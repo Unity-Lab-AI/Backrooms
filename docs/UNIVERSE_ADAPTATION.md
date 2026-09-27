@@ -2,9 +2,9 @@
 
 ## Chosen reference
 
-Per the project owner's direction, Kane Pixels' Backrooms series is the primary lore reference, and the 2026 A24 feature is a second reference within that creator-led continuity. The broader community wiki is a separate source. When sources differ, note the source and version in the content record instead of merging every Backrooms interpretation into one canon.
+Per the project owner's direction, Kane Pixels' Backrooms series and the A24 feature are the selected references, adapted indirectly. Do not directly recreate specific scenes or characters. Broader community canon is outside the shipped-content scope; keep any provenance checks against it separate from these references.
 
-The campaign is a deliberate RimWorld-era extension of the Kane Pixels material. RimWorld's interplanetary setting and colony management make the company able to expand beyond an Earth research site. Treat this as a playable branch of the source universe, not a claim that the RimWorld campaign occurs in the film's exact chronology.
+The campaign is an original RimWorld company simulation informed by broad themes from the selected references. RimWorld's interplanetary setting and colony management let the company expand beyond an Earth research site. Do not present the campaign as a canonical continuation or direct recreation of the series or feature.
 
 ## Lore-to-game translation
 

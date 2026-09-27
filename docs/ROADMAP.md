@@ -4,9 +4,9 @@ The work is sequenced so that later content depends on a tested company loop rat
 
 ## Stage 0 — decisions and research
 
-- Confirm the mod's public title, author/namespace, distribution target, and license for original code, text, and art.
+- Use the selected title, package ID, namespace, distribution target, and MIT source-code license. Keep author/publisher metadata blank until the owner assigns one; track art/audio provenance and licensing separately.
 - Capture the exact RimWorld 1.6 build, DLC set, RimWorld Together client version, server release, and client load order.
-- Finish the official video and feature-film research log at a design-summary level, recording provenance and avoiding copied expressive content.
+- Finish the 23-video Kane Pixels and full A24 feature review logs, recording provenance and translating the selected references indirectly; exclude broader community canon from shipped content.
 - Establish folder layout, build setup, language-key conventions, save ownership rules, and multiplayer synchronization approach.
 
 **Exit condition:** a concrete versioned target profile and a documented content-provenance rule exist.
@@ -37,10 +37,10 @@ The Furniture & Knickknack Store breach and Lone Survivor starts are planned sce
 - Add a narrow RimWorld Together adapter using only supported extension points; keep branch-local campaign state authoritative.
 - Verify guilds, sites/roads/events, item trade/gifts, pawn aid, configured facility visits, transfer spots, and reconnect/save behavior against a pinned client/server release.
 - Implement physical dossier exchange only after the exact RWT build reliably transfers the Backrooms dossier; research completion remains local to each branch.
-- Add DLC content under the requirement/optional policy selected at Gate 0 D4; if optional support is selected, keep safe Core fallbacks.
+- Add optional DLC content for Royalty, Ideology, Biotech, Anomaly, and Odyssey; keep the complete Core-only campaign path playable.
 - Run the mod in a clean baseline and then the exact recorded local server profile; keep an explicit list of known interactions.
 
-**Exit condition:** a second client can operate a separate company branch, exchange verified supplies/dossiers, use supported RWT world activities, and reconnect without duplicating or corrupting either branch. No live shared-map or shared-research behavior is assumed.
+**Exit condition:** a second client can operate a separate company branch, exchange verified supplies/dossiers, use supported RWT world activities, and reconnect without duplicating or corrupting either branch. Direct shared research is enabled only if the selected supported ledger extension passes synchronization tests; otherwise dossiers remain the technology-transfer path. No live shared-map control is assumed.
 
 ## Stage 4 — management breadth
 

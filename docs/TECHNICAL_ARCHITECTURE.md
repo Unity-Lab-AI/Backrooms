@@ -2,13 +2,13 @@
 
 This is a design target, not a claim that these types or APIs have already been implemented. Verify exact names and signatures against the installed RimWorld 1.6 assemblies and the chosen RimWorld Together client release before writing production code.
 
-**Gate 0 status:** the package and feature boundaries below are working proposals. The owner has not yet selected distribution/identity, 294-profile requirement, DLC requirement, adaptation depth, technology-transfer mechanism, localization plan, or project code license. Resolve those in [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md), then propagate the answers here and into [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md) before implementation.
+**Gate 0 decisions recorded:** private RWT prototype first; exact displayed title `Rimrooms - Async Industries`; author/publisher metadata intentionally blank; package ID `UnityLabAI.RimroomsAsyncIndustries`; internal namespace `RimroomsAsyncIndustries`; semantic versions; Core-only solo path; optional support for all five DLC; other 294-profile mods optional; indirect adaptation of Kane Pixels/A24 references, with wider community canon excluded from shipped content; dossier transfer plus shared research ledger only if supported and safely tested; English-first localization-ready; MIT for original source code. The remaining Gate 0 work is research, design, and runtime feasibility—not unresolved owner direction.
 
 ## Runtime and package boundaries
 
 - Target RimWorld **1.6** and its Core APIs first.
-- Proposed DLC approach: make Royalty, Ideology, Biotech, Anomaly, and Odyssey conditional integrations and keep a Core campaign path. Confirm D4 before freezing requirements; DLC-specific content should be guarded with the appropriate `MayRequire` metadata and/or versioned load folders if optional support is selected.
-- Proposed multiplayer approach: make the exact 294-entry profile the designated co-op test target. Whether all 294 are required for the supported server or remain optional is D3; do not freeze dependency metadata before that decision.
+- Keep Royalty, Ideology, Biotech, Anomaly, and Odyssey as optional conditional integrations; the Core campaign remains complete.
+- Use the exact 294-entry profile as the full research/test target. Require only Core plus Harmony/RWT for the co-op path; all other profile mods remain optional.
 - Ship one main mod package initially. Keep content and code organized so future optional extension packages can be split out without changing saved identifiers.
 - Use XML Defs for buildings, items, recipes, work types, research, quests, incidents, world objects, and language strings. Use C# only for systems that genuinely need custom state, generation, UI, or simulation.
 
@@ -31,7 +31,7 @@ Source/RimroomsAsyncIndustries.sln
   Compatibility/RimWorldTogether/
 ```
 
-The repository can include `Source/` and the mod's loadable `Assemblies/` output. Add the required `About/About.xml` only after the public author, package ID, version policy, and license are decided.
+The repository can include `Source/` and the mod's loadable `Assemblies/` output. Create `About/About.xml` with the selected title, package ID, version policy, and license when packaging begins. Leave its author/publisher value blank or omit it if the format permits; do not insert a placeholder. The owner may assign an author later.
 
 ## State ownership and persistence
 
@@ -81,12 +81,12 @@ Design around RWT's advertised separate-colony model, not a presumed shared simu
 - Each player's local company ledger, gate, expedition maps, research completion, contracts, pawns, and case records are authoritative in that branch's save.
 - Use RWT guilds, sites, roads, events, item trading/gifting, pawn aid, and configured visits where enabled. Inspect server settings before showing actions; disabled features must have a clear unavailable state.
 - Treat trade, gifting, visits, aid, and other world activities as unavailable until the exact client/server release and relevant server settings are pinned and reproduced. Do not copy older wiki claims into the API contract; those wiki pages could not be retrieved for the 2026-09-27 audit.
-- Proposed cross-branch technology exchange: physical research dossier items; the receiving branch studies the item and advances its own state. Confirm D6 and validate custom item transfer against the exact RWT release before enabling dossiers or promising cargo exchange.
+- Support physical Research Dossier transfer with local study. Also add shared research-ledger synchronization only if the pinned RWT build provides a supported extension and tests prove safe, nonduplicating updates.
 - Record transaction IDs and sender/receiver branch IDs to avoid duplicate shipment credits. Use configured transfer spots and show failed/unrecognized cargo for recovery instead of deleting or duplicating it.
 - Seed a destination from its saved coordinate ID, generator version, and explicit mission inputs. Never make the two players independently recreate what is supposed to be one shared map; RWT visits and Backrooms expedition maps are distinct features.
 - Do not make outcomes depend on client-only UI, local wall-clock time, external web requests, or unsaved random draws.
 - Keep compatibility code behind one small adapter layer. Do not scatter multiplayer-specific checks throughout XML defs and gameplay systems.
-- Proposed development path: keep a solo launch path for content iteration. The intended multiplayer path is RimWorld Together and its required Harmony dependency, with the D3 profile contract still open.
+- Keep a Core-only solo path. The multiplayer path requires RimWorld Together and Harmony; the remaining 294-profile entries are optional.
 - Treat the scenario presets as alternate starting conditions over one data model, as specified in [`SCENARIOS.md`](SCENARIOS.md). Test how new-game scenario creation maps onto RWT's shared world; do not assume separate clients can independently create different world starts until that behavior is demonstrated.
 
 The older `rwmt/Multiplayer` compatibility wiki is for a distinct multiplayer project and should not be treated as proof of RimWorld Together behavior. Use the chosen RWT source, version, and client APIs for implementation.

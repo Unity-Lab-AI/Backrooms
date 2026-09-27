@@ -2,7 +2,7 @@
 
 **Status:** design specification for RimWorld 1.6. No runtime mod code or in-game integration is implemented yet. The scope below turns the owner's campaign brief and the 2026-09-27 local 294-entry server profile into a buildable design. The companion [294-mod workbook](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx) contains one row per profile record, source package ID/order, dependency stance, intended use, integration approach, conflict watch, and evidence status.
 
-**Decision status:** the tables in “Binding design decisions” are working proposals. D3 (294-profile requirement), D4 (DLC requirement), D5 (canon/adaptation depth), and D6 (technology-transfer mechanism) in [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) must be answered before these become binding. Each profile entry and feature is cross-linked in [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md) before Gate 0 can pass.
+**Decision status:** owner choices D1–D9 are recorded in [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) and summarized below. Research, compatibility, and runtime validation remain open; no feature is considered implemented or tested until evidence is saved. Each profile entry and feature is cross-linked in [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md) before Gate 0 can pass.
 
 ## 1. Product definition and boundaries
 
@@ -12,17 +12,19 @@ The campaign begins at a small, underfunded research/security facility. The play
 
 “Endless” means a reproducible stream of seeded coordinates and saved visited sites, not an infinitely large map loaded at once. One expedition map is finite and playable. A coordinate atlas remembers discoveries, known routes, team notes, changed rooms, relays, and unresolved signals. New generator versions must not silently rebuild or erase already visited sites.
 
-### Working design proposals (Gate 0 decisions pending)
+### Settled product direction (Gate 0 owner choices recorded)
 
 | Area | Decision |
 | --- | --- |
 | Game version | RimWorld 1.6; publish only for game builds actually verified. |
-| DLC | Proposed: conditional support for Royalty, Ideology, Biotech, Anomaly, and Odyssey, with a Core route. Final required/optional policy is D4. |
-| Multiplayer | RimWorld Together (RWT) is the chosen co-op environment. Players run separate company branches and use documented world transfers/activities. Do not promise live co-control of a shared map or synchronized research. |
-| Additional dependencies | Proposed: no content mod is a Backrooms core dependency. For multiplayer, RWT and its published prerequisite Harmony are in the selected stack. Gravship Chapter 1 needs Odyssey plus Vanilla Expanded Framework; Chapter 2 additionally needs Chapter 1. Final package requirements follow D3/D4. |
-| Local 294 profile | All 294 records are in design/research scope and preliminary-mapped. Whether the exact 294 list is mandatory for the supported RWT co-op server is D3. |
+| DLC | Royalty, Ideology, Biotech, Anomaly, and Odyssey are optional integrations. The full company campaign must remain playable with Core alone. |
+| Multiplayer | RimWorld Together (RWT) is the co-op environment. Players run separate company branches and use only verified world transfers/activities. There is no live co-control of a shared map. Research dossiers are the baseline exchange; shared research is conditional on a supported, safely tested RWT extension. |
+| Required dependencies | RimWorld Core is required. The co-op profile also requires Harmony and RimWorld Together. Every other mod in the 294 profile is optional; verify exact dependencies before packaging. |
+| Local 294 profile | All 294 records are the required research/test target, not a required player dependency list. Each must receive an exact source review and a final disposition before Gate 0 passes. |
 | Gravships | Chapter 1 is the late orbital living-vessel/logistics layer. Chapter 2 adds orbital threats and defense. Neither replaces the machine gate or creates Backrooms coordinates. |
-| Source material | Kane Pixels' series and the A24 feature are required primary references. Wider canon and adaptation depth are D5. Maintain a source/provenance log for specific shipped names, text, art, audio, and characters. Third-party RimWorld mod assets and code are not bundled or copied by this plan. |
+| Source material | Use Kane Pixels' continuity and the A24 feature as indirect references. Do not directly recreate specific scenes or characters; exclude broader community canon from shipped content. Maintain source/provenance records. Third-party RimWorld mod assets and code are not bundled or copied by this plan. |
+| Project identity and license | Displayed title is exactly `Rimrooms - Async Industries`. Author/publisher metadata stays blank until the owner assigns one. Use package ID `UnityLabAI.RimroomsAsyncIndustries`, namespace `RimroomsAsyncIndustries`, semantic versions, and MIT for original source code; track asset/audio licensing separately. |
+| First release and language | Private RWT test build first; consider public Workshop release after validation. English first with localization keys; retain a Core-only solo path. |
 
 The official RWT Workshop page describes separate colonies on a shared planet and advertises activities including visiting, raiding, spying, trading, factions/guilds, roads, and sites. The project wiki endpoints returned HTTP 403 during the dated review, so exact online/offline visit rules, transfer behavior, server toggles, and client interaction semantics remain unverified. The local server hash is also not yet identified as the latest published release. Keep separate branch ledgers and treat each cross-branch activity as a pinned-build research/test item; see the [RWT and gravship feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md) and [source register](SOURCE_REGISTER.md) for direct references and evidence limits.
 
@@ -32,7 +34,7 @@ The official RWT Workshop page describes separate colonies on a shared planet an
 
 1. **Guild/company identity:** players can organize through RWT's player-made faction/guild system. Each player owns and runs a separate facility and local campaign state.
 2. **Physical supply:** trade, gifts, aid, caravans, and other enabled RWT routes move items or pawns between branches. Silver remains the ordinary payment instrument unless the exact custom item transfer is verified.
-3. **Technology exchange:** a branch can create a physical Research Dossier after it completes a milestone. The receiving branch accepts it into its own lab and completes a local study project for a defined insight, recipe, or progress bonus. The dossier never silently writes research into another save. Dossier transfer is a release gate: if the chosen RWT build cannot reliably move the custom item, leave the feature disabled until a supported, tested representation exists.
+3. **Technology exchange:** physical Research Dossiers are the baseline. The receiving branch accepts a dossier into its own lab and completes a local study project for a defined insight, recipe, or progress bonus. The dossier never silently writes research into another save. Transfer is a release gate: if the chosen RWT build cannot reliably move the custom item, leave it disabled until a supported, tested representation exists. Add direct shared-research ledger synchronization only if the pinned RWT build provides a supported extension point and disposable-profile tests prove safe, nonduplicating updates; otherwise retain dossier exchange alone.
 4. **Facility visits:** use RWT's configured visit/activity behavior, transfer spot, chill spot, and defense spot. Treat a visit as a server-controlled activity or snapshot interaction, not two players simultaneously commanding one colony. A visit can have a purpose (inspection, delivery, rescue handoff, training exchange) and a log entry, but it must respect RWT's actual activity rules.
 5. **Shared world activity:** where enabled, guild sites, roads, events, aid, and trade support a player-run company network. Each branch's Backrooms map, staff, gate state, contract state, and ledger remain locally authoritative unless RWT exposes and the project validates a supported way to transfer a particular record.
 
@@ -248,7 +250,7 @@ The map groups mods by intended use; a single mod may touch multiple systems. Th
 ### Design is specified in this workspace
 
 - [x] Initial company start, operation loop, facility functions, work roles, research/evidence, economy, incidents, coordinates, procedural sites, and late-stage expansion.
-- [ ] Confirm D4; conditional support for all five DLC is the current proposal, not yet an owner decision.
+- [x] Record D4: all five DLC are optional; maintain a complete Core-only campaign and validate the all-five local profile.
 - [x] RWT clarified as separate-branch cooperation with trade/aid/guild/activity-based visits; no live shared-map promise.
 - [x] Gravship Chapters 1 and 2 assigned distinct late-game roles and dependency boundaries.
 - [x] All 294 local profile rows captured and assigned to a design family in the workbook.
@@ -264,6 +266,6 @@ The map groups mods by intended use; a single mod may touch multiple systems. Th
 - [ ] Review the actual Workshop page, declared dependency, version notes, changed Defs/code/API, and known compatibility for the remaining 283 profile entries beyond Core, the five DLCs, Harmony, RWT, VEF, and the two gravship chapters; replace title-based assumptions where needed.
 - [ ] Run an in-game compatibility pass against baseline, each advertised DLC combination, both gravship chapters, and the complete ordered 294 profile. No such runtime result is represented by the design workbook.
 - [ ] Complete the official Kane Pixels episode-by-episode viewing log and the feature-film viewing log before specifying scene-specific content; the current index lists 23 videos but does not claim those works have all been reviewed.
-- [ ] Confirm package identity, author credits, original asset provenance, save migration policy, and release license.
+- [ ] Implement the selected package identity and MIT source-code license; leave the author/publisher field blank until assigned. Complete original asset provenance and save migration policy.
 
 The workbook is complete as a 294-row **design register**, not as a compatibility certification. Until the checklist's implementation and validation items are completed, describe the project as a thorough design package rather than a finished or fully tested RimWorld mod.

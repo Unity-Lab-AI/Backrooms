@@ -1,6 +1,6 @@
 # Research and references
 
-**Research snapshot: 2026-09-27.** This file separates source facts, design inspiration, and content that still needs review. The project's chosen primary lore reference is Kane Pixels' Backrooms continuity, alongside the 2026 A24 feature. The broader Backrooms concept and community wiki remain separate sources, not one unified canon.
+**Research snapshot: 2026-09-27.** This file separates source facts, design inspiration, and content that still needs review. The selected references are Kane Pixels' Backrooms continuity and the A24 feature, to be adapted indirectly. Broader community canon is excluded from shipped content and is not treated as one unified canon.
 
 ## First-pass design findings
 
@@ -16,13 +16,13 @@ The full Kane Pixels playlist remains a required review corpus. For each officia
 
 The [official A24 page](https://a24films.com/films/backrooms) identifies Kane Parsons as director and says the premise begins with a strange doorway appearing in the basement of a furniture showroom. That ordinary commercial setting and mundane threshold are the source cue for the **Furniture & Knickknack Store** scenario. The [A24 interview](https://a24films.com/notes/2026/05/thirty-thousand-square-feet-with-kane-parsons-james-wan) describes using human character context as an entry point, maintaining spatial continuity, and keeping the feature legible without overloading it with lore. The official [A24 home-video listing](https://shop.a24films.com/products/backrooms-blu-ray) lists a 111-minute feature and production extras, including a set-build featurette, VFX breakdowns, and a prop walkthrough. These sources support scenario and research priorities, but do not replace the still-pending full feature viewing log. The [scenario contract](SCENARIOS.md) distinguishes the synopsis cue from original scenario mechanics.
 
-Use the series and feature as the requested primary lore reference. Translate that material into RimWorld decisions: recruit and equip researchers and security, power and maintain the machine, plan openings, investigate coordinates, manage evidence, contain threats, and expand the organization. Keep a source/provenance entry for any specific names, text, image, sound, character, or design carried into the release so the project can apply the user's supplied rights basis consistently.
+Use the selected series and feature as indirect design references. Translate broad themes and production ideas into original RimWorld systems: recruit and equip researchers and security, power and maintain a machine gate, plan openings, investigate coordinates, manage evidence, contain threats, and expand the organization. Avoid directly recreating specific scenes or characters. Keep source/provenance records for any source-linked material considered for release and apply the owner's stated rights premise as an owner-provided assertion.
 
 ### Source and rights provenance
 
 Per the project owner's direction, the Backrooms creative reference is treated under the owner's stated MIT rights premise, with Kane Pixels' continuity as the selected canon. This is a project-supplied basis rather than a ruling re-verified in this workspace. Keep a provenance record for specific names, text, images, sounds, characters, and designs that enter the distributed mod. The project does not bundle code or assets from the 294 third-party RimWorld mods; each remains installed and governed by its own publisher's terms. The Gravship Expanded pages, for example, identify CC BY-NC-ND 4.0, so the mod plan integrates their installed gameplay and does not repackage their files.
 
-Keep creator-led Backrooms material, community-authored pages, photographs, fan games, and the A24 feature distinguishable in the source log. This preserves attribution and makes it clear which material informed each original gameplay implementation.
+Keep creator-led references, community-authored pages, photographs, fan games, and the A24 feature distinguishable in the source log. Broader community material is not part of the selected shipped-content scope; consult it only when needed to identify provenance or avoid accidental conflation.
 
 ## Primary technical sources
 
@@ -51,7 +51,7 @@ Use sources for the actual project being targeted. The separate `rwmt/Multiplaye
 
 - Review all 23 official playlist entries in the [direct-linked index](research/kane-pixels-video-index.csv), save a [timestamped review record](research/reviews/README.md) for each, and include relevant transcripts only when actually available. Do not treat user-uploaded compilations as authoritative.
 - Review the feature film in full and add a high-level design analysis of systems, pacing, spaces, company behavior, equipment, training, and story missions. Current notes use the official A24 synopsis and interview; a scene-by-scene viewing log has not been completed.
-- Identify which room and entity motifs belong to the broad community corpus, Kane Pixels' own continuity, individual contributors, or the film.
+- If a candidate motif has uncertain provenance, identify whether it belongs to Kane Pixels' continuity, the A24 feature, the broader community, or another contributor before deciding whether it fits the selected scope.
 - Identify the local RWT server commit as a published release and pin the exact client/server/game/DLC profile; the local config comparison is complete but the deployed build identity is not.
 - Inspect RWT source for supported extension points and verify item, pawn, visit, save/reconnect, and transaction behavior in a disposable profile.
-- Decide Rimrooms - Async Industries' code, text, and asset licenses before accepting outside contributions or adapting community work.
+- Record MIT for original source code; decide text, art, audio, and outside-contribution terms separately before accepting contributions or adding assets. Broader community canon remains outside shipped-content scope.

@@ -7,7 +7,7 @@ This file is the navigation index for the research and design materials a future
 | Topic | Canonical document | Supporting documents |
 | --- | --- | --- |
 | Work sequence and coding-start gate | [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) | [`ROADMAP.md`](ROADMAP.md), [`AI_BUILD_HANDOFF.md`](AI_BUILD_HANDOFF.md) |
-| Owner choices required before implementation | [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) | TODO Phase 0 and `AI_BUILD_HANDOFF.md` |
+| Settled owner choices for implementation | [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) | TODO Phase 0 and `AI_BUILD_HANDOFF.md` |
 | Feature/source/mod/style/file traceability | [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md) | `SYSTEMS_CATALOG.md`, `MOD_INTEGRATION_PLAN.md`, the 294-row register |
 | Player campaign and primary loop | [`GAME_DESIGN.md`](GAME_DESIGN.md) | [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md), [`ROADMAP.md`](ROADMAP.md) |
 | Starting campaign scenarios | [`SCENARIOS.md`](SCENARIOS.md) | [`GAME_DESIGN.md`](GAME_DESIGN.md), [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md), [`MOD_INTEGRATION_PLAN.md`](MOD_INTEGRATION_PLAN.md) |
@@ -26,7 +26,7 @@ This file is the navigation index for the research and design materials a future
 | A24 creator interview | [“Thirty Thousand Square Feet with Kane Parsons & James Wan”](https://a24films.com/notes/2026/05/thirty-thousand-square-feet-with-kane-parsons-james-wan) | [`RESEARCH.md`](RESEARCH.md) | Source-based high-level notes exist; distinguish the interview's statements from game design interpretation. |
 | A24 home-video extras | [Official A24 Blu-ray listing](https://shop.a24films.com/products/backrooms-blu-ray) | [`RESEARCH.md`](RESEARCH.md) | Listing reviewed to identify available production extras; it is not a substitute for viewing the feature. |
 
-The project direction names Kane Pixels' continuity and the A24 feature as primary creative references. Keep the wider community Backrooms corpus separate and label it when used. See the provenance and uncertainty rules in [`RESEARCH.md`](RESEARCH.md).
+The selected creative references are Kane Pixels' continuity and the A24 feature, adapted indirectly. Broader community Backrooms canon is excluded from shipped content. If it is consulted for identification or provenance research, keep it clearly separated from the selected references. See the provenance and uncertainty rules in [`RESEARCH.md`](RESEARCH.md).
 
 ## RimWorld, multiplayer, and mod references
 

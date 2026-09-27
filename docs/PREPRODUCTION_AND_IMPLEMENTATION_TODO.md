@@ -2,49 +2,52 @@
 
 **Purpose:** this is the master checklist from the current design folder to a releasable, polished RimWorld 1.6 mod. It includes work before code starts, the file/package work, every interconnected game system, all 294 local profile entries, RimWorld Together, all five DLCs, the two selected gravship chapters, verification, and release maintenance.
 
-**Current state:** design and research files exist; there is no mod source project, C# assembly, XML Def package, art/audio package, or in-game implementation. The inventory has 294 rows; the workbook assigns every row to a design family, with individual Workshop/API review still pending for most rows. The [Gate 0 decision sheet](GATE_0_DECISIONS.md) records owner-supplied direction and the few unresolved product choices. The [feature traceability map](FEATURE_TRACEABILITY.md) ties gameplay systems to design, lore, mod-profile rows, presentation, implementation surfaces, and acceptance evidence. Start from the [source register](SOURCE_REGISTER.md), then use the [design plan](MOD_INTEGRATION_PLAN.md), [technical architecture](TECHNICAL_ARCHITECTURE.md), [game brief](GAME_DESIGN.md), [scenario contract](SCENARIOS.md), [research index](RESEARCH.md), [294-row register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx), and [direct-linked video index](research/kane-pixels-video-index.csv).
+**Current state:** design and research files exist; there is no mod source project, C# assembly, XML Def package, art/audio package, or in-game implementation. The 294 rows are the full-profile research/test target, but only Core and the RWT/Harmony multiplayer stack are required; other profile mods are optional. The [Gate 0 decision sheet](GATE_0_DECISIONS.md) records the owner's selections. The public author/publisher remains intentionally unset; the displayed title is exactly **Rimrooms - Async Industries**. The [feature traceability map](FEATURE_TRACEABILITY.md) ties gameplay systems to design, lore, mod-profile rows, presentation, implementation surfaces, and acceptance evidence. Most mod, source, and runtime research is still pending. Start from the [source register](SOURCE_REGISTER.md), then use the [design plan](MOD_INTEGRATION_PLAN.md), [technical architecture](TECHNICAL_ARCHITECTURE.md), [game brief](GAME_DESIGN.md), [scenario contract](SCENARIOS.md), [research index](RESEARCH.md), [294-row register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx), and [direct-linked video index](research/kane-pixels-video-index.csv).
 
 ## How to use this backlog
 
 - Check an item only when its evidence or deliverable is saved in the project folder and reviewed.
 - `BLOCKER` means the work must be done before that implementation phase begins. `GATE` items must pass before moving to the next phase.
-- `DECISION` means owner direction is missing or needs to be made durable in the [Gate 0 decision sheet](GATE_0_DECISIONS.md). Suggested answers are proposals, not approvals.
+- `DECISION` means owner direction is missing or needs to be made durable in the [Gate 0 decision sheet](GATE_0_DECISIONS.md). The current D1–D9 selections there are recorded owner decisions.
 - Every code task needs a save/load path, a UI route, error handling, a dependency rule, and acceptance criteria. Avoid disconnected content that cannot be reached or used in the campaign.
 - The 294 profile is a target integration list. A mod can be “integrated” by using its native feature, supporting it without patches, adding a narrow adapter, or documenting a verified conflict. Do not write needless patches just to claim a mod was touched.
 
 ## Locked direction from the owner
 
-- [x] Target RimWorld 1.6. Whether the five DLC are optional layers or required content remains owner decision D4.
+- [x] Target RimWorld 1.6; Royalty, Ideology, Biotech, Anomaly, and Odyssey are optional integrations. Keep the campaign playable on Core.
 - [x] Start with a small corporate research/security facility, not the ordinary crashlanded start.
 - [x] Provide distinct selectable campaign starts: Async Industries facility, Furniture & Knickknack Store breach, and Lone Survivor inside a seeded coordinate; build the facility opening first and preserve a shared scenario/generation contract.
 - [x] Make the gate, expeditions, company management, money, hiring/training, security, procedural spaces, research, mysteries, entities, outposts, and expansion the central loop.
-- [x] Use the 294-entry local server profile as the required research and integration target; the launch dependency/support contract remains owner decision D3, and the profile is not yet compatibility-certified.
+- [x] Use the 294-entry local server profile as the full research and test target, but require only RimWorld Core plus Harmony/RWT for multiplayer. Every other profile mod remains optional; the full profile is not yet compatibility-certified.
 - [x] Official mod title: **Rimrooms - Async Industries**.
-- [x] Use RimWorld Together for asynchronous cooperation: separate facilities, exchange of resources/items/technology, and visits; no live shared-map control. Exact implementation mechanics remain subject to RWT source review and testing.
+- [x] Use RimWorld Together for asynchronous cooperation: separate facilities, resources/item exchange, research dossiers, and (if supported and safely tested) shared research ledger and visits; no live shared-map control.
 - [x] Include Vanilla Gravship Expanded Chapters 1 and 2 as optional late-game integrations.
-- [x] Use Kane Pixels' series and the A24 Backrooms feature as required primary creative references. Broader canon and adaptation depth are owner decision D5.
-- [ ] Resolve all choices in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.md) before locking metadata, namespace, distribution, license, dependency requirements, canon scope, or research-transfer mechanics.
+- [x] Use only Kane Pixels' continuity and the A24 feature as shipped Backrooms reference canon. Adapt canon/lore/themes/styles indirectly; do not recreate scenes or characters directly. Track source provenance for all content.
+- [x] First distribution target: private RimWorld Together prototype; consider public Steam Workshop release only after named-profile and multiplayer validation.
+- [x] Displayed title stays exactly **Rimrooms - Async Industries**. Author/publisher metadata stays blank until the owner assigns one; MIT does not supply an author name. Package ID: `UnityLabAI.RimroomsAsyncIndustries`; internal C# namespace: `RimroomsAsyncIndustries`; semantic versions (`0.x` pre-release, `1.0.0` stable).
+- [x] English-first, localization-ready; keep a Core-only solo path and use RWT for co-op. Original source code is MIT; art/audio licenses are tracked separately.
+- [x] Audience: mature psychological horror/management, with the strongest horror presentation the game and tested profile can support.
 
 ## Owner decisions that still affect the build
 
-The complete multiple-choice list is in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.md). It covers first distribution target; public author/package/version identity; whether the 294 list is mandatory for the supported co-op server; DLC requirement; canon/adaptation depth; technology-transfer mechanics; first-release language/solo mode; and the project's own source-code license. Do not turn a suggested option into a locked choice without the owner's answer.
+The recorded decisions are in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.md). They are fixed for pre-production and implementation. The chosen code license does not cover third-party assets; record those separately.
 
 ## Phase 0 — pre-code blockers and research
 
 ### 0.1 Project ownership and product contract
 
-- [ ] Resolve D1–D9 in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.md); record exact answers and update dependent docs.
+- [x] Record D1–D9 in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.md) and propagate the selected product, dependency, DLC, source, multiplayer, language, license, identity, and content-direction choices.
 - [ ] Define the “AAA-grade” acceptance bar in measurable terms: original cohesive art/audio, readable and accessible UI, minimal placeholder content, stable saves, bounded generation/performance, complete tutorial, and release/compatibility notes.
 - [ ] Create a provenance register for source-specific names, text, character designs, visuals, sound, and equipment. Preserve the owner's rights premise as an owner-provided statement, and independently record source/license provenance for every shipped or recreated asset before distribution. Keep other mod publishers' files out of the project.
-- [ ] Set the optional-compatibility-package policy and maintenance ownership, consistent with the D3 support contract.
-- [ ] Record first-release audience/horror presentation, player age/content rating target, accessibility expectations, and language plan in the project brief.
+- [ ] Define the optional-compatibility-package maintenance policy for the 294 optional profile mods.
+- [ ] Record the platform content descriptors/rating target and detailed accessibility requirements consistent with D7/D9.
 
 ### 0.2 Official-source review
 
 - [ ] Review all 23 rows in [the official Kane Pixels video index](research/kane-pixels-video-index.csv), one by one. Record date, timestamps actually reviewed, spatial rules, organization/tools, human decision, evidence, threat behavior, uncertainty, and a distinct RimWorld design translation. Do not invent a transcript when captions are absent.
 - [ ] Review the A24 film in full and write a high-level feature analysis for equipment, staff roles/training, A-Sync/facility work, room types, gate operation, threats, story beats, and candidate quests. Keep this separate from the series notes.
 - [ ] Recheck official source/playlist contents when content production starts; the video count and available captions can change.
-- [ ] Mark each candidate game element as direct source reference, original design, or broader-canon reference. Track its location in the game and its source record.
+- [ ] Mark each candidate game element as indirect Kane/A24 adaptation or original design. Broader community canon is not part of shipped content. Track each feature's source record.
 - [ ] Complete the full video-by-video and feature review before any mod code or source-specific content begins; cite observations in the relevant feature row of [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md).
 - [ ] Read current public RimWorld mod-package/load-folder guidance and validate the rules against the installed RimWorld 1.6 files before selecting XML folder/version conventions. Useful starting points: [Ludeon modding tutorial](https://ludeon.com/forums/index.php?topic=33219.0), [About.xml guide](https://www.rimworldwiki.com/wiki/Modding_Tutorials/About.xml), and [1.6 folder/load-folder guide](https://rimworldwiki.com/wiki/Modding_Tutorials/Mod_Folder_Structure).
 
@@ -75,7 +78,7 @@ The complete multiple-choice list is in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.m
 - [ ] Choose the exact RWT feature flags the co-op campaign needs. Document admin prerequisites, timeout/failure behavior, item ownership, logs, and recovery when a transfer fails.
 - [ ] Pin the actual RWT release before coding. The upstream release listing currently shows `26.8.31.1` with mod configuration/order enforcement and world-related changes; this does not prove the local server is running it or expose an API for arbitrary Backrooms state.
 - [ ] For [Gravship Expanded Chapter 1](https://steamcommunity.com/sharedfiles/filedetails/?id=3609835606) and [Chapter 2](https://steamcommunity.com/sharedfiles/filedetails/?id=3799737423), record current dependencies, supported extension points, update risks, and every selected profile mod that touches gravships. Confirm the support boundary with a clean gravship-only list before the 294-mod profile.
-- [ ] Decide whether the final server enforces only the essential co-op dependencies or the complete 294 list; write a join/incompatible-list procedure.
+- [ ] Configure the supported RWT co-op profile to require Core, Harmony, RWT, and the Rimrooms package; list other 294-profile mods as optional, while recording tested versions/order and join guidance.
 - [ ] Verify each RWT feature required by the settled D3/D6 contract against the exact pinned source/build. Preserve branch ownership and avoid custom shared research state unless a supported API and successful test justify it.
 
 ### 0.5 Pre-code design freeze
@@ -84,20 +87,20 @@ The complete multiple-choice list is in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.m
 - [x] Create the canonical [scenario contract](SCENARIOS.md): shared state fields, Async Industries/Store/Lone Survivor openings, future candidate starts, multiplayer caveat, and acceptance checklist.
 - [ ] Complete concrete map/pawn/faction/inventory/gate/coordinate values, objective branches, failure/recovery flow, tutorial text, and convergence events for each of the three planned openings. Keep Async Industries as the first playable; implement the store and survivor starts after the vertical slice.
 - [ ] Verify whether different RWT branches can use different start scenarios on the same server/world. If not supported, specify a shared scenario requirement for co-op sessions.
-- [ ] Freeze separate branch ownership: local company ledger/research/maps; inter-branch resources and dossiers move as tested items; facility visits use only activities verified in the pinned RWT build.
+- [ ] Freeze separate branch ownership: local company ledgers/maps remain authoritative; trade resource/item dossiers; implement direct shared research only through a supported RWT extension and successful synchronization tests; facility visits use only verified RWT activities.
 - [ ] Freeze a complete content inventory: staff roles, rooms, machines, field gear, furniture/salvage, research branches/tiers, evidence types, entities, anomalies, contracts, incidents, room archetypes, outposts, space content, translations, and accessibility needs.
 - [ ] Define the campaign math: prices, wages, food/sleep/rest needs, research costs, gate draw, open-window growth, crew/cargo limits, losses, recovery, rent, reputation, contract bonuses/penalties, and outpost upkeep. Use spreadsheets for balance hypotheses and preserve versioned formulas.
 - [ ] Define entity/anomaly rules and counterplay for each proposed threat before coding its Defs: tells, trigger, limits, behavior, evidence, response, containment, possible outcomes, and accessibility cues.
 - [ ] Define room-template tags, coordinate identity, procedural seed inputs, graph/path validation, bounded propagation rules, fog-of-war, return clues, map revisits, and generator migration behavior.
 - [ ] Define all Operation panes and each action's preconditions/result/error state; mark which action is local state and which crosses the RWT boundary.
 - [ ] Finish the data model and save ownership diagram in `TECHNICAL_ARCHITECTURE.md`; identify stable IDs and migration needs before defining save keys.
-- [ ] Complete all blocking decisions above and approve the first milestone backlog. Do not begin full content production while dependency, save ownership, and required launch profile remain ambiguous.
+- [x] Resolve the owner decisions and approve the dependency/source-transfer direction. Research, RWT feasibility, save ownership details, and the full profile mapping remain Gate 0 blockers.
 - [ ] Complete [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md) for every planned feature, all linked research/source paths, all 294 row assignments, planned files, presentation rules, DLC/RWT boundaries, state ownership, and acceptance proof.
 - [ ] Freeze the original visual/UI/audio guide for facility, gate, Backrooms room families, furniture/salvage, staff/equipment, entities, evidence, Operations, and all scenarios; link each style rule to its inspiration/review record or label it original.
 
 ### Coding-start gate
 
-**Gate 0 passes only when:** all owner choices in `GATE_0_DECISIONS.md` are answered and propagated; RimWorld/DLC/Harmony/RWT client/server targets are pinned; the full 23-video series and A24 feature have saved reviews; the exact 294 profile has per-row source/version/dependency/license/interactions review, feature IDs, final disposition, and a completed dependency/conflict/feature graph; RWT transfer, visit, scenario, save, reconnect, and trade behavior required by the chosen contract is verified in a disposable profile; the full feature/source/mod/style/file traceability map is complete; scenario, campaign math, threats, procedural generation, interface, save ownership and migrations, provenance, architecture, build strategy, and acceptance plan are frozen; and all baseline test cases are written. **Do not create the Rimrooms code project, XML Defs, or production source-specific content before Gate 0 passes.** This strict pre-build boundary follows the owner's request that preparation and all needed research be completed before building begins.
+**Gate 0 passes only when:** D1–D9 are recorded and propagated; RimWorld/DLC/Harmony/RWT client/server targets are pinned; the full 23-video series and A24 feature have saved reviews; the exact 294 profile has per-row source/version/dependency/license/interactions review, feature IDs, final disposition, and a completed dependency/conflict/feature graph; RWT dossier/ledger sync, visits, scenario, save, reconnect, and trade behavior required by the chosen contract is verified in a disposable profile; the full feature/source/mod/style/file traceability map is complete; scenario, campaign math, threats, procedural generation, interface, save ownership and migrations, provenance, architecture, build strategy, and acceptance plan are frozen; and all baseline test cases are written. **Do not create the Rimrooms code project, XML Defs, or production source-specific content before Gate 0 passes.** This strict pre-build boundary follows the owner's request that preparation and all needed research be completed before building begins.
 
 ## Phase 1 — repository, build, and content foundations
 
@@ -106,7 +109,7 @@ The complete multiple-choice list is in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.m
 - [ ] Create a reproducible C# solution/project targeting the RimWorld 1.6 runtime/compiler constraints; record reference paths, build configurations, output path, and warning policy.
 - [ ] Add a local dev launch configuration for a clean Core-only profile and a pinned RWT/profile launch configuration.
 - [ ] Create build/package scripts that copy only distributable files and produce a versioned mod folder/archive; ensure local DLL references, logs, source notes, and third-party assets are excluded.
-- [ ] Create the mod identity files after decisions: `About/About.xml`, `About/Preview.png`, package IDs, supported versions, dependencies, description, and load folders.
+- [ ] Create the mod identity files: `About/About.xml`, `About/Preview.png`, package IDs, supported versions, dependencies, description, and load folders. Use the selected title/package ID/version policy and leave author/publisher blank or omit that field until the owner assigns one.
 - [ ] Add README install/configuration/dependency guidance, changelog, credits, source/asset provenance ledger, version policy, bug report template, and save-migration policy.
 - [ ] Add `Languages/English/Keyed/` before UI strings are introduced; avoid visible hard-coded strings in C#.
 - [ ] Define namespaces/Def naming conventions, texture/audio conventions, stable IDs, XML validation rules, and file ownership boundaries.
@@ -332,9 +335,9 @@ flowchart LR
 | 294-mod inventory | 294 records and 45 preliminary family mappings exist. | Individual page/API/version review and full-profile runtime report. |
 | RimWorld Together | Local 294-entry client/server set and order match; server config does not enforce them; exact server release remains unidentified. | Pin builds, inspect extension points, resolve scenario joining, run item/visit/reconnect tests. |
 | VGE Chapters 1 and 2 | Installed entries/dependency order and official Workshop requirements reviewed. | Inspect all vehicle/space mods and run a clean plus combined stack. |
-| DLC | D4 pending; all five scoped for support. | Def folder audit and selected-profile runs; record every declared combination. |
+| DLC | D4 selected: all five optional; Core-only campaign. | Def folder audit and selected-profile runs; record every declared combination. |
 | Kane Pixels videos/A24 film | All 23 entries indexed; first video's transcript is unavailable; official synopsis/interview/home-video sources reviewed for scenario direction. | Timestamped viewing log for all 23 and full feature review. |
 | Code/package | Not started. | Gate 0, repository, build target, first playable implementation. |
-| Assets/release identity | Not started. | Approved title/author/namespace, asset plan, metadata, original content. |
+| Assets/release identity | Not started. | Exact title and package ID recorded; author/publisher intentionally blank; asset plan, metadata, original content, and provenance remain to be completed. |
 
 The work is ready for **pre-production decisions and research execution**. It is not ready to claim a complete, integrated, tested, or released mod. Completion of Gate 0 is the explicit point at which implementation begins.

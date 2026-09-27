@@ -11,7 +11,7 @@ Read these files in this order before implementation:
 2. [`../AGENTS.md`](../AGENTS.md) — mandatory project instructions for coding agents.
 3. [`SOURCE_REGISTER.md`](SOURCE_REGISTER.md) — canonical document map, direct source URLs, local profile inputs, review locations, and evidence state.
 4. [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) — owner decisions, blockers, code/package file map, phase sequence, gates, and acceptance work.
-5. [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) and [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md) — owner selections required before implementation and the feature-by-feature route through lore, the 294-mod profile, style, package surfaces, and acceptance evidence.
+5. [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) and [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md) — settled owner decisions and the feature-by-feature route through lore, the 294-mod profile, style, package surfaces, and acceptance evidence.
 6. [`GAME_DESIGN.md`](GAME_DESIGN.md) and [`SCENARIOS.md`](SCENARIOS.md) — core experience, campaign loop, and complete opening-scenario contracts.
 7. [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md) — complete system/content inventory.
 8. [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — proposed assemblies, ownership of save state, extension boundaries, and system contracts.
@@ -52,4 +52,4 @@ Update the file that owns the decision first, then add a link from its navigatio
 
 ## Current gate
 
-The exact local server/client mod ID set and order have now been compared and match at 294 entries. The server settings do not enforce that list, the exact deployed RWT release is still unresolved, and no compatibility run has been performed for this mod. The 23-video index exists, but the full viewing/timestamped analysis and complete feature-film review remain pending. Individual Workshop/API research for the 294 mods remains pending. Complete every decision in `GATE_0_DECISIONS.md` and every strict Gate 0 item in the TODO before creating the source project or claiming an implementation target is pinned.
+The exact local server/client mod ID set and order have now been compared and match at 294 entries. The server settings do not enforce that list, the exact deployed RWT release is still unresolved, and no compatibility run has been performed for this mod. The 23-video index exists, but the full viewing/timestamped analysis and complete feature-film review remain pending. Individual Workshop/API research for the 294 mods remains pending. D1–D9 are recorded; do not reopen them unless the owner changes direction. Complete every remaining strict Gate 0 research, design, and runtime-evidence item in the TODO before creating the source project or claiming an implementation target is pinned. The displayed title is exactly `Rimrooms - Async Industries`; leave author/publisher metadata blank until assigned.

@@ -125,4 +125,4 @@ Room templates carry tags for dimensions, doors, passages, materials, lighting, 
 
 ## DLC and third-party integrations
 
-The DLC dependency policy remains open at Gate 0 decision D4. If the owner chooses optional DLC support, content should load only when its DLC exists and the campaign needs a Core fallback. Hospitality, prisoner, storage, research, vehicle, and power mods are integration examples; the 294-profile requirement policy remains open at D3. Core systems should avoid undocumented or unreviewed bridges.
+Royalty, Ideology, Biotech, Anomaly, and Odyssey are optional content layers. Content should load only when its DLC exists, and the campaign must retain a Core-only route. Hospitality, prisoner, storage, research, vehicle, and power mods are optional integration examples from the 294-profile research target. Core systems should avoid undocumented or unreviewed bridges.

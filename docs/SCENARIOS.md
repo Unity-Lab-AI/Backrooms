@@ -2,7 +2,7 @@
 
 **Status:** design contract for selectable campaign openings. Async Industries is the first playable implementation target; this file describes the shared rules and the planned alternate starts. The scenario list is extensible, but each added start must pass the common contract below.
 
-**Decision dependency:** the Core-only route in this contract depends on D4, and the required multiplayer profile depends on D3, in [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md). Do not treat those proposed requirements as final until the owner records a choice.
+**Selected dependency contract:** all three starts remain playable on Core without DLC or optional profile mods. Co-op requires Harmony/RWT; the rest of the 294 profile is optional. See [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md).
 
 ## Why scenarios exist
 
@@ -23,7 +23,7 @@ Every scenario definition must provide:
 | Failure and recovery | Explicit handling for death, incapacitation, lost gear, sealed route, failed generation, broken gate, or abandoned settlement as applicable; no unrecoverable softlock. |
 | Convergence | A documented route into shared systems: company operation, paid investigation, rescued survivor, established outpost, or continued solo expedition. Convergence must preserve evidence and coordinate identity. |
 | Save/load idempotency | New-game grants, map setup, objectives, quests, items, pawns, and site links must not duplicate after reload or migration. |
-| Dependency boundary | Proposed: a complete route using RimWorld Core. Confirm DLC policy at D4 and multiplayer profile policy at D3 before treating optionality as final. |
+| Dependency boundary | Complete solo route using RimWorld Core. All five DLC and other 294-profile mods are optional. Harmony/RWT are required for co-op only. |
 | Multiplayer eligibility | Declared as solo, co-op compatible, or unverified. Do not assume multiple players can select independent new-game scenarios inside one RWT world. |
 
 Scenario generation may vary roster, stock, starting damage, early signals, and objective order by seed, but the opening must remain bounded and legible. The scenario chooses starting conditions; common campaign services own transactions, coordinates, evidence custody, gate/portal state, and saved progression.
@@ -51,7 +51,7 @@ These are options for future scenario content, not promised release features. Gi
 - [ ] Appears with an accurate name and opening summary in scenario selection.
 - [ ] Has a unique new-game setup and shares the same stable campaign, coordinate, and evidence services.
 - [ ] Gives every start an actionable first objective, visible failure state, and recovery/exit route.
-- [ ] Meets the dependency profile selected at D3/D4; if optional DLC and a Core-only solo path are selected, verify that path separately from the supported RWT profile.
+- [ ] Remains playable without optional DLC or the optional 294-profile mods; co-op setup requires the pinned Harmony/RWT stack.
 - [ ] Saves and reloads without duplicating starting pawns, items, buildings, objectives, contracts, or rewards.
 - [ ] Generated destinations remain reproducible and revisitable under their saved coordinate and generator version.
 - [ ] Joins or is excluded from RWT co-op based on a pinned-build result; mixed scenario starts are not promised before that result.

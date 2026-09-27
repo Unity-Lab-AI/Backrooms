@@ -2,7 +2,7 @@
 
 ## Support target
 
-**Proposed support target (D3/D4 pending):** RimWorld **1.6**, with conditional support for Royalty, Ideology, Biotech, Anomaly, and Odyssey. RimWorld Together is the chosen multiplayer path, with Harmony as its prerequisite in that stack. A solo/Core path is planned. The 294-entry server profile is the required research target, but its launch requirement status awaits D3. No profile entry is assumed compatible until exact review and combined-profile testing.
+**Selected support target:** RimWorld **1.6**. Core-only solo play is supported by design; Royalty, Ideology, Biotech, Anomaly, and Odyssey are optional integrations. Co-op requires RimWorld Together and Harmony. All other entries in the 294-entry server profile are optional, while the complete ordered list is the required research/test target. No profile entry is assumed compatible until exact review and combined-profile testing.
 
 ## Local server snapshot
 
@@ -41,7 +41,7 @@ The local list also contains a large set of combat, medical, pawn, and quality-o
 
 ## Compatibility rules
 
-1. Apply the final D3/D4 package contract. If optional-content support is selected, keep the main package independent from optional gameplay/DLC content and preserve a Core path.
+1. Keep the main package independent from optional DLC/profile content and preserve a complete Core path; require Harmony/RWT only for the co-op path.
 2. Detect DLC and optional user mods by their stable package IDs; place each integration in isolated XML patches or adapter code.
 3. Avoid overwriting another mod's Def. Prefer targeted `PatchOperation` changes only when there is a concrete interaction to solve.
 4. Keep a minimal recommended load-order note after the 1.6 folder and metadata rules are checked against the final package.
