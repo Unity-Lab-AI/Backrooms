@@ -1,0 +1,357 @@
+# Rimrooms - Async Industries: pre-production and complete implementation backlog
+
+**Purpose:** this is the master checklist from the current design folder to a releasable, polished RimWorld 1.6 mod. It includes work before code starts, the file/package work, every interconnected game system, all 294 local profile entries, RimWorld Together, all five DLCs, the two selected gravship chapters, verification, and release maintenance.
+
+**Current state:** design and research files exist; there is no mod source project, C# assembly, XML Def package, art/audio package, or in-game implementation. The inventory has 294 rows; the workbook assigns every row to a design family, with individual Workshop/API review still pending for most rows. Start source research from the [source register](SOURCE_REGISTER.md), then use the [design plan](MOD_INTEGRATION_PLAN.md), [technical architecture](TECHNICAL_ARCHITECTURE.md), [game brief](GAME_DESIGN.md), [scenario contract](SCENARIOS.md), [research index](RESEARCH.md), [294-row register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx), and [direct-linked video index](research/kane-pixels-video-index.csv).
+
+## How to use this backlog
+
+- Check an item only when its evidence or deliverable is saved in the project folder and reviewed.
+- `BLOCKER` means the work must be done before that implementation phase begins. `GATE` items must pass before moving to the next phase.
+- `DECISION` means owner direction is missing or needs to be made durable in the project record. Defaults below allow planning to continue; they are not silent approvals.
+- Every code task needs a save/load path, a UI route, error handling, a dependency rule, and acceptance criteria. Avoid disconnected content that cannot be reached or used in the campaign.
+- The 294 profile is a target integration list. A mod can be “integrated” by using its native feature, supporting it without patches, adding a narrow adapter, or documenting a verified conflict. Do not write needless patches just to claim a mod was touched.
+
+## Locked direction from the owner
+
+- [x] RimWorld 1.6; support Royalty, Ideology, Biotech, Anomaly, and Odyssey as optional DLC layers.
+- [x] Start with a small corporate research/security facility, not the ordinary crashlanded start.
+- [x] Provide distinct selectable campaign starts: Async Industries facility, Furniture & Knickknack Store breach, and Lone Survivor inside a seeded coordinate; build the facility opening first and preserve a shared scenario/generation contract.
+- [x] Make the gate, expeditions, company management, money, hiring/training, security, procedural spaces, research, mysteries, entities, outposts, and expansion the central loop.
+- [x] Use the 294-entry local server profile as the integration target and examples set; it is not yet compatibility-certified.
+- [x] Official mod title: **Rimrooms - Async Industries**.
+- [x] Use RimWorld Together for asynchronous cooperation: separate facilities, player-to-player supply/technology exchange, and configured visits; no live shared-map control.
+- [x] Include Vanilla Gravship Expanded Chapters 1 and 2 as optional late-game integrations.
+- [x] Use Kane Pixels' series and the A24 Backrooms film as primary creative references, following the owner's stated rights premise.
+- [ ] Save final publishing, namespace, and canon-scope decisions below before metadata/content is locked.
+
+## Owner decisions that still affect the build
+
+1. **Distribution/release target and publisher identity**
+   - [ ] Recommended: private RimWorld Together prototype first; publish only after profile and multiplayer validation.
+   - [ ] Public Steam Workshop release as the first target.
+   - [ ] Private server mod only, no Workshop release planned.
+   - **Needed to finish:** public author/display name and package namespace if publishing; otherwise use a temporary internal namespace. The public title is already set.
+
+2. **What “all 294 mods integrated” means for other players**
+   - [ ] Recommended: analyze and validate all 294 together in the target profile, but require only RimWorld Core plus RWT/Harmony for the co-op profile; keep other content/QoL integrations optional.
+   - [ ] Require the full 294-entry list to play the mod.
+   - [ ] Ship a core package plus separate optional integration packages for content families.
+
+3. **Canon coverage for shipped Backrooms content**
+   - [ ] Recommended: Kane Pixels official series plus the A24 film as primary sources; use original game inventions for connective material and label any wider references.
+   - [ ] Include the wider community Backrooms canon/wiki in the content pool too.
+   - [ ] Keep shipped content mostly original, using Kane/A24 as high-level inspiration only.
+
+4. **How technology is shared between RWT branches**
+   - [ ] Recommended: transferable Research Dossier items; the receiving facility studies each dossier locally. No shared master ledger/research state.
+   - [ ] Build a custom server-side shared ledger/research layer if RWT provides a supported extension path.
+   - [ ] Share physical supplies only; no tech transfer.
+
+**Working assumptions until decided:** preserve the current separate-branch model; no content-mod hard dependencies beyond the requested multiplayer stack; use a provisional namespace; don't copy third-party mod files. Resolve these decisions before making `About.xml`, Workshop metadata, save IDs, or content that depends on an unapproved canon scope.
+
+## Phase 0 — pre-code blockers and research
+
+### 0.1 Project ownership and product contract
+
+- [ ] Choose the author/display name, package ID/namespace, repository owner, and version scheme. The public title is **Rimrooms - Async Industries**.
+- [ ] Confirm distribution target, intended audience, supported language at first release, and whether the 294-mod profile is the supported launch profile or a private test profile.
+- [ ] Record the owner's stated Backrooms rights/source premise in a short provenance policy. Make an asset-by-asset record for source-specific names, text, character designs, visuals, sound, and equipment. Keep the publishers' files for RWT/VGE/other RimWorld mods out of this project's distribution.
+- [ ] Agree whether the mod may make optional compatibility packages for existing mods and who maintains their updates.
+- [ ] Define the “AAA-grade” acceptance bar: original cohesive art/audio, readable and accessible UI, minimal placeholder content, stable saves, predictable performance, complete tutorial, and release/compatibility notes. Do not use a marketing adjective as a substitute for measured acceptance criteria.
+- [ ] Decide whether the first runnable build can be solo-tested without RWT while the supported co-op setup uses RWT. (Recommended: yes.)
+
+### 0.2 Official-source review
+
+- [ ] Review all 23 rows in [the official Kane Pixels video index](research/kane-pixels-video-index.csv), one by one. Record date, timestamps actually reviewed, spatial rules, organization/tools, human decision, evidence, threat behavior, uncertainty, and a distinct RimWorld design translation. Do not invent a transcript when captions are absent.
+- [ ] Review the A24 film in full and write a high-level feature analysis for equipment, staff roles/training, A-Sync/facility work, room types, gate operation, threats, story beats, and candidate quests. Keep this separate from the series notes.
+- [ ] Recheck official source/playlist contents when content production starts; the video count and available captions can change.
+- [ ] Mark each candidate game element as direct source reference, original design, or broader-canon reference. Track its location in the game and its source record.
+- [ ] Read current public RimWorld mod-package/load-folder guidance and validate the rules against the installed RimWorld 1.6 files before selecting XML folder/version conventions. Useful starting points: [Ludeon modding tutorial](https://ludeon.com/forums/index.php?topic=33219.0), [About.xml guide](https://www.rimworldwiki.com/wiki/Modding_Tutorials/About.xml), and [1.6 folder/load-folder guide](https://rimworldwiki.com/wiki/Modding_Tutorials/Mod_Folder_Structure).
+
+### 0.3 Individual review of the 294-mod profile
+
+- [x] Preserve source load-order row, display name, package/Workshop ID, and config type in the CSV/workbook.
+- [x] Give all 294 rows a preliminary system family, intended Backrooms use, dependency stance, and compatibility watch.
+- [x] Compare the current local client `ModsConfig.xml` against server `ModConfig.json`: 294/294 IDs map, with zero missing/extra records and zero load-order differences on 2026-09-27. See [RWT and gravship audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md). This is a snapshot match, not a compatibility test.
+- [ ] For every row, inspect the exact Workshop page and current 1.6 version, `About.xml`, required DLC/mods, license/asset notes relevant to interoperability, feature list, and known incompatible mods.
+- [ ] Inspect source/XML/API for mods with direct game-state overlap: RimWorld Together, both gravship chapters, all frameworks, world/site/quest mods, portals, power systems, research UI, prisoner/capture mods, storage/cargo, map/terrain generation, and pawn/work/job systems.
+- [ ] Turn each row into one final action: **use native feature**, **configuration-only**, **narrow adapter**, **compatibility patch**, **avoid touching; verified alongside**, or **known conflict/not supported**. Add evidence and tested version. No row may remain “assumed from title” at release.
+- [ ] Build a dependency/conflict graph from the exact package IDs and load order. Identify duplicate/repackaged mods, patches, hard dependencies, frameworks, and mods disabled by local settings.
+- [ ] Establish an interaction map for the full 294: which Backrooms systems call each mod, which ones should remain untouched, and which pairs need a reproduced test. Preserve QoL mods' functions and key bindings.
+- [ ] Review mods by family first, then inspect high-risk members individually. Don't assume a family-level pass certifies its individual members.
+- [ ] Update the register's status for every row as reviewed/version-pinned/tested or pending; the final workbook must agree with the exact local client/server list.
+
+### 0.4 RimWorld Together and gravship feasibility
+
+- [x] Capture the local server executable product hash, client active package IDs, and ordered 294-entry list; map client package IDs through installed Workshop metadata and compare them with the server list. Results are recorded in [RWT_AND_GRAVSHIP_FEASIBILITY.md](research/RWT_AND_GRAVSHIP_FEASIBILITY.md).
+- [x] Compare server `ModConfig.json` with the actual client `ModsConfig.xml`. They match exactly today; `AllowAllMods=true`, `EnforceSettings=false`, and null `ModOrder` mean the server does not enforce that match.
+- [x] Review current official [RWT release notes](https://github.com/RimWorld-Together/Rimworld-Together/releases) and the official [RWT Workshop page](https://steamcommunity.com/sharedfiles/filedetails/?id=3005289691). The wiki pages currently return 403 to the browser tool; recheck them or verify behavior in-game after pinning the server.
+- [ ] Identify the local server commit `a7bc029472d727faec4e99b7f02614c370f4771a` as a published RWT release or replace it with an explicitly pinned release. The official latest in this audit is 26.8.31.1 / commit `bbd981f`; the hashes differ.
+- [ ] Identify the exact RimWorld build, DLC set, Harmony version, and RWT client/server compatibility pair, then record the finalized test profile.
+- [ ] Inspect RWT source for supported extension points and verify item, pawn, visit, save/reconnect, and transaction behavior in a disposable profile. Do not implement against undocumented shared state.
+- [ ] Determine whether different player branches can use different start scenarios in one RWT world; otherwise specify one shared scenario for co-op sessions.
+- [ ] In a disposable save, verify each intended RWT operation: guild membership, site/road/event creation, trade/gift, pawn aid, visit, receiving/transfer spots, unavailable server features, reconnect, and item preservation. Verify both vanilla goods and Backrooms custom dossier/cargo items.
+- [ ] Choose the exact RWT feature flags the co-op campaign needs. Document admin prerequisites, timeout/failure behavior, item ownership, logs, and recovery when a transfer fails.
+- [ ] Pin the actual RWT release before coding. The upstream release listing currently shows `26.8.31.1` with mod configuration/order enforcement and world-related changes; this does not prove the local server is running it or expose an API for arbitrary Backrooms state.
+- [ ] For [Gravship Expanded Chapter 1](https://steamcommunity.com/sharedfiles/filedetails/?id=3609835606) and [Chapter 2](https://steamcommunity.com/sharedfiles/filedetails/?id=3799737423), record current dependencies, supported extension points, update risks, and every selected profile mod that touches gravships. Confirm the support boundary with a clean gravship-only list before the 294-mod profile.
+- [ ] Decide whether the final server enforces only the essential co-op dependencies or the complete 294 list; write a join/incompatible-list procedure.
+
+### 0.5 Pre-code design freeze
+
+- [ ] Freeze the player loop and first playable milestone: facility → staffing → gate assembly/power/calibration → timed expedition → extraction → analysis → payment/research.
+- [x] Create the canonical [scenario contract](SCENARIOS.md): shared state fields, Async Industries/Store/Lone Survivor openings, future candidate starts, multiplayer caveat, and acceptance checklist.
+- [ ] Complete concrete map/pawn/faction/inventory/gate/coordinate values, objective branches, failure/recovery flow, tutorial text, and convergence events for each of the three planned openings. Keep Async Industries as the first playable; implement the store and survivor starts after the vertical slice.
+- [ ] Verify whether different RWT branches can use different start scenarios on the same server/world. If not supported, specify a shared scenario requirement for co-op sessions.
+- [ ] Freeze separate branch ownership: local company ledger/research/maps; inter-branch resources and dossiers move as tested items; facility visits use only activities verified in the pinned RWT build.
+- [ ] Freeze a complete content inventory: staff roles, rooms, machines, field gear, furniture/salvage, research branches/tiers, evidence types, entities, anomalies, contracts, incidents, room archetypes, outposts, space content, translations, and accessibility needs.
+- [ ] Define the campaign math: prices, wages, food/sleep/rest needs, research costs, gate draw, open-window growth, crew/cargo limits, losses, recovery, rent, reputation, contract bonuses/penalties, and outpost upkeep. Use spreadsheets for balance hypotheses and preserve versioned formulas.
+- [ ] Define entity/anomaly rules and counterplay for each proposed threat before coding its Defs: tells, trigger, limits, behavior, evidence, response, containment, possible outcomes, and accessibility cues.
+- [ ] Define room-template tags, coordinate identity, procedural seed inputs, graph/path validation, bounded propagation rules, fog-of-war, return clues, map revisits, and generator migration behavior.
+- [ ] Define all Operation panes and each action's preconditions/result/error state; mark which action is local state and which crosses the RWT boundary.
+- [ ] Finish the data model and save ownership diagram in `TECHNICAL_ARCHITECTURE.md`; identify stable IDs and migration needs before defining save keys.
+- [ ] Complete all blocking decisions above and approve the first milestone backlog. Do not begin full content production while dependency, save ownership, and required launch profile remain ambiguous.
+
+### Coding-start gate
+
+**Gate 0 passes when:** owner decisions are recorded; game/RWT build targets are pinned; the company loop, save ownership, and RWT boundaries are frozen; source-review notes are usable for the first playable's specific content; high-risk integrations have a feasibility report; repository/build strategy is chosen; and every 294 profile row has a clear review owner/status. The full series/film and 294 review can continue in parallel for late content, but no unreconciled source should be used for source-specific shipped content and no compatibility promise should be made for an unreviewed profile entry.
+
+## Phase 1 — repository, build, and content foundations
+
+- [ ] Create a Git repository with `main` plus feature branches, ignore generated assemblies/logs/local references, and add a contribution guide/code style.
+- [ ] Capture installed RimWorld managed assemblies and required reference DLL versions locally; never commit proprietary game or DLC assemblies.
+- [ ] Create a reproducible C# solution/project targeting the RimWorld 1.6 runtime/compiler constraints; record reference paths, build configurations, output path, and warning policy.
+- [ ] Add a local dev launch configuration for a clean Core-only profile and a pinned RWT/profile launch configuration.
+- [ ] Create build/package scripts that copy only distributable files and produce a versioned mod folder/archive; ensure local DLL references, logs, source notes, and third-party assets are excluded.
+- [ ] Create the mod identity files after decisions: `About/About.xml`, `About/Preview.png`, package IDs, supported versions, dependencies, description, and load folders.
+- [ ] Add README install/configuration/dependency guidance, changelog, credits, source/asset provenance ledger, version policy, bug report template, and save-migration policy.
+- [ ] Add `Languages/English/Keyed/` before UI strings are introduced; avoid visible hard-coded strings in C#.
+- [ ] Define namespaces/Def naming conventions, texture/audio conventions, stable IDs, XML validation rules, and file ownership boundaries.
+- [ ] Create a placeholder-free art/audio brief with resolutions, UI icon grid, palette, readability, animation, sound levels, and accessibility requirements.
+
+### Planned mod package layout
+
+```text
+About/                         About.xml, Preview.png, metadata
+Assemblies/                    Built RimroomsAsyncIndustries.dll only
+Defs/
+  Scenario/                    Candidate scenario defs/setup hooks; confirm exact 1.6 loader convention first
+  Buildings/                   Gate, consoles, labs, utility/security objects
+  Items/                       Equipment, samples, dossiers, salvage, cargo
+  Pawns/                       Staff/entity defs and factions where needed
+  Work/                        Work types, jobs, bills, recipes
+  Research/                    Backrooms project trees and unlocks
+  Quests/Incidents/World/       Contracts, distortions, sites, outposts
+  Rooms/                       Template tags and generator content
+Languages/English/Keyed/       All player-visible labels and messages
+LoadFolders.xml                Core and conditional DLC folders
+Patches/                        Narrow, package-guarded compatibility patches
+Source/RimroomsAsyncIndustries.sln  C# solution
+  Core/ Company/ Scenarios/ Gate/ Expedition/ Generation/ Research/ Cases/ Economy/
+  UI/ Save/ Compatibility/RimWorldTogether/ Compatibility/DLC/
+Textures/                       Original icons, buildings, entities, effects
+Sounds/                         Original ambience and effects
+Tests/QA/                       Deterministic generation, save fixtures, checklists
+Docs/                            Design, integration, provenance, release notes
+```
+
+Final names and folder conventions must be confirmed against RimWorld 1.6's actual loader and local build; this proposed tree is not an implemented package.
+
+## Phase 2 — code architecture and safe vertical slice
+
+### Core contracts
+
+- [ ] Implement a core campaign state owner for local branch identity, company ledger, project IDs, contracts, coordinate IDs, case IDs, and schema version.
+- [ ] Implement a versioned, data-driven scenario definition/initializer that applies one start exactly once, records its stable scenario ID, and routes generated starts through the shared coordinate/evidence/expedition services.
+- [ ] Implement one authoritative gate state machine with validated transitions, actions, preconditions, costs, warnings, timers, and event log.
+- [ ] Implement a single transaction service for stock/currency/job/project changes; prevent duplicate delivery/reward and never silently discard unsupported transferred items.
+- [ ] Implement stable site/coordinate IDs, deterministic seed construction, generator version, room graph records, map ownership, revisit behavior, and bounded cleanup policy.
+- [ ] Implement stable references to pawns/buildings/sites via game-supported serialization; avoid stale references and duplicated pawn inventories.
+- [ ] Add structured log categories and debug summaries for campaign/coordinate/gate/contract/case/RWT operations. Include seed and failing stage for generated-site errors.
+- [ ] Add versioned save components and migration from each released schema before saving or loading content updates.
+- [ ] Keep UI view models separate from simulation state so the Company Command layout can change without data migrations.
+
+### Vertical slice implementation
+
+- [ ] Create the Async Industries new-game scenario with starter facility, staff, stock, limited funds, disabled gate, first project, and tutorial, following `SCENARIOS.md`.
+- [ ] Add gate frame, control console, power requirements, emergency cutoff, assembly/calibration work, operation feedback, failure states, and repair costs.
+- [ ] Add staff role recommendations, field kit assignment, readiness checks, and basic company tasks while retaining vanilla pawn/work controls.
+- [ ] Create one seeded, finite Backrooms site with a short room graph, one hazard, one learnable entity, one evidence chain, one exit/recall path, and one reward.
+- [ ] Add expedition dispatch/recall/close flow; track crew/cargo/location/return and handle death, injury, missing, late return, and aborted runs.
+- [ ] Add evidence intake, one lab analysis recipe/project, one researched capability, a payment/contract result, and a traceable company ledger entry.
+- [ ] Save, reload, revisit the same coordinate, and confirm map state and unique rewards persist without duplication.
+- [ ] Provide a safe fallback map and recoverable error message when generation cannot produce a valid route.
+
+**Gate 2 passes when:** the first complete loop plays from a fresh save through build, staff, expedition, extraction, analysis, reward, save/reload, and a second visit without a softlock or lost state.
+
+## Phase 3 — interconnected company simulation
+
+### Scenario framework and alternate starts
+
+- [ ] Keep the first acceptance target on Async Industries while making its scenario setup consume the same versioned start contract intended for alternate starts.
+- [ ] Implement Furniture & Knickknack Store after Gate 2: validate public-area security, store stock/ownership, basement threshold, missing-person objective, and return/contract convergence.
+- [ ] Implement Lone Survivor after Gate 2: validate a seeded inside start, one-pawn survival, finite field kit, learned-rule/evidence persistence, return/rescue/outpost alternatives, and no facility prerequisite.
+- [ ] Add outpost, town-distortion, or company-in-crisis starts only after a design brief defines their starting state, pressure, failure/recovery, and acceptance evidence.
+- [ ] Verify every start's reload behavior, deterministic coordinate, objective idempotency, optional-DLC fallback, solo behavior, and RWT eligibility against `SCENARIOS.md`.
+
+### Facility and personnel
+
+- [ ] Implement physical room functions: gate, control, labs, evidence archive, quarantine/decontamination, medical, armory, workshop, power, radio, receiving, storage, cafeteria, recreation, quarters, and outpost.
+- [ ] Connect each room to concrete capabilities, stock needs, staff jobs, risks, and UI alerts; expose why a room is not functional.
+- [ ] Add applicant/talent pools for candidates, specialists, contractors, survivors, returning staff, and referrals, with inspectable skills, health, traits, salary/term, and recruit action.
+- [ ] Add configurable company roles, staff schedules, certifications, training jobs, field history, trust/stress/exposure and equipment familiarity; preserve pawn autonomy and vanilla skill/trait systems.
+- [ ] Add cafeteria, sleep, recreation, injury recovery, shift rotation, staff needs, conflict/wellbeing alerts, and accommodation capacity.
+- [ ] Integrate existing hospitality, guest, prisoner, medical, and QoL systems only through evidence-backed adapters; keep native interactions available.
+
+### Gate, equipment, and expedition operations
+
+- [ ] Add machine subsystems/upgrades: power reserves, calibration, stabilizers, monitoring, emergency cutoff, cool-down, modules, repair, and reliability.
+- [ ] Add field equipment: protective gear, weapons, restraints, med kits, recorder/camera, radio/repeater, mapping gear, detector/scanner, beacon/tether, sample kit, cargo frame, portable power, and tools.
+- [ ] Give every piece of gear a visible effect on detection, safety, information, cargo, route finding, or return reliability.
+- [ ] Add crew composition and cargo planner with skill/health/weight/gate-window checks, ready/unready reasons, and cost preview.
+- [ ] Add gate-window progression minutes → hours → days → weeks/months with power, heat, maintenance, supplies, crew rotation, communication, and increasing complexity costs.
+- [ ] Add schedule, warning, recall, evacuation, emergency close, lost-connection, failed return, and rescue workflows.
+- [ ] Add fog-of-war atlas, route notes, last-known position, evidence chain, return beacon, route clues, saved room graph, and revisit changes.
+
+### Procedural sites and propagation
+
+- [ ] Implement a tagged room/corridor library and deterministic topology generation by coordinate, mission, equipment, research, company tier, and saved history.
+- [ ] Validate map size, accessible entrances/exits, walkable paths, mission objects, safe return clues, playable combat spaces, and generation budget.
+- [ ] Add room families, furnishing rules, lighting/material palettes, loot, salvage, hazards, clue placement, threat events, and theme variations.
+- [ ] Implement bounded non-Euclidean effects: repeats, moved door/exit, impossible adjacency across site links, altered room dimensions, topology loops, changed object/room identity, and controlled map transitions.
+- [ ] Add saved, rule-based anomaly propagation across room graphs with observable clues, equipment detection, player countermeasures, cap/decay, event log, and deterministic save/reload.
+- [ ] Make equipment meaningfully change what is detected or generated without breaking seed reproducibility or invalidating an already saved coordinate.
+- [ ] Add map state versioning, archival, generator upgrades, explicit migration tests, and recovery if an old site cannot load.
+- [ ] Bound active map count, pawn/thing count, graph search, event evaluation, and background tick cost; profile large, long-running saves.
+
+### Economy, contracts, and evidence
+
+- [ ] Implement branch-local financial ledger with auditable credits/debits, payroll, upkeep, purchases, shipments, contract advances, salvage, penalties, compensation, and profit report.
+- [ ] Implement equipment/material procurement, source/price/deadline, shipment manifest, receiving area, delay/loss/damage events, cancellation, and delivery receipt.
+- [ ] Implement contract/quest templates for surveys, retrieval, furniture/salvage, samples, transcripts, rescue, containment, security, lease/site construction, town distortion, outpost delivery, and gravship support.
+- [ ] Generate bounded story variations from client/faction, coordinate, staffing, discovered rules, company tier, previous outcomes, opening duration, and available equipment.
+- [ ] Add space leasing/claiming with cost, boundaries, term, access/security requirements, maintenance, renewal, eviction, and exit/abandonment consequences.
+- [ ] Implement evidence provenance/custody/type/value/risk/confidence, sample storage, research value, sale value, client deliverable, archive, chain of custody, and destruction choice.
+- [ ] Add analyze/interview/compare/review workflows for equipment, furniture, people, entity remains, recordings, transcripts, route notes, and recovered documents.
+- [ ] Add repeated missing-person mysteries with radio fragments, missing crews, delayed return, witness conflict, reappearance/death, rescue, and case closure.
+- [ ] Make sale/study/use/contain/release/recruit/detain/transfer choices visible with financial, staff, faction, legal-in-world, trust, and security consequences.
+
+### Research, entity, and expansion progression
+
+- [ ] Define research IDs, tier gates, evidence prerequisites, benches, labor/cost, alternative discovery routes, unlocks, dossier output, and fallback when optional research mods/DLC are absent.
+- [ ] Complete research branches for facility/power, engineering, field safety, equipment, mapping, communication, stability, containment, medicine, logistics, commerce, orbital operations, and deep topology.
+- [ ] Author entity/anomaly design sheets first: appearance/readability, AI rules, triggers, limits, interaction, tells, counters, evidence, study risk, capture/storage, sale value, and fail states.
+- [ ] Implement containment rooms, security procedures, prisoner/witness interviews, staff debrief, quarantine, alarm/escape response, evidence custody, and case records.
+- [ ] Implement anomaly openings at ordinary RimWorld settlements as timed quests with perimeter, rescue, evidence, witness, close/stabilize, and follow-up objectives.
+- [ ] Add outside-gate and inside-site radio stations, supply points, relief teams, depots, guarded space rental, research/shelter outposts, servicing, loss/evacuation, and return routes.
+- [ ] Add vehicles and space travel as logistics branches; maintain the gate as the defining Backrooms access mechanism.
+- [ ] Add VGE Chapter 1 logistics summary/operations links without replacing its oxygen/fuel/power/heat/crew systems.
+- [ ] Add VGE Chapter 2 orbital security/contracts/wreck salvage hooks without patching its gravship internals or mixing orbital enemies into Backrooms entity generation.
+
+## Phase 4 — multiplayer, DLC, and the full profile
+
+### RimWorld Together adapter
+
+- [ ] Implement feature detection and setup diagnostics for the pinned RWT release; support unavailable/admin-disabled feature states.
+- [ ] Implement no custom server schema or patches until supported extension points are identified from the exact code version.
+- [ ] Verify guild identity, facility mapping, configured visits/snapshot behavior, visits when online/offline, transfer spot, chill/defense spots, caravan interactions, events, sites, roads, aid, gifts, and trading.
+- [ ] Verify transfer receipt IDs and item/pawn state prevent duplicates, loss, stale ownership, and broken stacks on disconnect/reconnect.
+- [ ] Verify Backrooms Research Dossier item transfer; receiving branch must explicitly study it locally and be unable to claim it twice in one save.
+- [ ] Test unsupported/complex modded items and define an honest fallback message rather than promising an unverified transfer.
+- [ ] Test separate colony saves, shared world actions, mod order/config enforcement, RWT server restart/backups, and an admin changing settings during play.
+- [ ] Document exact server setup and player experience. No statement may describe live shared-colony control or synchronized research unless implemented and demonstrated.
+
+### Five DLC layers
+
+- [ ] Base Core-only campaign works and loads with every DLC absent.
+- [ ] Royalty conditional content: titles/quests/faction/psycasts only as optional company routes.
+- [ ] Ideology conditional content: beliefs, meditation, rituals, staff policies, and recreation only when available.
+- [ ] Biotech conditional content: genes, mechanitors, children, medicine, pollution, and mechanoid options; no mandatory gene/resource dependency.
+- [ ] Anomaly conditional content: containment/research links; Backrooms entities retain a base-game implementation.
+- [ ] Odyssey conditional content: gravship/off-world logistics and any compatible space travel.
+- [ ] Verify all five individually enabled/disabled, then all combined. Maintain a 32-row DLC bitmask matrix (all combinations of five DLCs) if claiming full combinatorial support; at minimum, explicitly publish exactly which combinations were run.
+- [ ] Check DLC-only XML folders, Def references, textures, recipes, quests, C# type lookups, startup without DLC, and save load after toggling DLC.
+
+### All 294 profile entries
+
+- [ ] Pin the exact profile and test clean Core, Core+RWT/Harmony, selected VGE stack, each high-risk family, and the full ordered profile.
+- [ ] For each workbook row, close its status with evidence: reviewed version, load-order placement, applicable DLC, behavior used/preserved, patch/adaptor/no-code reason, and result.
+- [ ] Verify all QoL features remain available, including work-priority, UI, scheduling, storage, movement, hauling, selection, visitors, prisoners, health, combat, map, and scenario helpers represented in the list.
+- [ ] Resolve duplicate Defs/patch collisions in the exact 294 profile; use load-after patches only where a reproducible conflict requires one.
+- [ ] Test gravship-changing profile mods against both VGE chapters; publish incompatible combinations rather than hiding known conflicts.
+- [ ] Add a user-facing compatibility report with tested order, versions, DLC, known issues, unsupported features, and save caveats.
+
+## Phase 5 — complete Company Command interface and polish
+
+- [ ] Build the Operations overview and panes: Overview, Personnel, Facilities, Gate, Expeditions, Atlas/Routes, Research/Evidence, Contracts/Ledger, Cases/Containment, Outposts/Company Network, Gravship Operations.
+- [ ] Make each screen deep-link to the relevant pawn, building, map, quest, item, research project, evidence record, contract, or RWT site.
+- [ ] Add explainable alerts, reason codes, action previews, confirmation only for irreversible losses, undo/recovery where possible, and clear empty/loading/error states.
+- [ ] Build the long-term Company Command navigation layout while preserving direct access to Work, Architect, Assign, Research, World, and ordinary pawn controls.
+- [ ] Add tutorial/guide, help glossary, keyboard/controller paths as appropriate, color/contrast/readability options, scalable UI, icons/tooltips, and localization support.
+- [ ] Replace all placeholder graphics/audio with an approved coherent original asset set; include sound/visual cues for gate state, radio, warnings, spatial shifts, entity tells, and discoveries.
+- [ ] Review text length, font scale, combat readability, motion sensitivity, audio levels, UI overlap at supported screen sizes, and translations.
+- [ ] Verify no UI panel conceals urgent health, fire, power, missing crew, gate recall, containment, or contract deadlines.
+
+## Phase 6 — QA, balance, and release
+
+- [ ] Validate Def references, language keys, patch targets, load folders, package metadata, missing textures/audio, logs, build output, and clean-install folder structure.
+- [ ] Create a reproducible fresh-start/save/reload/revisit checklist and automated or manual fixtures for deterministic room generation, gate transitions, ledger idempotency, transfer receipt IDs, and schema migration.
+- [ ] Run the scenario acceptance checklist for every shipped opening: fresh start, reload, failure/recovery, route back to the shared campaign, and optional-mod/DLC absence.
+- [ ] Exercise invalid states: insufficient power, no operator, blocked route, missing exit, destroyed gate, overloaded cargo, dead/missing crew, unsafe return, destroyed relay, unavailable RWT feature, failed item transfer, missing DLC, bad mod order, and old save migration.
+- [ ] Check performance on worst-case room graphs, multi-outpost company, long play time, many evidence/case records, visitors/prisoners, active threats, and gravship combat.
+- [ ] Balance economy and progression from fresh-start play through late game; check grind, runaway money, research skip routes, dead-end tech, exploitative optimal choices, and difficulty scaling.
+- [ ] Verify the full mod list one final time and capture game/RWT/DLC/profile versions, settings, logs, save, known compatibility issues, and results in a release report.
+- [ ] Test clean install/uninstall, load order, Workshop update, dedicated RWT server setup, player join, server backup/restore, save migration, and rollback to previous mod release.
+- [ ] Prepare final mod page, description, feature list, screenshots, trailer/preview art, installation guide, dependencies, DLC matrix, RWT setup, credits, source provenance, license, FAQ, known issues, and update/support plan.
+- [ ] Tag release, archive exact source and build artifacts, preserve a known-good server profile, and publish only features that passed their listed acceptance criteria.
+
+## Cross-system contracts that must remain true
+
+```mermaid
+flowchart LR
+  People[Staff and training] --> Facility[Facility rooms, power, security]
+  Facility --> Gate[Gate state and window]
+  Gear[Equipment and research] --> Plan[Expedition plan]
+  Gate --> Plan
+  Plan --> Site[Seeded coordinate and room graph]
+  Site --> Evidence[Evidence, salvage, people, incidents]
+  Evidence --> Lab[Cases, analysis, research]
+  Lab --> Gear
+  Evidence --> Contract[Contracts, sale, dossier]
+  Contract --> Ledger[Branch ledger and procurement]
+  Ledger --> Facility
+  Ledger --> Outpost[Supply points, leases, relays]
+  Outpost --> Site
+  Ledger --> Transfer[RWT item/pawn transfer]
+  Transfer --> Other[Other player's separate branch]
+  Other --> Transfer
+  VGE[Optional gravship chapters] --> Outpost
+  DLC[Optional DLC adapters] --> Facility
+  DLC --> Lab
+```
+
+- A crew cannot be dispatched unless a powered/stable gate, valid plan, eligible crew, and return policy exist; every failed precondition is explained.
+- Equipment selected for a run must become the actual pawn/caravan/map gear and be accounted for on return, loss, consumption, sale, or transfer.
+- Every evidence item links to a coordinate and acquisition event; every analysis result links to an evidence source and an unlock/case/contract outcome.
+- Research unlocks gear, building, policy, site generator, or contract content that the player can identify and use; no invisible unlocks.
+- Each contract's reward/penalty posts exactly once to the owning branch ledger and uses traceable evidence/cargo receipts.
+- Every outpost/lease consumes an explicit upkeep/supply budget, communicates with known relays, and supports resupply/evacuation/abandonment.
+- RWT can move supported items/pawns only; it does not merge two local ledgers, gate states, map saves, or research trees by implication.
+- DLC and optional-mod content never become the sole way to repair the gate, feed/house the starting crew, finish the first mission, or continue the campaign.
+- Generated complexity can increase without invalidating the player's only known route home or silently mutating saved maps.
+- Every threat rule disclosed to the player has a discoverable clue; every failure leaves a readable event/case record.
+
+## Current readiness summary
+
+| Workstream | Current state | Required next evidence |
+| --- | --- | --- |
+| High-level game design | Shared company systems and three distinct campaign starts documented; Async Industries remains the first vertical slice. | Freeze each start state/convergence, remaining owner decisions, and first milestone. |
+| 294-mod inventory | 294 records and 45 preliminary family mappings exist. | Individual page/API/version review and full-profile runtime report. |
+| RimWorld Together | Local 294-entry client/server set and order match; server config does not enforce them; exact server release remains unidentified. | Pin builds, inspect extension points, resolve scenario joining, run item/visit/reconnect tests. |
+| VGE Chapters 1 and 2 | Installed entries/dependency order and official Workshop requirements reviewed. | Inspect all vehicle/space mods and run a clean plus combined stack. |
+| DLC | All five scoped as optional. | Def folder audit and advertised-combination runs. |
+| Kane Pixels videos/A24 film | All 23 entries indexed; first video's transcript is unavailable; official synopsis/interview/home-video sources reviewed for scenario direction. | Timestamped viewing log for all 23 and full feature review. |
+| Code/package | Not started. | Gate 0, repository, build target, first playable implementation. |
+| Assets/release identity | Not started. | Approved title/author/namespace, asset plan, metadata, original content. |
+
+The work is ready for **pre-production decisions and research execution**. It is not ready to claim a complete, integrated, tested, or released mod. Completion of Gate 0 is the explicit point at which implementation begins.

@@ -1,0 +1,19 @@
+# Generated visual previews and spreadsheet inspection diagnostics
+outputs/**/overview-preview.png
+outputs/**/register-preview.png
+outputs/**/rwt-row-preview.png
+outputs/**/*.inspect.ndjson
+
+# Local RimWorld build products
+bin/
+obj/
+Assemblies/*.dll
+Assemblies/*.pdb
+*.log
+
+# Local editor state and machine-specific game profiles
+.vs/
+*.user
+*.suo
+**/ModsConfig.xml
+**/ModConfig.json
