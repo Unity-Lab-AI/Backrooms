@@ -2,7 +2,8 @@
 
 - Official source: https://www.youtube.com/watch?v=eXdIDjzy6KY
 - Video ID and playlist spot: `eXdIDjzy6KY`, 4 of 23
-- Review date/status: 2026-09-27; **partial review, full review still needed**
+- Review date/status: 2026-09-27; partial direct review; first-pass fan story note available; full viewing optional.
+- Fan story note: [episode-04](../../KANE_PIXELS_FAN_CLIFF_NOTES.md#episode-04) (secondary source).
 - Page details: verified Kane Pixels upload; description and video overlay show `10/17/1989`.
 - Captions/transcript: selectable captions reported unavailable, but the player surfaced a few subtitle fragments during the sample. No complete transcript was reviewed.
 
@@ -28,4 +29,4 @@ The main reveal is the industrial gate opening onto a recognizable yellow corrid
 
 ## Review scope
 
-Partial visual and subtitle review. The full story, speaker, and relationship to other uploads remain open.
+Partial direct review only. The linked fan summary provides a separate first-pass plot outline; return to the video only if a design-critical question remains unclear.

@@ -8,7 +8,7 @@
 
 Rimrooms should support different ways into the Backrooms company/survival loop. A player may start as a small research company, ordinary people confronting a breach in a retail basement, or a lone person already trapped inside. These are separate opening experiences that converge on shared coordinate, expedition, evidence, threat, and progression systems. Do not duplicate the procedural-space generator or campaign state for each opening.
 
-The furniture-store threshold is a high-level cue from the [official A24 synopsis](https://a24films.com/films/backrooms), which describes a strange doorway in a furniture-showroom basement. Scenario events, staff, objectives, and implementation details remain original game design. The full feature review is still pending; see the [source register](SOURCE_REGISTER.md) and [film review template](research/reviews/templates/a24-feature-review-template.md).
+The furniture-store threshold is a high-level cue from the [official A24 synopsis](https://a24films.com/films/backrooms), which describes a strange doorway in a furniture-showroom basement. Scenario events, staff, objectives, and implementation details remain original game design. A separate, secondary fan-summary story note is recorded in the [feature review file](research/reviews/a24-feature/feature-review.md); it is not a direct review and does not establish a connection to the Kane series.
 
 ## Shared scenario contract
 

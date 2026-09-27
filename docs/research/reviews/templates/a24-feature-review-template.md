@@ -3,6 +3,7 @@
 - Official film page:
 - Viewing source/version:
 - Review date:
+- Review method and secondary recap link, if used:
 - Full feature viewed: Pending
 
 ## Story and atmosphere notes

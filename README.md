@@ -18,7 +18,8 @@ The detailed, build-ready start contracts live in [`docs/SCENARIOS.md`](docs/SCE
 - [Feature traceability map](docs/FEATURE_TRACEABILITY.md) — stable system IDs connecting player contracts to research, the 294-mod profile, presentation, code/file surfaces and acceptance evidence.
 - [Source and document register](docs/SOURCE_REGISTER.md) — canonical file map, direct research URLs, local profile paths, review templates, and unresolved evidence.
 - [Pre-production acceptance standard](docs/research/PREPRODUCTION_ACCEPTANCE_STANDARD.md), [optional-mod support policy](docs/research/OPTIONAL_MOD_SUPPORT_POLICY.md), [content/accessibility brief](docs/research/CONTENT_ACCESSIBILITY_BRIEF.md), and [provenance register](docs/research/provenance-register.csv) — quality criteria and the scope records future reviewers should use.
-- [Kane Pixels lore/story map](docs/research/KANE_PIXELS_LORE_STORY_MAP.md) — the 23-upload review queue, continuity evidence rules, and story-to-game synthesis path; individual reviews remain in progress.
+- [Kane Pixels fan cliff notes](docs/research/KANE_PIXELS_FAN_CLIFF_NOTES.md) — 23 concise fan-summary story notes with links to their source pages and original RimWorld inspiration hooks.
+- [Kane Pixels lore/story map](docs/research/KANE_PIXELS_LORE_STORY_MAP.md) — the 23-upload review queue, continuity evidence rules, and story-to-game synthesis path; direct-upload reviews remain in progress where needed.
 - [Campaign scenario contracts](docs/SCENARIOS.md) — Async Industries, Furniture & Knickknack Store, Lone Survivor, and later opening candidates with shared start-state requirements.
 - [Build-agent instructions](AGENTS.md) — project invariants and documentation workflow for implementation.
 - [DLC and multiplayer compatibility](docs/COMPATIBILITY.md) — support policy and the local server profile.

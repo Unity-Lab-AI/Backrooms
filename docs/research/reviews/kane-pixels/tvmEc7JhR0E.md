@@ -2,7 +2,8 @@
 
 - Official source: https://www.youtube.com/watch?v=tvmEc7JhR0E
 - Video ID and playlist spot: `tvmEc7JhR0E`, 3 of 23
-- Review date/status: 2026-09-27; **partial review, full review still needed**
+- Review date/status: 2026-09-27; partial direct review; first-pass fan story note available; full viewing optional.
+- Fan story note: [episode-03](../../KANE_PIXELS_FAN_CLIFF_NOTES.md#episode-03) (secondary source).
 - Captions/transcript: selectable captions were unavailable. The video has embedded subtitles, and only the visible fragments noted below were reviewed.
 
 ## What happens
@@ -29,4 +30,4 @@ The industrial test room and glowing doorway turn a business presentation into a
 
 ## Review scope
 
-Partial review with a few readable subtitle fragments. The full video, test result, and connections to other uploads remain open.
+Partial direct review only. The linked fan summary provides a separate first-pass plot outline; return to the video only if a design-critical question remains unclear.

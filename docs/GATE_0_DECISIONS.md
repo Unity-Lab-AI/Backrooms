@@ -87,9 +87,13 @@ The owner's stated MIT/court-case rights premise is retained as an owner-provide
 
 **Combined owner answer:** use the mature psychological-horror management direction in A and push the horror presentation to the limit expressed in C, within the capabilities of RimWorld and the selected mod profile.
 
+## Research-method clarification from the owner
+
+On 2026-09-27, the owner approved fan-made episode summaries and movie plot summaries as the first-pass story sources. A fan-maintained movie summary is now recorded; the chaptered video recap remains optional. Full video or feature viewing is not required by default. Keep fan interpretation labeled, keep the series and film separate, and only go back to the official source when a detail remains unclear and matters to a planned feature. See [`research/FAN_SUMMARY_GUIDE.md`](research/FAN_SUMMARY_GUIDE.md). This changes the research method, not the selected story scope in D5.
+
 ## Choices not delegated to the owner
 
-These are execution work, not questions: identify the exact RimWorld/RWT/Harmony builds; inspect all 294 exact mod pages, installed metadata and available source/API; verify RWT transfer/visit/scenario/save behavior; review all 23 indexed videos and the full feature; complete the feature/mod/lore/style/file traceability map; record DLC and gravship dependencies; and produce reproducible evidence. They are tracked in [Phase 0 of the master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md#phase-0--pre-code-blockers-and-research).
+These are execution work, not questions: identify the exact RimWorld/RWT/Harmony builds; inspect all 294 exact mod pages and relevant installed metadata/source; verify required RWT transfer/visit/scenario/save behavior; retain the completed 23-entry fan-summary notes and separate first-pass fan movie note; preserve the documented supplemental-clip scope boundary; complete the feature/mod/lore/style/file traceability map; record DLC and gravship dependencies; and produce reproducible evidence. Direct viewing is needed only for unresolved, design-critical story details. They are tracked in [Phase 0 of the master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md#phase-0--pre-code-blockers-and-research).
 
 ## Decision log
 

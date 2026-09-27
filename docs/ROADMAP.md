@@ -6,7 +6,7 @@ The work is sequenced so that later content depends on a tested company loop rat
 
 - Use the selected title, package ID, namespace, distribution target, and MIT source-code license. Keep author/publisher metadata blank until the owner assigns one; track art/audio provenance and licensing separately.
 - Capture the exact RimWorld 1.6 build, DLC set, RimWorld Together client version, server release, and client load order.
-- Finish the 23-video Kane Pixels and full A24 feature review logs, recording provenance and translating the selected references indirectly; exclude broader community canon from shipped content.
+- Maintain the completed 23-entry Kane fan-summary notes and separate A24 fan-summary story note; check official sources only for design-critical gaps, and assess supplemental Kane-related material without folding broader community canon into shipped content.
 - Establish folder layout, build setup, language-key conventions, save ownership rules, and multiplayer synchronization approach.
 
 **Exit condition:** a concrete versioned target profile and a documented content-provenance rule exist.

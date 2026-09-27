@@ -2,7 +2,8 @@
 
 - Official source: https://www.youtube.com/watch?v=k0L8SM32ENI
 - Video ID and playlist spot: `k0L8SM32ENI`, 2 of 23
-- Review date/status: 2026-09-27; **partial visual review, full review still needed**
+- Review date/status: 2026-09-27; partial direct review; first-pass fan story note available; full viewing optional.
+- Fan story note: [episode-02](../../KANE_PIXELS_FAN_CLIFF_NOTES.md#episode-02) (secondary source).
 - Page details: the description shows `Mar_90_ARCHIVE.tar` and `Compiled on Jun 1991`; what those labels mean is unclear.
 - Captions/transcript: selectable captions unavailable; no complete transcript or audio review is available in this note.
 
@@ -25,4 +26,4 @@ The footage has the feel of a strange recovered archive. It shows an unidentifie
 
 ## Review scope
 
-Partial visual review and official page details only. The full story, room identities, and connections to other uploads remain open.
+Partial direct review only. The linked fan summary provides a separate first-pass plot outline; return to the video only if a design-critical question remains unclear.

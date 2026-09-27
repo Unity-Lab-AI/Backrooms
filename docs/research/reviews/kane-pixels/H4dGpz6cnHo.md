@@ -2,7 +2,8 @@
 
 - Official source: https://www.youtube.com/watch?v=H4dGpz6cnHo
 - Video ID and playlist spot: `H4dGpz6cnHo`, 1 of 23
-- Review date/status: 2026-09-27; **partial visual review, full review still needed**
+- Review date/status: 2026-09-27; partial direct review; first-pass fan story note available; full viewing optional.
+- Fan story note: [episode-01](../../KANE_PIXELS_FAN_CLIFF_NOTES.md#episode-01) (secondary source).
 - Captions/transcript: YouTube reports captions unavailable; transcript export returned none. Dialogue and audio were not reviewed in this note.
 
 ## What happens
@@ -24,4 +25,4 @@ The sampled footage follows a camera-holder through broad yellow rooms, a sparse
 
 ## Review scope
 
-Partial visual review only. The full video and story sequence remain to be reviewed.
+Partial direct review only. The linked fan summary provides a separate first-pass plot outline; return to the video only if a design-critical question remains unclear.

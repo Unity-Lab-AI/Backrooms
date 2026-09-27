@@ -3,6 +3,7 @@
 - Official source:
 - Video ID and playlist spot:
 - Review date/status:
+- Review method and secondary summary link, if used:
 - Captions/transcript: note what was actually available; do not invent missing dialogue.
 
 ## What happens

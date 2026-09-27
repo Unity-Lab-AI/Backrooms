@@ -43,4 +43,4 @@ For each video or film segment, record the main story beat, important characters
 
 ## Review status
 
-The full official playlist is indexed in [kane-pixels-video-index.csv](research/kane-pixels-video-index.csv); uploads 1–4 have brief partial notes, and the other episode reviews remain open. The A24 feature still needs its own full review. Local multiplayer and gravship evidence is routed through the [RWT and gravship feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md).
+The full official playlist is indexed in [kane-pixels-video-index.csv](research/kane-pixels-video-index.csv), and first-pass fan summaries for all 23 uploads are in [KANE_PIXELS_FAN_CLIFF_NOTES.md](research/KANE_PIXELS_FAN_CLIFF_NOTES.md). Uploads 1–4 also have partial direct-source notes; full direct viewing is optional unless a planned feature depends on a detail the summaries do not settle. The A24 feature has a separate fan-summary story note and is not treated as part of the series continuity. Local multiplayer and gravship evidence is routed through the [RWT and gravship feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md).
