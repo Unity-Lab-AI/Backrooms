@@ -56,7 +56,7 @@ The recorded decisions are in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.md). They a
 
 - [x] Preserve source load-order row, display name, package/Workshop ID, and config type in the CSV/workbook.
 - [x] Give all 294 rows a preliminary system family, intended Backrooms use, dependency stance, and compatibility watch.
-- [x] Record individual source facts for 13 selected mods, including RimWorld Together; each note separates what its publisher says from our design use and what still needs a runtime check.
+- [x] Record individual source facts for 17 selected mods, including RimWorld Together and four facility power/storage modules; each note separates what its publisher says from our design use and what still needs a runtime check.
 - [x] Compare the current local client `ModsConfig.xml` against server `ModConfig.json`: 294/294 IDs map, with zero missing/extra records and zero load-order differences on 2026-09-27. See [RWT and gravship audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md). This is a snapshot match, not a compatibility test.
 - [ ] For every row, inspect the exact Workshop page and current 1.6 version, `About.xml`, required DLC/mods, license/asset notes relevant to interoperability, feature list, and known incompatible mods.
 - [ ] Inspect source/XML/API for mods with direct game-state overlap: RimWorld Together, both gravship chapters, all frameworks, world/site/quest mods, portals, power systems, research UI, prisoner/capture mods, storage/cargo, map/terrain generation, and pawn/work/job systems.
@@ -65,7 +65,7 @@ The recorded decisions are in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.md). They a
 - [ ] Establish an interaction map for the full 294: which Backrooms systems call each mod, which ones should remain untouched, and which pairs need a reproduced test. Preserve QoL mods' functions and key bindings.
 - [ ] Review mods by family first, then inspect high-risk members individually. Don't assume a family-level pass certifies its individual members.
 - [ ] Update the register's status for every row as reviewed/version-pinned/tested or pending; the final workbook must agree with the exact local client/server list.
-- [x] Add the `FeatureTraceIDs`, `ReviewRecord`, `ReviewStatus`, `FinalDisposition`, `EvidenceBuild`, and `AcceptanceEvidence` columns specified in [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md) to the authoritative workbook and CSV. The register records 13 source-reviewed rows and 281 still-pending rows; runtime compatibility remains untested. See the [294-row register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx) and [inventory CSV](research/rimworld-server-mod-inventory.csv).
+- [x] Add the `FeatureTraceIDs`, `ReviewRecord`, `ReviewStatus`, `FinalDisposition`, `EvidenceBuild`, and `AcceptanceEvidence` columns specified in [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md) to the authoritative workbook and CSV. The register records 17 source-reviewed rows and 277 still-pending rows; runtime compatibility remains untested. See the [294-row register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx) and [inventory CSV](research/rimworld-server-mod-inventory.csv).
 - [ ] Replace those placeholders for all 294 rows with verified feature IDs, exact review record paths, evidence-backed dispositions/builds, and tested acceptance evidence before code starts. “Pending mapping” and “Pending review” are not final outcomes.
 
 ### 0.4 RimWorld Together and gravship feasibility
@@ -333,7 +333,7 @@ flowchart LR
 | Workstream | Current state | Required next evidence |
 | --- | --- | --- |
 | High-level game design | Shared company systems and three distinct campaign starts documented; Async Industries remains the first vertical slice. | Freeze each start state/convergence, remaining owner decisions, and first milestone. |
-| 294-mod inventory | 294 records and 45 preliminary family mappings exist; 13 have individual source-fact notes and 281 remain pending. | Continue story-led per-mod review and finish the full-profile runtime report before calling it supported. |
+| 294-mod inventory | 294 records and 45 preliminary family mappings exist; 17 have individual source-fact notes and 277 remain pending. Four selected power/storage pages currently report removal from the Steam Community, despite local copies in the profile. | Continue story-led per-mod review and finish the full-profile runtime report before calling it supported. |
 | RimWorld Together | Local 294-entry client/server set/order match; local game, Harmony, client DLL, and the official 26.8.31.1 Windows server artifact are pinned. Offline visits look like a good fit for the separate-company story; server features and play behavior are untested. | Check separate starts, offline facility visit, supply/aid exchange, and reconnect on the pinned pair. Keep maps and company progress branch-local. |
 | VGE Chapters 1 and 2 | Installed entries/dependency order and official Workshop requirements reviewed. | Inspect all vehicle/space mods and run a clean plus combined stack. |
 | DLC | D4 selected: all five optional; Core-only campaign. | Def folder audit and selected-profile runs; record every declared combination. |
