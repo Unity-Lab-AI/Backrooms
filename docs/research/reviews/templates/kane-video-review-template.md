@@ -1,33 +1,31 @@
-# Kane Pixels video review: [title]
+# Kane Pixels video notes: [title]
 
-- Official YouTube URL:
-- Video ID:
-- Playlist order:
-- Video duration:
-- Review date:
-- Transcript/caption availability and method checked:
+- Official source:
+- Video ID and playlist spot:
+- Review date/status:
+- Captions/transcript: note what was actually available; do not invent missing dialogue.
 
-## Timestamped observations
+## What happens
 
-| Timestamp | Directly observed event or detail | Spatial/operational rule supported | Confidence / uncertainty |
-| --- | --- | --- | --- |
+Summarize the episode in plain language. Add timestamps for a few important story beats or details that future design work may rely on.
 
-## Human and institutional decisions
+## Lore and characters
 
-- Staff/crew roles and choices:
-- Equipment, communications, records, or procedures:
-- What remains unexplained:
+- People and organizations:
+- What the episode shows us:
+- New clues or connections to other uploads:
+- What's still uncertain:
 
-## Threat and space notes
+## Spaces, technology, and threats
 
-- Room/route/coordinate behavior:
-- Entity or hazard behavior and observable tells:
-- Evidence left behind:
-- Survival, recovery, or return clues:
+Describe the memorable locations, equipment, strange events, or creatures that matter to the episode. Only add detail that informs the story or a possible game idea.
 
-## Game design translation
+## RimWorld inspiration
 
-- Original RimWorld mechanic this may inform:
-- Difference from the source (avoid beat-for-beat reproduction):
-- Canon/source label and related design file:
-- Follow-up research question:
+- Possible scenario, quest, facility, research, or exploration hook:
+- Feature IDs this could inform:
+- What's adapted from the source, and what's our own design:
+
+## Review scope
+
+Say whether this is a full review or a partial sample and list anything not reviewed. Keep playlist/release order separate from story chronology until the videos support a connection.

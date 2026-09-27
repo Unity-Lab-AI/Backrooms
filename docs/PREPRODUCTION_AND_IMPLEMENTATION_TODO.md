@@ -22,7 +22,7 @@
 - [x] Official mod title: **Rimrooms - Async Industries**.
 - [x] Use RimWorld Together for asynchronous cooperation: separate facilities, resources/item exchange, research dossiers, and (if supported and safely tested) shared research ledger and visits; no live shared-map control.
 - [x] Include Vanilla Gravship Expanded Chapters 1 and 2 as optional late-game integrations.
-- [x] Use only Kane Pixels' continuity and the A24 feature as shipped Backrooms reference canon. Adapt canon/lore/themes/styles indirectly; do not recreate scenes or characters directly. Track source provenance for all content.
+- [x] Use Kane Pixels' series as the primary Backrooms story/lore source and review the A24 feature separately. Adapt the canon, lore, themes, and style indirectly rather than recreating specific scenes or characters; track the reviewed source for all adaptations.
 - [x] First distribution target: private RimWorld Together prototype; consider public Steam Workshop release only after named-profile and multiplayer validation.
 - [x] Displayed title stays exactly **Rimrooms - Async Industries**. Author/publisher metadata stays blank until the owner assigns one; MIT does not supply an author name. Package ID: `UnityLabAI.RimroomsAsyncIndustries`; internal C# namespace: `RimroomsAsyncIndustries`; semantic versions (`0.x` pre-release, `1.0.0` stable).
 - [x] English-first, localization-ready; keep a Core-only solo path and use RWT for co-op. Original source code is MIT; art/audio licenses are tracked separately.
@@ -37,17 +37,18 @@ The recorded decisions are in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.md). They a
 ### 0.1 Project ownership and product contract
 
 - [x] Record D1–D9 in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.md) and propagate the selected product, dependency, DLC, source, multiplayer, language, license, identity, and content-direction choices.
-- [ ] Define the “AAA-grade” acceptance bar in measurable terms: original cohesive art/audio, readable and accessible UI, minimal placeholder content, stable saves, bounded generation/performance, complete tutorial, and release/compatibility notes.
-- [ ] Create a provenance register for source-specific names, text, character designs, visuals, sound, and equipment. Preserve the owner's rights premise as an owner-provided statement, and independently record source/license provenance for every shipped or recreated asset before distribution. Keep other mod publishers' files out of the project.
-- [ ] Define the optional-compatibility-package maintenance policy for the 294 optional profile mods.
-- [ ] Record the platform content descriptors/rating target and detailed accessibility requirements consistent with D7/D9.
+- [x] Define the “AAA-grade” acceptance bar in measurable terms: see [pre-production acceptance standard](research/PREPRODUCTION_ACCEPTANCE_STANDARD.md). Its performance ceilings still need a named test machine and baseline before implementation.
+- [x] Create a provenance register for source-specific names, text, character designs, visuals, sound, and equipment at [provenance-register.csv](research/provenance-register.csv). Preserve the owner's rights premise as an owner-provided statement; complete per-asset source/license entries before distribution and keep other mod publishers' files out of the project.
+- [x] Define the optional-mod support and maintenance policy for the 294 optional profile mods in [OPTIONAL_MOD_SUPPORT_POLICY.md](research/OPTIONAL_MOD_SUPPORT_POLICY.md).
+- [x] Record the mature-horror content direction, platform-questionnaire requirement, and accessibility baseline in [CONTENT_ACCESSIBILITY_BRIEF.md](research/CONTENT_ACCESSIBILITY_BRIEF.md). No formal age rating has been assigned.
 
 ### 0.2 Official-source review
 
+- [x] Verify the official Kane Pixels playlist and establish a continuity/story review map for the 23 uploads; keep playlist order separate from in-world chronology: [Kane Pixels lore/story map](research/KANE_PIXELS_LORE_STORY_MAP.md).
 - [ ] Review all 23 rows in [the official Kane Pixels video index](research/kane-pixels-video-index.csv), one by one. Record date, timestamps actually reviewed, spatial rules, organization/tools, human decision, evidence, threat behavior, uncertainty, and a distinct RimWorld design translation. Do not invent a transcript when captions are absent.
 - [ ] Review the A24 film in full and write a high-level feature analysis for equipment, staff roles/training, A-Sync/facility work, room types, gate operation, threats, story beats, and candidate quests. Keep this separate from the series notes.
 - [ ] Recheck official source/playlist contents when content production starts; the video count and available captions can change.
-- [ ] Mark each candidate game element as indirect Kane/A24 adaptation or original design. Broader community canon is not part of shipped content. Track each feature's source record.
+- [ ] Mark each candidate game element as an indirect Kane/A24 adaptation or original design. Broader community canon is not part of shipped content. Track each feature's source record.
 - [ ] Complete the full video-by-video and feature review before any mod code or source-specific content begins; cite observations in the relevant feature row of [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md).
 - [ ] Read current public RimWorld mod-package/load-folder guidance and validate the rules against the installed RimWorld 1.6 files before selecting XML folder/version conventions. Useful starting points: [Ludeon modding tutorial](https://ludeon.com/forums/index.php?topic=33219.0), [About.xml guide](https://www.rimworldwiki.com/wiki/Modding_Tutorials/About.xml), and [1.6 folder/load-folder guide](https://rimworldwiki.com/wiki/Modding_Tutorials/Mod_Folder_Structure).
 
@@ -63,7 +64,8 @@ The recorded decisions are in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.md). They a
 - [ ] Establish an interaction map for the full 294: which Backrooms systems call each mod, which ones should remain untouched, and which pairs need a reproduced test. Preserve QoL mods' functions and key bindings.
 - [ ] Review mods by family first, then inspect high-risk members individually. Don't assume a family-level pass certifies its individual members.
 - [ ] Update the register's status for every row as reviewed/version-pinned/tested or pending; the final workbook must agree with the exact local client/server list.
-- [ ] Add the `FeatureTraceIDs`, `ReviewRecord`, `ReviewStatus`, `FinalDisposition`, `EvidenceBuild`, and `AcceptanceEvidence` columns specified in [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md) to the authoritative workbook and CSV; complete all 294 rows before code starts.
+- [x] Add the `FeatureTraceIDs`, `ReviewRecord`, `ReviewStatus`, `FinalDisposition`, `EvidenceBuild`, and `AcceptanceEvidence` columns specified in [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md) to the authoritative workbook and CSV. All 294 rows carry explicit pending/not-pinned/not-runtime-tested placeholders; see [294-row register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx) and [inventory CSV](research/rimworld-server-mod-inventory.csv).
+- [ ] Replace those placeholders for all 294 rows with verified feature IDs, exact review record paths, evidence-backed dispositions/builds, and tested acceptance evidence before code starts. “Pending mapping” and “Pending review” are not final outcomes.
 
 ### 0.4 RimWorld Together and gravship feasibility
 
@@ -336,7 +338,7 @@ flowchart LR
 | RimWorld Together | Local 294-entry client/server set and order match; server config does not enforce them; exact server release remains unidentified. | Pin builds, inspect extension points, resolve scenario joining, run item/visit/reconnect tests. |
 | VGE Chapters 1 and 2 | Installed entries/dependency order and official Workshop requirements reviewed. | Inspect all vehicle/space mods and run a clean plus combined stack. |
 | DLC | D4 selected: all five optional; Core-only campaign. | Def folder audit and selected-profile runs; record every declared combination. |
-| Kane Pixels videos/A24 film | All 23 entries indexed; first video's transcript is unavailable; official synopsis/interview/home-video sources reviewed for scenario direction. | Timestamped viewing log for all 23 and full feature review. |
+| Kane Pixels videos/A24 film | All 23 entries indexed; uploads 1–4 have short linked partial notes; upload 3 has sampled narration subtitles and upload 4 has a few surfaced subtitle fragments. | Full viewing/review of all 23 uploads and the separate feature review. |
 | Code/package | Not started. | Gate 0, repository, build target, first playable implementation. |
 | Assets/release identity | Not started. | Exact title and package ID recorded; author/publisher intentionally blank; asset plan, metadata, original content, and provenance remain to be completed. |
 

@@ -2,9 +2,9 @@
 
 ## Chosen reference
 
-Per the project owner's direction, Kane Pixels' Backrooms series and the A24 feature are the selected references, adapted indirectly. Do not directly recreate specific scenes or characters. Broader community canon is outside the shipped-content scope; keep any provenance checks against it separate from these references.
+Per the project owner's Gate 0 choice, Kane Pixels' Backrooms series is the primary story and lore reference; the A24 feature is a second, separately reviewed reference. Adapt the source's lore, story ideas, themes, and style indirectly rather than recreating specific scenes or characters. Keep the series and feature separate unless their official material establishes a connection. Broader community canon is outside the shipped-content scope unless the owner expands it.
 
-The campaign is an original RimWorld company simulation informed by broad themes from the selected references. RimWorld's interplanetary setting and colony management let the company expand beyond an Earth research site. Do not present the campaign as a canonical continuation or direct recreation of the series or feature.
+The campaign is an original RimWorld company simulation informed by the selected references. RimWorld's interplanetary setting and colony management let the company expand beyond an Earth research site. It is not a canonical continuation or direct recreation of the series or feature.
 
 ## Lore-to-game translation
 
@@ -39,17 +39,8 @@ RimWorld's colony simulation remains the engine: pawns need food, sleep, recreat
 
 ## Content structure for later research files
 
-For each video or film segment, record:
-
-- Source title, creator, URL, publication date, and timestamps reviewed.
-- What the audience is shown versus what characters know at that point.
-- Spatial rule or anomaly, including whether it is stable, shifting, or uncertain.
-- Organization, tools, staffing, communication, containment, and mission objective.
-- Human choices, consequences, missing persons, and changes in relationships or behavior.
-- Entity or hazard behavior and any evidence/countermeasure revealed.
-- Candidate RimWorld implementation: building, work task, quest, map generator tag, item, skill, incident, research, or staff event.
-- Which details are direct source references, which are project inventions, and which need a rights/source check before inclusion.
+For each video or film segment, record the main story beat, important characters or organizations, memorable spaces or technology, clues or threats, and one or two useful game ideas. Link the exact source and add a timestamp when it helps find a key detail. Mark partial reviews clearly and separate source lore from new RimWorld mechanics.
 
 ## Review status
 
-The full official playlist is indexed in [kane-pixels-video-index.csv](research/kane-pixels-video-index.csv), but individual timestamped viewing logs remain pending; YouTube reports no transcript for the first video. A24's official synopsis/interview and home-video materials inform the scenario framework, but the feature film still needs a complete viewing log before film-specific quests, equipment, characters, or set pieces are specified. Local multiplayer and gravship evidence is routed through the [RWT and gravship feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md).
+The full official playlist is indexed in [kane-pixels-video-index.csv](research/kane-pixels-video-index.csv); uploads 1–4 have brief partial notes, and the other episode reviews remain open. The A24 feature still needs its own full review. Local multiplayer and gravship evidence is routed through the [RWT and gravship feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md).
