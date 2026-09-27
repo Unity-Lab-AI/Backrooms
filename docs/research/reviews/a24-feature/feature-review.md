@@ -1,6 +1,7 @@
 # A24 Backrooms feature — fan-summary story note
 
 - Official film page: https://a24films.com/films/backrooms
+- Official A24 production notes (regional distributor-hosted copy): https://praesens.com/praesens-pro-presse/katalog/backrooms/regional/de/backrooms-press-kit-dch/
 - Fan summary reviewed: https://kane-pixels-backrooms.fandom.com/wiki/Backrooms_(film)
 - Optional chaptered fan recap: https://www.youtube.com/watch?v=1BimZacEegw (located; not reviewed in full)
 - Review date/method: 2026-09-27; fan-maintained plot summary, read in the browser
@@ -8,7 +9,7 @@
 
 ## Story and atmosphere notes
 
-The fan page describes Clark, who owns a furniture showroom, discovering a strange opening below the store. Beyond it are spaces that resemble familiar interiors but repeat and shift. Staff enter and go missing. Mary later goes in while searching for Clark, and the fan summary describes rooms reflecting personal memories before an Async encounter. The page's descriptions of the spaces and ending are secondary claims; this note does not treat them as official rules or settle their meaning.
+The fan page describes Clark, a furniture-showroom owner, discovering a strange opening below his store. Familiar commercial and domestic spaces appear again in distorted forms. The fan plot summary tracks his staff, Mary, and Async as the opening turns into a rescue and investigation. Treat detailed room behavior and the ending's meaning as secondary claims; this note does not use them as rules for the game.
 
 People the fan summary highlights include Clark, Mary, store employees Kat and Bobby, and Async personnel including Phil. The plain commercial setting, missing coworkers, familiar-but-wrong rooms, and personal memories give a concise story path for scenario and quest inspiration.
 
@@ -22,7 +23,7 @@ These are original gameplay hooks inspired by the fan summary, not claims about 
 
 ## Source limits and continuity
 
-The official [A24 synopsis](https://a24films.com/films/backrooms) independently confirms a strange doorway appearing in a furniture-showroom basement. It does not confirm this page's full plot outline. Keep the Kane Pixels series in its own continuity record; no connection between the series and feature is assumed here. Return to the official film only if a planned feature depends on a detail the fan page cannot resolve.
+The official [A24 synopsis](https://a24films.com/films/backrooms) confirms the strange doorway in a furniture-showroom basement. A24's [production notes](https://praesens.com/praesens-pro-presse/katalog/backrooms/regional/de/backrooms-press-kit-dch/) add that Async has studied the Complex since an accidental 1989 opening during the web-series events; they also describe the feature as an Async branch and mention callbacks to the web-series story. This confirms shared Async story context, while the fan page remains the source for its fuller film plot outline. Keep feature-specific people and events in this separate review record, and do not fill gaps with fan theory. Return to direct feature material only if a planned feature depends on an unresolved detail.
 
 ## Review status
 

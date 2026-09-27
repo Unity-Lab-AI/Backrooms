@@ -2,7 +2,7 @@
 
 This is a design target, not a claim that these types or APIs have already been implemented. Verify exact names and signatures against the installed RimWorld 1.6 assemblies and the chosen RimWorld Together client release before writing production code.
 
-**Gate 0 decisions recorded:** private RWT prototype first; exact displayed title `Rimrooms - Async Industries`; author/publisher metadata intentionally blank; package ID `UnityLabAI.RimroomsAsyncIndustries`; internal namespace `RimroomsAsyncIndustries`; semantic versions; Core-only solo path; optional support for all five DLC; other 294-profile mods optional; indirect adaptation of Kane Pixels/A24 references, with wider community canon excluded from shipped content; dossier transfer plus shared research ledger only if supported and safely tested; English-first localization-ready; MIT for original source code. The remaining Gate 0 work is research, design, and runtime feasibility—not unresolved owner direction.
+**Gate 0 decisions recorded:** private RWT prototype first; exact displayed title `Rimrooms - Async Industries`; author/publisher value `Operator`; package ID `UnityLabAI.RimroomsAsyncIndustries`; internal namespace `RimroomsAsyncIndustries`; semantic versions; Core-only solo path; optional support for all five DLC; other 294-profile mods optional; indirect adaptation of Kane Pixels/A24 references, with wider community canon excluded from shipped content; dossier transfer plus shared research ledger only if supported and safely tested; English-first localization-ready; MIT for original source code. The remaining Gate 0 work is research, design, and runtime feasibility—not unresolved owner direction.
 
 ## Runtime and package boundaries
 
@@ -31,7 +31,7 @@ Source/RimroomsAsyncIndustries.sln
   Compatibility/RimWorldTogether/
 ```
 
-The repository can include `Source/` and the mod's loadable `Assemblies/` output. Create `About/About.xml` with the selected title, package ID, version policy, and license when packaging begins. Leave its author/publisher value blank or omit it if the format permits; do not insert a placeholder. The owner may assign an author later.
+The repository can include `Source/` and the mod's loadable `Assemblies/` output. Create `About/About.xml` with the selected title, package ID, version policy, and license when packaging begins. Set its author/publisher value to `Operator`.
 
 ## State ownership and persistence
 
@@ -59,6 +59,8 @@ Generate a local map in stages:
 6. Register the map to its coordinate and save through normal world/map persistence.
 
 The engine should generate only maps that the player visits. Infinite expansion is a stable generator plus coordinates and continued discovery, not a single gigantic map. Add a generator version to records so later releases can preserve old destinations or intentionally migrate them.
+
+RimWorld 1.6's official [Modder Primer](https://docs.google.com/document/d/e/2PACX-1vRKE9u5ZW_zG45pxzwNvy4sxvozDeqtxlxpac5jwenOeW6liQCPgmPl9bIbtcMuqL1NPIDHOLFg64M_/pub) documents room layouts, room parts, prefabs, and map-generation stages that may support reusable generated rooms. Treat these as candidate building blocks only: exact type names, signatures, placement constraints, persistence behavior, and deterministic replay still need a small prototype against the pinned assemblies after Gate 0. See [RimWorld 1.6 package and generation findings](research/RIMWORLD_1_6_PACKAGE_AND_GENERATION.md) for the research path.
 
 ## Gate and expedition simulation
 

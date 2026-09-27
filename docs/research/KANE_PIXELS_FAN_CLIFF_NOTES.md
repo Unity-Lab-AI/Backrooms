@@ -192,7 +192,7 @@ The fan guide's broad story arc begins with a young filmmaker falling into the B
 
 ## Fan-identified hidden clips outside the 23-entry playlist
 
-The series page lists 19 main episodes and six hidden entries. Four hidden titles already appear in this project's 23-entry playlist index (`Mar11_90_ARCHIVE.tar`, `9780415263573`, `home_27647.mov`, and `_recording014`); the two below do not. This count and relationship come from the community guide, not the official playlist.
+Fan-wiki episode counters are community-maintained and have changed or conflicted with one another. The project index preserves the 23 entries present in Kane's official playlist on 2026-09-27, including **Everything Must Go**. Four titles identified as hidden or supplemental by the community guide also appear in that playlist snapshot (`Mar11_90_ARCHIVE.tar`, `9780415263573`, `home_27647.mov`, and `_recording014`); the two below were not listed there. Treat these labels as fan-guide scope notes, not creator-confirmed episode categories.
 
 - **faultline.mov:** A fan summary describes a compilation of news coverage about the 1989 Loma Prieta earthquake. The wiki repeats a theory linking it to First Contact but also notes timing conflicts and creator comments against treating the earthquake as the cause of the Threshold; leave causality unresolved. [Fan page](https://kane-pixels-backrooms.fandom.com/wiki/Faultline.mov).
 - **Simpsons:** A fan summary describes a television broadcast briefly changing to a Spanish commercial. The wiki attributes the upload to Laura Harris and notes it is absent from Kane's official playlist; keep it as an unverified supplemental reference, outside the 23-entry index. [Fan page](https://kane-pixels-backrooms.fandom.com/wiki/Simpsons).
@@ -210,7 +210,7 @@ The community [timeline page](https://kane-pixels-backrooms.fandom.com/wiki/Time
 5. **The space keeps changing:** Later expeditions encounter sealed routes, altered rooms, retail-like spaces, missing crew, and threats. The notes suggest Async becomes more organized as its people and maps become less dependable.
 6. **Personal incursions continue:** The fan chronology places Kane's found-footage trip in 1991, another lone person's recording in 1995, and Ravi's in 1997. These are separate human stories as well as evidence that the phenomenon reaches beyond Async's planned expeditions.
 
-The same fan timeline also inserts Clark, Mary, and events from the A24 feature among the series entries. That placement is a community interpretation, not an official continuity statement. For this project, keep the A24 story note separate from the Kane series until an official source establishes their relationship.
+The same fan timeline places Clark, Mary, and feature events among the series entries. A24 production notes now confirm that the feature is an Async branch, with an accidental 1989 opening during the web-series events and callbacks to the series. The fan timeline's detailed ordering remains a community interpretation. Keep film-specific plot evidence in its own A24 note and do not promote fan-assigned placement into confirmed chronology.
 
 ## How to use these notes
 

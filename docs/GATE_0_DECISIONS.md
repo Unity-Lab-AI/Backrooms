@@ -28,10 +28,10 @@ The marked boxes below are recorded as owner selections. Where multiple compatib
 
 ### D2. Public identity, package identity, and versioning
 
-**Proposal accepted with the owner's correction.** Keep the displayed mod title exactly **Rimrooms - Async Industries**. Leave the author/publisher field blank until the owner assigns one; do not infer or insert an author from the MIT license.
+**Proposal accepted with the owner's correction.** Keep the displayed mod title exactly **Rimrooms - Async Industries**. Set the author/publisher value to `Operator`; the MIT license does not supply or change that value.
 
 - Displayed mod title: `Rimrooms - Async Industries`
-- Public author/publisher metadata: `Unassigned — leave blank`
+- Public author/publisher metadata: `Operator`
 - RimWorld package ID: `UnityLabAI.RimroomsAsyncIndustries`
 - Internal C# namespace: `RimroomsAsyncIndustries`
 - Version policy: semantic versions; `0.x` while pre-release and `1.0.0` at the first stable public release.

@@ -4,7 +4,7 @@ This standard turns the project's “AAA-grade” quality goal into observable p
 
 ## Gate 0 evidence acceptance
 
-- All D1–D9 choices remain recorded in [GATE_0_DECISIONS.md](../GATE_0_DECISIONS.md); the mod title is exact and author metadata stays unassigned.
+- All D1–D9 choices remain recorded in [GATE_0_DECISIONS.md](../GATE_0_DECISIONS.md); the mod title is exact and author/publisher metadata is `Operator`.
 - Every source-derived design claim links to a reviewed source record. All 23 indexed Kane Pixels uploads and the A24 feature receive separate saved review records before source-specific production begins.
 - Every one of the 294 profile rows has a verified package identity, source/version review, required-dependency and license notes, feature IDs, final disposition, and a review record. “Verified alongside” counts only after the named profile is tested.
 - RimWorld, DLC, Harmony, and RWT client/server builds are pinned. RWT dossier transfer, conditional shared-ledger behavior, visits, scenario joining, reconnect, and save ownership are tested in a disposable profile.

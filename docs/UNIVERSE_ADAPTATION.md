@@ -2,7 +2,7 @@
 
 ## Chosen reference
 
-Per the project owner's Gate 0 choice, Kane Pixels' Backrooms series is the primary story and lore reference; the A24 feature is a second, separately reviewed reference. Adapt the source's lore, story ideas, themes, and style indirectly rather than recreating specific scenes or characters. Keep the series and feature separate unless their official material establishes a connection. Broader community canon is outside the shipped-content scope unless the owner expands it.
+Per the project owner's Gate 0 choice, Kane Pixels' Backrooms series is the primary story and lore reference; the A24 feature is a second, separately reviewed reference. A24 production notes explicitly connect the feature to an Async branch and the web-series events, while feature-specific plot evidence remains in its own review. Adapt story ideas, themes, and style indirectly rather than recreating specific scenes or characters. Broader community canon is outside shipped-content scope unless the owner expands it.
 
 The campaign is an original RimWorld company simulation informed by the selected references. RimWorld's interplanetary setting and colony management let the company expand beyond an Earth research site. It is not a canonical continuation or direct recreation of the series or feature.
 
@@ -43,4 +43,4 @@ For each video or film segment, record the main story beat, important characters
 
 ## Review status
 
-The full official playlist is indexed in [kane-pixels-video-index.csv](research/kane-pixels-video-index.csv), and first-pass fan summaries for all 23 uploads are in [KANE_PIXELS_FAN_CLIFF_NOTES.md](research/KANE_PIXELS_FAN_CLIFF_NOTES.md). Uploads 1–4 also have partial direct-source notes; full direct viewing is optional unless a planned feature depends on a detail the summaries do not settle. The A24 feature has a separate fan-summary story note and is not treated as part of the series continuity. Local multiplayer and gravship evidence is routed through the [RWT and gravship feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md).
+The official playlist snapshot is indexed in [kane-pixels-video-index.csv](research/kane-pixels-video-index.csv), and first-pass fan summaries for all 23 indexed uploads are in [KANE_PIXELS_FAN_CLIFF_NOTES.md](research/KANE_PIXELS_FAN_CLIFF_NOTES.md). Uploads 1–4 also have partial direct-source notes; full direct viewing is not required unless a planned feature depends on a detail the summaries do not settle. The A24 feature has a separate fan-summary story note; its official Async connection is recorded with clear limits in that review. Local multiplayer and gravship evidence is routed through the [RWT and gravship feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md).

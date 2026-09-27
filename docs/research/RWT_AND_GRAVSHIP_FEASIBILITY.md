@@ -52,10 +52,10 @@ The profile contains both selected chapters, with Odyssey and Vanilla Expanded F
 
 | Load order | Mod | Workshop ID | Verified dependency / feature note |
 | ---: | --- | --- | --- |
-| 247 | Vanilla Gravship Expanded - Chapter 1 | `3609835606` | Workshop page requires Odyssey and Vanilla Expanded Framework. It overhauls gravships around oxygen, fuel, power, heat, crew, and self-sustaining orbital operations. |
-| 281 | Vanilla Gravship Expanded - Chapter 2 | `3799737423` | Workshop page requires Odyssey, Vanilla Expanded Framework, and Chapter 1. It adds orbital threat detection, ship combat/defenses, salvage, and hostile orbital sites. |
+| 247 | Vanilla Gravship Expanded - Chapter 1 | `3609835606` | Workshop page requires Odyssey and Vanilla Expanded Framework; local metadata also requires Harmony. It overhauls oxygen, fuel, power, heat, and crew systems. [Per-mod review](reviews/mods/3609835606-vanillaexpanded.gravship.md). |
+| 281 | Vanilla Gravship Expanded - Chapter 2 | `3799737423` | Workshop page requires Odyssey, Vanilla Expanded Framework, and Chapter 1; local metadata also requires Harmony. It adds orbital threats, combat/defenses, and salvage. [Per-mod review](reviews/mods/3799737423-vanillaexpanded.gravship2.md). |
 
-Both Workshop pages warn that other mods altering gravships are likely incompatible. Both list CC BY-NC-ND 4.0; use these installed mods as optional integrations and do not redistribute their code, assets, or copied content.
+Both Workshop pages warn that other mods altering gravships are likely incompatible. Both list CC BY-NC-ND 4.0, and both pages currently display Steam Community removal notices; no reason is inferred from those notices. Local metadata lists RimWorld 1.6 and has no `modVersion` for either chapter. It declares `Bulldog.VanillaChemfuelExpandedOdysseyPatch` incompatible; that package is not active in this 294-entry profile. The rows have individual source notes now, but no clean-chain or full-profile runtime test has been performed. Do not redistribute their code, assets, or copied content.
 
 The profile has a broad vehicle/space set that still needs individual page/source inspection: Vehicle Framework; Carryalls; More Crashed Ship Parts; Trade Ships Drop Spot; Trade Ships No Matter What; Vanilla Vehicles Expanded and its Tier 3/Upgrades modules; Various Space Ship Chunk; Alpha Vehicles - Age of Sail; Vehicles Wrecks Expanded and Revisited; and both gravship chapters. The exact known conflict FriendFlyTogether is **not** in the current 294-entry profile. Its absence does not certify the remaining vehicle/space mods as compatible.
 

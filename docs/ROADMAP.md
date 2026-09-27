@@ -4,7 +4,7 @@ The work is sequenced so that later content depends on a tested company loop rat
 
 ## Stage 0 — decisions and research
 
-- Use the selected title, package ID, namespace, distribution target, and MIT source-code license. Keep author/publisher metadata blank until the owner assigns one; track art/audio provenance and licensing separately.
+- Use the selected title, package ID, namespace, distribution target, and MIT source-code license. Set author/publisher metadata to `Operator`; track art/audio provenance and licensing separately.
 - Capture the exact RimWorld 1.6 build, DLC set, RimWorld Together client version, server release, and client load order.
 - Maintain the completed 23-entry Kane fan-summary notes and separate A24 fan-summary story note; check official sources only for design-critical gaps, and assess supplemental Kane-related material without folding broader community canon into shipped content.
 - Establish folder layout, build setup, language-key conventions, save ownership rules, and multiplayer synchronization approach.

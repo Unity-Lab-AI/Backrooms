@@ -14,7 +14,7 @@ Before any implementation, read [`docs/AI_BUILD_HANDOFF.md`](docs/AI_BUILD_HANDO
 
 ## Required implementation discipline
 
-- Keep the displayed title exactly `Rimrooms - Async Industries`. Leave the author/publisher metadata blank until the owner assigns one; do not add a placeholder or infer an author from the MIT license. Use the selected package ID `UnityLabAI.RimroomsAsyncIndustries` and internal C# namespace `RimroomsAsyncIndustries`.
+- Keep the displayed title exactly `Rimrooms - Async Industries`. Set the author/publisher metadata to `Operator`; do not infer another author from the MIT license. Use the selected package ID `UnityLabAI.RimroomsAsyncIndustries` and internal C# namespace `RimroomsAsyncIndustries`.
 - Every feature must use a stable ID from `docs/FEATURE_TRACEABILITY.md` and link its exact lore/source notes, mod-profile rows, style rules, implementation files, state owner, player-facing route, failure state, DLC/mod dependency, and acceptance evidence before implementation.
 - Keep each player's facility, ledger, research, coordinate discoveries, and local maps branch-owned by default. Shared research is allowed only through the selected, explicitly supported and safely tested RWT ledger path; dossiers remain the item-transfer path.
 - Generated spaces need stable coordinate/seed identity, bounded generation, route validation, saved discoveries, and a recoverable return path.
