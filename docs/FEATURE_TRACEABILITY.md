@@ -43,4 +43,3 @@ Before Gate 0 can pass, add these columns to the authoritative mod register/work
 6. `AcceptanceEvidence` — test/save/log/report path or explicit `Not runtime tested`.
 
 Each reviewed feature row also needs its approved source/style note, implementation surface, state owner, interface route, failure/recovery behavior and acceptance evidence. Update the workbook and CSV together, preserve source columns, and never promote a preliminary mapping to “supported” without evidence.
-
