@@ -123,6 +123,6 @@ Show income and costs in a readable ledger: contracts and advances; salvage and 
 
 Room templates carry tags for dimensions, doors, passages, materials, lighting, furniture, usable points, loot, hazards, exits, and compatible modifiers. Each coordinate selects a deterministic room graph, assembles compatible templates, validates paths, then applies a bounded number of seeded changes. Store its generator version and saved state for revisits.
 
-## Optional integrations
+## DLC and third-party integrations
 
-DLC content loads only when that DLC exists; no DLC is required for the campaign. Hospitality, prisoner, storage, research, vehicle, and power mods remain optional examples. Core systems need vanilla implementations and should not require optional bridges.
+The DLC dependency policy remains open at Gate 0 decision D4. If the owner chooses optional DLC support, content should load only when its DLC exists and the campaign needs a Core fallback. Hospitality, prisoner, storage, research, vehicle, and power mods are integration examples; the 294-profile requirement policy remains open at D3. Core systems should avoid undocumented or unreviewed bridges.

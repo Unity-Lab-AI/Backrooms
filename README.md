@@ -4,7 +4,7 @@
 
 The default campaign begins with a small facility, limited supplies, and an unreliable gate. Players can instead choose a furniture-and-knickknack store breach or begin as a lone survivor already inside a seeded Backrooms coordinate. The openings differ, then feed into shared systems for exploration, evidence, threats, recovery, and expansion. See the [scenario framework](docs/SCENARIOS.md).
 
-The mod should stand on RimWorld 1.6 Core. Royalty, Ideology, Biotech, Anomaly, and Odyssey are optional integrations: content should appear only when its DLC is installed. Co-op compatibility with the RimWorld Together profile in `docs/research/rimworld-server-mod-inventory.csv` is a primary design requirement. The project has chosen Kane Pixels' Backrooms continuity as its primary lore reference; see the [source register](docs/SOURCE_REGISTER.md) for research status and the supplied rights assumption.
+The target is RimWorld 1.6. The exact DLC and 294-mod launch dependency contract remains an owner decision in [`docs/GATE_0_DECISIONS.md`](docs/GATE_0_DECISIONS.md). Co-op compatibility with the RimWorld Together profile in `docs/research/rimworld-server-mod-inventory.csv` is a primary design requirement. Kane Pixels' series and the A24 feature are required primary creative references; broader canon scope remains open. See the [source register](docs/SOURCE_REGISTER.md) for research status and the [feature traceability map](docs/FEATURE_TRACEABILITY.md) for the link between systems, lore, mods, visual direction and build evidence.
 
 The detailed, build-ready start contracts live in [`docs/SCENARIOS.md`](docs/SCENARIOS.md). Future build agents should start from [`AGENTS.md`](AGENTS.md), [`docs/AI_BUILD_HANDOFF.md`](docs/AI_BUILD_HANDOFF.md), and the [source register](docs/SOURCE_REGISTER.md), which maps local inputs and primary source URLs to their review status.
 
@@ -14,6 +14,8 @@ The detailed, build-ready start contracts live in [`docs/SCENARIOS.md`](docs/SCE
 - [Systems catalog](docs/SYSTEMS_CATALOG.md) — staff, facilities, interface, research, missions, and economy inventory.
 - [Technical architecture](docs/TECHNICAL_ARCHITECTURE.md) — proposed RimWorld implementation and multiplayer constraints.
 - [AI build handoff and document map](docs/AI_BUILD_HANDOFF.md) — required reading order, feature-to-source paths, and evidence/status rules for future coding agents.
+- [Gate 0 owner decisions](docs/GATE_0_DECISIONS.md) — multiple-choice release, dependency, canon, transfer, identity, language, and license decisions required before implementation.
+- [Feature traceability map](docs/FEATURE_TRACEABILITY.md) — stable system IDs connecting player contracts to research, the 294-mod profile, presentation, code/file surfaces and acceptance evidence.
 - [Source and document register](docs/SOURCE_REGISTER.md) — canonical file map, direct research URLs, local profile paths, review templates, and unresolved evidence.
 - [Campaign scenario contracts](docs/SCENARIOS.md) — Async Industries, Furniture & Knickknack Store, Lone Survivor, and later opening candidates with shared start-state requirements.
 - [Build-agent instructions](AGENTS.md) — project invariants and documentation workflow for implementation.

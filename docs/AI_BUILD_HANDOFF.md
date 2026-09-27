@@ -11,15 +11,18 @@ Read these files in this order before implementation:
 2. [`../AGENTS.md`](../AGENTS.md) — mandatory project instructions for coding agents.
 3. [`SOURCE_REGISTER.md`](SOURCE_REGISTER.md) — canonical document map, direct source URLs, local profile inputs, review locations, and evidence state.
 4. [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) — owner decisions, blockers, code/package file map, phase sequence, gates, and acceptance work.
-5. [`GAME_DESIGN.md`](GAME_DESIGN.md) and [`SCENARIOS.md`](SCENARIOS.md) — core experience, campaign loop, and complete opening-scenario contracts.
-6. [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md) — complete system/content inventory.
-7. [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — proposed assemblies, ownership of save state, extension boundaries, and system contracts.
-8. [`MOD_INTEGRATION_PLAN.md`](MOD_INTEGRATION_PLAN.md) and [`COMPATIBILITY.md`](COMPATIBILITY.md) — interaction model, DLC policy, RWT constraints, and the exact profile boundary.
-9. [`research/RWT_AND_GRAVSHIP_FEASIBILITY.md`](research/RWT_AND_GRAVSHIP_FEASIBILITY.md) — verified local client/server profile comparison and current upstream RWT/VGE findings.
-10. [`RESEARCH.md`](RESEARCH.md) and [`UNIVERSE_ADAPTATION.md`](UNIVERSE_ADAPTATION.md) — source provenance, source-to-design translation, and what remains unreviewed.
-11. [`research/kane-pixels-video-index.csv`](research/kane-pixels-video-index.csv), [`research/rimworld-server-mod-inventory.csv`](research/rimworld-server-mod-inventory.csv), and the [294-mod workbook](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx) — source/profile row data. Do not treat a preliminary workbook description as a verified mod-page audit.
+5. [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) and [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md) — owner selections required before implementation and the feature-by-feature route through lore, the 294-mod profile, style, package surfaces, and acceptance evidence.
+6. [`GAME_DESIGN.md`](GAME_DESIGN.md) and [`SCENARIOS.md`](SCENARIOS.md) — core experience, campaign loop, and complete opening-scenario contracts.
+7. [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md) — complete system/content inventory.
+8. [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — proposed assemblies, ownership of save state, extension boundaries, and system contracts.
+9. [`MOD_INTEGRATION_PLAN.md`](MOD_INTEGRATION_PLAN.md) and [`COMPATIBILITY.md`](COMPATIBILITY.md) — interaction model, DLC policy, RWT constraints, and the exact profile boundary.
+10. [`research/RWT_AND_GRAVSHIP_FEASIBILITY.md`](research/RWT_AND_GRAVSHIP_FEASIBILITY.md) — verified local client/server profile comparison and current upstream RWT/VGE findings.
+11. [`RESEARCH.md`](RESEARCH.md) and [`UNIVERSE_ADAPTATION.md`](UNIVERSE_ADAPTATION.md) — source provenance, source-to-design translation, and what remains unreviewed.
+12. [`research/kane-pixels-video-index.csv`](research/kane-pixels-video-index.csv), [`research/rimworld-server-mod-inventory.csv`](research/rimworld-server-mod-inventory.csv), and the [294-mod workbook](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx) — source/profile row data. Do not treat a preliminary workbook description as a verified mod-page audit.
 
 ## Feature-to-document route
+
+Every planned feature must have a stable ID in [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md), with its design, lore/source, exact 294 profile rows, DLC/RWT boundary, presentation guidance, planned files, and acceptance proof linked there. A preliminary inventory mapping is not a verified integration.
 
 | Work area | Read first | Cross-check before coding |
 | --- | --- | --- |
@@ -49,4 +52,4 @@ Update the file that owns the decision first, then add a link from its navigatio
 
 ## Current gate
 
-The exact local server/client mod ID set and order have now been compared and match at 294 entries. The server settings do not enforce that list, the exact deployed RWT release is still unresolved, and no compatibility run has been performed for this mod. The 23-video index exists, but the full viewing/timestamped analysis and complete feature-film review remain pending. Individual Workshop/API research for the 294 mods remains pending. Complete the remaining Gate 0 work in the TODO before creating the source project or claiming an implementation target is pinned.
+The exact local server/client mod ID set and order have now been compared and match at 294 entries. The server settings do not enforce that list, the exact deployed RWT release is still unresolved, and no compatibility run has been performed for this mod. The 23-video index exists, but the full viewing/timestamped analysis and complete feature-film review remain pending. Individual Workshop/API research for the 294 mods remains pending. Complete every decision in `GATE_0_DECISIONS.md` and every strict Gate 0 item in the TODO before creating the source project or claiming an implementation target is pinned.

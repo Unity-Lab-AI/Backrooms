@@ -7,6 +7,8 @@ This file is the navigation index for the research and design materials a future
 | Topic | Canonical document | Supporting documents |
 | --- | --- | --- |
 | Work sequence and coding-start gate | [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) | [`ROADMAP.md`](ROADMAP.md), [`AI_BUILD_HANDOFF.md`](AI_BUILD_HANDOFF.md) |
+| Owner choices required before implementation | [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) | TODO Phase 0 and `AI_BUILD_HANDOFF.md` |
+| Feature/source/mod/style/file traceability | [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md) | `SYSTEMS_CATALOG.md`, `MOD_INTEGRATION_PLAN.md`, the 294-row register |
 | Player campaign and primary loop | [`GAME_DESIGN.md`](GAME_DESIGN.md) | [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md), [`ROADMAP.md`](ROADMAP.md) |
 | Starting campaign scenarios | [`SCENARIOS.md`](SCENARIOS.md) | [`GAME_DESIGN.md`](GAME_DESIGN.md), [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md), [`MOD_INTEGRATION_PLAN.md`](MOD_INTEGRATION_PLAN.md) |
 | Proposed code and save boundaries | [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) | TODO, compatibility plan |

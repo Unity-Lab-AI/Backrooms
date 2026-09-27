@@ -1,6 +1,6 @@
 # Development roadmap
 
-The work is sequenced so that later content depends on a tested company loop rather than a pile of disconnected buildings and monsters. These are planning stages; none of the gameplay systems is implemented yet.
+The work is sequenced so that later content depends on a tested company loop rather than a pile of disconnected buildings and monsters. These are planning stages; none of the gameplay systems is implemented yet. Gate 0 is a strict pre-build gate: complete all owner decisions, source reviews, and the 294-mod feature map before creating the code project. See [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
 
 ## Stage 0 — decisions and research
 
@@ -37,7 +37,7 @@ The Furniture & Knickknack Store breach and Lone Survivor starts are planned sce
 - Add a narrow RimWorld Together adapter using only supported extension points; keep branch-local campaign state authoritative.
 - Verify guilds, sites/roads/events, item trade/gifts, pawn aid, configured facility visits, transfer spots, and reconnect/save behavior against a pinned client/server release.
 - Implement physical dossier exchange only after the exact RWT build reliably transfers the Backrooms dossier; research completion remains local to each branch.
-- Add optional DLC content behind conditional definitions and safe base-game fallbacks.
+- Add DLC content under the requirement/optional policy selected at Gate 0 D4; if optional support is selected, keep safe Core fallbacks.
 - Run the mod in a clean baseline and then the exact recorded local server profile; keep an explicit list of known interactions.
 
 **Exit condition:** a second client can operate a separate company branch, exchange verified supplies/dossiers, use supported RWT world activities, and reconnect without duplicating or corrupting either branch. No live shared-map or shared-research behavior is assumed.

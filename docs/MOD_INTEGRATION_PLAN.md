@@ -2,6 +2,8 @@
 
 **Status:** design specification for RimWorld 1.6. No runtime mod code or in-game integration is implemented yet. The scope below turns the owner's campaign brief and the 2026-09-27 local 294-entry server profile into a buildable design. The companion [294-mod workbook](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx) contains one row per profile record, source package ID/order, dependency stance, intended use, integration approach, conflict watch, and evidence status.
 
+**Decision status:** the tables in “Binding design decisions” are working proposals. D3 (294-profile requirement), D4 (DLC requirement), D5 (canon/adaptation depth), and D6 (technology-transfer mechanism) in [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) must be answered before these become binding. Each profile entry and feature is cross-linked in [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md) before Gate 0 can pass.
+
 ## 1. Product definition and boundaries
 
 Rimrooms - Async Industries is a company-management simulation built inside RimWorld. RimWorld remains the game engine: pawn needs, work, skills, health, combat, construction, storage, trade, world map, DLC content, and (where selected) gravships continue to use their native systems. The mod adds a corporate layer for a powered machine gate, branch/facility operations, expeditions, generated Backrooms destinations, evidence, research, contracts, procurement, incidents, and long-term expansion.
@@ -10,17 +12,17 @@ The campaign begins at a small, underfunded research/security facility. The play
 
 “Endless” means a reproducible stream of seeded coordinates and saved visited sites, not an infinitely large map loaded at once. One expedition map is finite and playable. A coordinate atlas remembers discoveries, known routes, team notes, changed rooms, relays, and unresolved signals. New generator versions must not silently rebuild or erase already visited sites.
 
-### Binding design decisions
+### Working design proposals (Gate 0 decisions pending)
 
 | Area | Decision |
 | --- | --- |
 | Game version | RimWorld 1.6; publish only for game builds actually verified. |
-| DLC | Royalty, Ideology, Biotech, Anomaly, and Odyssey are supported as optional layers. Core progression must work without any DLC. |
+| DLC | Proposed: conditional support for Royalty, Ideology, Biotech, Anomaly, and Odyssey, with a Core route. Final required/optional policy is D4. |
 | Multiplayer | RimWorld Together (RWT) is the chosen co-op environment. Players run separate company branches and use documented world transfers/activities. Do not promise live co-control of a shared map or synchronized research. |
-| Additional dependencies | No content mod is a Backrooms core dependency. For a multiplayer install, RWT and its published prerequisite Harmony are required by the selected multiplayer stack. Gravship Chapter 1 is optional and needs Odyssey plus Vanilla Expanded Framework; Chapter 2 is optional and additionally needs Chapter 1. |
-| Local 294 profile | All 294 records are in design scope and mapped in the workbook. Keep the user's chosen profile available as a target; do not make all 294 mandatory dependencies for other players. |
+| Additional dependencies | Proposed: no content mod is a Backrooms core dependency. For multiplayer, RWT and its published prerequisite Harmony are in the selected stack. Gravship Chapter 1 needs Odyssey plus Vanilla Expanded Framework; Chapter 2 additionally needs Chapter 1. Final package requirements follow D3/D4. |
+| Local 294 profile | All 294 records are in design/research scope and preliminary-mapped. Whether the exact 294 list is mandatory for the supported RWT co-op server is D3. |
 | Gravships | Chapter 1 is the late orbital living-vessel/logistics layer. Chapter 2 adds orbital threats and defense. Neither replaces the machine gate or creates Backrooms coordinates. |
-| Source material | Kane Pixels' continuity is the selected reference per project direction. Maintain a source/provenance log for specific shipped names, text, art, audio, and characters. Third-party RimWorld mod assets and code are not bundled or copied by this plan. |
+| Source material | Kane Pixels' series and the A24 feature are required primary references. Wider canon and adaptation depth are D5. Maintain a source/provenance log for specific shipped names, text, art, audio, and characters. Third-party RimWorld mod assets and code are not bundled or copied by this plan. |
 
 The official RWT Workshop page describes separate colonies on a shared planet and advertises activities including visiting, raiding, spying, trading, factions/guilds, roads, and sites. The project wiki endpoints returned HTTP 403 during the dated review, so exact online/offline visit rules, transfer behavior, server toggles, and client interaction semantics remain unverified. The local server hash is also not yet identified as the latest published release. Keep separate branch ledgers and treat each cross-branch activity as a pinned-build research/test item; see the [RWT and gravship feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md) and [source register](SOURCE_REGISTER.md) for direct references and evidence limits.
 
@@ -246,7 +248,7 @@ The map groups mods by intended use; a single mod may touch multiple systems. Th
 ### Design is specified in this workspace
 
 - [x] Initial company start, operation loop, facility functions, work roles, research/evidence, economy, incidents, coordinates, procedural sites, and late-stage expansion.
-- [x] All five DLCs scoped as optional.
+- [ ] Confirm D4; conditional support for all five DLC is the current proposal, not yet an owner decision.
 - [x] RWT clarified as separate-branch cooperation with trade/aid/guild/activity-based visits; no live shared-map promise.
 - [x] Gravship Chapters 1 and 2 assigned distinct late-game roles and dependency boundaries.
 - [x] All 294 local profile rows captured and assigned to a design family in the workbook.
