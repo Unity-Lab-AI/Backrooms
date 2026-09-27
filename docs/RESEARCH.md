@@ -10,7 +10,7 @@ The official [“The Backrooms (Found Footage)” video](https://www.youtube.com
 
 The A24 interview [“Thirty Thousand Square Feet with Kane Parsons & James Wan”](https://a24films.com/notes/2026/05/thirty-thousand-square-feet-with-kane-parsons-james-wan) provides a creator-side summary. Parsons describes starting with visual exploration of liminal spaces and extending the premise into an institutional research mystery. He emphasizes treating spatial changes as intentional continuity, presenting the phenomenon as indifferent rather than morally targeted, and limiting a feature's lore load while giving the people caught in it meaningful lives outside the anomaly. The game translation is persistent coordinate records and learnable spatial rules, combined with staff histories, company motives, and evidence-based investigation; variation should not be reduced to random jump scares.
 
-The full Kane Pixels playlist remains a required review corpus. For each official upload, note its date, new rule revealed, spatial motif, human decision, evidence type, threat behavior, and gameplay translation. All 23 titles are indexed, but video-by-video review remains pending. YouTube's transcript export reports no transcript for the first official video; check transcript availability per entry rather than assuming captions exist. Distinguish official Kane Pixels material from fan interpretations and community wiki lore.
+The official Kane Pixels playlist is the main story reference. All 23 titles are indexed, and the first four have short, partial notes. As the remaining videos are reviewed, focus on the story, people, organization, memorable spaces or threats, mysteries, and a few useful RimWorld ideas. Keep source material, interpretation, and original game ideas distinct. Add a timestamp only when it helps find an important moment; transcripts are optional and should only be noted when actually available.
 
 ### A24 feature film
 
@@ -49,8 +49,8 @@ Use sources for the actual project being targeted. The separate `rwmt/Multiplaye
 
 ## Open research work
 
-- Review all 23 official playlist entries in the [direct-linked index](research/kane-pixels-video-index.csv), save a [timestamped review record](research/reviews/README.md) for each, and include relevant transcripts only when actually available. Do not treat user-uploaded compilations as authoritative.
-- Review the feature film in full and add a high-level design analysis of systems, pacing, spaces, company behavior, equipment, training, and story missions. Current notes use the official A24 synopsis and interview; a scene-by-scene viewing log has not been completed.
+- Review all 23 official playlist entries in the [direct-linked index](research/kane-pixels-video-index.csv) and add a short story note for each. Do not treat user-uploaded compilations as authoritative.
+- Review the feature film in full and add a separate, high-level note about its story, people, memorable spaces, threats, and a few scenario or quest ideas. Current notes use the official A24 synopsis and interview; the feature itself has not yet been reviewed.
 - If a candidate motif has uncertain provenance, identify whether it belongs to Kane Pixels' continuity, the A24 feature, the broader community, or another contributor before deciding whether it fits the selected scope.
 - Identify the local RWT server commit as a published release and pin the exact client/server/game/DLC profile; the local config comparison is complete but the deployed build identity is not.
 - Inspect RWT source for supported extension points and verify item, pawn, visit, save/reconnect, and transaction behavior in a disposable profile.

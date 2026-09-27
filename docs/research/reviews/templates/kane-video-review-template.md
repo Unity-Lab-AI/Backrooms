@@ -7,7 +7,7 @@
 
 ## What happens
 
-Summarize the episode in plain language. Add timestamps for a few important story beats or details that future design work may rely on.
+Summarize the episode in a short, plain-language paragraph. Add a timestamp only when it helps someone find a memorable story beat.
 
 ## Lore and characters
 
@@ -16,9 +16,9 @@ Summarize the episode in plain language. Add timestamps for a few important stor
 - New clues or connections to other uploads:
 - What's still uncertain:
 
-## Spaces, technology, and threats
+## Memorable spaces and strange events
 
-Describe the memorable locations, equipment, strange events, or creatures that matter to the episode. Only add detail that informs the story or a possible game idea.
+Describe the rooms, people, equipment, or threats that make the episode memorable. Focus on mood and story; skip shot-by-shot or technical detail unless it helps explain what happens.
 
 ## RimWorld inspiration
 
@@ -26,6 +26,6 @@ Describe the memorable locations, equipment, strange events, or creatures that m
 - Feature IDs this could inform:
 - What's adapted from the source, and what's our own design:
 
-## Review scope
+## Review status
 
-Say whether this is a full review or a partial sample and list anything not reviewed. Keep playlist/release order separate from story chronology until the videos support a connection.
+Say whether the full video was reviewed. Note any major part that remains unclear. Keep playlist order separate from story order until the videos support a connection.

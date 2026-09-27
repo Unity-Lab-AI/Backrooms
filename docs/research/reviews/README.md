@@ -4,12 +4,12 @@ Save detailed source observations here so future design and implementation work 
 
 ## File layout
 
-- `kane-pixels/<video_id>.md` — one review file per official playlist upload. Use [`templates/kane-video-review-template.md`](templates/kane-video-review-template.md).
+- `kane-pixels/<video_id>.md` — one linked note per official playlist upload. Some files are short pending-review placeholders, not completed research. Use [`templates/kane-video-review-template.md`](templates/kane-video-review-template.md) when adding observations.
 - `a24-feature/feature-review.md` — complete feature review. Use [`templates/a24-feature-review-template.md`](templates/a24-feature-review-template.md).
 - `mods/<workshop_id>-<package_id>.md` — one exact mod-page/source review per Workshop mod. Use [`templates/mod-review-template.md`](templates/mod-review-template.md).
 - `rwt/` — pinned-build source inspection and disposable-profile behavior records; do not mark runtime behavior complete without the exact server/client/game/DLC/profile identifiers.
 
-Create a folder only when its first review is ready to save. Update [`../kane-pixels-video-index.csv`](../kane-pixels-video-index.csv) or the 294-row workbook only after adding the corresponding evidence record. A source-page review, installed-file inspection, and in-game runtime test are distinct evidence levels. If a video is only sampled, say so in both the review and index; do not mark the complete review done. Record caption/transcript availability checks separately from what was actually watched. Never present viewer comments, search snippets, or a partial sample as canon or a full-source review.
+Keep a placeholder for every indexed source so each map and index entry has a stable path. Update [`../kane-pixels-video-index.csv`](../kane-pixels-video-index.csv) or the 294-row workbook only when its status accurately reflects the linked evidence. A source-page review, installed-file inspection, and in-game runtime test are different evidence levels. If a video is only sampled, say so in both the review and index; do not mark the complete review done. Never present viewer comments, search snippets, or a partial sample as canon or a full-source review.
 
 ## Required review fields
 

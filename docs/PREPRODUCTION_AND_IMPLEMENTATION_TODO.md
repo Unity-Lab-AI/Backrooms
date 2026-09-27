@@ -45,8 +45,8 @@ The recorded decisions are in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.md). They a
 ### 0.2 Official-source review
 
 - [x] Verify the official Kane Pixels playlist and establish a continuity/story review map for the 23 uploads; keep playlist order separate from in-world chronology: [Kane Pixels lore/story map](research/KANE_PIXELS_LORE_STORY_MAP.md).
-- [ ] Review all 23 rows in [the official Kane Pixels video index](research/kane-pixels-video-index.csv), one by one. Record date, timestamps actually reviewed, spatial rules, organization/tools, human decision, evidence, threat behavior, uncertainty, and a distinct RimWorld design translation. Do not invent a transcript when captions are absent.
-- [ ] Review the A24 film in full and write a high-level feature analysis for equipment, staff roles/training, A-Sync/facility work, room types, gate operation, threats, story beats, and candidate quests. Keep this separate from the series notes.
+- [ ] Review all 23 videos in [the official Kane Pixels video index](research/kane-pixels-video-index.csv), one by one. Write a short note about the story, people, organization, memorable spaces or threats, mysteries, and one or two RimWorld ideas. Add a timestamp only when it helps find a standout moment. Keep what the source shows separate from our interpretation and game ideas.
+- [ ] Review the A24 film in full and write a separate, high-level note about its story, people, memorable spaces, threats, and a few ideas for scenarios or quests. Keep it separate from the series notes.
 - [ ] Recheck official source/playlist contents when content production starts; the video count and available captions can change.
 - [ ] Mark each candidate game element as an indirect Kane/A24 adaptation or original design. Broader community canon is not part of shipped content. Track each feature's source record.
 - [ ] Complete the full video-by-video and feature review before any mod code or source-specific content begins; cite observations in the relevant feature row of [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md).

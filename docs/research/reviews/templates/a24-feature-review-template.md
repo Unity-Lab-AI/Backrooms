@@ -5,21 +5,17 @@
 - Review date:
 - Full feature viewed: Pending
 
-## Timestamped high-level notes
+## Story and atmosphere notes
 
-| Timestamp | Character/institution/space observation | Equipment, spatial, or threat rule | Potential game-design relevance | Uncertainty |
-| --- | --- | --- | --- | --- |
+Summarize the main story, people, organization, memorable spaces, and threats in plain language. Add a timestamp only if it helps find a standout moment.
 
 ## Design topics
 
-- Facility/company operations:
-- Staff roles, training, and relationships:
-- Equipment and procedures:
-- Space types, transitions, and continuity:
-- Threats, clues, and counterplay:
-- Candidate mission structures:
-- Elements to keep distinct from the Kane Pixels series:
+- What could inspire the company's story or a scenario:
+- Memorable rooms, equipment, or threats:
+- A few possible quest or expedition hooks:
+- What is still unclear or should remain separate from the Kane Pixels series:
 
 ## Original game translation
 
-Record original mechanics and scenario hooks. Identify source-specific references separately; do not turn a viewing note into a compatibility or rights conclusion.
+Keep game ideas separate from what the film shows. This is a creative reference note, not a technical breakdown or a rights conclusion.
