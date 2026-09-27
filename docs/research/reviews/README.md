@@ -1,6 +1,6 @@
 # Source review records
 
-Save detailed source observations here so future design and implementation work can follow the evidence without relying on chat history.
+Save readable source notes here so design and implementation work can follow the evidence without relying on chat history. Creative-reference notes should stay focused on story and useful inspiration, not become shot-by-shot technical logs. Mod/API and runtime notes should include the technical detail needed to reproduce a compatibility claim.
 
 ## File layout
 
@@ -14,8 +14,8 @@ Keep a placeholder for every indexed source so each map and index entry has a st
 ## Required review fields
 
 1. Exact source URL and title/name; local Workshop/package ID where applicable.
-2. Date reviewed and the version/build visible at that time.
-3. What was directly observed, including timestamps or page sections where possible.
+2. Date reviewed and the version/build when it matters.
+3. What was directly observed; add a timestamp or page section only when it helps locate an important detail.
 4. What is uncertain, inaccessible, inferred, or not covered by the source.
 5. A separate original RimWorld gameplay translation and the design document it informs.
-6. Compatibility/runtime result only when actually reproduced, with game build, DLC, load order, RWT versions, save, logs, and observed behavior.
+6. Compatibility/runtime results only when actually reproduced. For mod tests, record the game build, DLC, load order, RWT versions, save, logs, and observed behavior.

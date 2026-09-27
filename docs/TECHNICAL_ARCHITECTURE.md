@@ -74,7 +74,7 @@ Store state independently from the screen implementation. That makes the company
 
 ## RimWorld Together requirements
 
-The local profile confirms workshop ID `3005289691` (`RimWorld Together`) and a dedicated server package. The client and server currently have the same 294 mapped mod IDs in the same order, but the server config does not enforce that profile. The server executable reports product hash `a7bc029472d727faec4e99b7f02614c370f4771a`; its published release identity is still unresolved. See the [local RWT and gravship audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md) and pin the exact client/server/game/DLC versions before adapter or save compatibility work.
+The local profile confirms workshop ID `3005289691` (`RimWorld Together`) and a dedicated server package. The client and server currently have the same 294 mapped mod IDs in the same order, but the server config does not enforce that profile. The local Windows server archive hash matches the official RWT 26.8.31.1 release asset; the local client DLL is pinned separately by version and hash. See the [local RWT and gravship audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md) for the exact RimWorld, Harmony, client/server artifact, DLC, and profile snapshot. Runtime behavior and save compatibility remain untested and must be verified before adapter work.
 
 Design around RWT's advertised separate-colony model, not a presumed shared simulation. The official Workshop listing describes a shared planet and advertises several world/co-op activities, but exact visit, transfer, and setting semantics need verification against the pinned build:
 

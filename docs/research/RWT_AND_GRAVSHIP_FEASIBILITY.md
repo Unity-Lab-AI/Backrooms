@@ -13,9 +13,30 @@ That establishes that the current client and server profile snapshots agree. It 
 
 The server config reports `AllowAllMods=true`, `EnforceSettings=false`, and a null `ModOrder`. Its `ModConfigs` array has 294 records. Therefore the profile is currently installed consistently by observation, but the server configuration does not force the settings or order; an administrator can still allow drift. The current client does have RWT active as package ID `nova.rimworldtogether`, Workshop ID `3005289691`, with local `About.xml` supporting RimWorld 1.5 and 1.6.
 
+## Pinned local RimWorld test target
+
+The installed game's `Version.txt` reads **1.6.4871 rev590** and Steam's local app manifest records build ID `23969874`. The managed `Assembly-CSharp.dll` reports version `1.6.9676.17735`. These identify the local pre-build test target; they do not claim every player's game is on this build. The local client `ModsConfig.xml` and server `ModConfig.json` SHA-256 digests are recorded below so the exact 294-entry profile snapshot can be reproduced without publishing its settings.
+
+| Target artifact | Observed identity | SHA-256 / evidence |
+| --- | --- | --- |
+| RimWorld game version file | `1.6.4871 rev590` | `0EC56B267649FAA48E8CD6BD767B14BAFE3D1359AF44434711105DBDC4597BE3` |
+| Steam RimWorld app manifest | Build ID `23969874` | Local `appmanifest_294100.acf` |
+| Core game assembly | `Assembly-CSharp.dll`, version `1.6.9676.17735` | `5CF1B5BE399D5B1C9C56CA72C9D35B4ECF307FEACF5859D04AC5A1AA5926356A` |
+| Harmony mod metadata | `2.4.2.0`, package `brrainz.harmony`, Workshop ID `2009463077` | Local `About.xml`; declares RimWorld 1.6 support |
+| Harmony active assembly | `0Harmony.dll`, product `2.4.1.0+789df191bbaf6610232d50e7ef7dddc0d2812549` | `353DAAFEC180BB8E7BBE4DA78F2A7CDC78067392E3A4E79DC8E7AF295F2371E6` |
+| Client mod profile | `ModsConfig.xml` | `D80C797B6DC41B0D8C44F5E0BAA28E9670656E36637D7E16885680DDDA0F38B1` |
+| Server mod profile | `ModConfig.json` | `1C1139569B469789B8586902FBDC99DEFE8DF91249A391B615F6198A990FA0CE` |
+| RWT client assembly | `RTClient.dll`, product `1.0.0+a7bc029472d727faec4e99b7f02614c370f4771a` | `CDCEC1060B7EBC9181B2457E3C1220AFB224EC755351C44C61851B8FF1BB9919` |
+| RWT server archive | `26.8.31.1` Windows x64 release asset | `F16C703F1E3E4E6DE0F4877D8AE502A817C85482681956AA01E8A4B619BAB68C`; exact match to official release-page digest |
+| RWT server executable | `RTServer.exe`, product `1.0.0+a7bc029472d727faec4e99b7f02614c370f4771a` | `939FE9A83434D31C543B3C486ED3398C6498AE9A9A609F8296E73C84CD5B7CC6` |
+
 ## RWT build identity and documented boundary
 
-The local server executable reports product version `1.0.0+a7bc029472d727faec4e99b7f02614c370f4771a`. The official upstream release listing identifies **26.8.31.1**, commit `bbd981f`, as the latest published release in this audit. The local build hash does not match that release commit, and the installed client `About.xml` contains no RWT release tag. Do not label the local stack as 26.8.31.1 or infer its feature/API surface from that release until the server build is identified.
+The local `Server-win-x64-new.zip` SHA-256 is `F16C703F1E3E4E6DE0F4877D8AE502A817C85482681956AA01E8A4B619BAB68C`. This exactly matches the `Server-win-x64.zip` digest published on the official **26.8.31.1** release page, so the Windows server artifact is pinned to that release. Its `RTServer.exe` reports product version `1.0.0+a7bc029472d727faec4e99b7f02614c370f4771a` and SHA-256 `939FE9A83434D31C543B3C486ED3398C6498AE9A9A609F8296E73C84CD5B7CC6`.
+
+The installed Workshop client `RTClient.dll` reports the same product-version string and has SHA-256 `CDCEC1060B7EBC9181B2457E3C1220AFB224EC755351C44C61851B8FF1BB9919`. The installed client `About.xml` supports RimWorld 1.5 and 1.6 but does not declare a release tag. The local client DLL is pinned by its exact hash; matching product-version text alone does not prove the client is byte-for-byte the release's distributed client. Keep this exact local artifact pair as the first test target and record any client/server update as a new target.
+
+The official upstream page currently marks **26.8.31.1** as latest, gives tag commit `bbd981f`, and publishes the matching Windows server archive hash. Its release notes cover full planet-river synchronization and Odyssey asteroid compatibility. The local executable's embedded product-version hash differs from the release tag commit, so cite the published archive digest as the evidence for the server release identity rather than treating those two identifiers as interchangeable. No Rimrooms multiplayer behavior has been tested yet.
 
 The RWT Workshop description says players share a planet while keeping separate colonies and pacing, and lists visiting, raiding, spying, trading, faction/guild creation, roads, and site building. The 26.8.31.1 release notes add full planet river synchronization and Odyssey asteroid compatibility. Release 26.8.9.1 introduced server-side mod-config and mod-order enforcement, but those controls are not enabled in this local server configuration.
 

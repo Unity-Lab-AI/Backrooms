@@ -2,6 +2,8 @@
 
 **Research snapshot: 2026-09-27.** This file separates source facts, design inspiration, and content that still needs review. The selected references are Kane Pixels' Backrooms continuity and the A24 feature, to be adapted indirectly. Broader community canon is excluded from shipped content and is not treated as one unified canon.
 
+Keep creative-reference research story-first and readable: capture the people, mystery, atmosphere, and ideas useful to RimWorld. A timestamp is optional; detailed shot logs, production analysis, and transcript work are only needed when they answer a design question.
+
 ## First-pass design findings
 
 ### Official Kane Pixels series
@@ -52,6 +54,6 @@ Use sources for the actual project being targeted. The separate `rwmt/Multiplaye
 - Review all 23 official playlist entries in the [direct-linked index](research/kane-pixels-video-index.csv) and add a short story note for each. Do not treat user-uploaded compilations as authoritative.
 - Review the feature film in full and add a separate, high-level note about its story, people, memorable spaces, threats, and a few scenario or quest ideas. Current notes use the official A24 synopsis and interview; the feature itself has not yet been reviewed.
 - If a candidate motif has uncertain provenance, identify whether it belongs to Kane Pixels' continuity, the A24 feature, the broader community, or another contributor before deciding whether it fits the selected scope.
-- Identify the local RWT server commit as a published release and pin the exact client/server/game/DLC profile; the local config comparison is complete but the deployed build identity is not.
+- Inspect RWT extension points and verify the specific multiplayer behaviors the design relies on in a disposable profile. The local game/server/client and 294-entry profile are identified; runtime compatibility remains untested.
 - Inspect RWT source for supported extension points and verify item, pawn, visit, save/reconnect, and transaction behavior in a disposable profile.
 - Record MIT for original source code; decide text, art, audio, and outside-contribution terms separately before accepting contributions or adding assets. Broader community canon remains outside shipped-content scope.

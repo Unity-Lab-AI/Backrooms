@@ -12,7 +12,11 @@ The separate client `C:\Users\gfour\AppData\LocalLow\Ludeon Studios\RimWorld by 
 
 The server reports `AllowAllMods=true`, `EnforceSettings=false`, and no configured `ModOrder`, so it does not force the currently matching profile/settings. The RWT client package is `nova.rimworldtogether` (Workshop ID `3005289691`) and its local `About.xml` declares support for RimWorld 1.5 and 1.6, but does not pin a client release tag.
 
-The server executable reports product version `1.0.0+a7bc029472d727faec4e99b7f02614c370f4771a`. The current upstream release page lists `26.8.31.1`, commit `bbd981f`; the local hash differs and has not been mapped to a published release. Do not infer an exact tested multiplayer build from the release list alone. Pin/identify the local server and client build before a compatibility promise.
+## Pinned pre-build test baseline
+
+The installed game reads **RimWorld 1.6.4871 rev590** from `Version.txt`; Steam's local app manifest build ID is `23969874`. The game assembly reports `1.6.9676.17735`. The current client/server profile files and their hashes are recorded in the [RWT feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md). This is the exact local baseline for the first compatibility run, not a claim that other users have the same build.
+
+The local Windows RWT server archive SHA-256 matches the `Server-win-x64.zip` asset published for upstream release **26.8.31.1**. The installed client assembly is separately pinned by its `RTClient.dll` product version and SHA-256 in that audit; matching version strings do not establish byte-for-byte release identity. Record the two exact artifacts for every run. No Rimrooms profile/runtime compatibility run has been completed.
 
 The profile contained:
 
@@ -50,8 +54,7 @@ The local list also contains a large set of combat, medical, pawn, and quality-o
 
 ## Current open compatibility questions
 
-- Which RimWorld 1.6 game build and RimWorld Together client build match the local server executable?
-- Does the local server configuration's mod order exactly match the clients' game `ModsConfig.xml` files?
+- Does this pinned game build and exact RWT client/server artifact pair support the required co-op campaign behavior in a disposable save?
 - Which individual profile mods need explicit synchronization patches for actions or custom interfaces used by this campaign?
 - Should unsupported optional mods be warned about, or should the first release publish a smaller recommended list?
 - Does the pinned RWT build transfer the Backrooms research dossier and expedition cargo reliably, and which server features will be enabled for visits, guilds, sites, roads, aid, and trading?
