@@ -1,8 +1,9 @@
 # A24 Backrooms feature review
 
-- Official source: https://a24films.com/films/backrooms
+- Official film page and synopsis: https://a24films.com/films/backrooms
+- Viewing route: the official page currently provides licensed "Watch Now" options; record the provider and edition used when the full review is completed.
 - Viewing source/version: pending
-- Review date: pending
+- Review date: pending; viewing availability checked 2026-09-27
 - Full feature viewed: **No — review pending**
 
 ## Story and atmosphere notes

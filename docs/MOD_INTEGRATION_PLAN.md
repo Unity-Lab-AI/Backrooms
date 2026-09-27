@@ -208,7 +208,7 @@ Every row in the workbook retains source row number, package/workshop ID, name, 
 | Hospitality and visitor economy | 7 | Optional guests, services, recruitment, and visitor handling. |
 | Interface and startup quality of life | 1 | Preserve startup convenience without gameplay dependency. |
 | Interface, scenario setup, and quality of life | 11 | Keep native convenience and UI; add focused Operations panels. |
-| Materials, cargo, and recovered resources | 10 | Shape expedition weight, appraisal, salvage, storage, and manifest rules. |
+| Materials, cargo, and recovered resources | 9 | Shape expedition weight, appraisal, salvage, storage, and manifest rules. |
 | Medical, biological, and recovery systems | 29 | Treat crews and use optional medicine/biology; core treatment remains independent. |
 | Mod framework | 6 | Use only concrete public services; no broad framework dependency in core. |
 | Multiplayer: guild and world exchange | 1 | Separate branches, trade, aid, guild/site/road/activity integrations. |
@@ -226,7 +226,7 @@ Every row in the workbook retains source row number, package/workshop ID, name, 
 | Staff jobs, policies, and social systems | 9 | Roles, schedules, priorities, beliefs, relationships, and work quality. |
 | Staff psychology, relationships, and faction standing | 11 | Applicant fit, morale, interpersonal events, and reputation. |
 | Staff welfare and recreation | 1 | Meditation/recovery within existing pawn needs. |
-| Staff work-flow quality of life | 2 | Preserve native work convenience and task recovery. |
+| Staff work-flow quality of life | 3 | Preserve native work convenience and task recovery. |
 | Storage and recovered-material logistics | 13 | Stockpiles, cold storage, warehouse, evidence, and cargo handling. |
 | Transport and expedition logistics | 14 | Vehicles/animals/carrying/travel; gate remains the primary access. |
 | World operations, contracts, and commerce | 12 | Quests, traders, contracts, comms, outposts, and revenue. |
