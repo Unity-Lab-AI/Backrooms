@@ -2,7 +2,7 @@
 
 ## Support target
 
-**Selected support target:** RimWorld **1.6**. Core-only solo play is supported by design; Royalty, Ideology, Biotech, Anomaly, and Odyssey are optional integrations. Co-op requires RimWorld Together and Harmony. All other entries in the 294-entry server profile are optional, while the complete ordered list is the required research/test target. No profile entry is assumed compatible until exact review and combined-profile testing.
+**Selected support target:** RimWorld **1.6**. Core-only solo play is supported by design; Royalty, Ideology, Biotech, Anomaly, and Odyssey are optional integrations. Co-op requires RimWorld Together and Harmony. All other entries in the 294-entry server profile are optional, while the complete ordered list is the required research/test target. All 294 entries have source-fact reviews; no profile entry is treated as runtime-compatible until the relevant exact-profile test is recorded.
 
 ## Local server snapshot
 
@@ -41,7 +41,7 @@ Treat these as **examples to study**, not dependencies or guaranteed integration
 | Travel, transport, and remote operations | RimWorld Together, Vanilla Vehicles Expanded, Carryalls, Vanilla Gravship Expanded | Compare world-object, vehicle, and remote supply behavior; do not make vehicles necessary to enter the Backrooms. |
 | Rooms, food, and staff comfort | Gastronomy, Hospitality, Realistic Rooms Rewritten, expanded furniture | Map company functions onto ordinary room, food, and recreation systems. |
 
-The local list also contains a large set of combat, medical, pawn, and quality-of-life changes. Each is assigned a use and risk note in the [294-mod integration register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx); actual page/API review and combined-profile compatibility work are still pending. Do not preemptively patch a mod solely from its title.
+The local list also contains a large set of combat, medical, pawn, and quality-of-life changes. Each is assigned a use and risk note in the [294-mod integration register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx); linked source-fact review is complete, while extension-point inspection and combined-profile compatibility work remain open. Do not preemptively patch a mod solely from its title.
 
 ## Compatibility rules
 
@@ -59,6 +59,7 @@ The local list also contains a large set of combat, medical, pawn, and quality-o
 - Should unsupported optional mods be warned about, or should the first release publish a smaller recommended list?
 - Does the pinned RWT build transfer the Backrooms research dossier and expedition cargo reliably, and which server features will be enabled for visits, guilds, sites, roads, aid, and trading?
 - Can one RWT server/world support players choosing different Rimrooms start scenarios, or must each co-op session select one common scenario?
+- What happens in the pinned two-client candidate profile with Questionable Ethics Enhanced (row 182) and Medical Dissection (row 274), which the owner directed us to include despite publisher multiplayer warnings?
 - Which active profile mods modify gravships and therefore conflict with the selected Gravship Expanded chapters?
 
-See the [complete systems and 294-mod integration plan](MOD_INTEGRATION_PLAN.md) and its linked workbook for the per-row role/status. Most profile rows have design-level mappings only; do not represent the profile as tested.
+See the [complete systems and 294-mod integration plan](MOD_INTEGRATION_PLAN.md) and its linked workbook for the per-row role/status. Every row has source review, but that does not establish runtime behavior; do not represent the profile as tested.

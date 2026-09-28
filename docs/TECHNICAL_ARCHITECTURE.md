@@ -83,13 +83,13 @@ Design around RWT's advertised separate-colony model, not a presumed shared simu
 - Each player's local company ledger, gate, expedition maps, research completion, contracts, pawns, and case records are authoritative in that branch's save.
 - Use RWT guilds, sites, roads, events, item trading/gifting, pawn aid, and configured visits where enabled. Inspect server settings before showing actions; disabled features must have a clear unavailable state.
 - Treat trade, gifting, visits, aid, and other world activities as unavailable until the exact client/server release and relevant server settings are pinned and reproduced. Do not copy older wiki claims into the API contract; those wiki pages could not be retrieved for the 2026-09-27 audit.
-- Support physical Research Dossier transfer with local study. Also add shared research-ledger synchronization only if the pinned RWT build provides a supported extension and tests prove safe, nonduplicating updates.
+- Treat physical Research Dossier transfer with local study as a conditional feature: first prove ordinary RWT item transfer before code, then test the custom dossier and receipt idempotency after the item exists. Keep shared research-ledger synchronization out of the first build unless a supported RWT extension and nonduplicating sync are demonstrated.
 - Record transaction IDs and sender/receiver branch IDs to avoid duplicate shipment credits. Use configured transfer spots and show failed/unrecognized cargo for recovery instead of deleting or duplicating it.
 - Seed a destination from its saved coordinate ID, generator version, and explicit mission inputs. Never make the two players independently recreate what is supposed to be one shared map; RWT visits and Backrooms expedition maps are distinct features.
 - Do not make outcomes depend on client-only UI, local wall-clock time, external web requests, or unsaved random draws.
 - Keep compatibility code behind one small adapter layer. Do not scatter multiplayer-specific checks throughout XML defs and gameplay systems.
 - Keep a Core-only solo path. The multiplayer path requires RimWorld Together and Harmony; the remaining 294-profile entries are optional.
-- Treat the scenario presets as alternate starting conditions over one data model, as specified in [`SCENARIOS.md`](SCENARIOS.md). Test how new-game scenario creation maps onto RWT's shared world; do not assume separate clients can independently create different world starts until that behavior is demonstrated.
+- Treat the scenario presets as alternate starting conditions over one data model, as specified in [`SCENARIOS.md`](SCENARIOS.md). Before code, test ordinary separate vanilla-started RWT branches; test Rimrooms scenario creation and mixed starts after those scenarios exist. Do not promise that clients can independently choose different Rimrooms starts until the pinned build demonstrates it.
 
 The older `rwmt/Multiplayer` compatibility wiki is for a distinct multiplayer project and should not be treated as proof of RimWorld Together behavior. Use the chosen RWT source, version, and client APIs for implementation.
 

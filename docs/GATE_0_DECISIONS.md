@@ -10,7 +10,7 @@ These are treated as project direction from the conversation. A change must be r
 - **Game/build target:** RimWorld 1.6.
 - **Core premise:** begin from a small facility with limited resources; hire and train staff; build, power, calibrate, secure, and operate the machine gate; investigate, extract, study, contain, trade, sell, and expand.
 - **Scenario set:** Async Industries facility first; Furniture & Knickknack Store breach and Lone Survivor as distinct selectable starts using shared campaign and coordinate systems. Later starts can include outposts, town distortions, and company crises.
-- **Mod profile:** the dated 294-entry local server profile is the required research and integration target. It is not yet individually reviewed or compatibility-certified.
+- **Mod profile:** the dated 294-entry local server profile is the required research and integration target. All 294 rows now have accepted source-fact reviews; that is not a runtime compatibility certificate.
 - **Multiplayer experience:** asynchronous cooperation through RimWorld Together; each player owns a separate facility/branch and can exchange resources, items, and technology and visit another player's facility. No live shared-map control is intended.
 - **Space expansion:** Vanilla Gravship Expanded Chapters 1 and 2 are intended as a later company/space layer, not a replacement for gate exploration.
 - **Creative references:** Kane Pixels' Backrooms series and the A24 Backrooms feature are the selected references. Adapt indirectly; broader community canon is excluded from shipped content.
@@ -89,12 +89,9 @@ The owner's stated MIT/court-case rights premise is retained as an owner-provide
 
 ## Open owner choice surfaced by mod review
 
-- **Questionable Ethics Enhanced (profile row 182):** the publisher's README says RimWorld multiplayer will not work properly. This is a source warning, not an RWT runtime result. It must remain optional under D3 until tested.
-- **Recommended working scope:** solo-only optional content, excluded from the supported RWT co-op profile. Other options are to allow it in a profile without a co-op support promise, or to require proven co-op compatibility and block that support claim until the exact profile passes.
-- **Status:** owner input requested on 2026-09-27; no answer recorded yet. See the [row 182 review](research/reviews/mods/2850854272-Mlie.QuestionableEthicsEnhanced.md) and [interaction check](research/PRIORITY_PROFILE_INTERACTIONS.md).
-- **Medical Dissection (profile row 274):** the Workshop publisher states the mod does not support multiplayer and will likely cause desyncs. This is a publisher warning, not a reproduced RWT result; its local manifest lists no multiplayer incompatibility. Keep it optional under D3 while its scope is decided.
-- **Recommended working scope:** solo-only optional content, excluded from the supported RWT co-op profile. Other options are to allow it in co-op setups without a support promise, or exclude it from Rimrooms guidance.
-- **Status:** owner input requested on 2026-09-27; no answer recorded yet. See the [row 274 review](research/reviews/mods/1328216966-Heremeus.MedicalDissection.md) and [interaction check](research/PRIORITY_PROFILE_INTERACTIONS.md).
+- **Questionable Ethics Enhanced (profile row 182):** its publisher warns that RimWorld multiplayer will not work properly. The owner replied on 2026-09-27, “use it it'll be fine.” Record the mod as optional and include it in the RWT candidate test profile; do not exclude it solely because of the warning. This direction is not a compatibility result or a promise that desyncs will not occur. See the [row 182 review](research/reviews/mods/2850854272-Mlie.QuestionableEthicsEnhanced.md) and [interaction check](research/PRIORITY_PROFILE_INTERACTIONS.md).
+- **Medical Dissection (profile row 274):** its publisher warns that multiplayer is unsupported and may desynchronize; the local manifest declares no incompatibility. The owner gave the same direction on 2026-09-27: keep it in the optional 294-entry candidate test profile despite the warning. Do not advertise it as RWT-compatible until the exact test is recorded. See the [row 274 review](research/reviews/mods/1328216966-Heremeus.MedicalDissection.md) and [interaction check](research/PRIORITY_PROFILE_INTERACTIONS.md).
+- **Scope:** both mods remain optional under D3. The owner wants them included in co-op feasibility testing; their publisher warnings remain in the evidence, and no technical outcome is assumed.
 
 ## Research-method clarification from the owner
 
@@ -109,8 +106,8 @@ These are execution work, not questions: identify the exact RimWorld/RWT/Harmony
 | ID | Final answer | Date | Documents updated |
 | --- | --- | --- | --- |
 | D1 | A — private RWT test first; public Workshop only after validation is considered | 2026-09-27 | TODO, roadmap, release plan |
-| D2 | Exact title; author field unset; package ID proposal `UnityLabAI.RimroomsAsyncIndustries`; internal namespace `RimroomsAsyncIndustries`; semantic versions | 2026-09-27 | TODO, About.xml/package metadata, technical architecture |
-| D3 | B — all 294 are the research/test target; only Core + Harmony/RWT required; other profile mods optional | 2026-09-27 | TODO, compatibility, mod plan, technical architecture |
+| D2 | Exact title; author/publisher metadata `Operator`; package ID `UnityLabAI.RimroomsAsyncIndustries`; namespace `RimroomsAsyncIndustries`; semantic versions | 2026-09-27 | TODO, About.xml/package metadata, technical architecture |
+| D3 | B — all 294 are the research/test target; only Core + Harmony/RWT required; other profile mods optional. Owner says test rows 182 and 274 in the co-op candidate despite publisher warnings; no support claim before results. | 2026-09-27 | TODO, compatibility, mod plan, technical architecture, interaction map |
 | D4 | A — all five DLC optional; Core-only campaign; validate all-five profile | 2026-09-27 | TODO, compatibility, scenario, mod plan, systems catalog |
 | D5 | B + customized D — Kane Pixels and A24 only; indirect use of canon/lore/themes/styles | 2026-09-27 | TODO, source register, research, universe adaptation, feature map |
 | D6 | A + B — tradeable dossiers plus shared research ledger only if supported and safely tested | 2026-09-27 | TODO, technical architecture, mod plan, roadmap |
