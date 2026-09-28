@@ -1,0 +1,55 @@
+{
+  "Checkpoint": "cb489bcf15e49b8cff2424dec8783dce855276e4",
+  "Refs": [
+    {
+      "Remote": "forgejo",
+      "Branch": "feature/preproduction-handoff",
+      "Commit": "cb489bcf15e49b8cff2424dec8783dce855276e4",
+      "Verified": true
+    },
+    {
+      "Remote": "forgejo",
+      "Branch": "Prep",
+      "Commit": "cb489bcf15e49b8cff2424dec8783dce855276e4",
+      "Verified": true
+    },
+    {
+      "Remote": "forgejo",
+      "Branch": "Develop",
+      "Commit": "cb489bcf15e49b8cff2424dec8783dce855276e4",
+      "Verified": true
+    },
+    {
+      "Remote": "forgejo",
+      "Branch": "Main",
+      "Commit": "cb489bcf15e49b8cff2424dec8783dce855276e4",
+      "Verified": true
+    },
+    {
+      "Remote": "github",
+      "Branch": "feature/preproduction-handoff",
+      "Commit": "cb489bcf15e49b8cff2424dec8783dce855276e4",
+      "Verified": true
+    },
+    {
+      "Remote": "github",
+      "Branch": "Prep",
+      "Commit": "cb489bcf15e49b8cff2424dec8783dce855276e4",
+      "Verified": true
+    },
+    {
+      "Remote": "github",
+      "Branch": "Develop",
+      "Commit": "cb489bcf15e49b8cff2424dec8783dce855276e4",
+      "Verified": true
+    },
+    {
+      "Remote": "github",
+      "Branch": "Main",
+      "Commit": "cb489bcf15e49b8cff2424dec8783dce855276e4",
+      "Verified": true
+    }
+  ],
+  "ForcePush": false,
+  "ReleaseClaim": false
+}

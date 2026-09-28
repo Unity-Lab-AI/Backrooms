@@ -229,11 +229,11 @@ The owner requires existing items, equipment, furniture and production benches t
 
 ### Scenario framework and alternate starts
 
-Follow the [latest scenario setup and physical-door contract](SCENARIO_SETUP_AND_PORTAL_NETWORK.md).
+Follow the [latest scenario setup and physical-door contract](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) and [installed-provider/API review](implementation/SCENARIO_AND_DOOR_PROVIDER_SOURCE.md). Prepare Carefully bypasses the old pawn-page validation, so its final review must follow the native pawn page.
 
 - [ ] Preserve native/Prepare Carefully edited pawn instances, relationships, inventory and role choice in all three starts; replace the historical fixed custom-kind roster checks with visible capability/role validation.
 - [ ] Honor the company-selected surface world tile through native setup, and give the store its distinct setup/grant/objective flow.
-- [ ] Implement the inside-start setup once the grouped party/first-exit choices are settled: direct Backrooms entry without a disposable surface colony, retained real-world state, discoverable physical exit and same-pawn/cargo transfer.
+- [ ] Implement the inside-start setup using the recorded provisional defaults while the grouped party/first-exit answers remain pending: direct Backrooms entry without a disposable surface colony, retained real-world state, discoverable physical exit and same-pawn/cargo transfer.
 
 - [ ] Keep the first acceptance target on Async Industries while making its scenario setup consume the same versioned start contract intended for alternate starts.
 - [ ] Implement Furniture & Knickknack Store after Gate 2: validate public-area security, store stock/ownership, basement threshold, missing-person objective, and return/contract convergence.

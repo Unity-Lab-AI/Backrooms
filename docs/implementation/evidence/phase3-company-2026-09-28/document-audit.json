@@ -1,9 +1,9 @@
 {
   "scope": "Saved reference/record integrity only; no runtime or source-truth certification",
   "counts": {
-    "markdown_files": 423,
-    "local_link_occurrences": 2376,
-    "markdown_fragment_occurrences": 166,
+    "markdown_files": 424,
+    "local_link_occurrences": 2414,
+    "markdown_fragment_occurrences": 167,
     "feature_ids": 17,
     "mod_rows": 294,
     "workbook_compared_cells": 3234,

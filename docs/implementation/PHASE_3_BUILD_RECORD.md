@@ -50,3 +50,9 @@ The owner subsequently required existing gameplay content only. Personnel/procur
 The package remains a private development checkpoint. It includes legacy/custom gameplay objects still awaiting native-provider conversion. No save/load, menu, procurement, hiring, profile, RWT or gameplay test is claimed. Continue the complete master TODO, starting with native-door/field-content replacement and the newly clarified scenario setup while owner-launched testing remains deferred.
 
 Final saved-reference result: [document audit](evidence/phase3-company-2026-09-28/document-audit.json). This checks local links, recorded register agreement and existing Gate 0 boxes only; it starts no game and is not an implementation test.
+
+## Publication and next implementation input
+
+Implementation checkpoint `cb489bcf15e49b8cff2424dec8783dce855276e4` was pushed in order through **feature/preproduction-handoff → Prep → Develop → Main**, first on Forgejo and then on GitHub, with every resulting remote ref read back. The [publication receipt](evidence/phase3-company-2026-09-28/publication-receipt.json) records all eight results; no force push or release claim was made.
+
+The next source review is [scenario setup and existing door providers](SCENARIO_AND_DOOR_PROVIDER_SOURCE.md). It identifies Prepare Carefully's bypass of the old pawn-page validation, actual Core/provider door sizes, instance paint/native aura, real battery withdrawal, and the saved-world constraints for an inside start. Company role/setup changes can proceed immediately; the two unanswered inside-start choices have explicit provisional defaults in the [scenario/portal contract](../SCENARIO_SETUP_AND_PORTAL_NETWORK.md). The tracked goal was re-read after the owner's resume and is **active**, with the complete mod as its objective.
