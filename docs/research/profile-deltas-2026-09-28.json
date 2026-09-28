@@ -1,0 +1,22 @@
+{
+  "snapshot": "installed-mod-metadata-2026-09-27.csv",
+  "review_date": "2026-09-28",
+  "scope": "Reviewed local metadata deltas; not compatibility results",
+  "deltas": [
+    {
+      "load_order": "270",
+      "package_id": "Orion.Hospitality",
+      "workshop_id": "3509486825",
+      "old_version": "1.1.4",
+      "new_version": "1.1.5",
+      "old_about_sha256": "DDE45358A4AE0E95669B07DA75F1B5C67E849ADE0C6D3694F4062634F6BBC6F7",
+      "new_about_sha256": "C9E318831F0DC2A34FAB2178AC8A3329EC503D61D340D564526117227F54447C",
+      "review_record": "docs/research/reviews/mods/3509486825-Orion.Hospitality.md",
+      "payload_pins": [
+        {"path": "LoadFolders.xml", "sha256": "8F9DE19DCCCA950CD23559DB2D74FD3F76B7191D5178C8DCF78279C58FC90618"},
+        {"path": "1.6/Assemblies/Hospitality.dll", "sha256": "0BB9F92354F8AFEE193332890152E3E62AE31FF27D98E3FF2A7C5CCB4AFE93DB"},
+        {"path": "1.6/Assemblies/0MultiplayerAPI.dll", "sha256": "4689E799C50DB79411B00AD8855D7DF86721BF3CFE1E390B68038B6ABCD852EC"}
+      ]
+    }
+  ]
+}

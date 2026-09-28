@@ -72,7 +72,7 @@ These are initial design bands, not engine limits or tested performance figures:
 | Deep survey or rescue | 16–32 | Support branches, an objective chain, and a longer route plan. |
 | Major site or outpost hub | 24–48 | A rare, deliberately staged destination with more than one safe route and a planned relief/resupply route. |
 
-Never allocate every possible coordinate as a map. Generate a destination when the player visits it; store only known coordinate records and maps the campaign actually needs. Before implementation, replace the candidate upper bands with measured limits from a named test machine and the accepted RimWorld profiles.
+Never allocate every possible coordinate as a map. Generate a destination when the player visits it; store only known coordinate records and maps the campaign actually needs. Campaign discovery can continue through new coordinates while each map and active-site budget stays bounded. Use the named machine, initial budgets and post-build measurement sequence in the [performance benchmark plan](research/PERFORMANCE_BENCHMARK_PLAN.md). Measure the candidate upper bands after a build exists and before enabling them for release; do not require a game run during pre-build preparation.
 
 Complexity grows by recombining learned room families and rules, then introducing one unfamiliar change at a time. A routine expedition uses no more than one new major spatial rule and two familiar modifiers. A late-game mission may raise that cap only when its briefing and equipment make the added risks understandable. More rooms do not automatically mean more difficulty or more rewards.
 

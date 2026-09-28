@@ -15,6 +15,8 @@ The server config reports `AllowAllMods=true`, `EnforceSettings=false`, and a nu
 
 ## Pinned local RimWorld test target
 
+**2026-09-28 read-only refresh:** the [pin checker](../../tools/research/audit-pinned-targets.ps1) matches the game/Harmony/RWT and client/server profile digests below. Of 294 installed mod manifests, 293 match the historical metadata snapshot; Hospitality row 270 is now 1.1.5 with unchanged declared package/dependency/order fields, captured in the [reviewed delta](profile-deltas-2026-09-28.json). Read that delta with the original register. These checks neither start the game nor validate compatibility.
+
 The two disposable launch logs report **RimWorld 1.6.4871 rev591** from the same Steam install recorded below. The current `RimWorldWin64.exe` and `Assembly-CSharp.dll` hashes identify the installed test target; their last-write times predate the logs, although the raw logs do not themselves contain hashes. `Version.txt` and the local profile snapshot still say **rev590**. Preserve that static-version discrepancy in every test record; match the executable and Core assembly hashes and capture the game-reported build before running either client. Steam's local app manifest records build ID `23969874`. The managed `Assembly-CSharp.dll` reports version `1.6.9676.17735`. The local client `ModsConfig.xml` and server `ModConfig.json` SHA-256 digests are recorded below so the exact 294-entry profile snapshot can be reproduced without publishing its settings.
 
 | Target artifact | Observed identity | SHA-256 / evidence |

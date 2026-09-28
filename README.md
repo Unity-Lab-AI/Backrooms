@@ -10,6 +10,9 @@ The scenario opening cards live in [`docs/SCENARIOS.md`](docs/SCENARIOS.md); the
 
 ## Project documents
 
+- [Gate 0 completion audit](docs/research/GATE_0_COMPLETION_AUDIT.md) — requirement-by-requirement closure evidence, reproducible document/register/pin checks, and the post-build work boundary.
+- [Performance benchmark plan](docs/research/PERFORMANCE_BENCHMARK_PLAN.md) — named reference machine, initial budgets and measurements scheduled after the owner's first RimSort launch.
+- [2026-09-28 profile delta](docs/research/profile-deltas-2026-09-28.json) — reviewed Hospitality update to read alongside the historical 294-mod register.
 - [Rimrooms mod overview](docs/RIMROOMS_MOD_OVERVIEW.md) — compact player-facing summary of the scenarios, campaign, company scale, exploration, multiplayer direction, interface, and menu showcase.
 - [Game design brief](docs/GAME_DESIGN.md) — player experience, campaign loop, systems, and scope.
 - [Systems catalog](docs/SYSTEMS_CATALOG.md) — staff, facilities, interface, research, missions, and economy inventory.

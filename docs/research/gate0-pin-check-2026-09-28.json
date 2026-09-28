@@ -1,0 +1,9 @@
+{
+  "Scope": "Read-only local metadata, binary and profile hashes; no gameplay or remote-release recheck",
+  "CheckedHashes": 307,
+  "MetadataRows": 294,
+  "ReviewedMetadataDeltas": 1,
+  "SteamBuildIDMatches": true,
+  "Issues": [],
+  "Result": "PASS"
+}
