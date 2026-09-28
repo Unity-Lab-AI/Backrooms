@@ -94,6 +94,7 @@ These are options for future scenario content, not promised release features. Gi
 ## Source and implementation links
 
 - [Game design](GAME_DESIGN.md) — campaign loop and first playable scope.
+- [Campaign content catalog](CAMPAIGN_CONTENT_CATALOG.md) — progression arcs, research themes, mission families, threats, spaces, and long-term company expansion.
 - [First playable contract](FIRST_PLAYABLE_CONTRACT.md) — provisional Async Industries starting values, opening loop, gate/expedition behavior, and future acceptance evidence.
 - [System catalog](SYSTEMS_CATALOG.md) — scenario opening matrix and related systems.
 - [Multiplayer/mod integration plan](MOD_INTEGRATION_PLAN.md) — RWT scenario-selection constraint.

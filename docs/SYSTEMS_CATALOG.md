@@ -1,6 +1,6 @@
 # Systems catalog
 
-This catalog turns the campaign brief into candidate content families. These are working labels; final Def names and balance belong to implementation. The first playable should stay focused on the vertical slice in [the roadmap](ROADMAP.md) and use its concrete [content inventory](FIRST_SLICE_CONTENT_INVENTORY.md), [threat sheets](THREAT_DESIGN_SHEETS.md), and [economy model](CAMPAIGN_ECONOMY_MODEL.md). The complete company flow, multiplayer contract, gravship scope, and 294-profile integration mapping are in the [systems and mod integration plan](MOD_INTEGRATION_PLAN.md).
+This catalog turns the campaign brief into candidate system families. The broader progression and player-facing content breadth are collected in the [campaign content catalog](CAMPAIGN_CONTENT_CATALOG.md); these are working labels, while final Def names and balance belong to later implementation. The first playable should stay focused on the vertical slice in [the roadmap](ROADMAP.md) and use its concrete [content inventory](FIRST_SLICE_CONTENT_INVENTORY.md), [threat sheets](THREAT_DESIGN_SHEETS.md), and [economy model](CAMPAIGN_ECONOMY_MODEL.md). The complete company flow, multiplayer contract, gravship scope, and 294-profile integration mapping are in the [systems and mod integration plan](MOD_INTEGRATION_PLAN.md).
 
 ## New-game setup
 

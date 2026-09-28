@@ -10,7 +10,7 @@ On 2026-09-27, `C:\Users\gfour\Desktop\RimWorld Server\Server-win-x64-new\Config
 
 The separate client `C:\Users\gfour\AppData\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Config\ModsConfig.xml` was also inspected. Its 294 active package IDs map through the installed Workshop `About/About.xml` files to the exact same 294 IDs and load order as the server export: **zero set differences and zero order-position differences** on this snapshot. This confirms local profile agreement, not RWT synchronization or Rimrooms compatibility. The mapping and its limits are recorded in the [RWT and gravship feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md).
 
-The server reports `AllowAllMods=true`, `EnforceSettings=false`, and no configured `ModOrder`, so it does not force the currently matching profile/settings. The RWT client package is `nova.rimworldtogether` (Workshop ID `3005289691`) and its local `About.xml` declares support for RimWorld 1.5 and 1.6, but does not pin a client release tag.
+The server reports `AllowAllMods=true`, `EnforceSettings=false`, and no configured `ModOrder`, so it does not force the currently matching profile/settings. The RWT client package is `nova.rimworldtogether` (Workshop ID `3005289691`) and its local `About.xml` declares support for RimWorld 1.5 and 1.6, but does not pin a client release tag. The installed `RTClient.dll`, `RTNetwork.dll`, and `RTShared.dll` have each been verified as byte-for-byte matches to the official 26.8.31.1 client asset; this pins source artifacts, not runtime compatibility.
 
 The local server's action files are in `Configs\Actions\*.json`: Aid and Trade are enabled with cooldown 250. There is no separate local Visit/Activity action file, and `ServerConfig.json` has no `EnableActivities` field, so offline-visit availability remains unknown from this snapshot. `ScenarioConfig.json` enforces `Crashlanded`; use a disposable configuration copy when testing mixed starts. File hashes and config details are recorded in the [RWT feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md).
 
@@ -18,7 +18,7 @@ The local server's action files are in `Configs\Actions\*.json`: Aid and Trade a
 
 The installed game reads **RimWorld 1.6.4871 rev590** from `Version.txt`; Steam's local app manifest build ID is `23969874`. The game assembly reports `1.6.9676.17735`. The current client/server profile files and their hashes are recorded in the [RWT feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md). This is the exact local baseline for the first compatibility run, not a claim that other users have the same build.
 
-The local Windows RWT server archive SHA-256 matches the `Server-win-x64.zip` asset published for upstream release **26.8.31.1**. The installed client assembly is separately pinned by its `RTClient.dll` product version and SHA-256 in that audit; matching version strings do not establish byte-for-byte release identity. Record the two exact artifacts for every run. No Rimrooms profile/runtime compatibility run has been completed.
+The local Windows RWT server archive SHA-256 matches the `Server-win-x64.zip` asset published for upstream release **26.8.31.1**. The installed client release archive digest and all three client DLL hashes also match the official 26.8.31.1 client asset, as recorded in that audit. This verifies artifact identity only. Record the exact artifacts for every run. No Rimrooms profile/runtime compatibility run has been completed.
 
 The profile contained:
 

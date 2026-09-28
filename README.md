@@ -12,6 +12,7 @@ The scenario opening cards live in [`docs/SCENARIOS.md`](docs/SCENARIOS.md); the
 
 - [Game design brief](docs/GAME_DESIGN.md) — player experience, campaign loop, systems, and scope.
 - [Systems catalog](docs/SYSTEMS_CATALOG.md) — staff, facilities, interface, research, missions, and economy inventory.
+- [Campaign content catalog](docs/CAMPAIGN_CONTENT_CATALOG.md) — full progression arcs, research branches, evidence, incidents, threats, room families, outposts, and later space content; future details remain candidates.
 - [Technical architecture](docs/TECHNICAL_ARCHITECTURE.md) — proposed RimWorld implementation and multiplayer constraints.
 - [AI build handoff and document map](docs/AI_BUILD_HANDOFF.md) — required reading order, feature-to-source paths, and evidence/status rules for future coding agents.
 - [Gate 0 owner decisions](docs/GATE_0_DECISIONS.md) — recorded release, dependency, canon, transfer, identity, language, content, and license decisions.
@@ -27,8 +28,10 @@ The scenario opening cards live in [`docs/SCENARIOS.md`](docs/SCENARIOS.md); the
 - [Campaign scenario contracts](docs/SCENARIOS.md) — Async Industries, Furniture & Knickknack Store, Lone Survivor, and later opening candidates with shared start-state requirements.
 - [First playable contract](docs/FIRST_PLAYABLE_CONTRACT.md) — provisional starting values and acceptance target for the Async Industries vertical slice.
 - [First-slice content inventory](docs/FIRST_SLICE_CONTENT_INVENTORY.md) — named staff, facility rooms, field gear, coordinate room families, evidence, objectives, reward, and teaching order.
+- [Tutorial script](docs/TUTORIAL_SCRIPT.md) — provisional player-facing first-session sequence, recovery messages, and accessibility cues; in-game UX review remains open.
+- [Procedural space contract](docs/PROCEDURAL_SPACE_CONTRACT.md) — finite seeded destinations, room tags, route safety, distortion propagation, revisit state, and migration rules.
 - [Threat design sheets](docs/THREAT_DESIGN_SHEETS.md) — original starter route distortion and entity rules, counterplay, evidence, accessibility cues, and the template for later threats.
-- [Campaign economy model](docs/CAMPAIGN_ECONOMY_MODEL.md) — provisional credits, wages, food, first contract, procurement, recovery, reputation, and outpost rules; its linked workbook calculates the first 30-day opening example.
+- [Campaign economy model](docs/CAMPAIGN_ECONOMY_MODEL.md) and [campaign economy progression](docs/CAMPAIGN_ECONOMY_PROGRESSION.md) — provisional opening values plus later income/cost stages, quote rules, logistics, and remaining balance cases; the linked workbook currently calculates the first 30-day opening example.
 - [Operations action contracts](docs/OPERATIONS_ACTION_CONTRACTS.md) — planned panes, action requirements, results, failures, recovery, and state owners.
 - [Campaign state dictionary](docs/CAMPAIGN_STATE_DICTIONARY.md) — branch/save ownership, stable ID categories, transfers, and migration rules.
 - [Build-agent instructions](AGENTS.md) — project invariants and documentation workflow for implementation.

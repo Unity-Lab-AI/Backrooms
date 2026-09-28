@@ -1,6 +1,6 @@
 # Rimrooms - Async Industries: campaign economy model
 
-**Status:** pre-code balance model, version 0.1. Values are tuning hypotheses, not tested play balance. The linked [campaign economy workbook](../outputs/4b7976f0-1820-4ffa-a191-bf7c7f79b010/Rimrooms_Campaign_Economy_v0.1.xlsx) calculates the first 30-day Async Industries cash example. Update this note and workbook together when a rule or value changes.
+**Status:** pre-code balance model, version 0.1. Values are tuning hypotheses, not tested play balance. The linked [campaign economy workbook](../outputs/4b7976f0-1820-4ffa-a191-bf7c7f79b010/Rimrooms_Campaign_Economy_v0.1.xlsx) calculates the first 30-day Async Industries cash example. [CAMPAIGN_ECONOMY_PROGRESSION.md](CAMPAIGN_ECONOMY_PROGRESSION.md) defines later campaign revenue/cost stages and model inputs, whose prices and solvency remain open. Update this note and workbook together when a rule or value changes.
 
 **Feature route:** [RR-ECO](FEATURE_TRACEABILITY.md), [RR-FAC](FEATURE_TRACEABILITY.md), [RR-STA](FEATURE_TRACEABILITY.md), [RR-GATE](FEATURE_TRACEABILITY.md), [RR-EXP](FEATURE_TRACEABILITY.md), [RR-MSN](FEATURE_TRACEABILITY.md), and [RR-OUT](FEATURE_TRACEABILITY.md). Account totals, reputation, and company research belong to the owning local campaign branch as defined in [CAMPAIGN_STATE_DICTIONARY.md](CAMPAIGN_STATE_DICTIONARY.md).
 

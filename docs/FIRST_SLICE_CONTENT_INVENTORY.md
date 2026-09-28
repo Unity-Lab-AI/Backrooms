@@ -21,7 +21,7 @@ The field kit is a named clarification to the scenario inventory. Add it to the 
 
 ## First destination: AI-01
 
-Generate a stable, finite site of six to eight connected rooms. Room names are working labels, not canonical Backrooms locations. Each valid site has an entry/return point, a route clue, one environmental distortion, one hostile-entity encounter opportunity, and a small evidence lead. The route to the gate remains recoverable if optional rooms are unexplored.
+Generate a stable, finite site of six to eight connected rooms under the shared [procedural space contract](PROCEDURAL_SPACE_CONTRACT.md). Room names are working labels, not canonical Backrooms locations. Each valid site has an entry/return point, a route clue, one environmental distortion, one hostile-entity encounter opportunity, and a small evidence lead. The route to the gate remains recoverable if optional rooms are unexplored.
 
 | Room family | Required or optional | Content purpose |
 | --- | --- | --- |

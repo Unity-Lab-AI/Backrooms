@@ -47,7 +47,7 @@ Persist numeric IDs, stable seeds, Def references, and explicit stage values. Av
 
 ## Destination and map generation model
 
-Represent a destination as a stable company coordinate with a deterministic generation seed and a normal RimWorld world object that can own a saved local map. The world object should record its room graph seed, generator version, visit count, first-seen state, known exits, and return equipment. Returning to a destination loads its previous save; a deliberate anomaly modifier may alter only documented state.
+Represent a destination as a stable company coordinate with a deterministic generation seed and a normal RimWorld world object that can own a saved local map. The world object should record its room graph seed, generator version, visit count, first-seen state, known exits, and return equipment. Returning to a destination loads its previous save; a deliberate anomaly modifier may alter only documented state. The full player-facing generation, discovery, propagation, recovery, and migration contract is in [PROCEDURAL_SPACE_CONTRACT.md](PROCEDURAL_SPACE_CONTRACT.md).
 
 Generate a local map in stages:
 
@@ -76,13 +76,14 @@ Store state independently from the screen implementation. That makes the company
 
 ## RimWorld Together requirements
 
-The local profile confirms workshop ID `3005289691` (`RimWorld Together`) and a dedicated server package. The client and server currently have the same 294 mapped mod IDs in the same order, but the server config does not enforce that profile. The local Windows server archive hash matches the official RWT 26.8.31.1 release asset; the local client DLL is pinned separately by version and hash. See the [local RWT and gravship audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md) for the exact RimWorld, Harmony, client/server artifact, DLC, and profile snapshot. Runtime behavior and save compatibility remain untested and must be verified before adapter work.
+The local profile confirms workshop ID `3005289691` (`RimWorld Together`) and a dedicated server package. The client and server currently have the same 294 mapped mod IDs in the same order, but the server config does not enforce that profile. The local Windows server archive and installed `RTClient.dll`, `RTNetwork.dll`, and `RTShared.dll` match the official RWT 26.8.31.1 release assets by SHA-256/byte comparison. See the [local RWT and gravship audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md) for exact artifact hashes and the RimWorld, Harmony, DLC, and profile snapshot. Runtime behavior and save compatibility remain untested and must be verified before adapter work.
 
 Design around RWT's advertised separate-colony model, not a presumed shared simulation. The official Workshop listing describes a shared planet and advertises several world/co-op activities, but exact visit, transfer, and setting semantics need verification against the pinned build:
 
 - Each player's local company ledger, gate, expedition maps, research completion, contracts, pawns, and case records are authoritative in that branch's save.
 - Use RWT guilds, sites, roads, events, item trading/gifting, pawn aid, and configured visits where enabled. Inspect server settings before showing actions; disabled features must have a clear unavailable state.
 - Treat trade, gifting, visits, aid, and other world activities as unavailable until the exact client/server release and relevant server settings are reproduced. The official RWT wiki's activity and server-configuration descriptions are setup guidance, not runtime proof; see the linked official sources and the [baseline test plan](research/RWT_BASELINE_TEST_PLAN.md).
+- No documented supported RWT client extension API was identified in the 2026-09-27 source review. Public implementation classes such as `RTClient.Hooks.*` and `RTClient.Patches.*` are not stable extension hooks. Wiki-configurable JSON events and sites are a narrow server-configuration candidate only; verify their schema against a disposable copy of the pinned server. They do not establish a client API or shared research/ledger support.
 - Direct trade and gifts require both players online according to the official RWT trading guide. The guide also describes vanilla drop-pod transfers to another settlement, but does not establish whether an offline recipient receives the cargo; test this route before designing asynchronous supply shipments around it.
 - Treat physical Research Dossier transfer with local study as a conditional feature: first prove ordinary RWT item transfer before code, then test the custom dossier and receipt idempotency after the item exists. Keep shared research-ledger synchronization out of the first build unless a supported RWT extension and nonduplicating sync are demonstrated.
 - Record transaction IDs and sender/receiver branch IDs to avoid duplicate shipment credits. Use configured transfer spots and show failed/unrecognized cargo for recovery instead of deleting or duplicating it.
@@ -92,7 +93,7 @@ Design around RWT's advertised separate-colony model, not a presumed shared simu
 - Keep a Core-only solo path. The multiplayer path requires RimWorld Together and Harmony; the remaining 294-profile entries are optional.
 - Treat the scenario presets as alternate starting conditions over one data model, as specified in [`SCENARIOS.md`](SCENARIOS.md). Before code, test ordinary separate vanilla-started RWT branches; test Rimrooms scenario creation and mixed starts after those scenarios exist. Do not promise that clients can independently choose different Rimrooms starts until the pinned build demonstrates it.
 
-The older `rwmt/Multiplayer` compatibility wiki is for a distinct multiplayer project and should not be treated as proof of RimWorld Together behavior. Use the chosen RWT source, version, and client APIs for implementation.
+The older `rwmt/Multiplayer` compatibility wiki is for a distinct multiplayer project and should not be treated as proof of RimWorld Together behavior. Implement against a documented, supported RWT client extension API only if one is identified in future source review; none was identified in the 2026-09-27 audit.
 
 The local RWT snapshot has Aid and Trade enabled, but no Visit/Activity setting was found; the server enforces Crashlanded. The official RWT trading guide says direct trades and gifts require both players online. Treat item exchange and offline visits as different workflows, and test pawn aid with identity, faction, health, equipment, destination, and reconnect checks in light of [upstream issue #296](https://github.com/RimWorld-Together/Rimworld-Together/issues/296). Use a disposable server configuration copy for mixed-start experiments.
 

@@ -115,20 +115,70 @@
 | Cremation and evidence custody: row 96 + row 152 + Rimrooms samples | [Fueled Crematoriums](reviews/mods/3286907608-Xercaine.FueledCrematorium.md); [Non uno Pinata](reviews/mods/1778821244-avilmask.NonUnoPinata.md); Rimrooms evidence/case records | The crematorium provides optional disposal bills; row 152 changes corpse inventory/auto-strip behavior around cremation. The publisher page's removal/incompatibility banners are not runtime results. | Verify corpse contents, carried items, sample custody, bill filters, destruction timing, fuel and save/load before allowing disposal of a case-linked body or specimen. | Source overlap documented; interaction runtime pending. |
 | Social fights and staff injury outcomes: row 237 + pawn traits/medical/combat systems | [Ugh You Got Me](reviews/mods/1542424705-marvinkosh.ughyougotme.md) | Publisher-described pain, injury, trait and relationship checks can change the end state of social fights; no direct Rimrooms API is shown. Steam's generic warning banner does not establish a conflict. | Check standard/romantic, Masochist and Bloodlust fights; injury, surrender, downing, death, case records and save/load. Include the selected combat/medical profile only after the isolated behavior is reproduced. | Publisher facts recorded; runtime pending. |
 
-## Additional declared-pair coverage gaps
+## Remaining declared in-profile relationship leads
 
-A directed comparison of the installed [`installed-mod-relationships-2026-09-27.csv`](installed-mod-relationships-2026-09-27.csv) against the pair names above found 37 in-profile declared relationships whose endpoints do not yet appear together in a priority-map heading. This is a bookkeeping gap, not evidence of 37 conflicts. The following clusters cover the highest-impact omissions and remain test candidates:
+A directed comparison of the installed [`installed-mod-relationships-2026-09-27.csv`](installed-mod-relationships-2026-09-27.csv) with the pair headings above identified 37 declared in-profile endpoint pairs whose rows were not co-listed. The entries below enumerate that entire comparison delta, grouped by useful test area. Row numbers are load-order rows from the 294-mod register; bracketed IDs are the `FromPackageID` / `ToPackageID` values in the relationship CSV. The linked [`feature traceability map`](../FEATURE_TRACEABILITY.md) defines the stable feature IDs. `RR-COMPAT` applies to every pair and is omitted from the per-pair tags to keep the list readable.
 
-| Candidate cluster | Rows to add to the interaction map | Check to add | Status |
-| --- | --- | --- | --- |
-| Vehicles, injury recovery, and combat cargo | Existing rows 249, 282, 283, 290, 294 plus 11 Vehicle Framework, 113 Injured Carry, 263 You Drive, I Sleep, 265 AirtightGarageDoors, 266 Alpha Vehicles – Age of Sail, and 291 VVE – Secondary Weapons. Declared requirements/order connect several of these to the vehicle chain. | Test the exact declared chain for load order, vehicle cargo, injured-pawn carry, combat gear, garage door access, save/load, and optional removal. Keep the gate usable without vehicle mods. | Relationship metadata verified; interactions untested. |
-| Storefront, hospitality, and prisoner work | Add 269 Gastronomy to the existing rows 62/183/270/285/286 guest/store check; add 288 Prison Labor's declared order links to 62, 269, and 270. Separately include row 152 Non uno Pinata's declared order before row 270 Hospitality. | Test guest purchases, visitor inventory/stripping, prisoner work, hospitality state, and removal/return of visitors independently. Keep RWT facility visits a separate test. | Relationship metadata verified; interactions untested. |
-| Research menus and Gravship Chapter 1 | Add row 247 VGE Chapter 1 to the existing 76/83/191/279 research-menu/queue check; row 279 declares a load-after relationship to row 247. | Check project visibility, queue changes, chapter content, save/load, and DLC absence on the exact optional stack. | Relationship metadata verified; interaction untested. |
-| Construction and perimeter defenses | Add row 185 ReBuild: Doors and Corners and row 277 Rebuild: Embrasures; row 277 declares load-after row 185. | Check placement, access, cover, and perimeter walls on a generated site and the facility map; save/load and remove either mod. | Relationship metadata verified; interaction untested. |
-| Crafted resources and recipes | Add row 289 Simple Ivory to row 271 Jewelry; row 289 declares load-after row 271. | Check recipe availability, material outputs, storage, appraisal, and optional absence. | Relationship metadata verified; interaction untested. |
-| Profile-wide tweaks | Add row 284 FrozenSnowFox Tweaks to its declared-load-after candidates: rows 11, 25, 38, 66, 84, 126, 158, 160, 185, 242–244, 247, 249, 250, and 282. | Inventory enabled tweak settings first. Reproduce only the toggles that affect facility access, power, research, vehicles, generated maps, or threat rules. | Relationship metadata verified; setting effects and interactions untested. |
+Every relationship below is a source/metadata test lead only. `Requires`, `LoadAfter`, and `LoadBefore` describe package declarations or ordering; they do not establish a code interaction, conflict, or runtime compatibility. All listed interactions remain untested.
 
-This shortlist improves the candidate map but does not close the full feature/conflict graph. Continue checking the remaining package relationships and all 294 feature mappings; a declared `LoadAfter`, `LoadBefore`, `Requires`, or `IncompatibleWith` record is metadata evidence, not a runtime result.
+### Vehicle framework, travel, and recovery (12 declared pairs)
+
+**Feature links:** RR-STA, RR-EXP, RR-THREAT, RR-OUT, RR-SPACEFLIGHT, RR-MSN, RR-FAC.
+
+**Status:** source/metadata test leads only; runtime compatibility is unverified for every pair below.
+
+- Row 113 Injured Carry (`Haecriver.InjuredCarry`) — `LoadAfter` → row 11 Vehicle Framework (`SmashPhil.VehicleFramework`). This is an ordering link between casualty carrying and the optional vehicle framework; test injured-pawn loading/unloading only where supported, while retaining a non-vehicle recovery path.
+- Row 249 Vanilla Vehicles Expanded (`OskarPotocki.VanillaVehiclesExpanded`) — `Requires` + `LoadAfter` → row 11 Vehicle Framework (`SmashPhil.VehicleFramework`). Verify the declared base/content chain loads as selected and that vehicle use remains optional to Rimrooms.
+- Row 263 You Drive, I Sleep (`Spacemoth.YouDriveISleep`) — `Requires` + `LoadAfter` → row 11 Vehicle Framework (`SmashPhil.VehicleFramework`). Check its optional passenger/sleep behavior with vehicle travel and saves; do not make it a Rimrooms travel requirement.
+- Row 265 AirtightGarageDoors (`Endy.Airtightgarage`) — `Requires` + `LoadAfter` → row 249 Vanilla Vehicles Expanded (`oskarpotocki.vanillavehiclesexpanded`). Check vehicle access through the added garage-door content, map pathing, and save/load.
+- Row 266 Alpha Vehicles - Age of Sail (`sarg.alphavehiclesageofsail`) — `Requires` + `LoadAfter` → row 11 Vehicle Framework (`SmashPhil.VehicleFramework`). Verify the declared framework dependency and optional vehicle content without making water travel a campaign prerequisite.
+- Row 266 Alpha Vehicles - Age of Sail (`sarg.alphavehiclesageofsail`) — `LoadAfter` → row 249 Vanilla Vehicles Expanded (`OskarPotocki.VanillaVehiclesExpanded`). Check the selected ordering and its vehicle content in the optional vehicle profile.
+- Row 282 Vanilla Vehicles Expanded - Tier 3 (`OskarPotocki.VanillaVehiclesExpandedTier3`) — `Requires` + `LoadAfter` → row 11 Vehicle Framework (`SmashPhil.VehicleFramework`). Verify the declared framework chain, research/build availability, and an optional-absence route.
+- Row 283 Vanilla Vehicles Expanded - Upgrades (`OskarPotocki.VanillaVehiclesExpandedUpgrades`) — `Requires` + `LoadAfter` → row 11 Vehicle Framework (`SmashPhil.VehicleFramework`). Check the declared framework chain and upgrade jobs without making vehicle upgrades part of Rimrooms progression.
+- Row 290 Vehicles Wrecks Expanded (`Explorern11.VehiclesWrecksExpanded`) — `Requires` + `LoadAfter` → row 11 Vehicle Framework (`SmashPhil.VehicleFramework`). Check optional wreck/recovery content, salvage state, and saves on the vehicle profile.
+- Row 291 VVE - Secondary Weapons (`tgbm.vve.secondary.weapons`) — `Requires` + `LoadAfter` → row 249 Vanilla Vehicles Expanded (`OskarPotocki.VanillaVehiclesExpanded`). Check the declared content dependency, equipment availability, and vehicle combat/loadout behavior.
+- Row 291 VVE - Secondary Weapons (`tgbm.vve.secondary.weapons`) — `LoadAfter` → row 282 Vanilla Vehicles Expanded - Tier 3 (`OskarPotocki.VanillaVehiclesExpandedTier3`). Check weapon/loadout behavior with Tier 3 content and save/load.
+- Row 291 VVE - Secondary Weapons (`tgbm.vve.secondary.weapons`) — `LoadAfter` → row 283 Vanilla Vehicles Expanded - Upgrades (`OskarPotocki.VanillaVehiclesExpandedUpgrades`). Check weapon/loadout behavior with the upgrades content and save/load.
+
+### Hospitality, food service, custody, and inventory state (5 declared pairs)
+
+**Feature links:** RR-STA, RR-EVD, RR-ECO, RR-MP, RR-FAC, RR-MSN, RR-OUT, RR-SPACEFLIGHT, RR-EXP, RR-THREAT.
+
+**Status:** source/metadata test leads only; runtime compatibility is unverified for every pair below.
+
+- Row 152 Non uno Pinata (don't drop items) (`avilmask.NonUnoPinata`) — `LoadBefore` → row 270 Hospitality (Continued) (`orion.hospitality`). This is an ordering declaration, not proof that guest inventories are patched; test visitor/custody inventory and any map-transfer or removal paths separately.
+- Row 269 Gastronomy (Continued) (`Orion.Gastronomy`) — `Requires` + `LoadAfter` → row 62 Cash Register (Continued) (`Orion.CashRegister`). Verify the declared register dependency and optional food-service, payment, and stock behavior.
+- Row 288 Prison Labor (`avius.prisonlabor`) — `LoadAfter` → row 62 Cash Register (Continued) (`orion.cashregister`). Check the selected ordering alongside prisoner work and register behavior; do not infer that prisoners transact with the register.
+- Row 288 Prison Labor (`avius.prisonlabor`) — `LoadAfter` → row 269 Gastronomy (Continued) (`orion.gastronomy`). Test prisoner work/needs and food-service jobs in the selected profile, including save/load and any transferred pawn state.
+- Row 288 Prison Labor (`avius.prisonlabor`) — `LoadAfter` → row 270 Hospitality (Continued) (`orion.hospitality`). Check prisoner and guest job/state handling separately, including map transfer and release; keep RWT offline facility visits as a separate test.
+
+### Research, building, training visuals, and resource recipes (4 declared pairs)
+
+**Feature links:** RR-FAC, RR-GATE, RR-OUT, RR-SPACEFLIGHT, RR-STA, RR-THREAT, RR-SPACE, RR-ECO, RR-EXP, RR-DLC.
+
+**Status:** source/metadata test leads only; runtime compatibility is unverified for every pair below.
+
+- Row 277 Rebuild: Embrasures (`Rebuild.Embrasures`) — `LoadAfter` → row 185 ReBuild: Doors and Corners (`ReBuild.COTR.DoorsAndCorners`). Check structure placement, access, cover, and perimeter construction together; the ordering record does not establish a conflict.
+- Row 279 Research Whatever (`avilmask.ResearchWhatever`) — `LoadAfter` → row 247 Vanilla Gravship Expanded - Chapter 1 (`vanillaexpanded.gravship`). Check research visibility/selection and relevant Gravship progression in the exact optional stack; preserve the Core-only research route.
+- Row 280 Van's Retexture : Misc. Training (`SirVan.MiscTrainingRetexture`) — `LoadAfter` → row 129 Misc. Training (`Haplo.Miscellaneous.Training`). Verify target definitions, ordering, and appearance only; the retexture is not a training-mechanics dependency.
+- Row 289 Simple Ivory (`LegendaryMinuteman.SimpleIvory.fork`) — `LoadAfter` → row 271 Jewelry (`kikohi.jewelry`). Check recipe/material availability, stock and trade values, and the profile with either optional content absent.
+
+### FrozenSnowFox Tweaks declared ordering (16 declared pairs)
+
+**Feature links:** RR-STA, RR-THREAT, RR-FAC, RR-OUT, RR-EXP, RR-SPACEFLIGHT, RR-EVD, RR-ECO, RR-DLC, RR-GATE.
+
+**Status:** source/metadata test leads only; runtime compatibility and the effects of enabled settings are unverified for every pair below.
+
+Row 284 [FSF] FrozenSnowFox Tweaks (`FrozenSnowFox.FrozenSnowFoxTweaks`) declares `LoadAfter` for each target below:
+
+- Facility, storage, health, and animal behavior: row 25 Adaptive Primitive Storage (`Adaptive.PrimitiveStorage`); row 38 Animals Logic (`Oblitus.AnimalsLogic`); row 66 Common Sense (`avilmask.CommonSense`); row 84 Dubs Rimkit (`Dubwise.DubsRimkit`); row 126 Medical IVs Fork (`cantaloupetheclown.MedicalIVsFork`); row 158 Oops All Gene Banks (`redundant.oopsallgenepacks`).
+- Vehicle and spaceflight content: row 11 Vehicle Framework (`SmashPhil.VehicleFramework`); row 247 Vanilla Gravship Expanded - Chapter 1 (`vanillaexpanded.gravship`); row 249 Vanilla Vehicles Expanded (`OskarPotocki.VanillaVehiclesExpanded`); row 282 Vanilla Vehicles Expanded - Tier 3 (`OskarPotocki.VanillaVehiclesExpandedTier3`).
+- Apparel and combat equipment: row 160 Packs Are Not Belts (`turnovus.submod.backpacksarenotbelts`); row 242 Vanilla Apparel Expanded (`VanillaExpanded.VAPPE`); row 243 Vanilla Apparel Expanded - Accessories (`VanillaExpanded.VAEAccessories`); row 244 Vanilla Armour Expanded (`vanillaexpanded.varme`); row 250 Vanilla Weapons Expanded - Non-Lethal (`VanillaExpanded.VWENL`).
+- Construction and access: row 185 ReBuild: Doors and Corners (`ReBuild.COTR.DoorsAndCorners`).
+
+These declarations establish ordering only. First record which tweak settings are enabled; then test only settings that actually touch a shared system among the named targets. Do not treat a `LoadAfter` edge by itself as a patch or a conflict.
+
+The 37-edge bookkeeping delta above is now enumerated; it does not complete the full feature/conflict graph. Continue checking the remaining package relationships and all 294 feature mappings. A declared relationship is metadata evidence, not a runtime result.
 
 ## Guardrails
 

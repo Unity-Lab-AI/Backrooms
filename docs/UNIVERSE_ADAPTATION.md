@@ -41,6 +41,8 @@ RimWorld's colony simulation remains the engine: pawns need food, sleep, recreat
 
 For each video or film segment, record the main story beat, important characters or organizations, memorable spaces or technology, clues or threats, and one or two useful game ideas. Link the exact source and add a timestamp when it helps find a key detail. Mark partial reviews clearly and separate source lore from new RimWorld mechanics.
 
+The source-to-campaign breadth map is collected in the [campaign content catalog](CAMPAIGN_CONTENT_CATALOG.md). It labels these references as indirect cues, keeps the series and film separate, and marks later game content as original design or a future candidate.
+
 ## Review status
 
 The official playlist snapshot is indexed in [kane-pixels-video-index.csv](research/kane-pixels-video-index.csv), and first-pass fan summaries for all 23 indexed uploads are in [KANE_PIXELS_FAN_CLIFF_NOTES.md](research/KANE_PIXELS_FAN_CLIFF_NOTES.md). Uploads 1–4 also have partial direct-source notes; full direct viewing is not required unless a planned feature depends on a detail the summaries do not settle. The A24 feature has a separate fan-summary story note; its official Async connection is recorded with clear limits in that review. Local multiplayer and gravship evidence is routed through the [RWT and gravship feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md).
