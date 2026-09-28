@@ -14,9 +14,9 @@ Read these files in this order before implementation:
 3. [`SOURCE_REGISTER.md`](SOURCE_REGISTER.md) — canonical document map, direct source URLs, local profile inputs, review locations, and evidence state.
 4. [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) — owner decisions, blockers, code/package file map, phase sequence, gates, and acceptance work.
 5. [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) and [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md) — settled owner decisions and the feature-by-feature route through lore, the 294-mod profile, style, package surfaces, and acceptance evidence.
-6. [`GAME_DESIGN.md`](GAME_DESIGN.md) and [`SCENARIOS.md`](SCENARIOS.md) — core experience, campaign loop, and complete opening-scenario contracts.
+6. [`GAME_DESIGN.md`](GAME_DESIGN.md), [`SCENARIOS.md`](SCENARIOS.md), and [`FIRST_PLAYABLE_CONTRACT.md`](FIRST_PLAYABLE_CONTRACT.md) — core experience, opening cards, and the provisional Async Industries vertical-slice values and acceptance target.
 7. [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md) — complete system/content inventory.
-8. [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — proposed assemblies, ownership of save state, extension boundaries, and system contracts.
+8. [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md), [`CAMPAIGN_STATE_DICTIONARY.md`](CAMPAIGN_STATE_DICTIONARY.md), and [`OPERATIONS_ACTION_CONTRACTS.md`](OPERATIONS_ACTION_CONTRACTS.md) — proposed assemblies and extension boundaries, campaign-save ownership, and every planned Operations action's player-facing contract.
 9. [`MOD_INTEGRATION_PLAN.md`](MOD_INTEGRATION_PLAN.md) and [`COMPATIBILITY.md`](COMPATIBILITY.md) — interaction model, DLC policy, RWT constraints, and the exact profile boundary.
 10. [`research/RWT_AND_GRAVSHIP_FEASIBILITY.md`](research/RWT_AND_GRAVSHIP_FEASIBILITY.md), [`research/RWT_BASELINE_TEST_PLAN.md`](research/RWT_BASELINE_TEST_PLAN.md), and [`research/reviews/mods/3005289691-nova.rimworldtogether.md`](research/reviews/mods/3005289691-nova.rimworldtogether.md) — local profile comparison, executable pre-code test cases, story-facing co-op translation, and sourced RWT/VGE findings.
 11. [`RESEARCH.md`](RESEARCH.md) and [`UNIVERSE_ADAPTATION.md`](UNIVERSE_ADAPTATION.md) — source provenance, source-to-design translation, and what remains unreviewed.
@@ -30,8 +30,10 @@ Every planned feature must have a stable ID in [`FEATURE_TRACEABILITY.md`](FEATU
 
 | Work area | Read first | Cross-check before coding |
 | --- | --- | --- |
-| New-game start, corporate progression, objective loop | `GAME_DESIGN.md` | `ROADMAP.md`, TODO Phase 2 |
-| Scenario framework and alternate starts | `SCENARIOS.md` | `GAME_DESIGN.md`, `SYSTEMS_CATALOG.md`, `MOD_INTEGRATION_PLAN.md`, RWT audit, TODO Phases 0.5, 2, 3, and 6 |
+| New-game start, corporate progression, objective loop | `GAME_DESIGN.md` + `FIRST_PLAYABLE_CONTRACT.md` | `ROADMAP.md`, TODO Phase 2 |
+| Scenario framework and alternate starts | `SCENARIOS.md` | `FIRST_PLAYABLE_CONTRACT.md`, `GAME_DESIGN.md`, `SYSTEMS_CATALOG.md`, `MOD_INTEGRATION_PLAN.md`, RWT audit, TODO Phases 0.5, 2, 3, and 6 |
+| Save ownership, state IDs, and migrations | `CAMPAIGN_STATE_DICTIONARY.md` | `TECHNICAL_ARCHITECTURE.md`, `FIRST_PLAYABLE_CONTRACT.md`, TODO phases 0.5, 2, 3, and 6 |
+| Operations panes, commands, errors, and recovery | `OPERATIONS_ACTION_CONTRACTS.md` | `FEATURE_TRACEABILITY.md`, `TECHNICAL_ARCHITECTURE.md`, TODO phases 0.5, 2, 3, and 5 |
 | Rooms, staff jobs, hiring, training, morale, security | `SYSTEMS_CATALOG.md` | `GAME_DESIGN.md`, `MOD_INTEGRATION_PLAN.md` |
 | Gate machine, power, opening window, recall, extraction | `GAME_DESIGN.md` | `TECHNICAL_ARCHITECTURE.md`, TODO Phase 2–3 |
 | Procedural space, coordinates, map persistence, propagation, return clues | `UNIVERSE_ADAPTATION.md` | `TECHNICAL_ARCHITECTURE.md`, TODO Phase 3 |

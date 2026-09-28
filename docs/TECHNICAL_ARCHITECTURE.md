@@ -35,7 +35,7 @@ The repository can include `Source/` and the mod's loadable `Assemblies/` output
 
 ## State ownership and persistence
 
-Keep each value in one authoritative owner and serialize it through RimWorld's save system.
+Keep each value in one authoritative owner and serialize it through RimWorld's save system. The full pre-code record list, branch boundaries, stable IDs, idempotency rules, and recovery expectations are in the [campaign state dictionary](CAMPAIGN_STATE_DICTIONARY.md). Those rules describe the data contract; the component types below remain API candidates.
 
 - **Campaign/company state:** funds/ledger, research clues, unlocked coordinates, open contracts, company reputation, and global progression. Candidate: one campaign `GameComponent`.
 - **World state:** coordinate records, discovered routes, outposts, signal sources, and active distortion incidents. Candidate: one `WorldComponent` plus normal `WorldObject` instances.
@@ -70,7 +70,7 @@ An expedition owns an explicit crew list, destination ID, opening tick, close/re
 
 ## Company UI
 
-Begin with one compact Operations window and inspectable objects (gate, console, lab, contracts) that open focused dialogs. UI actions that change funds, assign crews, consume stock, create sites, or advance a project mutate and save the owning branch's state. Cross-branch transfer actions must route through the RWT adapter and record a transfer receipt; RWT does not make every local action a shared-state mutation. Read-only panels can stay local.
+Begin with one compact Operations window and inspectable objects (gate, console, lab, contracts) that open focused dialogs. Use the [Operations action contracts](OPERATIONS_ACTION_CONTRACTS.md) for every pane's preconditions, success result, refusal state, recovery route, and owner. UI actions that change funds, assign crews, consume stock, create sites, or advance a project mutate and save the owning branch's state. Cross-branch transfer actions must route through the RWT adapter and record a transfer receipt; RWT does not make every local action a shared-state mutation. Read-only panels can stay local.
 
 Store state independently from the screen implementation. That makes the company board replaceable without migrating every campaign record. Use keyed translations from the first content pass; avoid hard-coded visible English in C#.
 

@@ -21,7 +21,7 @@ The campaign begins at a small, underfunded research/security facility. The play
 | Multiplayer | RimWorld Together (RWT) is the co-op environment. Players run separate company branches and use only verified world transfers/activities. There is no live co-control of a shared map. Research dossiers are the baseline exchange; shared research is conditional on a supported, safely tested RWT extension. |
 | Required dependencies | RimWorld Core is required. The co-op profile also requires Harmony and RimWorld Together. Every other mod in the 294 profile is optional; verify exact dependencies before packaging. |
 | Local 294 profile | All 294 records are the required research/test target, not a required player dependency list. Each must receive an exact source review and a final disposition before Gate 0 passes. |
-| Gravships | Chapter 1 is the late orbital living-vessel/logistics layer. Chapter 2 adds orbital threats and defense. Neither replaces the machine gate or creates Backrooms coordinates. |
+| Gravships | Proposed optional roles: Chapter 1 may supply late-game mobile-base/logistics content, and Chapter 2 may supply optional orbital threat/defense content, using native features only where the exact release and selected profile support them. Neither replaces the machine gate or creates Backrooms coordinates. Their APIs, compatibility, and wider orbital scope remain unverified; do not promise stations or moon play from these two chapters. |
 | Source material | Use Kane Pixels' continuity and the A24 feature as indirect references. Do not directly recreate specific scenes or characters; exclude broader community canon from shipped content. Maintain source/provenance records. Third-party RimWorld mod assets and code are not bundled or copied by this plan. |
 | Project identity and license | Displayed title is exactly `Rimrooms - Async Industries`. Author/publisher metadata is `Operator`. Use package ID `UnityLabAI.RimroomsAsyncIndustries`, namespace `RimroomsAsyncIndustries`, semantic versions, and MIT for original source code; track asset/audio licensing separately. |
 | First release and language | Private RWT test build first; consider public Workshop release after validation. English first with localization keys; retain a Core-only solo path. |
@@ -137,7 +137,7 @@ Mission and contract templates provide authored objectives with seeded variation
 | Relay/outpost and lease | Build, staff, rent, supply, defend, or evacuate a location. | Lease terms, cutoff, resupply delay, route pressure. |
 | Town distortion response | Secure ordinary-world opening and investigate missing residents. | Local authority pressure, witness conflict, unstable threshold. |
 | Commercial service | Meet a survey, retrieval, research, or custody-transfer request. | Bonus for evidence quality or penalty for unsafe handling. |
-| Gravship/space support | Move a team or cargo, defend a ship, salvage wreckage, or board a site. | Orbital threat, crew system, or Chapter 2 combat condition. |
+| Gravship/space support | Optional late-game branch using installed, verified native content for travel, cargo, or defense. | DLC/mod absent, exact-profile conflict, or no documented supported connection to a Rimrooms mission. |
 
 Repeating a mission family changes its evidence, coordinate rules, crew history, and contract terms rather than changing only enemy count. Major outcomes update the atlas and case timeline, creating leads for later quests.
 
@@ -177,9 +177,9 @@ All actions that consume stock, move pawns, open a gate, change a map, advance a
 
 ## 4. Gravship chapters and dependency policy
 
-The selected Gravship Expanded Chapter 1 page requires Odyssey and Vanilla Expanded Framework; it overhauls gravships around oxygen, fuel, power, heat, and crew management and warns other gravship-altering mods may conflict. Chapter 2 requires Odyssey, VEF, and Chapter 1; it adds orbital threat detection/combat, defenses, weapons, artillery/boarding, wreck salvage, and hostile orbital events. Both pages identify CC BY-NC-ND 4.0; keep their assets/code in their own subscribed mod, do not repackage them. [Chapter 1 page](https://steamcommunity.com/sharedfiles/filedetails/?id=3609835606), [Chapter 2 page](https://steamcommunity.com/sharedfiles/filedetails/?id=3799737423), [VEF page](https://steamcommunity.com/sharedfiles/filedetails/?id=2023507013).
+The selected Gravship Expanded Chapter 1 page requires Odyssey and Vanilla Expanded Framework; its publisher describes oxygen, fuel, power, heat, and crew management and warns that other gravship-altering mods may conflict. Chapter 2 requires Odyssey, VEF, and Chapter 1; its publisher describes orbital threat detection/combat, defenses, weapons, artillery/boarding, wreck salvage, and hostile orbital events. These are publisher descriptions, not Rimrooms runtime results or proof of a mission API. The project review records that neither chapter establishes a broader moon/station campaign; the FAQ points to Chapter 3 for broader off-world play and describes only a narrow custom-starting-ship route for Chapter 1. Both pages identify CC BY-NC-ND 4.0; keep their assets/code in their own subscribed mod, do not repackage them. [Chapter 1 page](https://steamcommunity.com/sharedfiles/filedetails/?id=3609835606), [Chapter 2 page](https://steamcommunity.com/sharedfiles/filedetails/?id=3799737423), [VEF page](https://steamcommunity.com/sharedfiles/filedetails/?id=2023507013).
 
-Integration contract: Chapter 1 contributes a mobile late-game operations base, crew sustainment, orbital movement, emergency shelter, cargo staging, and space-based logistics. Chapter 2 adds a space-security campaign branch: threat detection, ship defense, orbital supply risks, wreck salvage and rescue/boarding contracts. These are separate from gate operation, Backrooms room generation, and entity definitions. Avoid patching gravship internals unless the VGE authors document a supported extension API and a reproduced conflict requires a narrow adapter.
+Proposed integration role, subject to a clean chapter stack and exact-profile tests: expose Chapter 1's verified native travel/cargo/survival systems as an optional late-game logistics layer; expose Chapter 2's verified native threat/defense/salvage content as optional orbital activity only where normal game routes make it available. Do not promise that Rimrooms can create custom boarding missions, an orbital station, a moon surface, or a broad space campaign from these two chapters. Keep this separate from gate operation, Backrooms room generation, and entity definitions. Avoid patching gravship internals unless the VGE authors document a supported extension API and a reproduced conflict requires a narrow adapter.
 
 ## 5. Exhaustive 294-profile mapping
 
@@ -212,8 +212,8 @@ Every row in the workbook retains source row number, package/workshop ID, name, 
 | Medical, biological, and recovery systems | 29 | Treat crews and use optional medicine/biology; core treatment remains independent. |
 | Mod framework | 6 | Use only concrete public services; no broad framework dependency in core. |
 | Multiplayer: guild and world exchange | 1 | Separate branches, trade, aid, guild/site/road/activity integrations. |
-| Orbital operations: Gravship Expanded Chapter 1 | 1 | Late mobile company base and orbital logistics. |
-| Orbital operations: Gravship Expanded Chapter 2 | 1 | Orbital threats, ship defense, salvage, and boarding missions. |
+| Orbital operations: Gravship Expanded Chapter 1 | 1 | Candidate late mobile-base/logistics content; use only verified native features. |
+| Orbital operations: Gravship Expanded Chapter 2 | 1 | Candidate optional orbital-threat/defense content; mission and adapter support remain unverified. |
 | Performance and simulation controls | 1 | Preserve speed/performance tools; use tick time for simulation. |
 | Power and industrial infrastructure | 10 | Facility power, generation, storage, maintenance, and production. |
 | Power storage and surge protection | 2 | Optional reserve and electrical protection. |
@@ -251,8 +251,8 @@ The map groups mods by intended use; a single mod may touch multiple systems. Th
 
 - [x] Initial company start, operation loop, facility functions, work roles, research/evidence, economy, incidents, coordinates, procedural sites, and late-stage expansion.
 - [x] Record D4: all five DLC are optional; maintain a complete Core-only campaign and validate the all-five local profile.
-- [x] RWT clarified as separate-branch cooperation with trade/aid/guild/activity-based visits; no live shared-map promise.
-- [x] Gravship Chapters 1 and 2 assigned distinct late-game roles and dependency boundaries.
+- [x] Record the RWT design boundary: separate branches and no live shared-map promise; trade/aid/guild/visits remain conditional on documented or tested RWT behavior.
+- [x] Record proposed, optional late-game roles and dependency boundaries for Gravship Chapters 1 and 2; native capabilities and exact-profile compatibility remain unverified.
 - [x] All 294 local profile rows captured and assigned to a design family in the workbook.
 - [x] UI panes and facility roles enumerated.
 - [x] Backrooms infinite-scale requirement expressed as deterministic, persistent coordinate/site generation.

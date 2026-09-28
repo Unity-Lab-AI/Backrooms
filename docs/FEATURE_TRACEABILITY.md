@@ -9,6 +9,7 @@
 - Every third-party mod mapping needs its exact Workshop/package ID and reviewed version. A category-level match in the preliminary workbook is not an integration result.
 - For implementation, add the feature ID to the owning design contract, Def/source file checklist, save owner, UI route, and acceptance evidence. Do not make an untraceable feature.
 - Leave unknowns as **Pending**. Do not infer an exact mod API, story fact, asset license, DLC requirement, or RWT capability from a title or feature label.
+- Use [`SCENARIOS.md`](SCENARIOS.md) and [`FIRST_PLAYABLE_CONTRACT.md`](FIRST_PLAYABLE_CONTRACT.md) for opening/start rules, [`OPERATIONS_ACTION_CONTRACTS.md`](OPERATIONS_ACTION_CONTRACTS.md) for player commands and recovery, and [`CAMPAIGN_STATE_DICTIONARY.md`](CAMPAIGN_STATE_DICTIONARY.md) for state ownership, stable IDs, transfer receipts, and migrations. These are design contracts, not implementation evidence.
 
 ## Cross-feature defaults and ownership
 
