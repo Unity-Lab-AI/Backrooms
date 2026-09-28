@@ -7,7 +7,7 @@ This standard turns the project's “AAA-grade” quality goal into observable p
 - All D1–D9 choices remain recorded in [GATE_0_DECISIONS.md](../GATE_0_DECISIONS.md); the mod title is exact and author/publisher metadata is `Operator`.
 - Every source-derived design claim links to a reviewed source record. All 23 indexed Kane Pixels uploads and the A24 feature receive separate saved review records before source-specific production begins.
 - Every one of the 294 profile rows has a verified package identity, source/version review, required-dependency and license notes, feature IDs, final disposition, and a review record. “Verified alongside” counts only after the named profile is tested.
-- RimWorld, DLC, Harmony, and RWT client/server builds are pinned. RWT dossier transfer, conditional shared-ledger behavior, visits, scenario joining, reconnect, and save ownership are tested in a disposable profile.
+- RimWorld, DLC, Harmony, and RWT client/server builds are pinned. Before code, run the disposable two-client cases in the [RWT baseline test plan](RWT_BASELINE_TEST_PLAN.md): separate vanilla-started branches, supported visits, ordinary cargo/aid exchange, reconnect, and save recovery. Include optional profile rows 182 and 274 because the owner selected them for testing despite publisher warnings. Record failures without claiming compatibility. Custom Rimrooms dossier transfer and conditional shared-ledger behavior are post-code acceptance tests and stay disabled until implemented and verified.
 - The scenario, system, visual, accessibility, persistence, performance, and release contracts have owners, acceptance evidence locations, and no unresolved dependency decisions.
 
 ## Playable campaign acceptance
