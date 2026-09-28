@@ -5,6 +5,8 @@
 
 ## Required reading order
 
+For the generation and optional space-system API paths, also read [RimWorld 1.6 package and generation findings](research/RIMWORLD_1_6_PACKAGE_AND_GENERATION.md) and [gravship, vehicle, cargo, and orbital profile interactions](research/GRAVSHIP_PROFILE_INTERACTIONS.md). Their names and interaction notes are research leads, not implementation guarantees or compatibility clearance.
+
 Read these files in this order before implementation:
 
 1. [`../README.md`](../README.md) — project purpose, scope, and linked artifact list.
