@@ -87,7 +87,7 @@ The owner's stated MIT/court-case rights premise is retained as an owner-provide
 
 **Combined owner answer:** use the mature psychological-horror management direction in A and push the horror presentation to the limit expressed in C, within the capabilities of RimWorld and the selected mod profile.
 
-## Open owner choice surfaced by mod review
+## Owner direction on publisher-warned mods
 
 - **Questionable Ethics Enhanced (profile row 182):** its publisher warns that RimWorld multiplayer will not work properly. The owner replied on 2026-09-27, “use it it'll be fine.” Record the mod as optional and include it in the RWT candidate test profile; do not exclude it solely because of the warning. This direction is not a compatibility result or a promise that desyncs will not occur. See the [row 182 review](research/reviews/mods/2850854272-Mlie.QuestionableEthicsEnhanced.md) and [interaction check](research/PRIORITY_PROFILE_INTERACTIONS.md).
 - **Medical Dissection (profile row 274):** its publisher warns that multiplayer is unsupported and may desynchronize; the local manifest declares no incompatibility. The owner gave the same direction on 2026-09-27: keep it in the optional 294-entry candidate test profile despite the warning. Do not advertise it as RWT-compatible until the exact test is recorded. See the [row 274 review](research/reviews/mods/1328216966-Heremeus.MedicalDissection.md) and [interaction check](research/PRIORITY_PROFILE_INTERACTIONS.md).
