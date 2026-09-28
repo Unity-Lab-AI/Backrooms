@@ -1,81 +1,60 @@
-# Rimrooms - Async Industries: campaign economy progression
+# Rimrooms - Async Industries: campaign economy and logistics progression
 
-**Status:** pre-code economy design, version 0.1. This fills in the campaign-level money and logistics rules around the first-month example. It is not a full price list, tested balance, or implementation. The linked [campaign economy model](CAMPAIGN_ECONOMY_MODEL.md) and [workbook](../outputs/4b7976f0-1820-4ffa-a191-bf7c7f79b010/Rimrooms_Campaign_Economy_v0.1.xlsx) remain the authority for the current Async Industries opening values.
-
-**Feature route:** [RR-ECO](FEATURE_TRACEABILITY.md), [RR-FAC](FEATURE_TRACEABILITY.md), [RR-GATE](FEATURE_TRACEABILITY.md), [RR-EXP](FEATURE_TRACEABILITY.md), [RR-MSN](FEATURE_TRACEABILITY.md), [RR-OUT](FEATURE_TRACEABILITY.md), and [RR-MP](FEATURE_TRACEABILITY.md).
+**Status:** pre-code design, version 0.2. Read with the canonical [economy model](CAMPAIGN_ECONOMY_MODEL.md) and [v0.2 workbook](../outputs/4b7976f0-1820-4ffa-a191-bf7c7f79b010/Rimrooms_Campaign_Economy_v0.2.xlsx). Physical-versus-ledger rules and the Core/OgreStack planning comparison are product rules; all opening amounts, rates, quotes, and milestone targets remain editable hypotheses pending owner approval and playtests. The parent is a multi-trillion-dollar corporation; each scenario controls its own authorized budget and earns growth through play.
 
 ## Economy promise
 
-The company earns money by doing work it can document: survey a route, recover requested goods, analyze evidence, rescue a crew, secure a site, or provide a client with a monitored space. Growth should come from better planning and wider reach, while payroll, power, consumables, repairs, leases, and supply runs create costs the player can understand before accepting them.
+The company account is a branch-local USD ledger. One account unit represents one dollar for company transactions; it never becomes physical silver. Ordinary RimWorld silver and goods remain real items. A company purchase or sale requires a visible quote and a receipt, and physical cargo appears as items only when its shipment is delivered. There is no automatic conversion between the ledger and silver.
 
-Credits and RimWorld items are separate. Credits pay company bills and quoted services. Steel, components, food, weapons, furniture, samples, and dossiers remain physical stock. Buying with credits creates an order and later a shipment; selling an item changes its physical custody and adds a separately recorded payment. Do not silently convert between company credits and silver.
+Players still build and operate a RimWorld settlement. They grow and cook food, craft equipment and furniture, research, harvest, collect, store, trade, hire, build outposts, and send expeditions. Those activities use ordinary pawn jobs, work, power, maps, bills, stockpiles, and physical items. A harvest becomes company cash only when the player accepts an actual sale or contract that transfers custody.
 
-All branch accounts remain local. A tested RWT item transfer may move physical resources or a dossier with a receipt; it does not merge company balances, completed research, contracts, or case authority.
+Every contract is valued for its deliverables and circumstances. It names the buyer, scope, evidence or cargo, ownership, staff time, equipment, risk, deadline, amount, advance, optional milestone/bonus, partial outcome, penalty cap, cancellation, and logistics. A room discovery, combat event, or entity sighting alone pays nothing. A recovered or studied finding can command millions when evidence, condition, buyer demand, risk, and rights make it valuable. Players may sell/license it, keep it for research, archive it, or use it in company production.
 
-## Campaign income and cost stages
+## Seven campaign stages
 
-These stages describe how the kinds of work and expense broaden. They do not promise fixed rewards or force one linear route. All later prices and quantities are **open balance inputs** until estimated, modeled, and playtested.
+Stages describe expanding work and capacity, not a locked mission ladder. The amounts below are broad target bands, not guaranteed drops or final canon; contract cards store the chosen amount before the player commits.
 
-| Stage | Work that can earn income | Costs that begin to matter |
+| Stage | Income and work | Costs, capacity, and new choices |
 | --- | --- | --- |
-| **1. First safe survey** | Accepted mapping or recording contract; its stated one-time payment and any documented safety bonus. | Five-staff payroll, headquarters overhead, food after the starter grant, gate power, repair materials, and field-kit replacement. Use the values in the first-month model. |
-| **2. Repeat access** | Repeat surveys, route verification, evidence delivery, small retrieval jobs, and approved salvage sales. | More research and field time, gear wear, replacement shipments, extended openings, and higher-capacity storage. A longer gate window does not create automatic revenue. |
-| **3. Specialist services** | Instrument readings, sample analysis, rescue searches, equipment recovery, and client-funded research deliverables. | Specialist pay premiums, secure sample handling, medical/quarantine supplies, client-specific equipment, and scheduled deliveries. A research insight is not cash unless a contract explicitly buys a physical or documented deliverable. |
-| **4. Leases and remote sites** | Monitored-space leases, relay installation, site surveys, outpost services, resupply, and return contracts. | Lease terms, outpost upkeep, staff travel and wages, food, radio service, defense, storage, and evacuation reserve. The current provisional outpost operating/lease value is 17 credits per active day before separate wages and physical provisions. |
-| **5. Large recovery and network work** | Multi-team surveys, time-limited town response, missing-crew recovery, high-value retrieval, and defended site contracts. | Larger crews, more exposure days, insurance/compensation candidates, damaged shipments, security upgrades, medical care, and opportunity cost when a specialist is away from headquarters. |
-| **6. Vehicle and optional orbital support** | Cargo, reconnaissance, security, and salvage work linked to company transport; optional gravship operations only where the native system and verified bridge permit them. | Vehicle acquisition and maintenance, crew, fuel/material inputs where the selected system uses them, cargo handling, and off-world support. Native gravship finances and ship systems remain with their owning content unless an explicit, tested transaction is defined. |
-| **7. Deep-site operations** | Exceptional survey or recovery contracts with declared scope and risk; sale of eligible findings; and longer-term access agreements. | Stabilization, specialized gear, relief crews, long-duration food and medical supply, outpost security, and possible route closure or rescue costs. A rare discovery is not a guaranteed windfall. |
+| **1. First safe survey** | Opening branch allocation; one accepted mapping/recording contract, target payment $5,000,000 plus an optional $1,000,000 records bonus. | Five-staff wages, company overhead, existing physical food/stock, gate power, first repairs and visible shipment invoices. |
+| **2. Repeat access** | Verified routes, returned equipment, ordinary salvage sales, repeat surveys; planning cases use roughly $250,000–$5,000,000 per routine contract. | More field kits, replacement costs, delivery windows, safer receiving/storage, and short-haul labor. |
+| **3. Specialist services** | Sample analysis, commissioned research, equipment recovery, missing-person leads; planning cases range roughly $1,000,000–$25,000,000. | Specialist premiums, controlled/quarantine storage, lab space, medical supplies, and trained handling jobs. |
+| **4. Leases and remote sites** | Monitoring, relay installation, local services, site leases, resupply, and return contracts; scope-dependent millions or tens of millions. | Outpost wages, communications, defense, stock, cold/secure storage, and evacuation reserves. |
+| **5. Large recovery and network work** | Multi-team surveys, town response, rescue, high-value retrieval, and defended-site work; larger contracts may reach $5,000,000–$100,000,000. | More crews, relief shifts, shipment handling, recovery/medical capacity, damaged goods, and deep warehouse upgrades. |
+| **6. Vehicle and optional orbital support** | Transport, reconnaissance, security, cargo, salvage, and service contracts; late logistics can reach tens or hundreds of millions. | Native vehicle/gravship costs, cargo holds, route support, acquisition/maintenance, and tested optional integrations. |
+| **7. Deep-site operations** | Exceptional study, containment, route network, or site rights; $25,000,000–$500,000,000+ is a provisional range for rare, buyer-specific outcomes. | Extended provisions, stabilizers, multiple safe storage sites, replacement teams, threat response, and rescue/closure reserves. |
 
-The first-slice gate-duration ladder remains provisional: 20 minutes, then 2 hours, 1 day, 7 days, and 30 days. Every increase must account for staffing, food, maintenance, communication, power reserve, cargo, and a return/recovery plan. The paid survey is not required to prevent immediate bankruptcy under the opening forecast.
+The workbook's planning and downside cases use a single average paid contract value per stage to make cashflow editable. The `Recovery & Capital` sheet also models a 30-day no-contract close and a recovery close for each of the seven stages, with added monthly specialist, transport, equipment-replacement, cargo-replacement, and security/site-maintenance quotes. Its milestone request targets are editable and release no funds unless both the completion and explicit-approval controls are set. The recovery case retains the selected payroll and headquarters overhead while allowing unstarted hires and optional purchases or site days to be omitted; recovery hires are additional to retained payroll. These cases expose assumptions and cash consequences, not approved balance or proof that later stages are complete. Actual offer generation must use listed scope, deliverables, costs, risk, time, buyer demand, and rights.
 
-## What a quote includes
+## Company capital, costs, and receipts
 
-Before accepting a contract, lease, or order, show the player:
+- Keep the parent-company valuation separate from branch cash. The $50,000,000 starting allocation and the workbook's illustrative $25 million to $1 billion later-stage request targets are editable scenario amounts, not final approvals. Larger allocations require a visible milestone request/approval and a one-time branch receipt.
+- Record wages and account-funded orders once. The first five staff and HQ overhead use provisional values from the economy model; additional hires, specialist pay, service contracts, leases, repairs, transport, and physical procurement have separate quoted lines.
+- Food and crafted goods are physical stock. Pawns consume food in the ordinary simulation; do not subtract an automatic cash amount per meal. Growing or cooking creates physical stock; a food shipment charges only its accepted order price.
+- Client payments and salvage/research sales attach to actual deliverables and custody receipts. Partial results, bonuses, deductions, damage, and penalties must appear on the accepted contract or incident choice before work.
+- A credit advance reduces the remaining contract amount. Milestones do not duplicate a full payment. No random event grants a flat payout, debt, or bailout.
+- Failure still has a visible cost: wages during delay, used supplies, equipment loss, missed receipt, or a named penalty. Injury follows RimWorld treatment/recovery; an injured employee is not an automatic cash payout.
 
-- client or supplier, requested work, deliverable, due date, access rights, and who owns the result;
-- base payment or price, any advance, bonus, maximum penalty, cancellation rule, and partial-result payment if one exists;
-- expected staff time, required equipment/materials, expected physical shipments, and which items can be lost or consumed;
-- travel, gate-window, lease, communications, security, and outpost costs that begin because of the commitment;
-- the stated risk conditions and what the company loses if it declines, delays, withdraws, or fails.
+## Cargo and warehouse progression
 
-An advance counts against the contract's total payment. A bonus or penalty is paid only when the written condition is met. Penalties are capped in the accepted card. A partial result has a listed payment or it earns none; the settlement screen cannot invent a new amount.
+Cash, carried load, stored stock, and hauling throughput have separate limits. The implementation plan and tests must preserve the following behavior:
 
-For later tuning, a contract quote may be estimated from **work scope + expected staff time + required consumables and transport + disclosed risk and deadline premium + agreed access/service value**. This is a pricing guide, not a locked formula. The player sees the final amount before accepting, and every generated value is saved on that contract card.
+| Layer | Rule | What progression improves |
+| --- | --- | --- |
+| **Account** | Dollar totals remain ledger entries. They never spawn as silver or require hauling. | Larger approved branch allocations and contract authorizations; not larger item piles. |
+| **Carry** | Actual pawn carry/inventory limits apply after mandatory kits, food, and tools. Dispatch previews cargo still available. | Better kits, more crew/relief, dedicated carriers, and verified vehicle holds. |
+| **Storage** | Physical inventory occupies real bounded storage, with item stack, capacity, access, security, and preservation limits. | Receiving bays, stockpile capacity, warehouses, cold/quarantine rooms, and containers with tested contents and limits. |
+| **Throughput** | Loading/unloading, sorting, and hauling use time, pathing, labor, and available job capacity. | More staff, better routes, staged schedules, compatible material handling, and optional transport automation. |
+| **Shipment** | A manifest lists actual quantity, estimated stacks, size/weight where available, destination, batches, delivery window, and loss risk. | Larger batches only when the destination and staff can accept them; pause, redirect, or split shipments when full. |
 
-## Cost and inventory rules
+The Core Silver definition has a 500-item base limit and is tagged `smallVolume`. The active profile includes row 157, **OgreStack** (`Ogre.OgreStack`); its published default multiplies small-volume resource stacks by 30. That gives 15,000 silver per stack, or 67 stacks for one million silver, when that preset is active and no item override applies. Core-only fallback is 2,000 stacks. See the [OgreStack review](research/reviews/mods/1447140290-Ogre.OgreStack.md) and [profile interaction map](research/PRIORITY_PROFILE_INTERACTIONS.md#stack-size-cargo-and-shared-item-exchange-row-157--rows-122259--rwt). The current saved preset still needs runtime inspection. Do not represent company account balances as physical silver. For any physical quantity, calculate `ceil(quantity / effective in-save stack limit)` and show the expected stacks before dispatch or order acceptance. Bulk cargo must arrive in bounded stages or a tested container/warehouse route; never silently spawn an enormous delivery or store real inventory only as a hidden number.
 
-- **Payroll:** base pay applies to all employed staff. Any specialist premium is shown on the hire offer and roster. A pawn's company role does not remove ordinary RimWorld food, sleep, recreation, medical, or work needs.
-- **Physical provisions:** food, ammunition, medicine, parts, protective gear, and replacement tools are items. A purchase charges credits once, creates a named order, and adds stock only on delivery. Starter grants are already owned stock and do not spend the account again.
-- **Power and machine operation:** the base game power network determines available electricity. Credit costs apply only to a displayed purchase, service, or physical fuel order; never add an invisible fee merely because a gate draws power.
-- **Maintenance:** track wear or a repair requirement on the item/building; quote the parts and labor before repair. Do not charge both a hidden flat expedition fee and full replacement for the same use.
-- **Leases:** state the space, boundary, access/security conditions, start/end dates, upkeep, renewal, eviction, and abandonment effects. Rent starts on the accepted start date. Leaving a lease does not erase evidence, route records, or the company's claim history.
-- **Outposts:** track local stock, staffing, signal, upkeep, defense, relief date, and exit. The current 17-credit daily provisional charge covers the site/lease and local service/communications only; wages, food, purchased supplies, and repairs remain separate.
-- **Cargo loss:** every shipment records owner, contents, value basis, route, dispatch/delivery status, and receipt. A delayed or missing load is an incident with a recovery choice, not a debit-and-delete shortcut.
-- **Research:** staff time and existing materials are used first. A purchased supply order is a separate cost. A knowledge unlock is not automatically saleable or transferable; physical dossiers follow the branch-local receipt rules.
-- **Salvage and evidence:** show whether an object is eligible for sale, research, a client handoff, retention, or disposal. The same object cannot be paid as both a sale and a deliverable, and research value does not mint duplicate stock or cash.
+Do not alter vanilla stack limits just to reduce the hauling burden. Review the exact storage/stack/carry mods in the 294 profile and prove the chosen treatment on disposable saves. Optional mods may ease routine logistics, but the Core-only path must remain playable. If receiving capacity, pawn load, or hauling time is inadequate, explain the constraint and offer hold, split, reroute, sell, or decline choices.
 
-## Loss, failure, and recovery
+## Multiplayer boundary
 
-Failure must cost something the player was warned about, but it should not add surprise debt. Possible documented costs include wages during a delayed return, consumed field provisions, equipment wear, lost optional cargo, missed contract payment, or an accepted penalty. Injury uses ordinary treatment and recovery. Death, missing staff, or a failed delivery opens a case and may start a rescue, claim, or replacement decision; none grants a payment automatically.
+Each player's company account, facility, contracts, research, stock, and maps remain branch-local. RWT cargo exchange moves supported physical items with a receipt; it does not move account balances. A received shipment is counted at the recipient only after delivery succeeds. The exact vanilla silver, resource, large-stack, dossier, and container transfer cases require separate testing.
 
-The player may decline work, recall a crew, renegotiate before accepting a changed scope, or close an unprofitable lease under its stated terms. If a generated site or transfer fails before the player commits, do not charge for undelivered work or erase stock. If a shipment is lost after dispatch, preserve its receipt and offer only the recovery routes the game actually supports.
+## Freeze and balance evidence still required
 
-## Multiplayer and optional content
-
-Keep ledgers, research completion, contracts, reputation, leases, and case records branch-local. Trade only physical goods through a verified RWT transfer path. A Research Dossier is a physical item that the receiving branch analyzes locally. Direct shared research remains disabled unless a documented supported RWT extension and duplicate-safe synchronization are established. Facility visits, trades, gifts, aid, and offline cargo each need their own pinned-build test; do not imply one works because another does.
-
-Every DLC and profile mod remains optional except Core plus Harmony/RWT for co-op. External mods may supply useful systems or comparisons, but Rimrooms must preserve its Core-only economic route. An optional trade, hospitality, guest, or gravship mod cannot be the only way to purchase, sell, host, contain, or move required campaign content.
-
-## Balance evidence still needed
-
-The workbook now contains the opening forecast plus linked 30-day planning and downside examples for stages 2–7. Those later inputs are illustrative hypotheses, not final prices or balanced results. Before the campaign economy is considered frozen, extend or replace those examples with evidence-backed models for at least:
-
-1. the first 30-day opening with and without the survey payment and optional bonus;
-2. repeat-access work over several months, including contract delays, gear replacement, hiring, and failed/abandoned expeditions;
-3. a staffed lease and at least one outpost with wages, provisions, communications, repair, and evacuation reserve shown separately;
-4. a long expedition at each provisional gate-duration tier, with provisions and relief timing;
-5. a town-response or missing-crew contract with a disclosed deadline, partial outcome, rescue cost, and penalty cap;
-6. vehicle/gravship logistics as a separate optional profile, not a required revenue shortcut;
-7. a no-contract or lost-shipment case that remains recoverable without hidden credit generation.
-
-Each balance pass records workbook/model version, assumptions, cash and physical stock separately, successful and failed outcomes, adaptive cost cuts or recovery choices, and the target RimWorld/DLC/mod profile. Until those cases are completed and later playtested, the campaign price bands and late-game solvency remain open.
+The workbook is a pre-code model. To call the economy and logistics contract frozen, implement and test priced contract/partial-delivery/sale cases, milestone funding, empty-income recovery and cost-cut actions, long expeditions, staff premiums, outpost costs, large warehouse/storage rules, batch/delivery policies, and full inventory reconciliation. On a disposable build, test ordinary carry/storage and both the active-profile OgreStack default and Core-only 2,000-stack one-million-silver examples. Capture item stacks, mass/space, hauling jobs and time, stockpile capacity, shipment receipts, and save/reload behavior. Record build, DLC, exact mod order and observed result; figures remain hypotheses until owner decisions and actual playtesting.

@@ -10,6 +10,7 @@ The scenario opening cards live in [`docs/SCENARIOS.md`](docs/SCENARIOS.md); the
 
 ## Project documents
 
+- [Rimrooms mod overview](docs/RIMROOMS_MOD_OVERVIEW.md) — compact player-facing summary of the scenarios, campaign, company scale, exploration, multiplayer direction, interface, and menu showcase.
 - [Game design brief](docs/GAME_DESIGN.md) — player experience, campaign loop, systems, and scope.
 - [Systems catalog](docs/SYSTEMS_CATALOG.md) — staff, facilities, interface, research, missions, and economy inventory.
 - [Campaign content catalog](docs/CAMPAIGN_CONTENT_CATALOG.md) — full progression arcs, research branches, evidence, incidents, threats, room families, outposts, and later space content; future details remain candidates.
@@ -39,7 +40,7 @@ The scenario opening cards live in [`docs/SCENARIOS.md`](docs/SCENARIOS.md); the
 - [Complete systems and mod integration plan](docs/MOD_INTEGRATION_PLAN.md) — top-to-bottom company loop, RWT branch-sharing model, both gravship chapters, every profile integration family, and implementation gates.
 - [Pre-production and implementation TODO](docs/PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) — owner decisions, coding-start gate, full file creation list, interconnected build phases, every-profile integration, QA, and release acceptance.
 - [Research and references](docs/RESEARCH.md) — source register, inspiration notes, and licensing provenance.
-- [RWT and gravship feasibility audit](docs/research/RWT_AND_GRAVSHIP_FEASIBILITY.md) — exact local 294-entry client/server profile comparison, pinned RWT artifacts and open runtime/API checks, and the two gravship chapter findings.
+- [RWT and gravship feasibility audit](docs/research/RWT_AND_GRAVSHIP_FEASIBILITY.md) — exact local 294-entry client/server profile comparison, pinned RWT artifacts, unresolved RimWorld build identity, open runtime/API checks, and the two gravship chapter findings.
 - [RWT pre-code baseline test plan](docs/research/RWT_BASELINE_TEST_PLAN.md) — separate client branches, offline-visit availability, online trade/gift, candidate offline drop-pod cargo, aid/recovery cases, and the owner-selected test scope for rows 182 and 274. This run sheet is not a test result.
 - [Gravship, vehicle, cargo, and orbital profile interactions](docs/research/GRAVSHIP_PROFILE_INTERACTIONS.md) — source-backed review of the selected profile families that may interact with the two VGE chapters, plus a staged check plan. No compatibility pass is claimed.
 - [RimWorld 1.6 package and generation findings](docs/research/RIMWORLD_1_6_PACKAGE_AND_GENERATION.md) — official 1.6 primer, named room/map/path/planet-layer candidates, local package metadata counts, dependency/order graph, and unresolved prototype boundaries.

@@ -1,6 +1,6 @@
 # Rimrooms - Async Industries: first-session tutorial script
 
-**Status:** provisional player-facing copy for the pre-code first-playable contract (v0.1). Starting values and outcomes are balance hypotheses; this script has not received runtime review or in-game testing.
+**Status:** provisional player-facing copy for the pre-code first-playable contract (v0.2). Starting values and outcomes are balance hypotheses; this script has not received runtime review or in-game testing.
 
 **Canonical content checks:** align the Async opening with [FIRST_SLICE_CONTENT_INVENTORY.md](FIRST_SLICE_CONTENT_INVENTORY.md), [FIRST_PLAYABLE_CONTRACT.md](FIRST_PLAYABLE_CONTRACT.md), [CAMPAIGN_ECONOMY_MODEL.md](CAMPAIGN_ECONOMY_MODEL.md), and [THREAT_DESIGN_SHEETS.md](THREAT_DESIGN_SHEETS.md). The Store and Lone Survivor openings remain in [SCENARIOS.md](SCENARIOS.md); this script does not claim to verify their RWT setup.
 
@@ -10,7 +10,7 @@
 
 **Objective:** Restore safe power, finish the gate, prepare a three-person crew, and return one useful record from AI-01.
 
-Your company has **900 credits** for listed company costs and **150 silver** for ordinary physical trade. The five staff are flexible; assign work by ability, not by title. Keep a qualified gate operator at headquarters while the researcher, guard, and medic/logistics generalist prepare to go.
+The branch has **$50,000,000** in its Company Account for quoted company costs and **150 physical silver** for ordinary RimWorld trade. Account money stays on the ledger; it is never spawned as silver that someone has to haul. Food, steel, gear, samples, and salvage remain physical stock. The five staff are flexible; assign work by ability, not by title. Keep a qualified gate operator at headquarters while the researcher, guard, and medic/logistics generalist prepare to go.
 
 ## 2. Make the gate ready
 
@@ -62,7 +62,7 @@ The first encounter cannot kill a healthy pawn in one hit. Contact may cause an 
 
 Recall at any time. At headquarters, check the manifest: each item is delivered, consumed, damaged, left behind, or lost. Put the **AI-01 Route Recording** in the evidence case and link it to AI-01. Have a researcher analyze it; the report records the repeated label, misplaced tag, recorder gap, and any entity observation without claiming to explain their cause.
 
-> **Operations Lead:** “Survey accepted. The branch ledger posts its **one-time 240-credit payment** and one research insight. The **optional 60-credit safety and documentation bonus** is added if all three field staff return with the route, distortion, and entity-observation records. A recoverable injury does not cancel it.”
+> **Operations Lead:** “Survey accepted. The branch ledger posts its **one-time $5,000,000 payment** and one research insight. The **optional $1,000,000 safety and documentation bonus** is added if all three field staff return with the route, distortion, and entity-observation records. A recoverable injury does not cancel it.”
 
 ## 6. Choose the next lead
 

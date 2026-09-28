@@ -6,7 +6,7 @@
 
 ## Opening site and company
 
-Use the canonical start card in [SCENARIOS.md](SCENARIOS.md): a 60×60 headquarters, five company pawns, 900 company credits, 150 physical silver, starter stock, an incomplete gate, and an already accepted onboarding survey. The starting faction belongs to the player's branch. Nearby factions begin neutral. The start is not a crashlanded story.
+Use the canonical start card in [SCENARIOS.md](SCENARIOS.md): a 60×60 headquarters, five company pawns, a provisional $50,000,000 Company Account, 150 physical silver, starter stock, an incomplete gate, and an already accepted onboarding survey. The starting faction belongs to the player's branch. Nearby factions begin neutral. The start is not a crashlanded story.
 
 | Content group | First-slice roster | Player use |
 | --- | --- | --- |
@@ -43,7 +43,7 @@ The generator selects compatible templates from these families; a valid map need
 - **Timing:** one 20 in-game minute opening, with warnings at 10, 5, and 2 minutes remaining. Recall is always available before the final return limit.
 - **Cargo:** three-person field kits plus a small evidence case; optional furniture uses the displayed mass/carry limit. Exact limits are tuning hypotheses in the [first playable contract](FIRST_PLAYABLE_CONTRACT.md).
 - **Evidence:** one physical AI-01 Route Recording item and a linked case entry. It records contradictory room/timing observations without explaining the setting's cause.
-- **Contract result:** one 240-credit payment and one research insight for a valid extraction. An optional 60-credit bonus pays if all three crew return with the route, distortion, and entity-observation records. A recoverable injury does not cancel the bonus, and neither the bonus nor entity combat is required for contract completion.
+- **Contract result:** one $5,000,000 payment and one research insight for a valid extraction. An optional $1,000,000 bonus pays if all three crew return with the route, distortion, and entity-observation records. A recoverable injury does not cancel the bonus, and neither the bonus nor entity combat is required for contract completion. These are editable pre-code targets, not tested prices.
 - **Research follow-up:** Gate Telemetry is the first local project. It turns the recorded evidence into a concrete improvement to repeat-site planning. It consumes the earned insight and staffed research work; it does not require a DLC or another mod.
 - **Threat response:** the crew may observe and retreat, use the guard and firearm to force distance, or spend time laying tags and checking the route. Killing or capturing the first entity is not required for contract payment or research access.
 

@@ -14,7 +14,7 @@ Offer selectable scenarios with different starting maps, pawn rosters, budgets/i
 
 Each scenario must define a seed, starting faction/ownership rules, failure conditions, recovery/return path, tutorial/objective chain, and compatibility with save/load. Test how scenario-specific world generation works with RimWorld Together before advertising mixed-start multiplayer.
 
-Keep ordinary RimWorld systems for pawn needs, work, health, relationships, combat, construction, research, storage, power, and trade. Add the company layer for assignments, contracts, evidence, coordinates, finance, and expeditions.
+Keep ordinary RimWorld systems for pawn needs, work, health, relationships, combat, construction, research, storage, power, growing, crafting, and trade. Add the company layer for assignments, contracts, evidence, coordinates, USD-denominated branch finance, and expeditions. Company cash stays a ledger value; physical goods still use real carry, stack, storage, and hauling capacity. The [economy model](CAMPAIGN_ECONOMY_MODEL.md) defines the scale and bulk-handling rules.
 
 ## Staff and work categories
 
@@ -55,7 +55,7 @@ Recognize facilities from their buildings and functions. Avoid hidden room-score
 
 ## Operations interface
 
-Add an Operations main tab as a company dashboard. Keep vanilla tabs initially and link to their familiar pawn, building, research, and world views.
+The first playable adds an Operations main tab as a company dashboard. The full-mod target grows this into a company-first menu and tab layout that groups facility, personnel, projects, expeditions, discoveries, cases, contracts, finance, and outposts. Preserve working access to familiar pawn, building, map, work, research, and world actions as these views are reorganized; the dashboard is the first step, not the final UI scope.
 
 1. **Overview:** urgent alerts, active projects, gate state, cash, deadlines.
 2. **Personnel:** roster, role recommendations, training, injuries, field history.

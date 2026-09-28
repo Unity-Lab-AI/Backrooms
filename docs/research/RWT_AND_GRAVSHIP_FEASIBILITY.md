@@ -15,12 +15,13 @@ The server config reports `AllowAllMods=true`, `EnforceSettings=false`, and a nu
 
 ## Pinned local RimWorld test target
 
-The installed game's `Version.txt` reads **1.6.4871 rev590** and Steam's local app manifest records build ID `23969874`. The managed `Assembly-CSharp.dll` reports version `1.6.9676.17735`. These identify the local pre-build test target; they do not claim every player's game is on this build. The local client `ModsConfig.xml` and server `ModConfig.json` SHA-256 digests are recorded below so the exact 294-entry profile snapshot can be reproduced without publishing its settings.
+The two disposable launch logs report **RimWorld 1.6.4871 rev591** from the same Steam install recorded below. The current `RimWorldWin64.exe` and `Assembly-CSharp.dll` hashes identify the installed test target; their last-write times predate the logs, although the raw logs do not themselves contain hashes. `Version.txt` and the local profile snapshot still say **rev590**. Preserve that static-version discrepancy in every test record; match the executable and Core assembly hashes and capture the game-reported build before running either client. Steam's local app manifest records build ID `23969874`. The managed `Assembly-CSharp.dll` reports version `1.6.9676.17735`. The local client `ModsConfig.xml` and server `ModConfig.json` SHA-256 digests are recorded below so the exact 294-entry profile snapshot can be reproduced without publishing its settings.
 
 | Target artifact | Observed identity | SHA-256 / evidence |
 | --- | --- | --- |
 | RimWorld game version file | `1.6.4871 rev590` | `0EC56B267649FAA48E8CD6BD767B14BAFE3D1359AF44434711105DBDC4597BE3` |
 | Steam RimWorld app manifest | Build ID `23969874` | Local `appmanifest_294100.acf` |
+| RimWorld runtime executable | Runtime logs report `1.6.4871 rev591`; `RimWorldWin64.exe` | `4C30E2105B49F2D0130F5D861947FBE82B866042299DA48EF1C8CF6979A8564D`; file last modified 2025-10-12, before the recorded runs |
 | Core game assembly | `Assembly-CSharp.dll`, version `1.6.9676.17735` | `5CF1B5BE399D5B1C9C56CA72C9D35B4ECF307FEACF5859D04AC5A1AA5926356A` |
 | Harmony mod metadata | `2.4.2.0`, package `brrainz.harmony`, Workshop ID `2009463077` | Local `About.xml`; declares RimWorld 1.6 support |
 | Harmony active assembly | `0Harmony.dll`, product `2.4.1.0+789df191bbaf6610232d50e7ef7dddc0d2812549` | `353DAAFEC180BB8E7BBE4DA78F2A7CDC78067392E3A4E79DC8E7AF295F2371E6` |

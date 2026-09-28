@@ -141,7 +141,9 @@ Mission and contract templates provide authored objectives with seeded variation
 
 Repeating a mission family changes its evidence, coordinate rules, crew history, and contract terms rather than changing only enemy count. Major outcomes update the atlas and case timeline, creating leads for later quests.
 
-Keep a company ledger for payroll, contracts, expenses, shipment schedules, and profit. Use vanilla silver and transferable goods for player-to-player transactions; custom company credits do not cross RWT branches until a supported transfer path exists. Contract cards specify client, advance, deadline, requested deliverables, optional quality/safety terms, payment, penalty, and cancellation. Orders name quantity, price, source, arrival window, and receiving area. Shipments can be delayed, lost, contaminated, intercepted, or redirected by explicit world events.
+Keep a branch-local USD Company Account for payroll, contracts, expenses, shipment schedules, and profit; the parent company's multitrillion valuation is not the player's spendable balance. Use physical vanilla silver and transferable goods for ordinary RimWorld/RWT item transactions. Company-account balances do not cross RWT branches. Contract cards specify client, advance, deadline, requested deliverables, optional quality/safety terms, payment, penalty cap, ownership, and cancellation. Orders name quantity, price, source, arrival window, and receiving area. Shipments can be delayed, lost, contaminated, intercepted, or redirected by explicit world events.
+
+Cross-reference the [economy and bulk-logistics contract](CAMPAIGN_ECONOMY_MODEL.md), [OgreStack source review](research/reviews/mods/1447140290-Ogre.OgreStack.md), and [stack/cargo/RWT interaction map](research/PRIORITY_PROFILE_INTERACTIONS.md#stack-size-cargo-and-shared-item-exchange-row-157--rows-122259--rwt). Row 157 OgreStack is active in the 294 profile; its published default uses a ×30 scalar for small-volume resources. Rimrooms must read effective saved stack rules at runtime, preserve vanilla stack behavior when OgreStack is absent, and prove storage, shipment, caravan, save/reload, and RWT transfers against both paths. It must never encode the owner's current stack preset as a required dependency.
 
 Revenue: survey/recovery contracts, safe extraction, resale of approved salvage, scientific results, equipment/furniture resale, secure containment services, procurement/consulting, and outpost services. Costs: payroll/food, medical care, fuel/power, component wear, weapon replacement, laboratory consumables, security, shipping, rent/site upkeep, prisoner/guest upkeep, cleanup, compensation, and rescue. A discovery can be studied, archived, sold, licensed in-world, contained, or discarded; risk/value differs by choice.
 
@@ -155,7 +157,7 @@ Outposts must consume supplies, have staffing/security/communication, a defined 
 
 ### Operations interface and tab map
 
-Add one company **Operations** main tab with linked panes. Keep vanilla Architect, Work, Research, Assign, and World tabs during the first playable. Do not replace every RimWorld menu before the company loop works.
+For the first playable, add one company **Operations** main tab with linked panes and keep the familiar Architect, Work, Research, Assign, and World actions directly available. The full-mod target is a company-first remaster of the menu/tab layout, grown from these panes into a coherent **Company Command** navigation layer for facilities, people, projects, expeditions, sites, cases, and money. Reorganize redundant navigation in stages only after the company flow is proven; every underlying RimWorld action must remain reachable and compatible with the optional profile. Do not let the command layer replace pawn autonomy or the colony's native simulation.
 
 | Operations pane | Contents and controls |
 | --- | --- |
@@ -171,7 +173,7 @@ Add one company **Operations** main tab with linked panes. Keep vanilla Architec
 | Outposts and company network | Sites, staffing, stock, security, radio links, maintenance, evacuation and RWT guild/transfer reference. |
 | Gravship operations | Shown only when Odyssey and selected chapter content are present; link to native gravship views and company logistics summary. |
 
-The long-term interface goal is a coherent **Company Command** navigation layer that reorganizes the player's view around facilities, people, projects, expeditions, sites, cases, and money. Build it on top of the Operations panes in stages. Keep direct links to vanilla pawn, Work, Research, Architect, Assign, and World controls so the company layout groups RimWorld systems without hiding or breaking their established actions.
+Build Company Command on top of the Operations panes in stages. Its completed layout should make the company the primary navigation model while retaining direct routes to every relevant vanilla pawn, Work, Research, Architect, Assign, and World action. Screen replacement/reorganization is an interface presentation change, not a rewrite of the underlying RimWorld systems.
 
 All actions that consume stock, move pawns, open a gate, change a map, advance a project, trade cargo, or alter case state need a saved transaction record. Purely informational panels may be local. Button availability must reflect installed DLC/mods and server permissions.
 

@@ -98,11 +98,13 @@ The facility becomes a major organization and can support multiple teams and rem
 
 ### Economy and procurement
 
-- Track company funds separately from ordinary silver only if the custom interface can explain the distinction clearly. Otherwise begin with silver plus a company ledger.
-- Offer contracts with payment, advance supply, deadlines, requested evidence, and consequences for loss or breach.
-- Allow legal procurement through traders, comms, and scheduled shipments; later add internal company logistics and outpost re-supply.
+- Keep a USD-denominated company ledger distinct from physical silver. The multitrillion parent company's valuation is setting context; each scenario owns a finite, visible branch budget and may request milestone funding.
+- Let accepted contracts, research commissions, leases, services, and physical item sales pay amounts that match their scope, evidence, risk, buyer demand, and rights. Do not attach a flat cash reward to every event or discovery.
+- Keep normal RimWorld loops fully useful: build, grow, cook, research, craft, harvest, collect, store, and trade with actual pawns, jobs, bills, stockpiles, and goods.
+- Use account-funded orders for company procurement, then deliver real physical shipments. Ordinary vanilla trade still exchanges real items and silver; never convert the account to silver automatically.
 - Make recovered furnishings and technology useful as cargo, samples, blueprints, or resale goods. Some discoveries should be too dangerous or valuable for ordinary sale.
-- Every profit opportunity should have a cost: wages/food, machine upkeep, medical treatment, compensation, containment, or lost equipment.
+- Balance account cash, pawn carrying, physical storage, shipment batches, and hauling throughput separately. Large ledger amounts must not create huge silver piles; physical bulk must show stack counts, receiving capacity, and labor/time before acceptance.
+- Every profit opportunity should have a cost the player can see: payroll, machine upkeep, medical treatment, containment, shipment, rent, or lost equipment. Food is physical stock grown/cooked or bought in a quoted order, not an automatic cash fee per meal.
 
 ### Threats, containment, and investigation
 
@@ -120,7 +122,7 @@ The facility becomes a major organization and can support multiple teams and rem
 
 ## Company interface
 
-The interface should make the unusual campaign legible without hiding core RimWorld information. Add an **Operations** board for staff roster, projects, finance, gate status, expedition planning, coordinate records, contracts, incidents, and outposts. Reuse vanilla Architect, Work, Research, Assign, and World tabs where possible. Do not replace every vanilla menu in the first playable version; replace or reorganize screens only after the company workflow is proven.
+The full-mod interface goal is a company-first remaster of RimWorld's menus, tabs, and campaign views, so players manage facilities, staff, money, research, the gate, expeditions, cases, contracts, discovered spaces, and outposts as one connected operation. Start with an **Operations** board in the first playable, then grow it into Company Command pages for those work areas. Existing pawn, building, map, work, research, and world actions must remain reachable and retain their familiar RimWorld behavior; reorganize their presentation without breaking the underlying colony simulation. Decide the final tab arrangement through playability and profile-interaction checks rather than treating the first-slice layout as the finished interface.
 
 ## First playable acceptance target
 

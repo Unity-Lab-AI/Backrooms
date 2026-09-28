@@ -1,6 +1,6 @@
 # Rimrooms - Async Industries: first playable contract
 
-**Status:** pre-code design target, version 0.1. All numbers are balance hypotheses for a later RimWorld 1.6 prototype. They are not gameplay results, compatibility claims, or frozen canon. Keep values adjustable and revise this document with the scenario contract when a playtest changes them.
+**Status:** pre-code design target, version 0.2. All numbers are balance hypotheses for a later RimWorld 1.6 prototype. They are not gameplay results, compatibility claims, or frozen canon. Keep values adjustable and revise this document with the scenario contract when a playtest changes them.
 
 **Purpose:** define the first complete player loop tightly enough that implementation can begin with one coherent slice: a small company facility, a short gate opening, one seeded destination, a recoverable route distortion, one learnable hostile encounter, an evidence result, and a reason to prepare the next run. The named starting roster and room contents are in the [first-slice content inventory](FIRST_SLICE_CONTENT_INVENTORY.md); the starter encounter rules are in [THREAT_DESIGN_SHEETS.md](THREAT_DESIGN_SHEETS.md).
 
@@ -8,7 +8,7 @@
 
 ## Starting offer
 
-Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquarters map, five staff in flexible roles, 900 company credits, 150 physical silver, a partially assembled gate, the starter stock listed on that card, and one already-accepted onboarding survey contract. The provisional 240-credit reward is paid only after the survey requirements are recorded as complete. An optional 60-credit bonus pays if all three crew return and the route, distortion, and entity observation records are delivered; a recoverable injury does not cancel it. Start with the project board visible and the next actionable step highlighted. Do not require a DLC, optional profile mod, RWT, or a named pawn to complete the solo first run.
+Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquarters map, five staff in flexible roles, a provisional $50,000,000 Company Account, 150 physical silver, a partially assembled gate, the starter stock listed on that card, and one already-accepted onboarding survey contract. The $5,000,000 target reward is paid only after the survey requirements are recorded as complete. An optional $1,000,000 bonus pays if all three crew return and the route, distortion, and entity observation records are delivered; a recoverable injury does not cancel it. Start with the project board visible and the next actionable step highlighted. Do not require a DLC, optional profile mod, RWT, or a named pawn to complete the solo first run.
 
 | Measure | v0.1 starting target | Player-facing meaning |
 | --- | --- | --- |
@@ -18,7 +18,7 @@ Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquar
 | Gate opening | 20 in-game minutes for the first trip | A short first excursion with a visible warning and a recall decision. |
 | First destination | 6–8 connected rooms, one safe return point, the Borrowed Corridor distortion, one bounded Quiet Pursuer encounter, and one evidence lead | The map teaches route reading, investigation, and a first fight-or-retreat choice without a sprawling first mission. |
 | First crew load | Up to three pawns and their carried gear | The first run is intentionally easy to account for in a manifest. |
-| First successful return | 240 company credits and one research insight, both provisional | The player can see the economic and research value of a controlled expedition. |
+| First successful return | $5,000,000 Company Account receipt and one research insight, both provisional | The player can see the economic and research value of a controlled expedition. |
 
 ## The first session
 
@@ -61,7 +61,7 @@ These are future in-game acceptance checks, not tests already run. Record the Ri
 ## Boundaries
 
 - This slice does not require hires beyond the starting five, multiplayer visits, synchronized research, direct video/film assets, VGE, outposts, town incidents, or a full technology tree.
-- Research and company credits are local to the player's branch. Any RWT dossier or supported cargo transfer is a separately tested later feature.
+- Research and the USD-denominated Company Account are local to the player's branch. Physical silver and other goods remain actual items; any RWT cargo transfer is a separately tested later feature.
 - These starting targets are hypotheses. A future playtest can adjust map size, gate duration, costs, crew count, reward, and room count; the save identity, recovery path, branch ownership, and traceability rules remain the contract.
-- The first month of company credits is modeled in [CAMPAIGN_ECONOMY_MODEL.md](CAMPAIGN_ECONOMY_MODEL.md) and its linked workbook. Prices and power values remain hypotheses pending a playable balance pass.
+- The first month of Company Account activity is modeled in [CAMPAIGN_ECONOMY_MODEL.md](CAMPAIGN_ECONOMY_MODEL.md) and its linked v0.2 workbook. Prices and power values remain hypotheses pending a playable balance pass.
 - Do not mark this as runtime complete until the acceptance evidence table has dated records from an actual game build.

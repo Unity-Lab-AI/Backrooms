@@ -16,6 +16,16 @@ These are treated as project direction from the conversation. A change must be r
 - **Creative references:** Kane Pixels' Backrooms series and the A24 Backrooms feature are the selected references. Adapt indirectly; broader community canon is excluded from shipped content.
 - **Preparation rule:** finish the research, profile mapping, feature contracts, and Gate 0 decisions before starting implementation. Do not begin code while this gate is open.
 
+## Supplemental owner direction captured during preparation
+
+These product requirements supplement D1–D9; they do not change those answers or create new owner decisions.
+
+- **Company scale and economy:** the parent corporation operates at multi-trillion-dollar scale. Company contracts, discoveries, research, salvage, and services can reach millions or more when the buyer, deliverable, risk, and rights support that value; events do not pay a universal token amount just for happening. Company USD stays in an auditable branch ledger, separate from physical silver and goods. The colony still uses RimWorld's ordinary pawn work, growing, cooking, crafting, harvesting, research, storage, and hauling. Meals are physical food, not an automatic cash fee.
+- **Capacity and logistics:** use the owner's selected 294-profile with OgreStack's default behavior as the planning baseline, without making OgreStack required or overriding its settings. One million physical silver is therefore modeled as 67 stacks under the published default small-volume multiplier, compared with 2,000 stacks at Core's 500-item limit. Runtime estimates must use the actual save's effective item limit, pawn carry, storage, and hauling throughput; account balances never spawn as silver.
+- **Company interface:** the completed mod should remap RimWorld's menus, tabs, and campaign views into a company-first command layout for facilities, staff, research, the gate, expeditions, evidence, cases, contracts, finance, sites, and outposts. The first playable starts with Operations; the full layout grows from it while keeping underlying RimWorld actions accessible.
+- **Main-menu showcase:** create an original Backrooms background rotation that previews the shipped scenarios and campaign systems, with readable menu controls, disable/reduced-motion behavior, fallback, and per-asset provenance. The source/API research is recorded in the [menu extension audit](research/MENU_BACKGROUND_EXTENSION_AUDIT.md); the actual slideshow implementation and images remain later work.
+- **Profile-wide treatment:** all 294 installed profile entries are in scope for source review and interaction mapping. Use their native behavior, adapt a public extension point, add a narrow integration, or mark a row optional/no-touch/unsupported based on evidence. D3 remains controlling: only Core plus Harmony/RWT are required for co-op, while every other profile mod is optional. Do not copy or redistribute mod files.
+
 ## Owner choices and recorded answers
 
 The marked boxes below are recorded as owner selections. Where multiple compatible options are marked, they are combined and explained in the decision log. D2's proposal is accepted. The suggested answer is a proposal unless it is marked by the owner.

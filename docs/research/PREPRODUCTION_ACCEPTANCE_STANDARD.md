@@ -17,7 +17,7 @@ This standard turns the project's “AAA-grade” quality goal into observable p
 - **Expedition safety:** every generated destination provides a visible dispatch condition, a return/extraction rule, and a recoverable failure path. No required campaign objective can generate an unrecoverable softlock.
 - **Procedural repeatability:** for 1,000 recorded seed/coordinate cases per generator release, identical inputs produce identical room graphs; every generated graph passes route validation and has a reachable extraction path. Changed generator versions preserve saved visited sites or use a reviewed migration.
 - **Persistence:** a scripted suite performs at least 100 save/load cycles across representative Core and all-five-DLC saves, plus migration tests from each supported prior schema. No duplicated starting grants, lost pawns/items, reset discoveries, or unrecoverable load errors are accepted.
-- **Co-op transactions:** in the pinned two-client profile, exercise at least 100 item/dossier transfers and 20 interrupted/reconnected transfers. There must be zero duplicated credits, silently lost cargo, or cross-branch writes to state that remains branch-owned. Shared research is enabled only after equivalent ledger-sync tests pass.
+- **Co-op transactions:** in the pinned two-client profile, exercise at least 100 item/dossier transfers and 20 interrupted/reconnected transfers. There must be zero duplicate company-ledger postings, silently lost cargo, or cross-branch writes to state that remains branch-owned. Shared research is enabled only after equivalent ledger-sync tests pass.
 
 ## Integration and compatibility acceptance
 

@@ -65,11 +65,11 @@ Optional DLC may add familiar routes around these themes, but no branch or requi
 
 Keep these values aligned with the [scenario card](SCENARIOS.md), [first playable contract](FIRST_PLAYABLE_CONTRACT.md), [first-slice inventory](FIRST_SLICE_CONTENT_INVENTORY.md), and [threat sheets](THREAT_DESIGN_SHEETS.md). They are provisional balance hypotheses, not tested behavior:
 
-- A 60×60 headquarters with five flexible staff, 900 company credits, 150 physical silver, and the listed starter stock.
+- A 60×60 headquarters with five flexible staff, a provisional $50,000,000 authorized Company Account, 150 physical silver, and the listed starter stock.
 - Finish the gate with 100 steel and 8 components; meet the provisional 3,000 W reserve target and keep a qualified operator at the facility.
 - Prepare up to three field staff for a 20 in-game-minute opening, with warnings at 10, 5, and 2 minutes.
 - Explore AI-01, a saved 6–8-room destination with a validated return path, numbered tags, one Borrowed Corridor route distortion, and one bounded Quiet Pursuer encounter.
-- Return and analyze the AI-01 Route Recording. A valid extraction posts one 240-credit payment and one research insight. A further 60-credit bonus is optional and requires all three field staff and the route, distortion, and entity-observation records to return. A recoverable injury does not cancel it.
+- Return and analyze the AI-01 Route Recording. A valid extraction posts one provisional $5,000,000 payment and one research insight. A further $1,000,000 bonus is optional and requires all three field staff and the route, distortion, and entity-observation records to return. A recoverable injury does not cancel it. See [the v0.2 economy model](CAMPAIGN_ECONOMY_MODEL.md); amounts are untested balance targets.
 - Choose Gate Telemetry or a follow-on survey as the next preparation step.
 
 The distortion cannot injure the crew or move the gate exit. The entity can be avoided or repelled; capture and a kill are not required. The session must remain understandable through text and map cues without relying on color or sound.
