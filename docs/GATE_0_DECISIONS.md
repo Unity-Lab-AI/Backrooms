@@ -87,6 +87,15 @@ The owner's stated MIT/court-case rights premise is retained as an owner-provide
 
 **Combined owner answer:** use the mature psychological-horror management direction in A and push the horror presentation to the limit expressed in C, within the capabilities of RimWorld and the selected mod profile.
 
+## Open owner choice surfaced by mod review
+
+- **Questionable Ethics Enhanced (profile row 182):** the publisher's README says RimWorld multiplayer will not work properly. This is a source warning, not an RWT runtime result. It must remain optional under D3 until tested.
+- **Recommended working scope:** solo-only optional content, excluded from the supported RWT co-op profile. Other options are to allow it in a profile without a co-op support promise, or to require proven co-op compatibility and block that support claim until the exact profile passes.
+- **Status:** owner input requested on 2026-09-27; no answer recorded yet. See the [row 182 review](research/reviews/mods/2850854272-Mlie.QuestionableEthicsEnhanced.md) and [interaction check](research/PRIORITY_PROFILE_INTERACTIONS.md).
+- **Medical Dissection (profile row 274):** the Workshop publisher states the mod does not support multiplayer and will likely cause desyncs. This is a publisher warning, not a reproduced RWT result; its local manifest lists no multiplayer incompatibility. Keep it optional under D3 while its scope is decided.
+- **Recommended working scope:** solo-only optional content, excluded from the supported RWT co-op profile. Other options are to allow it in co-op setups without a support promise, or exclude it from Rimrooms guidance.
+- **Status:** owner input requested on 2026-09-27; no answer recorded yet. See the [row 274 review](research/reviews/mods/1328216966-Heremeus.MedicalDissection.md) and [interaction check](research/PRIORITY_PROFILE_INTERACTIONS.md).
+
 ## Research-method clarification from the owner
 
 On 2026-09-27, the owner approved fan-made episode summaries and movie plot summaries as the first-pass story sources. A fan-maintained movie summary is now recorded; the chaptered video recap remains optional. Full video or feature viewing is not required by default. Keep fan interpretation labeled, keep the series and film separate, and only go back to the official source when a detail remains unclear and matters to a planned feature. See [`research/FAN_SUMMARY_GUIDE.md`](research/FAN_SUMMARY_GUIDE.md). This changes the research method, not the selected story scope in D5.
