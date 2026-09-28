@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <PawnKindDef Name="RR_StaffBase" ParentName="BasePlayerPawnKind" Abstract="True">
+    <defaultFactionDef>PlayerColony</defaultFactionDef>
+    <apparelTags><li>IndustrialBasic</li></apparelTags>
+    <apparelMoney>400~650</apparelMoney>
+    <apparelAllowHeadgearChance>0</apparelAllowHeadgearChance>
+    <chemicalAddictionChance>0</chemicalAddictionChance>
+    <humanPregnancyChance>0</humanPregnancyChance>
+    <backstoryCryptosleepCommonality>0</backstoryCryptosleepCommonality>
+    <requiredWorkTags><li>Hauling</li><li>Cleaning</li><li>Firefighting</li></requiredWorkTags>
+  </PawnKindDef>
+  <PawnKindDef ParentName="RR_StaffBase">
+    <defName>RR_OperationsStaff</defName>
+    <label>operations lead</label>
+    <skills><li><skill>Social</skill><range>6~12</range></li><li><skill>Intellectual</skill><range>4~10</range></li></skills>
+    <requiredWorkTags><li>Social</li><li>Intellectual</li></requiredWorkTags>
+  </PawnKindDef>
+  <PawnKindDef ParentName="RR_StaffBase">
+    <defName>RR_ResearchStaff</defName>
+    <label>researcher</label>
+    <skills><li><skill>Intellectual</skill><range>8~14</range></li><li><skill>Crafting</skill><range>4~10</range></li></skills>
+    <requiredWorkTags><li>Intellectual</li><li>Crafting</li></requiredWorkTags>
+  </PawnKindDef>
+  <PawnKindDef ParentName="RR_StaffBase">
+    <defName>RR_EngineeringStaff</defName>
+    <label>engineer</label>
+    <skills><li><skill>Construction</skill><range>8~14</range></li><li><skill>Crafting</skill><range>6~12</range></li></skills>
+    <requiredWorkTags><li>Constructing</li><li>Crafting</li></requiredWorkTags>
+  </PawnKindDef>
+  <PawnKindDef ParentName="RR_StaffBase">
+    <defName>RR_SecurityStaff</defName>
+    <label>security guard</label>
+    <skills><li><skill>Shooting</skill><range>8~14</range></li><li><skill>Melee</skill><range>4~10</range></li></skills>
+    <requiredWorkTags><li>Violent</li><li>Shooting</li></requiredWorkTags>
+  </PawnKindDef>
+  <PawnKindDef ParentName="RR_StaffBase">
+    <defName>RR_MedicalLogisticsStaff</defName>
+    <label>medic and logistics generalist</label>
+    <skills><li><skill>Medicine</skill><range>8~14</range></li><li><skill>Cooking</skill><range>6~12</range></li><li><skill>Plants</skill><range>4~10</range></li></skills>
+    <requiredWorkTags><li>Caring</li><li>Cooking</li><li>PlantWork</li></requiredWorkTags>
+  </PawnKindDef>
+</Defs>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Generation_InvalidRequest>That coordinate cannot be opened from this branch.</RR_Generation_InvalidRequest>
+  <RR_Generation_InvalidCoordinate>The coordinate record is incomplete or invalid.</RR_Generation_InvalidCoordinate>
+  <RR_Generation_InvalidRoomGraph>The saved room plan is invalid; the site remains closed and its recorded layout was kept.</RR_Generation_InvalidRoomGraph>
+  <RR_Generation_OwnerMismatch>The saved coordinate belongs to a different or invalid site owner. No replacement map was made.</RR_Generation_OwnerMismatch>
+  <RR_Generation_OwnerMissing>The saved site owner is missing. The coordinate was kept for recovery.</RR_Generation_OwnerMissing>
+  <RR_Generation_OwnerDefMissing>The destination owner definition is unavailable.</RR_Generation_OwnerDefMissing>
+  <RR_Generation_OwnerDefMismatch>The destination owner definition has the wrong map-parent type.</RR_Generation_OwnerDefMismatch>
+  <RR_Generation_NoFreeTile>No unused world-map address is available for this coordinate.</RR_Generation_NoFreeTile>
+  <RR_Generation_OwnerRegistrationFailed>The destination owner could not be saved in the world. The coordinate plan was kept.</RR_Generation_OwnerRegistrationFailed>
+  <RR_Generation_PreviouslyOpenedMapMissing>The previously opened site map is missing. Its coordinate was kept and not rerolled.</RR_Generation_PreviouslyOpenedMapMissing>
+  <RR_Generation_MapSizeOrOwnerMismatch>The saved site map has the wrong size or owner.</RR_Generation_MapSizeOrOwnerMismatch>
+  <RR_Generation_IncompleteLayout>The site map did not produce its complete saved layout.</RR_Generation_IncompleteLayout>
+  <RR_Generation_UnreachableRequiredCell>A required room, evidence space, entry, or return cell is unreachable. The gate remains closed.</RR_Generation_UnreachableRequiredCell>
+  <RR_Generation_MapBuildFailed>The site could not be prepared. The coordinate and any generated map were retained for recovery.</RR_Generation_MapBuildFailed>
+  <RR_Generation_MapOwnerOrGraphMismatch>The destination generator did not find its matching saved coordinate and room graph.</RR_Generation_MapOwnerOrGraphMismatch>
+  <RR_Generation_RefusedToReplaceSavedLayout>The generator refused to replace an already saved room layout.</RR_Generation_RefusedToReplaceSavedLayout>
+  <RR_Generation_RequiredCoreOrSiteDefMissing>A required Core or Rimrooms site definition is missing.</RR_Generation_RequiredCoreOrSiteDefMissing>
+  <RR_Generation_NonAdjacentRooms>The saved room graph contains a disconnected physical link.</RR_Generation_NonAdjacentRooms>
+  <RR_Generation_CorridorOutOfBounds>A generated corridor fell outside the finite site map.</RR_Generation_CorridorOutOfBounds>
+  <RR_Generation_WallOutOfBounds>A generated wall fell outside the finite site map.</RR_Generation_WallOutOfBounds>
+  <RR_Generation_WallOverlap>Generated site walls overlap a room feature.</RR_Generation_WallOverlap>
+  <RR_Generation_NoReturnAnchorCell>The threshold has no safe space for its return anchor.</RR_Generation_NoReturnAnchorCell>
+  <RR_Generation_InvalidFixtureDef>The destination fixture definition is not a building.</RR_Generation_InvalidFixtureDef>
+  <RR_Generation_NoSafeRoomCell>No clear, walkable placement cell remains in the required room.</RR_Generation_NoSafeRoomCell>
+  <RR_Generation_NoReturnCell>The return anchor has no safe adjacent return cell.</RR_Generation_NoReturnCell>
+  <RR_Generation_InvalidStartOrObjectiveCell>The generated entry, return point, or evidence space is unsafe.</RR_Generation_InvalidStartOrObjectiveCell>
+  <RR_Generation_UnreachableRoom>The generated room graph is not physically reachable from the entry.</RR_Generation_UnreachableRoom>
+  <RR_Generation_FluorescentLabel>liminal fluorescent fixture</RR_Generation_FluorescentLabel>
+  <RR_Generation_FluorescentDescription>An original, damaged fluorescent fixture. It emits light without drawing from the crew's power grid, but it can be broken.</RR_Generation_FluorescentDescription>
+  <RR_Generation_ClimateUnitLabel>liminal climate unit</RR_Generation_ClimateUnitLabel>
+  <RR_Generation_ClimateUnitDescription>An original passive unit that warms its sealed room up to 20°C. It draws no site power, cannot cool a hot room, and can be damaged.</RR_Generation_ClimateUnitDescription>
+  <RR_Generation_NoSafeCandidate>No safe first-site layout was found within the bounded attempt limit.</RR_Generation_NoSafeCandidate>
+  <RR_Generation_ContentAlreadyStarted>Room contents were already started; the saved partial site is retained.</RR_Generation_ContentAlreadyStarted>
+  <RR_Generation_InvalidSalvageDef>A salvage item cannot be safely packed with the installed definitions.</RR_Generation_InvalidSalvageDef>
+  <RR_Generation_ContentPlacementFailed>Room content placement stopped; the existing site is retained.</RR_Generation_ContentPlacementFailed>
+  <RR_Generation_InvalidDoorDef>The installed doorway definition cannot provide the required native room access.</RR_Generation_InvalidDoorDef>
+  <RR_Generation_GateAccessOnly>Enter this coordinate through the machine gate.</RR_Generation_GateAccessOnly>
+  <RR_Clue_Label_threshold_room>Validated threshold — room {0}</RR_Clue_Label_threshold_room>
+  <RR_Clue_Text_threshold_room>Two waiting stools face a route that has no ordinary exterior. Use the return anchor for extraction; reaching this room alone does not send cargo home.</RR_Clue_Text_threshold_room>
+  <RR_Clue_Label_survey_lobby>Survey station — room {0}</RR_Clue_Label_survey_lobby>
+  <RR_Clue_Text_survey_lobby>A table and chair mark the first survey station. Compare the saved coordinate and surveyed-room count in Operations before leaving this junction. Gate Telemetry later adds the recorded room connections.</RR_Clue_Text_survey_lobby>
+  <RR_Clue_Label_office_copy>Duplicated workstation — room {0}</RR_Clue_Label_office_copy>
+  <RR_Clue_Text_office_copy>Two workstations repeat the same arrangement. The physical route recording is stored separately in this room; pick it up and carry it back for analysis.</RR_Clue_Text_office_copy>
+  <RR_Clue_Label_service_passage>Route-marking point — room {0}</RR_Clue_Label_service_passage>
+  <RR_Clue_Text_service_passage>A shelf and disconnected standing lamp mark this passage. Place a numbered survey tag at a verified junction before proceeding into the Borrowed Corridor.</RR_Clue_Text_service_passage>
+  <RR_Clue_Label_borrowed_corridor>Repeated planters — room {0}</RR_Clue_Label_borrowed_corridor>
+  <RR_Clue_Text_borrowed_corridor>The paired planters offer a familiar shape without a reliable direction. Compare the real numbered tag and return beacon with their recorded rooms when the route changes.</RR_Clue_Text_borrowed_corridor>
+  <RR_Clue_Label_storage_nook>Recoverable stock — room {0}</RR_Clue_Label_storage_nook>
+  <RR_Clue_Text_storage_nook>This loose salvage is a physical cargo item. Taking it uses actual crew capacity; it is never credited or returned remotely.</RR_Clue_Text_storage_nook>
+  <RR_Clue_Label_utility_room>Disconnected fixture — room {0}</RR_Clue_Label_utility_room>
+  <RR_Clue_Text_utility_room>A standing lamp has no supplied power although the ceiling fixture still glows. This dead end provides an observation.</RR_Clue_Text_utility_room>
+  <RR_Clue_Label_return_gallery>Return-route seating — room {0}</RR_Clue_Label_return_gallery>
+  <RR_Clue_Text_return_gallery>Paired stools mark the gallery on the saved return route. Keep the gate window and route markers in view; use a closed door deliberately when breaking pursuit.</RR_Clue_Text_return_gallery>
+  <RR_Generation_ReaddressContentRestore>This failure needs package or source diagnosis. A replacement cannot repair this record; the saved site is retained for recovery.</RR_Generation_ReaddressContentRestore>
+  <RR_Generation_ReaddressFailureNotEligible>This coordinate is not an eligible failed first-survey site. Its current map and records remain unchanged.</RR_Generation_ReaddressFailureNotEligible>
+  <RR_Generation_ReaddressSiteNotPristine>The site already has activity, evidence, people or linked expedition records. It cannot be replaced; preserve the coordinate and recover its existing state.</RR_Generation_ReaddressSiteNotPristine>
+  <RR_Generation_ReaddressReplacementExistsMismatch>A replacement record already exists with different survey links. Preserve both records and diagnose their ownership before proceeding.</RR_Generation_ReaddressReplacementExistsMismatch>
+  <RR_Generation_ReaddressSiteCapReached>The first-survey recovery limit has been reached. One failed site and one replacement are retained; no third site will be generated.</RR_Generation_ReaddressSiteCapReached>
+  <RR_Generation_ReaddressFallbackInvalid>The bounded replacement layout did not pass its preflight. No survey links or items were changed.</RR_Generation_ReaddressFallbackInvalid>
+  <RR_UI_FailedSiteRecovery>Review a replacement coordinate</RR_UI_FailedSiteRecovery>
+  <RR_UI_FailedSiteRecoveryExplanation>If initial room placement failed before any visit or evidence creation, one replacement may be prepared. The failed map is retained. Sites with activity or package/source faults require diagnosis instead.</RR_UI_FailedSiteRecoveryExplanation>
+  <RR_UI_FailedSiteRecoveryConfirm>Prepare AI-01R for this unresolved initial survey?\n\nThe failed coordinate and every object on it remain saved. Only a pristine survey's contract and case may move to the new coordinate. Its six-room fallback is generated on dispatch. This permits one replacement only, spends no company money, and grants no items. Eligibility is checked again when confirmed.</RR_UI_FailedSiteRecoveryConfirm>
+  <RR_Event_SiteReaddressed>The unvisited failed survey at {0} was reassigned to {1}. The failed map is retained, and the original contract remains unpaid.</RR_Event_SiteReaddressed>
+</LanguageData>

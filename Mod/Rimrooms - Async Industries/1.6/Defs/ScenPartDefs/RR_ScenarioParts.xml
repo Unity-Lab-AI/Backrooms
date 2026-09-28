@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ScenPartDef>
+    <defName>RR_CompanyStart</defName>
+    <label>company headquarters</label>
+    <category>Fixed</category>
+    <scenPartClass>RimroomsAsyncIndustries.Scenario.ScenPart_RimroomsStart</scenPartClass>
+    <canBeRandomlyAdded>false</canBeRandomlyAdded>
+    <canBePlayerAddedRemoved>false</canBePlayerAddedRemoved>
+  </ScenPartDef>
+  <ScenPartDef>
+    <defName>RR_StaffConfiguration</defName>
+    <label>starting staff</label>
+    <category>Fixed</category>
+    <scenPartClass>ScenPart_ConfigPage_ConfigureStartingPawns_KindDefs</scenPartClass>
+    <pageClass>RimroomsAsyncIndustries.Scenario.Page_ConfigureRimroomsStaff</pageClass>
+    <summaryPriority>500</summaryPriority>
+    <canBeRandomlyAdded>false</canBeRandomlyAdded>
+    <canBePlayerAddedRemoved>false</canBePlayerAddedRemoved>
+  </ScenPartDef>
+</Defs>

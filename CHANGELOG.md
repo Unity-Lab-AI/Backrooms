@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.0 — 2026-09-28 — first-expedition development slice
+
+- Added the Async Industries facility start, five staff, physical supplies and one-time branch funding.
+- Added the USD ledger, wages/overhead, arrears, initial survey contract, case/evidence records and company projects.
+- Added physical machine assembly, staffed calibration/operation, power reserve, warnings and recovery openings.
+- Added a saved finite first destination, real inventory/crew transfer, recall, relief/casualty recovery, abandonment history and auditable cargo declarations.
+- Added deployable numbered tags/beacon, corridor mismatch, bounded Quiet Pursuer, physical evidence analysis, once-only settlement and insight-gated Gate Telemetry.
+- Added actionable Operations panes, next objectives and original equipment/encounter sprites with provenance and source masters.
+- Added bounded layout candidates/fallback, furnished room families, fog-preserving native doors, observed clues, physical salvage, original carpet and native wall paint.
+- Added frozen evidence reports, explicit AI-01 resurvey preparation, persistent gate warnings and development identity/performance logging.
+- Added four original quiet audio cues with native game/master volume, independent gate/field mute and a mod volume control.
+
+The [build record](docs/implementation/PHASE_2_BUILD_RECORD.md) records exact implementation, source and evidence boundaries. Gate 2, runtime/presentation acceptance, full campaign systems, optional integrations, co-op and release remain in progress. This is a private development checkpoint.
+
 ## 0.1.0 — 2026-09-28 — private foundation
 
 - Added the Core-referenced C# library, logging entry point and inactive save-local campaign component with explicit schema version.

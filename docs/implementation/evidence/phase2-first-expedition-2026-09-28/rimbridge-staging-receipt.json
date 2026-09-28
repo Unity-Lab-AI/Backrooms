@@ -1,0 +1,98 @@
+{
+  "PackageId": "brrainz.rimbridgeserver",
+  "Version": "2.1.1",
+  "DownloadUrl": "https://github.com/pardeike/RimBridgeServer/releases/download/v2.1.1/RimBridgeServer.zip",
+  "ArchiveSHA256": "09B4C7ED5C17BD9C459B599E5216709AFC05FAA0D017EE524D1929F09C4808CE",
+  "PublisherDigestMatched": true,
+  "Destination": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Rimworld\\Mods\\RimBridgeServer",
+  "Files": [
+    {
+      "Path": "LICENSE",
+      "Bytes": 1074,
+      "SHA256": "447251991A4CA5255A7CDD1D65F7C7B87ADD26EEA880CF653221A01EC74F8F0C"
+    },
+    {
+      "Path": "LoadFolders.xml",
+      "Bytes": 81,
+      "SHA256": "BAF685359EEEB316B178E838C0D99B0233F95C4836B4B64831AF64AE1D813430"
+    },
+    {
+      "Path": "README.md",
+      "Bytes": 33415,
+      "SHA256": "66635D79343533AAEC2D2D7598C3A884A0A73892B250C4DF04BE56EDE1A1CBC3"
+    },
+    {
+      "Path": "1.6/Assemblies/Gabp.Runtime.dll",
+      "Bytes": 25600,
+      "SHA256": "D548E8665EFB033E36B5985738D865BCBAF50F9384674D0340B5C5C834FF7696"
+    },
+    {
+      "Path": "1.6/Assemblies/Lib.GAB.dll",
+      "Bytes": 82944,
+      "SHA256": "BE3AECCABD93C29271425F146C0EAAD8E37DB66C08F9883A4A5A4A44B9E51014"
+    },
+    {
+      "Path": "1.6/Assemblies/MoonSharp.Interpreter.dll",
+      "Bytes": 366592,
+      "SHA256": "1DB76110F21698639F55D28E21BDDB536C0C497CEB741DEE49FEDCCA9BCD1588"
+    },
+    {
+      "Path": "1.6/Assemblies/Newtonsoft.Json.dll",
+      "Bytes": 721320,
+      "SHA256": "F0C07AF0E84D4DD4DA4BD7823BA4535BC0481B3BF623ED40B659B68147A6BB75"
+    },
+    {
+      "Path": "1.6/Assemblies/RimBridgeServer.Contracts.dll",
+      "Bytes": 22528,
+      "SHA256": "FAC63353E9D9DF36DBFA790339380E8FDA9D84838A44ECC59FE6F072C8E39BDA"
+    },
+    {
+      "Path": "1.6/Assemblies/RimBridgeServer.Core.dll",
+      "Bytes": 252928,
+      "SHA256": "E8FAE178F5936A852CFFF227F94207B760139640AE4F6D261E6E47C811D4B87A"
+    },
+    {
+      "Path": "1.6/Assemblies/RimBridgeServer.dll",
+      "Bytes": 1305600,
+      "SHA256": "BDD0AD19036A3554EFF4ABEB2A5F35E4D13C0E8A4559985BDC13340589F913E0"
+    },
+    {
+      "Path": "1.6/Assemblies/RimBridgeServer.Extensions.Abstractions.dll",
+      "Bytes": 5632,
+      "SHA256": "E95D9241B371B158BD9A21B03B0E3DE81768E19E906D13939DD56D6D80625A4A"
+    },
+    {
+      "Path": "1.6/Assemblies/RimBridgeServer.Sdk.dll",
+      "Bytes": 33280,
+      "SHA256": "50B02CDF2183E449B5B85B16E46B1A52E3F01F7730D6A202AE845EC6CBC5B947"
+    },
+    {
+      "Path": "About/About.xml",
+      "Bytes": 1839,
+      "SHA256": "F934EF31F2C6061A022BB3098766DC03730039F33CB97AFBDF874CA66427A9E0"
+    },
+    {
+      "Path": "About/Manifest.xml",
+      "Bytes": 576,
+      "SHA256": "94F95802BE2B8C6A56C34D4C0F991FC0CF4AEF44782F68153809A9652C0350B8"
+    },
+    {
+      "Path": "About/ModIcon.png",
+      "Bytes": 10015,
+      "SHA256": "75AFEBFB6367E4000EDBF774DB7860F3BC30D6348200782365B269B1B4C78DFD"
+    },
+    {
+      "Path": "About/Preview.png",
+      "Bytes": 357119,
+      "SHA256": "D6B3A3D72CB2A292F430EE1F493DF7D5CC88B6E0C512DD8D1C5C2BA8BED2BFCB"
+    },
+    {
+      "Path": "About/PublishedFileId.txt",
+      "Bytes": 10,
+      "SHA256": "BBD6424B6B1C6F077093DB773D73256619695B9A8658558A050F5DEB2AA201DF"
+    }
+  ],
+  "ProfileChanged": false,
+  "GameLaunched": false,
+  "Connected": false
+}

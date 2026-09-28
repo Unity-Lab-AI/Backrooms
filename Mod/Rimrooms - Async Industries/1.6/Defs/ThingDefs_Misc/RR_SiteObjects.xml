@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_ReturnAnchor</defName><label>validated return anchor</label>
+    <description>The saved threshold for this coordinate. Approach this marker to return through an open company gate. Closing the gate does not erase the site or move its anchor. A blocked approach must be cleared before extraction.</description>
+    <thingClass>Building</thingClass><size>(1,1)</size><rotatable>false</rotatable>
+    <graphicData><texPath>Items/Field/RR_ReturnBeacon</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(1,1)</drawSize></graphicData>
+    <passability>Standable</passability><altitudeLayer>FloorEmplacement</altitudeLayer>
+    <useHitPoints>false</useHitPoints><selectable>true</selectable><fillPercent>0</fillPercent>
+    <statBases><Mass>30</Mass><MarketValue>0</MarketValue><WorkToBuild>0</WorkToBuild></statBases>
+    <building><isEdifice>false</isEdifice><deconstructible>false</deconstructible><claimable>false</claimable><canBuildNonEdificesUnder>true</canBuildNonEdificesUnder></building>
+  </ThingDef>
+  <ThingDef>
+    <defName>RR_QuietPursuer</defName><label>Quiet Pursuer</label>
+    <description>A motionless figure seems to occupy a nearer room whenever attention shifts. Its last reported distance is recorded in Operations. Withdraw behind a closed door, keep moving along a marked route, or use a firearm to force distance. The threshold is protected. This manifestation cannot be captured or sold.</description>
+    <thingClass>RimroomsAsyncIndustries.Threats.Thing_QuietPursuer</thingClass>
+    <category>Ethereal</category><tickerType>Never</tickerType><drawerType>RealtimeOnly</drawerType>
+    <graphicData><texPath>Threats/RR_QuietPursuer</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(1.4,1.4)</drawSize></graphicData>
+    <altitudeLayer>Pawn</altitudeLayer><passability>Standable</passability><selectable>true</selectable><useHitPoints>true</useHitPoints><rotatable>false</rotatable>
+    <statBases><MaxHitPoints>45</MaxHitPoints><Flammability>0</Flammability><MarketValue>0</MarketValue></statBases>
+    <fillPercent>0.5</fillPercent>
+  </ThingDef>
+</Defs>

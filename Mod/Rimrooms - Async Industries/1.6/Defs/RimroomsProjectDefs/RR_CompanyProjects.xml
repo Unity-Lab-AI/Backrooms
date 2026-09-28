@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_GateTelemetry</defName>
+    <label>Gate Telemetry</label>
+    <description>Compare recovered route recordings with the machine's timing records. Unlocks a persistent route-planning view of surveyed rooms and their known connections before a repeat expedition. Unexplored rooms remain unknown. Requires one research insight and staffed work at a powered field analysis bench.</description>
+    <insightCost>1</insightCost>
+    <workRequired>6000</workRequired>
+    <minimumIntellectual>4</minimumIntellectual>
+    <unlocksSurveyedRoutePlanning>true</unlocksSurveyedRoutePlanning>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+</Defs>

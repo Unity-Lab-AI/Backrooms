@@ -1,0 +1,186 @@
+{
+  "BuildVersion": "0.2.0",
+  "AssemblySHA256": "EB542B4D4F5E27CB08F3FA8AA673B64B9CA89D58568175A8A7B3F6E75B2D6575",
+  "Files": [
+    {
+      "Path": "src/RimroomsAsyncIndustries/Audio/RimroomsAudio.cs",
+      "SHA256": "4F8FF9427E21FACB60BC45FD4B2CF302CA1435BE76466A5D58F62EF80F56BF4A"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Company/CampaignRecords.cs",
+      "SHA256": "D9E69F9CD5D577BB38ACE7B17585D7AF050AF0F65720F473DFEEFC7F420D532D"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Company/CampaignServices.cs",
+      "SHA256": "E8731F14F623766CC5255C7AE491F082DD605EF1BF296BE15AD305C007C4EB4C"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Company/CompanyActionResult.cs",
+      "SHA256": "85B86BE73786596F11254ED23BFD8602C4CFE46F74646483518617D8A9F8EA08"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Company/EvidenceObservations.cs",
+      "SHA256": "7B8122A69215482BF7B4BD20C6FA7A43F4B70D5B53C2113AACEFC75EC8EDBF19"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Company/EvidenceSettlement.cs",
+      "SHA256": "9EFBBC28E7CA0E86373C6B2D0AEC12036688B8343325F48844EBDF95C5C6C451"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Company/InvestigationServices.cs",
+      "SHA256": "BF03B42C6DB324340DA539C09F06D93A800E5838E69437683D8E7D3866ABE119"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Company/RimroomsCampaignComponent.cs",
+      "SHA256": "5F676BB525D4D1A1A60A4D05F25A1CB96AC5C6D24BF8CBDF92E7AF1353E0B7D4"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Core/RimroomsDiagnostics.cs",
+      "SHA256": "33A9A8319B8B2EFD63A9A37EA17E4E05525639C9114402E74C4AC4373DC36DB4"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Core/RimroomsMod.cs",
+      "SHA256": "A1AFBEC3C9B4D1AD8974C7134E070C28571B136B0CB4BCE5F82E5BD84B7D057C"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Core/RimroomsSettings.cs",
+      "SHA256": "AF5468DCAD226999F1E4D960D72D6D548949B81253EB310C77B43E695E74C23F"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Expedition/ExpeditionCargo.cs",
+      "SHA256": "86BFED781D5B00E94938A3BD9D466967482B2FF64388494EE38CDBC600A439B8"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Expedition/ExpeditionClosure.cs",
+      "SHA256": "B2FEF2DB93A149C5F1FC7D8146885F9988C6E88BAD05ABE6FC51EFD59067D4C3"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Expedition/ExpeditionRecords.cs",
+      "SHA256": "1BE9E2776962927969F1259F95C9A29E9FBEC5358E352D0150AF287A3BDEDCF6"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Expedition/JobDriver_ExpeditionApproach.cs",
+      "SHA256": "5079F587369298E70B62540EA50B6F603ED779C72C6AF024A3CABB6C35D88AE7"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Expedition/RimroomsExpeditionComponent.cs",
+      "SHA256": "1C908E82E961EA296A53B76C74AD1D5E789C9453CC5E513C185A8DC90A37AAD5"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs",
+      "SHA256": "6AECAB07169A7F65457DB6246EB8A32099682AF58E37994346794E0EA5DA5892"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Gate/CompRimroomsGateConsole.cs",
+      "SHA256": "3887B4E36FF05BF7A56C3971678182AEA429DBFC6457C735A600B0AB49DBE9F9"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Gate/JobDriver_RimroomsGate.cs",
+      "SHA256": "CEB01A21E62D6FC806DDC89C98C22E1A28B3D06146A134332F01DF553C812F05"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Gate/WorkGiver_RimroomsGate.cs",
+      "SHA256": "90590B84384A9DFDBF96ACF75DF0FFE4F7BDC1A13D8EF9FBDFD1944E7A886C92"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Generation/DestinationService.cs",
+      "SHA256": "CE58061E8EA5C824E84A4F152970457454BAFAEF7107C7333EA3E4196FC9610D"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Generation/FailedSiteRecovery.cs",
+      "SHA256": "86ACA7E548BB2521F187B8B700A2202D8DFBF72C05AD793BA346E9777827CBB2"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Generation/GenStep_BackroomsDestination.cs",
+      "SHA256": "07424511FFFFDF2DECD5269FEC329CF086BCA044263AC85229F6A46993359568"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Generation/RimroomsDestinationMapParent.cs",
+      "SHA256": "48308A62C40CEAB87CB040E36736FC3AF5003EF3D361B288924DC53B6FD01EDE"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Generation/RoomContentBuilder.cs",
+      "SHA256": "01A4B50B2E2635702007B2517DEE3C0547623A12E604ED361AEF7CC6281CC53F"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Generation/RoomContentMapComponent.cs",
+      "SHA256": "0ABF2809D4F7B00D6DF77ACB7416D9968E40675CC4D98EBA94D2A64D73612ED0"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Generation/RoomLayoutPlanner.cs",
+      "SHA256": "8C9A112A37E3E5CA0828056E97993EF158AF11709BDA9081E8519C5CAF73EBEE"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Investigation/CompRouteAid.cs",
+      "SHA256": "3B022B87358FDD46500F989145C7B140B0FDEE6D2675497260FC646007D87F02"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Investigation/CompRouteEvidence.cs",
+      "SHA256": "168E8A7A599802F4236EB9B1384AE7061B8200FA5F80F3C145819687610D39EA"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Investigation/JobDriver_CompanyLaboratory.cs",
+      "SHA256": "051456EEEC4F11B948B59EA067A14EDD131BB033FA8DFD811E619CBF68768BC6"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Investigation/JobDriver_DeployRouteAid.cs",
+      "SHA256": "70BAE65493116ABE8C983CE1150B4CCECB308E1B7CDCEAF57B8385FC22595B4E"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Investigation/LaboratoryUtility.cs",
+      "SHA256": "440D70FAC14A598C022ED5726D3FF2B0C9DCA20C1FA4BDBD74FA1253332F0E6C"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Investigation/RimroomsProjectDef.cs",
+      "SHA256": "EEC2026F8BA0CD25209A112139B06466199446F65B51259F4B1F58B1CF3A8B30"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Investigation/WorkGiver_CompanyLaboratory.cs",
+      "SHA256": "5C67A3037D6BDD66F09138BC26E8E2503D831D7F12B5FCD9C4E1B6B9884E113A"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Scenario/GenStep_Headquarters.cs",
+      "SHA256": "21BAFA2AD46F1D8691E5D1E98E134CA461B8F4B755896427F2E290E05A303A67"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Scenario/HeadquartersSetupComponent.cs",
+      "SHA256": "1D2724C8B3AA1360EC03D01183774BC441007B4CC974994B6DD3CDD3561678C9"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Scenario/RimroomsStartDef.cs",
+      "SHA256": "A9DB022BD133B24F885A1E0A01FC72002FDD387619FA7DBF7B9042539A79AA7B"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Scenario/ScenPart_RimroomsStart.cs",
+      "SHA256": "AB0607DD23FE73A52E7FCDF0E553F458198F6DED855A6855C5B107F4A67B63BE"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Threats/FirstSlicePursuer.cs",
+      "SHA256": "03F28418E0B0835C9C34F173C10D2BF482D4B8EF1235634210418564509D9778"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Threats/FirstSliceSiteComponent.cs",
+      "SHA256": "6DE317B1CB861FD3C4B7F536997A81BB3726828F2C08B1660921C0FAC90D1374"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/Threats/Thing_QuietPursuer.cs",
+      "SHA256": "726623C61597687B8B7C23A869D6E6DDD7C69C9E75394137EA50266B1454AB5E"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/UI/ExpeditionRecordDialogs.cs",
+      "SHA256": "B7CC964DC9EF3D8A9865882DA03DFA04B6106FF8EB3FB5ADD5A22E6F1764D46D"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/UI/MainTabWindow_Operations.cs",
+      "SHA256": "89D72989959B9171611F4057A854D739B65C3BC1AA730A0D27B5C577C190D738"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/UI/OperationsEvidence.cs",
+      "SHA256": "357559F24B049B8C8116BEA0D6085D8C141C7E5DE3A650E7E4726C941F1D3396"
+    },
+    {
+      "Path": "src/RimroomsAsyncIndustries/UI/OperationsExpeditions.cs",
+      "SHA256": "AC3A6DAB6D33FEB523B670F0D73F3CAA8F8473DAC93D12EE84E461AD84A49BB9"
+    }
+  ]
+}

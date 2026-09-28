@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Company_UnsupportedSave>This company record belongs to another Rimrooms version. Keep the original save and use the matching build.</RR_Company_UnsupportedSave>
+  <RR_Company_InvalidStart>The company start is incomplete. Check the headquarters, starting staff and scenario report before continuing.</RR_Company_InvalidStart>
+  <RR_Company_AlreadyStarted>This save already belongs to a company branch. A second start cannot replace its records or grant more supplies.</RR_Company_AlreadyStarted>
+  <RR_Company_InvalidSave>Company records could not be reconciled. Company actions are disabled to preserve them. Keep the original save and review the Rimrooms log.</RR_Company_InvalidSave>
+  <RR_Company_InvalidAmount>The quoted transaction is invalid. No payment was posted.</RR_Company_InvalidAmount>
+  <RR_Company_ReceiptMismatch>This operation ID already has a different recorded result. No second transaction was posted.</RR_Company_ReceiptMismatch>
+  <RR_Company_InsufficientFunds>The Company Account cannot cover this payment. Existing debts and physical stock remain recorded.</RR_Company_InsufficientFunds>
+  <RR_Company_Inactive>No company branch is active in this save. Start the Async Industries scenario to establish one.</RR_Company_Inactive>
+  <RR_Company_InitialCase>AI-01: conflicting route record</RR_Company_InitialCase>
+  <RR_Company_InitialContract>AI-01 onboarding survey</RR_Company_InitialContract>
+  <RR_Ledger_InitialFunding>Authorized branch allocation</RR_Ledger_InitialFunding>
+  <RR_Ledger_Payroll>Staff payroll</RR_Ledger_Payroll>
+  <RR_Ledger_Overhead>Headquarters administration and communications</RR_Ledger_Overhead>
+  <RR_Ledger_SurveyPayment>Accepted survey deliverables</RR_Ledger_SurveyPayment>
+  <RR_Ledger_SurveyBonus>Complete crew and observation records</RR_Ledger_SurveyBonus>
+  <RR_Event_BranchStarted>Company branch established. The onboarding survey is accepted and the initial allocation is recorded.</RR_Event_BranchStarted>
+  <RR_Event_OperatingArrears>Operating charges remain unpaid. Review the account and outstanding obligations.</RR_Event_OperatingArrears>
+  <RR_Company_Balance>Company Account: {0} USD</RR_Company_Balance>
+  <RR_Company_CashExplanation>Company USD is an accounting balance. Silver, food, equipment and materials remain physical goods that staff must haul, store and use.</RR_Company_CashExplanation>
+  <RR_Company_Outstanding>Unpaid obligations: {0} USD</RR_Company_Outstanding>
+  <RR_Company_PayOutstanding>Pay outstanding obligations</RR_Company_PayOutstanding>
+  <RR_Company_Insights>Available research insights: {0}</RR_Company_Insights>
+  <RR_Company_StaffCount>Company staff: {0}</RR_Company_StaffCount>
+  <RR_Company_OpeningObjective>Next objective: prepare the machine, appoint its operator and review the AI-01 survey before dispatch.</RR_Company_OpeningObjective>
+  <RR_Company_OpenHeadquarters>View headquarters</RR_Company_OpenHeadquarters>
+  <RR_Company_MapUnavailable>The headquarters is unavailable. Its company records have been retained.</RR_Company_MapUnavailable>
+  <RR_UI_Overview>Overview</RR_UI_Overview>
+  <RR_UI_Personnel>Personnel</RR_UI_Personnel>
+  <RR_UI_Contracts>Contracts</RR_UI_Contracts>
+  <RR_UI_Ledger>Ledger</RR_UI_Ledger>
+  <RR_UI_Atlas>Atlas</RR_UI_Atlas>
+  <RR_UI_Activity>Activity</RR_UI_Activity>
+  <RR_UI_NoRecords>No records yet.</RR_UI_NoRecords>
+  <RR_UI_ViewPawn>View {0}</RR_UI_ViewPawn>
+  <RR_UI_MissingPawn>{0}: location unavailable; roster history retained.</RR_UI_MissingPawn>
+  <RR_UI_StaffRow>{0} — {1}; {2} USD per day</RR_UI_StaffRow>
+  <RR_Role_operations>Operations lead</RR_Role_operations>
+  <RR_Role_research>Researcher</RR_Role_research>
+  <RR_Role_engineering>Engineer</RR_Role_engineering>
+  <RR_Role_security>Security guard</RR_Role_security>
+  <RR_Role_medical_logistics>Medic and logistics</RR_Role_medical_logistics>
+  <RR_Contract_Accepted>Accepted</RR_Contract_Accepted>
+  <RR_Contract_Completed>Completed</RR_Contract_Completed>
+  <RR_Contract_Failed>Failed</RR_Contract_Failed>
+  <RR_Contract_Cancelled>Cancelled</RR_Contract_Cancelled>
+  <RR_UI_ContractRow>{0} — {1}</RR_UI_ContractRow>
+  <RR_UI_ContractValue>Quoted payment: {0} USD; optional records bonus: {1} USD</RR_UI_ContractValue>
+  <RR_UI_ContractTerms>Survey the route, record the distortion, recover the route recording and analyze it at headquarters. The optional bonus requires all three crew to return with route, distortion and entity observations. Combat is optional; a recoverable injury does not cancel the bonus.</RR_UI_ContractTerms>
+  <RR_UI_LedgerRow>Day {0}: {1} — {2} USD; balance {3} USD</RR_UI_LedgerRow>
+  <RR_UI_LedgerRecent>Most recent 60 transactions are shown here. Earlier receipts remain saved in the company ledger.</RR_UI_LedgerRecent>
+  <RR_Coordinate_Discovered>Signal registered; site not yet visited</RR_Coordinate_Discovered>
+  <RR_Coordinate_Ready>Saved site available</RR_Coordinate_Ready>
+  <RR_Coordinate_Unavailable>Route unavailable; recovery required</RR_Coordinate_Unavailable>
+  <RR_UI_CoordinateRow>{0} — {1}</RR_UI_CoordinateRow>
+  <RR_UI_SurveyedRooms>Surveyed rooms: {0}</RR_UI_SurveyedRooms>
+  <RR_UI_ActivityRow>Day {0}: {1}</RR_UI_ActivityRow>
+  <RR_Debug_RuntimeIdentity>Write build, loaded order and coordinate identity to Player.log</RR_Debug_RuntimeIdentity>
+</LanguageData>

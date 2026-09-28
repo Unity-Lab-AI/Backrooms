@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Exp_Status_Staging>Approaching the gate</RR_Exp_Status_Staging>
+  <RR_Exp_Status_OnSite>On site</RR_Exp_Status_OnSite>
+  <RR_Exp_Status_Returning>Returning</RR_Exp_Status_Returning>
+  <RR_Exp_Status_Stranded>Stranded; recovery required</RR_Exp_Status_Stranded>
+  <RR_Exp_Status_Completed>Returned</RR_Exp_Status_Completed>
+  <RR_Exp_Status_Aborted>Aborted before entry</RR_Exp_Status_Aborted>
+  <RR_Cargo_Location_WithCrew>With crew</RR_Cargo_Location_WithCrew>
+  <RR_Cargo_Location_Delivered>At headquarters</RR_Cargo_Location_Delivered>
+  <RR_Cargo_Location_LeftAtSite>Left at the coordinate</RR_Cargo_Location_LeftAtSite>
+  <RR_Cargo_Location_Elsewhere>Elsewhere</RR_Cargo_Location_Elsewhere>
+  <RR_Cargo_Location_Unresolved>Identity or disposition unresolved</RR_Cargo_Location_Unresolved>
+  <RR_UI_Machine>Machine</RR_UI_Machine>
+  <RR_UI_Expedition>Expedition</RR_UI_Expedition>
+  <RR_UI_MachineInstructions>Complete the console's gate assembly bill with 100 steel and 8 components. Assign a qualified operator, calibrate, charge the return reserve, then staff the console. A real operator must remain at the powered console throughout an opening.</RR_UI_MachineInstructions>
+  <RR_UI_NoMachine>No company machine was found at headquarters. Build or recover the gate before dispatch.</RR_UI_NoMachine>
+  <RR_UI_SelectMachine>View machine and its controls</RR_UI_SelectMachine>
+  <RR_UI_SelectConsole>View console assembly bill</RR_UI_SelectConsole>
+  <RR_UI_AssignGateOperator>Assign {0} as gate operator</RR_UI_AssignGateOperator>
+  <RR_UI_CalibrateMachine>Order assigned operator to calibrate</RR_UI_CalibrateMachine>
+  <RR_UI_StaffMachine>Order assigned operator to staff console</RR_UI_StaffMachine>
+  <RR_UI_RecoverTransfers>Recover interrupted physical transfers</RR_UI_RecoverTransfers>
+  <RR_UI_TripState>Expedition: {0}</RR_UI_TripState>
+  <RR_UI_AbortStaging>Cancel approach before entry</RR_UI_AbortStaging>
+  <RR_UI_RecallCrew>Recall crew along the return route</RR_UI_RecallCrew>
+  <RR_UI_StrandedInstructions>The crew and site remain saved. Restore power, recharge the return reserve and staff the console, then open a new recovery window. If the team cannot walk, prepare one headquarters relief worker to enter and carry casualties back.</RR_UI_StrandedInstructions>
+  <RR_UI_ReopenRecovery>Open a fresh recovery window at the saved site</RR_UI_ReopenRecovery>
+  <RR_UI_LoadRelief>Load missing rescue supplies onto {0}</RR_UI_LoadRelief>
+  <RR_UI_SendRelief>Send {0} as relief worker</RR_UI_SendRelief>
+  <RR_UI_CrewDead>Dead; remains require recovery</RR_UI_CrewDead>
+  <RR_UI_CrewHome>At headquarters</RR_UI_CrewHome>
+  <RR_UI_CrewOnSite>At the coordinate</RR_UI_CrewOnSite>
+  <RR_UI_CrewUnknown>Location unavailable; preserve recovery record</RR_UI_CrewUnknown>
+  <RR_UI_CrewRow>{0}: {1}</RR_UI_CrewRow>
+  <RR_UI_SelectFieldWorker>Select {0} for field actions</RR_UI_SelectFieldWorker>
+  <RR_UI_CarryCasualty>Order {0} to carry {1} to the return anchor</RR_UI_CarryCasualty>
+  <RR_UI_TripHistory>{0} — {1}; original crew returned {2}/{3}</RR_UI_TripHistory>
+  <RR_UI_NoCoordinate>No company coordinate is available.</RR_UI_NoCoordinate>
+  <RR_UI_SelectCoordinate>Destination: {0}</RR_UI_SelectCoordinate>
+  <RR_UI_DispatchInstructions>Select one to three available field staff. Keep the assigned operator at headquarters. Load the shared kit, allow the physical pickup jobs to finish, and equip the guard using normal RimWorld equipment controls. Dispatch orders the team to walk to the gate; the opening begins after final readiness checks.</RR_UI_DispatchInstructions>
+  <RR_UI_LoadSharedKit>Order physical shared-kit pickup</RR_UI_LoadSharedKit>
+  <RR_UI_KitReady>Required shared kit is in crew inventories.</RR_UI_KitReady>
+  <RR_UI_DispatchCrew>Approach gate and dispatch to selected coordinate</RR_UI_DispatchCrew>
+  <RR_UI_CargoManifest>Physical cargo manifest</RR_UI_CargoManifest>
+  <RR_UI_CargoRow>{0}: departed {1}, currently observed {2}; {3} {4}</RR_UI_CargoRow>
+  <RR_UI_Damaged>[damaged]</RR_UI_Damaged>
+  <RR_UI_CurrentObjective>Current company objective</RR_UI_CurrentObjective>
+  <RR_UI_OpenObjective>Open the work board for this objective</RR_UI_OpenObjective>
+  <RR_UI_NextAssembly>Select the gate console and add its machine-assembly bill. A capable worker needs 100 steel and 8 components. Keep the generator fueled and connected.</RR_UI_NextAssembly>
+  <RR_UI_NextCalibration>Assign a capable company operator to the machine, then order calibration. The powered console and machine must remain reachable.</RR_UI_NextCalibration>
+  <RR_UI_NextRecovery>The crew is stranded. Restore gate power and its return reserve, staff the console, then reopen the saved route or send a relief worker.</RR_UI_NextRecovery>
+  <RR_UI_NextFieldSurvey>Explore with the recorder, mark the junction, investigate the repeated route, and recover the office recording. Watch the gate window and recall through the saved return anchor.</RR_UI_NextFieldSurvey>
+  <RR_UI_NextDispatch>Staff the console. In Expedition, choose up to three field workers, queue the physical kit, wait for pickup, then dispatch to AI-01.</RR_UI_NextDispatch>
+  <RR_UI_NextRecoverEvidence>Return the physical route recording and its expedition evidence case to headquarters. A missing item stays missing until recovered; another opening does not produce a copy.</RR_UI_NextRecoverEvidence>
+  <RR_UI_NextAnalysis>Assign Research work to an available staff member with Intellectual 4. Keep the recording, its evidence case, and a powered analysis bench at headquarters. Completed analysis settles the survey once.</RR_UI_NextAnalysis>
+  <RR_UI_NextTelemetry>Commit the earned insight to Gate Telemetry in Investigation. A researcher must finish the work at the powered bench before known route connections appear in the Atlas.</RR_UI_NextTelemetry>
+  <RR_UI_NextRevisit>Gate Telemetry is complete. Review the surveyed route in Atlas, prepare replacement supplies, and reopen the saved coordinate to recover remaining cargo or continue building there.</RR_UI_NextRevisit>
+  <RR_Exp_Status_Abandoned>Closed as abandoned; recovery remains possible</RR_Exp_Status_Abandoned>
+  <RR_Cargo_Location_AtSiteInContainer>At the coordinate, inside a container</RR_Cargo_Location_AtSiteInContainer>
+  <RR_UI_ReviewAbandon>Review expedition abandonment</RR_UI_ReviewAbandon>
+  <RR_UI_ResumeRecovery>Resume this recovery operation</RR_UI_ResumeRecovery>
+  <RR_UI_AbandonPreview>Close expedition record: {0}</RR_UI_AbandonPreview>
+  <RR_UI_AbandonCounts>People currently at the coordinate: {0}. Known deaths: {1}. Cargo entries retained: {2}.</RR_UI_AbandonCounts>
+  <RR_UI_AbandonExplanation>This closes the expedition and releases the dispatch slot. The gate closes. People, bodies, cargo, evidence and the map remain where they are. A future expedition can return to this coordinate to recover them. Record why the operation is being abandoned below.</RR_UI_AbandonExplanation>
+  <RR_UI_RecordReason>Record note (up to 240 characters)</RR_UI_RecordReason>
+  <RR_UI_ConfirmAbandon>Record abandonment and close the gate</RR_UI_ConfirmAbandon>
+  <RR_UI_ClosureHistory>Closure record: {0}</RR_UI_ClosureHistory>
+  <RR_UI_RecoverHistoricalSurvivor>Order {0} back from the earlier expedition</RR_UI_RecoverHistoricalSurvivor>
+  <RR_UI_RefreshCargo>Refresh physical cargo locations</RR_UI_RefreshCargo>
+  <RR_UI_DeclareCargo>Record disposition: {0}</RR_UI_DeclareCargo>
+  <RR_UI_DeclareCargoTitle>Cargo declaration: {0}</RR_UI_DeclareCargoTitle>
+  <RR_UI_DeclareCargoExplanation>Original quantity: {0}. Currently observed: {1}. Unresolved quantity: {2}. Declarations record your account of use or loss; they do not create, remove, or relocate items. The service refuses declarations that contradict observed quantities or locations.</RR_UI_DeclareCargoExplanation>
+  <RR_UI_DeclareCount>Declared quantity (whole number)</RR_UI_DeclareCount>
+  <RR_UI_SaveCargoDeclaration>Save declaration</RR_UI_SaveCargoDeclaration>
+  <RR_UI_InvalidCargoCount>Enter a non-negative whole quantity.</RR_UI_InvalidCargoCount>
+  <RR_UI_CargoDeclaration>Declared {0}: {1}. Note: {2}</RR_UI_CargoDeclaration>
+  <RR_UI_DeclarationNeedsReview>This declaration needs review after the physical cargo changed.</RR_UI_DeclarationNeedsReview>
+  <RR_UI_AbandonTransfers>Interrupted transfer records retained: {0}. People held for safe transfer recovery: {1}. These people are not moved remotely; restoring a transfer still requires its original map and safe source position.</RR_UI_AbandonTransfers>
+  <RR_UI_AbandonPerson>{0} — {1} {2}</RR_UI_AbandonPerson>
+  <RR_Debug_CounterNote>Development counters: bounded component timings only. Whole-game baseline, achieved tick rate, startup and save/load timings require separate capture. Starting clears the prior counter window; nothing is saved in campaign state.</RR_Debug_CounterNote>
+  <RR_Debug_CounterStart>Start a new component timing window</RR_Debug_CounterStart>
+  <RR_Debug_CounterStop>Stop component timing</RR_Debug_CounterStop>
+  <RR_Debug_CounterLog>Write component timings and memory snapshot to Player.log</RR_Debug_CounterLog>
+  <RR_UI_FieldRuleState>This expedition's route mismatch: {0}</RR_UI_FieldRuleState>
+  <RR_UI_EntityWithdrawn>The reported figure has withdrawn. Its observation remains in the site record.</RR_UI_EntityWithdrawn>
+  <RR_UI_EntityLastRoom>Last reported figure: room {0}. Check the written advance warnings. Withdraw behind a closed door or return to the threshold; combat is optional.</RR_UI_EntityLastRoom>
+  <RR_UI_NextLeadChoice>Choose the next preparation step: develop Gate Telemetry or revisit the existing site with your current equipment.</RR_UI_NextLeadChoice>
+  <RR_UI_ReviewTelemetry>Review Gate Telemetry research</RR_UI_ReviewTelemetry>
+  <RR_UI_PrepareResurvey>Prepare an AI-01 resurvey</RR_UI_PrepareResurvey>
+  <RR_UI_ResurveyPurpose>Return to the same saved site to inspect unexplored rooms, retrieve remaining salvage or equipment, recover crew, or continue building. Previous discoveries and construction persist. The initial survey payment and insight are one-time; this visit does not grant them again.</RR_UI_ResurveyPurpose>
+</LanguageData>

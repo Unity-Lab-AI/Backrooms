@@ -1,6 +1,6 @@
 # Building Rimrooms - Async Industries
 
-**Current deliverable:** private `0.1.0` foundation. The Operations tab and inactive campaign save component compile; scenarios, gate operation and the playable company campaign remain in the [master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md). See the [build record](implementation/PHASE_1_BUILD_RECORD.md) for observed results.
+**Current deliverable:** private `0.2.0` development slice. See the [current build record](implementation/PHASE_2_BUILD_RECORD.md) for actual scenario, gate, destination, expedition, evidence, research and interface implementation. Gameplay acceptance and the complete campaign remain in the [master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
 
 ## Requirements and references
 
@@ -8,7 +8,7 @@
 - A locally installed, owned RimWorld 1.6. The script uses `-RimWorldPath`, then `RIMWORLD_PATH`, then the current instance's game folder in RimSort settings. It never loads or starts the game.
 - [The project](../src/RimroomsAsyncIndustries/RimroomsAsyncIndustries.csproj) uses C# 7.3, deterministic Release/Debug builds, .NET Framework **4.7.2**, and treats compiler warnings as errors. `net472` is our selected compiler baseline; Core has no `TargetFrameworkAttribute`, so it is not a claim about an official runtime target. Runtime acceptance is still required.
 - Restore uses the exact `Microsoft.NETFramework.ReferenceAssemblies.net472` **1.0.3** package and the committed [lock file](../src/RimroomsAsyncIndustries/packages.lock.json). [NuGet.Config](../NuGet.Config) selects nuget.org. Caches and CLI state stay in ignored `.local/`; internet access is needed on the first restore.
-- References resolve under `<game>/RimWorldWin64_Data/Managed`: `Assembly-CSharp.dll`, `UnityEngine.CoreModule.dll`, `UnityEngine.IMGUIModule.dll`. They have `Private=false` and never enter the mod package. The manifest also records installed `mscorlib.dll` as runtime context; compilation uses the reference package's framework assemblies.
+- References resolve under `<game>/RimWorldWin64_Data/Managed`: `Assembly-CSharp.dll`, `UnityEngine.CoreModule.dll`, `UnityEngine.IMGUIModule.dll`, `UnityEngine.TextRenderingModule.dll`. They have `Private=false` and never enter the mod package. The manifest also records installed `mscorlib.dll` as runtime context; compilation uses the reference package's framework assemblies.
 - The build refuses a Core DLL whose SHA-256 differs from the [inspected target](implementation/PHASE_1_CORE_SOURCE_REVIEW.md). Review source drift and update the pin with evidence before accepting a different game build. The historical rev590/rev591 label discrepancy remains recorded in the [target audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md#pinned-local-rimworld-test-target).
 
 ## Build
@@ -32,7 +32,7 @@ Normal builds restore in locked mode, compile, then package only our DLL and ori
 | `artifacts/build/package-manifest.json` | Exact approved package files, size and SHA-256 |
 | `artifacts/build/reference-manifest.json` | Compiler configuration and locally used reference identities |
 
-A clone contains package sources and the identity card, but **must be built before copying**: Git does not carry generated DLLs. [BuildCommon.ps1](../tools/BuildCommon.ps1) owns the explicit package allowlist. Add reviewed files there as features enter development. It rejects extra files and malformed XML. It does not prove Def behavior or compatibility. The original card is maintained by [render-preview.ps1](../tools/render-preview.ps1); regenerate it only when its design/version changes, then review and rebuild the manifest.
+A clone contains package sources and original assets, but **must be built before copying**: Git does not carry generated DLLs. [package-files.json](../tools/package-files.json) owns the explicit package allowlist, enforced by [BuildCommon.ps1](../tools/BuildCommon.ps1). Add reviewed files to that contract as features enter development. It rejects extra files and malformed XML. It does not prove Def behavior or compatibility. The original card is maintained by [render-preview.ps1](../tools/render-preview.ps1); regenerate it only when its design/version changes, then review and rebuild the manifest.
 
 ## Stage for RimSort discovery
 

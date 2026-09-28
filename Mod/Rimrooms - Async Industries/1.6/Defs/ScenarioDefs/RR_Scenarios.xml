@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ScenarioDef ParentName="ScenarioBase">
+    <defName>RR_AsyncIndustries</defName>
+    <label>Async Industries</label>
+    <description>Lead an authorized research branch of Async Industries. Five qualified staff arrive at a small secured facility with an unfinished machine, a survey mandate, and a $50 million company allocation. Assemble and calibrate the gate, prepare a crew, investigate an unfamiliar coordinate, and bring evidence home. Branch funds are digital company accounts; food, materials, equipment, and silver remain physical RimWorld items. This start always creates a compact 60 by 60 headquarters at your chosen surface site. A temperate site is recommended for this first facility.</description>
+    <scenario>
+      <summary>Five staff. One unfinished gate. A $50 million branch budget. A fixed 60 by 60 headquarters and a first survey into the unknown.</summary>
+      <parts>
+        <li Class="RimroomsAsyncIndustries.Scenario.ScenPart_RimroomsStart">
+          <def>RR_CompanyStart</def>
+          <startDef>RR_AsyncIndustriesStart</startDef>
+          <visible>false</visible>
+        </li>
+        <li Class="ScenPart_ConfigPage_ConfigureStartingPawns_KindDefs">
+          <def>RR_StaffConfiguration</def>
+          <pawnChoiceCount>5</pawnChoiceCount>
+          <kindCounts>
+            <li><kindDef>RR_OperationsStaff</kindDef><count>1</count><requiredAtStart>true</requiredAtStart></li>
+            <li><kindDef>RR_ResearchStaff</kindDef><count>1</count><requiredAtStart>true</requiredAtStart></li>
+            <li><kindDef>RR_EngineeringStaff</kindDef><count>1</count><requiredAtStart>true</requiredAtStart></li>
+            <li><kindDef>RR_SecurityStaff</kindDef><count>1</count><requiredAtStart>true</requiredAtStart></li>
+            <li><kindDef>RR_MedicalLogisticsStaff</kindDef><count>1</count><requiredAtStart>true</requiredAtStart></li>
+          </kindCounts>
+        </li>
+        <li Class="ScenPart_NoPossessions">
+          <def>NoPossessions</def>
+          <visible>false</visible>
+        </li>
+        <li Class="ScenPart_PlayerPawnsArriveMethod">
+          <def>PlayerPawnsArriveMethod</def>
+          <method>Standing</method>
+          <visible>false</visible>
+        </li>
+      </parts>
+    </scenario>
+  </ScenarioDef>
+  <MapGeneratorDef>
+    <defName>RR_Headquarters</defName>
+    <genSteps>
+      <li>RR_HeadquartersTerrain</li>
+      <li>RR_HeadquartersFacility</li>
+      <li>ScenParts</li>
+      <li>Fog</li>
+    </genSteps>
+  </MapGeneratorDef>
+  <GenStepDef>
+    <defName>RR_HeadquartersTerrain</defName>
+    <order>5</order>
+    <genStep Class="RimroomsAsyncIndustries.Scenario.GenStep_HeadquartersTerrain" />
+  </GenStepDef>
+  <GenStepDef>
+    <defName>RR_HeadquartersFacility</defName>
+    <order>800</order>
+    <genStep Class="RimroomsAsyncIndustries.Scenario.GenStep_HeadquartersFacility" />
+  </GenStepDef>
+</Defs>

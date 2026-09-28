@@ -37,7 +37,8 @@ try {
     $graphics.DrawString('Async Industries', (New-CardFont 34), $amber, 48, 220)
     $graphics.DrawLine($line, 48, 300, 530, 300)
     $graphics.DrawString('COMPANY RESEARCH / UNKNOWN SPACES', (New-CardFont 16), $muted, 48, 326)
-    $graphics.DrawString('FOUNDATION BUILD  0.1.0', (New-CardFont 18 ([Drawing.FontStyle]::Bold)), $paper, 48, 426)
+    [xml] $metadata = Get-Content -LiteralPath (Join-Path (Get-RimroomsRoot) 'Mod/Rimrooms - Async Industries/About/About.xml') -Raw
+    $graphics.DrawString(('DEVELOPMENT BUILD  ' + $metadata.ModMetaData.modVersion), (New-CardFont 18 ([Drawing.FontStyle]::Bold)), $paper, 48, 426)
     $graphics.DrawString('Operator', (New-CardFont 16), $muted, 48, 460)
     # Nested structural frames are an original identity mark, not a gameplay screenshot.
     $graphics.FillRectangle($steel, 618, 84, 278, 370)

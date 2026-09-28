@@ -1,6 +1,6 @@
 # Rimrooms - Async Industries: first-session tutorial script
 
-**Status:** provisional player-facing copy for the pre-code first-playable contract (v0.2). Starting values and outcomes are balance hypotheses; this script has not received runtime review or in-game testing.
+**Status:** provisional player-facing copy for the first-playable contract (v0.2). The [development build](implementation/PHASE_2_BUILD_RECORD.md) implements the next-objective board, action hints, written warnings and observation checklist. Narrative copy below remains a presentation target; runtime timing/readability and gameplay review are pending.
 
 **Canonical content checks:** align the Async opening with [FIRST_SLICE_CONTENT_INVENTORY.md](FIRST_SLICE_CONTENT_INVENTORY.md), [FIRST_PLAYABLE_CONTRACT.md](FIRST_PLAYABLE_CONTRACT.md), [CAMPAIGN_ECONOMY_MODEL.md](CAMPAIGN_ECONOMY_MODEL.md), and [THREAT_DESIGN_SHEETS.md](THREAT_DESIGN_SHEETS.md). The Store and Lone Survivor openings remain in [SCENARIOS.md](SCENARIOS.md); this script does not claim to verify their RWT setup.
 
@@ -19,7 +19,7 @@ The branch has **$50,000,000** in its Company Account for quoted company costs a
 **Gate checklist**
 
 - Finish assembly with **100 steel and 8 components**.
-- Confirm the power reserve meets the first-run target (**3,000 W capacity**, provisional).
+- Confirm the current machine readout's power and stored-return requirements. The development slice uses a **3,500 W opening draw**, **250 W headroom**, and a **2 Wd gate-owned return capacitor**, with an ordinary **6,000 W** starter generator. These are provisional operating values, not a 3,000 W battery-capacity measurement.
 - Assign a qualified operator who will remain at the facility.
 - Select up to three ready field staff; check their kit and return tether.
 - Confirm AI-01 and its validated way home are on the mission card.
@@ -60,15 +60,15 @@ The first encounter cannot kill a healthy pawn in one hit. Contact may cause an 
 
 > **Gate Operator:** “Two minutes. Final recall warning.”
 
-Recall at any time. At headquarters, check the manifest: each item is delivered, consumed, damaged, left behind, or lost. Put the **AI-01 Route Recording** in the evidence case and link it to AI-01. Have a researcher analyze it; the report records the repeated label, misplaced tag, recorder gap, and any entity observation without claiming to explain their cause.
+Recall at any time. At headquarters, check the manifest: each item is delivered, consumed, damaged, left behind, or lost. Return the **AI-01 Route Recording** and its physical evidence case together. Their expedition manifest links custody to AI-01; they remain separate items with ordinary mass and storage. Have a researcher analyze the recording at the powered bench while the case remains at headquarters. The report records the repeated label, misplaced tag, recorder gap, and any entity observation without claiming to explain their cause.
 
 > **Operations Lead:** “Survey accepted. The branch ledger posts its **one-time $5,000,000 payment** and one research insight. The **optional $1,000,000 safety and documentation bonus** is added if all three field staff return with the route, distortion, and entity-observation records. A recoverable injury does not cancel it.”
 
 ## 6. Choose the next lead
 
-> **Researcher:** “We can spend the insight on Gate Telemetry and make the next route easier to plan. Or we can accept another survey and learn what else AI-01 is hiding.”
+> **Researcher:** “We can spend the insight on Gate Telemetry and make the next route easier to plan. Or we can prepare another visit and learn what else AI-01 is hiding.”
 
-Choose **Gate Telemetry** (one insight and staffed research workday) or review the **follow-on survey contract**. Either starts the next preparation decision; neither opens a new coordinate automatically.
+Choose **Gate Telemetry** (one insight and staffed research work) or **Prepare an AI-01 resurvey**. The latter keeps the same map, discoveries, equipment and construction. It can recover remaining salvage or people and explore rooms left unseen, but it does not repay the one-time onboarding contract or grant another insight. Either starts the next preparation decision; neither opens a new coordinate automatically. Generated paid follow-on contracts remain part of the Phase 3 campaign build.
 
 ## If Operations refuses
 

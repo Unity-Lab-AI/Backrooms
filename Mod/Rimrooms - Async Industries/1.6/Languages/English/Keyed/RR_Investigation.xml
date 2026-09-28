@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Evidence_Unregistered>Evidence has no branch case record. Preserve the item and inspect the company record.</RR_Evidence_Unregistered>
+  <RR_Evidence_Inspect>Case status: {0}\nAnalysis: {1}</RR_Evidence_Inspect>
+  <RR_EvidenceStatus_Located>Located at the coordinate</RR_EvidenceStatus_Located>
+  <RR_EvidenceStatus_Recovered>Recovered by the crew</RR_EvidenceStatus_Recovered>
+  <RR_EvidenceStatus_Secured>Secured at headquarters</RR_EvidenceStatus_Secured>
+  <RR_EvidenceStatus_Analyzed>Analyzed</RR_EvidenceStatus_Analyzed>
+  <RR_EvidenceStatus_Missing>Missing or destroyed</RR_EvidenceStatus_Missing>
+  <RR_Evidence_InvalidRecord>The recording cannot be linked to this coordinate and case. Preserve it and review the case record.</RR_Evidence_InvalidRecord>
+  <RR_Evidence_NotReady>Analysis requires all six required room surveys, a recorded route mismatch, the secured recording, a powered headquarters analysis bench and a capable researcher with Intellectual 4.</RR_Evidence_NotReady>
+  <RR_Event_EvidenceSecured>The route recording and its physical evidence case are at headquarters. Complete the route and distortion observations, then assign a researcher to analysis.</RR_Event_EvidenceSecured>
+  <RR_Event_SurveySettled>Survey accepted after physical evidence analysis. Company Account receipt: ${0} USD.</RR_Event_SurveySettled>
+  <RR_Event_SurveyBonus>All three original crew returned with the required observations. Company Account bonus: ${0} USD.</RR_Event_SurveyBonus>
+  <RR_Research_MissingProject>The saved company project definition is unavailable. Restore the required Rimrooms content before proceeding.</RR_Research_MissingProject>
+  <RR_Research_ProjectAlreadyActive>Finish the active company project before starting another.</RR_Research_ProjectAlreadyActive>
+  <RR_Research_NeedsInsight>Analyze recovered evidence to earn the insight this project needs.</RR_Research_NeedsInsight>
+  <RR_Research_NotReady>Research requires an active company project and a qualified researcher working at a powered headquarters analysis bench.</RR_Research_NotReady>
+  <RR_Event_ProjectStarted>Company research started: {0}.</RR_Event_ProjectStarted>
+  <RR_Event_ProjectCompleted>Company research completed: {0}.</RR_Event_ProjectCompleted>
+  <RR_Event_EvidenceAnalyzed>{0} completed the physical evidence analysis. One research insight was recorded.</RR_Event_EvidenceAnalyzed>
+  <RR_UI_Investigation>Investigation</RR_UI_Investigation>
+  <RR_UI_EvidenceRow>{0} — {1}; analysis {2}</RR_UI_EvidenceRow>
+  <RR_UI_ProjectRow>{0} — {1}</RR_UI_ProjectRow>
+  <RR_UI_ProjectStart>Commit insight and start {0}</RR_UI_ProjectStart>
+  <RR_UI_ProjectCompleted>Completed</RR_UI_ProjectCompleted>
+  <RR_UI_ProjectUnstarted>Awaiting insight commitment</RR_UI_ProjectUnstarted>
+  <RR_UI_ProjectWorking>Work progress: {0}</RR_UI_ProjectWorking>
+  <RR_UI_LabInstructions>Assign Research work to an available researcher with Intellectual 4 or higher. Secured evidence is analyzed before active company research. Both require power and physical access to the field analysis bench.</RR_UI_LabInstructions>
+  <RR_UI_TelemetryRoom>Room {0}: {1}. Known connections: {2}.</RR_UI_TelemetryRoom>
+  <RR_UI_TelemetryLocked>Gate Telemetry unlocks planning from your surveyed room records.</RR_UI_TelemetryLocked>
+  <RR_UI_RetryCompanyRegistration>Register the prepared headquarters</RR_UI_RetryCompanyRegistration>
+  <RR_Evidence_SiteUnavailable>The coordinate's existing map is unavailable. Recover its saved site before creating or moving evidence.</RR_Evidence_SiteUnavailable>
+  <RR_Evidence_NoSafeSlot>No reachable evidence position was found in the generated office. Keep the gate closed and review the coordinate.</RR_Evidence_NoSafeSlot>
+  <RR_Evidence_PreviousObjectMissing>This coordinate's evidence was already created. Its loss is preserved; revisiting does not create a second copy.</RR_Evidence_PreviousObjectMissing>
+  <RR_UI_EvidenceChecklist>Required room survey: {0}\nRequired route mismatch: {1}\nOptional entity observation: {2}</RR_UI_EvidenceChecklist>
+  <RR_UI_ObservationRecorded>Recorded</RR_UI_ObservationRecorded>
+  <RR_UI_ObservationMissing>Still needed</RR_UI_ObservationMissing>
+  <RR_UI_LocateRecording>Locate physical recording</RR_UI_LocateRecording>
+  <RR_UI_EvidenceFieldWorkRemaining>Carry the field recorder through each required room. At the corridor junction, deploy a numbered tag before investigating the next passage. Bring a return beacon for a stable comparison. Incomplete observations can be finished on a later trip to the same site.</RR_UI_EvidenceFieldWorkRemaining>
+  <RR_UI_AnalysisReportHeader>Analysis report — {0}, branch day {1}</RR_UI_AnalysisReportHeader>
+  <RR_UI_AnalysisSnapshotNote>This report preserves the observations available when analysis finished.</RR_UI_AnalysisSnapshotNote>
+  <RR_UI_LegacyReportUnavailable>This older analyzed record has no saved observation details. Its recorded completion remains valid.</RR_UI_LegacyReportUnavailable>
+  <RR_UI_ReportUnavailable>No detailed field observations were available for this report.</RR_UI_ReportUnavailable>
+  <RR_UI_FieldLogHeader>Recorded field observations</RR_UI_FieldLogHeader>
+  <RR_UI_NoFieldObservations>No witnessed observations have been recorded yet.</RR_UI_NoFieldObservations>
+  <RR_UI_ObservationWitness>Witness: {0}. Branch day {1}. Recorder carried by {2}.</RR_UI_ObservationWitness>
+  <RR_Observation_room_survey>Room {0}: surveyed with the crew's field recorder present.</RR_Observation_room_survey>
+  <RR_Observation_route_mismatch>Room {0}: survey marker {2} was found here despite being placed in room {1}.</RR_Observation_route_mismatch>
+  <RR_Observation_recorder_gap>Room {0}: the field recording contains a gap around marker {2}'s displacement from room {1}. The cause remains unresolved.</RR_Observation_recorder_gap>
+  <RR_Observation_entity_sighting>Entity reported in room {0}; the witnessing crew member was in room {1}. Its origin remains unknown.</RR_Observation_entity_sighting>
+  <RR_UI_LocateClue>Locate observed landmark</RR_UI_LocateClue>
+  <RR_UI_CollectSalvage>{0}: collect {1}</RR_UI_CollectSalvage>
+</LanguageData>

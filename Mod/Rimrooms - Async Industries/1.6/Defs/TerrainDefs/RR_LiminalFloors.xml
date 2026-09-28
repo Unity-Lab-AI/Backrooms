@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <TerrainDef ParentName="FloorBase">
+    <defName>RR_FadedInstitutionalCarpet</defName>
+    <label>faded institutional carpet</label>
+    <description>A dense, worn carpet in a muted straw color. Familiar underfoot, difficult to keep clean, and flammable. Ordinary cloth can reproduce the material at a company facility.</description>
+    <texturePath>Terrain/RR_FadedInstitutionalCarpet</texturePath>
+    <edgeType>Hard</edgeType>
+    <renderPrecedence>244</renderPrecedence>
+    <isPaintable>true</isPaintable>
+    <burnedDef>BurnedCarpet</burnedDef>
+    <researchPrerequisites><li>CarpetMaking</li></researchPrerequisites>
+    <costList><Cloth>4</Cloth></costList>
+    <statBases>
+      <Beauty>0</Beauty>
+      <WorkToBuild>650</WorkToBuild>
+      <Flammability>0.32</Flammability>
+      <CleaningTimeFactor>2</CleaningTimeFactor>
+    </statBases>
+    <uiOrder>2190</uiOrder>
+  </TerrainDef>
+</Defs>

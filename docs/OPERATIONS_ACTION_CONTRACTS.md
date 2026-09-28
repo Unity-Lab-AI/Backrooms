@@ -1,6 +1,6 @@
 # Rimrooms - Async Industries: Operations action contracts
 
-**Status:** full-campaign player-facing contract. The [0.1.0 foundation](implementation/PHASE_1_BUILD_RECORD.md) implements a localized Operations information tab and guarded native Work/Research links only. The company actions and outcomes below remain planned; they define what the completed interface must let the player do and how it explains a blocked action.
+**Status:** full-campaign player-facing contract. The [0.2.0 development slice](implementation/PHASE_2_BUILD_RECORD.md) implements Overview, Personnel, Contracts, Ledger, Atlas, Activity, Investigation, Machine and Expedition panes. Actions cover the next opening objective, gate work/operator orders, physical kit pickup, dispatch/recall/rescue, route-aid deployment/recovery, evidence/research, arrears payment, explicit abandonment and auditable cargo declarations. Native Work/Research controls remain available. UI/runtime acceptance is pending; later company actions below remain planned.
 
 **Feature route:** [RR-UI](FEATURE_TRACEABILITY.md), with the owning gameplay rules in [GAME_DESIGN.md](GAME_DESIGN.md), [SCENARIOS.md](SCENARIOS.md), [FIRST_PLAYABLE_CONTRACT.md](FIRST_PLAYABLE_CONTRACT.md), and [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md).
 
@@ -29,6 +29,10 @@ Every command shows its required input, expected cost or risk, and the record it
 | Outposts — establish, stock, evacuate, abandon | Destination and route are known; contract, staff, supplies, and upkeep are funded | Creates a branch-linked local site or a recorded supply/evacuation action | Names missing route, budget, staff, or relay; abandonment previews what remains or is lost | Local branch outpost record and site map/stock |
 | Multiplayer — trade, send a dossier, or visit | The pinned RWT build exposes the action; both branches and server settings pass its requirements | Uses the verified RWT route and records a transfer receipt; dossier recipient studies its own copy locally | “Unavailable on this server/build” or an explicit transfer recovery state; never implies shared map/research | Each local branch plus RWT's supported transfer/activity owner |
 | Space/gravship operations | Optional DLC/mod is present and exact selected content is verified | Opens native content or the documented narrow adapter | Explains missing DLC/mod or unverified integration; Core gate campaign remains available | Native gravship/DLC owner; Rimrooms branch only records its own contract link |
+
+### First-survey generation failure action
+
+Development 0.2.0 adds **Atlas → Review a replacement coordinate** for an unavailable initial coordinate. The dialog describes preserving the failed map, reassigning the untouched survey and creating a separate six-room replacement. The service rechecks eligibility on confirmation; it returns a keyed refusal when people, evidence, previous activity, missing content or the two-site cap prevent replacement. It moves no pawn or stock and pays no reward. Source and exact limits are in the [recovery implementation](implementation/PHASE_2_GENERATION_RECOVERY.md); observed acceptance remains pending.
 
 ## First playable pane set
 

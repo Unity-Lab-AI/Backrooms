@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <RecipeDef>
+    <defName>RR_AssembleMachineGate</defName>
+    <label>assemble machine gate</label>
+    <description>Physically carry 100 steel and 8 industrial components to the powered gate console, then complete the staffed assembly work.</description>
+    <jobString>assembling the machine gate</jobString>
+    <workAmount>6000</workAmount>
+    <workSkill>Crafting</workSkill>
+    <requiredGiverWorkType>Crafting</requiredGiverWorkType>
+    <workerClass>RimroomsAsyncIndustries.Gate.RecipeWorker_RimroomsGateAssembly</workerClass>
+    <ingredients>
+      <li>
+        <filter><thingDefs><li>Steel</li></thingDefs></filter>
+        <count>100</count>
+      </li>
+      <li>
+        <filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter>
+        <count>8</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Steel</li>
+        <li>ComponentIndustrial</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <recipeUsers><li>RR_GateConsole</li></recipeUsers>
+  </RecipeDef>
+</Defs>

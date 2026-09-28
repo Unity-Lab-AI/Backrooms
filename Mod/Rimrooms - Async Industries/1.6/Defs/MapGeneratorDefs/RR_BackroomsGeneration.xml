@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <MapGeneratorDef>
+    <defName>RR_BackroomsGeneration</defName>
+    <genSteps>
+      <li>RR_BackroomsLayout</li>
+      <li>Fog</li>
+    </genSteps>
+  </MapGeneratorDef>
+
+  <GenStepDef>
+    <defName>RR_BackroomsLayout</defName>
+    <order>1400</order>
+    <genStep Class="RimroomsAsyncIndustries.Generation.GenStep_BackroomsDestination" />
+  </GenStepDef>
+</Defs>

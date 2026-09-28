@@ -52,17 +52,21 @@ function Get-RimroomsPackageManifest {
         $about.ModMetaData.packageId -cne 'UnityLabAI.RimroomsAsyncIndustries') {
         throw 'Package identity does not match the accepted project identity.'
     }
-    $required = @('About/About.xml', 'About/Preview.png', 'About/License.txt', 'LoadFolders.xml',
-        '1.6/Assemblies/RimroomsAsyncIndustries.dll', '1.6/Defs/MainButtonDefs/RR_MainButtons.xml',
-        '1.6/Languages/English/Keyed/RR_Operations.xml', '1.6/Languages/English/DefInjected/MainButtonDef/RR_MainButtons.xml')
+    $contract = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'package-files.json')) | ConvertFrom-Json
+    if ($contract.schemaVersion -ne 1 -or $contract.packageId -cne 'UnityLabAI.RimroomsAsyncIndustries') {
+        throw 'Unsupported package file contract.'
+    }
+    $required = @($contract.files)
+    if ($required.Count -ne @($required | Select-Object -Unique).Count) { throw 'Duplicate package file contract entry.' }
     foreach ($relative in $required) {
+        $null = Assert-RimroomsChildPath (Join-Path $root $relative) $root
         if (-not (Test-Path -LiteralPath (Join-Path $root $relative) -PathType Leaf)) { throw "Package file missing: $relative" }
     }
     $entries = @()
     foreach ($file in Get-ChildItem -LiteralPath $root -File -Recurse | Sort-Object FullName) {
         $null = Assert-RimroomsChildPath $file.FullName $root
         $relative = $file.FullName.Substring($root.Length + 1).Replace('\', '/')
-        if ($relative -notin $required) { throw "Unapproved foundation package file: $relative. Update the explicit package contract before adding content." }
+        if ($relative -notin $required) { throw "Unapproved package file: $relative. Update tools/package-files.json before adding content." }
         if ($file.Extension -eq '.xml') {
             $null = [xml] [IO.File]::ReadAllText($file.FullName)
         }

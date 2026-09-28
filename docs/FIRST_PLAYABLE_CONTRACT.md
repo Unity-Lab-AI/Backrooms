@@ -1,6 +1,6 @@
 # Rimrooms - Async Industries: first playable contract
 
-**Status:** pre-code design target, version 0.2. All numbers are balance hypotheses for a later RimWorld 1.6 prototype. They are not gameplay results, compatibility claims, or frozen canon. Keep values adjustable and revise this document with the scenario contract when a playtest changes them.
+**Status:** design/acceptance target, version 0.2. The [0.2.0 development build](implementation/PHASE_2_BUILD_RECORD.md) implements the core loop and records remaining generation/presentation work. All numbers remain balance hypotheses; no gameplay or compatibility result is claimed. Keep values adjustable and revise this document with the scenario contract when observed play changes them. The accepted 20 in-game-minute interpretation is retained pending the owner's timing choice.
 
 **Purpose:** define the first complete player loop tightly enough that implementation can begin with one coherent slice: a small company facility, a short gate opening, one seeded destination, a recoverable route distortion, one learnable hostile encounter, an evidence result, and a reason to prepare the next run. The named starting roster and room contents are in the [first-slice content inventory](FIRST_SLICE_CONTENT_INVENTORY.md); the starter encounter rules are in [THREAT_DESIGN_SHEETS.md](THREAT_DESIGN_SHEETS.md).
 
@@ -27,7 +27,7 @@ Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquar
 3. The player selects three available staff, checks their equipment and return plan, and reads the accepted survey's mission card for coordinate `AI-01`.
 4. The crew enters a deterministic 6–8-room site. The Borrowed Corridor provides a visible route tell, followed by one bounded Quiet Pursuer encounter. The crew can tag the route, record the encounter, repel the entity, collect the evidence lead, or recall early.
 5. The crew returns through a validated route before the gate window ends. Evidence is sealed in the facility, linked to `AI-01`, and analyzed by a researcher.
-6. After the survey requirements are recorded, the player receives the provisional payment and insight, then chooses a local gate-telemetry project or a follow-on survey contract. Either choice points to a second expedition.
+6. After the survey requirements are recorded, the player receives the provisional payment and insight, then chooses a local gate-telemetry project or prepares an AI-01 resurvey with existing equipment. Either choice points to a second expedition to the saved site. The first slice has one paid contract; generated follow-on contracts remain required in Phase 3.
 
 ## Gate and expedition rules for the prototype
 

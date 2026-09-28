@@ -4,9 +4,9 @@
 
 ## Traceability rules
 
-### Implemented foundation subset
+### Implemented development subset
 
-The [Phase 1 task](implementation/PHASE_1_FOUNDATION_TASK.md) and [0.1.0 build evidence](implementation/PHASE_1_BUILD_RECORD.md) connect actual files to this map. `RR-COMPAT` has the Core-only compiler/package/staging route; `RR-UI` has the localized Operations information tab; `RR-SCEN` has the inactive save-local component; `RR-STYLE` has an original package identity card. `RR-ECO` is referenced for future state ownership only: no ledger, starter funds or transactions exist. No feature has runtime acceptance from this foundation build. Full owner/feature tables below continue to describe the planned campaign.
+The [0.2.0 build record](implementation/PHASE_2_BUILD_RECORD.md) maps actual source directories and per-system source reviews to stable feature IDs. It adds `RR-SCEN/RR-FAC/RR-STA` scenario and starting staff, `RR-ECO/RR-MSN` branch ledger and initial contract, `RR-GATE/RR-EXP` machine and physical crew/cargo operations, `RR-SPACE/RR-THREAT` saved first site and bounded encounter, `RR-EVD` analysis and Gate Telemetry, and `RR-UI/RR-STYLE` actionable Operations panes and original sprites. `RR-COMPAT` remains the Core compiler/package route, with no optional integration clearance. No feature has runtime acceptance from compilation. Full tables below describe the complete campaign target; the build record identifies its current subset and remaining work.
 
 - This is the feature-level index. Before Gate 0, the per-mod register assigns each of its 294 rows one or more feature IDs below, exact source evidence, a proposed treatment, and an explicit review/evidence status. Runtime compatibility remains pending until reproduced.
 - Every source-specific lore claim needs a direct source URL and a saved review record. Mark it **source fact**, **interpretation**, **owner choice**, or **original game design**. An unreviewed video/film/source stays **Pending**.

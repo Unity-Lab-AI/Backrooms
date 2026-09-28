@@ -1,0 +1,192 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using RimWorld;
+using Verse;
+
+namespace RimroomsAsyncIndustries.Company
+{
+    public sealed partial class RimroomsCampaignComponent
+    {
+        public CompanyActionResult InitializeBranch(BranchStartRequest request)
+        {
+            if (!HasSupportedSchema) { return CompanyActionResult.Refused("RR_Company_UnsupportedSave"); }
+            if (request == null || string.IsNullOrWhiteSpace(request.ScenarioId) || request.ScenarioVersion < 1)
+            {
+                return CompanyActionResult.Refused("RR_Company_InvalidStart");
+            }
+            string receipt = request.ScenarioId + ":v" + request.ScenarioVersion;
+            if (HasBranch)
+            {
+                return initializationReceipt == receipt && headquarters == request.Headquarters
+                    ? CompanyActionResult.Existing() : CompanyActionResult.Refused("RR_Company_AlreadyStarted");
+            }
+            if (stateFaultKey != null || !string.IsNullOrEmpty(branchId) || ledger.Count != 0 || balanceUsd != 0)
+            {
+                return CompanyActionResult.Refused("RR_Company_InvalidSave");
+            }
+            if (request.Headquarters == null || request.Staff == null || request.StaffRoles == null ||
+                request.Staff.Count == 0 || request.Staff.Count > 20 || request.Staff.Count != request.StaffRoles.Count ||
+                request.InitialFundingUsd < 0 || request.DailyWageUsd < 0 || request.DailyOverheadUsd < 0 ||
+                request.SurveyRewardUsd < 0 || request.SurveyBonusUsd < 0 ||
+                request.Staff.Distinct().Count() != request.Staff.Count ||
+                request.Staff.Any(p => p == null || p.Destroyed || p.Dead || p.Faction != Faction.OfPlayer || p.Map != request.Headquarters) ||
+                request.StaffRoles.Any(string.IsNullOrWhiteSpace))
+            {
+                return CompanyActionResult.Refused("RR_Company_InvalidStart");
+            }
+            try
+            {
+                checked
+                {
+                    long dailyCost = request.DailyWageUsd * request.Staff.Count + request.DailyOverheadUsd;
+                    long contractTotal = request.SurveyRewardUsd + request.SurveyBonusUsd;
+                    if (dailyCost < 0 || contractTotal < 0) { return CompanyActionResult.Refused("RR_Company_InvalidAmount"); }
+                }
+            }
+            catch (OverflowException) { return CompanyActionResult.Refused("RR_Company_InvalidAmount"); }
+
+            int now = Find.TickManager.TicksGame;
+            string newId = "rr-branch-" + Guid.NewGuid().ToString("N");
+            var newStaff = new List<StaffRecord>();
+            for (int i = 0; i < request.Staff.Count; i++)
+            {
+                Pawn pawn = request.Staff[i];
+                newStaff.Add(new StaffRecord { id = newId + ":staff:" + (i + 1), pawn = pawn,
+                    pawnLoadId = pawn.GetUniqueLoadID(), nameAtHire = pawn.LabelShortCap.ToString(),
+                    role = request.StaffRoles[i], dailyWageUsd = request.DailyWageUsd, hiredTick = now });
+            }
+            string coordinateId = newId + ":coordinate:000001";
+            var initialCoordinate = new CoordinateRecord { id = coordinateId, label = "AI-01",
+                seed = CampaignSeed.Derive(request.CampaignSeed, "coordinate:000001", 1) };
+            var initialCase = new CaseRecord { id = newId + ":case:000001", coordinateId = coordinateId,
+                titleKey = "RR_Company_InitialCase" };
+            var initialContract = new ContractRecord { id = newId + ":contract:000001", templateId = "rr.survey.onboarding.v1",
+                titleKey = "RR_Company_InitialContract", coordinateId = coordinateId, status = ContractStatus.Accepted,
+                basePaymentUsd = request.SurveyRewardUsd, bonusUsd = request.SurveyBonusUsd, acceptedTick = now };
+            var initialProject = new ProjectRecord { id = newId + ":project:gate_telemetry", researchDefName = "RR_GateTelemetry" };
+            var initialLedger = new List<LedgerEntry>();
+            if (request.InitialFundingUsd > 0)
+            {
+                initialLedger.Add(new LedgerEntry { operationId = newId + ":funding:initial", amountUsd = request.InitialFundingUsd,
+                    balanceAfterUsd = request.InitialFundingUsd, reasonKey = "RR_Ledger_InitialFunding", relatedId = receipt, tick = now });
+            }
+
+            // Validate/build temporary records above, then commit the branch in one main-thread action.
+            branchId = newId;
+            scenarioId = request.ScenarioId;
+            scenarioVersion = request.ScenarioVersion;
+            campaignSeed = request.CampaignSeed;
+            initializationReceipt = receipt;
+            headquarters = request.Headquarters;
+            initializedTick = now;
+            balanceUsd = request.InitialFundingUsd;
+            dailyOverheadUsd = request.DailyOverheadUsd;
+            nextOperatingCostTick = now <= int.MaxValue - GenDate.TicksPerDay ? now + GenDate.TicksPerDay : int.MaxValue;
+            staff = newStaff;
+            ledger = initialLedger;
+            coordinates.Add(initialCoordinate);
+            cases.Add(initialCase);
+            contracts.Add(initialContract);
+            projects.Add(initialProject);
+            initializationComplete = true;
+            ValidateSavedState();
+            RecordEvent("RR_Event_BranchStarted", receipt);
+            Log.Message("[Rimrooms][Company] Initialized " + branchId + " scenario=" + scenarioId + " seed=" + campaignSeed);
+            return CompanyActionResult.Applied();
+        }
+
+        internal CompanyActionResult PostTransaction(string operationId, long amountUsd, string reasonKey, string relatedId)
+        {
+            if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
+            if (string.IsNullOrWhiteSpace(operationId) || string.IsNullOrWhiteSpace(reasonKey) || amountUsd == 0)
+            {
+                return CompanyActionResult.Refused("RR_Company_InvalidAmount");
+            }
+            LedgerEntry existing;
+            if (ledgerIndex.TryGetValue(operationId, out existing))
+            {
+                return existing.amountUsd == amountUsd && existing.reasonKey == reasonKey && existing.relatedId == relatedId
+                    ? CompanyActionResult.Existing() : CompanyActionResult.Refused("RR_Company_ReceiptMismatch");
+            }
+            long nextBalance;
+            try { nextBalance = checked(balanceUsd + amountUsd); }
+            catch (OverflowException) { return CompanyActionResult.Refused("RR_Company_InvalidAmount"); }
+            if (nextBalance < 0) { return CompanyActionResult.Refused("RR_Company_InsufficientFunds"); }
+            var entry = new LedgerEntry { operationId = operationId, amountUsd = amountUsd, balanceAfterUsd = nextBalance,
+                reasonKey = reasonKey, relatedId = relatedId, tick = Find.TickManager.TicksGame };
+            ledger.Add(entry);
+            ledgerIndex.Add(operationId, entry);
+            balanceUsd = nextBalance;
+            return CompanyActionResult.Applied();
+        }
+
+        public CompanyActionResult PayOutstandingObligations()
+        {
+            if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
+            foreach (CompanyObligation obligation in obligations)
+            {
+                if (obligation.paid) { continue; }
+                CompanyActionResult result = PostTransaction(obligation.id + ":payment", -obligation.amountUsd, obligation.reasonKey, obligation.id);
+                if (!result.Success) { return result; }
+                obligation.paid = true;
+            }
+            return CompanyActionResult.Applied();
+        }
+
+        public override void GameComponentTick()
+        {
+            using (Core.RimroomsDiagnostics.Measure("company-tick")) { TickCompany(); }
+        }
+
+        private void TickCompany()
+        {
+            if (!CanOperate) { return; }
+            int now = Find.TickManager.TicksGame;
+            if (now % 60 == 0) { UpdateEvidenceAndContracts(); }
+            if (now % 250 != 0 || now < nextOperatingCostTick || nextOperatingCostTick == int.MaxValue) { return; }
+            // Bound catch-up work after a time jump; unpaid obligations remain explicit records.
+            int days = 0;
+            while (now >= nextOperatingCostTick && nextOperatingCostTick != int.MaxValue && days++ < 4)
+            {
+                string dayId = branchId + ":operation-day:" + nextOperatingCostTick;
+                long wages = 0;
+                try
+                {
+                    foreach (StaffRecord member in staff)
+                    {
+                        if (member.employed && member.pawn != null && !member.pawn.Dead && !member.pawn.Destroyed)
+                        {
+                            wages = checked(wages + member.dailyWageUsd);
+                        }
+                    }
+                }
+                catch (OverflowException)
+                {
+                    stateFaultKey = "RR_Company_InvalidSave";
+                    return;
+                }
+                AddObligation(dayId + ":payroll", "RR_Ledger_Payroll", wages, nextOperatingCostTick);
+                AddObligation(dayId + ":overhead", "RR_Ledger_Overhead", dailyOverheadUsd, nextOperatingCostTick);
+                nextOperatingCostTick = nextOperatingCostTick <= int.MaxValue - GenDate.TicksPerDay
+                    ? nextOperatingCostTick + GenDate.TicksPerDay : int.MaxValue;
+            }
+            CompanyActionResult payment = PayOutstandingObligations();
+            if (!payment.Success) { RecordEvent("RR_Event_OperatingArrears", branchId); }
+        }
+
+        private void AddObligation(string id, string reasonKey, long amount, int dueTick)
+        {
+            if (amount <= 0 || obligations.Any(o => o.id == id)) { return; }
+            obligations.Add(new CompanyObligation { id = id, reasonKey = reasonKey, amountUsd = amount, dueTick = dueTick });
+        }
+
+        internal void RecordEvent(string messageKey, string relatedId, params string[] arguments)
+        {
+            events.Add(new CompanyEventRecord { tick = Find.TickManager.TicksGame, messageKey = messageKey,
+                relatedId = relatedId, arguments = new List<string>(arguments ?? new string[0]) });
+            // This is the recent activity feed. Ledger/case/contract history is retained separately.
+            if (events.Count > 256) { events.RemoveRange(0, events.Count - 256); }
+        }
+    }
+}

@@ -76,7 +76,7 @@ Alarms, radio messages, and entity cues need a text or icon equivalent in the lo
 
 ## Production file specification
 
-These are original-art production defaults for the planned campaign. They do not claim that assets beyond the 0.1.0 identity card exist. Change a default when the actual in-game view demonstrates a better result, and record the reason with the asset.
+These are original-art production defaults for the planned campaign. The [0.2.0 build record](../implementation/PHASE_2_BUILD_RECORD.md) links the actual original equipment/entity sprites, carpet material, short audio cues and provenance. Their native-resolution development exports have not yet passed in-game presentation acceptance. Change a default when the actual game view demonstrates a better result, and record the reason with the asset.
 
 | Asset family | Working/export specification | Readability and ownership |
 | --- | --- | --- |

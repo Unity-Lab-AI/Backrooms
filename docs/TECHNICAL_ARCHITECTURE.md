@@ -1,6 +1,6 @@
 # Technical architecture proposal
 
-Most of this document is the full-campaign design target. The [0.1.0 foundation record](implementation/PHASE_1_BUILD_RECORD.md) identifies the implemented subset: bootstrap, inert save component and localized Operations tab. The [Core lifecycle review](implementation/PHASE_1_CORE_SOURCE_REVIEW.md) supplies inspected signatures; [BUILDING.md](BUILDING.md) records the actual compiler/reference/package setup. Other proposed types and optional integrations still require their own source review and implementation.
+Most of this document is the full-campaign design target. The [0.2.0 build record](implementation/PHASE_2_BUILD_RECORD.md) maps the implemented company/scenario/gate/destination/expedition/investigation/threat/UI subset and its source reviews. [BUILDING.md](BUILDING.md) records the compiler/reference/package setup; [SAVE_MIGRATION_POLICY.md](SAVE_MIGRATION_POLICY.md) records actual saved owners. First-slice company research uses a custom insight-gated `RimroomsProjectDef` with native Research work, preserving Core research. Expedition transfer moves the same native objects and journals interruptions. Other proposed types and optional integrations still require their own source review and implementation.
 
 **Gate 0 decisions recorded:** private RWT prototype first; exact displayed title `Rimrooms - Async Industries`; author/publisher value `Operator`; package ID `UnityLabAI.RimroomsAsyncIndustries`; internal namespace `RimroomsAsyncIndustries`; semantic versions; Core-only solo path; optional support for all five DLC; other 294-profile mods optional; indirect adaptation of Kane Pixels/A24 references, with wider community canon excluded from shipped content; dossier transfer plus shared research ledger only if supported and safely tested; English-first localization-ready; MIT for original source code; and supplemental S1/B, which freezes broad later threat families and defers named sketches. Gate 0 documentation/source preparation passed; the foundation compile/staging evidence is linked above, while all in-game/runtime checks remain pending.
 
@@ -39,7 +39,7 @@ The identity, load folders, MainButtonDef and English localization now exist in 
 
 ## State ownership and persistence
 
-Keep each value in one authoritative owner and serialize it through RimWorld's save system. The full pre-code record list, branch boundaries, stable IDs, idempotency rules, and recovery expectations are in the [campaign state dictionary](CAMPAIGN_STATE_DICTIONARY.md). Those rules describe the data contract; the component types below remain API candidates.
+Keep each value in one authoritative owner and serialize it through RimWorld's save system. The full campaign record list, branch boundaries, stable IDs, idempotency rules, and recovery expectations are in the [campaign state dictionary](CAMPAIGN_STATE_DICTIONARY.md). Those rules describe the data contract; the component types below remain API candidates.
 
 - **Campaign/company state:** funds/ledger, research clues, unlocked coordinates, open contracts, company reputation, and global progression. Candidate: one campaign `GameComponent`.
 - **World state:** coordinate records, discovered routes, outposts, signal sources, and active distortion incidents. Candidate: one `WorldComponent` plus normal `WorldObject` instances.

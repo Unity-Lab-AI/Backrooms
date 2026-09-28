@@ -1,8 +1,12 @@
 # Development roadmap
 
-The work is sequenced so that later content depends on a tested company loop rather than a pile of disconnected buildings and monsters. These are planning stages; none of the gameplay systems is implemented yet. Gate 0 is a strict pre-build gate: complete all owner decisions, source reviews, and the 294-mod feature map before creating the code project. See [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
+The work is sequenced so that later content depends on an accepted company loop. Gate 0 preparation passed, repository/build foundations exist, and the first Async Industries facility-to-expedition slice is implemented in development. The integrated 0.2.0 package compiled with zero warnings/errors; all 61 staged files match the saved manifest. No gameplay or compatibility gate is closed by those compiler results. See the [current build record](implementation/PHASE_2_BUILD_RECORD.md) and [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) for exact evidence and remaining work.
+
+These stage numbers group the long-term roadmap; the master TODO controls task order and formal gates. Status notes distinguish existing first-slice code/assets from owner-launched acceptance and unimplemented broader systems. This reconciliation changes no stage scope or exit condition.
 
 ## Stage 0 — decisions and research
+
+**Status:** Gate 0 documentation/source preparation is complete. Its decisions, source reviews and 294-mod feature map preceded code creation. Historical preparation results do not establish gameplay or optional-mod compatibility. Current implementation evidence is in the [0.2.0 build record](implementation/PHASE_2_BUILD_RECORD.md).
 
 - Use the selected title, package ID, namespace, distribution target, and MIT source-code license. Set author/publisher metadata to `Operator`; track art/audio provenance and licensing separately.
 - Capture the exact RimWorld 1.6 build, DLC set, RimWorld Together client version, server release, and client load order.
@@ -12,6 +16,8 @@ The work is sequenced so that later content depends on a tested company loop rat
 **Exit condition:** a concrete versioned target profile and a documented content-provenance rule exist.
 
 ## Stage 1 — facility start and company shell
+
+**Status:** the data-driven Async Industries scenario, five-person starter facility, physical stock, company records/ledger, machine assembly/calibration/operator/power work and Operations actions exist in source/package content. Fresh-start behavior, one-time grants, real work and persistence still need owner-launched acceptance; this stage's exit condition is not yet observed.
 
 - Use [`SCENARIOS.md`](SCENARIOS.md) as the data-driven scenario setup contract and implement the first new-game scenario: Async Industries with a small facility, a roster, starter resources, a disabled gate, and a first project.
 - Add the basic machine building, calibration/assembly project, operator and power requirements, and clear gate status feedback.
@@ -24,6 +30,8 @@ The Furniture & Knickknack Store breach and Lone Survivor starts are planned sce
 
 ## Stage 2 — first expedition vertical slice
 
+**Status:** saved AI-01 generation now includes 6–8 furnished rooms, deterministic bounded candidates and fallback, native doors/fog, original clues/salvage, crew/cargo dispatch and recovery, the starter encounter, durable analysis reports, Gate Telemetry, original art and optional quiet cues/settings. Opt-in diagnostics exist without collected runtime measurements. Finish current source/package receipts and the pending opening-time decision, then record load, first loop, failure/recovery, save/revisit, presentation and performance observations. Gate 2 remains open; source presence does not demonstrate this exit condition.
+
 - Add one stable seeded coordinate that creates a single local site from a small room set.
 - Send a named crew and equipment loadout through a time-limited opening.
 - Add one return method, one environmental risk, one entity encounter, one recoverable evidence chain, and one payment/research outcome.
@@ -33,6 +41,8 @@ The Furniture & Knickknack Store breach and Lone Survivor starts are planned sce
 **Exit condition:** the full prepare → enter → investigate → extract → analyze → reward loop works in a save and can be repeated.
 
 ## Stage 3 — co-op and DLC foundation
+
+**Status:** future implementation and verification. The current assembly uses Core APIs; the 294 source reviews and RWT/DLC plans do not establish an adapter, supported transfer, shared research, visit or combined-profile result.
 
 - Add a narrow RimWorld Together adapter using only supported extension points; keep branch-local campaign state authoritative.
 - Verify guilds, sites/roads/events, item trade/gifts, pawn aid, configured facility visits, transfer spots, and reconnect/save behavior against a pinned client/server release.
@@ -44,6 +54,8 @@ The Furniture & Knickknack Store breach and Lone Survivor starts are planned sce
 
 ## Stage 4 — management breadth
 
+**Status:** the first slice provides a small local ledger, initial staff roles, one survey contract, analysis/research and Operations. The full hiring/training, procurement/shipment, dynamic contract, facility and company-management systems below remain unimplemented broader scope in master TODO Phase 3; retain that task order.
+
 - Expand hiring, role assignments, training, staff records, labs, cafeterias, dormitories, medical/quarantine, evidence storage, contracts, procurement, and shipment schedules.
 - Add two-way company economy with operating costs, salvage valuation, wages or contract labor, penalties, and equipment loss.
 - Add the Operations interface for finance, projects, staff, research clues, contracts, destinations, and incidents.
@@ -53,6 +65,8 @@ The Furniture & Knickknack Store breach and Lone Survivor starts are planned sce
 
 ## Stage 5 — world network and spatial variation
 
+**Status:** the bounded first site exists. The broader coordinate/template library, generated mission families, persistent outpost network, safe many-map archival and vehicle/space logistics below remain later work. Preserving one saved site is not acceptance of an expanding multi-site campaign.
+
 - Expand room templates, map themes, coordinate selection, radio reports, return navigation, remote supply, relay stations, and outposts.
 - Add rescue, survey, retrieval, containment, and town-distortion quest families.
 - Add stable map archival and generator-version migration rules.
@@ -61,6 +75,8 @@ The Furniture & Knickknack Store breach and Lone Survivor starts are planned sce
 **Exit condition:** an established company can run parallel sites and revisit saved spaces without save corruption or runaway map growth.
 
 ## Stage 6 — long-form progression and release
+
+**Status:** later progression/release work. Initial original sprites, carpet and short audio cues exist with provenance, but the complete coherent asset set, main-menu slideshow, translations, final presentation, balance and published compatibility matrix are not complete.
 
 - Expand threat catalog, countermeasures, deeper research branches, long-duration openings, multi-team operations, advanced transport, and endgame phenomena.
 - Add remaining original narratives, art, sounds, translations, accessibility options, settings, tutorials, and Workshop packaging.

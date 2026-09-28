@@ -1,6 +1,6 @@
 # Rimrooms - Async Industries: procedural space contract
 
-**Status:** pre-code design contract, version 0.1. It defines how the campaign can keep opening new, strange destinations while each expedition stays finite, saved, and recoverable. The room and event rules are original game design inspired by the selected series and film notes; they are not confirmed canon or proven RimWorld APIs.
+**Status:** full-campaign design contract, version 0.1. The [current destination implementation](implementation/PHASE_2_DESTINATION_IMPLEMENTATION.md) records the bounded first-site subset, saved ownership, inspected Core APIs and remaining layout/fallback/capacity work. This contract defines the wider campaign's continuing discovery of finite, saved destinations. Room and event rules are original game design inspired by the selected series and film notes; they are not confirmed canon or runtime proof.
 
 **Feature route:** RR-SPACE, RR-EXP, RR-GATE, RR-MSN, RR-EVD, RR-THREAT, RR-OUT, and RR-STYLE in [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md). The implementation boundary and local 1.6 research are in [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md) and [RimWorld 1.6 generation findings](research/RIMWORLD_1_6_PACKAGE_AND_GENERATION.md). The first site uses the [AI-01 content inventory](FIRST_SLICE_CONTENT_INVENTORY.md), [first playable contract](FIRST_PLAYABLE_CONTRACT.md), and [starter threat sheets](THREAT_DESIGN_SHEETS.md).
 
@@ -121,6 +121,12 @@ Save the coordinate ID, seed inputs, generator and room-library versions, missio
 - A migration may add a documented field or map a removed template to a compatible replacement while preserving room IDs, player construction, items, cases, and route history.
 - Never silently reroll an old coordinate. If a migration cannot preserve a site safely, keep its old saved data and offer an explicit recovery choice.
 - If the saved map cannot load at all, retain the coordinate and case record, create a recovery incident, and do not grant its reward twice.
+
+## First-survey failure recovery in development 0.2.0
+
+The [recovery implementation](implementation/PHASE_2_GENERATION_RECOVERY.md) adds one explicit Atlas action for a geometry-related failure during initial generation, before any visit, expedition, evidence or person reaches that site. It retains the failed map and creates a distinct `:fallback:1` coordinate, labeled AI-01R, with a preflighted six-room layout. The existing unpaid survey contract and empty case point to the replacement. Repeating the same action cannot create another site or reward.
+
+This development slice retains at most one failed site and one usable replacement. A visited site, lost recording, unresolved transfer, missing definition or unknown generation failure is ineligible; its existing records remain available for diagnosis. It does not implement campaign-wide map archival, migration repair or recovery from arbitrary corruption. Those remain later work. Runtime generation, retry and save/reload evidence is pending.
 
 ## Acceptance evidence before implementation can rely on it
 

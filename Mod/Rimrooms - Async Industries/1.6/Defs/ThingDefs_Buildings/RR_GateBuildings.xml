@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_MachineGate</defName>
+    <label>machine gate</label>
+    <description>A powered machine that opens a temporary passage into a recorded coordinate.</description>
+    <thingClass>Building</thingClass>
+    <drawerType>MapMeshAndRealTime</drawerType>
+    <graphicData>
+      <texPath>Buildings/Gate/RR_MachineGate</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(3,3)</drawSize>
+    </graphicData>
+    <altitudeLayer>Building</altitudeLayer>
+    <size>(3,3)</size>
+    <passability>PassThroughOnly</passability>
+    <fillPercent>0.85</fillPercent>
+    <pathCost>50</pathCost>
+    <rotatable>false</rotatable>
+    <useHitPoints>true</useHitPoints>
+    <canOverlapZones>false</canOverlapZones>
+    <hasInteractionCell>true</hasInteractionCell>
+    <interactionCellOffset>(0,0,-2)</interactionCellOffset>
+    <statBases>
+      <MaxHitPoints>500</MaxHitPoints>
+      <WorkToBuild>8000</WorkToBuild>
+      <Flammability>0.2</Flammability>
+      <Beauty>0</Beauty>
+    </statBases>
+    <costList>
+      <Steel>50</Steel>
+      <ComponentIndustrial>2</ComponentIndustrial>
+    </costList>
+    <building>
+      <destroySound>BuildingDestroyed_Metal_Medium</destroySound>
+      <ai_chillDestination>false</ai_chillDestination>
+      <canLandGravshipOn>false</canLandGravshipOn>
+    </building>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>250</basePowerConsumption>
+        <shortCircuitInRain>false</shortCircuitInRain>
+      </li>
+      <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGate">
+        <openingWindowTicks>833</openingWindowTicks>
+        <emergencyReturnWindowTicks>300</emergencyReturnWindowTicks>
+        <stablePowerTicksRequired>60</stablePowerTicksRequired>
+        <minimumPowerHeadroomWatts>250</minimumPowerHeadroomWatts>
+        <idlePowerDrawWatts>250</idlePowerDrawWatts>
+        <openingPowerDrawWatts>3500</openingPowerDrawWatts>
+        <reserveChargePowerWatts>1000</reserveChargePowerWatts>
+        <returnReserveCapacityWattDays>2</returnReserveCapacityWattDays>
+        <emergencyReturnCostWattDays>1</emergencyReturnCostWattDays>
+        <recoveryOpeningCostWattDays>1</recoveryOpeningCostWattDays>
+        <calibrationWorkRequired>2500</calibrationWorkRequired>
+      </li>
+      <li Class="CompProperties_Flickable"/>
+      <li Class="CompProperties_Breakdownable"/>
+      <li Class="CompProperties_Stunnable">
+        <affectedDamageDefs><li>EMP</li></affectedDamageDefs>
+      </li>
+    </comps>
+    <designationCategory>Power</designationCategory>
+    <uiOrder>2180</uiOrder>
+    <constructEffect>ConstructMetal</constructEffect>
+    <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+  </ThingDef>
+
+  <ThingDef ParentName="BenchBase">
+    <defName>RR_GateConsole</defName>
+    <label>gate control console</label>
+    <description>A powered company workbench for physically assembling and operating the machine gate.</description>
+    <thingClass>Building_WorkTable</thingClass>
+    <drawerType>MapMeshAndRealTime</drawerType>
+    <graphicData>
+      <texPath>Buildings/Gate/RR_GateConsole</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+    </graphicData>
+    <size>(1,1)</size>
+    <hasInteractionCell>true</hasInteractionCell>
+    <interactionCellOffset>(0,0,-1)</interactionCellOffset>
+    <costList>
+      <Steel>50</Steel>
+      <ComponentIndustrial>2</ComponentIndustrial>
+    </costList>
+    <statBases>
+      <WorkToBuild>2500</WorkToBuild>
+      <MaxHitPoints>180</MaxHitPoints>
+      <Flammability>0.2</Flammability>
+      <Cleanliness>-1</Cleanliness>
+    </statBases>
+    <building>
+      <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
+      <workTableRoomRole>Workshop</workTableRoomRole>
+      <unpoweredWorkTableWorkSpeedFactor>0</unpoweredWorkTableWorkSpeedFactor>
+      <paintable>false</paintable>
+    </building>
+    <inspectorTabs><li>ITab_Bills</li></inspectorTabs>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>500</basePowerConsumption>
+        <shortCircuitInRain>false</shortCircuitInRain>
+      </li>
+      <li Class="CompProperties_Flickable"/>
+      <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGateConsole"/>
+      <li Class="CompProperties_Breakdownable"/>
+    </comps>
+    <designationCategory>Production</designationCategory>
+    <uiOrder>2420</uiOrder>
+    <constructEffect>ConstructMetal</constructEffect>
+    <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+    <placeWorkers><li>PlaceWorker_PreventInteractionSpotOverlap</li></placeWorkers>
+  </ThingDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_EmergencyCutoff</defName>
+    <label>emergency return cutoff</label>
+    <description>A local control that signals an emergency return window while leaving crew recovery to the company service.</description>
+    <thingClass>Building</thingClass>
+    <graphicData>
+      <texPath>Buildings/Gate/RR_EmergencyCutoff</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+    </graphicData>
+    <size>(1,1)</size>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>Standable</passability>
+    <rotatable>false</rotatable>
+    <statBases>
+      <MaxHitPoints>120</MaxHitPoints>
+      <WorkToBuild>200</WorkToBuild>
+      <Flammability>0.2</Flammability>
+      <Beauty>-1</Beauty>
+    </statBases>
+    <costList>
+      <Steel>10</Steel>
+      <ComponentIndustrial>1</ComponentIndustrial>
+    </costList>
+    <building><ai_chillDestination>false</ai_chillDestination></building>
+    <comps>
+      <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGateCutoff"/>
+    </comps>
+    <designationCategory>Power</designationCategory>
+    <uiOrder>2190</uiOrder>
+    <constructEffect>ConstructMetal</constructEffect>
+  </ThingDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_UtilityGenerator</defName>
+    <label>utility generator</label>
+    <description>A wood-fueled 6,000-watt generator for a small research facility and its gate equipment.</description>
+    <thingClass>Building</thingClass>
+    <drawerType>MapMeshAndRealTime</drawerType>
+    <graphicData>
+      <texPath>Buildings/Gate/RR_UtilityGenerator</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(2,2)</drawSize>
+    </graphicData>
+    <size>(2,2)</size>
+    <passability>PassThroughOnly</passability>
+    <fillPercent>0.85</fillPercent>
+    <pathCost>50</pathCost>
+    <rotatable>false</rotatable>
+    <blockWind>true</blockWind>
+    <useHitPoints>true</useHitPoints>
+    <statBases>
+      <MaxHitPoints>300</MaxHitPoints>
+      <WorkToBuild>2500</WorkToBuild>
+      <Flammability>1</Flammability>
+      <Beauty>-12</Beauty>
+    </statBases>
+    <costList>
+      <Steel>100</Steel>
+      <ComponentIndustrial>2</ComponentIndustrial>
+    </costList>
+    <building><destroySound>BuildingDestroyed_Metal_Medium</destroySound></building>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerPlant</compClass>
+        <basePowerConsumption>-6000</basePowerConsumption>
+        <transmitsPower>true</transmitsPower>
+        <soundAmbientProducingPower>WoodFiredGenerator_Ambience</soundAmbientProducingPower>
+      </li>
+      <li Class="CompProperties_Flickable"/>
+      <li Class="CompProperties_Refuelable">
+        <fuelConsumptionRate>132</fuelConsumptionRate>
+        <fuelCapacity>300</fuelCapacity>
+        <fuelFilter><thingDefs><li>WoodLog</li></thingDefs></fuelFilter>
+        <showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+        <canEjectFuel>true</canEjectFuel>
+      </li>
+      <li Class="CompProperties_Breakdownable"/>
+      <li Class="CompProperties_Stunnable">
+        <useLargeEMPEffecter>true</useLargeEMPEffecter>
+        <affectedDamageDefs><li>EMP</li></affectedDamageDefs>
+      </li>
+    </comps>
+    <designationCategory>Power</designationCategory>
+    <uiOrder>2100</uiOrder>
+    <constructEffect>ConstructMetal</constructEffect>
+    <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+  </ThingDef>
+</Defs>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- Original first-slice tuning and layout. The campaign owns ongoing rules and saved money. -->
+  <RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+    <defName>RR_AsyncIndustriesStart</defName>
+    <label>Async Industries branch opening</label>
+    <scenarioId>async_industries</scenarioId>
+    <scenarioVersion>1</scenarioVersion>
+    <mapSize>60</mapSize>
+    <mapGenerator>RR_Headquarters</mapGenerator>
+    <outdoorTerrain>Soil</outdoorTerrain>
+    <floorTerrain>Concrete</floorTerrain>
+    <wallStuff>BlocksGranite</wallStuff>
+    <arrivalCell>(30, 0, 23)</arrivalCell>
+    <stockCell>(17, 0, 27)</stockCell>
+    <initialFundingUsd>50000000</initialFundingUsd>
+    <dailyWageUsd>5000</dailyWageUsd>
+    <dailyOverheadUsd>25000</dailyOverheadUsd>
+    <surveyRewardUsd>5000000</surveyRewardUsd>
+    <surveyBonusUsd>1000000</surveyBonusUsd>
+    <rooms>
+      <li><x>8</x><z>8</z><width>44</width><height>44</height><roofed>false</roofed><floor>false</floor></li>
+      <li><x>10</x><z>10</z><width>13</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>24</x><z>10</z><width>10</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>35</x><z>10</z><width>14</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>10</x><z>21</z><width>14</width><height>12</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>10</x><z>34</z><width>14</width><height>15</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>25</x><z>26</z><width>9</width><height>14</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>35</x><z>21</z><width>14</width><height>12</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>35</x><z>34</z><width>14</width><height>15</height><roofed>true</roofed><floor>true</floor></li>
+    </rooms>
+    <doors>
+      <li>(30, 0, 8)</li>
+      <li>(22, 0, 16)</li>
+      <li>(29, 0, 19)</li>
+      <li>(35, 0, 16)</li>
+      <li>(23, 0, 26)</li>
+      <li>(23, 0, 40)</li>
+      <li>(29, 0, 26)</li>
+      <li>(35, 0, 26)</li>
+      <li>(35, 0, 40)</li>
+    </doors>
+    <buildings>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(12, 0, 12)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(15, 0, 12)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(18, 0, 12)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(12, 0, 15)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(15, 0, 15)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(20, 0, 12)</cell></li>
+      <li><thing>Heater</thing><cell>(20, 0, 17)</cell></li>
+      <li><thing>ElectricStove</thing><cell>(28, 0, 13)</cell></li>
+      <li><thing>Table2x2c</thing><stuff>WoodLog</stuff><cell>(28, 0, 16)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(26, 0, 16)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(31, 0, 16)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(28, 0, 15)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(29, 0, 18)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(31, 0, 17)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(32, 0, 12)</cell></li>
+      <li><thing>Heater</thing><cell>(25, 0, 12)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(38, 0, 12)</cell><medical>true</medical></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(42, 0, 12)</cell><medical>true</medical></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(38, 0, 17)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(46, 0, 12)</cell></li>
+      <li><thing>Heater</thing><cell>(46, 0, 17)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(12, 0, 23)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(16, 0, 23)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(20, 0, 23)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(12, 0, 30)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(20, 0, 30)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(21, 0, 28)</cell></li>
+      <li><thing>ElectricSmithy</thing><cell>(17, 0, 41)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(21, 0, 36)</cell></li>
+      <li><thing>Heater</thing><cell>(12, 0, 36)</cell></li>
+      <li><thing>RR_MachineGate</thing><cell>(29, 0, 33)</cell></li>
+      <li><thing>RR_GateConsole</thing><cell>(27, 0, 28)</cell></li>
+      <li><thing>RR_EmergencyCutoff</thing><cell>(31, 0, 28)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(31, 0, 37)</cell></li>
+      <li><thing>RR_UtilityGenerator</thing><cell>(40, 0, 26)</cell><fuelFraction>0.5</fuelFraction></li>
+      <li><thing>Battery</thing><cell>(44, 0, 26)</cell><batteryFraction>0.5</batteryFraction></li>
+      <li><thing>StandingLamp</thing><cell>(46, 0, 23)</cell></li>
+      <li><thing>SimpleResearchBench</thing><stuff>Steel</stuff><cell>(41, 0, 42)</cell></li>
+      <li><thing>RR_FieldAnalysisBench</thing><cell>(39, 0, 37)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(46, 0, 36)</cell></li>
+      <li><thing>Heater</thing><cell>(46, 0, 46)</cell></li>
+      <li><thing>HorseshoesPin</thing><stuff>Steel</stuff><cell>(28, 0, 44)</cell></li>
+    </buildings>
+    <conduits>
+      <li><start>(17, 0, 24)</start><length>28</length><alongX>true</alongX></li>
+      <li><start>(30, 0, 15)</start><length>30</length><alongX>false</alongX></li>
+      <li><start>(17, 0, 40)</start><length>27</length><alongX>true</alongX></li>
+      <li><start>(17, 0, 16)</start><length>27</length><alongX>true</alongX></li>
+      <li><start>(17, 0, 16)</start><length>28</length><alongX>false</alongX></li>
+      <li><start>(41, 0, 16)</start><length>29</length><alongX>false</alongX></li>
+    </conduits>
+    <stock>
+      <li><thing>Steel</thing><count>250</count></li>
+      <li><thing>ComponentIndustrial</thing><count>18</count></li>
+      <li><thing>ComponentSpacer</thing><count>2</count></li>
+      <li><thing>Silver</thing><count>150</count></li>
+      <li><thing>MealSurvivalPack</thing><count>50</count></li>
+      <li><thing>MedicineIndustrial</thing><count>6</count></li>
+      <li><thing>Gun_BoltActionRifle</thing><count>1</count></li>
+      <li><thing>Gun_Revolver</thing><count>1</count></li>
+      <li><thing>Apparel_FlakVest</thing><count>1</count></li>
+      <li><thing>WoodLog</thing><count>150</count></li>
+      <li><thing>RR_FieldRecorder</thing><count>1</count></li>
+      <li><thing>RR_SurveyTag</thing><count>6</count></li>
+      <li><thing>RR_ReturnBeacon</thing><count>1</count></li>
+      <li><thing>RR_SealedEvidenceCase</thing><count>1</count></li>
+    </stock>
+    <roles>
+      <li>
+        <id>operations</id><kind>RR_OperationsStaff</kind><mustFight>false</mustFight>
+        <skills><Social>6</Social><Intellectual>4</Intellectual></skills>
+        <workTypes><li>Warden</li><li>Hauling</li></workTypes>
+      </li>
+      <li>
+        <id>research</id><kind>RR_ResearchStaff</kind><mustFight>false</mustFight>
+        <skills><Intellectual>8</Intellectual><Crafting>4</Crafting></skills>
+        <workTypes><li>Research</li></workTypes>
+      </li>
+      <li>
+        <id>engineering</id><kind>RR_EngineeringStaff</kind><mustFight>false</mustFight>
+        <skills><Construction>8</Construction><Crafting>6</Crafting></skills>
+        <workTypes><li>Construction</li><li>Smithing</li><li>Crafting</li></workTypes>
+      </li>
+      <li>
+        <id>security</id><kind>RR_SecurityStaff</kind><mustFight>true</mustFight>
+        <skills><Shooting>8</Shooting><Melee>4</Melee></skills>
+        <workTypes><li>Hauling</li></workTypes>
+      </li>
+      <li>
+        <id>medical_logistics</id><kind>RR_MedicalLogisticsStaff</kind><mustFight>false</mustFight>
+        <skills><Medicine>8</Medicine><Cooking>6</Cooking><Plants>4</Plants></skills>
+        <workTypes><li>Doctor</li><li>Cooking</li><li>Growing</li></workTypes>
+      </li>
+    </roles>
+  </RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+</Defs>

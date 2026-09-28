@@ -49,6 +49,12 @@ For tick and UI metrics, collect timings through documented profiler/counter acc
 
 ## Expansion and evidence
 
+### Development counter entry point
+
+The 0.2.0 implementation adds [RimroomsDiagnostics](../../src/RimroomsAsyncIndustries/Core/RimroomsDiagnostics.cs). After an owner-launched session exists, developer mode exposes **Operations → Activity → Start a new component timing window**, stop, and write-to-Player.log actions. Counters are disabled by default, remain outside save data, and retain at most 16 categories with 2,048 duration samples per category. Snapshots report call count, full-window mean/max, recent-window p50/p95, loaded maps, managed bytes and private process bytes. Current scopes cover company, expedition, site, gate and Operations work; generation/route scopes are linked in the current destination implementation.
+
+These are instrumented component scopes, not total game tick time, achieved TPS, startup or save/load duration. Use the matched external/native profiler capture above for those missing measures. Recent 2,048-sample percentiles are not automatically percentiles of an entire ten-minute run. Start/stop and retain comparable windows with the profile manifest; do not label uncollected measurements passed.
+
 The [procedural space contract](../PROCEDURAL_SPACE_CONTRACT.md) sets candidate room bands of 6–8, 8–16, 16–32 and 24–48. The first implementation tests the smallest band. Later bands, simultaneous staffed sites, additional maps and outpost counts need measured limits before being enabled for release. The campaign can continue discovering coordinates; it must not allocate all potential destinations at once. Archive inactive state through the proven save path and restore visited sites without rerolling them.
 
 Save each result under `docs/research/runtime-evidence/performance/<run-id>/` (planned until a run exists): manifest with hardware ID, exact build/profile/overlay order and settings; paired saves; seed list; raw timings/memory samples; logs; summary table with p50/p95, differences and pass/failure; recovery observations. Keep proprietary binaries out of Git. Record file hashes instead. The feature implementer owns instrumentation and collection, the lead reviews comparability and results, and the owner controls launch.

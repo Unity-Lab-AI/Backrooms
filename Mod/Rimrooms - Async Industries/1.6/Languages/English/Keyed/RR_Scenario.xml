@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Start_WelcomeTitle>Branch authorization received</RR_Start_WelcomeTitle>
+  <RR_Start_Welcome>Your Async Industries branch is operational. The machine is still incomplete. Use Operations to review your staff, materials, branch account, and first survey. Your company allocation is an account balance; receiving contains your physical supplies. Finish the machine, assign a capable operator, calibrate it, and prepare the return route before dispatching a crew. Native Work, Research, Architect, and pawn controls remain available.</RR_Start_Welcome>
+  <RR_Start_FailedTitle>Company startup needs attention</RR_Start_FailedTitle>
+  <RR_Start_Failed>The company could not finish startup: {0}\n\nExisting people, buildings, and stock have been retained. Repeating startup will not issue another physical allocation. If headquarters construction is incomplete, retain the log and return to scenario setup. If only branch registration failed, correct the reported condition and use the explicit registration recovery when available.</RR_Start_Failed>
+  <RR_Start_MissingSetup>A completed Async Industries headquarters receipt was not found.</RR_Start_MissingSetup>
+  <RR_Start_PhysicalSetupFailed>Headquarters placement stopped before all starting stock and furnishings were placed.</RR_Start_PhysicalSetupFailed>
+  <RR_Start_RosterCount>This start requires five distinct staff, one for each initial company role.</RR_Start_RosterCount>
+  <RR_Start_RosterCapability>The {0} must be able to move and manipulate, perform the role's starting work, and meet its skill requirements. Reroll or adjust this staff member before continuing.</RR_Start_RosterCapability>
+</LanguageData>

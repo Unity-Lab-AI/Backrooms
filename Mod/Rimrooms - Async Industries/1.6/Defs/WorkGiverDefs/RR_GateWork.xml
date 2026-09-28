@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <WorkGiverDef>
+    <defName>RR_DoGateAssembly</defName>
+    <label>assemble gate at console</label>
+    <giverClass>WorkGiver_DoBill</giverClass>
+    <workType>Crafting</workType>
+    <priorityInType>100</priorityInType>
+    <fixedBillGiverDefs><li>RR_GateConsole</li></fixedBillGiverDefs>
+    <verb>assemble gate at</verb>
+    <gerund>assembling gate at</gerund>
+  </WorkGiverDef>
+  <WorkGiverDef>
+    <defName>RR_CalibrateGate</defName>
+    <label>calibrate machine gate</label>
+    <giverClass>RimroomsAsyncIndustries.Gate.WorkGiver_RRCalibrateGate</giverClass>
+    <workType>Research</workType>
+    <priorityInType>100</priorityInType>
+    <verb>calibrate</verb>
+    <gerund>calibrating</gerund>
+  </WorkGiverDef>
+</Defs>

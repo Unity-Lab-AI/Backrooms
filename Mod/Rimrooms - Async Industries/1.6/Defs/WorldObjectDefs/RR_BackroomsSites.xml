@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <WorldObjectDef ParentName="StaticWorldObjectBase">
+    <defName>RR_BackroomsSite</defName>
+    <label>machine-linked coordinate</label>
+    <description>A finite, saved coordinate reached through the company's machine. Its world tile is an internal map address, not a caravan destination.</description>
+    <worldObjectClass>RimroomsAsyncIndustries.Generation.RimroomsDestinationMapParent</worldObjectClass>
+    <mapGenerator>RR_BackroomsGeneration</mapGenerator>
+    <canHaveMap>true</canHaveMap>
+    <canBePlayerHome>false</canBePlayerHome>
+    <validLaunchTarget>false</validLaunchTarget>
+    <saved>true</saved>
+    <expandingIcon>false</expandingIcon>
+    <allowCaravanIncidentsWhichGenerateMap>false</allowCaravanIncidentsWhichGenerateMap>
+  </WorldObjectDef>
+</Defs>

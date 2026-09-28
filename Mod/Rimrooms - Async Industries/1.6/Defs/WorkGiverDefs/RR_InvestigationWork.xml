@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <WorkGiverDef>
+    <defName>RR_CompanyLaboratory</defName>
+    <label>analyze company evidence</label>
+    <giverClass>RimroomsAsyncIndustries.Investigation.WorkGiver_CompanyLaboratory</giverClass>
+    <workType>Research</workType>
+    <verb>research at</verb>
+    <gerund>researching at</gerund>
+    <priorityInType>110</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+</Defs>

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-28",
+  "assets": [
+    {
+      "key": "RR_FadedInstitutionalCarpet",
+      "source": "exec-74f0712f-9949-430c-9c0a-38ae87d5e898.png",
+      "prompt": "Create an original seamless square top-down videogame floor texture for the RimWorld mod Rimrooms - Async Industries. Flat orthographic view, no perspective. One continuous field of old institutional short-pile carpet in muted warm ochre, faded straw yellow and gray beige. Fine restrained fibers, tiny mottled wear, subtle repeated weave, no bold stains, no directional light, no shadows, no walls, no furniture, no frame, no text. It must read as a quiet floor beneath tiny game pawns. Hand-painted simplified material shading with low contrast, not a photograph. Seamlessly tileable on all four edges. Do not recreate any existing movie frame or another game's asset. Opaque background; square material tile only. Export at 512x512 if possible.",
+      "tool": "image_gen.imagegen",
+      "transparent_background": false,
+      "creator": "Operator (AI-assisted original asset)",
+      "license": "MIT - original project asset",
+      "masterPath": "assets/source/phase2/RR_FadedInstitutionalCarpet.png",
+      "packagePath": "Mod/Rimrooms - Async Industries/1.6/Textures/Terrain/RR_FadedInstitutionalCarpet.png",
+      "sha256": "77D0F53A0A12AD1947180A72067253ED73A0079DD7C87134AFFE00BCC82B0ED6",
+      "review": "Visually inspected opaque original carpet material; no reference images. Native output retained without pixel edits. Seam repetition, export sizing and normal-zoom rendering need owner-launched acceptance.",
+      "width": 1254,
+      "height": 1254,
+      "pngColorType": 2
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingCategoryDef>
+    <defName>RR_FieldEquipment</defName>
+    <label>Rimrooms field equipment</label>
+    <parent>Items</parent>
+  </ThingCategoryDef>
+  <ThingCategoryDef>
+    <defName>RR_Evidence</defName>
+    <label>Rimrooms evidence</label>
+    <parent>Items</parent>
+  </ThingCategoryDef>
+</Defs>

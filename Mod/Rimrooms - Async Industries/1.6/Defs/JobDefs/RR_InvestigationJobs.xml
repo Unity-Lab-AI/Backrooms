@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <JobDef>
+    <defName>RR_DeployRouteAid</defName>
+    <driverClass>RimroomsAsyncIndustries.Investigation.JobDriver_DeployRouteAid</driverClass>
+    <reportString>Placing route equipment.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+  <JobDef>
+    <defName>RR_AnalyzeEvidence</defName>
+    <driverClass>RimroomsAsyncIndustries.Investigation.JobDriver_CompanyLaboratory</driverClass>
+    <reportString>Analyzing recovered evidence at TargetA.</reportString>
+    <casualInterruptible>true</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+  </JobDef>
+  <JobDef>
+    <defName>RR_CompanyResearch</defName>
+    <driverClass>RimroomsAsyncIndustries.Investigation.JobDriver_CompanyLaboratory</driverClass>
+    <reportString>Researching company technology at TargetA.</reportString>
+    <casualInterruptible>true</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+  </JobDef>
+</Defs>

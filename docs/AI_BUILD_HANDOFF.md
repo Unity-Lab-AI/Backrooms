@@ -7,7 +7,7 @@ For a short player-facing summary of the intended mod, see the [Rimrooms overvie
 
 ## Required reading order
 
-**Implementation entry:** [0.1.0 build record](implementation/PHASE_1_BUILD_RECORD.md), [build/stage instructions](BUILDING.md), [contributor guide](../CONTRIBUTING.md), [Core lifecycle review](implementation/PHASE_1_CORE_SOURCE_REVIEW.md), and [save policy](SAVE_MIGRATION_POLICY.md). These record the actual foundation files. The campaign documents below remain required design inputs; they are not a list of implemented features.
+**Implementation entry:** [0.2.0 build record and remaining work](implementation/PHASE_2_BUILD_RECORD.md), [Phase 2 task](implementation/PHASE_2_VERTICAL_SLICE_TASK.md), [build/stage instructions](BUILDING.md), [contributor guide](../CONTRIBUTING.md), and [save policy](SAVE_MIGRATION_POLICY.md). Follow the build record's per-system source/implementation links before editing its code. The [0.1.0 record](implementation/PHASE_1_BUILD_RECORD.md) is historical foundation evidence. The campaign documents below remain required design inputs; they are not a list of implemented features. Gate 2 and runtime acceptance remain open.
 
 For generation, read the player-facing [procedural space contract](PROCEDURAL_SPACE_CONTRACT.md) and the [RimWorld 1.6 package and generation findings](research/RIMWORLD_1_6_PACKAGE_AND_GENERATION.md). For optional space-system integrations, read [gravship, vehicle, cargo, and orbital profile interactions](research/GRAVSHIP_PROFILE_INTERACTIONS.md). These are design rules or research leads, not implementation guarantees or compatibility clearance.
 
@@ -67,7 +67,7 @@ Update the file that owns the decision first, then add a link from its navigatio
 
 ## Current gate
 
-Gate 0 remains passed. Phase 1 now has a compiled/staged 0.1.0 foundation; the Operations tab and inert save component are the only gameplay-facing code. No owner-launched Rimrooms acceptance has occurred. Capture the full target/bridge profile and runtime baseline through the owner's RimSort workflow; continue the next code task from the [build record's handoff](implementation/PHASE_1_BUILD_RECORD.md#next-work). Do not initialize campaigns through the foundation UI or invent grants outside the accepted scenario contract.
+Gate 0 remains passed. Continue the [0.2.0 first-expedition implementation queue](implementation/PHASE_2_BUILD_RECORD.md#remaining-phase-2-work-before-promotion), preserving its existing code and source findings. No owner-launched Rimrooms acceptance has occurred. Capture the full target/bridge profile and runtime baseline through the owner's RimSort workflow; only actual acceptance can close Gate 2. New-game grants remain scenario-owned and ordinary existing colonies remain inactive.
 
 For reproducible closure evidence and the remaining implementation stages, read the [Gate 0 completion audit](research/GATE_0_COMPLETION_AUDIT.md). The [performance plan](research/PERFORMANCE_BENCHMARK_PLAN.md) fixes RR-DEV-01 and initial budgets without running the game. The [dated profile delta](research/profile-deltas-2026-09-28.json) updates the local Hospitality target from the historical register's 1.1.4 to installed 1.1.5; use both records. Future source drift must be reviewed explicitly rather than silently changing a historical snapshot.
 

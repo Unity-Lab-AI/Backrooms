@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_MachineGate.label>machine gate</RR_MachineGate.label>
+  <RR_MachineGate.description>A powered machine that opens a temporary, recoverable passage into a recorded coordinate.</RR_MachineGate.description>
+  <RR_GateConsole.label>gate control console</RR_GateConsole.label>
+  <RR_GateConsole.description>A powered company workbench for physically assembling and operating the machine gate.</RR_GateConsole.description>
+  <RR_EmergencyCutoff.label>emergency return cutoff</RR_EmergencyCutoff.label>
+  <RR_EmergencyCutoff.description>A local control that signals an emergency return window while leaving expedition and crew recovery to the company service.</RR_EmergencyCutoff.description>
+  <RR_UtilityGenerator.label>utility generator</RR_UtilityGenerator.label>
+  <RR_UtilityGenerator.description>A wood-fueled 6,000-watt generator sized for a small research facility and its gate equipment.</RR_UtilityGenerator.description>
+</LanguageData>

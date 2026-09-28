@@ -4,6 +4,8 @@ This file is the navigation index for the research and design materials a future
 
 ## Project source-of-truth documents
 
+**Current implementation entry:** [0.2.0 build/source map](implementation/PHASE_2_BUILD_RECORD.md), [Phase 2 task](implementation/PHASE_2_VERTICAL_SLICE_TASK.md), [build instructions](BUILDING.md), and [save policy](SAVE_MIGRATION_POLICY.md). The build map links exact Core reviews, actual code/package paths, original art records and remaining acceptance. The 0.1.0 record remains historical. Source/compilation evidence is separate from owner-launched gameplay evidence.
+
 | Topic | Canonical document | Supporting documents |
 | --- | --- | --- |
 | Short player-facing mod overview | [`RIMROOMS_MOD_OVERVIEW.md`](RIMROOMS_MOD_OVERVIEW.md) | Orientation summary only; use the design contracts, TODO, and Gate 0 decision sheet for binding details |

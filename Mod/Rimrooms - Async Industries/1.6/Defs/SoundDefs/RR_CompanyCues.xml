@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <SoundDef>
+    <defName>RR_GatePowerRise</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains><li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_GatePowerRise</clipPath></li></grains>
+        <volumeRange>35</volumeRange>
+        <pitchRange>1</pitchRange>
+        <distRange>12~55</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+  <SoundDef>
+    <defName>RR_GateWarning</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains><li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_GateWarning</clipPath></li></grains>
+        <volumeRange>50</volumeRange>
+        <pitchRange>1</pitchRange>
+        <distRange>12~55</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+  <SoundDef>
+    <defName>RR_FieldRadio</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains><li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_FieldRadio</clipPath></li></grains>
+        <volumeRange>35</volumeRange>
+        <pitchRange>1</pitchRange>
+        <distRange>12~55</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+  <SoundDef>
+    <defName>RR_SpatialTell</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains><li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_SpatialTell</clipPath></li></grains>
+        <volumeRange>35</volumeRange>
+        <pitchRange>1</pitchRange>
+        <distRange>12~55</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+</Defs>

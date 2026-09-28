@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <JobDef>
+    <defName>RR_ApproachGate</defName>
+    <driverClass>RimroomsAsyncIndustries.Expedition.JobDriver_ExpeditionApproach</driverClass>
+    <reportString>assembling at the machine gate.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <carryThingAfterJob>true</carryThingAfterJob>
+    <dropThingBeforeJob>false</dropThingBeforeJob>
+    <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+  </JobDef>
+  <JobDef>
+    <defName>RR_ReturnThroughGate</defName>
+    <driverClass>RimroomsAsyncIndustries.Expedition.JobDriver_ExpeditionApproach</driverClass>
+    <reportString>returning to the saved threshold.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <carryThingAfterJob>true</carryThingAfterJob>
+    <dropThingBeforeJob>false</dropThingBeforeJob>
+    <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+  </JobDef>
+  <JobDef>
+    <defName>RR_CarryToReturnAnchor</defName>
+    <driverClass>RimroomsAsyncIndustries.Expedition.JobDriver_CarryToReturnAnchor</driverClass>
+    <reportString>carrying TargetA to the return threshold.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <carryThingAfterJob>true</carryThingAfterJob>
+    <dropThingBeforeJob>false</dropThingBeforeJob>
+    <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+  </JobDef>
+</Defs>

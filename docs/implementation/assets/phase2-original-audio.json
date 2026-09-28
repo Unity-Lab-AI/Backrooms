@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "creator": "Operator (original procedural audio)",
+  "license": "MIT - original project assets",
+  "source": "tools/assets/render-phase2-audio.py",
+  "review": "Deterministically rendered original PCM; sample peak and RMS calculated. No playback or in-game mix review performed. RMS is not LUFS or true peak.",
+  "assets": [
+    {
+      "name": "RR_GatePowerRise",
+      "durationSeconds": 2.0,
+      "sampleRate": 48000,
+      "channels": 1,
+      "bitsPerSample": 16,
+      "samplePeakDbfs": -14.894903334878773,
+      "rmsDbfs": -19.94232922515482,
+      "sha256": "b46973b4765f9b1bbf8c8d869a8419dafa9c85967e04b1a76a2778a1c52d63d7",
+      "masterPath": "assets/source/phase2/audio/RR_GatePowerRise.wav",
+      "packagePath": "Mod/Rimrooms - Async Industries/1.6/Sounds/Rimrooms/RR_GatePowerRise.wav"
+    },
+    {
+      "name": "RR_GateWarning",
+      "durationSeconds": 1.1,
+      "sampleRate": 48000,
+      "channels": 1,
+      "bitsPerSample": 16,
+      "samplePeakDbfs": -14.894903334878773,
+      "rmsDbfs": -25.35566072597698,
+      "sha256": "12c2a762df2674f1ef3c3278ea5ee489fb0d0310bab011d1770c843a006bd70c",
+      "masterPath": "assets/source/phase2/audio/RR_GateWarning.wav",
+      "packagePath": "Mod/Rimrooms - Async Industries/1.6/Sounds/Rimrooms/RR_GateWarning.wav"
+    },
+    {
+      "name": "RR_FieldRadio",
+      "durationSeconds": 0.6,
+      "sampleRate": 48000,
+      "channels": 1,
+      "bitsPerSample": 16,
+      "samplePeakDbfs": -14.894903334878773,
+      "rmsDbfs": -26.732551151676297,
+      "sha256": "030acbeb064900d64ba787ccd3abe0d4e7d4169a45d3d914217450db334fbdf7",
+      "masterPath": "assets/source/phase2/audio/RR_FieldRadio.wav",
+      "packagePath": "Mod/Rimrooms - Async Industries/1.6/Sounds/Rimrooms/RR_FieldRadio.wav"
+    },
+    {
+      "name": "RR_SpatialTell",
+      "durationSeconds": 1.4,
+      "sampleRate": 48000,
+      "channels": 1,
+      "bitsPerSample": 16,
+      "samplePeakDbfs": -14.894903334878773,
+      "rmsDbfs": -22.78028412319255,
+      "sha256": "260ee746025dc9fd3fb425c35904cd0ae0b5f954ac1cb84a47d3f9f09932b1a5",
+      "masterPath": "assets/source/phase2/audio/RR_SpatialTell.wav",
+      "packagePath": "Mod/Rimrooms - Async Industries/1.6/Sounds/Rimrooms/RR_SpatialTell.wav"
+    }
+  ]
+}

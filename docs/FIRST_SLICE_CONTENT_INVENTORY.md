@@ -1,6 +1,6 @@
 # Rimrooms - Async Industries: first-slice content inventory
 
-**Status:** pre-code content contract, version 0.1. Names and counts below are original working content for the first playable. They are not shipped assets, final lore, or tested game behavior. The slice remains Core-only and single-player-capable.
+**Status:** content contract, version 0.1. The [0.2.0 development build](implementation/PHASE_2_BUILD_RECORD.md) identifies the actual starting staff/facility, field equipment, original sprites, furnished saved site, observation report and encounter implementation; unfinished presentation and acceptance remain listed there. Names and counts below are original working content, not confirmed canon or runtime evidence. The slice targets Core-only solo operation.
 
 **Purpose:** make the Async Industries opening concrete enough to prepare implementation without expanding the first build into the whole campaign. Shared systems and optional integrations are mapped in [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md), [SYSTEMS_CATALOG.md](SYSTEMS_CATALOG.md), and the [294-mod register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx).
 
@@ -55,7 +55,7 @@ The generator selects compatible templates from these families; a valid map need
 4. Read the AI-01 mission card, enter, tag the first junction, and record what the room map shows.
 5. Identify the repeated-route clue, see the entity's warning, then decide whether to document, repel, or recall.
 6. Return, reconcile the manifest, secure the recording, analyze it, and receive the one-time reward.
-7. Choose Gate Telemetry or a follow-on survey. Both paths lead to a second preparation decision.
+7. Choose Gate Telemetry or prepare an AI-01 resurvey with current equipment. Both paths lead to a second preparation decision at the same saved coordinate. Additional paid contract generation belongs to Phase 3.
 
 ## Included and deferred
 

@@ -45,7 +45,7 @@ try {
     $evidenceDirectory = Join-Path $repoRoot 'artifacts/build'
     $null = New-Item -ItemType Directory -Path $evidenceDirectory -Force
     $manifest | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $evidenceDirectory 'package-manifest.json') -Encoding UTF8
-    $references = foreach ($name in @('Assembly-CSharp.dll', 'UnityEngine.CoreModule.dll', 'UnityEngine.IMGUIModule.dll', 'mscorlib.dll')) {
+    $references = foreach ($name in @('Assembly-CSharp.dll', 'UnityEngine.CoreModule.dll', 'UnityEngine.IMGUIModule.dll', 'UnityEngine.TextRenderingModule.dll', 'mscorlib.dll')) {
         $path = Join-Path $managed $name
         [ordered]@{ Name = $name; AssemblyVersion = [Reflection.AssemblyName]::GetAssemblyName($path).Version.ToString(); SHA256 = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash }
     }

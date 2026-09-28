@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Gate_AssignOperatorLabel>Assign gate operator</RR_Gate_AssignOperatorLabel>
+  <RR_Gate_AssignOperatorDesc>Choose an employed staff member for the gate console.</RR_Gate_AssignOperatorDesc>
+  <RR_Gate_CalibrateLabel>Calibrate gate</RR_Gate_CalibrateLabel>
+  <RR_Gate_CalibrateDesc>Start a staffed calibration job at the powered console.</RR_Gate_CalibrateDesc>
+  <RR_Gate_StaffConsoleLabel>Staff gate console</RR_Gate_StaffConsoleLabel>
+  <RR_Gate_StaffConsoleDesc>Order the assigned operator to reserve and staff the console.</RR_Gate_StaffConsoleDesc>
+  <RR_Gate_EmergencyCutoffLabel>Activate emergency cutoff</RR_Gate_EmergencyCutoffLabel>
+  <RR_Gate_EmergencyCutoffDesc>Cut gate power and start its bounded emergency-return window. Expedition crew and map handling stay with the expedition service.</RR_Gate_EmergencyCutoffDesc>
+  <RR_Gate_StaffChoice>{0} ({1})</RR_Gate_StaffChoice>
+  <RR_Gate_UnassignOperator>Unassign operator</RR_Gate_UnassignOperator>
+  <RR_Gate_NoOperator>No operator assigned.</RR_Gate_NoOperator>
+  <RR_Gate_OperatorPresent>Operator on station: {0}</RR_Gate_OperatorPresent>
+  <RR_Gate_OperatorAway>Assigned operator away from the console: {0}</RR_Gate_OperatorAway>
+  <RR_Gate_ReserveReadout>Emergency return reserve: {0} / {1} watt-days</RR_Gate_ReserveReadout>
+  <RR_Gate_PowerReadout>Configured gate load {0} W; reserve charging load {1} W; required network headroom {2} W. Gate-owned reserve {3} / {4} watt-days; emergency return cost {5} watt-days; recovery activation cost {6} watt-days.</RR_Gate_PowerReadout>
+  <RR_Gate_OpeningReadout>Opening time: {0}\nEmergency return: {1}\nStatus: {2}</RR_Gate_OpeningReadout>
+  <RR_Gate_WindowClosed>Closed</RR_Gate_WindowClosed>
+  <RR_Gate_RemainingMinutes>{0} in-game minutes remaining</RR_Gate_RemainingMinutes>
+  <RR_Gate_NoFailure>normal</RR_Gate_NoFailure>
+  <RR_Gate_StatusIncomplete>Assembly required</RR_Gate_StatusIncomplete>
+  <RR_Gate_StatusNeedsCalibration>Calibration required</RR_Gate_StatusNeedsCalibration>
+  <RR_Gate_StatusCalibrated>Calibrated</RR_Gate_StatusCalibrated>
+  <RR_Gate_CutoffEmergencyActive>Emergency state: {0}</RR_Gate_CutoffEmergencyActive>
+  <RR_Gate_CutoffReady>Emergency return control ready.</RR_Gate_CutoffReady>
+  <RR_Gate_NoMachineLinked>No machine gate is linked to this cutoff.</RR_Gate_NoMachineLinked>
+  <RR_Gate_JobUnavailable>The assigned staff member cannot start this gate job.</RR_Gate_JobUnavailable>
+  <RR_Gate_NoAssignedOperator>No employed operator is assigned.</RR_Gate_NoAssignedOperator>
+  <RR_Gate_ActiveCannotReassign>The operator cannot be changed while an expedition is active.</RR_Gate_ActiveCannotReassign>
+  <RR_Gate_StaffOnly>Only an employed company staff member can be assigned to the gate.</RR_Gate_StaffOnly>
+  <RR_Gate_InvalidExpedition>The expedition ID is missing or invalid.</RR_Gate_InvalidExpedition>
+  <RR_Gate_NotAssembled>The gate needs its physical materials and staffed assembly bill completed.</RR_Gate_NotAssembled>
+  <RR_Gate_NotCalibrated>The gate needs staffed calibration before opening.</RR_Gate_NotCalibrated>
+  <RR_Gate_AlreadyOpen>The gate already has an active expedition.</RR_Gate_AlreadyOpen>
+  <RR_Gate_RecoveryRequired>The previous opening has failed. Use the recovery operation after the return window ends.</RR_Gate_RecoveryRequired>
+  <RR_Gate_RecoveryWindowStillActive>The bounded emergency-return window must expire before a recovery opening can begin.</RR_Gate_RecoveryWindowStillActive>
+  <RR_Gate_RecoveryReserveNotFull>The gate-owned reserve must be fully recharged before recovery. Recharging takes powered time.</RR_Gate_RecoveryReserveNotFull>
+  <RR_Gate_InvalidOperation>The operation receipt ID is missing or invalid.</RR_Gate_InvalidOperation>
+  <RR_Gate_InvalidTimeCost>The opening time cost must be a positive number of ticks.</RR_Gate_InvalidTimeCost>
+  <RR_Gate_OperationIdConflict>This operation receipt ID was already used for a different request.</RR_Gate_OperationIdConflict>
+  <RR_Gate_NoNormalWindow>The gate cannot apply a new time cost during its emergency-return window.</RR_Gate_NoNormalWindow>
+  <RR_Gate_OperatorAway>The assigned operator is not staffing the console.</RR_Gate_OperatorAway>
+  <RR_Gate_OperatorUnavailable>The assigned operator must be alive, capable, employed, and present on the facility map.</RR_Gate_OperatorUnavailable>
+  <RR_Gate_PowerUnstable>The gate needs stable connected power and a charged return reserve.</RR_Gate_PowerUnstable>
+  <RR_Gate_OpeningPowerUnstable>The connected power network cannot support the gate's configured opening load while retaining its required headroom.</RR_Gate_OpeningPowerUnstable>
+  <RR_Gate_ReserveTooLow>The gate does not have enough stored emergency-return charge.</RR_Gate_ReserveTooLow>
+  <RR_Gate_ExpeditionMismatch>The emergency-return request does not match the active expedition.</RR_Gate_ExpeditionMismatch>
+  <RR_Gate_NoEmergencyWindow>The gate has no active emergency-return window.</RR_Gate_NoEmergencyWindow>
+  <RR_Gate_PowerLost>Power lost</RR_Gate_PowerLost>
+  <RR_Gate_OperatorLost>Operator station lost</RR_Gate_OperatorLost>
+  <RR_Gate_WindowExpired>Opening window expired</RR_Gate_WindowExpired>
+  <RR_Gate_WarningTenMinutes>The gate opening has about 10 in-game minutes remaining.</RR_Gate_WarningTenMinutes>
+  <RR_Gate_WarningFiveMinutes>The gate opening has about 5 in-game minutes remaining.</RR_Gate_WarningFiveMinutes>
+  <RR_Gate_WarningTwoMinutes>The gate opening has about 2 in-game minutes remaining.</RR_Gate_WarningTwoMinutes>
+  <RR_Gate_EmergencyWindowExpired>Emergency-return window expired</RR_Gate_EmergencyWindowExpired>
+  <RR_Gate_EmergencyCutoff>Emergency cutoff activated</RR_Gate_EmergencyCutoff>
+  <RR_Gate_NotOpen>The gate has no active expedition to interrupt.</RR_Gate_NotOpen>
+  <RR_Gate_CalibrationUnavailable>The gate is not ready for calibration.</RR_Gate_CalibrationUnavailable>
+  <RR_Gate_MachineUnavailable>The gate machine is no longer available.</RR_Gate_MachineUnavailable>
+  <RR_Gate_InvalidAssemblyBill>The assembly bill did not target the machine gate console.</RR_Gate_InvalidAssemblyBill>
+  <RR_Event_GateAssemblyCompleted>The machine assembly is complete. Assign a qualified operator and calibrate the gate.</RR_Event_GateAssemblyCompleted>
+  <RR_Event_GateCalibrationCompleted>The machine calibration is complete. Staff the console and review the power reserve before dispatch.</RR_Event_GateCalibrationCompleted>
+  <RR_Event_GateOpeningStarted>The gate opening has started. The expedition window is running.</RR_Event_GateOpeningStarted>
+  <RR_Event_GateOpeningClosed>The gate opening is closed. Crew and cargo remain accounted for in the expedition record.</RR_Event_GateOpeningClosed>
+  <RR_Event_GateEmergencyReturnPaid>Emergency return has committed {0} watt-days from the machine's reserve.</RR_Event_GateEmergencyReturnPaid>
+  <RR_Event_GateRecoveryOpeningStarted>The recovery opening has started, spending {0} watt-days from the machine's reserve.</RR_Event_GateRecoveryOpeningStarted>
+  <RR_Gate_TimeCostWindowExhausted>The recorded route distortion consumed the remaining normal opening. Use the emergency return while it remains available.</RR_Gate_TimeCostWindowExhausted>
+</LanguageData>

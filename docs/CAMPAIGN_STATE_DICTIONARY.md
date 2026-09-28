@@ -1,6 +1,6 @@
 # Rimrooms - Async Industries: campaign state and save ownership
 
-**Status:** full-campaign ownership contract. The [0.1.0 foundation](implementation/PHASE_1_BUILD_RECORD.md) implements only an inactive game component with schema version and nullable branch/scenario IDs, using the [reviewed Core lifecycle](implementation/PHASE_1_CORE_SOURCE_REVIEW.md). Its exact keys and limitations are in the [save policy](SAVE_MIGRATION_POLICY.md). The remaining records below still need implementation and acceptance; this file owns their intended state and transfer rules.
+**Status:** full-campaign ownership contract. The [0.2.0 build](implementation/PHASE_2_BUILD_RECORD.md) implements branch/ledger/staff, initial contract/case/evidence/project, coordinate/map, gate and expedition state. The [save policy](SAVE_MIGRATION_POLICY.md) maps actual classes, schema-2 migrations, physical holders and limitations. Full campaign records below remain the intended target; no runtime persistence or co-op result is claimed from compilation.
 
 ## Ownership rule
 

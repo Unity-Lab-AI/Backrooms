@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Exp_Missing_RR_FieldRecorder>The shared field recorder is missing from the selected crew's actual inventories. Load it from storage; relief may also use the original crew's inventoried recorder at the saved site.</RR_Exp_Missing_RR_FieldRecorder>
+  <RR_Exp_Missing_RR_SurveyTag>The shared kit needs six physical survey tags in crew inventories. Load missing tags from storage; no replacement tags are granted by dispatch.</RR_Exp_Missing_RR_SurveyTag>
+  <RR_Exp_Missing_RR_ReturnBeacon>The shared return beacon is missing from crew inventories. Locate or physically replace it before departure.</RR_Exp_Missing_RR_ReturnBeacon>
+  <RR_Exp_Missing_RR_SealedEvidenceCase>The shared sealed evidence case is missing from crew inventories. Load the case before departure.</RR_Exp_Missing_RR_SealedEvidenceCase>
+  <RR_Exp_CannotCarry>This staff member cannot carry an expedition inventory.</RR_Exp_CannotCarry>
+  <RR_Exp_OverCapacity>A crew member's real gear and cargo exceed their native carrying capacity. Unload cargo or choose another carrier.</RR_Exp_OverCapacity>
+  <RR_Exp_PickupUnavailable>The item is unavailable, forbidden, reserved, unreachable, or too large for this pickup. Inspect the real item and pawn.</RR_Exp_PickupUnavailable>
+  <RR_Exp_InvalidCrew>Select one to three distinct, available employed staff at headquarters. They must be alive, mobile, controllable, and able to carry their gear.</RR_Exp_InvalidCrew>
+  <RR_Exp_LoadPending>The selected crew already have inventory pickup orders. Let those jobs finish or cancel them before preparing another loadout.</RR_Exp_LoadPending>
+  <RR_Exp_LoadoutUnavailable>The complete missing field kit cannot be reserved and carried from headquarters stock. Inspect available items, doors, reservations, and each selected pawn's free capacity.</RR_Exp_LoadoutUnavailable>
+  <RR_Exp_PickupPartiallyQueued>Some physical pickup orders were queued before another reservation failed. Let the accepted jobs finish, inspect inventory, and retry only the missing kit.</RR_Exp_PickupPartiallyQueued>
+  <RR_Exp_AlreadyActive>An expedition is already staging, operating, or stranded. Recover that run or explicitly close it as abandoned before dispatching another.</RR_Exp_AlreadyActive>
+  <RR_Exp_InvalidDestination>The saved destination or its walkable arrival/return threshold is unavailable. Crew and cargo remain on their current map.</RR_Exp_InvalidDestination>
+  <RR_Exp_GatePathBlocked>The gate approach or arrival area is blocked. Clear a walkable route and free threshold cells.</RR_Exp_GatePathBlocked>
+  <RR_Exp_ApproachInterrupted>A crew approach was interrupted. Staff and gear remain where they physically are. Check their availability and issue dispatch or relief again.</RR_Exp_ApproachInterrupted>
+  <RR_Exp_NotStaging>There is no expedition currently assembling at headquarters.</RR_Exp_NotStaging>
+  <RR_Exp_NoOpenTrip>There is no open field expedition to recall.</RR_Exp_NoOpenTrip>
+  <RR_Exp_ReturnNeedsRescue>No mobile crew can complete this return order. Clear the route, tend injuries, or assign a mobile teammate to carry a casualty to the threshold.</RR_Exp_ReturnNeedsRescue>
+  <RR_Exp_NoStrandedTrip>There is no stranded run ready for reopening, or a failed transfer first needs its explicit recovery action.</RR_Exp_NoStrandedTrip>
+  <RR_Exp_OwnerMissing>The original gate, headquarters, or saved destination is missing. Existing crew, map, and cargo records are retained.</RR_Exp_OwnerMissing>
+  <RR_Exp_ReliefLimit>A run permits one additional relief staff member. Use the same relief member for further rescue trips; the original survey crew is unchanged.</RR_Exp_ReliefLimit>
+  <RR_Exp_ReturnClosed>The return opening has closed. Keep the crew and site intact and reopen the saved return route from headquarters.</RR_Exp_ReturnClosed>
+  <RR_Exp_CargoUnknown>This cargo entry or declared disposition is unavailable.</RR_Exp_CargoUnknown>
+  <RR_Exp_ControllerFailure>Expedition control stopped after an error. The run and physical crew are retained for recovery; inspect the game log.</RR_Exp_ControllerFailure>
+  <RR_Exp_TransferInterrupted>A cross-map transfer was interrupted. Crew remain on their actual map or in the saved transfer recovery holder. Use Recover interrupted transfers before reopening.</RR_Exp_TransferInterrupted>
+  <RR_Exp_Dispatched>The crew crossed the threshold with their actual equipment. The gate clock is running.</RR_Exp_Dispatched>
+  <RR_Exp_EmergencyRecall>Gate support failed or the normal window ended. Mobile crew are returning to the threshold. Emergency reserve permits one bounded return attempt; distant or incapacitated staff may need later recovery.</RR_Exp_EmergencyRecall>
+  <RR_Exp_Stranded>The return window expired. Remaining crew and cargo stay at the saved site. Restore gate readiness and reopen that return route, or send the one-person relief team.</RR_Exp_Stranded>
+  <RR_Exp_BranchUnavailable>The branch or expedition save state does not permit this action.</RR_Exp_BranchUnavailable>
+  <RR_Exp_OperatorMustStay>Keep the assigned gate operator at this headquarters gate. Select other staff for the field crew.</RR_Exp_OperatorMustStay>
+  <RR_Exp_FinishHauling>A selected crew member is carrying an object in their hands. Finish that haul or put the item into an allowed inventory before dispatch.</RR_Exp_FinishHauling>
+  <RR_Exp_Returned>The expedition's people or recovered remains are back at headquarters. Review actual cargo, unresolved stack changes, and evidence before settlement.</RR_Exp_Returned>
+  <RR_Exp_NoTransferRecovery>No interrupted transfer is waiting for recovery.</RR_Exp_NoTransferRecovery>
+  <RR_Exp_RecoveryIdLimit>This run has exhausted its saved recovery-attempt ID range. Existing crew and site remain intact.</RR_Exp_RecoveryIdLimit>
+  <RR_Exp_UnknownRun>This expedition record is not available in the current branch.</RR_Exp_UnknownRun>
+  <RR_Exp_CannotAbandon>Only a field expedition can be closed as abandoned. Cancel an initial headquarters approach through Abort staging.</RR_Exp_CannotAbandon>
+  <RR_Exp_ClosureReasonRequired>Record a reason for closing this expedition. Review the people and property that will remain at their actual locations.</RR_Exp_ClosureReasonRequired>
+  <RR_Exp_UnknownCrew>unresolved crew reference</RR_Exp_UnknownCrew>
+  <RR_Exp_Abandoned>The expedition is closed as abandoned. Its site, people, remains, equipment, evidence and records have been preserved where they actually are. A later expedition can visit the same coordinate and attempt physical recovery.</RR_Exp_Abandoned>
+  <RR_Exp_RecoveredCrewUnavailable>Select a mobile, controllable survivor from an abandoned expedition who is physically at this active expedition's saved site. A casualty or corpse needs a carrier.</RR_Exp_RecoveredCrewUnavailable>
+  <RR_Exp_CargoContradiction>The declaration conflicts with the observed item or quantity. Intact units cannot be declared consumed or lost; left-site units must actually remain at that site. Refresh the manifest and inspect the physical item.</RR_Exp_CargoContradiction>
+  <RR_Exp_CargoNoteRequired>Add a short explanation for this cargo declaration. It is a player report, not proof of consumption or destruction.</RR_Exp_CargoNoteRequired>
+  <RR_Event_ExpeditionAbandoned>Expedition closed as abandoned at {0}: {1}</RR_Event_ExpeditionAbandoned>
+  <RR_Event_ExpeditionResumed>Recovery planning resumed for the preserved expedition at {0}.</RR_Event_ExpeditionResumed>
+  <RR_Event_CargoDisposition>Cargo {0}: declared {1}, quantity {2}.</RR_Event_CargoDisposition>
+  <RR_Cargo_WithCrew>with field crew</RR_Cargo_WithCrew>
+  <RR_Cargo_Delivered>at headquarters</RR_Cargo_Delivered>
+  <RR_Cargo_LeftAtSite>left at the saved site</RR_Cargo_LeftAtSite>
+  <RR_Cargo_Elsewhere>at another location</RR_Cargo_Elsewhere>
+  <RR_Cargo_Unresolved>unresolved; inspect consumption, split or merge, destruction, or loss</RR_Cargo_Unresolved>
+  <RR_Cargo_AtSiteInContainer>at the saved site in another physical holder</RR_Cargo_AtSiteInContainer>
+  <RR_Cargo_Unspecified>not declared</RR_Cargo_Unspecified>
+  <RR_Cargo_Consumed>reported consumed</RR_Cargo_Consumed>
+  <RR_Cargo_Lost>reported lost</RR_Cargo_Lost>
+  <RR_Cargo_LeftBehind>reported left behind</RR_Cargo_LeftBehind>
+  <RR_Cargo_Used>reported used; physical equipment retained</RR_Cargo_Used>
+  <RR_CrewClosure_Headquarters>at headquarters</RR_CrewClosure_Headquarters>
+  <RR_CrewClosure_AtSite>at the saved site</RR_CrewClosure_AtSite>
+  <RR_CrewClosure_Elsewhere>at another known location</RR_CrewClosure_Elsewhere>
+  <RR_CrewClosure_Unknown>whereabouts unresolved</RR_CrewClosure_Unknown>
+</LanguageData>

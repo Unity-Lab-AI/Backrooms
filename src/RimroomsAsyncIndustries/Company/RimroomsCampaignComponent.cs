@@ -1,17 +1,41 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace RimroomsAsyncIndustries.Company
 {
     /// <summary>
-    /// RR-SCEN / RR-ECO: save-local foundation, inert until a scenario initializer exists.
+    /// RR-SCEN / RR-ECO: one branch per save, activated only by a scenario initializer.
     /// The constructor is called for every game, including existing non-Rimrooms saves.
     /// </summary>
-    public sealed class RimroomsCampaignComponent : GameComponent
+    public sealed partial class RimroomsCampaignComponent : GameComponent
     {
-        public const int CurrentSchemaVersion = 1;
+        public const int CurrentSchemaVersion = 2;
         private int schemaVersion = CurrentSchemaVersion;
         private string branchId;
         private string scenarioId;
+        private int scenarioVersion;
+        private int campaignSeed;
+        private bool initializationComplete;
+        private string initializationReceipt;
+        private Map headquarters;
+        private int initializedTick;
+        private long balanceUsd;
+        private long dailyOverheadUsd;
+        private int nextOperatingCostTick;
+        private int researchInsights;
+        private List<LedgerEntry> ledger = new List<LedgerEntry>();
+        private List<StaffRecord> staff = new List<StaffRecord>();
+        private List<CompanyObligation> obligations = new List<CompanyObligation>();
+        private List<ContractRecord> contracts = new List<ContractRecord>();
+        private List<CoordinateRecord> coordinates = new List<CoordinateRecord>();
+        private List<CaseRecord> cases = new List<CaseRecord>();
+        private List<EvidenceRecord> evidence = new List<EvidenceRecord>();
+        private List<ProjectRecord> projects = new List<ProjectRecord>();
+        private List<CompanyEventRecord> events = new List<CompanyEventRecord>();
+        private readonly Dictionary<string, LedgerEntry> ledgerIndex = new Dictionary<string, LedgerEntry>(StringComparer.Ordinal);
+        private string stateFaultKey;
 
         public RimroomsCampaignComponent(Game game)
         {
@@ -21,15 +45,174 @@ namespace RimroomsAsyncIndustries.Company
         public int SchemaVersion { get { return schemaVersion; } }
         public string BranchId { get { return branchId; } }
         public string ScenarioId { get { return scenarioId; } }
-        public bool HasBranch { get { return !string.IsNullOrEmpty(branchId); } }
+        public bool HasBranch { get { return initializationComplete && !string.IsNullOrEmpty(branchId); } }
         public bool HasSupportedSchema { get { return schemaVersion == CurrentSchemaVersion; } }
+        public bool CanOperate { get { return HasSupportedSchema && HasBranch && stateFaultKey == null; } }
+        public string StateFaultKey { get { return stateFaultKey; } }
+        public Map Headquarters { get { return headquarters; } }
+        public long BalanceUsd { get { return balanceUsd; } }
+        public int ResearchInsights { get { return researchInsights; } }
+        public IReadOnlyList<LedgerEntry> Ledger { get { return ledger; } }
+        public IReadOnlyList<StaffRecord> Staff { get { return staff; } }
+        public IReadOnlyList<CompanyObligation> Obligations { get { return obligations; } }
+        public IReadOnlyList<ContractRecord> Contracts { get { return contracts; } }
+        public IReadOnlyList<CoordinateRecord> Coordinates { get { return coordinates; } }
+        public IReadOnlyList<CaseRecord> Cases { get { return cases; } }
+        public IReadOnlyList<EvidenceRecord> Evidence { get { return evidence; } }
+        public IReadOnlyList<ProjectRecord> Projects { get { return projects; } }
+        public IReadOnlyList<CompanyEventRecord> Events { get { return events; } }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref schemaVersion, "rr_schemaVersion", CurrentSchemaVersion, forceSave: true);
+            // Version 1 is the only historical missing-field default; always write a version.
+            Scribe_Values.Look(ref schemaVersion, "rr_schemaVersion", 1, forceSave: true);
             Scribe_Values.Look(ref branchId, "rr_branchId");
             Scribe_Values.Look(ref scenarioId, "rr_scenarioId");
+            Scribe_Values.Look(ref scenarioVersion, "rr_scenarioVersion");
+            Scribe_Values.Look(ref campaignSeed, "rr_campaignSeed");
+            Scribe_Values.Look(ref initializationComplete, "rr_initializationComplete");
+            Scribe_Values.Look(ref initializationReceipt, "rr_initializationReceipt");
+            Scribe_References.Look(ref headquarters, "rr_headquarters");
+            Scribe_Values.Look(ref initializedTick, "rr_initializedTick");
+            Scribe_Values.Look(ref balanceUsd, "rr_balanceUsd");
+            Scribe_Values.Look(ref dailyOverheadUsd, "rr_dailyOverheadUsd");
+            Scribe_Values.Look(ref nextOperatingCostTick, "rr_nextOperatingCostTick");
+            Scribe_Values.Look(ref researchInsights, "rr_researchInsights");
+            Scribe_Collections.Look(ref ledger, "rr_ledger", LookMode.Deep);
+            Scribe_Collections.Look(ref staff, "rr_staff", LookMode.Deep);
+            Scribe_Collections.Look(ref obligations, "rr_obligations", LookMode.Deep);
+            Scribe_Collections.Look(ref contracts, "rr_contracts", LookMode.Deep);
+            Scribe_Collections.Look(ref coordinates, "rr_coordinates", LookMode.Deep);
+            Scribe_Collections.Look(ref cases, "rr_cases", LookMode.Deep);
+            Scribe_Collections.Look(ref evidence, "rr_evidence", LookMode.Deep);
+            Scribe_Collections.Look(ref projects, "rr_projects", LookMode.Deep);
+            Scribe_Collections.Look(ref events, "rr_events", LookMode.Deep);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                RestoreCollections();
+                if (schemaVersion == 1)
+                {
+                    // The foundation could not initialize a branch or award funds.
+                    // Preserve its scalar identities and leave ordinary saves inactive.
+                    schemaVersion = 2;
+                }
+                ValidateSavedState();
+            }
+        }
+
+        private void RestoreCollections()
+        {
+            ledger = ledger ?? new List<LedgerEntry>();
+            staff = staff ?? new List<StaffRecord>();
+            obligations = obligations ?? new List<CompanyObligation>();
+            contracts = contracts ?? new List<ContractRecord>();
+            coordinates = coordinates ?? new List<CoordinateRecord>();
+            cases = cases ?? new List<CaseRecord>();
+            evidence = evidence ?? new List<EvidenceRecord>();
+            projects = projects ?? new List<ProjectRecord>();
+            events = events ?? new List<CompanyEventRecord>();
+        }
+
+        private void ValidateSavedState()
+        {
+            ledgerIndex.Clear();
+            stateFaultKey = null;
+            if (!HasSupportedSchema) { return; }
+            long runningBalance = 0;
+            try
+            {
+                foreach (LedgerEntry entry in ledger)
+                {
+                    if (entry == null || string.IsNullOrEmpty(entry.operationId) || ledgerIndex.ContainsKey(entry.operationId))
+                    {
+                        stateFaultKey = "RR_Company_InvalidSave";
+                        break;
+                    }
+                    ledgerIndex.Add(entry.operationId, entry);
+                    runningBalance = checked(runningBalance + entry.amountUsd);
+                    if (runningBalance < 0 || entry.balanceAfterUsd != runningBalance)
+                    {
+                        stateFaultKey = "RR_Company_InvalidSave";
+                    }
+                }
+            }
+            catch (OverflowException) { stateFaultKey = "RR_Company_InvalidSave"; }
+            if (runningBalance != balanceUsd || researchInsights < 0 || dailyOverheadUsd < 0 ||
+                (initializationComplete && (string.IsNullOrEmpty(branchId) || string.IsNullOrEmpty(initializationReceipt))))
+            {
+                stateFaultKey = "RR_Company_InvalidSave";
+            }
+            if (!UniqueRecords(staff, r => r.id) || !UniqueRecords(obligations, r => r.id) ||
+                !UniqueRecords(contracts, r => r.id) || !UniqueRecords(coordinates, r => r.id) ||
+                !UniqueRecords(cases, r => r.id) || !UniqueRecords(evidence, r => r.id) || !UniqueRecords(projects, r => r.id))
+            {
+                stateFaultKey = "RR_Company_InvalidSave";
+            }
+            foreach (StaffRecord member in staff)
+            {
+                if (member != null && member.dailyWageUsd < 0) { stateFaultKey = "RR_Company_InvalidSave"; }
+            }
+            foreach (CompanyObligation obligation in obligations)
+            {
+                if (obligation != null && obligation.amountUsd <= 0) { stateFaultKey = "RR_Company_InvalidSave"; }
+            }
+            ValidateRecordRelationships();
+            if (stateFaultKey != null) { Log.Error("[Rimrooms][Save] Campaign integrity failed; company actions are disabled. Preserve the original save."); }
+        }
+
+        private void ValidateRecordRelationships()
+        {
+            // A lost physical reference is a gameplay recovery case. Broken logical owners or
+            // invalid amounts are a save-integrity fault and must never award money/work.
+            if (stateFaultKey != null) { return; }
+            var coordinateIds = new HashSet<string>(coordinates.Select(c => c.id), StringComparer.Ordinal);
+            var caseIds = new HashSet<string>(cases.Select(c => c.id), StringComparer.Ordinal);
+            var pawnIds = new HashSet<string>(StringComparer.Ordinal);
+            bool valid = staff.All(s => !string.IsNullOrWhiteSpace(s.pawnLoadId) && pawnIds.Add(s.pawnLoadId));
+            valid &= contracts.All(c => coordinateIds.Contains(c.coordinateId) && Enum.IsDefined(typeof(ContractStatus), c.status) &&
+                c.basePaymentUsd >= 0 && c.bonusUsd >= 0 && !string.IsNullOrWhiteSpace(c.templateId));
+            valid &= cases.All(c => coordinateIds.Contains(c.coordinateId) && c.evidenceIds != null &&
+                c.evidenceIds.Count == c.evidenceIds.Distinct(StringComparer.Ordinal).Count() &&
+                c.evidenceIds.All(id => evidence.Any(e => e.id == id && e.caseId == c.id)));
+            valid &= evidence.All(e => coordinateIds.Contains(e.coordinateId) && caseIds.Contains(e.caseId) &&
+                cases.Any(c => c.id == e.caseId && c.coordinateId == e.coordinateId && c.evidenceIds.Contains(e.id)) &&
+                Enum.IsDefined(typeof(EvidenceStatus), e.status) && FiniteNonnegative(e.analysisWork) &&
+                !string.IsNullOrWhiteSpace(e.itemLoadId));
+            valid &= evidence.All(e => ValidObservationState(e, coordinates.FirstOrDefault(c => c.id == e.coordinateId)));
+            valid &= projects.All(p => FiniteNonnegative(p.workDone) && !string.IsNullOrWhiteSpace(p.researchDefName) &&
+                (!p.completed || p.insightCommitted) && (!p.insightCommitted || !string.IsNullOrWhiteSpace(p.insightOperationId)));
+            valid &= projects.Count(p => p.insightCommitted && !p.completed) <= 1;
+            foreach (CoordinateRecord coordinate in coordinates)
+            {
+                valid &= Enum.IsDefined(typeof(CoordinateStatus), coordinate.status) && coordinate.generatorVersion > 0 &&
+                    coordinate.roomLibraryVersion > 0 && coordinate.rooms != null;
+                if (coordinate.rooms == null) { continue; }
+                var indices = new HashSet<int>();
+                foreach (RoomRecord room in coordinate.rooms)
+                {
+                    if (room == null || room.index < 0 || !indices.Add(room.index) || room.width <= 0 || room.height <= 0 ||
+                        string.IsNullOrWhiteSpace(room.familyId) || room.links == null) { valid = false; }
+                }
+                foreach (RoomRecord room in coordinate.rooms.Where(r => r != null && r.links != null))
+                { valid &= room.links.All(index => index != room.index && indices.Contains(index)); }
+            }
+            if (!valid) { stateFaultKey = "RR_Company_InvalidSave"; }
+        }
+
+        private static bool FiniteNonnegative(float value)
+        { return value >= 0f && !float.IsNaN(value) && !float.IsInfinity(value); }
+
+        private static bool UniqueRecords<T>(IEnumerable<T> records, Func<T, string> getId) where T : class
+        {
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            foreach (T record in records)
+            {
+                if (record == null) { return false; }
+                string id = getId(record);
+                if (string.IsNullOrWhiteSpace(id) || !ids.Add(id)) { return false; }
+            }
+            return true;
         }
     }
 }

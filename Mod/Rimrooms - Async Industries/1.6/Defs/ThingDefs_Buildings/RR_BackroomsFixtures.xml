@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_SiteFluorescent</defName>
+    <label>liminal fluorescent fixture</label>
+    <description>An original, damaged fluorescent fixture. It emits light without drawing from the crew's power grid, but it can be broken.</description>
+    <thingClass>Building</thingClass>
+    <category>Building</category>
+    <graphicData>
+      <texPath>Buildings/Rooms/RR_SiteFluorescent</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+    </graphicData>
+    <size>(1,1)</size>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <fillPercent>0.2</fillPercent>
+    <rotatable>false</rotatable>
+    <stealable>false</stealable>
+    <tradeability>None</tradeability>
+    <statBases>
+      <MaxHitPoints>90</MaxHitPoints>
+      <Mass>4</Mass>
+      <Flammability>0.2</Flammability>
+      <Beauty>-2</Beauty>
+      <MarketValue>0</MarketValue>
+    </statBases>
+    <building>
+      <deconstructible>false</deconstructible>
+      <isInert>true</isInert>
+      <canLandGravshipOn>false</canLandGravshipOn>
+    </building>
+    <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+    <resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
+    <comps>
+      <li Class="CompProperties_Glower">
+        <glowRadius>6</glowRadius>
+        <glowColor>(236,222,178,0)</glowColor>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_SiteClimateUnit</defName>
+    <label>liminal climate unit</label>
+    <description>An original passive unit that warms its sealed room up to 20°C. It draws no site power, cannot cool a hot room, and can be damaged.</description>
+    <thingClass>Building</thingClass>
+    <category>Building</category>
+    <graphicData>
+      <texPath>Buildings/Gate/RR_GateConsole</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+    </graphicData>
+    <size>(1,1)</size>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <fillPercent>0.25</fillPercent>
+    <rotatable>false</rotatable>
+    <stealable>false</stealable>
+    <tradeability>None</tradeability>
+    <statBases>
+      <MaxHitPoints>120</MaxHitPoints>
+      <Mass>8</Mass>
+      <Flammability>0.1</Flammability>
+      <Beauty>-2</Beauty>
+      <MarketValue>0</MarketValue>
+    </statBases>
+    <building>
+      <deconstructible>false</deconstructible>
+      <isInert>true</isInert>
+      <canLandGravshipOn>false</canLandGravshipOn>
+    </building>
+    <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+    <resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
+    <comps>
+      <li Class="CompProperties_HeatPusher">
+        <heatPerSecond>6</heatPerSecond>
+        <heatPushMaxTemperature>20</heatPushMaxTemperature>
+      </li>
+    </comps>
+  </ThingDef>
+</Defs>
