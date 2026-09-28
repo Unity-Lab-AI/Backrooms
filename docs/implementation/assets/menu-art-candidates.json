@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "status": "Original development candidates; not packaged or runtime accepted",
+  "assets": [
+    {
+      "id": "RR_MENU_FACILITY_THRESHOLD_001",
+      "path": "assets/source/menu/RR_Menu_FacilityThreshold_v1.png",
+      "generator": "Built-in imagegen",
+      "inputImages": [],
+      "prompt": "Use case: stylized-concept. Asset: original main-menu background candidate for the RimWorld mod Rimrooms - Async Industries, landscape 16:9, request a 3840x2160 master. Create polished cinematic painterly sci-fi horror illustration, an original composition, no screenshot, no text or logo. A modest practical concrete and painted-block research facility at night; central-right a heavy rectangular dark charcoal and steel machine gate with two thick ribbed pylons, bolted feet, looped black cables at the outer sides and a segmented muted amber strip under a broad lintel. Through the gate is an ordinary sickly warm yellow fluorescent office corridor, empty carpet, repeating doors extending farther than the building could hold; no swirling energy vortex. At far right a seated adult operator works a utilitarian console behind wired-glass screening; two small adult field staff in muted work coveralls stand near a physical equipment case, seen from behind at human scale. Cables, steel shelves and limited starter supplies show an improvised real working lab, not a giant futuristic spaceship command room. Architecture and lighting tell the story. Reserve the entire middle-left 40 percent as quiet dark low-detail wall and gently lit concrete floor for future native menu controls; keep the gate and people safely away from that region and screen edges. Broad restrained brushwork, rich but not cluttered material detail, coherent perspective, quiet unease, restrained industrial neutral palette and warm institutional fluorescent contrast, no oversaturated neon, no flashing effect, no gore, no recognizable existing characters, no film frames, no borrowed branding, no lettering, no baked interface, no watermark. The composition must survive center crop to 16:10 and wider crop without losing the gate silhouette.",
+      "sha256": "9E703C36EFC071AD67C519C31D219ECA234E518CD22F2574217CAEE4CC0805C5",
+      "width": 1672,
+      "height": 941,
+      "transparent": false,
+      "edits": [],
+      "features": [
+        "RR-SCEN",
+        "RR-GATE",
+        "RR-EXP",
+        "RR-STYLE"
+      ],
+      "packagedPath": null,
+      "visualReview": "Inspected generated image: quiet middle-left, coherent rectangular project gate and three adult staff, no embedded controls or readable branding; actual game overlay/crops remain unobserved."
+    },
+    {
+      "id": "RR_MENU_FIELD_SURVEY_001",
+      "path": "assets/source/menu/RR_Menu_FieldSurvey_v1.png",
+      "generator": "Built-in imagegen",
+      "inputImages": [],
+      "prompt": "Use case: stylized-concept. Asset: second original main-menu background candidate for the RimWorld mod Rimrooms - Async Industries. Wide 16:9 landscape, request 3840x2160 master, no lettering or interface. Painterly cinematic institutional horror illustration with grounded materials and restrained lighting. Interior of an unfamiliar but mundane yellow-beige office suite: faded low-pile carpet, suspended ceiling, fluorescent fixtures, steel-framed doors, oddly repeated office cubicles and a narrow service passage beyond. Compose the left 40 percent as a quiet dim unadorned wall and broad carpet in shadow for native menu controls. On the right half two small adult field investigators in charcoal-grey practical coveralls cautiously inspect a white physical survey marker on a doorway; one carries a compact handheld recorder with a shoulder strap, the other carries a small hard evidence case. A modest freestanding return beacon near their boots makes a small muted amber light, no laser or energy beam. The room architecture repeats just a little too far into the background and a lone dark angular indistinct humanoid silhouette stands barely visible beyond a distant doorway, with no gore or attack. An old table, single office chair and metal shelf are useful salvage rather than decorative clutter. Quiet uncertainty, the crew can still clearly see its return doorway at the rear-right edge. Polished rich painterly brushwork, coherent perspective, human scale, low-saturation industrial neutrals and sickly warm institutional yellow, no bright neon, no sci-fi city, no oversized monster, no jumpscare closeup, no cinematic motion blur, no text, no logos, no film frames, no named existing characters, no copied game screenshots. Keep important subjects well inside center-crop bounds and leave spacious calm menu-safe negative space. Original artistic scene showing only the current field survey, recorder, physical route aids, evidence and bounded encounter features.",
+      "sha256": "446B49386028D2161895655A61560D374074DD8DEC33A05549C0701D86FA8DB5",
+      "width": 1672,
+      "height": 941,
+      "transparent": false,
+      "edits": [],
+      "features": [
+        "RR-EXP",
+        "RR-EVD",
+        "RR-THREAT",
+        "RR-STYLE"
+      ],
+      "packagedPath": null,
+      "visualReview": "Inspected generated image: quiet left wall, two adult staff with recorder/case and beacon, ordinary office furniture and distant silhouette; route marker is an abstract visual motif, not an actual UI or encoded mechanic. Native menu overlays and crops remain unobserved."
+    }
+  ]
+}

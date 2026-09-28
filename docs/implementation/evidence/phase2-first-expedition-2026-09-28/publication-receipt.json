@@ -1,0 +1,29 @@
+{
+  "Commit": "616321afe8cc58402b33fa1eb9988dacb4752705",
+  "PackageVersion": "0.2.0",
+  "Method": "Ancestry-checked normal pushes in feature, Prep, Develop, Main order; each remote ref read back after push.",
+  "ForcePush": false,
+  "Remotes": [
+    {
+      "Name": "forgejo",
+      "Url": "ssh://git@git.unityailab.com/GFourteen/Backrooms.git",
+      "VerifiedBranches": [
+        "feature/preproduction-handoff",
+        "Prep",
+        "Develop",
+        "Main"
+      ]
+    },
+    {
+      "Name": "github",
+      "Url": "https://github.com/Unity-Lab-AI/Backrooms.git",
+      "VerifiedBranches": [
+        "feature/preproduction-handoff",
+        "Prep",
+        "Develop",
+        "Main"
+      ]
+    }
+  ],
+  "ReleaseReadinessClaimed": false
+}

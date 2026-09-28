@@ -47,6 +47,8 @@ The current publisher reference identifies `rimworld/get_mod_configuration_statu
 
 ## Proposed first owner-run sequence
 
+The [release-shipped client source review](PHASE_2_BRIDGE_CLIENT_SOURCE.md) now records the exact DLL protocol and the bounded [read-only client](../../tools/qa/rimbridge_readonly.py). Its initial implementation covers authenticated discovery, required ping and optional bridge status only. It was syntax-parsed but never executed or connected. The wider capture sequence below remains a planned follow-up after that first probe.
+
 1. The owner creates or chooses a disposable RimSort QA profile and save, enables RimBridgeServer in that profile as a separate QA-harness overlay, and manually launches RimWorld through RimSort. Do not use GABS or a bridge start/load tool. Preserve the RimSort profile and initial `ModsConfig.xml` before connecting. The owner performs the enablement and launch.
 2. Confirm the running game is the intended RimWorld 1.6 test process. In the local RimWorld log, locate the `[RimBridge]` standalone port and token lines. Keep the full token local and redact it from the evidence copy.
 3. Connect the direct client to loopback `127.0.0.1`, using the exact port and token printed by that process. A failed connection is a setup failure; do not scan other processes or guess ports.

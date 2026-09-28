@@ -11,6 +11,8 @@ For a short player-facing summary of the intended mod, see the [Rimrooms overvie
 
 For generation, read the player-facing [procedural space contract](PROCEDURAL_SPACE_CONTRACT.md) and the [RimWorld 1.6 package and generation findings](research/RIMWORLD_1_6_PACKAGE_AND_GENERATION.md). For optional space-system integrations, read [gravship, vehicle, cargo, and orbital profile interactions](research/GRAVSHIP_PROFILE_INTERACTIONS.md). These are design rules or research leads, not implementation guarantees or compatibility clearance.
 
+**Pending owner launch:** the [launch sheet](implementation/PHASE_2_OWNER_LAUNCH.md) identifies the staged 0.2.0 package and separate 2.1.1 QA bridge. The [direct-client source record](implementation/PHASE_2_BRIDGE_CLIENT_SOURCE.md) routes the first read-only attach; no live capture exists. Independent preparation is recorded for [personnel/facility implementation](implementation/PHASE_3_PERSONNEL_FACILITIES_TASK.md), [physical procurement](implementation/PHASE_3_PROCUREMENT_TASK.md) and [original menu art](implementation/PHASE_5_MENU_ART_PREPARATION.md), with a [menu controller source follow-up](implementation/PHASE_5_MENU_CONTROLLER_SOURCE.md). These do not advance Gate 2 or authorize an agent launch. Implement later campaign steps only in the master TODO's order.
+
 Read these files in this order before implementation:
 
 1. [`../README.md`](../README.md) — project purpose, scope, and linked artifact list.

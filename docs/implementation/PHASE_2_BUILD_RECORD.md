@@ -55,3 +55,9 @@ RimBridgeServer 2.1.1 is separately staged, with its publisher archive digest an
 6. After the owner's first full 295-target RimSort launch (bridge overlay counted separately), collect Def-load, startup, fresh scenario, one-time grants, power/work, fog/path, field gear, rescue, analysis, payment, save/reload/revisit, UI and performance observations. Fix observed failures before claiming Gate 2.
 
 Full campaign hiring/training, procurement/shipments, dynamic contract families, broader research, outposts, alternate starts, town cases, containment, optional integrations/co-op, menu slideshow, balance and release work remain in the [master TODO](../PREPRODUCTION_AND_IMPLEMENTATION_TODO.md). This checkpoint does not close those tasks.
+
+## Publication and independent follow-up
+
+Source/asset commit `616321afe8cc58402b33fa1eb9988dacb4752705` was pushed and read back through all four branches on both Forgejo and GitHub; see the [publication receipt](evidence/phase2-first-expedition-2026-09-28/publication-receipt.json). This is a development checkpoint, not a release tag or gameplay pass.
+
+While the owner's launch remains pending, [personnel/facility source preparation](PHASE_3_PERSONNEL_FACILITIES_TASK.md), [physical procurement source preparation](PHASE_3_PROCUREMENT_TASK.md), the [bounded direct-attach client](PHASE_2_BRIDGE_CLIENT_SOURCE.md) and [two original menu-art candidates](PHASE_5_MENU_ART_PREPARATION.md) were prepared outside the 61-file mod package. None changes the compiled 0.2.0 DLL, installed target/profile or pending acceptance status.
