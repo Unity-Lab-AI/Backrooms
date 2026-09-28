@@ -22,12 +22,14 @@ import uuid
 
 
 PROTOCOL_VERSION = "gabp/1"
-CLIENT_VERSION = "RimroomsReadOnlyQA/1"
+CLIENT_VERSION = "RimroomsReadOnlyQA/2"
 MAX_LOG_BYTES = 32 * 1024 * 1024
 MAX_HEADER_BYTES = 8 * 1024
 MAX_FRAME_BYTES = 1024 * 1024
 MAX_EVIDENCE_BYTES = 1024 * 1024
 MAX_EVENTS_PER_RESPONSE = 20
+MAX_COLLECTION_ITEMS = 512  # Includes every entry in the 296-entry QA profile.
+MAX_SANITIZED_NODES = 50000
 
 STANDALONE_RE = re.compile(
     r"^\[RimBridge\] GABP server running standalone on port (\d+)\s*$"
@@ -45,11 +47,13 @@ SECRET_KEY_RE = re.compile(
     r"(?i)(token|authorization|secret|password|credential|api[_-]?key)"
 )
 
-# The first probe is deliberately limited to connectivity and bridge status.
-# Further capture surfaces remain separate QA work, not a generic tool client.
+# Fixed startup observations only; no caller-supplied tool names or arguments.
 READ_TOOLS = {
     "ping": ("rimbridge/ping", {}),
     "status": ("rimbridge/get_bridge_status", {}),
+    "game": ("rimworld/get_game_info", {}),
+    "mods": ("rimworld/get_mod_configuration_status", {}),
+    "logs": ("rimbridge/list_logs", {"limit": 50, "minimumLevel": "warning", "afterSequence": 0}),
 }
 
 
@@ -278,13 +282,18 @@ def exchange(sock: socket.socket, buffer: bytearray, method: str, params: dict, 
         return message["result"]
 
 
-def sanitize(value, token: str, depth: int = 0, budget: list[int] | None = None):
+def sanitize(value, token: str, depth: int = 0, budget: list[int] | None = None,
+             truncations: list[int] | None = None):
     if budget is None:
-        budget = [5000]
+        budget = [MAX_SANITIZED_NODES]
+    if truncations is None:
+        truncations = [0]
     budget[0] -= 1
     if budget[0] < 0:
+        truncations[0] += 1
         return "[truncated: evidence item budget]"
     if depth >= 8:
+        truncations[0] += 1
         return "[truncated: maximum depth]"
     if isinstance(value, dict):
         cleaned = {}
@@ -294,18 +303,24 @@ def sanitize(value, token: str, depth: int = 0, budget: list[int] | None = None)
             if token:
                 safe_key = safe_key.replace(token, "[redacted]")
             safe_key = BRIDGE_TOKEN_LINE_RE.sub(r"\1[redacted]", safe_key)
-            safe_key = BEARER_RE.sub(r"\1[redacted]", safe_key)[:200]
+            safe_key = BEARER_RE.sub(r"\1[redacted]", safe_key)
+            if len(safe_key) > 200:
+                truncations[0] += 1
+                safe_key = safe_key[:200]
             if SECRET_KEY_RE.search(safe_key):
                 cleaned[safe_key] = "[redacted]"
             else:
-                cleaned[safe_key] = sanitize(item, token, depth + 1, budget)
+                cleaned[safe_key] = sanitize(item, token, depth + 1, budget, truncations)
         if len(items) > 100:
+            truncations[0] += 1
             cleaned["_truncated_fields"] = len(items) - 100
         return cleaned
     if isinstance(value, (list, tuple)):
-        cleaned = [sanitize(item, token, depth + 1, budget) for item in value[:100]]
-        if len(value) > 100:
-            cleaned.append({"_truncated_items": len(value) - 100})
+        cleaned = [sanitize(item, token, depth + 1, budget, truncations)
+                   for item in value[:MAX_COLLECTION_ITEMS]]
+        if len(value) > MAX_COLLECTION_ITEMS:
+            truncations[0] += 1
+            cleaned.append({"_truncated_items": len(value) - MAX_COLLECTION_ITEMS})
         return cleaned
     if isinstance(value, str):
         text = value
@@ -314,11 +329,18 @@ def sanitize(value, token: str, depth: int = 0, budget: list[int] | None = None)
         text = BRIDGE_TOKEN_LINE_RE.sub(r"\1[redacted]", text)
         text = BEARER_RE.sub(r"\1[redacted]", text)
         if len(text) > 2048:
+            truncations[0] += 1
             text = text[:2048] + "[truncated]"
         return text
     if value is None or isinstance(value, (bool, int, float)):
         return value
-    return str(value)[:2048]
+    return sanitize(str(value), token, depth, budget, truncations)
+
+
+def sanitized_result(result, token: str) -> dict:
+    truncations = [0]
+    cleaned = sanitize(result, token, truncations=truncations)
+    return {"result": cleaned, "evidence_truncations": truncations[0]}
 
 
 def tool_result_failed(result) -> bool:
@@ -345,6 +367,8 @@ def collect(port: int, token: str, selectors: list[str], timeout: float) -> dict
         "limitations": [
             "Caller-supplied PID and log pairing cannot be proven by this client.",
             "A successful handshake is not Rimrooms compatibility evidence.",
+            "Read results are sequential observations, not an atomic game snapshot.",
+            "Warnings are the latest 50 retained journal entries, not the entire startup log.",
         ],
         "calls": [],
     }
@@ -368,7 +392,9 @@ def collect(port: int, token: str, selectors: list[str], timeout: float) -> dict
                 },
                 timeout,
             )
-            evidence["session"] = sanitize(handshake, token)
+            session_capture = sanitized_result(handshake, token)
+            evidence["session"] = session_capture["result"]
+            evidence["evidence_truncations"] = session_capture["evidence_truncations"]
             listed = exchange(conn, buffer, "tools/list", {}, timeout)
             raw_tools = listed.get("tools") if isinstance(listed, dict) else listed
             if not isinstance(raw_tools, list):
@@ -402,20 +428,22 @@ def collect(port: int, token: str, selectors: list[str], timeout: float) -> dict
                         {"name": tool_name, "arguments": arguments},
                         timeout,
                     )
+                    capture = sanitized_result(result, token)
+                    evidence["evidence_truncations"] += capture["evidence_truncations"]
                     if tool_result_failed(result):
                         evidence["calls"].append(
                             {
                                 "selector": selector,
                                 "tool": tool_name,
                                 "error": "Tool result reports failure",
-                                "result": sanitize(result, token),
+                                **capture,
                             }
                         )
                         evidence["error"] = "A selected read call reported failure; see its sanitized call record"
                         call_failed = True
                         break
                     evidence["calls"].append(
-                        {"selector": selector, "tool": tool_name, "result": sanitize(result, token)}
+                        {"selector": selector, "tool": tool_name, **capture}
                     )
                 except ClientError as error:
                     evidence["calls"].append(
@@ -424,7 +452,9 @@ def collect(port: int, token: str, selectors: list[str], timeout: float) -> dict
                     evidence["error"] = "A selected read call failed; see its sanitized call record"
                     call_failed = True
                     break
-        evidence["status"] = "complete" if not evidence["requested_tools_missing_from_live_list"] else "partial"
+        incomplete = (evidence["requested_tools_missing_from_live_list"]
+                      or evidence["evidence_truncations"] > 0)
+        evidence["status"] = "partial" if incomplete else "complete"
         if call_failed:
             evidence["status"] = "failed"
     except ClientError as error:
@@ -463,7 +493,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     if not 1.0 <= args.timeout <= 10.0:
         parser.error("--timeout must be between 1 and 10 seconds")
     if args.connect and (not args.select or "ping" not in args.select):
-        parser.error("--connect requires --select ping; --select status is optional")
+        parser.error("--connect requires --select ping; other fixed read selectors are optional")
     return args
 
 

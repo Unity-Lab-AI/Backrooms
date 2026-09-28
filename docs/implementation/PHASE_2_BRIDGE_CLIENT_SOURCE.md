@@ -12,7 +12,7 @@ The reviewed files are under `.local/qa/RimBridgeServer-2.1.1/unpacked/RimBridge
 | `Lib.GAB.dll` | `BE3AECCABD93C29271425F146C0EAAD8E37DB66C08F9883A4A5A4A44B9E51014` |
 | `Gabp.Runtime.dll` | `D548E8665EFB033E36B5985738D865BCBAF50F9384674D0340B5C5C834FF7696` |
 
-The types below were inspected from those exact local files with ILSpy command-line decompilation to standard output; no decompiled third-party source was saved into the Rimrooms package.
+The types below were inspected from those exact local files with ILSpy command-line decompilation. Follow-up review copies of `RimBridgeTools`, `DiagnosticsCapabilityModule` and `RimWorldModConfiguration` are under ignored `.local/inspection-bridge/`; no decompiled third-party source is shipped or committed. The RimBridgeServer.dll hash was rechecked and still matches the pin above.
 
 ## Source-confirmed startup and endpoint
 
@@ -39,7 +39,7 @@ The server logs a different prefix when connected to GABS (`[RimBridge] GABP ser
 The concrete request envelopes used by the client are:
 
 ```json
-{"v":"gabp/1","id":"<uuid>","type":"request","method":"session/hello","params":{"token":"<read from explicit log, never emitted>","bridgeVersion":"RimroomsReadOnlyQA/1","platform":"windows","launchId":"<uuid>"}}
+{"v":"gabp/1","id":"<uuid>","type":"request","method":"session/hello","params":{"token":"<read from explicit log, never emitted>","bridgeVersion":"RimroomsReadOnlyQA/2","platform":"windows","launchId":"<uuid>"}}
 {"v":"gabp/1","id":"<uuid>","type":"request","method":"tools/list","params":{}}
 {"v":"gabp/1","id":"<uuid>","type":"request","method":"tools/call","params":{"name":"rimbridge/ping","arguments":{}}}
 ```
@@ -50,16 +50,21 @@ The client reads one response frame at a time, accepts only `gabp/1` response en
 
 ## First-probe read-only surface
 
-The initial utility intentionally supports only the handshake, `tools/list`, and these two calls. Their names and treatment are confirmed against `RimBridgeServer.RimBridgeTools` in the reviewed release assembly. Calls are made only if the exact tool name appears in the live `tools/list` result.
+Client revision 2 supports the handshake, `tools/list`, and the five fixed reads below. Names and arguments are confirmed against `RimBridgeServer.RimBridgeTools` in the reviewed release assembly. Calls are made only if the exact tool name appears in the live `tools/list` result. The additional reads are opt-in selectors; the ping-only first probe remains available.
 
 | CLI selector | Tool | Fixed arguments | Source treatment |
 | --- | --- | --- | --- |
 | `ping` | `rimbridge/ping` | `{}` | Explicit diagnostic/read-only connectivity probe. |
 | `status` | `rimbridge/get_bridge_status` | `{}` | Explicit status/read-only surface. |
+| `game` | `rimworld/get_game_info` | `{}` | Reads `Current.Game`; returns `no_game` at the menu or `game_loaded`, ticks, map count and selected pawn names. It does not create/load a game or report the exact executable build. |
+| `mods` | `rimworld/get_mod_configuration_status` | `{}` | Reads both configured and loaded mod order, metadata versions/root directories, warning counts and restart reasons. Does not enable, reorder or save mods. |
+| `logs` | `rimbridge/list_logs` | `{"limit":50,"minimumLevel":"warning","afterSequence":0}` | Reads the retained log journal. The response is only the latest 50 qualifying entries, not the full startup log or proof that no earlier error occurred. |
 
-There is no CLI parameter for a tool name, raw JSON, arbitrary arguments, endpoint, or remote host. The selector map is the entire call surface. Game information, mod/configuration inventory, logs, and UI captures remain separate follow-up work; no screenshot call is included because this utility captures bounded sanitized JSON only.
+There is no CLI parameter for a tool name, raw JSON, arbitrary arguments, endpoint, or remote host. The selector map is the entire call surface. UI screenshots and simulation-changing acceptance actions remain separate follow-up work; this utility captures bounded sanitized JSON only.
 
-Direct mode requires `--select ping`; if the live list omits `rimbridge/ping`, the client stops before invoking other tools. It sends ping before status regardless of selector order. A requested tool missing from the live list or any call-level error produces a nonzero exit status and a sanitized evidence record.
+`DiagnosticsCapabilityModule.GetGameInfo()` reads `Current.Game` and native selection; `ListLogs(...)` delegates to `_logJournal.GetEntries(...)`. `RimWorldModConfiguration.GetModConfigurationStatusResponse()` calls `ToResponseStatus(DescribeConfiguration())`: installed metadata is read after `ModLister.EnsureInit()`, configured order comes from `ModsConfig.ActiveModsInLoadOrder`, and loaded order comes from `LoadedModManager.RunningModsListForReading`. It collects native warnings and constructs response snapshots. The separate enable/reorder methods call `ModsConfig.SetActive`, `TryReorder` and `Save`; none is exposed by this client. Mod metadata versions and path/order fingerprints are not assembly content hashes or runtime compatibility clearance. Compare the observed identities with the package/profile receipts separately.
+
+Direct mode requires `--select ping`; if the live list omits `rimbridge/ping`, the client stops before invoking other tools. It sends ping before other reads regardless of selector order. A requested tool missing from the live list or any call-level error produces a nonzero exit status and a sanitized evidence record.
 
 ## Client safeguards and evidence limits
 
@@ -69,11 +74,15 @@ These checks do **not** prove that the supplied log belongs to the supplied proc
 
 The client reads the credential only to authenticate. It does not print or serialize the token. Evidence records the PID, executable basename, parsed port, token-present boolean, requested selectors, live allowlisted tool availability, and selected read results. A recursive sanitizer redacts token/secret/auth/password fields, the exact local token, bearer strings, and RimBridge token log lines; raw startup logs are never copied. Result depth, strings, arrays, frame sizes, timeouts, and total output size are bounded. Output creation is exclusive so an existing evidence path cannot be overwritten.
 
+Revision 2 raises the sanitizer's per-array limit from 100 to 512 and per-result node budget from 5,000 to 50,000 so the 296-entry QA profile can fit. The one-MiB frame/output limits remain. Any sanitizer truncation is counted per call and overall and produces `partial` with nonzero exit status; missing tools also produce `partial`. Failed calls produce `failed`. `complete` means selected responses were captured without those transport/capture failures; it does not mean the profile is correct or gameplay passed. These reads occur sequentially, so their combined result is not an atomic snapshot. Preserve the configured/loaded distinction and inspect restart warnings before relying on session identity.
+
 For a future owner-operated capture (not run as part of this review), use Python 3.10+ on the Windows test host and an explicit current process/log/output pair, for example:
 
 ```powershell
 python tools/qa/rimbridge_readonly.py --pid 12345 --log "C:\path\to\Player.log" --output "C:\path\to\capture.json" --connect --select ping --select status
 ```
+
+After the initial ping/status succeeds, the same owner-launched session can be observed using a **new** output path and adding `--select game --select mods --select logs`. Fixed selectors cannot change the mod list, acknowledge errors, start a game or control simulation. The owner need not provide the PID manually; read it from the OS after the owner confirms the QA launch and pair it with that session's log.
 
 Without `--connect`, the command only validates the explicit process/log pairing and writes a preflight record. This source review did not run even that preflight. The client received a Python AST syntax parse only; it was not executed, connected to a listener, tested, or used to start RimWorld. A later owner-run connection must still be recorded as QA evidence and must not be described as a successful Rimrooms profile or feature test.
 
