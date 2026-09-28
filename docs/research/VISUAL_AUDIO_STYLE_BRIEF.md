@@ -39,6 +39,16 @@ Increase variation gradually: institutional rooms and service corridors first; t
 
 All three use the same icon grammar and status language, but their opening inventory, camera composition, and briefing emphasis can differ.
 
+### Main menu background slideshow
+
+Ship a curated slideshow of original Backrooms scenes as the mod's main-menu backgrounds. Use the images to preview the range of play: the Async Industries facility and gate, the furniture-store breach, a field crew moving through a familiar room made wrong, evidence work and a safe return, a remote outpost, and deeper spaces or optional orbital support when those features are represented in the release. Include at least one image for each shipped scenario; add images for other systems as they become real in the build.
+
+Keep each frame faithful to the experience the release actually contains. A concept image for a later feature must not imply that feature is playable. Compose a calm, low-detail area behind the menu controls, check the crop at supported aspect ratios and resolutions, and keep menu text readable over every image. Use slow fades or similarly quiet transitions; the slideshow must not rely on flashes, sudden movement, or audio. Provide a way to disable the mod's backgrounds and honor reduced-motion preferences.
+
+Create the images specifically for Rimrooms. Do not use Kane Pixels or A24 frames, promotional stills, screenshots, or third-party mod assets. Broad mood and story cues may inform original compositions under the source rules above. Record the creator, source, license/permission, edits, and packaged path for every image in `provenance-register.csv`.
+
+Before implementation, inspect RimWorld 1.6's public menu/background extension surface and the exact profile's menu-changing mods. Decide whether Rimrooms can safely add its images to the existing rotation or needs a scoped replacement while enabled. Do not overwrite or redistribute vanilla/DLC background files; preserve a clear fallback when Rimrooms backgrounds are disabled or unavailable.
+
 ### Staff, evidence, equipment, and entities
 
 - Staff remain readable as RimWorld pawns first. Uniforms, protective gear, badges, radios, and work tools distinguish roles; do not make job eligibility depend on appearance.
@@ -71,3 +81,4 @@ Alarms, radio messages, and entity cues need a text or icon equivalent in the lo
 - Use keyed/localizable text from the first production pass. Check a long-string language, color-vision-safe status cues, keyboard navigation, reduced effects, and no-sound completion of the first expedition.
 - Review every room family and threat against its gameplay contract: the player can recognize a clue, read a warning, identify an action, and find the recovery path.
 - Final acceptance uses the [pre-production quality bar](PREPRODUCTION_ACCEPTANCE_STANDARD.md) and [content/accessibility brief](CONTENT_ACCESSIBILITY_BRIEF.md). This brief does not claim production assets exist or that their provenance has been cleared.
+- The main-menu slideshow is part of the release asset set. Test every image with the actual menu overlay at supported sizes, with reduced motion and no audio, and verify the chosen integration against menu-related mods in the pinned profile before advertising it as compatible.

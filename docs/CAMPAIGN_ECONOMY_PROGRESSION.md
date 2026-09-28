@@ -68,7 +68,7 @@ Every DLC and profile mod remains optional except Core plus Harmony/RWT for co-o
 
 ## Balance evidence still needed
 
-The first-month workbook covers only the opening Async Industries account forecast. Before the campaign economy is considered frozen, create an editable model for at least:
+The workbook now contains the opening forecast plus linked 30-day planning and downside examples for stages 2–7. Those later inputs are illustrative hypotheses, not final prices or balanced results. Before the campaign economy is considered frozen, extend or replace those examples with evidence-backed models for at least:
 
 1. the first 30-day opening with and without the survey payment and optional bonus;
 2. repeat-access work over several months, including contract delays, gear replacement, hiring, and failed/abandoned expeditions;
@@ -78,4 +78,4 @@ The first-month workbook covers only the opening Async Industries account foreca
 6. vehicle/gravship logistics as a separate optional profile, not a required revenue shortcut;
 7. a no-contract or lost-shipment case that remains recoverable without hidden credit generation.
 
-Each balance pass records workbook/model version, assumptions, cash and physical stock separately, successful and failed outcomes, and the target RimWorld/DLC/mod profile. Until those cases are modeled and later playtested, the campaign price bands and late-game solvency remain open.
+Each balance pass records workbook/model version, assumptions, cash and physical stock separately, successful and failed outcomes, adaptive cost cuts or recovery choices, and the target RimWorld/DLC/mod profile. Until those cases are completed and later playtested, the campaign price bands and late-game solvency remain open.

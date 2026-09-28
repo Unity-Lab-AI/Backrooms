@@ -1,6 +1,6 @@
 # Rimrooms - Async Industries: campaign economy model
 
-**Status:** pre-code balance model, version 0.1. Values are tuning hypotheses, not tested play balance. The linked [campaign economy workbook](../outputs/4b7976f0-1820-4ffa-a191-bf7c7f79b010/Rimrooms_Campaign_Economy_v0.1.xlsx) calculates the first 30-day Async Industries cash example. [CAMPAIGN_ECONOMY_PROGRESSION.md](CAMPAIGN_ECONOMY_PROGRESSION.md) defines later campaign revenue/cost stages and model inputs, whose prices and solvency remain open. Update this note and workbook together when a rule or value changes.
+**Status:** pre-code balance model, version 0.1. Values are tuning hypotheses, not tested play balance. The linked [campaign economy workbook](../outputs/4b7976f0-1820-4ffa-a191-bf7c7f79b010/Rimrooms_Campaign_Economy_v0.1.xlsx) calculates the first 30-day Async Industries example plus editable 30-day planning and downside cases for campaign stages 2–7. Later prices and solvency remain open. Update this note and workbook together when a rule or value changes.
 
 **Feature route:** [RR-ECO](FEATURE_TRACEABILITY.md), [RR-FAC](FEATURE_TRACEABILITY.md), [RR-STA](FEATURE_TRACEABILITY.md), [RR-GATE](FEATURE_TRACEABILITY.md), [RR-EXP](FEATURE_TRACEABILITY.md), [RR-MSN](FEATURE_TRACEABILITY.md), and [RR-OUT](FEATURE_TRACEABILITY.md). Account totals, reputation, and company research belong to the owning local campaign branch as defined in [CAMPAIGN_STATE_DICTIONARY.md](CAMPAIGN_STATE_DICTIONARY.md).
 
@@ -49,6 +49,12 @@ The five starter food days cover the first 25 person-days of the forecast, so on
 
 The company does not debit a flat expedition fee on top of consumed equipment. Gear use is reflected by physical loss, wear, replacement orders, or a contractually quoted service cost. Keep the cash ledger and item manifest separate, then reconcile them in the expedition report.
 
+## Later-stage workbook cases
+
+The workbook's `Campaign Scenarios` sheet rolls a 30-day planning case and a downside case through repeat access, specialist services, remote sites, large recovery work, optional vehicle/orbital support, and deep-site operations. The planning case starts from the existing 595-credit successful opening. The downside starts from the 355-credit opening with no survey payment, then assumes fewer completed and paid contracts while keeping the planned staffing and operating costs. Every later contract count, average payment, roster size, and nonzero support-cost placeholder is editable and marked as an estimate.
+
+The cases carry forward the first-slice base payroll, food, overhead, onboarding, restock, material, outpost, and facility rates. They do not include specialist pay premiums, itemized maintenance/medical/transport quotes, client-lease income as a separate line, contract penalties, partial-result terms, item sales, changing costs in response to shortfalls, or a tested vehicle/gravship budget. A negative closing value is a funding gap in the proposed spending plan; it does not define an account that can borrow or carry debt. Company credits remain separate from silver and physical inventory.
+
 ## Contract, procurement, and recovery rules
 
 - The contract card shows client, requested result, payment, advance, deadline, bonus, penalty cap, and cancellation rule. A 300-credit advance proposed for the Furniture & Knickknack Store start counts against that contract's total payment; it is not extra revenue.
@@ -70,5 +76,5 @@ Research uses named evidence/insight plus ordinary staffed research work. One in
 
 ## Economy not yet balanced
 
-The first-month worksheet is not a full simulation of late-game contracts, threat capture/sale, specialist salary, long expeditions, vehicle or gravship operations, insurance/compensation, tax, auction prices, rival companies, or all outpost logistics. Those values need separate design and later playtesting before implementation claims a complete economy. The selected 294-mod profile may affect ordinary trade and production; it never changes the standalone Core-only ledger rules without a verified integration decision.
+The workbook is a planning scaffold, not a full simulation or tested balance. Threat capture/sale, specialist salary, long expeditions, vehicle or gravship operations, insurance/compensation, tax, auction prices, rival companies, changing plans after a shortfall, and complete outpost logistics still need design, itemized estimates, and later playtesting. The selected 294-mod profile may affect ordinary trade and production; it never changes the standalone Core-only ledger rules without a verified integration decision.
 
