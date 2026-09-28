@@ -1,0 +1,28 @@
+name: Rimrooms bug report
+description: Report an observed build, package, or owner-launched game problem.
+title: "[Bug] "
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Include expected behavior, actual behavior and exact repeat steps. Say whether this is a build problem or an in-game observation.
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Build and profile
+      description: Rimrooms version/commit, RimWorld build, DLC, RimSort version, ordered package IDs/versions and relevant RWT/bridge versions. Attach the build reference manifest for compiler problems.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and recovery
+      description: Relevant logs, screenshot, disposable save/scenario/seed, last working version and whether reload/recovery changed the result. Remove credentials and personal information from attachments.
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Note the affected feature/contract, optional mod presence, and whether this was observed in Core or the full profile. A successful launch alone is not compatibility evidence.

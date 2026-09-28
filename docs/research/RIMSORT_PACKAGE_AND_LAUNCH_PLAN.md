@@ -1,6 +1,6 @@
 # RimSort package staging and launch plan
 
-**Status:** selected workflow for the first Rimrooms test. No Rimrooms package has been created or installed, and no test game was launched.
+**Status:** the 0.1.0 foundation was built and staged into the Default RimSort instance's configured Local Mods directory on 2026-09-28; see the [build/staging evidence](../implementation/PHASE_1_BUILD_RECORD.md) and [commands](../BUILDING.md). The active mod list was not changed and no game was launched. The first owner-operated profile/launch steps below remain pending.
 
 ## Repository and copyable package boundary
 
@@ -19,7 +19,7 @@ Backrooms/
       1.6/                            Defs, Assemblies, Languages, Patches, Textures, Sounds
 ```
 
-`Mod/Rimrooms - Async Industries/` is the package root. A staging script will copy only this folder into the `Local Mods` path shown in RimSort. RimSort's usual Local Mods path is `<RimWorld install>/Mods`, but installations and RimSort settings can differ; use the configured location shown in RimSort rather than assuming a hard-coded game path. Do not copy the repository root, `docs/`, `outputs/`, `src/`, or `tools/` into the game.
+`Mod/Rimrooms - Async Industries/` is the package root. The staging script copies only this folder into the `Local Mods` path shown in RimSort. RimSort's usual Local Mods path is `<RimWorld install>/Mods`, but installations and RimSort settings can differ; use the configured location shown in RimSort rather than assuming a hard-coded game path. Do not copy the repository root, `docs/`, `outputs/`, `src/`, or `tools/` into the game.
 
 The package metadata must keep the displayed title `Rimrooms - Async Industries`, package ID `UnityLabAI.RimroomsAsyncIndustries`, and author/publisher `Operator`. RimSort reads the package's `About/About.xml` and load-order metadata to identify and place the mod. Declare only dependencies and ordering rules justified by the settled design and reviewed source; do not add optional mods just to silence a sorter warning.
 

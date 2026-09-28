@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>RimroomsAsyncIndustries</AssemblyName>
+    <RootNamespace>RimroomsAsyncIndustries</RootNamespace>
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <Authors>Operator</Authors>
+    <Company>Operator</Company>
+    <Product>Rimrooms - Async Industries</Product>
+    <Description>RimWorld company campaign foundation.</Description>
+    <Copyright>Copyright (c) 2026 Operator</Copyright>
+    <Deterministic>true</Deterministic>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <DebugType>portable</DebugType>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <AutomaticallyUseReferenceAssemblyPackages>false</AutomaticallyUseReferenceAssemblyPackages>
+    <RimWorldPath Condition="'$(RimWorldPath)' == ''">$(RIMWORLD_PATH)</RimWorldPath>
+    <RimWorldManagedPath>$(RimWorldPath)/RimWorldWin64_Data/Managed</RimWorldManagedPath>
+    <PathMap>$(MSBuildProjectDirectory)=/src/RimroomsAsyncIndustries</PathMap>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" PrivateAssets="all" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldManagedPath)/Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(RimWorldManagedPath)/UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(RimWorldManagedPath)/UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <Target Name="RequireLocalGameReferences" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="'$(RimWorldPath)' == ''" Text="Set RimWorldPath or RIMWORLD_PATH to the installed RimWorld directory. See docs/BUILDING.md." />
+    <Error Condition="!Exists('$(RimWorldManagedPath)/Assembly-CSharp.dll')" Text="RimWorld 1.6 managed references are missing from $(RimWorldManagedPath). Do not download or commit game binaries." />
+  </Target>
+</Project>

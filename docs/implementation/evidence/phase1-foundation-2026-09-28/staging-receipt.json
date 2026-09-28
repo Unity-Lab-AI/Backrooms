@@ -1,0 +1,50 @@
+{
+  "PackageId": "UnityLabAI.RimroomsAsyncIndustries",
+  "Version": "0.1.0",
+  "Destination": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Rimworld\\Mods\\Rimrooms - Async Industries",
+  "Backup": null,
+  "Files": [
+    {
+      "Path": "1.6/Assemblies/RimroomsAsyncIndustries.dll",
+      "Bytes": 8704,
+      "SHA256": "02E02892D0D67A0F8BFBADD448D5560F0512B4BF361763D8C7DEADAACBE79A9D"
+    },
+    {
+      "Path": "1.6/Defs/MainButtonDefs/RR_MainButtons.xml",
+      "Bytes": 419,
+      "SHA256": "E2F214D5BAD4E65807A3EEDA0A453E2B78A8FAA27663D27D932AEFCD905DCF7A"
+    },
+    {
+      "Path": "1.6/Languages/English/DefInjected/MainButtonDef/RR_MainButtons.xml",
+      "Bytes": 258,
+      "SHA256": "D7ADD911E400686E579403C9531BE7BC1B66E37653AABCC3C45CD78E7ED6F5DD"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Operations.xml",
+      "Bytes": 1331,
+      "SHA256": "48CEECC6C18A889FA2477C9B9E2F2782F29A056E003921F7FF5385EE29AF2E76"
+    },
+    {
+      "Path": "About/About.xml",
+      "Bytes": 948,
+      "SHA256": "0A1F6A986B5AAD8A222767B522CF5551F14F42D7702A42419A27E96D395AAB46"
+    },
+    {
+      "Path": "About/License.txt",
+      "Bytes": 1065,
+      "SHA256": "B42D22D94B8A6E22CEF52B7D923C7D1CB8DC2F3FCC0687FA66FDDBC6FBC71E42"
+    },
+    {
+      "Path": "About/Preview.png",
+      "Bytes": 19913,
+      "SHA256": "6161300A4438E78B2BF52119787A9B859D98D90DC6DD98EC6FEC14EC81A30A0B"
+    },
+    {
+      "Path": "LoadFolders.xml",
+      "Bytes": 104,
+      "SHA256": "23F721252643F6A0230C935EA3E1F2F89A6371025DDE018AFE776508D66FCB03"
+    }
+  ],
+  "ProfileChanged": false,
+  "GameLaunched": false
+}

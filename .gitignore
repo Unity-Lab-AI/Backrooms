@@ -11,6 +11,13 @@ Assemblies/*.dll
 Assemblies/*.pdb
 *.log
 
+# Machine-local tooling, package caches, decompiled reference inspection, build evidence
+.local/
+artifacts/
+Mod/**/Assemblies/*.dll
+Mod/**/Assemblies/*.pdb
+*.local.props
+
 # Local editor state and machine-specific game profiles
 .vs/
 *.user

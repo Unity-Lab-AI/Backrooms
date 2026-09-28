@@ -74,6 +74,29 @@ Use a sparse sound bed: steady facility power, ventilation, distant machinery, i
 
 Alarms, radio messages, and entity cues need a text or icon equivalent in the log or status panel. Let players lower or mute repeated ambience and reduce startling effects without losing objective, threat, or failure information. Do not require headphones or rapid sound recognition to complete an action.
 
+## Production file specification
+
+These are original-art production defaults for the planned campaign. They do not claim that assets beyond the 0.1.0 identity card exist. Change a default when the actual in-game view demonstrates a better result, and record the reason with the asset.
+
+| Asset family | Working/export specification | Readability and ownership |
+| --- | --- | --- |
+| Package preview | 960 × 540 opaque PNG, sRGB; original title/identity composition | Title readable at a 320-pixel-wide thumbnail; identify foundation builds as such; no implied gameplay screenshot |
+| Menu backgrounds | 3840 × 2160 original master, 1920 × 1080 shipped PNG initially; no embedded menu text | Reserve a quiet middle-left area for the actual native menu; check 16:9, 16:10 and 21:9 crops and 1280 × 720 minimum before release; exact safe area follows source inspection and overlay evidence |
+| UI icons | 64 × 64 RGBA PNG on a 64-pixel grid; detail within a 52-pixel safe region; retain 256 × 256 source | Recognizable at 24–32 displayed pixels; distinct outline and paired text, never color alone |
+| Items and equipment | 128 × 128 RGBA export, up to 256 × 256 for detailed/large items | Match native item scale, silhouette and ground shadow; equipment must read at normal map zoom |
+| Buildings and room props | Start at 128 pixels per occupied tile; cap a single initial texture at 1024 × 1024 | Author needed facing variants deliberately; match footprint/interaction cells and avoid baking UI labels into sprites |
+| Pawns/entities | Original 256 × 256 directional masters with RimWorld-scale export chosen per body/overlay use | Distinct threat silhouette; fair pose/animation tells linked to the threat contract |
+| Short sound effects | 48 kHz WAV masters, mono PCM 16-bit exports unless spatial design needs stereo | Aim for peaks at or below −3 dBFS; trim clicks and use short edge fades; calibrate Def volume in game |
+| Ambient loops/music | 48 kHz stereo masters; OGG exports, restrained dynamics, seamless loops where needed | Initial ambience mix target around −24 LUFS integrated; radio around −20 LUFS; true peaks below −3 dBTP; production targets, not measured game loudness |
+
+Use source names such as `RR_<Family>_<Purpose>_<FacingOrVariant>` and stable extensionless runtime paths. Editable source and mix masters stay outside `Mod/`. Each shipped output has its own provenance entry and a source-generation/edit trail. Do not add unused assets just to fill directories.
+
+The foundation identity palette is charcoal `#141A1D`, deep shadow `#080D10`, steel `#263135`, warm paper `#EEE8D5`, muted grey `#A8B0AD`, and amber `#D3B46C`. Later status colors add red/green only with text, shape and an icon. UI text should meet a 4.5:1 contrast target and essential large symbols 3:1 against their actual backgrounds; check screenshots after game lighting/overlays. Use native UI fonts for game controls. The preview uses system Arial during rendering and bundles no font.
+
+Start the menu rotation at 30 seconds per image with a 2-second quiet crossfade. Reduced motion holds one image until user selection; disabling Rimrooms backgrounds restores the game's normal path. No flashes, sudden camera travel or menu audio stingers. These settings are planned behavior, pending the menu API/profile review, not features of the package preview. Gate/anomaly animation must retain static status labels when motion is reduced. Limit repeated alarms and allow ambience/stingers to be muted independently where the inspected sound API permits; native volume controls remain functional.
+
+Record export dimensions, format, measured audio peak/loudness where applicable, creator/license, packaged path and actual visual/audio review per asset. Readability, UI scaling, directional rendering, sound balance and menu crops remain owner-launched acceptance after those assets are implemented.
+
 ## Production and acceptance notes
 
 - Create original assets at the scale and contrast RimWorld needs; test them at normal zoom, not only in an enlarged editor view.

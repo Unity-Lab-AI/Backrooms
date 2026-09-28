@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Rimrooms - Async Industries</name>
+  <author>Operator</author>
+  <packageId>UnityLabAI.RimroomsAsyncIndustries</packageId>
+  <modVersion>0.1.0</modVersion>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <loadAfter>
+    <li>Ludeon.RimWorld</li>
+  </loadAfter>
+  <description>Build an organization that investigates, contains, and profits from unstable spaces beyond a machine gate.
+
+Foundation build 0.1.0: includes an Operations information screen and an inactive, save-local campaign component. The company scenarios, machine gate, expeditions, and campaign gameplay are still being built. This is not a playable campaign release.
+
+Designed for RimWorld 1.6. Core-only development foundation; no DLC or Harmony required by this package. RimWorld Together cooperation and optional integrations are planned and unverified.
+
+Author: Operator.</description>
+</ModMetaData>

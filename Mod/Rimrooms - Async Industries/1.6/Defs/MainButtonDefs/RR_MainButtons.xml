@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <MainButtonDef>
+    <defName>RR_Operations</defName>
+    <label>Operations</label>
+    <description>View company operations and return to ordinary work and research controls.</description>
+    <tabWindowClass>RimroomsAsyncIndustries.UI.MainTabWindow_Operations</tabWindowClass>
+    <order>95</order>
+    <validWithoutMap>true</validWithoutMap>
+  </MainButtonDef>
+</Defs>

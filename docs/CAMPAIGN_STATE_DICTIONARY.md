@@ -1,6 +1,6 @@
 # Rimrooms - Async Industries: campaign state and save ownership
 
-**Status:** pre-code ownership contract. The candidate RimWorld component classes in [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md) still require API verification. This file names the information the campaign needs, which save/map/object owns it, and the rules required to keep it stable across saves and co-op transfers.
+**Status:** full-campaign ownership contract. The [0.1.0 foundation](implementation/PHASE_1_BUILD_RECORD.md) implements only an inactive game component with schema version and nullable branch/scenario IDs, using the [reviewed Core lifecycle](implementation/PHASE_1_CORE_SOURCE_REVIEW.md). Its exact keys and limitations are in the [save policy](SAVE_MIGRATION_POLICY.md). The remaining records below still need implementation and acceptance; this file owns their intended state and transfer rules.
 
 ## Ownership rule
 

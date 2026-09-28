@@ -1,7 +1,7 @@
 # Rimrooms first-slice Core API source map
 
 **Checked:** 2026-09-28  
-**Status:** Static source/metadata reconnaissance only. No Rimrooms code, XML Defs, or assets were created, and RimWorld was not launched.
+**Status:** the original Gate 0 reconnaissance below is static XML/metadata evidence. The later [Phase 1 lifecycle review](../implementation/PHASE_1_CORE_SOURCE_REVIEW.md) now traces Mod/GameComponent/Scribe/MainButton method bodies, and the [0.1.0 build record](../implementation/PHASE_1_BUILD_RECORD.md) records actual source/XML/package compilation. Other routes below remain queued for their feature. RimWorld was not launched for this work.
 
 This map turns the [first playable contract](../FIRST_PLAYABLE_CONTRACT.md) and the approved [scenario lineup](../SCENARIOS.md) into a Phase 1 inspection route. It distinguishes what the pinned local RimWorld 1.6 files actually show from the implementation details that still need source-level inspection and a small in-game prototype. API names below are leads, not a guarantee that a proposed Rimrooms design is correct.
 

@@ -1,8 +1,12 @@
 # Rimrooms - Async Industries: feature traceability map
 
-**Purpose:** give every planned system a stable ID and a route through gameplay design, lore/source evidence, the 294-mod profile, DLC/RWT boundaries, visual/UI direction, planned package surfaces, and acceptance proof. All 294 profile rows have source-fact review records and proposed treatments in the linked register. All 914 declared dependency/load-order records are inventoried in the [relationship disposition matrix](research/declared-relationship-disposition-matrix-2026-09-27.csv); its classifications are metadata-based project rules, not source-code confirmation or compatibility results. This map does not claim runtime compatibility or that implementation code exists.
+**Purpose:** give every planned system a stable ID and a route through gameplay design, lore/source evidence, the 294-mod profile, DLC/RWT boundaries, visual/UI direction, planned package surfaces, and acceptance proof. All 294 profile rows have source-fact review records and proposed treatments in the linked register. All 914 declared dependency/load-order records are inventoried in the [relationship disposition matrix](research/declared-relationship-disposition-matrix-2026-09-27.csv); its classifications are metadata-based project rules, not source-code confirmation or compatibility results. This map does not claim runtime compatibility; the foundation subsection identifies the small implemented subset.
 
 ## Traceability rules
+
+### Implemented foundation subset
+
+The [Phase 1 task](implementation/PHASE_1_FOUNDATION_TASK.md) and [0.1.0 build evidence](implementation/PHASE_1_BUILD_RECORD.md) connect actual files to this map. `RR-COMPAT` has the Core-only compiler/package/staging route; `RR-UI` has the localized Operations information tab; `RR-SCEN` has the inactive save-local component; `RR-STYLE` has an original package identity card. `RR-ECO` is referenced for future state ownership only: no ledger, starter funds or transactions exist. No feature has runtime acceptance from this foundation build. Full owner/feature tables below continue to describe the planned campaign.
 
 - This is the feature-level index. Before Gate 0, the per-mod register assigns each of its 294 rows one or more feature IDs below, exact source evidence, a proposed treatment, and an explicit review/evidence status. Runtime compatibility remains pending until reproduced.
 - Every source-specific lore claim needs a direct source URL and a saved review record. Mark it **source fact**, **interpretation**, **owner choice**, or **original game design**. An unreviewed video/film/source stays **Pending**.

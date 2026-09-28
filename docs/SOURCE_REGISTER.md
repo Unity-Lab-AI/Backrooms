@@ -34,6 +34,8 @@ This file is the navigation index for the research and design materials a future
 
 ## Current preparation evidence
 
+Implementation evidence is now kept separately: [foundation task](implementation/PHASE_1_FOUNDATION_TASK.md), [Core method-body/source review](implementation/PHASE_1_CORE_SOURCE_REVIEW.md), [compiled/staged build record](implementation/PHASE_1_BUILD_RECORD.md), [build instructions](BUILDING.md), [credits](CREDITS.md) and [save policy](SAVE_MIGRATION_POLICY.md). Follow these to exact source, XML and manifest paths. They do not replace the historical Gate 0 snapshot or establish game compatibility.
+
 The [Gate 0 completion audit](research/GATE_0_COMPLETION_AUDIT.md) records the preparation boundary and reproducible checks. Use the [performance benchmark plan](research/PERFORMANCE_BENCHMARK_PLAN.md) for the named machine, initial budgets and post-build measurements. The 2026-09-27 mod CSV/workbook is a historical source snapshot; the [2026-09-28 profile delta](research/profile-deltas-2026-09-28.json) records Hospitality row 270 at installed version 1.1.5. Read that delta and its linked review together with the register before implementing an integration.
 
 ## Primary creative references

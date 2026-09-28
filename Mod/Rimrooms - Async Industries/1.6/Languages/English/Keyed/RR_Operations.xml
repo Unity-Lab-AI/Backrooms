@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Operations_Title>Company Operations</RR_Operations_Title>
+  <RR_Operations_NoGame>Company operations are unavailable here. Open a colony save to view its status.</RR_Operations_NoGame>
+  <RR_Operations_Inactive>No company branch is established in this save.</RR_Operations_Inactive>
+  <RR_Operations_Foundation>This foundation build adds the Operations screen. Company scenarios, the machine gate, expeditions, and company finances are still in development. Your existing colony continues through its usual controls.</RR_Operations_Foundation>
+  <RR_Operations_UnsupportedSave>This save uses a different company record version. Do not re-save it with this build. Keep the original save and use a matching Rimrooms build.</RR_Operations_UnsupportedSave>
+  <RR_Operations_Branch>Branch: {0}</RR_Operations_Branch>
+  <RR_Operations_Scenario>Opening: {0}</RR_Operations_Scenario>
+  <RR_Operations_NativeControls>Colony controls</RR_Operations_NativeControls>
+  <RR_Operations_OpenWork>Open Work</RR_Operations_OpenWork>
+  <RR_Operations_OpenResearch>Open Research</RR_Operations_OpenResearch>
+  <RR_Operations_TabUnavailable>That colony control is unavailable in the current view. Return to a playable colony map and try again.</RR_Operations_TabUnavailable>
+</LanguageData>

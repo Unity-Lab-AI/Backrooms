@@ -1,0 +1,10 @@
+{
+  "scope": "Static source/XML binding inspection only",
+  "keyed_entries": 11,
+  "referenced_keys": 11,
+  "def_injected_entries": 2,
+  "main_button": "RR_Operations",
+  "tab_window_class": "RimroomsAsyncIndustries.UI.MainTabWindow_Operations",
+  "runtime_verified": false,
+  "result": "PASS"
+}

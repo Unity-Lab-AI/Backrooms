@@ -1,6 +1,6 @@
 # Rimrooms - Async Industries: Operations action contracts
 
-**Status:** pre-code player-facing contract. These are proposed actions and outcomes; no menu or integration has been implemented. They define what the Operations interface must let the player do and how it must explain a blocked action.
+**Status:** full-campaign player-facing contract. The [0.1.0 foundation](implementation/PHASE_1_BUILD_RECORD.md) implements a localized Operations information tab and guarded native Work/Research links only. The company actions and outcomes below remain planned; they define what the completed interface must let the player do and how it explains a blocked action.
 
 **Feature route:** [RR-UI](FEATURE_TRACEABILITY.md), with the owning gameplay rules in [GAME_DESIGN.md](GAME_DESIGN.md), [SCENARIOS.md](SCENARIOS.md), [FIRST_PLAYABLE_CONTRACT.md](FIRST_PLAYABLE_CONTRACT.md), and [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md).
 

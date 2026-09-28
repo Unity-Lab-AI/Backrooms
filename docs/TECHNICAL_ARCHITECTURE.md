@@ -1,8 +1,8 @@
 # Technical architecture proposal
 
-This is a design target, not a claim that these types or APIs have already been implemented. Verify exact names and signatures against the installed RimWorld 1.6 assemblies and the chosen RimWorld Together client release before writing production code.
+Most of this document is the full-campaign design target. The [0.1.0 foundation record](implementation/PHASE_1_BUILD_RECORD.md) identifies the implemented subset: bootstrap, inert save component and localized Operations tab. The [Core lifecycle review](implementation/PHASE_1_CORE_SOURCE_REVIEW.md) supplies inspected signatures; [BUILDING.md](BUILDING.md) records the actual compiler/reference/package setup. Other proposed types and optional integrations still require their own source review and implementation.
 
-**Gate 0 decisions recorded:** private RWT prototype first; exact displayed title `Rimrooms - Async Industries`; author/publisher value `Operator`; package ID `UnityLabAI.RimroomsAsyncIndustries`; internal namespace `RimroomsAsyncIndustries`; semantic versions; Core-only solo path; optional support for all five DLC; other 294-profile mods optional; indirect adaptation of Kane Pixels/A24 references, with wider community canon excluded from shipped content; dossier transfer plus shared research ledger only if supported and safely tested; English-first localization-ready; MIT for original source code; and supplemental S1/B, which freezes broad later threat families and defers named sketches. Gate 0 documentation/source preparation passed; implementation prototypes and all in-game/runtime checks remain future Phase 1+ evidence.
+**Gate 0 decisions recorded:** private RWT prototype first; exact displayed title `Rimrooms - Async Industries`; author/publisher value `Operator`; package ID `UnityLabAI.RimroomsAsyncIndustries`; internal namespace `RimroomsAsyncIndustries`; semantic versions; Core-only solo path; optional support for all five DLC; other 294-profile mods optional; indirect adaptation of Kane Pixels/A24 references, with wider community canon excluded from shipped content; dossier transfer plus shared research ledger only if supported and safely tested; English-first localization-ready; MIT for original source code; and supplemental S1/B, which freezes broad later threat families and defers named sketches. Gate 0 documentation/source preparation passed; the foundation compile/staging evidence is linked above, while all in-game/runtime checks remain pending.
 
 ## Runtime and package boundaries
 
@@ -14,7 +14,7 @@ This is a design target, not a claim that these types or APIs have already been 
 - The product target is the existing 294 entries plus Rimrooms (295). RimSort owns the load order and profile; the owner launches each session through RimSort. RimBridgeServer is a separate QA overlay, normally making the attached test profile 296 entries; it does not replace any target mod. GABS must not start or rewrite this project's test profile.
 - Use XML Defs for buildings, items, recipes, work types, research, quests, incidents, world objects, and language strings. Use C# only for systems that genuinely need custom state, generation, UI, or simulation.
 
-## Suggested source layout once implementation begins
+## Source and package layout
 
 ```text
 Backrooms/
@@ -35,7 +35,7 @@ Backrooms/
       1.6/Textures/  1.6/Sounds/     original assets
 ```
 
-Create `About/About.xml` with the selected title, package ID, version policy, and license when packaging begins. Set its author/publisher value to `Operator`. Keep C# source outside the package; copy only build output and game assets into the package root. Use the [RimSort package/launch plan](research/RIMSORT_PACKAGE_AND_LAUNCH_PLAN.md) and [RimBridgeServer harness](research/RIMBRIDGE_TEST_HARNESS.md) for staging and post-build checks.
+The identity, load folders, MainButtonDef and English localization now exist in the foundation package. The other feature folders in this target layout are created only with implemented content. `About/About.xml` uses the accepted title/package ID and `Operator`. Keep C# source outside the package; copy only build output and approved game assets into the package root. Use [BUILDING.md](BUILDING.md), the [RimSort package/launch plan](research/RIMSORT_PACKAGE_AND_LAUNCH_PLAN.md) and [RimBridgeServer harness](research/RIMBRIDGE_TEST_HARNESS.md) for staging and post-build checks.
 
 ## State ownership and persistence
 
