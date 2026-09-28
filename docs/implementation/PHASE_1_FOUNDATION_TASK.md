@@ -1,5 +1,8 @@
 # Phase 1: build and package foundation
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Authorized:** owner requested beginning the mod build after Gate 0 closed, 2026-09-28. **Status:** compile/package/staging scope complete; runtime acceptance pending. See the [build record](PHASE_1_BUILD_RECORD.md). This task does not close the playable-campaign gate.
 
 ## Inputs and scope

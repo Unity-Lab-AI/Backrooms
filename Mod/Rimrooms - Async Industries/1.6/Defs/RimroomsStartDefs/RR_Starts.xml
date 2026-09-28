@@ -79,7 +79,6 @@
       <li><thing>Battery</thing><cell>(44, 0, 26)</cell><batteryFraction>0.5</batteryFraction></li>
       <li><thing>StandingLamp</thing><cell>(46, 0, 23)</cell></li>
       <li><thing>SimpleResearchBench</thing><stuff>Steel</stuff><cell>(41, 0, 42)</cell></li>
-      <li><thing>RR_FieldAnalysisBench</thing><cell>(39, 0, 37)</cell></li>
       <li><thing>StandingLamp</thing><cell>(46, 0, 36)</cell></li>
       <li><thing>Heater</thing><cell>(46, 0, 46)</cell></li>
       <li><thing>HorseshoesPin</thing><stuff>Steel</stuff><cell>(28, 0, 44)</cell></li>

@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using RimroomsAsyncIndustries.Audio;
 using UnityEngine;
 using Verse;
@@ -9,7 +10,24 @@ namespace RimroomsAsyncIndustries.Core
     public sealed class RimroomsMod : Mod
     {
         public const string PackageId = "UnityLabAI.RimroomsAsyncIndustries";
-        public static string ModVersion { get { return typeof(RimroomsMod).Assembly.GetName().Version.ToString(3); } }
+        private static readonly string CachedModVersion = ResolveModVersion();
+
+        public static string ModVersion { get { return CachedModVersion; } }
+
+        private static string ResolveModVersion()
+        {
+            Assembly assembly = typeof(RimroomsMod).Assembly;
+            var informational = Attribute.GetCustomAttribute(assembly, typeof(AssemblyInformationalVersionAttribute))
+                as AssemblyInformationalVersionAttribute;
+            if (informational != null && !string.IsNullOrWhiteSpace(informational.InformationalVersion))
+            {
+                string value = informational.InformationalVersion;
+                int metadataIndex = value.IndexOf('+');
+                return metadataIndex < 0 ? value : value.Substring(0, metadataIndex);
+            }
+            Version version = assembly.GetName().Version;
+            return version == null ? "unknown" : version.ToString(3);
+        }
         public static RimroomsSettings Settings { get; private set; }
 
         public RimroomsMod(ModContentPack content) : base(content)
@@ -36,6 +54,10 @@ namespace RimroomsAsyncIndustries.Core
                 listing.CheckboxLabeled("RR_Settings_MuteFieldCues".Translate().ToString(), ref Settings.MuteFieldCues);
                 listing.Label("RR_Settings_CueVolume".Translate((int)Math.Round(Settings.CueVolume * 100f)));
                 Settings.CueVolume = listing.Slider(Settings.CueVolume, 0f, 1f);
+                listing.GapLine();
+                listing.Label("RR_Menu_SettingsTitle".Translate());
+                listing.CheckboxLabeled("RR_Menu_SlideshowEnabled".Translate().ToString(), ref Settings.MenuSlideshowEnabled);
+                listing.CheckboxLabeled("RR_Menu_ReducedMotion".Translate().ToString(), ref Settings.MenuReducedMotion);
             }
             finally { listing.End(); }
         }

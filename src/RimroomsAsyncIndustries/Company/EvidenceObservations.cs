@@ -228,8 +228,8 @@ namespace RimroomsAsyncIndustries.Company
             if (!CanOperate) { return CompanyActionResult.Refused("RR_Company_Inactive"); }
             if (record == null || !evidence.Any(e => ReferenceEquals(e, record)) ||
                 record.analyzedTick >= 0 || record.analysisReport != null || record.item == null || record.item.Destroyed ||
-                record.status == EvidenceStatus.Missing || record.item.def.defName != "RR_RouteRecording" ||
-                record.item.TryGetComp<CompRouteEvidence>()?.EvidenceId != record.id)
+                record.status == EvidenceStatus.Missing || record.item.GetUniqueLoadID() != record.itemLoadId ||
+                !CompRouteEvidence.IsBoundRouteEvidence(record.item, record.id))
             { return CompanyActionResult.Refused("RR_Evidence_InvalidRecord"); }
 
             CoordinateRecord coordinate = coordinates.FirstOrDefault(c => c.id == record.coordinateId);

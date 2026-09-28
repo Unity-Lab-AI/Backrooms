@@ -2,8 +2,8 @@
 <Defs>
   <ThingDef ParentName="BuildingBase">
     <defName>RR_FieldAnalysisBench</defName>
-    <label>field analysis bench</label>
-    <description>A powered workstation for examining recovered route recordings and advancing company research. Researchers carry physical evidence here and preserve analysis progress if interrupted. Company work uses the Research work priority; colony research remains available at ordinary research benches.</description>
+    <label>legacy field analysis bench</label>
+    <description>Historical development-build furniture retained to avoid silently removing an object from an earlier save. It no longer supplies company research and cannot be newly built. Designate an existing simple or hi-tech research bench in Operations / Investigation for company analysis and research.</description>
     <thingClass>Building</thingClass>
     <graphicData>
       <texPath>Buildings/Lab/RR_FieldAnalysisBench</texPath>
@@ -18,7 +18,6 @@
     <fillPercent>0.5</fillPercent>
     <hasInteractionCell>true</hasInteractionCell>
     <interactionCellOffset>(0,0,-1)</interactionCellOffset>
-    <designationCategory>Production</designationCategory>
     <constructionSkillPrerequisite>4</constructionSkillPrerequisite>
     <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
     <statBases>

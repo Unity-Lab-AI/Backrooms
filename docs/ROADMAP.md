@@ -1,5 +1,8 @@
 # Development roadmap
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 The work is sequenced so that later content depends on an accepted company loop. Gate 0 preparation passed, repository/build foundations exist, and the first Async Industries facility-to-expedition slice is implemented in development. The integrated 0.2.0 package compiled with zero warnings/errors; all 61 staged files match the saved manifest. No gameplay or compatibility gate is closed by those compiler results. See the [current build record](implementation/PHASE_2_BUILD_RECORD.md) and [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) for exact evidence and remaining work.
 
 These stage numbers group the long-term roadmap; the master TODO controls task order and formal gates. Status notes distinguish existing first-slice code/assets from owner-launched acceptance and unimplemented broader systems. This reconciliation changes no stage scope or exit condition.

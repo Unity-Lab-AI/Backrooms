@@ -1,8 +1,13 @@
 # Rimrooms - Async Industries: campaign scenarios
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** design contract for selectable campaign openings. Async Industries is the first playable implementation target; this file describes the shared rules and the planned alternate starts. The scenario list is extensible, but each added start must pass the common contract below. Use the linked [first-slice inventory](FIRST_SLICE_CONTENT_INVENTORY.md), [threat sheets](THREAT_DESIGN_SHEETS.md), and [economy model](CAMPAIGN_ECONOMY_MODEL.md) with this contract.
 
 **Selected dependency contract:** all three starts remain playable on Core without DLC or optional profile mods. Co-op requires Harmony/RWT; the rest of the 294 profile is optional. See [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md).
+
+**Latest setup refinement:** [Scenario setup and physical door portals](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) supersedes fixed-roster assumptions below. Each start preserves native/Prepare Carefully customization. The company selects its real-world tile. The inside-start solo/group and initial exit-selection proposals remain pending clarification; its stable `lone_survivor` ID is retained. Existing counts and staff templates are defaults, not permission to replace edited pawns.
 
 ## Why scenarios exist
 

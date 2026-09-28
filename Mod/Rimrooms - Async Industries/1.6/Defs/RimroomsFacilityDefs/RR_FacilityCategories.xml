@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+    <defName>RR_Facility_Quarters</defName><label>quarters</label><displayOrder>10</displayOrder>
+    <buildingDefNames><li>Bed</li><li>DoubleBed</li><li>RoyalBed</li><li>SleepingSpot</li><li>DoubleSleepingSpot</li><li>Bedroll</li><li>BedrollDouble</li></buildingDefNames>
+  </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+  <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+    <defName>RR_Facility_Medical</defName><label>medical furniture</label><displayOrder>20</displayOrder>
+    <buildingDefNames><li>HospitalBed</li><li>VitalsMonitor</li></buildingDefNames>
+  </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+  <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+    <defName>RR_Facility_Mess</defName><label>cafeteria and kitchen</label><displayOrder>30</displayOrder>
+    <buildingDefNames><li>Table1x2c</li><li>Table2x2c</li><li>Table2x4c</li><li>Table3x3c</li><li>Stool</li><li>DiningChair</li><li>ElectricStove</li><li>FueledStove</li><li>NutrientPasteDispenser</li><li>Hopper</li></buildingDefNames>
+  </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+  <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+    <defName>RR_Facility_Recreation</defName><label>recreation</label><displayOrder>40</displayOrder>
+    <buildingDefNames><li>HorseshoesPin</li><li>HoopstoneRing</li><li>ChessTable</li><li>GameOfUrBoard</li><li>BilliardsTable</li><li>PokerTable</li><li>TubeTelevision</li><li>FlatscreenTelevision</li><li>MegascreenTelevision</li></buildingDefNames>
+  </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+  <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+    <defName>RR_Facility_Laboratory</defName><label>research and analysis</label><displayOrder>50</displayOrder>
+    <buildingDefNames><li>RR_FieldAnalysisBench</li><li>SimpleResearchBench</li><li>HiTechResearchBench</li><li>MultiAnalyzer</li></buildingDefNames>
+  </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+  <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+    <defName>RR_Facility_Workshop</defName><label>workshops</label><displayOrder>60</displayOrder>
+    <buildingDefNames><li>TableMachining</li><li>ElectricSmithy</li><li>FueledSmithy</li><li>ElectricTailoringBench</li><li>HandTailoringBench</li><li>TableStonecutter</li><li>TableSculpting</li><li>DrugLab</li><li>FabricationBench</li></buildingDefNames>
+  </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+  <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+    <defName>RR_Facility_Machine</defName><label>gate and control</label><displayOrder>70</displayOrder>
+    <buildingDefNames><li>RR_MachineGate</li><li>RR_GateConsole</li><li>RR_EmergencyCutoff</li></buildingDefNames>
+  </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+  <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+    <defName>RR_Facility_Power</defName><label>power sources and reserves</label><displayOrder>80</displayOrder>
+    <includePowerSources>true</includePowerSources><buildingDefNames><li>PowerConduit</li><li>HiddenConduit</li><li>PowerSwitch</li></buildingDefNames>
+  </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+  <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+    <defName>RR_Facility_Storage</defName><label>storage furniture</label><displayOrder>90</displayOrder>
+    <buildingDefNames><li>Shelf</li><li>ShelfSmall</li></buildingDefNames>
+  </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+</Defs>

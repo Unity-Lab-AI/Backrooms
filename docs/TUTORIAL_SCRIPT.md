@@ -1,5 +1,8 @@
 # Rimrooms - Async Industries: first-session tutorial script
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** provisional player-facing copy for the first-playable contract (v0.2). The [development build](implementation/PHASE_2_BUILD_RECORD.md) implements the next-objective board, action hints, written warnings and observation checklist. Narrative copy below remains a presentation target; runtime timing/readability and gameplay review are pending.
 
 **Canonical content checks:** align the Async opening with [FIRST_SLICE_CONTENT_INVENTORY.md](FIRST_SLICE_CONTENT_INVENTORY.md), [FIRST_PLAYABLE_CONTRACT.md](FIRST_PLAYABLE_CONTRACT.md), [CAMPAIGN_ECONOMY_MODEL.md](CAMPAIGN_ECONOMY_MODEL.md), and [THREAT_DESIGN_SHEETS.md](THREAT_DESIGN_SHEETS.md). The Store and Lone Survivor openings remain in [SCENARIOS.md](SCENARIOS.md); this script does not claim to verify their RWT setup.

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+    <defName>RR_Procurement_Silver</defName>
+    <label>Silver</label>
+    <thingDefName>Silver</thingDefName>
+    <unitPriceUsd>1000</unitPriceUsd>
+    <dispatchDelayTicks>60000</dispatchDelayTicks>
+    <leadTimeTicks>120000</leadTimeTicks>
+    <maxOrderQuantity>1000000</maxOrderQuantity>
+  </RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+  <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+    <defName>RR_Procurement_Steel</defName>
+    <label>Steel</label>
+    <thingDefName>Steel</thingDefName>
+    <unitPriceUsd>2000</unitPriceUsd>
+    <dispatchDelayTicks>60000</dispatchDelayTicks>
+    <leadTimeTicks>120000</leadTimeTicks>
+    <maxOrderQuantity>10000</maxOrderQuantity>
+  </RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+  <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+    <defName>RR_Procurement_Components</defName>
+    <label>Industrial components</label>
+    <thingDefName>ComponentIndustrial</thingDefName>
+    <unitPriceUsd>20000</unitPriceUsd>
+    <dispatchDelayTicks>60000</dispatchDelayTicks>
+    <leadTimeTicks>180000</leadTimeTicks>
+    <maxOrderQuantity>1000</maxOrderQuantity>
+  </RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+  <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+    <defName>RR_Procurement_Wood</defName>
+    <label>Wood logs</label>
+    <thingDefName>WoodLog</thingDefName>
+    <unitPriceUsd>250</unitPriceUsd>
+    <dispatchDelayTicks>60000</dispatchDelayTicks>
+    <leadTimeTicks>120000</leadTimeTicks>
+    <maxOrderQuantity>50000</maxOrderQuantity>
+  </RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+  <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+    <defName>RR_Procurement_Cloth</defName>
+    <label>Cloth</label>
+    <thingDefName>Cloth</thingDefName>
+    <unitPriceUsd>2500</unitPriceUsd>
+    <dispatchDelayTicks>60000</dispatchDelayTicks>
+    <leadTimeTicks>180000</leadTimeTicks>
+    <maxOrderQuantity>5000</maxOrderQuantity>
+  </RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+  <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+    <defName>RR_Procurement_Medicine</defName>
+    <label>Industrial medicine</label>
+    <thingDefName>MedicineIndustrial</thingDefName>
+    <unitPriceUsd>25000</unitPriceUsd>
+    <dispatchDelayTicks>60000</dispatchDelayTicks>
+    <leadTimeTicks>180000</leadTimeTicks>
+    <maxOrderQuantity>500</maxOrderQuantity>
+  </RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+  <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+    <defName>RR_Procurement_SurvivalMeals</defName>
+    <label>Packaged survival meals</label>
+    <thingDefName>MealSurvivalPack</thingDefName>
+    <unitPriceUsd>5000</unitPriceUsd>
+    <dispatchDelayTicks>60000</dispatchDelayTicks>
+    <leadTimeTicks>120000</leadTimeTicks>
+    <maxOrderQuantity>2000</maxOrderQuantity>
+  </RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+</Defs>

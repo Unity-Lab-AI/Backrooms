@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <RimroomsAsyncIndustries.Personnel.HiringPolicyDef>
+    <defName>RR_OrdinaryApplicants</defName>
+    <label>ordinary company applicants</label>
+    <description>Voluntary adult applicants with native RimWorld skills, traits, health and equipment. Quotes are saved before acceptance.</description>
+    <candidateKind>Colonist</candidateKind>
+    <maxOffers>3</maxOffers>
+    <refreshTicks>420000</refreshTicks>
+    <offerTicks>420000</offerTicks>
+    <onboardingUsd>100000</onboardingUsd>
+    <dailyWageUsd>5000</dailyWageUsd>
+  </RimroomsAsyncIndustries.Personnel.HiringPolicyDef>
+</Defs>

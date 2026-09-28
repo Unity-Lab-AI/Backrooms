@@ -1,5 +1,8 @@
 # Phase 2 Def and Core Source Review
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 Reviewed 2026-09-28 against the 0.2.0 package in `Mod/Rimrooms - Async Industries/1.6` and the locally installed RimWorld 1.6 Core source/data. The pinned `Assembly-CSharp.dll` reports version `1.6.9676.17735` and SHA-256 `5CF1B5BE399D5B1C9C56CA72C9D35B4ECF307FEACF5859D04AC5A1AA5926356A`.
 
 This was a static XML/source review. It did not compile the mod, load Defs in RimWorld, launch the game, or run tests. Decompiler evidence is in ignored `.local/inspection-work/`; it is local audit evidence, not a distributable source dependency.

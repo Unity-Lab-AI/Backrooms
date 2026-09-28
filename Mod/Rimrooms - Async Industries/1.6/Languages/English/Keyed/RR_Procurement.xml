@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Procurement_Title>Procurement and receiving</RR_Procurement_Title>
+  <RR_Procurement_BranchBalance>Branch USD balance: ${0}</RR_Procurement_BranchBalance>
+  <RR_Procurement_EstimateNotice>Catalog prices and supplier times are provisional planning estimates. Company USD pays for orders; it never creates silver or cargo by itself.</RR_Procurement_EstimateNotice>
+  <RR_Procurement_OrderInstructions>Choose a Core item, amount, and HQ stockpile. The quote snapshots its price and current stack estimate. Accepted shipments arrive as physical stacks in a nearby receiving area; assigned colonists use ordinary hauling work to move them into storage.</RR_Procurement_OrderInstructions>
+  <RR_Procurement_SelectItem>Item: {0}</RR_Procurement_SelectItem>
+  <RR_Procurement_SelectStockpile>Receiving stockpile: {0}</RR_Procurement_SelectStockpile>
+  <RR_Procurement_Quantity>Quantity to request</RR_Procurement_Quantity>
+  <RR_Procurement_Preview>Estimate: {0} items, ${1}, {2} stacks at the current setting, approximately {3} kg.</RR_Procurement_Preview>
+  <RR_Procurement_ReceivingTarget>Delivery target: {0}</RR_Procurement_ReceivingTarget>
+  <RR_Procurement_QuantityLimit>Maximum for this catalog line: {0}</RR_Procurement_QuantityLimit>
+  <RR_Procurement_GetQuote>Create supplier quote</RR_Procurement_GetQuote>
+  <RR_Procurement_QuotesHeading>Open quotes</RR_Procurement_QuotesHeading>
+  <RR_Procurement_NoOpenQuotes>No current quotes. Quotes expire after the listed period.</RR_Procurement_NoOpenQuotes>
+  <RR_Proc_QuoteLine>{0}: {1} requested, ${2}, receiving stockpile {3}</RR_Proc_QuoteLine>
+  <RR_Proc_QuoteBurden>Quoted stack estimate: {0}. Current stack setting now gives {1}. Approximate total mass: {2} kg.</RR_Proc_QuoteBurden>
+  <RR_Proc_QuoteTiming>Dispatch in {0} day(s); arrival in {1} day(s); quote expires in {2} day(s).</RR_Proc_QuoteTiming>
+  <RR_Procurement_AcceptQuote>Accept and pay ${0}</RR_Procurement_AcceptQuote>
+  <RR_Proc_ConfirmPurchase>Accept the order for {0} x {1} at ${2}? It will be charged once and delivered to {3} on the quoted schedule.</RR_Proc_ConfirmPurchase>
+  <RR_Procurement_OrderHistoryHeading>Orders and physical shipment receipts</RR_Procurement_OrderHistoryHeading>
+  <RR_Proc_ArchiveSummary>Safely archived: {0} settled order(s) ({1} delivered, {2} cancelled/refunded; {3} items delivered total). Their company ledger entries and monotonic order IDs remain.</RR_Proc_ArchiveSummary>
+  <RR_Procurement_OrderPage>Retained order history page {0} of {1}</RR_Procurement_OrderPage>
+  <RR_Procurement_PreviousOrders>Previous orders</RR_Procurement_PreviousOrders>
+  <RR_Procurement_NextOrders>More orders</RR_Procurement_NextOrders>
+  <RR_Proc_OrderLine>{0} — {1}: {2} ordered, {3} delivered, {4} still held; {5}</RR_Proc_OrderLine>
+  <RR_Proc_OrderTerms>Quoted total: ${0}. Receiving stockpile: {1}. Dispatch day {2}; arrival day {3}.</RR_Proc_OrderTerms>
+  <RR_Proc_OrderCurrentStacks>Remaining cargo now uses about {0} stack(s), at current limit {1}; this can change when the active stack setting changes.</RR_Proc_OrderCurrentStacks>
+  <RR_Proc_LatestReceipt>Latest receipt {0}: {1} physically staged, {2} still held, {3} resulting item stack reference(s).</RR_Proc_LatestReceipt>
+  <RR_Proc_ArchivedReceiptSummary>Earlier receipt summary: {0} receipt(s), {1} items, sequence {2} through {3}; recent detailed receipts follow.</RR_Proc_ArchivedReceiptSummary>
+  <RR_Proc_RouteChange>Receiving route changed from {0} to {1} on day {2}; earlier receipts keep their original destination.</RR_Proc_RouteChange>
+  <RR_Procurement_RetryPayment>Retry the same pending payment</RR_Procurement_RetryPayment>
+  <RR_Procurement_RetryDelivery>Retry delivery into this stockpile's receiving area</RR_Procurement_RetryDelivery>
+  <RR_Procurement_ChangeReceiving>Choose another receiving stockpile</RR_Procurement_ChangeReceiving>
+  <RR_Procurement_CancelOrder>Cancel before dispatch</RR_Procurement_CancelOrder>
+  <RR_Proc_ConfirmCancellation>Cancel order {0} before dispatch for a full quoted refund of ${1}?</RR_Proc_ConfirmCancellation>
+  <RR_Procurement_InspectOrder>Inspect full order and receipts</RR_Procurement_InspectOrder>
+  <RR_Proc_OrderDetails>Order: {0}\nQuote: {1}\nItem: {2} ({3})\nOrdered: {4}\nDelivered: {5}\nStill in shipment custody: {6}\nQuoted USD: ${7}\nStatus: {8}\nCurrent receiving stockpile: {9}\nPurchase verified: {10}\nCancellation pending: {11}\nReceipts:\n{12}</RR_Proc_OrderDetails>
+  <RR_Proc_NoReceipts>No delivery receipt yet.</RR_Proc_NoReceipts>
+  <RR_Proc_NoStockpiles>Create an HQ stockpile zone before requesting physical supplies.</RR_Proc_NoStockpiles>
+  <RR_Procurement_ComponentUnavailable>Procurement records are unavailable in this save.</RR_Procurement_ComponentUnavailable>
+  <RR_Proc_ZoneFilterRejects>item filter rejects this cargo</RR_Proc_ZoneFilterRejects>
+
+  <RR_Proc_Status_PaymentPending>payment is pending verification; cargo cannot dispatch</RR_Proc_Status_PaymentPending>
+  <RR_Proc_Status_Scheduled>paid; waiting for supplier dispatch</RR_Proc_Status_Scheduled>
+  <RR_Proc_Status_InTransit>dispatched; supplier shipment in transit</RR_Proc_Status_InTransit>
+  <RR_Proc_Status_PartiallyDelivered>partially delivered; remainder retained for retry</RR_Proc_Status_PartiallyDelivered>
+  <RR_Proc_Status_AwaitingReceivingSpace>waiting for eligible receiving space</RR_Proc_Status_AwaitingReceivingSpace>
+  <RR_Proc_Status_Delivered>all ordered cargo physically staged</RR_Proc_Status_Delivered>
+  <RR_Proc_Status_CancelPending>cancellation refund is pending; dispatch is blocked</RR_Proc_Status_CancelPending>
+  <RR_Proc_Status_Cancelled>cancelled and refunded before dispatch</RR_Proc_Status_Cancelled>
+  <RR_Proc_Status_RecoveryRequired>shipment state needs recovery review; automatic dispatch is stopped</RR_Proc_Status_RecoveryRequired>
+
+  <RR_Proc_InvalidSave>Procurement records are inconsistent. New orders and automatic delivery have been stopped to protect ledger and cargo ownership.</RR_Proc_InvalidSave>
+  <RR_Proc_CancelledCargoRemains>A cancelled order still has held cargo. No shipment was recreated or delivered.</RR_Proc_CancelledCargoRemains>
+  <RR_Proc_CargoIntegrity>Shipment cargo and the saved order quantity do not reconcile. Automatic delivery is stopped; inspect the order and preserve the remaining cargo.</RR_Proc_CargoIntegrity>
+  <RR_Proc_CatalogUnavailable>This Core item is not available in the current catalog.</RR_Proc_CatalogUnavailable>
+  <RR_Proc_InvalidQuantity>Enter a positive whole-number quantity.</RR_Proc_InvalidQuantity>
+  <RR_Proc_ReceivingZoneInvalid>The selected HQ stockpile is missing, changed, or no longer accepts this item. Redirect the same order to another valid stockpile.</RR_Proc_ReceivingZoneInvalid>
+  <RR_Proc_StackCountLimit>This quantity would require too many physical stack objects under the current stack setting.</RR_Proc_StackCountLimit>
+  <RR_Proc_PriceOverflow>The quoted total exceeds the supported company account amount.</RR_Proc_PriceOverflow>
+  <RR_Proc_TimeOverflow>The supplier schedule is outside the supported game-time range.</RR_Proc_TimeOverflow>
+  <RR_Proc_OrderLimit>Procurement order IDs are exhausted for this branch.</RR_Proc_OrderLimit>
+  <RR_Proc_TooManyOpenOrders>Too many orders are awaiting delivery. Resolve existing orders before creating more.</RR_Proc_TooManyOpenOrders>
+  <RR_Proc_OrderHistoryFull>All retained order records are active, ambiguous, or need ledger review, so none can be safely archived. Resolve existing shipments before ordering more; no records were discarded.</RR_Proc_OrderHistoryFull>
+  <RR_Proc_TooManyQuotes>Too many saved quotes are open. Accept or let an existing quote expire first.</RR_Proc_TooManyQuotes>
+  <RR_Proc_MassUnavailable>Core has no valid mass estimate for this item, so a safe physical quote cannot be prepared.</RR_Proc_MassUnavailable>
+  <RR_Proc_QuoteUnavailable>This quote is missing, already accepted, or belongs to another company branch.</RR_Proc_QuoteUnavailable>
+  <RR_Proc_QuoteExpired>This quote expired. Request a new quote to see current stack limits and schedule.</RR_Proc_QuoteExpired>
+  <RR_Proc_OrphanedPayment>A matching prior purchase ledger entry exists without a trustworthy shipment order. No duplicate shipment will be delivered or recreated; preserve the ledger and request recovery review.</RR_Proc_OrphanedPayment>
+  <RR_Proc_LedgerMismatch>The purchase or refund ledger entry does not match the saved order. Dispatch and automatic refund are stopped.</RR_Proc_LedgerMismatch>
+  <RR_Proc_BranchMismatch>The saved order belongs to a different campaign branch. Payment and delivery actions are stopped.</RR_Proc_BranchMismatch>
+  <RR_Proc_HeadquartersUnavailable>The company HQ map is unavailable. The paid order and its held cargo remain saved.</RR_Proc_HeadquartersUnavailable>
+  <RR_Proc_CannotCancelAfterDispatch>This order can only be cancelled before supplier dispatch. Delivered and in-transit cargo remains physical.</RR_Proc_CannotCancelAfterDispatch>
+  <RR_Proc_RefundOverflow>The branch account cannot accept the full quoted refund without exceeding its supported balance.</RR_Proc_RefundOverflow>
+  <RR_Proc_CancellationPending>The order is already waiting for its stable refund receipt. It cannot dispatch while cancellation is pending.</RR_Proc_CancellationPending>
+  <RR_Proc_OrderUnavailable>That order is not present in this branch's procurement history.</RR_Proc_OrderUnavailable>
+  <RR_Proc_NotArrived>The supplier shipment has not reached its quoted arrival time.</RR_Proc_NotArrived>
+  <RR_Proc_ReceivingUnavailable>No cargo moved. The stockpile route or receiving area needs attention.</RR_Proc_ReceivingUnavailable>
+  <RR_Proc_RedirectUnavailable>This completed, cancelled, or recovery-stopped order cannot change receiving stockpiles.</RR_Proc_RedirectUnavailable>
+  <RR_Proc_ItemDefMissing>The original Core item definition is unavailable. No replacement item was created.</RR_Proc_ItemDefMissing>
+  <RR_Proc_StackLimitChanged>The current stack limit would exceed the bounded physical stack count. Cargo remains held; restore a workable limit before retrying.</RR_Proc_StackLimitChanged>
+  <RR_Proc_NoReachableStaff>No living, standing company pawn can reach the receiving route. Cargo remains held until staff or access changes.</RR_Proc_NoReachableStaff>
+  <RR_Proc_FilterChanged>The selected stockpile no longer accepts this item. Redirect the same order to another accepting stockpile.</RR_Proc_FilterChanged>
+  <RR_Proc_ReceivingStockpileFull>The selected stockpile has no remaining physical item capacity after accounting for cargo already staged for it.</RR_Proc_ReceivingStockpileFull>
+  <RR_Proc_ReceivingStockpileNotPreferred>Vanilla hauling would currently prefer another storage zone. Change storage priorities or redirect this order.</RR_Proc_ReceivingStockpileNotPreferred>
+  <RR_Proc_ReceivingStagingFull>No reachable empty receiving cells are available beside the selected stockpile. Existing floor cargo and held cargo remain in place.</RR_Proc_ReceivingStagingFull>
+  <RR_Proc_CargoOwnerUnavailable>The saved shipment holder is unavailable. No charge or item creation occurred.</RR_Proc_CargoOwnerUnavailable>
+  <RR_Proc_CargoCreateFailed>Physical cargo could not be safely assembled in shipment custody. No order charge was posted.</RR_Proc_CargoCreateFailed>
+  <RR_Proc_ReceiptHistoryLimit>The oldest delivery receipt could not be safely folded into the saved aggregate. Remaining cargo stays held and is not spawned without a receipt.</RR_Proc_ReceiptHistoryLimit>
+  <RR_Proc_HeldStackBudget>The company shipment holder is at its bounded capacity of physical stacks. Receive or cancel held shipments before accepting more; no cargo was created.</RR_Proc_HeldStackBudget>
+  <RR_Proc_RouteHistoryLimit>The bounded receiving-route history is full. Existing route receipts are preserved; this order cannot be redirected again.</RR_Proc_RouteHistoryLimit>
+  <RR_Proc_ReceiptsOmitted>{0} older receipt(s) omitted from this view; all remain in the saved order journal.</RR_Proc_ReceiptsOmitted>
+  <RR_Proc_PaymentUnverified>The stable purchase transaction is missing or does not match. This order cannot dispatch until the ledger is reconciled.</RR_Proc_PaymentUnverified>
+  <RR_Proc_PaymentRetry>The purchase remains pending; use the same order action to retry its stable payment receipt.</RR_Proc_PaymentRetry>
+  <RR_Proc_RefundRetry>The full refund remains pending under the same cancellation receipt. The order stays blocked from dispatch.</RR_Proc_RefundRetry>
+  <RR_Proc_QuantityLimit>The requested amount exceeds this catalog line's maximum: {0}.</RR_Proc_QuantityLimit>
+  <RR_Proc_QuantityLogisticsLimit>Current stack settings support at most {0} physical items per bounded shipment.</RR_Proc_QuantityLogisticsLimit>
+
+  <RR_Ledger_ProcurementPurchase>Physical supply order</RR_Ledger_ProcurementPurchase>
+  <RR_Ledger_ProcurementRefund>Pre-dispatch supply order refund</RR_Ledger_ProcurementRefund>
+  <RR_Event_ProcurementAccepted>Purchase accepted: {0} x {1}. Shipment is scheduled.</RR_Event_ProcurementAccepted>
+  <RR_Event_ProcurementDispatched>Supplier dispatched the {0} order.</RR_Event_ProcurementDispatched>
+  <RR_Event_ProcurementDelivered>Supplier cargo delivery completed: {0} x {1}.</RR_Event_ProcurementDelivered>
+  <RR_Event_ProcurementCancelled>Pre-dispatch order cancelled and refunded: {0}.</RR_Event_ProcurementCancelled>
+  <RR_Event_ProcurementRedirected>Receiving stockpile changed for order {0}: {1}.</RR_Event_ProcurementRedirected>
+</LanguageData>

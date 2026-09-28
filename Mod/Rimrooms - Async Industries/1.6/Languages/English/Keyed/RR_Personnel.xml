@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Personnel_StaffPage>Staff page {0} of {1} — {2} records</RR_Personnel_StaffPage>
+  <RR_Personnel_PreviousStaff>Previous staff page</RR_Personnel_PreviousStaff>
+  <RR_Personnel_NextStaff>Next staff page</RR_Personnel_NextStaff>
+  <RR_Personnel_BranchUnavailable>A supported company branch is required. Applicant records and held people remain preserved.</RR_Personnel_BranchUnavailable>
+  <RR_Personnel_UnsupportedSchema>This personnel save uses an unsupported schema. Keep the original save and use its matching build; do not overwrite it.</RR_Personnel_UnsupportedSchema>
+  <RR_Personnel_InvalidSave>Personnel identities or custody records could not be reconciled. Actions are disabled; preserve this save and review the log.</RR_Personnel_InvalidSave>
+  <RR_Personnel_InvalidOffer>This applicant or its saved quote is unavailable.</RR_Personnel_InvalidOffer>
+  <RR_Personnel_InvalidRole>Select a supported company role.</RR_Personnel_InvalidRole>
+  <RR_Personnel_PawnUnavailable>This employee is unavailable for a role change. Check their location, faction, health and custody.</RR_Personnel_PawnUnavailable>
+  <RR_Personnel_RegistrationBlocked>This person must be alive, free, player-owned and physically at headquarters before employment can be registered. Their existing identity is retained.</RR_Personnel_RegistrationBlocked>
+  <RR_Personnel_Busy>A personnel operation is already in progress.</RR_Personnel_Busy>
+  <RR_Personnel_RequestCooldown>The applicant request interval has not elapsed. Keep or resolve the existing offers.</RR_Personnel_RequestCooldown>
+  <RR_Personnel_FinishOffers>Resolve the current offers, releases and held-person recovery before requesting another group.</RR_Personnel_FinishOffers>
+  <RR_Personnel_FinishHire>Finish or recover the pending hire/release before accepting another person.</RR_Personnel_FinishHire>
+  <RR_Personnel_PolicyMissing>The ordinary applicant policy is missing or invalid. Check the installed Rimrooms package; no substitute quote was generated.</RR_Personnel_PolicyMissing>
+  <RR_Personnel_MapUnavailable>The original company headquarters is not available as a loaded player home map. No new map or replacement arrival was created.</RR_Personnel_MapUnavailable>
+  <RR_Personnel_GenerationFailed>This applicant attempt failed native generation or validation. A returned person is preserved for release; no replacement is rerolled automatically.</RR_Personnel_GenerationFailed>
+  <RR_Personnel_CustodyChanged>The saved applicant is no longer in the expected custody, faction or location. Locate the original person and restore the recorded route; no replacement is created.</RR_Personnel_CustodyChanged>
+  <RR_Personnel_CustodyUnconfirmed>The original person is still held here or is detached with custody unconfirmed. The record remains open and blocks another applicant group. Locate or restore custody first; dismissing never transfers or releases a person.</RR_Personnel_CustodyUnconfirmed>
+  <RR_Personnel_CannotRelease>This person cannot be released from the applicant board while a charge, arrival or recruitment is unresolved.</RR_Personnel_CannotRelease>
+  <RR_Personnel_PawnMissing>The original person is missing, dead or destroyed. Their identity and payment history are retained; no substitute person or automatic refund is created.</RR_Personnel_PawnMissing>
+  <RR_Personnel_ReleaseInterrupted>Applicant release was interrupted. The original person and release receipt are retained; use Retry release after resolving custody.</RR_Personnel_ReleaseInterrupted>
+  <RR_Personnel_OfferClosed>This offer is expired, accepted or closed. Its original terms cannot be reused for another hire.</RR_Personnel_OfferClosed>
+  <RR_Personnel_ArrivalBlocked>No clear, unfogged and colony-reachable headquarters edge cell is available for this person. Clear an ordinary map entrance and retry.</RR_Personnel_ArrivalBlocked>
+  <RR_Personnel_ArrivalInterrupted>Arrival was interrupted. The same person's map/holder state and payment receipt are retained. Retry does not charge or generate a second person.</RR_Personnel_ArrivalInterrupted>
+  <RR_Personnel_RecruitInterrupted>Native recruitment did not complete its required pawn/work state. The person remains at their actual location; keep the save and inspect the native/mod error before retrying.</RR_Personnel_RecruitInterrupted>
+  <RR_Personnel_HireInterrupted>Hiring was interrupted. Inspect the original person's custody and the log, then retry this receipt. No second onboarding payment is required.</RR_Personnel_HireInterrupted>
+  <RR_Personnel_CannotCancel>Cancellation needs the original off-site applicant in our holder, with no actual arrival, recruitment or employee registration. A failed spawn must first be reconciled off-site. Arrived or ambiguous people cannot be refunded.</RR_Personnel_CannotCancel>
+  <RR_Ledger_HiringOnboarding>Applicant onboarding</RR_Ledger_HiringOnboarding>
+  <RR_Ledger_HiringRefund>Cancelled applicant onboarding refund</RR_Ledger_HiringRefund>
+  <RR_Personnel_NativeExplanation>Company roles describe assignments. Native skills, needs, health, beds, work priorities and schedules still control daily life.</RR_Personnel_NativeExplanation>
+  <RR_Personnel_OpenAssignments>Open native Assign controls</RR_Personnel_OpenAssignments>
+  <RR_Personnel_Inspect>Inspect {0}</RR_Personnel_Inspect>
+  <RR_Personnel_ChangeRole>Change company role</RR_Personnel_ChangeRole>
+  <RR_Personnel_Bed>Owned bed: {0}</RR_Personnel_Bed>
+  <RR_Personnel_NoBed>none assigned</RR_Personnel_NoBed>
+  <RR_Personnel_ApplicantHeading>Voluntary applicants</RR_Personnel_ApplicantHeading>
+  <RR_Personnel_HeldCount>People retained in the personnel recovery holder: {0}</RR_Personnel_HeldCount>
+  <RR_Personnel_BoardExplanation>Request up to {0} ordinary applicants every {1} game days. Inspect the actual person and equipment before accepting. Unaccepted candidates remain off-site; the board provides no free staff, work or supplies.</RR_Personnel_BoardExplanation>
+  <RR_Personnel_RequestAt>Next applicant request: day {0} or later, after open offers are resolved.</RR_Personnel_RequestAt>
+  <RR_Personnel_Request>Request applicants</RR_Personnel_Request>
+  <RR_Personnel_OfferRow>{0} — {1}</RR_Personnel_OfferRow>
+  <RR_Personnel_Quote>One-time onboarding: ${0} USD. Daily wage: ${1} USD, billed separately.</RR_Personnel_Quote>
+  <RR_Personnel_Expiry>Offer expires on day {0}.</RR_Personnel_Expiry>
+  <RR_Personnel_ReviewHire>Review hiring terms</RR_Personnel_ReviewHire>
+  <RR_Personnel_Decline>Decline and release applicant</RR_Personnel_Decline>
+  <RR_Personnel_HireProgress>Onboarding charged: {0}. Arrival attempted: {1}. Employment registered: {2}.</RR_Personnel_HireProgress>
+  <RR_Personnel_RetryHire>Retry original hire</RR_Personnel_RetryHire>
+  <RR_Personnel_CancelHire>Cancel before arrival and refund any onboarding charge</RR_Personnel_CancelHire>
+  <RR_Personnel_RetryRelease>Retry original release</RR_Personnel_RetryRelease>
+  <RR_Personnel_UnavailableDisposition>Dismissal only drops this board's reference after the original person is confirmed spawned, world-owned, held elsewhere, destroyed or discarded. The person is never moved or released.</RR_Personnel_UnavailableDisposition>
+  <RR_Personnel_DismissUnavailable>Dismiss record only; leave person untouched</RR_Personnel_DismissUnavailable>
+  <RR_Personnel_History>Recent applicant history</RR_Personnel_History>
+  <RR_Personnel_HistoryIdentity>Offer: {0} | person: {1}</RR_Personnel_HistoryIdentity>
+  <RR_Personnel_NotGenerated>not generated</RR_Personnel_NotGenerated>
+  <RR_Personnel_Unnamed>Pending applicant</RR_Personnel_Unnamed>
+  <RR_Personnel_Archived>{0} older closed applicant summaries compacted. Company staff and ledger receipts remain available; closed IDs cannot create new hires.</RR_Personnel_Archived>
+  <RR_Personnel_Yes>yes</RR_Personnel_Yes>
+  <RR_Personnel_No>no</RR_Personnel_No>
+  <RR_Personnel_Missing>Person unavailable; history retained.</RR_Personnel_Missing>
+  <RR_Personnel_Dead>Deceased; history retained.</RR_Personnel_Dead>
+  <RR_Personnel_Custody>In custody; ordinary custody controls apply.</RR_Personnel_Custody>
+  <RR_Personnel_Downed>Incapacitated; native medical care required.</RR_Personnel_Downed>
+  <RR_Personnel_MentalState>In a mental state; native needs and recovery apply.</RR_Personnel_MentalState>
+  <RR_Personnel_OnMap>Physically present on a loaded map.</RR_Personnel_OnMap>
+  <RR_Personnel_OffMap>Off-map; inspect the person's saved location/custody.</RR_Personnel_OffMap>
+  <RR_Personnel_NeedsUnavailable>Native needs are unavailable for this person.</RR_Personnel_NeedsUnavailable>
+  <RR_Personnel_Needs>Food {0} | Rest {1} | Recreation {2} | Mood {3}</RR_Personnel_Needs>
+  <RR_Personnel_NotApplicable>not applicable</RR_Personnel_NotApplicable>
+  <RR_Personnel_Age>Biological age: {0}</RR_Personnel_Age>
+  <RR_Personnel_OffsiteNote>Off-site applicants retain their offered native profile. Arrival enables ordinary colony work, needs and care; no need or skill is reset by this report.</RR_Personnel_OffsiteNote>
+  <RR_Personnel_Traits>Traits</RR_Personnel_Traits>
+  <RR_Personnel_Health>Health conditions</RR_Personnel_Health>
+  <RR_Personnel_NoConditions>No recorded health conditions.</RR_Personnel_NoConditions>
+  <RR_Personnel_Skills>Skills and passions</RR_Personnel_Skills>
+  <RR_Personnel_SkillRow>{0}: {1} | {2} {3}</RR_Personnel_SkillRow>
+  <RR_Personnel_Passion_None>no passion</RR_Personnel_Passion_None>
+  <RR_Personnel_Passion_Minor>interested</RR_Personnel_Passion_Minor>
+  <RR_Personnel_Passion_Major>burning passion</RR_Personnel_Passion_Major>
+  <RR_Personnel_Disabled>(disabled)</RR_Personnel_Disabled>
+  <RR_Personnel_Work>Native work availability and current priority</RR_Personnel_Work>
+  <RR_Personnel_WorkDisabled>{0}: disabled — {1}</RR_Personnel_WorkDisabled>
+  <RR_Personnel_WorkPriority>{0}: {1} (0 = disabled; native manual-priority setting applies)</RR_Personnel_WorkPriority>
+  <RR_Personnel_WorkAvailable>{0}: available; native priorities initialize on recruitment</RR_Personnel_WorkAvailable>
+  <RR_Personnel_Schedule>Current native schedule: {0}</RR_Personnel_Schedule>
+  <RR_Personnel_Equipment>Actual apparel, equipment and inventory</RR_Personnel_Equipment>
+  <RR_Personnel_NoEquipment>No included equipment.</RR_Personnel_NoEquipment>
+  <RR_Personnel_HireTitle>Hire {0}</RR_Personnel_HireTitle>
+  <RR_Personnel_PayrollTerms>After arrival and registration, the first full daily wage is due at the next headquarters payroll boundary (currently day {0}). Later days use the existing company payroll.</RR_Personnel_PayrollTerms>
+  <RR_Personnel_PayrollLimit>The game tick limit has no representable future payroll boundary. Daily wages remain governed by company payroll; this quote cannot display a future date.</RR_Personnel_PayrollLimit>
+  <RR_Personnel_ArrivalTerms>The same inspected person arrives at a clear headquarters map edge and joins through native recruitment. Their listed equipment comes with them. You provide beds, food, care and assignments. Cancellation/refund requires confirmed off-site custody before actual arrival or recruitment.</RR_Personnel_ArrivalTerms>
+  <RR_Personnel_RoleChoice>Company role: {0}</RR_Personnel_RoleChoice>
+  <RR_Personnel_RoleTerms>The selected role does not change skills, traits, schedules or work priorities. Set native work priorities yourself.</RR_Personnel_RoleTerms>
+  <RR_Personnel_ConfirmHire>Accept quote and hire</RR_Personnel_ConfirmHire>
+  <RR_Applicant_Queued>candidate requested</RR_Applicant_Queued>
+  <RR_Applicant_Offered>available</RR_Applicant_Offered>
+  <RR_Applicant_GenerationFailed>generation failed</RR_Applicant_GenerationFailed>
+  <RR_Applicant_Hiring>hiring / recovery pending</RR_Applicant_Hiring>
+  <RR_Applicant_Hired>employed</RR_Applicant_Hired>
+  <RR_Applicant_Releasing>release pending</RR_Applicant_Releasing>
+  <RR_Applicant_Declined>declined</RR_Applicant_Declined>
+  <RR_Applicant_Expired>expired</RR_Applicant_Expired>
+  <RR_Applicant_Cancelled>cancelled</RR_Applicant_Cancelled>
+  <RR_Applicant_Unavailable>custody changed; unavailable</RR_Applicant_Unavailable>
+  <RR_Applicant_Dismissed>record dismissed; person unchanged</RR_Applicant_Dismissed>
+</LanguageData>

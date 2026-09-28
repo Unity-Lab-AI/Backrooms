@@ -42,7 +42,8 @@ namespace RimroomsAsyncIndustries.Investigation
             };
             work.tickIntervalAction = delegate(int delta)
             {
-                float amount = pawn.GetStatValue(StatDefOf.ResearchSpeed) * delta;
+                float amount = pawn.GetStatValue(StatDefOf.ResearchSpeed) *
+                    TargetThingA.GetStatValue(StatDefOf.ResearchSpeedFactor) * delta;
                 CompanyActionResult result;
                 if (IsAnalysis)
                 {

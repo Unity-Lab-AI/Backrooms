@@ -1,5 +1,8 @@
 # Rimrooms - Async Industries: campaign economy and logistics progression
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** pre-code design, version 0.2. Read with the canonical [economy model](CAMPAIGN_ECONOMY_MODEL.md) and [v0.2 workbook](../outputs/4b7976f0-1820-4ffa-a191-bf7c7f79b010/Rimrooms_Campaign_Economy_v0.2.xlsx). Physical-versus-ledger rules and the Core/OgreStack planning comparison are product rules; all opening amounts, rates, quotes, and milestone targets remain editable hypotheses pending owner approval and playtests. The parent is a multi-trillion-dollar corporation; each scenario controls its own authorized budget and earns growth through play.
 
 ## Economy promise

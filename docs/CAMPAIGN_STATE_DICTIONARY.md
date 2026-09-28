@@ -1,6 +1,11 @@
 # Rimrooms - Async Industries: campaign state and save ownership
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** full-campaign ownership contract. The [0.2.0 build](implementation/PHASE_2_BUILD_RECORD.md) implements branch/ledger/staff, initial contract/case/evidence/project, coordinate/map, gate and expedition state. The [save policy](SAVE_MIGRATION_POLICY.md) maps actual classes, schema-2 migrations, physical holders and limitations. Full campaign records below remain the intended target; no runtime persistence or co-op result is claimed from compilation.
+
+**Planned door/setup ownership:** [the scenario/portal contract](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) adds stable setup selections and native pawn IDs, door provider/Def/load IDs, physical source/destination endpoints, linked equipment/grid observations, upgrades/opening state and once-only crossing receipts. These are future saved fields until the door migration is implemented; do not infer their presence in 0.3.0-dev.
 
 ## Ownership rule
 
@@ -26,9 +31,21 @@ Each player's facility, branch ledger, research completion, contracts, discovere
 
 ## Stable identifiers and time
 
+### Company systems source wave
+
+The [Phase 3 build record](implementation/PHASE_3_BUILD_RECORD.md) routes the current source additions. `RimroomsPersonnelComponent` owns schema-1 applicant offers and a deep native-pawn holder; the campaign remains the only ledger, staff and payroll owner. Hiring reconciles its charge/refund operation IDs against that ledger before registration. A hire uses the original generated pawn, not a second pawn generated at arrival. Declined/expired applicants are released to native world custody with a recoverable release journal.
+
+`RimroomsProcurementComponent` owns schema-1 supplier quotes, orders and their actual held goods. Purchase, cancellation, dispatch and partial receiving must reconcile with the same campaign ledger. The company UI cannot represent an undelivered quantity as map stock. Receiving redirects keep the original order, cargo and payment IDs. The procurement implementation record must accompany any claim that these paths are complete.
+
+`FacilityReport` is a transient, bounded-refresh observation of loaded HQ buildings and staff. It saves no Room object or duplicate furniture inventory. Native buildings, bed owners/occupants, power and pawn needs remain authoritative. See [facility implementation](implementation/PHASE_3_FACILITIES_IMPLEMENTATION.md). Menu background selection and motion/enable preferences belong to `ModSettings`, not the company save; title/version come from the loaded build.
+
+`RimroomsLaboratoryComponent` owns one explicit existing-bench role binding, not the bench itself. It saves branch/HQ, provider package/Def, actual bench reference/load ID and change revision; lost or invalid bindings stop company jobs. No designation is created during loading. Native work priority, pawn qualifications, interaction access, bench power and research speed still apply. See [laboratory implementation](implementation/PHASE_3_LABORATORY_REUSE_IMPLEMENTATION.md).
+
 Use explicit stable IDs for scenario definition/version, branch, coordinate, site, expedition, crew assignment, evidence, case, research project, contract, company transaction, shipment, and transfer receipt. IDs must not depend on display names, list order, or UI selection order. Store the seed inputs and generator version beside a generated destination. Record durations/deadlines in RimWorld game ticks, not the player's local wall clock.
 
 Starting grants, mission launches, objective completions, contract rewards, company-account funding, and received shipments each need a unique operation/receipt key. Replaying a saved event with the same key returns its recorded outcome rather than creating a duplicate. Physical item stacks remain the source of truth for what is actually carried, stored, consumed, sold, or transferred; account totals remain ledger values and never require pawn hauling.
+
+`RimroomsEvidenceCreationComponent` owns schema-1 once-only creation attempts and a deep holder for unfinished original Core TextBooks. It saves branch/coordinate/evidence identity, item reference/load ID, initialization/spawn/registration progress and failure state. The company remains the case/analysis owner. Registered items are never reminted after loss; unresolved attempts remain inspectable and retry the same original. See [the implementation](implementation/PHASE_3_EVIDENCE_BOOK_REUSE_IMPLEMENTATION.md).
 
 ## Save versioning and recovery
 

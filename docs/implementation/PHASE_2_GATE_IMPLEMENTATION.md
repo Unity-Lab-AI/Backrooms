@@ -1,5 +1,8 @@
 # Phase 2 gate and console implementation
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** Gate module implementation draft; code and XML are present, but no RimWorld build or in-game acceptance has been run. Values called provisional below remain tuning hypotheses.
 
 This slice creates a powered, staffed machine gate as the physical opening into a branch-owned expedition. It deliberately stops at gate status and operation receipts: expedition manifests, crew movement, maps/sites, recall, stranded outcomes, and trade are owned by the expedition/company systems.

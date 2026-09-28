@@ -1,6 +1,9 @@
 # Building Rimrooms - Async Industries
 
-**Current deliverable:** private `0.2.0` development slice. See the [current build record](implementation/PHASE_2_BUILD_RECORD.md) for actual scenario, gate, destination, expedition, evidence, research and interface implementation. Gameplay acceptance and the complete campaign remain in the [master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
+**Current development version:** private `0.3.0-dev`. See the [current build record](implementation/PHASE_3_BUILD_RECORD.md) for company operations, native-content reuse, menu work and exact compiler/package evidence; the [0.2.0 record](implementation/PHASE_2_BUILD_RECORD.md) remains historical. Gameplay acceptance, remaining content replacements and the complete campaign remain in the [master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
 
 ## Requirements and references
 
@@ -23,7 +26,7 @@ From the repository root:
 ./tools/build.ps1 -Configuration Debug
 ```
 
-Normal builds restore in locked mode, compile, then package only our DLL and original content. `-NoRestore` is for an already restored, unchanged project. A dependency change must deliberately regenerate and review the lock file with `dotnet restore` before returning to locked builds. Do not commit proprietary references or downloaded inspection output.
+Normal builds restore in locked mode, compile, then package the reviewed allowlist of our DLL, configuration, text and approved presentation content. `-NoRestore` is for an already restored, unchanged project. A dependency change must deliberately regenerate and review the lock file with `dotnet restore` before returning to locked builds. Do not commit proprietary references or downloaded inspection output.
 
 | Output | Purpose |
 | --- | --- |

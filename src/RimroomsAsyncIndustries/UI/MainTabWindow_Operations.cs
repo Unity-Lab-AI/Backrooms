@@ -15,7 +15,7 @@ namespace RimroomsAsyncIndustries.UI
         private Vector2 scrollPosition;
         private float contentHeight = 420f;
         private int selectedPane;
-        private static readonly string[] PaneKeys = { "RR_UI_Overview", "RR_UI_Personnel", "RR_UI_Contracts", "RR_UI_Ledger", "RR_UI_Atlas", "RR_UI_Activity", "RR_UI_Investigation", "RR_UI_Machine", "RR_UI_Expedition" };
+        private static readonly string[] PaneKeys = { "RR_UI_Overview", "RR_UI_Personnel", "RR_UI_Contracts", "RR_UI_Ledger", "RR_UI_Atlas", "RR_UI_Activity", "RR_UI_Investigation", "RR_UI_Machine", "RR_UI_Expedition", "RR_UI_Facilities", "RR_UI_Procurement" };
 
         public override Vector2 RequestedTabSize { get { return new Vector2(820f, 580f); } }
 
@@ -39,7 +39,7 @@ namespace RimroomsAsyncIndustries.UI
                     contentHeight = 420f;
                 }
             }
-            viewport.yMin += 80f;
+            viewport.yMin += ((PaneKeys.Length + columns - 1) / columns) * 36f + 8f;
             Rect content = new Rect(0f, 0f, Mathf.Max(120f, viewport.width - 20f), contentHeight);
             Widgets.BeginScrollView(viewport, ref scrollPosition, content);
             Listing_Standard listing = new Listing_Standard();
@@ -107,17 +107,10 @@ namespace RimroomsAsyncIndustries.UI
             {
                 case 7: DrawMachine(listing, campaign); break;
                 case 8: DrawExpedition(listing, campaign); break;
+                case 9: DrawFacilities(listing, campaign); break;
+                case 10: DrawProcurement(listing, campaign); break;
                 case 1:
-                    foreach (StaffRecord member in campaign.Staff)
-                    {
-                        listing.Label("RR_UI_StaffRow".Translate(member.Name, ("RR_Role_" + member.Role).Translate(), Money(member.DailyWageUsd)));
-                        if (member.Pawn != null && member.Pawn.Spawned)
-                        {
-                            if (listing.ButtonText("RR_UI_ViewPawn".Translate(member.Name))) { CameraJumper.TryJumpAndSelect(member.Pawn); }
-                        }
-                        else { listing.Label("RR_UI_MissingPawn".Translate(member.Name)); }
-                        listing.Gap(8f);
-                    }
+                    DrawPersonnel(listing, campaign);
                     break;
                 case 2:
                     foreach (ContractRecord contract in campaign.Contracts)
@@ -175,6 +168,9 @@ namespace RimroomsAsyncIndustries.UI
                     }
                     break;
                 case 6:
+                    DrawEvidenceCreationRecovery(listing, campaign);
+                    DrawLaboratoryBinding(listing, campaign);
+                    listing.GapLine();
                     listing.Label("RR_UI_LabInstructions".Translate());
                     listing.Label("RR_Company_Insights".Translate(campaign.ResearchInsights));
                     listing.GapLine();

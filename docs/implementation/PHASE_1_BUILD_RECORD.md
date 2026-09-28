@@ -1,5 +1,8 @@
 # Foundation 0.1.0: build and staging record
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Date:** 2026-09-28. **Result:** source compiled and the separate package staged. **Runtime result:** none; RimWorld was not launched. This is a private foundation, not a playable campaign or compatibility release.
 
 ## Task and source chain
@@ -11,7 +14,7 @@ The [foundation task](PHASE_1_FOUNDATION_TASK.md) implements the repository/pack
 | RR-COMPAT | [project](../../src/RimroomsAsyncIndustries/RimroomsAsyncIndustries.csproj), [bootstrap](../../src/RimroomsAsyncIndustries/Core/RimroomsMod.cs), [build tool](../../tools/build.ps1), [stage tool](../../tools/stage-mod.ps1) | Core references only; one logging entry point; pinned build, package manifest and scoped staging |
 | RR-SCEN / future RR-ECO | [campaign component](../../src/RimroomsAsyncIndustries/Company/RimroomsCampaignComponent.cs), [save policy](../SAVE_MIGRATION_POLICY.md) | Schema 1 and nullable branch/scenario identifiers; inactive constructor; no initialization, money, transactions, objects or research grants |
 | RR-UI | [window](../../src/RimroomsAsyncIndustries/UI/MainTabWindow_Operations.cs), [Def](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/MainButtonDefs/RR_MainButtons.xml), [English keys](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Languages/English/Keyed/RR_Operations.xml), [Def text](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Languages/English/DefInjected/MainButtonDef/RR_MainButtons.xml) | Read-only status plus guarded native Work/Research routing; no company commands |
-| RR-STYLE | [original card](../../Mod/Rimrooms%20-%20Async%20Industries/About/Preview.png), [drawing source](../../tools/render-preview.ps1), [production brief](../research/VISUAL_AUDIO_STYLE_BRIEF.md#production-file-specification), [provenance](../research/provenance-register.csv) | Original 960 × 540 mod-list identity card; no main-menu slideshow or scene art |
+| RR-STYLE | [original card](../../Mod/Rimrooms%20-%20Async%20Industries/About/Preview.png), [drawing source](../../tools/render-preview.ps1), [production brief](../research/VISUAL_AUDIO_STYLE_BRIEF.md#existing-content-bindings-and-presentation), [provenance](../research/provenance-register.csv) | Original 960 × 540 mod-list identity card; no main-menu slideshow or scene art |
 
 ## Compiler and package evidence
 

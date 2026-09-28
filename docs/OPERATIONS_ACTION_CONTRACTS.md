@@ -1,8 +1,13 @@
 # Rimrooms - Async Industries: Operations action contracts
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** full-campaign player-facing contract. The [0.2.0 development slice](implementation/PHASE_2_BUILD_RECORD.md) implements Overview, Personnel, Contracts, Ledger, Atlas, Activity, Investigation, Machine and Expedition panes. Actions cover the next opening objective, gate work/operator orders, physical kit pickup, dispatch/recall/rescue, route-aid deployment/recovery, evidence/research, arrears payment, explicit abandonment and auditable cargo declarations. Native Work/Research controls remain available. UI/runtime acceptance is pending; later company actions below remain planned.
 
 **Feature route:** [RR-UI](FEATURE_TRACEABILITY.md), with the owning gameplay rules in [GAME_DESIGN.md](GAME_DESIGN.md), [SCENARIOS.md](SCENARIOS.md), [FIRST_PLAYABLE_CONTRACT.md](FIRST_PLAYABLE_CONTRACT.md), and [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md).
+
+**Planned scenario/door actions:** [the setup and portal-network contract](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) requires preserved pawn customization, company world-site selection, explicit door/equipment binding, connection readiness, choose/dial known coordinate, enter/return, recall and emergency close. These replace historical custom-building actions only after the equivalent native-door state and recovery paths are implemented.
 
 ## Interface rule
 
@@ -35,6 +40,15 @@ Every command shows its required input, expected cost or risk, and the record it
 Development 0.2.0 adds **Atlas → Review a replacement coordinate** for an unavailable initial coordinate. The dialog describes preserving the failed map, reassigning the untouched survey and creating a separate six-room replacement. The service rechecks eligibility on confirmation; it returns a keyed refusal when people, evidence, previous activity, missing content or the two-site cap prevent replacement. It moves no pawn or stock and pays no reward. Source and exact limits are in the [recovery implementation](implementation/PHASE_2_GENERATION_RECOVERY.md); observed acceptance remains pending.
 
 ## First playable pane set
+
+### Additional source routes in the company systems wave
+
+- **Personnel:** request a saved applicant batch, inspect the actual applicant's skills/traits/health/gear, select a company role and review onboarding cost, daily wage, next billing and arrival terms before hiring. Retry uses the same applicant and charge; cancellation is offered only when off-site custody and refund eligibility can be established. Native Work/Assign controls remain available. See [personnel implementation](implementation/PHASE_3_PERSONNEL_IMPLEMENTATION.md).
+- **Facilities:** inspect cached native room/building/bed/power observations, refresh, filter categories, inspect the actual building or open Assign. Ordinary adult, medical, prisoner, slave, baby, animal and unknown special beds are distinguished; a slot count is not a claim that every pawn can use it. See [facility implementation](implementation/PHASE_3_FACILITIES_IMPLEMENTATION.md).
+- **Procurement:** preview the existing item definition, quantity, unit/total USD quote, actual mass/stack limit, delivery timing and chosen stockpile. Receiving is bounded and physical, with retained cargo when space or filters prevent delivery. Cancellation, retry and receiving redirection must show the original order and ledger receipt. See the [current implementation wave](implementation/PHASE_3_BUILD_RECORD.md) for completion status.
+- **Main menu:** show the exact mod title and current loaded version beside native top-left version information. Slideshow settings provide disable/native fallback and a still image for reduced motion; original menu images are the approved exception to gameplay content reuse.
+
+These routes are source work; native overlay, save/reload, full-profile and usability acceptance are still pending.
 
 The Async Industries slice needs Overview, Personnel, Facilities, Gate, Expeditions, Atlas, Evidence/Research, and Contracts/Ledger. Cases/Containment, Outposts, Multiplayer, and Space/Gravship panes can arrive later. An omitted pane is not a hidden blocker: the first campaign action stays available through a focused building, pawn, map, or vanilla interface route.
 

@@ -1,5 +1,8 @@
 # Phase 2 Core destination generation and transfer source review
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** pinned-Core source inspection complete; implementation and runtime behavior are unverified. This review is limited to map ownership, destination generation, persistence/revisit, fog, and pawn/item transition routes for the Core-only first slice. It does not establish compatibility with other mods or DLC.
 
 ## Inputs and reproduction

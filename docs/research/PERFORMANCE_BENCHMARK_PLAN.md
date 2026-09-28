@@ -1,5 +1,8 @@
 # Performance benchmark plan
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** pre-build engineering targets, recorded 2026-09-28. No performance measurements or game runs were made for this plan. Feature coverage: `RR-SPACE`, `RR-GATE`, `RR-EXP`, `RR-OUT`, `RR-UI`, `RR-COMPAT`.
 
 This plan completes the performance-budget requirement in the [acceptance standard](PREPRODUCTION_ACCEPTANCE_STANDARD.md). The thresholds below are initial development budgets. Keep them until measurements justify a documented change; do not silently relax a failed limit. They are not minimum system requirements or measured claims.

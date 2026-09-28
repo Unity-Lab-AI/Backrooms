@@ -1,5 +1,10 @@
 # Game design brief
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
+**Latest scenario/gate direction:** [the setup and portal-network contract](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) defines separate customizable openings, a company-selected surface tile, the proposed automatic inside start, and existing-door portals governed by physical connected equipment and power.
+
 ## High concept
 
 Run one of several Backrooms campaigns that open temporary routes into an enormous, unstable interior world. In the company campaign, the colony is headquarters; in other scenarios the player may begin at a retail breach or already trapped inside. Each start changes the initial situation and objectives, then uses the same persistent coordinate, expedition, evidence, danger, and progression systems.

@@ -1,5 +1,8 @@
 # Phase 2 development instrumentation
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Task:** master Phase 2 diagnostics and Phase 1 performance follow-up. **Features:** RR-COMPAT, RR-UI, RR-GATE, RR-SPACE, RR-EXP. **Inputs:** [benchmark plan](../research/PERFORMANCE_BENCHMARK_PLAN.md), [Core build/source record](PHASE_1_CORE_SOURCE_REVIEW.md), [state dictionary](../CAMPAIGN_STATE_DICTIONARY.md).
 
 [RimroomsDiagnostics](../../src/RimroomsAsyncIndustries/Core/RimroomsDiagnostics.cs) is a bounded, opt-in in-process timer using framework `Stopwatch`. It is disabled by default and can be started/stopped/logged only through the developer-mode Activity controls. Its transient counters do not alter campaign outcomes, saved IDs, the mod list or launch behavior. The no-op disabled path returns a value-type scope without starting a stopwatch or allocating a buffer.

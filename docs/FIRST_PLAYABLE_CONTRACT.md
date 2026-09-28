@@ -1,5 +1,8 @@
 # Rimrooms - Async Industries: first playable contract
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** design/acceptance target, version 0.2. The [0.2.0 development build](implementation/PHASE_2_BUILD_RECORD.md) implements the core loop and records remaining generation/presentation work. All numbers remain balance hypotheses; no gameplay or compatibility result is claimed. Keep values adjustable and revise this document with the scenario contract when observed play changes them. The accepted 20 in-game-minute interpretation is retained pending the owner's timing choice.
 
 **Purpose:** define the first complete player loop tightly enough that implementation can begin with one coherent slice: a small company facility, a short gate opening, one seeded destination, a recoverable route distortion, one learnable hostile encounter, an evidence result, and a reason to prepare the next run. The named starting roster and room contents are in the [first-slice content inventory](FIRST_SLICE_CONTENT_INVENTORY.md); the starter encounter rules are in [THREAT_DESIGN_SHEETS.md](THREAT_DESIGN_SHEETS.md).

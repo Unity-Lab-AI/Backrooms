@@ -1,5 +1,8 @@
 # Phase 2 development build: 0.2.0
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Date:** 2026-09-28. **Status:** first-expedition implementation in development. Gate 2 has not passed. The full mod goal remains active. No RimWorld launch or gameplay test has been performed for this build.
 
 ## Source and feature routes

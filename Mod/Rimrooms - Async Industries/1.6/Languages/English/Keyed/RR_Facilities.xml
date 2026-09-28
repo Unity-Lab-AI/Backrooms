@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_UI_Facilities>Facilities</RR_UI_Facilities>
+  <RR_Fac_Explanation>Headquarters infrastructure: installed, player-owned and visible buildings. Categories describe furniture; jobs, access, care and production still use the actual RimWorld buildings and staff.</RR_Fac_Explanation>
+  <RR_Fac_Refresh>Refresh facility report</RR_Fac_Refresh>
+  <RR_Fac_SummaryAge>Observations updated {0} ticks ago.</RR_Fac_SummaryAge>
+  <RR_Fac_BedSummary>Ordinary adult colonist beds: {0} physical slots · {1} assigned owners · {2} current occupants.</RR_Fac_BedSummary>
+  <RR_Fac_OtherBeds>Medical: {0} physical slots. Other, restricted or unclassified beds: {1} slots.</RR_Fac_OtherBeds>
+  <RR_Fac_BedLimit>Empty slots do not guarantee a usable bed. Body size, ideology, access, reservations and native assignments still apply. Special or unrecognized modded beds are counted separately. This report never assigns or evicts an owner.</RR_Fac_BedLimit>
+  <RR_Fac_UnassignedStaff>Staff without an owned bed: {0}</RR_Fac_UnassignedStaff>
+  <RR_Fac_CareStaff>Downed staff or staff with healing injuries: {0}. Inspect health and native care settings.</RR_Fac_CareStaff>
+  <RR_Fac_ObservationErrors>{0} building observations could not be read. Refresh or inspect the affected furniture using native controls.</RR_Fac_ObservationErrors>
+  <RR_Fac_OpenAssignments>Open native Assign controls</RR_Fac_OpenAssignments>
+  <RR_Fac_All>All functions</RR_Fac_All>
+  <RR_Fac_Unclassified>Unclassified furniture</RR_Fac_Unclassified>
+  <RR_Fac_Filter>Show: {0}</RR_Fac_Filter>
+  <RR_Fac_Page>Page {0}/{1} · {2} buildings</RR_Fac_Page>
+  <RR_Fac_Previous>Previous buildings</RR_Fac_Previous>
+  <RR_Fac_Next>Next buildings</RR_Fac_Next>
+  <RR_Fac_None>No installed buildings match this category.</RR_Fac_None>
+  <RR_Fac_Condition>Condition: {0}/{1}</RR_Fac_Condition>
+  <RR_Fac_Room>Native room: {0} · {1} cells · {2} unroofed · {3}</RR_Fac_Room>
+  <RR_Fac_OutdoorTemperature>This room uses outdoor temperature.</RR_Fac_OutdoorTemperature>
+  <RR_Fac_NoRoom>No current room observation is available.</RR_Fac_NoRoom>
+  <RR_Fac_Powered>Power: on</RR_Fac_Powered>
+  <RR_Fac_Unpowered>Power: off</RR_Fac_Unpowered>
+  <RR_Fac_InteractionClear>Interaction cell is clear. Staff access and reservations are checked by the actual job.</RR_Fac_InteractionClear>
+  <RR_Fac_InteractionBlocked>Interaction cell is blocked, outside the map or unexplored.</RR_Fac_InteractionBlocked>
+  <RR_Fac_BedRow>{0}: {1} slots · {2} owners · {3} occupants</RR_Fac_BedRow>
+  <RR_Fac_OrdinaryBed>Ordinary colonist bed</RR_Fac_OrdinaryBed>
+  <RR_Fac_MedicalBed>Medical bed, any owner category</RR_Fac_MedicalBed>
+  <RR_Fac_PrisonerBed>Prisoner bed</RR_Fac_PrisonerBed>
+  <RR_Fac_SlaveBed>Slave bed</RR_Fac_SlaveBed>
+  <RR_Fac_BabyBed>Baby bed</RR_Fac_BabyBed>
+  <RR_Fac_AnimalBed>Animal bed</RR_Fac_AnimalBed>
+  <RR_Fac_SpecialBed>Special or unclassified bed</RR_Fac_SpecialBed>
+  <RR_Fac_Unavailable>unavailable</RR_Fac_Unavailable>
+  <RR_Fac_Inspect>Inspect {0}</RR_Fac_Inspect>
+  <RR_Fac_TargetUnavailable>The building is no longer available at headquarters. Refresh the report.</RR_Fac_TargetUnavailable>
+  <RR_Fac_OpenMachine>Open Machine operations</RR_Fac_OpenMachine>
+</LanguageData>

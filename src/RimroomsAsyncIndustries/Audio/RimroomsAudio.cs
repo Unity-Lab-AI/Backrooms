@@ -13,8 +13,9 @@ namespace RimroomsAsyncIndustries.Audio
         private const int WarningLimit = 8;
         private static readonly HashSet<string> Warnings = new HashSet<string>(StringComparer.Ordinal);
 
-        public static void Play(string defName, Map map, IntVec3 cell, bool field)
+        public static void Play(string cueId, Map map, IntVec3 cell, bool field)
         {
+            string defName = ResolveNativeCue(cueId);
             try
             {
                 if (!UnityData.IsInMainThread || Current.Game == null || Current.ProgramState != ProgramState.Playing ||
@@ -24,26 +25,40 @@ namespace RimroomsAsyncIndustries.Audio
                 RimroomsSettings settings = RimroomsMod.Settings;
                 if (settings == null) { WarnOnce("settings", "Audio preferences are unavailable; cues remain silent."); return; }
                 if ((field ? settings.MuteFieldCues : settings.MuteGateCues) || settings.EffectiveCueVolume <= 0f) { return; }
-                if (string.IsNullOrWhiteSpace(defName)) { WarnOnce("name", "A cue was requested without a Def name."); return; }
+                if (string.IsNullOrWhiteSpace(defName)) { WarnOnce("name", "An unknown company cue was requested."); return; }
 
+                // Existing Core sounds are referenced at runtime; no Rimrooms sound assets or Def clones.
+                bool onCamera = cueId != "RR_GatePowerRise";
                 SoundDef definition = DefDatabase<SoundDef>.GetNamedSilentFail(defName);
-                if (definition == null || definition.isUndefined || definition.sustain || definition.context != SoundContext.MapOnly ||
+                if (definition == null || definition.isUndefined || definition.sustain || (!onCamera && definition.context != SoundContext.MapOnly) ||
                     definition.subSounds == null || definition.subSounds.Count == 0)
                 { WarnOnce("def:" + defName, "Unavailable or incompatible map cue: " + defName); return; }
                 foreach (SubSoundDef subSound in definition.subSounds)
                 {
                     // Missing resolved clips have zero duration. Avoid repeated native missing-grain errors.
-                    if (subSound == null || subSound.onCamera || !(subSound.Duration.TrueMax > 0f))
-                    { WarnOnce("grain:" + defName, "A positional cue has no usable resolved clip: " + defName); return; }
+                    if (subSound == null || subSound.onCamera != onCamera || !(subSound.Duration.TrueMax > 0f))
+                    { WarnOnce("grain:" + defName, "A native cue has no compatible resolved clip: " + defName); return; }
                 }
 
-                SoundInfo info = SoundInfo.InMap(new TargetInfo(cell, map));
+                SoundInfo info = onCamera ? SoundInfo.OnCamera() : SoundInfo.InMap(new TargetInfo(cell, map));
                 info.volumeFactor = settings.EffectiveCueVolume;
                 definition.PlayOneShot(info);
             }
             catch (Exception error)
             {
                 WarnOnce("exception:" + (defName ?? "unknown"), "Cue skipped after a presentation error: " + error.GetType().Name);
+            }
+        }
+
+        private static string ResolveNativeCue(string cueId)
+        {
+            switch (cueId)
+            {
+                case "RR_GatePowerRise": return "Power_OnSmall";
+                case "RR_GateWarning": return "Message_ThreatSmall";
+                case "RR_FieldRadio": return "CommsWindow_Open";
+                case "RR_SpatialTell": return "Message_NegativeEvent";
+                default: return null;
             }
         }
 

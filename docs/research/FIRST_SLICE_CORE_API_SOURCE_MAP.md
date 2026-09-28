@@ -1,5 +1,8 @@
 # Rimrooms first-slice Core API source map
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Checked:** 2026-09-28  
 **Status:** the original Gate 0 reconnaissance below is static XML/metadata evidence. The later [Phase 1 lifecycle review](../implementation/PHASE_1_CORE_SOURCE_REVIEW.md) now traces Mod/GameComponent/Scribe/MainButton method bodies, and the [0.1.0 build record](../implementation/PHASE_1_BUILD_RECORD.md) records actual source/XML/package compilation. Other routes below remain queued for their feature. RimWorld was not launched for this work.
 

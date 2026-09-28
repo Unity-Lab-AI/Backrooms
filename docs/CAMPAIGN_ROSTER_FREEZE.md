@@ -1,5 +1,8 @@
 # Rimrooms - Async Industries: campaign roster and progression freeze
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** pre-code campaign breadth map, version 0.2. The owner selected broad threat/anomaly families and deferred the five named later-threat sketches to future content reviews (S1 in [Gate 0 decisions](GATE_0_DECISIONS.md)). The sketches below are not an approved roadmap or release commitment. This document is not a shipped-content promise, a complete threat implementation sheet, final economy balance, or runtime result. Only the Async Industries opening and AI-01 are the first playable slice. Names and mechanics below are original Rimrooms design unless explicitly identified as an indirect source cue.
 
 **Feature routes:** [RR-SCEN, RR-FAC, RR-STA, RR-GATE, RR-EXP, RR-SPACE, RR-EVD, RR-THREAT, RR-MSN, RR-ECO, RR-OUT, RR-MP, RR-DLC, RR-SPACEFLIGHT, RR-UI, RR-STYLE, and RR-COMPAT](FEATURE_TRACEABILITY.md).

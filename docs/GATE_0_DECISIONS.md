@@ -1,5 +1,8 @@
 # Rimrooms - Async Industries: Gate 0 decisions
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Purpose:** record the product choices that control Rimrooms preparation and implementation. All recorded selections are binding project direction. Research and feasibility tasks that do not need an owner choice remain in the [master preparation TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
 
 ## Decisions already supplied by the owner
@@ -25,6 +28,10 @@ These product requirements supplement D1–D9; they do not change those answers 
 - **Company interface:** the completed mod should remap RimWorld's menus, tabs, and campaign views into a company-first command layout for facilities, staff, research, the gate, expeditions, evidence, cases, contracts, finance, sites, and outposts. The first playable starts with Operations; the full layout grows from it while keeping underlying RimWorld actions accessible.
 - **Main-menu showcase:** create an original Backrooms background rotation that previews the shipped scenarios and campaign systems, with readable menu controls, disable/reduced-motion behavior, fallback, and per-asset provenance. The source/API research is recorded in the [menu extension audit](research/MENU_BACKGROUND_EXTENSION_AUDIT.md); the actual slideshow implementation and images remain later work.
 - **Profile-wide treatment:** all 294 installed profile entries are in scope for source review and interaction mapping. Use their native behavior, adapt a public extension point, add a narrow integration, or mark a row optional/no-touch/unsupported based on evidence. D3 remains controlling: only Core plus Harmony/RWT are required for co-op, while every other profile mod is optional. Do not copy or redistribute mod files.
+
+## Scenario setup and doorway direction
+
+On 2026-09-28 the owner reaffirmed three custom scenario openings, Prepare Carefully support for their starting people, and ordinary world-site choice for Async Industries. Portals must be existing doors recolored with a native aura, with different supported sizes and real connected batteries, generation, control/research equipment, upgrades, longer operating windows and saved-map recall. The inside start was proposed as configurable solo/group with automatic Backrooms placement until a reliable exit is discovered; the party/exit choices are awaiting the two grouped answers. See [the complete refinement](SCENARIO_SETUP_AND_PORTAL_NETWORK.md). This is continued build direction, not a new Gate 0 blocker.
 
 ## Owner choices and recorded answers
 
@@ -111,7 +118,15 @@ On 2026-09-27, the owner approved fan-made episode summaries and movie plot summ
 
 These are execution work, not owner questions: the exact RimWorld/RWT/Harmony builds, 294 source reviews, 23-entry fan-summary notes, separate first-pass fan movie note, supplemental-clip scope, feature/mod/lore/style/file traceability, DLC and gravship dependencies, source maps, and post-build acceptance plans are recorded. Runtime RWT transfer/visit/scenario/save behavior and reproducible gameplay evidence are deliberately scheduled only after a Rimrooms build exists. Direct viewing is needed only for unresolved, design-critical story details. Gate 0 completion and the Phase 1+ follow-up work are tracked in [the master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
 
+## Build continuation and deferred game testing
+
+**Owner reaffirmation:** the objective is completion of **all TODO work for Rimrooms - Async Industries**. The work is active. A stale application goal-status label is not a project gate and does not prevent implementation. Preserve the owner's RimSort launch control and pending runtime-evidence boundaries.
+
+**Owner direction, 2026-09-28:** after reviewing the unfinished full-mod TODO, the owner deferred the first game test and explicitly instructed work to continue until the full mod is built. Continue source/content implementation across the planned phases without making an owner-launched Gate 2 run a prerequisite for further coding. Keep the existing dependency order between systems. Runtime gates remain pending acceptance requirements; this changes development sequencing, not evidence standards, feature scope or release criteria. Only the owner launches through RimSort. Do not request another launch merely to resume implementation. The opening-duration clarification remains unanswered; preserve the accepted value until directed otherwise.
+
 ## Decision log
+
+**Latest content decision:** the owner's [existing-content-only gameplay policy](CONTENT_REUSE_POLICY.md) supersedes prior original gameplay asset/item/bench creation plans. Repurpose existing Core/DLC/profile definitions and assets in place; implement new company/generation/quest logic around them. Prior 0.2.0 custom physical content is a replacement/migration task. The owner confirmed original RimWorld-style Backrooms main-menu images as the sole visual exception, with the exact mod title and current version shown beside native top-left version information.
 
 | ID | Final answer | Date | Documents updated |
 | --- | --- | --- | --- |

@@ -1,5 +1,8 @@
 # Phase 2: company, investigation, and threat integration review
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Date:** 2026-09-28. **Scope:** bounded source and Def comparison against the first-playable contracts. This is a static review, not runtime acceptance. No game, build, or tests were run. After the initial review, the evidence payload finding was implemented in Company source and described in the linked investigation implementation note; root also wired current field events to that API. This follow-up does not establish runtime acceptance. The adjacent generation edit replaced unregistered localization-key literals with English fixture labels/descriptions in `RR_BackroomsFixtures.xml`.
 
 ## Inputs and boundaries

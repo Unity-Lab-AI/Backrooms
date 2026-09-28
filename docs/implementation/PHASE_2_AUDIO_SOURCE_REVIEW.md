@@ -1,5 +1,8 @@
 # Phase 2: quiet gate and radio audio source review
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Task assigned and source review completed 2026-09-28.** Scope is read-only Core source inspection and this report only. Features: RR-STYLE, RR-GATE, RR-EXP. Read the [visual/audio brief](../research/VISUAL_AUDIO_STYLE_BRIEF.md#audio-direction), [accessibility brief](../research/CONTENT_ACCESSIBILITY_BRIEF.md#accessibility-requirements) and [Phase 2 task](PHASE_2_VERTICAL_SLICE_TASK.md). The lead owns audio implementation and assets. No code or assets were changed in this assignment; no game/audio playback, build or tests.
 
 Pinned source is profile row 4, `Ludeon.RimWorld`, `Assembly-CSharp.dll` SHA-256 `5CF1B5BE399D5B1C9C56CA72C9D35B4ECF307FEACF5859D04AC5A1AA5926356A`, inspected with local ILSpy 9.1.0.7988. Decompiled output remains ignored under `.local/inspection-audio/`. This report summarizes original findings, not copied Core code or assets.

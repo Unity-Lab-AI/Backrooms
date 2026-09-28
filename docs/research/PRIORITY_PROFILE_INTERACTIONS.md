@@ -1,5 +1,8 @@
 # Priority profile interaction checks
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Purpose:** keep source-identified and high-overlap interactions visible alongside the 294-row review register. The prior publisher-source follow-ups for rows 96, 237 and 278 are recorded in their reviews. Exact per-feature API questions and all combined-profile runtime checks remain future work; this map is not compatibility evidence.
 
 | Pair / system | Evidence and current order | What is established | Required check | Status |

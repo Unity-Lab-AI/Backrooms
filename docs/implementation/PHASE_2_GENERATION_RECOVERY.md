@@ -1,5 +1,8 @@
 # Phase 2 first-survey generation recovery
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** bounded source implementation for development slice 0.2.0; no RimWorld runtime, save/reload, or owner acceptance evidence is claimed. This action exists only to recover the untouched Async Industries opening survey after a narrow first-site generation failure.
 
 **Feature route:** `RR-SPACE` owns coordinate identity and generation, `RR-EVD` owns the still-empty case/evidence links, `RR-EXP` supplies custody checks, and `RR-UI` exposes the player action. See the [first-playable contract](../FIRST_PLAYABLE_CONTRACT.md), [first-slice inventory](../FIRST_SLICE_CONTENT_INVENTORY.md), [procedural-space contract](../PROCEDURAL_SPACE_CONTRACT.md), [state dictionary](../CAMPAIGN_STATE_DICTIONARY.md), [save policy](../SAVE_MIGRATION_POLICY.md), and [Operations action contract](../OPERATIONS_ACTION_CONTRACTS.md).

@@ -26,7 +26,7 @@
   <RR_UI_ProjectCompleted>Completed</RR_UI_ProjectCompleted>
   <RR_UI_ProjectUnstarted>Awaiting insight commitment</RR_UI_ProjectUnstarted>
   <RR_UI_ProjectWorking>Work progress: {0}</RR_UI_ProjectWorking>
-  <RR_UI_LabInstructions>Assign Research work to an available researcher with Intellectual 4 or higher. Secured evidence is analyzed before active company research. Both require power and physical access to the field analysis bench.</RR_UI_LabInstructions>
+  <RR_UI_LabInstructions>Designate an existing research bench above, then assign Research work to an available researcher with Intellectual 4 or higher. Secured evidence is analyzed before active company research. Native bench efficiency applies; a hi-tech bench needs power. Keep physical access to the interaction cell and evidence. Clearing the company designation leaves ordinary research available.</RR_UI_LabInstructions>
   <RR_UI_TelemetryRoom>Room {0}: {1}. Known connections: {2}.</RR_UI_TelemetryRoom>
   <RR_UI_TelemetryLocked>Gate Telemetry unlocks planning from your surveyed room records.</RR_UI_TelemetryLocked>
   <RR_UI_RetryCompanyRegistration>Register the prepared headquarters</RR_UI_RetryCompanyRegistration>

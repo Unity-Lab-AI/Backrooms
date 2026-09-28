@@ -1,17 +1,24 @@
 # AI build handoff and document map
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Project:** Rimrooms - Async Industries  
 **Purpose:** make the authoritative context, source material, and implementation path discoverable to a future coding agent without relying on chat history.
 
 For a short player-facing summary of the intended mod, see the [Rimrooms overview](RIMROOMS_MOD_OVERVIEW.md). The overview is orientation; the linked design contracts and Gate 0 decisions remain authoritative when details differ.
 
+**Newest design input:** [custom scenario setup and native door networks](SCENARIO_SETUP_AND_PORTAL_NETWORK.md). Preserve all three starts and customized pawns; company chooses a world tile. Read the pending inside-start choices and physical door/equipment requirements before the next gate/scenario rewrite.
+
 ## Required reading order
 
-**Implementation entry:** [0.2.0 build record and remaining work](implementation/PHASE_2_BUILD_RECORD.md), [Phase 2 task](implementation/PHASE_2_VERTICAL_SLICE_TASK.md), [build/stage instructions](BUILDING.md), [contributor guide](../CONTRIBUTING.md), and [save policy](SAVE_MIGRATION_POLICY.md). Follow the build record's per-system source/implementation links before editing its code. The [0.1.0 record](implementation/PHASE_1_BUILD_RECORD.md) is historical foundation evidence. The campaign documents below remain required design inputs; they are not a list of implemented features. Gate 2 and runtime acceptance remain open.
+**Active direction:** continue full implementation with game testing deferred, per the [owner's sequencing clarification](GATE_0_DECISIONS.md#build-continuation-and-deferred-game-testing). The pending launch below is a future acceptance dependency, not a blocker to further code/content work. Continue the [company systems implementation wave](implementation/PHASE_3_BUILD_RECORD.md) after reading its contracts.
+
+**Implementation entry:** [0.3.0-dev company operations and remaining work](implementation/PHASE_3_BUILD_RECORD.md), [earlier 0.2.0 slice](implementation/PHASE_2_BUILD_RECORD.md), [Phase 2 task](implementation/PHASE_2_VERTICAL_SLICE_TASK.md), [build/stage instructions](BUILDING.md), [contributor guide](../CONTRIBUTING.md), and [save policy](SAVE_MIGRATION_POLICY.md). Follow the build record's per-system source/implementation links before editing its code. The [0.1.0 record](implementation/PHASE_1_BUILD_RECORD.md) is historical foundation evidence. The campaign documents below remain required design inputs; they are not a list of implemented features. Gate 2 and runtime acceptance remain open.
 
 For generation, read the player-facing [procedural space contract](PROCEDURAL_SPACE_CONTRACT.md) and the [RimWorld 1.6 package and generation findings](research/RIMWORLD_1_6_PACKAGE_AND_GENERATION.md). For optional space-system integrations, read [gravship, vehicle, cargo, and orbital profile interactions](research/GRAVSHIP_PROFILE_INTERACTIONS.md). These are design rules or research leads, not implementation guarantees or compatibility clearance.
 
-**Pending owner launch:** the [launch sheet](implementation/PHASE_2_OWNER_LAUNCH.md) identifies the staged 0.2.0 package and separate 2.1.1 QA bridge. The [direct-client source record](implementation/PHASE_2_BRIDGE_CLIENT_SOURCE.md) routes the first read-only attach; no live capture exists. Independent preparation is recorded for [personnel/facility implementation](implementation/PHASE_3_PERSONNEL_FACILITIES_TASK.md), [physical procurement](implementation/PHASE_3_PROCUREMENT_TASK.md) and [original menu art](implementation/PHASE_5_MENU_ART_PREPARATION.md), with a [menu controller source follow-up](implementation/PHASE_5_MENU_CONTROLLER_SOURCE.md). These do not advance Gate 2 or authorize an agent launch. Implement later campaign steps only in the master TODO's order.
+**Historical staging and deferred owner launch:** the [current wave record](implementation/PHASE_3_BUILD_RECORD.md) identifies the compiled/staged 0.3.0-dev package. The [older launch sheet](implementation/PHASE_2_OWNER_LAUNCH.md) preserves historical 0.2.0 staging and the separate 2.1.1 QA bridge; it is not the current Rimrooms package identity. The [direct-client source record](implementation/PHASE_2_BRIDGE_CLIENT_SOURCE.md) routes the first read-only attach; no live capture exists. Independent preparation is recorded for [personnel/facility implementation](implementation/PHASE_3_PERSONNEL_FACILITIES_TASK.md), [physical procurement](implementation/PHASE_3_PROCUREMENT_TASK.md) and [original menu art](implementation/PHASE_5_MENU_ART_PREPARATION.md), with a [menu controller source follow-up](implementation/PHASE_5_MENU_CONTROLLER_SOURCE.md). These do not advance Gate 2 or authorize an agent launch. Implement later campaign steps only in the master TODO's order.
 
 Read these files in this order before implementation:
 
@@ -69,7 +76,7 @@ Update the file that owns the decision first, then add a link from its navigatio
 
 ## Current gate
 
-Gate 0 remains passed. Continue the [0.2.0 first-expedition implementation queue](implementation/PHASE_2_BUILD_RECORD.md#remaining-phase-2-work-before-promotion), preserving its existing code and source findings. No owner-launched Rimrooms acceptance has occurred. Capture the full target/bridge profile and runtime baseline through the owner's RimSort workflow; only actual acceptance can close Gate 2. New-game grants remain scenario-owned and ordinary existing colonies remain inactive.
+Gate 0 remains passed. Continue the [company systems and existing-content implementation wave](implementation/PHASE_3_BUILD_RECORD.md), using the historical [0.2.0 source and acceptance queue](implementation/PHASE_2_BUILD_RECORD.md#remaining-phase-2-work-before-promotion) as evidence. The owner requires further coding while game testing is deferred; no launch is requested now. No owner-launched Rimrooms acceptance has occurred. Capture the full target/bridge profile and runtime baseline through the owner's RimSort workflow; only actual acceptance can close Gate 2. New-game grants remain scenario-owned and ordinary existing colonies remain inactive.
 
 For reproducible closure evidence and the remaining implementation stages, read the [Gate 0 completion audit](research/GATE_0_COMPLETION_AUDIT.md). The [performance plan](research/PERFORMANCE_BENCHMARK_PLAN.md) fixes RR-DEV-01 and initial budgets without running the game. The [dated profile delta](research/profile-deltas-2026-09-28.json) updates the local Hospitality target from the historical register's 1.1.4 to installed 1.1.5; use both records. Future source drift must be reviewed explicitly rather than silently changing a historical snapshot.
 

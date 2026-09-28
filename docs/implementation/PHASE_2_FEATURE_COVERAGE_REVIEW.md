@@ -1,5 +1,8 @@
 # Phase 2 first-playable feature coverage review
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Date:** 2026-09-28. **Scope:** static comparison of the first-playable contract, first-slice inventory, tutorial script, current source and Phase 2 build record. Read-only except for this report. No build, tests or RimWorld session were run. Feature presence here means source paths exist; it does not establish Def loading, gameplay success, save/load behavior, balance or usability.
 
 ## Assessment

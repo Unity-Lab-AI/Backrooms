@@ -1,10 +1,13 @@
 # Phase 3 prerequisite: personnel and physical facilities
 
-**Status (2026-09-28):** source review and proposed bounded implementation task only. Phase 2 runtime acceptance and Gate 2 remain open. This task creates no gameplay code, changes no canonical design, and records no game, build or test result.
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
+**Original source-preparation status (2026-09-28):** this record defines the reviewed task. Implementation now proceeds in [the company wave](PHASE_3_BUILD_RECORD.md); this source review itself is not completion evidence. Phase 2 runtime acceptance and Gate 2 remain open. This task creates no gameplay code, changes no canonical design, and records no game, build or test result.
 
 ## Task and authority
 
-- **TODO route:** [Phase 3 — Facility and personnel](../PREPRODUCTION_AND_IMPLEMENTATION_TODO.md#facility-and-personnel), after the current first-playable acceptance work; source preparation can proceed while the owner launch is pending.
+- **TODO route:** [Phase 3 — Facility and personnel](../PREPRODUCTION_AND_IMPLEMENTATION_TODO.md#facility-and-personnel), source implementation now proceeds under the owner's [build-continuation direction](../GATE_0_DECISIONS.md#build-continuation-and-deferred-game-testing); runtime acceptance remains deferred.
 - **Feature IDs:** RR-FAC, RR-STA, RR-ECO and RR-UI; RR-COMPAT supplies optional-mod boundaries.
 - **Contracts:** [systems catalog](../SYSTEMS_CATALOG.md), [staff and company spaces](../CAMPAIGN_CONTENT_CATALOG.md#staff-work-and-company-spaces), [physical company roster](../CAMPAIGN_ROSTER_FREEZE.md#corporation-as-a-physical-rimworld-colony), [facility and personnel design](../GAME_DESIGN.md#major-systems), [staffing/recruiting](../MOD_INTEGRATION_PLAN.md#staffing-recruiting-and-training), [state dictionary](../CAMPAIGN_STATE_DICTIONARY.md), [Operations actions](../OPERATIONS_ACTION_CONTRACTS.md), [economy model](../CAMPAIGN_ECONOMY_MODEL.md) and [progression](../CAMPAIGN_ECONOMY_PROGRESSION.md).
 - **Exclusive ownership for this pass:** this document and ignored `.local/inspection-personnel/` source output. Every implementation path below is **planned**; no code is authorized by this report alone.

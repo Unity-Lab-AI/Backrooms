@@ -1,5 +1,8 @@
 # Contributing
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](docs/CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 Start with [AGENTS.md](AGENTS.md), the [AI handoff](docs/AI_BUILD_HANDOFF.md), [master TODO](docs/PREPRODUCTION_AND_IMPLEMENTATION_TODO.md), and [build instructions](docs/BUILDING.md). Keep owner decisions D1–D9 and S1/B; do not expand deferred named threats or introduce a mandatory optional-mod dependency.
 
 ## Task and source ownership
@@ -20,7 +23,7 @@ Each task gets a record under `docs/implementation/` naming its TODO items, feat
 
 Use UTF-8 and consistent two-space XML indentation. Keep unique Def names/keys, valid document roots, resolvable class/Def references, matching translation arguments and explicit optional-content guards. Well-formed XML alone does not validate RimWorld Def loading. Record static checks separately from runtime results.
 
-Only approved game-loadable files enter `Mod/Rimrooms - Async Industries/`. Extend the allowlist in [BuildCommon.ps1](tools/BuildCommon.ps1) alongside the feature. No docs, source, caches, tests, logs, dependencies' DLLs or private settings belong there. Track every original asset in the [provenance register](docs/research/provenance-register.csv) and follow the [production specification](docs/research/VISUAL_AUDIO_STYLE_BRIEF.md#production-file-specification).
+Only approved game-loadable files enter `Mod/Rimrooms - Async Industries/`. Extend the explicit [package allowlist](tools/package-files.json), enforced by [BuildCommon.ps1](tools/BuildCommon.ps1) alongside the feature. No docs, source, caches, tests, logs, dependencies' DLLs or private settings belong there. Track every original asset in the [provenance register](docs/research/provenance-register.csv) and follow the [production specification](docs/research/VISUAL_AUDIO_STYLE_BRIEF.md#existing-content-bindings-and-presentation).
 
 ## Versions, changes and review
 

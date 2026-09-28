@@ -1,5 +1,8 @@
 # Rimrooms - Async Industries: first-slice content inventory
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** content contract, version 0.1. The [0.2.0 development build](implementation/PHASE_2_BUILD_RECORD.md) identifies the actual starting staff/facility, field equipment, original sprites, furnished saved site, observation report and encounter implementation; unfinished presentation and acceptance remain listed there. Names and counts below are original working content, not confirmed canon or runtime evidence. The slice targets Core-only solo operation.
 
 **Purpose:** make the Async Industries opening concrete enough to prepare implementation without expanding the first build into the whole campaign. Shared systems and optional integrations are mapped in [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md), [SYSTEMS_CATALOG.md](SYSTEMS_CATALOG.md), and the [294-mod register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx).

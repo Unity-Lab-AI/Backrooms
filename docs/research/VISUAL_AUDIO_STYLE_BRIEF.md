@@ -1,6 +1,9 @@
 # Rimrooms - Async Industries: visual and audio style brief
 
-**Status:** pre-production direction for original Rimrooms content. This is a style contract, not finished art, sound, or a license clearance.
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
+**Status:** presentation direction using existing Core/DLC/installed-mod content. New gameplay art, audio, items and production benches are excluded by the owner. New procedural arrangements, behavior, UI and story text remain in scope.
 
 ## Experience in one sentence
 
@@ -10,7 +13,7 @@ Make the company's spaces feel practical and inspectable, then let familiar room
 
 - Use Kane Pixels' series as the primary source for broad moods and story cues: institutional research, procedural footage, fluorescent interiors, uncertain routes, missing crews, and incomplete returns. The [fan cliff notes](KANE_PIXELS_FAN_CLIFF_NOTES.md) are a quick index, not proof of every visual detail.
 - Use the [separate A24 feature review](reviews/a24-feature/feature-review.md) only for its own store/Async branch and production notes. Do not collapse film events into the series timeline.
-- Translate these references into original RimWorld-scale rooms, icons, dialogue, music/sound, props, and entities. Do not trace a frame, recreate a named character, or lift a third-party mod's asset. Broader community Backrooms designs are outside the current shipped-content scope.
+- Translate these references into original procedural arrangements, story text, observations and behavior using existing RimWorld/mod furniture, objects, pawns, terrain and sounds. Do not create new gameplay graphics or audio, clone item/bench definitions, or copy provider files. Broader community Backrooms designs remain outside the selected story scope.
 - Label future entries as **source cue**, **interpretation**, or **original design** in the [provenance register](provenance-register.csv). A reference mention does not establish permission for a specific borrowed asset.
 
 ## Visual language
@@ -23,7 +26,7 @@ Keep the company spaces brighter, more orderly, and more legible than the destin
 
 ### The machine gate
 
-Make the gate read as an engineered installation that needs power, operators, clearance, and maintenance. Give its build, calibration, ready, opening, unstable, recall, cooldown, and damaged states distinct silhouettes, labels, lights, and interface text. Alarms and animation support those labels; the player must never need to infer a dangerous state from color or a brief flash alone.
+Make the gate read as an engineered installation that needs power, operators, clearance, and maintenance. Represent build, calibration, ready, opening, unstable, recall, cooldown and damaged states through designated existing equipment, available native lights and clear interface text. Alarms and animation support those labels; the player must never need to infer a dangerous state from color or a brief flash alone.
 
 ### Backrooms destinations
 
@@ -41,7 +44,7 @@ All three use the same icon grammar and status language, but their opening inven
 
 ### Main menu background slideshow
 
-Ship a curated slideshow of original Backrooms scenes as the mod's main-menu backgrounds. Use the images to preview the range of play: the Async Industries facility and gate, the furniture-store breach, a field crew moving through a familiar room made wrong, evidence work and a safe return, a remote outpost, and deeper spaces or optional orbital support when those features are represented in the release. Include at least one image for each shipped scenario; add images for other systems as they become real in the build.
+**Approved presentation exception:** a curated slideshow of original Backrooms scenes as the mod's main-menu backgrounds. Use the images to preview the range of play: the Async Industries facility and gate, the furniture-store breach, a field crew moving through a familiar room made wrong, evidence work and a safe return, a remote outpost, and deeper spaces or optional orbital support when those features are represented in the release. Include at least one image for each shipped scenario; add images for other systems as they become real in the build.
 
 Keep each frame faithful to the experience the release actually contains. A concept image for a later feature must not imply that feature is playable. Compose a calm, low-detail area behind the menu controls, check the crop at supported aspect ratios and resolutions, and keep menu text readable over every image. Use slow fades or similarly quiet transitions; the slideshow must not rely on flashes, sudden movement, or audio. Provide a way to disable the mod's backgrounds and honor reduced-motion preferences.
 
@@ -54,7 +57,7 @@ Before implementation, inspect RimWorld 1.6's public menu/background extension s
 - Staff remain readable as RimWorld pawns first. Uniforms, protective gear, badges, radios, and work tools distinguish roles; do not make job eligibility depend on appearance.
 - Evidence has a clear physical form or named record: tape, transcript, sample, photograph, route sketch, instrument reading, or case file. Mark ownership, condition, risk, and analysis status in text or symbols.
 - Equipment should look like a repurposed company tool, salvage, or a named specialist device. Reuse visual grammar consistently so players can identify function and carry weight at normal game scale.
-- Threats and anomalies need original, distinguishable silhouettes and fair tells. Convey detection, danger, and counterplay through more than color or audio; keep specific movement and attack details in their own gameplay contracts.
+- Threats and anomalies use existing pawn/entity presentations and fair, distinguishable behavioral tells. Convey detection, danger, and counterplay through more than color or audio; keep specific movement and attack details in their own gameplay contracts.
 
 ## Color, light, and readability
 
@@ -74,34 +77,23 @@ Use a sparse sound bed: steady facility power, ventilation, distant machinery, i
 
 Alarms, radio messages, and entity cues need a text or icon equivalent in the log or status panel. Let players lower or mute repeated ambience and reduce startling effects without losing objective, threat, or failure information. Do not require headphones or rapid sound recognition to complete an action.
 
-## Production file specification
+## Existing-content bindings and presentation
 
-These are original-art production defaults for the planned campaign. The [0.2.0 build record](../implementation/PHASE_2_BUILD_RECORD.md) links the actual original equipment/entity sprites, carpet material, short audio cues and provenance. Their native-resolution development exports have not yet passed in-game presentation acceptance. Change a default when the actual game view demonstrates a better result, and record the reason with the asset.
+There is no gameplay sprite, texture, item-icon or sound-production pipeline. For every role, record the provider package, exact existing Def, optional dependency, Core fallback and runtime use. Use native fonts, icons, graphics, lighting and sounds; text is the fallback when a suitable cue is unavailable. Preserve owner controls, native volume and optional mod presentation behavior.
 
-| Asset family | Working/export specification | Readability and ownership |
-| --- | --- | --- |
-| Package preview | 960 × 540 opaque PNG, sRGB; original title/identity composition | Title readable at a 320-pixel-wide thumbnail; identify foundation builds as such; no implied gameplay screenshot |
-| Menu backgrounds | 3840 × 2160 original master, 1920 × 1080 shipped PNG initially; no embedded menu text | Reserve a quiet middle-left area for the actual native menu; check 16:9, 16:10 and 21:9 crops and 1280 × 720 minimum before release; exact safe area follows source inspection and overlay evidence |
-| UI icons | 64 × 64 RGBA PNG on a 64-pixel grid; detail within a 52-pixel safe region; retain 256 × 256 source | Recognizable at 24–32 displayed pixels; distinct outline and paired text, never color alone |
-| Items and equipment | 128 × 128 RGBA export, up to 256 × 256 for detailed/large items | Match native item scale, silhouette and ground shadow; equipment must read at normal map zoom |
-| Buildings and room props | Start at 128 pixels per occupied tile; cap a single initial texture at 1024 × 1024 | Author needed facing variants deliberately; match footprint/interaction cells and avoid baking UI labels into sprites |
-| Pawns/entities | Original 256 × 256 directional masters with RimWorld-scale export chosen per body/overlay use | Distinct threat silhouette; fair pose/animation tells linked to the threat contract |
-| Short sound effects | 48 kHz WAV masters, mono PCM 16-bit exports unless spatial design needs stereo | Aim for peaks at or below −3 dBFS; trim clicks and use short edge fades; calibrate Def volume in game |
-| Ambient loops/music | 48 kHz stereo masters; OGG exports, restrained dynamics, seamless loops where needed | Initial ambience mix target around −24 LUFS integrated; radio around −20 LUFS; true peaks below −3 dBTP; production targets, not measured game loudness |
+Room families are arrangements of existing floors, walls, doors, furniture and lighting. Item identity and appearance stay with the original definition; Rimrooms associates functional/evidence roles through saved records. Production and analysis use existing installed benches. New recipes/jobs must consume and produce existing content and preserve native bills and Work priorities.
 
-Use source names such as `RR_<Family>_<Purpose>_<FacingOrVariant>` and stable extensionless runtime paths. Editable source and mix masters stay outside `Mod/`. Each shipped output has its own provenance entry and a source-generation/edit trail. Do not add unused assets just to fill directories.
+The historical 0.2.0 original PNG/WAV files are superseded for the finished gameplay package. Follow the [replacement map](../implementation/EXISTING_CONTENT_REPLACEMENT_MAP.md) before removing them and their runtime references; preserve old source/provenance as history.
 
-The foundation identity palette is charcoal `#141A1D`, deep shadow `#080D10`, steel `#263135`, warm paper `#EEE8D5`, muted grey `#A8B0AD`, and amber `#D3B46C`. Later status colors add red/green only with text, shape and an icon. UI text should meet a 4.5:1 contrast target and essential large symbols 3:1 against their actual backgrounds; check screenshots after game lighting/overlays. Use native UI fonts for game controls. The preview uses system Arial during rendering and bundles no font.
+The owner confirmed original RimWorld-style Backrooms menu images as the visual exception. Keep 30-second dwell, two-second quiet fades, a reduced-motion still, native fallback, no audio and readability over the actual menu. Show the exact mod title and current build version beside native top-left version information using interface text, not baked image lettering. This exception does not permit new gameplay assets.
 
-Start the menu rotation at 30 seconds per image with a 2-second quiet crossfade. Reduced motion holds one image until user selection; disabling Rimrooms backgrounds restores the game's normal path. No flashes, sudden camera travel or menu audio stingers. These settings are planned behavior, pending the menu API/profile review, not features of the package preview. Gate/anomaly animation must retain static status labels when motion is reduced. Limit repeated alarms and allow ambience/stingers to be muted independently where the inspected sound API permits; native volume controls remain functional.
-
-Record export dimensions, format, measured audio peak/loudness where applicable, creator/license, packaged path and actual visual/audio review per asset. Readability, UI scaling, directional rendering, sound balance and menu crops remain owner-launched acceptance after those assets are implemented.
+Use the company UI palette through existing interface drawing primitives and native fonts. Preserve redundant text and readable contrast. Inspect eventual in-game results at the owner's resolution and UI scale; source or compilation results do not establish presentation quality.
 
 ## Production and acceptance notes
 
-- Create original assets at the scale and contrast RimWorld needs; test them at normal zoom, not only in an enlarged editor view.
-- Keep each asset's source, creator, license/permission, edits, and included-file path in `provenance-register.csv` before it enters a release build. Third-party mods remain dependencies or optional references; do not copy their files.
+- Select suitable existing provider content and inspect its actual behavior/readability at normal zoom after owner-launched testing is resumed.
+- Record each provider/Def/version and fallback. Existing files remain in their owning game/mod packages; do not copy or rebundle them. Historical generated-asset provenance remains a historical record.
 - Use keyed/localizable text from the first production pass. Check a long-string language, color-vision-safe status cues, keyboard navigation, reduced effects, and no-sound completion of the first expedition.
 - Review every room family and threat against its gameplay contract: the player can recognize a clue, read a warning, identify an action, and find the recovery path.
 - Final acceptance uses the [pre-production quality bar](PREPRODUCTION_ACCEPTANCE_STANDARD.md) and [content/accessibility brief](CONTENT_ACCESSIBILITY_BRIEF.md). This brief does not claim production assets exist or that their provenance has been cleared.
-- The main-menu slideshow is part of the release asset set. Test every image with the actual menu overlay at supported sizes, with reduced motion and no audio, and verify the chosen integration against menu-related mods in the pinned profile before advertising it as compatible.
+- The original main-menu slideshow is the approved visual exception. Test every image with the actual menu overlay at supported sizes, with reduced motion and no audio, and verify the chosen integration against menu-related mods in the pinned profile before advertising it as compatible.

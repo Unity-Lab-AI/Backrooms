@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Lab_Heading>Company laboratory workstation</RR_Lab_Heading>
+  <RR_Lab_Explanation>Designate one existing headquarters research bench for company evidence analysis and company projects. Simple and hi-tech research benches keep their native objects, ownership and power requirements. Designation supplies no bench or equipment.</RR_Lab_Explanation>
+  <RR_Lab_BranchUnavailable>A supported company branch is required for laboratory designation. Existing records remain preserved.</RR_Lab_BranchUnavailable>
+  <RR_Lab_UnsupportedSchema>This laboratory binding uses an unsupported save schema. Preserve the original save and open it with its matching build; do not overwrite it.</RR_Lab_UnsupportedSchema>
+  <RR_Lab_InvalidSave>The saved laboratory identity or revision is inconsistent. Actions are disabled; preserve the original save and inspect its log.</RR_Lab_InvalidSave>
+  <RR_Lab_UnsupportedBench>Select an existing Core simple research bench or hi-tech research bench. Optional modded benches have no reviewed company binding yet.</RR_Lab_UnsupportedBench>
+  <RR_Lab_ProviderMissing>The designated bench is missing, destroyed or not spawned. Reinstall the original bench at headquarters, or explicitly designate an existing replacement. Company progress and evidence are retained.</RR_Lab_ProviderMissing>
+  <RR_Lab_WrongHeadquarters>The workstation must be spawned at this branch's original loaded player headquarters.</RR_Lab_WrongHeadquarters>
+  <RR_Lab_NotOwned>The workstation must belong to the player faction.</RR_Lab_NotOwned>
+  <RR_Lab_NotVisible>The workstation must be visible on the headquarters map.</RR_Lab_NotVisible>
+  <RR_Lab_NotDesignated>No company laboratory workstation is designated. Choose a native research bench below.</RR_Lab_NotDesignated>
+  <RR_Lab_IdentityChanged>The saved workstation identity or provider changed. Inspect the original object and explicitly designate a valid bench.</RR_Lab_IdentityChanged>
+  <RR_Lab_Forbidden>The designated bench is forbidden. Unforbid it through native controls before company work can begin.</RR_Lab_Forbidden>
+  <RR_Lab_InteractionBlocked>The designated bench's interaction cell is obstructed, invalid or still fogged. Clear the native working position.</RR_Lab_InteractionBlocked>
+  <RR_Lab_Broken>The designated bench is broken down. Complete its native repair before company work resumes.</RR_Lab_Broken>
+  <RR_Lab_SwitchedOff>The designated bench is switched off. Use its native power controls.</RR_Lab_SwitchedOff>
+  <RR_Lab_NoPower>The designated bench requires native power and is unavailable. Restore power or designate a simple research bench, which works without electricity.</RR_Lab_NoPower>
+  <RR_Lab_Designation>Designated: {0} | object {1} | binding revision {2}</RR_Lab_Designation>
+  <RR_Lab_Provider>Provider: {0} | definition: {1}</RR_Lab_Provider>
+  <RR_Lab_Locate>Inspect designated workstation</RR_Lab_Locate>
+  <RR_Lab_Clear>Clear company workstation designation</RR_Lab_Clear>
+  <RR_Lab_Ready>Workstation ready. Company work still requires an available researcher, native work assignments, reachable evidence and any project prerequisites.</RR_Lab_Ready>
+  <RR_Lab_NativeResearch>Ordinary research remains available through native Research controls when no company work is ready. Designation does not cancel an existing native job. Clear or change designation to stop company work at this bench; analysis and project progress are retained.</RR_Lab_NativeResearch>
+  <RR_Lab_NoCandidates>No supported visible player-owned research bench is available at headquarters. Build or reinstall one with native Architect controls.</RR_Lab_NoCandidates>
+  <RR_Lab_Candidates>{0} eligible benches — page {1} of {2}. An unpowered or obstructed bench can be designated; it will remain unavailable for work until repaired.</RR_Lab_Candidates>
+  <RR_Lab_Previous>Previous benches</RR_Lab_Previous>
+  <RR_Lab_Next>Next benches</RR_Lab_Next>
+  <RR_Lab_Candidate>{0} at {1}</RR_Lab_Candidate>
+  <RR_Lab_Designate>Designate {0} for company work</RR_Lab_Designate>
+  <RR_Lab_InspectCandidate>Inspect {0}</RR_Lab_InspectCandidate>
+</LanguageData>

@@ -1,5 +1,8 @@
 # Phase 2: investigation and threat source review
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Date:** 2026-09-28. **Evidence:** bounded read-only source comparison, not runtime acceptance. The lead was changing the reviewed files concurrently; the locations below identify the reviewed methods and initial line positions. Fix status is stated explicitly. This reviewer changed only this report and ignored local inspection output. No game, build, tests, profile changes, or third-party source distribution occurred.
 
 ## Task and authority

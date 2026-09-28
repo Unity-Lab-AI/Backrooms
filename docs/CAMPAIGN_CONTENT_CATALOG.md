@@ -1,5 +1,8 @@
 # Rimrooms - Async Industries: campaign content catalog
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** pre-code design catalog, version 0.1. This is a player-facing content map, not a complete balance sheet, production asset list, implementation specification, or runtime result. All mechanics proposed here are **original Rimrooms design**. References to Kane Pixels or A24 are **indirect source cues** only; fan summaries are interpretations, not canon or proof of how a game mechanic must work.
 
 ## Campaign promise

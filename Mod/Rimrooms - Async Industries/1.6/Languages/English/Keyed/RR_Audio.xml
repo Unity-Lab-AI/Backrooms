@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Settings_AudioTitle>Company sound cues</RR_Settings_AudioTitle>
-  <RR_Settings_AudioDescription>Quiet cues accompany gate and field events. Persistent text warnings remain available when audio is muted. Native game and master volume still apply.</RR_Settings_AudioDescription>
+  <RR_Settings_AudioDescription>Existing game sound cues accompany gate and field events. Persistent text warnings remain available when audio is muted. Native game and master volume still apply.</RR_Settings_AudioDescription>
   <RR_Settings_AudioUnavailable>Audio preferences could not be loaded. Company cues are silent.</RR_Settings_AudioUnavailable>
   <RR_Settings_MuteGateCues>Mute gate cues</RR_Settings_MuteGateCues>
   <RR_Settings_MuteFieldCues>Mute field and radio cues</RR_Settings_MuteFieldCues>

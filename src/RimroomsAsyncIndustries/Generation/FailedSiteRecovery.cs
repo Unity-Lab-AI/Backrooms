@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Expedition;
 using RimroomsAsyncIndustries.Generation;
+using RimroomsAsyncIndustries.Investigation;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -159,6 +160,9 @@ namespace RimroomsAsyncIndustries.Company
 
             RimroomsExpeditionComponent expeditions = Current.Game == null
                 ? null : Current.Game.GetComponent<RimroomsExpeditionComponent>();
+            RimroomsEvidenceCreationComponent creation = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsEvidenceCreationComponent>();
+            if (creation == null || creation.FaultKey != null || creation.Attempts.Count != 0) { return false; }
             if (expeditions == null || expeditions.Records.Any(run => run == null ||
                 run.CoordinateId == failed.id || run.Destination == map))
             { return false; }
@@ -239,6 +243,8 @@ namespace RimroomsAsyncIndustries.Company
                 { if (pawn == null || ThingHolderContainsRouteRecording(pawn, visited)) { return true; } }
                 foreach (IThingHolder holder in Find.WorldObjects.AllWorldObjects.OfType<IThingHolder>())
                 { if (ThingHolderContainsRouteRecording(holder, visited)) { return true; } }
+                RimroomsEvidenceCreationComponent creation = Current.Game.GetComponent<RimroomsEvidenceCreationComponent>();
+                if (creation == null || ThingHolderContainsRouteRecording(creation, visited)) { return true; }
                 return expeditions == null || ThingHolderContainsRouteRecording(expeditions, visited);
             }
             catch (Exception)
@@ -250,7 +256,7 @@ namespace RimroomsAsyncIndustries.Company
         private static bool ThingOrHolderContainsRouteRecording(Thing thing, HashSet<IThingHolder> visited)
         {
             if (thing == null) { return true; }
-            if (thing.def != null && thing.def.defName == "RR_RouteRecording") { return true; }
+            if (CompRouteEvidence.IsEvidenceCarrierPresence(thing)) { return true; }
             return ThingHolderContainsRouteRecording(thing as IThingHolder, visited);
         }
 
@@ -281,15 +287,15 @@ namespace RimroomsAsyncIndustries.Company
             {
                 "RR_ReturnAnchor", "RR_SiteFluorescent", "RR_SiteClimateUnit",
                 "RR_MachineGate", "RR_GateConsole", "RR_EmergencyCutoff", "RR_UtilityGenerator",
-                "RR_FieldAnalysisBench", "RR_FieldRecorder", "RR_SurveyTag", "RR_ReturnBeacon",
-                "RR_SealedEvidenceCase", "RR_RouteRecording", "RR_QuietPursuer",
+                "SimpleResearchBench", "RR_FieldRecorder", "RR_SurveyTag", "RR_ReturnBeacon",
+                "RR_SealedEvidenceCase", "TextBook", "RR_QuietPursuer",
                 "Door", "Stool", "Table1x2c", "DiningChair", "PlantPot", "Shelf", "StandingLamp"
             };
             string[] siteTerrains = { "Concrete", "WaterDeep", "MetalTile", "PavedTile", "RR_FadedInstitutionalCarpet" };
             return DefDatabase<WorldObjectDef>.GetNamedSilentFail("RR_BackroomsSite") != null &&
                 DefDatabase<MapGeneratorDef>.GetNamedSilentFail("RR_BackroomsGeneration") != null &&
                 DefDatabase<GenStepDef>.GetNamedSilentFail("RR_BackroomsLayout") != null &&
-                ThingDefOf.Wall != null && ThingDefOf.Steel != null &&
+                ThingDefOf.Wall != null && ThingDefOf.Steel != null && CompRouteEvidence.NativeCarrierDef != null &&
                 siteThings.All(name => DefDatabase<ThingDef>.GetNamedSilentFail(name) != null) &&
                 siteTerrains.All(name => DefDatabase<TerrainDef>.GetNamedSilentFail(name) != null);
         }

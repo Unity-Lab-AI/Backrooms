@@ -1,5 +1,8 @@
 # Rimrooms - Async Industries: threat and distortion design sheets
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** pre-code design contract, version 0.1. The two first-slice entries are original game design, not confirmed Backrooms canon or tested behavior. Later entities and anomalies need their own completed sheets before their Defs or quests are implemented.
 
 **Feature route:** [RR-THREAT](FEATURE_TRACEABILITY.md), [RR-SPACE](FEATURE_TRACEABILITY.md), [RR-EXP](FEATURE_TRACEABILITY.md), [RR-EVD](FEATURE_TRACEABILITY.md), and [RR-MSN](FEATURE_TRACEABILITY.md). The initial encounter is specified in the [first playable contract](FIRST_PLAYABLE_CONTRACT.md) and [content inventory](FIRST_SLICE_CONTENT_INVENTORY.md).

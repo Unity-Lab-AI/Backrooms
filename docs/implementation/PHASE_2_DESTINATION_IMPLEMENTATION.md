@@ -1,5 +1,8 @@
 # Phase 2: destination generation implementation
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** implemented source for the bounded first destination; owner-launched runtime acceptance remains pending. The lead owns compilation and the [current build record](PHASE_2_BUILD_RECORD.md). This agent performed source inspection and edits only: no build, tests, game launch, profile change or compatibility claim.
 
 ## Task and source record

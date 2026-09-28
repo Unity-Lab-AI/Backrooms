@@ -1,5 +1,8 @@
 # Universe adaptation notes
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 ## Chosen reference
 
 Per the project owner's Gate 0 choice, Kane Pixels' Backrooms series is the primary story and lore reference; the A24 feature is a second, separately reviewed reference. A24 production notes explicitly connect the feature to an Async branch and the web-series events, while feature-specific plot evidence remains in its own review. Adapt story ideas, themes, and style indirectly rather than recreating specific scenes or characters. Broader community canon is outside shipped-content scope unless the owner expands it.

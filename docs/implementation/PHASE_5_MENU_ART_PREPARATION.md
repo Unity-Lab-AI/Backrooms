@@ -1,5 +1,8 @@
 # Menu art preparation: facility and field survey
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** two original image candidates created during the wait for the first owner-launched 0.2.0 session. This is independent asset preparation for RR-UI/RR-STYLE, not Phase 5 completion, gameplay screenshots or an implemented slideshow. The current 61-file package is unchanged.
 
 The [style brief](../research/VISUAL_AUDIO_STYLE_BRIEF.md#main-menu-background-slideshow) owns the slideshow requirements. The [menu extension audit](../research/MENU_BACKGROUND_EXTENSION_AUDIT.md) records the native-background and exact-profile integration questions. Every shipped scenario eventually needs its own image; only Async Industries currently has scenario source.

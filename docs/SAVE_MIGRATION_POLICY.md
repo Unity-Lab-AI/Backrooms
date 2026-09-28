@@ -1,5 +1,8 @@
 # Save schema and migration policy
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 ## Foundation schema 1
 
 The concrete class `RimroomsAsyncIndustries.Company.RimroomsCampaignComponent` is attached by Core's normal GameComponent discovery. Its public `(Game)` constructor is inert. [Source review](implementation/PHASE_1_CORE_SOURCE_REVIEW.md) confirms creation for ordinary new games and the missing-component path during loading. Runtime acceptance remains pending.
@@ -38,6 +41,18 @@ The [initial generation recovery](implementation/PHASE_2_GENERATION_RECOVERY.md)
 
 ## Rules for subsequent implementation
 
+### Company systems additions after 0.2.0
+
+Personnel and procurement use independent schema-1 GameComponents. Their constructors create empty records/holders only; adding a missing component to an old save must not generate applicants, goods, charges or starter grants. Each attaches to a valid existing branch by its saved ID. Personnel holds actual native pawns until arrival or release; procurement holds actual goods until receiving or a reconciled cancellation. Strong references and operation IDs survive interrupted work. Unknown versions or invalid duplicate/mismatched records disable mutation instead of reminting objects. See the [wave record](implementation/PHASE_3_BUILD_RECORD.md) and its system records for actual implemented paths and limits.
+
+Payroll remains in the campaign schema-2 owner. Catch-up billing excludes a worker from cutoffs on or before their hire tick. The hiring dialog projects the next future cutoff without advancing or erasing overdue payroll. Facilities observations and UI filters are transient. Main-menu settings are independent of game saves.
+
+`RimroomsLaboratoryComponent` schema 1 saves a selected native bench reference, load ID, provider package, Def name, HQ/branch and revision. Old saves and new games start unbound until the player designates a bench. Missing providers retain their last-known identity and block work; no replacement is silently selected. The former custom analysis bench remains only as a hidden legacy definition for existing objects; new starts no longer spawn it, it cannot be built, and company jobs no longer use it. Final removal still requires migration or the explicit development-save boundary.
+
+`RimroomsEvidenceCreationComponent` schema 1 keeps an original Core TextBook in a deep holder until native initialization/placement finishes, with once-only attempt and registration receipts. The native-book comp is dormant on unbound books. Old `RR_RouteRecording` objects retain their deliberate legacy reader; new evidence uses TextBook. Loss/sale/destruction never remints a replacement. See [book custody](implementation/PHASE_3_EVIDENCE_BOOK_REUSE_IMPLEMENTATION.md). Receipt summaries in procurement preserve monotonic IDs and aggregate quantities; unresolved cargo/orders are never archived.
+
+The existing-content replacement is a separate migration boundary: the historical 0.2.0 custom physical Defs cannot simply be deleted and called save compatible. Keep the old build/history available and record per-object conversion or an explicit development-save break before retiring those definitions. No runtime migration result is recorded for these additions.
+
 1. Keep stable class/Def/Scribe/record identifiers. Separate package, schema and generator versions. Record first introduction and required migrations alongside each field.
 2. Implement explicit, ordered migrations before changing stored meanings. A migration checks its source version, runs once, preserves branch/coordinate/transaction identities, and advances version only after a complete result. Never infer “new game” from a missing field in an old save.
 3. Scenario activation is a deliberate one-time initializer, with a recorded scenario ID and transaction/initialization receipt. Constructors, load hooks and UI drawing never award starter stock or cash.
@@ -45,4 +60,4 @@ The [initial generation recovery](implementation/PHASE_2_GENERATION_RECOVERY.md)
 5. Future unsupported versions remain read-only at the campaign layer and receive a clear warning against re-saving. Before supporting cross-version loads, inspect the full save lifecycle and implement a reliable refusal/recovery path. A warning alone is not preservation of unknown fields.
 6. Retain pre-migration backups and record source/destination package and schema versions. Owner-launched cases cover new start, existing non-Rimrooms save, same-version reload, repeat reload, each supported migration, interrupted/invalid records and removed optional dependencies.
 
-The [state dictionary](CAMPAIGN_STATE_DICTIONARY.md) owns full campaign fields and transfer rules; the [procedural contract](PROCEDURAL_SPACE_CONTRACT.md) owns coordinate/generator persistence. The current build implements the subset above. Later hiring, training, shipments, lease/outpost, expanded research and co-op records remain planned until their own source and migration evidence exists.
+The [state dictionary](CAMPAIGN_STATE_DICTIONARY.md) owns full campaign fields and transfer rules; the [procedural contract](PROCEDURAL_SPACE_CONTRACT.md) owns coordinate/generator persistence. The current build implements the subset above. Training, broader staffing and shipment incidents, lease/outpost, expanded research and co-op records remain planned until their own source and migration evidence exists. The 0.3.0-dev wave supplies bounded hiring/procurement records but no runtime migration certification.

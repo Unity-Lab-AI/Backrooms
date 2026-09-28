@@ -1,5 +1,10 @@
 # Development 0.2.0: first owner-launched session
 
+**Superseded package identity:** the 0.3.0-dev package has since been compiled and staged; use the [current wave record and receipt](PHASE_3_BUILD_RECORD.md). The old hashes/61-file count below remain historical. The separate QA bridge is unchanged. The owner has deferred game testing; no launch is requested by this checkpoint.
+
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 This is the first-expedition development package, with gameplay acceptance still pending. It is not the complete campaign release. The [build record](PHASE_2_BUILD_RECORD.md) lists implemented systems and the remaining work; the [master backlog](../PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) preserves the full mod scope.
 
 ## Installed packages

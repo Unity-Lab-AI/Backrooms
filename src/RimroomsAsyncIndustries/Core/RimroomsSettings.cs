@@ -10,6 +10,8 @@ namespace RimroomsAsyncIndustries.Core
         public bool MuteGateCues;
         public bool MuteFieldCues;
         public float CueVolume = DefaultCueVolume;
+        public bool MenuSlideshowEnabled = true;
+        public bool MenuReducedMotion;
 
         public float EffectiveCueVolume
         {
@@ -29,6 +31,8 @@ namespace RimroomsAsyncIndustries.Core
             Scribe_Values.Look(ref MuteGateCues, "rr_muteGateCues", false);
             Scribe_Values.Look(ref MuteFieldCues, "rr_muteFieldCues", false);
             Scribe_Values.Look(ref CueVolume, "rr_cueVolume", DefaultCueVolume);
+            Scribe_Values.Look(ref MenuSlideshowEnabled, "rr_menuSlideshowEnabled", true);
+            Scribe_Values.Look(ref MenuReducedMotion, "rr_menuReducedMotion", false);
             if (Scribe.mode == LoadSaveMode.PostLoadInit) { Normalize(); }
         }
     }

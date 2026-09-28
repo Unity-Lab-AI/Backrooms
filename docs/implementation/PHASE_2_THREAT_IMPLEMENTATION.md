@@ -1,5 +1,8 @@
 # First-site route and encounter implementation
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Feature IDs:** RR-SPACE, RR-THREAT, RR-EVD, RR-EXP, RR-UI, RR-STYLE. **Input:** [threat sheets](../THREAT_DESIGN_SHEETS.md), [first-slice inventory](../FIRST_SLICE_CONTENT_INVENTORY.md), [procedural contract](../PROCEDURAL_SPACE_CONTRACT.md), Core row 4 and the [local source review](PHASE_2_INVESTIGATION_THREAT_REVIEW.md). These are original Rimrooms mechanics and artwork. No direct film/series creature, scene, dialogue or asset is included.
 
 ## Owned files and save state

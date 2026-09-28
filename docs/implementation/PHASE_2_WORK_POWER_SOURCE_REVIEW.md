@@ -1,5 +1,8 @@
 # Phase 2 row 4: gate, work, power, and research source review
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Checked:** 2026-09-28
 **Status:** source review complete; implementation-facing routes below. No game launch, build, gameplay test, or profile change was performed.
 

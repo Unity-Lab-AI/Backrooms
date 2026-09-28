@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThingDef[defName="TextBook"]/comps/li[@Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteEvidence"]</xpath>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[defName="TextBook"]/comps</xpath>
+      <value>
+        <li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteEvidence">
+          <analysisWorkRequired>3000</analysisWorkRequired>
+        </li>
+      </value>
+    </nomatch>
+  </Operation>
+</Patch>

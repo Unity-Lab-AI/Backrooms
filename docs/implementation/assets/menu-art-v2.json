@@ -1,0 +1,32 @@
+{
+  "created": "2026-09-28",
+  "tool": "built-in image_gen",
+  "use": "Original Backrooms main-menu slideshow artwork, approved exception to gameplay reuse. Exact title/version is separate UI text.",
+  "editing": "New original images; no input images, resizing or edits; v1 source masters retained.",
+  "assets": [
+    {
+      "id": "RR_Menu_FacilityThreshold_v2",
+      "source": "assets/source/menu/RR_Menu_FacilityThreshold_v2.png",
+      "package": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_FacilityThreshold_v2.png",
+      "prompt": "Use case: stylized-concept. Create one original wide 16:9 main-menu background illustration for the RimWorld mod Rimrooms - Async Industries. Match the broad visual language of RimWorld DLC key art: clearly hand-painted science-fiction illustration, visible painterly shapes and brushwork, stylized believable humans, graphic silhouettes, carefully composed cinematic storytelling, not a photograph or 3D render. Scene: a modest staffed corporate research facility built from familiar sci-fi colony furnishings: steel walls, battery bank, cables, research benches and a communications console. A retro industrial machine doorway opens into an eerie, repeating yellow-beige institutional corridor with fluorescent ceiling lights and impossible vanishing depth. Two small adult researchers and a security worker stand in the right half checking their route before entering. Unsettling quiet, amber interior light against cool slate facility shadows. Place the gate and people in the right half. Preserve a low-detail dark upper-left zone for native version text and a quiet middle-left area for the game's menu controls. Atmospheric and legible, restrained details. This is artistic representation of a playable gate expedition, no spaceships or unimplemented giant metropolis. Absolutely no letters, words, title, logos, numbers, UI, watermark or version baked into the image; the game renders the exact mod title/version separately. Original composition, no copied film frame or named character. Opaque background.",
+      "width": 1672,
+      "height": 941,
+      "sha256": "AEB5091DE4568134980D36065C95C65DCD83472B4BB3E8D2DB92F092D3BF452C",
+      "nativeResolution": true,
+      "transparent": false,
+      "review": "Visual inspection: coherent painted sci-fi scenes, no baked title/version; dark left area. In-game crop/overlay acceptance pending."
+    },
+    {
+      "id": "RR_Menu_FieldSurvey_v2",
+      "source": "assets/source/menu/RR_Menu_FieldSurvey_v2.png",
+      "package": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_FieldSurvey_v2.png",
+      "prompt": "Use case: stylized-concept. Create one original wide 16:9 painted science-fiction main-menu illustration for the RimWorld mod Rimrooms - Async Industries, matching the broad art language of RimWorld DLC key art: visible painterly shapes and brushwork, restrained bold outlines, stylized believable adult humans, strong graphic silhouettes and atmospheric depth, not photorealism or a 3D render. Scene: an expedition deep inside an uncanny institutional office labyrinth. Repeating beige and faded yellow walls, cheap carpet, suspended fluorescent ceiling panels, identical doorways at subtly impossible intervals, abandoned native-looking colony chairs, desks and shelves. In the right third, two adult researchers and a security worker stop at an intersection; one carries a physical field logbook and another examines a small pile of recovered documents on an ordinary table. A dark open doorway on the far right hints at uncertainty without showing a monster. Their route back is visible as a sequence of ordinary lamps and recognizable doors, no sci-fi holograms. Quiet exploratory dread and curiosity, muted ochre against desaturated blue-black shadow, a warm distant doorway. Keep the upper-left and middle-left low-detail and dark enough for game menu/version overlays while preserving a convincing environment. Original composition, no copied film frame, no named characters. NO text, letters, title, logo, UI or version in the artwork; those are rendered by the game. Opaque background.",
+      "width": 1672,
+      "height": 941,
+      "sha256": "3AC775159E46DB91163299DBE1B454B310BCFB9676FE93279AD9A5A520837843",
+      "nativeResolution": true,
+      "transparent": false,
+      "review": "Visual inspection: coherent painted sci-fi scenes, no baked title/version; dark left area. In-game crop/overlay acceptance pending."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_EvidenceCreation_UnsupportedSchema>This save has an unsupported evidence-creation format. Preserve the original save and use its matching build.</RR_EvidenceCreation_UnsupportedSchema>
+  <RR_EvidenceCreation_InvalidSave>The evidence creation journal or custody is inconsistent. The original objects are retained; preserve the save and inspect the game log before continuing.</RR_EvidenceCreation_InvalidSave>
+  <RR_EvidenceCreation_Busy>The original evidence object is already being processed.</RR_EvidenceCreation_Busy>
+  <RR_EvidenceCreation_RetainedLimit>Eight unfinished evidence acquisitions are retained. Resolve their original-object recovery before creating more.</RR_EvidenceCreation_RetainedLimit>
+  <RR_EvidenceCreation_CustodyChanged>The original document's location or ownership changed. Restore its recorded custody before retrying; a replacement will not be generated.</RR_EvidenceCreation_CustodyChanged>
+  <RR_EvidenceCreation_CreationInterrupted>Evidence creation was interrupted. Retry can place or register the same retained original only. Preserve the save and inspect the game log if its creation did not return an object.</RR_EvidenceCreation_CreationInterrupted>
+  <RR_EvidenceCreation_InitializationInterrupted>Native book initialization began but did not finish. The original is retained. Preserve this save and inspect the game log; retry will not reroll its contents.</RR_EvidenceCreation_InitializationInterrupted>
+  <RR_EvidenceCreation_OriginalMissing>The original evidence document is missing or destroyed. It will not be replaced by revisiting or retrying.</RR_EvidenceCreation_OriginalMissing>
+  <RR_EvidenceRecovery_Title>Unfinished document acquisitions</RR_EvidenceRecovery_Title>
+  <RR_EvidenceRecovery_Explanation>Recover the original physical document after interrupted placement or registration. Retry preserves its identity and contents; it does not generate a duplicate.</RR_EvidenceRecovery_Explanation>
+  <RR_EvidenceRecovery_Held>Original documents held pending placement: {0}</RR_EvidenceRecovery_Held>
+  <RR_EvidenceRecovery_Identity>Coordinate: {0} · Original: {1}</RR_EvidenceRecovery_Identity>
+  <RR_EvidenceRecovery_NoOriginal>no returned object recorded</RR_EvidenceRecovery_NoOriginal>
+  <RR_EvidenceRecovery_Locate>Inspect visible original document</RR_EvidenceRecovery_Locate>
+  <RR_EvidenceRecovery_Retry>Retry the same original document</RR_EvidenceRecovery_Retry>
+</LanguageData>

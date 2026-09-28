@@ -1,8 +1,11 @@
 # Phase 3 first procurement increment
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** implementation-ready task definition; procurement code and runtime behavior are not implemented or verified. Scope is one local Async Industries headquarters purchase flow, built on Core. It does not implement multiplayer shipping, outposts, vehicles, a dynamic economy, or the full long-term supplier network.
 
-**Start condition:** implement this Phase 3 increment after Gate 2 passes under the [master TODO](../PREPRODUCTION_AND_IMPLEMENTATION_TODO.md). This source preparation was completed while the first owner-launched 0.2.0 acceptance session remained pending; it does not close that gate or authorize an agent game launch.
+**Current start condition:** source implementation proceeds under the owner's [build-continuation direction](../GATE_0_DECISIONS.md#build-continuation-and-deferred-game-testing) while game testing is deferred. The [company wave](PHASE_3_BUILD_RECORD.md) records actual work; this source-preparation task closes no runtime gate and authorizes no game launch.
 
 **Feature route:** `RR-ECO` owns quotes, orders, USD charges/refunds and receipts; `RR-FAC` owns physical receiving and native hauling; `RR-UI` exposes the order flow; `RR-COMPAT` preserves Core-only play and treats profile storage mods as optional. The relevant profile interactions are row 157 OgreStack and optional storage rows 122 LWM's Adaptive Deep Storage and 259 Warehouse Storage. These rows are test context, not dependencies.
 

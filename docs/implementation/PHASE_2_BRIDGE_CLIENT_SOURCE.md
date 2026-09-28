@@ -1,5 +1,8 @@
 # Phase 2 RimBridge direct-client source review
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Checked:** 2026-09-28. **Scope:** release-shipped RimBridgeServer/GABP source behavior and a bounded read-only QA client. This is static inspection of the staged v2.1.1 assemblies. The client has not been connected to a live bridge; RimWorld has not been launched or tested here.
 
 ## Inspected release assemblies

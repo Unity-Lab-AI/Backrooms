@@ -1,5 +1,8 @@
 # Pre-production acceptance standard
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 This standard turns the project's “AAA-grade” quality goal into observable pass conditions. It is a target for a RimWorld mod team, not a claim that the project has studio-scale resources. A criterion is complete only when the evidence is saved and linked from [FEATURE_TRACEABILITY.md](../FEATURE_TRACEABILITY.md) or the relevant release report.
 
 ## Gate 0 evidence acceptance

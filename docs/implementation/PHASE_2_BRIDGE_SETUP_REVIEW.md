@@ -1,5 +1,8 @@
 # Phase 2 RimBridgeServer setup review
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Checked:** 2026-09-28. **Scope:** publisher release metadata, verified local QA staging, and the attach-only plan for a future owner-launched acceptance run. The official RimBridgeServer v2.1.1 archive was downloaded, its SHA-256 matched the publisher API digest, and its 17 files were staged with per-file hash comparisons recorded. RimBridgeServer was not enabled in a RimSort profile; no profile configuration was changed; RimWorld was not launched; no bridge connection or game/test run occurred. Local staging evidence is linked below.
 
 ## Current publisher metadata

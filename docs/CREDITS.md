@@ -1,5 +1,8 @@
 # Credits and distribution scope
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Rimrooms - Async Industries — Operator.** Original project source is supplied under [MIT](../LICENSE). The original typographic package card uses the same project license, recorded separately in the [provenance register](research/provenance-register.csv). Its drawing script uses system Arial at render time; no font file is distributed.
 
 RimWorld and its installed engine/game assemblies are supplied by Ludeon Studios and their respective owners. They are local build/runtime requirements and are not bundled. This project is a mod for RimWorld; no endorsement is implied.

@@ -1,5 +1,8 @@
 # Rimrooms - Async Industries
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](docs/CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Rimrooms - Async Industries** is a RimWorld 1.6 company-management campaign about building and operating an organization that investigates, contains, and profits from unstable spaces beyond a machine gate.
 
 The planned default campaign begins with a small facility, limited supplies, and an unreliable gate. Later planned openings let players choose a furniture-and-knickknack store breach or begin as a lone survivor already inside a seeded Backrooms coordinate. The openings differ, then feed into shared systems for exploration, evidence, threats, recovery, and expansion. See the [scenario framework](docs/SCENARIOS.md).
@@ -10,11 +13,11 @@ The scenario opening cards live in [`docs/SCENARIOS.md`](docs/SCENARIOS.md); the
 
 ## Build and installation
 
-**Current build: 0.2.0 development slice.** The company start, gate, saved first destination, crew and cargo recovery, corridor encounter, physical evidence analysis and company research are implemented. Operations connects those actions to the actual staff, equipment and records. Compilation succeeds; gameplay acceptance and the full campaign remain in progress. The [current build record](docs/implementation/PHASE_2_BUILD_RECORD.md) identifies remaining work and exact evidence.
+**Current development version: 0.3.0-dev.** This adds applicant hiring, procurement of physical native goods, facility observations, a designated native research bench, Core-book evidence custody and the original menu slideshow to the earlier expedition slice. The [current build record](docs/implementation/PHASE_3_BUILD_RECORD.md) records the exact compiler/package result, source paths and remaining work. Existing-content replacement, the full campaign and runtime acceptance remain in progress; no game launch is required to continue independent implementation.
 
 - [Build and staging instructions](docs/BUILDING.md) — pinned local references, locked restore, copyable package, safe updates and RimSort discovery.
 - [First owner-launched session](docs/implementation/PHASE_2_OWNER_LAUNCH.md) — staged package identities, separate QA bridge and RimSort launch steps.
-- [Current build evidence and next work](docs/implementation/PHASE_2_BUILD_RECORD.md) — implementation/source map, compiler/package records and remaining owner-launched acceptance; [historical foundation](docs/implementation/PHASE_1_BUILD_RECORD.md).
+- [Current build evidence and next work](docs/implementation/PHASE_3_BUILD_RECORD.md) — company operations, content reuse and menu implementation; [earlier expedition slice](docs/implementation/PHASE_2_BUILD_RECORD.md) and [historical foundation](docs/implementation/PHASE_1_BUILD_RECORD.md).
 - [Contributor guide](CONTRIBUTING.md), [changelog](CHANGELOG.md), [credits](docs/CREDITS.md), [save policy](docs/SAVE_MIGRATION_POLICY.md), and [bug report form](.github/ISSUE_TEMPLATE/bug_report.yml).
 
 Build a clone before copying `Mod/Rimrooms - Async Industries/`; generated DLLs are not committed. This development package needs Core only. Future co-op requires the documented Harmony/RWT stack; no optional integration is yet cleared. The owner alone activates, sorts and launches through RimSort. Preserve the full 295-entry product target and count the QA bridge separately.

@@ -1,5 +1,8 @@
 # Phase 2: final bounded source findings
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Reviewed 2026-09-28.** Read-only review of Generation, Audio/settings, root Operations clue/salvage/report routes, and gate/threat cue call sites. Features: RR-SPACE, RR-EXP, RR-EVD, RR-GATE, RR-THREAT, RR-STYLE, RR-UI. No code fixes, tests, build, game launch or audio playback were performed by this reviewer. In-progress failed-site recovery work and its possible planner wrapper are excluded; this is not their final review.
 
 Sources remain pinned Core row 4, `Ludeon.RimWorld`, assembly SHA-256 `5CF1B5BE399D5B1C9C56CA72C9D35B4ECF307FEACF5859D04AC5A1AA5926356A`, local ILSpy 9.1.0.7988. Read the [destination implementation](PHASE_2_DESTINATION_IMPLEMENTATION.md), [audio source review](PHASE_2_AUDIO_SOURCE_REVIEW.md), [audio implementation](PHASE_2_AUDIO_IMPLEMENTATION.md), [procedural discovery contract](../PROCEDURAL_SPACE_CONTRACT.md#discovery-and-fog-of-war), and [first threat sheets](../THREAT_DESIGN_SHEETS.md).

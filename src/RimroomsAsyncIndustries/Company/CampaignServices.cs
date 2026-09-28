@@ -155,7 +155,8 @@ namespace RimroomsAsyncIndustries.Company
                 {
                     foreach (StaffRecord member in staff)
                     {
-                        if (member.employed && member.pawn != null && !member.pawn.Dead && !member.pawn.Destroyed)
+                        // A catch-up invoice must not bill a new arrival for cutoffs before its hire.
+                        if (member.employed && member.hiredTick < nextOperatingCostTick && member.pawn != null && !member.pawn.Dead && !member.pawn.Destroyed)
                         {
                             wages = checked(wages + member.dailyWageUsd);
                         }

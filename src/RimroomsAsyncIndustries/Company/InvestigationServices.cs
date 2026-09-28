@@ -20,38 +20,37 @@ namespace RimroomsAsyncIndustries.Company
         {
             if (!CanOperate || coordinate == null || !coordinates.Contains(coordinate))
             { return CompanyActionResult.Refused("RR_Company_Inactive"); }
+            RimroomsEvidenceCreationComponent creation = Current.Game == null ? null : Current.Game.GetComponent<RimroomsEvidenceCreationComponent>();
+            if (creation == null) { return CompanyActionResult.Refused("RR_Evidence_InvalidRecord"); }
+            CompanyActionResult creationReady = creation.Readiness();
+            if (!creationReady.Success) { return creationReady; }
             EvidenceRecord prior = FindEvidence(coordinate.id + ":evidence:route");
             if (prior != null)
             {
                 // A missing/destroyed recording remains a loss. Reopening a site must still be possible.
                 if (prior.analyzedTick < 0 && (prior.item == null || prior.item.Destroyed)) { prior.status = EvidenceStatus.Missing; }
-                return CompanyActionResult.Existing();
+                return creation.ReconcileRegistered(prior);
             }
-            Map map = coordinate.site == null ? null : coordinate.site.Map;
-            if (map == null) { return CompanyActionResult.Refused("RR_Evidence_SiteUnavailable"); }
-            ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail("RR_RouteRecording");
-            if (definition == null) { return CompanyActionResult.Refused("RR_Evidence_InvalidRecord"); }
-            // Recover a physical spawn whose record-registration was interrupted; do not mint another.
-            var physical = map.listerThings.ThingsOfDef(definition);
-            if (physical.Count == 1) { return RegisterRouteRecording(coordinate, physical[0]); }
-            if (physical.Count > 1) { return CompanyActionResult.Refused("RR_Company_ReceiptMismatch"); }
+            RimroomsDestinationMapParent site = coordinate.site as RimroomsDestinationMapParent;
+            Map map = site == null ? null : site.Map;
+            if (map == null || !site.LayoutReady || site.CoordinateId != coordinate.id)
+            { return CompanyActionResult.Refused("RR_Evidence_SiteUnavailable"); }
+            if (!cases.Any(c => c.coordinateId == coordinate.id)) { return CompanyActionResult.Refused("RR_Evidence_InvalidRecord"); }
             RoomRecord office = coordinate.rooms.FirstOrDefault(r => r.familyId == "office_copy");
             if (office == null) { return CompanyActionResult.Refused("RR_Evidence_NoSafeSlot"); }
-            IntVec3 cell = (coordinate.site as RimroomsDestinationMapParent)?.OfficeEvidenceCell ?? IntVec3.Invalid;
-            if (!cell.IsValid || !office.Bounds.Contains(cell) || !cell.InBounds(map) || !cell.Standable(map) || cell.GetFirstItem(map) != null)
+            IntVec3 cell = site.OfficeEvidenceCell;
+            if (!cell.IsValid || !office.Bounds.Contains(cell) || !cell.InBounds(map) || !cell.Standable(map))
             { return CompanyActionResult.Refused("RR_Evidence_NoSafeSlot"); }
-            try
-            {
-                Thing recording = ThingMaker.MakeThing(definition);
-                GenSpawn.Spawn(recording, cell, map);
-                recording.SetForbidden(false, false);
-                return RegisterRouteRecording(coordinate, recording);
-            }
-            catch (Exception error)
-            {
-                Log.Error("[Rimrooms][Evidence] Retained site after recording placement failure: " + error);
-                return CompanyActionResult.Refused("RR_Evidence_NoSafeSlot");
-            }
+            string id = coordinate.id + ":evidence:route";
+            if (creation.HasAttempt(id)) { return creation.EnsureOriginal(this, coordinate, map, cell); }
+            // A normal textbook is never inferred to be evidence. Recover only this bound identity,
+            // or the one deliberately supported legacy carrier left before old registration completed.
+            var physical = map.listerThings.AllThings.Where(t =>
+                t.TryGetComp<CompRouteEvidence>()?.EvidenceId == id || (CompRouteEvidence.IsLegacyCarrier(t) &&
+                string.IsNullOrEmpty(t.TryGetComp<CompRouteEvidence>()?.EvidenceId))).ToList();
+            if (physical.Count == 1) { return RegisterRouteRecording(coordinate, physical[0]); }
+            if (physical.Count > 1) { return CompanyActionResult.Refused("RR_Company_ReceiptMismatch"); }
+            return creation.EnsureOriginal(this, coordinate, map, cell);
         }
 
         public CompanyActionResult RegisterRouteRecording(CoordinateRecord coordinate, Thing recording)
@@ -59,15 +58,23 @@ namespace RimroomsAsyncIndustries.Company
             if (!CanOperate) { return CompanyActionResult.Refused("RR_Company_Inactive"); }
             CompRouteEvidence comp = recording == null ? null : recording.TryGetComp<CompRouteEvidence>();
             CaseRecord caseRecord = coordinate == null ? null : cases.FirstOrDefault(c => c.coordinateId == coordinate.id);
-            if (coordinate == null || !coordinates.Contains(coordinate) || caseRecord == null || comp == null || recording.Destroyed || recording.stackCount != 1)
+            if (coordinate == null || !coordinates.Contains(coordinate) || caseRecord == null || comp == null ||
+                !CompRouteEvidence.IsSupportedCarrier(recording))
             { return CompanyActionResult.Refused("RR_Evidence_InvalidRecord"); }
             string id = coordinate.id + ":evidence:route";
             EvidenceRecord existing = FindEvidence(id);
             if (existing != null)
             {
-                return existing.item == recording && comp.EvidenceId == id ? CompanyActionResult.Existing()
+                return existing.item == recording && existing.itemLoadId == recording.GetUniqueLoadID() &&
+                    CompRouteEvidence.IsBoundRouteEvidence(recording, id) ? CompanyActionResult.Existing()
                     : CompanyActionResult.Refused("RR_Company_ReceiptMismatch");
             }
+            if (coordinate.site == null || !recording.Spawned || recording.Map != coordinate.site.Map ||
+                !recording.Map.listerThings.AllThings.Contains(recording) ||
+                !recording.Position.GetThingList(recording.Map).Contains(recording) ||
+                evidence.Any(e => e.item == recording || e.itemLoadId == recording.GetUniqueLoadID()) ||
+                (recording is Book book && (string.IsNullOrWhiteSpace(book.Title) || book.BookComp == null)))
+            { return CompanyActionResult.Refused("RR_Evidence_InvalidRecord"); }
             if (!comp.Initialize(id)) { return CompanyActionResult.Refused("RR_Company_ReceiptMismatch"); }
             evidence.Add(new EvidenceRecord { id = id, coordinateId = coordinate.id, caseId = caseRecord.id,
                 item = recording, itemLoadId = recording.GetUniqueLoadID(), status = EvidenceStatus.Located });
@@ -96,7 +103,7 @@ namespace RimroomsAsyncIndustries.Company
             return CanOperate && record != null && record.status == EvidenceStatus.Secured && record.analyzedTick < 0 &&
                 record.routeRecorded && record.distortionRecorded && record.item != null &&
                 !record.item.Destroyed && record.item.MapHeld == headquarters && HasSecuredEvidenceCase(record) &&
-                record.item.TryGetComp<CompRouteEvidence>()?.EvidenceId == record.id &&
+                record.item.GetUniqueLoadID() == record.itemLoadId && CompRouteEvidence.IsBoundRouteEvidence(record.item, record.id) &&
                 LaboratoryUtility.CanWork(analyst, bench, this, 4);
         }
 

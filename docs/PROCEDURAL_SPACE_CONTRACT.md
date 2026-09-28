@@ -1,8 +1,13 @@
 # Rimrooms - Async Industries: procedural space contract
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Status:** full-campaign design contract, version 0.1. The [current destination implementation](implementation/PHASE_2_DESTINATION_IMPLEMENTATION.md) records the bounded first-site subset, saved ownership, inspected Core APIs and remaining layout/fallback/capacity work. This contract defines the wider campaign's continuing discovery of finite, saved destinations. Room and event rules are original game design inspired by the selected series and film notes; they are not confirmed canon or runtime proof.
 
 **Feature route:** RR-SPACE, RR-EXP, RR-GATE, RR-MSN, RR-EVD, RR-THREAT, RR-OUT, and RR-STYLE in [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md). The implementation boundary and local 1.6 research are in [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md) and [RimWorld 1.6 generation findings](research/RIMWORLD_1_6_PACKAGE_AND_GENERATION.md). The first site uses the [AI-01 content inventory](FIRST_SLICE_CONTENT_INVENTORY.md), [first playable contract](FIRST_PLAYABLE_CONTRACT.md), and [starter threat sheets](THREAT_DESIGN_SHEETS.md).
+
+**Entry and return routes:** [the scenario/door contract](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) adds distinct configurable starts and physical paired door endpoints. An established portal recalls its saved coordinate/map rather than regenerating it; the proposed inside start begins in a saved Backrooms site before a real-world exit is revealed. Party/first-exit choices remain pending.
 
 ## Player-facing promise
 

@@ -1,10 +1,15 @@
 # Rimrooms - Async Industries: source and document register
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 This file is the navigation index for the research and design materials a future implementation agent must consult. Read it alongside [`AGENTS.md`](../AGENTS.md) and [`AI_BUILD_HANDOFF.md`](AI_BUILD_HANDOFF.md). Source observations, design interpretations, and unverified runtime behavior must stay clearly distinguished.
+
+**Latest owner design refinement:** [Scenario setup and physical door portals](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) links the three starts, Prepare Carefully row 85, Stargates! reference row 218 and the native-door/equipment network. This is design direction, not a compatibility or implementation result.
 
 ## Project source-of-truth documents
 
-**Current implementation entry:** [0.2.0 build/source map](implementation/PHASE_2_BUILD_RECORD.md), [Phase 2 task](implementation/PHASE_2_VERTICAL_SLICE_TASK.md), [build instructions](BUILDING.md), and [save policy](SAVE_MIGRATION_POLICY.md). The build map links exact Core reviews, actual code/package paths, original art records and remaining acceptance. The 0.1.0 record remains historical. Source/compilation evidence is separate from owner-launched gameplay evidence.
+**Current implementation entry:** [0.3.0-dev company build/source map](implementation/PHASE_3_BUILD_RECORD.md), [earlier 0.2.0 slice](implementation/PHASE_2_BUILD_RECORD.md), [build instructions](BUILDING.md), and [save policy](SAVE_MIGRATION_POLICY.md). The current map links personnel, procurement, facilities, native laboratory/book/audio reuse and the approved original menu presentation to their source records and exact file paths. Read [CONTENT_REUSE_POLICY.md](CONTENT_REUSE_POLICY.md) and the [remaining replacement map](implementation/EXISTING_CONTENT_REPLACEMENT_MAP.md) before extending historical custom objects. Source/compilation evidence is separate from owner-launched gameplay evidence.
 
 | Topic | Canonical document | Supporting documents |
 | --- | --- | --- |

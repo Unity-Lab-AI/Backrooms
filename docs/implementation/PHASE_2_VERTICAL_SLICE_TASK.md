@@ -1,5 +1,8 @@
 # Phase 2: Async Industries playable loop
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Authorized:** 2026-09-28, owner directed continued implementation through the complete mod. **Status:** in progress. The full completion objective remains active; this task is the next dependency in the [master TODO](../PREPRODUCTION_AND_IMPLEMENTATION_TODO.md#phase-2--code-architecture-and-safe-vertical-slice).
 
 ## Inputs and boundary

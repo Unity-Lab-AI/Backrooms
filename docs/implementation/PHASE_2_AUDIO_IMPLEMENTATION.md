@@ -1,5 +1,8 @@
 # Phase 2: quiet company cues implementation
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **Task assigned and implementation handed to the lead 2026-09-28.** Features RR-STYLE, RR-GATE and RR-EXP; Core profile row 4 (`Ludeon.RimWorld`) only. Inputs: [pinned audio source review](PHASE_2_AUDIO_SOURCE_REVIEW.md), [style brief](../research/VISUAL_AUDIO_STYLE_BRIEF.md#audio-direction), [accessibility requirements](../research/CONTENT_ACCESSIBILITY_BRIEF.md#accessibility-requirements), and the lead's [original audio manifest](assets/phase2-original-audio.json). Compilation is owned by the lead; no playback/runtime result is claimed here.
 
 Exclusive scope: new `Audio/RimroomsAudio.cs`, new `Core/RimroomsSettings.cs`, edits to `Core/RimroomsMod.cs`, new package `Defs/SoundDefs/RR_CompanyCues.xml`, and this report. User preferences are owned by native ModSettings, not campaign saves. Cue calls are optional presentation; missing assets/settings or playback exceptions must not block gameplay. Lead owns original WAVs, call sites, keyed text, package allowlist/provenance and compilation. No playback, tests, game launch or build is authorized to this agent.
@@ -11,7 +14,7 @@ Exclusive scope: new `Audio/RimroomsAudio.cs`, new `Core/RimroomsSettings.cs`, e
 | [RimroomsAudio.cs](../../src/RimroomsAsyncIndustries/Audio/RimroomsAudio.cs) | Optional positional native one-shots with source/view/Def/settings checks and bounded diagnostic warnings. |
 | [RimroomsSettings.cs](../../src/RimroomsAsyncIndustries/Core/RimroomsSettings.cs) | Native user-only gate/field mute preferences and normalized 0..1 cue volume. |
 | [RimroomsMod.cs](../../src/RimroomsAsyncIndustries/Core/RimroomsMod.cs) | Loads one settings class, exposes native mod-settings UI, normalizes before native write. Package title/identity are unchanged. |
-| [RR_CompanyCues.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/SoundDefs/RR_CompanyCues.xml) | Four original positional MapOnly SoundDefs bound to the lead-rendered WAVs. |
+| [RR_CompanyCues.xml](historical-content/0.2.0/1.6/Defs/SoundDefs/RR_CompanyCues.xml) | Four original positional MapOnly SoundDefs bound to the lead-rendered WAVs. |
 
 Public call:
 

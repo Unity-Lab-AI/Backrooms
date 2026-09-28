@@ -1,5 +1,8 @@
 # First-site interior presentation
 
+**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+
+
 **2026-09-28 — RR-SPACE, RR-STYLE.** Original room arrangements and material treatment for the [first-slice room inventory](../FIRST_SLICE_CONTENT_INVENTORY.md), following the [visual/audio brief](../research/VISUAL_AUDIO_STYLE_BRIEF.md). Runtime presentation remains unobserved.
 
 ## Source route
