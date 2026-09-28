@@ -8,7 +8,7 @@
 
 ## Starting offer
 
-Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquarters map, five staff in flexible roles, 900 company credits, 150 physical silver, a partially assembled gate, and the starter stock listed on that card. Start the scenario with the first project board visible and the next actionable step highlighted. Do not require a DLC, optional profile mod, RWT, or a named pawn to complete the solo first run.
+Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquarters map, five staff in flexible roles, 900 company credits, 150 physical silver, a partially assembled gate, the starter stock listed on that card, and one already-accepted onboarding survey contract. The provisional 240-credit reward is paid only after the survey requirements are recorded as complete. Start with the project board visible and the next actionable step highlighted. Do not require a DLC, optional profile mod, RWT, or a named pawn to complete the solo first run.
 
 | Measure | v0.1 starting target | Player-facing meaning |
 | --- | --- | --- |
@@ -24,10 +24,10 @@ Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquar
 
 1. The player sees the facility, staff, gate chamber, stock, and a short explanation of the company account versus physical trade goods.
 2. The player confirms enough power is available, assigns a qualified gate operator, and completes the gate with the listed physical materials.
-3. The player selects three available staff, checks their equipment and return plan, and reads a mission card for coordinate `AI-01`.
+3. The player selects three available staff, checks their equipment and return plan, and reads the accepted survey's mission card for coordinate `AI-01`.
 4. The crew enters a deterministic 6–8-room site. A visible environmental tell provides time to respond; the crew can record it, collect one evidence lead, or recall early.
 5. The crew returns through a validated route before the gate window ends. Evidence is sealed in the facility, linked to `AI-01`, and analyzed by a researcher.
-6. The player receives the provisional payment and insight, then chooses a local gate-telemetry project or a small paid survey contract. Either choice points to a second expedition.
+6. After the survey requirements are recorded, the player receives the provisional payment and insight, then chooses a local gate-telemetry project or a follow-on survey contract. Either choice points to a second expedition.
 
 ## Gate and expedition rules for the prototype
 
