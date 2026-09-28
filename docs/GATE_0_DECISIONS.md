@@ -65,7 +65,7 @@ The marked boxes below are recorded as owner selections. Where multiple compatib
 - [ ] **C:** treat all reviewed material as high-level inspiration and make nearly all named characters, events, dialogue, and storylines original.
 - [x] **D — Selected with owner clarification:** adapt the canon, lore, themes, and styles indirectly; do not directly recreate specific scenes or characters based on this selection.
 
-The owner's stated MIT/court-case rights premise is retained as an owner-provided assertion, not as a verified legal finding. Before distribution, Gate 0 still records the source and license/provenance for each borrowed or recreated name, text, design, image, sound, and other asset. This research check is not an invitation to silently narrow the requested creative scope.
+The owner's stated MIT/court-case rights premise is retained as an owner-provided assertion, not as a verified legal finding. The source/provenance register and feature-source routes are part of Gate 0; complete per-asset source and license records for any future borrowed or recreated name, text, design, image, sound, or other asset before distribution. Asset creation and release permissions are later production/release work, not an open Gate 0 item. This research check is not an invitation to silently narrow the requested creative scope.
 
 ### D6. How players exchange technology
 
@@ -73,7 +73,7 @@ The owner's stated MIT/court-case rights premise is retained as an owner-provide
 - [x] **B — Selected:** also share unlocked research through a shared ledger, but only if the pinned RWT build exposes a supported extension point and testing confirms safe synchronization.
 - [ ] **C:** support both transferable dossiers and direct shared unlocks when feasible.
 
-**Combined owner answer:** support both tradeable dossiers and direct shared research when RWT has a supported, tested extension point. If shared-ledger synchronization is unsupported or unsafe, retain dossier exchange and leave direct sharing disabled. RWT feasibility remains a Gate 0 research/test task.
+**Combined owner answer:** support both tradeable dossiers and direct shared research when RWT has a supported extension point and synchronization is demonstrated safe. If shared-ledger synchronization is unsupported or unsafe, retain dossier exchange and leave direct sharing disabled. Gate 0 records the source/configuration research and prepares the acceptance plan; run multiplayer workflow tests only after a Rimrooms build exists.
 
 ### D7. First-release language and standalone play
 
@@ -109,7 +109,7 @@ On 2026-09-27, the owner approved fan-made episode summaries and movie plot summ
 
 ## Choices not delegated to the owner
 
-These are execution work, not questions: identify the exact RimWorld/RWT/Harmony builds; inspect all 294 exact mod pages and relevant installed metadata/source; verify required RWT transfer/visit/scenario/save behavior; retain the completed 23-entry fan-summary notes and separate first-pass fan movie note; preserve the documented supplemental-clip scope boundary; complete the feature/mod/lore/style/file traceability map; record DLC and gravship dependencies; and produce reproducible evidence. Direct viewing is needed only for unresolved, design-critical story details. They are tracked in [Phase 0 of the master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md#phase-0--pre-code-blockers-and-research).
+These are execution work, not owner questions: the exact RimWorld/RWT/Harmony builds, 294 source reviews, 23-entry fan-summary notes, separate first-pass fan movie note, supplemental-clip scope, feature/mod/lore/style/file traceability, DLC and gravship dependencies, source maps, and post-build acceptance plans are recorded. Runtime RWT transfer/visit/scenario/save behavior and reproducible gameplay evidence are deliberately scheduled only after a Rimrooms build exists. Direct viewing is needed only for unresolved, design-critical story details. Gate 0 completion and the Phase 1+ follow-up work are tracked in [the master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
 
 ## Decision log
 
@@ -124,3 +124,6 @@ These are execution work, not questions: identify the exact RimWorld/RWT/Harmony
 | D7 | A — English first/localization-ready; solo Core path; RWT co-op | 2026-09-27 | TODO, technical architecture, build plan |
 | D8 | A — MIT for original source code; assets tracked/licensed separately | 2026-09-27 | TODO, provenance plan, package checklist |
 | D9 | A + customized C — mature psychological horror; strongest presentation the game/profile supports | 2026-09-27 | TODO, game design, style and content briefs |
+| S1 — supplemental content scope | B — freeze broad later threat/anomaly families; defer the five names in the roster to later content reviews. The names are not approved roadmap or release commitments. | 2026-09-28 | TODO, campaign roster, content catalog |
+
+**S1 detail:** the owner selected option B for the later threat roster. Freeze the broad threat/anomaly families only; treat the five named entries in `CAMPAIGN_ROSTER_FREEZE.md` as deferred sketches. Revisit a named threat for owner approval and complete its feature sheet before adding it to a later implementation scope. This does not alter the authored first-slice route distortion or hostile encounter.

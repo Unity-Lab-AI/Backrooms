@@ -1,16 +1,16 @@
-# RimWorld Together pre-code baseline test plan
+# RimWorld Together post-build acceptance test plan
 
-**Status:** prepared; no runtime cases have been run. This is a run sheet, not compatibility evidence.
+**Status:** post-build acceptance run sheet prepared; no multiplayer workflow result is claimed. Do not run these in-game cases before a Rimrooms build exists. The owner prepares and launches each profile through RimSort; RimBridgeServer attaches afterward.
 
 ## Purpose and boundary
 
-Check the existing RWT workflows needed for the project's asynchronous, separate-facility design before Rimrooms code exists. Use a disposable server and saves. The pinned local game, DLC, Harmony, RWT client/server builds, hashes, and 294-entry profile are recorded in [RWT_AND_GRAVSHIP_FEASIBILITY.md](RWT_AND_GRAVSHIP_FEASIBILITY.md).
+Check the existing RWT workflows needed for the project's asynchronous, separate-facility design after a Rimrooms build exists and before advertising co-op support. Use a disposable server and saves. The pinned local game, DLC, Harmony, RWT client/server builds, hashes, and pre-Rimrooms 294-entry profile are recorded in [RWT_AND_GRAVSHIP_FEASIBILITY.md](RWT_AND_GRAVSHIP_FEASIBILITY.md). The first project test is the full 295-entry product target; then prepare a focused RWT profile containing Rimrooms, Core, Harmony, and RWT in RimSort. Record RimBridgeServer as a separate QA overlay and use the [RimSort package/launch plan](RIMSORT_PACKAGE_AND_LAUNCH_PLAN.md) and [bridge plan](RIMBRIDGE_TEST_HARNESS.md) for owner-operated launch and evidence capture.
 
 The owner selected Questionable Ethics Enhanced (profile row 182) and Medical Dissection (row 274) for the candidate RWT test despite their publishers' multiplayer warnings. Both remain optional. Their inclusion is test scope, not proof of compatibility or a co-op requirement.
 
 The local server snapshot has `Aid.json` and `Trade.json` enabled, each with cooldown 250. It has no local Visit/Activity action file or `EnableActivities` setting, so offline-visit availability must be checked on a disposable server. `ScenarioConfig.json` enforces `Crashlanded`; use a separate disposable configuration variant when testing mixed starts. The live server configuration is not part of these experiments. The official [trading guide](https://rimworldtogether.wiki.gg/wiki/Trading) says direct trades and gifts require both players online; its drop-pod instructions do not specify whether an offline recipient receives cargo, so RWT-10 checks that separately. The audit records the exact setting-file hashes.
 
-Do not test custom Rimrooms starts, a Rimrooms dossier, or shared research before those features exist. Keep shared research disabled unless a supported RWT extension and its later synchronization tests are established. A full ordered 294-profile compatibility run is a separate release-stage check.
+Run the custom Rimrooms starts, dossier transfer, and any shared-research case only after those features exist. Keep shared research disabled unless a supported RWT extension and its synchronization tests are established. A full ordered 294-profile compatibility run is a separate release-stage check.
 
 ## Candidate profiles
 
@@ -18,12 +18,22 @@ Keep the same RimWorld build, DLC state, Harmony/RWT versions, server settings, 
 
 | Profile | Contents | Why it is tested |
 | --- | --- | --- |
-| RWT-BASE | Core + Harmony + RimWorld Together | Check the existing co-op workflow without optional mods. |
+| RWT-BASE | Core + Rimrooms + Harmony + RimWorld Together | Check the Rimrooms co-op route without other optional mods. |
 | RWT-QEE | RWT-BASE + Questionable Ethics Enhanced (row 182) | Test the owner's selected warning-mod candidate on its own. |
 | RWT-MD | RWT-BASE + Medical Dissection (row 274) | Test the owner's selected warning-mod candidate on its own. |
 | RWT-QEE-MD | RWT-BASE + both rows 182 and 274 | Check the selected pair together after the isolated runs. |
 
 Use a fresh disposable world per profile. If a mod needs DLC or another dependency, record and match that requirement on both clients and the server. Do not remove Medical Dissection from a save after performing a dissection; its publisher warns that removal may be unsafe.
+
+## Disposable setup and recovery
+
+1. Copy the local RWT server directory/configuration and selected client mod profile to a disposable test location. The owner stages/sorts each client profile in RimSort and starts both clients there; never edit or launch the live server configuration for these cases.
+2. Record hashes for both client profiles and the disposable server config. Match RimWorld executable/Core hashes, runtime build, DLC, Harmony, RWT version, ordered package IDs, and settings on both clients; use one fresh world per profile.
+3. Start only the disposable server, connect the two clients, and make named branch/save copies before each case. Record the case ID, profile, save identity, and relevant settings in the evidence note.
+4. After each case, save both branches, disconnect/reconnect, and restart the disposable server where the case calls for recovery. Compare item/pawn state and owner records with the before-state.
+5. Preserve logs and the untouched source server/configuration; archive the disposable saves and evidence note together.
+
+Mixed-start cases require a separate disposable copy of the scenario setting. Restore the original value after the experiment and document the result; do not change the live server.
 
 ## Test cases
 
@@ -46,8 +56,8 @@ Record the exact RWT settings used for visits, trade, and aid. The current local
 
 For every case, save:
 
-- date, tester, server/client device labels, RimWorld and DLC state;
-- RWT client/server build and file hashes, Harmony version, ordered profile IDs, and the profile label above;
+- date, tester, server/client device labels, RimWorld/DLC and RimSort state;
+- RWT client/server build and file hashes, Harmony version, ordered target profile IDs, separate RimBridgeServer QA overlay IDs, and the profile label above;
 - relevant server settings and whether they were changed for this run;
 - branch/save names or hashes, action steps, before/after pawn and item counts, and observed result;
 - client and server log paths, errors/desyncs, reconnect/restart steps, and a short conclusion.
@@ -61,4 +71,4 @@ For every case, save:
 
 Create a separate dated evidence note for each completed profile row so each case can record its own observed result, logs, and save identity.
 
-A failed optional-mod case must be reported as a known limit for that tested profile; do not silently remove the mod from the owner's requested candidate or describe the run as compatible. A failed base workflow is a Gate 0 blocker for relying on that workflow in the co-op contract. Custom-item transfer, Rimrooms scenario support, and shared-ledger synchronization remain post-code acceptance tests.
+A failed optional-mod case must be reported as a known limit for that tested profile; do not silently remove the mod from the owner's requested candidate or describe the run as compatible. A failed base workflow blocks any co-op support claim for that workflow until it is resolved. Custom-item transfer, Rimrooms scenario support, and shared-ledger synchronization remain post-code acceptance tests.

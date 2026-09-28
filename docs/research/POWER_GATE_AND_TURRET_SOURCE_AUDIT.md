@@ -38,13 +38,15 @@ Together these systems touch vanilla map power, incident chances, generation, st
 - **All Turrets Can Set Forced Target, row 29:** the reviewed source patches `Building_TurretGun.get_CanSetForcedTarget` and conditionally covers a Combat Extended class. The exact profile turret classes covered at runtime are not established. Rimatomics adds its own turret/defense content, so forced-target controls need an in-game class-by-class check.
 - **Stargates!, row 218:** the installed 1.6 XML defines transporter-based sites, a custom powered/explosive gate component, and a world component saving addresses. Source patches map-removal checks, caravan gizmos, carrying-pawn transport options, and raid arrival. The inspected source license is GPL-3.0. This is a separate portal system, not a Rimrooms dependency or an approved code/asset source; optional coexistence is a distinct test.
 
-## Required disposable checks
+## Post-build acceptance checks
 
-1. Establish gate startup, cutoff, power-loss response, and recovery on Core power alone.
+**Status:** test cases prepared; no game run is planned before the Rimrooms build exists. The owner stages/sorts the full 295-entry product target in RimSort and launches the first test; RimBridgeServer is a separately recorded QA overlay attached afterward. See the [RimSort plan](RIMSORT_PACKAGE_AND_LAUNCH_PLAN.md) and [bridge plan](RIMBRIDGE_TEST_HARNESS.md) for setup/evidence.
+
+1. Use representative vanilla power consumers on Core alone to record startup, cutoff, power-loss response, and recovery; then test the built Rimrooms gate against its specified power budget and failure behavior.
 2. Add each power/storage mod separately, then test the selected combinations with incident settings on and off, including construction, deconstruction, and save/load.
 3. Check whether Efficient Batteries definitions actually load in the pinned 1.6 profile and record their in-game values.
 4. Record Rimatomics/Rimefeller assembly resolution and startup logs before testing any RWT action with that pair.
 5. Test forced-target controls on vanilla and selected-profile turrets, including Rimatomics turrets where they are available.
 6. If optional Stargates! coexistence remains in scope, test site/map creation and removal, pawns/cargo, raid arrivals, save/load, and a separate two-client RWT profile.
 
-No runtime case above has been run. Keep the Rimrooms gate native and independent. Continue to preserve a Core-only path and treat every profile mod as optional until its exact behavior has test evidence.
+No runtime case above has been run. Keep the Rimrooms gate native and independent. Preserve a Core-only path and treat every profile mod as optional until its exact behavior has test evidence.

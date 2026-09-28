@@ -55,7 +55,7 @@ Use sources for the actual project being targeted. The separate `rwmt/Multiplaye
 
 ## Open research work
 
-- The first-pass Kane fan story notes are complete in [`research/KANE_PIXELS_FAN_CLIFF_NOTES.md`](research/KANE_PIXELS_FAN_CLIFF_NOTES.md). Consult direct creator sources only to answer unresolved questions that affect a planned feature; separately decide whether the two hidden-clip leads belong in project scope.
+- The first-pass Kane fan story notes are complete in [`research/KANE_PIXELS_FAN_CLIFF_NOTES.md`](research/KANE_PIXELS_FAN_CLIFF_NOTES.md). The scope decision keeps `Faultline.mov` as a separate unresolved companion lead and excludes `Simpsons` from shipped scope. Consult direct creator sources only to answer unresolved questions that affect a planned feature.
 - The first-pass A24 fan-summary story note is complete. Only use the optional chaptered fan recap or direct feature when a planned feature depends on a detail that the existing fan summary and official synopsis do not settle.
 - If a candidate motif has uncertain provenance, identify whether it belongs to Kane Pixels' continuity, the A24 feature, the broader community, or another contributor before deciding whether it fits the selected scope.
 - Test offline visits, cargo/pawn aid, scenario joining, and save/reconnect in the pinned RWT profile. Keep each player's facility and progression separate; only explore a Rimrooms-specific extension if a concrete feature needs one.

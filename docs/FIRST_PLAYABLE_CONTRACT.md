@@ -42,7 +42,7 @@ Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquar
 
 ## First-session acceptance evidence
 
-These are future in-game acceptance checks, not tests already run. Record the RimWorld build, DLC, ordered mod list, scenario seed, save, log, and observed result for each run. Use Core-only first; run the pinned Core+Harmony/RWT profile separately after its baseline exists.
+These are future in-game acceptance checks, not tests already run. The first post-build test is the full 295-entry product target (the existing 294 plus Rimrooms), sorted and launched by the owner through RimSort. For bridge-driven checks, RimBridgeServer is a separate QA overlay, normally bringing the actual loaded profile to 296 entries; record target and overlay IDs separately. After that initial full-profile startup, run the focused Core-only baseline and pinned Core+Harmony/RWT profile as separate RimSort-prepared cases. Record the RimWorld build, DLC, RimSort version, ordered mod lists, scenario seed, save, log, bridge version, and observed result for each run. The post-build [RimBridgeServer harness](research/RIMBRIDGE_TEST_HARNESS.md), [power/gate acceptance cases](research/POWER_GATE_AND_TURRET_SOURCE_AUDIT.md), and [physical-logistics plan](research/PHYSICAL_LOGISTICS_BASELINE_TEST_PLAN.md) do not verify the unimplemented Rimrooms gate, custom field kit, expedition cargo handling, or company shipment flow until those cases pass.
 
 | Case | Expected result |
 | --- | --- |

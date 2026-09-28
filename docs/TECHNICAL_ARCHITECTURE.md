@@ -2,7 +2,7 @@
 
 This is a design target, not a claim that these types or APIs have already been implemented. Verify exact names and signatures against the installed RimWorld 1.6 assemblies and the chosen RimWorld Together client release before writing production code.
 
-**Gate 0 decisions recorded:** private RWT prototype first; exact displayed title `Rimrooms - Async Industries`; author/publisher value `Operator`; package ID `UnityLabAI.RimroomsAsyncIndustries`; internal namespace `RimroomsAsyncIndustries`; semantic versions; Core-only solo path; optional support for all five DLC; other 294-profile mods optional; indirect adaptation of Kane Pixels/A24 references, with wider community canon excluded from shipped content; dossier transfer plus shared research ledger only if supported and safely tested; English-first localization-ready; MIT for original source code. The remaining Gate 0 work is research, design, and runtime feasibility—not unresolved owner direction.
+**Gate 0 decisions recorded:** private RWT prototype first; exact displayed title `Rimrooms - Async Industries`; author/publisher value `Operator`; package ID `UnityLabAI.RimroomsAsyncIndustries`; internal namespace `RimroomsAsyncIndustries`; semantic versions; Core-only solo path; optional support for all five DLC; other 294-profile mods optional; indirect adaptation of Kane Pixels/A24 references, with wider community canon excluded from shipped content; dossier transfer plus shared research ledger only if supported and safely tested; English-first localization-ready; MIT for original source code; and supplemental S1/B, which freezes broad later threat families and defers named sketches. Gate 0 documentation/source preparation passed; implementation prototypes and all in-game/runtime checks remain future Phase 1+ evidence.
 
 ## Runtime and package boundaries
 
@@ -10,28 +10,32 @@ This is a design target, not a claim that these types or APIs have already been 
 - Keep Royalty, Ideology, Biotech, Anomaly, and Odyssey as optional conditional integrations; the Core campaign remains complete.
 - Use the exact 294-entry profile as the full research/test target. Require only Core plus Harmony/RWT for the co-op path; all other profile mods remain optional.
 - Ship one main mod package initially. Keep content and code organized so future optional extension packages can be split out without changing saved identifiers.
+- Keep repository source under `src/` and make `Mod/Rimrooms - Async Industries/` the only loadable, copyable package root. Documentation, research, workbook, source files, build utilities, and evidence stay outside this folder; the packaging/staging script must copy only this root to RimSort's configured Local Mods directory.
+- The product target is the existing 294 entries plus Rimrooms (295). RimSort owns the load order and profile; the owner launches each session through RimSort. RimBridgeServer is a separate QA overlay, normally making the attached test profile 296 entries; it does not replace any target mod. GABS must not start or rewrite this project's test profile.
 - Use XML Defs for buildings, items, recipes, work types, research, quests, incidents, world objects, and language strings. Use C# only for systems that genuinely need custom state, generation, UI, or simulation.
 
 ## Suggested source layout once implementation begins
 
 ```text
-About/
-  About.xml
-  Preview.png
-Assemblies/
-  RimroomsAsyncIndustries.dll
-Defs/
-  Buildings/  Items/  Recipes/  WorkTypes/  Research/  Quests/
-  WorldObjects/  Incidents/  Pawns/  Areas/
-Languages/English/Keyed/
-Patches/
-Textures/  Sounds/
-Source/RimroomsAsyncIndustries.sln
-  Core/  Company/  Gate/  Expedition/  Generation/  Investigation/
-  Compatibility/RimWorldTogether/
+Backrooms/
+  docs/                              research and design; not packaged
+  outputs/                           planning workbooks; not packaged
+  src/RimroomsAsyncIndustries.sln    source project; not packaged
+    Core/ Company/ Gate/ Expedition/ Generation/ Investigation/
+    Compatibility/RimWorldTogether/
+  tools/                             build and Rimsort staging scripts; not packaged
+  Mod/
+    Rimrooms - Async Industries/     only copyable/loadable mod package
+      About/About.xml
+      LoadFolders.xml
+      1.6/Assemblies/                 built RimroomsAsyncIndustries.dll
+      1.6/Defs/                       buildings, items, work, research, quests, maps
+      1.6/Languages/English/Keyed/
+      1.6/Patches/                    narrow, package-guarded patches
+      1.6/Textures/  1.6/Sounds/     original assets
 ```
 
-The repository can include `Source/` and the mod's loadable `Assemblies/` output. Create `About/About.xml` with the selected title, package ID, version policy, and license when packaging begins. Set its author/publisher value to `Operator`.
+Create `About/About.xml` with the selected title, package ID, version policy, and license when packaging begins. Set its author/publisher value to `Operator`. Keep C# source outside the package; copy only build output and game assets into the package root. Use the [RimSort package/launch plan](research/RIMSORT_PACKAGE_AND_LAUNCH_PLAN.md) and [RimBridgeServer harness](research/RIMBRIDGE_TEST_HARNESS.md) for staging and post-build checks.
 
 ## State ownership and persistence
 
@@ -85,13 +89,13 @@ Design around RWT's advertised separate-colony model, not a presumed shared simu
 - Treat trade, gifting, visits, aid, and other world activities as unavailable until the exact client/server release and relevant server settings are reproduced. The official RWT wiki's activity and server-configuration descriptions are setup guidance, not runtime proof; see the linked official sources and the [baseline test plan](research/RWT_BASELINE_TEST_PLAN.md).
 - No documented supported RWT client extension API was identified in the 2026-09-27 source review. Public implementation classes such as `RTClient.Hooks.*` and `RTClient.Patches.*` are not stable extension hooks. Wiki-configurable JSON events and sites are a narrow server-configuration candidate only; verify their schema against a disposable copy of the pinned server. They do not establish a client API or shared research/ledger support.
 - Direct trade and gifts require both players online according to the official RWT trading guide. The guide also describes vanilla drop-pod transfers to another settlement, but does not establish whether an offline recipient receives the cargo; test this route before designing asynchronous supply shipments around it.
-- Treat physical Research Dossier transfer with local study as a conditional feature: first prove ordinary RWT item transfer before code, then test the custom dossier and receipt idempotency after the item exists. Keep shared research-ledger synchronization out of the first build unless a supported RWT extension and nonduplicating sync are demonstrated.
+- Treat physical Research Dossier transfer with local study as a conditional feature: after a Rimrooms build exists, the owner launches the disposable profile through RimSort and attaches RimBridgeServer for the ordinary RWT item-transfer check; then test the custom dossier and receipt idempotency after that item exists. Keep shared research-ledger synchronization out of the first build unless a supported RWT extension and nonduplicating sync are demonstrated.
 - Record transaction IDs and sender/receiver branch IDs to prevent duplicate company-account postings for a shipment. Use configured transfer spots and show failed/unrecognized cargo for recovery instead of deleting or duplicating it.
 - Seed a destination from its saved coordinate ID, generator version, and explicit mission inputs. Never make the two players independently recreate what is supposed to be one shared map; RWT visits and Backrooms expedition maps are distinct features.
 - Do not make outcomes depend on client-only UI, local wall-clock time, external web requests, or unsaved random draws.
 - Keep compatibility code behind one small adapter layer. Do not scatter multiplayer-specific checks throughout XML defs and gameplay systems.
 - Keep a Core-only solo path. The multiplayer path requires RimWorld Together and Harmony; the remaining 294-profile entries are optional.
-- Treat the scenario presets as alternate starting conditions over one data model, as specified in [`SCENARIOS.md`](SCENARIOS.md). Before code, test ordinary separate vanilla-started RWT branches; test Rimrooms scenario creation and mixed starts after those scenarios exist. Do not promise that clients can independently choose different Rimrooms starts until the pinned build demonstrates it.
+- Treat the scenario presets as alternate starting conditions over one data model, as specified in [`SCENARIOS.md`](SCENARIOS.md). After a Rimrooms build exists, the owner launches disposable vanilla-started RWT branches through RimSort and attaches RimBridgeServer for evidence capture; test Rimrooms scenario creation and mixed starts after those scenarios exist. Do not promise that clients can independently choose different Rimrooms starts until the pinned build demonstrates it.
 
 The older `rwmt/Multiplayer` compatibility wiki is for a distinct multiplayer project and should not be treated as proof of RimWorld Together behavior. Implement against a documented, supported RWT client extension API only if one is identified in future source review; none was identified in the 2026-09-27 audit.
 

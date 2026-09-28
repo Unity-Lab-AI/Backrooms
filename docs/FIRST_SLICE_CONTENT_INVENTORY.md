@@ -15,9 +15,9 @@ Use the canonical start card in [SCENARIOS.md](SCENARIOS.md): a 60×60 headquart
 | Machine | Incomplete gate frame, control console, emergency cutoff, utility generator, reserve battery | Finish assembly, verify power, assign an operator, open and recall once. |
 | Starting stock | 250 steel, 18 components, 2 advanced components, five days of food for the five staff, medicine for two serious treatments, two serviceable firearms, one protective vest | The final gate step uses 100 steel and 8 components. Existing stock covers the first expedition; no purchase is needed to complete it. |
 | Field kit | One recorder/radio, six numbered survey tags, one short return tether/beacon, one sealed evidence case, basic medical supplies, guard's firearm and vest | The crew can record a route, identify a changed doorway, request recall, stabilize a sample, and retreat. These are original Rimrooms items and need their own art, text, and Def records. |
-| Company records | Accepted AI-01 onboarding survey, branch-local credit ledger, coordinate card, first case record | Show what the company asked for, what the crew found, and why payment was posted. |
+| Company records | Accepted AI-01 onboarding survey, branch-local USD Company Account ledger, coordinate card, first case record | Show what the company asked for, what the crew found, and why payment was posted. |
 
-The field kit is a named clarification to the scenario inventory. Add it to the starter stock record before implementation. It must not silently duplicate physical stacks on reload.
+The named field-kit items are already included among the starting resources on the [`async_industries` scenario card](SCENARIOS.md); they are not an additional starting grant. Allocate those physical items to the field loadout exactly once, then record their return, consumption, damage, or loss normally. They must not silently duplicate on reload.
 
 ## First destination: AI-01
 
@@ -41,7 +41,7 @@ The generator selects compatible templates from these families; a valid map need
 - **Crew:** up to three field pawns; keep a qualified gate operator at headquarters.
 - **Objective:** map the assigned route, record the room count and distortion, recover the route recording, and return it to the facility.
 - **Timing:** one 20 in-game minute opening, with warnings at 10, 5, and 2 minutes remaining. Recall is always available before the final return limit.
-- **Cargo:** three-person field kits plus a small evidence case; optional furniture uses the displayed mass/carry limit. Exact limits are tuning hypotheses in the [first playable contract](FIRST_PLAYABLE_CONTRACT.md).
+- **Cargo:** one shared field loadout for the three-person crew, using the equipment quantities listed above and including its single sealed evidence case; optional furniture uses the displayed mass/carry limit. Exact limits are tuning hypotheses in the [first playable contract](FIRST_PLAYABLE_CONTRACT.md).
 - **Evidence:** one physical AI-01 Route Recording item and a linked case entry. It records contradictory room/timing observations without explaining the setting's cause.
 - **Contract result:** one $5,000,000 payment and one research insight for a valid extraction. An optional $1,000,000 bonus pays if all three crew return with the route, distortion, and entity-observation records. A recoverable injury does not cancel the bonus, and neither the bonus nor entity combat is required for contract completion. These are editable pre-code targets, not tested prices.
 - **Research follow-up:** Gate Telemetry is the first local project. It turns the recorded evidence into a concrete improvement to repeat-site planning. It consumes the earned insight and staffed research work; it does not require a DLC or another mod.
@@ -68,4 +68,6 @@ The fan notes for [The Backrooms (Found Footage)](research/KANE_PIXELS_FAN_CLIFF
 ## Implementation handoff
 
 For each content record, reserve a stable ID, localized label/description, owner, save key, required item/building/job, player-facing route, failure message, recovery path, optional-mod/DLC rule, and acceptance evidence before implementation. The first site's generated layout and threat state must survive save/load without rerolling or duplicating evidence. This inventory describes the target; it does not establish an API, asset license, compatibility result, or runtime acceptance.
+
+The first-slice feature owners, relevant reviewed 294-profile rows, source-backed provisional treatments, explicit deferrals, and pending FS-01–FS-07 acceptance checks are mapped in the [first-slice mod interaction map](research/FIRST_SLICE_MOD_INTERACTION_MAP.md).
 
