@@ -1,0 +1,44 @@
+Rimrooms - Async Industries 0.5.7-dev Release/net472 build.
+Zero warnings and zero errors with TreatWarningsAsErrors enabled.
+No game was launched, no test was run and no RimSort mod list was changed.
+
+Assembly SHA-256 7520EB990C16ACB609A25731D844FF989DB186B5DC4CF933BF4AFB2B1EEC43D2.
+
+Determinism, and a defect in the evidence ritual found and fixed at this
+checkpoint:
+
+The .NET SDK appends the git commit to AssemblyInformationalVersion by
+default. The assembly therefore embedded, literally,
+"0.5.7-dev+74ce5a5594a4e17e67844a450b31f8a853e52341", which made the assembly
+hash a function of the source AND the commit. Every evidence hash recorded in
+this repository before this checkpoint became unreproducible the instant its
+own commit was created, because creating that commit changed what a rebuild
+produces. The recorded hashes were honest measurements at the time and the
+clean-rebuild comparisons were real, but they could never be re-verified
+afterwards, which is most of the value of recording them.
+
+Fixed by setting IncludeSourceRevisionInInformationalVersion to false. The
+informational version is now exactly "0.5.7-dev" and the hash is a pure
+function of the source.
+
+Verified two ways rather than asserted:
+  * obj/ and bin/ deleted and the project fully recompiled: same hash.
+  * the same source rebuilt at two DIFFERENT HEAD commits (74ce5a5 and
+    efa5060): same hash both times, which is the property that was previously
+    absent and is the one the ritual actually depends on.
+
+Compliance checks passed mechanically: zero destructive patch operations, no
+texPath outside RR_, no ungated DLC package id, no declared modDependencies,
+no non-original asset in the approved package list.
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  RimroomsAsyncIndustries -> C:\Users\gfour\Desktop\Backrooms\src\RimroomsAsyncIndustries\bin\Release\net472\RimroomsAsyncIndustries.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.46
+Built UnityLabAI.RimroomsAsyncIndustries 0.5.7-dev: C:\Users\gfour\Desktop\Backrooms\Mod\Rimrooms - Async Industries
+Package contains 76 approved files. No game was launched.

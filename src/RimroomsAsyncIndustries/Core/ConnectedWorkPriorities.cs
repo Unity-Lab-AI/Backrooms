@@ -69,6 +69,8 @@ namespace RimroomsAsyncIndustries.Core
                 "RR_ConnectedCasualtyContinue", "RR_ConnectedCasualty"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyConstruction",
                 "RR_ConnectedConstructionContinue", "RR_ConnectedConstruction"),
+            new ConnectedWorkPriorityPair("RR_Settings_FamilyBill",
+                "RR_ConnectedBillContinue", "RR_ConnectedBill"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyFinishing",
                 "RR_ConnectedConstructionFinishingContinue", "RR_ConnectedConstructionFinishing")
         };

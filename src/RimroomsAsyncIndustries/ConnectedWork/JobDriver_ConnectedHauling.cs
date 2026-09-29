@@ -151,8 +151,29 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             return intent != null && intent.AdapterId == adapterId ? intent : null;
         }
 
+        /// <summary>
+        /// The families that finish through the shared storage-delivery drivers below. A
+        /// family belongs here when its cargo genuinely ends up in storage the destination
+        /// map's own settings accept — plain hauling, and a bill's ingredients, which land
+        /// in storage inside the bill's own ingredient search radius so Core's local bill
+        /// worker finds them exactly as it finds anything else.
+        /// </summary>
+        private static readonly string[] StorageDeliveryFamilies =
+        {
+            ConnectedWorkAdapters.StorageHauling,
+            ConnectedWorkAdapters.BillIngredients
+        };
+
         internal static ConnectedWorkIntent LiveHaulingIntent(Pawn pawn)
-        { return LiveIntentFor(pawn, ConnectedWorkAdapters.StorageHauling); }
+        {
+            ConnectedWorkIntent intent = LiveConnectedIntent(pawn);
+            if (intent == null) { return null; }
+            for (int index = 0; index < StorageDeliveryFamilies.Length; index++)
+            {
+                if (intent.AdapterId == StorageDeliveryFamilies[index]) { return intent; }
+            }
+            return null;
+        }
 
         /// <summary>
         /// One delivery outcome rule for both the cell and the container route, so the

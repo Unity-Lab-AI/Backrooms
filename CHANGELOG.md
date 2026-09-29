@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.7-dev - 2026-09-28 - ingredients reach a bill through a gate
+
+- A workbench whose bill is short of leather can now be supplied from the other side of a gate. A colonist picks up the real leather, carries it through, and puts it where the bill can reach it.
+- The crafting itself is untouched. Your colonist on that side finds the ingredients and runs the recipe with the game's own bill work, exactly as if the leather had always been there.
+- Deliveries land inside the bill's own ingredient radius, measured the same way the game measures it. So if you have deliberately kept a bill's radius small, the goods arrive near that bench rather than in some far-off stockpile.
+- Nothing crosses a gate if the ingredient is already within reach of the bench. A recipe that will accept two different materials also will not trigger a trip when one of them is already plentiful there.
+- Half-finished work is never picked up or carried. The game binds a part-made item to the one colonist who started it, so nobody else can finish it; carrying one anywhere would strand it.
+- The bill a delivery is for is remembered properly, so reordering your bill list mid-delivery does not redirect the goods to a different bill.
+- Medical, mechanitor and autonomous bills are not supplied yet, and each is named as its own future piece of work rather than quietly skipped.
+
+- The loaded mod version no longer has a long build identifier stuck on the end of it internally, which also means a given release of the mod now builds to a byte-identical file every time.
+
+Full record: [bill ingredients](docs/implementation/CONNECTED_BILLS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.5.6-dev - 2026-09-28 - tune how eagerly colonists cross a gate, while the game runs
 
 - You can now set how eagerly colonists cross a gate to work, for all four kinds of cross-gate errand, in the mod settings. Changes take effect the moment you close the window: no restart, no reload.

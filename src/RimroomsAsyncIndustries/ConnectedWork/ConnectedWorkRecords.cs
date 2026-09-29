@@ -1,3 +1,4 @@
+using RimWorld;
 using Verse;
 using RimroomsAsyncIndustries.Portals;
 
@@ -67,6 +68,13 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         private Thing finalTarget;
         private string finalTargetLoadId;
 
+        // The actual bill the ingredients are for, when the work belongs to one. Saved by
+        // reference, which is a supported pattern rather than an invention: Core's own
+        // UnfinishedThing does exactly this for its bound bill, because Bill implements
+        // ILoadReferenceable. Saving a recipe def and a stack index instead would silently
+        // retarget onto whatever bill occupied that slot after the player reordered them.
+        private Bill bill;
+
         private string connectionId;
         private string openingId;
         private long topologyRevision;
@@ -95,6 +103,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         public IntVec3 CandidateStoreCell { get { return candidateStoreCell; } }
         public Thing FinalTarget { get { return finalTarget; } }
         public string FinalTargetLoadId { get { return finalTargetLoadId; } }
+        public Bill Bill { get { return bill; } }
         public string ConnectionId { get { return connectionId; } }
         public string OpeningId { get { return openingId; } }
         public long TopologyRevision { get { return topologyRevision; } }
@@ -118,7 +127,8 @@ namespace RimroomsAsyncIndustries.ConnectedWork
 
         internal ConnectedWorkIntent(string id, string branchId, ConnectedWorkAdapter adapter, Pawn pawn,
             Thing sourceThing, Map storeMap, IntVec3 candidateStoreCell, int requestedCount,
-            Thing finalTarget, PortalRouteStep plannedStep, long topologyRevision, int tick, int leaseTicks)
+            Thing finalTarget, Bill bill, PortalRouteStep plannedStep, long topologyRevision,
+            int tick, int leaseTicks)
         {
             this.id = id;
             this.branchId = branchId;
@@ -135,6 +145,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             this.candidateStoreCell = candidateStoreCell;
             this.finalTarget = finalTarget;
             finalTargetLoadId = finalTarget == null ? null : finalTarget.GetUniqueLoadID();
+            this.bill = bill;
             if (plannedStep != null && plannedStep.Connection != null)
             {
                 connectionId = plannedStep.Connection.Id;
@@ -178,6 +189,18 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         /// a bed. Recorded in the final-target field, which is exactly what that field is
         /// for — the native object the work finally belongs to.
         /// </summary>
+        /// <summary>
+        /// The destination is a cell, but the work still belongs to an object — a bill's
+        /// ingredients land in storage near the bench, and the bench is still what the trip
+        /// is for. Distinct from <see cref="RecordResolvedStoreCell"/>, which clears the
+        /// target because plain hauling has none; calling that one here would erase the
+        /// bill giver and leave the readout describing a trip to nowhere.
+        /// </summary>
+        internal void RecordResolvedCellForTarget(IntVec3 cell)
+        {
+            candidateStoreCell = cell;
+        }
+
         internal void RecordResolvedTarget(Thing target)
         {
             finalTarget = target;
@@ -211,6 +234,8 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             Scribe_Values.Look(ref candidateStoreCell, "candidateStoreCell", IntVec3.Invalid);
             Scribe_References.Look(ref finalTarget, "finalTarget");
             Scribe_Values.Look(ref finalTargetLoadId, "finalTargetLoadId");
+            // Additive; absent from every save before the bill family.
+            Scribe_References.Look(ref bill, "bill");
             Scribe_Values.Look(ref connectionId, "connectionId");
             Scribe_Values.Look(ref openingId, "openingId");
             Scribe_Values.Look(ref topologyRevision, "topologyRevision", 0L);

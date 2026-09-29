@@ -4,6 +4,7 @@ using System.Linq;
 using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Core;
 using RimroomsAsyncIndustries.Portals;
+using RimWorld;
 using Verse;
 
 namespace RimroomsAsyncIndustries.ConnectedWork
@@ -291,7 +292,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         /// </summary>
         public ConnectedWorkIntent Open(ConnectedWorkAdapter adapter, Pawn pawn, Thing sourceThing,
             Map storeMap, IntVec3 candidateStoreCell, int requestedCount, Thing finalTarget,
-            PortalRouteStep plannedStep)
+            PortalRouteStep plannedStep, Bill bill = null)
         {
             RimroomsCampaignComponent campaign = Campaign;
             RimroomsPortalNetwork network = Network;
@@ -307,7 +308,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             string id = campaign.BranchId + ":work:" + adapter.AdapterId + ":" + nextSequence;
             if (intents.Any(intent => intent != null && intent.Id == id)) { return null; }
             var created = new ConnectedWorkIntent(id, campaign.BranchId, adapter, pawn, sourceThing,
-                storeMap, candidateStoreCell, requestedCount, finalTarget, plannedStep,
+                storeMap, candidateStoreCell, requestedCount, finalTarget, bill, plannedStep,
                 network.TopologyRevision, Find.TickManager.TicksGame, LeaseDurationTicks);
             intents.Add(created);
             nextSequence++;

@@ -769,3 +769,49 @@ Owner questions answered: 4. Deferments closed: 1 (balance review, closed by rem
 Binding decisions recorded: 6. Compliance owner questions raised: 3, none blocking.
 Blocked-on-owner rows remaining: **zero, by construction — the status no longer exists.**
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+---
+
+## Session — 2026-09-28 — ingredients reach a bill through a gate (0.5.7-dev)
+
+### Verbatim request
+
+> lets get to it
+
+### COMPLETED
+
+- [x] **The fifth cross-map work family: bill ingredient logistics.** A workbench stalled for want of an ingredient on one side is supplied from the other. `ConnectedBillAdapter`, two work givers in `Hauling` at 11 (continue) and 7 (plan), and **zero new JobDefs** — fetch reuses `RR_ConnectedFetch`, delivery reuses `RR_ConnectedDeliver`. Record `implementation/CONNECTED_BILLS_IMPLEMENTATION.md`.
+  - **What it adds over hauling is the trigger, not the destination.** Storage hauling moves an object when somewhere else is better storage for it; it has no opinion about what anyone wants to make. This family moves an object because a named bill on a named bench is short of it. That is the "physical ingredient logistics" half of the contract, and it is why the intent had to learn to record an actual `Bill`.
+  - **Delivery lands inside `bill.ingredientSearchRadius`, measured from the giver's `Position`** — exactly where Core's own ingredient validator measures from, read out of `WorkGiver_DoBill.TryFindBestIngredientsHelper` rather than guessed. The default radius is 999, so a cap of our own exists to stop one planning pass sweeping a whole map of cells; the bill's own radius is never exceeded. For a bill the player deliberately kept tight, this is the case ordinary hauling could never have served.
+  - No bill is ever started from here and nothing about crafting is reimplemented. Core's own `WorkGiver_DoBill` on that map finds the goods, allocates them with its own `TryFindBestBillIngredients`, and runs the recipe.
+- [x] **The `UnfinishedThing` trap avoided on purpose, with the evidence recorded so it stays avoided.** Core confirms the binding twice: `ClosestUnfinishedThingForBill` validates `Creator == pawn`, and `Bill_ProductionWithUft` binds `BoundUft` to a single `BoundWorker`. A part-made thing belongs to one colonist and **no other pawn may ever finish it**, so a cross-gate worker carrying one would be moving something nobody on either map is allowed to complete. The family delivers material and stops. Written into `DEFERRED.md` as out of scope **by design, not omission**, with an explicit warning that a later session must not "improve" this by adding UFT hauling.
+- [x] **Verified `ShouldDoNow()` is safe to ask about a remote bill rather than assuming it.** The whole candidate half depends on this. `Bill_Production.ShouldDoNow()` reads `suspended`, `repeatMode` and `repeatCount`, and for a target-count bill counts products through `Bill.Map` — which resolves to the **bill giver's own** map, falling back to its `MapHeld`. It consults no pawn and never touches the worker's map. So it is a fair question about a map nobody is standing on, and it is asked directly instead of reimplemented.
+- [x] **A real trap caught in the shortage calculation.** Presence is counted across **every** def the ingredient allows, not only the one being considered for carrying. A recipe accepting steel *or* plasteel, with plenty of steel by the bench, is short of nothing — counting only plasteel would have reported a shortage and sent somebody across a gate for nothing, repeatedly, because the situation is stable. That is exactly the kind of quiet permanent busywork that is hard to notice and harder to attribute. Required counts come from Core's own `IngredientCount.CountRequiredOfFor`.
+- [x] **The bill is saved by reference, on Core's own precedent.** `Scribe_References.Look` on a `Bill`, which is supported because `Bill` implements `ILoadReferenceable` — and **Core's own `UnfinishedThing` already does exactly this** for its bound bill. The alternative considered and rejected was a recipe def plus a stack index, which would silently retarget onto whatever bill occupied that slot after the player reordered the stack.
+- [x] **A second resolve method, because the first would have erased the bench.** `RecordResolvedStoreCell` clears `finalTarget` since plain hauling has none. A bill delivery has one — the bench — while still delivering to a cell, so `RecordResolvedCellForTarget` sets only the cell. Using the hauling one here would have left the Operations pane describing a trip to nowhere. Both are documented at the call site.
+- [x] **Generalised rather than copied.** `ConnectedWorkJobs.LiveHaulingIntent` was hard-locked to the storage-hauling family; it now accepts any family in a small declared list of those that genuinely finish by placing cargo into storage the destination map's own settings accept. Bills qualify because that is precisely what a bill delivery does. One delivery outcome rule still serves every family that shares it.
+- [x] **Bill types skipped are named with reasons, not silently omitted.** `Bill_Medical` needs the patient present and belongs to the tending family; `Bill_Autonomous` and `Bill_Mech` are state machines with their own gathering phases. Each needs its own source review before being supplied.
+- [x] **Added to the live settings screen** in the same change, so all ten cross-gate priority numbers remain player-tunable while the game runs — per the standing rule that anything tunable must not be a constant.
+- [x] **Found and fixed a defect in the evidence ritual itself, caught by checking rather than trusting.** A rebuild produced a *different* assembly from the one just recorded, with no source change. Cause: the .NET SDK appends the git commit to `AssemblyInformationalVersion`, so the assembly literally contained `0.5.7-dev+74ce5a5594a4e17e67844a450b31f8a853e52341` and **the hash was a function of the source and the commit**. Every evidence hash recorded in this repository before this checkpoint became unreproducible the instant its own commit was created — the measurements were honest and the clean-rebuild comparisons were real, but they could never be re-verified afterwards, which is most of the point of recording them. There was even a tell already in the source: `ResolveModVersion` strips everything after a `+`, which only matters if the commit is in there.
+  - Fixed with `IncludeSourceRevisionInInformationalVersion=false`. The informational version is now exactly `0.5.7-dev` and the hash is a pure function of the source.
+  - **Proven two ways, not asserted:** `obj/` and `bin/` deleted and fully recompiled gives the same hash; and the same source rebuilt at two *different* HEAD commits (`74ce5a5`, `efa5060`) gives the same hash both times — which is the property the ritual actually depends on and the one that was previously absent.
+  - Earlier evidence folders are left untouched as truthful records of what was built at those commits, with a note added to the checkpoint ritual in `NOW.md` so a future session does not conclude the build is broken.
+
+### Saved state
+
+The intent gained a `bill` reference inside the existing deep-saved `rr_connectedWorkIntents` list. Additive, no schema bump; absent from every earlier save and loading as null, which every other family already expects since only this one sets it. A 0.5.6-dev save loads unchanged.
+
+### Documents updated in the same change
+
+`implementation/CONNECTED_BILLS_IMPLEMENTATION.md` (new record), `DEFERRED.md`, `TODO.md`, `NOW.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.5.7-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **101** C# source files, **76** approved package files (unchanged — two work giver defs and three keyed strings added to files that already existed). Assembly SHA-256 `7520EB990C16ACB609A25731D844FF989DB186B5DC4CF933BF4AFB2B1EEC43D2`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. Evidence folder `implementation/evidence/bill-ingredients-2026-09-28/`. All 58 packaged XML files parse; 537 `RR_` keys referenced from source with 0 missing; 2,959 relative doc links resolve with 0 broken; every `giverClass` resolves; 0 attribution strings; all compliance checks pass. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Source files modified: 5. Package files modified: 3. Docs updated: 9 (1 new).
+Deferments closed: 1 (bills). Work families complete: 5 of the planned set. Core traps documented from source evidence: 3 (`UnfinishedThing` one-creator binding, remote `ShouldDoNow()` safety, multi-def shortage counting).
+Next: research across a gate, as a travel-to-work **deployment provider** rather than a carry adapter.
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.

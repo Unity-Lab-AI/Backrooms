@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
   <RR_ConnectedWork_HaulingLabel>hauling through a gate</RR_ConnectedWork_HaulingLabel>
@@ -49,6 +49,9 @@
   <!-- Travel-to-work: the worker goes, and nothing is carried. Nobody is ever brought
        home by these; a person who crossed legitimately stays where it is when the work
        runs out, with its own needs and whatever local work it finds. -->
+  <RR_ConnectedWork_BillLabel>carrying ingredients to a bill through a gate</RR_ConnectedWork_BillLabel>
+  <RR_ConnectedWork_BillSatisfied>That bill no longer needs this. It was carried through and is here in hand; ordinary hauling will put it away.</RR_ConnectedWork_BillSatisfied>
+
   <RR_ConnectedWork_FinishingLabel>finishing a build through a gate</RR_ConnectedWork_FinishingLabel>
   <RR_ConnectedWork_NoWorkOnArrival>There was no work left to do there by the time they arrived. They are on that side now and will find their own work.</RR_ConnectedWork_NoWorkOnArrival>
   <RR_ConnectedWork_WorkerDeparted>They left the space they were sent to work in, so the assignment ended.</RR_ConnectedWork_WorkerDeparted>

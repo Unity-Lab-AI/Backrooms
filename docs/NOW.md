@@ -23,11 +23,11 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published commit | 0.5.6-dev (see `git log -1`; the cascade read-back is in `FINALIZED.md`) |
+| Published commit | 0.5.7-dev (see `git log -1`; the cascade read-back is in `FINALIZED.md`) |
 | Remotes | `forgejo` and `github`, both with `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` at the same commit |
 | Working tree | clean |
-| Build | 100 C# source files, 76 approved package files, zero warnings, zero errors |
-| Assembly | SHA-256 `00D209DC9AD497E054A9FB11D71D4FCEEB8826B72329315C8C73B3F90A82B26C`, reproduced after deleting `obj/` and `bin/` |
+| Build | 101 C# source files, 76 approved package files, zero warnings, zero errors |
+| Assembly | SHA-256 `7520EB990C16ACB609A25731D844FF989DB186B5DC4CF933BF4AFB2B1EEC43D2`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
 | Game launches | **none, ever.** Every runtime claim in this repo is pending the owner's first RimSort launch |
 
 ### What exists now, in order of arrival
@@ -39,22 +39,25 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 - **0.5.2-dev** — **casualties and remains**: our own downed people carried home to a bed, our dead to a grave or storage.
 - **0.5.3-dev** — **construction supply** (material carried into a real frame or blueprint), the audit proving the mod requires nothing but base Core, and the capability-matching method that dissolved the M2 content blockers.
 - **0.5.4-dev** — four owner decisions: the laboratory duration ladder, natural-gate exemption confirmed, one tech tree for every scenario, a player-named company.
+- **0.5.6-dev** — nothing is blocked on the owner: the `[!]` status deleted, the post-completion test phase named, all cross-gate work priorities made **live player settings**, and a verified RimWorld/Steam compliance position with automated checks.
+- **0.5.7-dev** — **bill ingredients**: goods cross a gate because a named bill is short of them, landing inside that bill's own search radius. Unfinished things deliberately out of scope.
 - **0.5.5-dev** — **travel-to-work**: a fourth work family and the first that is not fetch → carry → deliver. `ConnectedDeploymentIntent` (a *sibling* record), `ConnectedDeploymentProvider`, `ConstructionFinishingProvider`, and `ConnectedCrossing` as the single shared gate step. Also: the 1990s period and the universe factions captured verbatim and decided, queued after the work families.
 
-### The next task — bills and unfinished work
+### The next task — research across a gate
 
-**Owner-selected ordering (2026-09-28):** finish the remaining cross-map work families *before* the faction layer. Bills is next.
+**Owner ordering (2026-09-28):** finish the remaining cross-map work families before the faction layer.
 
-Back to the **carry** shape, so it is an adapter over `ConnectedWorkIntent`, not a deployment. What makes it different from the three carry families already built:
+**Research should reuse the travel-to-work *deployment* shape, not a carry adapter.** It is stationary work at a real bench with nothing carried — the same shape construction finishing already proved. So it is a new `ConnectedDeploymentProvider`, and it should be a genuinely small change: a provider class, two work giver defs in `Research`, a settings row, keyed strings. No new record, no new driver, no new JobDef.
 
-- **The destination is a real `Bill` on a real `BillStack`**, and the cargo must satisfy that bill's own `ingredientFilter`. The intent's `finalTarget` field holds the bill giver; the bill itself needs its own saved reference or a stable index, and a bill deleted while the worker walked must close the intent rather than deliver into nothing.
-- **`UnfinishedThing` is the trap.** A partly made thing is a real object with a real creator recorded on it. Core will refuse to let a different pawn resume one, so the adapter must either keep the original creator or treat a foreign unfinished thing as not-a-candidate. Read `Verse.UnfinishedThing` and `Toils_Recipe` before designing this; the decompiled `JobDriver_DoBill` and `WorkGiver_DoBill` are already in `.local/inspection-work/`.
-- **Quantity is per-ingredient**, not one stack. A bill can want several different things, so one trip carries one ingredient and the bill may need several trips — which the existing lease model already supports, because a lease is keyed to one actual `Thing` plus a count.
-- **Do not inflate anything.** Same rule the construction supply followed: the material physically travels. Never touch `itemAvailability` and never make a remote stack look local.
+What the provider has to answer, both halves:
 
-After bills, in order: **research** (which should reuse the travel-to-work shape directly — stationary work at a real bench with nothing carried, so it is a new *provider*, not a new adapter), **tending across a gate** (needs medicine-as-cargo, and each native route — surgery, prisoner and guest care, patient feeding, self-tend — needs its own source review), **food**, **rest**, then the remaining families.
+- **Candidate, explicit map:** does that map hold a usable research bench, and is there an active project this worker could advance? Read Core's `WorkGiver_Researcher` and `Building_ResearchBench` first — both are already decompiled in `.local/inspection-work/`. Split `CanConstruct`-style by *what each rule reads*, exactly as `ConstructionFinishingProvider` documents for construction.
+- **Definitive, on arrival:** Core's own eligibility on the worker's own map.
+- **Watch for:** research progress is global (`Find.ResearchManager`), not per-map, so "is there work here" is really "is there a usable bench here and an active project at all". That makes the candidate half simpler than construction's, not harder — but it also means the release condition is different: a deployment should end when the *bench* becomes unusable, not when the project finishes, because a new project may be queued straight after.
 
-**Then** the faction and period layer, per the decisions in `GATE_0_DECISIONS.md` under the universe heading.
+After research: **tending across a gate** (needs medicine-as-cargo, and surgery, prisoner and guest care, patient feeding and self-tend are each distinct native routes needing their own review), **food**, **rest**, then the remaining families.
+
+**Then** the 1990s period and the universe faction layer, under the compliance rules in `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`.
 
 ### Invariants — do not break these
 
@@ -109,7 +112,7 @@ Full text in `GATE_0_DECISIONS.md` under the two 2026-09-28 headings.
 3. Add a `CHANGELOG.md` entry in plain language, and update the `About.xml` description.
 4. Write the implementation record and an evidence folder under `docs/implementation/evidence/<name>-<date>/` with compiler output plus source, package and **recomputed** reference manifests.
 5. Update the ledger: `DEFERRED.md`, `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`.
-6. Verify: XML parses, every referenced `RR_` key resolves, every `giverClass` resolves to a real class, no attribution strings, and — **after deleting `obj/` and `bin/`** — the rebuilt assembly hash matches the recorded evidence. An incremental rebuild proves nothing about determinism.
+6. Verify: XML parses, every referenced `RR_` key resolves, every `giverClass` resolves to a real class, no attribution strings, and — **after deleting `obj/` and `bin/`** — the rebuilt assembly hash matches the recorded evidence. An incremental rebuild proves nothing about determinism. **Note for any pre-0.5.7 evidence folder:** its hash is *not* reproducible today. The SDK used to embed the git commit in `AssemblyInformationalVersion`, so those hashes were a function of source and commit both; `IncludeSourceRevisionInInformationalVersion=false` fixed that in 0.5.7-dev and the hash is now a pure function of the source. Do not conclude the build is broken — see `implementation/CONNECTED_BILLS_IMPLEMENTATION.md`.
 7. Commit once, atomically, then push the feature branch and cascade by refspec to `Prep`, `Develop`, `Main` on **both** remotes, then read back all eight refs. Do not edit anything after the push.
 
 ### Practical gotchas learned the hard way

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <!-- How eagerly colonists cross a gate to work. The one part of the cross-gate layer
        that cannot be settled by reading source, because whether a number feels right is a
@@ -13,6 +13,7 @@
   <RR_Settings_FamilyHauling>Hauling goods through a gate</RR_Settings_FamilyHauling>
   <RR_Settings_FamilyCasualty>Carrying casualties and the dead home</RR_Settings_FamilyCasualty>
   <RR_Settings_FamilyConstruction>Carrying building material to a site</RR_Settings_FamilyConstruction>
+  <RR_Settings_FamilyBill>Carrying ingredients to a bill</RR_Settings_FamilyBill>
   <RR_Settings_FamilyFinishing>Travelling to finish a build</RR_Settings_FamilyFinishing>
 
   <RR_Settings_AudioTitle>Company sound cues</RR_Settings_AudioTitle>

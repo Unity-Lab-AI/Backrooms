@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
   <!-- Each connected family is registered twice, because starting a trip and
@@ -87,6 +87,39 @@
     <verb>construct</verb>
     <gerund>constructing</gerund>
     <priorityInType>5</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <!-- Bill ingredients sit just under construction supply in Hauling. A stalled build is
+       more urgent than a stalled bill, so material to a frame is preferred; both stay well
+       below Core's own HaulGeneral (15) so ordinary local hauling always wins. Finishing a
+       delivery already in hand edges above the construction pair for the same reason it does
+       everywhere: cargo in real hands must not be abandoned. Balance decisions, recorded as
+       such, and all eight cross-gate numbers are player settings as of 0.5.6-dev. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBillContinue</defName>
+    <label>finish delivering ingredients through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillContinue</giverClass>
+    <workType>Hauling</workType>
+    <verb>deliver</verb>
+    <gerund>delivering</gerund>
+    <priorityInType>11</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBill</defName>
+    <label>carry ingredients to a bill through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBill</giverClass>
+    <workType>Hauling</workType>
+    <verb>deliver</verb>
+    <gerund>delivering</gerund>
+    <priorityInType>7</priorityInType>
     <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
     <canBeDoneByMechs>false</canBeDoneByMechs>
     <prioritizeSustains>true</prioritizeSustains>
