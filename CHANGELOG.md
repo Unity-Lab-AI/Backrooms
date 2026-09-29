@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.10-dev - 2026-09-29 - the handoff, audited
+
+- **Nothing in the game changed.** This is the session handoff, and writing it properly turned up four problems in the project's own checks.
+- **Four of the mod's fifteen internal proofs had not been running.** They pass, but they were being skipped, so nobody knew.
+- **The build fingerprint recorded in the handoff had been wrong for five versions.** It is now read from the build itself.
+- **Two questions the owner had already answered were still listed as open.** Both closed with their answers.
+
+Full record: [writing the handoff found four unrun proofs](docs/implementation/HANDOFF_AUDIT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.9-dev - 2026-09-29 - the exit plan
 
 - **You can build a gate at a site, not only at headquarters.** A second gate has stopped being theoretical.

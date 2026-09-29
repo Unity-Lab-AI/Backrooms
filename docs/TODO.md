@@ -473,6 +473,15 @@ Seven items, one task each. **This is a stop-building instruction and it is bein
 - [x] **Arc 5's named list is complete:** people, supplies, signals, protection, exit plan.
 - [ ] **Still unwritten from the chart for arc 5:** relay stations, caches, field shelters, guarded leases, resupply and evacuation missions. Check each against a real read site before building.
 
+**Verbatim owner request (2026-09-29):** *"lets go ahead and do now.md prcedure for handoff before compact"*
+
+- [x] **The `NOW.md` handoff written, and four defects found in it and in the ritual.** No gameplay changed; what changed is what the next session can trust.
+- [x] **Four live proofs had not been running.** The ritual said four proofs; there are **fifteen**, and the runner grepped `^PROOF HELD` while four end `PASS:`. `displacement`, `facilities`, `fit` and `spinup` were skipped every checkpoint. All pass - but they were not being consulted while the code they guard was edited. **The ritual now runs every proof by exit status.**
+- [x] **Five of my own patch scripts were named `proof-*`** and are renamed `patch-*`, so the glob means "a proof" again.
+- [x] **The assembly hash in the handoff had been stale for five checkpoints.** Now read from the live build after the determinism run.
+- [x] **Two already-answered owner questions were still listed as open** and are moved to a closed block with their answers.
+- [x] **The gotcha counts were flattering**: the heredoc trap is at **eight**, not six, and three of those came after the warning was already written.
+
 ## Owner directions recorded late, second pass
 
 `check-doc-conformance.py` gained a rule on 2026-09-29 requiring that every owner direction

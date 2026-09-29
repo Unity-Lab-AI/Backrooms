@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.9-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.10-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **172 C# files, 86 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `E62DF5326AC89E59E744E4AD10F054CA6674439AA7F73C34075DF1CF14AD2BE3`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `CC32A93E067B6DA9EC126A27F520BA49C2858A27FBD2A407799894E49CDAA81B`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
 | Checkers | **eight**, all passing |
-| Proofs | **eleven** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
+| Proofs | **FIFTEEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.9
+## What shipped this session, 0.7.1 → 0.12.10
 
 | Version | What |
 |---|---|
@@ -92,6 +92,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.7 | **Company-to-site logistics** — shipments reach a registered site; a latent cross-map reroute bug fixed before it could bite |
 | 0.12.8 | **Remote sites need people** — a shipment to an empty site waits; the stranded-crew guarantee proved rather than rebuilt |
 | 0.12.9 | **The exit plan** — a gate may stand at a registered site, with its own facility. Arc 5’s named list complete |
+| 0.12.10 | **The handoff** — four live proofs found unrun, five patch scripts un-named as proofs, a stale hash corrected |
 
 ---
 
@@ -156,10 +157,29 @@ anything in this list** — it is the authority, and steps 1–5 of its build or
 
 ### Done since the last handoff, so nobody rebuilds it
 
-Glow-pod markers with colour-as-meaning · evidence custody on a linked archive shelf · the survey
-tag, evidence case and their recipes retired · gate equipment links · the log-gated window ladder
-with four rungs · the campaign chart · the request shape with success routes · the full tutorial
-line and the hinge · research tiers 0 and 1 across seven branches · the alerts readout.
+**Research:** tiers 0, 1 and 2 across seven branches — **tier 2 complete, and tiers 3–4 deliberately
+deferred behind the arcs** (see the queue).
+
+**The corporation:** the clean-up team that means a facility never dies, deterministic and
+uncapped · the first two `IncidentDef`s so the player's own storyteller paces the lighter events ·
+**no `StorytellerDef`, ever, and it is asserted.**
+
+**All three starts ship.** Async Industries (now opening with eight completed projects) · the
+Furniture & Knickknack Store · solo/group, whose map is a real Backrooms coordinate with a
+**guaranteed** registered way out and a natural chain that stops at depth 3.
+
+**Arc 5's named list is complete:** sites on the books and billed daily · company-to-site
+logistics · staffing, so a shipment to an empty site waits · and the exit plan, a gate at a
+registered site with its own console, battery and bench.
+
+**Real defects fixed:** a wall beside a gate no longer bricks it for the life of the save · a
+cross-map reroute no longer strands a paid shipment for ever · a tier-0 research card that
+promised an unlock and moved nothing now moves something · three dead gate accessors wired ·
+five `PawnKindDef`s found authored and read by nothing.
+
+**Guarantees proved rather than rebuilt:** a gate closing on a crew strands them and never takes
+them — `ShouldRemoveMapNow` returns false **unconditionally** and no gate source may call
+`PassToWorld`.
 
 ---
 
@@ -348,12 +368,36 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 
 ## The warning that matters most right now
 
-**A checker that silently passes everything is worse than no checker — it manufactures confidence.**
+**A check that cannot fail manufactures confidence, and every instance of it this session was
+mine.** Four, all found by planting faults rather than by reading:
 
-Proved twice more this session. A placeholder rule contained a **literal backspace byte** where a word boundary was meant, matched nothing, and looked perfect in every listing. A vocabulary sweep **renamed a keyed string** and only `check-keyed-strings.py` noticed.
+| What could not fail | Why |
+|---|---|
+| the natural-depth ordering claim | keyed off a **variable name**; renaming it made the claim fail *open* |
+| the on-the-books claim | counted a **refusal string** that survived the guard being deleted |
+| the staffing ordering claim | had a **conditional fallback** on a method name absent from the file, so it collapsed to a tautology |
+| the whole proof runner | **grepped for `PROOF HELD`**, and four live proofs end `PASS:` — so four went unrun for most of the session |
 
-- **Sanity-test every checker by breaking something and confirming it fails.** Both directions: plant the fault, **and** plant what must be ignored.
-- **When a proof only confirms, suspect it.** Two designs changed this session *because* a proof disagreed — the spin-up decay rate, and revisit displacement firing 100% of the time.
+The first three were caught by fault-planting. **The fourth was caught only by writing this
+handoff**, which is the argument for writing it.
+
+### The rules that come out of that
+
+- **Key a claim off the thing that happens** — a guard expression, an assignment, a refusal, an
+  exit status. Never off a token near it, a variable's spelling, or a count of a string.
+- **A claim with a conditional fallback can be trivially true.** If the anchor is missing, the
+  whole expression degenerates and says nothing.
+- **Plant the fault and confirm it fails for the RIGHT reason.** A claim that fails for the wrong
+  reason will pass for the wrong reason too.
+- **Check the plant landed.** A patch script asserts before it writes, so a mistyped anchor plants
+  nothing — and the proof passing afterwards proves nothing.
+- **A wrong claim is far better than an unfalsifiable one.** Three times this session a corrected
+  claim was *also* wrong on its first try and failed immediately. That is the system working: the
+  wrong one tells you.
+
+**And the older lesson still holds:** when a proof only ever confirms, suspect it. Two designs
+changed *because* a proof disagreed — the spin-up decay rate, and revisit displacement firing
+every single time.
 
 ---
 
@@ -384,16 +428,33 @@ Proved twice more this session. A placeholder rule contained a **literal backspa
 5. Implementation record under `docs/implementation/`.
 6. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
 7. **Every checker** (eight): `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-display-style.py`, `check-campaign-absolutes.py`, `check-doc-conformance.py`, `research/audit-gate0.py`.
-7b. **Every proof** (four): `.local/register/proof-{research-branches,offer-routes,tier-ladder,gate-links}.py`. **Sanity-test any new rule by planting a fault in both directions** before believing it.
+7b. **Every proof (FIFTEEN), by exit status:**
+
+```sh
+for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: $p"; done
+```
+
+   **Do not grep their output.** Eleven end `PROOF HELD` and four end `PASS:`; grepping one
+   phrasing skipped four live proofs for most of one session. Exit status is phrasing-independent.
+
+   The set: `displacement`, `facilities`, `facility-relief`, `fit`, `gate-links`, `incidents`,
+   `live-effects`, `offer-routes`, `portal-footprint`, `remote-sites`, `research-branches`,
+   `spinup`, `starts`, `stranded-crew`, `tier-ladder`.
+
+   **`patch-*.py` in that directory are one-shot edit scripts, not proofs.** They were once named
+   `proof-*` and re-running one would try to re-apply a landed patch and fail confusingly.
+
+   **Sanity-test any new claim by planting a fault** and confirming it fails **for the right
+   reason**. Three claims this session passed a planted fault; all three were mine.
 8. **Determinism**: delete `obj/` and `bin/`, rebuild **twice**, hashes must match.
 9. Commit once atomically; cascade to `Prep`, `Develop`, `Main` on **both** remotes; **read back all eight refs**.
 
 ## Gotchas learned the hard way
 
-- **XML comments cannot contain `--`.** Hit **four times**. The checker names the rule and the line.
-- **Bash heredocs mangle `\n` and break on apostrophes.** Hit **six times**. Use Write, and a message file for commits.
+- **XML comments cannot contain `--`.** Hit **five times**. The checker names the rule and the line.
+- **Bash heredocs mangle `\n` and break on apostrophes.** Hit **EIGHT times**, the last three after this line already said so. **Stop reaching for a heredoc when the payload contains a backslash escape or an apostrophe** — use the Write tool, and a message file for commits.
 - **A GitHub push can silently drop some refs.** Read back all eight, every time — it happened once this session.
-- **A failed `assert` in a patch script means nothing was written** — the write comes last.
+- **A failed `assert` in a patch script means nothing was written** — the write comes last. So a fault-plant whose anchor was wrong plants nothing, and the proof passing afterwards proves nothing. Check the plant landed.
 - `git` index lock goes stale; `rm -f .git/index.lock`.
 - **`cd` inside a Bash call persists.** Absolute paths.
 - Package manifests are UTF-8 **with BOM** — `encoding="utf-8-sig"`.
@@ -408,15 +469,23 @@ Proved twice more this session. A placeholder rule contained a **literal backspa
 That status does not exist here; runtime rows are `[T]` and gate no work. These are **reserved
 decisions**, recorded so they are asked rather than guessed. Ask at the next natural moment.
 
-1. **`reserveChargePowerWatts`** — restored, deliberately not wired. The reserve is a Core battery
-   RimWorld already charges, so three readings are all defensible: a supply requirement (duplicates
-   `minimumPowerHeadroomWatts`), a display estimate (honest but only a readout), or a second charge
-   path (double-charges unless it replaces Core's). **Details in `TODO.md`.**
-2. **A designated gate now costs 250 W while idle**, scaled by footprint, on every existing save.
-   Made because an unused value is an unfinished job. **If zero idle cost was the intent, this is
-   the one to reverse.**
-3. **How a generated request picks its routes** — a fixed set per family, or derived from what the
-   branch has. Chart §6.
-4. **Whether the eight branches unlock in any order after the hinge.** Chart §6.
+1. **How a generated request picks its routes** — a fixed set per family, or derived from what the
+   branch has. Chart §6. **Blocks queue item 3.**
+2. **Whether the eight branches unlock in any order after the hinge.** Chart §6.
+3. **The public face** — site domain, Pages branch, and whether Playwright may drive a Steam page.
+   `PUBLIC_RELEASE_PLAN.md`. Correctly last.
+
+### Closed this session, so nobody re-asks
+
+- ~~**`reserveChargePowerWatts`**~~ — **a supply requirement before opening.** Wired 0.12.4-dev,
+  and wiring it revived `RR_Cap_ReserveDiscipline`, a tier-0 card that had promised an unlock and
+  moved nothing.
+- ~~**The 250 W idle draw**~~ — **kept.** Confirmed as the intended behaviour; no change needed.
+- ~~**Natural gates indestructible**~~ — **relaxed by the owner** to a confirmation warning.
+  *"dont worry about it, can we at least do a rim style pop up warning"*.
+- ~~**The solo/group tutorial line**~~ — **option three:** no request line until contact, plus four
+  hints in the survivors' own voice. None is an objective.
+- ~~**The solo/group exit**~~ — **two maps, coordinate is real.** Superseded the earlier
+  seed-tile answer once `RimroomsPortalNetwork.Register` was read.
 5. **The site's domain, the Pages publishing branch, and whether Playwright may drive Steam.**
    All three in [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md).

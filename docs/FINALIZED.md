@@ -395,6 +395,30 @@ A gate may be designated at a registered site. **Arc 5's named list is now compl
 
 ---
 
+## Session 2026-09-29 - the handoff audit (0.12.10-dev)
+
+**Verbatim user quote:** *"lets go ahead and do now.md prcedure for handoff before compact"*
+
+### What shipped
+
+The `NOW.md` compaction handoff, and **four defects in the handoff and the ritual itself**, found by reading every claim against the thing it describes rather than tidying the prose. **No gameplay changed.**
+
+### Files touched
+
+`docs/NOW.md`, `docs/implementation/HANDOFF_AUDIT_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `About.xml`, the csproj, and five renames in `.local/register/`.
+
+### Closure notes
+
+- **FOUR LIVE PROOFS HAD GONE UNRUN for most of the session.** The ritual said *"every proof (four)"*; the directory holds **fifteen**. Worse, the per-checkpoint runner grepped for `^PROOF HELD` - and four proofs end `PASS:`, so `displacement`, `facilities`, `fit` and `spinup` were skipped every checkpoint. **A skipped proof reports nothing, which is indistinguishable from a passing one.** All four pass, and passing is luck rather than evidence: they guard revisit displacement, facility formation, the body-size fit ladder and the spin-up decay curve, and this session touched all four areas. **The ritual now runs every proof by exit status**, which is phrasing-independent. Same failure as the three claims that could not fail, one level up: a runner matching a phrasing is a check keyed off a token.
+- **Five patch scripts were named `proof-*`** - mine, from this session. So `proof-*.py` had stopped meaning *"a proof"*, and a future session would have run a landed patch and had to work out whether a proof had broken. Renamed to `patch-*`, and the ritual states the distinction.
+- **The assembly hash had been stale for five checkpoints**, still holding 0.12.4's value. Nobody catches that by reading, because a SHA-256 looks equally plausible wrong. Corrected, then **immediately stale again** because bumping the version rebuilds the assembly - so it is now read from the live build **after** the determinism run, which is the only order that can be right, and the line says so.
+- **Two "open owner questions" had been answered hours earlier** - `reserveChargePowerWatts` and the 250 W idle draw, both settled in 0.12.4-dev. Moved to a **Closed this session** block with their answers, alongside the three other decisions the owner made today.
+- **The gotcha counts were wrong and flattering.** The heredoc trap said *"hit six times"*; the real count is **eight**, three of them **after** the line already warned about it.
+- **The top warning was two sessions out of date.** Replaced with the evidenced version: **four things that could not fail, all mine**, three found by fault-planting and the fourth only by writing this file.
+- Build 0.12.10-dev, 172 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, **fifteen** proofs exit zero. Assembly reproduced by two clean recompiles. **No game was launched, and nothing in this mod has ever been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra
