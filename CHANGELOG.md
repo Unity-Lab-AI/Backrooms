@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.8.9-dev - 2026-09-29 - bringing a gate up is work, and a gate looks like one
+
+- **Opening a connection is no longer a button.** The assigned operator brings the gate up at the console over time, and the console shows the progress while they do it.
+- **The operator matters.** A skilled technician brings a gate up quickly; a poor one takes a long while. It is their own working speed that decides it.
+- **Leave it unattended and it loses charge.** The gate only climbs while somebody is on the console with the power on and the cutoff off. Left alone it slips back and eventually lapses, and the address stays remembered so you can start again.
+- **Losing charge is always slower than gaining it**, whoever is operating, so walking away costs you time but never wipes out a long spin-up.
+- **A route you have run before comes up faster.** Every previous connection to the same address shortens the next one, down to a floor. Somewhere nobody has been takes the full spin-up, and no route is ever instant.
+- **Dial straight from a gate's history** to connect to somewhere it has been and start bringing it up, in one action.
+- If the spin-up finishes while the battery is still too low, the gate **waits fully charged and opens itself** the moment there is enough power.
+- **A gate you have designated is a blue door with a blue glow around it**, so you can tell one from an ordinary door at a glance. It glows brighter while a connection is live, and amber when something has gone wrong. If you painted that door yourself, your colour is kept.
+- A natural portal still has no history, cannot be dialled, and looks like the ordinary doorway it is.
+
+Full record: [bringing a gate up is work](docs/implementation/GATE_SPIN_UP_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.8.8-dev - 2026-09-29 - a gate remembers where it has been
 
 - **Every laboratory gate keeps its own list of everywhere it has connected to.**

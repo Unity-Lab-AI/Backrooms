@@ -207,6 +207,10 @@ namespace RimroomsAsyncIndustries.Gate
             nativeDesignated = true;
             calibrated = false;
             stablePowerTicks = 0;
+            // The door is a gate from this moment, so it should look like one from this moment.
+            // Core caches a thing's coloured graphic, and this is the one call that drops that
+            // cache and redraws the cell.
+            if (parent.Spawned) { parent.Notify_ColorChanged(); }
             return EnsureNativeAssemblyBill(workshop, false);
         }
 
@@ -235,6 +239,8 @@ namespace RimroomsAsyncIndustries.Gate
             assignedOperator = null;
             calibrated = false;
             stablePowerTicks = 0;
+            // Released, so it is an ordinary door again and must read as one immediately.
+            if (parent.Spawned) { parent.Notify_ColorChanged(); }
             // Retain paid assembly, branch provenance, bound position and all closed operation receipts.
             return CompanyActionResult.Applied();
         }

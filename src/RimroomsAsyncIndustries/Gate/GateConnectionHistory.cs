@@ -263,6 +263,13 @@ namespace RimroomsAsyncIndustries.Gate
             string name = HistoryLabelFor(entry, campaign);
             var options = new List<FloatMenuOption>
             {
+                // First, because it is what the list is for. Everything below it is management.
+                new FloatMenuOption("RR_GateHistory_Dial".Translate(name), delegate
+                {
+                    CompanyActionResult result = DialRememberedAddress(entry);
+                    if (!result.Success && !string.IsNullOrWhiteSpace(result.MessageKey))
+                    { Messages.Message(result.MessageKey.Translate(), parent, MessageTypeDefOf.RejectInput, false); }
+                }),
                 new FloatMenuOption("RR_GateHistory_Rename".Translate(name), delegate
                 {
                     Find.WindowStack.Add(new UI.Dialog_RenameGateAddress(entry));

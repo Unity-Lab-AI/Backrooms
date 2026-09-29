@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.8.8-dev**, commit `0bfc000` |
+| Published | **0.8.9-dev** (this commit) |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
-| Build | **154 C# files, 92 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `5CFCA1C8EEEF139655B91ED421942FC58B33F683B03F1590F0607810A75C643B`, reproduced by two clean recompiles |
+| Build | **155 C# files, 92 package files**, zero warnings, zero errors |
+| Assembly | SHA-256 `9E0FA752A9DB00EB801A013FAFBC937D3723CC33D359A54B57A11E42083D8354`, reproduced by two clean recompiles |
 | Checkers | four, all passing |
 | Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
 | Game launches | **none, ever** |
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.8.8
+## What shipped this session, 0.7.1 → 0.8.9
 
 | Version | What |
 |---|---|
@@ -61,23 +61,25 @@ Chain checkpoints. Do not finish one and wait.
 | 0.8.6 | **Room shape echoes** and hallways |
 | 0.8.7 | **Coherence decay** + tech scaling |
 | 0.8.8 | **Gate connection history** — per-gate address book, editable and clearable |
+| 0.8.9 | **Bringing a gate up is work** — an operator-driven spin-up with familiarity, and gates that look like gates |
 
 ---
 
 ## What is left, in order
 
-1. **Dialling from the connection history.** 0.8.8-dev records and manages the address book; selecting an entry to *re-open* that coordinate is the natural next step, and is a separate interaction with its own permission checks.
-2. **The unknown-def-field checker.** Written, **proved broken, removed rather than shipped.** See the warning below — start from the verified parts.
-3. **Facilities** — larger functional spaces, distinct from rooms and corridors.
-4. **A player-facing how-to.** Now **~12 interacting systems** with no written explanation of how they fit. Overdue.
-5. **The four area types across a gate** (`Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear`, `Area_PollutionClear`).
-6. **A world tile the branch does not hold** — needs a world object and generated map.
-7. **The three starting sites** (`SCENARIOS.md` specifies all three).
-8. **The 1990s period and universe factions.**
-9. **M2 existing-content replacement** — the save break is declared, so Defs can now be deleted with no migration.
-10. M1 step 5, M3 breadth, M5 interface, M6a/M6b.
+**The order is chosen and recorded**, by dependency direction rather than preference. Owner direction: *"we are doing it all so order needs to be logical and your intelkligent educated choise based on logical programming order of operations"*.
 
----
+Content set → generator → scenarios → docs. One direction, no backtracking.
+
+1. **Multi-cell gates** — 1x2, 1x3 and 2x3. **Owner-answered: both paths.** Bind a gate across a **run of adjacent Core doors** (existing-content-only, always works), **and** accept **Doors Expanded** (register row 77) multi-cell doors as single-thing gates when that mod is installed. Width is the capability: how many cross abreast, whether cargo or a vehicle fits, what the opening draws. Core has only 1x1 `Door` and `Autodoor`, verified against installed game data.
+2. **Pursuit and incursion.** **Owner-answered: depth plus technology, while an opening is live.** An inhabitant chases a fleeing pawn to the threshold, and reaching it before the gate closes brings it through into the colony, where every native hostile behaviour applies with nothing bespoke written. **Closing the gate is the countermeasure**, which makes the emergency cutoff a tactical decision at the cost of stranding whoever is still inside. `PortalTraversalPolicy` gains the rule; the inhabitant still decides nothing.
+3. **M2 existing-content replacement.** First of the four majors **because it deletes defs** — anything built against content about to be removed gets built twice. The save break is declared, so defs can go with no migration.
+4. **Facilities** — larger functional spaces, distinct from rooms and corridors. Generation must be finished before the scenarios that consume it.
+5. **New-game playability** — the world tile the branch does not hold (world object plus generated map) and **the three starting sites** (`SCENARIOS.md`). Consumes the final content set *and* the finished generator. **One tech tree for every start**, differing only in which projects begin complete — owner direction, and it belongs in the versioned start contract rather than bolted onto each scenario.
+6. **The player-facing how-to.** Last, because documentation describes a finished thing and writing it earlier means rewriting it. Note `docs/HOWTO.md` is the **developer** guide; the player one does not exist yet.
+7. **The unknown-def-field checker.** Written, **proved broken, removed rather than shipped.** See the warning below — start from the verified parts.
+8. **The 1990s period and universe factions.**
+9. The four area types across a gate, M1 step 5, M3 breadth, M5 interface, M6a/M6b.
 
 ## Invariants — do not break these
 
@@ -114,6 +116,10 @@ Each is a real defect or a pinned fact.
 29. **Undiscovered inhabitants are held.** Needs topped up, rot held, while fogged. Discovery starts their clock.
 30. **A natural gate has no address book and may not dial.** Enforced by `IsDesignated` on the gate gizmos, not by a second check — adding one would imply the first is unreliable.
 31. **When an existing guarantee already covers a new requirement, say so and rely on it.** Twice this session a requirement needed no new code: the natural-gate rule, and survivor recruitment obeying the traversal chokepoint rather than special-casing it.
+32. **There is exactly one way a laboratory gate opens** — through the spin-up. Every entry point routes into it. A second path would make the ramp optional, and a player who learned the other button would never see it.
+33. **Never tie a penalty rate to a flat constant without proving it against the real stat range.** Spin-up decay was written as a flat 0.5 per tick with a comment claiming it was slower than progress; at low Intellectual it was **faster**, which would have made a slow operator's gate impossible rather than slow. Express such a rate as a **fraction of the observed rate** so the guarantee holds by construction.
+34. **Ask at the fork; never flag it for later.** Owner direction: *"dopnt flag shit!!! ask me then and there"*. A flagged question becomes orphaned work — it lands in a doc nobody actions while the build carries a guess forward.
+35. **`ThingComp.ForceColor()` is the tint hook**, consulted by `ThingWithComps.DrawColor` for every comp a thing carries, and a painted colour wins over it. `Notify_ColorChanged()` drops Core's cached coloured graphic and redraws the cell.
 
 ---
 

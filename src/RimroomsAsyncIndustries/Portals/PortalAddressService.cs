@@ -112,6 +112,26 @@ namespace RimroomsAsyncIndustries.Portals
         /// </summary>
         public static CompanyActionResult RegisterLaboratoryAddress(CompRimroomsGate gate, CoordinateRecord coordinate)
         {
+            string connectionId;
+            return RegisterLaboratoryAddress(gate, coordinate, out connectionId);
+        }
+
+        /// <summary>
+        /// The same registration, reporting the connection it established.
+        ///
+        /// A caller that needs to act on the address next -- dialling it, for instance -- must
+        /// not re-derive the id for itself: the id is built from the *site's* return anchor
+        /// rather than anything the caller holds, so a second derivation elsewhere would be a
+        /// second implementation of the identity rule waiting to drift from this one.
+        ///
+        /// The id is reported on <see cref="PortalNetworkResult.Existing"/> as well as on a
+        /// fresh registration, because an address already remembered is exactly the case a
+        /// re-dial is.
+        /// </summary>
+        public static CompanyActionResult RegisterLaboratoryAddress(CompRimroomsGate gate,
+            CoordinateRecord coordinate, out string connectionId)
+        {
+            connectionId = null;
             RimroomsCampaignComponent campaign = Campaign();
             RimroomsPortalNetwork network = Network();
             if (campaign == null || !campaign.CanOperate || network == null || network.HasStateFault)
@@ -142,6 +162,8 @@ namespace RimroomsAsyncIndustries.Portals
             string id = AddressId(campaign, coordinate, threshold);
             PortalNetworkResult result = network.Register(id, coordinate.Id, PortalConnectionKind.Laboratory,
                 gate.parent, approach, threshold, thresholdApproach);
+            if (result == PortalNetworkResult.Success || result == PortalNetworkResult.Existing)
+            { connectionId = id; }
             if (result == PortalNetworkResult.Success)
             {
                 campaign.RecordEvent("RR_Event_PortalAddressRegistered", id, coordinate.Id);

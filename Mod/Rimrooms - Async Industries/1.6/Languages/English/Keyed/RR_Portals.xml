@@ -152,4 +152,7 @@
 
   <RR_PortalAddress_EmergenceAnchorUnavailable>No usable way home is marked. Mark a door on a map you hold as the place a way out can come up.</RR_PortalAddress_EmergenceAnchorUnavailable>
   <RR_Portals_KindEmergence>way out</RR_Portals_KindEmergence>
+
+  <RR_Portals_SpinUpRunning>Bringing up a connection: {0}% charged. The assigned operator must stay on the console.</RR_Portals_SpinUpRunning>
+  <RR_Portals_AbortSpinUp>Stop spin-up</RR_Portals_AbortSpinUp>
 </LanguageData>

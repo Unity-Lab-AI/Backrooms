@@ -60,6 +60,41 @@ namespace RimroomsAsyncIndustries.Gate
         public float recoveryOpeningCostWattDays = 1f;
         public float calibrationWorkRequired = 2500f;
 
+        /// <summary>
+        /// The work one opening costs before familiarity, at a base working speed. Deliberately
+        /// less than a calibration, which happens once in a gate's life, because this happens
+        /// every time a connection is brought up.
+        /// </summary>
+        public float dialSpinUpWorkRequired = 1800f;
+
+        /// <summary>
+        /// What each previous connection to the same address multiplies the required work by.
+        /// A route the crew has run before comes up faster; somewhere they have never been
+        /// takes the full ramp.
+        /// </summary>
+        public float dialSpinUpFamiliarityFactor = 0.85f;
+
+        /// <summary>
+        /// The floor familiarity may never take the ramp below, as a fraction of the base. A
+        /// gate that opens instantly is a gate with no operating crew, which is the one thing
+        /// the ramp exists to prevent.
+        /// </summary>
+        public float dialSpinUpFloorFraction = 0.25f;
+
+        /// <summary>
+        /// How fast an unheld ramp bleeds back down, **as a fraction of the rate it was
+        /// actually climbing at**.
+        ///
+        /// Deliberately not a flat number per tick. A flat rate was written first and an
+        /// offline proof rejected it: RimWorld's research speed at low Intellectual is well
+        /// under one, so a fixed 0.5 would have bled a poor technician's ramp **faster than
+        /// they could build it**, making a slow operator's gate impossible to bring up rather
+        /// than merely slow. Expressed as a fraction of the observed climb rate, "decay is
+        /// slower than progress" is true for every possible operator by construction instead
+        /// of by luck.
+        /// </summary>
+        public float dialSpinUpDecayFraction = 0.5f;
+
         public CompProperties_RimroomsGate()
         {
             compClass = typeof(CompRimroomsGate);
@@ -87,6 +122,19 @@ namespace RimroomsAsyncIndustries.Gate
                 emergencyReturnCostWattDays + recoveryOpeningCostWattDays > returnReserveCapacityWattDays ||
                 !PositiveFinite(calibrationWorkRequired))
             { yield return "Rimrooms gate power, reserve, and work settings must be finite and positive."; }
+            if (!PositiveFinite(dialSpinUpWorkRequired) ||
+                !PositiveFinite(dialSpinUpDecayFraction) || dialSpinUpDecayFraction > 1f ||
+                !PositiveFinite(dialSpinUpFamiliarityFactor) || dialSpinUpFamiliarityFactor > 1f ||
+                !PositiveFinite(dialSpinUpFloorFraction) || dialSpinUpFloorFraction > 1f)
+            {
+                // Every one of these is a silent design inversion rather than a crash, which is
+                // why they are refused at load. A familiarity factor above one makes a
+                // well-travelled route slower than a new one; a floor above one makes every ramp
+                // longer than its own base; and a decay fraction above one bleeds a ramp faster
+                // than any crew can build it, which turns a slow operator's gate from slow into
+                // impossible.
+                yield return "Rimrooms gate spin-up settings must be positive, and the familiarity factor, floor fraction and decay fraction must not exceed one.";
+            }
         }
 
         private static bool PositiveFinite(float value)
@@ -161,6 +209,7 @@ namespace RimroomsAsyncIndustries.Gate
         {
             base.PostExposeData();
             ExposeConnectionHistory();
+            ExposeSpinUp();
             Scribe_References.Look(ref assignedOperator, "rr_gateAssignedOperator");
             Scribe_Values.Look(ref assemblyComplete, "rr_gateAssemblyComplete", false);
             Scribe_Values.Look(ref calibrated, "rr_gateCalibrated", false);
@@ -234,6 +283,10 @@ namespace RimroomsAsyncIndustries.Gate
             }
             else { stablePowerTicks = 0; }
 
+            // Before the opening block, because a ramp only exists while the gate is closed and
+            // its completion is what opens one.
+            TickSpinUp();
+
             if (!IsOpening) { return; }
             if (string.IsNullOrEmpty(failureKey))
             {
@@ -288,6 +341,17 @@ namespace RimroomsAsyncIndustries.Gate
                 icon = parent.def.uiIcon,
                 action = OpenConnectionHistoryMenu
             };
+
+            if (IsSpinningUp)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "RR_Gate_AbortSpinUpLabel".Translate(),
+                    defaultDesc = "RR_Gate_AbortSpinUpDesc".Translate(),
+                    icon = parent.def.uiIcon,
+                    action = delegate { ShowOrderResult(AbortSpinUp()); }
+                };
+            }
 
             yield return new Command_Action
             {
@@ -355,9 +419,35 @@ namespace RimroomsAsyncIndustries.Gate
                         ? "RR_Gate_WindowSustained".Translate().ToString() : DescribeWindow(openingTicksRemaining),
                     DescribeWindow(emergencyReturnTicksRemaining), string.IsNullOrEmpty(failureKey) ? "RR_Gate_NoFailure".Translate() : failureKey.Translate()).ToString()
                 : "";
-            return string.Join("\n", new[] { status, operatorText, cutoffText, serviceText, powerText, active }
+            string ramp = SpinUpReadout();
+            return string.Join("\n", new[] { status, operatorText, cutoffText, serviceText, powerText, ramp, active }
                 .Where(s => !string.IsNullOrEmpty(s)));
         }
+
+        /// <summary>
+        /// The blue a designated gate reads as. **Owner direction, 2026-09-29, verbatim:**
+        /// *"yes the gates are just repurosed doors of the game with a bue tint and maybe a blue
+        /// light glow hue around it like light through a glass wall does"*.
+        ///
+        /// This needed no new component and no new patch operation, because
+        /// <c>ThingWithComps.DrawColor</c> already consults <c>ThingComp.ForceColor()</c> on
+        /// every component a thing carries, and this component is already on the door.
+        /// Returning null for anything not designated means **every other door in the game is
+        /// untouched**, which is the same dormant-until-designated rule the rest of the native
+        /// binding follows.
+        ///
+        /// A colour the player painted on deliberately still wins: Core checks a painted colour
+        /// *before* reaching this hook. That is the right outcome — an explicit choice beats an
+        /// automatic tint — and the aura still marks the door as a gate.
+        /// </summary>
+        public override Color? ForceColor()
+        {
+            if (!IsNativeProvider || !IsDesignated) { return null; }
+            return GateTintColor;
+        }
+
+        /// <summary>Pale blue, as light coming through glass rather than a flat repaint.</summary>
+        internal static readonly Color GateTintColor = new Color(0.55f, 0.78f, 0.98f);
 
         private static string DescribeWindow(int ticks)
         {

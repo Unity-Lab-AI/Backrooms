@@ -2429,3 +2429,45 @@ Owner directions captured verbatim: 2.
 **Requirements met by existing architecture rather than by new code: 1** — the natural-gate rule, which needed no guard because the single-chokepoint design already held it.
 Core UI reused instead of rebuilt: 1 — the rename dialog.
 Still open and named in `TODO.md`: dialling from the history; facilities; and the unknown-def-field checker from 0.8.7-dev.
+
+---
+
+## 0.8.9-dev - 2026-09-29 - bringing a gate up is work, and a gate looks like one
+
+### Owner directions, verbatim
+
+> *"when u establish a backrooms portal connection the specific addresss should be connected and the gate opened but it neededs to be a ramp up process that takes a bit of time like with everything the pawns needs to do/maintaing/ operate to opening the gate process like a item build in a way"*
+
+> *"yes the gates are just repurosed doors of the game with a bue tint and maybe a blue light glow hue around it like light through a glass wall does"*
+
+> *"we are doing it all so order needs to be logical and your intelkligent educated choise based on logical programming order of operations"*
+
+### Owner answers recorded this checkpoint, asked rather than assumed
+
+> *"Dial = take me there"* - a dial establishes the address and opens the gate, as one intention.
+
+> Gate sizes: **both** paths - binding across adjacent Core doors, and accepting Doors Expanded multi-cell doors when installed.
+
+> Depth: **higher number means deeper**. The built reading is correct; nothing changes.
+
+> Incursion: **depth plus technology, while an opening is live**. It must chase a pawn to the threshold, and closing the gate is the countermeasure.
+
+### What shipped
+
+Opening a laboratory connection is now work rather than a button, at the operator's own speed, shown on the console as a progress bar. Every entry point routes through the one ramp, so it cannot be skipped. The ramp climbs only while the gate is genuinely held and bleeds otherwise, lapsing at zero with the address kept. Required work falls with familiarity to a floor, turning the gate's address book into its learned routes. A finished ramp waits fully charged rather than being discarded when the battery is momentarily short. A designated gate is a blue door with a blue glow, built on a Core hook the gate component already had, leaving every other door untouched.
+
+### A defect caught before it shipped
+
+Decay was first a flat rate per tick, with a comment claiming it was slower than progress. It was not: at low Intellectual a technician would have lost charge faster than they could build it, making a slow operator's gate impossible rather than slow. The offline proof rejected it on that assertion, and decay is now a fraction of the observed climb rate - true for every operator by construction.
+
+### Build evidence
+
+0.8.9-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **155** C# source files (one new), **92** approved package files (no new file; three existing keyed files extended). Assembly SHA-256 `9E0FA752A9DB00EB801A013FAFBC937D3723CC33D359A54B57A11E42083D8354`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass; 1,214 keyed references all resolving. **No new def of any kind, no asset, no patch operation, no new job def, no new work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Source files modified: 6. Package files created: 0 (three extended). Docs updated: 5 (1 new).
+Owner directions captured verbatim: 3. Owner questions asked at the fork rather than flagged for later: 4.
+**Requirements met by an existing Core hook rather than by new content: 2** - the blue tint through `ThingComp.ForceColor()`, and the console progress bar through the job that already existed.
+**Defects caught by offline proof before shipping: 1** - the flat decay rate.
+Still open and named in `TODO.md`: multi-cell gates; pursuit and incursion; facilities; the unknown-def-field checker.

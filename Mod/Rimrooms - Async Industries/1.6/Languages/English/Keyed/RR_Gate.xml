@@ -88,4 +88,21 @@
   <RR_NativeGate_ServiceLapsed>The gate assembly is out of condition and must be reconditioned before it will open.</RR_NativeGate_ServiceLapsed>
   <RR_NativeGate_ServiceNotWanted>The gate assembly does not need reconditioning yet.</RR_NativeGate_ServiceNotWanted>
   <RR_Event_GateReconditioned>A gate assembly was reconditioned.</RR_Event_GateReconditioned>
+
+  <RR_Gate_SpinUpStarted>Bringing up a connection to {0}. The operator must stay on the console until it is open.</RR_Gate_SpinUpStarted>
+  <RR_Gate_SpinUpComplete>Connection open.</RR_Gate_SpinUpComplete>
+  <RR_Gate_SpinUpLapsed>The connection lost its charge before it opened. The address is still remembered and can be dialled again.</RR_Gate_SpinUpLapsed>
+  <RR_Gate_SpinUpAborted>Spin-up stopped. The address is still remembered.</RR_Gate_SpinUpAborted>
+  <RR_Gate_SpinUpWaiting>The connection is fully charged and waiting: {0}</RR_Gate_SpinUpWaiting>
+  <RR_Gate_SpinUpBusy>This gate is already bringing up a different connection.</RR_Gate_SpinUpBusy>
+  <RR_Gate_SpinUpReadout>Spinning up to {0}: {1} / {2} ({3})</RR_Gate_SpinUpReadout>
+  <RR_Gate_SpinUpHeldReadout>Charged and waiting to open to {0}.</RR_Gate_SpinUpHeldReadout>
+  <RR_Gate_SpinUpClimbing>climbing</RR_Gate_SpinUpClimbing>
+  <RR_Gate_SpinUpBleeding>losing charge</RR_Gate_SpinUpBleeding>
+  <RR_Gate_AbortSpinUpLabel>Stop spin-up</RR_Gate_AbortSpinUpLabel>
+  <RR_Gate_AbortSpinUpDesc>Stop bringing up this connection. The work done so far is lost, but the address stays in this gate's history and can be dialled again.</RR_Gate_AbortSpinUpDesc>
+  <RR_Event_GateSpinUpStarted>Gate spin-up started ({0} work required)</RR_Event_GateSpinUpStarted>
+  <RR_Event_GateSpinUpCompleted>Gate spin-up completed</RR_Event_GateSpinUpCompleted>
+  <RR_Event_GateSpinUpLapsed>Gate spin-up lapsed</RR_Event_GateSpinUpLapsed>
+  <RR_Event_GateSpinUpAborted>Gate spin-up stopped</RR_Event_GateSpinUpAborted>
 </LanguageData>

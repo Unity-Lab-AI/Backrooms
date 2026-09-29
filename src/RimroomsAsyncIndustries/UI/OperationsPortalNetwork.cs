@@ -69,6 +69,15 @@ namespace RimroomsAsyncIndustries.UI
                     { ShowResult(PortalTravelService.CloseSession(gate)); }
                     if (open == null) { listing.Label("RR_PortalTravel_EndpointMissing".Translate()); }
                 }
+                else if (gate.IsSpinningUp)
+                {
+                    // A ramp is running. Showing the open buttons here as well would offer a
+                    // second way to start something already in progress.
+                    listing.Label("RR_Portals_SpinUpRunning".Translate(
+                        (gate.SpinUpProgress * 100f).ToString("F0")));
+                    if (listing.ButtonText("RR_Portals_AbortSpinUp".Translate()))
+                    { ShowResult(gate.AbortSpinUp()); }
+                }
                 else
                 {
                     foreach (PortalConnectionRecord address in network.Connections
@@ -76,8 +85,12 @@ namespace RimroomsAsyncIndustries.UI
                             edge.First != null && edge.First.Anchor == gate.parent).ToList())
                     {
                         PortalConnectionRecord captured = address;
+                        // Routed through the ramp rather than straight to the opening, so there
+                        // is exactly one way a laboratory gate opens no matter which button
+                        // started it. Owner direction 2026-09-29: opening is "a ramp up process
+                        // that takes a bit of time".
                         if (listing.ButtonText("RR_Portals_OpenSession".Translate(captured.CoordinateId)))
-                        { ShowResult(gate.BeginPortalOpening(captured.Id)); }
+                        { ShowResult(gate.BeginSpinUp(captured.Id)); }
                     }
                 }
             }

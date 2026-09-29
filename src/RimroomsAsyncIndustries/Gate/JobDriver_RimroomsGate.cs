@@ -155,12 +155,31 @@ namespace RimroomsAsyncIndustries.Gate
             station.defaultCompleteMode = ToilCompleteMode.Never;
             station.tickIntervalAction = delegate(int delta)
             {
-                if (Gate == null || Gate.AssignedOperator != pawn || pawn.Downed || pawn.InMentalState)
+                CompRimroomsGate gate = Gate;
+                if (gate == null || gate.AssignedOperator != pawn || pawn.Downed || pawn.InMentalState)
                 { EndJobWith(JobCondition.Incompletable); }
-                else { pawn.GainComfortFromCellIfPossible(delta, chairsOnly: true); }
+                else
+                {
+                    pawn.GainComfortFromCellIfPossible(delta, chairsOnly: true);
+                    // Bringing a connection up is learned work, like calibrating the same
+                    // machine. Standing watch over a gate that is not ramping teaches nothing,
+                    // which is why this is inside the check rather than beside it.
+                    if (gate.IsSpinningUp && gate.SpinUpIsSupported)
+                    { pawn.skills.Learn(SkillDefOf.Intellectual, 0.1f * delta); }
+                }
             };
             station.FailOnCannotTouch(TargetIndex.A, PathEndMode.InteractionCell);
-            station.WithProgressBar(TargetIndex.A, () => Gate != null && Gate.IsOperatorOnStation ? 1f : 0f);
+            station.activeSkill = () => SkillDefOf.Intellectual;
+            // While a connection is ramping this shows the real progress, which is what makes
+            // the owner's "like a item build in a way" literally true at the console. With no
+            // ramp running it falls back to the plain on-station indicator it always was.
+            station.WithProgressBar(TargetIndex.A, delegate
+            {
+                CompRimroomsGate gate = Gate;
+                if (gate == null) { return 0f; }
+                if (gate.IsSpinningUp) { return gate.SpinUpProgress; }
+                return gate.IsOperatorOnStation ? 1f : 0f;
+            });
             yield return station;
         }
     }

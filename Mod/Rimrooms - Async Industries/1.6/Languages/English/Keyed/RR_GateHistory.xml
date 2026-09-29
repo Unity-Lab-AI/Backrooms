@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_GateHistory_Label>Connection history ({0})</RR_GateHistory_Label>
   <RR_GateHistory_Desc>Everywhere this gate has connected to. Rename, pin, remove or clear entries. Each gate keeps its own list. A natural portal has no list at all - its destination is fixed where it was found and it cannot be dialled.</RR_GateHistory_Desc>
@@ -11,4 +11,7 @@
   <RR_GateHistory_Remove>Remove {0} from this list</RR_GateHistory_Remove>
   <RR_GateHistory_Clear>Clear the list (pinned entries are kept)</RR_GateHistory_Clear>
   <RR_GateHistory_Cleared>Cleared {0} entries from this gate's connection history.</RR_GateHistory_Cleared>
+
+  <RR_GateHistory_Dial>Dial {0}</RR_GateHistory_Dial>
+  <RR_GateHistory_CoordinateGone>That space is no longer on this branch's list of coordinates. The gate still remembers dialling it, but there is nothing left to connect to.</RR_GateHistory_CoordinateGone>
 </LanguageData>
