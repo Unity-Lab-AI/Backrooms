@@ -221,6 +221,23 @@ namespace RimroomsAsyncIndustries.Company
         /// </summary>
         internal List<string> firedEventDefNames = new List<string>();
 
+        /// <summary>
+        /// Room dimensions taken from the branch's own colony **at the moment this coordinate
+        /// was discovered**, and never re-read afterwards.
+        ///
+        /// **Captured once rather than read live, and that is load-bearing.** Layout planning is
+        /// re-run to verify a saved graph against its fingerprint, so if the planner consulted
+        /// the colony's *current* rooms, a coordinate planned before the player built an
+        /// extension would replan differently afterwards and **fail its own fingerprint check**
+        /// — turning a working space into one that refuses to generate.
+        ///
+        /// Snapshotting at discovery also happens to be the better fiction: the place copied
+        /// what it saw when it opened, not what you have built since.
+        /// </summary>
+        internal List<int> echoedRoomSizes = new List<int>();
+
+        public IReadOnlyList<int> EchoedRoomSizes { get { return echoedRoomSizes; } }
+
         public bool HasFiredEvent(string defName)
         {
             return firedEventDefNames != null && firedEventDefNames.Contains(defName);
@@ -264,8 +281,11 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref openings, "rr_openings", 0);
             Scribe_Values.Look(ref occupancyTicks, "rr_occupancyTicks", 0);
             Scribe_Collections.Look(ref firedEventDefNames, "rr_firedEvents", LookMode.Value);
+            Scribe_Collections.Look(ref echoedRoomSizes, "rr_echoedRoomSizes", LookMode.Value);
             if (Scribe.mode == LoadSaveMode.PostLoadInit && firedEventDefNames == null)
             { firedEventDefNames = new List<string>(); }
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && echoedRoomSizes == null)
+            { echoedRoomSizes = new List<int>(); }
             if (Scribe.mode == LoadSaveMode.PostLoadInit && rooms == null) { rooms = new List<RoomRecord>(); }
             // A coordinate saved before 0.7.2-dev has no recorded odd goods. An empty list is
             // the honest answer -- it simply offers no supply contracts of its own -- rather

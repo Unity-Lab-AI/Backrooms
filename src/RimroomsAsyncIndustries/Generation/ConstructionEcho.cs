@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace RimroomsAsyncIndustries.Generation
@@ -237,6 +238,52 @@ namespace RimroomsAsyncIndustries.Generation
             int roll = Gen.HashCombineInt(seed, 0x4543484F);
             if (roll < 0) { roll = ~roll; }
             return candidates[roll % candidates.Count];
+        }
+
+        /// <summary>
+        /// The dimensions of the rooms the branch has actually built, read from the player's
+        /// own home maps right now.
+        ///
+        /// Called **once, when a coordinate is discovered**, and the result is saved against
+        /// that coordinate. It is never consulted at plan time: layout planning re-runs to
+        /// verify a saved graph against its fingerprint, so reading a changing colony there
+        /// would make a coordinate replan differently after the player built an extension and
+        /// **fail its own fingerprint check**.
+        ///
+        /// Bounded three ways — only enclosed indoor rooms, only sensible sizes, and a hard cap
+        /// on how many are taken — because this runs on maps of any size and the result is
+        /// written into a save.
+        /// </summary>
+        public static List<int> SampleColonyRoomSizes()
+        {
+            var sizes = new List<int>();
+            List<Map> maps = Find.Maps;
+            if (maps == null) { return sizes; }
+
+            for (int index = 0; index < maps.Count && sizes.Count < 24; index++)
+            {
+                Map map = maps[index];
+                if (map == null || !map.IsPlayerHome) { continue; }
+                if (Economy.OddOriginService.IsBackroomsMap(map)) { continue; }
+                if (map.regionGrid == null) { continue; }
+
+                foreach (Room room in map.regionGrid.AllRooms)
+                {
+                    if (sizes.Count >= 24) { break; }
+                    if (room == null || room.TouchesMapEdge || room.UsesOutdoorTemperature) { continue; }
+                    if (room.CellCount < 9 || room.CellCount > 400) { continue; }
+                    CellRect bounds = room.ExtentsClose;
+                    // Clamped to what the coordinate grid can actually hold. Rooms sit 19 cells
+                    // apart, so anything wider than 17 would overlap its neighbour and the
+                    // layout validator would reject every candidate.
+                    sizes.Add(Mathf.Clamp(bounds.Width, 8, 17));
+                    sizes.Add(Mathf.Clamp(bounds.Height, 8, 17));
+                }
+            }
+            // Sorted so the saved snapshot does not depend on room enumeration order, which is
+            // not stable between sessions.
+            sizes.Sort();
+            return sizes;
         }
 
         /// <summary>The live component, or null outside a game.</summary>

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.6-dev - 2026-09-29 - the shape of the place
+
+- **Deep spaces are not built to a grid any more.** Rooms stretch, shrink and go wrong, and they go wronger the further in you are.
+- **Some of them are shaped like rooms you built.** The place took their proportions when it opened - not what you have built since.
+- **Lots of hallways.** Long narrow corridors that are corridors on purpose, not by accident.
+- **The shallow yellow rooms stay regular.** That monotony is the look, and it is left alone. The wrongness is something you travel toward.
+- Spaces you already found are completely unchanged, down to the last cell.
+- Building an extension at home does not reshape a space you have already opened.
+
+Full record: [room shape echoes](docs/implementation/ROOM_SHAPE_ECHO_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.8.5-dev - 2026-09-29 - the place copies your people
 
 - **Somebody you know can be standing in a deep space**, wearing your colonist's name and the clothes they put on this morning.

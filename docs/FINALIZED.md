@@ -2309,3 +2309,48 @@ Exploits designed out before shipping: 1 — an echo that copied skills and coul
 Bugs designed out before shipping: 1 — copying apparel by reference would have stripped a living colonist from across a gate.
 Determinism traps closed: 1 — candidate order varying with spawn and load order.
 Still open and named in `TODO.md`, not deferred: **echoed room shapes**, the last one, which touches the saved layout fingerprint and therefore generation's validation path.
+
+---
+
+## 2026-09-29 — The shape of the place, and hallways (0.8.6-dev)
+
+### Verbatim owner requests
+
+> *"yes yes continue and remember the back rooms is random on crack and lsd creepy horror flick"*
+
+> *"and remebre it not just rooms its weirtd and lots of halways and halway/rooms and facilitys and noraml like rooms all furnished with theri proper room equipement to the extent we want normal and really want the creepy insane looks and feel of the universe"*
+
+> *"and items"*
+
+### The fingerprint problem was the whole difficulty
+
+- [x] Layout planning is **re-run to verify a saved graph against its fingerprint**. A planner consulting the colony's *current* rooms would replan a coordinate differently the moment the player built an extension, and that coordinate would then **fail its own fingerprint check and refuse to generate**. So echoed dimensions are **captured once at discovery and saved on the coordinate**, never read live.
+- [x] That is also the better fiction: **the place copied what it saw when it opened**, not what you have built since.
+- [x] **Existing coordinates are untouched by design.** `roomLibraryVersion` already existed for exactly this and feeds the fingerprint; new coordinates are version 2 and everything older plans **byte-identically**.
+
+### Shallow stays regular, and that is deliberate
+
+- [x] Depth 1 does not derange at all. **The yellow rooms read as a place precisely because they are monotonous and regular** — deranging them would throw away the image the whole setting rests on. **The wrongness is something the player travels toward.**
+- [x] **Hallways are made deliberately, not hoped for.** A corridor is one of the two shapes the setting is actually built on, and leaving it to a symmetric stretch roll would produce one rarely and by accident. Its own branch: long and narrow on one axis.
+
+### "Deranged" must not collapse into "broken"
+
+- [x] Every dimension is clamped to **8–17**, because rooms sit 19 cells apart and anything wider would overlap its neighbour — the validator would reject **every** candidate, the planner would fall back to the plain layout, and **the feature would silently become a no-op while appearing to work.**
+- [x] **Not left to trust.** The placement formula was replicated offline and every clamped width/height combination from 8 to 17 checked for overlap and map bounds: **zero violations**, extents 1–55 inside a 60×60 map. Re-run after the hallway shapes were added.
+
+### Said plainly rather than rebuilt
+
+- [x] *"all furnished with theri proper room equipement"* and *"and items"* are **already covered** by the archetype library from 0.7.9-dev — fourteen archetypes filling rooms by capability, including item slots drawn from thing categories. **The furnishing half was not outstanding; only the mapping is.**
+
+### Build evidence
+
+0.8.6-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **151** C# source files (unchanged), **91** approved package files (unchanged). Assembly SHA-256 `69B3038E29E875357360DCD7E81F54F999EBE270792627B6C5FAED2FBEA4DF15`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass. **No new def of any kind, no asset, no patch operation, no new work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 0. Source files modified: 4. Docs updated: 4 (1 new).
+Owner directions captured verbatim: 3.
+**The last named loose end closed.** Every item named as outstanding across the previous five checkpoints is now built.
+Silent-no-op failure modes designed out and **proved offline rather than trusted**: 1 — derangement making every layout candidate unsafe, which would have looked like a working feature doing nothing.
+Requirements found to be already met and said so rather than rebuilt: 2 — room furnishing and items.
+Newly open and named in `TODO.md`: archetypes constrained by structural family, so a hallway is not furnished as a nursery; and facilities as distinct from rooms and corridors.

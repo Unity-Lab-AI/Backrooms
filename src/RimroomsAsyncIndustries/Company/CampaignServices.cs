@@ -135,7 +135,12 @@ namespace RimroomsAsyncIndustries.Company
                 id = id,
                 label = "AI-" + (coordinates.Count + 1).ToString("00"),
                 seed = CampaignSeed.Derive(campaignSeed, stableKey, 1),
-                depth = depth < 1 ? 1 : depth
+                depth = depth < 1 ? 1 : depth,
+                // Version 2 is what unlocks depth-driven and echoed room shapes. Coordinates
+                // discovered before this stay at version 1 and plan exactly as they always did,
+                // which is the whole reason this field exists.
+                roomLibraryVersion = 2,
+                echoedRoomSizes = Generation.ConstructionEchoComponent.SampleColonyRoomSizes()
             };
             coordinates.Add(created);
             ValidateSavedState();
