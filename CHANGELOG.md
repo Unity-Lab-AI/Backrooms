@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.7-dev - 2026-09-29 - some places are bigger than a room
+
+- **Runs of two to four connected rooms are now furnished as one thing.** You find a laboratory wing rather than a room with a bench in it, a dormitory block rather than a stray bed.
+- **Deeper in they are still wrong in all the usual ways**, which is worse than a jumble rather than tidier: there is finally something recognisable for the wrongness to happen to.
+- Quiet rooms are never part of one, so a coordinate still has its empty stretches. The room you arrive in is never part of one either.
+- The shallow yellow rooms are untouched and stay sparse.
+
+Full record: [some places are bigger than a room](docs/implementation/FACILITIES_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.9.6-dev - 2026-09-29 - it came through with them
 
 - **Something can follow your crew home.** In the worst coordinates, with an advanced gate and a connection actually open, a thing that reaches the doorway behind your people steps through it into the facility.

@@ -97,7 +97,7 @@ namespace RimroomsAsyncIndustries.Generation
                     // produce a space that presents something everywhere.
                     bool quiet = Threats.CoordinatePressureLadder.IsQuietRoom(
                         coordinate.Seed, room.index, coordinate.Rooms.Count);
-                    if (!quiet) { DressRoom(map, room, coordinate.Depth, seed, reserved); }
+                    if (!quiet) { DressRoom(map, room, coordinate, seed, reserved); }
                     content.AddClue(coordinate.Id, room, landmark, variant, salvage);
                 }
                 finally { Rand.PopState(); }
@@ -147,10 +147,27 @@ namespace RimroomsAsyncIndustries.Generation
         /// alternative -- failing generation because a decorative shelf had nowhere to go --
         /// would take a working coordinate away from a player over scenery.
         /// </summary>
-        private static void DressRoom(Map map, RoomRecord room, int depth, int seed,
+        private static void DressRoom(Map map, RoomRecord room, CoordinateRecord coordinate, int seed,
             HashSet<IntVec3> reserved)
         {
-            RimroomsRoomArchetypeDef archetype = RoomArchetypeService.Select(room.familyId, depth, seed, room.index);
+            int depth = coordinate.Depth;
+            // Owner direction: "facilitys". A room inside a facility is dressed as whatever
+            // its group is, not as its own roll, which is what turns three rooms into a
+            // laboratory wing instead of three rooms that each happen to have a bench.
+            // Resolving through the anchor means every member asks the same question and gets
+            // the same answer, with nothing stored to fall out of step with the graph.
+            int anchor = FacilityPlanner.AnchorFor(coordinate, room.index);
+            RoomRecord dresser = room;
+            if (anchor >= 0 && anchor != room.index)
+            {
+                for (int index = 0; index < coordinate.Rooms.Count; index++)
+                {
+                    RoomRecord candidate = coordinate.Rooms[index];
+                    if (candidate != null && candidate.Index == anchor) { dresser = candidate; break; }
+                }
+            }
+            RimroomsRoomArchetypeDef archetype =
+                RoomArchetypeService.Select(dresser.familyId, depth, seed, dresser.index);
             if (archetype == null || archetype.slots == null) { return; }
 
             // Slots start well past the family fixtures' slot indices so the quadrant spread

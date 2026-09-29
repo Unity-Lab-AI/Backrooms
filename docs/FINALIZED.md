@@ -2715,3 +2715,42 @@ Source files created: 1. Keyed strings added: 7. Docs updated: 5 (1 new).
 **Founding invariants deliberately given a named exception: 1**, bounded on five axes, with the class documentation rewritten to say so rather than left describing code that no longer exists.
 **Behaviour written for "do everything npcs can do in game": none** - it is an ordinary hostile once inside.
 Still open and named in `TODO.md`: the adjacent-door-run fallback; facilities; new-game playability; the player how-to; the rest of M2.
+
+---
+
+## 0.9.7-dev - 2026-09-29 - some places are bigger than a room
+
+### Owner directions, verbatim
+
+> *"facilitys"*
+
+> *"lots of furnature and equipment and different types of rooms and materials of all types from labs, to workshops, to nursaries"*
+
+### What was wrong with what was there
+
+Every room rolled its own kind independently, so a coordinate could put a laboratory bench in one room, a bed in the next and a smithy in the third. Each room was fine and **the place was nothing** - there was no laboratory, only a room with a bench in it.
+
+### What shipped
+
+A facility is a contiguous run of two to four rooms taken off the coordinate's own saved graph and dressed as the same kind. No new def type and no new content: the same fourteen archetypes, chosen once for a group instead of once per room. Resolution is through an anchor - the lowest room index - so every member asks the same question and gets the same answer, and **nothing is stored**: the assignment is recomputed identically from the saved graph and seed rather than written down, so it cannot fall out of step with the graph.
+
+### Coherence makes a deep coordinate worse, not tidier
+
+**A recognisable institution that is wrong is far worse than a jumble**, because a jumble has nothing to violate. The 0.8.7-dev derangement still applies on top, so a three-room nursery turns up where no nursery could be, furnished at a tech level nobody there should have had.
+
+### Proved, because this is exactly how a generator ships a no-op
+
+Half of every coordinate is a required quiet room and one more is the threshold, so the pool is small before any roll happens. It is entirely possible to write this, have every constraint be individually reasonable, and never once form a group - which would look precisely like a working feature. 2,800 simulated coordinates across seven sizes assert that facilities form (53.9% of coordinates, so a plain one still exists), that every group is contiguous through the graph, bounded 2-4, anchored at its lowest index, never consumes a quiet or threshold room, leaves the quiet guarantee intact, and replans identically from the same seed.
+
+`EligibleShare` was compared at 0.45, 0.50, 0.60 and 0.70. **The code kept 0.45 and the proof was changed to match it** - a proof testing different numbers than the code is worthless.
+
+### Build evidence
+
+0.9.7-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **158** C# source files (one new), **79** approved package files. Assembly SHA-256 `77C50D056BBC91570AFB912B283A30F2EB49FA3EC7264A70C9DC8F4005EF5F37`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All five checkers pass. **No new def, asset, patch operation or work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Package files created: 0. Docs updated: 5 (1 new).
+**Structural properties asserted offline rather than assumed: 6**, across 2,800 simulated coordinates.
+**Tuning constants changed to match the proof: 0. Proofs changed to match the code: 1.**
+Still open and named in `TODO.md`: new-game playability; the player-facing how-to; the rest of M2; the adjacent-door-run fallback.
