@@ -59,7 +59,7 @@ Do not finish a checkpoint and wait. Chain them. The owner got tired of asking f
 2. **The four area types across a gate** — `Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear`, `Area_PollutionClear`. Correctly uncovered until 0.6.9; **now genuinely live**, because an ordinary map is reachable through a gate and a colony map gets snow and wants roofs built. See `research/ZONES_AND_AREAS_ACROSS_A_GATE.md`.
 3. **A world tile the branch does not hold** — the larger half of the topology direction, needing a new world object and a generated map. Its own checkpoint.
 4. **The three starting sites.** `SCENARIOS.md` specifies all three in full, so this is implementation, not design. Two begin with a way out of the Backrooms.
-5. **Floors returning materials when lifted** — vanilla returns none, so *"uninstalled, moved, resued, sold"* for carpet and tile needs a `CONTENT_REUSE_POLICY.md` decision.
+5. **Odd origin — the economy that makes the Backrooms worth entering.** Owner design, decision 23. Anything carried out of a coordinate is marked "(odd)", and contracts demand odd goods *by origin*. **Floors returning materials is settled** — Rimrooms floors only, so vanilla colonies are untouched.
 6. **The 1990s period and the universe factions.** New `FactionDef`s reusing existing pawn kinds, all starting neutral.
 7. **The eleven DLC container hauling givers** (each needs a custody review) and the **four painting givers** in `Art`.
 8. **M6a — now unblocked and buildable today.** Split out on 2026-09-29 by owner decision 19 because M6 was the only major that cannot be closed by building, and one major reading 0% hid that four of its ten rows needed no launch at all: package and def validation, the mod page and provenance, the tag-and-archive ritual, and the buildable part of the fresh-start checklist. M6b keeps the six rows that structurally require the owner's launch.
@@ -183,3 +183,17 @@ The file always has exactly one Active section. When it says _(none)_, the bridg
 - The harness hooks want a single-task pointer for the state-refresh banner
 
 Read `NOW.md` first for "what's happening", then `TODO.md` for "what's queued", then `ROADMAP.md` for "where are we headed".
+
+---
+
+## Update 2026-09-29 — DEFERRED.md is closed
+
+**`DEFERRED.md` holds zero open rows and must never hold one again.** All 43 were moved into `TODO.md` byte-for-byte on owner direction: 38 real build rows under their owning major, 5 as `[T]`. Of the 43, only 5 were test rows — **the other 38 were real work parked behind an owning step rather than done.** That is the failure the owner has called out twice now.
+
+**Three homes for work that is not being done right now, and no fourth:** build it; put it in `TODO.md` under its major (`[T]` only if it cannot close without the game running); or **ask immediately, with multiple choice and a write-in**. A genuine fork is a question, never a deferment.
+
+**New checker in the ritual — step 5e:** `python tools/check-package-integrity.py`. Covers what the other three did not: package metadata against the csproj, the allowlist against disk in both directions, load-folder structure, our own `RR_` def references, patch targets against the game's `Data/`, textures, sounds and DefInjected. Its first run caught `About.xml` quoting **0.6.4-dev** in its player-facing description while `modVersion` said 0.7.1-dev — seven checkpoints stale, and nothing had ever compared those two fields.
+
+**Odd origin is now the answer to "why go back in".** Owner design, decision 23: anything carried out of a Backrooms coordinate is marked "(odd)", and contracts demand odd goods by origin — *"1000 (odd) cotton"*, *"10 uninstalled electic stoves(odd)"*. An odd-only contract cannot be filled from the colony stockpile at any price, which turns the thirty-one existing work families into an economy without inventing a single new item. The harder half is named in `TODO.md`: the marker must survive **uninstall and rebuild**, because the owner's own example is a building, not a resource.
+
+**The last free save break is spent.** Decision 24 allows M2 to delete every custom Def with no migration. Decision 21 made migration a standing obligation from the first *published* version onward.
