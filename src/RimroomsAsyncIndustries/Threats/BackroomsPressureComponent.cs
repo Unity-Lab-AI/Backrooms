@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Economy;
 using RimWorld;
 using UnityEngine;
@@ -82,10 +83,12 @@ namespace RimroomsAsyncIndustries.Threats
                 if (!OddOriginService.IsBackroomsMap(map)) { continue; }
                 IReadOnlyList<Pawn> present = map.mapPawns == null ? null : map.mapPawns.AllPawnsSpawned;
                 if (present == null) { continue; }
+                int occupantsHere = 0;
                 for (int index = 0; index < present.Count; index++)
                 {
                     Pawn pawn = present[index];
                     if (!Affected(pawn)) { continue; }
+                    occupantsHere++;
                     inside.Add(pawn);
                     float rate;
                     if (!shelterCache.TryGetValue(pawn, out rate))
@@ -95,6 +98,7 @@ namespace RimroomsAsyncIndustries.Threats
                     }
                     Add(pawn, Mathf.Max(1, Mathf.RoundToInt(Interval * rate)));
                 }
+                NoteCoordinateHistory(map, occupantsHere);
             }
 
             for (int index = pawns.Count - 1; index >= 0; index--)
@@ -106,6 +110,49 @@ namespace RimroomsAsyncIndustries.Threats
                 if (pressure[index] <= 0) { Remove(index); }
             }
         }
+
+        /// <summary>
+        /// Records what this coordinate's own history is owed: one visit each time somebody
+        /// arrives in a space that was empty, and worked time while anybody is in it.
+        ///
+        /// A visit is counted on the **empty-to-occupied transition** rather than on a gate
+        /// opening, and the difference is deliberate: the owner's rule is that pressure rises
+        /// from *operating history at that coordinate*, and a gate opened onto a space nobody
+        /// walks into is not operating history. It also means the count cannot be inflated by
+        /// cycling a gate from the safe side.
+        ///
+        /// Both figures are saved on the coordinate, so a revisit resumes rather than rerolls.
+        /// </summary>
+        private void NoteCoordinateHistory(Map map, int occupants)
+        {
+            var site = map.Parent as Generation.RimroomsDestinationMapParent;
+            if (site == null) { return; }
+            RimroomsCampaignComponent campaign = Verse.Current.Game == null
+                ? null : Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (campaign == null) { return; }
+            CoordinateRecord coordinate = null;
+            for (int index = 0; index < campaign.Coordinates.Count; index++)
+            {
+                if (campaign.Coordinates[index] != null &&
+                    campaign.Coordinates[index].Id == site.CoordinateId)
+                { coordinate = campaign.Coordinates[index]; break; }
+            }
+            if (coordinate == null) { return; }
+
+            bool wasOccupied;
+            occupiedLastSweep.TryGetValue(map, out wasOccupied);
+            bool isOccupied = occupants > 0;
+            if (isOccupied && !wasOccupied) { coordinate.NoteOpened(); }
+            if (isOccupied) { coordinate.NoteOccupancy(Interval); }
+            occupiedLastSweep[map] = isOccupied;
+        }
+
+        /// <summary>
+        /// Whether each Backrooms map had anybody in it on the previous sweep. Not saved: a
+        /// reload starting from "empty" costs at most one extra recorded visit the first time
+        /// somebody walks in, and saving it would be more state for no gain.
+        /// </summary>
+        private readonly Dictionary<Map, bool> occupiedLastSweep = new Dictionary<Map, bool>();
 
         /// <summary>
         /// Who the pressure applies to.

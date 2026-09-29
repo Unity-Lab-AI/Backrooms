@@ -90,7 +90,14 @@ namespace RimroomsAsyncIndustries.Generation
                     // never throws: the clue system, the power validation and the route
                     // cross all depend on what came before it, so decoration is not
                     // allowed to fail a generation that had already succeeded.
-                    DressRoom(map, room, coordinate.Depth, seed, reserved);
+                    // "Quiet stretches are required content" -- a coordinate with something
+                    // in every room fails the owner's direction however good each room is.
+                    // The quiet rooms are chosen from the coordinate's own seed and by a
+                    // count rather than by chance, so an unlucky run of rolls can never
+                    // produce a space that presents something everywhere.
+                    bool quiet = Threats.CoordinatePressureLadder.IsQuietRoom(
+                        coordinate.Seed, room.index, coordinate.Rooms.Count);
+                    if (!quiet) { DressRoom(map, room, coordinate.Depth, seed, reserved); }
                     content.AddClue(coordinate.Id, room, landmark, variant, salvage);
                 }
                 finally { Rand.PopState(); }

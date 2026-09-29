@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.8.0-dev - 2026-09-29 - the Backrooms paces against what you have built
+
+- **How dangerous a space becomes is now paced against your colony's wealth**, the same measure the game's own storyteller uses.
+- **A space only gets worse from things you actually did** - how often you went in, and how long you stayed. Never from the clock, never from a reroll when you reload, never from simply having a gate open.
+- **Going back to a space you know resumes where it was.** It does not get worse for revisiting, and it does not get safer either.
+- **Walking in is never the dangerous part.** A first visit is always quiet, however rich you are and however deep the space.
+- **Half of every space is quiet, always.** Not by luck - by count. You will never open a coordinate with something in every room.
+- **No more than three things can ever act at once**, at any depth, at any wealth. That is a hard number, not a curve.
+- Several open gates never add up into one bigger threat.
+- Shallow spaces stay survivable no matter how rich you get.
+
+Nothing acts yet - this is the pacing the inhabitants will be held to.
+
+Full record: [the escalation ladder](docs/implementation/ESCALATION_LADDER_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.7.9-dev - 2026-09-29 - rooms that are a kind of place
 
 - **Deeper coordinates now contain recognisable rooms** - laboratories, workshops, dormitories, canteens, storerooms, offices, wards, machine halls, nurseries and salvage caches.

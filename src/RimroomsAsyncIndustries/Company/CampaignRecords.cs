@@ -188,6 +188,37 @@ namespace RimroomsAsyncIndustries.Company
 
         public int Depth { get { return depth < 1 ? 1 : depth; } }
 
+        /// <summary>
+        /// How many times this coordinate has been opened, and how long the branch's people
+        /// have actually worked inside it.
+        ///
+        /// These are the **saved observable causes** the escalation ladder is allowed to read.
+        /// The owner's rule is explicit about what it may *not* read: wall-clock time, a fresh
+        /// draw per load, or the mere fact that a gate is open. Both of these are things the
+        /// player did, both are recorded, and **both survive a reload unchanged** — which is
+        /// what makes revisiting a known space resume its pressure rather than reroll it up to
+        /// punish the revisit or down to make it safe.
+        /// </summary>
+        internal int openings;
+        internal int occupancyTicks;
+
+        public int Openings { get { return openings; } }
+        public int OccupancyTicks { get { return occupancyTicks; } }
+
+        /// <summary>Records one opening. Saturates rather than overflowing on a very long game.</summary>
+        internal void NoteOpened()
+        {
+            if (openings < int.MaxValue - 1) { openings++; }
+        }
+
+        /// <summary>Adds worked time inside this coordinate.</summary>
+        internal void NoteOccupancy(int ticks)
+        {
+            if (ticks <= 0) { return; }
+            long total = (long)occupancyTicks + ticks;
+            occupancyTicks = total > int.MaxValue ? int.MaxValue : (int)total;
+        }
+
         public IReadOnlyList<string> OddGoodsDefNames { get { return oddGoodsDefNames; } }
         public string Id { get { return id; } }
         public string Label { get { return label; } }
@@ -209,6 +240,8 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Collections.Look(ref rooms, "rr_rooms", LookMode.Deep);
             Scribe_Collections.Look(ref oddGoodsDefNames, "rr_oddGoodsDefNames", LookMode.Value);
             Scribe_Values.Look(ref depth, "rr_depth", 1);
+            Scribe_Values.Look(ref openings, "rr_openings", 0);
+            Scribe_Values.Look(ref occupancyTicks, "rr_occupancyTicks", 0);
             if (Scribe.mode == LoadSaveMode.PostLoadInit && rooms == null) { rooms = new List<RoomRecord>(); }
             // A coordinate saved before 0.7.2-dev has no recorded odd goods. An empty list is
             // the honest answer -- it simply offers no supply contracts of its own -- rather

@@ -2051,3 +2051,46 @@ Source files created: 2. Source files modified: 1. Package files created: 1. Doc
 Owner directions captured verbatim: 2.
 Cross-machine determinism traps closed before shipping: 1 — candidate lists following def load order, which would have made one seed produce different rooms under a different mod list.
 Still open and named in `TODO.md`, not deferred: material variety, since fixtures take their default stuff; anomalous **events** as distinct from anomalous rooms; escalation against colony wealth; and the owner's acceptance condition that a solo group can build, supply and escape a high-tier coordinate.
+
+---
+
+## 2026-09-29 — The escalation ladder, paced against colony wealth (0.8.0-dev)
+
+### Verbatim owner requests
+
+> *"get it"*
+
+> *"when u add places and events to proper balance levels of colony wealth and the like so that a solo group has ability to build and get supplies on backrroms instances and find a way out before dying from metting monstrositeitys and insay psychopaths and the like in high teir hard seed ed levels of all variations"*
+
+### The open question, answered by the owner
+
+- [x] **The ladder had been specified since 2026-09-28 with one question deliberately left open: what does pressure scale against?** The owner answered it — **colony wealth** — and it is the right answer for a RimWorld mod, because wealth is the input the game's own storyteller uses. A coordinate now paces against the same curve as everything else the player faces instead of running a private difficulty track alongside it.
+- [x] **Wealth raises the ceiling and never the floor.** The history terms are saved against the coordinate; the wealth term only ever clamps them. A colony that gets rich makes deep spaces *able* to become dangerous, but can never retroactively make a known space more dangerous than its own recorded history earned.
+- [x] **Wealth is read from player home maps only.** A Backrooms map full of generated furniture is not something the player earned, and counting it would make a space escalate **simply because it was well stocked**.
+
+### The three named failure modes, avoided as properties rather than as discipline
+
+- [x] `BandFor` reads **nothing but fixed and saved terms** — no clock, no roll, no count of open gates. A revisit therefore **resumes** rather than rerolling up to punish it or down to make it safe, and **several open gates never sum**, because each coordinate carries its own history and is evaluated alone.
+
+### The solo-survivability condition, as arithmetic rather than hope
+
+- [x] **Three simultaneous encounters, absolute**, at any depth and any wealth. A constant rather than a curve precisely because it is the number that keeps the condition true.
+- [x] **Half of every coordinate's rooms present nothing, by count rather than by chance**, so an unlucky run of rolls can never produce a space with something in every room. *"Quiet stretches are required content."*
+- [x] **A first visit is always quiet.** Whatever the colony is worth and however deep the space, **walking in is never the dangerous part.**
+- [x] **Shallow coordinates are capped below the top band regardless of wealth**, because the shallow Backrooms is where a solo start has to be able to operate and no amount of colony success may take that away.
+
+### Not left as a number waiting for callers
+
+- [x] This repo has a documented failure mode — *public APIs with no callers; built, compiling, and reachable by nothing*. So the quiet-room guarantee was **wired into generation in the same checkpoint**: room dressing asks the ladder first, and half of every coordinate's rooms are now genuinely bare.
+- [x] **A visit is recorded on the empty-to-occupied transition, not on a gate opening.** The rule is that pressure rises from *operating history at that coordinate*, and a gate opened onto a space nobody walks into is not operating history. It also means the count cannot be inflated by cycling a gate from the safe side.
+
+### Build evidence
+
+0.8.0-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **141** C# source files (one new), **86** approved package files (unchanged). Assembly SHA-256 `A9C6C6F7E12A756F9412688215B7F5DA535824A49AD77BD6D3899CF21E2FA553`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass. **No new def of any kind, no asset, no patch operation, no new work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Source files modified: 3. Docs updated: 4 (1 new).
+Owner directions captured verbatim: 2.
+Long-open design questions closed by the owner: 1 — what the escalation ladder paces against, open since 2026-09-28.
+Still open and named in `TODO.md`, not deferred: the inhabitant and monstrosity families, since the ladder now says how many things may act and at what band but **nothing acts yet**; raising a cap as a recorded progression step; a player-facing readout of a coordinate's band; and anomalous events as distinct from anomalous rooms.
