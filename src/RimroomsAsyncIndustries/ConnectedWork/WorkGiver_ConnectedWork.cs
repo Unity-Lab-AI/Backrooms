@@ -38,7 +38,11 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             if (work == null || !work.CanOperate || pawn == null || !pawn.Spawned) { return true; }
             bool committed = work.ActiveIntentFor(pawn) != null;
             if (ContinueOnly) { return !committed; }
-            if (committed || !work.MayPlanFor(pawn)) { return true; }
+            // One commitment per worker, across both record kinds. Someone sent through
+            // a gate to build must not also be promised a haul: it would abandon one of
+            // the two, and which one it abandoned would depend on job-search timing.
+            if (committed || work.ActiveDeploymentFor(pawn) != null || !work.MayPlanFor(pawn))
+            { return true; }
             // Nothing to plan against until this branch actually remembers a gate.
             RimroomsPortalNetwork network = Network();
             return network == null || network.HasStateFault || network.Connections.Count == 0;
@@ -73,6 +77,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 return Continue(intent, adapter, pawn, work);
             }
             if (ContinueOnly || !work.MayPlanFor(pawn)) { return null; }
+            // A worker already deployed somewhere is doing local work there on purpose.
+            // Planning a carry trip for it would pull it straight back off that site.
+            if (work.ActiveDeploymentFor(pawn) != null) { return null; }
             work.NotePlanningPass(pawn);
             intent = adapter.TryPlan(pawn, work);
             return intent == null ? null : Continue(intent, adapter, pawn, work);
@@ -119,9 +126,10 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         }
 
         /// <summary>
-        /// Hand out one ordinary crossing job toward the next hop. This reuses the
-        /// crossing the player's own travel order uses, so there is exactly one
-        /// implementation of stepping through a gate, with one set of rules.
+        /// Hand out one ordinary crossing job toward the next hop, through the single
+        /// shared implementation in <see cref="ConnectedCrossing"/>. What stays here is
+        /// only what is specific to a carry trip: the attempt cap, and the fact that a
+        /// carry trip which ran out of attempts failed with cargo in real hands.
         /// </summary>
         private Job CrossToward(ConnectedWorkIntent intent, Pawn pawn,
             RimroomsConnectedWorkComponent work, Map destination)
@@ -135,27 +143,14 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 work.Close(intent, ConnectedWorkPhase.Failed, "RR_ConnectedWork_RouteExhausted");
                 return null;
             }
-            PortalRouteStep step;
-            bool pending;
-            if (!work.Routes.TryNextStep(pawn.Map, destination, out step, out pending))
+            Job job;
+            ConnectedCrossingOutcome outcome = ConnectedCrossing.StepToward(pawn, destination, work, out job);
+            if (outcome == ConnectedCrossingOutcome.NoRoute)
             {
-                // A bounded search that has not finished is not an answer. Only a
-                // search that genuinely exhausted the reachable graph ends the trip.
-                if (!pending) { work.Close(intent, ConnectedWorkPhase.Cancelled, "RR_ConnectedWork_NoRoute"); }
+                work.Close(intent, ConnectedWorkPhase.Cancelled, "RR_ConnectedWork_NoRoute");
                 return null;
             }
-            JobDef definition = DefDatabase<JobDef>.GetNamedSilentFail(PortalTravelService.CrossJobDefName);
-            IntVec3 approach = step.Source.ApproachCell;
-            if (definition == null || step.Source.Anchor == null || !approach.IsValid ||
-                !approach.Standable(pawn.Map))
-            { return null; }
-            // Automatic work respects this pawn's own danger policy, its allowed area
-            // and locked or forbidden doors. A player order may use Deadly; work never.
-            if (step.Source.Anchor.IsForbidden(pawn) || approach.IsForbidden(pawn) ||
-                !pawn.CanReach(approach, PathEndMode.OnCell, pawn.NormalMaxDanger()))
-            { return null; }
-            Job job = JobMaker.MakeJob(definition, step.Source.Anchor, approach);
-            job.count = 1;
+            if (outcome != ConnectedCrossingOutcome.Step) { return null; }
             work.NoteCrossAttempt(intent);
             return job;
         }

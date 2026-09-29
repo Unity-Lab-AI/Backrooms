@@ -187,3 +187,22 @@ Recorded verbatim, then their consequences. Implemented in 0.5.4-dev; record: [`
 8. **Inside start first exit:** **the player chooses the destination settlement.** This supersedes the earlier provisional assumption of a fixed discovered destination.
 
 **Also directed:** continue building and defer the first in-game validation pass; build travel-to-work intents next.
+
+---
+
+## Owner decisions — 2026-09-28 — the universe period and its factions
+
+Recorded verbatim, then their consequences. Captured in `TODO.md` as ten rows, one per item in the owner's list. The faction layer itself is queued after the remaining cross-map work families by the owner's own sequencing decision; the rows and that reason are in [`DEFERRED.md`](DEFERRED.md) under M3.
+
+> and i havent talked about it but this is 1990's when this all starts and the factions should be the factions of the universe, so US government, other corporations trying to get propietary tech, ex employes disgruntleed, high tech theives, corporate spys and sbaatosh, concerned citizens.. and anything other type of factions along these lines that will increses the backrromms universe feeling as all this needs to be defgault set in the game settup for the differernt scenerios tailored to their scenrerio
+
+**Decided, and binding:**
+
+7. **The campaign opens in the 1990s.** This is the period for faction framing, naming and in-world language across every scenario.
+8. **The world's factions are the universe's own**, not RimWorld's default rimworld factions: US government, rival corporations after proprietary technology, disgruntled ex-employees, high-tech thieves, corporate espionage and sabotage, concerned citizens, and further factions in the same vein wherever they increase the Backrooms universe feeling.
+9. **Factions are authored as new `FactionDef`s that reuse existing pawn kinds.** A `FactionDef` is world configuration, not a physical gameplay Def, so it is inside [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md). Each faction's `pawnGroupMakers` point at existing Core or profile `PawnKindDef`s, and faction icons reuse existing icon paths. **No new `PawnKindDef`, no new texture, no new item** — which is what keeps this layer clear of M2's removal of the five `RR_*Staff` PawnKinds. A new pawn kind here would reopen exactly the category M2 is deleting and would need an explicit policy amendment first.
+10. **Every faction starts neutral.** Hostility is earned from what the company actually does, driven by the same saved observable causes as the bounded escalation ladder rather than by a second, unrelated hostility system. No faction is a raider on tick one.
+11. **The 1990s also constrains starting grants.** Scenario starting equipment and buildings are period-plausible. Research is **not** period-gated, because decision 5 above makes one full tree available to every start and a period-gated tree would dead-end progression. The period shapes where a start begins, never where it can end up.
+12. **Faction setup is default-set per scenario, tailored to that scenario**, and must be threaded through the existing versioned start contract (`RimroomsStartDef` → `BranchStartRequest` → `InitializeBranch`). It may **not** be a scenario-identity branch in code, which decision 5 already forbids for research and capability rules.
+
+**Sequencing decided the same day:** finish the remaining cross-map work families first — bills and unfinished work, research, tending across a gate, food, rest — then author the faction and period layer as one clean content checkpoint.

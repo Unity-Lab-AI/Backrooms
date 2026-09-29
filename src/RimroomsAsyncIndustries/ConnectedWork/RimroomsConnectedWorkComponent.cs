@@ -30,6 +30,14 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         internal const int MaximumIntents = 64;
 
         /// <summary>
+        /// Bounded saved growth for deployments. Lower than the intent cap on purpose: a
+        /// deployment occupies a whole worker for as long as there is work to do, so a
+        /// branch that had thirty-two people standing on other maps would have nobody
+        /// left at home. The cap is a floor under that, not a scheduling policy.
+        /// </summary>
+        internal const int MaximumDeployments = 32;
+
+        /// <summary>
         /// How long a plan stays valid before it is abandoned. A trip that has not
         /// progressed inside this window is stale by definition: the world it was
         /// planned against has moved on. Roughly three in-game hours.
@@ -62,6 +70,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         private int schema = CurrentSchema;
         private long nextSequence = 1;
         private List<ConnectedWorkIntent> intents = new List<ConnectedWorkIntent>();
+        private List<ConnectedDeploymentIntent> deployments = new List<ConnectedDeploymentIntent>();
         private List<ConnectedAreaObservation> areaObservations = new List<ConnectedAreaObservation>();
         private string stateFaultKey;
 
@@ -77,8 +86,11 @@ namespace RimroomsAsyncIndustries.ConnectedWork
 
         public string StateFaultKey { get { return stateFaultKey; } }
         public IReadOnlyList<ConnectedWorkIntent> Intents { get { return intents.AsReadOnly(); } }
+        public IReadOnlyList<ConnectedDeploymentIntent> Deployments { get { return deployments.AsReadOnly(); } }
         public ConnectedRouteService Routes { get { return routes; } }
         public int LiveIntentCount { get { return intents.Count(intent => intent != null && intent.IsLive); } }
+        public int LiveDeploymentCount
+        { get { return deployments.Count(deployment => deployment != null && deployment.IsLive); } }
 
         private RimroomsCampaignComponent Campaign
         { get { return Current.Game == null ? null : Current.Game.GetComponent<RimroomsCampaignComponent>(); } }
@@ -111,6 +123,10 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             Scribe_Values.Look(ref schema, "rr_connectedWorkSchema", CurrentSchema, forceSave: true);
             Scribe_Values.Look(ref nextSequence, "rr_connectedWorkNextSequence", 1L);
             Scribe_Collections.Look(ref intents, "rr_connectedWorkIntents", LookMode.Deep);
+            // Additive; absent from every save before travel-to-work, which correctly
+            // loads as "nobody is deployed". No schema bump, so older saves load as they
+            // are, exactly like the area observations added before this.
+            Scribe_Collections.Look(ref deployments, "rr_connectedWorkDeployments", LookMode.Deep);
             // Additive; absent from a 0.5.0-dev save, which correctly loads as "no
             // observations yet" and therefore as unrestricted everywhere, matching
             // Core's own default. No schema bump, so older saves are not rejected.
@@ -118,6 +134,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 intents = intents ?? new List<ConnectedWorkIntent>();
+                deployments = deployments ?? new List<ConnectedDeploymentIntent>();
                 areaObservations = areaObservations ?? new List<ConnectedAreaObservation>();
                 // A removed area or unloaded map leaves a useless row behind.
                 areaObservations.RemoveAll(observation => observation == null ||
@@ -137,6 +154,25 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             return pawn == null ? null
                 : intents.FirstOrDefault(intent => intent != null && intent.IsLive && intent.Pawn == pawn);
         }
+
+        /// <summary>
+        /// The one live deployment this worker owns, if any. A worker never holds two,
+        /// and never holds a deployment and a carry trip at the same time.
+        /// </summary>
+        public ConnectedDeploymentIntent ActiveDeploymentFor(Pawn pawn)
+        {
+            return pawn == null ? null : deployments.FirstOrDefault(
+                deployment => deployment != null && deployment.IsLive && deployment.Pawn == pawn);
+        }
+
+        /// <summary>
+        /// Whether this worker already owes this company a cross-map commitment of any
+        /// kind. One chokepoint for the rule, so a family added later cannot forget it:
+        /// a worker promised two things would abandon one of them, and which one it
+        /// abandoned would depend on job-search timing rather than on anything designed.
+        /// </summary>
+        public bool HasLiveCommitment(Pawn pawn)
+        { return ActiveIntentFor(pawn) != null || ActiveDeploymentFor(pawn) != null; }
 
         /// <summary>
         /// How much of this exact object this company's own planners have already
@@ -263,7 +299,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             if (!sourceThing.Spawned || sourceThing.Destroyed || sourceThing.Map == null ||
                 requestedCount > sourceThing.stackCount) { return null; }
             if (!campaign.OwnsMap(sourceThing.Map) || !campaign.OwnsMap(storeMap)) { return null; }
-            if (ActiveIntentFor(pawn) != null) { return null; }
+            if (HasLiveCommitment(pawn)) { return null; }
             if (LiveIntentCount >= MaximumIntents || intents.Count >= MaximumIntents * 2) { return null; }
             if (LeasedCount(sourceThing) + requestedCount > sourceThing.stackCount) { return null; }
 
@@ -284,6 +320,102 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 return null;
             }
             return created;
+        }
+
+        /// <summary>
+        /// Open one travel-to-work deployment. Every argument is checked here rather than
+        /// trusted from the provider, for the same reason the carry families are: a future
+        /// provider must not be able to open something the saved state would reject.
+        ///
+        /// There is no lease over an object here, because a deployment promises nothing to
+        /// anyone about anything physical. It reserves only this worker's attention.
+        /// </summary>
+        public ConnectedDeploymentIntent OpenDeployment(ConnectedDeploymentProvider provider, Pawn pawn,
+            Map destinationMap, PortalRouteStep plannedStep)
+        {
+            RimroomsCampaignComponent campaign = Campaign;
+            RimroomsPortalNetwork network = Network;
+            if (!CanOperate || provider == null || pawn == null || destinationMap == null ||
+                nextSequence == long.MaxValue) { return null; }
+            if (!pawn.Spawned || pawn.Map == null || pawn.Map == destinationMap) { return null; }
+            if (!campaign.OwnsMap(pawn.Map) || !campaign.OwnsMap(destinationMap)) { return null; }
+            if (HasLiveCommitment(pawn)) { return null; }
+            if (LiveDeploymentCount >= MaximumDeployments ||
+                deployments.Count >= MaximumDeployments * 2) { return null; }
+
+            string id = campaign.BranchId + ":deploy:" + provider.ProviderId + ":" + nextSequence;
+            if (deployments.Any(deployment => deployment != null && deployment.Id == id)) { return null; }
+            var created = new ConnectedDeploymentIntent(id, campaign.BranchId, provider, pawn,
+                destinationMap, plannedStep, network.TopologyRevision,
+                Find.TickManager.TicksGame, LeaseDurationTicks);
+            deployments.Add(created);
+            nextSequence++;
+            ValidateSavedState();
+            if (stateFaultKey != null)
+            {
+                // Never leave the branch faulted because of a record we just added.
+                deployments.Remove(created);
+                nextSequence--;
+                ValidateSavedState();
+                return null;
+            }
+            return created;
+        }
+
+        /// <summary>
+        /// The worker is standing on the map it was sent to, and there is still work of
+        /// its kind there. Called on every job search while it is deployed, which is what
+        /// keeps the record alive: a deployment does not run on a countdown once the
+        /// worker has arrived, it runs on the work still being there.
+        /// </summary>
+        public void NoteArrival(ConnectedDeploymentIntent deployment)
+        {
+            if (deployment == null || !deployment.IsLive) { return; }
+            if (deployment.Phase == ConnectedDeploymentPhase.Travelling)
+            {
+                deployment.RecordArrival(Find.TickManager.TicksGame, LeaseDurationTicks);
+                return;
+            }
+            deployment.RenewLease(Find.TickManager.TicksGame, LeaseDurationTicks);
+        }
+
+        public void NoteCrossAttempt(ConnectedDeploymentIntent deployment)
+        {
+            if (deployment == null || !deployment.IsLive) { return; }
+            deployment.NoteCrossAttempt();
+            deployment.RenewLease(Find.TickManager.TicksGame, LeaseDurationTicks);
+        }
+
+        public void RenewLease(ConnectedDeploymentIntent deployment)
+        {
+            if (deployment == null || !deployment.IsLive) { return; }
+            deployment.RenewLease(Find.TickManager.TicksGame, LeaseDurationTicks);
+        }
+
+        /// <summary>
+        /// Close a deployment. Nothing physical happens, and in particular the worker is
+        /// not moved: it stays exactly where it is standing, with its own needs and
+        /// whatever local work it finds. Closing only ends this company's claim on its
+        /// attention.
+        /// </summary>
+        public void Close(ConnectedDeploymentIntent deployment, ConnectedDeploymentPhase terminalPhase,
+            string failureKey)
+        {
+            if (deployment == null || !deployment.IsLive) { return; }
+            if (terminalPhase != ConnectedDeploymentPhase.Completed &&
+                terminalPhase != ConnectedDeploymentPhase.Cancelled &&
+                terminalPhase != ConnectedDeploymentPhase.Failed)
+            { terminalPhase = ConnectedDeploymentPhase.Failed; }
+            deployment.Close(terminalPhase, failureKey);
+            if (terminalPhase == ConnectedDeploymentPhase.Failed && !string.IsNullOrEmpty(failureKey))
+            {
+                RimroomsCampaignComponent campaign = Campaign;
+                if (campaign != null && campaign.CanOperate)
+                {
+                    campaign.RecordEvent("RR_Event_ConnectedWorkFailed", deployment.Id,
+                        failureKey.Translate().ToString());
+                }
+            }
         }
 
         /// <summary>
@@ -340,10 +472,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             if (Find.TickManager.TicksGame % MaintenanceInterval != 0) { return; }
             if (stateFaultKey != null || schema != CurrentSchema) { return; }
             routes.DropStaleCursors();
-            if (intents.Count == 0) { return; }
 
-            // Bounded by construction: the live set can never exceed MaximumIntents,
-            // so one full sweep per interval is a fixed cost, not a growing one.
+            // Bounded by construction: the live sets can never exceed their caps, so one
+            // full sweep per interval is a fixed cost, not a growing one.
             for (int index = 0; index < intents.Count; index++)
             {
                 ConnectedWorkIntent intent = intents[index];
@@ -352,7 +483,25 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 if (failure == null) { continue; }
                 Close(intent, LifecyclePhaseFor(failure), failure);
             }
-            intents.RemoveAll(intent => intent == null || !intent.IsLive);
+            if (intents.Count > 0)
+            { intents.RemoveAll(intent => intent == null || !intent.IsLive); }
+
+            // Deployments are swept the same way and for the same reason: a worker who
+            // died, was captured, left the map or lost its provider must not leave a
+            // record behind that silently blocks it from ever being planned again. This
+            // sweep never asks a provider whether work remains — that question belongs to
+            // the work giver, on the worker's own map, and asking it here for every
+            // deployment every interval would be a real cost for no gain.
+            for (int index = 0; index < deployments.Count; index++)
+            {
+                ConnectedDeploymentIntent deployment = deployments[index];
+                if (deployment == null || !deployment.IsLive) { continue; }
+                string failure = LiveFailureKey(deployment);
+                if (failure == null) { continue; }
+                Close(deployment, DeploymentPhaseFor(failure), failure);
+            }
+            if (deployments.Count > 0)
+            { deployments.RemoveAll(deployment => deployment == null || !deployment.IsLive); }
         }
 
         /// <summary>
@@ -371,6 +520,77 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 default:
                     return ConnectedWorkPhase.Failed;
             }
+        }
+
+        /// <summary>
+        /// How a deployment ends. Almost nothing here is a failure, and that is honest
+        /// rather than lenient: a deployment carries nothing, so a worker that went home,
+        /// was drafted, or simply outlived its lease has lost nobody and dropped nothing.
+        /// A route that kept being refused is the exception — that is a broken connection
+        /// the player may want to know about.
+        /// </summary>
+        internal static ConnectedDeploymentPhase DeploymentPhaseFor(string failureKey)
+        {
+            switch (failureKey)
+            {
+                case "RR_ConnectedWork_RouteExhausted":
+                case "RR_ConnectedWork_InvalidState":
+                    return ConnectedDeploymentPhase.Failed;
+                default:
+                    return ConnectedDeploymentPhase.Cancelled;
+            }
+        }
+
+        /// <summary>
+        /// Why this live deployment can no longer be honoured, or null while it still can.
+        /// A worker inside an unresolved crossing is deliberately left alone: the crossing
+        /// service owns that person until its receipt is reconciled.
+        /// </summary>
+        public string LiveFailureKey(ConnectedDeploymentIntent deployment)
+        {
+            RimroomsCampaignComponent campaign = Campaign;
+            if (deployment == null || !CanOperate || campaign == null ||
+                deployment.BranchId != campaign.BranchId)
+            { return "RR_ConnectedWork_InvalidState"; }
+
+            ConnectedDeploymentProvider provider = ConnectedDeploymentProviders.Get(deployment.ProviderId);
+            if (provider == null || provider.ProviderVersion != deployment.ProviderVersion)
+            { return "RR_ConnectedWork_AdapterRetired"; }
+
+            Pawn pawn = deployment.Pawn;
+            if (pawn == null || pawn.Destroyed || pawn.Dead ||
+                pawn.GetUniqueLoadID() != deployment.PawnLoadId)
+            { return "RR_ConnectedWork_WorkerLost"; }
+            if (!pawn.Spawned)
+            {
+                RimroomsPortalCrossingService crossings = Crossings;
+                if (crossings != null && crossings.HasUnresolvedCrossing(pawn)) { return null; }
+                return "RR_ConnectedWork_WorkerLost";
+            }
+            if (!campaign.OwnsMap(deployment.DestinationMap) || !campaign.OwnsMap(pawn.Map))
+            { return "RR_ConnectedWork_MapUnavailable"; }
+            if (deployment.CrossAttempts > MaximumCrossAttempts)
+            { return "RR_ConnectedWork_RouteExhausted"; }
+
+            if (deployment.Phase == ConnectedDeploymentPhase.Travelling)
+            {
+                if (Find.TickManager.TicksGame > deployment.LeaseExpiryTick)
+                { return "RR_ConnectedWork_LeaseExpired"; }
+                // Drafting, a mental state or being downed end a journey that has not
+                // arrived yet. Nothing is lost by dropping it.
+                if (PortalTraversalPolicy.TravellerFailureKey(pawn) != null)
+                { return "RR_ConnectedWork_WorkerUnavailable"; }
+                return null;
+            }
+
+            // Deployed. A worker standing where it was sent needs no countdown, because
+            // its being there is the whole point of the record — and a countdown would
+            // expire it overnight while it slept beside an unfinished wall. What ends it
+            // is leaving: if this person is no longer on that map, it went somewhere of
+            // its own accord or was taken, and either way the deployment is over.
+            if (pawn.Map != deployment.DestinationMap)
+            { return "RR_ConnectedWork_WorkerDeparted"; }
+            return null;
         }
 
         /// <summary>
@@ -434,7 +654,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         private void ValidateSavedState()
         {
             stateFaultKey = null;
-            if (schema != CurrentSchema || nextSequence < 1 || intents == null)
+            if (schema != CurrentSchema || nextSequence < 1 || intents == null || deployments == null)
             { Fault(); return; }
             var ids = new HashSet<string>(StringComparer.Ordinal);
             var liveWorkers = new HashSet<string>(StringComparer.Ordinal);
@@ -457,6 +677,28 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 { Fault(); return; }
                 if (intent.Phase == ConnectedWorkPhase.Carrying &&
                     (intent.Cargo == null || string.IsNullOrEmpty(intent.CargoLoadId) || intent.ObservedCount < 1))
+                { Fault(); return; }
+            }
+            // Deployments share both sets with the intents above, deliberately. Ids must be
+            // unique across everything this branch saved, and the one-live-commitment rule
+            // has to hold *across* the two record kinds or a worker could load owing a
+            // carry trip and a deployment at once, with no defined answer for which wins.
+            foreach (ConnectedDeploymentIntent deployment in deployments)
+            {
+                if (deployment == null || string.IsNullOrWhiteSpace(deployment.Id) ||
+                    deployment.Id.Length > 256 || !ids.Add(deployment.Id) ||
+                    string.IsNullOrEmpty(deployment.BranchId) ||
+                    string.IsNullOrEmpty(deployment.ProviderId) || deployment.ProviderVersion < 1 ||
+                    !Enum.IsDefined(typeof(ConnectedDeploymentPhase), deployment.Phase))
+                { Fault(); return; }
+                if (!deployment.IsLive) { continue; }
+                // A live deployment must still name its worker and the map it was sent to.
+                // Note what is deliberately *not* required: a source object. That is the
+                // whole reason this is a separate record instead of an exemption carved
+                // into the intent check above, where a missing source object is a fault.
+                if (deployment.Pawn == null || string.IsNullOrEmpty(deployment.PawnLoadId) ||
+                    deployment.Pawn.GetUniqueLoadID() != deployment.PawnLoadId ||
+                    !liveWorkers.Add(deployment.PawnLoadId) || deployment.DestinationMap == null)
                 { Fault(); return; }
             }
         }

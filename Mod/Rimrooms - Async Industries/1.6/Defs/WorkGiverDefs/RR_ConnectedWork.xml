@@ -44,6 +44,54 @@
     <prioritizeSustains>true</prioritizeSustains>
   </WorkGiverDef>
 
+  <!-- Travel-to-work is a different shape from every family above: the worker goes and
+       nothing is carried. The only job either of these ever hands out is a crossing.
+       Once the worker has arrived they hand out nothing at all, and Core's own
+       ConstructFinishFrames (Construction 80) does the building, locally, with its own
+       reservations and its own toils.
+
+       Core's Construction work type runs 120 FixBrokenDownBuilding, 110 Uninstall,
+       100 BuildRoofs, 90 RemoveRoofs, 85 DeconstructForBlueprint, 80 ConstructFinishFrames,
+       70 DeliverResourcesToFrames, 60 DeliverResourcesToBlueprints, 51 FillIn,
+       50 Deconstruct, 40 Repair, 30 RemoveFoundations/RemoveFloors, 20 SmoothFloors,
+       10 SmoothWalls.
+
+       Continuing sits at 82: above frame finishing, so a builder partway to a gate is not
+       turned around by a frame that appeared at home while it walked, but still below
+       clearing a blueprint site (85), roof work, uninstalls and breakdown repair, which
+       are either more urgent or block other work outright.
+
+       Starting sits at 5, below every single one of those. Crossing a gate to build
+       therefore only ever happens when there is nothing constructive left to do on this
+       side at all - not even smoothing a wall. Both values are balance decisions and are
+       recorded as such; they are subject to the owner's runtime acceptance. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedConstructionFinishingContinue</defName>
+    <label>travel on to finish a build through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedConstructionFinishingContinue</giverClass>
+    <workType>Construction</workType>
+    <verb>construct</verb>
+    <gerund>constructing</gerund>
+    <priorityInType>82</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedConstructionFinishing</defName>
+    <label>cross a gate to finish a build</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedConstructionFinishing</giverClass>
+    <workType>Construction</workType>
+    <verb>construct</verb>
+    <gerund>constructing</gerund>
+    <priorityInType>5</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
   <!-- Casualties sit around Core's own DoctorRescue (60): finishing a trip that
        already has someone in the worker's arms edges above it, starting one sits just
        below so a casualty on this map is always rescued first. Both stay under the

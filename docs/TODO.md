@@ -54,8 +54,8 @@ Binding contract: [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md). 
   - [x] Rescue and remains — BUILT 2026-09-28 in 0.5.2-dev. Our own downed people carried home to a bed (`ConnectedCasualtyAdapter`, Core's `CanRescueNow` far-side check and Core's `Toils_Bed` handoff on arrival); our dead carried home to a grave or storage through the ordinary hauling family. Capture stays a player order by design. Record `implementation/CONNECTED_CASUALTIES_IMPLEMENTATION.md`.
   - [ ] Tending across a gate — a doctor crossing to a patient who stays put, or medicine carried to them. A different capability from carrying a person back; not implemented.
   - [x] Construction supply — BUILT 2026-09-28 in 0.5.3-dev. Real material carried through a gate into a real build site (frame or blueprint), using the site's own material requirement and Core's own container and construct toils. Record `implementation/CONNECTED_CONSTRUCTION_IMPLEMENTATION.md`.
-  - [~] Construction finishing — a worker crossing to do build work with nothing carried. Needs the travel-to-work intent shape rather than another adapter; see `DEFERRED.md`. **Owner-selected as the next build (2026-09-28).**
-  - [ ] Bills and unfinished work.
+  - [x] Construction finishing — a worker crossing to do build work with nothing carried. Needs the travel-to-work intent shape rather than another adapter; see `DEFERRED.md`. **Owner-selected as the next build (2026-09-28).** — BUILT 2026-09-28 in 0.5.5-dev. `ConnectedDeploymentIntent` (a sibling record, not a new phase on the work intent), `ConnectedDeploymentProvider` with `ConstructionFinishingProvider`, two work givers in Core's `Construction` type at 82 (continue) and 5 (plan), and `ConnectedCrossing` as the one shared gate step. On arrival the deployment issues nothing: Core's own `WorkGiver_ConstructFinishFrames` does the building. Nobody is ever walked home. Record `implementation/CONNECTED_TRAVEL_TO_WORK_IMPLEMENTATION.md`.
+  - [ ] Bills and unfinished work. **Owner-selected as next (2026-09-28): finish the remaining work families before the faction layer.**
   - [ ] Research and stationary work.
   - [ ] Food.
   - [ ] Rest and beds.
@@ -265,15 +265,39 @@ Owner decision D1: private RimWorld Together test build first; public Workshop o
 - [ ] Prepare final mod page, description, feature list, screenshots, trailer/preview art, installation guide, dependencies, DLC matrix, RWT setup, credits, source provenance, license, FAQ, known issues, and update/support plan.
 - [ ] Tag release, archive exact source and build artifacts, preserve a known-good server profile, and publish only features that passed their listed acceptance criteria.
 
+### Owner universe direction — period and factions (2026-09-28)
+
+**Verbatim owner request (2026-09-28, ten items):** *"and i havent talked about it but this is 1990's when this all starts and the factions should be the factions of the universe, so US government, other corporations trying to get propietary tech, ex employes disgruntleed, high tech theives, corporate spys and sbaatosh, concerned citizens.. and anything other type of factions along these lines that will increses the backrromms universe feeling as all this needs to be defgault set in the game settup for the differernt scenerios tailored to their scenrerio"*
+
+New binding world direction. It lands on [`UNIVERSE_ADAPTATION.md`](UNIVERSE_ADAPTATION.md), [`SCENARIOS.md`](SCENARIOS.md), [`SCENARIO_SETUP_AND_PORTAL_NETWORK.md`](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) and the M3 scenario framework above, and it **intersects** [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md): that policy bans new physical gameplay Defs and M2 already lists `five RR_*Staff PawnKinds` for removal, so whether these factions may author new `FactionDef`/`PawnKindDef` content is an open owner question recorded below, not an assumption.
+
+- [ ] **"this is 1990's when this all starts"** — the campaign's opening period is the 1990s. Affects naming, faction framing, in-world technology language and every scenario's presented setting.
+- [ ] **"the factions should be the factions of the universe"** — the world's factions are the Backrooms universe's own factions, not RimWorld's default rimworld factions.
+- [ ] **"so US government"** — a US government faction.
+- [ ] **"other corporations trying to get propietary tech"** — rival corporation faction(s) whose motive is acquiring the company's proprietary technology.
+- [ ] **"ex employes disgruntleed"** — a disgruntled ex-employee faction.
+- [ ] **"high tech theives"** — a high-tech thief faction.
+- [ ] **"corporate spys and sbaatosh"** — a corporate espionage and sabotage faction.
+- [ ] **"concerned citizens.."** — a concerned-citizens faction.
+- [ ] **"and anything other type of factions along these lines that will increses the backrromms universe feeling"** — further factions in the same vein wherever they increase the Backrooms universe feeling.
+- [ ] **"as all this needs to be defgault set in the game settup for the differernt scenerios tailored to their scenrerio"** — all of the above is default-set during game setup, per scenario, tailored to that scenario.
+
 ### Blocked — owner-launched acceptance (never agent-launched)
 
 - [!] Runtime regression acceptance for these increments and their connected first-expedition loop, after the owner launches the disposable RimSort profile. *(master TODO §Earlier company/scenario increments)* — Blocked by: owner RimSort launch of the 295-entry product target (296 with the RimBridgeServer QA overlay attached afterward). Claude never starts RimWorld, never touches the active RimSort list, never attaches RimBridgeServer outside `research/RIMBRIDGE_TEST_HARNESS.md`.
 
 ### Open owner questions (not tasks; answers unblock items above)
 
-- [!] Inside start (`lone_survivor`): configurable party versus strictly lone start.
-- [!] Inside start: first reliable exit reveals a fixed discovered surface destination, or the player chooses a settlement.
-- [!] Opening-duration clarification (the accepted 20 in-game-minute first window is retained until directed otherwise).
+- [x] Inside start (`lone_survivor`): configurable party versus strictly lone start. — **ANSWERED 2026-09-28: configurable party, the player chooses.** Recorded in `GATE_0_DECISIONS.md` and `implementation/GATE_DURATION_AND_COMPANY_NAMING.md`. The M3 scenario row above consumes it.
+- [x] Inside start: first reliable exit reveals a fixed discovered surface destination, or the player chooses a settlement. — **ANSWERED 2026-09-28: the player chooses the destination settlement.** This *changed* the earlier provisional fixed-reveal assumption, so M3 must implement a choice, not a reveal.
+- [x] Opening-duration clarification (the accepted 20 in-game-minute first window is retained until directed otherwise). — **ANSWERED 2026-09-28 and superseded:** *"you should have the first opening be like 30 minutes of real time not game time there has to be time to acually do shit and it only greatly increases from there once u can re call seeds and better tech and levels to being able to open it indefintality at higherr tech and research and staff and power supplies"*. Implemented in 0.5.4-dev as the tier ladder (108,000 ticks base, ×3 per earned tier, no countdown at the indefinite tier). Natural gates stay permanently open and are exempt.
+
+**Newly opened by the 2026-09-28 universe direction (factions and period):**
+
+- [x] Do the universe factions author new `FactionDef` / `PawnKindDef` content, or must they be built by repurposing existing installed faction and pawn-kind content under `CONTENT_REUSE_POLICY.md`? — **ANSWERED 2026-09-28: new `FactionDef`s, reusing existing pawn kinds.** A `FactionDef` is world configuration, not a physical gameplay Def, so it sits inside the content policy. Each faction's `pawnGroupMakers` point at existing Core/profile `PawnKindDef`s and existing faction icon paths: no new pawn kind, no new texture, no new item. This is what keeps the faction layer clear of M2's deletion of the five `RR_*Staff` PawnKinds.
+- [x] Starting hostility per faction per scenario: which of the seven named factions begin hostile, neutral or allied in each start, and what escalates them. — **ANSWERED 2026-09-28: all neutral, escalating from play.** Hostility is earned by what the company actually does, from saved observable causes, reusing the existing bounded escalation-ladder rule rather than a second unrelated one.
+- [x] Whether the 1990s period is presentation-and-naming only, or also constrains which existing technology and content a start may grant. — **ANSWERED 2026-09-28: it also constrains starting grants.** Scenario starting equipment and buildings are period-plausible; research may still climb anywhere, so the one-tree-for-every-scenario rule holds and no start can be dead-ended.
+- [x] Ordering of the faction layer against the remaining cross-map work families. — **ANSWERED 2026-09-28: keep going down the work families first** (bills, research, tending, food, rest), then the faction and period layer as one clean content checkpoint.
 
 ---
 

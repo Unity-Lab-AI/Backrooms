@@ -34,11 +34,17 @@ namespace RimroomsAsyncIndustries.UI
                 .Where(intent => intent != null && intent.IsLive)
                 .OrderBy(intent => intent.Id)
                 .ToList();
-            if (live.Count == 0)
+            List<ConnectedDeploymentIntent> deployed = work.Deployments
+                .Where(deployment => deployment != null && deployment.IsLive)
+                .OrderBy(deployment => deployment.Id)
+                .ToList();
+            if (live.Count == 0 && deployed.Count == 0)
             {
                 listing.Label("RR_ConnectedWork_None".Translate());
                 return;
             }
+            DrawDeployments(listing, deployed);
+            if (live.Count == 0) { return; }
             listing.Label("RR_ConnectedWork_Active".Translate(live.Count));
             foreach (ConnectedWorkIntent intent in live)
             {
@@ -53,6 +59,34 @@ namespace RimroomsAsyncIndustries.UI
                         : subject.LabelCap.ToString(),
                     MapLabel(intent.FetchMap),
                     MapLabel(intent.StoreMap),
+                    stage));
+            }
+        }
+
+        /// <summary>
+        /// The people this company has sent to work somewhere else. Listed separately from
+        /// the carry trips above because they are a different thing and reading them as
+        /// hauling would be misleading: nobody here is bringing anything back. The line
+        /// says who, what work justified it, where, and whether they are still walking.
+        /// </summary>
+        private static void DrawDeployments(Listing_Standard listing,
+            List<ConnectedDeploymentIntent> deployed)
+        {
+            if (deployed.Count == 0) { return; }
+            listing.Label("RR_ConnectedWork_Deployed".Translate(deployed.Count));
+            foreach (ConnectedDeploymentIntent deployment in deployed)
+            {
+                ConnectedDeploymentProvider provider =
+                    ConnectedDeploymentProviders.Get(deployment.ProviderId);
+                string stage = (deployment.Phase == ConnectedDeploymentPhase.Deployed
+                    ? "RR_ConnectedWork_StageWorking"
+                    : "RR_ConnectedWork_StageTravelling").Translate().ToString();
+                listing.Label("RR_ConnectedWork_DeployLine".Translate(
+                    deployment.Pawn == null ? "RR_ConnectedWork_UnknownWorker".Translate().ToString()
+                        : deployment.Pawn.LabelShortCap.ToString(),
+                    provider == null ? "RR_ConnectedWork_UnknownWork".Translate().ToString()
+                        : provider.LabelKey.Translate().ToString(),
+                    MapLabel(deployment.DestinationMap),
                     stage));
             }
         }

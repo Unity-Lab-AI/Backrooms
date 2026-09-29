@@ -667,3 +667,53 @@ Validation: **keep building, launch later.** No QA pass scheduled; runtime accep
 Source files created: 1. Source files modified: 8. Package files modified: 6. Docs updated: 12.
 Owner-blocked rows resolved: 3 (opening duration, inside-start party, inside-start first exit). Deferments closed: 6. Rows added with a named dependency: 2 (the remaining ladder rungs; the inside-start scenario implementation).
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+---
+
+## Session — 2026-09-28 — travel-to-work: a builder crosses a gate and Core does the building (0.5.5-dev)
+
+### Verbatim requests
+
+> read and catch up on the doc files needed for the next bit of todo work , starting where we left off before compact reading the now.md and any and all files needed to properly build the mod we are hoping for following and using all prep work docs as needed never making shit up but insteading reading and stratigically devising the proper courses of actions. get to work, babe!
+
+> and i havent talked about it but this is 1990's when this all starts and the factions should be the factions of the universe, so US government, other corporations trying to get propietary tech, ex employes disgruntleed, high tech theives, corporate spys and sbaatosh, concerned citizens.. and anything other type of factions along these lines that will increses the backrromms universe feeling as all this needs to be defgault set in the game settup for the differernt scenerios tailored to their scenrerio
+
+### COMPLETED
+
+- [x] **"read and catch up on the doc files needed for the next bit of todo work ... never making shit up but insteading reading"** — read `NOW.md`, `DEFERRED.md`, `CONNECTED_WORK_CORE_API.md`, `CONTENT_REUSE_POLICY.md`, the whole `ConnectedWork/` source tree, and Core's own `WorkGiver_ConstructFinishFrames`, `GenConstruct`, `Frame` and `JobGiver_Work` from decompiled and shipped-XML source before writing a line. Two load-bearing facts were verified rather than recalled: Core's real `Construction` priority ladder, read out of `Data/Core/Defs/WorkGiverDefs/WorkGivers.xml`, and the exact structure of `JobGiver_Work.TryIssueJobPackage`.
+- [x] **Travel-to-work intents — the fourth work family, and the first that is not fetch → carry → deliver.** Built as a sibling record, `ConnectedDeploymentIntent`, deliberately *not* as a new phase on `ConnectedWorkIntent`: that record's integrity check faults a planning record with no source object, which is the rule protecting three shipped families, so exempting a deployment from it would have weakened the guard invisibly at every call site.
+  - **On arrival the deployment issues nothing at all.** Core's own `WorkGiver_ConstructFinishFrames` picks the frame up locally with its own reservation, blocking-thing handling and toils. The record's entire job is stopping the thrash in both directions: a worker being offered a trip home the instant it arrives, or crossing back and forth forever when the work is already done.
+  - **`HasLiveCommitment` is the one chokepoint** for one commitment per worker across both record kinds, checked in `Open`, `OpenDeployment` and both giver families, because a worker promised two things abandons one and which one would depend on job-search timing.
+  - **Nobody is ever walked home.** Closing a deployment moves no one: the worker is simply free where it stands, which is what the portal contract already says about anyone who crossed legitimately.
+- [x] **A real bug caught by checking a pinned fact instead of trusting it.** `JobGiver_Work` runs every giver's `NonScanJob` inside one priority-ordered loop. A higher-priority scanner's hit does win, but "there is no local construction work" still cannot be *inferred* from a low priority number, so the planner asks `HasWorkHere` outright and refuses to plan while local work of the same kind exists. Without that explicit call a builder would have crossed a gate while frames waited at home — and the priority numbers would have looked correct in review.
+- [x] **One deliberate asymmetry, stated rather than hidden.** The remote candidate scan is a rotating window per the standing rule; the arrival check is not windowed, because a window that missed the work would release the deployment while work remained and send the worker straight back across the gate — the exact loop the record exists to prevent. A remote miss costs one cooldown; an arrival miss costs a loop.
+- [x] **One shared implementation of stepping through a gate**, extracted to `ConnectedCrossing.StepToward` from the carry families' `CrossToward`. Pure extraction, behaviour unchanged. It matters because those rules are load-bearing: automatic work respects the pawn's own danger policy, allowed area and forbidden doors where a player order may use `Deadly`, so a second copy would drift into walking a colonist somewhere the player forbade.
+- [x] **Caught the ledger lying the same way the register once did.** `TODO.md` still listed all three Gate 0 owner questions — inside-start party, inside-start first exit, opening duration — as `[!]` open, when all three were answered and shipped in 0.5.4-dev. Flipped with their answers recorded inline, so the next session cannot plan around blockers that no longer exist.
+- [x] **Fixed a duplicated entry in the adapter-family ordering row** in `DEFERRED.md` (bills appeared twice in the sequence), and closed that row's construction-finishing caveat now that the shape exists.
+
+### The universe direction, captured and sequenced
+
+- [x] **"and i havent talked about it but this is 1990's when this all starts and the factions should be the factions of the universe..."** — captured verbatim in `TODO.md` under its own heading, broken into **ten rows, one per item in the owner's list**, with no noun or verb dropped and the original spelling preserved. Four questions were then put to the owner because the direction collided with a real policy boundary rather than because it was unclear.
+  - **New `FactionDef`s, reusing existing pawn kinds.** A `FactionDef` is world configuration, not a physical gameplay Def, so it is inside `CONTENT_REUSE_POLICY.md`. `pawnGroupMakers` point at existing Core/profile `PawnKindDef`s and existing faction icon paths: no new pawn kind, no new texture, no new item — which is what keeps the faction layer clear of M2's deletion of the five `RR_*Staff` PawnKinds. That collision was surfaced rather than papered over.
+  - **All factions start neutral**, hostility earned from saved observable causes, reusing the existing bounded escalation ladder rather than a second unrelated one.
+  - **The 1990s also constrains starting grants** — period-plausible scenario equipment and buildings — while research still climbs anywhere, so the binding one-tree-for-every-scenario rule holds and no start can be dead-ended.
+  - **Ordering: the remaining work families first**, then the faction and period layer as one clean content checkpoint. Recorded in `DEFERRED.md` under M3 with the honest reason attached: nothing technical is missing, these rows are queued by owner sequencing, not blocked.
+
+### Saved state
+
+`rr_connectedWorkDeployments` on `RimroomsConnectedWorkComponent`, additive with no schema bump, absent from every earlier save and loading correctly as "nobody is deployed" — the same pattern as `rr_connectedWorkAreaObservations` before it. A 0.5.4-dev save loads unchanged. `nextSequence` is shared between intents and deployments so ids stay unique across everything the branch saved, and `ValidateSavedState` shares both its id set and its live-worker set across the two lists, so no save can load with one worker owing a carry trip *and* a deployment.
+
+### Documents updated in the same change
+
+`implementation/CONNECTED_TRAVEL_TO_WORK_IMPLEMENTATION.md` (new record), `DEFERRED.md`, `TODO.md`, `NOW.md`, `DECOMPOSED.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `GATE_0_DECISIONS.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.5.5-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **99** C# source files, **76** approved package files (unchanged — no new package file; two work giver defs and nine keyed strings were added to files that already existed). Assembly SHA-256 `00D209DC9AD497E054A9FB11D71D4FCEEB8826B72329315C8C73B3F90A82B26C`, **reproduced after deleting `obj/` and `bin/` and recompiling from scratch** rather than by an incremental no-op rebuild. Evidence folder `implementation/evidence/travel-to-work-2026-09-28/` with compiler output plus source, package and recomputed reference manifests, no drift. All 58 packaged XML files parse; 530 `RR_` keys referenced from source, 0 missing; every `giverClass` resolves to a class that exists; 0 attribution strings. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 5. Source files modified: 3. Package files modified: 2. Docs updated: 11.
+Deferments closed: 2. Owner questions answered: 4. Stale rows corrected: 4 (three Gate 0 questions still marked open, one duplicated register entry).
+Rows added with a named position: 3 (the universe factions, per-scenario faction setup, period-plausible starting grants — queued by owner sequencing, not blocked).
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.

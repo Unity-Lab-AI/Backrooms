@@ -46,4 +46,17 @@
   <RR_ConnectedWork_ConstructionLabel>carrying building material through a gate</RR_ConnectedWork_ConstructionLabel>
   <RR_ConnectedWork_SiteSatisfied>That build site no longer needs this material. It was carried through and is here in hand; ordinary hauling will put it away.</RR_ConnectedWork_SiteSatisfied>
 
+  <!-- Travel-to-work: the worker goes, and nothing is carried. Nobody is ever brought
+       home by these; a person who crossed legitimately stays where it is when the work
+       runs out, with its own needs and whatever local work it finds. -->
+  <RR_ConnectedWork_FinishingLabel>finishing a build through a gate</RR_ConnectedWork_FinishingLabel>
+  <RR_ConnectedWork_NoWorkOnArrival>There was no work left to do there by the time they arrived. They are on that side now and will find their own work.</RR_ConnectedWork_NoWorkOnArrival>
+  <RR_ConnectedWork_WorkerDeparted>They left the space they were sent to work in, so the assignment ended.</RR_ConnectedWork_WorkerDeparted>
+
+  <RR_ConnectedWork_Deployed>Working across a gate: {0}</RR_ConnectedWork_Deployed>
+  <RR_ConnectedWork_DeployLine>{0}: {1}, in {2} ({3})</RR_ConnectedWork_DeployLine>
+  <RR_ConnectedWork_StageTravelling>on their way there</RR_ConnectedWork_StageTravelling>
+  <RR_ConnectedWork_StageWorking>working there</RR_ConnectedWork_StageWorking>
+  <RR_ConnectedWork_UnknownWork>work this build no longer recognises</RR_ConnectedWork_UnknownWork>
+
 </LanguageData>

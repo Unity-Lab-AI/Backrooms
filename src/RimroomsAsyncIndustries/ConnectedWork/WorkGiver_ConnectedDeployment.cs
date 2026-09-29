@@ -1,0 +1,238 @@
+using System.Collections.Generic;
+using RimroomsAsyncIndustries.Company;
+using RimroomsAsyncIndustries.Portals;
+using RimWorld;
+using Verse;
+using Verse.AI;
+
+namespace RimroomsAsyncIndustries.ConnectedWork
+{
+    /// <summary>
+    /// How travel-to-work reaches a pawn: as an ordinary WorkGiver, inside Core's own
+    /// <c>JobGiver_Work</c>, in that pawn's own priority and schedule order. Nothing here
+    /// pushes a job at anybody and nothing is ever marked player-forced.
+    ///
+    /// The one job this giver ever hands out is a crossing. Once the worker has arrived
+    /// it hands out nothing at all, and Core's own work giver for that work type picks
+    /// the work up locally. That is the entire point of the shape: the work is done by
+    /// the game's own code, on the map it belongs to, with the game's own reservations.
+    ///
+    /// Registered twice, like every carry family, because starting and continuing need
+    /// opposite priorities:
+    ///
+    /// * a **continuation** giver, above the local giver for its work type, so a worker
+    ///   partway to a gate is not turned around by work that appeared at home while it
+    ///   walked;
+    /// * a **planning** giver, below *every* local giver in its work type, so crossing a
+    ///   gate to work only ever happens when there is nothing of that kind to do on this
+    ///   side at all.
+    /// </summary>
+    public abstract class WorkGiver_ConnectedDeployment : WorkGiver
+    {
+        protected abstract string ProviderId { get; }
+
+        /// <summary>True for the high-priority half that only continues committed trips.</summary>
+        protected abstract bool ContinueOnly { get; }
+
+        public override bool ShouldSkip(Pawn pawn, bool forced = false)
+        {
+            RimroomsConnectedWorkComponent work = Work();
+            if (work == null || !work.CanOperate || pawn == null || !pawn.Spawned) { return true; }
+            ConnectedDeploymentProvider provider = ConnectedDeploymentProviders.Get(ProviderId);
+            if (provider == null) { return true; }
+            ConnectedDeploymentIntent deployment = work.ActiveDeploymentFor(pawn);
+            if (ContinueOnly)
+            { return deployment == null || deployment.ProviderId != ProviderId; }
+            // One commitment per worker, across both record kinds.
+            if (deployment != null || work.ActiveIntentFor(pawn) != null) { return true; }
+            if (!work.MayPlanFor(pawn) || !provider.WorkerEligible(pawn)) { return true; }
+            // Nothing to plan against until this branch actually remembers a gate.
+            RimroomsPortalNetwork network = Network();
+            return network == null || network.HasStateFault || network.Connections.Count == 0;
+        }
+
+        public override Job NonScanJob(Pawn pawn)
+        {
+            RimroomsConnectedWorkComponent work = Work();
+            ConnectedDeploymentProvider provider = ConnectedDeploymentProviders.Get(ProviderId);
+            RimroomsPortalCrossingService crossings = Crossings();
+            if (work == null || !work.CanOperate || provider == null || crossings == null ||
+                crossings.StateFaultKey != null || pawn == null || !pawn.Spawned)
+            { return null; }
+            // The gate rule, asked on every path into this layer and not only at the
+            // threshold: a colonist may decide to cross to work, nothing else may decide
+            // anything about a gate.
+            if (PortalTraversalPolicy.TravellerFailureKey(pawn) != null) { return null; }
+            // Someone held inside an unresolved crossing belongs to the crossing service
+            // until its receipt is reconciled. Never hand them a job.
+            if (crossings.HasUnresolvedCrossing(pawn)) { return null; }
+            // The one legitimate moment this worker's allowed area on this map is
+            // observable is while it is standing on it. Write it down every pass.
+            work.ObserveAreaHere(pawn);
+
+            ConnectedDeploymentIntent deployment = work.ActiveDeploymentFor(pawn);
+            if (deployment != null)
+            {
+                if (!ContinueOnly || deployment.ProviderId != ProviderId) { return null; }
+                return Continue(deployment, provider, pawn, work);
+            }
+            if (ContinueOnly || !work.MayPlanFor(pawn)) { return null; }
+            if (work.ActiveIntentFor(pawn) != null) { return null; }
+            if (!provider.WorkerEligible(pawn)) { return null; }
+            work.NotePlanningPass(pawn);
+            deployment = Plan(provider, pawn, work);
+            return deployment == null ? null : Continue(deployment, provider, pawn, work);
+        }
+
+        /// <summary>
+        /// Look for a connected map that holds work of this kind, and open a deployment
+        /// for the first one found. Bounded: a fixed number of connected maps from a
+        /// rotating start, and a bounded candidate window inside each.
+        /// </summary>
+        private ConnectedDeploymentIntent Plan(ConnectedDeploymentProvider provider, Pawn pawn,
+            RimroomsConnectedWorkComponent work)
+        {
+            RimroomsCampaignComponent campaign = Campaign();
+            if (campaign == null || !campaign.CanOperate || pawn.Map == null ||
+                !campaign.OwnsMap(pawn.Map))
+            { return null; }
+
+            // Never send someone through a gate while the same kind of work is waiting on
+            // this side. The local giver for this work type does sit above this one, but
+            // Core's JobGiver_Work walks every giver in priority order calling NonScanJob
+            // *before* that giver's scan, and a higher-priority scanner only wins once it
+            // has actually found a target. So "is there local work" has to be asked here
+            // outright; it cannot be inferred from the priority number.
+            if (provider.HasWorkHere(pawn)) { return null; }
+
+            List<Map> connected = ConnectedWorkScan.ConnectedMaps(campaign, pawn.Map, pawn);
+            for (int index = 0; index < connected.Count; index++)
+            {
+                Map other = connected[index];
+                // A place that turned this worker away recently is left alone for a while.
+                if (work.DestinationRecentlyRefused(pawn, other)) { continue; }
+                PortalRouteStep step;
+                bool pending;
+                if (!work.Routes.TryNextStep(pawn.Map, other, out step, out pending)) { continue; }
+                // If we have ever seen that this worker's allowed area excludes where it
+                // would arrive, the trip is pointless before it starts.
+                if (step != null && step.Destination != null &&
+                    !work.ObservedAreaAllows(pawn, step.Destination.Map, step.Destination.ApproachCell))
+                { continue; }
+                if (!provider.HasCandidateWork(other, pawn, work)) { continue; }
+                ConnectedDeploymentIntent opened = work.OpenDeployment(provider, pawn, other, step);
+                if (opened != null) { return opened; }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// One segment of the deployment, chosen from its phase and the worker's actual
+        /// current map. Nothing is stored about "which step comes next", so a reload, an
+        /// interruption or an unexpected location all resolve here.
+        /// </summary>
+        private Job Continue(ConnectedDeploymentIntent deployment, ConnectedDeploymentProvider provider,
+            Pawn pawn, RimroomsConnectedWorkComponent work)
+        {
+            string blocking = work.LiveFailureKey(deployment);
+            if (blocking != null)
+            {
+                work.Close(deployment, RimroomsConnectedWorkComponent.DeploymentPhaseFor(blocking), blocking);
+                return null;
+            }
+            if (pawn.Map != deployment.DestinationMap)
+            { return CrossToward(deployment, pawn, work); }
+
+            // Arrived. The definitive question, asked of the map the worker is standing
+            // on, where every native check finally means what it says.
+            if (!provider.HasWorkHere(pawn))
+            {
+                if (deployment.Phase == ConnectedDeploymentPhase.Travelling)
+                {
+                    // We crossed for this and there is nothing to do after all. Remember
+                    // the map for a while so the next pass does not repeat the walk.
+                    work.NoteDestinationRefused(pawn, pawn.Map);
+                    work.Close(deployment, ConnectedDeploymentPhase.Cancelled,
+                        "RR_ConnectedWork_NoWorkOnArrival");
+                    return null;
+                }
+                // The work here is done. A finished deployment, and deliberately no
+                // refusal recorded: coming back when there is more to do is correct.
+                work.Close(deployment, ConnectedDeploymentPhase.Completed, null);
+                return null;
+            }
+
+            // There is work here, and Core's own giver for it is already scanning this
+            // map in this pawn's own priority order. Issue nothing: holding the record is
+            // the whole contribution, and it is what stops this worker being planned into
+            // a trip back across the gate while a frame in front of it is unfinished.
+            //
+            // The worker is never dragged home. When the work runs out the record simply
+            // closes and the person is free, standing where it stands, with its own needs
+            // and whatever local work it finds — which is exactly what the portal
+            // contract says about anyone who crossed legitimately.
+            work.NoteArrival(deployment);
+            return null;
+        }
+
+        /// <summary>
+        /// One hop toward the destination, through the single shared crossing
+        /// implementation. What is specific to a deployment is the ending: running out of
+        /// attempts has cost a walk and nothing else, because nothing is being carried.
+        /// </summary>
+        private Job CrossToward(ConnectedDeploymentIntent deployment, Pawn pawn,
+            RimroomsConnectedWorkComponent work)
+        {
+            Map destination = deployment.DestinationMap;
+            if (deployment.CrossAttempts >= RimroomsConnectedWorkComponent.MaximumCrossAttempts)
+            {
+                work.NoteDestinationRefused(pawn, destination);
+                work.Close(deployment, ConnectedDeploymentPhase.Failed, "RR_ConnectedWork_RouteExhausted");
+                return null;
+            }
+            Job job;
+            ConnectedCrossingOutcome outcome = ConnectedCrossing.StepToward(pawn, destination, work, out job);
+            if (outcome == ConnectedCrossingOutcome.NoRoute)
+            {
+                work.Close(deployment, ConnectedDeploymentPhase.Cancelled, "RR_ConnectedWork_NoRoute");
+                return null;
+            }
+            if (outcome != ConnectedCrossingOutcome.Step) { return null; }
+            work.NoteCrossAttempt(deployment);
+            return job;
+        }
+
+        private static RimroomsConnectedWorkComponent Work()
+        { return Current.Game == null ? null : Current.Game.GetComponent<RimroomsConnectedWorkComponent>(); }
+        private static RimroomsCampaignComponent Campaign()
+        { return Current.Game == null ? null : Current.Game.GetComponent<RimroomsCampaignComponent>(); }
+        private static RimroomsPortalNetwork Network()
+        { return Current.Game == null ? null : Current.Game.GetComponent<RimroomsPortalNetwork>(); }
+        private static RimroomsPortalCrossingService Crossings()
+        { return Current.Game == null ? null : Current.Game.GetComponent<RimroomsPortalCrossingService>(); }
+    }
+
+    /// <summary>
+    /// Sends a builder through a gate to finish a frame that already has its material.
+    /// Sits below every one of Core's own construction givers, so a builder only ever
+    /// crosses when there is nothing constructive left to do on this side.
+    /// </summary>
+    public sealed class WorkGiver_ConnectedConstructionFinishing : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.ConstructionFinishing; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>
+    /// Walks a builder the rest of the way to a site it was already sent to, then gets
+    /// out of the way. Sits above Core's own frame finishing so a worker partway to a
+    /// gate is not turned around by a frame that appeared at home while it walked.
+    /// </summary>
+    public sealed class WorkGiver_ConnectedConstructionFinishingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.ConstructionFinishing; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+}

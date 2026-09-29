@@ -1,0 +1,19 @@
+Rimrooms - Async Industries 0.5.5-dev Release/net472 build.
+Zero warnings and zero errors with TreatWarningsAsErrors enabled.
+No game was launched, no test was run and no RimSort mod list was changed.
+
+Determinism: obj/ and bin/ were deleted and the project fully recompiled from
+scratch; the resulting assembly SHA-256 was identical to the first build's.
+Assembly SHA-256 00D209DC9AD497E054A9FB11D71D4FCEEB8826B72329315C8C73B3F90A82B26C.
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  RimroomsAsyncIndustries -> C:\Users\gfour\Desktop\Backrooms\src\RimroomsAsyncIndustries\bin\Release\net472\RimroomsAsyncIndustries.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.47
+Built UnityLabAI.RimroomsAsyncIndustries 0.5.5-dev: C:\Users\gfour\Desktop\Backrooms\Mod\Rimrooms - Async Industries
+Package contains 76 approved files. No game was launched.

@@ -16,19 +16,18 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 
 ## Active
 
-**Nothing in flight.** The last checkpoint is published and the tree is clean. This section is a handoff, written deliberately for the session that picks up after a compaction.
+**Nothing in flight.** The last checkpoint is published and the tree is clean. This section is a handoff, written deliberately for the session that picks up next.
 
 ### State at handoff
 
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published commit | `68b64ec` — 0.5.4-dev |
-| Remotes | `forgejo` and `github`, both with `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` all at `68b64ec` |
-| Working tree | clean, 0 changes |
-| Build | 94 C# source files, 76 approved package files, zero warnings, zero errors |
-| Assembly | SHA-256 `FA88C94730F13AB09CD49F52C5C1A39236D640BADC2533C6D4DE51209A17F3F9`, reproduced by a second deterministic build |
-| Register | 27 open, 2 owner-blocked, 29 built (`DEFERRED.md`) |
+| Published commit | 0.5.5-dev (see `git log -1`; the cascade read-back is in `FINALIZED.md`) |
+| Remotes | `forgejo` and `github`, both with `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` at the same commit |
+| Working tree | clean |
+| Build | 99 C# source files, 76 approved package files, zero warnings, zero errors |
+| Assembly | SHA-256 `00D209DC9AD497E054A9FB11D71D4FCEEB8826B72329315C8C73B3F90A82B26C`, reproduced after deleting `obj/` and `bin/` |
 | Game launches | **none, ever.** Every runtime claim in this repo is pending the owner's first RimSort launch |
 
 ### What exists now, in order of arrival
@@ -36,51 +35,57 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 - **0.4.2-dev** — remembered gate addresses, legacy threshold repair, the ordinary crossing job, laboratory session controls, emergency return, unresolved-crossing reconcile surface.
 - **0.4.3-dev** — the owner's gate traversal rule at one chokepoint (`PortalTraversalPolicy`): inhabitants and monstrosities never cross on their own; anything else rides only in a carrier's hands.
 - **0.5.0-dev** — the cross-map work engine: saved work intents, planning leases, bounded route cursors, the adapter contract, and the first family (**storage hauling**, both directions).
-- **0.5.1-dev** — a deferment audit that closed **nine** rows, seven of which were blocked on nothing and three of which had already shipped. Added natural-gate discovery by survey, container delivery destinations, observed remote allowed areas, and a bound on the crossing-receipt archive.
+- **0.5.1-dev** — a deferment audit that closed **nine** rows. Natural-gate discovery by survey, container delivery destinations, observed remote allowed areas, a bound on the crossing-receipt archive.
 - **0.5.2-dev** — **casualties and remains**: our own downed people carried home to a bed, our dead to a grave or storage.
-- **0.5.3-dev** — **construction supply** (material carried into a real frame or blueprint), plus an audit proving the mod requires nothing but base Core, plus the capability-matching method that dissolved the M2 content blockers.
-- **0.5.4-dev** — four owner decisions: the laboratory duration ladder, natural-gate exemption confirmed, one tech tree for every scenario, and a player-named company.
+- **0.5.3-dev** — **construction supply** (material carried into a real frame or blueprint), the audit proving the mod requires nothing but base Core, and the capability-matching method that dissolved the M2 content blockers.
+- **0.5.4-dev** — four owner decisions: the laboratory duration ladder, natural-gate exemption confirmed, one tech tree for every scenario, a player-named company.
+- **0.5.5-dev** — **travel-to-work**: a fourth work family and the first that is not fetch → carry → deliver. `ConnectedDeploymentIntent` (a *sibling* record), `ConnectedDeploymentProvider`, `ConstructionFinishingProvider`, and `ConnectedCrossing` as the single shared gate step. Also: the 1990s period and the universe factions captured verbatim and decided, queued after the work families.
 
-### The next task, already designed — travel-to-work intents
+### The next task — bills and unfinished work
 
-**Owner-selected.** Every family so far is fetch → carry → deliver. Construction *finishing*, and any work done at the far site with nothing carried, is a different shape and needs a new intent, not another adapter. Building it inside a family would put it in the wrong place.
+**Owner-selected ordering (2026-09-28):** finish the remaining cross-map work families *before* the faction layer. Bills is next.
 
-The design, so it does not have to be re-derived:
+Back to the **carry** shape, so it is an adapter over `ConnectedWorkIntent`, not a deployment. What makes it different from the three carry families already built:
 
-- **A deployment intent.** A worker crosses *because qualifying work exists over there*, and the intent exists only to justify the crossing and to stop thrash. Without it the shape oscillates: cross, find nothing, cross back.
-- **Shape.** Either a new `ConnectedWorkPhase.Deployed` on `ConnectedWorkIntent` with no `SourceThing` and a recorded work-type defName, or a sibling record. If the existing record is reused, note that `ValidateSavedState` currently requires a `SourceThing` for `Planned` — a deployment must be exempted explicitly rather than by accident.
-- **Candidate predicate, explicit-map as always.** For construction finishing: does the far map hold a player-faction `Frame` with work remaining, not forbidden to the player faction, not fogged? That is a fair question about a map nobody stands on. **Do not** ask Core whether a work giver has a job there — the remote-probe prohibition still applies.
-- **On arrival, do nothing.** Core's own `WorkGiver_ConstructFinishFrames` picks the work up locally. The deployment intent holds the worker there rather than issuing work itself.
-- **Release** when no qualifying work remains on that map, or the lease expires. Then the worker is simply free: a pawn already across legitimately stays there with its own needs and local work, per the portal contract. It must not be dragged home.
-- **Anti-thrash** reuses what exists: the per-worker planning cooldown, the per-destination refusal memory, and `MaximumCrossAttempts`. Do not plan a deployment for a worker already standing on a map that has qualifying work.
+- **The destination is a real `Bill` on a real `BillStack`**, and the cargo must satisfy that bill's own `ingredientFilter`. The intent's `finalTarget` field holds the bill giver; the bill itself needs its own saved reference or a stable index, and a bill deleted while the worker walked must close the intent rather than deliver into nothing.
+- **`UnfinishedThing` is the trap.** A partly made thing is a real object with a real creator recorded on it. Core will refuse to let a different pawn resume one, so the adapter must either keep the original creator or treat a foreign unfinished thing as not-a-candidate. Read `Verse.UnfinishedThing` and `Toils_Recipe` before designing this; the decompiled `JobDriver_DoBill` and `WorkGiver_DoBill` are already in `.local/inspection-work/`.
+- **Quantity is per-ingredient**, not one stack. A bill can want several different things, so one trip carries one ingredient and the bill may need several trips — which the existing lease model already supports, because a lease is keyed to one actual `Thing` plus a count.
+- **Do not inflate anything.** Same rule the construction supply followed: the material physically travels. Never touch `itemAvailability` and never make a remote stack look local.
 
-After that, in order: **bills and unfinished work** (deliver selected ingredients to a real bill giver, keeping the actual bill and unfinished-thing references), **research**, **tending across a gate** (needs medicine-as-cargo), **food**, **rest**, then the remaining families.
+After bills, in order: **research** (which should reuse the travel-to-work shape directly — stationary work at a real bench with nothing carried, so it is a new *provider*, not a new adapter), **tending across a gate** (needs medicine-as-cargo, and each native route — surgery, prisoner and guest care, patient feeding, self-tend — needs its own source review), **food**, **rest**, then the remaining families.
+
+**Then** the faction and period layer, per the decisions in `GATE_0_DECISIONS.md` under the universe heading.
 
 ### Invariants — do not break these
 
-Hard-won, each one the result of a real defect or a pinned source fact. They are recorded in `implementation/CONNECTED_WORK_IMPLEMENTATION.md` and `implementation/DEPENDENCIES_AND_CAPABILITY_MATCHING.md`.
+Hard-won, each one the result of a real defect or a pinned source fact. Recorded in `implementation/CONNECTED_WORK_IMPLEMENTATION.md`, `implementation/CONNECTED_TRAVEL_TO_WORK_IMPLEMENTATION.md` and `implementation/DEPENDENCIES_AND_CAPABILITY_MATCHING.md`.
 
 1. **`PortalTraversalPolicy` is the only chokepoint.** A colonist may decide to cross to do a job. An inhabitant may never decide anything about a gate. Nothing may reintroduce autonomous non-player traversal.
-2. **Two halves of validation, never merged.** An adapter's candidate half runs against an explicit `Map` and may never call a native `HasJob`/`JobOn` remotely, nor claim a pawn-specific or allowed-area result for a map the worker is not standing on. The definitive half runs only on arrival.
-3. **A bounded search that ran out of budget is *pending*, never "no route".**
-4. **Every bounded scan is a rotating window, never a prefix.** A prefix starves the fifth connected map forever and looks identical to correct code until a fifth gate opens. The rules live once, in `ConnectedWorkScan`.
-5. **Two work givers per family** — a high-priority one that only finishes committed trips, a low-priority one that only starts them. One giver cannot be both.
-6. **Nothing is ever `playerForced`.** Automatic work must not bypass a policy the player set.
-7. **No quantity is ever hardcoded.** Every count goes through `MaxStackSpaceEver` / `GetCountCanAccept`, which is why stack-size mods work for free.
-8. **No new gameplay ThingDef, art or audio.** Behaviour is patched onto Core objects and designated at runtime. Match by *capability*, never by name — that is the standing method.
-9. **Zero throwing def lookups.** `GetNamedSilentFail` everywhere; a missing def is an unavailable action, never an exception.
-10. **Natural gates have no timer, operator, power or close command.** Ever. Non-corporation starts depend on it.
-11. **Never force-push. Never launch the game. Never alter the RimSort list. No AI attribution anywhere.**
+2. **Two halves of validation, never merged.** A candidate predicate runs against an explicit `Map` and may never call a native pawn-specific reachability, reservation, `HasJob`/`JobOn` or allowed-area query for a map the worker is not standing on. The definitive half runs only on arrival. When splitting a Core method, split it by **what each rule reads**, and write the table down — `CONNECTED_TRAVEL_TO_WORK_IMPLEMENTATION.md` has the worked example for `GenConstruct.CanConstruct`.
+3. **Remote forbidden checks use the *faction* overload.** `IsForbidden(Pawn)` consults the pawn's allowed area *in its current map* — the wrong map. Use `IsForbidden(Faction.OfPlayer)` remotely and `IsForbidden(pawn)` only on arrival.
+4. **A bounded search that ran out of budget is *pending*, never "no route".**
+5. **Every bounded scan is a rotating window, never a prefix.** A prefix starves the fifth connected map forever and looks identical to correct code until a fifth gate opens. The rules live once, in `ConnectedWorkScan`. **The one exception is deliberate and documented:** a deployment's *arrival* check is unwindowed, because a window that missed the work would release the deployment and send the worker straight back across the gate.
+6. **Two work givers per family** — a high-priority one that only finishes committed trips, a low-priority one that only starts them. One giver cannot be both.
+7. **Never infer "there is no local work" from a priority number.** `JobGiver_Work` runs every giver's `NonScanJob` inside one priority-ordered loop. Ask the question outright, as `WorkGiver_ConnectedDeployment.Plan` does. This one nearly shipped as a bug that review would have passed.
+8. **One commitment per worker, across every record kind.** `HasLiveCommitment` is the chokepoint; `ValidateSavedState` enforces it across both saved lists so no save can load with a worker owing two.
+9. **Nothing is ever `playerForced`.** Automatic work must not bypass a policy the player set.
+10. **No quantity is ever hardcoded.** Every count goes through `MaxStackSpaceEver` / `GetCountCanAccept` / the constructible's own requirement, which is why stack-size mods work for free.
+11. **No new gameplay ThingDef, art or audio.** Behaviour is patched onto Core objects and designated at runtime. Match by *capability*, never by name. A `FactionDef` is world configuration and is permitted; a new `PawnKindDef` is not, because M2 is deleting the five that exist.
+12. **Zero throwing def lookups.** `GetNamedSilentFail` everywhere; a missing def is an unavailable action, never an exception.
+13. **Natural gates have no timer, operator, power or close command.** Ever. Non-corporation starts depend on it.
+14. **Nothing in the work layer walks a pawn home.** A pawn that crossed legitimately stays where it is when its errand ends, with its own needs and local work.
+15. **Never force-push. Never launch the game. Never alter the RimSort list. No AI attribution anywhere.**
 
-### Recent owner decisions that are binding
+### Binding owner decisions
 
-Full text in `GATE_0_DECISIONS.md` under the 2026-09-28 heading, and in `DEPENDENCIES_AND_CAPABILITY_MATCHING.md`.
+Full text in `GATE_0_DECISIONS.md` under the two 2026-09-28 headings.
 
-- **Laboratory duration is a ladder**: 108,000 ticks first (~30 real minutes at normal speed), ×3 per earned tier, no countdown at the indefinite tier — where it still requires power, operator and a successful energy debit every tick. Tier counts **completed projects**, never spendable insight.
+- **Laboratory duration is a ladder**: 108,000 ticks first (~30 real minutes), ×3 per earned tier, no countdown at the indefinite tier — where it still requires power, operator and a successful energy debit every tick. Tier counts **completed projects**, never spendable insight.
 - **Natural gates stay permanently open.** Confirmed in source; nothing changed.
-- **One research tree for every scenario.** No research, capability or duration rule may be gated on scenario identity. Every start can reach a self-built laboratory gate and a full company.
+- **One research tree for every scenario.** No research, capability or duration rule may be gated on scenario identity.
 - **Every company is named by its player**, on every start, renameable any time.
-- **Inside start**: configurable party; and the **player chooses the first exit destination** — this *changed* the old provisional assumption of a fixed reveal, so the scenario must implement a choice.
+- **Inside start**: configurable party; the **player chooses the first exit destination** — a change from the old fixed-reveal assumption.
+- **The campaign opens in the 1990s**, and the factions are the universe's own (US government, rival corporations, disgruntled ex-employees, high-tech thieves, corporate espionage and sabotage, concerned citizens, and more in the same vein). Authored as **new `FactionDef`s reusing existing pawn kinds** — no new pawn kind, texture or item. **All start neutral**, earning hostility from saved observable causes. The period **also constrains starting grants** but never research. Default-set per scenario, tailored per scenario, through the existing start contract and never by a scenario-identity branch in code.
 - **Deferments are audited, not appended to.** The four audit questions are in the header of `DEFERRED.md`; ask them every time that file is touched.
 - **Validation**: keep building, launch later. No QA pass scheduled.
 
@@ -89,47 +94,51 @@ Full text in `GATE_0_DECISIONS.md` under the 2026-09-28 heading, and in `DEPENDE
 1. `docs/NOW.md` (this file) — where things stand.
 2. `docs/DEFERRED.md` — every open row with its named owner, and the four audit questions in its header.
 3. `docs/implementation/CONNECTED_WORK_CORE_API.md` — the pinned Core job, reservation, carry, area and spawn facts every adapter depends on, **including its appendix on Core's own map-portal system and why it cannot serve this design**.
-4. `docs/implementation/CONNECTED_WORK_IMPLEMENTATION.md` — the engine and the invariants above.
-5. `docs/implementation/DEPENDENCIES_AND_CAPABILITY_MATCHING.md` — the audited zero-dependency position and the capability-matching method.
-6. `docs/CONNECTED_COLONY_PORTALS.md` — the governing contract, including the traversal rule and the duration model.
-7. `docs/PUBLISHING.md` — the exact push procedure. Follow it literally.
+4. `docs/implementation/CONNECTED_WORK_IMPLEMENTATION.md` — the engine and the carry families.
+5. `docs/implementation/CONNECTED_TRAVEL_TO_WORK_IMPLEMENTATION.md` — the deployment shape, and the Core-method split table.
+6. `docs/implementation/DEPENDENCIES_AND_CAPABILITY_MATCHING.md` — the audited zero-dependency position and the capability-matching method.
+7. `docs/CONNECTED_COLONY_PORTALS.md` — the governing contract, including the traversal rule and the duration model.
+8. `docs/PUBLISHING.md` — the exact push procedure. Follow it literally.
 
 ### The checkpoint ritual
 
 1. Read every file in full before editing it.
-2. `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build.ps1` — must be zero warnings and zero errors.
-3. Bump `About.xml` and the csproj together; add a `CHANGELOG.md` entry in plain language.
+2. `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build.ps1` — must be zero warnings and zero errors. It refuses to build if the csproj and `About.xml` versions disagree, so bump both.
+3. Add a `CHANGELOG.md` entry in plain language, and update the `About.xml` description.
 4. Write the implementation record and an evidence folder under `docs/implementation/evidence/<name>-<date>/` with compiler output plus source, package and **recomputed** reference manifests.
-5. Update the ledger: `DEFERRED.md`, `TODO.md`, `NOW.md`, `DECOMPOSED.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`.
-6. Verify: XML parses, every referenced `RR_` key resolves, every relative doc link resolves, no attribution strings, and the rebuilt assembly hash **matches the recorded evidence**.
+5. Update the ledger: `DEFERRED.md`, `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`.
+6. Verify: XML parses, every referenced `RR_` key resolves, every `giverClass` resolves to a real class, no attribution strings, and — **after deleting `obj/` and `bin/`** — the rebuilt assembly hash matches the recorded evidence. An incremental rebuild proves nothing about determinism.
 7. Commit once, atomically, then push the feature branch and cascade by refspec to `Prep`, `Develop`, `Main` on **both** remotes, then read back all eight refs. Do not edit anything after the push.
 
 ### Practical gotchas learned the hard way
 
-- **Long bash heredocs fail** on apostrophes and quotes. Write a `.local/*.py` file with the Write tool, run it, delete it.
+- **Long bash heredocs fail** on apostrophes and quotes — `1990's` killed one this session. Write the text with the Write tool to a `.local/*.md` file, `cat` it on, then delete it.
 - **`cd` inside a Bash call persists** and moves the working directory. Use absolute paths.
 - Python cannot open `/c/Program Files (x86)/...`; use the `C:\...` form.
 - Package manifests are UTF-8 **with BOM** — read with `encoding="utf-8-sig"`.
-- Decompile with `.local/tools/ilspycmd.exe`; pipe through `head` **only after** writing the file, or the output truncates mid-statement.
+- Decompile with `.local/tools/ilspycmd.exe -t <FullTypeName>`; pipe through `head` **only after** writing the file, or the output truncates mid-statement. Decompiled Core types already collected live in `.local/inspection-*/`.
 - Assembly string literals are UTF-16 in the DLL; a UTF-8 byte search gives false negatives.
 - C# 7.3: no target-typed conditionals. `AcceptanceReport` and `bool` will not unify in a ternary.
+- `ForbidUtility`, `HaulAIUtility` and `GenConstruct` are all in the `RimWorld` namespace, not `Verse`.
 
 ### Genuinely blocked on the owner
 
-Only two rows remain, and neither is a decision:
+Only two rows, and neither is a decision:
 
 - **Every runtime-acceptance row** across M1–M6. Needs the owner's RimSort launch of the 295-entry target. The agent never launches the game.
-- **Balance review of the work-giver priorities** set for connected hauling, casualties and construction. Needs play to judge feel.
+- **Balance review of the work-giver priorities** set for connected hauling, casualties, construction supply and now construction finishing (82 continue, 5 plan). Needs play to judge feel.
 
 ---
 
 ## Next up (from the cascade)
 
-**Immediate:** travel-to-work intents, per the design above. Then bills and unfinished work, research, tending across a gate, food, rest, and the remaining work families — one at a time, each with source evidence per route.
+**Immediate:** bills and unfinished work, per the design notes above. Then research (as a travel-to-work provider), tending across a gate, food, rest, and the remaining work families — one at a time, each with source evidence per route.
+
+**Then** the 1990s period and the universe faction layer, per the recorded decisions.
 
 **Then** M1 step 5 (the saved bounded escalation ladder before any inhabitant generation ships, procedural inhabitants, optional provider adapters) and step 6 (connected-site scheduling and streaming).
 
-**Then** M2 existing-content replacement, now unblocked on content grounds by capability matching — remaining work there is implementation plus the save-migration decision, which is shared with the legacy threshold repair already built. Then M3 breadth, M5 interface, M6 release.
+**Then** M2 existing-content replacement, unblocked on content grounds by capability matching — remaining work is implementation plus the save-migration decision, shared with the legacy threshold repair already built. Then M3 breadth, M5 interface, M6 release.
 
 ---
 

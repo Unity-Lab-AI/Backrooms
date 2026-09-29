@@ -1,6 +1,6 @@
 # SKILL_TREE
 
-Capability inventory for Rimrooms - Async Industries as of 0.5.4-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
+Capability inventory for Rimrooms - Async Industries as of 0.5.5-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
 
 | Status | Meaning |
 |--------|---------|
@@ -59,6 +59,8 @@ Canonical detail: [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md), [`FEATURE_TRACEABI
 - Cross-gate storage hauling in both directions: real pickup under native reservation, real carry under native mass and stack limits, native placement into storage the destination's own settings accept — **Build / Runtime-pending** (0.5.0-dev). Cell destinations only; container and provider destinations are **Design**.
 - Cross-gate rescue of our own downed people to a bed, and cross-gate recovery of remains to a grave or storage — **Build / Runtime-pending** (0.5.2-dev). Capture is a player order by design, not automatic work.
 - Cross-gate construction supply: real material carried into a real frame or blueprint, using the site's own requirement and Core's own container and construct toils — **Build / Runtime-pending** (0.5.3-dev)
+- Cross-gate construction finishing: a builder travels through a gate to finish a frame that already has its material, and Core's own giver does the building on arrival; the worker is never walked home — **Build / Runtime-pending** (0.5.5-dev)
+- Travel-to-work deployments as a reusable shape for any work done at the far site with nothing carried (research and stationary work are the next providers) — **Build / Runtime-pending** (0.5.5-dev)
 - Adapters for bills and unfinished work, research, tending across a gate, food, rest and all remaining work families — **Design** (resume step 4, one at a time with source evidence per route)
 - Travel-to-work intents, for work done at the far site with nothing carried (construction *finishing* and similar) — **Design** (a new intent shape, not another adapter)
 - Upgrades: stabilizers, monitoring, cool-down, modules, reliability; aperture/duration/recall/efficiency; larger door providers (Doors Expanded 2×1/3×1/3×2, ReBuild, VVE garage) — **Design**
@@ -255,6 +257,8 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 | Cross-gate casualty rescue to a bed | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.2-dev) |
 | Cross-gate recovery of remains | Gate/Portals | Intermediate | **Build / Runtime-pending** (0.5.2-dev) |
 | Cross-gate construction supply | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.3-dev) |
+| Cross-gate construction finishing (travel-to-work) | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.5-dev) |
+| Travel-to-work deployment shape, reusable per provider | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.5-dev) |
 | Audited zero-hard-dependency position | Compatibility | Foundational | **Build / Verified** (0.5.3-dev) |
 | Laboratory gate duration ladder to indefinite | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.4-dev). Top of the ladder needs M3's research tree. |
 | Player-named company, renameable in play | Company | Foundational | **Build / Runtime-pending** (0.5.4-dev) |
@@ -371,7 +375,7 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 
 **Implementation Notes:** Architecture A (Core-only staged adapters via XML-inserted WorkGiver/ThinkNode + JobDefs) recommended; Harmony not intrinsically required; automatic work never `playerForced`; native recovery guards fire on excessive `StartJob`. Provider absence must yield a Core-only base path.
 
-**Files Involved (planned):** `Portals/JobDriver_CrossPortal.cs`, `ConnectedWork/WorkIntent.cs`, `ConnectedWork/ConnectedWorkScheduler.cs`, `ConnectedWork/Adapters/*`; review basis `docs/implementation/CONNECTED_WORK_CORE_API.md`, `CONNECTED_WORK_PROFILE_BOUNDARIES.md`.
+**Files Involved (as built):** `Portals/JobDriver_CrossPortal.cs`, `ConnectedWork/ConnectedWorkRecords.cs`, `ConnectedWork/RimroomsConnectedWorkComponent.cs`, `ConnectedWork/Adapters/*`, and for travel-to-work `ConnectedWork/ConnectedDeploymentRecords.cs`, `ConnectedDeploymentProvider.cs`, `Providers/*`, `WorkGiver_ConnectedDeployment.cs`, `ConnectedCrossing.cs`; review basis `docs/implementation/CONNECTED_WORK_CORE_API.md`, `CONNECTED_WORK_PROFILE_BOUNDARIES.md`.
 
 ---
 
