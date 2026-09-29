@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.11.9-dev - 2026-09-29 - a shop with a door in the back
+
+- **A second start: the Furniture and Knickknack Store.** Three ordinary people, a sales floor, a stockroom, two hundred silver in the till, and a door in the back room that should not be there.
+- **No corporation, no research, and no rescue.** Nobody is watching this place. There is no clean-up team and no unsolicited delivery until you reach Async Industries, and reaching them at all is the achievement.
+- **Async Industries now starts with the research an authorised branch would already have** - the first rung of the gate ladder and the entry project of all seven branches. It also means something can follow a crew out from the very first opening.
+- **The threshold in the shop's back room is an ordinary door**, because that is what every gate in this mod is until somebody designates it. What it becomes is up to you.
+- **Both starts stay fully editable** with native setup, Prepare Carefully or Character Editor.
+
+Full record: [a shop with a door in the back](docs/implementation/STORE_START_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.11.8-dev - 2026-09-29 - the storyteller finally knows this mod exists
 
 - **Your storyteller can now pace this mod's events.** Until now every one of them fired on the mod's own schedule, so Cassandra, Randy and Phoebe had never heard of it.

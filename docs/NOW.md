@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.11.8-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.11.9-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **167 C# files, 86 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `3E7B151603CFA38B2066DD5F7DD57EB1DE1EE60317E3A2634D12F452FB05C528`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `490158EDEF1F88F2E060E70E127567C9DB4351C988021C5B765650FDA46661CE`, reproduced by two clean recompiles |
 | Checkers | **eight**, all passing |
-| Proofs | **six** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
+| Proofs | **seven** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.11.8
+## What shipped this session, 0.7.1 → 0.11.9
 
 | Version | What |
 |---|---|
@@ -81,6 +81,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.11.6 | **The second time you do a thing should be cheaper** — research tier 2; three planned unlocks deleted for changing nothing observable |
 | 0.11.7 | **The corporation does not write off a branch** — the clean-up team; five `PawnKindDef`s found authored and read by nothing |
 | 0.11.8 | **The storyteller finally knows this mod exists** — the first two `IncidentDef`s; no `StorytellerDef`, now asserted |
+| 0.11.9 | **A shop with a door in the back** — the Store start; three new-game crashes caught by a new proof |
 
 ---
 
@@ -89,11 +90,13 @@ Chain checkpoints. Do not finish one and wait.
 The order is the one `docs/CAMPAIGN_CHART.md` §7 authorises. **Read the chart before starting
 anything in this list** — it is the authority, and steps 1–5 of its build order are done.
 
-1. **The Store and Solo/Group starts.** Each *"needs special treatment in theri layout and
-   starts"*, a different point of view on the same world, and **neither begins in corporation
-   contact** — so neither has the clean-up team, and neither gets the courier, until it earns
-   contact. That absence is what makes those two openings frightening, and as of 0.11.7 and
-   0.11.8 it is a real difference rather than a note.
+1. **The solo/group start.** Owner direction at the fork, verbatim: *"remember the other one is
+   solo/group start.. group have been known to end up together inside so leets use the in
+   backrooms start to be 1-5 pawns player settable with normal set up or edb prepare carefully
+   mod and or character editor"*. It begins **inside a generated coordinate**, which is unlike
+   both surface starts: the coordinate has to be created, seeded and registered at new-game so a
+   reload does not silently make a different destination. **Neither it nor the Store begins in
+   corporation contact**, and as of 0.11.7–0.11.9 that absence is a real mechanical difference.
 2. **Research tiers 3–4** — remote and deep operations.
 4. **Generated requests after the hinge**, from branch state, coordinate history and capability.
    Route selection for a generated request is an **open owner question** (chart §6).
@@ -274,6 +277,10 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 142. **A proof must not punish an explanation.** The incursion claim failed on this mod’s own comment saying why incursion is excluded. Strip comments and ask about code — a rule that makes documenting a decision expensive teaches people to stop documenting decisions. **Second time this session an assertion was wrong and the code was right** (see 130).
 143. **One table, two scales.** The relief crate and the courier crate are one corporation with one warehouse. Two tables drift the first time either is tuned, and the letter keeps promising the old one.
 144. **A ledger patch must INSERT, never replace.** The 0.11.7 script’s helper consumed a `FINALIZED.md` section heading because its replacement text did not re-include the anchor. `FINALIZED.md` is append-only; every patch re-includes its anchor and the diff is checked for removed lines.
+145. **An assertion written from what the code LOOKS like is a guess; one written from what the code THROWS on is a fact.** All three wrong assertions this session came from the first kind — the depth rule, the incursion word-search, and the wall rule that would have failed the headquarters that ships and works. See 130, 142.
+146. **A start layout is a new-game crash nothing else can see.** `GenStep_Headquarters` throws on a wall collision, a door with no wall, or a bad rectangle, and the build and all eight checkers pass regardless. **Read building sizes from Core’s own `ThingDef`s** — a 2×2 generator on a 1×1 assumption put three crashes in a layout that built clean.
+147. **A sealed room does not throw.** The map generates and part of it can never be entered, forever, silently. Flood-fill every start from its arrival cell.
+148. **Exactly one start begins in corporation contact.** Async Industries. The other two earn it, and until they do there is no clean-up team and no courier. That absence is what makes those openings frightening, and it is asserted.
 
 ---
 

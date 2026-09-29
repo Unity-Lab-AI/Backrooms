@@ -65,7 +65,12 @@ namespace RimroomsAsyncIndustries.Scenario
             if (string.IsNullOrWhiteSpace(scenarioId) || scenarioVersion < 1) { yield return "Missing scenario identity/version."; }
             if (mapSize < 40 || mapSize > 300 || mapGenerator == null) { yield return "Invalid headquarters size/generator."; }
             if (outdoorTerrain == null || floorTerrain == null || wallStuff == null) { yield return "Missing headquarters terrain/material."; }
-            if (roles == null || roles.Count != 5) { yield return "Async Industries requires five distinct starting roles."; }
+            // Five was the Async Industries roster written as a rule for every start. The
+            // Store opens with three ordinary people and the solo/group start with as few
+            // as one, so the real rule is "at least one, and no more than the company
+            // recognises". A start with no roles has nobody to assign work to.
+            if (roles == null || roles.Count < 1 || roles.Count > 5)
+            { yield return "A start needs between one and five distinct starting roles."; }
             if (rooms == null || buildings == null || stock == null || doors == null || conduits == null)
             { yield return "Missing headquarters layout/stock list."; }
             if (roles != null)

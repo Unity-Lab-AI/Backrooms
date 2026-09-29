@@ -51,6 +51,49 @@ Supplies arrive physically with your people and stay editable separately from th
       </parts>
     </scenario>
   </ScenarioDef>
+  <ScenarioDef ParentName="ScenarioBase">
+    <defName>RR_FurnitureStore</defName>
+    <label>Furniture and Knickknack Store</label>
+    <description>Run a small furniture and knickknack shop with a door in the back that should not be there.
+
+Three ordinary people, a sales floor, a stockroom and two hundred silver in the till. There is no corporation, no research and no rescue: nobody is watching this place, and nothing is coming if it goes wrong.
+
+One expected customer has not come back out. What the door is, and what you do about it, is entirely yours to decide. Reaching Async Industries at all is an achievement here rather than a starting condition.
+
+Three people by default. Customise your staff and stock with native setup or Prepare Carefully as you prefer.</description>
+    <scenario>
+      <summary>A small shop, three ordinary people, and an anomalous threshold in the back room. No corporation, no research, and no rescue until you earn one.</summary>
+      <parts>
+        <li Class="ScenPart_ConfigPage_ConfigureStartingPawns">
+          <def>ConfigPage_ConfigureStartingPawns</def>
+          <pawnCount>3</pawnCount>
+          <pawnChoiceCount>6</pawnChoiceCount>
+          <allowedDevelopmentalStages>Adult</allowedDevelopmentalStages>
+        </li>
+        <li Class="RimroomsAsyncIndustries.Scenario.ScenPart_RimroomsStart">
+          <def>RR_CompanyStart</def>
+          <startDef>RR_FurnitureStoreStart</startDef>
+          <visible>false</visible>
+        </li>
+        <li Class="RimroomsAsyncIndustries.Scenario.ScenPart_RimroomsArrival">
+          <def>RR_CompanyArrival</def>
+          <method>Standing</method>
+          <visible>false</visible>
+        </li>
+        <!-- A shop's stock and a shop's petty cash. No company kit, no field recorder, no
+             glow pods: everything this start would need for an expedition is something it
+             has to acquire, which is the difference between it and Async Industries. -->
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>Silver</thingDef><count>200</count></li>
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>WoodLog</thingDef><count>200</count></li>
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>Cloth</thingDef><count>120</count></li>
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>Steel</thingDef><count>80</count></li>
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>MealSimple</thingDef><count>24</count></li>
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>MedicineHerbal</thingDef><count>8</count></li>
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>Gun_Revolver</thingDef><count>1</count></li>
+      </parts>
+    </scenario>
+  </ScenarioDef>
+
   <MapGeneratorDef>
     <defName>RR_Headquarters</defName>
     <genSteps>

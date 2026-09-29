@@ -117,6 +117,31 @@ The flavour half. The mod's **first two `IncidentDef`s** with our own `IncidentW
 
 ---
 
+## Session 2026-09-29 - the Store start (0.11.9-dev)
+
+**Verbatim user quote:** *"continue, that all sounds well"*
+
+**Owner answers at the fork, verbatim:** *"All seven tier-0 roots"* and *"option 1 and remember the other one is solo/group start.. group have been known to end up together inside so leets use the in backrooms start to be 1-5 pawns player settable with normal set up or edb prepare carefully mod and or character editor"*
+
+### What shipped
+
+The **Furniture and Knickknack Store** start: 50x50 shop, three ordinary people, 200 silver in the till, an ordinary door in the back room, **no corporation contact and no completed research**. And a correction to Async Industries, which listed nothing finished despite the direction it was written under.
+
+### Files touched
+
+`Mod/.../Defs/RimroomsStartDefs/RR_Starts.xml`, `Mod/.../Defs/ScenarioDefs/RR_Scenarios.xml`, `src/RimroomsAsyncIndustries/Scenario/RimroomsStartDef.cs`, `docs/implementation/STORE_START_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj, and a seventh proof.
+
+### Closure notes
+
+- **Async began with zero completed research**, contradicting *"Async industries starts with this tech research and other basic gate techs it needs to operate"*. Asked rather than guessed; the owner chose all seven tier 0 roots plus `RR_GateTelemetry`. **Consequence named before the choice and taken knowingly:** Telemetry puts `PortalWindowTier` at 1, so Async is exposed to incursion from its first opening.
+- **`proof-starts.py` found three new-game crashes in a layout that built with zero warnings** - a 2x2 `WoodFiredGenerator` and a `Battery` sitting on the stockroom's south wall, then a shelf colliding with the moved generator. `GenStep_Headquarters` throws on each, and no checker can see it. Building sizes are read from Core's own `ThingDef`s so a 1x1 assumption cannot hide a 2x2.
+- **It also asserts the failure that does NOT throw:** a sealed room. The map generates, the colony starts, and part of the shop can never be entered. Flood-fill from the arrival cell; removing one door fails it.
+- **An assertion was wrong and the source was right, for the THIRD time this session.** The wall rule said a wall must not land inside another room's interior - which would have failed Async, which ships and works. The generator throws only on an *edifice* collision. Restated as: two rooms must not share a wall cell.
+- **`ConfigErrors` demanded exactly five roles**, with an Async-specific message, as a rule for every start. The Store opens with three and the solo/group start with as few as one. Relaxed to one to five.
+- Build 0.11.9-dev, 167 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, seven proofs hold, the new one fault-planted four ways. Assembly reproduced by two clean recompiles. **No game was launched.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

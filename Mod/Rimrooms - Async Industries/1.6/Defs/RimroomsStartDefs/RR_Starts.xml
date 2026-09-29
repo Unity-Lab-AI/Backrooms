@@ -18,8 +18,30 @@
          starting researches finished based on scenerio". A start lists ONLY what it
          begins with finished. The tree itself is every RimroomsProjectDef the game has
          loaded, so it is identical for every start and cannot drift between them.
-         This one is the first slice and begins with nothing finished. -->
-    <completedProjects />
+         **Corrected 2026-09-29 on owner direction.** This start listed NOTHING finished, which
+         contradicted the direction it was written under: "Async industries starts with this tech
+         research and other basic gate techs it needs to operate and begin researching and gate
+         operations at basic levels". Owner's answer at the fork: all seven tier 0 roots, plus the
+         gate ladder's first rung.
+
+         So Async opens able to operate a gate properly and with a foot in the door on every
+         branch, which is what an authorised branch of a company that has done this before would
+         actually have. The Store and Solo/Group starts list nothing, and that difference is now
+         real rather than a note.
+
+         NOTE, chosen knowingly: RR_GateTelemetry puts PortalWindowTier at 1, which is the floor
+         at which something may follow a crew out. Async is therefore exposed to incursion from
+         the first opening. That is the cost of starting equipped and the owner took it. -->
+    <completedProjects>
+      <li>RR_GateTelemetry</li>
+      <li>RR_Facilities_ReserveDiscipline</li>
+      <li>RR_Fieldcraft_ReturnDrill</li>
+      <li>RR_Measurement_SecondReading</li>
+      <li>RR_Spatial_CoordinateAtlas</li>
+      <li>RR_Entities_EarlyWarning</li>
+      <li>RR_Logistics_StandingOrders</li>
+      <li>RR_Commerce_NegotiatedTerms</li>
+    </completedProjects>
     <mapSize>60</mapSize>
     <mapGenerator>RR_Headquarters</mapGenerator>
     <outdoorTerrain>Soil</outdoorTerrain>
@@ -137,4 +159,123 @@
       </li>
     </roles>
   </RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+  <!-- ==================================================================================== -->
+  <!-- FURNITURE AND KNICKKNACK STORE                                                       -->
+  <!--                                                                                      -->
+  <!-- Contract: docs/SCENARIOS.md, the furniture_knickknack_store card. A 50x50 shop with   -->
+  <!-- a sales floor, stockroom, office, staff room and a back room nobody uses, three       -->
+  <!-- ordinary people, and no corporation.                                                  -->
+  <!--                                                                                      -->
+  <!-- beginsInCorporationContact is FALSE and completedProjects is EMPTY, and both of those  -->
+  <!-- are the point. No clean-up team, no unsolicited courier, no research already done.     -->
+  <!-- Owner: "the other two scenerios need special treatment in theri layout and starts".    -->
+  <!-- Reaching contact is the achievement here, not the starting condition.                  -->
+  <!--                                                                                      -->
+  <!-- The threshold in the back room is an ordinary door, because that is exactly what a    -->
+  <!-- gate is in this mod before anybody designates it. Nothing here claims a breach system  -->
+  <!-- that does not exist; the shop simply has a door in the back that should not be there,  -->
+  <!-- and what it becomes is the player's decision.                                          -->
+  <!-- ==================================================================================== -->
+  <RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+    <defName>RR_FurnitureStoreStart</defName>
+    <label>Furniture and Knickknack Store opening</label>
+    <scenarioId>furniture_knickknack_store</scenarioId>
+    <beginsInCorporationContact>false</beginsInCorporationContact>
+    <defaultCompanyName>Furniture and Knickknack</defaultCompanyName>
+    <scenarioVersion>1</scenarioVersion>
+    <completedProjects />
+    <mapSize>50</mapSize>
+    <mapGenerator>RR_Headquarters</mapGenerator>
+    <outdoorTerrain>Soil</outdoorTerrain>
+    <floorTerrain>Concrete</floorTerrain>
+    <wallStuff>BlocksGranite</wallStuff>
+    <arrivalCell>(18, 0, 12)</arrivalCell>
+    <stockCell>(34, 0, 16)</stockCell>
+    <!-- A shop is a building, not a compound: the outer rectangle is the premises itself,
+         roofed and floored, and the rooms inside it are partitions. The one-cell gaps
+         between them are the corridors, and they join into a ring so nothing is sealed. -->
+    <rooms>
+      <li><x>8</x><z>8</z><width>34</width><height>30</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>10</x><z>10</z><width>18</width><height>14</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>29</x><z>10</z><width>11</width><height>14</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>10</x><z>25</z><width>10</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>21</x><z>25</z><width>9</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>31</x><z>25</z><width>9</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+    </rooms>
+    <doors>
+      <li>(18, 0, 8)</li>
+      <li>(18, 0, 10)</li>
+      <li>(27, 0, 16)</li>
+      <li>(29, 0, 16)</li>
+      <li>(14, 0, 25)</li>
+      <li>(25, 0, 25)</li>
+      <li>(35, 0, 25)</li>
+      <li>(35, 0, 34)</li>
+    </doors>
+    <buildings>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 13)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(17, 0, 13)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(21, 0, 13)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 20)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(17, 0, 20)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(21, 0, 20)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(25, 0, 13)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(25, 0, 20)</cell></li>
+      <li><thing>Table2x2c</thing><stuff>WoodLog</stuff><cell>(24, 0, 17)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(32, 0, 13)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(36, 0, 13)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(31, 0, 20)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(37, 0, 17)</cell></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(36, 0, 20)</cell><fuelFraction>0.5</fuelFraction></li>
+      <li><thing>Battery</thing><cell>(33, 0, 17)</cell><batteryFraction>0.4</batteryFraction></li>
+      <li><thing>Table1x2c</thing><stuff>WoodLog</stuff><cell>(13, 0, 30)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(15, 0, 30)</cell></li>
+      <li><thing>CommsConsole</thing><cell>(17, 0, 32)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(12, 0, 32)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(23, 0, 27)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(25, 0, 27)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(27, 0, 27)</cell></li>
+      <li><thing>ElectricStove</thing><cell>(23, 0, 32)</cell></li>
+      <li><thing>Table2x2c</thing><stuff>WoodLog</stuff><cell>(26, 0, 32)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(28, 0, 32)</cell></li>
+      <li><thing>Heater</thing><cell>(22, 0, 30)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(33, 0, 32)</cell></li>
+    </buildings>
+    <conduits>
+      <li><start>(33, 0, 22)</start><length>14</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 24)</start><length>22</length><alongX>true</alongX></li>
+      <li><start>(28, 0, 12)</start><length>13</length><alongX>false</alongX></li>
+      <li><start>(17, 0, 24)</start><length>9</length><alongX>false</alongX></li>
+      <li><start>(23, 0, 24)</start><length>9</length><alongX>false</alongX></li>
+    </conduits>
+    <!-- Three ordinary people, not a trained crew. The contract's owner/manager, employee and
+         night guard, mapped onto company roles the rest of the mod already understands, because
+         a role here is an assignment rather than a class. -->
+    <roles>
+      <li>
+        <id>operations</id><mustFight>false</mustFight>
+        <skills><Social>7</Social><Intellectual>3</Intellectual></skills>
+        <workTypes><li>Warden</li><li>Hauling</li></workTypes>
+      </li>
+      <li>
+        <id>medical_logistics</id><mustFight>false</mustFight>
+        <skills><Cooking>5</Cooking><Medicine>3</Medicine><Plants>3</Plants></skills>
+        <workTypes><li>Cooking</li><li>Doctor</li><li>Growing</li></workTypes>
+      </li>
+      <li>
+        <id>security</id><mustFight>true</mustFight>
+        <skills><Shooting>5</Shooting><Melee>4</Melee></skills>
+        <workTypes><li>Hauling</li></workTypes>
+      </li>
+    </roles>
+    <!-- A shop's economy, not a research branch's. No corporate allocation: 200 silver in the
+         till and whatever the stock is worth. Wages and overhead are three people and a
+         building, which is why they are a fraction of Async's. -->
+    <initialFundingUsd>200000</initialFundingUsd>
+    <dailyWageUsd>300</dailyWageUsd>
+    <dailyOverheadUsd>1500</dailyOverheadUsd>
+    <surveyRewardUsd>500000</surveyRewardUsd>
+    <surveyBonusUsd>100000</surveyBonusUsd>
+  </RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+
 </Defs>
