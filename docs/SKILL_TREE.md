@@ -1,6 +1,6 @@
 # SKILL_TREE
 
-Capability inventory for Rimrooms - Async Industries as of 0.5.7-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
+Capability inventory for Rimrooms - Async Industries as of 0.5.8-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
 
 | Status | Meaning |
 |--------|---------|
@@ -259,6 +259,7 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 | Cross-gate construction supply | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.3-dev) |
 | Cross-gate construction finishing (travel-to-work) | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.5-dev) |
 | Cross-gate bill ingredient logistics | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.7-dev) |
+| Cross-gate research (second travel-to-work provider) | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.8-dev) |
 | Live-tunable cross-gate work priorities in mod settings | Interface | Foundational | **Build / Runtime-pending** (0.5.6-dev) |
 | Verified RimWorld/Steam compliance position with automated checks | Release | Foundational | **Build** (0.5.6-dev) |
 | Travel-to-work deployment shape, reusable per provider | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.5-dev) |

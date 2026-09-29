@@ -92,6 +92,49 @@
     <prioritizeSustains>true</prioritizeSustains>
   </WorkGiverDef>
 
+  <!-- Research is the second travel-to-work provider, and it needed no new record, driver
+       or JobDef - only a different answer to "is there work of my kind over there". On
+       arrival it issues nothing and whatever research giver is active on that map does the
+       work, which is why a profile that changes how research is chosen or presented changes
+       nothing here.
+
+       Core's Research work type runs 130 Hack, 120 CreateXenogerm,
+       110 StudyArchotechStructures, 100 Research, 50 LongRangeScan, 50 GroundPenetratingScan.
+
+       Continuing sits at 102: above ordinary research so a researcher partway to a gate is
+       not turned around by a bench freeing up at home, and below archotech study, xenogerm
+       creation and hacking, which are more urgent or time-limited.
+
+       Starting sits at 40, below every Core research giver including both scans, so crossing
+       a gate to research only happens when there is nothing to research on this side.
+       Balance decisions, recorded as such, and player-tunable while the game runs. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedResearchContinue</defName>
+    <label>travel on to research through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedResearchContinue</giverClass>
+    <workType>Research</workType>
+    <verb>research</verb>
+    <gerund>researching</gerund>
+    <priorityInType>102</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedResearch</defName>
+    <label>cross a gate to research</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedResearch</giverClass>
+    <workType>Research</workType>
+    <verb>research</verb>
+    <gerund>researching</gerund>
+    <priorityInType>40</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
   <!-- Bill ingredients sit just under construction supply in Hauling. A stalled build is
        more urgent than a stalled bill, so material to a frame is preferred; both stay well
        below Core's own HaulGeneral (15) so ordinary local hauling always wins. Finishing a

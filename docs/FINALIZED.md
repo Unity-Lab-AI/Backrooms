@@ -815,3 +815,52 @@ Source files created: 1. Source files modified: 5. Package files modified: 3. Do
 Deferments closed: 1 (bills). Work families complete: 5 of the planned set. Core traps documented from source evidence: 3 (`UnfinishedThing` one-creator binding, remote `ShouldDoNow()` safety, multi-def shortage counting).
 Next: research across a gate, as a travel-to-work **deployment provider** rather than a carry adapter.
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+---
+
+## Session — 2026-09-28 — a researcher crosses a gate, and the deployment shape proves it generalises (0.5.8-dev)
+
+### Verbatim requests
+
+> sounds great lets keep at heading toward the completion as the over all goal
+
+> remembre there are research mods you should always be checking mods too
+
+> thats what the prep work was for
+
+### COMPLETED
+
+- [x] **"lets keep at heading toward the completion as the over all goal"** — sixth work family shipped and published without pausing. `ResearchProvider`, two work giver defs in `Research` at 102 (continue) and 40 (plan), a settings row, three keyed strings.
+- [x] **The whole implementation is one new file, and that is the result worth reporting.** No new record, no new job driver, no new `JobDef`, and **no change to the deployment engine at all**. The travel-to-work shape built in 0.5.5-dev accepted a second provider without being touched, which is the first real evidence it was the right shape rather than a construction-specific convenience.
+- [x] **"remembre there are research mods you should always be checking mods too"** — five profile rows read before a line was written, and each one mattered:
+  - **279 Research Whatever** auto-selects the cheapest project at a bench, so `GetProject()` may be null when a trip is planned and non-null on arrival. Harmless in that direction: an optimistic miss means no trip this pass, and planning retries on a cooldown.
+  - **76 Do Your F\*\*\*\*\*\* Research** is a player float-menu prioritisation action, not a research system. Automatic work never sees it.
+  - **191 ResearchTree (Eheieh)** is presentation and planning only.
+  - **83 Dubs Rimatomics** keeps its **own** research table and screen, which is not vanilla `ResearchManager` work at all. Because this provider matches Core exactly — `ThingRequestGroup.ResearchBench`, `Building_ResearchBench`, `CanBeResearchedAt` — a separate modded research system is neither claimed nor broken.
+  - **39 Anomaly Research Asteroid** is content with no work-giver interaction.
+- [x] **"thats what the prep work was for"** — the sharper of the two corrections, and it is now the standing method rather than a note. The 294 per-mod reviews already hold verified source facts and a recorded disposition for every entry; re-investigating from scratch wastes eighteen hours of preparation. Added to `TODO.md` as binding and to the **reading order in `NOW.md`**, so it applies to every future family and not only this one.
+- [x] **Found the compatibility property of the deployment shape, which is the session's real finding.** Because a deployment never issues the work, **whatever research giver is active on the destination map does it** — Core's, or a mod's replacement. So a profile that changes how research is chosen, prioritised, presented, or that runs an entirely separate research system, changes nothing here. The research family needed **no mod-specific adapter at all**, and that generalises to every future provider. All five rows carry the disposition "optional, no dependency, must work when absent, do not copy code" and this satisfies every clause by construction.
+- [x] **Verified `CanBeResearchedAt` is fair to ask remotely rather than assuming it.** From the decompiled source it reads the bench's own def against `requiredResearchBuilding`, the bench's own `CompPowerTrader.PowerOn`, and the bench's own linked facilities through `CompAffectedByFacilities`. Every one is a fact about the bench and the map it stands on; it consults no pawn and never touches the worker's map. Reservation, the sittable-spot check, the pawn form of forbidden, and the researching history event are all left to arrival.
+- [x] **Included the researching `HistoryEvent` on arrival for a concrete reason, not completeness.** An ideoligion that forbids researching would otherwise leave a deployed worker standing at a bench it may never use, with the deployment held open because the provider believed work existed. Core asks the same question in the same speculative position inside its own `HasJobOnThing`.
+- [x] **Release is on the bench, not the project** — as designed at handoff. Research progress is global, so the deployment ends when either no project is selected anywhere or no usable bench remains on that map. It does not try to outlive a finished project hoping another is queued, and if one is selected while the worker is still standing there no new deployment is needed: the anti-thrash rule already refuses to plan one for a worker on a map that has qualifying work.
+- [x] **One risk named instead of guarded speculatively.** If a mod replaced the vanilla research giver with stricter eligibility than this provider's candidate test, a deployed worker could idle at a bench it cannot use. The one concrete case found is handled. No further machinery was added, because guarding an unverifiable hypothesis with untested code is worse than naming it; it is on the post-completion test list instead.
+
+### Saved state
+
+**None added.** The deployment record already carries everything a provider needs — which is the same point as the single new file: a provider is data about a question, not new state. A 0.5.7-dev save loads unchanged.
+
+### Documents updated in the same change
+
+`implementation/CONNECTED_RESEARCH_IMPLEMENTATION.md` (new record), `DEFERRED.md`, `TODO.md`, `NOW.md` (including the new prep-work-first reading rule), `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.5.8-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **102** C# source files, **76** approved package files (unchanged). Assembly SHA-256 `46896D6F2D9A4F2D8A4DA526210CADD9DE2337F255F8E4675B28710213C9FC05`, reproduced by **two** full recompiles after deleting `obj/` and `bin/` — and now genuinely re-verifiable after the commit, because 0.5.7-dev removed the embedded git revision. Evidence folder `implementation/evidence/connected-research-2026-09-28/`. All 58 packaged XML files parse; every `RR_` key referenced from source resolves with 0 missing; 2,962 relative doc links resolve with 0 broken; every `giverClass` resolves; 0 attribution strings; all compliance checks pass. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Source files modified: 3. Package files modified: 3. Docs updated: 9 (1 new).
+Deferments closed: 1 (research). Work families complete: 6, two of them travel-to-work deployments.
+Owner corrections absorbed as standing method: 1 — read the prep work's per-mod reviews before implementing a family, rather than re-deriving mod facts.
+Next: tending across a gate, which is **two** capabilities — a doctor deployed to a patient who stays put, and medicine carried as consumable cargo — to be shipped separately, deployment half first.
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.

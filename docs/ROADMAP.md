@@ -18,7 +18,7 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
 | **Master TODO** | 133 items checked, 121 open (mirrored in `TODO.md`; deferments tracked in `DEFERRED.md`) |
 | **Source** | 78 C# files, 15 namespaces, 9 save owners, no Harmony |
 | **Package** | 73 allowlisted files, 27 Def XMLs, 2 patches, 25 language files, 16 PNGs |
-| **Active major** | M1 connected colony portals — addresses, crossing, controls, natural-gate discovery and five cross-map work families (storage hauling, casualties and remains, construction supply, construction finishing, bill ingredients) reachable in source, one of them the first travel-to-work shape rather than a carry; nineteen deferments closed; research next |
+| **Active major** | M1 connected colony portals — addresses, crossing, controls, natural-gate discovery and six cross-map work families (storage hauling, casualties and remains, construction supply, construction finishing, bill ingredients, research) reachable in source, two of them travel-to-work deployments rather than carries; twenty deferments closed; tending next |
 | **Next unblocked minor** | Resume step 4 (work intents, leases, adapter families) |
 | **Owner questions open** | 3 (inside-start party size; first-exit fixed vs chosen; opening duration) |
 
@@ -243,8 +243,8 @@ DONE        M1 step 1 → 2 → 3 (0.4.2-dev) · gate traversal rule (0.4.3-dev)
             the storage-hauling family (0.5.0-dev), each checkpointed and cascaded
 DONE        M1 step 4 families: storage hauling (0.5.0-dev), casualties and remains (0.5.2-dev),
             construction supply (0.5.3-dev), construction finishing as the first
-            travel-to-work deployment (0.5.5-dev), bill ingredients (0.5.7-dev).
-            Dependency position audited: base Core only.
+            travel-to-work deployment (0.5.5-dev), bill ingredients (0.5.7-dev), research as the second travel-to-work
+            deployment (0.5.8-dev). Dependency position audited: base Core only.
 NEXT        travel-to-work intents (owner-selected): completes construction finishing and unlocks
             every later "work done over there" family → bills → research → tending → food → rest
 THEN        M1 step 5 providers/inhabitants · step 6 hygiene · M2 migration decision · M3 groups in order

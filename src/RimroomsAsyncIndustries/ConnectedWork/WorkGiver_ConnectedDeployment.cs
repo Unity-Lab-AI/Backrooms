@@ -235,4 +235,25 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         { get { return ConnectedDeploymentProviders.ConstructionFinishing; } }
         protected override bool ContinueOnly { get { return true; } }
     }
+
+    /// <summary>
+    /// Sends a researcher through a gate to a bench on the other side. Sits below every one
+    /// of Core's own research givers, so a researcher only crosses when there is nothing to
+    /// research on this side.
+    /// </summary>
+    public sealed class WorkGiver_ConnectedResearch : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId { get { return ConnectedDeploymentProviders.Research; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>
+    /// Walks a researcher the rest of the way to a bench it was already sent to, then gets
+    /// out of the way so whatever research giver is active there does the work.
+    /// </summary>
+    public sealed class WorkGiver_ConnectedResearchContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId { get { return ConnectedDeploymentProviders.Research; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
 }

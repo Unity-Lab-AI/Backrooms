@@ -83,13 +83,16 @@ namespace RimroomsAsyncIndustries.ConnectedWork
     public static class ConnectedDeploymentProviders
     {
         public const string ConstructionFinishing = "construction-finishing";
+        public const string Research = "research";
 
         private static readonly ConstructionFinishingProvider construction =
             new ConstructionFinishingProvider();
+        private static readonly ResearchProvider research = new ResearchProvider();
         private static readonly Dictionary<string, ConnectedDeploymentProvider> registry =
             new Dictionary<string, ConnectedDeploymentProvider>(System.StringComparer.Ordinal)
             {
-                { ConstructionFinishing, construction }
+                { ConstructionFinishing, construction },
+                { Research, research }
             };
 
         public static IEnumerable<ConnectedDeploymentProvider> All { get { return registry.Values; } }

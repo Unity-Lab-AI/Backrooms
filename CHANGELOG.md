@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.8-dev - 2026-09-28 - a researcher crosses a gate to work
+
+- A researcher will now walk through a gate to use a research bench on the other side, when there is nothing to research on this side.
+- The research itself is the game's own, on that side, at its normal speed. Nothing about how research works is changed or replaced.
+- A researcher partway to a gate is not turned around by a bench freeing up at home, and nobody is ever dragged back. When the far bench stops being usable, or there is no project left to research, the colonist is simply free where it stands.
+- A bench that is unpowered, or missing a facility it needs, is not treated as somewhere worth walking to.
+- This works alongside your research mods without needing anything special for any of them. Because the mod only decides that the walk is worth it and then gets out of the way, whatever handles research on that side does the work — including mods that pick projects for you, reprioritise them, redraw the tree, or run a completely separate research system of their own.
+- How eagerly researchers cross a gate is a setting like the rest, adjustable while the game runs.
+
+Full record: [research across a gate](docs/implementation/CONNECTED_RESEARCH_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.5.7-dev - 2026-09-28 - ingredients reach a bill through a gate
 
 - A workbench whose bill is short of leather can now be supplied from the other side of a gate. A colonist picks up the real leather, carries it through, and puts it where the bill can reach it.
