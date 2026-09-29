@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using RimWorld;
 using Verse;
@@ -72,15 +72,13 @@ namespace RimroomsAsyncIndustries.Company
             }
         }
 
-        /// <summary>Basic supplies, in Core defs. A fresh start's worth, not a reward.</summary>
-        private static readonly KeyValuePair<string, int>[] ReliefSupplies =
-        {
-            new KeyValuePair<string, int>("MealSurvivalPack", 30),
-            new KeyValuePair<string, int>("MedicineIndustrial", 12),
-            new KeyValuePair<string, int>("Steel", 300),
-            new KeyValuePair<string, int>("ComponentIndustrial", 12),
-            new KeyValuePair<string, int>("WoodLog", 200),
-        };
+        /// <summary>
+        /// The clean-up team drops the corporation's crate at **full scale**.
+        ///
+        /// The table itself lives in <see cref="CompanySupplyDrop"/> because the unsolicited
+        /// courier drops the same crate smaller. Same corporation, same warehouse, one table.
+        /// </summary>
+        private const float ReliefSupplyScale = 1f;
 
         internal void ExposeFacilityRelief()
         {
@@ -158,7 +156,7 @@ namespace RimroomsAsyncIndustries.Company
             // map would be worse than the failure.
             if (payload.Count == 0) { return; }
 
-            AddReliefSupplies(payload);
+            CompanySupplyDrop.Fill(payload, ReliefSupplyScale);
 
             reliefCount++;
             lastReliefTick = now;
@@ -252,26 +250,6 @@ namespace RimroomsAsyncIndustries.Company
             {
                 Log.Warning("[Rimrooms] could not generate relief staff for " + role + ": " + error);
                 return null;
-            }
-        }
-
-        private static void AddReliefSupplies(List<Thing> payload)
-        {
-            for (int index = 0; index < ReliefSupplies.Length; index++)
-            {
-                KeyValuePair<string, int> line = ReliefSupplies[index];
-                ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(line.Key);
-                if (def == null) { continue; }
-                int remaining = line.Value;
-                int limit = def.stackLimit > 0 ? def.stackLimit : remaining;
-                while (remaining > 0)
-                {
-                    Thing stack = ThingMaker.MakeThing(def);
-                    if (stack == null) { break; }
-                    stack.stackCount = Math.Min(remaining, limit);
-                    payload.Add(stack);
-                    remaining -= stack.stackCount;
-                }
             }
         }
 

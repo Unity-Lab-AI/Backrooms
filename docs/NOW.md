@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.11.7-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.11.8-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **163 C# files, 85 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `307D02D075BBBF4256FB019BF848E6705400D4F40EF79DA5E26EE11802BB2CCC`, reproduced by two clean recompiles |
+| Build | **167 C# files, 86 package files**, zero warnings, zero errors |
+| Assembly | SHA-256 `3E7B151603CFA38B2066DD5F7DD57EB1DE1EE60317E3A2634D12F452FB05C528`, reproduced by two clean recompiles |
 | Checkers | **eight**, all passing |
-| Proofs | **five** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
+| Proofs | **six** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.11.7
+## What shipped this session, 0.7.1 → 0.11.8
 
 | Version | What |
 |---|---|
@@ -80,6 +80,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.11.5 | **A designated gate is a machine that is on** — three unused props restored, two wired. **Reversed 0.11.4’s retirements.** |
 | 0.11.6 | **The second time you do a thing should be cheaper** — research tier 2; three planned unlocks deleted for changing nothing observable |
 | 0.11.7 | **The corporation does not write off a branch** — the clean-up team; five `PawnKindDef`s found authored and read by nothing |
+| 0.11.8 | **The storyteller finally knows this mod exists** — the first two `IncidentDef`s; no `StorytellerDef`, now asserted |
 
 ---
 
@@ -88,16 +89,12 @@ Chain checkpoints. Do not finish one and wait.
 The order is the one `docs/CAMPAIGN_CHART.md` §7 authorises. **Read the chart before starting
 anything in this list** — it is the authority, and steps 1–5 of its build order are done.
 
-1. **The storyteller half of the owner's *"Both"* decision.** The guaranteed floor shipped in
-   0.11.7; this is the other half. **This mod still has zero `IncidentDef`s**, so no storyteller
-   knows it exists. Register lighter world-facing events as `IncidentDef`s with our own
-   `IncidentWorker`s, gated in `CanFireNowSub`, and let the player's chosen storyteller pace them.
-   The right home for arc 6, *"respond to openings in settlements"*. **Never a `StorytellerDef`** —
-   it is an exclusive slot, it needs portrait art the no-new-art rule forbids, and there is no
-   intelligence in one to borrow.
+1. **The Store and Solo/Group starts.** Each *"needs special treatment in theri layout and
+   starts"*, a different point of view on the same world, and **neither begins in corporation
+   contact** — so neither has the clean-up team, and neither gets the courier, until it earns
+   contact. That absence is what makes those two openings frightening, and as of 0.11.7 and
+   0.11.8 it is a real difference rather than a note.
 2. **Research tiers 3–4** — remote and deep operations.
-3. **The Store and Solo/Group starts.** Each *"needs special treatment in theri layout and
-   starts"*, a different point of view on the same world, and **neither begins in contact**.
 4. **Generated requests after the hinge**, from branch state, coordinate history and capability.
    Route selection for a generated request is an **open owner question** (chart §6).
 5. **Arcs 5–8** — remote sites, the outside world, industrial reach, deeper systems.
@@ -273,6 +270,10 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 138. **Check that a new tier does not switch off the tier below it.** Forward Dispatch halves the dispatch delay, and the lead-time clamp had to be moved onto the effective value or Relays would have stopped biting for exactly the branches holding both.
 139. **An orphaned def is more dangerous than a missing one.** Five `RR_*Staff` `PawnKindDef`s were authored, loaded and validated every run and read by **nothing**, and the queue called them *"unbuilt"*. Built and orphaned looks finished from every angle except the one nobody checks. **Third instance of invariant 131 this session.**
 140. **A guarantee must not be an incident.** *"Facilities never die"* does not admit the two questions a storyteller asks — whether, and when. The floor is deterministic; the flavour is paced. Owner decision, verbatim: *"Both - guaranteed floor, storyteller flavour"*.
+141. **Never ship a `StorytellerDef`.** It is an exclusive slot the player would have to give up Cassandra or Randy for, and it needs portrait art the no-new-art rule forbids. **There is no intelligence in one to borrow** — a `StorytellerComp` rolls a mean-time-between against wealth and population. The director is `IncidentWorker.CanFireNowSub`, which is ours without the slot. Asserted by `proof-incidents.py`.
+142. **A proof must not punish an explanation.** The incursion claim failed on this mod’s own comment saying why incursion is excluded. Strip comments and ask about code — a rule that makes documenting a decision expensive teaches people to stop documenting decisions. **Second time this session an assertion was wrong and the code was right** (see 130).
+143. **One table, two scales.** The relief crate and the courier crate are one corporation with one warehouse. Two tables drift the first time either is tuned, and the letter keeps promising the old one.
+144. **A ledger patch must INSERT, never replace.** The 0.11.7 script’s helper consumed a `FINALIZED.md` section heading because its replacement text did not re-include the anchor. `FINALIZED.md` is append-only; every patch re-includes its anchor and the diff is checked for removed lines.
 
 ---
 

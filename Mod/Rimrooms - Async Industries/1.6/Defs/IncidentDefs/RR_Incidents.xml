@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- ==================================================================================== -->
+  <!-- THE MOD'S FIRST INCIDENTS                                                            -->
+  <!--                                                                                      -->
+  <!-- Owner decision at the storyteller fork, verbatim: "Both - guaranteed floor,           -->
+  <!-- storyteller flavour". Until these, EVERY event in this mod fired from its own         -->
+  <!-- component tick, so whichever storyteller the player chose had never heard of it.      -->
+  <!--                                                                                      -->
+  <!-- There is deliberately NO StorytellerDef. It is an exclusive slot the player would     -->
+  <!-- have to give up Cassandra or Randy for, and it needs portrait art the no-new-art      -->
+  <!-- rule forbids. The part of a storyteller that behaves like a director is the worker's  -->
+  <!-- CanFireNowSub, and that is ours without owning the slot.                              -->
+  <!--                                                                                      -->
+  <!-- What is NOT here, on purpose: the clean-up team, because a guarantee must not be      -->
+  <!-- subject to the two questions a storyteller asks; incursion, because invariant 53      -->
+  <!-- keeps exactly one door into that exception; and anything inside a coordinate,         -->
+  <!-- because what happens down there is paced by arrival and depth.                        -->
+  <!--                                                                                      -->
+  <!-- Both are Core-only and carry no MayRequire. Both are Misc rather than a threat        -->
+  <!-- category: neither damages a pawn, destroys a thing or blocks a route.                 -->
+  <!-- ==================================================================================== -->
+
+  <IncidentDef>
+    <defName>RR_Incident_ThresholdBleed</defName>
+    <label>threshold bleed</label>
+    <category>Misc</category>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>RimroomsAsyncIndustries.Incidents.IncidentWorker_RimroomsThresholdBleed</workerClass>
+    <baseChance>0.8</baseChance>
+    <minRefireDays>5</minRefireDays>
+    <letterDef>NeutralEvent</letterDef>
+    <letterLabel>Threshold bleed</letterLabel>
+    <letterText>Something came out the near side.
+
+The gate is shut. The room it stands in is not quite as it was: the wrongness that lives behind the threshold does not always stay behind it, and a branch that works a hole in the world is a branch that occasionally finds the hole working back.
+
+It is the same handful of things the space does when you are standing in it, and the same answers work here. Nothing was destroyed and nobody was hurt.</letterText>
+  </IncidentDef>
+
+  <IncidentDef>
+    <defName>RR_Incident_CorporationDelivery</defName>
+    <label>unsolicited delivery</label>
+    <category>Misc</category>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>RimroomsAsyncIndustries.Incidents.IncidentWorker_RimroomsCorporationDelivery</workerClass>
+    <baseChance>0.5</baseChance>
+    <minRefireDays>15</minRefireDays>
+    <letterDef>PositiveEvent</letterDef>
+    <letterLabel>Unsolicited delivery</letterLabel>
+    <letterText>A crate nobody ordered.
+
+The parent corporation does not do this out of kindness. It has money in this branch, the branch works better with supplies in it than without, and the arithmetic on that is not complicated enough to need approval from anybody.
+
+There is no invoice and there is no note. There rarely is.</letterText>
+  </IncidentDef>
+
+</Defs>

@@ -70,6 +70,8 @@ The guaranteed-floor half. A branch in corporation contact that loses every livi
 ---
  (2026-09-27 → 2026-09-28, previous build agent)
 
+## Inherited pre-workflow history (2026-09-27 → 2026-09-28, previous build agent)
+
 Not verbatim user tasks — a pointer index into the records the previous agent left, so this archive has one continuous timeline. The authoritative evidence for each row is the linked file; the master TODO checkboxes in [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) are the per-item closure record.
 
 | Milestone | Commit(s) | Evidence |
@@ -84,6 +86,34 @@ Not verbatim user tasks — a pointer index into the records the previous agent 
 | 0.4.1-dev connected-colony foundations (portal graph, route search, laboratory session, crossing service) + owner usage-conservation pause | `8ed4e32` | [`implementation/CONNECTED_COLONY_CHECKPOINT.md`](implementation/CONNECTED_COLONY_CHECKPOINT.md), `implementation/evidence/connected-colony-2026-09-28/` |
 
 Owner directions the previous agent recorded and that remain binding: existing-content-only gameplay ([`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md)); connected colony portals supersede dispatch-only travel ([`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md)); build continuation with game testing deferred ([`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md#build-continuation-and-deferred-game-testing)); the owner alone launches through RimSort; publication cascade `feature/preproduction-handoff → Prep → Develop → Main` on both remotes. Open owner questions at handoff: inside-start party size; inside-start first-exit destination; opening-duration clarification.
+
+---
+
+## Session 2026-09-29 - the storyteller surface (0.11.8-dev)
+
+**Verbatim user quote:** *"lets get to it all making it all correct"*
+
+**The question this closes, verbatim:** *"we may need our own story teller right? or is that way way to much work? with the “AI” like ai thats not an ai that the storytellers use"*
+
+**The decision at that fork, verbatim:** *"Both - guaranteed floor, storyteller flavour"*
+
+### What shipped
+
+The flavour half. The mod's **first two `IncidentDef`s** with our own `IncidentWorker`s, so the player's chosen storyteller paces them: a threshold bleed scoped to the room a designated gate stands in, and an unsolicited corporation delivery gated on contact. **No `StorytellerDef`, now asserted as a never.**
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Incidents/RimroomsIncidents.cs` (new), `Company/CompanySupplyDrop.cs` (new), `Threats/AnomalyEventService.cs` (re-scoped to cells), `Company/FacilityRelief.cs`, `1.6/Defs/IncidentDefs/RR_Incidents.xml` (new), keyed strings, `tools/package-files.json`, `docs/implementation/INCIDENT_SURFACE_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj, and a sixth proof.
+
+### Closure notes
+
+- **The mod shipped zero `IncidentDef`s until this checkpoint.** Every event fired from its own component tick, so no storyteller had ever heard of it. That is the real answer to the owner's question, and it cost two defs and a base class rather than a persona.
+- **There is no intelligence in a storyteller to borrow** - a `StorytellerComp` rolls a mean-time-between against wealth and population. The part that behaves like a director is `IncidentWorker.CanFireNowSub`, which is ours without owning the exclusive slot.
+- **`AnomalyEventService` was re-scoped from `CoordinateRecord` to a plain cell list** so the bleed runs the *same* four effect bodies a coordinate runs. What would drift out of a second copy are the four safety promises in invariant 28.
+- **An assertion was wrong and the source was right, for the second time this session.** The incursion claim matched the mod's own doc comment explaining why incursion is excluded. A proof that punishes the explanation teaches people to delete explanations; it now strips comments before asking.
+- **The heredoc `\n` gotcha, hit for the seventh time**, with the fix already written next to it in `NOW.md`.
+- **A bug in the 0.11.7 ledger script was found and repaired here:** its replace() helper consumed the `## Inherited pre-workflow history` heading in this file instead of inserting before it. No entry text was lost; the heading is restored verbatim from `HEAD~1`, and every insertion in the 0.11.8 script re-includes its anchor.
+- Build 0.11.8-dev, 167 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, six proofs hold, the new one fault-planted four ways. Assembly reproduced by two clean recompiles. **No game was launched.**
 
 ---
 

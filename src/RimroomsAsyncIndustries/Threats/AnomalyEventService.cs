@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -90,26 +90,8 @@ namespace RimroomsAsyncIndustries.Threats
 
         private static bool Fire(Map map, CoordinateRecord coordinate, RimroomsAnomalyEventDef definition)
         {
-            bool happened;
-            switch (definition.effect)
-            {
-                case AnomalyEffect.LightsFail:
-                    happened = LightsFail(map, coordinate);
-                    break;
-                case AnomalyEffect.ColdSnap:
-                    happened = ColdSnap(map, coordinate, definition.magnitude);
-                    break;
-                case AnomalyEffect.Seepage:
-                    happened = Seepage(map, coordinate, definition.magnitude);
-                    break;
-                case AnomalyEffect.Rearrangement:
-                    happened = Rearrange(map, coordinate, definition.magnitude);
-                    break;
-                default:
-                    happened = true;
-                    break;
-            }
-            if (!happened) { return false; }
+            if (!FireEffect(map, RoomCells(map, coordinate).ToList(), definition.effect, definition.magnitude))
+            { return false; }
 
             Announce(map, coordinate, definition);
             RimroomsCampaignComponent campaign = Verse.Current.Game == null
@@ -120,16 +102,41 @@ namespace RimroomsAsyncIndustries.Threats
         }
 
         /// <summary>
+        /// Run one effect over an explicit set of cells.
+        ///
+        /// **The one implementation of all four effects.** A coordinate passes the cells of its
+        /// rooms minus the threshold; the threshold bleed at the headquarters passes the cells of
+        /// the room a gate stands in. A second copy of these bodies would drift, and what would
+        /// drift out of them are the four promises in invariant 28 -- nothing damages a pawn,
+        /// nothing is destroyed, nothing blocks a route, and there is always a countermeasure.
+        ///
+        /// Returns false when the effect found nothing to do, so a caller can decline to
+        /// announce an event that did not happen.
+        /// </summary>
+        public static bool FireEffect(Map map, List<IntVec3> cells, AnomalyEffect effect, int magnitude)
+        {
+            if (map == null || cells == null || cells.Count == 0) { return false; }
+            switch (effect)
+            {
+                case AnomalyEffect.LightsFail: return LightsFail(map, cells);
+                case AnomalyEffect.ColdSnap: return ColdSnap(map, cells, magnitude);
+                case AnomalyEffect.Seepage: return Seepage(map, cells, magnitude);
+                case AnomalyEffect.Rearrangement: return Rearrange(map, cells, magnitude);
+                default: return true;
+            }
+        }
+
+        /// <summary>
         /// Switches off every light in the space.
         ///
         /// Uses vanilla's own flick switch, which means **the countermeasure is vanilla too**:
         /// a colonist walks over and turns them back on. That is a far better answer than a
         /// bespoke darkness mechanic, because the player already knows how to do it.
         /// </summary>
-        private static bool LightsFail(Map map, CoordinateRecord coordinate)
+        private static bool LightsFail(Map map, List<IntVec3> cells)
         {
             bool any = false;
-            foreach (Thing thing in InCoordinate(map, coordinate))
+            foreach (Thing thing in ThingsIn(map, cells))
             {
                 CompFlickable flick = thing.TryGetComp<CompFlickable>();
                 if (flick == null || !flick.SwitchIsOn) { continue; }
@@ -140,11 +147,11 @@ namespace RimroomsAsyncIndustries.Threats
             return any;
         }
 
-        private static bool ColdSnap(Map map, CoordinateRecord coordinate, int degrees)
+        private static bool ColdSnap(Map map, List<IntVec3> cells, int degrees)
         {
             bool any = false;
             var seen = new HashSet<Room>();
-            foreach (IntVec3 cell in RoomCells(map, coordinate))
+            foreach (IntVec3 cell in cells)
             {
                 Room room = cell.GetRoom(map);
                 if (room == null || room.UsesOutdoorTemperature || !seen.Add(room)) { continue; }
@@ -154,12 +161,12 @@ namespace RimroomsAsyncIndustries.Threats
             return any;
         }
 
-        private static bool Seepage(Map map, CoordinateRecord coordinate, int amount)
+        private static bool Seepage(Map map, List<IntVec3> cells, int amount)
         {
             ThingDef filth = ThingDefOf.Filth_Dirt;
             if (filth == null) { return false; }
             int placed = 0;
-            foreach (IntVec3 cell in RoomCells(map, coordinate))
+            foreach (IntVec3 cell in cells)
             {
                 if (placed >= Math.Max(1, amount)) { break; }
                 if (!cell.Standable(map)) { continue; }
@@ -176,9 +183,8 @@ namespace RimroomsAsyncIndustries.Threats
         /// nothing is destroyed either, so the worst case is a player hunting for something that
         /// is definitely still here.
         /// </summary>
-        private static bool Rearrange(Map map, CoordinateRecord coordinate, int count)
+        private static bool Rearrange(Map map, List<IntVec3> cells, int count)
         {
-            var cells = RoomCells(map, coordinate).ToList();
             if (cells.Count == 0) { return false; }
 
             var loose = new List<Thing>();
@@ -244,10 +250,10 @@ namespace RimroomsAsyncIndustries.Threats
             }
         }
 
-        private static IEnumerable<Thing> InCoordinate(Map map, CoordinateRecord coordinate)
+        private static IEnumerable<Thing> ThingsIn(Map map, List<IntVec3> cells)
         {
             var seen = new HashSet<Thing>();
-            foreach (IntVec3 cell in RoomCells(map, coordinate))
+            foreach (IntVec3 cell in cells)
             {
                 List<Thing> things = cell.GetThingList(map);
                 for (int index = 0; index < things.Count; index++)

@@ -49,7 +49,7 @@ LAW #0 reminder: every task description preserves the user's verbatim words.
 **Owner decision at that fork: "Both - guaranteed floor, storyteller flavour".**
 
 - [x] **The clean-up team fires from our own component, deterministically** - SHIPPED in 0.11.7-dev. Record: `docs/implementation/FACILITY_RELIEF_IMPLEMENTATION.md`. It also wired **five `PawnKindDef`s that were authored and read by nothing**. - the guaranteed floor. *"so that facilities never die"* is a promise, and a promise must never be at the mercy of a dice roll.
-- [ ] **Lighter world-facing events register as `IncidentDef`s with our own `IncidentWorker`s**, so the player's chosen storyteller paces them and the mod joins the game's event economy instead of running beside it. This is also the correct home for arc 6, *"respond to openings in settlements"*.
+- [x] **Lighter world-facing events register as `IncidentDef`s with our own `IncidentWorker`s** - SHIPPED in 0.11.8-dev, the mod’s first two. Record: `docs/implementation/INCIDENT_SURFACE_IMPLEMENTATION.md`. **No `StorytellerDef`, now asserted as a never.**, so the player's chosen storyteller paces them and the mod joins the game's event economy instead of running beside it. This is also the correct home for arc 6, *"respond to openings in settlements"*.
 
 ### Research tier 2 - what the sweep changed before a line was written
 

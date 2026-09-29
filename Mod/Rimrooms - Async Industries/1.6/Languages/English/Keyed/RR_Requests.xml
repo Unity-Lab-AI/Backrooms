@@ -59,6 +59,8 @@
 
   <!-- Contact with the parent corporation. -->
 
+  <RR_Event_ThresholdBleed>The space came out the near side. Whatever it did, it did in the room a gate stands in.</RR_Event_ThresholdBleed>
+  <RR_Event_CorporationDelivery>The parent corporation sent supplies nobody asked for. It protects what it has money in.</RR_Event_CorporationDelivery>
   <RR_Event_FacilityRelief>A corporation clean-up team cleared the site, requisitioned a replacement crew and left supplies. The branch is open again.</RR_Event_FacilityRelief>
   <RR_Relief_Title>Clean-up team</RR_Relief_Title>
   <RR_Relief_Body>The parent corporation does not write off a branch it has on its books.

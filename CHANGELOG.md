@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.11.8-dev - 2026-09-29 - the storyteller finally knows this mod exists
+
+- **Your storyteller can now pace this mod's events.** Until now every one of them fired on the mod's own schedule, so Cassandra, Randy and Phoebe had never heard of it.
+- **Threshold bleed** - the space occasionally comes out the near side. The lights in the room a gate stands in go out, or the room drops several degrees, or dirt appears that was not there. Only in the gate's room, and only if you have actually been through a gate.
+- **Unsolicited delivery** - the parent corporation sends a crate nobody ordered. It is not kindness; it has money in you. Only once you are in contact with it.
+- **Neither can hurt anybody, destroy anything or block a route**, and each has an answer you already know: flick the switch, wear a coat, sweep the floor.
+- **There is no custom storyteller and there never will be.** You would have to give up the one you chose, and there is nothing in one worth taking.
+- **The clean-up team is not one of these.** It is a promise, and a promise does not get rolled for.
+
+Full record: [the storyteller finally knows this mod exists](docs/implementation/INCIDENT_SURFACE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.11.7-dev - 2026-09-29 - the corporation does not write off a branch
 
 - **A clean-up team now arrives if your facility is wiped out.** Once you are in contact with the parent corporation, losing every last member of staff is no longer the end of the run.
