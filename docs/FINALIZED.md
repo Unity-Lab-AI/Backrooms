@@ -2828,3 +2828,42 @@ Defs retired: 2 (the beacon and its recipe). C# references removed: 6. Keyed str
 **Owner forks asked and answered rather than guessed: 5** in one exchange, each grounded in enumerated Core content rather than in what seemed likely.
 **Field gear retired because its job was taken over rather than replaced: 1.**
 Still open and named in `TODO.md`: the survey tag as a glow pod with marker types; the evidence case as a designated archive; the recorder merged into the book; then the remaining two scenarios.
+
+---
+
+## 0.10.0-dev - 2026-09-29 - the documents say what is true
+
+### Owner direction, verbatim
+
+> *"we need to keep using the mod register and all the prep docs while updating old out of date docs, readmes, how tos and other docs making sure they conform to the wanted stake state"*
+
+### What was wrong
+
+`README.md` opened with **"Current development version: 0.4.1-dev"** against a build at 0.9.9-dev - twenty-five checkpoints stale, on the front page. `PUBLISHING.md`, the procedure followed at every checkpoint, named `feature/preproduction-handoff` as the working branch when the real one has been `feature/connected-colony-portals` throughout; that one is not cosmetic, because it is the document an agent follows to push. **28 genuine problems across 10 living documents.**
+
+### Living documents and dated records are different things
+
+A living document must describe the mod as it is now. A dated record describes a moment that has passed, and one saying *"all four checkers pass"* **was telling the truth on the day it was written** - rewriting it would falsify the evidence trail this project's method rests on. Dated records are never checked; 48 living documents are checked strictly.
+
+### Precision mattered more than coverage
+
+The first branch rule matched any `feature/...` string and produced 26 false positives: file paths, prose. The `DEFERRED.md` rule flagged `NOW.md` for the sentence that **forbids** deferring. **A checker that cries wolf is one people learn to scroll past**, which is worse than not having it. Branch names now come from an explicit list; a retired def may be named freely while explaining that it is retired; `DEFERRED.md` fails only if a document never says anywhere that it is closed. 54 raw hits became 28 real ones.
+
+### Proved in both directions
+
+Each fault planted separately, so a rule that does nothing cannot hide behind one that works: stale version CAUGHT, retired branch CAUGHT, retired def CAUGHT, wrong checker count CAUGHT. Then all four planted **in a dated record** and correctly not flagged - because an exemption that leaked would quietly disable the whole check.
+
+### It caught itself
+
+Adding this checker made six, and its own count said five, so it failed `NOW.md` on the checkpoint ritual. Its message also hardcoded the word "four" instead of quoting what it found, which it now does.
+
+### Build evidence
+
+0.10.0-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **158** C# source files, **79** approved package files. Assembly SHA-256 `1C54905192F5090A7C2F4F0D81321F1504919EB7E228CB9BB892A87265FADA73`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. **All six checkers pass.** **No new def, asset, patch operation or work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Checkers: 5 -> 6. Living documents corrected: 10. Stale claims fixed: 28.
+**False positives designed out before shipping: 26** - the first rule would have made the check noise.
+**Rules proved by planting their own fault: 4, plus the exemption proved by planting four faults it must ignore.**
+Still open and named in `TODO.md`: unified terminology (gate / connection / threshold, decided this checkpoint); the remaining field-gear replacements; the last two scenarios.

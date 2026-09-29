@@ -124,7 +124,7 @@ Eleven corrections across ten live docs, plus twelve in `ROADMAP.md`:
 - `CAMPAIGN_ECONOMY_MODEL.md`, `CAMPAIGN_ROSTER_FREEZE.md`, `FIRST_PLAYABLE_CONTRACT.md`, `FIRST_SLICE_CONTENT_INVENTORY.md` and `SCENARIOS.md` all still asserted the 20 in-game-minute opening as current, two of them with the superseded 2-hour/1-day/7-day/30-day ladder.
 - `ROADMAP.md` still defined `[!]` in its status legend and used it in eight places, still said the owner's launch "unblocks" things, and still posed the two inside-start questions as pending with the withdrawn fixed-reveal assumption.
 - `SCENARIO_SETUP_AND_PORTAL_NETWORK.md` contradicted itself as described above.
-- `DEFERRED.md` had two residual owner-blocked phrasings.
+- `DEFERRED.md` had two residual owner-blocked phrasings. That file has since been **closed** entirely: zero open rows, no row may be added, and everything it held was migrated to `TODO.md`.
 
 Superseded values were **kept and marked superseded** rather than deleted, per the never-delete-information rule, so the trail stays readable.
 

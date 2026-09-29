@@ -24,11 +24,11 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.9.9-dev** (this commit) |
+| Published | **0.10.0-dev** (this commit) |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
 | Build | **158 C# files, 79 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `0E9BEEF6DA1A781EB58E8974340522DF4010EA00004F38F292880677F6FD7F600`, reproduced by two clean recompiles |
-| Checkers | **five**, all passing |
+| Assembly | SHA-256 `1C54905192F5090A7C2F4F0D81321F1504919EB7E228CB9BB892A87265FADA73`, reproduced by two clean recompiles |
+| Checkers | **six**, all passing |
 | Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
 | Game launches | **none, ever** |
 
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.9.9
+## What shipped this session, 0.7.1 → 0.10.0
 
 | Version | What |
 |---|---|
@@ -72,6 +72,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.9.7 | **Some places are bigger than a room** — facilities as contiguous runs of rooms |
 | 0.9.8 | **One tech tree, different starting points** — the tree is derived, not declared per scenario |
 | 0.9.9 | **The beacon had nothing left to do** — first field-gear retirement, four replacements decided |
+| 0.10.0 | **The documents say what is true** — sixth checker, 28 stale claims across 10 living docs |
 
 ---
 
@@ -162,6 +163,9 @@ Each is a real defect or a pinned fact.
 63. **The field-kit replacements are decided.** Survey tag → Core `GlowPod`; return beacon → **dropped**, its job taken over by the gate's address book; evidence case → a **designated headquarters `Shelf`** as the archive; recorder → **the book is the recorder**. Asked at the fork, grounded in enumerated Core content.
 64. **`CompGlower.GlowColor` has a public setter**, backed by a saved per-instance `glowColorOverride`, and `colorPickerEnabled` on the props turns on RimWorld's own colour picker. Settable glow colour needs no new UI.
 65. **Glow pods are never capped.** Owner direction: a 300×300 instance can have hundreds of rooms. Colour is **semantic** — mod-defined marker types, not decoration.
+66. **Living documents and dated records are different things.** A readme must describe the mod now; an implementation record describes a moment that has passed and **must never be rewritten** — one stating the checker count of its day was true when written. `check-doc-conformance.py` exempts dated records by path, and that exemption is proved by planting faults it must ignore.
+67. **A checker that cries wolf is worse than no checker.** The first branch rule produced 26 false positives on file paths and prose. Precision before coverage, every time.
+68. **The unified vocabulary is gate / connection / threshold.** The **gate** is the machine in your wall; the **connection** is the live link it holds open; the **threshold** is the doorway on the far side. Never "portal", "the machine" or "the gizmo" in player-facing text.
 
 ---
 
@@ -202,7 +206,7 @@ Two things follow:
 3. `CHANGELOG.md` in plain player-facing language.
 4. Implementation record under `docs/implementation/`.
 5. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
-6. **All five checkers**: `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `research/audit-gate0.py`.
+6. **All six checkers**: `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-doc-conformance.py`, `research/audit-gate0.py`.
 7. **Determinism**: delete `obj/` and `bin/`, rebuild **twice**, hashes must match. An incremental rebuild proves nothing.
 8. Commit once atomically; cascade to `Prep`, `Develop`, `Main` on **both** remotes; **read back all eight refs**.
 

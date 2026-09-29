@@ -195,7 +195,7 @@ The recorded decisions are in [GATE_0_DECISIONS.md](GATE_0_DECISIONS.md). They a
 
 ## Phase 1 — repository, build, and content foundations
 
-- [x] Continue in the existing Git repository and use the authorized feature/preproduction-handoff → Prep → Develop → Main cascade separately on both remotes; ignore generated assemblies/logs/local references and add a contribution guide/code style.
+- [x] Continue in the existing Git repository and use the authorized feature/connected-colony-portals → Prep → Develop → Main cascade separately on both remotes; ignore generated assemblies/logs/local references and add a contribution guide/code style.
 - [x] Capture installed RimWorld managed assemblies and required reference DLL versions locally; never commit proprietary game or DLC assemblies.
 - [x] Create a reproducible C# solution/project targeting the RimWorld 1.6 runtime/compiler constraints; record reference paths, build configurations, output path, and warning policy.
 - [ ] Define RimSort-managed test profiles: preserve the 295-entry product target (the existing 294 plus Rimrooms), then record RimBridgeServer as a separate QA overlay (normally 296 loaded entries). RimSort owns sorting, saving mod lists, and every launch; the owner starts sessions through RimSort. Do not add direct RimWorld or GABS launch profiles or remove target mods to offset the bridge.

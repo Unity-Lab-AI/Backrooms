@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.10.0-dev - 2026-09-29 - the documents say what is true
+
+- **The readme said this was version 0.4.1-dev.** It is 0.10.0-dev. That and twenty-seven other stale claims across ten documents are corrected.
+- The publishing procedure named a branch that has not been the working branch for the whole of this development run.
+- Documents no longer describe retired objects as things you can build, or point at a deferral list that was closed.
+- A sixth check now refuses to ship documentation that describes a mod this is not. **Dated records are deliberately exempt**: an old build record saying "all four checkers pass" was true when it was written, and rewriting history would be worse than leaving it.
+
+Full record: [the documents say what is true](docs/implementation/DOC_CONFORMANCE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.9.9-dev - 2026-09-29 - the beacon had nothing left to do
 
 - **The return beacon is gone.** Your gate remembers every address it has dialled and the way back is saved with the space itself, so carrying a beacon to find your own door stopped being a job some time ago.

@@ -122,7 +122,7 @@ Resolve routine implementation choices from the accepted contracts. Ask a compac
 
 **Publication cadence (owner):** publish completed, meaningful milestones, not each edit or progress note. Batch implementation, linked documentation, TODO updates and available evidence into one reviewed checkpoint; then run each remote cascade once. Each publication includes all current project changes; do not leave a separate unpublished source, documentation or evidence batch. Finish and integrate active agent work before the checkpoint. Verify remote refs in tool output without creating a new local-only receipt after publishing. Urgent corrective publication is justified only for a concrete defect in an already published milestone.
 
-When publishing authorized work, preserve the existing `feature/preproduction-handoff` → `Prep` → `Develop` → `Main` cascade separately on `forgejo` and `github`. Inspect remote state, use ordinary fast-forward/merge operations as appropriate, and verify every resulting remote ref. Never force-push to manufacture agreement. A signed-in Forgejo browser and Git transport authentication are separate paths; inspect the actual Git result before reporting success.
+When publishing authorized work, preserve the existing `feature/connected-colony-portals` → `Prep` → `Develop` → `Main` cascade separately on `forgejo` and `github`. Inspect remote state, use ordinary fast-forward/merge operations as appropriate, and verify every resulting remote ref. Never force-push to manufacture agreement. A signed-in Forgejo browser and Git transport authentication are separate paths; inspect the actual Git result before reporting success.
 
 ## Preparation audit and evidence limits
 

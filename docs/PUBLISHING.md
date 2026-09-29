@@ -11,7 +11,7 @@ This is the procedure that works. It was written after doing it, not before. Fol
 | Host CLI | None. Do not point `gh` at it. Verify with `git ls-remote`. | `gh` works for visibility checks (`gh repo view Unity-Lab-AI/Backrooms --json visibility,owner`) and nothing else in this procedure. |
 | Push-to-create | **Disabled server-side.** The repo must already exist. It does. | n/a |
 | Visibility | Lab-owned host on the `.claude/` IP-boundary allowlist | PRIVATE, owner `Unity-Lab-AI` (verified 2026-09-28) |
-| Branches | `feature/preproduction-handoff`, `Prep`, `Develop`, `Main` — **capitalised** | identical set, identical casing |
+| Branches | `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` — **capitalised** | identical set, identical casing |
 | Remote named `origin` | **does not exist** | **does not exist** |
 
 Consequences:
@@ -25,7 +25,7 @@ Consequences:
 
 Publication happens only at a substantive milestone (`AGENTS.md` publication cadence). Every publication carries **all** current project changes; no separate unpublished batch.
 
-1. Work is on `feature/preproduction-handoff` (or another `feature/*`). Never commit on `Prep`/`Develop`/`Main`.
+1. Work is on `feature/connected-colony-portals` (or another `feature/*`). Never commit on `Prep`/`Develop`/`Main`.
 2. `./tools/build.ps1` ran clean if any source/XML changed; evidence folder + build record written; `About.xml` + `CHANGELOG.md` bumped if the version changed.
 3. Ledger is current: `docs/TODO.md`, `docs/FINALIZED.md` (verbatim entries), master TODO bounded ticks, `docs/ARCHITECTURE.md` if structure changed, `README.md` if anything player-facing changed.
 4. `git status` shows nothing you do not intend to ship. Machine-local `.claude/` state files are gitignored; `.local/`, `artifacts/`, DLLs are gitignored.
@@ -42,8 +42,8 @@ git commit -m "<one-line summary of the milestone>" -m "<what changed, what evid
 ## 3. Push the feature branch to BOTH remotes
 
 ```bash
-git push forgejo feature/preproduction-handoff
-git push github  feature/preproduction-handoff
+git push forgejo feature/connected-colony-portals
+git push github  feature/connected-colony-portals
 ```
 
 Read the output. `ssh: connect` / `Permission denied (publickey)` on Forgejo means the SSH key is not loaded or not registered; fix that, do not switch transports. `remote: Repository not found` on GitHub means `gh` is logged into the wrong account.
@@ -62,13 +62,13 @@ git ls-remote --heads github
 
 ```bash
 # Forgejo
-git push forgejo feature/preproduction-handoff:Prep
-git push forgejo feature/preproduction-handoff:Develop
-git push forgejo feature/preproduction-handoff:Main
+git push forgejo feature/connected-colony-portals:Prep
+git push forgejo feature/connected-colony-portals:Develop
+git push forgejo feature/connected-colony-portals:Main
 # GitHub
-git push github  feature/preproduction-handoff:Prep
-git push github  feature/preproduction-handoff:Develop
-git push github  feature/preproduction-handoff:Main
+git push github  feature/connected-colony-portals:Prep
+git push github  feature/connected-colony-portals:Develop
+git push github  feature/connected-colony-portals:Main
 ```
 
 **Case B — a remote integration branch has commits your feature branch does not have** (someone pushed there directly, or the two remotes diverged). Do NOT force. Merge the normal way, one branch at a time, and keep the feature branch as the thing you push:
@@ -76,8 +76,8 @@ git push github  feature/preproduction-handoff:Main
 ```bash
 git fetch forgejo Prep
 git merge --no-ff forgejo/Prep          # resolve conflicts, commit
-git push forgejo feature/preproduction-handoff
-git push forgejo feature/preproduction-handoff:Prep
+git push forgejo feature/connected-colony-portals
+git push forgejo feature/connected-colony-portals:Prep
 # then Develop, then Main, same pattern; then repeat for github
 ```
 
@@ -105,10 +105,10 @@ All eight lines must show the same commit hash as local `HEAD` (Case A) or the e
 
 ```bash
 git status --short && git log -1 --oneline                 # sanity
-git push forgejo feature/preproduction-handoff
-git push github  feature/preproduction-handoff
+git push forgejo feature/connected-colony-portals
+git push github  feature/connected-colony-portals
 for r in forgejo github; do
-  for b in Prep Develop Main; do git push $r feature/preproduction-handoff:$b; done
+  for b in Prep Develop Main; do git push $r feature/connected-colony-portals:$b; done
 done
 git ls-remote --heads forgejo; git ls-remote --heads github; git rev-parse HEAD
 ```

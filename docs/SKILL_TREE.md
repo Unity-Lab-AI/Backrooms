@@ -54,7 +54,7 @@ Canonical detail: [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md), [`FEATURE_TRACEABI
 - Discovery of further natural gates in play: a colonist surveys a doorway deeper in and records a permanently open way onward, deterministic per doorway position under the coordinate's own saved seed so a revisit never rerolls it, capped at two per coordinate — **Build / Runtime-pending** (0.5.1-dev)
 - Ordinary crossing job, per-address crossing orders, laboratory open/close wiring, emergency-return route, unresolved-crossing reconcile surface — **Build / Runtime-pending** (0.4.2-dev)
 - Gate traversal policy: inhabitants and monstrosities never cross on their own, an open gate is never an objective/lure/spawn target/raid route/attack trigger, and anything else rides only in a carrier's hands (downed, dead or imprisoned passengers included) — **Build / Runtime-pending** (0.4.3-dev)
-- Gradual, saved, bounded escalation of what a space presents (quiet start, saved causes only, caps per opening and per coordinate, required quiet stretches, no summing across gates) — **Design** (owned by resume step 5, spec in `DEFERRED.md`)
+- Gradual, saved, bounded escalation of what a space presents (quiet start, saved causes only, caps per opening and per coordinate, required quiet stretches, no summing across gates) — **Built** (0.8.0-dev, the escalation ladder; its specification moved to `TODO.md` when `DEFERRED.md` was closed)
 - Saved cross-map work intents, bounded expiring planning leases and definitive native destination revalidation — **Build / Runtime-pending** (0.5.0-dev)
 - Cross-gate storage hauling in both directions: real pickup under native reservation, real carry under native mass and stack limits, native placement into storage the destination's own settings accept — **Build / Runtime-pending** (0.5.0-dev). Cell destinations only; container and provider destinations are **Design**.
 - Cross-gate rescue of our own downed people to a bed, and cross-gate recovery of remains to a grave or storage — **Build / Runtime-pending** (0.5.2-dev). Capture is a player order by design, not automatic work.
@@ -277,7 +277,7 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 | Audited zero-hard-dependency position | Compatibility | Foundational | **Build / Verified** (0.5.3-dev) |
 | Laboratory gate duration ladder to indefinite | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.4-dev). Top of the ladder needs M3's research tree. |
 | Player-named company, renameable in play | Company | Foundational | **Build / Runtime-pending** (0.5.4-dev) |
-| Gradual bounded escalation of far-side pressure | Generation | Expert | **Design** (step 5, spec in `DEFERRED.md`) |
+| Gradual bounded escalation of far-side pressure | Generation | Expert | **Built** (0.8.0-dev; spec moved to `TODO.md`, `DEFERRED.md` is closed) |
 | Existing-content replacement of legacy gate/gear/fixtures/terrain/threat/PawnKinds | Company/Gate/Generation | Advanced | Design (M2) |
 | Keyed text for portal failure keys | Interface | Beginner | **Build** (`RR_Portals.xml`, 0.4.2-dev) |
 

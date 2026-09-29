@@ -59,7 +59,7 @@ These are genuinely the owner's to answer, and none of them blocks further build
 
 ## What this changes in the plan
 
-- The faction rows in [`DEFERRED.md`](DEFERRED.md) now carry rules 1–4 as authoring constraints, not just as content-policy notes.
+- The faction rows that were in [`DEFERRED.md`](DEFERRED.md) carry rules 1–4 as authoring constraints, not just as content-policy notes. **`DEFERRED.md` is CLOSED** as of 0.7.x: it holds zero open rows, nothing is ever deferred, and no row may be added to it. Build it, queue it in `TODO.md`, or ask. Those rows were migrated to [`TODO.md`](TODO.md) and the constraints travelled with them.
 - M4's DLC layers must use `MayRequire` and must be verified with each DLC absent, which the existing DLC matrix rows already require.
 - M6's release rows gain the three owner questions above and a final pass over this table before any Workshop upload.
 
