@@ -22,6 +22,7 @@ Six checkers run without the game and gate every checkpoint: package integrity, 
 - [Build and staging instructions](docs/BUILDING.md) — pinned local references, locked restore, copyable package, safe updates and RimSort discovery.
 - [First owner-launched session](docs/implementation/PHASE_2_OWNER_LAUNCH.md) — staged package identities, separate QA bridge and RimSort launch steps.
 - [Current build evidence and next work](docs/implementation/PHASE_3_BUILD_RECORD.md) — company operations, content reuse and menu implementation; [earlier expedition slice](docs/implementation/PHASE_2_BUILD_RECORD.md) and [historical foundation](docs/implementation/PHASE_1_BUILD_RECORD.md).
+- [Public release plan](docs/PUBLIC_RELEASE_PLAN.md) — the documentation site, the Steam Workshop page and the collection, and the order they have to happen in.
 - [Contributor guide](CONTRIBUTING.md), [changelog](CHANGELOG.md), [credits](docs/CREDITS.md), [save policy](docs/SAVE_MIGRATION_POLICY.md), and [bug report form](.github/ISSUE_TEMPLATE/bug_report.yml).
 
 Build a clone before copying `Mod/Rimrooms - Async Industries/`; generated DLLs are not committed. This development package needs Core only. Future co-op requires the documented Harmony/RWT stack; no optional integration is yet cleared. The owner alone activates, sorts and launches through RimSort. Preserve the full 295-entry product target and count the QA bridge separately.
