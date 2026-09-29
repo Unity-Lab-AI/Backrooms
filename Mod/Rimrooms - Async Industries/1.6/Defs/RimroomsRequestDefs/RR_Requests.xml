@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
   <!-- Corporation requests: the tutorial line from docs/CAMPAIGN_CHART.md #4.2, in order.
@@ -233,6 +233,135 @@
         <labelKey>RR_Route_CommitToTheLadderLabel</labelKey>
         <descriptionKey>RR_Route_CommitToTheLadderDesc</descriptionKey>
         <projectDefName>RR_GateSustainedAperture</projectDefName>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <!-- ===================================================================================
+       ARC 4, GENERATED. "Clients request surveys, samples, instruments, rescue, secure access"
+       one family per named item.
+
+       These are not tutorial requests. They carry no tutorialOrder and no prerequisites: the
+       eligibility filter decides whether the branch can take two routes of two different kinds
+       from the pool below, and only then is the family offered. A family may be asked for more
+       than once, and progress on a generated request is counted from the moment it appeared.
+       =================================================================================== -->
+
+  <!-- surveys -->
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_ClientSurvey</defName>
+    <label>a client wants a coordinate written up</label>
+    <description>Somebody is paying for paperwork about a place they will never go. They want the layout, the way through it and what it does to a compass, in a form their own people can read.\n\nThe company does not ask how you know. A filed record will do, and so will somebody who was there.</description>
+    <arc>4</arc>
+    <paymentUsd>6000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Document</kind>
+        <labelKey>RR_Route_ClientSurveyFileLabel</labelKey>
+        <descriptionKey>RR_Route_ClientSurveyFileDesc</descriptionKey>
+        <logKind>route</logKind>
+      </li>
+      <li>
+        <kind>Testify</kind>
+        <labelKey>RR_Route_ClientSurveySpeakLabel</labelKey>
+        <descriptionKey>RR_Route_ClientSurveySpeakDesc</descriptionKey>
+        <logKind>route</logKind>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <!-- samples -->
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_ClientSamples</defName>
+    <label>a client wants material by the crate</label>
+    <description>A buyer wants bulk metal and has been told it came out of somewhere unusual. They are not going to check.\n\nRecover it, or make the number up out of stock and keep the difference. The company genuinely does not mind which.</description>
+    <arc>4</arc>
+    <paymentUsd>9000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Deliver</kind>
+        <labelKey>RR_Route_ClientSamplesRecoverLabel</labelKey>
+        <descriptionKey>RR_Route_ClientSamplesRecoverDesc</descriptionKey>
+        <thingDefName>Steel</thingDefName>
+        <count>250</count>
+      </li>
+      <li>
+        <kind>Purchase</kind>
+        <labelKey>RR_Route_ClientSamplesBuyLabel</labelKey>
+        <descriptionKey>RR_Route_ClientSamplesBuyDesc</descriptionKey>
+        <thingDefName>Steel</thingDefName>
+        <count>250</count>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <!-- instruments -->
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_ClientInstruments</defName>
+    <label>a client wants instruments left running</label>
+    <description>A research outfit wants readings taken somewhere nobody sensible would stand for long. They have sent no equipment and no people.\n\nPut markers down and let them run, or show the company a method it can sell as one.</description>
+    <arc>4</arc>
+    <paymentUsd>11000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Deliver</kind>
+        <labelKey>RR_Route_ClientInstrumentsPlaceLabel</labelKey>
+        <descriptionKey>RR_Route_ClientInstrumentsPlaceDesc</descriptionKey>
+        <thingDefName>GlowPod</thingDefName>
+        <count>6</count>
+      </li>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_ClientInstrumentsMethodLabel</labelKey>
+        <descriptionKey>RR_Route_ClientInstrumentsMethodDesc</descriptionKey>
+        <projectDefName>RR_Measurement_SecondReading</projectDefName>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <!-- rescue -->
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_ClientRescue</defName>
+    <label>a client has lost somebody down there</label>
+    <description>Another operation sent people through a door they did not understand and the people did not come back. Their employer is paying this branch because it has stopped believing its own staff.\n\nThe company will take a trained capability or a first-hand account. It would prefer the capability, because it can sell that again.</description>
+    <arc>4</arc>
+    <paymentUsd>15000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_ClientRescueTrainingLabel</labelKey>
+        <descriptionKey>RR_Route_ClientRescueTrainingDesc</descriptionKey>
+        <projectDefName>RR_Fieldcraft_RescueTraining</projectDefName>
+      </li>
+      <li>
+        <kind>Testify</kind>
+        <labelKey>RR_Route_ClientRescueAccountLabel</labelKey>
+        <descriptionKey>RR_Route_ClientRescueAccountDesc</descriptionKey>
+        <logKind>entity</logKind>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <!-- secure access -->
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_ClientSecureAccess</defName>
+    <label>a client wants a door they can rely on</label>
+    <description>A paying customer wants to be able to go in and come out on a schedule of their own choosing, and has made it clear they consider that an ordinary thing to ask for.\n\nMake the connection hold, or hand over enough parts that somebody else can.</description>
+    <arc>4</arc>
+    <paymentUsd>18000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_ClientAccessStandingLabel</labelKey>
+        <descriptionKey>RR_Route_ClientAccessStandingDesc</descriptionKey>
+        <projectDefName>RR_GateStandingConnection</projectDefName>
+      </li>
+      <li>
+        <kind>Purchase</kind>
+        <labelKey>RR_Route_ClientAccessPartsLabel</labelKey>
+        <descriptionKey>RR_Route_ClientAccessPartsDesc</descriptionKey>
+        <thingDefName>ComponentIndustrial</thingDefName>
+        <count>40</count>
       </li>
     </successRoutes>
   </RimroomsAsyncIndustries.Company.RimroomsRequestDef>

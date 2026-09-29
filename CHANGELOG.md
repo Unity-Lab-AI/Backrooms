@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.12-dev - 2026-09-29 - the company stops naming things
+
+- **Work keeps coming after the tutorial.** Once you have answered the seventh request, clients start asking: a coordinate written up, material by the crate, instruments left running, somebody recovered, a door they can rely on. Five kinds of job, straight from the campaign plan's own list.
+- **You are never offered a job you cannot do.** A request only appears if your branch has at least two genuinely different ways to finish it. What it then shows you is still every route, including ones you have not earned yet.
+- **Progress on a generated job is counted from when it appeared.** "Deliver two hundred and fifty steel" means two hundred and fifty more, not "happen to have some in a stockpile".
+- **Still no clock anywhere.** The next job turns up when you have finished or turned down the last one, and the company works through the range of what it wants rather than repeating the cheapest thing.
+- **A job you already finished cannot be offered back to you as free money.** A request whose only route is research you have already completed is never put on the table.
+
+Full record: [the company stops naming things](docs/implementation/REQUEST_GENERATION_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.11-dev - 2026-09-29 - the corporation starts asking
 
 - **The company now actually asks you for things.** Six requests in order, each teaching one part of the job, and then a seventh where it stops naming things and asks where you intend to take this.

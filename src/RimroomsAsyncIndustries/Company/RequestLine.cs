@@ -35,6 +35,37 @@ namespace RimroomsAsyncIndustries.Company
     }
 
     /// <summary>
+    /// Where one route stood when the request was put on the table.
+    ///
+    /// **A job is measured from when you took it.** Without this, every check in this mod is
+    /// absolute state — *"does the branch hold twenty meals"*, *"has it filed a route log"* — and
+    /// absolute state is permanently true once true. That is right for a tutorial request asked
+    /// **once**: if the branch already has a battery, request 1 completing immediately is correct,
+    /// because the lesson is already learned. It is wrong for anything **repeatable**, where it
+    /// would pay out the instant the player accepted.
+    ///
+    /// So a generated request records where each of its routes started, and asks for that much
+    /// **more**. A tutorial request records zero and keeps asking absolutely.
+    ///
+    /// Keyed by label key rather than by list index, so a mod-list change that reorders or
+    /// removes a route cannot silently shift every baseline onto the wrong one.
+    /// </summary>
+    public sealed class RouteBaseline : IExposable
+    {
+        internal string labelKey;
+        internal int value;
+
+        public string LabelKey { get { return labelKey; } }
+        public int Value { get { return value; } }
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref labelKey, "rr_labelKey");
+            Scribe_Values.Look(ref value, "rr_value", 0);
+        }
+    }
+
+    /// <summary>
     /// What this branch did about one corporation request.
     ///
     /// The def is the offer; this is the history. Keeping them apart is what lets the seven
@@ -42,6 +73,27 @@ namespace RimroomsAsyncIndustries.Company
     /// </summary>
     public sealed class RequestRecord : IExposable
     {
+        /// <summary>
+        /// Where each route stood when this was offered. Empty means measure absolutely.
+        ///
+        /// **Saved**, unlike the satisfied-route list below, because it is not derivable from the
+        /// world: once the branch has moved past the baseline there is nothing left to read it
+        /// back from. Losing it would turn a half-finished job into a finished one.
+        /// </summary>
+        internal List<RouteBaseline> routeBaselines = new List<RouteBaseline>();
+
+        /// <summary>Where one route started, or zero when this request measures absolutely.</summary>
+        public int BaselineFor(string labelKey)
+        {
+            if (routeBaselines == null || string.IsNullOrEmpty(labelKey)) { return 0; }
+            for (int index = 0; index < routeBaselines.Count; index++)
+            {
+                RouteBaseline baseline = routeBaselines[index];
+                if (baseline != null && baseline.labelKey == labelKey) { return baseline.value; }
+            }
+            return 0;
+        }
+
         internal string id;
         internal string requestDefName;
         internal RequestStatus status = RequestStatus.Offered;
@@ -120,8 +172,11 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref satisfiedRouteLabelKey, "rr_satisfiedRouteLabelKey");
             Scribe_Values.Look(ref bonusPaid, "rr_bonusPaid", false);
             Scribe_Collections.Look(ref staffAtAcceptance, "rr_staffAtAcceptance", LookMode.Value);
+            Scribe_Collections.Look(ref routeBaselines, "rr_routeBaselines", LookMode.Deep);
             if (Scribe.mode == LoadSaveMode.PostLoadInit && staffAtAcceptance == null)
             { staffAtAcceptance = new List<string>(); }
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && routeBaselines == null)
+            { routeBaselines = new List<RouteBaseline>(); }
         }
     }
 
@@ -181,11 +236,17 @@ namespace RimroomsAsyncIndustries.Company
 
         public IReadOnlyList<RequestRecord> Requests { get { return requests; } }
 
-        /// <summary>This branch's history with one offer, or null if it has never been offered.</summary>
+        /// <summary>
+        /// This branch's **most recent** history with one offer, or null if never offered.
+        ///
+        /// Most recent rather than first, because a **generated** family may be asked for more
+        /// than once. A tutorial request is asked exactly once, so for those the distinction does
+        /// not arise — and `proof-request-generation.py` asserts it cannot.
+        /// </summary>
         public RequestRecord RequestFor(string defName)
         {
             if (string.IsNullOrEmpty(defName)) { return null; }
-            for (int index = 0; index < requests.Count; index++)
+            for (int index = requests.Count - 1; index >= 0; index--)
             {
                 RequestRecord record = requests[index];
                 if (record != null && record.requestDefName == defName) { return record; }
@@ -230,6 +291,10 @@ namespace RimroomsAsyncIndustries.Company
             if (!CanOperate) { return; }
             CompleteSatisfiedRequests();
             OfferNextTutorialRequest();
+            // The generated half. Refuses until the branch is past the hinge, so before then this
+            // is a bool and a list walk. Both offer routines refuse while a request is open, so at
+            // most one of them ever puts something on the table.
+            OfferNextGeneratedRequest();
         }
 
         // ------------------------------------------------------------------ offering
@@ -254,21 +319,55 @@ namespace RimroomsAsyncIndustries.Company
                 // resolved stops the whole line rather than being skipped over.
                 if (!PrerequisitesResolved(definition)) { return; }
 
-                var record = new RequestRecord
-                {
-                    id = branchId + ":request:" + definition.defName,
-                    requestDefName = definition.defName,
-                    status = RequestStatus.Offered,
-                    offeredTick = Find.TickManager.TicksGame,
-                };
-                requests.Add(record);
-                RecordEvent("RR_Event_RequestOffered", record.id, definition.LabelCap);
-                Find.LetterStack.ReceiveLetter(
-                    "RR_Letter_RequestOfferedTitle".Translate(definition.LabelCap),
-                    "RR_Letter_RequestOfferedBody".Translate(definition.description, CompanyName),
-                    LetterDefOf.NeutralEvent);
+                OfferRequest(definition);
                 return;
             }
+        }
+
+        /// <summary>
+        /// Put one request on the table, and record where its routes started.
+        ///
+        /// **The baseline is taken at OFFER, not at acceptance**, deliberately. It means the card
+        /// reads the same from the moment it appears, and it means a player who starts the work
+        /// before formally accepting is not punished for it — which is the same generosity as
+        /// letting them order a shipment to a site before the crew arrives.
+        ///
+        /// A **tutorial** request takes no baseline at all. It is asked once and measures
+        /// absolutely: a branch that already holds a battery has already learned request 1's
+        /// lesson, and completing it immediately is the honest outcome.
+        /// </summary>
+        private RequestRecord OfferRequest(RimroomsRequestDef definition)
+        {
+            // A generated family may be asked for again, so its id carries an instance number.
+            // A tutorial request is asked once and keeps the plain id it has always had, which
+            // means existing saves keep matching their own records.
+            string id = branchId + ":request:" + definition.defName;
+            if (!definition.tutorial) { id += ":" + (TimesAsked(definition.defName) + 1); }
+            var record = new RequestRecord
+            {
+                id = id,
+                requestDefName = definition.defName,
+                status = RequestStatus.Offered,
+                offeredTick = Find.TickManager.TicksGame,
+            };
+            if (!definition.tutorial)
+            {
+                List<RimroomsSuccessRoute> ordered = OrderedRoutes(definition);
+                for (int index = 0; index < ordered.Count; index++)
+                {
+                    RimroomsSuccessRoute route = ordered[index];
+                    if (string.IsNullOrEmpty(route.labelKey)) { continue; }
+                    record.routeBaselines.Add(new RouteBaseline
+                    { labelKey = route.labelKey, value = MeasureRoute(route) });
+                }
+            }
+            requests.Add(record);
+            RecordEvent("RR_Event_RequestOffered", record.id, definition.LabelCap);
+            Find.LetterStack.ReceiveLetter(
+                "RR_Letter_RequestOfferedTitle".Translate(definition.LabelCap),
+                "RR_Letter_RequestOfferedBody".Translate(definition.description, CompanyName),
+                LetterDefOf.NeutralEvent);
+            return record;
         }
 
         /// <summary>
@@ -369,9 +468,10 @@ namespace RimroomsAsyncIndustries.Company
                 RimroomsSuccessRoute satisfied = null;
                 for (int slot = 0; slot < ordered.Count; slot++)
                 {
-                    if (!RouteSatisfied(ordered[slot])) { continue; }
-                    record.satisfiedRouteLabelKeys.Add(ordered[slot].labelKey);
-                    if (satisfied == null) { satisfied = ordered[slot]; }
+                    RimroomsSuccessRoute route = ordered[slot];
+                    if (!RouteSatisfied(route, record.BaselineFor(route.labelKey))) { continue; }
+                    record.satisfiedRouteLabelKeys.Add(route.labelKey);
+                    if (satisfied == null) { satisfied = route; }
                 }
 
                 if (satisfied == null || record.status != RequestStatus.Accepted) { continue; }
@@ -468,15 +568,33 @@ namespace RimroomsAsyncIndustries.Company
         // ------------------------------------------------------------------ what each route asks
 
         /// <summary>
-        /// Whether one route has come true.
+        /// Whether one route has come true, counted from where the request started.
         ///
-        /// **Seven kinds, seven different questions.** Where two kinds could have collapsed into
-        /// the same check they are split on what actually differs, because a request whose two
-        /// routes are one check is the *"one route wearing two hats"* that
-        /// `RimroomsRequestDef.ConfigErrors` exists to forbid — and a def that passes that rule
-        /// while its runtime check ignores it would be the rule passing on text alone.
+        /// `baseline` is zero for the tutorial line, which measures absolutely and asks each
+        /// thing once, and is where the route stood when a **generated** request was offered.
+        /// See <see cref="RouteBaseline"/> for why the two differ.
         /// </summary>
-        private bool RouteSatisfied(RimroomsSuccessRoute route)
+        private bool RouteSatisfied(RimroomsSuccessRoute route, int baseline)
+        {
+            int required = RequiredProgress(route);
+            if (required <= 0) { return false; }
+            return MeasureRoute(route) >= baseline + required;
+        }
+
+        /// <summary>
+        /// How far along one route this branch is, as a number.
+        ///
+        /// **Seven kinds, seven different measurements.** Where two kinds could have collapsed
+        /// into the same one they are split on what actually differs, because a request whose two
+        /// routes are one measurement is the *"one route wearing two hats"* that
+        /// `RimroomsRequestDef.ConfigErrors` exists to forbid — and a def that passes that rule
+        /// while the runtime ignores it would be the rule passing on text alone.
+        ///
+        /// A number rather than a bool so that a baseline can be subtracted from it. That is the
+        /// only reason this is not simply a predicate, and it is a good enough reason: *"deliver
+        /// twenty more"* and *"hold twenty"* are different jobs and only one of them is a job.
+        /// </summary>
+        private int MeasureRoute(RimroomsSuccessRoute route)
         {
             switch (route.kind)
             {
@@ -486,33 +604,47 @@ namespace RimroomsAsyncIndustries.Company
                 case SuccessRouteKind.Deliver:
                 case SuccessRouteKind.Substitute:
                 case SuccessRouteKind.Purchase:
-                    return OwnedThingCount(route.thingDefName) >= route.count;
+                    return OwnedThingCount(route.thingDefName);
 
                 // The paperwork. An analysed record carries the log, and it keeps carrying it
                 // after the book itself is gone.
                 case SuccessRouteKind.Document:
-                    return CompletedLogsOfKind(route.logKind) >= route.count;
+                    return CompletedLogsOfKind(route.logKind);
 
                 // The person. Somebody who was there, is still employed, and is still alive --
-                // and `count` distinct people, so a route whose label promises two accounts
-                // needs two different witnesses rather than one witness counted twice.
+                // and DISTINCT people, so a route whose label promises two accounts needs two
+                // different witnesses rather than one witness counted twice.
                 case SuccessRouteKind.Testify:
-                    return LivingWitnessCount(route.logKind) >= route.count;
+                    return LivingWitnessCount(route.logKind);
 
                 // Finished it.
                 case SuccessRouteKind.Research:
-                    return ProjectCompleted(route.projectDefName);
+                    return ProjectCompleted(route.projectDefName) ? 1 : 0;
 
                 // Committed to it. Deliberately weaker than Research: the hinge offers both
                 // against the same project, and "declare a direction" is saying where you are
                 // going while "commit to the ladder" is arriving. If this asked for completion
                 // the hinge would have two routes with one answer.
                 case SuccessRouteKind.Redirect:
-                    return RedirectTaken(route.redirectTo);
+                    return RedirectTaken(route.redirectTo) ? 1 : 0;
 
                 default:
-                    return false;
+                    return 0;
             }
+        }
+
+        /// <summary>
+        /// How much progress this route asks for.
+        ///
+        /// `count` for the kinds that name a quantity; **one** for Research and Redirect, which
+        /// are either done or not and whose `count` field means nothing. Returning `count` for
+        /// them would let a def ask for a project to be completed three times.
+        /// </summary>
+        private static int RequiredProgress(RimroomsSuccessRoute route)
+        {
+            if (route.kind == SuccessRouteKind.Research || route.kind == SuccessRouteKind.Redirect)
+            { return 1; }
+            return route.count;
         }
 
         /// <summary>
@@ -681,18 +813,28 @@ namespace RimroomsAsyncIndustries.Company
         internal bool RequestRecordsValid()
         {
             var ids = new HashSet<string>(System.StringComparer.Ordinal);
-            var defNames = new HashSet<string>(System.StringComparer.Ordinal);
+            var tutorialDefNames = new HashSet<string>(System.StringComparer.Ordinal);
+            int open = 0;
             for (int index = 0; index < requests.Count; index++)
             {
                 RequestRecord record = requests[index];
                 if (record == null || string.IsNullOrWhiteSpace(record.id) || !ids.Add(record.id))
                 { return false; }
-                if (string.IsNullOrWhiteSpace(record.requestDefName) || !defNames.Add(record.requestDefName))
-                { return false; }
+                if (string.IsNullOrWhiteSpace(record.requestDefName)) { return false; }
                 if (!System.Enum.IsDefined(typeof(RequestStatus), record.status)) { return false; }
-                if (record.staffAtAcceptance == null) { return false; }
+                if (record.staffAtAcceptance == null || record.routeBaselines == null) { return false; }
+                if (record.Open) { open++; }
+
+                // A GENERATED family may legitimately appear more than once, so def names are not
+                // unique any more. A TUTORIAL request is asked exactly once, and a save holding
+                // two of one would mean a fixed line had been offered twice and paid twice.
+                RimroomsRequestDef definition = record.Definition;
+                if (definition != null && definition.tutorial &&
+                    !tutorialDefNames.Add(record.requestDefName)) { return false; }
             }
-            return true;
+            // One open request, ever. Both offer routines refuse while one is open, so two in a
+            // save means one of those guards was bypassed and the player has a second payout.
+            return open <= 1;
         }
     }
 }

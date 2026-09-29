@@ -451,6 +451,35 @@ The surface that presents a corporation request to a player. **The request shape
 
 ---
 
+## Session 2026-09-29 - the company stops naming things (0.12.12-dev)
+
+**Verbatim owner decision:** *"Both - filter picks the family, card never shrinks"*
+
+**The chart line this builds, verbatim from `CAMPAIGN_CHART.md` arc 4:** *"Clients request surveys, samples, instruments, rescue, secure access"*
+
+### What shipped
+
+Generation after the hinge: the eligibility filter, the generated offer routine, and **arc 4's five families - one per item the chart names, nothing invented.**
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Company/RequestGeneration.cs` (new), `Company/RequestLine.cs`, `Company/RequestRoutes.cs`, `1.6/Defs/RimroomsRequestDefs/RR_Requests.xml`, `1.6/Languages/English/Keyed/RR_Requests.xml`, `docs/implementation/REQUEST_GENERATION_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `About.xml`, the csproj, `proof-request-generation.py` (new, the seventeenth) and `proof-request-line.py` (retargeted).
+
+### Closure notes
+
+- **The owner's two answers operate at two levels and both stand.** Eligibility decides **which family is offered**; the card shows the **full authored floor, unfiltered**. `RequestRoutes.Available` is not modified, and planting a capability filter into it makes the new proof fail. **Nothing from 0.11.1-dev is reversed.**
+- **GENERATION EXPOSED A FLAW IN WHAT SHIPPED THE SAME DAY.** 0.12.11-dev measured satisfaction as **absolute state**, which is permanently true once true. Right for a tutorial request asked once; **wrong for anything repeatable, where it would have paid out the instant the player accepted.** A generated request now records where each route stood when it appeared and asks for that much more; a tutorial request records nothing and keeps measuring absolutely. Keyed by label key rather than list index so a reordered def cannot shift every baseline onto the wrong route.
+- **`proof-request-line.py` failed on the refactor and was retargeted, which is the proof working.** The per-kind switch moved from `RouteSatisfied` into `MeasureRoute`; a claim that survives its subject moving is a claim keyed off nothing.
+- **Every clause of the filter can refuse**, and the proof asserts none of them is `return true` - invariant 136, which has already deleted four research projects and three tier-2 constants in this project. Purchase refuses before contact, Document refuses when the branch has been nowhere, Testify refuses with no living witness, Research refuses when short of the log tier.
+- **A finished project is not reachable**, which is the payout button one level up: a Research route against completed work is satisfied on sight. Qualification is asked of `ProjectQualificationFailureKey`, the **same function the research screen uses**, so the filter can never disagree with it. `CatalogueCarries` was made internal and shared rather than copied.
+- **No clock, and the proof looks for four of them by name.** The next request appears when the open one resolves. Variety is least-asked-first, tie-broken ordinally then by the branch's seed, so a save reloaded twice does not produce two different campaigns.
+- **The check I would not have thought to write: every authored route must be able to FIRE.** A `logKind` typo is completely invisible - `TryLogKind` returns false, the measurement is zero, the route is permanently unsatisfiable, and it still counts toward the two-different-kinds rule, so `ConfigErrors` passes and the package checker passes while a request ships promising two ways through and having one. Invariant 49. The proof parses the XML and checks log kinds, project names, redirect targets and catalogue carriage.
+- **Save integrity changed with it.** Generated def names are no longer unique, so what replaced that check is stricter about what matters: ids carry an instance number, a **tutorial** request may appear at most once, and a save may hold **at most one open request** - two would mean a guard was bypassed and two payouts are running.
+- **Six planted faults, six catches, clean on restore**, including the owner decision reversed and the baseline ignored.
+- Build 0.12.12-dev, **173 C# files (measured)**, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, **seventeen** proofs exit zero. Assembly reproduced by two clean recompiles. **No game was launched, and nothing in this mod has ever been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

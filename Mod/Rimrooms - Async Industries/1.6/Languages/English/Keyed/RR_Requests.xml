@@ -137,4 +137,32 @@ There is no date on this and there will not be one. Open the Operations tab, loo
   <RR_Event_RequestCompleted>A corporation request was met: {0}.</RR_Event_RequestCompleted>
   <RR_Event_RequestBonus>The bonus was paid, ${0}. Everybody on the books when the work was taken on is still here.</RR_Event_RequestBonus>
 
+  <!-- Arc 4 generated families. A route label is a thing the player picks and carries no full
+       stop; a route description is prose and ends a sentence. -->
+
+  <RR_Route_ClientSurveyFileLabel>File the record you already have</RR_Route_ClientSurveyFileLabel>
+  <RR_Route_ClientSurveyFileDesc>A completed route log is the paperwork, and it stays the paperwork after the crew who wrote it are gone. Analyse a record and the client gets what they paid for.</RR_Route_ClientSurveyFileDesc>
+  <RR_Route_ClientSurveySpeakLabel>Put someone who was there in front of them</RR_Route_ClientSurveySpeakLabel>
+  <RR_Route_ClientSurveySpeakDesc>An employee who walked it and is still on the books can simply tell them. Cheaper than analysis and worth nothing the day that person leaves.</RR_Route_ClientSurveySpeakDesc>
+
+  <RR_Route_ClientSamplesRecoverLabel>Bring it out yourself</RR_Route_ClientSamplesRecoverLabel>
+  <RR_Route_ClientSamplesRecoverDesc>Haul the metal home and let it sit where the company can see it. The slow way, and the one that leaves the branch knowing a route it did not know before.</RR_Route_ClientSamplesRecoverDesc>
+  <RR_Route_ClientSamplesBuyLabel>Order it and say nothing</RR_Route_ClientSamplesBuyLabel>
+  <RR_Route_ClientSamplesBuyDesc>The catalogue sells metal. The buyer is not going to test it, the company has already worked that out, and neither of them will mention it again.</RR_Route_ClientSamplesBuyDesc>
+
+  <RR_Route_ClientInstrumentsPlaceLabel>Set markers down and leave them</RR_Route_ClientInstrumentsPlaceLabel>
+  <RR_Route_ClientInstrumentsPlaceDesc>Glow pods where the readings are wanted, and the company counts them as instruments. Nobody has to stay with them, which is the entire appeal.</RR_Route_ClientInstrumentsPlaceDesc>
+  <RR_Route_ClientInstrumentsMethodLabel>Sell them the method instead</RR_Route_ClientInstrumentsMethodLabel>
+  <RR_Route_ClientInstrumentsMethodDesc>Finish the second-reading work and the company has something it can licence to this client and the next one. More valuable to it than the readings ever were.</RR_Route_ClientInstrumentsMethodDesc>
+
+  <RR_Route_ClientRescueTrainingLabel>Train people to go in after them</RR_Route_ClientRescueTrainingLabel>
+  <RR_Route_ClientRescueTrainingDesc>Complete the rescue work and the branch has a capability rather than a favour. The company would rather own this than be owed it.</RR_Route_ClientRescueTrainingDesc>
+  <RR_Route_ClientRescueAccountLabel>Have somebody say what is in there</RR_Route_ClientRescueAccountLabel>
+  <RR_Route_ClientRescueAccountDesc>An employee who has seen one of the things that live down there, and is still here to describe it, closes this without anybody going back in.</RR_Route_ClientRescueAccountDesc>
+
+  <RR_Route_ClientAccessStandingLabel>Make the connection hold</RR_Route_ClientAccessStandingLabel>
+  <RR_Route_ClientAccessStandingDesc>Finish the standing-connection work. The client gets a door that behaves like a door, and the branch gets to stop treating every opening as an event.</RR_Route_ClientAccessStandingDesc>
+  <RR_Route_ClientAccessPartsLabel>Hand over the parts and let them try</RR_Route_ClientAccessPartsLabel>
+  <RR_Route_ClientAccessPartsDesc>Order the components and pass the problem along. Faster, and it teaches the branch nothing it will not have to learn later anyway.</RR_Route_ClientAccessPartsDesc>
+
 </LanguageData>

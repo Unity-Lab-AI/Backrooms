@@ -482,6 +482,17 @@ Seven items, one task each. **This is a stop-building instruction and it is bein
 - [x] **Two already-answered owner questions were still listed as open** and are moved to a closed block with their answers.
 - [x] **The gotcha counts were flattering**: the heredoc trap is at **eight**, not six, and three of those came after the warning was already written.
 
+**Built 2026-09-29, 0.12.12-dev: the company stops naming things.**
+
+- [x] **Generation after the hinge.** The eligibility filter, the generated offer routine, and **arc 4's five families** - one per item `CAMPAIGN_CHART.md` arc 4 names, nothing invented.
+- [x] **The owner's decision implemented at both levels.** *"Both - filter picks the family, card never shrinks."* Eligibility decides which family is offered; `RequestRoutes.Available` is untouched and still shows the full authored floor. Planting a filter into it fails the proof.
+- [x] **Fixed a flaw in 0.12.11-dev, shipped the same day.** Satisfaction was **absolute state**, permanently true once true, so a repeatable request would have paid out on acceptance. A generated request now measures progress from when it appeared; a tutorial request still measures absolutely, because its lesson may already be learned.
+- [x] **Every filter clause can refuse** - asserted, per invariant 136. A finished project is not reachable, and qualification reuses `ProjectQualificationFailureKey` rather than a second copy.
+- [x] **No clock**, and the proof looks for four by name. Variety is least-asked-first, seeded and ordinal.
+- [x] **Every authored route is asserted to be able to fire** - log kinds, project names, redirect targets, catalogue carriage. A `logKind` typo is otherwise completely invisible.
+- [x] **Save integrity tightened**: a tutorial request at most once, and at most one open request in the whole save.
+- [ ] **Next: the thirteen remaining generated families for arcs 5-8**, against the proved pattern.
+
 **Built 2026-09-29, 0.12.11-dev: the mission line reaches a player.**
 
 - [x] **The corporation request surface exists in the game.** `RimroomsRequestDef`, `RequestRoutes` and seven authored requests shipped in 0.11.1-dev and 0.11.2-dev and **were read by nothing** - the whole tutorial line and the hinge, invisible to every player. Records, offering, acceptance, cancellation, completion, payment and a pane.

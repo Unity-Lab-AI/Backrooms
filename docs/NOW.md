@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.11-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.12-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **172 C# files, 86 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `9435431C073CEB794A05F0793CA376FEE47E3B1FD613CC617EC1254F4945A4AB`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
+| Build | **173 C# files, 86 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `DCA9EC6E59DD41B008F2A6E582D574D20B70BAA53F629F6236AEC3F5778A7401`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
 | Checkers | **eight**, all passing |
-| Proofs | **SIXTEEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
+| Proofs | **SEVENTEEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.11
+## What shipped this session, 0.7.1 → 0.12.12
 
 | Version | What |
 |---|---|
@@ -94,6 +94,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.9 | **The exit plan** — a gate may stand at a registered site, with its own facility. Arc 5’s named list complete |
 | 0.12.10 | **The handoff** — four live proofs found unrun, five patch scripts un-named as proofs, a stale hash corrected |
 | 0.12.11 | **The corporation starts asking** — the mission line reaches a player. **The whole campaign had been authored and read by nothing** |
+| 0.12.12 | **The company stops naming things** — generation after the hinge, a filter that can refuse, arc 4’s five families. Fixed 0.12.11’s absolute-state flaw |
 
 ---
 
@@ -135,9 +136,15 @@ anything in this list** — it is the authority, and steps 1–5 of its build or
      `SurveyTicks` (Measurement's).
    - **The ~30 `Maximum*` constants in `ConnectedWork/` are scan budgets, not unlocks.** Raising
      one is a performance decision with no effect a player could name. Do not reach for them.
-3. **Generated requests after the hinge.** **The surface shipped 0.12.11-dev** — requests now
-   reach a player, are accepted, complete on any one route coming true, and pay. What is left is
-   **generation**: the arc 4–8 request families, and the eligibility filter the owner decided on.
+3. **Generated requests after the hinge. THE MACHINERY IS DONE, 0.12.12-dev.** The eligibility
+   filter, the generated offer routine and **arc 4's five families** ship, and progress on a
+   generated request is counted from when it appeared. **What is left is content:** the thirteen
+   remaining families for arcs 5–8, against the same proved pattern —
+   relay stations · caches · field shelters · guarded leases · resupply · evacuation · witnesses ·
+   missing residents · public danger · heavy cargo · staff transfer · combined families ·
+   one unfamiliar rule at a time.
+   **Every new route must name a def that exists**, or it can never fire and nothing but
+   `proof-request-generation.py` will say so.
    - **Route selection is ANSWERED** (chart §6 item 3 closed): *"Both — filter picks the family,
      card never shrinks."* A family is offered only if the branch can take **two routes of two
      different kinds** from its pool; the card it then shows is the **full authored floor,
@@ -379,6 +386,11 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 178. **Narrowing what a rule measures is legitimate; softening the rule is not.** A word search matching a comment is the wrong population (invariant 130). Strip the comments — then **plant a fault to prove the narrowing did not blind it.**
 179. **Grep the ledger before asking the owner anything.** Two of the three questions in the 0.12.10 handoff had already been answered and recorded, and one of them was re-asked the turn after that handoff shipped. One `grep` across `.local/register/` and `docs/` is cheaper than the owner’s patience.
 180. **Zero hard dependencies and Core-only are different claims.** The package must load and run against Core alone — a build property. The install it is *designed for* is the 294. Never write an option, doc line or design argument treating a vanilla install as the audience. *"wtf are you talking about core only we have 294 recommend mods you fuck!!!!"*
+181. **Absolute state is permanently true once true.** A check like *"does the branch hold twenty meals"* is right for a request asked **once** and wrong for anything repeatable, where it pays out on acceptance. A repeatable job records where it started and asks for that much **more** — keyed by label key, never by list index.
+182. **A route naming something that does not exist can never fire, and nothing says so.** A `logKind` typo makes the measurement zero while still counting toward the two-different-kinds rule, so every checker passes and the request ships promising two ways and having one. **Parse the content and assert each route names a real def.** Invariant 49.
+183. **A filter clause that cannot refuse is a hollow knob.** Assert no arm of an eligibility switch is `return true`. Invariant 136 has already deleted four projects and three constants here for the same reason.
+184. **A route against work already finished is satisfied on sight.** Exclude the completed case at the point of offering, not only at the point of measuring — otherwise the offer itself is a payout button.
+185. **A proof failing because its subject MOVED is the proof working.** Retarget it and say so. A claim that survives an arbitrary refactor of the thing it describes is keyed off nothing.
 
 ---
 
@@ -444,7 +456,7 @@ every single time.
 5. Implementation record under `docs/implementation/`.
 6. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
 7. **Every checker** (eight): `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-display-style.py`, `check-campaign-absolutes.py`, `check-doc-conformance.py`, `research/audit-gate0.py`.
-7b. **Every proof (SIXTEEN), by exit status:**
+7b. **Every proof (SEVENTEEN), by exit status:**
 
 ```sh
 for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: $p"; done
@@ -454,8 +466,8 @@ for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: 
    phrasing skipped four live proofs for most of one session. Exit status is phrasing-independent.
 
    The set: `displacement`, `facilities`, `facility-relief`, `fit`, `gate-links`, `incidents`,
-   `live-effects`, `offer-routes`, `portal-footprint`, `remote-sites`, `request-line`,
-   `research-branches`, `spinup`, `starts`, `stranded-crew`, `tier-ladder`.
+   `live-effects`, `offer-routes`, `portal-footprint`, `remote-sites`, `request-generation`,
+   `request-line`, `research-branches`, `spinup`, `starts`, `stranded-crew`, `tier-ladder`.
 
    **`patch-*.py` in that directory are one-shot edit scripts, not proofs.** They were once named
    `proof-*` and re-running one would try to re-apply a landed patch and fail confusingly.

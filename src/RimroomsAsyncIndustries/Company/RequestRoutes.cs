@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Procurement;
 using Verse;
@@ -107,7 +107,15 @@ namespace RimroomsAsyncIndustries.Company
             }
         }
 
-        private static bool CatalogueCarries(string thingDefName)
+        /// <summary>
+        /// Whether the parent corporation's catalogue carries a thing.
+        ///
+        /// **Internal because the eligibility filter asks the same question** and two
+        /// copies of it would eventually disagree about what is orderable. One source,
+        /// two callers -- the derived-route half here and `CanTakeRoute` in
+        /// `RequestGeneration.cs`.
+        /// </summary>
+        internal static bool CatalogueCarries(string thingDefName)
         {
             foreach (RimroomsProcurementCatalogDef entry in
                 DefDatabase<RimroomsProcurementCatalogDef>.AllDefsListForReading)
