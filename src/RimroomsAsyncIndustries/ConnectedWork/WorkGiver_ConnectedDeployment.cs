@@ -286,4 +286,24 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         { get { return ConnectedDeploymentProviders.PatientFeeding; } }
         protected override bool ContinueOnly { get { return true; } }
     }
+
+    /// <summary>
+    /// Sends somebody through a gate to put a downed person into a bed on that same map,
+    /// rather than hauling them home first. The counterpart of the casualty family, not a
+    /// duplicate of it.
+    /// </summary>
+    public sealed class WorkGiver_ConnectedRescueInPlace : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.RescueInPlace; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks a rescuer the rest of the way, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedRescueInPlaceContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.RescueInPlace; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
 }

@@ -49,6 +49,7 @@
   <!-- Travel-to-work: the worker goes, and nothing is carried. Nobody is ever brought
        home by these; a person who crossed legitimately stays where it is when the work
        runs out, with its own needs and whatever local work it finds. -->
+  <RR_ConnectedWork_RescueInPlaceLabel>bedding a casualty through a gate</RR_ConnectedWork_RescueInPlaceLabel>
   <RR_ConnectedWork_FoodLabel>carrying food through a gate</RR_ConnectedWork_FoodLabel>
   <RR_ConnectedWork_FeedingLabel>feeding a patient through a gate</RR_ConnectedWork_FeedingLabel>
   <RR_ConnectedWork_AlreadyFed>They have food on their side now. What was carried is here in hand; ordinary hauling will put it away.</RR_ConnectedWork_AlreadyFed>

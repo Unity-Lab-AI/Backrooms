@@ -71,6 +71,8 @@ namespace RimroomsAsyncIndustries.Core
                 "RR_ConnectedConstructionContinue", "RR_ConnectedConstruction"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyBill",
                 "RR_ConnectedBillContinue", "RR_ConnectedBill"),
+            new ConnectedWorkPriorityPair("RR_Settings_FamilyRescueInPlace",
+                "RR_ConnectedRescueInPlaceContinue", "RR_ConnectedRescueInPlace"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyFood",
                 "RR_ConnectedFoodContinue", "RR_ConnectedFood"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyFeeding",

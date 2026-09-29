@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.1-dev - 2026-09-29 - a casualty gets a bed where they lie
+
+- Somebody will now cross a gate to put a downed colonist into a bed on that side, instead of carrying them all the way home first. Taking an injured person through a gate is one more trip for somebody who cannot walk, so if there is a bed over there, the help goes to them.
+- If there is no bed on that side, nothing changes: they are carried home to one, exactly as before.
+- Babies are never picked up this way, and a prisoner bed is never used for one of your own people.
+- A casualty at home still comes first, and a rescuer already on their way to a gate is not turned around by one somebody else can reach.
+
+Two things deliberately **not** added. A tired colonist will not walk through a gate to go to bed, and this one is not a judgement call: the game itself refuses to let anyone use a bed that is not on the same map they are, so the walk could never have worked even if it were safe. The same goes for owning or being assigned a bed on the other side of a gate. What does work is building beds over there, and that already works through the existing cross-gate construction: material is carried to the site and a builder crosses to finish it.
+
+Full record: [rest and beds](docs/implementation/CONNECTED_REST_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.6.0-dev - 2026-09-29 - food crosses a gate, and nobody starves for want of a delivery
 
 - Food is now carried through a gate to your people on the other side when there is nothing there they will eat. Ordinary hauling only ever moves things to better storage, so without this a colonist could starve beside an empty larder while the pantry at home was full.

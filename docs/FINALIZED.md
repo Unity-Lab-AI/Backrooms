@@ -962,3 +962,54 @@ Work families complete: 10, four of them travel-to-work deployments.
 New standing invariants recorded: 2 — needs are not work and this layer does not reach into them; and a resource family must never move the shortage it is solving.
 Next: rest and beds, where the same needs-are-not-work question applies and `RestUtility` rejecting off-map beds already decides most of it.
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+---
+
+## Session — 2026-09-29 — rest and beds: one real gap, and one "no" that Core decides for us (0.6.1-dev)
+
+### Verbatim request
+
+> get to it
+
+Continuing under the standing instruction from 2026-09-28: *"in most cases you will do the todo work item and all relaeted work needed for that item as that item in the todo"*.
+
+### COMPLETED
+
+- [x] **The rest-and-beds item, as one register row with all three of its parts.** Only one of the three was work, and saying that plainly is the point.
+- [x] **A tired pawn does not cross a gate to sleep — and this time Core decides it, not us.** Verified at source rather than inherited from my own prior note. `RestUtility.CanUseBedNow`:
+  ```csharp
+  if (building_Bed.Map != sleeper.MapHeld) { return false; }
+  ```
+  It is the third check in the method, before burning, before vacuum, before `CanUseBedEver`. And `FindBedFor` only ever searches `sleeper.MapHeld`. **So patching Core's think tree would not even achieve the goal** — the bed would be refused on arrival and the pawn would have made a dangerous journey for nothing. Food's equivalent "no" rested on two arguments of ours; this one rests on Core's own rule, which is a stronger and cleaner close.
+  - Recorded as invariant 20: **a bed is only ever a bed on its own map.** That also closes bed ownership and assignment across a gate, which would never be honoured.
+- [x] **Beds existing on the far side: verified as already covered, and no redundant family written.** The useful half of "beds across a gate" is that a bed should *exist* there — and a bed is a built thing, so that is construction. `ConnectedConstructionAdapter` (0.5.3-dev) already carries material into a real frame or blueprint, and `ConstructionFinishingProvider` (0.5.5-dev) already sends a builder across to finish it. A bed blueprint on the far side therefore already attracts both. **Stating that is the finding; writing a family for symmetry would have been the mistake.** Recorded as invariant 21: check whether an existing family already covers it before writing a new one.
+- [x] **The one real gap, built: `RescueInPlaceProvider`** (fifth deployment provider). Somebody crosses to tuck a downed person into a bed **on that same map**, instead of hauling them home first. It is the counterpart of the casualty family rather than a duplicate: that one is right when the far side has no bed, and this one is right when it does, because an injured person taken through a gate is one more crossing for somebody who cannot walk and the traversal contract prefers fewer.
+  - The two coexist with no new machinery: `HasLiveCommitment` already allows one commitment per worker, and Core's own reservation on the patient settles which of two different workers arrives first.
+  - On arrival it issues nothing, and Core's `WorkGiver_RescueDowned` takes over — its `ShouldSkip` looks for a pawn of the worker's own faction that is downed and not in bed, which is exactly the situation that justified sending somebody.
+- [x] **Both of Core's rescue preconditions established as arrival-only, with the reason.** `HealthAIUtility.CanRescueNow` ends in `rescuer.CanReserveAndReach`, and the bed comes from `WorkGiver_TakeToBed.FindBed`, which is `protected` and whose underlying `RestUtility.FindBedFor` searches with `TraverseParms.For(traveler)` — a cross-map reachability query if the traveller is our remote pawn, which the two-halves rule forbids outright. So the candidate half asks only patient facts and bed facts, and `CanUseBedEver` is the useful one there because it takes a pawn and a `ThingDef` and **touches no map at all**.
+- [x] **Two exclusions made deliberately rather than by omission.** Babies go through `ChildcareUtility.SafePlaceForBaby`, a different route with its own rules, so they are excluded outright instead of half-handled. A prisoner bed is excluded too — it is not somewhere one of our own downed colonists gets tucked in.
+
+### Priorities
+
+`RR_ConnectedRescueInPlaceContinue` at Doctor **62**, just above Core's `DoctorRescue` (60) so a rescuer partway to a gate is not turned around by a casualty at home somebody else can reach, and still below the medical operation (70) and all tending above it. `RR_ConnectedRescueInPlace` at **3**, below every Core doctor giver and below both cross-gate tending (5) and feeding (4), because somebody already lying on the floor across a gate is the least time-critical of the three once the gate is open. Twenty-two cross-gate numbers now, all player settings.
+
+### Saved state
+
+**None added.** A deployment provider is data about a question, not new state. A 0.6.0-dev save loads unchanged.
+
+### Documents updated in the same change
+
+`implementation/CONNECTED_REST_IMPLEMENTATION.md` (new record), `DEFERRED.md`, `TODO.md`, `NOW.md` (including two new standing invariants), `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.6.1-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **107** C# source files, **76** approved package files (unchanged — two work giver defs and two keyed strings added to files that already existed). Assembly SHA-256 `1775A5EA03840F323634A8C081D5F53338D17BA53A2F779768E62BBFB823542B`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. Evidence folder `implementation/evidence/connected-rest-2026-09-29/`. All 58 packaged XML files parse; every `RR_` key referenced from source resolves with 0 missing; 2,969 relative doc links resolve with 0 broken; every `giverClass` resolves; 0 attribution strings; all compliance checks pass. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Source files modified: 3. Package files modified: 3. Docs updated: 9 (1 new).
+Deferments closed: 1 (rest and beds, all three parts). Rows added: 0.
+Work families complete: 11, five of them travel-to-work deployments.
+New standing invariants recorded: 2 — a bed is only ever a bed on its own map, verified at source; and check whether an existing family already covers it before writing a new one.
+Next: the remaining work families — cleaning, repair, firefighting, plants/mining/hunting, prisoner and guest care, wardening, childcare, animals and mechs, refuel and rearm, joy, rituals, hauling providers — most of which should be short, because the deployment and carry shapes already cover nearly everything.
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.

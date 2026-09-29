@@ -86,19 +86,22 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         public const string Research = "research";
         public const string Tending = "tending";
         public const string PatientFeeding = "patient-feeding";
+        public const string RescueInPlace = "rescue-in-place";
 
         private static readonly ConstructionFinishingProvider construction =
             new ConstructionFinishingProvider();
         private static readonly ResearchProvider research = new ResearchProvider();
         private static readonly TendingProvider tending = new TendingProvider();
         private static readonly FeedingProvider feeding = new FeedingProvider();
+        private static readonly RescueInPlaceProvider rescue = new RescueInPlaceProvider();
         private static readonly Dictionary<string, ConnectedDeploymentProvider> registry =
             new Dictionary<string, ConnectedDeploymentProvider>(System.StringComparer.Ordinal)
             {
                 { ConstructionFinishing, construction },
                 { Research, research },
                 { Tending, tending },
-                { PatientFeeding, feeding }
+                { PatientFeeding, feeding },
+                { RescueInPlace, rescue }
             };
 
         public static IEnumerable<ConnectedDeploymentProvider> All { get { return registry.Values; } }

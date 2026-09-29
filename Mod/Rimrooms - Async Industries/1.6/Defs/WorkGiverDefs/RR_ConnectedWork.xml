@@ -309,6 +309,46 @@
     <prioritizeSustains>true</prioritizeSustains>
   </WorkGiverDef>
 
+  <!-- Rescue in place is the counterpart of the casualty pair below, not a duplicate: that
+       one carries our downed home to a bed, this one crosses to tuck them into a bed on the
+       far side when there is one there. An injured person taken through a gate is one more
+       crossing for somebody who cannot walk.
+
+       Continuing sits at 62, just above Core's DoctorRescue (60), so a rescuer partway to a
+       gate is not turned around by a casualty at home that somebody else can reach - but
+       still below the medical operation at 70 and all tending above it. Starting sits at 3,
+       below every Core doctor giver and below both cross-gate tending (5) and feeding (4),
+       because somebody already lying on the floor across a gate is the least time-critical of
+       the three once the gate itself is open.
+
+       Balance decisions, recorded as such, and player-tunable while the game runs. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedRescueInPlaceContinue</defName>
+    <label>travel on to bed a casualty through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedRescueInPlaceContinue</giverClass>
+    <workType>Doctor</workType>
+    <verb>rescue</verb>
+    <gerund>rescuing</gerund>
+    <priorityInType>62</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedRescueInPlace</defName>
+    <label>cross a gate to bed a casualty where they lie</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedRescueInPlace</giverClass>
+    <workType>Doctor</workType>
+    <verb>rescue</verb>
+    <gerund>rescuing</gerund>
+    <priorityInType>3</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
   <!-- Casualties sit around Core's own DoctorRescue (60): finishing a trip that
        already has someone in the worker's arms edges above it, starting one sits just
        below so a casualty on this map is always rescued first. Both stay under the

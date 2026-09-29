@@ -23,11 +23,11 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published commit | 0.6.0-dev (see `git log -1`; the cascade read-back is in `FINALIZED.md`) |
+| Published commit | 0.6.1-dev (see `git log -1`; the cascade read-back is in `FINALIZED.md`) |
 | Remotes | `forgejo` and `github`, both with `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` at the same commit |
 | Working tree | clean |
-| Build | 106 C# source files, 76 approved package files, zero warnings, zero errors |
-| Assembly | SHA-256 `E5663D70D2BB1F7EC7553DE05286D4C4EFE63237248E10234029D72019FEF2AE`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
+| Build | 107 C# source files, 76 approved package files, zero warnings, zero errors |
+| Assembly | SHA-256 `1775A5EA03840F323634A8C081D5F53338D17BA53A2F779768E62BBFB823542B`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
 | Game launches | **none, ever.** Every runtime claim in this repo is pending the owner's first RimSort launch |
 
 ### What exists now, in order of arrival
@@ -40,29 +40,36 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 - **0.5.3-dev** — **construction supply** (material carried into a real frame or blueprint), the audit proving the mod requires nothing but base Core, and the capability-matching method that dissolved the M2 content blockers.
 - **0.5.4-dev** — four owner decisions: the laboratory duration ladder, natural-gate exemption confirmed, one tech tree for every scenario, a player-named company.
 - **0.5.6-dev** — nothing is blocked on the owner: the `[!]` status deleted, the post-completion test phase named, all cross-gate work priorities made **live player settings**, and a verified RimWorld/Steam compliance position with automated checks.
+- **0.6.1-dev** — **rest and beds**: the tired-pawn question closed by *Core's own rule* rather than our caution, and the one real gap built — bedding a casualty where they lie instead of hauling them home.
 - **0.6.0-dev** — **food across a gate**, as three parts, one of which was *decided against* rather than deferred: a hungry pawn does not walk through a gate to eat. Plus patient feeding as the fourth deployment provider.
 - **0.5.9-dev** — **tending across a gate, both halves in one item**: the doctor travels to a patient who stays put (third deployment provider), and medicine travels as the first cargo consumed by the work. Surgery, patient feeding and prisoner care remain separately reviewed routes.
 - **0.5.8-dev** — **research across a gate**, the *second* travel-to-work provider and one new file: no new record, driver or JobDef. Its real finding is that the deployment shape is inherently mod-tolerant, because a deployment never issues the work.
 - **0.5.7-dev** — **bill ingredients**: goods cross a gate because a named bill is short of them, landing inside that bill's own search radius. Unfinished things deliberately out of scope.
 - **0.5.5-dev** — **travel-to-work**: a fourth work family and the first that is not fetch → carry → deliver. `ConnectedDeploymentIntent` (a *sibling* record), `ConnectedDeploymentProvider`, `ConstructionFinishingProvider`, and `ConnectedCrossing` as the single shared gate step. Also: the 1990s period and the universe factions captured verbatim and decided, queued after the work families.
 
-### The next task — rest and beds
+### The next task — the remaining work families
 
 **Owner ordering:** finish the remaining cross-map work families before the faction layer.
 
-**Expect the answer food just gave.** Sleeping is a need from the think tree (`JobGiver_GetRest`), not work, so a tired pawn walking through a gate to find a bed runs into the same two objections that killed the equivalent food part: it needs a Core think-tree patch, and a gate closing mid-journey strands somebody — here, asleep and helpless on the far side. Read `.local/inspection-connected-work/RimWorld.JobGiver_GetRest.cs`, which is already decompiled, and reach your own conclusion rather than inheriting mine; but if it lands the same way, **say so as a decision and close the row**, exactly as the food item did. A decided "no" is a finished item; an open row implying unfinished work is not.
+What is left, from the register: **cleaning, repair, firefighting, plants/mining/hunting, prisoner and guest care, wardening, childcare, animals and mechs, refuel and rearm, joy, rituals, hauling providers**, and then every installed work giver in the 294-row profile.
 
-**Already pinned, and it decides most of this:** `RestUtility` rejects off-map beds. So a bed on another map is not a bed a pawn can be assigned to, which means there is no "claim a bed over there" route to build even if the traversal were safe.
+**Expect most of these to be short.** Eleven families in, the two shapes cover nearly everything:
 
-**What is probably left that is real:**
+- **Work done at the far site with nothing carried** → a `ConnectedDeploymentProvider`. Five exist; each of the last three was one new file. Cleaning, repair, firefighting, plants, mining, hunting and rituals all look like this.
+- **Something physical delivered to the far site** → a `ConnectedWorkAdapter`. Eight exist. Refuel and rearm look like this; so does anything that consumes material.
 
-1. **Making beds available where people are.** That is construction, not rest — a bed is a built thing, and cross-gate construction already ships in both halves (supply and finishing). Check honestly whether anything is missing before writing a family; if the construction families already cover it, record that and move on.
-2. **Medical rest.** `HealthAIUtility.ShouldSeekMedicalRest` and `WorkGiver_TakeToBedToOperate` (Doctor 20) touch beds and *are* work givers. The casualty family already carries our downed home to a bed; check whether a patient on the far side who needs a bed *there* is a real gap or an already-covered case.
-3. **Bed assignment and ownership across a gate** — almost certainly not wanted, given `RestUtility`, but check rather than assume.
+So the work per family is mostly: read the profile rows, read Core's own work giver, split its checks by **what each rule reads**, and write the two halves. Do not invent a third shape unless a family genuinely needs one — travel-to-work was the last time that was true, and it earned it.
 
-**Read the prep work first.** Find the bed, sleep and furniture profile rows and read their reviews before designing. Row 34 Animal Medical Bed is already known from the tending work; there will be others.
+**Group them where they share a shape and a review.** Cleaning, repair and firefighting are three providers that differ only in their candidate predicate; shipping them as one checkpoint with one record is honest and avoids nine near-identical documents. Do **not** group things whose profile rows or Core routes differ meaningfully — prisoner and guest care, childcare, and animals each carry their own rules and deserve their own reading.
 
-After rest: the remaining work families (cleaning, repair, firefighting, plants/mining/hunting, prisoner and guest care, wardening, childcare, animals and mechs, refuel and rearm, joy, rituals, hauling providers), then every installed work giver in the 294-row profile. Then the 1990s period and the universe faction layer, under the compliance rules in `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`.
+**Two of these have known sharp edges already recorded:**
+
+- **Prisoner and guest care** is named in `DEFERRED.md` and in the tending record as its own route, and Hospitality (row 270) plus its two companions (285, 286) bear on guests. `WardenFeedUtility` deliberately owns prisoner feeding, which the food family excluded on purpose.
+- **Hauling providers** — Pick Up And Haul (164), Haul To Stack (107) and Prison Labor (288) are the three rows still open on the optional-provider register row. Each needs its own review before any claim.
+
+**Firefighting deserves a moment's thought before it is written**, not because it is hard but because it is the first family where crossing a gate *toward* danger is the whole point. The traversal rule already says automatic work uses the pawn's own danger policy and never `Deadly`; check honestly whether a fire on the far side should be reachable at all under that rule, and say what you decide.
+
+After the families: the 1990s period and the universe faction layer, under the compliance rules in `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`. Then M1 step 5, M2, and the rest of the roadmap.
 
 ### Invariants — do not break these
 
@@ -87,6 +94,8 @@ Hard-won, each one the result of a real defect or a pinned source fact. Recorded
 17. **Prefer a setting or a def over a constant** for anything tunable, because the only test session fixes things live without a mod reload.
 18. **Needs are not work, and this layer does not reach into them.** Eating and sleeping come from Core's think tree, not from a `WorkGiver`. Do not patch Core's think tree to send a hungry or tired pawn through a gate: a closing gate strands them, and the failure mode is a dead colonist rather than a wasted walk. Solve needs logistically — take the thing to the people. Decided for food in 0.6.0-dev; see `implementation/CONNECTED_FOOD_IMPLEMENTATION.md`.
 19. **A resource family must never move the shortage it is solving.** Food will not take the last meal off a map that still has hungry people. Any future family that moves a consumable owes the same guard, because every individual trip looks correct while the net effect is harm.
+20. **A bed is only ever a bed on its own map.** `RestUtility.CanUseBedNow` returns false when `building_Bed.Map != sleeper.MapHeld`. Nothing may reserve, assign or own a bed across a gate; Core will refuse it on arrival. Verified at source in 0.6.1-dev.
+21. **Before writing a family, check whether an existing one already covers it.** Beds on the far side turned out to need no rest family at all, because cross-gate construction already supplies and finishes them. Writing a redundant family for symmetry is worse than writing none.
 
 ### Binding owner decisions
 
