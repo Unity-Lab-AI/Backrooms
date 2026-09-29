@@ -119,6 +119,10 @@ namespace RimroomsAsyncIndustries.UI
                     DrawPersonnel(listing, campaign);
                     break;
                 case 2:
+                    // The corporation's requests come first: they are the campaign, and the
+                    // contracts below them are the survey and odd-supply paperwork the requests
+                    // generate. A player looking at this pane is looking for what to do next.
+                    DrawRequests(listing, campaign);
                     foreach (ContractRecord contract in campaign.Contracts)
                     {
                         listing.Label("RR_UI_ContractRow".Translate(contract.TitleKey.Translate(), ("RR_Contract_" + contract.Status).Translate()));

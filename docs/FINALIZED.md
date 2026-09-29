@@ -419,6 +419,38 @@ The `NOW.md` compaction handoff, and **four defects in the handoff and the ritua
 
 ---
 
+## Session 2026-09-29 - the mission line reaches a player (0.12.11-dev)
+
+**Verbatim user quote:** *"read Now.md to resume the work and okay shoot ask me all you want on those question u had that were blocking and lets get to finishing all this work so we have a finished mod with nothing to do but test and bug hunt"*
+
+**Verbatim owner correction:** *"wtf are you talking about core only we have 294 recommend mods you fuck!!!!"*
+
+**Verbatim owner decision on the route conflict:** *"Both - filter picks the family, card never shrinks"*
+
+### What shipped
+
+The surface that presents a corporation request to a player. **The request shape and all seven authored requests shipped in 0.11.1-dev and 0.11.2-dev and were read by nothing** - the whole tutorial line and the hinge, validated at def load, checked by two tools, proved by a proof, and invisible.
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Company/RequestLine.cs` (new), `UI/OperationsRequests.cs` (new), `Company/RimroomsCampaignComponent.cs`, `Company/CampaignServices.cs`, `UI/MainTabWindow_Operations.cs`, `1.6/Defs/RimroomsRequestDefs/RR_Requests.xml`, `1.6/Languages/English/Keyed/RR_Requests.xml`, `docs/implementation/REQUEST_LINE_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `About.xml`, the csproj, and `proof-request-line.py` (new, the sixteenth).
+
+### Closure notes
+
+- **THE CAMPAIGN DID NOT EXIST IN THE GAME.** `grep` for `RequestDef|RequestRoutes|SuccessRoute|TutorialLine` across every `.cs` outside the two files defining them returned **nothing**. `ConfigErrors` validated the defs at load, `check-campaign-absolutes.py` checked them and `proof-offer-routes.py` proved their shape - **none of which is a player seeing a request.** Same defect as the five `PawnKindDef`s found authored and read by nothing, at feature scale. The proof's first claim is now exactly that: the request def is read by source outside its own definition, and commenting out the pane call makes it fail.
+- **This reordered the queue for a real reason.** The chart authorises arcs 5-8 next, but **arcs 6, 7 and 8 are request content**, and writing them first would have authored more defs nothing reads.
+- **TWO of the three "open owner questions" in my own handoff had already been answered.** The route model was answered *"1 and 3"* on 2026-09-29, recorded in three places and **shipped** - and I re-asked it one turn after publishing a checkpoint whose whole purpose was fixing that exact defect. The adjacent-door-run fallback was likewise already answered *"BOTH paths"*. The rule that comes out of it: **grep the ledger before asking; it costs one command.**
+- **Zero hard dependencies and Core-only are not the same claim**, and the owner's correction named it. The package must *load and run* against Core alone - a **build** property, and it holds. The install this mod is *designed for* is **the 294**. No option, doc line or design argument may treat a vanilla install as the audience.
+- **Document and Testify would have been one check wearing two hats**, and request 5's only two routes are those two - so the def rule forbidding it would have kept passing on text alone. Split on what actually differs: **Document is the paperwork and survives the witness dying; Testify is the person and survives the book burning.** `Research` and `Redirect` had the same collision at the hinge and are split the same way: arriving versus saying where you are going.
+- **Two labels were lying and the checks caught both.** Request 5's *"two crew accounts"* accepted one account; it now asks for two distinct living witnesses. `bonusUsd` was a number that would always have paid; it now requires everybody on the books at acceptance to still be there, measured against a **snapshot** so firing the casualty cannot earn it.
+- **A runtime-built keyed string, for the third time in this project.** `"RR_Requests_Status_" + status`, caught by `check-keyed-strings.py`, which sees a prefix and nothing else. Replaced with literal keys.
+- **A proof rule banned its own negation, then matched its own comment.** `RR_Requests_NoDeadline` said *"There is no time limit"* and tripped a rule against the word. **The key was renamed rather than the rule softened.** It then matched an XML comment of mine stating no string mentions a deadline - invariant 130 again - so comments are now stripped, which is **narrowing the population rather than softening the rule**, and a planted fault proves the narrowing did not blind it.
+- **The C# file count had been wrong for five checkpoints**, claimed 172 against a real 170. Exactly the stale assembly hash, found the same way: by measuring instead of copying. It is genuinely 172 now because this checkpoint adds two files, **which is how a wrong number outlives its correction**.
+- **Five planted faults, five catches, clean on restore** - including the original defect restaged by commenting out the pane call. Every plant asserted its anchor before writing.
+- Build 0.12.11-dev, **172 C# files (measured)**, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, **sixteen** proofs exit zero. Assembly reproduced by two clean recompiles. **No game was launched, and nothing in this mod has ever been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

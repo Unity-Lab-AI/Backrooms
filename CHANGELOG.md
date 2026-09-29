@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.12.11-dev - 2026-09-29 - the corporation starts asking
+
+- **The company now actually asks you for things.** Six requests in order, each teaching one part of the job, and then a seventh where it stops naming things and asks where you intend to take this.
+- **Every request offers more than one way through**, and the card shows all of them - including the ones you cannot do yet, so you can see what to work toward. A tick appears beside the ones you have already done.
+- **Nothing ever expires.** There is no date on any of it. The company waits as long as it takes, and you can turn any request down without penalty.
+- **Two ways through that used to mean the same thing now mean different things.** Filing the analysed paperwork and having a crew member who was there and can speak to it are separate routes: one survives the witness dying, the other survives the book burning.
+- **"Two crew accounts" now really means two people.** It was accepting one.
+- **The bonus on bringing back your first record is paid when everybody you had on the books comes back.** It previously had no condition at all.
+
+Honest note: all of this was authored two versions ago and **no part of the game ever showed it to you**. This is the version where it reaches the screen.
+
+Full record: [the mission line reaches a player](docs/implementation/REQUEST_LINE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.10-dev - 2026-09-29 - the handoff, audited
 
 - **Nothing in the game changed.** This is the session handoff, and writing it properly turned up four problems in the project's own checks.

@@ -324,6 +324,10 @@ namespace RimroomsAsyncIndustries.Company
             // game-over countdown, and cheap: a bool, then a scan that stops at the
             // first living employee.
             if (now % 60 == 30) { TickFacilityRelief(); }
+            // The mission line. Offered on contact, completed when a route comes true. Slow on
+            // purpose: every check it runs is a scan, and no route in this mod can be satisfied
+            // and un-satisfied inside four seconds.
+            if (now % 240 == 90) { TickRequestLine(); }
             // The solo/group start has no request line, so this is the only guidance it
             // gets. Slow: these are thoughts, not business, and they fire once each.
             if (now % 250 == 125) { TickSoloGroupHints(); }

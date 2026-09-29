@@ -157,6 +157,11 @@
         <labelKey>RR_Route_TwoAccountsLabel</labelKey>
         <descriptionKey>RR_Route_TwoAccountsDesc</descriptionKey>
         <logKind>distortion</logKind>
+        <!-- Two, because the label says two. A Testify route counts DISTINCT living employees
+             who witnessed something of this kind, so this asks for two different people rather
+             than one person counted twice. Left at the default of one, the check would have
+             been satisfied by a single account while the card promised a pair. -->
+        <count>2</count>
       </li>
     </successRoutes>
   </RimroomsAsyncIndustries.Company.RimroomsRequestDef>

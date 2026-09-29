@@ -226,6 +226,7 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Collections.Look(ref evidence, "rr_evidence", LookMode.Deep);
             Scribe_Collections.Look(ref projects, "rr_projects", LookMode.Deep);
             Scribe_Collections.Look(ref events, "rr_events", LookMode.Deep);
+            ExposeRequests();
             ExposeSupplyContracts();
             ExposeCorporateSupply();
             ExposeFacilityRelief();
@@ -294,6 +295,9 @@ namespace RimroomsAsyncIndustries.Company
             {
                 stateFaultKey = "RR_Company_InvalidSave";
             }
+            // The request line carries payment operation ids, so a duplicate record is a
+            // double-payment waiting to happen rather than a cosmetic problem.
+            if (!RequestRecordsValid()) { stateFaultKey = "RR_Company_InvalidSave"; }
             foreach (StaffRecord member in staff)
             {
                 if (member != null && member.dailyWageUsd < 0) { stateFaultKey = "RR_Company_InvalidSave"; }

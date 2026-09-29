@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.10-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.11-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **172 C# files, 86 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `CC32A93E067B6DA9EC126A27F520BA49C2858A27FBD2A407799894E49CDAA81B`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
+| Build | **172 C# files, 86 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `9435431C073CEB794A05F0793CA376FEE47E3B1FD613CC617EC1254F4945A4AB`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
 | Checkers | **eight**, all passing |
-| Proofs | **FIFTEEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
+| Proofs | **SIXTEEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.10
+## What shipped this session, 0.7.1 → 0.12.11
 
 | Version | What |
 |---|---|
@@ -93,6 +93,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.8 | **Remote sites need people** — a shipment to an empty site waits; the stranded-crew guarantee proved rather than rebuilt |
 | 0.12.9 | **The exit plan** — a gate may stand at a registered site, with its own facility. Arc 5’s named list complete |
 | 0.12.10 | **The handoff** — four live proofs found unrun, five patch scripts un-named as proofs, a stale hash corrected |
+| 0.12.11 | **The corporation starts asking** — the mission line reaches a player. **The whole campaign had been authored and read by nothing** |
 
 ---
 
@@ -134,8 +135,17 @@ anything in this list** — it is the authority, and steps 1–5 of its build or
      `SurveyTicks` (Measurement's).
    - **The ~30 `Maximum*` constants in `ConnectedWork/` are scan budgets, not unlocks.** Raising
      one is a performance decision with no effect a player could name. Do not reach for them.
-3. **Generated requests after the hinge**, from branch state, coordinate history and capability.
-   Route selection for a generated request is an **open owner question** (chart §6).
+3. **Generated requests after the hinge.** **The surface shipped 0.12.11-dev** — requests now
+   reach a player, are accepted, complete on any one route coming true, and pay. What is left is
+   **generation**: the arc 4–8 request families, and the eligibility filter the owner decided on.
+   - **Route selection is ANSWERED** (chart §6 item 3 closed): *"Both — filter picks the family,
+     card never shrinks."* A family is offered only if the branch can take **two routes of two
+     different kinds** from its pool; the card it then shows is the **full authored floor,
+     unfiltered**. `RequestRoutes.Available` is not to be modified.
+   - **The filter must have teeth.** Invariant 136: every clause has to be able to refuse. A
+     `Deliver` route that is "always takeable" makes the whole filter hollow. Refusable readings
+     exist for all seven kinds — catalogue carriage, completed logs, living witnesses, project
+     availability, redirect target existence.
 4. **Still unbuilt from the prep material** — *"contradictory accounts"* from a returning crew;
    staff **prior exposure**; *"respond to openings in settlements"*.
 5. **The adjacent-door-run fallback** — 1×3 and 2×3 by binding one gate across a run of adjacent
@@ -363,6 +373,12 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 172. **A gate runs on the equipment beside it.** `thing.Map == parent.Map` is what makes a remote gate a real facility rather than a remote control for the headquarters. Widening *where* a gate may stand must never widen *what it may draw on*.
 173. **Exclude by construction, not by a check somebody must remember.** A designated gate cannot appear in a coordinate because `OperatesAt` admits only registered places and a coordinate can never be registered. Invariant 12 then holds with nothing to forget.
 174. **Two questions may share a place-set and must not share a name.** `OperatesAt` and `CanReceiveDeliveryAt` agree today and are different questions; one implementation stops them drifting, two names give the difference somewhere to go when it arrives.
+175. **A def shape with content and no reader is not a feature.** `ConfigErrors`, a checker and a proof can all validate a def while nothing in the game consumes it — which is how the entire campaign shipped twice as content nobody could see. **Assert that a content surface is read from outside its own definition**, and restage the defect as a planted fault.
+176. **Where two route kinds could resolve to the same expression, split them on what actually differs.** A def rule demanding two different kinds is satisfied by text alone if the runtime asks one question twice. Document is the paperwork and survives the witness dying; Testify is the person and survives the book burning.
+177. **Re-measure every count in the handoff; never carry one forward.** The C# file count was wrong by two for five checkpoints, exactly as the assembly hash was. A plausible number is never checked by reading.
+178. **Narrowing what a rule measures is legitimate; softening the rule is not.** A word search matching a comment is the wrong population (invariant 130). Strip the comments — then **plant a fault to prove the narrowing did not blind it.**
+179. **Grep the ledger before asking the owner anything.** Two of the three questions in the 0.12.10 handoff had already been answered and recorded, and one of them was re-asked the turn after that handoff shipped. One `grep` across `.local/register/` and `docs/` is cheaper than the owner’s patience.
+180. **Zero hard dependencies and Core-only are different claims.** The package must load and run against Core alone — a build property. The install it is *designed for* is the 294. Never write an option, doc line or design argument treating a vanilla install as the audience. *"wtf are you talking about core only we have 294 recommend mods you fuck!!!!"*
 
 ---
 
@@ -428,7 +444,7 @@ every single time.
 5. Implementation record under `docs/implementation/`.
 6. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
 7. **Every checker** (eight): `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-display-style.py`, `check-campaign-absolutes.py`, `check-doc-conformance.py`, `research/audit-gate0.py`.
-7b. **Every proof (FIFTEEN), by exit status:**
+7b. **Every proof (SIXTEEN), by exit status:**
 
 ```sh
 for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: $p"; done
@@ -438,8 +454,8 @@ for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: 
    phrasing skipped four live proofs for most of one session. Exit status is phrasing-independent.
 
    The set: `displacement`, `facilities`, `facility-relief`, `fit`, `gate-links`, `incidents`,
-   `live-effects`, `offer-routes`, `portal-footprint`, `remote-sites`, `research-branches`,
-   `spinup`, `starts`, `stranded-crew`, `tier-ladder`.
+   `live-effects`, `offer-routes`, `portal-footprint`, `remote-sites`, `request-line`,
+   `research-branches`, `spinup`, `starts`, `stranded-crew`, `tier-ladder`.
 
    **`patch-*.py` in that directory are one-shot edit scripts, not proofs.** They were once named
    `proof-*` and re-running one would try to re-apply a landed patch and fail confusingly.
@@ -464,18 +480,40 @@ for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: 
 - Core's `StockGenerator_Category` has **all-private fields**. `GenRecipe.PostProcessProduct` is **private static**.
 - `SetTerrain` **clears** the colour grid. `CompFlickable.SwitchIsOn` has a **public setter**.
 
-## Open owner questions — none of them blocks anything
+## Open owner questions — THERE ARE NONE
 
-That status does not exist here; runtime rows are `[T]` and gate no work. These are **reserved
-decisions**, recorded so they are asked rather than guessed. Ask at the next natural moment.
+**All three reserved decisions were answered on 2026-09-29.** Nothing in this project is now
+waiting on the owner. Every remaining item in the queue above is buildable.
 
-1. **How a generated request picks its routes** — a fixed set per family, or derived from what the
-   branch has. Chart §6. **Blocks queue item 3.**
-2. **Whether the eight branches unlock in any order after the hinge.** Chart §6.
-3. **The public face** — site domain, Pages branch, and whether Playwright may drive a Steam page.
-   `PUBLIC_RELEASE_PLAN.md`. Correctly last.
+### Answered 2026-09-29 — the last three
 
-### Closed this session, so nobody re-asks
+- ~~**How a generated request picks its routes**~~ — **a declared pool, filtered by capability.**
+  A family declares a route **pool** in XML; generation filters it to what the branch can take,
+  and **if fewer than two routes of two different kinds survive, the request does not generate.**
+  Unblocks queue item 3, closes chart §6 item 3.
+- ~~**Whether the eight branches unlock in any order after the hinge**~~ — **all eight, any
+  order.** Each branch keeps its own internal tier ladder; no branch gates another. Closes chart
+  §6 item 2.
+- ~~**The public face**~~ — **everything, including Playwright driving Steam.** The concern was
+  stated before the choice and the owner chose it anyway, so it stands and is not re-litigated.
+  Still last, and it needs the owner present for the Steam session.
+
+### The question that was never open, and I asked it anyway
+
+**The adjacent-door-run fallback was owner-answered on 2026-09-29 — *"BOTH paths"* — and I put it
+back on the table one turn after the handoff audit fixed exactly this defect.** *"wtf are you
+talking about core only we have 294 recommend mods you fuck!!!!"*
+
+Two lessons, both load-bearing:
+
+1. **Search the ledger before asking.** `grep` for the subject across `.local/register/` and
+   `docs/` costs one command. The answer was sitting in `todo-089.py:37` in capitals.
+2. **Zero hard dependencies and Core-only are not the same claim.** The package must *load and
+   run* against Core alone — that is a **build** property and it holds. The install this mod is
+   *designed for* is **the 294**. Never write an option, a doc line or a design argument that
+   treats a vanilla install as the audience.
+
+### Closed earlier this session, so nobody re-asks
 
 - ~~**`reserveChargePowerWatts`**~~ — **a supply requirement before opening.** Wired 0.12.4-dev,
   and wiring it revived `RR_Cap_ReserveDiscipline`, a tier-0 card that had promised an unlock and
@@ -487,5 +525,3 @@ decisions**, recorded so they are asked rather than guessed. Ask at the next nat
   hints in the survivors' own voice. None is an objective.
 - ~~**The solo/group exit**~~ — **two maps, coordinate is real.** Superseded the earlier
   seed-tile answer once `RimroomsPortalNetwork.Register` was read.
-5. **The site's domain, the Pages publishing branch, and whether Playwright may drive Steam.**
-   All three in [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md).

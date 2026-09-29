@@ -1,0 +1,698 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using RimWorld;
+using Verse;
+
+namespace RimroomsAsyncIndustries.Company
+{
+    /// <summary>
+    /// Where a request stands with this branch.
+    ///
+    /// **There is no Expired and there never will be.** `docs/CAMPAIGN_CHART.md` §1.1: *"the only
+    /// clock is the gate"*. A request that nobody has got round to is still Offered, for as long
+    /// as the save lasts.
+    /// </summary>
+    public enum RequestStatus
+    {
+        /// <summary>On the table. The branch has not said yes.</summary>
+        Offered = 0,
+
+        /// <summary>Taken on. The routes are live and the branch is being watched.</summary>
+        Accepted = 1,
+
+        /// <summary>A route came true and the company paid.</summary>
+        Completed = 2,
+
+        /// <summary>
+        /// The player said no.
+        ///
+        /// **Chart §4.1: the player may cancel, the corporation may not.** A cancelled request
+        /// counts as *resolved* for the purpose of whatever came after it, so cancelling one
+        /// never strands the branch behind a prerequisite it can no longer satisfy. It pays
+        /// nothing, and that is the whole cost.
+        /// </summary>
+        Cancelled = 3,
+    }
+
+    /// <summary>
+    /// What this branch did about one corporation request.
+    ///
+    /// The def is the offer; this is the history. Keeping them apart is what lets the seven
+    /// authored requests stay pure content while the save carries only what actually happened.
+    /// </summary>
+    public sealed class RequestRecord : IExposable
+    {
+        internal string id;
+        internal string requestDefName;
+        internal RequestStatus status = RequestStatus.Offered;
+        internal int offeredTick = -1;
+        internal int acceptedTick = -1;
+        internal int completedTick = -1;
+        internal string settlementOperationId;
+        internal string satisfiedRouteLabelKey;
+        internal bool bonusPaid;
+
+        /// <summary>
+        /// Who was on the books the moment this was accepted.
+        ///
+        /// **A snapshot, per invariant 27**, because it decides money. The bonus asks whether
+        /// everybody who was employed when the branch took the job is still employed and alive
+        /// when it finishes, and reading that live would let a branch earn the bonus by firing
+        /// the casualty.
+        /// </summary>
+        internal List<string> staffAtAcceptance = new List<string>();
+
+        /// <summary>
+        /// Which routes were true the last time the line was evaluated, by label key.
+        ///
+        /// **Deliberately not saved.** It is derived from the world and refreshed on the same
+        /// tick that already evaluates every route, so saving it would be a second copy that can
+        /// disagree with the first. The field initializer runs before `ExposeData` on load, so a
+        /// loaded record starts empty and is correct again within four seconds.
+        ///
+        /// It exists so the card can show what is already done **without the pane scanning maps
+        /// sixty times a second** — the readout and the rule read the same evaluation.
+        /// </summary>
+        internal List<string> satisfiedRouteLabelKeys = new List<string>();
+
+        public IReadOnlyList<string> SatisfiedRouteLabelKeys { get { return satisfiedRouteLabelKeys; } }
+
+        public string Id { get { return id; } }
+        public string RequestDefName { get { return requestDefName; } }
+        public RequestStatus Status { get { return status; } }
+        public int OfferedTick { get { return offeredTick; } }
+        public int AcceptedTick { get { return acceptedTick; } }
+        public int CompletedTick { get { return completedTick; } }
+        public string SatisfiedRouteLabelKey { get { return satisfiedRouteLabelKey; } }
+        public bool BonusPaid { get { return bonusPaid; } }
+
+        /// <summary>The offer this record is about, or null if the def is no longer loaded.</summary>
+        public RimroomsRequestDef Definition
+        {
+            get
+            {
+                return string.IsNullOrEmpty(requestDefName) ? null
+                    : DefDatabase<RimroomsRequestDef>.GetNamedSilentFail(requestDefName);
+            }
+        }
+
+        /// <summary>Resolved either way: nothing downstream is waiting on it any more.</summary>
+        public bool Resolved
+        {
+            get { return status == RequestStatus.Completed || status == RequestStatus.Cancelled; }
+        }
+
+        /// <summary>Still on the table or being worked. At most one of these exists at a time.</summary>
+        public bool Open
+        {
+            get { return status == RequestStatus.Offered || status == RequestStatus.Accepted; }
+        }
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref id, "rr_id");
+            Scribe_Values.Look(ref requestDefName, "rr_requestDefName");
+            Scribe_Values.Look(ref status, "rr_status", RequestStatus.Offered);
+            Scribe_Values.Look(ref offeredTick, "rr_offeredTick", -1);
+            Scribe_Values.Look(ref acceptedTick, "rr_acceptedTick", -1);
+            Scribe_Values.Look(ref completedTick, "rr_completedTick", -1);
+            Scribe_Values.Look(ref settlementOperationId, "rr_settlementOperationId");
+            Scribe_Values.Look(ref satisfiedRouteLabelKey, "rr_satisfiedRouteLabelKey");
+            Scribe_Values.Look(ref bonusPaid, "rr_bonusPaid", false);
+            Scribe_Collections.Look(ref staffAtAcceptance, "rr_staffAtAcceptance", LookMode.Value);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && staffAtAcceptance == null)
+            { staffAtAcceptance = new List<string>(); }
+        }
+    }
+
+    /// <summary>
+    /// The mission line: the corporation asking this branch for things, and noticing when it gets
+    /// them.
+    ///
+    /// ## Why this file exists at all
+    ///
+    /// `RimroomsRequestDef` and `RequestRoutes` shipped in 0.11.1-dev and 0.11.2-dev as
+    /// `docs/CAMPAIGN_CHART.md` §7 steps 4 and 5, and the build order recorded both as done.
+    /// **They were read by nothing.** Seven requests, the whole tutorial line and the hinge,
+    /// validated at def load and checked by two tools, and no player could ever see one. This is
+    /// the half that was missing: the offer reaching somebody.
+    ///
+    /// ## What decides when an offer appears
+    ///
+    /// **Contact, then order, then prerequisites.** In that sequence, and every one of the three
+    /// can refuse:
+    ///
+    /// * **Contact.** Owner direction for the solo/group start, verbatim: *"option three with
+    ///   hints like i need to contact someone about this crazy shit"*. A corporation that has
+    ///   never heard of these people does not send them work. Two of the three starts begin in
+    ///   silence and the silence is the point.
+    /// * **Order.** The tutorial line is *"fixed"* (chart §4.2) and teaches one system each, so
+    ///   the next one waits until the open one is resolved. At most one is open at a time.
+    /// * **Prerequisites.** Declared on the def, and satisfied by Completed **or Cancelled** — so
+    ///   a player who refuses request 4 still gets request 5.
+    ///
+    /// **The tutorial line is deliberately NOT capability-filtered.** The owner's eligibility
+    /// answer — *"filter picks the family, card never shrinks"* — is about **generated** requests
+    /// after the hinge. Applying it here would let a fresh branch that cannot yet take two routes
+    /// be offered nothing at all, for ever, which is the one failure a tutorial cannot have.
+    ///
+    /// ## What decides when one completes
+    ///
+    /// **Any one route coming true.** Not the route the player nominated, because they never
+    /// nominate one: a request card shows the ways through and the company only cares that the
+    /// work is done. That also means two routes are allowed to come true together, and the one
+    /// recorded is the first in ordinal order so a save is reproducible.
+    ///
+    /// **Every route kind has its own check, and no two of them are the same question.** The pair
+    /// most at risk was Document and Testify, which both name a log kind — they are split on the
+    /// thing that actually differs: **Document is the paperwork and survives the witness dying;
+    /// Testify is the person and survives the book burning.**
+    /// </summary>
+    public sealed partial class RimroomsCampaignComponent
+    {
+        private List<RequestRecord> requests = new List<RequestRecord>();
+
+        internal void ExposeRequests()
+        {
+            Scribe_Collections.Look(ref requests, "rr_requestLine", LookMode.Deep);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && requests == null)
+            { requests = new List<RequestRecord>(); }
+        }
+
+        public IReadOnlyList<RequestRecord> Requests { get { return requests; } }
+
+        /// <summary>This branch's history with one offer, or null if it has never been offered.</summary>
+        public RequestRecord RequestFor(string defName)
+        {
+            if (string.IsNullOrEmpty(defName)) { return null; }
+            for (int index = 0; index < requests.Count; index++)
+            {
+                RequestRecord record = requests[index];
+                if (record != null && record.requestDefName == defName) { return record; }
+            }
+            return null;
+        }
+
+        /// <summary>The one request currently on the table, or null. There is never more than one.</summary>
+        public RequestRecord OpenRequest
+        {
+            get
+            {
+                for (int index = 0; index < requests.Count; index++)
+                {
+                    RequestRecord record = requests[index];
+                    if (record != null && record.Open) { return record; }
+                }
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// True once the branch is past the hinge.
+        ///
+        /// The hinge is the last thing the company asks for by name, so resolving it is what
+        /// turns the line from a script into a campaign. **Cancelled counts**, because the hinge's
+        /// own text says every choice is a success and refusing to answer is a choice.
+        /// </summary>
+        public bool PastTheHinge
+        {
+            get
+            {
+                List<RimroomsRequestDef> line = RimroomsRequestDef.TutorialLine();
+                if (line.Count == 0) { return false; }
+                RequestRecord record = RequestFor(line[line.Count - 1].defName);
+                return record != null && record.Resolved;
+            }
+        }
+
+        internal void TickRequestLine()
+        {
+            if (!CanOperate) { return; }
+            CompleteSatisfiedRequests();
+            OfferNextTutorialRequest();
+        }
+
+        // ------------------------------------------------------------------ offering
+
+        private void OfferNextTutorialRequest()
+        {
+            // Owner direction: no request line until the corporation knows this branch exists.
+            if (!corporationContact) { return; }
+            // One at a time. A second offer while the first is open would turn a tutorial that
+            // teaches one system per step into a list of chores.
+            if (OpenRequest != null) { return; }
+
+            List<RimroomsRequestDef> line = RimroomsRequestDef.TutorialLine();
+            for (int index = 0; index < line.Count; index++)
+            {
+                RimroomsRequestDef definition = line[index];
+                if (definition == null) { continue; }
+                RequestRecord existing = RequestFor(definition.defName);
+                // Already dealt with, in either direction. Move down the line.
+                if (existing != null) { continue; }
+                // The line is ordered, so the first unoffered request whose prerequisites are not
+                // resolved stops the whole line rather than being skipped over.
+                if (!PrerequisitesResolved(definition)) { return; }
+
+                var record = new RequestRecord
+                {
+                    id = branchId + ":request:" + definition.defName,
+                    requestDefName = definition.defName,
+                    status = RequestStatus.Offered,
+                    offeredTick = Find.TickManager.TicksGame,
+                };
+                requests.Add(record);
+                RecordEvent("RR_Event_RequestOffered", record.id, definition.LabelCap);
+                Find.LetterStack.ReceiveLetter(
+                    "RR_Letter_RequestOfferedTitle".Translate(definition.LabelCap),
+                    "RR_Letter_RequestOfferedBody".Translate(definition.description, CompanyName),
+                    LetterDefOf.NeutralEvent);
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Whether everything this request waits on has been dealt with.
+        ///
+        /// **Cancelled satisfies a prerequisite.** A player who turns down request 4 has still
+        /// resolved it, and stranding the rest of the line behind a refusal would make
+        /// cancellation a trap rather than the right the chart grants.
+        /// </summary>
+        private bool PrerequisitesResolved(RimroomsRequestDef definition)
+        {
+            if (definition.prerequisiteRequests == null) { return true; }
+            for (int index = 0; index < definition.prerequisiteRequests.Count; index++)
+            {
+                RequestRecord required = RequestFor(definition.prerequisiteRequests[index]);
+                if (required == null || !required.Resolved) { return false; }
+            }
+            return true;
+        }
+
+        // ------------------------------------------------------------------ the player's two verbs
+
+        /// <summary>Take the job on.</summary>
+        public CompanyActionResult AcceptRequest(string defName)
+        {
+            if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
+            RequestRecord record = RequestFor(defName);
+            if (record == null) { return CompanyActionResult.Refused("RR_Request_NotOffered"); }
+            if (record.status == RequestStatus.Accepted) { return CompanyActionResult.Existing(); }
+            if (record.status != RequestStatus.Offered)
+            { return CompanyActionResult.Refused("RR_Request_AlreadyResolved"); }
+
+            record.status = RequestStatus.Accepted;
+            record.acceptedTick = Find.TickManager.TicksGame;
+            record.staffAtAcceptance = EmployedStaffLoadIds();
+            RecordEvent("RR_Event_RequestAccepted", record.id);
+            return CompanyActionResult.Applied();
+        }
+
+        /// <summary>
+        /// Turn it down, or walk away from it after accepting.
+        ///
+        /// **Chart §4.1: the player may cancel; the corporation may not.** There is no fee, no
+        /// notice and no standing penalty, for the same reason a remote site has none: a cost for
+        /// changing your mind is a deadline wearing a different coat.
+        /// </summary>
+        public CompanyActionResult CancelRequest(string defName)
+        {
+            if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
+            RequestRecord record = RequestFor(defName);
+            if (record == null) { return CompanyActionResult.Refused("RR_Request_NotOffered"); }
+            if (record.status == RequestStatus.Cancelled) { return CompanyActionResult.Existing(); }
+            if (!record.Open) { return CompanyActionResult.Refused("RR_Request_AlreadyResolved"); }
+
+            record.status = RequestStatus.Cancelled;
+            RecordEvent("RR_Event_RequestCancelled", record.id);
+            return CompanyActionResult.Applied();
+        }
+
+        private List<string> EmployedStaffLoadIds()
+        {
+            var ids = new List<string>();
+            for (int index = 0; index < staff.Count; index++)
+            {
+                StaffRecord member = staff[index];
+                if (member == null || !member.employed || string.IsNullOrEmpty(member.pawnLoadId)) { continue; }
+                if (!ids.Contains(member.pawnLoadId)) { ids.Add(member.pawnLoadId); }
+            }
+            ids.Sort(System.StringComparer.Ordinal);
+            return ids;
+        }
+
+        // ------------------------------------------------------------------ completion
+
+        /// <summary>
+        /// Evaluate every open request once, refresh what the card shows, and complete anything
+        /// that has come true.
+        ///
+        /// **One evaluation feeds both the rule and the readout**, which is the same discipline
+        /// the gate's idle draw follows: a display that computes its own answer separately is a
+        /// display that will eventually disagree with the thing it is describing.
+        ///
+        /// An **Offered** request is evaluated too, so a player can see what is already done
+        /// before deciding. It is never completed while Offered — accepting is the branch saying
+        /// yes, and a job nobody took cannot pay.
+        /// </summary>
+        private void CompleteSatisfiedRequests()
+        {
+            for (int index = 0; index < requests.Count; index++)
+            {
+                RequestRecord record = requests[index];
+                if (record == null || !record.Open) { continue; }
+                RimroomsRequestDef definition = record.Definition;
+                if (definition == null) { continue; }
+
+                List<RimroomsSuccessRoute> ordered = OrderedRoutes(definition);
+                record.satisfiedRouteLabelKeys.Clear();
+                RimroomsSuccessRoute satisfied = null;
+                for (int slot = 0; slot < ordered.Count; slot++)
+                {
+                    if (!RouteSatisfied(ordered[slot])) { continue; }
+                    record.satisfiedRouteLabelKeys.Add(ordered[slot].labelKey);
+                    if (satisfied == null) { satisfied = ordered[slot]; }
+                }
+
+                if (satisfied == null || record.status != RequestStatus.Accepted) { continue; }
+                CompleteRequest(record, definition, satisfied);
+            }
+        }
+
+        /// <summary>
+        /// A request's authored routes in a fixed order.
+        ///
+        /// **Ordinal, per invariant 26.** Two routes may go true on the same tick, and which one
+        /// gets recorded as the one that did it must not depend on the order a def list happened
+        /// to load in — which varies with the player's mod list.
+        /// </summary>
+        private static List<RimroomsSuccessRoute> OrderedRoutes(RimroomsRequestDef definition)
+        {
+            if (definition.successRoutes == null) { return new List<RimroomsSuccessRoute>(); }
+            return definition.successRoutes
+                .Where(route => route != null)
+                .OrderBy(route => (int)route.kind)
+                .ThenBy(route => route.labelKey, System.StringComparer.Ordinal)
+                .ToList();
+        }
+
+        private void CompleteRequest(RequestRecord record, RimroomsRequestDef definition,
+            RimroomsSuccessRoute satisfied)
+        {
+            // Pay first. If the payment cannot be posted the request stays Accepted and this runs
+            // again next tick -- nothing is lost and nothing is completed for free.
+            if (definition.paymentUsd > 0)
+            {
+                string operationId = record.id + ":payment";
+                CompanyActionResult paid = PostTransaction(operationId, definition.paymentUsd,
+                    "RR_Ledger_RequestPayment", record.id);
+                if (!paid.Success) { return; }
+                record.settlementOperationId = operationId;
+            }
+
+            record.status = RequestStatus.Completed;
+            record.completedTick = Find.TickManager.TicksGame;
+            record.satisfiedRouteLabelKey = satisfied.labelKey;
+            RecordEvent("RR_Event_RequestCompleted", record.id, definition.LabelCap);
+
+            if (definition.bonusUsd > 0 && EverybodyCameBack(record))
+            {
+                CompanyActionResult bonus = PostTransaction(record.id + ":bonus", definition.bonusUsd,
+                    "RR_Ledger_RequestBonus", record.id);
+                if (bonus.Success && !bonus.AlreadyApplied)
+                {
+                    record.bonusPaid = true;
+                    RecordEvent("RR_Event_RequestBonus", record.id, definition.bonusUsd.ToString("N0"));
+                }
+            }
+
+            Find.LetterStack.ReceiveLetter(
+                "RR_Letter_RequestCompletedTitle".Translate(definition.LabelCap),
+                "RR_Letter_RequestCompletedBody".Translate(definition.LabelCap,
+                    satisfied.labelKey.Translate(), definition.paymentUsd.ToString("N0")),
+                LetterDefOf.PositiveEvent);
+        }
+
+        /// <summary>
+        /// Whether everybody who was on the books when this was accepted is still on them, alive.
+        ///
+        /// **This is the only read site for `bonusUsd`**, and it is the reason that field is not
+        /// a hollow number — invariant 136. It is also the right beat for the one request that
+        /// carries a bonus: *"bring back one record"* is the first time a branch sends people
+        /// through a gate, and the company pays extra when they all come back out.
+        ///
+        /// Measured against the **snapshot**, never the live roster, so firing the casualty does
+        /// not earn the bonus. Somebody hired afterwards is not held against the branch.
+        /// </summary>
+        private bool EverybodyCameBack(RequestRecord record)
+        {
+            if (record.staffAtAcceptance == null || record.staffAtAcceptance.Count == 0) { return false; }
+            for (int index = 0; index < record.staffAtAcceptance.Count; index++)
+            {
+                string loadId = record.staffAtAcceptance[index];
+                bool present = false;
+                for (int slot = 0; slot < staff.Count; slot++)
+                {
+                    StaffRecord member = staff[slot];
+                    if (member == null || !member.employed || member.pawnLoadId != loadId) { continue; }
+                    Pawn pawn = member.pawn;
+                    if (pawn == null || pawn.Dead || pawn.Destroyed) { continue; }
+                    present = true;
+                    break;
+                }
+                if (!present) { return false; }
+            }
+            return true;
+        }
+
+        // ------------------------------------------------------------------ what each route asks
+
+        /// <summary>
+        /// Whether one route has come true.
+        ///
+        /// **Seven kinds, seven different questions.** Where two kinds could have collapsed into
+        /// the same check they are split on what actually differs, because a request whose two
+        /// routes are one check is the *"one route wearing two hats"* that
+        /// `RimroomsRequestDef.ConfigErrors` exists to forbid — and a def that passes that rule
+        /// while its runtime check ignores it would be the rule passing on text alone.
+        /// </summary>
+        private bool RouteSatisfied(RimroomsSuccessRoute route)
+        {
+            switch (route.kind)
+            {
+                // The thing is home. "Home" is a branch place -- the headquarters or a registered
+                // site -- never a coordinate, because a record still lying in the Backrooms has
+                // not been brought back.
+                case SuccessRouteKind.Deliver:
+                case SuccessRouteKind.Substitute:
+                case SuccessRouteKind.Purchase:
+                    return OwnedThingCount(route.thingDefName) >= route.count;
+
+                // The paperwork. An analysed record carries the log, and it keeps carrying it
+                // after the book itself is gone.
+                case SuccessRouteKind.Document:
+                    return CompletedLogsOfKind(route.logKind) >= route.count;
+
+                // The person. Somebody who was there, is still employed, and is still alive --
+                // and `count` distinct people, so a route whose label promises two accounts
+                // needs two different witnesses rather than one witness counted twice.
+                case SuccessRouteKind.Testify:
+                    return LivingWitnessCount(route.logKind) >= route.count;
+
+                // Finished it.
+                case SuccessRouteKind.Research:
+                    return ProjectCompleted(route.projectDefName);
+
+                // Committed to it. Deliberately weaker than Research: the hinge offers both
+                // against the same project, and "declare a direction" is saying where you are
+                // going while "commit to the ladder" is arriving. If this asked for completion
+                // the hinge would have two routes with one answer.
+                case SuccessRouteKind.Redirect:
+                    return RedirectTaken(route.redirectTo);
+
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// How many of a thing the branch has at a place it actually runs.
+        ///
+        /// Uses <see cref="CanReceiveDeliveryAt"/> rather than <see cref="OwnsMap"/> on purpose:
+        /// `OwnsMap` includes the branch's own coordinates, and a book still on a shelf in the
+        /// Backrooms has not been brought home.
+        /// </summary>
+        private int OwnedThingCount(string thingDefName)
+        {
+            if (string.IsNullOrEmpty(thingDefName)) { return 0; }
+            ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail(thingDefName);
+            if (definition == null) { return 0; }
+            int count = 0;
+            List<Map> maps = Find.Maps;
+            for (int index = 0; index < maps.Count; index++)
+            {
+                Map map = maps[index];
+                if (map == null || !CanReceiveDeliveryAt(map)) { continue; }
+                List<Thing> things = map.listerThings.ThingsOfDef(definition);
+                for (int slot = 0; slot < things.Count; slot++)
+                {
+                    Thing thing = things[slot];
+                    if (thing == null || thing.Destroyed) { continue; }
+                    count += thing.stackCount;
+                }
+            }
+            return count;
+        }
+
+        private int CompletedLogsOfKind(string logKind)
+        {
+            LogKind kind;
+            return TryLogKind(logKind, out kind) ? CompletedLogCount(kind) : 0;
+        }
+
+        /// <summary>
+        /// Distinct living employees who witnessed something of this kind.
+        ///
+        /// **Distinct, employed and alive, all three.** Distinct because *"two crew accounts"*
+        /// means two people. Employed because a testimony is the branch speaking. Alive because
+        /// this is the half of the evidence system that a death can take away, which is exactly
+        /// what makes it a different route from the paperwork rather than a second name for it.
+        /// </summary>
+        private int LivingWitnessCount(string logKind)
+        {
+            LogKind kind;
+            if (!TryLogKind(logKind, out kind)) { return 0; }
+            var witnesses = new HashSet<string>(System.StringComparer.Ordinal);
+            for (int index = 0; index < evidence.Count; index++)
+            {
+                EvidenceRecord record = evidence[index];
+                if (record == null || record.Observations == null) { continue; }
+                IReadOnlyList<EvidenceObservationRecord> observations = record.Observations;
+                for (int slot = 0; slot < observations.Count; slot++)
+                {
+                    EvidenceObservationRecord observation = observations[slot];
+                    if (observation == null || string.IsNullOrEmpty(observation.WitnessLoadId)) { continue; }
+                    if (!ObservationCarries(observation.Kind, kind)) { continue; }
+                    Pawn witness = observation.Witness;
+                    if (witness == null || witness.Dead || witness.Destroyed) { continue; }
+                    if (!IsEmployedPawn(witness)) { continue; }
+                    witnesses.Add(observation.WitnessLoadId);
+                }
+            }
+            return witnesses.Count;
+        }
+
+        /// <summary>
+        /// Which observations speak to which log.
+        ///
+        /// Taken from `EvidenceObservationKinds`, which the investigation system already writes:
+        /// a room survey is how a route gets known, a route mismatch or a recorder gap is the map
+        /// and the landmark disagreeing, and a sighting is an entity. Nothing new is recorded for
+        /// this feature — testimony reads what crews were already producing.
+        /// </summary>
+        private static bool ObservationCarries(string observationKind, LogKind logKind)
+        {
+            switch (logKind)
+            {
+                case LogKind.Route:
+                    return observationKind == EvidenceObservationKinds.RoomSurvey;
+                case LogKind.Distortion:
+                    return observationKind == EvidenceObservationKinds.RouteMismatch ||
+                        observationKind == EvidenceObservationKinds.RecorderGap;
+                case LogKind.Entity:
+                    return observationKind == EvidenceObservationKinds.EntitySighting;
+                default:
+                    return false;
+            }
+        }
+
+        private static bool TryLogKind(string logKind, out LogKind kind)
+        {
+            switch ((logKind ?? "").ToLowerInvariant())
+            {
+                case "route": kind = LogKind.Route; return true;
+                case "distortion": kind = LogKind.Distortion; return true;
+                case "entity": kind = LogKind.Entity; return true;
+                default: kind = LogKind.Route; return false;
+            }
+        }
+
+        private bool IsEmployedPawn(Pawn pawn)
+        {
+            for (int index = 0; index < staff.Count; index++)
+            {
+                StaffRecord member = staff[index];
+                if (member != null && member.employed && member.pawn == pawn) { return true; }
+            }
+            return false;
+        }
+
+        private bool ProjectCompleted(string projectDefName)
+        {
+            if (string.IsNullOrEmpty(projectDefName)) { return false; }
+            for (int index = 0; index < projects.Count; index++)
+            {
+                ProjectRecord record = projects[index];
+                if (record != null && record.completed && record.researchDefName == projectDefName)
+                { return true; }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Started, rather than finished. Work on the bench, or the insight already committed.
+        ///
+        /// A project record exists as soon as a branch commits an insight to it, so this is the
+        /// earliest honest moment at which a branch has said where it is going.
+        /// </summary>
+        private bool ProjectStarted(string projectDefName)
+        {
+            if (string.IsNullOrEmpty(projectDefName)) { return false; }
+            for (int index = 0; index < projects.Count; index++)
+            {
+                ProjectRecord record = projects[index];
+                if (record == null || record.researchDefName != projectDefName) { continue; }
+                if (record.completed || record.insightCommitted || record.workDone > 0f) { return true; }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Whether a redirect has been taken: another request finished in its place, or the named
+        /// project committed to.
+        /// </summary>
+        private bool RedirectTaken(string redirectTo)
+        {
+            if (string.IsNullOrEmpty(redirectTo)) { return false; }
+            RequestRecord other = RequestFor(redirectTo);
+            if (other != null && other.status == RequestStatus.Completed) { return true; }
+            return ProjectStarted(redirectTo);
+        }
+
+        // ------------------------------------------------------------------ save integrity
+
+        /// <summary>
+        /// Requests, checked the way every other record collection is.
+        ///
+        /// A duplicate id would double-pay through a second operation id; an undefined status
+        /// would fall through every switch silently. Both are save-integrity faults rather than
+        /// gameplay recoveries.
+        /// </summary>
+        internal bool RequestRecordsValid()
+        {
+            var ids = new HashSet<string>(System.StringComparer.Ordinal);
+            var defNames = new HashSet<string>(System.StringComparer.Ordinal);
+            for (int index = 0; index < requests.Count; index++)
+            {
+                RequestRecord record = requests[index];
+                if (record == null || string.IsNullOrWhiteSpace(record.id) || !ids.Add(record.id))
+                { return false; }
+                if (string.IsNullOrWhiteSpace(record.requestDefName) || !defNames.Add(record.requestDefName))
+                { return false; }
+                if (!System.Enum.IsDefined(typeof(RequestStatus), record.status)) { return false; }
+                if (record.staffAtAcceptance == null) { return false; }
+            }
+            return true;
+        }
+    }
+}
