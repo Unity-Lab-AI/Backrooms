@@ -15,12 +15,6 @@
     <statBases><Mass>1.6</Mass><MarketValue>160</MarketValue></statBases>
   </ThingDef>
   <ThingDef ParentName="RR_FieldItemBase">
-    <defName>RR_SealedEvidenceCase</defName><label>sealed evidence case</label>
-    <description>A protective field case for one route recording. Carry it during recovery to establish the first mission's sealed custody record. The case and recording remain separate physical cargo with their normal mass and storage needs.</description>
-    <graphicData><texPath>Items/Field/RR_SealedEvidenceCase</texPath></graphicData>
-    <statBases><Mass>2</Mass><MarketValue>90</MarketValue></statBases>
-  </ThingDef>
-  <ThingDef ParentName="RR_FieldItemBase">
     <defName>RR_RouteRecording</defName><label>route recording</label>
     <description>A unique physical recording recovered from an explored coordinate. Preserve it, return it with the field evidence case, then analyze it at a powered field analysis bench. Case identity, observations and analysis progress are saved. Destroyed evidence is not recreated on revisiting the site.</description>
     <thingCategories Inherit="False"><li>RR_Evidence</li></thingCategories>

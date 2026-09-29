@@ -44,7 +44,10 @@ Supplies arrive physically with your people and stay editable separately from th
         <!-- Six survey tags became eight glow pods. Core content, no cap, and a player
              who wants more buys more; the retired tag was six because a kit check said so. -->
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>GlowPod</thingDef><count>8</count></li>
-        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>RR_SealedEvidenceCase</thingDef><count>1</count></li>
+        <!-- The sealed evidence case was retired in 0.10.9-dev. Custody is a shelf linked
+             to a gate as a records archive, so the start grants the shelf instead of a
+             custom item whose only job was to exist somewhere on the map. -->
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>Shelf</thingDef><count>2</count></li>
       </parts>
     </scenario>
   </ScenarioDef>

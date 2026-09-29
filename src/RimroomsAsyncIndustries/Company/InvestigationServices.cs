@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using RimWorld;
 using RimroomsAsyncIndustries.Investigation;
@@ -90,6 +90,8 @@ namespace RimroomsAsyncIndustries.Company
             if (definition == null) { return CompanyActionResult.Refused("RR_Research_MissingProject"); }
             if (project.insightCommitted || project.completed) { return CompanyActionResult.Existing(); }
             if (ActiveProject != null) { return CompanyActionResult.Refused("RR_Research_ProjectAlreadyActive"); }
+            string qualification = ProjectQualificationFailureKey(definition);
+            if (qualification != null) { return CompanyActionResult.Refused(qualification); }
             if (researchInsights < definition.insightCost) { return CompanyActionResult.Refused("RR_Research_NeedsInsight"); }
             researchInsights -= definition.insightCost;
             project.insightCommitted = true;
@@ -98,11 +100,74 @@ namespace RimroomsAsyncIndustries.Company
             return CompanyActionResult.Applied();
         }
 
+
+        /// <summary>
+        /// Whether this branch has learned enough to attempt a project, or null if it has.
+        ///
+        /// **Owner direction, 2026-09-29, verbatim:** *"u need certain logs complete to operate
+        /// the higher teri techs and shit and gate features and upgrades"*.
+        ///
+        /// Checked **before** insight is spent, so a branch that is short of logs is told so
+        /// rather than being charged and then refused. Separate from the cost for the same reason
+        /// every other check in this mod is split: a qualification and a price are two different
+        /// questions, and merging them hides which one failed.
+        /// </summary>
+        public string ProjectQualificationFailureKey(RimroomsProjectDef definition)
+        {
+            if (definition == null) { return "RR_Research_MissingProject"; }
+
+            if (definition.prerequisiteProjects != null)
+            {
+                for (int index = 0; index < definition.prerequisiteProjects.Count; index++)
+                {
+                    string required = definition.prerequisiteProjects[index];
+                    if (string.IsNullOrWhiteSpace(required)) { continue; }
+                    if (!projects.Any(p => p != null && p.Completed && p.ResearchDefName == required))
+                    { return "RR_Research_NeedsPrerequisite"; }
+                }
+            }
+
+            if (CompletedLogCount(LogKind.Route) < definition.requiredRouteLogs)
+            { return "RR_Research_NeedsRouteLogs"; }
+            if (CompletedLogCount(LogKind.Distortion) < definition.requiredDistortionLogs)
+            { return "RR_Research_NeedsDistortionLogs"; }
+            if (CompletedLogCount(LogKind.Entity) < definition.requiredEntityLogs)
+            { return "RR_Research_NeedsEntityLogs"; }
+            return null;
+        }
+
+        /// <summary>The three kinds of log an analysed record can carry.</summary>
+        public enum LogKind { Route = 0, Distortion = 1, Entity = 2 }
+
+        /// <summary>
+        /// Completed logs of one kind across the whole branch.
+        ///
+        /// **Only `Analyzed` records count.** A record that was carried home and never put through
+        /// a bench is recovered evidence, not a completed log, and the owner's word was
+        /// *"complete"*. A record that later goes `Missing` keeps its analysed tick, so a log that
+        /// was completed stays completed even if the book itself burns — which is the same
+        /// once-only rule the insight award already follows.
+        /// </summary>
+        public int CompletedLogCount(LogKind kind)
+        {
+            int count = 0;
+            for (int index = 0; index < evidence.Count; index++)
+            {
+                EvidenceRecord record = evidence[index];
+                if (record == null || record.analyzedTick < 0) { continue; }
+                bool carries = kind == LogKind.Route ? record.RouteRecorded
+                    : kind == LogKind.Distortion ? record.DistortionRecorded
+                    : record.EntityRecorded;
+                if (carries) { count++; }
+            }
+            return count;
+        }
+
         internal bool CanAnalyze(EvidenceRecord record, Pawn analyst, Thing bench)
         {
             return CanOperate && record != null && record.status == EvidenceStatus.Secured && record.analyzedTick < 0 &&
                 record.routeRecorded && record.distortionRecorded && record.item != null &&
-                !record.item.Destroyed && record.item.MapHeld == headquarters && HasSecuredEvidenceCase(record) &&
+                !record.item.Destroyed && record.item.MapHeld == headquarters && HasArchivedCustody(record) &&
                 record.item.GetUniqueLoadID() == record.itemLoadId && CompRouteEvidence.IsBoundRouteEvidence(record.item, record.id) &&
                 LaboratoryUtility.CanWork(analyst, bench, this, 4);
         }

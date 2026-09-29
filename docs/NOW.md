@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.10.8-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.10.9-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **160 C# files, 84 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `A3BDB14AC101C0FDAFBF67C917535996FE54E5023202391589D382B23C83860B`, reproduced by two clean recompiles |
+| Build | **160 C# files, 83 package files**, zero warnings, zero errors |
+| Assembly | SHA-256 `98A61546AFE6C757062FC91D55AB384CFD6BEC2D1DA0FC3A66E7D20927CA1F95`, reproduced by two clean recompiles |
 | Checkers | **seven**, all passing |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -41,7 +41,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.10.8
+## What shipped this session, 0.7.1 → 0.10.9
 
 | Version | What |
 |---|---|
@@ -69,6 +69,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.10.6 | **The documents use the mod's own words** — the vocabulary and the wall rule reach the reader-facing set; two superseded rules found while reading |
 | 0.10.7 | **The survey tag becomes a glow pod** — marker types with colours, three caps removed, and an outcome that could never fire |
 | 0.10.8 | **A gate's facility is the equipment linked into it** — shelves, analysers and cabinets link like furniture to a bed, but far, through walls and by hand |
+| 0.10.9 | **What you have learned is what you can build** — projects require completed logs; the ladder had one rung and a declared top tier of four |
 
 ---
 
@@ -198,6 +199,11 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 97. **A def name that reads correctly can still be wrong, and nothing will tell you.** `Multianalyzer` is a ResearchProjectDef; the building is `MultiAnalyzer`. RimWorld's XML loader validates neither, so the wrong one loads clean and matches nothing. **Enumerate the installed data.**
 98. **A rule and its exemption must both be provably non-empty.** The same-power-net rule applies only to things with a power comp. If every candidate were powered the exemption would be dead code; if none were, the rule would be. Assert both halves.
 99. **State what already works before building it again.** Six of the nine items in this direction were already satisfied by rules written for the original three providers.
+100. **A ladder must be at least as long as the tier it declares.** `portalWindowTierProjects` held one rung while `portalIndefiniteTier` was 4, so the top of the gate's own capability ladder was unreachable for the whole life of the mod. **Every individual value was valid**; the fault existed only in the relationship between two settings in different files. Covered by `proof-tier-ladder.py`, which reads the ladder from the source and the rungs from the defs.
+101. **Fungible currency cannot express what a branch has learned.** Insight bought the same thing whatever produced it. Completed logs are the qualification and insight is only the price; a spent currency is gone and a completed log is not.
+102. **Check a qualification before charging for it.** `ProjectQualificationFailureKey` runs ahead of the insight deduction, so a branch short of logs is told which kind.
+103. **Custody is a place, not a receipt.** The retired check asked whether an evidence case existed somewhere at headquarters and never asked where the book was. A rule that can be satisfied without the thing it is about being anywhere in particular is not a rule.
+104. **A prerequisite chain needs a cycle check, transitively.** A cycle is unreachable content in which every individual def looks completely normal.
 
 ---
 

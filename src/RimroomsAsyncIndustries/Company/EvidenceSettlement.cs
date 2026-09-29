@@ -1,17 +1,45 @@
-using System.Linq;
+﻿using System.Linq;
 using RimroomsAsyncIndustries.Expedition;
+using RimWorld;
 using Verse;
 
 namespace RimroomsAsyncIndustries.Company
 {
     public sealed partial class RimroomsCampaignComponent
     {
-        private bool HasSecuredEvidenceCase(EvidenceRecord record)
+        /// <summary>
+        /// Whether a record's book is in the branch's custody: **stored on a shelf linked to a
+        /// gate as a records archive**.
+        ///
+        /// This used to ask whether the expedition that produced the record still had a
+        /// `RR_SealedEvidenceCase` at headquarters. That was custody-by-receipt: the case was a
+        /// custom item whose only job was to exist somewhere on the map, and it did not matter
+        /// where the book itself had been put. Owner direction was *"things needed to be on
+        /// shelves/records that computers and workbenches need to connect to"*, so custody is now
+        /// **a place the book is**, which a player can see, reorganise and lose.
+        ///
+        /// The archive is a role in the gate's equipment links built in 0.10.8-dev, so a facility
+        /// with several gates has several archives and a record is in custody when it reaches any
+        /// of them. Not restricted to the gate that produced the record: the corporation cares
+        /// that the paperwork is filed, not which door it came through.
+        /// </summary>
+        private bool HasArchivedCustody(EvidenceRecord record)
         {
-            ExpeditionRecord source = Current.Game.GetComponent<RimroomsExpeditionComponent>().Records
-                .FirstOrDefault(r => r.ExpeditionId == record.sourceExpeditionId);
-            return source != null && source.Cargo.Any(c => c.Item != null && !c.Item.Destroyed &&
-                c.Item.def.defName == "RR_SealedEvidenceCase" && c.Item.MapHeld == headquarters);
+            if (record == null || record.item == null || record.item.Destroyed) { return false; }
+            Thing store = record.item.StoringThing();
+            if (store == null || store.Map != headquarters) { return false; }
+            foreach (Building building in headquarters.listerBuildings.allBuildingsColonist)
+            {
+                Gate.CompRimroomsGate gate = building.TryGetComp<Gate.CompRimroomsGate>();
+                if (gate == null || !gate.IsDesignated) { continue; }
+                foreach (Thing linked in gate.LinkedEquipment)
+                {
+                    if (linked != store) { continue; }
+                    Gate.RimroomsGateEquipmentDef role = Gate.RimroomsGateEquipmentDef.RoleFor(linked);
+                    if (role != null && role.defName == "RR_Link_Archive") { return true; }
+                }
+            }
+            return false;
         }
 
         private void UpdateEvidenceAndContracts()
@@ -33,7 +61,7 @@ namespace RimroomsAsyncIndustries.Company
                     if (record.analyzedTick < 0) { record.status = EvidenceStatus.Recovered; }
                 }
                 if (record.analyzedTick < 0 && record.item != null && !record.item.Destroyed && record.item.MapHeld == headquarters &&
-                    HasSecuredEvidenceCase(record))
+                    HasArchivedCustody(record))
                 {
                     if (record.status != EvidenceStatus.Secured)
                     { RecordEvent("RR_Event_EvidenceSecured", record.id); }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Evidence_Unregistered>Evidence has no branch case record. Preserve the item and inspect the company record.</RR_Evidence_Unregistered>
   <RR_Evidence_Inspect>Case status: {0}\nAnalysis: {1}</RR_Evidence_Inspect>
@@ -14,6 +14,10 @@
   <RR_Event_SurveyBonus>All three original crew returned with the required observations. Company Account bonus: ${0} USD.</RR_Event_SurveyBonus>
   <RR_Research_MissingProject>The saved company project definition is unavailable. Restore the required Rimrooms content before proceeding.</RR_Research_MissingProject>
   <RR_Research_ProjectAlreadyActive>Finish the active company project before starting another.</RR_Research_ProjectAlreadyActive>
+  <RR_Research_NeedsPrerequisite>An earlier project has to be finished before this one can begin.</RR_Research_NeedsPrerequisite>
+  <RR_Research_NeedsRouteLogs>Not enough completed route logs. Survey more coordinates, bring the books home to an archive shelf, and analyse them.</RR_Research_NeedsRouteLogs>
+  <RR_Research_NeedsDistortionLogs>Not enough completed distortion logs. This needs records of the space itself misbehaving while somebody was recording, which a branch that has only had quiet runs will not have.</RR_Research_NeedsDistortionLogs>
+  <RR_Research_NeedsEntityLogs>Not enough completed entity logs. The company will not authorise this on the word of a crew that has never met anything down there.</RR_Research_NeedsEntityLogs>
   <RR_Research_NeedsInsight>Analyze recovered evidence to earn the insight this project needs.</RR_Research_NeedsInsight>
   <RR_Research_NotReady>Research requires an active company project and a qualified researcher working at a powered headquarters analysis bench.</RR_Research_NotReady>
   <RR_Event_ProjectStarted>Company research started: {0}.</RR_Event_ProjectStarted>

@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Exp_Missing_RR_FieldRecorder>The shared field recorder is missing from the selected crew's actual inventories. Load it from storage; relief may also use the original crew's inventoried recorder at the saved site.</RR_Exp_Missing_RR_FieldRecorder>
-  <RR_Exp_Missing_RR_SealedEvidenceCase>The shared sealed evidence case is missing from crew inventories. Load the case before departure.</RR_Exp_Missing_RR_SealedEvidenceCase>
   <RR_Exp_CannotCarry>This staff member cannot carry an expedition inventory.</RR_Exp_CannotCarry>
   <RR_Exp_OverCapacity>A crew member's real gear and cargo exceed their native carrying capacity. Unload cargo or choose another carrier.</RR_Exp_OverCapacity>
   <RR_Exp_PickupUnavailable>The item is unavailable, forbidden, reserved, unreachable, or too large for this pickup. Inspect the real item and pawn.</RR_Exp_PickupUnavailable>

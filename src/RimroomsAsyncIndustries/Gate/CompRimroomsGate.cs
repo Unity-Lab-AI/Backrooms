@@ -39,7 +39,21 @@ namespace RimroomsAsyncIndustries.Gate
         /// and the ladder grows without a code change. Completion is what counts, not
         /// spendable insight, so a tier can never be lost by spending currency.
         /// </summary>
-        public List<string> portalWindowTierProjects = new List<string> { "RR_GateTelemetry" };
+        /// <summary>
+        /// The ladder, in order. One rung per tier.
+        ///
+        /// This held a single name until 0.10.9-dev while <see cref="portalIndefiniteTier"/> was
+        /// 4, so the tier could never exceed 1 and a standing connection was unreachable however
+        /// a branch played. Four rungs declared and one built, and no checker could see it
+        /// because every individual value was valid.
+        /// </summary>
+        public List<string> portalWindowTierProjects = new List<string>
+        {
+            "RR_GateTelemetry",
+            "RR_GateFieldStability",
+            "RR_GateSustainedAperture",
+            "RR_GateStandingConnection",
+        };
 
         /// <summary>
         /// The tier at which a supported opening stops counting down entirely. At and

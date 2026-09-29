@@ -23,8 +23,11 @@ namespace RimroomsAsyncIndustries.Expedition
         // The counts array carried a fourth entry the loop never read, left over from the
         // beacon. Arrays that disagree about their own length are a bug waiting for somebody
         // to add an item to one of them.
-        private static readonly string[] KitDefs = { "RR_FieldRecorder", "RR_SealedEvidenceCase" };
-        private static readonly int[] KitCounts = { 1, 1 };
+        // The sealed evidence case left in 0.10.9-dev with its requirement. Custody is a
+        // shelf linked to a gate as a records archive, which is a place at headquarters
+        // rather than an item a crew has to remember to carry out and back.
+        private static readonly string[] KitDefs = { "RR_FieldRecorder" };
+        private static readonly int[] KitCounts = { 1 };
 
         public static CompanyActionResult CheckKit(IEnumerable<Pawn> crew, Map deployedSite = null, string coordinateId = null)
         {

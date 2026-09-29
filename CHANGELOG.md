@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.10.9-dev - 2026-09-29 - what you have learned is what you can build
+
+- **A company project now needs completed logs, not just insight.** Route logs, distortion logs, entity logs. Insight is the price; the logs are the qualification, and unlike insight a completed log is never spent.
+- **You are told which log you are short of before anything is charged**, and told what to do about it.
+- **The ladder has four rungs instead of one.** Gate Telemetry, Field Stability, Sustained Aperture, Standing Connection. Each one needs the one below it.
+- **A connection that never counts down was previously impossible.** The indefinite tier was set at four and only one rung existed, so the top of the gate's own capability ladder could not be reached however you played. It can now.
+- **Sustained Aperture is the rung where what lives down there can follow a crew out** - and it requires an entity log, so nothing can come through before you have written down that something is there.
+- **Evidence custody is a shelf now.** Link a shelf to a gate as its records archive, store a recovered book there, and it is in custody. The sealed evidence case is retired: it was an item whose only job was to exist somewhere on the map, and it did not care where the book actually went.
+- Starts grant two shelves instead of a case. Dispatch no longer refuses a crew over one.
+
+Full record: [what you have learned is what you can build](docs/implementation/LOG_GATED_LADDER_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.10.8-dev - 2026-09-29 - a gate's facility is the equipment linked into it
 
 - **Link shelves, analysers, benches and tool cabinets to a gate**, the way furniture connects to a bed. Select the gate and you see lines to everything connected to it, drawn in the game's own colours - solid when a link is working, faded when it is not.
