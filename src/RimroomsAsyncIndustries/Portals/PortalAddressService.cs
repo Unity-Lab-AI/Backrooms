@@ -28,6 +28,69 @@ namespace RimroomsAsyncIndustries.Portals
             return campaign.BranchId + ":portal:" + coordinate.Id + ":" + threshold.GetUniqueLoadID();
         }
 
+        /// <summary>
+        /// Stable identity for a way out. A distinct <c>:emergence:</c> segment means it can
+        /// never collide with a portal address even if a coordinate and a threshold coincided.
+        /// </summary>
+        public static string EmergenceAddressId(RimroomsCampaignComponent campaign,
+            CoordinateRecord coordinate, Thing backroomsThreshold)
+        {
+            if (campaign == null || coordinate == null || backroomsThreshold == null) { return null; }
+            return campaign.BranchId + ":emergence:" + coordinate.Id + ":" +
+                backroomsThreshold.GetUniqueLoadID();
+        }
+
+        /// <summary>
+        /// Remember a way **out** of the Backrooms: a doorway inside a coordinate linked to a
+        /// door on an ordinary branch-owned map that the player marked for it.
+        ///
+        /// This is the other half of the owner's topology direction — *"and or pop out any
+        /// where in the game world on a tile map"* — in its bounded form, where the far side
+        /// is a map the branch already holds. It is what makes
+        /// <c>backrooms &gt; map &gt; backrooms</c> chains route end to end.
+        ///
+        /// **The endpoints are recorded anchor-first on purpose.** `First` is the ordinary
+        /// door and `Second` is the Backrooms doorway, which is the same orientation every
+        /// other kind uses — a branch-owned map on one side, a coordinate on the other. That
+        /// makes every ownership and site check the network already performs read correctly
+        /// for this kind without a single one of them needing a special case.
+        ///
+        /// Nothing here chooses the ordinary door. Only a door the player marked can be
+        /// passed in, and the network refuses one that is not marked.
+        /// </summary>
+        public static CompanyActionResult RegisterEmergenceAddress(Thing backroomsThreshold,
+            IntVec3 backroomsApproach, CompRimroomsEmergence anchor)
+        {
+            RimroomsCampaignComponent campaign = Campaign();
+            RimroomsPortalNetwork network = Network();
+            if (campaign == null || !campaign.CanOperate || network == null || network.HasStateFault)
+            { return Refuse("InvalidState"); }
+            if (anchor == null || !anchor.IsDesignated || anchor.parent == null)
+            { return Refuse("EmergenceAnchorUnavailable"); }
+            IntVec3 anchorApproach = anchor.ApproachCell;
+            if (!UsableThreshold(anchor.parent, anchorApproach, anchor.parent.Map))
+            { return Refuse("EmergenceAnchorUnavailable"); }
+            if (!UsableThreshold(backroomsThreshold, backroomsApproach,
+                backroomsThreshold == null ? null : backroomsThreshold.Map))
+            { return Refuse("LocalThresholdUnavailable"); }
+            if (backroomsThreshold.Map == anchor.parent.Map) { return Refuse("SameMap"); }
+
+            // The coordinate the doorway stands in. A way out leads from a real remembered
+            // space, never from an unowned map that merely happens to be generated.
+            var site = backroomsThreshold.Map.Parent as RimroomsDestinationMapParent;
+            if (site == null || !site.LayoutReady) { return Refuse("SiteUnavailable"); }
+            CoordinateRecord coordinate = campaign.Coordinates
+                .FirstOrDefault(record => record.Id == site.CoordinateId && record.Site == site);
+            if (coordinate == null) { return Refuse("UnknownCoordinate"); }
+
+            string id = EmergenceAddressId(campaign, coordinate, backroomsThreshold);
+            PortalNetworkResult result = network.Register(id, coordinate.Id, PortalConnectionKind.Emergence,
+                anchor.parent, anchorApproach, backroomsThreshold, backroomsApproach);
+            if (result == PortalNetworkResult.Success)
+            { campaign.RecordEvent("RR_Event_EmergenceRegistered", id, coordinate.Id); }
+            return Translate(result);
+        }
+
         public static bool NeedsLegacyThresholdRepair(CoordinateRecord coordinate)
         {
             RimroomsDestinationMapParent site = coordinate == null ? null : coordinate.Site as RimroomsDestinationMapParent;

@@ -141,8 +141,7 @@ namespace RimroomsAsyncIndustries.UI
             foreach (PortalConnectionRecord address in addresses)
             {
                 if (address == null) { continue; }
-                string kind = (address.Kind == PortalConnectionKind.Natural
-                    ? "RR_Portals_KindNatural" : "RR_Portals_KindLaboratory").Translate().ToString();
+                string kind = KindLabelKey(address.Kind).Translate().ToString();
                 listing.Label("RR_Portals_AddressLine".Translate(address.Id, address.CoordinateId, kind,
                     AvailabilityLabel(network.Availability(address))));
             }
@@ -256,5 +255,19 @@ namespace RimroomsAsyncIndustries.UI
         /// </summary>
         private static IntVec3 NaturalApproachCell(Thing door)
         { return PortalAddressService.ApproachCellFor(door); }
-    }
+    
+        /// <summary>
+        /// The player-facing name of a connection kind. A switch rather than a ternary so a
+        /// kind added later cannot be silently displayed as a laboratory.
+        /// </summary>
+        private static string KindLabelKey(PortalConnectionKind kind)
+        {
+            switch (kind)
+            {
+                case PortalConnectionKind.Natural: return "RR_Portals_KindNatural";
+                case PortalConnectionKind.Emergence: return "RR_Portals_KindEmergence";
+                default: return "RR_Portals_KindLaboratory";
+            }
+        }
+}
 }

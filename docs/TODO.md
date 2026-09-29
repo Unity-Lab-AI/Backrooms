@@ -369,6 +369,28 @@ This settles the shape of the topology: **an unbounded alternation of ordinary w
 
 **Position on the last two rows, recorded 2026-09-29 so it is not re-litigated:** the starting facilities do **not** need designing from scratch. [`SCENARIOS.md`](SCENARIOS.md) already specifies all three in detail — the Async Industries 60x60 headquarters with its secured perimeter, dormitory, mess, storage, infirmary corner, workshop, research bench, utility generator with reserve battery and a gate chamber assembled to roughly three-quarters that cannot open yet; the 50x50 store with sales floor, stockroom, office, staff room and a basement threshold that is not a working machine gate; and the lone-survivor generated 6-8 room coordinate with a restable shelter, limited supplies, at least two connected route clues and a traversable path to an objective and a possible exit. So this is implementation against an existing specification, not invention, and the fallback is not needed unless a specified element turns out to be unbuildable under the existing-content-only policy.
 
+### Owner direction — a kill switch for the laboratory gate (2026-09-29)
+
+**Verbatim owner request (2026-09-29):** *"we also need to have the ability to use a switch so cutting power instantly closes the lab gate in emergencies.. idk think of cool shit in how all the equipment needs to connect and operate for a lab gate"*
+
+Not yet built. Recorded here in full the moment it was asked so it cannot be lost, and scoped to its own checkpoint rather than folded into the emergence work that was in flight.
+
+- [ ] **"we also need to have the ability to use a switch so cutting power instantly closes the lab gate in emergencies"** — a player-operable switch that closes an open laboratory gate at once by cutting its power. What already exists to build on: `CompRimroomsGate` is a native provider carrying `nativeConsole`, `nativeBattery` and `nativeAssemblyBench`; `NativeBindingFailureKey` already reports `RR_NativeGate_PowerUnavailable` when power is unavailable; and there is already an emergency-return window with its own reserved watt-days. What is missing is the **deliberate** act: cutting power today makes a gate *unavailable*, which is not the same as *closing it now on purpose*, and the difference matters when somebody is on the far side.
+- [ ] **"idk think of cool shit in how all the equipment needs to connect and operate for a lab gate"** — open design latitude on how the equipment interconnects. Read `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md` and the gate records before proposing, and keep every piece existing content: Core's own `PowerSwitch`, conduits, batteries and consoles, matched by capability rather than by name.
+
+### Owner direction — the other half of the topology: a way out into the world (2026-09-29)
+
+**Verbatim owner requests, carried from the topology direction:** *"and or pop out any where in the game world on a tile map"*, and the worked examples *"map>backrrooms>backrroms , map > backrooms > map > backrooms , and backrromms > map>backrooms>backrooms>map"*.
+
+Record: [`implementation/CONNECTED_EMERGENCE_IMPLEMENTATION.md`](implementation/CONNECTED_EMERGENCE_IMPLEMENTATION.md).
+
+- [x] **A portal whose far side is an ordinary map** — **BUILT 0.6.9-dev** as `PortalConnectionKind.Emergence`, an appended enum value. Recorded **anchor-first** (`First` = the marked door on the ordinary branch-owned map, `Second` = the coordinate doorway), which is the same orientation every other kind uses — so `Availability`, the site check in `Register` and the uniqueness rule all needed **no change at all**. This is what makes `map > backrooms > map > backrooms` and `backrooms > map > backrooms > backrooms > map` route end to end.
+- [x] **The player marks where it comes up, and nothing ever picks for them** — `CompRimroomsEmergence` on Core `Door` and `Autodoor`, added by one additive patch beside the existing gate comp, dormant until marked. This inherits 0.6.3-dev's rule with more force, because a way out arrives **at** the player's own map: *a door the player built is never quietly turned into a hole in the world*. Marking is refused inside the Backrooms — a way out cannot come up in the place it leads away from — and the command is not even offered there.
+- [x] **Withdrawing a mark leaves an existing way out alone** — it means "no more ways out here", not "close the one that exists". A saved edge is evidence of a place somebody found.
+- [x] **Found by surveying, with its own independent draw** — a distinct seed key from the frontier draw so the two can never correlate, derived from the coordinate's own seed and the doorway's position so it is stable across saves and revisits. **One in three** ways onward leads out, deliberately common, because a way home is what makes the topology usable rather than a trap. With nothing marked the doorway leads deeper instead: a fallback, not a refusal.
+- [ ] **A world tile the branch does not hold** — still the larger half, needing a new world object and a generated map. Its own checkpoint.
+- [ ] **`Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear` and `Area_PollutionClear` across a gate** — `research/ZONES_AND_AREAS_ACROSS_A_GATE.md` recorded these as a dependency of exactly this endpoint, and they are **now genuinely live rather than hypothetical**: an ordinary map is reachable through a gate, and a colony map gets snow, wants roofs built, and may be polluted.
+
 ### Owner direction — zones must work on both sides of any gate (2026-09-29)
 
 **Verbatim owner requests (2026-09-29, two items):** *"we also need to make sure zones work properly when putting them on boith sides of any type of gate"* and *"and as a continueations through the gate"*

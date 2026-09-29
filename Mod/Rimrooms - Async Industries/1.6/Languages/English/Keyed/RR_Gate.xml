@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Gate_AssignOperatorLabel>Assign gate operator</RR_Gate_AssignOperatorLabel>
   <RR_Gate_AssignOperatorDesc>Choose an employed staff member for the gate console.</RR_Gate_AssignOperatorDesc>
@@ -40,7 +40,7 @@
   <RR_Gate_InvalidTimeCost>The opening time cost must be a positive number of ticks.</RR_Gate_InvalidTimeCost>
   <RR_Gate_OperationIdConflict>This operation receipt ID was already used for a different request.</RR_Gate_OperationIdConflict>
   <RR_Gate_NoNormalWindow>The gate cannot apply a new time cost during its emergency-return window.</RR_Gate_NoNormalWindow>
-  <RR_Gate_OperatorAway>The assigned operator is not staffing the console.</RR_Gate_OperatorAway>
+  <RR_Gate_OperatorNotStaffing>The assigned operator is not staffing the console.</RR_Gate_OperatorNotStaffing>
   <RR_Gate_OperatorUnavailable>The assigned operator must be alive, capable, employed, and present on the facility map.</RR_Gate_OperatorUnavailable>
   <RR_Gate_PowerUnstable>The gate needs stable connected power and a charged return reserve.</RR_Gate_PowerUnstable>
   <RR_Gate_OpeningPowerUnstable>The connected power network cannot support the gate's configured opening load while retaining its required headroom.</RR_Gate_OpeningPowerUnstable>

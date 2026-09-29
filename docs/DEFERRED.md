@@ -188,6 +188,15 @@ _Closed 2026-09-28 in 0.5.4-dev. Record: [`implementation/GATE_DURATION_AND_COMP
 
 - [x] **The dependency position, audited rather than asserted** — every non-Rimrooms def the code looks up traced to base Core (twelve of them, no DLC, no mod); both XML patch files confirmed correctly guarded, including the one Core def that genuinely lacks a `<comps>` node; stack-size mod compatibility confirmed real because no stack size is hardcoded; modded-door support confirmed real because doors are matched by type. `About.xml` now states the audited position precisely.
 
+## A way out of the Backrooms (2026-09-29)
+
+Record: [`implementation/CONNECTED_EMERGENCE_IMPLEMENTATION.md`](implementation/CONNECTED_EMERGENCE_IMPLEMENTATION.md).
+
+- [x] **A portal whose far side is an ordinary map** — **BUILT 0.6.9-dev.** `PortalConnectionKind.Emergence`, appended. Recorded anchor-first, which made `Availability` and the register's site and uniqueness rules work unchanged. Superseded text, kept per the never-delete rule: *the cheap version, and genuinely useful: the far side is an already-owned ordinary map.*
+- [x] **Keyed strings had no duplicate check, and there was a real duplicate** — `RR_Gate_OperatorAway` was declared twice in one file with two different texts and two different uses. Fixed, and `tools/check-keyed-strings.py` now enforces it.
+- [ ] **A world tile the branch does not hold** — still open. A new world object and a generated map; its own checkpoint.
+- [ ] **A kill switch for the laboratory gate** — newly requested 2026-09-29, recorded verbatim in `TODO.md`, not yet built.
+
 ## Zones and areas across a gate (2026-09-29)
 
 Audit: [`research/ZONES_AND_AREAS_ACROSS_A_GATE.md`](research/ZONES_AND_AREAS_ACROSS_A_GATE.md).
@@ -195,7 +204,7 @@ Audit: [`research/ZONES_AND_AREAS_ACROSS_A_GATE.md`](research/ZONES_AND_AREAS_AC
 - [x] **Stockpile, fishing, Home and allowed-area behaviour across a gate** — audited and working. The far zone's own settings decide, in every case.
 - [x] **Zones persist across visits** — coordinate maps are never removed (`ShouldRemoveMapNow` returns false unconditionally), so painted zones and their settings survive.
 - [x] **Growing zones inside the Backrooms** — **DEFECT FIXED 0.6.8-dev.** Concrete and paved floors have fertility 0 and no plant can be sown on them, but the provider reported work anyway and `HasWorkHere` held the deployment open. Core's `CanEverPlantAt` and `GrowthSeasonNow` now gate the per-cell test.
-- [ ] **`Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear`, `Area_PollutionClear` across a gate** — not covered, and **correctly not covered while the far side of a gate is always a Backrooms coordinate**: a coordinate is already all thick rock, roof removal there is forbidden by the world rule, and it has no outside and therefore no weather. **This row is a dependency of the ordinary-map portal endpoint, not an independent one** — build it in that checkpoint, because a colony map genuinely gets snow, genuinely wants roofs built, and may be polluted.
+- [ ] **`Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear`, `Area_PollutionClear` across a gate** — **now genuinely live as of 0.6.9-dev**, because an ordinary map is reachable through a gate. Was correctly not covered while the far side of a gate was always a Backrooms coordinate: a coordinate is already all thick rock, roof removal there is forbidden by the world rule, and it has no outside and therefore no weather. **This row is a dependency of the ordinary-map portal endpoint, not an independent one** — build it in that checkpoint, because a colony map genuinely gets snow, genuinely wants roofs built, and may be polluted.
 
 ## The 294-mod register, and the work types nobody had enumerated (2026-09-29)
 

@@ -2,7 +2,14 @@ using Verse;
 
 namespace RimroomsAsyncIndustries.Portals
 {
-    public enum PortalConnectionKind { Laboratory = 0, Natural = 1 }
+    // Appended, never renumbered: saved values must keep their meaning.
+    //
+    // Emergence is a way *out*. Its First endpoint is a door on an ordinary branch-owned map
+    // that the player explicitly marked, and its Second is a doorway inside a Backrooms
+    // coordinate. Recording it anchor-first is deliberate: it means every ownership and site
+    // check the network already performs on First and Second reads correctly for this kind
+    // with no change at all.
+    public enum PortalConnectionKind { Laboratory = 0, Natural = 1, Emergence = 2 }
 
     // Map references are saved load IDs, not volatile Map.Index values. Endpoint
     // cells are snapshots: moving a door cannot silently redirect a saved route.

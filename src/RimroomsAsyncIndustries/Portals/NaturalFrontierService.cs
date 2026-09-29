@@ -123,6 +123,18 @@ namespace RimroomsAsyncIndustries.Portals
             // discovered in an existing save still resolves to exactly the same space.
             string discoveryId = origin.OriginId + ":" + origin.KeyPrefix +
                 door.Position.x + "," + door.Position.z;
+            // A doorway inside the Backrooms may lead *out* instead of deeper. That is the
+            // other half of the owner's topology direction, and it is what makes
+            // `backrooms > map > backrooms` chains route end to end.
+            //
+            // Asked before the coordinate is minted, because minting one and then not using
+            // it would leave a space nobody can reach recorded against the branch.
+            if (source != null)
+            {
+                CompanyActionResult wayOut = TryRecordWayOut(door, origin, campaign);
+                if (wayOut != null) { return wayOut; }
+            }
+
             CoordinateRecord discovered;
             CompanyActionResult created = campaign.CreateDiscoveredCoordinate(discoveryId, out discovered);
             if (!created.Success || discovered == null) { return created; }
@@ -136,6 +148,53 @@ namespace RimroomsAsyncIndustries.Portals
                 // change exists to support.
                 campaign.RecordEvent("RR_Event_FrontierDiscovered", discovered.Id, origin.OriginId);
             }
+            return registered;
+        }
+
+        /// <summary>
+        /// Whether this doorway leads out of the Backrooms rather than deeper into it, and if
+        /// so, recording it against the way home the player marked.
+        ///
+        /// Returns **null** when this is not a way out, so the caller falls through to minting
+        /// a new coordinate exactly as it always did.
+        ///
+        /// ## Three things decide it, in this order
+        ///
+        /// 1. **A second, independent draw.** It uses a distinct key from the frontier draw, so
+        ///    which doorways lead onward and which of those lead out can never correlate. Like
+        ///    every other generated property it is derived from the coordinate's own saved seed
+        ///    and the doorway's position, so the answer is stable across saves and revisits.
+        /// 2. **A way home must already be marked.** With no marked door there is nowhere for a
+        ///    way out to come up, so the doorway leads deeper instead. That is a fallback rather
+        ///    than a refusal: the survey still finds something.
+        /// 3. **The player marked it.** Nothing here ever picks a door on the player's own map,
+        ///    which is the rule 0.6.3-dev established and this inherits.
+        ///
+        /// When several ways home are marked, the one used is chosen by an ordinal sort of
+        /// their load ids indexed by the same draw — deterministic, so the same doorway does
+        /// not come up somewhere different on a reload.
+        /// </summary>
+        private static CompanyActionResult TryRecordWayOut(Thing door, FrontierOrigin origin,
+            RimroomsCampaignComponent campaign)
+        {
+            if (door == null || origin == null || campaign == null) { return null; }
+            int draw = CampaignSeed.Derive(origin.Seed,
+                "wayout:" + door.Position.x + "," + door.Position.z, 1);
+            if (draw % EmergenceShare != 0) { return null; }
+
+            List<CompRimroomsEmergence> anchors = CompRimroomsEmergence.Anchors();
+            if (anchors.Count == 0) { return null; }
+            anchors.Sort((left, right) => string.CompareOrdinal(
+                left.parent.GetUniqueLoadID(), right.parent.GetUniqueLoadID()));
+            CompRimroomsEmergence anchor = anchors[draw % anchors.Count];
+
+            CompanyActionResult registered = PortalAddressService.RegisterEmergenceAddress(
+                door, PortalAddressService.ApproachCellFor(door), anchor);
+            // A refusal here is not a reason to mint a coordinate instead. The draw said this
+            // doorway leads out; if the marked door is momentarily unusable the honest answer
+            // is that the survey found nothing this time, and it can be tried again.
+            if (registered.Success && !registered.AlreadyApplied)
+            { campaign.RecordEvent("RR_Event_WayOutDiscovered", origin.OriginId); }
             return registered;
         }
 
@@ -238,6 +297,13 @@ namespace RimroomsAsyncIndustries.Portals
             if (draw % origin.Rarity != 0) { return "RR_Frontier_LeadsNowhere"; }
             return null;
         }
+
+        /// <summary>
+        /// One in this many ways onward inside the Backrooms leads out instead of deeper,
+        /// when the player has marked somewhere for it to come up. Deliberately common: a way
+        /// home is the thing that makes the rest of the topology usable rather than a trap.
+        /// </summary>
+        private const int EmergenceShare = 3;
 
         private static RimroomsCampaignComponent Campaign()
         { return Current.Game == null ? null : Current.Game.GetComponent<RimroomsCampaignComponent>(); }

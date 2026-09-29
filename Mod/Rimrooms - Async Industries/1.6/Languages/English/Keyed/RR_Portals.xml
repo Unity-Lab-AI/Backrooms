@@ -150,4 +150,6 @@
   <RR_Frontier_LeadsNowhere>That doorway leads nowhere but the next room.</RR_Frontier_LeadsNowhere>
   <RR_Event_FrontierDiscovered>A doorway deeper in was recorded as a permanently open way through to {0}, found from {1}.</RR_Event_FrontierDiscovered>
 
+  <RR_PortalAddress_EmergenceAnchorUnavailable>No usable way home is marked. Mark a door on a map you hold as the place a way out can come up.</RR_PortalAddress_EmergenceAnchorUnavailable>
+  <RR_Portals_KindEmergence>way out</RR_Portals_KindEmergence>
 </LanguageData>

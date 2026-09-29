@@ -53,7 +53,7 @@ namespace RimroomsAsyncIndustries.Portals
                 malformedState = connections.Any(edge => edge == null || string.IsNullOrWhiteSpace(edge.Id) ||
                     !ids.Add(edge.Id) || string.IsNullOrWhiteSpace(edge.BranchId) ||
                     edge.First == null || edge.Second == null ||
-                    (edge.Kind != PortalConnectionKind.Natural && edge.Kind != PortalConnectionKind.Laboratory));
+                    !KnownKind(edge.Kind));
                 connectionIdentity.Clear();
                 connectionById.Clear();
                 if (!malformedState)
@@ -70,7 +70,7 @@ namespace RimroomsAsyncIndustries.Portals
         {
             RimroomsCampaignComponent campaign = Campaign;
             if (HasStateFault || campaign == null || !campaign.CanOperate || string.IsNullOrWhiteSpace(id) ||
-                (kind != PortalConnectionKind.Natural && kind != PortalConnectionKind.Laboratory))
+                !KnownKind(kind))
             { return PortalNetworkResult.InvalidState; }
             if (!ValidDoor(firstAnchor, firstApproach) || !ValidDoor(secondAnchor, secondApproach) ||
                 firstAnchor.Map == secondAnchor.Map) { return PortalNetworkResult.InvalidEndpoint; }
@@ -84,6 +84,15 @@ namespace RimroomsAsyncIndustries.Portals
             if (kind == PortalConnectionKind.Laboratory &&
                 (gate == null || !gate.IsDesignated || firstAnchor.Faction != Faction.OfPlayer ||
                  gate.GateEntryCell != firstApproach)) { return PortalNetworkResult.InvalidEndpoint; }
+            // A way out may only ever come up at a door the player marked for it. Nothing
+            // here picks a door, for exactly the reason 0.6.3-dev refused to: a door somebody
+            // built is never quietly turned into a hole in the world.
+            if (kind == PortalConnectionKind.Emergence)
+            {
+                CompRimroomsEmergence anchor = firstAnchor.TryGetComp<CompRimroomsEmergence>();
+                if (anchor == null || !anchor.IsDesignated || firstAnchor.Faction != Faction.OfPlayer ||
+                    anchor.ApproachCell != firstApproach) { return PortalNetworkResult.InvalidEndpoint; }
+            }
             PortalConnectionRecord existing = Find(id);
             if (existing != null)
             {
@@ -131,6 +140,17 @@ namespace RimroomsAsyncIndustries.Portals
                 AdvanceTopologyRevision();
             }
             return PortalNetworkResult.Success;
+        }
+
+        /// <summary>
+        /// Every connection kind this build understands. A saved edge of an unknown kind is
+        /// treated as malformed state rather than quietly ignored, which is why this is one
+        /// list rather than a condition repeated in three places.
+        /// </summary>
+        private static bool KnownKind(PortalConnectionKind kind)
+        {
+            return kind == PortalConnectionKind.Natural || kind == PortalConnectionKind.Laboratory ||
+                kind == PortalConnectionKind.Emergence;
         }
 
         public PortalConnectionRecord Find(string id)

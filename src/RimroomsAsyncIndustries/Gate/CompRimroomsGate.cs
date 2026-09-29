@@ -625,7 +625,10 @@ namespace RimroomsAsyncIndustries.Gate
             { return CompanyActionResult.Refused(NativeBindingFailureKey); }
             if (gateOperator == null || gateOperator != assignedOperator || !IsEmployedStaff(gateOperator))
             { return CompanyActionResult.Refused("RR_Gate_NoAssignedOperator"); }
-            if (!IsOperatorOnStation) { return CompanyActionResult.Refused("RR_Gate_OperatorAway"); }
+            // A distinct key from the readout above, which takes the operator name as {0}.
+            // One key served both and only one string could win, so one of the two messages
+            // was always wrong. Corrected 2026-09-29.
+            if (!IsOperatorOnStation) { return CompanyActionResult.Refused("RR_Gate_OperatorNotStaffing"); }
             if (stablePowerTicks < GateProps.stablePowerTicksRequired || !HasPowerAndHeadroom())
             { return CompanyActionResult.Refused("RR_Gate_PowerUnstable"); }
             if (!HasProjectedOpeningPowerHeadroom())

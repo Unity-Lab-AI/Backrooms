@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.9-dev - 2026-09-29 - a way out, and it comes up where you said
+
+- **A doorway in the Backrooms can now lead back out into the world**, instead of only ever leading deeper. Roughly one in three ways onward does, once you have somewhere for it to come up.
+- **You choose where it comes up.** Any door on a map you hold can be marked as a way home, with one command on the door itself. Nothing is ever marked for you — a way out only ever arrives at a door you picked.
+- A door inside the Backrooms cannot be marked, because a way out cannot come up in the place it leads away from.
+- With nothing marked, doorways simply lead deeper as before. Nothing is refused and nothing is lost.
+- The same doorway always leads to the same place. Saving, reloading and revisiting never change it.
+- Unmarking a door stops new ways out coming up there, and deliberately leaves any that already exists alone.
+
+Two unrelated fixes found while working: one message on the gate was sharing a name with another, so one of the two was always wrong — the operator-away refusal and the operator readout now have separate names. And there is now a check that no two messages can share a name again.
+
+Full record: [a way out](docs/implementation/CONNECTED_EMERGENCE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.6.8-dev - 2026-09-29 - zones work on both sides of a gate
 
 - **A growing zone inside the Backrooms no longer traps the person you sent to it.** Backrooms floors are concrete, and nothing can be planted in concrete — but somebody was being sent to sow there anyway, and once they arrived the game correctly refused while the mod still believed there was work, so they stood there doing nothing and never came back. Nobody is sent now unless the ground can actually take the crop.

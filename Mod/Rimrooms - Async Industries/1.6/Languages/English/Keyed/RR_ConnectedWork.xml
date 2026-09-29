@@ -93,4 +93,17 @@
   <RR_ConnectedWork_HaulingUpkeepLabel>tending containers through a gate</RR_ConnectedWork_HaulingUpkeepLabel>
   <RR_ConnectedWork_BasicWorkerLabel>operating a marked object through a gate</RR_ConnectedWork_BasicWorkerLabel>
   <RR_ConnectedWork_FishingLabel>fishing a far zone through a gate</RR_ConnectedWork_FishingLabel>
+  <RR_Emergence_MarkLabel>Mark as way home</RR_Emergence_MarkLabel>
+  <RR_Emergence_MarkDesc>Mark this door as a place a way out of the Backrooms can come up. Nothing is ever marked automatically: a way out only ever arrives at a door you chose.</RR_Emergence_MarkDesc>
+  <RR_Emergence_WithdrawLabel>Stop being a way home</RR_Emergence_WithdrawLabel>
+  <RR_Emergence_WithdrawDesc>No further ways out will come up at this door. A way out that already came up here is left alone.</RR_Emergence_WithdrawDesc>
+  <RR_Emergence_Updated>Way home updated.</RR_Emergence_Updated>
+  <RR_Emergence_InvalidState>The company cannot act right now.</RR_Emergence_InvalidState>
+  <RR_Emergence_DoorUnavailable>That door cannot be marked.</RR_Emergence_DoorUnavailable>
+  <RR_Emergence_OrdinaryMapRequired>A way out cannot come up inside the Backrooms. Mark a door somewhere else you hold.</RR_Emergence_OrdinaryMapRequired>
+  <RR_Emergence_ApproachBlocked>Nobody could stand at that door to come through it.</RR_Emergence_ApproachBlocked>
+  <RR_Event_EmergenceAnchorMarked>A way home was marked.</RR_Event_EmergenceAnchorMarked>
+  <RR_Event_EmergenceAnchorWithdrawn>A way home was withdrawn.</RR_Event_EmergenceAnchorWithdrawn>
+  <RR_Event_EmergenceRegistered>A way out of the Backrooms was recorded.</RR_Event_EmergenceRegistered>
+  <RR_Event_WayOutDiscovered>A doorway led back out into the world.</RR_Event_WayOutDiscovered>
 </LanguageData>

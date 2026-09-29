@@ -26,7 +26,7 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 | Published | 0.6.7-dev (`git log -1`; the cascade read-back is in `FINALIZED.md`) |
 | Remotes | `forgejo` and `github`, both with `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` at the same commit |
 | Working tree | clean |
-| Build | 117 C# source files, 76 approved package files, zero warnings, zero errors |
+| Build | 118 C# source files, 76 approved package files, zero warnings, zero errors |
 | Register | `outputs/.../Rimrooms_Async_Industries_294_Mod_Integration_Register.html` — **open this one**, not the `.xlsx`. Generated; rebuild after any CSV edit |
 | Assembly | SHA-256 `9A73827B2E0F6C6AC33712BE447CEA5C7F8959C72820080AE7C2C00BA75A8EAE`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
 | Game launches | **none, ever.** Every runtime claim in this repo is pending the post-completion test phase |
@@ -51,6 +51,7 @@ Do not finish a checkpoint and wait. Chain them. The owner got tired of asking f
 - **0.6.5** — **bill work**: five families, one per work type, so a bench on the far side finally gets worked. Plus a shipped defect closed — the carry family had been supplying autonomous and mech bills for five checkpoints contrary to its own record, because they derive from `Bill_Production`.
 - **0.6.6** — **dark study**: a researcher crosses to a contained entity. Plus a second shipped defect closed — the childcare giver defs had referenced a Biotech-only work type with no `MayRequire` since 0.6.4, an unresolved cross-reference on a Core-only install. `tools/check-dlc-gating.py` now enforces it from the game's own data.
 - **0.6.7** — **hauling upkeep, BasicWorker and Fishing**, closing the last work-type gaps. All thirty `Hauling` givers classified; three decided against as map-bound.
+- **0.6.9** — **a way out**: `PortalConnectionKind.Emergence`, a player-marked door on an ordinary map as the place a way out comes up. Plus a duplicated keyed string fixed and `check-keyed-strings.py` added.
 - **Register checkpoint, still 0.6.4** — the 294-mod register rebuilt with a generator and a checker, joy and rituals **decided no**, the three hauling rows closed, and the work-type list **enumerated instead of trusted**. No C# change; the assembly is byte-identical.
 
 **Thirty-one cross-map work families, twenty-three of them travel-to-work deployments. Every work type in the game is covered or decided against.**
@@ -58,7 +59,9 @@ Do not finish a checkpoint and wait. Chain them. The owner got tired of asking f
 ### What is left, in the order to do it
 
 1. ~~**The four work-type gaps**~~ — **ALL CLOSED.** Bill work 0.6.5-dev, dark study 0.6.6-dev, hauling upkeep / BasicWorker / Fishing 0.6.7-dev. **Every work type in Core and all five expansions is now covered or decided against with its reason recorded**; joy, rituals, `Patient` and `PatientBedRest` are decided no. Do not reopen any of it — read `research/WORK_TYPE_COVERAGE_AUDIT.md`. What remains here is narrower and named in `DEFERRED.md`: the **eleven DLC container hauling givers** (each needs a custody review before a worker crosses for it) and the **four painting givers** in `Art`.
-2. **A portal whose far side is an ordinary map**, then **a world tile the branch does not hold.** **When this lands, also cover `Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear` and `Area_PollutionClear` across a gate** — they are uncovered today only because a coordinate has no outside and no removable roof, and a colony map has both. This is the remaining half of the topology direction. **It needs a player designation flow** — the same pattern gates already use — because auto-picking a door on the player's colony is exactly what 0.6.3 forbade. Do the already-owned-map version first: it is bounded, it is a real shortcut home, and it exercises the endpoint plumbing the world-tile version reuses.
+2. ~~**A portal whose far side is an ordinary map**~~ — **BUILT 0.6.9-dev.** Still open: **a world tile the branch does not hold**, which needs a new world object and a generated map.
+   **Now live because of it:** `Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear` and `Area_PollutionClear` have no cross-gate route, and an ordinary map reachable through a gate genuinely gets snow, wants roofs built and may be polluted. See `research/ZONES_AND_AREAS_ACROSS_A_GATE.md`.
+   **Also queued:** the owner's **kill switch** for the laboratory gate, captured verbatim in `TODO.md`.
 3. **The three starting sites.** `SCENARIOS.md` specifies all three in full, so this is implementation, not design. Two of them begin with a way out of the Backrooms.
 4. **Floors returning materials when lifted** — vanilla returns none, so the owner's "uninstalled, moved, resued, sold" for carpet and tile is a content feature needing a `CONTENT_REUSE_POLICY.md` decision.
 5. **The 1990s period and the universe factions**, under `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`. New `FactionDef`s reusing existing pawn kinds, all starting neutral.
@@ -129,8 +132,9 @@ Each one is a real defect or a pinned source fact.
 4. Write the implementation record and an evidence folder under `docs/implementation/evidence/<name>-<date>/` with compiler output plus source, package and **recomputed** reference manifests. **Write `build-output.txt` separately — the manifest script does not produce it.**
 5. Update the ledger: `DEFERRED.md`, `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`.
 5a. **Run the doc-rot sweep** if an owner decision landed. `REGRESSION_CONTAINMENT.md` §Doc-rot sweep.
-5b. **If any def was added or edited**, run `python tools/check-dlc-gating.py`. It must exit zero. Handling a DLC def correctly in C# with `GetNamedSilentFail` does **not** cover an ungated `MayRequire` in the def itself; that mismatch has produced two defects in two consecutive checkpoints.
-5c. **If any register CSV changed**, rebuild in the same commit: `python tools/research/build-mod-register.py`, then `check-mod-register.py`, then `audit-gate0.py`. All three must exit zero. The outputs rebuild byte-identically from an unchanged source, so a diff on them always means the sources really changed.
+5b. **If any keyed string or `RR_` literal changed**, run `python tools/check-keyed-strings.py`. It must exit zero. It catches duplicate keys (there was a real one, used for two different messages), unresolved references, and format arguments that do not line up.
+5c. **If any def was added or edited**, run `python tools/check-dlc-gating.py`. It must exit zero. Handling a DLC def correctly in C# with `GetNamedSilentFail` does **not** cover an ungated `MayRequire` in the def itself; that mismatch has produced two defects in two consecutive checkpoints.
+5d. **If any register CSV changed**, rebuild in the same commit: `python tools/research/build-mod-register.py`, then `check-mod-register.py`, then `audit-gate0.py`. All three must exit zero. The outputs rebuild byte-identically from an unchanged source, so a diff on them always means the sources really changed.
 6. Verify: XML parses, every `RR_` key resolves, every `giverClass` resolves, no attribution strings, and — **after deleting `obj/` and `bin/`** — the rebuilt hash matches the evidence. An incremental rebuild proves nothing. Pre-0.5.7 evidence hashes are **not** reproducible today; the SDK used to embed the git commit.
 7. Commit once, atomically, push the feature branch, cascade by refspec to `Prep`, `Develop`, `Main` on **both** remotes, read back all eight refs. Do not edit after the push.
 
