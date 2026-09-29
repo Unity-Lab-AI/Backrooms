@@ -122,6 +122,13 @@ def main():
     internal = set(re.findall(r'ToilMaker\.MakeToil\(\s*"(RR_[A-Za-z0-9_]+)"', source))
     internal |= set(re.findall(r'RimroomsAudio\.Play\(\s*"(RR_[A-Za-z0-9_]+)"', source))
     internal |= set(re.findall(r'case\s+"(RR_[A-Za-z0-9_]+)"\s*:', source))
+    # Capability names granted by a company project and asked for with HasCapability. They
+    # are an internal vocabulary, not keyed strings: a player never reads one. Both
+    # directions of the grant-and-read relationship are asserted by
+    # .local/register/proof-research-branches.py, which is a stronger guarantee than this
+    # checker could give -- it catches a capability granted and never honoured, which is an
+    # unlock the card promises and no code delivers.
+    internal |= set(re.findall(r'HasCapability\(\s*"(RR_[A-Za-z0-9_]+)"', source))
     unresolved = 0
     for key in sorted(referenced):
         if key in strings or key in defs or key in internal:
@@ -153,7 +160,7 @@ def main():
     print("  keys declared        : %d" % len(strings))
     print("  duplicates           : 0")
     print("  defNames declared    : %d" % len(defs))
-    print("  internal identifiers : %d (toil names, audio cues)" % len(internal))
+    print("  internal identifiers : %d (toil names, audio cues, capabilities)" % len(internal))
     print("  literal references   : %d, all resolve" % len(referenced))
     print("  argument mismatches  : 0")
     return 0

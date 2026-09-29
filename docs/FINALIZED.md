@@ -3210,3 +3210,23 @@ Power the gate, assemble and calibrate it, bring back one record, mark a route h
 **The proof was wrong before the content was.** Its first run reported `TextBook` as missing; it exists, in `Core/Defs/Books/BookDefs.xml`, which is not under a `ThingDefs*` path. **The index was wrong, not the content**, and a proof that reports a correct reference as a fault is the worst kind, because the obvious response is to "fix" working content. The index now reads every `Defs` file. Sanity-tested afterwards by planting a typo'd log kind and a broken prerequisite, both caught.
 
 162 C# files, 85 package files, zero warnings. Eight checkers pass with rule 2 now checking seven offer defs, three proofs hold, assembly reproduced by two clean recompiles. Record: `implementation/TUTORIAL_LINE_IMPLEMENTATION.md`.
+
+### 0.11.3-dev - seven ways into the tree, and every one of them does something
+
+**Step 6 of the chart's build order, tier 0**: the entry band of the eight branches that were not the gate.
+
+**The design decision that shaped it.** Built naively this is twenty-four to forty projects each needing an effect, and the obvious implementation is a typed field per effect. **That would be twenty-four chances to ship an effect nothing reads.** Nothing about a `public bool unlocksSomething` tells you whether any system looks at it, and a project whose card promises an unlock while no code honours it is **worse than a project with no effect** - it is a lie the player paid insight for, and it is invisible: the def loads, the project completes, the card reads correctly, nothing happens. Same failure class as the beacon condition that could never fire and the ladder that could never be climbed. So: **one generic mechanism** - `grantsCapabilities` on the def, `HasCapability` at the read site, and a proof asserting the relationship **in both directions**.
+
+**Seven projects, each moving a value a real system already reads.** Reserve Discipline lowers the gate's power headroom; Return Drill lengthens the emergency return window by half; Second Reading doubles insight per analysed record; Coordinate Atlas raises the share of returns that find a coordinate untouched; Early Warning doubles the grace between recognising something and it reaching you; Standing Orders doubles cargo in flight; Negotiated Terms takes a tenth off the catalogue. Nothing was invented to give a project something to do.
+
+**Seven, not eight. Transport and orbital support has no tier 0 project, deliberately** - the chart says it is DLC-optional and never required, and a project granting nothing so the count looked complete would be exactly the lie this checkpoint exists to prevent.
+
+**Two of them are worth noting.** Coordinate Atlas raises the quiet share rather than stopping displacement: the space has not stopped moving things, the branch has got better at knowing when it did. A horror mechanic a player can switch off is worse than one that fires every time. And Early Warning pays in **time, not damage** - readable warning, learnable rule and countermeasure in one.
+
+**Tier 0 has no prerequisites** because tier 0 *is* the entry band. Eight independent roots counting the gate's, costing insight and nothing else, which in practice means "after your first analysed record". None requires a distortion or entity log, because those need something to have gone wrong and a branch cannot be asked to have had a bad day before it may begin studying anything.
+
+`proof-research-branches.py` asserts that **every capability any project grants is read by at least one source file, and every capability any source file reads is granted by at least one project** - both directions, because a read with no grant is dead code and a grant with no read is a lie. Sanity-tested by renaming a grant and then a read; **each plant produced two failures**, which is the design working: the two directions catch the same break from opposite ends, so neither can be silently disabled.
+
+**Two checkers needed teaching.** `check-package-integrity.py` and `check-keyed-strings.py` both read `RR_Cap_*` as a broken reference - one as an undeclared def, the other as a missing keyed string. It is neither. Both now classify it alongside the existing internal identifiers, with a comment pointing at the proof, which gives a **stronger** guarantee than either checker could: it catches a capability granted and never honoured, which neither can see.
+
+162 C# files, 85 package files, zero warnings. Eight checkers pass, **four** proofs hold, assembly reproduced by two clean recompiles. Record: `implementation/RESEARCH_BRANCHES_IMPLEMENTATION.md`.

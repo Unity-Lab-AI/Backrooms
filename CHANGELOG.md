@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.11.3-dev - 2026-09-29 - seven ways into the tree, and every one of them does something
+
+- **The research tree has seven new starting points**, one for each branch of the company's work, and you can take them in any order. None requires anything but insight, so a branch is never locked out by which record it happened to bring home first.
+- **Reserve Discipline** - the gate needs less spare power above its draw before it will open.
+- **Return Drill** - the emergency return window runs half again as long.
+- **Second Reading** - every analysed record yields twice the insight.
+- **Coordinate Atlas** - coming back to a coordinate finds it as you left it more often. The space has not stopped moving things; you have got better at knowing when it did.
+- **Early Warning** - twice as long between recognising something and it reaching you.
+- **Standing Orders** - twice as much cargo may be in flight at once.
+- **Negotiated Terms** - everything bought through the company catalogue costs a tenth less.
+- **Every one of those is real.** A check refuses to ship a project whose card promises an unlock that no code honours.
+
+Full record: [seven ways into the tree](docs/implementation/RESEARCH_BRANCHES_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.11.2-dev - 2026-09-29 - the company asks for six things, then stops asking
 
 - **The tutorial line is in.** Power the gate, assemble and calibrate it, bring back one record, mark a route home, report a disagreement, hold a connection open - then the hinge, where the company stops naming things and the campaign opens up.

@@ -51,6 +51,16 @@ namespace RimroomsAsyncIndustries.Company
         /// would take the never-die guarantee away from a player who had earned it.
         /// </summary>
         private bool corporationContact;
+
+        /// <summary>
+        /// Capabilities this branch has earned, rebuilt from completed projects.
+        ///
+        /// Cached rather than computed per call because the read sites include a gate power
+        /// property and a pursuer tick. Not saved: it is derived entirely from the project
+        /// records, which are, so a load rebuilds it rather than trusting a second copy that
+        /// could disagree with the first.
+        /// </summary>
+        private HashSet<string> capabilityCache;
         private List<LedgerEntry> ledger = new List<LedgerEntry>();
         private List<StaffRecord> staff = new List<StaffRecord>();
         private List<CompanyObligation> obligations = new List<CompanyObligation>();
@@ -124,6 +134,43 @@ namespace RimroomsAsyncIndustries.Company
         public Map Headquarters { get { return headquarters; } }
         public long BalanceUsd { get { return balanceUsd; } }
         public int ResearchInsights { get { return researchInsights; } }
+
+        /// <summary>
+        /// Whether a completed project has granted this branch a named capability.
+        ///
+        /// **Every capability any project grants must be read by at least one source file**, and
+        /// `proof-research-branches.py` asserts exactly that. An unlock a player is told about and
+        /// that changes nothing is worse than no unlock: it is a lie on the card.
+        /// </summary>
+        public bool HasCapability(string capability)
+        {
+            if (string.IsNullOrEmpty(capability) || !CanOperate) { return false; }
+            if (capabilityCache == null) { RebuildCapabilities(); }
+            return capabilityCache.Contains(capability);
+        }
+
+        /// <summary>
+        /// Recompute from the completed project records. Called when a project completes and
+        /// whenever the cache is cold, including after a load.
+        /// </summary>
+        internal void RebuildCapabilities()
+        {
+            if (capabilityCache == null) { capabilityCache = new HashSet<string>(StringComparer.Ordinal); }
+            capabilityCache.Clear();
+            for (int index = 0; index < projects.Count; index++)
+            {
+                ProjectRecord record = projects[index];
+                if (record == null || !record.Completed) { continue; }
+                Investigation.RimroomsProjectDef definition =
+                    DefDatabase<Investigation.RimroomsProjectDef>.GetNamedSilentFail(record.ResearchDefName);
+                if (definition == null || definition.grantsCapabilities == null) { continue; }
+                for (int slot = 0; slot < definition.grantsCapabilities.Count; slot++)
+                {
+                    string capability = definition.grantsCapabilities[slot];
+                    if (!string.IsNullOrWhiteSpace(capability)) { capabilityCache.Add(capability); }
+                }
+            }
+        }
 
         /// <summary>True once this branch is in communication with the parent corporation.</summary>
         public bool CorporationContact { get { return corporationContact; } }

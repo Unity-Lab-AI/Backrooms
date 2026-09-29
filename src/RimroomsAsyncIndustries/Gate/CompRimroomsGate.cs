@@ -61,6 +61,11 @@ namespace RimroomsAsyncIndustries.Gate
         /// staffed and fed; losing any of those still ends it exactly as before.
         /// </summary>
         public int portalIndefiniteTier = 4;
+        /// <summary>
+        /// How long the emergency return window runs. **RR_Cap_ReturnDrill** (Fieldcraft and
+        /// medicine, tier 0) lengthens it — a drilled crew gets back through faster, which is the
+        /// same thing as having longer.
+        /// </summary>
         public int emergencyReturnWindowTicks = 300;
         public int stablePowerTicksRequired = 60;
         public float minimumPowerHeadroomWatts = 250f;
@@ -188,7 +193,23 @@ namespace RimroomsAsyncIndustries.Gate
         public float ReturnReserveCapacityWattDays { get { return NativeBatteryCapacity; } }
         public float RecoveryOpeningCostWattDays { get { return GateProps.recoveryOpeningCostWattDays; } }
         public float EmergencyReturnCostWattDays { get { return GateProps.emergencyReturnCostWattDays; } }
-        public float MinimumPowerHeadroomWatts { get { return GateProps.minimumPowerHeadroomWatts; } }
+        /// <summary>
+        /// Headroom a gate needs above its draw before it will open.
+        ///
+        /// **RR_Cap_ReserveDiscipline** (Facilities and power, tier 0) lowers it: a branch that has
+        /// studied its own reserve knows how close to the line it can safely run.
+        /// </summary>
+        public float MinimumPowerHeadroomWatts
+        {
+            get
+            {
+                float required = GateProps.minimumPowerHeadroomWatts;
+                Company.RimroomsCampaignComponent campaign = NativeCampaign;
+                if (campaign != null && campaign.HasCapability("RR_Cap_ReserveDiscipline"))
+                { required *= 0.6f; }
+                return required;
+            }
+        }
         public float CurrentPowerDrawWatts
         { get { return IsOpening && !IsEmergency ? OpeningPowerDrawWatts : 0f; } }
         public IntVec3 GateEntryCell { get { return NativeEntryCell; } }
@@ -696,7 +717,13 @@ namespace RimroomsAsyncIndustries.Gate
         {
             if (!IsOpening || !string.IsNullOrEmpty(failureKey)) { return; }
             failureKey = reasonKey;
-            emergencyReturnTicksRemaining = GateProps.emergencyReturnWindowTicks;
+            // **RR_Cap_ReturnDrill** (Fieldcraft and medicine, tier 0) adds half again. A crew
+            // that has practised the walk back does it faster, and a longer window is how that
+            // reads from the outside.
+            int returnWindow = GateProps.emergencyReturnWindowTicks;
+            if (NativeCampaign != null && NativeCampaign.HasCapability("RR_Cap_ReturnDrill"))
+            { returnWindow += returnWindow / 2; }
+            emergencyReturnTicksRemaining = returnWindow;
             RecordGateActivity(reasonKey == "RR_Gate_TimeCostWindowExhausted"
                 ? "RR_Gate_TimeCostWindowExhausted" : reasonKey, CurrentOpeningId);
             Messages.Message(reasonKey.Translate(), parent, MessageTypeDefOf.SilentInput, false);

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Verse;
 
 namespace RimroomsAsyncIndustries.Investigation
@@ -28,6 +28,21 @@ namespace RimroomsAsyncIndustries.Investigation
         public float workRequired = 6000f;
         public int minimumIntellectual = 4;
         public bool unlocksSurveyedRoutePlanning;
+
+        /// <summary>
+        /// Named capabilities this project grants the branch when it completes.
+        ///
+        /// **One generic mechanism rather than a typed field per effect.** Twenty-four bespoke
+        /// fields would be twenty-four chances to ship an effect nothing reads, and nothing about
+        /// a `public bool unlocksSomething` tells you whether anything looks at it. A capability
+        /// is a string, systems ask <c>HasCapability</c> for the ones they care about, and
+        /// `.local/register/proof-research-branches.py` asserts that **every capability any
+        /// project grants is read by at least one source file**.
+        ///
+        /// That assertion is the point. An unlock a player is told about and that changes nothing
+        /// is worse than no unlock: it is a lie on the card.
+        /// </summary>
+        public List<string> grantsCapabilities = new List<string>();
 
         /// <summary>
         /// Analysed records carrying a route log that this project needs before it may begin.
@@ -62,6 +77,14 @@ namespace RimroomsAsyncIndustries.Investigation
             { yield return "minimumIntellectual must be between 0 and 20."; }
             if (requiredRouteLogs < 0 || requiredDistortionLogs < 0 || requiredEntityLogs < 0)
             { yield return "A negative log requirement is not a requirement."; }
+            if (grantsCapabilities != null)
+            {
+                foreach (string capability in grantsCapabilities)
+                {
+                    if (string.IsNullOrWhiteSpace(capability))
+                    { yield return "An empty capability name grants nothing and reads as an unlock."; }
+                }
+            }
             if (prerequisiteProjects != null && prerequisiteProjects.Contains(defName))
             { yield return "A project cannot require itself; that rung can never be reached."; }
             if (prerequisiteProjects != null)

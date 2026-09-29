@@ -307,6 +307,12 @@ def check_def_references(problems, declared, keyed):
         for token in sorted(set(RR_TOKEN.findall(text))):
             if token in declared or token in keyed:
                 continue
+            # A capability is neither a def nor a keyed string: it is an internal name a
+            # project grants and a source file asks for. proof-research-branches.py asserts
+            # both directions of that relationship, including the case this checker cannot
+            # see -- a capability granted that no code reads.
+            if token.startswith("RR_Cap_"):
+                continue
             # Keyed strings and DefInjected suffixes are owned by check-keyed-strings.py.
             if os.sep + "Languages" + os.sep in path:
                 continue

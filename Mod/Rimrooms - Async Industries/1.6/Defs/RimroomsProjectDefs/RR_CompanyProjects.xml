@@ -1,6 +1,108 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
+
+  <!-- ==================================================================================== -->
+  <!-- TIER 0 - FACILITY FOUNDATIONS                                                        -->
+  <!--                                                                                      -->
+  <!-- One root per branch. No prerequisites: tier 0 IS the entry band, so each of these is  -->
+  <!-- its own way into the tree and a branch is never locked out by which log it happened   -->
+  <!-- to generate. They cost insight and nothing else, which in practice means "after your  -->
+  <!-- first analysed record", because insight only comes from analysis.                     -->
+  <!--                                                                                      -->
+  <!-- Every one grants a capability that a named source file actually reads. That is        -->
+  <!-- asserted by proof-research-branches.py, because an unlock the card promises and       -->
+  <!-- nothing honours is worse than no unlock at all.                                       -->
+  <!--                                                                                      -->
+  <!-- Transport and orbital support has NO tier 0 project, deliberately. The chart says it  -->
+  <!-- is DLC-optional and never required, and a hollow project granting nothing would be    -->
+  <!-- exactly the lie this file is built to avoid.                                          -->
+  <!-- ==================================================================================== -->
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Facilities_ReserveDiscipline</defName>
+    <label>Reserve Discipline</label>
+    <description>Measure what the gate actually draws rather than what the manual claims, and find out how close to the line a branch can safely run.
+
+The gate needs less spare headroom above its draw before it will open, which on a tight circuit is the difference between opening today and building another generator first.</description>
+    <insightCost>1</insightCost>
+    <workRequired>4000</workRequired>
+    <minimumIntellectual>3</minimumIntellectual>
+    <grantsCapabilities><li>RR_Cap_ReserveDiscipline</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Fieldcraft_ReturnDrill</defName>
+    <label>Return Drill</label>
+    <description>Practise the walk back until nobody has to think about it. Crews that have drilled the route out do it faster and argue about it less.
+
+The emergency return window runs half again as long. It does not make the emergency less likely; it makes it less often fatal.</description>
+    <insightCost>1</insightCost>
+    <workRequired>4500</workRequired>
+    <minimumIntellectual>3</minimumIntellectual>
+    <grantsCapabilities><li>RR_Cap_ReturnDrill</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Measurement_SecondReading</defName>
+    <label>Second Reading</label>
+    <description>Read every record twice, by two people, and compare what they each took from it. Tedious, and it is astonishing what the first reading misses.
+
+Every analysed record yields twice the insight.</description>
+    <insightCost>1</insightCost>
+    <workRequired>5000</workRequired>
+    <minimumIntellectual>5</minimumIntellectual>
+    <grantsCapabilities><li>RR_Cap_SecondReading</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Spatial_CoordinateAtlas</defName>
+    <label>Coordinate Atlas</label>
+    <description>Keep a real atlas rather than a folder of notes. Rooms get numbers, the numbers get used, and the branch stops relying on whoever happened to be there last time.
+
+Returning to a coordinate finds it exactly as you left it more often. The space has not stopped moving things. You have got better at knowing when it did.</description>
+    <insightCost>1</insightCost>
+    <workRequired>5000</workRequired>
+    <minimumIntellectual>4</minimumIntellectual>
+    <grantsCapabilities><li>RR_Cap_CoordinateAtlas</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Entities_EarlyWarning</defName>
+    <label>Early Warning</label>
+    <description>Collate every account of something approaching and work out what the first sign actually is. It is never the sound; it is always something about the room.
+
+A crew that has been trained on it gets twice as long between recognising the thing and the thing reaching them.</description>
+    <insightCost>1</insightCost>
+    <workRequired>6000</workRequired>
+    <minimumIntellectual>5</minimumIntellectual>
+    <grantsCapabilities><li>RR_Cap_EarlyWarning</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Logistics_StandingOrders</defName>
+    <label>Standing Orders</label>
+    <description>Stop placing one order at a time. Agree a standing arrangement with the parent corporation's supply service and let the branch carry more in flight than it can currently receive.
+
+Twice as much undelivered cargo may be on its way at once.</description>
+    <insightCost>1</insightCost>
+    <workRequired>4000</workRequired>
+    <minimumIntellectual>3</minimumIntellectual>
+    <grantsCapabilities><li>RR_Cap_StandingOrders</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Commerce_NegotiatedTerms</defName>
+    <label>Negotiated Terms</label>
+    <description>Find out what the catalogue price is actually made of, then argue about the parts of it that are not cost.
+
+Everything the branch buys through the company catalogue costs a tenth less. The corporation does not mind; it would rather the branch spent the difference on something it can invoice for.</description>
+    <insightCost>1</insightCost>
+    <workRequired>4500</workRequired>
+    <minimumIntellectual>4</minimumIntellectual>
+    <grantsCapabilities><li>RR_Cap_NegotiatedTerms</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
   <!-- The window-tier ladder.
 
        Until 0.10.9-dev this file held ONE project while `portalIndefiniteTier` was 4, so

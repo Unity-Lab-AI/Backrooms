@@ -211,7 +211,15 @@ namespace RimroomsAsyncIndustries.Procurement
             long stackCount = ((long)quantity + stackLimit - 1L) / stackLimit;
             if (stackCount > MaximumPhysicalStacksPerOrder) { return CompanyActionResult.Refused("RR_Proc_StackCountLimit"); }
             long totalPrice;
-            try { totalPrice = checked(catalog.unitPriceUsd * quantity); }
+            // **RR_Cap_NegotiatedTerms** (Commerce and organisation, tier 0) takes a tenth off
+            // the catalogue price. Computed before the overflow guard so a discount can never
+            // turn a refused order into an accepted one by arithmetic.
+            long unitPrice = catalog.unitPriceUsd;
+            RimroomsCampaignComponent priceCampaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (priceCampaign != null && priceCampaign.HasCapability("RR_Cap_NegotiatedTerms"))
+            { unitPrice -= unitPrice / 10; }
+            try { totalPrice = checked(unitPrice * quantity); }
             catch (OverflowException) { return CompanyActionResult.Refused("RR_Proc_PriceOverflow"); }
             if (totalPrice <= 0) { return CompanyActionResult.Refused("RR_Proc_PriceOverflow"); }
 
@@ -1096,7 +1104,14 @@ namespace RimroomsAsyncIndustries.Procurement
             int stackLimit = CurrentStackLimit(itemDef);
             int stacks = (int)(((long)order.quantity + stackLimit - 1L) / stackLimit);
             if (stacks > MaximumPhysicalStacksPerOrder) { return CompanyActionResult.Refused("RR_Proc_StackCountLimit"); }
-            if ((long)heldCargo.Count + stacks > MaximumHeldStacksAcrossOrders)
+            // **RR_Cap_StandingOrders** (Communications and logistics, tier 0) doubles how much
+            // undelivered cargo a branch may have in flight at once.
+            long heldBudget = MaximumHeldStacksAcrossOrders;
+            RimroomsCampaignComponent capacityCampaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (capacityCampaign != null && capacityCampaign.HasCapability("RR_Cap_StandingOrders"))
+            { heldBudget *= 2; }
+            if ((long)heldCargo.Count + stacks > heldBudget)
             { return CompanyActionResult.Refused("RR_Proc_HeldStackBudget"); }
             int remaining = order.quantity;
             try

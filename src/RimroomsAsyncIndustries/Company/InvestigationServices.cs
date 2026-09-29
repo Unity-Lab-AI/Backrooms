@@ -186,6 +186,11 @@ namespace RimroomsAsyncIndustries.Company
             record.analyzedTick = Find.TickManager.TicksGame;
             record.status = EvidenceStatus.Analyzed;
             researchInsights++;
+            // **RR_Cap_SecondReading** (Measurement and evidence, tier 0). A branch that has
+            // learned to read its own records twice gets more out of each one. Guarded against
+            // the same overflow the single award above is.
+            if (HasCapability("RR_Cap_SecondReading") && researchInsights < int.MaxValue)
+            { researchInsights++; }
             RecordEvent("RR_Event_EvidenceAnalyzed", record.id, analyst.LabelShortCap.ToString());
             UpdateEvidenceAndContracts();
             // The evidence record itself is the once-only insight receipt. Contract settlement is retriable independently.
@@ -202,6 +207,8 @@ namespace RimroomsAsyncIndustries.Company
             if (project.workDone >= definition.workRequired)
             {
                 project.completed = true;
+                // A capability is only real once the project that grants it is done.
+                RebuildCapabilities();
                 RecordEvent("RR_Event_ProjectCompleted", project.id, definition.LabelCap.ToString());
                 Messages.Message("RR_Event_ProjectCompleted".Translate(definition.LabelCap), MessageTypeDefOf.PositiveEvent);
             }

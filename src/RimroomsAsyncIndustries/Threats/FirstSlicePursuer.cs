@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -12,6 +12,23 @@ namespace RimroomsAsyncIndustries.Threats
     {
         private const int TwoGameMinutes = 84;
         private const int OneGameMinute = 42;
+
+        /// <summary>
+        /// How long a crew has between the contact warning and the strike.
+        ///
+        /// **RR_Cap_EarlyWarning** (Entities and containment, tier 0) doubles it. A branch that
+        /// has studied what is down there recognises it sooner, and the payoff is time rather
+        /// than damage — which is the shape every threat in this mod owes the player.
+        /// </summary>
+        private int ContactGraceTicks
+        {
+            get
+            {
+                Company.RimroomsCampaignComponent campaign = Campaign;
+                return campaign != null && campaign.HasCapability("RR_Cap_EarlyWarning")
+                    ? OneGameMinute * 2 : OneGameMinute;
+            }
+        }
 
         private void StartPursuer(RoomRecord crewRoom, int now)
         {
@@ -88,7 +105,10 @@ namespace RimroomsAsyncIndustries.Threats
                     contactPawn = closest;
                     Note("RR_Event_PursuerContactWarning", closest.LabelShortCap.ToString());
                 }
-                else if (now - contactWarningTick >= OneGameMinute && !attemptedStrike)
+                // **RR_Cap_EarlyWarning** (Entities and containment, tier 0) doubles the grace
+                // between the warning and the strike. A branch that has studied what is down
+                // there recognises it sooner, which buys the crew time rather than damage.
+                else if (now - contactWarningTick >= ContactGraceTicks && !attemptedStrike)
                 {
                     attemptedStrike = true;
                     // Only a healthy, upright target with a sound arm can receive this bounded tutorial strike.

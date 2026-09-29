@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using RimroomsAsyncIndustries.Company;
 using RimWorld;
@@ -69,7 +69,15 @@ namespace RimroomsAsyncIndustries.Generation
             // uncanny: a player would simply learn that returning moves things. The unease
             // depends on not being certain whether you misremembered, so roughly a third of
             // returns are left exactly as they were.
-            if (Roll(coordinate.Seed, coordinate.Openings, VisitSalt) % 3 == 0) { return; }
+            //
+            // **RR_Cap_CoordinateAtlas** (Spatial mapping and topology, tier 0) raises that share
+            // from about a third to about a half. A branch that keeps a real atlas is wrong about
+            // where things were less often — which is a reassurance rather than a fix, because
+            // the space still moves them and the atlas only means you notice.
+            Company.RimroomsCampaignComponent atlasCampaign = Current.Game == null
+                ? null : Current.Game.GetComponent<Company.RimroomsCampaignComponent>();
+            int quietShare = atlasCampaign != null && atlasCampaign.HasCapability("RR_Cap_CoordinateAtlas") ? 2 : 3;
+            if (Roll(coordinate.Seed, coordinate.Openings, VisitSalt) % quietShare == 0) { return; }
 
             int wanted = Math.Min(MaxMoved, 1 + (coordinate.Openings - 2) / OpeningsPerExtra);
             if (wanted <= 0) { return; }
