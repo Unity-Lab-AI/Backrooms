@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.9-dev - 2026-09-29 - rooms that are a kind of place
+
+- **Deeper coordinates now contain recognisable rooms** - laboratories, workshops, dormitories, canteens, storerooms, offices, wards, machine halls, nurseries and salvage caches.
+- **Further in, some of them are wrong.** A gallery. A room you have already been in, laid out exactly the same. An assembly of things that belong in different rooms. A hoard.
+- **Two rooms of the same kind are not the same room**, and the same room is the same every time you go back to it.
+- **The shallow yellow rooms stay empty.** That emptiness is the look, and nothing will be put in them.
+- The room you arrive in is never dressed, so the way back is never buried.
+- **Furniture comes from whatever you have installed.** A mod that adds a workbench puts it in Backrooms workshops without either mod knowing about the other.
+
+Full record: [room archetypes](docs/implementation/ROOM_ARCHETYPES_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.7.8-dev - 2026-09-29 - the yellow rooms
 
 - **The first Backrooms space now looks like the Backrooms.** Yellow carpet, yellow wood walls, and lights on the walls instead of lamps standing in the middle of the floor.

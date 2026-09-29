@@ -2010,3 +2010,44 @@ Owner directions captured verbatim: 2, the second of which reversed the shape of
 Owner assumptions corrected by reading the game's own data: 1 — the game *does* have an overhead lamp.
 Core behaviours found by reading rather than by failing: 1 — `SetTerrain` clearing the colour grid.
 Still open and named in `TODO.md`, not deferred: the entire seed-generator expansion — room archetypes and their variations, material variety, anomalous places and events, escalation balanced against **colony wealth** rather than wall-clock time, and the owner's explicit acceptance condition that a **solo group must be able to build, supply and find a way out** of a high-tier coordinate.
+
+---
+
+## 2026-09-29 — Rooms that are a kind of place (0.7.9-dev)
+
+### Verbatim owner requests
+
+> *"get to it"*
+
+> *"lots of furnature and equipment and different types of rooms and materials of all types from labs, to workshops, to nursaries, to everything imanginable and every variation of them and even wild waky carzxzy creepy things"*
+
+### What was built
+
+- [x] **0.7.8-dev made coordinates look different by depth, and a repainted room is still the same room.** This is what makes a deep space strange from the inside: **fourteen room archetypes** dressing rooms on top of their structural family, tiered by how far in the coordinate sits.
+- [x] **Every slot asks for a capability, never a name.** A hand-written list of defNames could not deliver *"everything imanginable"* — it would cover Core, miss every DLC, miss all 274 profile mods, and rot the first time anything was renamed. Asking the game *what is a work table* means **a profile that adds a bench puts it in Backrooms workshops the day it is installed**, without this mod knowing it exists.
+- [x] **Candidate lists are sorted ordinally, and that matters more than it looks.** Unsorted they would follow def load order, that order changes with the mod list, and **the same seed would produce different rooms on a different machine**.
+- [x] **Depth 1 stays empty, and that is the point.** The shallow yellow rooms are sparse precisely because that emptiness *is* the look. The threshold room is never dressed at any depth either — it is where the player arrives, and the way back must never be buried under scenery.
+- [x] **Four anomalous rooms** for the owner's *"wild waky carzxzy creepy things"*: a gallery, **a room you have already been in laid out exactly the same**, an assembly of things that belong in different rooms, and a hoard. Flagged `anomalous` so the escalation ladder can later cap how many one coordinate holds without reworking any of this. The duplicate room is deliberately **fixed-count rather than rolled**, because identical furniture in identical positions is the whole idea.
+- [x] **"Every variation of them", without authoring each variation.** Per-slot count ranges and appearance chances, rolled from the room's own seed: two laboratories in one coordinate are **not the same room**, while the same room is identical every load.
+
+### Decoration is never allowed to fail a generation
+
+- [x] `TryPlace` returns null instead of throwing. A slot nothing answers is skipped, a fixture that will not fit is skipped, a bare room is a bare room.
+- [x] **It is a separate method from `Place` rather than a flag on it, deliberately.** The required content genuinely must fail loudly if it cannot be placed — the clue system, the power validation and the saved layout all depend on it — and a shared code path with a "do not throw" switch is exactly how that guarantee gets quietly lost later.
+- [x] Dressing runs **after** the family fixtures and the landmark, so nothing it does can displace what those systems depend on.
+
+### Two placement rules that protect the player
+
+- [x] **A fixture may be at most 2×2.** A large machine dropped into a Backrooms room can seal the route cross, and the entire point of a coordinate is that somebody has to be able to walk back out.
+- [x] **Non-minifiable edifices are excluded outright** — a wall or door in the middle of a room changes the layout rather than dressing it, and the layout is saved and validated elsewhere. A definition from an unknown mod that refuses to be constructed is caught and skipped.
+
+### Build evidence
+
+0.7.9-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **140** C# source files (two new), **86** approved package files (one new def file, fourteen archetypes). Assembly SHA-256 `10FD715C060E983DA8DCCFB77E273701EBAA0E0053C2781EE8CDF60502179215`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass. Every referenced `ThingCategoryDef` verified present in Core. **No new gameplay ThingDef, no asset, no patch operation, no new work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 2. Source files modified: 1. Package files created: 1. Docs updated: 5 (1 new).
+Owner directions captured verbatim: 2.
+Cross-machine determinism traps closed before shipping: 1 — candidate lists following def load order, which would have made one seed produce different rooms under a different mod list.
+Still open and named in `TODO.md`, not deferred: material variety, since fixtures take their default stuff; anomalous **events** as distinct from anomalous rooms; escalation against colony wealth; and the owner's acceptance condition that a solo group can build, supply and escape a high-tier coordinate.
