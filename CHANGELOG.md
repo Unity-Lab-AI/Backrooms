@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.7-dev - 2026-09-29 - every kind of work in the game now crosses a gate
+
+- **Containers on the other side get tended.** A fermenting barrel that wants wort or has beer ready, an egg box with eggs in it, and a pack animal you marked to unload will all now pull somebody across a gate.
+- Nobody crosses for a barrel with no wort on that side, or one sitting at a temperature that would ruin it.
+- **Somebody will cross a gate to flick a switch, open a container, or eject fuel** — but only where you marked it. Nothing is guessed.
+- **With the Odyssey expansion, somebody will cross to fish** a zone you painted on the other side. Water you never zoned attracts nobody.
+- All of it is tunable while the game runs, like the rest.
+
+That closes the last of the gaps found when every kind of work in the game was listed out and checked. Every one is now either handled or deliberately left alone with the reason written down.
+
+Full record: [the last work type gaps](docs/implementation/WORK_TYPE_GAPS_CLOSED_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.6.6-dev - 2026-09-29 - study what you contain, through a gate
 
 - **A researcher now crosses a gate to study a contained entity on the other side.** A containment facility reached through a portal is the whole idea of this mod, and until now nobody would walk to one.

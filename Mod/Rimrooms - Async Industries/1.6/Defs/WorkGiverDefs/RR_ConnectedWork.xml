@@ -925,4 +925,97 @@
     <canBeDoneByMechs>false</canBeDoneByMechs>
   </WorkGiverDef>
 
+  <!-- Container upkeep across a gate: fermenting barrels, egg boxes, carriers to unload.
+       This family follows the HAULING ladder's own convention rather than the
+       "just above Core's highest giver in the type" rule the other work types use, because
+       that convention is documented and deliberate: CONNECTED_FOOD_IMPLEMENTATION.md
+       calibrates the cross-gate hauling numbers against HaulGeneral (15) and accepts that
+       "Core's local rearming at 150 will always beat it anyway". So continue sits at 131,
+       above every container giver it travels for, including UnloadCarriers (130), and below
+       Refuel (140) and RearmTurrets (150), because a turret out of shells at home beats eggs
+       across a gate. Plan sits at 4, below HaulMerge (5) and below every existing cross-gate
+       hauling plan giver, because this is the least urgent crossing in the mod. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedHaulingUpkeepContinue</defName>
+    <label>travel on to tend containers through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedHaulingUpkeepContinue</giverClass>
+    <workType>Hauling</workType>
+    <verb>tend</verb>
+    <gerund>tending containers</gerund>
+    <priorityInType>131</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedHaulingUpkeep</defName>
+    <label>cross a gate to tend containers</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedHaulingUpkeep</giverClass>
+    <workType>Hauling</workType>
+    <verb>tend</verb>
+    <gerund>tending containers</gerund>
+    <priorityInType>4</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
+  <!-- BasicWorker: flick a switch, open a container, eject fuel on the far side. Purely
+       designation driven, like the fieldwork families, so nothing is inferred. Continue sits
+       at 502, above Core's Flick (500). Plan sits at 2, below everything local. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBasicWorkerContinue</defName>
+    <label>travel on to operate through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBasicWorkerContinue</giverClass>
+    <workType>BasicWorker</workType>
+    <verb>operate</verb>
+    <gerund>operating</gerund>
+    <priorityInType>502</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBasicWorker</defName>
+    <label>cross a gate to operate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBasicWorker</giverClass>
+    <workType>BasicWorker</workType>
+    <verb>operate</verb>
+    <gerund>operating</gerund>
+    <priorityInType>2</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
+  <!-- Fishing: Odyssey content, and zone driven, so a coordinate the player never zoned
+       attracts nobody. Continue sits at 52, above Core's Fish (50). Plan sits at 2. -->
+
+  <WorkGiverDef MayRequire="Ludeon.RimWorld.Odyssey">
+    <defName>RR_ConnectedFishingContinue</defName>
+    <label>travel on to fish through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedFishingContinue</giverClass>
+    <workType>Fishing</workType>
+    <verb>fish</verb>
+    <gerund>fishing</gerund>
+    <priorityInType>52</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef MayRequire="Ludeon.RimWorld.Odyssey">
+    <defName>RR_ConnectedFishing</defName>
+    <label>cross a gate to fish</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedFishing</giverClass>
+    <workType>Fishing</workType>
+    <verb>fish</verb>
+    <gerund>fishing</gerund>
+    <priorityInType>2</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
 </Defs>

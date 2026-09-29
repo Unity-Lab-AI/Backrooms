@@ -555,4 +555,46 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         { get { return ConnectedDeploymentProviders.DarkStudy; } }
         protected override bool ContinueOnly { get { return true; } }
     }
+
+    public sealed class WorkGiver_ConnectedHaulingUpkeep : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.HaulingUpkeep; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedHaulingUpkeepContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.HaulingUpkeep; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    public sealed class WorkGiver_ConnectedBasicWorker : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BasicWorker; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedBasicWorkerContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BasicWorker; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    public sealed class WorkGiver_ConnectedFishing : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Fishing; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedFishingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Fishing; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
 }

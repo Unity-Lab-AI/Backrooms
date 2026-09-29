@@ -112,6 +112,15 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         /// <summary>Anomaly content; unavailable without the expansion rather than broken.</summary>
         public const string DarkStudy = "dark-study";
 
+        /// <summary>Container work on the far map: barrels, egg boxes, carriers.</summary>
+        public const string HaulingUpkeep = "hauling-upkeep";
+
+        /// <summary>Designation-driven: flick, open, eject fuel.</summary>
+        public const string BasicWorker = "basic-worker";
+
+        /// <summary>Odyssey content; zone-driven, so the player decides.</summary>
+        public const string Fishing = "fishing";
+
         private static readonly ConstructionFinishingProvider construction =
             new ConstructionFinishingProvider();
         private static readonly ResearchProvider research = new ResearchProvider();
@@ -139,6 +148,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         private static readonly BillWorkProvider billArt =
             new BillWorkProvider(BillWorkArt, "Art", "RR_ConnectedWork_BillWorkArtLabel");
         private static readonly DarkStudyProvider darkStudy = new DarkStudyProvider();
+        private static readonly HaulingUpkeepProvider haulingUpkeep = new HaulingUpkeepProvider();
+        private static readonly BasicWorkerProvider basicWorker = new BasicWorkerProvider();
+        private static readonly FishingProvider fishing = new FishingProvider();
         private static readonly Dictionary<string, ConnectedDeploymentProvider> registry =
             new Dictionary<string, ConnectedDeploymentProvider>(System.StringComparer.Ordinal)
             {
@@ -162,7 +174,10 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 { BillWorkSmithing, billSmithing },
                 { BillWorkTailoring, billTailoring },
                 { BillWorkArt, billArt },
-                { DarkStudy, darkStudy }
+                { DarkStudy, darkStudy },
+                { HaulingUpkeep, haulingUpkeep },
+                { BasicWorker, basicWorker },
+                { Fishing, fishing }
             };
 
         public static IEnumerable<ConnectedDeploymentProvider> All { get { return registry.Values; } }

@@ -23,12 +23,12 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | 0.6.6-dev (`git log -1`; the cascade read-back is in `FINALIZED.md`) |
+| Published | 0.6.7-dev (`git log -1`; the cascade read-back is in `FINALIZED.md`) |
 | Remotes | `forgejo` and `github`, both with `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` at the same commit |
 | Working tree | clean |
-| Build | 115 C# source files, 76 approved package files, zero warnings, zero errors |
+| Build | 117 C# source files, 76 approved package files, zero warnings, zero errors |
 | Register | `outputs/.../Rimrooms_Async_Industries_294_Mod_Integration_Register.html` — **open this one**, not the `.xlsx`. Generated; rebuild after any CSV edit |
-| Assembly | SHA-256 `238DA7119BECD99E080312C23FAC129E6996C805AD2A48A1E2405656CF86DEA0`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
+| Assembly | SHA-256 `9A73827B2E0F6C6AC33712BE447CEA5C7F8959C72820080AE7C2C00BA75A8EAE`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
 | Game launches | **none, ever.** Every runtime claim in this repo is pending the post-completion test phase |
 
 ### The standing instruction that matters most
@@ -50,17 +50,14 @@ Do not finish a checkpoint and wait. Chain them. The owner got tired of asking f
 - **0.6.4** — **Backrooms containment** (no outside, roof never removable, interior fully strippable) and the last three work families: wardening, childcare, animal handling.
 - **0.6.5** — **bill work**: five families, one per work type, so a bench on the far side finally gets worked. Plus a shipped defect closed — the carry family had been supplying autonomous and mech bills for five checkpoints contrary to its own record, because they derive from `Bill_Production`.
 - **0.6.6** — **dark study**: a researcher crosses to a contained entity. Plus a second shipped defect closed — the childcare giver defs had referenced a Biotech-only work type with no `MayRequire` since 0.6.4, an unresolved cross-reference on a Core-only install. `tools/check-dlc-gating.py` now enforces it from the game's own data.
+- **0.6.7** — **hauling upkeep, BasicWorker and Fishing**, closing the last work-type gaps. All thirty `Hauling` givers classified; three decided against as map-bound.
 - **Register checkpoint, still 0.6.4** — the 294-mod register rebuilt with a generator and a checker, joy and rituals **decided no**, the three hauling rows closed, and the work-type list **enumerated instead of trusted**. No C# change; the assembly is byte-identical.
 
-**Twenty-eight cross-map work families, twenty of them travel-to-work deployments.**
+**Thirty-one cross-map work families, twenty-three of them travel-to-work deployments. Every work type in the game is covered or decided against.**
 
 ### What is left, in the order to do it
 
-1. **The four work-type gaps**, in this order, from [`research/WORK_TYPE_COVERAGE_AUDIT.md`](research/WORK_TYPE_COVERAGE_AUDIT.md). **Joy, rituals, `Patient` and `PatientBedRest` are all decided no** and the three hauling rows are closed — do not reopen them; read the audit instead.
-   1. ~~**Bill work deployment**~~ — **BUILT 0.6.5-dev** as five families, one per work type. Do not reopen; read `implementation/CONNECTED_BILL_WORK_IMPLEMENTATION.md`.
-   2. ~~**DarkStudy**~~ — **BUILT 0.6.6-dev.** Do not reopen; read `implementation/CONNECTED_DARK_STUDY_IMPLEMENTATION.md`.
-   3. **Hauling upkeep** — the `Hauling` givers that are *local container operations on the far map* (`EmptyEggBox`, `FillFermentingBarrel`, `EmptyWasteContainer`, `HaulMechsToCharger`, `UnloadCarriers`, …). Same shape as the bill gap.
-   4. **BasicWorker (`Flick`, `Open`), and settle `Fishing` first** — `Fishing` needs water on the map, which is a *generation* question; if a coordinate never has fishable water the honest record is "unnecessary", not "unbuilt".
+1. ~~**The four work-type gaps**~~ — **ALL CLOSED.** Bill work 0.6.5-dev, dark study 0.6.6-dev, hauling upkeep / BasicWorker / Fishing 0.6.7-dev. **Every work type in Core and all five expansions is now covered or decided against with its reason recorded**; joy, rituals, `Patient` and `PatientBedRest` are decided no. Do not reopen any of it — read `research/WORK_TYPE_COVERAGE_AUDIT.md`. What remains here is narrower and named in `DEFERRED.md`: the **eleven DLC container hauling givers** (each needs a custody review before a worker crosses for it) and the **four painting givers** in `Art`.
 2. **A portal whose far side is an ordinary map**, then **a world tile the branch does not hold.** This is the remaining half of the topology direction. **It needs a player designation flow** — the same pattern gates already use — because auto-picking a door on the player's colony is exactly what 0.6.3 forbade. Do the already-owned-map version first: it is bounded, it is a real shortcut home, and it exercises the endpoint plumbing the world-tile version reuses.
 3. **The three starting sites.** `SCENARIOS.md` specifies all three in full, so this is implementation, not design. Two of them begin with a way out of the Backrooms.
 4. **Floors returning materials when lifted** — vanilla returns none, so the owner's "uninstalled, moved, resued, sold" for carpet and tile is a content feature needing a `CONTENT_REUSE_POLICY.md` decision.

@@ -19,14 +19,14 @@ No claim here rests on memory. Where a decision turns on a Core fact, the fact i
 | Construction | 15 | Core | `construction-finishing`, `repair` deployments + `construction-supply` carry | **Covered** |
 | Doctor | 14 | Core/Biotech/Anomaly | `tending`, `patient-feeding`, `rescue-in-place` deployments + `medicine-supply` carry | **Covered** |
 | Warden | 18 | Core/Ideology/Biotech/Anomaly | `warden` deployment + `food-supply` carry reaches prisoners | **Covered** |
-| Hauling | 30 | Core/Ideology/Biotech/Anomaly | `storage-hauling`, `casualty-rescue`, `fuel-supply` carry | **Partly** — see below |
+| Hauling | 30 | Core/Ideology/Biotech/Anomaly | carry families + `hauling-upkeep` deployment | **Covered 0.6.7-dev** for Core; eleven DLC container givers named and open |
 | Handling | 8 | Core | `animal-handling` deployment, designation-driven | **Covered** |
 | Research | 6 | Core/Biotech | `research` deployment | **Covered** |
 | Childcare | 6 | Biotech | `childcare` deployment | **Covered** |
-| BasicWorker | 6 | Core/Ideology | none | **Gap — candidate** |
+| BasicWorker | 6 | Core/Ideology | `basic-worker` deployment | **Covered 0.6.7-dev** |
 | Crafting | 6 | Core/Anomaly | `bill-ingredients` carry | **Covered 0.6.5-dev** — bill work deployment |
 | Smithing | 7 | Core/Biotech/Anomaly | `bill-ingredients` carry | **Covered 0.6.5-dev** — bill work deployment |
-| Art | 5 | Core | `bill-ingredients` carry + `bill-work-art` deployment | **Covered 0.6.5-dev** for sculpting; painting remains a candidate |
+| Art | 5 | Core | `bill-ingredients` carry + `bill-work-art` deployment | **Covered 0.6.5-dev** for sculpting; painting is designation work and belongs with `basic-worker`, recorded below |
 | Cooking | 4 | Core | `bill-ingredients` carry | **Covered 0.6.5-dev** — bill work deployment |
 | Growing | 4 | Core | `growing` deployment | **Covered** |
 | Cleaning | 3 | Core/Biotech | `cleaning` deployment | **Covered** |
@@ -38,9 +38,9 @@ No claim here rests on memory. Where a decision turns on a Core fact, the fact i
 | Tailoring | 1 | Core | `bill-ingredients` carry | **Covered 0.6.5-dev** — bill work deployment |
 | PatientBedRest | 1 | Core | none | **Decided: never** |
 | **DarkStudy** | 1 | Anomaly | `dark-study` deployment | **Covered 0.6.6-dev** |
-| **Fishing** | 1 | Odyssey | **none** | **Gap — candidate, lowest value** |
+| **Fishing** | 1 | Odyssey | `fishing` deployment | **Covered 0.6.7-dev** |
 
-**As of 0.6.6-dev: eighteen work types have a deployment.** Two are decided against permanently. **Two genuine gaps remain** — `BasicWorker` and the local-container half of `Hauling`, with `Fishing` a generation question before it is a work question. Two of the original four were absent from the remembered list this audit replaced.
+**As of 0.6.7-dev: twenty-one work types have a deployment.** Two are decided against permanently. **No work-type gaps remain.** Every work type in Core and all five expansions is either covered or decided against with its reason recorded. What stays open is narrower and named: the eleven DLC *container* hauling givers, which each need a custody review, and the four painting givers in `Art`. Two of the original four were absent from the remembered list this audit replaced.
 
 ## The two decided against, permanently
 
