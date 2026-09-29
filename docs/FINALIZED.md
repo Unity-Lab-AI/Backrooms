@@ -717,3 +717,55 @@ Source files created: 5. Source files modified: 3. Package files modified: 2. Do
 Deferments closed: 2. Owner questions answered: 4. Stale rows corrected: 4 (three Gate 0 questions still marked open, one duplicated register entry).
 Rows added with a named position: 3 (the universe factions, per-scenario faction setup, period-plausible starting grants — queued by owner sequencing, not blocked).
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+---
+
+## Session — 2026-09-28 — nothing is blocked on the owner: live-tunable priorities, a named test phase, a verified compliance position (0.5.6-dev)
+
+### Verbatim requests
+
+> whats blocked by me nothing should ever be blocked by me use ask me question and make sure there is a write in option multile choice to select and fill out my own because not all your recommendations listed are the only options
+
+> option 1 and once again we should not be worriying about this as the mod is NOT completed yet only once we confirm everything in intirety with the mod and its workings with the game dlc, core, and mods is 100% do we ever test it(which i have to set up first, then u add the rim api mod, then we test(me running through the game asnd telling you the problems, LIVE fixes to the extent we can without a restart and reload of the mod)
+
+> make sure we are foillowing all rimworld and steam TOS and requirments when it comes to issues similar and the issue of factions and pawn heduffs and the like this mod has to be working with official versions
+
+### COMPLETED
+
+- [x] **"whats blocked by me nothing should ever be blocked by me"** — the owner was right and the fault was mine. Labelling two rows "blocked on the owner" described a *closure* condition as if it were a *work* condition, and made the owner look like the bottleneck in their own project when nothing had ever waited on them: 0.4.2 through 0.5.5 were all built under the standing instruction to keep building and launch later. **The `[!]` status is removed entirely** — 28 rows in `TODO.md` and 2 in `DEFERRED.md` reclassified to `[T]`, every "— blocked: owner …" suffix rewritten, and both files now state at the top that no such status exists and must not be reintroduced.
+- [x] **"use ask me question and make sure there is a write in option multile choice to select and fill out my own because not all your recommendations listed are the only options"** — four questions asked, each with the write-in available, and the point recorded as binding: the listed suggestions are never the whole option space and a menu must not be treated as exhaustive.
+- [x] **"we should not be worriying about this as the mod is NOT completed yet ... only once we confirm everything in intirety ... is 100% do we ever test it"** — recorded as a single named phase with a fixed order: complete at 100% including behaviour with Core, the DLC and the mods → **the owner** sets up the environment → the rim api mod is added → the owner plays and reports, and fixes land live. This is the biggest thing in the session, because it is not a schedule note but an architectural constraint.
+- [x] **"LIVE fixes to the extent we can without a restart and reload of the mod"** — turned into two binding implementation rules rather than a remark: **prefer settings and data over constants**, because anything hardcoded is something that live session cannot fix; and **never ask the owner to launch in order to continue building.**
+- [x] **Work-giver priorities became live settings — the balance question was removed rather than answered.** All eight numbers across the four cross-gate families are now adjustable in the settings window and applied the moment it closes: no rebuild, no mod reload, no restart. Verified against decompiled Core that this is possible with **public API only and no Harmony**: `WorkGiverDef.priorityInType` is writable, `WorkTypeDef.workGiversByPriority` is a public mutable list, and `Pawn_WorkSettings.Notify_UseWorkPrioritiesChanged()` is public.
+  - **A stability trap caught by reading Core rather than assuming.** Core builds `workGiversByPriority` with a LINQ `orderby ... descending`, which is a **stable** sort, so givers sharing a priority keep their database order. `List.Sort` is not stable — using it would have silently reshuffled equal-priority **native** givers, changing unrelated vanilla behaviour as a side effect of touching a Rimrooms setting. `OrderByDescending` is used instead.
+  - The plan-below-continue invariant is enforced in code and **explained in the UI**, so a slider that refuses to stay where it was dragged says why instead of appearing broken.
+  - The shipped XML stays the single source of truth for the defaults, captured at startup rather than duplicated in code; only values differing from it are saved; overrides are keyed by giver defName so a family added later needs no settings migration.
+  - Applied at startup, on game load through `FinalizeInit` (a loaded save's pawns did not exist at startup and each pawn caches its own giver order), and on settings close — not per slider frame, because each apply re-sorts a work type and invalidates every pawn's cache.
+- [x] **"make sure we are foillowing all rimworld and steam TOS and requirments ... this mod has to be working with official versions"** — full position written with the **verification behind every row**, checked against the package on disk rather than recalled: [`COMPLIANCE_AND_OFFICIAL_VERSIONS.md`](COMPLIANCE_AND_OFFICIAL_VERSIONS.md).
+  - Targets official 1.6 only; **zero `modDependencies`**; no game or DLC asset in the package (all 18 non-XML files are ours, no `texPath` outside `RR_`); **zero `PatchOperationReplace` and zero `PatchOperationRemove`** in the whole package, so nothing of Core's is overwritten or deleted; no DLC def referenced from any XML; the single DLC-adjacent code path is `pawn.Ideo`, null-guarded, against a type that lives in the official `Assembly-CSharp`; no Harmony, no assembly patching, no bundled game file, no shipped QA overlay; MIT, our own. GPL contamination specifically avoided — Stargates! (row 218) is GPL-3.0, is not a dependency, and nothing is taken from it.
+  - **Confirmed the DLC-gating mechanism by evidence rather than memory:** `MayRequire="Ludeon.RimWorld.<Dlc>"` with `MayRequireAnyOf`, established as the supported path by Core and the DLC using it **1,999 times in their own shipped data**.
+  - **"when it comes to issues similar and the issue of factions and pawn heduffs and the like"** — generalised into one test applied to every def class the mod may add: add definitions, never redistribute an asset; reference by path and defName; no destructive patch on a Core def; gate DLC-conditional content with `MayRequire`; a pawn-attached def must degrade to nothing.
+  - **Timed correctly, and that matters.** The faction layer is the first thing that would have been tempted to violate this: a `FactionDef` needs an icon, and the easy way to get one is to copy a PNG out of the game's folders — redistribution of Ludeon's assets, trivial to do by accident and expensive to undo after release. The rules are now attached to those rows before a line is authored.
+  - **Made self-enforcing.** The checkpoint verification now mechanically fails on any destructive patch operation, any `texPath` outside `RR_`, any ungated DLC package id, any declared `modDependencies`, and any non-original asset in the approved package list. A compliance document nobody re-reads is not a compliance position.
+- [x] **Three compliance owner questions raised honestly rather than resolved by assertion** — provenance of the three images intended to survive to release (noting the 14 gameplay PNGs **do not** survive M2, so questions about those are moot for the release package); the `<author>Operator</author>` field; and a conscious MIT confirmation before publication, since MIT permits anyone to redistribute and relicense derivatives. None blocks any work.
+- [x] **Default at future forks recorded:** ask immediately with multiple choice and a write-in, and keep building everything that does not depend on the answer.
+
+### Saved state
+
+`rr_connectedWorkPriorities` in the mod's preferences file, not in a campaign save. Additive: absent from every earlier preferences file and loading correctly as "no overrides", therefore as the shipped priorities. No campaign save state changed; a 0.5.5-dev save loads unchanged.
+
+### Documents updated in the same change
+
+`COMPLIANCE_AND_OFFICIAL_VERSIONS.md` (new), `implementation/TUNABLE_PRIORITIES_AND_TEST_PHASE.md` (new record), `GATE_0_DECISIONS.md` (six new binding decisions, verbatim), `DEFERRED.md`, `TODO.md`, `NOW.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.5.6-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **100** C# source files, **76** approved package files (unchanged — twelve keyed strings added to a file that already existed). Assembly SHA-256 `B4C5D211624916639528EBA6FA5DB414B4F44838986090FFC8D6DB633A85956F`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. Evidence folder `implementation/evidence/tunable-priorities-2026-09-28/`. All 58 packaged XML files parse; 535 `RR_` keys referenced from source with 0 missing; 2,956 relative doc links resolve with 0 broken; every `giverClass` resolves; 0 attribution strings; all compliance checks pass. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Source files modified: 3. Package files modified: 2. Docs updated: 11 (2 new).
+Owner questions answered: 4. Deferments closed: 1 (balance review, closed by removing the question). Rows reclassified: 30 (`[!]` → `[T]`).
+Binding decisions recorded: 6. Compliance owner questions raised: 3, none blocking.
+Blocked-on-owner rows remaining: **zero, by construction — the status no longer exists.**
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.

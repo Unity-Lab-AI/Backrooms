@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <!-- How eagerly colonists cross a gate to work. The one part of the cross-gate layer
+       that cannot be settled by reading source, because whether a number feels right is a
+       play judgement. Tunable while the game runs; no restart and no mod reload. -->
+  <RR_Settings_WorkPriorityTitle>Work across the gates</RR_Settings_WorkPriorityTitle>
+  <RR_Settings_WorkPriorityDescription>How eagerly colonists cross a gate to work, as a priority within each work type. Higher runs sooner. These take effect as soon as you close this window.</RR_Settings_WorkPriorityDescription>
+  <RR_Settings_WorkPriorityUnavailable>Work priorities cannot be adjusted right now.</RR_Settings_WorkPriorityUnavailable>
+  <RR_Settings_WorkPriorityReset>Reset all to shipped values</RR_Settings_WorkPriorityReset>
+  <RR_Settings_PriorityContinue>Finish a trip already under way: {0} (shipped {1})</RR_Settings_PriorityContinue>
+  <RR_Settings_PriorityPlan>Start a new trip: {0} (shipped {1})</RR_Settings_PriorityPlan>
+  <RR_Settings_PriorityClamped>Starting a trip is kept below finishing one. Otherwise a colonist standing on the far side with something in its hands could be sent on a new errand instead of completing the delivery.</RR_Settings_PriorityClamped>
+  <RR_Settings_FamilyHauling>Hauling goods through a gate</RR_Settings_FamilyHauling>
+  <RR_Settings_FamilyCasualty>Carrying casualties and the dead home</RR_Settings_FamilyCasualty>
+  <RR_Settings_FamilyConstruction>Carrying building material to a site</RR_Settings_FamilyConstruction>
+  <RR_Settings_FamilyFinishing>Travelling to finish a build</RR_Settings_FamilyFinishing>
+
   <RR_Settings_AudioTitle>Company sound cues</RR_Settings_AudioTitle>
   <RR_Settings_AudioDescription>Existing game sound cues accompany gate and field events. Persistent text warnings remain available when audio is muted. Native game and master volume still apply.</RR_Settings_AudioDescription>
   <RR_Settings_AudioUnavailable>Audio preferences could not be loaded. Company cues are silent.</RR_Settings_AudioUnavailable>

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
+using RimroomsAsyncIndustries.Core;
 using RimroomsAsyncIndustries.Portals;
 using Verse;
 
@@ -465,6 +466,18 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         }
 
         // ----- maintenance -----
+
+        /// <summary>
+        /// Push the player's work-giver priority preferences into the defs for this session.
+        /// The startup pass already did this once, but a pawn caches its own giver order and
+        /// the pawns of a loaded save did not exist then, so it is done again here where
+        /// every pawn is present.
+        /// </summary>
+        public override void FinalizeInit()
+        {
+            base.FinalizeInit();
+            ConnectedWorkPriorities.Apply(RimroomsMod.Settings);
+        }
 
         public override void GameComponentTick()
         {

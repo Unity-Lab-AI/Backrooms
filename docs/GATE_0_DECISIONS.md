@@ -206,3 +206,24 @@ Recorded verbatim, then their consequences. Captured in `TODO.md` as ten rows, o
 12. **Faction setup is default-set per scenario, tailored to that scenario**, and must be threaded through the existing versioned start contract (`RimroomsStartDef` → `BranchStartRequest` → `InitializeBranch`). It may **not** be a scenario-identity branch in code, which decision 5 already forbids for research and capability rules.
 
 **Sequencing decided the same day:** finish the remaining cross-map work families first — bills and unfinished work, research, tending across a gate, food, rest — then author the faction and period layer as one clean content checkpoint.
+
+---
+
+## Owner decisions — 2026-09-28 — nothing is blocked on the owner, and the test phase
+
+Recorded verbatim, then their consequences. Implemented in 0.5.6-dev; record: [`implementation/TUNABLE_PRIORITIES_AND_TEST_PHASE.md`](implementation/TUNABLE_PRIORITIES_AND_TEST_PHASE.md).
+
+> whats blocked by me nothing should ever be blocked by me use ask me question and make sure there is a write in option multile choice to select and fill out my own because not all your recommendations listed are the only options
+
+> option 1 and once again we should not be worriying about this as the mod is NOT completed yet only once we confirm everything in intirety with the mod and its workings with the game dlc, core, and mods is 100% do we ever test it(which i have to set up first, then u add the rim api mod, then we test(me running through the game asnd telling you the problems, LIVE fixes to the extent we can without a restart and reload of the mod)
+
+> make sure we are foillowing all rimworld and steam TOS and requirments when it comes to issues similar and the issue of factions and pawn heduffs and the like this mod has to be working with official versions
+
+**Decided, and binding:**
+
+13. **There is no blocked-on-owner status.** The `[!]` marker is removed from `TODO.md` and `DEFERRED.md` and must not be reintroduced. Nothing in this project has ever been blocked on the owner; the standing instruction was to keep building and launch later, and every checkpoint from 0.4.2 onward was built without waiting. A row that cannot be *closed* without the game running is `[T]` and gates no work.
+14. **Testing is one phase, after completion, in a fixed order.** The mod is confirmed complete in its entirety — its own workings and its workings with the game, Core, the DLC and the mods — at 100%. Then the **owner** sets up the test environment. Then the rim api mod is added. Then the owner plays and reports problems, and fixes land **live, to whatever extent is possible without a restart and reload of the mod.**
+15. **Prefer settings and data over constants, as a consequence of 14.** Anything hardcoded is something the live test session cannot fix. Any value that is a matter of feel or tuning belongs in the settings window or in a def. The eight cross-gate work-giver priorities were moved for exactly this reason in 0.5.6-dev; hold every future tuning value to the same test.
+16. **Never ask the owner to launch in order to continue building.** No source work ever waits on a launch. The launch rule itself is unchanged: only the owner launches RimWorld, through RimSort, and the agent never touches the active mod list or attaches the QA overlay outside the saved plan.
+17. **At a fork, ask immediately and keep building around it.** Fire a multiple-choice question the moment a real fork appears, and meanwhile finish everything that does not depend on the answer. **Every question carries a write-in option, and the listed suggestions are never the whole option space** — the owner's own wording. Do not treat a menu as exhaustive.
+18. **RimWorld and Steam terms are a release requirement, verified rather than asserted.** The mod targets official RimWorld and official DLC only. Add definitions; never redistribute a game, DLC or third-party asset. Reference icons and pawn kinds by path and defName instead of copying files. No `PatchOperationReplace` or `PatchOperationRemove` on a Core or DLC def. Gate DLC-conditional content with `MayRequire`. No modified game build, no bundled game file, no shipped QA overlay, and upload only what we own. This governs the faction layer, pawn hediffs, and every def class added later. Position, verification and the mechanical checks: [`COMPLIANCE_AND_OFFICIAL_VERSIONS.md`](COMPLIANCE_AND_OFFICIAL_VERSIONS.md).

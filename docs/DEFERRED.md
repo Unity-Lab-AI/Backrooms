@@ -19,7 +19,9 @@ Every session must read this file alongside `TODO.md`. When a step in `TODO.md` 
 
 The method and what the first audit found are recorded in [`implementation/DEFERMENT_AUDIT_AND_CLOSURES.md`](implementation/DEFERMENT_AUDIT_AND_CLOSURES.md).
 
-Status: `[ ]` open · `[~]` in progress · `[x]` built (archived in `FINALIZED.md`, row kept here for the trail) · `[!]` blocked on the owner.
+Status: `[ ]` open · `[~]` in progress · `[x]` built (archived in `FINALIZED.md`, row kept here for the trail) · `[T]` belongs to the post-completion test phase.
+
+**There is no `[!]` blocked-on-owner status any more, by owner direction 2026-09-28.** Nothing in this project is blocked on the owner and nothing ever was: the instruction from the start was to keep building and launch later, and every checkpoint from 0.4.2 to 0.5.5 was built without waiting. Rows that cannot be *closed* without the game running are marked `[T]` and belong to a single named phase described below. They gate no work. Do not reintroduce a status that makes the owner look like a bottleneck.
 
 ---
 
@@ -52,6 +54,8 @@ The four governing answers are settled, so no row here is waiting on a decision 
 - All factions **start neutral** and hostility is earned from saved observable causes, reusing the escalation-ladder rule rather than inventing a second unrelated one.
 - The 1990s period **also constrains starting grants** — scenario starting equipment and buildings are period-plausible — while research may still climb anywhere, so no start can be dead-ended.
 
+**Compliance rules bind this work before a line of it is authored** — see [`COMPLIANCE_AND_OFFICIAL_VERSIONS.md`](COMPLIANCE_AND_OFFICIAL_VERSIONS.md). In short: add definitions, never redistribute an asset; reference icons and pawn kinds by path and defName rather than copying a file into the package; no `PatchOperationReplace` or `PatchOperationRemove` on a Core def; gate anything DLC-conditional with `MayRequire`. Copying a faction icon PNG out of the game folder would be redistribution of Ludeon's assets — easy to do by accident, expensive to undo after release.
+
 - [ ] **The seven named universe factions** as new `FactionDef`s: US government, rival corporations after proprietary tech, disgruntled ex-employees, high-tech thieves, corporate espionage and sabotage, concerned citizens, plus further factions in the same vein. Verbatim owner wording is in `TODO.md` under the universe direction heading; do not paraphrase it into def descriptions.
 - [ ] **Per-scenario default faction setup** so each start begins with the factions tailored to that scenario, wired through the existing versioned start contract (`RimroomsStartDef` → `BranchStartRequest` → `InitializeBranch`) rather than a scenario-identity branch in code.
 - [ ] **Period-plausible starting grants** for every start, and the 1990s framing across faction names, descriptions and scenario text. Must not gate research, which stays one tree available to every start.
@@ -59,7 +63,7 @@ The four governing answers are settled, so no row here is waiting on a decision 
 ### Owned by M1 resume step 6 (milestone hygiene)
 
 - [ ] **Connected-site scheduling and streaming, then measurement.** Active connected job destinations must not be silently unloaded to meet a budget. Measurement itself is owner-blocked. Source: `CONNECTED_COLONY_PORTALS.md`, `research/PERFORMANCE_BENCHMARK_PLAN.md`.
-- [!] **Balance review of the two connected-hauling work-giver priorities.** `RR_ConnectedHaulingContinue` at 95 and `RR_ConnectedHauling` at 14 are deliberate balance choices against Core's `Hauling` ladder (`HaulToPortal` 105, `Strip` 100, `HaulCorpses` 90, `HaulGeneral` 15). Starting a gate trip must not outrank local hauling; finishing one must not lose to it. Whether those exact numbers feel right needs the owner's launch. Source: `implementation/CONNECTED_WORK_IMPLEMENTATION.md`.
+- [x] **Balance review of the connected work-giver priorities** — **CLOSED 2026-09-28 in 0.5.6-dev by removing the question rather than answering it.** All eight numbers across the four families are now player settings, tunable in the settings window and applied live with no mod reload and no restart. This was the right shape regardless of feel, because by owner direction the one session where these are finally judged is a live play session where fixes must land without reloading the mod — so anything hardcoded is something that session could not have fixed. The shipped XML stays the single source of truth for the defaults; only values that differ from it are saved. The plan-below-continue invariant is enforced in code and explained in the UI, so tuning cannot silently break the two-giver design. Record: [`implementation/TUNABLE_PRIORITIES_AND_TEST_PHASE.md`](implementation/TUNABLE_PRIORITIES_AND_TEST_PHASE.md).
 
 ### Owned by M2 (existing-content replacement)
 
@@ -91,11 +95,27 @@ The four governing answers are settled, so no row here is waiting on a decision 
 - [ ] Slideshow integration review, additional menu images per shipped scenario.
 - [ ] Validation sweep, invalid-state matrix, balance, release report, packaging.
 
-### Blocked on the owner — cannot be built by an agent
+### The post-completion test phase — `[T]`
 
-_The three rows that used to sit here — inside-start party size, inside-start first exit, and laboratory opening duration — were **answered by the owner on 2026-09-28** and are now implemented or recorded as decisions. See the Built section and [the record](implementation/GATE_DURATION_AND_COMPANY_NAMING.md)._
+**Owner direction, 2026-09-28, verbatim:**
 
-- [!] **Every runtime acceptance row** across M1–M6 (Gate 2 onward). Needs the owner's RimSort launch of the 295-entry target. The agent never launches the game.
+> once again we should not be worriying about this as the mod is NOT completed yet only once we confirm everything in intirety with the mod and its workings with the game dlc, core, and mods is 100% do we ever test it(which i have to set up first, then u add the rim api mod, then we test(me running through the game asnd telling you the problems, LIVE fixes to the extent we can without a restart and reload of the mod)
+
+So testing is not a pending activity that anything waits on. It is **one named phase that begins only after the mod is complete**, and it runs in this order:
+
+1. The mod is confirmed complete **in its entirety** — its own workings, and its workings with the game, Core, the DLC and the mods — at 100%.
+2. **The owner sets up the test environment.** Not the agent. The standing rule is unchanged: only the owner launches RimWorld, through RimSort, and the agent never touches the active mod list.
+3. **Then** the rim api mod is added.
+4. **Then** the owner plays and reports problems, and fixes land **live, to whatever extent is possible without a restart and reload of the mod.**
+
+Two consequences that bind implementation *now*, long before that phase:
+
+- **Prefer settings and data over constants.** Anything hardcoded is something that live session cannot fix. Values that are a matter of feel or tuning belong in the settings window or in a def, not in a `const`. The work-giver priorities were moved for exactly this reason in 0.5.6-dev; apply the same test to every future tuning value.
+- **Never ask the owner to launch in order to continue building.** There is no circumstance in which source work waits on a launch.
+
+- [T] **Every runtime acceptance row** across M1–M6 (Gate 2 onward), including the per-checkpoint acceptance lists at the foot of each implementation record. These feed the phase above. They gate nothing.
+
+_The three rows that used to sit in this section — inside-start party size, inside-start first exit, and laboratory opening duration — were **answered by the owner on 2026-09-28** and are now implemented or recorded as decisions. See the Built section and [the record](implementation/GATE_DURATION_AND_COMPANY_NAMING.md)._
 
 ---
 

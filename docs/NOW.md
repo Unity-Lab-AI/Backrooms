@@ -23,10 +23,10 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published commit | 0.5.5-dev (see `git log -1`; the cascade read-back is in `FINALIZED.md`) |
+| Published commit | 0.5.6-dev (see `git log -1`; the cascade read-back is in `FINALIZED.md`) |
 | Remotes | `forgejo` and `github`, both with `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` at the same commit |
 | Working tree | clean |
-| Build | 99 C# source files, 76 approved package files, zero warnings, zero errors |
+| Build | 100 C# source files, 76 approved package files, zero warnings, zero errors |
 | Assembly | SHA-256 `00D209DC9AD497E054A9FB11D71D4FCEEB8826B72329315C8C73B3F90A82B26C`, reproduced after deleting `obj/` and `bin/` |
 | Game launches | **none, ever.** Every runtime claim in this repo is pending the owner's first RimSort launch |
 
@@ -75,6 +75,8 @@ Hard-won, each one the result of a real defect or a pinned source fact. Recorded
 13. **Natural gates have no timer, operator, power or close command.** Ever. Non-corporation starts depend on it.
 14. **Nothing in the work layer walks a pawn home.** A pawn that crossed legitimately stays where it is when its errand ends, with its own needs and local work.
 15. **Never force-push. Never launch the game. Never alter the RimSort list. No AI attribution anywhere.**
+16. **Add definitions; never redistribute assets.** Reference Ludeon's icons and pawn kinds by path and defName. No `PatchOperationReplace`/`Remove` on a Core def. Gate DLC-conditional content with `MayRequire`. Official versions only. Verified and mechanically checked — `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`.
+17. **Prefer a setting or a def over a constant** for anything tunable, because the only test session fixes things live without a mod reload.
 
 ### Binding owner decisions
 
@@ -121,12 +123,18 @@ Full text in `GATE_0_DECISIONS.md` under the two 2026-09-28 headings.
 - C# 7.3: no target-typed conditionals. `AcceptanceReport` and `bool` will not unify in a ternary.
 - `ForbidUtility`, `HaulAIUtility` and `GenConstruct` are all in the `RimWorld` namespace, not `Verse`.
 
-### Genuinely blocked on the owner
+### Blocked on the owner: nothing
 
-Only two rows, and neither is a decision:
+**There is no blocked-on-owner status in this project, by owner direction 2026-09-28.** It was removed from `TODO.md` (28 rows) and `DEFERRED.md` (2 rows) in 0.5.6-dev and must not be reintroduced. Nothing here has ever waited on the owner.
 
-- **Every runtime-acceptance row** across M1–M6. Needs the owner's RimSort launch of the 295-entry target. The agent never launches the game.
-- **Balance review of the work-giver priorities** set for connected hauling, casualties, construction supply and now construction finishing (82 continue, 5 plan). Needs play to judge feel.
+Rows that cannot be *closed* without the game running are `[T]` and belong to **one phase, after completion**: the mod is confirmed complete at 100% including its behaviour with Core, the DLC and the mods → the owner sets up the environment → the rim api mod is added → the owner plays and reports, and fixes land **live, without a mod restart and reload**.
+
+Two rules follow from that and bind work now:
+
+- **Prefer settings and data over constants.** Anything hardcoded is something that live session cannot fix. The eight work-giver priorities became live settings in 0.5.6-dev for exactly this reason; hold every future tuning value to the same test.
+- **Never ask the owner to launch in order to continue building.**
+
+Compliance is also a standing release requirement with a verified position and mechanical checks — see `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`. It binds the faction layer before a line of it is authored.
 
 ---
 

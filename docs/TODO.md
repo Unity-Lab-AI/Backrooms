@@ -8,7 +8,9 @@ Status markers:
 - `[ ]` pending
 - `[~]` in_progress
 - `[x]` complete (move to FINALIZED.md immediately, never leave here)
-- `[!]` blocked (waits on an owner decision or an owner-launched run)
+- `[T]` belongs to the **post-completion test phase** — cannot be *closed* without the game running, gates no work, and is never a reason to stop building
+
+**There is no blocked-on-owner status, by owner direction 2026-09-28.** Nothing here waits on the owner. Runtime rows are `[T]` and feed one named phase that begins only once the mod is complete; see [`DEFERRED.md`](DEFERRED.md) §The post-completion test phase.
 
 LAW #0 reminder: every task description preserves the user's verbatim words.
 
@@ -27,7 +29,7 @@ LAW #0 reminder: every task description preserves the user's verbatim words.
 - [~] **"new feature branch for your work"** — branch `feature/connected-colony-portals` created from `48a8418` (= `Develop` = `Main` on both remotes). Pushed with the first milestone per `PUBLISHING.md`.
 - [~] **"start on the todo weork"** — M1 resume steps 1, 2 and 3 CLOSED in 0.4.2-dev, plus the owner's gate traversal rule in 0.4.3-dev (see `FINALIZED.md`). Step 4 is IN PROGRESS: the intent/lease engine and the first adapter family (storage hauling, both directions) shipped in 0.5.0-dev; the remaining families are next.
 - [~] **"making sure to properly finalize all completed work as i think gate 0 is still in the todo stuff but it should be finalized first"** — all 129 checked master TODO items archived verbatim in `FINALIZED.md` §Inherited completed work; master TODO checkboxes retained beside their evidence per `REGRESSION_CONTAINMENT.md`.
-- [~] **"begin on any and all todo work to reach the goal of having a completed working mod in all regaurds as outlined in the many prep documentes build over 18 hours of work in gate 0"** — standing objective for every session from here: work the cascade M1 → M6 in `ROADMAP.md` order until the master TODO is empty; runtime rows stay `[!]` until the owner launches.
+- [~] **"begin on any and all todo work to reach the goal of having a completed working mod in all regaurds as outlined in the many prep documentes build over 18 hours of work in gate 0"** — standing objective for every session from here: work the cascade M1 → M6 in `ROADMAP.md` order until the master TODO is empty; runtime rows are `[T]` and belong to the post-completion test phase, so none of them ever stops the building.
 
 ---
 
@@ -77,7 +79,7 @@ Binding contract: [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md). 
 - [x] Keep inhabitants and monstrosities in the Backrooms: no non-player pawn crosses any gate on its own, an open gate is never an objective, lure, spawn target, raid route or attack trigger, and anything else returns only carried through by our own pawns, including people and monstrosities that are genuinely downed, dead or imprisoned. Enforced at one chokepoint; see [the rule](#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side) and the [travel record](implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md).
 - [ ] Author and implement the saved, bounded escalation ladder: a new coordinate starts quiet; pressure rises only from saved observable causes (operating history at that coordinate, depth and complexity, unlocked technology, what has already been taken out); caps on simultaneous encounters, inhabitants and events per opening and per coordinate, with raising a cap being itself a recorded progression step; quiet stretches as required content; no summing pressure across several open gates; and a revisit that resumes saved pressure without rerolling it up or down.
 - [ ] Implement connected-site scheduling/streaming and measure performance after an owner-launched build.
-- [!] Record owner-launched acceptance for multi-map work, both directions, permanent natural portals, intermittent laboratory links, saving/reloading, every supported work adapter and applicable DLC/profile variants. — blocked: owner RimSort launch.
+- [T] Record owner-launched acceptance for multi-map work, both directions, permanent natural portals, intermittent laboratory links, saving/reloading, every supported work adapter and applicable DLC/profile variants. — post-completion test phase (owner RimSort launch).
 
 **Task-record subitems still open (verbatim from `implementation/CONNECTED_COLONY_IMPLEMENTATION_TASK.md`):**
 
@@ -86,7 +88,7 @@ Binding contract: [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md). 
 - [ ] Saved work intents, quantity leases and native destination job revalidation.
 - [ ] Work-specific hauling, construction, bill, research, medical and needs adapters.
 - [ ] Optional profile interfaces and native priority/schedule/restriction coverage.
-- [!] Owner-launched acceptance: both directions; chains/loops; closed/blocked endpoints; permanent natural links; save/reload; cargo identity; interrupted jobs; all supported native/provider routes. — blocked: owner RimSort launch.
+- [T] Owner-launched acceptance: both directions; chains/loops; closed/blocked endpoints; permanent natural links; save/reload; cargo identity; interrupted jobs; all supported native/provider routes. — post-completion test phase (owner RimSort launch).
 
 ### Major M2 — Existing-content replacement (ROADMAP M2; master TODO §Existing-content replacement work + Phase 5 replacement item)
 
@@ -102,8 +104,8 @@ Policy: [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md); map: [`implementat
 
 ### Phase 1 leftovers (master TODO §Phase 1 — repository, build, and content foundations)
 
-- [!] Define RimSort-managed test profiles: preserve the 295-entry product target (the existing 294 plus Rimrooms), then record RimBridgeServer as a separate QA overlay (normally 296 loaded entries). RimSort owns sorting, saving mod lists, and every launch; the owner starts sessions through RimSort. Do not add direct RimWorld or GABS launch profiles or remove target mods to offset the bridge. — blocked: owner-operated RimSort action.
-- [!] After the first owner-launched full-target startup, collect matched Core/profile performance baselines on RR-DEV-01 and implement any missing counters per the [benchmark plan](research/PERFORMANCE_BENCHMARK_PLAN.md). Enforce the recorded budgets before promoting features or larger room/map bands. — blocked: owner RimSort launch.
+- [T] Define RimSort-managed test profiles: preserve the 295-entry product target (the existing 294 plus Rimrooms), then record RimBridgeServer as a separate QA overlay (normally 296 loaded entries). RimSort owns sorting, saving mod lists, and every launch; the owner starts sessions through RimSort. Do not add direct RimWorld or GABS launch profiles or remove target mods to offset the bridge. — post-completion test phase (owner-operated RimSort action).
+- [T] After the first owner-launched full-target startup, collect matched Core/profile performance baselines on RR-DEV-01 and implement any missing counters per the [benchmark plan](research/PERFORMANCE_BENCHMARK_PLAN.md). Enforce the recorded budgets before promoting features or larger room/map bands. — post-completion test phase (owner RimSort launch).
 
 ### Phase 2 — code architecture and safe vertical slice (master TODO; source largely present per `implementation/PHASE_2_BUILD_RECORD.md`, full stated scope + Gate 2 acceptance still open)
 
@@ -124,7 +126,7 @@ Policy: [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md); map: [`implementat
 - [ ] Create one seeded, finite Backrooms site with a short room graph, one hazard, one learnable entity, one evidence chain, one exit/recall path, and one reward.
 - [ ] Add expedition dispatch/recall/close flow; track crew/cargo/location/return and handle death, injury, missing, late return, and aborted runs.
 - [ ] Add evidence intake, one lab analysis recipe/project, one researched capability, a payment/contract result, and a traceable company ledger entry.
-- [!] Save, reload, revisit the same coordinate, and confirm map state and unique rewards persist without duplication. — blocked: owner RimSort launch.
+- [T] Save, reload, revisit the same coordinate, and confirm map state and unique rewards persist without duplication. — post-completion test phase (owner RimSort launch).
 - [ ] Provide a safe fallback map and recoverable error message when generation cannot produce a valid route.
 
 **Gate 2 passes when** (master TODO): "the first complete loop plays from a fresh save through build, staff, expedition, extraction, analysis, reward, save/reload, and a second visit without a softlock or lost state." — owner-launched only.
@@ -140,7 +142,7 @@ Policy: [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md); map: [`implementat
 - [ ] Implement Furniture & Knickknack Store after Gate 2: validate public-area security, store stock/ownership, basement threshold, missing-person objective, and return/contract convergence.
 - [ ] Implement Lone Survivor after Gate 2: validate a seeded inside start, one-pawn survival, finite field kit, learned-rule/evidence persistence, return/rescue/outpost alternatives, and no facility prerequisite.
 - [ ] Add outpost, town-distortion, or company-in-crisis starts only after a design brief defines their starting state, pressure, failure/recovery, and acceptance evidence.
-- [!] Verify every start's reload behavior, deterministic coordinate, objective idempotency, optional-DLC fallback, solo behavior, and RWT eligibility against `SCENARIOS.md`. — blocked: owner RimSort launch.
+- [T] Verify every start's reload behavior, deterministic coordinate, objective idempotency, optional-DLC fallback, solo behavior, and RWT eligibility against `SCENARIOS.md`. — post-completion test phase (owner RimSort launch).
 
 **Facility and personnel** (source checkpoint: native applicants/hiring + HQ facility observations implemented):
 
@@ -207,11 +209,11 @@ Every item in this major needs a Rimrooms build the owner has launched; source-s
 
 - [ ] Implement feature detection and setup diagnostics for the pinned RWT release; support unavailable/admin-disabled feature states.
 - [ ] Implement no custom server schema or patches until supported extension points are identified from the exact code version.
-- [!] Verify guild identity, facility mapping, configured visits/snapshot behavior, visits when online/offline, transfer spot, chill/defense spots, caravan interactions, events, sites, roads, aid, gifts, and trading. — blocked: owner-launched two-client run.
-- [!] Verify transfer receipt IDs and item/pawn state prevent duplicates, loss, stale ownership, and broken stacks on disconnect/reconnect. — blocked: owner-launched two-client run.
-- [!] Verify Backrooms Research Dossier item transfer; receiving branch must explicitly study it locally and be unable to claim it twice in one save. — blocked: owner-launched two-client run; dossier binds to an existing physical document object per the content-reuse rule.
-- [!] Test unsupported/complex modded items and define an honest fallback message rather than promising an unverified transfer. — blocked: owner-launched two-client run.
-- [!] Test separate colony saves, shared world actions, mod order/config enforcement, RWT server restart/backups, and an admin changing settings during play. — blocked: owner-launched two-client run.
+- [T] Verify guild identity, facility mapping, configured visits/snapshot behavior, visits when online/offline, transfer spot, chill/defense spots, caravan interactions, events, sites, roads, aid, gifts, and trading. — post-completion test phase (owner-launched two-client run).
+- [T] Verify transfer receipt IDs and item/pawn state prevent duplicates, loss, stale ownership, and broken stacks on disconnect/reconnect. — post-completion test phase (owner-launched two-client run).
+- [T] Verify Backrooms Research Dossier item transfer; receiving branch must explicitly study it locally and be unable to claim it twice in one save. — post-completion test phase (owner-launched two-client run); dossier binds to an existing physical document object per the content-reuse rule.
+- [T] Test unsupported/complex modded items and define an honest fallback message rather than promising an unverified transfer. — post-completion test phase (owner-launched two-client run).
+- [T] Test separate colony saves, shared world actions, mod order/config enforcement, RWT server restart/backups, and an admin changing settings during play. — post-completion test phase (owner-launched two-client run).
 - [ ] Document exact server setup and player experience. No statement may describe live shared-colony control or synchronized research unless implemented and demonstrated.
 
 **Five DLC layers:**
@@ -222,17 +224,17 @@ Every item in this major needs a Rimrooms build the owner has launched; source-s
 - [ ] Biotech conditional content: genes, mechanitors, children, medicine, pollution, and mechanoid options; no mandatory gene/resource dependency.
 - [ ] Anomaly conditional content: containment/research links; Backrooms entities retain a base-game implementation.
 - [ ] Odyssey conditional content: gravship/off-world logistics and any compatible space travel.
-- [!] Before implementing or advertising optional VGE support, verify the clean Core + Harmony + Odyssey + VEF + both VGE chapters stack, Chapter 1 operations, Chapter 2 threat/defense/salvage, optional Insectoids 2, save/reload, and the gravship-touch profile graph. Keep this in the per-integration acceptance gate; it is not a Gate 0 requirement. See the [gravship profile review](research/GRAVSHIP_PROFILE_INTERACTIONS.md). — blocked: owner RimSort launch.
-- [!] Verify all five individually enabled/disabled, then all combined. Maintain a 32-row DLC bitmask matrix (all combinations of five DLCs) if claiming full combinatorial support; at minimum, explicitly publish exactly which combinations were run. — blocked: owner RimSort launch.
+- [T] Before implementing or advertising optional VGE support, verify the clean Core + Harmony + Odyssey + VEF + both VGE chapters stack, Chapter 1 operations, Chapter 2 threat/defense/salvage, optional Insectoids 2, save/reload, and the gravship-touch profile graph. Keep this in the per-integration acceptance gate; it is not a Gate 0 requirement. See the [gravship profile review](research/GRAVSHIP_PROFILE_INTERACTIONS.md). — post-completion test phase (owner RimSort launch).
+- [T] Verify all five individually enabled/disabled, then all combined. Maintain a 32-row DLC bitmask matrix (all combinations of five DLCs) if claiming full combinatorial support; at minimum, explicitly publish exactly which combinations were run. — post-completion test phase (owner RimSort launch).
 - [ ] Check DLC-only XML folders, Def references, textures, recipes, quests, C# type lookups, startup without DLC, and save load after toggling DLC.
 
 **All 294 profile entries** (all rows source-reviewed; zero rows runtime-cleared):
 
-- [!] Pin the exact profile and test clean Core, Core+RWT/Harmony, selected VGE stack, each high-risk family, and the full ordered profile. — blocked: owner RimSort launch.
+- [T] Pin the exact profile and test clean Core, Core+RWT/Harmony, selected VGE stack, each high-risk family, and the full ordered profile. — post-completion test phase (owner RimSort launch).
 - [ ] For each workbook row, close its status with evidence: reviewed version, load-order placement, applicable DLC, behavior used/preserved, patch/adaptor/no-code reason, and result.
-- [!] Verify all QoL features remain available, including work-priority, UI, scheduling, storage, movement, hauling, selection, visitors, prisoners, health, combat, map, and scenario helpers represented in the list. — blocked: owner RimSort launch.
+- [T] Verify all QoL features remain available, including work-priority, UI, scheduling, storage, movement, hauling, selection, visitors, prisoners, health, combat, map, and scenario helpers represented in the list. — post-completion test phase (owner RimSort launch).
 - [ ] Resolve duplicate Defs/patch collisions in the exact 294 profile; use load-after patches only where a reproducible conflict requires one.
-- [!] Test gravship-changing profile mods against both VGE chapters; publish incompatible combinations rather than hiding known conflicts. — blocked: owner RimSort launch.
+- [T] Test gravship-changing profile mods against both VGE chapters; publish incompatible combinations rather than hiding known conflicts. — post-completion test phase (owner RimSort launch).
 - [ ] Add a user-facing compatibility report with tested order, versions, DLC, known issues, unsupported features, and save caveats.
 
 ### Major M5 — Phase 5 complete Company Command interface and polish (ROADMAP M5; master TODO §Phase 5)
@@ -246,9 +248,9 @@ Contracts: [`OPERATIONS_ACTION_CONTRACTS.md`](OPERATIONS_ACTION_CONTRACTS.md), [
 - [ ] Add tutorial/guide, help glossary, keyboard/controller paths as appropriate, color/contrast/readability options, scalable UI, icons/tooltips, and localization support.
 - [ ] Create and integrate the approved original RimWorld-style Backrooms main-menu slideshow, preserving provenance, native fallback, supported crops and truthful feature coverage. Show the exact mod title and loaded version beside native top-left version information; use dynamic UI text, not baked image version labels.
 - [ ] Integrate the slideshow through the verified 1.6 menu surface without redistributing vanilla/DLC art; keep a disable/fallback route and test it alongside the profile's menu-changing mods.
-- [!] Review every slideshow image with the actual menu overlay across supported aspect ratios, resolutions, and UI scales; check text contrast, crop safety, quiet transitions, reduced-motion behavior, and no-audio use. — blocked: owner RimSort launch.
-- [!] Review text length, font scale, combat readability, motion sensitivity, audio levels, UI overlap at supported screen sizes, and translations. — blocked: owner RimSort launch.
-- [!] Verify no UI panel conceals urgent health, fire, power, missing crew, gate recall, containment, or contract deadlines. — blocked: owner RimSort launch.
+- [T] Review every slideshow image with the actual menu overlay across supported aspect ratios, resolutions, and UI scales; check text contrast, crop safety, quiet transitions, reduced-motion behavior, and no-audio use. — post-completion test phase (owner RimSort launch).
+- [T] Review text length, font scale, combat readability, motion sensitivity, audio levels, UI overlap at supported screen sizes, and translations. — post-completion test phase (owner RimSort launch).
+- [T] Verify no UI panel conceals urgent health, fire, power, missing crew, gate recall, containment, or contract deadlines. — post-completion test phase (owner RimSort launch).
 
 ### Major M6 — Phase 6 QA, balance, and release (ROADMAP M6; master TODO §Phase 6)
 
@@ -256,12 +258,12 @@ Owner decision D1: private RimWorld Together test build first; public Workshop o
 
 - [ ] Validate Def references, language keys, patch targets, load folders, package metadata, missing textures/audio, logs, build output, and clean-install folder structure.
 - [ ] Create a reproducible fresh-start/save/reload/revisit checklist and automated or manual fixtures for deterministic room generation, gate transitions, ledger idempotency, transfer receipt IDs, and schema migration.
-- [!] Run the scenario acceptance checklist for every shipped opening: fresh start, reload, failure/recovery, route back to the shared campaign, and optional-mod/DLC absence. — blocked: owner RimSort launch.
-- [!] Exercise invalid states: insufficient power, no operator, blocked route, missing exit, destroyed gate, overloaded expedition cargo, receiving bay full, split/delayed bulk shipment, missing/changed OgreStack setting, dead/missing crew, unsafe return, destroyed relay, unavailable RWT feature, failed item transfer, missing DLC, bad mod order, and old save migration. Include a one-million-silver case: 67 stacks under the active OgreStack default assumption, 2,000 under Core limits; verify actual in-save settings and record hauling/storage/transfer results. — blocked: owner RimSort launch.
-- [!] Check performance on worst-case room graphs, multi-outpost company, long play time, many evidence/case records, visitors/prisoners, active threats, and gravship combat. — blocked: owner RimSort launch.
-- [!] Balance economy and progression from fresh-start play through late game; check grind, runaway money, research skip routes, dead-end tech, exploitative optimal choices, and difficulty scaling. — blocked: owner-launched play.
-- [!] Verify the full mod list one final time and capture game/RWT/DLC/profile versions, settings, logs, save, known compatibility issues, and results in a release report. — blocked: owner RimSort launch.
-- [!] Test clean install/uninstall, load order, Workshop update, dedicated RWT server setup, player join, server backup/restore, save migration, and rollback to previous mod release. — blocked: owner-operated.
+- [T] Run the scenario acceptance checklist for every shipped opening: fresh start, reload, failure/recovery, route back to the shared campaign, and optional-mod/DLC absence. — post-completion test phase (owner RimSort launch).
+- [T] Exercise invalid states: insufficient power, no operator, blocked route, missing exit, destroyed gate, overloaded expedition cargo, receiving bay full, split/delayed bulk shipment, missing/changed OgreStack setting, dead/missing crew, unsafe return, destroyed relay, unavailable RWT feature, failed item transfer, missing DLC, bad mod order, and old save migration. Include a one-million-silver case: 67 stacks under the active OgreStack default assumption, 2,000 under Core limits; verify actual in-save settings and record hauling/storage/transfer results. — post-completion test phase (owner RimSort launch).
+- [T] Check performance on worst-case room graphs, multi-outpost company, long play time, many evidence/case records, visitors/prisoners, active threats, and gravship combat. — post-completion test phase (owner RimSort launch).
+- [T] Balance economy and progression from fresh-start play through late game; check grind, runaway money, research skip routes, dead-end tech, exploitative optimal choices, and difficulty scaling. — post-completion test phase (owner-launched play).
+- [T] Verify the full mod list one final time and capture game/RWT/DLC/profile versions, settings, logs, save, known compatibility issues, and results in a release report. — post-completion test phase (owner RimSort launch).
+- [T] Test clean install/uninstall, load order, Workshop update, dedicated RWT server setup, player join, server backup/restore, save migration, and rollback to previous mod release. — post-completion test phase (owner-operated).
 - [ ] Prepare final mod page, description, feature list, screenshots, trailer/preview art, installation guide, dependencies, DLC matrix, RWT setup, credits, source provenance, license, FAQ, known issues, and update/support plan.
 - [ ] Tag release, archive exact source and build artifacts, preserve a known-good server profile, and publish only features that passed their listed acceptance criteria.
 
@@ -282,9 +284,21 @@ New binding world direction. It lands on [`UNIVERSE_ADAPTATION.md`](UNIVERSE_ADA
 - [ ] **"and anything other type of factions along these lines that will increses the backrromms universe feeling"** — further factions in the same vein wherever they increase the Backrooms universe feeling.
 - [ ] **"as all this needs to be defgault set in the game settup for the differernt scenerios tailored to their scenrerio"** — all of the above is default-set during game setup, per scenario, tailored to that scenario.
 
-### Blocked — owner-launched acceptance (never agent-launched)
+### Owner compliance direction — RimWorld and Steam terms, official versions (2026-09-28)
 
-- [!] Runtime regression acceptance for these increments and their connected first-expedition loop, after the owner launches the disposable RimSort profile. *(master TODO §Earlier company/scenario increments)* — Blocked by: owner RimSort launch of the 295-entry product target (296 with the RimBridgeServer QA overlay attached afterward). Claude never starts RimWorld, never touches the active RimSort list, never attaches RimBridgeServer outside `research/RIMBRIDGE_TEST_HARNESS.md`.
+**Verbatim owner request (2026-09-28):** *"make sure we are foillowing all rimworld and steam TOS and requirments when it comes to issues similar and the issue of factions and pawn heduffs and the like this mod has to be working with official versions"*
+
+Binding release requirement, and it governs the faction layer above before a line of it is authored. Position and verification: [`COMPLIANCE_AND_OFFICIAL_VERSIONS.md`](COMPLIANCE_AND_OFFICIAL_VERSIONS.md).
+
+- [ ] **"make sure we are foillowing all rimworld and steam TOS and requirments"** — hold the whole package against Ludeon's modding terms and the Steam Workshop and Steam Subscriber agreements, and keep the position current as content is added.
+- [ ] **"when it comes to issues similar and the issue of factions"** — `FactionDef` authoring must add definitions only, never redistribute a game or DLC asset. Faction icons and pawn kinds are **referenced by path and defName**, never copied into the package.
+- [ ] **"and pawn heduffs"** — the same rule for `HediffDef` and any pawn-attached definition: additive definitions referencing existing content, guarded patches on Core defs, never a copied asset and never a destructive overwrite of a Core def.
+- [ ] **"and the like"** — the rule generalises to every def class the mod may add later (thoughts, traits, backstories, incidents, quests, world objects, research). One compliance test, applied to all of them.
+- [ ] **"this mod has to be working with official versions"** — the mod targets official RimWorld 1.6 and official DLC only. No modified or patched game assembly, no bundled game binary, no reliance on a non-official build, and no shipped QA overlay.
+
+### Post-completion test phase — `[T]`, gates nothing
+
+- [T] Runtime regression acceptance for these increments and their connected first-expedition loop, after the owner launches the disposable RimSort profile. *(master TODO §Earlier company/scenario increments)* — Needs, in the post-completion test phase: the owner's RimSort launch of the 295-entry product target (296 with the RimBridgeServer QA overlay attached afterward). Claude never starts RimWorld, never touches the active RimSort list, never attaches RimBridgeServer outside `research/RIMBRIDGE_TEST_HARNESS.md`.
 
 ### Open owner questions (not tasks; answers unblock items above)
 
