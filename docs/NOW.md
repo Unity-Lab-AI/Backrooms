@@ -11,25 +11,26 @@
 | `docs/FINALIZED.md` | permanent archive |
 | ~~`docs/DEFERRED.md`~~ | **CLOSED. Zero open rows. Never add one.** |
 
-LAW #0 applies: owner words go in verbatim, everywhere.
+LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced** — see invariant #69.
 
 ---
 
 ## Active
 
-**Nothing in flight. Tree clean, everything published.** Written deliberately for the session after a compaction.
+**Nothing in flight. Tree clean, everything published, no half-finished task.** Written deliberately for the session after a compaction.
 
 ### State
 
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.10.4-dev** (this commit) |
-| Remotes | `forgejo` + `github`, all four refs each at the same commit |
+| Published | **0.10.4-dev**, commit `a6ea7e1` |
+| Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **159 C# files, 79 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `081A4DA33DD2D3CEF92D856E7B7926222B491EDDADCB73ECEB84742DABBC0D9F`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `67A5A5AB31865F9877932B69F77E38AA8EBE8DAC97A0CFF7E41DDBAB571455FB`, reproduced by two clean recompiles |
 | Checkers | **six**, all passing |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
+| Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
 | Game launches | **none, ever** |
 
 ### The standing instruction
@@ -44,145 +45,137 @@ Chain checkpoints. Do not finish one and wait.
 
 | Version | What |
 |---|---|
-| 0.7.2 | **Odd origin** — anything out of a coordinate is marked, never stacks with ordinary |
-| 0.7.3 | **Odd supply contracts** — buyers who want goods *by origin* |
-| 0.7.4 | **Three-state origin** + the **Backrooms mood pressure** (−1 → −10 over a real hour, shelter scored from real surroundings) |
-| 0.7.5 | **Company bonds** — 15 denominations, 10 → one quadrillion, greedy payout, credit beacon |
-| 0.7.6 | **The corporate trader** — tiered catalogue behind research + contract + credit locks |
-| 0.7.7 | **The exchange** — odd ×1.5, ordinary ×0.85; withdrawal as paper |
-| 0.7.8 | **The yellow rooms**, and depth as an axis |
-| 0.7.9 | **Fourteen room archetypes**, capability-driven |
-| 0.8.0 | **The escalation ladder**, paced on colony wealth |
-| 0.8.1 | **The construction echo** — the place copies what you build |
-| 0.8.2 | **Inhabitants** — wanderers, missing, dead, psychotic, survivors |
-| 0.8.3 | **Survivor recruitment** + the encounter cap as a recorded progression step |
-| 0.8.4 | **Anomaly events** + the echo reaching items |
-| 0.8.5 | **Colonist echoes** + **holding undiscovered inhabitants** (fog of war) |
-| 0.8.6 | **Room shape echoes** and hallways |
-| 0.8.7 | **Coherence decay** + tech scaling |
-| 0.8.8 | **Gate connection history** — per-gate address book, editable and clearable |
-| 0.8.9 | **Bringing a gate up is work** — an operator-driven spin-up with familiarity, and gates that look like gates |
-| 0.9.0 | **A gate is a door and nothing else** — eight legacy defs retired, package 92 → 79 files |
-| 0.9.1 | **One kind of gate** — 68 dead branches collapsed, a vestigial power model removed, net −112 lines |
-| 0.9.2 | **A gate has a size** — 1×1 to 2×3, Core's own `OrnateDoor` gives 1×2 free, cost scales with footprint |
-| 0.9.3 | **Everything you can look at says what it is** — info cards calibrated to Core's own practice, fifth checker |
-| 0.9.4 | **What a gate's size lets through** — animals may cross, and width decides which fit |
-| 0.9.5 | **They follow you** — at `Band.Hostile` an inhabitant hunts to the threshold, on vanilla AI |
+| 0.7.2–0.7.7 | **The economy** — odd origin, supply contracts, pressure, bonds, corporate trader, exchange |
+| 0.7.8–0.8.1 | **The look and the ladder** — yellow rooms, archetypes, escalation, construction echo |
+| 0.8.2–0.8.5 | **Inhabitants** — wanderers, survivors, anomalies, colonist echoes, fog-of-war holding |
+| 0.8.6–0.8.8 | **Shape** — room echoes, hallways, coherence decay, the gate address book |
+| 0.8.9 | **Bringing a gate up is work** — operator-driven spin-up with familiarity; gates are blue |
+| 0.9.0 | **A gate is a door and nothing else** — 8 legacy defs retired, package 92 → 79 |
+| 0.9.1 | **One kind of gate** — 68 dead branches collapsed, a vestigial power model gone, −112 lines |
+| 0.9.2 | **A gate has a size** — 1×1 to 2×3; Core's own `OrnateDoor` gives 1×2 free |
+| 0.9.3 | **Everything you can look at says what it is** — info cards calibrated to Core's practice |
+| 0.9.4 | **What a gate's size lets through** — animals cross; width decides what fits |
+| 0.9.5 | **They follow you** — at `Band.Hostile` an inhabitant hunts to the threshold |
 | 0.9.6 | **It came through with them** — a bounded, named exception to the founding rule |
-| 0.9.7 | **Some places are bigger than a room** — facilities as contiguous runs of rooms |
-| 0.9.8 | **One tech tree, different starting points** — the tree is derived, not declared per scenario |
-| 0.9.9 | **The beacon had nothing left to do** — first field-gear retirement, four replacements decided |
-| 0.10.0 | **The documents say what is true** — sixth checker, 28 stale claims across 10 living docs |
-| 0.10.1 | **LAW #0, made checkable** — 10 owner directions found unrecorded, and a rule so it cannot recur |
-| 0.10.2 | **One set of words** — gate / connection / threshold, enforced over all player-facing text |
-| 0.10.3 | **Something is not where you left it** — silent between-visit fixture displacement |
-| 0.10.4 | **The register, checked backwards** — a LAW, a query tool, and a real defect found; plus a readable description and `outputs/readable/` HTML |
+| 0.9.7 | **Some places are bigger than a room** — facilities as contiguous runs |
+| 0.9.8 | **One tech tree, different starting points** — the tree is derived, not declared |
+| 0.9.9 | **The beacon had nothing left to do** — first field-gear retirement |
+| 0.10.0 | **The documents say what is true** — sixth checker, 28 stale claims in 10 living docs |
+| 0.10.1 | **LAW #0, made checkable** — 10 owner directions found unrecorded |
+| 0.10.2 | **One set of words** — gate / connection / threshold, enforced |
+| 0.10.3 | **Something is not where you left it** — silent between-visit displacement |
+| 0.10.4 | **The register checked backwards** — a LAW, a query tool, a real defect; plus a readable description |
 
 ---
 
 ## What is left, in order
 
-**The order is chosen and recorded**, by dependency direction rather than preference. Owner direction: *"we are doing it all so order needs to be logical and your intelkligent educated choise based on logical programming order of operations"*.
-
 Content set → gate model → generator → scenarios → docs. One direction, no backtracking.
 
-**Corrected immediately after 0.8.9-dev**: the multi-cell gate work was first listed ahead of M2. That was wrong. M2 deletes `RR_MachineGate`, which removes the gate comp’s second geometry model entirely, so doing it first means the multi-cell binding is written once rather than written and then rewritten.
+1. **Finish the field gear (rest of M2).** All four replacements were decided at the fork; **none are built**:
+   - **Survey tag → Core `GlowPod`.** Carried, deployed, and it lights the room it marks. **No cap** — *"a backrooms instance can have 100s of rooms"*. **Colour is semantic**: mod-defined marker types (route home, cleared, danger, supply cache, unexplored lead), each its own colour. `CompGlower.GlowColor` has a **public setter** backed by a saved per-instance `glowColorOverride`, and `CompProperties_Glower.colorPickerEnabled` turns on RimWorld's own picker — **so this needs no new UI**. Verified by decompiling.
+   - **Evidence case → a designated HQ `Shelf` as the archive.** The book is carried; custody completes when it arrives. Same designation pattern as the gate console and the laboratory bench.
+   - **Field recorder → the book is the recorder.** One Core `TextBook`: carried in blank, written in the field, carried home as the evidence.
+   - Then `RR_QuietPursuer`, the five `RR_*Staff` PawnKinds and their recipes.
+2. **The adjacent-door-run fallback** — 1×3 and 2×3 by binding one gate across a run of adjacent 1×1 Core doors, for players without Doors Expanded.
+3. **New-game playability** — the world tile the branch does not hold, and **the other two starting sites** (`SCENARIOS.md`). **Blocked behind item 1**: the existing scenario still grants the field gear being retired.
+4. **The player-facing how-to.** Written **once**, for both the repo and the site.
+5. **Still unbuilt from the prep material** — *"contradictory accounts"* from a returning crew; staff **prior exposure**; the ladder's *"respond to openings in settlements"*.
+6. **The unknown-def-field checker** — written, **proved broken, removed rather than shipped**. Start from the verified parts.
+7. **The 1990s period and universe factions**; the four area types across a gate; M1 step 5; M3 breadth; M5 interface; M6a/M6b.
+8. **Public release** — site, Workshop page, collection. Full plan: [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md). **Correctly last**, and three decisions there are the owner's.
+9. **Continue the register retro sweep.** Swept: animals, security, spatial construction, expedition logistics. Not yet: facilities, storage, furniture, commerce, contracts, power, medical, interface, world operations.
+10. Reconcile 0.5.0–0.7.1 into the master backlog; fix the register's `disposition_stance()` negation bug.
 
-1. ~~**M2 existing-content replacement**, first pass.~~ **DONE 0.9.0-dev** for the eight defs whose replacements were already live. **Still open in M2:** the field gear (`RR_FieldRecorder`, `RR_SurveyTag`, `RR_ReturnBeacon`, `RR_SealedEvidenceCase`, `RR_RouteRecording`), which carry real mechanics the owner has explicitly refused to drop, so each needs a capability replacement built before its def can go; `RR_QuietPursuer`; the five staff PawnKinds and their recipes; The sixty-eight now-unreachable `IsNativeProvider` branches were collapsed in 0.9.1-dev. Original entry: **first, because it deletes defs** — anything built against content about to be removed gets built twice, and the save break is already declared so defs can go with no migration. It also **collapses the gate comp's whole non-native branch**: deleting `RR_MachineGate` removes the second geometry model, so the multi-cell work below is written once against one model instead of twice. Scope: legacy gate objects, field gear, fixtures and terrain, the `RR_QuietPursuer` presentation, five `RR_*Staff` PawnKinds, five recipes, and the fourteen historical PNGs off the allowlist.
-2. ~~**What a gate's size lets through.**~~ **BUILT 0.9.4-dev.** Original entry: ~~Multi-cell gates~~ **BUILT 0.9.2-dev** for the sizes themselves: Core's `OrnateDoor` is 2x1 so **1×2 needs no mods**, Anomaly's `SecurityDoor` matches it, and Doors Expanded supplies 1×3 and 2×3 behind a `PatchOperationFindMod`. **Still open:** body-size limits at `PortalTraversalPolicy` so bigger creatures and vehicles need a wider gate, and the adjacent-door-run fallback for 1×3 and 2×3 without that mod. Original entry: multi-cell gates **Owner-answered: both paths.** Bind a gate across a **run of adjacent Core doors** (existing-content-only, always works), **and** accept **Doors Expanded** (register row 77) multi-cell doors as single-thing gates when that mod is installed. Width is the capability: how many cross abreast, whether cargo or a vehicle fits, what the opening draws. Core has only 1x1 `Door` and `Autodoor`, verified against installed game data.
-3. ~~**Incursion.**~~ **BOTH HALVES BUILT — pursuit 0.9.5-dev, incursion 0.9.6-dev.** Original entry: ~~Pursuit~~ **BUILT 0.9.5-dev** with no pursuit code: at `Band.Hostile` a hostile gets an assault lord and vanilla AI walks it to the threshold. **Still open: coming *through*.** Original entry: **Owner-answered: depth plus technology, while an opening is live.** An inhabitant chases a fleeing pawn to the threshold, and reaching it before the gate closes brings it through into the colony, where every native hostile behaviour applies with nothing bespoke written. **Closing the gate is the countermeasure**, which makes the emergency cutoff a tactical decision at the cost of stranding whoever is still inside. `PortalTraversalPolicy` gains the rule; the inhabitant still decides nothing.
-4. ~~**Facilities**~~ **BUILT 0.9.7-dev** as contiguous runs of 2-4 rooms sharing one archetype, proved across 2,800 simulated coordinates.
-5. **New-game playability.** The **starting-research contract is BUILT (0.9.8-dev)** — a start declares only what begins finished and the tree is derived from the def database. **Still open:** the world tile the branch does not hold (world object plus generated map) and **the other two starting sites** (`SCENARIOS.md`), which are **blocked behind the field-gear replacement** — the existing scenario grants `RR_FieldRecorder`, `RR_SurveyTag`, `RR_ReturnBeacon` and `RR_SealedEvidenceCase`, and writing two more against retiring content is what the ordering exists to prevent. Consumes the final content set, the finished gate model *and* the finished generator. **One tech tree for every start**, differing only in which projects begin complete — owner direction, and it belongs in the versioned start contract rather than bolted onto each scenario.
-6. **The player-facing how-to.** Last, because documentation describes a finished thing and writing it earlier means rewriting it. Note `docs/HOWTO.md` is the **developer** guide; the player one does not exist yet.
-7. **The unknown-def-field checker.** Written, **proved broken, removed rather than shipped.** See the warning below — start from the verified parts.
-8. **The 1990s period and universe factions.**
-9. The four area types across a gate, M1 step 5, M3 breadth, M5 interface, M6a/M6b.
+---
 
 ## Invariants — do not break these
 
-Each is a real defect or a pinned fact.
+Each is a real defect or a pinned fact. Numbering is historical; gaps are deliberate.
 
-1. **`PortalTraversalPolicy` is the only traversal chokepoint.** An inhabitant may never decide anything about a gate. Survivor recruitment works *because* joining makes them a colonist — it does not special-case a gate.
-2. **Two halves of validation, never merged.** A candidate predicate runs against an explicit `Map`; never a pawn-specific native probe about a map the worker is not on.
+### The gate and crossing
+
+1. **`PortalTraversalPolicy` is the only traversal chokepoint.** An inhabitant may never decide anything about a gate.
+2. **Two halves of validation, never merged.** A candidate predicate runs against an explicit `Map`.
 3. **Remote forbidden checks use the *faction* overload.**
 4. **A bounded search that ran out of budget is *pending*, never "no route".**
 5. **Every bounded scan is a rotating window, never a prefix.**
 6. **Two work givers per family** — high-priority continue, low-priority plan.
 7. **Never infer "no local work" from a priority number.**
 8. **One commitment per worker**, across every record kind.
-9. **Nothing is ever `playerForced`.** **No quantity is hardcoded.**
+9. **Nothing is ever `playerForced`. No quantity is hardcoded.**
 10. **No new gameplay ThingDef, PawnKindDef, art or audio.** Match by *capability*. A `FactionDef`, `ThoughtDef` or mechanics def is permitted.
 11. **Zero throwing def lookups.** `GetNamedSilentFail` everywhere.
-12. **Natural gates have no timer, operator, power or close command — and no address book.**
+12. **Natural gates have no timer, operator, power, close command or address book, and may not dial.** Enforced by `IsDesignated`, not a second check.
 13. **A Backrooms coordinate has no outside**; its roof is never removable; its interior is fully strippable.
 14. **A candidate half must ask whether the *target* can take the work.**
-15. **A def referencing DLC carries `MayRequire`.** The C# guard is not enough.
-16. **The register is generated output; the HTML one is the register.**
+15. **A def referencing DLC carries `MayRequire`.**
 17. **A prisoner can never cross a gate; a *secure* slave can.**
 18. **The topology is an unbounded alternation** of world maps and coordinates.
+32. **There is exactly one way a laboratory gate opens** — through the spin-up. Every entry point routes into it.
+40. **A gate's width and its footprint are different numbers.** Width decides what fits; footprint decides what it costs.
+41. **Throughput is never capped.** A wide gate gets more doorway cells, never a quota. There is no counter, deliberately.
+43. **Core ships `OrnateDoor` at 2×1** and `Building_MultiTileDoor` to drive it; Anomaly adds `SecurityDoor`.
+47. **A connection has one width, in both directions.** Per-endpoint measuring traps an animal in the Backrooms.
+48. **Company work and player orders are two different rules.** `TravellerFailureKey` is colonists-only; `OrderedCrossingFailureKey` admits player animals. **Both refuse a drafted pawn.**
+53. **Incursion is the one named exception to the founding rule**, bounded on five axes: live opening, `Band.Hostile`, `PortalWindowTier >= 1`, it must fit, once per opening.
+54. **`MayApproachThresholdForTraversal` must stay false for everything, forever.** Incursion works *because* nothing is drawn to a gate.
+55. **A transfer that can lose a pawn is a corruption, not a threat.** Preflight fully, then move, and restore on failure.
+
+### Generation and threats
+
+16. **The register is generated output; the HTML one is the register.**
+25. **Depth 1 is sacred.** The yellow rooms are fixed, sparse, never deranged. Higher number = deeper (owner-confirmed).
+26. **Sort any candidate list ordinally before rolling.** A live trap three times.
+27. **Anything saved that feeds the layout fingerprint must be snapshotted, not read live.**
+28. **Every threat honours: readable warning, learnable rule, a countermeasure, no unavoidable instant failure.** The threshold room is excluded from every event and inhabitant.
+29. **Undiscovered inhabitants are held.** Discovery starts their clock.
+50. **`Band.Hostile` is the "deeper levels" threshold** — *"the space stops being forgiving"*. Do not invent a second number.
+51. **Below `Band.Hostile` a hostile holds ground; at it, it hunts.**
+52. **`LordJob_AssaultColony`'s first parameter is the ASSAULTER's faction.** Passing the player's compiles cleanly and no checker catches it.
+57. **A facility is a contiguous run of 2–4 rooms sharing one archetype**, anchored at the lowest index and **stored nowhere**.
+58. **Coherence is what wrongness needs.** Do not "fix" facilities by making deep coordinates tidier.
+74. **A horror mechanic that fires every time is a mechanic, not horror.** Revisit displacement was weakened from 100% to 66.7% deliberately.
+75. **Ownership is the test for "did the player make this".** Generation places with no faction.
+
+### Method
+
 19. **Never trust a remembered list against shipped game data. Enumerate.**
 20. **Owner words have been mod names twice.** Search the register before reading a phrase as flavour.
-21. **A D-numbered Gate 0 decision can change.** Read the sheet. D1 changed 2026-09-29.
-22. **The no-tests rule has exactly one exception** (decision 20), written into `CONTRIBUTING.md` itself. Never widen it.
-23. **Do not trust a progress percentage from a row count here.** The master backlog is granular for research and coarse for code.
-24. **Nothing is deferred.** Build it, queue it in `TODO.md` (`[T]` if it needs a launch), or ask. **Never add a row to `DEFERRED.md`.**
-25. **Depth 1 is sacred.** The yellow rooms are fixed, sparse and never deranged. The wrongness is travelled toward.
-26. **Sort any candidate list ordinally before rolling.** Def load order varies with the mod list; unsorted, the same seed produces different output on another machine. This has been a live trap three times.
-27. **Anything saved that feeds the layout fingerprint must be snapshotted, not read live.** Layout is re-planned to verify a saved graph; reading current colony state there makes a coordinate fail its own check.
-28. **Every threat honours: readable warning, learnable rule, a countermeasure, no unavoidable instant failure.** The threshold room is excluded from every event and every inhabitant.
-29. **Undiscovered inhabitants are held.** Needs topped up, rot held, while fogged. Discovery starts their clock.
-30. **A natural gate has no address book and may not dial.** Enforced by `IsDesignated` on the gate gizmos, not by a second check — adding one would imply the first is unreliable.
-31. **When an existing guarantee already covers a new requirement, say so and rely on it.** Twice this session a requirement needed no new code: the natural-gate rule, and survivor recruitment obeying the traversal chokepoint rather than special-casing it.
-32. **There is exactly one way a laboratory gate opens** — through the spin-up. Every entry point routes into it. A second path would make the ramp optional, and a player who learned the other button would never see it.
-33. **Never tie a penalty rate to a flat constant without proving it against the real stat range.** Spin-up decay was written as a flat 0.5 per tick with a comment claiming it was slower than progress; at low Intellectual it was **faster**, which would have made a slow operator's gate impossible rather than slow. Express such a rate as a **fraction of the observed rate** so the guarantee holds by construction.
-34. **Ask at the fork; never flag it for later.** Owner direction: *"dopnt flag shit!!! ask me then and there"*. A flagged question becomes orphaned work — it lands in a doc nobody actions while the build carries a guess forward.
-35. **`ThingComp.ForceColor()` is the tint hook**, consulted by `ThingWithComps.DrawColor` for every comp a thing carries, and a painted colour wins over it. `Notify_ColorChanged()` drops Core's cached coloured graphic and redraws the cell.
-36. **A checker that reads only one kind of source is a checker with a blind side.** The texture check read XML and never C#, so three live references to deleted textures passed clean. It also only ever asked the weaker question — *does every shipped file have a reference?* — when the serious one is *does every reference have a file?* Ask both directions, of every source.
-37. **Retired content is archived, never deleted.** `docs/implementation/historical-content/<version>/` mirrors the package layout. `audit-gate0.py` will catch the doc links that pointed at the old location.
-38. **To remove a pervasive flag, delete it and let the compiler enumerate the sites.** Pinning `IsNativeProvider` to true, transforming all 68 sites, then deleting the property turned "did I miss one?" into a build error. One had been missed.
-39. **A def field and the XML that sets it are removed in the same change, always.** A field removed alone leaves an element no class declares, and RimWorld ignores it in silence. This cost two checkpoints once already.
-40. **A gate's width and its footprint are different numbers.** A 2×3 blast door is three wide and six cells of machine. Width decides what fits through; footprint decides what it costs to run.
-41. **Throughput is never capped.** Owner direction: *"in vinilla any number of pawns can use a door at once so we dont want limitations"*. A wide gate gets more doorway cells, never a quota. There is no counter, deliberately.
-42. **A patch target inside `PatchOperationFindMod` is optional by construction**, and only there. The integrity checker exempts exactly those and still reports them. The exemption was proved narrow by planting a bogus target outside it.
-43. **Core ships `OrnateDoor` at 2×1 and `Building_MultiTileDoor` to drive it.** Anomaly adds `SecurityDoor`. This was found by enumerating installed data after the opposite was assumed.
-44. **"Like the game does" is measurable. Measure it.** Core describes 0 of 105 work givers and 80 of 80 recipes. Counting that cut a 94-item list to 17 and stopped 67 lines of text no player would ever see.
-45. **A description nothing renders is text in a file.** Write it and show it in the same checkpoint, or do neither.
-46. **Escapes written through a shell can collapse one level too far and leave an invisible byte.** A word-boundary escape became a literal backspace; the pattern matched nothing and looked perfect in every listing. Prefer a form that survives quoting, and always prove a checker by planting the fault it is meant to catch.
-47. **A connection has one width, in both directions.** Measuring each endpoint separately traps an animal in the Backrooms, because a generated return threshold is always a one-cell door.
-48. **Company work and player orders are two different traversal rules.** `TravellerFailureKey` governs work and stays colonists only; `OrderedCrossingFailureKey` governs a player order and admits player animals. Widening the first would schedule animals into bills.
-49. **Before designing a rule, check it can fire.** Body size could never have mattered while no non-colonist could cross.
-50. **`Band.Hostile` is the "deeper levels" threshold.** Its own definition is *"the space stops being forgiving"*. Anything gated on depth-plus-history should use it rather than inventing a second number that can drift from it.
-51. **A hostile below `Band.Hostile` holds ground; at it, it hunts.** The warning-first retreat rule is what makes a shallow coordinate survivable for one person, and it must stay true there.
-52. **`LordJob_AssaultColony`'s first parameter is the ASSAULTER's faction.** Passing the player's names the player as the attacker, compiles cleanly, and no checker can catch it.
-53. **Incursion is the one named exception to the founding rule**, and it is bounded on five axes: a live opening, `Band.Hostile`, `PortalWindowTier >= 1`, it must fit the opening, and once per opening. Widening any of them without the owner's word rewrites the mod's premise.
-54. **`MayApproachThresholdForTraversal` must stay false for everything, forever.** Incursion works *because* nothing is drawn to a gate: a hostile walks to the doorway to reach the people standing there, and the gate notices what is already on its doorstep.
-55. **A transfer that can lose a pawn is a corruption, not a threat.** Preflight fully, then move, and put it back where it stood if the move fails — a vanished pawn looks exactly like the feature working.
-56. **When a founding comment stops describing the code, rewrite it in the same commit.** A doc that lies at the top of the chokepoint is worse than no doc.
-57. **A facility is a contiguous run of 2–4 rooms sharing one archetype**, resolved through the lowest-index anchor and **stored nowhere** — recomputed identically from the saved graph and seed. Never a quiet room, never the threshold, never depth 1.
-58. **Coherence is what wrongness needs.** A recognisable institution that is wrong beats a jumble, because a jumble has nothing to violate. Do not "fix" facilities by making deep coordinates tidier.
-59. **When a proof and the code disagree on a constant, change the proof.** A proof testing different numbers than what ships is worthless. `EligibleShare` stayed 0.45; the proof moved to match.
-60. **A scenario declares what begins finished, never the tech tree.** The tree is every `RimroomsProjectDef` loaded, sorted ordinally. That is what makes "same tech tree" a fact rather than a convention three lists have to honour.
-61. **A project that begins finished is also insight-committed**, or the UI offers a "start" button on work already done.
-62. **The remaining two scenarios are blocked behind the field-gear replacement**, not behind effort. They would grant `RR_FieldRecorder`, `RR_SurveyTag`, `RR_ReturnBeacon` and `RR_SealedEvidenceCase` — content M2 is retiring.
-63. **The field-kit replacements are decided.** Survey tag → Core `GlowPod`; return beacon → **dropped**, its job taken over by the gate's address book; evidence case → a **designated headquarters `Shelf`** as the archive; recorder → **the book is the recorder**. Asked at the fork, grounded in enumerated Core content.
-64. **`CompGlower.GlowColor` has a public setter**, backed by a saved per-instance `glowColorOverride`, and `colorPickerEnabled` on the props turns on RimWorld's own colour picker. Settable glow colour needs no new UI.
-65. **Glow pods are never capped.** Owner direction: a 300×300 instance can have hundreds of rooms. Colour is **semantic** — mod-defined marker types, not decoration.
-66. **Living documents and dated records are different things.** A readme must describe the mod now; an implementation record describes a moment that has passed and **must never be rewritten** — one stating the checker count of its day was true when written. `check-doc-conformance.py` exempts dated records by path, and that exemption is proved by planting faults it must ignore.
-67. **A checker that cries wolf is worse than no checker.** The first branch rule produced 26 false positives on file paths and prose. Precision before coverage, every time.
-68. **The unified vocabulary is gate / connection / threshold.** The **gate** is the machine in your wall; the **connection** is the live link it holds open; the **threshold** is the doorway on the far side. Never "portal", "the machine" or "the gizmo" in player-facing text.
-69. **Every owner direction quoted in `FINALIZED.md` must already exist in `TODO.md`.** LAW #0 is now a build failure rather than an intention. It found **ten** directions that had been acted on and archived without ever reaching the queue.
-70. **When the owner suspects a process failure, measure it — do not argue.** The suspicion here was correct, and the audit that confirmed it took one script.
-71. **The vocabulary is enforced, not merely agreed.** `check-info-cards.py` fails the build on "portal", "machine gate", "doorway" or "gizmo" in any displayed text. **Key names are exempt** — a player never reads one, and renaming keys is churn with DefInjected risk.
-72. **A retired def's name outlives the def in player-facing text.** "machine gate" was still the game's own word for itself in 25 strings, two checkpoints after `RR_MachineGate` was deleted. Retiring a def means retiring its vocabulary too.
-73. **Check a prep document against the build every checkpoint.** `UNIVERSE_ADAPTATION.md` listed five uncanny changes; four were built and the fifth had been silently skipped for the whole project. Designing from memory is how that happens.
-74. **A horror mechanic that fires every time is a mechanic, not horror.** Revisit displacement was proved to fire on 100% of returns and was deliberately weakened to 66.7%, because the unease depends on not being sure whether you misremembered.
-75. **Ownership is the test for "did the player make this".** Generation places things with no faction; a colonist's work belongs to the player. One check, no list to maintain.
-76. **LAW: check the mod register before building.** Filter by system family, read the per-mod review the row points at, and **state in the record what was checked and what applied — or that nothing did**. Retroactively for shipped work too. `python tools/register-query.py family <x>`.
-77. **The register's `Stance` column is not trustworthy on its own.** Row 78 reads `Required`; its review reads `optional`. That is the known classifier bug, and the review is the authority.
-78. **The register HTML has TWO tables** over the same 294 mods with different layouts. A naive parse yields 589 rows and silently halves every family filter. `register-query.py` keeps the row whose family reads as a family.
-79. **Chromium blocks XSLT from `file://`.** A stylesheet on About.xml gives a **blank page**, not a styled one. Generate standalone HTML instead: `python tools/make-readable-html.py` writes `outputs/readable/`.
-80. **RimWorld renders newlines in descriptions and letters, so a wall of text is a choice.** `check-info-cards.py` fails any displayed string past 420 characters with no paragraph break. The About description had reached 6,724 characters on one line.
-81. **`"the machine"` is banned in player-facing text**; `machining table` is real Core content and stays.
+21. **A D-numbered Gate 0 decision can change.** D1 changed 2026-09-29.
+22. **The no-tests rule has exactly one exception** (decision 20), in `CONTRIBUTING.md`. Never widen it.
+23. **Do not trust a progress percentage from a row count here.**
+24. **Nothing is deferred.** Build it, queue it in `TODO.md`, or ask. **Never add a row to `DEFERRED.md`.**
+31. **When an existing guarantee already covers a new requirement, say so and rely on it.**
+33. **Never tie a penalty rate to a flat constant without proving it against the real stat range.** Express it as a fraction of the observed rate.
+34. **Ask at the fork; never flag it for later.** *"dopnt flag shit!!! ask me then and there"*. A flagged question becomes orphaned work.
+35. **`ThingComp.ForceColor()` is the tint hook**; a painted colour wins over it. `Notify_ColorChanged()` drops Core's cached graphic.
+36. **A checker that reads only one kind of source has a blind side.** Ask both directions, of every source.
+37. **Retired content is archived, never deleted** — `docs/implementation/historical-content/<version>/`.
+38. **To remove a pervasive flag, delete it and let the compiler enumerate the sites.**
+39. **A def field and the XML that sets it are removed in the same change, always.**
+42. **A patch target inside `PatchOperationFindMod` is optional by construction**, and only there.
+44. **"Like the game does" is measurable. Measure it.** Core describes 0 of 105 work givers and 80 of 80 recipes.
+45. **A description nothing renders is text in a file.** Write it and show it in the same checkpoint.
+46. **Escapes written through a shell can collapse one level too far and leave an invisible byte.**
+49. **Before designing a rule, check it can fire.**
+56. **When a founding comment stops describing the code, rewrite it in the same commit.**
+59. **When a proof and the code disagree on a constant, change the proof.**
+60. **A scenario declares what begins finished, never the tech tree.**
+61. **A project that begins finished is also insight-committed.**
+66. **Living documents and dated records are different things.** Dated records are **never** rewritten.
+67. **A checker that cries wolf is worse than no checker.** Precision before coverage.
+68. **The vocabulary is gate / connection / threshold.** Never "portal", "machine gate", "the machine", "doorway" or "gizmo" in player-facing text. **Key names are exempt.**
+69. **Every owner direction quoted in `FINALIZED.md` must already exist in `TODO.md`.** A build failure. It found **ten**.
+70. **When the owner suspects a process failure, measure it — do not argue.**
+72. **A retired def's name outlives the def in player-facing text.** Retiring a def means retiring its vocabulary.
+73. **Check a prep document against the build every checkpoint.**
+76. **LAW: check the mod register before building.** Filter by system family, read the per-mod review, and **state in the record what was checked** — or that nothing applied. Retroactively too.
+77. **The register's `Stance` column is not trustworthy alone.** Row 78 reads `Required`; its review reads `optional`. The review is the authority.
+78. **The register HTML has TWO tables**; a naive parse yields 589 rows and silently halves every filter.
+79. **Chromium blocks XSLT from `file://`** — a stylesheet on About.xml gives a **blank page**, not a styled one.
+80. **RimWorld renders newlines, so a wall of text is a choice.** Fails past 420 chars with no break.
+81. **Do not quote a banned string verbatim in a living document** — it trips the rule that bans it. Rephrase.
 
 ---
 
@@ -190,59 +183,60 @@ Each is a real defect or a pinned fact.
 
 **A checker that silently passes everything is worse than no checker — it manufactures confidence.**
 
-The unknown-def-field check was written this session, every part verified correct in isolation, and **the assembled function still reported nothing against a deliberately planted bad field.** It was removed rather than shipped.
+Proved twice more this session. A placeholder rule contained a **literal backspace byte** where a word boundary was meant, matched nothing, and looked perfect in every listing. A vocabulary sweep **renamed a keyed string** and only `check-keyed-strings.py` noticed.
 
-Two things follow:
-
-- **Sanity-test every checker by breaking something and confirming it fails.** Three checker gaps were found this session; each was proved by breaking it first.
-- The same rule caught a real risk in the layout derangement: if the clamp were wrong, every candidate would be rejected, the planner would fall back to plain, and **the feature would look like it worked while doing nothing.** That was proved offline across all 100 size combinations rather than trusted.
+- **Sanity-test every checker by breaking something and confirming it fails.** Both directions: plant the fault, **and** plant what must be ignored.
+- **When a proof only confirms, suspect it.** Two designs changed this session *because* a proof disagreed — the spin-up decay rate, and revisit displacement firing 100% of the time.
 
 ---
 
 ## Standing method
 
-- **Read the prep work first.** The 294 per-mod reviews under `research/reviews/mods/` carry verified facts. The register has recovered misread owner references in one query.
-- **A TODO item carries all its related work.** Do the item and everything it needs.
-- **At a fork: ask immediately with multiple choice and a write-in**, and keep building around it. But **search the register first**.
+- **Check the register first** (LAW). `python tools/register-query.py family <x>`, then the per-mod review under `docs/research/reviews/mods/`. Say what you checked.
+- **Read the prep work.** `UNIVERSE_ADAPTATION.md` had an unbuilt item nobody had noticed for the whole project.
+- **A TODO item carries all its related work.**
+- **At a fork: ask immediately**, multiple choice with a write-in. Never flag.
 - **State what already works before building it again.**
-- **Name what is not done, in `TODO.md`, in the same checkpoint.** Every "not done" in this session's records was named before the owner asked.
+- **Name what is not done, in `TODO.md`, in the same checkpoint.**
 
 ## Read these first
 
 1. `docs/NOW.md` — this file.
 2. `docs/TODO.md` — every owner direction verbatim.
-3. `docs/GATE_0_DECISIONS.md` — D1–D9 **and** decisions 13–25. D1 changed.
-4. `docs/implementation/CONNECTED_WORK_CORE_API.md` — pinned Core facts.
-5. `docs/research/WORK_TYPE_COVERAGE_AUDIT.md` — all 23 work types.
+3. `.claude/CONSTRAINTS.md` — the LAWs, including the register LAW.
+4. `docs/GATE_0_DECISIONS.md` — D1–D9 **and** decisions 13–25. D1 changed.
+5. `docs/implementation/CONNECTED_WORK_CORE_API.md` — pinned Core facts.
 6. `docs/PUBLISHING.md` — the cascade. Follow it literally.
 
 ## The checkpoint ritual
 
-1. Read every file in full before editing.
-2. `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build.ps1` — zero warnings. It refuses if csproj and `About.xml` versions disagree, so bump both.
-3. `CHANGELOG.md` in plain player-facing language.
-4. Implementation record under `docs/implementation/`.
-5. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
-6. **All six checkers**: `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-doc-conformance.py`, `research/audit-gate0.py`.
-7. **Determinism**: delete `obj/` and `bin/`, rebuild **twice**, hashes must match. An incremental rebuild proves nothing.
-8. Commit once atomically; cascade to `Prep`, `Develop`, `Main` on **both** remotes; **read back all eight refs**.
+1. **Check the register** for the system family being touched, and record what it said.
+2. Read every file in full before editing.
+3. `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build.ps1` — zero warnings. It refuses if csproj and `About.xml` disagree, so bump both.
+4. `CHANGELOG.md` in plain player-facing language.
+5. Implementation record under `docs/implementation/`.
+6. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
+7. **All six checkers**: `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-doc-conformance.py`, `research/audit-gate0.py`.
+8. **Determinism**: delete `obj/` and `bin/`, rebuild **twice**, hashes must match.
+9. Commit once atomically; cascade to `Prep`, `Develop`, `Main` on **both** remotes; **read back all eight refs**.
 
 ## Gotchas learned the hard way
 
-- **XML comments cannot contain `--`.** Hit **twice**. `check-package-integrity.py` now names the rule and the line.
-- **Bash heredocs mangle `\n` and break on apostrophes**, silently aborting a patch script. Hit **five times**. Use Write/Edit.
+- **XML comments cannot contain `--`.** Hit **four times**. The checker names the rule and the line.
+- **Bash heredocs mangle `\n` and break on apostrophes.** Hit **six times**. Use Write, and a message file for commits.
+- **A GitHub push can silently drop some refs.** Read back all eight, every time — it happened once this session.
 - **A failed `assert` in a patch script means nothing was written** — the write comes last.
-- `git` index lock goes stale; `rm -f .git/index.lock` and retry.
+- `git` index lock goes stale; `rm -f .git/index.lock`.
 - **`cd` inside a Bash call persists.** Absolute paths.
 - Package manifests are UTF-8 **with BOM** — `encoding="utf-8-sig"`.
-- Decompile with `.local/tools/ilspycmd.exe -t <FullTypeName>`. **Empty output means the type name was wrong.**
+- Decompile with `.local/tools/ilspycmd.exe -t <FullTypeName> "<RimWorld>/RimWorldWin64_Data/Managed/Assembly-CSharp.dll"`. **Empty output means the type name was wrong.**
 - C# 7.3: no target-typed conditionals.
-- **A def field emitted in XML that no class declares is ignored silently at load.** Cost two checkpoints once.
-- Core's `StockGenerator_Category` has **all-private fields** — it cannot be usefully subclassed.
-- `GenRecipe.PostProcessProduct` is **private static** — a bench bill cannot stamp a per-instance value. Mint in the recipe worker instead.
-- `SetTerrain` **clears** the colour grid. Apply colour after, then dirty the mesh.
-- `CompFlickable.SwitchIsOn` has a **public setter** — use vanilla's own switch for light failure.
+- **A def field emitted in XML that no class declares is ignored silently at load.**
+- Core's `StockGenerator_Category` has **all-private fields**. `GenRecipe.PostProcessProduct` is **private static**.
+- `SetTerrain` **clears** the colour grid. `CompFlickable.SwitchIsOn` has a **public setter**.
 
 ## Blocked on the owner
 
 **Nothing.** That status does not exist here. Runtime rows are `[T]` and gate no work.
+
+Three decisions are *reserved* for the owner but block nothing now: the site's domain, the Pages publishing branch, and whether Playwright may drive Steam. All three are named in [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md).
