@@ -161,7 +161,8 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         private static readonly string[] StorageDeliveryFamilies =
         {
             ConnectedWorkAdapters.StorageHauling,
-            ConnectedWorkAdapters.BillIngredients
+            ConnectedWorkAdapters.BillIngredients,
+            ConnectedWorkAdapters.MedicineSupply
         };
 
         internal static ConnectedWorkIntent LiveHaulingIntent(Pawn pawn)

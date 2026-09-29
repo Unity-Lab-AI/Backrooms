@@ -256,4 +256,18 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         protected override string ProviderId { get { return ConnectedDeploymentProviders.Research; } }
         protected override bool ContinueOnly { get { return true; } }
     }
+
+    /// <summary>Sends a doctor through a gate to a patient who stays where they are.</summary>
+    public sealed class WorkGiver_ConnectedTending : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId { get { return ConnectedDeploymentProviders.Tending; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks a doctor the rest of the way to a patient, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedTendingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId { get { return ConnectedDeploymentProviders.Tending; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
 }

@@ -23,11 +23,11 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published commit | 0.5.8-dev (see `git log -1`; the cascade read-back is in `FINALIZED.md`) |
+| Published commit | 0.5.9-dev (see `git log -1`; the cascade read-back is in `FINALIZED.md`) |
 | Remotes | `forgejo` and `github`, both with `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` at the same commit |
 | Working tree | clean |
-| Build | 102 C# source files, 76 approved package files, zero warnings, zero errors |
-| Assembly | SHA-256 `46896D6F2D9A4F2D8A4DA526210CADD9DE2337F255F8E4675B28710213C9FC05`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
+| Build | 104 C# source files, 76 approved package files, zero warnings, zero errors |
+| Assembly | SHA-256 `AE6BD0CCE437253568FCD54B45490EB969E66CF9086905836B807691A4848014`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
 | Game launches | **none, ever.** Every runtime claim in this repo is pending the owner's first RimSort launch |
 
 ### What exists now, in order of arrival
@@ -40,32 +40,28 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 - **0.5.3-dev** — **construction supply** (material carried into a real frame or blueprint), the audit proving the mod requires nothing but base Core, and the capability-matching method that dissolved the M2 content blockers.
 - **0.5.4-dev** — four owner decisions: the laboratory duration ladder, natural-gate exemption confirmed, one tech tree for every scenario, a player-named company.
 - **0.5.6-dev** — nothing is blocked on the owner: the `[!]` status deleted, the post-completion test phase named, all cross-gate work priorities made **live player settings**, and a verified RimWorld/Steam compliance position with automated checks.
+- **0.5.9-dev** — **tending across a gate, both halves in one item**: the doctor travels to a patient who stays put (third deployment provider), and medicine travels as the first cargo consumed by the work. Surgery, patient feeding and prisoner care remain separately reviewed routes.
 - **0.5.8-dev** — **research across a gate**, the *second* travel-to-work provider and one new file: no new record, driver or JobDef. Its real finding is that the deployment shape is inherently mod-tolerant, because a deployment never issues the work.
 - **0.5.7-dev** — **bill ingredients**: goods cross a gate because a named bill is short of them, landing inside that bill's own search radius. Unfinished things deliberately out of scope.
 - **0.5.5-dev** — **travel-to-work**: a fourth work family and the first that is not fetch → carry → deliver. `ConnectedDeploymentIntent` (a *sibling* record), `ConnectedDeploymentProvider`, `ConstructionFinishingProvider`, and `ConnectedCrossing` as the single shared gate step. Also: the 1990s period and the universe factions captured verbatim and decided, queued after the work families.
 
-### The next task — tending across a gate
+### The next task — food
 
-**Owner ordering (2026-09-28):** finish the remaining cross-map work families before the faction layer.
+**Owner ordering (2026-09-28):** finish the remaining cross-map work families before the faction layer. Food is next, and it is **three things**, not one:
 
-This one is genuinely harder than the last two, and it is **two capabilities, not one**:
+1. **A pawn crossing a gate to eat** because there is food over there and none here. That is a *need*, not work — it comes from `JobGiver_GetFood` in the think tree, **not** from a `WorkGiver` — so it is the first family that does not ride `JobGiver_Work` at all. Read `.local/inspection-connected-work/RimWorld.JobGiver_GetFood.cs`, which is already decompiled, before deciding the shape. This is the sharpest design question in the family: everything built so far hangs off `WorkGiver`, and a need does not.
+2. **Food carried across a gate** so pawns on the far side can eat. That is the ordinary carry shape, and the existing storage-hauling family may already cover much of it — check honestly whether a distinct trigger is even needed before writing an adapter. If hauling already moves food to where it is wanted, say so and skip it rather than adding a family for symmetry.
+3. **Patient feeding** — `DoctorFeedHumanlikes` (Doctor 80) and `DoctorFeedAnimals` (Doctor 40). These *are* work givers, so they fit the existing shapes. Recorded against the food item deliberately, because tending is done and this is feeding.
 
-- **A doctor crossing to a patient who stays put.** That is the *deployment* shape — a third `ConnectedDeploymentProvider`, and it should be as small as research was.
-- **Medicine carried to a patient.** That is the *carry* shape — an adapter, and it is the first family whose cargo is consumed by the work rather than stored.
-
-Do them as two pieces, and the deployment half first because it reuses proven machinery.
-
-**Read the prep work before writing anything.** Per the owner's standing rule, the per-mod reviews in `research/reviews/mods/` already hold verified facts and a recorded disposition for every medical mod in the profile. Find the medical rows first and read them; do not re-derive.
-
-**Core reading, decompile before designing:** `WorkGiver_Tend` (already in `.local/inspection-work/`), `HealthAIUtility`, `WorkGiver_PatientGoToBed`, `Toils_Tend`. The pinned review already warns that surgery, prisoner and guest care, patient feeding and self-tend are **each a distinct native route** — treat them as separate rows, not one family, and ship them one at a time with evidence per route.
+**Read the prep work first.** Per the standing rule, find the food, nutrition and meal-related profile rows and read their reviews before designing. Rows 125 Meals On Wheels and 269 Gastronomy are already named in `DEFERRED.md` as work-behaviour providers needing review, and there will be others.
 
 **Known sharp edges:**
 
-- **Medicine is a `stackCount` consumed by the tend job**, and the amount used depends on the medicine's potency and the injury. Never hardcode a count; find Core's own number.
-- **`HealthAIUtility.CanRescueNow` has no bed requirement** — already pinned, and it is *not* the same question as "can be tended".
-- A patient being tended is reserved by the doctor. A cross-map plan must not assume the patient is free on arrival.
+- A pawn that is starving must never be sent through a gate on a hopeful trip. Needs are not work: getting this wrong kills colonists rather than wasting a walk, so the bar for planning a food crossing is much higher than for any family so far.
+- Food poisoning, meal quality and `FoodUtility`'s own scoring are Core's. Never reimplement the choice of what to eat.
+- The gate could close while a pawn is on the far side with no food. That is the traversal contract's problem, not this family's, but it must be stated rather than discovered.
 
-After tending: **food**, **rest**, then the remaining families. Then the 1990s period and the universe faction layer, under the compliance rules in `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`.
+After food: **rest**, then the remaining families. Then the 1990s period and the universe faction layer, under the compliance rules in `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`.
 
 ### Invariants — do not break these
 

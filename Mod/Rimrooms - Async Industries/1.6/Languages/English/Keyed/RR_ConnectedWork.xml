@@ -49,6 +49,10 @@
   <!-- Travel-to-work: the worker goes, and nothing is carried. Nobody is ever brought
        home by these; a person who crossed legitimately stays where it is when the work
        runs out, with its own needs and whatever local work it finds. -->
+  <RR_ConnectedWork_TendingLabel>treating a patient through a gate</RR_ConnectedWork_TendingLabel>
+  <RR_ConnectedWork_MedicineLabel>carrying medicine to a patient through a gate</RR_ConnectedWork_MedicineLabel>
+  <RR_ConnectedWork_PatientSupplied>That patient no longer needs this medicine. It was carried through and is here in hand; ordinary hauling will put it away.</RR_ConnectedWork_PatientSupplied>
+
   <RR_ConnectedWork_ResearchLabel>researching through a gate</RR_ConnectedWork_ResearchLabel>
   <RR_ConnectedWork_BillLabel>carrying ingredients to a bill through a gate</RR_ConnectedWork_BillLabel>
   <RR_ConnectedWork_BillSatisfied>That bill no longer needs this. It was carried through and is here in hand; ordinary hauling will put it away.</RR_ConnectedWork_BillSatisfied>

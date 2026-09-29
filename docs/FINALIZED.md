@@ -864,3 +864,47 @@ Deferments closed: 1 (research). Work families complete: 6, two of them travel-t
 Owner corrections absorbed as standing method: 1 — read the prep work's per-mod reviews before implementing a family, rather than re-deriving mod facts.
 Next: tending across a gate, which is **two** capabilities — a doctor deployed to a patient who stays put, and medicine carried as consumable cargo — to be shipped separately, deployment half first.
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+---
+
+## Session — 2026-09-28 — tending across a gate: the doctor travels, and the medicine travels (0.5.9-dev)
+
+### Verbatim request
+
+> good job fixing shit that wasnt completed originally. get to it all working through the todo and documenting work in the rair case adding an item to it if needed but in most cases you will do the todo work item and all relaeted work needed for that item as that item in the todo
+
+### COMPLETED
+
+- [x] **"in most cases you will do the todo work item and all relaeted work needed for that item as that item in the todo"** — the register row *"Tending across a gate — a doctor crossing to a patient who stays put, or medicine carried to them"* was closed as **one item covering both halves**, rather than split into a second row. Two families shipped in one checkpoint: `TendingProvider` (the doctor travels) and `ConnectedMedicineAdapter` (the medicine travels). No new record, no new driver and no new `JobDef` for either.
+- [x] **The doctor half, and why it fitted the deployment shape almost perfectly.** Core's own `WorkGiver_Tend.HasJobOnThing` turned out to be **almost entirely patient-side** — `ShouldBeTendedNowByPlayer`, `GoodLayingStatusForTend`, the mutant medical-care entitlement and the aggro-mental-state exclusion are all facts about the patient — with only `CanReserve` being doctor-specific. That was checked in source, not hoped for. `map.mapPawns.SpawnedPawnsWithAnyHediff` is Core's own map-explicit accessor, so no wider sweep was needed.
+  - Because `GoodLayingStatusForTend` requires a humanlike patient to be **in bed**, a doctor is never sent through a gate for somebody merely walking around injured. That falls out of matching Core rather than needing a rule of ours.
+  - This is deliberately **not** a duplicate of the casualty family: 0.5.2-dev carries our own downed people home to a bed, and this one carries nobody, because a patient already settled in a bed on the far side is better off treated there.
+- [x] **The medicine half hangs on one Core fact, found by reading rather than assuming.** `HealthAIUtility.FindBestMedicine` searches `patient.MapHeld.listerThings.ThingsInGroup(ThingRequestGroup.Medicine)` — **the patient's map, not the doctor's**. So getting medicine onto the patient's map is exactly and only what is required, and there is no radius to respect because Core's search is map-wide.
+- [x] **Medicine is optional to tending, and saying so sets the honest urgency.** `WorkGiver_Tend.JobOnThing` falls through to `MakeJob(TendPatient, patient)` with **no medicine at all** when none is found. So this family never decides *whether* somebody is treated, only how well. A trip that arrives late costs a walk; a trip that never happens still leaves the patient tended.
+- [x] **Three patient-side rules honoured rather than reinvented:** a patient on `NoCare` or `NoMeds` has nothing carried for them, because `FindBestMedicine` returns null outright for both; `Medicine.GetMedicineCountToFullyHeal(patient)` is the count, never a number of ours; and `medCare.AllowsMedicine(def)` decides what qualifies, so a patient on herbal-or-worse never has glitterworld medicine hauled across a gate.
+- [x] **Caught a throwing-call trap.** `MedicalCareUtility.AllowsMedicine` is a `switch` expression whose default arm **throws `InvalidOperationException`** rather than returning false. An unexpected `MedicalCareCategory` — from a mod, or a damaged save — would have thrown from inside a work-giver scan. Guarded with `Enum.IsDefined`, treating an undefined value as "no medicine", per the standing rule that a bad lookup is an unavailable action and never an exception.
+- [x] **Avoided the same shortage mistake the bill family avoided.** Presence is counted across **every** medicine def the patient's care setting allows, not just the one being considered. A patient with plenty of herbal medicine beside them is short of nothing, and counting only industrial medicine would have sent somebody across a gate for nothing, repeatedly, because the situation is stable.
+- [x] **Nine medical profile rows read from their existing reviews first**, per the standing rule that the prep work is where mod facts live. Row **209 Smart Medicine** is the one that matters: it sources medicine from pawn and patient **inventories** and adds field tending, so with it installed our trip may simply be unnecessary — which is the **harmless** direction, because the shortage test counts only what is on the patient's map and Core tends from the inventory without consulting our delivery. Rows 193 ReTend, 225 TendYourself, 126 Medical IVs, 113 Injured Carry, 109 Hospital and 34 Animal Medical Bed all carry the same disposition: optional, no adapter, must work absent, do not copy code. Both halves satisfy every clause by construction.
+- [x] **Priorities placed with a medical judgement, not a pattern.** The doctor continue giver sits at Doctor 102 — above routine local tending so a doctor partway to a gate is not turned around by an ordinary patient at home, but **below a local emergency at 110**, which must always win. The plan giver sits at 5, below even visiting the sick. Medicine outranks construction material and bill ingredients on both halves (13/9 against 12/8 and 11/7) because a patient needing medicine beats a stalled build or a stalled bench.
+- [x] **The remaining medical routes named rather than implied.** Surgery across a gate (`Bill_Medical` needs the patient present, and `uniqueRequiredIngredients` is a case no other family has), patient feeding (which belongs with the food family and is now recorded against that item), and prisoner and guest care including Hospitality's guest patients. Self-tend is local by definition. Each is its own row with its own required source review.
+
+### Saved state
+
+**None added.** The medicine adapter records the patient in the intent's existing `finalTarget` field — which is exactly what that field has been for since schema 1, "the native object the work finally belongs to" — and reuses `RecordResolvedCellForTarget` so the patient is not erased when the delivery cell is chosen. The deployment half adds nothing at all. A 0.5.8-dev save loads unchanged.
+
+### Documents updated in the same change
+
+`implementation/CONNECTED_TENDING_IMPLEMENTATION.md` (new record), `DEFERRED.md`, `TODO.md`, `NOW.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.5.9-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **104** C# source files, **76** approved package files (unchanged — four work giver defs and five keyed strings added to files that already existed). Assembly SHA-256 `AE6BD0CCE437253568FCD54B45490EB969E66CF9086905836B807691A4848014`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. Evidence folder `implementation/evidence/connected-tending-2026-09-28/`. All 58 packaged XML files parse; every `RR_` key referenced from source resolves with 0 missing; 2,965 relative doc links resolve with 0 broken; every `giverClass` resolves; 0 attribution strings; all compliance checks pass. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 2. Source files modified: 5. Package files modified: 3. Docs updated: 9 (1 new).
+Deferments closed: 1 (tending, both halves as one item). Rows added: 1, and only because the pinned review already required it — the remaining medical routes, which are genuinely separate native routes rather than parts of this item.
+Work families complete: 8, three of them travel-to-work deployments.
+Core traps caught from source: 2 — `AllowsMedicine` throwing on an undefined category, and the multi-def shortage count.
+Next: food, which is **three** things and the first family that does not ride `JobGiver_Work` at all, because eating is a need from the think tree rather than work.
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.

@@ -218,4 +218,18 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         protected override string AdapterId { get { return ConnectedWorkAdapters.BillIngredients; } }
         protected override bool ContinueOnly { get { return true; } }
     }
+
+    /// <summary>Starts a trip to bring medicine to a patient on the other side.</summary>
+    public sealed class WorkGiver_ConnectedMedicine : WorkGiver_ConnectedWork
+    {
+        protected override string AdapterId { get { return ConnectedWorkAdapters.MedicineSupply; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Finishes carrying medicine to a patient.</summary>
+    public sealed class WorkGiver_ConnectedMedicineContinue : WorkGiver_ConnectedWork
+    {
+        protected override string AdapterId { get { return ConnectedWorkAdapters.MedicineSupply; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
 }

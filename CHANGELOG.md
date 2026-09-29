@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.9-dev - 2026-09-28 - a doctor crosses a gate, and so does the medicine
+
+- A doctor will now walk through a gate to treat a patient lying in a bed on the other side, instead of the patient being carried home first. Somebody already settled in a bed is better off treated where they are.
+- Medicine is carried through a gate to a patient whose own side has none. The treating is the game's own; all this does is make sure there is something to treat them with.
+- Medicine never decides whether somebody gets treated, only how well. The game treats patients with or without it, so a delivery that arrives late costs nothing.
+- Your medical care settings are respected exactly. A patient set to no medicine has none carried for them, a patient set to herbal or worse never has glitterworld medicine hauled across a gate, and the amount carried is the amount the game says will heal them.
+- Nothing crosses if the patient already has enough medicine they are allowed to use nearby, counting every kind they allow rather than just one.
+- A local emergency always wins. A doctor only partway to a gate turns back for an urgent patient at home, and a doctor only ever crosses when there is no doctoring left to do on this side at all.
+- An injured colonist wandering around does not pull a doctor through a gate; only somebody actually in a bed does.
+- Works alongside your medical mods with nothing special needed for any of them, including the one that lets doctors carry medicine in their own inventory.
+
+Surgery, patient feeding and prisoner or guest care are each a separate piece of work and are named as such rather than quietly assumed. Full record: [tending across a gate](docs/implementation/CONNECTED_TENDING_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.5.8-dev - 2026-09-28 - a researcher crosses a gate to work
 
 - A researcher will now walk through a gate to use a research bench on the other side, when there is nothing to research on this side.

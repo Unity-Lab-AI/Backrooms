@@ -168,6 +168,80 @@
     <prioritizeSustains>true</prioritizeSustains>
   </WorkGiverDef>
 
+  <!-- Tending across a gate is two capabilities, and they live in different work types.
+
+       The doctor half is a travel-to-work deployment in Doctor. Core's Doctor type runs
+       110 DoctorTendEmergency, 100 DoctorTendToHumanlikes, 90 DoctorTendToSelf,
+       80 DoctorFeedHumanlikes, 70 DoBillsMedicalHumanOperation, 65 FeedHemogen,
+       60 DoctorRescue, 50 DoctorTendToAnimals, 40 DoctorFeedAnimals,
+       30 DoBillsMedicalAnimalOperation, 20 TakeToBedToOperate, 10 VisitSickPawn.
+
+       Continuing sits at 102: above routine local tending so a doctor partway to a gate is
+       not turned around by an ordinary patient at home, but still below a local EMERGENCY
+       (110), which must always win. Starting sits at 5, below every Core doctor giver
+       including visiting the sick, so a doctor only crosses when there is no doctoring at
+       all on this side.
+
+       The medicine half is a carry, so it is Hauling like the other carries. It outranks
+       construction material and bill ingredients on both halves, because a patient needing
+       medicine is more urgent than a stalled build or a stalled bench: continue 13 above
+       construction's 12 and bills' 11, start 9 above construction's 8 and bills' 7. All stay
+       well below Core's HaulGeneral (15) so ordinary local hauling always wins.
+
+       Balance decisions, recorded as such, and player-tunable while the game runs. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedTendingContinue</defName>
+    <label>travel on to treat a patient through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedTendingContinue</giverClass>
+    <workType>Doctor</workType>
+    <verb>tend</verb>
+    <gerund>tending to</gerund>
+    <priorityInType>102</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedTending</defName>
+    <label>cross a gate to treat a patient</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedTending</giverClass>
+    <workType>Doctor</workType>
+    <verb>tend</verb>
+    <gerund>tending to</gerund>
+    <priorityInType>5</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedMedicineContinue</defName>
+    <label>finish delivering medicine through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedMedicineContinue</giverClass>
+    <workType>Hauling</workType>
+    <verb>deliver</verb>
+    <gerund>delivering</gerund>
+    <priorityInType>13</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedMedicine</defName>
+    <label>carry medicine to a patient through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedMedicine</giverClass>
+    <workType>Hauling</workType>
+    <verb>deliver</verb>
+    <gerund>delivering</gerund>
+    <priorityInType>9</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
   <!-- Casualties sit around Core's own DoctorRescue (60): finishing a trip that
        already has someone in the worker's arms edges above it, starting one sits just
        below so a casualty on this map is always rescued first. Both stay under the
