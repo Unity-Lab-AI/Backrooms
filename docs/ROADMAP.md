@@ -12,14 +12,14 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
 
 | Metric | Value |
 |--------|-------|
-| **Development version** | 0.4.1-dev (`About.xml`, csproj), commit `8ed4e32` |
+| **Development version** | 0.4.2-dev (`About.xml`, csproj), branch `feature/connected-colony-portals` |
 | **Gate 0 (docs/source preparation)** | PASSED 2026-09-28 (`research/GATE_0_COMPLETION_AUDIT.md`) |
 | **Gate 2 (first loop in play)** | OPEN — no Rimrooms build has ever been launched |
-| **Master TODO** | 129 items checked, 120 open (all 120 mirrored in `TODO.md`) |
-| **Source** | 75 C# files, 14,845 lines, 15 namespaces, 9 save owners, 370 `rr_` keys, no Harmony |
-| **Package** | 71 allowlisted files, 26 Def XMLs, 2 patches, 24 language files, 16 PNGs |
-| **Active major** | M1 connected colony portals — substrate compiled, zero callers |
-| **Next unblocked minor** | Resume step 1 (crossing-service boundary review), decomposed |
+| **Master TODO** | 133 items checked, 121 open (mirrored in `TODO.md`; deferments tracked in `DEFERRED.md`) |
+| **Source** | 78 C# files, 15 namespaces, 9 save owners, no Harmony |
+| **Package** | 73 allowlisted files, 27 Def XMLs, 2 patches, 25 language files, 16 PNGs |
+| **Active major** | M1 connected colony portals — addresses, crossing and controls reachable in source; work adapters next |
+| **Next unblocked minor** | Resume step 4 (work intents, leases, adapter families) |
 | **Owner questions open** | 3 (inside-start party size; first-exit fixed vs chosen; opening duration) |
 
 ### Majors
@@ -28,7 +28,7 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
 
 - [~] **M1 — Connected colony portals** (feature IDs RR-GATE, RR-EXP, RR-SPACE, RR-FAC, RR-COMPAT; contract [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md)).
   **Scope:** independent connection ownership, permanent natural portals, free bidirectional crossing of the same pawns and cargo, cross-map job discovery/reservations, cross-portal hauling/construction/bills/research/care, closure/reopen reconciliation, 294-row work/storage provider integration, replacement of dispatch-only travel controls, coordinate/seed/complexity persistence, bounded procedural inhabitants and rare monstrosities, connected-site streaming.
-  **Done so far (0.4.1-dev):** saved portal graph with Laboratory/Natural kinds, resumable route search, laboratory session ownership on the gate, same-pawn crossing service with receipts and recovery, content version 4 Core-door thresholds. All of it compiles; none of it is reachable in play.
+  **Done so far (0.4.2-dev):** saved portal graph with Laboratory/Natural kinds, resumable route search, laboratory session ownership, same-pawn crossing service with receipts and recovery, content version 4 Core-door thresholds (all 0.4.1-dev); then resume steps 1–3 — the crossing-service boundary review, derived laboratory and natural address registration, the deterministic discovered-coordinate API, the explicit legacy threshold repair, the `RR_CrossPortal` job with its save-stable operation id, the Operations portal pane with open/close/emergency-return/crossing/reconcile controls, and player text for every result. The substrate is now reachable in play.
   **Exit condition:** the 11-item required implementation backlog is source-complete with compiler evidence per step, every supported native work route is listed with source evidence, and the owner-launched acceptance row is recorded (the last item stays `[!]` until the owner launches).
   **Working sequence:** resume steps 1–6 in `TODO.md`; steps 1–3 decomposed in `DECOMPOSED.md`. Maps to Stage 2 → Stage 5 below.
 

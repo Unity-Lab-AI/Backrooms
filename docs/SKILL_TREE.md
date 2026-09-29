@@ -1,11 +1,11 @@
 # SKILL_TREE
 
-Capability inventory for Rimrooms - Async Industries as of commit `8ed4e32` (0.4.1-dev, 2026-09-28), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
+Capability inventory for Rimrooms - Async Industries as of 0.4.2-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
 
 | Status | Meaning |
 |--------|---------|
 | **Source** | Implemented in `src/` and/or XML, compiles with zero warnings/errors |
-| **Build** | Source + packaged in the 71-file allowlist with saved manifests |
+| **Build** | Source + packaged in the 73-file allowlist with saved manifests |
 | **Runtime-pending** | Source/Build exists; behaviour never observed in-game (owner has not launched) |
 | **Substrate** | API exists but no caller reaches it in play |
 | **Design** | Contract written, no source |
@@ -46,12 +46,12 @@ Canonical detail: [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md), [`FEATURE_TRACEABI
 - Native provider designation: Core `Door`/`Autodoor` gate, `CommsConsole` station, `TableMachining` assembly bench, `Battery` reserve (17 keyed refusal reasons) — **Build / Runtime-pending**
 - Assembly via native bill (100 Steel + 8 Components), calibration job, assigned operator, actual battery debit verified before/after, fault + acknowledge — **Build / Runtime-pending**
 - Opening/recovery receipts, emergency cutoff, interrupted-debit recovery, legacy gate objects hidden from construction — **Build / Runtime-pending**
-- Portal-session ownership on the gate (`BeginPortalOpening` / `ClosePortalOpening` / `RecoverPortalOpening`, post-load owner validation) — **Substrate**
-- Saved portal/endpoint graph, Laboratory vs NaturalPermanent kinds, idempotent registration, collision refusal — **Substrate**
-- Resumable bidirectional route search (budget ≤ 1024 ops/advance, loop detection, `Pending|Complete|Unreachable|Invalidated|InvalidState`) — **Substrate**
-- Same-pawn/same-cargo crossing service with receipts, post-spawn door/area checks, rollback, recovery (max 256 pending) — **Substrate**
-- Address registration + natural discovery + legacy saved-endpoint repair — **Design** (resume step 2, decomposed)
-- Ordinary crossing jobs, player gizmos, laboratory lifecycle wiring, emergency-return route — **Design** (resume step 3, decomposed)
+- Portal-session ownership on the gate (`BeginPortalOpening` / `ClosePortalOpening` / `RecoverPortalOpening`, post-load owner validation) — **Build / Runtime-pending**
+- Saved portal/endpoint graph, Laboratory vs Natural kinds, idempotent registration, collision refusal — **Build / Runtime-pending**
+- Resumable bidirectional route search (budget ≤ 1024 ops/advance, loop detection, `Pending|Complete|Unreachable|Invalidated|InvalidState`) — **Build / Runtime-pending**
+- Same-pawn/same-cargo crossing service with receipts, post-spawn door/area checks, rollback, recovery (max 256 pending) — **Build / Runtime-pending**
+- Derived laboratory and natural address registration, deterministic discovered-coordinate API, explicit legacy threshold repair — **Build / Runtime-pending** (0.4.2-dev). The discovery *trigger* that finds a new natural threshold in play is **Design** (step 5).
+- Ordinary crossing job, per-address crossing orders, laboratory open/close wiring, emergency-return route, unresolved-crossing reconcile surface — **Build / Runtime-pending** (0.4.2-dev)
 - Work intents, quantity leases, destination revalidation; adapters for hauling, construction, bills, research, tend/rescue, food, rest, then all remaining work families — **Design** (resume step 4)
 - Upgrades: stabilizers, monitoring, cool-down, modules, reliability; aperture/duration/recall/efficiency; larger door providers (Doors Expanded 2×1/3×1/3×2, ReBuild, VVE garage) — **Design**
 - Gate window ladder 20 min → 2 h → 1 day → 7 days → 30 days with power/heat/maintenance/supply/rotation/comms costs — **Design**
@@ -232,14 +232,14 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 
 | Skill | Domain | Complexity | Status |
 |-------|--------|------------|--------|
-| Crossing-service boundary review before callers | Gate/Portals | Advanced | Design (step 1, decomposed) |
-| Endpoint/address registration + legacy endpoint repair | Gate/Portals | Advanced | Design (step 2, decomposed) |
-| Ordinary crossing jobs + player controls + emergency return | Gate/Portals | Advanced | Design (step 3, decomposed) |
+| Crossing-service boundary review before callers | Gate/Portals | Advanced | **Done** (step 1, 2026-09-28) |
+| Endpoint/address registration + legacy endpoint repair | Gate/Portals | Advanced | **Build / Runtime-pending** (step 2, 0.4.2-dev) |
+| Ordinary crossing jobs + player controls + emergency return | Gate/Portals | Advanced | **Build / Runtime-pending** (step 3, 0.4.2-dev) |
 | Cross-map work intents, leases, revalidation | Gate/Portals | Expert | Design (step 4) |
 | Work/needs adapters preserving native rules | Gate/Portals | Expert | Design (step 4) |
-| Permanent natural portals with discovery | Gate/Portals | Intermediate | Substrate (kind exists; no discovery) |
+| Permanent natural portals with discovery | Gate/Portals | Intermediate | Registration **Build**; discovery trigger **Design** (step 5) |
 | Existing-content replacement of legacy gate/gear/fixtures/terrain/threat/PawnKinds | Company/Gate/Generation | Advanced | Design (M2) |
-| Keyed text for portal failure keys | Interface | Beginner | Design |
+| Keyed text for portal failure keys | Interface | Beginner | **Build** (`RR_Portals.xml`, 0.4.2-dev) |
 
 ### Important (Should Have)
 > Significantly improves the campaign or closes documented gaps
@@ -293,7 +293,7 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 | **Priority** | Critical (foundation for every portal skill above it) |
 | **Prerequisites** | Registered edge; pawn at saved source threshold; laboratory window or natural kind available |
 | **Unlocks** | Crossing jobs, work intents, adapters |
-| **Status** | Substrate — compiled, receipt-backed, no caller |
+| **Status** | Build / Runtime-pending — receipt-backed and reachable through `RR_CrossPortal` since 0.4.2-dev |
 
 **Description:** `RimroomsPortalCrossingService.Cross(pawn, step, operationId)` executes one graph step with the original `Pawn` and its actual carry stack. It checks branch/map ownership, graph availability, eligibility (player-faction humanlike colonists only), source door/cell permission and destination spawn safety; secures the carry stack with a nonmerging transfer; despawns; rechecks availability; spawns the same object at the saved approach cell; then checks destination door permission and the destination map's allowed area, rolling back to the source cell on denial. `Recover(operationId)` reconciles an interrupted receipt using only the saved endpoints.
 
@@ -383,15 +383,15 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 ### Currently Missing
 
 - Any runtime observation of any Rimrooms build (owner has not launched).
-- Portal registration/discovery, crossing jobs, player controls, work adapters, inhabitants, streaming.
-- Keyed text for portal failure keys; `Compatibility/` and `ConnectedWork/` folders; RWT/DLC/profile adapters.
+- Cross-map work adapters, the natural-discovery trigger, procedural inhabitants, streaming.
+- `Compatibility/` and `ConnectedWork/` folders; RWT/DLC/profile adapters.
 - Store and inside starts; training/certification/pools/wellbeing; contract families; research tiers; containment; settlement quests; outposts; Company Command remap; tutorial/accessibility layers.
 
 ### Partially Implemented
 
 - Existing-content replacement: evidence book, laboratory bench, audio, native gate infrastructure, native room providers and the v4 threshold replaced; gate objects, field gear, fixtures, terrain, threat presentation, staff PawnKinds, recipes still custom.
 - Scenario setup: Async Industries start complete in source; customized-pawn preservation ordered but runtime-unverified; alternate starts absent.
-- Connected colony: graph, session ownership, route search and crossing compiled; nothing above them.
+- Connected colony: graph, session ownership, route search, crossing, addresses, legacy repair, crossing job and controls are built (0.4.2-dev); cross-map work, discovery trigger, inhabitants and streaming are not.
 - Economy: ledger, payroll, one contract, procurement flow exist; stages 2–7, leases, incidents, balance absent.
 
 ### Fully Implemented (in source and package; runtime pending)

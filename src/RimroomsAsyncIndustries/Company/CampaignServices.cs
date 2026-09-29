@@ -96,6 +96,48 @@ namespace RimroomsAsyncIndustries.Company
             return CompanyActionResult.Applied();
         }
 
+        /// <summary>
+        /// Deterministic branch-local address for a newly discovered space. The id and
+        /// seed derive from the branch seed and the caller's stable discovery id, so a
+        /// replay returns the existing record instead of inventing a second coordinate.
+        /// Generation still happens through the ordinary coordinate owner on first use.
+        /// </summary>
+        public CompanyActionResult CreateDiscoveredCoordinate(string discoveryId, out CoordinateRecord coordinate)
+        {
+            coordinate = null;
+            if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
+            if (string.IsNullOrWhiteSpace(discoveryId) || discoveryId.Length > 128 ||
+                discoveryId.Any(character => char.IsWhiteSpace(character)))
+            { return CompanyActionResult.Refused("RR_Company_InvalidRequest"); }
+            string stableKey = "coordinate:discovery:" + discoveryId;
+            string id = branchId + ":" + stableKey;
+            CoordinateRecord existing = coordinates.FirstOrDefault(record => record.id == id);
+            if (existing != null)
+            {
+                coordinate = existing;
+                return CompanyActionResult.Existing();
+            }
+            if (coordinates.Count >= MaximumCoordinates) { return CompanyActionResult.Refused("RR_Company_CoordinateLimit"); }
+            var created = new CoordinateRecord
+            {
+                id = id,
+                label = "AI-" + (coordinates.Count + 1).ToString("00"),
+                seed = CampaignSeed.Derive(campaignSeed, stableKey, 1)
+            };
+            coordinates.Add(created);
+            ValidateSavedState();
+            if (stateFaultKey != null)
+            {
+                // Never leave the branch in a faulted state because of an added record.
+                coordinates.Remove(created);
+                ValidateSavedState();
+                return CompanyActionResult.Refused("RR_Company_InvalidSave");
+            }
+            coordinate = created;
+            RecordEvent("RR_Event_CoordinateDiscovered", id, discoveryId);
+            return CompanyActionResult.Applied();
+        }
+
         internal CompanyActionResult PostTransaction(string operationId, long amountUsd, string reasonKey, string relatedId)
         {
             if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }

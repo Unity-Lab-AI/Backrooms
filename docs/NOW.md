@@ -16,32 +16,31 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 
 ## Active
 
-_(none — no work currently in motion. The 2026-09-28 Claude Code workflow handoff closed; see `docs/FINALIZED.md` session 2026-09-28.)_
+M1 connected colony portals — resume step 4: saved work intents, quantity leases, native destination job revalidation, then the work/needs adapter families. Branch `feature/connected-colony-portals`.
 
-**Verbatim user request:** _(when work is active, paste their exact words here)_
+Steps 1–3 closed in 0.4.2-dev (addresses, legacy threshold repair, ordinary crossing job, session controls, emergency return, reconcile surface). Record: `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`.
 
-**Started:** _(ISO timestamp when the task became active)_
+**Verbatim user request:** "new feature branch for your work start on the todo weork making sure to properly finalize all completed work as i think gate 0 is still in the todo stuff but it should be finalized first and begin on any and all todo work to reach the goal of having a completed working mod in all regaurds as outlined in the many prep documentes build over 18 hours of work in gate 0"
 
-**Goal:** _(one-sentence statement of what "done" looks like)_
+**Started:** 2026-09-28T19:50 local
 
-**Files touched so far:** _(running list, updated as edits happen)_
+**Goal:** saved work intents and quantity leases exist, native destination job targets are revalidated at use, and the adapter families land one at a time with source evidence per route: storage hauling, construction supply and finish, bills, research, tend and rescue, food, rest, then the remaining families. Native priorities, schedules, allowed areas, locks, custody and actual inventory stay authoritative. A generic graph is not an adapter.
 
-**Verification plan:** _(how we'll confirm the task is actually done — compile against pinned references, read output, manual review; the owner alone launches RimWorld through RimSort)_
+**Files touched so far (this branch):** `docs/DEFERRED.md`, `docs/TODO.md`, `docs/FINALIZED.md`, `docs/NOW.md`, `docs/DECOMPOSED.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md`, `docs/SKILL_TREE.md`, `docs/PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`, `CHANGELOG.md`, `docs/implementation/CONNECTED_CROSSING_CALLER_REVIEW.md`, `docs/implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`, `docs/implementation/evidence/connected-travel-2026-09-28/`, `src/RimroomsAsyncIndustries/Portals/PortalAddressService.cs`, `PortalTravelService.cs`, `PortalCrossingService.cs`, `src/RimroomsAsyncIndustries/Generation/RimroomsDestinationMapParent.cs`, `src/RimroomsAsyncIndustries/Company/CampaignServices.cs`, `RimroomsCampaignComponent.cs`, `src/RimroomsAsyncIndustries/UI/OperationsPortalNetwork.cs`, `OperationsExpeditions.cs`, `Mod/.../1.6/Defs/JobDefs/RR_PortalJobs.xml`, `Mod/.../1.6/Languages/English/Keyed/RR_Portals.xml`, `tools/package-files.json`, `Mod/.../About/About.xml`, `src/.../RimroomsAsyncIndustries.csproj`
 
-**Blockers / open questions:** _(anything waiting on user input or external system)_
+**Verification plan:** read every file in full before editing; `./tools/build.ps1` with zero warnings and errors; evidence folder per checkpoint with compiler output and source/package/reference manifests; no game launch, no RimSort change.
+
+**Blockers / open questions:** none for step 4. The three owner questions (inside-start party size, first exit, opening duration) do not gate it and are tracked in `DEFERRED.md`.
 
 ---
 
 ## Next up (from the cascade)
 
-The next unblocked minor task is the first resume step from the connected-colony checkpoint, recorded in `docs/TODO.md` under the pending section. Read `docs/implementation/CONNECTED_COLONY_CHECKPOINT.md` and `docs/implementation/CONNECTED_CROSSING_IMPLEMENTATION.md` before touching `src/RimroomsAsyncIndustries/Portals/`.
+Read before editing `src/RimroomsAsyncIndustries/Portals/` or adding an adapter: `implementation/CONNECTED_WORK_CORE_API.md` (the pinned Core job, reservation, carry, area and spawn behaviour every adapter depends on), `implementation/CONNECTED_WORK_PROFILE_BOUNDARIES.md` (which profile rows touch work, storage and hauling and how the design treats them), `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md` (what steps 1–3 actually built), and [`DEFERRED.md`](DEFERRED.md) (every deferment with its owner step — a step cannot close while it still owns an open row there).
 
-Two owner questions are still open from the previous build agent and gate later scenario work (they do not block the portal work):
+After step 4: step 5 (optional providers, scenario openings, the natural-discovery trigger, procedural inhabitants), then step 6 (checkpoint and publish). Then M2 existing-content replacement, which shares its migration decision with the legacy threshold repair already built.
 
-- Inside start: configurable party versus strictly lone start.
-- Inside start: first reliable exit reveals a fixed discovered surface destination, or the player chooses a settlement.
-
-The previous agent proceeded under the provisional assumption "configurable solo/group, automatic Backrooms entry and a fixed discovered surface destination" (see `docs/SCENARIO_SETUP_AND_PORTAL_NETWORK.md`). A third open item is the opening-duration clarification noted in `docs/GATE_0_DECISIONS.md`.
+The three owner questions stay open and gate none of this: inside-start party size; inside-start first exit fixed versus chosen; opening duration. Provisional assumptions are recorded in `SCENARIO_SETUP_AND_PORTAL_NETWORK.md` and tracked in `DEFERRED.md`.
 
 ---
 

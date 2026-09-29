@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Portal network pane -->
+  <RR_Portals_Heading>Portal network</RR_Portals_Heading>
+  <RR_Portals_Explanation>Remembered addresses connect a real doorway on this map to the saved return threshold of a Backrooms coordinate. A laboratory address needs its designated gate, power and operator; a natural threshold stays open permanently.</RR_Portals_Explanation>
+  <RR_Portals_NoBranch>No company branch is active, so no address can be remembered.</RR_Portals_NoBranch>
+  <RR_Portals_NetworkFault>The saved portal network could not be read. Its records are retained for review and no portal operation is available.</RR_Portals_NetworkFault>
+  <RR_Portals_NoAddresses>No addresses are remembered yet. Select a coordinate below and remember it on the designated gate.</RR_Portals_NoAddresses>
+  <RR_Portals_AddressCount>Remembered addresses: {0}</RR_Portals_AddressCount>
+  <RR_Portals_AddressLine>{0} — coordinate {1} ({2}), status {3}</RR_Portals_AddressLine>
+  <RR_Portals_KindLaboratory>laboratory</RR_Portals_KindLaboratory>
+  <RR_Portals_KindNatural>natural, permanent</RR_Portals_KindNatural>
+  <RR_Portals_StatusAvailable>available</RR_Portals_StatusAvailable>
+  <RR_Portals_StatusClosed>closed — open the gate for this address</RR_Portals_StatusClosed>
+  <RR_Portals_StatusObstructed>obstructed — clear an approach cell</RR_Portals_StatusObstructed>
+  <RR_Portals_StatusEndpointMissing>endpoint unavailable — the record is retained for diagnosis</RR_Portals_StatusEndpointMissing>
+  <RR_Portals_StatusOther>unavailable ({0})</RR_Portals_StatusOther>
+  <RR_Portals_SelectCoordinate>Select a coordinate</RR_Portals_SelectCoordinate>
+  <RR_Portals_CoordinateOption>{0} ({1})</RR_Portals_CoordinateOption>
+  <RR_Portals_NoCoordinates>This branch has no coordinate records.</RR_Portals_NoCoordinates>
+  <RR_Portals_SelectedCoordinate>Selected coordinate: {0} ({1})</RR_Portals_SelectedCoordinate>
+  <RR_Portals_RememberLaboratory>Remember this coordinate on the designated gate</RR_Portals_RememberLaboratory>
+  <RR_Portals_RememberNatural>Remember this coordinate on the selected doorway as a permanent natural link</RR_Portals_RememberNatural>
+  <RR_Portals_SelectNaturalDoor>Select a doorway for a natural link</RR_Portals_SelectNaturalDoor>
+  <RR_Portals_NaturalDoorOption>{0} at {1}</RR_Portals_NaturalDoorOption>
+  <RR_Portals_SelectedNaturalDoor>Selected natural doorway: {0} at {1}</RR_Portals_SelectedNaturalDoor>
+  <RR_Portals_NoNaturalDoorCandidates>No eligible doorway with a clear standable approach was found on this map.</RR_Portals_NoNaturalDoorCandidates>
+  <RR_Portals_GateRequired>Designate a native gate with its console, battery and assembly bench before remembering a laboratory address.</RR_Portals_GateRequired>
+  <RR_Portals_LegacyRepairNeeded>This coordinate was generated before its return threshold became an actual door, so it cannot hold an address yet.</RR_Portals_LegacyRepairNeeded>
+  <RR_Portals_RepairThreshold>Replace the historical return threshold with an actual door</RR_Portals_RepairThreshold>
+  <RR_Portals_RepairExplanation>The site map, its room graph, your construction, recovered items and discoveries are kept. Only the single return-threshold object is replaced, once, against a saved receipt.</RR_Portals_RepairExplanation>
+  <RR_Portals_RepairRecorded>Return threshold already repaired under receipt {0}.</RR_Portals_RepairRecorded>
+  <RR_Portals_SiteNotLoaded>The saved site is not loaded, so its threshold cannot be repaired now.</RR_Portals_SiteNotLoaded>
+  <RR_Portals_CrossingPending>Unresolved crossings: {0}. Reconcile them before changing this network.</RR_Portals_CrossingPending>
+
+  <!-- Ordinary travel and session controls -->
+  <RR_Portals_TravelHeading>Crossing and session controls</RR_Portals_TravelHeading>
+  <RR_Portals_TravelExplanation>Select one colonist, then order a crossing on a remembered address. They walk to the saved threshold and cross carrying whatever they are already carrying. Opening a doorway normally never moves anyone.</RR_Portals_TravelExplanation>
+  <RR_Portals_NoSelectedPerson>Select one colonist on this map to order a crossing.</RR_Portals_NoSelectedPerson>
+  <RR_Portals_SelectedPerson>Selected: {0}</RR_Portals_SelectedPerson>
+  <RR_Portals_NoLocalAddresses>No remembered address has a threshold on this map.</RR_Portals_NoLocalAddresses>
+  <RR_Portals_OrderCrossing>Send {0} through {1} to coordinate {2}</RR_Portals_OrderCrossing>
+  <RR_Portals_OpenSession>Open the laboratory connection for coordinate {0}</RR_Portals_OpenSession>
+  <RR_Portals_CloseSession>Close the laboratory connection</RR_Portals_CloseSession>
+  <RR_Portals_SessionOpen>Laboratory session {0} is open on address {1}, {2} ticks remaining.</RR_Portals_SessionOpen>
+  <RR_Portals_SessionEmergency>The laboratory session is in an emergency state. People already across stay where they are with everything they carry.</RR_Portals_SessionEmergency>
+  <RR_Portals_EmergencyReturn>Pay the physical recovery cost and reopen the same session so people can walk back</RR_Portals_EmergencyReturn>
+  <RR_Portals_UnresolvedCrossings>Unresolved crossings ({0}):</RR_Portals_UnresolvedCrossings>
+  <RR_Portals_UnresolvedCrossingLine>{0} — {1}, phase {2}{3}</RR_Portals_UnresolvedCrossingLine>
+  <RR_Portals_UnresolvedReason> ({0})</RR_Portals_UnresolvedReason>
+  <RR_Portals_RecoverCrossing>Reconcile crossing {0}</RR_Portals_RecoverCrossing>
+  <RR_Portals_HeldPerson>a person held for recovery</RR_Portals_HeldPerson>
+
+  <RR_PortalTravel_InvalidState>The company branch, portal network or crossing record is unavailable.</RR_PortalTravel_InvalidState>
+  <RR_PortalTravel_NoPerson>No eligible person is selected on a loaded map.</RR_PortalTravel_NoPerson>
+  <RR_PortalTravel_AddressUnavailable>That address is not available from this map right now.</RR_PortalTravel_AddressUnavailable>
+  <RR_PortalTravel_SessionClosed>The laboratory connection for that address is not open.</RR_PortalTravel_SessionClosed>
+  <RR_PortalTravel_EndpointMissing>One of the address endpoints is missing. The record is retained for diagnosis.</RR_PortalTravel_EndpointMissing>
+  <RR_PortalTravel_ApproachBlocked>The threshold cell is blocked.</RR_PortalTravel_ApproachBlocked>
+  <RR_PortalTravel_Unreachable>{0} cannot reach that threshold safely.</RR_PortalTravel_Unreachable>
+  <RR_PortalTravel_JobDefMissing>The crossing job definition is unavailable in this installation.</RR_PortalTravel_JobDefMissing>
+  <RR_PortalTravel_OrderRefused>That person refused the crossing order.</RR_PortalTravel_OrderRefused>
+  <RR_PortalTravel_NoSession>This gate has no saved laboratory session.</RR_PortalTravel_NoSession>
+
+  <!-- Address service refusals -->
+  <RR_PortalAddress_InvalidState>The company branch or portal network is unavailable.</RR_PortalAddress_InvalidState>
+  <RR_PortalAddress_GateNotReady>The selected gate is not a designated native gate with valid links.</RR_PortalAddress_GateNotReady>
+  <RR_PortalAddress_HeadquartersRequired>A laboratory address must be remembered on a gate at the company headquarters.</RR_PortalAddress_HeadquartersRequired>
+  <RR_PortalAddress_LocalApproachBlocked>The doorway's approach cell on this map is blocked.</RR_PortalAddress_LocalApproachBlocked>
+  <RR_PortalAddress_LocalThresholdUnavailable>The selected doorway cannot serve as a threshold. It must be an actual door with a clear, directly adjacent standable cell.</RR_PortalAddress_LocalThresholdUnavailable>
+  <RR_PortalAddress_UnknownCoordinate>That coordinate is not a record of this branch.</RR_PortalAddress_UnknownCoordinate>
+  <RR_PortalAddress_SiteUnavailable>The coordinate's saved site is unavailable. Its records are retained; resolve the site before remembering an address.</RR_PortalAddress_SiteUnavailable>
+  <RR_PortalAddress_SiteNotLoaded>The coordinate's saved site is not loaded.</RR_PortalAddress_SiteNotLoaded>
+  <RR_PortalAddress_SiteThresholdUnavailable>The site's return threshold is missing or has moved. The saved route is never redirected to a replacement doorway.</RR_PortalAddress_SiteThresholdUnavailable>
+  <RR_PortalAddress_LegacyThreshold>This site's return threshold predates actual doors. Repair it explicitly first.</RR_PortalAddress_LegacyThreshold>
+  <RR_PortalAddress_LegacyAnchorMissing>The historical return threshold object is missing, so there is nothing to replace.</RR_PortalAddress_LegacyAnchorMissing>
+  <RR_PortalAddress_LegacyGeometryUnsupported>The historical return threshold does not occupy a single cell beside its saved return position.</RR_PortalAddress_LegacyGeometryUnsupported>
+  <RR_PortalAddress_CoreDoorUnavailable>The Core door definition is unavailable in this installation.</RR_PortalAddress_CoreDoorUnavailable>
+  <RR_PortalAddress_CrossingInProgress>An unresolved crossing still references this site. Reconcile it first.</RR_PortalAddress_CrossingInProgress>
+  <RR_PortalAddress_RepairInterrupted>The threshold repair was interrupted. The site, its graph and its discoveries are retained.</RR_PortalAddress_RepairInterrupted>
+  <RR_PortalAddress_RepairNotRecorded>The replacement door was placed but its repair could not be recorded. Review the site before remembering an address.</RR_PortalAddress_RepairNotRecorded>
+  <RR_PortalAddress_SameMap>A connection must join two different maps.</RR_PortalAddress_SameMap>
+  <RR_PortalAddress_IdentityConflict>A different saved address already uses one of these doorways.</RR_PortalAddress_IdentityConflict>
+  <RR_PortalAddress_EndpointRejected>One of the endpoints is not an acceptable doorway with a clear adjacent approach.</RR_PortalAddress_EndpointRejected>
+  <RR_PortalAddress_WrongBranch>One of the endpoints is not on a map this branch owns.</RR_PortalAddress_WrongBranch>
+  <RR_PortalAddress_Obstructed>An approach cell is obstructed.</RR_PortalAddress_Obstructed>
+  <RR_PortalAddress_Closed>The laboratory connection is not open for that address.</RR_PortalAddress_Closed>
+
+  <!-- Company events -->
+  <RR_Event_PortalAddressRegistered>Portal address remembered: {0} (coordinate {1}).</RR_Event_PortalAddressRegistered>
+  <RR_Event_PortalThresholdRepaired>Return threshold replaced with an actual door at coordinate {0} (receipt {1}).</RR_Event_PortalThresholdRepaired>
+  <RR_Event_CoordinateDiscovered>New coordinate recorded: {0} (discovery {1}).</RR_Event_CoordinateDiscovered>
+
+  <!-- Discovered-coordinate refusals -->
+  <RR_Company_InvalidRequest>That request is not valid for this branch.</RR_Company_InvalidRequest>
+  <RR_Company_CoordinateLimit>This branch is holding its maximum number of coordinate records. No visited coordinate is ever removed to make room.</RR_Company_CoordinateLimit>
+
+  <!-- Crossing service results. These are returned by the physical crossing API;
+       the crossing job and its controls surface them at the point of use. -->
+  <RR_PortalCrossing_Busy>Another crossing is already being reconciled.</RR_PortalCrossing_Busy>
+  <RR_PortalCrossing_InvalidState>The company branch or portal network is unavailable.</RR_PortalCrossing_InvalidState>
+  <RR_PortalCrossing_InvalidSave>The saved crossing records could not be read. They are retained and crossing is disabled.</RR_PortalCrossing_InvalidSave>
+  <RR_PortalCrossing_InvalidRequest>That crossing request is not valid.</RR_PortalCrossing_InvalidRequest>
+  <RR_PortalCrossing_SequenceExhausted>This save has exhausted its crossing sequence numbers.</RR_PortalCrossing_SequenceExhausted>
+  <RR_PortalCrossing_IdentityConflict>A different crossing already used that operation identity.</RR_PortalCrossing_IdentityConflict>
+  <RR_PortalCrossing_PendingLimit>Too many crossings are unresolved. Reconcile some before starting another.</RR_PortalCrossing_PendingLimit>
+  <RR_PortalCrossing_PawnInTransit>{0} is already part of an unresolved crossing.</RR_PortalCrossing_PawnInTransit>
+  <RR_PortalCrossing_PawnNotEligible>Only an available colonist of this company can cross. Drafted, downed, dead, prisoner, enslaved, guest and distressed people cannot.</RR_PortalCrossing_PawnNotEligible>
+  <RR_PortalCrossing_NotAtSourceThreshold>The person is not standing at the saved threshold cell for that connection.</RR_PortalCrossing_NotAtSourceThreshold>
+  <RR_PortalCrossing_SourceAccessDenied>The doorway on this side cannot be used: it is forbidden, locked or impassable for this person.</RR_PortalCrossing_SourceAccessDenied>
+  <RR_PortalCrossing_EdgeUnavailable>That connection is not currently available.</RR_PortalCrossing_EdgeUnavailable>
+  <RR_PortalCrossing_WrongBranch>That connection does not belong to this branch's maps.</RR_PortalCrossing_WrongBranch>
+  <RR_PortalCrossing_DestinationUnsafe>The arrival cell on the far side is not safe to stand in.</RR_PortalCrossing_DestinationUnsafe>
+  <RR_PortalCrossing_DestinationSpawnFailed>The arrival was refused on the far side; the person is being returned to the near side.</RR_PortalCrossing_DestinationSpawnFailed>
+  <RR_PortalCrossing_DestinationAccessDenied>The far doorway or allowed area refused this person on arrival; they are being returned to the near side.</RR_PortalCrossing_DestinationAccessDenied>
+  <RR_PortalCrossing_EdgeClosedDuringCleanup>The connection closed during the crossing; the person is being returned to the near side.</RR_PortalCrossing_EdgeClosedDuringCleanup>
+  <RR_PortalCrossing_CarryOwnerChanged>The carried item changed hands before the crossing; nothing was moved.</RR_PortalCrossing_CarryOwnerChanged>
+  <RR_PortalCrossing_CargoCustodyFailed>The carried item could not be taken into custody for the crossing.</RR_PortalCrossing_CargoCustodyFailed>
+  <RR_PortalCrossing_CargoRestoreFailed>The original carried item could not be handed back and is held for recovery.</RR_PortalCrossing_CargoRestoreFailed>
+  <RR_PortalCrossing_PawnCustodyFailed>The person could not be taken into custody for the crossing and is held for recovery.</RR_PortalCrossing_PawnCustodyFailed>
+  <RR_PortalCrossing_PawnCustodyMissing>The person is not in the expected custody for this crossing; the record is retained for recovery.</RR_PortalCrossing_PawnCustodyMissing>
+  <RR_PortalCrossing_PawnLocationUnresolved>The person is not at either saved endpoint. The record is retained; no one is teleported to resolve it.</RR_PortalCrossing_PawnLocationUnresolved>
+  <RR_PortalCrossing_SourceRecoveryBlocked>The original cell on the near side is blocked, so recovery is waiting.</RR_PortalCrossing_SourceRecoveryBlocked>
+  <RR_PortalCrossing_EndpointMismatch>The person is not where this crossing expected them to be.</RR_PortalCrossing_EndpointMismatch>
+  <RR_PortalCrossing_ReceiptMissing>There is no crossing record with that operation identity.</RR_PortalCrossing_ReceiptMissing>
+  <RR_PortalCrossing_ReceiptIdentityChanged>The people, items or maps of that crossing record have changed; it is retained for review.</RR_PortalCrossing_ReceiptIdentityChanged>
+  <RR_PortalCrossing_RecoveredAtChangedLocation>The person was recovered where they actually are, not at either saved endpoint.</RR_PortalCrossing_RecoveredAtChangedLocation>
+  <RR_PortalCrossing_RecoveryException>Recovery was interrupted; the crossing record and custody are retained.</RR_PortalCrossing_RecoveryException>
+  <RR_PortalCrossing_UnownedPawn>A saved crossing references a person who is neither present nor in custody. The record is retained.</RR_PortalCrossing_UnownedPawn>
+  <RR_PortalCrossing_UnownedCargo>A saved crossing references an item that is neither carried nor in custody. The record is retained.</RR_PortalCrossing_UnownedCargo>
+  <RR_PortalCrossing_OrphanedHeldThing>Something is held for a crossing that no longer references it. The record is retained.</RR_PortalCrossing_OrphanedHeldThing>
+
+</LanguageData>

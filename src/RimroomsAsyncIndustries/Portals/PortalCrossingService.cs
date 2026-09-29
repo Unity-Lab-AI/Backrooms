@@ -388,11 +388,25 @@ namespace RimroomsAsyncIndustries.Portals
                 pawn.Map != source.Map || pawn.Position != source.ApproachCell)
             { return "RR_PortalCrossing_NotAtSourceThreshold"; }
             if (!CanUseEndpointNow(pawn, source)) { return "RR_PortalCrossing_SourceAccessDenied"; }
-            if (!pawn.Spawned || pawn.Dead || pawn.Downed || pawn.Drafted || pawn.InMentalState ||
+            return EligibilityFailureKey(pawn);
+        }
+
+        /// <summary>
+        /// The single eligibility rule, shared with callers so an order can refuse
+        /// with the same reason the crossing itself would give. Mechs, subhumans and
+        /// non-colonists are deliberately out of scope.
+        /// </summary>
+        public static string EligibilityFailureKey(Pawn pawn)
+        {
+            if (pawn == null || !pawn.Spawned || pawn.Dead || pawn.Downed || pawn.Drafted || pawn.InMentalState ||
                 pawn.Faction != Faction.OfPlayer || !pawn.IsColonist || pawn.IsPrisoner || pawn.IsSlave || pawn.IsQuestLodger())
             { return "RR_PortalCrossing_PawnNotEligible"; }
             return null;
         }
+
+        /// <summary>Whether this pawn is already inside an unresolved crossing.</summary>
+        public bool HasUnresolvedCrossing(Pawn pawn)
+        { return pawn != null && receipts.Any(receipt => receipt != null && !receipt.IsTerminal && receipt.Pawn == pawn); }
 
         private bool ReceiptIdentityIntact(PortalCrossingReceipt receipt)
         {

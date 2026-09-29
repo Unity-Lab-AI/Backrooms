@@ -5,11 +5,13 @@
   "files": [
     "1.6/Assemblies/RimroomsAsyncIndustries.dll",
     "1.6/Languages/English/Keyed/RR_NativeGate.xml",
+    "1.6/Languages/English/Keyed/RR_Portals.xml",
     "1.6/Patches/RR_NativeGateProviders.xml",
     "1.6/Languages/English/Keyed/RR_StartupSetup.xml",
     "1.6/Defs/JobDefs/RR_ExpeditionJobs.xml",
     "1.6/Defs/JobDefs/RR_GateJobs.xml",
     "1.6/Defs/JobDefs/RR_InvestigationJobs.xml",
+    "1.6/Defs/JobDefs/RR_PortalJobs.xml",
     "1.6/Defs/MainButtonDefs/RR_MainButtons.xml",
     "1.6/Defs/MapGeneratorDefs/RR_BackroomsGeneration.xml",
     "1.6/Defs/PawnKindDefs/RR_Staff.xml",

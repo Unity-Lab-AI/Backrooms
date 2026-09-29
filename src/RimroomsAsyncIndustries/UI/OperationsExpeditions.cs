@@ -71,6 +71,7 @@ namespace RimroomsAsyncIndustries.UI
         private void DrawMachine(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
             DrawNativeGateBinding(listing, campaign);
+            DrawPortalNetwork(listing, campaign);
             CompRimroomsGate gate = CurrentGate(campaign);
             listing.Label((gate != null && gate.IsNativeProvider
                 ? "RR_NativeGate_MachineInstructions" : "RR_UI_MachineInstructions").Translate());

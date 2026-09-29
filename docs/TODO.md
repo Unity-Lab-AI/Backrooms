@@ -22,7 +22,12 @@ LAW #0 reminder: every task description preserves the user's verbatim words.
 
 ## In progress
 
-_(none — the 2026-09-28 workflow handoff session closed; its seven tasks are archived in `FINALIZED.md`)_
+**Verbatim owner request (2026-09-28, four items):** *"new feature branch for your work start on the todo weork making sure to properly finalize all completed work as i think gate 0 is still in the todo stuff but it should be finalized first and begin on any and all todo work to reach the goal of having a completed working mod in all regaurds as outlined in the many prep documentes build over 18 hours of work in gate 0"*
+
+- [~] **"new feature branch for your work"** — branch `feature/connected-colony-portals` created from `48a8418` (= `Develop` = `Main` on both remotes). Pushed with the first milestone per `PUBLISHING.md`.
+- [~] **"start on the todo weork"** — M1 resume steps 1, 2 and 3 CLOSED in 0.4.2-dev (see `FINALIZED.md`); step 4 (work intents, leases, adapters) is next.
+- [~] **"making sure to properly finalize all completed work as i think gate 0 is still in the todo stuff but it should be finalized first"** — all 129 checked master TODO items archived verbatim in `FINALIZED.md` §Inherited completed work; master TODO checkboxes retained beside their evidence per `REGRESSION_CONTAINMENT.md`.
+- [~] **"begin on any and all todo work to reach the goal of having a completed working mod in all regaurds as outlined in the many prep documentes build over 18 hours of work in gate 0"** — standing objective for every session from here: work the cascade M1 → M6 in `ROADMAP.md` order until the master TODO is empty; runtime rows stay `[!]` until the owner launches.
 
 ---
 
@@ -40,17 +45,17 @@ Binding contract: [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md). 
 
 **Resume order (verbatim from `implementation/CONNECTED_COLONY_CHECKPOINT.md`; these are the working sequence for the items above):**
 
-- [ ] **Resume step 1:** "Review the crossing service's documented permission, recovery and state boundaries before connecting callers. Finish unresolved constraints rather than weakening checks. Preserve original pawns/cargo and no-wipe landings." — decomposed in `DECOMPOSED.md`. Files: `Portals/PortalCrossingService.cs`, `PortalCrossingRecords.cs`.
-- [ ] **Resume step 2:** "Add explicit address registration and discovery using the existing campaign coordinate/site owner. Preserve seeds and visited maps; provide an explicit legacy saved-endpoint repair path. No auto-conversion of active legacy missions." — decomposed in `DECOMPOSED.md`. Files: `Portals/RimroomsPortalNetwork.cs`, `PortalConnectionRecord.cs`, `Generation/DestinationService.cs`, `RimroomsDestinationMapParent.cs`, `Gate/PortalGateOpening.cs`.
-- [ ] **Resume step 3:** "Implement ordinary local threshold approach/crossing jobs and player controls without crew/manifests. Wire laboratory open/close/recovery and permanent natural links. Define the remaining emergency-return route without duplicate debits or teleporting stranded workers home." — decomposed in `DECOMPOSED.md`. Files: new JobDef/JobDriver/WorkGiver + gizmos, `1.6/Defs/JobDefs/`, `1.6/Languages/English/Keyed/RR_Portals.xml` (planned), `UI/`.
-- [ ] **Resume step 4:** "Implement saved work intents, quantity leases and native destination job revalidation; then physical hauling, construction, bills, research, medical/food/bed and other work/needs families. Preserve priorities, schedules, areas, locks, custody and actual inventory. A generic graph does not implement these adapters."
+- [x] **Resume step 1:** "Review the crossing service's documented permission, recovery and state boundaries before connecting callers. Finish unresolved constraints rather than weakening checks. Preserve original pawns/cargo and no-wipe landings." — CLOSED 2026-09-28, record `implementation/CONNECTED_CROSSING_CALLER_REVIEW.md`. Archived in `FINALIZED.md`.
+- [x] **Resume step 2:** "Add explicit address registration and discovery using the existing campaign coordinate/site owner. Preserve seeds and visited maps; provide an explicit legacy saved-endpoint repair path. No auto-conversion of active legacy missions." — CLOSED 2026-09-28 in 0.4.2-dev, record `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`. Archived in `FINALIZED.md`.
+- [x] **Resume step 3:** "Implement ordinary local threshold approach/crossing jobs and player controls without crew/manifests. Wire laboratory open/close/recovery and permanent natural links. Define the remaining emergency-return route without duplicate debits or teleporting stranded workers home." — CLOSED 2026-09-28 in 0.4.2-dev, record `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`. Archived in `FINALIZED.md`.
+- [~] **Resume step 4:** "Implement saved work intents, quantity leases and native destination job revalidation; then physical hauling, construction, bills, research, medical/food/bed and other work/needs families. Preserve priorities, schedules, areas, locks, custody and actual inventory. A generic graph does not implement these adapters."
 - [ ] **Resume step 5:** "Integrate exact optional work/storage providers and scenario openings, then procedural inhabitants, rare monstrosities, saved events and tech-driven complexity. Keep every wider master TODO feature in scope."
 - [ ] **Resume step 6:** "Continue source/build milestones. Runtime acceptance remains deferred until the owner launches through RimSort; no agent game launch or profile change." — each milestone: `./tools/build.ps1`, evidence folder under `implementation/evidence/<name>-<date>/`, build record, master TODO ticks, then cascade-publish per `PUBLISHING.md`.
 
 **Required implementation backlog (verbatim from `CONNECTED_COLONY_PORTALS.md`; the acceptance list the majors above must satisfy):**
 
-- [ ] Save a portal/endpoint graph independent of expedition records, with distinct laboratory and permanent-natural lifetimes. *(source present in 0.4.1-dev; no runtime registration yet)*
-- [ ] Implement bidirectional free pawn movement, persistent crossing receipts and stable return endpoints.
+- [x] Save a portal/endpoint graph independent of expedition records, with distinct laboratory and permanent-natural lifetimes. *(source complete in 0.4.2-dev: graph from 0.4.1-dev plus the address registration that actually creates edges; runtime acceptance open)*
+- [x] Implement bidirectional free pawn movement, persistent crossing receipts and stable return endpoints. *(source complete in 0.4.2-dev: `RR_CrossPortal` job + `PortalTravelService`; the step is directional per call and both directions are orderable; runtime acceptance open)*
 - [ ] Implement cross-map job discovery, destination targets, route costs and reservations; preserve native per-pawn schedules and restrictions.
 - [ ] Implement actual cross-portal hauling, construction ingredients, bills/production, research and care/needs access; list each supported native work route with source/acceptance evidence.
 - [ ] Reconcile jobs and original cargo on closure/reopen, blocked endpoints, death, save/load and interrupted crossing without duplicating consumption or objects.
@@ -63,8 +68,8 @@ Binding contract: [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md). 
 
 **Task-record subitems still open (verbatim from `implementation/CONNECTED_COLONY_IMPLEMENTATION_TASK.md`):**
 
-- [ ] Machine ownership adapter, natural discovery registration and player controls.
-- [ ] Same-pawn crossing, carried-object custody and interrupted-transfer recovery. *(isolated API landed; player/job integration open)*
+- [x] Machine ownership adapter, natural discovery registration and player controls. *(0.4.2-dev: laboratory + natural address registration, deterministic discovered-coordinate API, Operations portal pane with open/close/emergency/crossing/reconcile controls. The discovery **trigger** that finds a new natural threshold in play is owned by step 5 and tracked in `DEFERRED.md`.)*
+- [x] Same-pawn crossing, carried-object custody and interrupted-transfer recovery. *(0.4.2-dev: the crossing job and reconcile surface connect the 0.4.1 API; runtime acceptance open)*
 - [ ] Saved work intents, quantity leases and native destination job revalidation.
 - [ ] Work-specific hauling, construction, bill, research, medical and needs adapters.
 - [ ] Optional profile interfaces and native priority/schedule/restriction coverage.

@@ -14,15 +14,15 @@
 
 ## Overview
 
-This file has two halves. **Part A** (through Recommendations) is the **as-built** map of the repository at commit `8ed4e32` (0.4.1-dev, 2026-09-28): what exists in `src/`, what ships in the package, what the tools do, who owns which saved state. **Part B** (from "Design system map" onward) is the **whole-project architecture** condensed from the design contracts so a session does not have to re-read forty documents to know how the finished mod is shaped: feature IDs, campaign systems, save contracts, content-replacement state, the portal/work design and its pinned Core API facts, economy, multiplayer/DLC/profile model, and the acceptance infrastructure. The canonical contracts remain authoritative ([`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md), [`CAMPAIGN_STATE_DICTIONARY.md`](CAMPAIGN_STATE_DICTIONARY.md), [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md) and the reading order in [`AI_BUILD_HANDOFF.md`](AI_BUILD_HANDOFF.md)); when this file and those disagree about intent, they win; when they disagree about what the code currently does, Part A wins until someone proves it stale.
+This file has two halves. **Part A** (through Recommendations) is the **as-built** map of the repository at 0.4.2-dev (2026-09-28, branch `feature/connected-colony-portals`): what exists in `src/`, what ships in the package, what the tools do, who owns which saved state. **Part B** (from "Design system map" onward) is the **whole-project architecture** condensed from the design contracts so a session does not have to re-read forty documents to know how the finished mod is shaped: feature IDs, campaign systems, save contracts, content-replacement state, the portal/work design and its pinned Core API facts, economy, multiplayer/DLC/profile model, and the acceptance infrastructure. The canonical contracts remain authoritative ([`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md), [`CAMPAIGN_STATE_DICTIONARY.md`](CAMPAIGN_STATE_DICTIONARY.md), [`FEATURE_TRACEABILITY.md`](FEATURE_TRACEABILITY.md) and the reading order in [`AI_BUILD_HANDOFF.md`](AI_BUILD_HANDOFF.md)); when this file and those disagree about intent, they win; when they disagree about what the code currently does, Part A wins until someone proves it stale.
 
 Three facts shape everything below:
 
 1. **Core-only, no Harmony.** The assembly references `Assembly-CSharp.dll` and three Unity modules, nothing else. Every vanilla integration goes through XML `PatchOperation`s, Def-declared classes, RimWorld's automatic `GameComponent` / `MapComponent` discovery, or subclassing. `About.xml` declares no dependencies.
 2. **One save owner per concern, explicit integer schemas, refuse-on-unknown.** Nine components each carry their own `rr_*Schema` key. Mutating services check the schema and return a refusal instead of guessing. Migrations are forward-only and grant nothing.
-3. **The connected-colony portal layer is an API substrate with no callers.** Graph, route search, laboratory session ownership and the same-pawn crossing service compiled in 0.4.1-dev, but nothing registers an edge, nothing crosses, and the live expedition path still uses the older gate opening. That is the first thing the next session has to change, and it is documented as such in [`implementation/CONNECTED_COLONY_CHECKPOINT.md`](implementation/CONNECTED_COLONY_CHECKPOINT.md).
+3. **The connected-colony portal layer became reachable in 0.4.2-dev.** The 0.4.1-dev substrate (graph, route search, laboratory session ownership, same-pawn crossing service) gained its first callers: derived address registration, an explicit legacy threshold repair, the `RR_CrossPortal` job, and an Operations pane with open, close, emergency-return, crossing and reconcile controls. Cross-map **work** — hauling, construction ingredients, bills, research, needs — is still not implemented; that is resume step 4, owned and tracked in [`DEFERRED.md`](DEFERRED.md). The legacy expedition dispatch path is untouched and still owns its own runs.
 
-Compilation status: zero warnings/errors, warnings treated as errors, .NET SDK 9.0.308, Release/net472. No in-game run of any Rimrooms build has ever been recorded; every runtime claim in this repo is pending owner-launched acceptance.
+Compilation status at 0.4.2-dev: zero warnings/errors, warnings treated as errors, .NET SDK 9.0.308, Release/net472, 78 C# source files, 73 approved package files. No in-game run of any Rimrooms build has ever been recorded; every runtime claim in this repo is pending owner-launched acceptance.
 
 ---
 
@@ -61,9 +61,9 @@ Backrooms/
 ├── outputs/                       planning workbooks (economy, 294-mod register)
 ├── src/
 │   ├── RimroomsAsyncIndustries.sln
-│   └── RimroomsAsyncIndustries/   one project, one namespace per folder (15 folders, 75 files)
+│   └── RimroomsAsyncIndustries/   one project, one namespace per folder (15 folders, 78 files)
 ├── tools/                         build.ps1, stage-mod.ps1, BuildCommon.ps1, render-preview.ps1,
-│   ├── package-files.json         the 71-entry package allowlist (ground truth for what ships)
+│   ├── package-files.json         the 73-entry package allowlist (ground truth for what ships)
 │   ├── assets/                    audio cue renderer (historical)
 │   ├── qa/                        rimbridge_readonly.py (owner-operated, attach-only)
 │   └── research/                  audit-gate0.py, audit-pinned-targets.ps1, metadata audit
@@ -72,9 +72,9 @@ Backrooms/
     ├── LoadFolders.xml
     └── 1.6/
         ├── Assemblies/RimroomsAsyncIndustries.dll   (built, gitignored)
-        ├── Defs/                  26 XML files (see Package Contents)
+        ├── Defs/                  27 XML files (see Package Contents)
         ├── Patches/               2 guarded PatchOperations
-        ├── Languages/English/     Keyed/ (18) + DefInjected/ (6)
+        ├── Languages/English/     Keyed/ (19) + DefInjected/ (6)
         └── Textures/              16 PNGs (14 historical gameplay sprites + 2 menu backgrounds)
 ```
 
@@ -94,9 +94,9 @@ Backrooms/
 | `.../Facilities/` | Transient (never saved) HQ building/room/power/bed observation report; `RimroomsFacilityCategoryDef` is presentation-only |
 | `.../Scenario/` | `ScenPart_RimroomsStart` / `ScenPart_RimroomsArrival`, `RimroomsStartDef` plan holders, startup receipt component (schema 1), HQ map component + GenSteps, company setup and staff configuration pages |
 | `.../Threats/` | `FirstSliceSiteComponent` (per-site encounter/route bookkeeping, deployment-item recovery), `Thing_QuietPursuer` entity |
-| `.../Portals/` | **Connected-colony substrate:** `RimroomsPortalNetwork` (saved graph, availability, resumable search), `PortalRouteSearch`, `RimroomsPortalCrossingService` (same-pawn/cargo crossing + recovery receipts, max 256 pending), records |
+| `.../Portals/` | **Connected colony:** `RimroomsPortalNetwork` (saved graph, availability, resumable search), `PortalRouteSearch`, `RimroomsPortalCrossingService` (same-pawn/cargo crossing + recovery receipts, max 256 pending), records, plus `PortalAddressService` (derived address ids, laboratory and natural registration, legacy threshold repair) and `PortalTravelService` with `JobDriver_CrossPortal` (crossing orders, session close, emergency return, reconcile) |
 | `.../Presentation/` | `[StaticConstructorOnStartup]` menu bootstrap, title-screen controller, crossfading Backrooms background slideshow (`UI_BackgroundMain` subclass), cosmetic portal aura |
-| `.../UI/` | `MainTabWindow_Operations` split into ten partial files by tab (company, personnel, procurement, facilities, dispatch/expedition/manifest/machine, evidence, evidence recovery, native gate binding, laboratory binding); four dialogs. Pure sink: reads services, surfaces `CompanyActionResult` |
+| `.../UI/` | `MainTabWindow_Operations` split into eleven partial files by tab (the eleventh is the portal network pane) (company, personnel, procurement, facilities, dispatch/expedition/manifest/machine, evidence, evidence recovery, native gate binding, laboratory binding); four dialogs. Pure sink: reads services, surfaces `CompanyActionResult` |
 | `Mod/.../1.6/Defs/` | Scenario, starts, gate/fixture/equipment/site things, jobs, work givers, recipes, project, catalog, hiring policy, facility categories, terrain, map generators, world object, main button |
 | `Mod/.../1.6/Patches/` | Adds dormant `CompProperties_RimroomsGate{Console}` to Core `Door`/`Autodoor`/`CommsConsole`/`TableMachining`; adds `CompProperties_RouteEvidence` to Core `TextBook` |
 | `tools/` | Build/stage/preview scripts; read-only research and QA tools that never launch the game |
@@ -269,8 +269,8 @@ Portals → Company, Gate, Generation               (near-leaf; only Gate reache
 
 ### Critical (Fix ASAP)
 
-- **Portal substrate has no callers** (registration, search, crossing, portal opening). Until resume steps 2–3 land, the owner's connected-colony requirement is unimplemented in play even though it compiles.
-- **No player-facing text for portal failure keys.** The crossing service returns keyed failures with no `Keyed/` entries yet.
+- **Cross-map work is not implemented.** Addresses and crossing exist; hauling, construction ingredients, bills, research and care across an open portal do not. Until resume step 4 lands, the owner's "one connected colony" requirement is only half true. Sequence and owner: `DEFERRED.md`.
+- **Natural-portal discovery has no trigger.** Registration and the deterministic coordinate API exist, but nothing in play discovers a natural threshold yet (resume step 5).
 
 ### Important (Plan to Fix)
 
@@ -322,7 +322,7 @@ Portals → Company, Gate, Generation               (near-leaf; only Gate reache
 
 ## Recommendations
 
-1. **Wire the portal substrate in the checkpoint's order** (review crossing boundaries → address registration + legacy endpoint repair → crossing jobs + player controls → work intents/leases + adapters). Each step is a minor task in `TODO.md`; the first is decomposed in `DECOMPOSED.md`. Do not skip to adapters: a job that targets a remote map without a registered edge has nothing to validate against.
+1. **Continue the checkpoint's order at step 4** (work intents and quantity leases, destination job revalidation, then the adapter families one at a time with source evidence per route). Steps 1 to 3 are closed; `DEFERRED.md` names the owner of every remaining piece. Superseded guidance follows for the trail: wire the portal substrate in the checkpoint's order (review crossing boundaries → address registration + legacy endpoint repair → crossing jobs + player controls → work intents/leases + adapters). Each step is a minor task in `TODO.md`; the first is decomposed in `DECOMPOSED.md`. Do not skip to adapters: a job that targets a remote map without a registered edge has nothing to validate against.
 2. **Add `Keyed/RR_Portals.xml` with the first crossing job**, so failure keys become player text the moment they can be reached.
 3. **Split `RimroomsProcurementComponent` into partials** (quotes / orders / delivery / receipts) before the next procurement feature; keep the single owner.
 4. **Keep the content-version gate honest.** When registering endpoints for versions 0–3 sites, provide the explicit repair route the checkpoint asks for; never retarget a saved edge to a new door.
@@ -357,9 +357,9 @@ Condensed 2026-09-28 from the canonical contracts. Status vocabulary: **Source**
 | RR-SCEN | Three starts on shared systems | Async Industries **Build**; Store/Lone Survivor **Design** | Native-pawn preservation, chosen tile honored, inside start (2 owner answers pending) |
 | RR-FAC | Facility build/operate | HQ observations **Build**; laboratory bench **Build** | Functional room roles, security/containment, outposts, provider adapters |
 | RR-STA | Hire/train/equip/recover staff | Native applicants + roles + payroll **Build** | Training, certification, field history, wellbeing, specialist sources |
-| RR-GATE | Machine gate lifecycle | Legacy gate + native binding **Build**; portal session **Substrate** | Portal callers, upgrades (aperture/duration/recall), legacy migration |
+| RR-GATE | Machine gate lifecycle | Legacy gate, native binding, portal session, addresses and crossing controls **Build** (0.4.2-dev) | Upgrades (aperture, duration, recall), legacy gate migration |
 | RR-EXP | Plan/explore/extract | Dispatch/recall/relief/closure/cargo **Build** | Ordinary crossing without manifests; expedition as optional mission UI |
-| RR-SPACE | Finite seeded room graphs | 6–8 room v4 sites **Build**; graph+search **Substrate** | Room library, bands 8–48, propagation, non-Euclidean effects, archival, streaming |
+| RR-SPACE | Finite seeded room graphs | 6–8 room v4 sites, graph, search, addresses, legacy repair **Build** (0.4.2-dev) | Room library, bands 8–48, propagation, non-Euclidean effects, archival, streaming |
 | RR-EVD | Evidence lifecycle | TextBook custody, analysis, settlement, Gate Telemetry **Build** | Other evidence types, custody breadth, dossier transfer |
 | RR-THREAT | Entities/anomalies | Borrowed Corridor + Quiet Pursuer **Build** | Family-level sheets; presentation via existing pawns (content reuse) |
 | RR-MSN | Mission families | Onboarding survey **Build** | 12 further families, seeded variation |
@@ -411,6 +411,8 @@ Condensed 2026-09-28 from the canonical contracts. Status vocabulary: **Source**
 | `CompRimroomsGate` native binding | native 1 (appended) | designated door/console/battery/bench refs, entry side, bound door position/rotation, `nativeLastProcessedTick`, observed energy, debit faults (history 32) | Load never creates a provider, restores energy or pays; same-tick duplicate payment blocked |
 | `CompRimroomsGate` portal session | appended | `rr_gatePortalConnectionId`, `rr_gatePortalOpeningId`, sequence, `PortalOpeningRecoveryReceipt` list | Post-load owner validation faults on dual legacy+portal ownership; emergency sessions cannot be closed to bypass recovery cost |
 | `RimroomsPortalNetwork` / `PortalConnectionRecord` | 1 | `rr_portalNetworkSchema`, `rr_portalConnections`; edge id/branch/coordinate/kind/endpoints/openingId | Old saves load empty; malformed IDs disable the graph but keep evidence; natural kind never consults timers |
+| `RimroomsDestinationMapParent` threshold repair | content version | `rr_thresholdRepairReceipt` (additive, 0.4.2-dev) | At most one legacy threshold repair per site; a replay is refused as already recorded |
+| `JobDriver_CrossPortal` | (job-scoped) | `rr_portalCrossingOperation` (additive, 0.4.2-dev) | Keeps one crossing idempotent across save and reload |
 | `RimroomsPortalCrossingService` | — | receipts (operation id, sequence, endpoints, pawn, carried thing, phase, failure), deep holder | Max 256 unresolved; receipts retained; recovery only to saved endpoint cells |
 | `RimroomsDestinationMapParent` / `CoordinateRecord` | content 4 | `rr_contentVersion`, coordinate id/seed/generator/room-library versions, status, layout receipt, anchors | Visited maps never rebuilt or retargeted; `AI-01` = `<branch>:coordinate:000001` |
 | `RimroomsLaboratoryComponent` | 1 | bench ref + load ID + provider | Starts unbound; missing provider blocks work, never substitutes |

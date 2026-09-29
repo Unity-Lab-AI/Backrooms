@@ -12,6 +12,12 @@ namespace RimroomsAsyncIndustries.Generation
     /// </summary>
     public sealed class RimroomsDestinationMapParent : MapParent
     {
+        /// <summary>
+        /// The first generated-content version whose return threshold is an actual
+        /// Core door. Sites below it keep their historical anchor until repaired.
+        /// </summary>
+        public const int DoorThresholdContentVersion = 4;
+
         private string coordinateId;
         private int generatorVersion;
         private int roomLibraryVersion;
@@ -27,6 +33,7 @@ namespace RimroomsAsyncIndustries.Generation
         private int plannerVersion;
         private int candidateIndex = -1;
         private int contentVersion;
+        private string thresholdRepairReceipt;
 
         public string CoordinateId { get { return coordinateId; } }
         public int GeneratorVersion { get { return generatorVersion; } }
@@ -43,6 +50,37 @@ namespace RimroomsAsyncIndustries.Generation
         public int CandidateIndex { get { return candidateIndex; } }
         public bool UsedSafeFallback { get { return plannerVersion > 0 && candidateIndex == RoomLayoutPlanner.FallbackCandidate; } }
         public int ContentVersion { get { return contentVersion; } }
+        public string ThresholdRepairReceipt { get { return thresholdRepairReceipt; } }
+
+        /// <summary>
+        /// A historical site whose return threshold is not an actual door cannot hold
+        /// a portal endpoint. The repair replaces that one object; it never rebuilds
+        /// the map, rerolls the graph or moves the saved return cell.
+        /// </summary>
+        public bool NeedsThresholdRepair
+        {
+            get
+            {
+                return layoutReady && contentVersion < DoorThresholdContentVersion &&
+                    !(returnAnchor is RimWorld.Building_Door);
+            }
+        }
+
+        internal bool TryRepairReturnThreshold(Thing replacement, string operationId)
+        {
+            if (!layoutReady || string.IsNullOrWhiteSpace(operationId) ||
+                contentVersion >= DoorThresholdContentVersion) { return false; }
+            if (!string.IsNullOrEmpty(thresholdRepairReceipt)) { return thresholdRepairReceipt == operationId; }
+            if (!(replacement is RimWorld.Building_Door) || replacement.Destroyed || !replacement.Spawned ||
+                replacement.def == null || replacement.def.defName != "Door" || !HasMap || replacement.Map != Map ||
+                !returnCell.IsValid || !returnCell.InBounds(Map) || !returnCell.Standable(Map) ||
+                !returnCell.AdjacentToCardinal(replacement.Position)) { return false; }
+            returnAnchor = replacement;
+            contentVersion = DoorThresholdContentVersion;
+            thresholdRepairReceipt = operationId;
+            generationFailureKey = null;
+            return true;
+        }
 
         public override AcceptanceReport CanBeSettled { get { return false; } }
         public override bool GravShipCanLandOn { get { return false; } }
@@ -137,6 +175,8 @@ namespace RimroomsAsyncIndustries.Generation
             Scribe_Values.Look(ref plannerVersion, "rr_plannerVersion");
             Scribe_Values.Look(ref candidateIndex, "rr_candidateIndex", -1);
             Scribe_Values.Look(ref contentVersion, "rr_contentVersion");
+            // Additive: absent on saves that never needed a threshold repair.
+            Scribe_Values.Look(ref thresholdRepairReceipt, "rr_thresholdRepairReceipt");
         }
     }
 }

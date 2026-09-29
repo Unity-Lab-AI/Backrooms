@@ -12,6 +12,8 @@ namespace RimroomsAsyncIndustries.Company
     public sealed partial class RimroomsCampaignComponent : GameComponent
     {
         public const int CurrentSchemaVersion = 2;
+        // Bounded record growth. Visited coordinates are never removed to make room.
+        internal const int MaximumCoordinates = 512;
         private int schemaVersion = CurrentSchemaVersion;
         private string branchId;
         private string scenarioId;
