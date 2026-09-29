@@ -2094,3 +2094,46 @@ Source files created: 1. Source files modified: 3. Docs updated: 4 (1 new).
 Owner directions captured verbatim: 2.
 Long-open design questions closed by the owner: 1 — what the escalation ladder paces against, open since 2026-09-28.
 Still open and named in `TODO.md`, not deferred: the inhabitant and monstrosity families, since the ladder now says how many things may act and at what band but **nothing acts yet**; raising a cap as a recorded progression step; a player-facing readout of a coordinate's band; and anomalous events as distinct from anomalous rooms.
+
+---
+
+## 2026-09-29 — The place starts copying you (0.8.1-dev)
+
+### Verbatim owner requests
+
+> *"and we need a dynamic procederually gernation of BAckrroms so that new equipement and rooms and shit going into the backrooms and build there or in the real world can start appearing in lower levels of back rooms seeds"*
+
+> *"alla trhings are possible finding random pawns of disappering, findeding dead ones pasycholitc ones lost pawns all kinds of crazy variations as per the lore"*
+
+### What was built
+
+- [x] **Deep coordinates now draw furniture from what the branch has actually built.** Until now they drew from the whole def database — broad, but impersonal. This is the feeling the setting runs on: a Backrooms space reads as wrong because it is *almost* somewhere real, and **nothing is more almost-real to a player than a copy of their own colony.** It also means the generator gets more interesting the longer a save runs, with no new content authored for it.
+- [x] **Sampled, never hooked.** A rotating window of one map's cells on an interval — the same bounded-scan rule the work layer uses: fixed cost however large the colony grows, and no region starved, because the cursor advances whether or not anything was found. That also makes it free to be correct about *where* something was built, which is the owner's *"build there or in the real world"*.
+
+### Three rules that stop it degenerating
+
+- [x] **Generated fixtures excluded**, tested by faction ownership. Without it the place would echo its own furniture back at itself and **every deep coordinate would converge on the same room**.
+- [x] **Structure excluded.** Echoing a wall or door would put one in the middle of a generated room — changing the layout rather than dressing it, the same rule the archetype placer holds.
+- [x] **Only 40% of slots echo.** The place copying you is unsettling **because the rest of the room is still strange**. If every fixture were player-built, a deep coordinate would read as a badly laid-out copy of their colony and the effect would collapse into a joke.
+
+### Bounded, forgetful, deterministic
+
+- [x] Capped at 96 definitions, dropping the **least recently seen** — a branch that stops building a thing stops seeing it echoed back, and a register that only grew would make a long save carry an ever-lengthening list forever.
+- [x] **Sorted ordinally on read.** Unsorted it would follow sampling order, which differs between machines, and **the same seed would produce different rooms**.
+- [x] **Starts at depth 3, deliberately not 2.** The first couple of spaces should still feel like somewhere that existed before the player did; the place copying you is something to **discover by pushing in**, not something that greets you. A young branch still gets fully dressed deep rooms, because the echo falls through to the ordinary pool.
+
+### A reading stated rather than buried
+
+- [x] *"lower levels"* is implemented as **deeper**. In Backrooms lore a lower *number* is usually shallower, so it is genuinely ambiguous — but the owner has consistently said *"further in"* for depth, and the mechanic is far stronger as a progression reveal. **Flipping it is a one-constant change**, which is why it is called out rather than assumed settled.
+
+### Build evidence
+
+0.8.1-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **142** C# source files (one new), **86** approved package files (unchanged). Assembly SHA-256 `8614901316F1935047963BC054CE0F87FCB630FFF40E0959097913956FA89675`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass. **No new def of any kind, no asset, no patch operation, no new work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Source files modified: 2. Docs updated: 4 (1 new).
+Owner directions captured verbatim: 2, the second of which is the next checkpoint's whole scope.
+Degenerate outcomes designed out before shipping: 3 — the place echoing its own furniture, structure being echoed into room interiors, and a full echo collapsing the effect into a joke.
+Ambiguous readings surfaced rather than assumed: 1 — *"lower levels"* as deeper.
+Still open and named in `TODO.md`, not deferred: echoed **rooms** as distinct from echoed fixtures; and the whole pawn direction — random pawns, ones who disappeared, dead ones, psychotic ones, lost ones — every variation held to the frozen threat rules and to the traversal invariant that an inhabitant may never decide anything about a gate.

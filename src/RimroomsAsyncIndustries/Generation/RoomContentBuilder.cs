@@ -160,7 +160,7 @@ namespace RimroomsAsyncIndustries.Generation
             {
                 RoomFurnitureSlot slot = archetype.slots[index];
                 if (!RoomArchetypeService.SlotAppears(slot, seed, index)) { continue; }
-                ThingDef definition = RoomArchetypeService.Resolve(slot, seed, index);
+                ThingDef definition = RoomArchetypeService.Resolve(slot, seed, index, depth);
                 if (definition == null) { continue; }
 
                 int wanted = RoomArchetypeService.SlotCount(slot, seed, index);

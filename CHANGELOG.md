@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.8.1-dev - 2026-09-29 - the place starts copying you
+
+- **Push far enough into the Backrooms and the rooms start containing things you built.** Your benches, your beds, your machines - arranged by something that has clearly seen them.
+- It counts what you build anywhere: in the colony, or inside a coordinate.
+- **It does not copy its own furniture**, so deep spaces do not slowly all turn into the same room.
+- **It only copies some of it.** The rest of the room stays strange, which is the whole point.
+- Only spaces three or more portals in do this. The first couple still feel like somewhere that existed before you did.
+- It forgets. Stop building something and it eventually stops appearing down there.
+- A brand-new colony that has built almost nothing still gets fully furnished deep rooms.
+
+Full record: [the construction echo](docs/implementation/CONSTRUCTION_ECHO_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.8.0-dev - 2026-09-29 - the Backrooms paces against what you have built
 
 - **How dangerous a space becomes is now paced against your colony's wealth**, the same measure the game's own storyteller uses.

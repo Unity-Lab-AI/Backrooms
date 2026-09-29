@@ -82,18 +82,54 @@ namespace RimroomsAsyncIndustries.Generation
         }
 
         /// <summary>
+        /// How often a slot in a deep coordinate is answered from the branch's own
+        /// construction register rather than from the whole def database.
+        ///
+        /// Deliberately not all of them. The place copying you is unsettling **because the rest
+        /// of the room is still strange** — if every fixture were something the player built,
+        /// a deep coordinate would just read as a badly laid-out copy of their colony, and the
+        /// effect would collapse into a joke.
+        /// </summary>
+        private const int EchoPercent = 40;
+
+        /// <summary>
         /// Resolves one slot to a definition, or null when nothing in the loaded game answers it.
         /// A slot that cannot be filled is skipped rather than substituted: putting a bed in a
         /// room that asked for a workbench is worse than an emptier room.
+        ///
+        /// **In a deep coordinate some slots are answered from what the branch has actually
+        /// built** — the owner's *"new equipement and rooms and shit going into the backrooms
+        /// and build there or in the real world can start appearing in lower levels"*. The echo
+        /// is tried first and falls straight through to the ordinary pool when the register
+        /// holds nothing that fits the slot, so a young branch that has built almost nothing
+        /// still gets fully dressed rooms.
         /// </summary>
-        public static ThingDef Resolve(RoomFurnitureSlot slot, int seed, int index)
+        public static ThingDef Resolve(RoomFurnitureSlot slot, int seed, int index, int depth)
         {
             if (slot == null) { return null; }
+
+            if (depth >= ConstructionEchoComponent.EchoFromDepth)
+            {
+                int roll = Gen.HashCombineInt(seed, index * 131 + 0x4543);
+                if (roll < 0) { roll = ~roll; }
+                if (roll % 100 < EchoPercent)
+                {
+                    ConstructionEchoComponent echo = ConstructionEchoComponent.Current;
+                    ThingDef mirrored = echo == null ? null
+                        : echo.Draw(candidate => Placeable(candidate)
+                            && (slot.kind == RoomSlotKind.Explicit
+                                || slot.kind == RoomSlotKind.CategoryMember
+                                || Matches(slot.kind, candidate)),
+                            seed + index);
+                    if (mirrored != null) { return mirrored; }
+                }
+            }
+
             List<ThingDef> candidates = Candidates(slot);
             if (candidates == null || candidates.Count == 0) { return null; }
-            int roll = Gen.HashCombineInt(seed, index * 31 + (int)slot.kind);
-            if (roll < 0) { roll = ~roll; }
-            return candidates[roll % candidates.Count];
+            int pick = Gen.HashCombineInt(seed, index * 31 + (int)slot.kind);
+            if (pick < 0) { pick = ~pick; }
+            return candidates[pick % candidates.Count];
         }
 
         /// <summary>Whether a slot appears in this particular room.</summary>
