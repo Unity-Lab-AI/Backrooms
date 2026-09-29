@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Portals;
@@ -167,12 +167,36 @@ namespace RimroomsAsyncIndustries.Gate
             float required = GateProps.dialSpinUpWorkRequired * GateCellCount;
             float floor = required * GateProps.dialSpinUpFloorFraction;
             int prior = PriorConnectionsTo(coordinateId);
+            float familiarity = SpinUpFamiliarityFactor;
             for (int step = 0; step < prior; step++)
             {
-                required *= GateProps.dialSpinUpFamiliarityFactor;
+                required *= familiarity;
                 if (required <= floor) { return floor; }
             }
             return Mathf.Max(floor, required);
+        }
+
+        /// <summary>
+        /// How much cheaper each previous connection to an address makes the next one.
+        ///
+        /// **RR_Cap_KnownAddress** (Spatial mapping and topology, tier 2) deepens it from
+        /// 0.85 to 0.6 by default -- a known address dials markedly faster once the branch is
+        /// keeping a real record of what it took last time.
+        ///
+        /// This is the tier 2 band stated literally: *"revisit known coordinates"*. It changes
+        /// nothing about a first visit, which is the point. **The floor is untouched**, so a
+        /// well-worn route is quick and still never free.
+        /// </summary>
+        private float SpinUpFamiliarityFactor
+        {
+            get
+            {
+                float factor = GateProps.dialSpinUpFamiliarityFactor;
+                RimroomsCampaignComponent familiarityCampaign = NativeCampaign;
+                if (familiarityCampaign != null && familiarityCampaign.HasCapability("RR_Cap_KnownAddress"))
+                { factor *= 0.7f; }
+                return Mathf.Clamp(factor, 0.1f, 1f);
+            }
         }
 
         /// <summary>
@@ -300,7 +324,16 @@ namespace RimroomsAsyncIndustries.Gate
                 // Tied to the rate this ramp was actually climbing at, so it is always slower
                 // than the crew that built it. A flat rate here would bleed a low-skill
                 // operator's ramp faster than they could raise it.
-                spinUpWorkDone -= spinUpObservedRate * GateProps.dialSpinUpDecayFraction;
+                // **RR_Cap_ReliefWatch** (Fieldcraft and medicine, tier 2) cuts what an
+                // unattended ramp bleeds to a quarter. A branch that has drilled relief at the
+                // console does not lose the shift's work because one operator was called away,
+                // which is the most preventable failure this mod has. It never reaches zero:
+                // an abandoned ramp still lapses, it just stops being punishing.
+                float decay = GateProps.dialSpinUpDecayFraction;
+                RimroomsCampaignComponent decayCampaign = NativeCampaign;
+                if (decayCampaign != null && decayCampaign.HasCapability("RR_Cap_ReliefWatch"))
+                { decay *= 0.25f; }
+                spinUpWorkDone -= spinUpObservedRate * decay;
                 spinUpHeldAtFull = false;
                 if (spinUpWorkDone <= 0f)
                 {

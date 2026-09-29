@@ -230,7 +230,7 @@ namespace RimroomsAsyncIndustries.Procurement
             int now = Find.TickManager.TicksGame;
             int dispatchTick;
             int arrivalTick;
-            if (!TryAddTicks(now, catalog.dispatchDelayTicks, out dispatchTick) ||
+            if (!TryAddTicks(now, DispatchDelayTicksFor(catalog), out dispatchTick) ||
                 !TryAddTicks(now, LeadTimeTicksFor(catalog), out arrivalTick))
             { return CompanyActionResult.Refused("RR_Proc_TimeOverflow"); }
             if (nextOrderSequence == long.MaxValue) { return CompanyActionResult.Refused("RR_Proc_OrderLimit"); }
@@ -1120,7 +1120,35 @@ namespace RimroomsAsyncIndustries.Procurement
             if (relayCampaign != null && relayCampaign.HasCapability("RR_Cap_Relays"))
             { lead -= lead / 4; }
             // Never shorter than the dispatch delay: a shipment cannot arrive before it leaves.
-            return Math.Max(lead, catalog.dispatchDelayTicks + 1);
+            // Measured against the EFFECTIVE delay, so a branch holding Forward Dispatch gets
+            // the benefit of Relays instead of being held at the old floor by a shipment that
+            // now leaves sooner. Reading the raw prop here is what would have made Relays stop
+            // biting for exactly the branches that invested in both.
+            return Math.Max(lead, DispatchDelayTicksFor(catalog) + 1);
+        }
+
+        /// <summary>
+        /// How long a shipment waits before it leaves the supplier at all.
+        ///
+        /// **RR_Cap_ForwardDispatch** (Communications and logistics, tier 2) halves it. A branch
+        /// with standing arrangements is not queued behind somebody else's paperwork every time
+        /// it orders the same thing again -- which is the tier 2 band exactly: the repeat order
+        /// is the one that gets faster.
+        ///
+        /// **This shortens a delay, never a deadline** (`docs/CAMPAIGN_CHART.md` #1.1). Nothing
+        /// is asked of the player while a shipment is in transit and nothing fails when it
+        /// lands. Never below one tick, because a dispatch that has not happened yet is what
+        /// every downstream comparison is written against.
+        /// </summary>
+        private int DispatchDelayTicksFor(RimroomsProcurementCatalogDef catalog)
+        {
+            int delay = catalog.dispatchDelayTicks;
+            if (delay <= 0) { return delay; }
+            RimroomsCampaignComponent dispatchCampaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (dispatchCampaign != null && dispatchCampaign.HasCapability("RR_Cap_ForwardDispatch"))
+            { delay -= delay / 2; }
+            return Math.Max(1, delay);
         }
 
         private CompanyActionResult CreateHeldCargo(ProcurementOrderRecord order, ThingDef itemDef)

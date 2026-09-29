@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.11.5-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.11.6-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **162 C# files, 85 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `3309AD3036C91C5159C91A7998C4486ECBC04E5B5F187A67B44980028E12A682`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `018417AEA123B3894A44F9007535ACED27AC6FE09E972DFAFC3E29F427ADA71A`, reproduced by two clean recompiles |
 | Checkers | **eight**, all passing |
 | Proofs | **four** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.11.5
+## What shipped this session, 0.7.1 → 0.11.6
 
 | Version | What |
 |---|---|
@@ -78,6 +78,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.11.3 | **Seven ways into the tree** — research tier 0 across seven branches, each granting a capability real code honours |
 | 0.11.4 | **The second rung of every branch** — research tier 1; two vestigial power props found and retired |
 | 0.11.5 | **A designated gate is a machine that is on** — three unused props restored, two wired. **Reversed 0.11.4’s retirements.** |
+| 0.11.6 | **The second time you do a thing should be cheaper** — research tier 2; three planned unlocks deleted for changing nothing observable |
 
 ---
 
@@ -86,43 +87,45 @@ Chain checkpoints. Do not finish one and wait.
 The order is the one `docs/CAMPAIGN_CHART.md` §7 authorises. **Read the chart before starting
 anything in this list** — it is the authority, and steps 1–5 of its build order are done.
 
-1. **Research tier 2** — *"Repeatable operations: revisit known coordinates and reduce preventable
-   failures."* Seven projects, one per branch, each requiring its tier 1 sibling **and a distortion
-   log**, because this band is about things having gone wrong. **Seven live knobs are already
-   identified and none of them needs inventing:**
-   - Facilities → `stablePowerTicksRequired` (how long power must be stable before opening)
-   - Fieldcraft → `dialSpinUpDecayFraction` (progress lost when the operator steps away)
-   - Measurement → `calibrationWorkRequired`
-   - Spatial → `dialSpinUpFamiliarityFactor` (a known address dials faster)
-   - Entities → incursion requires `PortalWindowTier >= 2` instead of `>= 1` — containment
-     meaning something, at an existing read site in `PortalTraversalPolicy`
-   - Logistics → `MaximumOpenOrders`
-   - Commerce → catalogue `maxOrderQuantity`
-2. **The clean-up team — *"so that facilities never die"*.** The state it keys on **already
+1. **The clean-up team — *"so that facilities never die"*.** The state it keys on **already
    exists**: `campaign.CorporationContact`, one-way, set from `beginsInCorporationContact`. Async
    Industries begins true; the Store and Solo/Group begin false and must earn it. On collapse the
    corporation sends a team with all-access passes, clears every hostile, requisitions a fresh
    basic team and drops supplies. **A no-fail floor, chosen deliberately by the owner.**
+
+   **Owner decision at the storyteller fork, 2026-09-29, verbatim: *"Both - guaranteed floor,
+   storyteller flavour"*.** So this is built twice over:
+   - **The rescue fires from our own `GameComponent`, deterministically.** A promise that says
+     *"facilities never die"* must never be at the mercy of a dice roll.
+   - **Lighter world-facing events register as `IncidentDef`s with our own `IncidentWorker`s**, so
+     the player's chosen storyteller paces them. **This mod currently has zero `IncidentDef`s**,
+     which means no storyteller knows it exists. It is also the right home for arc 6,
+     *"respond to openings in settlements"*.
+   - **No custom `StorytellerDef`, ever.** It is an exclusive slot the player would have to give
+     up Cassandra or Randy for, it needs portrait art the no-new-art rule forbids, and there is no
+     intelligence in one to borrow — a `StorytellerComp` rolls a mean-time-between against wealth
+     and population. The part that feels like a director is `IncidentWorker.CanFireNowSub`, and
+     that is ours without owning the slot.
+2. **Research tiers 3–4** — remote and deep operations.
 3. **The Store and Solo/Group starts.** Each *"needs special treatment in theri layout and
    starts"*, a different point of view on the same world, and **neither begins in contact**.
-4. **Research tiers 3–4** — remote and deep operations.
-5. **Generated requests after the hinge**, from branch state, coordinate history and capability.
+4. **Generated requests after the hinge**, from branch state, coordinate history and capability.
    Route selection for a generated request is an **open owner question** (chart §6).
-6. **Arcs 5–8** — remote sites, the outside world, industrial reach, deeper systems.
-7. **Still unbuilt from the prep material** — *"contradictory accounts"* from a returning crew;
+5. **Arcs 5–8** — remote sites, the outside world, industrial reach, deeper systems.
+6. **Still unbuilt from the prep material** — *"contradictory accounts"* from a returning crew;
    staff **prior exposure**; *"respond to openings in settlements"*.
-8. **The adjacent-door-run fallback** — 1×3 and 2×3 by binding one gate across a run of adjacent
+7. **The adjacent-door-run fallback** — 1×3 and 2×3 by binding one gate across a run of adjacent
    1×1 Core doors, for players without Doors Expanded.
-9. **`RR_QuietPursuer` presentation** and the five `RR_*Staff` PawnKinds — the last existing-content
+8. **`RR_QuietPursuer` presentation** and the five `RR_*Staff` PawnKinds — the last existing-content
    replacements.
-10. **The player-facing how-to.** Written **once**, for both the repo and the site.
-11. **Public release** — site, Workshop page, collection. [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md).
+9. **The player-facing how-to.** Written **once**, for both the repo and the site.
+10. **Public release** — site, Workshop page, collection. [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md).
     **Correctly last.**
-12. **Continue the register retro sweep.** Swept: animals, security, spatial construction,
+11. **Continue the register retro sweep.** Swept: animals, security, spatial construction,
     expedition logistics, interface, facilities, furniture, storage, power, contracts, faction
     standing, subject casework, evidence, policies. Not yet: medical, world operations, cargo,
     hospitality, materials, visitor economy, staff psychology.
-13. Reconcile 0.5.0–0.7.1 into the master backlog; fix the register's `disposition_stance()`
+12. Reconcile 0.5.0–0.7.1 into the master backlog; fix the register's `disposition_stance()`
     negation bug; the unknown-def-field checker, **written, proved broken and removed rather than
     shipped**.
 
@@ -276,6 +279,9 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 133. **A cost must not become a trap.** Idle draw stops above the emergency-return reserve. A flat battery is a cost a player can see; a crew that cannot be recovered is not, and nothing would have warned them.
 134. **When two readings of a value are both defensible, ask.** `reserveChargePowerWatts` is restored and deliberately **not** wired: the reserve is a Core battery RimWorld already charges, so the phrase either duplicates Core or means something else. Guessing would invent a mechanic.
 135. **A reversed dated record is annotated, never rewritten.** The 0.11.4 archive opens with a note that the decision was reversed and its body is untouched.
+136. **A live read site is not a live effect.** Three tier 2 unlocks were deleted before being written because the knobs they moved were a one-second wait, a cap of 100 orders and a quantity limit already set to a million. **All three would have passed `proof-research-branches.py`**, because the capability would have been read by real code. Open the file, find the value, and ask what a player would observe.
+137. **A number displayed and a number spent must come from one place.** Idle draw is read by the gate’s readout and by the tick that drains the reserve; research applied to one and not the other would make the readout lie, silently, because nothing compares them.
+138. **Check that a new tier does not switch off the tier below it.** Forward Dispatch halves the dispatch delay, and the lead-time clamp had to be moved onto the effective value or Relays would have stopped biting for exactly the branches holding both.
 
 ---
 

@@ -250,11 +250,55 @@ namespace RimroomsAsyncIndustries.Gate
             {
                 if (IsOpening && !IsEmergency) { return OpeningPowerDrawWatts; }
                 if (!IsDesignated) { return 0f; }
-                return GateProps.idlePowerDrawWatts * GateCellCount;
+                return IdlePowerDrawWatts;
+            }
+        }
+
+        /// <summary>
+        /// What a designated gate costs to keep while it is closed, after research.
+        ///
+        /// **RR_Cap_StandbyDiscipline** (Facilities and power, tier 2) halves it. A branch that
+        /// has worked out which of the standby systems actually have to stay warm between
+        /// connections stops paying for the ones that do not.
+        ///
+        /// **This property exists so there is exactly one answer to the question.** The idle
+        /// draw is read in two places -- here, for what the gate reports it is drawing, and in
+        /// <see cref="SpendIdleDrawTick"/>, for what it actually takes out of the reserve. A
+        /// capability applied to one and not the other would make the readout lie about the
+        /// drain, and the two would drift apart silently because nothing compares them.
+        /// </summary>
+        public float IdlePowerDrawWatts
+        {
+            get
+            {
+                float draw = GateProps.idlePowerDrawWatts * GateCellCount;
+                Company.RimroomsCampaignComponent idleCampaign = NativeCampaign;
+                if (idleCampaign != null && idleCampaign.HasCapability("RR_Cap_StandbyDiscipline"))
+                { draw *= 0.5f; }
+                return draw;
             }
         }
         public IntVec3 GateEntryCell { get { return NativeEntryCell; } }
-        public float CalibrationWorkRequired { get { return GateProps.calibrationWorkRequired; } }
+
+        /// <summary>
+        /// The work calibrating an assembly costs.
+        ///
+        /// **RR_Cap_ReferenceStandards** (Measurement and evidence, tier 2) takes two fifths off.
+        /// A branch holding its own reference standards is not deriving them again from scratch
+        /// every time it calibrates, which is the tier 2 band exactly: the second time you do a
+        /// thing should be cheaper than the first.
+        /// </summary>
+        public float CalibrationWorkRequired
+        {
+            get
+            {
+                float required = GateProps.calibrationWorkRequired;
+                Company.RimroomsCampaignComponent calibrationCampaign = NativeCampaign;
+                if (calibrationCampaign != null && calibrationCampaign.HasCapability("RR_Cap_ReferenceStandards"))
+                { required *= 0.6f; }
+                return required;
+            }
+        }
         public Thing Console { get { return FindConsole(); } }
         public bool IsAwaitingRecovery { get { return IsOpening && IsEmergency && emergencyReturnTicksRemaining <= 0; } }
 

@@ -90,6 +90,30 @@ namespace RimroomsAsyncIndustries.Personnel
             return CompanyActionResult.Applied();
         }
 
+        /// <summary>
+        /// How long the branch waits before it may ask the parent corporation for applicants
+        /// again.
+        ///
+        /// **RR_Cap_SpecialistRecruitment** (Commerce and organisation, tier 2) halves it. The
+        /// chart lists *"specialist recruitment"* as the thing this branch is missing, and a
+        /// branch with a standing arrangement is not starting the request from nothing each
+        /// time -- the repeat ask is the one that gets faster, which is the tier 2 band.
+        ///
+        /// **This is a cooldown, not a deadline** (`docs/CAMPAIGN_CHART.md` #1.1, which names
+        /// `nextRequestTick` on hiring in the allowlist by name). It runs before the player may
+        /// act again and there is no way to fail it. Never below one tick, so the cooldown
+        /// always exists and a request can never be made twice in the same tick.
+        /// </summary>
+        private int ApplicantRefreshTicks(HiringPolicyDef policy)
+        {
+            int refresh = policy.refreshTicks;
+            if (refresh <= 0) { return refresh; }
+            RimroomsCampaignComponent recruitmentCampaign = Campaign;
+            if (recruitmentCampaign != null && recruitmentCampaign.HasCapability("RR_Cap_SpecialistRecruitment"))
+            { refresh -= refresh / 2; }
+            return Math.Max(1, refresh);
+        }
+
         public CompanyActionResult RequestApplicants()
         {
             CompanyActionResult check = CheckActive();
@@ -103,7 +127,7 @@ namespace RimroomsAsyncIndustries.Personnel
             if (sequence > int.MaxValue - policy.maxOffers) { return Refuse("RR_Personnel_InvalidSave"); }
             TrimTerminalHistory();
             branchId = Campaign.BranchId;
-            nextRequestTick = AddTicks(Now, policy.refreshTicks);
+            nextRequestTick = AddTicks(Now, ApplicantRefreshTicks(policy));
             for (int i = 0; i < policy.maxOffers; i++)
             {
                 string id = branchId + ":applicant:" + (++sequence);

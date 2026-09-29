@@ -349,7 +349,9 @@ namespace RimroomsAsyncIndustries.Gate
         private void SpendIdleDrawTick()
         {
             if (IsOpening || !IsDesignated) { return; }
-            float cost = GateProps.idlePowerDrawWatts * GateCellCount * CompPower.WattsToWattDaysPerTick;
+            // Through the property, never the raw prop: it is the one place research is applied,
+            // so what the gate reports drawing and what it actually takes can never diverge.
+            float cost = IdlePowerDrawWatts * CompPower.WattsToWattDaysPerTick;
             if (!(cost > 0f) || float.IsNaN(cost) || float.IsInfinity(cost)) { return; }
             CompPowerBattery battery = NativeBatteryComp;
             if (battery == null) { return; }

@@ -31,6 +31,35 @@ LAW #0 reminder: every task description preserves the user's verbatim words.
 - [~] **"making sure to properly finalize all completed work as i think gate 0 is still in the todo stuff but it should be finalized first"** — all 129 checked master TODO items archived verbatim in `FINALIZED.md` §Inherited completed work; master TODO checkboxes retained beside their evidence per `REGRESSION_CONTAINMENT.md`.
 - [~] **"begin on any and all todo work to reach the goal of having a completed working mod in all regaurds as outlined in the many prep documentes build over 18 hours of work in gate 0"** — standing objective for every session from here: work the cascade M1 → M6 in `ROADMAP.md` order until the master TODO is empty; runtime rows are `[T]` and belong to the post-completion test phase, so none of them ever stops the building.
 
+
+**Verbatim owner direction (2026-09-29), resuming after compaction:** *"read now.md to continue the work guided by the prep docs and mod register and worrkflow docs to make an all encompassing mod(You do know how to properly make rimworld mods right for 1.6?) should of asked that before now, get to work!"*
+
+- [~] **"read now.md to continue the work guided by the prep docs and mod register and worrkflow docs"** - `docs/NOW.md` read, `docs/CAMPAIGN_CHART.md` read as the authority, and the register filtered on the Research and staff development family before designing anything (six rows, all Optional or Configuration-only, none conflicting). Item 1 of the NOW.md queue is research tier 2.
+- [~] **"to make an all encompassing mod"** - the standing objective. The chart's build order is the sequence; nothing is skipped and nothing is deferred.
+- [x] **"(You do know how to properly make rimworld mods right for 1.6?)"** - answered plainly in the session, and the answer is the shape of the repo: `loadFolders.xml` with a `1.6` folder, `About.xml` carrying `packageId` and `<supportedVersions><li>1.6</li>`, defs as XML under `1.6/Defs/`, behaviour as `ThingComp` / `GameComponent` / `WorkGiver` / `JobDriver` subclasses in a net472 C# 7.3 assembly at `1.6/Assemblies/`, keyed strings under `1.6/Languages/`, **Core-only, zero dependencies, no Harmony, no patch operations against other mods' defs.**
+- [x] **"should of asked that before now"** - fair. Recorded here rather than answered and forgotten.
+- [x] **"get to work!"** - research tier 2 SHIPPED in 0.11.6-dev: seven projects, one per branch, each requiring its tier 1 sibling and a completed distortion log. Record: `docs/implementation/RESEARCH_TIER2_IMPLEMENTATION.md`.
+
+**Verbatim owner question (2026-09-29), at the fork:** *"we may need our own story teller right? or is that way way to much work? with the “AI” like ai thats not an ai that the storytellers use"*
+
+- [x] **"we may need our own story teller right?"** - **No, and it is not a question of effort.** A `StorytellerDef` is an **exclusive slot**: the player picks exactly one, so shipping ours means asking somebody running 295 mods to abandon Cassandra or Randy to play this one. That is the opposite of *"we are making a mod that works with the other 274"*. It also needs `portraitLarge` / `portraitTiny` art, which the no-new-art rule forbids, and its job is pacing **global** incidents when this mod's pressure comes from the gate, which the player controls deliberately.
+- [x] **"with the “AI” like ai thats not an ai that the storytellers use"** - **exactly right, and that is why we do not need the storyteller itself.** There is no intelligence in one: a `StorytellerComp` rolls a mean-time-between against colony wealth and population and picks from a weighted `IncidentDef` list. The part that feels like a director is **`IncidentWorker.CanFireNowSub`** - the conditions - and that is ours to write without owning the slot.
+- [x] **A real gap found while answering: this mod has ZERO `IncidentDef`s.** Everything fires from its own `GameComponent` ticks, so whatever storyteller the player chose knows nothing about the mod and never paces a single thing it does.
+
+**Owner decision at that fork: "Both - guaranteed floor, storyteller flavour".**
+
+- [ ] **The clean-up team fires from our own component, deterministically** - the guaranteed floor. *"so that facilities never die"* is a promise, and a promise must never be at the mercy of a dice roll.
+- [ ] **Lighter world-facing events register as `IncidentDef`s with our own `IncidentWorker`s**, so the player's chosen storyteller paces them and the mod joins the game's event economy instead of running beside it. This is also the correct home for arc 6, *"respond to openings in settlements"*.
+
+### Research tier 2 - what the sweep changed before a line was written
+
+- [x] **Three of the seven knobs named in the previous handoff were verified hollow and replaced.** The handoff listed them as "already identified and none of them needs inventing", and checking them against their real read sites is what caught it:
+  - `stablePowerTicksRequired` is **60 ticks, one second**. A project halving it would be imperceptible.
+  - `MaximumOpenOrders` is a private sanity cap of **100** open orders. No player reaches it.
+  - catalogue `maxOrderQuantity` is already **500 to 1,000,000** per row and clamped again by `MaximumActiveQuantity`. Raising it changes nothing anyone sees.
+  - All three would have shipped exactly the lie `proof-research-branches.py` exists to prevent: a capability that **is** read, moving a number that does not matter. The proof cannot catch that, because the read site is real.
+
+
 ---
 
 ## Pending

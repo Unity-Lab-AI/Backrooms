@@ -14,6 +14,33 @@ Each session entry includes:
 
 ---
 
+## Session 2026-09-29 - research tier 2, and the storyteller question (0.11.6-dev)
+
+**Verbatim user quote:** *"read now.md to continue the work guided by the prep docs and mod register and worrkflow docs to make an all encompassing mod(You do know how to properly make rimworld mods right for 1.6?) should of asked that before now, get to work!"*
+
+**Verbatim user quote, mid-turn:** *"we may need our own story teller right? or is that way way to much work? with the “AI” like ai thats not an ai that the storytellers use"*
+
+**Verbatim user decision at that fork:** *"Both - guaranteed floor, storyteller flavour"*
+
+### What shipped
+
+Research tier 2: seven `RimroomsProjectDef`, one per branch, each requiring its tier 1 sibling and a completed distortion log. Standby Discipline, Relief Watch, Reference Standards, Known Address, Containment Protocol, Forward Dispatch, Specialist Recruitment. **Every one moves a knob no other project touches**, so nothing in this band supersedes anything and no card has to explain another.
+
+### Files touched
+
+`Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsProjectDefs/RR_CompanyProjects.xml`, `src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs`, `src/RimroomsAsyncIndustries/Gate/NativeGateBinding.cs`, `src/RimroomsAsyncIndustries/Gate/GateSpinUp.cs`, `src/RimroomsAsyncIndustries/Portals/PortalTraversalPolicy.cs`, `src/RimroomsAsyncIndustries/Procurement/RimroomsProcurementComponent.cs`, `src/RimroomsAsyncIndustries/Personnel/RimroomsPersonnelComponent.cs`, `docs/implementation/RESEARCH_TIER2_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj.
+
+### Closure notes
+
+- **Three of the seven knobs the previous handoff called "already identified" were verified hollow and replaced.** `stablePowerTicksRequired` is one second; `MaximumOpenOrders` is a sanity cap of 100; catalogue `maxOrderQuantity` is already up to a million. **All three would have passed `proof-research-branches.py`**, because the capability would have been read by real code - it would simply have moved a number no player could observe. A live read site is not a live effect.
+- **`Forward Dispatch` would have switched `Relays` off** had the lead-time clamp kept reading the raw dispatch delay. A tier 2 project silently disabling its own tier 1 prerequisite, reported by nothing.
+- **Idle draw is read in two places** - what the gate reports and what it spends - and the capability now lives in one property both call, so the readout can never lie about the drain.
+- **No custom storyteller**, and the reasoning is recorded in `TODO.md`: a `StorytellerDef` is an exclusive slot, it needs portrait art the no-new-art rule forbids, and there is no intelligence in one to borrow. The owner's decision is both a guaranteed floor in our own component and an `IncidentDef` surface for the player's chosen storyteller.
+- Build 0.11.6-dev, 162 C# files, 85 package files, **0 warnings, 0 errors**. Eight checkers pass; `check-doc-conformance.py` caught a stale README version and it was fixed. Four proofs hold, and `proof-research-branches.py` was **fault-planted in both directions** and failed correctly both times before being restored.
+- **No game was launched.**
+
+---
+
 ## Inherited pre-workflow history (2026-09-27 → 2026-09-28, previous build agent)
 
 Not verbatim user tasks — a pointer index into the records the previous agent left, so this archive has one continuous timeline. The authoritative evidence for each row is the linked file; the master TODO checkboxes in [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) are the per-item closure record.

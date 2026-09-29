@@ -1,4 +1,4 @@
-using RimroomsAsyncIndustries.Company;
+﻿using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Gate;
 using RimroomsAsyncIndustries.Threats;
 using RimWorld;
@@ -208,7 +208,22 @@ namespace RimroomsAsyncIndustries.Portals
             { return "RR_Incursion_BandTooLow"; }
             // "even at higher techs" -- the branch has to have advanced the machine. A first
             // gate, unresearched, is never a way in.
-            if (gate.PortalWindowTier < 1) { return "RR_Incursion_TechTooLow"; }
+            //
+            // **RR_Cap_ContainmentProtocol** (Entities and containment, tier 2) raises that
+            // floor from one tier to two. A branch that has written real containment procedure
+            // buys back the whole first rung of the aperture ladder: nothing follows a crew out
+            // until the gate is opened wider than Field Stability allows.
+            //
+            // **The bound only ever tightens.** Invariant 53 lists five axes that fence
+            // incursion in, and this moves one of them in the safe direction -- there is no
+            // capability anywhere that lowers it. It is also a genuine choice between branches:
+            // push the gate ladder and neglect containment, and the thing you opened the door
+            // wider for walks back through it.
+            RimroomsCampaignComponent containmentCampaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            int requiredTier = containmentCampaign != null &&
+                containmentCampaign.HasCapability("RR_Cap_ContainmentProtocol") ? 2 : 1;
+            if (gate.PortalWindowTier < requiredTier) { return "RR_Incursion_TechTooLow"; }
             return FitFailureKey(intruder, gate.GateWidth);
         }
     }

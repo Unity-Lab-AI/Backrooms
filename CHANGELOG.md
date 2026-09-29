@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.11.6-dev - 2026-09-29 - the second time you do a thing should be cheaper
+
+- **Seven more research projects**, the third step in each branch. Each needs its own second project and a completed distortion log, because this band is about having been through often enough for something to have gone wrong.
+- **Standby Discipline** - a designated gate costs half as much to keep while it is closed.
+- **Relief Watch** - a gate ramp left unattended loses a quarter as much progress. It still lapses if nobody comes back.
+- **Reference Standards** - calibrating a gate assembly takes two fifths less work.
+- **Known Address** - every previous connection to an address makes the next one to it markedly faster. A first visit is exactly as slow as it ever was.
+- **Containment Protocol** - nothing follows a crew out through a connection until the aperture is opened wider than Field Stability allows.
+- **Forward Dispatch** - a shipment leaves in half the time, which is what finally lets your own relays move an arrival.
+- **Specialist Recruitment** - you may ask for applicants again in half the time.
+- **None of these replaces an earlier project.** Every one moves a setting no other project touches, so two cards never have to explain each other.
+- **Three planned unlocks were dropped before they were built**, because checking them showed they would have changed a number nobody could ever notice - a one-second wait, a cap of a hundred orders, and a quantity limit already set to a million.
+
+Full record: [the second time you do a thing should be cheaper](docs/implementation/RESEARCH_TIER2_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.11.5-dev - 2026-09-29 - a designated gate is a machine that is on
 
 - **A designated gate now costs power to keep.** Not much, and only while it is closed - while a connection is open the opening draw is charged instead. Until now a finished gate sitting idle cost you exactly nothing.
