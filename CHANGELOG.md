@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.0-dev - 2026-09-29 - a gate is a door and nothing else
+
+- **The custom gate machine, control console, cutoff switch and generator are gone.** A gate is an ordinary door you designate, its controls are an ordinary comms console and machining table, and its power comes off your own grid like everything else.
+- The unused site lamp, climate unit, analysis bench and floor carpet went with them. **Four of those had no code behind them at all** and had been shipping artwork nobody could see.
+- The gate's control station no longer guesses which gate belongs to it. You choose, and only your choice counts.
+- Nothing you can do in the game was removed. Every one of these had already been replaced by an ordinary object you designate.
+
+Full record: [a gate is a door and nothing else](docs/implementation/LEGACY_GATE_RETIREMENT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.8.9-dev - 2026-09-29 - bringing a gate up is work, and a gate looks like one
 
 - **Opening a connection is no longer a button.** The assigned operator brings the gate up at the console over time, and the console shows the progress while they do it.

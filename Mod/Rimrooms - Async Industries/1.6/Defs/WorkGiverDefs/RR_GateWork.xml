@@ -6,7 +6,7 @@
     <giverClass>WorkGiver_DoBill</giverClass>
     <workType>Crafting</workType>
     <priorityInType>100</priorityInType>
-    <fixedBillGiverDefs><li>RR_GateConsole</li></fixedBillGiverDefs>
+    <fixedBillGiverDefs><li>TableMachining</li></fixedBillGiverDefs>
     <verb>assemble gate at</verb>
     <gerund>assembling gate at</gerund>
   </WorkGiverDef>

@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.8.9-dev** (this commit) |
+| Published | **0.9.0-dev** (this commit) |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
-| Build | **155 C# files, 92 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `9E0FA752A9DB00EB801A013FAFBC937D3723CC33D359A54B57A11E42083D8354`, reproduced by two clean recompiles |
+| Build | **155 C# files, 79 package files**, zero warnings, zero errors |
+| Assembly | SHA-256 `72D0FF07B03FB90FE0DC31615281E2214A0C78ACFF82AF81947488108A12BD3D`, reproduced by two clean recompiles |
 | Checkers | four, all passing |
 | Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
 | Game launches | **none, ever** |
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.8.9
+## What shipped this session, 0.7.1 → 0.9.0
 
 | Version | What |
 |---|---|
@@ -62,6 +62,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.8.7 | **Coherence decay** + tech scaling |
 | 0.8.8 | **Gate connection history** — per-gate address book, editable and clearable |
 | 0.8.9 | **Bringing a gate up is work** — an operator-driven spin-up with familiarity, and gates that look like gates |
+| 0.9.0 | **A gate is a door and nothing else** — eight legacy defs retired, package 92 → 79 files |
 
 ---
 
@@ -73,7 +74,7 @@ Content set → gate model → generator → scenarios → docs. One direction, 
 
 **Corrected immediately after 0.8.9-dev**: the multi-cell gate work was first listed ahead of M2. That was wrong. M2 deletes `RR_MachineGate`, which removes the gate comp’s second geometry model entirely, so doing it first means the multi-cell binding is written once rather than written and then rewritten.
 
-1. **M2 existing-content replacement.** **First, because it deletes defs** — anything built against content about to be removed gets built twice, and the save break is already declared so defs can go with no migration. It also **collapses the gate comp's whole non-native branch**: deleting `RR_MachineGate` removes the second geometry model, so the multi-cell work below is written once against one model instead of twice. Scope: legacy gate objects, field gear, fixtures and terrain, the `RR_QuietPursuer` presentation, five `RR_*Staff` PawnKinds, five recipes, and the fourteen historical PNGs off the allowlist.
+1. ~~**M2 existing-content replacement**, first pass.~~ **DONE 0.9.0-dev** for the eight defs whose replacements were already live. **Still open in M2:** the field gear (`RR_FieldRecorder`, `RR_SurveyTag`, `RR_ReturnBeacon`, `RR_SealedEvidenceCase`, `RR_RouteRecording`), which carry real mechanics the owner has explicitly refused to drop, so each needs a capability replacement built before its def can go; `RR_QuietPursuer`; the five staff PawnKinds and their recipes; and the sixty-odd now-unreachable `IsNativeProvider` branches, held back for their own reviewable checkpoint. Original entry: **first, because it deletes defs** — anything built against content about to be removed gets built twice, and the save break is already declared so defs can go with no migration. It also **collapses the gate comp's whole non-native branch**: deleting `RR_MachineGate` removes the second geometry model, so the multi-cell work below is written once against one model instead of twice. Scope: legacy gate objects, field gear, fixtures and terrain, the `RR_QuietPursuer` presentation, five `RR_*Staff` PawnKinds, five recipes, and the fourteen historical PNGs off the allowlist.
 2. **Multi-cell gates** — 1x2, 1x3 and 2x3, on the settled Core-door-only gate model. **Owner-answered: both paths.** Bind a gate across a **run of adjacent Core doors** (existing-content-only, always works), **and** accept **Doors Expanded** (register row 77) multi-cell doors as single-thing gates when that mod is installed. Width is the capability: how many cross abreast, whether cargo or a vehicle fits, what the opening draws. Core has only 1x1 `Door` and `Autodoor`, verified against installed game data.
 3. **Pursuit and incursion.** Grouped here so **all the gate work happens once**. **Owner-answered: depth plus technology, while an opening is live.** An inhabitant chases a fleeing pawn to the threshold, and reaching it before the gate closes brings it through into the colony, where every native hostile behaviour applies with nothing bespoke written. **Closing the gate is the countermeasure**, which makes the emergency cutoff a tactical decision at the cost of stranding whoever is still inside. `PortalTraversalPolicy` gains the rule; the inhabitant still decides nothing.
 4. **Facilities** — larger functional spaces, distinct from rooms and corridors. Generation must be finished before the scenarios that consume it.
@@ -122,6 +123,8 @@ Each is a real defect or a pinned fact.
 33. **Never tie a penalty rate to a flat constant without proving it against the real stat range.** Spin-up decay was written as a flat 0.5 per tick with a comment claiming it was slower than progress; at low Intellectual it was **faster**, which would have made a slow operator's gate impossible rather than slow. Express such a rate as a **fraction of the observed rate** so the guarantee holds by construction.
 34. **Ask at the fork; never flag it for later.** Owner direction: *"dopnt flag shit!!! ask me then and there"*. A flagged question becomes orphaned work — it lands in a doc nobody actions while the build carries a guess forward.
 35. **`ThingComp.ForceColor()` is the tint hook**, consulted by `ThingWithComps.DrawColor` for every comp a thing carries, and a painted colour wins over it. `Notify_ColorChanged()` drops Core's cached coloured graphic and redraws the cell.
+36. **A checker that reads only one kind of source is a checker with a blind side.** The texture check read XML and never C#, so three live references to deleted textures passed clean. It also only ever asked the weaker question — *does every shipped file have a reference?* — when the serious one is *does every reference have a file?* Ask both directions, of every source.
+37. **Retired content is archived, never deleted.** `docs/implementation/historical-content/<version>/` mirrors the package layout. `audit-gate0.py` will catch the doc links that pointed at the old location.
 
 ---
 

@@ -2471,3 +2471,33 @@ Owner directions captured verbatim: 3. Owner questions asked at the fork rather 
 **Requirements met by an existing Core hook rather than by new content: 2** - the blue tint through `ThingComp.ForceColor()`, and the console progress bar through the job that already existed.
 **Defects caught by offline proof before shipping: 1** - the flat decay rate.
 Still open and named in `TODO.md`: multi-cell gates; pursuit and incursion; facilities; the unknown-def-field checker.
+
+---
+
+## 0.9.0-dev - 2026-09-29 - a gate is a door and nothing else
+
+### Owner direction, verbatim
+
+> *"we are doing it all so order needs to be logical and your intelkligent educated choise based on logical programming order of operations"*
+
+M2 existing-content replacement was chosen as the first of the four remaining majors, because it deletes defs and anything built against content about to be removed gets built twice. It also removes the gate component's second geometry model, so the multi-cell gate work that follows is written once rather than written and then rewritten.
+
+### What shipped
+
+Eight legacy defs retired to the historical archive: the custom gate machine, control console, emergency cutoff and generator, plus the unused site lamp, climate unit, field analysis bench and institutional carpet. Four of the eight had no C# consumer whatsoever. Thirteen package files removed, seven of them textures. The dead cutoff component was deleted outright, and the control station no longer guesses which gate is its own.
+
+### Two checkers earned their place in the same checkpoint
+
+Retiring the textures left three live C# references to textures that no longer shipped, and `check-package-integrity.py` passed clean: its texture check only read XML, and only asked the weaker "ships but unreferenced" question. It now scans C# for `ContentFinder<Texture2D>.Get` too - and it was validated not by planting a fault but by catching three real ones already in the tree. `audit-gate0.py` then caught seven documentation links pointing at the four files that had moved to the archive.
+
+### Build evidence
+
+0.9.0-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **155** C# source files (none added), **79** approved package files, down from 92. Assembly SHA-256 `72D0FF07B03FB90FE0DC31615281E2214A0C78ACFF82AF81947488108A12BD3D`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass; 1,207 keyed references all resolving. **Nothing was added: no new def, asset, patch operation or work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Defs retired: 8. Package files removed: 13. Source files reduced: 4. Docs updated: 9 (1 new).
+**Checker gaps found and closed: 1** - C# texture references, proved by three real defects rather than a planted one.
+**Broken documentation links caught by the audit: 7.**
+Deliberately left for its own checkpoint: the sixty-odd now-unreachable `IsNativeProvider` branches, because a diff that says only "remove the dead branch" is reviewable in a way a mixed one is not.
+Still open and named in `TODO.md`: the field gear, whose mechanics must be replaced before its defs can go; `RR_QuietPursuer`; the staff PawnKinds and their recipes.

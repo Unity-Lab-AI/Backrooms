@@ -106,8 +106,6 @@ namespace RimroomsAsyncIndustries.Gate
             if (nativeProvider && (parentDef.defName == "Door" || parentDef.defName == "Autodoor") &&
                 !typeof(Building_Door).IsAssignableFrom(parentDef.thingClass))
             { yield return "Native Rimrooms gate provider supports only Core Door and Autodoor."; }
-            if (!nativeProvider && (parentDef.size.x != 3 || parentDef.size.z != 3))
-            { yield return "RR_MachineGate must use a 3x3 footprint."; }
             if (openingWindowTicks <= 0 || emergencyReturnWindowTicks <= 0 || stablePowerTicksRequired < 0)
             { yield return "Rimrooms gate timing settings must be positive."; }
             if (portalBaseWindowTicks <= 0 || portalIndefiniteTier < 0 ||
@@ -164,7 +162,6 @@ namespace RimroomsAsyncIndustries.Gate
         private List<GateRecoveryReceipt> recoveryReceipts = new List<GateRecoveryReceipt>();
         private CompPowerTrader powerTrader;
         private CompFlickable flickable;
-        private Thing consoleCache;
         private float appliedPowerDrawWatts = -1f;
 
         private CompProperties_RimroomsGate GateProps { get { return (CompProperties_RimroomsGate)props; } }
@@ -249,7 +246,6 @@ namespace RimroomsAsyncIndustries.Gate
             base.PostSpawnSetup(respawningAfterLoad);
             powerTrader = parent.GetComp<CompPowerTrader>();
             flickable = parent.GetComp<CompFlickable>();
-            consoleCache = null;
             ApplyPowerDraw();
         }
 
@@ -365,7 +361,7 @@ namespace RimroomsAsyncIndustries.Gate
             {
                 defaultLabel = "RR_Gate_AssignOperatorLabel".Translate(),
                 defaultDesc = "RR_Gate_AssignOperatorDesc".Translate(),
-                icon = IsNativeProvider ? parent.def.uiIcon : ContentFinder<Texture2D>.Get("Buildings/Gate/RR_GateConsole", true),
+                icon = parent.def.uiIcon,
                 action = OpenOperatorMenu
             };
 
@@ -375,7 +371,7 @@ namespace RimroomsAsyncIndustries.Gate
                 {
                     defaultLabel = "RR_Gate_CalibrateLabel".Translate(),
                     defaultDesc = "RR_Gate_CalibrateDesc".Translate(),
-                    icon = IsNativeProvider ? parent.def.uiIcon : ContentFinder<Texture2D>.Get("Buildings/Gate/RR_GateConsole", true),
+                    icon = parent.def.uiIcon,
                     action = delegate { ShowOrderResult(OrderCalibration()); }
                 };
             }
@@ -386,7 +382,7 @@ namespace RimroomsAsyncIndustries.Gate
                 {
                     defaultLabel = "RR_Gate_StaffConsoleLabel".Translate(),
                     defaultDesc = "RR_Gate_StaffConsoleDesc".Translate(),
-                    icon = IsNativeProvider ? parent.def.uiIcon : ContentFinder<Texture2D>.Get("Buildings/Gate/RR_MachineGate", true),
+                    icon = parent.def.uiIcon,
                     action = delegate { ShowOrderResult(OrderStaffConsole()); }
                 };
             }
@@ -840,16 +836,17 @@ namespace RimroomsAsyncIndustries.Gate
             return Mathf.Min(GateProps.reserveChargePowerWatts, wattsForRemainingCapacity);
         }
 
+        /// <summary>
+        /// The station this gate is operated from: the one the player designated, and only
+        /// that one.
+        ///
+        /// There used to be a second path here that searched the map for the nearest
+        /// RR_GateConsole. That def was retired in 0.9.0-dev, and the search was the wrong
+        /// answer regardless once a branch could run two gates -- "nearest" is not "mine".
+        /// </summary>
         private Thing FindConsole()
         {
-            if (IsNativeProvider) { return IsDesignated && SameNativeHeadquartersThing(nativeConsole) ? nativeConsole : null; }
-            if (!parent.Spawned || parent.Map == null) { return null; }
-            if (consoleCache != null && consoleCache.Spawned && consoleCache.Map == parent.Map) { return consoleCache; }
-            ThingDef consoleDef = DefDatabase<ThingDef>.GetNamedSilentFail("RR_GateConsole");
-            if (consoleDef == null) { return null; }
-            consoleCache = parent.Map.listerBuildings.AllBuildingsColonistOfDef(consoleDef)
-                .OrderBy(t => t.Position.DistanceToSquared(parent.Position)).FirstOrDefault();
-            return consoleCache;
+            return IsDesignated && SameNativeHeadquartersThing(nativeConsole) ? nativeConsole : null;
         }
 
         private bool IsEmployedStaff(Pawn pawn)

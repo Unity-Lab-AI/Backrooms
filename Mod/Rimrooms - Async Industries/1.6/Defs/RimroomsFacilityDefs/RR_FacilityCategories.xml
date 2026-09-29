@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
     <defName>RR_Facility_Quarters</defName><label>quarters</label><displayOrder>10</displayOrder>
@@ -18,7 +18,7 @@
   </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
   <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
     <defName>RR_Facility_Laboratory</defName><label>research and analysis</label><displayOrder>50</displayOrder>
-    <buildingDefNames><li>RR_FieldAnalysisBench</li><li>SimpleResearchBench</li><li>HiTechResearchBench</li><li>MultiAnalyzer</li></buildingDefNames>
+    <buildingDefNames><li>SimpleResearchBench</li><li>HiTechResearchBench</li><li>MultiAnalyzer</li></buildingDefNames>
   </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
   <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
     <defName>RR_Facility_Workshop</defName><label>workshops</label><displayOrder>60</displayOrder>
@@ -26,7 +26,7 @@
   </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
   <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
     <defName>RR_Facility_Machine</defName><label>gate and control</label><displayOrder>70</displayOrder>
-    <buildingDefNames><li>RR_MachineGate</li><li>RR_GateConsole</li><li>RR_EmergencyCutoff</li></buildingDefNames>
+    <buildingDefNames><li>Door</li><li>Autodoor</li><li>CommsConsole</li><li>PowerSwitch</li></buildingDefNames>
   </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
   <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
     <defName>RR_Facility_Power</defName><label>power sources and reserves</label><displayOrder>80</displayOrder>

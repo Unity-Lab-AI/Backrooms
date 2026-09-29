@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <RecipeDef>
     <defName>RR_AssembleMachineGate</defName>
@@ -25,6 +25,6 @@
         <li>ComponentIndustrial</li>
       </thingDefs>
     </fixedIngredientFilter>
-    <recipeUsers><li>RR_GateConsole</li><li>TableMachining</li></recipeUsers>
+    <recipeUsers><li>TableMachining</li></recipeUsers>
   </RecipeDef>
 </Defs>

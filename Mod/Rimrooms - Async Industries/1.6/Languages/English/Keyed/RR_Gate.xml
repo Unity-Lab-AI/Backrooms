@@ -6,8 +6,6 @@
   <RR_Gate_CalibrateDesc>Start a staffed calibration job at the powered console.</RR_Gate_CalibrateDesc>
   <RR_Gate_StaffConsoleLabel>Staff gate console</RR_Gate_StaffConsoleLabel>
   <RR_Gate_StaffConsoleDesc>Order the assigned operator to reserve and staff the console.</RR_Gate_StaffConsoleDesc>
-  <RR_Gate_EmergencyCutoffLabel>Activate emergency cutoff</RR_Gate_EmergencyCutoffLabel>
-  <RR_Gate_EmergencyCutoffDesc>Cut gate power and start its bounded emergency-return window. Expedition crew and map handling stay with the expedition service.</RR_Gate_EmergencyCutoffDesc>
   <RR_Gate_StaffChoice>{0} ({1})</RR_Gate_StaffChoice>
   <RR_Gate_UnassignOperator>Unassign operator</RR_Gate_UnassignOperator>
   <RR_Gate_NoOperator>No operator assigned.</RR_Gate_NoOperator>
@@ -22,9 +20,6 @@
   <RR_Gate_StatusIncomplete>Assembly required</RR_Gate_StatusIncomplete>
   <RR_Gate_StatusNeedsCalibration>Calibration required</RR_Gate_StatusNeedsCalibration>
   <RR_Gate_StatusCalibrated>Calibrated</RR_Gate_StatusCalibrated>
-  <RR_Gate_CutoffEmergencyActive>Emergency state: {0}</RR_Gate_CutoffEmergencyActive>
-  <RR_Gate_CutoffReady>Emergency return control ready.</RR_Gate_CutoffReady>
-  <RR_Gate_NoMachineLinked>No machine gate is linked to this cutoff.</RR_Gate_NoMachineLinked>
   <RR_Gate_JobUnavailable>The assigned staff member cannot start this gate job.</RR_Gate_JobUnavailable>
   <RR_Gate_NoAssignedOperator>No employed operator is assigned.</RR_Gate_NoAssignedOperator>
   <RR_Gate_ActiveCannotReassign>The operator cannot be changed while an expedition is active.</RR_Gate_ActiveCannotReassign>

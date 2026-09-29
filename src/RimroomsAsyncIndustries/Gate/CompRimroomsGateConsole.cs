@@ -15,17 +15,12 @@ namespace RimroomsAsyncIndustries.Gate
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
         {
             foreach (string error in base.ConfigErrors(parentDef)) { yield return error; }
-            if (nativeProvider)
-            {
-                if (!typeof(Building_WorkTable).IsAssignableFrom(parentDef.thingClass) &&
-                    !typeof(Building_CommsConsole).IsAssignableFrom(parentDef.thingClass))
-                { yield return "Native Rimrooms station requires an existing worktable or communications console."; }
-                yield break;
-            }
-            if (parentDef.thingClass != typeof(Building_WorkTable))
-            { yield return "RR_GateConsole must use Building_WorkTable for native bills."; }
-            if (parentDef.size.x != 1 || parentDef.size.z != 1)
-            { yield return "RR_GateConsole must use a 1x1 footprint."; }
+            // Only existing Core objects carry this component now. The custom RR_GateConsole
+            // it used to also describe was retired in 0.9.0-dev, so there is no second shape
+            // left to validate.
+            if (!typeof(Building_WorkTable).IsAssignableFrom(parentDef.thingClass) &&
+                !typeof(Building_CommsConsole).IsAssignableFrom(parentDef.thingClass))
+            { yield return "Native Rimrooms station requires an existing worktable or communications console."; }
         }
     }
 
@@ -86,12 +81,11 @@ namespace RimroomsAsyncIndustries.Gate
                 if (!parent.Spawned || parent.Map == null) { return null; }
                 if (linkedGate != null && linkedGate.Spawned && linkedGate.Map == parent.Map)
                 { return linkedGate.TryGetComp<CompRimroomsGate>(); }
-                if (NativeProvider) { return null; }
-                ThingDef gateDef = DefDatabase<ThingDef>.GetNamedSilentFail("RR_MachineGate");
-                if (gateDef == null) { return null; }
-                linkedGate = parent.Map.listerBuildings.AllBuildingsColonistOfDef(gateDef)
-                    .OrderBy(t => t.Position.DistanceToSquared(parent.Position)).FirstOrDefault();
-                return linkedGate == null ? null : linkedGate.TryGetComp<CompRimroomsGate>();
+                // A station is bound to its gate explicitly, by the player, through the
+                // designation UI. It used to fall back to hunting for the nearest
+                // RR_MachineGate on the map; that def was retired in 0.9.0-dev and the guess
+                // it made was never the right answer anyway once two gates could exist.
+                return null;
             }
         }
 

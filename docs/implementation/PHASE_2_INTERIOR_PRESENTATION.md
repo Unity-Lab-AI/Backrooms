@@ -13,7 +13,7 @@ Local ignored `.local/inspection-presentation/Verse.CompColorable.cs` confirms `
 
 ## Files and behavior
 
-- [RR_LiminalFloors.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/TerrainDefs/RR_LiminalFloors.xml): original carpet material, four cloth, 650 construction work, ordinary flammability and cleaning cost. Native CarpetMaking permits reproducing it through Architect; generated site flooring does not require player research.
+- [RR_LiminalFloors.xml](historical-content/0.2.0/1.6/Defs/TerrainDefs/RR_LiminalFloors.xml): original carpet material, four cloth, 650 construction work, ordinary flammability and cleaning cost. Native CarpetMaking permits reproducing it through Architect; generated site flooring does not require player research.
 - [RoomContentBuilder.cs](../../src/RimroomsAsyncIndustries/Generation/RoomContentBuilder.cs): content version 2 uses carpet under institutional rooms, deterministic hard-floor stripes/insets, cooler service/utility surfaces, and muted room-wall paint. Readable landmarks and text distinguish room families without relying on the palette.
 - [Interior art manifest](assets/phase2-interior-art.json) and [provenance register](../research/provenance-register.csv): original generated carpet PNG, exact prompt, master, package path and hash. Image output is preserved without pixel edits.
 
