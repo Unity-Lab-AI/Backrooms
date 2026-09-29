@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.13-dev - 2026-09-29 - arcs 5 to 8 have work in them
+
+- **Thirteen more kinds of job**, one for every item the campaign plan names across the last four arcs: relay stations, caches, field shelters, guarded leases, resupply, evacuation, a town that saw something, residents who are missing, something loose where people live, cargo that does not fit through a door, people who know what they are looking at, a place that is two places at once, and one rule nobody has seen before.
+- **Eighteen kinds of job in total** once you are past the tutorial, and the company works through the range of them rather than repeating the cheapest.
+- **Every job offers the capability or the shortcut.** Do the work and own it, or pay to make the problem somebody else's. The company genuinely does not mind which, and would quietly rather you did the first.
+- **Nothing new was added to the game to make this work** - no new items, no new art, no new sounds. It is written entirely out of things already there.
+
+Full record: [arcs 5 to 8 have work in them](docs/implementation/ARCS_5_TO_8_REQUESTS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.12-dev - 2026-09-29 - the company stops naming things
 
 - **Work keeps coming after the tutorial.** Once you have answered the seventh request, clients start asking: a coordinate written up, material by the crate, instruments left running, somebody recovered, a door they can rely on. Five kinds of job, straight from the campaign plan's own list.

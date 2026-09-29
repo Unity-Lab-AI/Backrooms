@@ -482,6 +482,14 @@ Seven items, one task each. **This is a stop-building instruction and it is bein
 - [x] **Two already-answered owner questions were still listed as open** and are moved to a closed block with their answers.
 - [x] **The gotcha counts were flattering**: the heredoc trap is at **eight**, not six, and three of those came after the warning was already written.
 
+**Built 2026-09-29, 0.12.13-dev: arcs 5 to 8 have work in them.**
+
+- [x] **Thirteen generated request families, one per item `CAMPAIGN_CHART.md` names** across arcs 5, 6, 7 and 8. With arc 4's five that is **18 generated families**, plus the seven tutorial requests: **25 request defs**. **Chart section 7 step 8 is closed.**
+- [x] **Arc 5's "still unwritten" list is written**, and checking it against real read sites first found that **every item already had a research project** from 0.11.3-0.11.6. The chart's arc names and the research tree's branch names were describing the same things from two directions.
+- [x] **Arc 6 "respond to openings in settlements" is built** - the witnesses, missing residents and public danger families. This also closes the prep item of the same name.
+- [x] **Coverage is asserted per arc, not in total**, because eighteen families is satisfied by eighteen copies of arc 4. Fault-planted by moving one arc 6 family into arc 4: total unchanged, proof fails.
+- [x] **No new ThingDef, PawnKindDef, art or audio** - 13 request defs, 26 routes, 52 keyed strings, built from six catalogue-carried things, three log kinds and eleven existing projects.
+
 **Built 2026-09-29, 0.12.12-dev: the company stops naming things.**
 
 - [x] **Generation after the hinge.** The eligibility filter, the generated offer routine, and **arc 4's five families** - one per item `CAMPAIGN_CHART.md` arc 4 names, nothing invented.

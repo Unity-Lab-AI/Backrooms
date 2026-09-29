@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.12-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.13-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **173 C# files, 86 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `DCA9EC6E59DD41B008F2A6E582D574D20B70BAA53F629F6236AEC3F5778A7401`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
+| Assembly | SHA-256 `600A8AA0424FD0BC93EB8E0395DCCB67F4B5D7B5D169531F8F8C26AB91F4CBAD`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
 | Checkers | **eight**, all passing |
 | Proofs | **SEVENTEEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.12
+## What shipped this session, 0.7.1 → 0.12.13
 
 | Version | What |
 |---|---|
@@ -95,6 +95,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.10 | **The handoff** — four live proofs found unrun, five patch scripts un-named as proofs, a stale hash corrected |
 | 0.12.11 | **The corporation starts asking** — the mission line reaches a player. **The whole campaign had been authored and read by nothing** |
 | 0.12.12 | **The company stops naming things** — generation after the hinge, a filter that can refuse, arc 4’s five families. Fixed 0.12.11’s absolute-state flaw |
+| 0.12.13 | **Arcs 5 to 8 have work in them** — thirteen more families, one per item the chart names. **Chart §7 step 8 closed** |
 
 ---
 
@@ -103,8 +104,13 @@ Chain checkpoints. Do not finish one and wait.
 The order is the one `docs/CAMPAIGN_CHART.md` §7 authorises. **Read the chart before starting
 anything in this list** — it is the authority, and steps 1–5 of its build order are done.
 
-1. **Arcs 5–8.** **This is what `docs/CAMPAIGN_CHART.md` §7 step 8 authorises next**, and the
-   chart beats any other document. Steps 6 and 7 are done.
+1. ~~**Arcs 5–8.**~~ **CLOSED, 0.12.13-dev.** `docs/CAMPAIGN_CHART.md` §7 step 8 is done: every
+   arc now has work a player can be asked to do — **18 generated families across arcs 4–8**, one
+   per item the chart names, plus the seven fixed tutorial requests. Arc 5’s *"still unwritten"*
+   list turned out to have had real read sites since 0.11.6: the chart’s arc names and the
+   research tree’s branch names were describing the same things from two directions.
+   **The systems each arc needs still have room to grow**; what is closed is that nothing in the
+   chart’s eight arcs is unreachable content. Historical detail follows.
    - **Arc 5, "Build beyond headquarters".** *"Remote sites need people, supplies, signals,
      protection, and an exit plan... A remote base is a costly responsibility rather than free map
      ownership."* **The first piece shipped in 0.12.6-dev**: a branch registers a map it already
@@ -138,11 +144,9 @@ anything in this list** — it is the authority, and steps 1–5 of its build or
      one is a performance decision with no effect a player could name. Do not reach for them.
 3. **Generated requests after the hinge. THE MACHINERY IS DONE, 0.12.12-dev.** The eligibility
    filter, the generated offer routine and **arc 4's five families** ship, and progress on a
-   generated request is counted from when it appeared. **What is left is content:** the thirteen
-   remaining families for arcs 5–8, against the same proved pattern —
-   relay stations · caches · field shelters · guarded leases · resupply · evacuation · witnesses ·
-   missing residents · public danger · heavy cargo · staff transfer · combined families ·
-   one unfamiliar rule at a time.
+   generated request is counted from when it appeared. **The thirteen remaining families shipped
+   0.12.13-dev**, so this item is closed too: 18 generated families across arcs 4–8, with
+   coverage asserted **per arc** — a total would be satisfied by eighteen copies of one arc.
    **Every new route must name a def that exists**, or it can never fire and nothing but
    `proof-request-generation.py` will say so.
    - **Route selection is ANSWERED** (chart §6 item 3 closed): *"Both — filter picks the family,
@@ -391,6 +395,8 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 183. **A filter clause that cannot refuse is a hollow knob.** Assert no arm of an eligibility switch is `return true`. Invariant 136 has already deleted four projects and three constants here for the same reason.
 184. **A route against work already finished is satisfied on sight.** Exclude the completed case at the point of offering, not only at the point of measuring — otherwise the offer itself is a payout button.
 185. **A proof failing because its subject MOVED is the proof working.** Retarget it and say so. A claim that survives an arbitrary refactor of the thing it describes is keyed off nothing.
+186. **Count coverage per category, never in total.** Eighteen generated families is satisfied by eighteen copies of one arc. The claim that matters is that **each** arc has somewhere to put work, and only a per-arc count catches a family moving between them.
+187. **Two documents can describe the same thing from two directions and nobody notices.** Arc 5’s *"still unwritten"* list — relay stations, caches, leases, resupply, evacuation — had had research projects since 0.11.6. **Before building a named item, grep the def names for its nouns.**
 
 ---
 

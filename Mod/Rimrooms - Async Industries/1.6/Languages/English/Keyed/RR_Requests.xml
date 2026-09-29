@@ -165,4 +165,60 @@ There is no date on this and there will not be one. Open the Operations tab, loo
   <RR_Route_ClientAccessPartsLabel>Hand over the parts and let them try</RR_Route_ClientAccessPartsLabel>
   <RR_Route_ClientAccessPartsDesc>Order the components and pass the problem along. Faster, and it teaches the branch nothing it will not have to learn later anyway.</RR_Route_ClientAccessPartsDesc>
 
+  <!-- Arcs 5 to 8 generated families. Route label: a thing the player picks, no full stop.
+       Route description: prose, ends a sentence. -->
+
+  <RR_Route_RelayWorkLabel>Do the relay work</RR_Route_RelayWorkLabel>
+  <RR_Route_RelayWorkDesc>Finish the relay project and the branch owns the capability rather than renting it. Slower, and the company stops asking about signals.</RR_Route_RelayWorkDesc>
+  <RR_Route_RelayPartsLabel>Hand over the hardware</RR_Route_RelayPartsLabel>
+  <RR_Route_RelayPartsDesc>Deliver the components and let the relay be somebody else's build. Faster, and the branch learns nothing it will not need later.</RR_Route_RelayPartsDesc>
+  <RR_Route_CacheRationsLabel>Stock it with rations</RR_Route_CacheRationsLabel>
+  <RR_Route_CacheRationsDesc>Survival packs, out where the next crew will reach them before they need them. The cheap answer and the one that actually gets used.</RR_Route_CacheRationsDesc>
+  <RR_Route_CacheMedicineLabel>Stock it with medicine</RR_Route_CacheMedicineLabel>
+  <RR_Route_CacheMedicineDesc>Order industrial medicine and put it in the cache. More expensive, and it covers the situation rations do not.</RR_Route_CacheMedicineDesc>
+  <RR_Route_ShelterTimberLabel>Build it out of timber</RR_Route_ShelterTimberLabel>
+  <RR_Route_ShelterTimberDesc>Haul wood to the place it is wanted. Cheap, quick and exactly as durable as wood is.</RR_Route_ShelterTimberDesc>
+  <RR_Route_ShelterSteelLabel>Buy steel and do it properly</RR_Route_ShelterSteelLabel>
+  <RR_Route_ShelterSteelDesc>Order the metal and build something that will still be standing next season. The company notices the difference and does not pay extra for it.</RR_Route_ShelterSteelDesc>
+  <RR_Route_LeaseWorkLabel>Do the leasing work</RR_Route_LeaseWorkLabel>
+  <RR_Route_LeaseWorkDesc>Complete the leases project and the branch can hold ground on paper. The company treats this as the real answer.</RR_Route_LeaseWorkDesc>
+  <RR_Route_LeaseTermsLabel>Start negotiating instead</RR_Route_LeaseTermsLabel>
+  <RR_Route_LeaseTermsDesc>Commit to the negotiated-terms work and the company accepts the intent. Declaring a direction is enough here; arriving is not required.</RR_Route_LeaseTermsDesc>
+  <RR_Route_ResupplyStandingLabel>Put standing orders in place</RR_Route_ResupplyStandingLabel>
+  <RR_Route_ResupplyStandingDesc>Finish the standing-orders work and the shipment stops being a decision anybody has to make. What the company actually wanted.</RR_Route_ResupplyStandingDesc>
+  <RR_Route_ResupplyBulkLabel>Just buy a great deal of food</RR_Route_ResupplyBulkLabel>
+  <RR_Route_ResupplyBulkDesc>Order rations in quantity and the question goes away for a while. It comes back.</RR_Route_ResupplyBulkDesc>
+  <RR_Route_EvacuationDrillLabel>Drill the return</RR_Route_EvacuationDrillLabel>
+  <RR_Route_EvacuationDrillDesc>Complete the return-drill work so a crew can leave together and on purpose. The company files this under things it hopes never to need.</RR_Route_EvacuationDrillDesc>
+  <RR_Route_EvacuationGuideLabel>Put your guide in front of them</RR_Route_EvacuationGuideLabel>
+  <RR_Route_EvacuationGuideDesc>An employee who has walked a route out and is still on the books can lead the rest. Worth nothing the day they leave.</RR_Route_EvacuationGuideDesc>
+  <RR_Route_WitnessAccountLabel>Your own person tells them</RR_Route_WitnessAccountLabel>
+  <RR_Route_WitnessAccountDesc>An employee who saw it, and is still here, speaks to it directly. The company prefers this because it can be questioned.</RR_Route_WitnessAccountDesc>
+  <RR_Route_WitnessFiledLabel>Give them the filed record</RR_Route_WitnessFiledLabel>
+  <RR_Route_WitnessFiledDesc>An analysed entity record says the same thing on paper, and keeps saying it after the witness has gone.</RR_Route_WitnessFiledDesc>
+  <RR_Route_MissingDetectionLabel>Do the detection work</RR_Route_MissingDetectionLabel>
+  <RR_Route_MissingDetectionDesc>Finish the detection project. The company gets something it can sell to the next town as well as this one.</RR_Route_MissingDetectionDesc>
+  <RR_Route_MissingAccountLabel>Have somebody describe it</RR_Route_MissingAccountLabel>
+  <RR_Route_MissingAccountDesc>An employee who got close enough to one of these things, and came back, closes this without further work.</RR_Route_MissingAccountDesc>
+  <RR_Route_DangerContainmentLabel>Do the containment work</RR_Route_DangerContainmentLabel>
+  <RR_Route_DangerContainmentDesc>Complete the containment protocol. Expensive, and the only route that leaves the branch able to do this again.</RR_Route_DangerContainmentDesc>
+  <RR_Route_DangerHardwareLabel>Deliver the hardware and step back</RR_Route_DangerHardwareLabel>
+  <RR_Route_DangerHardwareDesc>Components on the ground, and the problem formally handed on. Nobody involved believes this is a solution.</RR_Route_DangerHardwareDesc>
+  <RR_Route_CargoDispatchLabel>Do the forward dispatch work</RR_Route_CargoDispatchLabel>
+  <RR_Route_CargoDispatchDesc>Finish forward dispatch and the branch can move weight across distance. The company has already sold this.</RR_Route_CargoDispatchDesc>
+  <RR_Route_CargoBulkLabel>Buy the tonnage outright</RR_Route_CargoBulkLabel>
+  <RR_Route_CargoBulkDesc>Order enough metal that the shortfall stops being visible on anybody's paperwork. Ruinously expensive and completely effective.</RR_Route_CargoBulkDesc>
+  <RR_Route_StaffRecruitLabel>Recruit specialists properly</RR_Route_StaffRecruitLabel>
+  <RR_Route_StaffRecruitDesc>Complete the recruitment work and the branch stops running on whoever was nearest.</RR_Route_StaffRecruitDesc>
+  <RR_Route_StaffBuyInLabel>Pay somebody else's specialist</RR_Route_StaffBuyInLabel>
+  <RR_Route_StaffBuyInDesc>Enough silver moves the problem to a competitor's hiring department. The company respects this more than it admits.</RR_Route_StaffBuyInDesc>
+  <RR_Route_CombinedRecordLabel>File the disagreement</RR_Route_CombinedRecordLabel>
+  <RR_Route_CombinedRecordDesc>An analysed distortion record of a place that stopped belonging to one family. The paperwork the company can put in front of a client.</RR_Route_CombinedRecordDesc>
+  <RR_Route_CombinedAtlasLabel>Do the atlas work</RR_Route_CombinedAtlasLabel>
+  <RR_Route_CombinedAtlasDesc>Complete the coordinate atlas and the combination stops being a surprise. The company would rather own the map than the anecdote.</RR_Route_CombinedAtlasDesc>
+  <RR_Route_UnfamiliarRecordLabel>Write the thing down</RR_Route_UnfamiliarRecordLabel>
+  <RR_Route_UnfamiliarRecordDesc>An analysed entity record of whatever is behaving consistently and wrongly. One account, properly filed.</RR_Route_UnfamiliarRecordDesc>
+  <RR_Route_UnfamiliarCorroborationLabel>Do the corroboration work</RR_Route_UnfamiliarCorroborationLabel>
+  <RR_Route_UnfamiliarCorroborationDesc>Complete the corroboration project and one account becomes a finding. This is the version the company can charge for.</RR_Route_UnfamiliarCorroborationDesc>
+
 </LanguageData>

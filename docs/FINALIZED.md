@@ -480,6 +480,29 @@ Generation after the hinge: the eligibility filter, the generated offer routine,
 
 ---
 
+## Session 2026-09-29 - arcs 5 to 8 have work in them (0.12.13-dev)
+
+**The chart lines this closes, verbatim from `CAMPAIGN_CHART.md`:** arc 5 *"Remote sites need people, supplies, signals, protection, and an exit plan"*; arc 6 *"Openings appear in towns. Witnesses, missing residents, public danger"*; arc 7 *"Heavy cargo and staff across the wider world"*; arc 8 *"Later coordinates combine known families, then introduce one unfamiliar rule at a time"*.
+
+### What shipped
+
+**Thirteen generated request families, one per item the chart names.** With arc 4's five from 0.12.12-dev that is **18 generated families across arcs 4-8** plus the seven fixed tutorial requests: **25 request defs**. Chart §7 step 8 is closed.
+
+### Files touched
+
+`1.6/Defs/RimroomsRequestDefs/RR_Requests.xml`, `1.6/Languages/English/Keyed/RR_Requests.xml`, `docs/implementation/ARCS_5_TO_8_REQUESTS_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `About.xml`, the csproj, and `proof-request-generation.py`. **No C# changed** - this is content against the pattern proved in 0.12.12-dev.
+
+### Closure notes
+
+- **ARC 5'S "STILL UNWRITTEN" LIST HAD REAL READ SITES ALL ALONG.** `NOW.md` has carried *"still unwritten: relay stations, caches, field shelters, guarded leases, and resupply and evacuation missions"* since 0.12.9-dev with the instruction to check each against a real read site first. Checked: **every one of them already had a research project** - `RR_Logistics_Relays`, `RR_Commerce_Leases`, `RR_Commerce_NegotiatedTerms`, `RR_Logistics_StandingOrders`, `RR_Fieldcraft_ReturnDrill` - shipped between 0.11.3 and 0.11.6. **The chart's arc-5 names and the research tree's branch names were describing the same things from two directions and nobody had connected them.**
+- **Every route resolves against a def that exists**, which is the constraint that shaped all thirteen. A `Document` or `Testify` route with a mistyped log kind is **permanently unsatisfiable while still counting toward the two-different-kinds rule** - so `ConfigErrors` passes, the package checker passes, and the request ships promising two ways through and having one. Invariant 49 with teeth.
+- **The proof counts per arc, not in total**, and that distinction is load-bearing: a total of eighteen is satisfied by eighteen copies of arc 4. Fault-planted exactly that way - **moving one arc 6 family into arc 4 leaves the total at eighteen and still fails**, because arc 6 drops to two.
+- **Written entirely out of things that already exist.** Six catalogue-carried things, three log kinds, eleven of the twenty-five projects. **No new ThingDef, PawnKindDef, art or audio** - invariant 10 holds.
+- **The company's character does the writing.** Chart §4.3: greed is the *mechanism* for the patience. So the first route is nearly always the capability the company would rather own, because it can sell that again, and the second is the expensive shortcut it will happily accept - buy the metal and neither party mentions it again, hand over the hardware and formally pass the problem on, pay enough silver that staffing becomes a competitor's problem. **Same greed producing both halves is what makes two routes read as one company talking rather than a menu.**
+- Build 0.12.13-dev, **173 C# files (measured)**, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, **seventeen** proofs exit zero, the generation proof now carrying **48** claims. Assembly reproduced by two clean recompiles. **No game was launched, and nothing in this mod has ever been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

@@ -366,4 +366,312 @@
     </successRoutes>
   </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
 
+  <!-- ===================================================================================
+       ARCS 5 TO 8, GENERATED. One family per item the chart names, nothing invented.
+
+         arc 5  relay stations, caches, field shelters, guarded leases, resupply, evacuation
+         arc 6  witnesses, missing residents, public danger
+         arc 7  heavy cargo, staff across the wider world
+         arc 8  combining known families, one unfamiliar rule at a time
+
+       Every route resolves against a def that already exists. A route naming something that is
+       not there can never fire, still counts toward the two-different-kinds rule, and nothing
+       but proof-request-generation.py will say so.
+       =================================================================================== -->
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_RelayStation</defName>
+    <label>a relay station between here and there</label>
+    <description>Signals do not carry out of a coordinate, and the company has decided that is a problem it is willing to pay to stop hearing about. It wants a relay standing between the branch and whatever it is working.\n\nBuild the understanding, or hand over the hardware and let somebody else work it out.</description>
+    <arc>5</arc>
+    <paymentUsd>10000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_RelayWorkLabel</labelKey>
+        <descriptionKey>RR_Route_RelayWorkDesc</descriptionKey>
+        <projectDefName>RR_Logistics_Relays</projectDefName>
+      </li>
+      <li>
+        <kind>Deliver</kind>
+        <labelKey>RR_Route_RelayPartsLabel</labelKey>
+        <descriptionKey>RR_Route_RelayPartsDesc</descriptionKey>
+        <thingDefName>ComponentIndustrial</thingDefName>
+        <count>30</count>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_FieldCache</defName>
+    <label>a cache nobody has to carry</label>
+    <description>Every crew that has come home short has come home short of the same two things. The company wants them already out there, sitting where the next crew will need them.\n\nFood or medicine. It is not fussy, and it is not sending either.</description>
+    <arc>5</arc>
+    <paymentUsd>12000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Deliver</kind>
+        <labelKey>RR_Route_CacheRationsLabel</labelKey>
+        <descriptionKey>RR_Route_CacheRationsDesc</descriptionKey>
+        <thingDefName>MealSurvivalPack</thingDefName>
+        <count>25</count>
+      </li>
+      <li>
+        <kind>Purchase</kind>
+        <labelKey>RR_Route_CacheMedicineLabel</labelKey>
+        <descriptionKey>RR_Route_CacheMedicineDesc</descriptionKey>
+        <thingDefName>MedicineIndustrial</thingDefName>
+        <count>15</count>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_FieldShelter</defName>
+    <label>somewhere out there to stand still</label>
+    <description>A shelter is the difference between a crew that waits out a bad hour and a crew that walks into it. The company has priced both and prefers the first.\n\nTimber or steel. Whatever the branch can get to the place it is needed.</description>
+    <arc>5</arc>
+    <paymentUsd>13000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Deliver</kind>
+        <labelKey>RR_Route_ShelterTimberLabel</labelKey>
+        <descriptionKey>RR_Route_ShelterTimberDesc</descriptionKey>
+        <thingDefName>WoodLog</thingDefName>
+        <count>400</count>
+      </li>
+      <li>
+        <kind>Purchase</kind>
+        <labelKey>RR_Route_ShelterSteelLabel</labelKey>
+        <descriptionKey>RR_Route_ShelterSteelDesc</descriptionKey>
+        <thingDefName>Steel</thingDefName>
+        <count>150</count>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_GuardedLease</defName>
+    <label>a lease with somebody standing on it</label>
+    <description>The company wants a place held on paper and held in fact, and it has noticed those are two different achievements.\n\nGet the terms written, or commit to the negotiating work and let the paperwork follow.</description>
+    <arc>5</arc>
+    <paymentUsd>16000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_LeaseWorkLabel</labelKey>
+        <descriptionKey>RR_Route_LeaseWorkDesc</descriptionKey>
+        <projectDefName>RR_Commerce_Leases</projectDefName>
+      </li>
+      <li>
+        <kind>Redirect</kind>
+        <labelKey>RR_Route_LeaseTermsLabel</labelKey>
+        <descriptionKey>RR_Route_LeaseTermsDesc</descriptionKey>
+        <redirectTo>RR_Commerce_NegotiatedTerms</redirectTo>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_Resupply</defName>
+    <label>a resupply run that happens without being asked</label>
+    <description>The company is tired of authorising the same shipment every time somebody runs out. It wants the branch to make the problem stop being a decision.\n\nStanding orders, or enough rations bought outright that the question does not come up for a while.</description>
+    <arc>5</arc>
+    <paymentUsd>14000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_ResupplyStandingLabel</labelKey>
+        <descriptionKey>RR_Route_ResupplyStandingDesc</descriptionKey>
+        <projectDefName>RR_Logistics_StandingOrders</projectDefName>
+      </li>
+      <li>
+        <kind>Purchase</kind>
+        <labelKey>RR_Route_ResupplyBulkLabel</labelKey>
+        <descriptionKey>RR_Route_ResupplyBulkDesc</descriptionKey>
+        <thingDefName>MealSurvivalPack</thingDefName>
+        <count>40</count>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_Evacuation</defName>
+    <label>a way to get everyone out at once</label>
+    <description>Coming home one at a time works until the day it does not. The company wants a branch that can empty a place on purpose rather than by attrition.\n\nDrill it, or show them somebody who has already walked a route out and can lead the rest.</description>
+    <arc>5</arc>
+    <paymentUsd>18000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_EvacuationDrillLabel</labelKey>
+        <descriptionKey>RR_Route_EvacuationDrillDesc</descriptionKey>
+        <projectDefName>RR_Fieldcraft_ReturnDrill</projectDefName>
+      </li>
+      <li>
+        <kind>Testify</kind>
+        <labelKey>RR_Route_EvacuationGuideLabel</labelKey>
+        <descriptionKey>RR_Route_EvacuationGuideDesc</descriptionKey>
+        <logKind>route</logKind>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_TownWitnesses</defName>
+    <label>a town that saw something</label>
+    <description>A door opened somewhere it had no business opening, in front of people who live there. The company would like the account to come from somebody it employs.\n\nA first-hand account or a filed one. The difference matters more to the branch than it does to the company.</description>
+    <arc>6</arc>
+    <paymentUsd>15000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Testify</kind>
+        <labelKey>RR_Route_WitnessAccountLabel</labelKey>
+        <descriptionKey>RR_Route_WitnessAccountDesc</descriptionKey>
+        <logKind>entity</logKind>
+      </li>
+      <li>
+        <kind>Document</kind>
+        <labelKey>RR_Route_WitnessFiledLabel</labelKey>
+        <descriptionKey>RR_Route_WitnessFiledDesc</descriptionKey>
+        <logKind>entity</logKind>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_MissingResidents</defName>
+    <label>residents who are not where they live</label>
+    <description>People have stopped being where they are supposed to be, and the pattern of it is the part the company finds interesting.\n\nIt will take detection work it can reuse, or somebody who has been close enough to one of these things to describe it.</description>
+    <arc>6</arc>
+    <paymentUsd>19000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_MissingDetectionLabel</labelKey>
+        <descriptionKey>RR_Route_MissingDetectionDesc</descriptionKey>
+        <projectDefName>RR_Entities_Detection</projectDefName>
+      </li>
+      <li>
+        <kind>Testify</kind>
+        <labelKey>RR_Route_MissingAccountLabel</labelKey>
+        <descriptionKey>RR_Route_MissingAccountDesc</descriptionKey>
+        <logKind>entity</logKind>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_PublicDanger</defName>
+    <label>something out where people are</label>
+    <description>Whatever came through is no longer in a corridor nobody visits. The company has been asked to make it somebody else's problem, and has decided the branch is somebody else.\n\nA containment capability, or the hardware for one.</description>
+    <arc>6</arc>
+    <paymentUsd>24000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_DangerContainmentLabel</labelKey>
+        <descriptionKey>RR_Route_DangerContainmentDesc</descriptionKey>
+        <projectDefName>RR_Entities_ContainmentProtocol</projectDefName>
+      </li>
+      <li>
+        <kind>Deliver</kind>
+        <labelKey>RR_Route_DangerHardwareLabel</labelKey>
+        <descriptionKey>RR_Route_DangerHardwareDesc</descriptionKey>
+        <thingDefName>ComponentIndustrial</thingDefName>
+        <count>25</count>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_HeavyCargo</defName>
+    <label>cargo that does not fit through a door</label>
+    <description>The company has sold capacity it does not have, across a distance it has not tried. It is confident this is the branch's problem now.\n\nForward dispatch, or simply enough metal in one place that the shortfall stops being visible.</description>
+    <arc>7</arc>
+    <paymentUsd>30000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_CargoDispatchLabel</labelKey>
+        <descriptionKey>RR_Route_CargoDispatchDesc</descriptionKey>
+        <projectDefName>RR_Logistics_ForwardDispatch</projectDefName>
+      </li>
+      <li>
+        <kind>Purchase</kind>
+        <labelKey>RR_Route_CargoBulkLabel</labelKey>
+        <descriptionKey>RR_Route_CargoBulkDesc</descriptionKey>
+        <thingDefName>Steel</thingDefName>
+        <count>600</count>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_StaffTransfer</defName>
+    <label>people who know what they are looking at</label>
+    <description>The branch has been running on whoever was nearest. The company would like that to stop being true before something expensive is misread.\n\nRecruit properly, or pay enough that somebody else's specialist becomes available.</description>
+    <arc>7</arc>
+    <paymentUsd>34000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_StaffRecruitLabel</labelKey>
+        <descriptionKey>RR_Route_StaffRecruitDesc</descriptionKey>
+        <projectDefName>RR_Commerce_SpecialistRecruitment</projectDefName>
+      </li>
+      <li>
+        <kind>Purchase</kind>
+        <labelKey>RR_Route_StaffBuyInLabel</labelKey>
+        <descriptionKey>RR_Route_StaffBuyInDesc</descriptionKey>
+        <thingDefName>Silver</thingDefName>
+        <count>3000</count>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_CombinedFamilies</defName>
+    <label>a place that is two places at once</label>
+    <description>Deeper down, the shapes stop belonging to one family. The company wants that written up by somebody who noticed it happening rather than somebody who read about it.\n\nA filed record of the disagreement, or the atlas work that makes it predictable.</description>
+    <arc>8</arc>
+    <paymentUsd>38000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Document</kind>
+        <labelKey>RR_Route_CombinedRecordLabel</labelKey>
+        <descriptionKey>RR_Route_CombinedRecordDesc</descriptionKey>
+        <logKind>distortion</logKind>
+      </li>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_CombinedAtlasLabel</labelKey>
+        <descriptionKey>RR_Route_CombinedAtlasDesc</descriptionKey>
+        <projectDefName>RR_Spatial_CoordinateAtlas</projectDefName>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_UnfamiliarRule</defName>
+    <label>one rule nobody has seen before</label>
+    <description>Something down there is behaving consistently, and consistently wrong. The company has decided that is worth more than anything the branch has brought back so far.\n\nDocument it, or do the corroboration work that turns one account into a finding.</description>
+    <arc>8</arc>
+    <paymentUsd>45000000</paymentUsd>
+    <successRoutes>
+      <li>
+        <kind>Document</kind>
+        <labelKey>RR_Route_UnfamiliarRecordLabel</labelKey>
+        <descriptionKey>RR_Route_UnfamiliarRecordDesc</descriptionKey>
+        <logKind>entity</logKind>
+      </li>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_UnfamiliarCorroborationLabel</labelKey>
+        <descriptionKey>RR_Route_UnfamiliarCorroborationDesc</descriptionKey>
+        <projectDefName>RR_Measurement_Corroboration</projectDefName>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
 </Defs>
