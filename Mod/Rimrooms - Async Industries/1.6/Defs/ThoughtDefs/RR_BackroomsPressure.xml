@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Owner direction 2026-09-29: "all pawns in the backrooms get a -1 to -10 mood debuff
+       -1 first enter and -10 after being in for long time like 1hr real game time and you
+       can do things to lower it like security useing real materials not (odd) in theri
+       surroundings".
+
+       Ten stages, one per point. The stage is chosen by ThoughtWorker_RRBackroomsPressure
+       from saved per-pawn pressure, so it rises while somebody is inside a coordinate and
+       falls once they are out rather than snapping back. A state thought rather than a
+       memory, because the offset has to track a number that changes continuously. -->
+  <ThoughtDef>
+    <defName>RR_BackroomsPressure</defName>
+    <workerClass>RimroomsAsyncIndustries.Threats.ThoughtWorker_RRBackroomsPressure</workerClass>
+    <validWhileDespawned>false</validWhileDespawned>
+    <stages>
+    <li>
+      <label>uneasy here</label>
+      <description>Something about this place is off. I can't say what.</description>
+      <baseMoodEffect>-1</baseMoodEffect>
+    </li>
+    <li>
+      <label>unsettled here</label>
+      <description>Nothing here is quite the right shape. It's wearing on me.</description>
+      <baseMoodEffect>-2</baseMoodEffect>
+    </li>
+    <li>
+      <label>wrong place</label>
+      <description>I've been here too long. The corridors don't end.</description>
+      <baseMoodEffect>-3</baseMoodEffect>
+    </li>
+    <li>
+      <label>this place is wrong</label>
+      <description>This place is wrong and it doesn't care that I know.</description>
+      <baseMoodEffect>-4</baseMoodEffect>
+    </li>
+    <li>
+      <label>hollow here</label>
+      <description>Everything here feels like a copy of somewhere real.</description>
+      <baseMoodEffect>-5</baseMoodEffect>
+    </li>
+    <li>
+      <label>the walls are wrong</label>
+      <description>The walls repeat. I keep checking whether I've been here before.</description>
+      <baseMoodEffect>-6</baseMoodEffect>
+    </li>
+    <li>
+      <label>nothing here is right</label>
+      <description>Nothing here was made for anyone. It just goes on.</description>
+      <baseMoodEffect>-7</baseMoodEffect>
+    </li>
+    <li>
+      <label>cannot be here</label>
+      <description>I need to be out of here. I need to be out of here.</description>
+      <baseMoodEffect>-8</baseMoodEffect>
+    </li>
+    <li>
+      <label>this place is eating me</label>
+      <description>I can't tell how long I've been down here any more.</description>
+      <baseMoodEffect>-9</baseMoodEffect>
+    </li>
+    <li>
+      <label>unmade by this place</label>
+      <description>There is nothing left of me that this place hasn't got into.</description>
+      <baseMoodEffect>-10</baseMoodEffect>
+    </li>
+    </stages>
+  </ThoughtDef>
+
+</Defs>

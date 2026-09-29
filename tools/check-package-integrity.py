@@ -39,7 +39,10 @@ What it checks
    paths cannot be verified from disk (they live in asset bundles) and are reported as
    unverifiable rather than passed.
 7. **Sounds.** Every `RR_` sound reference resolves to a `SoundDef` this package declares.
-8. **DefInjected.** Every DefInjected key's leading defName must be a def this package
+8. **Class references.** Every `RimroomsAsyncIndustries` type named by a `workerClass`,
+   `compClass`, `giverClass`, `thingClass`, `driverClass` or `Class="..."` attribute must exist
+   in the C# source. A def naming a class that is not there fails at load with a red error.
+9. **DefInjected.** Every DefInjected key's leading defName must be a def this package
    declares, and its folder must name that def's own type. A DefInjected entry aimed at a
    def that no longer exists is dead text that never reaches a player.
 
@@ -284,6 +287,41 @@ def check_def_references(problems, declared):
 # 5. Patch targets
 # --------------------------------------------------------------------------- #
 
+def check_class_references(problems):
+    """Every RimroomsAsyncIndustries type named in XML must exist in the source.
+
+    A def naming a class that is not there fails at load with a red error, and nothing was
+    checking it. `workerClass`, `compClass`, `giverClass`, `thingClass`, `driverClass` and
+    `Class="..."` attributes all reach the same reflection lookup, so all of them are read
+    here rather than a list of the ones that have bitten so far.
+
+    Matched against declared type names in the C# source rather than by reflecting over the
+    built assembly, so the check is honest even when the DLL is stale.
+    """
+    declared_types = set()
+    for path in glob.glob(os.path.join(REPO, "src", "**", "*.cs"), recursive=True):
+        if os.sep + "obj" + os.sep in path or os.sep + "bin" + os.sep in path:
+            continue
+        text = read_text(path)
+        for name in re.findall(r"\b(?:class|struct|enum|interface)\s+([A-Za-z_][A-Za-z0-9_]*)", text):
+            declared_types.add(name)
+
+    referenced = set()
+    for path in mod_xml_files():
+        text = COMMENT.sub(" ", read_text(path))
+        for value in re.findall(r"<\w*[Cc]lass>([^<]+)</\w*[Cc]lass>", text):
+            referenced.add(value.strip())
+        for value in re.findall(r'Class="([^"]+)"', text):
+            referenced.add(value.strip())
+
+    for value in sorted(referenced):
+        if not value.startswith("RimroomsAsyncIndustries"):
+            continue                      # Core and DLC types; not ours to verify from source.
+        simple = value.split(".")[-1]
+        if simple not in declared_types:
+            fail(problems, "a def names %s, which no C# source file declares" % value)
+
+
 def check_patches(problems, declared, game_defs):
     patch_dir = os.path.join(MOD, "*", "Patches", "*.xml")
     for path in sorted(glob.glob(patch_dir)):
@@ -415,6 +453,7 @@ def main():
     check_no_attribution(problems)
     check_files(problems, allowlist, versions)
     check_def_references(problems, declared)
+    check_class_references(problems)
     check_patches(problems, declared, game_defs)
     check_textures(problems, notes)
     check_sounds(problems, declared)

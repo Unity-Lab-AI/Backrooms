@@ -16,6 +16,23 @@ namespace RimroomsAsyncIndustries.Economy
     }
 
     /// <summary>
+    /// Where a thing came from. Three states rather than a boolean, because "not known to be
+    /// odd" and "known to have come from outside" are different facts and only the second one
+    /// is safe to rely on.
+    /// </summary>
+    public enum ThingOrigin
+    {
+        /// <summary>Never stamped. Treated as ordinary, but not *proven* ordinary.</summary>
+        Unknown = 0,
+
+        /// <summary>Came into existence inside a Backrooms coordinate. Odd.</summary>
+        Backrooms = 1,
+
+        /// <summary>Came into existence anywhere else. Permanently ordinary, wherever it goes.</summary>
+        Outside = 2,
+    }
+
+    /// <summary>
     /// The mark a thing carries when it came out of a Backrooms coordinate, and the reason a
     /// player ever goes back in.
     ///
@@ -63,28 +80,76 @@ namespace RimroomsAsyncIndustries.Economy
     /// </summary>
     public sealed class CompRimroomsOddOrigin : ThingComp
     {
-        /// <summary>Saved. True once the coordinate that produced this thing marked it.</summary>
-        private bool odd;
+        /// <summary>Saved. Where this thing came into existence.</summary>
+        private ThingOrigin origin;
+
+        public ThingOrigin Origin
+        {
+            get { return origin; }
+        }
 
         public bool IsOdd
         {
-            get { return odd; }
+            get { return origin == ThingOrigin.Backrooms; }
         }
 
         /// <summary>
-        /// Marks this thing as having come out of a Backrooms coordinate. One-way on purpose:
-        /// nothing in the game clears the mark, because every route that could clear it would
-        /// also be a route to launder ordinary goods into odd ones.
+        /// Stamps where this thing came from, once. One-way on purpose: nothing in the game
+        /// restamps a thing, because every route that could would also be a route to launder
+        /// ordinary goods into odd ones or the reverse.
         /// </summary>
+        public void StampOrigin(ThingOrigin value)
+        {
+            if (origin != ThingOrigin.Unknown || value == ThingOrigin.Unknown) { return; }
+            origin = value;
+        }
+
+        /// <summary>Kept for callers that only care about the odd case.</summary>
         public void MarkOdd()
         {
-            odd = true;
+            StampOrigin(ThingOrigin.Backrooms);
+        }
+
+        /// <summary>
+        /// Stamps a thing the moment it first exists somewhere, which is what makes the origin
+        /// model complete rather than only covering generated contents.
+        ///
+        /// **This is the whole rule, and it closes the laundering route by construction.**
+        /// Anything that spawns anywhere other than a Backrooms coordinate is stamped
+        /// <see cref="ThingOrigin.Outside"/> — permanently, wherever it is later carried. So by
+        /// the time a colonist hauls a crate of cotton through a gate, that cotton is already
+        /// *proven* ordinary and can never become odd.
+        ///
+        /// Which means anything that turns up on a Backrooms map still carrying
+        /// <see cref="ThingOrigin.Unknown"/> genuinely came into existence there: rock mined out
+        /// of its walls, material from a deconstructed partition, a plant cut in one of its
+        /// rooms, meat butchered from something found in it. All of that is odd, and none of it
+        /// was covered when only generated contents were marked.
+        ///
+        /// Skipped on respawn-after-load, because a saved thing already carries its answer.
+        /// </summary>
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            if (respawningAfterLoad || origin != ThingOrigin.Unknown) { return; }
+            Map map = parent == null ? null : parent.Map;
+            if (map == null) { return; }
+            StampOrigin(OddOriginService.IsBackroomsMap(map)
+                ? ThingOrigin.Backrooms : ThingOrigin.Outside);
         }
 
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_Values.Look(ref odd, "rr_oddOrigin", false);
+            Scribe_Values.Look(ref origin, "rr_origin", ThingOrigin.Unknown);
+            if (Scribe.mode == LoadSaveMode.LoadingVars && origin == ThingOrigin.Unknown)
+            {
+                // 0.7.2-dev and 0.7.3-dev saved a bare boolean. Read it so an early save does
+                // not silently lose every mark it had earned.
+                bool legacyOdd = false;
+                Scribe_Values.Look(ref legacyOdd, "rr_oddOrigin", false);
+                if (legacyOdd) { origin = ThingOrigin.Backrooms; }
+            }
         }
 
         /// <summary>
@@ -98,7 +163,7 @@ namespace RimroomsAsyncIndustries.Economy
         public override bool AllowStackWith(Thing other)
         {
             if (!base.AllowStackWith(other)) { return false; }
-            return odd == OddOriginService.IsOdd(other);
+            return IsOdd == OddOriginService.IsOdd(other);
         }
 
         /// <summary>
@@ -108,7 +173,7 @@ namespace RimroomsAsyncIndustries.Economy
         public override void PostSplitOff(Thing piece)
         {
             base.PostSplitOff(piece);
-            if (!odd) { return; }
+            if (!IsOdd) { return; }
             CompRimroomsOddOrigin split = piece == null ? null : piece.TryGetComp<CompRimroomsOddOrigin>();
             if (split != null) { split.MarkOdd(); }
         }
@@ -119,18 +184,18 @@ namespace RimroomsAsyncIndustries.Economy
         /// </summary>
         public override string TransformLabel(string label)
         {
-            if (!odd) { return label; }
+            if (!IsOdd) { return label; }
             return "RR_OddOrigin_Label".Translate(label);
         }
 
         public override string CompInspectStringExtra()
         {
-            return odd ? "RR_OddOrigin_Inspect".Translate().ToString() : null;
+            return IsOdd ? "RR_OddOrigin_Inspect".Translate().ToString() : null;
         }
 
         public override string GetDescriptionPart()
         {
-            return odd ? "RR_OddOrigin_Description".Translate().ToString() : null;
+            return IsOdd ? "RR_OddOrigin_Description".Translate().ToString() : null;
         }
     }
 }

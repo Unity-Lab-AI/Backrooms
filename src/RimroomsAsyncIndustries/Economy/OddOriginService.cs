@@ -102,9 +102,40 @@ namespace RimroomsAsyncIndustries.Economy
             Thing subject = Resolve(thing);
             if (subject == null) { return false; }
             CompRimroomsOddOrigin marker = subject.TryGetComp<CompRimroomsOddOrigin>();
-            if (marker == null || marker.IsOdd) { return false; }
+            // Already stamped either way -- odd, or proven to have come from outside --
+            // means there is nothing to do and nothing was changed. Reporting otherwise
+            // would make the generation pass overcount what it marked.
+            if (marker == null || marker.Origin != ThingOrigin.Unknown) { return false; }
             marker.MarkOdd();
             return true;
+        }
+
+        /// <summary>
+        /// The recorded origin of a thing, looking through a minified wrapper. Distinguishes
+        /// "proven to have come from outside" from "never stamped", which the boolean
+        /// <see cref="IsOdd"/> cannot: shelter scoring needs the former and must not count the
+        /// latter, or an unstamped Backrooms fixture would read as comfort from home.
+        /// </summary>
+        public static ThingOrigin OriginOf(Thing thing)
+        {
+            Thing subject = Resolve(thing);
+            if (subject == null) { return ThingOrigin.Unknown; }
+            CompRimroomsOddOrigin marker = subject.TryGetComp<CompRimroomsOddOrigin>();
+            return marker == null ? ThingOrigin.Unknown : marker.Origin;
+        }
+
+        /// <summary>
+        /// Whether this map is a Backrooms coordinate that has finished generating.
+        ///
+        /// Readiness matters rather than being pedantry: a map still being built is not yet a
+        /// place a thing can be said to have come *from*, and the generation pass marks its
+        /// contents explicitly anyway.
+        /// </summary>
+        public static bool IsBackroomsMap(Map map)
+        {
+            if (map == null) { return false; }
+            var site = map.Parent as Generation.RimroomsDestinationMapParent;
+            return site != null && site.LayoutReady;
         }
 
         private static Thing Resolve(Thing thing)

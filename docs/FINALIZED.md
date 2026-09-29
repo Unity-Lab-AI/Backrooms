@@ -1809,3 +1809,45 @@ Owner directions captured verbatim: 2.
 Unfillable-contract trap identified and designed out before shipping: 1, and it would have made the whole feature look broken.
 Integrity rules corrected rather than worked around: 1.
 Still open and named in `TODO.md`, not deferred: quests and missions as distinct from contracts; a player-facing surface listing open demands; and materials recovered by **deconstructing** a marked building.
+
+---
+
+## 2026-09-29 — Origin completeness, and the weight of being somewhere wrong (0.7.4-dev)
+
+### Verbatim owner requests
+
+> *"above market for (odd) resources as everything in it entirety that comes out of the backrooms get marked odd(im not sure the best way of doing it maybe mark it at the gate but idk it should be odd when in the backrooms too and all pawns in the backrooms get a -1 to -10 mood debuff -1 first enter and -10 after being in for long time like 1hr real game time and you can do things to lower it like security useing real materials not (odd) in theri surroundings ect ect expound on this too"*
+
+### The owner's own doubt was correct, and gate-marking was not built
+
+- [x] **The owner floated gate-marking and immediately doubted it** — *"maybe mark it at the gate but idk"*. The doubt was right on two counts. It is a **laundering route**: carry ordinary cotton in, carry it out, it is now odd. And it fails the owner's very next clause — *"it should be odd when in the backrooms too"* — because nothing would be odd until it crossed.
+- [x] **What generation-time marking genuinely missed** was everything meant by *"everything in it entirety"*: rock mined from a coordinate's walls, material from a deconstructed partition, plants cut in its rooms, meat butchered from something found there. None of that is generated content.
+
+### The fix, and why it needed no special cases
+
+- [x] **A three-state origin replaces the boolean** — `Unknown`, `Backrooms`, `Outside` — stamped the first time a thing exists anywhere. **This closes the laundering route by construction rather than by a rule.** By the time a colonist hauls cotton through a gate it was stamped `Outside` back in the colony and can never become odd, which means anything appearing on a Backrooms map still `Unknown` genuinely came into existence there. Mined rock, deconstruction returns, cut plants and butchered meat all become odd with **no special case for any of them**.
+- [x] **One seam named rather than fought:** haul ordinary steel in, build a wall, deconstruct it, and the returns are odd. Deconstruction refunds roughly half, so the cycle **loses material every time** and is economically irrational.
+
+### The pressure — the piece that ties the mod together
+
+- [x] **Until now odd/ordinary was purely economic. This makes it psychological**, and gives the player a reason to carry ordinary material *into* a coordinate instead of only carrying odd material out. The tension is real: **every ordinary thing hauled in to make the place bearable is a thing that was not sold.** It is also what finally gives the forward base a purpose — thirty-one work families could already work across a gate; this is what makes it worth building somewhere to do it from.
+- [x] **Saved ticks per person, not a thought with a timer**, so the penalty **decays on leaving rather than snapping back**. An hour down there follows somebody home, which forces shift rotation instead of one colonist living there forever.
+- [x] **−1 on arrival as a floor nothing removes; −10 at 216,000 ticks** — one real hour at normal speed, and exactly double the gate's 108,000-tick opening window, so both systems measure time in the same unit. Recovery runs at 2×.
+- [x] **Shelter is scored from the pawn's actual surroundings**, not a research unlock or a stat — a stat would have been easier and would have meant nothing. Ordinary-origin construction 0.45, an enclosed room 0.25, ordinary seating or a bed 0.15, light 0.15. Best case slows accumulation to **20%, never zero**: a perfectly appointed room in a coordinate is still a room in a coordinate. **Odd fixtures found in place score nothing**, which is the entire point.
+- [x] **Applied to the player's people and anyone they carried in**, not to generated inhabitants. The owner said *"all pawns"*; the honest reading is everybody who does not belong there, since a native is not unsettled by its own home and nothing reads its mood anyway.
+
+### A checker gap closed in the same change
+
+- [x] This checkpoint introduced the package's **first `workerClass` reference, and nothing verified such a class exists** — a def naming a missing type fails at load with a red error. `check-package-integrity.py` now resolves every `RimroomsAsyncIndustries` type named by `workerClass`, `compClass`, `giverClass`, `thingClass`, `driverClass` or a `Class="..."` attribute against the C# source. **Verified by deliberately corrupting the name, confirming the failure, and restoring.**
+
+### Build evidence
+
+0.7.4-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **125** C# source files (two new), **79** approved package files (one new ThoughtDef). Assembly SHA-256 `67843DA1A84F9B609B7BA4FBFADC29FA8E2C3C3F279919A4588E125E188A0716`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass. One ThoughtDef added — a mechanics definition, anticipated by owner decision 18 which names *"pawn hediffs"* explicitly. **No new gameplay ThingDef, no asset, no patch operation, no new work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 2. Source files modified: 3. Package files created: 1. Docs updated: 5 (1 new).
+Owner directions captured verbatim: 1, containing two separate systems.
+Owner ideas declined with reasons, on the owner's own stated doubt: 1 (gate-marking).
+Checker gaps found and closed in the same checkpoint: 1, sanity-tested by breaking it.
+Still open and named in `TODO.md`, not deferred: the whole credit/bond layer — denominations 10 to 1,000,000, the bench bills, greedy highest-denomination payout, the credit beacon, and the exchange paying above market for odd resources.

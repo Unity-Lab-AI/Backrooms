@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.4-dev - 2026-09-29 - the place gets into people, and everything from it is marked
+
+- **Everything that comes out of a coordinate is odd now, not just what was lying there.** Rock you mined from its walls, material from a partition you pulled down, plants you cut in its rooms - all of it.
+- **Things you carry in stay ordinary, permanently.** Haul your own cotton down there and back and it is still your own cotton.
+- **Being in the Backrooms wears on people.** Minus one the moment they step through, sliding toward minus ten over about an hour of real time down there.
+- **It follows them home.** The feeling fades after they leave rather than switching off at the door, so rotating shifts works and living down there does not.
+- **You can build against it.** A lit, properly enclosed room made of material you hauled in slows it right down. Fixtures you found in place do nothing - it has to be real material from outside.
+- Nothing you build makes the place ordinary. The first point never goes away.
+
+Full record: [origin and pressure](docs/implementation/BACKROOMS_PRESSURE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.7.3-dev - 2026-09-29 - somebody wants the odd goods
 
 - **Buyers now turn up wanting goods recovered from the Backrooms**, and they will not take the ordinary equivalent. Your own cotton is no substitute for cotton that came out of a coordinate.

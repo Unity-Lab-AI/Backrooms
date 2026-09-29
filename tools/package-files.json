@@ -28,6 +28,7 @@
     "1.6/Defs/ThingDefs_Buildings/RR_InvestigationBuildings.xml",
     "1.6/Defs/ThingDefs_Items/RR_FieldEquipment.xml",
     "1.6/Defs/ThingDefs_Misc/RR_SiteObjects.xml",
+    "1.6/Defs/ThoughtDefs/RR_BackroomsPressure.xml",
     "1.6/Defs/WorkGiverDefs/RR_ConnectedWork.xml",
     "1.6/Defs/WorkGiverDefs/RR_GateWork.xml",
     "1.6/Defs/WorkGiverDefs/RR_InvestigationWork.xml",
