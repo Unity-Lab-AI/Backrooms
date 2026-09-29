@@ -1104,3 +1104,45 @@ This has now bitten three times: `NOW.md` claimed three answered questions were 
 Docs corrected: 11. Individual corrections: 23. Live docs scanned: 43. Genuine rot remaining: 0.
 Self-contradicting docs found: 1 (`SCENARIO_SETUP_AND_PORTAL_NETWORK.md`).
 Standing process added: the doc-rot sweep, with its check table, in `REGRESSION_CONTAINMENT.md` and as ritual step 5a.
+
+---
+
+## Session — 2026-09-29 — continuous portal topology: two requirements already worked, one gap closed (0.6.3-dev)
+
+### Verbatim request
+
+Working under the standing instruction *"you are NOT to stop untill i tell you to stop or you reach the completeion of the mod's build out"*, against the two universe directions captured earlier in the session.
+
+### COMPLETED
+
+- [x] **Established what already satisfied the owner's topology direction before writing anything, and reported it rather than quietly rebuilding it.** Two of the four requirements were already met:
+  - **Portals within portals, to any depth** — `RimroomsPortalNetwork` stores a graph and `PortalRouteSearch` is multi-hop, so coordinate A's frontier reaching B, whose frontier reaches C, is just another edge. Depth is unbounded; breadth is capped per coordinate and by the campaign's own coordinate cap.
+  - **A portal leading to another Backrooms instance seed** — `NaturalFrontierService.Discover` has always called `CreateDiscoveredCoordinate`, which mints a **new coordinate with its own derived seed**. A frontier never linked two known spaces; it always led somewhere new.
+  - Also already true: **the link kind never restricts onward travel**, because routing does not discriminate by `PortalConnectionKind` and the gate window is consulted only for laboratory edges.
+- [x] **Closed the first real gap: a way onward can now be found on an ordinary map.** `NaturalFrontierService.Evaluate` previously refused any door outside a `RimroomsDestinationMapParent` with the stated reason "Only deeper in" — a design assumption the owner has overridden. It now has two origin branches: a generated coordinate (its own seed, 1-in-12, cap 2) and an ordinary colony or world-site map (the newly exposed `BranchSeed`, 1-in-40, **cap 1**).
+- [x] **The rule that makes it safe to ship: a door the player built is never a frontier.** Converting somebody's own wall door into a permanent way into the Backrooms would change an existing colony just by installing this mod, which `CONTENT_REUSE_POLICY.md` forbids outright, and it is exactly the surprise nobody asked for. So a way onward is found in **something that was already standing there** — `door.Faction != Faction.OfPlayer`. A designated laboratory gate is excluded too, because it already has a machine on it. The cap of one and the low rarity carry the same intent: ordinary inside the Backrooms, rare and notable out in the world.
+- [x] **Save compatibility held exactly, as a constraint on the refactor rather than by luck.** A Backrooms origin still produces byte-for-byte the same discovered-coordinate id and the same seed key as before, so every coordinate already discovered in an existing save resolves to the same space with the same seed. Restructuring that id would have silently relocated every space a player had already found. The ordinary-map case uses a distinct `worldfrontier:` key so the two can never collide.
+- [x] **Two defects caught before the build.**
+  - **A null dereference in precisely the case the change exists to support:** `Discover` recorded its event with `source.Id`, the `CoordinateRecord` — and an ordinary map has none, so the first successful world-map discovery would have thrown. Now records `origin.OriginId`.
+  - **A shadowed type:** exposing the branch seed as `CampaignSeed` collided with the static `CampaignSeed` derivation helper in the same namespace, so four existing call sites in `CampaignServices` and `FailedSiteRecovery` resolved `CampaignSeed.Derive(...)` against an `int` property and failed to compile. Renamed to `BranchSeed`. Recorded because a property shadowing a type produces baffling errors a long way from their cause.
+- [x] **Named the remaining half honestly, with an order.** *"Pop out any where in the game world on a tile map"* is genuinely unbuilt, because everything today assumes the far side of a natural edge is a branch-owned coordinate — `RegisterNaturalAddress` takes a `CoordinateRecord` and `DestinationService.EnsureSite` generates a Backrooms map for it. Split into two register rows with the cheap one first: a far side that is an **already-owned ordinary map** (a real shortcut home, bounded, and it exercises the endpoint plumbing), then a far side that is a **world tile the branch does not hold**, which needs a new world object and a generated map and therefore its own checkpoint and review.
+- [x] **Recorded that the three starting sites need implementing, not designing.** The owner offered a fallback of shipping equipment and supplies because they were unsure authored facilities were feasible; `SCENARIOS.md` already specifies all three in full, so the fallback is only needed if a specified element proves unbuildable under the existing-content-only policy — and then the element and the reason must be named.
+
+### Saved state
+
+**None added.** `BranchSeed` exposes an existing saved field read-only, and discovered coordinates keep the existing derived-id path. A 0.6.2-dev save loads unchanged and every already-discovered space resolves identically.
+
+### Documents updated in the same change
+
+`implementation/CONTINUOUS_TOPOLOGY_IMPLEMENTATION.md` (new record), `DEFERRED.md` (new topology section, four rows), `ARCHITECTURE.md`, `SKILL_TREE.md`, `ROADMAP.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.6.3-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **110** C# source files (no new file — this was a change to an existing service), **76** approved package files (unchanged; two keyed strings added). Assembly SHA-256 `F7ADAE761CE5AF98925DBA0EEA5A5ED5C0CC8BAB14B0163D1CD8236FEE90C89C`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. Evidence folder `implementation/evidence/world-frontiers-2026-09-29/`. All 58 packaged XML files parse; every `RR_` key resolves with 0 missing; 2,983 relative doc links resolve with 0 broken; 0 attribution strings; all compliance checks pass. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 0. Source files modified: 2. Package files modified: 1. Docs updated: 7 (1 new).
+Requirements found already satisfied and reported rather than rebuilt: 3.
+Gaps closed: 1. Gaps named with a concrete order: 2. Defects caught pre-build: 2.
+Next: the far side of a natural edge being an already-owned ordinary map, then the three starting sites.

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.3-dev - 2026-09-29 - a way onward can turn up out in the world
+
+- Doorways that lead somewhere else can now be found out in the ordinary world, not only deep in the Backrooms. Much rarer out there, and at most one per map, because it should be a notable thing rather than a fixture.
+- **A door your own people built is never one of them.** A way onward is found in something that was already standing there, so installing this mod never quietly turns part of your base into a permanent hole in the world.
+- A doorway that already has a gate machine on it is left alone too.
+- The same doorway always leads to the same place. Reloading or revisiting never rerolls it, and every space already found in an older save still leads exactly where it did.
+
+Two things worth knowing about what was already true, because they did not need building: a portal found inside a space reached by a portal already works to any depth, and a way onward has always led to a genuinely new place with its own seed rather than linking two you already knew. What is still to come is a portal that opens out onto the ordinary world rather than into another Backrooms space; the groundwork for it is named in the register.
+
+Full record: [continuous topology](docs/implementation/CONTINUOUS_TOPOLOGY_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.6.2-dev - 2026-09-29 - eight more kinds of work cross a gate
 
 - Cleaning, repair and firefighting now happen across a gate — but only inside a Home area you set on that side. A Backrooms corridor nobody called home attracts nobody, exactly as it already did for the game's own colonists.

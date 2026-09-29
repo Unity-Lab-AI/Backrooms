@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
+using RimroomsAsyncIndustries.Gate;
 using RimroomsAsyncIndustries.Generation;
 using RimWorld;
 using Verse;
@@ -20,12 +21,25 @@ namespace RimroomsAsyncIndustries.Portals
     /// address by hand, and a deterministic coordinate API sat with no caller at all.
     ///
     /// Bounded, and deliberately so. A frontier is a property of the doorway's own
-    /// position under the coordinate's own saved seed, so the same doorway is always
-    /// the same answer: reopening a known space never rerolls what it leads to. At
-    /// most <see cref="MaximumFrontiersPerCoordinate"/> gates are ever found on one
-    /// coordinate, and the campaign's own coordinate cap bounds the whole graph. This
-    /// propagates further spaces without preallocating infinity, which is exactly what
-    /// the contract asks for.
+    /// position under the place's own stable seed, so the same doorway is always the same
+    /// answer: reopening a known space never rerolls what it leads to. At most
+    /// <see cref="MaximumFrontiersPerCoordinate"/> gates are ever found on one coordinate,
+    /// and the campaign's own coordinate cap bounds the whole graph. This propagates further
+    /// spaces without preallocating infinity, which is exactly what the contract asks for.
+    ///
+    /// **Two kinds of origin, per the owner's topology direction of 2026-09-29.** A doorway
+    /// leading onward may be found inside the Backrooms, as before, *or* on an ordinary map —
+    /// a colony or a generated world site — because portals are findable on world maps too and
+    /// the link kind that brought you somewhere never restricts where you can go next. The
+    /// ordinary-map case is deliberately rarer, capped at one per map, and **never applies to a
+    /// door the player built**: turning somebody's own wall door into a permanent way into the
+    /// Backrooms would change an existing colony just by installing this mod, which the content
+    /// policy forbids. A way onward is found in something that was already standing there.
+    ///
+    /// Save compatibility is exact: a Backrooms origin still produces byte-for-byte the same
+    /// discovered-coordinate id and the same seed key it produced before ordinary maps were
+    /// allowed, so every coordinate already discovered in an existing save resolves to the same
+    /// space. The ordinary-map case uses a distinct key so the two can never collide.
     ///
     /// This finds a *way through*. It does not generate inhabitants, encounters or
     /// pressure; what waits on the other side is the escalation ladder's business.
@@ -48,6 +62,35 @@ namespace RimroomsAsyncIndustries.Portals
         internal const int FrontierRarity = 12;
 
         /// <summary>
+        /// How many ways onward may ever be found on an **ordinary** map — a colony, or a
+        /// generated world site. One, deliberately. The Backrooms is where doorways lead
+        /// somewhere else; the world is where that is a rare and notable event, and a base
+        /// riddled with anomalous doors would be both wrong and intrusive.
+        /// </summary>
+        internal const int MaximumFrontiersPerOrdinaryMap = 1;
+
+        /// <summary>
+        /// Rarity on an ordinary map, much lower than inside the Backrooms for the same
+        /// reason as the cap above.
+        /// </summary>
+        internal const int WorldFrontierRarity = 40;
+
+        /// <summary>
+        /// Where a frontier draw is anchored. A generated coordinate has its own saved seed
+        /// and its own id; an ordinary map has neither, so it uses the branch seed and an id
+        /// derived from the map. Both are stable for the life of the save, which is the only
+        /// property the draw actually needs.
+        /// </summary>
+        private sealed class FrontierOrigin
+        {
+            internal string OriginId;
+            internal int Seed;
+            internal int Rarity;
+            internal int Cap;
+            internal string KeyPrefix;
+        }
+
+        /// <summary>
         /// Whether this doorway is one that leads onward and has not been recorded yet.
         /// Pure and side-effect free: it generates nothing and records nothing, so it
         /// is safe to ask about every door on a map during work scanning.
@@ -55,7 +98,8 @@ namespace RimroomsAsyncIndustries.Portals
         public static bool IsFrontierCandidate(Thing door)
         {
             CoordinateRecord source;
-            return Evaluate(door, out source) == null;
+            FrontierOrigin origin;
+            return Evaluate(door, out source, out origin) == null;
         }
 
         /// <summary>
@@ -67,14 +111,18 @@ namespace RimroomsAsyncIndustries.Portals
         public static CompanyActionResult Discover(Thing door)
         {
             CoordinateRecord source;
-            string refusal = Evaluate(door, out source);
-            if (refusal != null) { return CompanyActionResult.Refused(refusal); }
+            FrontierOrigin origin;
+            string refusal = Evaluate(door, out source, out origin);
+            if (refusal != null || origin == null) { return CompanyActionResult.Refused(refusal ?? "RR_Frontier_Unavailable"); }
             RimroomsCampaignComponent campaign = Campaign();
 
-            // Derived from the source coordinate and the doorway's own position, so a
-            // replay of the same discovery resolves to the same space with the same
-            // seed rather than inventing another one.
-            string discoveryId = source.Id + ":frontier:" + door.Position.x + "," + door.Position.z;
+            // Derived from where it was found and the doorway's own position, so a replay of
+            // the same discovery resolves to the same space with the same seed rather than
+            // inventing another one. For a Backrooms origin this is byte-for-byte the id the
+            // service produced before ordinary maps were allowed, so every coordinate already
+            // discovered in an existing save still resolves to exactly the same space.
+            string discoveryId = origin.OriginId + ":" + origin.KeyPrefix +
+                door.Position.x + "," + door.Position.z;
             CoordinateRecord discovered;
             CompanyActionResult created = campaign.CreateDiscoveredCoordinate(discoveryId, out discovered);
             if (!created.Success || discovered == null) { return created; }
@@ -82,7 +130,12 @@ namespace RimroomsAsyncIndustries.Portals
             CompanyActionResult registered = PortalAddressService.RegisterNaturalAddress(
                 door, PortalAddressService.ApproachCellFor(door), discovered);
             if (registered.Success && !registered.AlreadyApplied)
-            { campaign.RecordEvent("RR_Event_FrontierDiscovered", discovered.Id, source.Id); }
+            {
+                // Origin id, not the coordinate's: an ordinary map has no CoordinateRecord at
+                // all, so reading source.Id here would have thrown for exactly the case this
+                // change exists to support.
+                campaign.RecordEvent("RR_Event_FrontierDiscovered", discovered.Id, origin.OriginId);
+            }
             return registered;
         }
 
@@ -98,9 +151,11 @@ namespace RimroomsAsyncIndustries.Portals
         /// worker was sent to survey cannot differ from the thing that gets recorded.
         /// Returns a keyed refusal, or null when the doorway is a live candidate.
         /// </summary>
-        private static string Evaluate(Thing door, out CoordinateRecord source)
+        private static string Evaluate(Thing door, out CoordinateRecord sourceCoordinate,
+            out FrontierOrigin frontierOrigin)
         {
-            source = null;
+            sourceCoordinate = null;
+            frontierOrigin = null;
             RimroomsCampaignComponent campaign = Campaign();
             RimroomsPortalNetwork network = Network();
             if (campaign == null || !campaign.CanOperate || network == null || network.HasStateFault)
@@ -109,15 +164,55 @@ namespace RimroomsAsyncIndustries.Portals
                 !campaign.OwnsMap(door.Map))
             { return "RR_Frontier_NotADoorway"; }
 
-            // Only deeper in. Headquarters has a machine for this; the Backrooms is
-            // where a doorway can simply lead somewhere else.
+            // Two kinds of place a doorway can lead onward from, per the owner's topology
+            // direction of 2026-09-29: the link kind that brought you somewhere never
+            // restricts where you can go next, and portals are findable on world maps too.
             RimroomsDestinationMapParent site = door.Map.Parent as RimroomsDestinationMapParent;
-            if (site == null || !site.LayoutReady) { return "RR_Frontier_NotInTheBackrooms"; }
-            CoordinateRecord record = campaign.Coordinates.FirstOrDefault(candidate => candidate != null &&
-                candidate.Site == site && candidate.Id == site.CoordinateId);
-            if (record == null) { return "RR_Frontier_NotInTheBackrooms"; }
-            // The way home is never a frontier.
-            if (door == site.ReturnAnchor) { return "RR_Frontier_IsTheWayBack"; }
+            FrontierOrigin origin;
+            if (site != null && site.LayoutReady)
+            {
+                CoordinateRecord record = campaign.Coordinates.FirstOrDefault(candidate => candidate != null &&
+                    candidate.Site == site && candidate.Id == site.CoordinateId);
+                if (record == null) { return "RR_Frontier_NotInTheBackrooms"; }
+                // The way home is never a frontier.
+                if (door == site.ReturnAnchor) { return "RR_Frontier_IsTheWayBack"; }
+                // Unchanged from the original id and key so every coordinate already
+                // discovered in an existing save resolves to exactly the same space.
+                origin = new FrontierOrigin
+                {
+                    OriginId = record.Id,
+                    Seed = record.Seed,
+                    Rarity = FrontierRarity,
+                    Cap = MaximumFrontiersPerCoordinate,
+                    KeyPrefix = "frontier:"
+                };
+                sourceCoordinate = record;
+            }
+            else
+            {
+                // An ordinary map: a colony, or a generated world site. Rarer, capped at one,
+                // and with one hard restriction that protects the player's own base.
+                //
+                // **A door the player built is never a frontier.** Turning somebody's own
+                // wall door into a permanent way into the Backrooms would change an existing
+                // colony just by installing this mod, which the content policy forbids, and
+                // it would be the kind of surprise nobody asked for. A way onward is found in
+                // something that was already standing there.
+                if (door.Faction == Faction.OfPlayer) { return "RR_Frontier_PlayerBuilt"; }
+                // A designated laboratory gate has a machine for this and is not a frontier.
+                if (door.TryGetComp<CompRimroomsGate>() != null) { return "RR_Frontier_IsAMachineGate"; }
+                origin = new FrontierOrigin
+                {
+                    OriginId = "map:" + door.Map.uniqueID,
+                    Seed = campaign.BranchSeed,
+                    Rarity = WorldFrontierRarity,
+                    Cap = MaximumFrontiersPerOrdinaryMap,
+                    // A distinct key, so an ordinary-map draw can never collide with a
+                    // Backrooms one even if a seed and a position happened to coincide.
+                    KeyPrefix = "worldfrontier:"
+                };
+            }
+            frontierOrigin = origin;
 
             IntVec3 approach = PortalAddressService.ApproachCellFor(door);
             if (!PortalAddressService.UsableThreshold(door, approach, door.Map))
@@ -133,16 +228,14 @@ namespace RimroomsAsyncIndustries.Portals
                 { return "RR_Frontier_AlreadyRecorded"; }
                 if (edge.Kind == PortalConnectionKind.Natural && edge.First.Map == door.Map) { foundHere++; }
             }
-            if (foundHere >= MaximumFrontiersPerCoordinate) { return "RR_Frontier_NoneLeftHere"; }
+            if (foundHere >= origin.Cap) { return "RR_Frontier_NoneLeftHere"; }
 
-            // The draw is over the doorway's position under this coordinate's own saved
-            // seed. Position is stable for the life of the space, so the answer never
-            // changes on a reload or a revisit.
-            int draw = CampaignSeed.Derive(record.Seed,
-                "frontier:" + door.Position.x + "," + door.Position.z, 1);
-            if (draw % FrontierRarity != 0) { return "RR_Frontier_LeadsNowhere"; }
-
-            source = record;
+            // The draw is over the doorway's position under this place's own stable seed.
+            // Position is stable for the life of the map, so the answer never changes on a
+            // reload or a revisit.
+            int draw = CampaignSeed.Derive(origin.Seed,
+                origin.KeyPrefix + door.Position.x + "," + door.Position.z, 1);
+            if (draw % origin.Rarity != 0) { return "RR_Frontier_LeadsNowhere"; }
             return null;
         }
 
@@ -173,13 +266,18 @@ namespace RimroomsAsyncIndustries.Portals
             RimroomsCampaignComponent campaign = Current.Game == null
                 ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
             if (campaign == null || !campaign.CanOperate || !campaign.OwnsMap(pawn.Map)) { return true; }
-            RimroomsDestinationMapParent site = pawn.Map.Parent as RimroomsDestinationMapParent;
-            if (site == null || !site.LayoutReady) { return true; }
             RimroomsPortalNetwork network = Current.Game.GetComponent<RimroomsPortalNetwork>();
             if (network == null || network.HasStateFault) { return true; }
+            // Both kinds of place can hold a way onward now, with different caps: a generated
+            // coordinate may give up two, an ordinary map at most one.
+            RimroomsDestinationMapParent site = pawn.Map.Parent as RimroomsDestinationMapParent;
+            bool inBackrooms = site != null && site.LayoutReady;
+            int cap = inBackrooms
+                ? NaturalFrontierService.MaximumFrontiersPerCoordinate
+                : NaturalFrontierService.MaximumFrontiersPerOrdinaryMap;
             int foundHere = network.Connections.Count(edge => edge != null && edge.First != null &&
                 edge.Kind == PortalConnectionKind.Natural && edge.First.Map == pawn.Map);
-            return foundHere >= NaturalFrontierService.MaximumFrontiersPerCoordinate;
+            return foundHere >= cap;
         }
 
         private Job SurveyJob(Pawn pawn, Thing thing, bool forced)

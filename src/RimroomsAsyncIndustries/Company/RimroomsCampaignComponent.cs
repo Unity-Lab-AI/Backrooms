@@ -50,6 +50,16 @@ namespace RimroomsAsyncIndustries.Company
         }
 
         public int SchemaVersion { get { return schemaVersion; } }
+
+        /// <summary>
+        /// The branch's own seed, read-only. Exposed so a deterministic draw can be made
+        /// about a map that is not a generated coordinate and therefore has no
+        /// <c>CoordinateRecord.Seed</c> of its own — an ordinary colony or world-site map.
+        /// Read-only on purpose: nothing outside this component may reseed a branch. Named
+        /// BranchSeed rather than CampaignSeed because the latter is the static derivation
+        /// helper in this same namespace, and a property of that name silently shadowed it.
+        /// </summary>
+        public int BranchSeed { get { return campaignSeed; } }
         public string BranchId { get { return branchId; } }
 
         /// <summary>The player's own name for this company, or a neutral fallback.</summary>
