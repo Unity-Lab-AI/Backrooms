@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.2-dev - 2026-09-29 - what comes out of the Backrooms is marked
+
+- **Anything you carry out of a Backrooms coordinate is marked odd.** A stove you found down there, a stack of cotton off a shelf, a door you uninstalled: it comes home labelled `(odd)`.
+- **Odd goods never stack with ordinary ones.** Odd cotton and your own cotton sit in the same stockpile as two separate stacks, and neither one absorbs the other. Split an odd stack and both halves stay odd.
+- **Uninstalled buildings keep the mark.** Uninstalling a machine you found and hauling it home does not launder it back into an ordinary one.
+- **Bringing your own goods in does not make them odd.** Only what was already down there counts.
+
+Nothing asks for odd goods yet. This is the marker the contracts will be written against.
+
+Full record: [odd origin](docs/implementation/ODD_ORIGIN_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.7.1-dev - 2026-09-29 - the gate assembly needs looking after
 
 - **A gate now holds a condition that slowly wears down**, and somebody has to recondition it before it runs out. A gate with nothing left will not open until it is seen to.

@@ -187,6 +187,16 @@ namespace RimroomsAsyncIndustries.Generation
                 MapGenerator.rootsToUnfog.Add(returnCell);
 
                 ValidatePlacedLayout(map, coordinate, entryCell, returnCell, officeEvidenceCell, anchor);
+
+                // Everything this coordinate contains is marked as having come out of the
+                // Backrooms, in one pass, here and nowhere else. The mark is what odd contracts
+                // ask for, so it is also the thing a player would most like to forge: marking
+                // on spawn instead would let somebody haul ordinary goods in, drop them, and
+                // carry them back out as odd. Doing it once at generation, before the map can
+                // be reached, means the mark can only be earned by taking what was already
+                // there. See Economy/OddOriginService.
+                Economy.OddOriginService.MarkGeneratedContents(map);
+
                 parent.MarkLayoutReady(entryCell, returnCell, officeEvidenceCell, anchor);
             }
             catch (Exception error)

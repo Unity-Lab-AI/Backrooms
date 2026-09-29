@@ -1721,3 +1721,46 @@ Owner directions captured verbatim: 4 (the question, plus three answers).
 Defects surfaced and named: 2 (master-backlog granularity; the register's negated-"required" classifier, 82% of that bucket wrong).
 Stale doc facts corrected: the roadmap status table, three versions and 42 source files out of date.
 Still open and named: the player-facing how-to for the gameplay and systems, the M6a rows now unblocked, and the two defects above.
+
+---
+
+## 2026-09-29 — Odd origin, the reason a player goes back in (0.7.2-dev)
+
+### Verbatim owner requests
+
+> *"get to it"*
+
+> *"ik think option one can work and we can add a flag to item from the back rooms like (odd) or something like that and have quests and missions and contracts and stuff for like 1000 (odd) cotton or like 10 uninstalled electic stoves(odd) and the such for all things materials and resources ect ect that can give reason for the players to have to advance and excplore and haul and use the spaces iin the backrooms"*
+
+### What was built
+
+- [x] **The marker.** `CompRimroomsOddOrigin` — one saved boolean, set only by the coordinate that produced the thing, never cleared. One-way on purpose: every route that could clear it would also be a route to launder ordinary goods into odd ones.
+- [x] **Odd and ordinary never merge, in either direction.** This is the load-bearing detail and the danger runs both ways: odd absorbing ordinary would **manufacture** odd goods out of colony stock and defeat every contract at once; ordinary absorbing odd would **destroy** goods the player crossed a gate to fetch. Core's `ThingWithComps.CanStackWith` consults every comp's `AllowStackWith` and gates `TryAbsorbStack` — verified in source, not assumed.
+- [x] **Splitting does not launder.** `PostSplitOff` carries the mark onto the piece. Without it, splitting a stack is a free conversion.
+- [x] **Uninstalled buildings keep the mark** — the owner's own example is a stove, not a resource. `MinifiedThing.InnerThing` is the original, so the comp travels; the cost is that every read must look **through** the wrapper, since asking the wrapper directly reports every uninstalled stove as ordinary.
+- [x] **"(odd)" is a keyed string**, so the exact word is a translation decision rather than a code one.
+
+### Two decisions worth keeping
+
+- [x] **The marker is attached in code, not by a patch.** The direction is open-ended — *"for all things materials and resources ect ect"* — so it must reach every carryable thing in the loaded game, **including items from the other 274 mods**. A `PatchOperationAdd` can only append to a `comps` node that already exists, and most item defs have none, so an XML patch would have applied to an arbitrary subset and **failed silently on the rest**. Appending to `ThingDef.comps` at startup is purely additive: no def replaced, nothing removed, no other mod's files touched. Two filters keep it honest — the def must actually instantiate comps (a `thingClass` that is not a `ThingWithComps` never builds its comp list), and the thing must be carryable out.
+- [x] **Exactly one place applies a mark, and that is the whole security model.** Once, at the end of generation, before the map can be reached. The obvious alternative — mark anything that spawns on a Backrooms map — is an **open laundering route**: haul a thousand ordinary cotton in, drop it, pick it up, walk out with a thousand odd cotton. Marking only at generation means the mark can only be earned by taking what was already there.
+
+### Why this is more than a label
+
+Thirty-one cross-map work families have moved real goods through a gate since 0.5.0, and **nothing in the game has ever asked for those goods by origin**. An odd-only contract cannot be filled from the colony's own fields at any price. It converts the existing work engine into an economy and gives ordinary Core resources a second tier of value **without inventing a single item, texture or resource** — inside `CONTENT_REUSE_POLICY.md` rather than an exception to it.
+
+### Documents updated in the same change
+
+`implementation/ODD_ORIGIN_IMPLEMENTATION.md` (new record), `TODO.md` (three rows closed, two new rows naming what is not covered), `GATE_0_DECISIONS.md` (decision 23), `CHANGELOG.md`, `About.xml`, the csproj, `tools/package-files.json`.
+
+### Build evidence
+
+0.7.2-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **122** C# source files (two new), **77** approved package files (one new keyed file). Assembly SHA-256 `CC35332D69E4C9E4CF75A790B8C82641C2315A6CE113EDD6C927B5E1935A2A6D`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. `check-package-integrity.py` PASS; `check-keyed-strings.py` 1,138 keys, 0 duplicates, 1,107 references all resolving; `check-dlc-gating.py` passes; `audit-gate0.py` PASS with zero errors. **No patch operation added, no asset, no new work type, no new gameplay ThingDef.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 2. Source files modified: 1. Package files created: 1. Docs updated: 6 (1 new).
+Owner directions captured verbatim: 2.
+Laundering routes identified and closed before shipping: 3 (stack merge in both directions, stack split, mark-on-spawn).
+Core hooks verified in source rather than assumed: 4 (`AllowStackWith`, `PostSplitOff`, `TransformLabel`, `PostExposeData`).
+Still open and named in `TODO.md`, not deferred: contracts that demand odd goods, and materials recovered by **deconstructing** a marked building — uninstall preserves the mark, deconstruct destroys the thing and `GenLeaving` exposes no public hook.
