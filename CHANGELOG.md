@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.3-dev - 2026-09-29 - somebody wants the odd goods
+
+- **Buyers now turn up wanting goods recovered from the Backrooms**, and they will not take the ordinary equivalent. Your own cotton is no substitute for cotton that came out of a coordinate.
+- **They only ask for things a space you have actually opened really held.** No contract will ever send you looking for something that was never down there.
+- **They pay well over the ordinary rate** - these are goods nobody else can source.
+- Up to three demands stand open at a time, and a new one arrives about once a day.
+- Delivery is automatic once the goods are home: the contract settles and pays, and it pays once even if you reload in the middle of it.
+- Uninstalled buildings count. Haul a machine home from down there and it is still the thing the buyer wanted.
+
+Full record: [odd supply contracts](docs/implementation/ODD_SUPPLY_CONTRACTS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.7.2-dev - 2026-09-29 - what comes out of the Backrooms is marked
 
 - **Anything you carry out of a Backrooms coordinate is marked odd.** A stove you found down there, a stack of cotton off a shelf, a door you uninstalled: it comes home labelled `(odd)`.

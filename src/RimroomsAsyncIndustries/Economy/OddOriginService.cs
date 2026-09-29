@@ -126,21 +126,35 @@ namespace RimroomsAsyncIndustries.Economy
         /// Called at the end of generation, before the map is ever reachable, so nothing the
         /// player owns can be present to be marked by accident.
         /// </summary>
-        public static int MarkGeneratedContents(Map map)
+        /// <returns>
+        /// The distinct definition names actually marked, sorted, so the coordinate can record
+        /// what it really produced. Supply contracts are drawn from that record rather than
+        /// from the whole def database: a demand for a thousand odd cotton is worthless if no
+        /// space the branch has ever opened contained cotton.
+        /// </returns>
+        public static List<string> MarkGeneratedContents(Map map)
         {
-            if (map == null || map.listerThings == null) { return 0; }
-            int marked = 0;
+            var produced = new List<string>();
+            if (map == null || map.listerThings == null) { return produced; }
             List<Thing> things = map.listerThings.AllThings;
-            if (things == null) { return 0; }
-            for (int index = 0; index < things.Count; index++)
+            if (things == null) { return produced; }
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            // A copy, because marking is read-only against the lister but callers should not
+            // depend on that staying true if this ever grows.
+            var snapshot = new List<Thing>(things);
+            for (int index = 0; index < snapshot.Count; index++)
             {
-                Thing thing = things[index];
+                Thing thing = snapshot[index];
                 // Pawns are not goods. A generated inhabitant is not a thing to be sold by
                 // origin, and the traversal rule already governs what may leave a coordinate.
                 if (thing == null || thing is Pawn) { continue; }
-                if (Mark(thing)) { marked++; }
+                if (!Mark(thing)) { continue; }
+                Thing subject = Resolve(thing);
+                if (subject == null || subject.def == null) { continue; }
+                if (seen.Add(subject.def.defName)) { produced.Add(subject.def.defName); }
             }
-            return marked;
+            produced.Sort(StringComparer.Ordinal);
+            return produced;
         }
     }
 }

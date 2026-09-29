@@ -1764,3 +1764,48 @@ Owner directions captured verbatim: 2.
 Laundering routes identified and closed before shipping: 3 (stack merge in both directions, stack split, mark-on-spawn).
 Core hooks verified in source rather than assumed: 4 (`AllowStackWith`, `PostSplitOff`, `TransformLabel`, `PostExposeData`).
 Still open and named in `TODO.md`, not deferred: contracts that demand odd goods, and materials recovered by **deconstructing** a marked building — uninstall preserves the mark, deconstruct destroys the thing and `GenLeaving` exposes no public hook.
+
+---
+
+## 2026-09-29 — Odd supply contracts, somebody who actually wants the goods (0.7.3-dev)
+
+### Verbatim owner requests
+
+> *"get to it all we are finishing everything"*
+
+> *"have quests and missions and contracts and stuff for like 1000 (odd) cotton or like 10 uninstalled electic stoves(odd) and the such for all things materials and resources ect ect that can give reason for the players to have to advance and excplore and haul and use the spaces iin the backrooms"*
+
+### What was built
+
+0.7.2-dev built the marker. **Without a buyer, "(odd)" is a label nobody reads.** This is the half that makes it an economy.
+
+- [x] **Demands are drawn only from what coordinates actually produced.** This is the decision that shaped everything else. The tempting implementation — pick any thing definition and demand a pile of it — produces contracts a player **cannot possibly fill**: a thousand odd cotton is unanswerable if no space the branch ever opened held cotton, and the player would hunt for hours then correctly conclude the feature is broken. So every coordinate records the distinct definitions it really produced, at generation, and a demand is drawn only from the union of those. It gives the loop a better shape too: **open a space, see what it holds, and buyers appear who want it** — exploration drives demand rather than demand arriving from nowhere.
+- [x] **Bounded, deterministic, saved.** Three open at once so a campaign cannot accumulate an unfillable backlog; about a day between offers; the choice derived from `Gen.HashCombineInt(campaignSeed, supplyOfferIndex)` and **never `Rand`**, so reloading cannot reroll a hard demand into an easy one.
+- [x] **Quantity scaled by the thing's own `stackLimit`** — a few stacks of a stackable resource, 2–10 of an unstackable, which is the owner's *"10 uninstalled electic stoves"* expressed in the units the game already uses.
+- [x] **Payment from the thing's own `BaseMarketValue` × 6**, clamped. Built from the game's economy so it tracks any mod that changes a value, rather than from a table this mod would maintain against 294 other mods. The multiplier is because the buyer cannot source these anywhere else and the player paid in gate time, power and risk rather than silver.
+- [x] **Payment happens before the goods are consumed, deliberately.** It is the idempotent step, so a save reloaded mid-delivery reports "already applied" rather than paying twice, and the goods are consumed exactly once either way.
+- [x] **Matching reads through `OddOriginService.IsOdd`**, which resolves a `MinifiedThing` to its `InnerThing` — the owner's own stove example, and the case that would **silently never settle** if the wrapper were asked directly.
+
+### One integrity rule had to change, and it is worth stating
+
+`RimroomsCampaignComponent` validated that **every** contract names a coordinate that exists. An odd-supply contract is **branch-wide** — it buys goods by origin, and any coordinate that produced them satisfies it — so it legitimately carries no coordinate id, and leaving the old rule in place would have faulted a perfectly valid save. The check now asks the right question of each kind rather than the same question of both.
+
+### Save compatibility
+
+A coordinate saved before 0.7.2-dev has no recorded odd goods. **An empty list is the honest answer** — that coordinate offers no supply contracts of its own — rather than inventing contents for a space generated before any of this existed.
+
+### Documents updated in the same change
+
+`implementation/ODD_SUPPLY_CONTRACTS_IMPLEMENTATION.md` (new record), `TODO.md` (contract row moved to in-progress with quests and missions still named, two new rows for what is not covered), `CHANGELOG.md`, `About.xml`, the csproj, `tools/package-files.json`.
+
+### Build evidence
+
+0.7.3-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **123** C# source files (one new), **78** approved package files (one new keyed file). Assembly SHA-256 `D2D3C6E6F906B4AB698ED1D6C01C45BB616D67E0581D99FDA7E70FF8B8F64569`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. `check-package-integrity.py` PASS; `check-keyed-strings.py` 1,142 keys, 0 duplicates, 1,111 references all resolving; `check-dlc-gating.py` passes; `audit-gate0.py` PASS with zero errors. **No patch operation added, no asset, no new work type, no new gameplay ThingDef.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Source files modified: 4. Package files created: 1. Docs updated: 5 (1 new).
+Owner directions captured verbatim: 2.
+Unfillable-contract trap identified and designed out before shipping: 1, and it would have made the whole feature look broken.
+Integrity rules corrected rather than worked around: 1.
+Still open and named in `TODO.md`, not deferred: quests and missions as distinct from contracts; a player-facing surface listing open demands; and materials recovered by **deconstructing** a marked building.

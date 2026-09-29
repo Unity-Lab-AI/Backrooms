@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Contract_OddSupply_Title>Odd goods supply</RR_Contract_OddSupply_Title>
+  <RR_Event_OddSupplyOffered>A buyer wants {0} x {1} recovered from the Backrooms, and will pay ${2}. Ordinary stock will not be accepted.</RR_Event_OddSupplyOffered>
+  <RR_Event_OddSupplySettled>Odd goods supply contract settled for ${0}.</RR_Event_OddSupplySettled>
+  <RR_Ledger_OddSupplyPayment>Odd goods supply</RR_Ledger_OddSupplyPayment>
+</LanguageData>

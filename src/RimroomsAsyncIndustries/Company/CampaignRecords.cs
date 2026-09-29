@@ -97,6 +97,29 @@ namespace RimroomsAsyncIndustries.Company
         internal int acceptedTick;
         internal int completedTick = -1;
         internal string settlementOperationId;
+
+        /// <summary>
+        /// Supply-contract demand: the thing definition wanted, how many, and how many have
+        /// been handed over so far. Empty on every other contract kind, which is what
+        /// <see cref="IsOddSupply"/> tests.
+        ///
+        /// A supply contract wants goods that came **out of a Backrooms coordinate** and will
+        /// not accept the ordinary equivalent. That is the whole point of it, and it is why
+        /// the marker had to exist first.
+        /// </summary>
+        internal string requiredThingDefName;
+        internal int requiredCount;
+        internal int deliveredCount;
+
+        public string RequiredThingDefName { get { return requiredThingDefName; } }
+        public int RequiredCount { get { return requiredCount; } }
+        public int DeliveredCount { get { return deliveredCount; } }
+
+        /// <summary>True when this contract is a demand for odd goods rather than a survey.</summary>
+        public bool IsOddSupply
+        {
+            get { return !string.IsNullOrEmpty(requiredThingDefName) && requiredCount > 0; }
+        }
         public string Id { get { return id; } }
         public string TemplateId { get { return templateId; } }
         public string TitleKey { get { return titleKey; } }
@@ -116,6 +139,9 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref acceptedTick, "rr_acceptedTick");
             Scribe_Values.Look(ref completedTick, "rr_completedTick", -1);
             Scribe_Values.Look(ref settlementOperationId, "rr_settlementOperationId");
+            Scribe_Values.Look(ref requiredThingDefName, "rr_requiredThingDefName");
+            Scribe_Values.Look(ref requiredCount, "rr_requiredCount", 0);
+            Scribe_Values.Look(ref deliveredCount, "rr_deliveredCount", 0);
         }
     }
 
@@ -130,6 +156,21 @@ namespace RimroomsAsyncIndustries.Company
         internal MapParent site;
         internal string lastFailureKey;
         internal List<RoomRecord> rooms = new List<RoomRecord>();
+
+        /// <summary>
+        /// The distinct thing definitions this coordinate actually produced as odd goods,
+        /// recorded once at generation.
+        ///
+        /// Supply contracts are drawn from this rather than from the whole def database, and
+        /// that is the difference between a demand a player can meet and one they cannot. A
+        /// contract asking for a thousand odd cotton is worthless if no coordinate the branch
+        /// has ever opened contained cotton — the player would be sent to look for something
+        /// that does not exist down there. Recording what a space really held means every
+        /// demand is answerable by going back to a space that has it.
+        /// </summary>
+        internal List<string> oddGoodsDefNames = new List<string>();
+
+        public IReadOnlyList<string> OddGoodsDefNames { get { return oddGoodsDefNames; } }
         public string Id { get { return id; } }
         public string Label { get { return label; } }
         public int Seed { get { return seed; } }
@@ -148,7 +189,13 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_References.Look(ref site, "rr_site");
             Scribe_Values.Look(ref lastFailureKey, "rr_lastFailureKey");
             Scribe_Collections.Look(ref rooms, "rr_rooms", LookMode.Deep);
+            Scribe_Collections.Look(ref oddGoodsDefNames, "rr_oddGoodsDefNames", LookMode.Value);
             if (Scribe.mode == LoadSaveMode.PostLoadInit && rooms == null) { rooms = new List<RoomRecord>(); }
+            // A coordinate saved before 0.7.2-dev has no recorded odd goods. An empty list is
+            // the honest answer -- it simply offers no supply contracts of its own -- rather
+            // than inventing contents for a space that was generated before this existed.
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && oddGoodsDefNames == null)
+            { oddGoodsDefNames = new List<string>(); }
         }
     }
 

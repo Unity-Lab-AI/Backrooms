@@ -228,6 +228,9 @@ namespace RimroomsAsyncIndustries.Company
             if (!CanOperate) { return; }
             int now = Find.TickManager.TicksGame;
             if (now % 60 == 0) { UpdateEvidenceAndContracts(); }
+            // Odd-supply demand rides the same cadence. Offering is interval-gated inside,
+            // so this is a counter comparison almost every time it runs.
+            if (now % 60 == 0) { UpdateOddSupplyContracts(); }
             if (now % 250 != 0 || now < nextOperatingCostTick || nextOperatingCostTick == int.MaxValue) { return; }
             // Bound catch-up work after a time jump; unpaid obligations remain explicit records.
             int days = 0;

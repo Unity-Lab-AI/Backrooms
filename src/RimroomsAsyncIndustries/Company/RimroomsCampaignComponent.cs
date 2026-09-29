@@ -144,6 +144,7 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Collections.Look(ref evidence, "rr_evidence", LookMode.Deep);
             Scribe_Collections.Look(ref projects, "rr_projects", LookMode.Deep);
             Scribe_Collections.Look(ref events, "rr_events", LookMode.Deep);
+            ExposeSupplyContracts();
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 RestoreCollections();
@@ -226,8 +227,14 @@ namespace RimroomsAsyncIndustries.Company
             var caseIds = new HashSet<string>(cases.Select(c => c.id), StringComparer.Ordinal);
             var pawnIds = new HashSet<string>(StringComparer.Ordinal);
             bool valid = staff.All(s => !string.IsNullOrWhiteSpace(s.pawnLoadId) && pawnIds.Add(s.pawnLoadId));
-            valid &= contracts.All(c => coordinateIds.Contains(c.coordinateId) && Enum.IsDefined(typeof(ContractStatus), c.status) &&
-                c.basePaymentUsd >= 0 && c.bonusUsd >= 0 && !string.IsNullOrWhiteSpace(c.templateId));
+            // An odd-supply contract is branch-wide rather than tied to one coordinate: it
+            // buys goods by origin, and any coordinate that produced them satisfies it. So it
+            // legitimately carries no coordinate id, and requiring one would fault a valid save.
+            valid &= contracts.All(c => (c.IsOddSupply ? string.IsNullOrEmpty(c.coordinateId)
+                    : coordinateIds.Contains(c.coordinateId)) &&
+                Enum.IsDefined(typeof(ContractStatus), c.status) &&
+                c.basePaymentUsd >= 0 && c.bonusUsd >= 0 && !string.IsNullOrWhiteSpace(c.templateId) &&
+                c.requiredCount >= 0 && c.deliveredCount >= 0);
             valid &= cases.All(c => coordinateIds.Contains(c.coordinateId) && c.evidenceIds != null &&
                 c.evidenceIds.Count == c.evidenceIds.Distinct(StringComparer.Ordinal).Count() &&
                 c.evidenceIds.All(id => evidence.Any(e => e.id == id && e.caseId == c.id)));

@@ -195,7 +195,7 @@ namespace RimroomsAsyncIndustries.Generation
                 // carry them back out as odd. Doing it once at generation, before the map can
                 // be reached, means the mark can only be earned by taking what was already
                 // there. See Economy/OddOriginService.
-                Economy.OddOriginService.MarkGeneratedContents(map);
+                coordinate.oddGoodsDefNames = Economy.OddOriginService.MarkGeneratedContents(map);
 
                 parent.MarkLayoutReady(entryCell, returnCell, officeEvidenceCell, anchor);
             }
