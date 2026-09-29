@@ -106,6 +106,8 @@ namespace RimroomsAsyncIndustries.Gate
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) { yield return gizmo; }
             foreach (Gizmo gizmo in Procurement.CorporateSupplyGizmos.For(parent))
             { yield return gizmo; }
+            foreach (Gizmo gizmo in Procurement.CreditWithdrawalGizmo.For(parent))
+            { yield return gizmo; }
         }
 
         public override void PostExposeData()

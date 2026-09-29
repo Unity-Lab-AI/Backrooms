@@ -93,6 +93,8 @@ namespace RimroomsAsyncIndustries.Economy
 
             if (!designated) { yield break; }
 
+            if (campaignForQuote == null) { yield break; }
+
             long available = AvailableCredits;
             var bank = new Command_Action
             {
@@ -104,6 +106,59 @@ namespace RimroomsAsyncIndustries.Economy
             if (available <= 0L)
             { bank.Disable("RR_Bond_NoneInRange".Translate()); }
             yield return bank;
+
+            // Selling valuables shares the beacon's radius on purpose. A Core trade beacon
+            // already means "what is in this circle is what is on the table", so the exchange
+            // borrows a contract the player already understands rather than inventing its own
+            // selection rules. The radius is the control.
+            long oddValue, ordinaryValue;
+            int itemCount;
+            campaignForQuote.QuoteExchange(parent.Map, parent.Position, Props.radius,
+                out oddValue, out ordinaryValue, out itemCount);
+
+            var sell = new Command_Action
+            {
+                defaultLabel = "RR_Exchange_Sell".Translate(),
+                defaultDesc = "RR_Exchange_SellDesc".Translate(
+                    itemCount.ToString("N0"),
+                    (oddValue + ordinaryValue).ToString("N0"),
+                    oddValue.ToString("N0"),
+                    ordinaryValue.ToString("N0")),
+                icon = TexCommand.ForbidOff,
+                action = SellValuables,
+            };
+            if (itemCount <= 0)
+            { sell.Disable("RR_Exchange_NothingInRange".Translate()); }
+            yield return sell;
+        }
+
+        private static RimroomsCampaignComponent campaignForQuote
+        {
+            get
+            {
+                return Verse.Current.Game == null
+                    ? null : Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
+            }
+        }
+
+        private void SellValuables()
+        {
+            RimroomsCampaignComponent campaign = campaignForQuote;
+            if (campaign == null) { return; }
+
+            long credited;
+            int sold;
+            CompanyActionResult result = campaign.ExchangeValuables(
+                parent.Map, parent.Position, Props.radius, out credited, out sold);
+            if (!result.Success)
+            {
+                Messages.Message((result.MessageKey ?? "RR_Exchange_NothingInRange").Translate(),
+                    parent, MessageTypeDefOf.RejectInput, false);
+                return;
+            }
+            Messages.Message(
+                "RR_Exchange_Sold".Translate(sold.ToString("N0"), credited.ToString("N0")),
+                parent, MessageTypeDefOf.PositiveEvent, false);
         }
 
         private void BankBonds()

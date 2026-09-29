@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.7-dev - 2026-09-29 - the company will buy, and pay you in paper
+
+- **Sell to the company at a credit beacon.** Everything tradeable in the beacon's range goes at once, and you see the total before you commit.
+- **Odd goods fetch half again over market**, because nobody else can get them. Ordinary valuables go slightly under, because the company is instant and a trader is not.
+- **Traders are still the better price for ordinary goods if you can wait for one.** That is on purpose.
+- Your gold and silver finally have somewhere to go that is not a passing caravan.
+- **Company bonds in range are never sold** - banking one is a different thing, and selling your own money by accident is not a feature.
+- **Withdraw credits as paper at the gate console.** Pick a denomination off the ladder, get one bond of that size.
+
+Full record: [the exchange](docs/implementation/VALUABLES_EXCHANGE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.7.6-dev - 2026-09-29 - the corporation will sell you things, eventually
 
 - **The parent corporation is now a trader you can call in** from the gate console. It arrives in orbit like any other trade ship, and trading works exactly as it always does, beacon and all.

@@ -22,4 +22,15 @@
   <RR_Ledger_BondIssued>Company bonds issued</RR_Ledger_BondIssued>
   <RR_Event_BondsRedeemed>Banked {0} company bonds for {1} credits.</RR_Event_BondsRedeemed>
   <RR_Event_BondsIssued>Issued {0} company bonds totalling {1} credits.</RR_Event_BondsIssued>
+  <RR_Bond_Withdraw>Withdraw credits</RR_Bond_Withdraw>
+  <RR_Bond_WithdrawDesc>Draw credits out of the company account as a physical bearer bond. The account holds {0} credits. Bonds can be hauled, stored and stolen; the account cannot.</RR_Bond_WithdrawDesc>
+  <RR_Bond_WithdrawOne>Withdraw {0} credits as one bond</RR_Bond_WithdrawOne>
+  <RR_Bond_Withdrawn>Withdrew {0} bond(s) of {1} credits.</RR_Bond_Withdrawn>
+  <RR_Exchange_Sell>Sell to the company</RR_Exchange_Sell>
+  <RR_Exchange_SellDesc>Sell every tradeable item within the beacon's range to the parent corporation for credits. {0} item(s) in range, worth {1} credits: {2} from odd goods (above market, because the corporation cannot source them anywhere else) and {3} from ordinary valuables (below market - traders pay better if you can wait for one). Company bonds in range are never sold.</RR_Exchange_SellDesc>
+  <RR_Exchange_Sold>Sold {0} item(s) to the company for {1} credits.</RR_Exchange_Sold>
+  <RR_Exchange_NothingInRange>Nothing in range can be sold to the company.</RR_Exchange_NothingInRange>
+  <RR_Exchange_NoMap>There is nothing here to sell.</RR_Exchange_NoMap>
+  <RR_Ledger_ValuablesExchanged>Valuables sold to the company</RR_Ledger_ValuablesExchanged>
+  <RR_Event_ValuablesExchanged>Sold {0} item(s) to the company for {1} credits.</RR_Event_ValuablesExchanged>
 </LanguageData>
