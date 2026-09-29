@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -67,47 +67,7 @@ namespace RimroomsAsyncIndustries.Generation
                     throw new InvalidOperationException("RR_Generation_RequiredCoreOrSiteDefMissing");
                 }
 
-                ClearMapContents(map);
-                // Owner direction 2026-09-29: a Backrooms environment can never have an
-                // outside, and the whole seed map sits inside mountain roof. So the base pass
-                // roofs *every* cell with thick rock rather than leaving it open, and fills the
-                // space between rooms with solid mineable rock.
-                //
-                // The rock is doing two jobs. It supports the thick roof, which is what stops
-                // Core's own collapse check from finding a vast unsupported ceiling; and it is
-                // material the player can mine, which the same owner direction explicitly wants
-                // ("areas minable and of all types of materisals throughout"). Nothing here
-                // restricts the pickaxe: thick roof never vanishes on collapse, so a coordinate
-                // can be mined to nothing and still never open a hole in the world.
-                List<ThingDef> rockTypes = NaturalRockTypesFor(map);
-                foreach (IntVec3 cell in map.AllCells)
-                {
-                    map.terrainGrid.SetTerrain(cell, voidFloor);
-                    map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
-                }
-                FillWithRock(map, coordinate, rockTypes);
-
-                foreach (RoomRecord room in coordinate.Rooms)
-                {
-                    foreach (IntVec3 cell in room.Bounds.Cells)
-                    {
-                        // Carve the room out of the rock, keeping the thick roof overhead. The
-                        // roof is deliberately NOT RoofConstructed: constructed roof is
-                        // removable, and all roof in a Backrooms coordinate must never be.
-                        ClearRock(map, cell);
-                        map.terrainGrid.SetTerrain(cell, concrete);
-                        map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
-                    }
-                }
-                BuildCorridors(coordinate.Rooms, map, concrete);
-
-                foreach (RoomRecord room in coordinate.Rooms)
-                {
-                    BuildRoomWalls(room, coordinate.Rooms, map, wallDef, wallStuff);
-                    // A center support complements perimeter walls across the bounded room proportions.
-                    PlaceWall(map, room.Bounds.CenterCell, wallDef, wallStuff);
-                }
-                PlaceNativeDoors(coordinate.Rooms, map);
+                BuildShell(map, coordinate, concrete, voidFloor, wallDef, wallStuff);
 
                 RoomRecord threshold = coordinate.Rooms.First(room => room.familyId == "threshold_room");
                 IntVec3 anchorPosition = FindBuildingCell(
@@ -225,6 +185,67 @@ namespace RimroomsAsyncIndustries.Generation
                 Log.Error("[Rimrooms][Generation] Site layout stopped; existing coordinate/map are retained: " + error);
                 throw;
             }
+        }
+
+
+        /// <summary>
+        /// The coordinate shell: rock to every edge, thick roof over every cell, and the
+        /// rooms carved out of it.
+        ///
+        /// **Shared by both generators on purpose.** A destination reached through a gate
+        /// and the place the solo/group start is already standing in are furnished quite
+        /// differently - one has a gate anchor and a way home, the other has neither - but
+        /// the shell is identical, and the shell is what carries invariant 13: **a Backrooms
+        /// coordinate has no outside, and its roof is never removable.**
+        ///
+        /// A second copy of this would drift, and what would drift out of it is the promise
+        /// that you cannot dig your way into open sky. The roof is deliberately
+        /// `RoofRockThick` and never `RoofConstructed`: constructed roof can be removed.
+        /// </summary>
+        internal static void BuildShell(Map map, CoordinateRecord coordinate, TerrainDef concrete,
+            TerrainDef voidFloor, ThingDef wallDef, ThingDef wallStuff)
+        {
+            ClearMapContents(map);
+            // Owner direction 2026-09-29: a Backrooms environment can never have an
+            // outside, and the whole seed map sits inside mountain roof. So the base pass
+            // roofs *every* cell with thick rock rather than leaving it open, and fills the
+            // space between rooms with solid mineable rock.
+            //
+            // The rock is doing two jobs. It supports the thick roof, which is what stops
+            // Core's own collapse check from finding a vast unsupported ceiling; and it is
+            // material the player can mine, which the same owner direction explicitly wants
+            // ("areas minable and of all types of materisals throughout"). Nothing here
+            // restricts the pickaxe: thick roof never vanishes on collapse, so a coordinate
+            // can be mined to nothing and still never open a hole in the world.
+            List<ThingDef> rockTypes = NaturalRockTypesFor(map);
+            foreach (IntVec3 cell in map.AllCells)
+            {
+                map.terrainGrid.SetTerrain(cell, voidFloor);
+                map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
+            }
+            FillWithRock(map, coordinate, rockTypes);
+
+            foreach (RoomRecord room in coordinate.Rooms)
+            {
+                foreach (IntVec3 cell in room.Bounds.Cells)
+                {
+                    // Carve the room out of the rock, keeping the thick roof overhead. The
+                    // roof is deliberately NOT RoofConstructed: constructed roof is
+                    // removable, and all roof in a Backrooms coordinate must never be.
+                    ClearRock(map, cell);
+                    map.terrainGrid.SetTerrain(cell, concrete);
+                    map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
+                }
+            }
+            BuildCorridors(coordinate.Rooms, map, concrete);
+
+            foreach (RoomRecord room in coordinate.Rooms)
+            {
+                BuildRoomWalls(room, coordinate.Rooms, map, wallDef, wallStuff);
+                // A center support complements perimeter walls across the bounded room proportions.
+                PlaceWall(map, room.Bounds.CenterCell, wallDef, wallStuff);
+            }
+            PlaceNativeDoors(coordinate.Rooms, map);
         }
 
         public override void PostMapInitialized(Map map, GenStepParams parms)

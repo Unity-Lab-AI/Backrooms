@@ -278,4 +278,55 @@
     <surveyBonusUsd>100000</surveyBonusUsd>
   </RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
 
+  <!-- ==================================================================================== -->
+  <!-- SOLO / GROUP - THE INSIDE START                                                      -->
+  <!--                                                                                      -->
+  <!-- Contract: docs/SCENARIOS.md, the lone_survivor card. The stable scenario ID is kept   -->
+  <!-- because saves depend on it; the NAME is solo/group, on owner direction: "remember     -->
+  <!-- the other one is solo/group start.. group have been known to end up together inside". -->
+  <!--                                                                                      -->
+  <!-- The map IS a Backrooms coordinate, wall to wall, so there is no layout to declare.    -->
+  <!-- No corporation, no research, no facility, no gate and no way home. 1 to 5 people,     -->
+  <!-- the player's choice, through the native config page.                                  -->
+  <!--                                                                                      -->
+  <!-- Funding is zero and overhead is zero, and both are deliberate: there is no company     -->
+  <!-- here to run an account or bill a wage. Nobody is being paid and nobody is billing.     -->
+  <!-- ==================================================================================== -->
+  <RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+    <defName>RR_SoloGroupStart</defName>
+    <label>Solo or group, inside</label>
+    <scenarioId>lone_survivor</scenarioId>
+    <beginsInCorporationContact>false</beginsInCorporationContact>
+    <defaultCompanyName>The ones who got in</defaultCompanyName>
+    <scenarioVersion>1</scenarioVersion>
+    <completedProjects />
+    <insideStart>true</insideStart>
+    <insideStartDepth>1</insideStartDepth>
+    <mapSize>60</mapSize>
+    <mapGenerator>RR_InsideStart</mapGenerator>
+    <outdoorTerrain>Concrete</outdoorTerrain>
+    <floorTerrain>Concrete</floorTerrain>
+    <wallStuff>BlocksGranite</wallStuff>
+    <!-- The generator decides where anybody can stand, because the rooms are generated. These
+         two are required by the shared contract and are never read on an inside start. -->
+    <arrivalCell>(30, 0, 30)</arrivalCell>
+    <stockCell>(30, 0, 30)</stockCell>
+    <rooms />
+    <doors />
+    <buildings />
+    <conduits />
+    <roles>
+      <li>
+        <id>operations</id><mustFight>false</mustFight>
+        <skills><Social>3</Social><Intellectual>3</Intellectual></skills>
+        <workTypes><li>Hauling</li></workTypes>
+      </li>
+    </roles>
+    <initialFundingUsd>0</initialFundingUsd>
+    <dailyWageUsd>0</dailyWageUsd>
+    <dailyOverheadUsd>0</dailyOverheadUsd>
+    <surveyRewardUsd>500000</surveyRewardUsd>
+    <surveyBonusUsd>100000</surveyBonusUsd>
+  </RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+
 </Defs>

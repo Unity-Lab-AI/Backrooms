@@ -94,6 +94,47 @@ Three people by default. Customise your staff and stock with native setup or Pre
     </scenario>
   </ScenarioDef>
 
+  <ScenarioDef ParentName="ScenarioBase">
+    <defName>RR_SoloGroup</defName>
+    <label>Solo or group, inside</label>
+    <description>You are already in. There was no gate and there is no way back that anybody knows about.
+
+The rooms go on further than you have walked. The roof does not come off. Nothing here was built for you and nothing here is coming for you, because no company knows this place exists and neither did you until today.
+
+One to five people, your choice. Groups have been known to end up in together.
+
+Stay alive, learn one rule this place obeys, mark the way you came, and decide whether you are looking for a way out, a way to call somebody, or somewhere to put a bed.</description>
+    <scenario>
+      <summary>You start inside the Backrooms with what you were carrying. No company, no gate, no research and nobody looking for you. One to five people.</summary>
+      <parts>
+        <li Class="ScenPart_ConfigPage_ConfigureStartingPawns">
+          <def>ConfigPage_ConfigureStartingPawns</def>
+          <pawnCount>1</pawnCount>
+          <pawnChoiceCount>5</pawnChoiceCount>
+          <allowedDevelopmentalStages>Adult</allowedDevelopmentalStages>
+        </li>
+        <li Class="RimroomsAsyncIndustries.Scenario.ScenPart_RimroomsStart">
+          <def>RR_CompanyStart</def>
+          <startDef>RR_SoloGroupStart</startDef>
+          <visible>false</visible>
+        </li>
+        <li Class="RimroomsAsyncIndustries.Scenario.ScenPart_RimroomsArrival">
+          <def>RR_CompanyArrival</def>
+          <method>Standing</method>
+          <visible>false</visible>
+        </li>
+        <!-- What you had on you. A light source matters more than anything else here, and
+             the place has no power: nobody wired it and nobody is going to. -->
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>MealSurvivalPack</thingDef><count>5</count></li>
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>MedicineHerbal</thingDef><count>2</count></li>
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>RR_FieldRecorder</thingDef><count>1</count></li>
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>GlowPod</thingDef><count>3</count></li>
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>Steel</thingDef><count>40</count></li>
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>ComponentIndustrial</thingDef><count>2</count></li>
+      </parts>
+    </scenario>
+  </ScenarioDef>
+
   <MapGeneratorDef>
     <defName>RR_Headquarters</defName>
     <genSteps>

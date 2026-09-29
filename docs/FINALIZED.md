@@ -142,6 +142,31 @@ The **Furniture and Knickknack Store** start: 50x50 shop, three ordinary people,
 
 ---
 
+## Session 2026-09-29 - the solo/group start (0.12.0-dev)
+
+**Verbatim user quote:** *"yup get to it"*
+
+**Owner direction this closes, verbatim:** *"remember the other one is solo/group start.. group have been known to end up together inside so leets use the in backrooms start to be 1-5 pawns player settable with normal set up or edb prepare carefully mod and or character editor"*
+
+### What shipped
+
+The **third and last** of the chart's starts. The map itself is a Backrooms coordinate, wall to wall. One to five people through Core's own config page. No company, no gate, no research, no power, no money.
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Scenario/GenStep_InsideStart.cs` (new), `Scenario/RimroomsStartDef.cs`, `Generation/GenStep_BackroomsDestination.cs` (shell extracted), `Mod/.../Defs/RimroomsStartDefs/RR_Starts.xml`, `Mod/.../Defs/ScenarioDefs/RR_Scenarios.xml`, `Mod/.../Defs/MapGeneratorDefs/RR_BackroomsGeneration.xml`, `docs/implementation/SOLO_GROUP_START_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj, and the starts proof.
+
+### Closure notes
+
+- **No Harmony and no trick.** `Game.InitNewGame` picks `initData.mapGeneratorDef ?? settlement.MapGeneratorDef`, `GameInitData.mapGeneratorDef` is a public field, and `ScenPart_RimroomsStart.PreMapGenerate` has assigned it from the start def since the Async headquarters was built. A start that opens inside simply names a different generator.
+- **The coordinate SHELL is now shared** between the destination generator and the inside start - void terrain, `RoofRockThick` over every cell, rock fill, carved rooms, corridors, walls, doors. That block carries **invariant 13**, and a second copy would have drifted the promise that you cannot dig your way into open sky. Same reasoning as the `AnomalyEventService` re-scoping one checkpoint earlier.
+- **Three absences, each deliberate and each cheaper than a half-built version:** no power or lights, no gate anchor or return cell, and the coordinate is not registered in the branch atlas. Reload safety comes from the map being saved whole, which is what `SCENARIOS.md` actually requires.
+- **Zero funding, wages and overhead** - not a balance call. There is no company, so nobody is paid and nothing is billed.
+- **The starts proof learned a second shape.** An inside start has no layout, so it asserts what is true instead: no declared facility, the coordinate map size, a generator the mod ships, and a genstep class that resolves. **That last one fails as an ordinary RimWorld colony rather than a crash**, with the scenario description still promising the Backrooms.
+- Build 0.12.0-dev, 168 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, seven proofs hold, the starts proof fault-planted four more ways. Assembly reproduced by two clean recompiles. **No game was launched.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

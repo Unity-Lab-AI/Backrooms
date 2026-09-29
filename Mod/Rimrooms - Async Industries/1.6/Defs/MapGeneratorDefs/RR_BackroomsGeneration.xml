@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <MapGeneratorDef>
     <defName>RR_BackroomsGeneration</defName>
@@ -13,4 +13,26 @@
     <order>1400</order>
     <genStep Class="RimroomsAsyncIndustries.Generation.GenStep_BackroomsDestination" />
   </GenStepDef>
+  <!-- The solo/group start's map. Core picks the starting map's generator as
+       initData.mapGeneratorDef ?? settlement.MapGeneratorDef, and ScenPart_RimroomsStart has
+       always assigned that field from the start def, so naming this here is the whole trick.
+       No Harmony and no patching of anybody's defs.
+
+       ScenParts runs after the layout so the native starting things land in carved rooms
+       rather than in solid rock. -->
+  <MapGeneratorDef>
+    <defName>RR_InsideStart</defName>
+    <genSteps>
+      <li>RR_InsideStartLayout</li>
+      <li>ScenParts</li>
+      <li>Fog</li>
+    </genSteps>
+  </MapGeneratorDef>
+
+  <GenStepDef>
+    <defName>RR_InsideStartLayout</defName>
+    <order>800</order>
+    <genStep Class="RimroomsAsyncIndustries.Scenario.GenStep_InsideStart" />
+  </GenStepDef>
+
 </Defs>

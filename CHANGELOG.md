@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.12.0-dev - 2026-09-29 - you are already in
+
+- **The third start: solo or group, inside.** You begin in the Backrooms with what you were carrying. No gate, no company, no research, and nobody looking for you.
+- **One to five people, your choice.** Groups have been known to end up in together. Set it up natively or with Prepare Carefully or Character Editor, the same as the other two starts.
+- **The whole map is the Backrooms**, wall to wall. Solid rock between the rooms, and a roof that does not come off however far you dig.
+- **There is no power and there are no lights.** Nobody wired the place. You have three glow pods and whatever else you brought.
+- **No money, no wages, no overhead** - there is no company here to run an account.
+- **All three starts are now in**, and only Async Industries begins in contact with the corporation. The other two have no clean-up team and no deliveries until they earn one.
+
+Full record: [you are already in](docs/implementation/SOLO_GROUP_START_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.11.9-dev - 2026-09-29 - a shop with a door in the back
 
 - **A second start: the Furniture and Knickknack Store.** Three ordinary people, a sales floor, a stockroom, two hundred silver in the till, and a door in the back room that should not be there.
