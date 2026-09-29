@@ -1,3 +1,47 @@
+# GenStep_InsideStart — retired 0.12.2-dev, shipped in 0.12.0-dev
+
+**Archive, not a deletion** (invariant 37).
+
+This generated the solo/group start's map **as** a Backrooms coordinate, using
+`GameInitData.mapGeneratorDef`. It worked, it built clean, and the starts proof validated it.
+
+## Why it was retired one checkpoint later
+
+**It could never carry a registered exit**, and the owner's direction requires one at 100%:
+
+> *"the solo/group start in a backroom needs to 100% have a exit to map natural portal on their
+> first backrroms level"*
+
+`RimroomsPortalNetwork.Register` requires the Backrooms side of every connection to be a
+`RimroomsDestinationMapParent` with a matching `CoordinateRecord`:
+
+```csharp
+RimroomsDestinationMapParent site = secondAnchor.Map.Parent as RimroomsDestinationMapParent;
+if (coordinate == null || coordinate.site != site || site == null || !site.LayoutReady ||
+    site.CoordinateId != coordinateId) { return PortalNetworkResult.UnknownCoordinate; }
+```
+
+The **starting** map cannot be one. `Game.InitNewGame` generates it for a player `Settlement`
+world object and logs an error without one, so the starting map's parent is always a `Settlement`.
+
+Keeping this design would have meant widening the validation **every existing gate depends on**.
+The owner chose the other route at the fork: *"Two maps at start, coordinate is real"*.
+
+## What replaced it
+
+`SoloGroupOpening`, which generates the coordinate through `DestinationService.EnsureSite` — the
+same path every gate destination uses — and registers an ordinary `Emergence` connection at the
+opening instead of waiting for a survey draw to find one.
+
+## The part of it that survived
+
+`GenStep_BackroomsDestination.BuildShell`, extracted for this class to share, **stays**. It is the
+one implementation of the coordinate shell that carries invariant 13, and the destination
+generator still calls it.
+
+## The retired source, verbatim
+
+```csharp
 using System;
 using System.Collections.Generic;
 using RimroomsAsyncIndustries.Company;
@@ -143,3 +187,4 @@ namespace RimroomsAsyncIndustries.Scenario
         }
     }
 }
+```

@@ -8,4 +8,5 @@
   <RR_Start_PhysicalSetupFailed>Headquarters placement stopped before all starting stock and furnishings were placed.</RR_Start_PhysicalSetupFailed>
   <RR_Start_RosterCount>This start requires five distinct staff, one for each initial company role.</RR_Start_RosterCount>
   <RR_Start_RosterCapability>The {0} must be able to move and manipulate, perform the role's starting work, and meet its skill requirements. Reroll or adjust this staff member before continuing.</RR_Start_RosterCapability>
+  <RR_Event_SoloGroupOpening>The group started inside, and the way out was already there. Nobody built it and nobody knows who did.</RR_Event_SoloGroupOpening>
 </LanguageData>

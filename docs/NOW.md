@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.1-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.2-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **168 C# files, 86 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `62935DFB887DED243394A1A6C5440ED3DE39F364AF055AAB17E5CF8491FCFA57`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `D9090678DBFBABFB02B144A9E0C23777E23680D2164D3369742D2BE7BB26421F`, reproduced by two clean recompiles |
 | Checkers | **eight**, all passing |
 | Proofs | **seven** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.1
+## What shipped this session, 0.7.1 → 0.12.2
 
 | Version | What |
 |---|---|
@@ -84,6 +84,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.11.9 | **A shop with a door in the back** — the Store start; three new-game crashes caught by a new proof |
 | 0.12.0 | **You are already in** — the solo/group start; the map itself is a coordinate. **All three starts ship.** |
 | 0.12.1 | **The free doors run out** — found doors stop at depth 3; deeper needs a built gate. Corrects 0.12.0 |
+| 0.12.2 | **The way out was already there** — the guaranteed exit; two maps, a real coordinate, `GenStep_InsideStart` retired |
 
 ---
 
@@ -92,19 +93,21 @@ Chain checkpoints. Do not finish one and wait.
 The order is the one `docs/CAMPAIGN_CHART.md` §7 authorises. **Read the chart before starting
 anything in this list** — it is the authority, and steps 1–5 of its build order are done.
 
-1. **The guaranteed exit on the solo/group start's first level.** Owner direction, verbatim:
-   *"needs to 100% have a exit to map natural portal on their first backrroms level"*. **0.12.0-dev
-   shipped the opposite and its record is annotated as corrected.** Owner's answer at the fork:
-   *"Emerges on a fresh tile chosen by the seed"*.
-   - The existing emergence path **cannot serve it**: `RegisterEmergenceAddress` needs a
-     `CompRimroomsEmergence` anchor, which is **a door the player marked on a map they already
-     hold**, and a solo/group start holds none. `RegisterEmergenceAddress` also requires the
-     Backrooms side to be a `RimroomsDestinationMapParent`, and the solo start's map is
-     `Settlement`-parented because Core requires a player settlement for the starting map.
-   - So it needs: a world tile derived from the branch seed, a player settlement created on it,
-     its map generated on first use, and a two-way route registered between the two.
-   - **100% means at generation, not by survey.** `NaturalFrontierService` finds frontiers at
-     roughly one door in twelve; a draw cannot deliver a guarantee.
+1. **Natural gates that cannot be destroyed or moved, and building around a portal.** Owner
+   direction, verbatim: *"natruals can not be destoryed or moved, so one can technically build a
+   roomm directly on the other side of the portal door and it shouldnt interfere with the portal
+   transition to the seeded backrooms"*.
+   - **Check first, do not assume.** A natural gate is a Core `Door` today: it has hit points and
+     a deconstruct designation, so a player can very probably destroy one — which would break a
+     connection the design calls **permanently open**.
+   - **The build-around half is the one most likely broken today.** Every threshold is validated
+     by `PortalAddressService.UsableThreshold(door, approach, map)` against an **approach cell**,
+     and a wall built on that cell would make a permanently open gate refuse. A player who builds
+     a proper airlock around their own gate must not lose it by doing so.
+   - **An open question before any of it is built:** whether the approach cell is re-derived when
+     the local geometry changes, or whether a portal door's approach cell simply cannot be built
+     on — and if the latter, how the player is told. Both readings are defensible, so invariant
+     134 says ask.
 2. **The solo/group tutorial line.** *"the tutorial like quest chains should lay it all out"* —
    and *"this is all open eneded they can play how they choose"*, so it **guides without railing**.
    Requests have no per-start scoping yet: the six tutorial requests and the hinge are Async's

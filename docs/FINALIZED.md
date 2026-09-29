@@ -195,6 +195,32 @@ The **third and last** of the chart's starts. The map itself is a Backrooms coor
 
 ---
 
+## Session 2026-09-29 - the solo/group exit (0.12.2-dev)
+
+**Verbatim user quote:** *"sweet! im excited you are doing such a great job i think and hope, till we finish we wont know"*
+
+**Owner answer at the exit-route fork, verbatim:** *"Two maps at start, coordinate is real (Recommended)"*
+
+**Owner direction this closes, verbatim:** *"and remember the solo/group start in a backroom needs to 100% have a exit to map natural portal on their first backrroms level with natural portals deeper to an extent till they would need to buidl theri own gate"*
+
+### What shipped
+
+The guaranteed exit. The solo/group start generates two maps: an ordinary surface map holding one small concrete shell with one door, and a **real Backrooms coordinate** beside it. The people and their supplies begin inside, and an ordinary `Emergence` connection is registered at the opening - not found by a survey draw.
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Scenario/SoloGroupOpening.cs` (new), `Scenario/RimroomsStartDef.cs`, `Scenario/ScenPart_RimroomsStart.cs`, `Scenario/GenStep_InsideStart.cs` (**retired, archived**), `Mod/.../Defs/RimroomsStartDefs/RR_Starts.xml`, `Mod/.../Defs/MapGeneratorDefs/RR_BackroomsGeneration.xml`, keyed strings, `docs/implementation/SOLO_GROUP_EXIT_IMPLEMENTATION.md`, `historical-content/0.12.0-dev/RETIRED_GENSTEP_INSIDESTART.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj, and the starts proof.
+
+### Closure notes
+
+- **A hard constraint decided the architecture, and it was found by reading rather than assumed.** `RimroomsPortalNetwork.Register` requires the Backrooms side of every connection to be a `RimroomsDestinationMapParent` with a matching `CoordinateRecord`. The starting map can never be one, because `Game.InitNewGame` generates it for a player `Settlement`. **0.12.0-dev's design was the thing in the way**, and the alternative was widening the validation every existing gate depends on. Taken to the owner rather than decided quietly.
+- **The order of the opening is its safety.** The party is moved inside **last**, so a failure anywhere above leaves everybody safely on the surface rather than sealed in a coordinate with no registered exit - the exact trap invariant 28 forbids. Asserted, and a plant that reorders it fails immediately.
+- **`GenStep_InsideStart` and `RR_InsideStart` retired and archived verbatim** with the reason (invariant 37). `BuildShell` stays: it is the destination generator's own shell and the single implementation carrying invariant 13.
+- **`check-keyed-strings.py` caught two refusal keys I invented** - `RR_Portal_InvalidState` and `RR_Portal_LocalThresholdUnavailable`. The real prefix is `RR_PortalAddress_`, built by the service's own `Refuse` helper. A refusal key that does not exist shows the player the raw key.
+- Build 0.12.2-dev, 168 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, seven proofs hold. Assembly reproduced by two clean recompiles. **No game was launched, and nothing here has been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

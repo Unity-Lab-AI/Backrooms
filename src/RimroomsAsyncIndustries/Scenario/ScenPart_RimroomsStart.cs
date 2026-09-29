@@ -107,6 +107,15 @@ namespace RimroomsAsyncIndustries.Scenario
             }
             receipt.branchInitialized = true;
             receipt.failure = null;
+            // The solo/group opening, after the branch exists and before the welcome letter: it
+            // needs a live campaign to mint a coordinate against, and the player should not be
+            // told they have arrived until they are actually where they start.
+            string openingFailure = SoloGroupOpening.Open(startDef, company, map);
+            if (openingFailure != null)
+            {
+                receipt.failure = openingFailure;
+                return CompanyActionResult.Refused(openingFailure);
+            }
             SetStartingRelations();
             Find.LetterStack.ReceiveLetter("RR_Start_WelcomeTitle".Translate(), "RR_Setup_Welcome".Translate(), LetterDefOf.NeutralEvent);
             return result;

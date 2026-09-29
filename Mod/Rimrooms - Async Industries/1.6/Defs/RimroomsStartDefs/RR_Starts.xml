@@ -303,16 +303,26 @@
     <insideStart>true</insideStart>
     <insideStartDepth>1</insideStartDepth>
     <mapSize>60</mapSize>
-    <mapGenerator>RR_InsideStart</mapGenerator>
-    <outdoorTerrain>Concrete</outdoorTerrain>
+    <mapGenerator>RR_Headquarters</mapGenerator>
+    <outdoorTerrain>Soil</outdoorTerrain>
     <floorTerrain>Concrete</floorTerrain>
     <wallStuff>BlocksGranite</wallStuff>
-    <!-- The generator decides where anybody can stand, because the rooms are generated. These
-         two are required by the shared contract and are never read on an inside start. -->
-    <arrivalCell>(30, 0, 30)</arrivalCell>
-    <stockCell>(30, 0, 30)</stockCell>
-    <rooms />
-    <doors />
+    <!-- The surface map holds ONE small concrete shell with ONE door, and nothing else. That
+         door is the place the Backrooms comes up, and it is where they will come out. Everything
+         a facility needs, they build.
+
+         Reworked in 0.12.2-dev: the starting map used to BE the coordinate, which could never
+         carry a registered exit. Now the coordinate is real and generated beside this map, and
+         SoloGroupOpening moves everybody into it after registering the way out. -->
+    <arrivalCell>(30, 0, 29)</arrivalCell>
+    <stockCell>(30, 0, 31)</stockCell>
+    <emergenceDoorCell>(30, 0, 27)</emergenceDoorCell>
+    <rooms>
+      <li><x>27</x><z>27</z><width>7</width><height>7</height><roofed>true</roofed><floor>true</floor></li>
+    </rooms>
+    <doors>
+      <li>(30, 0, 27)</li>
+    </doors>
     <buildings />
     <conduits />
     <roles>

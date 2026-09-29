@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.2-dev - 2026-09-29 - the way out was already there
+
+- **The solo or group start now has a guaranteed way out, from the first tick.** A door on the surface, connected to the level you wake up in. Nobody built it and nobody knows who did.
+- **You still start inside.** Your people and everything they were carrying are in the Backrooms before you see anything; the surface is a bare tile with one small concrete shell on it, and that shell is where you will come out.
+- **Nothing is prepared for you up there.** No power, no furniture, no stockpile. Everything a facility needs, you build.
+- **Using the way out is entirely your choice.** It is permanently open and it does not ask anything of you. A group that would rather stay down there and dig is playing correctly.
+
+Full record: [the way out was already there](docs/implementation/SOLO_GROUP_EXIT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.1-dev - 2026-09-29 - the free doors run out
 
 - **Found doors stop leading deeper after the third level.** The Backrooms gives you the yellow rooms and two steps in, and then no more doors turn up. Past that, going deeper needs a gate you built.
