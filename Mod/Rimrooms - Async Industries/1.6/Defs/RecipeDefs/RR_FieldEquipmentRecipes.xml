@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <RecipeDef Name="RR_FieldFabricationBase" Abstract="True">
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
@@ -25,16 +25,6 @@
     <jobString>Making survey tags.</jobString><workAmount>500</workAmount>
     <ingredients><li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>3</count></li></ingredients>
     <products><RR_SurveyTag>6</RR_SurveyTag></products>
-  </RecipeDef>
-  <RecipeDef ParentName="RR_FieldFabricationBase">
-    <defName>RR_MakeReturnBeacon</defName><label>make return beacon</label>
-    <description>Assemble a portable route beacon from steel and components.</description>
-    <jobString>Making return beacon.</jobString><workAmount>1800</workAmount>
-    <ingredients>
-      <li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>20</count></li>
-      <li><filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter><count>2</count></li>
-    </ingredients>
-    <products><RR_ReturnBeacon>1</RR_ReturnBeacon></products>
   </RecipeDef>
   <RecipeDef ParentName="RR_FieldFabricationBase">
     <defName>RR_MakeEvidenceCase</defName><label>make sealed evidence case</label>

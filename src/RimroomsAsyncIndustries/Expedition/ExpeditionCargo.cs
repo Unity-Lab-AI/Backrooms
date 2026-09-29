@@ -11,7 +11,10 @@ namespace RimroomsAsyncIndustries.Expedition
 {
     public static class ExpeditionCargo
     {
-        private static readonly string[] KitDefs = { "RR_FieldRecorder", "RR_SurveyTag", "RR_ReturnBeacon", "RR_SealedEvidenceCase" };
+        // The return beacon was retired in 0.9.9-dev: the gate's own address book and the
+        // saved return threshold already are the route authority, so the item had no job
+        // left to do. Owner decision, asked at the fork.
+        private static readonly string[] KitDefs = { "RR_FieldRecorder", "RR_SurveyTag", "RR_SealedEvidenceCase" };
         private static readonly int[] KitCounts = { 1, 6, 1, 1 };
 
         public static CompanyActionResult CheckKit(IEnumerable<Pawn> crew, Map deployedSite = null, string coordinateId = null)
@@ -128,7 +131,7 @@ namespace RimroomsAsyncIndustries.Expedition
 
         private static int DeployedCount(string name, Map site, string coordinateId)
         {
-            if (site == null || string.IsNullOrEmpty(coordinateId) || (name != "RR_SurveyTag" && name != "RR_ReturnBeacon")) { return 0; }
+            if (site == null || string.IsNullOrEmpty(coordinateId) || name != "RR_SurveyTag") { return 0; }
             ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(name);
             if (def == null) { return 0; }
             int count = 0;

@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.9.8-dev** (this commit) |
+| Published | **0.9.9-dev** (this commit) |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
 | Build | **158 C# files, 79 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `211687673EA54860637418F89D3EFE90436387EDB9BB8284AA84A09A19295B94`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `0E9BEEF6DA1A781EB58E8974340522DF4010EA00004F38F292880677F6FD7F600`, reproduced by two clean recompiles |
 | Checkers | **five**, all passing |
 | Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
 | Game launches | **none, ever** |
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.9.8
+## What shipped this session, 0.7.1 → 0.9.9
 
 | Version | What |
 |---|---|
@@ -71,6 +71,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.9.6 | **It came through with them** — a bounded, named exception to the founding rule |
 | 0.9.7 | **Some places are bigger than a room** — facilities as contiguous runs of rooms |
 | 0.9.8 | **One tech tree, different starting points** — the tree is derived, not declared per scenario |
+| 0.9.9 | **The beacon had nothing left to do** — first field-gear retirement, four replacements decided |
 
 ---
 
@@ -158,6 +159,9 @@ Each is a real defect or a pinned fact.
 60. **A scenario declares what begins finished, never the tech tree.** The tree is every `RimroomsProjectDef` loaded, sorted ordinally. That is what makes "same tech tree" a fact rather than a convention three lists have to honour.
 61. **A project that begins finished is also insight-committed**, or the UI offers a "start" button on work already done.
 62. **The remaining two scenarios are blocked behind the field-gear replacement**, not behind effort. They would grant `RR_FieldRecorder`, `RR_SurveyTag`, `RR_ReturnBeacon` and `RR_SealedEvidenceCase` — content M2 is retiring.
+63. **The field-kit replacements are decided.** Survey tag → Core `GlowPod`; return beacon → **dropped**, its job taken over by the gate's address book; evidence case → a **designated headquarters `Shelf`** as the archive; recorder → **the book is the recorder**. Asked at the fork, grounded in enumerated Core content.
+64. **`CompGlower.GlowColor` has a public setter**, backed by a saved per-instance `glowColorOverride`, and `colorPickerEnabled` on the props turns on RimWorld's own colour picker. Settable glow colour needs no new UI.
+65. **Glow pods are never capped.** Owner direction: a 300×300 instance can have hundreds of rooms. Colour is **semantic** — mod-defined marker types, not decoration.
 
 ---
 

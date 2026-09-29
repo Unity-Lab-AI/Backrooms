@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.9-dev - 2026-09-29 - the beacon had nothing left to do
+
+- **The return beacon is gone.** Your gate remembers every address it has dialled and the way back is saved with the space itself, so carrying a beacon to find your own door stopped being a job some time ago.
+- Nothing was lost with it. Finding your way home is done by the gate's own address book and the saved return threshold, both of which are better at it than an item you could drop.
+- Survey tags are untouched and still mark your route.
+
+Full record: [the field kit, part one](docs/implementation/FIELD_KIT_RETIREMENT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.9.8-dev - 2026-09-29 - one tech tree, different starting points
 
 - **Every start uses the same company research tree.** A scenario chooses only which projects it begins with already finished, never what the tree contains.

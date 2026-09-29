@@ -2789,3 +2789,42 @@ Def fields added: 1. Request fields added: 1. Methods added: 1. Hardcoded record
 **Behaviour changed today: none.** The tree is derived rather than asserted, which is what makes the next two scenarios possible without a fourth list to keep in step.
 **Scenarios deliberately NOT written this checkpoint: 2**, because they would have granted legacy gear that M2 is about to retire.
 Still open and named in `TODO.md`: the field-gear replacement; the other two starts; the world tile.
+
+---
+
+## 0.9.9-dev - 2026-09-29 - the beacon had nothing left to do
+
+### Owner decisions, asked at the fork and answered
+
+Four pieces of field gear needed capability replacements before the remaining scenarios could be written, and the owner has always refused to lose the mechanics. Core was enumerated first so the options were real, and all four were answered:
+
+> **Survey tag -> Core `GlowPod`**, minifiable, carried, deployed, and it lights the room it marks.
+
+> **Return beacon -> dropped.** The gate's address book and the saved return threshold already are the route authority.
+
+> **Sealed evidence case -> a designated headquarters shelf is the archive**, with the book carried and custody completing when it arrives.
+
+> **Field recorder -> the book is the recorder.** One Core `TextBook` carried in blank, written in the field, carried home as the evidence.
+
+Further owner direction on the glow pods, recorded verbatim in `TODO.md`: *"lets not limit the amount as a backrooms instance can have 100s of rooms"*, *"maybe lets have the glow pods color setable"*, and *"color means differnt types of the needs markers"* - answered as **mod-defined marker types, each with its own colour**.
+
+### What shipped here
+
+Only the beacon, because it is the one that needed no replacement built: its job was genuinely taken over by work already shipped. The def, its recipe, its scenario grant, its keyed strings, its deploy button and all six C# references are gone.
+
+`CompGlower.GlowColor` was verified to have a public setter backed by a **saved per-instance `glowColorOverride`**, and `CompProperties_Glower.colorPickerEnabled` turns on RimWorld's own colour picker - so settable colour needs no new UI. That is for the next checkpoint.
+
+### The checker found the last trace
+
+`RR_ReturnAnchor` used the beacon's texture, so the package still referenced a name it no longer declared. The texture is renamed to the def that actually uses it, leaving nothing pointing at a dead name. **Found by `check-package-integrity.py`, not by reading.**
+
+### Build evidence
+
+0.9.9-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **158** C# source files, **79** approved package files. Assembly SHA-256 `0E9BEEF6DA1A781EB58E8974340522DF4010EA00004F38F292880677F6FD7F600`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All five checkers pass. **Nothing was added.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Defs retired: 2 (the beacon and its recipe). C# references removed: 6. Keyed strings removed: 2. Textures renamed: 1.
+**Owner forks asked and answered rather than guessed: 5** in one exchange, each grounded in enumerated Core content rather than in what seemed likely.
+**Field gear retired because its job was taken over rather than replaced: 1.**
+Still open and named in `TODO.md`: the survey tag as a glow pod with marker types; the evidence case as a designated archive; the recorder merged into the book; then the remaining two scenarios.

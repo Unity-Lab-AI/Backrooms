@@ -141,8 +141,7 @@ namespace RimroomsAsyncIndustries.UI
                     FirstSliceSiteComponent site = selected.Map.GetComponent<FirstSliceSiteComponent>();
                     if (site.DeploymentRecoveryCount > 0 && listing.ButtonText("RR_UI_RecoverRoutePlacement".Translate()))
                     { ShowResult(site.RecoverDeploymentItems(selected)); }
-                    if (listing.ButtonText("RR_UI_PlaceTag".Translate(selected.LabelShortCap))) { ShowResult(site.QueueDeployAid(selected, false)); }
-                    if (listing.ButtonText("RR_UI_PlaceBeacon".Translate(selected.LabelShortCap))) { ShowResult(site.QueueDeployAid(selected, true)); }
+                    if (listing.ButtonText("RR_UI_PlaceTag".Translate(selected.LabelShortCap))) { ShowResult(site.QueueDeployAid(selected)); }
                     foreach (EvidenceRecord record in campaign.Evidence.Where(e => e.CoordinateId == run.CoordinateId && e.Item != null && e.Item.Spawned && e.Item.Map == selected.Map && !e.Item.Position.Fogged(selected.Map)))
                     {
                         if (listing.ButtonText("RR_UI_RecoverEvidence".Translate(selected.LabelShortCap)))
@@ -213,7 +212,8 @@ namespace RimroomsAsyncIndustries.UI
 
         private static void DrawRouteAidRecovery(Listing_Standard listing, Pawn pawn)
         {
-            foreach (string defName in new[] { "RR_SurveyTag", "RR_ReturnBeacon" })
+            // One kind of route aid since the beacon was retired in 0.9.9-dev.
+            foreach (string defName in new[] { "RR_SurveyTag" })
             {
                 ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
                 if (definition == null) { continue; }

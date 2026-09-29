@@ -236,22 +236,20 @@ namespace RimroomsAsyncIndustries.Threats
         }
         private IEnumerable<CompRouteAid> DeployedAids()
         {
-            foreach (string name in new[] { "RR_SurveyTag", "RR_ReturnBeacon" })
+            // One kind of route aid since the beacon was retired in 0.9.9-dev.
+            ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail("RR_SurveyTag");
+            if (definition == null) { yield break; }
+            foreach (Thing item in map.listerThings.ThingsOfDef(definition))
             {
-                ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail(name);
-                if (definition == null) { continue; }
-                foreach (Thing item in map.listerThings.ThingsOfDef(definition))
-                {
-                    CompRouteAid aid = item.TryGetComp<CompRouteAid>();
-                    if (aid != null && aid.Deployed && aid.CoordinateId == Coordinate?.Id) { yield return aid; }
-                }
+                CompRouteAid aid = item.TryGetComp<CompRouteAid>();
+                if (aid != null && aid.Deployed && aid.CoordinateId == Coordinate?.Id) { yield return aid; }
             }
         }
-        public CompanyActionResult QueueDeployAid(Pawn pawn, bool beacon)
+        public CompanyActionResult QueueDeployAid(Pawn pawn)
         {
             if (pawn == null || !crew.Contains(pawn) || !pawn.Spawned || pawn.Map != map || pawn.Downed || RoomAt(pawn.Position) == null)
             { return CompanyActionResult.Refused("RR_Field_CannotDeploy"); }
-            Thing item = pawn.inventory?.innerContainer.FirstOrDefault(t => t.def.defName == (beacon ? "RR_ReturnBeacon" : "RR_SurveyTag"));
+            Thing item = pawn.inventory?.innerContainer.FirstOrDefault(t => t.def.defName == "RR_SurveyTag");
             if (item == null) { return CompanyActionResult.Refused("RR_Field_AidMissing"); }
             IntVec3 cell = GenRadial.RadialCellsAround(pawn.Position, 2f, true).FirstOrDefault(c => c.InBounds(map) &&
                 c.Standable(map) && c.GetFirstItem(map) == null && RoomAt(c) == RoomAt(pawn.Position));

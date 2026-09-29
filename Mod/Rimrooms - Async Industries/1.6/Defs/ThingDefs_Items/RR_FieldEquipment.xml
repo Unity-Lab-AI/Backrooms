@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <ThingDef Name="RR_FieldItemBase" ParentName="ResourceBase" Abstract="True">
     <thingClass>ThingWithComps</thingClass>
@@ -21,13 +21,6 @@
     <graphicData><texPath>Items/Field/RR_SurveyTag</texPath></graphicData>
     <statBases><Mass>0.05</Mass><MarketValue>3</MarketValue></statBases>
     <comps><li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteAid" /></comps>
-  </ThingDef>
-  <ThingDef ParentName="RR_FieldItemBase">
-    <defName>RR_ReturnBeacon</defName><label>return beacon</label>
-    <description>A portable beacon for identifying a validated junction. Carry or deploy it as part of the expedition's return plan. It marks a known route; it cannot create an exit or move a stranded person.</description>
-    <graphicData><texPath>Items/Field/RR_ReturnBeacon</texPath></graphicData>
-    <statBases><Mass>2.5</Mass><MarketValue>200</MarketValue></statBases>
-    <comps><li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteAid"><beacon>true</beacon></li></comps>
   </ThingDef>
   <ThingDef ParentName="RR_FieldItemBase">
     <defName>RR_SealedEvidenceCase</defName><label>sealed evidence case</label>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <ScenarioDef ParentName="ScenarioBase">
     <defName>RR_AsyncIndustries</defName>
@@ -36,7 +36,6 @@
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>WoodLog</thingDef><count>150</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>RR_FieldRecorder</thingDef><count>1</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>RR_SurveyTag</thingDef><count>6</count></li>
-        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>RR_ReturnBeacon</thingDef><count>1</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>RR_SealedEvidenceCase</thingDef><count>1</count></li>
       </parts>
     </scenario>

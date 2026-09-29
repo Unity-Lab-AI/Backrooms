@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Field_AidMismatch>This tag still records room {0}, but its physical location no longer matches that junction.</RR_Field_AidMismatch>
   <RR_Field_RepeatedLabel>Room {0} again? Tag #{1}</RR_Field_RepeatedLabel>
@@ -30,7 +30,6 @@
   <RR_Event_PursuerRepelled>The attack forced the figure back to room {0}. The crew has another warning interval to withdraw.</RR_Event_PursuerRepelled>
   <RR_Event_PursuerWithdrawn>The figure withdrew. This opening will not spawn another encounter.</RR_Event_PursuerWithdrawn>
   <RR_UI_PlaceTag>Place carried survey tag at {0}'s position</RR_UI_PlaceTag>
-  <RR_UI_PlaceBeacon>Place carried return beacon at {0}'s position</RR_UI_PlaceBeacon>
   <RR_UI_RecoverEvidence>Order {0} to collect the route recording</RR_UI_RecoverEvidence>
   <RR_UI_RecoverRouteAid>Order {0} to recover {1}</RR_UI_RecoverRouteAid>
   <RR_UI_FieldObjectives>Survey the six required room families with the recorder, document the route mismatch, collect the physical recording, and return it with the evidence case. A clear entity observation and all three original crew returning qualify for the bonus. Place tags and the return beacon at a known junction to counter the loop.</RR_UI_FieldObjectives>
