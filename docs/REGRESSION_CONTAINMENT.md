@@ -34,6 +34,53 @@ Record the affected cases for the later owner-launched disposable session: old/n
 
 These are future acceptance cases, not results or permission to start RimWorld. The owner alone launches through RimSort; attach RimBridgeServer only under the saved QA plan. Do not call compilation, source review, a passing document audit or another agent's message a runtime regression pass. Keep independent coding moving while those cases are deferred.
 
+## Doc-rot sweep — every owner decision, checked against the live docs
+
+**Owner direction, 2026-09-29, verbatim:** *"make sure no docs in docs have retoffeed or regressed with all ive said"*
+
+A decision that is recorded in one file and contradicted in another is worse than an unrecorded one, because the next session reads whichever it opens first. This has now bitten three times: `NOW.md` claimed three answered questions were still open; `TODO.md` did the same; and `SCENARIO_SETUP_AND_PORTAL_NETWORK.md` contradicted **itself**, describing the inside-start choices as pending in one paragraph and recording their answers in another.
+
+So the sweep is a standing step, not a one-off. **Run it whenever an owner decision lands, and before any publication that records one.**
+
+### What counts as a live doc
+
+Only forward-looking docs can rot. These are **archives** and legitimately describe past state — never rewrite them to match the present:
+
+- `FINALIZED.md`, `GATE_0_DECISIONS.md`, `DECOMPOSED.md`, `CHANGELOG.md`
+- everything under `docs/implementation/` (per-checkpoint records) and `docs/research/` (source reviews)
+- every `evidence/` folder
+
+Everything else in `docs/` is live and must agree with the current decisions.
+
+### The checks
+
+Grep every live doc for each superseded claim, and treat a hit as rot **unless** the same line also supersedes, answers or withdraws it. Current list, with what the truth is:
+
+| Stale claim to grep for | Current truth |
+|---|---|
+| `20 in-game minute` opening, or an access ladder of 2 hours / 1 day / 7 days / 30 days | 108,000 ticks first (~30 real minutes at normal speed), ×3 per earned tier, no countdown at the indefinite tier while power, operator and energy hold |
+| `833` ticks as the portal window | Legacy expeditions only; portal sessions use the ladder |
+| `fixed discovered` first-exit destination | **The player chooses** the destination settlement |
+| `[!]` status marker, or `owner-blocked` / `blocked: owner` / `blocked on the owner` | No blocked status exists. `[T]` = post-completion test phase, which gates nothing |
+| A hardcoded company identity | Every start names its own company; *Async Industries* is a suggested default only |
+| Per-scenario or scenario-specific research or tech | **One** tech tree available to every scenario; no rule may be gated on scenario identity |
+| Refuel and rearm as two families | One family — Core's own `RearmTurrets` giver *is* a refuel giver |
+| A hungry or tired pawn crossing a gate for a need | Decided against: needs are not work, and a closing gate strands them. Take the thing to the people instead |
+
+Add a row every time a decision supersedes something. A check that is not written down here is a check that will not be run.
+
+### What the 2026-09-29 sweep found and fixed
+
+Eleven corrections across ten live docs, plus twelve in `ROADMAP.md`:
+
+- `ARCHITECTURE.md` still listed all three answered owner questions as **open**, including the 833-tick window.
+- `CAMPAIGN_ECONOMY_MODEL.md`, `CAMPAIGN_ROSTER_FREEZE.md`, `FIRST_PLAYABLE_CONTRACT.md`, `FIRST_SLICE_CONTENT_INVENTORY.md` and `SCENARIOS.md` all still asserted the 20 in-game-minute opening as current, two of them with the superseded 2-hour/1-day/7-day/30-day ladder.
+- `ROADMAP.md` still defined `[!]` in its status legend and used it in eight places, still said the owner's launch "unblocks" things, and still posed the two inside-start questions as pending with the withdrawn fixed-reveal assumption.
+- `SCENARIO_SETUP_AND_PORTAL_NETWORK.md` contradicted itself as described above.
+- `DEFERRED.md` had two residual owner-blocked phrasings.
+
+Superseded values were **kept and marked superseded** rather than deleted, per the never-delete-information rule, so the trail stays readable.
+
 ## Required task-record fields
 
 `TODO/feature IDs · baseline build/commit · owned paths · affected callers and saved fields · deliberate changes · preserved behavior · source/build evidence · remaining regression cases · TODO updates`

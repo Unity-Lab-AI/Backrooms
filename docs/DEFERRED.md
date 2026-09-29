@@ -63,7 +63,7 @@ The four governing answers are settled, so no row here is waiting on a decision 
 
 ### Owned by M1 resume step 6 (milestone hygiene)
 
-- [ ] **Connected-site scheduling and streaming, then measurement.** Active connected job destinations must not be silently unloaded to meet a budget. Measurement itself is owner-blocked. Source: `CONNECTED_COLONY_PORTALS.md`, `research/PERFORMANCE_BENCHMARK_PLAN.md`.
+- [ ] **Connected-site scheduling and streaming, then measurement.** Active connected job destinations must not be silently unloaded to meet a budget. Measurement itself belongs to the post-completion test phase and gates nothing. Source: `CONNECTED_COLONY_PORTALS.md`, `research/PERFORMANCE_BENCHMARK_PLAN.md`.
 - [x] **Balance review of the connected work-giver priorities** — **CLOSED 2026-09-28 in 0.5.6-dev by removing the question rather than answering it.** All eight numbers across the four families are now player settings, tunable in the settings window and applied live with no mod reload and no restart. This was the right shape regardless of feel, because by owner direction the one session where these are finally judged is a live play session where fixes must land without reloading the mod — so anything hardcoded is something that session could not have fixed. The shipped XML stays the single source of truth for the defaults; only values that differ from it are saved. The plan-below-continue invariant is enforced in code and explained in the UI, so tuning cannot silently break the two-giver design. Record: [`implementation/TUNABLE_PRIORITIES_AND_TEST_PHASE.md`](implementation/TUNABLE_PRIORITIES_AND_TEST_PHASE.md).
 
 ### Owned by M2 (existing-content replacement)
@@ -86,7 +86,7 @@ The four governing answers are settled, so no row here is waiting on a decision 
 - [ ] Contract/quest templates for the 13 mission families, leases, shipment incidents.
 - [ ] Research IDs across tiers T0–T6 and the nine branches; entity family sheets (broad families only per S1/B).
 - [ ] Containment, interviews, settlement openings, outposts, vehicles, VGE hooks.
-- [ ] Store start; Lone Survivor start (also owner-blocked, below).
+- [ ] Store start; Lone Survivor start. Both starts are fully specified in [`SCENARIOS.md`](SCENARIOS.md), so this is implementation rather than design, and **neither is blocked on the owner**.
 
 ### Owned by M5 (interface) / M6 (release)
 

@@ -6,7 +6,9 @@
 
 **Tier 1 of 3** in the Claude Code three-tier task cascade (ROADMAP → `TODO.md` → `DECOMPOSED.md`; completed work archives to `FINALIZED.md`). Added 2026-09-28 when the Claude Code workflow took over from the previous build agent. This section layers status markers, scope, exit conditions and dependencies over the existing Stage 0–6 roadmap below; it changes no stage scope or exit condition. The [master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) keeps the complete backlog and formal gates; every open item of it is mirrored verbatim in `TODO.md` under these majors. The sections after the stages (decision log, dependency graph, risks, timeline, next actions) are the workflow's project-wide view.
 
-Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived to `FINALIZED.md`) · `[!]` blocked.
+Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived to `FINALIZED.md`) · `[T]` belongs to the **post-completion test phase**.
+
+**There is no blocked status, by owner direction 2026-09-28.** Nothing in this project is blocked on the owner and nothing ever was. Rows that cannot be *closed* without the game running are `[T]` and gate no work. The `[!]` marker was removed from this file in the 2026-09-29 doc-rot sweep and must not be reintroduced; see [`DEFERRED.md`](DEFERRED.md) §The post-completion test phase.
 
 ### Current status
 
@@ -29,7 +31,7 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
 - [~] **M1 — Connected colony portals** (feature IDs RR-GATE, RR-EXP, RR-SPACE, RR-FAC, RR-COMPAT; contract [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md)).
   **Scope:** independent connection ownership, permanent natural portals, free bidirectional crossing of the same pawns and cargo, cross-map job discovery/reservations, cross-portal hauling/construction/bills/research/care, closure/reopen reconciliation, 294-row work/storage provider integration, replacement of dispatch-only travel controls, coordinate/seed/complexity persistence, bounded procedural inhabitants and rare monstrosities, connected-site streaming.
   **Done so far (0.4.2-dev):** saved portal graph with Laboratory/Natural kinds, resumable route search, laboratory session ownership, same-pawn crossing service with receipts and recovery, content version 4 Core-door thresholds (all 0.4.1-dev); then resume steps 1–3 — the crossing-service boundary review, derived laboratory and natural address registration, the deterministic discovered-coordinate API, the explicit legacy threshold repair, the `RR_CrossPortal` job with its save-stable operation id, the Operations portal pane with open/close/emergency-return/crossing/reconcile controls, and player text for every result. The substrate is now reachable in play.
-  **Exit condition:** the 11-item required implementation backlog is source-complete with compiler evidence per step, every supported native work route is listed with source evidence, and the owner-launched acceptance row is recorded (the last item stays `[!]` until the owner launches).
+  **Exit condition:** the 11-item required implementation backlog is source-complete with compiler evidence per step, every supported native work route is listed with source evidence, and the owner-launched acceptance row is recorded (that last item is `[T]`: it is confirmed in the post-completion test phase and gates nothing before then).
   **Working sequence:** resume steps 1–6 in `TODO.md`; steps 1–3 decomposed in `DECOMPOSED.md`. Maps to Stage 2 → Stage 5 below.
 
 - [~] **M2 — Existing-content replacement** (RR-STYLE, RR-GATE, RR-EVD, RR-THREAT; policy [CONTENT_REUSE_POLICY.md](CONTENT_REUSE_POLICY.md), map [implementation/EXISTING_CONTENT_REPLACEMENT_MAP.md](implementation/EXISTING_CONTENT_REPLACEMENT_MAP.md)).
@@ -44,7 +46,7 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
 
 - [ ] **M4 — Phase 4 multiplayer, DLC and the full profile** (RR-MP, RR-DLC, RR-SPACEFLIGHT, RR-COMPAT).
   **Scope:** RWT feature detection and setup diagnostics for pinned 26.8.31.1 (no supported client extension API identified; no custom server schema); Research Dossier bound to an existing physical document object; five DLC conditional layers each present/absent; VGE Chapter 1/2 clean-stack chain; per-row closure of all 294 register rows with one of the six support tiers; compatibility report.
-  **Exit condition:** source-side guards and adapters compile; every verification row is `[!]` until the owner runs the two-client disposable profile; release notes list only tested configurations. Maps to Stage 3.
+  **Exit condition:** source-side guards and adapters compile; every verification row is `[T]` and is confirmed in the post-completion test phase, when the owner runs the two-client disposable profile; release notes list only tested configurations. Maps to Stage 3.
 
 - [ ] **M5 — Phase 5 Company Command interface and polish** (RR-UI, RR-STYLE).
   **Scope:** the 11 panes (Overview, Personnel, Facilities, Gate, Expeditions, Atlas/Routes, Research/Evidence, Contracts/Ledger, Cases/Containment, Outposts/Company Network, Gravship Operations) with deep links, reason codes, previews and recovery; native menu/tab remap preserving every Architect/Work/Assign/Research/World action; tutorial, glossary, keyboard paths, contrast/scale options; main-menu slideshow (≥1 image per shipped scenario, 30 s dwell, 2 s fades, reduced-motion still, no audio) with dynamic title/version.
@@ -54,7 +56,7 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
   **Scope:** Def/key/patch/package validation; scenario acceptance per opening; invalid-state matrix including the one-million-silver case (67 stacks OgreStack / 2,000 Core); performance against `research/PERFORMANCE_BENCHMARK_PLAN.md` budgets on RR-DEV-01; economy balance; release report; install/uninstall/update/server tests; mod page and provenance; tag and archive.
   **Exit condition (D1):** private RimWorld Together prototype passes the Core-only solo path and the pinned co-op tests; public Workshop only after named-profile and multiplayer validation. Maps to Stage 6.
 
-- [!] **Runtime acceptance gates (Gate 2 onward).** Blocked on the owner launching the 295-entry product target through RimSort (296 with the RimBridgeServer QA overlay attached afterward). The build agent never launches RimWorld, never alters the active RimSort list, never attaches RimBridgeServer outside `research/RIMBRIDGE_TEST_HARNESS.md`. Source and build work continues across M1–M6 per the owner's [build-continuation direction](GATE_0_DECISIONS.md#build-continuation-and-deferred-game-testing).
+- [T] **Runtime acceptance gates (Gate 2 onward).** Confirmed in the post-completion test phase, which begins only once the mod is complete in its entirety and the owner sets up the environment; it gates no source work. Needs, at that point, the owner launching the 295-entry product target through RimSort (296 with the RimBridgeServer QA overlay attached afterward). The build agent never launches RimWorld, never alters the active RimSort list, never attaches RimBridgeServer outside `research/RIMBRIDGE_TEST_HARNESS.md`. Source and build work continues across M1–M6 per the owner's [build-continuation direction](GATE_0_DECISIONS.md#build-continuation-and-deferred-game-testing).
 
 The work is sequenced so that later content depends on an accepted company loop. Gate 0 preparation passed, repository/build foundations exist, and the first Async Industries facility-to-expedition slice is implemented in development. The integrated 0.2.0 package compiled with zero warnings/errors; all 61 staged files match the saved manifest. No gameplay or compatibility gate is closed by those compiler results. See the [current build record](implementation/PHASE_2_BUILD_RECORD.md) and [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) for exact evidence and remaining work.
 
@@ -170,7 +172,7 @@ Everything below was added 2026-09-28 by the Claude Code workflow as the project
 | S1/B | 2026-09-28 | Freeze broad later threat/anomaly families; the five named sketches (Signal Sink, The Long Exchange, Chalkline Spread, The Receiver, The Latch Visitor) are deferred and need owner approval + a full sheet before scope | M3 entity work stays family-level |
 | Content reuse | 2026-09-28 | Existing Core/DLC/profile content only; no new gameplay items, benches, sprites, textures, audio; original main-menu images are the sole visual exception | M2 exists; M3 gear/room/threat items bind existing objects |
 | Connected colony | 2026-09-28 | Open portals unify one branch's labor and materials across maps; natural portals permanently open; expedition dispatch becomes optional mission UI | M1 exists and supersedes dispatch-only contracts where they conflict |
-| Build continuation | 2026-09-28 | Continue source/content work with game testing deferred; runtime gates govern acceptance, not permission to code | M1–M6 proceed in dependency order with `[!]` runtime rows |
+| Build continuation | 2026-09-28 | Continue source/content work with game testing deferred; runtime gates govern acceptance, not permission to code | M1–M6 proceed in dependency order with `[T]` runtime rows |
 | Regression containment + publication cadence | 2026-09-28 | Every task records baseline/callers/saved fields/preserved behaviour; publish only at meaningful milestones, all changes batched, both cascades, refs read back, no separate receipt file | `PUBLISHING.md`; each resume step closes with compiler evidence |
 | Tracking `.claude/` | 2026-09-28 | Owner: ".claude gets pushed the whole backrooms folder always gets pushed except obvious dependacies and node stuff and logs,temps,and cache like files and configes ect ect that are auto generated and not product ship worthy" | `.gitignore` carries only session-state and personal-file excludes inside `.claude/` |
 
@@ -194,7 +196,7 @@ M3 scenario framework (Store, Lone Survivor*) ◄── step 5 providers + scena
 M3 facility/personnel · gate upgrades · room library/propagation · economy/contracts · research/containment/outposts
    │
    ▼
-M4 RWT adapter · DLC layers · 294-row closure  (source guards now; verification [!] until owner launch)
+M4 RWT adapter · DLC layers · 294-row closure  (source guards now; verification [T] in the post-completion test phase)
    │
    ▼
 M5 Company Command · tutorial/accessibility · slideshow integration
@@ -203,7 +205,7 @@ M5 Company Command · tutorial/accessibility · slideshow integration
 M6 validation · balance · release report · D1 private RWT prototype ─► Workshop (later, only after validation)
 
 * Lone Survivor waits on two owner answers (party size; first exit fixed vs chosen). Provisional assumption in use.
-Every "[!]" row across all majors converges on one external event: the owner's first RimSort launch of the 295-entry target.
+Every `[T]` row across all majors converges on one event: the **post-completion test phase**, which begins only after the mod is complete in its entirety and the owner has set up the environment. None of them blocks any build work, and none of them is a reason to ask the owner to launch.
 ```
 
 ### Critical path
@@ -211,7 +213,7 @@ Every "[!]" row across all majors converges on one external event: the owner's f
 1. M1 steps 1–3 (the substrate becomes reachable: registration, crossing job, controls). Nothing in M3's gate/expedition/procedural groups should be built on the old dispatch-only path after this point.
 2. M2's migration decision (legacy gate objects and legacy return anchor) is made together with M1 step 2, because they share saved keys.
 3. M1 step 4 adapters unlock M3's facility/personnel breadth being meaningful across maps.
-4. The owner's first launch unblocks Gate 2, the performance baselines, and every `[!]` row; until then every major ends at "source + build evidence".
+4. The post-completion test phase confirms Gate 2, the performance baselines and every `[T]` row; until then every major ends at "source + build evidence", which is the intended sequencing rather than a limitation.
 5. M4 verification and M6 release both require that launch plus a two-client disposable server.
 
 ### Risk assessment
@@ -221,7 +223,7 @@ Every "[!]" row across all majors converges on one external event: the owner's f
 | Portal substrate stays unconnected while other systems grow on the dispatch path | Rework across Expedition/Gate/UI; owner requirement unmet | High if M3 starts first | M1 steps 1–3 before any M3 gate/expedition item; `TODO.md` order enforces it |
 | Two gate opening paths double-debit or adopt an active legacy trip | Save corruption, duplicate energy debits | Medium | Receipt rules already exist; step 3 must call only `BeginPortalOpening`; never migrate `rr_gateActiveExpeditionId` silently |
 | Legacy content-version 0–3 sites cannot be registered | Existing dev saves lose portal access | Medium | Explicit repair route in step 2; never retarget a saved edge; keep the old anchor Def loadable |
-| No runtime observation exists for any build | Any of the 120 open items may fail in play; balance numbers untested | Certain until owner launches | Every runtime row is `[!]`; compile + manifest evidence only; benchmark plan waits |
+| No runtime observation exists for any build | Any of the 120 open items may fail in play; balance numbers untested | Certain until owner launches | Every runtime row is `[T]`; compile + manifest evidence only; benchmark plan waits for the test phase |
 | Cross-map work adapters break native priorities, areas, locks or optional-mod work givers | Owner's "one colony" promise silently wrong in the 294 profile | High | Step 4 ships one adapter family at a time with source evidence per route; 294-row provider boundaries in `CONNECTED_WORK_PROFILE_BOUNDARIES.md` |
 | RWT has no supported client extension API | Dossier transfer may be impossible; shared research impossible | Known | D6: dossier is a physical existing document object; ship disabled if the pinned build cannot move it |
 | Custom gameplay assets ship by accident | Violates content-reuse policy at release | Medium | M2 exit condition removes them from the allowlist; `BuildCommon.ps1` rejects extras |
@@ -266,12 +268,14 @@ BLOCKED     every runtime row until the owner's first RimSort launch of the 295-
 
 **Long term:**
 - M1 step 4–5, M2 closure, then M3 in master TODO order; M4/M5/M6 source-side work interleaved where it does not depend on runtime evidence.
-- Owner launch → Gate 2 → benchmark baselines → every `[!]` row.
+- Mod complete → owner sets up the environment → rim api mod added → Gate 2, benchmark baselines and every `[T]` row confirmed, with live fixes where possible.
 
 ### Open owner questions (carried from the previous agent; do not answer on the owner's behalf)
 
-1. Inside start (`lone_survivor`): configurable party versus strictly lone start.
-2. Inside start: does the first reliable exit reveal a fixed discovered surface destination, or does the player choose a settlement?
-3. Opening-duration clarification — the accepted 20 in-game-minute first window is retained until directed otherwise.
+**All three were ANSWERED by the owner on 2026-09-28.** They are kept here with their answers rather than deleted, and this list is no longer a set of open questions; corrected in the 2026-09-29 doc-rot sweep.
 
-Provisional assumption in use for 1–2 (recorded in `SCENARIO_SETUP_AND_PORTAL_NETWORK.md`): configurable solo/group, automatic Backrooms entry, fixed discovered surface destination.
+1. Inside start (`lone_survivor`): configurable party versus strictly lone start. — **ANSWERED: configurable party, the player chooses.**
+2. Inside start: does the first reliable exit reveal a fixed discovered surface destination, or does the player choose a settlement? — **ANSWERED: the player chooses the destination settlement.** The fixed-reveal assumption is withdrawn; scenario work must implement a choice.
+3. Opening-duration clarification — the accepted 20 in-game-minute first window is retained until directed otherwise. — **ANSWERED and superseded:** the first opening is 108,000 ticks, about thirty real minutes at normal speed, multiplying by three per earned tier, with no countdown at the indefinite tier while power, operator and energy hold.
+
+**No provisional assumption remains in use.** The fixed-discovered-destination assumption that used to be recorded here and in `SCENARIO_SETUP_AND_PORTAL_NETWORK.md` is withdrawn, because the owner chose a player-made choice instead. What stands: configurable solo/group party, automatic Backrooms entry, and a **player-chosen** first-exit settlement.

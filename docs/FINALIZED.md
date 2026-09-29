@@ -1066,3 +1066,41 @@ New standing invariants recorded: 2 — a provider answers one question rather t
 Owner directions captured verbatim: 2 (12 rows), plus a recorded position that the starting facilities are already fully specified in `SCENARIOS.md` and need implementing rather than designing.
 Next: verify what the portal graph already supports, close the real continuous-topology gaps, then the three scenario starts.
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+---
+
+## Session — 2026-09-29 — doc-rot sweep: every owner decision checked against the live docs
+
+### Verbatim request
+
+> make sure no docs in docs have retoffeed or regressed with all ive said
+
+### COMPLETED
+
+- [x] **Swept all 43 live docs against every decision the owner has given, and found real rot in ten of them.** The owner's suspicion was correct. Corrections were applied with the superseded values **kept and marked superseded** rather than deleted, per the never-delete-information rule.
+- [x] **`ARCHITECTURE.md` still listed all three answered owner questions as open** — inside-start party, first-exit fixed versus chosen, and opening duration with the 833-tick value described as accepted. All three were answered on 2026-09-28 and shipped in 0.5.4-dev.
+- [x] **Five docs still asserted the superseded 20 in-game-minute opening as current:** `CAMPAIGN_ECONOMY_MODEL.md` (twice, including the old 2-hour/1-day/7-day/30-day ladder), `CAMPAIGN_ROSTER_FREEZE.md`, `FIRST_PLAYABLE_CONTRACT.md` (twice, including warning marks at 10/5/2 minutes that only make sense for a twenty-minute window), `FIRST_SLICE_CONTENT_INVENTORY.md` and `SCENARIOS.md`.
+- [x] **`ROADMAP.md` had the most, twelve corrections.** Its status legend still *defined* `[!]` as blocked; eight places used it; the narrative still said the owner's first launch "unblocks" Gate 2 and every row; and it still posed the two inside-start questions as pending with the withdrawn fixed-reveal assumption recorded as in use.
+- [x] **`SCENARIO_SETUP_AND_PORTAL_NETWORK.md` contradicted itself** — the worst kind. One paragraph described the inside-start choices as pending and named the fixed-discovered-destination assumption as in use; another paragraph further down already recorded the owner's answers. A session reading the first paragraph would have implemented a reveal instead of a choice.
+- [x] **`DEFERRED.md` had two residual owner-blocked phrasings**, including a start row marked "also owner-blocked" after the status was abolished.
+- [x] **Confirmed clean on everything else checked:** no live doc contradicts the player-named company, the one-tech-tree-for-every-scenario rule, the compliance position, the refuel-and-rearm-are-one finding, or the decision that needs are not work. No live doc asserts a far-future or spacer period that would contradict the 1990s direction, and none names a faction set that contradicts the universe factions.
+- [x] **Made the sweep repeatable instead of a one-off.** Added `REGRESSION_CONTAINMENT.md` §Doc-rot sweep with the live-versus-archive rule and a table of every stale claim to grep for beside its current truth, and added step 5a to the checkpoint ritual in `NOW.md`. The rule for adding to it: *a check that is not written down here is a check that will not be run.*
+- [x] **Recorded which files are archives and must never be rewritten to match the present** — `FINALIZED.md`, `GATE_0_DECISIONS.md`, `DECOMPOSED.md`, `CHANGELOG.md`, everything under `implementation/` and `research/`, and every evidence folder. Those legitimately describe past state, and "fixing" them would destroy the trail.
+
+### Why this matters more than it looks
+
+This has now bitten three times: `NOW.md` claimed three answered questions were still open, `TODO.md` did the same, and a contract doc contradicted itself. **A decision recorded in one file and contradicted in another is worse than an unrecorded one**, because the next session reads whichever file it opens first and plans around a limit that no longer exists — or implements a withdrawn assumption.
+
+### Documents updated
+
+`ARCHITECTURE.md`, `CAMPAIGN_ECONOMY_MODEL.md`, `CAMPAIGN_ROSTER_FREEZE.md`, `FIRST_PLAYABLE_CONTRACT.md`, `FIRST_SLICE_CONTENT_INVENTORY.md`, `SCENARIOS.md`, `SCENARIO_SETUP_AND_PORTAL_NETWORK.md`, `DEFERRED.md`, `ROADMAP.md`, `REGRESSION_CONTAINMENT.md` (new section), `NOW.md` (ritual step 5a).
+
+### Verification
+
+23 corrections applied across 11 files. Re-ran the sweep afterwards: every remaining match is a sentence that states the correct answer while quoting the old one in order to supersede it, and **zero live docs still assert a stale fact**. 2,980 relative doc links resolve with 0 broken. Package verification and all compliance checks pass. No source changed, so the assembly is untouched.
+
+### SESSION SUMMARY
+
+Docs corrected: 11. Individual corrections: 23. Live docs scanned: 43. Genuine rot remaining: 0.
+Self-contradicting docs found: 1 (`SCENARIO_SETUP_AND_PORTAL_NETWORK.md`).
+Standing process added: the doc-rot sweep, with its check table, in `REGRESSION_CONTAINMENT.md` and as ritual step 5a.

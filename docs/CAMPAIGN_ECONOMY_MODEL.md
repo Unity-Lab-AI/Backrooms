@@ -38,7 +38,7 @@
 | HQ rent | $0 per day | The opening headquarters is already available. |
 | Leased facility space | $100,000 per active day | Optional lab, warehouse, or protected rental space. |
 | Outpost lease and service | $250,000 per active outpost day | A planning allowance for site/service/communications. Staff, physical stock, security, and shipment costs remain separate. |
-| First opening window | 20 in-game minutes | Provisional operational window, independent of dollar amounts. |
+| First opening window | 108,000 ticks (~30 real minutes at normal speed) | **Superseded the provisional 20 in-game minutes on 2026-09-28** by owner direction. Operational window, independent of dollar amounts. |
 | First field team | Up to 3 pawns | A qualified operator remains at headquarters. Cargo capacity is further limited by actual carried kits, pawn capacity, return transfer capacity, receiving space, and time. |
 
 These figures are balance targets for pre-code modeling. A player sees the full contract/order quote and consequences before accepting. No flat payment is generated merely because an event occurred, an entity appeared, or a room was discovered.
@@ -104,7 +104,7 @@ Expedition dispatch likewise checks the complete kit, carry capacity remaining a
 
 ## Progression and operating limits
 
-The first gate opening is 20 in-game minutes. A provisional access ladder is 2 hours, 1 day, 7 days, then 30 days. Each increase needs explicit power reserve, maintenance, staffing, communication, supply, cargo, storage, security, and return planning. Longer openings increase operating and recovery exposure; they do not automatically pay more.
+The first gate opening is **108,000 ticks, about thirty real minutes at normal speed** — this **supersedes** the provisional 20 in-game minutes recorded here before 2026-09-28, by owner direction, because a colonist cannot cross a gate, collect something, return and deliver in a shorter window. The access ladder is now **multiplicative: each earned tier multiplies the duration by three, and at the indefinite tier the countdown stops entirely while power, the operator and the energy supply all hold.** Tier is the count of completed company projects, never spendable insight. The earlier 2 hours / 1 day / 7 days / 30 days sketch is superseded as a duration schedule, though its operating requirements below still apply. Each increase needs explicit power reserve, maintenance, staffing, communication, supply, cargo, storage, security, and return planning. Longer openings increase operating and recovery exposure; they do not automatically pay more.
 
 The implemented development machine uses provisional 250 W standby draw, 3,500 W opening draw and 250 W projected network headroom. A separate 2 Wd gate-owned capacitor charges through an accounted 1,000 W load; emergency return and a recovery activation each spend 1 Wd. These untested values replace the earlier 500 W / 2,000 W / 3,000 W draft and distinguish power from stored energy. See the [gate implementation](implementation/PHASE_2_GATE_IMPLEMENTATION.md). Power must not be converted into company dollars without an explicit fuel/material purchase. The first expedition allows three pawns and requires a qualified operator at the facility; physical cargo is then checked against the actual limits above. Pawn food, rest, health, movement, carrying, and ordinary work stay in RimWorld's simulation.
 

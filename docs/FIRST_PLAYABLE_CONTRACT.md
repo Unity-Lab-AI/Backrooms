@@ -21,7 +21,7 @@ Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquar
 | Facility map | 60×60 | Enough space for the starter operation without asking the player to expand immediately. |
 | Field crew | 3 people plus 1 gate operator kept at the facility | A researcher, guard, and flexible medic/logistics pawn can enter; the operator keeps the exit available. |
 | Gate completion | Final 100 steel and 8 components, plus stable power and an operator | The opening asks the player to use construction, stock control, and staff assignments. |
-| Gate opening | 20 in-game minutes for the first trip | A short first excursion with a visible warning and a recall decision. |
+| Gate opening | 108,000 ticks for the first trip (~30 real minutes at normal speed) | **Superseded the provisional 20 in-game minutes on 2026-09-28.** A first excursion long enough to actually do something, with a visible warning and a recall decision. |
 | First destination | 6–8 connected rooms, one safe return point, the Borrowed Corridor distortion, one bounded Quiet Pursuer encounter, and one evidence lead | The map teaches route reading, investigation, and a first fight-or-retreat choice without a sprawling first mission. |
 | First crew load | Up to three pawns and their carried gear | The first run is intentionally easy to account for in a manifest. |
 | First successful return | $5,000,000 Company Account receipt and one research insight, both provisional | The player can see the economic and research value of a controlled expedition. |
@@ -38,7 +38,7 @@ Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquar
 ## Gate and expedition rules for the prototype
 
 - Opening is refused with a specific reason if the gate is incomplete, the operator is absent/unqualified, the reserved power margin is below the starting threshold, the crew is empty, or no return route is stored.
-- The first opening lasts 20 in-game minutes. Show clear warnings at 10 minutes and 5 minutes remaining, then a final recall prompt at 2 minutes. The player can recall sooner. These notices must not depend on color or sound alone.
+- The first opening lasts **108,000 ticks, about thirty real minutes at normal speed** (this supersedes the provisional 20 in-game minutes, by owner direction 2026-09-28). Warnings scale with the window rather than sitting at fixed minute marks: show clear warnings at roughly a third and a sixth of the window remaining, then a final recall prompt near the end. The player can recall sooner. These notices must not depend on color or sound alone.
 - The first crew plan has a required return reserve. Once it is crossed, the gate warns and offers recall; it does not silently end the expedition. If power fails, use the reserved battery for one return attempt and create a logged emergency state.
 - The generator stores `AI-01`'s coordinate ID, seed, generator version, and initial site state. Reopening the same coordinate restores that site and recorded route changes; generating a replacement site requires a new coordinate ID.
 - The first map is capped at 8 rooms in this slice. Rooms are connected and path-checked before opening. A failed layout is discarded before the player commits to it, and the gate remains closed with a clear explanation.

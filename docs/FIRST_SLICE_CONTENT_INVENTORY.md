@@ -46,7 +46,7 @@ The generator selects compatible templates from these families; a valid map need
 
 - **Crew:** up to three field pawns; keep a qualified gate operator at headquarters.
 - **Objective:** map the assigned route, record the room count and distortion, recover the route recording, and return it to the facility.
-- **Timing:** one 20 in-game minute opening, with warnings at 10, 5, and 2 minutes remaining. Recall is always available before the final return limit.
+- **Timing:** one opening of **108,000 ticks, about thirty real minutes at normal speed** (superseding the provisional 20 in-game minutes, owner direction 2026-09-28), with warnings scaled to the window rather than at fixed minute marks. Recall is always available before the final return limit.
 - **Cargo:** one shared field loadout for the three-person crew, using the equipment quantities listed above and including its single sealed evidence case; optional furniture uses the displayed mass/carry limit. Exact limits are tuning hypotheses in the [first playable contract](FIRST_PLAYABLE_CONTRACT.md).
 - **Evidence:** one physical AI-01 Route Recording item and a linked case entry. It records contradictory room/timing observations without explaining the setting's cause.
 - **Contract result:** one $5,000,000 payment and one research insight for a valid extraction. An optional $1,000,000 bonus pays if all three crew return with the route, distortion, and entity-observation records. A recoverable injury does not cancel the bonus, and neither the bonus nor entity combat is required for contract completion. These are editable pre-code targets, not tested prices.
