@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.9-dev - 2026-09-29 - the exit plan
+
+- **You can build a gate at a site, not only at headquarters.** A second gate has stopped being theoretical.
+- **A remote gate needs its own facility.** Its own comms console, its own bound battery and its own assembly bench, standing at that site. You cannot run a gate at the far end of the world off the equipment back home.
+- **A way out of the Backrooms can already come up at a site too**, which came free from how ownership works rather than from a separate rule.
+- **A Backrooms coordinate still cannot hold a company gate.** What is down there is a natural gate: no operator, no power, no address book, and not yours to build.
+- **The refusal message stopped lying.** It used to say infrastructure had to be on the headquarters map, which is no longer true.
+
+Full record: [the exit plan](docs/implementation/GATE_AT_A_SITE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.8-dev - 2026-09-29 - remote sites need people
 
 - **A shipment to a site with nobody at it waits.** The supplier will not unload with no one to receive it. Nothing is lost - the cargo is held and the payment stands - and it lands as soon as somebody is there.

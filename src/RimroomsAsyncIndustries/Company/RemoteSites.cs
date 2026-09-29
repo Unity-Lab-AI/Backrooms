@@ -211,7 +211,29 @@ namespace RimroomsAsyncIndustries.Company
         /// can never be a delivery address. Which is correct — a supplier does not drive into a
         /// hole in the world.
         /// </summary>
-        public bool CanReceiveDeliveryAt(Map map)
+        public bool CanReceiveDeliveryAt(Map map) { return IsBranchPlace(map); }
+
+        /// <summary>
+        /// Whether the branch **operates** here: whether it may build and run a facility on this
+        /// map, which arc 5 calls the site's *"exit plan"* — a gate of its own.
+        ///
+        /// **A separate question from <see cref="CanReceiveDeliveryAt"/> that currently has the
+        /// same answer.** Both delegate to one place-set so they cannot drift while they agree,
+        /// and they are named apart because they are not the same thing: a site could one day be
+        /// too remote for a supplier and still perfectly fine to build a gate on, and at that
+        /// point one predicate would be wrong for one of them.
+        /// </summary>
+        public bool OperatesAt(Map map) { return IsBranchPlace(map); }
+
+        /// <summary>
+        /// The headquarters, or a site on the books the branch can currently reach.
+        ///
+        /// **A Backrooms coordinate is excluded by construction**, because it can never be
+        /// registered — which is what keeps a designated gate out of a coordinate without a
+        /// second check to forget. Invariant 12: what is down there is a natural gate, with no
+        /// operator, no power and no address book, and it is not the company's doing.
+        /// </summary>
+        private bool IsBranchPlace(Map map)
         {
             if (map == null || !Find.Maps.Contains(map)) { return false; }
             if (headquarters == map) { return true; }

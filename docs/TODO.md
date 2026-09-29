@@ -464,6 +464,15 @@ Seven items, one task each. **This is a stop-building instruction and it is bein
 - [x] **"turning off a company gate with pawns inside doesnt lose control of those pawns"** - **ALREADY TRUE, verified rather than assumed, and now proved.** `ShouldRemoveMapNow` returns false unconditionally, the expiry path touches no pawn, no gate source calls `PassToWorld`, `RecoverPortalOpening` is the reconnection, it has no countdown, and `Alert_RimroomsRecoveryOverdue` tells the player.
 - [x] **"they have to survive till a reconnection is made so they can escape"** - exactly what happens. Nothing was built; `proof-stranded-crew.py` was written instead, because the way this breaks is an innocuous-looking optimisation that would delete a map with a crew standing on it.
 
+**Arc 5 completed (2026-09-29, 0.12.9-dev): the exit plan.**
+
+- [x] **A gate may be designated at a registered site.** `SameNativeHeadquartersThing` compared `parent.Map` against `campaign.Headquarters` and **eleven call sites** inherited it, so the exit plan was unreachable however many sites a branch held. It now asks `OperatesAt`.
+- [x] **A remote gate needs its own facility at that site** - console, bound battery, assembly bench. The `thing.Map == parent.Map` clause was deliberately left alone, and it is what makes a site with a gate a real facility rather than a remote control for headquarters.
+- [x] **A coordinate still cannot host a company gate**, by construction: `OperatesAt` admits only registered places and a coordinate can never be registered.
+- [x] **A way out may come up at a site**, which came free from the ownership predicate rather than from a new rule.
+- [x] **Arc 5's named list is complete:** people, supplies, signals, protection, exit plan.
+- [ ] **Still unwritten from the chart for arc 5:** relay stations, caches, field shelters, guarded leases, resupply and evacuation missions. Check each against a real read site before building.
+
 ## Owner directions recorded late, second pass
 
 `check-doc-conformance.py` gained a rule on 2026-09-29 requiring that every owner direction

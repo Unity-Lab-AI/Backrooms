@@ -50,7 +50,7 @@
   <RR_NativeGate_UnsupportedProvider>Only a Core Door or Autodoor can be designated as a native gate.</RR_NativeGate_UnsupportedProvider>
   <RR_NativeGate_UnknownSchema>The saved native gate binding uses an unsupported schema. Preserve the save and request a migration review.</RR_NativeGate_UnknownSchema>
   <RR_NativeGate_ActiveCannotRebind>The gate is open or a saved expedition still depends on this gate. Its designation cannot be cleared.</RR_NativeGate_ActiveCannotRebind>
-  <RR_NativeGate_HeadquartersRequired>Choose existing player-owned infrastructure on the active company headquarters map.</RR_NativeGate_HeadquartersRequired>
+  <RR_NativeGate_HeadquartersRequired>Choose existing player-owned infrastructure standing on this same map, at the headquarters or at a site the branch has on the books. A gate runs on the equipment beside it, never on equipment somewhere else.</RR_NativeGate_HeadquartersRequired>
   <RR_NativeGate_EntryBlocked>The selected door approach cell is blocked or outside the map. Choose the other side or clear the threshold.</RR_NativeGate_EntryBlocked>
   <RR_NativeGate_EntryLocked>A saved expedition has locked this door position and approach side. Keep the recorded route unchanged.</RR_NativeGate_EntryLocked>
   <RR_NativeGate_ProviderAlreadyBound>One or more selected infrastructure buildings are already linked to another gate. Choose unlinked buildings or inspect the existing designation.</RR_NativeGate_ProviderAlreadyBound>

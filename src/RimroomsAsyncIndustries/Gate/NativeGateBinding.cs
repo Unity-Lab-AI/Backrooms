@@ -100,11 +100,34 @@ namespace RimroomsAsyncIndustries.Gate
         private RimroomsCampaignComponent NativeCampaign
         { get { return Current.Game == null ? null : Current.Game.GetComponent<RimroomsCampaignComponent>(); } }
 
+        /// <summary>
+        /// Whether this thing is player-owned infrastructure standing **on the same map as the
+        /// gate**, at a place the branch operates.
+        ///
+        /// **Arc 5's exit plan.** This used to require `parent.Map == campaign.Headquarters`, so a
+        /// gate could only ever be designated at the headquarters and the arc's *"exit plan"* was
+        /// unreachable however many sites a branch held. It now asks
+        /// <see cref="RimroomsCampaignComponent.OperatesAt"/>: the headquarters, or a site on the
+        /// books.
+        ///
+        /// **A Backrooms coordinate is still excluded**, because a coordinate can never be
+        /// registered as a site. What is down there is a natural gate — no operator, no power, no
+        /// address book — and invariant 12 keeps it that way without a second check to forget.
+        ///
+        /// **The `thing.Map == parent.Map` clause is untouched, and it is the good consequence.**
+        /// A gate at a remote site needs its own console, its own bound battery and its own
+        /// assembly bench **at that site**. You cannot run a gate at the far end of the world off
+        /// the equipment in your headquarters, which is exactly what *"remote sites need people,
+        /// supplies, signals, protection, and an exit plan"* is asking for.
+        ///
+        /// The name is kept. Eleven call sites read it as "the branch's own infrastructure, here",
+        /// which is what it has always meant and still means; only the set of valid "here"s grew.
+        /// </summary>
         private bool SameNativeHeadquartersThing(Thing thing)
         {
             RimroomsCampaignComponent campaign = NativeCampaign;
-            return campaign != null && campaign.CanOperate && campaign.Headquarters != null &&
-                parent.Spawned && parent.Map == campaign.Headquarters && parent.Faction == Faction.OfPlayer &&
+            return campaign != null && campaign.CanOperate && campaign.OperatesAt(parent.Map) &&
+                parent.Spawned && parent.Faction == Faction.OfPlayer &&
                 thing != null && !thing.Destroyed && thing.Spawned && thing.Map == parent.Map && thing.Faction == Faction.OfPlayer;
         }
 

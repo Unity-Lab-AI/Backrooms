@@ -24,7 +24,7 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.8-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.9-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **172 C# files, 86 package files**, zero warnings, zero errors |
 | Assembly | SHA-256 `E62DF5326AC89E59E744E4AD10F054CA6674439AA7F73C34075DF1CF14AD2BE3`, reproduced by two clean recompiles |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.8
+## What shipped this session, 0.7.1 → 0.12.9
 
 | Version | What |
 |---|---|
@@ -91,6 +91,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.6 | **A remote base is a costly responsibility** — arc 5 opens: sites on the books, billed daily, and a coordinate is never one |
 | 0.12.7 | **Company-to-site logistics** — shipments reach a registered site; a latent cross-map reroute bug fixed before it could bite |
 | 0.12.8 | **Remote sites need people** — a shipment to an empty site waits; the stranded-crew guarantee proved rather than rebuilt |
+| 0.12.9 | **The exit plan** — a gate may stand at a registered site, with its own facility. Arc 5’s named list complete |
 
 ---
 
@@ -109,9 +110,14 @@ anything in this list** — it is the authority, and steps 1–5 of its build or
        latent cross-map reroute bug was found and fixed before it could swallow a shipment.
      - **Staffing it: DONE, 0.12.8-dev.** A shipment to an unstaffed site waits rather than
        landing in an empty field, checked at arrival so ordering ahead stays possible.
-     - **Still owed: the exit plan.** A gate anchored at a registered site — which the ownership
-       predicate now permits and nothing yet does. **This is where a second gate stops being
-       theoretical.**
+     - **The exit plan: DONE, 0.12.9-dev.** A gate may be designated at a registered site, and it
+       needs **its own console, battery and assembly bench there** — a site with a gate is a real
+       facility or it is nothing. A way out may come up at a site too, which came free from the
+       ownership predicate.
+     - **Arc 5's named list is complete**: people, supplies, signals, protection, exit plan.
+     - **Still unwritten from the chart:** relay stations, caches, field shelters, guarded leases,
+       and resupply and evacuation missions. **Check each against a real read site before
+       building** — invariant 136, which deleted four tier 3 projects at 0.12.5.
      - **The chart also names** relay stations, caches, field shelters, guarded leases, resupply
        and evacuation missions. None is written.
    - Arc 6, the outside world — **the `IncidentDef` surface built in 0.11.8 is its home.**
@@ -334,6 +340,9 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 169. **A crew left on the far side is stranded, never taken.** Owner, verbatim: *"turning off a company gate with pawns inside doesnt lose control of those pawns they have to survive till a reconnection is made so they can escape"*. `ShouldRemoveMapNow` returns false **unconditionally** — any condition there is a condition under which somebody’s colonists vanish. No gate source may ever call `PassToWorld`. Asserted by `proof-stranded-crew.py`.
 170. **A claim with a conditional fallback is a claim that can be trivially true.** The ordering claim keyed off a method name absent from the file and collapsed to a tautology. **Third fail-open in one day, all three found by fault-planting and none by reading** — which is what fault-planting is for (109, 152, 167).
 171. **Gate a requirement where it bites, not where it is convenient.** Staffing is checked at a shipment’s **arrival**, never at its ordering: gating the order punishes planning, and gating nothing makes the rule a sentence in a document.
+172. **A gate runs on the equipment beside it.** `thing.Map == parent.Map` is what makes a remote gate a real facility rather than a remote control for the headquarters. Widening *where* a gate may stand must never widen *what it may draw on*.
+173. **Exclude by construction, not by a check somebody must remember.** A designated gate cannot appear in a coordinate because `OperatesAt` admits only registered places and a coordinate can never be registered. Invariant 12 then holds with nothing to forget.
+174. **Two questions may share a place-set and must not share a name.** `OperatesAt` and `CanReceiveDeliveryAt` agree today and are different questions; one implementation stops them drifting, two names give the difference somewhere to go when it arrives.
 
 ---
 

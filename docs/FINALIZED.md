@@ -370,6 +370,31 @@ Staffing: a shipment to an unstaffed site **waits** rather than landing in an em
 
 ---
 
+## Session 2026-09-29 - the exit plan (0.12.9-dev)
+
+**Verbatim user quote:** *"lets get it"*
+
+**The arc line this closes, verbatim from `CAMPAIGN_CONTENT_CATALOG.md`:** *"Remote sites need people, supplies, signals, protection, and an exit plan"*
+
+### What shipped
+
+A gate may be designated at a registered site. **Arc 5's named list is now complete** - sites on the books (0.12.6), supplies (0.12.7), people (0.12.8), and an exit plan (this one).
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Company/RemoteSites.cs`, `Gate/NativeGateBinding.cs`, `1.6/Languages/English/Keyed/RR_NativeGate.xml`, `docs/implementation/GATE_AT_A_SITE_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj, and the sites proof.
+
+### Closure notes
+
+- **One line was the whole blocker.** `SameNativeHeadquartersThing` compared `parent.Map` against `campaign.Headquarters`, and **eleven call sites** inherited it - console, battery, assembly bench, kill switch, equipment links, console lookup. It now asks `campaign.OperatesAt(parent.Map)`. **The name is kept**: all eleven read it as *"the branch's own infrastructure, here"*, which is still exactly what it means; only the set of valid *heres* grew.
+- **The clause I did NOT touch is the good part.** `thing.Map == parent.Map` survives, so a gate at a remote site needs **its own console, battery and bench at that site**. Widening the map test without touching it is what turns the arc's list into a build order: a site with a gate is a real facility or it is nothing. The proof asserts that clause explicitly, because deleting it would look like a simplification.
+- **A coordinate still cannot host a company gate - by construction, not by a check.** `OperatesAt` admits the headquarters or a **registered** site, and a coordinate can never be registered. Invariant 12 holds without anybody remembering it. The proof asserts the place-set never mentions `RimroomsDestinationMapParent` at all.
+- **Two questions, one place-set.** `OperatesAt` and `CanReceiveDeliveryAt` delegate to one private `IsBranchPlace`, and are **named apart on purpose**: a site could one day be too remote for a supplier and still fine to build a gate on. Shared implementation stops them drifting while they agree; separate names give the difference somewhere to go.
+- **A way out at a site came free.** `OrdinaryBranchMap` already routes through `OwnsMap`, so 0.12.6's third clause delivered emergence anchors at sites with no line written here. **Second time the single-predicate decision has paid** - and why the proof checks each of the four consequences is still wanted.
+- Build 0.12.9-dev, 172 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, eleven proofs hold, the sites proof fault-planted four more ways. Assembly reproduced by two clean recompiles. **No game was launched, and nothing here has been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra
