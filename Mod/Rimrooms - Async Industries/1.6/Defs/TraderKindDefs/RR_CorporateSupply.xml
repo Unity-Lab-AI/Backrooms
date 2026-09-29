@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- The parent corporation as a trader in its own right. Orbital, so it is called in from
+       the company console rather than waited on, and so Core's own trade window, beacon rule
+       and delivery all apply unchanged.
+
+       Each stock generator is one catalogue tier and yields nothing at all while that tier is
+       locked — including refusing to BUY its own category, since HandlesThingDef is what
+       decides purchasing. A tier that generated nothing but still claimed its category would
+       quietly let a player sell into a catalogue they had not unlocked. -->
+  <TraderKindDef>
+    <defName>RR_CorporateSupply</defName>
+    <label>Async Industries corporate supply</label>
+    <orbital>true</orbital>
+    <stockGenerators>
+      <li Class="RimroomsAsyncIndustries.Procurement.StockGenerator_RRCorporateTier">
+        <tier>RR_SupplyTier_Basics</tier>
+        <countRange>8~24</countRange>
+      </li>
+      <li Class="RimroomsAsyncIndustries.Procurement.StockGenerator_RRCorporateTier">
+        <tier>RR_SupplyTier_Tools</tier>
+        <countRange>8~24</countRange>
+      </li>
+      <li Class="RimroomsAsyncIndustries.Procurement.StockGenerator_RRCorporateTier">
+        <tier>RR_SupplyTier_Construction</tier>
+        <countRange>8~24</countRange>
+      </li>
+      <li Class="RimroomsAsyncIndustries.Procurement.StockGenerator_RRCorporateTier">
+        <tier>RR_SupplyTier_Medical</tier>
+        <countRange>8~24</countRange>
+      </li>
+      <li Class="RimroomsAsyncIndustries.Procurement.StockGenerator_RRCorporateTier">
+        <tier>RR_SupplyTier_Advanced</tier>
+        <countRange>8~24</countRange>
+      </li>
+    </stockGenerators>
+  </TraderKindDef>
+
+</Defs>

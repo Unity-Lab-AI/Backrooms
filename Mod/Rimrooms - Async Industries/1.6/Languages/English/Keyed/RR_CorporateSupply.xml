@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Supply_Hail>Hail corporate supply</RR_Supply_Hail>
+  <RR_Supply_HailDesc>Call the parent corporation's supply service to this map. It will stay for a while, like any orbital trader, and it only carries the catalogue tiers your branch has opened. Goods must be near a trade beacon to sell, as with any orbital trade.</RR_Supply_HailDesc>
+  <RR_Supply_Hailed>Corporate supply is inbound.</RR_Supply_Hailed>
+  <RR_Supply_AlreadyHere>Corporate supply is already in orbit over this map.</RR_Supply_AlreadyHere>
+  <RR_Supply_NoMap>There is no map to deliver to.</RR_Supply_NoMap>
+  <RR_Supply_Catalogue>Corporate catalogue</RR_Supply_Catalogue>
+  <RR_Supply_CatalogueDesc>Review the parent corporation's catalogue tiers and open the ones your branch qualifies for. Each tier needs its research, its company work, and an access fee in credits.</RR_Supply_CatalogueDesc>
+  <RR_Supply_NoTiers>No catalogue tiers are defined.</RR_Supply_NoTiers>
+  <RR_Supply_TierOpen>{0}: open</RR_Supply_TierOpen>
+  <RR_Supply_TierResearch>{0}: locked - requires research ({1})</RR_Supply_TierResearch>
+  <RR_Supply_TierContract>{0}: locked - the corporation wants completed company work first</RR_Supply_TierContract>
+  <RR_Supply_TierCost>{0}: locked - access fee is {1} credits, which the account cannot cover</RR_Supply_TierCost>
+  <RR_Supply_TierUnlock>{0}: open for {1} credits</RR_Supply_TierUnlock>
+  <RR_Supply_TierUnlocked>{0} is now open.</RR_Supply_TierUnlocked>
+  <RR_Supply_UnknownTier>That catalogue tier does not exist.</RR_Supply_UnknownTier>
+  <RR_Supply_ResearchLocked>That tier still needs its research.</RR_Supply_ResearchLocked>
+  <RR_Supply_ContractLocked>That tier still needs completed company work.</RR_Supply_ContractLocked>
+  <RR_Supply_Unaffordable>The company account cannot cover that access fee.</RR_Supply_Unaffordable>
+  <RR_Ledger_SupplyTierUnlocked>Corporate catalogue access</RR_Ledger_SupplyTierUnlocked>
+  <RR_Event_SupplyTierUnlocked>Corporate catalogue tier opened: {0} for {1} credits.</RR_Event_SupplyTierUnlocked>
+  <RR_Event_CorporateSupplierCalled>Corporate supply was called to the branch.</RR_Event_CorporateSupplierCalled>
+</LanguageData>

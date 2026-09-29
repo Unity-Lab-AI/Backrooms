@@ -95,6 +95,19 @@ namespace RimroomsAsyncIndustries.Gate
             }
         }
 
+        /// <summary>
+        /// The corporate catalogue is reached from this console, because the console is already
+        /// the thing a branch talks to the company through. **No new building and no new UI
+        /// window** was added for it -- a gizmo and a float menu, which is the lightest surface
+        /// that can carry three separate locks legibly.
+        /// </summary>
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+        {
+            foreach (Gizmo gizmo in base.CompGetGizmosExtra()) { yield return gizmo; }
+            foreach (Gizmo gizmo in Procurement.CorporateSupplyGizmos.For(parent))
+            { yield return gizmo; }
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();

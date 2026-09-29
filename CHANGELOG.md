@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.7.6-dev - 2026-09-29 - the corporation will sell you things, eventually
+
+- **The parent corporation is now a trader you can call in** from the gate console. It arrives in orbit like any other trade ship, and trading works exactly as it always does, beacon and all.
+- **Its catalogue is tiered, and each tier has three locks**: research you have to finish, company work you have to have completed, and an access fee in credits.
+- **That access fee is what your bonds are for.** A vault of paper now buys capability, not just goods.
+- **A locked tier sells nothing and buys nothing** - it will not quietly take your goods off you for a catalogue you have not opened.
+- **A locked tier tells you which lock is holding it**, rather than just refusing.
+- The first tier is open from the start, because a supplier who sells you nothing until you have already made it is not a supplier.
+- Each tier sells whatever the loaded game puts in its category, so mods that add materials show up in the catalogue without this mod knowing they exist.
+
+Full record: [corporate supply](docs/implementation/CORPORATE_SUPPLY_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.7.5-dev - 2026-09-29 - company bonds, from ten credits to a quadrillion
 
 - **Company credits can now be held as physical bearer bonds.** Print them at a machining table, haul them, stack them in a vault, hand them around.

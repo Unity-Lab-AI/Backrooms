@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Owner direction 2026-09-29: "ther should be a trader that is the multi trillion dollar
+       corporation with all kinds of equipenmnt tools amaterials and supplies like a
+       universersal trader but things are tech and company quest locked out till passed", and
+       "and even cost credits to unlock item and materials and equipment gates in buying".
+
+       Three locks per tier, each gating a different kind of progress, which is why none of
+       them is redundant: research means you understand it, a completed company contract means
+       you have done something for them, and a credit cost means you paid for access rather
+       than only for stock. That last one is what makes the bond layer matter beyond storage.
+
+       Each tier names a ThingCategoryDef rather than a list of items, so it sells whatever
+       the loaded game puts in that category — Core, DLC and any of the other 274 mods alike
+       — without this mod listing or inventing a single item.
+
+       The first tier has no locks at all on purpose. A corporation that sells you nothing
+       until you have already succeeded is not a supplier, it is a wall. -->
+
+  <RimroomsAsyncIndustries.Procurement.RimroomsSupplyTierDef>
+    <defName>RR_SupplyTier_Basics</defName>
+    <label>Corporate supply: basics</label>
+    <description>Consumables and raw material the parent corporation will ship to any branch with a name on the door. No conditions.</description>
+    <tierIndex>0</tierIndex>
+    <unlockCostCredits>0</unlockCostCredits>
+    <category>ResourcesRaw</category>
+    <thingDefCountRange>3~7</thingDefCountRange>
+    <maxTechLevel>Industrial</maxTechLevel>
+  </RimroomsAsyncIndustries.Procurement.RimroomsSupplyTierDef>
+
+  <RimroomsAsyncIndustries.Procurement.RimroomsSupplyTierDef>
+    <defName>RR_SupplyTier_Tools</defName>
+    <label>Corporate supply: tools and equipment</label>
+    <description>Tools, gear and field equipment. The corporation wants to see one completed survey before it commits shipping capacity.</description>
+    <tierIndex>1</tierIndex>
+    <requiredContractTemplateId>rr.survey.onboarding.v1</requiredContractTemplateId>
+    <unlockCostCredits>25000</unlockCostCredits>
+    <category>Manufactured</category>
+    <thingDefCountRange>3~6</thingDefCountRange>
+    <maxTechLevel>Industrial</maxTechLevel>
+  </RimroomsAsyncIndustries.Procurement.RimroomsSupplyTierDef>
+
+  <RimroomsAsyncIndustries.Procurement.RimroomsSupplyTierDef>
+    <defName>RR_SupplyTier_Construction</defName>
+    <label>Corporate supply: construction and fabrication</label>
+    <description>Building material and fabricated components at branch scale.</description>
+    <tierIndex>2</tierIndex>
+    <requiredResearchDefName>Smithing</requiredResearchDefName>
+    <unlockCostCredits>100000</unlockCostCredits>
+    <category>BuildingsFurniture</category>
+    <thingDefCountRange>2~5</thingDefCountRange>
+    <maxTechLevel>Industrial</maxTechLevel>
+  </RimroomsAsyncIndustries.Procurement.RimroomsSupplyTierDef>
+
+  <RimroomsAsyncIndustries.Procurement.RimroomsSupplyTierDef>
+    <defName>RR_SupplyTier_Medical</defName>
+    <label>Corporate supply: medical and biological</label>
+    <description>Medicine and biological supplies, released once the branch has demonstrated it can recover material from a coordinate.</description>
+    <tierIndex>3</tierIndex>
+    <requiredResearchDefName>MedicineProduction</requiredResearchDefName>
+    <requiredContractTemplateId>rr.supply.odd.v1</requiredContractTemplateId>
+    <unlockCostCredits>1000000</unlockCostCredits>
+    <category>Medicine</category>
+    <thingDefCountRange>2~4</thingDefCountRange>
+    <maxTechLevel>Industrial</maxTechLevel>
+  </RimroomsAsyncIndustries.Procurement.RimroomsSupplyTierDef>
+
+  <RimroomsAsyncIndustries.Procurement.RimroomsSupplyTierDef>
+    <defName>RR_SupplyTier_Advanced</defName>
+    <label>Corporate supply: restricted catalogue</label>
+    <description>The catalogue the corporation does not print. Advanced components, spacer material and anything it would rather a branch did not know it had.</description>
+    <tierIndex>4</tierIndex>
+    <requiredResearchDefName>MicroelectronicsBasics</requiredResearchDefName>
+    <requiredContractTemplateId>rr.supply.odd.v1</requiredContractTemplateId>
+    <unlockCostCredits>100000000</unlockCostCredits>
+    <category>ResourcesRaw</category>
+    <thingDefCountRange>2~4</thingDefCountRange>
+    <maxTechLevel>Spacer</maxTechLevel>
+  </RimroomsAsyncIndustries.Procurement.RimroomsSupplyTierDef>
+
+</Defs>

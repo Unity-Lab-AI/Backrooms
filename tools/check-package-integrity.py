@@ -287,6 +287,23 @@ def check_def_references(problems, declared):
 # 5. Patch targets
 # --------------------------------------------------------------------------- #
 
+def check_comment_dashes(problems):
+    """XML comments may not contain a double hyphen, and this keeps biting.
+
+    The parser reports it as a generic "not well-formed (invalid token)" at a column, which
+    tells you nothing about the actual rule. Prose in these files naturally wants an em-dash
+    typed as `--`, so this is a trap the next person walks into too. Named explicitly here.
+    """
+    for path in mod_xml_files():
+        text = read_text(path)
+        for match in re.finditer(r"<!--(.*?)(?:-->|$)", text, re.S):
+            if "--" in match.group(1):
+                line = text[: match.start()].count(chr(10)) + 1
+                fail(problems, "%s line %d: an XML comment contains '--', which is not legal "
+                               "inside a comment. Use an em-dash or rephrase."
+                     % (rel(path), line))
+
+
 def check_class_references(problems):
     """Every RimroomsAsyncIndustries type named in XML must exist in the source.
 
@@ -452,6 +469,7 @@ def main():
     check_metadata(problems, allowlist, versions)
     check_no_attribution(problems)
     check_files(problems, allowlist, versions)
+    check_comment_dashes(problems)
     check_def_references(problems, declared)
     check_class_references(problems)
     check_patches(problems, declared, game_defs)
