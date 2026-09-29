@@ -122,6 +122,67 @@ Policy: [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md); map: [`implementat
 
 - [x] **RETIRED 0.9.0-dev.** **Legacy gate objects** `RR_MachineGate`, `RR_GateConsole`, `RR_EmergencyCutoff`, `RR_UtilityGenerator` → designated Core `Autodoor`/`CommsConsole`/`PowerSwitch` + generation. Hidden from construction today, still in the package. **Power claim corrected 2026-09-28:** this row previously said no single Core generator meets the 3,500 W opening draw while its own parenthetical named `GeothermalGenerator` at 3,600 W, which exceeds it. Core outputs verified: Geothermal 3,600 W, Wind 2,300 W, Solar 1,700 W, Watermill 1,100 W, Wood-fired 1,000 W, Chemfuel 1,000 W. The framing was also wrong — a draw is supplied by a power network with batteries, and the gate already designates a battery as its provider. No content blocker remains here.
 
+**Verbatim owner direction (2026-09-29):** *"after u fix that get back to the doc drift and it seems i could be wrong but it seems like sometimes i dont see you record the verbatiums and then build them into tasks of the todo prperly, documenting them alll, idk"*
+
+- [x] **The owner was right, measured rather than argued. BUILT 0.10.1-dev.** An audit found **three of seventeen** directions from this session archived without ever reaching this queue, and the rule written to stop it recurring found **seven more** from earlier. All ten are now recorded verbatim above. `check-doc-conformance.py` now fails the build if a direction quoted in `FINALIZED.md` does not appear here - it caught this very entry when it was first written, which is the rule doing its job on its own first use.
+
+## Owner directions recorded late, second pass
+
+`check-doc-conformance.py` gained a rule on 2026-09-29 requiring that every owner direction
+quoted in `FINALIZED.md` also appear here. It immediately found **seven more** that had been
+acted on and archived without ever being written into this queue. Each was implemented, so
+nothing was lost - but the queue is supposed to be the record of what was asked for, and for
+these it was not.
+
+**Verbatim owner direction:** *"make sure u are using the prep docs and the mod spreadsheet and still thinking critical at how we impliment our mods needs across the mods"*
+
+- [x] **HELD as a standing working rule.** The 294 per-mod reviews under `research/reviews/mods/` and the generated register are read before designing, not after. It has recovered misread owner references and, in 0.9.2-dev, produced the Doors Expanded footprints that matched the requested gate sizes exactly.
+
+**Verbatim owner direction:** *"rememrb we are making a mod that works with the other 274, WE ARE NOT EDITING OTHER PEOPLES MODS!"*
+
+- [x] **HELD absolutely.** No file belonging to another mod is ever modified. Compatibility is reached only through conditional runtime patches that apply nothing when the other mod is absent - the owner confirmed this reading explicitly on 2026-09-29 when asked whether a `PatchOperationFindMod` counts as editing. It does not: their files are never touched.
+
+**Verbatim owner direction:** *"continue the work to finish the mod making sure you are using the mod integration register in what all needs to be done"*
+
+- [x] **HELD as a standing working rule.** The register is consulted for every integration question, and **the HTML is the register**, not the spreadsheet.
+
+**Verbatim owner direction:** *"and we cant have backrooms npc pawns all dying off if a person is slow to explore so something needs to be done about like stat or need freezing until discovered with the fog of war"*
+
+- [x] **BUILT 0.8.5-dev, and it was a real defect in work that was otherwise ready to ship.** Everything placed in a coordinate is a live pawn on a live map, so a survivor three rooms away would **starve before a cautious player ever reached them** - impossible for exactly the player most likely to want the rescue. Fog of war was the right signal and the owner named it: RimWorld already tracks per cell whether the player has seen it, so nothing had to be invented or kept in sync. Needs are topped back up on a bounded sweep rather than frozen, because stopping them ticking needs Harmony and the observable result is identical. **Discovery starts their clock.**
+
+**Verbatim owner direction:** *"yes yes continue and remember the back rooms is random on crack and lsd creepy horror flick"*
+
+- [x] **HELD as the tone contract for generation.** Depth 1 stays the sparse yellow rooms; everything past it grows stranger through the palette bands, the coherence decay and the anomalous archetype weighting, so the wrongness is travelled toward rather than presented at the door.
+
+**Verbatim owner direction:** *"get to it hallways can have furniture and produiction benches too remember things are almost completely fucking werid and crazy odd and scary looking the deeping in the backrooms and higher the gete quality and rtesarch levels and tech and stuff ec t ect"*
+
+- [x] **BUILT 0.8.7-dev, and it corrected a wrong finding of mine.** A bench standing in a corridor had been treated as a gap to constrain; the owner's direction is that it **is** the content. So an archetype's declared family constraint now **lapses in a deranged space** instead of being enforced, and what a coordinate produces rises with research finished and depth reached, never above the archetype's own declared ceiling.
+
+**Verbatim owner direction:** *"i suppose the fallback is okay of building mulitple doors 1x1 to make the sizes needed to fit vehicals and the like and bigger creatures"*
+
+- [ ] **The adjacent-door-run fallback.** Binding one gate across a run of adjacent 1x1 Core doors, so 1x3 and 2x3 are reachable without Doors Expanded. **Still open.** The single-door half shipped in 0.9.2-dev, where Core's own `OrnateDoor` turned out to supply 1x2 with no mods at all, and the body-size ladder that makes the sizes mean something shipped in 0.9.4-dev.
+
+
+## Owner directions recorded late
+
+These three were **acted on correctly and recorded in `NOW.md` or `FINALIZED.md`, but never
+written into this queue as tasks**. The owner noticed the gap on 2026-09-29 and was right.
+They are recorded here verbatim now, and `check-doc-conformance.py` refuses from this point
+on to let a direction reach `FINALIZED.md` without appearing here first.
+
+**Verbatim owner direction (2026-09-29):** *"dopnt flag shit!!! ask me then and there"* and *"write that to mem,ory to not flag shit, it just becomes orphaned work"*
+
+- [x] **HELD as a standing working rule.** No unresolved question is written down for later: it is asked immediately with `AskUserQuestion`. A flagged item becomes orphaned work - it lands in a doc nobody actions while the build carries an unresolved assumption forward. Recorded as a persistent memory and as invariant #44 in `NOW.md`.
+
+**Verbatim owner direction (2026-09-29):** *"2 should really limit numbers through at once because in vinilla any number of pawns can use a door at once so we dont want limitations"*
+
+- [x] **HELD 0.9.2-dev by adding nothing.** A wide gate gets **more doorway cells**, never a quota, and ordinary pathfinding spreads people across them exactly as at any wide vanilla door. `OrderCrossing` was checked first and only ever refused *the same pawn twice*, never a second pawn, so the existing behaviour was already vanilla-equivalent and the correct action was to leave it alone. There is no counter anywhere in `GateFootprint.cs`, deliberately.
+
+**Verbatim owner direction (2026-09-29):** *"gate doors expansions can NOT be done on a working gate"*
+
+- [x] **BUILT 0.9.2-dev.** Binding and unbinding already refused while a gate was open or had an unresolved trip. **A ramp is the gate working too**, so spinning up now blocks a rebind by the same rule. Resizing a gate means swapping the door, which means taking it out of service first.
+
+
 **Verbatim owner direction (2026-09-29):** *"we need to keep using the mod register and all the prep docs while updating old out of date docs, readmes, how tos and other docs making sure they conform to the wanted stake state"*
 
 - [x] **BUILT 0.10.0-dev as `check-doc-conformance.py`, the sixth checker.** 28 stale claims across 10 living documents corrected, including a readme claiming version 0.4.1-dev against a 0.9.9-dev build and a publishing procedure naming a branch that has not been the working branch all run. **Dated records are exempt by design** - an implementation record stating the checker count of its day was true when written, and rewriting it would falsify the evidence trail.

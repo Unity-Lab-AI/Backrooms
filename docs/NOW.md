@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.10.0-dev** (this commit) |
+| Published | **0.10.1-dev** (this commit) |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
 | Build | **158 C# files, 79 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `1C54905192F5090A7C2F4F0D81321F1504919EB7E228CB9BB892A87265FADA73`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `B0878FAE21A2EC14A7DA9AD06E2B2280EB481F985935087EF0BD4E973EFFA094`, reproduced by two clean recompiles |
 | Checkers | **six**, all passing |
 | Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
 | Game launches | **none, ever** |
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.10.0
+## What shipped this session, 0.7.1 → 0.10.1
 
 | Version | What |
 |---|---|
@@ -73,6 +73,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.9.8 | **One tech tree, different starting points** — the tree is derived, not declared per scenario |
 | 0.9.9 | **The beacon had nothing left to do** — first field-gear retirement, four replacements decided |
 | 0.10.0 | **The documents say what is true** — sixth checker, 28 stale claims across 10 living docs |
+| 0.10.1 | **LAW #0, made checkable** — 10 owner directions found unrecorded, and a rule so it cannot recur |
 
 ---
 
@@ -166,6 +167,8 @@ Each is a real defect or a pinned fact.
 66. **Living documents and dated records are different things.** A readme must describe the mod now; an implementation record describes a moment that has passed and **must never be rewritten** — one stating the checker count of its day was true when written. `check-doc-conformance.py` exempts dated records by path, and that exemption is proved by planting faults it must ignore.
 67. **A checker that cries wolf is worse than no checker.** The first branch rule produced 26 false positives on file paths and prose. Precision before coverage, every time.
 68. **The unified vocabulary is gate / connection / threshold.** The **gate** is the machine in your wall; the **connection** is the live link it holds open; the **threshold** is the doorway on the far side. Never "portal", "the machine" or "the gizmo" in player-facing text.
+69. **Every owner direction quoted in `FINALIZED.md` must already exist in `TODO.md`.** LAW #0 is now a build failure rather than an intention. It found **ten** directions that had been acted on and archived without ever reaching the queue.
+70. **When the owner suspects a process failure, measure it — do not argue.** The suspicion here was correct, and the audit that confirmed it took one script.
 
 ---
 

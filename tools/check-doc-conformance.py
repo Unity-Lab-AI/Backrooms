@@ -37,6 +37,13 @@ What it checks, in living documents only
    four checkers" will cause them to skip one.
 5. **`DEFERRED.md` is not described as a live queue.** It is closed, and the standing rule
    is that nothing is ever deferred.
+6. **Every owner direction quoted in `FINALIZED.md` also appears in `TODO.md`.** LAW #0 says
+   the owner's exact words go into the queue. An audit on 2026-09-29 found three of seventeen
+   directions that had been acted on and archived without ever being written into the queue as
+   tasks. Each was implemented correctly, so nothing was lost -- but the queue was not the
+   record of what had been asked for, which is the one job it has. A direction in the
+   permanent archive is by definition something that shipped; if it never appeared in the
+   queue, it skipped the queue.
 
 Usage
 -----
@@ -140,6 +147,77 @@ def strip_code(text):
     return re.sub(r"```.*?```", "", text, flags=re.S)
 
 
+
+
+# Owner instructions that mean "keep working" and name nothing to build. They are real words
+# and they are archived, but a queue entry for them would say nothing a reader could act on.
+# Listed explicitly rather than matched by pattern: an over-eager pattern would swallow a
+# direction that carries real content alongside a "get to it", which has happened repeatedly.
+CONTINUATION_QUOTES = {
+    "continue towards getting to the goal: a 100",
+    "cool lets get to it remeber the goal: completing the aaa mod rimrooms - async industries",
+    "get to it all we are finishing everything",
+    "get to the work we are doing everything to get this mod 100% and outstanding awesomeness",
+    "lets get to them all so we can finish everything without shortcuts and no loose ends",
+    "i said questionable ethics, its a mod",
+}
+
+# An owner direction as the ledgers quote one: a blockquote holding an italicised quotation.
+OWNER_QUOTE = re.compile('^>\\s*\\*"(.+?)"\\*\\s*$', re.M)
+
+# Quotations short enough to be a fragment of a longer one, or a stock phrase, are skipped:
+# matching them proves nothing either way.
+MIN_QUOTE_CHARS = 25
+
+
+def normalise(text):
+    """Compare on words, not on markup.
+
+    A direction can be quoted in one ledger with escaped quotation marks and in another
+    without, or wrapped differently. Those are the same words and must not read as a missing
+    direction -- a check that fires on markup is a check people stop believing.
+    """
+    lowered = text.replace("\\", "").replace("\u201c", '"').replace("\u201d", '"')
+    return " ".join(lowered.split()).lower()
+
+
+def owner_quotes(text):
+    """Every verbatim owner direction a document quotes."""
+    found = []
+    for match in OWNER_QUOTE.finditer(text):
+        quote = " ".join(match.group(1).split())
+        if len(quote) >= MIN_QUOTE_CHARS:
+            found.append(quote)
+    return found
+
+
+def check_directions_reached_the_queue(problems):
+    """LAW #0, made checkable.
+
+    Owner direction, 2026-09-29, verbatim: *"it seems like sometimes i dont see you record
+    the verbatiums and then build them into tasks of the todo prperly"*.
+
+    The owner was right. An audit found **three of seventeen** directions that had been acted
+    on and archived in `FINALIZED.md` without ever being written into `TODO.md` as tasks. Each
+    was implemented correctly, so nothing was lost -- but the queue was not the record of what
+    had been asked for, which is the one job it has.
+
+    A direction quoted in the permanent archive is by definition something that shipped. If it
+    never appeared in the working queue, it skipped the queue entirely. That is now a failure.
+    """
+    archive = os.path.join(REPO, "docs", "FINALIZED.md")
+    queue = os.path.join(REPO, "docs", "TODO.md")
+    if not (os.path.isfile(archive) and os.path.isfile(queue)):
+        return
+    archived = owner_quotes(io.open(archive, encoding="utf-8-sig").read())
+    queue_text = normalise(io.open(queue, encoding="utf-8-sig").read())
+    for quote in archived:
+        if normalise(quote) in CONTINUATION_QUOTES:
+            continue
+        if normalise(quote) not in queue_text:
+            problems.append("docs/FINALIZED.md quotes an owner direction that never reached "
+                            "docs/TODO.md: %r" % (quote[:90] + ("..." if len(quote) > 90 else "")))
+
 def main():
     version = package_version()
     branch = current_branch()
@@ -179,6 +257,8 @@ def main():
         if "DEFERRED.md" in text and not DEFERRED_CLOSED_WORDS.search(text):
             problems.append("%s mentions DEFERRED.md without saying anywhere that it is closed"
                             % rel)
+
+    check_directions_reached_the_queue(problems)
 
     print("doc-conformance")
     print("  living documents checked : %d" % len(docs))

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.1-dev - 2026-09-29 - LAW #0, made checkable
+
+- Internal only; nothing in the game changes.
+- The owner asked whether their instructions were always being written down properly. **They were not.** Ten of them had been acted on and archived without ever being written into the working queue.
+- All ten are now recorded word for word, and a check refuses from here on to let an instruction reach the archive without appearing in the queue first.
+
+Full record: [LAW #0, made checkable](docs/implementation/VERBATIM_QUEUE_RULE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.10.0-dev - 2026-09-29 - the documents say what is true
 
 - **The readme said this was version 0.4.1-dev.** It is 0.10.0-dev. That and twenty-seven other stale claims across ten documents are corrected.
