@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.23-dev - 2026-09-29 - the handoff, audited again
+
+- **Nothing in the game changed.** This is the session handoff, and writing it properly turned up six things in it that were no longer true.
+- **The count of how the mod's own internal checks report themselves was stale**, and measuring it found two that do not announce themselves at all - which is a better argument for the way they are run, not a worse one.
+- **Three finished pieces of work were still listed as pending**, including all seven third-tier research projects.
+- **A question was asked instead of written down.** It had been parked in the document as something for the owner to decide later; the owner asked for it immediately, answered it, and the handoff now records the decision.
+
+Full record: [the handoff, audited again](docs/implementation/HANDOFF_AUDIT_2_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.22-dev - 2026-09-29 - the last new art is gone
 
 - **This mod no longer adds a single piece of gameplay art.** The four custom images it still shipped - the field recorder, the route recording, the return anchor and the Quiet Pursuer - now use pictures the base game already has.

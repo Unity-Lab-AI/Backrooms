@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.22-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.23-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **174 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `CB1A145285E572A7F9D779BEB6DAD9D7D857A12C3625AAF58C325D680AA2B099`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
+| Assembly | SHA-256 `3CED6004E9AC406FAC52BB1FE20A5297E6C7390180C810B31DBFF30C7B389C44`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
 | Checkers | **NINE**, all passing |
-| Proofs | **TWENTY-ONE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
+| Proofs | **TWENTY-ONE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>` — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.22
+## What shipped this session, 0.7.1 → 0.12.23
 
 | Version | What |
 |---|---|
@@ -105,6 +105,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.20 | **The register, by the column that matters** — `trace` querying, and a **ninth checker** verifying how this mod uses other mods |
 | 0.12.21 | **A way out into the world** — the last unbuilt piece of the topology. Claim a tile under five maps, caravan over. **A dead end removed** |
 | 0.12.22 | **The last new art is gone** — four custom textures replaced with paths enumerated from Core. **Zero gameplay art ships**, and it is checked |
+| 0.12.23 | **The handoff, audited again** — six defects in it. A question I had parked in a document, asked and answered instead |
 
 ---
 
@@ -141,7 +142,9 @@ anything in this list** — it is the authority, and steps 1–5 of its build or
    - Arc 6, the outside world — **the `IncidentDef` surface built in 0.11.8 is its home.**
    - Arc 7, industrial reach. **DLC-optional throughout.**
    - Arc 8, deeper systems — partly built already: depth bands, archetypes, the pressure ladder.
-2. **Research tiers 3–4, AFTER the arcs.** **Deliberately moved behind them, 0.12.5-dev.** Tier 3
+2. ~~**Research tier 3.**~~ **CLOSED, 0.12.18-dev — all seven branches**, each moving a real observable knob, with two restraints asserted: the per-coordinate frontier cap is **not** a research knob, and shelter never reaches zero.
+   **TIER 4 REMAINS, and survey it the same way rather than assuming it has knobs.** The 0.12.5-dev deletion of tier 3 was correct at the time and became writeable only because arc 5 wrote the systems — so re-run the sweep, do not carry an old verdict. Historical detail on tier 3’s original deletion follows.
+   Tier 3
    is *"remote operations: support more than one site; work beyond headquarters"*, and the knob
    sweep found **nothing to move** for Facilities, Fieldcraft, Entities or Commerce, because the
    systems such an unlock would modify are not written. Four of seven projects would have been
@@ -170,7 +173,8 @@ anything in this list** — it is the authority, and steps 1–5 of its build or
    staff **prior exposure**; *"respond to openings in settlements"*.
 5. **The adjacent-door-run fallback** — 1×3 and 2×3 by binding one gate across a run of adjacent
    1×1 Core doors, for players without Doors Expanded.
-6. **`RR_QuietPursuer` presentation** — the last existing-content replacement.
+6. ~~**`RR_QuietPursuer` presentation.**~~ **CLOSED, 0.12.22-dev** — it uses Core’s `Things/Mote/Black`, a shape you cannot resolve, which is closer to its own description than a drawing was. **Zero gameplay art or audio now ships** and a checker asserts it as a shape rather than a count.
+   **NEXT, and owner-answered 2026-09-29:** retire **`RR_FieldRecorder`** by **folding its job into the record book crews already carry**. A crew already takes Core’s `TextBook` in as the native evidence carrier, patched with our comp — so the same book logs visited rooms, route mismatches and entity sightings. **One item, two jobs, no new def, and NO SAVE BREAK:** the recorder def stays loadable so old saves open, but is never granted or sold again. It also reads better — the thing you write in is the thing that remembers. Four live read sites move onto the book. Historical detail follows.
    **The five `RR_*Staff` PawnKinds are NO LONGER part of this item:** they were found already
    authored and read by nothing, and wired as the clean-up team's relief crew in 0.11.7-dev.
    `proof-facility-relief.py` now asserts both directions so they cannot go dead again.
@@ -187,29 +191,49 @@ anything in this list** — it is the authority, and steps 1–5 of its build or
 
 ### Done since the last handoff, so nobody rebuilds it
 
-**Research:** tiers 0, 1 and 2 across seven branches — **tier 2 complete, and tiers 3–4 deliberately
-deferred behind the arcs** (see the queue).
+**Twelve checkpoints, 0.12.11 → 0.12.22.** Every one published to all eight refs with a read-back,
+a deterministic assembly, and the full checker and proof sweep.
 
-**The corporation:** the clean-up team that means a facility never dies, deterministic and
-uncapped · the first two `IncidentDef`s so the player's own storyteller paces the lighter events ·
-**no `StorytellerDef`, ever, and it is asserted.**
+**THE CAMPAIGN NOW EXISTS IN THE GAME.** It did not before. `RimroomsRequestDef`, `RequestRoutes`
+and seven authored requests — the tutorial line and the hinge — shipped at 0.11.1 and 0.11.2 and
+were **read by zero lines of C#**. Chart §7 steps 4 and 5 were both recorded *done*. Now: requests
+reach a player, are accepted, complete when any one route comes true, and pay.
 
-**All three starts ship.** Async Industries (now opening with eight completed projects) · the
-Furniture & Knickknack Store · solo/group, whose map is a real Backrooms coordinate with a
-**guaranteed** registered way out and a natural chain that stops at depth 3.
+**25 request defs** — 7 fixed tutorial plus **18 generated across arcs 4–8**, one per item the chart
+names. **Chart §7 step 8 is closed**: every arc has work a player can be asked to do. Coverage is
+asserted **per arc**, because a total of eighteen is satisfied by eighteen copies of one arc.
 
-**Arc 5's named list is complete:** sites on the books and billed daily · company-to-site
-logistics · staffing, so a shipment to an empty site waits · and the exit plan, a gate at a
-registered site with its own console, battery and bench.
+**Generation after the hinge**, with an eligibility filter whose every clause can refuse, and
+progress measured **from when a request appeared** — absolute state is permanently true once true,
+so a repeatable request would otherwise have paid out on acceptance.
 
-**Real defects fixed:** a wall beside a gate no longer bricks it for the life of the save · a
-cross-map reroute no longer strands a paid shipment for ever · a tier-0 research card that
-promised an unlock and moved nothing now moves something · three dead gate accessors wired ·
-five `PawnKindDef`s found authored and read by nothing.
+**Research tier 3, all seven branches**, each moving a knob a player can watch change. Two
+restraints kept and asserted: the per-coordinate frontier cap is **not** a research knob, and
+shelter never reaches zero.
 
-**Guarantees proved rather than rebuilt:** a gate closing on a crew strands them and never takes
-them — `ShouldRemoveMapNow` returns false **unconditionally** and no gate source may call
-`PassToWorld`.
+**The seven universe factions ship** — the largest completely unbuilt owner direction, found by the
+backlog audit. All neutral, **no settlements** so world generation is untouched, and no new pawn
+kind or art.
+
+**A way out into the world.** The last unbuilt piece of the topology, and the gap was worse than
+the row said: with no marked door a way out silently became a way **deeper**, so a branch with
+nothing marked could never get out. Now it leads to an unheld tile — **claimed under the five-map
+cap, a caravan at or over it.**
+
+**Zero gameplay art or audio ships.** Four custom textures replaced with paths **enumerated from
+Core's own defs**, all four archived.
+
+**The register is queryable by the column that answers the question.** `trace` names which Rimrooms
+feature a row bears on; it had no query, which is why it was the column that got skipped. **A ninth
+checker** verifies this build still uses other mods the way the register says to.
+
+**Real defects fixed, all of them shipped and player-visible:** the depth-1 yellow rooms had never
+been carpeted · two labels lied (request 5 accepted one crew account while promising two; `bonusUsd`
+would always have paid) · a way out with no marked anchor was a dead end · two menu textures were
+reported unreferenced on every run.
+
+**And the queue was re-measured against the code**: 155 rows, **114 built or superseded**, open rows
+**254 → 90**. It could not answer *"how close are we"* before that, because nobody had checked.
 
 ---
 
@@ -434,23 +458,38 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 213. **Enumerate the replacement, never remember it.** `Data/Core/Defs` holds **908** distinct `texPath` values; every path used here was confirmed present in a real Core def first. This is the same discipline that `Named<TerrainDef>("Carpet")` skipped, and that one shipped a wrong floor for months.
 214. **Check a rule as a SHAPE, not a count.** *"Remove the 14 historical PNGs"* was stale by ten. The durable assertion is *"every image this package ships is a menu slide"* — which needs no number and cannot go out of date.
 215. **When a def is infrastructure, the art is the breach.** Three of the four legacy defs were mechanics or generator-placed markers that invariant 10 permits. Rebuilding working systems was never the fix. **Separate the def from its texture before deciding what to retire.**
+216. **A handoff that contains an open question is a handoff that deferred work.** `RR_FieldRecorder` was written into this document as *"needs an owner decision"*; the owner said **ask me, asap**. Invariant 34 already said so. **Ask in the turn you find it, then record the decision.**
+217. **Measure the proof-output split, never carry it.** It said four `PASS:` and eleven `PROOF HELD` when there were twenty-one proofs, and **two of them announce nothing at all** — their last line is a wrapped continuation. Every phrasing-based runner misses those two, not just the wrong one.
+218. **When your measurement and the document disagree, suspect the measurement first.** An invariant-count regex caught ordinary numbered lists and reported duplicates 1–9. The document was right: **209 invariants, no duplicates, gaps deliberate.**
 
 ---
 
 ## The warning that matters most right now
 
-**A check that cannot fail manufactures confidence, and every instance of it this session was
-mine.** Four, all found by planting faults rather than by reading:
+**A search that finds nothing is not evidence, and this session I twice took one as proof.**
+Both directions of that failed, and both cost real things:
 
-| What could not fail | Why |
+| What happened | Why it was worse than being wrong |
 |---|---|
-| the natural-depth ordering claim | keyed off a **variable name**; renaming it made the claim fail *open* |
-| the on-the-books claim | counted a **refusal string** that survived the guard being deleted |
-| the staffing ordering claim | had a **conditional fallback** on a method name absent from the file, so it collapsed to a tautology |
-| the whole proof runner | **grepped for `PROOF HELD`**, and four live proofs end `PASS:` — so four went unrun for most of the session |
+| **`Named<TerrainDef>("Carpet")` returned null, silently, for months** | Core ships `Carpet` as a `TerrainTemplateDef`; there is no `TerrainDef` of that name. `GetNamedSilentFail` is silent **by design** and a `??` fallback made wood plank flooring look deliberate. **The depth-1 yellow rooms — the one look invariant 25 calls sacred — were never carpeted.** |
+| **I marked working code *"confirmed unbuilt by grep"*** | The mineable-rock fill ships. My grep searched `Generation/` for *"Mineable"*, *"Granite"*, *"RockRubble"* — **words the code does not contain**, because it asks `Find.World.NaturalRockTypesIn`. I then accused a correct comment of lying. **Condemning working code on a failed search is worse than trusting a wrong comment**, because it invites somebody to "fix" what works. |
+| **A check I wrote to catch one specific thing PASSED that exact planted fault** | The floor-value claim skipped terrains with no cost list as *"never built"* — which excused `PackedDirt`, the precise case it existed for. **A filter that skips the case it guards against is worse than no check**, and only the planted fault found it. |
+| **A claim keyed off proximity broke when correct code moved near it** | It searched for a capability name within 400 characters of a constant. **Proximity is not the thing that happens.** Fifth instance of that class. |
+| **Claims matching the code's own comments** | Twice more, including a rule defeated by the two doc comments explaining why the thing it looked for is deliberately absent. **Sixth instance.** |
 
-The first three were caught by fault-planting. **The fourth was caught only by writing this
-handoff**, which is the argument for writing it.
+### The rules that come out of it
+
+- **Key a claim off the thing that happens** — an assignment, a guard, an exit status. Never a
+  token near it, a variable's spelling, or a count of a string.
+- **Strip comments before searching source.** Six times now.
+- **A grep for the words you expected, in the file you expected, is not a search.** Check the API
+  the code actually calls.
+- **`GetNamedSilentFail` plus a `??` fallback is a silent wrong answer.** Assert that every def a
+  generator names actually resolves — including template-generated ones.
+- **Plant the fault and confirm it fails for the RIGHT reason.** A check that passes its own
+  motivating case is the worst outcome available, and reading will never reveal it.
+- **Never widen a rule so your own text passes.** Refused three times this session: a key was
+  renamed, two descriptions were reworded, and the vocabulary rule was obeyed rather than relaxed.
 
 ### The rules that come out of that
 
@@ -539,8 +578,29 @@ for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: 
 
 ## Open owner questions — THERE ARE NONE
 
-**All three reserved decisions were answered on 2026-09-29.** Nothing in this project is now
-waiting on the owner. Every remaining item in the queue above is buildable.
+**Nothing in this project is waiting on the owner.** Every remaining item in the queue above is
+buildable, and the owner's standing instruction is that the register is **guidance, not law** and
+that *"test cases arnt being worried about right now we are trying to get the build complete so we
+can test"* — so **unverifiable-without-a-launch is never a reason to defer building something.**
+
+### Answered this session, so nobody re-asks
+
+- ~~**The route model**~~ — *"Both — filter picks the family, card never shrinks."* Eligibility
+  gates which family is offered; the card shows the full authored floor, unfiltered.
+- ~~**Branch unlock order after the hinge**~~ — **all eight open, any order.**
+- ~~**The world exit vs the stranded-crew guarantee**~~ — **build it, a player caravan is still
+  yours.** The narrowing is asserted by name: closing, expiry and traversal still never take a crew.
+- ~~**The map cap**~~ — **five, universally**, counting the Backrooms map and every claimed tile;
+  over that, caravans. The player's own `Prefs.MaxNumberOfPlayerSettlements` wins if stricter.
+- ~~**The register's standing**~~ — **guidance, not law.** A row does not veto work.
+- ~~**The public face**~~ — everything, including Playwright driving Steam. Still correctly last,
+  and it needs the owner present.
+- ~~**Testing**~~ — *"test cases arnt being worried about right now we are trying to get the build
+  complete so we can test."* **Unverifiable-without-a-launch is not a reason to slow the build.**
+- ~~**`RR_FieldRecorder`, the last authored gameplay item**~~ — **fold its job into the record book
+  crews already carry.** Core's `TextBook` is already the native evidence carrier; the same book now
+  logs rooms, mismatches and sightings. **No new def, no save break** — the recorder stays loadable
+  so old saves open, and is never granted or sold again. **This is the next thing to build.**
 
 ### Answered 2026-09-29 — the last three
 

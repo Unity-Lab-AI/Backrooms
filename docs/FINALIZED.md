@@ -749,6 +749,30 @@ The last four custom gameplay textures replaced with paths **enumerated out of C
 
 ---
 
+## Session 2026-09-29 - the handoff, audited again (0.12.23-dev)
+
+**Verbatim user quotes:** *"go ahead with now.md protocol and get ready form compact with creating the handoff before i compact"*, then *"ask me the question remebr i said sooner than later with those"* and *"that means asap"*.
+
+### What shipped
+
+The compaction handoff, written by **checking every claim against the thing it describes**. It found **six defects**, and the owner's correction mid-procedure changed how the one open question was handled.
+
+### Closure notes
+
+- **THE OWNER CAUGHT ME PARKING A QUESTION IN A DOCUMENT.** I had written `RR_FieldRecorder` into the handoff as *"STILL OPEN, needs an owner decision"* - which is exactly the flagging that invariant 34 forbids: *"dopnt flag shit!!! ask me then and there"*. The owner said *"ask me the question"* and then *"that means asap"*. Asked, answered in one exchange, and the handoff now records a **decision** rather than a question. **A handoff with an open question in it is a handoff that deferred work.**
+- **Owner answer:** fold `RR_FieldRecorder`'s job into the record book crews already carry. Core's `TextBook` is already the native evidence carrier, patched with our comp, so the same book logs visited rooms, route mismatches and entity sightings. **One item, two jobs, no new def, and no save break** - the recorder def stays loadable so old saves open, and is never granted or sold again. **This is the next thing to build.**
+- **SIX DEFECTS IN THE HANDOFF, none of which reading would have found:**
+  1. **The proof output split was stale by six.** It said *"four print `PASS:` and eleven print `PROOF HELD`"* - fifteen, against twenty-one. Measured: **17 `PROOF HELD`, 2 `PASS:`, and 2 that end on a WRAPPED CONTINUATION LINE** whose final line is not a status token at all. **That strengthens the exit-status rule rather than weakening it**: the two wrapped ones would be missed by every phrasing, not just the wrong one.
+  2. **Queue item 2 said research tiers 3-4 were both pending.** Tier 3 shipped at 0.12.18-dev, all seven branches.
+  3. **Queue item 6 called `RR_QuietPursuer` *"the last existing-content replacement"*.** It shipped at 0.12.22-dev.
+  4. **The top warning was two sessions stale**, still describing 0.12.10-dev's four unfalsifiable claims. Replaced with this session's sharper lesson: **a search that finds nothing is not evidence**, and I took one as proof twice - once shipping a silently-null `Named<TerrainDef>("Carpet")` that left the sacred yellow rooms in wood plank flooring, and once marking working code *"confirmed unbuilt by grep"* while accusing a correct comment of lying.
+  5. **"Done since the last handoff" mentioned NONE of this session's twelve checkpoints.** It described work up to 0.12.9. Rewritten to name what actually shipped, including that **the campaign did not exist in the game** before 0.12.11-dev.
+  6. **"Open owner questions - THERE ARE NONE" was wrong** at the moment it was written, because the recorder decision was outstanding. Now true again, and true by having asked rather than by having omitted.
+- **My own measurement was wrong once, and the doc was right.** An invariant-numbering check reported 222 entries with duplicates 1-9; the regex had caught ordinary numbered lists outside the section. Corrected: **209 invariants, 1 to 215, no duplicates, 6 deliberate gaps**, and the two apparent out-of-order entries are subsection restarts by design.
+- Build 0.12.23-dev, 174 C# files, 87 package files, **0 warnings, 0 errors**. Nine checkers pass, twenty-one proofs exit zero. **No game was launched, and nothing in this mod has ever been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

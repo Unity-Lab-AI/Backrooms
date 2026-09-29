@@ -482,6 +482,16 @@ Seven items, one task each. **This is a stop-building instruction and it is bein
 - [x] **Two already-answered owner questions were still listed as open** and are moved to a closed block with their answers.
 - [x] **The gotcha counts were flattering**: the heredoc trap is at **eight**, not six, and three of those came after the warning was already written.
 
+**Built 2026-09-29, 0.12.23-dev: the handoff, audited again.**
+
+**Verbatim owner directions:** *"go ahead with now.md protocol and get ready form compact with creating the handoff before i compact"*, *"ask me the question remebr i said sooner than later with those"*, *"that means asap"*.
+
+- [x] **The compaction handoff written by checking every claim against the thing it describes.** Six defects found: a stale proof-output split (15 claimed, 21 real, and two proofs announce nothing at all), two finished items still listed pending, a two-session-stale top warning, a "done since" block naming none of this session's twelve checkpoints, and an open-questions section that was wrong when written.
+- [x] **THE OWNER CAUGHT ME PARKING A QUESTION IN A DOCUMENT** rather than asking it - exactly what invariant 34 forbids. Asked, answered in one exchange, and the handoff records a decision instead of a question.
+- [x] **Owner answer recorded: fold `RR_FieldRecorder` into the `TextBook` crews already carry.** One item, two jobs, no new def, **no save break** - the def stays loadable so old saves open and is never granted or sold again.
+- [x] **My own measurement was wrong once and the doc was right**: an invariant-count regex caught ordinary numbered lists. Corrected to 209 invariants, 1-215, no duplicates, 6 deliberate gaps.
+- [ ] **NEXT: build the recorder fold.** Four live read sites move onto the book.
+
 **Built 2026-09-29, 0.12.14-dev: the queue could not answer the question.**
 
 **Verbatim owner question:** *"okay is that todo list getting there are we getting close to having all work complete on the mod build to completion and thourough totality? get to it all"*
