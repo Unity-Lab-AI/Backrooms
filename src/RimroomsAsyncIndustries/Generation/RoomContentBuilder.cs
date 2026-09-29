@@ -35,7 +35,7 @@ namespace RimroomsAsyncIndustries.Generation
                 Rand.PushState(seed);
                 try
                 {
-                    PaintRoom(map, room, variant);
+                    PaintRoom(map, room, variant, coordinate.Depth, seed);
                     Thing landmark;
                     bool salvage = false;
                     switch (room.familyId)
@@ -88,25 +88,36 @@ namespace RimroomsAsyncIndustries.Generation
             content.CompletePopulation();
         }
 
-        private static void PaintRoom(Map map, RoomRecord room, int variant)
+        private static void PaintRoom(Map map, RoomRecord room, int variant, int depth, int seed)
         {
             bool utility = room.familyId == "service_passage" || room.familyId == "utility_room";
-            TerrainDef baseFloor = DefDatabase<TerrainDef>.GetNamedSilentFail(utility ? "Concrete" : "PavedTile");
-            TerrainDef accent = DefDatabase<TerrainDef>.GetNamedSilentFail(utility ? "MetalTile" : "Concrete");
+            // The look is chosen by how deep the coordinate sits rather than by a global
+            // constant, because the owner's direction has two halves: the yellow carpet and
+            // yellow wood walls are "the main backrooms look", and "further in it gets very
+            // varied and weird". Depth 1 is always the yellow rooms; deeper bands diverge.
+            BackroomsPalette.Look look = BackroomsPalette.For(depth, seed);
+            TerrainDef baseFloor = look.floor;
+            TerrainDef accent = look.accent;
             if (accent == null || baseFloor == null) { throw new InvalidOperationException("RR_Generation_RequiredCoreOrSiteDefMissing"); }
             foreach (IntVec3 cell in room.Bounds.Cells)
             {
                 Thing wall = cell.GetEdifice(map);
                 if (wall != null && wall.def == ThingDefOf.Wall)
-                { wall.TryGetComp<CompColorable>()?.SetColor(utility ? new Color(0.61f, 0.65f, 0.62f) : new Color(0.77f, 0.73f, 0.51f)); }
+                {
+                    // Utility spaces stay a shade off the room palette so the two read apart
+                    // without relying on colour alone -- the stripe pattern below is the
+                    // non-colour cue.
+                    Color tint = look.wallColor;
+                    if (utility) { tint = new Color(tint.r * 0.78f, tint.g * 0.82f, tint.b * 0.86f); }
+                    wall.TryGetComp<CompColorable>()?.SetColor(tint);
+                }
             }
             foreach (IntVec3 cell in room.Bounds.ContractedBy(1).Cells)
             {
                 // Original floor inset/stripes establish room differences without a color-only cue.
                 bool stripe = variant == 0 ? (cell.x - room.x) % 4 == 0 : variant == 1 ? (cell.z - room.z) % 4 == 0 :
                     cell.x == room.x + 2 || cell.z == room.z + 2 || cell.x == room.Bounds.maxX - 2 || cell.z == room.Bounds.maxZ - 2;
-                if (stripe) { map.terrainGrid.SetTerrain(cell, accent); }
-                else { map.terrainGrid.SetTerrain(cell, baseFloor); }
+                BackroomsPalette.SetFloor(map, cell, stripe ? accent : baseFloor, look.floorColor);
             }
         }
 

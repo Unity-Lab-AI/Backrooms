@@ -44,9 +44,18 @@ namespace RimroomsAsyncIndustries.Generation
                 TerrainDef voidFloor = DefDatabase<TerrainDef>.GetNamedSilentFail("WaterDeep");
                 TerrainDef pavedFloor = DefDatabase<TerrainDef>.GetNamedSilentFail("PavedTile");
                 ThingDef wallDef = ThingDefOf.Wall;
-                ThingDef wallStuff = ThingDefOf.Steel;
+                // Walls take the palette's material too, so the shallow yellow rooms are
+                // wood and the deeper bands are not. Steel stays the fallback if a
+                // palette material is somehow unavailable.
+                ThingDef wallStuff = BackroomsPalette.For(coordinate.Depth, coordinate.Seed).wallStuff
+                    ?? ThingDefOf.Steel;
                 ThingDef anchorDef = DefDatabase<ThingDef>.GetNamedSilentFail("Door");
-                ThingDef lightDef = DefDatabase<ThingDef>.GetNamedSilentFail("StandingLamp");
+                // Core ships a wall-mounted lamp, which is both closer to the overhead
+                // fluorescent the setting wants and better for the look in a second way:
+                // an endless corridor reads as endless precisely because nothing is
+                // standing in it. Generation used StandingLamp before, which put
+                // furniture in the middle of every room.
+                ThingDef lightDef = BackroomsPalette.For(coordinate.Depth, coordinate.Seed).light;
                 ThingDef climateDef = DefDatabase<ThingDef>.GetNamedSilentFail("Heater");
                 ThingDef generatorDef = DefDatabase<ThingDef>.GetNamedSilentFail("ChemfuelPoweredGenerator");
                 ThingDef fuelDef = DefDatabase<ThingDef>.GetNamedSilentFail("Chemfuel");

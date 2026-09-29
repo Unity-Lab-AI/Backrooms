@@ -107,6 +107,14 @@ namespace RimroomsAsyncIndustries.Company
         /// Generation still happens through the ordinary coordinate owner on first use.
         /// </summary>
         public CompanyActionResult CreateDiscoveredCoordinate(string discoveryId, out CoordinateRecord coordinate)
+        { return CreateDiscoveredCoordinate(discoveryId, 1, out coordinate); }
+
+        /// <summary>
+        /// As above, recording how deep the new space sits. Depth is counted in portals from
+        /// the ordinary world and is what the palette and room library read to decide how
+        /// strange a coordinate looks.
+        /// </summary>
+        public CompanyActionResult CreateDiscoveredCoordinate(string discoveryId, int depth, out CoordinateRecord coordinate)
         {
             coordinate = null;
             if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
@@ -126,7 +134,8 @@ namespace RimroomsAsyncIndustries.Company
             {
                 id = id,
                 label = "AI-" + (coordinates.Count + 1).ToString("00"),
-                seed = CampaignSeed.Derive(campaignSeed, stableKey, 1)
+                seed = CampaignSeed.Derive(campaignSeed, stableKey, 1),
+                depth = depth < 1 ? 1 : depth
             };
             coordinates.Add(created);
             ValidateSavedState();

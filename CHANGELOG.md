@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.8-dev - 2026-09-29 - the yellow rooms
+
+- **The first Backrooms space now looks like the Backrooms.** Yellow carpet, yellow wood walls, and lights on the walls instead of lamps standing in the middle of the floor.
+- **The first one always looks like that**, on every seed. It is the image the whole thing rests on.
+- **Deeper spaces do not.** Coordinates now know how far in they are, and the look changes with depth: poolrooms, machinery, abandoned offices, cold storage, and one band where the place stops agreeing with itself.
+- The same deep space looks the same every time you go back to it.
+- Spaces in an existing save read as shallow, so nothing you have already found changes.
+
+Full record: [the palette](docs/implementation/BACKROOMS_PALETTE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.7.7-dev - 2026-09-29 - the company will buy, and pay you in paper
 
 - **Sell to the company at a credit beacon.** Everything tradeable in the beacon's range goes at once, and you see the total before you commit.

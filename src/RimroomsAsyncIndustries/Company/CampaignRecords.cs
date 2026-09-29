@@ -170,6 +170,24 @@ namespace RimroomsAsyncIndustries.Company
         /// </summary>
         internal List<string> oddGoodsDefNames = new List<string>();
 
+        /// <summary>
+        /// How deep this coordinate sits, counted in portals from the ordinary world. The first
+        /// space reached from a world map is 1; a frontier found inside it mints 2, and so on
+        /// without limit.
+        ///
+        /// **This is what makes the place look like itself and then stop looking like itself.**
+        /// Owner direction 2026-09-29: the yellow carpet, yellow wood walls and overhead light
+        /// are *"the main backrooms look"*, and *"further in it gets very varied and weird"*. A
+        /// single global palette could only ever deliver the first half of that. Depth is the
+        /// axis the palette, the room library and eventually the escalation ladder all read.
+        ///
+        /// Defaults to 1 so a coordinate saved before 0.7.8-dev reads as a shallow one, which
+        /// is both the safe answer and the true one for every space discovered so far.
+        /// </summary>
+        internal int depth = 1;
+
+        public int Depth { get { return depth < 1 ? 1 : depth; } }
+
         public IReadOnlyList<string> OddGoodsDefNames { get { return oddGoodsDefNames; } }
         public string Id { get { return id; } }
         public string Label { get { return label; } }
@@ -190,6 +208,7 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref lastFailureKey, "rr_lastFailureKey");
             Scribe_Collections.Look(ref rooms, "rr_rooms", LookMode.Deep);
             Scribe_Collections.Look(ref oddGoodsDefNames, "rr_oddGoodsDefNames", LookMode.Value);
+            Scribe_Values.Look(ref depth, "rr_depth", 1);
             if (Scribe.mode == LoadSaveMode.PostLoadInit && rooms == null) { rooms = new List<RoomRecord>(); }
             // A coordinate saved before 0.7.2-dev has no recorded odd goods. An empty list is
             // the honest answer -- it simply offers no supply contracts of its own -- rather

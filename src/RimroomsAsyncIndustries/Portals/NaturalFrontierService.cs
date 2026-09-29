@@ -136,7 +136,12 @@ namespace RimroomsAsyncIndustries.Portals
             }
 
             CoordinateRecord discovered;
-            CompanyActionResult created = campaign.CreateDiscoveredCoordinate(discoveryId, out discovered);
+            // Depth is one more than wherever this doorway was found. A frontier on an
+            // ordinary world map mints depth 1 -- the shallow, yellow-carpet Backrooms --
+            // and every step inward adds one, which is what lets the place stop looking
+            // like itself the further a branch pushes.
+            int depth = source == null ? 1 : source.Depth + 1;
+            CompanyActionResult created = campaign.CreateDiscoveredCoordinate(discoveryId, depth, out discovered);
             if (!created.Success || discovered == null) { return created; }
 
             CompanyActionResult registered = PortalAddressService.RegisterNaturalAddress(
