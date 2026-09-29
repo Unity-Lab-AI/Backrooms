@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.10.1-dev** (this commit) |
+| Published | **0.10.2-dev** (this commit) |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
 | Build | **158 C# files, 79 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `B0878FAE21A2EC14A7DA9AD06E2B2280EB481F985935087EF0BD4E973EFFA094`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `7F0ECE7490C23886E8862C1625812FEF27C2B9E31970FC55CD161E91B8157AB7`, reproduced by two clean recompiles |
 | Checkers | **six**, all passing |
 | Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
 | Game launches | **none, ever** |
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.10.1
+## What shipped this session, 0.7.1 → 0.10.2
 
 | Version | What |
 |---|---|
@@ -74,6 +74,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.9.9 | **The beacon had nothing left to do** — first field-gear retirement, four replacements decided |
 | 0.10.0 | **The documents say what is true** — sixth checker, 28 stale claims across 10 living docs |
 | 0.10.1 | **LAW #0, made checkable** — 10 owner directions found unrecorded, and a rule so it cannot recur |
+| 0.10.2 | **One set of words** — gate / connection / threshold, enforced over all player-facing text |
 
 ---
 
@@ -169,6 +170,8 @@ Each is a real defect or a pinned fact.
 68. **The unified vocabulary is gate / connection / threshold.** The **gate** is the machine in your wall; the **connection** is the live link it holds open; the **threshold** is the doorway on the far side. Never "portal", "the machine" or "the gizmo" in player-facing text.
 69. **Every owner direction quoted in `FINALIZED.md` must already exist in `TODO.md`.** LAW #0 is now a build failure rather than an intention. It found **ten** directions that had been acted on and archived without ever reaching the queue.
 70. **When the owner suspects a process failure, measure it — do not argue.** The suspicion here was correct, and the audit that confirmed it took one script.
+71. **The vocabulary is enforced, not merely agreed.** `check-info-cards.py` fails the build on "portal", "machine gate", "doorway" or "gizmo" in any displayed text. **Key names are exempt** — a player never reads one, and renaming keys is churn with DefInjected risk.
+72. **A retired def's name outlives the def in player-facing text.** "machine gate" was still the game's own word for itself in 25 strings, two checkpoints after `RR_MachineGate` was deleted. Retiring a def means retiring its vocabulary too.
 
 ---
 

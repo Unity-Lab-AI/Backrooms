@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
-  <!-- Portal network pane -->
-  <RR_Portals_Heading>Portal network</RR_Portals_Heading>
-  <RR_Portals_Explanation>Remembered addresses connect a real doorway on this map to the saved return threshold of a Backrooms coordinate. A laboratory address needs its designated gate, power and operator; a natural threshold stays open permanently.</RR_Portals_Explanation>
+  <!-- Gates and connections pane -->
+  <RR_Portals_Heading>Gates and connections</RR_Portals_Heading>
+  <RR_Portals_Explanation>Remembered addresses connect a real door on this map to the saved return threshold of a Backrooms coordinate. A laboratory address needs its designated gate, power and operator; a natural threshold stays open permanently.</RR_Portals_Explanation>
   <RR_Portals_NoBranch>No company branch is active, so no address can be remembered.</RR_Portals_NoBranch>
-  <RR_Portals_NetworkFault>The saved portal network could not be read. Its records are retained for review and no portal operation is available.</RR_Portals_NetworkFault>
+  <RR_Portals_NetworkFault>The saved connection network could not be read. Its records are retained for review and no gate operation is available.</RR_Portals_NetworkFault>
   <RR_Portals_NoAddresses>No addresses are remembered yet. Select a coordinate below and remember it on the designated gate.</RR_Portals_NoAddresses>
   <RR_Portals_AddressCount>Remembered addresses: {0}</RR_Portals_AddressCount>
   <RR_Portals_AddressLine>{0} — coordinate {1} ({2}), status {3}</RR_Portals_AddressLine>
@@ -21,11 +21,11 @@
   <RR_Portals_NoCoordinates>This branch has no coordinate records.</RR_Portals_NoCoordinates>
   <RR_Portals_SelectedCoordinate>Selected coordinate: {0} ({1})</RR_Portals_SelectedCoordinate>
   <RR_Portals_RememberLaboratory>Remember this coordinate on the designated gate</RR_Portals_RememberLaboratory>
-  <RR_Portals_RememberNatural>Remember this coordinate on the selected doorway as a permanent natural link</RR_Portals_RememberNatural>
-  <RR_Portals_SelectNaturalDoor>Select a doorway for a natural link</RR_Portals_SelectNaturalDoor>
+  <RR_Portals_RememberNatural>Remember this coordinate on the selected door as a permanent natural link</RR_Portals_RememberNatural>
+  <RR_Portals_SelectNaturalDoor>Select a door for a natural link</RR_Portals_SelectNaturalDoor>
   <RR_Portals_NaturalDoorOption>{0} at {1}</RR_Portals_NaturalDoorOption>
-  <RR_Portals_SelectedNaturalDoor>Selected natural doorway: {0} at {1}</RR_Portals_SelectedNaturalDoor>
-  <RR_Portals_NoNaturalDoorCandidates>No eligible doorway with a clear standable approach was found on this map.</RR_Portals_NoNaturalDoorCandidates>
+  <RR_Portals_SelectedNaturalDoor>Selected natural door: {0} at {1}</RR_Portals_SelectedNaturalDoor>
+  <RR_Portals_NoNaturalDoorCandidates>No eligible door with a clear standable approach was found on this map.</RR_Portals_NoNaturalDoorCandidates>
   <RR_Portals_GateRequired>Designate a native gate with its console, battery and assembly bench before remembering a laboratory address.</RR_Portals_GateRequired>
   <RR_Portals_LegacyRepairNeeded>This coordinate was generated before its return threshold became an actual door, so it cannot hold an address yet.</RR_Portals_LegacyRepairNeeded>
   <RR_Portals_RepairThreshold>Replace the historical return threshold with an actual door</RR_Portals_RepairThreshold>
@@ -36,7 +36,7 @@
 
   <!-- Ordinary travel and session controls -->
   <RR_Portals_TravelHeading>Crossing and session controls</RR_Portals_TravelHeading>
-  <RR_Portals_TravelExplanation>Select one colonist, then order a crossing on a remembered address. They walk to the saved threshold and cross carrying whatever they are already carrying. Opening a doorway normally never moves anyone.</RR_Portals_TravelExplanation>
+  <RR_Portals_TravelExplanation>Select one colonist, then order a crossing on a remembered address. They walk to the saved threshold and cross carrying whatever they are already carrying. Opening a door normally never moves anyone.</RR_Portals_TravelExplanation>
   <RR_Portals_NoSelectedPerson>Select one colonist on this map to order a crossing.</RR_Portals_NoSelectedPerson>
   <RR_Portals_SelectedPerson>Selected: {0}</RR_Portals_SelectedPerson>
   <RR_Portals_NoLocalAddresses>No remembered address has a threshold on this map.</RR_Portals_NoLocalAddresses>
@@ -52,7 +52,7 @@
   <RR_Portals_RecoverCrossing>Reconcile crossing {0}</RR_Portals_RecoverCrossing>
   <RR_Portals_HeldPerson>a person held for recovery</RR_Portals_HeldPerson>
 
-  <RR_PortalTravel_InvalidState>The company branch, portal network or crossing record is unavailable.</RR_PortalTravel_InvalidState>
+  <RR_PortalTravel_InvalidState>The company branch, connection network or crossing record is unavailable.</RR_PortalTravel_InvalidState>
   <RR_PortalTravel_NoPerson>No eligible person is selected on a loaded map.</RR_PortalTravel_NoPerson>
   <RR_PortalTravel_AddressUnavailable>That address is not available from this map right now.</RR_PortalTravel_AddressUnavailable>
   <RR_PortalTravel_SessionClosed>The laboratory connection for that address is not open.</RR_PortalTravel_SessionClosed>
@@ -70,15 +70,15 @@
   <RR_PortalTraversal_CargoNotCarried>That object is not in the carrier's hands, so it cannot go through a gate with them.</RR_PortalTraversal_CargoNotCarried>
 
   <!-- Address service refusals -->
-  <RR_PortalAddress_InvalidState>The company branch or portal network is unavailable.</RR_PortalAddress_InvalidState>
+  <RR_PortalAddress_InvalidState>The company branch or connection network is unavailable.</RR_PortalAddress_InvalidState>
   <RR_PortalAddress_GateNotReady>The selected gate is not a designated native gate with valid links.</RR_PortalAddress_GateNotReady>
   <RR_PortalAddress_HeadquartersRequired>A laboratory address must be remembered on a gate at the company headquarters.</RR_PortalAddress_HeadquartersRequired>
-  <RR_PortalAddress_LocalApproachBlocked>The doorway's approach cell on this map is blocked.</RR_PortalAddress_LocalApproachBlocked>
-  <RR_PortalAddress_LocalThresholdUnavailable>The selected doorway cannot serve as a threshold. It must be an actual door with a clear, directly adjacent standable cell.</RR_PortalAddress_LocalThresholdUnavailable>
+  <RR_PortalAddress_LocalApproachBlocked>The door's approach cell on this map is blocked.</RR_PortalAddress_LocalApproachBlocked>
+  <RR_PortalAddress_LocalThresholdUnavailable>The selected door cannot serve as a threshold. It must be an actual door with a clear, directly adjacent standable cell.</RR_PortalAddress_LocalThresholdUnavailable>
   <RR_PortalAddress_UnknownCoordinate>That coordinate is not a record of this branch.</RR_PortalAddress_UnknownCoordinate>
   <RR_PortalAddress_SiteUnavailable>The coordinate's saved site is unavailable. Its records are retained; resolve the site before remembering an address.</RR_PortalAddress_SiteUnavailable>
   <RR_PortalAddress_SiteNotLoaded>The coordinate's saved site is not loaded.</RR_PortalAddress_SiteNotLoaded>
-  <RR_PortalAddress_SiteThresholdUnavailable>The site's return threshold is missing or has moved. The saved route is never redirected to a replacement doorway.</RR_PortalAddress_SiteThresholdUnavailable>
+  <RR_PortalAddress_SiteThresholdUnavailable>The site's return threshold is missing or has moved. The saved route is never redirected to a replacement door.</RR_PortalAddress_SiteThresholdUnavailable>
   <RR_PortalAddress_LegacyThreshold>This site's return threshold predates actual doors. Repair it explicitly first.</RR_PortalAddress_LegacyThreshold>
   <RR_PortalAddress_LegacyAnchorMissing>The historical return threshold object is missing, so there is nothing to replace.</RR_PortalAddress_LegacyAnchorMissing>
   <RR_PortalAddress_LegacyGeometryUnsupported>The historical return threshold does not occupy a single cell beside its saved return position.</RR_PortalAddress_LegacyGeometryUnsupported>
@@ -87,14 +87,14 @@
   <RR_PortalAddress_RepairInterrupted>The threshold repair was interrupted. The site, its graph and its discoveries are retained.</RR_PortalAddress_RepairInterrupted>
   <RR_PortalAddress_RepairNotRecorded>The replacement door was placed but its repair could not be recorded. Review the site before remembering an address.</RR_PortalAddress_RepairNotRecorded>
   <RR_PortalAddress_SameMap>A connection must join two different maps.</RR_PortalAddress_SameMap>
-  <RR_PortalAddress_IdentityConflict>A different saved address already uses one of these doorways.</RR_PortalAddress_IdentityConflict>
-  <RR_PortalAddress_EndpointRejected>One of the endpoints is not an acceptable doorway with a clear adjacent approach.</RR_PortalAddress_EndpointRejected>
+  <RR_PortalAddress_IdentityConflict>A different saved address already uses one of these doors.</RR_PortalAddress_IdentityConflict>
+  <RR_PortalAddress_EndpointRejected>One of the endpoints is not an acceptable door with a clear adjacent approach.</RR_PortalAddress_EndpointRejected>
   <RR_PortalAddress_WrongBranch>One of the endpoints is not on a map this branch owns.</RR_PortalAddress_WrongBranch>
   <RR_PortalAddress_Obstructed>An approach cell is obstructed.</RR_PortalAddress_Obstructed>
   <RR_PortalAddress_Closed>The laboratory connection is not open for that address.</RR_PortalAddress_Closed>
 
   <!-- Company events -->
-  <RR_Event_PortalAddressRegistered>Portal address remembered: {0} (coordinate {1}).</RR_Event_PortalAddressRegistered>
+  <RR_Event_PortalAddressRegistered>Gate address remembered: {0} (coordinate {1}).</RR_Event_PortalAddressRegistered>
   <RR_Event_PortalThresholdRepaired>Return threshold replaced with an actual door at coordinate {0} (receipt {1}).</RR_Event_PortalThresholdRepaired>
   <RR_Event_CoordinateDiscovered>New coordinate recorded: {0} (discovery {1}).</RR_Event_CoordinateDiscovered>
 
@@ -105,7 +105,7 @@
   <!-- Crossing service results. These are returned by the physical crossing API;
        the crossing job and its controls surface them at the point of use. -->
   <RR_PortalCrossing_Busy>Another crossing is already being reconciled.</RR_PortalCrossing_Busy>
-  <RR_PortalCrossing_InvalidState>The company branch or portal network is unavailable.</RR_PortalCrossing_InvalidState>
+  <RR_PortalCrossing_InvalidState>The company branch or connection network is unavailable.</RR_PortalCrossing_InvalidState>
   <RR_PortalCrossing_InvalidSave>The saved crossing records could not be read. They are retained and crossing is disabled.</RR_PortalCrossing_InvalidSave>
   <RR_PortalCrossing_InvalidRequest>That crossing request is not valid.</RR_PortalCrossing_InvalidRequest>
   <RR_PortalCrossing_SequenceExhausted>This save has exhausted its crossing sequence numbers.</RR_PortalCrossing_SequenceExhausted>
@@ -114,12 +114,12 @@
   <RR_PortalCrossing_PawnInTransit>{0} is already part of an unresolved crossing.</RR_PortalCrossing_PawnInTransit>
   <RR_PortalCrossing_PawnNotEligible>Only this company's own available people and animals can cross. Drafted, downed, dead, prisoner, enslaved, guest and distressed people cannot, and neither can a downed or panicking animal.</RR_PortalCrossing_PawnNotEligible>
   <RR_PortalCrossing_NotAtSourceThreshold>The person is not standing at the saved threshold cell for that connection.</RR_PortalCrossing_NotAtSourceThreshold>
-  <RR_PortalCrossing_SourceAccessDenied>The doorway on this side cannot be used: it is forbidden, locked or impassable for this person.</RR_PortalCrossing_SourceAccessDenied>
+  <RR_PortalCrossing_SourceAccessDenied>The door on this side cannot be used: it is forbidden, locked or impassable for this person.</RR_PortalCrossing_SourceAccessDenied>
   <RR_PortalCrossing_EdgeUnavailable>That connection is not currently available.</RR_PortalCrossing_EdgeUnavailable>
   <RR_PortalCrossing_WrongBranch>That connection does not belong to this branch's maps.</RR_PortalCrossing_WrongBranch>
   <RR_PortalCrossing_DestinationUnsafe>The arrival cell on the far side is not safe to stand in.</RR_PortalCrossing_DestinationUnsafe>
   <RR_PortalCrossing_DestinationSpawnFailed>The arrival was refused on the far side; the person is being returned to the near side.</RR_PortalCrossing_DestinationSpawnFailed>
-  <RR_PortalCrossing_DestinationAccessDenied>The far doorway or allowed area refused this person on arrival; they are being returned to the near side.</RR_PortalCrossing_DestinationAccessDenied>
+  <RR_PortalCrossing_DestinationAccessDenied>The far door or allowed area refused this person on arrival; they are being returned to the near side.</RR_PortalCrossing_DestinationAccessDenied>
   <RR_PortalCrossing_EdgeClosedDuringCleanup>The connection closed during the crossing; the person is being returned to the near side.</RR_PortalCrossing_EdgeClosedDuringCleanup>
   <RR_PortalCrossing_CarryOwnerChanged>The carried item changed hands before the crossing; nothing was moved.</RR_PortalCrossing_CarryOwnerChanged>
   <RR_PortalCrossing_CargoCustodyFailed>The carried item could not be taken into custody for the crossing.</RR_PortalCrossing_CargoCustodyFailed>
@@ -137,30 +137,30 @@
   <RR_PortalCrossing_UnownedCargo>A saved crossing references an item that is neither carried nor in custody. The record is retained.</RR_PortalCrossing_UnownedCargo>
   <RR_PortalCrossing_OrphanedHeldThing>Something is held for a crossing that no longer references it. The record is retained.</RR_PortalCrossing_OrphanedHeldThing>
 
-  <RR_Frontier_Discovered>{0} found a doorway that leads somewhere else. The way through is permanently open and is now a remembered address.</RR_Frontier_Discovered>
-  <RR_Frontier_Unavailable>Surveying doorways is unavailable until this branch is operating.</RR_Frontier_Unavailable>
-  <RR_Frontier_NotADoorway>That is not a doorway this company can study.</RR_Frontier_NotADoorway>
+  <RR_Frontier_Discovered>{0} found a door that leads somewhere else. The way through is permanently open and is now a remembered address.</RR_Frontier_Discovered>
+  <RR_Frontier_Unavailable>Surveying doors is unavailable until this branch is operating.</RR_Frontier_Unavailable>
+  <RR_Frontier_NotADoor>That is not a door this company can study.</RR_Frontier_NotADoor>
   <RR_Frontier_PlayerBuilt>A door your own people built is not a way onward. Ways onward are found in what was already standing there.</RR_Frontier_PlayerBuilt>
-  <RR_Frontier_IsAMachineGate>That doorway already has a machine on it.</RR_Frontier_IsAMachineGate>
-  <RR_Frontier_NotInTheBackrooms>Doorways only lead elsewhere from inside the Backrooms.</RR_Frontier_NotInTheBackrooms>
-  <RR_Frontier_IsTheWayBack>That doorway is the way back. It leads home, not onward.</RR_Frontier_IsTheWayBack>
-  <RR_Frontier_Obstructed>There is no clear space beside that doorway to work from.</RR_Frontier_Obstructed>
-  <RR_Frontier_AlreadyRecorded>That doorway is already a remembered address.</RR_Frontier_AlreadyRecorded>
+  <RR_Frontier_IsAMachineGate>That door is already a gate.</RR_Frontier_IsAMachineGate>
+  <RR_Frontier_NotInTheBackrooms>Doors only lead elsewhere from inside the Backrooms.</RR_Frontier_NotInTheBackrooms>
+  <RR_Frontier_IsTheWayBack>That door is the way back. It leads home, not onward.</RR_Frontier_IsTheWayBack>
+  <RR_Frontier_Obstructed>There is no clear space beside that door to work from.</RR_Frontier_Obstructed>
+  <RR_Frontier_AlreadyRecorded>That door is already a remembered address.</RR_Frontier_AlreadyRecorded>
   <RR_Frontier_NoneLeftHere>This space has given up every way onward it has.</RR_Frontier_NoneLeftHere>
-  <RR_Frontier_LeadsNowhere>That doorway leads nowhere but the next room.</RR_Frontier_LeadsNowhere>
-  <RR_Event_FrontierDiscovered>A doorway deeper in was recorded as a permanently open way through to {0}, found from {1}.</RR_Event_FrontierDiscovered>
+  <RR_Frontier_LeadsNowhere>That door leads nowhere but the next room.</RR_Frontier_LeadsNowhere>
+  <RR_Event_FrontierDiscovered>A door deeper in was recorded as a permanently open way through to {0}, found from {1}.</RR_Event_FrontierDiscovered>
 
   <RR_PortalAddress_EmergenceAnchorUnavailable>No usable way home is marked. Mark a door on a map you hold as the place a way out can come up.</RR_PortalAddress_EmergenceAnchorUnavailable>
   <RR_Portals_KindEmergence>way out</RR_Portals_KindEmergence>
 
   <RR_Portals_SpinUpRunning>Bringing up a connection: {0}% charged. The assigned operator must stay on the console.</RR_Portals_SpinUpRunning>
   <RR_Portals_AbortSpinUp>Stop spin-up</RR_Portals_AbortSpinUp>
-  <RR_PortalTraversal_TooLargeForGate>Too large for this gate. Widen the opening: a one-cell doorway passes people and working animals, a two-cell doorway passes pack animals like muffalo and dromedaries, and three cells or more passes anything.</RR_PortalTraversal_TooLargeForGate>
+  <RR_PortalTraversal_TooLargeForGate>Too large for this gate. Widen the opening: a one-cell door passes people and working animals, a two-cell door passes pack animals like muffalo and dromedaries, and three cells or more passes anything.</RR_PortalTraversal_TooLargeForGate>
   <RR_Incursion_Label>Something came through the gate</RR_Incursion_Label>
-  <RR_Incursion_Text>{0} followed your people to the doorway and stepped through {1} behind them. It is in the facility now, and it will behave like anything else that gets inside. Closing a connection before something reaches the threshold is what stops this.</RR_Incursion_Text>
+  <RR_Incursion_Text>{0} followed your people to the door and stepped through {1} behind them. It is in the facility now, and it will behave like anything else that gets inside. Closing a connection before something reaches the threshold is what stops this.</RR_Incursion_Text>
   <RR_Incursion_NotEligible>Nothing there can cross.</RR_Incursion_NotEligible>
   <RR_Incursion_NoOpening>A closed gate is a wall.</RR_Incursion_NoOpening>
   <RR_Incursion_AlreadySpent>Something has already come through on this opening.</RR_Incursion_AlreadySpent>
   <RR_Incursion_BandTooLow>This space is not yet bad enough for anything to follow you home.</RR_Incursion_BandTooLow>
-  <RR_Incursion_TechTooLow>The machine is not advanced enough to hold a connection something else could use.</RR_Incursion_TechTooLow>
+  <RR_Incursion_TechTooLow>The gate is not advanced enough to hold a connection something else could use.</RR_Incursion_TechTooLow>
 </LanguageData>

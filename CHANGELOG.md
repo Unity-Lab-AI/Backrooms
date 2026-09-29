@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.10.2-dev - 2026-09-29 - one set of words
+
+- **Everything the mod shows you now uses one set of words.** The **gate** is the machine in your wall. The **connection** is the live link it holds open. The **threshold** is the doorway you arrive at on the far side.
+- That means the game can finally tell you *which* part failed. "The gate is fine, the connection dropped" is a sentence it could not say before.
+- The biggest offender was **"machine gate"**, the name of an object retired two versions ago and still used in twenty-five places the game spoke to you.
+- Eighty-four lines of screen text, tooltips, job reports and item cards brought into line.
+
+Full record: [one set of words](docs/implementation/VOCABULARY_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.10.1-dev - 2026-09-29 - LAW #0, made checkable
 
 - Internal only; nothing in the game changes.

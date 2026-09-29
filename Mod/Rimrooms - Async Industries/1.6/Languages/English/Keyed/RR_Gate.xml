@@ -49,14 +49,14 @@
   <RR_Gate_EmergencyCutoff>Emergency cutoff activated</RR_Gate_EmergencyCutoff>
   <RR_Gate_NotOpen>The gate has no active expedition to interrupt.</RR_Gate_NotOpen>
   <RR_Gate_CalibrationUnavailable>The gate is not ready for calibration.</RR_Gate_CalibrationUnavailable>
-  <RR_Gate_MachineUnavailable>The gate machine is no longer available.</RR_Gate_MachineUnavailable>
+  <RR_Gate_MachineUnavailable>The gate is no longer available.</RR_Gate_MachineUnavailable>
   <RR_Gate_InvalidAssemblyBill>The assembly bill did not target this installation's assigned assembly station.</RR_Gate_InvalidAssemblyBill>
-  <RR_Event_GateAssemblyCompleted>The machine assembly is complete. Assign a qualified operator and calibrate the gate.</RR_Event_GateAssemblyCompleted>
-  <RR_Event_GateCalibrationCompleted>The machine calibration is complete. Staff the console and review the power reserve before dispatch.</RR_Event_GateCalibrationCompleted>
+  <RR_Event_GateAssemblyCompleted>The gate assembly is complete. Assign a qualified operator and calibrate the gate.</RR_Event_GateAssemblyCompleted>
+  <RR_Event_GateCalibrationCompleted>The gate calibration is complete. Staff the console and review the power reserve before dispatch.</RR_Event_GateCalibrationCompleted>
   <RR_Event_GateOpeningStarted>The gate opening has started. The expedition window is running.</RR_Event_GateOpeningStarted>
   <RR_Event_GateOpeningClosed>The gate opening is closed. Crew and cargo remain accounted for in the expedition record.</RR_Event_GateOpeningClosed>
-  <RR_Event_GateEmergencyReturnPaid>Emergency return has committed {0} watt-days from the machine's reserve.</RR_Event_GateEmergencyReturnPaid>
-  <RR_Event_GateRecoveryOpeningStarted>The recovery opening has started, spending {0} watt-days from the machine's reserve.</RR_Event_GateRecoveryOpeningStarted>
+  <RR_Event_GateEmergencyReturnPaid>Emergency return has committed {0} watt-days from the gate's reserve.</RR_Event_GateEmergencyReturnPaid>
+  <RR_Event_GateRecoveryOpeningStarted>The recovery opening has started, spending {0} watt-days from the gate's reserve.</RR_Event_GateRecoveryOpeningStarted>
   <RR_Gate_TimeCostWindowExhausted>The recorded route distortion consumed the remaining normal opening. Use the emergency return while it remains available.</RR_Gate_TimeCostWindowExhausted>
   <RR_Gate_WindowSustained>held while powered and staffed</RR_Gate_WindowSustained>
   <RR_Gate_KillSwitchLabel>Set emergency cutoff</RR_Gate_KillSwitchLabel>
@@ -97,5 +97,5 @@
   <RR_Event_GateSpinUpCompleted>Gate spin-up completed</RR_Event_GateSpinUpCompleted>
   <RR_Event_GateSpinUpLapsed>Gate spin-up lapsed</RR_Event_GateSpinUpLapsed>
   <RR_Event_GateSpinUpAborted>Gate spin-up stopped</RR_Event_GateSpinUpAborted>
-  <RR_Gate_FootprintReadout>Opening {0} wide, {1} cell(s) of machine ({2}).</RR_Gate_FootprintReadout>
+  <RR_Gate_FootprintReadout>Opening {0} wide, {1} cell(s) of gate ({2}).</RR_Gate_FootprintReadout>
 </LanguageData>

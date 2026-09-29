@@ -43,7 +43,7 @@
   <RR_NativeGate_ClearBinding>Clear this native gate designation</RR_NativeGate_ClearBinding>
   <RR_NativeGate_OpeningCannotRebind>The gate's saved opening is active. Infrastructure links cannot be changed until it closes.</RR_NativeGate_OpeningCannotRebind>
   <RR_NativeGate_SharedBatteryWarning>The linked battery is a real RimWorld battery on a shared power network. Other consumers can drain it; Rimrooms does not reserve its charge or guarantee emergency power.</RR_NativeGate_SharedBatteryWarning>
-  <RR_NativeGate_DoorStateExplanation>The portal window is Rimrooms expedition state. The door's ordinary Open/Hold Open state only controls local pawn passage and is not proof that a portal is active.</RR_NativeGate_DoorStateExplanation>
+  <RR_NativeGate_DoorStateExplanation>The connection window is Rimrooms expedition state. The door's ordinary Open/Hold Open state only controls local pawn passage and is not proof that a connection is active.</RR_NativeGate_DoorStateExplanation>
   <RR_NativeGate_DispatchNeedsBoundGate>Select and designate a native gate before dispatch. Existing expeditions remain attached to their saved gate.</RR_NativeGate_DispatchNeedsBoundGate>
   <RR_NativeGate_PowerReadout>Linked battery charge: {0}/{1} watt-days. Rimrooms direct drain while open: {2} W. Charge needed for normal window plus emergency return: {3} watt-days; recovery opening total: {4} watt-days. The native battery remains shared with its power network.</RR_NativeGate_PowerReadout>
   <RR_NativeGate_UnsupportedProvider>Only a Core Door or Autodoor can be designated as a native gate.</RR_NativeGate_UnsupportedProvider>
@@ -66,6 +66,6 @@
   <RR_NativeGate_DebitFaultDetails>Unresolved energy debit {0}: requested {1} watt-days; observed change {2} watt-days.</RR_NativeGate_DebitFaultDetails>
   <RR_NativeGate_DebitFaultExplanation>Acknowledgment records that you reviewed the observed loss. It does not refill the battery or refund the company.</RR_NativeGate_DebitFaultExplanation>
   <RR_NativeGate_AcknowledgeDebit>Acknowledge reviewed battery debit</RR_NativeGate_AcknowledgeDebit>
-  <RR_NativeGate_AuraEnabled>Show native portal aura</RR_NativeGate_AuraEnabled>
-  <RR_NativeGate_ReducedMotion>Reduce portal motion (hide aura; keep status text)</RR_NativeGate_ReducedMotion>
+  <RR_NativeGate_AuraEnabled>Show native gate aura</RR_NativeGate_AuraEnabled>
+  <RR_NativeGate_ReducedMotion>Reduce gate motion (hide aura; keep status text)</RR_NativeGate_ReducedMotion>
 </LanguageData>

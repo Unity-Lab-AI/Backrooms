@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_UI_Facilities>Facilities</RR_UI_Facilities>
   <RR_Fac_Explanation>Headquarters infrastructure: installed, player-owned and visible buildings. Categories describe furniture; jobs, access, care and production still use the actual RimWorld buildings and staff.</RR_Fac_Explanation>
@@ -37,5 +37,5 @@
   <RR_Fac_Unavailable>unavailable</RR_Fac_Unavailable>
   <RR_Fac_Inspect>Inspect {0}</RR_Fac_Inspect>
   <RR_Fac_TargetUnavailable>The building is no longer available at headquarters. Refresh the report.</RR_Fac_TargetUnavailable>
-  <RR_Fac_OpenMachine>Open Machine operations</RR_Fac_OpenMachine>
+  <RR_Fac_OpenMachine>Open gate operations</RR_Fac_OpenMachine>
 </LanguageData>

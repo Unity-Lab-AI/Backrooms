@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Company_UnsupportedSave>This company record belongs to another Rimrooms version. Keep the original save and use the matching build.</RR_Company_UnsupportedSave>
   <RR_Company_InvalidStart>The company start is incomplete. Check the headquarters, starting staff and scenario report before continuing.</RR_Company_InvalidStart>
@@ -23,7 +23,7 @@
   <RR_Company_PayOutstanding>Pay outstanding obligations</RR_Company_PayOutstanding>
   <RR_Company_Insights>Available research insights: {0}</RR_Company_Insights>
   <RR_Company_StaffCount>Company staff: {0}</RR_Company_StaffCount>
-  <RR_Company_OpeningObjective>Next objective: prepare the machine, appoint its operator and review the AI-01 survey before dispatch.</RR_Company_OpeningObjective>
+  <RR_Company_OpeningObjective>Next objective: prepare the gate, appoint its operator and review the AI-01 survey before dispatch.</RR_Company_OpeningObjective>
   <RR_Company_OpenHeadquarters>View headquarters</RR_Company_OpenHeadquarters>
   <RR_Company_MapUnavailable>The headquarters is unavailable. Its company records have been retained.</RR_Company_MapUnavailable>
   <RR_UI_Overview>Overview</RR_UI_Overview>

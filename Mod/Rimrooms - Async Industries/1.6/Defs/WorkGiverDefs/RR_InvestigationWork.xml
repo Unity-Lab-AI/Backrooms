@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
-  <!-- Surveying a doorway for a way onward sits just above bench research. It is a
+  <!-- Surveying a door for a way onward sits just above bench research. It is a
        discrete, short task that can only happen a bounded number of times per space
        (NaturalFrontierService.MaximumFrontiersPerCoordinate), so it cannot starve
        ongoing research for long. The exact value is a balance decision. -->
   <WorkGiverDef>
     <defName>RR_SurveyFrontier</defName>
-    <label>survey doorways for a way onward</label>
+    <label>survey doors for a way onward</label>
     <giverClass>RimroomsAsyncIndustries.Portals.WorkGiver_SurveyFrontier</giverClass>
     <workType>Research</workType>
     <verb>survey</verb>

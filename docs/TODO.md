@@ -122,6 +122,11 @@ Policy: [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md); map: [`implementat
 
 - [x] **RETIRED 0.9.0-dev.** **Legacy gate objects** `RR_MachineGate`, `RR_GateConsole`, `RR_EmergencyCutoff`, `RR_UtilityGenerator` → designated Core `Autodoor`/`CommsConsole`/`PowerSwitch` + generation. Hidden from construction today, still in the package. **Power claim corrected 2026-09-28:** this row previously said no single Core generator meets the 3,500 W opening draw while its own parenthetical named `GeothermalGenerator` at 3,600 W, which exceeds it. Core outputs verified: Geothermal 3,600 W, Wind 2,300 W, Solar 1,700 W, Watermill 1,100 W, Wood-fired 1,000 W, Chemfuel 1,000 W. The framing was also wrong — a draw is supplied by a power network with batteries, and the gate already designates a battery as its provider. No content blocker remains here.
 
+**Verbatim owner direction (2026-09-29):** *"get to it we are completeing and optimizing everything while doing everything in the columns of the prep docs and mod register"*
+
+- [x] **HELD as the standing working method.** The register's columns - load order, mod, system family, stance, firmness, trace IDs and card - are what integration questions are answered from, and the 294 per-mod reviews under `research/reviews/mods/` are read before designing rather than after.
+
+
 **Verbatim owner direction (2026-09-29):** *"after u fix that get back to the doc drift and it seems i could be wrong but it seems like sometimes i dont see you record the verbatiums and then build them into tasks of the todo prperly, documenting them alll, idk"*
 
 - [x] **The owner was right, measured rather than argued. BUILT 0.10.1-dev.** An audit found **three of seventeen** directions from this session archived without ever reaching this queue, and the rule written to stop it recurring found **seven more** from earlier. All ten are now recorded verbatim above. `check-doc-conformance.py` now fails the build if a direction quoted in `FINALIZED.md` does not appear here - it caught this very entry when it was first written, which is the rule doing its job on its own first use.
@@ -191,10 +196,10 @@ on to let a direction reach `FINALIZED.md` without appearing here first.
 
 **Owner answer, asked at the fork:** **gate / connection / threshold** - three words for three genuinely different things, rather than one word that would lose the distinction.
 
-- [ ] **`gate`** - the machine in your wall. Always a designated door. Already dominant at 171 player-facing uses against 13 for "portal".
-- [ ] **`connection`** - the live link a gate holds open to one coordinate. Lets the game say *"the gate is fine, the connection dropped"*, which is a real thing that happens and currently cannot be said clearly.
-- [ ] **`threshold`** - the doorway you arrive at on the far side.
-- [ ] **Enforce it over player-facing text** - keyed strings and def labels and descriptions - so the vocabulary cannot drift back. Same reasoning as every other checker here.
+- [x] **BUILT 0.10.2-dev.** **`gate`** - the machine in your wall. Always a designated door. Already dominant at 171 player-facing uses against 13 for "portal".
+- [x] **BUILT 0.10.2-dev.** **`connection`** - the live link a gate holds open to one coordinate. Lets the game say *"the gate is fine, the connection dropped"*, which is a real thing that happens and currently cannot be said clearly.
+- [x] **BUILT 0.10.2-dev.** **`threshold`** - the doorway you arrive at on the far side.
+- [x] **BUILT 0.10.2-dev** as a vocabulary rule in `check-info-cards.py`, proved by planting each banned term and by confirming key names and the blessed words stay allowed. **Enforce it over player-facing text** - keyed strings and def labels and descriptions - so the vocabulary cannot drift back. Same reasoning as every other checker here.
 
 
 **Verbatim owner direction (2026-09-29), on the glow pods:** *"tyhe glow pods can be used and lets not limit the amount as a backrooms instance can have 100s of rooms if the player is using 300x300 maps for instance and maybe lets have the glow pods color setable"* and *"color means differnt types of the needs markers"*

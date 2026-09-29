@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <RR_AssembleMachineGate.label>assemble machine gate</RR_AssembleMachineGate.label>
+  <RR_AssembleMachineGate.label>assemble gate</RR_AssembleMachineGate.label>
   <RR_AssembleMachineGate.description>Physically carry 100 steel and 8 industrial components to the powered gate console, then complete the staffed assembly work.</RR_AssembleMachineGate.description>
-  <RR_AssembleMachineGate.jobString>assembling the machine gate</RR_AssembleMachineGate.jobString>
+  <RR_AssembleMachineGate.jobString>assembling the gate</RR_AssembleMachineGate.jobString>
 </LanguageData>

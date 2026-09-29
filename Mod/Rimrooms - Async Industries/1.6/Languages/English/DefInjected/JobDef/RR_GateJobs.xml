@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <RR_CalibrateGate.reportString>calibrating the machine gate</RR_CalibrateGate.reportString>
-  <RR_OperateGate.reportString>staffing the machine gate console</RR_OperateGate.reportString>
+  <RR_CalibrateGate.reportString>calibrating the gate</RR_CalibrateGate.reportString>
+  <RR_OperateGate.reportString>staffing the gate console</RR_OperateGate.reportString>
 </LanguageData>

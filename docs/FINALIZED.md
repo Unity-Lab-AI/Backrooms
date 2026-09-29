@@ -2902,3 +2902,42 @@ Owner directions found unrecorded and then recorded: **10**. Checker rules added
 **An owner suspicion about process, measured rather than argued, and confirmed correct.**
 False-positive classes designed out before shipping: 2 - markup differences and continuation prompts.
 Still open and named in `TODO.md`: unified terminology; the remaining field-gear replacements; the last two scenarios.
+
+---
+
+## 0.10.2-dev - 2026-09-29 - one set of words
+
+### Owner directions, verbatim
+
+> *"also ive used alot of differnt terms for the gates.. from portals, gates, doors , the machine, the gizmo, ect ect we need a unified name throught the entire mode in all the equipment information and cards of things items resources and buildings and all things that our mod touches"*
+
+> *"get to it we are completeing and optimizing everything while doing everything in the columns of the prep docs and mod register"*
+
+### One word would have been the wrong answer
+
+The obvious reading is to pick a word and use it everywhere. Asked at the fork, and the answer was **three words for three genuinely different things**: the **gate** is the machine in your wall, the **connection** is the live link it holds open, the **threshold** is the doorway you arrive at on the far side. *"The gate is fine, the connection dropped"* says something true and could not be said at all while both were called a portal. Gate already won on the evidence: 171 player-facing uses against 13 for portal.
+
+### What was actually wrong
+
+Not "portal". The biggest source of drift was **"machine gate"** - the name of `RR_MachineGate`, a def **retired in 0.9.0-dev** - still in **25 player-facing strings**. The def was gone and its name was still what the game called itself. 84 lines across 21 files changed.
+
+Key names were deliberately left alone: a player never reads `RR_Portals_Heading`, and renaming keys is churn with real DefInjected risk for no reader benefit.
+
+### A real bug, caught by a checker rather than by reading
+
+A global word replacement renamed a key - `RR_Frontier_NotADoorway` became `RR_Frontier_NotADoor` - while the C# still asked for the old name, which a player would have seen as a raw key in a refusal. `check-keyed-strings.py` caught it immediately. The new name matches the new vocabulary, so the **C# reference was updated rather than the rename reverted**, and the replacement script now asserts that no key or class name count changes.
+
+### Enforced, not just done
+
+`check-info-cards.py` gained a vocabulary rule over everything a player can read, with the reason attached to each banned term. Proved by planting all four terms separately and confirming failure, then planting a key name containing "portal" and the three blessed words together and confirming silence.
+
+### Build evidence
+
+0.10.2-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **158** C# source files, **79** approved package files. Assembly SHA-256 `7F0ECE7490C23886E8862C1625812FEF27C2B9E31970FC55CD161E91B8157AB7`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All six checkers pass. **No new def, asset, patch operation or work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Player-facing lines corrected: 84 across 21 files. Checker rules added: 1, proved in both directions.
+**The worst offender was the name of a def retired two checkpoints earlier**, still being used as the game's own word for itself in 25 places.
+**Bugs caught by a checker rather than by reading the diff: 1** - an accidental key rename that would have shown a player a raw key.
+Still open and named in `TODO.md`: the survey tag as a `GlowPod` with marker types; custody at a designated archive shelf; the recorder merged into the book; the last two scenarios.

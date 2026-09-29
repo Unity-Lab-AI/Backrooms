@@ -3,7 +3,7 @@
   <JobDef>
     <defName>RR_CalibrateGate</defName>
     <driverClass>RimroomsAsyncIndustries.Gate.JobDriver_RRCalibrateGate</driverClass>
-    <reportString>calibrating the machine gate</reportString>
+    <reportString>calibrating the gate</reportString>
     <suspendable>false</suspendable>
     <playerInterruptible>true</playerInterruptible>
     <casualInterruptible>false</casualInterruptible>
@@ -12,7 +12,7 @@
   <JobDef>
     <defName>RR_OperateGate</defName>
     <driverClass>RimroomsAsyncIndustries.Gate.JobDriver_RROperateGate</driverClass>
-    <reportString>staffing the machine gate console</reportString>
+    <reportString>staffing the gate console</reportString>
     <suspendable>false</suspendable>
     <playerInterruptible>true</playerInterruptible>
     <casualInterruptible>false</casualInterruptible>
@@ -21,7 +21,7 @@
   <JobDef>
     <defName>RR_ReconditionGate</defName>
     <driverClass>RimroomsAsyncIndustries.Gate.JobDriver_RRReconditionGate</driverClass>
-    <reportString>monitoring and adjusting the machine gate assembly</reportString>
+    <reportString>monitoring and adjusting the gate assembly</reportString>
     <suspendable>false</suspendable>
     <playerInterruptible>true</playerInterruptible>
     <casualInterruptible>false</casualInterruptible>

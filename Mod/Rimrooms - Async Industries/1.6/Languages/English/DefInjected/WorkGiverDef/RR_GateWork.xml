@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_DoGateAssembly.label>assemble gate at console</RR_DoGateAssembly.label>
   <RR_DoGateAssembly.verb>assemble gate at</RR_DoGateAssembly.verb>
   <RR_DoGateAssembly.gerund>assembling gate at</RR_DoGateAssembly.gerund>
-  <RR_CalibrateGate.label>calibrate machine gate</RR_CalibrateGate.label>
+  <RR_CalibrateGate.label>calibrate gate</RR_CalibrateGate.label>
   <RR_CalibrateGate.verb>calibrate</RR_CalibrateGate.verb>
   <RR_CalibrateGate.gerund>calibrating</RR_CalibrateGate.gerund>
 </LanguageData>

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <!-- Study a doorway deeper in and record where it leads. Bounded per coordinate
-       by NaturalFrontierService; the doorway itself decides, from its own position
+  <!-- Study a door deeper in and record where it leads. Bounded per coordinate
+       by NaturalFrontierService; the door itself decides, from its own position
        under that coordinate's saved seed, so the answer never changes on a revisit. -->
   <JobDef>
     <defName>RR_SurveyFrontier</defName>

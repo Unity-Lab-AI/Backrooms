@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <JobDef>
     <defName>RR_ApproachGate</defName>
     <driverClass>RimroomsAsyncIndustries.Expedition.JobDriver_ExpeditionApproach</driverClass>
-    <reportString>assembling at the machine gate.</reportString>
+    <reportString>assembling at the gate.</reportString>
     <casualInterruptible>false</casualInterruptible>
     <carryThingAfterJob>true</carryThingAfterJob>
     <dropThingBeforeJob>false</dropThingBeforeJob>

@@ -18,9 +18,9 @@
   <RR_Field_AidMissing>This worker is not carrying the requested route equipment. Collect or transfer the physical item first.</RR_Field_AidMissing>
   <RR_Field_AidAlreadyPlaced>This room already has that type of route equipment. Recover or move it before deploying another.</RR_Field_AidAlreadyPlaced>
   <RR_Event_RoomSurveyed>{0}: surveyed room {1}, {2}.</RR_Event_RoomSurveyed>
-  <RR_Event_CorridorMismatch>{0}: a doorway repeats the last room's label, but the route counter disagrees. Stop and compare the physical route tags. The last validated junction is room {1}; a tag and return beacon there identify the safe route. Continuing deeper risks a loop.</RR_Event_CorridorMismatch>
+  <RR_Event_CorridorMismatch>{0}: a door repeats the last room's label, but the route counter disagrees. Stop and compare the physical route tags. The last validated junction is room {1}; a tag and return beacon there identify the safe route. Continuing deeper risks a loop.</RR_Event_CorridorMismatch>
   <RR_Event_CorridorCountered>Tag and beacon agree at room {0}. The crew identified the false connection and preserved the return path.</RR_Event_CorridorCountered>
-  <RR_Event_CorridorLoop>The doorway returned the crew to room {0}. Three reported in-game minutes were lost; no injury occurred and the gate exit is unchanged.</RR_Event_CorridorLoop>
+  <RR_Event_CorridorLoop>The door returned the crew to room {0}. Three reported in-game minutes were lost; no injury occurred and the gate exit is unchanged.</RR_Event_CorridorLoop>
   <RR_Event_CorridorRouteBlocked>The last junction is obstructed. The route distortion stopped without moving the crew. Clear the route or request recall.</RR_Event_CorridorRouteBlocked>
   <RR_Event_RouteAidPlaced>Placed {0} in room {1}. Its physical position now supports the saved route.</RR_Event_RouteAidPlaced>
   <RR_Event_PursuerSighting>Quiet Pursuer reported in room {0}, {1} rooms away. Keep moving along your route, retreat behind a closed door, or prepare to repel it. The threshold remains safe.</RR_Event_PursuerSighting>

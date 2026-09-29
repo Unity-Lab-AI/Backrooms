@@ -105,5 +105,5 @@
   <RR_Event_EmergenceAnchorMarked>A way home was marked.</RR_Event_EmergenceAnchorMarked>
   <RR_Event_EmergenceAnchorWithdrawn>A way home was withdrawn.</RR_Event_EmergenceAnchorWithdrawn>
   <RR_Event_EmergenceRegistered>A way out of the Backrooms was recorded.</RR_Event_EmergenceRegistered>
-  <RR_Event_WayOutDiscovered>A doorway led back out into the world.</RR_Event_WayOutDiscovered>
+  <RR_Event_WayOutDiscovered>A door led back out into the world.</RR_Event_WayOutDiscovered>
 </LanguageData>

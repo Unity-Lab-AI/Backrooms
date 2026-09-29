@@ -2,9 +2,9 @@
 <Defs>
   <RecipeDef>
     <defName>RR_AssembleMachineGate</defName>
-    <label>assemble machine gate</label>
+    <label>assemble gate</label>
     <description>Physically carry 100 steel and 8 industrial components to the designated machining table, then complete the installation assembly work. Designate the native door, communications console, battery and machining table in Operations first. The table retains its ordinary recipes.</description>
-    <jobString>assembling the machine gate</jobString>
+    <jobString>assembling the gate</jobString>
     <workAmount>6000</workAmount>
     <workSkill>Crafting</workSkill>
     <requiredGiverWorkType>Crafting</requiredGiverWorkType>

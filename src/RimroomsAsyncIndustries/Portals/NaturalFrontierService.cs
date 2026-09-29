@@ -226,7 +226,7 @@ namespace RimroomsAsyncIndustries.Portals
             { return "RR_Frontier_Unavailable"; }
             if (!(door is Building_Door) || !door.Spawned || door.Destroyed || door.Map == null ||
                 !campaign.OwnsMap(door.Map))
-            { return "RR_Frontier_NotADoorway"; }
+            { return "RR_Frontier_NotADoor"; }
 
             // Two kinds of place a doorway can lead onward from, per the owner's topology
             // direction of 2026-09-29: the link kind that brought you somewhere never
