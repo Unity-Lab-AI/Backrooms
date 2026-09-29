@@ -166,7 +166,24 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         /// The destination the definitive native search actually chose on arrival,
         /// replacing the candidate the plan was made against.
         /// </summary>
-        internal void RecordResolvedStoreCell(IntVec3 cell) { candidateStoreCell = cell; }
+        internal void RecordResolvedStoreCell(IntVec3 cell)
+        {
+            candidateStoreCell = cell;
+            finalTarget = null;
+            finalTargetLoadId = null;
+        }
+
+        /// <summary>
+        /// The destination is a container rather than a cell. Recorded in the
+        /// final-target field, which is exactly what that field is for: the native
+        /// object the work finally belongs to.
+        /// </summary>
+        internal void RecordResolvedContainer(Thing container)
+        {
+            finalTarget = container;
+            finalTargetLoadId = container == null ? null : container.GetUniqueLoadID();
+            candidateStoreCell = IntVec3.Invalid;
+        }
 
         internal void Close(ConnectedWorkPhase terminalPhase, string key)
         {
@@ -202,6 +219,69 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             Scribe_Values.Look(ref openedTick, "openedTick", 0);
             Scribe_Values.Look(ref leaseExpiryTick, "leaseExpiryTick", 0);
             Scribe_Values.Look(ref crossAttempts, "crossAttempts", 0);
+        }
+    }
+
+    /// <summary>
+    /// What this worker's allowed area was, the last time it was actually standing
+    /// on this map.
+    ///
+    /// This exists because Core stores allowed areas in a private dictionary keyed
+    /// by Map and exposes only "in the pawn's current map" accessors. There is no
+    /// public way to ask what a pawn's area is on a map it is not standing on, and
+    /// spoofing <c>pawn.Map</c> to find out is never acceptable. So instead of
+    /// claiming remote area compliance we cannot check, or giving up on it, we
+    /// simply write down what we saw while we were legitimately able to see it.
+    ///
+    /// A null area means unrestricted, which is also Core's own answer for a map the
+    /// player has never set an area on — so an unobserved map is treated as
+    /// unrestricted for exactly the same reason Core would.
+    /// </summary>
+    public sealed class ConnectedAreaObservation : IExposable
+    {
+        private string pawnLoadId;
+        private Map map;
+        private Area area;
+        private int observedTick;
+
+        public string PawnLoadId { get { return pawnLoadId; } }
+        public Map Map { get { return map; } }
+        public Area Area { get { return area; } }
+        public int ObservedTick { get { return observedTick; } }
+
+        public ConnectedAreaObservation() { }
+
+        internal ConnectedAreaObservation(Pawn pawn, Map map, Area area, int tick)
+        {
+            pawnLoadId = pawn.GetUniqueLoadID();
+            this.map = map;
+            this.area = area;
+            observedTick = tick;
+        }
+
+        internal void Update(Area observed, int tick)
+        {
+            area = observed;
+            observedTick = tick;
+        }
+
+        /// <summary>
+        /// Whether this observation still permits a cell. A removed area resolves to
+        /// null on load, which correctly reads as unrestricted rather than as a wall.
+        /// </summary>
+        public bool Allows(IntVec3 cell)
+        {
+            if (area == null) { return true; }
+            if (area.Map != map) { return true; }
+            return !cell.IsValid || area[cell];
+        }
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref pawnLoadId, "pawnLoadId");
+            Scribe_References.Look(ref map, "map");
+            Scribe_References.Look(ref area, "area");
+            Scribe_Values.Look(ref observedTick, "observedTick", 0);
         }
     }
 }

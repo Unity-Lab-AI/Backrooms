@@ -59,6 +59,10 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             // Someone held inside an unresolved crossing belongs to the crossing
             // service until its receipt is reconciled. Never hand them a job.
             if (crossings.HasUnresolvedCrossing(pawn)) { return null; }
+            // The one legitimate moment this worker's allowed area on this map is
+            // observable is while it is standing on it. Write it down every pass so a
+            // later planning decision about this map is made on evidence.
+            work.ObserveAreaHere(pawn);
 
             ConnectedWorkIntent intent = work.ActiveIntentFor(pawn);
             if (intent != null)
@@ -94,6 +98,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 string refusal = adapter.RevalidateAtFetchSide(intent, pawn);
                 if (refusal != null)
                 {
+                    // We crossed for this and were turned away on arrival. Remember the
+                    // map for a while so the next pass does not repeat the walk.
+                    if (pawn.Map != intent.StoreMap) { work.NoteDestinationRefused(pawn, pawn.Map); }
                     work.Close(intent, adapter.TerminalPhaseFor(refusal), refusal);
                     return null;
                 }
@@ -124,6 +131,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             // retries, not hops: a legitimate multi-hop trip fits inside it.
             if (intent.CrossAttempts >= RimroomsConnectedWorkComponent.MaximumCrossAttempts)
             {
+                work.NoteDestinationRefused(pawn, destination);
                 work.Close(intent, ConnectedWorkPhase.Failed, "RR_ConnectedWork_RouteExhausted");
                 return null;
             }

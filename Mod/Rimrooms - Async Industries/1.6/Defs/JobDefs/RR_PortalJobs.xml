@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
+  <!-- Study a doorway deeper in and record where it leads. Bounded per coordinate
+       by NaturalFrontierService; the doorway itself decides, from its own position
+       under that coordinate's saved seed, so the answer never changes on a revisit. -->
+  <JobDef>
+    <defName>RR_SurveyFrontier</defName>
+    <driverClass>RimroomsAsyncIndustries.Portals.JobDriver_SurveyFrontier</driverClass>
+    <reportString>studying TargetA for a way onward.</reportString>
+    <casualInterruptible>true</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+  </JobDef>
+
   <JobDef>
     <defName>RR_CrossPortal</defName>
     <driverClass>RimroomsAsyncIndustries.Portals.JobDriver_CrossPortal</driverClass>

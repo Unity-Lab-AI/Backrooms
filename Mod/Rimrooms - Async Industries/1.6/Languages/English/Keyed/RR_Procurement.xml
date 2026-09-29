@@ -104,4 +104,6 @@
   <RR_Event_ProcurementDelivered>Supplier cargo delivery completed: {0} x {1}.</RR_Event_ProcurementDelivered>
   <RR_Event_ProcurementCancelled>Pre-dispatch order cancelled and refunded: {0}.</RR_Event_ProcurementCancelled>
   <RR_Event_ProcurementRedirected>Receiving stockpile changed for order {0}: {1}.</RR_Event_ProcurementRedirected>
+  <RR_Proc_NoOpenQuotes>No open quotes. Request one to see prices and delivery terms.</RR_Proc_NoOpenQuotes>
+  <RR_Proc_UnassignedCargo>The saved procurement records reference cargo that is not assigned to a delivery, so procurement is disabled. Nothing was altered; keep this save.</RR_Proc_UnassignedCargo>
 </LanguageData>

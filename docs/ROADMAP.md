@@ -18,7 +18,7 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
 | **Master TODO** | 133 items checked, 121 open (mirrored in `TODO.md`; deferments tracked in `DEFERRED.md`) |
 | **Source** | 78 C# files, 15 namespaces, 9 save owners, no Harmony |
 | **Package** | 73 allowlisted files, 27 Def XMLs, 2 patches, 25 language files, 16 PNGs |
-| **Active major** | M1 connected colony portals — addresses, crossing, controls and the first cross-map work family (storage hauling) reachable in source; the remaining work adapters next |
+| **Active major** | M1 connected colony portals — addresses, crossing, controls, the first cross-map work family (storage hauling) and natural-gate discovery all reachable in source; nine deferments closed; the remaining work adapters next, starting with tend/rescue and remains |
 | **Next unblocked minor** | Resume step 4 (work intents, leases, adapter families) |
 | **Owner questions open** | 3 (inside-start party size; first-exit fixed vs chosen; opening duration) |
 
@@ -241,8 +241,9 @@ Every "[!]" row across all majors converges on one external event: the owner's f
             · workflow ledger built; .claude/ tracked by owner decision; PUBLISHING.md written
 DONE        M1 step 1 → 2 → 3 (0.4.2-dev) · gate traversal rule (0.4.3-dev) · step 4 intent/lease engine and
             the storage-hauling family (0.5.0-dev), each checkpointed and cascaded
-NEXT        M1 step 4 remaining families: construction supply/finish → bills → research → tend/rescue →
-            food → rest → the rest, one at a time with source evidence per route
+NEXT        M1 step 4 remaining families: tend/rescue and remains (promoted: carrying a downed, dead or
+            imprisoned person back through a gate is an owner requirement no route reaches today) →
+            construction supply/finish → bills → research → food → rest → the rest
 THEN        M1 step 5 providers/inhabitants · step 6 hygiene · M2 migration decision · M3 groups in order
 BLOCKED     every runtime row until the owner's first RimSort launch of the 295-entry target
 ```

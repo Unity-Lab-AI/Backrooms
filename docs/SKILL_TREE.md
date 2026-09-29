@@ -1,6 +1,6 @@
 # SKILL_TREE
 
-Capability inventory for Rimrooms - Async Industries as of 0.5.0-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
+Capability inventory for Rimrooms - Async Industries as of 0.5.1-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
 
 | Status | Meaning |
 |--------|---------|
@@ -50,7 +50,8 @@ Canonical detail: [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md), [`FEATURE_TRACEABI
 - Saved portal/endpoint graph, Laboratory vs Natural kinds, idempotent registration, collision refusal — **Build / Runtime-pending**
 - Resumable bidirectional route search (budget ≤ 1024 ops/advance, loop detection, `Pending|Complete|Unreachable|Invalidated|InvalidState`) — **Build / Runtime-pending**
 - Same-pawn/same-cargo crossing service with receipts, post-spawn door/area checks, rollback, recovery (max 256 pending) — **Build / Runtime-pending**
-- Derived laboratory and natural address registration, deterministic discovered-coordinate API, explicit legacy threshold repair — **Build / Runtime-pending** (0.4.2-dev). The discovery *trigger* that finds a new natural threshold in play is **Design** (step 5).
+- Derived laboratory and natural address registration, deterministic discovered-coordinate API, explicit legacy threshold repair — **Build / Runtime-pending** (0.4.2-dev)
+- Discovery of further natural gates in play: a colonist surveys a doorway deeper in and records a permanently open way onward, deterministic per doorway position under the coordinate's own saved seed so a revisit never rerolls it, capped at two per coordinate — **Build / Runtime-pending** (0.5.1-dev)
 - Ordinary crossing job, per-address crossing orders, laboratory open/close wiring, emergency-return route, unresolved-crossing reconcile surface — **Build / Runtime-pending** (0.4.2-dev)
 - Gate traversal policy: inhabitants and monstrosities never cross on their own, an open gate is never an objective/lure/spawn target/raid route/attack trigger, and anything else rides only in a carrier's hands (downed, dead or imprisoned passengers included) — **Build / Runtime-pending** (0.4.3-dev)
 - Gradual, saved, bounded escalation of what a space presents (quiet start, saved causes only, caps per opening and per coordinate, required quiet stretches, no summing across gates) — **Design** (owned by resume step 5, spec in `DEFERRED.md`)
@@ -245,6 +246,9 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 | Inhabitants stay in the Backrooms unless carried | Gate/Portals | Intermediate | **Build / Runtime-pending** (0.4.3-dev) |
 | Cross-gate work intents and planning leases | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.0-dev) |
 | Cross-gate storage hauling, both directions | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.0-dev) |
+| Cross-gate delivery into storage containers | Gate/Portals | Intermediate | **Build / Runtime-pending** (0.5.1-dev) |
+| Observed remote allowed-area preflight | Gate/Portals | Intermediate | **Build / Runtime-pending** (0.5.1-dev) |
+| Natural gate discovery by survey | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.1-dev) |
 | Gradual bounded escalation of far-side pressure | Generation | Expert | **Design** (step 5, spec in `DEFERRED.md`) |
 | Existing-content replacement of legacy gate/gear/fixtures/terrain/threat/PawnKinds | Company/Gate/Generation | Advanced | Design (M2) |
 | Keyed text for portal failure keys | Interface | Beginner | **Build** (`RR_Portals.xml`, 0.4.2-dev) |

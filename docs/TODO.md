@@ -51,10 +51,10 @@ Binding contract: [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md). 
 - [~] **Resume step 4:** "Implement saved work intents, quantity leases and native destination job revalidation; then physical hauling, construction, bills, research, medical/food/bed and other work/needs families. Preserve priorities, schedules, areas, locks, custody and actual inventory. A generic graph does not implement these adapters."
   - [x] Saved work intents, quantity leases and native destination job revalidation — BUILT 2026-09-28 in 0.5.0-dev. `RimroomsConnectedWorkComponent` (saved intents, leases, bounded maintenance), `ConnectedWorkIntent`, `ConnectedRouteService` (bounded; a budget-limited search is pending, never "no route"), `ConnectedWorkAdapter` (candidate half explicitly separated from the definitive native half). Record `implementation/CONNECTED_WORK_IMPLEMENTATION.md`.
   - [x] Physical hauling — BUILT 2026-09-28 in 0.5.0-dev. `ConnectedHaulingAdapter` plus `RR_ConnectedFetch` / `RR_ConnectedDeliver` and two work givers for the family (one high-priority that only finishes committed trips, one low-priority that only starts them). Priorities, schedules, areas, locks, custody and actual inventory are preserved by riding Core's own `JobGiver_Work`; nothing is ever player-forced. Cell storage destinations only; container and provider destinations are deferred.
+  - [ ] Tending, rescue and remains — **next**, promoted ahead of construction because carrying a downed, dead or imprisoned person back through a gate is an explicit owner requirement that no route currently reaches.
   - [ ] Construction supply and finishing.
   - [ ] Bills and unfinished work.
   - [ ] Research and stationary work.
-  - [ ] Tending, rescue and medical beds.
   - [ ] Food.
   - [ ] Rest and beds.
   - [ ] The remaining work/needs families, and every installed work giver in the 294-row profile.

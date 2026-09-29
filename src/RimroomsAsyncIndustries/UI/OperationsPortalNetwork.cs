@@ -251,18 +251,10 @@ namespace RimroomsAsyncIndustries.UI
         }
 
         /// <summary>
-        /// The saved approach cell is the contract for a threshold; it is chosen
-        /// explicitly here rather than derived from a door's drawn rotation.
+        /// The saved approach cell is the contract for a threshold. There is one
+        /// implementation of choosing it, on the service that owns thresholds.
         /// </summary>
         private static IntVec3 NaturalApproachCell(Thing door)
-        {
-            if (door == null || !door.Spawned || door.Map == null) { return IntVec3.Invalid; }
-            foreach (IntVec3 candidate in GenAdj.CardinalDirections
-                .Select(direction => door.Position + direction))
-            {
-                if (candidate.InBounds(door.Map) && candidate.Standable(door.Map)) { return candidate; }
-            }
-            return IntVec3.Invalid;
-        }
+        { return PortalAddressService.ApproachCellFor(door); }
     }
 }

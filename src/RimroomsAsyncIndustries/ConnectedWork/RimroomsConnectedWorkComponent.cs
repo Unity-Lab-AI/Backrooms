@@ -49,14 +49,27 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         private const int MaintenanceInterval = 60;
         private const int MaximumCooldownEntries = 256;
 
+        /// <summary>Bounded saved growth for allowed-area observations.</summary>
+        internal const int MaximumAreaObservations = 256;
+
+        /// <summary>
+        /// How long a worker leaves a destination alone after a trip there failed.
+        /// This stops a worker spending its whole day walking to a gate for a place
+        /// that keeps refusing it, without ever hiding the destination permanently.
+        /// </summary>
+        internal const int DestinationRefusalTicks = 15000;
+
         private int schema = CurrentSchema;
         private long nextSequence = 1;
         private List<ConnectedWorkIntent> intents = new List<ConnectedWorkIntent>();
+        private List<ConnectedAreaObservation> areaObservations = new List<ConnectedAreaObservation>();
         private string stateFaultKey;
 
         // Transient. Planning throttles and topology cursors own no game object and
         // are deliberately not saved; they are rebuilt from nothing after a load.
         private readonly Dictionary<string, int> planningCooldown =
+            new Dictionary<string, int>(StringComparer.Ordinal);
+        private readonly Dictionary<string, int> destinationRefusal =
             new Dictionary<string, int>(StringComparer.Ordinal);
         private readonly ConnectedRouteService routes = new ConnectedRouteService();
 
@@ -98,11 +111,20 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             Scribe_Values.Look(ref schema, "rr_connectedWorkSchema", CurrentSchema, forceSave: true);
             Scribe_Values.Look(ref nextSequence, "rr_connectedWorkNextSequence", 1L);
             Scribe_Collections.Look(ref intents, "rr_connectedWorkIntents", LookMode.Deep);
+            // Additive; absent from a 0.5.0-dev save, which correctly loads as "no
+            // observations yet" and therefore as unrestricted everywhere, matching
+            // Core's own default. No schema bump, so older saves are not rejected.
+            Scribe_Collections.Look(ref areaObservations, "rr_connectedWorkAreaObservations", LookMode.Deep);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 intents = intents ?? new List<ConnectedWorkIntent>();
+                areaObservations = areaObservations ?? new List<ConnectedAreaObservation>();
+                // A removed area or unloaded map leaves a useless row behind.
+                areaObservations.RemoveAll(observation => observation == null ||
+                    string.IsNullOrEmpty(observation.PawnLoadId) || observation.Map == null);
                 routes.Clear();
                 planningCooldown.Clear();
+                destinationRefusal.Clear();
                 ValidateSavedState();
             }
         }
@@ -132,6 +154,81 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             }
             return total;
         }
+
+        /// <summary>
+        /// Write down this worker's allowed area for the map it is standing on right
+        /// now. Cheap, and the only legitimate moment the answer is observable.
+        /// </summary>
+        public void ObserveAreaHere(Pawn pawn)
+        {
+            if (pawn == null || !pawn.Spawned || pawn.Map == null || pawn.playerSettings == null) { return; }
+            if (!pawn.playerSettings.SupportsAllowedAreas) { return; }
+            Area here = pawn.playerSettings.EffectiveAreaRestrictionInPawnCurrentMap;
+            string loadId = pawn.GetUniqueLoadID();
+            int tick = Find.TickManager.TicksGame;
+            for (int index = 0; index < areaObservations.Count; index++)
+            {
+                ConnectedAreaObservation existing = areaObservations[index];
+                if (existing == null || existing.Map != pawn.Map || existing.PawnLoadId != loadId) { continue; }
+                existing.Update(here, tick);
+                return;
+            }
+            if (areaObservations.Count >= MaximumAreaObservations)
+            {
+                // Drop the least recently confirmed row rather than refusing to learn.
+                int oldest = 0;
+                for (int index = 1; index < areaObservations.Count; index++)
+                {
+                    if (areaObservations[index].ObservedTick < areaObservations[oldest].ObservedTick)
+                    { oldest = index; }
+                }
+                areaObservations.RemoveAt(oldest);
+            }
+            areaObservations.Add(new ConnectedAreaObservation(pawn, pawn.Map, here, tick));
+        }
+
+        /// <summary>
+        /// Whether a cell on a map the worker is not standing on is inside that
+        /// worker's allowed area there, as far as we have ever been able to observe.
+        /// An unobserved map answers true, for the same reason Core answers
+        /// unrestricted for a map no area was ever set on.
+        ///
+        /// This is deliberately an observation and not a guarantee. The definitive
+        /// per-pawn check still runs on arrival; this only stops us planning trips we
+        /// already have evidence the worker will be turned away from.
+        /// </summary>
+        public bool ObservedAreaAllows(Pawn pawn, Map map, IntVec3 cell)
+        {
+            if (pawn == null || map == null) { return true; }
+            string loadId = pawn.GetUniqueLoadID();
+            for (int index = 0; index < areaObservations.Count; index++)
+            {
+                ConnectedAreaObservation observation = areaObservations[index];
+                if (observation == null || observation.Map != map || observation.PawnLoadId != loadId) { continue; }
+                return observation.Allows(cell);
+            }
+            return true;
+        }
+
+        /// <summary>Leave a destination alone for a while after a trip there failed.</summary>
+        public void NoteDestinationRefused(Pawn pawn, Map map)
+        {
+            if (pawn == null || map == null) { return; }
+            if (destinationRefusal.Count >= MaximumCooldownEntries) { destinationRefusal.Clear(); }
+            destinationRefusal[RefusalKey(pawn, map)] =
+                Find.TickManager.TicksGame + DestinationRefusalTicks;
+        }
+
+        public bool DestinationRecentlyRefused(Pawn pawn, Map map)
+        {
+            if (pawn == null || map == null) { return false; }
+            int readyTick;
+            return destinationRefusal.TryGetValue(RefusalKey(pawn, map), out readyTick) &&
+                Find.TickManager.TicksGame < readyTick;
+        }
+
+        private static string RefusalKey(Pawn pawn, Map map)
+        { return pawn.GetUniqueLoadID() + "|" + map.uniqueID; }
 
         public bool MayPlanFor(Pawn pawn)
         {

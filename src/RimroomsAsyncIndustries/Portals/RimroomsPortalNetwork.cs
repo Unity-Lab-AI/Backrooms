@@ -212,11 +212,11 @@ namespace RimroomsAsyncIndustries.Portals
                 connectionIdentity.Contains(edge) && edge.BranchId == campaign.BranchId &&
                 edge.First != null && edge.Second != null;
         }
+        // Branch map ownership has one implementation, on the campaign component.
+        // This is a thin guard around it so a null campaign cannot throw here.
         private static bool OwnsMap(RimroomsCampaignComponent campaign, Map map)
         {
-            if (map == campaign.Headquarters) { return true; }
-            var site = map.Parent as RimroomsDestinationMapParent;
-            return site != null && campaign.Coordinates.Any(record => record.site == site && record.id == site.CoordinateId);
+            return campaign != null && campaign.OwnsMap(map);
         }
         private static bool ValidDoor(Thing anchor, IntVec3 approach)
         {

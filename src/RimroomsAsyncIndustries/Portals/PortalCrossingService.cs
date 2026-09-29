@@ -16,6 +16,17 @@ namespace RimroomsAsyncIndustries.Portals
     {
         private const int CurrentSchema = 1;
         private const int MaximumPendingCrossings = 256;
+
+        /// <summary>
+        /// How many finished receipts are kept as history. Unresolved receipts are
+        /// never touched by this and keep their own separate bound, because they own
+        /// real custody. Dropping the oldest *finished* records is safe for replay
+        /// protection: every operation id is derived from an identity that cannot
+        /// recur (a job load id, or a gate opening id), and a receipt can only be
+        /// finished once the crossing it describes has already completed or rolled
+        /// back, so no in-flight job can be holding a compacted id.
+        /// </summary>
+        private const int MaximumArchivedCrossings = 512;
         private int schema = CurrentSchema;
         private long nextSequence = 1;
         private List<PortalCrossingReceipt> receipts = new List<PortalCrossingReceipt>();
@@ -50,6 +61,8 @@ namespace RimroomsAsyncIndustries.Portals
             {
                 receipts = receipts ?? new List<PortalCrossingReceipt>();
                 heldThings = heldThings ?? new ThingOwner<Thing>(this);
+                // An older save may carry more history than the current bound.
+                CompactArchivedReceipts();
                 ValidateSavedState();
             }
         }
@@ -80,6 +93,9 @@ namespace RimroomsAsyncIndustries.Portals
             }
             if (receipts.Count(r => r != null && !r.IsTerminal) >= MaximumPendingCrossings)
             { return Refused("RR_PortalCrossing_PendingLimit"); }
+            // Trim history before adding to it, so the saved list cannot creep past
+            // its bound one automatic haul at a time.
+            CompactArchivedReceipts();
             if (receipts.Any(r => r != null && !r.IsTerminal && r.Pawn == pawn))
             { return Refused("RR_PortalCrossing_PawnInTransit"); }
 
@@ -179,6 +195,28 @@ namespace RimroomsAsyncIndustries.Portals
 
         public PortalCrossingReceipt FindReceipt(string operationId)
         { return receipts.FirstOrDefault(r => r != null && r.OperationId == operationId); }
+
+        /// <summary>
+        /// Trim the finished-receipt history to its bound, oldest first by the
+        /// monotonic sequence the receipts already carry. Unresolved receipts are
+        /// never removed: they own a deep-held pawn or cargo, and losing one would
+        /// lose that custody.
+        /// </summary>
+        private void CompactArchivedReceipts()
+        {
+            int archived = 0;
+            for (int index = 0; index < receipts.Count; index++)
+            {
+                if (receipts[index] != null && receipts[index].IsTerminal) { archived++; }
+            }
+            if (archived <= MaximumArchivedCrossings) { return; }
+            List<PortalCrossingReceipt> oldest = receipts
+                .Where(receipt => receipt != null && receipt.IsTerminal)
+                .OrderBy(receipt => receipt.Sequence)
+                .Take(archived - MaximumArchivedCrossings)
+                .ToList();
+            for (int index = 0; index < oldest.Count; index++) { receipts.Remove(oldest[index]); }
+        }
 
         private PortalCrossingResult ReconcileAndRecover(PortalCrossingReceipt receipt)
         {
@@ -524,13 +562,10 @@ namespace RimroomsAsyncIndustries.Portals
         private bool CanRecover(RimroomsCampaignComponent campaign)
         { return stateFaultKey == null && schema == CurrentSchema && campaign != null && campaign.CanOperate && heldThings != null; }
 
+        // Branch map ownership has one implementation, on the campaign component.
         private static bool OwnsMap(RimroomsCampaignComponent campaign, Map map)
         {
-            if (campaign == null || map == null || !Find.Maps.Contains(map)) { return false; }
-            if (campaign.Headquarters == map) { return true; }
-            RimroomsDestinationMapParent site = map.Parent as RimroomsDestinationMapParent;
-            return site != null && campaign.Coordinates.Any(record => record != null &&
-                record.site == site && record.id == site.CoordinateId);
+            return campaign != null && campaign.OwnsMap(map);
         }
 
         private static bool ValidOperationId(string value)

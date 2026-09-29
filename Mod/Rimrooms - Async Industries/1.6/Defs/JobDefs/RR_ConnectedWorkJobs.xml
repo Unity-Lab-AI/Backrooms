@@ -14,6 +14,18 @@
     <carryThingAfterJob>true</carryThingAfterJob>
   </JobDef>
 
+  <!-- Place the carried object into a storage container on this map. Same
+       carry rules as the cell route; different Core toils. -->
+  <JobDef>
+    <defName>RR_ConnectedDeliverContainer</defName>
+    <driverClass>RimroomsAsyncIndustries.ConnectedWork.JobDriver_ConnectedDepositInContainer</driverClass>
+    <reportString>putting TargetA into TargetB.</reportString>
+    <casualInterruptible>true</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+    <dropThingBeforeJob>false</dropThingBeforeJob>
+    <carryThingAfterJob>true</carryThingAfterJob>
+  </JobDef>
+
   <!-- Place the carried object into storage on this map. dropThingBeforeJob MUST stay
        false: the whole point of this segment is that the worker arrives holding the
        cargo. carryThingAfterJob keeps it in hand when a placement has to be retried. -->

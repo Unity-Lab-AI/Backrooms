@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
@@ -82,26 +83,44 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         }
 
         private void FinishDelivery(JobCondition condition)
-        {
-            RimroomsConnectedWorkComponent work = ConnectedWorkJobs.Work();
-            ConnectedWorkIntent intent = LiveIntent();
-            if (work == null || intent == null || intent.Phase != ConnectedWorkPhase.Carrying) { return; }
-            Thing carried = pawn.carryTracker == null ? null : pawn.carryTracker.CarriedThing;
-            if (carried != null && carried == intent.Cargo)
-            {
-                // Still in hand, so the placement did not finish. Leave the trip live
-                // and let the next pass try again; the lease bounds how long that can
-                // go on, and the object is physically held the whole time.
-                return;
-            }
-            // Out of hand means placed. The original object may legitimately no longer
-            // exist, because merging into an existing stack destroys it; that is a
-            // completed delivery, not a lost item.
-            work.Close(intent, ConnectedWorkPhase.Completed, null);
-        }
+        { ConnectedWorkJobs.FinishHaulDelivery(pawn); }
 
         private ConnectedWorkIntent LiveIntent()
         { return ConnectedWorkJobs.LiveHaulingIntent(pawn); }
+    }
+
+    /// <summary>
+    /// Place the carried object into a storage container rather than onto a cell,
+    /// using Core's own container toils. This is the path a shelf never takes (a
+    /// shelf is a slot-group parent and so is delivered to by cell) but that graves
+    /// and the storage-framework buildings do, which is how those work here without
+    /// an adapter written for each one.
+    /// </summary>
+    public sealed class JobDriver_ConnectedDepositInContainer : JobDriver
+    {
+        private Thing Container { get { return job.targetB.Thing; } }
+
+        public override bool TryMakePreToilReservations(bool errorOnFailed)
+        {
+            // Mirrors Core: a destination that tracks enroute deliveries manages its
+            // own accounting and must not be reserved exclusively here.
+            if (Container is IHaulEnroute) { return true; }
+            return pawn.Reserve(job.targetB, job, 1, 1, null, errorOnFailed);
+        }
+
+        protected override IEnumerable<Toil> MakeNewToils()
+        {
+            AddFinishAction(FinishDelivery);
+            this.FailOnDestroyedOrNull(TargetIndex.A);
+            this.FailOnDestroyedOrNull(TargetIndex.B);
+            this.FailOnForbidden(TargetIndex.B);
+            this.FailOn(() => ConnectedWorkJobs.LiveHaulingIntent(pawn) == null);
+            yield return Toils_Haul.CarryHauledThingToContainer();
+            yield return Toils_Haul.DepositHauledThingInContainer(TargetIndex.B, TargetIndex.None);
+        }
+
+        private void FinishDelivery(JobCondition condition)
+        { ConnectedWorkJobs.FinishHaulDelivery(pawn); }
     }
 
     /// <summary>Shared lookups for the hauling segment drivers.</summary>
@@ -119,6 +138,29 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             ConnectedWorkIntent intent = work == null ? null : work.ActiveIntentFor(pawn);
             return intent != null && intent.AdapterId == ConnectedWorkAdapters.StorageHauling
                 ? intent : null;
+        }
+
+        /// <summary>
+        /// One delivery outcome rule for both the cell and the container route, so the
+        /// two can never disagree about what counts as delivered.
+        /// </summary>
+        internal static void FinishHaulDelivery(Pawn pawn)
+        {
+            RimroomsConnectedWorkComponent work = Work();
+            ConnectedWorkIntent intent = LiveHaulingIntent(pawn);
+            if (work == null || intent == null || intent.Phase != ConnectedWorkPhase.Carrying) { return; }
+            Thing carried = pawn.carryTracker == null ? null : pawn.carryTracker.CarriedThing;
+            if (carried != null && carried == intent.Cargo)
+            {
+                // Still in hand, so the placement did not finish. Leave the trip live
+                // and let the next pass try again; the lease bounds how long that can
+                // go on, and the object is physically held the whole time.
+                return;
+            }
+            // Out of hand means placed. The original object may legitimately no longer
+            // exist, because merging into an existing stack destroys it; that is a
+            // completed delivery, not a lost item.
+            work.Close(intent, ConnectedWorkPhase.Completed, null);
         }
     }
 }

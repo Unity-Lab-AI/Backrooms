@@ -16,7 +16,9 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 
 ## Active
 
-M1 connected colony portals — resume step 4, continuing: the intent/lease engine and the **storage-hauling** adapter family shipped in 0.5.0-dev. Next families in order: construction supply and finishing, bills and unfinished work, research, tend/rescue, food, rest, then the remainder. Branch `feature/connected-colony-portals`.
+M1 connected colony portals. The intent/lease engine and the **storage-hauling** family shipped in 0.5.0-dev; 0.5.1-dev then closed **nine deferments** on the owner's direction not to park work the mod depends on, including the natural-gate discovery trigger, container delivery destinations, remote allowed-area preflight and the crossing receipt bound. Branch `feature/connected-colony-portals`.
+
+**Next:** the **tend/rescue and remains** family, promoted ahead of construction deliberately. Carrying someone downed, dead or imprisoned back through a gate is a capability the owner named explicitly and it is currently reachable by no route at all; the traversal policy already permits the carry, so what is missing is the work that would order it plus the bed, custody and grave rules that belong with it. Then construction supply and finishing, bills, research, food and rest.
 
 Steps 1–3 closed in 0.4.2-dev (addresses, legacy threshold repair, ordinary crossing job, session controls, emergency return, reconcile surface). The owner's gate traversal rule shipped in 0.4.3-dev on top of them: inhabitants and monstrosities stay in the Backrooms, enforced at one chokepoint. Record for both: `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`.
 

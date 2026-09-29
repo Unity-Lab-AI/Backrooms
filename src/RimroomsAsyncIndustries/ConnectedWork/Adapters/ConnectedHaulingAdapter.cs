@@ -24,6 +24,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
     {
         internal const string FetchJobDefName = "RR_ConnectedFetch";
         internal const string DeliverJobDefName = "RR_ConnectedDeliver";
+        internal const string DeliverContainerJobDefName = "RR_ConnectedDeliverContainer";
 
         /// <summary>
         /// Arriving to find the planned storage gone. Not a failure: the object is
@@ -64,6 +65,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
             for (int index = 0; index < connected.Count; index++)
             {
                 Map other = connected[index];
+                // A destination that just turned this worker away is left alone for a
+                // while, so a refusal cannot become a daily round trip to nowhere.
+                if (work.DestinationRecentlyRefused(pawn, other)) { continue; }
                 PortalRouteStep step;
                 bool pending;
                 if (!work.Routes.TryNextStep(home, other, out step, out pending))
@@ -134,11 +138,36 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
 
             // The definitive storage decision. Both the worker and the object are on
             // this map, so this is the ordinary native search, not a remote guess.
+            StoragePriority current = StoreUtility.CurrentStoragePriorityOf(cargo);
             IntVec3 cell;
-            if (!StoreUtility.TryFindBestBetterStoreCellFor(cargo, pawn, pawn.Map,
-                    StoreUtility.CurrentStoragePriorityOf(cargo), pawn.Faction, out cell))
+            IHaulDestination destination;
+            if (!StoreUtility.TryFindBestBetterStorageFor(cargo, pawn, pawn.Map, current,
+                    pawn.Faction, out cell, out destination))
             { return NoStorageOnArrivalKey; }
-            if (!pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, pawn.NormalMaxDanger()))
+
+            // Core's own branch, mirrored exactly: a slot-group parent is delivered to
+            // by cell, and a container that exposes an inner ThingOwner is delivered
+            // into. Following Core here is what makes shelves, graves and the storage
+            // framework mods work without a separate adapter for each of them.
+            if (!(destination is ISlotGroupParent))
+            {
+                Thing container = destination as Thing;
+                if (container != null && !container.Destroyed && container.Spawned &&
+                    container.Map == pawn.Map && container.TryGetInnerInteractableThingOwner() != null &&
+                    !container.IsForbidden(pawn) &&
+                    pawn.CanReserveAndReach(container, PathEndMode.Touch, pawn.NormalMaxDanger()))
+                {
+                    intent.RecordResolvedContainer(container);
+                    return null;
+                }
+                // The best destination turned out to be unusable. Fall back to the best
+                // plain cell before giving up, rather than setting the object down.
+                if (!StoreUtility.TryFindBestBetterStoreCellFor(cargo, pawn, pawn.Map, current,
+                        pawn.Faction, out cell))
+                { return NoStorageOnArrivalKey; }
+            }
+            if (!cell.IsValid ||
+                !pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, pawn.NormalMaxDanger()))
             { return NoStorageOnArrivalKey; }
             intent.RecordResolvedStoreCell(cell);
             return null;
@@ -147,10 +176,25 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
         public override Job DeliverJob(ConnectedWorkIntent intent, Pawn pawn)
         {
             Thing cargo = pawn == null || pawn.carryTracker == null ? null : pawn.carryTracker.CarriedThing;
+            if (intent == null || cargo == null || cargo != intent.Cargo) { return null; }
+
+            Thing container = intent.FinalTarget;
+            if (container != null)
+            {
+                JobDef containerDefinition = DefDatabase<JobDef>.GetNamedSilentFail(DeliverContainerJobDefName);
+                ThingOwner owner = container.Destroyed || !container.Spawned || container.Map != pawn.Map
+                    ? null : container.TryGetInnerInteractableThingOwner();
+                if (containerDefinition == null || owner == null) { return null; }
+                int accepted = Math.Min(cargo.stackCount, owner.GetCountCanAccept(cargo));
+                if (accepted < 1) { return null; }
+                Job containerJob = JobMaker.MakeJob(containerDefinition, cargo, container);
+                containerJob.count = accepted;
+                containerJob.haulMode = HaulMode.ToContainer;
+                return containerJob;
+            }
+
             JobDef definition = DefDatabase<JobDef>.GetNamedSilentFail(DeliverJobDefName);
-            if (definition == null || intent == null || cargo == null || cargo != intent.Cargo ||
-                !intent.CandidateStoreCell.IsValid)
-            { return null; }
+            if (definition == null || !intent.CandidateStoreCell.IsValid) { return null; }
             Job job = JobMaker.MakeJob(definition, cargo, intent.CandidateStoreCell);
             job.count = cargo.stackCount;
             job.haulMode = HaulMode.ToCellStorage;
@@ -264,6 +308,17 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
             if (carryable < 1) { return null; }
             IntVec3 cell;
             if (!TryFindCandidateStoreCell(storeMap, thing, out cell)) { return null; }
+            // Allowed areas, as far as this worker has ever been observed on those
+            // maps. Unobserved reads as unrestricted, which is Core's own answer for a
+            // map no area was set on. The definitive per-pawn check still runs on
+            // arrival; this only avoids planning a trip we already know ends in a
+            // refusal. See RimroomsConnectedWorkComponent.ObservedAreaAllows.
+            if (!work.ObservedAreaAllows(pawn, fetchMap, thing.Position) ||
+                !work.ObservedAreaAllows(pawn, storeMap, cell))
+            { return null; }
+            if (step != null && step.Destination != null && step.Source != null &&
+                !work.ObservedAreaAllows(pawn, step.Destination.Map, step.Destination.ApproachCell))
+            { return null; }
             return work.Open(this, pawn, thing, storeMap, cell, Math.Min(available, carryable), null, step);
         }
 

@@ -207,6 +207,21 @@ Decomposed 2026-09-28. This is the step that makes the substrate reachable in pl
 - [x] **Slice 8 — make it visible.** Files: `UI/OperationsConnectedWork.cs`, one added call in `UI/OperationsPortalNetwork.cs`, `Languages/English/Keyed/RR_ConnectedWork.xml`. Verification: every live trip is listed; all 31 referenced keys resolve.
 - [x] **Slice 9 — checkpoint.** Files: `About.xml`, csproj, `tools/package-files.json`, `CHANGELOG.md`, the implementation record, the evidence folder, and the workflow ledger. Verification: clean build, XML parse sweep, key-coverage sweep, manifests recomputed.
 
+### Parent minor task: Deferment audit — CLOSED 2026-09-28 (0.5.1-dev) — nine rows closed, natural gates findable
+
+> lets get to work.. and try not to deffer anything you may need to properly bbuild other coded systems so that you can do the deffered items(I DONT WANT YOU JUST DEFFERING SHIT THAT WE NEED WORKING !!! WE CANT NOT BUILD SHIT THAT THE MOD DEPENDS ON AND JUST MARK IT DEFFERED BECAUSE SOMETHING WELSE NEEDS DONE FIRST!!! DO THE FIRST THING TO UNDEFER SHIT! I DONT WANT TO GET COMPLETED WITH THIS MOD AND HAVE 1000s of defferments, we need to critical solve these issues wirthin the confines of the mods and the game
+
+**Decomposition rationale:** audit before building, because the register turned out to contain rows that had already shipped and rows blocked on nothing — and building the next feature on top of that would have inherited both.
+
+- [x] **Slice 1 — audit the register and the source.** Ask of every row: is it still open, is it blocked on anything, does anything depend on it; and of the source: which public APIs have no callers. Verification: three rows verified as already-shipped against source; `CreateDiscoveredCoordinate` confirmed at zero callers.
+- [x] **Slice 2 — one `OwnsMap`.** Files: `Portals/RimroomsPortalNetwork.cs`, `Portals/PortalCrossingService.cs`. Verification: both delegate to the campaign accessor, which is the strictest of the three.
+- [x] **Slice 3 — bound the finished-receipt archive.** Files: `Portals/PortalCrossingService.cs`. Verification: unresolved receipts provably untouched; replay protection reasoned from how operation ids are derived.
+- [x] **Slice 4 — container delivery destinations.** Files: `ConnectedWork/Adapters/ConnectedHaulingAdapter.cs`, `ConnectedWork/JobDriver_ConnectedHauling.cs`, `ConnectedWork/ConnectedWorkRecords.cs`, `Defs/JobDefs/RR_ConnectedWorkJobs.xml`. Verification: branch mirrors Core's `HaulToStorageJob` exactly; Core's own container toils used.
+- [x] **Slice 5 — observed remote allowed areas.** Files: `ConnectedWork/ConnectedWorkRecords.cs`, `ConnectedWork/RimroomsConnectedWorkComponent.cs`, `ConnectedWork/Adapters/ConnectedHaulingAdapter.cs`, `ConnectedWork/WorkGiver_ConnectedWork.cs`. Verification: public API only; unobserved reads as unrestricted, matching Core's own default; arrival check still definitive.
+- [x] **Slice 6 — natural-gate discovery.** Files: `Portals/NaturalFrontierService.cs` (new), `Portals/PortalAddressService.cs`, `UI/OperationsPortalNetwork.cs`, `Defs/JobDefs/RR_PortalJobs.xml`, `Defs/WorkGiverDefs/RR_InvestigationWork.xml`, `Languages/English/Keyed/RR_Portals.xml`. Verification: `CreateDiscoveredCoordinate` now has a caller; the draw is deterministic per doorway position under the coordinate seed; capped per coordinate; `Sight` and `Moving` confirmed as real capacity defNames before shipping the def.
+- [x] **Slice 7 — the four missing keyed strings.** Files: `RR_Company.xml`, `RR_Procurement.xml`, `RR_Generation.xml`. Verification: sweep of every `RR_` identifier in source re-run; only concatenation prefixes remain, each family spot-checked.
+- [x] **Slice 8 — checkpoint.** Files: `About.xml`, csproj, `CHANGELOG.md`, the audit record, the evidence folder, and the workflow ledger including the four audit questions now in `DEFERRED.md`'s header.
+
 ## TOMBSTONES
 
 _(none)_

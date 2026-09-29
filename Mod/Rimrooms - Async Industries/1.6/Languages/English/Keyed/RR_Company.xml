@@ -57,4 +57,5 @@
   <RR_UI_SurveyedRooms>Surveyed rooms: {0}</RR_UI_SurveyedRooms>
   <RR_UI_ActivityRow>Day {0}: {1}</RR_UI_ActivityRow>
   <RR_Debug_RuntimeIdentity>Write build, loaded order and coordinate identity to Player.log</RR_Debug_RuntimeIdentity>
+  <RR_UI_Procurement>Procurement</RR_UI_Procurement>
 </LanguageData>

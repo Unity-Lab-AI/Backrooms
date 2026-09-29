@@ -449,3 +449,60 @@ RimWorld 1.6 base Core does ship its own map-portal system — `MapPortal`, `Wor
 Source files created: 8. Source files modified: 2 (one new public accessor on the campaign component; one added call in the portal pane). Package files created: 3. Package files modified: 1. Docs updated: 14.
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
 Deliberate limits, all with named owner steps in `DEFERRED.md`: one work family only; cell storage destinations only; no optional provider adapters; people and corpses out of scope for storage hauling; no remote allowed-area claim; two private `OwnsMap` copies left to converge as hygiene.
+
+
+---
+
+## Session — 2026-09-28 — deferment audit: nine rows closed, natural gates findable (0.5.1-dev)
+
+### Verbatim request
+
+> lets get to work.. and try not to deffer anything you may need to properly bbuild other coded systems so that you can do the deffered items(I DONT WANT YOU JUST DEFFERING SHIT THAT WE NEED WORKING !!! WE CANT NOT BUILD SHIT THAT THE MOD DEPENDS ON AND JUST MARK IT DEFFERED BECAUSE SOMETHING WELSE NEEDS DONE FIRST!!! DO THE FIRST THING TO UNDEFER SHIT! I DONT WANT TO GET COMPLETED WITH THIS MOD AND HAVE 1000s of defferments, we need to critical solve these issues wirthin the confines of the mods and the game
+
+### What the audit found
+
+Four questions were asked of every open row, and of the source. They are now written into the header of `DEFERRED.md` so the register gets audited rather than only appended to. Two of them caught rot on the first pass.
+
+- **Three rows had already shipped** in 0.4.2-dev and were still listed as outstanding: the 32 crossing failure keys shown at point of use, the emergency-return route, and the unresolved-receipt surface. Each was verified against source before closing. A register that lies is worse than a deferment, because the next session either rebuilds the thing or plans around a limit that is not there.
+- **`CreateDiscoveredCoordinate` had zero callers** since 0.4.2-dev — built, compiling, reachable by nothing — while the deferment row said natural gates could not be discovered yet. That is the same failure the whole portal layer had at 0.4.1-dev.
+- **One row was a live defect, not a future cost.** Shipping automatic hauling in 0.5.0-dev made crossing receipts an everyday event; only *unresolved* ones were bounded, so finished ones grew in the save forever. My own previous wave turned a deferred hypothetical into a bug.
+
+### COMPLETED — nine deferments closed
+
+- [x] **"DO THE FIRST THING TO UNDEFER SHIT"** — seven of the nine were blocked on nothing at all.
+  - **Natural-gate discovery trigger.** `Portals/NaturalFrontierService.cs` (new) plus `RR_SurveyFrontier` job and work giver. A colonist deeper in walks to a doorway, studies it, and records a permanently open way onward. A doorway's frontier status is drawn from **its own position under that coordinate's own saved seed**, so the same doorway is always the same answer and a revisit never rerolls where it leads — the contract's explicit requirement. Capped at two ways onward per coordinate; the campaign's 512-coordinate cap bounds the graph. The site's own return anchor is never a frontier. One `Evaluate` backs both the scanning predicate and the recording action, so the doorway surveyed cannot differ from the one recorded.
+  - **Container haul destinations.** Mirrors Core's own two-case branch exactly — `ISlotGroupParent` delivers to a cell, a `Thing` exposing an inner `ThingOwner` is delivered into — using Core's own container toils, and Core's rule about not exclusively reserving an enroute-tracking destination. The container is recorded in the intent's `finalTarget`, which is what that field was reserved for. Also narrows the optional-provider row: Adaptive Storage, LWM Deep Storage, Warehouse and RimFridge now reach cross-gate hauling through `IHaulDestination` with no bespoke adapter each.
+  - **Remote allowed-area preflight — solved, not accepted-with-a-limit.** Core genuinely exposes no cross-map area accessor, so the area is **observed** while the worker is legitimately standing on that map and saved as `ConnectedAreaObservation`. An unobserved map answers unrestricted, which is not a guess: it is Core's own answer, because a player can only set an area for a map the pawn is on. Public API only — no reflection, no map spoofing. The definitive per-pawn check still runs on arrival, and a transient refusal memory stops a destination that turned someone away becoming a daily round trip to nowhere.
+  - **Bounded crossing-receipt archive.** Finished history capped at 512, oldest first by the monotonic sequence receipts already carry, trimmed before each addition and again on load so an older save is brought inside the bound. Unresolved receipts are never touched; they own real custody. Replay protection is unaffected, and that was reasoned rather than hoped: every operation id derives from an identity that cannot recur, and a receipt only becomes finished after its crossing has already completed or rolled back.
+  - **One `OwnsMap`.** The two private copies now delegate to the canonical campaign accessor, which is the strictest of the three.
+  - **One approach-cell implementation.** `PortalAddressService.ApproachCellFor`. Adding the survey would otherwise have created a third hand-written copy; avoiding the duplicate cost less than the row that tracking it would have needed.
+  - **Three already-shipped rows closed on verification** (crossing keys, emergency return, unresolved-receipt surface).
+- [x] **"we need to critical solve these issues wirthin the confines of the mods and the game"** — every closure above uses only public Core API against the pinned assembly, adds no gameplay ThingDef, art or audio, and copies no Core code. The allowed-area solution is the clearest case: the honest answer was neither reflection nor giving up, but recording what was observable at the one moment it was observable.
+
+### Found while auditing — four missing player-facing strings
+
+A sweep of every `RR_` identifier in source against the keyed and def files found four translated at display time with no text, all pre-existing from earlier phases, all of which would have shown the player a raw internal name: the Procurement tab label (`RR_UI_Procurement`), the empty-quote line, a procurement save-integrity message, and the default generation-failure message. All four now have text. The rest of the sweep's misses are concatenation prefixes, and every one of those families was spot-checked as having its concrete keys defined.
+
+### Re-owned rather than closed
+
+The deliberate-cross gizmo row moved from step 3 to M5. The capability is done — every refusal is a keyed reason the player sees — and what remains is surfacing it on the door rather than in the Operations pane, which is presentation and belongs where presentation lives.
+
+### Still deferred, with the dependency named
+
+**Tend/rescue and remains is now the next family, promoted ahead of construction.** Carrying someone downed, dead or imprisoned back through a gate is a capability the owner named explicitly and no route reaches it today: the traversal policy already permits the carry and the crossing already preserves a carried passenger, but nothing orders it. Building it inside the hauling family would have meant writing bed, custody and grave rules in the wrong place — a real dependency, so it is the next thing built rather than the next thing parked.
+
+Also still deferred with real dependencies: the remaining adapter families; the saved bounded escalation ladder and procedural inhabitants (the ladder paces generation that does not exist yet); scheduling, streaming and measurement (measurement is owner-blocked); M2 content replacement; M3 breadth; M5 interface; M6 release; and every runtime-acceptance row.
+
+### Documents updated in the same change
+
+`implementation/DEFERMENT_AUDIT_AND_CLOSURES.md` (new record, including the audit method), `DEFERRED.md` (restructured, with the four audit questions in its header), `CONNECTED_COLONY_PORTALS.md`, `TODO.md`, `NOW.md`, `DECOMPOSED.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `CHANGELOG.md`, `About.xml` and the csproj.
+
+### Build evidence
+
+0.5.1-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **88** C# source files, **76** approved package files (unchanged: the new job and work-giver defs went into existing packaged files). Assembly SHA-256 `E9A6363913C647D1091EA5ED25B2AD1473D5CDCE6F88E3DA8683473FCA6DFA5E`. Evidence folder `implementation/evidence/deferment-closures-2026-09-28/` with compiler output plus source, package and recomputed reference manifests, no reference drift. All 58 packaged XML files parse. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Source files modified: 7. Package files modified: 6. Docs updated: 11.
+Deferments closed: 9. Re-owned: 1. Open rows that gained a named dependency instead of a vague owner: 2.
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.

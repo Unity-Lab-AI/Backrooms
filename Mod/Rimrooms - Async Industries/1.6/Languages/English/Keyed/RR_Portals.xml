@@ -137,4 +137,15 @@
   <RR_PortalCrossing_UnownedCargo>A saved crossing references an item that is neither carried nor in custody. The record is retained.</RR_PortalCrossing_UnownedCargo>
   <RR_PortalCrossing_OrphanedHeldThing>Something is held for a crossing that no longer references it. The record is retained.</RR_PortalCrossing_OrphanedHeldThing>
 
+  <RR_Frontier_Discovered>{0} found a doorway that leads somewhere else. The way through is permanently open and is now a remembered address.</RR_Frontier_Discovered>
+  <RR_Frontier_Unavailable>Surveying doorways is unavailable until this branch is operating.</RR_Frontier_Unavailable>
+  <RR_Frontier_NotADoorway>That is not a doorway this company can study.</RR_Frontier_NotADoorway>
+  <RR_Frontier_NotInTheBackrooms>Doorways only lead elsewhere from inside the Backrooms.</RR_Frontier_NotInTheBackrooms>
+  <RR_Frontier_IsTheWayBack>That doorway is the way back. It leads home, not onward.</RR_Frontier_IsTheWayBack>
+  <RR_Frontier_Obstructed>There is no clear space beside that doorway to work from.</RR_Frontier_Obstructed>
+  <RR_Frontier_AlreadyRecorded>That doorway is already a remembered address.</RR_Frontier_AlreadyRecorded>
+  <RR_Frontier_NoneLeftHere>This space has given up every way onward it has.</RR_Frontier_NoneLeftHere>
+  <RR_Frontier_LeadsNowhere>That doorway leads nowhere but the next room.</RR_Frontier_LeadsNowhere>
+  <RR_Event_FrontierDiscovered>A doorway deeper in was recorded as a permanently open way through to {0}, found from {1}.</RR_Event_FrontierDiscovered>
+
 </LanguageData>

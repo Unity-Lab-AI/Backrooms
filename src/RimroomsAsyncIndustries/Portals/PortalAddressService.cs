@@ -195,6 +195,23 @@ namespace RimroomsAsyncIndustries.Portals
         private static bool SingleCell(ThingDef definition)
         { return definition != null && definition.size.x == 1 && definition.size.z == 1; }
 
+        /// <summary>
+        /// The approach cell for a threshold: the first standable cell cardinally
+        /// adjacent to it. Chosen explicitly and never derived from a door's drawn
+        /// rotation, because Core rotates a one-cell door during rendering.
+        /// This is the single implementation; callers must not re-derive it.
+        /// </summary>
+        internal static IntVec3 ApproachCellFor(Thing door)
+        {
+            if (door == null || !door.Spawned || door.Map == null) { return IntVec3.Invalid; }
+            foreach (IntVec3 direction in GenAdj.CardinalDirections)
+            {
+                IntVec3 candidate = door.Position + direction;
+                if (candidate.InBounds(door.Map) && candidate.Standable(door.Map)) { return candidate; }
+            }
+            return IntVec3.Invalid;
+        }
+
         internal static bool UsableThreshold(Thing anchor, IntVec3 approach, Map map)
         {
             return anchor is Building_Door && anchor.Spawned && !anchor.Destroyed && map != null &&
