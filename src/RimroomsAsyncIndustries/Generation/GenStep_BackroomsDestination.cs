@@ -204,6 +204,14 @@ namespace RimroomsAsyncIndustries.Generation
                 // carry them back out as odd. Doing it once at generation, before the map can
                 // be reached, means the mark can only be earned by taking what was already
                 // there. See Economy/OddOriginService.
+                // Bodies are DISCOVERABLE CONTENT rather than encounters, so they are placed
+                // with the space rather than paced by the escalation ladder: finding one should
+                // not wait on a danger band, and a corpse does not act. Living inhabitants are
+                // placed on arrival instead, which is what keeps "a first visit is always quiet"
+                // true. Placed before the odd-origin pass so the bodies and what they carry are
+                // marked along with everything else the coordinate produced.
+                Threats.InhabitantService.PopulateDead(map, coordinate, reservedProviderCells);
+
                 coordinate.oddGoodsDefNames = Economy.OddOriginService.MarkGeneratedContents(map);
 
                 parent.MarkLayoutReady(entryCell, returnCell, officeEvidenceCell, anchor);

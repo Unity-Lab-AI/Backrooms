@@ -2137,3 +2137,49 @@ Owner directions captured verbatim: 2, the second of which is the next checkpoin
 Degenerate outcomes designed out before shipping: 3 — the place echoing its own furniture, structure being echoed into room interiors, and a full echo collapsing the effect into a joke.
 Ambiguous readings surfaced rather than assumed: 1 — *"lower levels"* as deeper.
 Still open and named in `TODO.md`, not deferred: echoed **rooms** as distinct from echoed fixtures; and the whole pawn direction — random pawns, ones who disappeared, dead ones, psychotic ones, lost ones — every variation held to the frozen threat rules and to the traversal invariant that an inhabitant may never decide anything about a gate.
+
+---
+
+## 2026-09-29 — Who you find down there (0.8.2-dev)
+
+### Verbatim owner requests
+
+> *"lets get to them all so we can finish everything without shortcuts and no loose ends"*
+
+> *"alla trhings are possible finding random pawns of disappering, findeding dead ones pasycholitc ones lost pawns all kinds of crazy variations as per the lore"*
+
+### All six, no shortcuts
+
+- [x] **The load-bearing split: bodies at generation, living things on arrival.** A corpse is discoverable content — finding one should not wait on a danger band, and a body does not act. But if living inhabitants were baked in at generation, **"a first visit is always quiet" would be a lie the moment somebody walked in**, and a band that rose later would never show.
+- [x] **"Of disappering" lands because the name is one the player knows.** A missing person draws from the branch's own register of people it lost inside a coordinate. **A stranger called nothing in particular is atmosphere; somebody you lost is a story.** Bounded at 24, drops the oldest, and **consumes** a name when used, so the same colonist is never found twice — both better and the only honest reading of "missing".
+- [x] **Losses recorded by sampling corpses, not by hooking death** — same reason the construction echo samples: bounded cost, and correct for a body carried in from elsewhere and left there.
+- [x] **Bodies carry what they had.** Generated then **killed** rather than spawned dead, so a body has a real cause, a real age and real belongings. *"Findeding dead ones"* is a discovery, and **a body with nothing on it is a prop rather than a find.** One family deliberately stripped — an old one, long picked over.
+- [x] **Variation rolled, not authored.** Counts, chances and identities roll from the coordinate seed combined with its opening count, so a later arrival is not a rerun of the first while a single arrival stays stable.
+
+### No new pawn kinds, and the constraint was load-bearing
+
+- [x] M2 is currently **deleting** this mod's five legacy `RR_*Staff` PawnKindDefs under the existing-content policy, so authoring new ones here would reopen the exact category being closed. Every inhabitant generates from a `PawnKindDef` the loaded game already ships, through a fallback chain, so Core-only and a 274-mod profile both work. **A family whose kinds are all absent is skipped rather than substituted** — a wanderer rendered as the wrong kind of person is worse than an empty room.
+
+### The frozen threat rules, enforced rather than intended
+
+- [x] **Only `Psychotic` families may be hostile, checked in code rather than trusted in data**, because a hostile family that does not read as hostile breaks the warning-first rule.
+- [x] **A defend-point lord, not an assault lord.** A player who backs off is not pursued across the space, which is what makes withdrawal a real countermeasure rather than a delayed death.
+- [x] **A letter that points at the pawn**, so the warning arrives before the encounter.
+- [x] **The ladder's absolute cap of three** clamps hostile counts whatever the defs say; **quiet rooms are never used for people**; and **the threshold room is never used**, so nothing is ever standing between the player and the way back.
+- [x] **Nothing touches gates.** `PortalTraversalPolicy` remains the single chokepoint.
+
+### A checker gap closed in the same checkpoint
+
+- [x] The integrity checker flagged every letter key as an unresolved def reference. **The package was right and the checker was incomplete** — a def may legitimately name a keyed string. It now loads keyed names and accepts them, **verified by planting a genuinely missing key, confirming it still fails, and restoring.** That is the **third** checker gap this session found by a real change rather than by inspection.
+
+### Build evidence
+
+0.8.2-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **145** C# source files (three new), **88** approved package files (two new). Assembly SHA-256 `6CF7DD15383596B41C85A36039CDC1C9F3383147569F13040FE814268CE2901B`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass. **No new PawnKindDef, no new gameplay ThingDef, no asset, no patch operation, no new work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 3. Source files modified: 3. Package files created: 2. Docs updated: 5 (1 new).
+Owner directions captured verbatim: 2.
+Owner requirements closed in full: 5 of 6; one (**"lost pawns"**) is in progress because survivors exist but the recovery interaction does not.
+Checker gaps found and closed: 1, sanity-tested by breaking it — the third this session.
+Still open and named in `TODO.md`, not deferred: recruiting a survivor; raising an encounter cap as a recorded progression step; anomalous **events** as distinct from anomalous rooms and inhabitants; and echoed **room shapes**.

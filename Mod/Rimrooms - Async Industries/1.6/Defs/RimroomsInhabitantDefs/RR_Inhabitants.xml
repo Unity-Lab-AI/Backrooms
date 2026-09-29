@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Owner direction 2026-09-29: "alla trhings are possible finding random pawns of
+       disappering, findeding dead ones pasycholitc ones lost pawns all kinds of crazy
+       variations as per the lore".
+
+       Every family generates from a PawnKindDef the loaded game already ships. No new pawn
+       kind is authored here, because M2 is currently DELETING this mod's five legacy
+       RR_*Staff PawnKindDefs under the existing-content policy, and adding new ones would
+       reopen the exact category being closed. The preference lists fall back, so a Core-only
+       install and a 274-mod profile both work.
+
+       Bodies are Dead and are placed when the space is generated: finding one should not wait
+       on a danger band, and a corpse does not act. Everything else acts and is placed on
+       ARRIVAL against the coordinate's band at that moment, which is what keeps the ladder's
+       promise that a first visit is always quiet.
+
+       Only the Psychotic families are hostile, and that is enforced in code rather than
+       trusted here: a hostile family that does not read as hostile would break the
+       warning-first threat rule. Hostile counts are additionally clamped by the ladder's
+       absolute cap of three simultaneous encounters, whatever these numbers say. -->
+
+  <RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+    <defName>RR_Inhabitant_Wanderer</defName>
+    <label>wanderer</label>
+    <description>Somebody is here. They were not brought in, and they do not explain themselves.</description>
+    <kind>Wanderer</kind>
+    <minDepth>2</minDepth>
+    <minBand>Unsettled</minBand>
+    <weight>1.2</weight>
+    <pawnKindDefNames>
+      <li>Villager</li>
+      <li>Drifter</li>
+      <li>Colonist</li>
+    </pawnKindDefNames>
+    <count>1~1</count>
+    <chance>0.45</chance>
+    <letterLabelKey>RR_Inhabitant_WandererLabel</letterLabelKey>
+    <letterTextKey>RR_Inhabitant_WandererText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+    <defName>RR_Inhabitant_Missing</defName>
+    <label>missing person</label>
+    <description>Somebody who went missing. Where the branch has lost people, it is one of them.</description>
+    <kind>Missing</kind>
+    <minDepth>2</minDepth>
+    <minBand>Unsettled</minBand>
+    <weight>1.0</weight>
+    <pawnKindDefNames>
+      <li>Villager</li>
+      <li>Drifter</li>
+      <li>Colonist</li>
+    </pawnKindDefNames>
+    <count>1~1</count>
+    <chance>0.35</chance>
+    <letterLabelKey>RR_Inhabitant_MissingLabel</letterLabelKey>
+    <letterTextKey>RR_Inhabitant_MissingText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+    <defName>RR_Inhabitant_Survivor</defName>
+    <label>survivor</label>
+    <description>Somebody still alive down here, and willing to leave with anyone who can get them out.</description>
+    <kind>Survivor</kind>
+    <minDepth>2</minDepth>
+    <minBand>Unsettled</minBand>
+    <weight>0.9</weight>
+    <pawnKindDefNames>
+      <li>Villager</li>
+      <li>Drifter</li>
+      <li>Colonist</li>
+    </pawnKindDefNames>
+    <count>1~2</count>
+    <chance>0.3</chance>
+    <letterLabelKey>RR_Inhabitant_SurvivorLabel</letterLabelKey>
+    <letterTextKey>RR_Inhabitant_SurvivorText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+    <defName>RR_Inhabitant_Psychotic</defName>
+    <label>unstable inhabitant</label>
+    <description>Somebody who has been down here far too long and will not be reasoned with.</description>
+    <kind>Psychotic</kind>
+    <minDepth>3</minDepth>
+    <minBand>Active</minBand>
+    <weight>1.0</weight>
+    <pawnKindDefNames>
+      <li>Pirate</li>
+      <li>Drifter</li>
+      <li>Villager</li>
+    </pawnKindDefNames>
+    <count>1~2</count>
+    <chance>0.55</chance>
+    <hostile>true</hostile>
+    <letterLabelKey>RR_Inhabitant_PsychoticLabel</letterLabelKey>
+    <letterTextKey>RR_Inhabitant_PsychoticText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+    <defName>RR_Inhabitant_PsychoticPack</defName>
+    <label>several unstable inhabitants</label>
+    <description>More than one, and they have been together long enough to move together.</description>
+    <kind>Psychotic</kind>
+    <minDepth>5</minDepth>
+    <minBand>Hostile</minBand>
+    <weight>0.6</weight>
+    <pawnKindDefNames>
+      <li>Pirate</li>
+      <li>Drifter</li>
+    </pawnKindDefNames>
+    <count>2~3</count>
+    <chance>0.4</chance>
+    <hostile>true</hostile>
+    <letterLabelKey>RR_Inhabitant_PackLabel</letterLabelKey>
+    <letterTextKey>RR_Inhabitant_PackText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+    <defName>RR_Inhabitant_DeadRecent</defName>
+    <label>a body</label>
+    <description>Somebody who did not get out. Still carrying what they came in with.</description>
+    <kind>Dead</kind>
+    <minDepth>2</minDepth>
+    <minBand>Quiet</minBand>
+    <weight>1.3</weight>
+    <pawnKindDefNames>
+      <li>Villager</li>
+      <li>Drifter</li>
+      <li>Colonist</li>
+    </pawnKindDefNames>
+    <count>1~2</count>
+    <chance>0.55</chance>
+  </RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+    <defName>RR_Inhabitant_DeadStripped</defName>
+    <label>an old body</label>
+    <description>Somebody who did not get out, a long time ago. Whatever they had is long gone.</description>
+    <kind>Dead</kind>
+    <minDepth>3</minDepth>
+    <minBand>Quiet</minBand>
+    <weight>1.0</weight>
+    <pawnKindDefNames>
+      <li>Villager</li>
+      <li>Drifter</li>
+    </pawnKindDefNames>
+    <count>1~3</count>
+    <chance>0.45</chance>
+    <carriesBelongings>false</carriesBelongings>
+  </RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+    <defName>RR_Inhabitant_DeadCrew</defName>
+    <label>what is left of a crew</label>
+    <description>Several people who came in together and stayed.</description>
+    <kind>Dead</kind>
+    <minDepth>4</minDepth>
+    <minBand>Quiet</minBand>
+    <weight>0.7</weight>
+    <pawnKindDefNames>
+      <li>Pirate</li>
+      <li>Drifter</li>
+      <li>Villager</li>
+    </pawnKindDefNames>
+    <count>2~4</count>
+    <chance>0.35</chance>
+  </RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+
+</Defs>

@@ -142,9 +142,45 @@ namespace RimroomsAsyncIndustries.Threats
             bool wasOccupied;
             occupiedLastSweep.TryGetValue(map, out wasOccupied);
             bool isOccupied = occupants > 0;
-            if (isOccupied && !wasOccupied) { coordinate.NoteOpened(); }
+            if (isOccupied && !wasOccupied)
+            {
+                coordinate.NoteOpened();
+                // Living inhabitants are placed on ARRIVAL, against the band as it stands right
+                // now, rather than baked in at generation. That is what makes the ladder's
+                // guarantees real: a first visit is genuinely quiet, and a band that rises
+                // later genuinely shows.
+                InhabitantService.PopulateOnArrival(map, coordinate);
+            }
+            NoteLosses(map, coordinate);
             if (isOccupied) { coordinate.NoteOccupancy(Interval); }
             occupiedLastSweep[map] = isOccupied;
+        }
+
+        /// <summary>
+        /// Records anybody of ours who has died inside this coordinate, so a later *missing*
+        /// inhabitant can carry a name the player recognises.
+        ///
+        /// Read from corpses present rather than hooked into death, for the same reason the
+        /// construction echo samples rather than hooks: it costs a bounded scan of an already
+        /// short list, and it is correct for a body carried in from elsewhere and left here too.
+        /// </summary>
+        private static void NoteLosses(Map map, CoordinateRecord coordinate)
+        {
+            RimroomsCampaignComponent campaign = Verse.Current.Game == null
+                ? null : Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (campaign == null || map.listerThings == null) { return; }
+            List<Thing> corpses = map.listerThings.ThingsInGroup(ThingRequestGroup.Corpse);
+            if (corpses == null) { return; }
+            for (int index = 0; index < corpses.Count; index++)
+            {
+                var corpse = corpses[index] as Corpse;
+                if (corpse == null || corpse.InnerPawn == null) { continue; }
+                Pawn dead = corpse.InnerPawn;
+                // Only our own people count as lost. A generated body was never ours to lose.
+                if (dead.Faction == null || !dead.Faction.IsPlayer) { continue; }
+                if (dead.RaceProps == null || !dead.RaceProps.Humanlike) { continue; }
+                campaign.NoteLostPawn(dead.LabelShortCap);
+            }
         }
 
         /// <summary>

@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.8.2-dev - 2026-09-29 - who you find down there
+
+- **There are people in the Backrooms now.** Wanderers who do not explain themselves, survivors who will leave with you, people who went missing, and ones who have been down there far too long.
+- **A missing person may be somebody you lost.** The Backrooms remembers people it keeps, and gives you the name back.
+- **Bodies are there from the first visit**, carrying what they came in with. Older ones have been picked over.
+- **Living things are not there on your first visit.** They arrive as a space gets worse, and a space only gets worse from what you did there.
+- **Never more than three hostiles at once**, at any depth, at any wealth.
+- **You get told before you meet one.** Hostiles hold their ground rather than hunting you, so backing out is always a real option.
+- Nothing you find down there will follow you through a gate on its own.
+- Nobody is ever standing between you and the way back.
+
+Full record: [inhabitants](docs/implementation/INHABITANTS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.8.1-dev - 2026-09-29 - the place starts copying you
 
 - **Push far enough into the Backrooms and the rooms start containing things you built.** Your benches, your beds, your machines - arranged by something that has clearly seen them.

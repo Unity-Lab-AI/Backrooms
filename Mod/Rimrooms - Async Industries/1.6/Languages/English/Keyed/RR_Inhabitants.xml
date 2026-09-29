@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Inhabitant_WandererLabel>Somebody is here</RR_Inhabitant_WandererLabel>
+  <RR_Inhabitant_WandererText>{0} is in this space. Nobody brought them in and they offer no account of themselves. They are not hostile.</RR_Inhabitant_WandererText>
+  <RR_Inhabitant_MissingLabel>A missing person</RR_Inhabitant_MissingLabel>
+  <RR_Inhabitant_MissingText>{0} is here. Whoever they were, they went missing, and this is where they ended up. They are not hostile.</RR_Inhabitant_MissingText>
+  <RR_Inhabitant_SurvivorLabel>Someone still alive</RR_Inhabitant_SurvivorLabel>
+  <RR_Inhabitant_SurvivorText>{0} is alive down here and wants out. They will leave with anyone who can carry them through a gate.</RR_Inhabitant_SurvivorText>
+  <RR_Inhabitant_PsychoticLabel>Something is here, and it is not friendly</RR_Inhabitant_PsychoticLabel>
+  <RR_Inhabitant_PsychoticText>{0} has been in this space far too long. They will not be reasoned with, and they will defend where they are standing. They will not follow you out of the space if you withdraw.</RR_Inhabitant_PsychoticText>
+  <RR_Inhabitant_PackLabel>Several of them, and they move together</RR_Inhabitant_PackLabel>
+  <RR_Inhabitant_PackText>{0} is not alone. They have been down here long enough to act as a group. They hold their ground rather than hunting, but there is more than one.</RR_Inhabitant_PackText>
+  <RR_Event_PawnLostInside>{0} was lost inside a coordinate. The Backrooms remembers people it keeps.</RR_Event_PawnLostInside>
+</LanguageData>

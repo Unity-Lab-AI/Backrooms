@@ -28,7 +28,8 @@ What it checks
    a directory RimWorld actually reads. A `Defs/` folder one level too high loads nothing
    and reports nothing.
 4. **Our own def references resolve.** Every `RR_` token referenced from a def must be a
-   def this package declares. This is what catches a rename that updated the declaration
+   def this package declares, or a keyed string it declares -- a def may legitimately name a
+   keyed letter label or body. This is what catches a rename that updated the declaration
    and missed a reference -- an unresolved cross-reference at load, in a mod whose whole
    claim is that it needs nothing but Core.
 5. **Patch targets exist.** Each `PatchOperation`'s xpath is resolved down to the defName
@@ -266,7 +267,27 @@ def collect_declared(problems):
     return declared
 
 
-def check_def_references(problems, declared):
+def collect_keyed(problems):
+    """Every keyed string name the package declares.
+
+    Needed because a def may legitimately *name a keyed string* -- a letter label, a letter
+    body -- and those are not defs. Without this, every such reference reads as a broken def
+    reference, which is a false failure that would push somebody toward "fixing" a correct
+    package.
+    """
+    keys = set()
+    pattern = os.path.join(MOD, "*", "Languages", "*", "Keyed", "*.xml")
+    for path in sorted(glob.glob(pattern)):
+        root = parse(path, problems)
+        if root is None:
+            continue
+        for node in list(root):
+            if node.tag:
+                keys.add(node.tag)
+    return keys
+
+
+def check_def_references(problems, declared, keyed):
     for path in mod_xml_files():
         if os.sep + "About" + os.sep in path:
             continue
@@ -274,7 +295,7 @@ def check_def_references(problems, declared):
         # scanning them reports prose as a broken reference.
         text = COMMENT.sub(" ", read_text(path))
         for token in sorted(set(RR_TOKEN.findall(text))):
-            if token in declared:
+            if token in declared or token in keyed:
                 continue
             # Keyed strings and DefInjected suffixes are owned by check-keyed-strings.py.
             if os.sep + "Languages" + os.sep in path:
@@ -470,7 +491,8 @@ def main():
     check_no_attribution(problems)
     check_files(problems, allowlist, versions)
     check_comment_dashes(problems)
-    check_def_references(problems, declared)
+    keyed = collect_keyed(problems)
+    check_def_references(problems, declared, keyed)
     check_class_references(problems)
     check_patches(problems, declared, game_defs)
     check_textures(problems, notes)
