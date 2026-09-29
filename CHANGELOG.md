@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.7.5-dev - 2026-09-29 - company bonds, from ten credits to a quadrillion
+
+- **Company credits can now be held as physical bearer bonds.** Print them at a machining table, haul them, stack them in a vault, hand them around.
+- **Fifteen denominations**, every power of ten from 10 credits up to a quadrillion. Ten of any size is worth one of the next size up.
+- **You are always paid in the fewest, largest bonds.** Withdraw a trillion and you get one piece of paper, not a warehouse.
+- **A trade beacon can be designated as a credit beacon.** It shows the face value of every bond in its range, and banks them into the company account on command.
+- **Banking a bond destroys it.** No spent certificate left lying around.
+- **Bonds are physical, and that means physical.** They burn. They can be carried off. That is the price of holding your money where you can reach it, and it is why the company account still exists.
+- Silver, gold, jade and ivory are untouched. Your vault works exactly as it always did.
+
+Full record: [company bonds](docs/implementation/COMPANY_BONDS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.7.4-dev - 2026-09-29 - the place gets into people, and everything from it is marked
 
 - **Everything that comes out of a coordinate is odd now, not just what was lying there.** Rock you mined from its walls, material from a partition you pulled down, plants you cut in its rooms - all of it.

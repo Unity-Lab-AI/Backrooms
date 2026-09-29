@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Owner direction 2026-09-29: "a production bench with buills for makeing the differnt
+       sizes", "they need to go up to values of 1 million like 10, 100, 1000, 10000 ... ect
+       ect", and then "yeah keep teriing it then dont stop at 1 million".
+
+       So the ladder runs every power of ten from 10 to one quadrillion. Ten of any rung is
+       one of the next, in both directions, which is what keeps the chain simple.
+
+       These recipes declare NO products on purpose. A bond's value lives per instance in a
+       comp, a recipe's products list can only name a ThingDef and a count, and the hook that
+       post-processes a finished product is private and static. So the worker mints the bond
+       itself in Notify_IterationCompleted, which is a documented virtual: the denomination
+       comes from the recipe that is running rather than from guessing which object on the
+       floor was the one just made, and an unfunded print produces nothing at all instead of
+       a book worth free market value. -->
+
+  <RecipeDef>
+    <defName>RR_PrintBond_10</defName>
+    <label>print company bond (10 credits)</label>
+    <description>Print a company bearer bond with a face value of 10 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>660</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_100</defName>
+    <label>print company bond (100 credits)</label>
+    <description>Print a company bearer bond with a face value of 100 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>720</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_1000</defName>
+    <label>print company bond (1,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 1,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>780</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_10000</defName>
+    <label>print company bond (10,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 10,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>840</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_100000</defName>
+    <label>print company bond (100,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 100,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>900</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_1000000</defName>
+    <label>print company bond (1,000,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 1,000,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>960</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_10000000</defName>
+    <label>print company bond (10,000,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 10,000,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>1020</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_100000000</defName>
+    <label>print company bond (100,000,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 100,000,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>1080</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_1000000000</defName>
+    <label>print company bond (1,000,000,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 1,000,000,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>1140</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_10000000000</defName>
+    <label>print company bond (10,000,000,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 10,000,000,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>1200</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_100000000000</defName>
+    <label>print company bond (100,000,000,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 100,000,000,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>1260</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_1000000000000</defName>
+    <label>print company bond (1,000,000,000,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 1,000,000,000,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>1320</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_10000000000000</defName>
+    <label>print company bond (10,000,000,000,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 10,000,000,000,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>1380</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_100000000000000</defName>
+    <label>print company bond (100,000,000,000,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 100,000,000,000,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>1440</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_PrintBond_1000000000000000</defName>
+    <label>print company bond (1,000,000,000,000,000 credits)</label>
+    <description>Print a company bearer bond with a face value of 1,000,000,000,000,000 credits. The amount is debited from the company account when the bond is printed; if the account cannot cover it, nothing is printed.</description>
+    <jobString>Printing a company bond.</jobString>
+    <workerClass>RimroomsAsyncIndustries.Economy.RecipeWorker_RRPrintBond</workerClass>
+    <workAmount>1500</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+</Defs>

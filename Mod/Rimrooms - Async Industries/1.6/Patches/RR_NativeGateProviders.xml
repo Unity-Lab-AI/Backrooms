@@ -26,6 +26,24 @@
           <li Class="RimroomsAsyncIndustries.Portals.CompProperties_RimroomsEmergence" />
         </value>
       </li>
+      <!-- Owner direction 2026-09-29: "like orbital beacons to beable to show that available
+           credits". A Core trade beacon already means "the valuables in this circle are the
+           ones that count", so nobody has to learn a new idea and Core already draws the
+           radius. Dormant until the player designates it, exactly like the gate comps above:
+           a trade beacon in somebody's existing colony must behave as it always has. -->
+      <li Class="PatchOperationConditional">
+        <xpath>Defs/ThingDef[defName="OrbitalTradeBeacon"]/comps</xpath>
+        <nomatch Class="PatchOperationAdd">
+          <xpath>Defs/ThingDef[defName="OrbitalTradeBeacon"]</xpath>
+          <value><comps /></value>
+        </nomatch>
+      </li>
+      <li Class="PatchOperationAdd">
+        <xpath>Defs/ThingDef[defName="OrbitalTradeBeacon"]/comps</xpath>
+        <value>
+          <li Class="RimroomsAsyncIndustries.Economy.CompProperties_RimroomsCreditBeacon" />
+        </value>
+      </li>
       <li Class="PatchOperationAdd">
         <xpath>Defs/ThingDef[defName="CommsConsole" or defName="TableMachining"]/comps</xpath>
         <value>

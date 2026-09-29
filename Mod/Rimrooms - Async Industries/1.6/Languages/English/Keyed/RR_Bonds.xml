@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Bond_Label>{0}-credit company bond</RR_Bond_Label>
+  <RR_Bond_Inspect>Company bearer bond. Face value {0} credits.</RR_Bond_Inspect>
+  <RR_Bond_Description>A company bearer bond with a face value of {0} credits. Whoever holds it owns it, so it can be hauled, stored, stolen and burned like any other object. Bank it at a designated credit beacon to put the credits back into the company account; the bond is consumed when it is banked.</RR_Bond_Description>
+  <RR_Bond_PrintUnfunded>The company account cannot cover a {0}-credit bond.</RR_Bond_PrintUnfunded>
+  <RR_Bond_InvalidDenomination>That is not a company bond denomination.</RR_Bond_InvalidDenomination>
+  <RR_Bond_InvalidAmount>Enter an amount to withdraw.</RR_Bond_InvalidAmount>
+  <RR_Bond_Unfunded>The company account does not hold that much.</RR_Bond_Unfunded>
+  <RR_Bond_BelowSmallest>That is less than the smallest bond denomination.</RR_Bond_BelowSmallest>
+  <RR_Bond_NoMap>No map to place bonds on.</RR_Bond_NoMap>
+  <RR_Bond_NoneInRange>No company bonds are within the beacon's range.</RR_Bond_NoneInRange>
+  <RR_CreditBeacon_Designate>Credit beacon</RR_CreditBeacon_Designate>
+  <RR_CreditBeacon_DesignateDesc>Treat this trade beacon as a company credit beacon. It will report the face value of every company bond within its range, and can bank them into the company account. Its ordinary trade behaviour is unchanged.</RR_CreditBeacon_DesignateDesc>
+  <RR_CreditBeacon_Inspect>Available credits in range: {0}</RR_CreditBeacon_Inspect>
+  <RR_CreditBeacon_Bank>Bank bonds</RR_CreditBeacon_Bank>
+  <RR_CreditBeacon_BankDesc>Bank every company bond within range into the company account. {0} credits are in range. The bonds are consumed.</RR_CreditBeacon_BankDesc>
+  <RR_CreditBeacon_Banked>Banked {0} company bonds for {1} credits.</RR_CreditBeacon_Banked>
+  <RR_Ledger_BondPrinted>Company bond printed</RR_Ledger_BondPrinted>
+  <RR_Ledger_BondRefunded>Company bond refunded</RR_Ledger_BondRefunded>
+  <RR_Ledger_BondRedeemed>Company bonds banked</RR_Ledger_BondRedeemed>
+  <RR_Ledger_BondIssued>Company bonds issued</RR_Ledger_BondIssued>
+  <RR_Event_BondsRedeemed>Banked {0} company bonds for {1} credits.</RR_Event_BondsRedeemed>
+  <RR_Event_BondsIssued>Issued {0} company bonds totalling {1} credits.</RR_Event_BondsIssued>
+</LanguageData>

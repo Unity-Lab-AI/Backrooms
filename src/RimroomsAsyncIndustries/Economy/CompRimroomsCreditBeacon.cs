@@ -1,0 +1,131 @@
+using System;
+using System.Collections.Generic;
+using RimroomsAsyncIndustries.Company;
+using RimWorld;
+using Verse;
+
+namespace RimroomsAsyncIndustries.Economy
+{
+    public sealed class CompProperties_RimroomsCreditBeacon : CompProperties
+    {
+        /// <summary>Cells from the beacon that count. Matches Core's trade beacon radius.</summary>
+        public float radius = 7.9f;
+
+        public CompProperties_RimroomsCreditBeacon()
+        {
+            compClass = typeof(CompRimroomsCreditBeacon);
+        }
+    }
+
+    /// <summary>
+    /// Turns a Core orbital trade beacon into a credit beacon: it reports the bonds in its
+    /// radius and can bank them.
+    ///
+    /// **Owner direction, 2026-09-29, verbatim:** *"like orbital beacons to beable to show that
+    /// available credits"*.
+    ///
+    /// ## Why this reuse is the right one
+    ///
+    /// A trade beacon already means exactly this to a player: *the valuables inside this circle
+    /// are the ones that count*. Nobody has to learn a new idea, the radius is already drawn on
+    /// the ground by Core when you select it, and the habit of stacking things near a beacon is
+    /// one players already have. It was the owner's own suggestion and it lands perfectly.
+    ///
+    /// The comp is **dormant until designated**, exactly like the gate and emergence comps on
+    /// Core doors. An unrelated trade beacon in somebody's existing colony behaves as it always
+    /// has and shows nothing, because installing this mod must never change a colony that was
+    /// not asking for it.
+    ///
+    /// ## What it does not do
+    ///
+    /// It does not trade, does not talk to orbital ships, and does not alter how Core's own
+    /// beacon behaviour works. It reads bonds and, on an explicit order, banks them.
+    /// </summary>
+    public sealed class CompRimroomsCreditBeacon : ThingComp
+    {
+        /// <summary>Saved. A beacon does nothing until the player says it is a credit beacon.</summary>
+        private bool designated;
+
+        private CompProperties_RimroomsCreditBeacon Props
+        {
+            get { return (CompProperties_RimroomsCreditBeacon)props; }
+        }
+
+        public bool Designated { get { return designated; } }
+
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_Values.Look(ref designated, "rr_creditBeacon", false);
+        }
+
+        /// <summary>Face value of every bond inside the radius right now.</summary>
+        public long AvailableCredits
+        {
+            get
+            {
+                if (!designated || parent == null || !parent.Spawned) { return 0L; }
+                long total;
+                BondService.BondsInRadius(parent.Map, parent.Position, Props.radius, out total);
+                return total;
+            }
+        }
+
+        public override string CompInspectStringExtra()
+        {
+            if (!designated) { return null; }
+            return "RR_CreditBeacon_Inspect".Translate(AvailableCredits.ToString("N0")).ToString();
+        }
+
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+        {
+            if (parent == null || !parent.Spawned || parent.Faction != Faction.OfPlayer)
+            { yield break; }
+
+            yield return new Command_Toggle
+            {
+                defaultLabel = "RR_CreditBeacon_Designate".Translate(),
+                defaultDesc = "RR_CreditBeacon_DesignateDesc".Translate(),
+                icon = TexCommand.ForbidOff,
+                isActive = () => designated,
+                toggleAction = () => { designated = !designated; },
+            };
+
+            if (!designated) { yield break; }
+
+            long available = AvailableCredits;
+            var bank = new Command_Action
+            {
+                defaultLabel = "RR_CreditBeacon_Bank".Translate(),
+                defaultDesc = "RR_CreditBeacon_BankDesc".Translate(available.ToString("N0")),
+                icon = TexCommand.ForbidOff,
+                action = BankBonds,
+            };
+            if (available <= 0L)
+            { bank.Disable("RR_Bond_NoneInRange".Translate()); }
+            yield return bank;
+        }
+
+        private void BankBonds()
+        {
+            RimroomsCampaignComponent campaign = Verse.Current.Game == null
+                ? null : Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (campaign == null) { return; }
+
+            long credited;
+            int consumed;
+            CompanyActionResult result = campaign.RedeemBondsInRadius(
+                parent.Map, parent.Position, Props.radius, out credited, out consumed);
+            if (!result.Success)
+            {
+                Messages.Message(
+                    (result.MessageKey ?? "RR_Bond_NoneInRange").Translate(),
+                    parent, MessageTypeDefOf.RejectInput, false);
+                return;
+            }
+            Messages.Message(
+                "RR_CreditBeacon_Banked".Translate(consumed.ToString("N0"), credited.ToString("N0")),
+                parent, MessageTypeDefOf.PositiveEvent, false);
+        }
+    }
+}
