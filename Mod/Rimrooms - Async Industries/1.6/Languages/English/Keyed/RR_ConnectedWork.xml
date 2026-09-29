@@ -84,4 +84,9 @@
   <RR_ConnectedWork_StageWorking>working there</RR_ConnectedWork_StageWorking>
   <RR_ConnectedWork_UnknownWork>work this build no longer recognises</RR_ConnectedWork_UnknownWork>
 
+  <RR_ConnectedWork_BillWorkCookingLabel>cooking at a bench through a gate</RR_ConnectedWork_BillWorkCookingLabel>
+  <RR_ConnectedWork_BillWorkCraftingLabel>crafting at a bench through a gate</RR_ConnectedWork_BillWorkCraftingLabel>
+  <RR_ConnectedWork_BillWorkSmithingLabel>smithing at a bench through a gate</RR_ConnectedWork_BillWorkSmithingLabel>
+  <RR_ConnectedWork_BillWorkTailoringLabel>tailoring at a bench through a gate</RR_ConnectedWork_BillWorkTailoringLabel>
+  <RR_ConnectedWork_BillWorkArtLabel>sculpting at a bench through a gate</RR_ConnectedWork_BillWorkArtLabel>
 </LanguageData>

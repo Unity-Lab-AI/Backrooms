@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.6.5-dev - 2026-09-29 - somebody actually runs the bill on the other side
+
+- **A bench on the other side of a gate now gets worked.** Until now ingredients were carried through to a bill and then nobody came to make anything, so a workshop in the Backrooms just accumulated material. A cook, crafter, smith, tailor or sculptor will now cross a gate to run the bill itself.
+- **The game's own crafting does the work, exactly as it does at home.** Nothing about recipes, quality, skill gain or part-finished items is reimplemented here — your colonist walks over and the game takes it from there.
+- **A bill you restricted to one person still only pulls that person**, and a bill with a skill minimum only pulls somebody who meets it. Neither ever drags the wrong colonist through a gate.
+- **Nobody crosses for a bench that has no materials.** A workshop over there with nothing to work with attracts nobody, rather than sending someone on a pointless walk over and over.
+- **Nobody crosses for a bench that has simply run out of fuel** either — fuel gets carried to it instead, which already worked.
+- Local work always wins. Somebody only crosses when there is nothing of that kind to do on this side at all, and somebody already on their way is never turned around.
+- All of it is tunable while the game runs, like the rest.
+
+One fix to something already shipped: bills belonging to the automatic production and mech systems were being supplied with ingredients even though the mod's own notes said they were left alone. They are now genuinely left alone until they get a proper look.
+
+Full record: [bill work](docs/implementation/CONNECTED_BILL_WORK_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## Repository tooling - 2026-09-29 - the 294-mod register actually opens now
 
 **No change to the mod itself.** The mod build is byte-for-byte identical to 0.6.4-dev and the version was deliberately not bumped. This entry covers the project's own research register, which lives beside the mod rather than inside it.

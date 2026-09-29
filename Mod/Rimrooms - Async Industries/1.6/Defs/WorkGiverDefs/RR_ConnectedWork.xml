@@ -754,4 +754,135 @@
     <canBeDoneByMechs>false</canBeDoneByMechs>
   </WorkGiverDef>
 
+  <!-- Bill work: a crafter crosses a gate to run a bill on the far side. One pair per
+       work type, because Core compares a recipe's requiredGiverWorkType against the
+       giver def's own workType, and a bench belongs to a work type only through
+       fixedBillGiverDefs. Continue sits just above the highest Core giver in its type
+       so a traveller is never turned around; plan sits at 2, below everything local. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBillWorkCookingContinue</defName>
+    <label>travel on to cook through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillWorkCookingContinue</giverClass>
+    <workType>Cooking</workType>
+    <verb>cook</verb>
+    <gerund>cooking</gerund>
+    <priorityInType>102</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBillWorkCooking</defName>
+    <label>cross a gate to cook</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillWorkCooking</giverClass>
+    <workType>Cooking</workType>
+    <verb>cook</verb>
+    <gerund>cooking</gerund>
+    <priorityInType>2</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBillWorkCraftingContinue</defName>
+    <label>travel on to craft through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillWorkCraftingContinue</giverClass>
+    <workType>Crafting</workType>
+    <verb>craft</verb>
+    <gerund>crafting</gerund>
+    <priorityInType>102</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBillWorkCrafting</defName>
+    <label>cross a gate to craft</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillWorkCrafting</giverClass>
+    <workType>Crafting</workType>
+    <verb>craft</verb>
+    <gerund>crafting</gerund>
+    <priorityInType>2</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBillWorkSmithingContinue</defName>
+    <label>travel on to smith through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillWorkSmithingContinue</giverClass>
+    <workType>Smithing</workType>
+    <verb>smith</verb>
+    <gerund>smithing</gerund>
+    <priorityInType>222</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBillWorkSmithing</defName>
+    <label>cross a gate to smith</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillWorkSmithing</giverClass>
+    <workType>Smithing</workType>
+    <verb>smith</verb>
+    <gerund>smithing</gerund>
+    <priorityInType>2</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBillWorkTailoringContinue</defName>
+    <label>travel on to tailor through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillWorkTailoringContinue</giverClass>
+    <workType>Tailoring</workType>
+    <verb>tailor</verb>
+    <gerund>tailoring</gerund>
+    <priorityInType>112</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBillWorkTailoring</defName>
+    <label>cross a gate to tailor</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillWorkTailoring</giverClass>
+    <workType>Tailoring</workType>
+    <verb>tailor</verb>
+    <gerund>tailoring</gerund>
+    <priorityInType>2</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBillWorkArtContinue</defName>
+    <label>travel on to sculpt through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillWorkArtContinue</giverClass>
+    <workType>Art</workType>
+    <verb>sculpt</verb>
+    <gerund>sculpting</gerund>
+    <priorityInType>204</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedBillWorkArt</defName>
+    <label>cross a gate to sculpt</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillWorkArt</giverClass>
+    <workType>Art</workType>
+    <verb>sculpt</verb>
+    <gerund>sculpting</gerund>
+    <priorityInType>2</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
 </Defs>

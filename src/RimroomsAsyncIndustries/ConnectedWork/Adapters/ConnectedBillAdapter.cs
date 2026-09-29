@@ -38,19 +38,26 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
     ///
     /// Also deliberately not touched: `Bill_Medical` (a surgery needs the patient, which is
     /// the tending family's problem), and the autonomous and mech bill types, which are
-    /// state machines with their own gathering phases. Only `Bill_Production` and its
-    /// subclasses are supplied. Each of the others needs its own source review first.
+    /// state machines with their own gathering phases. Each of the others needs its own
+    /// source review first.
+    ///
+    /// **A defect corrected 2026-09-29.** That exclusion had been stated here since 0.5.7-dev
+    /// and was **not actually enforced**. The filter read `if (!(bill is Bill_Production))`,
+    /// but the hierarchy is `Bill_Autonomous : Bill_Production` and
+    /// `Bill_Mech : Bill_Autonomous`, so autonomous and mech bills are *themselves*
+    /// `Bill_Production` and passed straight through the test meant to exclude them. This
+    /// family has therefore been supplying ingredients to mech gestator and other autonomous
+    /// bills without review, contrary to its own record. The type test now lives in
+    /// `ConnectedBillScan.OrdinaryProductionBill` and excludes `Bill_Autonomous` explicitly.
+    /// Found while writing the bill *work* family, by checking the hierarchy in source rather
+    /// than trusting the name.
     /// </summary>
     public sealed class ConnectedBillAdapter : ConnectedWorkAdapter
     {
         /// <summary>The bill no longer wants this. Not a failure; the material is real and here.</summary>
         internal const string BillSatisfiedKey = "RR_ConnectedWork_BillSatisfied";
 
-        private const int MaximumBillGiversPerMap = 12;
-        private const int MaximumBillsPerGiver = 8;
-        private const int MaximumIngredientDefs = 12;
         private const int MaximumResourceCandidates = 24;
-        private const int MaximumPresenceCandidates = 48;
 
         /// <summary>
         /// How far out a landing cell is looked for. The bill's own radius is honoured and
@@ -187,11 +194,11 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
 
             List<Thing> givers = billMap.listerThings.ThingsInGroup(ThingRequestGroup.PotentialBillGiver);
             if (givers.Count == 0) { return null; }
-            int windowStart = ConnectedWorkScan.WindowStart(givers.Count, MaximumBillGiversPerMap, pawn);
+            int windowStart = ConnectedWorkScan.WindowStart(givers.Count, ConnectedBillScan.MaximumGiversPerMap, pawn);
             int examined = 0;
             for (int position = windowStart; position < givers.Count; position++)
             {
-                if (examined >= MaximumBillGiversPerMap) { break; }
+                if (examined >= ConnectedBillScan.MaximumGiversPerMap) { break; }
                 examined++;
                 Thing giver = givers[position];
                 if (!UsableGiver(giver, billMap)) { continue; }
@@ -207,23 +214,14 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
         /// </summary>
         private static bool UsableGiver(Thing giver, Map map)
         {
-            var billGiver = giver as IBillGiver;
-            if (billGiver == null || giver.Destroyed || !giver.Spawned || giver.Map != map)
-            { return false; }
-            if (giver is Pawn) { return false; }
-            if (giver.Faction != Faction.OfPlayer) { return false; }
-            if (giver.IsBurning() || giver.IsForbidden(Faction.OfPlayer)) { return false; }
-            if (giver.Position.Fogged(map)) { return false; }
-            // Core's own first question about a bill giver, and it is a fact about the
-            // giver and its own map rather than about any pawn.
-            return billGiver.BillStack != null && billGiver.BillStack.AnyShouldDoNow;
+            return ConnectedBillScan.UsableGiver(giver, map);
         }
 
         private ConnectedWorkIntent TryPlanForGiver(Pawn pawn, RimroomsConnectedWorkComponent work,
             Map fetchMap, Map billMap, Thing giver, PortalRouteStep step)
         {
             BillStack stack = ((IBillGiver)giver).BillStack;
-            int count = Math.Min(stack.Count, MaximumBillsPerGiver);
+            int count = Math.Min(stack.Count, ConnectedBillScan.MaximumBillsPerGiver);
             for (int index = 0; index < count; index++)
             {
                 Bill bill = stack[index];
@@ -244,16 +242,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
         /// </summary>
         private static bool BillUsable(Bill bill, Thing giver, Map expectedMap)
         {
-            if (bill == null || giver == null || giver.Destroyed || !giver.Spawned ||
-                giver.Map != expectedMap || bill.billStack == null ||
-                bill.billStack.billGiver as Thing != giver)
-            { return false; }
-            // Only ordinary production bills. Medical, autonomous and mech bills have
-            // requirements beyond ingredients and each needs its own review first.
-            if (!(bill is Bill_Production)) { return false; }
-            if (bill.recipe == null || bill.recipe.ingredients == null) { return false; }
-            if (bill.suspended || bill.DeletedOrDereferenced) { return false; }
-            return bill.ShouldDoNow();
+            return ConnectedBillScan.OrdinaryProductionBill(bill, giver, expectedMap);
         }
 
         private ConnectedWorkIntent TryPlanForBill(Pawn pawn, RimroomsConnectedWorkComponent work,
@@ -269,7 +258,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
                 int seen = 0;
                 foreach (ThingDef def in defs)
                 {
-                    if (seen >= MaximumIngredientDefs) { break; }
+                    if (seen >= ConnectedBillScan.MaximumIngredientDefs) { break; }
                     seen++;
                     if (def == null || !def.EverHaulable) { continue; }
                     if (!bill.IsFixedOrAllowedIngredient(def)) { continue; }
@@ -294,38 +283,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
         /// </summary>
         private static int Shortfall(Bill bill, Thing giver, IngredientCount ingredient, ThingDef carried)
         {
-            int required = ingredient.CountRequiredOfFor(carried, bill.recipe, bill);
-            if (required < 1) { return 0; }
-            Map map = giver.Map;
-            if (map == null) { return 0; }
-            float radius = bill.ingredientSearchRadius;
-            float radiusSquared = radius * radius;
-            int present = 0;
-            int seen = 0;
-            foreach (ThingDef def in ingredient.filter.AllowedThingDefs)
-            {
-                if (seen >= MaximumIngredientDefs) { break; }
-                seen++;
-                if (def == null || !bill.IsFixedOrAllowedIngredient(def)) { continue; }
-                List<Thing> stacks = map.listerThings.ThingsOfDef(def);
-                int checkedStacks = 0;
-                for (int index = 0; index < stacks.Count; index++)
-                {
-                    if (checkedStacks >= MaximumPresenceCandidates) { break; }
-                    checkedStacks++;
-                    Thing stack = stacks[index];
-                    if (stack == null || stack.Destroyed || !stack.Spawned || stack.Map != map)
-                    { continue; }
-                    // Core's own ingredient validator measures from the giver's Position,
-                    // so this measures from exactly the same place.
-                    if ((stack.Position - giver.Position).LengthHorizontalSquared > radiusSquared)
-                    { continue; }
-                    if (stack.IsForbidden(Faction.OfPlayer) || stack.Position.Fogged(map)) { continue; }
-                    present += stack.stackCount;
-                    if (present >= required) { return 0; }
-                }
-            }
-            return required - present;
+            return ConnectedBillScan.Shortfall(bill, giver, ingredient, carried);
         }
 
         private ConnectedWorkIntent TryOpenSupply(Pawn pawn, RimroomsConnectedWorkComponent work,

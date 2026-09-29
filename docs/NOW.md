@@ -23,12 +23,12 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | 0.6.4-dev plus the register checkpoint (`git log -1`; the cascade read-back is in `FINALIZED.md`) |
+| Published | 0.6.5-dev (`git log -1`; the cascade read-back is in `FINALIZED.md`) |
 | Remotes | `forgejo` and `github`, both with `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` at the same commit |
 | Working tree | clean |
-| Build | 112 C# source files, 76 approved package files, zero warnings, zero errors |
+| Build | 114 C# source files, 76 approved package files, zero warnings, zero errors |
 | Register | `outputs/.../Rimrooms_Async_Industries_294_Mod_Integration_Register.html` — **open this one**, not the `.xlsx`. Generated; rebuild after any CSV edit |
-| Assembly | SHA-256 `4057EFD15AAB4B1C609732AB18A02F025C9A98A8D951374CE7333A80C9780728`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
+| Assembly | SHA-256 `51D2DB71724A7559FCE6092406040C6660EDCF15817732511D74C3A018D7E8EC`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
 | Game launches | **none, ever.** Every runtime claim in this repo is pending the post-completion test phase |
 
 ### The standing instruction that matters most
@@ -48,14 +48,15 @@ Do not finish a checkpoint and wait. Chain them. The owner got tired of asking f
 - **0.6.2** — eight families in one pass: cleaning, repair, firefighting, mining, hunting, plant cutting, growing zones, and refuel **with rearm as one family**.
 - **0.6.3** — ways onward findable on ordinary world maps, never in a player-built door.
 - **0.6.4** — **Backrooms containment** (no outside, roof never removable, interior fully strippable) and the last three work families: wardening, childcare, animal handling.
+- **0.6.5** — **bill work**: five families, one per work type, so a bench on the far side finally gets worked. Plus a shipped defect closed — the carry family had been supplying autonomous and mech bills for five checkpoints contrary to its own record, because they derive from `Bill_Production`.
 - **Register checkpoint, still 0.6.4** — the 294-mod register rebuilt with a generator and a checker, joy and rituals **decided no**, the three hauling rows closed, and the work-type list **enumerated instead of trusted**. No C# change; the assembly is byte-identical.
 
-**Twenty-two cross-map work families, fourteen of them travel-to-work deployments.**
+**Twenty-seven cross-map work families, nineteen of them travel-to-work deployments.**
 
 ### What is left, in the order to do it
 
 1. **The four work-type gaps**, in this order, from [`research/WORK_TYPE_COVERAGE_AUDIT.md`](research/WORK_TYPE_COVERAGE_AUDIT.md). **Joy, rituals, `Patient` and `PatientBedRest` are all decided no** and the three hauling rows are closed — do not reopen them; read the audit instead.
-   1. **Bill work deployment** — the biggest. Ingredients already cross to a bill that `ShouldDoNow()`, but **nobody is sent to run it**, so an unstaffed coordinate's bench just accumulates material. The `UnfinishedThing` rule makes a deployment correct *by construction*: a deployed worker runs Core's own `WorkGiver_DoBill` locally and owns its own UFT. Covers Cooking, Crafting, Smithing, Tailoring and sculpting in one family.
+   1. ~~**Bill work deployment**~~ — **BUILT 0.6.5-dev** as five families, one per work type. Do not reopen; read `implementation/CONNECTED_BILL_WORK_IMPLEMENTATION.md`.
    2. **DarkStudy** — Anomaly, one giver, `[MayRequireAnomaly]`. The most on-theme item in the audit: studying a contained entity is the premise of the mod.
    3. **Hauling upkeep** — the `Hauling` givers that are *local container operations on the far map* (`EmptyEggBox`, `FillFermentingBarrel`, `EmptyWasteContainer`, `HaulMechsToCharger`, `UnloadCarriers`, …). Same shape as the bill gap.
    4. **BasicWorker (`Flick`, `Open`), and settle `Fishing` first** — `Fishing` needs water on the map, which is a *generation* question; if a coordinate never has fishable water the honest record is "unnecessary", not "unbuilt".

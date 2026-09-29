@@ -466,4 +466,79 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         { get { return ConnectedDeploymentProviders.AnimalHandling; } }
         protected override bool ContinueOnly { get { return true; } }
     }
+    // Bill work: one giver pair per work type, because Core itself distinguishes them.
+    // `WorkGiver_DoBill.StartOrResumeBillJob` compares a recipe's `requiredGiverWorkType`
+    // against `def.workType`, and a bench belongs to a work type only through its
+    // `WorkGiverDef.fixedBillGiverDefs`. See `BillWorkProvider` for the whole argument.
+
+    public sealed class WorkGiver_ConnectedBillWorkCooking : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BillWorkCooking; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedBillWorkCookingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BillWorkCooking; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    public sealed class WorkGiver_ConnectedBillWorkCrafting : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BillWorkCrafting; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedBillWorkCraftingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BillWorkCrafting; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    public sealed class WorkGiver_ConnectedBillWorkSmithing : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BillWorkSmithing; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedBillWorkSmithingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BillWorkSmithing; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    public sealed class WorkGiver_ConnectedBillWorkTailoring : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BillWorkTailoring; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedBillWorkTailoringContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BillWorkTailoring; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    public sealed class WorkGiver_ConnectedBillWorkArt : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BillWorkArt; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedBillWorkArtContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BillWorkArt; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
 }

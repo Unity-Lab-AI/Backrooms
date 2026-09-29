@@ -24,10 +24,10 @@ No claim here rests on memory. Where a decision turns on a Core fact, the fact i
 | Research | 6 | Core/Biotech | `research` deployment | **Covered** |
 | Childcare | 6 | Biotech | `childcare` deployment | **Covered** |
 | BasicWorker | 6 | Core/Ideology | none | **Gap — candidate** |
-| Crafting | 6 | Core/Anomaly | `bill-ingredients` carry | **Carry only, by decision** |
-| Smithing | 7 | Core/Biotech/Anomaly | `bill-ingredients` carry | **Carry only, by decision** |
-| Art | 5 | Core | `bill-ingredients` carry covers sculpting only | **Partly — candidate** |
-| Cooking | 4 | Core | `bill-ingredients` carry | **Carry only, by decision** |
+| Crafting | 6 | Core/Anomaly | `bill-ingredients` carry | **Covered 0.6.5-dev** — bill work deployment |
+| Smithing | 7 | Core/Biotech/Anomaly | `bill-ingredients` carry | **Covered 0.6.5-dev** — bill work deployment |
+| Art | 5 | Core | `bill-ingredients` carry + `bill-work-art` deployment | **Covered 0.6.5-dev** for sculpting; painting remains a candidate |
+| Cooking | 4 | Core | `bill-ingredients` carry | **Covered 0.6.5-dev** — bill work deployment |
 | Growing | 4 | Core | `growing` deployment | **Covered** |
 | Cleaning | 3 | Core/Biotech | `cleaning` deployment | **Covered** |
 | PlantCutting | 3 | Core/Ideology | `plant-cutting` deployment | **Covered** |
@@ -35,12 +35,12 @@ No claim here rests on memory. Where a decision turns on a Core fact, the fact i
 | Patient | 2 | Core | none | **Decided: never** |
 | Firefighter | 1 | Core | `firefighting` deployment | **Covered** |
 | Hunting | 1 | Core | `hunting` deployment | **Covered** |
-| Tailoring | 1 | Core | `bill-ingredients` carry | **Carry only, by decision** |
+| Tailoring | 1 | Core | `bill-ingredients` carry | **Covered 0.6.5-dev** — bill work deployment |
 | PatientBedRest | 1 | Core | none | **Decided: never** |
 | **DarkStudy** | 1 | Anomaly | **none** | **Gap — candidate, and the most on-theme of them** |
 | **Fishing** | 1 | Odyssey | **none** | **Gap — candidate, lowest value** |
 
-Twelve work types have a deployment. Five are covered by the bill carry family alone. Two are decided against permanently. **Four are genuine gaps**, and two of those four were absent from the remembered list.
+**As of 0.6.5-dev: seventeen work types have a deployment.** Two are decided against permanently. **Three genuine gaps remain** — `DarkStudy`, `BasicWorker` and the local-container half of `Hauling`, with `Fishing` a generation question before it is a work question. Two of the original four were absent from the remembered list this audit replaced.
 
 ## The two decided against, permanently
 
@@ -78,18 +78,18 @@ Rituals are driven by a `Lord`: a `LordJob_Ritual` owns its participants' duties
 
 ## The four gaps, in the order worth building them
 
-### 1. Bill work — the largest, and the one the bills record left open
+### 1. Bill work — BUILT 0.6.5-dev, and the one the bills record left open
 
-`CONNECTED_BILLS_IMPLEMENTATION.md` settles the carry half completely: ingredients cross a gate to a bill that `ShouldDoNow()`. It never decides **who runs the bill once the material is there.** Today nobody is sent, so a bench on a coordinate with no staff standing on it accumulates ingredients and produces nothing.
+`CONNECTED_BILLS_IMPLEMENTATION.md` settled the carry half completely: ingredients cross a gate to a bill that `ShouldDoNow()`. It never decided **who runs the bill once the material is there**, so a bench on a coordinate with no staff standing on it accumulated ingredients and produced nothing.
 
-The Core fact that record pins turns out to argue *for* a deployment rather than against one:
+The Core fact that record pins argues *for* a deployment rather than against one:
 
 - `WorkGiver_DoBill.ClosestUnfinishedThingForBill` validates `((UnfinishedThing)t).Creator == pawn`.
 - `Bill_ProductionWithUft` binds `BoundUft` to a `BoundWorker`, and only that worker resumes it.
 
 A half-made thing belongs to one colonist, which is why the *carry* family must never touch one. But a **deployed** worker stands on the bill's own map and runs Core's own `WorkGiver_DoBill` locally — creating and finishing its own unfinished thing, on one map, exactly as Core intends. The deployment shape sidesteps the trap by construction rather than working around it.
 
-This single family would cover `Cooking`, `Crafting`, `Smithing`, `Tailoring` and the sculpting half of `Art` at once, because all of them are `WorkGiver_DoBill`.
+**Built as five families rather than one**, which this audit got wrong when it predicted a single family. `WorkGiver_DoBill.StartOrResumeBillJob` compares `bill.recipe.requiredGiverWorkType` against `def.workType`, and a bench belongs to a work type only through `WorkGiverDef.fixedBillGiverDefs` — so one provider declaring one work type would have pulled a cook across a gate for smithing. Cooking, Crafting, Smithing, Tailoring and the sculpting half of `Art` each got their own. Record: `implementation/CONNECTED_BILL_WORK_IMPLEMENTATION.md`.
 
 ### 2. DarkStudy — one giver, and the most thematically apt thing in the audit
 
@@ -102,6 +102,10 @@ Six givers: `Flick`, `Open`, `EjectFuel`, `ExtractSkull`, `ChangeTreeMode`, `Bas
 ### 4. Fishing — lowest value, and it may not apply at all
 
 Odyssey ships one giver, `WorkGiver_Fish`, gated `[MayRequireOdyssey]`. It needs water on the map. Whether a generated Backrooms coordinate ever has fishable water is a generation question, not a work question, and the answer may simply be no — in which case the honest record is that the family is unnecessary rather than unbuilt. Settle the generation question first.
+
+## What painting still needs
+
+`Art` is covered for sculpting, which is `WorkGiver_DoBill` work. Its other four givers — `PaintBuilding`, `PaintFloor`, `RemovePaintBuilding`, `RemovePaintFloor` — are not bill work at all and remain uncovered. They are designation-driven, which puts them with the fieldwork families where nothing is inferred, and they belong with the `BasicWorker` gap rather than with bills.
 
 ## Hauling, and why it is only partly covered
 

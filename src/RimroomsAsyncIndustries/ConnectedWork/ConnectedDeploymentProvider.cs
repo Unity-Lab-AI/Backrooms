@@ -98,6 +98,17 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         public const string Childcare = "childcare";
         public const string AnimalHandling = "animal-handling";
 
+        // Bill work is one family per work type, because Core distinguishes them itself:
+        // `WorkGiver_DoBill.StartOrResumeBillJob` compares a recipe's `requiredGiverWorkType`
+        // against `def.workType`, and a bench belongs to a work type only through its
+        // `WorkGiverDef.fixedBillGiverDefs`. A single provider would have to declare one work
+        // type and would pull a cook across a gate for smithing. See `BillWorkProvider`.
+        public const string BillWorkCooking = "bill-work-cooking";
+        public const string BillWorkCrafting = "bill-work-crafting";
+        public const string BillWorkSmithing = "bill-work-smithing";
+        public const string BillWorkTailoring = "bill-work-tailoring";
+        public const string BillWorkArt = "bill-work-art";
+
         private static readonly ConstructionFinishingProvider construction =
             new ConstructionFinishingProvider();
         private static readonly ResearchProvider research = new ResearchProvider();
@@ -114,6 +125,16 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         private static readonly WardenProvider warden = new WardenProvider();
         private static readonly ChildcareProvider childcare = new ChildcareProvider();
         private static readonly AnimalHandlingProvider animalhandling = new AnimalHandlingProvider();
+        private static readonly BillWorkProvider billCooking =
+            new BillWorkProvider(BillWorkCooking, "Cooking", "RR_ConnectedWork_BillWorkCookingLabel");
+        private static readonly BillWorkProvider billCrafting =
+            new BillWorkProvider(BillWorkCrafting, "Crafting", "RR_ConnectedWork_BillWorkCraftingLabel");
+        private static readonly BillWorkProvider billSmithing =
+            new BillWorkProvider(BillWorkSmithing, "Smithing", "RR_ConnectedWork_BillWorkSmithingLabel");
+        private static readonly BillWorkProvider billTailoring =
+            new BillWorkProvider(BillWorkTailoring, "Tailoring", "RR_ConnectedWork_BillWorkTailoringLabel");
+        private static readonly BillWorkProvider billArt =
+            new BillWorkProvider(BillWorkArt, "Art", "RR_ConnectedWork_BillWorkArtLabel");
         private static readonly Dictionary<string, ConnectedDeploymentProvider> registry =
             new Dictionary<string, ConnectedDeploymentProvider>(System.StringComparer.Ordinal)
             {
@@ -131,7 +152,12 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 { Growing, growing },
                 { Warden, warden },
                 { Childcare, childcare },
-                { AnimalHandling, animalhandling }
+                { AnimalHandling, animalhandling },
+                { BillWorkCooking, billCooking },
+                { BillWorkCrafting, billCrafting },
+                { BillWorkSmithing, billSmithing },
+                { BillWorkTailoring, billTailoring },
+                { BillWorkArt, billArt }
             };
 
         public static IEnumerable<ConnectedDeploymentProvider> All { get { return registry.Values; } }

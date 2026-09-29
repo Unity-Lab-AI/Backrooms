@@ -39,4 +39,9 @@
   <RR_Settings_MuteGateCues>Mute gate cues</RR_Settings_MuteGateCues>
   <RR_Settings_MuteFieldCues>Mute field and radio cues</RR_Settings_MuteFieldCues>
   <RR_Settings_CueVolume>Cue volume: {0}%</RR_Settings_CueVolume>
+  <RR_Settings_FamilyBillWorkCooking>Travelling to cook at a far bench</RR_Settings_FamilyBillWorkCooking>
+  <RR_Settings_FamilyBillWorkCrafting>Travelling to craft at a far bench</RR_Settings_FamilyBillWorkCrafting>
+  <RR_Settings_FamilyBillWorkSmithing>Travelling to smith at a far bench</RR_Settings_FamilyBillWorkSmithing>
+  <RR_Settings_FamilyBillWorkTailoring>Travelling to tailor at a far bench</RR_Settings_FamilyBillWorkTailoring>
+  <RR_Settings_FamilyBillWorkArt>Travelling to sculpt at a far bench</RR_Settings_FamilyBillWorkArt>
 </LanguageData>
