@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.12.6-dev - 2026-09-29 - a remote base is a costly responsibility
+
+- **A new Sites pane.** Put a place your branch holds on the books, and it becomes the branch's responsibility - your people and supplies reach it, a gate can be built there, and a way out of the Backrooms can come up on it.
+- **It costs every day, and you can see exactly how much.** A quarter of your branch's overhead per site, billed as its own line so you can decide whether a place is worth keeping.
+- **The cost scales with your operation.** A site costs a research branch on fifty million rather more in absolute terms than it costs a furniture shop with two hundred silver in the till, and proportionally the same.
+- **Taking a place off the books is free.** No fee and no notice. The colony there is still yours; it just stops being the branch's account.
+- **A Backrooms coordinate can never be a site** - somewhere you go, not somewhere you keep.
+- **Nothing here settles anything for you.** RimWorld already lets you found a second colony, and the mod's own portals already let a crew come out somewhere else. This is the paperwork, not the shovel.
+- **A site you can no longer reach stops being billed**, and says so on its row rather than vanishing.
+
+Full record: [a remote base is a costly responsibility](docs/implementation/REMOTE_SITES_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.5-dev - 2026-09-29 - the queue was in the wrong order
 
 - **Nothing in the game changed, on purpose.** This checkpoint is a correction to what gets built next, and shipping it is cheaper than building the wrong thing.

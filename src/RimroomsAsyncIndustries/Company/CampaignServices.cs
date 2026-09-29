@@ -256,8 +256,17 @@ namespace RimroomsAsyncIndustries.Company
             if (map == null || !Find.Maps.Contains(map)) { return false; }
             if (headquarters == map) { return true; }
             RimroomsDestinationMapParent site = map.Parent as RimroomsDestinationMapParent;
-            return site != null && coordinates.Any(record => record != null &&
-                record.site == site && record.id == site.CoordinateId);
+            if (site != null)
+            {
+                return coordinates.Any(record => record != null &&
+                    record.site == site && record.id == site.CoordinateId);
+            }
+            // Arc 5's third clause. A registered site is the branch's own place, so connected
+            // work reaches it, a gate may anchor there and a way out may come up on it -- which
+            // is *"people, supplies, signals, protection, and an exit plan"* stated as one
+            // predicate rather than five features. A coordinate is checked above and returns
+            // there either way, because a destination is never a base.
+            return IsRegisteredRemoteSite(map);
         }
 
         internal CompanyActionResult PostTransaction(string operationId, long amountUsd, string reasonKey, string relatedId)
@@ -343,6 +352,13 @@ namespace RimroomsAsyncIndustries.Company
                 }
                 AddObligation(dayId + ":payroll", "RR_Ledger_Payroll", wages, nextOperatingCostTick);
                 AddObligation(dayId + ":overhead", "RR_Ledger_Overhead", dailyOverheadUsd, nextOperatingCostTick);
+                // Arc 5: *"a remote base is a costly responsibility rather than free map
+                // ownership"*. Its own obligation rather than folded into overhead, so the
+                // player can see on the ledger what the places are costing them and decide
+                // whether to keep them. Zero for a branch holding none, which is every branch
+                // until somebody registers one.
+                AddObligation(dayId + ":sites", "RR_Ledger_RemoteSites",
+                    DailyRemoteSiteOverheadUsd, nextOperatingCostTick);
                 nextOperatingCostTick = nextOperatingCostTick <= int.MaxValue - GenDate.TicksPerDay
                     ? nextOperatingCostTick + GenDate.TicksPerDay : int.MaxValue;
             }

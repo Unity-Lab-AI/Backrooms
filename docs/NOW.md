@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.5-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.6-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **170 C# files, 86 package files**, zero warnings, zero errors |
+| Build | **172 C# files, 86 package files**, zero warnings, zero errors |
 | Assembly | SHA-256 `E62DF5326AC89E59E744E4AD10F054CA6674439AA7F73C34075DF1CF14AD2BE3`, reproduced by two clean recompiles |
 | Checkers | **eight**, all passing |
-| Proofs | **nine** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
+| Proofs | **ten** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.5
+## What shipped this session, 0.7.1 → 0.12.6
 
 | Version | What |
 |---|---|
@@ -88,6 +88,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.3 | **A portal is its own door cell** — a wall beside a gate no longer bricks it; eighth proof |
 | 0.12.4 | **Four answers** — supply requirement, deconstruct warning, solo hints; **a tier 0 unlock that did nothing**, found by a new general sweep |
 | 0.12.5 | **The queue was in the wrong order** — tier 3 has no knobs to move; the chart authorises arcs 5–8 next. Four hollow unlocks not written |
+| 0.12.6 | **A remote base is a costly responsibility** — arc 5 opens: sites on the books, billed daily, and a coordinate is never one |
 
 ---
 
@@ -100,9 +101,15 @@ anything in this list** — it is the authority, and steps 1–5 of its build or
    chart beats any other document. Steps 6 and 7 are done.
    - **Arc 5, "Build beyond headquarters".** *"Remote sites need people, supplies, signals,
      protection, and an exit plan... A remote base is a costly responsibility rather than free map
-     ownership."* Its **first piece is a way to hold a remote site at all** — the surcharge that
-     makes it costly follows, because today it would compute zero (`OwnsMap` returns true only for
-     the headquarters and for transient open coordinates).
+     ownership."* **The first piece shipped in 0.12.6-dev**: a branch registers a map it already
+     holds, which puts it inside `OwnsMap` and on the daily bill. **Acquisition stays RimWorld's.**
+     - **Still owed, and now all three are reachable because of that one predicate:** what a site
+       needs to *be* one. **Staffing** it — a site with nobody at it is a line on a ledger.
+       **Supplying** it — company-to-site logistics, where the procurement and cargo systems
+       already exist and do not know about sites yet. **The exit plan** — the arc names it, and a
+       gate may now anchor at a site, so this is where a second gate stops being theoretical.
+     - **The chart also names** relay stations, caches, field shelters, guarded leases, resupply
+       and evacuation missions. None is written.
    - Arc 6, the outside world — **the `IncidentDef` surface built in 0.11.8 is its home.**
    - Arc 7, industrial reach. **DLC-optional throughout.**
    - Arc 8, deeper systems — partly built already: depth bands, archetypes, the pressure ladder.
@@ -313,6 +320,10 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 159. **A dead accessor and a dead value are different problems.** `EmergencyReturnCostWattDays` was live as a field and dead as a property: the number reached the code and never reached the player. The fix is to display it, not to wire it again.
 160. **Never build a keyed string at runtime.** `"RR_Hint_" + id` cannot be verified in either direction, so a typo ships as a raw key on screen. `check-keyed-strings.py` refuses it and is right to.
 161. **Gate an opening requirement at the opening, never in the tick.** `NativeBindingFailureKey` is read every tick; a supply check there would emergency-return a crew already across. A lapse blocks the **next** opening, never the current one.
+162. **Acquisition is the game’s; recognition is ours.** RimWorld already settles a second tile and this mod’s topology already emerges a crew elsewhere. A remote site is **registered, never created** — `proof-remote-sites.py` bans `WorldObjectMaker.MakeWorldObject`, `GetOrGenerateMap`, `SettleInEmptyTileUtility` and `MapGenerator.GenerateMap` from that source. Inventing settling would be fighting Core for nothing and first to break on an update.
+163. **A recurring cost must be a ratio of the branch’s own economy, never an absolute.** Async runs on $25,000 a day of overhead and the Store on $1,500. One number is a rounding error for one and ruinous for the other; a share of a number each start already tunes is correct for both for free.
+164. **A coordinate is never a base.** It is reached through a gate, it is transient, and it is not the player’s to keep. A surcharge that counted coordinates computes zero and looks like progress.
+165. **Extend the one predicate, do not thread a second one.** `OwnsMap` has 30 call sites across 16 files; its third clause is what makes work, gates and emergence anchors all reach a registered site at once. Check that **every** consequence is wanted before widening it.
 
 ---
 

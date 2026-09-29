@@ -435,6 +435,14 @@ Seven items, one task each. **This is a stop-building instruction and it is bein
 - [x] **Arc 5's obvious first piece was checked and is also blocked.** A daily surcharge per remote site would always compute **zero**, because `OwnsMap` covers only the headquarters and transient open coordinates and nothing can acquire an ordinary remote world site yet. **The acquisition is arc 5's real first piece.**
 - [x] **Bug volume answered with numbers.** Of the defects found in already-shipped code this session, **one** would visibly malfunction in play (the frozen approach cell, fixed 0.12.3). The rest did nothing. Everything else reported was caught in code written minutes earlier. **The real caveat: no game has ever been launched, so every runtime defect class is unverified.**
 
+**Arc 5 opened (2026-09-29, 0.12.6-dev)**, the first work in the arcs the chart authorises at §7 step 8.
+
+- [x] **A branch can hold a place beyond its headquarters, and it costs.** *"A remote base is a costly responsibility rather than free map ownership."* Registration puts a map inside `OwnsMap` - so connected work reaches it, a gate may anchor there and a way out may come up on it - and bills a quarter of the branch's own base overhead per live site, as its own ledger line. Releasing is free: the only clock in this mod is the gate's, so charging for a change of mind would be that clock's cousin.
+- [x] **Nothing here acquires a site.** RimWorld settles a second tile already, and the mod's topology already emerges a crew elsewhere. **Recognition, not acquisition**, and the proof bans the four Core calls that would cross that line.
+- [x] **A Backrooms coordinate can never be registered.** This is what made the naive version - a surcharge with no registry - compute zero forever.
+- [ ] **Still owed in arc 5, all three now reachable because of that predicate:** **staffing** a site, **supplying** it (company-to-site logistics; procurement and cargo exist and do not know about sites), and **the exit plan** (a gate may now anchor at a site, so a second gate stops being theoretical).
+- [ ] **Also named by the chart and unwritten:** relay stations, caches, field shelters, guarded leases, resupply and evacuation missions.
+
 ## Owner directions recorded late, second pass
 
 `check-doc-conformance.py` gained a rule on 2026-09-29 requiring that every owner direction

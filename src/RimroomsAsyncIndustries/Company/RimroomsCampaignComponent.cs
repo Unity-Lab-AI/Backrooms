@@ -230,6 +230,7 @@ namespace RimroomsAsyncIndustries.Company
             ExposeCorporateSupply();
             ExposeFacilityRelief();
             ExposeSoloGroupHints();
+            ExposeRemoteSites();
             ExposeLostPawns();
             ExposeEncounterProgression();
             if (Scribe.mode == LoadSaveMode.PostLoadInit)

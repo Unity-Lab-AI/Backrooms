@@ -294,6 +294,33 @@ A correction, and deliberately no gameplay change. Research tier 3 was next in `
 
 ---
 
+## Session 2026-09-29 - remote sites, arc 5's first piece (0.12.6-dev)
+
+**Verbatim user quote:** *"go"*
+
+**The arc this opens, verbatim from `CAMPAIGN_CONTENT_CATALOG.md`:** *"Remote sites need people, supplies, signals, protection, and an exit plan... A remote base is a costly responsibility rather than free map ownership."*
+
+### What shipped
+
+A branch can register a map it already holds as a remote site. Registration puts it inside `OwnsMap`, so connected work reaches it, a gate may anchor there and a way out may come up on it. It is billed daily at a quarter of the branch's own base overhead, as its own ledger line. Releasing is free.
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Company/RemoteSites.cs` (new), `UI/OperationsRemoteSites.cs` (new), `Company/RimroomsCampaignComponent.cs`, `Company/CampaignServices.cs`, `UI/MainTabWindow_Operations.cs`, `1.6/Languages/English/Keyed/RR_Operations.xml`, `docs/implementation/REMOTE_SITES_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj, and a tenth proof.
+
+### Closure notes
+
+- **The register found no outpost or multi-colony mod anywhere in the 295 rows.** Nothing to conflict with, and nothing to lean on. Every row in the four adjacent families is Optional or Configuration-only and none touches how a branch accounts for a place it holds.
+- **Acquisition is the game's; recognition is ours.** RimWorld already lets a colony settle a second tile, and this mod's own topology already lets a crew come out of the Backrooms elsewhere. **Nothing here acquires anything**, and the proof bans `WorldObjectMaker.MakeWorldObject`, `GetOrGenerateMap`, `SettleInEmptyTileUtility` and `MapGenerator.GenerateMap` from the source.
+- **The cost had to be a ratio.** Async Industries runs on $25,000 a day of overhead and the Store on $1,500; one absolute surcharge would be a rounding error for one and ruinous for the other. A quarter of base overhead per site means every start tunes it for free by tuning the number it already had.
+- **A coordinate is never a site, and that is the distinction that made the naive version worthless** - my own, one checkpoint earlier. A surcharge alone would have computed **zero forever**, because `OwnsMap` covered the headquarters and transient open coordinates and nothing else. Refused in the service and again in the pane before the click.
+- **One predicate, five features.** `OwnsMap` gained a third clause, and that single line is what *"people, supplies, signals, protection, and an exit plan"* means in this codebase. Thirty call sites across sixteen files consult it; extending one predicate rather than threading a second through all of them is the difference between a concept and a bolt-on. Placed **after** the coordinate check, and the order is asserted.
+- **Releasing is free as a rule rather than as generosity.** Nothing in this mod has a deadline but the gate, and a release fee is a cost for changing your mind. The proof asserts the release path contains no transaction and no obligation.
+- **Fault-planted four ways**, and the first is the one that mattered: removing the daily obligation silently restores free map ownership with no compiler error, no checker failure and no visible symptom.
+- Build 0.12.6-dev, 172 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, ten proofs hold. Assembly reproduced by two clean recompiles. **No game was launched, and nothing here has been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

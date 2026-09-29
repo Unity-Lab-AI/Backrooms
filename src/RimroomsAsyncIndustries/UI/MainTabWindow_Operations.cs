@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Investigation;
@@ -15,7 +15,7 @@ namespace RimroomsAsyncIndustries.UI
         private Vector2 scrollPosition;
         private float contentHeight = 420f;
         private int selectedPane;
-        private static readonly string[] PaneKeys = { "RR_UI_Overview", "RR_UI_Personnel", "RR_UI_Contracts", "RR_UI_Ledger", "RR_UI_Atlas", "RR_UI_Activity", "RR_UI_Investigation", "RR_UI_Machine", "RR_UI_Expedition", "RR_UI_Facilities", "RR_UI_Procurement" };
+        private static readonly string[] PaneKeys = { "RR_UI_Overview", "RR_UI_Personnel", "RR_UI_Contracts", "RR_UI_Ledger", "RR_UI_Atlas", "RR_UI_Activity", "RR_UI_Investigation", "RR_UI_Machine", "RR_UI_Expedition", "RR_UI_Facilities", "RR_UI_Procurement", "RR_UI_Sites" };
 
         public override Vector2 RequestedTabSize { get { return new Vector2(820f, 580f); } }
 
@@ -114,6 +114,7 @@ namespace RimroomsAsyncIndustries.UI
                 case 8: DrawExpedition(listing, campaign); break;
                 case 9: DrawFacilities(listing, campaign); break;
                 case 10: DrawProcurement(listing, campaign); break;
+                case 11: DrawRemoteSites(listing, campaign); break;
                 case 1:
                     DrawPersonnel(listing, campaign);
                     break;

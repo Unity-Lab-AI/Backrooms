@@ -11,4 +11,27 @@
   <RR_Operations_OpenWork>Open Work</RR_Operations_OpenWork>
   <RR_Operations_OpenResearch>Open Research</RR_Operations_OpenResearch>
   <RR_Operations_TabUnavailable>That colony control is unavailable in the current view. Return to a playable colony map and try again.</RR_Operations_TabUnavailable>
+  <RR_UI_Sites>Sites</RR_UI_Sites>
+  <RR_Sites_Heading>Places this branch runs beyond its headquarters.</RR_Sites_Heading>
+  <RR_Sites_Summary>{0} of {1} sites on the books, costing {2} a day on top of ordinary overhead.</RR_Sites_Summary>
+  <RR_Sites_None>None. Nothing is being paid for, and nothing beyond headquarters is the branch's responsibility.</RR_Sites_None>
+  <RR_Sites_Row>{0} - on the books and reachable.</RR_Sites_Row>
+  <RR_Sites_RowUnreachable>{0} - on the books but out of reach. It is not being billed while that is true.</RR_Sites_RowUnreachable>
+  <RR_Sites_Release>Take {0} off the books</RR_Sites_Release>
+  <RR_Sites_RegisterCurrent>Put {0} on the books</RR_Sites_RegisterCurrent>
+  <RR_Sites_NoCurrentMap>No map in view to register.</RR_Sites_NoCurrentMap>
+  <RR_Sites_BlockedHeadquarters>This is the headquarters. It is already the branch's own place.</RR_Sites_BlockedHeadquarters>
+  <RR_Sites_BlockedCoordinate>A Backrooms coordinate is somewhere you go, not somewhere you keep.</RR_Sites_BlockedCoordinate>
+  <RR_Sites_BlockedNotYours>The branch does not hold this place.</RR_Sites_BlockedNotYours>
+  <RR_Sites_BlockedAlready>Already on the books.</RR_Sites_BlockedAlready>
+  <RR_Sites_BlockedTooMany>The branch is running as many places as it can account for.</RR_Sites_BlockedTooMany>
+  <RR_Site_MapUnavailable>That map is not available.</RR_Site_MapUnavailable>
+  <RR_Site_IsHeadquarters>The headquarters is not a remote site.</RR_Site_IsHeadquarters>
+  <RR_Site_CoordinateNotASite>A Backrooms coordinate is a destination, not a base.</RR_Site_CoordinateNotASite>
+  <RR_Site_NotYours>The branch does not hold that place.</RR_Site_NotYours>
+  <RR_Site_TooMany>The branch cannot account for another site.</RR_Site_TooMany>
+  <RR_Site_NotRegistered>That site is not on the books.</RR_Site_NotRegistered>
+  <RR_Ledger_RemoteSites>Remote sites</RR_Ledger_RemoteSites>
+  <RR_Event_RemoteSiteRegistered>A place beyond headquarters went on the books. It costs something every day now.</RR_Event_RemoteSiteRegistered>
+  <RR_Event_RemoteSiteReleased>A place came off the books. No fee, no notice, and the colony there is still the player's own business.</RR_Event_RemoteSiteReleased>
 </LanguageData>
