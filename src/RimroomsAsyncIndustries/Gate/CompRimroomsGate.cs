@@ -71,11 +71,24 @@ namespace RimroomsAsyncIndustries.Gate
         public float minimumPowerHeadroomWatts = 250f;
         public float idlePowerDrawWatts = 250f;
         public float openingPowerDrawWatts = 3500f;
-        // reserveChargePowerWatts and returnReserveCapacityWattDays were retired in
-        // 0.11.4-dev. Both were declared, validated and READ BY NOTHING -- residue from the
-        // power model retired in 0.9.1-dev, when the gate stopped owning a reserve and started
-        // binding a Core battery. The reserve IS that battery, and RimWorld charges it.
-        // Archived in full: docs/implementation/historical-content/0.11.4-dev/RETIRED_VESTIGIAL_POWER_PROPS.md
+        /// <summary>
+        /// How fast the gate tops its bound battery up, in watts.
+        ///
+        /// **Restored and wired in 0.11.5-dev.** It was retired one checkpoint earlier for being
+        /// unread, which was the wrong call: owner direction, 2026-09-29, verbatim — *"make sure
+        /// shit isnt unused it was put there for a reason"*. A value nobody wired is a job nobody
+        /// finished, not a value nobody wanted.
+        /// </summary>
+        public float reserveChargePowerWatts = 1000f;
+
+        /// <summary>
+        /// The smallest battery a gate will accept as its reserve, in watt-days.
+        ///
+        /// **Restored and wired in 0.11.5-dev**, for the same reason. It is now what it always
+        /// read like: a minimum, checked when a battery is bound, so a gate cannot be backed by a
+        /// battery too small to hold an emergency return.
+        /// </summary>
+        public float returnReserveCapacityWattDays = 2f;
         public float emergencyReturnCostWattDays = 1f;
         public float recoveryOpeningCostWattDays = 1f;
         public float calibrationWorkRequired = 2500f;
@@ -215,8 +228,31 @@ namespace RimroomsAsyncIndustries.Gate
                 return required;
             }
         }
+        /// <summary>
+        /// What the gate is drawing right now.
+        ///
+        /// **`idlePowerDrawWatts` wired in 0.11.5-dev.** A designated gate used to draw exactly
+        /// nothing unless a connection was open, which made the prop a job nobody finished rather
+        /// than a value nobody wanted — owner direction, verbatim: *"make sure shit isnt unused it
+        /// was put there for a reason"*.
+        ///
+        /// A designated gate is a machine that is **on**: it holds its calibration, keeps its
+        /// address book live and tops up its reserve. That costs something. An undesignated door
+        /// is still just a door and draws nothing, which is the same dormant-until-designated rule
+        /// every other part of this component follows.
+        ///
+        /// Scaled by footprint like the opening draw, because a bigger gate is more machine to
+        /// keep warm.
+        /// </summary>
         public float CurrentPowerDrawWatts
-        { get { return IsOpening && !IsEmergency ? OpeningPowerDrawWatts : 0f; } }
+        {
+            get
+            {
+                if (IsOpening && !IsEmergency) { return OpeningPowerDrawWatts; }
+                if (!IsDesignated) { return 0f; }
+                return GateProps.idlePowerDrawWatts * GateCellCount;
+            }
+        }
         public IntVec3 GateEntryCell { get { return NativeEntryCell; } }
         public float CalibrationWorkRequired { get { return GateProps.calibrationWorkRequired; } }
         public Thing Console { get { return FindConsole(); } }

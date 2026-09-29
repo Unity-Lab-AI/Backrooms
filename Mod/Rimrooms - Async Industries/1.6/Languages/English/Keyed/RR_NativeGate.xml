@@ -46,6 +46,7 @@
   <RR_NativeGate_DoorStateExplanation>The connection window is Rimrooms expedition state. The door's ordinary Open/Hold Open state only controls local pawn passage and is not proof that a connection is active.</RR_NativeGate_DoorStateExplanation>
   <RR_NativeGate_DispatchNeedsBoundGate>Select and designate a native gate before dispatch. Existing expeditions remain attached to their saved gate.</RR_NativeGate_DispatchNeedsBoundGate>
   <RR_NativeGate_PowerReadout>Linked battery charge: {0}/{1} watt-days. Rimrooms direct drain while open: {2} W. Charge needed for normal window plus emergency return: {3} watt-days; recovery opening total: {4} watt-days. The native battery remains shared with its power network.</RR_NativeGate_PowerReadout>
+  <RR_NativeGate_ReserveTooSmall>That battery is too small to hold an emergency return. A gate backed by a reserve it cannot come home on would look finished and strand the first crew through it.</RR_NativeGate_ReserveTooSmall>
   <RR_NativeGate_UnsupportedProvider>Only a Core Door or Autodoor can be designated as a native gate.</RR_NativeGate_UnsupportedProvider>
   <RR_NativeGate_UnknownSchema>The saved native gate binding uses an unsupported schema. Preserve the save and request a migration review.</RR_NativeGate_UnknownSchema>
   <RR_NativeGate_ActiveCannotRebind>The gate is open or a saved expedition still depends on this gate. Its designation cannot be cleared.</RR_NativeGate_ActiveCannotRebind>

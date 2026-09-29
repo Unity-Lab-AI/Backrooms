@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11.5-dev - 2026-09-29 - a designated gate is a machine that is on
+
+- **A designated gate now costs power to keep.** Not much, and only while it is closed - while a connection is open the opening draw is charged instead. Until now a finished gate sitting idle cost you exactly nothing.
+- **It will never drain the reserve below what an emergency return needs.** A flat battery is a cost. A crew that cannot be recovered is a trap, and the gate stops short of it.
+- **A gate now refuses a battery too small to come home on.** You are told when you choose the battery, rather than finding out at the threshold.
+- **Three settings that did nothing now do what their names always said.** Two were removed one version ago as dead weight; that was wrong, and they are back and working.
+
+Full record: [a designated gate is a machine that is on](docs/implementation/WIRED_UNUSED_PROPS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.11.4-dev - 2026-09-29 - the second rung of every branch
 
 - **Seven more research projects**, one deeper step in each branch of the company's work. Each needs its own first project and one completed route log, so the band is about having been through once and read what came back.

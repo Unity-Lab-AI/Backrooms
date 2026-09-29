@@ -3248,3 +3248,25 @@ Power the gate, assemble and calibrate it, bring back one record, mark a route h
 **The `--` in an XML comment, for the fifth time.** The file stopped parsing and the build did not notice, because it compiles C# and copies files rather than parsing def XML. Two checkers caught it hard; only running the proof first hid it. The pipeline is sound.
 
 162 C# files, 85 package files, zero warnings. **18 projects, 14 capabilities**, every one granted once and read by real code. Eight checkers pass, four proofs hold, assembly reproduced by two clean recompiles. Record: `implementation/RESEARCH_TIER1_IMPLEMENTATION.md`.
+
+### 0.11.5-dev - a designated gate is a machine that is on
+
+> *"then once you finalize that do the NOW.md write up procedures and prepare for the other side of compact and make sure shit isnt unused it was put there for a reason"*
+
+**This direction reversed three decisions.** Over 0.11.4-dev and the opening of 0.11.5-dev, three gate props found to be read by nothing were **retired** - archived properly, with reasons, and removed. That was wrong. **A value nobody wired is a job nobody finished, not a value nobody wanted**, and retiring it throws away the intention along with the dead code. All three restored.
+
+**Second correction of the same shape this session.** The first was *"how tf do you know we didnt need that shit coded up correctly"*, about deleting tuned values. The pattern in both: **"unused" was treated as "unwanted" and the reach was for removal.**
+
+**`idlePowerDrawWatts` wired.** A designated gate drew **exactly nothing** while closed; now it draws from its bound battery every tick, scaled by footprint like the opening draw. A designated gate holds its calibration, keeps its address book live and keeps the reserve warm, and that should cost something. **It never drains below what an emergency return costs** - a flat battery is a cost, a crew that cannot be recovered is a trap, and nothing would warn you about the second.
+
+**`returnReserveCapacityWattDays` wired** as the thing its name always read like: the smallest reserve a gate will accept, refused when somebody chooses the battery rather than as a surprise at the threshold. A gate backed by a battery too small to come home on would look finished and strand the first crew through it.
+
+**`reserveChargePowerWatts` restored and deliberately NOT wired** - it is genuinely ambiguous and is not being guessed at. The reserve is a Core battery on the colony's net and **RimWorld already charges it**, so the phrase either duplicates Core or means something else; three readings are all defensible and the question is recorded for the owner. Guessing would produce exactly the contrived mechanic the *"don't build willy nilly"* direction warns against.
+
+**The sweep that made this findable.** The first two were found by **stumbling on them**, which is not a method, so the third search swept all seventeen props on the gate's props class counting real read sites. It found one dead prop - and **cleared one that an earlier one-off grep had wrongly called dead**, because that grep excluded every line containing `public ` and threw away the property wrapper reading it. Finding dead values one at a time produces false negatives *and* false positives. Of seventeen, exactly one was dead; now none is.
+
+**The balance change is named rather than buried.** A designated gate used to cost nothing to keep and now costs 250 W scaled by footprint, on every existing save. Recorded as an open question in the queue: if zero idle cost was the intent, that is the one to reverse.
+
+**The 0.11.4 archive was not rewritten.** It opens with a note that the decision was reversed and its body is untouched, because dated records are never rewritten and that rule is what makes the evidence trail worth anything.
+
+162 C# files, 85 package files, zero warnings. Eight checkers pass, four proofs hold, assembly reproduced by two clean recompiles. Record: `implementation/WIRED_UNUSED_PROPS_IMPLEMENTATION.md`.

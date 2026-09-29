@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -148,6 +148,19 @@ namespace RimroomsAsyncIndustries.Gate
                 !ExactProvider(battery, "Battery") || battery.TryGetComp<CompPowerBattery>() == null ||
                 !ExactProvider(assemblyBench, "TableMachining") || !(assemblyBench is Building_WorkTable))
             { return RefuseNative("UnsupportedProvider"); }
+
+            // **`returnReserveCapacityWattDays` wired in 0.11.5-dev** as the thing its name always
+            // read like: the smallest reserve a gate will accept. It had been declared and read by
+            // nothing, which made it a job nobody finished rather than a value nobody wanted.
+            //
+            // A battery too small to hold an emergency return is not a reserve, and binding one
+            // would produce a gate that looks complete and strands the first crew through it. The
+            // refusal happens here, at the moment somebody chooses the battery, rather than as a
+            // surprise at the threshold.
+            CompPowerBattery reserve = battery.TryGetComp<CompPowerBattery>();
+            if (reserve.Props == null || !FiniteNonnegative(reserve.Props.storedEnergyMax) ||
+                reserve.Props.storedEnergyMax < GateProps.returnReserveCapacityWattDays)
+            { return RefuseNative("ReserveTooSmall"); }
             IntVec3 entry = EntrySideCell(oppositeEntrySide);
             if (!entry.InBounds(parent.Map) || !entry.Standable(parent.Map)) { return RefuseNative("EntryBlocked"); }
             if (HasUnresolvedNativeTrip() && (nativeOppositeEntrySide != oppositeEntrySide ||
@@ -318,6 +331,30 @@ namespace RimroomsAsyncIndustries.Gate
             if (nativeLastProcessedTick == now) { return false; }
             nativeLastProcessedTick = now;
             return true;
+        }
+
+        /// <summary>
+        /// The standing cost of keeping a designated gate, charged while it is closed. While it
+        /// is open the opening draw is charged instead, so the two never stack.
+        ///
+        /// **`idlePowerDrawWatts` wired in 0.11.5-dev.** It had been declared and read by nothing
+        /// since the prop was written, which made it a job nobody finished rather than a value
+        /// nobody wanted. Owner direction, verbatim: *"make sure shit isnt unused it was put there
+        /// for a reason"*.
+        ///
+        /// **Never takes the reserve below what an emergency return costs.** That floor is the
+        /// difference between a cost and a trap: a player who designates a gate and walks away
+        /// should come back to a flat battery, not to a crew that cannot be recovered.
+        /// </summary>
+        private void SpendIdleDrawTick()
+        {
+            if (IsOpening || !IsDesignated) { return; }
+            float cost = GateProps.idlePowerDrawWatts * GateCellCount * CompPower.WattsToWattDaysPerTick;
+            if (!(cost > 0f) || float.IsNaN(cost) || float.IsInfinity(cost)) { return; }
+            CompPowerBattery battery = NativeBatteryComp;
+            if (battery == null) { return; }
+            if (NativeStoredEnergy - cost < GateProps.emergencyReturnCostWattDays) { return; }
+            battery.DrawPower(cost);
         }
 
         private bool SpendNativeOpeningTick()

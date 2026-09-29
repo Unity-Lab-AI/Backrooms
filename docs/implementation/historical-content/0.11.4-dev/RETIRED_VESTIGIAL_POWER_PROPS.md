@@ -1,5 +1,15 @@
 # Two vestigial power props — archived 0.11.4-dev
 
+> **THIS DECISION WAS REVERSED IN 0.11.5-dev.** Both props were restored, and two of the three
+> retirements of this kind were wired instead. Owner direction, 2026-09-29, verbatim: *"make sure
+> shit isnt unused it was put there for a reason"* — **a value nobody wired is a job nobody
+> finished, not a value nobody wanted.**
+>
+> This record is **not rewritten**, because it was true on the day it was written and the evidence
+> trail depends on that. What follows is the reasoning as it stood; the reversal is recorded in
+> `FINALIZED.md` and `TODO.md`.
+
+
 **Archive, not a deletion.** Found while looking for a tier-1 research knob, which is the only
 reason anybody looked at them.
 

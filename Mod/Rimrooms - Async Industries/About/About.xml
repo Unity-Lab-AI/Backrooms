@@ -3,14 +3,14 @@
   <name>Rimrooms - Async Industries</name>
   <author>Operator</author>
   <packageId>UnityLabAI.RimroomsAsyncIndustries</packageId>
-  <modVersion>0.11.4-dev</modVersion>
+  <modVersion>0.11.5-dev</modVersion>
   <supportedVersions>
     <li>1.6</li>
   </supportedVersions>
   <loadAfter>
     <li>Ludeon.RimWorld</li>
   </loadAfter>
-  <description>Development build 0.11.4-dev. Gameplay acceptance is pending; this is not a finished campaign release.
+  <description>Development build 0.11.5-dev. Gameplay acceptance is pending; this is not a finished campaign release.
 
 Rimrooms - Async Industries is a company-management campaign about an authorised research branch that investigates, contains and profits from unstable spaces beyond a gate.
 

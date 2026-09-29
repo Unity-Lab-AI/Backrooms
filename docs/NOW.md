@@ -24,11 +24,13 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.11.4-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.11.5-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **162 C# files, 85 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `D586E665BB10FD6067A3A84241770E6BA8EF454DFC72E7D74FECA3D3E4A4787`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `3309AD3036C91C5159C91A7998C4486ECBC04E5B5F187A67B44980028E12A682`, reproduced by two clean recompiles |
 | Checkers | **eight**, all passing |
+| Proofs | **four** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
+| Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
 | Game launches | **none, ever** |
@@ -41,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.11.4
+## What shipped this session, 0.7.1 → 0.11.5
 
 | Version | What |
 |---|---|
@@ -75,27 +77,61 @@ Chain checkpoints. Do not finish one and wait.
 | 0.11.2 | **The company asks for six things, then stops asking** — the tutorial line and the hinge; the two-kinds rule forced a better hinge |
 | 0.11.3 | **Seven ways into the tree** — research tier 0 across seven branches, each granting a capability real code honours |
 | 0.11.4 | **The second rung of every branch** — research tier 1; two vestigial power props found and retired |
+| 0.11.5 | **A designated gate is a machine that is on** — three unused props restored, two wired. **Reversed 0.11.4’s retirements.** |
 
 ---
 
 ## What is left, in order
 
-Content set → gate model → generator → scenarios → docs. One direction, no backtracking.
+The order is the one `docs/CAMPAIGN_CHART.md` §7 authorises. **Read the chart before starting
+anything in this list** — it is the authority, and steps 1–5 of its build order are done.
 
-1. **Finish the field gear (rest of M2).** All four replacements were decided at the fork; **none are built**:
-   - **Survey tag → Core `GlowPod`.** Carried, deployed, and it lights the room it marks. **No cap** — *"a backrooms instance can have 100s of rooms"*. **Colour is semantic**: mod-defined marker types (route home, cleared, danger, supply cache, unexplored lead), each its own colour. `CompGlower.GlowColor` has a **public setter** backed by a saved per-instance `glowColorOverride`, and `CompProperties_Glower.colorPickerEnabled` turns on RimWorld's own picker — **so this needs no new UI**. Verified by decompiling.
-   - **Evidence case → a designated HQ `Shelf` as the archive.** The book is carried; custody completes when it arrives. Same designation pattern as the gate console and the laboratory bench.
-   - **Field recorder → the book is the recorder.** One Core `TextBook`: carried in blank, written in the field, carried home as the evidence.
-   - Then `RR_QuietPursuer`, the five `RR_*Staff` PawnKinds and their recipes.
-2. **The adjacent-door-run fallback** — 1×3 and 2×3 by binding one gate across a run of adjacent 1×1 Core doors, for players without Doors Expanded.
-3. **New-game playability** — the world tile the branch does not hold, and **the other two starting sites** (`SCENARIOS.md`). **Blocked behind item 1**: the existing scenario still grants the field gear being retired.
-4. **The player-facing how-to.** Written **once**, for both the repo and the site.
-5. **Still unbuilt from the prep material** — *"contradictory accounts"* from a returning crew; staff **prior exposure**; the ladder's *"respond to openings in settlements"*.
-6. **The unknown-def-field checker** — written, **proved broken, removed rather than shipped**. Start from the verified parts.
-7. **The 1990s period and universe factions**; the four area types across a gate; M1 step 5; M3 breadth; M5 interface; M6a/M6b.
-8. **Public release** — site, Workshop page, collection. Full plan: [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md). **Correctly last**, and three decisions there are the owner's.
-9. **Continue the register retro sweep.** Swept: animals, security, spatial construction, expedition logistics. Not yet: facilities, storage, furniture, commerce, contracts, power, medical, interface, world operations.
-10. Reconcile 0.5.0–0.7.1 into the master backlog; fix the register's `disposition_stance()` negation bug.
+1. **Research tier 2** — *"Repeatable operations: revisit known coordinates and reduce preventable
+   failures."* Seven projects, one per branch, each requiring its tier 1 sibling **and a distortion
+   log**, because this band is about things having gone wrong. **Seven live knobs are already
+   identified and none of them needs inventing:**
+   - Facilities → `stablePowerTicksRequired` (how long power must be stable before opening)
+   - Fieldcraft → `dialSpinUpDecayFraction` (progress lost when the operator steps away)
+   - Measurement → `calibrationWorkRequired`
+   - Spatial → `dialSpinUpFamiliarityFactor` (a known address dials faster)
+   - Entities → incursion requires `PortalWindowTier >= 2` instead of `>= 1` — containment
+     meaning something, at an existing read site in `PortalTraversalPolicy`
+   - Logistics → `MaximumOpenOrders`
+   - Commerce → catalogue `maxOrderQuantity`
+2. **The clean-up team — *"so that facilities never die"*.** The state it keys on **already
+   exists**: `campaign.CorporationContact`, one-way, set from `beginsInCorporationContact`. Async
+   Industries begins true; the Store and Solo/Group begin false and must earn it. On collapse the
+   corporation sends a team with all-access passes, clears every hostile, requisitions a fresh
+   basic team and drops supplies. **A no-fail floor, chosen deliberately by the owner.**
+3. **The Store and Solo/Group starts.** Each *"needs special treatment in theri layout and
+   starts"*, a different point of view on the same world, and **neither begins in contact**.
+4. **Research tiers 3–4** — remote and deep operations.
+5. **Generated requests after the hinge**, from branch state, coordinate history and capability.
+   Route selection for a generated request is an **open owner question** (chart §6).
+6. **Arcs 5–8** — remote sites, the outside world, industrial reach, deeper systems.
+7. **Still unbuilt from the prep material** — *"contradictory accounts"* from a returning crew;
+   staff **prior exposure**; *"respond to openings in settlements"*.
+8. **The adjacent-door-run fallback** — 1×3 and 2×3 by binding one gate across a run of adjacent
+   1×1 Core doors, for players without Doors Expanded.
+9. **`RR_QuietPursuer` presentation** and the five `RR_*Staff` PawnKinds — the last existing-content
+   replacements.
+10. **The player-facing how-to.** Written **once**, for both the repo and the site.
+11. **Public release** — site, Workshop page, collection. [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md).
+    **Correctly last.**
+12. **Continue the register retro sweep.** Swept: animals, security, spatial construction,
+    expedition logistics, interface, facilities, furniture, storage, power, contracts, faction
+    standing, subject casework, evidence, policies. Not yet: medical, world operations, cargo,
+    hospitality, materials, visitor economy, staff psychology.
+13. Reconcile 0.5.0–0.7.1 into the master backlog; fix the register's `disposition_stance()`
+    negation bug; the unknown-def-field checker, **written, proved broken and removed rather than
+    shipped**.
+
+### Done since the last handoff, so nobody rebuilds it
+
+Glow-pod markers with colour-as-meaning · evidence custody on a linked archive shelf · the survey
+tag, evidence case and their recipes retired · gate equipment links · the log-gated window ladder
+with four rungs · the campaign chart · the request shape with success routes · the full tutorial
+line and the hinge · research tiers 0 and 1 across seven branches · the alerts readout.
 
 ---
 
@@ -235,6 +271,11 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 128. **A validation can guarantee nothing and still look like a guarantee.** The retired clause compared costs against a nominal capacity unrelated to the battery a player binds.
 129. **A deeper tier SUPERSEDES rather than stacks.** Read sites check the deeper capability first and fall through, so a card that says "twice as long" means twice.
 130. **When a new assertion fails, ask whether the assertion is wrong first.** The depth rule failed on the gate ladder, which is linear by design. The assertion was restated; the ladder was not widened to satisfy it.
+131. **UNUSED IS NOT UNWANTED. Wire it, do not retire it.** Owner, verbatim: *"make sure shit isnt unused it was put there for a reason"*. **A value nobody wired is a job nobody finished.** Three gate props were retired across 0.11.4 and 0.11.5 and all three were restored; two are now wired. This is the **second** correction of this shape — see 105, about deleting tuned values.
+132. **Sweep the class, do not grep for one name.** The first two dead props were found by stumbling. A sweep of all seventeen gate props found the third **and cleared one an earlier grep had wrongly called dead**, because that grep excluded every line containing `public ` and threw away the property wrapper reading it.
+133. **A cost must not become a trap.** Idle draw stops above the emergency-return reserve. A flat battery is a cost a player can see; a crew that cannot be recovered is not, and nothing would have warned them.
+134. **When two readings of a value are both defensible, ask.** `reserveChargePowerWatts` is restored and deliberately **not** wired: the reserve is a Core battery RimWorld already charges, so the phrase either duplicates Core or means something else. Guessing would invent a mechanic.
+135. **A reversed dated record is annotated, never rewritten.** The 0.11.4 archive opens with a note that the decision was reversed and its body is untouched.
 
 ---
 
@@ -275,7 +316,8 @@ Proved twice more this session. A placeholder rule contained a **literal backspa
 4. `CHANGELOG.md` in plain player-facing language.
 5. Implementation record under `docs/implementation/`.
 6. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
-7. **Every checker**: `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-display-style.py`, `check-campaign-absolutes.py`, `check-doc-conformance.py`, `research/audit-gate0.py`. There are eight.
+7. **Every checker** (eight): `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-display-style.py`, `check-campaign-absolutes.py`, `check-doc-conformance.py`, `research/audit-gate0.py`.
+7b. **Every proof** (four): `.local/register/proof-{research-branches,offer-routes,tier-ladder,gate-links}.py`. **Sanity-test any new rule by planting a fault in both directions** before believing it.
 8. **Determinism**: delete `obj/` and `bin/`, rebuild **twice**, hashes must match.
 9. Commit once atomically; cascade to `Prep`, `Develop`, `Main` on **both** remotes; **read back all eight refs**.
 
@@ -294,8 +336,20 @@ Proved twice more this session. A placeholder rule contained a **literal backspa
 - Core's `StockGenerator_Category` has **all-private fields**. `GenRecipe.PostProcessProduct` is **private static**.
 - `SetTerrain` **clears** the colour grid. `CompFlickable.SwitchIsOn` has a **public setter**.
 
-## Blocked on the owner
+## Open owner questions — none of them blocks anything
 
-**Nothing.** That status does not exist here. Runtime rows are `[T]` and gate no work.
+That status does not exist here; runtime rows are `[T]` and gate no work. These are **reserved
+decisions**, recorded so they are asked rather than guessed. Ask at the next natural moment.
 
-Three decisions are *reserved* for the owner but block nothing now: the site's domain, the Pages publishing branch, and whether Playwright may drive Steam. All three are named in [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md).
+1. **`reserveChargePowerWatts`** — restored, deliberately not wired. The reserve is a Core battery
+   RimWorld already charges, so three readings are all defensible: a supply requirement (duplicates
+   `minimumPowerHeadroomWatts`), a display estimate (honest but only a readout), or a second charge
+   path (double-charges unless it replaces Core's). **Details in `TODO.md`.**
+2. **A designated gate now costs 250 W while idle**, scaled by footprint, on every existing save.
+   Made because an unused value is an unfinished job. **If zero idle cost was the intent, this is
+   the one to reverse.**
+3. **How a generated request picks its routes** — a fixed set per family, or derived from what the
+   branch has. Chart §6.
+4. **Whether the eight branches unlock in any order after the hinge.** Chart §6.
+5. **The site's domain, the Pages publishing branch, and whether Playwright may drive Steam.**
+   All three in [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md).
