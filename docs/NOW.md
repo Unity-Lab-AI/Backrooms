@@ -62,7 +62,9 @@ Do not finish a checkpoint and wait. Chain them. The owner got tired of asking f
 5. **Floors returning materials when lifted** — vanilla returns none, so *"uninstalled, moved, resued, sold"* for carpet and tile needs a `CONTENT_REUSE_POLICY.md` decision.
 6. **The 1990s period and the universe factions.** New `FactionDef`s reusing existing pawn kinds, all starting neutral.
 7. **The eleven DLC container hauling givers** (each needs a custody review) and the **four painting givers** in `Art`.
-8. Then M1 step 5, M2 existing-content replacement, M3 breadth, M5 interface, M6 release.
+8. **M6a — now unblocked and buildable today.** Split out on 2026-09-29 by owner decision 19 because M6 was the only major that cannot be closed by building, and one major reading 0% hid that four of its ten rows needed no launch at all: package and def validation, the mod page and provenance, the tag-and-archive ritual, and the buildable part of the fresh-start checklist. M6b keeps the six rows that structurally require the owner's launch.
+9. **Two defects surfaced 2026-09-29 while counting, named and open.** (a) **The master backlog stopped at 0.4.2-dev** — 81 rows on Phase 0 research, one unchecked row covering the entire cross-map work engine and 27 shipped versions, so a raw count reads ~12% on code while the source tree went 78 → 120 files; reconciling 0.5.0–0.7.1 back into it is its own item. (b) **`disposition_stance()` counts a negated "required" as Required** — 14 of 17 rows in that bucket say the opposite, so 82% of it is wrong, and row 196 (RimWorld Together) falls through to `Unclassified`.
+10. Then M1 step 5, M2 existing-content replacement, M3 breadth, M5 interface, M6b release.
 
 ### Invariants — do not break these
 
@@ -99,6 +101,9 @@ Each one is a real defect or a pinned source fact.
 29. **The portal topology is an unbounded alternation of world maps and Backrooms coordinates**, in any order, built gates and found frontiers mixed freely.
 30. **Never trust a remembered list of anything against the shipped game data.** The families list omitted `DarkStudy` and `Fishing`. Enumerate.
 31. **Two owner words have turned out to be mod names, not descriptions.** *"Questionable Ethics"* is profile row 182. **Search the register before interpreting an unfamiliar phrase as flavour.**
+32. **A D-numbered Gate 0 decision can change, so read the sheet rather than a remembered answer.** D1 changed on 2026-09-29 — public Steam Workshop is now the first distribution target, not a private RWT prototype. Several documents assert a decision's *content* rather than linking it, so a change means grepping the assertion, not just the ID: four documents still stated the old D1 after the first propagation pass. `AGENTS.md` already required this — *"when a new owner decision changes scope, record it and propagate it across the TODO, design, technical, traceability, and test documents before relying on it"* — and it is a real sweep, not a formality.
+33. **The no-tests rule has exactly one exception and it is written into `CONTRIBUTING.md` itself.** Owner decision 20 authorises automated fixtures for a single Phase 6 row and defers all of it until after the first launch. **Never widen it.** It is recorded in the rule's own file precisely so a later session cannot read it as general permission.
+34. **Do not trust a progress percentage from a row count in this repo.** The master backlog is granular for research and coarse for code — one checkbox covers 27 shipped versions. Estimate per major, and say which basis a number came from.
 
 ### Standing method
 

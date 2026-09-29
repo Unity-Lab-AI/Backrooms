@@ -231,7 +231,7 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 - **Company breadth (M3):** room functions → training/pools/wellbeing → contracts/leases/evidence → research tiers → containment/settlement quests → outposts → vehicles/VGE.
 - **Alternate starts (M3):** shared start contract → Store setup/grant/objective → inside start after the two owner answers.
 - **Compatibility (M4):** feature detection + guards now → owner two-client run → per-row closure → report.
-- **Release (M5–M6):** Company Command → tutorial/accessibility → validation/balance/performance → D1 private RWT prototype → Workshop only after validation.
+- **Release (M5–M6):** Company Command → tutorial/accessibility → M6a validation and mod page → M6b balance/performance/acceptance → Workshop. **D1 changed 2026-09-29:** public Workshop is the first distribution target, so the private RWT prototype is no longer a gate. Compatibility claims still wait on recorded results.
 
 ---
 
@@ -318,7 +318,7 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 | 294-row profile runtime closure | Compatibility | Expert | Blocked |
 | Five named later-threat sketches | Threats | Advanced | Deferred (S1/B) |
 | Outpost, town-distortion, company-crisis starts | Scenario | Advanced | Deferred until design briefs exist |
-| Public Workshop release | Release | — | Deferred (D1: private RWT prototype first) |
+| Public Workshop release | Release | — | **First distribution target (D1 changed 2026-09-29).** Waits on M6a and the Core-only solo path passing, not on a private RWT prototype |
 
 ---
 

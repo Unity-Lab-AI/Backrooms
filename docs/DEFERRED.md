@@ -109,7 +109,9 @@ The four governing answers are settled, so no row here is waiting on a decision 
 - [ ] **Door gizmo for the deliberate-cross order, naming the refusal reason in place.** Re-owned here 2026-09-28 from step 3. The *capability* is done: every refusal is a keyed reason and the player sees it. What is outstanding is surfacing the order and its reason on the door itself rather than in the Operations pane, which is presentation. Source: `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`.
 - [ ] Tutorial, glossary, keyboard paths, contrast/scale, localization completeness.
 - [ ] Slideshow integration review, additional menu images per shipped scenario.
-- [ ] Validation sweep, invalid-state matrix, balance, release report, packaging.
+- [ ] Validation sweep, invalid-state matrix, balance, release report, packaging. — **split 2026-09-29 by owner decision 19.** The validation sweep and packaging halves are M6a and close without a launch; the invalid-state matrix, balance and release report are M6b and cannot. Tracked as separate rows in `TODO.md`.
+- [T] **Automated fixtures for deterministic room generation, gate transitions, ledger idempotency, transfer receipt IDs and schema migration.** Deferred **by explicit owner instruction**, 2026-09-29 (decision 20, verbatim *"option 2 and option 3"*), not by dependency: the owner authorised automated fixtures **and** chose to hold them until after the first launch so their content follows observed failures rather than guessed ones. This is the **only** exception to the `CONTRIBUTING.md` no-tests rule anywhere in the repo, it covers this row alone, and **nothing for it may be written before the owner has launched the game once**. Owned by M6b.
+- [ ] **Screenshots, trailer and preview art for the mod page.** Need a running game, so they split from the M6a mod-page row into M6b. Everything else on that row — description, feature list, installation guide, dependencies, DLC matrix, RWT setup, credits, provenance, license, FAQ, update plan — closes without a launch and is M6a.
 
 ### The post-completion test phase — `[T]`
 

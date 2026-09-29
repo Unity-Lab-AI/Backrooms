@@ -55,9 +55,28 @@ The marked boxes below are recorded as owner selections. Where multiple compatib
 
 ### D1. First distribution target
 
-- [x] **A — Selected:** private RimWorld Together test build first; consider public Steam Workshop release only after the named profile and multiplayer flows pass.
-- [ ] **B:** public Steam Workshop release is the first distribution target; do not announce compatibility until validation is complete.
+**Changed by the owner on 2026-09-29. B is now the selection; A is superseded.** The original answer was recorded 2026-09-27, before any of the mod existed. See [the superseding direction](#d1-superseded-2026-09-29--public-workshop-is-the-first-distribution-target) below for the owner's verbatim words and what the change costs.
+
+- [ ] ~~**A — selected 2026-09-27, superseded 2026-09-29:** private RimWorld Together test build first; consider public Steam Workshop release only after the named profile and multiplayer flows pass.~~
+- [x] **B — Selected 2026-09-29:** public Steam Workshop release is the first distribution target; do not announce compatibility until validation is complete.
 - [ ] **C:** private server use only; no public Workshop release planned.
+
+#### D1 superseded 2026-09-29 — public Workshop is the first distribution target
+
+**Verbatim owner direction (2026-09-29), answering the M6 release question:**
+
+> *"option 3 and remeber we dont have other peoples saves we just publish it all and update it as we go fixing bugs"*
+
+Option 3 as presented was *"Public Workshop directly once complete — skip the private-prototype stage."* The owner's reason is the load-bearing half and is recorded because it answers the objection that was put to them: the risk raised against B was that first real-world profile validation would happen in public, against other players' saves. **There are no other players' saves.** Nothing has shipped, there is no installed base, and there is therefore no save to break. The owner's model is publish, then iterate in public — *"we just publish it all and update it as we go fixing bugs"*.
+
+Consequences, propagated in the same change:
+
+- The private RWT prototype stage is **no longer a release prerequisite**. It remains available as a test route and the [RWT run sheet](research/RWT_BASELINE_TEST_PLAN.md) and [RimBridgeServer harness](research/RIMBRIDGE_TEST_HARNESS.md) are unaffected.
+- **M6's exit condition changes.** It was "private RWT prototype passes the Core-only solo path and the pinned co-op tests". It is now the Core-only solo path passing, with co-op validation no longer gating the first publication.
+- **The no-compatibility-claim rule survives intact and is now the main protection.** B's own text — *"do not announce compatibility until validation is complete"* — stays binding. Publishing early makes this stricter, not looser: the mod page may claim Core-only solo support and must not claim any of the 294 profile rows, any DLC interaction, or RWT co-op until that row has a recorded result. 200 of the 294 dispositions are still provisional.
+- **Update-and-fix becomes a supported path rather than an afterthought.** Save migration stops being a release-day checkbox and becomes an ongoing obligation from the first published version, since from publication onward there *are* other people's saves. [`SAVE_MIGRATION_POLICY.md`](SAVE_MIGRATION_POLICY.md) owns that, and the version policy in D2 is unchanged: `0.x` while pre-release, `1.0.0` at the first stable public release.
+
+This changes the release gate only. It does not change evidence standards, feature scope, the existing-content rule, or the rule that only the owner launches the game.
 
 ### D2. Public identity, package identity, and versioning
 
@@ -146,7 +165,7 @@ These are execution work, not owner questions: the exact RimWorld/RWT/Harmony bu
 
 | ID | Final answer | Date | Documents updated |
 | --- | --- | --- | --- |
-| D1 | A — private RWT test first; public Workshop only after validation is considered | 2026-09-27 | TODO, roadmap, release plan |
+| D1 | **B — public Steam Workshop is the first distribution target; do not announce compatibility until validation is complete.** Changed by the owner 2026-09-29: *"option 3 and remeber we dont have other peoples saves we just publish it all and update it as we go fixing bugs"*. Supersedes A (private RWT test first), recorded 2026-09-27 before the mod existed. The private RWT prototype is no longer a release prerequisite; the no-compatibility-claim rule is now the main protection. | 2026-09-27, **changed 2026-09-29** | TODO, roadmap, release plan, ARCHITECTURE, SKILL_TREE, AGENTS, CONTRIBUTING |
 | D2 | Exact title; author/publisher metadata `Operator`; package ID `UnityLabAI.RimroomsAsyncIndustries`; namespace `RimroomsAsyncIndustries`; semantic versions | 2026-09-27 | TODO, About.xml/package metadata, technical architecture |
 | D3 | B — all 294 are the research/test target; only Core + Harmony/RWT required; other profile mods optional. Owner says test rows 182 and 274 in the co-op candidate despite publisher warnings; no support claim before results. | 2026-09-27 | TODO, compatibility, mod plan, technical architecture, interaction map |
 | D4 | A — all five DLC optional; Core-only campaign; validate all-five profile | 2026-09-27 | TODO, compatibility, scenario, mod plan, systems catalog |
@@ -227,3 +246,19 @@ Recorded verbatim, then their consequences. Implemented in 0.5.6-dev; record: [`
 16. **Never ask the owner to launch in order to continue building.** No source work ever waits on a launch. The launch rule itself is unchanged: only the owner launches RimWorld, through RimSort, and the agent never touches the active mod list or attaches the QA overlay outside the saved plan.
 17. **At a fork, ask immediately and keep building around it.** Fire a multiple-choice question the moment a real fork appears, and meanwhile finish everything that does not depend on the answer. **Every question carries a write-in option, and the listed suggestions are never the whole option space** — the owner's own wording. Do not treat a menu as exhaustive.
 18. **RimWorld and Steam terms are a release requirement, verified rather than asserted.** The mod targets official RimWorld and official DLC only. Add definitions; never redistribute a game, DLC or third-party asset. Reference icons and pawn kinds by path and defName instead of copying files. No `PatchOperationReplace` or `PatchOperationRemove` on a Core or DLC def. Gate DLC-conditional content with `MayRequire`. No modified game build, no bundled game file, no shipped QA overlay, and upload only what we own. This governs the faction layer, pawn hediffs, and every def class added later. Position, verification and the mechanical checks: [`COMPLIANCE_AND_OFFICIAL_VERSIONS.md`](COMPLIANCE_AND_OFFICIAL_VERSIONS.md).
+
+---
+
+## Owner decisions — 2026-09-29 — the M6 release gate
+
+Recorded verbatim, then their consequences. Three answers to one question set, asked because M6 is the only major that cannot be closed by building.
+
+> option 3 and remeber we dont have other peoples saves we just publish it all and update it as we go fixing bugs
+
+> option 2 and option 3
+
+**Decided, and binding:**
+
+19. **M6 splits into M6a and M6b.** M6a is the four rows that can be closed without the game running: package and def validation, the fresh-start checklist, the mod page and provenance, and the tag-and-archive ritual. M6b is the six rows that structurally cannot: scenario acceptance per opening, the invalid-state matrix, performance, economy balance, the release report and the install/uninstall/server tests. The split is bookkeeping, not scope: no row is dropped, reworded or moved out of Phase 6. It exists because one major reading 0% hid the fact that nearly half of it was buildable today.
+20. **The no-tests rule gains one scoped exception, and it is deferred.** The owner selected *both* the automated-fixtures option and the defer option for the Phase 6 fixtures row. Read together: **automated fixtures are authorised**, replacing the manual-checklist-only reading, **and they are not written until after the first launch**, so their content is shaped by observed failures rather than guessed ones. The exception is **narrow and belongs to that row alone**: deterministic room generation, gate transitions, ledger idempotency, transfer receipt IDs and schema migration. It is **not** permission for a general test suite, and `CONTRIBUTING.md`'s rule stands everywhere else. Nothing about it may be built before the owner has launched the game once.
+21. **Publication no longer waits on validation, but claims still do.** See [D1 superseded](#d1-superseded-2026-09-29--public-workshop-is-the-first-distribution-target). The mod page may claim the Core-only solo path and must not claim a profile row, a DLC interaction or RWT co-op until that row has a recorded result. Publishing early makes the no-compatibility-claim rule the main protection rather than a formality, and makes save migration a standing obligation from the first published version.

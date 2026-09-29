@@ -14,15 +14,17 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
 
 | Metric | Value |
 |--------|-------|
-| **Development version** | 0.4.2-dev (`About.xml`, csproj), branch `feature/connected-colony-portals` |
+| **Development version** | 0.7.1-dev (`About.xml`, csproj), branch `feature/connected-colony-portals` |
 | **Gate 0 (docs/source preparation)** | PASSED 2026-09-28 (`research/GATE_0_COMPLETION_AUDIT.md`) |
 | **Gate 2 (first loop in play)** | OPEN — no Rimrooms build has ever been launched |
-| **Master TODO** | 133 items checked, 121 open (mirrored in `TODO.md`; deferments tracked in `DEFERRED.md`) |
-| **Source** | 78 C# files, 15 namespaces, 9 save owners, no Harmony |
-| **Package** | 73 allowlisted files, 27 Def XMLs, 2 patches, 25 language files, 16 PNGs |
+| **Master TODO** | 134 items checked, 122 open (mirrored in `TODO.md`; deferments tracked in `DEFERRED.md`). **Read this number with the caveat below** |
+| **Source** | 120 C# files, 18 namespaces, no Harmony |
+| **Package** | 76 allowlisted files, 28 Def XMLs, 2 patches, 26 language files, 16 PNGs |
 | **Active major** | M1 connected colony portals — addresses, crossing, controls, natural-gate discovery and nineteen cross-map work families reachable in source (storage hauling, casualties and remains, construction supply, construction finishing, bill ingredients, research, tending, medicine supply, food supply, patient feeding, rescue in place, cleaning, repair, firefighting, mining, hunting, plant cutting, growing zones, fuel with rearm), eleven of them travel-to-work deployments rather than carries; twenty-eight deferments closed; **thirty-one cross-map work families, twenty-three of them deployments**, covering or explicitly deciding against every work type in Core and all five expansions; Backrooms containment enforced; the continuous topology is half closed (nesting and new-seed links already worked, ordinary-map discovery now added, emerging out in the world still open); prisoner/guest care, wardening, childcare and animals all built; no work-type gaps remain |
-| **Next unblocked minor** | Resume step 4 (work intents, leases, adapter families) |
+| **Next unblocked minor** | The player-facing how-to for the gameplay and systems, then the four area types across a gate |
 | **Owner questions open** | 3 (inside-start party size; first-exit fixed vs chosen; opening duration) |
+
+**Read the master TODO count with this caveat — it undercounts, badly.** The master backlog is granular for research and coarse for code: Phase 0 spends **81 rows** on preparation, while everything built from 0.5.0 through 0.7.1 — the whole cross-map work engine, 31 work families, 23 deployments, Backrooms containment, emergence, the kill switch and gate servicing — sits under **one** unchecked row, *"Implement and integrate native work/needs adapters, physical ingredient logistics and per-provider coverage without separate mandatory labor/material pools."* Twenty-seven shipped versions behind a single checkbox. A raw count of that file therefore reads ~12% on code while the source tree has gone from 78 files to 120. Reconciling those checkpoints back into the master backlog is itself an open item; until it is done, use the per-major estimates rather than the row count.
 
 ### Majors
 
@@ -52,9 +54,15 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
   **Scope:** the 11 panes (Overview, Personnel, Facilities, Gate, Expeditions, Atlas/Routes, Research/Evidence, Contracts/Ledger, Cases/Containment, Outposts/Company Network, Gravship Operations) with deep links, reason codes, previews and recovery; native menu/tab remap preserving every Architect/Work/Assign/Research/World action; tutorial, glossary, keyboard paths, contrast/scale options; main-menu slideshow (≥1 image per shipped scenario, 30 s dwell, 2 s fades, reduced-motion still, no audio) with dynamic title/version.
   **Exit condition:** every Operations action passes the six acceptance checks in `OPERATIONS_ACTION_CONTRACTS.md`; 100% of player text keyed; long-string locale clips nothing; owner-launched readability rows recorded. Maps to Stage 6.
 
-- [ ] **M6 — Phase 6 QA, balance and release** (all IDs).
-  **Scope:** Def/key/patch/package validation; scenario acceptance per opening; invalid-state matrix including the one-million-silver case (67 stacks OgreStack / 2,000 Core); performance against `research/PERFORMANCE_BENCHMARK_PLAN.md` budgets on RR-DEV-01; economy balance; release report; install/uninstall/update/server tests; mod page and provenance; tag and archive.
-  **Exit condition (D1):** private RimWorld Together prototype passes the Core-only solo path and the pinned co-op tests; public Workshop only after named-profile and multiplayer validation. Maps to Stage 6.
+- [ ] **M6a — Phase 6 work that closes without a launch** (all IDs).
+  **Split from M6 by owner decision 19, 2026-09-29.** Bookkeeping only: no Phase 6 row is dropped, reworded or moved out of Phase 6. The split exists because one major reading 0% hid the fact that four of its ten rows were buildable today.
+  **Scope:** Def/key/patch/package validation — references, language keys, patch targets, load folders, package metadata, missing textures/audio, logs, build output, clean-install folder structure; the reproducible fresh-start/save/reload/revisit checklist; the mod page, description, feature list, installation guide, dependencies, DLC matrix, RWT setup, credits, source provenance, license, FAQ, known issues and update/support plan; tag, archive and known-good server profile.
+  **Exit condition:** every Phase 6 row that does not require a running game is closed with its evidence, and the mod page claims nothing that lacks a recorded result.
+  **Note:** screenshots, trailer and preview art inside the mod-page row still need a running game and stay with M6b.
+
+- [ ] **M6b — Phase 6 work that structurally requires the owner's launch** (all IDs). Every row here is `[T]`.
+  **Scope:** scenario acceptance per opening; invalid-state matrix including the one-million-silver case (67 stacks OgreStack / 2,000 Core); performance against `research/PERFORMANCE_BENCHMARK_PLAN.md` budgets on RR-DEV-01; economy balance; release report; install/uninstall/update/server tests. Plus the **automated fixtures** authorised by owner decision 20 and explicitly deferred until after the first launch.
+  **Exit condition (D1, changed 2026-09-29):** the Core-only solo path passes. **The private RimWorld Together prototype is no longer a release prerequisite** — the owner moved the first distribution target to public Steam Workshop, because there is no installed base and therefore no other player's save to break: *"we dont have other peoples saves we just publish it all and update it as we go fixing bugs"*. Co-op validation no longer gates the first publication. The no-compatibility-claim rule stays binding and is now the main protection. Maps to Stage 6. See [D1 superseded](GATE_0_DECISIONS.md#d1-superseded-2026-09-29--public-workshop-is-the-first-distribution-target).
 
 - [T] **Runtime acceptance gates (Gate 2 onward).** Confirmed in the post-completion test phase, which begins only once the mod is complete in its entirety and the owner sets up the environment; it gates no source work. Needs, at that point, the owner launching the 295-entry product target through RimSort (296 with the RimBridgeServer QA overlay attached afterward). The build agent never launches RimWorld, never alters the active RimSort list, never attaches RimBridgeServer outside `research/RIMBRIDGE_TEST_HARNESS.md`. Source and build work continues across M1–M6 per the owner's [build-continuation direction](GATE_0_DECISIONS.md#build-continuation-and-deferred-game-testing).
 
@@ -160,7 +168,7 @@ Everything below was added 2026-09-28 by the Claude Code workflow as the project
 
 | ID | Date | Decision | Impact on the roadmap |
 |----|------|----------|-----------------------|
-| D1 | 2026-09-27 | Private RimWorld Together test build first; public Workshop only after named-profile and multiplayer validation | M6 exit condition; no Workshop work before M4 verification |
+| D1 | 2026-09-27, **changed 2026-09-29** | ~~Private RimWorld Together test build first; public Workshop only after named-profile and multiplayer validation.~~ **Now B: public Steam Workshop is the first distribution target; do not announce compatibility until validation is complete.** Owner: *"we dont have other peoples saves we just publish it all and update it as we go fixing bugs"* | M6b exit condition; the private RWT prototype stops being a release prerequisite, so **mod-page and provenance work moves forward into M6a instead of waiting on M4**. The no-compatibility-claim rule becomes the main protection, and save migration becomes a standing obligation from the first published version |
 | D2 | 2026-09-27 | Title exactly `Rimrooms - Async Industries`; author/publisher `Operator`; package `UnityLabAI.RimroomsAsyncIndustries`; namespace `RimroomsAsyncIndustries`; semantic versions (`0.x` pre-release, `1.0.0` first stable) | Identity is implemented; every version bump touches `About.xml`, csproj, `CHANGELOG.md` together |
 | D3 | 2026-09-27 | All 294 profile rows are the research/test target; only Core + Harmony/RWT required for co-op; everything else optional; rows 182 (Questionable Ethics Enhanced) and 274 (Medical Dissection) stay in the co-op candidate test despite publisher warnings | M4 scope; no adapter may become a hidden dependency |
 | D4 | 2026-09-27 | Core-only campaign; all five DLC optional detected content; validate the all-five profile | M4 DLC layers; no DLC type may gate the machine or the first mission |
@@ -202,7 +210,13 @@ M4 RWT adapter · DLC layers · 294-row closure  (source guards now; verificatio
 M5 Company Command · tutorial/accessibility · slideshow integration
    │
    ▼
-M6 validation · balance · release report · D1 private RWT prototype ─► Workshop (later, only after validation)
+M6a validation · fresh-start checklist · mod page/provenance · tag+archive   (closes without a launch)
+   │
+   ▼
+M6b scenario acceptance · invalid states · performance · balance · release report · install/server tests
+   │                                     (every row [T]; plus the deferred automated fixtures)
+   ▼
+Workshop (D1 changed 2026-09-29: public Workshop is the FIRST target; no compatibility claimed without a result)
 
 * Lone Survivor waits on two owner answers (party size; first exit fixed vs chosen). Provisional assumption in use.
 Every `[T]` row across all majors converges on one event: the **post-completion test phase**, which begins only after the mod is complete in its entirety and the owner has set up the environment. None of them blocks any build work, and none of them is a reason to ask the owner to launch.
