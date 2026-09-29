@@ -397,3 +397,55 @@ Contract section in `CONNECTED_COLONY_PORTALS.md`; decision log section in `GATE
 
 Source files created: 1 (`PortalTraversalPolicy.cs`). Source files modified: 1 (`PortalCrossingService.cs`). Package files modified: 1 (`RR_Portals.xml`). Docs updated: 17.
 Published: via the cascade in `PUBLISHING.md` on both remotes; the refs were read back in session output.
+
+
+---
+
+## Session — 2026-09-28 — cross-map work intents, planning leases and the storage-hauling family (0.5.0-dev)
+
+### Verbatim request
+
+> continue the work empecabily and completely of the Mod work to be done keeping true to all prep docs and needed refrences when building the mods systems and structures of the code to be a perfect working mod as described completely in the prep work
+
+### COMPLETED
+
+- [x] **"Implement saved work intents, quantity leases and native destination job revalidation"** (M1 resume step 4, first half, verbatim from the checkpoint)
+  - `ConnectedWork/RimroomsConnectedWorkComponent.cs` (new) owns the branch's saved work intents, schema 1, capped at 64 live and 128 total, with a full bounded maintenance sweep every 60 ticks. On load it validates its own records and, on any inconsistency, faults, logs, disables the whole layer and leaves the save untouched.
+  - `ConnectedWork/ConnectedWorkRecords.cs` (new) is the saved intent. It records every field the pinned API review demanded, including the adapter id **and version**, the original object with its load id and owning map, the observed object and count after a real pickup, the connection id, opening id and graph revision the plan was made against, and the final-target reference that hauling does not use but the bill, frame and patient families will, so they need no migration.
+  - The intent owns its own planning lease, so the two can never desync. The lease is bounded, expiring, keyed by the actual `Thing` plus a quantity, and explicitly **not** a native reservation: it excludes no native pawn and grants no claim. It is released the moment a quantity is physically in hand.
+  - The phase deliberately does not encode which segment comes next; the next physical step is derived from the phase plus the worker's **actual current map** every time. That is what makes a reload mid-route, an interrupted job or a worker in an unexpected place all resolve through one rule.
+  - `ConnectedWork/ConnectedWorkAdapter.cs` (new) makes the two halves of validation structural rather than advisory: a candidate half that runs against an explicit `Map`, and a definitive native half that runs only once the worker is standing on the map in question. No native `HasJob`/`JobOn` is ever called remotely, because Core's defaults can invoke each other and a speculative remote probe can have side effects.
+  - `ConnectedWork/ConnectedRouteService.cs` (new) retains one bounded route cursor per ordered map pair on top of the existing resumable search. The rule it exists to enforce: a search that ran out of budget is **pending**, never "no route".
+- [x] **"then physical hauling"** (same step, first family)
+  - `ConnectedWork/Adapters/ConnectedHaulingAdapter.cs` (new) hauls across a gate in both directions: real pickup under a real native reservation, real carry under native mass and stack limits, native placement into storage the destination map's own settings accept. Cell destinations only in this version.
+  - Two candidate sources, not one. Core's `ListerHaulables.ShouldBeHaulable` excludes anything already in its best storage **on its own map**, so a crate in a perfectly good far-side stockpile is invisible to that map's own lister even when better storage exists on this side. Without the second source, "bring it home" would have appeared to work on loose salvage and silently failed on anything stored.
+  - Direction is chosen by cost, not by favour: collect where the worker already stands before sending it through a gate to collect, because that trip costs one crossing instead of two.
+  - `ConnectedWork/WorkGiver_ConnectedWork.cs` and `JobDriver_ConnectedHauling.cs` (new), plus `RR_ConnectedWorkJobs.xml`, `RR_ConnectedWork.xml` work givers and keyed text.
+- [x] **"Preserve priorities, schedules, areas, locks, custody and actual inventory. A generic graph does not implement these adapters."**
+  - Preserved by construction rather than by re-implementation: the layer reaches pawns as ordinary `WorkGiverDef`s inside Core's own `JobGiver_Work`, which already honours per-pawn priorities, within-type order, schedules, disabled work types, work tags and required capacities, and already puts the constant and emergency trees ahead of routine work. Verified from the pinned decompile, not assumed. **No job this layer produces is ever marked `playerForced`.**
+  - Each family registers two work givers because starting and finishing need opposite priorities: a high-priority one that only finishes a committed trip, and a low-priority one that only starts a new one. Starting sits below Core's `HaulGeneral` so local work is never starved; finishing sits above `HaulCorpses` so a worker holding cargo on the far side does not wander off.
+  - Custody and inventory: the object that arrives is the object that left, or the honest split a partial pickup produced. Carry-between-jobs was verified against `Pawn_JobTracker` rather than guessed, which is why the fetch job sets `carryThingAfterJob` and the deliver job must not set `dropThingBeforeJob`.
+
+### Found and fixed in self-review before publishing
+
+- The bounded candidate scans originally examined a fixed **prefix**. With five or more connected maps open, the fifth and later would have been starved forever, which directly violates the owner's rule that no code path may assume one gate per branch, map or coordinate. Every cap is now a deterministic **rotating window**, sized so a pass still spends its whole budget.
+- A dead `Log.Error` branch in the save validator that could never be reached, and a call to `IsHashIntervalTick` on an `int`, which that extension does not exist for.
+- A comment that claimed the far side is always where loose salvage lies, which is only true when the worker happens to be at headquarters.
+
+### Reference gap closed
+
+RimWorld 1.6 base Core does ship its own map-portal system — `MapPortal`, `WorkGiver_HaulToPortal`, `EnterPortalUtility`, `JobDriver_EnterPortal`, `JobDriver_TakeAndEnterPortal` — and the pinned API review never covered it. It was inspected before writing a line of the adapter, and it cannot serve this contract on four independent grounds: its hauling does nothing until the player fills a `leftToLoad` transferable manifest, which is exactly the dispatch model the owner's clarification removed; its crossing driver **drops carried cargo on arrival** and wipes the job queue; `GetOtherMap()` is hard-bound to generating a pocket map rather than a persistent coordinate site; and it is a `Building`, not a `Building_Door`, so using it would require a new gameplay ThingDef the existing-content-only rule forbids. Recorded permanently as an appendix in `implementation/CONNECTED_WORK_CORE_API.md` so nobody re-litigates it. Core itself is now also on the list of things that do not supply this adapter.
+
+### Documents updated in the same change
+
+`implementation/CONNECTED_WORK_IMPLEMENTATION.md` (new record), appendix in `implementation/CONNECTED_WORK_CORE_API.md`, `CONNECTED_COLONY_PORTALS.md` backlog progress, `TODO.md`, `DEFERRED.md`, `NOW.md`, `DECOMPOSED.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `CHANGELOG.md`, `About.xml`, the csproj, and `tools/package-files.json`.
+
+### Build evidence
+
+0.5.0-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **87** C# source files, **76** approved package files. Assembly SHA-256 `E5426A967402B70D709536F8C1809C9A2B9158492091768B31984E0003205AAF`. Evidence folder `implementation/evidence/connected-work-2026-09-28/` with compiler output plus source, package and **recomputed** reference manifests (no reference drift). All 58 packaged XML files parse; all 31 translation keys referenced by the new source resolve. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 8. Source files modified: 2 (one new public accessor on the campaign component; one added call in the portal pane). Package files created: 3. Package files modified: 1. Docs updated: 14.
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+Deliberate limits, all with named owner steps in `DEFERRED.md`: one work family only; cell storage destinations only; no optional provider adapters; people and corpses out of scope for storage hauling; no remote allowed-area claim; two private `OwnsMap` copies left to converge as hygiene.

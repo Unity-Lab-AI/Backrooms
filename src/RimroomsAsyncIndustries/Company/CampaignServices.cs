@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using RimroomsAsyncIndustries.Generation;
 using Verse;
 
 namespace RimroomsAsyncIndustries.Company
@@ -136,6 +137,21 @@ namespace RimroomsAsyncIndustries.Company
             coordinate = created;
             RecordEvent("RR_Event_CoordinateDiscovered", id, discoveryId);
             return CompanyActionResult.Applied();
+        }
+
+        /// <summary>
+        /// Whether this branch owns a loaded map: its headquarters, or a destination
+        /// site held by one of its own coordinate records. This is the canonical
+        /// answer. It is deliberately strict about a map that is no longer loaded,
+        /// because a stale reference must never read as ownership.
+        /// </summary>
+        public bool OwnsMap(Map map)
+        {
+            if (map == null || !Find.Maps.Contains(map)) { return false; }
+            if (headquarters == map) { return true; }
+            RimroomsDestinationMapParent site = map.Parent as RimroomsDestinationMapParent;
+            return site != null && coordinates.Any(record => record != null &&
+                record.site == site && record.id == site.CoordinateId);
         }
 
         internal CompanyActionResult PostTransaction(string operationId, long amountUsd, string reasonKey, string relatedId)

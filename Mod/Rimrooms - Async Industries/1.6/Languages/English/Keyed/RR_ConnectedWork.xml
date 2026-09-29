@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <RR_ConnectedWork_HaulingLabel>hauling through a gate</RR_ConnectedWork_HaulingLabel>
+
+  <!-- A trip that stopped short. Every one of these names a physical situation, and
+       none of them moves, copies or destroys anything: whatever was picked up stays
+       exactly where it actually is. -->
+  <RR_ConnectedWork_InvalidState>Cross-gate work is unavailable right now.</RR_ConnectedWork_InvalidState>
+  <RR_ConnectedWork_InvalidSave>The saved cross-gate work records did not pass their integrity check, so cross-gate work is disabled. Nothing was altered; keep this save.</RR_ConnectedWork_InvalidSave>
+  <RR_ConnectedWork_AdapterRetired>That work trip was planned by an older version of this build and will not be carried out under changed rules.</RR_ConnectedWork_AdapterRetired>
+  <RR_ConnectedWork_WorkerLost>The worker on that trip is no longer available.</RR_ConnectedWork_WorkerLost>
+  <RR_ConnectedWork_WorkerUnavailable>The worker cannot make that trip now. Drafting, a mental state or being downed all end a trip that has not collected anything yet.</RR_ConnectedWork_WorkerUnavailable>
+  <RR_ConnectedWork_MapUnavailable>One side of that trip is no longer loaded.</RR_ConnectedWork_MapUnavailable>
+  <RR_ConnectedWork_LeaseExpired>That work trip went stale before it finished and was abandoned. Anything already collected stays where it is.</RR_ConnectedWork_LeaseExpired>
+  <RR_ConnectedWork_RouteExhausted>The route for that trip kept being refused at the gate, so the trip was abandoned.</RR_ConnectedWork_RouteExhausted>
+  <RR_ConnectedWork_NoRoute>There is no open gate route to that space.</RR_ConnectedWork_NoRoute>
+  <RR_ConnectedWork_ObjectGone>The object that trip was for no longer exists.</RR_ConnectedWork_ObjectGone>
+  <RR_ConnectedWork_ObjectMoved>The object that trip was for is no longer where it was.</RR_ConnectedWork_ObjectMoved>
+  <RR_ConnectedWork_ObjectUnavailable>The object cannot be collected: it is forbidden, out of the allowed area, unreachable, or already claimed by someone else.</RR_ConnectedWork_ObjectUnavailable>
+  <RR_ConnectedWork_CannotCarry>The worker cannot carry any of that object.</RR_ConnectedWork_CannotCarry>
+  <RR_ConnectedWork_CargoGone>The carried object no longer exists.</RR_ConnectedWork_CargoGone>
+  <RR_ConnectedWork_CargoDropped>The worker put the carried object down before reaching storage. It is lying where it was dropped.</RR_ConnectedWork_CargoDropped>
+  <RR_ConnectedWork_PickupFailed>Nothing was collected, so the trip was dropped. Nothing changed hands.</RR_ConnectedWork_PickupFailed>
+  <RR_ConnectedWork_NoStorageOnArrival>The storage this delivery was planned for is gone. The object arrived and was set down here; ordinary hauling can take it from there.</RR_ConnectedWork_NoStorageOnArrival>
+
+  <RR_Event_ConnectedWorkFailed>A work trip through a gate did not finish: {0}</RR_Event_ConnectedWorkFailed>
+
+  <RR_ConnectedWork_Heading>Work across the gates</RR_ConnectedWork_Heading>
+  <RR_ConnectedWork_Unavailable>Work across the gates is unavailable until this branch is operating.</RR_ConnectedWork_Unavailable>
+  <RR_ConnectedWork_None>No work trips are crossing a gate right now.</RR_ConnectedWork_None>
+  <RR_ConnectedWork_Active>Work trips under way: {0}</RR_ConnectedWork_Active>
+  <RR_ConnectedWork_Line>{0}: {1}, {2} to {3} ({4})</RR_ConnectedWork_Line>
+  <RR_ConnectedWork_StageCollecting>going to collect it</RR_ConnectedWork_StageCollecting>
+  <RR_ConnectedWork_StageCarrying>carrying it</RR_ConnectedWork_StageCarrying>
+  <RR_ConnectedWork_UnknownWorker>an unavailable worker</RR_ConnectedWork_UnknownWorker>
+  <RR_ConnectedWork_UnknownObject>an object that is gone</RR_ConnectedWork_UnknownObject>
+  <RR_ConnectedWork_UnknownPlace>somewhere no longer loaded</RR_ConnectedWork_UnknownPlace>
+
+</LanguageData>

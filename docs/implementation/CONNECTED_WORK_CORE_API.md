@@ -152,3 +152,33 @@ The query retains capture position, available-edge adjacency, BFS queue/visited 
 The lead's final gate integration adds `HasUsablePortalWindow(connectionId, openingId)`. Laboratory Availability now calls it for live owner/session, remaining-time, operator/station, circuit and next-tick battery checks; it does not rely only on last tick's saved open flag. Observe retains its identity checks. This prevents a topology traversal check accepting newly lost power/staff before the gate's next tick observes that loss.
 
 Source inspection covered phase transitions, one-operation continuation, cycles/visited identity, retained route-list ownership, changed registration/opening, dynamic availability rechecks and legacy-wrapper statuses. These are source reasoning results, not executed tests. Build remains with the lead; owner-launched path/closure/save-load cases and performance measurement remain pending.
+
+
+## Appendix: Core 1.6 already has a map-portal system, and it cannot serve this contract
+
+**Added 2026-09-28 during resume step 4 implementation.** This section closes a gap in the review above, which did not cover these types. It is recorded permanently so no later agent spends a day rediscovering it or, worse, rebuilds the design on top of it.
+
+Core 1.6 — base `Data/Core`, not a DLC — ships a complete pawns-and-cargo-through-a-portal system. Same pinned `Assembly-CSharp.dll` hash as the rest of this document; inspections in `.local/inspection-connected-work/`.
+
+| Exact type / def | What it actually does |
+|---|---|
+| `RimWorld.MapPortal : Building, IThingHolder` | A portal building. `GetOtherMap()` returns its pocket map and **generates one from `def.portal.pocketMapGenerator` if absent**. Holds `PocketMapExit exit`, `List<TransferableOneWay> leftToLoad`, `PortalContainerProxy containerProxy`, `LoadInProgress`, `IsEnterable(out string)`, `GetDestinationLocation()`, `OnEntered(Pawn)`, `AutoDraftOnEnter`. |
+| `RimWorld.WorkGiver_HaulToPortal`, `WorkGiverDef HaulToPortal` (`Hauling`, priority 105) | Scans `ThingRequestGroup.MapPortal`. Delegates to `EnterPortalUtility.HasJobOnPortal` / `JobOnPortal`. |
+| `RimWorld.EnterPortalUtility` | `HasJobOnPortal` returns false immediately when `portal.leftToLoad.NullOrEmpty()`. `FindThingToLoad` selects against that transferable list. `MakeLordsAsAppropriate` builds a `LordJob_LoadAndEnterPortal`. |
+| `RimWorld.JobDriver_HaulToPortal : JobDriver_HaulToContainer` | Hauls the item **into the portal as a container**, 90-tick deposit. |
+| `RimWorld.JobDriver_EnterPortal`, `JobDriver_TakeAndEnterPortal` (`EnterPortal`, `CarryDownedPawnToPortal`) | Walks to the portal, waits 90 ticks, then `DeSpawnOrDeselect` + `GenSpawn.Spawn` on the other map. |
+
+**Why it cannot be used for this mod, on four independent grounds.**
+
+1. **It *is* the cargo-manifest dispatch model the owner's clarification removed.** `WorkGiver_HaulToPortal` does nothing at all until the player has populated `leftToLoad` with `TransferableOneWay` entries, and crossing is then marched by a `LordJob_LoadAndEnterPortal`. That is a caravan-style load-then-depart flow. [The governing contract](../CONNECTED_COLONY_PORTALS.md) requires the opposite: no mandatory dispatch, no selected crew, no manifest for routine work.
+2. **`JobDriver_EnterPortal` drops carried cargo on arrival.** Its final toil calls `pawn.carryTracker.TryDropCarriedThing(...)` when the pawn is not drafted, and also clears the prioritized work and job queue and notifies the lord of `PawnLost`. Its semantics are "leave this map", not "walk into the next room of my colony". The contract requires crossing to preserve the same pawn *and its carried objects* under a recoverable receipt, which is what `RimroomsPortalCrossingService` does and this does not.
+3. **It is hard-bound to pocket maps.** `GetOtherMap()` generates a `PocketMapParent` from the portal ThingDef's own generator. Rimrooms destinations are `RimroomsDestinationMapParent` world sites with persistent coordinate identity, saved seed and generator version, revisitable without reset. A `MapPortal` cannot own one of those.
+4. **A gate is a door, and new gameplay ThingDefs are prohibited.** `MapPortal` is a `Building`, not a `Building_Door`, and using it would require a new gameplay ThingDef carrying `portal.pocketMapGenerator`. The owner's existing-content-only rule forbids that, and the owner's vocabulary is explicit that a gate *is* the machine door.
+
+**It supplies no cross-map work of any kind.** No cross-map job discovery, no cross-map storage search, no cross-map reservation, no cross-map bill, ingredient or care route. It is a transfer mechanism. The finding of [the profile review](CONNECTED_WORK_PROFILE_BOUNDARIES.md) therefore stands unchanged with Core itself added to it: nothing installed, Core included, supplies the connected work adapter this project has to own.
+
+**What was genuinely reused from this inspection, with signatures confirmed against the pinned assembly:** `Verse.AI.Toils_Haul.StartCarryThing` / `CarryHauledThingToCell` / `PlaceHauledThingInCell`, `RimWorld.StoreUtility.TryFindBestBetterStoreCellFor` / `CurrentStoragePriorityOf`, the public map-parameterised `IntVec3.IsValidStorageFor(cell, map, thing)` that Core's own `JobDriver_HaulToCell` uses the same way, `Verse.AI.HaulAIUtility.PawnCanAutomaticallyHaul`, `RimWorld.ListerHaulables.ThingsPotentiallyNeedingHauling`, `RimWorld.HaulDestinationManager.AllGroupsListInPriorityOrder`, `RimWorld.SlotGroup.Settings` / `CellsList` / `HeldThings`, `RimWorld.StorageSettings.Priority` / `AllowedToAccept`, `Verse.AI.JobDriver.AddFinishAction`, and the `Pawn_JobTracker` carry-between-jobs rules for `dropThingBeforeJob` and `carryThingAfterJob`. Two further facts were confirmed rather than assumed: `JobGiver_Work` calls `NonScanJob` for every giver before the scanner branch, and `PawnCanUseWorkGiver` checks `ShouldSkip`, `WorkTypeIsDisabled` and required capacities first.
+
+Also recorded from `ListerHaulables.ShouldBeHaulable`: it excludes anything already in its best storage **on its own map**. Any cross-map hauling built only on `listerHaulables` therefore works on loose objects and silently fails on stored ones. See [the work implementation record](CONNECTED_WORK_IMPLEMENTATION.md) for the second candidate source that covers it.
+
+No code, def, art or content was copied from Core. No build, test, game run or profile change was performed for this appendix beyond the decompilation commands already documented above.

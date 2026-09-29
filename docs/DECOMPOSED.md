@@ -191,6 +191,22 @@ Decomposed 2026-09-28. This is the step that makes the substrate reachable in pl
 
 ---
 
+### Parent minor task: Resume step 4 (wave 1) — CLOSED 2026-09-28 (0.5.0-dev) — work intents, planning leases and the storage-hauling family
+
+> "Implement saved work intents, quantity leases and native destination job revalidation; then physical hauling, construction, bills, research, medical/food/bed and other work/needs families. Preserve priorities, schedules, areas, locks, custody and actual inventory. A generic graph does not implement these adapters."
+
+**Decomposition rationale:** the step covers every work family. The engine plus exactly one family is the smallest increment that proves the design actually works end to end, and the remaining families are then additive against a settled contract rather than speculative.
+
+- [x] **Slice 1 — close the reference gap before writing anything.** Inspect Core 1.6's own map-portal system and every API the adapters would stand on, against the pinned assembly hash. Files: `.local/inspection-connected-work/*` (evidence only). Verification: each signature read from the decompile, not memory; findings written up as an appendix to `implementation/CONNECTED_WORK_CORE_API.md`.
+- [x] **Slice 2 — the saved intent.** Files: `ConnectedWork/ConnectedWorkRecords.cs`. Verification: every field the pinned review demanded is present, including adapter version and the unused final-target reference later families need.
+- [x] **Slice 3 — bounded routing for automatic callers.** Files: `ConnectedWork/ConnectedRouteService.cs`. Verification: a budget-limited or invalidated status returns pending, never unreachable; cursors are transient and cleared on load.
+- [x] **Slice 4 — the adapter contract.** Files: `ConnectedWork/ConnectedWorkAdapter.cs`. Verification: the candidate half and the definitive half are separate abstract members, so a future family cannot accidentally merge them.
+- [x] **Slice 5 — the component, leases and maintenance.** Files: `ConnectedWork/RimroomsConnectedWorkComponent.cs`, plus one new public `OwnsMap` accessor on `Company/CampaignServices.cs`. Verification: withdraw-on-fault on open; one live intent per worker enforced in the save validator; full sweep bounded by the live cap.
+- [x] **Slice 6 — the storage-hauling family.** Files: `ConnectedWork/Adapters/ConnectedHaulingAdapter.cs`. Verification: two candidate sources so stored objects are not silently invisible; rotating windows so no map or stockpile is starved; `Pawn` and `Corpse` refused by design.
+- [x] **Slice 7 — work givers and segment drivers.** Files: `ConnectedWork/WorkGiver_ConnectedWork.cs`, `ConnectedWork/JobDriver_ConnectedHauling.cs`, `Defs/JobDefs/RR_ConnectedWorkJobs.xml`, `Defs/WorkGiverDefs/RR_ConnectedWork.xml`. Verification: plan/continue pair per family; carry-between-jobs flags set from the verified `Pawn_JobTracker` rules; outcomes recorded from a global finish action so a failure cannot skip them.
+- [x] **Slice 8 — make it visible.** Files: `UI/OperationsConnectedWork.cs`, one added call in `UI/OperationsPortalNetwork.cs`, `Languages/English/Keyed/RR_ConnectedWork.xml`. Verification: every live trip is listed; all 31 referenced keys resolve.
+- [x] **Slice 9 — checkpoint.** Files: `About.xml`, csproj, `tools/package-files.json`, `CHANGELOG.md`, the implementation record, the evidence folder, and the workflow ledger. Verification: clean build, XML parse sweep, key-coverage sweep, manifests recomputed.
+
 ## TOMBSTONES
 
 _(none)_

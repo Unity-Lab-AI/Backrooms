@@ -41,6 +41,7 @@ namespace RimroomsAsyncIndustries.UI
             DrawRememberedAddresses(listing, network);
             DrawAddressActions(listing, campaign, network);
             DrawTravelControls(listing, campaign, network, crossings);
+            DrawConnectedWork(listing);
             listing.GapLine();
         }
 

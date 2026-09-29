@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Each connected family is registered twice, because starting a trip and
+       finishing one need opposite priorities.
+
+       Finishing sits high: a worker standing on the far side holding cargo must not
+       lose to routine local hauling and abandon the delivery. It is placed above
+       Core's HaulCorpses (90) and below Strip (100) and HaulToPortal (105).
+
+       Starting sits just below Core's HaulGeneral (15), so ordinary local hauling is
+       always preferred and a trip through a gate only happens when there is nothing
+       closer to do. Both values are balance decisions and are recorded as such; they
+       are subject to the owner's runtime acceptance. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedHaulingContinue</defName>
+    <label>finish hauling through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedHaulingContinue</giverClass>
+    <workType>Hauling</workType>
+    <verb>haul</verb>
+    <gerund>hauling</gerund>
+    <priorityInType>95</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedHauling</defName>
+    <label>haul through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedHauling</giverClass>
+    <workType>Hauling</workType>
+    <verb>haul</verb>
+    <gerund>hauling</gerund>
+    <priorityInType>14</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
+</Defs>

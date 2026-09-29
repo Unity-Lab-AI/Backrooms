@@ -75,6 +75,9 @@
     "About/About.xml",
     "About/License.txt",
     "About/Preview.png",
-    "LoadFolders.xml"
+    "LoadFolders.xml",
+    "1.6/Defs/JobDefs/RR_ConnectedWorkJobs.xml",
+    "1.6/Defs/WorkGiverDefs/RR_ConnectedWork.xml",
+    "1.6/Languages/English/Keyed/RR_ConnectedWork.xml"
   ]
 }

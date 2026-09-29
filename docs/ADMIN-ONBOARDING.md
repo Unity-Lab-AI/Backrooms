@@ -248,6 +248,6 @@ The audit log at `logs/admin_audit.log` on the bot host records every authentica
 
 - [`.claude/CLAUDE.md`](../.claude/CLAUDE.md) — workflow index + LAW one-liners + team roster + Forgejo info
 - [`.claude/CONSTRAINTS.md`](../.claude/CONSTRAINTS.md) — full LAW bodies (binding rules for every founder)
-- [`.claude/commands/unity-admin-init.md`](../.claude/commands/unity-admin-init.md) — interactive slash command that walks you through steps 2-10
+- [`.claude/skills/unity-admin-init/SKILL.md`](../.claude/skills/unity-admin-init/SKILL.md) — interactive slash command that walks you through steps 2-10
 - [Unity Command `docs/USAGE.md §10`](https://git.unityailab.com/UnityAILab/UnityCommand/src/branch/main/docs/USAGE.md) — bot-side admin bridge reference + audit log
 - [Unity Command `docs/SECURITY.md §6.5`](https://git.unityailab.com/UnityAILab/UnityCommand/src/branch/main/docs/SECURITY.md) — three-population auth model + spoofing protection

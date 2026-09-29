@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Take hold of an actual object on the map that holds it. dropThingBeforeJob puts
+       down anything unrelated first; carryThingAfterJob is what lets the picked-up
+       object survive into the crossing job that follows. -->
+  <JobDef>
+    <defName>RR_ConnectedFetch</defName>
+    <driverClass>RimroomsAsyncIndustries.ConnectedWork.JobDriver_ConnectedFetch</driverClass>
+    <reportString>collecting TargetA to carry back.</reportString>
+    <casualInterruptible>true</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+    <dropThingBeforeJob>true</dropThingBeforeJob>
+    <carryThingAfterJob>true</carryThingAfterJob>
+  </JobDef>
+
+  <!-- Place the carried object into storage on this map. dropThingBeforeJob MUST stay
+       false: the whole point of this segment is that the worker arrives holding the
+       cargo. carryThingAfterJob keeps it in hand when a placement has to be retried. -->
+  <JobDef>
+    <defName>RR_ConnectedDeliver</defName>
+    <driverClass>RimroomsAsyncIndustries.ConnectedWork.JobDriver_ConnectedDeliver</driverClass>
+    <reportString>storing TargetA.</reportString>
+    <casualInterruptible>true</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+    <dropThingBeforeJob>false</dropThingBeforeJob>
+    <carryThingAfterJob>true</carryThingAfterJob>
+  </JobDef>
+
+</Defs>
