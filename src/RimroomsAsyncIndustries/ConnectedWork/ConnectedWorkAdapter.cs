@@ -88,12 +88,15 @@ namespace RimroomsAsyncIndustries.ConnectedWork
     public static class ConnectedWorkAdapters
     {
         public const string StorageHauling = "storage-hauling";
+        public const string CasualtyRescue = "casualty-rescue";
 
         private static readonly ConnectedHaulingAdapter hauling = new ConnectedHaulingAdapter();
+        private static readonly ConnectedCasualtyAdapter casualties = new ConnectedCasualtyAdapter();
         private static readonly Dictionary<string, ConnectedWorkAdapter> registry =
             new Dictionary<string, ConnectedWorkAdapter>(System.StringComparer.Ordinal)
             {
-                { StorageHauling, hauling }
+                { StorageHauling, hauling },
+                { CasualtyRescue, casualties }
             };
 
         public static IEnumerable<ConnectedWorkAdapter> All { get { return registry.Values; } }

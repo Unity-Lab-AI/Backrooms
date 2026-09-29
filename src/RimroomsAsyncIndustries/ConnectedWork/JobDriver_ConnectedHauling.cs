@@ -18,7 +18,10 @@ namespace RimroomsAsyncIndustries.ConnectedWork
     {
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            return pawn.Reserve(job.targetA, job, 1, job.count, null, errorOnFailed);
+            // A person is reserved whole, exactly as Core reserves a rescue target. A
+            // stack is reserved by the quantity this trip is actually for.
+            int reserved = job.targetA.Thing is Pawn ? -1 : job.count;
+            return pawn.Reserve(job.targetA, job, 1, reserved, null, errorOnFailed);
         }
 
         protected override IEnumerable<Toil> MakeNewToils()
@@ -39,6 +42,8 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             RimroomsConnectedWorkComponent work = ConnectedWorkJobs.Work();
             ConnectedWorkIntent intent = LiveIntent();
             if (work == null || intent == null || intent.Phase != ConnectedWorkPhase.Planned) { return; }
+            // Shared by every family: a casualty is picked up with the same toil as a
+            // crate, so this records whatever the family asked to be collected.
             Thing carried = pawn.carryTracker == null ? null : pawn.carryTracker.CarriedThing;
             if (carried == null || intent.SourceThing == null || carried.def != intent.SourceThing.def)
             {
@@ -53,7 +58,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         }
 
         private ConnectedWorkIntent LiveIntent()
-        { return ConnectedWorkJobs.LiveHaulingIntent(pawn); }
+        { return ConnectedWorkJobs.LiveConnectedIntent(pawn); }
     }
 
     /// <summary>
@@ -132,13 +137,22 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 ? null : Current.Game.GetComponent<RimroomsConnectedWorkComponent>();
         }
 
-        internal static ConnectedWorkIntent LiveHaulingIntent(Pawn pawn)
+        /// <summary>This worker's live intent, whichever family owns it.</summary>
+        internal static ConnectedWorkIntent LiveConnectedIntent(Pawn pawn)
         {
             RimroomsConnectedWorkComponent work = Work();
-            ConnectedWorkIntent intent = work == null ? null : work.ActiveIntentFor(pawn);
-            return intent != null && intent.AdapterId == ConnectedWorkAdapters.StorageHauling
-                ? intent : null;
+            return work == null ? null : work.ActiveIntentFor(pawn);
         }
+
+        /// <summary>This worker's live intent, but only if the named family owns it.</summary>
+        internal static ConnectedWorkIntent LiveIntentFor(Pawn pawn, string adapterId)
+        {
+            ConnectedWorkIntent intent = LiveConnectedIntent(pawn);
+            return intent != null && intent.AdapterId == adapterId ? intent : null;
+        }
+
+        internal static ConnectedWorkIntent LiveHaulingIntent(Pawn pawn)
+        { return LiveIntentFor(pawn, ConnectedWorkAdapters.StorageHauling); }
 
         /// <summary>
         /// One delivery outcome rule for both the cell and the container route, so the

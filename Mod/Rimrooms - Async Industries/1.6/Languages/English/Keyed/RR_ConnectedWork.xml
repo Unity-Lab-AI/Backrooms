@@ -37,4 +37,10 @@
   <RR_ConnectedWork_UnknownObject>an object that is gone</RR_ConnectedWork_UnknownObject>
   <RR_ConnectedWork_UnknownPlace>somewhere no longer loaded</RR_ConnectedWork_UnknownPlace>
 
+  <RR_ConnectedWork_RescueLabel>carrying a casualty home through a gate</RR_ConnectedWork_RescueLabel>
+  <RR_ConnectedWork_CasualtyGone>The person that trip was for is no longer there to carry.</RR_ConnectedWork_CasualtyGone>
+  <RR_ConnectedWork_CasualtyUnavailable>They cannot be picked up: forbidden, out of the allowed area, unreachable, already claimed, or there are enemies too close.</RR_ConnectedWork_CasualtyUnavailable>
+  <RR_ConnectedWork_CasualtyHome>They were carried back through the gate but there was no bed free on arrival, so they were set down here. Ordinary rescue can take them from here.</RR_ConnectedWork_CasualtyHome>
+  <RR_ConnectedWork_CasualtyRecovered>They came round while being carried back, and were set down on this side.</RR_ConnectedWork_CasualtyRecovered>
+
 </LanguageData>

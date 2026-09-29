@@ -14,6 +14,20 @@
     <carryThingAfterJob>true</carryThingAfterJob>
   </JobDef>
 
+  <!-- Put the carried casualty into the bed found for them on this map. Unlike the
+       cargo routes this does NOT keep them in hand afterwards: if the placement fails
+       Core sets them down here, and they are then an ordinary local rescue, which is
+       the right handoff rather than a worker carrying someone around indefinitely. -->
+  <JobDef>
+    <defName>RR_ConnectedTakeToBed</defName>
+    <driverClass>RimroomsAsyncIndustries.ConnectedWork.JobDriver_ConnectedTakeToBed</driverClass>
+    <reportString>taking TargetA to TargetB.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+    <dropThingBeforeJob>false</dropThingBeforeJob>
+    <carryThingAfterJob>false</carryThingAfterJob>
+  </JobDef>
+
   <!-- Place the carried object into a storage container on this map. Same
        carry rules as the cell route; different Core toils. -->
   <JobDef>

@@ -1,6 +1,6 @@
 # SKILL_TREE
 
-Capability inventory for Rimrooms - Async Industries as of 0.5.1-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
+Capability inventory for Rimrooms - Async Industries as of 0.5.2-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
 
 | Status | Meaning |
 |--------|---------|
@@ -57,7 +57,8 @@ Canonical detail: [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md), [`FEATURE_TRACEABI
 - Gradual, saved, bounded escalation of what a space presents (quiet start, saved causes only, caps per opening and per coordinate, required quiet stretches, no summing across gates) — **Design** (owned by resume step 5, spec in `DEFERRED.md`)
 - Saved cross-map work intents, bounded expiring planning leases and definitive native destination revalidation — **Build / Runtime-pending** (0.5.0-dev)
 - Cross-gate storage hauling in both directions: real pickup under native reservation, real carry under native mass and stack limits, native placement into storage the destination's own settings accept — **Build / Runtime-pending** (0.5.0-dev). Cell destinations only; container and provider destinations are **Design**.
-- Adapters for construction supply/finish, bills and unfinished work, research, tend/rescue, food, rest and all remaining work families — **Design** (resume step 4, one at a time with source evidence per route)
+- Cross-gate rescue of our own downed people to a bed, and cross-gate recovery of remains to a grave or storage — **Build / Runtime-pending** (0.5.2-dev). Capture is a player order by design, not automatic work.
+- Adapters for construction supply/finish, bills and unfinished work, research, tending across a gate, food, rest and all remaining work families — **Design** (resume step 4, one at a time with source evidence per route)
 - Upgrades: stabilizers, monitoring, cool-down, modules, reliability; aperture/duration/recall/efficiency; larger door providers (Doors Expanded 2×1/3×1/3×2, ReBuild, VVE garage) — **Design**
 - Gate window ladder 20 min → 2 h → 1 day → 7 days → 30 days with power/heat/maintenance/supply/rotation/comms costs — **Design**
 - Native recolor (`Building.ChangePaint`) with original paint restored; Core `HeatGlow` aura with disable/reduced-motion guards — **Build** (aura) / **Design** (paint)
@@ -249,6 +250,8 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 | Cross-gate delivery into storage containers | Gate/Portals | Intermediate | **Build / Runtime-pending** (0.5.1-dev) |
 | Observed remote allowed-area preflight | Gate/Portals | Intermediate | **Build / Runtime-pending** (0.5.1-dev) |
 | Natural gate discovery by survey | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.1-dev) |
+| Cross-gate casualty rescue to a bed | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.2-dev) |
+| Cross-gate recovery of remains | Gate/Portals | Intermediate | **Build / Runtime-pending** (0.5.2-dev) |
 | Gradual bounded escalation of far-side pressure | Generation | Expert | **Design** (step 5, spec in `DEFERRED.md`) |
 | Existing-content replacement of legacy gate/gear/fixtures/terrain/threat/PawnKinds | Company/Gate/Generation | Advanced | Design (M2) |
 | Keyed text for portal failure keys | Interface | Beginner | **Build** (`RR_Portals.xml`, 0.4.2-dev) |

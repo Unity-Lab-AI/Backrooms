@@ -13,6 +13,35 @@
        closer to do. Both values are balance decisions and are recorded as such; they
        are subject to the owner's runtime acceptance. -->
 
+  <!-- Casualties sit around Core's own DoctorRescue (60): finishing a trip that
+       already has someone in the worker's arms edges above it, starting one sits just
+       below so a casualty on this map is always rescued first. Both stay under the
+       more urgent doctor work above 70. Balance decisions, recorded as such. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedCasualtyContinue</defName>
+    <label>finish carrying a casualty home</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedCasualtyContinue</giverClass>
+    <workType>Doctor</workType>
+    <verb>carry</verb>
+    <gerund>carrying</gerund>
+    <priorityInType>65</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedCasualty</defName>
+    <label>carry casualties home through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedCasualty</giverClass>
+    <workType>Doctor</workType>
+    <verb>rescue</verb>
+    <gerund>rescuing</gerund>
+    <priorityInType>59</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
   <WorkGiverDef>
     <defName>RR_ConnectedHaulingContinue</defName>
     <label>finish hauling through a gate</label>

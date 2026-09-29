@@ -174,14 +174,14 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         }
 
         /// <summary>
-        /// The destination is a container rather than a cell. Recorded in the
-        /// final-target field, which is exactly what that field is for: the native
-        /// object the work finally belongs to.
+        /// The destination is an object rather than a cell: a storage container, a grave,
+        /// a bed. Recorded in the final-target field, which is exactly what that field is
+        /// for — the native object the work finally belongs to.
         /// </summary>
-        internal void RecordResolvedContainer(Thing container)
+        internal void RecordResolvedTarget(Thing target)
         {
-            finalTarget = container;
-            finalTargetLoadId = container == null ? null : container.GetUniqueLoadID();
+            finalTarget = target;
+            finalTargetLoadId = target == null ? null : target.GetUniqueLoadID();
             candidateStoreCell = IntVec3.Invalid;
         }
 

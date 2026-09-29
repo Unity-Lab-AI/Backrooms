@@ -222,6 +222,21 @@ Decomposed 2026-09-28. This is the step that makes the substrate reachable in pl
 - [x] **Slice 7 — the four missing keyed strings.** Files: `RR_Company.xml`, `RR_Procurement.xml`, `RR_Generation.xml`. Verification: sweep of every `RR_` identifier in source re-run; only concatenation prefixes remain, each family spot-checked.
 - [x] **Slice 8 — checkpoint.** Files: `About.xml`, csproj, `CHANGELOG.md`, the audit record, the evidence folder, and the workflow ledger including the four audit questions now in `DEFERRED.md`'s header.
 
+### Parent minor task: Casualties and remains — CLOSED 2026-09-28 (0.5.2-dev) — our own people and our dead come home
+
+> okay lets get to it, whats logically next and/or needs finished already built or onto the next
+
+**Decomposition rationale:** the owner's gate rule names people and monstrosities among what comes back through an opening, and no route reached it. A gap in a stated requirement is built before the next addition, so this went ahead of construction supply.
+
+- [x] **Slice 1 — read Core's rescue path before writing.** Verification: `WorkGiver_RescueDowned`, `HealthAIUtility.CanRescueNow` (confirmed to have no bed requirement), `WorkGiver_TakeToBed.FindBed`, `JobDriver_TakeToBed` (confirmed it already jumps past goto and pickup when already carrying), `Toils_Bed`, `Building_Bed`, `WorkGiver_HaulCorpses`, and Core's `DoctorRescue` priority — all against the pinned assembly.
+- [x] **Slice 2 — share the scan rules.** Files: `ConnectedWork/ConnectedWorkScan.cs` (new), `Adapters/ConnectedHaulingAdapter.cs`. Verification: the hauling adapter's private copies removed, not left alongside.
+- [x] **Slice 3 — remains as ordinary hauling.** Files: `Adapters/ConnectedHaulingAdapter.cs`. Verification: `Corpse` exclusion removed with Core's feeding-animal guard added; category check relaxed for corpses only.
+- [x] **Slice 4 — the cell-only candidate defect.** Files: `Adapters/ConnectedHaulingAdapter.cs`. Verification: a grave is reachable as a candidate destination, so the container delivery route is no longer unreachable for the case it was built for.
+- [x] **Slice 5 — the casualty adapter.** Files: `Adapters/ConnectedCasualtyAdapter.cs` (new), `ConnectedWorkAdapter.cs` (registry). Verification: one direction only; destination is the map the worker stands on and only if it has a candidate bed; capture deliberately absent.
+- [x] **Slice 6 — the bed handoff driver.** Files: `JobDriver_ConnectedCasualty.cs` (new), `Defs/JobDefs/RR_ConnectedWorkJobs.xml`. Verification: Core's own bed toils and reservation pattern; `carryThingAfterJob` false so a failed placement hands off to native rescue instead of stranding a carried person.
+- [x] **Slice 7 — work givers and the shared fetch.** Files: `WorkGiver_ConnectedWork.cs`, `JobDriver_ConnectedHauling.cs`, `Defs/WorkGiverDefs/RR_ConnectedWork.xml`, `Languages/English/Keyed/RR_ConnectedWork.xml`. Verification: plan below and continue above Core's `DoctorRescue`; a person reserved whole rather than by quantity.
+- [x] **Slice 8 — checkpoint.** Files: `About.xml`, csproj, `CHANGELOG.md`, the casualties record, the evidence folder, and the workflow ledger.
+
 ## TOMBSTONES
 
 _(none)_

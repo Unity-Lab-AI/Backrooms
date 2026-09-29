@@ -181,4 +181,18 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         protected override string AdapterId { get { return ConnectedWorkAdapters.StorageHauling; } }
         protected override bool ContinueOnly { get { return true; } }
     }
+
+    /// <summary>Starts a trip to bring one of our own home. Sits just below native rescue.</summary>
+    public sealed class WorkGiver_ConnectedCasualty : WorkGiver_ConnectedWork
+    {
+        protected override string AdapterId { get { return ConnectedWorkAdapters.CasualtyRescue; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Finishes carrying a casualty home. Sits just above native rescue.</summary>
+    public sealed class WorkGiver_ConnectedCasualtyContinue : WorkGiver_ConnectedWork
+    {
+        protected override string AdapterId { get { return ConnectedWorkAdapters.CasualtyRescue; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
 }

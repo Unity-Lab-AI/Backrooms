@@ -33,8 +33,8 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
         internal const string NoStorageOnArrivalKey = "RR_ConnectedWork_NoStorageOnArrival";
 
         // Every search below is capped. A planning pass costs a fixed amount whatever
-        // the size of the colony, the site or the graph.
-        private const int MaximumConnectedMapsPerPass = 4;
+        // the size of the colony, the site or the graph. The rotating-window rules
+        // themselves live in ConnectedWorkScan, shared with every other family.
         private const int MaximumLooseCandidatesPerMap = 24;
         private const int MaximumStoredCandidatesPerMap = 24;
         private const int MaximumGroupsPerCandidate = 8;
@@ -61,7 +61,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
             if (PortalTraversalPolicy.TravellerFailureKey(pawn) != null) { return null; }
 
             Map home = pawn.Map;
-            List<Map> connected = ConnectedMaps(campaign, home, pawn);
+            List<Map> connected = ConnectedWorkScan.ConnectedMaps(campaign, home, pawn);
             for (int index = 0; index < connected.Count; index++)
             {
                 Map other = connected[index];
@@ -157,7 +157,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
                     !container.IsForbidden(pawn) &&
                     pawn.CanReserveAndReach(container, PathEndMode.Touch, pawn.NormalMaxDanger()))
                 {
-                    intent.RecordResolvedContainer(container);
+                    intent.RecordResolvedTarget(container);
                     return null;
                 }
                 // The best destination turned out to be unusable. Fall back to the best
@@ -203,55 +203,13 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
 
         // ----- candidate search -----
 
-        /// <summary>
-        /// A deterministic rotating offset, with no randomness so a reload cannot
-        /// change what a pass sees. Every bounded scan below examines a *window*
-        /// rather than a fixed prefix. That matters because this branch may hold many
-        /// gates at once: with a prefix, the fifth and sixth connected space would be
-        /// starved forever. It is the same principle the route search already follows,
-        /// where running out of budget must never become a permanent answer.
-        /// </summary>
-        private static int RotationOffset(int count, Pawn pawn)
-        {
-            if (count <= 1) { return 0; }
-            long turn = Find.TickManager.TicksGame / RimroomsConnectedWorkComponent.PlanningCooldownTicks;
-            int offset = (int)((turn + pawn.thingIDNumber) % count);
-            return offset < 0 ? offset + count : offset;
-        }
-
-        /// <summary>
-        /// Where a window of <paramref name="budget"/> items should start so that it
-        /// always fits inside <paramref name="count"/> and still reaches every position
-        /// across successive passes. A pass therefore spends its whole budget instead
-        /// of being cut short near the end of the collection.
-        /// </summary>
-        private static int WindowStart(int count, int budget, Pawn pawn)
-        {
-            return count <= budget ? 0 : RotationOffset(count - budget + 1, pawn);
-        }
-
-        private static List<Map> ConnectedMaps(RimroomsCampaignComponent campaign, Map home, Pawn pawn)
-        {
-            var result = new List<Map>();
-            List<Map> maps = Find.Maps;
-            if (maps.Count == 0) { return result; }
-            int start = RotationOffset(maps.Count, pawn);
-            for (int step = 0; step < maps.Count && result.Count < MaximumConnectedMapsPerPass; step++)
-            {
-                Map map = maps[(start + step) % maps.Count];
-                if (map == home || !campaign.OwnsMap(map)) { continue; }
-                result.Add(map);
-            }
-            return result;
-        }
-
         private ConnectedWorkIntent TryPlanTransfer(Pawn pawn, RimroomsConnectedWorkComponent work,
             Map fetchMap, Map storeMap, PortalRouteStep step)
         {
             // Candidate source one: what the fetch map's own lister already considers
             // loose, which on a Backrooms floor is the salvage lying around.
             ICollection<Thing> loose = fetchMap.listerHaulables.ThingsPotentiallyNeedingHauling();
-            int windowStart = WindowStart(loose.Count, MaximumLooseCandidatesPerMap, pawn);
+            int windowStart = ConnectedWorkScan.WindowStart(loose.Count, MaximumLooseCandidatesPerMap, pawn);
             int position = 0;
             int examined = 0;
             foreach (Thing thing in loose)
@@ -277,7 +235,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
         {
             List<SlotGroup> groups = fetchMap.haulDestinationManager.AllGroupsListInPriorityOrder;
             if (groups.Count == 0) { return null; }
-            int start = RotationOffset(groups.Count, pawn);
+            int start = ConnectedWorkScan.RotationOffset(groups.Count, pawn);
             int examined = 0;
             // Within a pass this follows the map's own storage priority order; the
             // rotating start is what stops a stockpile past the cap from being
@@ -307,7 +265,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
             int carryable = pawn.carryTracker.MaxStackSpaceEver(thing.def);
             if (carryable < 1) { return null; }
             IntVec3 cell;
-            if (!TryFindCandidateStoreCell(storeMap, thing, out cell)) { return null; }
+            if (!AnyCandidateDestination(storeMap, thing, out cell)) { return null; }
             // Allowed areas, as far as this worker has ever been observed on those
             // maps. Unobserved reads as unrestricted, which is Core's own answer for a
             // map no area was set on. The definitive per-pawn check still runs on
@@ -327,18 +285,64 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Adapters
             if (thing == null || thing.Destroyed || !thing.Spawned || thing.Map != fetchMap ||
                 thing.def == null || thing.stackCount < 1)
             { return false; }
-            // People and remains are never storage cargo. Carrying someone downed,
-            // dead or imprisoned back through a gate is allowed by the traversal
-            // policy, but it is rescue, capture or burial work, and those families
-            // own their own custody, bed and grave rules.
-            if (thing is Pawn || thing is Corpse) { return false; }
-            if (!thing.def.EverHaulable || thing.def.category != ThingCategory.Item) { return false; }
+            // A living person is never storage cargo; casualties are their own family
+            // with their own bed and custody rules.
+            if (thing is Pawn) { return false; }
+            // Remains are. Core treats corpse hauling as ordinary hauling with one extra
+            // guard, and a grave is reached through the same container route as any other
+            // storage, so the owner's "corpses carried back" case needs no separate
+            // family: the destination search finds the grave by itself.
+            var corpse = thing as Corpse;
+            if (corpse != null)
+            {
+                Pawn reserver = fetchMap.physicalInteractionReservationManager.FirstReserverOf(thing);
+                // Do not take a corpse something is currently feeding on.
+                if (reserver != null && reserver.RaceProps.Animal && reserver.Faction != Faction.OfPlayer)
+                { return false; }
+            }
+            else if (thing.def.category != ThingCategory.Item) { return false; }
+            if (!thing.def.EverHaulable) { return false; }
             // Faction-level forbidding is a property of the object, so it is safe to
             // read from anywhere. Per-pawn forbidding and allowed areas are not, and
             // are deliberately left to the definitive check on arrival.
             if (thing.IsForbidden(Faction.OfPlayer) || thing.IsBurning()) { return false; }
             // Nothing in unrevealed rooms. A gate is not x-ray vision.
             return !thing.Position.Fogged(fetchMap);
+        }
+
+        /// <summary>
+        /// Whether this map offers anywhere strictly better for the object than where it
+        /// is now, by cell or by container, and the cell if it was a cell. An invalid cell
+        /// with a true result means "yes, but it is a container" — which is enough to
+        /// justify the trip, because the real destination is chosen definitively on
+        /// arrival. Without the container half, a corpse whose only home is a grave would
+        /// never be planned for, since a grave is a haul destination rather than a slot
+        /// group and a cell search cannot see it.
+        /// </summary>
+        private static bool AnyCandidateDestination(Map storeMap, Thing thing, out IntVec3 cell)
+        {
+            if (TryFindCandidateStoreCell(storeMap, thing, out cell)) { return true; }
+            StoragePriority best = StoreUtility.CurrentStoragePriorityOf(thing);
+            List<IHaulDestination> destinations = storeMap.haulDestinationManager.AllHaulDestinationsListInPriorityOrder;
+            int examined = 0;
+            for (int index = 0; index < destinations.Count; index++)
+            {
+                if (examined >= MaximumGroupsPerCandidate) { break; }
+                IHaulDestination destination = destinations[index];
+                if (destination == null || !destination.HaulDestinationEnabled) { continue; }
+                var container = destination as Thing;
+                if (container == null || container.Destroyed || !container.Spawned ||
+                    container.Map != storeMap)
+                { continue; }
+                examined++;
+                StorageSettings settings = destination.GetStoreSettings();
+                if (settings == null || settings.Priority <= best) { continue; }
+                if (!destination.Accepts(thing)) { continue; }
+                ThingOwner owner = container.TryGetInnerInteractableThingOwner();
+                if (owner == null || owner.GetCountCanAccept(thing) < 1) { continue; }
+                return true;
+            }
+            return false;
         }
 
         private static bool TryFindCandidateStoreCell(Map storeMap, Thing thing, out IntVec3 cell)

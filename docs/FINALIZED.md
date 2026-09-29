@@ -506,3 +506,52 @@ Also still deferred with real dependencies: the remaining adapter families; the 
 Source files created: 1. Source files modified: 7. Package files modified: 6. Docs updated: 11.
 Deferments closed: 9. Re-owned: 1. Open rows that gained a named dependency instead of a vague owner: 2.
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+
+---
+
+## Session — 2026-09-28 — casualties and remains come home through a gate (0.5.2-dev)
+
+### Verbatim request
+
+> okay lets get to it, whats logically next and/or needs finished already built or onto the next
+
+### COMPLETED
+
+- [x] **Carrying our own downed people back through a gate.** `ConnectedWork/Adapters/ConnectedCasualtyAdapter.cs` and `ConnectedWork/JobDriver_ConnectedCasualty.cs` (both new). This was the capability the owner's gate rule named explicitly — people carried back through the opening — and no route reached it: the traversal policy had permitted a carried passenger since 0.4.3-dev and the crossing had preserved one, but nothing ever ordered the carry. Built ahead of construction supply for exactly that reason: a gap in a stated requirement outranks the next addition.
+  - The candidate pass reads `map.mapPawns.SpawnedDownedPawns`, Core's own per-map downed list, then `HealthAIUtility.WantsToBeRescued`, which reads only the patient's own state and is therefore a fair question about a map nobody is standing on.
+  - The definitive far-side check is Core's own `HealthAIUtility.CanRescueNow`. It was read before being trusted, and the load-bearing fact is what it does **not** check: no bed requirement. That is why it is the right question on the far side, where there may be no bed, and why the bed is a separate question at the other end.
+  - The bed question answers itself after the crossing. `RestUtility` rejects a bed whose map differs from the sleeper's `MapHeld` — the pinned review's warning — but a *carried* pawn's `MapHeld` is the carrier's map, so the ordinary native bed search finally answers about the right side. The two-phase contract fit this family without bending.
+  - Placement is Core's own bed handoff: `Toils_Bed.ClaimBedIfNonMedical`, goto with `FailOnBedNoLongerUsable`, `Toils_Reserve.Release`, `Toils_Bed.TuckIntoBed(..., rescued: true)`, with Core's reservation pattern mirrored including clearing the casualty's own claims and reserving the bed by sleeping slot.
+  - Core's `Rescue` job was inspected and *almost* reused — `JobDriver_TakeToBed` already jumps past its own goto and pickup when the worker is carrying the takee. It is not reused for one narrow reason: it knows nothing about the saved intent, so nothing would record the outcome and maintenance would later read a successful rescue as a dropped-cargo failure.
+  - The failure mode is a handoff rather than a loss. This is the only segment with `carryThingAfterJob` false: if placement fails, Core sets the person down where the worker stands, and by then they are on this side, downed and not in a bed — precisely what Core's own rescue work giver handles. The intent closes as Completed whenever the worker reached the destination map. Arriving to no free bed, and the person coming round mid-carry, are Completed for the same reason: they are home.
+- [x] **Carrying our dead back.** No new family was needed. Core already treats corpse hauling as ordinary hauling and a grave as an ordinary container, so this was the removal of the `Corpse` exclusion from the hauling adapter plus Core's own guard against taking a corpse a non-player animal is feeding on.
+- [x] **Capture left as a player order, deliberately.** Core makes taking a downed stranger prisoner a player order rather than automatic work, and the owner's rule says people and monstrosities come back because the player directed it. Recorded as a design decision, not a gap; the player route already exists through the ordinary crossing order.
+
+### Found and fixed in self-review before publishing
+
+- **The candidate pass was cell-only, which would have made corpse recovery silently not work.** A grave is an `IHaulDestination` and not an `ISlotGroupParent`, so `IsValidStorageFor` can never see one; a corpse whose only destination was a grave would never have been planned for, and the container delivery route built the previous build would have sat unreachable for exactly the case it existed for. `AnyCandidateDestination` now checks cells and then containers, using each destination's own settings, `Accepts` and `GetCountCanAccept` — all properties of the destination rather than of the carrier's map.
+- **The shared fetch segment reserved a person by quantity instead of whole.** Corrected to `stackCount` −1 for a `Pawn`, as Core reserves a rescue target.
+- A fail condition that could dereference a null patient, and a mutator named `RecordResolvedContainer` when the field it writes has always meant "the native object the work finally belongs to" (now `RecordResolvedTarget`, used here for a bed).
+
+### Shared rather than copied
+
+`ConnectedWorkScan` now owns the rotating-window rules and both families use it; the hauling adapter's private copies are gone. Deliberate rather than tidy: a per-family copy of that rule would drift invisibly, because a prefix scan looks identical to a correct one until the fifth gate opens — which was already caught once in 0.5.0-dev. The fetch segment is shared too, since Core carries a downed pawn with the same toil it uses for a crate.
+
+### Saved state
+
+**No new key and no schema change.** The family reuses the intent shape exactly: the patient is `SourceThing` then `Cargo`, and the bed is `FinalTarget` — the field reserved from schema 1 for the native object the work belongs to, used here for the first time as intended. A 0.5.1-dev save loads unchanged.
+
+### Documents updated in the same change
+
+`implementation/CONNECTED_CASUALTIES_IMPLEMENTATION.md` (new record), `DEFERRED.md`, `CONNECTED_COLONY_PORTALS.md`, `TODO.md`, `NOW.md`, `DECOMPOSED.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.5.2-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **91** C# source files, **76** approved package files (unchanged: the new job and work-giver defs went into existing packaged files). Assembly SHA-256 `75288E6CA3FB53407C89EF67D8414255FFD1B8AF2AD08460D1E135703FCB5393`. Evidence folder `implementation/evidence/connected-casualties-2026-09-28/` with compiler output plus source, package and recomputed reference manifests, no drift. All 58 packaged XML files parse; every connected-work and frontier translation key resolves. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 3. Source files modified: 5. Package files modified: 3. Docs updated: 11.
+Deferments closed: 3 (people and corpses as connected work; the cell-only candidate search found here; the duplicated rotating-window rule). One row re-scoped from "tend/rescue and remains" to "tending across a gate", which is what actually remains.
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
