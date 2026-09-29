@@ -306,4 +306,116 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         { get { return ConnectedDeploymentProviders.RescueInPlace; } }
         protected override bool ContinueOnly { get { return true; } }
     }
+
+    /// <summary>Sends a worker through a gate to do cleaning work over there.</summary>
+    public sealed class WorkGiver_ConnectedCleaning : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Cleaning; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks that worker the rest of the way, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedCleaningContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Cleaning; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    /// <summary>Sends a worker through a gate to do repair work over there.</summary>
+    public sealed class WorkGiver_ConnectedRepair : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Repair; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks that worker the rest of the way, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedRepairContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Repair; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    /// <summary>Sends a worker through a gate to do firefighting work over there.</summary>
+    public sealed class WorkGiver_ConnectedFirefighting : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Firefighting; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks that worker the rest of the way, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedFirefightingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Firefighting; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    /// <summary>Sends a worker through a gate to do designated mining work over there.</summary>
+    public sealed class WorkGiver_ConnectedMining : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Mining; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks that worker the rest of the way, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedMiningContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Mining; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    /// <summary>Sends a worker through a gate to do designated hunting work over there.</summary>
+    public sealed class WorkGiver_ConnectedHunting : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Hunting; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks that worker the rest of the way, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedHuntingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Hunting; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    /// <summary>Sends a worker through a gate to do designated plantcutting work over there.</summary>
+    public sealed class WorkGiver_ConnectedPlantCutting : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.PlantCutting; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks that worker the rest of the way, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedPlantCuttingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.PlantCutting; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    /// <summary>Sends a worker through a gate to do designated growing work over there.</summary>
+    public sealed class WorkGiver_ConnectedGrowing : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Growing; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks that worker the rest of the way, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedGrowingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Growing; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
 }

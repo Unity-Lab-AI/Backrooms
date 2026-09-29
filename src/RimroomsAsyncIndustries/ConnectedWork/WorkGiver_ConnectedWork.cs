@@ -246,4 +246,18 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         protected override string AdapterId { get { return ConnectedWorkAdapters.FoodSupply; } }
         protected override bool ContinueOnly { get { return true; } }
     }
+
+    /// <summary>Starts a trip to bring fuel or shells to something of ours that has run dry.</summary>
+    public sealed class WorkGiver_ConnectedFuel : WorkGiver_ConnectedWork
+    {
+        protected override string AdapterId { get { return ConnectedWorkAdapters.FuelSupply; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Finishes carrying fuel through a gate.</summary>
+    public sealed class WorkGiver_ConnectedFuelContinue : WorkGiver_ConnectedWork
+    {
+        protected override string AdapterId { get { return ConnectedWorkAdapters.FuelSupply; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
 }

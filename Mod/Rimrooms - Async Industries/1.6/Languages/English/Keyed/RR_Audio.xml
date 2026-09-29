@@ -14,7 +14,15 @@
   <RR_Settings_FamilyCasualty>Carrying casualties and the dead home</RR_Settings_FamilyCasualty>
   <RR_Settings_FamilyConstruction>Carrying building material to a site</RR_Settings_FamilyConstruction>
   <RR_Settings_FamilyBill>Carrying ingredients to a bill</RR_Settings_FamilyBill>
+  <RR_Settings_FamilyMining>Travelling to mine</RR_Settings_FamilyMining>
+  <RR_Settings_FamilyHunting>Travelling to hunt</RR_Settings_FamilyHunting>
+  <RR_Settings_FamilyPlantCutting>Travelling to cut plants</RR_Settings_FamilyPlantCutting>
+  <RR_Settings_FamilyGrowing>Travelling to tend crops</RR_Settings_FamilyGrowing>
+  <RR_Settings_FamilyCleaning>Travelling to clean</RR_Settings_FamilyCleaning>
+  <RR_Settings_FamilyRepair>Travelling to repair</RR_Settings_FamilyRepair>
+  <RR_Settings_FamilyFirefighting>Travelling to fight a fire</RR_Settings_FamilyFirefighting>
   <RR_Settings_FamilyRescueInPlace>Travelling to bed a casualty</RR_Settings_FamilyRescueInPlace>
+  <RR_Settings_FamilyFuel>Carrying fuel to something run dry</RR_Settings_FamilyFuel>
   <RR_Settings_FamilyFood>Carrying food to people with none</RR_Settings_FamilyFood>
   <RR_Settings_FamilyFeeding>Travelling to feed a patient</RR_Settings_FamilyFeeding>
   <RR_Settings_FamilyMedicine>Carrying medicine to a patient</RR_Settings_FamilyMedicine>

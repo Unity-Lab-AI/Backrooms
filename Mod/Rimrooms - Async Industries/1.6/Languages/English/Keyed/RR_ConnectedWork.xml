@@ -49,7 +49,16 @@
   <!-- Travel-to-work: the worker goes, and nothing is carried. Nobody is ever brought
        home by these; a person who crossed legitimately stays where it is when the work
        runs out, with its own needs and whatever local work it finds. -->
+  <RR_ConnectedWork_MiningLabel>mining through a gate</RR_ConnectedWork_MiningLabel>
+  <RR_ConnectedWork_HuntingLabel>hunting through a gate</RR_ConnectedWork_HuntingLabel>
+  <RR_ConnectedWork_PlantCuttingLabel>cutting plants through a gate</RR_ConnectedWork_PlantCuttingLabel>
+  <RR_ConnectedWork_GrowingLabel>working a growing zone through a gate</RR_ConnectedWork_GrowingLabel>
+  <RR_ConnectedWork_CleaningLabel>cleaning through a gate</RR_ConnectedWork_CleaningLabel>
+  <RR_ConnectedWork_RepairLabel>repairing through a gate</RR_ConnectedWork_RepairLabel>
+  <RR_ConnectedWork_FirefightingLabel>fighting a fire through a gate</RR_ConnectedWork_FirefightingLabel>
   <RR_ConnectedWork_RescueInPlaceLabel>bedding a casualty through a gate</RR_ConnectedWork_RescueInPlaceLabel>
+  <RR_ConnectedWork_FuelLabel>carrying fuel through a gate</RR_ConnectedWork_FuelLabel>
+  <RR_ConnectedWork_AlreadyFuelled>That no longer needs fuel. What was carried is here in hand; ordinary hauling will put it away.</RR_ConnectedWork_AlreadyFuelled>
   <RR_ConnectedWork_FoodLabel>carrying food through a gate</RR_ConnectedWork_FoodLabel>
   <RR_ConnectedWork_FeedingLabel>feeding a patient through a gate</RR_ConnectedWork_FeedingLabel>
   <RR_ConnectedWork_AlreadyFed>They have food on their side now. What was carried is here in hand; ordinary hauling will put it away.</RR_ConnectedWork_AlreadyFed>

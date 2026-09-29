@@ -87,6 +87,13 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         public const string Tending = "tending";
         public const string PatientFeeding = "patient-feeding";
         public const string RescueInPlace = "rescue-in-place";
+        public const string Cleaning = "cleaning";
+        public const string Repair = "repair";
+        public const string Firefighting = "firefighting";
+        public const string Mining = "mining";
+        public const string Hunting = "hunting";
+        public const string PlantCutting = "plant-cutting";
+        public const string Growing = "growing";
 
         private static readonly ConstructionFinishingProvider construction =
             new ConstructionFinishingProvider();
@@ -94,6 +101,13 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         private static readonly TendingProvider tending = new TendingProvider();
         private static readonly FeedingProvider feeding = new FeedingProvider();
         private static readonly RescueInPlaceProvider rescue = new RescueInPlaceProvider();
+        private static readonly CleaningProvider cleaning = new CleaningProvider();
+        private static readonly RepairProvider repair = new RepairProvider();
+        private static readonly FirefightingProvider firefighting = new FirefightingProvider();
+        private static readonly MiningProvider mining = new MiningProvider();
+        private static readonly HuntingProvider hunting = new HuntingProvider();
+        private static readonly PlantCuttingProvider plantcutting = new PlantCuttingProvider();
+        private static readonly GrowingProvider growing = new GrowingProvider();
         private static readonly Dictionary<string, ConnectedDeploymentProvider> registry =
             new Dictionary<string, ConnectedDeploymentProvider>(System.StringComparer.Ordinal)
             {
@@ -101,7 +115,14 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 { Research, research },
                 { Tending, tending },
                 { PatientFeeding, feeding },
-                { RescueInPlace, rescue }
+                { RescueInPlace, rescue },
+                { Cleaning, cleaning },
+                { Repair, repair },
+                { Firefighting, firefighting },
+                { Mining, mining },
+                { Hunting, hunting },
+                { PlantCutting, plantcutting },
+                { Growing, growing }
             };
 
         public static IEnumerable<ConnectedDeploymentProvider> All { get { return registry.Values; } }

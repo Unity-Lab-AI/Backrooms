@@ -1013,3 +1013,56 @@ Work families complete: 11, five of them travel-to-work deployments.
 New standing invariants recorded: 2 — a bed is only ever a bed on its own map, verified at source; and check whether an existing family already covers it before writing a new one.
 Next: the remaining work families — cleaning, repair, firefighting, plants/mining/hunting, prisoner and guest care, wardening, childcare, animals and mechs, refuel and rearm, joy, rituals, hauling providers — most of which should be short, because the deployment and carry shapes already cover nearly everything.
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+---
+
+## Session — 2026-09-29 — eight more families in one pass, and two new universe directions captured (0.6.2-dev)
+
+### Verbatim requests
+
+> okay wtf you only worked for 6 minutes.. wtf im gettting tired of telling you to "keep working" in one way or another.. you are NOT to stop untill i tell you to stop or you reach the completeion of the mod's build out
+
+> and remember the solo/group start  and industry async start and furnature store start all need thier portals and back rooms to sum what be continues... ie a back room can have a protal to another normal worlds map or a portal to a deep level of the backrooms ect ect so that any one backrooms portal corroridanet weither from a lab portal or a natural portal can lead to other places and other backroom instance seeds, and or pop out any where in the game world on a tile map
+
+> so what i mean by that is there can be portals with in portals and portals found on world maps when u do the cites and build the furnature store and starting lab maps basic defaults for starting equipment and posible starting facilities if you know how to do that or we just give them starting equipment building and supplies and they build it all, i dont know how good you will be at designing starting building faciliteis and portals  and stuff but we can try
+
+### COMPLETED
+
+- [x] **"you are NOT to stop untill i tell you to stop or you reach the completeion of the mod's build out"** — the owner was right to push back: the previous pattern was one checkpoint per prompt with a report at the end, which made them ask for continuation repeatedly. This checkpoint is eight families in one pass rather than one, and the working pattern from here is continuous.
+- [x] **Eight work families built in one pass** — nineteen total now, eleven of them travel-to-work deployments. Three new files, **no new record, no new job driver and no new `JobDef` in the whole checkpoint**. Record `implementation/CONNECTED_WORK_FAMILIES_IMPLEMENTATION.md`.
+  - **Cleaning, repair, firefighting** as deployment providers, and **scoped for free by Core's own rule**: all three check `map.areaManager.Home[position]`, so a generated Backrooms coordinate nobody called home attracts none of this work — exactly as it attracts none of Core's own. Nobody crosses a gate to sweep an anomalous corridor.
+  - **Mining, hunting, plant cutting, growing-zone work** as deployment providers driven entirely by what the player **designated or zoned** on that map, through the public map-explicit `designationManager` and `zoneManager`. Nothing is ever inferred: no designation, nobody goes. Mining marks cells rather than things, so its candidate half reads designated cells.
+  - **Refuel and rearm as ONE family.** The register listed them as two. Core's own `RearmTurrets` giver is `WorkGiver_Refuel_Turret` — a refuel giver restricted to turrets — because a turret holds its shells in a `CompRefuelable` with a shell fuel filter. So one adapter serves a generator, a smithy, a mortar and an autocannon, each taking whatever its own `fuelFilter` accepts, which also means a modded machine with an unusual fuel works for free. **Reading Core first is what caught this**; building two families would have duplicated the same code against the same comp.
+- [x] **The danger question answered for firefighting**, the first family where crossing *toward* trouble is the point. Core's own giver paths with `Danger.Deadly`; **the crossing does not** — `ConnectedCrossing.StepToward` uses `pawn.NormalMaxDanger()` as every automatic cross-gate step does, because a player order may accept deadly danger and automatic work may not. A burning map on the far side does not override what the player allowed. Fires burning *on a pawn* are excluded from the remote half entirely, since Core handles those with a proximity rule measured from the firefighter's own position.
+- [x] **Three Core internals handled honestly rather than worked around.** `WorkGiver_FightFires` is `internal`, so its handled-fire rule is reproduced from the same public pieces with a comment saying why it is reproduced and not called. `WorkGiver_Grower.wantedPlantDef` is **static mutable state** Core writes during its own scan — deliberately never touched, because writing it from a speculative remote probe could corrupt a scan in progress on another map, which is precisely the side effect the remote-probe prohibition exists to prevent. `RepairUtility.PawnCanRepairNow` consults `pawn.Map`, so only its map-free half `PawnCanRepairEver` is used remotely and the rest is re-asked against the building's own map.
+- [x] **A new rule recorded: a provider answers one *question*, not one Core work giver.** Sowing and harvesting are two givers and one question, so they share a provider and Core's own givers pick whichever applies on arrival. The alternative would have produced four near-identical classes answering the same thing.
+- [x] **Both new universe directions captured verbatim**, twelve rows in total, before any of it was acted on.
+  - **Continuous portal topology:** every start shares one topology; a Backrooms coordinate may hold a portal to an ordinary world map, deeper into the Backrooms, to another instance seed, or emerging anywhere on a world tile; portals within portals without a nesting limit; portals also findable on ordinary world maps; and **the link kind that brought you somewhere never restricts where you can go next.**
+  - **Starting facilities and equipment** for site generation, the store and the starting lab maps, with the owner's explicit fallback of shipping equipment and supplies instead if authored facilities prove unworkable.
+- [x] **Answered the owner's uncertainty about designing starting facilities, with evidence.** They offered a fallback because they were unsure it was feasible. It is not a design exercise: **`SCENARIOS.md` already specifies all three starting sites in full** — the Async 60x60 headquarters down to a gate chamber assembled to roughly three-quarters that cannot open yet, the 50x50 store down to a basement threshold that is explicitly not a working machine gate, and the lone-survivor 6-8 room coordinate with its route clues and possible exit. So this is implementation against an existing specification, and the fallback is only needed if a specified element turns out to be unbuildable under the existing-content-only policy. Recorded in `TODO.md` so it is not re-litigated.
+
+### Priorities
+
+Sixteen new work giver defs. The fieldwork four are uniform at continue 22 / start 2 **on purpose** — each of those work types has a single Core giver, so a per-family number would imply a judgement that has not been made. Repair sits at 42 against Core's `Repair` (40) with its start at 3, just under cross-gate construction finishing at 5, because a wall losing hit points is less urgent than a half-built one. Firefighting continues at 82. Fuel continues at 16, just above `HaulGeneral` (15), and starts at 6 below food, medicine, construction material and bill ingredients. Thirty-eight cross-gate numbers now, all player settings.
+
+### Saved state
+
+**None added** by any of the eight families. A 0.6.1-dev save loads unchanged.
+
+### Documents updated in the same change
+
+`implementation/CONNECTED_WORK_FAMILIES_IMPLEMENTATION.md` (new record), `DEFERRED.md`, `TODO.md` (both new directions, verbatim), `NOW.md` (including three new standing invariants and the topology plan), `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.6.2-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **110** C# source files, **76** approved package files (unchanged — sixteen work giver defs and sixteen keyed strings added to files that already existed). Assembly SHA-256 `F575107A652079035111984660BADBD60235F80E3651FD9B025E8533AAE2A08C`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. Evidence folder `implementation/evidence/work-families-2026-09-29/`. All 58 packaged XML files parse; every `RR_` key referenced from source resolves with 0 missing; every one of the sixteen new `giverClass` values resolves to a real class; 2,974 relative doc links resolve with 0 broken; 0 attribution strings; all compliance checks pass. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 3. Source files modified: 5. Package files modified: 3. Docs updated: 9 (1 new).
+Work families built this checkpoint: 8. Total: 19, eleven of them travel-to-work deployments.
+Register corrections found by reading Core: 1 — refuel and rearm are one family, not two.
+New standing invariants recorded: 2 — a provider answers one question rather than one Core giver; and never touch Core's static scan state from a remote probe.
+Owner directions captured verbatim: 2 (12 rows), plus a recorded position that the starting facilities are already fully specified in `SCENARIOS.md` and need implementing rather than designing.
+Next: verify what the portal graph already supports, close the real continuous-topology gaps, then the three scenario starts.
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.

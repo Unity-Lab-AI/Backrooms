@@ -93,6 +93,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         public const string BillIngredients = "bill-ingredients";
         public const string MedicineSupply = "medicine-supply";
         public const string FoodSupply = "food-supply";
+        public const string FuelSupply = "fuel-supply";
 
         private static readonly ConnectedHaulingAdapter hauling = new ConnectedHaulingAdapter();
         private static readonly ConnectedCasualtyAdapter casualties = new ConnectedCasualtyAdapter();
@@ -100,6 +101,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         private static readonly ConnectedBillAdapter bills = new ConnectedBillAdapter();
         private static readonly ConnectedMedicineAdapter medicine = new ConnectedMedicineAdapter();
         private static readonly ConnectedFoodAdapter food = new ConnectedFoodAdapter();
+        private static readonly ConnectedFuelAdapter fuel = new ConnectedFuelAdapter();
         private static readonly Dictionary<string, ConnectedWorkAdapter> registry =
             new Dictionary<string, ConnectedWorkAdapter>(System.StringComparer.Ordinal)
             {
@@ -108,7 +110,8 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 { ConstructionSupply, construction },
                 { BillIngredients, bills },
                 { MedicineSupply, medicine },
-                { FoodSupply, food }
+                { FoodSupply, food },
+                { FuelSupply, fuel }
             };
 
         public static IEnumerable<ConnectedWorkAdapter> All { get { return registry.Values; } }

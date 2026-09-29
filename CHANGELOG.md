@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.2-dev - 2026-09-29 - eight more kinds of work cross a gate
+
+- Cleaning, repair and firefighting now happen across a gate — but only inside a Home area you set on that side. A Backrooms corridor nobody called home attracts nobody, exactly as it already did for the game's own colonists.
+- Mining, hunting, cutting plants and working a growing zone all cross a gate too, and every one of them only where **you** marked it wanted. Nothing is guessed: no designation, no zone, nobody goes.
+- Fuel and shells are carried through a gate to anything of yours that has run dry — a generator, a smithy, a mortar, an autocannon. Each takes whatever it actually accepts, so a modded machine with its own odd fuel is handled without anything special.
+- A machine you told not to auto-refuel is left alone, and nothing crosses if fuel it can use is already sitting on that side.
+- A colonist will not cross toward a fire if the route to the gate breaks the danger rules you set. A fire on the other side does not override what you allowed.
+- A local emergency, and local work of the same kind, always come first for every one of these.
+- All of it is tunable while the game runs, like the rest.
+
+Full record: [eight more families](docs/implementation/CONNECTED_WORK_FAMILIES_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.6.1-dev - 2026-09-29 - a casualty gets a bed where they lie
 
 - Somebody will now cross a gate to put a downed colonist into a bed on that side, instead of carrying them all the way home first. Taking an injured person through a gate is one more trip for somebody who cannot walk, so if there is a bed over there, the help goes to them.
