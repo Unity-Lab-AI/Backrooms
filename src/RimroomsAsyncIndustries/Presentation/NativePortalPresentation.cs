@@ -39,7 +39,7 @@ namespace RimroomsAsyncIndustries.Presentation
 
         internal static void Tick(CompRimroomsGate gate)
         {
-            if (gate == null || !gate.IsNativeProvider || !gate.IsDesignated ||
+            if (gate == null || !gate.IsDesignated ||
                 RimroomsMod.Settings == null || !RimroomsMod.Settings.PortalAuraEnabled ||
                 RimroomsMod.Settings.PortalReducedMotion || Find.TickManager == null) { return; }
 

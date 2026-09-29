@@ -89,7 +89,7 @@ namespace RimroomsAsyncIndustries.Gate
                 portalConnectionId == connectionId && portalOpeningId == openingId &&
                 string.IsNullOrEmpty(activeExpeditionId) && !IsEmergency &&
                 (openingTicksRemaining > 0 || PortalOpeningIsIndefinite) &&
-                IsNativeProvider && CheckStationReadiness(assignedOperator).Success &&
+                CheckStationReadiness(assignedOperator).Success &&
                 NativeStoredEnergy >= GateProps.openingPowerDrawWatts * CompPower.WattsToWattDaysPerTick;
         }
 
@@ -125,7 +125,7 @@ namespace RimroomsAsyncIndustries.Gate
             RimroomsCampaignComponent campaign = Current.Game.GetComponent<RimroomsCampaignComponent>();
             if (edge == null || edge.Kind != PortalConnectionKind.Laboratory || edge.First.Anchor != parent ||
                 campaign == null || !campaign.CanOperate || edge.BranchId != campaign.BranchId ||
-                !IsNativeProvider || !IsDesignated || portalOwnerFault || portalOpeningSequence < 0 || portalOpeningSequence == int.MaxValue ||
+                !IsDesignated || portalOwnerFault || portalOpeningSequence < 0 || portalOpeningSequence == int.MaxValue ||
                 nativeOpeningSequence < 0 || nativeOpeningSequence == int.MaxValue)
             { return CompanyActionResult.Refused("RR_Gate_InvalidOperation"); }
             if (!string.IsNullOrEmpty(activeExpeditionId) || HasUnresolvedNativeTrip())
@@ -163,7 +163,6 @@ namespace RimroomsAsyncIndustries.Gate
                 openingTicksRemaining = 0;
                 return CompanyActionResult.Refused("RR_Gate_InvalidOperation");
             }
-            ApplyPowerDraw();
             RecordGateActivity("RR_Event_GateOpeningStarted", nextId);
             return CompanyActionResult.Applied();
         }
@@ -183,7 +182,7 @@ namespace RimroomsAsyncIndustries.Gate
         {
             if (portalOwnerFault || string.IsNullOrWhiteSpace(recoveryOperationId) ||
                 string.IsNullOrEmpty(portalOpeningId) || portalConnectionId != connectionId ||
-                !string.IsNullOrEmpty(activeExpeditionId) || !IsNativeProvider)
+                !string.IsNullOrEmpty(activeExpeditionId))
             { return CompanyActionResult.Refused("RR_Gate_InvalidOperation"); }
             PortalOpeningRecoveryReceipt prior = portalRecoveryReceipts.FirstOrDefault(r => r.OperationId == recoveryOperationId);
             if (prior != null)
@@ -208,7 +207,6 @@ namespace RimroomsAsyncIndustries.Gate
             emergencyReturnSpent = false;
             ResetOpeningWarnings();
             failureKey = null;
-            ApplyPowerDraw();
             RecordGateActivity("RR_Event_GateRecoveryOpeningStarted", portalOpeningId,
                 GateProps.recoveryOpeningCostWattDays.ToString("F2", System.Globalization.CultureInfo.InvariantCulture));
             return CompanyActionResult.Applied();

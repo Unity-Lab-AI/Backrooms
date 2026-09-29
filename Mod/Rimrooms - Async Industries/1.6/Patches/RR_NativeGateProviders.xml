@@ -15,9 +15,7 @@
       <li Class="PatchOperationAdd">
         <xpath>Defs/ThingDef[defName="Door" or defName="Autodoor"]/comps</xpath>
         <value>
-          <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGate">
-            <nativeProvider>true</nativeProvider>
-          </li>
+          <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGate" />
         </value>
       </li>
       <li Class="PatchOperationAdd">
@@ -65,9 +63,7 @@
       <li Class="PatchOperationAdd">
         <xpath>Defs/ThingDef[defName="CommsConsole" or defName="TableMachining"]/comps</xpath>
         <value>
-          <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGateConsole">
-            <nativeProvider>true</nativeProvider>
-          </li>
+          <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGateConsole" />
         </value>
       </li>
     </operations>

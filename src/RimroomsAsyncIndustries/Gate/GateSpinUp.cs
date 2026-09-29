@@ -180,7 +180,7 @@ namespace RimroomsAsyncIndustries.Gate
         public CompanyActionResult BeginSpinUp(string connectionId)
         {
             if (string.IsNullOrWhiteSpace(connectionId)) { return CompanyActionResult.Refused("RR_Gate_InvalidOperation"); }
-            if (portalOwnerFault || !IsNativeProvider || !IsDesignated)
+            if (portalOwnerFault || !IsDesignated)
             { return CompanyActionResult.Refused("RR_Gate_InvalidOperation"); }
             if (IsOpening) { return CompanyActionResult.Refused("RR_Gate_AlreadyOpen"); }
             if (IsSpinningUp)

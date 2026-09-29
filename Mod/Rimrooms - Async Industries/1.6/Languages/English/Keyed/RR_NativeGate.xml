@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_NativeGate_Heading>Native gate infrastructure</RR_NativeGate_Heading>
   <RR_NativeGate_Explanation>Choose one specific Core door and explicitly link its control console, real battery, and machining bench. Rimrooms never chooses the nearest door or infrastructure automatically.</RR_NativeGate_Explanation>
@@ -13,9 +13,6 @@
   <RR_NativeGate_SelectedDoor>Selected threshold: {0} ({1}) at {2}</RR_NativeGate_SelectedDoor>
   <RR_NativeGate_RecordedRunGate>Saved expedition {0} is bound to {1} at {2}. Its gate cannot be replaced.</RR_NativeGate_RecordedRunGate>
   <RR_NativeGate_RecordedGateUnavailable>Saved expedition {0} has no available gate component. Keep its record intact and resolve the missing gate through recovery.</RR_NativeGate_RecordedGateUnavailable>
-  <RR_NativeGate_LegacyRunLocked>Expedition {0} is using a legacy gate. Its saved gate and recovery controls remain attached to that gate; it cannot be converted or retargeted here.</RR_NativeGate_LegacyRunLocked>
-  <RR_NativeGate_LegacyProvider>This is a legacy gate. Its normal machine controls remain available for this saved run; new dispatches use a designated native gate.</RR_NativeGate_LegacyProvider>
-  <RR_NativeGate_LegacyControls>These controls belong to the saved legacy gate. Do not retarget its expedition.</RR_NativeGate_LegacyControls>
   <RR_NativeGate_BindBeforeOperation>Bind the selected door to valid infrastructure before calibration, staffing, or dispatch.</RR_NativeGate_BindBeforeOperation>
   <RR_NativeGate_InspectGate>Inspect and locate selected door</RR_NativeGate_InspectGate>
   <RR_NativeGate_ConsoleRole>Control console: {0}</RR_NativeGate_ConsoleRole>

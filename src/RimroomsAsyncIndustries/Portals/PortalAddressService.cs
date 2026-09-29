@@ -136,7 +136,7 @@ namespace RimroomsAsyncIndustries.Portals
             RimroomsPortalNetwork network = Network();
             if (campaign == null || !campaign.CanOperate || network == null || network.HasStateFault)
             { return Refuse("InvalidState"); }
-            if (gate == null || gate.parent == null || !gate.IsNativeProvider || !gate.IsDesignated ||
+            if (gate == null || gate.parent == null || !gate.IsDesignated ||
                 gate.HasPortalOwnerFault || gate.NativeBindingFailureKey != null)
             { return Refuse("GateNotReady"); }
             if (gate.parent.Map != campaign.Headquarters) { return Refuse("HeadquartersRequired"); }

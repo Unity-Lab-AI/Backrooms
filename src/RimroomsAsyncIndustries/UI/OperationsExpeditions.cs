@@ -63,7 +63,7 @@ namespace RimroomsAsyncIndustries.UI
 
             if (campaign == null || campaign.Headquarters == null || selectedGate == null || selectedGate.Destroyed ||
                 !selectedGate.Spawned || selectedGate.Map != campaign.Headquarters || selectedGate.Faction != Faction.OfPlayer ||
-                selectedGate.TryGetComp<CompRimroomsGate>()?.IsNativeProvider != true)
+                selectedGate.TryGetComp<CompRimroomsGate>() == null)
             { selectedGate = null; return null; }
             return selectedGate?.TryGetComp<CompRimroomsGate>();
         }
@@ -73,15 +73,12 @@ namespace RimroomsAsyncIndustries.UI
             DrawNativeGateBinding(listing, campaign);
             DrawPortalNetwork(listing, campaign);
             CompRimroomsGate gate = CurrentGate(campaign);
-            listing.Label((gate != null && gate.IsNativeProvider
+            listing.Label((gate != null
                 ? "RR_NativeGate_MachineInstructions" : "RR_UI_MachineInstructions").Translate());
             if (gate == null) { listing.Label("RR_NativeGate_NoSelectedGate".Translate()); return; }
-            if (!gate.IsNativeProvider) { listing.Label("RR_NativeGate_LegacyControls".Translate()); }
-            else if (!gate.IsDesignated) { listing.Label("RR_NativeGate_BindBeforeOperation".Translate()); return; }
+            if (!gate.IsDesignated) { listing.Label("RR_NativeGate_BindBeforeOperation".Translate()); return; }
             if (listing.ButtonText("RR_UI_SelectMachine".Translate())) { CameraJumper.TryJumpAndSelect(gate.parent); }
             listing.Label(gate.CompInspectStringExtra());
-            if (!gate.IsNativeProvider && listing.ButtonText("RR_UI_SelectConsole".Translate()) && gate.Console != null)
-            { CameraJumper.TryJumpAndSelect(gate.Console); }
             listing.GapLine();
             foreach (StaffRecord member in campaign.Staff.Where(s => s.Employed && s.Pawn != null && s.Pawn.Spawned && s.Pawn.Map == campaign.Headquarters))
             {
@@ -208,7 +205,7 @@ namespace RimroomsAsyncIndustries.UI
             CompanyActionResult kit = ExpeditionCargo.CheckKit(selectedCrew);
             listing.Label(kit.Success ? "RR_UI_KitReady".Translate() : kit.MessageKey.Translate());
             CompRimroomsGate gate = CurrentGate(campaign);
-            if (gate == null || !gate.IsNativeProvider || !gate.IsDesignated)
+            if (gate == null || !gate.IsDesignated)
             { listing.Label("RR_NativeGate_DispatchNeedsBoundGate".Translate()); }
             else if (listing.ButtonText("RR_UI_DispatchCrew".Translate()))
             { ShowResult(trips.Dispatch(gate, coordinate, new List<Pawn>(selectedCrew))); }

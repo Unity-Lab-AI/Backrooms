@@ -41,14 +41,6 @@ namespace RimroomsAsyncIndustries.UI
                 }
 
                 selectedGate = recordedGate;
-                if (!gate.IsNativeProvider)
-                {
-                    listing.Label("RR_NativeGate_LegacyRunLocked".Translate(activeRun.ExpeditionId));
-                    if (recordedGate.Spawned && listing.ButtonText("RR_NativeGate_InspectGate".Translate()))
-                    { CameraJumper.TryJumpAndSelect(recordedGate); }
-                    listing.GapLine();
-                    return;
-                }
                 SetNativeBindingTarget(gate, gate.IsOpening);
                 listing.Label("RR_NativeGate_RecordedRunGate".Translate(activeRun.ExpeditionId,
                     recordedGate.LabelCap, recordedGate.Position));
@@ -74,13 +66,6 @@ namespace RimroomsAsyncIndustries.UI
                 SetNativeBindingTarget(gate);
                 listing.Label("RR_NativeGate_SelectedDoor".Translate(gate.parent.LabelCap,
                     gate.parent.def.defName, gate.parent.Position));
-            }
-
-            if (!gate.IsNativeProvider)
-            {
-                listing.Label("RR_NativeGate_LegacyProvider".Translate());
-                listing.GapLine();
-                return;
             }
 
             if (gate.parent.Spawned && listing.ButtonText("RR_NativeGate_InspectGate".Translate()))
@@ -170,7 +155,7 @@ namespace RimroomsAsyncIndustries.UI
             return campaign.Headquarters.listerBuildings.allBuildingsColonist.OfType<Building_Door>()
                 .Where(door => door != null && door.Spawned && door.Map == campaign.Headquarters &&
                     door.Faction == Faction.OfPlayer && (door.def.defName == "Door" || door.def.defName == "Autodoor") &&
-                    door.TryGetComp<CompRimroomsGate>()?.IsNativeProvider == true)
+                    door.TryGetComp<CompRimroomsGate>() != null)
                 .OrderBy(door => door.def.defName).ThenBy(door => door.Position.x).ThenBy(door => door.Position.z)
                 .ThenBy(door => door.thingIDNumber).ToList();
         }

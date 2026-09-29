@@ -102,7 +102,7 @@ namespace RimroomsAsyncIndustries.Gate
 
         /// <summary>No condition left. The gate will not open until it is reconditioned.</summary>
         public bool ServiceLapsed
-        { get { return IsNativeProvider && IsDesignated && ServiceConditionTicks <= 0; } }
+        { get { return IsDesignated && ServiceConditionTicks <= 0; } }
 
         /// <summary>
         /// Whether anybody should be offered the work. False across the whole dead zone, which
@@ -112,7 +112,7 @@ namespace RimroomsAsyncIndustries.Gate
         {
             get
             {
-                return IsNativeProvider && IsDesignated && !IsOpening &&
+                return IsDesignated && !IsOpening &&
                     ServiceConditionFraction < ServiceRequestThreshold;
             }
         }
@@ -127,7 +127,7 @@ namespace RimroomsAsyncIndustries.Gate
             get
             {
                 float factor = RoomWearFactor();
-                if (IsNativeProvider && !NativeElectricalAvailable()) { factor *= UnpoweredWearFactor; }
+                if (!NativeElectricalAvailable()) { factor *= UnpoweredWearFactor; }
                 if (IsOpening && !IsEmergency) { factor *= OpenWearFactor; }
                 return factor;
             }
@@ -167,7 +167,7 @@ namespace RimroomsAsyncIndustries.Gate
         /// </summary>
         internal void TickServicing()
         {
-            if (!IsNativeProvider || !IsDesignated) { return; }
+            if (!IsDesignated) { return; }
             if (serviceConditionTicks < 0) { serviceConditionTicks = ServiceCapacityTicks; }
             if (serviceConditionTicks <= 0) { serviceConditionTicks = 0; return; }
             if (Find.TickManager.TicksGame % ServiceSampleInterval != 0) { return; }
@@ -206,7 +206,7 @@ namespace RimroomsAsyncIndustries.Gate
         /// <summary>The servicing line for the gate's inspect string.</summary>
         internal string ServicingReadout()
         {
-            if (!IsNativeProvider || !IsDesignated) { return null; }
+            if (!IsDesignated) { return null; }
             if (ServiceLapsed) { return "RR_Gate_ServiceLapsed".Translate().ToString(); }
             string days = ServiceConditionDays.ToString("F1");
             string wear = ServiceWearFactor.ToString("F1");

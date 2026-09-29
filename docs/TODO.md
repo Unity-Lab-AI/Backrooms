@@ -127,7 +127,7 @@ Policy: [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md); map: [`implementat
 - [ ] **Five `RR_*Staff` PawnKinds** → native `Colonist` (new starts already use it; old kinds are readable-only).
 - [ ] **Five recipes** (`RR_MakeFieldRecorder`, `RR_MakeSurveyTags`, `RR_MakeReturnBeacon`, `RR_MakeEvidenceCase`, `RR_AssembleMachineGate`).
 - [ ] **Migration decision or declared development-save break** before removing any Def a saved `Thing` references, with the old build preserved. Shares saved keys with the portal legacy-threshold repair built in step 2 — decide them together.
-- [ ] **The remaining `IsNativeProvider` branches.** Sixty-odd sites whose else-side became unreachable when `RR_MachineGate` was retired in 0.9.0-dev. **Deliberately left for its own checkpoint** rather than mixed into the content retirement: the value is code clarity for the multi-cell gate work, and a diff that says only "remove the dead branch" is reviewable in a way a mixed one is not.
+- [x] **DONE 0.9.1-dev, net minus 112 lines, and it uncovered a whole dead power model.** **The remaining `IsNativeProvider` branches.** Sixty-odd sites whose else-side became unreachable when `RR_MachineGate` was retired in 0.9.0-dev. **Deliberately left for its own checkpoint** rather than mixed into the content retirement: the value is code clarity for the multi-cell gate work, and a diff that says only "remove the dead branch" is reviewable in a way a mixed one is not.
 - [ ] **Remove the 14 historical gameplay PNGs from the package allowlist** once their references are gone.
 
 ### Phase 1 leftovers (master TODO §Phase 1 — repository, build, and content foundations)

@@ -26,11 +26,10 @@ namespace RimroomsAsyncIndustries.Gate
         private NativeEnergyDebitFault nativeEnergyDebit;
         private List<NativeEnergyDebitFault> nativeDebitHistory = new List<NativeEnergyDebitFault>();
 
-        public bool IsNativeProvider { get { return GateProps.nativeProvider; } }
-        public bool IsDesignated { get { return !IsNativeProvider || (NativeDoorProvider() && nativeBindingSchema == 1 && nativeDesignated); } }
+        public bool IsDesignated { get { return NativeDoorProvider() && nativeBindingSchema == 1 && nativeDesignated; } }
         public bool OppositeEntrySide { get { return nativeOppositeEntrySide; } }
-        public Thing LinkedBattery { get { return IsNativeProvider ? nativeBattery : null; } }
-        public Thing AssemblyBench { get { return IsNativeProvider ? nativeAssemblyBench : FindConsole(); } }
+        public Thing LinkedBattery { get { return nativeBattery; } }
+        public Thing AssemblyBench { get { return nativeAssemblyBench; } }
         public float NativeEnergyRequiredToOpenWattDays
         {
             get { return GateProps.openingWindowTicks * GateProps.openingPowerDrawWatts * CompPower.WattsToWattDaysPerTick
@@ -47,7 +46,6 @@ namespace RimroomsAsyncIndustries.Gate
         {
             get
             {
-                if (!IsNativeProvider) { return null; }
                 string failure = NativePhysicalLinkFailure();
                 if (failure != null) { return failure; }
                 // A thrown cutoff is reported ahead of the generic power failure for the same
@@ -126,7 +124,7 @@ namespace RimroomsAsyncIndustries.Gate
         public CompanyActionResult BindNativeInfrastructure(Thing console, Thing battery, Thing assemblyBench,
             bool oppositeEntrySide = false)
         {
-            if (!IsNativeProvider || !NativeDoorProvider()) { return RefuseNative("UnsupportedProvider"); }
+            if (!NativeDoorProvider()) { return RefuseNative("UnsupportedProvider"); }
             if (nativeBindingSchema != 1) { return RefuseNative("UnknownSchema"); }
             if (IsOpening) { return RefuseNative("ActiveCannotRebind"); }
             if (HasNativeEnergyDebitFault) { return RefuseNative("EnergyDebitFault"); }
@@ -150,7 +148,7 @@ namespace RimroomsAsyncIndustries.Gate
             foreach (Building building in parent.Map.listerBuildings.allBuildingsColonist)
             {
                 CompRimroomsGate other = building.TryGetComp<CompRimroomsGate>();
-                if (other != null && other != this && other.IsNativeProvider && other.nativeDesignated &&
+                if (other != null && other != this && other.nativeDesignated &&
                     (other.nativeBattery == battery || other.nativeConsole == console || other.nativeAssemblyBench == assemblyBench))
                 { return RefuseNative("ProviderAlreadyBound"); }
             }
@@ -216,7 +214,6 @@ namespace RimroomsAsyncIndustries.Gate
 
         public CompanyActionResult ClearNativeBinding()
         {
-            if (!IsNativeProvider) { return RefuseNative("UnsupportedProvider"); }
             if (nativeBindingSchema != 1) { return RefuseNative("UnknownSchema"); }
             if (IsOpening || HasUnresolvedNativeTrip()) { return RefuseNative("ActiveCannotRebind"); }
             if (HasNativeEnergyDebitFault) { return RefuseNative("EnergyDebitFault"); }
@@ -256,7 +253,7 @@ namespace RimroomsAsyncIndustries.Gate
 
         private string NativeIdentityLinkFailure()
         {
-            if (!IsNativeProvider || !NativeDoorProvider()) { return "RR_NativeGate_UnsupportedProvider"; }
+            if (!NativeDoorProvider()) { return "RR_NativeGate_UnsupportedProvider"; }
             if (nativeBindingSchema != 1) { return "RR_NativeGate_UnknownSchema"; }
             if (!nativeDesignated) { return "RR_NativeGate_NotBound"; }
             if (NativeCampaign == null || nativeBranchId != NativeCampaign.BranchId ||
@@ -379,7 +376,7 @@ namespace RimroomsAsyncIndustries.Gate
         public CompanyActionResult AcknowledgeNativeEnergyDebit()
         {
             if (nativeBindingSchema != 1) { return RefuseNative("UnknownSchema"); }
-            if (!IsNativeProvider || NativeCampaign == null || !NativeCampaign.CanOperate ||
+            if (NativeCampaign == null || !NativeCampaign.CanOperate ||
                 nativeBranchId != NativeCampaign.BranchId) { return RefuseNative("HeadquartersRequired"); }
             if (nativeEnergyDebit == null || nativeEnergyDebit.Acknowledged) { return CompanyActionResult.Existing(); }
             nativeEnergyDebit.Acknowledged = true;

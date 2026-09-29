@@ -131,7 +131,7 @@ namespace RimroomsAsyncIndustries.Gate
         /// </summary>
         public CompanyActionResult BindNativeKillSwitch(Thing powerSwitch)
         {
-            if (!IsNativeProvider || !NativeDoorProvider()) { return RefuseNative("UnsupportedProvider"); }
+            if (!NativeDoorProvider()) { return RefuseNative("UnsupportedProvider"); }
             if (!IsDesignated) { return RefuseNative("NotBound"); }
             if (IsOpening) { return RefuseNative("ActiveCannotRebind"); }
             if (!SameNativeHeadquartersThing(powerSwitch)) { return RefuseNative("HeadquartersRequired"); }

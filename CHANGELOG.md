@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.1-dev - 2026-09-29 - one kind of gate
+
+- Internal cleanup with **no change to anything you can see or do**. Now that the custom gate machine is gone, there is only one kind of gate, and the code no longer carries a second one alongside it.
+- The gate's leftover private power reserve is gone with it. A gate has always run off the battery you bind to it; the unused second system underneath is simply removed.
+- One hundred and twelve lines lighter, and seven pieces of dead on-screen text pruned.
+
+Full record: [one kind of gate](docs/implementation/NATIVE_PROVIDER_COLLAPSE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.9.0-dev - 2026-09-29 - a gate is a door and nothing else
 
 - **The custom gate machine, control console, cutoff switch and generator are gone.** A gate is an ordinary door you designate, its controls are an ordinary comms console and machining table, and its power comes off your own grid like everything else.

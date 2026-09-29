@@ -9,7 +9,6 @@ namespace RimroomsAsyncIndustries.Gate
 {
     public sealed class CompProperties_RimroomsGateConsole : CompProperties
     {
-        public bool nativeProvider;
         public CompProperties_RimroomsGateConsole() { compClass = typeof(CompRimroomsGateConsole); }
 
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
@@ -30,7 +29,6 @@ namespace RimroomsAsyncIndustries.Gate
         private Thing linkedGate;
         private bool assemblyBillCreated;
         public Building_WorkTable WorkTable { get { return parent as Building_WorkTable; } }
-        public bool NativeProvider { get { return ((CompProperties_RimroomsGateConsole)props).nativeProvider; } }
         public Thing LinkedGate { get { return linkedGate; } }
         public bool HasAssemblyJob
         {
@@ -45,7 +43,7 @@ namespace RimroomsAsyncIndustries.Gate
 
         public bool CanBindToGate(Thing gate)
         {
-            return NativeProvider && parent.Spawned && parent.Faction == Faction.OfPlayer &&
+            return parent.Spawned && parent.Faction == Faction.OfPlayer &&
                 gate != null && gate.Spawned && gate.Map == parent.Map && gate.Faction == Faction.OfPlayer &&
                 gate.TryGetComp<CompRimroomsGate>() != null && (linkedGate == null || linkedGate == gate);
         }
@@ -59,7 +57,7 @@ namespace RimroomsAsyncIndustries.Gate
 
         public bool ClearNativeBinding(Thing expectedGate)
         {
-            if (!NativeProvider || linkedGate != expectedGate || HasAssemblyJob) { return false; }
+            if (linkedGate != expectedGate || HasAssemblyJob) { return false; }
             CompRimroomsGate gate = linkedGate == null ? null : linkedGate.TryGetComp<CompRimroomsGate>();
             if (gate != null && gate.IsOpening) { return false; }
             // Suspend unfinished installation work before releasing its exact provider link.
@@ -114,14 +112,13 @@ namespace RimroomsAsyncIndustries.Gate
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            if (!NativeProvider) { EnsureAssemblyBill(); }
         }
 
         public void EnsureAssemblyBill()
         {
             Building_WorkTable table = WorkTable;
             if (table == null || table.BillStack == null) { return; }
-            if (NativeProvider && Gate == null) { return; }
+            if (Gate == null) { return; }
             RecipeDef recipe = DefDatabase<RecipeDef>.GetNamedSilentFail("RR_AssembleMachineGate");
             if (recipe == null) { return; }
             Bill_Production existing = table.BillStack.Bills.OfType<Bill_Production>()
@@ -130,7 +127,7 @@ namespace RimroomsAsyncIndustries.Gate
             {
                 existing.repeatMode = BillRepeatModeDefOf.RepeatCount;
                 existing.repeatCount = 1;
-                if (NativeProvider && Gate != null) { existing.suspended = Gate.AssemblyComplete; }
+                if (Gate != null) { existing.suspended = Gate.AssemblyComplete; }
                 else if (Gate != null && Gate.AssemblyComplete) { existing.suspended = true; }
                 assemblyBillCreated = true;
                 return;

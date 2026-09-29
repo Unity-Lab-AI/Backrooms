@@ -52,7 +52,7 @@ namespace RimroomsAsyncIndustries.UI
             listing.Label("RR_Portals_TravelExplanation".Translate());
 
             CompRimroomsGate gate = CurrentGate(campaign);
-            if (gate != null && gate.IsNativeProvider && gate.IsDesignated)
+            if (gate != null && gate.IsDesignated)
             {
                 if (!string.IsNullOrEmpty(gate.PortalOpeningId) && !string.IsNullOrEmpty(gate.PortalConnectionId))
                 {
@@ -202,7 +202,7 @@ namespace RimroomsAsyncIndustries.UI
             }
 
             CompRimroomsGate gate = CurrentGate(campaign);
-            if (gate == null || !gate.IsNativeProvider || !gate.IsDesignated)
+            if (gate == null || !gate.IsDesignated)
             { listing.Label("RR_Portals_GateRequired".Translate()); }
             else if (listing.ButtonText("RR_Portals_RememberLaboratory".Translate()))
             { ShowResult(PortalAddressService.RegisterLaboratoryAddress(gate, coordinate)); }

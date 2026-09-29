@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Exp_Status_Staging>Approaching the gate</RR_Exp_Status_Staging>
   <RR_Exp_Status_OnSite>On site</RR_Exp_Status_OnSite>
@@ -16,7 +16,6 @@
   <RR_UI_MachineInstructions>Designate the door, communications console, battery and machining table above. Complete the table's gate assembly bill with 100 steel and 8 components. Assign a qualified operator, calibrate, and charge the connected battery through native generation. A real operator must remain at the powered console throughout a normal opening. Shared electrical loads can consume the same battery charge.</RR_UI_MachineInstructions>
   <RR_UI_NoMachine>No company machine was found at headquarters. Build or recover the gate before dispatch.</RR_UI_NoMachine>
   <RR_UI_SelectMachine>View machine and its controls</RR_UI_SelectMachine>
-  <RR_UI_SelectConsole>View console assembly bill</RR_UI_SelectConsole>
   <RR_UI_AssignGateOperator>Assign {0} as gate operator</RR_UI_AssignGateOperator>
   <RR_UI_CalibrateMachine>Order assigned operator to calibrate</RR_UI_CalibrateMachine>
   <RR_UI_StaffMachine>Order assigned operator to staff console</RR_UI_StaffMachine>

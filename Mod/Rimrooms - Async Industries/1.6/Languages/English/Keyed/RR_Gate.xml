@@ -12,7 +12,6 @@
   <RR_Gate_OperatorPresent>Operator on station: {0}</RR_Gate_OperatorPresent>
   <RR_Gate_OperatorAway>Assigned operator away from the console: {0}</RR_Gate_OperatorAway>
   <RR_Gate_ReserveReadout>Emergency return reserve: {0} / {1} watt-days</RR_Gate_ReserveReadout>
-  <RR_Gate_PowerReadout>Configured gate load {0} W; reserve charging load {1} W; required network headroom {2} W. Gate-owned reserve {3} / {4} watt-days; emergency return cost {5} watt-days; recovery activation cost {6} watt-days.</RR_Gate_PowerReadout>
   <RR_Gate_OpeningReadout>Opening time: {0}\nEmergency return: {1}\nStatus: {2}</RR_Gate_OpeningReadout>
   <RR_Gate_WindowClosed>Closed</RR_Gate_WindowClosed>
   <RR_Gate_RemainingMinutes>{0} in-game minutes remaining</RR_Gate_RemainingMinutes>
@@ -30,7 +29,6 @@
   <RR_Gate_AlreadyOpen>The gate already has an active expedition.</RR_Gate_AlreadyOpen>
   <RR_Gate_RecoveryRequired>The previous opening has failed. Use the recovery operation after the return window ends.</RR_Gate_RecoveryRequired>
   <RR_Gate_RecoveryWindowStillActive>The bounded emergency-return window must expire before a recovery opening can begin.</RR_Gate_RecoveryWindowStillActive>
-  <RR_Gate_RecoveryReserveNotFull>The gate-owned reserve must be fully recharged before recovery. Recharging takes powered time.</RR_Gate_RecoveryReserveNotFull>
   <RR_Gate_InvalidOperation>The operation receipt ID is missing or invalid.</RR_Gate_InvalidOperation>
   <RR_Gate_InvalidTimeCost>The opening time cost must be a positive number of ticks.</RR_Gate_InvalidTimeCost>
   <RR_Gate_OperationIdConflict>This operation receipt ID was already used for a different request.</RR_Gate_OperationIdConflict>
@@ -39,7 +37,6 @@
   <RR_Gate_OperatorUnavailable>The assigned operator must be alive, capable, employed, and present on the facility map.</RR_Gate_OperatorUnavailable>
   <RR_Gate_PowerUnstable>The gate needs stable connected power and a charged return reserve.</RR_Gate_PowerUnstable>
   <RR_Gate_OpeningPowerUnstable>The connected power network cannot support the gate's configured opening load while retaining its required headroom.</RR_Gate_OpeningPowerUnstable>
-  <RR_Gate_ReserveTooLow>The gate does not have enough stored emergency-return charge.</RR_Gate_ReserveTooLow>
   <RR_Gate_ExpeditionMismatch>The emergency-return request does not match the active expedition.</RR_Gate_ExpeditionMismatch>
   <RR_Gate_NoEmergencyWindow>The gate has no active emergency-return window.</RR_Gate_NoEmergencyWindow>
   <RR_Gate_PowerLost>Power lost</RR_Gate_PowerLost>

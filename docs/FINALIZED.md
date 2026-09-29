@@ -2501,3 +2501,30 @@ Defs retired: 8. Package files removed: 13. Source files reduced: 4. Docs update
 **Broken documentation links caught by the audit: 7.**
 Deliberately left for its own checkpoint: the sixty-odd now-unreachable `IsNativeProvider` branches, because a diff that says only "remove the dead branch" is reviewable in a way a mixed one is not.
 Still open and named in `TODO.md`: the field gear, whose mechanics must be replaced before its defs can go; `RR_QuietPursuer`; the staff PawnKinds and their recipes.
+
+---
+
+## 0.9.1-dev - 2026-09-29 - one kind of gate
+
+### What shipped
+
+The sixty-eight sites that branched on `IsNativeProvider` collapsed, and the property was deleted. Every edit was a boolean identity applied to a value that became constantly true when `RR_MachineGate` was retired, so behaviour is unchanged by construction rather than by judgement. The property was pinned true, every site transformed, then the property deleted outright so the compiler enumerated anything missed - and it caught one, an unbalanced parenthesis in the assembly-bill guard.
+
+An entire vestigial power model fell out: the component's own stored reserve, applied draw, charging tick, charge-rate calculation, `ApplyPowerDraw` and its nine call sites, the door's flickable handle, and the grid-headroom arithmetic in both power checks. A gate on a door has never used any of it. `CompInspectStringExtra` was also building a legacy power readout and overwriting it on every call before returning, so that string was computed and discarded every tick a gate was selected.
+
+`nativeProvider` was removed from both component property classes **and from the patch that set it, in the same change** - removing only the field would have left an XML element no class declares, which RimWorld ignores in complete silence at load. That is the exact defect class that cost two checkpoints when `maxTechLevel` did it.
+
+### Why it was a separate commit
+
+A diff that says only "remove the dead branch" can be read and checked. The same change mixed into a content retirement cannot.
+
+### Build evidence
+
+0.9.1-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **155** C# source files, **79** approved package files, **net minus 112 lines across 18 files**. Assembly SHA-256 `152660F9835E71DD9A75E9D59C1B9EDE72F9D09CF47C488F0A552EF1DC9FCBAE`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass; 1,200 keyed references all resolving, seven orphaned keys pruned. **Nothing was added.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Branch sites collapsed: 68. Net lines removed: 112. Orphaned keyed strings pruned: 7.
+**Errors caught by the compiler because the property was deleted rather than worked around: 1.**
+Dead systems discovered by the collapse: 1 - the component's private power reserve, unreachable since the native gate landed.
+Still open and named in `TODO.md`: the field gear; `RR_QuietPursuer`; the staff PawnKinds and recipes; multi-cell gates, which this checkpoint cleared the ground for.
