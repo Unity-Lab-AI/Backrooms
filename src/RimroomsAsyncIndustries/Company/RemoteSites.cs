@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Generation;
 using RimWorld;
@@ -197,6 +197,44 @@ namespace RimroomsAsyncIndustries.Company
                 return CompanyActionResult.Applied();
             }
             return CompanyActionResult.Refused("RR_Site_NotRegistered");
+        }
+
+        /// <summary>
+        /// Whether the parent corporation will deliver a shipment to this map.
+        ///
+        /// **Arc 5 names "company-to-site logistics"**, and procurement had the headquarters
+        /// written into it in seven places. The headquarters, or any site on the books that the
+        /// branch can currently reach — and nowhere else, because a supplier will not unload into
+        /// a place the branch has not accepted responsibility for.
+        ///
+        /// A Backrooms coordinate is excluded by construction: it can never be registered, so it
+        /// can never be a delivery address. Which is correct — a supplier does not drive into a
+        /// hole in the world.
+        /// </summary>
+        public bool CanReceiveDeliveryAt(Map map)
+        {
+            if (map == null || !Find.Maps.Contains(map)) { return false; }
+            if (headquarters == map) { return true; }
+            for (int index = 0; index < remoteSites.Count; index++)
+            {
+                RemoteSiteRecord record = remoteSites[index];
+                if (record != null && record.Live && record.site == map.Parent) { return true; }
+            }
+            return false;
+        }
+
+        /// <summary>Somewhere a shipment may be sent, for a menu. Headquarters first.</summary>
+        public List<Map> DeliveryDestinations()
+        {
+            List<Map> destinations = new List<Map>();
+            if (headquarters != null && Find.Maps.Contains(headquarters)) { destinations.Add(headquarters); }
+            for (int index = 0; index < remoteSites.Count; index++)
+            {
+                RemoteSiteRecord record = remoteSites[index];
+                if (record == null || !record.Live || record.site.Map == null) { continue; }
+                if (!destinations.Contains(record.site.Map)) { destinations.Add(record.site.Map); }
+            }
+            return destinations;
         }
 
         /// <summary>Whether this map is a registered site. The third clause of <c>OwnsMap</c>.</summary>

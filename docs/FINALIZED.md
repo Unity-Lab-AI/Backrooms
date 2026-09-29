@@ -321,6 +321,30 @@ A branch can register a map it already holds as a remote site. Registration puts
 
 ---
 
+## Session 2026-09-29 - company-to-site logistics (0.12.7-dev)
+
+**Verbatim user quote:** *"lets get to it"*
+
+**The arc line this closes, verbatim from `CAMPAIGN_CONTENT_CATALOG.md`:** *"company-to-site logistics"*
+
+### What shipped
+
+Procurement may deliver to any place the branch has on the books. The destination is the receiving stockpile's own map, gated by a new `CanReceiveDeliveryAt` - headquarters or a live registered site, never a coordinate. In-flight orders may be rerouted across maps. The order menu offers stockpiles at every destination and names the place when the branch holds more than one.
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Company/RemoteSites.cs`, `Procurement/RimroomsProcurementComponent.cs`, `UI/OperationsProcurement.cs`, `1.6/Languages/English/Keyed/RR_Procurement.xml`, `docs/implementation/SITE_DELIVERIES_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj, and the sites proof.
+
+### Closure notes
+
+- **The design had anticipated this.** `ProcurementOrderRecord.receivingMap` already existed and **the delivery path already honoured it**; only the selection was pinned, in seven places. A widening rather than a rewrite, and its smallness is evidence the original design expected the far side to move.
+- **A LATENT BUG, found by reading every write before changing what the record could hold.** The redirect path updated `receivingZone`, `receivingZoneId` and `receivingZoneLabel` and **never `receivingMap`**. Harmless while one map was legal; the moment a second was, a cross-map reroute would leave the order pointing at the old map and the delivery check would refuse it **on every attempt, for ever** - paid for, cargo held, never arriving. **A bug that only exists once you add the feature is the hardest kind to find, because it is not there while you are looking.** Same method as the frozen approach cell at 0.12.3, and what invariant 157 was written for.
+- **A CLAIM OF MINE FAILED OPEN, for the second time today.** The on-the-books claim counted the refusal string; a planted fault replaced the guard with `if (false)` and **left the string sitting there unused**, so the count passed and the proof said nothing. **The plant that mattered most was the one the proof ignored.** Rewritten as three claims keyed off each guard expression, then re-planted and confirmed. This is invariant 152 written earlier the same day: the rule is not "fix it when caught", it is **check what your claim survives before believing it**.
+- **Reachable, not merely permitted.** `HeadquartersStockpiles` listed only the headquarters', so widening the service alone would have left the feature unofferable. Stockpiles now say where they are, but **only when the branch holds more than one place** - otherwise every row would read "at headquarters", which is noise teaching nothing.
+- Build 0.12.7-dev, 172 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, ten proofs hold, the sites proof fault-planted five ways. Assembly reproduced by two clean recompiles. **No game was launched, and nothing here has been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

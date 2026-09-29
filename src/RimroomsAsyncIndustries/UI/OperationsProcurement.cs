@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -31,7 +31,7 @@ namespace RimroomsAsyncIndustries.UI
             { listing.Label("RR_Proc_HeadquartersUnavailable".Translate()); return; }
 
             IReadOnlyList<RimroomsProcurementCatalogDef> catalog = procurement.AvailableCatalog();
-            List<Zone_Stockpile> zones = HeadquartersStockpiles(campaign);
+            List<Zone_Stockpile> zones = DeliveryStockpiles(campaign);
             RimroomsProcurementCatalogDef selectedCatalog = SelectedCatalog(catalog);
             Zone_Stockpile selectedZone = zones.FirstOrDefault(zone => zone.ID == procurementReceivingZoneId);
             if (selectedZone == null && zones.Count > 0)
@@ -197,12 +197,46 @@ namespace RimroomsAsyncIndustries.UI
             return selected;
         }
 
-        private static List<Zone_Stockpile> HeadquartersStockpiles(RimroomsCampaignComponent campaign)
+        /// <summary>
+        /// Every stockpile the supplier will unload into: the headquarters', and those at any site
+        /// the branch has put on the books.
+        ///
+        /// **Arc 5's "company-to-site logistics".** This listed only the headquarters', which
+        /// meant a registered site could be billed for daily and never receive a shipment — the
+        /// paperwork without the point.
+        ///
+        /// Headquarters first, then sites in registration order, and within a map by label. An
+        /// ordinal tiebreak on the zone ID so the list cannot follow scan order and shuffle
+        /// between openings (invariant 26, applied to a menu).
+        /// </summary>
+        private static List<Zone_Stockpile> DeliveryStockpiles(RimroomsCampaignComponent campaign)
         {
-            if (campaign.Headquarters == null || campaign.Headquarters.zoneManager == null) { return new List<Zone_Stockpile>(); }
-            return campaign.Headquarters.zoneManager.AllZones.OfType<Zone_Stockpile>()
-                .Where(zone => zone != null && zone.Map == campaign.Headquarters)
-                .OrderBy(zone => zone.label, StringComparer.CurrentCultureIgnoreCase).ThenBy(zone => zone.ID).ToList();
+            var zones = new List<Zone_Stockpile>();
+            foreach (Map destination in campaign.DeliveryDestinations())
+            {
+                if (destination == null || destination.zoneManager == null) { continue; }
+                zones.AddRange(destination.zoneManager.AllZones.OfType<Zone_Stockpile>()
+                    .Where(zone => zone != null && zone.Map == destination)
+                    .OrderBy(zone => zone.label, StringComparer.CurrentCultureIgnoreCase)
+                    .ThenBy(zone => zone.ID));
+            }
+            return zones;
+        }
+
+        /// <summary>
+        /// A stockpile's name, said with where it is when the branch holds more than one place.
+        ///
+        /// Qualified only when it needs to be: a branch with a headquarters and nothing else would
+        /// read "Stockpile (headquarters)" on every row, which is noise teaching nothing.
+        /// </summary>
+        private static string StockpileLabel(RimroomsCampaignComponent campaign, Zone_Stockpile zone)
+        {
+            if (zone == null) { return string.Empty; }
+            if (campaign.DeliveryDestinations().Count <= 1) { return zone.label; }
+            string where = zone.Map == campaign.Headquarters
+                ? "RR_Proc_AtHeadquarters".Translate().ToString()
+                : (zone.Map.Parent == null ? zone.Map.ToString() : zone.Map.Parent.LabelCap);
+            return "RR_Proc_ZoneAtPlace".Translate(zone.label, where).ToString();
         }
 
         private void OpenCatalogMenu(IReadOnlyList<RimroomsProcurementCatalogDef> catalog)
@@ -224,7 +258,10 @@ namespace RimroomsAsyncIndustries.UI
             {
                 Zone_Stockpile captured = zone;
                 bool accepts = itemDef == null || (captured.settings != null && captured.settings.AllowedToAccept(itemDef));
-                string label = captured.label + (accepts ? "" : " - " + "RR_Proc_ZoneFilterRejects".Translate().ToString());
+                RimroomsCampaignComponent labelCampaign = Current.Game == null
+                    ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+                string name = labelCampaign == null ? captured.label : StockpileLabel(labelCampaign, captured);
+                string label = name + (accepts ? "" : " - " + "RR_Proc_ZoneFilterRejects".Translate().ToString());
                 options.Add(new FloatMenuOption(label, accepts ? (Action)delegate { procurementReceivingZoneId = captured.ID; } : null));
             }
             Find.WindowStack.Add(new FloatMenu(options));

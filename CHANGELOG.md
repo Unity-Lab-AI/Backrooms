@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.12.7-dev - 2026-09-29 - shipments can go to your sites
+
+- **The corporation will now deliver to a site you have put on the books**, not only to headquarters. Pick any stockpile at any place the branch holds.
+- **Stockpiles say where they are** once you hold more than one place, so two stockpiles both called "Stockpile" are never confusable.
+- **You can reroute a shipment in flight to a different place**, and it arrives there.
+- **A bug was fixed that would have swallowed shipments.** Rerouting an order updated which stockpile it was bound for but not which map, so the moment deliveries to sites became possible a cross-map reroute would have left the shipment paid for, held, and never arriving.
+- **A shipment bound for a place that is not loaded now says so honestly** instead of blaming headquarters.
+- **The supplier will not unload anywhere you have not accepted responsibility for** - headquarters or a registered site, and never a Backrooms coordinate.
+
+Full record: [company-to-site logistics](docs/implementation/SITE_DELIVERIES_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.6-dev - 2026-09-29 - a remote base is a costly responsibility
 
 - **A new Sites pane.** Put a place your branch holds on the books, and it becomes the branch's responsibility - your people and supplies reach it, a gate can be built there, and a way out of the Backrooms can come up on it.

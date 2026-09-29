@@ -204,7 +204,12 @@ namespace RimroomsAsyncIndustries.Procurement
             ThingDef itemDef = catalog.ItemDef;
             if (quantity < 1 || quantity > catalog.maxOrderQuantity || quantity > MaximumActiveQuantity)
             { return CompanyActionResult.Refused("RR_Proc_InvalidQuantity"); }
-            if (!IsReceivingZoneValid(campaign.Headquarters, receivingZone, itemDef))
+            // The destination is the zone's own map, not the headquarters. A stockpile already
+            // knows where it is, so nothing has to be passed in and the two can never disagree.
+            Map destination = receivingZone == null ? null : receivingZone.Map;
+            if (!campaign.CanReceiveDeliveryAt(destination))
+            { return CompanyActionResult.Refused("RR_Proc_DestinationNotOnTheBooks"); }
+            if (!IsReceivingZoneValid(destination, receivingZone, itemDef))
             { return CompanyActionResult.Refused("RR_Proc_ReceivingZoneInvalid"); }
 
             int stackLimit = CurrentStackLimit(itemDef);
@@ -255,7 +260,7 @@ namespace RimroomsAsyncIndustries.Procurement
                 thingLabel = itemDef.LabelCap.ToString(),
                 receivingZoneLabel = receivingZone.label,
                 receivingZoneId = receivingZone.ID,
-                receivingMap = campaign.Headquarters,
+                receivingMap = destination,
                 receivingZone = receivingZone,
                 quantity = quantity,
                 unitPriceUsd = catalog.unitPriceUsd,
@@ -286,8 +291,10 @@ namespace RimroomsAsyncIndustries.Procurement
             int now = Find.TickManager.TicksGame;
             ThingDef itemDef = DefDatabase<ThingDef>.GetNamedSilentFail(quote.thingDefName);
             if (itemDef == null || itemDef.category != ThingCategory.Item || !itemDef.EverHaulable || itemDef.destroyOnDrop ||
-                !IsReceivingZoneValid(campaign.Headquarters, quote.receivingZone, itemDef) ||
-                quote.receivingMap != campaign.Headquarters || quote.receivingZoneId != quote.receivingZone.ID)
+                !IsReceivingZoneValid(quote.receivingMap, quote.receivingZone, itemDef) ||
+                !campaign.CanReceiveDeliveryAt(quote.receivingMap) ||
+                quote.receivingZone.Map != quote.receivingMap ||
+                quote.receivingZoneId != quote.receivingZone.ID)
             { return CompanyActionResult.Refused("RR_Proc_ReceivingZoneInvalid"); }
 
             int activeStackLimit = CurrentStackLimit(itemDef);
@@ -433,7 +440,10 @@ namespace RimroomsAsyncIndustries.Procurement
             { return CompanyActionResult.Refused(order.failureKey ?? "RR_Proc_CargoIntegrity"); }
             if (!VerifyPurchase(campaign, order)) { return CompanyActionResult.Refused(order.failureKey ?? "RR_Proc_PaymentUnverified"); }
             ThingDef itemDef = DefDatabase<ThingDef>.GetNamedSilentFail(order.thingDefName);
-            if (!IsReceivingZoneValid(campaign.Headquarters, receivingZone, itemDef))
+            Map redirectTo = receivingZone == null ? null : receivingZone.Map;
+            if (!campaign.CanReceiveDeliveryAt(redirectTo))
+            { return CompanyActionResult.Refused("RR_Proc_DestinationNotOnTheBooks"); }
+            if (!IsReceivingZoneValid(redirectTo, receivingZone, itemDef))
             { return CompanyActionResult.Refused("RR_Proc_ReceivingZoneInvalid"); }
             if (order.receivingZone == receivingZone) { return CompanyActionResult.Existing(); }
             if (order.routeChanges.Count >= MaximumRouteChangesPerOrder)
@@ -448,6 +458,13 @@ namespace RimroomsAsyncIndustries.Procurement
                 oldZoneLabel = order.receivingZoneLabel,
                 newZoneLabel = receivingZone.label
             });
+            // **`receivingMap` was NOT updated here, and that was a latent bug.** It was
+            // harmless while every zone lived on the one allowed map; the moment a second map
+            // became legal, redirecting across maps would leave the order pointing at the old
+            // one, and the delivery check compares the zone against `order.receivingMap` --
+            // so the shipment would be refused every attempt, for ever, awaiting a condition
+            // that could never come true.
+            order.receivingMap = redirectTo;
             order.receivingZone = receivingZone;
             order.receivingZoneId = receivingZone.ID;
             order.receivingZoneLabel = receivingZone.label;
@@ -654,8 +671,11 @@ namespace RimroomsAsyncIndustries.Procurement
             if (!IsReceivingZoneValid(order.receivingMap, order.receivingZone, itemDef) ||
                 order.receivingZone.ID != order.receivingZoneId)
             { SetAwaiting(order, "RR_Proc_ReceivingZoneInvalid", now); return 0; }
+            // A site's map can be unloaded while the headquarters' cannot, so the reason had to
+            // stop saying "HQ". The shipment waits rather than failing: the cargo is held and the
+            // payment is already recorded.
             if (!Find.Maps.Contains(order.receivingMap))
-            { SetAwaiting(order, "RR_Proc_HeadquartersUnavailable", now); return 0; }
+            { SetAwaiting(order, "RR_Proc_ReceivingMapUnavailable", now); return 0; }
 
             int newLimit = CurrentStackLimit(itemDef);
             long projectedOrderStacks;

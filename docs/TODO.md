@@ -443,6 +443,13 @@ Seven items, one task each. **This is a stop-building instruction and it is bein
 - [ ] **Still owed in arc 5, all three now reachable because of that predicate:** **staffing** a site, **supplying** it (company-to-site logistics; procurement and cargo exist and do not know about sites), and **the exit plan** (a gate may now anchor at a site, so a second gate stops being theoretical).
 - [ ] **Also named by the chart and unwritten:** relay stations, caches, field shelters, guarded leases, resupply and evacuation missions.
 
+**Arc 5 continued (2026-09-29, 0.12.7-dev): company-to-site logistics.**
+
+- [x] **Procurement delivers to a registered site**, not only to headquarters. The destination is the receiving stockpile's own map, gated by `CanReceiveDeliveryAt` - headquarters or a live registered site, and **never a Backrooms coordinate**, which is excluded by construction because it can never be registered.
+- [x] **A latent bug found and fixed.** The redirect path updated the receiving zone and **never the receiving map**. Harmless while one map was legal; with two, a cross-map reroute would have left a shipment paid for, held, and refused on every attempt for ever.
+- [x] **The stockpile menu offers every destination**, and names the place only when the branch holds more than one - otherwise every row reads "at headquarters", which is noise.
+- [x] **A proof claim of mine failed open and was fixed.** It counted a refusal string rather than asserting the guard, so a planted fault that disabled the guard still passed.
+
 ## Owner directions recorded late, second pass
 
 `check-doc-conformance.py` gained a rule on 2026-09-29 requiring that every owner direction

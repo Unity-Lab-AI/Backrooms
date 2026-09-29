@@ -105,4 +105,8 @@
   <RR_Event_ProcurementRedirected>Receiving stockpile changed for order {0}: {1}.</RR_Event_ProcurementRedirected>
   <RR_Proc_NoOpenQuotes>No open quotes. Request one to see prices and delivery terms.</RR_Proc_NoOpenQuotes>
   <RR_Proc_UnassignedCargo>The saved procurement records reference cargo that is not assigned to a delivery, so procurement is disabled. Nothing was altered; keep this save.</RR_Proc_UnassignedCargo>
+  <RR_Proc_DestinationNotOnTheBooks>The supplier will not unload there. A shipment goes to headquarters, or to a site this branch has put on the books.</RR_Proc_DestinationNotOnTheBooks>
+  <RR_Proc_ReceivingMapUnavailable>The place this shipment is bound for is not loaded. The paid order and its held cargo remain saved.</RR_Proc_ReceivingMapUnavailable>
+  <RR_Proc_AtHeadquarters>headquarters</RR_Proc_AtHeadquarters>
+  <RR_Proc_ZoneAtPlace>{0} at {1}</RR_Proc_ZoneAtPlace>
 </LanguageData>
