@@ -5,5 +5,17 @@
     "main_branch": "main",
     "develop_branch": "develop",
     "custom_protected_branches": []
+  },
+  "claude_ip_boundary": {
+    "public_repo_approved": true,
+    "approved_at": "2026-09-29",
+    "approved_by": "GFourteen",
+    "owner_direction_verbatim": "i made it public on purpose becasue thats how its suppose to be liek i said before the whole root folder backrooms is to be shared but the gitignore things i mentioned lick caches logs temps and other things that are product worthly only to be pushed",
+    "rationale": "For this project the whole root folder IS the shared artefact, .claude/ included. The default LAW posture assumes .claude/ is private lab IP; the owner has decided that does not apply here. Only caches, logs, temps and generated output are excluded, per the existing owner decision that this repo tracks .claude/.",
+    "scope": "Applies ONLY to the remote URLs listed below. A remote added later does not inherit this, and owner must still be Unity-Lab-AI: approving a public repo is not approving somebody else's account.",
+    "approved_remote_urls": [
+      "https://github.com/Unity-Lab-AI/Backrooms.git"
+    ],
+    "audit_entry": "docs/FINALIZED.md, 0.10.7-dev addendum"
   }
 }

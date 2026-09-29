@@ -817,6 +817,48 @@ A remote is **allowed** to receive `.claude/` content via either of these two pa
 
 If a remote fails BOTH paths, the remote is **NOT allowed** and the LAW blocks. Multi-remote: any non-allowed remote blocks all remotes.
 
+## The one owner-approved exception: a project whose root folder IS the shared artefact
+
+The rule above exists to protect `.claude/` as lab IP. **That premise does not hold in every project**, and where the owner has decided it does not, the LAW must be told so explicitly rather than argued with at each push.
+
+**Rimrooms - Async Industries (this repository) is that project.** Owner direction, 2026-09-29, verbatim:
+
+> *"i made it public on purpose becasue thats how its suppose to be liek i said before the whole root folder backrooms is to be shared but the gitignore things i mentioned lick caches logs temps and other things that are product worthly only to be pushed"*
+
+This is consistent with the standing owner decision that this repo **tracks** `.claude/` and that the `.claude/` exclude block is never re-added here. The exception is not a relaxation of the LAW's reasoning; it is the owner stating that the thing the LAW protects is, in this one project, the thing being published.
+
+### How the exception is declared
+
+In the **project's own** `.claude/project-config.json`, beside the Git Flow marker — never in the template:
+
+```json
+"claude_ip_boundary": {
+  "public_repo_approved": true,
+  "approved_at": "<ISO date>",
+  "approved_by": "<owner handle>",
+  "owner_direction_verbatim": "<the owner's exact words>",
+  "approved_remote_urls": ["https://github.com/Unity-Lab-AI/<repo>.git"],
+  "audit_entry": "<where the FINALIZED.md entry is>"
+}
+```
+
+### What the exception does NOT relax
+
+| Still enforced | Why |
+|---|---|
+| **`owner.login == "Unity-Lab-AI"`** | Approving a public repo is not approving somebody else's account. A public repo under another namespace still blocks. |
+| **Exact remote URL match** | A remote added later does **not** inherit approval. What is approved is a specific repository somebody looked at, not a policy of not caring. |
+| **Block-by-default on uncertainty** | Missing, unreadable or malformed config means **no exception**. A parse failure is uncertainty, and uncertainty blocks. |
+| **Visibility is still announced** | The hook writes the exempted remote to stderr on **every** run. An exception nobody sees is an exception nobody reviews. |
+| **The audit trail** | A `FINALIZED.md` entry is mandatory, exactly as `/claude-publish` requires. |
+
+### What must never happen
+
+- ❌ Assuming this exception. It requires an **explicit owner decision**, captured verbatim.
+- ❌ Copying the `claude_ip_boundary` block into the upstream template or into another project.
+- ❌ Widening it by dropping the owner check, the URL list, or the announcement.
+- ❌ Reaching for it because a push was inconvenient. **Ask the owner and stop**, which is what happened here.
+
 ## Forbidden actions
 
 - ❌ `git add` of any path under `.claude/` in a repo whose remotes contain ANY remote that is NEITHER on Forgejo `git.unityailab.com/UnityAILab/*` NOR confirmed PRIVATE under `Unity-Lab-AI`

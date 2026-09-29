@@ -3088,3 +3088,27 @@ Eight documents brought into the vocabulary, eleven walls broken up, both new ru
 **Supply is entirely native.** Core's `ScenPart_StartingThing_Defined` minifies its own output, so granting eight glow pods at the start needed no code at all. Procurement needed one line - an uncrated building in a cargo hold is a thing no colonist can pick up, and that was latent for every minifiable def the catalogue might ever carry. Deployment is the ordinary install order: five moving parts became none.
 
 Retired and archived, never deleted: `RR_SurveyTag`, `RR_MakeSurveyTags`, `RR_DeployRouteAid`, two source files, one texture and eleven keyed strings. The dated record that linked to the retired source had its **link** repointed and its sentences left alone. 159 C# files, 82 package files, zero warnings, seven checkers. Record: `implementation/GLOW_POD_MARKERS_IMPLEMENTATION.md`.
+
+#### Addendum - the IP-boundary guard blocked the cascade, and the owner's answer was that the premise was wrong
+
+> *"i made it public on purpose becasue thats how its suppose to be liek i said before the whole root folder backrooms is to be shared but the gitignore things i mentioned lick caches logs temps and other things that are product worthly only to be pushed"*
+
+**Audit entry for the `.claude/` IP boundary, required by the LAW.**
+
+The 0.10.7-dev cascade was **blocked by `pre-tool-public-repo-guard.cjs`**: `gh repo view` reported `Unity-Lab-AI/Backrooms` as `visibility: PUBLIC`, and this repository tracks **132 files under `.claude/`**. The guard is multi-remote paranoid, so the Forgejo push was blocked too. Nothing was pushed; the checkpoint sat committed locally at `4f01efb`.
+
+**It was raised rather than worked around, and the answer was that the LAW's premise does not hold here.** The rule protects `.claude/` as private lab IP; the owner's decision is that in this project the whole root folder is the artefact being published, with only caches, logs, temps and generated output excluded. That is consistent with the standing decision that this repo tracks `.claude/` at all.
+
+**Recorded as a narrow, named exception rather than a bypass**, because a bypass would have to be repeated at every push and would leave nothing for anyone to review:
+
+- `claude_ip_boundary` in the **project's own** `.claude/project-config.json`, carrying the owner's verbatim words, the approver, the date and the **exact approved remote URL**.
+- The hook reads it and still enforces `owner == Unity-Lab-AI`. **Approving a public repo is not approving somebody else's account.**
+- **Exact URL match only.** A remote added later does not inherit approval; what is approved is a specific repository somebody looked at.
+- **Malformed or missing config means no exception.** A parse failure is uncertainty, and uncertainty blocks - the existing posture of the hook, unchanged.
+- **The exemption is written to stderr on every run.** An exception nobody sees is an exception nobody reviews.
+- Documented as an explicit section in `.claude/CONSTRAINTS.md` with what it does *not* relax, indexed in `.claude/CLAUDE.md`, and written to project memory so a future session does not re-litigate a settled decision.
+
+**Not to be copied.** Not into the upstream template, not into another project. If a different repository trips the guard, the correct move is the one taken here: ask the owner and stop.
+
+One process note worth keeping: writing the hook's escapes through a shell heredoc collapsed `
+` into a real newline inside a JavaScript string literal and broke the file. That is the sixth time this session's family of escaping failures has bitten, and `node --check` caught it immediately. The fix was to stop writing escapes through the shell.

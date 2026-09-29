@@ -48,6 +48,43 @@ const TRUSTED_PRIVATE_HOSTS = new Set([
   'git.unityailab.com',  // Forgejo instance owned + operated by Unity AI Lab
 ]);
 
+// ---------------------------------------------------------------------------
+// Per-project approved-public exception
+// ---------------------------------------------------------------------------
+//
+// The LAW's default is that `.claude/` never lands on a public repo. One project
+// overrides it: Backrooms, where the owner's decision is that the whole root
+// folder is the shared artefact and only caches, logs, temps and generated
+// output are excluded.
+//
+// The exception is deliberately narrow and auditable:
+//
+//   * It lives in the PROJECT's own `.claude/project-config.json`, beside the
+//     Git Flow marker, so it travels with the project and never with the
+//     template.
+//   * It names the exact remote URLs approved. A remote added later does NOT
+//     inherit approval, because the thing being approved is a specific
+//     repository someone looked at, not a policy of not caring.
+//   * It still requires `owner === Unity-Lab-AI`. A public repo under somebody
+//     else's account is never approved by this, whatever the config says.
+//
+// Anything that does not match every one of those still blocks.
+function approvedPublicRemotes() {
+  const root = process.env.CLAUDE_PROJECT_DIR || process.cwd();
+  const file = path.join(root, '.claude', 'project-config.json');
+  try {
+    const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const block = parsed && parsed.claude_ip_boundary;
+    if (!block || block.public_repo_approved !== true) return new Set();
+    const urls = Array.isArray(block.approved_remote_urls) ? block.approved_remote_urls : [];
+    return new Set(urls.map(function (u) { return String(u).trim(); }));
+  } catch (e) {
+    // No config, unreadable config, or malformed JSON: no exception. Block-by-default
+    // on uncertainty is the whole posture of this hook and a parse failure is uncertainty.
+    return new Set();
+  }
+}
+
 function parseHost(url) {
   // Handles git@host:owner/repo.git, https://host/owner/repo, ssh://git@host/owner/repo
   const sshMatch = url.match(/^[^@\s]+@([^:/\s]+)[:/]/);
@@ -247,13 +284,28 @@ function reasonFor(entry) {
   if (remotes.length === 0) process.exit(0);
 
   const cache = loadCache();
+  const approved = approvedPublicRemotes();
   const now = Date.now();
   const offending = [];
+  const exempted = [];
   for (let i = 0; i < remotes.length; i++) {
     const r = remotes[i];
     const v = checkVisibility(r.url, cache, now);
-    const allowed = (v.visibility === ALLOWED_VISIBILITY) && (v.owner === ALLOWED_OWNER);
+    let allowed = (v.visibility === ALLOWED_VISIBILITY) && (v.owner === ALLOWED_OWNER);
+    // The project-approved exception. Owner is still enforced: approving a public
+    // repo is not approving somebody else's account.
+    if (!allowed && approved.has(r.url) && v.owner === ALLOWED_OWNER) {
+      allowed = true;
+      exempted.push(r.name + ' → ' + r.url + ' (' + v.visibility + ', approved in project-config.json)');
+    }
     if (!allowed) offending.push(Object.assign({}, r, v));
+  }
+
+  // Say it out loud every time. An exception nobody sees is an exception nobody
+  // reviews, and this one is the single place the IP boundary is relaxed.
+  if (exempted.length > 0) {
+    process.stderr.write('[CLAUDE-IP-GUARD] project-approved public remote(s): '
+      + exempted.join('; ') + require('os').EOL);
   }
 
   if (offending.length === 0) process.exit(0);
@@ -278,6 +330,11 @@ function reasonFor(entry) {
   lines.push('  3. If this remote is genuinely meant to receive .claude/ AND is private + ' + ALLOWED_OWNER + ':');
   lines.push('     run `gh repo view <owner>/<repo> --json visibility,owner` to verify');
   lines.push('     then re-run the original command — visibility cached for 60s');
+  lines.push('  4. If the OWNER has decided this repository is public on purpose and the whole');
+  lines.push('     root folder is the shared artefact: add a `claude_ip_boundary` block to');
+  lines.push('     .claude/project-config.json naming the exact remote URLs approved.');
+  lines.push('     Owner must still be ' + ALLOWED_OWNER + '. Requires an explicit owner decision');
+  lines.push('     and a FINALIZED.md audit entry — never assume it.');
   lines.push('');
   lines.push('See .claude/CONSTRAINTS.md §LAW — .CLAUDE WORKFLOW IP BOUNDARY for full text.');
 

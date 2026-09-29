@@ -216,6 +216,14 @@ Four items, one per task, as the law requires.
   - Record: `implementation/DISPLAY_SURFACE_IMPLEMENTATION.md`.
 
 
+
+**Verbatim owner direction (2026-09-29), on the repository being public:** *"i made it public on purpose becasue thats how its suppose to be liek i said before the whole root folder backrooms is to be shared but the gitignore things i mentioned lick caches logs temps and other things that are product worthly only to be pushed"*
+
+- [x] **"i made it public on purpose"** - **RECORDED 0.10.7-dev.** The `.claude/` IP-boundary guard blocked the 0.10.7-dev cascade because `gh` reported `Unity-Lab-AI/Backrooms` as PUBLIC while this repo tracks 132 files under `.claude/`. Raised rather than worked around; the owner's answer is that the LAW's premise does not hold here, because the whole root folder is the artefact being published.
+- [x] **"the whole root folder backrooms is to be shared"** - held as the standing rule, consistent with the existing decision that this repo tracks `.claude/` and never re-adds the exclude block.
+- [x] **"but the gitignore things i mentioned lick caches logs temps and other things that are product worthly only to be pushed"** - only caches, dependencies, logs, temps and auto-generated output stay ignored. Everything else ships.
+- [x] **Recorded as a narrow named exception, not a bypass.** `claude_ip_boundary` in this project's own `.claude/project-config.json`, read by `pre-tool-public-repo-guard.cjs`. It still enforces `owner == Unity-Lab-AI`, still requires an **exact remote URL match** so a later remote never inherits approval, still blocks on malformed config, and **announces the exemption on stderr every run**. Documented in `.claude/CONSTRAINTS.md` with what it does not relax, indexed in `.claude/CLAUDE.md`, audit entry in `FINALIZED.md`, and written to project memory. **Never to be copied to the template or another project.**
+
 ## Owner directions recorded late, second pass
 
 `check-doc-conformance.py` gained a rule on 2026-09-29 requiring that every owner direction
