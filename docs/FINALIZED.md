@@ -2216,3 +2216,46 @@ Source files created: 2. Source files modified: 4. Package files created: 1. Doc
 Loose ends closed: 2 of the 4 named in the previous checkpoint.
 Long-standing direction clauses closed: 1 — *"raising a cap is itself a recorded progression step"*, open since 2026-09-28 and the last unmet part of the ladder.
 Still open and named in `TODO.md`, not deferred: anomalous **events** as distinct from anomalous rooms and inhabitants; and **echoed room shapes**, which is the larger of the two because room dimensions feed the saved layout fingerprint and changing them touches generation's validation path.
+
+---
+
+## 2026-09-29 — Things that happen, and the echo reaching items (0.8.4-dev)
+
+### Verbatim owner requests
+
+> *"get to it"*
+
+> *"even wild waky carzxzy creepy things when u add places and events"* — the **events** half, named as outstanding for four checkpoints rather than quietly dropped.
+
+> *"not just room shape echoes but echos of thier inhabitance in weird ways and items and equipment and production benches"* — arrived mid-build. Items and equipment are done here; **inhabitant echoes are the next checkpoint**, being a different thing entirely.
+
+### Every effect has an answer, because the threat rules demand one
+
+- [x] Seven events. **The lights case is the best of them**: `CompFlickable.SwitchIsOn` has a public setter, so the event switches lights off with **vanilla's own switch** and the countermeasure is therefore vanilla too — a far better answer than a bespoke darkness mechanic, because the player already knows how to do it.
+- [x] Cold is answered by clothing, a heater or leaving. Seepage is answered by the cleaning family, **which already crosses a gate**. Rearranged things are moved, never destroyed. Presence does nothing at all and is there so a quiet band still has texture.
+
+### Nothing here can trap anybody
+
+- [x] **No effect damages a pawn, destroys a thing, or blocks a route**, and the **threshold room is excluded from every effect, always**. That is the "no unavoidable instant failure" rule made concrete rather than promised: whatever happens, walking back out is still possible.
+- [x] Rearrangement moves **loose items only**, never fixtures — the clue system records a landmark per room and moving one would quietly break a trail a player is following. It refuses to move **bonds**, because a player's money is not scenery, and a failed move puts the item back rather than leaving it unspawned.
+- [x] **Bounded and non-replaying.** At most two per visit; a non-repeatable event is recorded on the coordinate so a revisit resumes rather than replays. A space a player knows should not perform its party trick every time they walk in — that turns an unsettling event into a chore.
+
+### The echo now reaches items and equipment
+
+- [x] Benches were already covered as buildings. **Items needed a different test, and getting it right mattered:** faction ownership cannot work for them, because a stack of steel in a colony stockpile has a null faction exactly like one lying in a Backrooms corridor. **Origin is the test instead**, and it already existed — anything stamped `Outside` came into existence somewhere the player was, which excludes a coordinate's own contents by the same stroke. Bonds are never echoed.
+
+### The comment-dash checker earned itself back
+
+- [x] Two new def files failed to parse — `--` inside an XML comment, again. **The checker added in 0.7.6-dev caught it and named the rule and the line**, instead of the parser's useless *"not well-formed (invalid token)"* at a column. Second time this exact trap has been hit since the check was written, and **the first time it cost nothing to diagnose**.
+
+### Build evidence
+
+0.8.4-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **149** C# source files (two new), **91** approved package files (two new). Assembly SHA-256 `5A5FE6070667CF540A2A4F4C7DD3227DFD5BFC71F175056E3798D3DC3FBD55D1`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass; 1,183 keyed references all resolving. **No new gameplay ThingDef, no asset, no patch operation, no new work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 2. Source files modified: 3. Package files created: 2. Docs updated: 5 (1 new).
+Owner directions captured verbatim: 2.
+Long-outstanding items closed: 1 — anomalous **events**, named as open for four checkpoints.
+Traps caught by the project's own tooling rather than by a failure: 1, and it cost nothing to diagnose because a previous checkpoint had built the check for exactly it.
+Still open and named in `TODO.md`, not deferred: **inhabitant echoes** — the place copying your *people* rather than your things; and **echoed room shapes**, which touch the saved layout fingerprint.

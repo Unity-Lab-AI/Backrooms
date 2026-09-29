@@ -150,6 +150,22 @@ namespace RimroomsAsyncIndustries.Generation
         {
             if (thing == null || thing.def == null || !thing.Spawned) { return false; }
             if (thing is Pawn) { return false; }
+            if (thing.def.size.x > 2 || thing.def.size.z > 2) { return false; }
+
+            // Owner direction 2026-09-29: "items and equipemnt and production benches". Items
+            // carry no faction of their own, so ownership cannot be the test for them -- a
+            // stack of steel in a colony stockpile has a null faction exactly like one lying in
+            // a Backrooms corridor. Origin is the right test instead, and it already exists:
+            // anything stamped Outside came into existence somewhere the player was, and
+            // anything from a coordinate is excluded by the same stroke. That is what stops the
+            // place echoing its own contents back at itself.
+            if (thing.def.category == ThingCategory.Item)
+            {
+                if (!thing.def.EverHaulable || thing.def.IsCorpse) { return false; }
+                if (Economy.BondService.FaceValueOf(thing) > 0L) { return false; }
+                return Economy.OddOriginService.OriginOf(thing) == Economy.ThingOrigin.Outside;
+            }
+
             if (thing.Faction == null || !thing.Faction.IsPlayer) { return false; }
             if (thing.def.category != ThingCategory.Building) { return false; }
             if (thing.def.building == null) { return false; }

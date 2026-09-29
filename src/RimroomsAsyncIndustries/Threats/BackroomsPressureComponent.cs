@@ -157,6 +157,7 @@ namespace RimroomsAsyncIndustries.Threats
                 // guarantees real: a first visit is genuinely quiet, and a band that rises
                 // later genuinely shows.
                 InhabitantService.PopulateOnArrival(map, coordinate);
+                AnomalyEventService.OnArrival(map, coordinate);
             }
             NoteLosses(map, coordinate);
             if (isOccupied) { coordinate.NoteOccupancy(Interval); }

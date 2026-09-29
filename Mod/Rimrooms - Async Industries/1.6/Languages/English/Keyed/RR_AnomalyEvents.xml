@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Anomaly_PresenceLabel>Something was heard</RR_Anomaly_PresenceLabel>
+  <RR_Anomaly_PresenceText>Somebody in the space heard something move in a room nobody was in. There is nothing there now. Nothing has changed and nothing is required.</RR_Anomaly_PresenceText>
+  <RR_Anomaly_LightsLabel>The lights go out</RR_Anomaly_LightsLabel>
+  <RR_Anomaly_LightsText>Every light in the space has switched itself off. The switches still work - somebody just has to walk over and turn them back on.</RR_Anomaly_LightsText>
+  <RR_Anomaly_ColdLabel>The cold comes in</RR_Anomaly_ColdLabel>
+  <RR_Anomaly_ColdText>The space has dropped several degrees with no source anyone can find. Warm clothing, a heater, or leaving will all answer it.</RR_Anomaly_ColdText>
+  <RR_Anomaly_SeepageLabel>Seepage</RR_Anomaly_SeepageLabel>
+  <RR_Anomaly_SeepageText>The place is filthier than it was an hour ago, and nobody tracked it in. Cleaning works here the same as anywhere else.</RR_Anomaly_SeepageText>
+  <RR_Anomaly_MovedLabel>Things have moved</RR_Anomaly_MovedLabel>
+  <RR_Anomaly_MovedText>Loose things in the space are not where they were left. Nothing is missing - it is all still here, somewhere else.</RR_Anomaly_MovedText>
+  <RR_Anomaly_DeepColdLabel>A cold that stays</RR_Anomaly_DeepColdLabel>
+  <RR_Anomaly_DeepColdText>The space has gone badly cold, far more than before, and it does not feel like it will lift on its own. Get people warm or get them out.</RR_Anomaly_DeepColdText>
+  <RR_Anomaly_BlackoutLabel>Total blackout</RR_Anomaly_BlackoutLabel>
+  <RR_Anomaly_BlackoutText>Everything in the space went dark at once. The switches still work. Somebody will have to cross the dark to reach them.</RR_Anomaly_BlackoutText>
+  <RR_Event_AnomalyFired>Something happened at {0}: {1}.</RR_Event_AnomalyFired>
+</LanguageData>

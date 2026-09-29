@@ -212,6 +212,27 @@ namespace RimroomsAsyncIndustries.Company
         }
 
         /// <summary>Adds worked time inside this coordinate.</summary>
+        /// <summary>
+        /// Anomalous events that have already fired here and are not repeatable.
+        ///
+        /// Recorded so a revisit **resumes rather than replays** — the same rule the escalation
+        /// ladder follows. A space a player knows should not perform its party trick every
+        /// single time they walk in; that turns an unsettling event into a chore.
+        /// </summary>
+        internal List<string> firedEventDefNames = new List<string>();
+
+        public bool HasFiredEvent(string defName)
+        {
+            return firedEventDefNames != null && firedEventDefNames.Contains(defName);
+        }
+
+        internal void NoteEventFired(string defName)
+        {
+            if (string.IsNullOrEmpty(defName)) { return; }
+            firedEventDefNames = firedEventDefNames ?? new List<string>();
+            if (!firedEventDefNames.Contains(defName)) { firedEventDefNames.Add(defName); }
+        }
+
         internal void NoteOccupancy(int ticks)
         {
             if (ticks <= 0) { return; }
@@ -242,6 +263,9 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref depth, "rr_depth", 1);
             Scribe_Values.Look(ref openings, "rr_openings", 0);
             Scribe_Values.Look(ref occupancyTicks, "rr_occupancyTicks", 0);
+            Scribe_Collections.Look(ref firedEventDefNames, "rr_firedEvents", LookMode.Value);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && firedEventDefNames == null)
+            { firedEventDefNames = new List<string>(); }
             if (Scribe.mode == LoadSaveMode.PostLoadInit && rooms == null) { rooms = new List<RoomRecord>(); }
             // A coordinate saved before 0.7.2-dev has no recorded odd goods. An empty list is
             // the honest answer -- it simply offers no supply contracts of its own -- rather

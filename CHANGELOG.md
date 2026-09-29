@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.4-dev - 2026-09-29 - things that happen
+
+- **Things happen in the Backrooms now**, not just things being there. A noise with nothing making it. Every light switching itself off. Cold with no source. The place getting filthier. Loose things not where you left them.
+- **Everything that happens has an answer you can actually perform.** The lights come back on with the same switch you already use. Cold is answered by clothing or a heater or leaving. Filth is answered by cleaning, which already works through a gate.
+- **Nothing that happens can trap you.** No event hurts anyone, destroys anything, or blocks a route, and the room you arrive in is never touched.
+- **Nothing that moves is ever lost** - it is somewhere else in the same space. Your money is never moved at all.
+- At most two things happen per visit, and a space does not replay the same trick every time you go back.
+- **Deep spaces now also contain things you have owned**, not just things you have built.
+
+Full record: [anomaly events](docs/implementation/ANOMALY_EVENTS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.8.3-dev - 2026-09-29 - getting somebody out, and earning what comes against you
 
 - **You can offer a survivor passage home.** They accept - there is no negotiation and no recruitment roll. Somebody lost down there who meets a team with a way out wants to leave.

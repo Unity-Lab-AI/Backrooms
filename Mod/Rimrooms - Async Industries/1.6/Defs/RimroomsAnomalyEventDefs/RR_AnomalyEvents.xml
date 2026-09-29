@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Owner direction 2026-09-29: "even wild waky carzxzy creepy things when u add places and
+       events". The places shipped earlier; these are the events.
+
+       Every effect has an answer, because the frozen threat rules require one: readable
+       warning, learnable rule, at least one countermeasure, no unavoidable instant failure.
+       Lights are switched off with vanilla's own flick switch, so the countermeasure is
+       vanilla too and the player already knows how to do it. Cold is answered by clothing, a
+       heater, or leaving. Seepage is answered by the cleaning family, which already crosses a
+       gate. Rearranged things are moved, never destroyed. Presence does nothing at all.
+
+       Nothing here damages a pawn, destroys a thing, or blocks a route, and the threshold room
+       is excluded from every effect, always — whatever happens, walking back out is still
+       possible.
+
+       Non-repeatable events are recorded against the coordinate so a revisit resumes rather
+       than replaying: a space a player knows should not perform its party trick every single
+       time they walk in. -->
+
+  <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+    <defName>RR_Anomaly_Presence</defName>
+    <label>a presence</label>
+    <description>Something was heard. Nothing was found.</description>
+    <effect>Presence</effect>
+    <minDepth>2</minDepth>
+    <minBand>Unsettled</minBand>
+    <weight>1.4</weight>
+    <repeatable>true</repeatable>
+    <letterLabelKey>RR_Anomaly_PresenceLabel</letterLabelKey>
+    <letterTextKey>RR_Anomaly_PresenceText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+    <defName>RR_Anomaly_LightsFail</defName>
+    <label>the lights go</label>
+    <description>Every light in the space switches itself off.</description>
+    <effect>LightsFail</effect>
+    <minDepth>2</minDepth>
+    <minBand>Unsettled</minBand>
+    <weight>1.2</weight>
+    <repeatable>true</repeatable>
+    <letterLabelKey>RR_Anomaly_LightsLabel</letterLabelKey>
+    <letterTextKey>RR_Anomaly_LightsText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+    <defName>RR_Anomaly_ColdSnap</defName>
+    <label>the cold comes in</label>
+    <description>The space drops several degrees for no reason anyone can find.</description>
+    <effect>ColdSnap</effect>
+    <minDepth>3</minDepth>
+    <minBand>Unsettled</minBand>
+    <weight>1.0</weight>
+    <magnitude>12</magnitude>
+    <repeatable>true</repeatable>
+    <letterLabelKey>RR_Anomaly_ColdLabel</letterLabelKey>
+    <letterTextKey>RR_Anomaly_ColdText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+    <defName>RR_Anomaly_Seepage</defName>
+    <label>seepage</label>
+    <description>The place is filthier than it was an hour ago.</description>
+    <effect>Seepage</effect>
+    <minDepth>2</minDepth>
+    <minBand>Unsettled</minBand>
+    <weight>1.1</weight>
+    <magnitude>24</magnitude>
+    <repeatable>true</repeatable>
+    <letterLabelKey>RR_Anomaly_SeepageLabel</letterLabelKey>
+    <letterTextKey>RR_Anomaly_SeepageText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+    <defName>RR_Anomaly_Rearrangement</defName>
+    <label>things move</label>
+    <description>Loose things are not where they were left.</description>
+    <effect>Rearrangement</effect>
+    <minDepth>4</minDepth>
+    <minBand>Active</minBand>
+    <weight>0.8</weight>
+    <magnitude>6</magnitude>
+    <repeatable>true</repeatable>
+    <letterLabelKey>RR_Anomaly_MovedLabel</letterLabelKey>
+    <letterTextKey>RR_Anomaly_MovedText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+    <defName>RR_Anomaly_DeepCold</defName>
+    <label>the cold that stays</label>
+    <description>A deeper, longer cold. It does not lift on its own.</description>
+    <effect>ColdSnap</effect>
+    <minDepth>5</minDepth>
+    <minBand>Active</minBand>
+    <weight>0.6</weight>
+    <magnitude>25</magnitude>
+    <letterLabelKey>RR_Anomaly_DeepColdLabel</letterLabelKey>
+    <letterTextKey>RR_Anomaly_DeepColdText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+
+  <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+    <defName>RR_Anomaly_Blackout</defName>
+    <label>total blackout</label>
+    <description>Everything goes dark at once, and stays dark until somebody walks over and fixes it.</description>
+    <effect>LightsFail</effect>
+    <minDepth>5</minDepth>
+    <minBand>Hostile</minBand>
+    <weight>0.7</weight>
+    <letterLabelKey>RR_Anomaly_BlackoutLabel</letterLabelKey>
+    <letterTextKey>RR_Anomaly_BlackoutText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+
+</Defs>
