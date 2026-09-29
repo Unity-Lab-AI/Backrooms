@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.15-dev - 2026-09-29 - the universe has factions in it
+
+- **Seven organisations now exist in the world.** A federal oversight office that wants your paperwork, competing interests that want your figures, former staff who know where everything is, an acquisition crew that will just take it, industrial intelligence you may never see arrive, concerned citizens who noticed the trucks, and an independent press that wants to publish all of it.
+- **All seven start neutral.** None of them is an enemy until your branch makes one. Hostility is earned by what you actually do.
+- **None of them changes your world map.** They have people and intentions, not towns, so generating a world is exactly as it was before. This matters when you are running 294 other mods.
+- **Nothing new was added to the game to build them.** Every person they can send is one RimWorld already ships, and every icon is one the base game already uses.
+
+Full record: [the universe has factions in it](docs/implementation/UNIVERSE_FACTIONS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.14-dev - 2026-09-29 - the queue could not answer the question
 
 - **Nothing in the game changed.** The owner asked how close the mod was to finished, and the working queue could not say, because 178 of its 254 open rows had never been re-checked against the code.

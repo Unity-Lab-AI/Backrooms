@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- The universe's own factions, from the owner direction of 2026-09-28.
+
+       WHY THESE ARE PERMITTED AT ALL. The founding rule is that no new gameplay ThingDef,
+       PawnKindDef, art or audio may be authored. A FactionDef is world configuration rather than
+       a physical gameplay Def, and the owner answered explicitly that these are new FactionDefs
+       reusing existing pawn kinds and existing faction icon paths. Every kindDef named below
+       ships in Core, and every factionIconPath below is a path Core already uses.
+
+       WHY NONE OF THEM GENERATES SETTLEMENTS. settlementGenerationWeight is 0 for all seven,
+       deliberately. This mod exists to work alongside 294 others, several of which add their own
+       factions and world content, and seven more settlement-generating factions would change
+       every world map every player generates. These are conspiratorial and institutional
+       interest groups, not territorial nations: they have people and intentions, not towns.
+       requiredCountAtGameStart is 1 so each exists exactly once, and canMakeRandomly is false so
+       world generation never adds a second copy.
+
+       WHY ALL SEVEN START NEUTRAL. Owner-answered: all neutral, escalating from play. There is
+       no starting-goodwill field on FactionDef, and a faction that is not permanentEnemy starts
+       neutral by Core's own relation logic, so this is achieved by NOT setting something rather
+       than by setting it. Hostility is earned by what the branch actually does.
+
+       WHY THE PERIOD IS IN THE PROSE AND NOT IN A FIELD. techLevel Industrial is the 1990s in
+       RimWorld's vocabulary. The decade itself lives in how these organisations talk about
+       themselves, because there is no field for a year.
+
+       The owner's verbatim wording for each faction is recorded in docs/TODO.md under the
+       universe direction heading and is deliberately NOT paraphrased into these descriptions. -->
+
+  <FactionDef Name="RR_UniverseFactionBase" Abstract="True">
+    <humanlikeFaction>true</humanlikeFaction>
+    <hidden>false</hidden>
+    <techLevel>Industrial</techLevel>
+    <settlementGenerationWeight>0</settlementGenerationWeight>
+    <requiredCountAtGameStart>1</requiredCountAtGameStart>
+    <canMakeRandomly>false</canMakeRandomly>
+    <maxConfigurableAtWorldCreation>0</maxConfigurableAtWorldCreation>
+    <permanentEnemy>false</permanentEnemy>
+    <canSiege>false</canSiege>
+    <canStageAttacks>true</canStageAttacks>
+    <rescueesCanJoin>false</rescueesCanJoin>
+    <classicIdeo>true</classicIdeo>
+    <listOrderPriority>70</listOrderPriority>
+  </FactionDef>
+
+  <!-- 1. The government. Not an enemy: an authority that has noticed. -->
+  <FactionDef ParentName="RR_UniverseFactionBase">
+    <defName>RR_Faction_Government</defName>
+    <label>federal oversight office</label>
+    <fixedName>Federal Oversight Office</fixedName>
+    <description>An office with a budget, a mandate nobody will read aloud, and a filing system that outlives every administration that funds it.\n\nIt does not believe in your doors. It believes in paperwork about your doors, and it would like that paperwork to be complete and in its possession. It is patient in the way only something salaried can be, and it does not go away when ignored.</description>
+    <pawnSingular>agent</pawnSingular>
+    <pawnsPlural>agents</pawnsPlural>
+    <leaderTitle>director</leaderTitle>
+    <categoryTag>Outlander</categoryTag>
+    <factionIconPath>World/WorldObjects/Expanding/Town</factionIconPath>
+    <colorSpectrum>
+      <li>(0.18, 0.26, 0.38)</li>
+      <li>(0.28, 0.38, 0.52)</li>
+    </colorSpectrum>
+    <pawnGroupMakers>
+      <li>
+        <kindDef>Combat</kindDef>
+        <options>
+          <Town_Guard>10</Town_Guard>
+          <Mercenary_Gunner>8</Mercenary_Gunner>
+          <Town_Councilman>4</Town_Councilman>
+        </options>
+      </li>
+      <li>
+        <kindDef>Peaceful</kindDef>
+        <options>
+          <Town_Councilman>10</Town_Councilman>
+          <Villager>6</Villager>
+        </options>
+      </li>
+    </pawnGroupMakers>
+  </FactionDef>
+
+  <!-- 2. The competition. The only faction that wants exactly what you have. -->
+  <FactionDef ParentName="RR_UniverseFactionBase">
+    <defName>RR_Faction_RivalCorporations</defName>
+    <label>competing interests</label>
+    <fixedName>Competing Interests</fixedName>
+    <description>Other companies, with other branches, running other doors badly.\n\nThey want your calibration figures, your window durations and the name of whoever worked out how to hold a connection open. They will buy them, hire them away, or arrive with enough people to take the paperwork off a desk. None of that is personal. It is a line item.</description>
+    <pawnSingular>operative</pawnSingular>
+    <pawnsPlural>operatives</pawnsPlural>
+    <leaderTitle>board chair</leaderTitle>
+    <categoryTag>Outlander</categoryTag>
+    <factionIconPath>World/WorldObjects/Expanding/TownRough</factionIconPath>
+    <colorSpectrum>
+      <li>(0.42, 0.34, 0.14)</li>
+      <li>(0.62, 0.50, 0.20)</li>
+    </colorSpectrum>
+    <pawnGroupMakers>
+      <li>
+        <kindDef>Combat</kindDef>
+        <options>
+          <Mercenary_Gunner>10</Mercenary_Gunner>
+          <Mercenary_Slasher>6</Mercenary_Slasher>
+          <Mercenary_Elite>4</Mercenary_Elite>
+        </options>
+      </li>
+      <li>
+        <kindDef>Peaceful</kindDef>
+        <options>
+          <Town_Councilman>10</Town_Councilman>
+          <Town_Guard>4</Town_Guard>
+        </options>
+      </li>
+    </pawnGroupMakers>
+  </FactionDef>
+
+  <!-- 3. The people who used to work here. They know where everything is. -->
+  <FactionDef ParentName="RR_UniverseFactionBase">
+    <defName>RR_Faction_FormerStaff</defName>
+    <label>former staff association</label>
+    <fixedName>Former Staff Association</fixedName>
+    <description>People who signed the same agreements you did and are no longer bound by them in any way they respect.\n\nSome left. Some were removed. Some came back from a coordinate and were quietly reassigned to nothing. They know which door sticks, which console lies, and what the company does with a report it does not like. They are the only group on this list that has stood where your crews stand.</description>
+    <pawnSingular>former employee</pawnSingular>
+    <pawnsPlural>former employees</pawnsPlural>
+    <leaderTitle>spokesperson</leaderTitle>
+    <categoryTag>Outlander</categoryTag>
+    <factionIconPath>World/WorldObjects/Expanding/Village</factionIconPath>
+    <colorSpectrum>
+      <li>(0.34, 0.34, 0.36)</li>
+      <li>(0.52, 0.52, 0.55)</li>
+    </colorSpectrum>
+    <pawnGroupMakers>
+      <li>
+        <kindDef>Combat</kindDef>
+        <options>
+          <Villager>10</Villager>
+          <Mercenary_Slasher>4</Mercenary_Slasher>
+          <Town_Guard>4</Town_Guard>
+        </options>
+      </li>
+      <li>
+        <kindDef>Peaceful</kindDef>
+        <options>
+          <Villager>12</Villager>
+        </options>
+      </li>
+    </pawnGroupMakers>
+  </FactionDef>
+
+  <!-- 4. Thieves. The most straightforward relationship on the list. -->
+  <FactionDef ParentName="RR_UniverseFactionBase">
+    <defName>RR_Faction_TechThieves</defName>
+    <label>acquisition crew</label>
+    <fixedName>Acquisition Crew</fixedName>
+    <description>Professionals, in the sense that they are paid and they are good at it.\n\nThey are not interested in what a gate is for. They are interested in what a calibrated assembly is worth, who will buy one, and how long it takes to get it onto a truck. Of everybody who wants something from this branch, they are the only ones who will tell you so honestly.</description>
+    <pawnSingular>thief</pawnSingular>
+    <pawnsPlural>thieves</pawnsPlural>
+    <leaderTitle>fixer</leaderTitle>
+    <categoryTag>Pirate</categoryTag>
+    <factionIconPath>World/WorldObjects/Expanding/PirateOutpost</factionIconPath>
+    <colorSpectrum>
+      <li>(0.30, 0.16, 0.22)</li>
+      <li>(0.48, 0.24, 0.32)</li>
+    </colorSpectrum>
+    <pawnGroupMakers>
+      <li>
+        <kindDef>Combat</kindDef>
+        <options>
+          <Mercenary_Slasher>10</Mercenary_Slasher>
+          <Mercenary_Gunner>8</Mercenary_Gunner>
+          <Grenadier_Destructive>2</Grenadier_Destructive>
+        </options>
+      </li>
+      <li>
+        <kindDef>Peaceful</kindDef>
+        <options>
+          <Mercenary_Gunner>10</Mercenary_Gunner>
+        </options>
+      </li>
+    </pawnGroupMakers>
+  </FactionDef>
+
+  <!-- 5. Espionage and sabotage. The faction you may never see arrive. -->
+  <FactionDef ParentName="RR_UniverseFactionBase">
+    <defName>RR_Faction_Espionage</defName>
+    <label>industrial intelligence</label>
+    <fixedName>Industrial Intelligence</fixedName>
+    <description>Somebody is reading your reports before the parent corporation does.\n\nThis group does not raid and does not negotiate. It hires, it listens, and occasionally something that was working stops working on a day that suits somebody else. You will learn its name from a discrepancy rather than from a letter.</description>
+    <pawnSingular>informant</pawnSingular>
+    <pawnsPlural>informants</pawnsPlural>
+    <leaderTitle>handler</leaderTitle>
+    <categoryTag>Outlander</categoryTag>
+    <factionIconPath>World/WorldObjects/Expanding/Sites/DownedRefugee</factionIconPath>
+    <colorSpectrum>
+      <li>(0.20, 0.30, 0.28)</li>
+      <li>(0.30, 0.46, 0.42)</li>
+    </colorSpectrum>
+    <pawnGroupMakers>
+      <li>
+        <kindDef>Combat</kindDef>
+        <options>
+          <Mercenary_Elite>10</Mercenary_Elite>
+          <Mercenary_Gunner>4</Mercenary_Gunner>
+        </options>
+      </li>
+      <li>
+        <kindDef>Peaceful</kindDef>
+        <options>
+          <Villager>10</Villager>
+          <Town_Councilman>4</Town_Councilman>
+        </options>
+      </li>
+    </pawnGroupMakers>
+  </FactionDef>
+
+  <!-- 6. The people who live near the doors. -->
+  <FactionDef ParentName="RR_UniverseFactionBase">
+    <defName>RR_Faction_ConcernedCitizens</defName>
+    <label>concerned citizens</label>
+    <fixedName>Concerned Citizens</fixedName>
+    <description>They noticed the trucks. They noticed the lights. They noticed that the Hendersons' boy went for a walk behind the furniture shop and that nobody official has said his name since.\n\nThey have no funding, no weapons worth the word, and nothing to lose. They are also the only group here who will still be standing outside in the morning.</description>
+    <pawnSingular>resident</pawnSingular>
+    <pawnsPlural>residents</pawnsPlural>
+    <leaderTitle>chairperson</leaderTitle>
+    <categoryTag>Outlander</categoryTag>
+    <factionIconPath>World/WorldObjects/Expanding/VillageRough</factionIconPath>
+    <colorSpectrum>
+      <li>(0.38, 0.42, 0.22)</li>
+      <li>(0.56, 0.62, 0.32)</li>
+    </colorSpectrum>
+    <pawnGroupMakers>
+      <li>
+        <kindDef>Combat</kindDef>
+        <options>
+          <Villager>14</Villager>
+          <Town_Guard>2</Town_Guard>
+        </options>
+      </li>
+      <li>
+        <kindDef>Peaceful</kindDef>
+        <options>
+          <Villager>16</Villager>
+        </options>
+      </li>
+    </pawnGroupMakers>
+  </FactionDef>
+
+  <!-- 7. "anything other type of factions along these lines that will increses the backrooms
+       universe feeling". The press: the one group whose whole purpose is that other people
+       find out, which is the thing every other faction on this list is trying to prevent. -->
+  <FactionDef ParentName="RR_UniverseFactionBase">
+    <defName>RR_Faction_Press</defName>
+    <label>independent press</label>
+    <fixedName>Independent Press</fixedName>
+    <description>A handful of people with a rented office, a fax machine and eleven years of notes nobody would print.\n\nThey are not trying to stop you. They are trying to publish you, which several parties consider worse. They will trade for a document faster than anyone and they keep better records of this branch than the branch does.</description>
+    <pawnSingular>reporter</pawnSingular>
+    <pawnsPlural>reporters</pawnsPlural>
+    <leaderTitle>editor</leaderTitle>
+    <categoryTag>Outlander</categoryTag>
+    <factionIconPath>World/WorldObjects/Expanding/VillageSavage</factionIconPath>
+    <colorSpectrum>
+      <li>(0.46, 0.42, 0.50)</li>
+      <li>(0.66, 0.60, 0.72)</li>
+    </colorSpectrum>
+    <pawnGroupMakers>
+      <li>
+        <kindDef>Combat</kindDef>
+        <options>
+          <Villager>12</Villager>
+          <Mercenary_Gunner>2</Mercenary_Gunner>
+        </options>
+      </li>
+      <li>
+        <kindDef>Peaceful</kindDef>
+        <options>
+          <Villager>14</Villager>
+          <Town_Councilman>4</Town_Councilman>
+        </options>
+      </li>
+    </pawnGroupMakers>
+  </FactionDef>
+
+</Defs>

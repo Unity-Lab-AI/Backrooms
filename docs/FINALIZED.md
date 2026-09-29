@@ -529,6 +529,34 @@ A full re-measurement of `docs/TODO.md` against the shipped code. **No gameplay 
 
 ---
 
+## Session 2026-09-29 - the universe has factions in it (0.12.15-dev)
+
+**Verbatim user quote:** *"lets start knocking out these todo items in droves thouroghly efficient and professionaally with out error"*
+
+**The owner direction this closes, verbatim from 2026-09-28:** *"the factions should be the factions of the universe"*, *"so US government"*, *"other corporations trying to get propietary tech"*, *"ex employes disgruntleed"*, *"high tech theives"*, *"corporate spys and sbaatosh"*, *"concerned citizens.."*, *"and anything other type of factions along these lines that will increses the backrromms universe feeling"*, *"this is 1990's when this all starts"*.
+
+### What shipped
+
+**Seven `FactionDef`s** - the largest completely unbuilt owner direction, found by the 0.12.14-dev backlog audit. Six named by the owner plus one in the same vein.
+
+### Files touched
+
+`1.6/Defs/FactionDefs/RR_UniverseFactions.xml` (new), `tools/package-files.json`, `docs/implementation/UNIVERSE_FACTIONS_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `About.xml`, the csproj, and `proof-universe-factions.py` (new, the eighteenth).
+
+### Closure notes
+
+- **A `FactionDef` is the one new Def this project permits, and the permission is narrow.** The owner answered on 2026-09-28 that a faction is **world configuration rather than a physical gameplay Def**, provided it reuses existing pawn kinds and existing faction icon paths. The proof enumerates the **installed game** for both - invariant 19, never trust a remembered list - and a planted pawn kind or icon path this mod authored makes it fail.
+- **The icon failure would otherwise have been invisible until runtime.** `ContentFinder` returns null for a missing texture, so a wrong `factionIconPath` loads clean and the faction simply has no icon. Nothing in the build would have said so.
+- **NONE OF THE SEVEN GENERATES SETTLEMENTS**, and that is the decision that keeps this non-invasive. `settlementGenerationWeight` is 0 for all of them, `canMakeRandomly` is false and `requiredCountAtGameStart` is 1. **Seven settlement-generating factions would change every world map every player generates, alongside 294 other mods.** These are conspiratorial and institutional interest groups: they have people and intentions, not towns.
+- **All seven begin neutral, and that was achieved by NOT setting something.** `FactionDef` has **no starting-goodwill field** - confirmed by decompiling the type rather than by memory - so a faction that is not `permanentEnemy` starts neutral through Core's own relation logic. Exactly the owner's answer: *all neutral, escalating from play*. The proof asserts the absence, because nothing looks wrong when a flag quietly appears.
+- **Every faction can field both a peaceful and a combat group.** A faction that cannot arrive either way is a name on a list, and earning its hostility would change nothing observable - the same test invariant 136 applies to research unlocks.
+- **The period is prose, not a field.** RimWorld has no year; `techLevel` Industrial is the 1990s in its vocabulary. The decade lives in how these organisations talk about themselves. The proof also asserts **no start grants spacer-tier content**, which is the measurable half of the owner's answer that the framing *"also constrains starting grants"* - research may still climb anywhere, so no start is dead-ended.
+- **The owner's own wording was deliberately kept out of the def descriptions**, because the recorded row asked for exactly that. The proof searches the descriptions for the owner's phrasings and fails if any leaked in.
+- **Five planted faults, five catches, clean on restore**: an authored pawn kind, an icon path Core does not ship, a settlement-generating faction, a faction that starts hostile, and the file dropped from the package allowlist.
+- Build 0.12.15-dev, 173 C# files, **87 package files** (one new def file), **0 warnings, 0 errors**. **No C# changed.** Eight checkers pass, **eighteen** proofs exit zero. Assembly reproduced by two clean recompiles. **No game was launched, and nothing in this mod has ever been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.14-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.15-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **173 C# files, 86 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `E0F06A3F240AC4A589B1AE179B9802B530FD8370578FD38B84B8C7F260C0DC6F`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
+| Build | **173 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `059EBB499A0ED1FEB3ED35F8E361D73B352FFBA4B5448B5B778085A56E51CE7F`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
 | Checkers | **eight**, all passing |
-| Proofs | **SEVENTEEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
+| Proofs | **EIGHTEEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.14
+## What shipped this session, 0.7.1 → 0.12.15
 
 | Version | What |
 |---|---|
@@ -97,6 +97,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.12 | **The company stops naming things** — generation after the hinge, a filter that can refuse, arc 4’s five families. Fixed 0.12.11’s absolute-state flaw |
 | 0.12.13 | **Arcs 5 to 8 have work in them** — thirteen more families, one per item the chart names. **Chart §7 step 8 closed** |
 | 0.12.14 | **The queue could not answer the question** — 155 backlog rows re-measured against the code; open rows 254 → 107. **No `FactionDef` exists at all** |
+| 0.12.15 | **The universe has factions in it** — seven, all neutral, **no settlements and no new content**. Closes the largest unbuilt owner direction |
 
 ---
 
@@ -401,6 +402,9 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 188. **A queue nobody re-measures cannot answer "how much is left".** 178 rows carried a status that was never re-checked; 114 of them were built. **Re-measure the queue against the code before answering any question about progress**, and append the evidence so the next reader can re-check rather than trust.
 189. **Close a row with a named read site, or leave it open.** A flip on a guess is worse than a stale row, because it removes the thing from view. Anything unverifiable stays open.
 190. **Say when a row cannot close without the owner.** Performance, balance, the 294 profile and the compatibility report all need a launch, and only the owner launches. Marking that is honesty, not deferral — and `DEFERRED.md` still gets no rows.
+191. **A `FactionDef` is world configuration, and that is the whole of the permission.** It may reuse existing pawn kinds and existing icon paths and nothing else. **Enumerate the installed game for both** — a `factionIconPath` Core does not ship loads clean and fails at runtime, because `ContentFinder` returns null and the faction simply has no icon.
+192. **`settlementGenerationWeight` 0 for anything this mod adds to the world.** Seven settlement-generating factions would change every world map every player generates, alongside 294 other mods. An interest group has people and intentions, not towns.
+193. **Some correctness is achieved by NOT setting a field.** `FactionDef` has no starting-goodwill field, so *all neutral* is the default and the risk is a flag quietly appearing later. **Assert the absence**, because nothing looks wrong when it does.
 
 ---
 
@@ -466,7 +470,7 @@ every single time.
 5. Implementation record under `docs/implementation/`.
 6. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
 7. **Every checker** (eight): `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-display-style.py`, `check-campaign-absolutes.py`, `check-doc-conformance.py`, `research/audit-gate0.py`.
-7b. **Every proof (SEVENTEEN), by exit status:**
+7b. **Every proof (EIGHTEEN), by exit status:**
 
 ```sh
 for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: $p"; done
@@ -477,7 +481,8 @@ for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: 
 
    The set: `displacement`, `facilities`, `facility-relief`, `fit`, `gate-links`, `incidents`,
    `live-effects`, `offer-routes`, `portal-footprint`, `remote-sites`, `request-generation`,
-   `request-line`, `research-branches`, `spinup`, `starts`, `stranded-crew`, `tier-ladder`.
+   `request-line`, `research-branches`, `spinup`, `starts`, `stranded-crew`, `tier-ladder`,
+   `universe-factions`.
 
    **`patch-*.py` in that directory are one-shot edit scripts, not proofs.** They were once named
    `proof-*` and re-running one would try to re-apply a landed patch and fail confusingly.
