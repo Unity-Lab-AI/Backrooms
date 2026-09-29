@@ -9,6 +9,67 @@ namespace RimroomsAsyncIndustries.Company
 {
     public sealed partial class RimroomsCampaignComponent
     {
+        /// <summary>
+        /// Every company project the loaded game has, as this branch's research list.
+        ///
+        /// **Owner direction, 2026-09-29, verbatim:** *"all starts have same tech tree just
+        /// differnt starting researches finished based on scenerio"*. Taken literally: the
+        /// tree is built from the def database rather than from the scenario, so **it is the
+        /// same tree for every start by construction**, and a scenario chooses only which of
+        /// its entries begin finished.
+        ///
+        /// This replaces a single hardcoded `RR_GateTelemetry` record. That hardcoding meant a
+        /// second project would have been invisible to every existing branch until somebody
+        /// remembered to add it in three places; now adding one def reaches every start at
+        /// once.
+        ///
+        /// Ordinal sort before anything is built, because def load order varies with the mod
+        /// list and two players starting the same scenario must get the same branch.
+        /// </summary>
+        private static List<ProjectRecord> BuildProjectTree(string branchId, List<string> completed)
+        {
+            var finished = new HashSet<string>(StringComparer.Ordinal);
+            if (completed != null)
+            {
+                for (int index = 0; index < completed.Count; index++)
+                {
+                    string name = completed[index];
+                    if (string.IsNullOrWhiteSpace(name)) { continue; }
+                    if (DefDatabase<Investigation.RimroomsProjectDef>.GetNamedSilentFail(name) == null)
+                    {
+                        Log.Warning("[Rimrooms][Company] Start names completed project '" + name +
+                            "', which no longer exists; it is skipped and the branch begins without it.");
+                        continue;
+                    }
+                    finished.Add(name);
+                }
+            }
+
+            var definitions = new List<Investigation.RimroomsProjectDef>(
+                DefDatabase<Investigation.RimroomsProjectDef>.AllDefsListForReading);
+            definitions.Sort((left, right) => string.CompareOrdinal(left.defName, right.defName));
+
+            var records = new List<ProjectRecord>();
+            for (int index = 0; index < definitions.Count; index++)
+            {
+                Investigation.RimroomsProjectDef definition = definitions[index];
+                if (definition == null || string.IsNullOrEmpty(definition.defName)) { continue; }
+                bool done = finished.Contains(definition.defName);
+                records.Add(new ProjectRecord
+                {
+                    id = branchId + ":project:" + definition.defName,
+                    researchDefName = definition.defName,
+                    completed = done,
+                    // A project that begins finished has had its insight paid for by whoever
+                    // ran this branch before you. Leaving it uncommitted would offer the player
+                    // a "start" button on work that is already done.
+                    insightCommitted = done,
+                    workDone = done ? definition.workRequired : 0f,
+                });
+            }
+            return records;
+        }
+
         public CompanyActionResult InitializeBranch(BranchStartRequest request)
         {
             if (!HasSupportedSchema) { return CompanyActionResult.Refused("RR_Company_UnsupportedSave"); }
@@ -68,7 +129,7 @@ namespace RimroomsAsyncIndustries.Company
             var initialContract = new ContractRecord { id = newId + ":contract:000001", templateId = "rr.survey.onboarding.v1",
                 titleKey = "RR_Company_InitialContract", coordinateId = coordinateId, status = ContractStatus.Accepted,
                 basePaymentUsd = request.SurveyRewardUsd, bonusUsd = request.SurveyBonusUsd, acceptedTick = now };
-            var initialProject = new ProjectRecord { id = newId + ":project:gate_telemetry", researchDefName = "RR_GateTelemetry" };
+            List<ProjectRecord> initialProjects = BuildProjectTree(newId, request.CompletedProjects);
             var initialLedger = new List<LedgerEntry>();
             if (request.InitialFundingUsd > 0)
             {
@@ -92,7 +153,7 @@ namespace RimroomsAsyncIndustries.Company
             coordinates.Add(initialCoordinate);
             cases.Add(initialCase);
             contracts.Add(initialContract);
-            projects.Add(initialProject);
+            for (int index = 0; index < initialProjects.Count; index++) { projects.Add(initialProjects[index]); }
             initializationComplete = true;
             ValidateSavedState();
             RecordEvent("RR_Event_BranchStarted", receipt);

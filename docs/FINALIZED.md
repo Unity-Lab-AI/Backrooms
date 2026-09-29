@@ -2754,3 +2754,38 @@ Source files created: 1. Package files created: 0. Docs updated: 5 (1 new).
 **Structural properties asserted offline rather than assumed: 6**, across 2,800 simulated coordinates.
 **Tuning constants changed to match the proof: 0. Proofs changed to match the code: 1.**
 Still open and named in `TODO.md`: new-game playability; the player-facing how-to; the rest of M2; the adjacent-door-run fallback.
+
+---
+
+## 0.9.8-dev - 2026-09-29 - one tech tree, different starting points
+
+### Owner direction, verbatim
+
+> *"fyi all starts have same tech tree just differnt starting researches finished based on scenerio"*
+
+### Why this piece, and why now
+
+The recorded order puts new-game playability after M2, and the existing scenario still grants `RR_FieldRecorder`, `RR_SurveyTag`, `RR_ReturnBeacon` and `RR_SealedEvidenceCase` - legacy gear pending retirement. Writing two more scenarios granting the same gear would be building against content about to be removed, which is the exact thing the ordering exists to prevent. This piece touches none of it, is the scenario contract the other two starts need, and can be done in the right order.
+
+### Taken literally, which changed the implementation
+
+The tempting reading is to give each start a list of projects. That would have made three lists somebody has to keep in agreement, and "same tech tree" would have been a convention rather than a fact. So a start declares **only what begins finished**, and the tree is built from every `RimroomsProjectDef` the game has loaded. The tree is identical for every start **by construction**: a scenario cannot declare a different one because it never declares one at all. Adding a project later reaches every start at once, and a scenario that forgot to list it cannot exist.
+
+### What it replaced
+
+A single hardcoded `RR_GateTelemetry` record. A second project would have been invisible to every branch until somebody remembered to add it in three places. Today there is exactly one project def, so **this checkpoint changes no behaviour at all** - what changed is that the tree is now derived rather than asserted.
+
+### Three details
+
+A project that begins finished is also marked insight-committed, or the operations window would offer a "start" button on work already done. Ordinal sort before the list is built, because def load order varies with the mod list and two players starting the same scenario must get the same branch. A named project that no longer exists is reported and skipped rather than fatal - a player should not lose a new colony because a content update renamed something.
+
+### Build evidence
+
+0.9.8-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **158** C# source files, **79** approved package files. Assembly SHA-256 `211687673EA54860637418F89D3EFE90436387EDB9BB8284AA84A09A19295B94`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All five checkers pass. **No new def, asset, patch operation or work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Def fields added: 1. Request fields added: 1. Methods added: 1. Hardcoded records removed: 1.
+**Behaviour changed today: none.** The tree is derived rather than asserted, which is what makes the next two scenarios possible without a fourth list to keep in step.
+**Scenarios deliberately NOT written this checkpoint: 2**, because they would have granted legacy gear that M2 is about to retire.
+Still open and named in `TODO.md`: the field-gear replacement; the other two starts; the world tile.

@@ -95,7 +95,9 @@ namespace RimroomsAsyncIndustries.Scenario
                 DailyWageUsd = startDef.dailyWageUsd,
                 DailyOverheadUsd = startDef.dailyOverheadUsd,
                 SurveyRewardUsd = startDef.surveyRewardUsd,
-                SurveyBonusUsd = startDef.surveyBonusUsd
+                SurveyBonusUsd = startDef.surveyBonusUsd,
+                CompletedProjects = startDef.completedProjects == null
+                    ? new List<string>() : new List<string>(startDef.completedProjects)
             });
             if (!result.Success)
             {

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <!-- Original first-slice tuning and layout. The campaign owns ongoing rules and saved money. -->
   <RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
@@ -8,6 +8,12 @@
     <!-- Only a suggestion. Every start renames its own company. -->
     <defaultCompanyName>Async Industries</defaultCompanyName>
     <scenarioVersion>1</scenarioVersion>
+    <!-- Owner direction 2026-09-29: "all starts have same tech tree just differnt
+         starting researches finished based on scenerio". A start lists ONLY what it
+         begins with finished. The tree itself is every RimroomsProjectDef the game has
+         loaded, so it is identical for every start and cannot drift between them.
+         This one is the first slice and begins with nothing finished. -->
+    <completedProjects />
     <mapSize>60</mapSize>
     <mapGenerator>RR_Headquarters</mapGenerator>
     <outdoorTerrain>Soil</outdoorTerrain>

@@ -34,6 +34,8 @@ namespace RimroomsAsyncIndustries.Company
         public long InitialFundingUsd;
         public long DailyWageUsd;
         public long DailyOverheadUsd;
+        /// <summary>Company projects this start begins with already finished.</summary>
+        public List<string> CompletedProjects = new List<string>();
         public long SurveyRewardUsd;
         public long SurveyBonusUsd;
     }

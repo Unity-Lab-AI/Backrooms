@@ -30,6 +30,24 @@ namespace RimroomsAsyncIndustries.Scenario
         public long surveyRewardUsd = 5000000L;
         public long surveyBonusUsd = 1000000L;
 
+        /// <summary>
+        /// Company projects this start begins with already finished.
+        ///
+        /// **Owner direction, 2026-09-29, verbatim:** *"all starts have same tech tree just
+        /// differnt starting researches finished based on scenerio"*.
+        ///
+        /// So a start declares **only this**. It never declares a tree, and it cannot: the
+        /// branch is seeded from every `RimroomsProjectDef` the game has loaded, so the tree
+        /// is identical for every start **by construction** rather than by three lists being
+        /// kept in agreement by hand. Adding a project later reaches every scenario at once,
+        /// and a scenario that forgot to list it cannot exist.
+        ///
+        /// A name here that matches no project is reported and skipped rather than failing a
+        /// start: a player should not lose a new colony because a scenario named a project
+        /// that a content update renamed.
+        /// </summary>
+        public List<string> completedProjects = new List<string>();
+
         public override IEnumerable<string> ConfigErrors()
         {
             foreach (string error in base.ConfigErrors()) { yield return error; }

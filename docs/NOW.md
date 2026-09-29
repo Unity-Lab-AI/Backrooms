@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.9.7-dev** (this commit) |
+| Published | **0.9.8-dev** (this commit) |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
 | Build | **158 C# files, 79 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `77C50D056BBC91570AFB912B283A30F2EB49FA3EC7264A70C9DC8F4005EF5F37`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `211687673EA54860637418F89D3EFE90436387EDB9BB8284AA84A09A19295B94`, reproduced by two clean recompiles |
 | Checkers | **five**, all passing |
 | Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
 | Game launches | **none, ever** |
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.9.7
+## What shipped this session, 0.7.1 → 0.9.8
 
 | Version | What |
 |---|---|
@@ -70,6 +70,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.9.5 | **They follow you** — at `Band.Hostile` an inhabitant hunts to the threshold, on vanilla AI |
 | 0.9.6 | **It came through with them** — a bounded, named exception to the founding rule |
 | 0.9.7 | **Some places are bigger than a room** — facilities as contiguous runs of rooms |
+| 0.9.8 | **One tech tree, different starting points** — the tree is derived, not declared per scenario |
 
 ---
 
@@ -85,7 +86,7 @@ Content set → gate model → generator → scenarios → docs. One direction, 
 2. ~~**What a gate's size lets through.**~~ **BUILT 0.9.4-dev.** Original entry: ~~Multi-cell gates~~ **BUILT 0.9.2-dev** for the sizes themselves: Core's `OrnateDoor` is 2x1 so **1×2 needs no mods**, Anomaly's `SecurityDoor` matches it, and Doors Expanded supplies 1×3 and 2×3 behind a `PatchOperationFindMod`. **Still open:** body-size limits at `PortalTraversalPolicy` so bigger creatures and vehicles need a wider gate, and the adjacent-door-run fallback for 1×3 and 2×3 without that mod. Original entry: multi-cell gates **Owner-answered: both paths.** Bind a gate across a **run of adjacent Core doors** (existing-content-only, always works), **and** accept **Doors Expanded** (register row 77) multi-cell doors as single-thing gates when that mod is installed. Width is the capability: how many cross abreast, whether cargo or a vehicle fits, what the opening draws. Core has only 1x1 `Door` and `Autodoor`, verified against installed game data.
 3. ~~**Incursion.**~~ **BOTH HALVES BUILT — pursuit 0.9.5-dev, incursion 0.9.6-dev.** Original entry: ~~Pursuit~~ **BUILT 0.9.5-dev** with no pursuit code: at `Band.Hostile` a hostile gets an assault lord and vanilla AI walks it to the threshold. **Still open: coming *through*.** Original entry: **Owner-answered: depth plus technology, while an opening is live.** An inhabitant chases a fleeing pawn to the threshold, and reaching it before the gate closes brings it through into the colony, where every native hostile behaviour applies with nothing bespoke written. **Closing the gate is the countermeasure**, which makes the emergency cutoff a tactical decision at the cost of stranding whoever is still inside. `PortalTraversalPolicy` gains the rule; the inhabitant still decides nothing.
 4. ~~**Facilities**~~ **BUILT 0.9.7-dev** as contiguous runs of 2-4 rooms sharing one archetype, proved across 2,800 simulated coordinates.
-5. **New-game playability** — the world tile the branch does not hold (world object plus generated map) and **the three starting sites** (`SCENARIOS.md`). Consumes the final content set, the finished gate model *and* the finished generator. **One tech tree for every start**, differing only in which projects begin complete — owner direction, and it belongs in the versioned start contract rather than bolted onto each scenario.
+5. **New-game playability.** The **starting-research contract is BUILT (0.9.8-dev)** — a start declares only what begins finished and the tree is derived from the def database. **Still open:** the world tile the branch does not hold (world object plus generated map) and **the other two starting sites** (`SCENARIOS.md`), which are **blocked behind the field-gear replacement** — the existing scenario grants `RR_FieldRecorder`, `RR_SurveyTag`, `RR_ReturnBeacon` and `RR_SealedEvidenceCase`, and writing two more against retiring content is what the ordering exists to prevent. Consumes the final content set, the finished gate model *and* the finished generator. **One tech tree for every start**, differing only in which projects begin complete — owner direction, and it belongs in the versioned start contract rather than bolted onto each scenario.
 6. **The player-facing how-to.** Last, because documentation describes a finished thing and writing it earlier means rewriting it. Note `docs/HOWTO.md` is the **developer** guide; the player one does not exist yet.
 7. **The unknown-def-field checker.** Written, **proved broken, removed rather than shipped.** See the warning below — start from the verified parts.
 8. **The 1990s period and universe factions.**
@@ -154,6 +155,9 @@ Each is a real defect or a pinned fact.
 57. **A facility is a contiguous run of 2–4 rooms sharing one archetype**, resolved through the lowest-index anchor and **stored nowhere** — recomputed identically from the saved graph and seed. Never a quiet room, never the threshold, never depth 1.
 58. **Coherence is what wrongness needs.** A recognisable institution that is wrong beats a jumble, because a jumble has nothing to violate. Do not "fix" facilities by making deep coordinates tidier.
 59. **When a proof and the code disagree on a constant, change the proof.** A proof testing different numbers than what ships is worthless. `EligibleShare` stayed 0.45; the proof moved to match.
+60. **A scenario declares what begins finished, never the tech tree.** The tree is every `RimroomsProjectDef` loaded, sorted ordinally. That is what makes "same tech tree" a fact rather than a convention three lists have to honour.
+61. **A project that begins finished is also insight-committed**, or the UI offers a "start" button on work already done.
+62. **The remaining two scenarios are blocked behind the field-gear replacement**, not behind effort. They would grant `RR_FieldRecorder`, `RR_SurveyTag`, `RR_ReturnBeacon` and `RR_SealedEvidenceCase` — content M2 is retiring.
 
 ---
 

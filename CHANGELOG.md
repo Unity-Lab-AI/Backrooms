@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.8-dev - 2026-09-29 - one tech tree, different starting points
+
+- **Every start uses the same company research tree.** A scenario chooses only which projects it begins with already finished, never what the tree contains.
+- Adding a research project in future reaches every scenario at once, instead of needing each one updated by hand.
+- No change to the Async Industries start: it still begins with gate telemetry available and unresearched.
+
+Full record: [one tech tree, different starting points](docs/implementation/STARTING_RESEARCH_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.9.7-dev - 2026-09-29 - some places are bigger than a room
 
 - **Runs of two to four connected rooms are now furnished as one thing.** You find a laboratory wing rather than a room with a bench in it, a dormitory block rather than a stray bed.
