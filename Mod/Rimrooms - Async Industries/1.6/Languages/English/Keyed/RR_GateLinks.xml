@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Equipment linked into a gate's facility. Written to each surface's own shape: a gizmo
+       label is short with no full stop, a tooltip is prose that ends a sentence, a float menu
+       row is a thing you pick, and an inspect line is terse with no trailing stop. -->
+
+  <RR_GateLink_Label>Linked equipment ({0})</RR_GateLink_Label>
+  <RR_GateLink_Desc>Link the shelves, analysers, benches and tool cabinets that make up this gate's facility. Connections work the way furniture connects to a bed, with three differences that a large installation needs: they reach as far as the branch, they pass through walls, and nothing is ever connected automatically.\\n\\nPowered equipment must sit on the same power network as the gate. Unpowered equipment has no network to be on and is accepted anywhere on the branch.\\n\\nA piece of equipment belongs to one gate at a time, so several gates can share one building without quietly sharing each other's facilities.</RR_GateLink_Desc>
+
+  <RR_GateLink_Add>Link {0}</RR_GateLink_Add>
+  <RR_GateLink_Unlink>Release {0}</RR_GateLink_Unlink>
+  <RR_GateLink_NoCandidates>Nothing on this branch can be linked</RR_GateLink_NoCandidates>
+
+  <RR_GateLink_RoleReadout>{0}: {1} of {2} working, {3} maximum</RR_GateLink_RoleReadout>
+
+  <RR_GateLink_GateNotDesignated>Designate this door as a gate before linking equipment to it.</RR_GateLink_GateNotDesignated>
+  <RR_GateLink_GateBusy>This gate is bringing a connection up. Wait for it to settle before changing its facility.</RR_GateLink_GateBusy>
+  <RR_GateLink_Unavailable>That equipment is not on this branch, or is no longer there.</RR_GateLink_Unavailable>
+  <RR_GateLink_WrongKind>Nothing about that can be linked to a gate. Shelves keep records, analysers and benches do the work, and tool cabinets keep the engineers supplied.</RR_GateLink_WrongKind>
+  <RR_GateLink_AlreadyAProvider>That is already one of this gate's own providers rather than facility equipment.</RR_GateLink_AlreadyAProvider>
+  <RR_GateLink_AlreadyLinked>Already linked to this gate.</RR_GateLink_AlreadyLinked>
+  <RR_GateLink_RoleFull>This gate already holds as many of those as it can. Release one first.</RR_GateLink_RoleFull>
+  <RR_GateLink_BoundToAnotherGate>Another gate on this branch already holds that. A piece of equipment belongs to one gate at a time.</RR_GateLink_BoundToAnotherGate>
+
+</LanguageData>

@@ -3112,3 +3112,25 @@ The 0.10.7-dev cascade was **blocked by `pre-tool-public-repo-guard.cjs`**: `gh 
 
 One process note worth keeping: writing the hook's escapes through a shell heredoc collapsed `
 ` into a real newline inside a JavaScript string literal and broke the file. That is the sixth time this session's family of escaping failures has bitten, and `node --check` caught it immediately. The fix was to stop writing escapes through the shell.
+
+### 0.10.8-dev - a gate's facility is the equipment linked into it
+
+> *"get to it and remmebr these facilities when built will be big so some shelves and multiples need to be like connect via a option like beds connect to other furnature in making the gate work properly with everything needed and like things needed to be on shelves/records that computers and workbenches need to connect to ie we can use things like the research computer multianalysers and other such things and tool cabnets for enginners research benches and the like and these facilitys can be massive so thes connections need to be like on the same power systems and connected to gether via connections like furnature to beds and reach fare and through walls and manually connected for use of multi gate facilities"*
+
+Nine items, one task each, all recorded verbatim in the queue before anything was built.
+
+**RimWorld already has exactly this relationship, and it could not be reused.** A bed links to an end table, a research bench to a multi-analyzer, a workbench to a tool cabinet. But **all the geometry lives on the facility side**: `CompProperties_Facility` defaults to `maxDistance = 8f` and `requiresLOS = true`, read from decompiled Core, and the consumer side carries one field and no control over either. *"reach fare and through walls"* is the opposite of both, so reusing Core's comps would have meant editing `MultiAnalyzer` and `ToolCabinet` and **changing vanilla research linking for every player and every other mod** - including the three wall-mounted facility mods in the profile. The links are ours; **Core's comps are untouched**, and a multi-analyzer linked to a gate still boosts a research bench.
+
+**The register said nothing to integrate with and one thing to avoid.** Rows 254, 256 and 257 are wall-mounted facility-linking furniture and row 184 changes room sizing. That is the reason above, found before designing rather than after.
+
+**Most of the direction was already true, for other reasons.** *"manually connected"*, *"reach fare and through walls"* and the same-power-net rule were all already how the gate's original three providers worked - `SameNativeHeadquartersThing` never had a distance or line-of-sight test, and `NativePowerConnected` already required the battery and console to share a net. What this checkpoint added was **multiples** (8 shelves, 6 analysers, 6 cabinets, where the old shape allowed exactly one of each provider), the **roles**, and the **drawn lines**.
+
+**The def name was not what it reads like.** The owner wrote *"multianalysers"*. `Multianalyzer` is a **ResearchProjectDef**; the building is `MultiAnalyzer` with a capital A. RimWorld's XML loader validates neither, so the wrong one would have loaded clean, appeared in the picker and **silently matched nothing**. Found by enumerating the installed game data, and now the first assertion in the proof.
+
+**The power rule is applied to anything that has a power component and to nothing else**, because a `Shelf` has no network to be on and requiring one would make the archive role - the very role the direction asks for - permanently unfillable. Two of six candidates are powered, four are not, and the proof asserts both halves are non-empty so neither the rule nor its exemption can quietly become dead code.
+
+**Inactive links are kept rather than dropped.** A player who loses power for an hour has not un-designated their facility. They draw in Core's own faded material, which is what vanilla does for an unpowered analyser. Unlinking is allowed mid-opening while binding a provider is not, because a link grants no charge and no work and so releasing one can never strand anybody.
+
+`.local/register/proof-gate-links.py` asserts twenty claims and all held, sanity-tested by planting the real casing mistake and an overlapping role and confirming each failed. **No Core def was patched at all** - no facility comp, no distance, no line of sight. 160 C# files, 84 package files, zero warnings, seven checkers. Record: `implementation/GATE_EQUIPMENT_LINKS_IMPLEMENTATION.md`.
+
+Still open and named in the queue: the archive role is the place records belong, and wiring evidence custody so a recovered book's chain of custody **completes** when it reaches a linked shelf is its own change.

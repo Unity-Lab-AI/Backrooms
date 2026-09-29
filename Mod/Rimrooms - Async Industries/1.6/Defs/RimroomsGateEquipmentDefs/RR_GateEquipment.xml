@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Roles a gate's facility can have equipment linked into. Every def name below was read
+       from the installed game data, not remembered - `MultiAnalyzer` has a capital A and
+       `Multianalyzer` is a research project rather than a building, which is the sort of thing
+       that silently produces a role nobody can fill.
+
+       maxLinked is deliberately above one: the owner's words were "some shelves and multiples",
+       and a facility big enough to need several gates is big enough to need several shelves. -->
+
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_Archive</defName>
+    <label>records archive</label>
+    <description>Shelves this gate's facility keeps its records on. Recovered books, route notes and case files belong on a linked shelf rather than wherever a hauler happened to drop them.\n\nLink as many as the facility needs. They do not have to be in the same room as the gate, or anywhere near it - only on the same map and the same branch.</description>
+    <thingDefNames>
+      <li>Shelf</li>
+      <li>ShelfSmall</li>
+    </thingDefNames>
+    <maxLinked>8</maxLinked>
+    <displayOrder>0</displayOrder>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_Analysis</defName>
+    <label>analysis equipment</label>
+    <description>The benches and analysers this gate's facility does its work on. A multi-analyzer, a research bench, or several of each.\n\nPowered equipment must be on the same power network as the gate. Unpowered equipment has no network to be on, so it is accepted anywhere on the branch.\n\nLinking a multi-analyzer here does not stop it boosting a research bench in the ordinary way.</description>
+    <thingDefNames>
+      <li>MultiAnalyzer</li>
+      <li>HiTechResearchBench</li>
+      <li>SimpleResearchBench</li>
+    </thingDefNames>
+    <maxLinked>6</maxLinked>
+    <displayOrder>1</displayOrder>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_Tooling</defName>
+    <label>engineering tooling</label>
+    <description>Tool cabinets for the engineers who keep a gate working. A large installation keeps them where the work is rather than in one central store.</description>
+    <thingDefNames>
+      <li>ToolCabinet</li>
+    </thingDefNames>
+    <maxLinked>6</maxLinked>
+    <displayOrder>2</displayOrder>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
+</Defs>

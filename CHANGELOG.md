@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.10.8-dev - 2026-09-29 - a gate's facility is the equipment linked into it
+
+- **Link shelves, analysers, benches and tool cabinets to a gate**, the way furniture connects to a bed. Select the gate and you see lines to everything connected to it, drawn in the game's own colours - solid when a link is working, faded when it is not.
+- **Three differences a large installation needs.** The links reach as far as the branch, they pass through walls, and nothing is ever connected automatically. You connect each one yourself.
+- **Multiples, not one of each.** Up to eight shelves, six analysers or benches, six tool cabinets per gate.
+- **Powered equipment must be on the gate's own power network.** Unpowered equipment - a shelf, a tool cabinet, a simple research bench - has no network to be on and can sit anywhere on the branch.
+- **Equipment belongs to one gate at a time**, so several gates can share one building without quietly sharing each other's facilities.
+- **A multi-analyzer linked to a gate still boosts a research bench** in the ordinary way. Nothing about vanilla facility linking changed, for you or for any other mod.
+- The gate's inspect pane now lists each role, how many are linked, and how many of those are actually working.
+
+Full record: [a gate's facility is the equipment linked into it](docs/implementation/GATE_EQUIPMENT_LINKS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.10.7-dev - 2026-09-29 - the survey tag becomes a glow pod
 
 - **Route markers are glow pods now.** The custom survey tag is gone. You set down an ordinary Core glow pod and mark it, the same way you designate a door as a gate.

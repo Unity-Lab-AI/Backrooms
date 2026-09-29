@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -221,6 +221,7 @@ namespace RimroomsAsyncIndustries.Gate
             Scribe_Collections.Look(ref openingSpendReceipts, "rr_gateOpeningSpendReceipts", LookMode.Deep);
             Scribe_Collections.Look(ref recoveryReceipts, "rr_gateRecoveryReceipts", LookMode.Deep);
             ExposeNativeBinding();
+            ExposeEquipmentLinks();
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 if (openingSpendReceipts == null) { openingSpendReceipts = new List<GateWindowSpendReceipt>(); }
@@ -330,6 +331,8 @@ namespace RimroomsAsyncIndustries.Gate
                 };
             }
 
+            yield return EquipmentLinkGizmo();
+
             yield return new Command_Action
             {
                 defaultLabel = "RR_Gate_KillSwitchLabel".Translate(),
@@ -392,8 +395,9 @@ namespace RimroomsAsyncIndustries.Gate
                     DescribeWindow(emergencyReturnTicksRemaining), string.IsNullOrEmpty(failureKey) ? "RR_Gate_NoFailure".Translate() : failureKey.Translate()).ToString()
                 : "";
             string ramp = SpinUpReadout();
+            string links = EquipmentLinkReadout();
             string footprint = FootprintReadout();
-            return string.Join("\n", new[] { status, footprint, operatorText, cutoffText, serviceText, powerText, ramp, active }
+            return string.Join("\n", new[] { status, footprint, operatorText, cutoffText, serviceText, powerText, ramp, links, active }
                 .Where(s => !string.IsNullOrEmpty(s)));
         }
 

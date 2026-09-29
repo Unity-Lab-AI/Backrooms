@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.10.7-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.10.8-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **159 C# files, 82 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `860E986640BE2744316EB1C80145836175665692D10C8EC026D496D9CC900658`, reproduced by two clean recompiles |
+| Build | **160 C# files, 84 package files**, zero warnings, zero errors |
+| Assembly | SHA-256 `A3BDB14AC101C0FDAFBF67C917535996FE54E5023202391589D382B23C83860B`, reproduced by two clean recompiles |
 | Checkers | **seven**, all passing |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -41,7 +41,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.10.7
+## What shipped this session, 0.7.1 → 0.10.8
 
 | Version | What |
 |---|---|
@@ -68,6 +68,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.10.5 | **Every surface the game speaks through** — a seventh checker measured against Core per display surface, and the alerts readout, which this mod used none of |
 | 0.10.6 | **The documents use the mod's own words** — the vocabulary and the wall rule reach the reader-facing set; two superseded rules found while reading |
 | 0.10.7 | **The survey tag becomes a glow pod** — marker types with colours, three caps removed, and an outcome that could never fire |
+| 0.10.8 | **A gate's facility is the equipment linked into it** — shelves, analysers and cabinets link like furniture to a bed, but far, through walls and by hand |
 
 ---
 
@@ -193,6 +194,10 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 93. **Core's `ScenPart_StartingThing_Defined` minifies its own output**, and `MinifyUtility.TryMakeMinified` passes a non-minifiable thing through unchanged. An uncrated building in a cargo hold is a thing nobody can pick up.
 94. **`CompLifespan.age` is a public field.** A Core glow pod dies after 1,200,000 ticks; holding a designated one at zero leaves every other glow pod in the game alone.
 95. **Count the caps, not the cap.** *"lets not limit the amount"* named one limit and there were three: per room, per crew at dispatch, and per recipe batch.
+96. **Core keeps facility-link geometry on the FACILITY side.** `CompProperties_Facility` is `maxDistance = 8f`, `requiresLOS = true`; the consumer comp carries one field and no control over either. Long-range, wall-transparent links must be our own record, or vanilla research linking changes for everyone.
+97. **A def name that reads correctly can still be wrong, and nothing will tell you.** `Multianalyzer` is a ResearchProjectDef; the building is `MultiAnalyzer`. RimWorld's XML loader validates neither, so the wrong one loads clean and matches nothing. **Enumerate the installed data.**
+98. **A rule and its exemption must both be provably non-empty.** The same-power-net rule applies only to things with a power comp. If every candidate were powered the exemption would be dead code; if none were, the rule would be. Assert both halves.
+99. **State what already works before building it again.** Six of the nine items in this direction were already satisfied by rules written for the original three providers.
 
 ---
 
