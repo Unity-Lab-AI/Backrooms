@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.8-dev - 2026-09-29 - zones work on both sides of a gate
+
+- **A growing zone inside the Backrooms no longer traps the person you sent to it.** Backrooms floors are concrete, and nothing can be planted in concrete — but somebody was being sent to sow there anyway, and once they arrived the game correctly refused while the mod still believed there was work, so they stood there doing nothing and never came back. Nobody is sent now unless the ground can actually take the crop.
+- Everything else about zones on both sides of a gate was checked rather than assumed. Stockpiles on the far side pull goods across and honour their own filters and priority. Fishing zones, home areas and per-colonist allowed areas all read the far side's own settings.
+- Zones you paint in a Backrooms space survive leaving and coming back, along with their settings.
+
+One honest note on what "continuous" can mean: the game does not allow a single zone to cover two maps, so two zones either side of a gate stay two zones. They already behave as one in the way that matters — put something in one and a hauler will move it to the other when that is a better home for it.
+
+Full record: [zones and areas across a gate](docs/research/ZONES_AND_AREAS_ACROSS_A_GATE.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.6.7-dev - 2026-09-29 - every kind of work in the game now crosses a gate
 
 - **Containers on the other side get tended.** A fermenting barrel that wants wort or has beer ready, an egg box with eggs in it, and a pack animal you marked to unload will all now pull somebody across a gate.

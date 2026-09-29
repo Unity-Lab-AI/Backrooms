@@ -290,8 +290,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
         {
             List<IntVec3> cells = zone.Cells;
             if (cells == null || cells.Count == 0) { return false; }
-            // Sowing: the zone itself says whether it will accept sowing now.
-            bool sowWanted = zone.allowSow && zone.CanAcceptSowNow() && zone.GetPlantDefToGrow() != null;
+            // Sowing: the zone itself says whether it will accept sowing now...
+            ThingDef wantedPlant = zone.GetPlantDefToGrow();
+            bool sowWanted = zone.allowSow && zone.CanAcceptSowNow() && wantedPlant != null;
             int examined = 0;
             for (int index = 0; index < cells.Count; index++)
             {
@@ -303,8 +304,28 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
                 Plant plant = cell.GetPlant(map);
                 if (plant == null)
                 {
-                    // An empty, unfogged cell in a zone that wants sowing is work.
-                    if (sowWanted) { return true; }
+                    // ...but the zone wanting sowing is not enough, and assuming it was is a
+                    // defect corrected 2026-09-29. Whether this *cell* can be sown is a
+                    // separate question, and inside the Backrooms the answer is usually no:
+                    // rooms are floored with Concrete and PavedTile, both of which inherit
+                    // FloorBase and therefore have fertility 0, while every Core plant needs
+                    // `fertilityMin` of at least 0.01. So a growing zone painted in a
+                    // coordinate could never be sown — and because `HasWorkHere` asks this
+                    // same question, the deployment would have been **held open** with the
+                    // worker standing there idle rather than released. That is worse than a
+                    // wasted trip, and it is exactly the case the owner asked about when they
+                    // said zones must work properly on both sides of a gate.
+                    //
+                    // Both gates below are Core's own and both are facts about the cell and
+                    // its own map — neither takes a pawn, so both are fair to ask remotely:
+                    //
+                    //   CanEverPlantAt   -> terrain fertility, blockers, roof and edifice
+                    //   GrowthSeasonNow  -> the cell's room and its temperature
+                    //
+                    // `zone.GetPlantDefToGrow()` is used rather than
+                    // `WorkGiver_Grower.wantedPlantDef`, which Core writes mid-scan and which
+                    // a remote probe must never touch.
+                    if (sowWanted && CellCanBeSown(cell, map, wantedPlant)) { return true; }
                     continue;
                 }
                 // Harvesting: every one of these is a fact about the plant.
@@ -313,10 +334,25 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
                 if (!plant.def.plant.autoHarvestable) { continue; }
                 // Core refuses to cut a plant the zone is protecting unless it is the one the
                 // zone wants grown.
-                if (!zone.allowCut && plant.def != zone.GetPlantDefToGrow()) { continue; }
+                if (!zone.allowCut && plant.def != wantedPlant) { continue; }
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Whether this cell could actually be sown with this plant, asked with Core's own
+        /// two gates and nothing of ours.
+        ///
+        /// Deliberately **not** reimplemented: fertility thresholds, blocker rules and
+        /// temperature bands are all Core's numbers, read through Core's own methods, so a mod
+        /// that changes any of them changes this answer too without anything here knowing.
+        /// </summary>
+        private static bool CellCanBeSown(IntVec3 cell, Map map, ThingDef wantedPlant)
+        {
+            if (wantedPlant == null || wantedPlant.plant == null) { return false; }
+            if (!wantedPlant.CanEverPlantAt(cell, map)) { return false; }
+            return PlantUtility.GrowthSeasonNow(cell, map, wantedPlant);
         }
     }
 }

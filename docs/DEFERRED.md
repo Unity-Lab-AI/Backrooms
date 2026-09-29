@@ -188,6 +188,15 @@ _Closed 2026-09-28 in 0.5.4-dev. Record: [`implementation/GATE_DURATION_AND_COMP
 
 - [x] **The dependency position, audited rather than asserted** — every non-Rimrooms def the code looks up traced to base Core (twelve of them, no DLC, no mod); both XML patch files confirmed correctly guarded, including the one Core def that genuinely lacks a `<comps>` node; stack-size mod compatibility confirmed real because no stack size is hardcoded; modded-door support confirmed real because doors are matched by type. `About.xml` now states the audited position precisely.
 
+## Zones and areas across a gate (2026-09-29)
+
+Audit: [`research/ZONES_AND_AREAS_ACROSS_A_GATE.md`](research/ZONES_AND_AREAS_ACROSS_A_GATE.md).
+
+- [x] **Stockpile, fishing, Home and allowed-area behaviour across a gate** — audited and working. The far zone's own settings decide, in every case.
+- [x] **Zones persist across visits** — coordinate maps are never removed (`ShouldRemoveMapNow` returns false unconditionally), so painted zones and their settings survive.
+- [x] **Growing zones inside the Backrooms** — **DEFECT FIXED 0.6.8-dev.** Concrete and paved floors have fertility 0 and no plant can be sown on them, but the provider reported work anyway and `HasWorkHere` held the deployment open. Core's `CanEverPlantAt` and `GrowthSeasonNow` now gate the per-cell test.
+- [ ] **`Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear`, `Area_PollutionClear` across a gate** — not covered, and **correctly not covered while the far side of a gate is always a Backrooms coordinate**: a coordinate is already all thick rock, roof removal there is forbidden by the world rule, and it has no outside and therefore no weather. **This row is a dependency of the ordinary-map portal endpoint, not an independent one** — build it in that checkpoint, because a colony map genuinely gets snow, genuinely wants roofs built, and may be polluted.
+
 ## The 294-mod register, and the work types nobody had enumerated (2026-09-29)
 
 - [x] **A register the owner can actually open** — decided. There is **no spreadsheet application on this machine and no `.xlsx` association at all**, so the workbook was never openable here whatever its XML said. The register is now `Rimrooms_Async_Industries_294_Mod_Integration_Register.html`: browser, no install, no external asset. The workbook is still built and verified as the secondary output. Record in `implementation/MOD_REGISTER_REBUILD.md`.

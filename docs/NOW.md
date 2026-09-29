@@ -58,7 +58,7 @@ Do not finish a checkpoint and wait. Chain them. The owner got tired of asking f
 ### What is left, in the order to do it
 
 1. ~~**The four work-type gaps**~~ — **ALL CLOSED.** Bill work 0.6.5-dev, dark study 0.6.6-dev, hauling upkeep / BasicWorker / Fishing 0.6.7-dev. **Every work type in Core and all five expansions is now covered or decided against with its reason recorded**; joy, rituals, `Patient` and `PatientBedRest` are decided no. Do not reopen any of it — read `research/WORK_TYPE_COVERAGE_AUDIT.md`. What remains here is narrower and named in `DEFERRED.md`: the **eleven DLC container hauling givers** (each needs a custody review before a worker crosses for it) and the **four painting givers** in `Art`.
-2. **A portal whose far side is an ordinary map**, then **a world tile the branch does not hold.** This is the remaining half of the topology direction. **It needs a player designation flow** — the same pattern gates already use — because auto-picking a door on the player's colony is exactly what 0.6.3 forbade. Do the already-owned-map version first: it is bounded, it is a real shortcut home, and it exercises the endpoint plumbing the world-tile version reuses.
+2. **A portal whose far side is an ordinary map**, then **a world tile the branch does not hold.** **When this lands, also cover `Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear` and `Area_PollutionClear` across a gate** — they are uncovered today only because a coordinate has no outside and no removable roof, and a colony map has both. This is the remaining half of the topology direction. **It needs a player designation flow** — the same pattern gates already use — because auto-picking a door on the player's colony is exactly what 0.6.3 forbade. Do the already-owned-map version first: it is bounded, it is a real shortcut home, and it exercises the endpoint plumbing the world-tile version reuses.
 3. **The three starting sites.** `SCENARIOS.md` specifies all three in full, so this is implementation, not design. Two of them begin with a way out of the Backrooms.
 4. **Floors returning materials when lifted** — vanilla returns none, so the owner's "uninstalled, moved, resued, sold" for carpet and tile is a content feature needing a `CONTENT_REUSE_POLICY.md` decision.
 5. **The 1990s period and the universe factions**, under `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`. New `FactionDef`s reusing existing pawn kinds, all starting neutral.
@@ -92,11 +92,12 @@ Each one is a real defect or a pinned source fact.
 22. **Prefer a setting or a def over a constant** for anything tunable. The only test session fixes things live without a mod reload.
 23. **Add definitions; never redistribute assets.** No `PatchOperationReplace`/`Remove` on a Core def. Gate DLC content with `MayRequire`. Official versions only.
 24. **Never force-push. Never launch the game. Never alter the RimSort list. No AI attribution anywhere.**
-25. **A def referencing DLC content carries `MayRequire`; the C# guard is not enough.** `GetNamedSilentFail` makes the *code* degrade and does nothing for an unresolved cross-reference in the *def*. `tools/check-dlc-gating.py` indexes the game's own data and must pass. The compliance check does **not** cover this — it looks for package ids, and a def naming `Childcare` never mentions Biotech.
-26. **The register is generated output; the HTML one is the register.** There is **no spreadsheet application on this machine and no `.xlsx` association at all**, so `Rimrooms_Async_Industries_294_Mod_Integration_Register.html` is the file anybody reads. Both are built by `tools/research/build-mod-register.py` from the CSVs under `docs/research/`. **Hand-editing either output loses the edit on the next build.** Family, stance and firmness tallies are counted from the rows every build and are never stored.
-27. **A prisoner can never cross a gate; a *secure* slave can.** `Pawn.IsColonist` requires `Faction.IsPlayer && (!IsSlave || guest.SlaveIsSecure) && !IsSubhuman`, and `PortalTraversalPolicy` delegates the whole judgement to it. Prisoners keep their own faction. Do not add a second check — Core's containment judgement is the one that decides.
-28. **The portal topology is an unbounded alternation of world maps and Backrooms coordinates, in any order, built gates and found frontiers mixed freely.** Not "nesting" plus "an exit" — one rule. `map > backrooms > backrooms` already works; everything else resolves to the single open ordinary-map endpoint.
-29. **Never trust a remembered list of anything against the shipped game data.** The families list omitted `DarkStudy` and `Fishing`, and closing the row on it would have closed it wrongly. Enumerate.
+25. **A candidate half must ask whether the *target* can take the work, not only whether its *zone or owner* wants it.** A growing zone on a coordinate's concrete floor (fertility 0) reported work forever, and because `HasWorkHere` asks the same question the deployment was **held open** with the worker idle — worse than a wasted trip. See `research/ZONES_AND_AREAS_ACROSS_A_GATE.md`.
+26. **A def referencing DLC content carries `MayRequire`; the C# guard is not enough.** `GetNamedSilentFail` makes the *code* degrade and does nothing for an unresolved cross-reference in the *def*. `tools/check-dlc-gating.py` indexes the game's own data and must pass. The compliance check does **not** cover this — it looks for package ids, and a def naming `Childcare` never mentions Biotech.
+27. **The register is generated output; the HTML one is the register.** There is **no spreadsheet application on this machine and no `.xlsx` association at all**, so `Rimrooms_Async_Industries_294_Mod_Integration_Register.html` is the file anybody reads. Both are built by `tools/research/build-mod-register.py` from the CSVs under `docs/research/`. **Hand-editing either output loses the edit on the next build.** Family, stance and firmness tallies are counted from the rows every build and are never stored.
+28. **A prisoner can never cross a gate; a *secure* slave can.** `Pawn.IsColonist` requires `Faction.IsPlayer && (!IsSlave || guest.SlaveIsSecure) && !IsSubhuman`, and `PortalTraversalPolicy` delegates the whole judgement to it. Prisoners keep their own faction. Do not add a second check — Core's containment judgement is the one that decides.
+29. **The portal topology is an unbounded alternation of world maps and Backrooms coordinates, in any order, built gates and found frontiers mixed freely.** Not "nesting" plus "an exit" — one rule. `map > backrooms > backrooms` already works; everything else resolves to the single open ordinary-map endpoint.
+30. **Never trust a remembered list of anything against the shipped game data.** The families list omitted `DarkStudy` and `Fishing`, and closing the row on it would have closed it wrongly. Enumerate.
 
 ### Standing method
 
@@ -115,9 +116,10 @@ Each one is a real defect or a pinned source fact.
 5. `docs/implementation/CONNECTED_TRAVEL_TO_WORK_IMPLEMENTATION.md` — the deployment shape and the Core-method split table.
 6. `docs/implementation/CONTAINMENT_AND_CARE_IMPLEMENTATION.md` — the containment rule and its Core evidence.
 7. `docs/research/WORK_TYPE_COVERAGE_AUDIT.md` — all 23 work types, what is covered, what is decided against, and the four gaps. **Read this before writing any work family.**
-8. `docs/implementation/MOD_REGISTER_REBUILD.md` — how the 294-mod register works now, and why the HTML one is the one to open.
-9. `docs/COMPLIANCE_AND_OFFICIAL_VERSIONS.md` — the verified TOS position and the rules binding every new def.
-10. `docs/PUBLISHING.md` — the push procedure. Follow it literally.
+8. `docs/research/ZONES_AND_AREAS_ACROSS_A_GATE.md` — every zone and area type across a gate, what works, and the three that wait on the ordinary-map endpoint.
+9. `docs/implementation/MOD_REGISTER_REBUILD.md` — how the 294-mod register works now, and why the HTML one is the one to open.
+10. `docs/COMPLIANCE_AND_OFFICIAL_VERSIONS.md` — the verified TOS position and the rules binding every new def.
+11. `docs/PUBLISHING.md` — the push procedure. Follow it literally.
 
 ### The checkpoint ritual
 
