@@ -41,7 +41,34 @@ Research tier 2: seven `RimroomsProjectDef`, one per branch, each requiring its 
 
 ---
 
-## Inherited pre-workflow history (2026-09-27 → 2026-09-28, previous build agent)
+## Session 2026-09-29 - the clean-up team (0.11.7-dev)
+
+**Verbatim user quote:** *"nicely done keep at it"*
+
+**The direction this closes, verbatim:** *"the mega mother corp is greedy and will basic do anything and put up with anything to make sure you succssed to the point of sending clean up teams to your base with all access passses to wipe the facitly of all hostals and requisition a new basic team supplies drops like a fresh start of sorts so that facilities never die, this is liken the store and solo/group scenerios once they reach contact with the corporation"*
+
+**And its scoping answer, verbatim:** *"clena up tema is only once u are in communication and working with the corporation"*
+
+**And the storyteller fork decision, verbatim:** *"Both - guaranteed floor, storyteller flavour"*
+
+### What shipped
+
+The guaranteed-floor half. A branch in corporation contact that loses every living staff member gets a clean-up team: hostiles removed, five replacement staff requisitioned one per company role, and a basic supply drop. No cap, no escalation, and it refuses to fire while anybody is alive anywhere - including a crew standing inside a Backrooms coordinate.
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Company/FacilityRelief.cs` (new), `RimroomsCampaignComponent.cs`, `CampaignServices.cs`, `1.6/Languages/English/Keyed/RR_Requests.xml`, `docs/implementation/FACILITY_RELIEF_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj, and a fifth proof.
+
+### Closure notes
+
+- **Five `PawnKindDef`s were already written and read by nothing** - the whole `RR_*Staff` set, authored with skill ranges matching the five company roles exactly. Third instance this session of invariant 131. The queue called them "unbuilt"; they were **built and orphaned**, which is more dangerous, because an orphaned def looks finished from every angle except the one nobody checks.
+- **Core facts read from the decompiled assembly, not remembered:** `GameEnder.gameEnding` is a public field, Core clears it whenever a map holds a free colonist, and the game-over countdown is 400 ticks. The relief is checked every 60. All three are now asserted against the live assembly.
+- **Not routed through the hiring pipeline**, because that path's job is matching onboarding receipts and there is no charge here. Using it would have meant inventing a receipt.
+- **A fifth proof**, fault-planted four ways and correct on every one.
+- Build 0.11.7-dev, 163 C# files, 85 package files, **0 warnings, 0 errors**. Eight checkers pass. Assembly reproduced by two clean recompiles. **No game was launched.**
+
+---
+ (2026-09-27 → 2026-09-28, previous build agent)
 
 Not verbatim user tasks — a pointer index into the records the previous agent left, so this archive has one continuous timeline. The authoritative evidence for each row is the linked file; the master TODO checkboxes in [`PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) are the per-item closure record.
 

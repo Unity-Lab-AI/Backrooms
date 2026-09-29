@@ -311,6 +311,10 @@ namespace RimroomsAsyncIndustries.Company
             // Odd-supply demand rides the same cadence. Offering is interval-gated inside,
             // so this is a counter comparison almost every time it runs.
             if (now % 60 == 0) { UpdateOddSupplyContracts(); }
+            // The clean-up team. Checked often enough to land inside Core's 400-tick
+            // game-over countdown, and cheap: a bool, then a scan that stops at the
+            // first living employee.
+            if (now % 60 == 30) { TickFacilityRelief(); }
             if (now % 250 != 0 || now < nextOperatingCostTick || nextOperatingCostTick == int.MaxValue) { return; }
             // Bound catch-up work after a time jump; unpaid obligations remain explicit records.
             int days = 0;

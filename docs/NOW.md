@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.11.6-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.11.7-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **162 C# files, 85 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `018417AEA123B3894A44F9007535ACED27AC6FE09E972DFAFC3E29F427ADA71A`, reproduced by two clean recompiles |
+| Build | **163 C# files, 85 package files**, zero warnings, zero errors |
+| Assembly | SHA-256 `307D02D075BBBF4256FB019BF848E6705400D4F40EF79DA5E26EE11802BB2CCC`, reproduced by two clean recompiles |
 | Checkers | **eight**, all passing |
-| Proofs | **four** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
+| Proofs | **five** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.11.6
+## What shipped this session, 0.7.1 → 0.11.7
 
 | Version | What |
 |---|---|
@@ -79,6 +79,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.11.4 | **The second rung of every branch** — research tier 1; two vestigial power props found and retired |
 | 0.11.5 | **A designated gate is a machine that is on** — three unused props restored, two wired. **Reversed 0.11.4’s retirements.** |
 | 0.11.6 | **The second time you do a thing should be cheaper** — research tier 2; three planned unlocks deleted for changing nothing observable |
+| 0.11.7 | **The corporation does not write off a branch** — the clean-up team; five `PawnKindDef`s found authored and read by nothing |
 
 ---
 
@@ -87,25 +88,13 @@ Chain checkpoints. Do not finish one and wait.
 The order is the one `docs/CAMPAIGN_CHART.md` §7 authorises. **Read the chart before starting
 anything in this list** — it is the authority, and steps 1–5 of its build order are done.
 
-1. **The clean-up team — *"so that facilities never die"*.** The state it keys on **already
-   exists**: `campaign.CorporationContact`, one-way, set from `beginsInCorporationContact`. Async
-   Industries begins true; the Store and Solo/Group begin false and must earn it. On collapse the
-   corporation sends a team with all-access passes, clears every hostile, requisitions a fresh
-   basic team and drops supplies. **A no-fail floor, chosen deliberately by the owner.**
-
-   **Owner decision at the storyteller fork, 2026-09-29, verbatim: *"Both - guaranteed floor,
-   storyteller flavour"*.** So this is built twice over:
-   - **The rescue fires from our own `GameComponent`, deterministically.** A promise that says
-     *"facilities never die"* must never be at the mercy of a dice roll.
-   - **Lighter world-facing events register as `IncidentDef`s with our own `IncidentWorker`s**, so
-     the player's chosen storyteller paces them. **This mod currently has zero `IncidentDef`s**,
-     which means no storyteller knows it exists. It is also the right home for arc 6,
-     *"respond to openings in settlements"*.
-   - **No custom `StorytellerDef`, ever.** It is an exclusive slot the player would have to give
-     up Cassandra or Randy for, it needs portrait art the no-new-art rule forbids, and there is no
-     intelligence in one to borrow — a `StorytellerComp` rolls a mean-time-between against wealth
-     and population. The part that feels like a director is `IncidentWorker.CanFireNowSub`, and
-     that is ours without owning the slot.
+1. **The storyteller half of the owner's *"Both"* decision.** The guaranteed floor shipped in
+   0.11.7; this is the other half. **This mod still has zero `IncidentDef`s**, so no storyteller
+   knows it exists. Register lighter world-facing events as `IncidentDef`s with our own
+   `IncidentWorker`s, gated in `CanFireNowSub`, and let the player's chosen storyteller pace them.
+   The right home for arc 6, *"respond to openings in settlements"*. **Never a `StorytellerDef`** —
+   it is an exclusive slot, it needs portrait art the no-new-art rule forbids, and there is no
+   intelligence in one to borrow.
 2. **Research tiers 3–4** — remote and deep operations.
 3. **The Store and Solo/Group starts.** Each *"needs special treatment in theri layout and
    starts"*, a different point of view on the same world, and **neither begins in contact**.
@@ -282,6 +271,8 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 136. **A live read site is not a live effect.** Three tier 2 unlocks were deleted before being written because the knobs they moved were a one-second wait, a cap of 100 orders and a quantity limit already set to a million. **All three would have passed `proof-research-branches.py`**, because the capability would have been read by real code. Open the file, find the value, and ask what a player would observe.
 137. **A number displayed and a number spent must come from one place.** Idle draw is read by the gate’s readout and by the tick that drains the reserve; research applied to one and not the other would make the readout lie, silently, because nothing compares them.
 138. **Check that a new tier does not switch off the tier below it.** Forward Dispatch halves the dispatch delay, and the lead-time clamp had to be moved onto the effective value or Relays would have stopped biting for exactly the branches holding both.
+139. **An orphaned def is more dangerous than a missing one.** Five `RR_*Staff` `PawnKindDef`s were authored, loaded and validated every run and read by **nothing**, and the queue called them *"unbuilt"*. Built and orphaned looks finished from every angle except the one nobody checks. **Third instance of invariant 131 this session.**
+140. **A guarantee must not be an incident.** *"Facilities never die"* does not admit the two questions a storyteller asks — whether, and when. The floor is deterministic; the flavour is paced. Owner decision, verbatim: *"Both - guaranteed floor, storyteller flavour"*.
 
 ---
 

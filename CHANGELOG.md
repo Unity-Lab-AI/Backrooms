@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.11.7-dev - 2026-09-29 - the corporation does not write off a branch
+
+- **A clean-up team now arrives if your facility is wiped out.** Once you are in contact with the parent corporation, losing every last member of staff is no longer the end of the run.
+- **They come in on all-access passes and clear the site of hostiles.** Removed, not killed - there is nobody left to haul forty corpses.
+- **They bring a replacement crew of five**, one for each company role, and leave food, medicine, steel, components and wood. Enough to start again.
+- **There is no limit on this and it never gets stingier.** The corporation is greedy, it is invested in you, and it will wait.
+- **It will not fire while anybody is still alive** - including a crew that is standing inside the Backrooms when it happens. Staff who are merely unconscious are not replaced.
+- **The Store and Solo/Group starts do not have this until they earn contact.** That absence is the point of those openings.
+- **Five staff types that shipped with the mod but were used by nothing are now the replacement crew.** They were written for exactly this.
+
+Full record: [the corporation does not write off a branch](docs/implementation/FACILITY_RELIEF_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.11.6-dev - 2026-09-29 - the second time you do a thing should be cheaper
 
 - **Seven more research projects**, the third step in each branch. Each needs its own second project and a completed distortion log, because this band is about having been through often enough for something to have gone wrong.

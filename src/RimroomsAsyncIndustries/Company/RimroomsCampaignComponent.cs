@@ -228,6 +228,7 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Collections.Look(ref events, "rr_events", LookMode.Deep);
             ExposeSupplyContracts();
             ExposeCorporateSupply();
+            ExposeFacilityRelief();
             ExposeLostPawns();
             ExposeEncounterProgression();
             if (Scribe.mode == LoadSaveMode.PostLoadInit)

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
   <!-- Success routes. A route label is a thing the player picks, so it carries no full stop;
@@ -59,6 +59,13 @@
 
   <!-- Contact with the parent corporation. -->
 
+  <RR_Event_FacilityRelief>A corporation clean-up team cleared the site, requisitioned a replacement crew and left supplies. The branch is open again.</RR_Event_FacilityRelief>
+  <RR_Relief_Title>Clean-up team</RR_Relief_Title>
+  <RR_Relief_Body>The parent corporation does not write off a branch it has on its books.
+
+A clean-up team came in on all-access passes, removed {1} hostiles from the site and left. Behind them: {0} replacement staff and enough supplies to start again.
+
+Nobody asked {2} whether it wanted the help, and no invoice came with it. The crew are on the ordinary wage from today.</RR_Relief_Body>
   <RR_Event_CorporationContact>The parent corporation has this branch on the books. It is now an investment rather than an experiment.</RR_Event_CorporationContact>
 
 </LanguageData>
