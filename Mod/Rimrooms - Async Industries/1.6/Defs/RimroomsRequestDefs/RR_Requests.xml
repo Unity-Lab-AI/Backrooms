@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
-  <!-- Corporation requests.
+  <!-- Corporation requests: the tutorial line from docs/CAMPAIGN_CHART.md #4.2, in order.
 
-       The first rung of the tutorial line from docs/CAMPAIGN_CHART.md #4.2, built as the worked
-       proof that the offer shape holds. Requests 2-6 and the hinge follow it, in the order the
-       chart sets, and nothing here is invented: the routes below are the ones the chart already
-       names for request 1.
+       Nothing here is invented. Each request's routes are the ones the chart already names for
+       it, and every def name referenced was read out of the installed game or out of our own
+       project file rather than typed from memory.
 
-       Two rules every request in this file obeys, both enforced at def load and by
+       Two rules every request obeys, enforced at def load by ConfigErrors and before shipping by
        tools/check-campaign-absolutes.py:
 
          * TWO OR MORE routes, of TWO OR MORE DIFFERENT KINDS. Two ways of delivering the same
            object is one route wearing two hats.
-         * NO EXPIRY. There is no field to put one in. The company waits. -->
+         * NO EXPIRY. There is no field to put one in. The company waits as long as it takes.
 
+       Requests 1-6 are fixed and teach one system each by being played. Request 7 is the hinge:
+       the designed point where the tutorial becomes an open campaign. -->
+
+  <!-- ===================================================================== 1 - power ==== -->
   <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
     <defName>RR_Request_PowerTheGate</defName>
     <label>power the gate</label>
@@ -24,7 +27,6 @@
     <tutorialOrder>0</tutorialOrder>
     <paymentUsd>2000000</paymentUsd>
     <successRoutes>
-
       <li>
         <kind>Deliver</kind>
         <labelKey>RR_Route_BuildBatteryLabel</labelKey>
@@ -32,7 +34,6 @@
         <thingDefName>Battery</thingDefName>
         <count>1</count>
       </li>
-
       <li>
         <kind>Substitute</kind>
         <labelKey>RR_Route_BindExistingLabel</labelKey>
@@ -40,7 +41,194 @@
         <thingDefName>Battery</thingDefName>
         <count>1</count>
       </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
 
+  <!-- ============================================================ 2 - assemble, calibrate -->
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_AssembleAndCalibrate</defName>
+    <label>assemble and calibrate the gate</label>
+    <description>A designated door is not a gate until the assembly is finished and somebody has calibrated it. The company wants both done and an operator named, because a gate with nobody to run it is a door with an expensive component in it.</description>
+    <arc>1</arc>
+    <tutorial>true</tutorial>
+    <tutorialOrder>1</tutorialOrder>
+    <paymentUsd>3000000</paymentUsd>
+    <prerequisiteRequests>
+      <li>RR_Request_PowerTheGate</li>
+    </prerequisiteRequests>
+    <successRoutes>
+      <li>
+        <kind>Deliver</kind>
+        <labelKey>RR_Route_AssembleOnSiteLabel</labelKey>
+        <descriptionKey>RR_Route_AssembleOnSiteDesc</descriptionKey>
+        <thingDefName>ComponentIndustrial</thingDefName>
+        <count>8</count>
+      </li>
+      <li>
+        <kind>Purchase</kind>
+        <labelKey>RR_Route_RequisitionAssemblyLabel</labelKey>
+        <descriptionKey>RR_Route_RequisitionAssemblyDesc</descriptionKey>
+        <thingDefName>ComponentIndustrial</thingDefName>
+        <count>8</count>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <!-- ================================================================= 3 - one record ==== -->
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_BringBackOneRecord</defName>
+    <label>bring back one record</label>
+    <description>Open a connection, send a crew, and bring home one completed record of what is on the other side. File it on a shelf the gate calls its archive.\n\nThis is the first thing the company can sell, and the first thing that teaches a branch what it is actually for.</description>
+    <arc>1</arc>
+    <tutorial>true</tutorial>
+    <tutorialOrder>2</tutorialOrder>
+    <paymentUsd>5000000</paymentUsd>
+    <bonusUsd>1000000</bonusUsd>
+    <prerequisiteRequests>
+      <li>RR_Request_AssembleAndCalibrate</li>
+    </prerequisiteRequests>
+    <successRoutes>
+      <li>
+        <kind>Document</kind>
+        <labelKey>RR_Route_SurveyAndAnalyseLabel</labelKey>
+        <descriptionKey>RR_Route_SurveyAndAnalyseDesc</descriptionKey>
+        <logKind>route</logKind>
+      </li>
+      <li>
+        <kind>Deliver</kind>
+        <labelKey>RR_Route_RecoverExistingRecordLabel</labelKey>
+        <descriptionKey>RR_Route_RecoverExistingRecordDesc</descriptionKey>
+        <thingDefName>TextBook</thingDefName>
+        <count>1</count>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <!-- ================================================================ 4 - mark the way ==== -->
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_MarkARouteHome</defName>
+    <label>mark a route home</label>
+    <description>The company has read enough incident reports to know how crews are lost, and it is almost never the thing in the dark. Mark the way back at every junction where the way back is not obvious.\n\nThe colour is the meaning. A marker nobody can read from the far end of a corridor is decoration.</description>
+    <arc>2</arc>
+    <tutorial>true</tutorial>
+    <tutorialOrder>3</tutorialOrder>
+    <paymentUsd>4000000</paymentUsd>
+    <prerequisiteRequests>
+      <li>RR_Request_BringBackOneRecord</li>
+    </prerequisiteRequests>
+    <successRoutes>
+      <li>
+        <kind>Deliver</kind>
+        <labelKey>RR_Route_PlaceMarkersLabel</labelKey>
+        <descriptionKey>RR_Route_PlaceMarkersDesc</descriptionKey>
+        <thingDefName>GlowPod</thingDefName>
+        <count>3</count>
+      </li>
+      <li>
+        <kind>Testify</kind>
+        <labelKey>RR_Route_CrewKnowsTheWayLabel</labelKey>
+        <descriptionKey>RR_Route_CrewKnowsTheWayDesc</descriptionKey>
+        <logKind>route</logKind>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <!-- ========================================================= 5 - report a disagreement == -->
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_ReportADisagreement</defName>
+    <label>report a disagreement</label>
+    <description>Somewhere down there, the map and the landmark will stop agreeing. The company wants that written down the first time it happens, by somebody who was there, while it is still fresh.\n\nA branch that has only ever had quiet runs has nothing to report, and the company is content to wait until it does.</description>
+    <arc>2</arc>
+    <tutorial>true</tutorial>
+    <tutorialOrder>4</tutorialOrder>
+    <paymentUsd>8000000</paymentUsd>
+    <prerequisiteRequests>
+      <li>RR_Request_MarkARouteHome</li>
+    </prerequisiteRequests>
+    <successRoutes>
+      <li>
+        <kind>Document</kind>
+        <labelKey>RR_Route_AnalyseDistortionLabel</labelKey>
+        <descriptionKey>RR_Route_AnalyseDistortionDesc</descriptionKey>
+        <logKind>distortion</logKind>
+      </li>
+      <li>
+        <kind>Testify</kind>
+        <labelKey>RR_Route_TwoAccountsLabel</labelKey>
+        <descriptionKey>RR_Route_TwoAccountsDesc</descriptionKey>
+        <logKind>distortion</logKind>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <!-- ============================================================ 6 - hold it open ======== -->
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_HoldAConnectionOpen</defName>
+    <label>hold a connection open</label>
+    <description>Everything so far has been done inside a window that closes. The company wants the window longer, and it wants to know what that costs in power and in people.\n\nThis is the last thing the company will ask for by name.</description>
+    <arc>3</arc>
+    <tutorial>true</tutorial>
+    <tutorialOrder>5</tutorialOrder>
+    <paymentUsd>12000000</paymentUsd>
+    <prerequisiteRequests>
+      <li>RR_Request_ReportADisagreement</li>
+    </prerequisiteRequests>
+    <successRoutes>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_CompleteFieldStabilityLabel</labelKey>
+        <descriptionKey>RR_Route_CompleteFieldStabilityDesc</descriptionKey>
+        <projectDefName>RR_GateFieldStability</projectDefName>
+      </li>
+      <li>
+        <kind>Purchase</kind>
+        <labelKey>RR_Route_BuyTheWindowLabel</labelKey>
+        <descriptionKey>RR_Route_BuyTheWindowDesc</descriptionKey>
+        <thingDefName>ComponentIndustrial</thingDefName>
+        <count>20</count>
+      </li>
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+  <!-- ================================================================== 7 - THE HINGE ===== -->
+  <!-- The designed point where the tutorial becomes an open campaign.
+
+       The chart drew this as "pick any one of the eight branches", which would have made every
+       route the same kind and failed the two-different-kinds rule. The rule biting on the
+       chart's own content produced better design: you may DECLARE a direction, or you may simply
+       GO AND DO SOMETHING in one and let the work speak.
+
+       "Every choice is a success" is more true when you do not have to announce anything. -->
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_ChooseADirection</defName>
+    <label>choose a direction</label>
+    <description>The branch has done everything the company asked for by name. From here the company stops naming things.\n\nTell them where you intend to take this, or do not — go and do something and let the work say it for you. Both are answers, and there is no wrong one. The company is interested in a branch that has decided what it is.</description>
+    <arc>3</arc>
+    <tutorial>true</tutorial>
+    <tutorialOrder>6</tutorialOrder>
+    <paymentUsd>10000000</paymentUsd>
+    <prerequisiteRequests>
+      <li>RR_Request_HoldAConnectionOpen</li>
+    </prerequisiteRequests>
+    <successRoutes>
+      <li>
+        <kind>Redirect</kind>
+        <labelKey>RR_Route_DeclareADirectionLabel</labelKey>
+        <descriptionKey>RR_Route_DeclareADirectionDesc</descriptionKey>
+        <redirectTo>RR_GateSustainedAperture</redirectTo>
+      </li>
+      <li>
+        <kind>Document</kind>
+        <labelKey>RR_Route_ShowThemByDoingLabel</labelKey>
+        <descriptionKey>RR_Route_ShowThemByDoingDesc</descriptionKey>
+        <logKind>entity</logKind>
+      </li>
+      <li>
+        <kind>Research</kind>
+        <labelKey>RR_Route_CommitToTheLadderLabel</labelKey>
+        <descriptionKey>RR_Route_CommitToTheLadderDesc</descriptionKey>
+        <projectDefName>RR_GateSustainedAperture</projectDefName>
+      </li>
     </successRoutes>
   </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
 

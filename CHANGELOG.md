@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.11.2-dev - 2026-09-29 - the company asks for six things, then stops asking
+
+- **The tutorial line is in.** Power the gate, assemble and calibrate it, bring back one record, mark a route home, report a disagreement, hold a connection open - then the hinge, where the company stops naming things and the campaign opens up.
+- **Each one teaches one system by being played**, in the order the systems depend on each other, and each requires the one before it.
+- **Every request offers at least two genuinely different ways through.** Build the battery or re-purpose one you already have. Survey a coordinate yourself or recover a record somebody else left down there. Mark the junctions or let a crew who already walked it account for it.
+- **The hinge has three answers and no wrong one.** Tell the company where you are taking this, say nothing and go do something and let the work speak, or push the gate itself further.
+- **Nothing here expires.** The company waits for all of it, for as long as it takes.
+
+Full record: [the company asks for six things](docs/implementation/TUTORIAL_LINE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.11.1-dev - 2026-09-29 - an offer with more than one way through
 
 - **A corporation request now has to offer at least two ways to succeed**, of two genuinely different kinds. Two ways of delivering the same object to the same shelf is one route wearing two hats, and the game refuses to load a request that tries it.

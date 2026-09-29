@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
@@ -35,6 +35,17 @@ namespace RimroomsAsyncIndustries.Company
 
         /// <summary>Refuse the stated task and complete a related one the corporation also wants.</summary>
         Redirect = 5,
+
+        /// <summary>
+        /// Complete a named company project.
+        ///
+        /// Added in 0.11.2-dev because the chart's tutorial request 6 offers *"complete Field
+        /// Stability"* and none of the six kinds above covered it. The chart's table was
+        /// explicitly *"route kinds this chart uses"* rather than a closed set, and this is the
+        /// natural fill: research is a thing a branch does, and it is not a delivery, a document,
+        /// a substitute, a purchase, a testimony or a redirect.
+        /// </summary>
+        Research = 6,
     }
 
     /// <summary>
@@ -64,6 +75,9 @@ namespace RimroomsAsyncIndustries.Company
         /// <summary>Redirect: the project or request accepted in place of this one.</summary>
         public string redirectTo;
 
+        /// <summary>Research: the company project whose completion satisfies this route.</summary>
+        public string projectDefName;
+
         /// <summary>
         /// True when this route was added from branch capability rather than authored in XML.
         /// Derived routes are shown differently and, critically, **never counted toward the
@@ -91,6 +105,9 @@ namespace RimroomsAsyncIndustries.Company
 
             if (kind == SuccessRouteKind.Redirect && string.IsNullOrEmpty(redirectTo))
             { yield return owner + ": a Redirect route must name what it redirects to."; }
+
+            if (kind == SuccessRouteKind.Research && string.IsNullOrEmpty(projectDefName))
+            { yield return owner + ": a Research route must name the project that satisfies it."; }
         }
     }
 

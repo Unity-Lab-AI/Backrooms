@@ -88,6 +88,12 @@ labels on the same act:
 | **Purchase** | Buy the shortfall through procurement rather than recovering it |
 | **Testify** | A staff member's account, where a crew saw what a record would have shown |
 | **Decline-and-redirect** | Refuse the stated task and complete a related one the corporation also wants |
+| **Research** | Complete a named company project |
+
+**The `Research` kind was added in 0.11.2-dev**, when tutorial request 6 offered *"complete Field
+Stability"* and none of the six above covered it. This table was always *"route kinds this chart
+uses"* rather than a closed set; research is a thing a branch does, and it is not a delivery, a
+document, a substitute, a purchase, a testimony or a redirect.
 
 **A request is well-formed when at least two of its routes are of different kinds.** Two deliver
 routes that differ only in which shelf the item lands on is one route wearing two hats.
@@ -107,9 +113,26 @@ transition point rather than a fade-out.
 | **The hinge** | 3 | **The designed transition.** The last guided request, and the first where the corporation offers a *choice* of what to pursue next | The player is asked to pick a direction for the first time |
 | **Campaign** | 4–8 | Open-ended. Requests are generated from branch state, coordinate history and capability | Nothing new is taught; everything is combined |
 
-**The hinge is where "contact with the corporation" completes**, which matters because the
-never-die rescue is scoped to after contact. Before the hinge a branch is on its own; after it,
-the corporation is invested and will not let the facility die.
+**Corrected 0.11.2-dev.** This section previously said the hinge is where *"contact with the
+corporation"* completes. That is not right, and the owner's answer at the fork is why:
+
+> *"Async industries starts with this tech research and other basic gate techs it needs to operate
+> and begin researching and gate operations at basic levels but the other two scenerios need
+> special treatment in theri layout and starts"*
+
+**Contact is a branch state, not a point on the tutorial line.** `beginsInCorporationContact`
+decides where a start opens:
+
+| Start | Opens in contact | What the tutorial line is for it |
+|---|---|---|
+| **Async Industries** | **Yes** | Training, paid for by a company that is already invested. The rescue applies from the first minute |
+| **Store** | No | Its own layout, and **reaching contact is the achievement** |
+| **Solo/Group** | No | Same, from a different point of view |
+
+So the hinge is where the **tutorial** ends and the campaign opens, for every start. Whether the
+corporation is already watching when you get there depends on which start you chose, and for two
+of the three, **there is no rescue until you earn contact.** That absence is what makes those two
+openings frightening.
 
 ### The eight arcs, from the prep material
 
@@ -202,7 +225,14 @@ not happened to generate the right log.
 | 4 | **Mark a route home** | 2 | markers, colour meaning | place and mark pods · testify from a crew account |
 | 5 | **Report a disagreement** | 2 | distortion logs | analyse a distortion record · two crew accounts of the same room |
 | 6 | **Hold a connection open** | 3 | the ladder, power draw | complete Field Stability · buy a longer window as a service |
-| 7 | **The hinge: choose a direction** | 3 | **the transition** | pick any one of the eight branches. **Every choice is a success** |
+| 7 | **The hinge: choose a direction** | 3 | **the transition** | declare a direction · say nothing and go do something · take the aperture further. **Every choice is a success** |
+
+**The hinge's routes were corrected in 0.11.2-dev, by the two-kinds rule biting on this chart's
+own content.** As first drawn — *"pick any one of the eight branches"* — every route would have
+been the same kind, which fails the rule that a request offers two routes of two **different**
+kinds. Rather than carve out an exception, the hinge was redesigned, and the redesign is better:
+you may **declare** a direction, or you may simply **go and do something** in one and let the work
+speak. *"Every choice is a success"* is more true when nothing has to be announced.
 | 8+ | Generated | 4–8 | nothing new | generated from branch state, coordinate history, capability |
 
 Requests 1–6 are the tutorial and are **fixed**. Request 7 is the hinge. Everything after is
@@ -244,7 +274,9 @@ deadlines into the game does not exist yet.
 
 Named rather than guessed, and none of it blocks the next checkpoint:
 
-1. **Where the hinge sits precisely** — after request 6 as drawn, or earlier.
+1. ~~**Where the hinge sits precisely**~~ — **built after request 6 as drawn.** Still movable: it is
+   one `tutorialOrder` value and one prerequisite, and the proof asserts the line stays contiguous
+   and acyclic whatever it is changed to.
 2. **Whether the eight branches unlock in any order after the hinge**, or whether some require a
    tier-2 gate rung first.
 3. **How generated requests pick their routes** — a fixed route set per request family, or routes
@@ -257,8 +289,8 @@ Named rather than guessed, and none of it blocks the next checkpoint:
 1. ~~The gate branch~~ — **done, 0.10.9-dev.**
 2. **The two absolutes made enforceable**, and the existing breaches removed. *(This checkpoint.)*
 3. The prep documents corrected. *(This checkpoint.)*
-4. The offer/request def shape, with routes as a first-class field.
-5. Tutorial requests 1–6, then the hinge.
+4. ~~The offer/request def shape, with routes as a first-class field.~~ **Done, 0.11.1-dev.**
+5. ~~Tutorial requests 1–6, then the hinge.~~ **Done, 0.11.1-dev and 0.11.2-dev.**
 6. The remaining eight research branches, tier 0 → 2 first.
 7. The clean-up team that means a facility never dies.
 8. Arcs 5–8.
