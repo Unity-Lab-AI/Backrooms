@@ -1,8 +1,10 @@
-# Rimrooms - Async Industries: campaign scenarios
+﻿# Rimrooms - Async Industries: campaign scenarios
 
-**Gate traversal and pacing rule (owner, 2026-09-28):** inhabitants and monstrosities stay in the Backrooms. Nothing but this company's own pawns crosses a gate under its own will, and an open gate is never an objective, lure, spawn target, raid route or attack trigger. Everything else comes back only because one of our pawns physically carried it through by ordinary work, including people and monstrosities that are genuinely downed, dead or imprisoned. Pressure escalates gradually from saved causes, bounded per opening and per coordinate, with quiet stretches as required content. Gate, machine door and portal are one thing in the owner's vocabulary; every start can eventually run several gates. See [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side).
+**Gate traversal and pacing rule (owner, 2026-09-28):** inhabitants and monstrosities stay in the Backrooms. Nothing but this company's own pawns crosses a gate under its own will, and an open gate is never an objective, lure, spawn target, raid route or attack trigger. Everything else comes back only because one of our pawns physically carried it through by ordinary work, including people and monstrosities that are genuinely downed, dead or imprisoned. Pressure escalates gradually from saved causes, bounded per opening and per coordinate, with quiet stretches as required content. Every start can eventually run several gates.
 
-**Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
+**Two later directions refine this rule and are not in conflict with it.** The words are now three rather than one: the **gate** is the designated door, the **connection** is the live link it holds open, and the **threshold** is where you arrive. And there is exactly one bounded exception to nothing-crosses-under-its-own-will: at the deepest pressure band, through an advanced gate, while an opening is live, something that fits may follow a crew out. A gate is still never an objective, a lure or a spawn target, and nothing is ever drawn toward one. See [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side).
+
+**Latest owner requirement — connected colony gates (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, connection lifetime, coordinate persistence and procedural inhabitants. A live connection unifies local-branch labour and physical job and material access across both sides; ordinary crossing must not require expedition dispatch. Natural gates remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
 
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
@@ -12,13 +14,13 @@
 
 **Selected dependency contract:** all three starts remain playable on Core without DLC or optional profile mods. Co-op requires Harmony/RWT; the rest of the 294 profile is optional. See [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md).
 
-**Latest setup refinement:** [Scenario setup and physical door portals](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) supersedes fixed-roster assumptions below. Each start preserves native/Prepare Carefully customization. The company selects its real-world tile. The inside-start solo/group and initial exit-selection proposals remain pending clarification; its stable `lone_survivor` ID is retained. Existing counts and staff templates are defaults, not permission to replace edited pawns.
+**Latest setup refinement:** [Scenario setup and physical door gates](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) supersedes fixed-roster assumptions below. Each start preserves native/Prepare Carefully customization. The company selects its real-world tile. The inside-start solo/group and initial exit-selection proposals remain pending clarification; its stable `lone_survivor` ID is retained. Existing counts and staff templates are defaults, not permission to replace edited pawns.
 
 ## Why scenarios exist
 
 Rimrooms should support different ways into the Backrooms company/survival loop. A player may start as a small research company, ordinary people confronting a breach in a retail basement, or a lone person already trapped inside. These are separate opening experiences that converge on shared coordinate, expedition, evidence, threat, and progression systems. Do not duplicate the procedural-space generator or campaign state for each opening.
 
-The furniture-store threshold is a high-level cue from the [official A24 synopsis](https://a24films.com/films/backrooms), which describes a strange doorway in a furniture-showroom basement. Scenario events, staff, objectives, and implementation details remain original game design. A separate, secondary fan-summary story note is recorded in the [feature review file](research/reviews/a24-feature/feature-review.md); A24 production notes establish an Async branch and callbacks to the web series, but the film's detailed plot and the game's scenario remain separately documented.
+The furniture-store threshold is a high-level cue from the [official A24 synopsis](https://a24films.com/films/backrooms), which describes a strange "doorway" in a furniture-showroom basement. Scenario events, staff, objectives, and implementation details remain original game design. A separate, secondary fan-summary story note is recorded in the [feature review file](research/reviews/a24-feature/feature-review.md); A24 production notes establish an Async branch and callbacks to the web series, but the film's detailed plot and the game's scenario remain separately documented.
 
 ## Shared scenario contract
 
@@ -27,7 +29,7 @@ Every scenario definition must provide:
 | Field | Required behavior |
 | --- | --- |
 | Stable scenario ID and schema version | Remains stable across saves and scenario updates; changed layouts use explicit migration rules. |
-| Starting context | Starting map/site, owning faction, pawns and relationships, inventory/funds, buildings, gate or portal state, known coordinates, and initial cases/evidence. |
+| Starting context | Starting map/site, owning faction, pawns and relationships, inventory/funds, buildings, gate and connection state, known coordinates, and initial cases/evidence. |
 | Seed and identity | Any generated Backrooms start has a saved coordinate ID, seed inputs, generator version, and a deterministic initial room graph. Reloading must not silently create a new destination. |
 | Objectives and tutorial | Ordered or branching first objectives, clear completion/failure signals, relevant tutorial messages, and no dependency on one specific UI layout. |
 | Failure and recovery | Explicit handling for death, incapacitation, lost gear, sealed route, failed generation, broken gate, or abandoned settlement as applicable; no unrecoverable softlock. |
@@ -36,7 +38,7 @@ Every scenario definition must provide:
 | Dependency boundary | Complete solo route using RimWorld Core. All five DLC and other 294-profile mods are optional. Harmony/RWT are required for co-op only. |
 | Multiplayer eligibility | Declared as solo, co-op compatible, or unverified. Do not assume multiple players can select independent new-game scenarios inside one RWT world. |
 
-Scenario generation may vary roster, stock, starting damage, early signals, and objective order by seed, but the opening must remain bounded and legible. The scenario chooses starting conditions; common campaign services own transactions, coordinates, evidence custody, gate/portal state, and saved progression.
+Scenario generation may vary roster, stock, starting damage, early signals, and objective order by seed, but the opening must remain bounded and legible. The scenario chooses starting conditions; common campaign services own transactions, coordinates, evidence custody, gate and connection state, and saved progression.
 
 ## Planned opening scenarios
 

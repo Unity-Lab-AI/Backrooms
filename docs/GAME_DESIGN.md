@@ -1,14 +1,16 @@
-# Game design brief
+﻿# Game design brief
 
-**Gate traversal and pacing rule (owner, 2026-09-28):** inhabitants and monstrosities stay in the Backrooms. Nothing but this company's own pawns crosses a gate under its own will, and an open gate is never an objective, lure, spawn target, raid route or attack trigger. Everything else comes back only because one of our pawns physically carried it through by ordinary work, including people and monstrosities that are genuinely downed, dead or imprisoned. Pressure escalates gradually from saved causes, bounded per opening and per coordinate, with quiet stretches as required content. Gate, machine door and portal are one thing in the owner's vocabulary; every start can eventually run several gates. See [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side).
+**Gate traversal and pacing rule (owner, 2026-09-28):** inhabitants and monstrosities stay in the Backrooms. Nothing but this company's own pawns crosses a gate under its own will, and an open gate is never an objective, lure, spawn target, raid route or attack trigger. Everything else comes back only because one of our pawns physically carried it through by ordinary work, including people and monstrosities that are genuinely downed, dead or imprisoned. Pressure escalates gradually from saved causes, bounded per opening and per coordinate, with quiet stretches as required content. Every start can eventually run several gates.
 
-**Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
+**Two later directions refine this rule and are not in conflict with it.** The words are now three rather than one: the **gate** is the designated door, the **connection** is the live link it holds open, and the **threshold** is where you arrive. And there is exactly one bounded exception to nothing-crosses-under-its-own-will: at the deepest pressure band, through an advanced gate, while an opening is live, something that fits may follow a crew out. A gate is still never an objective, a lure or a spawn target, and nothing is ever drawn toward one. See [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side).
+
+**Latest owner requirement — connected colony gates (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, connection lifetime, coordinate persistence and procedural inhabitants. A live connection unifies local-branch labour and physical job and material access across both sides; ordinary crossing must not require expedition dispatch. Natural gates remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
 
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
-**Latest scenario/gate direction:** [the setup and portal-network contract](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) defines separate customizable openings, a company-selected surface tile, the proposed automatic inside start, and existing-door portals governed by physical connected equipment and power.
+**Latest scenario/gate direction:** [the setup and gate-network contract](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) defines separate customizable openings, a company-selected surface tile, the proposed automatic inside start, and existing-door gates governed by physical connected equipment and power.
 
 ## High concept
 
@@ -24,7 +26,7 @@ The player grows a fragile operation into a network of secure facilities and for
 
 The complete starting-state schema, additional scenario candidates, and scenario acceptance checklist are maintained in [SCENARIOS.md](SCENARIOS.md). This section is the player-facing overview; use the canonical contract before implementation.
 
-Scenarios are selectable campaign presets. A preset supplies a starting map or location, pawn roster, relationships, inventory, funds, gate/portal state, known coordinates, early incidents, and first objectives. It changes the entry point and pressure profile; it must not fork the procedural-space generator or duplicate the shared evidence, coordinate, and expedition systems.
+Scenarios are selectable campaign presets. A preset supplies a starting map or location, pawn roster, relationships, inventory, funds, gate state, known coordinates, early incidents, and first objectives. It changes the entry point and pressure profile; it must not fork the procedural-space generator or duplicate the shared evidence, coordinate, and expedition systems.
 
 | Scenario | Opening state | First objective | Path into the wider campaign |
 | --- | --- | --- | --- |
@@ -83,7 +85,7 @@ The facility becomes a major organization and can support multiple teams and rem
 - Add training projects for field readiness, medical handling, laboratory procedure, engineering, navigation, security, and anomaly response.
 - Create meaningful differences between a trained team and an interchangeable squad: skills, equipment familiarity, stress, loyalty, field notes, and prior experience should matter.
 
-### The machine gate and expeditions
+### The gate and expeditions
 
 - Treat the gate as a buildable, powered, serviceable machine with calibration, operating cost, instability, and exposure.
 - Opening duration scales with components, research, operator skill, power reserve, and prepared return infrastructure.
@@ -132,8 +134,23 @@ The facility becomes a major organization and can support multiple teams and rem
 
 ## Company interface
 
-The full-mod interface goal is a company-first remaster of RimWorld's menus, tabs, and campaign views, so players manage facilities, staff, money, research, the gate, expeditions, cases, contracts, discovered spaces, and outposts as one connected operation. Start with an **Operations** board in the first playable, then grow it into Company Command pages for those work areas. Existing pawn, building, map, work, research, and world actions must remain reachable and retain their familiar RimWorld behavior; reorganize their presentation without breaking the underlying colony simulation. Decide the final tab arrangement through playability and profile-interaction checks rather than treating the first-slice layout as the finished interface.
+The full-mod interface goal is a company-first remaster of RimWorld's menus, tabs and campaign views, so that facilities, staff, money, research, the gate, expeditions, cases, contracts, discovered spaces and outposts are managed as one connected operation.
+
+Start with an **Operations** board in the first playable, then grow it into Company Command pages for those work areas.
+
+**Existing pawn, building, map, work, research and world actions must remain reachable and keep their familiar RimWorld behaviour.** Reorganise their presentation without breaking the underlying colony simulation. Decide the final tab arrangement through playability and profile-interaction checks rather than treating the first-slice layout as the finished interface.
 
 ## First playable acceptance target
 
-The first playable focuses on **Async Industries**: a new save starts at its facility; the player can build and power the machine, complete its assembly project, assign a viable crew, open one seeded expedition site, explore and extract, close/recall through the gate, return to the same saved coordinate, analyze the recovered evidence, receive a payment or research reward, and respond to the first distortion and hostile encounter. Its target values and acceptance checks are in the [first playable contract](FIRST_PLAYABLE_CONTRACT.md), [first-slice content inventory](FIRST_SLICE_CONTENT_INVENTORY.md), [threat sheets](THREAT_DESIGN_SHEETS.md), and [economy model](CAMPAIGN_ECONOMY_MODEL.md). The scenario framework and the Store and Lone Survivor starts are defined in [SCENARIOS.md](SCENARIOS.md) and implemented after the vertical slice proves the shared systems. The co-op design target is separate player branches that can exchange only tested items/dossiers, send supported aid, and visit another facility only if the pinned RWT build and settings expose a safe visit route. Each branch keeps its own gate, map, staff, research completion, contracts, and ledger; the design does not promise live shared-map control or synchronized company research. Test whether distinct scenario starts can coexist in one RWT server before making that a support promise. See the [complete multiplayer and systems plan](MOD_INTEGRATION_PLAN.md#2-cooperative-company-model).
+The first playable focuses on **Async Industries**. A new save starts at its facility, and the player can:
+
+- build and power the gate, and complete its assembly project;
+- assign a viable crew and bring a connection up to one seeded coordinate;
+- explore, extract, and recall through the gate;
+- return to the same saved coordinate and find it as they left it;
+- analyse the recovered evidence for a payment or a research reward;
+- and meet the first distortion and the first hostile encounter.
+
+Target values and acceptance checks live in the [first playable contract](FIRST_PLAYABLE_CONTRACT.md), the [first-slice content inventory](FIRST_SLICE_CONTENT_INVENTORY.md), the [threat sheets](THREAT_DESIGN_SHEETS.md) and the [economy model](CAMPAIGN_ECONOMY_MODEL.md). The scenario framework and the Store and Lone Survivor starts are defined in [SCENARIOS.md](SCENARIOS.md), and are implemented after the vertical slice proves the shared systems.
+
+The co-op design target is separate player branches that exchange only tested items and dossiers, send supported aid, and visit another facility only if the pinned RWT build and settings expose a safe visit route. Each branch keeps its own gate, map, staff, research completion, contracts and ledger. **The design does not promise live shared-map control or synchronised company research**, and whether distinct scenario starts can coexist in one RWT server has to be tested before it becomes a support promise. See the [complete multiplayer and systems plan](MOD_INTEGRATION_PLAN.md#2-cooperative-company-model).

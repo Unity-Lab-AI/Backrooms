@@ -1,4 +1,4 @@
-# Rimrooms - Async Industries: first-session tutorial script
+﻿# Rimrooms - Async Industries: first-session tutorial script
 
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
@@ -35,7 +35,7 @@ The branch has **$50,000,000** in its Company Account for quoted company costs a
 
 Place a numbered survey tag at the first junction. Follow the mission card through the Survey Lobby and Service Passage. The tags are a route record, not a guarantee that the rooms will stay familiar.
 
-> **Researcher:** “The label says we have reached the same room again. The tag is on the wrong side of the doorway. The map and the landmark disagree.”
+> **Researcher:** “The label says we have reached the same room again. The tag is on the wrong side of the door. The map and the landmark disagree.”
 
 **Borrowed Corridor clue:** Stop at the mismatch. Compare the room label and tag number, place the short return beacon at the last validated junction, then follow the recorded route. The distortion may return the crew to that junction and cost three reported game-minutes. It cannot move the gate exit or injure the crew. You may recall now instead of investigating further.
 

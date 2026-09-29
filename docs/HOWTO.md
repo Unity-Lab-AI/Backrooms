@@ -1,4 +1,4 @@
-# HOWTO — Working on Rimrooms with the Claude Code workflow
+﻿# HOWTO — Working on Rimrooms with the Claude Code workflow
 
 This is the practical guide for anyone (human or build agent) opening this repository under the `.claude/` workflow. It explains how the two documentation layers fit together, what the daily ceremony is, how to build and stage the mod, and how work gets published. It does not replace the project contracts; it tells you where they are and in what order they win.
 
@@ -61,7 +61,7 @@ These are the workflow LAWs in `.claude/CONSTRAINTS.md`, restated as they apply 
 Straight from `AGENTS.md`, because a build agent forgets these at its peril:
 
 - **Existing content only.** No new gameplay ThingDefs, benches, items, sprites, textures or audio ([`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md)). The only visual exception is the original main-menu background images. Historical 0.2.0 custom content is a replacement/migration task, not a template.
-- **Connected colony portals** supersede dispatch-only ordinary travel ([`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md)). Natural portals are permanently open. One local branch's labour and materials work across an open portal without crew manifests.
+- **Connected colony gates** supersede dispatch-only ordinary travel ([`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md)). Natural gates are permanently open. One local branch's labour and materials work across a live connection without crew manifests.
 - **Only the owner launches RimWorld,** through RimSort, with the 295-entry product target. A build agent never starts the game, never edits the active mod list, never attaches RimBridgeServer outside the saved QA plan. A successful compile is compiler evidence only.
 - **Regression containment** ([`REGRESSION_CONTAINMENT.md`](REGRESSION_CONTAINMENT.md)): every task records baseline commit, owned paths, affected callers and saved fields, deliberate changes, preserved behaviour, evidence, remaining runtime cases, and the master TODO update.
 - **Save contracts.** Scribe keys start `rr_`, Def names and language keys start `RR_`, schema versions are explicit integers, and a written key is a contract that needs a migration before it changes ([`SAVE_MIGRATION_POLICY.md`](SAVE_MIGRATION_POLICY.md)).

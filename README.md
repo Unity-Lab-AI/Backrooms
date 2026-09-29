@@ -13,9 +13,17 @@ The scenario opening cards live in [`docs/SCENARIOS.md`](docs/SCENARIOS.md); the
 
 ## Build and installation
 
-**Current development version: 0.10.5-dev.** Every checkpoint has its own record under [`docs/implementation/`](docs/implementation/), and [`docs/NOW.md`](docs/NOW.md) is the single page that says what is true right now: the published commit, the build counts, the reproduced assembly hash, and what is open in order.
+**Current development version: 0.10.6-dev.** Every checkpoint has its own record under [`docs/implementation/`](docs/implementation/), and [`docs/NOW.md`](docs/NOW.md) is the single page that says what is true right now: the published commit, the build counts, the reproduced assembly hash, and what is open in order.
 
-What works in source today, briefly: a gate is an **ordinary door you designate** rather than a custom machine, at sizes from 1x1 to 2x3; **bringing a connection up is work** an operator does at a console, faster on a route the crew has run before; each gate keeps its own **address book** of everywhere it has dialled; colonists and animals cross, with the gate's width deciding what fits through; coordinates generate as rooms, corridors and **facilities** that span several rooms at once; what lives there **follows a crew to the doorway** in the worst spaces and, on an advanced machine, can come through behind them; and an **odd-origin economy**, company bonds, a corporate trader and a credits ladder sit on top of it.
+What works in source today:
+
+- A gate is an **ordinary door you designate**, never a custom object, at sizes from 1x1 to 2x3.
+- **Bringing a connection up is work** an operator does at a console, and it is faster on a route the crew has run before.
+- Each gate keeps its own **address book** of everywhere it has dialled.
+- Colonists and animals cross. The gate's width decides what fits through.
+- Coordinates generate as rooms, corridors and **facilities** that span several rooms at once.
+- What lives down there **follows a crew to the threshold** in the worst spaces, and through an advanced gate it can come out behind them.
+- An **odd-origin economy** sits on top of all of it: company bonds, a corporate trader and a credits ladder.
 
 Seven checkers run without the game and gate every checkpoint: package integrity, keyed strings, DLC gating, info cards, display style, documentation conformance, and the Gate 0 documentation audit. The build is **deterministic** and proved so by recompiling twice from clean and comparing the assembly hash. **Existing-content replacement, the remaining scenarios and all runtime acceptance are still open**, and no game launch is required to continue implementation.
 
@@ -79,7 +87,7 @@ Build a clone before copying `Mod/Rimrooms - Async Industries/`; generated DLLs 
 
 ## Working on the mod with the Claude Code workflow
 
-Development continues under the Unity AI Lab `.claude/` workflow from 2026-09-28. Start with [`docs/HOWTO.md`](docs/HOWTO.md): it explains how the workflow ledger sits on top of the project contracts above, the daily task ceremony, the build/stage/publish commands, and the rules a build agent must never break (existing content only, the owner alone launches RimWorld, connected colony portals supersede dispatch-only travel). The ledger files are:
+Development continues under the Unity AI Lab `.claude/` workflow from 2026-09-28. Start with [`docs/HOWTO.md`](docs/HOWTO.md): it explains how the workflow ledger sits on top of the project contracts above, the daily task ceremony, the build/stage/publish commands, and the rules a build agent must never break (existing content only, the owner alone launches RimWorld, the connected-colony contract supersede dispatch-only travel). The ledger files are:
 
 - [`docs/ROADMAP.md`](docs/ROADMAP.md) — major milestones layered on the Stage 0–6 roadmap; [`docs/TODO.md`](docs/TODO.md) — the working queue; [`docs/DECOMPOSED.md`](docs/DECOMPOSED.md) — single-edit slices of the active task; [`docs/NOW.md`](docs/NOW.md) — the one task in motion.
 - [`docs/FINALIZED.md`](docs/FINALIZED.md) — permanent archive of completed work, including the inherited pre-workflow history.
@@ -94,6 +102,14 @@ Make the company loop work before building an endless content catalog. Each new 
 
 ## Current status
 
-Gate 0 documentation/source criteria passed. The [0.2.0 build record](docs/implementation/PHASE_2_BUILD_RECORD.md) now maps the implemented first-expedition slice, original sprites, compiler evidence and remaining work. Gate 2 gameplay acceptance, full campaign content, final audio and the main-menu slideshow remain open. Fan-summary story coverage is complete for the 23 indexed Kane Pixels uploads and the separate A24 feature note; the notes clearly mark secondary-source claims, and watching every video or the full film is not a Gate 0 requirement. Check creator or official film sources only when a planned feature depends on an unresolved detail. All 294 profile rows have accepted source-fact notes and linked review records, including direct publisher-source follow-up for rows 96, 237, and 278. No gameplay or multiplayer workflow tests were run for Rimrooms before a build; the two-client RWT baseline and combined-profile compatibility remain pending post-build acceptance through the [RimBridgeServer harness plan](docs/research/RIMBRIDGE_TEST_HARNESS.md). The product test target is 295 entries (the current 294 plus Rimrooms); a separately loaded RimBridgeServer QA overlay normally makes the test session 296 entries. The staging tool copies the mod into RimSort's configured Local Mods directory; the owner alone activates, sorts and launches it.
+Gate 0's documentation and source criteria passed. Every checkpoint since has its own record under [`docs/implementation/`](docs/implementation/).
 
-The latest required direction is [one connected local colony through open portals](docs/CONNECTED_COLONY_PORTALS.md): shared work/material access, permanent natural portals and persistent procedural inhabitants. This unified work network is not yet implemented by the native-provider foundation.
+**Still open.** Gameplay acceptance, the remaining campaign content, the last two starting sites, and the main-menu slideshow.
+
+**Story sources.** Coverage is complete for the 23 indexed Kane Pixels uploads and the separate A24 feature note. Secondary-source claims are marked as such throughout, and watching every video or the full film was never a requirement. Check a creator or official source only when a planned feature turns on an unresolved detail.
+
+**The profile.** All rows in the integration register carry source-fact notes and a linked review, including direct publisher follow-up for rows 96, 237 and 278. Query it with `python tools/register-query.py`.
+
+**Testing.** No gameplay or multiplayer test has been run. The two-client baseline and combined-profile compatibility are pending through the [RimBridgeServer harness plan](docs/research/RIMBRIDGE_TEST_HARNESS.md). The staging tool copies the mod into RimSort's configured Local Mods directory; **the owner alone activates, sorts and launches it**.
+
+The latest required direction is [one connected local colony through open gates](docs/CONNECTED_COLONY_PORTALS.md): shared work and material access, permanently open natural gates, and persistent procedural inhabitants. This unified work network is not yet implemented by the native-provider foundation.

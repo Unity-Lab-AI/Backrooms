@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.10.6-dev - 2026-09-29 - the documents use the mod's own words
+
+- **The documents you read now call things what the game calls them.** The gate is the gate, the connection is the link it holds open, the threshold is where you arrive. The readme, the how-to, the design and scenario documents, the compatibility notes and the research notes were still using the words the game stopped using two versions ago.
+- **Eleven walls of text broken up.** The readme opened with a 1,275-character paragraph; the design document had a 1,274-character one. They are lists and short paragraphs now, because that is what they always were underneath.
+- **One of those walls was also out of date.** The readme's status paragraph still cited the 0.2.0 build record and sprites that were retired in 0.9.0-dev.
+- **Two rules that were superseded and still written down as current.** The design and scenario documents both said gate and portal were one word, and both said nothing ever crosses a gate on its own - which stopped being true when pursuit and incursion were added.
+- **Words quoted from somewhere else are never rewritten.** The A24 synopsis calls what appears in the basement a doorway; that is the synopsis's word and it stays, marked as a quotation.
+
+Full record: [the documents use the mod's own words](docs/implementation/READER_FACING_DOCS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.10.5-dev - 2026-09-29 - every surface the game speaks through
 
 - **New warnings in the alerts readout, down the right-hand edge.** Until now every warning this mod gave you was either a letter you can dismiss and lose, or a line in an inspect pane you had to already be looking at. RimWorld keeps the alerts readout for things that are still wrong *right now*, and the mod used it for nothing.

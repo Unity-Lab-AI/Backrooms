@@ -110,6 +110,125 @@ RETIREMENT_WORDS = re.compile(
 DEFERRED_CLOSED_WORDS = re.compile(r"(closed|never add|nothing is deferred|zero open)", re.I)
 
 
+# --------------------------------------------------------------------------- #
+# The reader-facing set
+# --------------------------------------------------------------------------- #
+#
+# Owner direction, 2026-09-29, verbatim: *"lets make sure the docs and informations displays
+# in game are proper to backrrooms universe and rimworld gameplay style"*, and earlier
+# *"cleaning up text walls for everything making them a pleasure to read"*.
+#
+# 0.10.2-dev unified the vocabulary in everything the **game** displays, and 0.10.4-dev added
+# the wall rule over the same text. Neither reached the documents, and a sweep found the
+# retired word in prose **262 times across 30 living documents**.
+#
+# Only these are held to the two rules below, and the boundary is a real distinction rather
+# than a convenience:
+#
+# * These describe **the mod to a person**. A reader meets the mod here, so the mod's own
+#   words are the only ones that can be right.
+# * An internal design or architecture document describes **the code to whoever works on it
+#   next**, and the code's own identifiers are `Portals/`, `PortalCrossingService`,
+#   `RR_PortalCrossing_*`. Invariant: key names are exempt from the vocabulary. Rewriting the
+#   prose around those identifiers would make the documents disagree with the source, which is
+#   a worse failure than an old word.
+#
+# The remainder is counted in `TODO.md` with its number rather than left to be rediscovered.
+READER_FACING = (
+    "README.md",
+    os.path.join("docs", "HOWTO.md"),
+    os.path.join("docs", "COMPATIBILITY.md"),
+    os.path.join("docs", "GAME_DESIGN.md"),
+    os.path.join("docs", "SCENARIOS.md"),
+    os.path.join("docs", "BUILDING.md"),
+    os.path.join("docs", "RESEARCH.md"),
+    os.path.join("docs", "CONTENT_REUSE_POLICY.md"),
+    os.path.join("docs", "RIMROOMS_MOD_OVERVIEW.md"),
+    os.path.join("docs", "TUTORIAL_SCRIPT.md"),
+    os.path.join("docs", "CREDITS.md"),
+)
+
+# The same words `check-info-cards.py` bans from anything the game displays, for the same
+# reason: one set of words, or the mod cannot say which part failed.
+DOC_BANNED_TERMS = {
+    "portal": "the machine is a 'gate'; the link it holds open is a 'connection'",
+    "doorway": "a plain door is a 'door'; the far-side arrival point is a 'threshold'",
+    "the machine": "the gate is a 'gate'",
+    "gizmo": "'gizmo' is RimWorld's word for a button, never a name for our gate",
+}
+DOC_BANNED = [(term, re.compile(r"\b" + term.replace(" ", r"\s+") + r"s?\b", re.I))
+              for term in DOC_BANNED_TERMS]
+
+# A paragraph past this many characters with no break. Grounded in this project's own
+# accepted practice rather than picked: the documents rewritten deliberately for readability
+# top out at 393 and 542 characters per paragraph, so 700 is real headroom above the shape
+# already agreed to be readable, and still less than half the worst offender found (1,467).
+DOC_WALL_CHARS = 700
+
+FENCED = re.compile(r"```.*?```", re.S)
+INLINE_CODE = re.compile(r"`[^`]*`")
+MARKDOWN_LINK = re.compile(r"\[([^\]]*)\]\([^)]*\)")
+OWNER_INLINE_QUOTE = re.compile(r'\*"[^"]*"\*')
+# Any double-quoted span, not only the owner's. A quoted phrase belongs to whoever is being
+# quoted, and this project cites external sources -- the A24 synopsis calls what appears in
+# the basement a "doorway". Rewriting that word would not be tidying our vocabulary, it would
+# be misquoting a source. Words we are quoting are never ours to change.
+QUOTED_SPAN = re.compile(r'"[^"\n]{0,200}"')
+LIST_OR_TABLE = re.compile(r"^\s*(?:[|#>*+-]|\d+\.)")
+
+
+def readable_prose(raw):
+    """A document's prose, with everything that is not prose removed.
+
+    Code spans, fenced blocks, link targets and verbatim owner quotations are all excluded.
+    The owner's words are never rewritten -- LAW #0 -- so flagging a word inside one would be
+    reporting a fault that must not be fixed, which is the definition of crying wolf. Link
+    text is kept and the target dropped, because a reader reads the text and a file called
+    `CONNECTED_COLONY_PORTALS.md` is a filename rather than a sentence.
+    """
+    text = FENCED.sub(" ", raw)
+    text = MARKDOWN_LINK.sub(r"\1", text)
+    text = INLINE_CODE.sub(" ", text)
+    text = OWNER_INLINE_QUOTE.sub(" ", text)
+    return QUOTED_SPAN.sub(" ", text)
+
+
+def paragraphs(text):
+    """Rendered paragraphs, not source lines.
+
+    Measuring source lines is wrong in both directions: a hard-wrapped document hides a long
+    paragraph behind short lines, and a document with one line per paragraph reports the
+    paragraph. Headings, list items, blockquotes and tables are not prose and are skipped.
+    """
+    found = []
+    for block in re.split(r"\n\s*\n", text):
+        lines = [line for line in block.split("\n") if line.strip()]
+        if not lines or any(LIST_OR_TABLE.match(line) for line in lines):
+            continue
+        found.append(" ".join(" ".join(lines).split()))
+    return found
+
+
+def check_reader_facing(problems):
+    for rel in READER_FACING:
+        path = os.path.join(REPO, rel)
+        if not os.path.isfile(path):
+            problems.append("%s is named as reader-facing and does not exist" % rel)
+            continue
+        prose = readable_prose(io.open(path, encoding="utf-8-sig").read())
+
+        for term, pattern in DOC_BANNED:
+            match = pattern.search(prose)
+            if match:
+                problems.append("%s says %r to a reader -- %s"
+                                % (rel, match.group(0), DOC_BANNED_TERMS[term]))
+
+        for paragraph in paragraphs(prose):
+            if len(paragraph) > DOC_WALL_CHARS:
+                problems.append("%s has a %d-character paragraph with no break; a reader meets "
+                                "it as a wall (%r)" % (rel, len(paragraph), paragraph[:60]))
+
+
 def package_version():
     text = io.open(CSPROJ, encoding="utf-8-sig").read()
     match = re.search(r"<Version>([^<]+)</Version>", text)
@@ -260,9 +379,12 @@ def main():
                             % rel)
 
     check_directions_reached_the_queue(problems)
+    check_reader_facing(problems)
 
     print("doc-conformance")
     print("  living documents checked : %d" % len(docs))
+    print("  reader-facing documents  : %d, held to the vocabulary and the wall rule"
+          % len(READER_FACING))
     print("  dated records skipped    : implementation records, FINALIZED, CHANGELOG, reviews")
     print("  build version            : %s" % version)
     print("  working branch           : %s" % branch)

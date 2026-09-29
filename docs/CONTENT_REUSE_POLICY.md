@@ -1,4 +1,4 @@
-# Existing-content-only gameplay policy
+﻿# Existing-content-only gameplay policy
 
 **Binding owner direction, 2026-09-28:** Rimrooms repurposes content already in RimWorld and the selected installed mods. The owner does not want a new item, equipment, furniture, production-bench or in-game asset production project. This supersedes earlier instructions to create original gameplay art/audio and custom physical item/building content. The full company/procedural campaign scope is retained.
 
@@ -13,7 +13,7 @@
 - Use existing native/modded pawn or entity presentations for threats and people, with original Rimrooms behavior only where compatible. Do not commission or generate new threat sprites, uniforms, furniture, item icons, floor textures or gameplay audio. Use existing UI graphics/sounds or clear text where no suitable asset exists.
 - Preserve native item mass, stack limits, work, building usability, needs and optional-mod behavior. OgreStack remains the runtime stack-limit source through live `ThingDef.stackLimit`; company value does not become impossible silver stacks.
 
-**Explicit door direction:** the owner selected actual existing doors, native recoloring/aura and supported installed doorway sizes for portals. See [the scenario/portal contract](SCENARIO_SETUP_AND_PORTAL_NETWORK.md): power, batteries, control equipment, research and upgrades govern opening duration, aperture and recall of saved sites. No cloned door Def or new gameplay sprite is permitted.
+**Explicit door direction:** the owner selected actual existing doors, native recolouring and aura, and the installed door sizes the game already supports. See [the scenario and gate contract](SCENARIO_SETUP_AND_PORTAL_NETWORK.md): power, batteries, control equipment, research and upgrades govern opening duration, aperture and recall of saved sites. No cloned door Def or new gameplay sprite is permitted.
 
 ## Content provider and dependency rules
 

@@ -1,4 +1,4 @@
-# Compatibility and local multiplayer profile
+﻿# Compatibility and local multiplayer profile
 
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
@@ -31,7 +31,11 @@ The profile contained:
 - Relevant example systems for later comparison: Hospitality, Gastronomy, Prison Commons, Prison Labor, prisoner interactions, ResearchTree, Rimatomics, Rimefeller, vehicles, storage frameworks, communications, and expanded furniture.
 - Vanilla Gravship Expanded Chapters 1 and 2. Chapter 1 requires Odyssey and Vanilla Expanded Framework; Chapter 2 also requires Chapter 1. The publishers describe Chapter 1 as a gravship systems overhaul and warn other gravship-changing mods may conflict; Chapter 2 adds orbital threats and ship defense. These are optional integrations, not Backrooms core requirements.
 
-The server configuration is a useful real-world profile, but `AllowAllMods=true`, `EnforceSettings=false`, and an unset order mean the server does not guarantee that every future client keeps the same list. The current exact local match is a dated observation; a co-op release still needs a pinned/enforced join profile and an in-game run. RWT's official wiki describes configurable offline visits/raids; its trading guide says direct trades and gifts require both players online. Local Aid and Trade actions are enabled, while offline-visit availability is not established. Test visits, aid, direct trade, and reconnect as separate workflows. Keep company maps, research, gate state, and ledgers separate. See the [source register](SOURCE_REGISTER.md), [per-mod RWT review](research/reviews/mods/3005289691-nova.rimworldtogether.md), and [RWT feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md).
+The server configuration is a useful real-world profile, but `AllowAllMods=true`, `EnforceSettings=false` and an unset order mean the server does **not** guarantee that every future client keeps the same list. The current exact local match is a dated observation, and a co-op release still needs a pinned, enforced join profile and an in-game run.
+
+RWT's official wiki describes configurable offline visits and raids; its trading guide says direct trades and gifts require both players online. Local Aid and Trade actions are enabled, while offline-visit availability is not established.
+
+Test visits, aid, direct trade and reconnect as **separate workflows**, and keep company maps, research, gate state and ledgers separate. See the [source register](SOURCE_REGISTER.md), the [per-mod RWT review](research/reviews/mods/3005289691-nova.rimworldtogether.md) and the [RWT feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md).
 
 ## Mod-interaction shortlist
 

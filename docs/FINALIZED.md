@@ -3050,3 +3050,19 @@ Four items in one direction. Two were questions and were answered with measureme
 **The seventh checker reported seven faults that were not faults, and the baselines were wrong, not the text.** Letter bodies had been measured from `Letters.xml` alone (max 385) when Core's incident letters reach **666**; tooltips from `GameplayCommands.xml` alone (max 204) when Core's explanatory strings reach **894**. One good tooltip was flagged for being four characters over a ceiling that never existed. Measure a surface, never a file. Sanity-tested in both directions afterwards by planting a fault on each rule and confirming it fired, then reverting.
 
 **Checkers: seven.** 160 C# files, 80 package files, zero warnings. No def, no art, no audio, no Harmony, no game launched. Record: `implementation/DISPLAY_SURFACE_IMPLEMENTATION.md`.
+
+### 0.10.6-dev - the documents use the mod's own words
+
+The document half of the same direction, and the answer to its two questions.
+
+**Both answers were partly, and both were measured rather than asserted.** The documentation regression work closed twenty-eight stale claims across ten living documents and its checker passes - but its rule set was five rules wide and covered neither the vocabulary nor readability, and a sweep found the retired word in prose **262 times across 30 living documents**. The text-wall work closed every wall the game displays and enforced it at 420 characters - but never touched the documents, where **twenty carried prose lines past 400 characters**, the worst a single paragraph of 1,467.
+
+**Two rules added to `check-doc-conformance.py` over a named reader-facing set of eleven documents:** the banned vocabulary, and a paragraph wall at 700 characters. The threshold is grounded rather than picked - the documents rewritten deliberately for readability top out at 393 and 542.
+
+**The boundary is a real distinction, not a convenience.** Those eleven describe the mod to a person, so the mod's own words are the only ones that can be right. An internal design document describes the code to whoever works on it next, and the code's identifiers are `Portals/` and `PortalCrossingService`; rewriting the prose around them would make the documents disagree with the source. The remaining 262 occurrences are counted in the queue with what the rule needs before it can run there.
+
+**Words quoted from somewhere else are never rewritten.** The first run flagged two sentences describing the A24 synopsis, which is where the word *doorway* comes from. Rewriting those would have been misquoting a source rather than tidying a vocabulary. The rule now excludes any double-quoted span - it already covered the owner's words and now covers everyone's - and the two sentences were marked as the quotations they always were.
+
+**Reading the flagged text found two rules that were superseded and still written down as current.** The readme's status paragraph still cited the 0.2.0 build record and sprites retired in 0.9.0-dev. The gate traversal rule at the head of both the design and scenario documents still said gate and portal were one word, which 0.10.2-dev settled into three, and still said nothing ever crosses a gate on its own, which 0.9.6-dev made a bounded exception to. **Nobody was looking for either.** A readability rule made somebody read the paragraph, and reading it found the lie - which is the argument for the rule rather than for the sweep.
+
+Eight documents brought into the vocabulary, eleven walls broken up, both new rules sanity-tested by planting a fault on each and confirming it fired. No source, no def, no asset changed. Checkers: seven. Record: `implementation/READER_FACING_DOCS_IMPLEMENTATION.md`.
