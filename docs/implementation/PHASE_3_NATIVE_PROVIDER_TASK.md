@@ -28,7 +28,7 @@ New headquarters uses an actual Autodoor, CommsConsole, TableMachining, three Wo
 - [x] New generated room fixtures/floors and failure-recovery provider lists integrated.
 - [x] Exact provider source, saved-field changes, deliberate behavior changes and remaining limitations recorded.
 - [x] Integrated compilation and package evidence saved; only evidenced TODO increments checked.
-- [ ] All current project source/docs/evidence committed together and both remote cascades verified.
+- [x] All native-provider milestone source/docs/evidence committed as `dff9125732142928f4e48cd265b787d5676393bc`; both remote cascades read back at that commit before the subsequent connected-colony checkpoint.
 
 No game launch or tests in this task. Later owner-launched acceptance covers plain/automatic door rotation and locks, native bills/comms, shared power loss/EMP, repeated operation receipts, active and legacy run recovery, save/reload, floor/lighting/fog and all preserved company functions. Source/build evidence does not close those gates.
 

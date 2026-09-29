@@ -11,7 +11,7 @@ namespace RimroomsAsyncIndustries.Generation
     // Original arrangements of native runtime Defs. No source or assets from Core are redistributed.
     internal static class RoomContentBuilder
     {
-        internal const int ContentVersion = 3;
+        internal const int ContentVersion = 4;
 
         internal static void Populate(Map map, CoordinateRecord coordinate, IntVec3 entry, IntVec3 returnCell,
             IntVec3 officeEvidence, Thing anchor)

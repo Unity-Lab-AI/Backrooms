@@ -333,7 +333,9 @@ namespace RimroomsAsyncIndustries.Generation
                 !ValidateCell(map, parent.EntryCell) || !ValidateCell(map, parent.ReturnCell) ||
                 !ValidateCell(map, parent.OfficeEvidenceCell) || parent.ReturnAnchor == null ||
                 parent.ReturnAnchor.Destroyed || parent.ReturnAnchor.Map != map ||
-                parent.ReturnAnchor.def.defName != "RR_ReturnAnchor")
+                !(parent.ContentVersion == 4
+                    ? parent.ReturnAnchor is RimWorld.Building_Door && parent.ReturnAnchor.def.defName == "Door"
+                    : parent.ContentVersion < 4 && parent.ReturnAnchor.def.defName == "RR_ReturnAnchor"))
             {
                 failureKey = parent.GenerationFailureKey ?? "RR_Generation_IncompleteLayout";
                 return false;

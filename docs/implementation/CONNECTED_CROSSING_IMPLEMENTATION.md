@@ -1,0 +1,26 @@
+# Connected-colony crossing service
+
+**Scope:** source-only crossing/recovery API for one edge at a time. Baseline `dff9125732142928f4e48cd265b787d5676393bc` (native-provider 0.4.0-dev). This work does not add a job, route scheduler, player control, XML, or claim that connected-colony work is complete.
+
+## Saved ownership and call route
+
+`RimroomsPortalCrossingService` is a branch-local `GameComponent` and `IThingHolder`. Its saved receipts record operation/sequence, branch and connection, direction, saved endpoint maps/anchors/cells, original pawn ID/reference, original carried object ID/reference/count, phase, and failure. The service deep-saves an original carried `Thing` while pawn job cleanup runs; a pawn left unspawned by an exception is held by that same component. `Cross(Pawn, PortalRouteStep, operationId)` accepts a single graph-produced step only after the original pawn is at the saved source threshold. `Recover(operationId)` reconciles the saved receipt and tries only the original source or destination cell. The same Pawn and cargo objects are reused. There is no cloning, Def-based reconstruction, job creation, remote stock access, or receipt deletion.
+
+Before despawn, the service checks branch/map ownership, graph availability, eligible local human colonist status, source-cell/door permission, and destination spawn safety. It secures the complete current carry stack with nonmerging `ThingOwner.TryTransferToContainer`, then calls native `Pawn.DeSpawn` and checks graph availability again after native job/reservation cleanup. It spawns the same pawn object at the saved destination approach using `GenSpawn.Spawn`, then checks actual destination door permission and the current-map allowed-area restriction. A denied destination is rolled back to the original source cell when safe. Recovery to the source does not require the original door to remain intact; continuing forward after interruption does require the exact saved edge/endpoints and current graph availability.
+
+The API uses `Building_Door.CanPhysicallyPass(Pawn)`, `Thing.IsForbidden(Pawn)`, and `IntVec3.IsForbidden(Pawn)` on the endpoint where the pawn is physically present. Core `Pawn_PlayerSettings` stores allowed areas in a private `Dictionary<Map, Area>`; therefore the service does not guess a remote area from the source map. It evaluates the native area rule after spawn on the destination and rolls back on denial. This check only gates crossing; it does not establish that a remote job target, workgiver, lock provider, or optional mod is valid.
+
+## Source basis
+
+- [`CONNECTED_WORK_CORE_API.md`](CONNECTED_WORK_CORE_API.md) records the pinned Core inspection and exact native behavior: `Pawn.DeSpawn` stops jobs/releases reservations; `ThingOwner<T>.TryTransferToContainer(..., canMergeWithExistingStacks: false)` preserves actual transfer ownership; `GenSpawn.Spawn(Thing, IntVec3, Map, Rot4, WipeMode, ...)` reuses the supplied Thing; and carry state is held by `Pawn_CarryTracker`.
+- Pinned local source inspected for this task: `.local/inspection-expedition/Verse.Pawn.cs`, `.local/inspection-expedition/Verse.GenSpawn.cs`, `.local/inspection-expedition/Verse.ThingOwner\`1.cs`, `.local/inspection-connected-work/Verse.Pawn_CarryTracker.cs`, `.local/inspection-connected-work/RimWorld.Pawn_PlayerSettings.cs`, and `.local/inspection-room-content/RimWorld.Building_Door.cs`. In the door source, `CanPhysicallyPass(Pawn)` delegates to `PawnCanOpen(Pawn)` when the door is not in free passage.
+- The graph interface is [`RimroomsPortalNetwork.cs`](../../src/RimroomsAsyncIndustries/Portals/RimroomsPortalNetwork.cs); its `Availability` validates endpoint identity, laboratory opening identity, and obstruction. The crossing service rechecks that state after despawn cleanup and before destination spawn.
+
+## Explicit limits / acceptance still open
+
+- This is a source API foundation only; no integrated compile, game run, save/reload, interrupted-transfer, or observed runtime evidence was produced by this task. Parent owns combined build and runtime acceptance.
+- No job pathfinding, route selection, automatic scheduling, destination workgiver validation, cross-map reservations, work/needs adapters, job continuation, crossing gizmo, or localization is included. Failure keys in the API still need player-facing localization/integration.
+- The initial eligibility filter is player-faction humanlike colonists and rejects prisoners, slaves, quest lodgers, drafted, downed, dead, and mental-state pawns. Mechs/subhumans and special optional-provider doors are not claimed as supported.
+- Door passability/forbidden state and destination area membership receive a local post-spawn check. The service does not copy native job permission checks or assert that a future remote work target is permitted.
+- Saved receipt history is retained so operation IDs remain idempotent; high-volume receipt compaction is not implemented. At most 256 unresolved crossings may coexist; this is a concurrent recovery bound, not a lifetime crossing cap.
+- Connected-colony contract items remain open until the linked work/cargo adapters and owner-launched acceptance cases are completed. This artifact alone must not close RR-GATE/RR-SPACE or connected-colony completion in the master TODO.

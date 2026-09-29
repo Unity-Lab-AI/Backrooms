@@ -82,7 +82,7 @@ namespace RimroomsAsyncIndustries.Gate
         public Pawn AssignedOperator { get { return assignedOperator; } }
         public bool AssemblyComplete { get { return assemblyComplete; } }
         public bool Calibrated { get { return calibrated; } }
-        public bool IsOpening { get { return !string.IsNullOrEmpty(activeExpeditionId); } }
+        public bool IsOpening { get { return !string.IsNullOrEmpty(activeExpeditionId) || !string.IsNullOrEmpty(portalOpeningId); } }
         public string ActiveExpeditionId { get { return activeExpeditionId; } }
         public int OpeningTicksRemaining { get { return openingTicksRemaining; } }
         public int EmergencyReturnTicksRemaining { get { return emergencyReturnTicksRemaining; } }
@@ -123,6 +123,7 @@ namespace RimroomsAsyncIndustries.Gate
             Scribe_Values.Look(ref assemblyComplete, "rr_gateAssemblyComplete", false);
             Scribe_Values.Look(ref calibrated, "rr_gateCalibrated", false);
             Scribe_Values.Look(ref activeExpeditionId, "rr_gateActiveExpeditionId");
+            ExposePortalOpening();
             Scribe_Values.Look(ref openingTicksRemaining, "rr_gateOpeningTicksRemaining", 0);
             Scribe_Values.Look(ref emergencyReturnTicksRemaining, "rr_gateEmergencyReturnTicksRemaining", 0);
             Scribe_Values.Look(ref emergencyReturnSpent, "rr_gateEmergencyReturnSpent", false);
@@ -146,6 +147,7 @@ namespace RimroomsAsyncIndustries.Gate
                 openingTicksRemaining = Math.Max(0, openingTicksRemaining);
                 emergencyReturnTicksRemaining = Math.Max(0, emergencyReturnTicksRemaining);
                 stablePowerTicks = Math.Max(0, stablePowerTicks);
+                ValidatePortalOpeningOwner();
             }
         }
 
@@ -166,7 +168,7 @@ namespace RimroomsAsyncIndustries.Gate
         private void TickGate()
         {
             base.CompTick();
-            if (!parent.Spawned) { return; }
+            if (!parent.Spawned || portalOwnerFault) { return; }
             if (IsNativeProvider && !BeginNativeTick()) { return; }
             if (IsNativeProvider) { Presentation.NativePortalPresentation.Tick(this); }
 
@@ -207,7 +209,7 @@ namespace RimroomsAsyncIndustries.Gate
                 if (emergencyReturnTicksRemaining <= 0)
                 {
                     failureKey = "RR_Gate_EmergencyWindowExpired";
-                    RecordGateActivity(failureKey, activeExpeditionId);
+                    RecordGateActivity(failureKey, CurrentOpeningId);
                 }
             }
         }
@@ -345,12 +347,23 @@ namespace RimroomsAsyncIndustries.Gate
 
         public void CloseOpening()
         {
+            if (!string.IsNullOrEmpty(portalOpeningId)) { return; }
+            CloseOpeningCore();
+        }
+
+        private void CloseOpeningCore()
+        {
+            if (portalOwnerFault || (!string.IsNullOrEmpty(portalOpeningId) && IsEmergency)) { return; }
+            if (!string.IsNullOrEmpty(portalOpeningId))
+            { RecordGateActivity("RR_Event_GateOpeningClosed", portalOpeningId); }
             if (!string.IsNullOrWhiteSpace(activeExpeditionId))
             {
                 lastClosedExpeditionId = activeExpeditionId;
                 RecordGateActivity("RR_Event_GateOpeningClosed", activeExpeditionId);
             }
             activeExpeditionId = null;
+            portalOpeningId = null;
+            portalConnectionId = null;
             openingTicksRemaining = 0;
             emergencyReturnTicksRemaining = 0;
             emergencyReturnSpent = false;
@@ -546,13 +559,14 @@ namespace RimroomsAsyncIndustries.Gate
             emergencyReturnTicksRemaining = GateProps.emergencyReturnWindowTicks;
             ApplyPowerDraw();
             RecordGateActivity(reasonKey == "RR_Gate_TimeCostWindowExhausted"
-                ? "RR_Gate_TimeCostWindowExhausted" : reasonKey, activeExpeditionId);
+                ? "RR_Gate_TimeCostWindowExhausted" : reasonKey, CurrentOpeningId);
             Messages.Message(reasonKey.Translate(), parent, MessageTypeDefOf.SilentInput, false);
             Audio.RimroomsAudio.Play("RR_GateWarning", parent.Map, parent.Position, false);
         }
 
         private CompanyActionResult CheckStationReadiness(Pawn gateOperator)
         {
+            if (portalOwnerFault) { return CompanyActionResult.Refused("RR_Gate_InvalidOperation"); }
             if (IsNativeProvider && NativeBindingFailureKey != null)
             { return CompanyActionResult.Refused(NativeBindingFailureKey); }
             if (gateOperator == null || gateOperator != assignedOperator || !IsEmployedStaff(gateOperator))
@@ -575,21 +589,21 @@ namespace RimroomsAsyncIndustries.Gate
                 warnedHalfWindow = true;
                 Messages.Message("RR_Gate_WarningTenMinutes".Translate(), parent, MessageTypeDefOf.SilentInput, false);
                 Audio.RimroomsAudio.Play("RR_GateWarning", parent.Map, parent.Position, false);
-                RecordGateActivity("RR_Gate_WarningTenMinutes", activeExpeditionId);
+                RecordGateActivity("RR_Gate_WarningTenMinutes", CurrentOpeningId);
             }
             if (!warnedQuarterWindow && GateProps.openingWindowTicks > fiveMinutesRemaining && openingTicksRemaining <= fiveMinutesRemaining)
             {
                 warnedQuarterWindow = true;
                 Messages.Message("RR_Gate_WarningFiveMinutes".Translate(), parent, MessageTypeDefOf.SilentInput, false);
                 Audio.RimroomsAudio.Play("RR_GateWarning", parent.Map, parent.Position, false);
-                RecordGateActivity("RR_Gate_WarningFiveMinutes", activeExpeditionId);
+                RecordGateActivity("RR_Gate_WarningFiveMinutes", CurrentOpeningId);
             }
             if (!warnedTenthWindow && GateProps.openingWindowTicks > twoMinutesRemaining && openingTicksRemaining <= twoMinutesRemaining)
             {
                 warnedTenthWindow = true;
                 Messages.Message("RR_Gate_WarningTwoMinutes".Translate(), parent, MessageTypeDefOf.SilentInput, false);
                 Audio.RimroomsAudio.Play("RR_GateWarning", parent.Map, parent.Position, false);
-                RecordGateActivity("RR_Gate_WarningTwoMinutes", activeExpeditionId);
+                RecordGateActivity("RR_Gate_WarningTwoMinutes", CurrentOpeningId);
             }
         }
 

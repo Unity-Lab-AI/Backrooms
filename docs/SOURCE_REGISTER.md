@@ -11,6 +11,8 @@ This file is the navigation index for the research and design materials a future
 
 ## Project source-of-truth documents
 
+**Connected-colony implementation:** [owner contract](CONNECTED_COLONY_PORTALS.md), [task and ownership](implementation/CONNECTED_COLONY_IMPLEMENTATION_TASK.md), [native Core job/carry APIs](implementation/CONNECTED_WORK_CORE_API.md), [state migration](implementation/CONNECTED_PORTAL_STATE_MIGRATION.md), [profile boundaries](implementation/CONNECTED_WORK_PROFILE_BOUNDARIES.md) and [network source](implementation/CONNECTED_NETWORK_IMPLEMENTATION.md). These are source/design records, not gameplay acceptance.
+
 **Current implementation entry:** [0.3.0-dev company build/source map](implementation/PHASE_3_BUILD_RECORD.md), [earlier 0.2.0 slice](implementation/PHASE_2_BUILD_RECORD.md), [build instructions](BUILDING.md), and [save policy](SAVE_MIGRATION_POLICY.md). The current map links personnel, procurement, facilities, native laboratory/book/audio reuse and the approved original menu presentation to their source records and exact file paths. Read [CONTENT_REUSE_POLICY.md](CONTENT_REUSE_POLICY.md) and the [remaining replacement map](implementation/EXISTING_CONTENT_REPLACEMENT_MAP.md) before extending historical custom objects. Source/compilation evidence is separate from owner-launched gameplay evidence.
 
 | Topic | Canonical document | Supporting documents |

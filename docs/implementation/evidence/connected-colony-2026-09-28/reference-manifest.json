@@ -1,0 +1,33 @@
+{
+  "SDK": "9.0.308",
+  "Configuration": "Release",
+  "TargetFramework": "net472",
+  "References": [
+    {
+      "Name": "Assembly-CSharp.dll",
+      "AssemblyVersion": "1.6.9676.17735",
+      "SHA256": "5CF1B5BE399D5B1C9C56CA72C9D35B4ECF307FEACF5859D04AC5A1AA5926356A"
+    },
+    {
+      "Name": "UnityEngine.CoreModule.dll",
+      "AssemblyVersion": "0.0.0.0",
+      "SHA256": "C5C58EA254834291780A1D6C388C241443D07167B4A4B890A23C9494F626DDBA"
+    },
+    {
+      "Name": "UnityEngine.IMGUIModule.dll",
+      "AssemblyVersion": "0.0.0.0",
+      "SHA256": "C6C39327211BE8299E2E9FFDEE7A979F228736C99B84FD54BC73F563456865D9"
+    },
+    {
+      "Name": "UnityEngine.TextRenderingModule.dll",
+      "AssemblyVersion": "0.0.0.0",
+      "SHA256": "B63769AD71C7FC79034CF6C3A1EBFCF79D4591F0B1F5CD4A9823E6ED7B5816F8"
+    },
+    {
+      "Name": "mscorlib.dll",
+      "AssemblyVersion": "4.0.0.0",
+      "SHA256": "62EA68DAF78ED2CC20CF34921DE70CE6DEBF33CF3B59FFA79F4DED29EF5FCFE9"
+    }
+  ],
+  "GameplayVerified": false
+}

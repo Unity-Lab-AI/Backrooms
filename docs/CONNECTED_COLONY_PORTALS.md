@@ -56,4 +56,6 @@ This unified network belongs to a local company branch. The approved RimWorld To
 
 ## Current implementation limit
 
-The native-provider work under [the active task](implementation/PHASE_3_NATIVE_PROVIDER_TASK.md) supplies useful physical door/control/power foundations. Its current gate windows and travel remain coupled to expedition records. It does **not** yet implement the unified colony behavior above. Refactor that ownership and implement the job/path adapters before marking portal travel or the full mod complete.
+The native-provider checkpoint supplies physical door/control/power foundations. The [connected-colony implementation task](implementation/CONNECTED_COLONY_IMPLEMENTATION_TASK.md) now adds [independent saved graph and laboratory-session source](implementation/CONNECTED_NETWORK_IMPLEMENTATION.md). Historical expedition travel remains preserved; the new APIs still need player controls, automatic crossing and native work/needs adapters. They do **not** yet implement the unified colony behavior above. Complete the full job/path integration before marking portal travel or the full mod complete.
+
+Implementation agents must also read the [pinned Core work API](implementation/CONNECTED_WORK_CORE_API.md), [state migration review](implementation/CONNECTED_PORTAL_STATE_MIGRATION.md) and [profile integration boundaries](implementation/CONNECTED_WORK_PROFILE_BOUNDARIES.md). These distinguish actual source constraints from planned behavior and future runtime acceptance.

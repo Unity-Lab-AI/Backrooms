@@ -3,7 +3,7 @@
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
-**Current development version:** private `0.4.0-dev`. See the [native-provider build record](implementation/PHASE_3_NATIVE_PROVIDER_BUILD.md) for its exact compiler/package evidence, and the [0.3.0 company record](implementation/PHASE_3_BUILD_RECORD.md) for the preceding baseline. Gameplay acceptance, remaining content replacements and the complete campaign remain in the [master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
+**Current development version:** private `0.4.1-dev`. See the [connected-colony checkpoint](implementation/CONNECTED_COLONY_CHECKPOINT.md) for current source/build evidence and resume instructions. The installed package remains the prior staged 0.4.0 build; see the [native-provider build record](implementation/PHASE_3_NATIVE_PROVIDER_BUILD.md) for that evidence, and the [0.3.0 company record](implementation/PHASE_3_BUILD_RECORD.md) for the preceding baseline. Gameplay acceptance, remaining content replacements and the complete campaign remain in the [master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
 
 ## Requirements and references
 

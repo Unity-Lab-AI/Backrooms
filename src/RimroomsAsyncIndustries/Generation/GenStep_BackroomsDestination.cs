@@ -45,7 +45,7 @@ namespace RimroomsAsyncIndustries.Generation
                 TerrainDef pavedFloor = DefDatabase<TerrainDef>.GetNamedSilentFail("PavedTile");
                 ThingDef wallDef = ThingDefOf.Wall;
                 ThingDef wallStuff = ThingDefOf.Steel;
-                ThingDef anchorDef = DefDatabase<ThingDef>.GetNamedSilentFail("RR_ReturnAnchor");
+                ThingDef anchorDef = DefDatabase<ThingDef>.GetNamedSilentFail("Door");
                 ThingDef lightDef = DefDatabase<ThingDef>.GetNamedSilentFail("StandingLamp");
                 ThingDef climateDef = DefDatabase<ThingDef>.GetNamedSilentFail("Heater");
                 ThingDef generatorDef = DefDatabase<ThingDef>.GetNamedSilentFail("ChemfuelPoweredGenerator");
@@ -89,7 +89,10 @@ namespace RimroomsAsyncIndustries.Generation
                     threshold,
                     anchorDef);
                 Thing anchor = MakeBuilding(anchorDef, anchorDef.MadeFromStuff ? ThingDefOf.Steel : null);
+                if (!(anchor is Building_Door)) { throw new InvalidOperationException("RR_Generation_InvalidDoorDef"); }
+                anchor.SetFaction(Faction.OfPlayer);
                 GenSpawn.Spawn(anchor, anchorPosition, map, Rot4.North);
+                anchor.SetForbidden(false, false);
 
                 RoomRecord office = coordinate.Rooms.First(room => room.familyId == "office_copy");
                 IntVec3 officeEvidenceCell = FindClearInteriorCell(map, office, office.Bounds.CenterCell);

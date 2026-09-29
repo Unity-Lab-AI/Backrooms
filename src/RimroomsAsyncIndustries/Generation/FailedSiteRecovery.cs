@@ -285,7 +285,7 @@ namespace RimroomsAsyncIndustries.Company
         {
             string[] siteThings =
             {
-                "RR_ReturnAnchor", "ChemfuelPoweredGenerator", "Chemfuel", "HiddenConduit",
+                "ChemfuelPoweredGenerator", "Chemfuel", "HiddenConduit",
                 "SimpleResearchBench", "RR_FieldRecorder", "RR_SurveyTag", "RR_ReturnBeacon",
                 "RR_SealedEvidenceCase", "TextBook", "RR_QuietPursuer",
                 "Door", "Autodoor", "CommsConsole", "TableMachining", "Battery", "WoodFiredGenerator",

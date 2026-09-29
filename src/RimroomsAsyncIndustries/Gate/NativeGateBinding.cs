@@ -305,7 +305,7 @@ namespace RimroomsAsyncIndustries.Gate
         }
 
         private string NativeOpeningDebitId(string suffix)
-        { return activeExpeditionId + ":" + nativeOpeningSequence + ":" + suffix; }
+        { return CurrentOpeningId + ":" + nativeOpeningSequence + ":" + suffix; }
 
         private bool NativeEmergencyCircuitAvailable()
         {

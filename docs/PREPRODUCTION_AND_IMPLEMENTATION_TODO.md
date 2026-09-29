@@ -24,6 +24,14 @@ The next implementation batch follows the [scenario and native-provider task rec
 - [x] Source: new sites use native lighting, heater, fueled generator, physical power network and native floors; [room evidence](implementation/PHASE_3_ROOM_PROVIDER_REUSE.md). Saved-map/runtime behavior remains pending acceptance.
 - [x] Build/package: 0.4.0-dev compiled with zero warnings/errors and 71 staged hashes matched; [build record](implementation/PHASE_3_NATIVE_PROVIDER_BUILD.md).
 - [ ] Implement every open item in [connected colony portals](CONNECTED_COLONY_PORTALS.md#required-implementation-backlog): independent connection ownership, permanent natural portals, free crossing, shared cross-map work/materials, persistent seeds and dynamic inhabitants/complexity. This supersedes dispatch-only travel as the target.
+  - [x] Source review: pinned Core job/reservation/carry APIs, gate-state migration and affected profile boundaries; see [the connected-colony task](implementation/CONNECTED_COLONY_IMPLEMENTATION_TASK.md) and its linked records.
+  - [x] Source: independently saved portal/endpoint records and separate laboratory opening-session ownership; [implementation](implementation/CONNECTED_NETWORK_IMPLEMENTATION.md). This API foundation does not complete player controls, automatic crossing or unified work.
+  - [x] Source/build: resumable topology search, live laboratory readiness, independent recovery receipts and Core-door return thresholds for new content-version-4 sites; [0.4.1 checkpoint](implementation/CONNECTED_COLONY_CHECKPOINT.md).
+  - [x] Source: original-pawn/cargo crossing and recovery API with saved receipts; [crossing record](implementation/CONNECTED_CROSSING_IMPLEMENTATION.md). This is not automatic movement, work scheduling or runtime acceptance.
+  - [ ] Finish resumable route scheduling, same-pawn/cargo crossing recovery and player-facing connection controls; integrate their compilation evidence.
+  - [ ] Implement and integrate native work/needs adapters, physical ingredient logistics and per-provider coverage without separate mandatory labor/material pools.
+
+**Current owner-requested pause:** see [0.4.1 checkpoint/resume order](implementation/CONNECTED_COLONY_CHECKPOINT.md). This pause conserves weekly usage after publication; it does not mark the master TODO complete.
 
 ### Earlier company/scenario increments
 
