@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_GateHistory_Label>Connection history ({0})</RR_GateHistory_Label>
+  <RR_GateHistory_Desc>Everywhere this gate has connected to. Rename, pin, remove or clear entries. Each gate keeps its own list. A natural portal has no list at all - its destination is fixed where it was found and it cannot be dialled.</RR_GateHistory_Desc>
+  <RR_GateHistory_Empty>This gate has not connected anywhere yet.</RR_GateHistory_Empty>
+  <RR_GateHistory_Row>{0} - connected {1} time(s)</RR_GateHistory_Row>
+  <RR_GateHistory_RowPinned>{0} (pinned) - connected {1} time(s)</RR_GateHistory_RowPinned>
+  <RR_GateHistory_Rename>Rename {0}</RR_GateHistory_Rename>
+  <RR_GateHistory_Pin>Pin, so clearing never removes it</RR_GateHistory_Pin>
+  <RR_GateHistory_Unpin>Unpin</RR_GateHistory_Unpin>
+  <RR_GateHistory_Remove>Remove {0} from this list</RR_GateHistory_Remove>
+  <RR_GateHistory_Clear>Clear the list (pinned entries are kept)</RR_GateHistory_Clear>
+  <RR_GateHistory_Cleared>Cleared {0} entries from this gate's connection history.</RR_GateHistory_Cleared>
+</LanguageData>

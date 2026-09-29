@@ -2393,3 +2393,39 @@ Owner directions captured verbatim: 2.
 Latent defects found and fixed: 1 — a def field emitted in XML that no class declared, silently ignored at load for two checkpoints.
 **Tools written and then deliberately discarded for failing their own sanity test: 1.** A checker that passes everything manufactures confidence, which is worse than having none.
 Still open and named in `TODO.md`: the unknown-def-field checker; facilities as larger functional spaces; and the laboratory gate connection history — editable, clearable, per-gate, and **never offered on a natural gate, which has no address book and may not dial.**
+
+---
+
+## 2026-09-29 — A gate remembers where it has been (0.8.8-dev)
+
+### Verbatim owner requests
+
+> *"get to it"*
+
+> *"and we need a proper history list that lab gates are connected have connected to in a easily editable clear able and manage bench connected to the portal gates natural gates dont get to call a seed they are what they are"*
+
+### What was built
+
+- [x] **The list belongs to the gate, not the branch.** *"connected to the portal gates"* — two gates keep different address books. The right shape rather than a convenience: a gate at headquarters and one at an outpost are **two different operations**, and merging their histories would lose the distinction that makes a second gate worth building.
+- [x] **Recorded at exactly one point** — the success branch of `RegisterLaboratoryAddress`, the single moment a laboratory gate dials a coordinate. Repeat connections **update** the entry rather than appending, which keeps it an address book rather than a log, and the list orders most-recently-used first so it stays useful without anyone sorting it.
+- [x] **Rename, pin, remove, clear.** *"a history nobody can prune becomes unusable in a long game"*. **Clear keeps pinned entries, deliberately**: in a long game "clear" means *get rid of the noise*, and a single button that also destroyed the handful of addresses somebody explicitly marked would be a **trap rather than a convenience**.
+- [x] **Capped at 32, evicting the least recently used unpinned entry.** Pinning is what makes that safe. If everything is pinned, a new address is simply **not recorded** — better than silently discarding something the player deliberately kept.
+- [x] **Renaming reuses the game's own rename dialog** — the same one used for zones, caravans and the company name. `Dialog_Rename<T>` is abstract so a concrete subclass is required even adding nothing; worth it, because there is **no second rename UI to keep consistent**. A blank name is accepted and falls back to the coordinate's label, because **clearing a name is how a player undoes a rename**.
+- [x] **No new window.** A float menu per row, and each row opens **its own** actions rather than cramming rename, pin and remove onto one line **where a misclick destroys an address**.
+
+### The natural-gate rule needed no new guard
+
+- [x] *"natural gates dont get to call a seed they are what they are"* — **the existing architecture already guaranteed it.** Every gate gizmo sits behind `IsDesignated`, only ever true of a laboratory gate the player assembled; a natural threshold registers through `RegisterNaturalAddress`, has no gate behind it, and never reaches this code.
+- [x] **Adding a second check would have implied the first one was unreliable.** The rule is enforced in one place and this is one more thing obeying it — the same reasoning that kept survivor recruitment from special-casing a gate.
+
+### Build evidence
+
+0.8.8-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **154** C# source files (two new), **92** approved package files (one new keyed file). Assembly SHA-256 `5CFCA1C8EEEF139655B91ED421942FC58B33F683B03F1590F0607810A75C643B`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass; 1,194 keyed references all resolving. **No new def of any kind, no asset, no patch operation, no new work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 2. Source files modified: 3. Package files created: 1. Docs updated: 5 (1 new).
+Owner directions captured verbatim: 2.
+**Requirements met by existing architecture rather than by new code: 1** — the natural-gate rule, which needed no guard because the single-chokepoint design already held it.
+Core UI reused instead of rebuilt: 1 — the rename dialog.
+Still open and named in `TODO.md`: dialling from the history; facilities; and the unknown-def-field checker from 0.8.7-dev.

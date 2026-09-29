@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.8.8-dev - 2026-09-29 - a gate remembers where it has been
+
+- **Every laboratory gate keeps its own list of everywhere it has connected to.**
+- **Two gates keep two different lists.** A gate at home and a gate at an outpost are running different operations.
+- **Rename an address to something you can actually navigate by.** Clear the name again to get the original back.
+- **Pin the ones that matter.** Pinned addresses survive a clear and are never dropped to make room.
+- Remove one entry, or clear the noise in one go.
+- Connecting somewhere you have been before updates that entry instead of adding another.
+- **A natural portal has no list at all.** Its destination is fixed where you found it and it cannot be dialled.
+
+Full record: [gate connection history](docs/implementation/GATE_CONNECTION_HISTORY_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.8.7-dev - 2026-09-29 - the deeper it is, the less it pretends
 
 - **Hallways can hold anything.** A production bench in a corridor is not a mistake down there.

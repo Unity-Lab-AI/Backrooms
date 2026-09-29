@@ -160,6 +160,7 @@ namespace RimroomsAsyncIndustries.Gate
         public override void PostExposeData()
         {
             base.PostExposeData();
+            ExposeConnectionHistory();
             Scribe_References.Look(ref assignedOperator, "rr_gateAssignedOperator");
             Scribe_Values.Look(ref assemblyComplete, "rr_gateAssemblyComplete", false);
             Scribe_Values.Look(ref calibrated, "rr_gateCalibrated", false);
@@ -279,6 +280,14 @@ namespace RimroomsAsyncIndustries.Gate
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) { yield return gizmo; }
             if (parent.Faction != Faction.OfPlayer || !IsDesignated) { yield break; }
+
+            yield return new Command_Action
+            {
+                defaultLabel = "RR_GateHistory_Label".Translate(ConnectionHistory.Count.ToString()),
+                defaultDesc = "RR_GateHistory_Desc".Translate(),
+                icon = parent.def.uiIcon,
+                action = OpenConnectionHistoryMenu
+            };
 
             yield return new Command_Action
             {

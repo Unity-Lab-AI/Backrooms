@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.8.7-dev**, commit `dfb4557` |
+| Published | **0.8.8-dev**, commit read back below |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
-| Build | **152 C# files, 91 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `11D0FB47F37A78D58E7CD3A47E3C8A89D7B4769BAE731E675D6B6BC2C37B9A48`, reproduced by two clean recompiles |
+| Build | **154 C# files, 92 package files**, zero warnings, zero errors |
+| Assembly | SHA-256 `5CFCA1C8EEEF139655B91ED421942FC58B33F683B03F1590F0607810A75C643B`, reproduced by two clean recompiles |
 | Checkers | four, all passing |
 | Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
 | Game launches | **none, ever** |
@@ -60,12 +60,13 @@ Chain checkpoints. Do not finish one and wait.
 | 0.8.5 | **Colonist echoes** + **holding undiscovered inhabitants** (fog of war) |
 | 0.8.6 | **Room shape echoes** and hallways |
 | 0.8.7 | **Coherence decay** + tech scaling |
+| 0.8.8 | **Gate connection history** — per-gate address book, editable and clearable |
 
 ---
 
 ## What is left, in order
 
-1. **A managed connection history for laboratory gates.** Owner's most recent direction, verbatim in `TODO.md`. An address book per *gate*, editable, clearable. **A natural gate never gets one** — its destination is fixed at discovery and it may not dial. That rule already holds in the traversal layer and must not be broken by this feature.
+1. **Dialling from the connection history.** 0.8.8-dev records and manages the address book; selecting an entry to *re-open* that coordinate is the natural next step, and is a separate interaction with its own permission checks.
 2. **The unknown-def-field checker.** Written, **proved broken, removed rather than shipped.** See the warning below — start from the verified parts.
 3. **Facilities** — larger functional spaces, distinct from rooms and corridors.
 4. **A player-facing how-to.** Now **~12 interacting systems** with no written explanation of how they fit. Overdue.
@@ -111,6 +112,8 @@ Each is a real defect or a pinned fact.
 27. **Anything saved that feeds the layout fingerprint must be snapshotted, not read live.** Layout is re-planned to verify a saved graph; reading current colony state there makes a coordinate fail its own check.
 28. **Every threat honours: readable warning, learnable rule, a countermeasure, no unavoidable instant failure.** The threshold room is excluded from every event and every inhabitant.
 29. **Undiscovered inhabitants are held.** Needs topped up, rot held, while fogged. Discovery starts their clock.
+30. **A natural gate has no address book and may not dial.** Enforced by `IsDesignated` on the gate gizmos, not by a second check — adding one would imply the first is unreliable.
+31. **When an existing guarantee already covers a new requirement, say so and rely on it.** Twice this session a requirement needed no new code: the natural-gate rule, and survivor recruitment obeying the traversal chokepoint rather than special-casing it.
 
 ---
 

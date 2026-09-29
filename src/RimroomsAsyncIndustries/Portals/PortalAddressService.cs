@@ -143,7 +143,16 @@ namespace RimroomsAsyncIndustries.Portals
             PortalNetworkResult result = network.Register(id, coordinate.Id, PortalConnectionKind.Laboratory,
                 gate.parent, approach, threshold, thresholdApproach);
             if (result == PortalNetworkResult.Success)
-            { campaign.RecordEvent("RR_Event_PortalAddressRegistered", id, coordinate.Id); }
+            {
+                campaign.RecordEvent("RR_Event_PortalAddressRegistered", id, coordinate.Id);
+                // The gate's own address book. Recorded here rather than anywhere else because
+                // this is the single point at which a LABORATORY gate dials a coordinate --
+                // which is exactly why a natural threshold never gets one. Its registration
+                // goes through RegisterNaturalAddress, has no gate at all, and its destination
+                // is fixed at discovery: "natural gates dont get to call a seed they are what
+                // they are".
+                gate.NoteConnected(coordinate);
+            }
             return Translate(result);
         }
 
