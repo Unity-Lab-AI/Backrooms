@@ -169,6 +169,7 @@ namespace RimroomsAsyncIndustries.Gate
             Scribe_Values.Look(ref emergencyReturnTicksRemaining, "rr_gateEmergencyReturnTicksRemaining", 0);
             Scribe_Values.Look(ref emergencyReturnSpent, "rr_gateEmergencyReturnSpent", false);
             ExposeKillSwitch();
+            ExposeServicing();
             Scribe_Values.Look(ref warnedHalfWindow, "rr_gateWarnedHalfWindow", false);
             Scribe_Values.Look(ref warnedQuarterWindow, "rr_gateWarnedQuarterWindow", false);
             Scribe_Values.Look(ref warnedTenthWindow, "rr_gateWarnedTenthWindow", false);
@@ -214,6 +215,7 @@ namespace RimroomsAsyncIndustries.Gate
             if (IsNativeProvider && !BeginNativeTick()) { return; }
             if (IsNativeProvider) { Presentation.NativePortalPresentation.Tick(this); }
 
+            TickServicing();
             ApplyPowerDraw();
             if (HasPowerAndHeadroom())
             {
@@ -327,6 +329,7 @@ namespace RimroomsAsyncIndustries.Gate
                 : (IsOperatorOnStation ? "RR_Gate_OperatorPresent".Translate(assignedOperator.LabelShortCap).ToString()
                     : "RR_Gate_OperatorAway".Translate(assignedOperator.LabelShortCap).ToString());
             string cutoffText = KillSwitchReadout();
+            string serviceText = ServicingReadout();
             string powerText = "RR_Gate_PowerReadout".Translate(CurrentPowerDrawWatts.ToString("F0"),
                 GateProps.reserveChargePowerWatts.ToString("F0"), GateProps.minimumPowerHeadroomWatts.ToString("F0"),
                 returnReserveStoredWattDays.ToString("F2"), GateProps.returnReserveCapacityWattDays.ToString("F2"),
@@ -343,7 +346,7 @@ namespace RimroomsAsyncIndustries.Gate
                         ? "RR_Gate_WindowSustained".Translate().ToString() : DescribeWindow(openingTicksRemaining),
                     DescribeWindow(emergencyReturnTicksRemaining), string.IsNullOrEmpty(failureKey) ? "RR_Gate_NoFailure".Translate() : failureKey.Translate()).ToString()
                 : "";
-            return string.Join("\n", new[] { status, operatorText, cutoffText, powerText, active }
+            return string.Join("\n", new[] { status, operatorText, cutoffText, serviceText, powerText, active }
                 .Where(s => !string.IsNullOrEmpty(s)));
         }
 

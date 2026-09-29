@@ -81,4 +81,11 @@
   <RR_NativeGate_SwitchAlreadyBound>Another gate already uses that switch as its cutoff.</RR_NativeGate_SwitchAlreadyBound>
   <RR_Event_GateKillSwitchBound>An emergency cutoff was set on a gate.</RR_Event_GateKillSwitchBound>
   <RR_Event_GateKillSwitchCleared>An emergency cutoff was cleared.</RR_Event_GateKillSwitchCleared>
+  <RR_Gate_ServiceFine>Assembly condition: {0} days remaining, wearing at {1}x.</RR_Gate_ServiceFine>
+  <RR_Gate_ServiceWanted>Assembly condition: {0} days remaining, wearing at {1}x. Reconditioning wanted.</RR_Gate_ServiceWanted>
+  <RR_Gate_ServiceLapsed>Assembly condition exhausted. The gate will not open until it is reconditioned.</RR_Gate_ServiceLapsed>
+  <RR_Gate_Reconditioned>Assembly reconditioned.</RR_Gate_Reconditioned>
+  <RR_NativeGate_ServiceLapsed>The gate assembly is out of condition and must be reconditioned before it will open.</RR_NativeGate_ServiceLapsed>
+  <RR_NativeGate_ServiceNotWanted>The gate assembly does not need reconditioning yet.</RR_NativeGate_ServiceNotWanted>
+  <RR_Event_GateReconditioned>A gate assembly was reconditioned.</RR_Event_GateReconditioned>
 </LanguageData>

@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.7.1-dev - 2026-09-29 - the gate assembly needs looking after
+
+- **A gate now holds a condition that slowly wears down**, and somebody has to recondition it before it runs out. A gate with nothing left will not open until it is seen to.
+- **How fast it wears depends on how you keep the room.** A clean, sterile gate chamber wears at half rate; a filthy one wears at triple. Look after the place and the gate mostly looks after itself.
+- **An unpowered assembly degrades eight times faster**, so cutting the power has a cost beyond closing the gate.
+- Holding a connection open wears it faster too.
+- **Nobody is sent to it until it actually needs it.** Above a quarter condition the job is not offered at all, so your people are not forever fiddling with the gate. Reconditioning restores it fully in one visit.
+- Running out **never slams a gate shut on people who are already through**. It stops the next opening; it does not end one in progress.
+
+Existing gates load in full condition, so nothing you already built is suddenly out of service.
+
+Full record: [gate servicing](docs/implementation/GATE_SERVICING_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.7.0-dev - 2026-09-29 - a cutoff you can throw
 
 - **A gate can now be given an emergency cutoff**: a power switch on its own circuit that somebody can throw to shut an open gate at once.

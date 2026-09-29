@@ -1,0 +1,9 @@
+DLC gating verified
+  DLC-only defs known : 6063
+  references found    : 6, all gated
+    RR_ConnectedChildcareContinue <workType>Childcare</workType> gated by Ludeon.RimWorld.Biotech
+    RR_ConnectedChildcare <workType>Childcare</workType> gated by Ludeon.RimWorld.Biotech
+    RR_ConnectedDarkStudyContinue <workType>DarkStudy</workType> gated by Ludeon.RimWorld.Anomaly
+    RR_ConnectedDarkStudy <workType>DarkStudy</workType> gated by Ludeon.RimWorld.Anomaly
+    RR_ConnectedFishingContinue <workType>Fishing</workType> gated by Ludeon.RimWorld.Odyssey
+    RR_ConnectedFishing <workType>Fishing</workType> gated by Ludeon.RimWorld.Odyssey

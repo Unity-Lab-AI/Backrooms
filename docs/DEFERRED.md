@@ -196,7 +196,7 @@ Record: [`implementation/CONNECTED_EMERGENCE_IMPLEMENTATION.md`](implementation/
 - [x] **Keyed strings had no duplicate check, and there was a real duplicate** — `RR_Gate_OperatorAway` was declared twice in one file with two different texts and two different uses. Fixed, and `tools/check-keyed-strings.py` now enforces it.
 - [ ] **A world tile the branch does not hold** — still open. A new world object and a generated map; its own checkpoint.
 - [x] **A kill switch for the laboratory gate** — **BUILT 0.7.0-dev.** Refused unless the switch is closed and on the gate's own power net, which is the condition that makes it real rather than decorative. The emergency-return window is deliberately kept.
-- [ ] **Equipment maintenance on the gate** — requested 2026-09-29 and **genuinely new**: no upkeep concept exists in the gate today. The owner's ceiling is explicit — not *"crazy amounts"*. Its own checkpoint.
+- [x] **Equipment maintenance on the gate** — **BUILT 0.7.1-dev**, modelled on *Questionable Ethics Enhanced* (profile row 182) as the owner intended: a condition that decays continuously, modulated by **room cleanliness**, degrading eight times faster without power. The dead zone falls out of the model, reinforced by a quarter-condition threshold. Nothing of that mod copied or depended on.
 - [ ] **A player-facing how-to for the gameplay and systems** — requested 2026-09-29. `docs/HOWTO.md` documents the build, not play. Owed; scope it once the systems stop moving.
 
 ## Zones and areas across a gate (2026-09-29)

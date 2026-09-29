@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <JobDef>
     <defName>RR_CalibrateGate</defName>
@@ -13,6 +13,15 @@
     <defName>RR_OperateGate</defName>
     <driverClass>RimroomsAsyncIndustries.Gate.JobDriver_RROperateGate</driverClass>
     <reportString>staffing the machine gate console</reportString>
+    <suspendable>false</suspendable>
+    <playerInterruptible>true</playerInterruptible>
+    <casualInterruptible>false</casualInterruptible>
+    <checkOverrideOnDamage>Always</checkOverrideOnDamage>
+  </JobDef>
+  <JobDef>
+    <defName>RR_ReconditionGate</defName>
+    <driverClass>RimroomsAsyncIndustries.Gate.JobDriver_RRReconditionGate</driverClass>
+    <reportString>monitoring and adjusting the machine gate assembly</reportString>
     <suspendable>false</suspendable>
     <playerInterruptible>true</playerInterruptible>
     <casualInterruptible>false</casualInterruptible>

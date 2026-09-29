@@ -54,6 +54,10 @@ namespace RimroomsAsyncIndustries.Gate
                 // reason the tick checks it first: the player needs to know the switch is the
                 // reason, not a fault somewhere in the wiring.
                 if (KillSwitchThrown) { return "RR_NativeGate_KillSwitchThrown"; }
+                // A lapsed assembly blocks the next opening. It never closes one already
+                // running: ending an opening for a bookkeeping reason would strand whoever
+                // is on the far side, and the return window is for real emergencies.
+                if (ServiceLapsed) { return "RR_NativeGate_ServiceLapsed"; }
                 if (HasNativeEnergyDebitFault) { return "RR_NativeGate_EnergyDebitFault"; }
                 if (!NativePowerConnected()) { return "RR_NativeGate_Disconnected"; }
                 if (!NativeElectricalAvailable() || !IsConsolePowered(nativeConsole) ||

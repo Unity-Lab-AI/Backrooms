@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <WorkGiverDef>
     <defName>RR_DoGateAssembly</defName>
@@ -18,5 +18,21 @@
     <priorityInType>100</priorityInType>
     <verb>calibrate</verb>
     <gerund>calibrating</gerund>
+  </WorkGiverDef>
+
+  <!-- Reconditioning sits just above ordinary research and calibration, because a lapsed
+       assembly blocks every expedition while research merely waits. It is rare by design:
+       the giver finds nothing at all across the whole dead zone, so it cannot starve
+       research in practice. -->
+  <WorkGiverDef>
+    <defName>RR_ReconditionGate</defName>
+    <label>recondition machine gate</label>
+    <giverClass>RimroomsAsyncIndustries.Gate.WorkGiver_RRReconditionGate</giverClass>
+    <workType>Research</workType>
+    <verb>recondition</verb>
+    <gerund>reconditioning</gerund>
+    <priorityInType>102</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Sight</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
   </WorkGiverDef>
 </Defs>
