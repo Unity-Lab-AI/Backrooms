@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.21-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.22-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **174 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `C39799CE9E0C92088049DC9CB66AF5517F9ED6F55B4D453F7069BD4AFD3C3227`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
+| Build | **174 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `CB1A145285E572A7F9D779BEB6DAD9D7D857A12C3625AAF58C325D680AA2B099`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
 | Checkers | **NINE**, all passing |
 | Proofs | **TWENTY-ONE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.21
+## What shipped this session, 0.7.1 → 0.12.22
 
 | Version | What |
 |---|---|
@@ -104,6 +104,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.19 | **The yellow rooms were never carpeted** — a real shipped defect; three of my own audit verdicts corrected. **Twentieth proof** |
 | 0.12.20 | **The register, by the column that matters** — `trace` querying, and a **ninth checker** verifying how this mod uses other mods |
 | 0.12.21 | **A way out into the world** — the last unbuilt piece of the topology. Claim a tile under five maps, caravan over. **A dead end removed** |
+| 0.12.22 | **The last new art is gone** — four custom textures replaced with paths enumerated from Core. **Zero gameplay art ships**, and it is checked |
 
 ---
 
@@ -430,6 +431,9 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 210. **The five-map cap is the stricter of ours and the player’s.** Ours is five, counting the coordinate they are standing in; the player’s is `Prefs.MaxNumberOfPlayerSettlements`. **A setting the player chose is never overruled by this mod.**
 211. **Generate the destination before despawning anybody.** The claimed map exists before a pawn is touched, so a failure means nothing moved, and a failed spawn puts that pawn back. Invariant 55 in the one place it would have been easiest to get wrong.
 212. **Let Core choose the world tile.** `TileFinder.TryFindNewSiteTile` already refuses water, space and impassable terrain and honours every mod that patches tile validity. **Seed the roll**, or the way out moves on every reload.
+213. **Enumerate the replacement, never remember it.** `Data/Core/Defs` holds **908** distinct `texPath` values; every path used here was confirmed present in a real Core def first. This is the same discipline that `Named<TerrainDef>("Carpet")` skipped, and that one shipped a wrong floor for months.
+214. **Check a rule as a SHAPE, not a count.** *"Remove the 14 historical PNGs"* was stale by ten. The durable assertion is *"every image this package ships is a menu slide"* — which needs no number and cannot go out of date.
+215. **When a def is infrastructure, the art is the breach.** Three of the four legacy defs were mechanics or generator-placed markers that invariant 10 permits. Rebuilding working systems was never the fix. **Separate the def from its texture before deciding what to retire.**
 
 ---
 

@@ -197,6 +197,33 @@ if foreign:
 else:
     notes.append("every shipped file belongs to this package; no other mod's content is present")
 
+# ---------------------------------------------------------------- 6. no new gameplay art
+# Invariant 10: no new gameplay ThingDef, PawnKindDef, art or audio. Original main-menu images are
+# the single declared exception, so the rule is checkable as a shape rather than a count: every PNG
+# this package ships is a menu slide, and nothing else.
+#
+# Closed at 0.12.22-dev, when the last four gameplay textures were replaced with paths enumerated
+# out of Core's own defs. Before that, four shipped and each was a real breach nothing asserted.
+MENU_PREFIX = "1.6/Textures/UI/Menu/"
+gameplay_art = []
+for root, _dirs, files in os.walk(MOD):
+    for name in files:
+        if not name.lower().endswith((".png", ".jpg", ".jpeg", ".wav", ".ogg", ".mp3")):
+            continue
+        rel = os.path.relpath(os.path.join(root, name), MOD).replace(os.sep, "/")
+        if rel.startswith(MENU_PREFIX):
+            continue
+        if rel.startswith("About/"):
+            continue          # the mod's own preview and icon, which every mod must ship
+        gameplay_art.append(rel)
+
+if gameplay_art:
+    fail("this package ships gameplay art or audio: %s. Invariant 10 permits original MENU images "
+         "only; every other texture must name a path Core or an installed mod already ships."
+         % ", ".join(sorted(gameplay_art)))
+else:
+    notes.append("ships no gameplay art or audio; menu images only")
+
 # ---------------------------------------------------------------- report
 print("register compliance")
 for note in notes:

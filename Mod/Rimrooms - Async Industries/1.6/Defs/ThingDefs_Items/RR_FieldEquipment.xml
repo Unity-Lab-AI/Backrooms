@@ -11,7 +11,7 @@
   <ThingDef ParentName="RR_FieldItemBase">
     <defName>RR_FieldRecorder</defName><label>field recorder and radio</label>
     <description>A rugged recorder with a short-range radio. Carry it into a coordinate to log visited rooms, route mismatches and entity observations. It is physical equipment and must return with the crew or be recovered later.</description>
-    <graphicData><texPath>Items/Field/RR_FieldRecorder</texPath></graphicData>
+    <graphicData><texPath>Things/Item/Equipment/WeaponSpecial/OrbitalTargeter</texPath></graphicData>
     <statBases><Mass>1.6</Mass><MarketValue>160</MarketValue></statBases>
   </ThingDef>
   <ThingDef ParentName="RR_FieldItemBase">
@@ -19,7 +19,7 @@
     <description>A unique physical recording recovered from an explored coordinate. Preserve it, return it with the field evidence case, then analyze it at a powered field analysis bench. Case identity, observations and analysis progress are saved. Destroyed evidence is not recreated on revisiting the site.</description>
     <thingCategories Inherit="False"><li>RR_Evidence</li></thingCategories>
     <tradeability>None</tradeability>
-    <graphicData><texPath>Items/Evidence/RR_RouteRecording</texPath></graphicData>
+    <graphicData><texPath>Things/Item/Book/Schematic/Schematic</texPath></graphicData>
     <statBases><Mass>0.2</Mass><MarketValue>0</MarketValue></statBases>
     <comps><li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteEvidence"><analysisWorkRequired>3000</analysisWorkRequired></li></comps>
   </ThingDef>

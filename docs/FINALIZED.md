@@ -720,6 +720,35 @@ The last genuinely unbuilt piece of the portal topology: **a way out that leads 
 
 ---
 
+## Session 2026-09-29 - the last new art is gone (0.12.22-dev)
+
+**Verbatim user quote:** *"lets get to it and lets not count the test items and the steam collection and mod workshop setup and stuff like that"*
+
+### What shipped
+
+The last four custom gameplay textures replaced with paths **enumerated out of Core's own defs**, and the no-new-gameplay-art half of invariant 10 turned into a check.
+
+### Files touched
+
+`1.6/Defs/ThingDefs_Items/RR_FieldEquipment.xml`, `1.6/Defs/ThingDefs_Misc/RR_SiteObjects.xml`, `tools/package-files.json`, `tools/check-register-compliance.py`, `docs/implementation/NO_NEW_ART_IMPLEMENTATION.md`, four PNGs archived to `historical-content/0.12.22-dev/textures/`, `CHANGELOG.md`, `README.md`, `About.xml`, the csproj.
+
+### Closure notes
+
+- **THE COUNT IN THE ROW WAS STALE BY TEN.** M2 said *"remove the 14 historical gameplay PNGs from the package allowlist"*. **Four shipped.** Ten had already gone in earlier retirements and nobody updated the row - the same stale-number defect as the assembly hash and the C# file count, for the fourth time.
+- **The breach was the ART, not the defs.** Three of the four are infrastructure or mechanics defs that invariant 10 explicitly permits: `RR_ReturnAnchor` is a non-deconstructible generator-placed marker, `RR_QuietPursuer` is an `Ethereal` Thing with a custom class, and `RR_RouteRecording` is **already superseded** - `CompRouteEvidence.NativeCarrierDef` resolves Core's `TextBook` and `IsLegacyCarrier` exists purely so old saves keep loading. Only `RR_FieldRecorder` is a buyable carryable item. **Rebuilding working systems was never the fix; the textures were.**
+- **Every replacement path was ENUMERATED from Core's own defs, not remembered.** 908 distinct `texPath` values exist in `Data/Core/Defs`, and each chosen path was confirmed to appear in at least one Core def before use. Invariant 19, and the reason this did not become another `Named<TerrainDef>("Carpet")`:
+  - field recorder -> `Things/Item/Equipment/WeaponSpecial/OrbitalTargeter`, a handheld device with a radio, which is what the description already claimed it was;
+  - route recording -> `Things/Item/Book/Schematic/Schematic`, consistent with `TextBook` being the native carrier;
+  - return anchor -> `Things/Building/Furniture/PenMarker`, a marker post;
+  - **Quiet Pursuer -> `Things/Mote/Black`.**
+- **The Pursuer is better for it.** Its own description says *"a motionless figure seems to occupy a nearer room whenever attention shifts"*, and Core ships no humanoid-figure Thing texture. A plain black shape you cannot resolve is closer to what that sentence promises than a drawing was, and the M2 row's own suggestion - a `Megascarab` reskin - would have put an insect where a figure belongs.
+- **Retired art is archived, never deleted** - invariant 37. All four PNGs are in `historical-content/0.12.22-dev/textures/`.
+- **The rule is now a check rather than a memory.** `check-register-compliance.py` asserts every image and sound this package ships is a **menu slide** - a shape, not a count - with `About/` exempt because every mod ships a preview. **Fault-planted both ways:** a gameplay texture reappearing under `Textures/Threats/` fails it, and a def naming a texture that no longer ships fails package integrity.
+- **Zero gameplay art or audio now ships.** Six menu images, which are the single declared exception, and nothing else.
+- Build 0.12.22-dev, 174 C# files, **87 package files** (four fewer), **0 warnings, 0 errors**. **No C# changed.** Nine checkers pass, twenty-one proofs exit zero. Assembly reproduced by two clean recompiles. **No game was launched, so these read correctly by def and by path and nobody has looked at one.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

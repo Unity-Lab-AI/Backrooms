@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.22-dev - 2026-09-29 - the last new art is gone
+
+- **This mod no longer adds a single piece of gameplay art.** The four custom images it still shipped - the field recorder, the route recording, the return anchor and the Quiet Pursuer - now use pictures the base game already has.
+- **The Quiet Pursuer is a shape you cannot resolve.** It uses the base game's plain black mote, which suits it better than a drawing did: you are not meant to get a good look at it.
+- **Nothing about how any of them behaves changed.** Every rule you can learn about the Pursuer, every route recording, every return anchor works exactly as before.
+- **The rule is now checked rather than remembered.** The only images this mod ships are the main-menu slides, and a check refuses any other.
+
+Full record: [the last new art is gone](docs/implementation/NO_NEW_ART_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.21-dev - 2026-09-29 - a way out into the world
 
 - **You can now get out of the Backrooms without having marked a door first.** Before this, a way out could only ever arrive at a door you had already marked back home - and if you had not marked one, the survey quietly turned the way out into a way *deeper*. A branch with nothing marked could never get out at all.
