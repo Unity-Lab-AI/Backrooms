@@ -72,6 +72,17 @@ Build a clone before copying `Mod/Rimrooms - Async Industries/`; generated DLLs 
 - [Local server mod inventory](docs/research/rimworld-server-mod-inventory.csv) — 294 name/ID/order records exported from the server's `ModConfig.json` on 2026-09-27, with direct Workshop URLs for 288 Workshop entries. It does not include private settings.
 - [294-mod integration workbook](outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx) — filterable per-mod role, dependency, use, conflict watch, and review status.
 
+## Working on the mod with the Claude Code workflow
+
+Development continues under the Unity AI Lab `.claude/` workflow from 2026-09-28. Start with [`docs/HOWTO.md`](docs/HOWTO.md): it explains how the workflow ledger sits on top of the project contracts above, the daily task ceremony, the build/stage/publish commands, and the rules a build agent must never break (existing content only, the owner alone launches RimWorld, connected colony portals supersede dispatch-only travel). The ledger files are:
+
+- [`docs/ROADMAP.md`](docs/ROADMAP.md) — major milestones layered on the Stage 0–6 roadmap; [`docs/TODO.md`](docs/TODO.md) — the working queue; [`docs/DECOMPOSED.md`](docs/DECOMPOSED.md) — single-edit slices of the active task; [`docs/NOW.md`](docs/NOW.md) — the one task in motion.
+- [`docs/FINALIZED.md`](docs/FINALIZED.md) — permanent archive of completed work, including the inherited pre-workflow history.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — as-built map of the source, package, tools and save owners plus the whole-project design system map; [`docs/SKILL_TREE.md`](docs/SKILL_TREE.md) — capability inventory with implementation status.
+- [`docs/PUBLISHING.md`](docs/PUBLISHING.md) — the exact push and cascade procedure for both remotes.
+
+The complete mod backlog remains [`docs/PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`](docs/PREPRODUCTION_AND_IMPLEMENTATION_TODO.md); the ledger mirrors its active slice and never replaces it.
+
 ## Design rule
 
 Make the company loop work before building an endless content catalog. Each new room, entity, tool, contract, or research branch should give the player a useful decision, create a risk, or improve how the company handles risk.

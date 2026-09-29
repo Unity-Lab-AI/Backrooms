@@ -24,3 +24,29 @@ Mod/**/Assemblies/*.pdb
 *.suo
 **/ModsConfig.xml
 **/ModConfig.json
+
+# Generic dependency, cache, temp and log noise (never ship-worthy)
+node_modules/
+__pycache__/
+*.pyc
+.cache/
+*.tmp
+*.temp
+*.bak
+
+# Claude Code workflow (.claude/) IS tracked in this repository — owner decision 2026-09-28,
+# both remotes verified PRIVATE (see docs/FINALIZED.md). Only machine-local session state
+# and personal files inside it stay out of git.
+.claude/.session-env.json
+.claude/.session-state.md
+.claude/.session-tidbits.md
+.claude/.last-session.md
+.claude/.session-usage.jsonl
+.claude/.usage-tracking-disabled
+.claude/.yolo-mode
+.claude/settings.local.json
+.claude/.env
+.claude/user.json
+.claude/user-context/
+# The generic bin/ rule above is for .NET output; the workflow's bundled scanner binaries ship
+!.claude/bin/

@@ -128,6 +128,10 @@ When publishing authorized work, preserve the existing `feature/preproduction-ha
 
 Read the [Gate 0 completion audit](docs/research/GATE_0_COMPLETION_AUDIT.md) for the evidence behind the preparation status and the explicit post-build queue. Run `python tools/research/audit-gate0.py` to check saved local links/anchors, mod-register agreement, relationship records, story routes, and Gate 0 boxes. This read-only script starts no game and changes no workbook/profile. It does not verify upstream claims, execute spreadsheet formulas, or prove gameplay compatibility. Read the relevant source record as well as running the check.
 
+## Claude Code workflow ledger (from 2026-09-28)
+
+The project is now worked under the `.claude/` workflow. Read [docs/HOWTO.md](docs/HOWTO.md) for how its ledger (`docs/ROADMAP.md` majors, `docs/TODO.md` working queue, `docs/DECOMPOSED.md` slices, `docs/NOW.md` active task, `docs/FINALIZED.md` permanent archive, `docs/ARCHITECTURE.md` as-built map, `docs/SKILL_TREE.md` capability status) layers onto the authority order above. The master TODO stays the complete backlog; the ledger mirrors every open item of it verbatim. New task and archive entries quote the owner's words verbatim; older records predate that rule. Every rule in this file still applies unchanged. The exact push and cascade procedure for both remotes is [docs/PUBLISHING.md](docs/PUBLISHING.md); the `.claude/` workflow folder is tracked in this repository by owner decision (audit entry in `docs/FINALIZED.md`).
+
 ## Current implementation boundary
 
 **Owner-requested wrap-up:** [0.4.1 checkpoint and resume order](docs/implementation/CONNECTED_COLONY_CHECKPOINT.md) is the next-session entry point. Pause new implementation after the final full-batch cascades to conserve weekly usage. The full mod objective remains unfinished; no runtime acceptance is implied.
