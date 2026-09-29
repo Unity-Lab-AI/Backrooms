@@ -606,6 +606,101 @@
     <prioritizeSustains>true</prioritizeSustains>
   </WorkGiverDef>
 
+  <!-- The last three families. Each leans on the rule that a provider answers one
+       question rather than one Core giver: Core has fourteen warden givers, six childcare
+       givers and eight handling givers, and asking once whether that kind of work exists over
+       there - then letting Core pick which giver applies on arrival - is both correct and the
+       only sane amount of code.
+
+       Each continue giver sits just above the highest Core giver in its own work type, so a
+       traveller is not turned around: Warden 112 above ExecuteSlave (110), Childcare 202 above
+       BringBabyToSafety (200), Handling 152 above HandlingFeedPatientAnimals (150). Each plan
+       giver sits at 2, below everything local in that type.
+
+       Childcare is Biotech content; without the expansion its work type does not exist, the
+       provider resolves to unavailable through GetNamedSilentFail, and these two defs simply
+       never match anything.
+
+       Balance decisions, recorded as such, and player-tunable while the game runs. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedWardenContinue</defName>
+    <label>travel on to tend to through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedWardenContinue</giverClass>
+    <workType>Warden</workType>
+    <verb>tend to</verb>
+    <gerund>tending to</gerund>
+    <priorityInType>112</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedWarden</defName>
+    <label>cross a gate to tend to</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedWarden</giverClass>
+    <workType>Warden</workType>
+    <verb>tend to</verb>
+    <gerund>tending to</gerund>
+    <priorityInType>2</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedChildcareContinue</defName>
+    <label>travel on to mind through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedChildcareContinue</giverClass>
+    <workType>Childcare</workType>
+    <verb>mind</verb>
+    <gerund>minding</gerund>
+    <priorityInType>202</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedChildcare</defName>
+    <label>cross a gate to mind</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedChildcare</giverClass>
+    <workType>Childcare</workType>
+    <verb>mind</verb>
+    <gerund>minding</gerund>
+    <priorityInType>2</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedHandlingContinue</defName>
+    <label>travel on to handle through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedHandlingContinue</giverClass>
+    <workType>Handling</workType>
+    <verb>handle</verb>
+    <gerund>handling</gerund>
+    <priorityInType>152</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedHandling</defName>
+    <label>cross a gate to handle</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedHandling</giverClass>
+    <workType>Handling</workType>
+    <verb>handle</verb>
+    <gerund>handling</gerund>
+    <priorityInType>2</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
   <!-- Casualties sit around Core's own DoctorRescue (60): finishing a trip that
        already has someone in the worker's arms edges above it, starting one sits just
        below so a casualty on this map is always rescued first. Both stay under the

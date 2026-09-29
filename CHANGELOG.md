@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.6.4-dev - 2026-09-29 - the Backrooms has no sky, and the last three kinds of work
+
+- **A Backrooms space now has no outside anywhere in it.** Every cell of it sits under thick mountain rock, and the space between its rooms is solid stone rather than open ground. Previously most of a generated space was open to the sky, which was wrong.
+- **That ceiling can never be opened.** Marking a no-roof area inside the Backrooms does nothing, and if anything else removes a piece of roof it is put straight back. There is no way to make a hole in the world from the inside.
+- **You can still take the place apart completely.** Walls and doors deconstruct, the stone is mineable in several materials, and floors can be lifted. Mine a whole space out if you like — the ceiling collapses into rubble the way a mountain does, and it still never leaves a gap.
+- **Your own colony is untouched by all of this.** Building roof, removing mountain roof and building mountain wall all work exactly as they always did anywhere outside the Backrooms.
+- Wardens now cross a gate to prisoners held on the other side, and food already reaches them, so the two work together without anything extra.
+- Carers cross to a baby on the far side, where the expansion that adds babies is present.
+- Animal handlers cross for animals you marked for slaughter, taming or release — but not merely because an animal over there could be sheared some day.
+
+One thing named rather than assumed: lifting a floor does not return materials in the base game, so carpet and tile being reused or sold is its own piece of work still to come.
+
+Full record: [containment and care](docs/implementation/CONTAINMENT_AND_CARE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.6.3-dev - 2026-09-29 - a way onward can turn up out in the world
 
 - Doorways that lead somewhere else can now be found out in the ordinary world, not only deep in the Backrooms. Much rarer out there, and at most one per map, because it should be a notable thing rather than a fixture.

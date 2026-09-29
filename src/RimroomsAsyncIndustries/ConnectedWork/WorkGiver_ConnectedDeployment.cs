@@ -418,4 +418,52 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         { get { return ConnectedDeploymentProviders.Growing; } }
         protected override bool ContinueOnly { get { return true; } }
     }
+
+    /// <summary>Sends a worker through a gate to warden work over there.</summary>
+    public sealed class WorkGiver_ConnectedWarden : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Warden; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks that worker the rest of the way, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedWardenContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Warden; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    /// <summary>Sends a worker through a gate to childcare work over there.</summary>
+    public sealed class WorkGiver_ConnectedChildcare : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Childcare; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks that worker the rest of the way, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedChildcareContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Childcare; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    /// <summary>Sends a worker through a gate to animalhandling work over there.</summary>
+    public sealed class WorkGiver_ConnectedHandling : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.AnimalHandling; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks that worker the rest of the way, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedHandlingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.AnimalHandling; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
 }

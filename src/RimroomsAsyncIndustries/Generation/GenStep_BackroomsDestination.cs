@@ -59,18 +59,35 @@ namespace RimroomsAsyncIndustries.Generation
                 }
 
                 ClearMapContents(map);
+                // Owner direction 2026-09-29: a Backrooms environment can never have an
+                // outside, and the whole seed map sits inside mountain roof. So the base pass
+                // roofs *every* cell with thick rock rather than leaving it open, and fills the
+                // space between rooms with solid mineable rock.
+                //
+                // The rock is doing two jobs. It supports the thick roof, which is what stops
+                // Core's own collapse check from finding a vast unsupported ceiling; and it is
+                // material the player can mine, which the same owner direction explicitly wants
+                // ("areas minable and of all types of materisals throughout"). Nothing here
+                // restricts the pickaxe: thick roof never vanishes on collapse, so a coordinate
+                // can be mined to nothing and still never open a hole in the world.
+                List<ThingDef> rockTypes = NaturalRockTypesFor(map);
                 foreach (IntVec3 cell in map.AllCells)
                 {
                     map.terrainGrid.SetTerrain(cell, voidFloor);
-                    map.roofGrid.SetRoof(cell, null);
+                    map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
                 }
+                FillWithRock(map, coordinate, rockTypes);
 
                 foreach (RoomRecord room in coordinate.Rooms)
                 {
                     foreach (IntVec3 cell in room.Bounds.Cells)
                     {
+                        // Carve the room out of the rock, keeping the thick roof overhead. The
+                        // roof is deliberately NOT RoofConstructed: constructed roof is
+                        // removable, and all roof in a Backrooms coordinate must never be.
+                        ClearRock(map, cell);
                         map.terrainGrid.SetTerrain(cell, concrete);
-                        map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
+                        map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
                     }
                 }
                 BuildCorridors(coordinate.Rooms, map, concrete);
@@ -479,16 +496,88 @@ namespace RimroomsAsyncIndustries.Generation
             }
         }
 
+        /// <summary>
+        /// The rock types this map's own tile would naturally have, so a coordinate is made of
+        /// the same stone the world around it is. Falls back to any single natural rock def if
+        /// the world cannot answer, and to nothing at all if the game has no natural rock —
+        /// in which case the space between rooms simply stays as it was.
+        /// </summary>
+        private static List<ThingDef> NaturalRockTypesFor(Map map)
+        {
+            var types = new List<ThingDef>();
+            if (Find.World != null)
+            {
+                IEnumerable<ThingDef> natural = Find.World.NaturalRockTypesIn(map.Tile);
+                if (natural != null)
+                {
+                    foreach (ThingDef candidate in natural)
+                    {
+                        if (candidate != null && candidate.building != null &&
+                            candidate.building.isNaturalRock)
+                        { types.Add(candidate); }
+                    }
+                }
+            }
+            if (types.Count > 0) { return types; }
+            foreach (ThingDef candidate in DefDatabase<ThingDef>.AllDefsListForReading)
+            {
+                if (candidate.building != null && candidate.building.isNaturalRock &&
+                    !candidate.building.isResourceRock)
+                { types.Add(candidate); return types; }
+            }
+            return types;
+        }
+
+        /// <summary>
+        /// Fill the whole map with solid natural rock, deterministically varied across the
+        /// available types. Rooms and corridors are carved back out afterwards.
+        ///
+        /// The variety is drawn from the coordinate's own saved seed and the cell position, so
+        /// the same coordinate is always made of the same stone in the same places — revisiting
+        /// a known space never reshuffles it, which is the same rule every other generated
+        /// property of a coordinate follows.
+        /// </summary>
+        private static void FillWithRock(Map map, CoordinateRecord coordinate, List<ThingDef> rockTypes)
+        {
+            if (rockTypes == null || rockTypes.Count == 0) { return; }
+            foreach (IntVec3 cell in map.AllCells)
+            {
+                if (cell.GetEdifice(map) != null) { continue; }
+                int draw = CampaignSeed.Derive(coordinate.Seed, "rock:" + cell.x + "," + cell.z, 1);
+                ThingDef rock = rockTypes[draw % rockTypes.Count];
+                GenSpawn.Spawn(ThingMaker.MakeThing(rock), cell, map);
+            }
+        }
+
+        /// <summary>Remove whatever natural rock stands in this cell, so a space can be carved.</summary>
+        private static void ClearRock(Map map, IntVec3 cell)
+        {
+            if (!cell.InBounds(map)) { return; }
+            Building edifice = cell.GetEdifice(map);
+            if (edifice != null && edifice.def.building != null && edifice.def.building.isNaturalRock)
+            { edifice.Destroy(DestroyMode.Vanish); }
+        }
+
         private static void SetWalkableRoofedCell(Map map, IntVec3 cell, TerrainDef floor)
         {
             if (!cell.InBounds(map)) { throw new InvalidOperationException("RR_Generation_CorridorOutOfBounds"); }
+            // A corridor is carved through the rock fill, so the rock has to go or the corridor
+            // would be impassable and the coordinate would be cut into disconnected rooms.
+            ClearRock(map, cell);
             map.terrainGrid.SetTerrain(cell, floor);
-            map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
+            // Thick, like every other roofed cell in a coordinate, because constructed roof
+            // can be removed and no roof here ever may be.
+            map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
         }
 
         private static void PlaceWall(Map map, IntVec3 cell, ThingDef wallDef, ThingDef wallStuff)
         {
             if (!cell.InBounds(map)) { throw new InvalidOperationException("RR_Generation_WallOutOfBounds"); }
+            // Natural rock is the fill this coordinate was carved out of, and a wall replacing
+            // it is expected rather than an error. The overlap check below still fires for
+            // anything else, because that would mean two generated structures collided, which
+            // is a real generator fault and must not be silently tolerated.
+            ClearRock(map, cell);
             Thing existing = cell.GetEdifice(map);
             if (existing != null)
             {

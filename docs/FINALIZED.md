@@ -1146,3 +1146,53 @@ Source files created: 0. Source files modified: 2. Package files modified: 1. Do
 Requirements found already satisfied and reported rather than rebuilt: 3.
 Gaps closed: 1. Gaps named with a concrete order: 2. Defects caught pre-build: 2.
 Next: the far side of a natural edge being an already-owned ordinary map, then the three starting sites.
+
+---
+
+## Session — 2026-09-29 — the Backrooms has no outside, and the last three work families (0.6.4-dev)
+
+### Verbatim requests
+
+> and remembr a backrooms environment can never have an out side in of itselfe so mods like remove roof for removing mountain need something in our mod so that the full seed map for a backrroms seed instance is entirely inside "mountain roof" and all roof in a backrroms is never revovable and no one in any scerio can find them selfs in a world map eara but by finding a portal in the backrromms leading out of the backrrooms liken the one the scenerio start has for the furnature store and the one that the solo/group start has to be able to get out and start building thsir facility
+
+> but all rooms and walls and doors are all deconstructable and areas minable and of all types of materisals throughout and capte ands  tile can all be uninstalled , moved, resued , sold , studied, all of it
+
+> but we still have to be able to use build roof and maountain roof remove and bbuild mountain wall on the normal maps of the world
+
+### COMPLETED — containment
+
+- [x] **Found two direct violations of the containment rule in the existing generator.** The base pass set `SetRoof(cell, null)` on **every** cell, so every cell outside a room or corridor was unroofed — open sky across most of the map, which is exactly the "outside" the rule forbids. And rooms and corridors were roofed with `RoofConstructed`, which is **removable**.
+- [x] **Reconciled "no outside" with "everything is strippable" on a verified Core fact, and corrected a wrong guess of my own.** My first instinct, written into the register as a conflict note, was that mining inside a coordinate would have to be **refused** to protect the ceiling. The owner's refinement overrode it, and the Core source proves the refinement right: `RoofDef.VanishOnCollapse => !isThickRoof`, so **thick rock roof never vanishes when it collapses**. Mining out its support produces rubble and a collapse exactly as under any mountain, and the cell stays roofed. So a player may mine a coordinate to nothing and still never open a hole in the world, and containment needs **no restriction on the player at all**. The wrong guess is marked superseded in `TODO.md` rather than deleted.
+- [x] **Generation now holds the rule.** Every cell gets `RoofRockThick` — not `RoofConstructed` anywhere, because constructed roof is removable. The space between rooms is filled with **solid natural rock**, drawn from the map tile's own rock types and varied per cell by a draw from the **coordinate's own saved seed**, so a coordinate is always the same stone in the same places and a revisit never reshuffles it. The rock does two jobs: it supports the ceiling so Core's collapse check never sees a vast unsupported span, and it is material the player can mine, which the refinement explicitly asks for. Rooms and corridors are carved back out.
+- [x] **Caught two breakages the rock fill caused, before publishing.** Both would have been serious.
+  - **Corridors would have been impassable.** `SetWalkableRoofedCell` set terrain and roof but never removed an edifice, so every corridor would have stayed solid rock and each coordinate would have been cut into disconnected rooms.
+  - **Generation would have failed outright.** `PlaceWall` **throws** `RR_Generation_WallOverlap` on any existing edifice, and after the fill every wall cell had rock in it. It now clears natural rock first and still throws for anything else, because a non-rock overlap means two generated structures collided — a real generator fault that must not be silently tolerated.
+- [x] **Built the roof guard the owner asked for, and established why one was needed.** Vanilla alone can strip the ceiling: `WorkGiver_RemoveRoof` is driven by `map.areaManager.NoRoof` and contains **no** check for natural or thick roof — it asks only whether the cell is in the area and is roofed. A player could paint a no-roof area across a coordinate and colonists would obediently remove a mountain ceiling. `BackroomsContainmentMapComponent` closes it two ways with public API only and no Harmony: it **keeps the no-roof area empty**, which makes `ShouldSkip` return true so the job is never offered and any mod using the same area is neutralised by the same stroke; and it **re-roofs any cell that loses its roof by any route**, which is a repair rather than a prohibition and therefore honest about mods it has never been tested against. Both passes are bounded, the sweep using the same rotating-window rule as the work layer.
+- [x] **"we still have to be able to use build roof and maountain roof remove and bbuild mountain wall on the normal maps of the world"** — satisfied **by construction, not by a special case.** The component tests whether the map is a ready `RimroomsDestinationMapParent` before doing anything, and returns immediately otherwise. On a colony map it never clears an area and never re-roofs a cell, so every vanilla roof and mountain tool behaves exactly as it does without this mod. The guard cannot regress an existing colony, which is the standard the content policy sets for everything else here.
+
+### COMPLETED — the last three work families
+
+- [x] **Wardening, childcare and animal handling**, all deployments. Twenty-two families now, fourteen of them travel-to-work deployments. Each leans on the rule that a provider answers **one question, not one Core work giver**: Core has fourteen warden givers, six childcare givers and eight handling givers.
+- [x] **Prisoner food already reaches them, and nothing had to be added.** The food carry family excluded prisoners from *feeding* because `WardenFeedUtility` owns that route — but its eater test accepts any pawn whose `HostFaction` is the player, which is exactly what a prisoner is. So food is already carried to a map holding prisoners and the warden family sends the person who hands it over. **The two halves already fit without either knowing about the other**, which is what the shapes were for.
+- [x] **Animal handling narrowed on purpose to designations only** — slaughter, tame, release. Penning, milking, shearing and training describe continuous states rather than something the player asked for, and a handler crossing a gate because a far-side alpaca could theoretically be sheared would be constant pointless traffic. Once a handler is there, Core's own givers do the continuous work the provider would not have crossed for.
+- [x] **Childcare degrades correctly rather than claiming support.** It is Biotech content, so `GetNamedSilentFail("Childcare")` returns null without the expansion and the provider is simply unavailable — never a missing-def exception.
+
+### Saved state
+
+One transient scan cursor, `rr_containmentCursor`, on the new map component. Nothing else. A 0.6.3-dev save loads unchanged, and on load the containment component immediately roofs any cell an older save left open, so an existing coordinate is brought up to the rule rather than left broken.
+
+### Documents updated in the same change
+
+`implementation/CONTAINMENT_AND_CARE_IMPLEMENTATION.md` (new record), `DEFERRED.md` (new containment section), `TODO.md` (three directions captured verbatim, twelve rows, plus the superseded guess), `ARCHITECTURE.md`, `SKILL_TREE.md`, `ROADMAP.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.6.4-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **112** C# source files, **76** approved package files (unchanged; six work giver defs and six keyed strings added). Assembly SHA-256 `4057EFD15AAB4B1C609732AB18A02F025C9A98A8D951374CE7333A80C9780728`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. Evidence folder `implementation/evidence/containment-and-care-2026-09-29/`. All 58 packaged XML files parse; every `RR_` key resolves with 0 missing; 2,986 relative doc links resolve with 0 broken; 0 attribution strings; all compliance checks pass. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 2. Source files modified: 5. Package files modified: 3. Docs updated: 9 (1 new).
+Owner directions captured verbatim: 3 (12 rows). Wrong guesses of mine corrected by an owner refinement and then by Core source: 1.
+Generation violations found and fixed: 2. Breakages caused by the fix and caught before publishing: 2.
+Work families complete: 22, fourteen of them deployments.
+Still open: joy and rituals, the three hauling providers, floors returning materials when lifted, the far side of a portal being an ordinary map or world tile, and the three starting sites.

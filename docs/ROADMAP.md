@@ -20,7 +20,7 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
 | **Master TODO** | 133 items checked, 121 open (mirrored in `TODO.md`; deferments tracked in `DEFERRED.md`) |
 | **Source** | 78 C# files, 15 namespaces, 9 save owners, no Harmony |
 | **Package** | 73 allowlisted files, 27 Def XMLs, 2 patches, 25 language files, 16 PNGs |
-| **Active major** | M1 connected colony portals — addresses, crossing, controls, natural-gate discovery and nineteen cross-map work families reachable in source (storage hauling, casualties and remains, construction supply, construction finishing, bill ingredients, research, tending, medicine supply, food supply, patient feeding, rescue in place, cleaning, repair, firefighting, mining, hunting, plant cutting, growing zones, fuel with rearm), eleven of them travel-to-work deployments rather than carries; twenty-five deferments closed; the continuous topology is half closed (nesting and new-seed links already worked, ordinary-map discovery now added, emerging out in the world still open); prisoner/guest care, wardening, childcare and animals also open |
+| **Active major** | M1 connected colony portals — addresses, crossing, controls, natural-gate discovery and nineteen cross-map work families reachable in source (storage hauling, casualties and remains, construction supply, construction finishing, bill ingredients, research, tending, medicine supply, food supply, patient feeding, rescue in place, cleaning, repair, firefighting, mining, hunting, plant cutting, growing zones, fuel with rearm), eleven of them travel-to-work deployments rather than carries; twenty-eight deferments closed; twenty-two cross-map work families, fourteen of them deployments; Backrooms containment enforced; the continuous topology is half closed (nesting and new-seed links already worked, ordinary-map discovery now added, emerging out in the world still open); prisoner/guest care, wardening, childcare and animals also open |
 | **Next unblocked minor** | Resume step 4 (work intents, leases, adapter families) |
 | **Owner questions open** | 3 (inside-start party size; first-exit fixed vs chosen; opening duration) |
 
@@ -248,7 +248,8 @@ DONE        M1 step 4 families: storage hauling (0.5.0-dev), casualties and rema
             travel-to-work deployment (0.5.5-dev), bill ingredients (0.5.7-dev), research as the second travel-to-work
             deployment (0.5.8-dev), tending plus medicine supply (0.5.9-dev), food supply plus patient
             feeding (0.6.0-dev), rescue in place (0.6.1-dev), eight more families in one pass
-            (0.6.2-dev), ways onward findable on ordinary maps (0.6.3-dev).
+            (0.6.2-dev), ways onward findable on ordinary maps (0.6.3-dev), Backrooms
+            containment plus the last three work families (0.6.4-dev).
             Dependency position audited: base Core only.
 NEXT        travel-to-work intents (owner-selected): completes construction finishing and unlocks
             every later "work done over there" family → bills → research → tending → food → rest

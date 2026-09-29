@@ -49,6 +49,9 @@
   <!-- Travel-to-work: the worker goes, and nothing is carried. Nobody is ever brought
        home by these; a person who crossed legitimately stays where it is when the work
        runs out, with its own needs and whatever local work it finds. -->
+  <RR_ConnectedWork_WardenLabel>attending to prisoners through a gate</RR_ConnectedWork_WardenLabel>
+  <RR_ConnectedWork_ChildcareLabel>minding a baby through a gate</RR_ConnectedWork_ChildcareLabel>
+  <RR_ConnectedWork_HandlingLabel>handling animals through a gate</RR_ConnectedWork_HandlingLabel>
   <RR_ConnectedWork_MiningLabel>mining through a gate</RR_ConnectedWork_MiningLabel>
   <RR_ConnectedWork_HuntingLabel>hunting through a gate</RR_ConnectedWork_HuntingLabel>
   <RR_ConnectedWork_PlantCuttingLabel>cutting plants through a gate</RR_ConnectedWork_PlantCuttingLabel>

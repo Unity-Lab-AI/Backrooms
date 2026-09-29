@@ -94,6 +94,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         public const string Hunting = "hunting";
         public const string PlantCutting = "plant-cutting";
         public const string Growing = "growing";
+        public const string Warden = "warden";
+        public const string Childcare = "childcare";
+        public const string AnimalHandling = "animal-handling";
 
         private static readonly ConstructionFinishingProvider construction =
             new ConstructionFinishingProvider();
@@ -108,6 +111,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         private static readonly HuntingProvider hunting = new HuntingProvider();
         private static readonly PlantCuttingProvider plantcutting = new PlantCuttingProvider();
         private static readonly GrowingProvider growing = new GrowingProvider();
+        private static readonly WardenProvider warden = new WardenProvider();
+        private static readonly ChildcareProvider childcare = new ChildcareProvider();
+        private static readonly AnimalHandlingProvider animalhandling = new AnimalHandlingProvider();
         private static readonly Dictionary<string, ConnectedDeploymentProvider> registry =
             new Dictionary<string, ConnectedDeploymentProvider>(System.StringComparer.Ordinal)
             {
@@ -122,7 +128,10 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 { Mining, mining },
                 { Hunting, hunting },
                 { PlantCutting, plantcutting },
-                { Growing, growing }
+                { Growing, growing },
+                { Warden, warden },
+                { Childcare, childcare },
+                { AnimalHandling, animalhandling }
             };
 
         public static IEnumerable<ConnectedDeploymentProvider> All { get { return registry.Values; } }
