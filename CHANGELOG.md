@@ -1,5 +1,18 @@
 # Changelog
 
+## Repository tooling - 2026-09-29 - the 294-mod register actually opens now
+
+**No change to the mod itself.** The mod build is byte-for-byte identical to 0.6.4-dev and the version was deliberately not bumped. This entry covers the project's own research register, which lives beside the mod rather than inside it.
+
+- **The register now opens.** The spreadsheet never could on this machine: there is no spreadsheet program installed and Windows has no idea what a `.xlsx` is, so it was being handed to an unrelated application. There is now an **HTML register beside it** that opens straight in a browser with no install and no internet — same four views, plus a search box that filters all 294 mods across every column as you type, and dropdowns for how each mod is treated and whether that decision is settled yet.
+- The 294-mod integration register workbook also had four real faults, now fixed for anyone who does have a spreadsheet program. Every text cell in it claimed to be a formula result when nothing in the file was a formula; all 294 rows were pinned to a fixed height that the spreadsheet was then forbidden to expand, so five columns — including every evidence field — were cut off on screen; its summary page counted 45 categories where the rows hold 66, with eleven wrong numbers; and there was no way to rebuild it, while six columns of work existed in that one file and nowhere else.
+- Both versions are now four views instead of two: a summary, an **index** that fits on one screen with a link to each mod, the **full grid** for filtering, and a **card per mod** where no field is ever cut off.
+- The counts on the summary page are now worked out from the rows each time it is built, so they cannot quietly go stale again.
+- It can be rebuilt from plain text files that live in the repository, and a second tool reads every cell back out and checks it against them.
+- A broken link in the task list that had been failing the project's own audit was found and fixed along the way.
+
+Full record: [the register rebuild](docs/implementation/MOD_REGISTER_REBUILD.md) and [the work type coverage audit](docs/research/WORK_TYPE_COVERAGE_AUDIT.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.6.4-dev - 2026-09-29 - the Backrooms has no sky, and the last three kinds of work
 
 - **A Backrooms space now has no outside anywhere in it.** Every cell of it sits under thick mountain rock, and the space between its rooms is solid stone rather than open ground. Previously most of a generated space was open to the sky, which was wrong.

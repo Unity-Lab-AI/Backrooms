@@ -1,0 +1,66 @@
+{
+  "note": "Register rebuild checkpoint. No C# source changed and no version was bumped; the assembly hash below is identical to the one recorded for 0.6.4-dev, which is the point. Compilation and structural verification establish consistency only; no game, test or runtime compatibility result is claimed.",
+  "modVersion": "0.6.4-dev",
+  "assemblySha256": "4057EFD15AAB4B1C609732AB18A02F025C9A98A8D951374CE7333A80C9780728",
+  "assemblyUnchangedFrom": "0.6.4-dev (4057EFD15AAB4B1C609732AB18A02F025C9A98A8D951374CE7333A80C9780728)",
+  "cleanRebuild": "obj/ and bin/ deleted before the build recorded in build-output.txt",
+  "workbook": {
+    "path": "outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx",
+    "bytes": 306017,
+    "sha256": "3B3E7BAFBE02C0091C277A18E5B6EF70B993E3B6EA77788590D034E284B27B53",
+    "deterministic": "two consecutive builds of an unchanged source give this same hash",
+    "sheets": [
+      "Overview",
+      "Index",
+      "Mod Register",
+      "Mod Cards"
+    ],
+    "modRows": 294,
+    "registerColumns": 17
+  },
+  "htmlRegister": {
+    "path": "outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.html",
+    "bytes": 1547283,
+    "sha256": "B98D16F8733DA8DB23D57221C3C87324EB26F21EDD253A835A1F95C56BCF5F71",
+    "why": "There is no spreadsheet application on this machine and no .xlsx association at all, so this is the register that actually gets read. Browser only, no install, no external asset, works offline.",
+    "views": [
+      "Overview",
+      "Index",
+      "Full register",
+      "Mod cards"
+    ],
+    "search": "live across all 17 columns of every row; stance, firmness and family filters"
+  },
+  "toolExitCodes": {
+    "register-build.txt": 0,
+    "register-check.txt": 0,
+    "gate0-audit.json": 0
+  },
+  "sources": [
+    {
+      "path": "docs/research/rimworld-server-mod-inventory.csv",
+      "bytes": 178159,
+      "sha256": "CC85E055DCC0196CB9C779805B5D2363B8FECBB35955CFCDDFDDB2CD02735D60"
+    },
+    {
+      "path": "docs/research/mod-register-integration-fields-2026-09-29.csv",
+      "bytes": 210883,
+      "sha256": "0755622DF3DAAA4A3A0A798092549C03EC30BAAAA832D87715F6D504D5AA78C1"
+    },
+    {
+      "path": "docs/research/mod-register-overview-2026-09-29.csv",
+      "bytes": 3519,
+      "sha256": "A7675624F3D18E66FFDEDF629B494494DECB27372529644F6126226CEF185734"
+    },
+    {
+      "path": "tools/research/build-mod-register.py",
+      "bytes": 46807,
+      "sha256": "E56D1215B4D67334CE75E1D2A184072E5CE8E01A56935BD577556C44333829DA"
+    },
+    {
+      "path": "tools/research/check-mod-register.py",
+      "bytes": 17505,
+      "sha256": "F51BE8E65BE7E7B2ADA9FBC516518C407FD3EF011E5074F3D9A1D688B10847DF"
+    }
+  ]
+}

@@ -46,7 +46,7 @@ Treat these as **examples to study**, not dependencies or guaranteed integration
 | Travel, transport, and remote operations | RimWorld Together, Vanilla Vehicles Expanded, Carryalls, Vanilla Gravship Expanded | Compare world-object, vehicle, and remote supply behavior; do not make vehicles necessary to enter the Backrooms. |
 | Rooms, food, and staff comfort | Gastronomy, Hospitality, Realistic Rooms Rewritten, expanded furniture | Map company functions onto ordinary room, food, and recreation systems. |
 
-The local list also contains a large set of combat, medical, pawn, and quality-of-life changes. Each is assigned a use and risk note in the [294-mod integration register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx); linked source-fact review is complete, while extension-point inspection and combined-profile compatibility work remain open. Do not preemptively patch a mod solely from its title.
+The local list also contains a large set of combat, medical, pawn, and quality-of-life changes. Each is assigned a use and risk note in the [294-mod integration register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.html); linked source-fact review is complete, while extension-point inspection and combined-profile compatibility work remain open. Do not preemptively patch a mod solely from its title.
 
 ## Compatibility rules
 

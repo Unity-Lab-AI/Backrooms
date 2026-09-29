@@ -70,7 +70,7 @@ Build a clone before copying `Mod/Rimrooms - Async Industries/`; generated DLLs 
 - [Kane Pixels video index](docs/research/kane-pixels-video-index.csv) — all 23 entries in the official “The Backrooms” playlist, with direct watch URLs, IDs, runtime, and review status.
 - [Development roadmap](docs/ROADMAP.md) — staged implementation from first playable build to the long campaign.
 - [Local server mod inventory](docs/research/rimworld-server-mod-inventory.csv) — 294 name/ID/order records exported from the server's `ModConfig.json` on 2026-09-27, with direct Workshop URLs for 288 Workshop entries. It does not include private settings.
-- [294-mod integration workbook](outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx) — filterable per-mod role, dependency, use, conflict watch, and review status.
+- [294-mod integration workbook](outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.html) — filterable per-mod role, dependency, use, conflict watch, and review status.
 
 ## Working on the mod with the Claude Code workflow
 

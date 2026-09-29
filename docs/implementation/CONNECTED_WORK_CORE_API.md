@@ -113,6 +113,37 @@ Recommended implementation order: (1) independently saved permanent-natural/labo
 
 Future owner-launched cases must cover both directions and chained/cyclic links, permanent natural versus powered laboratory lifetimes, local/remote competing priorities, work schedules/areas/danger/forbidden/locks, occupied reservations, stack splits/merges and loaded OgreStack limits, ordinary/mod storage, construction/UFT/bill edits, medical custody and urgency, food/rest, closure before/after pickup and during crossing, death/downing/mental break, save/load at each segment and failed spawn recovery. The full profile and RWT branch separation need separate records. No runtime compatibility or completed connected-colony feature is claimed by this source review.
 
+## Pinned fact: exactly who `PortalTraversalPolicy` admits, per Core's own definition (2026-09-29)
+
+Established while recording the Prison Labor profile row, because that mod gives **prisoners** work settings and every connected work giver gates on `pawn.workSettings.WorkIsActive(workType)`. The question was whether a working prisoner could be picked up and sent through a gate. It cannot, and the reason is worth pinning because the policy delegates the whole judgement to one Core property:
+
+```csharp
+public bool IsColonist
+{
+    get
+    {
+        if (base.Faction != null && base.Faction.IsPlayer && RaceProps.Humanlike
+            && (!IsSlave || guest.SlaveIsSecure))
+        {
+            return !IsSubhuman;
+        }
+        return false;
+    }
+}
+```
+
+`TravellerFailureKey` admits only `traveller.Faction == Faction.OfPlayer && traveller.IsColonist`, so that one property decides three cases at once:
+
+| Who | May cross | Why |
+|---|---|---|
+| **A prisoner of the colony** | **never** | A prisoner keeps its *own* faction and is held through `HostFaction`, so `Faction.IsPlayer` is false. This holds regardless of any mod that grants prisoners work. |
+| **A secure slave of the colony** | **yes** | `Faction.IsPlayer` is true and `guest.SlaveIsSecure` satisfies the slave clause, so Core itself counts a secure slave as a colonist for work purposes. |
+| **An insecure slave** | **no** | The slave clause fails, which is exactly the escape-risk case. |
+
+Also excluded: `!IsSubhuman` keeps Anomaly ghouls out, and `RaceProps.Humanlike` keeps animals and mechs out.
+
+The secure-slave case had never been written down. It is **correct** — letting Core's own containment judgement draw the line is consistent with every other delegation in this layer, and the insecure case is refused — but it is behaviour a reader would not predict from the policy's own comment, so it is recorded here rather than left to be rediscovered.
+
 ## Follow-up review: initial portal graph source
 
 At the lead's request, read [PortalConnectionRecord.cs](../../src/RimroomsAsyncIndustries/Portals/PortalConnectionRecord.cs) and [RimroomsPortalNetwork.cs](../../src/RimroomsAsyncIndustries/Portals/RimroomsPortalNetwork.cs) without editing either. This is the initial graph increment, not the scheduler/crossing implementation. The lead was independently updating laboratory opening identity during this review; no obsolete expedition-identity observation is asserted as a final defect.

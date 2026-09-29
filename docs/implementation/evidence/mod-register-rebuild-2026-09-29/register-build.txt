@@ -1,0 +1,9 @@
+wrote C:\Users\gfour\Desktop\Backrooms\outputs\rimrooms-async-industries-register-2026-09-27\Rimrooms_Async_Industries_294_Mod_Integration_Register.html
+  the browser register: open this one. No install, no internet.
+  bytes        : 1547283
+wrote C:\Users\gfour\Desktop\Backrooms\outputs\rimrooms-async-industries-register-2026-09-27\Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx
+  sheets       : Overview, Index, Mod Register, Mod Cards
+  mods         : 294
+  cards        : 294
+  register rows: 295
+  card rows    : 5292

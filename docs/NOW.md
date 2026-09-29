@@ -23,10 +23,11 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | 0.6.4-dev (`git log -1`; the cascade read-back is in `FINALIZED.md`) |
+| Published | 0.6.4-dev plus the register checkpoint (`git log -1`; the cascade read-back is in `FINALIZED.md`) |
 | Remotes | `forgejo` and `github`, both with `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` at the same commit |
 | Working tree | clean |
 | Build | 112 C# source files, 76 approved package files, zero warnings, zero errors |
+| Register | `outputs/.../Rimrooms_Async_Industries_294_Mod_Integration_Register.html` — **open this one**, not the `.xlsx`. Generated; rebuild after any CSV edit |
 | Assembly | SHA-256 `4057EFD15AAB4B1C609732AB18A02F025C9A98A8D951374CE7333A80C9780728`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
 | Game launches | **none, ever.** Every runtime claim in this repo is pending the post-completion test phase |
 
@@ -47,18 +48,22 @@ Do not finish a checkpoint and wait. Chain them. The owner got tired of asking f
 - **0.6.2** — eight families in one pass: cleaning, repair, firefighting, mining, hunting, plant cutting, growing zones, and refuel **with rearm as one family**.
 - **0.6.3** — ways onward findable on ordinary world maps, never in a player-built door.
 - **0.6.4** — **Backrooms containment** (no outside, roof never removable, interior fully strippable) and the last three work families: wardening, childcare, animal handling.
+- **Register checkpoint, still 0.6.4** — the 294-mod register rebuilt with a generator and a checker, joy and rituals **decided no**, the three hauling rows closed, and the work-type list **enumerated instead of trusted**. No C# change; the assembly is byte-identical.
 
 **Twenty-two cross-map work families, fourteen of them travel-to-work deployments.**
 
 ### What is left, in the order to do it
 
-1. **Joy and rituals.** Expect the needs-are-not-work answer for joy and **decide it explicitly** rather than leaving a row open — food and rest both closed that way, and a decided "no" is a finished item. Rituals are lord-driven and local by nature.
-2. **The three hauling providers** — Pick Up And Haul (164), Haul To Stack (107), Prison Labor (288). These are **mod-review rows, not families**: read each review, record the disposition, done.
-3. **A portal whose far side is an ordinary map**, then **a world tile the branch does not hold.** This is the remaining half of the topology direction. **It needs a player designation flow** — the same pattern gates already use — because auto-picking a door on the player's colony is exactly what 0.6.3 forbade. Do the already-owned-map version first: it is bounded, it is a real shortcut home, and it exercises the endpoint plumbing the world-tile version reuses.
-4. **The three starting sites.** `SCENARIOS.md` specifies all three in full, so this is implementation, not design. Two of them begin with a way out of the Backrooms.
-5. **Floors returning materials when lifted** — vanilla returns none, so the owner's "uninstalled, moved, resued, sold" for carpet and tile is a content feature needing a `CONTENT_REUSE_POLICY.md` decision.
-6. **The 1990s period and the universe factions**, under `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`. New `FactionDef`s reusing existing pawn kinds, all starting neutral.
-7. Then M1 step 5 (the saved escalation ladder before any inhabitant generation), M2 existing-content replacement, M3 breadth, M5 interface, M6 release.
+1. **The four work-type gaps**, in this order, from [`research/WORK_TYPE_COVERAGE_AUDIT.md`](research/WORK_TYPE_COVERAGE_AUDIT.md). **Joy, rituals, `Patient` and `PatientBedRest` are all decided no** and the three hauling rows are closed — do not reopen them; read the audit instead.
+   1. **Bill work deployment** — the biggest. Ingredients already cross to a bill that `ShouldDoNow()`, but **nobody is sent to run it**, so an unstaffed coordinate's bench just accumulates material. The `UnfinishedThing` rule makes a deployment correct *by construction*: a deployed worker runs Core's own `WorkGiver_DoBill` locally and owns its own UFT. Covers Cooking, Crafting, Smithing, Tailoring and sculpting in one family.
+   2. **DarkStudy** — Anomaly, one giver, `[MayRequireAnomaly]`. The most on-theme item in the audit: studying a contained entity is the premise of the mod.
+   3. **Hauling upkeep** — the `Hauling` givers that are *local container operations on the far map* (`EmptyEggBox`, `FillFermentingBarrel`, `EmptyWasteContainer`, `HaulMechsToCharger`, `UnloadCarriers`, …). Same shape as the bill gap.
+   4. **BasicWorker (`Flick`, `Open`), and settle `Fishing` first** — `Fishing` needs water on the map, which is a *generation* question; if a coordinate never has fishable water the honest record is "unnecessary", not "unbuilt".
+2. **A portal whose far side is an ordinary map**, then **a world tile the branch does not hold.** This is the remaining half of the topology direction. **It needs a player designation flow** — the same pattern gates already use — because auto-picking a door on the player's colony is exactly what 0.6.3 forbade. Do the already-owned-map version first: it is bounded, it is a real shortcut home, and it exercises the endpoint plumbing the world-tile version reuses.
+3. **The three starting sites.** `SCENARIOS.md` specifies all three in full, so this is implementation, not design. Two of them begin with a way out of the Backrooms.
+4. **Floors returning materials when lifted** — vanilla returns none, so the owner's "uninstalled, moved, resued, sold" for carpet and tile is a content feature needing a `CONTENT_REUSE_POLICY.md` decision.
+5. **The 1990s period and the universe factions**, under `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`. New `FactionDef`s reusing existing pawn kinds, all starting neutral.
+6. Then M1 step 5 (the saved escalation ladder before any inhabitant generation), M2 existing-content replacement, M3 breadth, M5 interface, M6 release.
 
 ### Invariants — do not break these
 
@@ -88,6 +93,10 @@ Each one is a real defect or a pinned source fact.
 22. **Prefer a setting or a def over a constant** for anything tunable. The only test session fixes things live without a mod reload.
 23. **Add definitions; never redistribute assets.** No `PatchOperationReplace`/`Remove` on a Core def. Gate DLC content with `MayRequire`. Official versions only.
 24. **Never force-push. Never launch the game. Never alter the RimSort list. No AI attribution anywhere.**
+25. **The register is generated output; the HTML one is the register.** There is **no spreadsheet application on this machine and no `.xlsx` association at all**, so `Rimrooms_Async_Industries_294_Mod_Integration_Register.html` is the file anybody reads. Both are built by `tools/research/build-mod-register.py` from the CSVs under `docs/research/`. **Hand-editing either output loses the edit on the next build.** Family, stance and firmness tallies are counted from the rows every build and are never stored.
+26. **A prisoner can never cross a gate; a *secure* slave can.** `Pawn.IsColonist` requires `Faction.IsPlayer && (!IsSlave || guest.SlaveIsSecure) && !IsSubhuman`, and `PortalTraversalPolicy` delegates the whole judgement to it. Prisoners keep their own faction. Do not add a second check — Core's containment judgement is the one that decides.
+27. **The portal topology is an unbounded alternation of world maps and Backrooms coordinates, in any order, built gates and found frontiers mixed freely.** Not "nesting" plus "an exit" — one rule. `map > backrooms > backrooms` already works; everything else resolves to the single open ordinary-map endpoint.
+28. **Never trust a remembered list of anything against the shipped game data.** The families list omitted `DarkStudy` and `Fishing`, and closing the row on it would have closed it wrongly. Enumerate.
 
 ### Standing method
 
@@ -105,8 +114,10 @@ Each one is a real defect or a pinned source fact.
 4. `docs/implementation/CONNECTED_WORK_CORE_API.md` — pinned Core facts, including why Core's own map-portal system cannot serve this design.
 5. `docs/implementation/CONNECTED_TRAVEL_TO_WORK_IMPLEMENTATION.md` — the deployment shape and the Core-method split table.
 6. `docs/implementation/CONTAINMENT_AND_CARE_IMPLEMENTATION.md` — the containment rule and its Core evidence.
-7. `docs/COMPLIANCE_AND_OFFICIAL_VERSIONS.md` — the verified TOS position and the rules binding every new def.
-8. `docs/PUBLISHING.md` — the push procedure. Follow it literally.
+7. `docs/research/WORK_TYPE_COVERAGE_AUDIT.md` — all 23 work types, what is covered, what is decided against, and the four gaps. **Read this before writing any work family.**
+8. `docs/implementation/MOD_REGISTER_REBUILD.md` — how the 294-mod register works now, and why the HTML one is the one to open.
+9. `docs/COMPLIANCE_AND_OFFICIAL_VERSIONS.md` — the verified TOS position and the rules binding every new def.
+10. `docs/PUBLISHING.md` — the push procedure. Follow it literally.
 
 ### The checkpoint ritual
 
@@ -116,6 +127,7 @@ Each one is a real defect or a pinned source fact.
 4. Write the implementation record and an evidence folder under `docs/implementation/evidence/<name>-<date>/` with compiler output plus source, package and **recomputed** reference manifests. **Write `build-output.txt` separately — the manifest script does not produce it.**
 5. Update the ledger: `DEFERRED.md`, `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`.
 5a. **Run the doc-rot sweep** if an owner decision landed. `REGRESSION_CONTAINMENT.md` §Doc-rot sweep.
+5b. **If any register CSV changed**, rebuild in the same commit: `python tools/research/build-mod-register.py`, then `check-mod-register.py`, then `audit-gate0.py`. All three must exit zero. The outputs rebuild byte-identically from an unchanged source, so a diff on them always means the sources really changed.
 6. Verify: XML parses, every `RR_` key resolves, every `giverClass` resolves, no attribution strings, and — **after deleting `obj/` and `bin/`** — the rebuilt hash matches the evidence. An incremental rebuild proves nothing. Pre-0.5.7 evidence hashes are **not** reproducible today; the SDK used to embed the git commit.
 7. Commit once, atomically, push the feature branch, cascade by refspec to `Prep`, `Develop`, `Main` on **both** remotes, read back all eight refs. Do not edit after the push.
 
@@ -130,6 +142,9 @@ Each one is a real defect or a pinned source fact.
 - `ForbidUtility`, `HaulAIUtility`, `GenConstruct` are in `RimWorld`; `ReservationUtility` is in `Verse.AI`.
 - **A property can shadow a type in the same namespace.** `CampaignSeed` as a property broke four unrelated call sites of the static `CampaignSeed` helper. Renamed to `BranchSeed`.
 - Some Core work givers are `internal` (`WorkGiver_FightFires`). Reproduce the rule from public pieces and say why.
+- **`audit-gate0.py`'s link scanner strips fenced code blocks but not inline code spans.** Quoting a broken markdown link inline in a doc *recreates* it and fails the audit. Fence it.
+- **No spreadsheet application is installed and `.xlsx` has no association.** Do not tell the owner to open a workbook; point at the HTML. Do not change file associations or install software — that is the owner's call.
+- **Read the distribution after changing any classifier.** Testing "no integration" above "optional" silently moved 59 mods into the wrong bucket; a count jumping 13→72 was the only tell.
 
 ### Genuinely blocked on the owner
 

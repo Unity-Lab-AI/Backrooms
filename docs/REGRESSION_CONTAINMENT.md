@@ -66,8 +66,29 @@ Grep every live doc for each superseded claim, and treat a hit as rot **unless**
 | Per-scenario or scenario-specific research or tech | **One** tech tree available to every scenario; no rule may be gated on scenario identity |
 | Refuel and rearm as two families | One family — Core's own `RearmTurrets` giver *is* a refuel giver |
 | A hungry or tired pawn crossing a gate for a need | Decided against: needs are not work, and a closing gate strands them. Take the thing to the people instead |
+| A joy or recreation work family, or a ritual work family | Both decided against 2026-09-29. **Joy has no work type at all** — 23 exist across Core and all five DLC and `Joy` is not among them. **No `WorkGiverDef` anywhere is ritual-driven**; a `LordJob_Ritual` owns its participants' duties |
+| *"twenty-two families covers every kind of work"*, or the remembered families list as if it were complete | It is **not** complete. `DarkStudy` and `Fishing` were missing from it entirely, and four gaps are open. `research/WORK_TYPE_COVERAGE_AUDIT.md` is the enumeration; the remembered list is not evidence |
+| The register workbook as a hand-maintained file, or its Overview family tallies as stored numbers | Generated output. `tools/research/build-mod-register.py` builds it from the CSVs under `docs/research/`; tallies are **counted from the rows every build**, never stored. Hand-editing the workbook loses the edit on the next build |
+| The register preview PNGs under `outputs/` as showing the current file | They depict the **superseded two-sheet layout**. Both registers now carry four views: Overview, Index, Full register, Mod cards |
+| The `.xlsx` workbook as the register anybody reads, or telling the owner to open it | **There is no spreadsheet application on this machine and no `.xlsx` association at all.** The register that gets read is `Rimrooms_Async_Industries_294_Mod_Integration_Register.html` -- browser, no install, offline. The workbook is still built and verified, but it is the secondary output |
 
 Add a row every time a decision supersedes something. A check that is not written down here is a check that will not be run.
+
+### The register is generated, and must be rebuilt in the same change
+
+Any edit to `docs/research/rimworld-server-mod-inventory.csv`, `mod-register-integration-fields-2026-09-29.csv` or `mod-register-overview-2026-09-29.csv` must be followed in the **same commit** by:
+
+```
+python tools/research/build-mod-register.py
+python tools/research/check-mod-register.py
+python tools/research/audit-gate0.py
+```
+
+All three must exit zero. `audit-gate0.py` compares 3,234 workbook cells against the inventory independently of the checker, so a register change that passes the checker but breaks the audit is a real disagreement to resolve, not a nuisance. The workbook rebuilds byte-identically from an unchanged source, so a diff on it in `git status` always means the sources actually changed.
+
+Both outputs are produced by the one build command, so they can never disagree; `check-mod-register.py` round-trips the workbook cell by cell **and** validates the HTML (every mod carded and linked, every value present through the same escaper that wrote it, filters complete, tags balanced, zero external assets).
+
+**A note learned the hard way:** the audit's link scanner strips fenced code blocks but **not** inline code spans, so quoting a broken markdown link inline in a doc recreates it and fails the audit. Fence it.
 
 ### What the 2026-09-29 sweep found and fixed
 

@@ -1,0 +1,10 @@
+register verified
+  browser register  : C:\Users\gfour\Desktop\Backrooms\outputs\rimrooms-async-industries-register-2026-09-27\Rimrooms_Async_Industries_294_Mod_Integration_Register.html
+                      1547283 bytes, offline, every mod carded and linked
+  workbook          : C:\Users\gfour\Desktop\Backrooms\outputs\rimrooms-async-industries-register-2026-09-27\Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx
+  sheets            : Index, Mod Cards, Mod Register, Overview
+  mods round-tripped: 294 x 17 columns
+  cards checked     : 294, every field equal to the register
+  formula-typed text: 0 cells (the old register had 5,009)
+  pinned row heights: 0 rows (the old register pinned 294)
+  family tallies    : 66, all computed from the rows
