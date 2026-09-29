@@ -5,6 +5,12 @@
     <defName>RR_AsyncIndustriesStart</defName>
     <label>Async Industries branch opening</label>
     <scenarioId>async_industries</scenarioId>
+    <!-- Owner direction 2026-09-29: "Async industries starts with this tech research and other
+         basic gate techs it needs to operate and begin researching and gate operations at basic
+         levels". This start is on the corporation's books from the first minute, so it can take
+         company requests immediately - and the clean-up team, when it is built, applies to it.
+         The Store and Solo/Group starts begin WITHOUT contact and have to reach it. -->
+    <beginsInCorporationContact>true</beginsInCorporationContact>
     <!-- Only a suggestion. Every start renames its own company. -->
     <defaultCompanyName>Async Industries</defaultCompanyName>
     <scenarioVersion>1</scenarioVersion>

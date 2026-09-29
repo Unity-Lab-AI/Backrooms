@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
@@ -10,6 +10,17 @@ namespace RimroomsAsyncIndustries.Scenario
         public string scenarioId;
         public int scenarioVersion = 1;
         /// <summary>The name offered at setup. The player may replace it; every start can.</summary>
+        /// <summary>
+        /// Whether this start begins already in communication with the parent corporation.
+        ///
+        /// True for Async Industries, which *"starts with this tech research and other basic gate
+        /// techs it needs to operate and begin researching and gate operations at basic levels"*.
+        /// False for the Store and Solo/Group starts, which have to reach contact - and until
+        /// they do, there is no clean-up team and no rescue. That absence is what makes those two
+        /// openings frightening.
+        /// </summary>
+        public bool beginsInCorporationContact;
+
         public string defaultCompanyName;
         public int mapSize = 60;
         public MapGeneratorDef mapGenerator;

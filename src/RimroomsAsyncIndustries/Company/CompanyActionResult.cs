@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Verse;
 
 namespace RimroomsAsyncIndustries.Company
@@ -36,6 +36,9 @@ namespace RimroomsAsyncIndustries.Company
         public long DailyOverheadUsd;
         /// <summary>Company projects this start begins with already finished.</summary>
         public List<string> CompletedProjects = new List<string>();
+
+        /// <summary>Whether this branch opens already in contact with the parent corporation.</summary>
+        public bool BeginsInCorporationContact;
         public long SurveyRewardUsd;
         public long SurveyBonusUsd;
     }

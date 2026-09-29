@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -32,6 +32,25 @@ namespace RimroomsAsyncIndustries.Company
         private long dailyOverheadUsd;
         private int nextOperatingCostTick;
         private int researchInsights;
+
+        /// <summary>
+        /// Whether this branch is in communication with the parent corporation.
+        ///
+        /// **Owner direction, 2026-09-29, verbatim:** *"clena up tema is only once u are in
+        /// communication and working with the corporation Async industries starts with this tech
+        /// research and other basic gate techs it needs to operate and begin researching and gate
+        /// operations at basic levels but the other two scenerios need special treatment in theri
+        /// layout and starts"*.
+        ///
+        /// **Contact is a state, not a scenario.** Async Industries begins with it true and can
+        /// operate from the first minute. The Store and Solo/Group starts begin without it, and
+        /// reaching it is what turns the corporation's attention - and its clean-up team - on.
+        ///
+        /// One-way by design: a branch that has been in contact stays in contact. A corporation
+        /// that has seen a return on an investment does not forget about it, and losing contact
+        /// would take the never-die guarantee away from a player who had earned it.
+        /// </summary>
+        private bool corporationContact;
         private List<LedgerEntry> ledger = new List<LedgerEntry>();
         private List<StaffRecord> staff = new List<StaffRecord>();
         private List<CompanyObligation> obligations = new List<CompanyObligation>();
@@ -105,6 +124,21 @@ namespace RimroomsAsyncIndustries.Company
         public Map Headquarters { get { return headquarters; } }
         public long BalanceUsd { get { return balanceUsd; } }
         public int ResearchInsights { get { return researchInsights; } }
+
+        /// <summary>True once this branch is in communication with the parent corporation.</summary>
+        public bool CorporationContact { get { return corporationContact; } }
+
+        /// <summary>
+        /// Establish contact. One-way: there is deliberately no method to take it back.
+        /// </summary>
+        public CompanyActionResult EstablishCorporationContact()
+        {
+            if (!CanOperate) { return CompanyActionResult.Refused("RR_Company_Inactive"); }
+            if (corporationContact) { return CompanyActionResult.Existing(); }
+            corporationContact = true;
+            RecordEvent("RR_Event_CorporationContact", BranchId);
+            return CompanyActionResult.Applied();
+        }
         public IReadOnlyList<LedgerEntry> Ledger { get { return ledger; } }
         public IReadOnlyList<StaffRecord> Staff { get { return staff; } }
         public IReadOnlyList<CompanyObligation> Obligations { get { return obligations; } }
@@ -135,6 +169,7 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref dailyOverheadUsd, "rr_dailyOverheadUsd");
             Scribe_Values.Look(ref nextOperatingCostTick, "rr_nextOperatingCostTick");
             Scribe_Values.Look(ref researchInsights, "rr_researchInsights");
+            Scribe_Values.Look(ref corporationContact, "rr_corporationContact", false);
             Scribe_Collections.Look(ref ledger, "rr_ledger", LookMode.Deep);
             Scribe_Collections.Look(ref staff, "rr_staff", LookMode.Deep);
             Scribe_Collections.Look(ref obligations, "rr_obligations", LookMode.Deep);

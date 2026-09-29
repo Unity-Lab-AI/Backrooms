@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Corporation requests.
+
+       The first rung of the tutorial line from docs/CAMPAIGN_CHART.md #4.2, built as the worked
+       proof that the offer shape holds. Requests 2-6 and the hinge follow it, in the order the
+       chart sets, and nothing here is invented: the routes below are the ones the chart already
+       names for request 1.
+
+       Two rules every request in this file obeys, both enforced at def load and by
+       tools/check-campaign-absolutes.py:
+
+         * TWO OR MORE routes, of TWO OR MORE DIFFERENT KINDS. Two ways of delivering the same
+           object is one route wearing two hats.
+         * NO EXPIRY. There is no field to put one in. The company waits. -->
+
+  <RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+    <defName>RR_Request_PowerTheGate</defName>
+    <label>power the gate</label>
+    <description>Async Industries wants the branch drawing power and holding a reserve before anything else happens. A gate that cannot hold a charge cannot open, and a gate that opens and then loses its reserve is worse than one that never opened at all.\n\nThe company does not care how the reserve gets there.</description>
+    <arc>1</arc>
+    <tutorial>true</tutorial>
+    <tutorialOrder>0</tutorialOrder>
+    <paymentUsd>2000000</paymentUsd>
+    <successRoutes>
+
+      <li>
+        <kind>Deliver</kind>
+        <labelKey>RR_Route_BuildBatteryLabel</labelKey>
+        <descriptionKey>RR_Route_BuildBatteryDesc</descriptionKey>
+        <thingDefName>Battery</thingDefName>
+        <count>1</count>
+      </li>
+
+      <li>
+        <kind>Substitute</kind>
+        <labelKey>RR_Route_BindExistingLabel</labelKey>
+        <descriptionKey>RR_Route_BindExistingDesc</descriptionKey>
+        <thingDefName>Battery</thingDefName>
+        <count>1</count>
+      </li>
+
+    </successRoutes>
+  </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
+
+</Defs>

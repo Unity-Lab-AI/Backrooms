@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.11.1-dev - 2026-09-29 - an offer with more than one way through
+
+- **A corporation request now has to offer at least two ways to succeed**, of two genuinely different kinds. Two ways of delivering the same object to the same shelf is one route wearing two hats, and the game refuses to load a request that tries it.
+- **A request has nowhere to put a deadline.** Not "we chose not to set one" - the shape has no field for it.
+- **Routes you have earned are added on top.** If the company catalogue carries what a request wants, you can simply order it. If your crew has already been there and the log proves it, they can account for it instead of going again. Neither is available to a branch that has not built toward it.
+- **A branch with nothing still sees two ways through**, because the written-in routes are counted before any of that is consulted.
+- **Async Industries now starts in contact with the parent corporation**, with the basic gate research already done, and can take company work from the first minute. The other two starts will begin without contact and have to reach it.
+- The first request of the tutorial line - power the gate - is in, as the worked proof that the shape holds.
+
+Full record: [an offer with more than one way through](docs/implementation/REQUEST_SHAPE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.11.0-dev - 2026-09-29 - the only clock is the gate
 
 - **Nothing in this mod has a deadline except the gate.** No mission, quest, offer, contract or trade ever expires. The company waits.

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Success routes. A route label is a thing the player picks, so it carries no full stop;
+       a route description is prose and ends a sentence. Same per-surface shapes the display
+       checker holds everything else to. -->
+
+  <RR_Route_BuildBatteryLabel>Build a battery</RR_Route_BuildBatteryLabel>
+  <RR_Route_BuildBatteryDesc>Construct a battery on the gate's own circuit and charge it. The ordinary way, and the cheapest if the branch has steel and somebody to do the work.</RR_Route_BuildBatteryDesc>
+
+  <RR_Route_BindExistingLabel>Bind a battery you already have</RR_Route_BindExistingLabel>
+  <RR_Route_BindExistingDesc>Designate an existing battery as the gate's reserve. Nothing new is built; a battery that was already powering something else is re-purposed, which costs the branch whatever it was doing before.</RR_Route_BindExistingDesc>
+
+  <!-- Derived routes. These are added from branch capability rather than authored per request,
+       so their text is written once and reused. -->
+
+  <RR_Route_PurchaseLabel>Order it from the company</RR_Route_PurchaseLabel>
+  <RR_Route_PurchaseDesc>Buy the shortfall through the corporate catalogue instead of recovering or building it. Available because the branch's catalogue carries this, and it costs money rather than work.</RR_Route_PurchaseDesc>
+
+  <RR_Route_TestifyLabel>Have the crew account for it</RR_Route_TestifyLabel>
+  <RR_Route_TestifyDesc>Somebody on this branch has already been there and the log proves it. The company accepts a staff account in place of another expedition. Available because the branch has completed a log of the right kind.</RR_Route_TestifyDesc>
+
+  <!-- Contact with the parent corporation. -->
+
+  <RR_Event_CorporationContact>The parent corporation has this branch on the books. It is now an investment rather than an experiment.</RR_Event_CorporationContact>
+
+</LanguageData>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -97,7 +97,8 @@ namespace RimroomsAsyncIndustries.Scenario
                 SurveyRewardUsd = startDef.surveyRewardUsd,
                 SurveyBonusUsd = startDef.surveyBonusUsd,
                 CompletedProjects = startDef.completedProjects == null
-                    ? new List<string>() : new List<string>(startDef.completedProjects)
+                    ? new List<string>() : new List<string>(startDef.completedProjects),
+                BeginsInCorporationContact = startDef.beginsInCorporationContact
             });
             if (!result.Success)
             {

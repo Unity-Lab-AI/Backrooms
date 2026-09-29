@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -154,6 +154,11 @@ namespace RimroomsAsyncIndustries.Company
             cases.Add(initialCase);
             contracts.Add(initialContract);
             for (int index = 0; index < initialProjects.Count; index++) { projects.Add(initialProjects[index]); }
+            // Contact is a state the start declares, not a property of the scenario def:
+            // Async Industries opens on the corporation's books, the other two starts do
+            // not and have to reach it. Set before validation so a branch is never briefly
+            // initialised in a state its start did not ask for.
+            corporationContact = request.BeginsInCorporationContact;
             initializationComplete = true;
             ValidateSavedState();
             RecordEvent("RR_Event_BranchStarted", receipt);
