@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.20-dev - 2026-09-29 - the register, by the column that matters
+
+- **The mod register can now be asked the question it exists to answer.** Every one of its 295 rows carries a trace code saying which part of this mod it bears on, and there was no way to search by it. Now there is, so "what applies to the thing I am about to build" is one command.
+- **A new check verifies this mod still uses other people's mods the way the register says to.** It confirms no hard dependency on any mod, that the one mod we patch at all is a reviewed row, that the patch does nothing when that mod is absent, and that none of another mod's content has been copied in here.
+- **We patch exactly one mod, optionally**, and depend on none.
+
+Full record: [the register, by the column that matters](docs/implementation/REGISTER_COMPLIANCE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.19-dev - 2026-09-29 - the yellow rooms were never carpeted
 
 - **A real, visible bug, fixed.** The first Backrooms level you ever walk into is supposed to be worn yellow carpet. It has been **wood plank flooring** since the look shipped, in every game, on every seed. Nothing ever reported it.

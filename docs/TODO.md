@@ -493,6 +493,16 @@ Seven items, one task each. **This is a stop-building instruction and it is bein
 - [x] **Rows that cannot close without an owner launch are now marked as such** rather than left ambiguous.
 - [x] **One row challenged rather than closed:** remapping Core's menus is invasive and nothing has asked for it since.
 
+**Built 2026-09-29, 0.12.20-dev: the register, by the column that matters.**
+
+**Verbatim owner directions:** *"guided by the columns in the mod registar"*, *"make sure nothing regressed in the build that it mentions how those mods are to be use by ours"*, *"remmebr its not law but guidance"*, *"remmebr we dont change the mods we dont have rights to edit 274 or sum mods"*.
+
+- [x] **`register-query.py` gained `traces` and `trace <code>`.** The trace column names which Rimrooms feature each row bears on, which is the question the rule actually asks, and it had **no query at all** - which is why it was the column that got skipped. Sixteen codes in use; `RR-OUT` alone is 65 rows. A truncated code was found and fixed on the way: `RR-SPACEFLI` was really `RR-SPACEFLIGHT`.
+- [x] **THE REGISTER IS GUIDANCE, NOT LAW** - owner-corrected, and recorded as invariant 206. A row does not veto work.
+- [x] **A ninth checker, `check-register-compliance.py`**, verifies only what is structural: no hard mod dependency, the one patched mod is a reviewed row, the patch is inside `PatchOperationFindMod` so it does nothing when absent, no `ResearchProjectDef`/`QuestScriptDef`/`StorytellerDef` authored, and no other mod's content shipped here.
+- [x] **Nothing had regressed.** We patch exactly one mod, optionally - Doors Expanded, row 77 - and depend on none.
+- [x] **"We don't edit their files" is now asserted rather than remembered.** A `PatchOperationFindMod` patches the runtime def database, not their files; shipping their content here is what would breach it, and that is what is checked.
+
 **Built 2026-09-29, 0.12.13-dev: arcs 5 to 8 have work in them.**
 
 - [x] **Thirteen generated request families, one per item `CAMPAIGN_CHART.md` names** across arcs 5, 6, 7 and 8. With arc 4's five that is **18 generated families**, plus the seven tutorial requests: **25 request defs**. **Chart section 7 step 8 is closed.**

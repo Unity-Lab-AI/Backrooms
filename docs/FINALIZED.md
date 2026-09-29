@@ -667,6 +667,32 @@ A **real, shipped, player-visible defect** fixed, and **three of my own audit ve
 
 ---
 
+## Session 2026-09-29 - the register, by the column that matters (0.12.20-dev)
+
+**Verbatim user quotes, in order:** *"lets get it and rememebr we are trying to get shit done in droves and correctly and guided by the columns in the mod registar"*, then *"now that you can actually read the registar that ive been telling to to use make sure nothing regressed in the build that it mentions how those mods are to be use by ours"*, then *"remmebr its not law but guidance"*, then *"remmebr we dont change the mods we dont have rights to edit 274 or sum mods"*.
+
+### What shipped
+
+`register-query.py` gained `traces` and `trace <code>`, and **a ninth checker** verifies the build against the register's structural guidance on using other mods.
+
+### Files touched
+
+`tools/register-query.py`, `tools/check-register-compliance.py` (new), `docs/implementation/REGISTER_COMPLIANCE_IMPLEMENTATION.md`, `docs/NOW.md`, `docs/TODO.md`, `CHANGELOG.md`, `README.md`, `About.xml`, the csproj.
+
+### Closure notes
+
+- **"GUIDED BY THE COLUMNS" NAMED THE COLUMN I HAD BEEN SKIPPING.** The register has six columns and I had been querying three: family, stance, firmness. The **trace** column is the one that answers the question the LAW actually asks - *what applies to the thing I am about to build* - because it names the **Rimrooms feature** a row bears on rather than the mod's own subject matter. **It had no query at all**, which is exactly why it got skipped: a column nobody can ask about is a column nobody consults. Sixteen codes are in use; `RR-OUT` alone covers 65 rows and is precisely *"a way out into the world"*.
+- **A truncated code was found and fixed while adding it.** The first pattern capped codes at eight characters and reported `RR-SPACEFLI`; the real code is `RR-SPACEFLIGHT`. A summary that silently truncates its own keys is a summary that merges two categories.
+- **THE REGISTER IS GUIDANCE, NOT LAW - owner-corrected, and the checker is written that way.** *"remmebr its not law but guidance"*. `check-register-compliance.py` does **not** veto work because a row exists. It verifies only the handful of dispositions that are **structural** and would regress silently, and every check is about **this** package rather than a judgement about anybody else's.
+- **What it verifies, and the answer today:** no hard mod dependency at all (`modDependencies` empty; `loadAfter` names Core only); the only mod this package patches is **Doors Expanded, row 77, Optional, Settled, trace RR-FAC;RR-THREAT;RR-STYLE;RR-COMPAT**; that patch sits inside a `PatchOperationFindMod` so it applies nothing when the mod is absent (invariant 42); and **no `ResearchProjectDef`, `QuestScriptDef` or `StorytellerDef` is authored**, which is what keeps this mod clear of rows 191, 279, 148 and 132 by construction rather than by care.
+- **WE NEVER EDIT THEIR FILES, and that is now asserted rather than remembered.** *"remmebr we dont change the mods we dont have rights to edit"*. A `PatchOperationFindMod` does **not** edit anybody's files - the owner confirmed that reading explicitly on 2026-09-29 - it patches the loaded def database at runtime. What would breach the direction is this repository **containing** another mod's content, so the checker asserts every shipped file belongs to this package and that no second `About.xml` has appeared.
+- **Nothing had regressed.** Three separate reviews had independently concluded that this mod should use its own def types rather than the native systems those mods operate on, and the build still does. That conclusion is now checked every checkpoint instead of re-derived by reading.
+- **The four remaining `ThingDef`s were confirmed as the known open ones** - `RR_FieldRecorder`, `RR_RouteRecording`, `RR_ReturnAnchor`, `RR_QuietPursuer` - all already tracked in the queue as the last existing-content replacements. No new gameplay def has crept in.
+- **Three planted faults, three catches, clean on restore:** a declared hard dependency, an authored `ResearchProjectDef`, and patching a mod that is not a reviewed row.
+- Build 0.12.20-dev, 173 C# files, 91 package files, **0 warnings, 0 errors**. **No C# changed.** **NINE checkers** pass, twenty proofs exit zero. Assembly reproduced by two clean recompiles. **No game was launched, and nothing in this mod has ever been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

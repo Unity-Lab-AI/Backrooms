@@ -17,6 +17,14 @@ Usage
     python tools/register-query.py family <text>     rows whose system family matches
     python tools/register-query.py find <text>       rows matching anywhere
     python tools/register-query.py row <id>          one row in full
+    python tools/register-query.py traces            every trace code, with row counts
+    python tools/register-query.py trace <code>      rows bearing on one feature, eg RR-OUT
+
+The **trace** column is the one that answers the question the LAW asks -- *what applies to the
+thing I am about to build* -- because it names the Rimrooms feature each row bears on rather
+than the mod's own subject matter. It had no query until 0.12.20-dev, which made it the column
+that got skipped. Codes in use: RR-COMPAT, RR-STA, RR-FAC, RR-EXP, RR-THREAT, RR-OUT, RR-ECO,
+RR-DLC, RR-EVD, RR-MP, RR-UI, RR-GATE, RR-MSN, RR-STYLE, RR-SPACE, RR-SCEN.
 """
 
 import glob
@@ -98,6 +106,19 @@ def main(argv):
 
     command = argv[1].lower()
 
+    if command == "traces":
+        # The trace column names which Rimrooms feature a row bears on, and it is the column
+        # that answers the question the LAW actually asks: "what applies to the thing I am about
+        # to build". It had no query, so it was the column that got skipped.
+        counts = {}
+        for row in data:
+            for code in re.findall(r"RR-[A-Z]{2,14}", row["trace"]):
+                counts[code] = counts.get(code, 0) + 1
+        print("rows parsed: %d" % len(data))
+        for code in sorted(counts, key=lambda k: (-counts[k], k)):
+            print("  %-14s %d" % (code, counts[code]))
+        return 0
+
     if command == "families":
         counts = {}
         for row in data:
@@ -116,6 +137,12 @@ def main(argv):
 
     if command == "family":
         hits = [r for r in data if needle in r["family"].lower()]
+    elif command == "trace":
+        # Matched as a whole code, so RR-OUT never also returns RR-OUTPOST-style codes and a
+        # short code cannot quietly pull in a longer one it is a prefix of.
+        wanted = needle.strip().upper()
+        hits = [r for r in data
+                if wanted in re.findall(r"RR-[A-Z]{2,14}", r["trace"].upper())]
     elif command == "find":
         hits = [r for r in data
                 if any(needle in r[column].lower() for column in COLUMNS)]
