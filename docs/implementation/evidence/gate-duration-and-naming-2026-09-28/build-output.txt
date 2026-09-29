@@ -1,0 +1,15 @@
+Rimrooms - Async Industries 0.5.4-dev Release/net472 build.
+Zero warnings and zero errors with TreatWarningsAsErrors enabled.
+No game was launched, no test was run and no RimSort mod list was changed.
+
+  Determining projects to restore...
+  Restored C:\Users\gfour\Desktop\Backrooms\src\RimroomsAsyncIndustries\RimroomsAsyncIndustries.csproj (in 370 ms).
+  RimroomsAsyncIndustries -> C:\Users\gfour\Desktop\Backrooms\src\RimroomsAsyncIndustries\bin\Release\net472\RimroomsAsyncIndustries.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.37
+Built UnityLabAI.RimroomsAsyncIndustries 0.5.4-dev: C:\Users\gfour\Desktop\Backrooms\Mod\Rimrooms - Async Industries
+Package contains 76 approved files. No game was launched.

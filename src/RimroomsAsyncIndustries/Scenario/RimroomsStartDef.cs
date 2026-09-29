@@ -9,6 +9,8 @@ namespace RimroomsAsyncIndustries.Scenario
     {
         public string scenarioId;
         public int scenarioVersion = 1;
+        /// <summary>The name offered at setup. The player may replace it; every start can.</summary>
+        public string defaultCompanyName;
         public int mapSize = 60;
         public MapGeneratorDef mapGenerator;
         public TerrainDef outdoorTerrain;

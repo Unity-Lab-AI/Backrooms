@@ -115,3 +115,25 @@ This unified network belongs to a local company branch. The approved RimWorld To
 The native-provider checkpoint supplies physical door/control/power foundations. The [connected-colony implementation task](implementation/CONNECTED_COLONY_IMPLEMENTATION_TASK.md) now adds [independent saved graph and laboratory-session source](implementation/CONNECTED_NETWORK_IMPLEMENTATION.md). Historical expedition travel remains preserved; the new APIs still need player controls, automatic crossing and native work/needs adapters. They do **not** yet implement the unified colony behavior above. Complete the full job/path integration before marking portal travel or the full mod complete.
 
 Implementation agents must also read the [pinned Core work API](implementation/CONNECTED_WORK_CORE_API.md), [state migration review](implementation/CONNECTED_PORTAL_STATE_MIGRATION.md) and [profile integration boundaries](implementation/CONNECTED_WORK_PROFILE_BOUNDARIES.md). These distinguish actual source constraints from planned behavior and future runtime acceptance.
+
+
+## Laboratory opening duration, and why natural gates are exempt
+
+**Owner decision, 2026-09-28.** Implemented in 0.5.4-dev; record: [`implementation/GATE_DURATION_AND_COMPANY_NAMING.md`](implementation/GATE_DURATION_AND_COMPANY_NAMING.md).
+
+A laboratory opening lasts long enough to actually work through, and grows with advancement toward being held indefinitely:
+
+| Tier | Ticks | ≈ real time at normal speed |
+|---|---|---|
+| 0 — first opening | 108,000 | ~30 minutes |
+| 1 | 324,000 | ~90 minutes |
+| 2 | 972,000 | ~4.5 hours |
+| at or above the indefinite tier | no countdown | held while supported |
+
+Tier is the count of **completed** company projects named in the gate's `portalWindowTierProjects`. It is never spendable insight, because insight is consumed when committed and gating on it would make research reduce capability.
+
+"Indefinite" is not "free". A sustained opening still requires, every tick, power and headroom, the operator on station, and a successful energy debit; losing any of them enters emergency exactly as before. A sustained 3,500 W draw therefore needs real sustained generation behind it.
+
+**Natural connections are exempt from all of the above**, as they always were: `Availability` consults the gate window only for laboratory edges, and a natural connection has no machine, operator or energy draw. The starts that begin with only a natural gate are unaffected by any duration rule. This is load-bearing for those starts and must not change.
+
+The previously accepted 833-tick value is superseded for portal sessions and retained only for legacy expeditions.

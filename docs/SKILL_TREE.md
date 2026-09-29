@@ -1,6 +1,6 @@
 # SKILL_TREE
 
-Capability inventory for Rimrooms - Async Industries as of 0.5.3-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
+Capability inventory for Rimrooms - Async Industries as of 0.5.4-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
 
 | Status | Meaning |
 |--------|---------|
@@ -256,6 +256,8 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 | Cross-gate recovery of remains | Gate/Portals | Intermediate | **Build / Runtime-pending** (0.5.2-dev) |
 | Cross-gate construction supply | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.3-dev) |
 | Audited zero-hard-dependency position | Compatibility | Foundational | **Build / Verified** (0.5.3-dev) |
+| Laboratory gate duration ladder to indefinite | Gate/Portals | Advanced | **Build / Runtime-pending** (0.5.4-dev). Top of the ladder needs M3's research tree. |
+| Player-named company, renameable in play | Company | Foundational | **Build / Runtime-pending** (0.5.4-dev) |
 | Gradual bounded escalation of far-side pressure | Generation | Expert | **Design** (step 5, spec in `DEFERRED.md`) |
 | Existing-content replacement of legacy gate/gear/fixtures/terrain/threat/PawnKinds | Company/Gate/Generation | Advanced | Design (M2) |
 | Keyed text for portal failure keys | Interface | Beginner | **Build** (`RR_Portals.xml`, 0.4.2-dev) |

@@ -17,14 +17,43 @@ namespace RimroomsAsyncIndustries.Scenario
         private List<string> pawnIds = new List<string>();
         private List<string> roles = new List<string>();
         private List<string> supplySummary = new List<string>();
+        private string companyName;
         public bool Accepted { get { return accepted && schemaVersion == 1; } }
         public IReadOnlyList<string> SupplySummary { get { return supplySummary.AsReadOnly(); } }
+        public string CompanyName { get { return companyName; } }
 
         public RimroomsStartupComponent(Game game) { }
 
-        public void Accept(RimroomsStartDef start, IList<Pawn> pawns, IList<string> assignedRoles, List<string> supplies)
+        /// <summary>
+        /// The name offered at setup: the start's own suggestion, its label, or a neutral
+        /// fallback. Only a suggestion — every start may replace it.
+        /// </summary>
+        public static string SuggestedName(RimroomsStartDef start)
+        {
+            if (start == null) { return "RR_Company_UnnamedCompany".Translate().ToString(); }
+            if (!string.IsNullOrWhiteSpace(start.defaultCompanyName)) { return start.defaultCompanyName.Trim(); }
+            return string.IsNullOrWhiteSpace(start.label)
+                ? "RR_Company_UnnamedCompany".Translate().ToString() : start.label;
+        }
+
+        /// <summary>
+        /// Accept a typed name, or fall back to the suggestion. Never stores an empty or
+        /// over-long name, so the branch can always be referred to by something.
+        /// </summary>
+        private static string NormalizeName(string proposed, RimroomsStartDef start)
+        {
+            string trimmed = proposed == null ? null : proposed.Trim();
+            if (string.IsNullOrEmpty(trimmed) ||
+                trimmed.Length > RimroomsAsyncIndustries.Company.RimroomsCampaignComponent.MaximumCompanyNameLength)
+            { return SuggestedName(start); }
+            return trimmed;
+        }
+
+        public void Accept(RimroomsStartDef start, IList<Pawn> pawns, IList<string> assignedRoles,
+            List<string> supplies, string chosenCompanyName)
         {
             startDefName = start.defName;
+            companyName = NormalizeName(chosenCompanyName, start);
             selectedTile = Find.GameInitData.startingTile;
             selected = new List<Pawn>(pawns);
             pawnIds = selected.Select(p => p.GetUniqueLoadID()).ToList();
@@ -56,6 +85,7 @@ namespace RimroomsAsyncIndustries.Scenario
         {
             Scribe_Values.Look(ref schemaVersion, "rr_startupSchema", 1, true);
             Scribe_Values.Look(ref startDefName, "rr_setupStartDef");
+            Scribe_Values.Look(ref companyName, "rr_startupCompanyName");
             Scribe_Values.Look(ref accepted, "rr_setupAccepted");
             Scribe_Values.Look(ref selectedTile, "rr_setupTile", PlanetTile.Invalid);
             Scribe_Collections.Look(ref selected, "rr_setupPawns", LookMode.Reference);

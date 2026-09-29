@@ -26,6 +26,7 @@ namespace RimroomsAsyncIndustries.Company
     {
         public string ScenarioId;
         public int ScenarioVersion;
+        public string CompanyName;
         public int CampaignSeed;
         public Map Headquarters;
         public List<Pawn> Staff;

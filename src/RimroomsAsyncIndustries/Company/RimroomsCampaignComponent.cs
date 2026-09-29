@@ -9,13 +9,18 @@ namespace RimroomsAsyncIndustries.Company
     /// RR-SCEN / RR-ECO: one branch per save, activated only by a scenario initializer.
     /// The constructor is called for every game, including existing non-Rimrooms saves.
     /// </summary>
-    public sealed partial class RimroomsCampaignComponent : GameComponent
+    public sealed partial class RimroomsCampaignComponent : GameComponent, IRenameable
     {
         public const int CurrentSchemaVersion = 2;
         // Bounded record growth. Visited coordinates are never removed to make room.
         internal const int MaximumCoordinates = 512;
         private int schemaVersion = CurrentSchemaVersion;
         private string branchId;
+        /// <summary>
+        /// What the player calls this company. Every start can build a full company and
+        /// name it their own, so this is never derived from the scenario.
+        /// </summary>
+        private string companyName;
         private string scenarioId;
         private int scenarioVersion;
         private int campaignSeed;
@@ -46,6 +51,42 @@ namespace RimroomsAsyncIndustries.Company
 
         public int SchemaVersion { get { return schemaVersion; } }
         public string BranchId { get { return branchId; } }
+
+        /// <summary>The player's own name for this company, or a neutral fallback.</summary>
+        public string CompanyName
+        {
+            get
+            {
+                return string.IsNullOrWhiteSpace(companyName)
+                    ? "RR_Company_UnnamedCompany".Translate().ToString() : companyName;
+            }
+        }
+
+        // Core's own renaming interface, so the company renames through the same
+        // dialog everything else in the game renames through.
+        public string RenamableLabel
+        {
+            get { return CompanyName; }
+            set { TrySetCompanyName(value); }
+        }
+        public string BaseLabel { get { return CompanyName; } }
+        public string InspectLabel { get { return CompanyName; } }
+
+        /// <summary>
+        /// Normalise and accept a name. A blank or over-long entry leaves the existing
+        /// name alone rather than clearing it, so the field can never end up empty.
+        /// </summary>
+        internal bool TrySetCompanyName(string value)
+        {
+            if (value == null) { return false; }
+            string trimmed = value.Trim();
+            if (trimmed.Length < 1 || trimmed.Length > MaximumCompanyNameLength) { return false; }
+            companyName = trimmed;
+            return true;
+        }
+
+        /// <summary>Bounded so a saved name cannot grow without limit.</summary>
+        internal const int MaximumCompanyNameLength = 64;
         public string ScenarioId { get { return scenarioId; } }
         public bool HasBranch { get { return initializationComplete && !string.IsNullOrEmpty(branchId); } }
         public bool HasSupportedSchema { get { return schemaVersion == CurrentSchemaVersion; } }
@@ -70,6 +111,9 @@ namespace RimroomsAsyncIndustries.Company
             // Version 1 is the only historical missing-field default; always write a version.
             Scribe_Values.Look(ref schemaVersion, "rr_schemaVersion", 1, forceSave: true);
             Scribe_Values.Look(ref branchId, "rr_branchId");
+            // Additive; a save from before company naming loads with no name and
+            // falls back to the neutral label. No schema bump, so older saves load.
+            Scribe_Values.Look(ref companyName, "rr_companyName");
             Scribe_Values.Look(ref scenarioId, "rr_scenarioId");
             Scribe_Values.Look(ref scenarioVersion, "rr_scenarioVersion");
             Scribe_Values.Look(ref campaignSeed, "rr_campaignSeed");

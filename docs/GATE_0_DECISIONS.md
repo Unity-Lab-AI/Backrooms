@@ -158,3 +158,32 @@ These are execution work, not owner questions: the exact RimWorld/RWT/Harmony bu
 | S1 — supplemental content scope | B — freeze broad later threat/anomaly families; defer the five names in the roster to later content reviews. The names are not approved roadmap or release commitments. | 2026-09-28 | TODO, campaign roster, content catalog |
 
 **S1 detail:** the owner selected option B for the later threat roster. Freeze the broad threat/anomaly families only; treat the five named entries in `CAMPAIGN_ROSTER_FREEZE.md` as deferred sketches. Revisit a named threat for owner approval and complete its feature sheet before adding it to a later implementation scope. This does not alter the authored first-slice route distortion or hostile encounter.
+
+
+## Owner decisions — 2026-09-28 — gate duration, scenario parity, company identity
+
+Recorded verbatim, then their consequences. Implemented in 0.5.4-dev; record: [`implementation/GATE_DURATION_AND_COMPANY_NAMING.md`](implementation/GATE_DURATION_AND_COMPANY_NAMING.md).
+
+> on gate duration question you should have the first opening be like 30 minutes of real time not game time there has to be time to acually do shit and it only greatly increases from there once u can re call seeds and better tech and levels to being able to open it indefintality at higherr tech and research and staff and power supplies
+
+> but remember natural portals like in the not corporation secerio stay open indefinately as the player doesnt have a way to build a lab portal of their own yet
+
+> hold up every scerio gets the same tech tree to research so each scernioro will be able to build a full corporation if they want
+
+> and name it their own
+
+**Decided, and binding:**
+
+1. **Laboratory duration is a ladder, measured in real time at normal speed.** First opening 108,000 ticks ≈ 30 real minutes. Each earned tier multiplies it. The top of the ladder removes the countdown entirely. The previously accepted 833 ticks is superseded for portal sessions and retained only for legacy expeditions.
+2. **Indefinite means "while supported".** Power, operator and energy are still required every tick. This is the mechanism, not a description: running the energy supply dry ends a sustained opening exactly as cutting power does.
+3. **Duration advances on completed research, never on spendable insight.** Insight is a currency that is consumed; gating duration on it would have made advancement reduce capability.
+4. **Natural gates are permanently open and must stay so.** No timer, operator, power, mission or close command may ever apply to a natural connection. The non-corporation starts depend on this, because they begin with no way to build a laboratory gate.
+5. **One research tree for every scenario.** No research, project, duration or capability rule may be gated on scenario identity. Every start must be able to reach a self-built laboratory gate and a full company. M3's tree must be authored as a single tree available to all starts.
+6. **Every company is named by its player, on every start.** The scenario supplies a suggestion only. The name is saved on the branch and renameable at any time.
+
+**Also decided the same day, closing two Gate 0 questions:**
+
+7. **Inside start party:** configurable — solo or a small group, the player's choice.
+8. **Inside start first exit:** **the player chooses the destination settlement.** This supersedes the earlier provisional assumption of a fixed discovered destination.
+
+**Also directed:** continue building and defer the first in-game validation pass; build travel-to-work intents next.

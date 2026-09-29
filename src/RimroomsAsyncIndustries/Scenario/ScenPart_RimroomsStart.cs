@@ -86,6 +86,7 @@ namespace RimroomsAsyncIndustries.Scenario
             {
                 ScenarioId = startDef.scenarioId,
                 ScenarioVersion = startDef.scenarioVersion,
+                CompanyName = Verse.Current.Game.GetComponent<RimroomsStartupComponent>()?.CompanyName,
                 CampaignSeed = Find.World.info.Seed,
                 Headquarters = map,
                 Staff = new List<Pawn>(receipt.staff),

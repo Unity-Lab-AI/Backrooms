@@ -60,6 +60,9 @@ _All rows closed 2026-09-28. Three of them had in fact shipped in 0.4.2-dev and 
 
 ### Owned by M3 (Phase 3 breadth) — deferred by dependency, not by choice
 
+- [ ] **The remaining rungs of the laboratory duration ladder.** The mechanism ships in 0.5.4-dev and is data-driven, but `portalWindowTierProjects` currently names the single company project that exists, so the highest attainable tier is 1 (~90 real minutes) and the indefinite tier is **unreachable**. **Genuine dependency:** the T0–T6 research tree across nine branches has to exist before its rungs can be climbed. Appending its projects to the def list grows the ladder with no code change. Must be authored as **one tree available to every start**, per the owner's 2026-09-28 clarification. Source: `implementation/GATE_DURATION_AND_COMPANY_NAMING.md`.
+- [ ] **Inside-start scenario implementation now that both its questions are decided:** a configurable solo-or-small-group party, and a first exit where **the player chooses the destination settlement** rather than being shown a fixed one. The second is a change from the old provisional assumption, so the scenario must implement a choice, not a reveal.
+
 - [ ] Room functions, applicant pools, training/certification, wellbeing (needs the cross-map adapters to be meaningful across maps).
 - [ ] Contract/quest templates for the 13 mission families, leases, shipment incidents.
 - [ ] Research IDs across tiers T0–T6 and the nine branches; entity family sheets (broad families only per S1/B).
@@ -76,9 +79,8 @@ _All rows closed 2026-09-28. Three of them had in fact shipped in 0.4.2-dev and 
 
 ### Blocked on the owner — cannot be built by an agent
 
-- [!] **Inside start: configurable party versus strictly lone start.** Provisional assumption in use: configurable solo/group. Source: `SCENARIO_SETUP_AND_PORTAL_NETWORK.md`.
-- [!] **Inside start: first reliable exit reveals a fixed discovered surface destination, or the player chooses a settlement.** Provisional assumption: fixed discovered destination.
-- [!] **Opening duration.** The accepted value is 833 ticks ≈ 14 real seconds at normal speed; the previous agent asked whether 20 real minutes, two in-game hours, or 20 in-game minutes was meant, and recorded it as a usability/balance risk. Retained until directed otherwise.
+_The three rows that used to sit here — inside-start party size, inside-start first exit, and laboratory opening duration — were **answered by the owner on 2026-09-28** and are now implemented or recorded as decisions. See the Built section and [the record](implementation/GATE_DURATION_AND_COMPANY_NAMING.md)._
+
 - [!] **Every runtime acceptance row** across M1–M6 (Gate 2 onward). Needs the owner's RimSort launch of the 295-entry target. The agent never launches the game.
 
 ---
@@ -116,6 +118,15 @@ _Closed 2026-09-28 in 0.5.3-dev. Records: [`implementation/CONNECTED_CONSTRUCTIO
 
 - [x] **Construction supply across a gate** — real material carried to a real build site, into the frame's own resource container, through Core's own container and construct toils. Blueprints included, because Core's `Toils_Construct.MakeSolidThingFromBlueprintIfNecessary` turns one into a frame on first delivery; excluding them would have been an unnecessary scope cut.
 - [x] **Throwing def lookups** — four `GetNamed` calls that would throw when a def is absent now refuse gracefully. Zero remain. A def can go missing because of another mod or a load-order clash, and that must never reach the player as an exception.
+_Closed 2026-09-28 in 0.5.4-dev. Record: [`implementation/GATE_DURATION_AND_COMPANY_NAMING.md`](implementation/GATE_DURATION_AND_COMPANY_NAMING.md)._
+
+- [x] **Laboratory opening duration** — decided and implemented. The first opening is 108,000 ticks, about thirty real minutes at normal speed, replacing 833 ticks (about fourteen real seconds) which could not support one round trip and would have made every cross-gate work family unusable on a laboratory gate. Each earned tier multiplies by three; at the indefinite tier the countdown stops while power, operator and energy still hold every tick. Tier counts **completed projects**, never spendable insight, because gating on the currency would have meant spending research shrank the gate. Legacy expeditions keep the 833-tick window untouched.
+- [x] **Natural gates stay permanently open** — verified rather than changed. `Availability` consults the gate window only for laboratory edges, and a natural connection has no machine, operator or energy draw, so no part of the duration logic can reach it. The starts that begin with only a natural gate are unaffected.
+- [x] **One tech tree for every scenario** — satisfied by construction: the tier reads the branch's completed projects and never a scenario id, and the gate comp sits on Core doors every start has. Now a binding constraint: no research, project or duration rule may be gated on scenario identity.
+- [x] **Every company is named by its player** — there was no company name anywhere in the project. Added through setup on every start, saved on the branch, shown across Operations, and renameable any time through Core's own `Dialog_Rename`. Bounded at 64 characters; a blank entry is refused rather than clearing the name. The old fixed identity survives only as a suggested default.
+- [x] **Inside start: party size** — decided: configurable solo or small group, confirming the provisional assumption.
+- [x] **Inside start: first exit** — decided: **the player chooses the destination settlement**. This changes the old provisional assumption of a fixed discovered destination, so M3 must implement a choice.
+
 - [x] **The dependency position, audited rather than asserted** — every non-Rimrooms def the code looks up traced to base Core (twelve of them, no DLC, no mod); both XML patch files confirmed correctly guarded, including the one Core def that genuinely lacks a `<comps>` node; stack-size mod compatibility confirmed real because no stack size is hardcoded; modded-door support confirmed real because doors are matched by type. `About.xml` now states the audited position precisely.
 
 ---

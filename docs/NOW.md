@@ -22,7 +22,11 @@ M1 connected colony portals. The intent/lease engine and the **storage-hauling**
 
 0.5.3-dev closed **construction supply** — real material carried through a gate into a real build site, blueprints included — and audited the mod's dependency position: it requires nothing but base Core, now verified rather than asserted. The capability-matching method is recorded as binding and dissolves the M2 "Core has no X" content blockers.
 
-**Next:** **bills and unfinished work** — deliver selected ingredients to a real bill giver across a gate and let the original bill be executed locally, retaining the actual bill and unfinished-thing references. Then research, tending across a gate, food and rest, and the travel-to-work intent shape that construction *finishing* needs.
+0.5.4-dev implemented four owner decisions: the laboratory duration ladder (first opening ~30 real minutes, multiplying per completed project, indefinite at the top while still requiring power, operator and energy every tick), confirmation that natural gates stay permanently open and untouched, one tech tree for every scenario, and a **player-named company** renameable through Core's own dialog. The two inside-start questions open since Gate 0 are also decided.
+
+**Next, chosen by the owner:** **travel-to-work intents**, the new intent shape for work done at the far site with nothing carried. It completes construction *finishing* and unlocks every later "work over there" family. Then bills and unfinished work, research, tending across a gate, food and rest.
+
+Owner direction on validation: **keep building, launch later.** No QA pass is scheduled yet; runtime acceptance rows stay open.
 
 Steps 1–3 closed in 0.4.2-dev (addresses, legacy threshold repair, ordinary crossing job, session controls, emergency return, reconcile surface). The owner's gate traversal rule shipped in 0.4.3-dev on top of them: inhabitants and monstrosities stay in the Backrooms, enforced at one chokepoint. Record for both: `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`.
 

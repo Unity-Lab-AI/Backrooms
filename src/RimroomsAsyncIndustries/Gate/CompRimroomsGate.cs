@@ -12,7 +12,43 @@ namespace RimroomsAsyncIndustries.Gate
     public sealed class CompProperties_RimroomsGate : CompProperties
     {
         public bool nativeProvider;
+
+        /// <summary>
+        /// The historical expedition window. Unchanged, and deliberately so: legacy
+        /// expeditions still run on it and their behaviour is never altered. Portal
+        /// sessions do not use this value at all.
+        /// </summary>
         public int openingWindowTicks = 833;
+
+        /// <summary>
+        /// A first laboratory opening, in ticks. 108,000 ticks is about thirty real
+        /// minutes at normal speed, which is roughly 1.8 in-game days — long enough to
+        /// actually cross, find something, and carry it home several times over. The
+        /// value it replaces for portal sessions was 833 ticks, about fourteen real
+        /// seconds, which could not support a single round trip.
+        /// </summary>
+        public int portalBaseWindowTicks = 108000;
+
+        /// <summary>
+        /// How much longer each earned tier holds the connection open. Multiplicative,
+        /// so advancement increases duration sharply rather than incrementally.
+        /// </summary>
+        public float portalWindowMultiplierPerTier = 3f;
+
+        /// <summary>
+        /// The company projects that each raise the duration tier by one, in order.
+        /// This is content: as the research tree lands, its projects are appended here
+        /// and the ladder grows without a code change. Completion is what counts, not
+        /// spendable insight, so a tier can never be lost by spending currency.
+        /// </summary>
+        public List<string> portalWindowTierProjects = new List<string> { "RR_GateTelemetry" };
+
+        /// <summary>
+        /// The tier at which a supported opening stops counting down entirely. At and
+        /// above it the connection is held for as long as the machine is powered,
+        /// staffed and fed; losing any of those still ends it exactly as before.
+        /// </summary>
+        public int portalIndefiniteTier = 4;
         public int emergencyReturnWindowTicks = 300;
         public int stablePowerTicksRequired = 60;
         public float minimumPowerHeadroomWatts = 250f;
@@ -39,6 +75,11 @@ namespace RimroomsAsyncIndustries.Gate
             { yield return "RR_MachineGate must use a 3x3 footprint."; }
             if (openingWindowTicks <= 0 || emergencyReturnWindowTicks <= 0 || stablePowerTicksRequired < 0)
             { yield return "Rimrooms gate timing settings must be positive."; }
+            if (portalBaseWindowTicks <= 0 || portalIndefiniteTier < 0 ||
+                !PositiveFinite(portalWindowMultiplierPerTier) || portalWindowMultiplierPerTier < 1f ||
+                portalWindowTierProjects == null ||
+                portalWindowTierProjects.Any(name => string.IsNullOrWhiteSpace(name)))
+            { yield return "Rimrooms portal duration ladder must be positive, non-shrinking and fully named."; }
             if (!PositiveFinite(minimumPowerHeadroomWatts) || !PositiveFinite(idlePowerDrawWatts) ||
                 !PositiveFinite(openingPowerDrawWatts) || !PositiveFinite(reserveChargePowerWatts) ||
                 !PositiveFinite(returnReserveCapacityWattDays) || !PositiveFinite(emergencyReturnCostWattDays) ||
@@ -194,6 +235,18 @@ namespace RimroomsAsyncIndustries.Gate
             {
                 if (!HasPowerAndHeadroom()) { EnterEmergency("RR_Gate_PowerLost"); }
                 else if (!IsOperatorOnStation) { EnterEmergency("RR_Gate_OperatorLost"); }
+                else if (IsSustainedPortalSession)
+                {
+                    // Held, not counted down. The energy is still spent every tick, so
+                    // running the supply dry ends the session exactly as losing power
+                    // does — which is what makes "indefinite" mean "while supported"
+                    // rather than "free".
+                    if (IsNativeProvider && !SpendNativeOpeningTick())
+                    {
+                        EnterEmergency(HasNativeEnergyDebitFault
+                            ? "RR_NativeGate_EnergyDebitFault" : "RR_NativeGate_OpeningEnergyLow");
+                    }
+                }
                 else if (openingTicksRemaining > 0)
                 {
                     if (IsNativeProvider && !SpendNativeOpeningTick())
@@ -271,7 +324,8 @@ namespace RimroomsAsyncIndustries.Gate
                 if (NativeBindingFailureKey != null) { powerText += "\n" + NativeBindingFailureKey.Translate(); }
             }
             string active = IsOpening
-                ? "RR_Gate_OpeningReadout".Translate(DescribeWindow(openingTicksRemaining),
+                ? "RR_Gate_OpeningReadout".Translate(IsSustainedPortalSession
+                        ? "RR_Gate_WindowSustained".Translate().ToString() : DescribeWindow(openingTicksRemaining),
                     DescribeWindow(emergencyReturnTicksRemaining), string.IsNullOrEmpty(failureKey) ? "RR_Gate_NoFailure".Translate() : failureKey.Translate()).ToString()
                 : "";
             return string.Join("\n", new[] { status, operatorText, powerText, active }.Where(s => !string.IsNullOrEmpty(s)));

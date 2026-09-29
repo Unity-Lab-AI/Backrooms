@@ -5,6 +5,8 @@
     <defName>RR_AsyncIndustriesStart</defName>
     <label>Async Industries branch opening</label>
     <scenarioId>async_industries</scenarioId>
+    <!-- Only a suggestion. Every start renames its own company. -->
+    <defaultCompanyName>Async Industries</defaultCompanyName>
     <scenarioVersion>1</scenarioVersion>
     <mapSize>60</mapSize>
     <mapGenerator>RR_Headquarters</mapGenerator>

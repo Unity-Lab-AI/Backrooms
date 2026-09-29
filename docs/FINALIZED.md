@@ -615,3 +615,55 @@ Also open with real dependencies: bills and unfinished work, research, tending a
 Source files created: 2. Source files modified: 6. Package files modified: 4. Docs updated: 11.
 Deferments closed: 4 (construction supply; throwing def lookups; the audited dependency position; the corrected power claim). One content blocker dissolved (M2 legacy field gear). One row added with its design named rather than left vague (travel-to-work intents).
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+
+---
+
+## Session — 2026-09-28 — four owner decisions: gate duration ladder, scenario parity, company naming (0.5.4-dev)
+
+### Verbatim requests
+
+> sound good, track the goal of completing todo work and anything else needed to make this mod work as layed out and use ask me questions with muliple choice suggestions and wwrite in options where you need guidance or blocked or holes needed filled or any guildance needed.
+
+> on gate duration question you should have the first opening be like 30 minutes of real time not game time there has to be time to acually do shit and it only greatly increases from there once u can re call seeds and better tech and levels to being able to open it indefintality at higherr tech and research and staff and power supplies
+
+> but remember natural portals like in the not corporation secerio stay open indefinately as the player doesnt have a way to build a lab portal of their own yet
+
+> hold up every scerio gets the same tech tree to research so each scernioro will be able to build a full corporation if they want
+
+> and name it their own
+
+### COMPLETED
+
+- [x] **Asked rather than guessed.** Four multiple-choice questions on the genuinely open forks, including two rows `[!]` owner-blocked since Gate 0. All four answered.
+- [x] **Laboratory duration ladder.** The recorded window was 833 ticks, about fourteen real seconds at normal speed. A previous agent flagged it as unresolved; it was worse than a usability risk, because a colonist cannot cross, fetch, return and deliver in fourteen seconds, so every cross-gate work family shipped since 0.5.0-dev would have been unusable on a laboratory gate. Now 108,000 ticks for a first opening, about thirty real minutes at normal speed, multiplying by three per earned tier, with the countdown removed entirely at the indefinite tier.
+  - Tier counts **completed company projects**, never `researchInsights`. Insight is a spendable currency that `InvestigationServices` decrements on commit, so gating duration on it would have meant spending research shrank the gate. Completed projects only accumulate.
+  - "Indefinite" is enforced as "while supported" rather than asserted: the tick still requires power and headroom, the operator on station, and a successful energy debit, so running the supply dry ends a sustained opening exactly as cutting power does. A sustained 3,500 W draw needs real generation behind it, which makes "and staff and power supplies" mechanical rather than decorative.
+  - Legacy expeditions keep the 833-tick window byte-for-byte. Only portal sessions use the ladder.
+  - **Honest gap stated rather than buried:** only one company project exists, so the highest attainable tier is 1, about ninety real minutes, and the indefinite tier is currently unreachable. The ladder is data-driven, so M3's research tree grows it with no code change. Recorded with a named owner.
+- [x] **Natural gates confirmed exempt, verified rather than assumed.** `Availability` consults the gate window only for laboratory edges, and a natural connection has no machine, operator or energy draw. No change was needed and none was made, which is the right outcome for the starts that begin with only a natural gate.
+- [x] **One tech tree for every scenario**, satisfied by construction: the tier reads the branch's completed projects and never a scenario id, and the gate comp sits on Core doors every start has. Recorded as a binding constraint on M3's research tree.
+- [x] **Every company is named by its player.** There was no company name anywhere in the project. Added end to end: a suggestion on the start def, a field at setup on every start, carried through the setup receipt, saved on the branch, shown across Operations, and renameable at any time through Core's own `Verse.Dialog_Rename<T>` rather than a bespoke window. Bounded at 64 characters; a blank entry is refused rather than clearing the name. Async Industries survives only as the corporate start's suggested default.
+- [x] **Two Gate 0 questions closed.** Inside start party: configurable solo or small group, confirming the assumption in use. Inside start first exit: **the player chooses the destination settlement**, which changes the old provisional assumption of a fixed discovered destination, so M3 must implement a choice rather than a reveal.
+
+### Owner direction recorded
+
+Validation: **keep building, launch later.** No QA pass scheduled; runtime acceptance rows stay open. Next build: **travel-to-work intents**, completing construction finishing and unlocking every later work-done-over-there family.
+
+### Saved state
+
+`rr_companyName` on the campaign and `rr_startupCompanyName` on the setup receipt, both additive with no schema bump, so a 0.5.3-dev save loads unchanged and falls back to a neutral label until renamed. The duration ladder adds **no saved state at all**: it is computed from props and completed projects, so it cannot desync and an existing save picks up the new behaviour on load.
+
+### Documents updated in the same change
+
+`implementation/GATE_DURATION_AND_COMPANY_NAMING.md` (new record), `GATE_0_DECISIONS.md` (decision log, verbatim), `SCENARIO_SETUP_AND_PORTAL_NETWORK.md`, `CONNECTED_COLONY_PORTALS.md`, `DEFERRED.md`, `TODO.md`, `NOW.md`, `DECOMPOSED.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.5.4-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **94** C# source files, **76** approved package files. Assembly SHA-256 `FA88C94730F13AB09CD49F52C5C1A39236D640BADC2533C6D4DE51209A17F3F9`. Evidence folder `implementation/evidence/gate-duration-and-naming-2026-09-28/` with compiler output plus source, package and recomputed reference manifests, no drift. All 58 packaged XML files parse; every naming and gate key resolves. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Source files modified: 8. Package files modified: 6. Docs updated: 12.
+Owner-blocked rows resolved: 3 (opening duration, inside-start party, inside-start first exit). Deferments closed: 6. Rows added with a named dependency: 2 (the remaining ladder rungs; the inside-start scenario implementation).
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.

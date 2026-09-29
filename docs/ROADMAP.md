@@ -243,8 +243,8 @@ DONE        M1 step 1 → 2 → 3 (0.4.2-dev) · gate traversal rule (0.4.3-dev)
             the storage-hauling family (0.5.0-dev), each checkpointed and cascaded
 DONE        M1 step 4 families: storage hauling (0.5.0-dev), casualties and remains (0.5.2-dev),
             construction supply (0.5.3-dev). Dependency position audited: base Core only.
-NEXT        bills and unfinished work → research → tending across a gate → food → rest → the rest,
-            plus the travel-to-work intent shape that construction finishing needs
+NEXT        travel-to-work intents (owner-selected): completes construction finishing and unlocks
+            every later "work done over there" family → bills → research → tending → food → rest
 THEN        M1 step 5 providers/inhabitants · step 6 hygiene · M2 migration decision · M3 groups in order
 BLOCKED     every runtime row until the owner's first RimSort launch of the 295-entry target
 ```

@@ -13,6 +13,7 @@ namespace RimroomsAsyncIndustries.Scenario
         private Vector2 scroll;
         private float contentHeight = 1000f;
         private bool reviewed;
+        private string companyNameBuffer;
         public override string PageTitle { get { return "RR_Setup_Title".Translate(); } }
 
         public override void DoWindowContents(Rect rect)
@@ -37,6 +38,12 @@ namespace RimroomsAsyncIndustries.Scenario
             else
             {
                 SynchronizeRoles(start, pawns);
+                // Every start names its own company, so this is offered on every one.
+                if (companyNameBuffer == null)
+                { companyNameBuffer = RimroomsStartupComponent.SuggestedName(start); }
+                listing.Label("RR_Setup_CompanyName".Translate());
+                companyNameBuffer = Widgets.TextField(listing.GetRect(28f), companyNameBuffer);
+                listing.Gap(4f);
                 listing.Label("RR_Setup_Site".Translate(Find.GameInitData.startingTile.ToString(), start.mapSize));
                 listing.Label("RR_Setup_StaffCount".Translate(pawns.Count));
                 listing.Label("RR_Setup_Funding".Translate(start.initialFundingUsd.ToString("N0"),
@@ -114,7 +121,8 @@ namespace RimroomsAsyncIndustries.Scenario
             SynchronizeRoles(start, pawns);
             if (!reviewed) { Messages.Message("RR_Setup_NeedsReview".Translate(), MessageTypeDefOf.RejectInput, false); return false; }
             Current.Game.GetComponent<RimroomsStartupComponent>().Accept(start, pawns,
-                pawns.Select(p => selectedRoles[p]).ToList(), StartupReview.SupplySummary());
+                pawns.Select(p => selectedRoles[p]).ToList(), StartupReview.SupplySummary(),
+                companyNameBuffer);
             return base.CanDoNext();
         }
     }

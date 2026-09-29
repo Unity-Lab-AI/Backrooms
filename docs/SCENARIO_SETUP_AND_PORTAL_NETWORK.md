@@ -63,3 +63,13 @@ Acceptance remains owner-launched through RimSort: all three starts with native 
 - [Operations actions](OPERATIONS_ACTION_CONTRACTS.md), [saved state](CAMPAIGN_STATE_DICTIONARY.md), [master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
 - Prepare Carefully: [row 85 source review](research/reviews/mods/735106432-EdB.PrepareCarefully.md), package `EdB.PrepareCarefully`, Workshop `735106432`.
 - Stargates!: [row 218 source review](research/reviews/mods/2831698056-ccyt.stargatesmod.md), package `ccyt.stargatesmod`, Workshop `2831698056`. Use its gate/site mechanics as a source reference; no direct dependency or copied implementation is authorized by that comparison.
+
+
+## Owner decisions — 2026-09-28 — inside start, scenario parity, company naming
+
+The two inside-start questions this document carried as provisional assumptions are **decided**. Full decision log: [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md). Implementation record: [`implementation/GATE_DURATION_AND_COMPANY_NAMING.md`](implementation/GATE_DURATION_AND_COMPANY_NAMING.md).
+
+- **Party size: configurable.** The player chooses a solo start or a small group. This confirms the assumption already in use.
+- **First reliable exit: the player chooses the destination settlement.** This **changes** the previous provisional assumption, which was that the first exit reveals a fixed discovered surface destination. Scenario work must implement a choice, not a reveal.
+- **Every scenario shares one research tree and can build a full company**, including its own laboratory gate. No scenario-gated research, capability or duration rule is permitted. Until a start builds a laboratory gate it relies on permanently open natural gates, which are unaffected by any duration rule.
+- **Every start names its own company.** `RimroomsStartDef.defaultCompanyName` is a suggestion offered at setup; the player may replace it, and may rename the company at any time afterwards.

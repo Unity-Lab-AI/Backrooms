@@ -20,11 +20,75 @@ namespace RimroomsAsyncIndustries.Gate
         public bool HasPortalOwnerFault { get { return portalOwnerFault; } }
         private string CurrentOpeningId { get { return !string.IsNullOrEmpty(activeExpeditionId) ? activeExpeditionId : portalOpeningId; } }
 
+        /// <summary>
+        /// How far this branch has advanced the machine's ability to hold a connection.
+        /// Counted from *completed* company projects, never from spendable insight, so
+        /// a tier already earned cannot be lost by spending currency on the next one.
+        /// </summary>
+        public int PortalWindowTier
+        {
+            get
+            {
+                List<string> ladder = GateProps.portalWindowTierProjects;
+                RimroomsCampaignComponent campaign = Current.Game == null
+                    ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+                if (ladder == null || campaign == null || !campaign.CanOperate) { return 0; }
+                int tier = 0;
+                for (int index = 0; index < ladder.Count; index++)
+                {
+                    string project = ladder[index];
+                    if (campaign.Projects.Any(record => record != null && record.Completed &&
+                        record.ResearchDefName == project))
+                    { tier++; }
+                }
+                return tier;
+            }
+        }
+
+        /// <summary>
+        /// Whether a supported opening now holds without a countdown. Reached by
+        /// advancement only; the physical requirements still apply every tick, so
+        /// "indefinite" means "for as long as it is powered, staffed and fed".
+        /// </summary>
+        public bool PortalOpeningIsIndefinite
+        { get { return PortalWindowTier >= GateProps.portalIndefiniteTier; } }
+
+        /// <summary>How long a laboratory opening lasts at the current tier, in ticks.</summary>
+        public int PortalWindowTicksForTier
+        {
+            get
+            {
+                double ticks = GateProps.portalBaseWindowTicks;
+                int tier = PortalWindowTier;
+                for (int step = 0; step < tier; step++)
+                {
+                    ticks *= GateProps.portalWindowMultiplierPerTier;
+                    if (ticks >= int.MaxValue) { return int.MaxValue; }
+                }
+                return (int)Math.Min(ticks, int.MaxValue);
+            }
+        }
+
+        /// <summary>
+        /// A live portal session that is held rather than counted down. Legacy
+        /// expeditions are never this, and neither is a natural connection, which has
+        /// no machine, no operator and no timer of any kind.
+        /// </summary>
+        public bool IsSustainedPortalSession
+        {
+            get
+            {
+                return string.IsNullOrEmpty(activeExpeditionId) && !string.IsNullOrEmpty(portalOpeningId) &&
+                    PortalOpeningIsIndefinite;
+            }
+        }
+
         public bool HasUsablePortalWindow(string connectionId, string openingId)
         {
             return !portalOwnerFault && !string.IsNullOrEmpty(portalOpeningId) &&
                 portalConnectionId == connectionId && portalOpeningId == openingId &&
-                string.IsNullOrEmpty(activeExpeditionId) && !IsEmergency && openingTicksRemaining > 0 &&
+                string.IsNullOrEmpty(activeExpeditionId) && !IsEmergency &&
+                (openingTicksRemaining > 0 || PortalOpeningIsIndefinite) &&
                 IsNativeProvider && CheckStationReadiness(assignedOperator).Success &&
                 NativeStoredEnergy >= GateProps.openingPowerDrawWatts * CompPower.WattsToWattDaysPerTick;
         }
@@ -82,7 +146,9 @@ namespace RimroomsAsyncIndustries.Gate
             portalConnectionId = connectionId;
             portalOpeningId = nextId;
             nativeOpeningSequence++;
-            openingTicksRemaining = GateProps.openingWindowTicks;
+            // A portal session runs on the duration ladder, not the historical
+            // expedition window. At the top of the ladder there is no countdown at all.
+            openingTicksRemaining = PortalOpeningIsIndefinite ? 0 : PortalWindowTicksForTier;
             emergencyReturnTicksRemaining = 0;
             emergencyReturnSpent = false;
             ResetOpeningWarnings();
@@ -137,7 +203,7 @@ namespace RimroomsAsyncIndustries.Gate
             { return CompanyActionResult.Refused("RR_NativeGate_RecoveryEnergyLow"); }
             portalRecoveryReceipts.Add(new PortalOpeningRecoveryReceipt(recoveryOperationId, portalOpeningId));
             nativeOpeningSequence++;
-            openingTicksRemaining = GateProps.openingWindowTicks;
+            openingTicksRemaining = PortalOpeningIsIndefinite ? 0 : PortalWindowTicksForTier;
             emergencyReturnTicksRemaining = 0;
             emergencyReturnSpent = false;
             ResetOpeningWarnings();

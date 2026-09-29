@@ -101,6 +101,11 @@ namespace RimroomsAsyncIndustries.UI
 
         private void DrawCompany(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
+            // The company's own name, on every pane. Every start builds a company and
+            // names it their own, so this is identity rather than decoration.
+            listing.Label("RR_Company_NameHeading".Translate(campaign.CompanyName));
+            if (listing.ButtonText("RR_Company_RenameButton".Translate()))
+            { Find.WindowStack.Add(new Dialog_RenameCompany(campaign)); }
             listing.Label("RR_Company_Balance".Translate(Money(campaign.BalanceUsd)));
             listing.GapLine();
             switch (selectedPane)

@@ -252,6 +252,20 @@ Decomposed 2026-09-28. This is the step that makes the substrate reachable in pl
 - [x] **Slice 7 — record the capability-matching method and correct the register.** Files: `implementation/DEPENDENCIES_AND_CAPABILITY_MATCHING.md` (new), `DEFERRED.md`. Verification: Core generator outputs extracted from `Buildings_Power.xml`; each M2 legacy object given a capability-based Core answer.
 - [x] **Slice 8 — checkpoint.** Files: `About.xml`, csproj, `CHANGELOG.md`, the construction record, the evidence folder, and the workflow ledger.
 
+### Parent minor task: Owner decisions round — CLOSED 2026-09-28 (0.5.4-dev) — duration ladder, scenario parity, company naming
+
+> sound good, track the goal of completing todo work and anything else needed to make this mod work as layed out and use ask me questions with muliple choice suggestions and wwrite in options where you need guidance or blocked or holes needed filled or any guildance needed.
+
+**Decomposition rationale:** the open forks were asked before building, because the duration answer determined whether the three work families already shipped were usable at all.
+
+- [x] **Slice 1 — ask, with options and trade-offs.** Four questions: gate duration, validation timing, next build, inside start. All answered, including two rows owner-blocked since Gate 0.
+- [x] **Slice 2 — verify the natural-gate exemption before touching any timer.** Verification: the window is consulted only for laboratory edges; a natural connection has no machine, operator or energy draw. No change needed.
+- [x] **Slice 3 — pick a tier driver that cannot go backwards.** Verification: `researchInsights` is decremented on commit, so it was rejected in favour of completed projects.
+- [x] **Slice 4 — the ladder.** Files: `Gate/CompRimroomsGate.cs` (props, config errors, tick, readout), `Gate/PortalGateOpening.cs` (tier, indefinite, ticks-for-tier, both session starts). Verification: legacy window untouched; sustained sessions still spend energy every tick.
+- [x] **Slice 5 — company naming, end to end.** Files: `Scenario/RimroomsStartDef.cs`, `Scenario/RimroomsStartupComponent.cs`, `Scenario/Page_RimroomsCompanySetup.cs`, `Scenario/ScenPart_RimroomsStart.cs`, `Company/CompanyActionResult.cs`, `Company/RimroomsCampaignComponent.cs`, `Company/CampaignServices.cs`, `UI/Dialog_RenameCompany.cs` (new), `UI/MainTabWindow_Operations.cs`, `Defs/RimroomsStartDefs/RR_Starts.xml`. Verification: renames through Core's own dialog; blank and over-long names refused; additive save keys only.
+- [x] **Slice 6 — record the decisions where decisions live.** Files: `GATE_0_DECISIONS.md`, `SCENARIO_SETUP_AND_PORTAL_NETWORK.md`, `CONNECTED_COLONY_PORTALS.md`, `DEFERRED.md`. Verification: three owner-blocked rows resolved; the unreachable top of the ladder recorded as a content gap with a named owner rather than left implied.
+- [x] **Slice 7 — checkpoint.** Files: `About.xml`, csproj, `CHANGELOG.md`, the record, the evidence folder, the ledger.
+
 ## TOMBSTONES
 
 _(none)_

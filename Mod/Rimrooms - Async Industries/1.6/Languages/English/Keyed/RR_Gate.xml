@@ -66,4 +66,5 @@
   <RR_Event_GateEmergencyReturnPaid>Emergency return has committed {0} watt-days from the machine's reserve.</RR_Event_GateEmergencyReturnPaid>
   <RR_Event_GateRecoveryOpeningStarted>The recovery opening has started, spending {0} watt-days from the machine's reserve.</RR_Event_GateRecoveryOpeningStarted>
   <RR_Gate_TimeCostWindowExhausted>The recorded route distortion consumed the remaining normal opening. Use the emergency return while it remains available.</RR_Gate_TimeCostWindowExhausted>
+  <RR_Gate_WindowSustained>held while powered and staffed</RR_Gate_WindowSustained>
 </LanguageData>

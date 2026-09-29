@@ -58,4 +58,9 @@
   <RR_UI_ActivityRow>Day {0}: {1}</RR_UI_ActivityRow>
   <RR_Debug_RuntimeIdentity>Write build, loaded order and coordinate identity to Player.log</RR_Debug_RuntimeIdentity>
   <RR_UI_Procurement>Procurement</RR_UI_Procurement>
+  <RR_Company_UnnamedCompany>this company</RR_Company_UnnamedCompany>
+  <RR_Company_InvalidName>That name cannot be used. Enter between 1 and 64 characters.</RR_Company_InvalidName>
+  <RR_Company_NameHeading>Company: {0}</RR_Company_NameHeading>
+  <RR_Company_RenameButton>Rename company</RR_Company_RenameButton>
+  <RR_Event_CompanyRenamed>The company is now called {0}.</RR_Event_CompanyRenamed>
 </LanguageData>

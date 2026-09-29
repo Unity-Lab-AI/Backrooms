@@ -17,6 +17,9 @@ namespace RimroomsAsyncIndustries.Company
                 return CompanyActionResult.Refused("RR_Company_InvalidStart");
             }
             string receipt = request.ScenarioId + ":v" + request.ScenarioVersion;
+            // Accepted before anything else is committed, and never fatal: a rejected
+            // name simply leaves the company unnamed until the player renames it.
+            TrySetCompanyName(request.CompanyName);
             if (HasBranch)
             {
                 return initializationReceipt == receipt && headquarters == request.Headquarters
@@ -136,6 +139,29 @@ namespace RimroomsAsyncIndustries.Company
             }
             coordinate = created;
             RecordEvent("RR_Event_CoordinateDiscovered", id, discoveryId);
+            return CompanyActionResult.Applied();
+        }
+
+        /// <summary>
+        /// Record that the company was renamed. Called after the game's own rename dialog
+        /// has already applied the new name through the renameable setter.
+        /// </summary>
+        internal void NoteRenamed()
+        {
+            if (!CanOperate) { return; }
+            RecordEvent("RR_Event_CompanyRenamed", branchId, CompanyName);
+        }
+
+        /// <summary>
+        /// Rename the company. Available at any time and to every start, because every
+        /// start can build a full company of its own.
+        /// </summary>
+        public CompanyActionResult RenameCompany(string proposed)
+        {
+            if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
+            if (proposed != null && proposed.Trim() == CompanyName) { return CompanyActionResult.Existing(); }
+            if (!TrySetCompanyName(proposed)) { return CompanyActionResult.Refused("RR_Company_InvalidName"); }
+            RecordEvent("RR_Event_CompanyRenamed", branchId, CompanyName);
             return CompanyActionResult.Applied();
         }
 
