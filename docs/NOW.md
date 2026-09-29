@@ -24,7 +24,7 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.10.4-dev**, commit `a6ea7e1` |
+| Published | **0.10.4-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **159 C# files, 79 package files**, zero warnings, zero errors |
 | Assembly | SHA-256 `67A5A5AB31865F9877932B69F77E38AA8EBE8DAC97A0CFF7E41DDBAB571455FB`, reproduced by two clean recompiles |
