@@ -7,7 +7,7 @@
   <RR_Bond_InvalidDenomination>That is not a company bond denomination.</RR_Bond_InvalidDenomination>
   <RR_Bond_InvalidAmount>Enter an amount to withdraw.</RR_Bond_InvalidAmount>
   <RR_Bond_Unfunded>The company account does not hold that much.</RR_Bond_Unfunded>
-  <RR_Bond_BelowSmallest>That is less than the smallest bond denomination.</RR_Bond_BelowSmallest>
+  <RR_Bond_BelowSmallest>Below the smallest bond denomination</RR_Bond_BelowSmallest>
   <RR_Bond_NoMap>No map to place bonds on.</RR_Bond_NoMap>
   <RR_Bond_NoneInRange>No company bonds are within the beacon's range.</RR_Bond_NoneInRange>
   <RR_CreditBeacon_Designate>Credit beacon</RR_CreditBeacon_Designate>

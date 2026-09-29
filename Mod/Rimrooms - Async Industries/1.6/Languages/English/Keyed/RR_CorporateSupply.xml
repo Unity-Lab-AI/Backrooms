@@ -7,7 +7,7 @@
   <RR_Supply_NoMap>There is no map to deliver to.</RR_Supply_NoMap>
   <RR_Supply_Catalogue>Corporate catalogue</RR_Supply_Catalogue>
   <RR_Supply_CatalogueDesc>Review the parent corporation's catalogue tiers and open the ones your branch qualifies for. Each tier needs its research, its company work, and an access fee in credits.</RR_Supply_CatalogueDesc>
-  <RR_Supply_NoTiers>No catalogue tiers are defined.</RR_Supply_NoTiers>
+  <RR_Supply_NoTiers>No catalogue tiers open</RR_Supply_NoTiers>
   <RR_Supply_TierOpen>{0}: open</RR_Supply_TierOpen>
   <RR_Supply_TierResearch>{0}: locked - requires research ({1})</RR_Supply_TierResearch>
   <RR_Supply_TierContract>{0}: locked - the corporation wants completed company work first</RR_Supply_TierContract>

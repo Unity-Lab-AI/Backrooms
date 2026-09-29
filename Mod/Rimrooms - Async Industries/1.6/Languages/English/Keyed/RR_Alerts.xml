@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- The alerts readout. Written to Core's own measured shape for this surface: a label is a
+       short noun phrase with no full stop (Core puts one on 14% of them, median length 21),
+       and an explanation is prose that ends a sentence (Core, 70%, median length 141). -->
+
+  <RR_Alert_RecoveryOverdue>Recovery overdue</RR_Alert_RecoveryOverdue>
+  <RR_Alert_RecoveryOverdueDesc>The return window on a connection has run out with your people still on the far side. They cannot walk home on their own. Bring the gate back up and send a recovery run for them.</RR_Alert_RecoveryOverdueDesc>
+
+  <RR_Alert_ReturnWindowClosing>Return window closing</RR_Alert_ReturnWindowClosing>
+  <RR_Alert_ReturnWindowClosingDesc>A connection has failed while it was open. The emergency return window is still running, and everyone on the far side should be moving toward the threshold now. When it runs out they stay where they are.</RR_Alert_ReturnWindowClosingDesc>
+
+  <RR_Alert_NoGateOperator>No gate operator</RR_Alert_NoGateOperator>
+  <RR_Alert_NoGateOperatorDesc>A gate is finished and nobody is assigned to run one. A connection cannot be brought up without an operator on station. Assign one from the gate's own controls.</RR_Alert_NoGateOperatorDesc>
+
+</LanguageData>

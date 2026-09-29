@@ -60,11 +60,11 @@
   <RR_Gate_TimeCostWindowExhausted>The recorded route distortion consumed the remaining normal opening. Use the emergency return while it remains available.</RR_Gate_TimeCostWindowExhausted>
   <RR_Gate_WindowSustained>held while powered and staffed</RR_Gate_WindowSustained>
   <RR_Gate_KillSwitchLabel>Set emergency cutoff</RR_Gate_KillSwitchLabel>
-  <RR_Gate_KillSwitchDesc>Choose a power switch on this gate's own circuit as its emergency cutoff. Throwing that switch ends an opening at once and names itself as the cause. Only a switch that actually carries this gate's power can be chosen.</RR_Gate_KillSwitchDesc>
+  <RR_Gate_KillSwitchDesc>Choose a power switch on this gate's own circuit as its emergency cutoff. Throwing that switch ends an opening at once and names itself as the cause. Only a switch that actually carries this gate's power can be chosen. If there is none, wire one into the line that feeds the gate and turn it on.</RR_Gate_KillSwitchDesc>
   <RR_Gate_KillSwitchNone>Emergency cutoff: none set.</RR_Gate_KillSwitchNone>
   <RR_Gate_KillSwitchArmed>Emergency cutoff: {0}, closed and carrying power.</RR_Gate_KillSwitchArmed>
   <RR_Gate_KillSwitchThrown>Emergency cutoff: {0} is OPEN. The gate has no supply.</RR_Gate_KillSwitchThrown>
-  <RR_Gate_NoKillSwitchCandidates>No power switch on this gate's circuit. Wire one into the line that feeds the gate and turn it on.</RR_Gate_NoKillSwitchCandidates>
+  <RR_Gate_NoKillSwitchCandidates>No power switch on this gate's circuit</RR_Gate_NoKillSwitchCandidates>
   <RR_Gate_ClearKillSwitch>Clear emergency cutoff</RR_Gate_ClearKillSwitch>
   <RR_NativeGate_KillSwitchThrown>The emergency cutoff was thrown.</RR_NativeGate_KillSwitchThrown>
   <RR_NativeGate_UnsupportedSwitch>That is not a power switch.</RR_NativeGate_UnsupportedSwitch>

@@ -195,6 +195,22 @@ Owner's words: *"things will have to be deployed and settled before doing the pr
 
 - [x] **The owner was right, measured rather than argued. BUILT 0.10.1-dev.** An audit found **three of seventeen** directions from this session archived without ever reaching this queue, and the rule written to stop it recurring found **seven more** from earlier. All ten are now recorded verbatim above. `check-doc-conformance.py` now fails the build if a direction quoted in `FINALIZED.md` does not appear here - it caught this very entry when it was first written, which is the rule doing its job on its own first use.
 
+
+**Verbatim owner direction (2026-09-29):** *"read now.md to continue the work completing the mod, and also real quick did we finish up that doc regress work and the later stuff i said about cleaning up text walls for everything making them a pleasure to read, lets make sure the docs and informations displays in game are proper to backrrooms universe and rimworld gameplay style of all displayed informations of varying types to include all."*
+
+Four items, one per task, as the law requires.
+
+- [ ] **"did we finish up that doc regress work"** - **partly. Answered with a measurement rather than a claim.** `check-doc-conformance.py` shipped in 0.10.0-dev and closed twenty-eight stale claims across ten living documents, and it passes. But its rule set is five rules wide: version claim, stale branch, retired def, checker count, DEFERRED-not-closed, plus LAW #0 quote reachability. It does **not** check the gate vocabulary in documents, and it does not check readability. A sweep on 2026-09-29 found **309 occurrences of the retired word across 34 living documents**, and `FEATURE_TRACEABILITY.md` still describes the mod in the vocabulary that 0.10.2-dev retired from the game. So: the checker is real and the drift it covers is closed; the drift it does not cover is open and is now written down here rather than left to be discovered again.
+- [ ] **"the later stuff i said about cleaning up text walls for everything making them a pleasure to read"** - **partly.** `About.xml` was un-walled, `check-info-cards.py` gained the 420-character rule over **every** string the game displays and it passes, and `tools/make-readable-html.py` renders seven documents to standalone styled HTML. What was never done is the documents themselves: **twenty living documents carry prose lines past 400 characters**, `FINALIZED.md` has ninety-four of them. In-game text is clean; the documents a human sits down and reads are not.
+- [ ] **"lets make sure the docs ... are proper to backrrooms universe and rimworld gameplay style"** - the document half of the direction above: the gate vocabulary and the readability rule leave the game and reach the living documents, enforced rather than swept once.
+- [x] **"informations displays in game are proper to backrrooms universe and rimworld gameplay style of all displayed informations of varying types to include all"** - **BUILT 0.10.5-dev.** - **the surfaces, measured against RimWorld's own practice, one by one.** RimWorld does not have one voice for displayed text; it has a different convention per surface, and Core's own keyed files are organised by surface (`Alerts.xml`, `Letters.xml`, `Messages.xml`, `FloatMenu.xml`, `GameplayCommands.xml`) where ours are organised by system. *"to include all"* is the load-bearing phrase: the audit has to enumerate the surfaces and name the ones we use **zero** of.
+  - Seventh checker `tools/check-display-style.py`: classifies each key by the **call site** that displays it, holds each surface to Core's measured envelope, and prints a **census of every surface including the ones at zero**.
+  - Six strings were written in the wrong register and were rewritten; the kill-switch row's instruction moved to the tooltip that exists for instructions.
+  - The census found the **alerts readout empty**. Three alerts added - recovery overdue, return window closing, no gate operator - with no def, no asset and no Harmony.
+  - Register row 146 changed the design: its review warns about alert-check cost, so the three alerts share one cached building sweep per game tick.
+  - Record: `implementation/DISPLAY_SURFACE_IMPLEMENTATION.md`.
+
+
 ## Owner directions recorded late, second pass
 
 `check-doc-conformance.py` gained a rule on 2026-09-29 requiring that every owner direction

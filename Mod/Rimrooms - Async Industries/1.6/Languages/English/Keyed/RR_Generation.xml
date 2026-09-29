@@ -36,7 +36,7 @@
   <RR_Generation_InvalidSalvageDef>A salvage item cannot be safely packed with the installed definitions.</RR_Generation_InvalidSalvageDef>
   <RR_Generation_ContentPlacementFailed>Room content placement stopped; the existing site is retained.</RR_Generation_ContentPlacementFailed>
   <RR_Generation_InvalidDoorDef>The installed door definition cannot provide the required native room access.</RR_Generation_InvalidDoorDef>
-  <RR_Generation_GateAccessOnly>Enter this coordinate through the gate.</RR_Generation_GateAccessOnly>
+  <RR_Generation_GateAccessOnly>Reachable only through a gate</RR_Generation_GateAccessOnly>
   <RR_Clue_Label_threshold_room>Validated threshold — room {0}</RR_Clue_Label_threshold_room>
   <RR_Clue_Text_threshold_room>Two waiting stools face a route that has no ordinary exterior. Use the return anchor for extraction; reaching this room alone does not send cargo home.</RR_Clue_Text_threshold_room>
   <RR_Clue_Label_survey_lobby>Survey station — room {0}</RR_Clue_Label_survey_lobby>

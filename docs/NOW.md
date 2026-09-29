@@ -24,11 +24,11 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.10.4-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.10.5-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **159 C# files, 79 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `67A5A5AB31865F9877932B69F77E38AA8EBE8DAC97A0CFF7E41DDBAB571455FB`, reproduced by two clean recompiles |
-| Checkers | **six**, all passing |
+| Build | **160 C# files, 80 package files**, zero warnings, zero errors |
+| Assembly | SHA-256 `6D3F664B555446452D1A17F808A9C4225994A0D9B8160DD79C295F5708F950AE`, reproduced by two clean recompiles |
+| Checkers | **seven**, all passing |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
 | Game launches | **none, ever** |
@@ -41,7 +41,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.10.4
+## What shipped this session, 0.7.1 → 0.10.5
 
 | Version | What |
 |---|---|
@@ -65,6 +65,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.10.2 | **One set of words** — gate / connection / threshold, enforced |
 | 0.10.3 | **Something is not where you left it** — silent between-visit displacement |
 | 0.10.4 | **The register checked backwards** — a LAW, a query tool, a real defect; plus a readable description |
+| 0.10.5 | **Every surface the game speaks through** — a seventh checker measured against Core per display surface, and the alerts readout, which this mod used none of |
 
 ---
 
@@ -176,6 +177,11 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 79. **Chromium blocks XSLT from `file://`** — a stylesheet on About.xml gives a **blank page**, not a styled one.
 80. **RimWorld renders newlines, so a wall of text is a choice.** Fails past 420 chars with no break.
 81. **Do not quote a banned string verbatim in a living document** — it trips the rule that bans it. Rephrase.
+82. **RimWorld has a different convention per display surface, not one voice.** A float menu row ends with a full stop 7% of the time in Core; an explanatory tooltip does 93% of the time. Writing either in the other's register is the mistake.
+83. **Measure a surface, never a file.** The first run of `check-display-style.py` reported seven faults that were not faults, every one from sampling `Letters.xml` or `GameplayCommands.xml` alone when the surface spans several files. The baselines were corrected, not the text.
+84. **A census counts the zeroes.** *"to include all"* is only actionable if the report names the surfaces the mod uses **none** of. That is how the alerts readout was found unused. A zero is a question, not a failure.
+85. **A count printed with no rule behind it says so.** The inspect pane is counted and not ruled on, because Core builds inspect lines from strings scattered across its keyed files and there is no clean population to measure. A stated limit is not a forgotten one.
+86. **Cache an alert scan on the tick AND the game object.** Core calls `GetReport` on a rotating one-in-twenty-four schedule. Keying a cache on the tick alone hands a second save loaded at the same tick the first save's despawned components.
 
 ---
 
@@ -216,7 +222,7 @@ Proved twice more this session. A placeholder rule contained a **literal backspa
 4. `CHANGELOG.md` in plain player-facing language.
 5. Implementation record under `docs/implementation/`.
 6. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
-7. **All six checkers**: `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-doc-conformance.py`, `research/audit-gate0.py`.
+7. **Every checker**: `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-display-style.py`, `check-doc-conformance.py`, `research/audit-gate0.py`. There are seven.
 8. **Determinism**: delete `obj/` and `bin/`, rebuild **twice**, hashes must match.
 9. Commit once atomically; cascade to `Prep`, `Develop`, `Main` on **both** remotes; **read back all eight refs**.
 
