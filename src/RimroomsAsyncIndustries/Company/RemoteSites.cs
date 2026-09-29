@@ -223,6 +223,61 @@ namespace RimroomsAsyncIndustries.Company
             return false;
         }
 
+        /// <summary>
+        /// Whether anybody the branch employs is actually standing at this place.
+        ///
+        /// **Arc 5: *"remote sites need people"*.** A site with nobody at it is a line on a
+        /// ledger, and the consequence is that a shipment bound for it **waits** — a supplier
+        /// does not unload into an empty field with nobody to sign for it.
+        ///
+        /// **Employed, alive, and present.** Not downed: somebody unconscious on the floor cannot
+        /// take delivery of anything, and pretending otherwise would make the rule a formality.
+        /// A prisoner or a slave is not staff and never counted.
+        ///
+        /// Checked live. A site is staffed when people are there and unstaffed the moment they
+        /// leave, which is the honest reading of *"needs people"* and needs no assignment to
+        /// maintain, no record to go stale and nothing for the player to remember to update.
+        /// </summary>
+        public bool IsSiteStaffed(Map map)
+        {
+            if (map == null) { return false; }
+            for (int index = 0; index < staff.Count; index++)
+            {
+                StaffRecord member = staff[index];
+                if (member == null || !member.employed) { continue; }
+                Pawn pawn = member.pawn;
+                if (pawn == null || pawn.Dead || pawn.Destroyed || !pawn.Spawned) { continue; }
+                if (pawn.Map != map || pawn.Downed) { continue; }
+                if (pawn.IsPrisoner || pawn.IsSlave) { continue; }
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Whether a shipment may actually be unloaded here **now**.
+        ///
+        /// Distinct from <see cref="CanReceiveDeliveryAt"/> on purpose, and the split is the whole
+        /// design of this piece:
+        ///
+        /// * **The address** is acceptable if the place is on the books. A player may order ahead
+        ///   while the crew is still walking there, which is what anybody would actually do.
+        /// * **The arrival** needs somebody present. The shipment waits, the cargo stays held and
+        ///   the payment stays recorded — nothing is lost and the fix is obvious.
+        ///
+        /// Gating the order instead would have punished planning, and gating nothing would have
+        /// made *"remote sites need people"* a sentence in a document.
+        ///
+        /// **The headquarters is never held to this.** A branch with nobody alive at home has a
+        /// bigger problem, and the clean-up team already owns it.
+        /// </summary>
+        public bool CanUnloadAt(Map map)
+        {
+            if (!CanReceiveDeliveryAt(map)) { return false; }
+            if (map == headquarters) { return true; }
+            return IsSiteStaffed(map);
+        }
+
         /// <summary>Somewhere a shipment may be sent, for a menu. Headquarters first.</summary>
         public List<Map> DeliveryDestinations()
         {

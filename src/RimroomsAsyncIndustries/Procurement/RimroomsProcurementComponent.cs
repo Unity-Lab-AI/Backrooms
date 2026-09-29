@@ -676,6 +676,14 @@ namespace RimroomsAsyncIndustries.Procurement
             // payment is already recorded.
             if (!Find.Maps.Contains(order.receivingMap))
             { SetAwaiting(order, "RR_Proc_ReceivingMapUnavailable", now); return 0; }
+            // Arc 5: *"remote sites need people"*. A supplier does not unload into an empty field
+            // with nobody to sign for it, so the shipment WAITS rather than failing -- the cargo
+            // is held, the payment is recorded, and it lands as soon as somebody is there.
+            //
+            // Checked at arrival and not at ordering, deliberately: a player should be able to
+            // order ahead while the crew is still walking there.
+            if (!campaign.CanUnloadAt(order.receivingMap))
+            { SetAwaiting(order, "RR_Proc_SiteUnstaffed", now); return 0; }
 
             int newLimit = CurrentStackLimit(itemDef);
             long projectedOrderStacks;

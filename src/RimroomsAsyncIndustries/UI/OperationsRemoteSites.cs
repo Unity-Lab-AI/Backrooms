@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Generation;
 using RimWorld;
@@ -40,9 +40,14 @@ namespace RimroomsAsyncIndustries.UI
                     // A record whose place is gone is shown rather than hidden: the player needs
                     // to know why a site stopped being billed, and silently dropping a row is how
                     // a UI teaches somebody not to trust it.
-                    listing.Label(record.Live
-                        ? "RR_Sites_Row".Translate(record.Label).ToString()
-                        : "RR_Sites_RowUnreachable".Translate(record.Label).ToString());
+                    // Three states, not two. "Reachable but nobody there" is the one a player
+                    // needs to see, because it is the one that quietly holds their shipments.
+                    string row;
+                    if (!record.Live) { row = "RR_Sites_RowUnreachable".Translate(record.Label).ToString(); }
+                    else if (!campaign.IsSiteStaffed(record.Site.Map))
+                    { row = "RR_Sites_RowUnstaffed".Translate(record.Label).ToString(); }
+                    else { row = "RR_Sites_Row".Translate(record.Label).ToString(); }
+                    listing.Label(row);
                     if (listing.ButtonText("RR_Sites_Release".Translate(record.Label)))
                     { ShowResult(campaign.ReleaseRemoteSite(record.Id)); }
                     listing.Gap(4f);

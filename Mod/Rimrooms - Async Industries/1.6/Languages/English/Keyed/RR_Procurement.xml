@@ -109,4 +109,5 @@
   <RR_Proc_ReceivingMapUnavailable>The place this shipment is bound for is not loaded. The paid order and its held cargo remain saved.</RR_Proc_ReceivingMapUnavailable>
   <RR_Proc_AtHeadquarters>headquarters</RR_Proc_AtHeadquarters>
   <RR_Proc_ZoneAtPlace>{0} at {1}</RR_Proc_ZoneAtPlace>
+  <RR_Proc_SiteUnstaffed>Nobody is at the place this shipment is bound for. The supplier will not unload with no one to receive it; the order and its cargo are held until somebody is there.</RR_Proc_SiteUnstaffed>
 </LanguageData>

@@ -34,4 +34,5 @@
   <RR_Ledger_RemoteSites>Remote sites</RR_Ledger_RemoteSites>
   <RR_Event_RemoteSiteRegistered>A place beyond headquarters went on the books. It costs something every day now.</RR_Event_RemoteSiteRegistered>
   <RR_Event_RemoteSiteReleased>A place came off the books. No fee, no notice, and the colony there is still the player's own business.</RR_Event_RemoteSiteReleased>
+  <RR_Sites_RowUnstaffed>{0} - on the books and reachable, but nobody is there. Shipments to it will wait.</RR_Sites_RowUnstaffed>
 </LanguageData>

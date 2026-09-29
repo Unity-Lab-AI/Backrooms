@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.7-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.8-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **172 C# files, 86 package files**, zero warnings, zero errors |
 | Assembly | SHA-256 `E62DF5326AC89E59E744E4AD10F054CA6674439AA7F73C34075DF1CF14AD2BE3`, reproduced by two clean recompiles |
 | Checkers | **eight**, all passing |
-| Proofs | **ten** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
+| Proofs | **eleven** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.7
+## What shipped this session, 0.7.1 → 0.12.8
 
 | Version | What |
 |---|---|
@@ -90,6 +90,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.5 | **The queue was in the wrong order** — tier 3 has no knobs to move; the chart authorises arcs 5–8 next. Four hollow unlocks not written |
 | 0.12.6 | **A remote base is a costly responsibility** — arc 5 opens: sites on the books, billed daily, and a coordinate is never one |
 | 0.12.7 | **Company-to-site logistics** — shipments reach a registered site; a latent cross-map reroute bug fixed before it could bite |
+| 0.12.8 | **Remote sites need people** — a shipment to an empty site waits; the stranded-crew guarantee proved rather than rebuilt |
 
 ---
 
@@ -106,9 +107,11 @@ anything in this list** — it is the authority, and steps 1–5 of its build or
      holds, which puts it inside `OwnsMap` and on the daily bill. **Acquisition stays RimWorld's.**
      - **Supplying it: DONE, 0.12.7-dev.** Procurement delivers to any place on the books, and a
        latent cross-map reroute bug was found and fixed before it could swallow a shipment.
-     - **Still owed:** **staffing** a site — a site with nobody at it is a line on a ledger — and
-       **the exit plan**, which the arc names and which a gate anchored at a site now makes
-       possible rather than theoretical.
+     - **Staffing it: DONE, 0.12.8-dev.** A shipment to an unstaffed site waits rather than
+       landing in an empty field, checked at arrival so ordering ahead stays possible.
+     - **Still owed: the exit plan.** A gate anchored at a registered site — which the ownership
+       predicate now permits and nothing yet does. **This is where a second gate stops being
+       theoretical.**
      - **The chart also names** relay stations, caches, field shelters, guarded leases, resupply
        and evacuation missions. None is written.
    - Arc 6, the outside world — **the `IncidentDef` surface built in 0.11.8 is its home.**
@@ -328,6 +331,9 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 166. **A bug that only exists once you add the feature is the hardest kind to find, because it is not there while you are looking.** The procurement redirect updated the receiving zone and never the receiving map — harmless with one legal map, a shipment lost for ever with two. **Read every WRITE to a record before changing what the record may hold.**
 167. **Check what your claim survives before believing it.** The on-the-books claim counted a refusal string; a planted fault removed the guard, left the string, and the proof passed. **Key a claim off the thing that happens** — a guard expression, a refusal, an assignment — never off a token near it. Second instance in one day (see 152).
 168. **Permitted is not reachable.** Widening procurement without widening the stockpile menu would have left site delivery legal and unofferable. Every widening needs its surface widened in the same checkpoint.
+169. **A crew left on the far side is stranded, never taken.** Owner, verbatim: *"turning off a company gate with pawns inside doesnt lose control of those pawns they have to survive till a reconnection is made so they can escape"*. `ShouldRemoveMapNow` returns false **unconditionally** — any condition there is a condition under which somebody’s colonists vanish. No gate source may ever call `PassToWorld`. Asserted by `proof-stranded-crew.py`.
+170. **A claim with a conditional fallback is a claim that can be trivially true.** The ordering claim keyed off a method name absent from the file and collapsed to a tautology. **Third fail-open in one day, all three found by fault-planting and none by reading** — which is what fault-planting is for (109, 152, 167).
+171. **Gate a requirement where it bites, not where it is convenient.** Staffing is checked at a shipment’s **arrival**, never at its ordering: gating the order punishes planning, and gating nothing makes the rule a sentence in a document.
 
 ---
 

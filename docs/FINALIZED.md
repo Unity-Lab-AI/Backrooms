@@ -345,6 +345,31 @@ Procurement may deliver to any place the branch has on the books. The destinatio
 
 ---
 
+## Session 2026-09-29 - site staffing, and the stranded-crew guarantee (0.12.8-dev)
+
+**Verbatim user quote:** *"get to it"*
+
+**Verbatim owner direction, arriving mid-checkpoint:** *"and remmebr turning off a company gate with pawns inside doesnt lose control of those pawns they have to survive till a reconnection is made so they can escape"*
+
+### What shipped
+
+Staffing: a shipment to an unstaffed site **waits** rather than landing in an empty field. And the stranded-crew guarantee, which was **already true in every part** and is now enforced by an eleventh proof rather than rebuilt.
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Company/RemoteSites.cs`, `Procurement/RimroomsProcurementComponent.cs`, `UI/OperationsRemoteSites.cs`, keyed strings in `RR_Procurement.xml` and `RR_Operations.xml`, `docs/implementation/SITE_STAFFING_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj, and two proofs.
+
+### Closure notes
+
+- **Staffing gates ARRIVAL, not ordering**, and both alternatives were wrong: gating the order punishes planning, and gating nothing makes *"remote sites need people"* a sentence in a document. Two predicates - `CanReceiveDeliveryAt` for the address, `CanUnloadAt` for the arrival - and the split is the whole piece.
+- **Staffed means employed, alive, present on that map and not downed.** Somebody unconscious cannot take delivery of anything. Checked live, so there is no assignment to maintain and no record to go stale.
+- **The stranded-crew direction was already satisfied in every part, and verified rather than assumed:** `ShouldRemoveMapNow` returns false **unconditionally**; the expiry path touches no pawn; no gate source calls `PassToWorld`; `RecoverPortalOpening` exists and costs energy; the recovery path has no countdown; and `Alert_RimroomsRecoveryOverdue` tells the player.
+- **So nothing was built for it and a proof was written instead.** The way it would break is an obvious-looking optimisation - *"a coordinate with nobody on it does not need to stay loaded"* - which would delete a map with a crew on it, **take colonists away permanently**, and produce no compiler error, no checker failure and no symptom until somebody lost five people. The proof fails the instant `ShouldRemoveMapNow` grows **any** condition.
+- **A THIRD proof claim of mine could not fail**, found by fault-planting. It had a conditional fallback keyed off a method name that does not exist in the file, so it collapsed to a trivially-true expression. **A claim with a conditional fallback is a claim that can be trivially true.** Replaced with exact call-site counts. The replacement's first version was also wrong (`== 2` where the answer is three) - and it **failed immediately**, which is the difference between a wrong claim and one that cannot fail: the wrong one tells you.
+- Build 0.12.8-dev, 172 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, eleven proofs hold, fault-planted seven ways across two of them. Assembly reproduced by two clean recompiles. **No game was launched, and nothing here has been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

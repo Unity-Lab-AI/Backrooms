@@ -85,6 +85,13 @@ LAW #0 reminder: every task description preserves the user's verbatim words.
 
 - [x] **SETTLED. The 250 W idle draw stays.** A designated gate is a machine that is on: it holds calibration, keeps its address book live and keeps the reserve warm. It never drains below what an emergency return costs, so it is a visible cost and never a trap. **This closes the open balance question raised in 0.11.5-dev** - no change needed, the shipped behaviour is the intended behaviour.
 
+**Verbatim owner direction (2026-09-29), a crew left on the far side:** *"and remmebr turning off a company gate with pawns inside doesnt lose control of those pawns they have to survive till a reconnection is made so they can escape"*
+
+- [ ] **"turning off a company gate with pawns inside doesnt lose control of those pawns"** - closing a gate on a crew **does not take them away from the player**. They stay the player's own pawns, under the player's own control, on the coordinate map.
+- [ ] **"they have to survive till a reconnection is made"** - and now they are a survival problem. Food, warmth, injury, whatever is down there with them. The player plays them.
+- [ ] **"so they can escape"** - reconnection is the way out, and it is the player's to arrange from the near side. **Nothing here is timed** (`docs/CAMPAIGN_CHART.md` §1.1): a stranded crew is not on a countdown, they are simply somewhere hard.
+- [ ] **What to verify before writing anything:** `Company/LostPawnRegister.cs` exists and the campaign calls `ExposeLostPawns()`. **The name is the thing to check.** If a closing gate hands its crew to the world-pawn pool, or despawns them, or marks them lost in any way that removes player control, that is a defect against this direction and the most consequential kind - it takes colonists away from somebody.
+
 **Verbatim owner clarification (2026-09-29), immediately after the above:** *"if u get what i mean .. in the real world maps the portals dont extend into the real world environment so in the real world you can mine and build and explore directly behind the gates with out actually effecting the gate, unless there is connected need requipremd equipemnet directly required placemnets behind the pgate doors.. so yeah you get it"*
 
 - [x] **"in the real world maps the portals dont extend into the real world environment"** - SHIPPED 0.12.3-dev, and asserted by `proof-portal-footprint.py`. - **a portal is exactly its own door cell and reserves nothing else.** There is no aura, no claimed radius, no protected zone and no reservation projected onto the local map. This is the rule the two preceding directions were pointing at.
@@ -449,6 +456,13 @@ Seven items, one task each. **This is a stop-building instruction and it is bein
 - [x] **A latent bug found and fixed.** The redirect path updated the receiving zone and **never the receiving map**. Harmless while one map was legal; with two, a cross-map reroute would have left a shipment paid for, held, and refused on every attempt for ever.
 - [x] **The stockpile menu offers every destination**, and names the place only when the branch holds more than one - otherwise every row reads "at headquarters", which is noise.
 - [x] **A proof claim of mine failed open and was fixed.** It counted a refusal string rather than asserting the guard, so a planted fault that disabled the guard still passed.
+
+**Arc 5 continued (2026-09-29, 0.12.8-dev): staffing, and a guarantee verified.**
+
+- [x] **A shipment to an unstaffed site waits.** Checked at **arrival**, not at ordering, so a player may order ahead while the crew walks there. Nothing is lost: the cargo is held and the payment stands.
+- [x] **Staffed means employed, alive, present on that map and not downed.** Prisoners and slaves are never staff.
+- [x] **"turning off a company gate with pawns inside doesnt lose control of those pawns"** - **ALREADY TRUE, verified rather than assumed, and now proved.** `ShouldRemoveMapNow` returns false unconditionally, the expiry path touches no pawn, no gate source calls `PassToWorld`, `RecoverPortalOpening` is the reconnection, it has no countdown, and `Alert_RimroomsRecoveryOverdue` tells the player.
+- [x] **"they have to survive till a reconnection is made so they can escape"** - exactly what happens. Nothing was built; `proof-stranded-crew.py` was written instead, because the way this breaks is an innocuous-looking optimisation that would delete a map with a crew standing on it.
 
 ## Owner directions recorded late, second pass
 

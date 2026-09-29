@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.8-dev - 2026-09-29 - remote sites need people
+
+- **A shipment to a site with nobody at it waits.** The supplier will not unload with no one to receive it. Nothing is lost - the cargo is held and the payment stands - and it lands as soon as somebody is there.
+- **You can still order ahead.** Staffing is checked when the shipment arrives, not when you place it, so you can send supplies while the crew is still walking there.
+- **The Sites pane tells you which sites are empty**, because that is the state quietly holding your deliveries.
+- **Somebody unconscious on the floor does not count as staffing a site.** Neither do prisoners.
+- **Closing a gate on your people does not take them away from you.** They stay yours, on a map that is never unloaded, and they have to survive until you reopen a connection. There is no time limit on getting them back, and an alert tells you they are waiting. This was already how the mod worked; it is now guaranteed against a future change breaking it.
+
+Full record: [remote sites need people](docs/implementation/SITE_STAFFING_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.7-dev - 2026-09-29 - shipments can go to your sites
 
 - **The corporation will now deliver to a site you have put on the books**, not only to headquarters. Pick any stockpile at any place the branch holds.
