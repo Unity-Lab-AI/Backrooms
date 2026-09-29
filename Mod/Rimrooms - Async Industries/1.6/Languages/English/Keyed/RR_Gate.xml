@@ -67,4 +67,18 @@
   <RR_Event_GateRecoveryOpeningStarted>The recovery opening has started, spending {0} watt-days from the machine's reserve.</RR_Event_GateRecoveryOpeningStarted>
   <RR_Gate_TimeCostWindowExhausted>The recorded route distortion consumed the remaining normal opening. Use the emergency return while it remains available.</RR_Gate_TimeCostWindowExhausted>
   <RR_Gate_WindowSustained>held while powered and staffed</RR_Gate_WindowSustained>
+  <RR_Gate_KillSwitchLabel>Set emergency cutoff</RR_Gate_KillSwitchLabel>
+  <RR_Gate_KillSwitchDesc>Choose a power switch on this gate's own circuit as its emergency cutoff. Throwing that switch ends an opening at once and names itself as the cause. Only a switch that actually carries this gate's power can be chosen.</RR_Gate_KillSwitchDesc>
+  <RR_Gate_KillSwitchNone>Emergency cutoff: none set.</RR_Gate_KillSwitchNone>
+  <RR_Gate_KillSwitchArmed>Emergency cutoff: {0}, closed and carrying power.</RR_Gate_KillSwitchArmed>
+  <RR_Gate_KillSwitchThrown>Emergency cutoff: {0} is OPEN. The gate has no supply.</RR_Gate_KillSwitchThrown>
+  <RR_Gate_NoKillSwitchCandidates>No power switch on this gate's circuit. Wire one into the line that feeds the gate and turn it on.</RR_Gate_NoKillSwitchCandidates>
+  <RR_Gate_ClearKillSwitch>Clear emergency cutoff</RR_Gate_ClearKillSwitch>
+  <RR_NativeGate_KillSwitchThrown>The emergency cutoff was thrown.</RR_NativeGate_KillSwitchThrown>
+  <RR_NativeGate_UnsupportedSwitch>That is not a power switch.</RR_NativeGate_UnsupportedSwitch>
+  <RR_NativeGate_SwitchMustBeOnToBind>The switch must be closed when it is chosen, so its circuit can be checked against the gate's.</RR_NativeGate_SwitchMustBeOnToBind>
+  <RR_NativeGate_SwitchNotOnGateCircuit>That switch does not carry this gate's power. Wire it into the line that feeds the gate.</RR_NativeGate_SwitchNotOnGateCircuit>
+  <RR_NativeGate_SwitchAlreadyBound>Another gate already uses that switch as its cutoff.</RR_NativeGate_SwitchAlreadyBound>
+  <RR_Event_GateKillSwitchBound>An emergency cutoff was set on a gate.</RR_Event_GateKillSwitchBound>
+  <RR_Event_GateKillSwitchCleared>An emergency cutoff was cleared.</RR_Event_GateKillSwitchCleared>
 </LanguageData>

@@ -168,6 +168,7 @@ namespace RimroomsAsyncIndustries.Gate
             Scribe_Values.Look(ref openingTicksRemaining, "rr_gateOpeningTicksRemaining", 0);
             Scribe_Values.Look(ref emergencyReturnTicksRemaining, "rr_gateEmergencyReturnTicksRemaining", 0);
             Scribe_Values.Look(ref emergencyReturnSpent, "rr_gateEmergencyReturnSpent", false);
+            ExposeKillSwitch();
             Scribe_Values.Look(ref warnedHalfWindow, "rr_gateWarnedHalfWindow", false);
             Scribe_Values.Look(ref warnedQuarterWindow, "rr_gateWarnedQuarterWindow", false);
             Scribe_Values.Look(ref warnedTenthWindow, "rr_gateWarnedTenthWindow", false);
@@ -233,7 +234,12 @@ namespace RimroomsAsyncIndustries.Gate
             if (!IsOpening) { return; }
             if (string.IsNullOrEmpty(failureKey))
             {
-                if (!HasPowerAndHeadroom()) { EnterEmergency("RR_Gate_PowerLost"); }
+                // Checked before the generic power test on purpose. A thrown switch will cut
+                // the supply a tick later anyway, but then the cause recorded would be
+                // "power lost" — indistinguishable from a snapped conduit. Somebody threw
+                // this, and the log and the readout should say so.
+                if (KillSwitchThrown) { EnterEmergency("RR_NativeGate_KillSwitchThrown"); }
+                else if (!HasPowerAndHeadroom()) { EnterEmergency("RR_Gate_PowerLost"); }
                 else if (!IsOperatorOnStation) { EnterEmergency("RR_Gate_OperatorLost"); }
                 else if (IsSustainedPortalSession)
                 {
@@ -271,6 +277,14 @@ namespace RimroomsAsyncIndustries.Gate
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) { yield return gizmo; }
             if (parent.Faction != Faction.OfPlayer || !IsDesignated) { yield break; }
+
+            yield return new Command_Action
+            {
+                defaultLabel = "RR_Gate_KillSwitchLabel".Translate(),
+                defaultDesc = "RR_Gate_KillSwitchDesc".Translate(),
+                icon = parent.def.uiIcon,
+                action = OpenKillSwitchMenu
+            };
 
             yield return new Command_Action
             {
@@ -312,6 +326,7 @@ namespace RimroomsAsyncIndustries.Gate
             string operatorText = assignedOperator == null ? "RR_Gate_NoOperator".Translate().ToString()
                 : (IsOperatorOnStation ? "RR_Gate_OperatorPresent".Translate(assignedOperator.LabelShortCap).ToString()
                     : "RR_Gate_OperatorAway".Translate(assignedOperator.LabelShortCap).ToString());
+            string cutoffText = KillSwitchReadout();
             string powerText = "RR_Gate_PowerReadout".Translate(CurrentPowerDrawWatts.ToString("F0"),
                 GateProps.reserveChargePowerWatts.ToString("F0"), GateProps.minimumPowerHeadroomWatts.ToString("F0"),
                 returnReserveStoredWattDays.ToString("F2"), GateProps.returnReserveCapacityWattDays.ToString("F2"),
@@ -328,7 +343,8 @@ namespace RimroomsAsyncIndustries.Gate
                         ? "RR_Gate_WindowSustained".Translate().ToString() : DescribeWindow(openingTicksRemaining),
                     DescribeWindow(emergencyReturnTicksRemaining), string.IsNullOrEmpty(failureKey) ? "RR_Gate_NoFailure".Translate() : failureKey.Translate()).ToString()
                 : "";
-            return string.Join("\n", new[] { status, operatorText, powerText, active }.Where(s => !string.IsNullOrEmpty(s)));
+            return string.Join("\n", new[] { status, operatorText, cutoffText, powerText, active }
+                .Where(s => !string.IsNullOrEmpty(s)));
         }
 
         private static string DescribeWindow(int ticks)

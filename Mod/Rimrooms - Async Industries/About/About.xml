@@ -3,7 +3,7 @@
   <name>Rimrooms - Async Industries</name>
   <author>Operator</author>
   <packageId>UnityLabAI.RimroomsAsyncIndustries</packageId>
-  <modVersion>0.6.9-dev</modVersion>
+  <modVersion>0.7.0-dev</modVersion>
   <supportedVersions>
     <li>1.6</li>
   </supportedVersions>

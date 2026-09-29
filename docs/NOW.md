@@ -26,7 +26,7 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 | Published | 0.6.7-dev (`git log -1`; the cascade read-back is in `FINALIZED.md`) |
 | Remotes | `forgejo` and `github`, both with `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` at the same commit |
 | Working tree | clean |
-| Build | 118 C# source files, 76 approved package files, zero warnings, zero errors |
+| Build | 119 C# source files, 76 approved package files, zero warnings, zero errors |
 | Register | `outputs/.../Rimrooms_Async_Industries_294_Mod_Integration_Register.html` — **open this one**, not the `.xlsx`. Generated; rebuild after any CSV edit |
 | Assembly | SHA-256 `9A73827B2E0F6C6AC33712BE447CEA5C7F8959C72820080AE7C2C00BA75A8EAE`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
 | Game launches | **none, ever.** Every runtime claim in this repo is pending the post-completion test phase |
@@ -52,6 +52,7 @@ Do not finish a checkpoint and wait. Chain them. The owner got tired of asking f
 - **0.6.6** — **dark study**: a researcher crosses to a contained entity. Plus a second shipped defect closed — the childcare giver defs had referenced a Biotech-only work type with no `MayRequire` since 0.6.4, an unresolved cross-reference on a Core-only install. `tools/check-dlc-gating.py` now enforces it from the game's own data.
 - **0.6.7** — **hauling upkeep, BasicWorker and Fishing**, closing the last work-type gaps. All thirty `Hauling` givers classified; three decided against as map-bound.
 - **0.6.9** — **a way out**: `PortalConnectionKind.Emergence`, a player-marked door on an ordinary map as the place a way out comes up. Plus a duplicated keyed string fixed and `check-keyed-strings.py` added.
+- **0.7.0** — **the gate kill switch**: an optional cutoff bound to a Core power switch, refused unless it genuinely carries the gate's power.
 - **Register checkpoint, still 0.6.4** — the 294-mod register rebuilt with a generator and a checker, joy and rituals **decided no**, the three hauling rows closed, and the work-type list **enumerated instead of trusted**. No C# change; the assembly is byte-identical.
 
 **Thirty-one cross-map work families, twenty-three of them travel-to-work deployments. Every work type in the game is covered or decided against.**
@@ -61,7 +62,8 @@ Do not finish a checkpoint and wait. Chain them. The owner got tired of asking f
 1. ~~**The four work-type gaps**~~ — **ALL CLOSED.** Bill work 0.6.5-dev, dark study 0.6.6-dev, hauling upkeep / BasicWorker / Fishing 0.6.7-dev. **Every work type in Core and all five expansions is now covered or decided against with its reason recorded**; joy, rituals, `Patient` and `PatientBedRest` are decided no. Do not reopen any of it — read `research/WORK_TYPE_COVERAGE_AUDIT.md`. What remains here is narrower and named in `DEFERRED.md`: the **eleven DLC container hauling givers** (each needs a custody review before a worker crosses for it) and the **four painting givers** in `Art`.
 2. ~~**A portal whose far side is an ordinary map**~~ — **BUILT 0.6.9-dev.** Still open: **a world tile the branch does not hold**, which needs a new world object and a generated map.
    **Now live because of it:** `Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear` and `Area_PollutionClear` have no cross-gate route, and an ordinary map reachable through a gate genuinely gets snow, wants roofs built and may be polluted. See `research/ZONES_AND_AREAS_ACROSS_A_GATE.md`.
-   **Also queued:** the owner's **kill switch** for the laboratory gate, captured verbatim in `TODO.md`.
+   **Also queued:** ~~the kill switch~~ (BUILT 0.7.0-dev), and two things newly asked for and **not** built — **equipment maintenance on the gate** (genuinely new; no upkeep concept exists, and the owner's ceiling is explicitly not *"crazy amounts"*) and a **player-facing how-to for the gameplay and systems** (`docs/HOWTO.md` covers the build, not play). Both verbatim in `TODO.md`.
+   **Confirmed rather than changed** by that same direction, checked against shipped values: power loss already closes an open gate every tick; the first opening is already **exactly 30 real minutes** (`portalBaseWindowTicks = 108000` ÷ 60 ticks per second = 1,800 seconds); it already only increases from there (×3 per tier); and tiers already come from completed research.
 3. **The three starting sites.** `SCENARIOS.md` specifies all three in full, so this is implementation, not design. Two of them begin with a way out of the Backrooms.
 4. **Floors returning materials when lifted** — vanilla returns none, so the owner's "uninstalled, moved, resued, sold" for carpet and tile is a content feature needing a `CONTENT_REUSE_POLICY.md` decision.
 5. **The 1990s period and the universe factions**, under `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`. New `FactionDef`s reusing existing pawn kinds, all starting neutral.

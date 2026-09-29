@@ -50,6 +50,10 @@ namespace RimroomsAsyncIndustries.Gate
                 if (!IsNativeProvider) { return null; }
                 string failure = NativePhysicalLinkFailure();
                 if (failure != null) { return failure; }
+                // A thrown cutoff is reported ahead of the generic power failure for the same
+                // reason the tick checks it first: the player needs to know the switch is the
+                // reason, not a fault somewhere in the wiring.
+                if (KillSwitchThrown) { return "RR_NativeGate_KillSwitchThrown"; }
                 if (HasNativeEnergyDebitFault) { return "RR_NativeGate_EnergyDebitFault"; }
                 if (!NativePowerConnected()) { return "RR_NativeGate_Disconnected"; }
                 if (!NativeElectricalAvailable() || !IsConsolePowered(nativeConsole) ||
