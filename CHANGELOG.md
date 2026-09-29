@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.17-dev - 2026-09-29 - four more menu slides
+
+- **Six main-menu images now cycle instead of two.** Laboratory operations, industrial gate logistics, a corridor encounter and a silent recovery join the two that were already there.
+- **A slide that would never have appeared is now caught before it ships.** The slideshow only shows files whose name starts with `RR_Menu_`, so a correctly-drawn image with the wrong filename used to be invisible with nothing anywhere saying so.
+- **A truncated or half-copied image is caught too**, which matters because the game would only fail when it tried to load it, long after the build said everything was fine.
+- **How the images were made is recorded and ships with the mod**, including the exact instructions used for each one.
+
+Full record: [four more menu slides](docs/implementation/MENU_SLIDES_LANDED_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.16-dev - 2026-09-29 - the menu takes any number of slides
 
 - **New main-menu art is now a drop-in.** Any image named `RR_Menu_*.png` placed in the menu texture folder becomes a slide, in filename order, with no code change at all.

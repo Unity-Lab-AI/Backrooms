@@ -584,6 +584,31 @@ The slideshow now loads **any** `RR_Menu_*.png` from its folder, and `docs/MENU_
 
 ---
 
+## Session 2026-09-29 - four more menu slides (0.12.17-dev)
+
+**Verbatim user quote:** *"okay get to doing next up and those additional main menu images should be good to go now"*
+
+### What shipped
+
+Four original menu illustrations produced on the owner's parallel track, plus **a proof that a slide cannot fail silently**. The art itself was not produced here: this session has no image-generation tool.
+
+### Files touched
+
+Four PNGs in `1.6/Textures/UI/Menu/`, `outputs/menu-art-2026-09-29/prompts-and-provenance.json`, `tools/package-files.json`, `docs/implementation/MENU_SLIDES_LANDED_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `About.xml`, the csproj, and `proof-menu-slides.py` (new, the nineteenth).
+
+### Closure notes
+
+- **The drop-in design worked exactly as intended.** Four images landed, correctly prefixed, and the slideshow picked all four up with **no code change** - which was the whole point of replacing the hardcoded two-entry array in 0.12.16-dev. `check-package-integrity.py` reports six textures covered by the folder scan.
+- **THE SILENT FAILURE THIS GUARDS IS REAL AND WAS LIKELY.** The slideshow only shows files whose name starts with `RR_Menu_`, so **a correctly-drawn image with the wrong filename is loaded by nothing, shown to nobody, and nothing in the build, the checkers or the log would say so.** With the art produced separately from the code, a naming mistake was probable rather than hypothetical. Fault-planted: a stray `MenuBackdrop_NoPrefix.png` makes the proof exit 1.
+- **A truncated image is caught at build rather than at load.** Unity fails when it tries to read a malformed PNG, which is long after the build has reported success, and a half-finished copy is the obvious way parallel art delivery goes wrong. The proof checks the signature **and** that `IEND` is the final chunk with zero trailing bytes. My first attempt at that check compared the last eight bytes literally and reported **every** file as broken, including the two that already shipped - the check was wrong, not the files, and it was corrected rather than believed.
+- **Aspect ratios are checked as a set, not individually.** `BackgroundRect` reads each image's own aspect, so mismatched slides letterbox differently and the crossfade between them reads as a bug. `RR_Menu_LaboratoryOperations.png` is **1672x940 against the others' 1672x941** - a one-pixel difference, 0.1% of aspect, inside the tolerance and **reported explicitly rather than hidden**. It does not need regenerating.
+- **The folder and prefix are read out of the source, never restated in the proof**, so renaming either one moves the proof with it instead of leaving it checking a value that no longer exists.
+- **Provenance ships, and it is a release obligation rather than a nicety.** `prompts-and-provenance.json` records the tool and the exact prompt for each image. **Steam requires AI-content disclosure**, and original menu images are the *one* exception to this project's no-new-art rule, so a record is what makes both statements auditable at release instead of remembered. The proof asserts it exists.
+- **Three planted faults, three catches, clean on restore.**
+- Build 0.12.17-dev, 173 C# files, **91 package files**, **0 warnings, 0 errors**. **No C# changed.** Eight checkers pass, **nineteen** proofs exit zero. Assembly reproduced by two clean recompiles. **No game was launched, so how these read behind the menu buttons, and the dwell and crossfade timing, remain unverified by play.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra
