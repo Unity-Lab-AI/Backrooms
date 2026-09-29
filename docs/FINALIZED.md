@@ -221,6 +221,31 @@ The guaranteed exit. The solo/group start generates two maps: an ordinary surfac
 
 ---
 
+## Session 2026-09-29 - the portal footprint (0.12.3-dev)
+
+**Verbatim user direction:** *"and technically the way the gate works and make a portal when placing it on your map or having a natural one(natruals can not be destoryed or moved, so one can technically build a roomm directly on the other side of the portal door and it shouldnt interfere with the portal transition to the seeded backrooms"*
+
+**And the clarification, verbatim:** *"if u get what i mean .. in the real world maps the portals dont extend into the real world environment so in the real world you can mine and build and explore directly behind the gates with out actually effecting the gate, unless there is connected need requipremd equipemnet directly required placemnets behind the pgate doors.. so yeah you get it"*
+
+### What shipped
+
+`PortalEndpointRecord.TryRepairApproach()`, called from `RimroomsPortalNetwork.Availability` when no crossing is in flight. A portal is its own door cell and reserves nothing; building beside a gate no longer breaks it.
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Portals/PortalConnectionRecord.cs`, `Portals/RimroomsPortalNetwork.cs`, `docs/implementation/PORTAL_FOOTPRINT_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj, and an eighth proof.
+
+### Closure notes
+
+- **A real defect, invisible from any single file.** `PortalEndpointRecord` snapshots the approach cell at registration and `Availability` validated that saved cell forever, so **a wall on one cell beside a gate reported `Obstructed` for the life of the save** - with up to three other walkable cells beside the same door, and no error or message. Both files look correct alone; the bug lives only in the relationship. Same failure family as the beacon that could never fire and the tier ladder that could never be climbed.
+- **The anchor cell is deliberately NOT refreshed.** That snapshot is what stops a moved door silently redirecting a saved route. Refreshing both would have traded one silent failure for a worse one, and the proof asserts the asymmetry.
+- **The repair is skipped while a crossing is in flight**, because a `PortalCrossingReceipt` stores the approach cells it began with and `ConnectionStillMatches` refuses to continue if they changed - the guard that stops a transfer losing a pawn (invariant 55). **The naive fix, re-deriving live everywhere, would have quietly weakened the most safety-critical system in the mod.** Finding every read site before changing the value is the only reason it did not.
+- **An eighth proof**, which also enforces a forward-looking rule: no portal source may contain `ReserveCell`, `ClaimRadius`, `portalRadius`, `ProtectedRadius` or `ReservedCells`. If one ever appears, somebody has started projecting the gate onto the map.
+- **Still owed:** *"natruals can not be destoryed or moved"*. Core decides destructibility at the **def** level, and this mod may not change that because it would make every door in every colony indestructible for every player and every other mod. Damage can be absorbed per-instance via the vanilla `PostPreApplyDamage` comp hook; **deconstruction has no comp-level veto**, and the three honest options are all defensible - so it is queued with the question attached rather than guessed at (invariant 134).
+- Build 0.12.3-dev, 168 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, eight proofs hold. Assembly reproduced by two clean recompiles. **No game was launched, and nothing here has been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

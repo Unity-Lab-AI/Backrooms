@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.2-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.3-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **168 C# files, 86 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `D9090678DBFBABFB02B144A9E0C23777E23680D2164D3369742D2BE7BB26421F`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `826C21158ECB93979E2D89FEDBFB8FFC9EC4D825C439215F14A9B3A3D73AC46D`, reproduced by two clean recompiles |
 | Checkers | **eight**, all passing |
-| Proofs | **seven** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
+| Proofs | **eight** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.2
+## What shipped this session, 0.7.1 → 0.12.3
 
 | Version | What |
 |---|---|
@@ -85,6 +85,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.0 | **You are already in** — the solo/group start; the map itself is a coordinate. **All three starts ship.** |
 | 0.12.1 | **The free doors run out** — found doors stop at depth 3; deeper needs a built gate. Corrects 0.12.0 |
 | 0.12.2 | **The way out was already there** — the guaranteed exit; two maps, a real coordinate, `GenStep_InsideStart` retired |
+| 0.12.3 | **A portal is its own door cell** — a wall beside a gate no longer bricks it; eighth proof |
 
 ---
 
@@ -93,21 +94,17 @@ Chain checkpoints. Do not finish one and wait.
 The order is the one `docs/CAMPAIGN_CHART.md` §7 authorises. **Read the chart before starting
 anything in this list** — it is the authority, and steps 1–5 of its build order are done.
 
-1. **Natural gates that cannot be destroyed or moved, and building around a portal.** Owner
-   direction, verbatim: *"natruals can not be destoryed or moved, so one can technically build a
-   roomm directly on the other side of the portal door and it shouldnt interfere with the portal
-   transition to the seeded backrooms"*.
-   - **Check first, do not assume.** A natural gate is a Core `Door` today: it has hit points and
-     a deconstruct designation, so a player can very probably destroy one — which would break a
-     connection the design calls **permanently open**.
-   - **The build-around half is the one most likely broken today.** Every threshold is validated
-     by `PortalAddressService.UsableThreshold(door, approach, map)` against an **approach cell**,
-     and a wall built on that cell would make a permanently open gate refuse. A player who builds
-     a proper airlock around their own gate must not lose it by doing so.
-   - **An open question before any of it is built:** whether the approach cell is re-derived when
-     the local geometry changes, or whether a portal door's approach cell simply cannot be built
-     on — and if the latter, how the player is told. Both readings are defensible, so invariant
-     134 says ask.
+1. **Natural gates that cannot be destroyed or moved.** Owner, verbatim: *"natruals can not be
+   destoryed or moved"*. The **build-around half shipped in 0.12.3**; this is the rest.
+   - **Core decides destructibility at the def level** — `def.destroyable`,
+     `def.building.IsDeconstructible` — and this mod **may not change those**, because it would
+     make every door in every colony indestructible for every player and every other mod.
+   - **Damage is solvable per-instance**: `ThingComp.PostPreApplyDamage(ref DamageInfo, out bool
+     absorbed)` is a vanilla comp hook and these doors already carry this mod's comps.
+   - **Deconstruction has no comp-level veto.** Three defensible options: let the designation
+     happen and re-place the door; refuse the crossing afterwards and explain; or accept that a
+     player who deliberately deconstructs their own natural gate has closed it. **Ask** — invariant
+     134.
 2. **The solo/group tutorial line.** *"the tutorial like quest chains should lay it all out"* —
    and *"this is all open eneded they can play how they choose"*, so it **guides without railing**.
    Requests have no per-start scoping yet: the six tutorial requests and the hinge are Async's
@@ -306,6 +303,9 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 152. **A claim that can fail for the wrong reason can also pass for the wrong reason.** The natural-depth ordering claim was a string-index search over a variable name; renaming the variable made it fail open. **Key an assertion off the thing that actually happens** — a refusal, a keyed string, a def name — never off an expression’s spelling. Fourth assertion corrected this session and the first of this kind (see 130, 142, 145).
 153. **Cap the free doors, never the way home.** `MaximumNaturalDepth` is checked after the way-out attempt. Capping both directions makes the deepest natural band a trap, which invariant 28 forbids.
 154. **Open-ended is a constraint on the content, not a mood.** Owner, verbatim: *"this is all open eneded they can play how they choose"*. A tutorial line offers and describes; it never requires an order, and a step already done by a player who got there first must read as done rather than skipped.
+155. **A portal is its own door cell and reserves nothing.** No radius, no claimed cells, no protected zone. Owner, verbatim: *"in the real world you can mine and build and explore directly behind the gates with out actually effecting the gate"*. The only placement rules near a gate belong to **linked equipment**, which has a reach of its own. Enforced by `proof-portal-footprint.py`, including a banned-name check.
+156. **A snapshot and a live check, in two different files, is a silent failure waiting.** The approach cell was frozen at registration and validated forever; a wall on it bricked a gate for the life of the save. **Both files read correctly alone.** When a value is snapshotted, ask what happens when the world moves under it.
+157. **Find every read site before changing a shared value.** Re-deriving the approach cell live everywhere — the obvious fix — would have tripped the crossing receipt’s equality guard, which is what stops a transfer losing a pawn. The repair is skipped while a crossing is in flight because the read sites were enumerated first.
 
 ---
 

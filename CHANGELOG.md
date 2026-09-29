@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.3-dev - 2026-09-29 - a portal is its own door cell
+
+- **You can build, mine and explore right behind a gate without affecting it.** A portal takes up its own doorway and nothing else: no reserved space, no protected circle, no invisible claim on your map.
+- **A real bug is fixed.** Walling one particular cell beside a gate used to break that gate permanently, silently, for the rest of the save - even with three other perfectly walkable cells around the same door. Build your airlock; the gate keeps working.
+- **Seal a door in on all four sides and it stops working**, exactly like any other door you wall off. That much has always been fair.
+- **A crossing in progress is never disturbed.** If somebody is mid-transfer the gate waits before adjusting anything, because losing a colonist in a doorway is not a risk worth taking.
+- **The only placement rules near a gate are the equipment's own** - a console or a bound battery has to be within reach. That is the equipment needing to be close, not the gate claiming ground.
+
+Full record: [a portal is its own door cell](docs/implementation/PORTAL_FOOTPRINT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.2-dev - 2026-09-29 - the way out was already there
 
 - **The solo or group start now has a guaranteed way out, from the first tick.** A door on the surface, connected to the level you wake up in. Nobody built it and nobody knows who did.

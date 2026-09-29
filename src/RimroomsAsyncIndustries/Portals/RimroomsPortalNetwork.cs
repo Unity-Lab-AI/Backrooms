@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -179,9 +179,46 @@ namespace RimroomsAsyncIndustries.Portals
             }
             // Natural connections deliberately have no timeout, gate operator,
             // mission completion, battery or close command dependency.
+            //
+            // **A portal does not extend into the real world.** Owner direction, 2026-09-29:
+            // *"in the real world you can mine and build and explore directly behind the gates
+            // with out actually effecting the gate"*. The approach cell was snapshotted at
+            // registration, so a wall built on it used to report Obstructed forever even with
+            // three walkable cells beside the same door. It is now re-derived on demand.
+            //
+            // **Not repaired while a crossing is in flight.** A receipt records the approach cell
+            // it began with and refuses to continue if it changed, which is the guard that stops
+            // a transfer losing a pawn (invariant 55). Moving the cell underneath a live transfer
+            // would trip that guard and abort a legitimate crossing, so a busy edge waits.
+            if (!CrossingInFlight(edge))
+            {
+                edge.First.TryRepairApproach();
+                edge.Second.TryRepairApproach();
+            }
             return edge.First.ApproachCell.Standable(edge.First.Map) &&
                 edge.Second.ApproachCell.Standable(edge.Second.Map)
                 ? PortalNetworkResult.Success : PortalNetworkResult.Obstructed;
+        }
+
+        /// <summary>
+        /// Whether any crossing receipt still refers to this connection.
+        ///
+        /// Asked before repairing an approach cell, because a receipt's stored approach is the
+        /// equality guard that protects a pawn mid-transfer. Cheap: the receipt list is bounded
+        /// and is almost always empty.
+        /// </summary>
+        private static bool CrossingInFlight(PortalConnectionRecord edge)
+        {
+            if (edge == null || Current.Game == null) { return false; }
+            RimroomsPortalCrossingService crossings = Current.Game.GetComponent<RimroomsPortalCrossingService>();
+            if (crossings == null) { return false; }
+            IReadOnlyList<PortalCrossingReceipt> receipts = crossings.Receipts;
+            for (int index = 0; index < receipts.Count; index++)
+            {
+                PortalCrossingReceipt receipt = receipts[index];
+                if (receipt != null && receipt.ConnectionId == edge.Id) { return true; }
+            }
+            return false;
         }
 
         public PortalRouteSearch BeginRouteSearch(Map source, Map destination)

@@ -64,6 +64,19 @@ LAW #0 reminder: every task description preserves the user's verbatim words.
 - The existing way-out path registers against a `CompRimroomsEmergence` anchor, which is **a door the player marked on their own map**. A solo/group start has no colony and no marked door, so that path cannot be the one used. The exit needs a destination that exists at new-game.
 - The depth extent needs a number and it is **not yet chosen**. It is the difference between "a few levels of free exploration" and "the whole game without ever building anything".
 
+**Verbatim owner clarification (2026-09-29), immediately after the above:** *"if u get what i mean .. in the real world maps the portals dont extend into the real world environment so in the real world you can mine and build and explore directly behind the gates with out actually effecting the gate, unless there is connected need requipremd equipemnet directly required placemnets behind the pgate doors.. so yeah you get it"*
+
+- [ ] **"in the real world maps the portals dont extend into the real world environment"** - **a portal is exactly its own door cell and reserves nothing else.** There is no aura, no claimed radius, no protected zone and no reservation projected onto the local map. This is the rule the two preceding directions were pointing at.
+- [ ] **"in the real world you can mine and build and explore directly behind the gates with out actually effecting the gate"** - the cells around and behind a gate are **ordinary map**. Mine them, wall them, roof them, put a bedroom there. The gate does not care and must keep working.
+- [ ] **"unless there is connected need requipremd equipemnet directly required placemnets behind the pgate doors"** - **the one exception, and it is not the portal's doing.** Linked equipment - the console, the bound battery, shelves, analysers, tool cabinets - has placement requirements **of its own**, because a link has a reach. That is the equipment's constraint, not the portal projecting a zone, and the distinction matters: a player who is told "the gate needs space" would build differently from one told "this cabinet has to be within reach of that gate".
+
+**Where this is very likely broken today, to check before building:**
+
+- `PortalEndpointRecord` **snapshots the approach cell** - *"Endpoint cells are snapshots: moving a door cannot silently redirect a saved route"* - and `Matches(thing, approach)` demands exact equality.
+- `PortalAddressService.UsableThreshold(door, approach, map)` then validates that saved cell.
+- So **a wall built on a saved approach cell would break a live connection**, which is precisely the *"affecting the gate"* the owner says must not happen.
+- **The likely correct shape:** keep the **anchor** cell snapshotted, because that is what stops a moved door silently redirecting a route, and **re-derive the approach cell** from the door's current surroundings at use time. Walling off your own door should stop you walking through it exactly as it does for any RimWorld door - and no more than that.
+
 **Verbatim owner direction (2026-09-29), gate placement and building around a portal:** *"and technically the way the gate works and make a portal when placing it on your map or having a natural one(natruals can not be destoryed or moved, so one can technically build a roomm directly on the other side of the portal door and it shouldnt interfere with the portal transition to the seeded backrooms"*
 
 - [ ] **"natruals can not be destoryed or moved"** - a natural gate is **indestructible and immovable**. It is not something the branch built and it is not something the branch can unbuild. **Check first whether this is already true:** a natural gate is a Core `Door` with a registered natural address, and a Core door has hit points and a deconstruct designation, so a player can very probably destroy one today - which would break a connection the design calls **permanently open**.
