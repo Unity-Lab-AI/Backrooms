@@ -414,4 +414,132 @@ The branch may ask for applicants again in half the time. The corporation was ne
     </prerequisiteProjects>
   </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
 
+  <!-- =====================================================================================
+       TIER 3 - remote operations: support more than one site; work beyond headquarters.
+
+       This tier was DELETED rather than written at 0.12.5-dev, because a knob sweep found
+       nothing to move for four of the seven branches: the systems an unlock would modify did
+       not exist. Arc 5 wrote them between 0.12.6-dev and 0.12.9-dev, and the sweep now finds a
+       real, observable read site for EVERY branch. Record: BUILD_ORDER_CORRECTION.md.
+
+       Every capability below is read by real code, and proof-research-branches.py asserts
+       exactly that: an unlock a player is told about and that changes nothing is worse than no
+       unlock, because it is a lie on the card.
+
+       Ladder shape matches tiers 0-2: insight 4, three route logs, two distortion logs, and the
+       first tier to require an ENTITY log. You have to have met something.
+       ===================================================================================== -->
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Facilities_SiteNetwork</defName>
+    <label>Site Network</label>
+    <description>Holding places costs the branch attention as much as money, and the limit has never been the money. Standing arrangements, a rota that covers more than one address, and a filing system that does not lose a site.
+
+Twelve places on the books instead of eight. The Sites pane stops refusing, and the bill goes up accordingly.</description>
+    <insightCost>4</insightCost>
+    <workRequired>14000</workRequired>
+    <minimumIntellectual>6</minimumIntellectual>
+    <requiredRouteLogs>3</requiredRouteLogs>
+    <requiredDistortionLogs>2</requiredDistortionLogs>
+    <requiredEntityLogs>1</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Facilities_StandbyDiscipline</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_SiteNetwork</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Commerce_SiteEfficiency</defName>
+    <label>Site Economies</label>
+    <description>Every site was being administered as though it were the first one. Consolidate the paperwork, the communications and the supply arrangements, and the marginal place stops costing what the original did.
+
+Each site adds a sixth of base overhead per day instead of a quarter. Proportionate, so it is worth the same to a shop as to a corporation.</description>
+    <insightCost>4</insightCost>
+    <workRequired>14000</workRequired>
+    <minimumIntellectual>6</minimumIntellectual>
+    <requiredRouteLogs>3</requiredRouteLogs>
+    <requiredDistortionLogs>2</requiredDistortionLogs>
+    <requiredEntityLogs>1</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Commerce_SpecialistRecruitment</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_SiteEfficiency</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Logistics_UnattendedDelivery</defName>
+    <label>Unattended Delivery</label>
+    <description>The supplier has been refusing to unload where nobody is standing to sign for it, which is ordinary practice and has cost this branch a great deal of waiting.
+
+The arrangement is now on file: a registered site is a place a crate may simply be left. A place that is not on the books still refuses, and always will.</description>
+    <insightCost>4</insightCost>
+    <workRequired>14000</workRequired>
+    <minimumIntellectual>6</minimumIntellectual>
+    <requiredRouteLogs>3</requiredRouteLogs>
+    <requiredDistortionLogs>2</requiredDistortionLogs>
+    <requiredEntityLogs>1</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Logistics_ForwardDispatch</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_UnattendedDelivery</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Spatial_CoordinateReading</defName>
+    <label>Coordinate Reading</label>
+    <description>A space gives itself away before it gives anything else away. Which door sits wrong in its frame, which corridor is a foot too long, which junction the carpet was laid through.
+
+Roughly one door in eight leads onward rather than one in twelve. **The limit of two ways onward per coordinate does not move, and will not:** it is what keeps a chain of spaces finite.</description>
+    <insightCost>4</insightCost>
+    <workRequired>14000</workRequired>
+    <minimumIntellectual>6</minimumIntellectual>
+    <requiredRouteLogs>3</requiredRouteLogs>
+    <requiredDistortionLogs>2</requiredDistortionLogs>
+    <requiredEntityLogs>1</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Spatial_KnownAddress</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_CoordinateReading</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Fieldcraft_WayHomeDiscipline</defName>
+    <label>Way Home Discipline</label>
+    <description>Crews have been finding the way deeper more often than the way out, and the company has stopped believing that is chance. Train for the exit first and the exit is what gets found.
+
+A survey turns up a way out into the world on one draw in two instead of one in three. The branch does not go less deep; it comes back out more often.</description>
+    <insightCost>4</insightCost>
+    <workRequired>14000</workRequired>
+    <minimumIntellectual>6</minimumIntellectual>
+    <requiredRouteLogs>3</requiredRouteLogs>
+    <requiredDistortionLogs>2</requiredDistortionLogs>
+    <requiredEntityLogs>1</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Fieldcraft_ReliefWatch</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_WayHomeDiscipline</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Measurement_RapidSurvey</defName>
+    <label>Rapid Survey</label>
+    <description>Most of a survey was establishing what ordinary looks like. With reference standards already in hand, a crew measures the difference instead of the whole.
+
+A survey takes about ten seconds of standing there rather than fourteen. Visible on the progress bar, which is a short time to be standing still in a place like that.</description>
+    <insightCost>4</insightCost>
+    <workRequired>14000</workRequired>
+    <minimumIntellectual>6</minimumIntellectual>
+    <requiredRouteLogs>3</requiredRouteLogs>
+    <requiredDistortionLogs>2</requiredDistortionLogs>
+    <requiredEntityLogs>1</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Measurement_ReferenceStandards</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_RapidSurvey</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Entities_SpaceDiscipline</defName>
+    <label>Space Discipline</label>
+    <description>A built room was already the only thing that slowed the place down. Knowing what is in the space changes how the room is built: sightlines, thresholds, what is left in the open and what is not.
+
+A properly built room holds it back considerably better. **It never stops entirely.** A coordinate is always wearing, and nothing will make it somewhere to live.</description>
+    <insightCost>4</insightCost>
+    <workRequired>14000</workRequired>
+    <minimumIntellectual>6</minimumIntellectual>
+    <requiredRouteLogs>3</requiredRouteLogs>
+    <requiredDistortionLogs>2</requiredDistortionLogs>
+    <requiredEntityLogs>1</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Entities_ContainmentProtocol</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_SpaceDiscipline</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
 </Defs>

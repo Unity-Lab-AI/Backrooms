@@ -80,6 +80,17 @@ namespace RimroomsAsyncIndustries.Company
         internal const int MaximumRemoteSites = 8;
 
         /// <summary>
+        /// What the cap becomes once a branch has earned the room for more.
+        ///
+        /// **Tier 3 is "remote operations: support more than one site".** At 0.12.5-dev this
+        /// branch had nothing to move, because remote sites did not exist yet; arc 5 wrote them.
+        /// The unlock is observable in the one place a player already reads the cap — the Sites
+        /// pane says *"3 of 8"*, and afterwards it says *"3 of 12"* — and in the refusal
+        /// `RR_Site_TooMany` stopping.
+        /// </summary>
+        internal const int ExpandedRemoteSites = 12;
+
+        /// <summary>
         /// What each site adds to the daily overhead, as a share of the branch's base overhead.
         ///
         /// **A ratio and not a number, deliberately.** Async Industries runs on $25,000 a day of
@@ -89,6 +100,41 @@ namespace RimroomsAsyncIndustries.Company
         /// tunes it for free by tuning the number it already had.
         /// </summary>
         internal const int RemoteSiteOverheadDivisor = 4;
+
+        /// <summary>
+        /// A better divisor: each site costs a sixth of base overhead instead of a quarter.
+        ///
+        /// **Commerce tier 3.** A ratio rather than an absolute, for the same reason the base
+        /// divisor is one: Async Industries runs on $25,000 a day of overhead and the Store on
+        /// $1,500, so one flat discount would be a rounding error for one and transformative for
+        /// the other. Observable on the Sites pane, which already prints the daily figure.
+        /// </summary>
+        internal const int EfficientRemoteSiteOverheadDivisor = 6;
+
+        /// <summary>
+        /// How many sites this branch may hold, which a completed project raises.
+        ///
+        /// **One method, both readers.** The service refusal and the Sites pane readout both come
+        /// through here, so the number a player is shown and the number that refuses them can
+        /// never disagree -- the same discipline as the gate's idle draw.
+        /// </summary>
+        public int RemoteSiteCap
+        {
+            get
+            {
+                return HasCapability("RR_Cap_SiteNetwork") ? ExpandedRemoteSites : MaximumRemoteSites;
+            }
+        }
+
+        /// <summary>The divisor in force, which a completed project improves.</summary>
+        private int OverheadDivisorInForce
+        {
+            get
+            {
+                return HasCapability("RR_Cap_SiteEfficiency")
+                    ? EfficientRemoteSiteOverheadDivisor : RemoteSiteOverheadDivisor;
+            }
+        }
 
         private List<RemoteSiteRecord> remoteSites = new List<RemoteSiteRecord>();
 
@@ -120,7 +166,7 @@ namespace RimroomsAsyncIndustries.Company
             get
             {
                 if (dailyOverheadUsd <= 0) { return 0L; }
-                long each = dailyOverheadUsd / RemoteSiteOverheadDivisor;
+                long each = dailyOverheadUsd / OverheadDivisorInForce;
                 if (each <= 0L) { return 0L; }
                 return each * LiveRemoteSiteCount;
             }
@@ -160,7 +206,7 @@ namespace RimroomsAsyncIndustries.Company
                 RemoteSiteRecord existing = remoteSites[index];
                 if (existing != null && existing.site == parent) { return CompanyActionResult.Existing(); }
             }
-            if (remoteSites.Count >= MaximumRemoteSites)
+            if (remoteSites.Count >= RemoteSiteCap)
             { return CompanyActionResult.Refused("RR_Site_TooMany"); }
 
             string id = branchId + ":site:" + parent.ID;
@@ -297,6 +343,14 @@ namespace RimroomsAsyncIndustries.Company
         {
             if (!CanReceiveDeliveryAt(map)) { return false; }
             if (map == headquarters) { return true; }
+            // **Logistics tier 3: RR_Cap_UnattendedDelivery.** Arc 5 established that a shipment
+            // to an empty site waits, because a supplier does not unload into a field with nobody
+            // to sign for it. This is the branch earning the right to be trusted with a drop: the
+            // arrangement is on file, the site is on the books, and the crate is left.
+            //
+            // The rule it relaxes is kept everywhere else. A place that is NOT on the books still
+            // refuses, above, and that is the clause that matters.
+            if (HasCapability("RR_Cap_UnattendedDelivery")) { return true; }
             return IsSiteStaffed(map);
         }
 

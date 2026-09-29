@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.18-dev - 2026-09-29 - the third rung of every branch
+
+- **Seven new research projects, one for each branch**, and every one of them changes a number you can watch change. Hold twelve remote sites instead of eight. Pay a sixth of your overhead per site instead of a quarter. Have a shipment left at a site with nobody there. Find a way onward sooner. Find the way *out* more often. Finish a survey faster. Build a room that holds the place back better.
+- **This tier was deleted rather than written four versions ago**, because there was genuinely nothing for four of the branches to move. Building remote sites gave them all something real.
+- **Two things deliberately did not change.** A coordinate still never yields more than two ways onward - that limit is what keeps the whole chain of spaces finite. And a sheltered room never stops the place wearing on you entirely; nothing will make the Backrooms somewhere to live.
+- **Every unlock is checked against the code that honours it**, so no card can promise something that does nothing.
+
+Full record: [the third rung of every branch](docs/implementation/RESEARCH_TIER_3_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.17-dev - 2026-09-29 - four more menu slides
 
 - **Six main-menu images now cycle instead of two.** Laboratory operations, industrial gate logistics, a corridor encounter and a silent recovery join the two that were already there.

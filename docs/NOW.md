@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.17-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.18-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **173 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `FB06DD120589250CF7AB6FBA63DA5851C82D1244D243E85CF6021B33A5F98F2C`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
+| Assembly | SHA-256 `DA438B9E7B355487C34A4F75693067E08B175AB8BF86A3376BF733951893FBE3`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
 | Checkers | **eight**, all passing |
 | Proofs | **NINETEEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.17
+## What shipped this session, 0.7.1 → 0.12.18
 
 | Version | What |
 |---|---|
@@ -100,6 +100,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.15 | **The universe has factions in it** — seven, all neutral, **no settlements and no new content**. Closes the largest unbuilt owner direction |
 | 0.12.16 | **The menu takes any number of slides** — folder-scanned with a load-bearing name prefix, plus the art brief. Two integrity notes that were always wrong, fixed |
 | 0.12.17 | **Four more menu slides** — six now cycle. A slide that would never have appeared is caught before it ships; provenance ships for the Steam disclosure |
+| 0.12.18 | **The third rung of every branch** — research tier 3, **all seven**, every one moving an observable knob. Two design restraints asserted |
 
 ---
 
@@ -413,6 +414,9 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 197. **A drop-in folder needs a proof that nothing dropped in can fail silently.** A slide named without the prefix is loaded by nothing and shown to nobody, and no build, checker or log says so. When content arrives from outside the code, **assert the naming contract** and plant a stray file to prove it fails.
 198. **Validate delivered binary assets structurally, at build.** A truncated PNG fails when Unity reads it, long after the build reported success. Check the signature **and** that `IEND` is the final chunk. My first version of that check compared the last eight bytes literally and condemned every file, including ones already shipping — **the check was wrong, not the files.**
 199. **Provenance for generated art is a release obligation, not a nicety.** Steam requires AI-content disclosure and menu images are the single exception to the no-new-art rule. `prompts-and-provenance.json` records tool and prompt per image, and a proof asserts it exists.
+200. **A tier deleted for having no knobs is worth re-surveying once the systems land.** Tier 3 had nothing to move for four of seven branches at 0.12.5-dev and a real read site for **all seven** at 0.12.18-dev, because arc 5 wrote the systems in between. **Re-run the sweep; do not carry the old verdict.**
+201. **A restraint is only a restraint if breaking it fails.** The per-coordinate frontier cap must never become a research knob, and shelter must never reach zero. Both are asserted and both were fault-planted — otherwise they are comments.
+202. **Proximity is not the thing that happens.** A claim that looked for a capability name within 400 characters of a constant broke the moment a legitimate line was written above it. **Key off the assignment, the guard, the exit status — never off what sits nearby.** Fifth time.
 
 ---
 
@@ -503,7 +507,7 @@ for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: 
 ## Gotchas learned the hard way
 
 - **XML comments cannot contain `--`.** Hit **five times**. The checker names the rule and the line.
-- **Bash heredocs mangle `\n` and break on apostrophes.** Hit **NINE times**, the last three after this line already said so. **Stop reaching for a heredoc when the payload contains a backslash escape or an apostrophe** — use the Write tool, and a message file for commits.
+- **Bash heredocs mangle `\n` and break on apostrophes.** Hit **TEN times**, the last three after this line already said so. **Stop reaching for a heredoc when the payload contains a backslash escape or an apostrophe** — use the Write tool, and a message file for commits.
 - **A GitHub push can silently drop some refs.** Read back all eight, every time — it happened once this session.
 - **A failed `assert` in a patch script means nothing was written** — the write comes last. So a fault-plant whose anchor was wrong plants nothing, and the proof passing afterwards proves nothing. Check the plant landed.
 - `git` index lock goes stale; `rm -f .git/index.lock`.

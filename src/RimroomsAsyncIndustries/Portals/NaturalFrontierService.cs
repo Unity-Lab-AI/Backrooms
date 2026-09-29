@@ -85,6 +85,19 @@ namespace RimroomsAsyncIndustries.Portals
         internal const int FrontierRarity = 12;
 
         /// <summary>
+        /// Rarity once a branch reads a space well enough to spot a way onward sooner.
+        ///
+        /// **Spatial tier 3: `RR_Cap_CoordinateReading`.** One doorway in eight rather than one in
+        /// twelve.
+        ///
+        /// **The CAP is deliberately not touched.** Its own summary says raising
+        /// <see cref="MaximumFrontiersPerCoordinate"/> is a design decision rather than a tuning
+        /// knob, because the cap is what keeps a chain of spaces finite. So this makes the two a
+        /// branch may find arrive sooner; it never makes them three.
+        /// </summary>
+        internal const int PractisedFrontierRarity = 8;
+
+        /// <summary>
         /// How many ways onward may ever be found on an **ordinary** map — a colony, or a
         /// generated world site. One, deliberately. The Backrooms is where doorways lead
         /// somewhere else; the world is where that is a rare and notable event, and a base
@@ -217,7 +230,9 @@ namespace RimroomsAsyncIndustries.Portals
             if (door == null || origin == null || campaign == null) { return null; }
             int draw = CampaignSeed.Derive(origin.Seed,
                 "wayout:" + door.Position.x + "," + door.Position.z, 1);
-            if (draw % EmergenceShare != 0) { return null; }
+            int share = campaign.HasCapability("RR_Cap_WayHomeDiscipline")
+                ? PractisedEmergenceShare : EmergenceShare;
+            if (draw % share != 0) { return null; }
 
             List<CompRimroomsEmergence> anchors = CompRimroomsEmergence.Anchors();
             if (anchors.Count == 0) { return null; }
@@ -278,7 +293,8 @@ namespace RimroomsAsyncIndustries.Portals
                 {
                     OriginId = record.Id,
                     Seed = record.Seed,
-                    Rarity = FrontierRarity,
+                    Rarity = campaign.HasCapability("RR_Cap_CoordinateReading")
+                        ? PractisedFrontierRarity : FrontierRarity,
                     Cap = MaximumFrontiersPerCoordinate,
                     KeyPrefix = "frontier:"
                 };
@@ -341,6 +357,16 @@ namespace RimroomsAsyncIndustries.Portals
         /// home is the thing that makes the rest of the topology usable rather than a trap.
         /// </summary>
         private const int EmergenceShare = 3;
+
+        /// <summary>
+        /// The share once a branch has drilled getting people home.
+        ///
+        /// **Fieldcraft tier 3: `RR_Cap_WayHomeDiscipline`.** One draw in two rather than one in
+        /// three produces a way out to the world instead of a way deeper. This belongs to
+        /// Fieldcraft rather than Spatial because it is not about reading a space, it is about
+        /// **coming back out of one** -- the same subject as the return drill and the relief watch.
+        /// </summary>
+        private const int PractisedEmergenceShare = 2;
 
         private static RimroomsCampaignComponent Campaign()
         { return Current.Game == null ? null : Current.Game.GetComponent<RimroomsCampaignComponent>(); }
@@ -408,6 +434,15 @@ namespace RimroomsAsyncIndustries.Portals
     {
         private const int SurveyTicks = 600;
 
+        /// <summary>
+        /// Survey time once a branch has reference standards to measure against.
+        ///
+        /// **Measurement tier 3: `RR_Cap_RapidSurvey`.** Ten seconds rather than fourteen at
+        /// normal speed. Visible on the progress bar the job already draws, which is the point:
+        /// an unlock nobody can see happening is the thing invariant 136 deletes.
+        /// </summary>
+        private const int RapidSurveyTicks = 420;
+
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         { return pawn.Reserve(job.targetA, job, 1, -1, null, errorOnFailed); }
 
@@ -416,7 +451,11 @@ namespace RimroomsAsyncIndustries.Portals
             this.FailOnDespawnedOrNull(TargetIndex.A);
             this.FailOn(() => !NaturalFrontierService.IsFrontierCandidate(job.targetA.Thing));
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
-            Toil survey = Toils_General.Wait(SurveyTicks, TargetIndex.A);
+            RimroomsCampaignComponent surveyCampaign = Current.Game == null ? null
+                : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            int surveyTicks = surveyCampaign != null && surveyCampaign.HasCapability("RR_Cap_RapidSurvey")
+                ? RapidSurveyTicks : SurveyTicks;
+            Toil survey = Toils_General.Wait(surveyTicks, TargetIndex.A);
             survey.FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch);
             survey.WithProgressBarToilDelay(TargetIndex.A);
             yield return survey;

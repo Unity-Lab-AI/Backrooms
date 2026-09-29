@@ -23,7 +23,7 @@ namespace RimroomsAsyncIndustries.UI
 
             IReadOnlyList<RemoteSiteRecord> sites = campaign.RemoteSites;
             listing.Label("RR_Sites_Summary".Translate(
-                campaign.LiveRemoteSiteCount, RimroomsCampaignComponent.MaximumRemoteSites,
+                campaign.LiveRemoteSiteCount, campaign.RemoteSiteCap,
                 campaign.DailyRemoteSiteOverheadUsd.ToString("N0")));
             listing.Gap(8f);
 
@@ -90,7 +90,7 @@ namespace RimroomsAsyncIndustries.UI
             if (map.Parent == null || map.Parent.Destroyed || map.Parent.Faction != Faction.OfPlayer)
             { return "RR_Sites_BlockedNotYours"; }
             if (campaign.IsRegisteredRemoteSite(map)) { return "RR_Sites_BlockedAlready"; }
-            if (campaign.RemoteSites.Count >= RimroomsCampaignComponent.MaximumRemoteSites)
+            if (campaign.RemoteSites.Count >= campaign.RemoteSiteCap)
             { return "RR_Sites_BlockedTooMany"; }
             return null;
         }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using RimroomsAsyncIndustries.Economy;
 using RimWorld;
@@ -83,6 +83,18 @@ namespace RimroomsAsyncIndustries.Threats
         /// </summary>
         private const float BestShelterRate = 0.2f;
 
+        /// <summary>
+        /// The best shelter can do once a branch knows how to hold a space against what is in it.
+        ///
+        /// **Entities and containment tier 3: `RR_Cap_SpaceDiscipline`.** 0.12 rather than 0.20.
+        ///
+        /// **Still never zero**, which is the rule the base constant exists to state: a coordinate
+        /// is always wearing, just slowly, and no player may build a room that makes the place
+        /// ordinary. This unlock makes a well-built room better; it does not make the Backrooms
+        /// somewhere you can live.
+        /// </summary>
+        private const float DisciplinedShelterRate = 0.12f;
+
         /// <summary>How often a pawn's surroundings are re-scored. Cheap, but not free.</summary>
         private const int ShelterInterval = 600;
 
@@ -109,7 +121,11 @@ namespace RimroomsAsyncIndustries.Threats
         {
             if (pawn == null || !pawn.Spawned) { return 1f; }
             float score = ShelterScore(pawn);
-            return Mathf.Lerp(1f, BestShelterRate, Mathf.Clamp01(score));
+            Company.RimroomsCampaignComponent campaign = Current.Game == null ? null
+                : Current.Game.GetComponent<Company.RimroomsCampaignComponent>();
+            float best = campaign != null && campaign.HasCapability("RR_Cap_SpaceDiscipline")
+                ? DisciplinedShelterRate : BestShelterRate;
+            return Mathf.Lerp(1f, best, Mathf.Clamp01(score));
         }
 
         /// <summary>
