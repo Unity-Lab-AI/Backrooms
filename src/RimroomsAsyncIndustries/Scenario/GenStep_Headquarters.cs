@@ -33,6 +33,7 @@ namespace RimroomsAsyncIndustries.Scenario
             HeadquartersSetupComponent receipt = map.GetComponent<HeadquartersSetupComponent>();
             if (receipt.setupStarted) { return; }
             receipt.setupStarted = true;
+            receipt.receiptVersion = 2;
             receipt.startDefName = start.defName;
             try
             {
@@ -43,6 +44,7 @@ namespace RimroomsAsyncIndustries.Scenario
                     out staff, out roles, out refusal)) { throw new InvalidOperationException(refusal); }
                 receipt.staff = staff;
                 receipt.staffRoles = roles;
+                receipt.acceptedSupplies = new List<string>(Current.Game.GetComponent<RimroomsStartupComponent>().SupplySummary);
                 HeadquartersBuilder.Build(start, map, receipt);
                 receipt.setupComplete = true;
             }
@@ -139,25 +141,7 @@ namespace RimroomsAsyncIndustries.Scenario
                     }
                 }
             }
-            index = 0;
-            foreach (RimroomsStockPlan stock in start.stock)
-            {
-                if (stock.thing == null || stock.count < 1 || stock.thing.stackLimit < 1)
-                { throw new InvalidOperationException("Invalid starting physical stock."); }
-                int remaining = stock.count;
-                while (remaining > 0)
-                {
-                    Thing item = ThingMaker.MakeThing(stock.thing, stock.stuff);
-                    item.stackCount = Math.Min(remaining, stock.thing.stackLimit);
-                    int quantity = item.stackCount;
-                    item.TryGetComp<CompQuality>()?.SetQuality(QualityCategory.Normal, ArtGenerationContext.Outsider);
-                    if (!GenPlace.TryPlaceThing(item, start.stockCell, map, ThingPlaceMode.Near))
-                    { throw new InvalidOperationException("No receiving space for " + stock.thing.defName); }
-                    item.SetForbidden(false, false);
-                    remaining -= quantity;
-                }
-                receipt.placedRecords.Add("stock:" + index++ + ":" + stock.thing.defName + ":" + stock.count);
-            }
+            // Editable native scenario parts/possessions own supplies. Never replay start.stock here.
             if (!start.arrivalCell.Standable(map))
             { throw new InvalidOperationException("Headquarters arrival position is not walkable."); }
             MapGenerator.PlayerStartSpot = start.arrivalCell;

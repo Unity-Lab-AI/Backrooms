@@ -5,6 +5,8 @@
 
 Start with [AGENTS.md](AGENTS.md), the [AI handoff](docs/AI_BUILD_HANDOFF.md), [master TODO](docs/PREPRODUCTION_AND_IMPLEMENTATION_TODO.md), and [build instructions](docs/BUILDING.md). Keep owner decisions D1–D9 and S1/B; do not expand deferred named threats or introduce a mandatory optional-mod dependency.
 
+Read [regression containment](docs/REGRESSION_CONTAINMENT.md) before extending an implemented path. Keep the baseline, impact list, deliberate changes, preserved behavior and remaining verification in the task record, then update the master TODO to match actual evidence.
+
 ## Task and source ownership
 
 Each task gets a record under `docs/implementation/` naming its TODO items, feature IDs, canonical contracts, exact reviewed mod rows/package IDs, source facts, saved-state owner, player route, failure/recovery, file scope and acceptance evidence. Use the [foundation task](docs/implementation/PHASE_1_FOUNDATION_TASK.md) as an example. Mark future paths **planned**. Agents receive exclusive file/row scopes; the lead reconciles changes to shared contracts. Do not copy game/mod source or assets.

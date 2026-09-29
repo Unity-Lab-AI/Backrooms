@@ -1,0 +1,9 @@
+  RimroomsAsyncIndustries -> C:\Users\gfour\Desktop\Backrooms\src\RimroomsAsyncIndustries\bin\Release\net472\RimroomsAsyncIndustries.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.45
+Built UnityLabAI.RimroomsAsyncIndustries 0.3.1-dev: C:\Users\gfour\Desktop\Backrooms\Mod\Rimrooms - Async Industries
+Package contains 69 approved files. No game was launched.

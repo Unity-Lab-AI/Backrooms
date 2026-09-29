@@ -4,6 +4,7 @@
   "note": "Reviewed explicit game-loadable package files. Update with each implemented content addition; source, evidence and third-party files stay outside this list.",
   "files": [
     "1.6/Assemblies/RimroomsAsyncIndustries.dll",
+    "1.6/Languages/English/Keyed/RR_StartupSetup.xml",
     "1.6/Defs/JobDefs/RR_ExpeditionJobs.xml",
     "1.6/Defs/JobDefs/RR_GateJobs.xml",
     "1.6/Defs/JobDefs/RR_InvestigationJobs.xml",

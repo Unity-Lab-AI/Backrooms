@@ -13,7 +13,7 @@ The scenario opening cards live in [`docs/SCENARIOS.md`](docs/SCENARIOS.md); the
 
 ## Build and installation
 
-**Current development version: 0.3.0-dev.** This adds applicant hiring, procurement of physical native goods, facility observations, a designated native research bench, Core-book evidence custody and the original menu slideshow to the earlier expedition slice. The [current build record](docs/implementation/PHASE_3_BUILD_RECORD.md) records the exact compiler/package result, source paths and remaining work. Existing-content replacement, the full campaign and runtime acceptance remain in progress; no game launch is required to continue independent implementation.
+**Current development version: 0.3.1-dev.** The [scenario/provider checkpoint](docs/implementation/PHASE_3_SCENARIO_PROVIDER_BUILD.md) records the current build result and remaining work. It extends the [0.3.0 company systems](docs/implementation/PHASE_3_BUILD_RECORD.md): hiring, physical procurement, facility observations, native research/evidence and menu presentation. Existing-content replacement, the full campaign and runtime acceptance remain in progress; no game launch is required to continue independent implementation.
 
 - [Build and staging instructions](docs/BUILDING.md) — pinned local references, locked restore, copyable package, safe updates and RimSort discovery.
 - [First owner-launched session](docs/implementation/PHASE_2_OWNER_LAUNCH.md) — staged package identities, separate QA bridge and RimSort launch steps.

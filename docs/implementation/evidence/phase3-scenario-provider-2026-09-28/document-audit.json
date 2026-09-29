@@ -1,0 +1,24 @@
+{
+  "scope": "Saved reference/record integrity only; no runtime or source-truth certification",
+  "counts": {
+    "markdown_files": 430,
+    "local_link_occurrences": 2503,
+    "markdown_fragment_occurrences": 169,
+    "feature_ids": 17,
+    "mod_rows": 294,
+    "workbook_compared_cells": 3234,
+    "review_records": 294,
+    "relationship_records": 914,
+    "in_profile_records": 602,
+    "unique_directed_pairs": 443,
+    "in_profile_relationship_types": {
+      "LoadBefore": 5,
+      "Requires": 226,
+      "LoadAfter": 371
+    },
+    "indexed_story_records": 23,
+    "gate0_open_boxes": 0
+  },
+  "errors": [],
+  "result": "PASS"
+}

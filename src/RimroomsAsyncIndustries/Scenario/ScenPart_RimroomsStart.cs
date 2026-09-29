@@ -28,6 +28,12 @@ namespace RimroomsAsyncIndustries.Scenario
             if (startDef == null) { yield return "Rimrooms scenario has no startDef."; }
         }
 
+        public override IEnumerable<Page> GetConfigPages()
+        {
+            // XML places this part after the native pawn page. EdB's next-page path also reaches it.
+            yield return new Page_RimroomsCompanySetup();
+        }
+
         public override void PreMapGenerate()
         {
             base.PreMapGenerate();
@@ -43,12 +49,7 @@ namespace RimroomsAsyncIndustries.Scenario
             { throw new InvalidOperationException("[Rimrooms] Refused duplicate company startup."); }
             Find.GameInitData.mapSize = startDef.mapSize;
             Find.GameInitData.mapGeneratorDef = startDef.mapGenerator;
-            // PrepForMapGen assigned native work priorities before this hook.
-            for (int i = 0; i < staff.Count; i++)
-            {
-                foreach (WorkTypeDef work in startDef.roles[i].workTypes)
-                { staff[i].workSettings.SetPriority(work, 2); }
-            }
+            // Native PrepForMapGen owns initial work priorities. Company role labels do not overwrite them.
         }
 
         public override void PostGameStart()
@@ -75,6 +76,11 @@ namespace RimroomsAsyncIndustries.Scenario
                 return CompanyActionResult.Refused(receipt == null ? "RR_Start_MissingSetup" : receipt.failure ?? "RR_Start_MissingSetup");
             }
             if (receipt.branchInitialized) { return CompanyActionResult.Existing(); }
+            if (receipt.receiptVersion != 1 && receipt.receiptVersion != 2)
+            { return CompanyActionResult.Refused("RR_Setup_UnknownReceipt"); }
+            // Schema-1 physical receipts predate the native-arrival journal and remain valid.
+            if (receipt.receiptVersion == 2 && !receipt.arrivalComplete)
+            { return CompanyActionResult.Refused(receipt.failure ?? "RR_Setup_ArrivalIncomplete"); }
             RimroomsCampaignComponent company = Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
             CompanyActionResult result = company.InitializeBranch(new BranchStartRequest
             {
@@ -98,7 +104,7 @@ namespace RimroomsAsyncIndustries.Scenario
             receipt.branchInitialized = true;
             receipt.failure = null;
             SetStartingRelations();
-            Find.LetterStack.ReceiveLetter("RR_Start_WelcomeTitle".Translate(), "RR_Start_Welcome".Translate(), LetterDefOf.NeutralEvent);
+            Find.LetterStack.ReceiveLetter("RR_Start_WelcomeTitle".Translate(), "RR_Setup_Welcome".Translate(), LetterDefOf.NeutralEvent);
             return result;
         }
 
@@ -128,53 +134,16 @@ namespace RimroomsAsyncIndustries.Scenario
             staff = new List<Pawn>();
             roles = new List<string>();
             refusal = null;
-            List<Pawn> selected = candidates == null ? new List<Pawn>() : candidates.Take(5).ToList();
-            if (start == null || start.roles == null || start.roles.Count != 5 || selected.Count != 5 || selected.Distinct().Count() != 5)
-            { refusal = "RR_Start_RosterCount".Translate(); return false; }
-            if (start.roles.Any(r => r == null || r.kind == null || r.skills == null || r.workTypes == null))
-            { refusal = "RR_Start_MissingSetup".Translate(); return false; }
-            foreach (RimroomsStaffRole role in start.roles)
-            {
-                Pawn pawn = null;
-                foreach (Pawn candidate in selected)
-                {
-                    if (candidate != null && candidate.kindDef == role.kind && !staff.Contains(candidate))
-                    { pawn = candidate; break; }
-                }
-                if (pawn == null || pawn.Dead || pawn.Downed || pawn.skills == null || pawn.workSettings == null ||
-                    !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Moving) ||
-                    !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) ||
-                    (role.mustFight && pawn.WorkTagIsDisabled(WorkTags.Violent)) ||
-                    role.workTypes.Any(w => w == null || pawn.WorkTypeIsDisabled(w)) ||
-                    role.skills.Any(s => s == null || s.skill == null || pawn.skills.GetSkill(s.skill).TotallyDisabled || !s.PawnSatisfies(pawn)))
-                {
-                    refusal = "RR_Start_RosterCapability".Translate(role.kind == null ? role.id : role.kind.LabelCap.ToString());
-                    return false;
-                }
-                staff.Add(pawn);
-                roles.Add(role.id);
-            }
-            return true;
+            RimroomsStartupComponent setup = Verse.Current.Game?.GetComponent<RimroomsStartupComponent>();
+            if (setup != null && setup.TryRead(start, out staff, out roles) &&
+                candidates != null && staff.SequenceEqual(candidates)) { return true; }
+            refusal = "RR_Setup_Unaccepted".Translate();
+            return false;
         }
     }
 
     public sealed class Page_ConfigureRimroomsStaff : Page_ConfigureStartingPawns
     {
-        protected override bool CanDoNext()
-        {
-            if (!base.CanDoNext()) { return false; }
-            ScenPart_RimroomsStart part = ScenPart_RimroomsStart.Current;
-            List<Pawn> staff;
-            List<string> roles;
-            string refusal = null;
-            if (part == null || !ScenPart_RimroomsStart.TryGetStaff(part.startDef,
-                Find.GameInitData.startingAndOptionalPawns, out staff, out roles, out refusal))
-            {
-                Messages.Message(part == null ? "RR_Start_MissingSetup".Translate().ToString() : refusal,
-                    MessageTypeDefOf.RejectInput, false);
-                return false;
-            }
-            return true;
-        }
+        // Kept for legacy ScenPartDef resolution; new starts use the native page plus final review.
     }
 }

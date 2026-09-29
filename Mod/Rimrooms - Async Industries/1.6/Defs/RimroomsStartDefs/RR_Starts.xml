@@ -91,45 +91,30 @@
       <li><start>(17, 0, 16)</start><length>28</length><alongX>false</alongX></li>
       <li><start>(41, 0, 16)</start><length>29</length><alongX>false</alongX></li>
     </conduits>
-    <stock>
-      <li><thing>Steel</thing><count>250</count></li>
-      <li><thing>ComponentIndustrial</thing><count>18</count></li>
-      <li><thing>ComponentSpacer</thing><count>2</count></li>
-      <li><thing>Silver</thing><count>150</count></li>
-      <li><thing>MealSurvivalPack</thing><count>50</count></li>
-      <li><thing>MedicineIndustrial</thing><count>6</count></li>
-      <li><thing>Gun_BoltActionRifle</thing><count>1</count></li>
-      <li><thing>Gun_Revolver</thing><count>1</count></li>
-      <li><thing>Apparel_FlakVest</thing><count>1</count></li>
-      <li><thing>WoodLog</thing><count>150</count></li>
-      <li><thing>RR_FieldRecorder</thing><count>1</count></li>
-      <li><thing>RR_SurveyTag</thing><count>6</count></li>
-      <li><thing>RR_ReturnBeacon</thing><count>1</count></li>
-      <li><thing>RR_SealedEvidenceCase</thing><count>1</count></li>
-    </stock>
+    <!-- Editable stock is owned by native starting-thing parts in RR_Scenarios.xml. -->
     <roles>
       <li>
-        <id>operations</id><kind>RR_OperationsStaff</kind><mustFight>false</mustFight>
+        <id>operations</id><mustFight>false</mustFight>
         <skills><Social>6</Social><Intellectual>4</Intellectual></skills>
         <workTypes><li>Warden</li><li>Hauling</li></workTypes>
       </li>
       <li>
-        <id>research</id><kind>RR_ResearchStaff</kind><mustFight>false</mustFight>
+        <id>research</id><mustFight>false</mustFight>
         <skills><Intellectual>8</Intellectual><Crafting>4</Crafting></skills>
         <workTypes><li>Research</li></workTypes>
       </li>
       <li>
-        <id>engineering</id><kind>RR_EngineeringStaff</kind><mustFight>false</mustFight>
+        <id>engineering</id><mustFight>false</mustFight>
         <skills><Construction>8</Construction><Crafting>6</Crafting></skills>
         <workTypes><li>Construction</li><li>Smithing</li><li>Crafting</li></workTypes>
       </li>
       <li>
-        <id>security</id><kind>RR_SecurityStaff</kind><mustFight>true</mustFight>
+        <id>security</id><mustFight>true</mustFight>
         <skills><Shooting>8</Shooting><Melee>4</Melee></skills>
         <workTypes><li>Hauling</li></workTypes>
       </li>
       <li>
-        <id>medical_logistics</id><kind>RR_MedicalLogisticsStaff</kind><mustFight>false</mustFight>
+        <id>medical_logistics</id><mustFight>false</mustFight>
         <skills><Medicine>8</Medicine><Cooking>6</Cooking><Plants>4</Plants></skills>
         <workTypes><li>Doctor</li><li>Cooking</li><li>Growing</li></workTypes>
       </li>

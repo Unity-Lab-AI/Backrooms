@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Setup_Title>Review company startup</RR_Setup_Title>
+  <RR_Setup_Introduction>Your selected people and supplies are retained. Company roles are editable assignments, not changes to pawn kinds, skills, traits, health, relationships or equipment. Capability warnings are advisory; missing capabilities may require hiring, training or different assignments before operations. Use Back to change people or supplies.</RR_Setup_Introduction>
+  <RR_Setup_InvalidRoster>Select 1–20 distinct, living humanlike starting people. No extra people will be silently removed to fit this boundary. Use Back to adjust your selected roster.</RR_Setup_InvalidRoster>
+  <RR_Setup_InvalidTile>Select a valid surface starting tile before reviewing the company.</RR_Setup_InvalidTile>
+  <RR_Setup_InvalidConfiguration>The company startup definition is incomplete or invalid. Review the game log before starting; no people or supplies have been granted.</RR_Setup_InvalidConfiguration>
+  <RR_Setup_Site>Selected world tile: {0}. Headquarters size: {1} × {1}.</RR_Setup_Site>
+  <RR_Setup_StaffCount>Selected staff: {0}. Other native optional candidates are not starting staff.</RR_Setup_StaffCount>
+  <RR_Setup_Funding>Company allocation: ${0}. Daily wage per starting staff member: ${1}; daily overhead: ${2}. Physical supplies are listed separately.</RR_Setup_Funding>
+  <RR_Setup_Role>Company role: {0}</RR_Setup_Role>
+  <RR_Setup_Role_operations>Operations</RR_Setup_Role_operations>
+  <RR_Setup_Role_research>Research</RR_Setup_Role_research>
+  <RR_Setup_Role_engineering>Engineering</RR_Setup_Role_engineering>
+  <RR_Setup_Role_security>Security</RR_Setup_Role_security>
+  <RR_Setup_Role_medical_logistics>Medical and logistics</RR_Setup_Role_medical_logistics>
+  <RR_Setup_LimitedCapacity>Advisory: this person is downed or has limited movement/manipulation. Their existing health is preserved.</RR_Setup_LimitedCapacity>
+  <RR_Setup_NoViolence>Advisory: this person cannot perform violent work.</RR_Setup_NoViolence>
+  <RR_Setup_DisabledWork>Advisory: {0} work is disabled for this person.</RR_Setup_DisabledWork>
+  <RR_Setup_AdvisorySkill>Suggested role qualification: {0} {1}. This skill will not be raised automatically.</RR_Setup_AdvisorySkill>
+  <RR_Setup_Gear>Worn, equipped and carried: {0}</RR_Setup_Gear>
+  <RR_Setup_Possessions>Additional native starting possessions: {0}</RR_Setup_Possessions>
+  <RR_Setup_None>none</RR_Setup_None>
+  <RR_Setup_Supplies>Editable native starting supplies and scenario conditions</RR_Setup_Supplies>
+  <RR_Setup_Facility>Fixed prebuilt facility — separate from editable carried supplies</RR_Setup_Facility>
+  <RR_Setup_FixedInfrastructure>Layout sections: {0}; ordinary structure doors: {1}; conduit runs: {2}. Walls, floors, roofs and these conduits are part of this fixed facility.</RR_Setup_FixedInfrastructure>
+  <RR_Setup_FixedFuel>{0}: starts with {1} of its fuel capacity, separate from loose starting fuel.</RR_Setup_FixedFuel>
+  <RR_Setup_FixedBattery>{0}: starts with {1} stored charge.</RR_Setup_FixedBattery>
+  <RR_Setup_FixedCapacity>The facility and food defaults do not expand with the roster. Build extra beds and arrange additional supplies for larger teams. A standard first expedition needs three field crew plus a separate headquarters operator; smaller starts can hire before dispatch. Native startup assigns initial Work settings; company roles do not overwrite them.</RR_Setup_FixedCapacity>
+  <RR_Setup_Confirm>I have reviewed this roster, its advisory capability gaps, physical supplies and fixed facility.</RR_Setup_Confirm>
+  <RR_Setup_NeedsReview>Review the selected people, supplies and fixed facility, then acknowledge this page before starting.</RR_Setup_NeedsReview>
+  <RR_Setup_Unaccepted>The selected roster, company roles or tile changed after final review. Return to company setup and review them again before starting.</RR_Setup_Unaccepted>
+  <RR_Setup_ArrivalIncomplete>Native company arrival did not finish. The saved receipt prevents a second supply grant. Preserve the map and log; return to setup for a new campaign if a selected person failed to arrive.</RR_Setup_ArrivalIncomplete>
+  <RR_Setup_UnknownReceipt>This headquarters receipt belongs to an unsupported setup version. Preserve the save and use the matching build; initialization will not replay physical grants.</RR_Setup_UnknownReceipt>
+  <RR_Setup_Welcome>Your selected people have arrived and the branch allocation is recorded. Native starting supplies are near the arrival point; equipped and carried items remain with their owners. The fixed facility is separate from those supplies. Review Operations, assign a capable operator, complete the machine, and prepare a real return route. A small or underqualified roster may need recruitment or training first. Native Work, Research, Architect and pawn controls remain available.</RR_Setup_Welcome>
+</LanguageData>

@@ -33,6 +33,10 @@ These product requirements supplement D1–D9; they do not change those answers 
 
 On 2026-09-28 the owner reaffirmed three custom scenario openings, Prepare Carefully support for their starting people, and ordinary world-site choice for Async Industries. Portals must be existing doors recolored with a native aura, with different supported sizes and real connected batteries, generation, control/research equipment, upgrades, longer operating windows and saved-map recall. The inside start was proposed as configurable solo/group with automatic Backrooms placement until a reliable exit is discovered; the party/exit choices are awaiting the two grouped answers. See [the complete refinement](SCENARIO_SETUP_AND_PORTAL_NETWORK.md). This is continued build direction, not a new Gate 0 blocker. The lead is provisionally proceeding with configurable solo/group, automatic Backrooms entry and a fixed discovered exit after allowing time for answers; these defaults remain explicitly revisable, not recorded owner selections.
 
+## Completion tracking, regression containment and publication cadence
+
+On 2026-09-28 the owner required completed work to be checked in the TODO with evidence and explicit regression containment while extending existing implementation. Follow [REGRESSION_CONTAINMENT.md](REGRESSION_CONTAINMENT.md). The owner also reaffirmed both remote cascades but requested publication only at meaningful completed milestones, not every edit. Batch code, contracts, checked tasks and evidence before the cascade. The owner clarified that every publication must include all current project changes, with no separate unpublished batch. Finish and integrate active work first; verify the final remote refs in tool output without creating a new local-only receipt. Existing signed-in browser access remains available, but verify the actual Git transport result.
+
 ## Owner choices and recorded answers
 
 The marked boxes below are recorded as owner selections. Where multiple compatible options are marked, they are combined and explained in the decision log. D2's proposal is accepted. The suggested answer is a proposal unless it is marked by the owner.

@@ -9,6 +9,14 @@
     <canBePlayerAddedRemoved>false</canBePlayerAddedRemoved>
   </ScenPartDef>
   <ScenPartDef>
+    <defName>RR_CompanyArrival</defName>
+    <label>company arrival</label>
+    <category>Fixed</category>
+    <scenPartClass>RimroomsAsyncIndustries.Scenario.ScenPart_RimroomsArrival</scenPartClass>
+    <canBeRandomlyAdded>false</canBeRandomlyAdded>
+    <canBePlayerAddedRemoved>false</canBePlayerAddedRemoved>
+  </ScenPartDef>
+  <ScenPartDef>
     <defName>RR_StaffConfiguration</defName>
     <label>starting staff</label>
     <category>Fixed</category>

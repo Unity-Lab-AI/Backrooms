@@ -7,6 +7,8 @@ This file is the navigation index for the research and design materials a future
 
 **Latest owner design refinement:** [Scenario setup and physical door portals](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) links the three starts, Prepare Carefully row 85, Stargates! reference row 218 and the native-door/equipment network. This is design direction, not a compatibility or implementation result.
 
+**Implementation process:** [Regression containment and completion tracking](REGRESSION_CONTAINMENT.md) is the mandatory rule for preserving already implemented behavior and checking off source/build increments without overstating runtime acceptance.
+
 ## Project source-of-truth documents
 
 **Current implementation entry:** [0.3.0-dev company build/source map](implementation/PHASE_3_BUILD_RECORD.md), [earlier 0.2.0 slice](implementation/PHASE_2_BUILD_RECORD.md), [build instructions](BUILDING.md), and [save policy](SAVE_MIGRATION_POLICY.md). The current map links personnel, procurement, facilities, native laboratory/book/audio reuse and the approved original menu presentation to their source records and exact file paths. Read [CONTENT_REUSE_POLICY.md](CONTENT_REUSE_POLICY.md) and the [remaining replacement map](implementation/EXISTING_CONTENT_REPLACEMENT_MAP.md) before extending historical custom objects. Source/compilation evidence is separate from owner-launched gameplay evidence.

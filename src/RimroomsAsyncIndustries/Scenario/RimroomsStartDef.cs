@@ -40,12 +40,11 @@ namespace RimroomsAsyncIndustries.Scenario
             if (roles != null)
             {
                 var ids = new HashSet<string>();
-                var kinds = new HashSet<PawnKindDef>();
                 foreach (RimroomsStaffRole role in roles)
                 {
-                    if (role == null || string.IsNullOrWhiteSpace(role.id) || role.kind == null || role.skills == null || role.workTypes == null)
+                    if (role == null || string.IsNullOrWhiteSpace(role.id) || role.skills == null || role.workTypes == null)
                     { yield return "Invalid headquarters staff role."; continue; }
-                    if (!ids.Add(role.id) || !kinds.Add(role.kind)) { yield return "Starting staff roles and kinds must be unique."; }
+                    if (!ids.Add(role.id)) { yield return "Starting role IDs must be unique."; }
                     foreach (SkillRequirement skill in role.skills)
                     { if (skill == null || skill.skill == null || skill.minLevel < 0 || skill.minLevel > 20) { yield return "Invalid staff skill floor."; } }
                     foreach (WorkTypeDef work in role.workTypes)
