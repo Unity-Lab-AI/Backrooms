@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Generation;
 using RimWorld;
@@ -77,7 +77,28 @@ namespace RimroomsAsyncIndustries.Portals
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) { yield return gizmo; }
-            if (parent == null || parent.Faction != Faction.OfPlayer || !parent.Spawned) { yield break; }
+            if (parent == null || !parent.Spawned) { yield break; }
+
+            // A recorded way out to the world, offered BEFORE the faction and ordinary-map checks
+            // below: the door this appears on stands inside a Backrooms coordinate and generation
+            // places it with no faction at all, so both of those checks would reject it.
+            //
+            // This is the only player-facing route into Core's caravan formation, and it is a
+            // click. Nothing automatic can reach it -- see WorldExit.cs for the narrowed
+            // stranded-crew guarantee that depends on exactly that.
+            RimroomsCampaignComponent worldExitCampaign = Campaign();
+            if (worldExitCampaign != null && worldExitCampaign.WorldExitFor(parent) != null)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "RR_WorldExit_LeaveLabel".Translate(),
+                    defaultDesc = "RR_WorldExit_LeaveDesc".Translate(),
+                    icon = parent.def.uiIcon,
+                    action = delegate { Show(worldExitCampaign.LeaveThroughWorldExit(parent)); }
+                };
+            }
+
+            if (parent.Faction != Faction.OfPlayer) { yield break; }
             // Never offered inside the Backrooms: a way out cannot come up in the place it
             // leads away from, and offering the command there would only ever refuse.
             if (!OrdinaryBranchMap(parent.Map)) { yield break; }

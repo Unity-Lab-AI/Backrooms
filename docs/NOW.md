@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.20-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.21-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **173 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `93F61D0FD600EE77142EBA18B4184593A91A78FFA7D38258BA87E58744B06371`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
+| Build | **174 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `C39799CE9E0C92088049DC9CB66AF5517F9ED6F55B4D453F7069BD4AFD3C3227`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
 | Checkers | **NINE**, all passing |
-| Proofs | **TWENTY** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
+| Proofs | **TWENTY-ONE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>` — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.20
+## What shipped this session, 0.7.1 → 0.12.21
 
 | Version | What |
 |---|---|
@@ -103,6 +103,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.18 | **The third rung of every branch** — research tier 3, **all seven**, every one moving an observable knob. Two design restraints asserted |
 | 0.12.19 | **The yellow rooms were never carpeted** — a real shipped defect; three of my own audit verdicts corrected. **Twentieth proof** |
 | 0.12.20 | **The register, by the column that matters** — `trace` querying, and a **ninth checker** verifying how this mod uses other mods |
+| 0.12.21 | **A way out into the world** — the last unbuilt piece of the topology. Claim a tile under five maps, caravan over. **A dead end removed** |
 
 ---
 
@@ -425,6 +426,10 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 206. **The mod register is GUIDANCE, not law.** Owner-corrected 2026-09-29: *"remmebr its not law but guidance"*. Consult it, let it shape the design, and say what it said — but a row does not veto work, and a checker built on it must only assert what is **structural**.
 207. **Query the register by `trace`, not only by family.** The trace column names the **Rimrooms feature** a row bears on, which is the question the rule actually asks. It had no query until 0.12.20-dev, and that is precisely why it was the column that got skipped. **A column nobody can ask about is a column nobody consults.**
 208. **A `PatchOperationFindMod` does not edit anybody’s files** — owner-confirmed. It patches the loaded def database at runtime and applies nothing when the mod is absent. What would breach *"WE ARE NOT EDITING OTHER PEOPLES MODS"* is **shipping their content here**, and that is what `check-register-compliance.py` asserts.
+209. **A guarantee narrowed on a directory boundary is a guarantee evaded.** `proof-stranded-crew.py` watched `Gate/*.cs` only, so a `PassToWorld` shipped in `Portals/` would have passed on a technicality. **Say so, ask the owner, and assert the forbidden paths by name** — closing, expiry, traversal — rather than relying on where a file sits.
+210. **The five-map cap is the stricter of ours and the player’s.** Ours is five, counting the coordinate they are standing in; the player’s is `Prefs.MaxNumberOfPlayerSettlements`. **A setting the player chose is never overruled by this mod.**
+211. **Generate the destination before despawning anybody.** The claimed map exists before a pawn is touched, so a failure means nothing moved, and a failed spawn puts that pawn back. Invariant 55 in the one place it would have been easiest to get wrong.
+212. **Let Core choose the world tile.** `TileFinder.TryFindNewSiteTile` already refuses water, space and impassable terrain and honours every mod that patches tile validity. **Seed the roll**, or the way out moves on every reload.
 
 ---
 
@@ -490,7 +495,7 @@ every single time.
 5. Implementation record under `docs/implementation/`.
 6. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
 7. **Every checker** (NINE): `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-display-style.py`, `check-campaign-absolutes.py`, `check-doc-conformance.py`, `check-register-compliance.py`, `research/audit-gate0.py`.
-7b. **Every proof (TWENTY), by exit status:**
+7b. **Every proof (TWENTY-ONE), by exit status:**
 
 ```sh
 for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: $p"; done
@@ -502,6 +507,7 @@ for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: 
    The set: `displacement`, `facilities`, `facility-relief`, `fit`, `gate-links`, `incidents`,
    `interior-resource`, `live-effects`, `menu-slides`, `offer-routes`, `portal-footprint`, `remote-sites`, `request-generation`,
    `request-line`, `research-branches`, `spinup`, `starts`, `stranded-crew`, `tier-ladder`,
+   `world-exit`,
    `universe-factions`.
 
    **`patch-*.py` in that directory are one-shot edit scripts, not proofs.** They were once named

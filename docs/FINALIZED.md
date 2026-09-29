@@ -693,6 +693,33 @@ A **real, shipped, player-visible defect** fixed, and **three of my own audit ve
 
 ---
 
+## Session 2026-09-29 - a way out into the world (0.12.21-dev)
+
+**Verbatim user quotes, in order:** *"okay and remember test cases arnt being worried about right now we are trying to get the build complete so we can test"*, then the owner decision *"Build it - a player caravan is still yours"*, then *"but at that not a player can have up to five maps if settings are right so lets have that 5 map count be universal max for back rooms main map and claiming maps where u pop out and anything over 5 maps defaults to caravans"*.
+
+### What shipped
+
+The last genuinely unbuilt piece of the portal topology: **a way out that leads to a world tile the branch does not hold**, with two outcomes decided by a five-map cap.
+
+### Files touched
+
+`Portals/WorldExit.cs` (new), `Portals/NaturalFrontierService.cs`, `Portals/CompRimroomsEmergence.cs`, `Company/RimroomsCampaignComponent.cs`, `1.6/Languages/English/Keyed/RR_Portals.xml`, `docs/implementation/WORLD_EXIT_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `About.xml`, the csproj, and `proof-world-exit.py` (new, the twenty-first).
+
+### Closure notes
+
+- **THE OWNER OVERRULED MY OWN CAUTION, AND WAS RIGHT TO.** I had parked this because it moves pawns between maps and cannot be verified without a launch. *"test cases arnt being worried about right now we are trying to get the build complete so we can test"* - unverifiable-without-a-launch is not a reason to slow the build. It is built.
+- **THE GAP WAS WORSE THAN THE ROW SAID.** The row described a missing feature. The reality was a **dead end**: `TryRecordWayOut` required a marked anchor on an owned map, and with nothing marked it returned null, so the draw that said *"this leads out"* silently produced a way **deeper** instead. A branch with no marked door could never find a way out **at all** - worst for exactly the player least equipped for it.
+- **A CARAVAN, NOT A NEW WORLD OBJECT - and the register's `trace` column is what settled that.** Querying `RR-OUT` grouped the four Settled transport mods that bear on this exact feature: Carryalls intercontinental transport, Giddy-Up 2, Pack Mules Extended, Alpha Vehicles Age of Sail. **All four already integrate with caravans; none integrates with a bespoke world object of ours.** Core already has *"people standing on a tile you do not own"*. Nothing in the `family` column would have grouped those four together.
+- **THE GUARANTEE CONFLICT WAS REAL AND WAS THE OWNER'S TO SETTLE.** Forming any caravan calls `PassToWorld`, and the stranded-crew guarantee says no gate source ever may, because *"a pawn in the world pool is alive and no longer the player's"*. I stopped and asked rather than deciding. **Owner decision: build it, because a player caravan is still yours.** And I said plainly that the proof only watched `Gate/*.cs`, so shipping this in `Portals/` would have passed on a **directory technicality** - which would have been evading the guarantee, not honouring it.
+- **In the event our source gained NO new `PassToWorld` call at all.** The only route is inside Core's own `ExitMapAndCreateCaravan`. Our one direct call is pre-existing and releases a **declined job applicant**, who was never the player's. The proof asserts that the only caller in our source is that one, that gate sources and traversal still never call it, and that the world exit never calls it directly.
+- **THE OWNER'S FIVE-MAP CAP IMPROVED THE DESIGN RATHER THAN CONSTRAINING IT.** Under the cap the tile is **claimed** through Core's own `SettleUtility.AddNewHome` and the crew walks onto a new map - **which never touches `PassToWorld` at all**, so the narrowed guarantee is not even reached until somebody already holds five maps. At or over it, a caravan. Two gates and **the stricter wins**: ours is five counting the coordinate they are standing in, the player's is `Prefs.MaxNumberOfPlayerSettlements` read through Core's own limit. **Somebody who set that to one meant it**, and this mod does not get to overrule a setting the player chose.
+- **Nobody can be lost.** The claimed map is generated **before** any pawn is despawned, so a failure means nothing has moved; a failed spawn puts that pawn back where it stood. Prisoners, slaves and the downed are never taken - invariant 17, and somebody unconscious on the floor is not walking anywhere. Only the player's own pawns leave.
+- **The destination is Core's choice, not ours.** `TileFinder.TryFindNewSiteTile` already refuses water, space and impassable terrain and already honours every mod that patches tile validity; our own test would be a second opinion that disagrees with the game the first time somebody installs a biome mod. The roll is wrapped in a seeded `Rand` state, so a way out does not move on reload. **`PlanetTile` is a readonly struct and not `IExposable`**, with a private `layerId`, so both halves are saved and the tile rebuilt - losing the layer would put a crew on the wrong planet layer, which reads as a teleport bug rather than a save bug.
+- **Seven planted faults, seven catches, clean on restore**, including a direct `PassToWorld` added to the world exit, the map cap removed, the player's own limit ignored, a prisoner made takeable, the put-back removed, and the dead end restored.
+- Build 0.12.21-dev, **174 C# files**, 91 package files, **0 warnings, 0 errors**. Nine checkers pass, **twenty-one** proofs exit zero. Assembly reproduced by two clean recompiles. **No game was launched, and nothing in this mod has ever been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

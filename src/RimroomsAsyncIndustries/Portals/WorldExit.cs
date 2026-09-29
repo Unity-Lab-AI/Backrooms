@@ -1,0 +1,434 @@
+﻿using System.Collections.Generic;
+using RimroomsAsyncIndustries.Portals;
+using RimWorld;
+using RimWorld.Planet;
+using Verse;
+
+namespace RimroomsAsyncIndustries.Company
+{
+    /// <summary>
+    /// A way out of the Backrooms that leads to a world tile the branch does not hold.
+    ///
+    /// ## The gap this fills
+    ///
+    /// A found way out has always needed a **marked door on a map the branch already owns**. With
+    /// nothing marked, `TryRecordWayOut` returned null and the door led deeper instead — so a
+    /// branch with no marked anchor could never find a way out **at all**. That is worse than the
+    /// row that described this as a missing feature suggested: it was a dead end for exactly the
+    /// player least equipped to deal with one.
+    ///
+    /// ## Why this is a caravan and not a new world object
+    ///
+    /// Core already has *"people standing on a world tile you do not own"*, and it is a caravan.
+    /// A new `WorldObjectDef` plus a generated map would duplicate that, touch world generation —
+    /// the most compatibility-sensitive surface there is with 294 other mods — and fight the four
+    /// Settled transport mods the register's **RR-OUT** trace groups around this exact feature:
+    /// Carryalls intercontinental transport, Giddy-Up 2, Pack Mules Extended, and Alpha Vehicles
+    /// Age of Sail. All four already integrate with caravans. None of them integrates with a
+    /// bespoke world object of ours.
+    ///
+    /// **Acquisition stays RimWorld's; recognition is ours** — the same rule arc 5 settled for
+    /// remote sites.
+    ///
+    /// ## The guarantee this narrows, and exactly how far
+    ///
+    /// The stranded-crew guarantee says **no gate source may ever call `PassToWorld`**, because a
+    /// pawn in the world pool is alive and no longer the player's. Forming a caravan calls it —
+    /// Core's own `ExitMapAndCreateCaravan` does, unavoidably, for every caravan RimWorld makes.
+    ///
+    /// **Owner decision, 2026-09-29: build it, because a player caravan is still yours.** The
+    /// guarantee exists so the mod never *takes* a crew. A player-faction caravan is fully the
+    /// player's — they move it, bring it home, settle it. So the narrowing is precise and the
+    /// forbidden cases are unchanged and still asserted:
+    ///
+    /// | Path | May call `PassToWorld` |
+    /// |---|---|
+    /// | a gate **closing** on a crew | **never** |
+    /// | a return **window expiring** | **never** |
+    /// | any **traversal** or crossing | **never** |
+    /// | **this**, and only on a player command | yes, into a caravan they control |
+    ///
+    /// Nothing automatic can reach this code. There is no tick, no work giver and no incident
+    /// that calls it: <see cref="RimroomsCampaignComponent.LeaveThroughWorldExit"/> runs from a
+    /// gizmo the player clicks, and `proof-world-exit.py` asserts that it has exactly one caller.
+    /// </summary>
+    public sealed class WorldExitRecord : IExposable
+    {
+        internal string id;
+        internal string coordinateId;
+        internal string doorLoadId;
+
+        /// <summary>
+        /// The destination, split into its two ints.
+        ///
+        /// `PlanetTile` is a readonly struct and **not** `IExposable`, and its `layerId` is
+        /// private, so it cannot be saved directly. Both halves are stored and the tile is
+        /// rebuilt — losing the layer would put a crew on the wrong planet layer, which is the
+        /// kind of thing that looks like a teleport bug rather than a save bug.
+        /// </summary>
+        internal int tileId = -1;
+        internal int layerId;
+
+        internal int foundTick = -1;
+        internal int usedTick = -1;
+
+        public string Id { get { return id; } }
+        public string CoordinateId { get { return coordinateId; } }
+        public string DoorLoadId { get { return doorLoadId; } }
+        public int FoundTick { get { return foundTick; } }
+        public bool Used { get { return usedTick >= 0; } }
+
+        public PlanetTile Tile { get { return new PlanetTile(tileId, layerId); } }
+
+        /// <summary>Whether the saved destination is still a tile the world actually has.</summary>
+        public bool DestinationValid
+        {
+            get
+            {
+                if (tileId < 0 || Find.WorldGrid == null) { return false; }
+                PlanetTile tile = Tile;
+                return tile.Valid;
+            }
+        }
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref id, "rr_id");
+            Scribe_Values.Look(ref coordinateId, "rr_coordinateId");
+            Scribe_Values.Look(ref doorLoadId, "rr_doorLoadId");
+            Scribe_Values.Look(ref tileId, "rr_tileId", -1);
+            Scribe_Values.Look(ref layerId, "rr_layerId", 0);
+            Scribe_Values.Look(ref foundTick, "rr_foundTick", -1);
+            Scribe_Values.Look(ref usedTick, "rr_usedTick", -1);
+        }
+    }
+
+    public sealed partial class RimroomsCampaignComponent
+    {
+        /// <summary>
+        /// How far from the branch's headquarters a way out may come up, in world tiles.
+        ///
+        /// Far enough that walking home is a journey and a decision, near enough that it is not a
+        /// death sentence. Core's own new-site range is 7 to 27, and this sits inside it rather
+        /// than inventing a second idea of "somewhere else on the planet".
+        /// </summary>
+        internal const int WorldExitMinimumTiles = 7;
+        internal const int WorldExitMaximumTiles = 20;
+
+        private List<WorldExitRecord> worldExits = new List<WorldExitRecord>();
+
+        internal void ExposeWorldExits()
+        {
+            Scribe_Collections.Look(ref worldExits, "rr_worldExits", LookMode.Deep);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && worldExits == null)
+            { worldExits = new List<WorldExitRecord>(); }
+        }
+
+        public IReadOnlyList<WorldExitRecord> WorldExits { get { return worldExits; } }
+
+        /// <summary>The unused way out recorded at this door, or null.</summary>
+        public WorldExitRecord WorldExitFor(Thing door)
+        {
+            if (door == null || !CanOperate) { return null; }
+            string loadId = door.GetUniqueLoadID();
+            for (int index = 0; index < worldExits.Count; index++)
+            {
+                WorldExitRecord record = worldExits[index];
+                if (record != null && !record.Used && record.doorLoadId == loadId) { return record; }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Record that this door leads out to a world tile.
+        ///
+        /// **The tile is chosen by Core's own site-placement logic**, not by ours:
+        /// `TileFinder.TryFindNewSiteTile` already refuses water, space and impassable terrain and
+        /// already honours every mod that patches tile validity. Writing our own validity test
+        /// would be a second opinion that disagrees with the game the first time somebody installs
+        /// a biome mod.
+        ///
+        /// **Seeded, so the same door always leads to the same place.** `TileFinder` rolls against
+        /// `Rand`, so the roll is wrapped in a pushed state derived from the coordinate's own seed
+        /// and the door's position — the same derivation every other generated property uses. A way
+        /// out that moved on reload would be a different world every time somebody loaded a save.
+        /// </summary>
+        internal CompanyActionResult RecordWorldExit(Thing door, string coordinateId, int seed)
+        {
+            if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
+            if (door == null || !door.Spawned || door.Map == null)
+            { return CompanyActionResult.Refused("RR_WorldExit_DoorUnavailable"); }
+            if (WorldExitFor(door) != null) { return CompanyActionResult.Existing(); }
+            if (headquarters == null || Find.WorldGrid == null)
+            { return CompanyActionResult.Refused("RR_WorldExit_NoAnchorTile"); }
+
+            PlanetTile from = headquarters.Tile;
+            if (!from.Valid) { return CompanyActionResult.Refused("RR_WorldExit_NoAnchorTile"); }
+
+            PlanetTile destination;
+            bool found;
+            Rand.PushState(CampaignSeed.Derive(seed,
+                "worldexit:" + door.Position.x + "," + door.Position.z, 1));
+            try
+            {
+                found = TileFinder.TryFindNewSiteTile(out destination, from,
+                    WorldExitMinimumTiles, WorldExitMaximumTiles, allowCaravans: false);
+            }
+            finally { Rand.PopState(); }
+
+            // No valid tile is an honest outcome rather than a reason to invent one. The survey
+            // simply found nothing this time, exactly as it does when a marked door is unusable.
+            if (!found || !destination.Valid)
+            { return CompanyActionResult.Refused("RR_WorldExit_NoTileFound"); }
+
+            var record = new WorldExitRecord
+            {
+                id = branchId + ":worldexit:" + door.GetUniqueLoadID(),
+                coordinateId = coordinateId,
+                doorLoadId = door.GetUniqueLoadID(),
+                tileId = destination.tileId,
+                layerId = destination.Layer == null ? 0 : destination.Layer.LayerID,
+                foundTick = Find.TickManager.TicksGame,
+            };
+            worldExits.Add(record);
+            RecordEvent("RR_Event_WorldExitFound", record.id);
+            return CompanyActionResult.Applied();
+        }
+
+        /// <summary>
+        /// Walk out through this door, onto the world map, as a caravan.
+        ///
+        /// **This is the only place in the mod that reaches Core's caravan formation, and it runs
+        /// only from a player command.** No tick, work giver, incident or scheduler calls it, and
+        /// `proof-world-exit.py` asserts it has exactly one caller. That is what makes the narrowed
+        /// stranded-crew guarantee hold: a gate closing, a window expiring and any traversal still
+        /// never take a crew anywhere.
+        ///
+        /// **Core does the leaving.** `CaravanExitMapUtility.ExitMapAndCreateCaravan` despawns the
+        /// pawns, forms the caravan, notifies the map and sets the route. Hand-rolling that is how
+        /// a pawn gets lost — invariant 55: a transfer that can lose a pawn is a corruption, not a
+        /// threat — and it is also what every transport mod in the register's RR-OUT group already
+        /// hooks into.
+        /// </summary>
+        /// <summary>
+        /// The most maps this branch may hold at once, counting **everything**: its headquarters,
+        /// every Backrooms coordinate currently loaded, every registered site, and every tile it
+        /// has claimed by walking out of a door.
+        ///
+        /// **Owner direction, 2026-09-29, verbatim:** *"but at that not a player can have up to
+        /// five maps if settings are right so lets have that 5 map count be universal max for back
+        /// rooms main map and claiming maps where u pop out and anything over 5 maps defaults to
+        /// caravans"*.
+        ///
+        /// So five is **our** universal cap, and it sits **on top of** the player's own
+        /// `Prefs.MaxNumberOfPlayerSettlements` rather than arguing with it. Whichever is stricter
+        /// wins, which is the only reading that respects a setting the player chose.
+        /// </summary>
+        internal const int MaximumBranchMaps = 5;
+
+        /// <summary>Every loaded map this branch holds, by the one ownership predicate.</summary>
+        public int BranchMapCount
+        {
+            get
+            {
+                int count = 0;
+                List<Map> maps = Find.Maps;
+                if (maps == null) { return 0; }
+                for (int index = 0; index < maps.Count; index++)
+                {
+                    if (OwnsMap(maps[index])) { count++; }
+                }
+                return count;
+            }
+        }
+
+        /// <summary>
+        /// Whether walking out may **claim** the tile as a map, or must form a caravan instead.
+        ///
+        /// Two gates, and the stricter one wins:
+        ///
+        /// * **Ours**, <see cref="MaximumBranchMaps"/> — five, counting the Backrooms coordinate
+        ///   the crew is standing in as one of them, because the owner's cap is on maps held and a
+        ///   coordinate is a map held.
+        /// * **The player's**, `SettleUtility.PlayerSettlementsCountLimitReached`, which reads
+        ///   `Prefs.MaxNumberOfPlayerSettlements`. Somebody who set that to one meant it.
+        /// </summary>
+        public bool CanClaimAnotherMap
+        {
+            get
+            {
+                if (!CanOperate) { return false; }
+                if (BranchMapCount >= MaximumBranchMaps) { return false; }
+                return !SettleUtility.PlayerSettlementsCountLimitReached;
+            }
+        }
+
+        /// <summary>
+        /// Walk out through this door.
+        ///
+        /// **Two outcomes, decided by the map cap**, per the owner's direction:
+        ///
+        /// | Maps held | What happens | Touches `PassToWorld` |
+        /// |---|---|---|
+        /// | under the cap | the tile is **claimed** and the crew walks onto a new map | **no** |
+        /// | at or over it | the crew forms a **caravan** they control | yes |
+        ///
+        /// The claiming path is both the common case and the safer one: it never hands a pawn to
+        /// the world pool at all, so the narrowed stranded-crew guarantee is not even reached
+        /// until somebody is already holding five maps.
+        ///
+        /// **This is the only place in the mod that reaches Core's caravan formation or its
+        /// settling, and it runs only from a player command.** No tick, work giver, incident or
+        /// scheduler calls it, and `proof-world-exit.py` asserts it has exactly one caller.
+        /// </summary>
+        public CompanyActionResult LeaveThroughWorldExit(Thing door)
+        {
+            if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
+            WorldExitRecord record = WorldExitFor(door);
+            if (record == null) { return CompanyActionResult.Refused("RR_WorldExit_NotHere"); }
+            if (!record.DestinationValid)
+            { return CompanyActionResult.Refused("RR_WorldExit_DestinationGone"); }
+            if (door == null || !door.Spawned || door.Map == null)
+            { return CompanyActionResult.Refused("RR_WorldExit_DoorUnavailable"); }
+
+            Map map = door.Map;
+            PlanetTile from = map.Tile;
+            if (!from.Valid) { return CompanyActionResult.Refused("RR_WorldExit_NoAnchorTile"); }
+
+            List<Pawn> leaving = TravellersAt(door);
+            if (leaving.Count == 0) { return CompanyActionResult.Refused("RR_WorldExit_NobodyHere"); }
+
+            CompanyActionResult result = CanClaimAnotherMap
+                ? ClaimTileAndWalkOut(record, leaving)
+                : FormCaravanAndWalkOut(record, from, leaving);
+            if (!result.Success) { return result; }
+
+            record.usedTick = Find.TickManager.TicksGame;
+            RecordEvent("RR_Event_WorldExitUsed", record.id, leaving.Count.ToString());
+            return result;
+        }
+
+        /// <summary>
+        /// Claim the tile and put the crew on it.
+        ///
+        /// **The map is generated before anybody is despawned.** That ordering is the whole safety
+        /// property: if settling or generation fails, nothing has moved and the way out is still
+        /// there to try again. Invariant 55 — a transfer that can lose a pawn is a corruption, not
+        /// a threat — so the risky window is one pawn wide and it puts them back if a spawn fails.
+        ///
+        /// Claiming uses `SettleUtility.AddNewHome`, Core's own settling, so the new map is an
+        /// ordinary player settlement that every mod in the register already understands. Nothing
+        /// bespoke, and no `PassToWorld` anywhere on this path.
+        /// </summary>
+        private CompanyActionResult ClaimTileAndWalkOut(WorldExitRecord record, List<Pawn> leaving)
+        {
+            PlanetTile tile = record.Tile;
+            Settlement settlement;
+            Map claimed;
+            try
+            {
+                settlement = SettleUtility.AddNewHome(tile, Faction.OfPlayer);
+                if (settlement == null) { return CompanyActionResult.Refused("RR_WorldExit_CouldNotClaim"); }
+                claimed = GetOrGenerateMapUtility.GetOrGenerateMap(tile, null);
+            }
+            catch (System.Exception)
+            {
+                // Generation is the one step here that can throw, and it throws before any pawn
+                // has been touched. Report it rather than leaving a half-claimed world.
+                return CompanyActionResult.Refused("RR_WorldExit_CouldNotClaim");
+            }
+            if (claimed == null) { return CompanyActionResult.Refused("RR_WorldExit_CouldNotClaim"); }
+
+            IntVec3 arrival = FindArrivalCell(claimed);
+            if (!arrival.IsValid) { return CompanyActionResult.Refused("RR_WorldExit_NoArrivalCell"); }
+
+            int moved = 0;
+            for (int index = 0; index < leaving.Count; index++)
+            {
+                Pawn pawn = leaving[index];
+                if (pawn == null || !pawn.Spawned) { continue; }
+                Map origin = pawn.Map;
+                IntVec3 was = pawn.Position;
+                IntVec3 cell = CellFinder.RandomClosewalkCellNear(arrival, claimed, 6);
+                if (!cell.IsValid || !cell.InBounds(claimed)) { cell = arrival; }
+                pawn.DeSpawn();
+                if (GenSpawn.Spawn(pawn, cell, claimed) == null)
+                {
+                    // Put them back rather than leaving anybody unspawned. The same rule the
+                    // solo/group opening follows: a step that loses a person is worse than a step
+                    // that does not happen.
+                    GenSpawn.Spawn(pawn, was, origin);
+                    continue;
+                }
+                moved++;
+            }
+            if (moved == 0) { return CompanyActionResult.Refused("RR_WorldExit_NobodyMoved"); }
+
+            RecordEvent("RR_Event_WorldExitClaimed", record.id, settlement.Label);
+            return CompanyActionResult.Applied();
+        }
+
+        /// <summary>
+        /// Form a caravan instead, because the branch is already holding its five maps.
+        ///
+        /// **Core does the leaving.** `CaravanExitMapUtility.ExitMapAndCreateCaravan` despawns the
+        /// pawns, forms the caravan, notifies the map and sets the route. Hand-rolling that is how
+        /// a pawn gets lost, and it is also what every transport mod in the register's RR-OUT group
+        /// already hooks into — Carryalls, Giddy-Up 2, Pack Mules, Alpha Vehicles Age of Sail.
+        ///
+        /// This is the **only** path in the mod that reaches `PassToWorld`, it is reached only when
+        /// the map cap is already met, and it is reached only from a player's click.
+        /// </summary>
+        private CompanyActionResult FormCaravanAndWalkOut(WorldExitRecord record, PlanetTile from,
+            List<Pawn> leaving)
+        {
+            Caravan formed = CaravanExitMapUtility.ExitMapAndCreateCaravan(
+                leaving, Faction.OfPlayer, from, record.Tile, record.Tile, sendMessage: false);
+            // A null caravan means Core refused and nobody has moved. Say so rather than
+            // reporting a success that did not happen.
+            if (formed == null) { return CompanyActionResult.Refused("RR_WorldExit_CouldNotForm"); }
+            RecordEvent("RR_Event_WorldExitCaravan", record.id, formed.Label);
+            return CompanyActionResult.Applied();
+        }
+
+        /// <summary>Somewhere standable on the claimed map. Core's own centre-out search.</summary>
+        private static IntVec3 FindArrivalCell(Map map)
+        {
+            IntVec3 found;
+            if (CellFinderLoose.TryFindRandomNotEdgeCellWith(10,
+                cell => cell.Standable(map) && !cell.Fogged(map), map, out found))
+            { return found; }
+            return map.Center.Standable(map) ? map.Center : IntVec3.Invalid;
+        }
+
+        /// <summary>
+        /// Who walks out: player pawns standing on the door's own approach cell or beside it.
+        ///
+        /// **Deliberately only the player's own, and never a prisoner or a slave.** Invariant 17:
+        /// a prisoner can never cross a gate, and walking out into the world is a crossing by any
+        /// honest reading. A downed pawn is left too — somebody unconscious on the floor is not
+        /// walking anywhere, and taking them would be the mod moving a crew rather than the player.
+        /// </summary>
+        private List<Pawn> TravellersAt(Thing door)
+        {
+            var leaving = new List<Pawn>();
+            Map map = door.Map;
+            IntVec3 approach = PortalAddressService.ApproachCellFor(door);
+            if (!approach.IsValid || !approach.InBounds(map)) { return leaving; }
+
+            foreach (IntVec3 cell in GenAdj.CellsAdjacent8Way(door))
+            {
+                if (!cell.InBounds(map)) { continue; }
+                foreach (Thing thing in map.thingGrid.ThingsListAtFast(cell))
+                {
+                    Pawn pawn = thing as Pawn;
+                    if (pawn == null || pawn.Dead || pawn.Destroyed || !pawn.Spawned) { continue; }
+                    if (pawn.Faction != Faction.OfPlayer) { continue; }
+                    if (pawn.IsPrisoner || pawn.IsSlave || pawn.Downed) { continue; }
+                    if (!leaving.Contains(pawn)) { leaving.Add(pawn); }
+                }
+            }
+            return leaving;
+        }
+    }
+}

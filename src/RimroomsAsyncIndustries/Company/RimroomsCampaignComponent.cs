@@ -227,6 +227,7 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Collections.Look(ref projects, "rr_projects", LookMode.Deep);
             Scribe_Collections.Look(ref events, "rr_events", LookMode.Deep);
             ExposeRequests();
+            ExposeWorldExits();
             ExposeSupplyContracts();
             ExposeCorporateSupply();
             ExposeFacilityRelief();

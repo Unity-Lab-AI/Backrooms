@@ -235,7 +235,16 @@ namespace RimroomsAsyncIndustries.Portals
             if (draw % share != 0) { return null; }
 
             List<CompRimroomsEmergence> anchors = CompRimroomsEmergence.Anchors();
-            if (anchors.Count == 0) { return null; }
+            if (anchors.Count == 0)
+            {
+                // No marked door anywhere. This used to return null, so the way out became a way
+                // DEEPER -- which meant a branch with nothing marked could never find a way out at
+                // all, and that is a dead end for exactly the player least equipped for one.
+                //
+                // Instead the way out leads to a world tile the branch does not hold, and the crew
+                // walks out as a caravan. Owner decision 2026-09-29.
+                return campaign.RecordWorldExit(door, origin.OriginId, origin.Seed);
+            }
             anchors.Sort((left, right) => string.CompareOrdinal(
                 left.parent.GetUniqueLoadID(), right.parent.GetUniqueLoadID()));
             CompRimroomsEmergence anchor = anchors[draw % anchors.Count];

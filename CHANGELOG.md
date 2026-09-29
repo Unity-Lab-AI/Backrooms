@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.21-dev - 2026-09-29 - a way out into the world
+
+- **You can now get out of the Backrooms without having marked a door first.** Before this, a way out could only ever arrive at a door you had already marked back home - and if you had not marked one, the survey quietly turned the way out into a way *deeper*. A branch with nothing marked could never get out at all.
+- **A way out now leads somewhere on the world map you do not own.** Walk through, and if the company can take on another place, that tile becomes yours and your crew is standing in it. If you are already running as many places as you can, they come out as a caravan and make their own way from there.
+- **Five places is the limit**, counting the Backrooms level you are standing in and every tile you have claimed this way - and if you have set your own colony limit lower than that, yours wins.
+- **Nobody can be taken from you by any of this.** A gate closing on a crew, a window running out, and crossing a gate all still leave your people yours. Walking out is something you click, and the crew stays yours on the other side.
+
+Full record: [a way out into the world](docs/implementation/WORLD_EXIT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.20-dev - 2026-09-29 - the register, by the column that matters
 
 - **The mod register can now be asked the question it exists to answer.** Every one of its 295 rows carries a trace code saying which part of this mod it bears on, and there was no way to search by it. Now there is, so "what applies to the thing I am about to build" is one command.
