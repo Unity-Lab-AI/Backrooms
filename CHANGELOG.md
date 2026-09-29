@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.1-dev - 2026-09-29 - the free doors run out
+
+- **Found doors stop leading deeper after the third level.** The Backrooms gives you the yellow rooms and two steps in, and then no more doors turn up. Past that, going deeper needs a gate you built.
+- **Doors that lead OUT are never limited.** You can always find your way home from the deepest level the free doors reach. Being stuck down there with nothing to find would not be a challenge, it would be a bug.
+- **A built gate is unaffected** and reaches anywhere it has earned, exactly as before. The limit is on the free doors, not on you.
+- **When a door goes deeper than anything you can walk through, you are told so plainly** rather than quietly sent somewhere else.
+
+Full record: [the free doors run out](docs/implementation/NATURAL_DEPTH_LIMIT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.0-dev - 2026-09-29 - you are already in
 
 - **The third start: solo or group, inside.** You begin in the Backrooms with what you were carrying. No gate, no company, no research, and nobody looking for you.

@@ -2,6 +2,24 @@
 
 **Dated record.** Describes the checkpoint as it was built. Never rewritten.
 
+> ## ONE CLAIM IN THIS RECORD WAS CORRECTED THE SAME DAY
+>
+> Below, under *"Three things it deliberately does not do"*, this record says: **"There is no way
+> home and finding one is the whole opening."**
+>
+> **That is wrong.** Owner direction, 2026-09-29, verbatim: *"and remember the solo/group start in
+> a backroom needs to 100% have a exit to map natural portal on their first backrroms level with
+> natural portals deeper to an extent till they would need to buidl theri own gate"*.
+>
+> The first level must hold a **guaranteed** natural portal out - not a discovered one, not a
+> rarity draw. The body below is **left exactly as written**, because it is what the checkpoint
+> shipped and the evidence trail depends on that. The correction is in `TODO.md`, in
+> `FINALIZED.md`, and in the record for the checkpoint that fixes it.
+>
+> **Half of it was fixed immediately**, in the same session: natural portals now reach through
+> depth 3 and no further, which is the *"to an extent"* half. The guaranteed exit itself is its
+> own piece, because its destination is a world tile that does not exist yet.
+
 ---
 
 ## What this is

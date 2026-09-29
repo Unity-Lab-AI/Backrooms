@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Gate;
@@ -54,6 +54,29 @@ namespace RimroomsAsyncIndustries.Portals
         /// spaces finite.
         /// </summary>
         internal const int MaximumFrontiersPerCoordinate = 2;
+
+        /// <summary>
+        /// The deepest coordinate a found doorway will ever lead to.
+        ///
+        /// **Owner direction, 2026-09-29, verbatim:** *"with natural portals deeper to an extent
+        /// till they would need to buidl theri own gate"*, and the depth chosen at the fork was
+        /// **through depth 3**.
+        ///
+        /// So the Backrooms hands a branch three bands for free -- the shallow yellow rooms and
+        /// two steps in -- and then stops handing out doorways. Going further is a machine's job,
+        /// which is the convergence this start needs: the place gives you enough to learn on and
+        /// then asks you to become an engineer.
+        ///
+        /// **This caps going DEEPER, never coming OUT.** The way-out draw runs first and is not
+        /// subject to this, because a crew standing at depth 3 must always be able to find a door
+        /// that leads home. Capping both would have turned the deepest natural band into a trap,
+        /// and invariant 28 forbids an unavoidable failure.
+        ///
+        /// **It does not restrain the player, only the free doorways.** Owner, verbatim: *"this
+        /// is all open eneded they can play how they choose"*. A built gate reaches any depth it
+        /// has earned, exactly as before.
+        /// </summary>
+        internal const int MaximumNaturalDepth = 3;
 
         /// <summary>
         /// Roughly one doorway in this many is a frontier. Combined with the cap above,
@@ -141,6 +164,15 @@ namespace RimroomsAsyncIndustries.Portals
             // and every step inward adds one, which is what lets the place stop looking
             // like itself the further a branch pushes.
             int depth = source == null ? 1 : source.Depth + 1;
+            // The natural chain stops here. Checked AFTER the way-out attempt above, so a crew
+            // at the deepest natural band can still find a door home -- capping both directions
+            // would make that band a trap.
+            //
+            // Refused rather than silently minting a shallower space: a doorway that led
+            // somewhere other than where it should would be a quieter and worse lie than being
+            // told plainly that nothing natural goes further than this.
+            if (depth > MaximumNaturalDepth)
+            { return CompanyActionResult.Refused("RR_Frontier_BeyondNaturalReach"); }
             CompanyActionResult created = campaign.CreateDiscoveredCoordinate(discoveryId, depth, out discovered);
             if (!created.Success || discovered == null) { return created; }
 

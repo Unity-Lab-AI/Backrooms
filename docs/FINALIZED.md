@@ -167,6 +167,34 @@ The **third and last** of the chart's starts. The map itself is a Backrooms coor
 
 ---
 
+## Session 2026-09-29 - the natural depth limit (0.12.1-dev)
+
+**Verbatim user direction:** *"and remember the solo/group start in a backroom needs to 100% have a exit to map natural portal on their first backrroms level with natural portals deeper to an extent till they would need to buidl theri own gate"*
+
+**And, mid-turn, verbatim:** *"but remmebr this is all open eneded they can play how they choose"*
+
+**Owner answers at the fork, verbatim:** *"Emerges on a fresh tile chosen by the seed"* / *"option 1 and the tutorial like quest chains should lay it all out"*
+
+### What shipped
+
+`NaturalFrontierService.MaximumNaturalDepth = 3`. Found doors reach the shallow yellow rooms and two steps inward, then stop. Deeper requires a gate the player built.
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Portals/NaturalFrontierService.cs`, `1.6/Languages/English/Keyed/RR_Portals.xml`, `docs/implementation/NATURAL_DEPTH_LIMIT_IMPLEMENTATION.md`, `docs/implementation/SOLO_GROUP_START_IMPLEMENTATION.md` (annotated), `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj, and the starts proof.
+
+### Closure notes
+
+- **This corrects 0.12.0-dev, shipped an hour earlier**, whose record says *"There is no way home and finding one is the whole opening."* That is wrong. The 0.12.0 record is **annotated, not rewritten**, per invariant 135.
+- **The cap is applied AFTER the way-out attempt**, and that ordering is the whole safety of it: capping both directions would make depth 3 a trap with no door home, which invariant 28 forbids. Asserted rather than trusted to the reading.
+- **It restrains the doors, not the player.** *"This is all open eneded they can play how they choose"* - a built gate reaches any depth it has earned, and a player who never goes deeper never meets the wall.
+- **`check-info-cards.py` refused the first version of the player-facing string** for saying *"doorway"*: the enforced vocabulary is door, gate, connection, threshold. The string was wrong and the rule was right.
+- **A claim of mine was failing OPEN, which is a new failure mode this session.** The ordering claim was a string-index search over the literal `"depth > MaximumNaturalDepth"`, so a reordered cap using a different variable name failed it for the wrong reason - and the same claim could have **passed** for a genuinely reordered cap. Rewritten to key off `Refused("RR_Frontier_BeyondNaturalReach")`, which cannot be renamed without the keyed string moving with it, then re-planted and confirmed to fail for the right reason.
+- **Still owed and queued with its design:** the guaranteed exit on level 1, emerging on a fresh world tile chosen by the seed. The existing emergence path cannot serve it - it needs a `CompRimroomsEmergence` anchor, which is a door the player marked on a map they already hold, and a solo/group start holds none. Then the solo/group tutorial line, which must guide without railing.
+- Build 0.12.1-dev, 168 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, seven proofs hold. Assembly reproduced by two clean recompiles. **No game was launched.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

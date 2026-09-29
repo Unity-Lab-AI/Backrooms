@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.0-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.1-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **168 C# files, 86 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `C6810C8DD2E0B422B4B5F3BBF1CA05E178B8AC0F9D60FAF16D84598E7CB46AEB`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `62935DFB887DED243394A1A6C5440ED3DE39F364AF055AAB17E5CF8491FCFA57`, reproduced by two clean recompiles |
 | Checkers | **eight**, all passing |
 | Proofs | **seven** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.0
+## What shipped this session, 0.7.1 → 0.12.1
 
 | Version | What |
 |---|---|
@@ -83,6 +83,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.11.8 | **The storyteller finally knows this mod exists** — the first two `IncidentDef`s; no `StorytellerDef`, now asserted |
 | 0.11.9 | **A shop with a door in the back** — the Store start; three new-game crashes caught by a new proof |
 | 0.12.0 | **You are already in** — the solo/group start; the map itself is a coordinate. **All three starts ship.** |
+| 0.12.1 | **The free doors run out** — found doors stop at depth 3; deeper needs a built gate. Corrects 0.12.0 |
 
 ---
 
@@ -91,6 +92,23 @@ Chain checkpoints. Do not finish one and wait.
 The order is the one `docs/CAMPAIGN_CHART.md` §7 authorises. **Read the chart before starting
 anything in this list** — it is the authority, and steps 1–5 of its build order are done.
 
+1. **The guaranteed exit on the solo/group start's first level.** Owner direction, verbatim:
+   *"needs to 100% have a exit to map natural portal on their first backrroms level"*. **0.12.0-dev
+   shipped the opposite and its record is annotated as corrected.** Owner's answer at the fork:
+   *"Emerges on a fresh tile chosen by the seed"*.
+   - The existing emergence path **cannot serve it**: `RegisterEmergenceAddress` needs a
+     `CompRimroomsEmergence` anchor, which is **a door the player marked on a map they already
+     hold**, and a solo/group start holds none. `RegisterEmergenceAddress` also requires the
+     Backrooms side to be a `RimroomsDestinationMapParent`, and the solo start's map is
+     `Settlement`-parented because Core requires a player settlement for the starting map.
+   - So it needs: a world tile derived from the branch seed, a player settlement created on it,
+     its map generated on first use, and a two-way route registered between the two.
+   - **100% means at generation, not by survey.** `NaturalFrontierService` finds frontiers at
+     roughly one door in twelve; a draw cannot deliver a guarantee.
+2. **The solo/group tutorial line.** *"the tutorial like quest chains should lay it all out"* —
+   and *"this is all open eneded they can play how they choose"*, so it **guides without railing**.
+   Requests have no per-start scoping yet: the six tutorial requests and the hinge are Async's
+   unconditionally, so the request shape needs to know which start a line belongs to.
 1. **Research tiers 3–4** — remote and deep operations. The band meanings are in
    `docs/CAMPAIGN_CHART.md` §3.1: tier 3 is *"support more than one site; work beyond
    headquarters"*, tier 4 is *"combine known techniques; extend reach"*. **Check every knob
@@ -282,6 +300,9 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 149. **Core already lets a scenario choose the starting map’s generator.** `Game.InitNewGame` reads `initData.mapGeneratorDef ?? settlement.MapGeneratorDef`, and `GameInitData.mapGeneratorDef` is a public field. **No Harmony is needed to open a game anywhere**, and this mod had already been assigning it from the start def.
 150. **Share the half that carries the promises.** The coordinate shell — rock to every edge, `RoofRockThick` over every cell, rooms carved out — is one implementation used by both generators, because invariant 13 lives inside it. The furniture differs; the shell never may. Same reasoning as the anomaly effects at 0.11.8.
 151. **A `workerClass` or `genStep Class` that does not resolve fails as ORDINARY BEHAVIOUR, not as a crash.** A missing genstep gives the player a normal colony while the description promises the Backrooms. Assert that every class named in XML exists in source.
+152. **A claim that can fail for the wrong reason can also pass for the wrong reason.** The natural-depth ordering claim was a string-index search over a variable name; renaming the variable made it fail open. **Key an assertion off the thing that actually happens** — a refusal, a keyed string, a def name — never off an expression’s spelling. Fourth assertion corrected this session and the first of this kind (see 130, 142, 145).
+153. **Cap the free doors, never the way home.** `MaximumNaturalDepth` is checked after the way-out attempt. Capping both directions makes the deepest natural band a trap, which invariant 28 forbids.
+154. **Open-ended is a constraint on the content, not a mood.** Owner, verbatim: *"this is all open eneded they can play how they choose"*. A tutorial line offers and describes; it never requires an order, and a step already done by a player who got there first must read as done rather than skipped.
 
 ---
 

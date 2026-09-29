@@ -163,4 +163,5 @@
   <RR_Incursion_AlreadySpent>Something has already come through on this opening.</RR_Incursion_AlreadySpent>
   <RR_Incursion_BandTooLow>This space is not yet bad enough for anything to follow you home.</RR_Incursion_BandTooLow>
   <RR_Incursion_TechTooLow>The gate is not advanced enough to hold a connection something else could use.</RR_Incursion_TechTooLow>
+  <RR_Frontier_BeyondNaturalReach>The door goes on, and nothing anybody can walk through goes with it. Whatever is past this is only reachable through a gate of your own.</RR_Frontier_BeyondNaturalReach>
 </LanguageData>
