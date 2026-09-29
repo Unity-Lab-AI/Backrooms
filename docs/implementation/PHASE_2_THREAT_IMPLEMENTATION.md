@@ -1,4 +1,4 @@
-# First-site route and encounter implementation
+﻿# First-site route and encounter implementation
 
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
@@ -7,7 +7,7 @@
 
 ## Owned files and save state
 
-[FirstSliceSiteComponent](../../src/RimroomsAsyncIndustries/Threats/FirstSliceSiteComponent.cs) owns site observations, individual previous-room records, encounter counters, current crew references and a deep-held recovery container for interrupted route-equipment deployment. [FirstSlicePursuer](../../src/RimroomsAsyncIndustries/Threats/FirstSlicePursuer.cs) owns the bounded approach/contact rules. [Thing_QuietPursuer](../../src/RimroomsAsyncIndustries/Threats/Thing_QuietPursuer.cs) is a Core `IAttackTarget` using native damage and targeting. [CompRouteAid](../../src/RimroomsAsyncIndustries/Investigation/CompRouteAid.cs) saves coordinate, recorded room, number and mismatch on each deployed physical tag/beacon. All are local to the branch/map.
+[FirstSliceSiteComponent](../../src/RimroomsAsyncIndustries/Threats/FirstSliceSiteComponent.cs) owns site observations, individual previous-room records, encounter counters, current crew references and a deep-held recovery container for interrupted route-equipment deployment. [FirstSlicePursuer](../../src/RimroomsAsyncIndustries/Threats/FirstSlicePursuer.cs) owns the bounded approach/contact rules. [Thing_QuietPursuer](../../src/RimroomsAsyncIndustries/Threats/Thing_QuietPursuer.cs) is a Core `IAttackTarget` using native damage and targeting. [CompRouteAid](historical-content/0.10.7-dev/src/RimroomsAsyncIndustries/Investigation/CompRouteAid.cs) saves coordinate, recorded room, number and mismatch on each deployed physical tag/beacon. All are local to the branch/map.
 
 An opening ID means the saved expedition, including its paid recovery windows. Resuming that expedition does not reset an encounter. A genuinely new expedition resets the bounded encounter while room survey records, recovered evidence and deployed route aids remain saved.
 

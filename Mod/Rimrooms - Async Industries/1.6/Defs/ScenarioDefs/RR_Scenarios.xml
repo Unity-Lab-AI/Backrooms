@@ -41,7 +41,9 @@ Supplies arrive physically with your people and stay editable separately from th
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>Apparel_FlakVest</thingDef><count>1</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>WoodLog</thingDef><count>150</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>RR_FieldRecorder</thingDef><count>1</count></li>
-        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>RR_SurveyTag</thingDef><count>6</count></li>
+        <!-- Six survey tags became eight glow pods. Core content, no cap, and a player
+             who wants more buys more; the retired tag was six because a kit check said so. -->
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>GlowPod</thingDef><count>8</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>RR_SealedEvidenceCase</thingDef><count>1</count></li>
       </parts>
     </scenario>

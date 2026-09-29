@@ -1,11 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <JobDef>
-    <defName>RR_DeployRouteAid</defName>
-    <driverClass>RimroomsAsyncIndustries.Investigation.JobDriver_DeployRouteAid</driverClass>
-    <reportString>Placing route equipment.</reportString>
-    <casualInterruptible>false</casualInterruptible>
-  </JobDef>
   <JobDef>
     <defName>RR_AnalyzeEvidence</defName>
     <driverClass>RimroomsAsyncIndustries.Investigation.JobDriver_CompanyLaboratory</driverClass>

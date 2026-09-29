@@ -20,13 +20,6 @@
     <products><RR_FieldRecorder>1</RR_FieldRecorder></products>
   </RecipeDef>
   <RecipeDef ParentName="RR_FieldFabricationBase">
-    <defName>RR_MakeSurveyTags</defName><label>make six survey tags</label>
-    <description>Cut six durable route tags from steel. Each deployment uses one tag.</description>
-    <jobString>Making survey tags.</jobString><workAmount>500</workAmount>
-    <ingredients><li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>3</count></li></ingredients>
-    <products><RR_SurveyTag>6</RR_SurveyTag></products>
-  </RecipeDef>
-  <RecipeDef ParentName="RR_FieldFabricationBase">
     <defName>RR_MakeEvidenceCase</defName><label>make sealed evidence case</label>
     <description>Fabricate a protective field case. An empty case has no evidence or research value.</description>
     <jobString>Making sealed evidence case.</jobString><workAmount>1200</workAmount>

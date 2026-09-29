@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Expedition;
@@ -286,7 +286,7 @@ namespace RimroomsAsyncIndustries.Company
             string[] siteThings =
             {
                 "ChemfuelPoweredGenerator", "Chemfuel", "HiddenConduit",
-                "SimpleResearchBench", "RR_FieldRecorder", "RR_SurveyTag",
+                "SimpleResearchBench", "RR_FieldRecorder", "GlowPod",
                 "RR_SealedEvidenceCase", "TextBook", "RR_QuietPursuer",
                 "Door", "Autodoor", "CommsConsole", "TableMachining", "Battery", "WoodFiredGenerator",
                 "Stool", "Table1x2c", "DiningChair", "PlantPot", "Shelf", "StandingLamp", "Heater"

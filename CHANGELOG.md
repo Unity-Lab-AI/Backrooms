@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.10.7-dev - 2026-09-29 - the survey tag becomes a glow pod
+
+- **Route markers are glow pods now.** The custom survey tag is gone. You set down an ordinary Core glow pod and mark it, the same way you designate a door as a gate.
+- **The colour is what it means.** Route home, cleared, danger, supply cache, unexplored lead - five markers, five colours, readable from the far end of a corridor without selecting anything.
+- **No limit on how many.** Not per room, not per coordinate, not per map. The old tag allowed exactly one per room and made dispatch refuse a crew carrying fewer than six.
+- **A marked pod stops ageing.** A plain glow pod dies after about twenty days. A way home that expires is not a way home, so marking one holds it. Unmark it and it starts ageing again.
+- **A glow pod you find in the wild is untouched.** Same green light, same lifespan. It just gains a button.
+- **A marked junction can now actually counter a corridor distortion.** That outcome existed in the code and could never happen: it tested for a return beacon, which was retired two versions ago, so the condition was permanently false.
+- Dispatch no longer refuses a crew over survey tags, the deploy order and its job are gone, and the company catalogue sells glow pods by the crate.
+
+Full record: [the survey tag becomes a glow pod](docs/implementation/GLOW_POD_MARKERS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.10.6-dev - 2026-09-29 - the documents use the mod's own words
 
 - **The documents you read now call things what the game calls them.** The gate is the gate, the connection is the link it holds open, the threshold is where you arrive. The readme, the how-to, the design and scenario documents, the compatibility notes and the research notes were still using the words the game stopped using two versions ago.

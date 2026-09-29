@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <!-- Puts the marker component on Core's own glow pod.
+
+       Dormant until designated, exactly like the gate component on a door: a glow pod dropped
+       by an insect hive on an ordinary map is untouched by this. It still glows its own green,
+       it still dies on schedule, and it gains one button that does nothing until pressed.
+
+       Conditional, so that running twice is not an error and another mod having already added
+       the component does not produce a duplicate. -->
+
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThingDef[defName="GlowPod"]/comps/li[@Class="RimroomsAsyncIndustries.Investigation.CompProperties_RimroomsMarker"]</xpath>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[defName="GlowPod"]/comps</xpath>
+      <value>
+        <li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RimroomsMarker" />
+      </value>
+    </nomatch>
+  </Operation>
+
+</Patch>

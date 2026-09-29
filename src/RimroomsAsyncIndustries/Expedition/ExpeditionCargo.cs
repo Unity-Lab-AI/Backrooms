@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -14,8 +14,17 @@ namespace RimroomsAsyncIndustries.Expedition
         // The return beacon was retired in 0.9.9-dev: the gate's own address book and the
         // saved return threshold already are the route authority, so the item had no job
         // left to do. Owner decision, asked at the fork.
-        private static readonly string[] KitDefs = { "RR_FieldRecorder", "RR_SurveyTag", "RR_SealedEvidenceCase" };
-        private static readonly int[] KitCounts = { 1, 6, 1, 1 };
+        //
+        // The survey tag left in 0.10.7-dev, and its six-per-crew requirement left with it.
+        // Owner direction was *"lets not limit the amount"*, and a kit check that refuses to
+        // dispatch a crew without exactly six of something is the same limit wearing a hat.
+        // Markers are glow pods now: a player brings as many or as few as they like.
+        //
+        // The counts array carried a fourth entry the loop never read, left over from the
+        // beacon. Arrays that disagree about their own length are a bug waiting for somebody
+        // to add an item to one of them.
+        private static readonly string[] KitDefs = { "RR_FieldRecorder", "RR_SealedEvidenceCase" };
+        private static readonly int[] KitCounts = { 1, 1 };
 
         public static CompanyActionResult CheckKit(IEnumerable<Pawn> crew, Map deployedSite = null, string coordinateId = null)
         {
@@ -129,19 +138,17 @@ namespace RimroomsAsyncIndustries.Expedition
         private static int InventoryCount(Pawn pawn, string defName)
         { return pawn.inventory == null ? 0 : pawn.inventory.innerContainer.Where(t => t.def.defName == defName).Sum(t => t.stackCount); }
 
+        /// <summary>
+        /// Kit already put down at the site counts as kit the crew has.
+        ///
+        /// Nothing in the kit is deployable any more -- the survey tag was the only one, and
+        /// it left in 0.10.7-dev -- so this is zero for every remaining entry. It is kept as
+        /// the seam rather than deleted because the rule it expresses is still the right one:
+        /// a crew that has already placed something has not lost it.
+        /// </summary>
         private static int DeployedCount(string name, Map site, string coordinateId)
         {
-            if (site == null || string.IsNullOrEmpty(coordinateId) || name != "RR_SurveyTag") { return 0; }
-            ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(name);
-            if (def == null) { return 0; }
-            int count = 0;
-            foreach (Thing item in site.listerThings.ThingsOfDef(def))
-            {
-                CompRouteAid aid = item.TryGetComp<CompRouteAid>();
-                if (!item.Destroyed && item.Spawned && item.Map == site && aid != null && aid.Deployed && aid.CoordinateId == coordinateId)
-                { count += item.stackCount; }
-            }
-            return count;
+            return 0;
         }
 
         internal static IEnumerable<Thing> HeldGear(Pawn pawn)

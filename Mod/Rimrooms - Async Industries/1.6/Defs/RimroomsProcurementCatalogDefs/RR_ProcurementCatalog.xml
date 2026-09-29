@@ -11,6 +11,16 @@
     <maxOrderQuantity>1000000</maxOrderQuantity>
   </RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
   <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+    <defName>RR_Procurement_MarkerPods</defName>
+    <label>Glow pods</label>
+    <description>Live glow pods, crated. The company buys them from insect-hive salvagers by the pallet because a branch that cannot mark its own way back out files a great many more casualty reports.\n\nThey arrive packed for installation, and there is no limit on how many a branch may hold.</description>
+    <thingDefName>GlowPod</thingDefName>
+    <unitPriceUsd>4000</unitPriceUsd>
+    <dispatchDelayTicks>60000</dispatchDelayTicks>
+    <leadTimeTicks>120000</leadTimeTicks>
+    <maxOrderQuantity>500</maxOrderQuantity>
+  </RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+  <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
     <defName>RR_Procurement_Steel</defName>
     <label>Steel</label>
     <description>Structural steel. Everything a branch builds and most of what it repairs is made of this, and a gate assembly that lapses cannot be reconditioned without it.</description>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Expedition;
@@ -344,13 +344,12 @@ namespace RimroomsAsyncIndustries.Company
             int observedRoom, int recordedRoom, int markerNumber)
         {
             if (recordedRoom < 0 || recordedRoom == observedRoom || markerNumber <= 0) { return false; }
-            ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail("RR_SurveyTag");
-            if (definition == null) { return false; }
-            foreach (Thing item in map.listerThings.ThingsOfDef(definition))
+            foreach (Investigation.CompRimroomsMarker marker in Investigation.CompRimroomsMarker.OnMap(map))
             {
-                CompRouteAid aid = item.TryGetComp<CompRouteAid>();
-                if (item.Destroyed || !item.Spawned || item.Map != map || aid == null || !aid.Deployed ||
-                    aid.CoordinateId != coordinate.id || aid.RoomIndex != recordedRoom || aid.Number != markerNumber) { continue; }
+                Thing item = marker.parent;
+                if (item.Destroyed || !item.Spawned || item.Map != map ||
+                    marker.CoordinateId != coordinate.id || marker.RoomIndex != recordedRoom ||
+                    marker.Number != markerNumber) { continue; }
                 if (coordinate.rooms.Any(r => r != null && r.index == observedRoom && r.Bounds.Contains(item.Position))) { return true; }
             }
             return false;

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- What a glow pod means once it is designated as a marker. The colour is the meaning:
+       it has to be readable from across a dark room without selecting anything, which is why
+       these are a fixed set rather than a free colour picker.
+
+       Core writes glow colours with alpha 0; these follow that. -->
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsMarkerTypeDef>
+    <defName>RR_Marker_Route</defName>
+    <label>route home</label>
+    <description>The way back. Set these along the path you came in by, at every junction where the way out is not obvious.\n\nA route marker left at a junction, and still where you put it, is what lets a crew tell the difference between a corridor that has changed and a corridor they misremembered.</description>
+    <glowColor>(120,190,255,0)</glowColor>
+    <displayOrder>0</displayOrder>
+    <countersDistortion>true</countersDistortion>
+  </RimroomsAsyncIndustries.Investigation.RimroomsMarkerTypeDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsMarkerTypeDef>
+    <defName>RR_Marker_Cleared</defName>
+    <label>cleared</label>
+    <description>Searched, and nothing left in it worth coming back for. Green means you have already spent time here.</description>
+    <glowColor>(110,220,130,0)</glowColor>
+    <displayOrder>1</displayOrder>
+  </RimroomsAsyncIndustries.Investigation.RimroomsMarkerTypeDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsMarkerTypeDef>
+    <defName>RR_Marker_Danger</defName>
+    <label>danger</label>
+    <description>Something happened here, or something is still here. Red is the one colour a crew should be able to read at the far end of a corridor.</description>
+    <glowColor>(255,90,70,0)</glowColor>
+    <displayOrder>2</displayOrder>
+  </RimroomsAsyncIndustries.Investigation.RimroomsMarkerTypeDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsMarkerTypeDef>
+    <defName>RR_Marker_Cache</defName>
+    <label>supply cache</label>
+    <description>Something worth carrying out is here, and nobody has carried it yet. Useful when a crew finds more than it can lift in one trip.</description>
+    <glowColor>(255,190,80,0)</glowColor>
+    <displayOrder>3</displayOrder>
+  </RimroomsAsyncIndustries.Investigation.RimroomsMarkerTypeDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsMarkerTypeDef>
+    <defName>RR_Marker_Lead</defName>
+    <label>unexplored lead</label>
+    <description>A way on that nobody has taken yet. The marker is for the next crew as much as this one.</description>
+    <glowColor>(190,120,255,0)</glowColor>
+    <displayOrder>4</displayOrder>
+  </RimroomsAsyncIndustries.Investigation.RimroomsMarkerTypeDef>
+
+</Defs>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Route markers. A glow pod a crew has designated, and the colour is what it means. -->
+
+  <RR_Marker_Designate>Mark this pod</RR_Marker_Designate>
+  <RR_Marker_Change>Change what it marks</RR_Marker_Change>
+  <RR_Marker_DesignateDesc>Designate this glow pod as a route marker and choose what it means. The colour of its light is the meaning, so a crew can read it from the far end of a corridor without stopping.\n\nA designated marker stops ageing: an undesignated pod dies after about twenty days, and a way home that expires is not a way home.\n\nThere is no limit on how many you place.</RR_Marker_DesignateDesc>
+  <RR_Marker_Clear>Stop marking</RR_Marker_Clear>
+  <RR_Marker_ClearDesc>Return this pod to an ordinary glow pod. Its light goes back to its own colour and it begins ageing again.</RR_Marker_ClearDesc>
+  <RR_Marker_NoTypes>No marker types loaded</RR_Marker_NoTypes>
+
+  <RR_Marker_Label>{0} ({1})</RR_Marker_Label>
+  <RR_Marker_Inspect>Marking: {0}</RR_Marker_Inspect>
+  <RR_Marker_InspectRoom>Recorded junction: room {0}</RR_Marker_InspectRoom>
+  <RR_Marker_Mismatch>This marker still records room {0}, and it is no longer in that room</RR_Marker_Mismatch>
+  <RR_Marker_RepeatedLabel>Room {0} again?</RR_Marker_RepeatedLabel>
+
+</LanguageData>

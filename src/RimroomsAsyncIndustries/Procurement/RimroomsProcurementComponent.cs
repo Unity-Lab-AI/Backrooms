@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -1109,7 +1109,10 @@ namespace RimroomsAsyncIndustries.Procurement
                 while (remaining > 0)
                 {
                     int count = Math.Min(remaining, stackLimit);
-                    Thing item = ThingMaker.MakeThing(itemDef);
+                    // A minifiable building ships crated, the way a trader delivers furniture.
+                    // Glow pods are Core buildings, and an uncrated building sitting in a cargo
+                    // hold is a thing no colonist can pick up.
+                    Thing item = ThingMaker.MakeThing(itemDef).TryMakeMinified();
                     if (item == null) { throw new InvalidOperationException("ThingMaker returned no item for " + itemDef.defName); }
                     item.stackCount = count;
                     if (item.stackCount < 1 || item.stackCount > item.def.stackLimit ||

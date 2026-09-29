@@ -1,0 +1,6 @@
+  <JobDef>
+    <defName>RR_DeployRouteAid</defName>
+    <driverClass>RimroomsAsyncIndustries.Investigation.JobDriver_DeployRouteAid</driverClass>
+    <reportString>Placing route equipment.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>

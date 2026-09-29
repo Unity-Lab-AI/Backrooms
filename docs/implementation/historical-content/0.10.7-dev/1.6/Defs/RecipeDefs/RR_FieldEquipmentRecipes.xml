@@ -1,0 +1,7 @@
+  <RecipeDef ParentName="RR_FieldFabricationBase">
+    <defName>RR_MakeSurveyTags</defName><label>make six survey tags</label>
+    <description>Cut six durable route tags from steel. Each deployment uses one tag.</description>
+    <jobString>Making survey tags.</jobString><workAmount>500</workAmount>
+    <ingredients><li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>3</count></li></ingredients>
+    <products><RR_SurveyTag>6</RR_SurveyTag></products>
+  </RecipeDef>

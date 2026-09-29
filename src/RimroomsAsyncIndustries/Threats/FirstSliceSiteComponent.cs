@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -140,11 +140,11 @@ namespace RimroomsAsyncIndustries.Threats
                     ?? coordinate.Rooms.FirstOrDefault(r => r.familyId == "service_passage");
                 if (junction != null)
                 {
-                    CompRouteAid tag = DeployedAids().FirstOrDefault(a => !a.Beacon && a.RoomIndex == junction.index &&
-                        RoomAt(a.parent.Position)?.index == junction.index && !a.parent.def.AffectsRegions);
-                    if (tag != null && TryRoomCell(currentRoom, out IntVec3 tagCell) && tagCell.GetFirstItem(map) == null)
+                    CompRimroomsMarker tag = Markers().FirstOrDefault(a => a.RoomIndex == junction.index &&
+                        RoomAt(a.parent.Position)?.index == junction.index);
+                    if (tag != null && TryRoomCell(currentRoom, out IntVec3 tagCell) && tagCell.GetFirstItem(map) == null &&
+                        tag.RelocateTo(tagCell, map))
                     {
-                        tag.parent.Position = tagCell;
                         tag.MarkMismatch();
                         lastValidatedRoom = junction.index;
                         distortionWarned = true; distortionWarningTick = now; distortionPawn = leader; distortionWarningCell = leader.Position;
@@ -177,7 +177,7 @@ namespace RimroomsAsyncIndustries.Threats
             {
                 RoomRecord room = RoomAt(witness.Position);
                 if (room == null) { continue; }
-                CompRouteAid displaced = DeployedAids().FirstOrDefault(a => !a.Beacon &&
+                CompRimroomsMarker displaced = Markers().FirstOrDefault(a =>
                     a.RoomIndex != room.Index && RoomAt(a.parent.Position)?.Index == room.Index);
                 if (distortionWarned && displaced != null)
                 {
@@ -199,8 +199,12 @@ namespace RimroomsAsyncIndustries.Threats
             if (!distortionWarned || distortionResolved || now <= distortionWarningTick) { return; }
             RoomRecord junction = Coordinate.Rooms.FirstOrDefault(r => r.index == lastValidatedRoom);
             if (junction == null) { return; }
-            bool protectedRoute = DeployedAids().Any(a => a.Beacon && a.RoomIndex == junction.index && RoomAt(a.parent.Position)?.index == junction.index) &&
-                DeployedAids().Any(a => !a.Beacon && a.RoomIndex == junction.index);
+            // Marked and still where it was put. Until this checkpoint the first half of
+            // this test asked whether a *beacon* was present -- a def retired in 0.9.9-dev --
+            // so it was permanently false and a marked junction could never counter anything.
+            // A marker type that says it counters distortion is a condition that can be met.
+            bool protectedRoute = Markers().Any(a => a.MarkerType != null && a.MarkerType.countersDistortion &&
+                a.RoomIndex == junction.index && RoomAt(a.parent.Position)?.index == junction.index);
             if (protectedRoute)
             {
                 distortionResolved = true;
@@ -234,64 +238,48 @@ namespace RimroomsAsyncIndustries.Threats
         {
             return pawn?.inventory != null && pawn.inventory.innerContainer.Any(t => !t.Destroyed && t.def.defName == defName && t.stackCount > 0);
         }
-        private IEnumerable<CompRouteAid> DeployedAids()
+        /// <summary>
+        /// Every marker this coordinate has, placed by the player designating a glow pod.
+        ///
+        /// The custom survey tag this replaced was a mod item with its own deploy job, its own
+        /// recipe and a limit of one per room. Owner direction was <i>"lets not limit the
+        /// amount"</i>, so there is no limit here of any kind, and the pods are Core's own.
+        /// </summary>
+        private IEnumerable<CompRimroomsMarker> Markers()
         {
-            // One kind of route aid since the beacon was retired in 0.9.9-dev.
-            ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail("RR_SurveyTag");
-            if (definition == null) { yield break; }
-            foreach (Thing item in map.listerThings.ThingsOfDef(definition))
+            string id = Coordinate?.Id;
+            if (string.IsNullOrEmpty(id)) { yield break; }
+            foreach (CompRimroomsMarker marker in CompRimroomsMarker.OnMap(map))
             {
-                CompRouteAid aid = item.TryGetComp<CompRouteAid>();
-                if (aid != null && aid.Deployed && aid.CoordinateId == Coordinate?.Id) { yield return aid; }
+                if (marker.CoordinateId == id) { yield return marker; }
             }
         }
-        public CompanyActionResult QueueDeployAid(Pawn pawn)
+
+        /// <summary>Hands out the next marker number for this coordinate. Never reused.</summary>
+        internal int NextMarkerNumber()
         {
-            if (pawn == null || !crew.Contains(pawn) || !pawn.Spawned || pawn.Map != map || pawn.Downed || RoomAt(pawn.Position) == null)
-            { return CompanyActionResult.Refused("RR_Field_CannotDeploy"); }
-            Thing item = pawn.inventory?.innerContainer.FirstOrDefault(t => t.def.defName == "RR_SurveyTag");
-            if (item == null) { return CompanyActionResult.Refused("RR_Field_AidMissing"); }
-            IntVec3 cell = GenRadial.RadialCellsAround(pawn.Position, 2f, true).FirstOrDefault(c => c.InBounds(map) &&
-                c.Standable(map) && c.GetFirstItem(map) == null && RoomAt(c) == RoomAt(pawn.Position));
-            if (!cell.InBounds(map) || !cell.Standable(map) || cell.GetFirstItem(map) != null || RoomAt(cell) != RoomAt(pawn.Position))
-            { return CompanyActionResult.Refused("RR_Field_CannotDeploy"); }
-            JobDef deployDef = DefDatabase<JobDef>.GetNamedSilentFail("RR_DeployRouteAid");
-            if (deployDef == null) { return CompanyActionResult.Refused("RR_Field_CannotDeploy"); }
-            Job job = JobMaker.MakeJob(deployDef, cell, item);
-            return pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc) ? CompanyActionResult.Applied() : CompanyActionResult.Refused("RR_Field_CannotDeploy");
+            return nextMarkerNumber == int.MaxValue ? nextMarkerNumber : nextMarkerNumber++;
         }
-        internal CompanyActionResult DeployAid(Pawn pawn, Thing item, IntVec3 cell)
-        {
-            RoomRecord room = RoomAt(cell);
-            if (pawn == null || !crew.Contains(pawn) || pawn.Map != map || pawn.Position != cell || room == null ||
-                item == null || item.TryGetComp<CompRouteAid>() == null || !pawn.inventory.innerContainer.Contains(item) || nextMarkerNumber == int.MaxValue ||
-                cell.GetFirstItem(map) != null || !cell.Standable(map))
-            { return CompanyActionResult.Refused("RR_Field_CannotDeploy"); }
-            if (DeployedAids().Any(a => a.RoomIndex == room.index && a.Beacon == item.TryGetComp<CompRouteAid>().Beacon))
-            { return CompanyActionResult.Refused("RR_Field_AidAlreadyPlaced"); }
-            Thing unit = pawn.inventory.innerContainer.Take(item, 1);
-            if (unit == null) { return CompanyActionResult.Refused("RR_Field_AidMissing"); }
-            try
-            {
-                GenSpawn.Spawn(unit, cell, map);
-                if (!unit.Spawned || unit.Map != map) { throw new InvalidOperationException("Route aid did not reach its requested map."); }
-                unit.TryGetComp<CompRouteAid>().Deploy(Coordinate.Id, room.index, nextMarkerNumber++);
-                unit.SetForbidden(true, false);
-                Note("RR_Event_RouteAidPlaced", unit.LabelCap, (room.index + 1).ToString());
-                return CompanyActionResult.Applied();
-            }
-            catch (Exception error)
-            {
-                Log.Error("[Rimrooms][Route] Placement interrupted: " + error);
-                if (!unit.Spawned && !unit.Destroyed && !pawn.inventory.innerContainer.TryAdd(unit))
-                { deploymentRecovery.TryAdd(unit); }
-                return CompanyActionResult.Refused("RR_Field_CannotDeploy");
-            }
-        }
+        /// <summary>
+        /// Nothing queues a marker any more, and that is the point.
+        ///
+        /// The retired survey tag needed an order, a job driver, a reserved cell, a free
+        /// inventory slot and a limit of one per room before a pawn could put one down. A glow
+        /// pod is a Core building a colonist installs with the ordinary install order, and
+        /// marking it is a designation on the thing itself -- the same shape as designating a
+        /// door as a gate. Five moving parts became none, and the cap went with them.
+        /// </summary>
+        /// <summary>
+        /// Drains anything a save made before 0.10.7-dev left in the deployment holder.
+        ///
+        /// Nothing fills it now that the deploy order is gone. It is kept rather than
+        /// deleted because a saved <c>ThingOwner</c> that stops being read is a saved
+        /// object that quietly stops existing, and the things inside it were the player's.
+        /// </summary>
         public CompanyActionResult RecoverDeploymentItems(Pawn pawn)
         {
             if (pawn == null || !pawn.Spawned || pawn.Map != map || !crew.Contains(pawn) || pawn.Downed)
-            { return CompanyActionResult.Refused("RR_Field_CannotDeploy"); }
+            { return CompanyActionResult.Refused("RR_Field_CannotRecover"); }
             foreach (Thing item in deploymentRecovery.ToList())
             {
                 IntVec3 dropCell = IntVec3.Invalid;
@@ -302,7 +290,7 @@ namespace RimroomsAsyncIndustries.Threats
                     { dropCell = candidate; break; }
                 }
                 if (!dropCell.IsValid || !deploymentRecovery.TryDrop(item, dropCell, map, ThingPlaceMode.Direct, out Thing dropped))
-                { return CompanyActionResult.Refused("RR_Field_CannotDeploy"); }
+                { return CompanyActionResult.Refused("RR_Field_CannotRecover"); }
             }
             return CompanyActionResult.Applied();
         }
@@ -311,7 +299,7 @@ namespace RimroomsAsyncIndustries.Threats
             Campaign.RecordEvent(key, Coordinate.Id, arguments);
             string message = string.Format(key.Translate().ToString(), arguments.Cast<object>().ToArray());
             bool spatial = key == "RR_Event_CorridorMismatch" || key == "RR_Event_CorridorLoop";
-            bool radio = key == "RR_Event_PursuerSighting" || key == "RR_Event_PursuerContactWarning" || key == "RR_Event_RouteAidPlaced";
+            bool radio = key == "RR_Event_PursuerSighting" || key == "RR_Event_PursuerContactWarning";
             Messages.Message(message, spatial || radio ? MessageTypeDefOf.SilentInput : MessageTypeDefOf.NeutralEvent, false);
             if (spatial || radio)
             {

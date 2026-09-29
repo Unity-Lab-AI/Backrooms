@@ -1,0 +1,8 @@
+  <ThingDef ParentName="RR_FieldItemBase">
+    <defName>RR_SurveyTag</defName><label>survey tag</label>
+    <description>A durable numbered route tag. Place one at a known junction to mark the surveyed path. Its number and coordinate are saved on the deployed marker. Deployment consumes one physical tag; taking down an intact marker returns that tag.</description>
+    <stackLimit>25</stackLimit>
+    <graphicData><texPath>Items/Field/RR_SurveyTag</texPath></graphicData>
+    <statBases><Mass>0.05</Mass><MarketValue>3</MarketValue></statBases>
+    <comps><li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteAid" /></comps>
+  </ThingDef>

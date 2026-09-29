@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using RimroomsAsyncIndustries.Company;
@@ -141,13 +141,11 @@ namespace RimroomsAsyncIndustries.UI
                     FirstSliceSiteComponent site = selected.Map.GetComponent<FirstSliceSiteComponent>();
                     if (site.DeploymentRecoveryCount > 0 && listing.ButtonText("RR_UI_RecoverRoutePlacement".Translate()))
                     { ShowResult(site.RecoverDeploymentItems(selected)); }
-                    if (listing.ButtonText("RR_UI_PlaceTag".Translate(selected.LabelShortCap))) { ShowResult(site.QueueDeployAid(selected)); }
                     foreach (EvidenceRecord record in campaign.Evidence.Where(e => e.CoordinateId == run.CoordinateId && e.Item != null && e.Item.Spawned && e.Item.Map == selected.Map && !e.Item.Position.Fogged(selected.Map)))
                     {
                         if (listing.ButtonText("RR_UI_RecoverEvidence".Translate(selected.LabelShortCap)))
                         { ShowResult(ExpeditionCargo.QueuePickup(selected, record.Item, 1)); }
                     }
-                    DrawRouteAidRecovery(listing, selected);
                     DrawSalvageRecovery(listing, selected);
                     foreach (Pawn casualty in members.Concat(trips.RecoverableCrewAtActiveSite()).Distinct().Where(p => p != selected && (p.Downed || p.Dead) && (p.Dead ? p.Corpse?.MapHeld : p.MapHeld) == run.Destination))
                     {
@@ -210,24 +208,9 @@ namespace RimroomsAsyncIndustries.UI
             { ShowResult(trips.Dispatch(gate, coordinate, new List<Pawn>(selectedCrew))); }
         }
 
-        private static void DrawRouteAidRecovery(Listing_Standard listing, Pawn pawn)
-        {
-            // One kind of route aid since the beacon was retired in 0.9.9-dev.
-            foreach (string defName in new[] { "RR_SurveyTag" })
-            {
-                ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
-                if (definition == null) { continue; }
-                foreach (Thing item in pawn.Map.listerThings.ThingsOfDef(definition).Where(t => t.TryGetComp<CompRouteAid>()?.Deployed == true).ToList())
-                {
-                    if (!listing.ButtonText("RR_UI_RecoverRouteAid".Translate(pawn.LabelShortCap, item.LabelCap))) { continue; }
-                    bool forbidden = item.IsForbidden(pawn);
-                    item.SetForbidden(false, false);
-                    CompanyActionResult result = ExpeditionCargo.QueuePickup(pawn, item, 1);
-                    if (!result.Success) { item.SetForbidden(forbidden, false); }
-                    ShowResult(result);
-                }
-            }
-        }
+        // Recovering a marker is an ordinary uninstall order on an ordinary Core building
+        // now, so the panel that used to list every deployed survey tag and offer to pick it
+        // up has nothing left to do. Removed rather than left showing an empty list.
         private static void DrawManifest(Listing_Standard listing, ExpeditionRecord run)
         {
             listing.Label("RR_UI_CargoManifest".Translate());

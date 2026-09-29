@@ -3066,3 +3066,25 @@ The document half of the same direction, and the answer to its two questions.
 **Reading the flagged text found two rules that were superseded and still written down as current.** The readme's status paragraph still cited the 0.2.0 build record and sprites retired in 0.9.0-dev. The gate traversal rule at the head of both the design and scenario documents still said gate and portal were one word, which 0.10.2-dev settled into three, and still said nothing ever crosses a gate on its own, which 0.9.6-dev made a bounded exception to. **Nobody was looking for either.** A readability rule made somebody read the paragraph, and reading it found the lie - which is the argument for the rule rather than for the sweep.
 
 Eight documents brought into the vocabulary, eleven walls broken up, both new rules sanity-tested by planting a fault on each and confirming it fired. No source, no def, no asset changed. Checkers: seven. Record: `implementation/READER_FACING_DOCS_IMPLEMENTATION.md`.
+
+### 0.10.7-dev - the survey tag becomes a glow pod
+
+> *"tyhe glow pods can be used and lets not limit the amount as a backrooms instance can have 100s of rooms if the player is using 300x300 maps for instance and maybe lets have the glow pods color setable"*
+
+> *"color means differnt types of the needs markers"*
+
+**The second sentence decided how the first was built.** The colour is settable, and the way you set it is by choosing what the marker is for - so RimWorld's own free colour picker is deliberately **not** enabled. A picker lets a player paint a danger marker the same green as a cleared one, and the whole value of the colour is that it reads across a dark room without selecting anything. Five types, five colours: route home, cleared, danger, supply cache, unexplored lead. Marker type also carries `countersDistortion`, so what a colour means is mechanical and not only visual.
+
+**The register was checked first and came back empty**, which is itself worth knowing: zero rows in 295 mention glow, and none of the 27 that mention light touches `CompGlower` or the glow grid. Nothing in the profile competes for it.
+
+**Core's glow pod dies after twenty days**, which is the fact that shaped the design - `CompProperties_Lifespan` at 1,200,000 ticks, and the def's own description says so. A route home that evaporates on day twenty is not a route home. `CompLifespan.age` is a public field, so a designated pod is held at zero and an undesignated one is untouched: a pod dropped by an insect hive still glows its own green and still dies on schedule, and gains one button that does nothing until pressed. Same shape as the gate on a door.
+
+**Three caps were found where the direction named one.** One deployed aid per room, a dispatch check refusing any crew carrying fewer than six tags, and a recipe that made exactly six. All three gone; there is no cap of any kind left.
+
+**An outcome in the code could never happen.** A marked junction countering a corridor distortion tested for a *return beacon* - a def retired in 0.9.9-dev - so the condition had been permanently false for three checkpoints and no checker could see it. Marker types gave it a real condition for the first time. Removing a def means removing every rule only it could satisfy.
+
+**Two things that would have been bugs.** The distortion moves a marker, and the retired code moved it by writing `Position` - fine for a small item, wrong for a `Building`, whose cells are registered in the map's thing grid at spawn. It despawns and respawns now. And that respawn would have re-read the room the marker had just been moved into and quietly agreed with it, erasing the discrepancy the move exists to create; a flag suppresses the rebind for exactly that instant, while keeping it for the case that wants it - a marker a player uninstalls and sets down elsewhere really is in a new room.
+
+**Supply is entirely native.** Core's `ScenPart_StartingThing_Defined` minifies its own output, so granting eight glow pods at the start needed no code at all. Procurement needed one line - an uncrated building in a cargo hold is a thing no colonist can pick up, and that was latent for every minifiable def the catalogue might ever carry. Deployment is the ordinary install order: five moving parts became none.
+
+Retired and archived, never deleted: `RR_SurveyTag`, `RR_MakeSurveyTags`, `RR_DeployRouteAid`, two source files, one texture and eleven keyed strings. The dated record that linked to the retired source had its **link** repointed and its sentences left alone. 159 C# files, 82 package files, zero warnings, seven checkers. Record: `implementation/GLOW_POD_MARKERS_IMPLEMENTATION.md`.
