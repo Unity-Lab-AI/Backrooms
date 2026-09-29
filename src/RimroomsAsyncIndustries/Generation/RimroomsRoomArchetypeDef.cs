@@ -116,6 +116,17 @@ namespace RimroomsAsyncIndustries.Generation
         public List<RoomFurnitureSlot> slots = new List<RoomFurnitureSlot>();
 
         /// <summary>
+        /// The highest tech level this archetype will ever produce.
+        ///
+        /// A **ceiling, not a target.** What a coordinate actually produces rises with the
+        /// branch's own research and how deep the space is — the owner's *"higher the gete
+        /// quality and rtesarch levels and tech and stuff"* — but it never exceeds what the
+        /// archetype itself declares, so a def that says it deals in industrial goods is still
+        /// telling the truth.
+        /// </summary>
+        public TechLevel maxTechLevel = TechLevel.Archotech;
+
+        /// <summary>
         /// Marks an archetype as one of the owner's *"wild waky carzxzy creepy things"*.
         /// Kept as a flag rather than a separate def type so the escalation ladder can later
         /// cap how many of them a single coordinate may hold without reworking this.

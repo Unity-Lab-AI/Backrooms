@@ -47,7 +47,8 @@ namespace RimroomsAsyncIndustries.Generation
         /// emptiness *is* the look; filling them with laboratory equipment would destroy the
         /// exact image the setting rests on.
         /// </summary>
-        public static RimroomsRoomArchetypeDef Select(string familyId, int depth, int seed)
+        public static RimroomsRoomArchetypeDef Select(string familyId, int depth, int seed,
+            int roomIndex)
         {
             if (depth <= 1 || string.IsNullOrEmpty(familyId)) { return null; }
 
@@ -55,11 +56,22 @@ namespace RimroomsAsyncIndustries.Generation
             // way back is never buried under scenery.
             if (string.Equals(familyId, "threshold_room", StringComparison.Ordinal)) { return null; }
 
+            Company.RimroomsCampaignComponent campaign = Current.Game == null
+                ? null : Current.Game.GetComponent<Company.RimroomsCampaignComponent>();
+
+            // Owner direction 2026-09-29: "hallways can have furniture and produiction benches
+            // too". A bench standing in a corridor is not a bug in this setting -- the
+            // wrongness IS the content. So an archetype's declared family constraint is honoured
+            // in a coherent space and LAPSES in a deranged one, rather than being removed
+            // outright: a shallow coordinate still reads as somewhere, and a deep one stops
+            // pretending.
+            bool ignoreKind = SpaceSophistication.IgnoreRoomKind(depth, campaign, seed, roomIndex);
+
             List<RimroomsRoomArchetypeDef> legal = DefDatabase<RimroomsRoomArchetypeDef>
                 .AllDefsListForReading
                 .Where(archetype => archetype.minDepth <= depth
                     && (archetype.maxDepth <= 0 || archetype.maxDepth >= depth)
-                    && (archetype.familyIds == null || archetype.familyIds.Count == 0
+                    && (ignoreKind || archetype.familyIds == null || archetype.familyIds.Count == 0
                         || archetype.familyIds.Contains(familyId)))
                 .ToList();
             if (legal.Count == 0) { return null; }
@@ -69,13 +81,20 @@ namespace RimroomsAsyncIndustries.Generation
             // machine with the same seed.
             legal.Sort((left, right) => string.CompareOrdinal(left.defName, right.defName));
 
-            float total = legal.Sum(archetype => Math.Max(0.0001f, archetype.weight));
+            // The stranger archetypes get heavier as a coordinate gets more deranged, until
+            // they outweigh the ordinary ones rather than merely matching them -- by then the
+            // ordinary ones are the surprise.
+            float anomalousFactor = SpaceSophistication.AnomalousWeightFactor(depth, campaign);
+            Func<RimroomsRoomArchetypeDef, float> weightOf = archetype =>
+                Math.Max(0.0001f, archetype.weight) * (archetype.anomalous ? anomalousFactor : 1f);
+
+            float total = legal.Sum(weightOf);
             int roll = Gen.HashCombineInt(seed, 0x41524348);
             if (roll < 0) { roll = ~roll; }
             float pick = (roll % 100000) / 100000f * total;
             for (int index = 0; index < legal.Count; index++)
             {
-                pick -= Math.Max(0.0001f, legal[index].weight);
+                pick -= weightOf(legal[index]);
                 if (pick <= 0f) { return legal[index]; }
             }
             return legal[legal.Count - 1];
@@ -104,9 +123,25 @@ namespace RimroomsAsyncIndustries.Generation
         /// holds nothing that fits the slot, so a young branch that has built almost nothing
         /// still gets fully dressed rooms.
         /// </summary>
-        public static ThingDef Resolve(RoomFurnitureSlot slot, int seed, int index, int depth)
+        public static ThingDef Resolve(RimroomsRoomArchetypeDef archetype, RoomFurnitureSlot slot,
+            int seed, int index, int depth)
         {
             if (slot == null) { return null; }
+
+            // The archetype's declared tech level is a CEILING, not a target. What a coordinate
+            // actually produces rises with the branch -- owner direction 2026-09-29, "higher the
+            // gete quality and rtesarch levels and tech and stuff". A pre-industrial branch
+            // finds pre-industrial things; one that has gone deep and researched widely starts
+            // turning up spacer equipment, which is also what makes a deep space worth
+            // revisiting later without anything being authored twice.
+            //
+            // This field had been declared on the def and never read. Wiring it here is what
+            // turns it from dead data into the lever the owner asked for.
+            Company.RimroomsCampaignComponent campaign = Current.Game == null
+                ? null : Current.Game.GetComponent<Company.RimroomsCampaignComponent>();
+            TechLevel ceiling = archetype == null
+                ? TechLevel.Archotech
+                : SpaceSophistication.TechCeiling(archetype.maxTechLevel, depth, campaign);
 
             if (depth >= ConstructionEchoComponent.EchoFromDepth)
             {
@@ -117,6 +152,7 @@ namespace RimroomsAsyncIndustries.Generation
                     ConstructionEchoComponent echo = ConstructionEchoComponent.Current;
                     ThingDef mirrored = echo == null ? null
                         : echo.Draw(candidate => Placeable(candidate)
+                            && WithinTech(candidate, ceiling)
                             && (slot.kind == RoomSlotKind.Explicit
                                 || slot.kind == RoomSlotKind.CategoryMember
                                 || Matches(slot.kind, candidate)),
@@ -127,9 +163,20 @@ namespace RimroomsAsyncIndustries.Generation
 
             List<ThingDef> candidates = Candidates(slot);
             if (candidates == null || candidates.Count == 0) { return null; }
+
+            // Filtered rather than rejected: a slot whose whole pool is above the branch's
+            // reach falls back to the unfiltered pool, because an empty room is a worse
+            // outcome than a slightly anachronistic one.
+            var affordable = new List<ThingDef>();
+            for (int index2 = 0; index2 < candidates.Count; index2++)
+            {
+                if (WithinTech(candidates[index2], ceiling)) { affordable.Add(candidates[index2]); }
+            }
+            List<ThingDef> pool = affordable.Count > 0 ? affordable : candidates;
+
             int pick = Gen.HashCombineInt(seed, index * 31 + (int)slot.kind);
             if (pick < 0) { pick = ~pick; }
-            return candidates[pick % candidates.Count];
+            return pool[pick % pool.Count];
         }
 
         /// <summary>Whether a slot appears in this particular room.</summary>
@@ -152,6 +199,11 @@ namespace RimroomsAsyncIndustries.Generation
             int roll = Gen.HashCombineInt(seed, index * 613 + 7);
             if (roll < 0) { roll = ~roll; }
             return low + roll % (high - low + 1);
+        }
+
+        private static bool WithinTech(ThingDef definition, TechLevel ceiling)
+        {
+            return definition != null && (int)definition.techLevel <= (int)ceiling;
         }
 
         private static List<ThingDef> Candidates(RoomFurnitureSlot slot)

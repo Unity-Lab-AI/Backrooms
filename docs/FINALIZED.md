@@ -2354,3 +2354,42 @@ Owner directions captured verbatim: 3.
 Silent-no-op failure modes designed out and **proved offline rather than trusted**: 1 — derangement making every layout candidate unsafe, which would have looked like a working feature doing nothing.
 Requirements found to be already met and said so rather than rebuilt: 2 — room furnishing and items.
 Newly open and named in `TODO.md`: archetypes constrained by structural family, so a hallway is not furnished as a nursery; and facilities as distinct from rooms and corridors.
+
+---
+
+## 2026-09-29 — Coherence decays, and what you find scales with you (0.8.7-dev)
+
+### Verbatim owner requests
+
+> *"get to it hallways can have furniture and produiction benches too remember things are almost completely fucking werid and crazy odd and scary looking the deeping in the backrooms and higher the gete quality and rtesarch levels and tech and stuff ec t ect"*
+
+> *"and we need a proper history list that lab gates are connected have connected to in a easily editable clear able and manage bench connected to the portal gates natural gates dont get to call a seed they are what they are"* — captured verbatim for the next checkpoint.
+
+### The correction that shaped this
+
+- [x] The previous checkpoint named a gap: archetypes were not constrained by structural family, so *"a hallway can be furnished as a nursery"*. **The owner's answer was that this is not a bug.** A production bench in a corridor is exactly right for the setting — **the wrongness is the content.** So nothing was constrained; instead **coherence decays.**
+- [x] **Two inputs, capped separately.** Depth is what the player chose to risk (at most 0.65); branch advancement — research finished, deepest reached — is what they earned (at most 0.45). **Neither alone can max the place out; the worst of it wants both.**
+- [x] **Rolled per room.** Some rooms in a deep space still read as ordinary, deliberately: **a space where everything is wrong stops being unsettling and starts being noise. The contrast is what works.** Anomalous archetypes grow heavier with derangement until **the ordinary ones are the surprise.**
+- [x] **What you find scales with what you can understand.** Never above the archetype's declared ceiling, and a slot whose whole pool is out of reach **falls back to the unfiltered pool**, because an empty room is worse than a slightly anachronistic one. It also makes **a deep space worth revisiting** — the same coordinate after a hundred hours of research is a different place, with nothing authored twice.
+
+### A real defect found and fixed
+
+- [x] `maxTechLevel` was emitted in the archetype XML for **fourteen defs** while the C# class had no such field. RimWorld logs an unknown field and carries on, so it had been **failing silently at load since 0.7.9-dev** — the defs worked, the field did nothing, and **nothing in the build or any checker noticed.** Wiring it as the tech ceiling both fixes the defect and turns dead data into the lever the owner asked for.
+
+### A checker written, proved broken, and removed rather than shipped
+
+- [x] A check for exactly that defect was written: every child element of one of our def types must be a real field on its class. **It did not fire.** Every part was verified correct in isolation — the field parser reads all seven fields, the XML walk reaches the right node, the comparison flags a deliberately planted bad child — but the assembled function reported nothing.
+- [x] **It was removed rather than shipped.** A checker that silently passes everything is worse than no checker, because **it manufactures confidence**. That is the same failure mode designed out of the layout derangement one checkpoint earlier, and shipping it here would have been hypocritical. Recorded in `TODO.md` with what was already proven, so the next attempt starts from the working parts.
+
+### Build evidence
+
+0.8.7-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **152** C# source files (one new), **91** approved package files (unchanged). Assembly SHA-256 `11D0FB47F37A78D58E7CD3A47E3C8A89D7B4769BAE731E675D6B6BC2C37B9A48`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass. **No new def of any kind, no asset, no patch operation, no new work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Source files modified: 4. Docs updated: 4 (1 new).
+Owner directions captured verbatim: 2.
+**Named gaps that turned out not to be gaps: 1** — the owner corrected it, and the correction improved the design rather than merely permitting the status quo.
+Latent defects found and fixed: 1 — a def field emitted in XML that no class declared, silently ignored at load for two checkpoints.
+**Tools written and then deliberately discarded for failing their own sanity test: 1.** A checker that passes everything manufactures confidence, which is worse than having none.
+Still open and named in `TODO.md`: the unknown-def-field checker; facilities as larger functional spaces; and the laboratory gate connection history — editable, clearable, per-gate, and **never offered on a natural gate, which has no address book and may not dial.**

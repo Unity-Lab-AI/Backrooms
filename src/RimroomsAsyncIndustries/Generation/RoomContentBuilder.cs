@@ -150,7 +150,7 @@ namespace RimroomsAsyncIndustries.Generation
         private static void DressRoom(Map map, RoomRecord room, int depth, int seed,
             HashSet<IntVec3> reserved)
         {
-            RimroomsRoomArchetypeDef archetype = RoomArchetypeService.Select(room.familyId, depth, seed);
+            RimroomsRoomArchetypeDef archetype = RoomArchetypeService.Select(room.familyId, depth, seed, room.index);
             if (archetype == null || archetype.slots == null) { return; }
 
             // Slots start well past the family fixtures' slot indices so the quadrant spread
@@ -160,7 +160,7 @@ namespace RimroomsAsyncIndustries.Generation
             {
                 RoomFurnitureSlot slot = archetype.slots[index];
                 if (!RoomArchetypeService.SlotAppears(slot, seed, index)) { continue; }
-                ThingDef definition = RoomArchetypeService.Resolve(slot, seed, index, depth);
+                ThingDef definition = RoomArchetypeService.Resolve(archetype, slot, seed, index, depth);
                 if (definition == null) { continue; }
 
                 int wanted = RoomArchetypeService.SlotCount(slot, seed, index);

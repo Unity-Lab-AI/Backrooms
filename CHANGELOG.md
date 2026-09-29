@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.7-dev - 2026-09-29 - the deeper it is, the less it pretends
+
+- **Hallways can hold anything.** A production bench in a corridor is not a mistake down there.
+- **Shallow spaces still make sense.** Deep ones stop bothering, and the change is gradual rather than a switch.
+- **Some rooms in a deep space still read as ordinary**, on purpose. If everything is wrong, nothing is unsettling.
+- **The strange kinds of room get commoner the further in you go**, until the ordinary ones are the surprise.
+- **What you find scales with what you have researched and how deep you have pushed.** A young colony finds crude things; an advanced one starts turning up spacer equipment.
+- **A deep space is worth going back to.** The same coordinate after a hundred hours of research is a different place.
+
+Full record: [coherence and tech scaling](docs/implementation/COHERENCE_AND_TECH_SCALING_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.8.6-dev - 2026-09-29 - the shape of the place
 
 - **Deep spaces are not built to a grid any more.** Rooms stretch, shrink and go wrong, and they go wronger the further in you are.
