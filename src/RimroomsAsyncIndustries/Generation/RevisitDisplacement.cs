@@ -79,7 +79,14 @@ namespace RimroomsAsyncIndustries.Generation
             int quietShare = atlasCampaign != null && atlasCampaign.HasCapability("RR_Cap_CoordinateAtlas") ? 2 : 3;
             if (Roll(coordinate.Seed, coordinate.Openings, VisitSalt) % quietShare == 0) { return; }
 
-            int wanted = Math.Min(MaxMoved, 1 + (coordinate.Openings - 2) / OpeningsPerExtra);
+            // **RR_Cap_AlternateExits** (Spatial mapping and topology, tier 1). A branch that
+            // has mapped more than one way through a coordinate notices fewer things out of
+            // place, because it is no longer depending on a single remembered route. The cap
+            // drops rather than the chance: the space still moves things, and it still does it
+            // on the same schedule.
+            int ceiling = atlasCampaign != null && atlasCampaign.HasCapability("RR_Cap_AlternateExits")
+                ? MaxMoved - 1 : MaxMoved;
+            int wanted = Math.Min(ceiling, 1 + (coordinate.Openings - 2) / OpeningsPerExtra);
             if (wanted <= 0) { return; }
 
             var site = map.Parent as RimroomsDestinationMapParent;

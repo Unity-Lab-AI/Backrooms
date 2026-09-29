@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
@@ -147,7 +147,17 @@ namespace RimroomsAsyncIndustries.Gate
         /// </summary>
         public float OpeningPowerDrawWatts
         {
-            get { return GateProps.openingPowerDrawWatts * GateCellCount; }
+            get
+            {
+                float draw = GateProps.openingPowerDrawWatts * GateCellCount;
+                // **RR_Cap_EfficientAperture** (Facilities and power, tier 1). A branch that has
+                // measured its own aperture holds one open for less. Applied after the footprint
+                // multiplier, so a larger gate saves proportionally more -- which is the point.
+                Company.RimroomsCampaignComponent campaign = NativeCampaign;
+                if (campaign != null && campaign.HasCapability("RR_Cap_EfficientAperture"))
+                { draw *= 0.85f; }
+                return draw;
+            }
         }
 
         /// <summary>The gate's size, as a player reads it: the opening first.</summary>

@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.11.4-dev - 2026-09-29 - the second rung of every branch
+
+- **Seven more research projects**, one deeper step in each branch of the company's work. Each needs its own first project and one completed route log, so the band is about having been through once and read what came back.
+- **Efficient Aperture** - holding a connection open costs about a seventh less power, and a wider gate saves proportionally more.
+- **Rescue Training** - the emergency return window runs twice as long.
+- **Corroboration** - analysing a record takes a quarter less work.
+- **Alternate Exits** - fewer things are out of place when you return, because you are no longer relying on the one path that would have shown it.
+- **Detection** - three times as long between recognising something and it reaching you.
+- **Relays** - deliveries arrive about a quarter sooner.
+- **Leases** - everything bought through the catalogue costs a fifth less.
+- **Three of these replace their earlier version rather than adding to it**, so a deeper study is a bigger number and not a compounding one.
+- **Two settings that did nothing have been removed.** They looked like they governed how fast the gate's reserve refills and how large it is. Neither was read by anything; the reserve is whichever battery you bind, and your colony's power charges it.
+
+Full record: [the second rung of every branch](docs/implementation/RESEARCH_TIER1_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.11.3-dev - 2026-09-29 - seven ways into the tree, and every one of them does something
 
 - **The research tree has seven new starting points**, one for each branch of the company's work, and you can take them in any order. None requires anything but insight, so a branch is never locked out by which record it happened to bring home first.

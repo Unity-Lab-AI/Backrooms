@@ -71,8 +71,11 @@ namespace RimroomsAsyncIndustries.Gate
         public float minimumPowerHeadroomWatts = 250f;
         public float idlePowerDrawWatts = 250f;
         public float openingPowerDrawWatts = 3500f;
-        public float reserveChargePowerWatts = 1000f;
-        public float returnReserveCapacityWattDays = 2f;
+        // reserveChargePowerWatts and returnReserveCapacityWattDays were retired in
+        // 0.11.4-dev. Both were declared, validated and READ BY NOTHING -- residue from the
+        // power model retired in 0.9.1-dev, when the gate stopped owning a reserve and started
+        // binding a Core battery. The reserve IS that battery, and RimWorld charges it.
+        // Archived in full: docs/implementation/historical-content/0.11.4-dev/RETIRED_VESTIGIAL_POWER_PROPS.md
         public float emergencyReturnCostWattDays = 1f;
         public float recoveryOpeningCostWattDays = 1f;
         public float calibrationWorkRequired = 2500f;
@@ -130,11 +133,13 @@ namespace RimroomsAsyncIndustries.Gate
                 portalWindowTierProjects == null ||
                 portalWindowTierProjects.Any(name => string.IsNullOrWhiteSpace(name)))
             { yield return "Rimrooms portal duration ladder must be positive, non-shrinking and fully named."; }
+            // The retired clause compared the two costs against a nominal reserve size that
+            // had no relationship to the battery a player actually binds, so it guaranteed
+            // nothing. The real guarantee is in SpendNativeOpeningTick, which checks the
+            // actual stored energy of the actual battery every tick.
             if (!PositiveFinite(minimumPowerHeadroomWatts) || !PositiveFinite(idlePowerDrawWatts) ||
-                !PositiveFinite(openingPowerDrawWatts) || !PositiveFinite(reserveChargePowerWatts) ||
-                !PositiveFinite(returnReserveCapacityWattDays) || !PositiveFinite(emergencyReturnCostWattDays) ||
+                !PositiveFinite(openingPowerDrawWatts) || !PositiveFinite(emergencyReturnCostWattDays) ||
                 !PositiveFinite(recoveryOpeningCostWattDays) ||
-                emergencyReturnCostWattDays + recoveryOpeningCostWattDays > returnReserveCapacityWattDays ||
                 !PositiveFinite(calibrationWorkRequired))
             { yield return "Rimrooms gate power, reserve, and work settings must be finite and positive."; }
             if (!PositiveFinite(dialSpinUpWorkRequired) ||
@@ -721,8 +726,16 @@ namespace RimroomsAsyncIndustries.Gate
             // that has practised the walk back does it faster, and a longer window is how that
             // reads from the outside.
             int returnWindow = GateProps.emergencyReturnWindowTicks;
-            if (NativeCampaign != null && NativeCampaign.HasCapability("RR_Cap_ReturnDrill"))
-            { returnWindow += returnWindow / 2; }
+            Company.RimroomsCampaignComponent returnCampaign = NativeCampaign;
+            if (returnCampaign != null)
+            {
+                // **RR_Cap_RescueTraining** (Fieldcraft and medicine, tier 1) supersedes
+                // RR_Cap_ReturnDrill rather than stacking with it: a branch with the deeper
+                // training gets double, not two and a half times. Checked first so the two
+                // can never compound into a window nobody designed.
+                if (returnCampaign.HasCapability("RR_Cap_RescueTraining")) { returnWindow *= 2; }
+                else if (returnCampaign.HasCapability("RR_Cap_ReturnDrill")) { returnWindow += returnWindow / 2; }
+            }
             emergencyReturnTicksRemaining = returnWindow;
             RecordGateActivity(reasonKey == "RR_Gate_TimeCostWindowExhausted"
                 ? "RR_Gate_TimeCostWindowExhausted" : reasonKey, CurrentOpeningId);

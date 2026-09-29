@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -29,7 +29,25 @@ namespace RimroomsAsyncIndustries.Investigation
         private string evidenceId;
         private string carrierLoadId;
         public string EvidenceId { get { return evidenceId; } }
-        public float WorkRequired { get { return ((CompProperties_RouteEvidence)props).analysisWorkRequired; } }
+        /// <summary>
+        /// Work needed to analyse this record.
+        ///
+        /// **RR_Cap_Corroboration** (Measurement and evidence, tier 1) takes a quarter off. A
+        /// branch that has learned to corroborate one record against another stops re-deriving
+        /// everything from first principles each time.
+        /// </summary>
+        public float WorkRequired
+        {
+            get
+            {
+                float work = ((CompProperties_RouteEvidence)props).analysisWorkRequired;
+                Company.RimroomsCampaignComponent campaign = Current.Game == null
+                    ? null : Current.Game.GetComponent<Company.RimroomsCampaignComponent>();
+                if (campaign != null && campaign.HasCapability("RR_Cap_Corroboration"))
+                { work *= 0.75f; }
+                return work;
+            }
+        }
         public bool HasValidBinding { get { return bindingSchema == 1 && !string.IsNullOrWhiteSpace(evidenceId) &&
             carrierLoadId == parent.GetUniqueLoadID() && IsSupportedCarrier(parent) && WorkRequired > 0f &&
             !float.IsNaN(WorkRequired) && !float.IsInfinity(WorkRequired); } }

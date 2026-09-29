@@ -25,8 +25,11 @@ namespace RimroomsAsyncIndustries.Threats
             get
             {
                 Company.RimroomsCampaignComponent campaign = Campaign;
-                return campaign != null && campaign.HasCapability("RR_Cap_EarlyWarning")
-                    ? OneGameMinute * 2 : OneGameMinute;
+                if (campaign == null) { return OneGameMinute; }
+                // **RR_Cap_Detection** (Entities and containment, tier 1) supersedes
+                // RR_Cap_EarlyWarning rather than stacking: three times, not six.
+                if (campaign.HasCapability("RR_Cap_Detection")) { return OneGameMinute * 3; }
+                return campaign.HasCapability("RR_Cap_EarlyWarning") ? OneGameMinute * 2 : OneGameMinute;
             }
         }
 

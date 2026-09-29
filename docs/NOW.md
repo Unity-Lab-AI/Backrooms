@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.11.3-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.11.4-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **162 C# files, 85 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `A5A79073550682B074F69D2BE1024E8C7A77403EAF160901F2AAFE91889B5C1D`, reproduced by two clean recompiles |
+| Assembly | SHA-256 `D586E665BB10FD6067A3A84241770E6BA8EF454DFC72E7D74FECA3D3E4A4787`, reproduced by two clean recompiles |
 | Checkers | **eight**, all passing |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -41,7 +41,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.11.3
+## What shipped this session, 0.7.1 → 0.11.4
 
 | Version | What |
 |---|---|
@@ -74,6 +74,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.11.1 | **An offer with more than one way through** — the request shape, routes as a first-class field, contact as a branch state |
 | 0.11.2 | **The company asks for six things, then stops asking** — the tutorial line and the hinge; the two-kinds rule forced a better hinge |
 | 0.11.3 | **Seven ways into the tree** — research tier 0 across seven branches, each granting a capability real code honours |
+| 0.11.4 | **The second rung of every branch** — research tier 1; two vestigial power props found and retired |
 
 ---
 
@@ -229,6 +230,11 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 123. **A plant that produces TWO failures means the proof checks both ends.** Renaming one side of a grant-and-read pair should fail as an orphaned grant AND an orphaned read.
 124. **Do not add a hollow entry so a count looks complete.** Transport has no tier 0 project because it is DLC-optional; inventing one to make it eight would be the exact lie the proof exists to catch.
 125. **A capability is neither a def nor a keyed string.** `check-package-integrity.py` and `check-keyed-strings.py` both had to be taught that, and both defer to the proof, which catches what neither can see.
+126. **A dead PROP is more dangerous than dead code.** It reads exactly like a live one: a plausible name, a sensible default, a validation rule implying somebody cared. `reserveChargePowerWatts` and `returnReserveCapacityWattDays` were declared, validated and read by nothing since 0.9.1-dev.
+127. **A property and a field differing only in casing is a trap.** `ReturnReserveCapacityWattDays` read the battery; `returnReserveCapacityWattDays` read nothing. Same class, one character apart.
+128. **A validation can guarantee nothing and still look like a guarantee.** The retired clause compared costs against a nominal capacity unrelated to the battery a player binds.
+129. **A deeper tier SUPERSEDES rather than stacks.** Read sites check the deeper capability first and fall through, so a card that says "twice as long" means twice.
+130. **When a new assertion fails, ask whether the assertion is wrong first.** The depth rule failed on the gate ladder, which is linear by design. The assertion was restated; the ladder was not widened to satisfy it.
 
 ---
 

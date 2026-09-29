@@ -103,6 +103,118 @@ Everything the branch buys through the company catalogue costs a tenth less. The
     <grantsCapabilities><li>RR_Cap_NegotiatedTerms</li></grantsCapabilities>
   </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
 
+
+  <!-- ==================================================================================== -->
+  <!-- TIER 1 - FIRST ENTRY                                                                 -->
+  <!--                                                                                      -->
+  <!-- Each requires its own tier 0 root and one completed route log: this band is about     -->
+  <!-- having been through once and read what came back, so a branch that has never surveyed -->
+  <!-- has nothing to build on. No distortion or entity log yet — those need something to   -->
+  <!-- have gone wrong, which is tier 2's business.                                          -->
+  <!--                                                                                      -->
+  <!-- Three of these SUPERSEDE their tier 0 capability rather than stacking with it, so     -->
+  <!-- that a deeper study is a bigger number and not a compounding one. The read sites      -->
+  <!-- check the tier 1 capability first and fall through.                                   -->
+  <!-- ==================================================================================== -->
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Facilities_EfficientAperture</defName>
+    <label>Efficient Aperture</label>
+    <description>Work out how much of the draw is the connection and how much is the branch being careless about it.
+
+Holding a connection open costs about a seventh less power. A wider gate saves proportionally more, because the saving applies after the footprint is counted.</description>
+    <insightCost>2</insightCost>
+    <workRequired>7000</workRequired>
+    <minimumIntellectual>5</minimumIntellectual>
+    <requiredRouteLogs>1</requiredRouteLogs>
+    <prerequisiteProjects><li>RR_Facilities_ReserveDiscipline</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_EfficientAperture</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Fieldcraft_RescueTraining</defName>
+    <label>Rescue Training</label>
+    <description>Train for the run that goes wrong rather than the one that goes well. Who carries whom, who goes last, and what gets left behind.
+
+The emergency return window runs twice as long. This replaces the drill rather than adding to it: the branch is not doing both, it is doing the better one.</description>
+    <insightCost>2</insightCost>
+    <workRequired>7500</workRequired>
+    <minimumIntellectual>5</minimumIntellectual>
+    <requiredRouteLogs>1</requiredRouteLogs>
+    <prerequisiteProjects><li>RR_Fieldcraft_ReturnDrill</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_RescueTraining</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Measurement_Corroboration</defName>
+    <label>Corroboration</label>
+    <description>Stop reading every record as though it were the first one. Set each against what the branch already holds and the work halves itself.
+
+Analysing a record takes a quarter less work.</description>
+    <insightCost>2</insightCost>
+    <workRequired>8000</workRequired>
+    <minimumIntellectual>6</minimumIntellectual>
+    <requiredRouteLogs>1</requiredRouteLogs>
+    <prerequisiteProjects><li>RR_Measurement_SecondReading</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_Corroboration</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Spatial_AlternateExits</defName>
+    <label>Alternate Exits</label>
+    <description>Map more than one way through. A branch that depends on a single remembered route is a branch that loses a crew when the route is wrong.
+
+Fewer things are out of place when you return. Not because the space moved fewer of them, but because you were no longer relying on the one path that would have shown it.</description>
+    <insightCost>2</insightCost>
+    <workRequired>8000</workRequired>
+    <minimumIntellectual>5</minimumIntellectual>
+    <requiredRouteLogs>2</requiredRouteLogs>
+    <prerequisiteProjects><li>RR_Spatial_CoordinateAtlas</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_AlternateExits</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Entities_Detection</defName>
+    <label>Detection</label>
+    <description>Turn the collated accounts into something a crew can be drilled on, then drill them on it until noticing is not a decision.
+
+Three times as long between recognising something and it reaching you. This replaces the early-warning training rather than adding to it.</description>
+    <insightCost>2</insightCost>
+    <workRequired>9000</workRequired>
+    <minimumIntellectual>6</minimumIntellectual>
+    <requiredRouteLogs>1</requiredRouteLogs>
+    <prerequisiteProjects><li>RR_Entities_EarlyWarning</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_Detection</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Logistics_Relays</defName>
+    <label>Relays</label>
+    <description>Put the branch's own relays on the route the supply service uses, so a shipment is not waiting on somebody else's schedule to be noticed.
+
+Deliveries arrive about a quarter sooner. A shipment still cannot arrive before it has left.</description>
+    <insightCost>2</insightCost>
+    <workRequired>7000</workRequired>
+    <minimumIntellectual>4</minimumIntellectual>
+    <requiredRouteLogs>1</requiredRouteLogs>
+    <prerequisiteProjects><li>RR_Logistics_StandingOrders</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_Relays</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Commerce_Leases</defName>
+    <label>Leases</label>
+    <description>Stop buying and start leasing where leasing is cheaper, and make the parent corporation carry the depreciation it was going to charge you for anyway.
+
+Everything bought through the catalogue costs a fifth less. This replaces the negotiated terms rather than adding to them.</description>
+    <insightCost>2</insightCost>
+    <workRequired>7500</workRequired>
+    <minimumIntellectual>5</minimumIntellectual>
+    <requiredRouteLogs>1</requiredRouteLogs>
+    <prerequisiteProjects><li>RR_Commerce_NegotiatedTerms</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_Leases</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
   <!-- The window-tier ladder.
 
        Until 0.10.9-dev this file held ONE project while `portalIndefiniteTier` was 4, so

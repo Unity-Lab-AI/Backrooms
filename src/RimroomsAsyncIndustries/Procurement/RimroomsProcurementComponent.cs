@@ -217,7 +217,11 @@ namespace RimroomsAsyncIndustries.Procurement
             long unitPrice = catalog.unitPriceUsd;
             RimroomsCampaignComponent priceCampaign = Current.Game == null
                 ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
-            if (priceCampaign != null && priceCampaign.HasCapability("RR_Cap_NegotiatedTerms"))
+            // **RR_Cap_Leases** (Commerce and organisation, tier 1) supersedes
+            // RR_Cap_NegotiatedTerms rather than stacking: a fifth off, not three tenths.
+            if (priceCampaign != null && priceCampaign.HasCapability("RR_Cap_Leases"))
+            { unitPrice -= unitPrice / 5; }
+            else if (priceCampaign != null && priceCampaign.HasCapability("RR_Cap_NegotiatedTerms"))
             { unitPrice -= unitPrice / 10; }
             try { totalPrice = checked(unitPrice * quantity); }
             catch (OverflowException) { return CompanyActionResult.Refused("RR_Proc_PriceOverflow"); }
@@ -227,7 +231,7 @@ namespace RimroomsAsyncIndustries.Procurement
             int dispatchTick;
             int arrivalTick;
             if (!TryAddTicks(now, catalog.dispatchDelayTicks, out dispatchTick) ||
-                !TryAddTicks(now, catalog.leadTimeTicks, out arrivalTick))
+                !TryAddTicks(now, LeadTimeTicksFor(catalog), out arrivalTick))
             { return CompanyActionResult.Refused("RR_Proc_TimeOverflow"); }
             if (nextOrderSequence == long.MaxValue) { return CompanyActionResult.Refused("RR_Proc_OrderLimit"); }
             if (orders.Count(o => o != null && !IsTerminal(o.status)) >= MaximumOpenOrders)
@@ -1096,6 +1100,27 @@ namespace RimroomsAsyncIndustries.Procurement
                     staff.Pawn.Spawned && staff.Pawn.Map == map && !staff.Pawn.Dead && !staff.Pawn.Downed &&
                     staff.Pawn.Faction == Faction.OfPlayer)
                 .Select(staff => staff.Pawn).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// How long a shipment takes to arrive.
+        ///
+        /// **RR_Cap_Relays** (Communications and logistics, tier 1) takes a quarter off: a branch
+        /// with its own relays is reached sooner.
+        ///
+        /// This shortens a **delay**, never a deadline. Nothing is asked of the player while a
+        /// shipment is in transit and nothing fails when it lands -- the supplier is simply slow,
+        /// and this makes it less so. See docs/CAMPAIGN_CHART.md #1.1.
+        /// </summary>
+        private int LeadTimeTicksFor(RimroomsProcurementCatalogDef catalog)
+        {
+            int lead = catalog.leadTimeTicks;
+            RimroomsCampaignComponent relayCampaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (relayCampaign != null && relayCampaign.HasCapability("RR_Cap_Relays"))
+            { lead -= lead / 4; }
+            // Never shorter than the dispatch delay: a shipment cannot arrive before it leaves.
+            return Math.Max(lead, catalog.dispatchDelayTicks + 1);
         }
 
         private CompanyActionResult CreateHeldCargo(ProcurementOrderRecord order, ThingDef itemDef)
