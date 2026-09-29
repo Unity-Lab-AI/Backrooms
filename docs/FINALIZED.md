@@ -2639,3 +2639,40 @@ Source files modified: 3. Keyed strings added: 1, corrected: 2 (they claimed col
 **Features that would have been unable to fire until the code was read: 1** - body size, with no non-colonist able to cross.
 **Wrong-but-obvious implementations avoided by reasoning about the topology: 1** - per-endpoint width, which would have trapped animals in the Backrooms.
 Still open and named in `TODO.md`: hostiles needing width; the adjacent-door-run fallback.
+
+---
+
+## 0.9.5-dev - 2026-09-29 - they follow you
+
+### Owner direction, verbatim
+
+> *"and at deeper levels i do want monstrosities and npcs to \"Chase\" pawns/ kill them all the way to the gate"*
+
+### What was already there and did the opposite, on purpose
+
+A hostile inhabitant was given a `LordJob_DefendPoint`, with a comment saying why: *"the warning-first rule requires that a player who backs off is not pursued across the whole space."* That was a deliberate decision and at shallow depth it is still right. The direction is not that it was wrong, but that it should stop being true as you go deeper.
+
+### The threshold already existed
+
+`Band.Hostile` is defined in the pressure ladder as *"more than one thing acts, and the space stops being forgiving"* - the owner's "deeper levels" already written down, derived from depth, operating history, technology and colony wealth together. A second threshold beside it would have given one idea two definitions that could drift. Below `Hostile`, unchanged; at `Hostile`, it hunts.
+
+### No pursuit code was written
+
+RimWorld's own assault lord already walks a hostile toward whoever it can reach. "All the way to the gate" needed nothing added, because the threshold room is excluded from *spawning*, never from being walked into. **Fifth time this session a requirement was met by an existing guarantee rather than new code.**
+
+Kidnapping, stealing, fleeing and timing out are all off: every generated coordinate has map edges, and a kidnapper carrying somebody off one would be a disappearance with no story attached to it.
+
+### A bug caught by reading the diff
+
+`LordJob_AssaultColony`'s first parameter is the **assaulter's** faction. The first version passed `Faction.OfPlayer`, naming the player as the attacker. It compiled, and no checker would have caught it - the type is right and the value is a real faction. It was found by re-reading the change against the decompiled constructor.
+
+### Build evidence
+
+0.9.5-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **156** C# source files, **79** approved package files. Assembly SHA-256 `C5160083A4903117221AF361E39C4709A6EF0B5E58755971513EE67640180E10`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All five checkers pass. **No new def, asset, patch operation or work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Methods added: 1. Call sites changed: 1. Docs updated: 5 (1 new).
+**Bugs caught by re-reading a diff against decompiled Core rather than by any checker: 1.**
+**Requirements met by existing vanilla behaviour rather than new code: 1** - pursuit to the threshold.
+Still open and named in `TODO.md`: coming through the gate into the colony, which inverts the mod's founding rule and needs its own diff; the legacy `RR_QuietPursuer` scripted chase, untouched here because it is a separate older system on a custom def.

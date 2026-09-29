@@ -71,7 +71,7 @@ namespace RimroomsAsyncIndustries.Threats
 
                 for (int made = 0; made < wanted; made++)
                 {
-                    if (!PlaceOne(map, coordinate, family, seed + made * 17)) { break; }
+                    if (!PlaceOne(map, coordinate, family, seed + made * 17, band)) { break; }
                     if (family.hostile) { hostilesPlaced++; }
                 }
             }
@@ -152,7 +152,7 @@ namespace RimroomsAsyncIndustries.Threats
         }
 
         private static bool PlaceOne(Map map, CoordinateRecord coordinate,
-            RimroomsInhabitantDef family, int seed)
+            RimroomsInhabitantDef family, int seed, CoordinatePressureLadder.Band band)
         {
             PawnKindDef kind = ResolveKind(family);
             if (kind == null) { return false; }
@@ -194,10 +194,7 @@ namespace RimroomsAsyncIndustries.Threats
 
             if (family.hostile && faction != null)
             {
-                // A defend-this-place lord rather than an assault lord: the warning-first rule
-                // requires that a player who backs off is not pursued across the whole space.
-                LordMaker.MakeNewLord(faction,
-                    new LordJob_DefendPoint(cell, 12f), map, new List<Pawn> { pawn });
+                LordMaker.MakeNewLord(faction, HostileLordJob(band, cell, faction), map, new List<Pawn> { pawn });
             }
             Announce(family, pawn, map);
             return true;
@@ -279,6 +276,41 @@ namespace RimroomsAsyncIndustries.Threats
                 ? (Name)new NameSingle(remembered)
                 : new NameTriple(existing.First, remembered, existing.Last);
             return remembered;
+        }
+
+        /// <summary>
+        /// What a hostile inhabitant does about the people who walked in.
+        ///
+        /// **Owner direction, 2026-09-29, verbatim:** *"and at deeper levels i do want
+        /// monstrosities and npcs to \"Chase\" pawns/ kill them all the way to the gate"*.
+        ///
+        /// Below <see cref="CoordinatePressureLadder.Band.Hostile"/> this is unchanged and
+        /// deliberately so: a defend-this-place lord, because the warning-first rule requires
+        /// that **a player who backs off is not pursued across the whole space**. That rule is
+        /// what makes a shallow coordinate somewhere a lone survivor can retreat from.
+        ///
+        /// At `Hostile` it hunts. The band's own definition is *"more than one thing acts, and
+        /// the space stops being forgiving"*, which is the owner's "deeper levels" already
+        /// written down, so the rule needed no second threshold of its own.
+        ///
+        /// **Nothing here is new pursuit code.** RimWorld's own assault lord already walks a
+        /// hostile to whoever it can reach, which is exactly "all the way to the gate": the
+        /// threshold room is excluded from *spawning*, never from being walked into, so a
+        /// hunter follows a fleeing crew right to the doorway with nothing added.
+        ///
+        /// Kidnapping, stealing, fleeing and timing out are all off. A coordinate has map
+        /// edges because every generated map does, and a kidnapper carrying somebody off one
+        /// would be a disappearance with no story attached to it. What is wanted is something
+        /// that follows you, and the countermeasure stays what it always was: leave.
+        /// </summary>
+        private static LordJob HostileLordJob(CoordinatePressureLadder.Band band, IntVec3 cell, Faction hostileFaction)
+        {
+            if (band < CoordinatePressureLadder.Band.Hostile)
+            { return new LordJob_DefendPoint(cell, 12f); }
+            // The assaulting faction is the inhabitant's own, never the player's. Core reads
+            // this parameter as who is doing the attacking.
+            return new LordJob_AssaultColony(hostileFaction, canKidnap: false,
+                canTimeoutOrFlee: false, sappers: false, useAvoidGridSmart: false, canSteal: false);
         }
 
         private static Faction FactionFor(RimroomsInhabitantDef family)

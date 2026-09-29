@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.5-dev - 2026-09-29 - they follow you
+
+- **In the worst coordinates, what lives there no longer holds its ground.** It follows your crew, room after room, all the way to the doorway you came in by.
+- **Everywhere quieter it still gives you a warning and lets you back away.** That has not changed, and it is what makes the deep ones mean something.
+- Nothing kidnaps anyone or carries anything off the map. What follows you follows you; it does not disappear with one of your people.
+- The limits that keep a lone survivor alive are untouched: never more than three things acting at once, quiet rooms still guaranteed, and nothing ever waiting in the room you arrive in.
+
+Full record: [they follow you](docs/implementation/PURSUIT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.9.4-dev - 2026-09-29 - what a gate's size lets through
 
 - **Your animals can walk through a gate.** They could not before at all, which meant gate size had nothing to stop.
