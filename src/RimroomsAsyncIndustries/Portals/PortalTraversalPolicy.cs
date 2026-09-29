@@ -31,9 +31,10 @@ namespace RimroomsAsyncIndustries.Portals
         public const bool AutonomousNonPlayerTraversalPermitted = false;
 
         /// <summary>
-        /// May this pawn traverse as a traveller, walking through on its own legs?
-        /// Only this company's available colonists may, whether the order came from
-        /// the player directly or from company work scheduling.
+        /// May this pawn traverse **in the course of company work**? Only this company's
+        /// available colonists may. Every connected-work adapter asks this before it will
+        /// plan a job across a gate, which is what keeps cross-gate work a thing people do
+        /// rather than something an animal or a guest can be scheduled into.
         /// </summary>
         public static string TravellerFailureKey(Pawn traveller)
         {
@@ -41,6 +42,75 @@ namespace RimroomsAsyncIndustries.Portals
             if (traveller.Faction != Faction.OfPlayer || !traveller.IsColonist)
             { return "RR_PortalTraversal_NotOurPerson"; }
             return RimroomsPortalCrossingService.EligibilityFailureKey(traveller);
+        }
+
+        /// <summary>
+        /// May this pawn cross on its own legs because **the player ordered it to**?
+        ///
+        /// **Owner direction, 2026-09-29:** a player-owned animal may cross freely. So this is
+        /// wider than <see cref="TravellerFailureKey"/> above, and deliberately kept separate
+        /// from it: that one governs *work*, and an animal is not scheduled into a bill.
+        ///
+        /// **The rule this does not weaken** is the one that matters. What the chokepoint
+        /// exists to prevent is the **far side** walking out, and the test for that is
+        /// ownership: a pawn must belong to the player's faction. A Backrooms inhabitant is
+        /// hostile or unfactioned and fails here exactly as it always did.
+        /// <see cref="AutonomousNonPlayerTraversalPermitted"/> is still constant false and
+        /// <see cref="MayApproachThresholdForTraversal"/> still returns false for everything.
+        /// </summary>
+        public static string OrderedCrossingFailureKey(Pawn traveller)
+        {
+            if (traveller == null) { return "RR_PortalCrossing_PawnNotEligible"; }
+            if (traveller.Faction != Faction.OfPlayer) { return "RR_PortalTraversal_NotOurPerson"; }
+            if (traveller.RaceProps != null && traveller.RaceProps.Animal)
+            {
+                if (!traveller.Spawned || traveller.Dead || traveller.Downed || traveller.InMentalState)
+                { return "RR_PortalCrossing_PawnNotEligible"; }
+                return null;
+            }
+            return TravellerFailureKey(traveller);
+        }
+
+        /// <summary>
+        /// The largest body a doorway of a given width admits.
+        ///
+        /// The numbers come from Core's own races rather than from taste: a person is 1.0, a
+        /// muffalo is 2.4, a dromedary 2.1, a boomalope 2.0, and the largest thing Core ships
+        /// is 4.0. So a one-wide door passes people and working animals, a two-wide door
+        /// passes the pack animals a branch would actually want to walk through a gate, and
+        /// three wide or more passes anything at all.
+        /// </summary>
+        public const float SingleWidthMaxBodySize = 1.2f;
+        public const float DoubleWidthMaxBodySize = 2.5f;
+
+        /// <summary>The body size a doorway this wide admits, or null for no limit.</summary>
+        public static float? MaxBodySizeForWidth(int doorwayWidth)
+        {
+            if (doorwayWidth <= 1) { return SingleWidthMaxBodySize; }
+            if (doorwayWidth == 2) { return DoubleWidthMaxBodySize; }
+            return null;
+        }
+
+        /// <summary>
+        /// Whether this pawn physically fits through a doorway of the given width.
+        ///
+        /// **Owner direction, 2026-09-29:** the larger gate sizes exist *"to fit vehicals and
+        /// the like and bigger creatures"*, so size has to actually stop something or the
+        /// sizes are decoration.
+        ///
+        /// Checked where the **connection** is known rather than where a single endpoint is,
+        /// because a connection has one width for both directions: the gate is the machine
+        /// that forms the aperture, and the doorway waiting on the Backrooms side is just
+        /// where you arrive. Checking an endpoint instead would let a pack animal walk in
+        /// through a wide gate and then be unable to come home.
+        /// </summary>
+        public static string FitFailureKey(Pawn traveller, int doorwayWidth)
+        {
+            if (traveller == null) { return "RR_PortalCrossing_PawnNotEligible"; }
+            float? limit = MaxBodySizeForWidth(doorwayWidth);
+            if (!limit.HasValue) { return null; }
+            float size = traveller.RaceProps == null ? 1f : traveller.BodySize;
+            return size > limit.Value ? "RR_PortalTraversal_TooLargeForGate" : null;
         }
 
         /// <summary>

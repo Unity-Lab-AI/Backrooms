@@ -2600,3 +2600,42 @@ Checkers: 4 -> 5. Descriptions written: 16. Rendering lines added: 2. Docs updat
 **Standards calibrated by counting the game's own data rather than assuming: 1** - and it cut the work from 94 items to 17.
 **Bugs found inside a new checker by planting faults: 2**, the second of them invisible in every listing.
 Still open and named in `TODO.md`: inspect-card text for the station and the beacon; what a gate's size lets through; hostiles needing width; the adjacent-door-run fallback.
+
+---
+
+## 0.9.4-dev - 2026-09-29 - what a gate's size lets through
+
+### Owner directions, verbatim
+
+> *"i suppose the fallback is okay of building mulitple doors 1x1 to make the sizes needed to fit vehicals and the like and bigger creatures"*
+
+> Asked at the fork and answered: **any player-owned animal may cross, freely.**
+
+### The code was read before the feature was designed
+
+Animals could not cross a gate at all: `EligibilityFailureKey` required `IsColonist`. So "bigger creatures fit through a wider gate" **had no subject** - every colonist is body size 1.0 and fits the narrowest gate there is, and a body-size rule written on top of that could never have fired. The owner was asked rather than guessed at.
+
+### Two rules, deliberately kept apart
+
+`TravellerFailureKey` is **unchanged** and still colonists only: it governs traversal in the course of company work, and eleven connected-work adapters ask it before planning a job across a gate. Relaxing that would have made animals eligible to be scheduled into bills. A new `OrderedCrossingFailureKey` governs crossing because the player ordered it, and admits player animals.
+
+**The rule that matters was not weakened.** The chokepoint exists to stop the far side walking out, and the test is ownership: a Backrooms inhabitant is hostile or unfactioned and fails exactly as before. `AutonomousNonPlayerTraversalPermitted` is still constant false.
+
+### Width belongs to the connection, not to an endpoint
+
+A connection has one width in both directions. Measuring each end separately would have been the obvious implementation and would have been **wrong**: a generated return threshold is always a one-cell door, so a pack animal could have walked in through a wide gate and been unable to come home.
+
+### Proved, not assumed
+
+The ladder was proved offline against all 113 races the installed game ships: 73 fit one wide, 97 fit two, 113 fit three. Strictly widening, a person always admitted, and pack animals genuinely blocked by a 1x1 - which is what makes the wider sizes worth building. The proof asserts those properties rather than printing them, so a future threshold change that let everything through a 1x1 fails rather than passing quietly.
+
+### Build evidence
+
+0.9.4-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **156** C# source files, **79** approved package files. Assembly SHA-256 `8B01DE3983F9E2AA05011B50F497BFCF4F37B548A60EB74ABAF2EB82D00B16A3`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All five checkers pass. **No new def, asset, patch operation or work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files modified: 3. Keyed strings added: 1, corrected: 2 (they claimed colonists only).
+**Features that would have been unable to fire until the code was read: 1** - body size, with no non-colonist able to cross.
+**Wrong-but-obvious implementations avoided by reasoning about the topology: 1** - per-endpoint width, which would have trapped animals in the Backrooms.
+Still open and named in `TODO.md`: hostiles needing width; the adjacent-door-run fallback.

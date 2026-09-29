@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.9.4-dev - 2026-09-29 - what a gate's size lets through
+
+- **Your animals can walk through a gate.** They could not before at all, which meant gate size had nothing to stop.
+- **How big a creature fits depends on how wide the gate is.** A one-cell doorway passes people, dogs and deer. A two-cell doorway passes pack animals - muffalo, dromedaries, donkeys. Three cells or more passes anything, up to and including a thrumbo.
+- **A gate has one width in both directions**, so an animal that walked in can always walk back out again.
+- **Nothing from the other side gained anything.** A Backrooms creature still cannot cross under any circumstances; the rule that changed is about what is *yours*.
+- Cross-gate **work** is still colonists only. An animal crosses because you told it to, never because a job was scheduled for it.
+
+Full record: [what a gate's size lets through](docs/implementation/GATE_FIT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.9.3-dev - 2026-09-29 - everything you can look at says what it is
 
 - **The facilities overview now explains each kind of room** - what it is for, and what goes wrong for a branch without it.

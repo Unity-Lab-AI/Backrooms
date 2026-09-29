@@ -430,21 +430,29 @@ namespace RimroomsAsyncIndustries.Portals
             if (!CanUseEndpointNow(pawn, source)) { return "RR_PortalCrossing_SourceAccessDenied"; }
             // One chokepoint owns who may pass and in what role, so no later
             // adapter or scheduler can let the far side walk out on its own.
-            string traveller = PortalTraversalPolicy.TravellerFailureKey(pawn);
+            string traveller = PortalTraversalPolicy.OrderedCrossingFailureKey(pawn);
             if (traveller != null) { return traveller; }
             Thing carried = pawn.carryTracker == null ? null : pawn.carryTracker.CarriedThing;
             return PortalTraversalPolicy.CargoFailureKey(carried, pawn);
         }
 
         /// <summary>
-        /// The single eligibility rule, shared with callers so an order can refuse
-        /// with the same reason the crossing itself would give. Mechs, subhumans and
-        /// non-colonists are deliberately out of scope.
+        /// The single eligibility rule, shared with callers so an order can refuse with the
+        /// same reason the crossing itself would give. Mechs and subhumans are deliberately
+        /// out of scope.
+        ///
+        /// **Owner direction, 2026-09-29:** a player-owned animal may cross freely, so one is
+        /// eligible here on the same terms a colonist is. The conditions that differ are the
+        /// ones that only mean something for a person: an animal is never a prisoner, a slave
+        /// or a quest lodger, and "drafted" is not a state it has.
         /// </summary>
         public static string EligibilityFailureKey(Pawn pawn)
         {
-            if (pawn == null || !pawn.Spawned || pawn.Dead || pawn.Downed || pawn.Drafted || pawn.InMentalState ||
-                pawn.Faction != Faction.OfPlayer || !pawn.IsColonist || pawn.IsPrisoner || pawn.IsSlave || pawn.IsQuestLodger())
+            if (pawn == null || !pawn.Spawned || pawn.Dead || pawn.Downed || pawn.InMentalState ||
+                pawn.Faction != Faction.OfPlayer)
+            { return "RR_PortalCrossing_PawnNotEligible"; }
+            if (pawn.RaceProps != null && pawn.RaceProps.Animal) { return null; }
+            if (pawn.Drafted || !pawn.IsColonist || pawn.IsPrisoner || pawn.IsSlave || pawn.IsQuestLodger())
             { return "RR_PortalCrossing_PawnNotEligible"; }
             return null;
         }

@@ -56,6 +56,8 @@ namespace RimroomsAsyncIndustries.Portals
             if (eligibility != null) { return CompanyActionResult.Refused(eligibility); }
             if (crossings.HasUnresolvedCrossing(pawn))
             { return CompanyActionResult.Refused("RR_PortalCrossing_PawnInTransit"); }
+            string fit = PortalTraversalPolicy.FitFailureKey(pawn, DoorwayWidth(connection));
+            if (fit != null) { return CompanyActionResult.Refused(fit); }
 
             PortalRouteStep step = StepFrom(connection, pawn.Map);
             if (step == null || network.Find(connection.Id) != connection)
@@ -75,6 +77,27 @@ namespace RimroomsAsyncIndustries.Portals
             if (!pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc))
             { return CompanyActionResult.Refused("RR_PortalTravel_OrderRefused"); }
             return CompanyActionResult.Applied();
+        }
+
+        /// <summary>
+        /// How wide the doorway of a connection is, in cells.
+        ///
+        /// Taken from the connection's **first** endpoint for every kind, which for a
+        /// laboratory connection is the gate. A connection has one width in both directions:
+        /// the gate is the machine that forms the aperture, and the doorway on the Backrooms
+        /// side is just where you arrive. Measuring each end separately would let a pack
+        /// animal walk in through a wide gate and then be unable to come home, because a
+        /// generated return threshold is always an ordinary one-cell door.
+        /// </summary>
+        public static int DoorwayWidth(PortalConnectionRecord connection)
+        {
+            Thing anchor = connection == null || connection.First == null ? null : connection.First.Anchor;
+            if (anchor == null) { return 1; }
+            CompRimroomsGate gate = anchor.TryGetComp<CompRimroomsGate>();
+            if (gate != null && gate.IsDesignated) { return gate.GateWidth; }
+            if (anchor.def == null) { return 1; }
+            int span = anchor.def.size.x > anchor.def.size.z ? anchor.def.size.x : anchor.def.size.z;
+            return span < 1 ? 1 : span;
         }
 
         /// <summary>Reconcile one interrupted crossing. Never invents a person or item.</summary>

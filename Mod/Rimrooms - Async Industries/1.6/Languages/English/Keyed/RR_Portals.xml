@@ -65,7 +65,7 @@
 
   <!-- Traversal policy. Inhabitants stay in the Backrooms; anything else comes
        back only in one of our own people's hands. True for every gate at once. -->
-  <RR_PortalTraversal_NotOurPerson>Only this company's own people walk through a gate. Anyone or anything else comes back only by being carried through by one of them.</RR_PortalTraversal_NotOurPerson>
+  <RR_PortalTraversal_NotOurPerson>Only this company's own people and animals walk through a gate. Anyone or anything else comes back only by being carried through by one of them.</RR_PortalTraversal_NotOurPerson>
   <RR_PortalTraversal_PassengerNotHeld>{0} is still on their own feet, so they cannot be taken through a gate. Down, capture or otherwise actually carry them first.</RR_PortalTraversal_PassengerNotHeld>
   <RR_PortalTraversal_CargoNotCarried>That object is not in the carrier's hands, so it cannot go through a gate with them.</RR_PortalTraversal_CargoNotCarried>
 
@@ -112,7 +112,7 @@
   <RR_PortalCrossing_IdentityConflict>A different crossing already used that operation identity.</RR_PortalCrossing_IdentityConflict>
   <RR_PortalCrossing_PendingLimit>Too many crossings are unresolved. Reconcile some before starting another.</RR_PortalCrossing_PendingLimit>
   <RR_PortalCrossing_PawnInTransit>{0} is already part of an unresolved crossing.</RR_PortalCrossing_PawnInTransit>
-  <RR_PortalCrossing_PawnNotEligible>Only an available colonist of this company can cross. Drafted, downed, dead, prisoner, enslaved, guest and distressed people cannot.</RR_PortalCrossing_PawnNotEligible>
+  <RR_PortalCrossing_PawnNotEligible>Only this company's own available people and animals can cross. Drafted, downed, dead, prisoner, enslaved, guest and distressed people cannot, and neither can a downed or panicking animal.</RR_PortalCrossing_PawnNotEligible>
   <RR_PortalCrossing_NotAtSourceThreshold>The person is not standing at the saved threshold cell for that connection.</RR_PortalCrossing_NotAtSourceThreshold>
   <RR_PortalCrossing_SourceAccessDenied>The doorway on this side cannot be used: it is forbidden, locked or impassable for this person.</RR_PortalCrossing_SourceAccessDenied>
   <RR_PortalCrossing_EdgeUnavailable>That connection is not currently available.</RR_PortalCrossing_EdgeUnavailable>
@@ -155,4 +155,5 @@
 
   <RR_Portals_SpinUpRunning>Bringing up a connection: {0}% charged. The assigned operator must stay on the console.</RR_Portals_SpinUpRunning>
   <RR_Portals_AbortSpinUp>Stop spin-up</RR_Portals_AbortSpinUp>
+  <RR_PortalTraversal_TooLargeForGate>Too large for this gate. Widen the opening: a one-cell doorway passes people and working animals, a two-cell doorway passes pack animals like muffalo and dromedaries, and three cells or more passes anything.</RR_PortalTraversal_TooLargeForGate>
 </LanguageData>
