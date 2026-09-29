@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using RimroomsAsyncIndustries.Core;
@@ -21,11 +21,21 @@ namespace RimroomsAsyncIndustries.Presentation
         private const float NativeAspectHeight = 1280f;
         private const float VersionLabelX = 350f;
 
-        private static readonly string[] TexturePaths =
-        {
-            "UI/Menu/RR_Menu_FacilityThreshold_v2",
-            "UI/Menu/RR_Menu_FieldSurvey_v2"
-        };
+        /// <summary>
+        /// Where the slides live, and the prefix that decides which of them are ours.
+        ///
+        /// **The folder is scanned rather than listed**, so a new slide is added by dropping a
+        /// PNG in and nothing in C# changes. That matters because the menu art is the one place
+        /// this project is allowed to add original images, and it is being produced separately
+        /// from the code.
+        ///
+        /// **The prefix is not decoration.** `UI/Menu` is a generic content path and
+        /// `ContentFinder` resolves across every loaded mod, so a folder scan alone would pull
+        /// another mod's menu art into this slideshow. With 294 other mods in the target install
+        /// that is a certainty rather than a risk. Only `RR_Menu_*` is ours.
+        /// </summary>
+        private const string SlideFolder = "UI/Menu";
+        private const string SlidePrefix = "RR_Menu_";
 
         private static Texture2D[] loadedSlides;
 
@@ -170,13 +180,15 @@ namespace RimroomsAsyncIndustries.Presentation
         {
             if (loadedSlides == null)
             {
-                var found = new List<Texture2D>();
-                for (int i = 0; i < TexturePaths.Length; i++)
-                {
-                    Texture2D image = ContentFinder<Texture2D>.Get(TexturePaths[i], false);
-                    if (image != null) { found.Add(image); }
-                }
-                loadedSlides = found.ToArray();
+                // Sorted ordinally by name -- invariant 26 -- so the running order is the same on
+                // every machine and every mod list, rather than whatever order the loader
+                // happened to return. A slideshow whose order depends on the install is a
+                // slideshow nobody can describe or reproduce a screenshot from.
+                loadedSlides = ContentFinder<Texture2D>.GetAllInFolder(SlideFolder)
+                    .Where(image => image != null && image.name != null &&
+                        image.name.StartsWith(SlidePrefix, System.StringComparison.Ordinal))
+                    .OrderBy(image => image.name, System.StringComparer.Ordinal)
+                    .ToArray();
             }
             return new List<Texture2D>(loadedSlides);
         }

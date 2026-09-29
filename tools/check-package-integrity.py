@@ -452,6 +452,7 @@ def check_textures(problems, notes):
     # "ships but unreferenced" direction from disk. A reference to a texture that does not
     # ship is the more serious of the two, because ContentFinder reports a missing path at
     # runtime, so it is checked in both directions now and from both kinds of source.
+    scanned_folders = set()
     for path in source_cs_files():
         text = read_text(path)
         for value in re.findall(r"""ContentFinder<\s*Texture2D\s*>\s*\.\s*Get\s*\(\s*["']([^"']+)["']""", text):
@@ -460,6 +461,29 @@ def check_textures(problems, notes):
                 referenced.add(value)
             else:
                 unverifiable.add(value)
+        # GetAllInFolder references a WHOLE FOLDER, not one path, and this checker could not see
+        # that. Both menu slides have been reported as "ships but nothing references it" for
+        # every run since they were added -- the old code named them in a string array and then
+        # called Get(variable), which this regex cannot follow either. A note nobody can act on
+        # is noise, and noise is how a real finding gets scrolled past.
+        #
+        # This is not a widening. GetAllInFolder genuinely loads every image under the folder, so
+        # treating them as referenced is what the API actually does. The "reference that does not
+        # ship" direction is untouched and is still the more serious of the two.
+        for value in re.findall(
+                r"""ContentFinder<\s*Texture2D\s*>\s*\.\s*GetAllInFolder\s*\(\s*(\w+|["'][^"']+["'])""",
+                text):
+            token = value.strip()
+            if token.startswith('"') or token.startswith("'"):
+                folder = token.strip("\"'")
+            else:
+                # A bare identifier. Resolve the const it names, in this same file, or give up --
+                # guessing a folder would be worse than reporting nothing.
+                match = re.search(
+                    r"""const\s+string\s+%s\s*=\s*["']([^"']+)["']""" % re.escape(token), text)
+                folder = match.group(1) if match else None
+            if folder:
+                scanned_folders.add(folder.strip("/"))
 
     on_disk = set()
     for path in glob.glob(os.path.join(MOD, "*", "Textures", "**", "*.png"), recursive=True):
@@ -471,8 +495,20 @@ def check_textures(problems, notes):
             fail(problems, "texture path %r is referenced but no matching .png ships" % value)
 
     for value in sorted(on_disk):
-        if value not in referenced:
-            notes.append("texture ships but nothing references it: %s.png" % value)
+        if value in referenced:
+            continue
+        # A texture inside a folder some source scans with GetAllInFolder IS referenced, by the
+        # folder rather than by name. That is the whole point of scanning: art can be added by
+        # dropping a file in.
+        if any(value.startswith(folder + "/") for folder in scanned_folders):
+            continue
+        notes.append("texture ships but nothing references it: %s.png" % value)
+
+    if scanned_folders:
+        for folder in sorted(scanned_folders):
+            count = len([v for v in on_disk if v.startswith(folder + "/")])
+            notes.append("folder scanned by GetAllInFolder, %d texture(s) covered: %s"
+                         % (count, folder))
 
     if unverifiable:
         notes.append("%d non-RR texture path(s) point at game assets and cannot be "

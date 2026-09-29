@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.16-dev - 2026-09-29 - the menu takes any number of slides
+
+- **New main-menu art is now a drop-in.** Any image named `RR_Menu_*.png` placed in the menu texture folder becomes a slide, in filename order, with no code change at all.
+- **Another mod's menu art can never leak into the slideshow.** The folder is a shared content path, so the name prefix is what keeps the slideshow ours.
+- **A full art brief ships with the mod**, naming twelve scenes drawn from things the mod actually contains, with the exact image size, the screen regions to keep clear, and the palette the game already uses.
+- **Two integrity notes that had been wrong since the art was added are fixed.** Both existing slides were reported as unused every single run; the checker could not see how they were loaded.
+
+Full record: [the menu takes any number of slides](docs/implementation/MENU_SLIDESHOW_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.15-dev - 2026-09-29 - the universe has factions in it
 
 - **Seven organisations now exist in the world.** A federal oversight office that wants your paperwork, competing interests that want your figures, former staff who know where everything is, an acquisition crew that will just take it, industrial intelligence you may never see arrive, concerned citizens who noticed the trucks, and an independent press that wants to publish all of it.

@@ -129,6 +129,17 @@ def main():
     # checker could give -- it catches a capability granted and never honoured, which is an
     # unlock the card promises and no code delivers.
     internal |= set(re.findall(r'HasCapability\(\s*"(RR_[A-Za-z0-9_]+)"', source))
+
+    # A texture-name PREFIX is not a keyed string. The menu slideshow scans its folder and keeps
+    # the files whose name starts with "RR_Menu_", so that prefix is a name test rather than
+    # something a player ever reads.
+    #
+    # Classified by CALL SITE, like every rule above it, and not by spelling: the value counts as
+    # internal only when the const holding it is passed to StartsWith. A const that merely looks
+    # like a prefix, or one that is later handed to Translate, is still checked as a keyed string.
+    for name, value in re.findall(r'const\s+string\s+(\w+)\s*=\s*"(RR_[A-Za-z0-9_]+)"', source):
+        if re.search(r'StartsWith\(\s*%s\b' % re.escape(name), source):
+            internal.add(value)
     unresolved = 0
     for key in sorted(referenced):
         if key in strings or key in defs or key in internal:
