@@ -33,6 +33,16 @@ namespace RimroomsAsyncIndustries.Threats
 
         /// <summary>A survivor who can be brought home. The reason to enter, not only to endure.</summary>
         Survivor = 4,
+
+        /// <summary>
+        /// Somebody wearing the name and clothes of a colonist who is **alive right now**.
+        ///
+        /// The owner's *"echos of thier inhabitance in weird ways"*. Deliberately not a copy of
+        /// somebody you lost — that is the <see cref="Missing"/> family and it is a different,
+        /// sadder feeling. An echo is uncanny precisely because the real one is standing in
+        /// your base at the same moment.
+        /// </summary>
+        Echo = 5,
     }
 
     /// <summary>

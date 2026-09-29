@@ -174,7 +174,14 @@ namespace RimroomsAsyncIndustries.Threats
             }
             if (pawn == null) { return false; }
 
-            ApplyIdentity(pawn, family, coordinate);
+            string echoedName = ApplyIdentity(pawn, family, coordinate, map, seed);
+            if (family.kind == InhabitantKind.Echo && string.IsNullOrEmpty(echoedName))
+            {
+                // Nobody at home to echo. Placing a generic stranger under an echo family would
+                // be a worse encounter than none, because the whole point is the recognition.
+                pawn.Destroy();
+                return false;
+            }
             if (family.kind == InhabitantKind.Survivor)
             {
                 // Marks this person as somebody who can be offered passage home. Without
@@ -218,7 +225,7 @@ namespace RimroomsAsyncIndustries.Threats
             }
             if (pawn == null) { return false; }
 
-            ApplyIdentity(pawn, family, coordinate);
+            ApplyIdentity(pawn, family, coordinate, map, seed);
             if (!family.carriesBelongings)
             {
                 pawn.equipment?.DestroyAllEquipment();
@@ -247,20 +254,31 @@ namespace RimroomsAsyncIndustries.Threats
         /// one exists, which is what makes the owner's *"random pawns of disappering"* land: the
         /// name on the body is a name the player recognises.
         /// </summary>
-        private static void ApplyIdentity(Pawn pawn, RimroomsInhabitantDef family,
-            CoordinateRecord coordinate)
+        private static string ApplyIdentity(Pawn pawn, RimroomsInhabitantDef family,
+            CoordinateRecord coordinate, Map map, int seed)
         {
-            if (pawn == null) { return; }
-            if (family.kind != InhabitantKind.Missing) { return; }
+            if (pawn == null) { return null; }
+
+            if (family.kind == InhabitantKind.Echo)
+            {
+                // An echo is of somebody ALIVE AND AT HOME, never of somebody lost -- that is
+                // the Missing family and a different, sadder feeling. The uncanniness depends
+                // entirely on the real one being in the base at the same moment.
+                Pawn source = ColonistEcho.PickSource(map, seed);
+                return source == null ? null : ColonistEcho.Apply(pawn, source);
+            }
+
+            if (family.kind != InhabitantKind.Missing) { return null; }
 
             RimroomsCampaignComponent campaign = Verse.Current.Game == null
                 ? null : Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
             string remembered = campaign == null ? null : campaign.TakeLostPawnName();
-            if (string.IsNullOrEmpty(remembered)) { return; }
+            if (string.IsNullOrEmpty(remembered)) { return null; }
             NameTriple existing = pawn.Name as NameTriple;
             pawn.Name = existing == null
                 ? (Name)new NameSingle(remembered)
                 : new NameTriple(existing.First, remembered, existing.Last);
+            return remembered;
         }
 
         private static Faction FactionFor(RimroomsInhabitantDef family)

@@ -11,4 +11,6 @@
   <RR_Inhabitant_PackLabel>Several of them, and they move together</RR_Inhabitant_PackLabel>
   <RR_Inhabitant_PackText>{0} is not alone. They have been down here long enough to act as a group. They hold their ground rather than hunting, but there is more than one.</RR_Inhabitant_PackText>
   <RR_Event_PawnLostInside>{0} was lost inside a coordinate. The Backrooms remembers people it keeps.</RR_Event_PawnLostInside>
+  <RR_Inhabitant_EchoLabel>Somebody you know is here</RR_Inhabitant_EchoLabel>
+  <RR_Inhabitant_EchoText>{0} is standing in this space, wearing what they were wearing this morning. {0} is also at home right now. Whatever this is, it is not hostile, and it is not them.</RR_Inhabitant_EchoText>
 </LanguageData>

@@ -168,4 +168,23 @@
     <chance>0.35</chance>
   </RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
 
+  <RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+    <defName>RR_Inhabitant_Echo</defName>
+    <label>an echo</label>
+    <description>Somebody wearing the name and the clothes of one of your people. That person is at home right now. This one is not them.</description>
+    <kind>Echo</kind>
+    <minDepth>3</minDepth>
+    <minBand>Unsettled</minBand>
+    <weight>0.8</weight>
+    <pawnKindDefNames>
+      <li>Villager</li>
+      <li>Drifter</li>
+      <li>Colonist</li>
+    </pawnKindDefNames>
+    <count>1~1</count>
+    <chance>0.35</chance>
+    <letterLabelKey>RR_Inhabitant_EchoLabel</letterLabelKey>
+    <letterTextKey>RR_Inhabitant_EchoText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsInhabitantDef>
+
 </Defs>

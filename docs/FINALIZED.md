@@ -2259,3 +2259,53 @@ Owner directions captured verbatim: 2.
 Long-outstanding items closed: 1 — anomalous **events**, named as open for four checkpoints.
 Traps caught by the project's own tooling rather than by a failure: 1, and it cost nothing to diagnose because a previous checkpoint had built the check for exactly it.
 Still open and named in `TODO.md`, not deferred: **inhabitant echoes** — the place copying your *people* rather than your things; and **echoed room shapes**, which touch the saved layout fingerprint.
+
+---
+
+## 2026-09-29 — The place copies your people (0.8.5-dev)
+
+### Verbatim owner requests
+
+> *"get to it"*
+
+> *"not just room shape echoes but echos of thier inhabitance in weird ways and items and equipment and production benches"* — items and benches shipped in 0.8.4-dev; this is *"echos of thier inhabitance"*.
+
+### The design decision the whole thing rests on
+
+- [x] **The echo is of somebody who is alive right now, deliberately not somebody lost.** A body with a familiar name is grief and belongs to the Missing family. An echo is **uncanny**, and it is uncanny precisely because **the real one is standing in your base at the same moment you are looking at this one.**
+- [x] That constraint is **enforced rather than assumed**: alive, not downed, on a player home map, and **not on the coordinate map itself** — meeting your own echo while you are standing there is a sillier effect than meeting it while you know they are at home.
+- [x] **If nobody qualifies, no echo is placed at all.** A generic stranger under an echo family would be a worse encounter than none, because the whole effect is the recognition.
+
+### Surface only, and that is the point
+
+- [x] **Copied: the name and the apparel.** Those are what a player recognises at a glance, and together they are enough.
+- [x] **Not copied: skills, traits, backstory, health, relationships.** An echo is a **surface** — something that has *seen* your colonist rather than something that *is* them. Copying the interior would make it a duplicate, a weaker and more confusing idea, and would **hand the player a free second copy of their best worker** if they ever recruited one. **Echoes cannot be recruited at all.**
+- [x] **Apparel is copied, never taken.** Taking the real clothes would strip a living colonist from across a gate — a bug wearing a feature's clothes. Generator-issued clothing is removed first, or the echo wears two shirts and reads as a mess rather than as a copy.
+- [x] **Never hostile.** Hostility would break the warning-first rule outright: a thing wearing a friendly name that attacks is the definition of an unreadable threat. The existing `ConfigErrors` guard enforces it.
+
+### Determinism took a specific fix
+
+- [x] Candidates are sorted by `thingIDNumber` rather than taken in list order, because list order varies with spawn and load order — **without the sort, the same seed would echo a different colonist after a reload**, and the entire effect depends on it being the same person every time.
+
+### A defect the owner caught mid-build, fixed in the same checkpoint
+
+> *"and we cant have backrooms npc pawns all dying off if a person is slow to explore so something needs to be done about like stat or need freezing until discovered with the fog of war"*
+
+- [x] **This was a real defect in what had just been built.** Everything placed in a coordinate is a live pawn on a live map, so needs tick from the moment it exists. A survivor three rooms away would **starve before a cautious player ever reached them** — the rescue impossible for the exact player most likely to want it, reading as a broken feature rather than as a death. Same for a hostile freezing in a cold band's coordinate and a body rotting behind a door nobody opened.
+- [x] **Fog of war was the right signal, and the owner named it.** RimWorld already tracks per cell whether the player has seen it, so **nothing had to be invented, saved or kept in sync** — and it is already the exact question a player experiences as "have I been there yet".
+- [x] **Needs are topped back up rather than frozen**, because stopping them ticking requires Harmony and the observable result is identical. Malnutrition, hypothermia and heatstroke cleared; corpse rot held at zero. Safe **precisely because it only ever runs on somebody nobody has seen** — no player decision is undone and nothing observable is reversed.
+- [x] **Mood deliberately left alone.** A held pawn is kept alive, not made happy; a forced mood would produce somebody uncannily content in a place designed to be unbearable. **Discovery starts their clock.**
+
+### Build evidence
+
+0.8.5-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **151** C# source files (two new), **91** approved package files (unchanged; one def and two keyed strings added to existing files). Assembly SHA-256 `1314BF625F45C04F9F64BB8AC18F88B5705F9ED253563AA4BBEE9E8C8983BE28`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass; 1,183 keyed references all resolving. **No new PawnKindDef, no new gameplay ThingDef, no asset, no patch operation, no new work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 2. Source files modified: 2. Package files modified: 2 (no new files). Docs updated: 5 (1 new).
+Owner directions captured verbatim: 3.
+**Defects caught by the owner mid-build and fixed in the same checkpoint: 1**, and it would have made the survivor rescue impossible for careful players specifically.
+Exploits designed out before shipping: 1 — an echo that copied skills and could be recruited would be a free duplicate of the player's best worker.
+Bugs designed out before shipping: 1 — copying apparel by reference would have stripped a living colonist from across a gate.
+Determinism traps closed: 1 — candidate order varying with spawn and load order.
+Still open and named in `TODO.md`, not deferred: **echoed room shapes**, the last one, which touches the saved layout fingerprint and therefore generation's validation path.
