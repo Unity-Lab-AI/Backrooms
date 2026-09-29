@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.19-dev - 2026-09-29 - the yellow rooms were never carpeted
+
+- **A real, visible bug, fixed.** The first Backrooms level you ever walk into is supposed to be worn yellow carpet. It has been **wood plank flooring** since the look shipped, in every game, on every seed. Nothing ever reported it.
+- **The cause:** RimWorld has no floor called "Carpet". It has a *template* that makes one carpet per colour, so asking for "Carpet" quietly returned nothing and the code fell back to wood. The fix uses the colour each level already names, so mustard carpet downstairs, faded green in the office levels, burnt umber where the place stops making sense.
+- **Three things I had reported as missing are already in the game.** The rock between rooms is mineable in whatever stone that world tile actually has, and lifting a floor gives you back half of what it cost - carpet included. I was wrong about all three and the record says so.
+- **All of that is now checked**, including the specific way it could silently break again: swapping in one of the floors RimWorld gives nothing back for.
+
+Full record: [the yellow rooms were never carpeted](docs/implementation/INTERIOR_RESOURCE_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.18-dev - 2026-09-29 - the third rung of every branch
 
 - **Seven new research projects, one for each branch**, and every one of them changes a number you can watch change. Hold twelve remote sites instead of eight. Pay a sixth of your overhead per site instead of a quarter. Have a shipment left at a site with nobody there. Find a way onward sooner. Find the way *out* more often. Finish a survey faster. Build a room that holds the place back better.

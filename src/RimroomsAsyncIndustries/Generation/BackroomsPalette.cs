@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -93,8 +93,8 @@ namespace RimroomsAsyncIndustries.Generation
                 wallStuff = ThingDefOf.WoodLog,
                 wallColor = MonoYellow,
                 light = Named("WallLamp") ?? Named("StandingLamp"),
-                floor = Named<TerrainDef>("Carpet"),
-                accent = Named<TerrainDef>("Carpet"),
+                floor = Carpet("Structure_Mustard"),
+                accent = Carpet("Structure_Mustard"),
                 floorColor = NamedColor("Structure_Mustard"),
                 nameKey = "RR_Palette_Monochrome",
             };
@@ -127,7 +127,7 @@ namespace RimroomsAsyncIndustries.Generation
                     look.nameKey = "RR_Palette_Machinery";
                     break;
                 case 2: // Offices: worn carpet under dead strip light.
-                    look.floor = Named<TerrainDef>("Carpet") ?? look.floor;
+                    look.floor = Carpet("Structure_GreenFaded") ?? look.floor;
                     look.accent = Named<TerrainDef>("PavedTile") ?? look.floor;
                     look.floorColor = NamedColor("Structure_GreenFaded");
                     look.wallStuff = ThingDefOf.WoodLog;
@@ -143,7 +143,7 @@ namespace RimroomsAsyncIndustries.Generation
                     look.nameKey = "RR_Palette_ColdStore";
                     break;
                 default: // Wrong: the palette stops agreeing with itself.
-                    look.floor = Named<TerrainDef>("Carpet") ?? look.floor;
+                    look.floor = Carpet("Structure_UmberBurnt") ?? look.floor;
                     look.accent = Named<TerrainDef>("MetalTile") ?? look.floor;
                     look.floorColor = NamedColor("Structure_UmberBurnt");
                     look.wallStuff = ThingDefOf.WoodLog;
@@ -201,6 +201,34 @@ namespace RimroomsAsyncIndustries.Generation
         private static ColorDef NamedColor(string defName)
         {
             return DefDatabase<ColorDef>.GetNamedSilentFail(defName);
+        }
+
+        /// <summary>
+        /// The carpet `TerrainDef` for one structure colour.
+        ///
+        /// **There is no `TerrainDef` called "Carpet".** Core ships a `TerrainTemplateDef` of that
+        /// name and `TerrainDefGenerator_Carpet` turns it into one real terrain per structure
+        /// colour, named `Carpet` + the `ColorDef` name with `Structure_` removed — so
+        /// `Structure_Mustard` becomes `CarpetMustard`.
+        ///
+        /// This existed as `Named&lt;TerrainDef&gt;("Carpet")`, which **silently returned null**,
+        /// and every band that wanted carpet fell through to its `??` fallback. The depth-1 yellow
+        /// rooms — the one look invariant 25 calls sacred — were laid in **wood plank flooring**
+        /// from the day the palette shipped. Nothing said so: `GetNamedSilentFail` is silent by
+        /// design, and the fallback made the result look deliberate.
+        ///
+        /// Unlike a wall, a carpet cannot be tinted at runtime: the colour is baked into the
+        /// generated def. So the colour this band already names is the colour that picks the def,
+        /// which is why no new data was needed to fix it.
+        /// </summary>
+        private static TerrainDef Carpet(string structureColorDefName)
+        {
+            if (string.IsNullOrEmpty(structureColorDefName)) { return null; }
+            const string prefix = "Structure_";
+            string suffix = structureColorDefName.StartsWith(prefix, System.StringComparison.Ordinal)
+                ? structureColorDefName.Substring(prefix.Length)
+                : structureColorDefName;
+            return Named<TerrainDef>("Carpet" + suffix);
         }
     }
 }

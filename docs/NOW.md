@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.18-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.19-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **173 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `DA438B9E7B355487C34A4F75693067E08B175AB8BF86A3376BF733951893FBE3`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
+| Assembly | SHA-256 `3B260F514CCFE2DD3F9400FA7D54BDF7FE385247AA6111FFBF7CAA2F34C6C6A4`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
 | Checkers | **eight**, all passing |
-| Proofs | **NINETEEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
+| Proofs | **TWENTY** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output** — four of them print `PASS:` and eleven print `PROOF HELD`, and a grep for one phrasing silently skips the others. That is how four live proofs went unrun for most of this session |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.18
+## What shipped this session, 0.7.1 → 0.12.19
 
 | Version | What |
 |---|---|
@@ -101,6 +101,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.16 | **The menu takes any number of slides** — folder-scanned with a load-bearing name prefix, plus the art brief. Two integrity notes that were always wrong, fixed |
 | 0.12.17 | **Four more menu slides** — six now cycle. A slide that would never have appeared is caught before it ships; provenance ships for the Steam disclosure |
 | 0.12.18 | **The third rung of every branch** — research tier 3, **all seven**, every one moving an observable knob. Two design restraints asserted |
+| 0.12.19 | **The yellow rooms were never carpeted** — a real shipped defect; three of my own audit verdicts corrected. **Twentieth proof** |
 
 ---
 
@@ -417,6 +418,9 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 200. **A tier deleted for having no knobs is worth re-surveying once the systems land.** Tier 3 had nothing to move for four of seven branches at 0.12.5-dev and a real read site for **all seven** at 0.12.18-dev, because arc 5 wrote the systems in between. **Re-run the sweep; do not carry the old verdict.**
 201. **A restraint is only a restraint if breaking it fails.** The per-coordinate frontier cap must never become a research knob, and shelter must never reach zero. Both are asserted and both were fault-planted — otherwise they are comments.
 202. **Proximity is not the thing that happens.** A claim that looked for a capability name within 400 characters of a constant broke the moment a legitimate line was written above it. **Key off the assignment, the guard, the exit status — never off what sits nearby.** Fifth time.
+203. **A grep for the words you expected, in the file you expected, is not a search.** The mineable-rock fill was marked *"confirmed unbuilt by grep"* while fully shipping, because the code says `Find.World.NaturalRockTypesIn` and contains none of the words searched for. **Condemning correct code on a failed search is worse than trusting a wrong comment.**
+204. **`Named<X>("Foo")` on a TEMPLATE def returns null, silently, and a `??` fallback makes the wrong result look deliberate.** Core ships `Carpet` as a `TerrainTemplateDef` and generates `Carpet<Colour>`. The yellow rooms were wood plank flooring from the day they shipped. **Assert that every def a generator names actually resolves.**
+205. **A filter that skips the case it guards against is worse than no check.** The floor claim excused terrains with no cost list as *"never built"*, which excused `PackedDirt` — the exact plant it existed to catch. **Only the planted fault found it; reading it would not have.**
 
 ---
 
@@ -482,7 +486,7 @@ every single time.
 5. Implementation record under `docs/implementation/`.
 6. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
 7. **Every checker** (eight): `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-display-style.py`, `check-campaign-absolutes.py`, `check-doc-conformance.py`, `research/audit-gate0.py`.
-7b. **Every proof (NINETEEN), by exit status:**
+7b. **Every proof (TWENTY), by exit status:**
 
 ```sh
 for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: $p"; done
@@ -492,7 +496,7 @@ for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: 
    phrasing skipped four live proofs for most of one session. Exit status is phrasing-independent.
 
    The set: `displacement`, `facilities`, `facility-relief`, `fit`, `gate-links`, `incidents`,
-   `live-effects`, `menu-slides`, `offer-routes`, `portal-footprint`, `remote-sites`, `request-generation`,
+   `interior-resource`, `live-effects`, `menu-slides`, `offer-routes`, `portal-footprint`, `remote-sites`, `request-generation`,
    `request-line`, `research-branches`, `spinup`, `starts`, `stranded-crew`, `tier-ladder`,
    `universe-factions`.
 

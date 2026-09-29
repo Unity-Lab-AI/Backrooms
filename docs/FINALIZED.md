@@ -636,6 +636,37 @@ Four PNGs in `1.6/Textures/UI/Menu/`, `outputs/menu-art-2026-09-29/prompts-and-p
 
 ---
 
+## Session 2026-09-29 - the yellow rooms were never carpeted (0.12.19-dev)
+
+**Verbatim user quote:** *"continue"*, following *"make sure you are use the prep docs and mod register as a guide in all you build"*
+
+**The owner directions this settles, verbatim:** *"and areas minable and of all types of materisals throughout"*, *"and capte ands tile can all be uninstalled , moved, resued , sold , studied"*, *"all of it"*
+
+### What shipped
+
+A **real, shipped, player-visible defect** fixed, and **three of my own audit verdicts corrected**. I set out to build "the interior as a resource" and found it was already built - then found a genuine bug while proving it.
+
+### Files touched
+
+`Generation/BackroomsPalette.cs`, `docs/implementation/INTERIOR_RESOURCE_IMPLEMENTATION.md`, `docs/TODO.md`, `CHANGELOG.md`, `README.md`, `About.xml`, the csproj, and `proof-interior-resource.py` (new, the twentieth).
+
+### Closure notes
+
+- **THE DEPTH-1 YELLOW ROOMS HAVE NEVER BEEN CARPETED.** `BackroomsPalette` asked for `Named<TerrainDef>("Carpet")`, and **there is no `TerrainDef` called `Carpet`**: Core ships a `TerrainTemplateDef` of that name and `TerrainDefGenerator_Carpet` produces one real terrain per structure colour, named `Carpet` + the colour def name minus `Structure_`. So the lookup returned null through `GetNamedSilentFail`, which is silent by design, and **every carpet band fell through to its `??` fallback** - wood plank flooring at depth 1. Worn yellow carpet is the defining surface of the Backrooms and invariant 25 calls depth 1 **sacred**. No build error, no checker, no log line, and the fallback made the wrong floor look deliberate.
+- **The fix needed no new data.** Each band already names its own floor colour - `Structure_Mustard` at depth 1, `Structure_GreenFaded` for the office band, `Structure_UmberBurnt` for the wrong band - and all three generated defs exist. A carpet **cannot** be tinted at runtime the way a wall can, because the colour is baked into the generated def, so the colour the band already named is exactly what picks the def.
+- **THREE OF MY OWN 0.12.14-dev AUDIT VERDICTS WERE WRONG**, and correcting them is most of this checkpoint:
+  - *"areas minable and of all types of materisals"* was marked **STILL OPEN, confirmed unbuilt by grep**. It is **fully built**: `FillWithRock` plus `NaturalRockTypesFor`, which asks `Find.World.NaturalRockTypesIn(map.Tile)` for whatever that tile actually has. My grep searched `Generation/` for *"Mineable"*, *"Granite"*, *"RockRubble"* - **none of which the code contains**. A grep for the words I expected is not a search.
+  - I accused `BackroomsContainment.cs` of **claiming mineability its code does not implement**. **The comment was telling the truth.** The implementation is in a different file. I invoked invariant 130 while committing its inverse: condemning correct code on a failed search is worse than trusting a wrong comment, because it marks working behaviour as broken.
+  - I asserted **vanilla returns no materials for a lifted floor**. `TerrainGrid.RemoveTopLayer` defaults `doLeavings: true` and calls `GenLeaving.DoLeavingsFor(TerrainDef, cell, map)`, which returns `CostListAdjusted()` times `resourcesFractionWhenDeconstructed` - **0.5 by default on `BuildableDef`**. Every floor the palette lays returns half its cost. The premise of the row was wrong.
+- **So nothing needed building, and the proof is the deliverable.** What was genuinely missing was anything watching: **the behaviour depends entirely on which terrains the palette picks**, and Core ships `PackedDirt`, `BrokenAsphalt` and stone tiles that return **nothing**. A future palette change would have silently ended the owner direction.
+- **MY FIRST VERSION OF THAT EXACT CLAIM WAS BLIND, AND ONLY A PLANTED FAULT FOUND IT.** It skipped any terrain with no cost list, reasoning that natural terrain was never built - which excused **precisely** the case it existed to catch: swapping a floor for `PackedDirt` **passed**. A filter that skips the case it guards against is worse than no check. Rewritten to require both halves: it cost something, and it returns some of that.
+- **Two more of my claims were wrong on the first run.** One searched for `RoofConstructed` and was broken by the two doc comments saying the roof is deliberately **not** `RoofConstructed` - a claim defeated by the code explaining itself, **sixth time** in this project. The other asserted `SetFaction` never appears in generation; it appears **six times**, deliberately, on the player's own equipment and doors, which is what makes them the player's to use. Both rekeyed off the spawn.
+- **Register checked first this time, and it shaped the work.** Row **101 Gold & Silver Ingots is *Required*** but is smelting recipes only, with no ore veins, and its review says not to require it for core progression - so mineable rock uses **Core** ore. Row **152 Non uno Pinata** changes corpse inventory and auto-strip behaviour, **not terrain drops**, so floor recovery is clear of it. Row **127 Mine Sight** is a designation UI, so real mineable rock simply appears in it. Rows 144, 221 and 52 alter material properties, not placement.
+- **Five planted faults, five catches, clean on restore**, including the formerly-blind one and the original defect restaged.
+- Build 0.12.19-dev, 173 C# files, 91 package files, **0 warnings, 0 errors**. Eight checkers pass, **twenty** proofs exit zero. Assembly reproduced by two clean recompiles. **No game was launched - so the carpet is correct by def name and cost, and nobody has seen it.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra
