@@ -315,6 +315,9 @@ namespace RimroomsAsyncIndustries.Company
             // game-over countdown, and cheap: a bool, then a scan that stops at the
             // first living employee.
             if (now % 60 == 30) { TickFacilityRelief(); }
+            // The solo/group start has no request line, so this is the only guidance it
+            // gets. Slow: these are thoughts, not business, and they fire once each.
+            if (now % 250 == 125) { TickSoloGroupHints(); }
             if (now % 250 != 0 || now < nextOperatingCostTick || nextOperatingCostTick == int.MaxValue) { return; }
             // Bound catch-up work after a time jump; unpaid obligations remain explicit records.
             int days = 0;

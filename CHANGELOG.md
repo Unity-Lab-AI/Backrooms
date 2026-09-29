@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.12.4-dev - 2026-09-29 - four answers, and a research unlock that did nothing
+
+- **A gate now needs real generators running before it will open**, not just a charged battery. You are told which is missing: the circuit cannot deliver enough, or there is no margin left above what the gate already draws.
+- **A research unlock that changed nothing now works.** Reserve Discipline, the first Facilities project, promised the gate would need less spare power before opening. Nothing read that number. It does now.
+- **The gate tells you how much of its reserve is held back for getting people home.** You used to see only the total.
+- **A warning before you remove a natural way into the Backrooms.** Take it out and the access is gone; the space does not close and does not move, you just have no way back to it. Confirm and it goes; cancel and the order is dropped.
+- **Machine gates you built get no such warning** - it is your machine, you can rebuild it.
+- **The solo or group start has no mission list, on purpose.** Nobody is helping you because nobody knows you exist. Instead your people occasionally say what they are thinking - and none of it is an objective, nothing tracks whether you listened.
+- **A designated gate still costs 250 W while closed.** Confirmed as intended rather than left as an open question.
+
+Full record: [four answers, and a dead capability they uncovered](docs/implementation/FOUR_ANSWERS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.3-dev - 2026-09-29 - a portal is its own door cell
 
 - **You can build, mine and explore right behind a gate without affecting it.** A portal takes up its own doorway and nothing else: no reserved space, no protected circle, no invisible claim on your map.

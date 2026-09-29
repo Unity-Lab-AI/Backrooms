@@ -292,6 +292,32 @@ namespace RimroomsAsyncIndustries.Gate
             return null;
         }
 
+        /// <summary>
+        /// What the gate's own circuit is **generating** right now, in watts.
+        ///
+        /// Only what is actually producing: a generator that is switched off, broken down or out
+        /// of fuel contributes nothing, which is the entire point of asking. Stored charge is
+        /// deliberately not counted — a battery is not supply, it is a buffer, and the owner's
+        /// answer names delivery: *"the gate refuses to open unless its circuit can deliver this
+        /// much power"*.
+        /// </summary>
+        private float NativeGenerationWatts()
+        {
+            CompPowerBattery battery = NativeBatteryComp;
+            PowerNet net = battery == null ? null : battery.PowerNet;
+            if (net == null) { return 0f; }
+            float total = 0f;
+            List<CompPowerTrader> traders = net.powerComps;
+            for (int index = 0; index < traders.Count; index++)
+            {
+                CompPowerTrader trader = traders[index];
+                if (trader == null || !trader.PowerOn) { continue; }
+                float output = trader.PowerOutput;
+                if (output > 0f && !float.IsNaN(output) && !float.IsInfinity(output)) { total += output; }
+            }
+            return total;
+        }
+
         private bool NativePowerConnected()
         {
             CompPowerBattery battery = NativeBatteryComp;

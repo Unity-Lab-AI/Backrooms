@@ -98,4 +98,6 @@
   <RR_Event_GateSpinUpLapsed>Gate spin-up lapsed</RR_Event_GateSpinUpLapsed>
   <RR_Event_GateSpinUpAborted>Gate spin-up stopped</RR_Event_GateSpinUpAborted>
   <RR_Gate_FootprintReadout>Opening {0} wide, {1} cell(s) of gate ({2}).</RR_Gate_FootprintReadout>
+  <RR_Gate_SupplyTooLow>The circuit cannot deliver enough power to start an opening. A charged battery is not supply: the gate needs generators actually running.</RR_Gate_SupplyTooLow>
+  <RR_Gate_HeadroomTooLow>There is no margin left above what the gate already draws. Add generation, or take something else off this circuit.</RR_Gate_HeadroomTooLow>
 </LanguageData>

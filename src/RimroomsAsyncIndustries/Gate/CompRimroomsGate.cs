@@ -508,6 +508,14 @@ namespace RimroomsAsyncIndustries.Gate
             string powerText = "RR_NativeGate_PowerReadout".Translate(ReturnReserveStoredWattDays.ToString("F2"),
                 ReturnReserveCapacityWattDays.ToString("F2"), CurrentPowerDrawWatts.ToString("F0"),
                 NativeEnergyRequiredToOpenWattDays.ToString("F2"), RecoveryEnergyRequiredWattDays.ToString("F2")).ToString();
+            // The breakdown, found by the live-effects sweep: `EmergencyReturnCostWattDays` and
+            // `RecoveryOpeningCostWattDays` were public accessors read by NOTHING. The totals above
+            // include them, so the player saw "this much to open and come home" without ever being
+            // told how much of it was the coming home. That is the number that decides whether it
+            // is safe to send anybody, so it is worth its own line.
+            powerText += "\n" + "RR_NativeGate_ReserveBreakdown".Translate(
+                EmergencyReturnCostWattDays.ToString("F2"),
+                RecoveryOpeningCostWattDays.ToString("F2"));
             if (NativeBindingFailureKey != null) { powerText += "\n" + NativeBindingFailureKey.Translate(); }
             string active = IsOpening
                 ? "RR_Gate_OpeningReadout".Translate(IsSustainedPortalSession
@@ -836,8 +844,11 @@ namespace RimroomsAsyncIndustries.Gate
             if (!IsOperatorOnStation) { return CompanyActionResult.Refused("RR_Gate_OperatorNotStaffing"); }
             if (stablePowerTicks < GateProps.stablePowerTicksRequired || !HasPowerAndHeadroom())
             { return CompanyActionResult.Refused("RR_Gate_PowerUnstable"); }
-            if (!HasProjectedOpeningPowerHeadroom())
-            { return CompanyActionResult.Refused("RR_Gate_OpeningPowerUnstable"); }
+            // A keyed reason rather than one blanket refusal: "the circuit cannot deliver
+            // enough" and "there is no margin above what the gate already draws" are different
+            // problems with different fixes, and one string for both always lied about one.
+            string supply = ProjectedOpeningPowerFailure();
+            if (supply != null) { return CompanyActionResult.Refused(supply); }
             return CompanyActionResult.Applied();
         }
 
@@ -887,10 +898,43 @@ namespace RimroomsAsyncIndustries.Gate
             return NativeBindingFailureKey == null;
         }
 
-        /// <summary>Opening load is paid from the linked battery, never charged twice as grid load.</summary>
-        private bool HasProjectedOpeningPowerHeadroom()
+        /// <summary>
+        /// Whether the circuit can support **starting** an opening, or a keyed reason why not.
+        ///
+        /// Opening load is paid from the linked battery, never charged twice as grid load — so this
+        /// asks about **supply**, not about the cost of the opening itself.
+        ///
+        /// ## Two values that had nothing reading them
+        ///
+        /// **`reserveChargePowerWatts`.** Owner's answer, 2026-09-29, verbatim: *"A supply
+        /// requirement before opening"* — *the gate refuses to open unless its circuit can deliver
+        /// this much power*. Generation, not stored charge: a battery is a buffer, not supply, and
+        /// a gate opened on one charged battery and no generator is a gate about to strand a crew.
+        ///
+        /// **`MinimumPowerHeadroomWatts`, which was read by NOTHING.** Found while wiring the
+        /// above. Its own docstring says *"headroom a gate needs above its draw before it will
+        /// open"*, and no code asked. Worse: **`RR_Cap_ReserveDiscipline` is granted by the tier 0
+        /// Facilities project and its whole effect was to lower that unread number**, so the card
+        /// promised *"the gate needs less spare headroom above its draw before it will open"* and
+        /// changed nothing a player could ever observe.
+        ///
+        /// That is **invariant 136** exactly, and it is why the research proof could not catch it:
+        /// the capability *is* read by real code, and the code reading it was itself dead. A live
+        /// read site is not a live effect. Both values are now consumed here, so the tier 0
+        /// Facilities unlock finally does the thing it says.
+        ///
+        /// **This gates opening only.** It is called once, from the can-open check, and never from
+        /// the tick — a generation dip must not emergency-return a crew that is already through.
+        /// </summary>
+        private string ProjectedOpeningPowerFailure()
         {
-            return NativeBindingFailureKey == null;
+            if (NativeBindingFailureKey != null) { return NativeBindingFailureKey; }
+            float generation = NativeGenerationWatts();
+            if (generation < GateProps.reserveChargePowerWatts)
+            { return "RR_Gate_SupplyTooLow"; }
+            if (generation < CurrentPowerDrawWatts + MinimumPowerHeadroomWatts)
+            { return "RR_Gate_HeadroomTooLow"; }
+            return null;
         }
 
         private static bool IsConsolePowered(Thing console)

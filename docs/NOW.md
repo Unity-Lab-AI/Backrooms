@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.3-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.4-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **168 C# files, 86 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `826C21158ECB93979E2D89FEDBFB8FFC9EC4D825C439215F14A9B3A3D73AC46D`, reproduced by two clean recompiles |
+| Build | **170 C# files, 86 package files**, zero warnings, zero errors |
+| Assembly | SHA-256 `E62DF5326AC89E59E744E4AD10F054CA6674439AA7F73C34075DF1CF14AD2BE3`, reproduced by two clean recompiles |
 | Checkers | **eight**, all passing |
-| Proofs | **eight** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
+| Proofs | **nine** in `.local/register/proof-*.py`, all holding. They assert; they do not print. |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.3
+## What shipped this session, 0.7.1 → 0.12.4
 
 | Version | What |
 |---|---|
@@ -86,6 +86,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.1 | **The free doors run out** — found doors stop at depth 3; deeper needs a built gate. Corrects 0.12.0 |
 | 0.12.2 | **The way out was already there** — the guaranteed exit; two maps, a real coordinate, `GenStep_InsideStart` retired |
 | 0.12.3 | **A portal is its own door cell** — a wall beside a gate no longer bricks it; eighth proof |
+| 0.12.4 | **Four answers** — supply requirement, deconstruct warning, solo hints; **a tier 0 unlock that did nothing**, found by a new general sweep |
 
 ---
 
@@ -94,21 +95,6 @@ Chain checkpoints. Do not finish one and wait.
 The order is the one `docs/CAMPAIGN_CHART.md` §7 authorises. **Read the chart before starting
 anything in this list** — it is the authority, and steps 1–5 of its build order are done.
 
-1. **Natural gates that cannot be destroyed or moved.** Owner, verbatim: *"natruals can not be
-   destoryed or moved"*. The **build-around half shipped in 0.12.3**; this is the rest.
-   - **Core decides destructibility at the def level** — `def.destroyable`,
-     `def.building.IsDeconstructible` — and this mod **may not change those**, because it would
-     make every door in every colony indestructible for every player and every other mod.
-   - **Damage is solvable per-instance**: `ThingComp.PostPreApplyDamage(ref DamageInfo, out bool
-     absorbed)` is a vanilla comp hook and these doors already carry this mod's comps.
-   - **Deconstruction has no comp-level veto.** Three defensible options: let the designation
-     happen and re-place the door; refuse the crossing afterwards and explain; or accept that a
-     player who deliberately deconstructs their own natural gate has closed it. **Ask** — invariant
-     134.
-2. **The solo/group tutorial line.** *"the tutorial like quest chains should lay it all out"* —
-   and *"this is all open eneded they can play how they choose"*, so it **guides without railing**.
-   Requests have no per-start scoping yet: the six tutorial requests and the hinge are Async's
-   unconditionally, so the request shape needs to know which start a line belongs to.
 1. **Research tiers 3–4** — remote and deep operations. The band meanings are in
    `docs/CAMPAIGN_CHART.md` §3.1: tier 3 is *"support more than one site; work beyond
    headquarters"*, tier 4 is *"combine known techniques; extend reach"*. **Check every knob
@@ -306,6 +292,10 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 155. **A portal is its own door cell and reserves nothing.** No radius, no claimed cells, no protected zone. Owner, verbatim: *"in the real world you can mine and build and explore directly behind the gates with out actually effecting the gate"*. The only placement rules near a gate belong to **linked equipment**, which has a reach of its own. Enforced by `proof-portal-footprint.py`, including a banned-name check.
 156. **A snapshot and a live check, in two different files, is a silent failure waiting.** The approach cell was frozen at registration and validated forever; a wall on it bricked a gate for the life of the save. **Both files read correctly alone.** When a value is snapshotted, ask what happens when the world moves under it.
 157. **Find every read site before changing a shared value.** Re-deriving the approach cell live everywhere — the obvious fix — would have tripped the crossing receipt’s equality guard, which is what stops a transfer losing a pawn. The repair is skipped while a crossing is in flight because the read sites were enumerated first.
+158. **Sweep the exposed surface, not the fields.** `MinimumPowerHeadroomWatts` applied a research capability and **was itself read by nothing**, so the tier 0 Facilities unlock promised a change and delivered none. `proof-live-effects.py` walks every public property that reads `GateProps` and found two more. **A live read site is not a live effect** (invariant 136); this is the sweep that catches it.
+159. **A dead accessor and a dead value are different problems.** `EmergencyReturnCostWattDays` was live as a field and dead as a property: the number reached the code and never reached the player. The fix is to display it, not to wire it again.
+160. **Never build a keyed string at runtime.** `"RR_Hint_" + id` cannot be verified in either direction, so a typo ships as a raw key on screen. `check-keyed-strings.py` refuses it and is right to.
+161. **Gate an opening requirement at the opening, never in the tick.** `NativeBindingFailureKey` is read every tick; a supply check there would emergency-return a crew already across. A lapse blocks the **next** opening, never the current one.
 
 ---
 

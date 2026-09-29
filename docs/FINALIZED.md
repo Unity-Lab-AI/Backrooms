@@ -246,6 +246,32 @@ The guaranteed exit. The solo/group start generates two maps: an ordinary surfac
 
 ---
 
+## Session 2026-09-29 - four answers (0.12.4-dev)
+
+**Verbatim user quote:** *"okay yeah lets get to it all ask away then get to it"*
+
+**Owner answers, verbatim:** *"we with minify i guess dont worry about it, can we at least do a rim style pop up warning ull lose valuable access to the backrooms and will have to find your own way back in"* / *"option three with hints like i need to contact someone about this crazy shit"* / *"A supply requirement before opening"* / *"Keep 250 W (Recommended)"*
+
+### What shipped
+
+All four answers, plus a real defect they uncovered: **`RR_Cap_ReserveDiscipline` promised an unlock and delivered nothing**, because the property it modified was read by no code at all.
+
+### Files touched
+
+`src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs`, `Gate/NativeGateBinding.cs`, `Portals/PortalDoorWarning.cs` (new), `Company/SoloGroupHints.cs` (new), `Company/RimroomsCampaignComponent.cs`, `Company/CampaignServices.cs`, keyed strings in `RR_Gate.xml` / `RR_NativeGate.xml` / `RR_Portals.xml` / `RR_Scenario.xml`, `docs/implementation/FOUR_ANSWERS_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj, and a ninth proof.
+
+### Closure notes
+
+- **A capability that promised an unlock and delivered nothing.** `MinimumPowerHeadroomWatts` applied `RR_Cap_ReserveDiscipline` and **was itself read by nothing**, so the tier 0 Facilities card promised *"the gate needs less spare headroom above its draw before it will open"* and changed nothing observable. **Invariant 136 exactly**, and exactly why `proof-research-branches.py` cannot catch it: the capability *was* read, and the reader was dead.
+- **The sweep became a general proof.** `proof-live-effects.py` walks every public property on the gate comp whose body reads `GateProps` - fifteen of them - and insists each is consulted elsewhere. It found **two more**: `EmergencyReturnCostWattDays` and `RecoveryOpeningCostWattDays`, dead **accessors** rather than dead values. The totals were shown; how much of the total was the way home was not. Now it has its own line.
+- **The supply check gates OPENING only**, never the tick. `NativeBindingFailureKey` is read every tick and a generation dip there would emergency-return a crew already across; the chart's rule is that a lapse blocks the next opening, never the current one. The proof asserts the absence.
+- **Natural gates became informed consent rather than prohibition**, on the owner's own relaxation. Core decides destructibility at the def level and changing it would make every door in every colony indestructible for every mod. A laboratory gate gets no warning: warning about ordinary construction is how a player learns to click through warnings.
+- **The solo/group start gets no request line, for honesty rather than difficulty.** Four hints, each once, none an objective, nothing tracking whether the player listened.
+- **Two proof mistakes of my own.** The declaration scan matched nothing - a brace-nesting limit against a `{ get { ... } }` body - and so **passed every per-property claim by having none to check**, which is invariant 152 written this same session. And the hints built keyed strings at runtime; `check-keyed-strings.py` refused it and was right, because a constructed key cannot be verified in either direction.
+- Build 0.12.4-dev, 170 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, nine proofs hold. Assembly reproduced by two clean recompiles. **No game was launched, and nothing here has been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

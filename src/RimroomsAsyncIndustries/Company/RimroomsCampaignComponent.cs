@@ -229,6 +229,7 @@ namespace RimroomsAsyncIndustries.Company
             ExposeSupplyContracts();
             ExposeCorporateSupply();
             ExposeFacilityRelief();
+            ExposeSoloGroupHints();
             ExposeLostPawns();
             ExposeEncounterProgression();
             if (Scribe.mode == LoadSaveMode.PostLoadInit)

@@ -9,4 +9,9 @@
   <RR_Start_RosterCount>This start requires five distinct staff, one for each initial company role.</RR_Start_RosterCount>
   <RR_Start_RosterCapability>The {0} must be able to move and manipulate, perform the role's starting work, and meet its skill requirements. Reroll or adjust this staff member before continuing.</RR_Start_RosterCapability>
   <RR_Event_SoloGroupOpening>The group started inside, and the way out was already there. Nobody built it and nobody knows who did.</RR_Event_SoloGroupOpening>
+  <RR_Hint_Contact>Somebody needs to be told about this. Not for help, necessarily. Just so it is written down somewhere that is not in here.</RR_Hint_Contact>
+  <RR_Hint_Surface>Open sky. Nobody is going to believe a word of it, and there is nothing standing here that we did not walk out of.</RR_Hint_Surface>
+  <RR_Hint_Comms>The radio works. Whether anyone on the other end has a category for what we would be reporting is a separate question.</RR_Hint_Comms>
+  <RR_Hint_DoorsRunOut>The doors stop going anywhere new around here. Whatever is further in, nobody is going to walk to it.</RR_Hint_DoorsRunOut>
+  <RR_Event_SoloGroupHint>Somebody said something worth remembering.</RR_Event_SoloGroupHint>
 </LanguageData>
