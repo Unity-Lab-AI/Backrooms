@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.14-dev - 2026-09-29 - the queue could not answer the question
+
+- **Nothing in the game changed.** The owner asked how close the mod was to finished, and the working queue could not say, because 178 of its 254 open rows had never been re-checked against the code.
+- **155 rows re-measured.** 114 of them turned out to be built or deliberately superseded; 41 were rewritten to name exactly what exists and what does not. Open rows went from **254 to 107**.
+- **Nothing was ticked off on a guess.** Every flip names the file, symbol, def or version that proves it, so anybody can re-check it instead of trusting it.
+- **It found a real hole:** the seven universe factions the owner asked for are completely unbuilt, and so is mining and floor recovery inside the Backrooms, which a code comment had been claiming for months.
+
+Full record: [the queue could not answer the question](docs/implementation/BACKLOG_AUDIT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.13-dev - 2026-09-29 - arcs 5 to 8 have work in them
 
 - **Thirteen more kinds of job**, one for every item the campaign plan names across the last four arcs: relay stations, caches, field shelters, guarded leases, resupply, evacuation, a town that saw something, residents who are missing, something loose where people live, cargo that does not fit through a door, people who know what they are looking at, a place that is two places at once, and one rule nobody has seen before.

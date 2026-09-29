@@ -503,6 +503,32 @@ Generation after the hinge: the eligibility filter, the generated offer routine,
 
 ---
 
+## Session 2026-09-29 - the queue could not answer the question (0.12.14-dev)
+
+**Verbatim user quote:** *"okay is that todo list getting there are we getting close to having all work complete on the mod build to completion and thourough totality? get to it all"*
+
+### What shipped
+
+A full re-measurement of `docs/TODO.md` against the shipped code. **No gameplay changed.**
+
+### Files touched
+
+`docs/TODO.md`, `docs/implementation/BACKLOG_AUDIT_IMPLEMENTATION.md`, `docs/NOW.md`, `CHANGELOG.md`, `README.md`, `About.xml`, the csproj, and three audit scripts in `.local/register/`.
+
+### Closure notes
+
+- **THE QUEUE COULD NOT ANSWER THE QUESTION, AND THAT WAS THE FINDING.** 254 open rows, **178 of them in the historical master-backlog section with statuses that had never been re-measured.** A large fraction shipped between 0.7.2-dev and 0.12.13-dev and nobody flipped a checkbox; some went stale **during this session**. Third appearance of the same defect as the stale assembly hash and the stale C# file count, and the first time it was being used to answer a question about whether the project was nearly finished.
+- **155 rows re-measured: 114 built or superseded, 41 rewritten as partial with the gap named.** Open rows **254 to 107**, done rows 278 to 408. **LAW held throughout: status changes only, every original word kept, and evidence appended** - a file, symbol, def, version or invariant - so a flip can be re-checked rather than trusted. Nothing was flipped on a guess; anything unverifiable stayed open.
+- **NO `FactionDef` EXISTS ANYWHERE IN THE PACKAGE.** The entire *"period and factions"* owner direction from 2026-09-28 - the 1990s framing and seven named universe factions - is unbuilt, thirteen rows, none started. It is also **explicitly authorised**: the owner answered that these are new `FactionDef`s reusing existing pawn kinds and icon paths, because a `FactionDef` is world configuration rather than a physical gameplay Def. **Largest completely unbuilt owner direction remaining.**
+- **A code comment had been claiming something the code does not do.** `BackroomsContainment.cs` says *"every solid area is mineable in a variety of materials"*; **there is no mineable-rock placement anywhere in `Generation/`.** The roofing half is real and is what makes *"no outside"* survive another mod's roof removal. Invariant 130 again, and the reason this audit greps rather than reads. Three owner directions turn out to be one unbuilt piece: **mineable materials, reusable floor terrain, and floors that return something when lifted.**
+- **One row's own complaint had gone stale.** *"`portalWindowTierProjects` currently names the single..."* - it names **three** and has since 0.10.9-dev.
+- **Rows that structurally cannot close without the owner are now marked as such**, not left ambiguous: performance measurement, 294-profile def collisions, the compatibility report, balance and the invalid-state matrix, and the RWT surface. **Only the owner launches the game.**
+- **One row was challenged rather than closed.** *"Remap RimWorld's menus, tabs and campaign views"* is invasive, would fight every interface mod in the register, and no owner direction has asked for it since; the twelve-pane Operations tab already is the company-first surface. **A row that would be wrong to satisfy silently is worth saying so about.**
+- **The heredoc trap was hit for the NINTH time** while writing this ledger, four after the gotcha line already said to stop. The count is corrected rather than rounded down.
+- Build 0.12.14-dev, 173 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, **seventeen** proofs exit zero. **No game was launched, and nothing in this mod has ever been played.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra
