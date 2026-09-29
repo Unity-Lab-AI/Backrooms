@@ -24,7 +24,7 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.8.8-dev**, commit read back below |
+| Published | **0.8.8-dev**, commit `0bfc000` |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
 | Build | **154 C# files, 92 package files**, zero warnings, zero errors |
 | Assembly | SHA-256 `5CFCA1C8EEEF139655B91ED421942FC58B33F683B03F1590F0607810A75C643B`, reproduced by two clean recompiles |
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.8.7
+## What shipped this session, 0.7.1 → 0.8.8
 
 | Version | What |
 |---|---|
