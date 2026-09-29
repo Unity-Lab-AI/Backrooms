@@ -272,6 +272,28 @@ All four answers, plus a real defect they uncovered: **`RR_Cap_ReserveDiscipline
 
 ---
 
+## Session 2026-09-29 - the build-order correction (0.12.5-dev)
+
+**Verbatim user quote:** *"if all that is good to go then continue wwhats next, but idk, sounds like ur wording means its full of buggs"*
+
+### What shipped
+
+A correction, and deliberately no gameplay change. Research tier 3 was next in `NOW.md`; the knob sweep found it has almost nothing to move, and `docs/CAMPAIGN_CHART.md` §7 turned out to authorise **"tier 0 to 2 first"** with arcs 5 to 8 next. The queue is corrected to match the chart.
+
+### Files touched
+
+`docs/implementation/BUILD_ORDER_CORRECTION.md`, `docs/NOW.md`, `docs/TODO.md`, `CHANGELOG.md`, `README.md`, `About.xml`, the csproj.
+
+### Closure notes
+
+- **Seven tier 3 projects would have needed four invented effects.** The sweep found ~30 `Maximum*` constants in `ConnectedWork/` that are **scan budgets, not unlocks**; three good knobs that all belong to Spatial; one that belongs to Measurement; and **nothing at all** for Facilities, Fieldcraft, Entities and Commerce, because the systems a remote-operations unlock would modify are not written. That is exactly what three tier 2 unlocks were deleted for at 0.11.6-dev.
+- **The chart had the answer already.** §7 step 6 reads *"the remaining eight research branches, tier 0 to 2 first"*, and step 8 is arcs 5 to 8. Tier 3 is *remote operations*; **arc 5 is what builds remote sites.** A research band cannot unlock capabilities for a system that does not exist.
+- **Arc 5's obvious first piece is blocked too, and that was checked rather than assumed.** *"A remote base is a costly responsibility rather than free map ownership"* suggests a daily surcharge per held site - but `OwnsMap` returns true for the headquarters and for **open Backrooms coordinates**, which are transient destinations rather than bases. There is no way to acquire an ordinary remote world site yet, so the surcharge would always compute **zero**. The acquisition is arc 5's real first piece.
+- **On the user's question about bug volume, answered with numbers rather than reassurance:** of the defects found in already-shipped code this session, **exactly one** would visibly malfunction in play - the frozen approach cell fixed in 0.12.3. The rest *did nothing*: an unlock that moved no number, two clocks that bounded nothing, values nobody read. Everything else reported loudly this session was caught in code written minutes earlier, before it shipped. **The standing caveat is the real one: no game has ever been launched, so the entire class of runtime defects is unverified.**
+- Build 0.12.5-dev, 170 C# files, 86 package files, **0 warnings, 0 errors**. Eight checkers pass, nine proofs hold. **No game was launched.**
+
+---
+
 ## Completed sessions
 
 ## Session 2026-09-28 — Claude Code workflow handoff from ChatGPT 6 Astra

@@ -428,6 +428,13 @@ Seven items, one task each. **This is a stop-building instruction and it is bein
 - [ ] **Open owner question, found while sweeping:** a designated gate drew **nothing** while closed until 0.11.5-dev. It now draws `idlePowerDrawWatts` (250 W, scaled by footprint). That is a **balance change on every existing save**, made because the direction above says an unused value is an unfinished job. If the intended behaviour was genuinely zero idle cost, this is the one to reverse.
 
 
+**Build-order correction (2026-09-29, 0.12.5-dev), answering** *"if all that is good to go then continue wwhats next, but idk, sounds like ur wording means its full of buggs"*
+
+- [x] **The queue in `NOW.md` was in the wrong order and is corrected.** It listed research tiers 3-4 before arcs 5-8. `docs/CAMPAIGN_CHART.md` §7 authorises *"the remaining eight research branches, **tier 0 to 2 first**"* at step 6 and **arcs 5 to 8 at step 8**. Steps 6 and 7 are done, so the next authorised step is 8. The chart beats any other document by its own rule.
+- [x] **Four tier 3 projects were not written**, because the sweep found no knob for Facilities, Fieldcraft, Entities or Commerce at that band. Tier 3 is *remote operations* and **arc 5 is what builds remote sites**; a research band cannot unlock capabilities for a system that does not exist. Exactly what three tier 2 unlocks were deleted for at 0.11.6-dev.
+- [x] **Arc 5's obvious first piece was checked and is also blocked.** A daily surcharge per remote site would always compute **zero**, because `OwnsMap` covers only the headquarters and transient open coordinates and nothing can acquire an ordinary remote world site yet. **The acquisition is arc 5's real first piece.**
+- [x] **Bug volume answered with numbers.** Of the defects found in already-shipped code this session, **one** would visibly malfunction in play (the frozen approach cell, fixed 0.12.3). The rest did nothing. Everything else reported was caught in code written minutes earlier. **The real caveat: no game has ever been launched, so every runtime defect class is unverified.**
+
 ## Owner directions recorded late, second pass
 
 `check-doc-conformance.py` gained a rule on 2026-09-29 requiring that every owner direction

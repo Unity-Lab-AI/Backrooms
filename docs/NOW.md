@@ -24,7 +24,7 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.4-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.5-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **170 C# files, 86 package files**, zero warnings, zero errors |
 | Assembly | SHA-256 `E62DF5326AC89E59E744E4AD10F054CA6674439AA7F73C34075DF1CF14AD2BE3`, reproduced by two clean recompiles |
@@ -43,7 +43,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.4
+## What shipped this session, 0.7.1 → 0.12.5
 
 | Version | What |
 |---|---|
@@ -87,6 +87,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.12.2 | **The way out was already there** — the guaranteed exit; two maps, a real coordinate, `GenStep_InsideStart` retired |
 | 0.12.3 | **A portal is its own door cell** — a wall beside a gate no longer bricks it; eighth proof |
 | 0.12.4 | **Four answers** — supply requirement, deconstruct warning, solo hints; **a tier 0 unlock that did nothing**, found by a new general sweep |
+| 0.12.5 | **The queue was in the wrong order** — tier 3 has no knobs to move; the chart authorises arcs 5–8 next. Four hollow unlocks not written |
 
 ---
 
@@ -95,28 +96,44 @@ Chain checkpoints. Do not finish one and wait.
 The order is the one `docs/CAMPAIGN_CHART.md` §7 authorises. **Read the chart before starting
 anything in this list** — it is the authority, and steps 1–5 of its build order are done.
 
-1. **Research tiers 3–4** — remote and deep operations. The band meanings are in
-   `docs/CAMPAIGN_CHART.md` §3.1: tier 3 is *"support more than one site; work beyond
-   headquarters"*, tier 4 is *"combine known techniques; extend reach"*. **Check every knob
-   against its real read site before building** — invariant 136, which deleted three of the
-   seven tier-2 unlocks before a line was written.
-4. **Generated requests after the hinge**, from branch state, coordinate history and capability.
+1. **Arcs 5–8.** **This is what `docs/CAMPAIGN_CHART.md` §7 step 8 authorises next**, and the
+   chart beats any other document. Steps 6 and 7 are done.
+   - **Arc 5, "Build beyond headquarters".** *"Remote sites need people, supplies, signals,
+     protection, and an exit plan... A remote base is a costly responsibility rather than free map
+     ownership."* Its **first piece is a way to hold a remote site at all** — the surcharge that
+     makes it costly follows, because today it would compute zero (`OwnsMap` returns true only for
+     the headquarters and for transient open coordinates).
+   - Arc 6, the outside world — **the `IncidentDef` surface built in 0.11.8 is its home.**
+   - Arc 7, industrial reach. **DLC-optional throughout.**
+   - Arc 8, deeper systems — partly built already: depth bands, archetypes, the pressure ladder.
+2. **Research tiers 3–4, AFTER the arcs.** **Deliberately moved behind them, 0.12.5-dev.** Tier 3
+   is *"remote operations: support more than one site; work beyond headquarters"*, and the knob
+   sweep found **nothing to move** for Facilities, Fieldcraft, Entities or Commerce, because the
+   systems such an unlock would modify are not written. Four of seven projects would have been
+   invented effects. Record: `implementation/BUILD_ORDER_CORRECTION.md`.
+   - The knobs that **do** exist and are real: `MaximumFrontiersPerCoordinate`, `FrontierRarity`
+     and `EmergenceShare` (all three Spatial's, so one branch cannot take them all) and
+     `SurveyTicks` (Measurement's).
+   - **The ~30 `Maximum*` constants in `ConnectedWork/` are scan budgets, not unlocks.** Raising
+     one is a performance decision with no effect a player could name. Do not reach for them.
+3. **Generated requests after the hinge**, from branch state, coordinate history and capability.
    Route selection for a generated request is an **open owner question** (chart §6).
-5. **Arcs 5–8** — remote sites, the outside world, industrial reach, deeper systems.
-6. **Still unbuilt from the prep material** — *"contradictory accounts"* from a returning crew;
+4. **Still unbuilt from the prep material** — *"contradictory accounts"* from a returning crew;
    staff **prior exposure**; *"respond to openings in settlements"*.
-7. **The adjacent-door-run fallback** — 1×3 and 2×3 by binding one gate across a run of adjacent
+5. **The adjacent-door-run fallback** — 1×3 and 2×3 by binding one gate across a run of adjacent
    1×1 Core doors, for players without Doors Expanded.
-8. **`RR_QuietPursuer` presentation** and the five `RR_*Staff` PawnKinds — the last existing-content
-   replacements.
-9. **The player-facing how-to.** Written **once**, for both the repo and the site.
-10. **Public release** — site, Workshop page, collection. [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md).
+6. **`RR_QuietPursuer` presentation** — the last existing-content replacement.
+   **The five `RR_*Staff` PawnKinds are NO LONGER part of this item:** they were found already
+   authored and read by nothing, and wired as the clean-up team's relief crew in 0.11.7-dev.
+   `proof-facility-relief.py` now asserts both directions so they cannot go dead again.
+7. **The player-facing how-to.** Written **once**, for both the repo and the site.
+8. **Public release** — site, Workshop page, collection. [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md).
     **Correctly last.**
-11. **Continue the register retro sweep.** Swept: animals, security, spatial construction,
+9. **Continue the register retro sweep.** Swept: animals, security, spatial construction,
     expedition logistics, interface, facilities, furniture, storage, power, contracts, faction
     standing, subject casework, evidence, policies. Not yet: medical, world operations, cargo,
     hospitality, materials, visitor economy, staff psychology.
-12. Reconcile 0.5.0–0.7.1 into the master backlog; fix the register's `disposition_stance()`
+10. Reconcile 0.5.0–0.7.1 into the master backlog; fix the register's `disposition_stance()`
     negation bug; the unknown-def-field checker, **written, proved broken and removed rather than
     shipped**.
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.5-dev - 2026-09-29 - the queue was in the wrong order
+
+- **Nothing in the game changed, on purpose.** This checkpoint is a correction to what gets built next, and shipping it is cheaper than building the wrong thing.
+- **Four research projects were NOT written**, because the things they would have unlocked do not exist yet. The research band after the current one is about running remote sites, and remote sites are not built.
+- **The build order now matches the design chart**, which said all along that the remaining research stops at the current band and the campaign arcs come next.
+
+Full record: [the queue was in the wrong order](docs/implementation/BUILD_ORDER_CORRECTION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.4-dev - 2026-09-29 - four answers, and a research unlock that did nothing
 
 - **A gate now needs real generators running before it will open**, not just a charged battery. You are told which is missing: the circuit cannot deliver enough, or there is no margin left above what the gate already draws.
