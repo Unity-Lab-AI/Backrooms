@@ -44,6 +44,24 @@
           <li Class="RimroomsAsyncIndustries.Economy.CompProperties_RimroomsCreditBeacon" />
         </value>
       </li>
+      <!-- Owner direction 2026-09-29: "lost pawns". The comp sits on the human race def so
+           every person in the game carries it, and it does nothing at all unless a coordinate
+           marked that particular person as a survivor it produced. Same dormant-until-marked
+           pattern as the gate and beacon comps above: installing this mod must never change
+           anybody who was not asking for it. -->
+      <li Class="PatchOperationConditional">
+        <xpath>Defs/ThingDef[defName="Human"]/comps</xpath>
+        <nomatch Class="PatchOperationAdd">
+          <xpath>Defs/ThingDef[defName="Human"]</xpath>
+          <value><comps /></value>
+        </nomatch>
+      </li>
+      <li Class="PatchOperationAdd">
+        <xpath>Defs/ThingDef[defName="Human"]/comps</xpath>
+        <value>
+          <li Class="RimroomsAsyncIndustries.Threats.CompProperties_RimroomsSurvivor" />
+        </value>
+      </li>
       <li Class="PatchOperationAdd">
         <xpath>Defs/ThingDef[defName="CommsConsole" or defName="TableMachining"]/comps</xpath>
         <value>

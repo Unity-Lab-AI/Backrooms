@@ -145,6 +145,13 @@ namespace RimroomsAsyncIndustries.Threats
             if (isOccupied && !wasOccupied)
             {
                 coordinate.NoteOpened();
+                // Pushing deeper than the branch has ever been is a recorded progression step,
+                // and it is the only thing that raises the encounter cap. Deliberately not
+                // research and not wealth: wealth already feeds the ladder's ceiling, so using
+                // it again here would double-count one input, and research is not an act of
+                // exploration. The Backrooms never brings more against somebody than they went
+                // looking for.
+                campaignForHistory?.NoteDepthReached(coordinate.Depth);
                 // Living inhabitants are placed on ARRIVAL, against the band as it stands right
                 // now, rather than baked in at generation. That is what makes the ladder's
                 // guarantees real: a first visit is genuinely quiet, and a band that rises
@@ -154,6 +161,15 @@ namespace RimroomsAsyncIndustries.Threats
             NoteLosses(map, coordinate);
             if (isOccupied) { coordinate.NoteOccupancy(Interval); }
             occupiedLastSweep[map] = isOccupied;
+        }
+
+        private static RimroomsCampaignComponent campaignForHistory
+        {
+            get
+            {
+                return Verse.Current.Game == null
+                    ? null : Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
+            }
         }
 
         /// <summary>

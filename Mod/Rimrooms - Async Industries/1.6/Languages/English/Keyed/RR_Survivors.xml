@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Survivor_Inspect>Lost in the Backrooms. Will leave with anyone who can get them out.</RR_Survivor_Inspect>
+  <RR_Survivor_Offer>Offer passage home</RR_Survivor_Offer>
+  <RR_Survivor_OfferDesc>Offer this person a way out. They have been lost down here and will accept. Until they do, they are an inhabitant and cannot cross a gate on their own - the only way out for them is to be carried. Once they join, they can walk out with your people like anyone else.</RR_Survivor_OfferDesc>
+  <RR_Survivor_NobodyHere>One of your people has to be here to make the offer.</RR_Survivor_NobodyHere>
+  <RR_Survivor_JoinedLabel>They accepted</RR_Survivor_JoinedLabel>
+  <RR_Survivor_JoinedText>{0} has joined the branch. They can cross a gate on their own now, which they could not do a moment ago.</RR_Survivor_JoinedText>
+  <RR_Event_SurvivorJoined>{0} was found alive in a coordinate and joined the branch.</RR_Event_SurvivorJoined>
+  <RR_Event_DepthReached>The branch reached depth {0}.</RR_Event_DepthReached>
+  <RR_Event_EncounterCapRaised>The branch reached depth {0}. The Backrooms will now bring as many as {1} against them at once.</RR_Event_EncounterCapRaised>
+</LanguageData>

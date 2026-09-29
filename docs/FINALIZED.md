@@ -2183,3 +2183,36 @@ Owner directions captured verbatim: 2.
 Owner requirements closed in full: 5 of 6; one (**"lost pawns"**) is in progress because survivors exist but the recovery interaction does not.
 Checker gaps found and closed: 1, sanity-tested by breaking it — the third this session.
 Still open and named in `TODO.md`, not deferred: recruiting a survivor; raising an encounter cap as a recorded progression step; anomalous **events** as distinct from anomalous rooms and inhabitants; and echoed **room shapes**.
+
+---
+
+## 2026-09-29 — Getting somebody out, and earning what comes against you (0.8.3-dev)
+
+### Verbatim owner request
+
+> *"get to it"* — taking the loose ends named in the previous checkpoint, in order.
+
+### 1. Recruiting a survivor, closing *"lost pawns"*
+
+- [x] 0.8.2-dev placed survivors: alive, neutral, carryable out. **Without a way to accept them, a survivor was scenery you could pick up rather than a person you could save.**
+- [x] **Offering passage, not recruiting.** No negotiation, no recruitment chance, no prisoner step. Somebody lost in the Backrooms who meets a team with a way out **wants to leave**, and making a player roll for that would be a worse story and a worse game.
+- [x] **The structurally important part:** the traversal rule is absolute — an inhabitant may never decide anything about a gate. A survivor who has not joined **is** an inhabitant, so they cannot cross and the only way out for them is to be carried. Joining makes them a colonist and `PortalTraversalPolicy` then permits it **through the same single chokepoint everything else uses**. Nothing special-cases a gate: the rule is enforced in one place and this is one more caller obeying it.
+- [x] **Dormant unless marked.** The comp sits on the human race def so every pawn carries it, and it does nothing unless a coordinate marked that person as a survivor it produced. One of the branch's own people must be **present** — a survivor cannot be recruited from the other side of a gate by a player looking at a map.
+
+### 2. The cap as a recorded progression step — the last unmet clause of the ladder direction
+
+- [x] The 2026-09-28 direction required *"caps ... where raising a cap is itself a recorded progression step"*. 0.8.0-dev built the cap and the ceiling; what was missing is that **the cap should not simply be the ceiling from day one**. It has to be earned, recorded, and visible in the branch's history — so a player can see the moment the rules changed rather than discovering the world quietly got harder.
+- [x] **The step is reaching a depth nobody has reached before.** Deliberately not research and not wealth: wealth already feeds the ladder's ceiling, so reusing it would **double-count one input**, and research is not an act of exploration. **Pushing deeper is the one thing that is unambiguously the player choosing to escalate**, so the Backrooms never brings more against somebody than they went looking for.
+- [x] Opening cap **1**; +1 per new deepest coordinate; absolute ceiling **3**, unchanged. **A branch that stays shallow stays at one forever**, however rich or advanced it becomes — the point, not a side effect.
+- [x] **Idempotent**, so a cap cannot be walked up by re-entering one space. Depth 1 never raises anything. A step that hits the ceiling is **still recorded**, because the history should show the branch went deeper even when nothing changed.
+
+### Build evidence
+
+0.8.3-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **147** C# source files (two new), **89** approved package files (one new keyed file). Assembly SHA-256 `EB18029C58456A3A99D85440D3808BE9A8A410380CC3895AEE7CA1A95A08F51C`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass; 1,182 keyed references all resolving. One `PatchOperationAdd` adding a dormant comp to a Core def. **No new PawnKindDef, no new gameplay ThingDef, no asset, no new work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 2. Source files modified: 4. Package files created: 1. Docs updated: 5 (1 new).
+Loose ends closed: 2 of the 4 named in the previous checkpoint.
+Long-standing direction clauses closed: 1 — *"raising a cap is itself a recorded progression step"*, open since 2026-09-28 and the last unmet part of the ladder.
+Still open and named in `TODO.md`, not deferred: anomalous **events** as distinct from anomalous rooms and inhabitants; and **echoed room shapes**, which is the larger of the two because room dimensions feed the saved layout fingerprint and changing them touches generation's validation path.

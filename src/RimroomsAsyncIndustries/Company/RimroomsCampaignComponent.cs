@@ -147,6 +147,7 @@ namespace RimroomsAsyncIndustries.Company
             ExposeSupplyContracts();
             ExposeCorporateSupply();
             ExposeLostPawns();
+            ExposeEncounterProgression();
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 RestoreCollections();

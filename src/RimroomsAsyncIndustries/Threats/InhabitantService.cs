@@ -175,6 +175,13 @@ namespace RimroomsAsyncIndustries.Threats
             if (pawn == null) { return false; }
 
             ApplyIdentity(pawn, family, coordinate);
+            if (family.kind == InhabitantKind.Survivor)
+            {
+                // Marks this person as somebody who can be offered passage home. Without
+                // it a survivor is scenery you can pick up rather than a person you can
+                // save, and they stay an inhabitant who may never cross a gate alone.
+                pawn.TryGetComp<CompRimroomsSurvivor>()?.MarkSurvivor();
+            }
             GenSpawn.Spawn(pawn, cell, map);
             if (!pawn.Spawned) { return false; }
 

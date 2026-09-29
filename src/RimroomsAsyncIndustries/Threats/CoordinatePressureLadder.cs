@@ -161,13 +161,24 @@ namespace RimroomsAsyncIndustries.Threats
         public static int EncounterCapFor(CoordinateRecord coordinate, float colonyWealth)
         {
             Band band = BandFor(coordinate, colonyWealth);
+            int byBand;
             switch (band)
             {
-                case Band.Quiet: return 0;
-                case Band.Unsettled: return 0;
-                case Band.Active: return 1;
-                default: return MaxSimultaneousEncounters;
+                case Band.Quiet: byBand = 0; break;
+                case Band.Unsettled: byBand = 0; break;
+                case Band.Active: byBand = 1; break;
+                default: byBand = MaxSimultaneousEncounters; break;
             }
+
+            // The branch's own earned cap narrows this further. The original direction required
+            // that "raising a cap is itself a recorded progression step", so the cap starts at
+            // one and only grows when the branch pushes deeper than it ever has -- never past
+            // the absolute ceiling, which is what keeps the solo-survivability condition true.
+            RimroomsCampaignComponent campaign = Verse.Current.Game == null
+                ? null : Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
+            int byProgression = campaign == null
+                ? RimroomsCampaignComponent.OpeningEncounterCap : campaign.EncounterCap;
+            return Math.Min(byBand, byProgression);
         }
 
         /// <summary>

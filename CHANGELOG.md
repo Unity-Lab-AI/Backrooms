@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.8.3-dev - 2026-09-29 - getting somebody out, and earning what comes against you
+
+- **You can offer a survivor passage home.** They accept - there is no negotiation and no recruitment roll. Somebody lost down there who meets a team with a way out wants to leave.
+- **Joining is what lets them walk out.** Until they accept they are an inhabitant, and an inhabitant cannot use a gate at all - the only way out for them is to be carried, like anything else you find.
+- One of your people has to actually be standing there to make the offer.
+- **The Backrooms now starts by sending one thing at a time**, not three.
+- **It only sends more once you have gone deeper than you ever have**, and when that happens it is written into your branch history so you can see the moment the rules changed.
+- Stay shallow and it stays at one, however rich or advanced you get.
+- It never goes past three.
+
+Full record: [survivors and cap progression](docs/implementation/SURVIVORS_AND_CAP_PROGRESSION_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.8.2-dev - 2026-09-29 - who you find down there
 
 - **There are people in the Backrooms now.** Wanderers who do not explain themselves, survivors who will leave with you, people who went missing, and ones who have been down there far too long.
