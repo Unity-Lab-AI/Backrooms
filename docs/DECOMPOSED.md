@@ -237,6 +237,21 @@ Decomposed 2026-09-28. This is the step that makes the substrate reachable in pl
 - [x] **Slice 7 — work givers and the shared fetch.** Files: `WorkGiver_ConnectedWork.cs`, `JobDriver_ConnectedHauling.cs`, `Defs/WorkGiverDefs/RR_ConnectedWork.xml`, `Languages/English/Keyed/RR_ConnectedWork.xml`. Verification: plan below and continue above Core's `DoctorRescue`; a person reserved whole rather than by quantity.
 - [x] **Slice 8 — checkpoint.** Files: `About.xml`, csproj, `CHANGELOG.md`, the casualties record, the evidence folder, and the workflow ledger.
 
+### Parent minor task: Construction supply and the dependency audit — CLOSED 2026-09-28 (0.5.3-dev)
+
+> get to it we are doing great! make sure mods needed specifically for our mod as dependacies are properly handled with our single mod Rimrooms properly using them as needed to impliment all features of the mod properly
+
+**Decomposition rationale:** the dependency audit ran first because if a feature genuinely needed another mod it would have changed what got built. It did not — and the audit instead dissolved a content blocker and found a factually wrong row.
+
+- [x] **Slice 1 — audit what the mod actually requires.** Verification: twelve non-Rimrooms defs each traced to base Core in the game's own `Data` folders; both patch files confirmed guarded by parsing Core defs; stack-mod and modded-door compatibility confirmed from what the code does.
+- [x] **Slice 2 — fix the throwing def lookups.** Files: `Expedition/RimroomsExpeditionComponent.cs`, `Gate/WorkGiver_RimroomsGate.cs`, `Threats/FirstSliceSiteComponent.cs`, `Languages/English/Keyed/RR_Expedition.xml`. Verification: zero `GetNamed` calls remain.
+- [x] **Slice 3 — read Core's construction path before writing.** Verification: `IConstructible`, `IHaulEnroute`, `Frame`'s declaration and `resourceContainer`, `Toils_Construct`, `Toils_Goto.MoveOffTargetBlueprint`, `JobDriver_HaulToContainer`'s already-carrying jump, and Core's delivery giver priorities — all against the pinned assembly.
+- [x] **Slice 4 — the construction adapter.** Files: `Adapters/ConnectedConstructionAdapter.cs` (new), `ConnectedWorkAdapter.cs`. Verification: quantity clamped by stack, carry capacity and the site's remaining need; site revalidated on the fetch side as well as on arrival.
+- [x] **Slice 5 — the delivery driver.** Files: `JobDriver_ConnectedConstruction.cs` (new), `Defs/JobDefs/RR_ConnectedWorkJobs.xml`. Verification: blueprints included via Core's own conversion toil rather than excluded.
+- [x] **Slice 6 — work givers.** Files: `WorkGiver_ConnectedWork.cs`, `Defs/WorkGiverDefs/RR_ConnectedWork.xml`. Verification: continue above and plan below Core's own delivery givers, with `prioritizeSustains` matching them.
+- [x] **Slice 7 — record the capability-matching method and correct the register.** Files: `implementation/DEPENDENCIES_AND_CAPABILITY_MATCHING.md` (new), `DEFERRED.md`. Verification: Core generator outputs extracted from `Buildings_Power.xml`; each M2 legacy object given a capability-based Core answer.
+- [x] **Slice 8 — checkpoint.** Files: `About.xml`, csproj, `CHANGELOG.md`, the construction record, the evidence folder, and the workflow ledger.
+
 ## TOMBSTONES
 
 _(none)_

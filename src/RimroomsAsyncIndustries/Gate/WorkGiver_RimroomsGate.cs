@@ -33,7 +33,8 @@ namespace RimroomsAsyncIndustries.Gate
             if (gate == null || gate.Console != thing || !gate.CanCalibrate(pawn) || !pawn.CanReserveAndReach(thing, PathEndMode.InteractionCell,
                 Danger.Some, 1, -1, null, forced) || !pawn.CanReserveSittableOrSpot(thing.InteractionCell, forced))
             { return null; }
-            return JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("RR_CalibrateGate"), thing);
+            JobDef definition = DefDatabase<JobDef>.GetNamedSilentFail("RR_CalibrateGate");
+            return definition == null ? null : JobMaker.MakeJob(definition, thing);
         }
 
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)

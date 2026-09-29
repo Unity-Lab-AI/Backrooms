@@ -555,3 +555,63 @@ Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs we
 Source files created: 3. Source files modified: 5. Package files modified: 3. Docs updated: 11.
 Deferments closed: 3 (people and corpses as connected work; the cell-only candidate search found here; the duplicated rotating-window rule). One row re-scoped from "tend/rescue and remains" to "tending across a gate", which is what actually remains.
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+
+---
+
+## Session — 2026-09-28 — construction supply, and the dependency position audited (0.5.3-dev)
+
+### Verbatim requests
+
+> get to it we are doing great! make sure mods needed specifically for our mod as dependacies are properly handled with our single mod Rimrooms properly using them as needed to impliment all features of the mod properly
+
+> remember the mod names might not jump out as the specific ferature we need for our mod so u have to think critically as to what can and should be used and in what whay with what specialities we need in our mod to propely create the needed action function thing and or property or any other coded needed useing critical thinking to achieve our Superior end result in mod functionality
+
+### COMPLETED — construction supply across a gate
+
+- [x] **Real material carried through a gate into a real build site.** `ConnectedWork/Adapters/ConnectedConstructionAdapter.cs` and `ConnectedWork/JobDriver_ConnectedConstruction.cs` (both new). Third work family, and the first whose destination is a native *work object* rather than storage or a bed — so the first real use of the intent's `finalTarget` field for what schema 1 reserved it for, and the first family where the destination is known at planning time rather than resolved on arrival.
+  - Nothing about construction is reimplemented. The requirement is the site's own (`IConstructible.ThingCountNeeded`), the remaining space is the site's own (`IHaulEnroute.SpaceRemainingFor`), the material goes into the frame's own `resourceContainer`, and the building is Core's local work. `itemAvailability` is never inflated, which is the trap the pinned review names: the material physically travels.
+  - `Frame` was confirmed from source to be an `IThingHolder` *and* an `IHaulEnroute` with a public `resourceContainer`, which is why the container delivery route built in 0.5.1-dev already reached it, and why that driver's existing rule of not exclusively reserving an enroute destination is exactly right here — a frame coordinates several haulers itself.
+  - **Blueprints were not cut.** The easy scope reduction would have been "frames only", and it would have broken the main case, because a blueprint with no local material would never become a frame. Core solves it in one public toil, `Toils_Construct.MakeSolidThingFromBlueprintIfNecessary`, used in exactly the position Core's own container driver uses it. So a first delivery to an untouched blueprint works.
+  - The quantity is clamped three ways: the stack after leases, what the worker can carry, and **what the site still needs** — carrying eighty steel to a frame that wants twelve would waste the trip. The site is also revalidated on the *fetch* side before the pickup, so a build finished while the worker walked to the stack ends the trip before anyone lifts anything.
+  - Arriving to a site that no longer wants the material is a **Completed** outcome, not a failure: it is here in real hands and ordinary hauling puts it away.
+
+### COMPLETED — the dependency directive, answered with an audit
+
+- [x] **"mods needed specifically for our mod as dependacies are properly handled"** — audited four ways, and the result is that Rimrooms requires **nothing but base Core**, now verified rather than asserted.
+  - Every non-Rimrooms def the code looks up by name — twelve of them — traced to the package that actually defines it in the game's own `Data` folders. All base Core. No DLC def, no mod def, nothing from the 294-row profile. `TextBook` in particular was checked because books could plausibly have been DLC; it is Core.
+  - Both XML patch files confirmed correctly guarded, by parsing the Core defs rather than assuming: of the four patched Core defs, three already carry a `<comps>` node and `Door` does not — which is precisely the case the existing `PatchOperationConditional` creates it for. A patch that silently failed to apply would have meant a designated provider could never be designated, invisibly.
+  - **Four throwing def lookups fixed.** `DefDatabase<JobDef>.GetNamed` throws when a def is absent; sixty-eight sibling calls used `GetNamedSilentFail`. A def can go missing because another mod patched it away or a load order clashed, and that must never reach the player as an exception. Zero throwing lookups remain.
+  - Two compatibility claims confirmed **real rather than intended**: stack-size mods are respected automatically because every quantity goes through `MaxStackSpaceEver` / `GetCountCanAccept` and no stack size is ever hardcoded; modded doors work as gate thresholds because every check tests `is Building_Door` rather than a def name.
+  - `About.xml` now states the audited position precisely instead of claiming it loosely.
+
+### COMPLETED — the capability-matching directive, recorded as binding
+
+- [x] **"the mod names might not jump out as the specific ferature we need ... useing critical thinking"** — recorded as the standing method in `implementation/DEPENDENCIES_AND_CAPABILITY_MATCHING.md`: never ask whether a mod or a Def *named* X exists; ask what capability the feature needs and what existing object already has it.
+  - The structural fact that makes it work is already shipped: `CompProperties_RimroomsGate` is patched onto Core's `Door` and `Autodoor` and stays dormant until the player designates an instance. **Any Core object can carry Rimrooms behaviour without a new ThingDef.** So "Core has no item called a survey tag" was never the right question.
+  - Applied to the M2 rows that were framed as content blockers, each now has a Core answer by capability: per-instance identity for a survey tag (Core art via `CompArt` is the only Core thing that *generates* one), a Core beacon for a route marker, a saved comp record for a field recorder, and a real `ThingOwner` container for evidence custody — which the connected container haul route already reaches. **The M2 content blocker is dissolved**; what remains there is implementation and the migration decision.
+  - The method's own guard is kept: a capability match must not have disqualifying side effects, so the register's warning that `MedicineIndustrial` is an unsafe evidence substitute still stands, because other systems consume it.
+
+### Found wrong while auditing
+
+- [x] **A recorded blocker that was factually self-contradicting.** The M2 gate row said no single Core generator meets the 3,500 W opening draw, while its own parenthetical named `GeothermalGenerator` at 3,600 W. Core outputs verified from `Buildings_Power.xml`: Geothermal 3,600, Wind 2,300, Solar 1,700, Watermill 1,100, Wood-fired 1,000, Chemfuel 1,000. The framing was also wrong — a draw is supplied by a power network with batteries, and the gate already designates a battery as its provider. Corrected in the register rather than left standing.
+
+### Still deferred, with the dependency named
+
+**Construction *finishing* is not another adapter.** A worker crossing to do build work with nothing carried is a different shape from fetch → carry → deliver, and without an intent to bound it that shape thrashes. The design is recorded rather than hand-waved: a saved deployment intent naming the destination map and the work type that justified crossing, bounded by the same lease, released when no qualifying work remains there. Building it inside a family would have put it in the wrong place.
+
+Also open with real dependencies: bills and unfinished work, research, tending across a gate, food, rest; terrain, blockers, minified installation and roof work as their own construction cases; M2 implementation and the migration decision; M3–M6; every runtime-acceptance row.
+
+### Documents updated in the same change
+
+`implementation/CONNECTED_CONSTRUCTION_IMPLEMENTATION.md` and `implementation/DEPENDENCIES_AND_CAPABILITY_MATCHING.md` (both new), `DEFERRED.md`, `TODO.md`, `NOW.md`, `DECOMPOSED.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.5.3-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **93** C# source files, **76** approved package files. Assembly SHA-256 `F2A854438700F68E419533028C6E523A0FD8FAFBDB72B936B87F78C0138FF8AE`. Evidence folder `implementation/evidence/connected-construction-2026-09-28/` with compiler output plus source, package and recomputed reference manifests, no drift. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 2. Source files modified: 6. Package files modified: 4. Docs updated: 11.
+Deferments closed: 4 (construction supply; throwing def lookups; the audited dependency position; the corrected power claim). One content blocker dissolved (M2 legacy field gear). One row added with its design named rather than left vague (travel-to-work intents).
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.

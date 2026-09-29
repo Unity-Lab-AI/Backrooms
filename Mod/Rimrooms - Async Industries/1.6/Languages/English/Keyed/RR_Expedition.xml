@@ -60,4 +60,5 @@
   <RR_CrewClosure_AtSite>at the saved site</RR_CrewClosure_AtSite>
   <RR_CrewClosure_Elsewhere>at another known location</RR_CrewClosure_Elsewhere>
   <RR_CrewClosure_Unknown>whereabouts unresolved</RR_CrewClosure_Unknown>
+  <RR_Exp_JobDefMissing>That action is unavailable because its job definition did not load. Check for a mod conflict; nothing was changed.</RR_Exp_JobDefMissing>
 </LanguageData>

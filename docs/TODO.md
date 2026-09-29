@@ -53,7 +53,8 @@ Binding contract: [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md). 
   - [x] Physical hauling — BUILT 2026-09-28 in 0.5.0-dev. `ConnectedHaulingAdapter` plus `RR_ConnectedFetch` / `RR_ConnectedDeliver` and two work givers for the family (one high-priority that only finishes committed trips, one low-priority that only starts them). Priorities, schedules, areas, locks, custody and actual inventory are preserved by riding Core's own `JobGiver_Work`; nothing is ever player-forced. Cell storage destinations only; container and provider destinations are deferred.
   - [x] Rescue and remains — BUILT 2026-09-28 in 0.5.2-dev. Our own downed people carried home to a bed (`ConnectedCasualtyAdapter`, Core's `CanRescueNow` far-side check and Core's `Toils_Bed` handoff on arrival); our dead carried home to a grave or storage through the ordinary hauling family. Capture stays a player order by design. Record `implementation/CONNECTED_CASUALTIES_IMPLEMENTATION.md`.
   - [ ] Tending across a gate — a doctor crossing to a patient who stays put, or medicine carried to them. A different capability from carrying a person back; not implemented.
-  - [ ] Construction supply and finishing.
+  - [x] Construction supply — BUILT 2026-09-28 in 0.5.3-dev. Real material carried through a gate into a real build site (frame or blueprint), using the site's own material requirement and Core's own container and construct toils. Record `implementation/CONNECTED_CONSTRUCTION_IMPLEMENTATION.md`.
+  - [ ] Construction finishing — a worker crossing to do build work with nothing carried. Needs the travel-to-work intent shape rather than another adapter; see `DEFERRED.md`.
   - [ ] Bills and unfinished work.
   - [ ] Research and stationary work.
   - [ ] Food.

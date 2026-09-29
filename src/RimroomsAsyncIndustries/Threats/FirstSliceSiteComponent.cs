@@ -257,7 +257,9 @@ namespace RimroomsAsyncIndustries.Threats
                 c.Standable(map) && c.GetFirstItem(map) == null && RoomAt(c) == RoomAt(pawn.Position));
             if (!cell.InBounds(map) || !cell.Standable(map) || cell.GetFirstItem(map) != null || RoomAt(cell) != RoomAt(pawn.Position))
             { return CompanyActionResult.Refused("RR_Field_CannotDeploy"); }
-            Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("RR_DeployRouteAid"), cell, item);
+            JobDef deployDef = DefDatabase<JobDef>.GetNamedSilentFail("RR_DeployRouteAid");
+            if (deployDef == null) { return CompanyActionResult.Refused("RR_Field_CannotDeploy"); }
+            Job job = JobMaker.MakeJob(deployDef, cell, item);
             return pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc) ? CompanyActionResult.Applied() : CompanyActionResult.Refused("RR_Field_CannotDeploy");
         }
         internal CompanyActionResult DeployAid(Pawn pawn, Thing item, IntVec3 cell)

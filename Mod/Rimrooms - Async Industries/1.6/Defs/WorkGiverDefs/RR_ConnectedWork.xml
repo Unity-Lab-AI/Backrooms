@@ -13,6 +13,37 @@
        closer to do. Both values are balance decisions and are recorded as such; they
        are subject to the owner's runtime acceptance. -->
 
+  <!-- Construction supply sits around Core's own delivery givers, which are in the
+       Hauling work type at 10 (frames) and 9 (blueprints). Finishing a delivery already
+       in hand edges above them; starting one sits below, so material already on this side
+       is always delivered first. Balance decisions, recorded as such. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedConstructionContinue</defName>
+    <label>finish delivering material through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedConstructionContinue</giverClass>
+    <workType>Hauling</workType>
+    <verb>deliver</verb>
+    <gerund>delivering</gerund>
+    <priorityInType>12</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedConstruction</defName>
+    <label>carry material to a site through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedConstruction</giverClass>
+    <workType>Hauling</workType>
+    <verb>deliver</verb>
+    <gerund>delivering</gerund>
+    <priorityInType>8</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
   <!-- Casualties sit around Core's own DoctorRescue (60): finishing a trip that
        already has someone in the worker's arms edges above it, starting one sits just
        below so a casualty on this map is always rescued first. Both stay under the

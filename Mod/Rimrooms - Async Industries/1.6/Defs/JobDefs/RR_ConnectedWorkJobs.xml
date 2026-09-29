@@ -14,6 +14,18 @@
     <carryThingAfterJob>true</carryThingAfterJob>
   </JobDef>
 
+  <!-- Put the carried material into a build site. Core's own container and construct
+       toils do the work, including turning a blueprint into a frame on first delivery. -->
+  <JobDef>
+    <defName>RR_ConnectedDeliverToSite</defName>
+    <driverClass>RimroomsAsyncIndustries.ConnectedWork.JobDriver_ConnectedDeliverToSite</driverClass>
+    <reportString>delivering TargetA to TargetB.</reportString>
+    <casualInterruptible>true</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+    <dropThingBeforeJob>false</dropThingBeforeJob>
+    <carryThingAfterJob>true</carryThingAfterJob>
+  </JobDef>
+
   <!-- Put the carried casualty into the bed found for them on this map. Unlike the
        cargo routes this does NOT keep them in hand afterwards: if the placement fails
        Core sets them down here, and they are then an ordinary local rescue, which is

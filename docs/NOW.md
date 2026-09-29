@@ -20,7 +20,9 @@ M1 connected colony portals. The intent/lease engine and the **storage-hauling**
 
 0.5.2-dev closed the **casualties and remains** family: our own downed people are carried home to a bed and our dead to a grave or storage, which was the owner-named capability no route reached. Capture stays a player order by design.
 
-**Next:** **construction supply and finishing** — deliver actual materials to a real Blueprint or Frame across a gate and let the native construction flow consume them once. This is the first family whose destination is a native object rather than storage or a bed, so it is the first real use of the intent's final-target field for a work target. Then bills and unfinished work, research, tending across a gate, food and rest.
+0.5.3-dev closed **construction supply** — real material carried through a gate into a real build site, blueprints included — and audited the mod's dependency position: it requires nothing but base Core, now verified rather than asserted. The capability-matching method is recorded as binding and dissolves the M2 "Core has no X" content blockers.
+
+**Next:** **bills and unfinished work** — deliver selected ingredients to a real bill giver across a gate and let the original bill be executed locally, retaining the actual bill and unfinished-thing references. Then research, tending across a gate, food and rest, and the travel-to-work intent shape that construction *finishing* needs.
 
 Steps 1–3 closed in 0.4.2-dev (addresses, legacy threshold repair, ordinary crossing job, session controls, emergency return, reconcile surface). The owner's gate traversal rule shipped in 0.4.3-dev on top of them: inhabitants and monstrosities stay in the Backrooms, enforced at one chokepoint. Record for both: `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`.
 

@@ -43,4 +43,7 @@
   <RR_ConnectedWork_CasualtyHome>They were carried back through the gate but there was no bed free on arrival, so they were set down here. Ordinary rescue can take them from here.</RR_ConnectedWork_CasualtyHome>
   <RR_ConnectedWork_CasualtyRecovered>They came round while being carried back, and were set down on this side.</RR_ConnectedWork_CasualtyRecovered>
 
+  <RR_ConnectedWork_ConstructionLabel>carrying building material through a gate</RR_ConnectedWork_ConstructionLabel>
+  <RR_ConnectedWork_SiteSatisfied>That build site no longer needs this material. It was carried through and is here in hand; ordinary hauling will put it away.</RR_ConnectedWork_SiteSatisfied>
+
 </LanguageData>

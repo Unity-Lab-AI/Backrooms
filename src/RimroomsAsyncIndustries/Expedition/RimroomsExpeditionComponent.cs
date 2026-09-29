@@ -193,7 +193,9 @@ namespace RimroomsAsyncIndustries.Expedition
                 !carrier.CanReach(run.returnCell, PathEndMode.OnCell, Danger.Deadly))
             { return Refuse("RR_Exp_ReturnNeedsRescue"); }
             if (!ReturnWindowOpen(run)) { return Refuse("RR_Exp_ReturnClosed"); }
-            Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("RR_CarryToReturnAnchor"), target, run.returnCell);
+            JobDef carryDef = DefDatabase<JobDef>.GetNamedSilentFail("RR_CarryToReturnAnchor");
+            if (carryDef == null) { return Refuse("RR_Exp_JobDefMissing"); }
+            Job job = JobMaker.MakeJob(carryDef, target, run.returnCell);
             job.count = 1;
             bool added = !Members(run).Contains(casualty);
             if (added) { run.recoveryPassengers.Add(casualty); }
@@ -426,7 +428,10 @@ namespace RimroomsAsyncIndustries.Expedition
         }
         private static bool OrderApproach(Pawn pawn, IntVec3 cell, bool returning)
         {
-            Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed(returning ? "RR_ReturnThroughGate" : "RR_ApproachGate"), cell);
+            JobDef definition = DefDatabase<JobDef>.GetNamedSilentFail(
+                returning ? "RR_ReturnThroughGate" : "RR_ApproachGate");
+            if (definition == null) { return false; }
+            Job job = JobMaker.MakeJob(definition, cell);
             return pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
         }
         private int IssueReturnOrders(ExpeditionRecord run)
