@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.10.4-dev - 2026-09-29 - the register checked backwards, and a description you can read
+
+- **A drafted animal could walk through a gate while a drafted colonist could not.** Fixed. A pawn under direct combat control does not wander off through a gate, whatever it is.
+- That was only reachable if you run **Draftable Animals**, which vanilla cannot do - so it was found by checking the mod register against work already shipped, not by re-reading the code.
+- Two other systems were checked against the profile and needed no change: what chases you works the same with or without **Search and Destroy**, and a coordinate still cannot be stripped of its roof with a roof-removal mod installed.
+
+- **The mod description was one unbroken paragraph of 6,724 characters.** It is now four titled sections and half the length, which fixes how it reads in RimWorld's own mod panel too.
+- Both welcome letters and the scenario description were walls as well. All reflowed.
+- Readable HTML versions of the description, readme, changelog and working docs are generated into `outputs/readable/`.
+
+Full record: [the register, checked backwards](docs/implementation/REGISTER_RETRO_AUDIT.md) and [a description you can read](docs/implementation/READABLE_TEXT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.10.3-dev - 2026-09-29 - something is not where you left it
 
 - **Go back to a space you have been to before and something is sometimes not where you left it.** A bench, a lamp, a shelf - in the same room, a few cells away.

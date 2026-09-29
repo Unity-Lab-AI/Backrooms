@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Setup_Title>Review company startup</RR_Setup_Title>
   <RR_Setup_Introduction>Your selected people and supplies are retained. Company roles are editable assignments, not changes to pawn kinds, skills, traits, health, relationships or equipment. Capability warnings are advisory; missing capabilities may require hiring, training or different assignments before operations. Use Back to change people or supplies.</RR_Setup_Introduction>
@@ -32,6 +32,6 @@
   <RR_Setup_Unaccepted>The selected roster, company roles or tile changed after final review. Return to company setup and review them again before starting.</RR_Setup_Unaccepted>
   <RR_Setup_ArrivalIncomplete>Native company arrival did not finish. The saved receipt prevents a second supply grant. Preserve the map and log; return to setup for a new campaign if a selected person failed to arrive.</RR_Setup_ArrivalIncomplete>
   <RR_Setup_UnknownReceipt>This headquarters receipt belongs to an unsupported setup version. Preserve the save and use the matching build; initialization will not replay physical grants.</RR_Setup_UnknownReceipt>
-  <RR_Setup_Welcome>Your selected people have arrived and the branch allocation is recorded. Native starting supplies are near the arrival point; equipped and carried items remain with their owners. The fixed facility is separate from those supplies. Review Operations, assign a capable operator, complete the machine, and prepare a real return route. A small or underqualified roster may need recruitment or training first. Native Work, Research, Architect and pawn controls remain available.</RR_Setup_Welcome>
+  <RR_Setup_Welcome>Your selected people have arrived and the branch allocation is recorded.&#10;&#10;Native starting supplies are near the arrival point, and equipped or carried items stay with their owners. The fixed facility is separate from those supplies.&#10;&#10;Review Operations, assign a capable operator, complete the gate and prepare a real return route. A small or underqualified roster may need recruitment or training first.&#10;&#10;Native Work, Research, Architect and pawn controls all remain available.</RR_Setup_Welcome>
   <RR_Setup_CompanyName>Company name. This is your company; call it whatever you like.</RR_Setup_CompanyName>
 </LanguageData>

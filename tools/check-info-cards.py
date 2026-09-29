@@ -113,6 +113,7 @@ PLACEHOLDER_PREFIX = re.compile('^\\s*(todo|tbd|tba|fixme|xxx|placeholder)(?![A-
 # renaming keys is churn with real DefInjected risk for no reader benefit. Only what is
 # displayed is held to the vocabulary.
 BANNED_TERMS = {
+    "the machine": "the gate is a 'gate'; 'machining table' is Core content and stays",
     "portal": "the machine is a 'gate'; the link it holds open is a 'connection'",
     "machine gate": "the machine gate def was retired in 0.9.0-dev; it is a 'gate'",
     "doorway": "a plain door is a 'door'; the far-side arrival point is a 'threshold'",
@@ -216,6 +217,34 @@ def check_vocabulary(problems):
                             % (path, tag, match.group(0), BANNED_TERMS[term], flat[:70]))
 
 
+# --------------------------------------------------------------------------- #
+# Walls of text
+# --------------------------------------------------------------------------- #
+#
+# Owner direction, 2026-09-29, verbatim: *"its a massive text wall needs style formating and
+# beautiful layout"*, about an About.xml description that had reached a single unbroken line
+# of 6,724 characters -- one sentence appended per checkpoint for twenty-odd checkpoints.
+#
+# RimWorld renders newlines in a description, a letter and a scenario summary, so a wall is
+# a choice rather than a limitation. Past this length without a single paragraph break, it
+# is a choice nobody made deliberately.
+WALL_CHARS = 420
+WALL_EXEMPT_TAGS = ("jobString", "reportString", "verb", "gerund", "label")
+
+
+def check_walls(problems):
+    for path, tag, text in displayed_text():
+        if tag in WALL_EXEMPT_TAGS:
+            continue
+        flat = " ".join(text.split())
+        if len(flat) <= WALL_CHARS:
+            continue
+        if "\n" in text or "\\n" in text:
+            continue
+        problems.append("%s <%s> is %d characters with no paragraph break -- a player meets "
+                        "this as a wall (%r)" % (path, tag, len(flat), flat[:60]))
+
+
 def main():
     defs = read_defs()
     labels, descriptions = read_injected()
@@ -258,6 +287,7 @@ def main():
                             "it is a bare name (%s)" % (kind, name, path))
 
     check_vocabulary(problems)
+    check_walls(problems)
 
     print("info-cards")
     print("  defs declared        : %d" % len(defs))

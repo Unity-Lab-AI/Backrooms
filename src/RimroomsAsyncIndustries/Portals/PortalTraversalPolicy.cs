@@ -79,7 +79,11 @@ namespace RimroomsAsyncIndustries.Portals
             if (traveller.Faction != Faction.OfPlayer) { return "RR_PortalTraversal_NotOurPerson"; }
             if (traveller.RaceProps != null && traveller.RaceProps.Animal)
             {
-                if (!traveller.Spawned || traveller.Dead || traveller.Downed || traveller.InMentalState)
+                // Drafted included. Vanilla cannot draft an animal, but **Draftable Animals -
+                // Releashed** (register row 78) is in the owner's profile and can, and a pawn
+                // under direct combat control does not walk through a gate whatever it is.
+                if (!traveller.Spawned || traveller.Dead || traveller.Downed ||
+                    traveller.InMentalState || traveller.Drafted)
                 { return "RR_PortalCrossing_PawnNotEligible"; }
                 return null;
             }

@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.10.3-dev** (this commit) |
+| Published | **0.10.4-dev** (this commit) |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
 | Build | **159 C# files, 79 package files**, zero warnings, zero errors |
 | Assembly | SHA-256 `081A4DA33DD2D3CEF92D856E7B7926222B491EDDADCB73ECEB84742DABBC0D9F`, reproduced by two clean recompiles |
 | Checkers | **six**, all passing |
-| Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
+| Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>` — **the HTML is the register**, never the xlsx |
 | Game launches | **none, ever** |
 
 ### The standing instruction
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.10.3
+## What shipped this session, 0.7.1 → 0.10.4
 
 | Version | What |
 |---|---|
@@ -76,6 +76,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.10.1 | **LAW #0, made checkable** — 10 owner directions found unrecorded, and a rule so it cannot recur |
 | 0.10.2 | **One set of words** — gate / connection / threshold, enforced over all player-facing text |
 | 0.10.3 | **Something is not where you left it** — silent between-visit fixture displacement |
+| 0.10.4 | **The register, checked backwards** — a LAW, a query tool, and a real defect found; plus a readable description and `outputs/readable/` HTML |
 
 ---
 
@@ -176,6 +177,12 @@ Each is a real defect or a pinned fact.
 73. **Check a prep document against the build every checkpoint.** `UNIVERSE_ADAPTATION.md` listed five uncanny changes; four were built and the fifth had been silently skipped for the whole project. Designing from memory is how that happens.
 74. **A horror mechanic that fires every time is a mechanic, not horror.** Revisit displacement was proved to fire on 100% of returns and was deliberately weakened to 66.7%, because the unease depends on not being sure whether you misremembered.
 75. **Ownership is the test for "did the player make this".** Generation places things with no faction; a colonist's work belongs to the player. One check, no list to maintain.
+76. **LAW: check the mod register before building.** Filter by system family, read the per-mod review the row points at, and **state in the record what was checked and what applied — or that nothing did**. Retroactively for shipped work too. `python tools/register-query.py family <x>`.
+77. **The register's `Stance` column is not trustworthy on its own.** Row 78 reads `Required`; its review reads `optional`. That is the known classifier bug, and the review is the authority.
+78. **The register HTML has TWO tables** over the same 294 mods with different layouts. A naive parse yields 589 rows and silently halves every family filter. `register-query.py` keeps the row whose family reads as a family.
+79. **Chromium blocks XSLT from `file://`.** A stylesheet on About.xml gives a **blank page**, not a styled one. Generate standalone HTML instead: `python tools/make-readable-html.py` writes `outputs/readable/`.
+80. **RimWorld renders newlines in descriptions and letters, so a wall of text is a choice.** `check-info-cards.py` fails any displayed string past 420 characters with no paragraph break. The About description had reached 6,724 characters on one line.
+81. **`"the machine"` is banned in player-facing text**; `machining table` is real Core content and stays.
 
 ---
 

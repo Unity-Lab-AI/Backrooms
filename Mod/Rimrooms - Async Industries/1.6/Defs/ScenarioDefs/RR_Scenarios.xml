@@ -3,7 +3,13 @@
   <ScenarioDef ParentName="ScenarioBase">
     <defName>RR_AsyncIndustries</defName>
     <label>Async Industries</label>
-    <description>Lead an authorized research branch of Async Industries. Customize your starting people and supplies with native setup or optional Prepare Carefully, then review company roles and capabilities. Five colonists are the default; the company review supports 1 to 20 selected people without replacing them. A fixed small facility, unfinished machine, first survey and $50 million allocation await at your chosen surface tile. Supplies arrive physically with your people and remain editable separately from the fixed structures. This start uses a compact 60 by 60 headquarters; temperate conditions are recommended. Extra staff need additional beds and supplies. Small teams may need to hire before a full expedition.</description>
+    <description>Lead an authorised research branch of Async Industries.
+
+A small facility, an unfinished gate, a first survey and a $50 million allocation wait for you at the surface tile you choose. The headquarters is a fixed 60 by 60 layout, and temperate conditions are recommended.
+
+Five colonists by default. The company review supports one to twenty selected people without replacing them, so customise your staff and supplies with native setup or Prepare Carefully as you prefer.
+
+Supplies arrive physically with your people and stay editable separately from the fixed structures. Extra staff need extra beds and food, and a small team may need to hire before it can field a full expedition.</description>
     <scenario>
       <summary>Customize your people and supplies, review company roles, and establish a $50 million research branch at your chosen surface tile. Five colonists by default; a fixed 60 by 60 headquarters.</summary>
       <parts>

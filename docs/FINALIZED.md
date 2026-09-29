@@ -2977,3 +2977,58 @@ Never anything the player built or owns (ownership is the whole test - generatio
 Source files created: 1. Prep-document items checked against the build: 5, of which **1 was unbuilt**.
 **Designs changed by an offline proof rather than confirmed by one: 1** - the feature was too reliable to be unsettling.
 Still open and named in `TODO.md`: contradictory crew accounts and staff prior exposure, both from the same prep document; the remaining field-gear replacements; the last two scenarios.
+
+---
+
+## 0.10.4-dev - 2026-09-29 - the register, checked backwards
+
+### Owner direction, verbatim
+
+> *"add a memory and a law to always check the registry of mods before building something to see what if anything applies, and do this retro actively dfor regress too"*
+
+### A memory, a LAW, and a tool the LAW needs
+
+The memory is loaded every session. The LAW lives in `CONSTRAINTS.md` and is indexed in `.claude/CLAUDE.md`: filter the register by system family **before** designing, read the per-mod review the row points at, and **state in the implementation record what was checked and what applied, or that nothing did**.
+
+A LAW that requires opening a browser and scrolling a 294-row table is a LAW that gets skipped exactly when it is inconvenient, so `tools/register-query.py` makes the register answerable from the command line. It immediately found a parsing trap: the HTML carries **two tables** over the same 294 mods with different layouts, the second putting a Steam id where the system family belongs. A naive parse returns **589 rows** and would have made every family filter miss half its matches while appearing to work.
+
+### The backwards pass found a real defect
+
+**Row 78, Draftable Animals - Releashed**, is in the owner's profile. 0.9.4-dev let player animals cross a gate and its eligibility check returned early for animals **before** testing `Drafted`. A drafted colonist has never been allowed through; a drafted animal could. **Vanilla cannot draft an animal, so this read as dead code and is only reachable on somebody else's mod list** - exactly the class of defect the register exists to surface, and exactly the class no amount of re-reading a diff would find. Fixed in both the crossing service and the traversal policy.
+
+### And three more results worth recording
+
+**The stance-classifier bug now has a named example.** Row 78 reads `Required`; its own review reads *"Provisional disposition: optional"*. The open task had no reproducible case before. Consequence for the LAW: the `Stance` column is not trustworthy alone, and the per-mod review is.
+
+**Pursuit verified independent** of row 200, Search and Destroy, whose review requires that *"authored threat behavior/player control remain independent"*. 0.9.5-dev uses vanilla `LordJob_AssaultColony`, independent by construction. No change needed, and now checked rather than lucky.
+
+**Roof containment verified** against row 188, Removable Mt.Rock Roof Patch, whose review warns not to assume a mountain roof preserves protection after removal. `BackroomsContainment`'s second guarantee re-roofs any cell that loses its roof **whatever removed it**, written defensively before that mod was considered. No change needed - and recording that is the point, because silence is not evidence of having looked.
+
+### Build evidence
+
+0.10.4-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **159** C# source files, **79** approved package files. All six checkers pass. **No new def, asset, patch operation or work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+LAWs added: 1. Memories added: 1. Tools added: 1. Defects found by the retroactive pass: **1, fixed**.
+**Systems verified compliant rather than changed: 2** - recorded deliberately, because a check that only reports problems teaches nobody what was examined.
+**Parsing traps found in the register itself: 1** - two tables, 589 rows, silent half-misses.
+Still open: the remaining system families to sweep; the field-gear replacements; the last two scenarios.
+
+### Addendum - a description you can actually read
+
+> *"real quick make this html open able : \" file:///C:/Users/gfour/Desktop/Backrooms/Mod/Rimrooms%20-%20Async%20Industries/About/About.xml\" as if i open this with edge to read it its all fucked up"*
+
+> *"and its a massive text wall needs style formating and beautiful layout"*
+
+> *"check for other shit text walls youve made too after you fix this one"*
+
+> *"now the about.xml show a blank screen when i open it with edge and i still dont see the html versions"*
+
+The About description had reached **a single unbroken line of 6,724 characters** - one sentence appended per checkpoint for twenty-odd checkpoints. Rewritten into four titled sections across 37 lines and half the length, which fixes RimWorld's own description panel as well as any viewer.
+
+**An XSLT stylesheet was tried first and was the wrong answer.** Chromium blocks XSLT loaded from a `file://` URL, so Edge showed a **blank page** instead of raw XML - worse than the problem it was solving. Reverted completely, and replaced with `tools/make-readable-html.py`, which writes standalone styled HTML into `outputs/readable/` with no external dependencies and no restriction on where it is opened.
+
+Sweeping for other walls found **42 player-facing strings over 220 characters**, including the scenario description a player reads on the picker and both welcome letters, which are the first thing anybody reads. All reflowed. A wall rule now fails the build on any displayed text past 420 characters with no paragraph break, proved by planting one - RimWorld renders newlines, so a wall is a choice rather than a limitation.
+
+The sweep also caught a vocabulary leak the earlier rule missed: *"the machine"* meaning the gate, in three places. It is banned as a phrase now, while `machining table` stays because it is real Core content.

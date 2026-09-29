@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Start_WelcomeTitle>Branch authorization received</RR_Start_WelcomeTitle>
-  <RR_Start_Welcome>Your Async Industries branch is operational. The gate is still incomplete. Use Operations to review your staff, materials, branch account, and first survey. Your company allocation is an account balance; receiving contains your physical supplies. Finish the machine, assign a capable operator, calibrate it, and prepare the return route before dispatching a crew. Native Work, Research, Architect, and pawn controls remain available.</RR_Start_Welcome>
+  <RR_Start_Welcome>Your Async Industries branch is operational. The gate is still incomplete.&#10;&#10;Use Operations to review your staff, materials, branch account and first survey. Your company allocation is an account balance; receiving holds your physical supplies.&#10;&#10;Finish the gate, assign a capable operator, calibrate it, and prepare the return route before you dispatch a crew.&#10;&#10;Native Work, Research, Architect and pawn controls all remain available.</RR_Start_Welcome>
   <RR_Start_FailedTitle>Company startup needs attention</RR_Start_FailedTitle>
   <RR_Start_Failed>The company could not finish startup: {0}\n\nExisting people, buildings, and stock have been retained. Repeating startup will not issue another physical allocation. If headquarters construction is incomplete, retain the log and return to scenario setup. If only branch registration failed, correct the reported condition and use the explicit registration recovery when available.</RR_Start_Failed>
   <RR_Start_MissingSetup>A completed Async Industries headquarters receipt was not found.</RR_Start_MissingSetup>
