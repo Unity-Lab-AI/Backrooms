@@ -84,11 +84,12 @@ RETIRED_DEFS = (
 )
 
 # A phrase that will make a future agent skip a check.
-CHECKER_COUNT = 7
+CHECKER_COUNT = 8
 CHECKER_PHRASES = (
     re.compile('\\b(all\\s+)?four checkers\\b', re.I),
     re.compile('\\b(all\\s+)?five checkers\\b', re.I),
     re.compile('\\b(all\\s+)?six checkers\\b', re.I),
+    re.compile('\\b(all\\s+)?seven checkers\\b', re.I),
 )
 
 VERSION_CLAIM = re.compile(r"(?:current\s+(?:development\s+)?version|development\s+build)\D{0,12}"

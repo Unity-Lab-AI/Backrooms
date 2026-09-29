@@ -1,4 +1,4 @@
-# Systems catalog
+﻿# Systems catalog
 
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
@@ -63,7 +63,7 @@ Recognize facilities from their buildings and functions. Avoid hidden room-score
 
 The first playable adds an Operations main tab as a company dashboard. The full-mod target grows this into a company-first menu and tab layout that groups facility, personnel, projects, expeditions, discoveries, cases, contracts, finance, and outposts. Preserve working access to familiar pawn, building, map, work, research, and world actions as these views are reorganized; the dashboard is the first step, not the final UI scope.
 
-1. **Overview:** urgent alerts, active projects, gate state, cash, deadlines.
+1. **Overview:** urgent alerts, active projects, gate state, cash, payments due. **No deadlines** - see [the campaign chart](CAMPAIGN_CHART.md#11-the-only-clock-is-the-gate).
 2. **Personnel:** roster, role recommendations, training, injuries, field history.
 3. **Projects and research:** machine progress, technical projects, evidence waiting for analysis.
 4. **Gate network:** known coordinates, routes, site state, radio quality, last contact, return gear.
@@ -107,7 +107,7 @@ Let evidence, contracts, and documented room rules open alternate research route
 | Missing crew | Trace a signal, rescue survivors, recover records | Conflicting time reports or changed route |
 | Relay installation | Build or repair a radio/return point | Short window or limited materials |
 | Containment | Secure a threat or prevent an exit event | Limited restraints or unclear behavior |
-| Reality distortion | Investigate an opening at a settlement or ordinary site | Missing civilians, authority pressure, deadline |
+| Reality distortion | Investigate an opening at a settlement or ordinary site | Missing civilians, authority pressure, several routes to success |
 | Commercial contract | Meet a survey or recovery request | Clawback, rival interests, elevated risk |
 | Outpost expedition | Establish, supply, defend, or evacuate a site | Lost communications or depleted stock |
 

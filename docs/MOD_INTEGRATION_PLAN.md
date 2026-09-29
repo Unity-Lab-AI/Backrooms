@@ -1,4 +1,4 @@
-# Rimrooms - Async Industries: complete systems and mod integration plan
+﻿# Rimrooms - Async Industries: complete systems and mod integration plan
 
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
@@ -139,7 +139,7 @@ Mission and contract templates provide authored objectives with seeded variation
 | Equipment/furniture retrieval | Recover named cargo or salvage useful stock. | Weight limit, unstable opening, claim dispute. |
 | Sample and transcript analysis | Collect and document evidence. | Contamination, contradictory accounts, hidden rule. |
 | Missing personnel/rescue | Follow radio or physical clues and find a crew. | Delayed time, changed room identity, split survivors. |
-| Containment/security | Secure an entity, protect a site, or escort a client. | Countermeasure unknown, breach risk, contract deadline. |
+| Containment/security | Secure an entity, protect a site, or escort a client. | Countermeasure unknown, breach risk, several routes to success. |
 | Relay/outpost and lease | Build, staff, rent, supply, defend, or evacuate a location. | Lease terms, cutoff, resupply delay, route pressure. |
 | Town distortion response | Secure ordinary-world opening and investigate missing residents. | Local authority pressure, witness conflict, unstable threshold. |
 | Commercial service | Meet a survey, retrieval, research, or custody-transfer request. | Bonus for evidence quality or penalty for unsafe handling. |
@@ -147,7 +147,7 @@ Mission and contract templates provide authored objectives with seeded variation
 
 Repeating a mission family changes its evidence, coordinate rules, crew history, and contract terms rather than changing only enemy count. Major outcomes update the atlas and case timeline, creating leads for later quests.
 
-Keep a branch-local USD Company Account for payroll, contracts, expenses, shipment schedules, and profit; the parent company's multitrillion valuation is not the player's spendable balance. Use physical vanilla silver and transferable goods for ordinary RimWorld/RWT item transactions. Company-account balances do not cross RWT branches. Contract cards specify client, advance, deadline, requested deliverables, optional quality/safety terms, payment, penalty cap, ownership, and cancellation. Orders name quantity, price, source, arrival window, and receiving area. Shipments can be delayed, lost, contaminated, intercepted, or redirected by explicit world events.
+Keep a branch-local USD Company Account for payroll, contracts, expenses, shipment schedules, and profit; the parent company's multitrillion valuation is not the player's spendable balance. Use physical vanilla silver and transferable goods for ordinary RimWorld/RWT item transactions. Company-account balances do not cross RWT branches. Contract cards specify client, advance, requested deliverables, **two or more routes to success**, optional quality/safety terms, payment, penalty cap, ownership, and cancellation. **No deadline** - see [the campaign chart](CAMPAIGN_CHART.md#11-the-only-clock-is-the-gate). Orders name quantity, price, source, arrival window, and receiving area. Shipments can be delayed, lost, contaminated, intercepted, or redirected by explicit world events.
 
 Cross-reference the [economy and bulk-logistics contract](CAMPAIGN_ECONOMY_MODEL.md), [OgreStack source review](research/reviews/mods/1447140290-Ogre.OgreStack.md), and [stack/cargo/RWT interaction map](research/PRIORITY_PROFILE_INTERACTIONS.md#stack-size-cargo-and-shared-item-exchange-row-157--rows-122259--rwt). Row 157 OgreStack is active in the 294 profile; its published default uses a ×30 scalar for small-volume resources. Rimrooms must read effective saved stack rules at runtime, preserve vanilla stack behavior when OgreStack is absent, and prove storage, shipment, caravan, save/reload, and RWT transfers against both paths. It must never encode the owner's current stack preset as a required dependency.
 
@@ -157,7 +157,7 @@ Stable destinations may offer **leased or claimed spaces**: the company can rent
 
 ### Distortions, settlements, outposts, and world map
 
-Use RimWorld world sites/quests/incidents for outposts, stranded crews, signal stations, missing settlements, ordinary-world openings, response contracts, and return expeditions. The company network has distinct node types: the headquarters and ordinary-world facilities outside the gate; approach, security, and receiving posts at the threshold; rented/claimed rooms, field shelters, labs, radio relays, and depots inside saved Backrooms coordinates; and gravship support sites in orbit when available. A town distortion creates timed objectives: locate/secure the entry, contact missing civilians, rescue/search, establish perimeter, collect evidence, shut down or stabilize the opening, handle witnesses, and close the case. Outcomes alter company reputation, local faction relations, future signals, and contract offers.
+Use RimWorld world sites/quests/incidents for outposts, stranded crews, signal stations, missing settlements, ordinary-world openings, response contracts, and return expeditions. The company network has distinct node types: the headquarters and ordinary-world facilities outside the gate; approach, security, and receiving posts at the threshold; rented/claimed rooms, field shelters, labs, radio relays, and depots inside saved Backrooms coordinates; and gravship support sites in orbit when available. A town distortion creates objectives, none of them timed: locate/secure the entry, contact missing civilians, rescue/search, establish perimeter, collect evidence, shut down or stabilize the opening, handle witnesses, and close the case. Outcomes alter company reputation, local faction relations, future signals, and contract offers.
 
 Outposts must consume supplies, have staffing/security/communication, a defined purpose (relay, receiving depot, research station, recovery shelter), and evacuation/abandonment policy. Radio and supply points extend reach only when placed, powered, staffed or serviced, and linked to a known route. World travel, vehicles, and gravships support logistics; the machine gate remains the primary Backrooms access.
 
@@ -167,7 +167,7 @@ For the first playable, add one company **Operations** main tab with linked pane
 
 | Operations pane | Contents and controls |
 | --- | --- |
-| Overview | Gate alarm/state, low stocks, injured/missing staff, payment deadlines, power reserve, contract and incident priorities. |
+| Overview | Gate alarm/state, low stocks, injured/missing staff, payments due, power reserve, contract and incident priorities. |
 | Personnel | Staff list, skills/health/traits, role suggestion, training queue, shift, gear, expedition history. |
 | Facilities | Room function, capacity, access policy, power/safety warnings, storage and receiving areas. |
 | Gate | Machine condition/modules, calibration, power window estimate, cutoff, assigned operator, open/recall/close action with cost/risk preview. |

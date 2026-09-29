@@ -1,4 +1,4 @@
-# Rimrooms - Async Industries: campaign economy and logistics progression
+﻿# Rimrooms - Async Industries: campaign economy and logistics progression
 
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
@@ -11,7 +11,7 @@ The company account is a branch-local USD ledger. One account unit represents on
 
 Players still build and operate a RimWorld settlement. They grow and cook food, craft equipment and furniture, research, harvest, collect, store, trade, hire, build outposts, and send expeditions. Those activities use ordinary pawn jobs, work, power, maps, bills, stockpiles, and physical items. A harvest becomes company cash only when the player accepts an actual sale or contract that transfers custody.
 
-Every contract is valued for its deliverables and circumstances. It names the buyer, scope, evidence or cargo, ownership, staff time, equipment, risk, deadline, amount, advance, optional milestone/bonus, partial outcome, penalty cap, cancellation, and logistics. A room discovery, combat event, or entity sighting alone pays nothing. A recovered or studied finding can command millions when evidence, condition, buyer demand, risk, and rights make it valuable. Players may sell/license it, keep it for research, archive it, or use it in company production.
+Every contract is valued for its deliverables and circumstances. It names the buyer, scope, evidence or cargo, ownership, staff time, equipment, risk, amount, advance, optional milestone/bonus, partial outcome, penalty cap, cancellation, logistics, and **two or more routes to success**. **It names no deadline** - see [the campaign chart](CAMPAIGN_CHART.md#11-the-only-clock-is-the-gate). A room discovery, combat event, or entity sighting alone pays nothing. A recovered or studied finding can command millions when evidence, condition, buyer demand, risk, and rights make it valuable. Players may sell/license it, keep it for research, archive it, or use it in company production.
 
 ## Seven campaign stages
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
 using RimWorld;
@@ -16,7 +16,8 @@ namespace RimroomsAsyncIndustries.Personnel
             ApplicantRecord offer = FindOffer(applicantId);
             if (offer == null) { return Refuse("RR_Personnel_InvalidOffer"); }
             if (offer.status == ApplicantStatus.Hired) { return CompanyActionResult.Existing(); }
-            if (offer.status != ApplicantStatus.Offered || Now >= offer.expiresTick) { return Refuse("RR_Personnel_OfferClosed"); }
+            // No expiry: an offer stays open until the player accepts or declines it.
+            if (offer.status != ApplicantStatus.Offered) { return Refuse("RR_Personnel_OfferClosed"); }
             if (!PersonnelRoles.Valid(roleId)) { return Refuse("RR_Personnel_InvalidRole"); }
             if (offers.Any(o => o != offer && (o.status == ApplicantStatus.Hiring || o.status == ApplicantStatus.Releasing)))
             { return Refuse("RR_Personnel_FinishHire"); }

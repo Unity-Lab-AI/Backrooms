@@ -13,7 +13,7 @@ The scenario opening cards live in [`docs/SCENARIOS.md`](docs/SCENARIOS.md); the
 
 ## Build and installation
 
-**Current development version: 0.10.9-dev.** Every checkpoint has its own record under [`docs/implementation/`](docs/implementation/), and [`docs/NOW.md`](docs/NOW.md) is the single page that says what is true right now: the published commit, the build counts, the reproduced assembly hash, and what is open in order.
+**Current development version: 0.11.0-dev.** Every checkpoint has its own record under [`docs/implementation/`](docs/implementation/), and [`docs/NOW.md`](docs/NOW.md) is the single page that says what is true right now: the published commit, the build counts, the reproduced assembly hash, and what is open in order.
 
 What works in source today:
 
@@ -25,7 +25,7 @@ What works in source today:
 - What lives down there **follows a crew to the threshold** in the worst spaces, and through an advanced gate it can come out behind them.
 - An **odd-origin economy** sits on top of all of it: company bonds, a corporate trader and a credits ladder.
 
-Seven checkers run without the game and gate every checkpoint: package integrity, keyed strings, DLC gating, info cards, display style, documentation conformance, and the Gate 0 documentation audit. The build is **deterministic** and proved so by recompiling twice from clean and comparing the assembly hash. **Existing-content replacement, the remaining scenarios and all runtime acceptance are still open**, and no game launch is required to continue implementation.
+Eight checkers run without the game and gate every checkpoint: package integrity, keyed strings, DLC gating, info cards, display style, campaign absolutes, documentation conformance, and the Gate 0 documentation audit. The build is **deterministic** and proved so by recompiling twice from clean and comparing the assembly hash. **Existing-content replacement, the remaining scenarios and all runtime acceptance are still open**, and no game launch is required to continue implementation.
 
 - [Build and staging instructions](docs/BUILDING.md) — pinned local references, locked restore, copyable package, safe updates and RimSort discovery.
 - [First owner-launched session](docs/implementation/PHASE_2_OWNER_LAUNCH.md) — staged package identities, separate QA bridge and RimSort launch steps.

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -63,7 +63,7 @@ namespace RimroomsAsyncIndustries.Personnel
             foreach (ApplicantRecord offer in offers)
             {
                 if (!offer.id.StartsWith(branchId + ":applicant:", StringComparison.Ordinal) ||
-                    offer.onboardingUsd <= 0 || offer.dailyWageUsd <= 0 || offer.createdTick < 0 || offer.expiresTick < offer.createdTick ||
+                    offer.onboardingUsd <= 0 || offer.dailyWageUsd <= 0 || offer.createdTick < 0 ||
                     !Enum.IsDefined(typeof(ApplicantStatus), offer.status) || !Enum.IsDefined(typeof(ApplicantRelease), offer.release) ||
                     (offer.pawn != null && offer.pawn.GetUniqueLoadID() != offer.pawnId) ||
                     (offer.status == ApplicantStatus.Hiring && !PersonnelRoles.Valid(offer.selectedRole)) ||
@@ -108,7 +108,7 @@ namespace RimroomsAsyncIndustries.Personnel
             {
                 string id = branchId + ":applicant:" + (++sequence);
                 if (offers.Any(o => o.id == id)) { faultKey = "RR_Personnel_InvalidSave"; return Refuse(faultKey); }
-                offers.Add(new ApplicantRecord { id = id, createdTick = Now, expiresTick = AddTicks(Now, policy.offerTicks),
+                offers.Add(new ApplicantRecord { id = id, createdTick = Now,
                     kindDefName = policy.candidateKind.defName, policyDefName = policy.defName, onboardingUsd = policy.onboardingUsd,
                     dailyWageUsd = policy.dailyWageUsd, status = ApplicantStatus.Queued });
             }
@@ -127,8 +127,14 @@ namespace RimroomsAsyncIndustries.Personnel
                 return;
             }
             if (Now % 250 != 0) { return; }
-            ApplicantRecord expired = offers.FirstOrDefault(o => o.status == ApplicantStatus.Offered && Now >= o.expiresTick);
-            if (expired != null) { StartRelease(expired, ApplicantRelease.Expired); }
+            // An offer never withdraws itself. Owner direction, 2026-09-29: *"missions and
+            // quests and offeres and trades are never time senstive the company will wait as
+            // long as possible"*, scope confirmed at the fork to include offers and trades.
+            //
+            // This clock was never what bounded the pool: maxOffers is 1-3 and a new request is
+            // refused outright while any offer is still open, so it was pressure with no
+            // function. Accepting or declining ends a batch, which is a decision.
+            // Archived in full: docs/implementation/historical-content/0.11.0-dev/RETIRED_OFFER_CLOCKS.md
             TrimTerminalHistory();
         }
 
@@ -178,7 +184,8 @@ namespace RimroomsAsyncIndustries.Personnel
             if (offer == null) { return Refuse("RR_Personnel_InvalidOffer"); }
             if (offer.status == ApplicantStatus.Declined || offer.status == ApplicantStatus.Expired) { return CompanyActionResult.Existing(); }
             if (offer.status != ApplicantStatus.Offered) { return Refuse("RR_Personnel_InvalidOffer"); }
-            return StartRelease(offer, Now >= offer.expiresTick ? ApplicantRelease.Expired : ApplicantRelease.Declined);
+            // Declining is now the only way an offer closes, so the reason is never Expired.
+            return StartRelease(offer, ApplicantRelease.Declined);
         }
 
         public CompanyActionResult RetryRelease(string applicantId)

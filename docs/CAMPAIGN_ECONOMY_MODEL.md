@@ -1,4 +1,4 @@
-# Rimrooms - Async Industries: campaign economy model
+﻿# Rimrooms - Async Industries: campaign economy model
 
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
@@ -62,7 +62,7 @@ The margin protects the opening from an immediate softlock while making salaries
 
 The player should operate a real RimWorld company settlement: build rooms, grow/cook food, craft gear and furniture, research, harvest, collect, store, trade, recruit, and dispatch. Physical production is governed by pawns, jobs, bills, power, stock, storage, and map space. A farm harvest or crafted component creates physical inventory; it does not create company cash until a sale/contract explicitly changes custody and posts a receipt.
 
-Company revenue can come from accepted investigation/recovery contracts, commissioned research, analysis or licensing deliverables, facility services, leases, physical harvest/salvage sales, rescue work, and later transport/outpost operations. Each contract card names requested evidence or cargo, who owns it, base payment, advance, milestone/partial payments, optional bonus, deadline, penalty cap, and cancellation terms. An advance counts toward the total. Settlement requires the matching delivered result and posts once.
+Company revenue can come from accepted investigation/recovery contracts, commissioned research, analysis or licensing deliverables, facility services, leases, physical harvest/salvage sales, rescue work, and later transport/outpost operations. Each contract card names requested evidence or cargo, who owns it, base payment, advance, milestone/partial payments, optional bonus, **two or more routes to success**, penalty cap, and cancellation terms. **No card carries a deadline, ever** - see [the campaign chart](CAMPAIGN_CHART.md#11-the-only-clock-is-the-gate). An advance counts toward the total. Settlement requires the matching delivered result and posts once.
 
 Use these broad, editable balance bands as a starting point for generated offers, not a guaranteed payout table:
 
@@ -70,10 +70,10 @@ Use these broad, editable balance bands as a starting point for generated offers
 | --- | ---: | --- |
 | Routine repeat survey or local service | $250,000–$5,000,000 | Verified route map, monitoring, ordinary equipment retrieval, or documented short survey. |
 | Specialist study or controlled recovery | $1,000,000–$25,000,000 | Usable sample analysis, missing-person lead, staffed lab service, or requested recovery with custody and risk documented. |
-| Town-scale response, major rescue, or defended site | $5,000,000–$100,000,000 | Several teams, an extended deadline, high-value cargo, or a secured temporary facility. |
+| Town-scale response, major rescue, or defended site | $5,000,000–$100,000,000 | Several teams, high-value cargo, or a secured temporary facility. |
 | Exceptional entity/site discovery or deep-network operation | $25,000,000–$500,000,000+ | Rare findings, high exposure, large logistics, sustained containment, or buyer-specific study/licensing rights. |
 
-The actual quote is generated from scope, risk, staff time, required equipment and transport, deadline, buyer demand, deliverable quality, and ownership terms. Loot value comes from actual items, recovered people or equipment, research services, or a buyer who wants the evidence. A clue, kill, capture, or random event alone does not mint money. Rare discoveries can be worth millions to the right buyer, but players must recover, secure, document, analyze, and sell/license them to realize that value. A finding can also be retained for research or company use instead of sold.
+The actual quote is generated from scope, risk, staff time, required equipment and transport, buyer demand, deliverable quality, and ownership terms. Loot value comes from actual items, recovered people or equipment, research services, or a buyer who wants the evidence. A clue, kill, capture, or random event alone does not mint money. Rare discoveries can be worth millions to the right buyer, but players must recover, secure, document, analyze, and sell/license them to realize that value. A finding can also be retained for research or company use instead of sold.
 
 Parent-company funding is a separate progression route: milestone requests can make larger approved budgets available, with a stated amount, requirement, and ledger receipt. This represents corporate authorization and does not replace player-run income, ordinary colony production, or trade.
 
@@ -94,7 +94,7 @@ Expedition dispatch likewise checks the complete kit, carry capacity remaining a
 
 ## Transactions and settlement
 
-- The contract card and order show client/supplier, requested work or goods, amount in USD, advance, deadline, bonus, capped penalty, cancellation rule, shipment quantity, receiving site, expected arrival, and item ownership.
+- The contract card and order show client/supplier, requested work or goods, amount in USD, advance, bonus, capped penalty, cancellation rule, shipment quantity, receiving site, expected arrival, and item ownership. **No deadline.** An expected arrival is the supplier's estimate of when goods turn up, not a clock the player is measured against.
 - A generated amount is saved on that contract/order and is never rerolled at settlement. Partial credit is paid only if the contract listed a partial-delivery amount before dispatch.
 - Physical goods remain items. A company purchase debits the ledger once, then creates a physical shipment. A sale/lease/service receipt records the accepted goods or service and posts once.
 - Loss/damage removes only the physical item actually lost; replacement requires an explicit quote/order. Food, medicine, construction supplies, and power inputs must not be charged twice as both automatic fees and physical purchases.

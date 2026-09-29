@@ -1,4 +1,4 @@
-# Rimrooms - Async Industries: campaign state and save ownership
+﻿# Rimrooms - Async Industries: campaign state and save ownership
 
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
@@ -44,7 +44,7 @@ The [Phase 3 build record](implementation/PHASE_3_BUILD_RECORD.md) routes the cu
 
 `RimroomsLaboratoryComponent` owns one explicit existing-bench role binding, not the bench itself. It saves branch/HQ, provider package/Def, actual bench reference/load ID and change revision; lost or invalid bindings stop company jobs. No designation is created during loading. Native work priority, pawn qualifications, interaction access, bench power and research speed still apply. See [laboratory implementation](implementation/PHASE_3_LABORATORY_REUSE_IMPLEMENTATION.md).
 
-Use explicit stable IDs for scenario definition/version, branch, coordinate, site, expedition, crew assignment, evidence, case, research project, contract, company transaction, shipment, and transfer receipt. IDs must not depend on display names, list order, or UI selection order. Store the seed inputs and generator version beside a generated destination. Record durations/deadlines in RimWorld game ticks, not the player's local wall clock.
+Use explicit stable IDs for scenario definition/version, branch, coordinate, site, expedition, crew assignment, evidence, case, research project, contract, company transaction, shipment, and transfer receipt. IDs must not depend on display names, list order, or UI selection order. Store the seed inputs and generator version beside a generated destination. Record durations in RimWorld game ticks, not the player's local wall clock. **The gate's connection window is the only duration measured against the player** - see [the campaign chart](CAMPAIGN_CHART.md#11-the-only-clock-is-the-gate).
 
 Starting grants, mission launches, objective completions, contract rewards, company-account funding, and received shipments each need a unique operation/receipt key. Replaying a saved event with the same key returns its recorded outcome rather than creating a duplicate. Physical item stacks remain the source of truth for what is actually carried, stored, consumed, sold, or transferred; account totals remain ledger values and never require pawn hauling.
 

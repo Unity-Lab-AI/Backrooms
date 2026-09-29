@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using RimWorld;
 using Verse;
@@ -34,6 +34,11 @@ namespace RimroomsAsyncIndustries.Procurement
         internal int stackCountAtQuote;
         internal float estimatedMassKg;
         internal int createdTick;
+        /// <summary>
+        /// **Legacy since 0.11.0-dev: set by nothing, read by nothing.** A quote no longer
+        /// expires. Kept scribed so a save written before that checkpoint still loads.
+        /// Archived in full: docs/implementation/historical-content/0.11.0-dev/RETIRED_OFFER_CLOCKS.md
+        /// </summary>
         internal int expiresTick;
         internal int dispatchTick;
         internal int arrivalTick;

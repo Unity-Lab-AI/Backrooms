@@ -1,4 +1,4 @@
-# Rimrooms - Async Industries: pre-production and complete implementation backlog
+﻿# Rimrooms - Async Industries: pre-production and complete implementation backlog
 
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
@@ -333,7 +333,7 @@ Source checkpoint: [native applicants/hiring](implementation/PHASE_3_PERSONNEL_I
 Source checkpoint: the [0.3.0-dev wave](implementation/PHASE_3_BUILD_RECORD.md) implements Core-goods quotes, physical supplier custody, payment/refund reconciliation, partial delivery, rerouting, bounded history and native-book evidence creation. Shipment incidents, broader contracts/evidence and observed runtime acceptance remain in the full tasks below.
 
 - [ ] Implement branch-local USD financial ledger with auditable entries, payroll, upkeep, purchases, shipments, contract advances, salvage, penalties, compensation, and profit report. Keep ledger balances separate from physical silver/items and prevent duplicate posting.
-- [ ] Implement equipment/material procurement, source/price/deadline, shipment manifest, receiving area, delay/loss/damage events, cancellation, and delivery receipt.
+- [ ] Implement equipment/material procurement, source/price/**expected arrival** (a supplier estimate, never a deadline), shipment manifest, receiving area, delay/loss/damage events, cancellation, and delivery receipt.
 - [ ] Implement contract/quest templates for surveys, retrieval, furniture/salvage, samples, transcripts, rescue, containment, security, lease/site construction, town distortion, outpost delivery, and gravship support.
 - [ ] Generate bounded story variations from client/faction, coordinate, staffing, discovered rules, company tier, previous outcomes, opening duration, and available equipment.
 - [ ] Add space leasing/claiming with cost, boundaries, term, access/security requirements, maintenance, renewal, eviction, and exit/abandonment consequences.
@@ -401,7 +401,7 @@ Source checkpoint: the [0.3.0-dev wave](implementation/PHASE_3_BUILD_RECORD.md) 
 - [ ] Integrate the slideshow through the verified 1.6 menu surface without redistributing vanilla/DLC art; keep a disable/fallback route and test it alongside the profile's menu-changing mods.
 - [ ] Review every slideshow image with the actual menu overlay across supported aspect ratios, resolutions, and UI scales; check text contrast, crop safety, quiet transitions, reduced-motion behavior, and no-audio use.
 - [ ] Review text length, font scale, combat readability, motion sensitivity, audio levels, UI overlap at supported screen sizes, and translations.
-- [ ] Verify no UI panel conceals urgent health, fire, power, missing crew, gate recall, containment, or contract deadlines.
+- [ ] Verify no UI panel conceals urgent health, fire, power, missing crew, gate recall, containment, or contract priorities.
 
 ## Phase 6 — QA, balance, and release
 

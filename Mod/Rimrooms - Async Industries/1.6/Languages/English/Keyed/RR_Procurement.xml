@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Procurement_Title>Procurement and receiving</RR_Procurement_Title>
   <RR_Procurement_BranchBalance>Branch USD balance: ${0}</RR_Procurement_BranchBalance>
@@ -66,7 +66,6 @@
   <RR_Proc_TooManyQuotes>Too many saved quotes are open. Accept or let an existing quote expire first.</RR_Proc_TooManyQuotes>
   <RR_Proc_MassUnavailable>Core has no valid mass estimate for this item, so a safe physical quote cannot be prepared.</RR_Proc_MassUnavailable>
   <RR_Proc_QuoteUnavailable>This quote is missing, already accepted, or belongs to another company branch.</RR_Proc_QuoteUnavailable>
-  <RR_Proc_QuoteExpired>This quote expired. Request a new quote to see current stack limits and schedule.</RR_Proc_QuoteExpired>
   <RR_Proc_OrphanedPayment>A matching prior purchase ledger entry exists without a trustworthy shipment order. No duplicate shipment will be delivered or recreated; preserve the ledger and request recovery review.</RR_Proc_OrphanedPayment>
   <RR_Proc_LedgerMismatch>The purchase or refund ledger entry does not match the saved order. Dispatch and automatic refund are stopped.</RR_Proc_LedgerMismatch>
   <RR_Proc_BranchMismatch>The saved order belongs to a different campaign branch. Payment and delivery actions are stopped.</RR_Proc_BranchMismatch>

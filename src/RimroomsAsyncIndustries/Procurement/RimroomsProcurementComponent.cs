@@ -12,7 +12,6 @@ namespace RimroomsAsyncIndustries.Procurement
     public sealed class RimroomsProcurementComponent : GameComponent, IThingHolder
     {
         private const int CurrentSchemaVersion = 1;
-        private const int QuoteLifetimeTicks = 25000;
         private const int RetryDelayTicks = 2500;
         private const int ProcessingIntervalTicks = 250;
         private const int MaximumPhysicalStacksPerOrder = 4096;
@@ -217,11 +216,9 @@ namespace RimroomsAsyncIndustries.Procurement
             if (totalPrice <= 0) { return CompanyActionResult.Refused("RR_Proc_PriceOverflow"); }
 
             int now = Find.TickManager.TicksGame;
-            int expiresTick;
             int dispatchTick;
             int arrivalTick;
-            if (!TryAddTicks(now, QuoteLifetimeTicks, out expiresTick) ||
-                !TryAddTicks(now, catalog.dispatchDelayTicks, out dispatchTick) ||
+            if (!TryAddTicks(now, catalog.dispatchDelayTicks, out dispatchTick) ||
                 !TryAddTicks(now, catalog.leadTimeTicks, out arrivalTick))
             { return CompanyActionResult.Refused("RR_Proc_TimeOverflow"); }
             if (nextOrderSequence == long.MaxValue) { return CompanyActionResult.Refused("RR_Proc_OrderLimit"); }
@@ -254,7 +251,6 @@ namespace RimroomsAsyncIndustries.Procurement
                 stackCountAtQuote = (int)stackCount,
                 estimatedMassKg = totalMass,
                 createdTick = now,
-                expiresTick = expiresTick,
                 dispatchTick = dispatchTick,
                 arrivalTick = arrivalTick
             };
@@ -276,7 +272,6 @@ namespace RimroomsAsyncIndustries.Procurement
             if (orders.Count(candidate => candidate != null && !IsTerminal(candidate.status)) >= MaximumOpenOrders)
             { return CompanyActionResult.Refused("RR_Proc_TooManyOpenOrders"); }
             int now = Find.TickManager.TicksGame;
-            if (now > quote.expiresTick) { return CompanyActionResult.Refused("RR_Proc_QuoteExpired"); }
             ThingDef itemDef = DefDatabase<ThingDef>.GetNamedSilentFail(quote.thingDefName);
             if (itemDef == null || itemDef.category != ThingCategory.Item || !itemDef.EverHaulable || itemDef.destroyOnDrop ||
                 !IsReceivingZoneValid(campaign.Headquarters, quote.receivingZone, itemDef) ||
@@ -1255,7 +1250,12 @@ namespace RimroomsAsyncIndustries.Procurement
         }
 
         private void RemoveExpiredQuotes(int now)
-        { quotes.RemoveAll(quote => quote == null || (!quote.accepted && now > quote.expiresTick)); }
+        {
+            // A quote never expires. MaximumSavedQuotes already caps the list and RequestQuote
+            // refuses at the cap, so the clock was pressure with no bounding function.
+            // Archived in full: docs/implementation/historical-content/0.11.0-dev/RETIRED_OFFER_CLOCKS.md
+            quotes.RemoveAll(quote => quote == null);
+        }
 
         private void SetAwaiting(ProcurementOrderRecord order, string failureKey, int now)
         {

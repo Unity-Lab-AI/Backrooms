@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
@@ -9,13 +9,15 @@ namespace RimroomsAsyncIndustries.Personnel
     {
         public PawnKindDef candidateKind;
         public int maxOffers = 3;
+        /// <summary>A cooldown before a new hiring request may be made. A cooldown cannot be
+        /// failed, so it survived the 0.11.0-dev removal of the offer expiry, which happened to
+        /// carry the same value.</summary>
         public int refreshTicks = 420000;
-        public int offerTicks = 420000;
         public long onboardingUsd = 100000;
         public long dailyWageUsd = 5000;
         public bool Valid { get { return candidateKind != null && candidateKind.race != null &&
             candidateKind.race.race != null && candidateKind.race.race.Humanlike && maxOffers >= 1 && maxOffers <= 3 &&
-            refreshTicks >= GenDate.TicksPerDay && offerTicks >= 1 && onboardingUsd > 0 && dailyWageUsd > 0; } }
+            refreshTicks >= GenDate.TicksPerDay && onboardingUsd > 0 && dailyWageUsd > 0; } }
         public override IEnumerable<string> ConfigErrors()
         {
             foreach (string error in base.ConfigErrors()) { yield return error; }

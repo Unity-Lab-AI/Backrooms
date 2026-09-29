@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.11.0-dev - 2026-09-29 - the only clock is the gate
+
+- **Nothing in this mod has a deadline except the gate.** No mission, quest, offer, contract or trade ever expires. The company waits.
+- **A job applicant used to withdraw after seven days.** It does not any more. Offers stay open until you accept or decline them.
+- **A purchase quote used to expire after about ten hours.** It does not any more. A quote stays until you take it or cancel it.
+- **The gate still has its window**, and that window is still what power, tech, maintenance and your operator decide - it was never a timer set against you, and it stays.
+- Delivery still takes time, cooldowns still exist. A supplier being slow is not you being late.
+- **The campaign chart is written**: the mission line, the research tree, the tutorial that turns into an open campaign, and the rule that every offer must have more than one way to succeed. No quest or request content is written until the chart says where it sits.
+
+Full record: [the only clock is the gate](docs/implementation/CAMPAIGN_ABSOLUTES_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.10.9-dev - 2026-09-29 - what you have learned is what you can build
 
 - **A company project now needs completed logs, not just insight.** Route logs, distortion logs, entity logs. Insight is the price; the logs are the qualification, and unlike insight a completed log is never spent.

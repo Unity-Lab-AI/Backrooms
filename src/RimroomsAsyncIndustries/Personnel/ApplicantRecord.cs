@@ -1,4 +1,4 @@
-using Verse;
+﻿using Verse;
 
 namespace RimroomsAsyncIndustries.Personnel
 {
@@ -20,6 +20,13 @@ namespace RimroomsAsyncIndustries.Personnel
         internal long onboardingUsd;
         internal long dailyWageUsd;
         internal int createdTick;
+        /// <summary>
+        /// **Legacy since 0.11.0-dev: set by nothing, read by nothing.** An offer no longer
+        /// expires. Kept scribed, along with the `Expired` status and release reason, because a
+        /// save written before that checkpoint contains all three and dropping a scribed field
+        /// to tidy up is how a saved game stops loading.
+        /// Archived in full: docs/implementation/historical-content/0.11.0-dev/RETIRED_OFFER_CLOCKS.md
+        /// </summary>
         internal int expiresTick;
         internal ApplicantStatus status;
         internal string failureKey;
