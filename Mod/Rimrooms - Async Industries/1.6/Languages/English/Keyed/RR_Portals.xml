@@ -156,4 +156,11 @@
   <RR_Portals_SpinUpRunning>Bringing up a connection: {0}% charged. The assigned operator must stay on the console.</RR_Portals_SpinUpRunning>
   <RR_Portals_AbortSpinUp>Stop spin-up</RR_Portals_AbortSpinUp>
   <RR_PortalTraversal_TooLargeForGate>Too large for this gate. Widen the opening: a one-cell doorway passes people and working animals, a two-cell doorway passes pack animals like muffalo and dromedaries, and three cells or more passes anything.</RR_PortalTraversal_TooLargeForGate>
+  <RR_Incursion_Label>Something came through the gate</RR_Incursion_Label>
+  <RR_Incursion_Text>{0} followed your people to the doorway and stepped through {1} behind them. It is in the facility now, and it will behave like anything else that gets inside. Closing a connection before something reaches the threshold is what stops this.</RR_Incursion_Text>
+  <RR_Incursion_NotEligible>Nothing there can cross.</RR_Incursion_NotEligible>
+  <RR_Incursion_NoOpening>A closed gate is a wall.</RR_Incursion_NoOpening>
+  <RR_Incursion_AlreadySpent>Something has already come through on this opening.</RR_Incursion_AlreadySpent>
+  <RR_Incursion_BandTooLow>This space is not yet bad enough for anything to follow you home.</RR_Incursion_BandTooLow>
+  <RR_Incursion_TechTooLow>The machine is not advanced enough to hold a connection something else could use.</RR_Incursion_TechTooLow>
 </LanguageData>

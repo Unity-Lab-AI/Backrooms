@@ -1,3 +1,6 @@
+using RimroomsAsyncIndustries.Company;
+using RimroomsAsyncIndustries.Gate;
+using RimroomsAsyncIndustries.Threats;
 using RimWorld;
 using Verse;
 
@@ -13,6 +16,18 @@ namespace RimroomsAsyncIndustries.Portals
     /// connection is never a reason for the far side to move toward the threshold.
     /// Anything else reaches the near side only because one of this company's
     /// pawns physically carried it through by ordinary work.
+    ///
+    /// **One named exception, added 2026-09-29 on owner direction**: see
+    /// <see cref="IncursionFailureKey"/>. In the worst coordinates, on an advanced
+    /// machine, with a connection actually open, a hostile that has followed a crew
+    /// to the far doorway may come through it, once. Every clause of the rule above
+    /// still holds around it: it does not cross *under its own will* -- it has no
+    /// will about the gate at all, because
+    /// <see cref="MayApproachThresholdForTraversal"/> is still false for everything
+    /// and nothing on the far side is ever given a threshold as a destination. It
+    /// walks to the doorway because **your people are standing there**, and the gate
+    /// notices what is on its doorstep. The decision is still made here and nowhere
+    /// else.
     ///
     /// Gate, machine door and portal are one thing; only the connection kind
     /// differs, laboratory or permanently open natural. The rule is per connection
@@ -140,10 +155,57 @@ namespace RimroomsAsyncIndustries.Portals
         /// Whether a spawned thing on either side may be treated as drawn toward a
         /// threshold. Always false: generation, encounters and threats must never
         /// use an open connection as a destination or a trigger to converge on it.
+        ///
+        /// **Still false after incursion landed, and that is the point.** A hostile that
+        /// follows a crew to the doorway does so because *your people are standing there*,
+        /// never because a gate is open. Nothing on the far side is ever given a threshold as
+        /// a destination.
         /// </summary>
         public static bool MayApproachThresholdForTraversal(Thing thing)
         {
             return false;
+        }
+
+        /// <summary>
+        /// The one case in which something that is **not ours** may cross, and the only place
+        /// that may ever say yes to it.
+        ///
+        /// **Owner direction, 2026-09-29, verbatim:** *"and even at higher techs they can come
+        /// through the portal into your base and attack, kidnap, steal, do everything npcs can
+        /// do in game"*, under the condition chosen when asked: **depth plus technology, while
+        /// an opening is live**.
+        ///
+        /// This is a deliberate, named exception to the rule the rest of this class exists to
+        /// enforce, and it is narrow on five axes at once: a live opening, a coordinate at
+        /// <see cref="CoordinatePressureLadder.Band.Hostile"/>, a branch that has advanced the
+        /// machine at least one tier, a body that fits the opening, and once per opening.
+        ///
+        /// **It is still the policy deciding, not the pawn.** Nothing about this method is
+        /// reachable by an inhabitant: the gate asks about whatever is already standing at its
+        /// far doorway, exactly as every other crossing in this mod is decided by asking here.
+        /// </summary>
+        public static string IncursionFailureKey(Pawn intruder, CompRimroomsGate gate,
+            CoordinateRecord coordinate, float colonyWealth)
+        {
+            if (intruder == null || gate == null || coordinate == null)
+            { return "RR_Incursion_NotEligible"; }
+            // Ours never "intrudes". A colonist or a player animal at the far doorway is just
+            // somebody about to walk home through their own gate.
+            if (intruder.Faction == Faction.OfPlayer) { return "RR_Incursion_NotEligible"; }
+            if (!intruder.Spawned || intruder.Dead || intruder.Downed) { return "RR_Incursion_NotEligible"; }
+            // Something that is not hostile to the branch has no business walking into it, and
+            // an unfactioned wanderer is scenery rather than a threat.
+            if (intruder.Faction == null || !intruder.Faction.HostileTo(Faction.OfPlayer))
+            { return "RR_Incursion_NotEligible"; }
+            if (!gate.IsDesignated || gate.IsEmergency || string.IsNullOrEmpty(gate.PortalOpeningId))
+            { return "RR_Incursion_NoOpening"; }
+            if (gate.IncursionSpentThisOpening) { return "RR_Incursion_AlreadySpent"; }
+            if (CoordinatePressureLadder.BandFor(coordinate, colonyWealth) < CoordinatePressureLadder.Band.Hostile)
+            { return "RR_Incursion_BandTooLow"; }
+            // "even at higher techs" -- the branch has to have advanced the machine. A first
+            // gate, unresearched, is never a way in.
+            if (gate.PortalWindowTier < 1) { return "RR_Incursion_TechTooLow"; }
+            return FitFailureKey(intruder, gate.GateWidth);
         }
     }
 }

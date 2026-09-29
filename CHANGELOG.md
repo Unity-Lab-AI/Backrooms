@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.9.6-dev - 2026-09-29 - it came through with them
+
+- **Something can follow your crew home.** In the worst coordinates, with an advanced gate and a connection actually open, a thing that reaches the doorway behind your people steps through it into the facility.
+- **Once it is inside it is an ordinary hostile**, and does everything a hostile in your base does.
+- **Only one per opening.** Closing the connection and opening it again is what resets that, which makes the emergency cutoff a decision rather than a formality.
+- **Only if it fits through the gate.** A narrow gate is genuinely safer, so the small one is a defensive choice and not just the one you started with.
+- **Never from a quiet space, and never on an unresearched machine.** A new branch with a fresh gate is not a way in.
+- Closing the connection before it reaches the doorway stops it completely.
+
+Full record: [it came through with them](docs/implementation/GATE_INCURSION_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.9.5-dev - 2026-09-29 - they follow you
 
 - **In the worst coordinates, what lives there no longer holds its ground.** It follows your crew, room after room, all the way to the doorway you came in by.

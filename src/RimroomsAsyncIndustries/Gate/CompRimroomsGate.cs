@@ -262,6 +262,7 @@ namespace RimroomsAsyncIndustries.Gate
             // Before the opening block, because a ramp only exists while the gate is closed and
             // its completion is what opens one.
             TickSpinUp();
+            Threats.GateIncursion.Tick(this);
 
             if (!IsOpening) { return; }
             if (string.IsNullOrEmpty(failureKey))
@@ -505,6 +506,7 @@ namespace RimroomsAsyncIndustries.Gate
             activeExpeditionId = null;
             portalOpeningId = null;
             portalConnectionId = null;
+            ClearIncursionSpent();
             openingTicksRemaining = 0;
             emergencyReturnTicksRemaining = 0;
             emergencyReturnSpent = false;

@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.9.5-dev** (this commit) |
+| Published | **0.9.6-dev** (this commit) |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
-| Build | **156 C# files, 79 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `C5160083A4903117221AF361E39C4709A6EF0B5E58755971513EE67640180E10`, reproduced by two clean recompiles |
+| Build | **157 C# files, 79 package files**, zero warnings, zero errors |
+| Assembly | SHA-256 `76F6C531C095C1EB6F8508209A23C18BE43E711CD8F205EF6E604AA3B88E584B`, reproduced by two clean recompiles |
 | Checkers | **five**, all passing |
 | Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
 | Game launches | **none, ever** |
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.9.5
+## What shipped this session, 0.7.1 → 0.9.6
 
 | Version | What |
 |---|---|
@@ -68,6 +68,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.9.3 | **Everything you can look at says what it is** — info cards calibrated to Core's own practice, fifth checker |
 | 0.9.4 | **What a gate's size lets through** — animals may cross, and width decides which fit |
 | 0.9.5 | **They follow you** — at `Band.Hostile` an inhabitant hunts to the threshold, on vanilla AI |
+| 0.9.6 | **It came through with them** — a bounded, named exception to the founding rule |
 
 ---
 
@@ -81,7 +82,7 @@ Content set → gate model → generator → scenarios → docs. One direction, 
 
 1. ~~**M2 existing-content replacement**, first pass.~~ **DONE 0.9.0-dev** for the eight defs whose replacements were already live. **Still open in M2:** the field gear (`RR_FieldRecorder`, `RR_SurveyTag`, `RR_ReturnBeacon`, `RR_SealedEvidenceCase`, `RR_RouteRecording`), which carry real mechanics the owner has explicitly refused to drop, so each needs a capability replacement built before its def can go; `RR_QuietPursuer`; the five staff PawnKinds and their recipes; The sixty-eight now-unreachable `IsNativeProvider` branches were collapsed in 0.9.1-dev. Original entry: **first, because it deletes defs** — anything built against content about to be removed gets built twice, and the save break is already declared so defs can go with no migration. It also **collapses the gate comp's whole non-native branch**: deleting `RR_MachineGate` removes the second geometry model, so the multi-cell work below is written once against one model instead of twice. Scope: legacy gate objects, field gear, fixtures and terrain, the `RR_QuietPursuer` presentation, five `RR_*Staff` PawnKinds, five recipes, and the fourteen historical PNGs off the allowlist.
 2. ~~**What a gate's size lets through.**~~ **BUILT 0.9.4-dev.** Original entry: ~~Multi-cell gates~~ **BUILT 0.9.2-dev** for the sizes themselves: Core's `OrnateDoor` is 2x1 so **1×2 needs no mods**, Anomaly's `SecurityDoor` matches it, and Doors Expanded supplies 1×3 and 2×3 behind a `PatchOperationFindMod`. **Still open:** body-size limits at `PortalTraversalPolicy` so bigger creatures and vehicles need a wider gate, and the adjacent-door-run fallback for 1×3 and 2×3 without that mod. Original entry: multi-cell gates **Owner-answered: both paths.** Bind a gate across a **run of adjacent Core doors** (existing-content-only, always works), **and** accept **Doors Expanded** (register row 77) multi-cell doors as single-thing gates when that mod is installed. Width is the capability: how many cross abreast, whether cargo or a vehicle fits, what the opening draws. Core has only 1x1 `Door` and `Autodoor`, verified against installed game data.
-3. **Incursion.** ~~Pursuit~~ **BUILT 0.9.5-dev** with no pursuit code: at `Band.Hostile` a hostile gets an assault lord and vanilla AI walks it to the threshold. **Still open: coming *through*.** Original entry: **Owner-answered: depth plus technology, while an opening is live.** An inhabitant chases a fleeing pawn to the threshold, and reaching it before the gate closes brings it through into the colony, where every native hostile behaviour applies with nothing bespoke written. **Closing the gate is the countermeasure**, which makes the emergency cutoff a tactical decision at the cost of stranding whoever is still inside. `PortalTraversalPolicy` gains the rule; the inhabitant still decides nothing.
+3. ~~**Incursion.**~~ **BOTH HALVES BUILT — pursuit 0.9.5-dev, incursion 0.9.6-dev.** Original entry: ~~Pursuit~~ **BUILT 0.9.5-dev** with no pursuit code: at `Band.Hostile` a hostile gets an assault lord and vanilla AI walks it to the threshold. **Still open: coming *through*.** Original entry: **Owner-answered: depth plus technology, while an opening is live.** An inhabitant chases a fleeing pawn to the threshold, and reaching it before the gate closes brings it through into the colony, where every native hostile behaviour applies with nothing bespoke written. **Closing the gate is the countermeasure**, which makes the emergency cutoff a tactical decision at the cost of stranding whoever is still inside. `PortalTraversalPolicy` gains the rule; the inhabitant still decides nothing.
 4. **Facilities** — larger functional spaces, distinct from rooms and corridors. Generation must be finished before the scenarios that consume it.
 5. **New-game playability** — the world tile the branch does not hold (world object plus generated map) and **the three starting sites** (`SCENARIOS.md`). Consumes the final content set, the finished gate model *and* the finished generator. **One tech tree for every start**, differing only in which projects begin complete — owner direction, and it belongs in the versioned start contract rather than bolted onto each scenario.
 6. **The player-facing how-to.** Last, because documentation describes a finished thing and writing it earlier means rewriting it. Note `docs/HOWTO.md` is the **developer** guide; the player one does not exist yet.
@@ -145,6 +146,10 @@ Each is a real defect or a pinned fact.
 50. **`Band.Hostile` is the "deeper levels" threshold.** Its own definition is *"the space stops being forgiving"*. Anything gated on depth-plus-history should use it rather than inventing a second number that can drift from it.
 51. **A hostile below `Band.Hostile` holds ground; at it, it hunts.** The warning-first retreat rule is what makes a shallow coordinate survivable for one person, and it must stay true there.
 52. **`LordJob_AssaultColony`'s first parameter is the ASSAULTER's faction.** Passing the player's names the player as the attacker, compiles cleanly, and no checker can catch it.
+53. **Incursion is the one named exception to the founding rule**, and it is bounded on five axes: a live opening, `Band.Hostile`, `PortalWindowTier >= 1`, it must fit the opening, and once per opening. Widening any of them without the owner's word rewrites the mod's premise.
+54. **`MayApproachThresholdForTraversal` must stay false for everything, forever.** Incursion works *because* nothing is drawn to a gate: a hostile walks to the doorway to reach the people standing there, and the gate notices what is already on its doorstep.
+55. **A transfer that can lose a pawn is a corruption, not a threat.** Preflight fully, then move, and put it back where it stood if the move fails — a vanished pawn looks exactly like the feature working.
+56. **When a founding comment stops describing the code, rewrite it in the same commit.** A doc that lies at the top of the chokepoint is worse than no doc.
 
 ---
 

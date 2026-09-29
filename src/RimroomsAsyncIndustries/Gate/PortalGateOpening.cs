@@ -14,6 +14,18 @@ namespace RimroomsAsyncIndustries.Gate
         private string portalOpeningId;
         private int portalOpeningSequence;
         private bool portalOwnerFault;
+
+        /// <summary>
+        /// Whether something has already come through on this opening.
+        ///
+        /// One per opening, so **closing the gate is a countermeasure that works** and is
+        /// learnable from a single incident. It is cleared when the session ends rather than
+        /// on a timer, which is what makes "close it and reopen" the deliberate cost.
+        /// </summary>
+        private bool incursionSpent;
+        public bool IncursionSpentThisOpening { get { return incursionSpent; } }
+        internal void NoteIncursionSpent() { incursionSpent = true; }
+        private void ClearIncursionSpent() { incursionSpent = false; }
         private List<PortalOpeningRecoveryReceipt> portalRecoveryReceipts = new List<PortalOpeningRecoveryReceipt>();
         public string PortalConnectionId { get { return portalConnectionId; } }
         public string PortalOpeningId { get { return portalOpeningId; } }
@@ -100,6 +112,7 @@ namespace RimroomsAsyncIndustries.Gate
             Scribe_Values.Look(ref portalConnectionId, "rr_gatePortalConnectionId");
             Scribe_Values.Look(ref portalOpeningId, "rr_gatePortalOpeningId");
             Scribe_Values.Look(ref portalOpeningSequence, "rr_gatePortalOpeningSequence", 0);
+            Scribe_Values.Look(ref incursionSpent, "rr_gateIncursionSpent", false);
             Scribe_Collections.Look(ref portalRecoveryReceipts, "rr_gatePortalRecoveryReceipts", LookMode.Deep);
         }
 
@@ -145,6 +158,7 @@ namespace RimroomsAsyncIndustries.Gate
             portalOpeningSequence++;
             portalConnectionId = connectionId;
             portalOpeningId = nextId;
+            incursionSpent = false;
             nativeOpeningSequence++;
             // A portal session runs on the duration ladder, not the historical
             // expedition window. At the top of the ladder there is no countdown at all.

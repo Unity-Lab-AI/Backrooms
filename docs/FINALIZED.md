@@ -2676,3 +2676,42 @@ Methods added: 1. Call sites changed: 1. Docs updated: 5 (1 new).
 **Bugs caught by re-reading a diff against decompiled Core rather than by any checker: 1.**
 **Requirements met by existing vanilla behaviour rather than new code: 1** - pursuit to the threshold.
 Still open and named in `TODO.md`: coming through the gate into the colony, which inverts the mod's founding rule and needs its own diff; the legacy `RR_QuietPursuer` scripted chase, untouched here because it is a separate older system on a custom def.
+
+---
+
+## 0.9.6-dev - 2026-09-29 - it came through with them
+
+### Owner direction, verbatim
+
+> *"and even at higher techs they can come through the portal into your base and attack, kidnap, steal, do everything npcs can do in game"*
+
+Asked at the fork and answered: **depth plus technology, while an opening is live** - *"it follows your pawn to the threshold; if it reaches the threshold before you close: it comes through."*
+
+### Bounded on five axes at once
+
+A live opening only; `Band.Hostile` only; an advanced machine only (`PortalWindowTier >= 1`, which needs the `RR_GateTelemetry` project - checked to be completable, because this session already produced an invariant about rules that can never fire); it has to fit through the opening; and once per opening, so that closing the gate is a countermeasure that works and is learnable from a single incident.
+
+### The inhabitant still decides nothing
+
+Invariant #1 holds as written. `MayApproachThresholdForTraversal` still returns false for everything, so nothing on the far side is ever given a threshold as a destination. A hostile walks to the doorway **because the player's people are standing there** - vanilla assault-lord behaviour aimed at colonists, not at a door - and the gate then notices what is on its doorstep and asks the policy. `AutonomousNonPlayerTraversalPermitted` is still a constant false.
+
+The class-level documentation was **rewritten rather than left standing**: a founding comment that no longer describes the code is worse than no comment.
+
+### Losing a pawn to a bug is not a threat, it is a corruption
+
+The transfer preflights completely before anything is despawned, and a spawn that somehow fails puts the pawn back where it stood. A vanished hostile is a save with a hole in it that the player would never know about, and it would look exactly like the feature working.
+
+### What it does once through: nothing bespoke
+
+It is an ordinary hostile pawn on a player map, so every native behaviour applies. "Attack, kidnap, steal, do everything npcs can do in game" is satisfied by writing no behaviour code at all. Note the deliberate asymmetry with 0.9.5-dev: kidnapping and stealing are off inside a coordinate, where a kidnapper leaving by a map edge is a disappearance with no story, and on in the colony, where it is an ordinary raid the player can chase.
+
+### Build evidence
+
+0.9.6-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **157** C# source files (one new), **79** approved package files. Assembly SHA-256 `76F6C531C095C1EB6F8508209A23C18BE43E711CD8F205EF6E604AA3B88E584B`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All five checkers pass. **No new def, asset, patch operation or work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Keyed strings added: 7. Docs updated: 5 (1 new).
+**Founding invariants deliberately given a named exception: 1**, bounded on five axes, with the class documentation rewritten to say so rather than left describing code that no longer exists.
+**Behaviour written for "do everything npcs can do in game": none** - it is an ordinary hostile once inside.
+Still open and named in `TODO.md`: the adjacent-door-run fallback; facilities; new-game playability; the player how-to; the rest of M2.
