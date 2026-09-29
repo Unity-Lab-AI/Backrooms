@@ -270,4 +270,20 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         protected override string ProviderId { get { return ConnectedDeploymentProviders.Tending; } }
         protected override bool ContinueOnly { get { return true; } }
     }
+
+    /// <summary>Sends someone through a gate to feed a patient who cannot feed themselves.</summary>
+    public sealed class WorkGiver_ConnectedFeeding : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.PatientFeeding; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    /// <summary>Walks a feeder the rest of the way to a patient, then gets out of the way.</summary>
+    public sealed class WorkGiver_ConnectedFeedingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.PatientFeeding; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
 }

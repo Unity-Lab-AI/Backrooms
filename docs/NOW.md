@@ -23,11 +23,11 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published commit | 0.5.9-dev (see `git log -1`; the cascade read-back is in `FINALIZED.md`) |
+| Published commit | 0.6.0-dev (see `git log -1`; the cascade read-back is in `FINALIZED.md`) |
 | Remotes | `forgejo` and `github`, both with `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` at the same commit |
 | Working tree | clean |
-| Build | 104 C# source files, 76 approved package files, zero warnings, zero errors |
-| Assembly | SHA-256 `AE6BD0CCE437253568FCD54B45490EB969E66CF9086905836B807691A4848014`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
+| Build | 106 C# source files, 76 approved package files, zero warnings, zero errors |
+| Assembly | SHA-256 `E5663D70D2BB1F7EC7553DE05286D4C4EFE63237248E10234029D72019FEF2AE`, reproduced by two full recompiles after deleting `obj/` and `bin/` |
 | Game launches | **none, ever.** Every runtime claim in this repo is pending the owner's first RimSort launch |
 
 ### What exists now, in order of arrival
@@ -40,28 +40,29 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 - **0.5.3-dev** — **construction supply** (material carried into a real frame or blueprint), the audit proving the mod requires nothing but base Core, and the capability-matching method that dissolved the M2 content blockers.
 - **0.5.4-dev** — four owner decisions: the laboratory duration ladder, natural-gate exemption confirmed, one tech tree for every scenario, a player-named company.
 - **0.5.6-dev** — nothing is blocked on the owner: the `[!]` status deleted, the post-completion test phase named, all cross-gate work priorities made **live player settings**, and a verified RimWorld/Steam compliance position with automated checks.
+- **0.6.0-dev** — **food across a gate**, as three parts, one of which was *decided against* rather than deferred: a hungry pawn does not walk through a gate to eat. Plus patient feeding as the fourth deployment provider.
 - **0.5.9-dev** — **tending across a gate, both halves in one item**: the doctor travels to a patient who stays put (third deployment provider), and medicine travels as the first cargo consumed by the work. Surgery, patient feeding and prisoner care remain separately reviewed routes.
 - **0.5.8-dev** — **research across a gate**, the *second* travel-to-work provider and one new file: no new record, driver or JobDef. Its real finding is that the deployment shape is inherently mod-tolerant, because a deployment never issues the work.
 - **0.5.7-dev** — **bill ingredients**: goods cross a gate because a named bill is short of them, landing inside that bill's own search radius. Unfinished things deliberately out of scope.
 - **0.5.5-dev** — **travel-to-work**: a fourth work family and the first that is not fetch → carry → deliver. `ConnectedDeploymentIntent` (a *sibling* record), `ConnectedDeploymentProvider`, `ConstructionFinishingProvider`, and `ConnectedCrossing` as the single shared gate step. Also: the 1990s period and the universe factions captured verbatim and decided, queued after the work families.
 
-### The next task — food
+### The next task — rest and beds
 
-**Owner ordering (2026-09-28):** finish the remaining cross-map work families before the faction layer. Food is next, and it is **three things**, not one:
+**Owner ordering:** finish the remaining cross-map work families before the faction layer.
 
-1. **A pawn crossing a gate to eat** because there is food over there and none here. That is a *need*, not work — it comes from `JobGiver_GetFood` in the think tree, **not** from a `WorkGiver` — so it is the first family that does not ride `JobGiver_Work` at all. Read `.local/inspection-connected-work/RimWorld.JobGiver_GetFood.cs`, which is already decompiled, before deciding the shape. This is the sharpest design question in the family: everything built so far hangs off `WorkGiver`, and a need does not.
-2. **Food carried across a gate** so pawns on the far side can eat. That is the ordinary carry shape, and the existing storage-hauling family may already cover much of it — check honestly whether a distinct trigger is even needed before writing an adapter. If hauling already moves food to where it is wanted, say so and skip it rather than adding a family for symmetry.
-3. **Patient feeding** — `DoctorFeedHumanlikes` (Doctor 80) and `DoctorFeedAnimals` (Doctor 40). These *are* work givers, so they fit the existing shapes. Recorded against the food item deliberately, because tending is done and this is feeding.
+**Expect the answer food just gave.** Sleeping is a need from the think tree (`JobGiver_GetRest`), not work, so a tired pawn walking through a gate to find a bed runs into the same two objections that killed the equivalent food part: it needs a Core think-tree patch, and a gate closing mid-journey strands somebody — here, asleep and helpless on the far side. Read `.local/inspection-connected-work/RimWorld.JobGiver_GetRest.cs`, which is already decompiled, and reach your own conclusion rather than inheriting mine; but if it lands the same way, **say so as a decision and close the row**, exactly as the food item did. A decided "no" is a finished item; an open row implying unfinished work is not.
 
-**Read the prep work first.** Per the standing rule, find the food, nutrition and meal-related profile rows and read their reviews before designing. Rows 125 Meals On Wheels and 269 Gastronomy are already named in `DEFERRED.md` as work-behaviour providers needing review, and there will be others.
+**Already pinned, and it decides most of this:** `RestUtility` rejects off-map beds. So a bed on another map is not a bed a pawn can be assigned to, which means there is no "claim a bed over there" route to build even if the traversal were safe.
 
-**Known sharp edges:**
+**What is probably left that is real:**
 
-- A pawn that is starving must never be sent through a gate on a hopeful trip. Needs are not work: getting this wrong kills colonists rather than wasting a walk, so the bar for planning a food crossing is much higher than for any family so far.
-- Food poisoning, meal quality and `FoodUtility`'s own scoring are Core's. Never reimplement the choice of what to eat.
-- The gate could close while a pawn is on the far side with no food. That is the traversal contract's problem, not this family's, but it must be stated rather than discovered.
+1. **Making beds available where people are.** That is construction, not rest — a bed is a built thing, and cross-gate construction already ships in both halves (supply and finishing). Check honestly whether anything is missing before writing a family; if the construction families already cover it, record that and move on.
+2. **Medical rest.** `HealthAIUtility.ShouldSeekMedicalRest` and `WorkGiver_TakeToBedToOperate` (Doctor 20) touch beds and *are* work givers. The casualty family already carries our downed home to a bed; check whether a patient on the far side who needs a bed *there* is a real gap or an already-covered case.
+3. **Bed assignment and ownership across a gate** — almost certainly not wanted, given `RestUtility`, but check rather than assume.
 
-After food: **rest**, then the remaining families. Then the 1990s period and the universe faction layer, under the compliance rules in `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`.
+**Read the prep work first.** Find the bed, sleep and furniture profile rows and read their reviews before designing. Row 34 Animal Medical Bed is already known from the tending work; there will be others.
+
+After rest: the remaining work families (cleaning, repair, firefighting, plants/mining/hunting, prisoner and guest care, wardening, childcare, animals and mechs, refuel and rearm, joy, rituals, hauling providers), then every installed work giver in the 294-row profile. Then the 1990s period and the universe faction layer, under the compliance rules in `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`.
 
 ### Invariants — do not break these
 
@@ -84,6 +85,8 @@ Hard-won, each one the result of a real defect or a pinned source fact. Recorded
 15. **Never force-push. Never launch the game. Never alter the RimSort list. No AI attribution anywhere.**
 16. **Add definitions; never redistribute assets.** Reference Ludeon's icons and pawn kinds by path and defName. No `PatchOperationReplace`/`Remove` on a Core def. Gate DLC-conditional content with `MayRequire`. Official versions only. Verified and mechanically checked — `COMPLIANCE_AND_OFFICIAL_VERSIONS.md`.
 17. **Prefer a setting or a def over a constant** for anything tunable, because the only test session fixes things live without a mod reload.
+18. **Needs are not work, and this layer does not reach into them.** Eating and sleeping come from Core's think tree, not from a `WorkGiver`. Do not patch Core's think tree to send a hungry or tired pawn through a gate: a closing gate strands them, and the failure mode is a dead colonist rather than a wasted walk. Solve needs logistically — take the thing to the people. Decided for food in 0.6.0-dev; see `implementation/CONNECTED_FOOD_IMPLEMENTATION.md`.
+19. **A resource family must never move the shortage it is solving.** Food will not take the last meal off a map that still has hungry people. Any future family that moves a consumable owes the same guard, because every individual trip looks correct while the net effect is harm.
 
 ### Binding owner decisions
 

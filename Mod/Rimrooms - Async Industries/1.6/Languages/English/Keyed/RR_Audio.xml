@@ -14,6 +14,8 @@
   <RR_Settings_FamilyCasualty>Carrying casualties and the dead home</RR_Settings_FamilyCasualty>
   <RR_Settings_FamilyConstruction>Carrying building material to a site</RR_Settings_FamilyConstruction>
   <RR_Settings_FamilyBill>Carrying ingredients to a bill</RR_Settings_FamilyBill>
+  <RR_Settings_FamilyFood>Carrying food to people with none</RR_Settings_FamilyFood>
+  <RR_Settings_FamilyFeeding>Travelling to feed a patient</RR_Settings_FamilyFeeding>
   <RR_Settings_FamilyMedicine>Carrying medicine to a patient</RR_Settings_FamilyMedicine>
   <RR_Settings_FamilyTending>Travelling to treat a patient</RR_Settings_FamilyTending>
   <RR_Settings_FamilyResearch>Travelling to research</RR_Settings_FamilyResearch>

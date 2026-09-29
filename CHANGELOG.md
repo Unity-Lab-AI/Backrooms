@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.0-dev - 2026-09-29 - food crosses a gate, and nobody starves for want of a delivery
+
+- Food is now carried through a gate to your people on the other side when there is nothing there they will eat. Ordinary hauling only ever moves things to better storage, so without this a colonist could starve beside an empty larder while the pantry at home was full.
+- The last food never leaves a side that still has hungry people of its own. Moving starvation from one side of a gate to the other is not work.
+- Only your own people and your guests are fed. A hungry animal or hostile on the far side attracts nothing.
+- What anybody will actually eat stays entirely the game's decision, so ideology restrictions, royal titles, teetotalling and race diets are all respected without this mod having an opinion.
+- Someone will also cross a gate to feed a patient who cannot feed themselves, but only once there is food on that side to feed them with. Sending a carer to an empty larder helps nobody.
+- Treatment still beats meals: a patient who needs a doctor outranks a patient who needs feeding, and an urgent local patient outranks both.
+- Food that arrives after the hunger has passed is simply put away rather than treated as a wasted trip, because food keeps.
+
+One thing deliberately **not** added, and worth saying plainly: a hungry colonist will not walk through a gate to go and eat. Hunger is handled by the game at a level this mod does not reach into, and more importantly a gate can close while somebody is still on the far side. Sending a starving person on that walk risks stranding them with no food and no way back, which is worse than being hungry at home. Food goes to people instead. Full record: [food across a gate](docs/implementation/CONNECTED_FOOD_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.5.9-dev - 2026-09-28 - a doctor crosses a gate, and so does the medicine
 
 - A doctor will now walk through a gate to treat a patient lying in a bed on the other side, instead of the patient being carried home first. Somebody already settled in a bed is better off treated where they are.

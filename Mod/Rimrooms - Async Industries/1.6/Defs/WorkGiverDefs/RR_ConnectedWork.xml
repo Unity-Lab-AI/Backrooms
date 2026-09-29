@@ -242,6 +242,73 @@
     <prioritizeSustains>true</prioritizeSustains>
   </WorkGiverDef>
 
+  <!-- Food is the family that keeps anybody alive on the far side of a gate, so it sits
+       above every other carry: continue 14 and start 10, against medicine 13/9,
+       construction 12/8 and bills 11/7. Still under Core's HaulGeneral (15), because food
+       already on this side being put away properly still comes first.
+
+       Patient feeding is a deployment in Doctor, placed against Core's own feeding givers
+       (DoctorFeedHumanlikes 80, DoctorFeedAnimals 40). Continuing sits at 82: above feeding
+       humanlikes, so a feeder partway to a gate is not turned around by a patient who needs
+       a meal at home, and still below tending (100) and emergency tending (110), which must
+       always win over feeding. Starting sits at 4, below every Core doctor giver and below
+       the cross-gate tending start at 5, because a patient who needs treatment is more
+       urgent than one who needs a meal.
+
+       Balance decisions, recorded as such, and player-tunable while the game runs. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedFoodContinue</defName>
+    <label>finish carrying food through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedFoodContinue</giverClass>
+    <workType>Hauling</workType>
+    <verb>deliver</verb>
+    <gerund>delivering</gerund>
+    <priorityInType>14</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedFood</defName>
+    <label>carry food through a gate to people with none</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedFood</giverClass>
+    <workType>Hauling</workType>
+    <verb>deliver</verb>
+    <gerund>delivering</gerund>
+    <priorityInType>10</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedFeedingContinue</defName>
+    <label>travel on to feed a patient through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedFeedingContinue</giverClass>
+    <workType>Doctor</workType>
+    <verb>feed</verb>
+    <gerund>feeding</gerund>
+    <priorityInType>82</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedFeeding</defName>
+    <label>cross a gate to feed a patient</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedFeeding</giverClass>
+    <workType>Doctor</workType>
+    <verb>feed</verb>
+    <gerund>feeding</gerund>
+    <priorityInType>4</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
   <!-- Casualties sit around Core's own DoctorRescue (60): finishing a trip that
        already has someone in the worker's arms edges above it, starting one sits just
        below so a casualty on this map is always rescued first. Both stay under the

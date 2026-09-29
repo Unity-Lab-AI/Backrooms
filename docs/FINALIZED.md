@@ -908,3 +908,57 @@ Work families complete: 8, three of them travel-to-work deployments.
 Core traps caught from source: 2 — `AllowsMedicine` throwing on an undefined category, and the multi-def shortage count.
 Next: food, which is **three** things and the first family that does not ride `JobGiver_Work` at all, because eating is a need from the think tree rather than work.
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+---
+
+## Session — 2026-09-29 — food across a gate, and the family part that was decided against (0.6.0-dev)
+
+### Verbatim request
+
+> get to it
+
+Continuing under the standing instruction from 2026-09-28: *"in most cases you will do the todo work item and all relaeted work needed for that item as that item in the todo"*.
+
+### COMPLETED
+
+- [x] **The food item, as one register row with all three of its parts.** Two families shipped and one part was **decided against** rather than deferred.
+  - **`ConnectedFoodAdapter`** (eighth adapter) carries food to maps whose own hungry people have nothing there they will eat.
+  - **`FeedingProvider`** (fourth deployment provider) sends someone to feed a patient who cannot feed themselves.
+  - **A hungry pawn crossing a gate to eat: decided against.** Recorded as a decision with reasons, not as an open gap.
+- [x] **Why that third part is a "no", written down so it is not quietly reversed.** Eating is a **need**, not work: Core's `JobGiver_GetFood` is a `ThinkNode_JobGiver` in the think tree, and every family in this mod rides `JobGiver_Work` through ordinary work givers. Reaching a need means patching Core's **think tree** — the most conflict-prone thing to touch across a 294-mod profile and squarely against the standing method of using Core's own extension points. Worse, the duration ladder makes a laboratory opening finite, so sending a *starving* pawn on a multi-map walk risks stranding it with no food and no way back. The failure mode is a dead colonist rather than a wasted walk. The logistical answer — take the food to the people — solves the real problem with none of that risk. **This is the first family closed partly by deciding a piece of it should not exist.**
+- [x] **A narrow trigger, on purpose.** The carry family fires only when there are hungry people *of ours* on that map and nothing there they will eat. Storage hauling would never move food to a map that has no better storage for it, so without this a colonist on the far side could starve beside an empty larder while the pantry at home was full.
+- [x] **Two guards specific to food, and both matter.**
+  - **Only our own people and our guests.** A hungry wild animal or hostile on the far side is not a logistics problem, and hauling meals to it would be feeding the Backrooms.
+  - **The last meal never leaves a map.** `SafeToTakeFrom` refuses to take food from a map that still has hungry people of ours unless something else there would feed them. Without it the family would move starvation from one side of a gate to the other and call it work — and **every individual trip would look correct** while the net effect was harm. Recorded as a new standing invariant: a resource family must never move the shortage it is solving.
+- [x] **Deliberately not refused when the hunger passes mid-trip.** Every other carry family closes as "already supplied" if the need evaporates. Food does not, because food keeps and a map with people on it will be hungry again shortly, so storing the meals there is right either way.
+- [x] **Core keeps every judgement about food.** `Pawn.WillEat(ThingDef)` with no getter decides what an eater would touch — ideology, royal title, teetotalling and race diet included — and nutrition, quality, rot and preference ordering stay entirely Core's. This family decides *that food should be there*, never *what anybody eats*.
+- [x] **The feeding half needs one thing the other providers do not: food must already be on that map.** A feeder with an empty larder is the parked-worker case for real, because Core's feeding giver simply finds no food source and does nothing — there is no partial-credit version of the job. Edible-food presence is therefore part of the candidate test rather than left to hope, which also makes the two halves cooperate instead of overlapping: the carry family gets food there, and only then is a feeder worth sending.
+- [x] **Core's `WorkGiver_FeedPatient` proved patient-side too**, like tending: `IsHungry`, `ShouldBeFed`, the warden exclusion and the baby exclusion are all facts about the patient, with only the reservation and the food search left to arrival.
+- [x] **The prep work corrected an assumption I had going in.** Row **125 Meals On Wheels** is *not* meal delivery despite the name — its review establishes that colonists may take meals **from animals or other pawns** when other food is unavailable, a food-*sourcing* convenience, and its disposition explicitly warns against relying on it for expedition or outpost ration accounting. That warning is another reason this family exists rather than leaning on the mod. Row **269 Gastronomy** has **unresolved rights** (Workshop text refers to GPL, the continuation repository declares CC BY-NC-ND), so no adapter and no adaptation of its code or art. Rows 195 RimFridge, 229 Tradable Meals, 93 Food Poisoning Stack Fix and 48 Bed Rest For Food Poisoning were read and have no food-logistics interaction.
+- [x] **Closed two rows that were explicitly waiting on this item.** `DEFERRED.md` listed Meals On Wheels (125) and Gastronomy (269) among the optional work-behaviour providers "each still needing its own review". Both are now reviewed with a recorded outcome, as part of this item rather than as new rows. With Research Whatever (279) reviewed in 0.5.8-dev, that row is down to Pick Up And Haul, Haul To Stack and Prison Labor.
+- [x] **Caught a sloppy shipped comment before publishing.** A work-giver XML comment contained a thinking-out-loud stumble ("...no: above it") left in from drafting the priority reasoning. Corrected; it would otherwise have shipped in the package.
+
+### Priorities
+
+Food outranks every other carry on both halves, because it is the one that keeps people alive: continue 14 and start 10, against medicine 13/9, construction 12/8 and bills 11/7 — all still under Core's `HaulGeneral` (15). Patient feeding continues at Doctor 82, above Core's `DoctorFeedHumanlikes` (80) but below tending (100) and emergency tending (110); it starts at 4, below the cross-gate tending start at 5, because a patient who needs treatment is more urgent than one who needs a meal. Twenty cross-gate numbers now, all player settings.
+
+### Saved state
+
+**None added.** The food adapter records the eater in the intent's existing `finalTarget` field and reuses `RecordResolvedCellForTarget`; the feeding provider adds nothing at all. A 0.5.9-dev save loads unchanged.
+
+### Documents updated in the same change
+
+`implementation/CONNECTED_FOOD_IMPLEMENTATION.md` (new record), `DEFERRED.md`, `TODO.md`, `NOW.md` (including two new standing invariants), `ROADMAP.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `CHANGELOG.md`, `About.xml`, the csproj.
+
+### Build evidence
+
+0.6.0-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **106** C# source files, **76** approved package files (unchanged — four work giver defs and five keyed strings added to files that already existed). Assembly SHA-256 `E5663D70D2BB1F7EC7553DE05286D4C4EFE63237248E10234029D72019FEF2AE`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. Evidence folder `implementation/evidence/connected-food-2026-09-29/`. All 58 packaged XML files parse; every `RR_` key referenced from source resolves with 0 missing; 2,967 relative doc links resolve with 0 broken; every `giverClass` resolves; 0 attribution strings; all compliance checks pass. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 2. Source files modified: 5. Package files modified: 3. Docs updated: 9 (1 new).
+Deferments closed: 1 (food, all three parts) plus two provider-review rows folded into it. Rows added: 0.
+Work families complete: 10, four of them travel-to-work deployments.
+New standing invariants recorded: 2 — needs are not work and this layer does not reach into them; and a resource family must never move the shortage it is solving.
+Next: rest and beds, where the same needs-are-not-work question applies and `RestUtility` rejecting off-map beds already decides most of it.
+Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.

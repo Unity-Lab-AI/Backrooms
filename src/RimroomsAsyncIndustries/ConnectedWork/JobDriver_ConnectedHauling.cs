@@ -162,7 +162,8 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         {
             ConnectedWorkAdapters.StorageHauling,
             ConnectedWorkAdapters.BillIngredients,
-            ConnectedWorkAdapters.MedicineSupply
+            ConnectedWorkAdapters.MedicineSupply,
+            ConnectedWorkAdapters.FoodSupply
         };
 
         internal static ConnectedWorkIntent LiveHaulingIntent(Pawn pawn)
