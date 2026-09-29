@@ -60,6 +60,39 @@
           <li Class="RimroomsAsyncIndustries.Threats.CompProperties_RimroomsSurvivor" />
         </value>
       </li>
+      <!-- Owner direction 2026-09-29: "ther are 1x1 1x2 and 1x3 and 2x3 gate doors that
+           allow differnt capabilities". The component is only ever attached here, so this
+           file is the allowlist of what may become a gate, and the four legal footprints
+           are enforced in code.
+
+           Core's own OrnateDoor is 2x1, which was found by reading the installed game data
+           rather than assumed. It means a 1x2 gate needs no mods at all. Dormant until
+           designated, exactly like the doors above. -->
+      <li Class="PatchOperationConditional">
+        <xpath>Defs/ThingDef[defName="OrnateDoor"]/comps</xpath>
+        <nomatch Class="PatchOperationAdd">
+          <xpath>Defs/ThingDef[defName="OrnateDoor"]</xpath>
+          <value><comps /></value>
+        </nomatch>
+      </li>
+      <li Class="PatchOperationAdd">
+        <xpath>Defs/ThingDef[defName="OrnateDoor"]/comps</xpath>
+        <value>
+          <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGate" />
+        </value>
+      </li>
+      <!-- Anomaly's security door is also 2x1. Wrapped in a conditional rather than gated by
+           name: without the DLC the def simply is not there, the condition does not match,
+           and nothing is attempted. An unguarded add against an absent def logs an error. -->
+      <li Class="PatchOperationConditional">
+        <xpath>Defs/ThingDef[defName="SecurityDoor"]/comps</xpath>
+        <match Class="PatchOperationAdd">
+          <xpath>Defs/ThingDef[defName="SecurityDoor"]/comps</xpath>
+          <value>
+            <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGate" />
+          </value>
+        </match>
+      </li>
       <li Class="PatchOperationAdd">
         <xpath>Defs/ThingDef[defName="CommsConsole" or defName="TableMachining"]/comps</xpath>
         <value>
@@ -67,5 +100,23 @@
         </value>
       </li>
     </operations>
+  </Operation>
+  <!-- Optional compatibility. PatchOperationFindMod applies nothing when Doors Expanded is
+       not installed, and modifies none of its files when it is. Def names and footprints
+       were read from the installed copy: PH_DoorDouble and PH_AutodoorDouble are 2x1,
+       PH_DoorTriple and PH_AutodoorTriple are 3x1, PH_GateDoubleThick and PH_DoorBlastDoor
+       are 2x1, and PH_DoorThickBlastDoor is 3x2, which is the 2x3 the owner named. The
+       cloth curtains and the 1x1 jail door are deliberately not included: a curtain is not a
+       gate, and Core already covers 1x1. -->
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Doors Expanded</li>
+    </mods>
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[defName="PH_DoorDouble" or defName="PH_DoorTriple" or defName="PH_AutodoorDouble" or defName="PH_AutodoorTriple" or defName="PH_GateDoubleThick" or defName="PH_DoorBlastDoor" or defName="PH_DoorThickBlastDoor"]/comps</xpath>
+      <value>
+        <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGate" />
+      </value>
+    </match>
   </Operation>
 </Patch>

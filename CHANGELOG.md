@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.9.2-dev - 2026-09-29 - a gate has a size
+
+- **A gate can be wider than one cell.** An ordinary door gives you a one-wide gate; **the game's own ornate door gives you a two-wide one with no other mods at all**, and so does Anomaly's security door.
+- If you run **Doors Expanded**, its double and triple doors and its big blast door work as gates too, giving you three-wide and two-by-three. If you do not run it, nothing changes and nothing is touched.
+- **A wider gate is more machine.** It draws more power while open and takes longer to bring up, in proportion to its whole footprint, so a big gate is something you work toward and plan power for.
+- **A wide gate never limits how many people cross at once.** It simply has a wider opening, and your colonists spread across it the way they do at any wide door.
+- **A gate cannot be resized while it is working** - not while it is open, and not while it is being brought up.
+- The gate now tells you its size when you select it.
+
+Full record: [a gate has a size](docs/implementation/GATE_FOOTPRINT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.9.1-dev - 2026-09-29 - one kind of gate
 
 - Internal cleanup with **no change to anything you can see or do**. Now that the custom gate machine is gone, there is only one kind of gate, and the code no longer carries a second one alongside it.

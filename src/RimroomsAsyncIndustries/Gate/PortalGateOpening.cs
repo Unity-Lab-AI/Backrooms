@@ -90,7 +90,7 @@ namespace RimroomsAsyncIndustries.Gate
                 string.IsNullOrEmpty(activeExpeditionId) && !IsEmergency &&
                 (openingTicksRemaining > 0 || PortalOpeningIsIndefinite) &&
                 CheckStationReadiness(assignedOperator).Success &&
-                NativeStoredEnergy >= GateProps.openingPowerDrawWatts * CompPower.WattsToWattDaysPerTick;
+                NativeStoredEnergy >= OpeningPowerDrawWatts * CompPower.WattsToWattDaysPerTick;
         }
 
         private void ExposePortalOpening()

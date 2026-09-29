@@ -370,12 +370,30 @@ def check_class_references(problems):
             fail(problems, "a def names %s, which no C# source file declares" % value)
 
 
-def check_patches(problems, declared, game_defs):
+def optional_compat_xpaths(root):
+    """Every <xpath> that sits inside a PatchOperationFindMod.
+
+    Such an operation applies only when the named mod is installed, so its target def
+    legitimately does not exist in Core, in a DLC, or in this package. Demanding that it
+    resolve would make supporting another mod impossible -- but the exemption is deliberately
+    narrow: it is granted by being wrapped in FindMod, not by the def merely being unknown.
+    """
+    exempt = set()
+    for node in root.iter():
+        if node.get("Class") != "PatchOperationFindMod":
+            continue
+        for xpath_node in node.iter("xpath"):
+            exempt.add(id(xpath_node))
+    return exempt
+
+
+def check_patches(problems, declared, game_defs, notes):
     patch_dir = os.path.join(MOD, "*", "Patches", "*.xml")
     for path in sorted(glob.glob(patch_dir)):
         root = parse(path, problems)
         if root is None:
             continue
+        exempt = optional_compat_xpaths(root)
         found_any = False
         for xpath_node in root.iter("xpath"):
             found_any = True
@@ -385,14 +403,22 @@ def check_patches(problems, declared, game_defs):
                 fail(problems, "%s has an xpath selecting no named def, so what it "
                                "patches cannot be verified: %s" % (rel(path), xpath))
                 continue
+            optional = id(xpath_node) in exempt
             for target in targets:
                 if target in declared:
                     continue
                 if game_defs is None:
                     continue
                 if target not in game_defs:
-                    fail(problems, "%s patches %r, which exists neither in the game's "
-                                   "Data nor in this package" % (rel(path), target))
+                    if optional:
+                        # Still surfaced rather than silent: an optional target that has been
+                        # renamed by the other mod is a real compatibility break, it is just
+                        # not a reason to refuse the package.
+                        notes.append("optional compatibility patch targets %r, which is not "
+                                     "installed here and cannot be verified" % target)
+                    else:
+                        fail(problems, "%s patches %r, which exists neither in the game's "
+                                       "Data nor in this package" % (rel(path), target))
         if not found_any:
             fail(problems, "%s is in Patches/ but contains no xpath" % rel(path))
 
@@ -519,7 +545,7 @@ def main():
     keyed = collect_keyed(problems)
     check_def_references(problems, declared, keyed)
     check_class_references(problems)
-    check_patches(problems, declared, game_defs)
+    check_patches(problems, declared, game_defs, notes)
     check_textures(problems, notes)
     check_sounds(problems, declared)
     check_definjected(problems, declared)

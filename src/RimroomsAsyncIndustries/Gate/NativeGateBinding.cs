@@ -32,7 +32,7 @@ namespace RimroomsAsyncIndustries.Gate
         public Thing AssemblyBench { get { return nativeAssemblyBench; } }
         public float NativeEnergyRequiredToOpenWattDays
         {
-            get { return GateProps.openingWindowTicks * GateProps.openingPowerDrawWatts * CompPower.WattsToWattDaysPerTick
+            get { return GateProps.openingWindowTicks * OpeningPowerDrawWatts * CompPower.WattsToWattDaysPerTick
                 + GateProps.emergencyReturnCostWattDays; }
         }
         public float RecoveryEnergyRequiredWattDays
@@ -111,8 +111,17 @@ namespace RimroomsAsyncIndustries.Gate
         private static bool ExactProvider(Thing thing, string definition)
         { return thing != null && thing.def != null && thing.def.defName == definition; }
 
+        /// <summary>
+        /// A door this mod is prepared to operate as a gate.
+        ///
+        /// This used to name Core `Door` and `Autodoor` explicitly. It no longer needs to:
+        /// the component is only ever attached by this mod's own patches, so **carrying the
+        /// component is the allowlist**, and the patch file is where the supported providers
+        /// are declared. What still has to be checked here is the shape, because the
+        /// capability ladder is defined for four footprints and nothing else.
+        /// </summary>
         private bool NativeDoorProvider()
-        { return parent is Building_Door && (ExactProvider(parent, "Door") || ExactProvider(parent, "Autodoor")); }
+        { return parent is Building_Door && parent.def != null && LegalGateFootprint(parent.def.size); }
 
         private bool HasUnresolvedNativeTrip()
         {
@@ -127,6 +136,9 @@ namespace RimroomsAsyncIndustries.Gate
             if (!NativeDoorProvider()) { return RefuseNative("UnsupportedProvider"); }
             if (nativeBindingSchema != 1) { return RefuseNative("UnknownSchema"); }
             if (IsOpening) { return RefuseNative("ActiveCannotRebind"); }
+            // Owner direction 2026-09-29: "gate doors expansions can NOT be done on a
+            // working gate". A ramp is the gate working, so it counts.
+            if (IsSpinningUp) { return RefuseNative("ActiveCannotRebind"); }
             if (HasNativeEnergyDebitFault) { return RefuseNative("EnergyDebitFault"); }
             if (!SameNativeHeadquartersThing(console) || !SameNativeHeadquartersThing(battery) ||
                 !SameNativeHeadquartersThing(assemblyBench)) { return RefuseNative("HeadquartersRequired"); }
@@ -215,7 +227,7 @@ namespace RimroomsAsyncIndustries.Gate
         public CompanyActionResult ClearNativeBinding()
         {
             if (nativeBindingSchema != 1) { return RefuseNative("UnknownSchema"); }
-            if (IsOpening || HasUnresolvedNativeTrip()) { return RefuseNative("ActiveCannotRebind"); }
+            if (IsOpening || IsSpinningUp || HasUnresolvedNativeTrip()) { return RefuseNative("ActiveCannotRebind"); }
             if (HasNativeEnergyDebitFault) { return RefuseNative("EnergyDebitFault"); }
             if (!nativeDesignated) { return CompanyActionResult.Existing(); }
             CompRimroomsGateConsole station = nativeConsole?.TryGetComp<CompRimroomsGateConsole>();
@@ -310,7 +322,7 @@ namespace RimroomsAsyncIndustries.Gate
 
         private bool SpendNativeOpeningTick()
         {
-            float cost = GateProps.openingPowerDrawWatts * CompPower.WattsToWattDaysPerTick;
+            float cost = OpeningPowerDrawWatts * CompPower.WattsToWattDaysPerTick;
             if (NativeStoredEnergy < cost + GateProps.emergencyReturnCostWattDays) { return false; }
             return TrySpendNativeEnergy(cost, false, NativeOpeningDebitId("tick:" + Find.TickManager.TicksGame));
         }

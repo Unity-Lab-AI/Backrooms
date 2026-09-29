@@ -176,7 +176,7 @@ namespace RimroomsAsyncIndustries.Gate
         public float EmergencyReturnCostWattDays { get { return GateProps.emergencyReturnCostWattDays; } }
         public float MinimumPowerHeadroomWatts { get { return GateProps.minimumPowerHeadroomWatts; } }
         public float CurrentPowerDrawWatts
-        { get { return IsOpening && !IsEmergency ? GateProps.openingPowerDrawWatts : 0f; } }
+        { get { return IsOpening && !IsEmergency ? OpeningPowerDrawWatts : 0f; } }
         public IntVec3 GateEntryCell { get { return NativeEntryCell; } }
         public float CalibrationWorkRequired { get { return GateProps.calibrationWorkRequired; } }
         public Thing Console { get { return FindConsole(); } }
@@ -391,7 +391,8 @@ namespace RimroomsAsyncIndustries.Gate
                     DescribeWindow(emergencyReturnTicksRemaining), string.IsNullOrEmpty(failureKey) ? "RR_Gate_NoFailure".Translate() : failureKey.Translate()).ToString()
                 : "";
             string ramp = SpinUpReadout();
-            return string.Join("\n", new[] { status, operatorText, cutoffText, serviceText, powerText, ramp, active }
+            string footprint = FootprintReadout();
+            return string.Join("\n", new[] { status, footprint, operatorText, cutoffText, serviceText, powerText, ramp, active }
                 .Where(s => !string.IsNullOrEmpty(s)));
         }
 

@@ -2528,3 +2528,40 @@ Branch sites collapsed: 68. Net lines removed: 112. Orphaned keyed strings prune
 **Errors caught by the compiler because the property was deleted rather than worked around: 1.**
 Dead systems discovered by the collapse: 1 - the component's private power reserve, unreachable since the native gate landed.
 Still open and named in `TODO.md`: the field gear; `RR_QuietPursuer`; the staff PawnKinds and recipes; multi-cell gates, which this checkpoint cleared the ground for.
+
+---
+
+## 0.9.2-dev - 2026-09-29 - a gate has a size
+
+### Owner directions, verbatim
+
+> *"and rember ther are 1x1 1x2 and 1x3 and 2x3 gate doors that allow differnt capabilities as to the universe and scerios needs"*
+
+> *"gate doors expansions can NOT be done on a working gate"*
+
+> *"2 should really limit numbers through at once because in vinilla any number of pawns can use a door at once so we dont want limitations"*
+
+### The premise changed because the data was read
+
+The plan assumed Core ships only 1x1 doors. Reading the installed game data instead found `Building_MultiTileDoor` and two defs using it: Core's `OrnateDoor` at 2x1 and Anomaly's `SecurityDoor` at 2x1. The class chain `Building_MultiTileDoor : Building_SupportedDoor : Building_Door` was confirmed by decompiling. **So a 1x2 gate needs no mods at all.** Enumerating the installed Doors Expanded copy produced the rest, including `PH_DoorThickBlastDoor` at 3x2 - exactly the 2x3 the owner named. The four sizes in the direction line up one-for-one with doors that already exist.
+
+### What shipped
+
+Width and footprint are tracked separately, because a 2x3 blast door is three wide but six cells of machine. Opening draw and spin-up work scale on cell count, so a bigger gate costs more to run. Entry cells are derived per doorway cell, so a wide gate physically admits more people at once **without any quota** - checked first, and `OrderCrossing` only ever refused the same pawn twice, so the correct action was to add nothing. Rebinding is refused while a gate is ramping, not only while open. Supported providers are declared in the patch file rather than named in code: carrying the component is the allowlist, and only the shape is enforced in code.
+
+### A checker gap, closed narrowly and proved narrow
+
+Patching Doors Expanded made `check-package-integrity.py` fail seven targets, correctly, because it had no concept of optional compatibility. A target inside a `PatchOperationFindMod` is optional by construction. The check now exempts exactly those and still reports them as notes. **The exemption was proved narrow by planting a bogus target outside `FindMod` and confirming it still fails** - an exemption that leaked would be worse than no check.
+
+### Build evidence
+
+0.9.2-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **156** C# source files (one new), **79** approved package files. Assembly SHA-256 `0A2B527ED14475D56428DD2E63A0970853D5C70A854D4BB3516E4D9831FBE001`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All four checkers pass; 1,201 keyed references all resolving. **No new gameplay def, asset or work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Package files created: 0. Docs updated: 5 (1 new).
+**Design premises corrected by reading shipped data rather than trusting memory: 1** - Core does ship a multi-cell door.
+**Requirements met by adding nothing: 1** - throughput was already uncapped, so the no-limitations rule needed no code.
+**Checker exemptions added and proved narrow by breaking them: 1.**
+Gotchas hit again: the `--` in an XML comment, for the **third** time.
+Still open and named in `TODO.md`: what a size lets through; hostiles needing width; the adjacent-door-run fallback.

@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.9.1-dev** (this commit) |
+| Published | **0.9.2-dev** (this commit) |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
-| Build | **155 C# files, 79 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `152660F9835E71DD9A75E9D59C1B9EDE72F9D09CF47C488F0A552EF1DC9FCBAE`, reproduced by two clean recompiles |
+| Build | **156 C# files, 79 package files**, zero warnings, zero errors |
+| Assembly | SHA-256 `0A2B527ED14475D56428DD2E63A0970853D5C70A854D4BB3516E4D9831FBE001`, reproduced by two clean recompiles |
 | Checkers | four, all passing |
 | Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
 | Game launches | **none, ever** |
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.9.1
+## What shipped this session, 0.7.1 → 0.9.2
 
 | Version | What |
 |---|---|
@@ -64,6 +64,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.8.9 | **Bringing a gate up is work** — an operator-driven spin-up with familiarity, and gates that look like gates |
 | 0.9.0 | **A gate is a door and nothing else** — eight legacy defs retired, package 92 → 79 files |
 | 0.9.1 | **One kind of gate** — 68 dead branches collapsed, a vestigial power model removed, net −112 lines |
+| 0.9.2 | **A gate has a size** — 1×1 to 2×3, Core's own `OrnateDoor` gives 1×2 free, cost scales with footprint |
 
 ---
 
@@ -76,7 +77,7 @@ Content set → gate model → generator → scenarios → docs. One direction, 
 **Corrected immediately after 0.8.9-dev**: the multi-cell gate work was first listed ahead of M2. That was wrong. M2 deletes `RR_MachineGate`, which removes the gate comp’s second geometry model entirely, so doing it first means the multi-cell binding is written once rather than written and then rewritten.
 
 1. ~~**M2 existing-content replacement**, first pass.~~ **DONE 0.9.0-dev** for the eight defs whose replacements were already live. **Still open in M2:** the field gear (`RR_FieldRecorder`, `RR_SurveyTag`, `RR_ReturnBeacon`, `RR_SealedEvidenceCase`, `RR_RouteRecording`), which carry real mechanics the owner has explicitly refused to drop, so each needs a capability replacement built before its def can go; `RR_QuietPursuer`; the five staff PawnKinds and their recipes; The sixty-eight now-unreachable `IsNativeProvider` branches were collapsed in 0.9.1-dev. Original entry: **first, because it deletes defs** — anything built against content about to be removed gets built twice, and the save break is already declared so defs can go with no migration. It also **collapses the gate comp's whole non-native branch**: deleting `RR_MachineGate` removes the second geometry model, so the multi-cell work below is written once against one model instead of twice. Scope: legacy gate objects, field gear, fixtures and terrain, the `RR_QuietPursuer` presentation, five `RR_*Staff` PawnKinds, five recipes, and the fourteen historical PNGs off the allowlist.
-2. **Multi-cell gates** — 1x2, 1x3 and 2x3, on the settled Core-door-only gate model. **Owner-answered: both paths.** Bind a gate across a **run of adjacent Core doors** (existing-content-only, always works), **and** accept **Doors Expanded** (register row 77) multi-cell doors as single-thing gates when that mod is installed. Width is the capability: how many cross abreast, whether cargo or a vehicle fits, what the opening draws. Core has only 1x1 `Door` and `Autodoor`, verified against installed game data.
+2. **What a gate's size lets through.** ~~Multi-cell gates~~ **BUILT 0.9.2-dev** for the sizes themselves: Core's `OrnateDoor` is 2x1 so **1×2 needs no mods**, Anomaly's `SecurityDoor` matches it, and Doors Expanded supplies 1×3 and 2×3 behind a `PatchOperationFindMod`. **Still open:** body-size limits at `PortalTraversalPolicy` so bigger creatures and vehicles need a wider gate, and the adjacent-door-run fallback for 1×3 and 2×3 without that mod. Original entry: multi-cell gates **Owner-answered: both paths.** Bind a gate across a **run of adjacent Core doors** (existing-content-only, always works), **and** accept **Doors Expanded** (register row 77) multi-cell doors as single-thing gates when that mod is installed. Width is the capability: how many cross abreast, whether cargo or a vehicle fits, what the opening draws. Core has only 1x1 `Door` and `Autodoor`, verified against installed game data.
 3. **Pursuit and incursion.** Grouped here so **all the gate work happens once**. **Owner-answered: depth plus technology, while an opening is live.** An inhabitant chases a fleeing pawn to the threshold, and reaching it before the gate closes brings it through into the colony, where every native hostile behaviour applies with nothing bespoke written. **Closing the gate is the countermeasure**, which makes the emergency cutoff a tactical decision at the cost of stranding whoever is still inside. `PortalTraversalPolicy` gains the rule; the inhabitant still decides nothing.
 4. **Facilities** — larger functional spaces, distinct from rooms and corridors. Generation must be finished before the scenarios that consume it.
 5. **New-game playability** — the world tile the branch does not hold (world object plus generated map) and **the three starting sites** (`SCENARIOS.md`). Consumes the final content set, the finished gate model *and* the finished generator. **One tech tree for every start**, differing only in which projects begin complete — owner direction, and it belongs in the versioned start contract rather than bolted onto each scenario.
@@ -128,6 +129,10 @@ Each is a real defect or a pinned fact.
 37. **Retired content is archived, never deleted.** `docs/implementation/historical-content/<version>/` mirrors the package layout. `audit-gate0.py` will catch the doc links that pointed at the old location.
 38. **To remove a pervasive flag, delete it and let the compiler enumerate the sites.** Pinning `IsNativeProvider` to true, transforming all 68 sites, then deleting the property turned "did I miss one?" into a build error. One had been missed.
 39. **A def field and the XML that sets it are removed in the same change, always.** A field removed alone leaves an element no class declares, and RimWorld ignores it in silence. This cost two checkpoints once already.
+40. **A gate's width and its footprint are different numbers.** A 2×3 blast door is three wide and six cells of machine. Width decides what fits through; footprint decides what it costs to run.
+41. **Throughput is never capped.** Owner direction: *"in vinilla any number of pawns can use a door at once so we dont want limitations"*. A wide gate gets more doorway cells, never a quota. There is no counter, deliberately.
+42. **A patch target inside `PatchOperationFindMod` is optional by construction**, and only there. The integrity checker exempts exactly those and still reports them. The exemption was proved narrow by planting a bogus target outside it.
+43. **Core ships `OrnateDoor` at 2×1 and `Building_MultiTileDoor` to drive it.** Anomaly adds `SecurityDoor`. This was found by enumerating installed data after the opposite was assumed.
 
 ---
 

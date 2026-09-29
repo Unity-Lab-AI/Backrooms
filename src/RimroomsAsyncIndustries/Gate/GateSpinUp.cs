@@ -161,7 +161,10 @@ namespace RimroomsAsyncIndustries.Gate
         /// </summary>
         public float SpinUpWorkRequiredFor(string coordinateId)
         {
-            float required = GateProps.dialSpinUpWorkRequired;
+            // Scaled by the whole footprint, for the same reason the power draw is: a bigger
+            // gate is more machine to energise, and the owner made "costs more to run" a
+            // condition of the larger sizes rather than a side effect of them.
+            float required = GateProps.dialSpinUpWorkRequired * GateCellCount;
             float floor = required * GateProps.dialSpinUpFloorFraction;
             int prior = PriorConnectionsTo(coordinateId);
             for (int step = 0; step < prior; step++)
