@@ -158,6 +158,10 @@ namespace RimroomsAsyncIndustries.Threats
                 // later genuinely shows.
                 InhabitantService.PopulateOnArrival(map, coordinate);
                 AnomalyEventService.OnArrival(map, coordinate);
+                // "a feature that has moved since the last visit" - the one uncanny change
+                // from UNIVERSE_ADAPTATION.md that had never been built. Runs after
+                // NoteOpened so it can see that this is a return rather than a first visit.
+                Generation.RevisitDisplacement.OnArrival(map, coordinate);
             }
             NoteLosses(map, coordinate);
             if (isOccupied) { coordinate.NoteOccupancy(Interval); }

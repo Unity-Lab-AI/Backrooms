@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.10.3-dev - 2026-09-29 - something is not where you left it
+
+- **Go back to a space you have been to before and something is sometimes not where you left it.** A bench, a lamp, a shelf - in the same room, a few cells away.
+- **Nothing tells you.** No letter, no alert. If you never notice, you have lost nothing. If you do notice, you found it yourself.
+- **Not every time.** Roughly a third of returns are exactly as you left them, so you can never be sure whether the room changed or you misremembered.
+- Never anything you built, never the way out, and never anything that could block a door.
+- A first visit never changes, because there is nothing yet to remember.
+
+Full record: [something is not where you left it](docs/implementation/REVISIT_DISPLACEMENT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.10.2-dev - 2026-09-29 - one set of words
 
 - **Everything the mod shows you now uses one set of words.** The **gate** is the machine in your wall. The **connection** is the live link it holds open. The **threshold** is the doorway you arrive at on the far side.

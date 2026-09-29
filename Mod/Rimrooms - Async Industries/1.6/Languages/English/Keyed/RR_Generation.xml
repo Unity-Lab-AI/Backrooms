@@ -64,4 +64,5 @@
   <RR_UI_FailedSiteRecoveryConfirm>Prepare AI-01R for this unresolved initial survey?\n\nThe failed coordinate and every object on it remain saved. Only a pristine survey's contract and case may move to the new coordinate. Its six-room fallback is generated on dispatch. This permits one replacement only, spends no company money, and grants no items. Eligibility is checked again when confirmed.</RR_UI_FailedSiteRecoveryConfirm>
   <RR_Event_SiteReaddressed>The unvisited failed survey at {0} was reassigned to {1}. The failed map is retained, and the original contract remains unpaid.</RR_Event_SiteReaddressed>
   <RR_Generation_Failed>This space could not be laid out. Nothing was generated and the coordinate is unchanged.</RR_Generation_Failed>
+  <RR_Event_ThingsMovedSinceLastVisit>{0} fixture(s) in this coordinate are not where the last survey left them.</RR_Event_ThingsMovedSinceLastVisit>
 </LanguageData>

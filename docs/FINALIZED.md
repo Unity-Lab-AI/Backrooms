@@ -2941,3 +2941,39 @@ Player-facing lines corrected: 84 across 21 files. Checker rules added: 1, prove
 **The worst offender was the name of a def retired two checkpoints earlier**, still being used as the game's own word for itself in 25 places.
 **Bugs caught by a checker rather than by reading the diff: 1** - an accidental key rename that would have shown a player a raw key.
 Still open and named in `TODO.md`: the survey tag as a `GlowPod` with marker types; custody at a designated archive shelf; the recorder merged into the book; the last two scenarios.
+
+---
+
+## 0.10.3-dev - 2026-09-29 - something is not where you left it
+
+### Owner direction, verbatim
+
+> *"and remembner alot of things you should be reviewing the prep materials and registry for especially backroom themed items equip,memntn and questes and logic and game paly and factions and random events and backrooms make ups you should be doing deep dives into the univers's make up of backrroms to properly design all the sustems events and specialities involved with this mod"*
+
+### Found by reading the prep material, not by inventing
+
+`UNIVERSE_ADAPTATION.md` lists five ways an ordinary interior is made uncanny: a shifted doorway, impossible adjacency, a repeated hall, changed room dimensions, and **a feature that has moved since the last visit**. Checked one by one, four were built and the fifth was not - and it is the only one that depends on **the player's own memory** rather than on the geometry.
+
+### Not the rearrangement anomaly
+
+`RR_Anomaly_Rearrangement` moves loose items **during a session**, at depth four and above, and **announces itself**. This moves fixtures **between visits**, **silently**, at any depth a coordinate has been opened twice. Opposites on purpose: an anomaly you are told about happened *to you*; a chair that is somewhere else happened **while you were not there**.
+
+### The proof changed the design
+
+The first version fired on **every single return** - 100% across 4,000 simulated visits - which is mechanical rather than uncanny, because a player would simply learn that returning moves things. The unease depends on not being certain whether you misremembered, so a once-per-visit roll now leaves roughly a third of returns untouched: 66.7% change something, a first visit never does across 500 seeds, and a sparsely dressed room still fires on 267 of 400 returns. **Second time this session a proof has changed a design rather than confirmed one.**
+
+### Nothing is told to the player
+
+No letter, no message, no alert; only a company log entry, so the discovery is checkable after the fact rather than announced before it. This does not breach the warning-first rule, which governs **threats** - a bench in a different corner cannot hurt anybody.
+
+Never anything the player built or owns (ownership is the whole test - generation places with no faction), never the return threshold, never a door or a room edge, so a moved fixture cannot seal a route. Only furnishings move, so the layout fingerprint is untouched and a revisited coordinate still re-plans byte-identically.
+
+### Build evidence
+
+0.10.3-dev, SDK 9.0.308, Release/net472, zero warnings and zero errors with `TreatWarningsAsErrors` enabled. **159** C# source files (one new), **79** approved package files. Assembly SHA-256 `081A4DA33DD2D3CEF92D856E7B7926222B491EDDADCB73ECEB84742DABBC0D9F`, reproduced by **two** full recompiles after deleting `obj/` and `bin/`. All six checkers pass. **No new def, asset, patch operation or work type.** No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1. Prep-document items checked against the build: 5, of which **1 was unbuilt**.
+**Designs changed by an offline proof rather than confirmed by one: 1** - the feature was too reliable to be unsettling.
+Still open and named in `TODO.md`: contradictory crew accounts and staff prior exposure, both from the same prep document; the remaining field-gear replacements; the last two scenarios.

@@ -13,7 +13,7 @@ The scenario opening cards live in [`docs/SCENARIOS.md`](docs/SCENARIOS.md); the
 
 ## Build and installation
 
-**Current development version: 0.10.2-dev.** Every checkpoint has its own record under [`docs/implementation/`](docs/implementation/), and [`docs/NOW.md`](docs/NOW.md) is the single page that says what is true right now: the published commit, the build counts, the reproduced assembly hash, and what is open in order.
+**Current development version: 0.10.3-dev.** Every checkpoint has its own record under [`docs/implementation/`](docs/implementation/), and [`docs/NOW.md`](docs/NOW.md) is the single page that says what is true right now: the published commit, the build counts, the reproduced assembly hash, and what is open in order.
 
 What works in source today, briefly: a gate is an **ordinary door you designate** rather than a custom machine, at sizes from 1x1 to 2x3; **bringing a connection up is work** an operator does at a console, faster on a route the crew has run before; each gate keeps its own **address book** of everywhere it has dialled; colonists and animals cross, with the gate's width deciding what fits through; coordinates generate as rooms, corridors and **facilities** that span several rooms at once; what lives there **follows a crew to the doorway** in the worst spaces and, on an advanced machine, can come through behind them; and an **odd-origin economy**, company bonds, a corporate trader and a credits ladder sit on top of it.
 

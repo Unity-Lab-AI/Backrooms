@@ -122,6 +122,14 @@ Policy: [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md); map: [`implementat
 
 - [x] **RETIRED 0.9.0-dev.** **Legacy gate objects** `RR_MachineGate`, `RR_GateConsole`, `RR_EmergencyCutoff`, `RR_UtilityGenerator` → designated Core `Autodoor`/`CommsConsole`/`PowerSwitch` + generation. Hidden from construction today, still in the package. **Power claim corrected 2026-09-28:** this row previously said no single Core generator meets the 3,500 W opening draw while its own parenthetical named `GeothermalGenerator` at 3,600 W, which exceeds it. Core outputs verified: Geothermal 3,600 W, Wind 2,300 W, Solar 1,700 W, Watermill 1,100 W, Wood-fired 1,000 W, Chemfuel 1,000 W. The framing was also wrong — a draw is supplied by a power network with batteries, and the gate already designates a battery as its provider. No content blocker remains here.
 
+**Verbatim owner direction (2026-09-29):** *"and remembner alot of things you should be reviewing the prep materials and registry for especially backroom themed items equip,memntn and questes and logic and game paly and factions and random events and backrooms make ups you should be doing deep dives into the univers's make up of backrroms to properly design all the sustems events and specialities involved with this mod"*
+
+- [x] **ACTED ON IMMEDIATELY 0.10.3-dev.** `UNIVERSE_ADAPTATION.md` lists five ways an ordinary interior is made uncanny. Four were built; **"a feature that has moved since the last visit" was not**, and it is the only one that depends on the player's own memory rather than on geometry. Built as silent between-visit fixture displacement.
+- [ ] **Still unbuilt from the same prep document:** *"contradictory accounts"* from a returning crew - a report that does not match what another crew saw - and staff **prior exposure** affecting how an expedition goes.
+- [ ] **Still unbuilt from the progression ladder:** step 5's *"respond to openings in settlements"* - a connection appearing somewhere the branch did not make one.
+- [ ] **Keep doing this.** Each checkpoint should check one prep document against what exists rather than designing from memory. The register's columns - load order, mod, system family, stance, firmness, trace IDs, card - are the integration half of the same habit.
+
+
 **Verbatim owner direction (2026-09-29):** *"get to it we are completeing and optimizing everything while doing everything in the columns of the prep docs and mod register"*
 
 - [x] **HELD as the standing working method.** The register's columns - load order, mod, system family, stance, firmness, trace IDs and card - are what integration questions are answered from, and the 294 per-mod reviews under `research/reviews/mods/` are read before designing rather than after.

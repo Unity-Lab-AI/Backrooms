@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.10.2-dev** (this commit) |
+| Published | **0.10.3-dev** (this commit) |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
-| Build | **158 C# files, 79 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `7F0ECE7490C23886E8862C1625812FEF27C2B9E31970FC55CD161E91B8157AB7`, reproduced by two clean recompiles |
+| Build | **159 C# files, 79 package files**, zero warnings, zero errors |
+| Assembly | SHA-256 `081A4DA33DD2D3CEF92D856E7B7926222B491EDDADCB73ECEB84742DABBC0D9F`, reproduced by two clean recompiles |
 | Checkers | **six**, all passing |
 | Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
 | Game launches | **none, ever** |
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.10.2
+## What shipped this session, 0.7.1 → 0.10.3
 
 | Version | What |
 |---|---|
@@ -75,6 +75,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.10.0 | **The documents say what is true** — sixth checker, 28 stale claims across 10 living docs |
 | 0.10.1 | **LAW #0, made checkable** — 10 owner directions found unrecorded, and a rule so it cannot recur |
 | 0.10.2 | **One set of words** — gate / connection / threshold, enforced over all player-facing text |
+| 0.10.3 | **Something is not where you left it** — silent between-visit fixture displacement |
 
 ---
 
@@ -172,6 +173,9 @@ Each is a real defect or a pinned fact.
 70. **When the owner suspects a process failure, measure it — do not argue.** The suspicion here was correct, and the audit that confirmed it took one script.
 71. **The vocabulary is enforced, not merely agreed.** `check-info-cards.py` fails the build on "portal", "machine gate", "doorway" or "gizmo" in any displayed text. **Key names are exempt** — a player never reads one, and renaming keys is churn with DefInjected risk.
 72. **A retired def's name outlives the def in player-facing text.** "machine gate" was still the game's own word for itself in 25 strings, two checkpoints after `RR_MachineGate` was deleted. Retiring a def means retiring its vocabulary too.
+73. **Check a prep document against the build every checkpoint.** `UNIVERSE_ADAPTATION.md` listed five uncanny changes; four were built and the fifth had been silently skipped for the whole project. Designing from memory is how that happens.
+74. **A horror mechanic that fires every time is a mechanic, not horror.** Revisit displacement was proved to fire on 100% of returns and was deliberately weakened to 66.7%, because the unease depends on not being sure whether you misremembered.
+75. **Ownership is the test for "did the player make this".** Generation places things with no faction; a colonist's work belongs to the player. One check, no list to maintain.
 
 ---
 
