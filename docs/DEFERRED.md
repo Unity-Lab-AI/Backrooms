@@ -28,6 +28,7 @@ Status: `[ ]` open · `[~]` in progress · `[x]` built (archived in `FINALIZED.m
 
 - [ ] **Natural-portal discovery trigger.** Step 2 built the deterministic coordinate API (`CreateDiscoveredCoordinate`) and natural-edge registration, but nothing in the game yet *discovers* a natural threshold. The trigger belongs with procedural frontiers. Source: `CONNECTED_COLONY_PORTALS.md` §Coordinates and repeat visits.
 - [ ] **Procedural inhabitants, rare monstrosities, evolving saved events, technology-driven complexity families.** Source: `CONNECTED_COLONY_PORTALS.md` §People, monstrosities and increasing complexity.
+- [ ] **The saved, bounded escalation ladder** required by the owner's gate-pacing rule, to be authored before any inhabitant generation ships. Concrete spec: a newly opened coordinate starts quiet; pressure rises only from saved observable causes (operating history at that coordinate, depth and complexity, unlocked technology, what has already been taken out), never from wall-clock time, a fresh draw per load, or the mere fact a gate is open; caps on simultaneous encounters, inhabitants and events per opening and per coordinate, where raising a cap is itself a recorded progression step; quiet stretches are required content, so a space presenting something in every room fails; several open gates never sum into one escalating number, for any start; reopening a known space resumes its saved pressure without rerolling up to punish a revisit or down to make one safe. Inherits the frozen threat rules: readable warning, learnable rule, at least one countermeasure, no unavoidable instant failure. Source: `CONNECTED_COLONY_PORTALS.md` §Who may cross, and the pacing of what waits on the other side.
 - [ ] **Optional work/storage provider adapters** (Pick Up And Haul 164, Haul To Stack 107, Adaptive Storage 10/24/25/26, LWM Deep Storage 122, Warehouse 259, RimFridge 195, Prison Labor 288, Research Whatever 279, Meals On Wheels 125, Gastronomy 269). Core-only path must work with every one absent. Source: `CONNECTED_WORK_PROFILE_BOUNDARIES.md`.
 
 ### Owned by M1 resume step 6 (milestone hygiene)
@@ -75,6 +76,7 @@ Status: `[ ]` open · `[~]` in progress · `[x]` built (archived in `FINALIZED.m
 - [x] **Crossing-service boundary review** — closed by resume step 1; record `implementation/CONNECTED_CROSSING_CALLER_REVIEW.md`. No source change was needed and no check was weakened.
 - [x] **Legacy saved-endpoint repair route** — closed by resume step 2; a Core steel door replaces the historical `RR_ReturnAnchor` on an already generated site, receipt-recorded, without rebuilding the map.
 - [x] **Deterministic discovered-coordinate API** — closed by resume step 2 (`CreateDiscoveredCoordinate`), so no future discovery caller can invent coordinate ids or seeds.
+- [x] **Gate traversal guard** — closed 2026-09-28 by `PortalTraversalPolicy`, the single chokepoint every crossing path asks. Inhabitants and monstrosities cannot cross on their own, an open gate is never a destination or trigger, and anything else rides only in a carrier's hands. The pacing half of the same owner rule is the open ladder row above.
 
 ---
 

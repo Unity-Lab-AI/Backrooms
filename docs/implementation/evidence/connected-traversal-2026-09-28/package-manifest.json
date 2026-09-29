@@ -1,0 +1,371 @@
+﻿{
+    "PackageId":  "UnityLabAI.RimroomsAsyncIndustries",
+    "Version":  "0.4.3-dev",
+    "Files":  [
+                  {
+                      "Path":  "1.6/Assemblies/RimroomsAsyncIndustries.dll",
+                      "Bytes":  498176,
+                      "SHA256":  "EC09DF40D3007CE1864640296885485ABDF37FC452A1AC30194815646D7ACB7B"
+                  },
+                  {
+                      "Path":  "1.6/Defs/JobDefs/RR_ExpeditionJobs.xml",
+                      "Bytes":  1378,
+                      "SHA256":  "163E305CDE41811A2311372F0971FD97D8DAE6A3F6BBE6053E008C663CD86A65"
+                  },
+                  {
+                      "Path":  "1.6/Defs/JobDefs/RR_GateJobs.xml",
+                      "Bytes":  877,
+                      "SHA256":  "911957DBB5C35D591331950FA3D31B69C225BEE568058A7A1E19B68616648860"
+                  },
+                  {
+                      "Path":  "1.6/Defs/JobDefs/RR_InvestigationJobs.xml",
+                      "Bytes":  1005,
+                      "SHA256":  "2734CC8AB0887709DDE13E7FD69C42149B7C6188EF71148382CF256DBB5E9699"
+                  },
+                  {
+                      "Path":  "1.6/Defs/JobDefs/RR_PortalJobs.xml",
+                      "Bytes":  477,
+                      "SHA256":  "F2527A455D4E6FFE58C8AC18EB889E38881D226EF47DA6B827B758261D09AA87"
+                  },
+                  {
+                      "Path":  "1.6/Defs/MainButtonDefs/RR_MainButtons.xml",
+                      "Bytes":  419,
+                      "SHA256":  "E2F214D5BAD4E65807A3EEDA0A453E2B78A8FAA27663D27D932AEFCD905DCF7A"
+                  },
+                  {
+                      "Path":  "1.6/Defs/MapGeneratorDefs/RR_BackroomsGeneration.xml",
+                      "Bytes":  411,
+                      "SHA256":  "F2305F5D1762E92AFA24C1BBBE0D2FDC0ABAEEE80E8DD9F6C0AE8454D6C92893"
+                  },
+                  {
+                      "Path":  "1.6/Defs/PawnKindDefs/RR_Staff.xml",
+                      "Bytes":  2412,
+                      "SHA256":  "ED58E71DAE8D32F629E5C8B66E57F0994B20539F97E35208342E8DD981C3DED9"
+                  },
+                  {
+                      "Path":  "1.6/Defs/RecipeDefs/RR_FieldEquipmentRecipes.xml",
+                      "Bytes":  2831,
+                      "SHA256":  "C66109525778A80795A46B8BB2913993C98C3FFB24277CE335BCCC00AF1A6612"
+                  },
+                  {
+                      "Path":  "1.6/Defs/RecipeDefs/RR_GateRecipes.xml",
+                      "Bytes":  1263,
+                      "SHA256":  "BFEDBC701AD5849026834F752E71A27956341531F766FE0A64EE1EBA34FA7BDF"
+                  },
+                  {
+                      "Path":  "1.6/Defs/RimroomsFacilityDefs/RR_FacilityCategories.xml",
+                      "Bytes":  3711,
+                      "SHA256":  "BD3F5A6D4FF11F0114101C5F30CAC43FBB76828A6EDA8EB01CE5D3799246E272"
+                  },
+                  {
+                      "Path":  "1.6/Defs/RimroomsPersonnelDefs/RR_HiringPolicies.xml",
+                      "Bytes":  637,
+                      "SHA256":  "96334E0317A6675B0396D24C870EB2E96B790F0FBAEC274A242FA3AEC58AC90F"
+                  },
+                  {
+                      "Path":  "1.6/Defs/RimroomsProcurementCatalogDefs/RR_ProcurementCatalog.xml",
+                      "Bytes":  3151,
+                      "SHA256":  "EA83CD78703E17B06259F01B3E8864064540485E3418FAAC22F4094F3A60678B"
+                  },
+                  {
+                      "Path":  "1.6/Defs/RimroomsProjectDefs/RR_CompanyProjects.xml",
+                      "Bytes":  772,
+                      "SHA256":  "13B3425BB02BC9F3B6A75C32DC715309B898A2B4F188D6320E5128CD4D4C4115"
+                  },
+                  {
+                      "Path":  "1.6/Defs/RimroomsStartDefs/RR_Starts.xml",
+                      "Bytes":  7486,
+                      "SHA256":  "FD96CBBD748305C7F1CB33E5DDD29DF856383C77663B97009C6815F83544EEB1"
+                  },
+                  {
+                      "Path":  "1.6/Defs/ScenarioDefs/RR_Scenarios.xml",
+                      "Bytes":  4581,
+                      "SHA256":  "C43BCDA7BFB6B15743DED5AE7D5DBBE6B777A54F82CA1736DF0058CA4256EF66"
+                  },
+                  {
+                      "Path":  "1.6/Defs/ScenPartDefs/RR_ScenarioParts.xml",
+                      "Bytes":  1218,
+                      "SHA256":  "FEB26A2B097AD1CBFFA4C0E465489AE2BA2A9B06C39B60E95D728956905D6D07"
+                  },
+                  {
+                      "Path":  "1.6/Defs/TerrainDefs/RR_LiminalFloors.xml",
+                      "Bytes":  951,
+                      "SHA256":  "2F9E6193FD42343B4371E30E5F7FE269353CC96F5D6222BA011C3407097276BE"
+                  },
+                  {
+                      "Path":  "1.6/Defs/ThingCategoryDefs/RR_FieldCategories.xml",
+                      "Bytes":  351,
+                      "SHA256":  "D47E56D4C182199712E70B3F1357F33EADD3D1543E35C27BD7B1062895590872"
+                  },
+                  {
+                      "Path":  "1.6/Defs/ThingDefs_Buildings/RR_BackroomsFixtures.xml",
+                      "Bytes":  2986,
+                      "SHA256":  "F3954CA38EB61F2E14D6DED755A2E7BAD2708D19AC13D114B94FD4A91AADCAF3"
+                  },
+                  {
+                      "Path":  "1.6/Defs/ThingDefs_Buildings/RR_GateBuildings.xml",
+                      "Bytes":  8331,
+                      "SHA256":  "8821F264E26DB8CE48BB54D23126EAA2239098E93A1851A0C4645CDE6DF72666"
+                  },
+                  {
+                      "Path":  "1.6/Defs/ThingDefs_Buildings/RR_InvestigationBuildings.xml",
+                      "Bytes":  1805,
+                      "SHA256":  "69805981E770F542AC8DFC9DCE67ADDFC7469B9FC51E0D407CF82473D0661B37"
+                  },
+                  {
+                      "Path":  "1.6/Defs/ThingDefs_Items/RR_FieldEquipment.xml",
+                      "Bytes":  3797,
+                      "SHA256":  "B212A1C88343DAC4C3FBDCFCC5C6E85ABDEE5D5BBBB522F81FFCAFC62124A805"
+                  },
+                  {
+                      "Path":  "1.6/Defs/ThingDefs_Misc/RR_SiteObjects.xml",
+                      "Bytes":  2203,
+                      "SHA256":  "B9D2383AD051F49D8B6CDF974393D0FFBB25ABC90B5FE30A68DBE5AFFDDCAD05"
+                  },
+                  {
+                      "Path":  "1.6/Defs/WorkGiverDefs/RR_GateWork.xml",
+                      "Bytes":  774,
+                      "SHA256":  "56A92BA353DCC71A945D8E2224C513CFEF3DB52E500C5B312A6D3D7DE07E905F"
+                  },
+                  {
+                      "Path":  "1.6/Defs/WorkGiverDefs/RR_InvestigationWork.xml",
+                      "Bytes":  541,
+                      "SHA256":  "D2E7C02D14898F5EBE591CA5A6D703435C188943D966F366F871896C067E366D"
+                  },
+                  {
+                      "Path":  "1.6/Defs/WorldObjectDefs/RR_BackroomsSites.xml",
+                      "Bytes":  823,
+                      "SHA256":  "6ED1604981FCCDFE5979423B39760D06185967D4585996CB34429B6187AF9BF2"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/DefInjected/JobDef/RR_GateJobs.xml",
+                      "Bytes":  259,
+                      "SHA256":  "F349AD908B5D932E89A9E8810582093D73415BDCFD5325241402459E4E72758D"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/DefInjected/MainButtonDef/RR_MainButtons.xml",
+                      "Bytes":  258,
+                      "SHA256":  "D7ADD911E400686E579403C9531BE7BC1B66E37653AABCC3C45CD78E7ED6F5DD"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/DefInjected/RecipeDef/RR_GateRecipes.xml",
+                      "Bytes":  454,
+                      "SHA256":  "D81312F5CB11B9008D6D26352BE809B5301EF1202F3A0B86D41EE676963EAF5C"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/DefInjected/TerrainDef/RR_LiminalFloors.xml",
+                      "Bytes":  425,
+                      "SHA256":  "0F990767087745AD025E0BB2B555E65DDD5D9EE4D171D69EBC0E148962B915B8"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/DefInjected/ThingDef/RR_GateBuildings.xml",
+                      "Bytes":  1000,
+                      "SHA256":  "0B1648C94F96E11C1F19567C64283E0B4D411295A957197CD6EE11FA5B67F537"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/DefInjected/WorkGiverDef/RR_GateWork.xml",
+                      "Bytes":  488,
+                      "SHA256":  "0A2F62425D8706FA21E7EE4B5C06100ECDF090A1A44E8A674FB1932EA390D40B"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Audio.xml",
+                      "Bytes":  713,
+                      "SHA256":  "2EC61883EF2EA3BED901928FECDE4FC883A5390DB0BEB629C93BD1ABB684867D"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Company.xml",
+                      "Bytes":  5395,
+                      "SHA256":  "8C39ADA592BD8BF8062F41C92D0D311B271D9CF7020DD905ED5C4EC6854EF6FA"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_EvidenceRecovery.xml",
+                      "Bytes":  2500,
+                      "SHA256":  "921CB8C88E2EE2526E46C6AB307088D2D1A62E0317DF2510BB399CE860F2E1BE"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Expedition.xml",
+                      "Bytes":  8720,
+                      "SHA256":  "8C0419129E711FF7770DA211BAE6AC801FAF63CF497C6D57ABDB6C5D5FC6BCB5"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Facilities.xml",
+                      "Bytes":  3295,
+                      "SHA256":  "8863EF42A165B4447B2FA3331032466688396D3BF9B368D9F3B090E9C7A4EF47"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_FieldAndThreats.xml",
+                      "Bytes":  4777,
+                      "SHA256":  "156454847243B9D69A97283501E308BEDA96D71CE710F32F4920C6EADC09148A"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Gate.xml",
+                      "Bytes":  7302,
+                      "SHA256":  "0C6BBF538F4D929A320628F603F5EB049B48AEF98CFF02053659C90AA6C60848"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Generation.xml",
+                      "Bytes":  9895,
+                      "SHA256":  "C788272690E9D2FF6688C34CB1947540FD28E44206DD0BFB9CB3B60A75CDF608"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Investigation.xml",
+                      "Bytes":  6391,
+                      "SHA256":  "41B42F3F59B85E55A2234A36922765D7EEAE537CCCBD8DBB1E8FDB2284741110"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_LaboratoryBinding.xml",
+                      "Bytes":  4183,
+                      "SHA256":  "C3AE7EF5B40A50D446BC1A223A73F7059E12A48F500901CF63D28E264F89FD00"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Menu.xml",
+                      "Bytes":  402,
+                      "SHA256":  "861F0F236463A80C2E3C538BA2187ECDF3C21B54E0D68B5C760E24BA4B9BC96C"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_NativeGate.xml",
+                      "Bytes":  9933,
+                      "SHA256":  "05E3455FDA2E825E65DBA5A078A3BCC9E0260F14DDCEF3A7225F26825507A592"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Operations.xml",
+                      "Bytes":  1331,
+                      "SHA256":  "48CEECC6C18A889FA2477C9B9E2F2782F29A056E003921F7FF5385EE29AF2E76"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_OperationsExpeditions.xml",
+                      "Bytes":  10482,
+                      "SHA256":  "F1455028A195C80BF3873BE3102F348461DA0F56DCDB2A9EBCCC1DA394E04BF8"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Personnel.xml",
+                      "Bytes":  12309,
+                      "SHA256":  "2DC5525E4ED2CDB802E408CBAD2EF24236F840369763C986D71A98B0371EAD92"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Portals.xml",
+                      "Bytes":  16491,
+                      "SHA256":  "3EBE92446CE6AF75F4419BDF30F9E99B5EE080EE66D689F829B2E1206D21B592"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Procurement.xml",
+                      "Bytes":  13629,
+                      "SHA256":  "810F03D41532F76AD20C6EE8EFAB0693A3A5CF5EB68A8F30C91D05795DF7CA11"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_Scenario.xml",
+                      "Bytes":  1730,
+                      "SHA256":  "B47EA44C4A740FCEFE716EC84B72D7D9277EE507CEBAAC9BA9C954A91049CB53"
+                  },
+                  {
+                      "Path":  "1.6/Languages/English/Keyed/RR_StartupSetup.xml",
+                      "Bytes":  4957,
+                      "SHA256":  "6C20114F05B0D5CF8BBC8486F1793E26C9E34DC5B1A6F5DFF216849C687257CD"
+                  },
+                  {
+                      "Path":  "1.6/Patches/RR_ExistingEvidenceBook.xml",
+                      "Bytes":  565,
+                      "SHA256":  "5BB93BAF84705BA80DF8A67776F71C6AC793959B2829D5A6AD1CCA03EA006AF0"
+                  },
+                  {
+                      "Path":  "1.6/Patches/RR_NativeGateProviders.xml",
+                      "Bytes":  1161,
+                      "SHA256":  "6E16F848CD0B489015678316388F42D4DE216F64736705124D0F3C948A0EF3E8"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Buildings/Gate/RR_EmergencyCutoff.png",
+                      "Bytes":  597458,
+                      "SHA256":  "EAE509B24E6062311A22098479658F0112A8CECECEB4A082603B4B2EAE99865B"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Buildings/Gate/RR_GateConsole.png",
+                      "Bytes":  722611,
+                      "SHA256":  "99D169FADDB687ABD82B1A8A1B9B007B3B5628F31BD572F9E9090E3B342A2051"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Buildings/Gate/RR_MachineGate.png",
+                      "Bytes":  1036044,
+                      "SHA256":  "1C5CC5E7F9E97C7210B5EAE19BB630FC6557DBB9ECB1B4519B2E98D9D673CC57"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Buildings/Gate/RR_UtilityGenerator.png",
+                      "Bytes":  1243853,
+                      "SHA256":  "525587F66EF39A526D9BF2C77679BC51B58D01FF6B754F349EE331EC238CA587"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Buildings/Lab/RR_FieldAnalysisBench.png",
+                      "Bytes":  449719,
+                      "SHA256":  "F909020FAD186932A20A9FFF9CB4CD4E5FACA6AE519742DB6B5CF37BFE4DFB23"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Buildings/Rooms/RR_SiteFluorescent.png",
+                      "Bytes":  327815,
+                      "SHA256":  "FE1069DB502883C173484EE1D295AA05AB4E585ED180B9782F9ACA4A4E42E0B1"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Items/Evidence/RR_RouteRecording.png",
+                      "Bytes":  919684,
+                      "SHA256":  "2F516296754D1B38AF2CC611AE3A3775B9F7F6AAE345E131C284CE669601A2F5"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Items/Field/RR_FieldRecorder.png",
+                      "Bytes":  857514,
+                      "SHA256":  "206DA803A3D7CE51515527F6F3E971D0551D6A0EAC5C7172A6418CF76B5A268A"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Items/Field/RR_ReturnBeacon.png",
+                      "Bytes":  567295,
+                      "SHA256":  "74D2101B484DC703EBB05837B9387F0C63F808D660BEDD6EE7974815F335C9A4"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Items/Field/RR_SealedEvidenceCase.png",
+                      "Bytes":  811684,
+                      "SHA256":  "ED0CF97C6BFC684A6405A4B1C8760D6DAC34D837662851732674983653E64EC7"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Items/Field/RR_SurveyTag.png",
+                      "Bytes":  605900,
+                      "SHA256":  "9133A08998DB8FBFF89D8BA69BC81E58A2A932AF19F0DDDFD1F4C72454C95B1F"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Terrain/RR_FadedInstitutionalCarpet.png",
+                      "Bytes":  3303831,
+                      "SHA256":  "77D0F53A0A12AD1947180A72067253ED73A0079DD7C87134AFFE00BCC82B0ED6"
+                  },
+                  {
+                      "Path":  "1.6/Textures/Threats/RR_QuietPursuer.png",
+                      "Bytes":  577995,
+                      "SHA256":  "874CC8A9F70AC8DE5596349B668EF08185832F2C2A5C5972E25BC1E41599DFC2"
+                  },
+                  {
+                      "Path":  "1.6/Textures/UI/Menu/RR_Menu_FacilityThreshold_v2.png",
+                      "Bytes":  1789238,
+                      "SHA256":  "AEB5091DE4568134980D36065C95C65DCD83472B4BB3E8D2DB92F092D3BF452C"
+                  },
+                  {
+                      "Path":  "1.6/Textures/UI/Menu/RR_Menu_FieldSurvey_v2.png",
+                      "Bytes":  1911119,
+                      "SHA256":  "3AC775159E46DB91163299DBE1B454B310BCFB9676FE93279AD9A5A520837843"
+                  },
+                  {
+                      "Path":  "About/About.xml",
+                      "Bytes":  1446,
+                      "SHA256":  "0313E8E6EF127000A5E1D81E523234412E7352D14E12D5809C963AF7D2C77384"
+                  },
+                  {
+                      "Path":  "About/License.txt",
+                      "Bytes":  1065,
+                      "SHA256":  "B42D22D94B8A6E22CEF52B7D923C7D1CB8DC2F3FCC0687FA66FDDBC6FBC71E42"
+                  },
+                  {
+                      "Path":  "About/Preview.png",
+                      "Bytes":  20268,
+                      "SHA256":  "EAAEBE44A4C4F6F5A7893C6F18BDF98941E0A915D09F8F20AB3673AAE6E3D784"
+                  },
+                  {
+                      "Path":  "LoadFolders.xml",
+                      "Bytes":  104,
+                      "SHA256":  "23F721252643F6A0230C935EA3E1F2F89A6371025DDE018AFE776508D66FCB03"
+                  }
+              ]
+}

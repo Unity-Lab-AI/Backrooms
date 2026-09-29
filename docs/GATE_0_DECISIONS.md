@@ -35,6 +35,14 @@ On 2026-09-28 the owner reaffirmed three custom scenario openings, Prepare Caref
 
 ## Completion tracking, regression containment and publication cadence
 
+### Gate traversal, who may cross, and escalation pacing
+
+**Owner clarification, 2026-09-28.** People and monstrosities further in must not all run for a gate to exit or attack when it opens, and must not cross a machine door or a natural portal; they stay in the Backrooms. They reach the near side only when the player uses ordinary game mechanics, pawn controls and normal pawn tasks to carry things back, and a pawn can carry essentially anything found — furniture, production equipment, resources, and people and monstrosities themselves. Nothing on the far side may rush a gate as soon as it connects; things must get crazier, but not all at once, with balance across the whole design.
+
+The owner also fixed the vocabulary: **gate, gates, machine door and portal all mean the same thing**; only the connection kind (laboratory versus permanently open natural) differs. And **all three starts — company, solo-or-group inside, and furniture store — can eventually have multiple gates**, so no design or code may assume one gate per branch, map or coordinate.
+
+Recorded in full, with the source chokepoint that enforces it, in [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side). This does not approve any previously deferred named threat, and it does not change the asynchronous RimWorld Together boundary.
+
 ### Connected colony travel, permanent natural portals and procedural inhabitants
 
 The owner clarified that open laboratory/natural portals must unify local-branch work, labor and physical material access across maps. Pawns cross freely to carry materials and perform jobs on either side; mandatory expedition manifests and separate job pools are superseded. Natural portals stay permanently open. Coordinates select persistent seeds/saved spaces; advancement enables recall and increasingly complex/dangerous procedural architecture, events and people in native mental/health/life states, with rare monstrosities. The [binding implementation contract and backlog](CONNECTED_COLONY_PORTALS.md) records the full direction. This requires substantial new cross-map job/path/reservation work; the existing source does not prove it implemented. It does not change the separate-player asynchronous RWT boundary or approve previously deferred named threat sketches.

@@ -18,7 +18,9 @@ LAW #0 applies: every snapshot of the active task preserves the user's verbatim 
 
 M1 connected colony portals — resume step 4: saved work intents, quantity leases, native destination job revalidation, then the work/needs adapter families. Branch `feature/connected-colony-portals`.
 
-Steps 1–3 closed in 0.4.2-dev (addresses, legacy threshold repair, ordinary crossing job, session controls, emergency return, reconcile surface). Record: `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`.
+Steps 1–3 closed in 0.4.2-dev (addresses, legacy threshold repair, ordinary crossing job, session controls, emergency return, reconcile surface). The owner's gate traversal rule shipped in 0.4.3-dev on top of them: inhabitants and monstrosities stay in the Backrooms, enforced at one chokepoint. Record for both: `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`.
+
+Carried into step 4 and beyond: the adapters must honour `PortalTraversalPolicy` — a colonist may decide to cross to do a job, an inhabitant may never decide anything about a gate. The pacing half of the owner's rule (gradual bounded escalation) is specified and owned by step 5 in `DEFERRED.md`.
 
 **Verbatim user request:** "new feature branch for your work start on the todo weork making sure to properly finalize all completed work as i think gate 0 is still in the todo stuff but it should be finalized first and begin on any and all todo work to reach the goal of having a completed working mod in all regaurds as outlined in the many prep documentes build over 18 hours of work in gate 0"
 

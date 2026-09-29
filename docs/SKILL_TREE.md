@@ -1,6 +1,6 @@
 # SKILL_TREE
 
-Capability inventory for Rimrooms - Async Industries as of 0.4.2-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
+Capability inventory for Rimrooms - Async Industries as of 0.4.3-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
 
 | Status | Meaning |
 |--------|---------|
@@ -52,6 +52,8 @@ Canonical detail: [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md), [`FEATURE_TRACEABI
 - Same-pawn/same-cargo crossing service with receipts, post-spawn door/area checks, rollback, recovery (max 256 pending) — **Build / Runtime-pending**
 - Derived laboratory and natural address registration, deterministic discovered-coordinate API, explicit legacy threshold repair — **Build / Runtime-pending** (0.4.2-dev). The discovery *trigger* that finds a new natural threshold in play is **Design** (step 5).
 - Ordinary crossing job, per-address crossing orders, laboratory open/close wiring, emergency-return route, unresolved-crossing reconcile surface — **Build / Runtime-pending** (0.4.2-dev)
+- Gate traversal policy: inhabitants and monstrosities never cross on their own, an open gate is never an objective/lure/spawn target/raid route/attack trigger, and anything else rides only in a carrier's hands (downed, dead or imprisoned passengers included) — **Build / Runtime-pending** (0.4.3-dev)
+- Gradual, saved, bounded escalation of what a space presents (quiet start, saved causes only, caps per opening and per coordinate, required quiet stretches, no summing across gates) — **Design** (owned by resume step 5, spec in `DEFERRED.md`)
 - Work intents, quantity leases, destination revalidation; adapters for hauling, construction, bills, research, tend/rescue, food, rest, then all remaining work families — **Design** (resume step 4)
 - Upgrades: stabilizers, monitoring, cool-down, modules, reliability; aperture/duration/recall/efficiency; larger door providers (Doors Expanded 2×1/3×1/3×2, ReBuild, VVE garage) — **Design**
 - Gate window ladder 20 min → 2 h → 1 day → 7 days → 30 days with power/heat/maintenance/supply/rotation/comms costs — **Design**
@@ -238,6 +240,8 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 | Cross-map work intents, leases, revalidation | Gate/Portals | Expert | Design (step 4) |
 | Work/needs adapters preserving native rules | Gate/Portals | Expert | Design (step 4) |
 | Permanent natural portals with discovery | Gate/Portals | Intermediate | Registration **Build**; discovery trigger **Design** (step 5) |
+| Inhabitants stay in the Backrooms unless carried | Gate/Portals | Intermediate | **Build / Runtime-pending** (0.4.3-dev) |
+| Gradual bounded escalation of far-side pressure | Generation | Expert | **Design** (step 5, spec in `DEFERRED.md`) |
 | Existing-content replacement of legacy gate/gear/fixtures/terrain/threat/PawnKinds | Company/Gate/Generation | Advanced | Design (M2) |
 | Keyed text for portal failure keys | Interface | Beginner | **Build** (`RR_Portals.xml`, 0.4.2-dev) |
 

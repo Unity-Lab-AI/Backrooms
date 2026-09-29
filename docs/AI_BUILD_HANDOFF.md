@@ -1,5 +1,7 @@
 # AI build handoff and document map
 
+**Gate traversal and pacing rule (2026-09-28):** inhabitants and monstrosities stay in the Backrooms; nothing but our own pawns crosses a gate on its own; an open gate is never an objective, lure, spawn target, raid route or attack trigger; everything else returns only carried through by our pawns, including people and monstrosities genuinely downed, dead or imprisoned; pressure escalates gradually from saved causes, bounded per opening and per coordinate, with quiet stretches required. Gate, machine door and portal are one thing, and every start can eventually run several gates. See [the rule](CONNECTED_COLONY_PORTALS.md#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side).
+
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
 

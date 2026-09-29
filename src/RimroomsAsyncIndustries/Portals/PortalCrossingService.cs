@@ -96,6 +96,8 @@ namespace RimroomsAsyncIndustries.Portals
             try
             {
                 Thing carried = pawn.carryTracker == null ? null : pawn.carryTracker.CarriedThing;
+                string cargoPolicy = PortalTraversalPolicy.CargoFailureKey(carried, pawn);
+                if (cargoPolicy != null) { return FailBeforeDespawn(receipt, cargoPolicy); }
                 receipt.RecordCarriedThing(carried);
                 if (carried != null)
                 {
@@ -388,7 +390,12 @@ namespace RimroomsAsyncIndustries.Portals
                 pawn.Map != source.Map || pawn.Position != source.ApproachCell)
             { return "RR_PortalCrossing_NotAtSourceThreshold"; }
             if (!CanUseEndpointNow(pawn, source)) { return "RR_PortalCrossing_SourceAccessDenied"; }
-            return EligibilityFailureKey(pawn);
+            // One chokepoint owns who may pass and in what role, so no later
+            // adapter or scheduler can let the far side walk out on its own.
+            string traveller = PortalTraversalPolicy.TravellerFailureKey(pawn);
+            if (traveller != null) { return traveller; }
+            Thing carried = pawn.carryTracker == null ? null : pawn.carryTracker.CarriedThing;
+            return PortalTraversalPolicy.CargoFailureKey(carried, pawn);
         }
 
         /// <summary>

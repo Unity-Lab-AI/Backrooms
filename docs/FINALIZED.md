@@ -355,3 +355,45 @@ Owner direction: *"properly finalize all completed work as i think gate 0 is sti
 
 Source files created: 3 (`PortalAddressService.cs`, `PortalTravelService.cs`, `OperationsPortalNetwork.cs`). Source files modified: 5. Package files added: 2. Docs created: 3 (`DEFERRED.md`, `CONNECTED_CROSSING_CALLER_REVIEW.md`, `CONNECTED_TRAVEL_IMPLEMENTATION.md`). Docs updated: 8.
 Published: via the cascade in `PUBLISHING.md` on both remotes; the eight refs were read back in session output.
+
+---
+
+## Session 2026-09-28 (traversal rule) — inhabitants stay in the Backrooms, 0.4.3-dev
+
+**Verbatim owner requests (four messages):**
+
+> and something we need is that people and monstrosites further in need to not all run for the gate to exit and or attack when the gate opens or is a natural gate they need to more or less stay in the backrroms and not cross the gate(the machine door) and not crooss natural portals unless a player directly uses game machanics and pawn controls and normal pawn tasks to bring the materials tools equipment resources and such back through the gate, as they can carry pretty much anything they find from furnature to production equipemnet to resources and peoiple and monstrosities all back through the opening but we dont want everything on the backrroms connect portal to rush the gate as soon as it connects things have to get crazier but not all at once, balance to it all
+
+> gate/gate(s)
+
+> company, solo/group, and furnature store starts can all eventual have multiple gates
+
+> gates= machine door = portals in my vocab
+
+### COMPLETED
+
+- [x] **"people and monstrosites further in need to not all run for the gate to exit and or attack when the gate opens or is a natural gate they need to more or less stay in the backrroms and not cross the gate(the machine door) and not crooss natural portals"**
+  - `src/RimroomsAsyncIndustries/Portals/PortalTraversalPolicy.cs` (new) is the single chokepoint every crossing path asks. Only this company's own colonists traverse. `AutonomousNonPlayerTraversalPermitted` is a constant `false` and `MayApproachThresholdForTraversal` is unconditionally `false`, so an open gate can never become an objective, lure, spawn target, raid route or attack trigger for a later adapter, scheduler, generator or threat.
+  - Verified rather than assumed: nothing in the existing source gave a far-side pawn a route or trigger toward a threshold, and RimWorld cannot path a pawn between `Map` instances, so no behaviour had to be removed. The policy is the standing guard against building one.
+- [x] **"unless a player directly uses game machanics and pawn controls and normal pawn tasks to bring the materials tools equipment resources and such back through the gate, as they can carry pretty much anything they find from furnature to production equipemnet to resources and peoiple and monstrosities all back through the opening"**
+  - `CargoFailureKey` admits anything genuinely in a carrier's hands: item stacks, tools, equipment, resources, minified furniture and production benches, corpses, and people or monstrosities that are downed, dead or held as prisoners. Anyone still on their own feet is refused, because letting them walk through would be traversal.
+  - `RimroomsPortalCrossingService.Cross` calls the policy in `ValidateRouteAndPawn` and again immediately before the carry transfer, so planning and execution share one rule.
+- [x] **"we dont want everything on the backrroms connect portal to rush the gate as soon as it connects things have to get crazier but not all at once, balance to it all"**
+  - The traversal half is built (above). The **pacing** half is specified, not hand-waved: a binding contract section plus a concrete spec in `DEFERRED.md` owned by resume step 5, to be authored before any inhabitant generation ships — quiet start, pressure only from saved observable causes, caps per opening and per coordinate where raising a cap is itself a recorded progression step, required quiet stretches, no summing across several open gates, and a revisit that resumes saved pressure without rerolling.
+- [x] **"gate/gate(s)"** and **"gates= machine door = portals in my vocab"**
+  - Terminology fixed as authoritative for every Rimrooms document: gate, gates, machine door and portal all mean one connection threshold; only the kind differs (laboratory versus permanently open natural). The rule is per connection and holds for every gate simultaneously, with no aggregate exception.
+- [x] **"company, solo/group, and furnature store starts can all eventual have multiple gates"**
+  - Recorded as binding: no design or code may assume one gate per branch, map or coordinate. Noted what the source already satisfies (independent connection list, several addresses per machine with only the open one active, per-connection availability) and what later work must hold (scheduling, route search, pacing and interface across several simultaneous gates).
+
+### Documents updated in the same change
+
+Contract section in `CONNECTED_COLONY_PORTALS.md`; decision log section in `GATE_0_DECISIONS.md`; banner in `THREAT_DESIGN_SHEETS.md`, `PROCEDURAL_SPACE_CONTRACT.md`, `CAMPAIGN_CONTENT_CATALOG.md`, `SCENARIO_SETUP_AND_PORTAL_NETWORK.md`, `SCENARIOS.md`, `GAME_DESIGN.md`, `AI_BUILD_HANDOFF.md`; authority note in `AGENTS.md`; bounded subitems in the master TODO; `TODO.md`, `DEFERRED.md`, `ARCHITECTURE.md`, `SKILL_TREE.md`, `NOW.md`, `CHANGELOG.md`, `About.xml`, the csproj, and the implementation record.
+
+### Build evidence
+
+0.4.3-dev, SDK 9.0.308, Release/net472, zero warnings and errors. **79** C# source files, **73** approved package files. Evidence folder `implementation/evidence/connected-traversal-2026-09-28/` with compiler output and source, package and reference manifests. No game launched, no test run, no RimSort profile touched.
+
+### SESSION SUMMARY
+
+Source files created: 1 (`PortalTraversalPolicy.cs`). Source files modified: 1 (`PortalCrossingService.cs`). Package files modified: 1 (`RR_Portals.xml`). Docs updated: 17.
+Published: via the cascade in `PUBLISHING.md` on both remotes; the refs were read back in session output.

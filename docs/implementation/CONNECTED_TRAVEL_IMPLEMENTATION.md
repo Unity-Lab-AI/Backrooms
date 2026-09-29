@@ -1,10 +1,16 @@
-# Connected-colony travel — addresses, legacy repair and ordinary crossing (0.4.2-dev)
+# Connected-colony travel — addresses, legacy repair, ordinary crossing and the gate traversal rule (0.4.2-dev, 0.4.3-dev)
 
 **TODO / feature IDs:** master TODO §Native-provider foundation — "Finish resumable route scheduling, same-pawn/cargo crossing recovery and player-facing connection controls"; RR-GATE, RR-EXP, RR-SPACE, RR-UI. Resume steps 1–3 of [`CONNECTED_COLONY_CHECKPOINT.md`](CONNECTED_COLONY_CHECKPOINT.md), quoted verbatim in [`../TODO.md`](../TODO.md).
 
-**Baseline build/commit:** `48a8418` (0.4.1-dev source, 75 C# files, 71 package files). **This checkpoint:** 0.4.2-dev, **78 C# source files**, **73 approved package files**, zero warnings and errors, SDK 9.0.308, Release/net472. Assembly SHA-256 `986151ED0F1F3F319CED08A960A85B8AC57880F1E31302A334E3DE496A90F6BD`. Evidence: [`evidence/connected-travel-2026-09-28/`](evidence/connected-travel-2026-09-28/) (compiler output, source manifest, package manifest, reference manifest). **No game was launched and no test was run.**
+**Baseline build/commit:** `48a8418` (0.4.1-dev source, 75 C# files, 71 package files).
 
-**Owned paths:** `src/RimroomsAsyncIndustries/Portals/PortalAddressService.cs` (new), `Portals/PortalTravelService.cs` (new, includes `JobDriver_CrossPortal`), `Portals/PortalCrossingService.cs` (two additive members), `Generation/RimroomsDestinationMapParent.cs` (threshold repair), `Company/CampaignServices.cs` + `RimroomsCampaignComponent.cs` (discovered-coordinate API and record bound), `UI/OperationsPortalNetwork.cs` (new pane), `UI/OperationsExpeditions.cs` (one call), `Mod/.../1.6/Defs/JobDefs/RR_PortalJobs.xml` (new), `Mod/.../1.6/Languages/English/Keyed/RR_Portals.xml` (new), `tools/package-files.json` (two entries).
+**Checkpoint A — 0.4.2-dev** (addresses, legacy repair, ordinary crossing): **78 C# source files**, **73 approved package files**, zero warnings and errors, SDK 9.0.308, Release/net472. Assembly SHA-256 `986151ED0F1F3F319CED08A960A85B8AC57880F1E31302A334E3DE496A90F6BD`. Evidence: [`evidence/connected-travel-2026-09-28/`](evidence/connected-travel-2026-09-28/).
+
+**Checkpoint B — 0.4.3-dev** (the owner's gate traversal rule): **79 C# source files**, **73 approved package files**, zero warnings and errors, same toolchain. Assembly SHA-256 `EC09DF40D3007CE1...` (full value in the manifest). Evidence: [`evidence/connected-traversal-2026-09-28/`](evidence/connected-traversal-2026-09-28/).
+
+Each folder holds compiler output plus source, package and reference manifests. **No game was launched and no test was run for either checkpoint.**
+
+**Owned paths:** `src/RimroomsAsyncIndustries/Portals/PortalAddressService.cs` (new), `Portals/PortalTravelService.cs` (new, includes `JobDriver_CrossPortal`), `Portals/PortalTraversalPolicy.cs` (new), `Portals/PortalCrossingService.cs` (two additive members plus the policy calls), `Generation/RimroomsDestinationMapParent.cs` (threshold repair), `Company/CampaignServices.cs` + `RimroomsCampaignComponent.cs` (discovered-coordinate API and record bound), `UI/OperationsPortalNetwork.cs` (new pane), `UI/OperationsExpeditions.cs` (one call), `Mod/.../1.6/Defs/JobDefs/RR_PortalJobs.xml` (new), `Mod/.../1.6/Languages/English/Keyed/RR_Portals.xml` (new), `tools/package-files.json` (two entries).
 
 ## Step 1 — crossing-service boundary review
 
@@ -55,6 +61,22 @@ Closed with no source change and no weakened check. The located boundaries, the 
 **Operations pane.** `DrawPortalNetwork` is drawn under the Machine pane and shows remembered addresses with live availability, the coordinate picker, the legacy-repair action with its explanation, laboratory open/close and emergency-return controls, the per-address crossing order for the selected colonist, and the list of unresolved crossings with a reconcile action each. That last list exists so a person held for recovery is never invisible.
 
 The crossing order follows this project's established selection idiom (select the colonist, act in Operations), which is the same route the first-slice route-aid and salvage actions use. A door float-menu or pawn gizmo would be nicer and is recorded in [`../DEFERRED.md`](../DEFERRED.md) under M5; it is a presentation improvement, not a missing capability.
+
+## Gate traversal policy (owner rule, same wave)
+
+The owner's [gate traversal and pacing rule](../CONNECTED_COLONY_PORTALS.md#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side) arrived while this wave was open and its traversal half is implemented here. `Portals/PortalTraversalPolicy.cs` is the single chokepoint every crossing path asks:
+
+- `TravellerFailureKey(Pawn)` — only this company's own colonists walk through, and only when the existing eligibility rule also passes. A non-player pawn is refused with `RR_PortalTraversal_NotOurPerson`.
+- `CargoFailureKey(Thing, Pawn carrier)` — anything genuinely in the carrier's hands may ride: materials, tools, equipment, resources, minified furniture and production benches, corpses, and people or monstrosities that are downed, dead or held as prisoners. A pawn still on its own feet is refused with `RR_PortalTraversal_PassengerNotHeld`, because letting it walk through would be traversal. An object not actually carried is refused with `RR_PortalTraversal_CargoNotCarried`.
+- `AutonomousNonPlayerTraversalPermitted` is a constant `false` and `MayApproachThresholdForTraversal` returns an unconditional `false`, so a later work adapter, scheduler, generator or threat cannot reintroduce the behaviour by accident. These exist to be read by future code, not configured.
+
+`RimroomsPortalCrossingService.Cross` consults the policy inside `ValidateRouteAndPawn` and again immediately before the carry transfer, so both the planning check and the execution check go through the same rule.
+
+**Scope confirmed with the owner:** gate, gates, machine door and portal all mean one thing; only the connection kind differs (laboratory versus permanently open natural). The rule is per connection and holds for every gate simultaneously, and all three starts — company, solo-or-group inside, and furniture store — can eventually run several gates, so nothing assumes one gate per branch, map or coordinate.
+
+**Verified, not assumed:** nothing in the current source gives a far-side pawn a route, destination or trigger toward a threshold, and RimWorld's own pathing cannot route a pawn between `Map` instances, so no existing behaviour had to be removed. The policy is the standing guard against building one.
+
+**The pacing half is not implemented and is not silently dropped.** The saved, bounded escalation ladder is specified in the contract and carries a concrete spec with a named owner step in [`../DEFERRED.md`](../DEFERRED.md) (resume step 5, before any inhabitant generation ships).
 
 ## Saved state added
 

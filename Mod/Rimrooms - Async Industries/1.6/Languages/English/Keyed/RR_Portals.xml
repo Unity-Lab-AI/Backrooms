@@ -63,6 +63,12 @@
   <RR_PortalTravel_OrderRefused>That person refused the crossing order.</RR_PortalTravel_OrderRefused>
   <RR_PortalTravel_NoSession>This gate has no saved laboratory session.</RR_PortalTravel_NoSession>
 
+  <!-- Traversal policy. Inhabitants stay in the Backrooms; anything else comes
+       back only in one of our own people's hands. True for every gate at once. -->
+  <RR_PortalTraversal_NotOurPerson>Only this company's own people walk through a gate. Anyone or anything else comes back only by being carried through by one of them.</RR_PortalTraversal_NotOurPerson>
+  <RR_PortalTraversal_PassengerNotHeld>{0} is still on their own feet, so they cannot be taken through a gate. Down, capture or otherwise actually carry them first.</RR_PortalTraversal_PassengerNotHeld>
+  <RR_PortalTraversal_CargoNotCarried>That object is not in the carrier's hands, so it cannot go through a gate with them.</RR_PortalTraversal_CargoNotCarried>
+
   <!-- Address service refusals -->
   <RR_PortalAddress_InvalidState>The company branch or portal network is unavailable.</RR_PortalAddress_InvalidState>
   <RR_PortalAddress_GateNotReady>The selected gate is not a designated native gate with valid links.</RR_PortalAddress_GateNotReady>
