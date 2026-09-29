@@ -27,7 +27,7 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | Published | **0.12.23-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **174 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `3CED6004E9AC406FAC52BB1FE20A5297E6C7390180C810B31DBFF30C7B389C44`, reproduced by two clean recompiles. **This line was stale for five checkpoints** — it still held 0.12.4’s hash. Re-read it from the build, never from memory |
+| Assembly | SHA-256 `3CED6004E9AC406FAC52BB1FE20A5297E6C7390180C810B31DBFF30C7B389C44`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **NINE**, all passing |
 | Proofs | **TWENTY-ONE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -39,7 +39,57 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 
 > *"you are NOT to stop untill i tell you to stop or you reach the completeion of the mod's build out"*
 
-Chain checkpoints. Do not finish one and wait.
+Chain checkpoints. Do not finish one and wait. Two standing corrections that change how to read
+everything below:
+
+- **The mod register is GUIDANCE, not law.** *"remmebr its not law but guidance"*. Consult it, let
+  it shape the design, say what it said — but a row never vetoes work.
+- **Tests are not the concern yet.** *"test cases arnt being worried about right now we are trying
+  to get the build complete so we can test"*. **Unverifiable-without-a-launch is never a reason to
+  defer building something.** I parked the world exit for that reason and was overruled, correctly.
+
+---
+
+## DO THIS FIRST — fold the field recorder into the record book
+
+**Owner-answered 2026-09-29, in the turn it was found.** This is the only remaining breach of
+invariant 10: `RR_FieldRecorder` is the one genuinely **buyable, carryable gameplay `ThingDef`** this
+mod authors. Its art is already gone (0.12.22-dev); the def is what remains.
+
+**The decision, verbatim in effect:** *fold its job into the record book crews already carry.* A
+crew already takes Core's **`TextBook`** into a coordinate — that is the native evidence carrier,
+resolved by `CompRouteEvidence.NativeCarrierDef` and patched with our comp in
+`1.6/Patches/RR_ExistingEvidenceBook.xml`. The same book logs visited rooms, route mismatches and
+entity sightings. **One item, two jobs.**
+
+**NO SAVE BREAK.** The recorder def stays loadable so existing saves open; it is simply never
+granted or sold again. That is the whole of the migration.
+
+### The four live read sites, already located
+
+| File | What it does there |
+|---|---|
+| `Expedition/ExpeditionCargo.cs:29` | `KitDefs = { "RR_FieldRecorder" }` — the kit a crew must carry |
+| `Threats/FirstSliceSiteComponent.cs:117` | `HasItem(p, "RR_FieldRecorder")` — whether anyone present is recording |
+| `Company/EvidenceObservations.cs:329` | resolves the def to attribute an observation to a recorder |
+| `Generation/FailedSiteRecovery.cs:289` | recovery tolerance list; **leave this one naming the def**, because old saves still contain instances |
+
+### Where it is granted or sold, and must stop being
+
+- `1.6/Defs/RecipeDefs/RR_FieldEquipmentRecipes.xml:20` — the crafting recipe's product
+- `1.6/Defs/ScenarioDefs/RR_Scenarios.xml:43` and `:130` — two starts grant one
+- `1.6/Languages/English/Keyed/RR_Expedition.xml:3` — `RR_Exp_Missing_RR_FieldRecorder`, the refusal
+  a crew gets without one. **Reword rather than delete**: the book can be missing too.
+
+### Before writing a line
+
+- **Check the register by trace**, not by family: `python tools/register-query.py trace RR-EVD` and
+  `trace RR-STA`. It is guidance.
+- **`GetNamedSilentFail` returns null silently.** If the book cannot be resolved, the recording job
+  must refuse visibly rather than fall through — that is exactly how
+  `Named<TerrainDef>("Carpet")` left the yellow rooms in wood plank flooring for months.
+- **Write the proof to assert the def is never granted**, and fault-plant it by adding the recipe
+  back. A check that cannot fail is the thing this project keeps catching.
 
 ---
 
@@ -174,7 +224,7 @@ anything in this list** — it is the authority, and steps 1–5 of its build or
 5. **The adjacent-door-run fallback** — 1×3 and 2×3 by binding one gate across a run of adjacent
    1×1 Core doors, for players without Doors Expanded.
 6. ~~**`RR_QuietPursuer` presentation.**~~ **CLOSED, 0.12.22-dev** — it uses Core’s `Things/Mote/Black`, a shape you cannot resolve, which is closer to its own description than a drawing was. **Zero gameplay art or audio now ships** and a checker asserts it as a shape rather than a count.
-   **NEXT, and owner-answered 2026-09-29:** retire **`RR_FieldRecorder`** by **folding its job into the record book crews already carry**. A crew already takes Core’s `TextBook` in as the native evidence carrier, patched with our comp — so the same book logs visited rooms, route mismatches and entity sightings. **One item, two jobs, no new def, and NO SAVE BREAK:** the recorder def stays loadable so old saves open, but is never granted or sold again. It also reads better — the thing you write in is the thing that remembers. Four live read sites move onto the book. Historical detail follows.
+   **NEXT: fold `RR_FieldRecorder` into the record book.** Fully specified at the top of this file under **DO THIS FIRST** — decision, read sites, grant sites and constraints, all located. Historical detail follows.
    **The five `RR_*Staff` PawnKinds are NO LONGER part of this item:** they were found already
    authored and read by nothing, and wired as the clean-up team's relief crew in 0.11.7-dev.
    `proof-facility-relief.py` now asserts both directions so they cannot go dead again.
