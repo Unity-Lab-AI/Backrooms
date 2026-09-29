@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <!-- Exact Core providers only. Their new components remain dormant until explicit designation. -->
+  <Operation Class="PatchOperationSequence">
+    <operations>
+      <li Class="PatchOperationConditional">
+        <xpath>Defs/ThingDef[defName="Door"]/comps</xpath>
+        <nomatch Class="PatchOperationAdd">
+          <xpath>Defs/ThingDef[defName="Door"]</xpath>
+          <value><comps /></value>
+        </nomatch>
+      </li>
+      <li Class="PatchOperationAdd">
+        <xpath>Defs/ThingDef[defName="Door" or defName="Autodoor"]/comps</xpath>
+        <value>
+          <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGate">
+            <nativeProvider>true</nativeProvider>
+          </li>
+        </value>
+      </li>
+      <li Class="PatchOperationAdd">
+        <xpath>Defs/ThingDef[defName="CommsConsole" or defName="TableMachining"]/comps</xpath>
+        <value>
+          <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGateConsole">
+            <nativeProvider>true</nativeProvider>
+          </li>
+        </value>
+      </li>
+    </operations>
+  </Operation>
+</Patch>

@@ -1,5 +1,8 @@
 # Rimrooms - Async Industries: pre-production and complete implementation backlog
 
+**Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
+
+
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
@@ -14,6 +17,15 @@ Owner instruction: follow [REGRESSION_CONTAINMENT.md](REGRESSION_CONTAINMENT.md)
 The next implementation batch follows the [scenario and native-provider task record](implementation/PHASE_3_SCENARIO_GATE_REUSE_TASK.md). Its in-progress work stays local until a substantive milestone is reviewed and compiled; then publish the full cascade separately to Forgejo and GitHub and verify their refs. Every publication includes all current project changes after active agent work is integrated. Verify final refs in tool output without creating a new local-only receipt.
 
 ### Completed 0.3.0-dev increments
+
+### Native-provider foundation — 0.4.0-dev
+
+- [x] Source: native door/control/battery/workbench designation, material assembly and operator/calibration routes, actual battery debits and saved fault reconciliation; [gate](implementation/PHASE_3_NATIVE_GATE_IMPLEMENTATION.md) and [UI](implementation/PHASE_3_NATIVE_GATE_UI.md) evidence. Free cross-map work is not implemented by this increment.
+- [x] Source: new sites use native lighting, heater, fueled generator, physical power network and native floors; [room evidence](implementation/PHASE_3_ROOM_PROVIDER_REUSE.md). Saved-map/runtime behavior remains pending acceptance.
+- [x] Build/package: 0.4.0-dev compiled with zero warnings/errors and 71 staged hashes matched; [build record](implementation/PHASE_3_NATIVE_PROVIDER_BUILD.md).
+- [ ] Implement every open item in [connected colony portals](CONNECTED_COLONY_PORTALS.md#required-implementation-backlog): independent connection ownership, permanent natural portals, free crossing, shared cross-map work/materials, persistent seeds and dynamic inhabitants/complexity. This supersedes dispatch-only travel as the target.
+
+### Earlier company/scenario increments
 
 New source increment: [company setup implementation](implementation/PHASE_3_SCENARIO_SETUP_IMPLEMENTATION.md), integrated in the [0.3.1 checkpoint](implementation/PHASE_3_SCENARIO_PROVIDER_BUILD.md).
 

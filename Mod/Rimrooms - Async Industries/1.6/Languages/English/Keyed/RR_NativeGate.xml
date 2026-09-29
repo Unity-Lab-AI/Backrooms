@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_NativeGate_Heading>Native gate infrastructure</RR_NativeGate_Heading>
+  <RR_NativeGate_Explanation>Choose one specific Core door and explicitly link its control console, real battery, and machining bench. Rimrooms never chooses the nearest door or infrastructure automatically.</RR_NativeGate_Explanation>
+  <RR_NativeGate_HQContext>Current company branch: {0}. Eligible links below are limited to headquarters map {1}.</RR_NativeGate_HQContext>
+  <RR_NativeGate_MachineInstructions>Bind a Core door to its selected CommsConsole, Battery, and TableMachining before assembly or operation. Complete the physical bill at the selected TableMachining, assign an operator, calibrate, and keep the operator at the console for an opening.</RR_NativeGate_MachineInstructions>
+  <RR_NativeGate_NoHeadquarters>The company headquarters map is unavailable.</RR_NativeGate_NoHeadquarters>
+  <RR_NativeGate_SelectDoor>Select a Core Door or Autodoor</RR_NativeGate_SelectDoor>
+  <RR_NativeGate_NoSelectedGate>No gate is selected. Choose a specific Core Door or Autodoor on the headquarters map.</RR_NativeGate_NoSelectedGate>
+  <RR_NativeGate_AvailableDoorCount>Eligible native gate doors on this headquarters map: {0}. Choose one door explicitly.</RR_NativeGate_AvailableDoorCount>
+  <RR_NativeGate_NoDoorCandidates>No eligible native gate doors were found on this headquarters map.</RR_NativeGate_NoDoorCandidates>
+  <RR_NativeGate_DoorOption>{0} ({1}) at {2}</RR_NativeGate_DoorOption>
+  <RR_NativeGate_SelectedDoor>Selected threshold: {0} ({1}) at {2}</RR_NativeGate_SelectedDoor>
+  <RR_NativeGate_RecordedRunGate>Saved expedition {0} is bound to {1} at {2}. Its gate cannot be replaced.</RR_NativeGate_RecordedRunGate>
+  <RR_NativeGate_RecordedGateUnavailable>Saved expedition {0} has no available gate component. Keep its record intact and resolve the missing gate through recovery.</RR_NativeGate_RecordedGateUnavailable>
+  <RR_NativeGate_LegacyRunLocked>Expedition {0} is using a legacy gate. Its saved gate and recovery controls remain attached to that gate; it cannot be converted or retargeted here.</RR_NativeGate_LegacyRunLocked>
+  <RR_NativeGate_LegacyProvider>This is a legacy gate. Its normal machine controls remain available for this saved run; new dispatches use a designated native gate.</RR_NativeGate_LegacyProvider>
+  <RR_NativeGate_LegacyControls>These controls belong to the saved legacy gate. Do not retarget its expedition.</RR_NativeGate_LegacyControls>
+  <RR_NativeGate_BindBeforeOperation>Bind the selected door to valid infrastructure before calibration, staffing, or dispatch.</RR_NativeGate_BindBeforeOperation>
+  <RR_NativeGate_InspectGate>Inspect and locate selected door</RR_NativeGate_InspectGate>
+  <RR_NativeGate_ConsoleRole>Control console: {0}</RR_NativeGate_ConsoleRole>
+  <RR_NativeGate_BatteryRole>Physical battery: {0}</RR_NativeGate_BatteryRole>
+  <RR_NativeGate_AssemblyBenchRole>Assembly workbench: {0}</RR_NativeGate_AssemblyBenchRole>
+  <RR_NativeGate_ChooseConsole>Choose an existing Core CommsConsole</RR_NativeGate_ChooseConsole>
+  <RR_NativeGate_ChooseBattery>Choose an existing Core Battery</RR_NativeGate_ChooseBattery>
+  <RR_NativeGate_ChooseAssemblyBench>Choose an existing Core TableMachining</RR_NativeGate_ChooseAssemblyBench>
+  <RR_NativeGate_Unselected>not selected</RR_NativeGate_Unselected>
+  <RR_NativeGate_RoleValue>{0} ({1}) at {2}</RR_NativeGate_RoleValue>
+  <RR_NativeGate_RoleOption>{0} ({1}) at {2}</RR_NativeGate_RoleOption>
+  <RR_NativeGate_InspectRole>Inspect {0}</RR_NativeGate_InspectRole>
+  <RR_NativeGate_NoRoleCandidates>No eligible existing building was found for this selection: {0}.</RR_NativeGate_NoRoleCandidates>
+  <RR_NativeGate_StandardSide>standard side</RR_NativeGate_StandardSide>
+  <RR_NativeGate_OppositeSide>opposite side</RR_NativeGate_OppositeSide>
+  <RR_NativeGate_OppositeEntrySide>Use the opposite side of the door as the expedition approach</RR_NativeGate_OppositeEntrySide>
+  <RR_NativeGate_EntrySideLocked>The saved expedition locks the approach to the {0}.</RR_NativeGate_EntrySideLocked>
+  <RR_NativeGate_Designated>This door is the company's designated native gate.</RR_NativeGate_Designated>
+  <RR_NativeGate_NotDesignated>This door is not designated. Saving a valid binding designates this exact door.</RR_NativeGate_NotDesignated>
+  <RR_NativeGate_LinkedConsole>Linked control console: {0} at {1}</RR_NativeGate_LinkedConsole>
+  <RR_NativeGate_LinkedBattery>Linked physical battery: {0} at {1}</RR_NativeGate_LinkedBattery>
+  <RR_NativeGate_LinkedAssemblyBench>Linked assembly workbench: {0} at {1}</RR_NativeGate_LinkedAssemblyBench>
+  <RR_NativeGate_InspectConsole>Inspect linked console</RR_NativeGate_InspectConsole>
+  <RR_NativeGate_InspectBattery>Inspect linked battery</RR_NativeGate_InspectBattery>
+  <RR_NativeGate_InspectAssemblyBench>Inspect linked assembly bench</RR_NativeGate_InspectAssemblyBench>
+  <RR_NativeGate_DesignateGate>Save links and designate this gate</RR_NativeGate_DesignateGate>
+  <RR_NativeGate_SaveBinding>Save infrastructure links</RR_NativeGate_SaveBinding>
+  <RR_NativeGate_ClearBinding>Clear this native gate designation</RR_NativeGate_ClearBinding>
+  <RR_NativeGate_OpeningCannotRebind>The gate's saved opening is active. Infrastructure links cannot be changed until it closes.</RR_NativeGate_OpeningCannotRebind>
+  <RR_NativeGate_SharedBatteryWarning>The linked battery is a real RimWorld battery on a shared power network. Other consumers can drain it; Rimrooms does not reserve its charge or guarantee emergency power.</RR_NativeGate_SharedBatteryWarning>
+  <RR_NativeGate_DoorStateExplanation>The portal window is Rimrooms expedition state. The door's ordinary Open/Hold Open state only controls local pawn passage and is not proof that a portal is active.</RR_NativeGate_DoorStateExplanation>
+  <RR_NativeGate_DispatchNeedsBoundGate>Select and designate a native gate before dispatch. Existing expeditions remain attached to their saved gate.</RR_NativeGate_DispatchNeedsBoundGate>
+  <RR_NativeGate_PowerReadout>Linked battery charge: {0}/{1} watt-days. Rimrooms direct drain while open: {2} W. Charge needed for normal window plus emergency return: {3} watt-days; recovery opening total: {4} watt-days. The native battery remains shared with its power network.</RR_NativeGate_PowerReadout>
+  <RR_NativeGate_UnsupportedProvider>Only a Core Door or Autodoor can be designated as a native gate.</RR_NativeGate_UnsupportedProvider>
+  <RR_NativeGate_UnknownSchema>The saved native gate binding uses an unsupported schema. Preserve the save and request a migration review.</RR_NativeGate_UnknownSchema>
+  <RR_NativeGate_ActiveCannotRebind>The gate is open or a saved expedition still depends on this gate. Its designation cannot be cleared.</RR_NativeGate_ActiveCannotRebind>
+  <RR_NativeGate_HeadquartersRequired>Choose existing player-owned infrastructure on the active company headquarters map.</RR_NativeGate_HeadquartersRequired>
+  <RR_NativeGate_EntryBlocked>The selected door approach cell is blocked or outside the map. Choose the other side or clear the threshold.</RR_NativeGate_EntryBlocked>
+  <RR_NativeGate_EntryLocked>A saved expedition has locked this door position and approach side. Keep the recorded route unchanged.</RR_NativeGate_EntryLocked>
+  <RR_NativeGate_ProviderAlreadyBound>One or more selected infrastructure buildings are already linked to another gate. Choose unlinked buildings or inspect the existing designation.</RR_NativeGate_ProviderAlreadyBound>
+  <RR_NativeGate_AssemblyInProgress>A gate assembly job is using one of the selected stations. Let it finish before changing bindings.</RR_NativeGate_AssemblyInProgress>
+  <RR_NativeGate_BindingInterrupted>The binding update was interrupted. Inspect the existing gate links before retrying.</RR_NativeGate_BindingInterrupted>
+  <RR_NativeGate_NotBound>Bind this door to a console, battery, and assembly workbench before operation.</RR_NativeGate_NotBound>
+  <RR_NativeGate_LinkMissing>A linked building is missing, moved, unpowered, or no longer belongs to this headquarters. Repair its exact saved link.</RR_NativeGate_LinkMissing>
+  <RR_NativeGate_Disconnected>The console, battery, and threshold are not connected to the same live power network.</RR_NativeGate_Disconnected>
+  <RR_NativeGate_PowerUnavailable>The native infrastructure is switched off, broken down, EMP-disabled, or affected by an electrical outage.</RR_NativeGate_PowerUnavailable>
+  <RR_NativeGate_OpeningEnergyLow>The linked physical battery does not contain enough charge for the configured opening and emergency-return reserve.</RR_NativeGate_OpeningEnergyLow>
+  <RR_NativeGate_RecoveryEnergyLow>The linked physical battery does not contain enough charge for the configured recovery opening and emergency-return reserve.</RR_NativeGate_RecoveryEnergyLow>
+  <RR_NativeGate_ReturnEnergyUnavailable>The linked physical battery cannot pay the emergency return charge. Other consumers may have used its shared stored energy.</RR_NativeGate_ReturnEnergyUnavailable>
+  <RR_NativeGate_EnergyDebitFault>Review and acknowledge the unresolved battery debit before attempting another native gate energy charge.</RR_NativeGate_EnergyDebitFault>
+  <RR_NativeGate_DebitFaultDetails>Unresolved energy debit {0}: requested {1} watt-days; observed change {2} watt-days.</RR_NativeGate_DebitFaultDetails>
+  <RR_NativeGate_DebitFaultExplanation>Acknowledgment records that you reviewed the observed loss. It does not refill the battery or refund the company.</RR_NativeGate_DebitFaultExplanation>
+  <RR_NativeGate_AcknowledgeDebit>Acknowledge reviewed battery debit</RR_NativeGate_AcknowledgeDebit>
+  <RR_NativeGate_AuraEnabled>Show native portal aura</RR_NativeGate_AuraEnabled>
+  <RR_NativeGate_ReducedMotion>Reduce portal motion (hide aura; keep status text)</RR_NativeGate_ReducedMotion>
+</LanguageData>

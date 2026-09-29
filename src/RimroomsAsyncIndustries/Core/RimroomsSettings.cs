@@ -12,6 +12,8 @@ namespace RimroomsAsyncIndustries.Core
         public float CueVolume = DefaultCueVolume;
         public bool MenuSlideshowEnabled = true;
         public bool MenuReducedMotion;
+        public bool PortalAuraEnabled = true;
+        public bool PortalReducedMotion;
 
         public float EffectiveCueVolume
         {
@@ -33,6 +35,8 @@ namespace RimroomsAsyncIndustries.Core
             Scribe_Values.Look(ref CueVolume, "rr_cueVolume", DefaultCueVolume);
             Scribe_Values.Look(ref MenuSlideshowEnabled, "rr_menuSlideshowEnabled", true);
             Scribe_Values.Look(ref MenuReducedMotion, "rr_menuReducedMotion", false);
+            Scribe_Values.Look(ref PortalAuraEnabled, "rr_portalAuraEnabled", true);
+            Scribe_Values.Look(ref PortalReducedMotion, "rr_portalReducedMotion", false);
             if (Scribe.mode == LoadSaveMode.PostLoadInit) { Normalize(); }
         }
     }

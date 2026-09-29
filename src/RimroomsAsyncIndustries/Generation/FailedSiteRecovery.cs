@@ -285,13 +285,13 @@ namespace RimroomsAsyncIndustries.Company
         {
             string[] siteThings =
             {
-                "RR_ReturnAnchor", "RR_SiteFluorescent", "RR_SiteClimateUnit",
-                "RR_MachineGate", "RR_GateConsole", "RR_EmergencyCutoff", "RR_UtilityGenerator",
+                "RR_ReturnAnchor", "ChemfuelPoweredGenerator", "Chemfuel", "HiddenConduit",
                 "SimpleResearchBench", "RR_FieldRecorder", "RR_SurveyTag", "RR_ReturnBeacon",
                 "RR_SealedEvidenceCase", "TextBook", "RR_QuietPursuer",
-                "Door", "Stool", "Table1x2c", "DiningChair", "PlantPot", "Shelf", "StandingLamp"
+                "Door", "Autodoor", "CommsConsole", "TableMachining", "Battery", "WoodFiredGenerator",
+                "Stool", "Table1x2c", "DiningChair", "PlantPot", "Shelf", "StandingLamp", "Heater"
             };
-            string[] siteTerrains = { "Concrete", "WaterDeep", "MetalTile", "PavedTile", "RR_FadedInstitutionalCarpet" };
+            string[] siteTerrains = { "Concrete", "WaterDeep", "MetalTile", "PavedTile" };
             return DefDatabase<WorldObjectDef>.GetNamedSilentFail("RR_BackroomsSite") != null &&
                 DefDatabase<MapGeneratorDef>.GetNamedSilentFail("RR_BackroomsGeneration") != null &&
                 DefDatabase<GenStepDef>.GetNamedSilentFail("RR_BackroomsLayout") != null &&

@@ -132,7 +132,10 @@ namespace RimroomsAsyncIndustries.Scenario
                 {
                     IntVec3 cell = line.start + new IntVec3(line.alongX ? offset : 0, 0, line.alongX ? 0 : offset);
                     if (!cell.InBounds(map)) { throw new InvalidOperationException("Starting conduit outside headquarters."); }
-                    bool exists = cell.GetThingList(map).Exists(t => t.def == ThingDefOf.PowerConduit);
+                    // Native generators/batteries can already transmit across this cell.
+                    // A second conduit transmitter under them would duplicate the native grid registration.
+                    bool exists = cell.GetThingList(map).Exists(t => t.def == ThingDefOf.PowerConduit ||
+                        t.TryGetComp<CompPower>()?.Props.transmitsPower == true);
                     if (!exists)
                     {
                         Thing conduit = ThingMaker.MakeThing(ThingDefOf.PowerConduit);
@@ -141,6 +144,8 @@ namespace RimroomsAsyncIndustries.Scenario
                     }
                 }
             }
+            // Resolve queued native connections only. Core ticks own power, fuel and battery simulation.
+            map.powerNetManager.UpdatePowerNetsAndConnections_First();
             // Editable native scenario parts/possessions own supplies. Never replay start.stock here.
             if (!start.arrivalCell.Standable(map))
             { throw new InvalidOperationException("Headquarters arrival position is not walkable."); }

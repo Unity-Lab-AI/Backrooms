@@ -69,13 +69,15 @@
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(20, 0, 30)</cell></li>
       <li><thing>StandingLamp</thing><cell>(21, 0, 28)</cell></li>
       <li><thing>ElectricSmithy</thing><cell>(17, 0, 41)</cell></li>
+      <li><thing>TableMachining</thing><cell>(17, 0, 44)</cell></li>
       <li><thing>StandingLamp</thing><cell>(21, 0, 36)</cell></li>
       <li><thing>Heater</thing><cell>(12, 0, 36)</cell></li>
-      <li><thing>RR_MachineGate</thing><cell>(29, 0, 33)</cell></li>
-      <li><thing>RR_GateConsole</thing><cell>(27, 0, 28)</cell></li>
-      <li><thing>RR_EmergencyCutoff</thing><cell>(31, 0, 28)</cell></li>
+      <li><thing>Autodoor</thing><stuff>Steel</stuff><cell>(29, 0, 33)</cell></li>
+      <li><thing>CommsConsole</thing><cell>(28, 0, 29)</cell></li>
       <li><thing>StandingLamp</thing><cell>(31, 0, 37)</cell></li>
-      <li><thing>RR_UtilityGenerator</thing><cell>(40, 0, 26)</cell><fuelFraction>0.5</fuelFraction></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(40, 0, 26)</cell><fuelFraction>0.5</fuelFraction></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(40, 0, 29)</cell><fuelFraction>0.5</fuelFraction></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(44, 0, 29)</cell><fuelFraction>0.5</fuelFraction></li>
       <li><thing>Battery</thing><cell>(44, 0, 26)</cell><batteryFraction>0.5</batteryFraction></li>
       <li><thing>StandingLamp</thing><cell>(46, 0, 23)</cell></li>
       <li><thing>SimpleResearchBench</thing><stuff>Steel</stuff><cell>(41, 0, 42)</cell></li>
@@ -90,6 +92,7 @@
       <li><start>(17, 0, 16)</start><length>27</length><alongX>true</alongX></li>
       <li><start>(17, 0, 16)</start><length>28</length><alongX>false</alongX></li>
       <li><start>(41, 0, 16)</start><length>29</length><alongX>false</alongX></li>
+      <li><start>(41, 0, 29)</start><length>5</length><alongX>true</alongX></li>
     </conduits>
     <!-- Editable stock is owned by native starting-thing parts in RR_Scenarios.xml. -->
     <roles>

@@ -14,7 +14,8 @@ namespace RimroomsAsyncIndustries.Gate
             get
             {
                 CompRimroomsGateConsole console = TargetThingA == null ? null : TargetThingA.TryGetComp<CompRimroomsGateConsole>();
-                return console == null ? null : console.Gate;
+                CompRimroomsGate gate = console == null ? null : console.Gate;
+                return gate != null && gate.Console == TargetThingA ? gate : null;
             }
         }
 
@@ -70,7 +71,8 @@ namespace RimroomsAsyncIndustries.Gate
             get
             {
                 CompRimroomsGateConsole console = TargetThingA == null ? null : TargetThingA.TryGetComp<CompRimroomsGateConsole>();
-                return console == null ? null : console.Gate;
+                CompRimroomsGate gate = console == null ? null : console.Gate;
+                return gate != null && gate.Console == TargetThingA ? gate : null;
             }
         }
 

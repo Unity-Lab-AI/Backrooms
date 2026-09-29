@@ -16,6 +16,12 @@ namespace RimroomsAsyncIndustries.Facilities
 
         public bool Matches(Building building)
         {
+            if (defName == "RR_Facility_Machine")
+            {
+                Gate.CompRimroomsGate gate = building.TryGetComp<Gate.CompRimroomsGate>();
+                Gate.CompRimroomsGateConsole console = building.TryGetComp<Gate.CompRimroomsGateConsole>();
+                if ((gate != null && gate.IsDesignated) || (console != null && console.Gate != null)) { return true; }
+            }
             return (buildingDefNames != null && buildingDefNames.Contains(building.def.defName)) || (includePowerSources &&
                 (building.TryGetComp<CompPowerPlant>() != null || building.TryGetComp<CompPowerBattery>() != null));
         }

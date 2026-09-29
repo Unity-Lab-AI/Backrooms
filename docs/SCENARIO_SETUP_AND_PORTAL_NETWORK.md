@@ -1,5 +1,8 @@
 # Scenario setup and physical door portals
 
+**Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
+
+
 **Owner direction, 2026-09-28:** retain three distinct starts with their own setup. Allow EdB Prepare Carefully for starting people in each scenario. The company start chooses its real-world site. Portals are existing doors with recoloring and a readable native aura; existing power, batteries, control equipment and research infrastructure enable larger supported doorways, longer openings and recall of saved Backrooms destinations. This refines the existing-content policy without adding custom items or door assets.
 
 **Status:** implementation contract. The current development build does not implement these setup or door-network changes. Read the [installed-provider and setup source review](implementation/SCENARIO_AND_DOOR_PROVIDER_SOURCE.md) before implementation. Prepare Carefully and Stargates! are already in the 294-row profile; their source review is not runtime clearance.

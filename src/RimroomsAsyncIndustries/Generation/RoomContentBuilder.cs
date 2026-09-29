@@ -11,7 +11,7 @@ namespace RimroomsAsyncIndustries.Generation
     // Original arrangements of native runtime Defs. No source or assets from Core are redistributed.
     internal static class RoomContentBuilder
     {
-        internal const int ContentVersion = 2;
+        internal const int ContentVersion = 3;
 
         internal static void Populate(Map map, CoordinateRecord coordinate, IntVec3 entry, IntVec3 returnCell,
             IntVec3 officeEvidence, Thing anchor)
@@ -91,10 +91,9 @@ namespace RimroomsAsyncIndustries.Generation
         private static void PaintRoom(Map map, RoomRecord room, int variant)
         {
             bool utility = room.familyId == "service_passage" || room.familyId == "utility_room";
-            string name = utility ? "MetalTile" : "PavedTile";
-            TerrainDef accent = DefDatabase<TerrainDef>.GetNamedSilentFail(name);
-            TerrainDef carpet = DefDatabase<TerrainDef>.GetNamedSilentFail("RR_FadedInstitutionalCarpet");
-            if (accent == null || carpet == null) { throw new InvalidOperationException("RR_Generation_RequiredCoreOrSiteDefMissing"); }
+            TerrainDef baseFloor = DefDatabase<TerrainDef>.GetNamedSilentFail(utility ? "Concrete" : "PavedTile");
+            TerrainDef accent = DefDatabase<TerrainDef>.GetNamedSilentFail(utility ? "MetalTile" : "Concrete");
+            if (accent == null || baseFloor == null) { throw new InvalidOperationException("RR_Generation_RequiredCoreOrSiteDefMissing"); }
             foreach (IntVec3 cell in room.Bounds.Cells)
             {
                 Thing wall = cell.GetEdifice(map);
@@ -107,7 +106,7 @@ namespace RimroomsAsyncIndustries.Generation
                 bool stripe = variant == 0 ? (cell.x - room.x) % 4 == 0 : variant == 1 ? (cell.z - room.z) % 4 == 0 :
                     cell.x == room.x + 2 || cell.z == room.z + 2 || cell.x == room.Bounds.maxX - 2 || cell.z == room.Bounds.maxZ - 2;
                 if (stripe) { map.terrainGrid.SetTerrain(cell, accent); }
-                else if (!utility) { map.terrainGrid.SetTerrain(cell, carpet); }
+                else { map.terrainGrid.SetTerrain(cell, baseFloor); }
             }
         }
 

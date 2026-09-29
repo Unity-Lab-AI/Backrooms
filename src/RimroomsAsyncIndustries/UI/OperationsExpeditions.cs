@@ -53,23 +53,34 @@ namespace RimroomsAsyncIndustries.UI
 
         private CompRimroomsGate CurrentGate(RimroomsCampaignComponent campaign)
         {
-            if (selectedGate == null || selectedGate.Destroyed || !selectedGate.Spawned || selectedGate.Map != campaign.Headquarters)
+            RimroomsExpeditionComponent trips = Current.Game == null ? null : Current.Game.GetComponent<RimroomsExpeditionComponent>();
+            ExpeditionRecord activeRun = trips == null ? null : trips.Active;
+            if (activeRun != null)
             {
-                ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail("RR_MachineGate");
-                selectedGate = definition == null || campaign.Headquarters == null ? null
-                    : campaign.Headquarters.listerThings.ThingsOfDef(definition).FirstOrDefault(t => t.Faction == Faction.OfPlayer);
+                // An active or stranded record owns its saved gate reference. Never retarget it to another door.
+                return activeRun.Gate == null ? null : activeRun.Gate.TryGetComp<CompRimroomsGate>();
             }
+
+            if (campaign == null || campaign.Headquarters == null || selectedGate == null || selectedGate.Destroyed ||
+                !selectedGate.Spawned || selectedGate.Map != campaign.Headquarters || selectedGate.Faction != Faction.OfPlayer ||
+                selectedGate.TryGetComp<CompRimroomsGate>()?.IsNativeProvider != true)
+            { selectedGate = null; return null; }
             return selectedGate?.TryGetComp<CompRimroomsGate>();
         }
 
         private void DrawMachine(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
+            DrawNativeGateBinding(listing, campaign);
             CompRimroomsGate gate = CurrentGate(campaign);
-            listing.Label("RR_UI_MachineInstructions".Translate());
-            if (gate == null) { listing.Label("RR_UI_NoMachine".Translate()); return; }
+            listing.Label((gate != null && gate.IsNativeProvider
+                ? "RR_NativeGate_MachineInstructions" : "RR_UI_MachineInstructions").Translate());
+            if (gate == null) { listing.Label("RR_NativeGate_NoSelectedGate".Translate()); return; }
+            if (!gate.IsNativeProvider) { listing.Label("RR_NativeGate_LegacyControls".Translate()); }
+            else if (!gate.IsDesignated) { listing.Label("RR_NativeGate_BindBeforeOperation".Translate()); return; }
             if (listing.ButtonText("RR_UI_SelectMachine".Translate())) { CameraJumper.TryJumpAndSelect(gate.parent); }
             listing.Label(gate.CompInspectStringExtra());
-            if (listing.ButtonText("RR_UI_SelectConsole".Translate()) && gate.Console != null) { CameraJumper.TryJumpAndSelect(gate.Console); }
+            if (!gate.IsNativeProvider && listing.ButtonText("RR_UI_SelectConsole".Translate()) && gate.Console != null)
+            { CameraJumper.TryJumpAndSelect(gate.Console); }
             listing.GapLine();
             foreach (StaffRecord member in campaign.Staff.Where(s => s.Employed && s.Pawn != null && s.Pawn.Spawned && s.Pawn.Map == campaign.Headquarters))
             {
@@ -195,8 +206,11 @@ namespace RimroomsAsyncIndustries.UI
             if (listing.ButtonText("RR_UI_LoadSharedKit".Translate())) { ShowResult(trips.QueueLoadout(new List<Pawn>(selectedCrew))); }
             CompanyActionResult kit = ExpeditionCargo.CheckKit(selectedCrew);
             listing.Label(kit.Success ? "RR_UI_KitReady".Translate() : kit.MessageKey.Translate());
-            if (listing.ButtonText("RR_UI_DispatchCrew".Translate()))
-            { ShowResult(trips.Dispatch(CurrentGate(campaign), coordinate, new List<Pawn>(selectedCrew))); }
+            CompRimroomsGate gate = CurrentGate(campaign);
+            if (gate == null || !gate.IsNativeProvider || !gate.IsDesignated)
+            { listing.Label("RR_NativeGate_DispatchNeedsBoundGate".Translate()); }
+            else if (listing.ButtonText("RR_UI_DispatchCrew".Translate()))
+            { ShowResult(trips.Dispatch(gate, coordinate, new List<Pawn>(selectedCrew))); }
         }
 
         private static void DrawRouteAidRecovery(Listing_Standard listing, Pawn pawn)

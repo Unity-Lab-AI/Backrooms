@@ -14,17 +14,20 @@ namespace RimroomsAsyncIndustries.Generation
         private const int GeneratorSeedPart = 72910463;
         private const float InitialRoomTemperature = 20f;
         private const int CorridorHalfWidth = 2;
+        private const int MaxNativePowerConduits = 512;
+        private const int MaxInitialFuelStacks = 16;
 
         public override int SeedPart { get { return GeneratorSeedPart; } }
 
         public override void Generate(Map map, GenStepParams parms)
         {
             RimroomsDestinationMapParent parent = map == null ? null : map.Parent as RimroomsDestinationMapParent;
+            CoordinateRecord coordinate = null;
             try
             {
                 RimroomsCampaignComponent campaign = Current.Game == null
                     ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
-                CoordinateRecord coordinate = campaign == null || parent == null ? null :
+                coordinate = campaign == null || parent == null ? null :
                     campaign.Coordinates.FirstOrDefault(record => record.Id == parent.CoordinateId);
                 if (parent == null || coordinate == null || coordinate.Site != parent ||
                     map.Size.x != DestinationService.MapWidth || map.Size.z != DestinationService.MapHeight ||
@@ -37,16 +40,20 @@ namespace RimroomsAsyncIndustries.Generation
                 {
                     throw new InvalidOperationException("RR_Generation_RefusedToReplaceSavedLayout");
                 }
-
                 TerrainDef concrete = DefDatabase<TerrainDef>.GetNamedSilentFail("Concrete");
                 TerrainDef voidFloor = DefDatabase<TerrainDef>.GetNamedSilentFail("WaterDeep");
+                TerrainDef pavedFloor = DefDatabase<TerrainDef>.GetNamedSilentFail("PavedTile");
                 ThingDef wallDef = ThingDefOf.Wall;
                 ThingDef wallStuff = ThingDefOf.Steel;
                 ThingDef anchorDef = DefDatabase<ThingDef>.GetNamedSilentFail("RR_ReturnAnchor");
-                ThingDef lightDef = DefDatabase<ThingDef>.GetNamedSilentFail("RR_SiteFluorescent");
-                ThingDef climateDef = DefDatabase<ThingDef>.GetNamedSilentFail("RR_SiteClimateUnit");
-                if (concrete == null || voidFloor == null || wallDef == null || wallStuff == null ||
-                    anchorDef == null || lightDef == null || climateDef == null)
+                ThingDef lightDef = DefDatabase<ThingDef>.GetNamedSilentFail("StandingLamp");
+                ThingDef climateDef = DefDatabase<ThingDef>.GetNamedSilentFail("Heater");
+                ThingDef generatorDef = DefDatabase<ThingDef>.GetNamedSilentFail("ChemfuelPoweredGenerator");
+                ThingDef fuelDef = DefDatabase<ThingDef>.GetNamedSilentFail("Chemfuel");
+                ThingDef conduitDef = DefDatabase<ThingDef>.GetNamedSilentFail("HiddenConduit");
+                if (concrete == null || voidFloor == null || pavedFloor == null || wallDef == null || wallStuff == null ||
+                    anchorDef == null || lightDef == null || climateDef == null || generatorDef == null ||
+                    fuelDef == null || conduitDef == null)
                 {
                     throw new InvalidOperationException("RR_Generation_RequiredCoreOrSiteDefMissing");
                 }
@@ -86,28 +93,75 @@ namespace RimroomsAsyncIndustries.Generation
 
                 RoomRecord office = coordinate.Rooms.First(room => room.familyId == "office_copy");
                 IntVec3 officeEvidenceCell = FindClearInteriorCell(map, office, office.Bounds.CenterCell);
-
-                foreach (RoomRecord room in coordinate.Rooms)
-                {
-                    IntVec3 lightCell = FindClearInteriorCell(map, room, room.Bounds.CenterCell + new IntVec3(0, 0, 2),
-                        new HashSet<IntVec3> { officeEvidenceCell, anchorPosition });
-                    Thing light = MakeBuilding(lightDef, lightDef.MadeFromStuff ? ThingDefOf.Steel : null);
-                    GenSpawn.Spawn(light, lightCell, map, Rot4.North);
-                }
-
                 RoomRecord climateRoom = coordinate.Rooms.FirstOrDefault(room => room.familyId == "utility_room") ??
                     coordinate.Rooms.First(room => room.familyId == "service_passage");
-                IntVec3 climateCell = FindClearInteriorCell(map, climateRoom,
-                    climateRoom.Bounds.CenterCell + new IntVec3(2, 0, 0), new HashSet<IntVec3> { officeEvidenceCell, anchorPosition });
-                Thing climate = MakeBuilding(climateDef, climateDef.MadeFromStuff ? ThingDefOf.Steel : null);
-                GenSpawn.Spawn(climate, climateCell, map, Rot4.North);
-
                 IntVec3 entryCell = FindClearInteriorCell(map,
                     threshold,
                     threshold.Bounds.Min + new IntVec3(3, 0, 3),
                     new HashSet<IntVec3> { officeEvidenceCell, anchorPosition });
                 IntVec3 returnCell = FindAdjacentSafeCell(map, threshold, anchor);
+
+                var reservedProviderCells = new HashSet<IntVec3>
+                    { officeEvidenceCell, anchorPosition, entryCell, returnCell };
+                foreach (IntVec3 cell in anchor.OccupiedRect().ExpandedBy(1).Cells)
+                { reservedProviderCells.Add(cell); }
+                var lightCells = new List<IntVec3>();
+                foreach (RoomRecord room in coordinate.Rooms.OrderBy(value => value.Index))
+                {
+                    IntVec3 lightCell = FindClearInteriorCell(map, room,
+                        room.Bounds.CenterCell + new IntVec3(0, 0, 2), reservedProviderCells);
+                    lightCells.Add(lightCell);
+                    reservedProviderCells.Add(lightCell);
+                }
+                IntVec3 generatorCell = FindPoweredBuildingCell(map, climateRoom, generatorDef,
+                    reservedProviderCells, climateRoom.Bounds.CenterCell + new IntVec3(2, 0, 0));
+                ReserveFootprint(generatorCell, generatorDef, reservedProviderCells);
+                IntVec3 climateCell = FindPoweredBuildingCell(map, climateRoom, climateDef,
+                    reservedProviderCells, climateRoom.Bounds.CenterCell + new IntVec3(-2, 0, 0));
+                ReserveFootprint(climateCell, climateDef, reservedProviderCells);
+                IntVec3 fuelCell = FindClearInteriorCell(map, climateRoom, generatorCell + IntVec3.East,
+                    reservedProviderCells);
+
+                var consumerFootprints = new List<CellRect>
+                { GenAdj.OccupiedRect(climateCell, Rot4.North, climateDef.size) };
+                consumerFootprints.AddRange(lightCells.Select(cell =>
+                    GenAdj.OccupiedRect(cell, Rot4.North, lightDef.size)));
+                List<CellRect> poweredRoomCoverage = coordinate.Rooms
+                    .Where(room => room.familyId == "service_passage" || room.familyId == "utility_room")
+                    .Select(room => room.Bounds.ContractedBy(1)).ToList();
+                SpawnNativePowerNetwork(map, voidFloor, conduitDef,
+                    GenAdj.OccupiedRect(generatorCell, Rot4.North, generatorDef.size), consumerFootprints,
+                    poweredRoomCoverage);
+
+                Thing generator = MakeBuilding(generatorDef, generatorDef.MadeFromStuff ? ThingDefOf.Steel : null);
+                generator.SetFaction(Faction.OfPlayer);
+                GenSpawn.Spawn(generator, generatorCell, map, Rot4.North);
+                if (!generator.Spawned || generator.Map != map)
+                { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+                PrimeNativeGenerator(generator, fuelDef, fuelCell, climateRoom, reservedProviderCells, map);
+
+                Thing climate = MakeBuilding(climateDef, climateDef.MadeFromStuff ? ThingDefOf.Steel : null);
+                climate.SetFaction(Faction.OfPlayer);
+                GenSpawn.Spawn(climate, climateCell, map, Rot4.North);
+                if (!climate.Spawned || climate.Map != map)
+                { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+
+                for (int index = 0; index < coordinate.Rooms.Count; index++)
+                {
+                    Thing light = MakeBuilding(lightDef, lightDef.MadeFromStuff ? ThingDefOf.Steel : null);
+                    light.SetFaction(Faction.OfPlayer);
+                    GenSpawn.Spawn(light, lightCells[index], map, Rot4.North);
+                    if (!light.Spawned || light.Map != map)
+                    { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+                }
+
                 RoomContentBuilder.Populate(map, coordinate, entryCell, returnCell, officeEvidenceCell, anchor);
+                // Native spawn notifications are queued; rebuild connections now without ticking
+                // the power simulation so readiness checks see the actual shared grid.
+                map.powerNetManager.UpdatePowerNetsAndConnections_First();
+                int expectedPowerLights = coordinate.Rooms.Count + coordinate.Rooms.Count(room =>
+                    room.familyId == "service_passage" || room.familyId == "utility_room");
+                ValidateNativePowerNetwork(map, generator, climate, lightDef, expectedPowerLights);
                 MapGenerator.PlayerStartSpot = entryCell;
                 MapGenerator.rootsToUnfog.Add(entryCell);
                 MapGenerator.rootsToUnfog.Add(returnCell);
@@ -136,6 +190,179 @@ namespace RimroomsAsyncIndustries.Generation
                 {
                     room.TempTracker.Temperature = InitialRoomTemperature;
                 }
+            }
+        }
+
+        private static IntVec3 FindPoweredBuildingCell(Map map, RoomRecord room, ThingDef definition,
+            HashSet<IntVec3> reserved, IntVec3 preferred)
+        {
+            CellRect usable = room.Bounds.ContractedBy(1);
+            IntVec3 center = room.Bounds.CenterCell;
+            foreach (IntVec3 candidate in OrderedInteriorCells(room, preferred))
+            {
+                CellRect footprint = GenAdj.OccupiedRect(candidate, Rot4.North, definition.size);
+                bool fits = true;
+                foreach (IntVec3 cell in footprint.Cells)
+                {
+                    if (!usable.Contains(cell) || !cell.InBounds(map) || reserved.Contains(cell) ||
+                        !cell.Standable(map) || cell.GetEdifice(map) != null || cell.GetFirstItem(map) != null ||
+                        Math.Abs(cell.x - center.x) <= 1 || Math.Abs(cell.z - center.z) <= 1)
+                    {
+                        fits = false;
+                        break;
+                    }
+                }
+                if (fits) { return candidate; }
+            }
+            throw new InvalidOperationException("RR_Generation_NoSafeRoomCell");
+        }
+
+        private static void ReserveFootprint(IntVec3 position, ThingDef definition, HashSet<IntVec3> reserved)
+        {
+            foreach (IntVec3 cell in GenAdj.OccupiedRect(position, Rot4.North, definition.size).Cells)
+            { reserved.Add(cell); }
+        }
+
+        private static void SpawnNativePowerNetwork(Map map, TerrainDef voidFloor, ThingDef conduitDef,
+            CellRect generatorFootprint, IEnumerable<CellRect> consumerFootprints,
+            IEnumerable<CellRect> poweredRoomCoverage)
+        {
+            var wiredCells = new HashSet<IntVec3>();
+            foreach (IntVec3 cell in generatorFootprint.Cells.OrderBy(value => value.x).ThenBy(value => value.z))
+            {
+                if (!cell.InBounds(map) || map.terrainGrid.TerrainAt(cell) == voidFloor)
+                { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+                // These cells are logical BFS roots owned by the generator itself. A physical
+                // conduit here would create a duplicate transmitter on the generator footprint.
+                wiredCells.Add(cell);
+            }
+
+            foreach (CellRect consumer in consumerFootprints)
+            {
+                List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells, consumer);
+                foreach (IntVec3 cell in route)
+                { SpawnNativeConduit(map, voidFloor, conduitDef, cell, wiredCells); }
+            }
+
+            // RoomContentBuilder adds another Core lamp to every service/utility room after this
+            // method. Wire each such room first so those later loads join the real native network.
+            foreach (IntVec3 cell in poweredRoomCoverage.SelectMany(room => room.Cells)
+                .Distinct().OrderBy(value => value.x).ThenBy(value => value.z))
+            { SpawnNativeConduit(map, voidFloor, conduitDef, cell, wiredCells); }
+        }
+
+        private static List<IntVec3> FindConduitRoute(Map map, TerrainDef voidFloor,
+            HashSet<IntVec3> wiredCells, CellRect target)
+        {
+            var pending = new Queue<IntVec3>();
+            var roots = new HashSet<IntVec3>();
+            var previous = new Dictionary<IntVec3, IntVec3>();
+            foreach (IntVec3 cell in wiredCells.OrderBy(value => value.x).ThenBy(value => value.z))
+            {
+                if (!cell.InBounds(map) || map.terrainGrid.TerrainAt(cell) == voidFloor || !roots.Add(cell)) { continue; }
+                pending.Enqueue(cell);
+            }
+            IntVec3 destination = IntVec3.Invalid;
+            IntVec3[] directions = { IntVec3.North, IntVec3.East, IntVec3.South, IntVec3.West };
+            while (pending.Count > 0)
+            {
+                IntVec3 current = pending.Dequeue();
+                if (target.Contains(current)) { destination = current; break; }
+                foreach (IntVec3 direction in directions)
+                {
+                    IntVec3 next = current + direction;
+                    if (!next.InBounds(map) || map.terrainGrid.TerrainAt(next) == voidFloor ||
+                        roots.Contains(next) || previous.ContainsKey(next)) { continue; }
+                    previous[next] = current;
+                    pending.Enqueue(next);
+                }
+            }
+            if (!destination.IsValid) { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+
+            var route = new List<IntVec3>();
+            IntVec3 cursor = destination;
+            route.Add(cursor);
+            while (!roots.Contains(cursor))
+            {
+                IntVec3 predecessor;
+                if (!previous.TryGetValue(cursor, out predecessor))
+                { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+                cursor = predecessor;
+                route.Add(cursor);
+            }
+            route.Reverse();
+            return route;
+        }
+
+        private static void SpawnNativeConduit(Map map, TerrainDef voidFloor, ThingDef conduitDef,
+            IntVec3 cell, HashSet<IntVec3> wiredCells)
+        {
+            if (!cell.InBounds(map) || map.terrainGrid.TerrainAt(cell) == voidFloor)
+            { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+            if (!wiredCells.Add(cell)) { return; }
+            if (wiredCells.Count > MaxNativePowerConduits)
+            { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+            Thing conduit = MakeBuilding(conduitDef, null);
+            conduit.SetFaction(Faction.OfPlayer);
+            GenSpawn.Spawn(conduit, cell, map, Rot4.North);
+            if (!conduit.Spawned || conduit.Map != map)
+            { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+        }
+
+        private static void PrimeNativeGenerator(Thing generator, ThingDef fuelDef, IntVec3 preferredFuelCell,
+            RoomRecord room, HashSet<IntVec3> reserved, Map map)
+        {
+            CompRefuelable refuelable = generator == null ? null : generator.TryGetComp<CompRefuelable>();
+            if (refuelable == null || fuelDef == null || fuelDef.stackLimit < 1)
+            { throw new InvalidOperationException("RR_Generation_RequiredCoreOrSiteDefMissing"); }
+            int units = refuelable.GetFuelCountToFullyRefuel();
+            long requiredStacks = units < 1 ? 0 : ((long)units + fuelDef.stackLimit - 1) / fuelDef.stackLimit;
+            if (units < 1 || requiredStacks > MaxInitialFuelStacks)
+            { throw new InvalidOperationException("RR_Generation_RequiredCoreOrSiteDefMissing"); }
+
+            var fuel = new List<Thing>();
+            int remaining = units;
+            foreach (IntVec3 cell in OrderedInteriorCells(room, preferredFuelCell))
+            {
+                if (remaining <= 0) { break; }
+                if (!cell.InBounds(map) || !cell.Standable(map) || reserved.Contains(cell) ||
+                    cell.GetEdifice(map) != null || cell.GetFirstItem(map) != null) { continue; }
+                Thing stack = ThingMaker.MakeThing(fuelDef);
+                stack.stackCount = Math.Min(remaining, fuelDef.stackLimit);
+                GenSpawn.Spawn(stack, cell, map);
+                if (!stack.Spawned || stack.Map != map)
+                { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+                fuel.Add(stack);
+                reserved.Add(cell);
+                remaining -= stack.stackCount;
+            }
+            if (remaining != 0 || fuel.Count != (int)requiredStacks)
+            { throw new InvalidOperationException("RR_Generation_NoSafeRoomCell"); }
+
+            refuelable.Refuel(fuel);
+            if (!refuelable.HasFuel || !refuelable.IsFull)
+            { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+        }
+
+        private static void ValidateNativePowerNetwork(Map map, Thing generator, Thing heater,
+            ThingDef lightDef, int expectedRoomLights)
+        {
+            CompPowerPlant plant = generator == null ? null : generator.TryGetComp<CompPowerPlant>();
+            CompRefuelable fuel = generator == null ? null : generator.TryGetComp<CompRefuelable>();
+            if (plant == null || plant.PowerNet == null || fuel == null || !fuel.HasFuel ||
+                heater == null || !heater.Spawned || heater.Map != map)
+            { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+
+            List<Thing> lights = map.listerThings.AllThings.Where(thing => thing != null &&
+                thing.Spawned && thing.Map == map && thing.def == lightDef).ToList();
+            if (lights.Count != expectedRoomLights)
+            { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+            var consumers = new List<Thing>(lights) { heater };
+            foreach (Thing consumer in consumers)
+            {
+                CompPowerTrader power = consumer.TryGetComp<CompPowerTrader>();
+                if (power == null || power.PowerNet == null || power.PowerNet != plant.PowerNet)
+                { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
             }
         }
 

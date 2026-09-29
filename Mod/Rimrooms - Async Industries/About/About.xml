@@ -3,7 +3,7 @@
   <name>Rimrooms - Async Industries</name>
   <author>Operator</author>
   <packageId>UnityLabAI.RimroomsAsyncIndustries</packageId>
-  <modVersion>0.3.1-dev</modVersion>
+  <modVersion>0.4.0-dev</modVersion>
   <supportedVersions>
     <li>1.6</li>
   </supportedVersions>
@@ -12,7 +12,7 @@
   </loadAfter>
   <description>Build an organization that investigates, contains, and profits from unstable spaces beyond a machine gate.
 
-Development build 0.3.1-dev: Async Industries facility, company account, staff hiring, facilities overview, procurement, machine operation, saved AI-01 destination, expeditions, investigation and company research. Original Backrooms menu backgrounds show the mod title and loaded version beside the native version information. Gameplay acceptance is pending; this is not a finished campaign release.
+Development build 0.4.0-dev: Async Industries facility, company account, staff hiring, facilities overview, procurement, machine operation, saved AI-01 destination, expeditions, investigation and company research. Original Backrooms menu backgrounds show the mod title and loaded version beside the native version information. Gameplay acceptance is pending; this is not a finished campaign release.
 
 Designed for RimWorld 1.6. No DLC or Harmony required by this package. Existing-game-content replacement, the full procedural campaign, further scenarios, RimWorld Together cooperation and optional integrations remain under development. This source checkpoint still contains historical custom gameplay objects being replaced under the project's existing-content policy.
 

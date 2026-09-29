@@ -58,6 +58,9 @@ namespace RimroomsAsyncIndustries.Core
                 listing.Label("RR_Menu_SettingsTitle".Translate());
                 listing.CheckboxLabeled("RR_Menu_SlideshowEnabled".Translate().ToString(), ref Settings.MenuSlideshowEnabled);
                 listing.CheckboxLabeled("RR_Menu_ReducedMotion".Translate().ToString(), ref Settings.MenuReducedMotion);
+                listing.GapLine();
+                listing.CheckboxLabeled("RR_NativeGate_AuraEnabled".Translate().ToString(), ref Settings.PortalAuraEnabled);
+                listing.CheckboxLabeled("RR_NativeGate_ReducedMotion".Translate().ToString(), ref Settings.PortalReducedMotion);
             }
             finally { listing.End(); }
         }

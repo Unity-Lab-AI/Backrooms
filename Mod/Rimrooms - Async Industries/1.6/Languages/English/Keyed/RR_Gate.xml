@@ -58,7 +58,7 @@
   <RR_Gate_NotOpen>The gate has no active expedition to interrupt.</RR_Gate_NotOpen>
   <RR_Gate_CalibrationUnavailable>The gate is not ready for calibration.</RR_Gate_CalibrationUnavailable>
   <RR_Gate_MachineUnavailable>The gate machine is no longer available.</RR_Gate_MachineUnavailable>
-  <RR_Gate_InvalidAssemblyBill>The assembly bill did not target the machine gate console.</RR_Gate_InvalidAssemblyBill>
+  <RR_Gate_InvalidAssemblyBill>The assembly bill did not target this installation's assigned assembly station.</RR_Gate_InvalidAssemblyBill>
   <RR_Event_GateAssemblyCompleted>The machine assembly is complete. Assign a qualified operator and calibrate the gate.</RR_Event_GateAssemblyCompleted>
   <RR_Event_GateCalibrationCompleted>The machine calibration is complete. Staff the console and review the power reserve before dispatch.</RR_Event_GateCalibrationCompleted>
   <RR_Event_GateOpeningStarted>The gate opening has started. The expedition window is running.</RR_Event_GateOpeningStarted>

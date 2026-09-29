@@ -35,6 +35,10 @@ On 2026-09-28 the owner reaffirmed three custom scenario openings, Prepare Caref
 
 ## Completion tracking, regression containment and publication cadence
 
+### Connected colony travel, permanent natural portals and procedural inhabitants
+
+The owner clarified that open laboratory/natural portals must unify local-branch work, labor and physical material access across maps. Pawns cross freely to carry materials and perform jobs on either side; mandatory expedition manifests and separate job pools are superseded. Natural portals stay permanently open. Coordinates select persistent seeds/saved spaces; advancement enables recall and increasingly complex/dangerous procedural architecture, events and people in native mental/health/life states, with rare monstrosities. The [binding implementation contract and backlog](CONNECTED_COLONY_PORTALS.md) records the full direction. This requires substantial new cross-map job/path/reservation work; the existing source does not prove it implemented. It does not change the separate-player asynchronous RWT boundary or approve previously deferred named threat sketches.
+
 On 2026-09-28 the owner required completed work to be checked in the TODO with evidence and explicit regression containment while extending existing implementation. Follow [REGRESSION_CONTAINMENT.md](REGRESSION_CONTAINMENT.md). The owner also reaffirmed both remote cascades but requested publication only at meaningful completed milestones, not every edit. Batch code, contracts, checked tasks and evidence before the cascade. The owner clarified that every publication must include all current project changes, with no separate unpublished batch. Finish and integrate active work first; verify the final remote refs in tool output without creating a new local-only receipt. Existing signed-in browser access remains available, but verify the actual Git transport result.
 
 ## Owner choices and recorded answers

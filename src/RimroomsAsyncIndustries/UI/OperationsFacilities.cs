@@ -85,7 +85,7 @@ namespace RimroomsAsyncIndustries.UI
                     if (FacilityReport.Inspectable(target, campaign.Headquarters)) { CameraJumper.TryJumpAndSelect(target); }
                     else { Messages.Message("RR_Fac_TargetUnavailable".Translate(), MessageTypeDefOf.RejectInput, false); }
                 }
-                if (FacilityReport.Inspectable(target, campaign.Headquarters) && target.TryGetComp<CompRimroomsGate>() != null &&
+                if (FacilityReport.Inspectable(target, campaign.Headquarters) && target.TryGetComp<CompRimroomsGate>()?.IsDesignated == true &&
                     listing.ButtonText("RR_Fac_OpenMachine".Translate())) { selectedPane = 7; scrollPosition = UnityEngine.Vector2.zero; }
             }
         }

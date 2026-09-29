@@ -11,6 +11,7 @@ namespace RimroomsAsyncIndustries.Gate
 {
     public sealed class CompProperties_RimroomsGate : CompProperties
     {
+        public bool nativeProvider;
         public int openingWindowTicks = 833;
         public int emergencyReturnWindowTicks = 300;
         public int stablePowerTicksRequired = 60;
@@ -31,7 +32,10 @@ namespace RimroomsAsyncIndustries.Gate
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
         {
             foreach (string error in base.ConfigErrors(parentDef)) { yield return error; }
-            if (parentDef.size.x != 3 || parentDef.size.z != 3)
+            if (nativeProvider && (parentDef.defName == "Door" || parentDef.defName == "Autodoor") &&
+                !typeof(Building_Door).IsAssignableFrom(parentDef.thingClass))
+            { yield return "Native Rimrooms gate provider supports only Core Door and Autodoor."; }
+            if (!nativeProvider && (parentDef.size.x != 3 || parentDef.size.z != 3))
             { yield return "RR_MachineGate must use a 3x3 footprint."; }
             if (openingWindowTicks <= 0 || emergencyReturnWindowTicks <= 0 || stablePowerTicksRequired < 0)
             { yield return "Rimrooms gate timing settings must be positive."; }
@@ -51,7 +55,7 @@ namespace RimroomsAsyncIndustries.Gate
     }
 
     /// <summary>Persistent gate assembly, operator, power reserve, and opening-window state.</summary>
-    public sealed class CompRimroomsGate : ThingComp
+    public sealed partial class CompRimroomsGate : ThingComp
     {
         private Pawn assignedOperator;
         private bool assemblyComplete;
@@ -85,13 +89,14 @@ namespace RimroomsAsyncIndustries.Gate
         public bool EmergencyReturnSpentForActiveExpedition { get { return emergencyReturnSpent; } }
         public bool IsEmergency { get { return IsOpening && !string.IsNullOrEmpty(failureKey); } }
         public string FailureKey { get { return failureKey; } }
-        public float ReturnReserveStoredWattDays { get { return returnReserveStoredWattDays; } }
-        public float ReturnReserveCapacityWattDays { get { return GateProps.returnReserveCapacityWattDays; } }
+        public float ReturnReserveStoredWattDays { get { return IsNativeProvider ? NativeStoredEnergy : returnReserveStoredWattDays; } }
+        public float ReturnReserveCapacityWattDays { get { return IsNativeProvider ? NativeBatteryCapacity : GateProps.returnReserveCapacityWattDays; } }
         public float RecoveryOpeningCostWattDays { get { return GateProps.recoveryOpeningCostWattDays; } }
         public float EmergencyReturnCostWattDays { get { return GateProps.emergencyReturnCostWattDays; } }
         public float MinimumPowerHeadroomWatts { get { return GateProps.minimumPowerHeadroomWatts; } }
-        public float CurrentPowerDrawWatts { get { return appliedPowerDrawWatts < 0f ? GateProps.idlePowerDrawWatts : appliedPowerDrawWatts; } }
-        public IntVec3 GateEntryCell { get { return parent.Spawned ? parent.InteractionCell : IntVec3.Invalid; } }
+        public float CurrentPowerDrawWatts { get { return IsNativeProvider ? (IsOpening && !IsEmergency ? GateProps.openingPowerDrawWatts : 0f)
+            : appliedPowerDrawWatts < 0f ? GateProps.idlePowerDrawWatts : appliedPowerDrawWatts; } }
+        public IntVec3 GateEntryCell { get { return IsNativeProvider ? NativeEntryCell : parent.Spawned ? parent.InteractionCell : IntVec3.Invalid; } }
         public float CalibrationWorkRequired { get { return GateProps.calibrationWorkRequired; } }
         public Thing Console { get { return FindConsole(); } }
         public bool IsAwaitingRecovery { get { return IsOpening && IsEmergency && emergencyReturnTicksRemaining <= 0; } }
@@ -130,6 +135,7 @@ namespace RimroomsAsyncIndustries.Gate
             Scribe_Values.Look(ref lastClosedExpeditionId, "rr_gateLastClosedExpeditionId");
             Scribe_Collections.Look(ref openingSpendReceipts, "rr_gateOpeningSpendReceipts", LookMode.Deep);
             Scribe_Collections.Look(ref recoveryReceipts, "rr_gateRecoveryReceipts", LookMode.Deep);
+            ExposeNativeBinding();
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 if (openingSpendReceipts == null) { openingSpendReceipts = new List<GateWindowSpendReceipt>(); }
@@ -161,6 +167,8 @@ namespace RimroomsAsyncIndustries.Gate
         {
             base.CompTick();
             if (!parent.Spawned) { return; }
+            if (IsNativeProvider && !BeginNativeTick()) { return; }
+            if (IsNativeProvider) { Presentation.NativePortalPresentation.Tick(this); }
 
             ApplyPowerDraw();
             if (HasPowerAndHeadroom())
@@ -168,7 +176,7 @@ namespace RimroomsAsyncIndustries.Gate
                 if (stablePowerTicks < int.MaxValue) { stablePowerTicks++; }
                 bool canChargeForNormalUse = !IsOpening && !emergencyReturnSpent;
                 bool canChargeForRecovery = IsAwaitingRecovery;
-                if ((canChargeForNormalUse || canChargeForRecovery) &&
+                if (!IsNativeProvider && (canChargeForNormalUse || canChargeForRecovery) &&
                     (!emergencyReturnSpent || canChargeForRecovery) &&
                     returnReserveStoredWattDays < GateProps.returnReserveCapacityWattDays)
                 {
@@ -186,6 +194,8 @@ namespace RimroomsAsyncIndustries.Gate
                 else if (!IsOperatorOnStation) { EnterEmergency("RR_Gate_OperatorLost"); }
                 else if (openingTicksRemaining > 0)
                 {
+                    if (IsNativeProvider && !SpendNativeOpeningTick())
+                    { EnterEmergency(HasNativeEnergyDebitFault ? "RR_NativeGate_EnergyDebitFault" : "RR_NativeGate_OpeningEnergyLow"); return; }
                     openingTicksRemaining--;
                     SendOpeningWindowWarnings();
                     if (openingTicksRemaining <= 0) { EnterEmergency("RR_Gate_WindowExpired"); }
@@ -205,13 +215,13 @@ namespace RimroomsAsyncIndustries.Gate
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) { yield return gizmo; }
-            if (parent.Faction != Faction.OfPlayer) { yield break; }
+            if (parent.Faction != Faction.OfPlayer || !IsDesignated) { yield break; }
 
             yield return new Command_Action
             {
                 defaultLabel = "RR_Gate_AssignOperatorLabel".Translate(),
                 defaultDesc = "RR_Gate_AssignOperatorDesc".Translate(),
-                icon = ContentFinder<Texture2D>.Get("Buildings/Gate/RR_GateConsole", true),
+                icon = IsNativeProvider ? parent.def.uiIcon : ContentFinder<Texture2D>.Get("Buildings/Gate/RR_GateConsole", true),
                 action = OpenOperatorMenu
             };
 
@@ -221,7 +231,7 @@ namespace RimroomsAsyncIndustries.Gate
                 {
                     defaultLabel = "RR_Gate_CalibrateLabel".Translate(),
                     defaultDesc = "RR_Gate_CalibrateDesc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get("Buildings/Gate/RR_GateConsole", true),
+                    icon = IsNativeProvider ? parent.def.uiIcon : ContentFinder<Texture2D>.Get("Buildings/Gate/RR_GateConsole", true),
                     action = delegate { ShowOrderResult(OrderCalibration()); }
                 };
             }
@@ -232,7 +242,7 @@ namespace RimroomsAsyncIndustries.Gate
                 {
                     defaultLabel = "RR_Gate_StaffConsoleLabel".Translate(),
                     defaultDesc = "RR_Gate_StaffConsoleDesc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get("Buildings/Gate/RR_MachineGate", true),
+                    icon = IsNativeProvider ? parent.def.uiIcon : ContentFinder<Texture2D>.Get("Buildings/Gate/RR_MachineGate", true),
                     action = delegate { ShowOrderResult(OrderStaffConsole()); }
                 };
             }
@@ -240,6 +250,7 @@ namespace RimroomsAsyncIndustries.Gate
 
         public override string CompInspectStringExtra()
         {
+            if (!IsDesignated) { return null; }
             string status = calibrated ? "RR_Gate_StatusCalibrated".Translate().ToString()
                 : assemblyComplete ? "RR_Gate_StatusNeedsCalibration".Translate().ToString()
                 : "RR_Gate_StatusIncomplete".Translate().ToString();
@@ -250,6 +261,13 @@ namespace RimroomsAsyncIndustries.Gate
                 GateProps.reserveChargePowerWatts.ToString("F0"), GateProps.minimumPowerHeadroomWatts.ToString("F0"),
                 returnReserveStoredWattDays.ToString("F2"), GateProps.returnReserveCapacityWattDays.ToString("F2"),
                 GateProps.emergencyReturnCostWattDays.ToString("F2"), GateProps.recoveryOpeningCostWattDays.ToString("F2")).ToString();
+            if (IsNativeProvider)
+            {
+                powerText = "RR_NativeGate_PowerReadout".Translate(ReturnReserveStoredWattDays.ToString("F2"),
+                    ReturnReserveCapacityWattDays.ToString("F2"), CurrentPowerDrawWatts.ToString("F0"),
+                    NativeEnergyRequiredToOpenWattDays.ToString("F2"), RecoveryEnergyRequiredWattDays.ToString("F2")).ToString();
+                if (NativeBindingFailureKey != null) { powerText += "\n" + NativeBindingFailureKey.Translate(); }
+            }
             string active = IsOpening
                 ? "RR_Gate_OpeningReadout".Translate(DescribeWindow(openingTicksRemaining),
                     DescribeWindow(emergencyReturnTicksRemaining), string.IsNullOrEmpty(failureKey) ? "RR_Gate_NoFailure".Translate() : failureKey.Translate()).ToString()
@@ -265,6 +283,7 @@ namespace RimroomsAsyncIndustries.Gate
 
         public CompanyActionResult AssignOperator(Pawn pawn)
         {
+            if (!IsDesignated) { return CompanyActionResult.Refused("RR_NativeGate_NotBound"); }
             if (IsOpening) { return CompanyActionResult.Refused("RR_Gate_ActiveCannotReassign"); }
             if (pawn == null)
             {
@@ -294,7 +313,9 @@ namespace RimroomsAsyncIndustries.Gate
             if (IsOpening && expeditionId == activeExpeditionId)
             { return CompanyActionResult.Refused("RR_Gate_RecoveryRequired"); }
             if (IsOpening) { return CompanyActionResult.Refused("RR_Gate_AlreadyOpen"); }
-            if (returnReserveStoredWattDays + 0.0001f < GateProps.emergencyReturnCostWattDays)
+            if (IsNativeProvider && NativeStoredEnergy < NativeEnergyRequiredToOpenWattDays)
+            { return CompanyActionResult.Refused("RR_NativeGate_OpeningEnergyLow"); }
+            if (!IsNativeProvider && returnReserveStoredWattDays + 0.0001f < GateProps.emergencyReturnCostWattDays)
             { return CompanyActionResult.Refused("RR_Gate_ReserveTooLow"); }
             return CompanyActionResult.Applied();
         }
@@ -310,6 +331,7 @@ namespace RimroomsAsyncIndustries.Gate
             CompanyActionResult ready = CanOpen(assignedOperator, expeditionId);
             if (!ready.Success) { return ready; }
             activeExpeditionId = expeditionId;
+            if (IsNativeProvider) { nativeOpeningSequence++; }
             openingTicksRemaining = GateProps.openingWindowTicks;
             emergencyReturnTicksRemaining = 0;
             emergencyReturnSpent = false;
@@ -343,9 +365,17 @@ namespace RimroomsAsyncIndustries.Gate
             if (!IsEmergency || emergencyReturnTicksRemaining <= 0)
             { return CompanyActionResult.Refused("RR_Gate_NoEmergencyWindow"); }
             if (emergencyReturnSpent) { return CompanyActionResult.Existing(); }
-            if (returnReserveStoredWattDays + 0.0001f < GateProps.emergencyReturnCostWattDays)
-            { return CompanyActionResult.Refused("RR_Gate_ReserveTooLow"); }
-            returnReserveStoredWattDays = Mathf.Max(0f, returnReserveStoredWattDays - GateProps.emergencyReturnCostWattDays);
+            if (IsNativeProvider)
+            {
+                if (!TrySpendNativeEnergy(GateProps.emergencyReturnCostWattDays, true, NativeOpeningDebitId("emergency")))
+                { return CompanyActionResult.Refused("RR_NativeGate_ReturnEnergyUnavailable"); }
+            }
+            else
+            {
+                if (returnReserveStoredWattDays + 0.0001f < GateProps.emergencyReturnCostWattDays)
+                { return CompanyActionResult.Refused("RR_Gate_ReserveTooLow"); }
+                returnReserveStoredWattDays = Mathf.Max(0f, returnReserveStoredWattDays - GateProps.emergencyReturnCostWattDays);
+            }
             emergencyReturnSpent = true;
             ApplyPowerDraw();
             RecordGateActivity("RR_Event_GateEmergencyReturnPaid", expeditionId,
@@ -409,7 +439,9 @@ namespace RimroomsAsyncIndustries.Gate
             { return CompanyActionResult.Refused("RR_Gate_NotCalibrated"); }
             CompanyActionResult ready = CheckStationReadiness(gateOperator);
             if (!ready.Success) { return ready; }
-            if (returnReserveStoredWattDays + 0.0001f < GateProps.returnReserveCapacityWattDays)
+            if (IsNativeProvider && NativeStoredEnergy < RecoveryEnergyRequiredWattDays)
+            { return CompanyActionResult.Refused("RR_NativeGate_RecoveryEnergyLow"); }
+            if (!IsNativeProvider && returnReserveStoredWattDays + 0.0001f < GateProps.returnReserveCapacityWattDays)
             { return CompanyActionResult.Refused("RR_Gate_RecoveryReserveNotFull"); }
             return CompanyActionResult.Applied();
         }
@@ -428,11 +460,14 @@ namespace RimroomsAsyncIndustries.Gate
             CompanyActionResult ready = CanRecover(assignedOperator, expeditionId, recoveryOperationId);
             if (!ready.Success) { return ready; }
 
+            if (IsNativeProvider && !TrySpendNativeEnergy(GateProps.recoveryOpeningCostWattDays, false, "recovery:" + recoveryOperationId))
+            { return CompanyActionResult.Refused("RR_NativeGate_RecoveryEnergyLow"); }
             recoveryReceipts.Add(new GateRecoveryReceipt(recoveryOperationId, expeditionId));
             activeExpeditionId = expeditionId;
+            if (IsNativeProvider) { nativeOpeningSequence++; }
             lastClosedExpeditionId = null;
-            returnReserveStoredWattDays = Mathf.Max(0f,
-                returnReserveStoredWattDays - GateProps.recoveryOpeningCostWattDays);
+            if (!IsNativeProvider)
+            { returnReserveStoredWattDays = Mathf.Max(0f, returnReserveStoredWattDays - GateProps.recoveryOpeningCostWattDays); }
             openingTicksRemaining = GateProps.openingWindowTicks;
             emergencyReturnTicksRemaining = 0;
             emergencyReturnSpent = false;
@@ -479,10 +514,15 @@ namespace RimroomsAsyncIndustries.Gate
             if (billGiver == null || recipe == null || recipe.defName != "RR_AssembleMachineGate" ||
                 billGiver.TryGetComp<CompRimroomsGateConsole>() == null)
             { return CompanyActionResult.Refused("RR_Gate_InvalidAssemblyBill"); }
+            if (IsNativeProvider && (!IsDesignated || NativeCampaign == null || nativeBranchId != NativeCampaign.BranchId ||
+                !SameNativeHeadquartersThing(billGiver) || billGiver != nativeAssemblyBench ||
+                billGiver.TryGetComp<CompRimroomsGateConsole>().LinkedGate != parent))
+            { return CompanyActionResult.Refused("RR_Gate_InvalidAssemblyBill"); }
             if (assemblyComplete) { return CompanyActionResult.Existing(); }
             if (!parent.Spawned || billGiver.Map != parent.Map)
             { return CompanyActionResult.Refused("RR_Gate_MachineUnavailable"); }
             assemblyComplete = true;
+            if (IsNativeProvider) { billGiver.TryGetComp<CompRimroomsGateConsole>().MarkAssemblyBillComplete(); }
             RecordGateActivity("RR_Event_GateAssemblyCompleted", parent.GetUniqueLoadID());
             return CompanyActionResult.Applied();
         }
@@ -491,8 +531,11 @@ namespace RimroomsAsyncIndustries.Gate
         {
             if (!IsOpening) { return CompanyActionResult.Refused("RR_Gate_NotOpen"); }
             if (!IsEmergency) { EnterEmergency("RR_Gate_EmergencyCutoff"); }
-            if (flickable == null) { flickable = parent.GetComp<CompFlickable>(); }
-            if (flickable != null) { flickable.SwitchIsOn = false; }
+            if (!IsNativeProvider)
+            {
+                if (flickable == null) { flickable = parent.GetComp<CompFlickable>(); }
+                if (flickable != null) { flickable.SwitchIsOn = false; }
+            }
             return CompanyActionResult.Applied();
         }
 
@@ -510,6 +553,8 @@ namespace RimroomsAsyncIndustries.Gate
 
         private CompanyActionResult CheckStationReadiness(Pawn gateOperator)
         {
+            if (IsNativeProvider && NativeBindingFailureKey != null)
+            { return CompanyActionResult.Refused(NativeBindingFailureKey); }
             if (gateOperator == null || gateOperator != assignedOperator || !IsEmployedStaff(gateOperator))
             { return CompanyActionResult.Refused("RR_Gate_NoAssignedOperator"); }
             if (!IsOperatorOnStation) { return CompanyActionResult.Refused("RR_Gate_OperatorAway"); }
@@ -557,6 +602,7 @@ namespace RimroomsAsyncIndustries.Gate
 
         private bool HasPowerAndHeadroom()
         {
+            if (IsNativeProvider) { return NativeBindingFailureKey == null; }
             if (!parent.Spawned || powerTrader == null || !powerTrader.PowerOn || powerTrader.PowerNet == null ||
                 parent.IsBrokenDown() || FlickUtility.WantsToBeOn(parent) == false ||
                 parent.Map.gameConditionManager.ElectricityDisabled(parent.Map)) { return false; }
@@ -566,6 +612,8 @@ namespace RimroomsAsyncIndustries.Gate
 
         private bool HasProjectedOpeningPowerHeadroom()
         {
+            // Native portal load is paid from the linked battery, not charged twice as grid load.
+            if (IsNativeProvider) { return NativeBindingFailureKey == null; }
             if (!parent.Spawned || powerTrader == null || !powerTrader.PowerOn || powerTrader.PowerNet == null)
             { return false; }
             float currentHeadroomWatts = powerTrader.PowerNet.CurrentEnergyGainRate() / CompPower.WattsToWattDaysPerTick;
@@ -584,6 +632,7 @@ namespace RimroomsAsyncIndustries.Gate
 
         private void ApplyPowerDraw()
         {
+            if (IsNativeProvider) { return; }
             if (powerTrader == null) { powerTrader = parent.GetComp<CompPowerTrader>(); }
             if (powerTrader == null) { return; }
             float desired = IsOpening && string.IsNullOrEmpty(failureKey) ? GateProps.openingPowerDrawWatts
@@ -604,6 +653,7 @@ namespace RimroomsAsyncIndustries.Gate
 
         private Thing FindConsole()
         {
+            if (IsNativeProvider) { return IsDesignated && SameNativeHeadquartersThing(nativeConsole) ? nativeConsole : null; }
             if (!parent.Spawned || parent.Map == null) { return null; }
             if (consoleCache != null && consoleCache.Spawned && consoleCache.Map == parent.Map) { return consoleCache; }
             ThingDef consoleDef = DefDatabase<ThingDef>.GetNamedSilentFail("RR_GateConsole");

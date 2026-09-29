@@ -61,7 +61,7 @@
         <affectedDamageDefs><li>EMP</li></affectedDamageDefs>
       </li>
     </comps>
-    <designationCategory>Power</designationCategory>
+    <!-- Legacy save provider: no new construction. -->
     <uiOrder>2180</uiOrder>
     <constructEffect>ConstructMetal</constructEffect>
     <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
@@ -108,7 +108,7 @@
       <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGateConsole"/>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
-    <designationCategory>Production</designationCategory>
+    <!-- Legacy save provider: no new construction. -->
     <uiOrder>2420</uiOrder>
     <constructEffect>ConstructMetal</constructEffect>
     <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
@@ -143,7 +143,7 @@
     <comps>
       <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGateCutoff"/>
     </comps>
-    <designationCategory>Power</designationCategory>
+    <!-- Legacy save provider: no new construction. -->
     <uiOrder>2190</uiOrder>
     <constructEffect>ConstructMetal</constructEffect>
   </ThingDef>
@@ -198,7 +198,7 @@
         <affectedDamageDefs><li>EMP</li></affectedDamageDefs>
       </li>
     </comps>
-    <designationCategory>Power</designationCategory>
+    <!-- Legacy save provider: no new construction. -->
     <uiOrder>2100</uiOrder>
     <constructEffect>ConstructMetal</constructEffect>
     <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>

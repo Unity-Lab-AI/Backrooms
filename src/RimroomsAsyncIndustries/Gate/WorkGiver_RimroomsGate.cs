@@ -12,14 +12,25 @@ namespace RimroomsAsyncIndustries.Gate
     {
         public override ThingRequest PotentialWorkThingRequest
         {
-            get { return ThingRequest.ForDef(DefDatabase<ThingDef>.GetNamed("RR_GateConsole")); }
+            get { return ThingRequest.ForGroup(ThingRequestGroup.BuildingArtificial); }
+        }
+
+        public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
+        {
+            if (pawn == null || pawn.Map == null) { yield break; }
+            foreach (Building building in pawn.Map.listerBuildings.allBuildingsColonist)
+            {
+                CompRimroomsGateConsole console = building.TryGetComp<CompRimroomsGateConsole>();
+                CompRimroomsGate gate = console == null ? null : console.Gate;
+                if (gate != null && gate.Console == building) { yield return building; }
+            }
         }
 
         private Job FindCalibrationJob(Pawn pawn, Thing thing, bool forced)
         {
             CompRimroomsGateConsole console = thing == null ? null : thing.TryGetComp<CompRimroomsGateConsole>();
             CompRimroomsGate gate = console == null ? null : console.Gate;
-            if (gate == null || !gate.CanCalibrate(pawn) || !pawn.CanReserveAndReach(thing, PathEndMode.InteractionCell,
+            if (gate == null || gate.Console != thing || !gate.CanCalibrate(pawn) || !pawn.CanReserveAndReach(thing, PathEndMode.InteractionCell,
                 Danger.Some, 1, -1, null, forced) || !pawn.CanReserveSittableOrSpot(thing.InteractionCell, forced))
             { return null; }
             return JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("RR_CalibrateGate"), thing);
