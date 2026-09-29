@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.3-dev - 2026-09-29 - everything you can look at says what it is
+
+- **The facilities overview now explains each kind of room** - what it is for, and what goes wrong for a branch without it.
+- **The procurement list now says what each thing is actually for**, not just what it costs and how long it takes to arrive.
+- Sixteen descriptions written for things that previously showed you a bare name.
+- Where the game itself does not describe something, neither do we. A work giver, a pawn kind, a trader and a category get a name and no more, because **that is exactly what RimWorld does** - it was counted rather than guessed.
+
+Full record: [everything you can look at says what it is](docs/implementation/INFO_CARDS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.9.2-dev - 2026-09-29 - a gate has a size
 
 - **A gate can be wider than one cell.** An ordinary door gives you a one-wide gate; **the game's own ornate door gives you a two-wide one with no other mods at all**, and so does Anomaly's security door.

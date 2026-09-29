@@ -24,11 +24,11 @@ LAW #0 applies: owner words go in verbatim, everywhere.
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.9.2-dev** (this commit) |
+| Published | **0.9.3-dev** (this commit) |
 | Remotes | `forgejo` + `github`, all four refs each at the same commit |
 | Build | **156 C# files, 79 package files**, zero warnings, zero errors |
-| Assembly | SHA-256 `0A2B527ED14475D56428DD2E63A0970853D5C70A854D4BB3516E4D9831FBE001`, reproduced by two clean recompiles |
-| Checkers | four, all passing |
+| Assembly | SHA-256 `BF66AC9770AC85F7A6471E95BD7DFB9DC2B2F30A8603B33DBA4786C3DAB26220`, reproduced by two clean recompiles |
+| Checkers | **five**, all passing |
 | Register | `outputs/rimrooms-async-industries-register-2026-09-27/…Register.html` — **open the HTML**, not the xlsx |
 | Game launches | **none, ever** |
 
@@ -40,7 +40,7 @@ Chain checkpoints. Do not finish one and wait.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.9.2
+## What shipped this session, 0.7.1 → 0.9.3
 
 | Version | What |
 |---|---|
@@ -65,6 +65,7 @@ Chain checkpoints. Do not finish one and wait.
 | 0.9.0 | **A gate is a door and nothing else** — eight legacy defs retired, package 92 → 79 files |
 | 0.9.1 | **One kind of gate** — 68 dead branches collapsed, a vestigial power model removed, net −112 lines |
 | 0.9.2 | **A gate has a size** — 1×1 to 2×3, Core's own `OrnateDoor` gives 1×2 free, cost scales with footprint |
+| 0.9.3 | **Everything you can look at says what it is** — info cards calibrated to Core's own practice, fifth checker |
 
 ---
 
@@ -133,6 +134,9 @@ Each is a real defect or a pinned fact.
 41. **Throughput is never capped.** Owner direction: *"in vinilla any number of pawns can use a door at once so we dont want limitations"*. A wide gate gets more doorway cells, never a quota. There is no counter, deliberately.
 42. **A patch target inside `PatchOperationFindMod` is optional by construction**, and only there. The integrity checker exempts exactly those and still reports them. The exemption was proved narrow by planting a bogus target outside it.
 43. **Core ships `OrnateDoor` at 2×1 and `Building_MultiTileDoor` to drive it.** Anomaly adds `SecurityDoor`. This was found by enumerating installed data after the opposite was assumed.
+44. **"Like the game does" is measurable. Measure it.** Core describes 0 of 105 work givers and 80 of 80 recipes. Counting that cut a 94-item list to 17 and stopped 67 lines of text no player would ever see.
+45. **A description nothing renders is text in a file.** Write it and show it in the same checkpoint, or do neither.
+46. **Escapes written through a shell can collapse one level too far and leave an invisible byte.** A word-boundary escape became a literal backspace; the pattern matched nothing and looked perfect in every listing. Prefer a form that survives quoting, and always prove a checker by planting the fault it is meant to catch.
 
 ---
 
@@ -173,7 +177,7 @@ Two things follow:
 3. `CHANGELOG.md` in plain player-facing language.
 4. Implementation record under `docs/implementation/`.
 5. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
-6. **All four checkers**: `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `research/audit-gate0.py`.
+6. **All five checkers**: `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `research/audit-gate0.py`.
 7. **Determinism**: delete `obj/` and `bin/`, rebuild **twice**, hashes must match. An incremental rebuild proves nothing.
 8. Commit once atomically; cascade to `Prep`, `Develop`, `Main` on **both** remotes; **read back all eight refs**.
 

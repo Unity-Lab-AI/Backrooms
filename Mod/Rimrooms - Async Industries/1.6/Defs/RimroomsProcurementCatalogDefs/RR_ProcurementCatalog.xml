@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
     <defName>RR_Procurement_Silver</defName>
     <label>Silver</label>
+    <description>Ordinary silver, bought rather than dug. The company sells it at a poor rate because you are paying for delivery to a branch that has no mine.</description>
     <thingDefName>Silver</thingDefName>
     <unitPriceUsd>1000</unitPriceUsd>
     <dispatchDelayTicks>60000</dispatchDelayTicks>
@@ -12,6 +13,7 @@
   <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
     <defName>RR_Procurement_Steel</defName>
     <label>Steel</label>
+    <description>Structural steel. Everything a branch builds and most of what it repairs is made of this, and a gate assembly that lapses cannot be reconditioned without it.</description>
     <thingDefName>Steel</thingDefName>
     <unitPriceUsd>2000</unitPriceUsd>
     <dispatchDelayTicks>60000</dispatchDelayTicks>
@@ -21,6 +23,7 @@
   <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
     <defName>RR_Procurement_Components</defName>
     <label>Industrial components</label>
+    <description>Industrial components. The limiting part of almost every machine worth having, and the one thing a branch is most likely to be short of at the worst moment.</description>
     <thingDefName>ComponentIndustrial</thingDefName>
     <unitPriceUsd>20000</unitPriceUsd>
     <dispatchDelayTicks>60000</dispatchDelayTicks>
@@ -30,6 +33,7 @@
   <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
     <defName>RR_Procurement_Wood</defName>
     <label>Wood logs</label>
+    <description>Wood logs. Cheap, flammable and useful, and the fastest way to put a floor and a few walls up around a gate before the first connection is opened.</description>
     <thingDefName>WoodLog</thingDefName>
     <unitPriceUsd>250</unitPriceUsd>
     <dispatchDelayTicks>60000</dispatchDelayTicks>
@@ -39,6 +43,7 @@
   <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
     <defName>RR_Procurement_Cloth</defName>
     <label>Cloth</label>
+    <description>Plain cloth. Clothing, bedding and the soft parts of a branch that keep people working; also the material the yellow rooms are remembered for.</description>
     <thingDefName>Cloth</thingDefName>
     <unitPriceUsd>2500</unitPriceUsd>
     <dispatchDelayTicks>60000</dispatchDelayTicks>
@@ -48,6 +53,7 @@
   <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
     <defName>RR_Procurement_Medicine</defName>
     <label>Industrial medicine</label>
+    <description>Industrial medicine. Crews come back from a coordinate needing it more reliably than they come back with anything worth selling.</description>
     <thingDefName>MedicineIndustrial</thingDefName>
     <unitPriceUsd>25000</unitPriceUsd>
     <dispatchDelayTicks>60000</dispatchDelayTicks>
@@ -57,6 +63,7 @@
   <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
     <defName>RR_Procurement_SurvivalMeals</defName>
     <label>Packaged survival meals</label>
+    <description>Packaged survival meals. They keep indefinitely and need no kitchen, which is the entire reason to carry them through a gate instead of cooking.</description>
     <thingDefName>MealSurvivalPack</thingDefName>
     <unitPriceUsd>5000</unitPriceUsd>
     <dispatchDelayTicks>60000</dispatchDelayTicks>

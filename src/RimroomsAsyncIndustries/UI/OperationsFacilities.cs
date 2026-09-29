@@ -51,6 +51,14 @@ namespace RimroomsAsyncIndustries.UI
                 options.Add(new FloatMenuOption("RR_Fac_Unclassified".Translate(), () => SetFacilityFilter("")));
                 Find.WindowStack.Add(new FloatMenu(options));
             }
+            // What the chosen category is actually for. Owner direction 2026-09-29: "all mod
+            // ingame decriptions and informational informations for everything is properly in
+            // the cards like the game does currently". A row of bare nouns tells a player
+            // nothing the word did not already tell them.
+            RimroomsFacilityCategoryDef chosen = string.IsNullOrEmpty(facilityCategory) ? null
+                : DefDatabase<RimroomsFacilityCategoryDef>.GetNamedSilentFail(facilityCategory);
+            if (chosen != null && !string.IsNullOrEmpty(chosen.description))
+            { listing.Label(chosen.description); }
             List<FacilityBuildingObservation> rows = facilityReport.Buildings.Where(b => facilityCategory == null ||
                 (b.CategoryId ?? "") == facilityCategory).ToList();
             const int pageSize = 12;

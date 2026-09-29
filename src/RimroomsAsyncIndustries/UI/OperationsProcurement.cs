@@ -42,6 +42,9 @@ namespace RimroomsAsyncIndustries.UI
             else if (listing.ButtonText("RR_Procurement_SelectItem".Translate(selectedCatalog.LabelCap)))
             { OpenCatalogMenu(catalog); }
 
+            if (selectedCatalog != null && !string.IsNullOrEmpty(selectedCatalog.description))
+            { listing.Label(selectedCatalog.description); }
+
             if (zones.Count == 0) { listing.Label("RR_Proc_NoStockpiles".Translate()); }
             else if (listing.ButtonText("RR_Procurement_SelectStockpile".Translate(selectedZone == null ? "" : selectedZone.label)))
             { OpenReceivingZoneMenu(zones, selectedCatalog == null ? null : selectedCatalog.ItemDef); }
