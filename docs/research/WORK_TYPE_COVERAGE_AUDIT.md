@@ -37,10 +37,10 @@ No claim here rests on memory. Where a decision turns on a Core fact, the fact i
 | Hunting | 1 | Core | `hunting` deployment | **Covered** |
 | Tailoring | 1 | Core | `bill-ingredients` carry | **Covered 0.6.5-dev** — bill work deployment |
 | PatientBedRest | 1 | Core | none | **Decided: never** |
-| **DarkStudy** | 1 | Anomaly | **none** | **Gap — candidate, and the most on-theme of them** |
+| **DarkStudy** | 1 | Anomaly | `dark-study` deployment | **Covered 0.6.6-dev** |
 | **Fishing** | 1 | Odyssey | **none** | **Gap — candidate, lowest value** |
 
-**As of 0.6.5-dev: seventeen work types have a deployment.** Two are decided against permanently. **Three genuine gaps remain** — `DarkStudy`, `BasicWorker` and the local-container half of `Hauling`, with `Fishing` a generation question before it is a work question. Two of the original four were absent from the remembered list this audit replaced.
+**As of 0.6.6-dev: eighteen work types have a deployment.** Two are decided against permanently. **Two genuine gaps remain** — `BasicWorker` and the local-container half of `Hauling`, with `Fishing` a generation question before it is a work question. Two of the original four were absent from the remembered list this audit replaced.
 
 ## The two decided against, permanently
 
@@ -91,7 +91,7 @@ A half-made thing belongs to one colonist, which is why the *carry* family must 
 
 **Built as five families rather than one**, which this audit got wrong when it predicted a single family. `WorkGiver_DoBill.StartOrResumeBillJob` compares `bill.recipe.requiredGiverWorkType` against `def.workType`, and a bench belongs to a work type only through `WorkGiverDef.fixedBillGiverDefs` — so one provider declaring one work type would have pulled a cook across a gate for smithing. Cooking, Crafting, Smithing, Tailoring and the sculpting half of `Art` each got their own. Record: `implementation/CONNECTED_BILL_WORK_IMPLEMENTATION.md`.
 
-### 2. DarkStudy — one giver, and the most thematically apt thing in the audit
+### 2. DarkStudy — BUILT 0.6.6-dev, and the most thematically apt thing in the audit
 
 Anomaly ships exactly one: `StudyInteract` / `WorkGiver_DarkStudyInteract`, priority 110. Studying a contained entity on a holding platform is what this mod's company *does*, and a containment facility reached through a portal is the premise. `WorkTypeDefOf` carries it as `[MayRequireAnomaly]`, so it gates cleanly through `GetNamedSilentFail` the same way `Childcare` does for Biotech.
 

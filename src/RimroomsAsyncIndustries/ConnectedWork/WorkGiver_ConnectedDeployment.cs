@@ -541,4 +541,18 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         protected override bool ContinueOnly { get { return true; } }
     }
 
+
+    public sealed class WorkGiver_ConnectedDarkStudy : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.DarkStudy; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedDarkStudyContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.DarkStudy; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
 }

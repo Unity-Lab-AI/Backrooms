@@ -67,14 +67,35 @@ Grep every live doc for each superseded claim, and treat a hit as rot **unless**
 | Refuel and rearm as two families | One family — Core's own `RearmTurrets` giver *is* a refuel giver |
 | A hungry or tired pawn crossing a gate for a need | Decided against: needs are not work, and a closing gate strands them. Take the thing to the people instead |
 | A joy or recreation work family, or a ritual work family | Both decided against 2026-09-29. **Joy has no work type at all** — 23 exist across Core and all five DLC and `Joy` is not among them. **No `WorkGiverDef` anywhere is ritual-driven**; a `LordJob_Ritual` owns its participants' duties |
-| A family count of twenty-two, or the remembered families list as if it were complete | **27 families, 19 of them deployments** as of 0.6.5-dev. The remembered list was **not** complete — `DarkStudy` and `Fishing` were missing entirely. `research/WORK_TYPE_COVERAGE_AUDIT.md` is the enumeration; the remembered list is not evidence |
+| Any family count other than the current one (twenty-two, twenty-seven, …), or the remembered families list treated as complete | **28 families, 20 of them deployments** as of 0.6.6-dev. Hauling upkeep and BasicWorker remain; `Fishing` is a generation question first. The remembered list was **not** complete — `DarkStudy` and `Fishing` were missing entirely. `research/WORK_TYPE_COVERAGE_AUDIT.md` is the enumeration and the only count worth quoting. **Update this row's number in the same change as any new family** rather than adding another row beside it |
 | Bill work described as an open gap, or as one family | **BUILT 0.6.5-dev as five families**, one per work type, because Core compares a recipe's `requiredGiverWorkType` against the giver def's own `workType` |
+| A def referencing DLC-only content without `MayRequire`, or the claim that the compliance check covers it | It does **not** — it looks for DLC *package ids*, and a def referencing `Childcare` never mentions Biotech. `tools/check-dlc-gating.py` indexes the game's own data and must pass |
 | `is Bill_Production` used as a test that excludes autonomous or mech bills | It does **not**. `Bill_Autonomous : Bill_Production` and `Bill_Mech : Bill_Autonomous`. Use `ConnectedBillScan.OrdinaryProductionBill` |
 | The register workbook as a hand-maintained file, or its Overview family tallies as stored numbers | Generated output. `tools/research/build-mod-register.py` builds it from the CSVs under `docs/research/`; tallies are **counted from the rows every build**, never stored. Hand-editing the workbook loses the edit on the next build |
 | The register preview PNGs under `outputs/` as showing the current file | They depict the **superseded two-sheet layout**. Both registers now carry four views: Overview, Index, Full register, Mod cards |
 | The `.xlsx` workbook as the register anybody reads, or telling the owner to open it | **There is no spreadsheet application on this machine and no `.xlsx` association at all.** The register that gets read is `Rimrooms_Async_Industries_294_Mod_Integration_Register.html` -- browser, no install, offline. The workbook is still built and verified, but it is the secondary output |
 
 Add a row every time a decision supersedes something. A check that is not written down here is a check that will not be run.
+
+### DLC-only defs must be gated, and the check is not optional
+
+Any def that references content from an expansion must carry `MayRequire` naming that
+expansion's package id. This is **not** covered by the compliance check, which looks for DLC
+package ids rather than DLC def *names*: a `WorkGiverDef` reading `<workType>Childcare</workType>`
+never mentions Biotech anywhere, and shipped ungated from 0.6.4-dev to 0.6.6-dev because of it.
+
+```
+python tools/check-dlc-gating.py
+```
+
+It indexes every `defName` under `RimWorld/Data/*/Defs/**`, treats anything not defined by
+`Core` as DLC-only, and fails on an ungated reference. Reading the game's own data is the
+point — a hand-written list of DLC def names would rot exactly the way the thing it checks
+rotted. Run it whenever a def is added or edited.
+
+**Handling a DLC def correctly in C# is not sufficient.** `GetNamedSilentFail` makes the
+*code* degrade; it does nothing for an unresolved cross-reference in the *def*. Both halves
+are required, and that mismatch has now produced two defects in two consecutive checkpoints.
 
 ### The register is generated, and must be rebuilt in the same change
 

@@ -109,6 +109,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         public const string BillWorkTailoring = "bill-work-tailoring";
         public const string BillWorkArt = "bill-work-art";
 
+        /// <summary>Anomaly content; unavailable without the expansion rather than broken.</summary>
+        public const string DarkStudy = "dark-study";
+
         private static readonly ConstructionFinishingProvider construction =
             new ConstructionFinishingProvider();
         private static readonly ResearchProvider research = new ResearchProvider();
@@ -135,6 +138,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             new BillWorkProvider(BillWorkTailoring, "Tailoring", "RR_ConnectedWork_BillWorkTailoringLabel");
         private static readonly BillWorkProvider billArt =
             new BillWorkProvider(BillWorkArt, "Art", "RR_ConnectedWork_BillWorkArtLabel");
+        private static readonly DarkStudyProvider darkStudy = new DarkStudyProvider();
         private static readonly Dictionary<string, ConnectedDeploymentProvider> registry =
             new Dictionary<string, ConnectedDeploymentProvider>(System.StringComparer.Ordinal)
             {
@@ -157,7 +161,8 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 { BillWorkCrafting, billCrafting },
                 { BillWorkSmithing, billSmithing },
                 { BillWorkTailoring, billTailoring },
-                { BillWorkArt, billArt }
+                { BillWorkArt, billArt },
+                { DarkStudy, darkStudy }
             };
 
         public static IEnumerable<ConnectedDeploymentProvider> All { get { return registry.Values; } }

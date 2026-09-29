@@ -649,7 +649,12 @@
     <prioritizeSustains>true</prioritizeSustains>
   </WorkGiverDef>
 
-  <WorkGiverDef>
+  <!-- Childcare is a Biotech WorkTypeDef. Without the gate this <workType> is an
+       unresolved cross-reference on a Core-only install, which is an error at load
+       in a mod that requires nothing but Core. The provider already degraded
+       correctly in C# through GetNamedSilentFail; this is the XML half of that,
+       missing since 0.6.4-dev and added 2026-09-29. -->
+  <WorkGiverDef MayRequire="Ludeon.RimWorld.Biotech">
     <defName>RR_ConnectedChildcareContinue</defName>
     <label>travel on to mind through a gate</label>
     <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedChildcareContinue</giverClass>
@@ -662,7 +667,12 @@
     <prioritizeSustains>true</prioritizeSustains>
   </WorkGiverDef>
 
-  <WorkGiverDef>
+  <!-- Childcare is a Biotech WorkTypeDef. Without the gate this <workType> is an
+       unresolved cross-reference on a Core-only install, which is an error at load
+       in a mod that requires nothing but Core. The provider already degraded
+       correctly in C# through GetNamedSilentFail; this is the XML half of that,
+       missing since 0.6.4-dev and added 2026-09-29. -->
+  <WorkGiverDef MayRequire="Ludeon.RimWorld.Biotech">
     <defName>RR_ConnectedChildcare</defName>
     <label>cross a gate to mind</label>
     <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedChildcare</giverClass>
@@ -880,6 +890,36 @@
     <workType>Art</workType>
     <verb>sculpt</verb>
     <gerund>sculpting</gerund>
+    <priorityInType>2</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
+  <!-- Dark study: a researcher crosses a gate to study a contained entity. Anomaly content,
+       so both defs are gated; Core's own WorkGiver_DarkStudyInteract.ShouldSkip is likewise
+       just `return !ModsConfig.AnomalyActive`. Continue sits above Core's StudyInteract (110)
+       so a traveller is not turned around; plan sits at 2, below everything local. -->
+
+  <WorkGiverDef MayRequire="Ludeon.RimWorld.Anomaly">
+    <defName>RR_ConnectedDarkStudyContinue</defName>
+    <label>travel on to study through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedDarkStudyContinue</giverClass>
+    <workType>DarkStudy</workType>
+    <verb>study</verb>
+    <gerund>studying</gerund>
+    <priorityInType>112</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef MayRequire="Ludeon.RimWorld.Anomaly">
+    <defName>RR_ConnectedDarkStudy</defName>
+    <label>cross a gate to study</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedDarkStudy</giverClass>
+    <workType>DarkStudy</workType>
+    <verb>study</verb>
+    <gerund>studying</gerund>
     <priorityInType>2</priorityInType>
     <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
     <canBeDoneByMechs>false</canBeDoneByMechs>

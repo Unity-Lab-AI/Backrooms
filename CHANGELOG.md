@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.6-dev - 2026-09-29 - study what you contain, through a gate
+
+- **A researcher now crosses a gate to study a contained entity on the other side.** A containment facility reached through a portal is the whole idea of this mod, and until now nobody would walk to one.
+- An empty holding platform attracts nobody. Neither does an entity still on its study cooldown, or one whose study you switched off.
+- The game's own study work does the studying once your researcher is standing there, exactly as it does at home.
+- This needs the Anomaly expansion. Without it the work simply does not exist, rather than misbehaving.
+
+**A load error fixed, present since 0.6.4-dev.** The two cross-gate childcare work entries referred to a work type that only the Biotech expansion adds, with nothing marking them as needing it. On a copy of the game without Biotech that produced an error at startup — in a mod that is supposed to need nothing but the base game. Both are now marked correctly, and a new check reads the game's own data to make sure no future entry can slip through the same way.
+
+Full record: [dark study](docs/implementation/CONNECTED_DARK_STUDY_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.6.5-dev - 2026-09-29 - somebody actually runs the bill on the other side
 
 - **A bench on the other side of a gate now gets worked.** Until now ingredients were carried through to a bill and then nobody came to make anything, so a workshop in the Backrooms just accumulated material. A cook, crafter, smith, tailor or sculptor will now cross a gate to run the bill itself.

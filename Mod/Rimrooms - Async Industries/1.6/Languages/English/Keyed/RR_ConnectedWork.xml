@@ -89,4 +89,5 @@
   <RR_ConnectedWork_BillWorkSmithingLabel>smithing at a bench through a gate</RR_ConnectedWork_BillWorkSmithingLabel>
   <RR_ConnectedWork_BillWorkTailoringLabel>tailoring at a bench through a gate</RR_ConnectedWork_BillWorkTailoringLabel>
   <RR_ConnectedWork_BillWorkArtLabel>sculpting at a bench through a gate</RR_ConnectedWork_BillWorkArtLabel>
+  <RR_ConnectedWork_DarkStudyLabel>studying a contained entity through a gate</RR_ConnectedWork_DarkStudyLabel>
 </LanguageData>
