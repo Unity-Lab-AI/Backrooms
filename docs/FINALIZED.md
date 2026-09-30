@@ -4542,3 +4542,112 @@ planted faults caught**, against a baseline verified first. Record:
 `implementation/PLAYER_FACING_IMPLEMENTATION.md`.
 
 No game was launched. Nothing in this batch has been played.
+
+
+---
+
+## 0.12.41-dev — the last two systems
+
+**Rows 728, 1031, 1032 and 1033, and the parent row 1028 closes with them.** Owner direction for
+the run, verbatim:
+
+> *"lets get to it"*
+
+Row 728, verbatim: *"Add crew composition and cargo planner with skill/health/weight/gate-window
+checks, ready/unready reasons, and cost preview. (optional mission UI under the connected-colony
+contract; must not own connection existence)"*.
+
+Rows 1028 and 1031, verbatim: *"have quests and missions and contracts and stuff for like 1000
+(odd) cotton or like 10 uninstalled electic stoves(odd) and the such for all things materials and
+resources ect ect that can give reason for the players to have to advance and excplore and haul
+and use the spaces iin the backrooms"*.
+
+**Every gameplay system the queue asked for is now built.** What remains is four rows of
+housekeeping, plus the ~8 that cannot close before the game runs once and the 9 the owner excluded.
+
+**Every check row 728 asks for was already enforced and not one of them was named.** `Dispatch`
+refuses on fifteen distinct grounds, and `CheckCrew` collapses **five** of them — wrong crew
+size, a duplicate, cannot walk, not employed, and by extension dead, downed, mid-mental-break or
+incapable of moving — into the single key `RR_Exp_InvalidCrew`. Weight was already checked,
+hauling was already checked, the operator was already held back, and the debrief hold was already
+enforced. So a player ticked three boxes, pressed dispatch, and was told *"invalid crew"*: **one
+message for five conditions across three people, naming neither the person nor the condition.**
+
+So the planner is **not a second set of checks. It is the same conditions, attributed** — ten
+named reasons, one per person, each reading the state dispatch itself reads:
+`gate.AssignedOperator`, `campaign.AwaitingDebrief`, `ExpeditionCargo.CheckCapacity`,
+`PawnCapacityDefOf.Moving`. A planner with its own idea of "downed" would say ready about somebody
+dispatch turns away, which is worse than saying nothing.
+
+**Skill was the one thing genuinely absent.** Best level per field skill across the selected crew,
+with the gaps named and **deliberately not enforced** — a player may have good reasons to send
+two shooters and no medic, and this mod does not get to overrule that.
+
+**The row's absolute is asserted structurally.** *"Must not own connection existence"*: the planner
+constructs no `CompanyActionResult`, and the proof **enumerates every C# file in the package and
+refuses any reference to the type from outside `UI/`**. Deleting it would change no outcome in the
+game. Which also means it may only be wrong in the safe direction.
+
+**A duplicate accessor was written for the cost preview and the compiler refused it.** A public
+`OpeningPowerDrawWatts` already existed in `GateFootprint.cs` — and the existing one is
+**better**: footprint-scaled by cell count and discounted by `RR_Cap_EfficientAperture`, so the raw
+prop is not what any gate above 1x1 actually draws. A preview built on the raw prop would have
+quoted the wrong number for every large gate and every advanced branch. **Fifteenth time this
+session a measurement was the defect, and the cheapest — the compiler found it.**
+
+**A mission is a contract plus survey work at depth, and that is all the code can verify.** The
+obvious design — *"bring back odd goods from coordinate AI-04"* — **cannot be built**:
+`ThingOrigin` has three values, Outside, Backrooms and Unknown, and **carries no coordinate at
+all**; and `CompRimroomsOddOrigin.AllowStackWith` lets odd stacks merge, so a per-coordinate tag
+would either break stacking or be lost the first time two stacks met.
+
+So the mission names a coordinate in its **demand** — which definition it wants, drawn from what
+that place held — and verifies its field condition against **recorded survey state**, which is
+saved and cannot be faked by hauling. **That is what makes it distinct:** the contract pays for
+*haul* alone and settles the moment goods sit at headquarters, so a branch with a shelf of odd
+cotton fills one without opening a connection. A mission pays for **advance** and **explore** too,
+and will not settle until a space at that depth has been surveyed further than it had been when
+the mission was offered. One open at a time against three, offered every three days rather than
+one, paying double because it also buys the survey work.
+
+**No deadline.** `check-campaign-absolutes.py` forbids one under any name, and a plant that adds
+an `expiryTick` to the mission is caught. A mission is harder because of **what it asks**, never
+because of a clock.
+
+**One settlement path, plus one call.** `SettleSupplyContracts` consults `FieldConditionMet` rather
+than growing a second path, because two paths that both consume goods and both pay money will
+eventually disagree about one of them. **A record with no field condition reports it met**, and the
+saved fields default to zero, so every contract in every existing save behaves exactly as it did.
+
+**The Contracts pane was not silent about odd demands. It was wrong about them.** It printed
+`RR_UI_ContractTerms` — the *survey* contract's terms — on every contract, so a demand for two
+hundred odd cotton displayed *"Survey the route, record the distortion, recover the record book and
+analyse it at headquarters."* **A confident wrong answer is worse than silence**: silence sends a
+player looking, this stopped them. And `requiredThingDefName`, `requiredCount` and `deliveredCount`
+were saved, given public accessors, and **read by nothing but the settlement code** — the
+`check-wiring.py` defect class, in C# where it cannot see it.
+
+**The plant harness caught a syntax error in its own proof and refused to plant anything**, naming
+the reason. That is the 0.12.39-dev failure — 17 of 17 against a proof failing unconditionally —
+reproduced one checkpoint later and caught by construction.
+
+**The sweep then found 39 of 47, and six of the eight misses were the same defect as the previous
+batch:** a claim that tests a **mention** rather than a **use**. `"RR_Plan_Reserve"` is a prefix of
+`RR_Plan_ReserveShort`, so the short-reserve warning alone satisfied it. `"IsOddConsignment"` is a
+prefix of `IsOddConsignmentUnused`, so renaming the property passed. `"return -1f;"` appears three
+times in one method. `"TotallyDisabled"`, `"MassUtility.CanEverCarryAnything"` and
+`"CrewPlanner.MaxCrew"` each have two use sites, and a plant on one left the other matching. Two
+were weak plants — one wrapped a label in `var unused = (...)` and called it a refusal when it
+was neither.
+
+**The lesson, recorded once because it has now cost two batches:** a name is a substring of its own
+declaration, of any renaming of it, and of every symbol that starts with it. **A claim worth making
+is a claim about a call, and if a call happens twice the claim is about how many times.**
+
+**196 C# files, 89 package files**, zero warnings, zero errors. Assembly SHA-256
+`5670CA7C784A5E11B2A50DBEC461B469D015727A8B453711FB35E938C7270C69`, reproduced by two clean
+recompiles. **Twelve checkers pass, thirty-eight proofs hold**, all read by exit status. **48 of 48
+planted faults caught**, against a baseline verified first. Record:
+`implementation/PLANNER_AND_MISSIONS_IMPLEMENTATION.md`.
+
+No game was launched. Nothing in this batch has been played.

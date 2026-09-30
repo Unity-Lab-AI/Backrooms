@@ -317,6 +317,9 @@ namespace RimroomsAsyncIndustries.Company
             // Odd-supply demand rides the same cadence. Offering is interval-gated inside,
             // so this is a counter comparison almost every time it runs.
             if (now % 60 == 0) { UpdateOddSupplyContracts(); }
+            // Consignment missions ride it too. Their own interval is three days rather
+            // than one and their cap is one rather than three, both gated inside.
+            if (now % 60 == 0) { UpdateOddConsignmentMissions(); }
             // The containment procedure. Same cadence as the clean-up team and for the same
             // reason: it has to land inside the window where a response still means something,
             // and it is cheap -- a latched bool, then a holder list that is built at most once

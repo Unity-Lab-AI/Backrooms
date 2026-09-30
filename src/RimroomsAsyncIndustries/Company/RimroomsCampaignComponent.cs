@@ -264,6 +264,7 @@ namespace RimroomsAsyncIndustries.Company
             ExposeRequests();
             ExposeWorldExits();
             ExposeSupplyContracts();
+            ExposeConsignmentMissions();
             ExposeCorporateSupply();
             ExposeFacilityRelief();
             ExposeSoloGroupHints();

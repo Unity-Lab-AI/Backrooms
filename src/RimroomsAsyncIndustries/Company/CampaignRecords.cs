@@ -111,14 +111,40 @@ namespace RimroomsAsyncIndustries.Company
         internal int requiredCount;
         internal int deliveredCount;
 
+        /// <summary>
+        /// Consignment-mission field condition: a space at least this deep, surveyed at least
+        /// this far. **Zero on every other record**, including every contract written before
+        /// 0.12.41-dev, and a zero reports its condition met — which is what lets one settlement
+        /// path serve a plain contract and a mission without a second copy of it.
+        ///
+        /// This is what makes a mission a mission. A contract pays for hauling; a mission does
+        /// not settle until a space has actually been worked, which is the owner's own reason
+        /// for the whole family: *"give reason for the players to have to advance and excplore
+        /// and haul and use the spaces iin the backrooms"*.
+        /// </summary>
+        internal int requiredDepth;
+        internal int requiredSurveyedRooms;
+
         public string RequiredThingDefName { get { return requiredThingDefName; } }
         public int RequiredCount { get { return requiredCount; } }
         public int DeliveredCount { get { return deliveredCount; } }
+        public int RequiredDepth { get { return requiredDepth; } }
+        public int RequiredSurveyedRooms { get { return requiredSurveyedRooms; } }
 
         /// <summary>True when this contract is a demand for odd goods rather than a survey.</summary>
         public bool IsOddSupply
         {
             get { return !string.IsNullOrEmpty(requiredThingDefName) && requiredCount > 0; }
+        }
+
+        /// <summary>
+        /// True when this record is a consignment mission rather than a standing demand. The
+        /// field condition is the only difference in the data, and it is the whole difference in
+        /// what the player has to do.
+        /// </summary>
+        public bool IsOddConsignment
+        {
+            get { return IsOddSupply && requiredSurveyedRooms > 0; }
         }
         public string Id { get { return id; } }
         public string TemplateId { get { return templateId; } }
@@ -142,6 +168,10 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref requiredThingDefName, "rr_requiredThingDefName");
             Scribe_Values.Look(ref requiredCount, "rr_requiredCount", 0);
             Scribe_Values.Look(ref deliveredCount, "rr_deliveredCount", 0);
+            // Defaulted, so a save written before 0.12.41-dev loads with no field condition and
+            // every contract in it keeps behaving exactly as it did.
+            Scribe_Values.Look(ref requiredDepth, "rr_requiredDepth", 0);
+            Scribe_Values.Look(ref requiredSurveyedRooms, "rr_requiredSurveyedRooms", 0);
         }
     }
 

@@ -202,6 +202,12 @@ namespace RimroomsAsyncIndustries.UI
             CompanyActionResult kit = ExpeditionCargo.CheckKit(selectedCrew);
             listing.Label(kit.Success ? "RR_UI_KitReady".Translate() : kit.MessageKey.Translate());
             CompRimroomsGate gate = CurrentGate(campaign);
+            // Row 728. Drawn before the dispatch button on purpose: the whole value of it is
+            // being able to read why somebody is unready *instead of* pressing the button and
+            // being told "invalid crew".
+            listing.GapLine();
+            DrawCrewPlanner(listing, campaign, gate);
+            listing.GapLine();
             if (gate == null || !gate.IsDesignated)
             { listing.Label("RR_NativeGate_DispatchNeedsBoundGate".Translate()); }
             else if (listing.ButtonText("RR_UI_DispatchCrew".Translate()))

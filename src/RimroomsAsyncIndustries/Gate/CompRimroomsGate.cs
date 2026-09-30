@@ -211,6 +211,12 @@ namespace RimroomsAsyncIndustries.Gate
         public float ReturnReserveCapacityWattDays { get { return NativeBatteryCapacity; } }
         public float RecoveryOpeningCostWattDays { get { return GateProps.recoveryOpeningCostWattDays; } }
         public float EmergencyReturnCostWattDays { get { return GateProps.emergencyReturnCostWattDays; } }
+        // The crew planner's cost preview wants the opening draw in watts, and `GateFootprint`
+        // already exposes `OpeningPowerDrawWatts` -- footprint-scaled and discounted by
+        // RR_Cap_EfficientAperture. A second accessor reading the raw prop was written here and
+        // the compiler refused it, which was the right answer: the raw prop is not what a gate
+        // actually draws, so a preview built on it would have quoted the wrong number for every
+        // gate bigger than 1x1.
         /// <summary>
         /// Headroom a gate needs above its draw before it will open.
         ///

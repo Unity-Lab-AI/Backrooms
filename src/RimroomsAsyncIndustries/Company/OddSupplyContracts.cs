@@ -209,6 +209,10 @@ namespace RimroomsAsyncIndustries.Company
             {
                 if (contract == null || !contract.IsOddSupply) { continue; }
                 if (contract.status != ContractStatus.Accepted) { continue; }
+                // A consignment mission wants the space worked as well as the goods delivered.
+                // A record with no field condition -- every plain contract -- reports true, so
+                // this is one settlement path rather than two that could disagree about paying.
+                if (!FieldConditionMet(contract)) { continue; }
 
                 List<Thing> matching = MatchingOddGoods(contract.requiredThingDefName);
                 int available = 0;

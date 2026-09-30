@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_Plan_Heading>Who can go, and who cannot.</RR_Plan_Heading>
+  <RR_Plan_NoStaff>Nobody is employed at this branch.</RR_Plan_NoStaff>
+  <RR_Plan_RowReady>{0} - ready, {1} kg of room left.</RR_Plan_RowReady>
+  <RR_Plan_RowUnready>{0} - not ready. {1}</RR_Plan_RowUnready>
+
+  <RR_Plan_Missing>That staff member is no longer on the map.</RR_Plan_Missing>
+  <RR_Plan_Dead>Dead.</RR_Plan_Dead>
+  <RR_Plan_NotEmployed>Not employed by this branch.</RR_Plan_NotEmployed>
+  <RR_Plan_IsOperator>Assigned to the gate console, and the operator stays.</RR_Plan_IsOperator>
+  <RR_Plan_AwaitingDebrief>Has not reported in from the last trip.</RR_Plan_AwaitingDebrief>
+  <RR_Plan_Downed>Down and needs treatment.</RR_Plan_Downed>
+  <RR_Plan_MentalState>In no state to be sent anywhere.</RR_Plan_MentalState>
+  <RR_Plan_CannotMove>Cannot move.</RR_Plan_CannotMove>
+  <RR_Plan_NotAtHeadquarters>Not at headquarters.</RR_Plan_NotAtHeadquarters>
+  <RR_Plan_Hauling>Carrying something. Let them put it down first.</RR_Plan_Hauling>
+  <RR_Plan_OverCapacity>Loaded past what they can carry.</RR_Plan_OverCapacity>
+
+  <RR_Plan_SelectedCount>Selected: {0} of {1}.</RR_Plan_SelectedCount>
+  <RR_Plan_TooMany>That is more than a crossing will take. Deselect somebody.</RR_Plan_TooMany>
+  <RR_Plan_NoneSelected>Nobody selected yet.</RR_Plan_NoneSelected>
+  <RR_Plan_SkillBest>{0}: best in the crew is {1}.</RR_Plan_SkillBest>
+  <RR_Plan_SkillAbsent>{0}: nobody selected has any.</RR_Plan_SkillAbsent>
+  <RR_Plan_SkillGaps>This crew has nobody for: {0}. That is allowed; it is worth knowing.</RR_Plan_SkillGaps>
+  <RR_Plan_CargoSpace>Room to carry: {0} kg between them.</RR_Plan_CargoSpace>
+
+  <RR_Plan_WindowHeading>How long the connection holds, and what it costs.</RR_Plan_WindowHeading>
+  <RR_Plan_NoGate>No gate is bound, so there is no window to quote.</RR_Plan_NoGate>
+  <RR_Plan_Window>About {0} hours at advancement tier {1}.</RR_Plan_Window>
+  <RR_Plan_WindowSustained>Held for as long as it stays powered, staffed and fed, drawing {0} W.</RR_Plan_WindowSustained>
+  <RR_Plan_Cost>Holding it for the whole window draws about {0} Wd, at {1} W.</RR_Plan_Cost>
+  <RR_Plan_CostUnknown>The draw for a full window cannot be quoted from this gate's current state.</RR_Plan_CostUnknown>
+  <RR_Plan_Reserve>Reserve stored: {0} Wd. A return costs {1} Wd.</RR_Plan_Reserve>
+  <RR_Plan_ReserveShort>The reserve does not currently cover a return.</RR_Plan_ReserveShort>
+</LanguageData>

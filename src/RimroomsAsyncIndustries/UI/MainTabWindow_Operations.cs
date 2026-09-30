@@ -163,7 +163,7 @@ namespace RimroomsAsyncIndustries.UI
                     {
                         listing.Label("RR_UI_ContractRow".Translate(contract.TitleKey.Translate(), ("RR_Contract_" + contract.Status).Translate()));
                         listing.Label("RR_UI_ContractValue".Translate(Money(contract.BasePaymentUsd), Money(contract.BonusUsd)));
-                        listing.Label("RR_UI_ContractTerms".Translate());
+                        DrawContractTerms(listing, campaign, contract);
                         listing.GapLine();
                     }
                     break;

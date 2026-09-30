@@ -4,4 +4,16 @@
   <RR_Event_OddSupplyOffered>A buyer wants {0} x {1} recovered from the Backrooms, and will pay ${2}. Ordinary stock will not be accepted.</RR_Event_OddSupplyOffered>
   <RR_Event_OddSupplySettled>Odd goods supply contract settled for ${0}.</RR_Event_OddSupplySettled>
   <RR_Ledger_OddSupplyPayment>Odd goods supply</RR_Ledger_OddSupplyPayment>
+
+  <RR_Contract_OddConsignment_Title>Odd goods consignment</RR_Contract_OddConsignment_Title>
+  <RR_Event_OddConsignmentOffered>The corporation wants a consignment: {0} x {1} out of {2}, and it will not close until a space that deep has {3} rooms surveyed. It pays ${4}.</RR_Event_OddConsignmentOffered>
+
+  <RR_UI_DemandWanted>Wanted: {0} x {1}.</RR_UI_DemandWanted>
+  <RR_UI_DemandDelivered>Handed over: {0} of {1}.</RR_UI_DemandDelivered>
+  <RR_UI_DemandOddOnly>Only goods that came out of the Backrooms count. Ordinary stock will not be accepted.</RR_UI_DemandOddOnly>
+  <RR_UI_DemandUnknownThing>something this build no longer recognises</RR_UI_DemandUnknownThing>
+  <RR_UI_ConsignmentOrigin>Asked for out of {0}, at depth {1}.</RR_UI_ConsignmentOrigin>
+  <RR_UI_ConsignmentSurvey>Survey: {0} of {1} rooms at depth {2} or deeper.</RR_UI_ConsignmentSurvey>
+  <RR_UI_ConsignmentFieldMet>The survey requirement is met. Deliver the goods and it settles.</RR_UI_ConsignmentFieldMet>
+  <RR_UI_ConsignmentFieldUnmet>The survey requirement is not met yet, so delivering the goods alone will not close this.</RR_UI_ConsignmentFieldUnmet>
 </LanguageData>

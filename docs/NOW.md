@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.40-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.41-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **192 C# files, 88 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `7641035476D6D2A2A5FF326E258E1B5D24E32DD581FFD2A683994B55C2D230C4`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **196 C# files, 89 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `5670CA7C784A5E11B2A50DBEC461B469D015727A8B453711FB35E938C7270C69`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **TWELVE**, all passing. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
-| Proofs | **THIRTY-SEVEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Proofs | **THIRTY-EIGHT** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -62,17 +62,19 @@ everything below:
 
 ## Is it done? NO, and the shape of what is left
 
-**6 genuine build items**, counted at 0.12.40-dev, listed in full under **What is left** below. **Five rows closed this batch** — 1193, 1220, 821, 822 and 833, all one family. **Twenty-two rows across the last five batches.**
+**4 genuine build items, and none of them is a gameplay system.** Counted at 0.12.41-dev, listed in full under **What is left** below. **Five rows closed this batch** — 728, 1028, 1031, 1032 and 1033. **Twenty-seven rows across the last six batches.**
 
-**The counting command overstates by one, and it is worth knowing why.** It counts numbered entries under *What is left*, and **entry 1 is a closed record kept there deliberately so nobody rebuilds row 761**. Seven entries, six of them open. Read the list rather than the number.
+**Every system the queue asked for is built.** What is left is a backlog reconciliation, the register retro sweep's last seven families, an economy workbook generator, and the compliance pass.
+
+**The counting command overstates by one, and it is worth knowing why.** It counts numbered entries under *What is left*, and **entry 1 is a closed record kept there deliberately so nobody rebuilds row 761**. Five entries, four of them open. Read the list rather than the number.
 Plus about **8 rows that cannot close before the game runs once** and **9 the owner excluded**.
 
 Queue, one consistent pattern, command beside the number:
 
 ```
-grep -c '^\s*- \[ \]' docs/TODO.md     # 54 open
-grep -c '^\s*- \[~\]' docs/TODO.md    # 48 partial
-grep -c '^\s*- \[x\]' docs/TODO.md    # 480 done
+grep -c '^\s*- \[ \]' docs/TODO.md     # 50 open
+grep -c '^\s*- \[~\]' docs/TODO.md    # 47 partial
+grep -c '^\s*- \[x\]' docs/TODO.md    # 485 done
 ```
 
 **The raw open count overstates, and the reason is worth the paragraph.** Rows closed by work
@@ -95,10 +97,10 @@ this session turned out to be already built, already true, or answered by Core**
 thing in this file. It has saved more work this session than every other practice combined, and
 twice the row's own *“confirmed absent by grep”* was the thing that was wrong.
 
-### The package is staged, and FOURTEEN checkpoints behind
+### The package is staged, and FIFTEEN checkpoints behind
 
-The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.40-dev** —
-**fourteen checkpoints of work are not in the game folder.** Re-stage before any launch:
+The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.41-dev** —
+**fifteen checkpoints of work are not in the game folder.** Re-stage before any launch:
 
 ```
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
@@ -111,41 +113,41 @@ checkpoints stale, so nothing built in this project's history had ever reached t
 
 ---
 
-## DO THIS FIRST — the two systems left
+## DO THIS FIRST — housekeeping is all that is left
 
-**Rows 728 and 1031–1033.** Everything still unbuilt that is a *system* rather than housekeeping,
-and the two are related enough to batch: one decides what a crew takes with them, the other decides
-what the company wants brought back.
+**Every gameplay system in the queue is built.** What remains is four rows of bookkeeping, and
+they are genuinely worth doing rather than filler: two of them are about the register and the
+documents being *true*, which is the property this project leans on hardest.
 
-| Row | What |
-|---|---|
-| 728 | **crew composition and cargo planner** — skill, health, weight and window checks, ready and unready reasons, a cost preview |
-| 1031–1033 | **quests and missions for odd goods**, as distinct from contracts, plus a player-facing surface for open odd demands |
+| Row | What | Shape of the work |
+|---|---|---|
+| 1054 | reconcile 0.5.0–0.7.1 into the master backlog | reading and editing, no code |
+| 206, 302 | the register retro sweep's last seven families | **medical, world operations, cargo, hospitality, materials, visitor economy, staff psychology** |
+| 1268, 1269 | the campaign economy workbook has no generator, and the register preview PNGs depict a superseded layout | a generator, and regenerated images |
+| 1286–1290 | the TOS and official-versions compliance pass | reading Ludeon's terms and the Steam agreements against the package |
 
-Four things to settle before writing anything:
+Three things to settle:
 
-1. **Row 728 carries its own constraint, verbatim: *"must not own connection existence"*.** The
-   planner may refuse a *crew*; it may never be the thing that decides whether a connection can
-   exist. Six reasons already stop a gate and a seventh arrived at 0.12.38-dev — the planner is an
-   eighth opinion about a crew, not about the machine.
-2. **Most of the checks already exist somewhere.** `StaffDebrief` has nine refusals,
-   `Dispatch` already gates on readiness, and the expedition pane already previews. **Read those
-   first** — nine rows this session turned out already built, and twice a row's own *"confirmed
-   absent by grep"* was itself the defect.
-3. **The owner asked for *"quests and missions and contracts"*, and contracts shipped at
-   0.7.3-dev.** So 1031–1033 is the other two thirds of one direction, not a new idea. Core's
-   `QuestScriptDef` is the obvious surface and it is worth establishing what a Core-only,
-   Harmony-free mod can actually reach through it before designing anything.
-4. **The odd-demand surface is the small half and is nearly free.** Offers and settlements are
-   already recorded events; the Operations pane simply does not list the open ones. Check that
-   before building a system for it.
+1. **The retro sweep is the one with teeth.** `check-register-compliance.py` already refuses a
+   shipped feature whose family was never consulted, so the seven unswept families are seven
+   places the LAW has been satisfied on paper. **Query each one before reading anything else** —
+   `python tools/register-query.py family <name>` — and expect at least one to change something,
+   because every previous sweep did.
+2. **1268 is a generator, so it is code, and it is the only code left.** The workbook is
+   `docs/CAMPAIGN_ECONOMY_MODEL.md`'s numbers; a generator that derives them from the defs is
+   what stops the document drifting from the build. Check whether `tools/` already has something
+   close before writing a new one.
+3. **1286–1290 cannot be answered by reading this repository.** It is Ludeon's modding terms and
+   the Steam agreements against what the package actually does — and
+   `docs/COMPLIANCE_AND_OFFICIAL_VERSIONS.md` already exists, so **read it first and establish
+   what is stale rather than starting a new position.**
 
-**Then the housekeeping batch**, which is all that is left after these: 1054, 206 and 302, 1268 and
-1269, and 1286–1290.
+**After these four, the only rows left in the queue are the ~8 that cannot close before the game
+runs once and the 9 the owner excluded.** That is the end of the build.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.40
+## What shipped this session, 0.7.1 → 0.12.41
 
 | Version | What |
 |---|---|
@@ -225,6 +227,7 @@ Four things to settle before writing anything:
 | 0.12.38 | **A gate read no damage at all** — it could be shot to twelve per cent and still hold a connection. **Seven of row 725's nine subsystems were already built** under different names. Reliability is a record, not a dice roll |
 | 0.12.39 | **The register said don't patch, so the hook is a sentence** — reading the integration approach first made the obvious build the wrong one. Five rows, a read-only readout, and **row 791's absolute got a checker**
 | 0.12.40 | **The words a player reads** — five rows in one batch. **Architect, the first surface row 821 names, opened from nowhere in this package**, and the handoff said it was already reachable. The company tab was second from the right. `docs/PLAYING.md`, a help pane with the glossary, and Core's own generator supplying the keyboard binding for one XML field
+| 0.12.41 | **The last two systems** — **every check row 728 asks for was already enforced and not one was named**: five conditions across three people, all reported as `RR_Exp_InvalidCrew`. And a mission is a contract **plus survey work at depth**, because the odd mark carries no coordinate and stacks merge, so nothing can verify *where* a good came from
 
 ---
 
@@ -232,9 +235,12 @@ Four things to settle before writing anything:
 
 **Re-measure this list before trusting it.** It has been correct at every checkpoint since 0.12.33-dev because each batch edited it, but the count at the top of the file is a command for a reason: the item numbers are renumbered on every close and a stale count is the most expensive thing this file can hold.
 
-**7 numbered entries below, 6 of them genuine build items** — entry 1 is a closed record. Counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
+**5 numbered entries below, 4 of them genuine build items** — entry 1 is a closed record. Counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
 
-### Systems still unbuilt
+### Systems still unbuilt — NONE. This heading holds a closed record only
+
+**Every gameplay system the queue asked for is built as of 0.12.41-dev.** The entry below stays so nobody rebuilds row 761.
+
 
 1. **ROW 761 IS CLOSED** (0.12.35-dev and 0.12.36-dev). Containment rooms, the security
    procedure and the alarm shipped first; **staff debrief and quarantine closed it**, and they
@@ -248,25 +254,17 @@ Four things to settle before writing anything:
    **Also closed, 0.12.34-dev:** row 1266's eleven DLC container hauling givers as
    `machine-loading` — **Core forbids every one of them from moving anything between maps**, so
    invariant 55 was never engaged — and the four `Art` painting givers as `painting`.
-2. **Crew composition and cargo planner** with skill, health, weight and window checks, ready and
-   unready reasons, and a cost preview. Row 728. *"must not own connection existence"*.
-3. **Quests and missions for odd goods**, as distinct from contracts — contracts shipped 0.7.3-dev
-   and the owner asked for *"quests and missions and contracts"*. Plus a player-facing surface for
-   open odd demands: offers and settlements are recorded events and the Operations pane does not
-   list them. Rows 1031, 1032, 1033.
-
-
 ### Housekeeping with teeth
 
-4. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
+2. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
     research and coarse for code.
-5. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
+3. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
     expedition logistics, interface, facilities, furniture, storage, power, contracts, faction
     standing, subject casework, evidence, policies. **Not yet: medical, world operations, cargo,
     hospitality, materials, visitor economy, staff psychology.** Rows 206, 302.
-6. **The campaign economy workbook has no generator**, and the register preview PNGs under
+4. **The campaign economy workbook has no generator**, and the register preview PNGs under
     `outputs/` depict a superseded layout. Rows 1268, 1269.
-7. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
+5. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
     terms and the Steam agreements, and keep the position current. Rows 1286–1290.
 
 ### Cannot close before the game runs once — about 8 rows
@@ -292,7 +290,7 @@ idea. [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md) holds them, and **it is
 
 ### Done since the last handoff, so nobody rebuilds it
 
-**Seven checkpoints, 0.12.34 → 0.12.40, twenty-two rows closed in five batches.** Every one published
+**Eight checkpoints, 0.12.34 → 0.12.41, twenty-seven rows closed in six batches.** Every one published
 to all eight refs with a read-back, a deterministic assembly, and the full checker and proof sweep.
 
 **The owner changed how to work, mid-run:** *"lets start doing shit correctly and efficiently and
@@ -353,6 +351,41 @@ the framework is installed"* for the vehicle framework. So the hook is a **read-
 what is installed and what this package does about it — which is what the rows asked for in their
 own words. The defence that cannot rot is asserted: **only two files mention the detection class,
 and no tracked package id appears in any other source file.**
+
+**Every check row 728 asks for was already enforced, and not one of them was named.** `Dispatch`
+refuses on fifteen distinct grounds and `CheckCrew` collapses **five** of them — wrong crew size, a
+duplicate, cannot walk, not employed, and by extension dead, downed, mid-mental-break or incapable
+of moving — into the single key `RR_Exp_InvalidCrew`. **One message for five conditions across
+three people, naming neither the person nor the condition.** So the planner is not a second set of
+checks, it is the same conditions attributed: ten named reasons, each reading the state dispatch
+itself reads. Skill was the one thing genuinely absent. **The row's absolute — *"must not own
+connection existence"* — is asserted structurally:** the proof enumerates every C# file and
+refuses a reference to the planner from outside `UI/`, so deleting it would change no outcome.
+
+**A mission is a contract plus survey work at depth, because that is all the code can verify.**
+*"Bring back odd goods from coordinate AI-04"* cannot be built: `ThingOrigin` has three values and
+**carries no coordinate at all**, and odd stacks merge, so nothing can ever check *where* a good
+came from. The field condition is checked against recorded survey state instead — which cannot be
+faked by hauling, and which is what makes the mission pay for **advance and explore** where the
+contract only ever paid for **haul**. One settlement path, plus one call; a record with no
+condition reports it met, so every existing save behaves exactly as it did.
+
+**The Contracts pane was not silent about odd demands, it was wrong about them.** It printed the
+*survey* contract's terms on every contract, so a demand for two hundred odd cotton displayed
+*"Survey the route, record the distortion, recover the record book and analyse it at
+headquarters."* **A confident wrong answer is worse than silence** — silence sends a player
+looking, this stopped them. Three demand fields were saved, given public accessors and read by
+nothing but the settlement code.
+
+**The plant harness caught a syntax error in its own proof and refused to plant anything.** That is
+the 0.12.39-dev failure reproduced one checkpoint later and caught by construction. The sweep then
+found **39 of 47**, and **six of the eight misses were the same defect as the previous batch**: a
+claim testing a mention rather than a use. The lesson, stated once because it has now cost two
+batches — **a name is a substring of its own declaration, of any renaming of it, and of every
+symbol that starts with it.** `RR_Plan_Reserve` is a prefix of `RR_Plan_ReserveShort`;
+`IsOddConsignment` is a prefix of `IsOddConsignmentUnused`; `return -1f;` appears three times in
+one method. A claim worth making is a claim about a **call**, and if a call happens twice the claim
+is about **how many times**.
 
 **The first surface row 821 names opened from nowhere at all.** Not from the company panel, not
 from any pane, not from anywhere in 191 files: `grep -rn "Architect" --include=*.cs src` returned
@@ -808,11 +841,12 @@ Three of this project's largest types are partial across many files: `CompRimroo
 ## The warning that matters most right now
 
 **SUSPECT YOUR OWN MEASUREMENT FIRST.** A search that finds nothing is not evidence, and across
-0.12.24 → 0.12.40 **the measurement was the defect at least fourteen separate times while the code
-was fine.** Five from 0.12.24 → 0.12.33 are tabulated below; the nine since are:
+0.12.24 → 0.12.41 **the measurement was the defect at least fifteen separate times while the code
+was fine.** Five from 0.12.24 → 0.12.33 are tabulated below; the ten since are:
 
 | Measured wrong | The truth |
 |---|---|
+| a public `OpeningPowerDrawWatts` written for the cost preview | **one already existed** in `GateFootprint.cs`, footprint-scaled and discounted by `RR_Cap_EfficientAperture`. The compiler caught it, which is the cheapest way this ever gets caught — and the existing one was *better*: the raw prop is not what any gate above 1×1 draws |
 | **this file said `OpenNativeTab` already opens Architect** | it did not and never had. `grep -rn "Architect" --include=*.cs src` returned **nothing at all**. The stale measurement was in the handoff itself, which is the worst place for one |
 | a colour guard that matched `new Color(` | `new UnityEngine.Color(...)` walked past it — and the qualified spelling is the one a file without the `using` would have to write |
 | the queue count, **twice** (90 vs 86, then an item count of 19 and 13 vs 20 and 12) | the list is renumbered on every close, so the count must come from the file |
