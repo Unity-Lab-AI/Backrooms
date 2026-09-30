@@ -48,6 +48,7 @@
   <RR_Settings_FamilyHaulingUpkeep>Travelling to tend containers</RR_Settings_FamilyHaulingUpkeep>
   <RR_Settings_FamilyMachineLoading>Travelling to load a machine</RR_Settings_FamilyMachineLoading>
   <RR_Settings_FamilyPainting>Travelling to paint</RR_Settings_FamilyPainting>
+  <RR_Settings_FamilyRoofWork>Travelling to work a roof</RR_Settings_FamilyRoofWork>
   <RR_Settings_FamilyBasicWorker>Travelling to operate a marked object</RR_Settings_FamilyBasicWorker>
   <RR_Settings_FamilyFishing>Travelling to fish</RR_Settings_FamilyFishing>
 </LanguageData>

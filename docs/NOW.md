@@ -24,16 +24,26 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.35-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.36-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **186 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `F4252E3F04A178EB6B2FCB3C0D8C2B5D1A8114883404C46088278D9FA0B6892D`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **188 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `CF62F3C946CCEC8CB9E7A0CEC5B235394556B3254B399920D0FEE9DF8AE8D9DC`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **ELEVEN**, all passing. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
-| Proofs | **THIRTY-TWO** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Proofs | **THIRTY-THREE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
 | Game launches | **none, ever** |
+
+### How to work, owner direction 2026-09-29
+
+> *"lets start doing shit correctly and efficiently and keep going iin batches of items completed
+> so we have less work constantly pushing and all of that"*
+
+**Batch related rows into one checkpoint and publish once.** 0.12.36-dev closed **six** rows in one
+publish, and they were related on purpose: quarantine is an area question, so the area rows rode
+with it, and the two ordinary-map rows were proved in the same sweep. Chain the work, then do one
+build, one determinism run, one checker and proof sweep, one commit, one cascade.
 
 ### The standing instruction
 
@@ -52,15 +62,15 @@ everything below:
 
 ## Is it done? NO, and the shape of what is left
 
-**20 genuine build items**, counted at 0.12.35-dev, listed in full under **What is left** below. Row 761 lost three of its five halves this checkpoint and still holds two, so the *count* has not moved even though the work has — which is why the count is a command and not a memory.
+**18 genuine build items**, counted at 0.12.36-dev, listed in full under **What is left** below. **Six rows closed in one batch**: 761 completely, the three area rows together, and 98 and 99 by proof.
 Plus about **8 rows that cannot close before the game runs once** and **9 the owner excluded**.
 
 Queue, one consistent pattern, command beside the number:
 
 ```
-grep -c '^\s*- \[ \]' docs/TODO.md     # 74 open
+grep -c '^\s*- \[ \]' docs/TODO.md     # 68 open
 grep -c '^\s*- \[~\]' docs/TODO.md    # 50 partial
-grep -c '^\s*- \[x\]' docs/TODO.md    # 458 done
+grep -c '^\s*- \[x\]' docs/TODO.md    # 464 done
 ```
 
 **The raw open count overstates.** Rows closed by work that shipped the same day keep their `[ ]`
@@ -71,7 +81,7 @@ session than it cost.
 
 ### The package is staged, and one checkpoint behind
 
-The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.35-dev**. Re-stage
+The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.36-dev**. Re-stage
 before any launch:
 
 ```
@@ -85,42 +95,44 @@ checkpoints stale, so nothing built in this project's history had ever reached t
 
 ---
 
-## DO THIS FIRST — staff debrief and quarantine, the last two halves of row 761
+## DO THIS FIRST — the generation batch: materials, mineables, floors and families
 
-Three of row 761's five remaining halves shipped at 0.12.35-dev: containment rooms, the security
-procedure and the alarm. **These two are what is left of it**, and they are one mechanism rather
-than two, which is the thing to settle before writing anything.
+Four rows that are one piece of work, and they should be built together for the same reason the
+last batch was: they all touch what a generated coordinate is *made of*.
 
-Four things to establish:
+| Row | What |
+|---|---|
+| **1005** | material variety per coordinate — archetype fixtures take their default stuff today |
+| **1101** | mineable materials and recoverable floors in a stripped interior |
+| **1011** | inhabitant and monstrosity families tiered by depth and wealth, every variation seeded |
+| **1266's neighbours** | nothing; 1266 is closed |
 
-1. **There is no exposure hediff in this mod, and that decides quarantine's shape.** Measured:
-   the package has **no `HediffDefs` folder at all**. So there is nothing medical to hold somebody
-   *for*, and quarantine cannot be *"wait until the sickness clears"* without inventing a hediff —
-   which the existing-content-only constraint forbids. **The honest reading is that quarantine is
-   "held apart until debriefed"**, which makes it the same mechanism as the debrief and gives the
-   debrief a consequence.
-2. **Debrief has most of its machinery already built, and it must not be rebuilt.**
-   `EvidenceObservations.RecordFieldObservation` files what a crew member saw;
-   `EvidenceInterview.SettleDisputedAccount` (0.12.28-dev) settles two accounts that disagree, with
-   nine refusals and an interviewer chosen on Social. **Read both before designing.** What is
-   plausibly missing is the *home-side* step: a returning crew member reporting in, as against an
-   observation being written down in the field.
-3. **Quarantine is an area question and three area rows are still open** — 1215, 1235 and 1239
-   cover `Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear` and `Area_PollutionClear` across
-   a gate. **Measured at 0.12.33-dev: one incidental `Area_NoRoof` use and no cross-gate
-   coverage.** If quarantine is an area, build it with those three rather than beside them.
-4. **`python tools/register-query.py family "staff psychology"`** — it is one of the **seven**
-   families the register retro sweep has not reached (rows 206, 302), and a debrief is a mood event
-   about what somebody saw. This is the sweep that owes this work its guidance.
+Four things to establish before writing a line:
 
-**The thing to be careful about:** a debrief that hands out a mood effect is writing a `ThoughtDef`
-consequence, and `ThoughtDefs` already ship in this package — so check what is there before adding
-anything. 0.12.5-dev deleted four research projects for being unlocks with nothing to unlock, and a
-debrief that changes nothing observable is the same defect.
+1. **Half of 1101 already ships and must not be rebuilt.** `FillWithRock` and `NaturalRockTypesIn`
+   are already used by generation — measured at 0.12.33-dev. **The floors half is what remains**:
+   a recoverable floor means `TerrainDef.removeBuildingBlueprint` or Core's own floor-removal
+   designation working on a coordinate's terrain. Read `GenStep_BackroomsDestination` first.
+2. **1005 and 1011 share a seed, and that is the constraint that matters.** A coordinate is
+   regenerated from its seed, and **two players must see the same thing happen** — that rule is
+   already written into `GateIncursion`'s candidate ordering and into the displacement work at
+   0.10.3-dev. Any material or family choice must come out of the coordinate's own seed, never out
+   of `Rand` without a pushed state.
+3. **1011's ladder already exists and must be read rather than re-invented.** The bands, the
+   archetypes and `CoordinatePressureLadder` all ship, and 0.12.33-dev surfaced the band per
+   coordinate in the Operations pane. *"Tiered by depth and wealth"* is the ladder's own two
+   inputs — `CoordinatePressureLadder.ColonyWealth()` is already how incursion scales.
+4. **`python tools/register-query.py family materials`** — **one of the seven families the
+   register retro sweep has not reached** (rows 206, 302), and it is exactly the family this batch
+   is about. This is the sweep that owes this work its guidance, so read the rows directly.
+
+**The constraint that will bite:** *"material variety"* must not become new `ThingDef`s. Existing
+content only — the variety has to come from Core's own stuffable materials and rock types chosen
+per coordinate, not from anything authored here.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.35
+## What shipped this session, 0.7.1 → 0.12.36
 
 | Version | What |
 |---|---|
@@ -198,19 +210,19 @@ debrief that changes nothing observable is the same defect.
 
 ## What is left, in order — rewritten 0.12.34-dev, measured not carried
 
-**20 genuine build items**, counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
+**18 genuine build items**, counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
 
 ### Systems still unbuilt
 
-1. **Staff debrief and quarantine** — the last two halves of row 761, and **the DO THIS
-   FIRST item**; see the top of this file for the four things to settle, of which *"there is no
-   exposure hediff in this mod"* is the one that decides the shape.
-   **Closed from that row at 0.12.35-dev:** containment rooms (a tenth facility category matched
-   by capability, naming no expansion def), the security procedure (a standing order that cuts
-   every open connection on a breach, through the gate's own existing cutoff) and the alarm. The
-   finding worth keeping: **Core already ships four containment alerts and every one reads
-   `Find.CurrentMap`**, so the gap was never that containment has no warning but that it has none
-   about the maps you are not looking at.
+1. **ROW 761 IS CLOSED** (0.12.35-dev and 0.12.36-dev). Containment rooms, the security
+   procedure and the alarm shipped first; **staff debrief and quarantine closed it**, and they
+   turned out to be one mechanism because this package has **no `HediffDefs` folder at all**, so
+   quarantine is *"you do not go back out until you have reported in"* rather than anything
+   medical. Two findings worth keeping: **Core already ships four containment alerts and every one
+   reads `Find.CurrentMap`**, so the gap was never that containment has no warning but that it has
+   none about the maps you are not looking at; and the debrief hold bites on **`Dispatch`, not on
+   `PortalTraversalPolicy`**, because a player walking one colonist through a door by hand is not
+   a company dispatch.
    **Also closed, 0.12.34-dev:** row 1266's eleven DLC container hauling givers as
    `machine-loading` — **Core forbids every one of them from moving anything between maps**, so
    invariant 55 was never engaged — and the four `Art` painting givers as `painting`.
@@ -220,52 +232,45 @@ debrief that changes nothing observable is the same defect.
    and the owner asked for *"quests and missions and contracts"*. Plus a player-facing surface for
    open odd demands: offers and settlements are recorded events and the Operations pane does not
    list them. Rows 1031, 1032, 1033.
-4. **Mining and building behind a gate.** Rows 98 and 99. The cells around a gate are ordinary map;
-   the one exception is linked equipment, which has placement requirements **of its own**.
-   **Row 113 is closed** (0.12.27-dev) — the approach cell is reserved against blocking, and
-   flooring is fine.
-5. **Mineable materials and recoverable floors** in a stripped interior. Row 1101. `FillWithRock`
+4. **Mineable materials and recoverable floors** in a stripped interior. Row 1101. `FillWithRock`
    and `NaturalRockTypesIn` already ship; the floors half is what remains.
-6. **The four area types across a gate** — `Area_BuildRoof`, `Area_NoRoof`,
-   `Area_SnowOrSandClear`, `Area_PollutionClear`. Rows 1215, 1235, 1239. **Measured: one incidental
-   `Area_NoRoof` use and no cross-gate coverage.**
-7. **Inhabitant and monstrosity families tiered by depth and wealth**, every variation seeded.
+5. **Inhabitant and monstrosity families tiered by depth and wealth**, every variation seeded.
    Row 1011. The bands, archetypes and pressure ladder they sit on all ship.
-8. **Material variety per coordinate** — archetype fixtures take their default stuff today.
+6. **Material variety per coordinate** — archetype fixtures take their default stuff today.
    Row 1005.
-9. **Gate subsystems**: monitoring, cool-down, modules, repair and reliability. Row 725. Power
+7. **Gate subsystems**: monitoring, cool-down, modules, repair and reliability. Row 725. Power
     reserves, calibration and the cutoff already ship.
-10. **Vehicles, space travel and the two VGE chapter hooks.** Rows 764, 765, 766. **Optional by
+8. **Vehicles, space travel and the two VGE chapter hooks.** Rows 764, 765, 766. **Optional by
     construction** — a `PatchOperationFindMod` that does nothing when the mod is absent.
-11. **RWT multiplayer feature detection and its documentation.** Rows 784, 791. Requires the mod
+9. **RWT multiplayer feature detection and its documentation.** Rows 784, 791. Requires the mod
     present to detect anything, and **no statement may describe live shared-colony control** unless
     implemented and demonstrated.
 
 ### Surfaces and words
 
-12. **The player-facing how-to for gameplay and systems.** Rows 1193, 1220. `docs/HOWTO.md`
+10. **The player-facing how-to for gameplay and systems.** Rows 1193, 1220. `docs/HOWTO.md`
     documents the **build**, not play. Written **once**, for both the repo and the site.
-13. **The native menu remap** into the company-first layout. Row 821. Twelve panes and reason codes
+11. **The native menu remap** into the company-first layout. Row 821. Twelve panes and reason codes
     ship; this is the Architect/Work/Assign/Research integration.
-14. **Tutorial, glossary, keyboard paths, contrast and scale.** Rows 822, 833. Localization
+12. **Tutorial, glossary, keyboard paths, contrast and scale.** Rows 822, 833. Localization
     completeness is already measurable: `check-keyed-strings.py` reports every declared key
     resolving.
 
 ### Housekeeping with teeth
 
-15. **The unknown-def-field checker**, written once and **removed rather than shipped** because it
+13. **The unknown-def-field checker**, written once and **removed rather than shipped** because it
     passed its own planted fault. Row 922.
-16. **Fix `disposition_stance()`** in the register generator: it counts a **negated** "required" as
+14. **Fix `disposition_stance()`** in the register generator: it counts a **negated** "required" as
     Required, and **14 of the 17** "Required" rows say the opposite. Row 1055.
-17. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
+15. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
     research and coarse for code.
-18. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
+16. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
     expedition logistics, interface, facilities, furniture, storage, power, contracts, faction
     standing, subject casework, evidence, policies. **Not yet: medical, world operations, cargo,
     hospitality, materials, visitor economy, staff psychology.** Rows 206, 302.
-19. **The campaign economy workbook has no generator**, and the register preview PNGs under
+17. **The campaign economy workbook has no generator**, and the register preview PNGs under
     `outputs/` depict a superseded layout. Rows 1268, 1269.
-20. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
+18. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
     terms and the Steam agreements, and keep the position current. Rows 1286–1290.
 
 ### Cannot close before the game runs once — about 8 rows

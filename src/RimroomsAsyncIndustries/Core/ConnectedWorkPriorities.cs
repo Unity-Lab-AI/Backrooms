@@ -91,6 +91,8 @@ namespace RimroomsAsyncIndustries.Core
                 "RR_ConnectedMachineLoadingContinue", "RR_ConnectedMachineLoading"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyPainting",
                 "RR_ConnectedPaintingContinue", "RR_ConnectedPainting"),
+            new ConnectedWorkPriorityPair("RR_Settings_FamilyRoofWork",
+                "RR_ConnectedRoofWorkContinue", "RR_ConnectedRoofWork"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyDarkStudy",
                 "RR_ConnectedDarkStudyContinue", "RR_ConnectedDarkStudy"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyBillWorkCooking",

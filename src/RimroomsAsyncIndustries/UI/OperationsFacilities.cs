@@ -60,6 +60,71 @@ namespace RimroomsAsyncIndustries.UI
             }
         }
 
+        /// <summary>
+        /// Who has come home and not reported in, and the button that takes the report.
+        ///
+        /// The interviewer is chosen here rather than by the player, from the colonists standing
+        /// on the same map, highest Social first with ties broken on load id so the choice is
+        /// deterministic and a reload cannot change who took the report. The same rule witness
+        /// interviews use.
+        ///
+        /// Every row is drawn whether or not it can be actioned, with the refusal on the button,
+        /// because *"nobody here is good enough at talking to take this report"* is exactly the
+        /// thing a player needs told.
+        /// </summary>
+        private void DrawDebriefs(Listing_Standard listing, RimroomsCampaignComponent campaign)
+        {
+            var holds = campaign.OutstandingDebriefs().ToList();
+            if (holds.Count == 0)
+            { listing.Label("RR_Debrief_NoneOutstanding".Translate()); return; }
+            listing.Label("RR_Debrief_Outstanding".Translate(holds.Count));
+            foreach (Company.DebriefHold hold in holds.Take(8))
+            {
+                Pawn crewMember = hold.Crew;
+                string name = string.IsNullOrEmpty(hold.CrewName)
+                    ? "RR_Debrief_UnknownStaff".Translate().ToString() : hold.CrewName;
+                Pawn interviewer = DebriefInterviewerFor(campaign, crewMember);
+                string blocker = campaign.DebriefBlocker(crewMember, interviewer);
+                if (blocker != null)
+                {
+                    listing.Label("RR_Debrief_Row".Translate(name, blocker.Translate()));
+                    continue;
+                }
+                if (listing.ButtonText("RR_Debrief_Take".Translate(name,
+                    interviewer.LabelShortCap)))
+                {
+                    CompanyActionResult result =
+                        campaign.DebriefCrewMember(crewMember, interviewer);
+                    if (!result.Success)
+                    {
+                        Messages.Message(result.MessageKey.Translate(),
+                            MessageTypeDefOf.RejectInput, false);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The most capable colleague standing where this crew member is, or null. Never the crew
+        /// member themselves -- <c>DebriefBlocker</c> refuses that anyway, but offering it would
+        /// put a button on the screen whose only possible outcome is a refusal.
+        /// </summary>
+        private static Pawn DebriefInterviewerFor(RimroomsCampaignComponent campaign,
+            Pawn crewMember)
+        {
+            if (crewMember == null || crewMember.Map == null) { return null; }
+            return crewMember.Map.mapPawns.FreeColonistsSpawned
+                .Where(candidate => candidate != null && candidate != crewMember &&
+                    !candidate.Downed && !candidate.InMentalState && candidate.skills != null)
+                .OrderByDescending(candidate =>
+                {
+                    SkillRecord skill = candidate.skills.GetSkill(SkillDefOf.Social);
+                    return skill == null || skill.TotallyDisabled ? -1 : skill.Level;
+                })
+                .ThenBy(candidate => candidate.ThingID, StringComparer.Ordinal)
+                .FirstOrDefault();
+        }
+
         private void DrawFacilities(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
             if (!FacilityReport.Available(campaign.Headquarters))
@@ -81,6 +146,8 @@ namespace RimroomsAsyncIndustries.UI
             { OpenNativeTab(DefDatabase<MainButtonDef>.GetNamedSilentFail("Assign")); }
             listing.GapLine();
             DrawContainment(listing, campaign);
+            listing.GapLine();
+            DrawDebriefs(listing, campaign);
             listing.GapLine();
 
             string filter = facilityCategory == null ? "RR_Fac_All".Translate().ToString() :

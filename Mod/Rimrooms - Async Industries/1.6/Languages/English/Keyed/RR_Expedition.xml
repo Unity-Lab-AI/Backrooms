@@ -58,4 +58,5 @@
   <RR_CrewClosure_Elsewhere>at another known location</RR_CrewClosure_Elsewhere>
   <RR_CrewClosure_Unknown>whereabouts unresolved</RR_CrewClosure_Unknown>
   <RR_Exp_JobDefMissing>That action is unavailable because its job definition did not load. Check for a mod conflict; nothing was changed.</RR_Exp_JobDefMissing>
+  <RR_Exp_AwaitingDebrief>Somebody on this crew has not reported in from the last trip. Debrief them from the facilities pane before sending them out again.</RR_Exp_AwaitingDebrief>
 </LanguageData>

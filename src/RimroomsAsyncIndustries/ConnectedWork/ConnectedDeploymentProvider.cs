@@ -133,6 +133,15 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         /// </summary>
         public const string Painting = "painting";
 
+        /// <summary>
+        /// Roof building and roof removal on the far map, driven by `Area_BuildRoof` and
+        /// `Area_NoRoof`. A third `Construction` family rather than two routes on the finishing
+        /// one, because the finishing family's continuation giver sits at 82 -- **below** Core's
+        /// `BuildRoofs` (100) and `RemoveRoofs` (90) -- and a continuation giver that does not
+        /// outrank the local givers it travels for turns a committed worker around.
+        /// </summary>
+        public const string RoofWork = "roof-work";
+
         /// <summary>Designation-driven: flick, open, eject fuel.</summary>
         public const string BasicWorker = "basic-worker";
 
@@ -170,6 +179,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         private static readonly MachineLoadingProvider machineLoading =
             new MachineLoadingProvider();
         private static readonly PaintingProvider painting = new PaintingProvider();
+        private static readonly RoofWorkProvider roofWork = new RoofWorkProvider();
         private static readonly BasicWorkerProvider basicWorker = new BasicWorkerProvider();
         private static readonly FishingProvider fishing = new FishingProvider();
         private static readonly Dictionary<string, ConnectedDeploymentProvider> registry =
@@ -199,6 +209,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 { HaulingUpkeep, haulingUpkeep },
                 { MachineLoading, machineLoading },
                 { Painting, painting },
+                { RoofWork, roofWork },
                 { BasicWorker, basicWorker },
                 { Fishing, fishing }
             };

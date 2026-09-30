@@ -1030,6 +1030,40 @@
     <canBeDoneByMechs>false</canBeDoneByMechs>
   </WorkGiverDef>
 
+  <!-- RoofWork: put a roof up or take one down on the far side, driven by the player's own
+       BuildRoof and NoRoof areas. Continue sits at 101, one above Core's BuildRoofs (100) and
+       therefore above RemoveRoofs (90) as well, which are the two givers this family travels
+       for. It is NOT hung on the finishing family because that family's continue is 82, below
+       both, and a continue giver below the work it travels for turns a committed worker around.
+       Plan sits at 1, below ConstructSmoothWalls (10) which is the lowest local giver in the
+       type, and below the finishing (5) and repair (3) plans because a frame somebody is waiting
+       on beats a roof area. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedRoofWorkContinue</defName>
+    <label>travel on to work a roof through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedRoofWorkContinue</giverClass>
+    <workType>Construction</workType>
+    <verb>roof</verb>
+    <gerund>working a roof</gerund>
+    <priorityInType>101</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedRoofWork</defName>
+    <label>cross a gate to work a roof</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedRoofWork</giverClass>
+    <workType>Construction</workType>
+    <verb>roof</verb>
+    <gerund>working a roof</gerund>
+    <priorityInType>1</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
   <!-- BasicWorker: flick a switch, open a container, eject fuel on the far side. Purely
        designation driven, like the fieldwork families, so nothing is inferred. Continue sits
        at 502, above Core's Flick (500). Plan sits at 2, below everything local. -->

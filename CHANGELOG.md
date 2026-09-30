@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.36-dev - 2026-09-29 - roofs, snow, and reporting in
+
+- **Colonists will cross a gate to build a roof or take one down**, wherever you paint the area. On a Backrooms coordinate there is nothing to do, because it is already solid rock overhead and taking a roof off in there was never allowed.
+- **They will also cross to clear snow, sand and pollution**, which only matters at a registered site: a coordinate has no outside and never gets weather.
+- **Crew who come back from a trip now owe the company a report**, and the company will not send anybody out again until they have given it. Take the report from the facilities pane; somebody else has to take it, and they have to be a decent enough talker.
+- **Confirmed rather than changed: the ground around a gate is ordinary ground.** Mine it, wall it, roof it, put a bedroom there. Nothing about a gate looks at its neighbours, and the only reserved square is the one people stand on to walk through.
+
+Full record: [four area types, a debrief that gates the next trip, and two rows that were already true](docs/implementation/AREAS_AND_DEBRIEF_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.35-dev - 2026-09-29 - containment you can see from the other side of a gate
 
 - **You are now told when containment fails somewhere you are not looking.** The base game warns you about the map you have open; this warns you about every other place the company holds something, which is the warning that actually matters when you are standing in a coordinate watching a crew work.

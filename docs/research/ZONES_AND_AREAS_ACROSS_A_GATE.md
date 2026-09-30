@@ -17,10 +17,10 @@ What "continuous" has to mean instead is that **two zones, one on each side, beh
 | `Zone_Fishing` | fishing deployment | **Works** (0.6.7-dev). `ShouldFishNow` and `HasAnyFishableCells` are read from the far zone; unpainted water attracts nobody |
 | `Area_Home` | cleaning, repair, firefighting | **Works.** All three read the far map's own Home area, so a Backrooms corridor nobody called home attracts nobody, exactly as it would at home |
 | `Area_Allowed` | every family | **Works, as an observation.** `ObserveAreaHere` records a worker's `EffectiveAreaRestrictionInPawnCurrentMap` for whatever map it is standing on; `ObservedAreaAllows` consults it for a map the worker is not on. An unobserved map answers *unrestricted*, which matches Core, and the definitive per-pawn check still runs on arrival with a destination-refusal cooldown behind it |
-| `Area_NoRoof` | containment | **Deliberately emptied** on a Backrooms map every interval. That is the containment rule, not a defect. Untouched on ordinary maps |
-| `Area_BuildRoof` | `WorkGiver_BuildRoof` | **Not covered — and correctly so today.** See below |
-| `Area_SnowOrSandClear` | `CleanClearSnowOrSand` | **Not covered — and correctly so today.** See below |
-| `Area_PollutionClear` | `CleanClearPollution` (Biotech) | **Not covered — and correctly so today.** See below |
+| `Area_NoRoof` | containment | **Still deliberately emptied** on a Backrooms map every interval — that is the containment rule, not a defect. **Covered 0.12.36-dev** by `roof-work` on ordinary maps, where the area is not emptied and roof removal is ordinary work |
+| `Area_BuildRoof` | `WorkGiver_BuildRoof` | **Covered 0.12.36-dev** by `roof-work`. Was correctly uncovered while the far side was always a coordinate |
+| `Area_SnowOrSandClear` | `CleanClearSnowOrSand` | **Covered 0.12.36-dev** by a route on `cleaning` |
+| `Area_PollutionClear` | `CleanClearPollution` (Biotech) | **Covered 0.12.36-dev** by a route on `cleaning`; null pollution grid without Biotech is the only gate |
 
 ## Zones persist, which is the precondition for all of it
 
@@ -70,6 +70,8 @@ The first hypothesis was that a fully-roofed coordinate blocks sowing for lack o
 ## Three area types not covered, and why that is right *today*
 
 These are gaps, named rather than hidden — but each is currently unreachable, and the reason is the containment rule rather than an oversight.
+
+**All four were covered at 0.12.36-dev.** The condition each of these paragraphs attached — *revisit when the ordinary-map endpoint lands* — was met at 0.6.9-dev, and the reasons below are kept because they are why the work was findable: they record **why** the areas were uncovered rather than only that they were.
 
 - **`Area_BuildRoof`.** The construction deployment looks for `BuildingFrame`s, not roof areas. Inside a Backrooms coordinate every cell already carries thick rock roof, so a build-roof area there has nothing to do.
 - **`Area_NoRoof`.** Roof removal inside the Backrooms is forbidden outright, and the containment component keeps the area empty. Covering it would be building the thing the world rule exists to prevent.

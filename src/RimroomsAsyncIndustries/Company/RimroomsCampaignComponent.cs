@@ -251,6 +251,7 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref corporationContact, "rr_corporationContact", false);
             Scribe_Values.Look(ref cutConnectionsOnBreach, "rr_cutConnectionsOnBreach", true);
             Scribe_Values.Look(ref breachResponded, "rr_breachResponded", false);
+            ExposeDebriefs();
             Scribe_Collections.Look(ref ledger, "rr_ledger", LookMode.Deep);
             Scribe_Collections.Look(ref staff, "rr_staff", LookMode.Deep);
             Scribe_Collections.Look(ref obligations, "rr_obligations", LookMode.Deep);

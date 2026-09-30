@@ -82,4 +82,22 @@ This cannot be undone.</RR_Exchange_SellConfirm>
   <RR_Containment_NothingOpen>There is nothing open to cut. No connection is live.</RR_Containment_NothingOpen>
   <RR_Letter_ContainmentCutLabel>Containment failure: connections cut</RR_Letter_ContainmentCutLabel>
   <RR_Letter_ContainmentCutText>Something is coming off a holding platform, and the standing order was to shut the doors.\n\nConnections cut: {0}. Every crew on the far side is inside its return window and walking back. You can disarm this order from the facilities pane if you would rather decide each time yourself.</RR_Letter_ContainmentCutText>
+
+  <!-- Staff debrief, and quarantine, which is the same mechanism: you do not go back out until
+       you have reported in. Row 761, last two halves. -->
+  <RR_Debrief_Outstanding>Crew home and not yet debriefed: {0}. None of them will be sent out again until they have reported in.</RR_Debrief_Outstanding>
+  <RR_Debrief_NoneOutstanding>Every returned crew member has reported in.</RR_Debrief_NoneOutstanding>
+  <RR_Debrief_Row>{0} - cannot be debriefed: {1}</RR_Debrief_Row>
+  <RR_Debrief_Take>Debrief {0} (report taken by {1})</RR_Debrief_Take>
+  <RR_Debrief_UnknownStaff>a former employee</RR_Debrief_UnknownStaff>
+  <RR_Debrief_NobodyToReport>there is nobody here to take the report</RR_Debrief_NobodyToReport>
+  <RR_Debrief_NothingToReport>they have nothing outstanding to report</RR_Debrief_NothingToReport>
+  <RR_Debrief_SelfReport>nobody debriefs themselves</RR_Debrief_SelfReport>
+  <RR_Debrief_NotStaff>only company staff can take a debrief</RR_Debrief_NotStaff>
+  <RR_Debrief_InterviewerUnfit>whoever would take the report is in no state to take it</RR_Debrief_InterviewerUnfit>
+  <RR_Debrief_InterviewerUnskilled>nobody here is a good enough talker to take the report</RR_Debrief_InterviewerUnskilled>
+  <RR_Debrief_NotOurs>that is not one of the company's sites</RR_Debrief_NotOurs>
+  <RR_Debrief_NotHome>they are not back at the headquarters yet</RR_Debrief_NotHome>
+  <RR_Debrief_NotTogether>the two of them are not in the same place</RR_Debrief_NotTogether>
+  <RR_Event_StaffDebriefed>Staff debriefed after returning from the field</RR_Event_StaffDebriefed>
 </LanguageData>

@@ -598,6 +598,20 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         protected override bool ContinueOnly { get { return true; } }
     }
 
+    public sealed class WorkGiver_ConnectedRoofWork : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.RoofWork; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedRoofWorkContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.RoofWork; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
     public sealed class WorkGiver_ConnectedBasicWorker : WorkGiver_ConnectedDeployment
     {
         protected override string ProviderId

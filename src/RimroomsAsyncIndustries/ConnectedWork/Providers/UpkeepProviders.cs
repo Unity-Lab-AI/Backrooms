@@ -72,6 +72,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
         public override bool HasCandidateWork(Map map, Pawn pawn, RimroomsConnectedWorkComponent work)
         {
             if (map == null || pawn == null || work == null || !WorkerEligible(pawn)) { return false; }
+            // Weather work first: both are a TrueCount comparison on an area, so a map with no
+            // snow area and no pollution area leaves in two integer reads.
+            if (AnyWeatherToClear(map, pawn, work)) { return true; }
             List<Thing> filth = FilthOn(map);
             if (filth == null || filth.Count == 0) { return false; }
             int windowStart = ConnectedWorkScan.WindowStart(filth.Count, UpkeepScan.MaximumCandidates, pawn);
@@ -91,12 +94,73 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
         {
             if (pawn == null || !pawn.Spawned || pawn.Map == null || !WorkerEligible(pawn))
             { return false; }
+            if (AnyWeatherToClear(pawn.Map, pawn, null)) { return true; }
             List<Thing> filth = FilthOn(pawn.Map);
             if (filth == null) { return false; }
             for (int index = 0; index < filth.Count; index++)
             {
                 if (!Candidate(filth[index] as Filth, pawn.Map)) { continue; }
                 if (!pawn.CanReserve(filth[index], 1, -1, null, false)) { continue; }
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// How many marked cells one remote pass may look at. Areas are cell sets and a player
+        /// can paint a large one.
+        /// </summary>
+        private const int MaximumWeatherCellsPerMap = 24;
+
+        /// <summary>
+        /// Snow, sand or pollution the player marked for clearing on that map.
+        ///
+        /// **Live only since the ordinary-map endpoint landed at 0.6.9-dev.**
+        /// `research/ZONES_AND_AREAS_ACROSS_A_GATE.md` recorded `Area_SnowOrSandClear` and
+        /// `Area_PollutionClear` as not covered *and correctly so*, with the reason written down:
+        /// a Backrooms coordinate **has no outside and therefore no weather**, so nothing
+        /// accumulates there and the areas have nothing in them. A registered remote site is an
+        /// ordinary world map, which does get snow and can be polluted, so the reason expired.
+        ///
+        /// On a coordinate this still finds nothing, because there is still nothing to find.
+        ///
+        /// Both halves are facts about the map asked about, taken from Core's own givers:
+        /// `WorkGiver_ClearSnowOrSand` refuses below `0.2f` of snow **or** sand depth, and
+        /// `WorkGiver_ClearPollution` asks `map.pollutionGrid.IsPolluted(cell)`. Neither takes a
+        /// pawn, so Core's real question is asked here rather than substituted for. The
+        /// reservation is all that is left to arrival.
+        ///
+        /// `map.pollutionGrid` is null without Biotech, which is the only gate either route
+        /// needs: an absent expansion is an empty world, not a condition.
+        /// </summary>
+        private static bool AnyWeatherToClear(Map map, Pawn pawn, RimroomsConnectedWorkComponent work)
+        {
+            if (map.areaManager == null) { return false; }
+            return AnyMarked(map, pawn, work, map.areaManager.SnowOrSandClear, true) ||
+                AnyMarked(map, pawn, work, map.areaManager.PollutionClear, false);
+        }
+
+        private static bool AnyMarked(Map map, Pawn pawn, RimroomsConnectedWorkComponent work,
+            Area area, bool snow)
+        {
+            if (area == null || area.TrueCount == 0) { return false; }
+            if (!snow && map.pollutionGrid == null) { return false; }
+            int examined = 0;
+            foreach (IntVec3 cell in area.ActiveCells)
+            {
+                if (work != null && examined >= MaximumWeatherCellsPerMap) { break; }
+                examined++;
+                if (!cell.IsValid || !cell.InBounds(map) || cell.Fogged(map)) { continue; }
+                if (snow)
+                {
+                    // Core's own threshold, and it is an OR: either depth alone is enough.
+                    if (map.snowGrid == null) { continue; }
+                    if (map.snowGrid.GetDepth(cell) < 0.2f && cell.GetSandDepth(map) < 0.2f)
+                    { continue; }
+                }
+                else if (!map.pollutionGrid.IsPolluted(cell)) { continue; }
+                if (work != null && !work.ObservedAreaAllows(pawn, map, cell)) { continue; }
+                if (work == null && !pawn.CanReserve(cell, 1, -1, null)) { continue; }
                 return true;
             }
             return false;

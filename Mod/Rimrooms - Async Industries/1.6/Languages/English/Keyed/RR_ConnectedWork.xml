@@ -93,6 +93,7 @@
   <RR_ConnectedWork_HaulingUpkeepLabel>tending containers through a gate</RR_ConnectedWork_HaulingUpkeepLabel>
   <RR_ConnectedWork_MachineLoadingLabel>loading and emptying machines through a gate</RR_ConnectedWork_MachineLoadingLabel>
   <RR_ConnectedWork_PaintingLabel>painting through a gate</RR_ConnectedWork_PaintingLabel>
+  <RR_ConnectedWork_RoofWorkLabel>working a roof through a gate</RR_ConnectedWork_RoofWorkLabel>
   <RR_ConnectedWork_BasicWorkerLabel>operating a marked object through a gate</RR_ConnectedWork_BasicWorkerLabel>
   <RR_ConnectedWork_FishingLabel>fishing a far zone through a gate</RR_ConnectedWork_FishingLabel>
   <RR_Emergence_MarkLabel>Mark as way home</RR_Emergence_MarkLabel>

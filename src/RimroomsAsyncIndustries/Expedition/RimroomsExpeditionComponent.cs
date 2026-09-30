@@ -65,6 +65,15 @@ namespace RimroomsAsyncIndustries.Expedition
             if (coordinate == null || !Campaign.Coordinates.Contains(coordinate)) { return Refuse("RR_Exp_InvalidDestination"); }
             check = ExpeditionCargo.CheckKit(crew);
             if (!check.Success) { return check; }
+            // Quarantine, and it is the whole of it: the company will not send somebody back out
+            // who has not reported in from the last trip. Deliberately here rather than in
+            // PortalTraversalPolicy -- a player walking one colonist through a door by hand is
+            // not a company dispatch, and a procedure has no business refusing it.
+            for (int index = 0; index < crew.Count; index++)
+            {
+                if (Campaign.AwaitingDebrief(crew[index]))
+                { return Refuse("RR_Exp_AwaitingDebrief"); }
+            }
             string id = Campaign.BranchId + ":expedition:" + Guid.NewGuid().ToString("N");
             check = gate.CanOpen(gate.AssignedOperator, id);
             if (!check.Success) { return check; }
@@ -469,6 +478,13 @@ namespace RimroomsAsyncIndustries.Expedition
             CloseOwnedOpening(run);
             UpdateReturned(run);
             ExpeditionCargo.Reconcile(run);
+            // Everybody who came home owes the company a report, and this is the one place in
+            // the code where "they came home" is already established -- Complete is reached from
+            // AllAtHeadquarters. Raising the hold anywhere else would mean detecting a return a
+            // second way. A stranded, aborted or abandoned trip raises nothing: those people
+            // either are not home or belong to a different procedure. Idempotent per pawn, so a
+            // save reloaded across a completion cannot stack two holds on one person.
+            Campaign.NoteReturnedFromField(run.crew, run.coordinateId);
             Notify("RR_Exp_Returned");
         }
         private static CompanyActionResult Refuse(string key) { return CompanyActionResult.Refused(key); }
