@@ -138,6 +138,11 @@ DEFERRED_CLOSED_WORDS = re.compile(r"(closed|never add|nothing is deferred|zero 
 READER_FACING = (
     "README.md",
     os.path.join("docs", "HOWTO.md"),
+    # The play document, rows 1193 and 1220. It belongs here for the same reason `HOWTO.md`
+    # does and for one more: it is the one document whose every sentence is an instruction to
+    # a player, so a stale claim in it is a lie about what will happen rather than a lie about
+    # the repository.
+    os.path.join("docs", "PLAYING.md"),
     os.path.join("docs", "COMPATIBILITY.md"),
     os.path.join("docs", "MULTIPLAYER.md"),
     os.path.join("docs", "GAME_DESIGN.md"),

@@ -15,7 +15,14 @@ namespace RimroomsAsyncIndustries.UI
         private Vector2 scrollPosition;
         private float contentHeight = 420f;
         private int selectedPane;
-        private static readonly string[] PaneKeys = { "RR_UI_Overview", "RR_UI_Personnel", "RR_UI_Contracts", "RR_UI_Ledger", "RR_UI_Atlas", "RR_UI_Activity", "RR_UI_Investigation", "RR_UI_Machine", "RR_UI_Expedition", "RR_UI_Facilities", "RR_UI_Procurement", "RR_UI_Sites" };
+        private static readonly string[] PaneKeys = { "RR_UI_Overview", "RR_UI_Personnel", "RR_UI_Contracts", "RR_UI_Ledger", "RR_UI_Atlas", "RR_UI_Activity", "RR_UI_Investigation", "RR_UI_Machine", "RR_UI_Expedition", "RR_UI_Facilities", "RR_UI_Procurement", "RR_UI_Sites", "RR_UI_Help" };
+
+        /// <summary>
+        /// The help pane is the one pane that does not read company state, so it is drawn
+        /// beside the campaign block rather than inside it. A glossary that needs a running
+        /// company before it will open is not help.
+        /// </summary>
+        private const int HelpPane = 12;
 
         public override Vector2 RequestedTabSize { get { return new Vector2(820f, 580f); } }
 
@@ -53,7 +60,11 @@ namespace RimroomsAsyncIndustries.UI
 
                 RimroomsCampaignComponent campaign = Current.Game == null
                     ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
-                if (campaign == null)
+                if (selectedPane == HelpPane)
+                {
+                    DrawHelp(listing);
+                }
+                else if (campaign == null)
                 {
                     listing.Label("RR_Operations_NoGame".Translate());
                 }
@@ -81,13 +92,38 @@ namespace RimroomsAsyncIndustries.UI
 
                 listing.Gap(20f);
                 listing.Label("RR_Operations_NativeControls".Translate());
+
+                // Row 821 names the surfaces that must stay reachable: *"every relevant
+                // Architect, Work, Assign, Research, World, map, building, and pawn action"*.
+                // Until 0.12.40-dev this block held two of them, and **Architect -- the first
+                // one the row names, and the one every building action goes through -- was not
+                // opened from anywhere in this package.** Assign and World were reachable, but
+                // only from inside the personnel and facilities panes, which is reachable and
+                // not findable. All five are here now, in the order the row lists them.
+                //
+                // Each is `MainButtonDef.Worker.InterfaceTryActivate()`: the game's own button,
+                // pressed on the player's behalf. Nothing about Core's tab bar is replaced,
+                // reordered or patched, which is the part of row 821 that stays unbuilt on
+                // purpose -- see the closure note.
+                if (listing.ButtonText("RR_Operations_OpenArchitect".Translate()))
+                {
+                    OpenNativeTab(DefDatabase<MainButtonDef>.GetNamedSilentFail("Architect"));
+                }
                 if (listing.ButtonText("RR_Operations_OpenWork".Translate()))
                 {
                     OpenNativeTab(DefDatabase<MainButtonDef>.GetNamedSilentFail("Work"));
                 }
+                if (listing.ButtonText("RR_Operations_OpenAssign".Translate()))
+                {
+                    OpenNativeTab(DefDatabase<MainButtonDef>.GetNamedSilentFail("Assign"));
+                }
                 if (listing.ButtonText("RR_Operations_OpenResearch".Translate()))
                 {
                     OpenNativeTab(MainButtonDefOf.Research);
+                }
+                if (listing.ButtonText("RR_Operations_OpenWorld".Translate()))
+                {
+                    OpenNativeTab(DefDatabase<MainButtonDef>.GetNamedSilentFail("World"));
                 }
                 contentHeight = Mathf.Max(420f, listing.CurHeight + 20f);
             }

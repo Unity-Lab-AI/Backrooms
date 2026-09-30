@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
+  <!--
+    Company-first means first. Core's own orders are Architect 1, Work 10, Schedule 20,
+    Assign 30, Animals 40, Wildlife 50, Research 60, Quests 65, World 70, History 80,
+    Factions 90, Menu 500. This tab sat at 95 - between Factions and Menu, the far right
+    of the bar - which is the opposite of the layout row 821 asks for. Order 0 puts it
+    left of Architect and changes nothing about Core's own buttons or any other mod's.
+
+    defaultHotKey is Core's own keyboard path and costs no def of ours:
+    KeyBindingDefGenerator.ImpliedKeyBindingDefs emits `MainTab_RR_Operations` into the
+    MainTabs category for any MainButtonDef that sets it, so the binding appears in the
+    player's Key Bindings dialog and is rebindable there. F12 is the only function key
+    Core leaves unbound - it uses Tab and F1..F9 for main tabs, F10 for a screenshot and
+    F11 for screenshot mode.
+  -->
   <MainButtonDef>
     <defName>RR_Operations</defName>
     <label>Operations</label>
     <description>View company operations and return to ordinary work and research controls.</description>
     <tabWindowClass>RimroomsAsyncIndustries.UI.MainTabWindow_Operations</tabWindowClass>
-    <order>95</order>
+    <order>0</order>
+    <defaultHotKey>F12</defaultHotKey>
     <validWithoutMap>true</validWithoutMap>
   </MainButtonDef>
 </Defs>

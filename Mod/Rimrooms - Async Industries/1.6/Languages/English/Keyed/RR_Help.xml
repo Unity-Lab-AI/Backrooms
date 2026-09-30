@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RR_UI_Help>Help</RR_UI_Help>
+  <RR_Help_Heading>What this company does, what its words mean, and how to reach everything from here.</RR_Help_Heading>
+  <RR_Help_FirstSession>Your first session, in order: restore power, finish the gate on the machining table, keep a qualified operator at the console, pick up to three ready field staff, then open a connection and bring back one record. Operations refuses an opening it cannot complete and names the reason; fix the named reason and try again.</RR_Help_FirstSession>
+
+  <RR_Help_KeyboardHeading>Keyboard</RR_Help_KeyboardHeading>
+  <RR_Help_KeyboardTab>This tab opens and closes with {0}.</RR_Help_KeyboardTab>
+  <RR_Help_KeyboardUnbound>no key</RR_Help_KeyboardUnbound>
+  <RR_Help_KeyboardRebind>Change it under Options, Key Bindings, in the main tabs section, beside the game's own tab keys.</RR_Help_KeyboardRebind>
+  <RR_Help_KeyboardNative>The colony controls below open the game's own tabs, so their keys are unchanged: Tab for Architect, F1 for Work, F3 for Assign, F6 for Research, F8 for the world map.</RR_Help_KeyboardNative>
+
+  <RR_Help_ReadabilityHeading>Reading the screens</RR_Help_ReadabilityHeading>
+  <RR_Help_Readability>Every state that matters is written in words as well as shown: gate readiness, the return reserve, route tags, distance, recall warnings and record status. Nothing required is carried by colour, sound or animation alone.</RR_Help_Readability>
+  <RR_Help_Scale>These screens set no colour and no text size of their own. Whatever you choose under Options for interface scale, font and colour applies here exactly as it does to the rest of the game.</RR_Help_Scale>
+
+  <RR_Help_GlossaryHeading>Words this company uses</RR_Help_GlossaryHeading>
+  <RR_Help_TermGate>Gate - the built machine that holds a connection open. One kind, in sizes from one by one to two by three. Wider gates let larger things through.</RR_Help_TermGate>
+  <RR_Help_TermConnection>Connection - what an opened gate holds. It costs power to open, draws power while it stands, and keeps a reserve back for one return.</RR_Help_TermConnection>
+  <RR_Help_TermThreshold>Threshold - the arrival cell on the far side. Crossing back out is always through the threshold the crew came in by.</RR_Help_TermThreshold>
+  <RR_Help_TermCoordinate>Coordinate - an address in the Backrooms, and the map it opens onto. You visit a coordinate; you do not settle one.</RR_Help_TermCoordinate>
+  <RR_Help_TermBand>Band - how hostile a coordinate currently is. It rises with depth and with what the colony is worth, and it decides what comes looking for the crew.</RR_Help_TermBand>
+  <RR_Help_TermBranch>Branch - your office of the company, its account, its staff and its paperwork. A save has one.</RR_Help_TermBranch>
+  <RR_Help_TermRequest>Request - what the corporation asks the branch for next. Requests are the campaign; finishing one opens the following one.</RR_Help_TermRequest>
+  <RR_Help_TermContract>Contract - a priced job with terms, a base payment and a bonus. Survey and odd-supply work arrives this way.</RR_Help_TermContract>
+  <RR_Help_TermDispatch>Dispatch - sending a crew through as company work. Walking one colonist through a door by hand is not a dispatch and is not held to the same checks.</RR_Help_TermDispatch>
+  <RR_Help_TermDebrief>Debrief - reporting in after a return. Staff who have not reported in yet are not dispatched again until they have.</RR_Help_TermDebrief>
+  <RR_Help_TermEvidence>Evidence - a recording brought home from a coordinate. Analysing one at a bound laboratory turns it into insight.</RR_Help_TermEvidence>
+  <RR_Help_TermInsight>Insight - what the branch has learned. Company projects spend it, and a completed project is what lets the branch build the next thing.</RR_Help_TermInsight>
+  <RR_Help_TermFacility>Facility - equipment linked into a gate: shelves, analysers, cabinets. Links reach through walls and across distance, and are made by hand.</RR_Help_TermFacility>
+  <RR_Help_TermSite>Site - somewhere beyond headquarters the branch has put on its books. It is billed daily and it needs people to receive anything.</RR_Help_TermSite>
+
+  <RR_Help_Untested>This build has not been played through. Everything above describes how the code is written, not how it has been observed to feel.</RR_Help_Untested>
+</LanguageData>

@@ -8,8 +8,11 @@
   <RR_Operations_Branch>Branch: {0}</RR_Operations_Branch>
   <RR_Operations_Scenario>Opening: {0}</RR_Operations_Scenario>
   <RR_Operations_NativeControls>Colony controls</RR_Operations_NativeControls>
+  <RR_Operations_OpenArchitect>Open Architect</RR_Operations_OpenArchitect>
   <RR_Operations_OpenWork>Open Work</RR_Operations_OpenWork>
+  <RR_Operations_OpenAssign>Open Assign</RR_Operations_OpenAssign>
   <RR_Operations_OpenResearch>Open Research</RR_Operations_OpenResearch>
+  <RR_Operations_OpenWorld>Open World</RR_Operations_OpenWorld>
   <RR_Operations_TabUnavailable>That colony control is unavailable in the current view. Return to a playable colony map and try again.</RR_Operations_TabUnavailable>
   <RR_UI_Sites>Sites</RR_UI_Sites>
   <RR_Sites_Heading>Places this branch runs beyond its headquarters.</RR_Sites_Heading>

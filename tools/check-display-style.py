@@ -289,10 +289,86 @@ def check(surface, key, text, problems):
                         "%d messages -- %r" % (key, core["n"], one_line[:60]))
 
 
+# --------------------------------------------------------------------------- #
+# Contrast and scale, rows 822 and 833
+# --------------------------------------------------------------------------- #
+#
+# The rows ask for *"color/contrast/readability options, scalable UI"*. This package's answer
+# is that it authors **neither** -- every readout uses Core's own `GameFont` values and Core's
+# own palette, so the player's Options (interface scale, font, colourblind mode) apply to this
+# mod exactly as they apply to the base game. An option of our own would be a second, worse
+# copy of a setting the game already has.
+#
+# That answer is only worth anything if it stays true, and it was true by accident: the UI
+# folder contained no authored colour at all when this was written, which is why the claim
+# could be made. A claim with no check behind it is a promise, so this refuses the first
+# authored colour or authored font to arrive in a readout file.
+#
+# Scoped to the readout folder on purpose. `Presentation/` and `Generation/` author colour
+# deliberately and correctly -- the gate tint, the room palettes, the connection overlay and
+# the menu art are pictures, not text, and the contrast rule is about text a player reads.
+READOUT_DIR = os.path.join(SRC, "RimroomsAsyncIndustries", "UI")
+
+# Every pattern tolerates a namespace qualifier. A first version matched `new Color(` only and
+# a planted `new UnityEngine.Color(1f, 0f, 0f)` walked straight past it -- the one spelling a
+# file that has no `using UnityEngine;` would actually have to use, which is to say the likeliest
+# one. Same for `UnityEngine.GUI.color` and `UnityEngine.Color.red`.
+QUALIFIER = r"(?:[A-Za-z_][A-Za-z0-9_]*\s*\.\s*)*"
+AUTHORED_COLOUR = (
+    (re.compile(r"\bnew\s+" + QUALIFIER + r"Color(?:32|Int)?\s*\("), "authored colour literal"),
+    (re.compile(r"\bGUI\s*\.\s*color\s*="), "assignment to GUI.color"),
+    (re.compile(r"\bColorLibrary\s*\."), "a ColorLibrary colour"),
+    (re.compile(r"\bColor\s*\.\s*[a-z]"), "a UnityEngine.Color constant"),
+    (re.compile(r"<color="), "an inline colour tag"),
+)
+
+# Core's four font sizes. Anything else assigned to `Text.Font` is a font this package chose
+# rather than one the game offers, and `fontSize` touches Unity's skin directly, which no
+# amount of player scaling can undo.
+CORE_FONTS = ("GameFont.Tiny", "GameFont.Small", "GameFont.Medium", "GameFont.Large")
+FONT_ASSIGNMENT = re.compile(r"Text\s*\.\s*Font\s*=\s*([^;]+);")
+PLAIN_IDENTIFIER = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+AUTHORED_FONT_SIZE = re.compile(r"\bfontSize\s*=")
+
+
+def check_readability(problems):
+    """Refuse an authored colour or an authored font in anything a player reads text from."""
+    for path in sorted(glob.glob(os.path.join(READOUT_DIR, "*.cs"))):
+        rel = os.path.relpath(path, REPO)
+        text = io.open(path, encoding="utf-8-sig").read()
+        # A comment explaining the rule is not a violation of it, and this file's own header
+        # names every pattern below. Strip comments before matching.
+        code = re.sub(r"//[^\n]*", " ", text)
+        code = re.sub(r"/\*.*?\*/", " ", code, flags=re.S)
+
+        for pattern, what in AUTHORED_COLOUR:
+            if pattern.search(code):
+                problems.append("%s uses %s -- readouts take Core's palette so the player's "
+                                "own contrast and colourblind settings apply (rows 822, 833)"
+                                % (rel, what))
+        for match in FONT_ASSIGNMENT.finditer(code):
+            value = match.group(1).strip()
+            if value in CORE_FONTS:
+                continue
+            # Saving and restoring the caller's font is not choosing one, so a bare local name
+            # is allowed. Tested as a whole identifier and with `GameFont` excluded on purpose:
+            # a first version allowed anything *containing* "Font", which let the cast
+            # `(GameFont)7` -- an arbitrary font size out of Core's range, the exact thing this
+            # rule exists to refuse -- pass both this checker and its proof.
+            if PLAIN_IDENTIFIER.match(value) and "GameFont" not in value:
+                continue
+            problems.append("%s sets Text.Font to %r -- readouts use Core's own GameFont "
+                            "values so interface scale applies (rows 822, 833)" % (rel, value))
+        if AUTHORED_FONT_SIZE.search(code):
+            problems.append("%s sets a font size directly -- that bypasses the player's "
+                            "interface scale entirely (rows 822, 833)" % rel)
+
+
 def main():
     strings = keyed_strings()
     surfaces = classify()
     problems = []
+    check_readability(problems)
 
     counts = {}
     for key, kinds in sorted(surfaces.items()):
@@ -309,6 +385,8 @@ def main():
     print("  classified by call site    : %d" % len([k for k in surfaces if k in strings]))
     print("  not reached by any pattern : %d  (held by check-info-cards.py for vocabulary "
           "and walls)" % len([k for k in strings if k not in surfaces]))
+    print("  readout files held to Core's palette and fonts : %d"
+          % len(glob.glob(os.path.join(READOUT_DIR, "*.cs"))))
     print("")
     print("  surface census -- every place RimWorld displays text, used or not:")
     for surface, where in SURFACE_CENSUS:

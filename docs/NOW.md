@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.39-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.40-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **191 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `13031FCBAE5FB6238197D3EB36AD6B2AE0042B91E4B5F05E0AFF6252A736EFCD`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **192 C# files, 88 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `7641035476D6D2A2A5FF326E258E1B5D24E32DD581FFD2A683994B55C2D230C4`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **TWELVE**, all passing. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
-| Proofs | **THIRTY-SIX** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Proofs | **THIRTY-SEVEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -62,15 +62,17 @@ everything below:
 
 ## Is it done? NO, and the shape of what is left
 
-**10 genuine build items**, counted at 0.12.39-dev, listed in full under **What is left** below. **Five rows closed this batch** — 764, 765, 766, 784 and 791, all one family. **Seventeen rows across the last four batches.**
+**6 genuine build items**, counted at 0.12.40-dev, listed in full under **What is left** below. **Five rows closed this batch** — 1193, 1220, 821, 822 and 833, all one family. **Twenty-two rows across the last five batches.**
+
+**The counting command overstates by one, and it is worth knowing why.** It counts numbered entries under *What is left*, and **entry 1 is a closed record kept there deliberately so nobody rebuilds row 761**. Seven entries, six of them open. Read the list rather than the number.
 Plus about **8 rows that cannot close before the game runs once** and **9 the owner excluded**.
 
 Queue, one consistent pattern, command beside the number:
 
 ```
-grep -c '^\s*- \[ \]' docs/TODO.md     # 59 open
+grep -c '^\s*- \[ \]' docs/TODO.md     # 54 open
 grep -c '^\s*- \[~\]' docs/TODO.md    # 48 partial
-grep -c '^\s*- \[x\]' docs/TODO.md    # 475 done
+grep -c '^\s*- \[x\]' docs/TODO.md    # 480 done
 ```
 
 **The raw open count overstates, and the reason is worth the paragraph.** Rows closed by work
@@ -93,10 +95,10 @@ this session turned out to be already built, already true, or answered by Core**
 thing in this file. It has saved more work this session than every other practice combined, and
 twice the row's own *“confirmed absent by grep”* was the thing that was wrong.
 
-### The package is staged, and THIRTEEN checkpoints behind
+### The package is staged, and FOURTEEN checkpoints behind
 
-The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.39-dev** —
-**thirteen checkpoints of work are not in the game folder.** Re-stage before any launch:
+The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.40-dev** —
+**fourteen checkpoints of work are not in the game folder.** Re-stage before any launch:
 
 ```
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
@@ -109,45 +111,41 @@ checkpoints stale, so nothing built in this project's history had ever reached t
 
 ---
 
-## DO THIS FIRST — the player-facing words batch
+## DO THIS FIRST — the two systems left
 
-Rows 1193, 1220, 821, 822 and 833. **Five rows, one family**: everything left that is about what
-the player reads and how they reach it.
+**Rows 728 and 1031–1033.** Everything still unbuilt that is a *system* rather than housekeeping,
+and the two are related enough to batch: one decides what a crew takes with them, the other decides
+what the company wants brought back.
 
 | Row | What |
 |---|---|
-| 1193, 1220 | the player-facing how-to for gameplay and systems — `docs/HOWTO.md` documents the **build**, not play |
-| 821 | the native menu remap into the company-first layout — Architect, Work, Assign, Research |
-| 822, 833 | tutorial, glossary, keyboard paths, contrast and scale |
+| 728 | **crew composition and cargo planner** — skill, health, weight and window checks, ready and unready reasons, a cost preview |
+| 1031–1033 | **quests and missions for odd goods**, as distinct from contracts, plus a player-facing surface for open odd demands |
 
-Four things to settle:
+Four things to settle before writing anything:
 
-1. **Written once, for both the repo and the site.** Row 1193 says so explicitly. `docs/HOWTO.md`
-   exists and is about building the mod; the play document is a different document, and naming it
-   `HOWTO.md` would collide. **`docs/PLAYING.md`** is the obvious name, and it must join the
-   reader-facing set in `check-doc-conformance.py` — now twelve documents, holding the vocabulary
-   rule, the wall rule and the row 791 claim guard.
-2. **Most of the tutorial content already exists.** `docs/TUTORIAL_SCRIPT.md` is already in the
-   reader-facing set, and the mission line, the solo/group hints and the twelve Operations panes
-   all ship. **Read those before writing anything** — nine rows this session turned out already
-   built.
-3. **Row 821 is a question about Core's surfaces, not a document.** *"Remap the native menus"* has
-   to mean something a player can see; `OpenNativeTab` already opens Architect, Work, Assign and
-   Research from the company panel, so establish what remains before designing. **A `MainButtonDef`
-   reorder is content; changing Core's own tabs is not ours to do.**
-4. **822 and 833 are accessibility, and they are measurable.** `check-keyed-strings.py` already
-   reports every declared key resolving, and `check-display-style.py` holds every surface against
-   Core's own practice per surface. **Contrast and scale mean using Core's own `GameFont`,
-   `Text.Font` and `ColorLibrary` values rather than authored ones** — measure what the panes do
-   today first.
+1. **Row 728 carries its own constraint, verbatim: *"must not own connection existence"*.** The
+   planner may refuse a *crew*; it may never be the thing that decides whether a connection can
+   exist. Six reasons already stop a gate and a seventh arrived at 0.12.38-dev — the planner is an
+   eighth opinion about a crew, not about the machine.
+2. **Most of the checks already exist somewhere.** `StaffDebrief` has nine refusals,
+   `Dispatch` already gates on readiness, and the expedition pane already previews. **Read those
+   first** — nine rows this session turned out already built, and twice a row's own *"confirmed
+   absent by grep"* was itself the defect.
+3. **The owner asked for *"quests and missions and contracts"*, and contracts shipped at
+   0.7.3-dev.** So 1031–1033 is the other two thirds of one direction, not a new idea. Core's
+   `QuestScriptDef` is the obvious surface and it is worth establishing what a Core-only,
+   Harmony-free mod can actually reach through it before designing anything.
+4. **The odd-demand surface is the small half and is nearly free.** Offers and settlements are
+   already recorded events; the Operations pane simply does not list the open ones. Check that
+   before building a system for it.
 
-**The one thing to be careful about:** a how-to that describes behaviour nobody has observed is the
-defect `docs/MULTIPLAYER.md` was written to avoid. Every play instruction is a structural claim
-about the code, and the document has to say so.
+**Then the housekeeping batch**, which is all that is left after these: 1054, 206 and 302, 1268 and
+1269, and 1286–1290.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.39
+## What shipped this session, 0.7.1 → 0.12.40
 
 | Version | What |
 |---|---|
@@ -226,6 +224,7 @@ about the code, and the document has to say so.
 | 0.12.37 | **Every coordinate in the game was made of wood** — one hardcoded material for every stuffable fixture in every room. Plus the **twelfth checker**, which caught itself twice, and the stance classifier fixed to its own row's prediction |
 | 0.12.38 | **A gate read no damage at all** — it could be shot to twelve per cent and still hold a connection. **Seven of row 725's nine subsystems were already built** under different names. Reliability is a record, not a dice roll |
 | 0.12.39 | **The register said don't patch, so the hook is a sentence** — reading the integration approach first made the obvious build the wrong one. Five rows, a read-only readout, and **row 791's absolute got a checker**
+| 0.12.40 | **The words a player reads** — five rows in one batch. **Architect, the first surface row 821 names, opened from nowhere in this package**, and the handoff said it was already reachable. The company tab was second from the right. `docs/PLAYING.md`, a help pane with the glossary, and Core's own generator supplying the keyboard binding for one XML field
 
 ---
 
@@ -233,7 +232,7 @@ about the code, and the document has to say so.
 
 **Re-measure this list before trusting it.** It has been correct at every checkpoint since 0.12.33-dev because each batch edited it, but the count at the top of the file is a command for a reason: the item numbers are renumbered on every close and a stale count is the most expensive thing this file can hold.
 
-**10 genuine build items**, counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
+**7 numbered entries below, 6 of them genuine build items** — entry 1 is a closed record. Counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
 
 ### Systems still unbuilt
 
@@ -256,27 +255,18 @@ about the code, and the document has to say so.
    open odd demands: offers and settlements are recorded events and the Operations pane does not
    list them. Rows 1031, 1032, 1033.
 
-### Surfaces and words
-
-4. **The player-facing how-to for gameplay and systems.** Rows 1193, 1220. `docs/HOWTO.md`
-    documents the **build**, not play. Written **once**, for both the repo and the site.
-5. **The native menu remap** into the company-first layout. Row 821. Twelve panes and reason codes
-    ship; this is the Architect/Work/Assign/Research integration.
-6. **Tutorial, glossary, keyboard paths, contrast and scale.** Rows 822, 833. Localization
-    completeness is already measurable: `check-keyed-strings.py` reports every declared key
-    resolving.
 
 ### Housekeeping with teeth
 
-7. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
+4. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
     research and coarse for code.
-8. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
+5. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
     expedition logistics, interface, facilities, furniture, storage, power, contracts, faction
     standing, subject casework, evidence, policies. **Not yet: medical, world operations, cargo,
     hospitality, materials, visitor economy, staff psychology.** Rows 206, 302.
-9. **The campaign economy workbook has no generator**, and the register preview PNGs under
+6. **The campaign economy workbook has no generator**, and the register preview PNGs under
     `outputs/` depict a superseded layout. Rows 1268, 1269.
-10. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
+7. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
     terms and the Steam agreements, and keep the position current. Rows 1286–1290.
 
 ### Cannot close before the game runs once — about 8 rows
@@ -302,7 +292,7 @@ idea. [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md) holds them, and **it is
 
 ### Done since the last handoff, so nobody rebuilds it
 
-**Six checkpoints, 0.12.34 → 0.12.39, seventeen rows closed in four batches.** Every one published
+**Seven checkpoints, 0.12.34 → 0.12.40, twenty-two rows closed in five batches.** Every one published
 to all eight refs with a read-back, a deterministic assembly, and the full checker and proof sweep.
 
 **The owner changed how to work, mid-run:** *"lets start doing shit correctly and efficiently and
@@ -363,6 +353,46 @@ the framework is installed"* for the vehicle framework. So the hook is a **read-
 what is installed and what this package does about it — which is what the rows asked for in their
 own words. The defence that cannot rot is asserted: **only two files mention the detection class,
 and no tracked package id appears in any other source file.**
+
+**The first surface row 821 names opened from nowhere at all.** Not from the company panel, not
+from any pane, not from anywhere in 191 files: `grep -rn "Architect" --include=*.cs src` returned
+**nothing**. And this file said it was already reachable, which makes it the worst kind of stale
+measurement — the one a fresh session would trust instead of checking. Architect is the surface
+every building action in RimWorld goes through. All five surfaces the row names now open from the
+panel, each through the game's own `MainButtonDef.Worker.InterfaceTryActivate()`.
+
+**A tab called company-first was second from the right.** Core's orders are Architect 1 through
+Factions 90 and Menu 500; Operations shipped at **95**, between the last two. It is order 0 now,
+left of Architect. One field, and **the invasive reading of "remap" stays unbuilt on purpose** —
+rewriting Core's own tab bar would fight every interface mod in the register at once, and
+reachability was what the row actually required. The absence is asserted rather than assumed,
+including against the def-database route a Harmony-free mod still has.
+
+**The whole keyboard requirement was one XML field, and Core writes the rest.**
+`KeyBindingDefGenerator.ImpliedKeyBindingDefs` emits a rebindable `MainTab_<defName>` into the
+`MainTabs` category for any `MainButtonDef` that sets `defaultHotKey`. So the binding appears in the
+player's own Key Bindings dialog and **this package authors no `KeyBindingDef` at all**. The default
+is **F12, the only function key Core leaves free** — it takes Tab and F1–F9 for main tabs,
+F10 for a screenshot and F11 for screenshot mode.
+
+**Contrast and scale were already right, with nothing holding them right.** Not one file under
+`UI/` authored a colour, and the only font work in the folder is one `GameFont.Medium` heading with
+the caller's font restored. So the position is that this package authors **neither colour nor font
+size in anything a player reads text from**, and the player's own Options for scale, font and
+colourblind mode apply exactly as they do to the base game. **An option of ours would have been a
+second, worse copy of a setting the game already has.** That is now a checker rule, because it was
+true by accident.
+
+**The plant harness verifies its targets before it plants anything**, and the first sweep of this
+batch justified it: **33 of 42, and all nine misses were real.** Two were gaps in the new checker
+— `new UnityEngine.Color(...)` walked past a pattern matching `new Color(`, and `(GameFont)7`
+walked past an exemption meant for the `previousFont` restore. Four were claims that tested a
+**mention** rather than a **use**: `def check_readability(` satisfies a probe for
+`check_readability(problems)`, and `AUTHORED_COLOUR` matches `AUTHORED_COLOUR_UNUSED`. One was a
+detector that depended on a variable being named conveniently. Two were weak plants — and one
+of those found a writing fault, because the document stated the same key in two places.
+
+---
 
 **Two new checkers, taking it to twelve.** The def-field checker (row 922) **caught itself twice**
 before it was right, both times in the same function — first reporting nothing, then reporting 159
@@ -778,11 +808,13 @@ Three of this project's largest types are partial across many files: `CompRimroo
 ## The warning that matters most right now
 
 **SUSPECT YOUR OWN MEASUREMENT FIRST.** A search that finds nothing is not evidence, and across
-0.12.24 → 0.12.39 **the measurement was the defect at least twelve separate times while the code
-was fine.** Five from 0.12.24 → 0.12.33 are tabulated below; the seven since are:
+0.12.24 → 0.12.40 **the measurement was the defect at least fourteen separate times while the code
+was fine.** Five from 0.12.24 → 0.12.33 are tabulated below; the nine since are:
 
 | Measured wrong | The truth |
 |---|---|
+| **this file said `OpenNativeTab` already opens Architect** | it did not and never had. `grep -rn "Architect" --include=*.cs src` returned **nothing at all**. The stale measurement was in the handoff itself, which is the worst place for one |
+| a colour guard that matched `new Color(` | `new UnityEngine.Color(...)` walked past it — and the qualified spelling is the one a file without the `using` would have to write |
 | the queue count, **twice** (90 vs 86, then an item count of 19 and 13 vs 20 and 12) | the list is renumbered on every close, so the count must come from the file |
 | **six** shipped work-giver priorities above the clamp | **seven** — the pattern was `<WorkGiverDef>` and missed `<WorkGiverDef MayRequire=…>` |
 | **five** ways a gate can stop working | **six** — I forgot the deliberate cutoff. Then a seventh arrived and the proof kept passing, because it read one file of a **partial class** |
