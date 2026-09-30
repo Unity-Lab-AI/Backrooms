@@ -109,9 +109,14 @@ namespace RimroomsAsyncIndustries.Scenario
             // doors list has no door generated at it, so the opening would find nothing to mark
             // and the start would have no registered exit at all -- which is the one thing the
             // owner's direction says it must have at 100%.
-            if (insideStart && (!emergenceDoorCell.IsValid ||
-                doors == null || !doors.Contains(emergenceDoorCell)))
-            { yield return "An inside start must name an emergenceDoorCell that is one of its own doors."; }
+            // An inside start MUST name one. Any other start MAY -- and naming one is what
+            // gives it a natural gate at 0.12.45-dev. Either way the cell has to be one of this
+            // start's own doors, because a cell that is not in the doors list has no door
+            // generated at it and the opening would find nothing to mark.
+            if (insideStart && !emergenceDoorCell.IsValid)
+            { yield return "An inside start must name an emergenceDoorCell."; }
+            if (emergenceDoorCell.IsValid && (doors == null || !doors.Contains(emergenceDoorCell)))
+            { yield return "emergenceDoorCell must be one of this start's own doors."; }
             if (roles != null)
             {
                 var ids = new HashSet<string>();

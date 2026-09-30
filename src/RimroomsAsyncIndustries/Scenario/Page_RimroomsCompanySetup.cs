@@ -149,7 +149,10 @@ namespace RimroomsAsyncIndustries.Scenario
                 DrawGateReadiness(listing, start);
                 listing.GapLine();
 
-                listing.Label("RR_Setup_Site".Translate(Find.GameInitData.startingTile.ToString(), start.mapSize));
+                // The map size is the player's own choice now, so showing the def's authored number
+                // would be telling them something that is not true about their game.
+                listing.Label("RR_Setup_Site".Translate(Find.GameInitData.startingTile.ToString(),
+                    Find.GameInitData.mapSize));
                 listing.Label("RR_Setup_StaffCount".Translate(pawns.Count));
                 listing.Label("RR_Setup_Funding".Translate(start.initialFundingUsd.ToString("N0"),
                     start.dailyWageUsd.ToString("N0"), start.dailyOverheadUsd.ToString("N0")));

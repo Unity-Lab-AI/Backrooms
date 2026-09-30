@@ -15,11 +15,15 @@ namespace RimroomsAsyncIndustries.Scenario
         public override void Generate(Map map, GenStepParams parms)
         {
             RimroomsStartDef start = HeadquartersBuilder.RequireStart(map);
+            // The layout is authored in its own coordinates and offset onto whatever map the
+            // player chose; see HeadquartersLayout. Before 0.12.45-dev the mod forced its own
+            // map size instead, which is why a 50x50 site read as a cage.
+            IntVec3 offset = HeadquartersLayout.Offset(start, map.Size);
             foreach (IntVec3 cell in map.AllCells) { map.terrainGrid.SetTerrain(cell, start.outdoorTerrain); }
-            MapGenerator.PlayerStartSpot = start.arrivalCell;
-            MapGenerator.rootsToUnfog.Add(start.arrivalCell);
-            foreach (RimroomsRoomPlan room in start.rooms)
-            { MapGenerator.GetOrGenerateVar<List<CellRect>>("UsedRects").Add(room.Rect); }
+            MapGenerator.PlayerStartSpot = start.arrivalCell + offset;
+            MapGenerator.rootsToUnfog.Add(start.arrivalCell + offset);
+            foreach (CellRect rect in HeadquartersLayout.Rooms(start, offset))
+            { MapGenerator.GetOrGenerateVar<List<CellRect>>("UsedRects").Add(rect); }
         }
     }
 
@@ -63,8 +67,11 @@ namespace RimroomsAsyncIndustries.Scenario
         {
             ScenPart_RimroomsStart part = ScenPart_RimroomsStart.Current;
             if (part == null || part.startDef == null || Find.GameInitData == null ||
-                map.Size.x != part.startDef.mapSize || map.Size.z != part.startDef.mapSize ||
                 map.Tile != Find.GameInitData.startingTile ||
+                // The map no longer has to BE the authored size -- it has to be able to hold the
+                // layout. The player picks the size at world setup and the tile they arrive on,
+                // and the facility is generated onto that map.
+                !HeadquartersLayout.Fits(part.startDef, map.Size) ||
                 Current.Game.GetComponent<RimroomsCampaignComponent>().HasBranch)
             { throw new InvalidOperationException("[Rimrooms] Headquarters generator used outside the initial company start."); }
             return part.startDef;
@@ -72,11 +79,12 @@ namespace RimroomsAsyncIndustries.Scenario
 
         internal static void Build(RimroomsStartDef start, Map map, HeadquartersSetupComponent receipt)
         {
-            if (!start.arrivalCell.InBounds(map) || !start.stockCell.InBounds(map))
+            IntVec3 offset = HeadquartersLayout.Offset(start, map.Size);
+            if (!(start.arrivalCell + offset).InBounds(map) || !(start.stockCell + offset).InBounds(map))
             { throw new InvalidOperationException("Headquarters arrival or receiving position is outside the map."); }
             foreach (RimroomsRoomPlan room in start.rooms)
             {
-                CellRect rect = room.Rect;
+                CellRect rect = room.Rect.MovedBy(new IntVec2(offset.x, offset.z));
                 if (room.width < 3 || room.height < 3 || !rect.Min.InBounds(map) || !rect.Max.InBounds(map))
                 { throw new InvalidOperationException("Invalid headquarters room rectangle."); }
                 foreach (IntVec3 cell in rect.Cells)
@@ -94,8 +102,9 @@ namespace RimroomsAsyncIndustries.Scenario
                     map.areaManager.Home[cell] = true;
                 }
             }
-            foreach (IntVec3 cell in start.doors)
+            foreach (IntVec3 authored in start.doors)
             {
+                IntVec3 cell = authored + offset;
                 Building wall = cell.GetEdifice(map);
                 if (wall == null || wall.def != ThingDefOf.Wall) { throw new InvalidOperationException("Headquarters door has no generated wall at " + cell); }
                 wall.Destroy(DestroyMode.Vanish);
@@ -108,7 +117,8 @@ namespace RimroomsAsyncIndustries.Scenario
             {
                 if (plan.thing == null) { throw new InvalidOperationException("Unresolved headquarters building definition."); }
                 Rot4 rotation = new Rot4(plan.rotation);
-                foreach (IntVec3 cell in GenAdj.OccupiedRect(plan.cell, rotation, plan.thing.size).Cells)
+                IntVec3 where = plan.cell + offset;
+                foreach (IntVec3 cell in GenAdj.OccupiedRect(where, rotation, plan.thing.size).Cells)
                 {
                     if (!cell.InBounds(map) || cell.GetEdifice(map) != null)
                     { throw new InvalidOperationException("Headquarters furniture intersects a wall/building at " + cell); }
@@ -116,7 +126,7 @@ namespace RimroomsAsyncIndustries.Scenario
                 Thing building = ThingMaker.MakeThing(plan.thing, plan.stuff);
                 building.SetFactionDirect(Faction.OfPlayer);
                 building.TryGetComp<CompQuality>()?.SetQuality(QualityCategory.Normal, ArtGenerationContext.Outsider);
-                GenSpawn.Spawn(building, plan.cell, map, rotation);
+                GenSpawn.Spawn(building, where, map, rotation);
                 Building_Bed bed = building as Building_Bed;
                 if (bed != null && plan.medical) { bed.Medical = true; }
                 CompRefuelable fuel = building.TryGetComp<CompRefuelable>();
@@ -128,9 +138,10 @@ namespace RimroomsAsyncIndustries.Scenario
             foreach (RimroomsConduitPlan line in start.conduits)
             {
                 if (line.length < 1 || line.length > start.mapSize) { throw new InvalidOperationException("Invalid starting conduit run."); }
-                for (int offset = 0; offset < line.length; offset++)
+                for (int step = 0; step < line.length; step++)
                 {
-                    IntVec3 cell = line.start + new IntVec3(line.alongX ? offset : 0, 0, line.alongX ? 0 : offset);
+                    IntVec3 cell = line.start + offset
+                        + new IntVec3(line.alongX ? step : 0, 0, line.alongX ? 0 : step);
                     if (!cell.InBounds(map)) { throw new InvalidOperationException("Starting conduit outside headquarters."); }
                     // Native generators/batteries can already transmit across this cell.
                     // A second conduit transmitter under them would duplicate the native grid registration.
@@ -147,11 +158,11 @@ namespace RimroomsAsyncIndustries.Scenario
             // Resolve queued native connections only. Core ticks own power, fuel and battery simulation.
             map.powerNetManager.UpdatePowerNetsAndConnections_First();
             // Editable native scenario parts/possessions own supplies. Never replay start.stock here.
-            if (!start.arrivalCell.Standable(map))
+            if (!(start.arrivalCell + offset).Standable(map))
             { throw new InvalidOperationException("Headquarters arrival position is not walkable."); }
-            MapGenerator.PlayerStartSpot = start.arrivalCell;
-            MapGenerator.rootsToUnfog.Add(start.arrivalCell);
-            foreach (IntVec3 door in start.doors) { MapGenerator.rootsToUnfog.Add(door); }
+            MapGenerator.PlayerStartSpot = start.arrivalCell + offset;
+            MapGenerator.rootsToUnfog.Add(start.arrivalCell + offset);
+            foreach (IntVec3 door in start.doors) { MapGenerator.rootsToUnfog.Add(door + offset); }
         }
     }
 }

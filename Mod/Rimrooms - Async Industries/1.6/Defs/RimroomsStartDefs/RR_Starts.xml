@@ -202,6 +202,10 @@
     <floorTerrain>Concrete</floorTerrain>
     <wallStuff>BlocksGranite</wallStuff>
     <arrivalCell>(18, 0, 12)</arrivalCell>
+    <!-- The door in the back that should not be there. Naming it is what gives this
+         start a natural gate: a permanently open connection to a seeded coordinate,
+         registered at generation. One expected customer already went through it. -->
+    <emergenceDoorCell>(35, 0, 34)</emergenceDoorCell>
     <stockCell>(34, 0, 16)</stockCell>
     <!-- A shop is a building, not a compound: the outer rectangle is the premises itself,
          roofed and floored, and the rooms inside it are partitions. The one-cell gaps
@@ -226,13 +230,6 @@
     </doors>
     <buildings>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 13)</cell></li>
-      <!-- Three glow pods on the sales-floor edge. Moved here from the scenario's starting
-           things at 0.12.44-dev for the same EdB reason as the Async eight; every cell was
-           computed free against the occupied set, because GenStep_Headquarters throws on a
-           clash rather than skipping it. -->
-      <li><thing>GlowPod</thing><cell>(9, 0, 9)</cell></li>
-      <li><thing>GlowPod</thing><cell>(10, 0, 9)</cell></li>
-      <li><thing>GlowPod</thing><cell>(11, 0, 9)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(17, 0, 13)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(21, 0, 13)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 20)</cell></li>

@@ -137,8 +137,14 @@ Stay alive, learn one rule this place obeys, mark the way you came, and decide w
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>MedicineHerbal</thingDef><count>2</count></li>
         <!-- A book was the one piece of company property worth having on you. -->
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>TextBook</thingDef><count>1</count></li>
-        <!-- The Store's three glow pods moved to its fixed facility at 0.12.44-dev, for
-             the same EdB reason as the Async eight. -->
+        <!-- Three glow pods, CARRIED, and they must stay carried. 0.12.44-dev moved these
+             into a fixed facility to silence an EdB warning, which was wrong twice over:
+             they were attributed to the Store (whose own note says it has none) and this
+             start's party is moved INSIDE a coordinate on the first tick, so anything
+             standing in the surface shell is abandoned immediately. EdB logs a warning
+             it cannot avoid for a Building granted as a starting thing; a warning is
+             cheaper than a start whose only light source is left behind. -->
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>GlowPod</thingDef><count>3</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>Steel</thingDef><count>40</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>ComponentIndustrial</thingDef><count>2</count></li>
       </parts>

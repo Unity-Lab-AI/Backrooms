@@ -56,7 +56,12 @@ namespace RimroomsAsyncIndustries.Scenario
         /// </summary>
         internal static string Open(RimroomsStartDef start, RimroomsCampaignComponent campaign, Map surface)
         {
-            if (start == null || !start.insideStart) { return null; }
+            // **Any start that names a door gets a natural connection**, not only the
+            // inside start. Before 0.12.45-dev this returned here unless `insideStart`, so the
+            // Furniture Store -- whose entire premise is a door in the back that should not be
+            // there -- began with no Backrooms connection of any kind. Nothing in the
+            // headquarters generator creates one, so there was nothing to enter.
+            if (start == null || !start.emergenceDoorCell.IsValid) { return null; }
             if (campaign == null || !campaign.CanOperate || surface == null)
             { return "RR_Start_MissingSetup"; }
 
@@ -91,11 +96,22 @@ namespace RimroomsAsyncIndustries.Scenario
                 threshold, PortalAddressService.ApproachCellFor(threshold), anchor);
             if (!registered.Success) { return registered.MessageKey ?? "RR_PortalAddress_InvalidState"; }
 
-            // 5. Put them where they actually start. Done last, so a failure above leaves
-            //    everybody standing safely on the surface rather than sealed in a coordinate
-            //    with no registered way out.
-            MoveOpeningPartyInside(surface, inside, entry);
-            campaign.RecordEvent("RR_Event_SoloGroupOpening", coordinate.Id);
+            // 5. Put them where they actually start -- **only for a start that begins
+            //    inside**. Done last, so a failure above leaves everybody standing safely on
+            //    the surface rather than sealed in a coordinate with no registered way out.
+            //
+            //    A surface start with a natural gate stops here: the connection is registered
+            //    and permanently open, and the crew are in their own building looking at a door
+            //    that was not there yesterday. Whether they go through is theirs to decide.
+            if (start.insideStart)
+            {
+                MoveOpeningPartyInside(surface, inside, entry);
+                campaign.RecordEvent("RR_Event_SoloGroupOpening", coordinate.Id);
+            }
+            else
+            {
+                campaign.RecordEvent("RR_Event_NaturalGateOpening", coordinate.Id);
+            }
             return null;
         }
 
@@ -108,7 +124,10 @@ namespace RimroomsAsyncIndustries.Scenario
         /// </summary>
         private static Thing FindExitDoor(RimroomsStartDef start, Map surface)
         {
-            IntVec3 cell = start.emergenceDoorCell;
+            // Offset, because the layout is placed onto whatever map the player chose
+            // rather than forcing its own size; see HeadquartersLayout. Reading the authored
+            // cell directly would look for a door where no door is.
+            IntVec3 cell = start.emergenceDoorCell + HeadquartersLayout.Offset(start, surface.Size);
             if (!cell.IsValid || !cell.InBounds(surface)) { return null; }
             Building edifice = cell.GetEdifice(surface);
             return edifice is Building_Door ? edifice : null;

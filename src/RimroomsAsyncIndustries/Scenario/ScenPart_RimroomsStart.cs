@@ -47,7 +47,10 @@ namespace RimroomsAsyncIndustries.Scenario
             { throw new InvalidOperationException("[Rimrooms] " + refusal); }
             if (Verse.Current.Game.GetComponent<RimroomsCampaignComponent>().HasBranch)
             { throw new InvalidOperationException("[Rimrooms] Refused duplicate company startup."); }
-            Find.GameInitData.mapSize = startDef.mapSize;
+            // The map size is the PLAYER'S choice, made at world setup, and the tile they
+            // pick is where this facility is generated. Forcing it here is what produced the
+            // owner's 2026-09-30 report: *"not the map i chose ... a super micro blocked in
+            // area"*. The layout is offset onto their map instead; see HeadquartersLayout.
             Find.GameInitData.mapGeneratorDef = startDef.mapGenerator;
             // Native PrepForMapGen owns initial work priorities. Company role labels do not overwrite them.
         }
