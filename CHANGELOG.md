@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.30-dev - 2026-09-29 - you can call the company
+
+- **Two of the three starts could never reach the campaign at all.** The shop opening and the solo/group opening both begin with no corporation watching, and there was no way to change that - which meant no contracts, no company catalogue, and no clean-up team coming for a stranded crew, for the whole game.
+- **You can now call them, from a communications console.** Once they have you on the books the Async Industries request line starts, exactly as it does for the company start.
+- **You have to have something to tell them.** A powered console, somebody awake who can speak, a coordinate you have actually been into, and a record book you brought home and had analysed. You are not calling for help; you are calling to say you found something.
+- **The button always shows why it is not ready yet** rather than hiding until it is.
+- **There is no way to take the call back.**
+
+Full record: [two of three starts had no campaign](docs/implementation/CORPORATE_CONTACT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.29-dev - 2026-09-29 - the top of the research ladder
 
 - **Six new company projects, one for each branch that had somewhere left to go.**

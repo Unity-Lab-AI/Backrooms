@@ -68,6 +68,19 @@
 A clean-up team came in on all-access passes, removed {1} hostiles from the site and left. Behind them: {0} replacement staff and enough supplies to start again.
 
 Nobody asked {2} whether it wanted the help, and no invoice came with it. The crew are on the ordinary wage from today.</RR_Relief_Body>
+  <RR_Contact_Call>Call the corporation</RR_Contact_Call>
+  <RR_Contact_CallDesc>Tell the parent corporation this branch exists, and that it has a finding worth reading.
+
+Once they have you on the books they start sending work, their clean-up team will come for a stranded crew, and their catalogue opens. There is no way to take the call back.</RR_Contact_CallDesc>
+  <RR_Contact_Established>{0} is on the corporation’s books. Expect the first request shortly.</RR_Contact_Established>
+  <RR_Contact_Inactive>The branch is not operating.</RR_Contact_Inactive>
+  <RR_Contact_AlreadyInContact>The corporation already has this branch on the books.</RR_Contact_AlreadyInContact>
+  <RR_Contact_NoConsole>A call needs a communications console this branch owns.</RR_Contact_NoConsole>
+  <RR_Contact_NotOurs>That console is not on a map this branch holds.</RR_Contact_NotOurs>
+  <RR_Contact_Unpowered>The console has no power.</RR_Contact_Unpowered>
+  <RR_Contact_NoOperator>Nobody employed here is awake, present and able to speak.</RR_Contact_NoOperator>
+  <RR_Contact_NoCoordinate>There is nothing to report yet. Find a way in and go through it first.</RR_Contact_NoCoordinate>
+  <RR_Contact_NoFinding>You have nothing they want. Bring a record book back from a coordinate and have somebody analyse it, then call.</RR_Contact_NoFinding>
   <RR_Event_CorporationContact>The parent corporation has this branch on the books. It is now an investment rather than an experiment.</RR_Event_CorporationContact>
 
   <!-- ==================================================================================
