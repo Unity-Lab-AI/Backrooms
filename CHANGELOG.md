@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.38-dev - 2026-09-29 - a shot-up gate will not hold a connection
+
+- **Damage to a gate now matters.** A gate could be shot to twelve per cent and still open a connection and hold it perfectly. Below half condition it loses its calibration, refuses to open, and says why - repair it with ordinary construction work and calibrate it again, exactly as you did the first time. If a connection is live when it goes, the crews get their return window rather than being cut off.
+- **Every address you have dialled now records how the trips went.** How many came back clean, how many ended in an emergency, and the rate - shown when you pick that address out of the gate's history, which is where it helps. An address nobody has come back from yet says so rather than showing a made-up figure.
+- **Nothing about this is random.** A gate fails for a reason you can read, every time.
+
+Full record: [a gate read no damage at all](docs/implementation/GATE_SUBSYSTEMS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.37-dev - 2026-09-29 - every coordinate in the game was made of wood
 
 - **Spaces are furnished out of different materials now.** Every table, chair, shelf and lamp in every room of every coordinate was wooden - one hardcoded material, not the item's own default. A space now has a short palette of its own drawn from whatever materials your game has, so two spaces look different and each looks like somewhere that was fitted out.

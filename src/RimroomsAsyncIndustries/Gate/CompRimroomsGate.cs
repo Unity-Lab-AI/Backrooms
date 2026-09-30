@@ -385,6 +385,9 @@ namespace RimroomsAsyncIndustries.Gate
             // its completion is what opens one.
             TickSpinUp();
             Threats.GateIncursion.Tick(this);
+            // Row 725's repair half. A gate read no damage at all before this: it could
+            // be shot to twelve per cent and still hold a connection perfectly.
+            TickIntegrity();
 
             if (!IsOpening) { return; }
             if (string.IsNullOrEmpty(failureKey))
@@ -539,6 +542,12 @@ namespace RimroomsAsyncIndustries.Gate
                 : (IsOperatorOnStation ? "RR_Gate_OperatorPresent".Translate(assignedOperator.LabelShortCap).ToString()
                     : "RR_Gate_OperatorAway".Translate(assignedOperator.LabelShortCap).ToString());
             string cutoffText = KillSwitchReadout();
+            // Said only when the machine is not sound. A line reading "condition 100%" on every
+            // gate forever is noise, and Core's own health bar already covers the ordinary case.
+            string integrityText = IntegritySound ? null
+                : "RR_Gate_IntegrityReadout".Translate(
+                    IntegrityFraction.ToStringPercent("F0"),
+                    IntegrityFloorFraction.ToStringPercent("F0")).ToString();
             string serviceText = ServicingReadout();
             // One readout. The legacy one computed here first was overwritten on every
             // single call before it could be shown.
@@ -562,7 +571,8 @@ namespace RimroomsAsyncIndustries.Gate
             string ramp = SpinUpReadout();
             string links = EquipmentLinkReadout();
             string footprint = FootprintReadout();
-            return string.Join("\n", new[] { status, footprint, operatorText, cutoffText, serviceText, powerText, ramp, links, active }
+            return string.Join("\n", new[] { status, footprint, integrityText, operatorText, cutoffText,
+                    serviceText, powerText, ramp, links, active }
                 .Where(s => !string.IsNullOrEmpty(s)));
         }
 
@@ -621,6 +631,11 @@ namespace RimroomsAsyncIndustries.Gate
             { return CompanyActionResult.Refused("RR_Gate_NoAssignedOperator"); }
             if (!assemblyComplete) { return CompanyActionResult.Refused("RR_Gate_NotAssembled"); }
             if (!calibrated) { return CompanyActionResult.Refused("RR_Gate_NotCalibrated"); }
+            // Row 725's repair half. Asked here as well as in the tick, because a gate can take
+            // damage between the tick that noticed and the click that opens, and the refusal has
+            // to be the same answer the readout is showing.
+            if (IntegrityFailureKey != null)
+            { return CompanyActionResult.Refused(IntegrityFailureKey); }
             CompanyActionResult ready = CheckStationReadiness(gateOperator);
             if (!ready.Success) { return ready; }
             if (IsOpening && expeditionId == activeExpeditionId && string.IsNullOrEmpty(failureKey))
@@ -665,6 +680,10 @@ namespace RimroomsAsyncIndustries.Gate
         private void CloseOpeningCore()
         {
             if (portalOwnerFault || (!string.IsNullOrEmpty(portalOpeningId) && IsEmergency)) { return; }
+            // Row 725's reliability half. Read before `failureKey` is cleared below, because
+            // that field IS the emergency, and filed here because this is the one place an
+            // opening is torn down -- so an outcome cannot be counted twice or missed.
+            NoteOpeningOutcome(IsEmergency);
             if (!string.IsNullOrEmpty(portalOpeningId))
             { RecordGateActivity("RR_Event_GateOpeningClosed", portalOpeningId); }
             if (!string.IsNullOrWhiteSpace(activeExpeditionId))

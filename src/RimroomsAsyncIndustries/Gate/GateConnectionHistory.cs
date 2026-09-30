@@ -25,11 +25,52 @@ namespace RimroomsAsyncIndustries.Gate
         internal int times;
         internal bool pinned;
 
+        /// <summary>
+        /// How many openings to this coordinate ended with the operation closed, and how many
+        /// ended in an emergency.
+        ///
+        /// Row 725's reliability half. The entry recorded `times` and **nothing about how any
+        /// of it went**, so the history could not answer the one question a player would ask of
+        /// it: which of these addresses has been costing me return windows.
+        ///
+        /// Counted rather than rated. A stored percentage would be a second number that could
+        /// disagree with the counts it came from; the rate is derived on read from these two.
+        /// </summary>
+        internal int completed;
+
+        internal int emergencies;
+
         public string CoordinateId { get { return coordinateId; } }
         public string Label { get { return label; } }
         public int FirstTick { get { return firstTick; } }
         public int LastTick { get { return lastTick; } }
         public int Times { get { return times; } }
+        public int Completed { get { return completed; } }
+        public int Emergencies { get { return emergencies; } }
+
+        /// <summary>
+        /// The share of recorded outcomes that ended well, or **-1 when nothing has been
+        /// recorded yet**.
+        ///
+        /// -1 rather than 0 or 1, because *no data* is not *perfect* and is not *hopeless*
+        /// either, and a surface showing either would be lying about a coordinate nobody has
+        /// come back from yet. Derived, never stored.
+        /// </summary>
+        public float Reliability
+        {
+            get
+            {
+                int recorded = completed + emergencies;
+                return recorded <= 0 ? -1f : (float)completed / recorded;
+            }
+        }
+
+        /// <summary>Record how one opening ended. The only writer of either count.</summary>
+        internal void NoteOutcome(bool emergency)
+        {
+            if (emergency) { emergencies++; }
+            else { completed++; }
+        }
         public bool Pinned { get { return pinned; } }
 
         public GateHistoryEntry() { }
@@ -64,7 +105,9 @@ namespace RimroomsAsyncIndustries.Gate
             Scribe_Values.Look(ref firstTick, "rr_firstTick", -1);
             Scribe_Values.Look(ref lastTick, "rr_lastTick", -1);
             Scribe_Values.Look(ref times, "rr_times", 0);
-            Scribe_Values.Look(ref pinned, "rr_pinned", false);
+            Scribe_Values.Look(ref pinned, "rr_gateHistoryPinned", false);
+            Scribe_Values.Look(ref completed, "rr_completed", 0);
+            Scribe_Values.Look(ref emergencies, "rr_emergencies", 0);
         }
     }
 
@@ -114,9 +157,21 @@ namespace RimroomsAsyncIndustries.Gate
 
         private List<GateHistoryEntry> connectionHistory = new List<GateHistoryEntry>();
 
+        /// <summary>
+        /// Which coordinate the live opening is to, so its outcome can be filed against the
+        /// right entry when it closes.
+        ///
+        /// Remembered explicitly rather than read off the front of the list. The history is
+        /// most-recently-used first, so *"the first entry is the one we are connected to"* is
+        /// true today and would be a silent lie the first time anything else records a
+        /// connection between opening and closing. One saved string is cheaper than that bug.
+        /// </summary>
+        private string historyCoordinateId;
+
         internal void ExposeConnectionHistory()
         {
             Scribe_Collections.Look(ref connectionHistory, "rr_gateConnectionHistory", LookMode.Deep);
+            Scribe_Values.Look(ref historyCoordinateId, "rr_gateHistoryCoordinateId");
             if (Scribe.mode == LoadSaveMode.PostLoadInit && connectionHistory == null)
             { connectionHistory = new List<GateHistoryEntry>(); }
         }
@@ -139,6 +194,7 @@ namespace RimroomsAsyncIndustries.Gate
         public void NoteConnected(CoordinateRecord coordinate)
         {
             if (coordinate == null || string.IsNullOrEmpty(coordinate.Id)) { return; }
+            historyCoordinateId = coordinate.Id;
             connectionHistory = connectionHistory ?? new List<GateHistoryEntry>();
             int now = Find.TickManager == null ? 0 : Find.TickManager.TicksGame;
 
@@ -203,6 +259,27 @@ namespace RimroomsAsyncIndustries.Gate
         /// of the noise", and a single button that also destroyed the handful of addresses
         /// somebody had explicitly marked would be a trap rather than a convenience.
         /// </summary>
+        /// <summary>
+        /// File how the live opening ended against the coordinate it was to.
+        ///
+        /// Called from the one place an opening is torn down, so an opening cannot be counted
+        /// twice and cannot be missed. Silent when there is no remembered coordinate, which is
+        /// the case for a legacy opening recorded before this field existed.
+        /// </summary>
+        internal void NoteOpeningOutcome(bool emergency)
+        {
+            if (string.IsNullOrEmpty(historyCoordinateId) || connectionHistory == null)
+            { historyCoordinateId = null; return; }
+            for (int index = 0; index < connectionHistory.Count; index++)
+            {
+                GateHistoryEntry entry = connectionHistory[index];
+                if (entry != null && string.Equals(entry.coordinateId, historyCoordinateId,
+                    StringComparison.Ordinal))
+                { entry.NoteOutcome(emergency); break; }
+            }
+            historyCoordinateId = null;
+        }
+
         public int ClearConnectionHistory()
         {
             if (connectionHistory == null) { return 0; }
@@ -258,11 +335,32 @@ namespace RimroomsAsyncIndustries.Gate
             Find.WindowStack.Add(new FloatMenu(options));
         }
 
+        /// <summary>
+        /// How the trips to one address have actually gone, in words.
+        ///
+        /// Row 725's reliability half, shown where a player is already deciding which address to
+        /// dial — which is the only place the number is a decision rather than trivia. Says
+        /// **"none finished yet"** rather than a percentage when there is nothing recorded,
+        /// because `Reliability` returns -1 for that and a surface that printed 0% or 100% would
+        /// be inventing a claim about a coordinate nobody has come back from.
+        /// </summary>
+        private static string ReliabilityRow(GateHistoryEntry entry)
+        {
+            float rate = entry.Reliability;
+            if (rate < 0f) { return "RR_GateHistory_NoOutcomes".Translate().ToString(); }
+            int recorded = entry.Completed + entry.Emergencies;
+            return "RR_GateHistory_Reliability".Translate(entry.Completed.ToString("N0"),
+                recorded.ToString("N0"), rate.ToStringPercent("F0")).ToString();
+        }
+
         private void OpenEntryMenu(GateHistoryEntry entry, RimroomsCampaignComponent campaign)
         {
             string name = HistoryLabelFor(entry, campaign);
             var options = new List<FloatMenuOption>
             {
+                // Read-only, and first, because it is what the player needs to know before
+                // choosing any of the actions below it.
+                new FloatMenuOption(ReliabilityRow(entry), null),
                 // First, because it is what the list is for. Everything below it is management.
                 new FloatMenuOption("RR_GateHistory_Dial".Translate(name), delegate
                 {

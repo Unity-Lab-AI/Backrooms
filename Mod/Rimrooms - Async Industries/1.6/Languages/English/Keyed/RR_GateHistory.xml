@@ -14,4 +14,8 @@
 
   <RR_GateHistory_Dial>Dial {0}</RR_GateHistory_Dial>
   <RR_GateHistory_CoordinateGone>That space is no longer on this branch's list of coordinates. The gate still remembers dialling it, but there is nothing left to connect to.</RR_GateHistory_CoordinateGone>
+
+  <!-- Row 725's reliability half: what actually happened, per address. Counted, never rolled. -->
+  <RR_GateHistory_Reliability>{0} of {1} trips to here came back clean ({2})</RR_GateHistory_Reliability>
+  <RR_GateHistory_NoOutcomes>No trip to here has finished yet</RR_GateHistory_NoOutcomes>
 </LanguageData>

@@ -100,4 +100,14 @@
   <RR_Gate_FootprintReadout>Opening {0} wide, {1} cell(s) of gate ({2}).</RR_Gate_FootprintReadout>
   <RR_Gate_SupplyTooLow>The circuit cannot deliver enough power to start an opening. A charged battery is not supply: the gate needs generators actually running.</RR_Gate_SupplyTooLow>
   <RR_Gate_HeadroomTooLow>There is no margin left above what the gate already draws. Add generation, or take something else off this circuit.</RR_Gate_HeadroomTooLow>
+
+  <!-- Row 725: a damaged gate will not hold a connection, and the history records how its
+       openings actually went. -->
+  <RR_Gate_IntegrityTooLow>The gate is too badly damaged to hold a connection. Repair it, then calibrate it again.</RR_Gate_IntegrityTooLow>
+  <RR_Gate_IntegrityLost>The gate came apart under load</RR_Gate_IntegrityLost>
+  <RR_Gate_IntegrityReadout>Condition {0} - below the {1} a connection needs. Repair, then calibrate.</RR_Gate_IntegrityReadout>
+  <RR_Letter_GateIntegrityLabel>Gate out of calibration: damage</RR_Letter_GateIntegrityLabel>
+  <RR_Letter_GateIntegrityText>{0} has taken enough damage to lose its calibration. It is down to {1} condition, and it will not open a connection until it has been repaired and calibrated again.
+
+Repairing it is ordinary construction work. Calibrating it is the assigned operator's job, as it was the first time.</RR_Letter_GateIntegrityText>
 </LanguageData>

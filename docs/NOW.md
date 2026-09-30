@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.37-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.38-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **189 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `7CB355E054853C9E50461EEEAA68AA68F532320DB9073228E755223B12DAEF6A`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **190 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `24BF762A9D3C767167102FFCABCC77E08B418A0DF062E34AC6D9706FA4F7DE7C`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **TWELVE**, all passing. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
-| Proofs | **THIRTY-FOUR** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Proofs | **THIRTY-FIVE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -62,15 +62,15 @@ everything below:
 
 ## Is it done? NO, and the shape of what is left
 
-**13 genuine build items**, counted at 0.12.37-dev, listed in full under **What is left** below. **Five more rows closed in this batch**: 1005 built, 1011 and 1101 by proof, and 922 and 1055 as tooling. **Eleven rows across the last two batches.**
+**12 genuine build items**, counted at 0.12.38-dev, listed in full under **What is left** below. **Row 725 closed completely this batch** — seven of its nine subsystems turned out already built. **Twelve rows across the last three batches.**
 Plus about **8 rows that cannot close before the game runs once** and **9 the owner excluded**.
 
 Queue, one consistent pattern, command beside the number:
 
 ```
 grep -c '^\s*- \[ \]' docs/TODO.md     # 64 open
-grep -c '^\s*- \[~\]' docs/TODO.md    # 49 partial
-grep -c '^\s*- \[x\]' docs/TODO.md    # 469 done
+grep -c '^\s*- \[~\]' docs/TODO.md    # 48 partial
+grep -c '^\s*- \[x\]' docs/TODO.md    # 470 done
 ```
 
 **The raw open count overstates.** Rows closed by work that shipped the same day keep their `[ ]`
@@ -81,7 +81,7 @@ session than it cost.
 
 ### The package is staged, and one checkpoint behind
 
-The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.37-dev**. Re-stage
+The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.38-dev**. Re-stage
 before any launch:
 
 ```
@@ -133,7 +133,7 @@ RWT multiplayer detection (784, 791), because all three are *optional-by-constru
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.37
+## What shipped this session, 0.7.1 → 0.12.38
 
 | Version | What |
 |---|---|
@@ -211,7 +211,7 @@ RWT multiplayer detection (784, 791), because all three are *optional-by-constru
 
 ## What is left, in order — rewritten 0.12.34-dev, measured not carried
 
-**13 genuine build items**, counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
+**12 genuine build items**, counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
 
 ### Systems still unbuilt
 
@@ -233,35 +233,33 @@ RWT multiplayer detection (784, 791), because all three are *optional-by-constru
    and the owner asked for *"quests and missions and contracts"*. Plus a player-facing surface for
    open odd demands: offers and settlements are recorded events and the Operations pane does not
    list them. Rows 1031, 1032, 1033.
-4. **Gate subsystems**: monitoring, cool-down, modules, repair and reliability. Row 725. Power
-    reserves, calibration and the cutoff already ship.
-5. **Vehicles, space travel and the two VGE chapter hooks.** Rows 764, 765, 766. **Optional by
+4. **Vehicles, space travel and the two VGE chapter hooks.** Rows 764, 765, 766. **Optional by
     construction** — a `PatchOperationFindMod` that does nothing when the mod is absent.
-6. **RWT multiplayer feature detection and its documentation.** Rows 784, 791. Requires the mod
+5. **RWT multiplayer feature detection and its documentation.** Rows 784, 791. Requires the mod
     present to detect anything, and **no statement may describe live shared-colony control** unless
     implemented and demonstrated.
 
 ### Surfaces and words
 
-7. **The player-facing how-to for gameplay and systems.** Rows 1193, 1220. `docs/HOWTO.md`
+6. **The player-facing how-to for gameplay and systems.** Rows 1193, 1220. `docs/HOWTO.md`
     documents the **build**, not play. Written **once**, for both the repo and the site.
-8. **The native menu remap** into the company-first layout. Row 821. Twelve panes and reason codes
+7. **The native menu remap** into the company-first layout. Row 821. Twelve panes and reason codes
     ship; this is the Architect/Work/Assign/Research integration.
-9. **Tutorial, glossary, keyboard paths, contrast and scale.** Rows 822, 833. Localization
+8. **Tutorial, glossary, keyboard paths, contrast and scale.** Rows 822, 833. Localization
     completeness is already measurable: `check-keyed-strings.py` reports every declared key
     resolving.
 
 ### Housekeeping with teeth
 
-10. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
+9. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
     research and coarse for code.
-11. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
+10. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
     expedition logistics, interface, facilities, furniture, storage, power, contracts, faction
     standing, subject casework, evidence, policies. **Not yet: medical, world operations, cargo,
     hospitality, materials, visitor economy, staff psychology.** Rows 206, 302.
-12. **The campaign economy workbook has no generator**, and the register preview PNGs under
+11. **The campaign economy workbook has no generator**, and the register preview PNGs under
     `outputs/` depict a superseded layout. Rows 1268, 1269.
-13. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
+12. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
     terms and the Steam agreements, and keep the position current. Rows 1286–1290.
 
 ### Cannot close before the game runs once — about 8 rows
@@ -708,6 +706,21 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
      wired. `RenameCompany` duplicated a live path with identical validation and an identical
      event, so it was retired. **Decide which before fixing either**, because wiring a duplicate
      doubles the drift instead of closing it.
+
+---
+
+## The scope lesson from 0.12.38-dev, because it will happen again
+
+**A proof that reads one file of a partial class does not know about the class.**
+`proof-areas-and-debrief.py` enumerated *"every way a gate can stop working"* out of
+`CompRimroomsGate.cs`, and **kept passing** when a seventh way was added in `GateIntegrity.cs` —
+another file of the same `partial class`. The count was right and the scope was wrong, so a claim
+that reads as *these are all of them* was really *these are the ones in this file*.
+
+Anything asserting a **complete set** over a partial class must glob the class, not name a file.
+Three of this project's largest types are partial across many files: `CompRimroomsGate`
+(`Gate/*.cs`), `RimroomsCampaignComponent` (`Company/*.cs`) and `MainTabWindow_Operations`
+(`UI/*.cs`). **Check every existing completeness claim against that list before trusting it.**
 
 ---
 
