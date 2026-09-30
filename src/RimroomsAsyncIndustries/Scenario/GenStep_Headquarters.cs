@@ -14,12 +14,24 @@ namespace RimroomsAsyncIndustries.Scenario
 
         public override void Generate(Map map, GenStepParams parms)
         {
-            RimroomsStartDef start = HeadquartersBuilder.RequireStart(map);
+            RimroomsStartDef start = HeadquartersBuilder.StartForMap(map);
+            if (start == null) { return; }
             // The layout is authored in its own coordinates and offset onto whatever map the
-            // player chose; see HeadquartersLayout. Before 0.12.45-dev the mod forced its own
-            // map size instead, which is why a 50x50 site read as a cage.
+            // player chose; see HeadquartersLayout.
             IntVec3 offset = HeadquartersLayout.Offset(start, map.Size);
-            foreach (IntVec3 cell in map.AllCells) { map.terrainGrid.SetTerrain(cell, start.outdoorTerrain); }
+            // **The rest of the tile is left exactly as Core generated it.** This used to be
+            //     foreach (IntVec3 cell in map.AllCells) SetTerrain(cell, start.outdoorTerrain);
+            // which flattened the entire map to one terrain -- the *"bare dirt not even
+            // vegitation"* the owner reported. Only the footprint is prepared, and the room
+            // loop in HeadquartersBuilder floors the interiors.
+            foreach (CellRect rect in HeadquartersLayout.Rooms(start, offset))
+            {
+                foreach (IntVec3 cell in rect.Cells)
+                {
+                    if (cell.InBounds(map))
+                    { map.terrainGrid.SetTerrain(cell, start.outdoorTerrain); }
+                }
+            }
             MapGenerator.PlayerStartSpot = start.arrivalCell + offset;
             MapGenerator.rootsToUnfog.Add(start.arrivalCell + offset);
             foreach (CellRect rect in HeadquartersLayout.Rooms(start, offset))
@@ -33,9 +45,10 @@ namespace RimroomsAsyncIndustries.Scenario
 
         public override void Generate(Map map, GenStepParams parms)
         {
-            RimroomsStartDef start = HeadquartersBuilder.RequireStart(map);
+            RimroomsStartDef start = HeadquartersBuilder.StartForMap(map);
+            if (start == null) { return; }
             HeadquartersSetupComponent receipt = map.GetComponent<HeadquartersSetupComponent>();
-            if (receipt.setupStarted) { return; }
+            if (receipt == null || receipt.setupStarted) { return; }
             receipt.setupStarted = true;
             receipt.receiptVersion = 2;
             receipt.startDefName = start.defName;
@@ -63,17 +76,25 @@ namespace RimroomsAsyncIndustries.Scenario
 
     internal static class HeadquartersBuilder
     {
-        internal static RimroomsStartDef RequireStart(Map map)
+        /// <summary>
+        /// The start this map belongs to, or **null** when this map is not the initial company
+        /// start.
+        ///
+        /// **Null rather than a throw, and that is the load-bearing detail of 0.12.46-dev.**
+        /// These gen steps now live in Core's `Base_Player`, which runs for **every** player map
+        /// a game ever generates -- a second settlement, a quest site, a reloaded world. A step
+        /// that threw there would break all of them. It used to throw because it only ever ran
+        /// inside a generator this mod owned and nothing else could reach it.
+        /// </summary>
+        internal static RimroomsStartDef StartForMap(Map map)
         {
             ScenPart_RimroomsStart part = ScenPart_RimroomsStart.Current;
-            if (part == null || part.startDef == null || Find.GameInitData == null ||
-                map.Tile != Find.GameInitData.startingTile ||
-                // The map no longer has to BE the authored size -- it has to be able to hold the
-                // layout. The player picks the size at world setup and the tile they arrive on,
-                // and the facility is generated onto that map.
-                !HeadquartersLayout.Fits(part.startDef, map.Size) ||
-                Current.Game.GetComponent<RimroomsCampaignComponent>().HasBranch)
-            { throw new InvalidOperationException("[Rimrooms] Headquarters generator used outside the initial company start."); }
+            if (part == null || part.startDef == null || Find.GameInitData == null) { return null; }
+            if (map.Tile != Find.GameInitData.startingTile) { return null; }
+            if (Current.Game.GetComponent<RimroomsCampaignComponent>().HasBranch) { return null; }
+            // The map does not have to BE the authored size -- it has to be able to hold the
+            // layout. The player picks the size at world setup and the tile they arrive on.
+            if (!HeadquartersLayout.Fits(part.startDef, map.Size)) { return null; }
             return part.startDef;
         }
 

@@ -51,7 +51,19 @@ namespace RimroomsAsyncIndustries.Scenario
             // pick is where this facility is generated. Forcing it here is what produced the
             // owner's 2026-09-30 report: *"not the map i chose ... a super micro blocked in
             // area"*. The layout is offset onto their map instead; see HeadquartersLayout.
-            Find.GameInitData.mapGeneratorDef = startDef.mapGenerator;
+            // **The map generator is not ours.** Owner direction, 2026-09-30, after
+            // reporting bare dirt and no vegetation on a tile chosen with Map Preview.
+            //
+            // This line used to read:
+            //     Find.GameInitData.mapGeneratorDef = startDef.mapGenerator;
+            // and it replaced Core's `Base_Player` -- elevation, fertility, biome terrain,
+            // caves, rocks, plants, animals, ruins, rivers, roads and the DLC steps -- with a
+            // four-step generator of ours. The result was flat Soil with a building on it, and
+            // **Map Preview simulates the real generator**, so the preview a player rerolled
+            // against was a picture of a map this mod then discarded.
+            //
+            // Core generates the tile now, at the size the player picked, and the facility is
+            // added onto it by two gen steps patched into `Base_Player`.
             // Native PrepForMapGen owns initial work priorities. Company role labels do not overwrite them.
         }
 

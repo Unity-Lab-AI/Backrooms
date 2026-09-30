@@ -43,7 +43,6 @@
       <li>RR_Commerce_NegotiatedTerms</li>
     </completedProjects>
     <mapSize>60</mapSize>
-    <mapGenerator>RR_Headquarters</mapGenerator>
     <outdoorTerrain>Soil</outdoorTerrain>
     <floorTerrain>Concrete</floorTerrain>
     <wallStuff>BlocksGranite</wallStuff>
@@ -197,7 +196,6 @@
     <scenarioVersion>1</scenarioVersion>
     <completedProjects />
     <mapSize>50</mapSize>
-    <mapGenerator>RR_Headquarters</mapGenerator>
     <outdoorTerrain>Soil</outdoorTerrain>
     <floorTerrain>Concrete</floorTerrain>
     <wallStuff>BlocksGranite</wallStuff>
@@ -319,7 +317,6 @@
     <insideStart>true</insideStart>
     <insideStartDepth>1</insideStartDepth>
     <mapSize>60</mapSize>
-    <mapGenerator>RR_Headquarters</mapGenerator>
     <outdoorTerrain>Soil</outdoorTerrain>
     <floorTerrain>Concrete</floorTerrain>
     <wallStuff>BlocksGranite</wallStuff>

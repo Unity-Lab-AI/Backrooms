@@ -151,15 +151,13 @@ Stay alive, learn one rule this place obeys, mark the way you came, and decide w
     </scenario>
   </ScenarioDef>
 
-  <MapGeneratorDef>
-    <defName>RR_Headquarters</defName>
-    <genSteps>
-      <li>RR_HeadquartersTerrain</li>
-      <li>RR_HeadquartersFacility</li>
-      <li>ScenParts</li>
-      <li>Fog</li>
-    </genSteps>
-  </MapGeneratorDef>
+  <!-- The RR_Headquarters MapGeneratorDef was retired at 0.12.46-dev. Owner direction:
+       **"the map generator is not our mod"**. It had four gen steps against Core's whole
+       chain, so a start map was flat Soil with a building on it - no rock, no plants, no
+       water, no biome character - and Map Preview, which simulates the REAL generator, showed
+       a tile the mod then discarded. Core generates the map now; the two gen steps below are
+       patched into Base_Player in Patches/RR_StartGenSteps.xml so the facility is placed ONTO
+       it. Both steps return immediately unless the map is the initial company start. -->
   <GenStepDef>
     <defName>RR_HeadquartersTerrain</defName>
     <order>5</order>

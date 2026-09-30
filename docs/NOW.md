@@ -17,6 +17,29 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 
 ## Active
 
+**Nothing in flight. Tree clean, everything published, no half-finished task.** Written
+deliberately for the session after a compaction.
+
+### The one thing that will go wrong if you skip it
+
+**The cascade is TEN refs, not eight.** Work is on `feature/bug-testing` now. The eight-ref
+read-back that was the only publication receipt for forty-five checkpoints is:
+
+```
+forgejo, github  x  feature/connected-colony-portals, Prep, Develop, Main
+```
+
+and it is now that **plus `feature/bug-testing` on both remotes**. A publish that reads back eight
+and stops has left the branch the work is actually on unpublished, silently. **Count the branch
+you are on.**
+
+### The second thing
+
+**Use a FILE for any script with escapes or apostrophes, never a bash heredoc.** It mangled
+`\n` into real newlines **five times** in the 0.12.46-dev batch alone, each time producing a
+Python syntax error in a proof or plant file that then had to be repaired. It is written down
+here because writing it down has not yet been enough.
+
 **Nothing in flight. Tree clean, everything published, no half-finished task.** Written deliberately for the session after a compaction.
 
 ### State
@@ -24,16 +47,16 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
-| Published | **0.12.45-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.46-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **199 C# files, 89 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `B4E57D05F52BCD7947465A34E70834165A5CD23CB25BBE6831EA8DA6586EFFA3`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
-| Checkers | **THIRTEEN**, all passing. The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
+| Build | **199 C# files, 90 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `1C0348B2D59F8B58743BE50BEA7AA67C6D2E79E832A10CD08497E6E5154E8455`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Checkers | **THIRTEEN**, all passing. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **FORTY** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
-| Game launches | **ONE, by the owner, 2026-09-30.** It found three defects in the first minute and all three were ours. See *What the first launch found*. The staged copy is current as of this checkpoint |
+| Game launches | **THREE, all by the owner on 2026-09-30.** They have found **eight defects** and every one was ours. Nothing found so far has been a mod conflict. See *What the first launch found*. The staged copy is current at this checkpoint, hash-verified |
 
 ### How to work, owner direction 2026-09-29
 
@@ -74,7 +97,7 @@ Queue, one consistent pattern, command beside the number:
 ```
 grep -c '^\s*- \[ \]' docs/TODO.md     # 42 open
 grep -c '^\s*- \[~\]' docs/TODO.md    # 45 partial
-grep -c '^\s*- \[x\]' docs/TODO.md    # 495 done
+grep -c '^\s*- \[x\]' docs/TODO.md    # 505 done
 ```
 
 **And the master backlog, which row 1054 said understated the build by roughly thirty points.**
@@ -119,6 +142,20 @@ checkpoints stale, so nothing built in this project's history had ever reached t
 ---
 
 ## WHAT THE FIRST LAUNCH FOUND — read this before anything else
+
+**Third pass, and this one was the root of the map complaints.** Owner: **"the map generator
+is not our mod"**. `ScenPart_RimroomsStart` replaced Core's `Base_Player` — elevation, fertility,
+biome terrain, caves, rocks, plants, animals, ruins, rivers, roads — with a **four-step** generator
+of ours, and our terrain step flattened **every cell** to one terrain. Hence *"bare dirt not even
+vegitation"*. And the owner previews tiles with **Map Preview**, which simulates the **real**
+generator, so every map they rerolled against was a picture of a map the mod then discarded: **the
+preview was right and the game was wrong.**
+
+Core generates the tile now. The two gen steps are **added** to `Base_Player` by a patch — never a
+replace, which would drop every step Core and other mods put there. **The load-bearing half: the
+steps had to stop throwing.** They live in the generator that makes *every* player map now, so a
+throw would break a second settlement, a quest site, a reloaded world. `StartForMap` returns null
+and the proof refuses a `throw` in its body.
 
 **Second pass, and these two were the worst of the lot.**
 
@@ -224,7 +261,59 @@ there.
 
 ---
 
-## DO THIS FIRST — re-stage the package, then launch it
+## DO THIS FIRST — read the play-testing log, then launch again
+
+**The build is done. This is the play-testing phase**, on `feature/bug-testing`, and it has
+already been worth more than any equivalent stretch of building: **three launches, eight defects,
+every one ours.**
+
+**The staged copy is current** — 0.12.46-dev, hash-verified against the build. Nothing to re-stage
+unless the build moves.
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
+```
+
+**Only the owner launches, through RimSort.** Standing instruction, unchanged.
+
+### The pattern in all eight, because it is the same pattern
+
+**Seven of the eight were this mod overriding or replacing something the player or the base game
+already owned**, and the eighth was the mod inheriting global state it never set:
+
+| # | What was overridden | What it produced |
+|---|---|---|
+| 1 | Unity's IMGUI draw state, never reset | a blank page with an empty log |
+| 2 | the scroll view swallowed the confirm checkbox | Start refused and the reason was off screen |
+| 3 | the same for the company name field | *"there is no box to type in"* |
+| 4 | `GameInitData.mapSize` | a 50x50 map: *"a super micro blocked in area"* |
+| 5 | `GameInitData.mapGeneratorDef` | *"bare dirt not even vegitation"* |
+| 6 | the terrain grid, every cell | the tile's character erased |
+| 7 | `SoloGroupOpening` gated on `insideStart` | the Store had no gate to enter |
+| 8 | F12, measured against Core alone | collided with HugsLib's log publisher |
+
+**The rule that falls out of it, and it is the thing to carry into the next launch: do not replace
+what the player or the base game already owns. Add to it.** Every fix in 0.12.45 and 0.12.46 was
+the same move — stop overriding, start contributing. The map generator patch is
+`PatchOperationAdd` for exactly this reason.
+
+### What a fourth launch should settle
+
+- **the map is yours**: your chosen size, your chosen tile, and **what Map Preview showed you**.
+  Rocks, plants, water, biome terrain all present; the facility centred with real ground round it.
+- **a door in the Store's back room that nobody built** — permanently open, to a seeded
+  coordinate, with an event announcing it.
+- **through it**, and then onward: ways deeper, or out to a world tile, found by surveying
+  doorways.
+- **the Operations tab on Backslash**, and no double-fire with HugsLib.
+
+**And the standing ask, which has paid for itself three times: if anything fails silently, that is
+the bug.** The setup page names its own draw faults, gate refusals name themselves, crew refusals
+name the person. Silence is the thing worth reporting.
+
+---
+
+## The re-stage command, for when the build does move
 
 **The build is done.** Every queue row that can close without the game running is closed. There is
 nothing left to build that does not first need somebody to press play.

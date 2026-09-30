@@ -142,7 +142,13 @@ DESTRUCTIVE = ("PatchOperationReplace", "PatchOperationRemove")
 destructive = []
 operations = {}
 for path in package_xml():
-    body = read(path)
+    # **Comments stripped first.** A patch whose comment explains *why* a destructive operation
+    # is forbidden is not a destructive operation, and the first version of this scan failed
+    # exactly that file -- `RR_StartGenSteps.xml`, whose note says a `PatchOperationReplace`
+    # "would take ownership of the def and silently drop other mods' steps". Testing for mention
+    # rather than for assertion is the defect class this project has now been caught by four
+    # times; `check-display-style.py` strips comments for the same reason.
+    body = re.sub(r"<!--.*?-->", " ", read(path), flags=re.S)
     for match in re.finditer(r'Class="(Patch[A-Za-z]*)"', body):
         operations[match.group(1)] = operations.get(match.group(1), 0) + 1
     for kind in DESTRUCTIVE:

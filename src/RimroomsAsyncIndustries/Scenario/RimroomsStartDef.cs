@@ -23,7 +23,10 @@ namespace RimroomsAsyncIndustries.Scenario
 
         public string defaultCompanyName;
         public int mapSize = 60;
-        public MapGeneratorDef mapGenerator;
+        // The `mapGenerator` field was retired at 0.12.46-dev. Owner direction: **"the map
+        // generator is not our mod"**. Core's Base_Player generates the tile the player
+        // picked and the facility is added onto it by two gen steps patched into that
+        // generator; nothing here chooses a generator any more.
         public TerrainDef outdoorTerrain;
         public TerrainDef floorTerrain;
         public ThingDef wallStuff;
@@ -91,7 +94,7 @@ namespace RimroomsAsyncIndustries.Scenario
         {
             foreach (string error in base.ConfigErrors()) { yield return error; }
             if (string.IsNullOrWhiteSpace(scenarioId) || scenarioVersion < 1) { yield return "Missing scenario identity/version."; }
-            if (mapSize < 40 || mapSize > 300 || mapGenerator == null) { yield return "Invalid headquarters size/generator."; }
+            if (mapSize < 40 || mapSize > 300) { yield return "Invalid headquarters reference size."; }
             if (outdoorTerrain == null || floorTerrain == null || wallStuff == null) { yield return "Missing headquarters terrain/material."; }
             // Five was the Async Industries roster written as a rule for every start. The
             // Store opens with three ordinary people and the solo/group start with as few

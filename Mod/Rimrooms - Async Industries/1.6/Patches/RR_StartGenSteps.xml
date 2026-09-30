@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <!-- Put the company facility onto RimWorld's OWN map for the tile the player picked.
+
+       Owner direction, 2026-09-30: **"the map generator is not our mod"** — after reporting
+       *"its not the tilemap i chose the land features are all barren to just bare dirt not even
+       vegitation"* on a tile chosen with **Map Preview** (`m00nl1ght.MapPreview`).
+
+       Until 0.12.46-dev this mod set `Find.GameInitData.mapGeneratorDef` to a generator of its
+       own with four steps. Core's `Base_Player` inherits `MapCommonBase` and runs the whole
+       chain: elevation, fertility, biome terrain, caves, rocks from grid, plants, animals,
+       ruins, rivers, roads, plus the Royalty, Biotech and Anomaly steps. Replacing it produced
+       flat Soil with a building on it, and **Map Preview simulates the real generator**, so the
+       preview a player rerolled against was a picture of a map the mod discarded. The preview
+       was right; the game was wrong.
+
+       WHY THIS IS AN ADD RATHER THAN A REPLACE. `PatchOperationAdd` appends to the existing
+       list, so every one of Core's steps and every step any other mod has added to
+       `Base_Player` still runs. A `PatchOperationReplace` here would take ownership of the list
+       and silently drop other mods' steps — and `check-compliance.py` refuses destructive
+       operations outright for exactly that reason.
+
+       WHY THIS IS SAFE ON EVERY OTHER MAP. `Base_Player` runs for **every** player map a game
+       ever generates: a second settlement, a quest site, a reloaded world. Both steps below
+       call `HeadquartersBuilder.StartForMap`, which returns **null** — not a throw — unless the
+       map is the initial company start on the tile the player chose and no branch exists yet.
+       They return immediately in every other case. That guard used to throw, which was fine
+       while nothing but our own generator could reach it and is the thing that had to change
+       before this patch could exist.
+
+       The gen step ORDER values decide when they run, not this list: terrain at 5, before
+       Core's own terrain work, and the facility at 800, after rocks and before ruins. -->
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/MapGeneratorDef[defName="Base_Player"]/genSteps</xpath>
+    <value>
+      <li>RR_HeadquartersTerrain</li>
+      <li>RR_HeadquartersFacility</li>
+    </value>
+  </Operation>
+
+</Patch>
