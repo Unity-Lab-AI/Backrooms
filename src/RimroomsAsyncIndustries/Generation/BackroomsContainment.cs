@@ -22,11 +22,25 @@ namespace RimroomsAsyncIndustries.Generation
     ///
     /// <code>RoofDef.VanishOnCollapse => !isThickRoof;</code>
     ///
-    /// **Thick rock roof never vanishes when it collapses.** Mining out the rock that supports
-    /// it produces rubble and a collapse exactly as it does under any mountain, and the cell
-    /// stays roofed afterwards. So a player may mine a coordinate to nothing and still never
-    /// open a hole in the world. Containment survives unlimited mining with **no restriction on
-    /// the player at all**, which is a far better answer than forbidding the pickaxe.
+    /// **Thick rock roof never vanishes when it collapses**, so the cell stays roofed and no hole
+    /// ever opens in the world. A player may mine a coordinate to nothing and containment
+    /// survives, with **no restriction on the player at all**.
+    ///
+    /// ## And it does not collapse either, which this file used to get wrong
+    ///
+    /// **Owner direction, 2026-09-30, verbatim:** *"and remember backrooms can not and shall not
+    /// have cave ins so removing walls floors columns shall not cause mountain overhead to column
+    /// collapse"*, scoped the same minute to *"tgis is only for backrooms"*.
+    ///
+    /// The paragraph above used to end by saying mining "produces rubble and a collapse exactly
+    /// as it does under any mountain", and treated that as acceptable. **It is not, and the
+    /// wording hid how bad it was:** `VanishOnCollapse` being false means the roof stays, but
+    /// `RoofRockThick` still drops `CollapsedRocks` and crushes whatever stands underneath.
+    ///
+    /// Core gates every cave-in on <c>RoofDef.canCollapse</c>, which **defaults to true** and
+    /// which Core sets false on none of its three roofs. So the fix is a roof def of our own with
+    /// it false -- see <see cref="BackroomsContainmentMapComponent.OverheadRoof"/> -- and **not** a patch to `RoofRockThick`, which
+    /// would stop mountains collapsing in every colony for every mod in the profile.
     ///
     /// ## What actually needed guarding
     ///
@@ -112,10 +126,28 @@ namespace RimroomsAsyncIndustries.Generation
             for (int index = 0; index < marked.Count; index++) { area[marked[index]] = false; }
         }
 
+        /// <summary>
+        /// The roof every Backrooms coordinate is under: overhead mountain in every way Core
+        /// measures, and **non-collapsing**.
+        ///
+        /// Resolved by name with a fallback to Core's own thick roof, so a package missing the
+        /// def degrades to vanilla behaviour instead of generating an unroofed coordinate. The
+        /// fallback is strictly worse -- it can cave in -- and that is still better than a
+        /// coordinate with a sky.
+        /// </summary>
+        internal static RoofDef OverheadRoof
+        {
+            get
+            {
+                return DefDatabase<RoofDef>.GetNamedSilentFail("RR_RoofBackroomsOverhead")
+                    ?? RoofDefOf.RoofRockThick;
+            }
+        }
+
         /// <summary>One bounded rotating window of cells, re-roofed if any lost its roof.</summary>
         private void SweepReroof()
         {
-            RoofDef thick = RoofDefOf.RoofRockThick;
+            RoofDef thick = OverheadRoof;
             if (thick == null || map.roofGrid == null) { return; }
             int total = map.Size.x * map.Size.z;
             if (total <= 0) { return; }
@@ -137,7 +169,7 @@ namespace RimroomsAsyncIndustries.Generation
         /// </summary>
         internal void ReroofWholeMap()
         {
-            RoofDef thick = RoofDefOf.RoofRockThick;
+            RoofDef thick = OverheadRoof;
             if (thick == null || map.roofGrid == null) { return; }
             foreach (IntVec3 cell in map.AllCells)
             {

@@ -4919,3 +4919,79 @@ recompiles. **Thirteen checkers pass, forty proofs hold.** 28 of 28 plants in th
 five **repeating**, plus **new structural families** (flooded_room, stairwell, dead_end,
 pillar_hall) that are layout and dressing only with **no new ThingDefs**; **4-6 onward gates** per
 level and `MaximumNaturalDepth` **3 to 6**; **fresh save**, the 60x60 path dropped.
+
+---
+
+## Session 2026-09-30 - grand spaces, pillars, and no cave-ins (0.12.49-dev)
+
+**Verbatim user quote:** *"and everything doesnt have to be square rooms and rectangle halways and u
+can use walls as pillars making the 0 level rooms be grand large spaces and leas than 60-100 romms
+and this can propigate depper with the wild variatiosn of material typeds in all items equaipment
+walls floors lights furnature and benches that are found everywher deeper in with wild random
+events and layouts and spawns to find and loot!!!!!!"*
+
+**Verbatim user quote:** *"and remember backrooms can not and shall not have cave ins so removing
+walls floors columns shall not cause mountain overhead to column collapse"*
+
+**Verbatim user quote:** *"tgis is only for backrooms"*
+
+**Verbatim user quote:** *"dont let them go more than 5 remember the games mechanics and limits
+built in if they find a gate to a world map tile or a deeper backrroms and they have 5 mpas they
+should gett a warning this gate is blocked your holding open too many gates, but per scerio styled"*
+
+**Verbatim user quote:** *"5 is the limit of other colonies available so a backrooms level should be
+one colonly bacskicly in my thinking"*
+
+**Files touched:** `src/RimroomsAsyncIndustries/Generation/RoomLayoutPlanner.cs` (rewritten),
+`DestinationService.cs`, `GenStep_BackroomsDestination.cs`, `BackroomsContainment.cs`,
+`Mod/.../1.6/Defs/RoofDefs/RR_Roofs.xml` (new), `tools/package-files.json`, About.xml, the csproj,
+`README.md`, `docs/implementation/GRAND_SPACES_IMPLEMENTATION.md`, `docs/TODO.md`, `docs/NOW.md`,
+plus the 41st proof and the 12th plant suite.
+
+**Closure notes.** **Stage one of the coordinate rebuild.** Every number in the planner was a
+constant; they are all functions of depth now. Depth 1 is **6 halls of 80x80 with 144 pillars
+each** - the owner's *"grand large spaces"* - and the room count going DOWN is what pays for it,
+which is *"leas than 60-100 romms"* satisfied by construction rather than by a cap. Depth 6 is 42
+rooms of 24.
+
+**The pillar lattice lives in exactly one function**, because the planner has to prove a room is
+still walkable with the pillars in it before any map exists, and two independent derivations of one
+rule is the defect that stopped every coordinate generating for thirty-nine checkpoints one
+checkpoint earlier.
+
+**The no-cave-in direction found a real defect in the existing reasoning.** `BackroomsContainment`
+argued from `VanishOnCollapse => !isThickRoof` that a coordinate could be "mined to nothing and
+still never open a hole in the world", and treated the collapse itself as acceptable. Half right:
+no hole opens, but Core gates every cave-in on `RoofDef.canCollapse`, which **defaults to true and
+which Core sets false on none of its three roofs** - so thick roof still drops `CollapsedRocks` and
+crushes what stands beneath. Fixed with a roof def of our own. **Core's `RoofRockThick` is
+deliberately NOT patched**, per the owner's own scoping, because that would stop mountains
+collapsing in every colony for every mod in the profile. Every Core behaviour that matters reads
+`isThickRoof` rather than the def's identity, which is why a roof of ours behaves identically.
+
+**A blind spot was measured, not guessed.** Every constant in `RoomLayoutPlanner` was changed and
+**all forty existing proofs still passed** - a coordinate's geometry had no coverage at all.
+`proof-coordinate-layout.py` parses the constants out of the C# and recomputes from them, so it
+cannot go stale when one changes. **A plant then found a hole in that design:** the model copies the
+formulas while parsing the constants, so deleting `if (span % 2 != 0) { span--; }` walked straight
+past the computed evenness claim. Every modelled formula is now paired with a source claim. Two of
+the plants were themselves wrong rather than the proof - `Margin = 1` does not push rooms off the
+map, because the spacing grows as the margin shrinks and the arithmetic self-corrects.
+`proof-interior-resource.py` also objected correctly to the roof change, and now asserts the
+property rather than the def name.
+
+**199 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`A17D99ED025EAAA975011D05F588BBB735793165EFF9E8E4881E2A18B26EEB13`, reproduced by two clean
+recompiles. **Thirteen checkers pass, forty-one proofs hold.** 34 of 34 in the new suite.
+
+**Needs a fresh save**, by owner decision: one shape, the 60x60 path dropped, `PlannerVersion` 3.
+
+**Held for stage two on purpose:** the raised gate count and depth ship WITH the map cap, because
+`ShouldRemoveMapNow` always returns false and a coordinate map is never unloaded. The owner's cap
+supersedes their own earlier LRU-eviction answer and is better on every count - and their
+clarification grounds it in Core: `Prefs.MaxNumberOfPlayerSettlements` is a 1-to-5 player slider
+that Core enforces for settlements but which cannot see a coordinate map, so the budget is read
+from the pref and a coordinate counts against it.
+
+**And the heredoc rule in NOW.md earned its place again this checkpoint** - a bash heredoc died on
+an apostrophe mid-closure, which is the sixth time in two days. This file exists because of it.

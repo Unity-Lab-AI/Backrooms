@@ -240,8 +240,13 @@ namespace RimroomsAsyncIndustries.Generation
         /// coordinate has no outside, and its roof is never removable.**
         ///
         /// A second copy of this would drift, and what would drift out of it is the promise
-        /// that you cannot dig your way into open sky. The roof is deliberately
-        /// `RoofRockThick` and never `RoofConstructed`: constructed roof can be removed.
+        /// that you cannot dig your way into open sky. The roof is deliberately thick and never
+        /// `RoofConstructed`: constructed roof can be removed.
+        ///
+        /// **And it is our own non-collapsing roof rather than Core's `RoofRockThick`.** Owner
+        /// direction, 2026-09-30: *"backrooms can not and shall not have cave ins so removing
+        /// walls floors columns shall not cause mountain overhead to column collapse"*, scoped
+        /// to *"tgis is only for backrooms"*. See `BackroomsContainmentMapComponent.OverheadRoof`.
         /// </summary>
         internal static void BuildShell(Map map, CoordinateRecord coordinate, TerrainDef concrete,
             TerrainDef voidFloor, ThingDef wallDef, ThingDef wallStuff)
@@ -259,10 +264,11 @@ namespace RimroomsAsyncIndustries.Generation
             // restricts the pickaxe: thick roof never vanishes on collapse, so a coordinate
             // can be mined to nothing and still never open a hole in the world.
             List<ThingDef> rockTypes = NaturalRockTypesFor(map);
+            RoofDef overheadRoof = BackroomsContainmentMapComponent.OverheadRoof;
             foreach (IntVec3 cell in map.AllCells)
             {
                 map.terrainGrid.SetTerrain(cell, voidFloor);
-                map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
+                map.roofGrid.SetRoof(cell, overheadRoof);
             }
             FillWithRock(map, coordinate, rockTypes);
 
@@ -275,7 +281,7 @@ namespace RimroomsAsyncIndustries.Generation
                     // removable, and all roof in a Backrooms coordinate must never be.
                     ClearRock(map, cell);
                     map.terrainGrid.SetTerrain(cell, concrete);
-                    map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
+                    map.roofGrid.SetRoof(cell, overheadRoof);
                 }
             }
             BuildCorridors(coordinate.Rooms, map, concrete);
@@ -283,8 +289,21 @@ namespace RimroomsAsyncIndustries.Generation
             foreach (RoomRecord room in coordinate.Rooms)
             {
                 BuildRoomWalls(room, coordinate.Rooms, map, wallDef, wallStuff);
-                // A center support complements perimeter walls across the bounded room proportions.
-                PlaceWall(map, room.Bounds.CenterCell, wallDef, wallStuff);
+                // Owner direction, 2026-09-30, verbatim: *"u can use walls as pillars making the
+                // 0 level rooms be grand large spaces"*. A depth-1 hall is eighty cells across,
+                // and an eighty-cell room with nothing in it is a field, not a hall.
+                //
+                // **The lattice is decided in RoomLayoutPlanner.PillarCells and nowhere else**,
+                // because the planner has to prove the room is still walkable with the pillars in
+                // it before any map exists. Two places deriving the same lattice independently is
+                // exactly the defect that stopped every coordinate generating for thirty-nine
+                // checkpoints.
+                //
+                // This replaced a single wall at the room's centre cell. A lone centre support
+                // was right for a 14-cell room and pointless in an 80-cell one -- and it sat on
+                // the centre cross, which the lattice now deliberately leaves clear.
+                foreach (IntVec3 pillar in RoomLayoutPlanner.PillarCells(room))
+                { PlaceWall(map, pillar, wallDef, wallStuff); }
             }
             PlaceNativeDoors(coordinate.Rooms, map);
         }
@@ -670,16 +689,32 @@ namespace RimroomsAsyncIndustries.Generation
         /// a known space never reshuffles it, which is the same rule every other generated
         /// property of a coordinate follows.
         /// </summary>
+        /// <summary>
+        /// Solid rock everywhere a room or corridor is not.
+        ///
+        /// **Region rebuilding is suspended for the duration**, which is the same thing Core's
+        /// own `GenStep_RocksFromGrid` does and for the same reason: every spawn would otherwise
+        /// ask the region grid to re-partition the map. At 60x60 that was 3,600 cells and nobody
+        /// noticed. At 300x300 it is up to 90,000, and leaving it on makes the work quadratic in
+        /// the worst case. The flag is restored in a `finally` so a throw mid-fill cannot leave
+        /// the map with region updates switched off.
+        /// </summary>
         private static void FillWithRock(Map map, CoordinateRecord coordinate, List<ThingDef> rockTypes)
         {
             if (rockTypes == null || rockTypes.Count == 0) { return; }
-            foreach (IntVec3 cell in map.AllCells)
+            bool updaterWasEnabled = map.regionAndRoomUpdater.Enabled;
+            map.regionAndRoomUpdater.Enabled = false;
+            try
             {
-                if (cell.GetEdifice(map) != null) { continue; }
-                int draw = CampaignSeed.Derive(coordinate.Seed, "rock:" + cell.x + "," + cell.z, 1);
-                ThingDef rock = rockTypes[draw % rockTypes.Count];
-                GenSpawn.Spawn(ThingMaker.MakeThing(rock), cell, map);
+                foreach (IntVec3 cell in map.AllCells)
+                {
+                    if (cell.GetEdifice(map) != null) { continue; }
+                    int draw = CampaignSeed.Derive(coordinate.Seed, "rock:" + cell.x + "," + cell.z, 1);
+                    ThingDef rock = rockTypes[draw % rockTypes.Count];
+                    GenSpawn.Spawn(ThingMaker.MakeThing(rock), cell, map);
+                }
             }
+            finally { map.regionAndRoomUpdater.Enabled = updaterWasEnabled; }
         }
 
         /// <summary>Remove whatever natural rock stands in this cell, so a space can be carved.</summary>
@@ -700,7 +735,7 @@ namespace RimroomsAsyncIndustries.Generation
             map.terrainGrid.SetTerrain(cell, floor);
             // Thick, like every other roofed cell in a coordinate, because constructed roof
             // can be removed and no roof here ever may be.
-            map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
+            map.roofGrid.SetRoof(cell, BackroomsContainmentMapComponent.OverheadRoof);
         }
 
         private static void PlaceWall(Map map, IntVec3 cell, ThingDef wallDef, ThingDef wallStuff)

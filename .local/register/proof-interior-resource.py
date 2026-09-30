@@ -86,10 +86,25 @@ check("the fill is deterministic per cell",
 check("rock is cleared where a room is carved",
       "ClearRock(map, cell)" in generation,
       "-- a room full of rock is not a room")
+# This claim USED to read `"RoofDefOf.RoofRockThick" in generation`, and it failed the moment
+# 0.12.49-dev stopped naming Core's roof -- which is the proof doing its job. The property worth
+# asserting was never "it uses that particular def"; it is that the roof is THICK, so it cannot
+# vanish and leave a sky, and NON-COLLAPSING, so removing a wall or a pillar cannot drop it.
+ROOFS_PATH = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+                          "RoofDefs", "RR_Roofs.xml")
+roofs_xml = read(ROOFS_PATH) if os.path.isfile(ROOFS_PATH) else ""
 check("mining can never open a hole in the world",
-      "RoofDefOf.RoofRockThick" in generation and "RoofConstructed" not in generation,
+      "OverheadRoof" in generation and "RoofConstructed" not in generation
+      and "<isThickRoof>true</isThickRoof>" in roofs_xml,
       "-- thick roof never vanishes on collapse, which is what lets a coordinate be mined to "
       "nothing and still have no outside. Constructed roof IS removable")
+check("MINING CAN NEVER BRING THE CEILING DOWN EITHER",
+      "<canCollapse>false</canCollapse>" in roofs_xml
+      and "RoofDefOf.RoofRockThick" not in generation,
+      "-- owner direction, verbatim: *\"backrooms can not and shall not have cave ins so "
+      "removing walls floors columns shall not cause mountain overhead to column collapse\"*. "
+      "RoofDef.canCollapse defaults to TRUE and Core sets it false on none of its three roofs, "
+      "so Core's own thick roof drops CollapsedRocks and crushes what is beneath it")
 
 # ---------------------------------------------------------------- 2. lifting a floor pays
 palette = strip_comments(read(SRC, "Generation", "BackroomsPalette.cs"))

@@ -11,8 +11,12 @@ namespace RimroomsAsyncIndustries.Generation
     /// <summary>RR-SPACE: create or retrieve one finite, persisted machine-linked site.</summary>
     public static class DestinationService
     {
-        public const int MapWidth = 60;
-        public const int MapHeight = 60;
+        // Owner direction, 2026-09-30: *"theri 300x300 gate"*, and *"making the 0 level rooms
+        // be grand large spaces"*. A 60x60 coordinate could not hold a grand anything -- its
+        // whole room grid was three slots at 19 cells. See RoomLayoutPlanner for what scales
+        // with this and what it costs.
+        public const int MapWidth = 300;
+        public const int MapHeight = 300;
         private const int WorldTileCandidateBudget = 512;
         private static readonly IntVec3 MapSize = new IntVec3(MapWidth, 1, MapHeight);
         private static readonly string[] PreferredBiomeNames =
@@ -20,13 +24,24 @@ namespace RimroomsAsyncIndustries.Generation
             "TemperateForest", "TemperateSwamp", "TemperateSwampyForest"
         };
 
-        private static readonly string[] RequiredFamilies =
+        // **Exactly one of each, because something depends on there being exactly one:** the
+        // gate anchor, the evidence book, and the way out. Owner direction, 2026-09-30, on a
+        // warren of up to sixty rooms: threshold / office / return stay unique, the rest repeat.
+        private static readonly string[] UniqueFamilies =
         {
-            "threshold_room", "survey_lobby", "office_copy", "service_passage",
-            "borrowed_corridor", "return_gallery"
+            "threshold_room", "office_copy", "return_gallery"
         };
 
-        private static readonly string[] OptionalFamilies = { "storage_nook", "utility_room" };
+        // At least one, and then as many as the chain is long. `service_passage` is required
+        // rather than optional because the generator's climate room is
+        // FirstOrDefault(utility_room) ?? First(service_passage), and the second half throws
+        // when there is none.
+        private static readonly string[] AtLeastOnceFamilies = { "service_passage" };
+
+        private static readonly string[] RepeatingFamilies =
+        {
+            "survey_lobby", "service_passage", "borrowed_corridor", "storage_nook", "utility_room"
+        };
 
         public static CompanyActionResult EnsureSite(
             RimroomsCampaignComponent campaign,
@@ -201,7 +216,8 @@ namespace RimroomsAsyncIndustries.Generation
         internal static bool ValidateRooms(List<RoomRecord> rooms, out string failureKey)
         {
             failureKey = null;
-            if (rooms == null || rooms.Count < 6 || rooms.Count > 8 || rooms.Any(room => room == null))
+            if (rooms == null || rooms.Count < 6 || rooms.Count > RoomLayoutPlanner.MaxRooms ||
+                rooms.Any(room => room == null))
             {
                 failureKey = "RR_Generation_InvalidRoomGraph";
                 return false;
@@ -221,7 +237,7 @@ namespace RimroomsAsyncIndustries.Generation
                 failureKey = "RR_Generation_InvalidRoomGraph";
                 return false;
             }
-            foreach (string family in RequiredFamilies)
+            foreach (string family in UniqueFamilies)
             {
                 if (rooms.Count(room => room.familyId == family) != 1)
                 {
@@ -229,9 +245,9 @@ namespace RimroomsAsyncIndustries.Generation
                     return false;
                 }
             }
-            foreach (string family in OptionalFamilies)
+            foreach (string family in AtLeastOnceFamilies)
             {
-                if (rooms.Count(room => room.familyId == family) > 1)
+                if (rooms.Count(room => room.familyId == family) < 1)
                 {
                     failureKey = "RR_Generation_InvalidRoomGraph";
                     return false;
@@ -240,8 +256,12 @@ namespace RimroomsAsyncIndustries.Generation
 
             foreach (RoomRecord room in rooms)
             {
-                if (room.index < 0 || room.index >= rooms.Count || room.width < 10 || room.width > 16 || room.width % 2 != 0 ||
-                    room.height < 10 || room.height > 16 || room.height % 2 != 0 ||
+                // Room spans are a function of depth now, so the bound is the widest slot the
+                // planner can produce rather than the old hard-coded 16. Still even, because
+                // CellRect.CenterCell is where every door and corridor is aimed.
+                if (room.index < 0 || room.index >= rooms.Count || room.width < 8 ||
+                    room.width > MaxRoomSpan || room.width % 2 != 0 ||
+                    room.height < 8 || room.height > MaxRoomSpan || room.height % 2 != 0 ||
                     room.links == null || room.links.Distinct().Count() != room.links.Count ||
                     !KnownFamily(room.familyId) || !WithinMap(room.Bounds) ||
                     rooms.Any(other => other != room && room.Bounds.Overlaps(other.Bounds)))
@@ -352,7 +372,7 @@ namespace RimroomsAsyncIndustries.Generation
 
         private static bool KnownFamily(string family)
         {
-            return RequiredFamilies.Contains(family) || OptionalFamilies.Contains(family);
+            return UniqueFamilies.Contains(family) || RepeatingFamilies.Contains(family);
         }
 
         private static bool WithinMap(CellRect bounds)
@@ -361,11 +381,32 @@ namespace RimroomsAsyncIndustries.Generation
                 bounds.maxX < MapWidth - 1 && bounds.maxZ < MapHeight - 1;
         }
 
+        /// <summary>The widest room the planner can produce, at its coarsest slot grid.</summary>
+        private static int MaxRoomSpan
+        {
+            get
+            {
+                return RoomLayoutPlanner.SlotRoomSpan(
+                    RoomLayoutPlanner.SlotSpacing(RoomLayoutPlanner.MinSlotsPerAxis));
+            }
+        }
+
+        /// <summary>
+        /// Whether a link between these two rooms is one a corridor can actually be built for.
+        ///
+        /// **The literal 19 is gone.** It was the old fixed slot spacing, and the spacing is a
+        /// function of depth now -- a validator carrying a constant the planner no longer uses is
+        /// the same defect class as the light count. The requirement the corridor builder really
+        /// has is this: the centres share a row or a column, and the bounds do not overlap, so
+        /// there is a straight run of rock between them to carve.
+        /// </summary>
         private static bool AreGridNeighbors(RoomRecord first, RoomRecord second)
         {
             IntVec3 a = first.Bounds.CenterCell;
             IntVec3 b = second.Bounds.CenterCell;
-            return (a.x == b.x && Math.Abs(a.z - b.z) == 19) || (a.z == b.z && Math.Abs(a.x - b.x) == 19);
+            if (first.Bounds.Overlaps(second.Bounds)) { return false; }
+            if (a.x == b.x) { return a.z != b.z; }
+            return a.z == b.z && a.x != b.x;
         }
 
         private static PlanetTile FindUniqueTile(CoordinateRecord coordinate)

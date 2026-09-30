@@ -6,14 +6,84 @@ using Verse;
 
 namespace RimroomsAsyncIndustries.Generation
 {
-    // Pure first-slice planning: no map, world object, crew, random-global state or coordinate mutation.
+    /// <summary>
+    /// Where the rooms of a coordinate go, before any map exists.
+    ///
+    /// ## Owner direction, 2026-09-30, verbatim
+    ///
+    /// *"and everything doesnt have to be square rooms and rectangle halways and u can use walls
+    /// as pillars making the 0 level rooms be grand large spaces and leas than 60-100 romms and
+    /// this can propigate depper with the wild variatiosn of material typeds in all items
+    /// equaipment walls floors lights furnature and benches that are found everywher deeper in
+    /// with wild random events and layouts and spawns to find and loot!!!!!!"*
+    ///
+    /// ## What replaced what
+    ///
+    /// Until 0.12.49-dev this was a **hard-coded 3x3 grid of eight slots** at a fixed 19-cell
+    /// spacing, producing 6 to 8 rooms of 10 to 16 cells on a 60x60 map. Every one of those
+    /// numbers was a constant.
+    ///
+    /// The slot grid is now a **function of depth**, and so is everything derived from it:
+    ///
+    ///     depth   slots    spacing   room span   rooms
+    ///       1      3x3        90         80        6      grand pillared halls
+    ///       2      4x4        68         58       10
+    ///       3      5x5        54         44       16
+    ///       4      6x6        45         35       24
+    ///       5      7x7        38         28       32
+    ///       6      8x8        34         24       42      a warren
+    ///
+    /// **Depth 1 is six rooms eighty cells across.** That is the owner's *"grand large spaces"*,
+    /// and it is also why the room count goes DOWN rather than up: a hall that size cannot fit in
+    /// a 19-cell slot, and *"leas than 60-100 romms"* is satisfied at every depth by construction
+    /// rather than by a cap.
+    ///
+    /// The shape is a **serpentine chain** through the slot grid, so consecutive rooms are always
+    /// grid neighbours and the chain is connected without needing a search. Dead-end spur rooms
+    /// hang off it from the slots the chain did not use.
+    ///
+    /// Pure planning: no map, world object, crew, random-global state or coordinate mutation.
+    /// </summary>
     internal static class RoomLayoutPlanner
     {
-        internal const int PlannerVersion = 2;
+        internal const int PlannerVersion = 3;
         internal const int CandidateBudget = 3;
         internal const int FallbackCandidate = 3;
-        private static readonly int[,] Grid = { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 2, 1 }, { 1, 1 }, { 0, 1 }, { 0, 2 }, { 1, 2 } };
-        private static readonly string[] Families = { "threshold_room", "survey_lobby", "office_copy", "service_passage", "borrowed_corridor", "return_gallery" };
+
+        /// <summary>Free cells kept between the slot grid and the map edge.</summary>
+        internal const int Margin = 14;
+
+        /// <summary>Rock left between neighbouring rooms, which is what corridors run through.</summary>
+        internal const int SlotGap = 10;
+
+        /// <summary>Fewest and most slots per axis, mapped from depth 1 upward.</summary>
+        internal const int MinSlotsPerAxis = 3;
+        internal const int MaxSlotsPerAxis = 8;
+
+        /// <summary>The ceiling the owner named: *"leas than 60-100 romms"*.</summary>
+        internal const int MaxRooms = 60;
+
+        /// <summary>
+        /// Cells between pillars inside a room. Chosen against
+        /// <c>RoofCollapseUtility.RoofMaxSupportDistance</c>, which is **6.9**, so a lattice at
+        /// this spacing keeps every roofed cell within reach of something that holds roof.
+        /// </summary>
+        internal const int PillarSpacing = 6;
+
+        /// <summary>
+        /// A room only gets pillars once it is wider than a roof can span unaided -- twice 6.9,
+        /// rounded down. Below that the room is a room; above it, it is a hall.
+        /// </summary>
+        internal const int PillarThreshold = 13;
+
+        /// <summary>Exactly one of each of these, and index 0 is always the threshold.</summary>
+        private static readonly string[] UniqueFamilies = { "threshold_room", "office_copy", "return_gallery" };
+
+        /// <summary>Filled in along the chain, as many times as the chain is long.</summary>
+        private static readonly string[] ChainFamilies = { "survey_lobby", "service_passage", "borrowed_corridor" };
+
+        /// <summary>Dead ends hanging off the chain, one link each.</summary>
+        private static readonly string[] SpurFamilies = { "storage_nook", "utility_room" };
 
         internal static bool TrySelect(CoordinateRecord coordinate, out List<RoomRecord> selected)
         {
@@ -54,52 +124,210 @@ namespace RimroomsAsyncIndustries.Generation
             return -1; // Existing saved graph: never relabel it as a newly selected candidate.
         }
 
+        /// <summary>Slots per axis for this depth. Deeper means more, smaller rooms.</summary>
+        internal static int SlotsPerAxis(int depth)
+        {
+            int slots = MinSlotsPerAxis + (depth < 1 ? 0 : depth - 1);
+            if (slots < MinSlotsPerAxis) { return MinSlotsPerAxis; }
+            return slots > MaxSlotsPerAxis ? MaxSlotsPerAxis : slots;
+        }
+
+        /// <summary>Centre-to-centre distance between neighbouring slots.</summary>
+        internal static int SlotSpacing(int slots)
+        {
+            return (DestinationService.MapWidth - Margin * 2) / slots;
+        }
+
+        /// <summary>The default span of a room in a slot of this size, always even.</summary>
+        internal static int SlotRoomSpan(int spacing)
+        {
+            int span = spacing - SlotGap;
+            if (span % 2 != 0) { span--; }
+            return span < 8 ? 8 : span;
+        }
+
+        /// <summary>Where a slot's centre sits on the map.</summary>
+        internal static int SlotCenter(int index, int spacing)
+        {
+            return Margin + spacing / 2 + spacing * index;
+        }
+
+        /// <summary>
+        /// The pillar cells inside a room, and **the single place this is decided.**
+        ///
+        /// Both the generator, which spawns them, and <see cref="CandidateIsSafe"/>, which has to
+        /// prove the room is still walkable with them in it, call this. Two places deriving the
+        /// same lattice independently is precisely the defect that stopped every coordinate
+        /// generating from 0.7.8-dev to 0.12.47-dev.
+        ///
+        /// **Never on the centre cross.** Doors and corridors meet a room at the midpoint of each
+        /// wall, so the centre row and centre column are left completely clear: a straight walk
+        /// from any doorway to any other cannot be blocked by a pillar, whatever the room's size.
+        /// </summary>
+        internal static IEnumerable<IntVec3> PillarCells(RoomRecord room)
+        {
+            CellRect bounds = room.Bounds;
+            if (bounds.Width <= PillarThreshold && bounds.Height <= PillarThreshold)
+            { yield break; }
+            IntVec3 center = bounds.CenterCell;
+            for (int x = bounds.minX + PillarSpacing; x <= bounds.maxX - PillarSpacing; x += PillarSpacing)
+            {
+                for (int z = bounds.minZ + PillarSpacing; z <= bounds.maxZ - PillarSpacing; z += PillarSpacing)
+                {
+                    if (x == center.x || z == center.z) { continue; }
+                    yield return new IntVec3(x, 0, z);
+                }
+            }
+        }
+
         private static List<RoomRecord> Build(CoordinateRecord coordinate, int candidate)
         {
             bool fallback = candidate == FallbackCandidate;
             int seed = DestinationService.StableHash(coordinate.Seed, coordinate.Id + ":rooms:" + candidate,
                 PlannerVersion + coordinate.GeneratorVersion + DestinationService.GetRoomLibraryVersion(coordinate));
-            int count = fallback ? 6 : 6 + seed % 3;
-            int rotation = fallback ? 0 : (seed / 3) % 4;
-            bool mirror = !fallback && (seed / 13) % 2 != 0;
-            var rooms = new List<RoomRecord>();
-            for (int i = 0; i < count; i++)
-            {
-                int x = Grid[i, 0];
-                int z = Grid[i, 1];
-                if (mirror) { x = 2 - x; }
-                for (int turn = 0; turn < rotation; turn++) { int oldX = x; x = 2 - z; z = oldX; }
-                string family = i < 6 ? Families[i] : ((i == 6) == ((seed / 29) % 2 == 0) ? "storage_nook" : "utility_room");
-                int width = 14;
-                int height = 14;
-                if (!fallback)
-                {
-                    if (family == "survey_lobby") { width = 16; height = 12; }
-                    else if (family == "service_passage") { width = 10; height = 14; }
-                    else if (family == "borrowed_corridor") { width = (seed / 7) % 2 == 0 ? 10 : 16; height = width == 10 ? 16 : 10; }
-                    else if (i >= 6) { width = 12; height = 12; }
-                    else if (family == "office_copy" && (seed / 17) % 2 == 0) { width = 16; height = 12; }
-                }
-                // Owner direction 2026-09-29: "the back rooms is random on crack and lsd creepy
-                // horror flick", and "not just room shape echoes but echos of thier inhabitance".
-                //
-                // Only for coordinates on room library version 2 or later. Everything discovered
-                // before this plans exactly as it always did, which is what roomLibraryVersion
-                // exists for -- a saved graph is re-planned to verify its fingerprint, so
-                // changing the shape of an existing coordinate would make it refuse to generate.
-                if (!fallback && DestinationService.GetRoomLibraryVersion(coordinate) >= 2)
-                { Derange(coordinate, ref width, ref height, seed, i); }
+            int depth = fallback ? 1 : Math.Max(1, coordinate.Depth);
+            int slots = SlotsPerAxis(depth);
+            int spacing = SlotSpacing(slots);
+            int span = SlotRoomSpan(spacing);
 
-                if (rotation % 2 != 0) { int swap = width; width = height; height = swap; }
-                rooms.Add(new RoomRecord { index = i, familyId = family, x = 9 + 19 * x - width / 2,
-                    z = 9 + 19 * z - height / 2, width = width, height = height, links = new List<int>() });
+            // The serpentine: row-major with alternating direction, so consecutive entries are
+            // always grid neighbours and the chain needs no pathfinding to be connected.
+            var order = new List<IntVec2>();
+            for (int row = 0; row < slots; row++)
+            {
+                for (int column = 0; column < slots; column++)
+                {
+                    int x = row % 2 == 0 ? column : slots - 1 - column;
+                    order.Add(new IntVec2(x, row));
+                }
             }
-            for (int i = 1; i < 6; i++) { Link(rooms, i - 1, i); }
-            // Ring candidates provide a short return-gallery exit; spine candidates require route retracing.
-            if (fallback || seed % 2 == 0) { Link(rooms, 5, 0); }
-            if (count >= 7) { Link(rooms, 6, 5); }
-            if (count == 8) { Link(rooms, 7, 4); }
+
+            // Two thirds of the grid, so there is always rock left between the arms of the chain.
+            int chainLength = fallback ? MinSlotsPerAxis * MinSlotsPerAxis * 2 / 3 : order.Count * 2 / 3;
+            if (chainLength < 6) { chainLength = 6; }
+            if (chainLength > MaxRooms) { chainLength = MaxRooms; }
+            if (chainLength > order.Count) { chainLength = order.Count; }
+
+            var rooms = new List<RoomRecord>();
+            var taken = new HashSet<IntVec2>();
+            for (int index = 0; index < chainLength; index++)
+            {
+                IntVec2 slot = order[index];
+                taken.Add(slot);
+                string family = ChainFamilyFor(index, chainLength, seed);
+                rooms.Add(MakeRoom(coordinate, rooms.Count, family, slot, spacing, span, seed, fallback, depth));
+            }
+            for (int index = 1; index < chainLength; index++) { Link(rooms, index - 1, index); }
+
+            // Dead ends, from slots the chain walked past. Bounded by MaxRooms so a deep
+            // coordinate cannot grow without limit.
+            if (!fallback)
+            {
+                for (int index = 0; index < order.Count && rooms.Count < MaxRooms; index++)
+                {
+                    IntVec2 slot = order[index];
+                    if (taken.Contains(slot)) { continue; }
+                    int host = ChainNeighbourOf(rooms, chainLength, slot, slots, spacing);
+                    if (host < 0) { continue; }
+                    if (DestinationService.StableHash(seed, "spur:" + slot.x + "," + slot.z, depth) % 3 != 0)
+                    { continue; }
+                    taken.Add(slot);
+                    string family = SpurFamilies[rooms.Count % SpurFamilies.Length];
+                    rooms.Add(MakeRoom(coordinate, rooms.Count, family, slot, spacing, span, seed, false, depth));
+                    Link(rooms, rooms.Count - 1, host);
+                }
+            }
+
+            // A ring, when the chain's ends happen to be neighbours: a short way back rather than
+            // retracing the whole route. Spine candidates deliberately do not get one.
+            if (fallback || seed % 2 == 0)
+            {
+                if (AreNeighbourRooms(rooms[0], rooms[chainLength - 1]) &&
+                    !rooms[0].links.Contains(chainLength - 1))
+                { Link(rooms, chainLength - 1, 0); }
+            }
             return rooms;
+        }
+
+        /// <summary>
+        /// Index 0 is the threshold, the last chain room is the way home, and one room in the
+        /// middle is the office copy. Everything else cycles the repeating families.
+        ///
+        /// The three unique families are unique because something depends on there being exactly
+        /// one: the gate anchor, the evidence book, and the way out.
+        /// </summary>
+        private static string ChainFamilyFor(int index, int chainLength, int seed)
+        {
+            if (index == 0) { return UniqueFamilies[0]; }
+            if (index == chainLength - 1) { return UniqueFamilies[2]; }
+            int officeAt = 1 + Math.Abs(seed / 23) % Math.Max(1, chainLength - 2);
+            if (index == officeAt) { return UniqueFamilies[1]; }
+            // service_passage must appear at least once: the generator's climate room is
+            // FirstOrDefault(utility_room) ?? First(service_passage), and the second half of that
+            // throws when there is none.
+            if (index == 1 && officeAt != 1) { return "service_passage"; }
+            if (index == 2 && officeAt == 1) { return "service_passage"; }
+            return ChainFamilies[Math.Abs(seed / 7 + index) % ChainFamilies.Length];
+        }
+
+        private static RoomRecord MakeRoom(CoordinateRecord coordinate, int index, string family,
+            IntVec2 slot, int spacing, int span, int seed, bool fallback, int depth)
+        {
+            int width = span;
+            int height = span;
+            if (!fallback)
+            {
+                // Family proportions, scaled to the slot rather than written as cell counts.
+                if (family == "service_passage") { width = span * 3 / 4; }
+                else if (family == "borrowed_corridor")
+                {
+                    bool lengthwise = (seed / 7 + index) % 2 == 0;
+                    if (lengthwise) { height = span * 3 / 5; } else { width = span * 3 / 5; }
+                }
+                else if (family == "storage_nook" || family == "utility_room")
+                { width = span * 2 / 3; height = span * 2 / 3; }
+                if (DestinationService.GetRoomLibraryVersion(coordinate) >= 2)
+                { Derange(coordinate, ref width, ref height, seed, index, span); }
+            }
+            width = Even(width, span);
+            height = Even(height, span);
+            int centerX = SlotCenter(slot.x, spacing);
+            int centerZ = SlotCenter(slot.z, spacing);
+            return new RoomRecord
+            {
+                index = index,
+                familyId = family,
+                x = centerX - width / 2,
+                z = centerZ - height / 2,
+                width = width,
+                height = height,
+                links = new List<int>(),
+            };
+        }
+
+        /// <summary>The chain room a spur slot can hang off, or -1 when it touches none.</summary>
+        private static int ChainNeighbourOf(List<RoomRecord> rooms, int chainLength, IntVec2 slot,
+            int slots, int spacing)
+        {
+            int centerX = SlotCenter(slot.x, spacing);
+            int centerZ = SlotCenter(slot.z, spacing);
+            for (int index = 0; index < chainLength && index < rooms.Count; index++)
+            {
+                IntVec3 other = rooms[index].Bounds.CenterCell;
+                if ((other.x == centerX && Math.Abs(other.z - centerZ) == spacing) ||
+                    (other.z == centerZ && Math.Abs(other.x - centerX) == spacing))
+                { return index; }
+            }
+            return -1;
+        }
+
+        private static bool AreNeighbourRooms(RoomRecord first, RoomRecord second)
+        {
+            IntVec3 a = first.Bounds.CenterCell;
+            IntVec3 b = second.Bounds.CenterCell;
+            if (a.x == b.x) { return !first.Bounds.Overlaps(second.Bounds) && a.z != b.z; }
+            if (a.z == b.z) { return !first.Bounds.Overlaps(second.Bounds) && a.x != b.x; }
+            return false;
         }
 
         /// <summary>
@@ -111,13 +339,12 @@ namespace RimroomsAsyncIndustries.Generation
         /// image the whole setting rests on. The wrongness is something the player travels
         /// toward.
         ///
-        /// **Clamped to 8..17 always.** Rooms sit 19 cells apart on the planning grid, so
-        /// anything wider would overlap its neighbour — and the candidate validator would then
-        /// reject every layout and the coordinate would fall back to the plain one. The clamp
-        /// is what keeps "deranged" from collapsing into "broken".
+        /// **Clamped to the slot, not to a constant.** The old version clamped to 8..17 because
+        /// rooms sat 19 cells apart; the spacing is now a function of depth, so the clamp is too.
+        /// The clamp is what keeps *"deranged"* from collapsing into *"broken"*.
         /// </summary>
         private static void Derange(CoordinateRecord coordinate, ref int width, ref int height,
-            int seed, int roomIndex)
+            int seed, int roomIndex, int span)
         {
             int depth = coordinate.Depth;
             if (depth <= 1) { return; }
@@ -131,50 +358,63 @@ namespace RimroomsAsyncIndustries.Generation
             int echoChance = Math.Min(50, (depth - 1) * 12);
             if (echoed != null && echoed.Count >= 2 && roll % 100 < echoChance)
             {
-                width = Clamp(echoed[roll % echoed.Count]);
-                height = Clamp(echoed[(roll / 7) % echoed.Count]);
+                width = Clamp(echoed[roll % echoed.Count], span);
+                height = Clamp(echoed[(roll / 7) % echoed.Count], span);
                 return;
             }
 
             // A hallway. Owner direction 2026-09-29: "its weirtd and lots of halways and
             // halway/rooms and facilitys and noraml like rooms".
-            //
-            // Made deliberately rather than hoped for out of the stretch below: a corridor is
-            // one of the two shapes the setting is actually built on, and leaving it to a
-            // symmetric roll would produce one rarely and by accident. Long and narrow in one
-            // axis, which the room dresser then fills as a corridor rather than as a hall.
             int hallChance = Math.Min(35, (depth - 1) * 9);
             if ((roll / 3) % 100 < hallChance)
             {
                 bool lengthwise = ((roll / 5) % 2) == 0;
-                int longSide = 15 + (roll % 3);
-                int shortSide = 8 + ((roll / 13) % 2);
-                width = Clamp(lengthwise ? longSide : shortSide);
-                height = Clamp(lengthwise ? shortSide : longSide);
+                int longSide = span;
+                int shortSide = Math.Max(8, span / 3);
+                width = Clamp(lengthwise ? longSide : shortSide, span);
+                height = Clamp(lengthwise ? shortSide : longSide, span);
                 return;
             }
 
-            // Otherwise: stretch. The spread grows with depth, so a deep room can be a long
-            // corridor or a near-square hall where a shallow one is always roughly a hall.
-            int spread = Math.Min(5, depth);
-            width = Clamp(width + (roll % (spread * 2 + 1)) - spread);
-            height = Clamp(height + ((roll / 11) % (spread * 2 + 1)) - spread);
+            // Otherwise: stretch. The spread grows with depth AND with the slot, so a deep room
+            // can be a long corridor or a near-square hall where a shallow one is always a hall.
+            int spread = Math.Min(span / 3, depth * Math.Max(1, span / 12));
+            if (spread < 1) { spread = 1; }
+            width = Clamp(width + (roll % (spread * 2 + 1)) - spread, span);
+            height = Clamp(height + ((roll / 11) % (spread * 2 + 1)) - spread, span);
         }
 
-        /// <summary>Keeps a dimension inside what the 19-cell planning grid can hold.</summary>
-        private static int Clamp(int value)
+        /// <summary>Keeps a dimension inside what this depth's slot can hold.</summary>
+        private static int Clamp(int value, int span)
         {
-            return value < 8 ? 8 : (value > 17 ? 17 : value);
+            if (value < 8) { return 8; }
+            return value > span ? span : value;
+        }
+
+        /// <summary>
+        /// Rooms are an even number of cells across so <c>CellRect.CenterCell</c> lands where
+        /// doors and corridors expect it, whatever the room's size.
+        /// </summary>
+        private static int Even(int value, int span)
+        {
+            int clamped = Clamp(value, span);
+            if (clamped % 2 != 0) { clamped--; }
+            return clamped < 8 ? 8 : clamped;
         }
 
         private static void Link(List<RoomRecord> rooms, int a, int b)
-        { rooms[a].links.Add(b); rooms[b].links.Add(a); }
+        {
+            if (rooms[a].links.Contains(b)) { return; }
+            rooms[a].links.Add(b);
+            rooms[b].links.Add(a);
+        }
 
         private static bool CandidateIsSafe(List<RoomRecord> rooms)
         {
             if (!DestinationService.ValidateRooms(rooms, out _)) { return false; }
-            // Project the exact boundary walls, one-cell openable doors, three-cell corridors and center support.
-            // This is a bounded 60x60 floor check before any engine map/content state exists.
+            // Project the exact boundary walls, one-cell openable doors, three-cell corridors and
+            // the pillar lattice. A bounded floor check before any engine map/content state
+            // exists, so a layout that seals a room off never reaches a map.
             var floor = new bool[DestinationService.MapWidth, DestinationService.MapHeight];
             foreach (RoomRecord room in rooms)
             {
@@ -183,8 +423,9 @@ namespace RimroomsAsyncIndustries.Generation
                     bool edge = cell.x == room.Bounds.minX || cell.x == room.Bounds.maxX || cell.z == room.Bounds.minZ || cell.z == room.Bounds.maxZ;
                     floor[cell.x, cell.z] = !edge || DoorOpening(room, rooms, cell);
                 }
-                IntVec3 center = room.Bounds.CenterCell;
-                floor[center.x, center.z] = false;
+                // The pillars, from the SAME function the generator spawns them from.
+                foreach (IntVec3 pillar in PillarCells(room))
+                { floor[pillar.x, pillar.z] = false; }
             }
             foreach (RoomRecord room in rooms)
             {
@@ -205,7 +446,7 @@ namespace RimroomsAsyncIndustries.Generation
                     }
                 }
             }
-            IntVec3 start = rooms[0].Bounds.CenterCell + IntVec3.East;
+            IntVec3 start = rooms[0].Bounds.CenterCell;
             var seen = new HashSet<IntVec3> { start };
             var pending = new Queue<IntVec3>();
             pending.Enqueue(start);
@@ -220,7 +461,7 @@ namespace RimroomsAsyncIndustries.Generation
                         floor[next.x, next.z] && seen.Add(next)) { pending.Enqueue(next); }
                 }
             }
-            return rooms.All(room => seen.Contains(room.Bounds.CenterCell + IntVec3.East)) &&
+            return rooms.All(room => seen.Contains(room.Bounds.CenterCell)) &&
                 rooms.Where(room => room.familyId == "utility_room" || room.familyId == "storage_nook").All(room => room.links.Count == 1);
         }
 

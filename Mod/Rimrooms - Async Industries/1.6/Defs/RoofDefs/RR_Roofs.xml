@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- THE BACKROOMS DO NOT CAVE IN.
+
+       Owner direction, 2026-09-30, verbatim: **"and remember backrooms can not and shall not
+       have cave ins so removing walls floors columns shall not cause mountain overhead to column
+       collapse"**, and immediately after, when asked how far it reached: **"tgis is only for
+       backrooms"**.
+
+       WHY A ROOF DEF OF OUR OWN, AND WHY THIS IS THE ONLY HONEST WAY TO DO IT.
+
+       Core gates every cave-in on `RoofDef.canCollapse`, in
+       `RoofCollapseCellsFinder.ProcessRoofHolderDespawned`:
+
+           ... && roofGrid.RoofAt(intVec).canCollapse && !RoofCollapseUtility.WithinRangeOfRoofHolder(...)
+
+       `canCollapse` DEFAULTS TO TRUE and Core sets it false on none of its three roofs, so
+       `RoofRockThick` collapses like any other. The comment in BuildShell that claimed a
+       coordinate "can be mined to nothing and still never open a hole in the world" was half
+       right: `VanishOnCollapse` is false for thick roof, so no hole opens - but the roof still
+       drops `CollapsedRocks` and crushes whatever is beneath it. That is a cave-in.
+
+       Patching `RoofRockThick` itself was considered and REFUSED. It would make every mountain
+       in every colony non-collapsing, for this player and for every other mod in the profile.
+       The owner's own words draw the line: "tgis is only for backrooms".
+
+       A RoofDef is the right unit for this. It is a `Def`, not a `ThingDef`, and it carries
+       **no texture, graphic or sound of its own that we author** - roofs are drawn from the map
+       mesh according to `isThickRoof`. So this stays inside the existing-content-only rule: no
+       new gameplay ThingDef, no sprite, no audio.
+
+       WHY `isThickRoof` IS TRUE. Every piece of Core behaviour that matters reads that flag, not
+       the def's identity: drop pods (`DropPodUtility`, `DropCellFinder`), projectiles and
+       bombardment, `RoomTempTracker`, `Fire`, turret line of fire, the indoor mask and the
+       lighting overlay, and `Designator_AreaNoRoof`. With it true this behaves exactly like
+       overhead mountain, which is what invariant 13 requires: **a Backrooms coordinate has no
+       outside.**
+
+       WHAT IS KNOWINGLY GIVEN UP. Two places in Core compare against the def itself rather than
+       the flag. `RoofGrid.GetCellExtraColor` tints `RoofRockThick` gray in the roof-overlay
+       view, so ours draws white there - cosmetic, and only inside that toggle. And
+       `MechClusterUtility` avoids cells whose roof IS `RoofRockThick`; mech clusters are a
+       colony-map incident and do not target coordinate maps.
+
+       WHAT THIS DOES NOT CLAIM. `canCollapse` closes the reachable path - mine or deconstruct a
+       wide span, get "roof collapsed". It does not gate
+       `RoofCollapseCellsFinder.CheckCollapseFlyingRoofAtAndAdjInternal`, which marks a roofed
+       region carrying NO roof holder anywhere in it. In a coordinate every cell is roofed and the
+       space between rooms is solid rock, so that region contains tens of thousands of holders; it
+       would take mining the entire map AND deconstructing every wall to empty it. -->
+  <RoofDef>
+    <defName>RR_RoofBackroomsOverhead</defName>
+    <label>overhead mass</label>
+    <isThickRoof>true</isThickRoof>
+    <isNatural>true</isNatural>
+    <canCollapse>false</canCollapse>
+    <filthLeaving>Filth_RubbleRock</filthLeaving>
+  </RoofDef>
+
+</Defs>

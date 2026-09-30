@@ -1442,7 +1442,49 @@ thir natual gate spawns to different levels within"**
 
 - [x] **`NaturalFrontierService` reported as orphaned — WRONG, and the correction belongs on the record.** The grep excluded the file holding the caller, and the caller is a `JobDriver` in that same file. Verified end to end: `WorkGiverDef RR_SurveyFrontier` → `WorkGiver_SurveyFrontier` → `JobDef RR_SurveyFrontier` → `JobDriver` → `NaturalFrontierService.Discover`. `check-wiring.py` was right. **The onward-gate machinery exists and is reachable; the only thing blocking it was that no level could generate.**
 
+- [ ] **"and everything doesnt have to be square rooms and rectangle halways and u can use walls as pillars making the 0 level rooms be grand large spaces and leas than 60-100 romms and this can propigate depper with the wild variatiosn of material typeds in all items equaipment walls floors lights furnature and benches that are found everywher deeper in with wild random events and layouts and spawns to find and loot!!!!!!"** — **OPEN. This REVISES the room-count answer given an hour earlier and it is the better call.** Taken apart into what each clause actually requires:
+
+  | Clause, verbatim | What it means in the generator |
+  |---|---|
+  | *"everything doesnt have to be square rooms and rectangle halways"* | a room's `Bounds` stays a rect for bookkeeping, but the **carved shape** does not: L, T, cross and ragged-edged rooms, and corridors that change width and bend |
+  | *"u can use walls as pillars"* | interior `ThingDefOf.Wall` on a support lattice. **This is the thing that makes grand spaces possible at all** — `RoofCollapseUtility.RoofMaxSupportDistance` is **6.9**, so a roofed span wider than ~13 cells needs something holding it up, and a pillar is exactly that |
+  | *"making the 0 level rooms be grand large spaces"* | shallow depth is **few, very large, pillared halls** — not the tidy 10-16 cell boxes the planner builds today |
+  | *"leas than 60-100 romms"* | **supersedes the 60-100 dense-warren answer.** Fewer rooms, each far bigger. The warren idea moves inward rather than being dropped |
+  | *"this can propigate depper"* | the variation is a **function of depth**, which `BackroomsPalette` and `Derange` already are. Same axis, more of it |
+  | *"wild variatiosn of material typeds in all items equaipment walls floors lights furnature and benches"* | `CoordinateMaterials` already picks stuff per coordinate; widen it across **every** placed category and let the spread grow with depth |
+  | *"found everywher deeper in"* | material variety is discovered content, so what a room is **built from** is part of the loot |
+  | *"with wild random events and layouts and spawns to find and loot!!!!!!"* | `AnomalyEventService`, `InhabitantService` and `RoomArchetypeService` all exist; the layouts and the loot density scale inward with the rest |
+
+  **What stands from the four earlier answers:** levels are **300x300**; `threshold_room` / `office_copy` / `return_gallery` stay **unique** while other families **repeat**; **new structural families** are authored as layout and dressing only with **no new ThingDefs**; **4-6 onward gates** per level with `MaximumNaturalDepth` **3 to 6**; **fresh save**, the 60x60 path dropped.
+
+  **What changes:** *"leas than 60-100 romms"* replaces the 60-100 count, and grand pillared halls at shallow depth replace the uniform small-room grid. The 10x10 planning grid at 19-cell spacing was sized for the old shape and is superseded with it — a grand hall does not fit in a 19-cell slot.
+
+- [ ] **SUPERSEDED IN PART, same day, by the row above** -- the *"leas than 60-100 romms"* direction replaces this row's 60-100 count and its uniform small-room grid. Kept whole because the size, family, gate-count, depth-cap and save decisions in it all still stand.
 - [ ] **"theri 300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels with thir natual gate spawns to different levels within"** — **OPEN, and fully specified by the owner across four questions this checkpoint.** Levels become **300×300** (from 60×60); **60–100 rooms** in a dense warren on a **10×10** planning grid at the existing 19-cell spacing; **threshold_room / office_copy / return_gallery stay unique**, the other five families **repeat**, and **new structural families** are authored (flooded_room, stairwell, dead_end, pillar_hall) — **layout and dressing only, no new ThingDefs**; **4–6 onward gates per level**, one per ~15 rooms, with `MaximumNaturalDepth` **3 → 6**; and a **fresh save**, dropping the 60×60 path entirely for one shape, the simplest code and the cleanest proofs.
+
+---
+
+## Coordinate rebuild, stage one — 2026-09-30 (0.12.49-dev)
+
+- [x] **300x300 coordinates, grand pillared halls at level zero, and the depth-scaled warren** — **DONE.** The 3x3 eight-slot grid at 19-cell spacing is gone; slots, spacing, room span and room count are all functions of depth. Depth 1 is **6 halls of 80x80 with 144 pillars each**; depth 6 is **42 rooms of 24**. Verified at every depth: nothing off the map, every span even, 10 cells of rock between neighbours, serpentine chain connected. Record `implementation/GRAND_SPACES_IMPLEMENTATION.md`.
+
+- [x] **"u can use walls as pillars"** — **DONE.** Lattice at 6 against Core's `RoofMaxSupportDistance` of 6.9, never on the centre cross, narrowest free run 5 cells. **Decided in `RoomLayoutPlanner.PillarCells` and nowhere else**, because the planner must prove walkability before a map exists, and two independent derivations of one rule is the defect that cost thirty-nine checkpoints.
+
+- [x] **"and remember backrooms can not and shall not have cave ins so removing walls floors columns shall not cause mountain overhead to column collapse"**, scoped by **"tgis is only for backrooms"** — **DONE, and the old code was wrong about this.** `BackroomsContainment` claimed a coordinate could be "mined to nothing and still never open a hole", treating the collapse as acceptable. Core gates cave-ins on `RoofDef.canCollapse`, which **defaults to true and which Core sets false on none of its three roofs**, so `RoofRockThick` drops `CollapsedRocks` and crushes what is under it. A roof def of our own, `RR_RoofBackroomsOverhead`, `canCollapse false`, `isThickRoof true`. **Core's roof is deliberately not patched** — that would stop mountains collapsing in every colony, for every mod in the profile.
+
+- [x] **the coordinate geometry had no proof coverage at all** — **FIXED, and measured rather than guessed: every constant in the planner was changed and all forty existing proofs still passed.** `proof-coordinate-layout.py` is the **41st proof**; it parses the constants out of the C# and recomputes rather than hard-coding them. A plant then found a hole in that design — the model copies the formulas, so deleting an algorithm step was invisible to it — and **every modelled formula is now paired with a source claim**. `plant-coordinate-layout.py` is the 12th suite, **34 of 34**.
+
+- [ ] **"dont let them go more than 5 remember the games mechanics and limits built in if they find a gate to a world map tile or a deeper backrroms and they have 5 mpas they should gett a warning this gate is blocked your holding open too many gates, but per scerio styled"**, clarified by **"5 is the limit of other colonies available so a backrooms level should be one colonly bacskicly in my thinking"** — **OPEN, stage two, and it SUPERSEDES the LRU-eviction answer given minutes earlier.**
+
+  A hard cap with **no eviction** is strictly better: nothing the player looted or built ever resets, memory is bounded by construction, and the limit is **diegetic** rather than an apology about memory.
+
+  **And the owner's clarification grounds the number in Core.** `Prefs.MaxNumberOfPlayerSettlements` is a player option, a slider from **1 to 5, default 5**, enforced by `SettleUtility` as `count >= Prefs.MaxNumberOfPlayerSettlements`. Core counts only `map.IsPlayerHome && map.Parent is Settlement` plus gravship landings, so a `RimroomsDestinationMapParent` is **invisible to it**. So the budget is read from that pref rather than hard-coded, and a coordinate map counts against it — *"a backrooms level should be one colonly bacskicly"*. A player who sets the slider to 3 gets 3.
+
+  *"per scerio styled"* means the budget belongs on the scenario, not a global constant.
+
+  **This ships together with raising onward gates to 4-6 and `MaximumNaturalDepth` 3 to 6**, because the cap without the gates is pointless and the gates without the cap is what kills the game: `RimroomsDestinationMapParent.ShouldRemoveMapNow` always returns false, so at 90,000 cells and ~70,000 mineables per level, hundreds of reachable levels against a `MaximumCoordinates` of 512 would be fatal.
+
+- [ ] **still open from the same direction** — non-rectangular rooms and corridors; and the wild variation of materials across items, equipment, walls, floors, lights, furniture and benches, with the events, layouts and loot deeper in.
 
 ---
 
