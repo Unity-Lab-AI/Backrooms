@@ -41,43 +41,43 @@ namespace RimroomsAsyncIndustries.Generation
                     switch (room.familyId)
                     {
                         case "threshold_room":
-                            landmark = Place(map, room, "Stool", reserved, seed, 0);
-                            Place(map, room, "Stool", reserved, seed, 1);
+                            landmark = Place(map, room, coordinate, "Stool", reserved, seed, 0);
+                            Place(map, room, coordinate, "Stool", reserved, seed, 1);
                             break;
                         case "survey_lobby":
-                            landmark = Place(map, room, "Table1x2c", reserved, seed, 0);
-                            Place(map, room, "DiningChair", reserved, seed, 1);
-                            Place(map, room, "PlantPot", reserved, seed, 2);
+                            landmark = Place(map, room, coordinate, "Table1x2c", reserved, seed, 0);
+                            Place(map, room, coordinate, "DiningChair", reserved, seed, 1);
+                            Place(map, room, coordinate, "PlantPot", reserved, seed, 2);
                             break;
                         case "office_copy":
-                            landmark = Place(map, room, "Table1x2c", reserved, seed, 0);
-                            Place(map, room, "DiningChair", reserved, seed, 1);
-                            Place(map, room, "Table1x2c", reserved, seed, 2);
-                            Place(map, room, "DiningChair", reserved, seed, 3);
-                            if (variant == 2) { Place(map, room, "PlantPot", reserved, seed, 4); }
+                            landmark = Place(map, room, coordinate, "Table1x2c", reserved, seed, 0);
+                            Place(map, room, coordinate, "DiningChair", reserved, seed, 1);
+                            Place(map, room, coordinate, "Table1x2c", reserved, seed, 2);
+                            Place(map, room, coordinate, "DiningChair", reserved, seed, 3);
+                            if (variant == 2) { Place(map, room, coordinate, "PlantPot", reserved, seed, 4); }
                             break;
                         case "service_passage":
-                            landmark = Place(map, room, "Shelf", reserved, seed, 0);
-                            Place(map, room, "StandingLamp", reserved, seed, 1);
+                            landmark = Place(map, room, coordinate, "Shelf", reserved, seed, 0);
+                            Place(map, room, coordinate, "StandingLamp", reserved, seed, 1);
                             break;
                         case "borrowed_corridor":
-                            landmark = Place(map, room, "PlantPot", reserved, seed, 0);
-                            Place(map, room, "PlantPot", reserved, seed, 1);
+                            landmark = Place(map, room, coordinate, "PlantPot", reserved, seed, 0);
+                            Place(map, room, coordinate, "PlantPot", reserved, seed, 1);
                             break;
                         case "storage_nook":
-                            Place(map, room, "Shelf", reserved, seed, 0);
-                            landmark = variant == 0 ? Place(map, room, "Steel", reserved, seed, 1, false, 12) :
-                                Place(map, room, variant == 1 ? "Stool" : "DiningChair", reserved, seed, 1, true);
+                            Place(map, room, coordinate, "Shelf", reserved, seed, 0);
+                            landmark = variant == 0 ? Place(map, room, coordinate, "Steel", reserved, seed, 1, false, 12) :
+                                Place(map, room, coordinate, variant == 1 ? "Stool" : "DiningChair", reserved, seed, 1, true);
                             salvage = true;
                             break;
                         case "utility_room":
-                            landmark = Place(map, room, "StandingLamp", reserved, seed, 0);
-                            Place(map, room, "Stool", reserved, seed, 1);
+                            landmark = Place(map, room, coordinate, "StandingLamp", reserved, seed, 0);
+                            Place(map, room, coordinate, "Stool", reserved, seed, 1);
                             break;
                         case "return_gallery":
-                            landmark = Place(map, room, "Stool", reserved, seed, 0);
-                            Place(map, room, "Stool", reserved, seed, 1);
-                            if (variant != 0) { Place(map, room, "PlantPot", reserved, seed, 2); }
+                            landmark = Place(map, room, coordinate, "Stool", reserved, seed, 0);
+                            Place(map, room, coordinate, "Stool", reserved, seed, 1);
+                            if (variant != 0) { Place(map, room, coordinate, "PlantPot", reserved, seed, 2); }
                             break;
                         default: throw new InvalidOperationException("RR_Generation_InvalidRoomGraph");
                     }
@@ -190,7 +190,7 @@ namespace RimroomsAsyncIndustries.Generation
                         int high = Math.Max(low, slot.stackCount.max);
                         stack = Math.Min(definition.stackLimit, low + (seed + made) % (high - low + 1));
                     }
-                    Thing placed = TryPlace(map, room, definition, reserved, seed + made * 7,
+                    Thing placed = TryPlace(map, room, coordinate, definition, reserved, seed + made * 7,
                         slotIndex++, slot.minified && definition.Minifiable, stack);
                     if (placed == null) { break; }
                 }
@@ -205,7 +205,8 @@ namespace RimroomsAsyncIndustries.Generation
         /// because the clue system and the saved layout depend on it, and a shared code path
         /// with a "do not throw" switch is exactly how that guarantee gets lost later.
         /// </summary>
-        private static Thing TryPlace(Map map, RoomRecord room, ThingDef definition,
+        private static Thing TryPlace(Map map, RoomRecord room, CoordinateRecord coordinate,
+            ThingDef definition,
             HashSet<IntVec3> reserved, int seed, int slot, bool minified, int count)
         {
             if (definition == null || count < 1) { return null; }
@@ -255,13 +256,20 @@ namespace RimroomsAsyncIndustries.Generation
             return null;
         }
 
-        private static Thing Place(Map map, RoomRecord room, string defName, HashSet<IntVec3> reserved,
+        private static Thing Place(Map map, RoomRecord room, CoordinateRecord coordinate,
+            string defName, HashSet<IntVec3> reserved,
             int seed, int slot, bool minified = false, int count = 1)
         {
             ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
             if (definition == null || count < 1 || count > definition.stackLimit)
             { throw new InvalidOperationException("RR_Generation_RequiredCoreOrSiteDefMissing"); }
-            Thing thing = ThingMaker.MakeThing(definition, definition.MadeFromStuff ? ThingDefOf.WoodLog : null);
+            // Row 1005. This was `definition.MadeFromStuff ? ThingDefOf.WoodLog : null`, which
+            // made every stuffable fixture on every coordinate in the game wooden -- not the
+            // def's own default, one hardcoded material. The palette is per coordinate and
+            // derived from its seed, so a coordinate looks like somewhere and two coordinates
+            // look different. See CoordinateMaterials.
+            Thing thing = ThingMaker.MakeThing(definition,
+                CoordinateMaterials.StuffFor(definition, coordinate));
             thing.TryGetComp<CompQuality>()?.SetQuality(QualityCategory.Normal, ArtGenerationContext.Outsider);
             if (definition.useHitPoints) { thing.HitPoints = Math.Max(1, (int)(thing.MaxHitPoints * (0.65f + (seed % 4) * 0.08f))); }
             if (minified)

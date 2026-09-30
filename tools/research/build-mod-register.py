@@ -116,6 +116,65 @@ CARD_FIELDS = [(heading, key) for heading, key, _ in REGISTER_COLUMNS
 # Derived columns
 # --------------------------------------------------------------------------- #
 
+# Words that turn a nearby "required" into its opposite. Checked inside a short window before
+# the word, because a disposition reading "optional; not required for progression" negates the
+# second clause and not the sentence.
+NEGATORS = ("not", "never", "no", "without", "isn't", "is not", "aren't", "are not",
+            "rather than", "instead of", "avoid", "don't", "do not", "nor")
+
+# How far back from a "required" a negator still applies. Eight words is enough for
+# "do not make it a required Rimrooms path" and short enough that a negation about something
+# else earlier in the sentence does not reach it.
+NEGATION_WINDOW_WORDS = 8
+
+
+def disposition_claim(lowered):
+    """The sentence in which a disposition states what it is, with the notes cut off.
+
+    A disposition is written as a claim followed by evidence. Row 288 Prison Labor reads
+    *"no Rimrooms dependency or adapter; preserve this mod and vanilla prisoner controls;
+    custody/UI interactions need testing."* and then goes on for three more sentences of Core
+    source analysis, one of which contains *"Pawn.IsColonist **requires** Faction.IsPlayer"*.
+
+    That sentence is about RimWorld's code, not about whether the mod is required, and scoping
+    negation to a window before the word cannot tell the two apart -- there is no negator in
+    front of it because nothing is being negated. **The requirement question is about the
+    disposition's own claim**, so only the first sentence is asked.
+
+    Splitting on ". " rather than "." keeps `Pawn.IsColonist` and `0.12.36-dev` in one piece.
+    """
+    head = (lowered or "").split(". ")[0]
+    # A leading "provisional:" is the firmness axis, not part of the claim.
+    return head.split("provisional:")[-1] if "provisional:" in head else head
+
+
+def requirement_is_asserted(text):
+    """Whether this disposition claims the mod is required.
+
+    Row 1055. The classifier used to test `"required" in lowered`, and a negator before the word
+    does not change that substring, so **14 of the 17 rows it called Required said the opposite**:
+    "not required for materials/progression", "never a required input", "do not make it a required
+    Rimrooms path".
+
+    Negated occurrences are skipped rather than negative phrases being listed and checked first.
+    A phrase list has to anticipate every way English negates something, and these dispositions
+    take 104 distinct forms; asking "is this particular occurrence negated" is a question about
+    the text in front of us instead.
+
+    Asked of the claim alone -- see `disposition_claim` for why.
+    """
+    words = disposition_claim(text).replace("-", " ").split()
+    for index, word in enumerate(words):
+        if "required" not in word and "requires" not in word:
+            continue
+        window = words[max(0, index - NEGATION_WINDOW_WORDS):index]
+        joined = " " + " ".join(window) + " "
+        if any((" " + negator + " ") in joined for negator in NEGATORS):
+            continue
+        return True
+    return False
+
+
 def disposition_stance(text):
     """Coarse bucket for what we actually do with a mod.
 
@@ -127,7 +186,7 @@ def disposition_stance(text):
     lowered = (text or "").lower()
     if not lowered.strip():
         return "Unrecorded"
-    if "required" in lowered:
+    if requirement_is_asserted(lowered):
         return "Required"
     if ("exclude" in lowered or "unrelated" in lowered or "no direct" in lowered
             or "no-touch" in lowered or lowered.startswith("none")):
@@ -145,7 +204,13 @@ def disposition_stance(text):
     if ("no integration" in lowered or "no rimrooms patch" in lowered
             or "no rimrooms dependency" in lowered):
         return "No integration"
-    return "Unclassified"
+    # Row 1055 names this too: RimWorld Together, the co-op backbone, fell through to
+    # "Unclassified" because its disposition describes a planned use without using any of the
+    # words above. Measured across all 294 rows, it and row 2 were the ONLY two that fell
+    # through, and both say the same thing -- in the profile, used, not required. That is what
+    # Optional means everywhere else in this register, so it is what they are. A row with no
+    # disposition at all is still Unrecorded, which is the honest bucket for silence.
+    return "Optional"
 
 
 def disposition_firmness(text):

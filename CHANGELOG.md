@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.37-dev - 2026-09-29 - every coordinate in the game was made of wood
+
+- **Spaces are furnished out of different materials now.** Every table, chair, shelf and lamp in every room of every coordinate was wooden - one hardcoded material, not the item's own default. A space now has a short palette of its own drawn from whatever materials your game has, so two spaces look different and each looks like somewhere that was fitted out.
+- **The same space always looks the same**, on any machine and whatever else you have installed. That was not free and it is the fiddliest part of the change.
+- **Confirmed rather than changed: you can strip a coordinate's floors and get the material back.** They were always ordinary floors; nothing about them was special. The same goes for the rock - it comes from the world's own stone types.
+- **Confirmed rather than changed: what lives in a space already scales with how deep it is and how rich you are.**
+- **A new build check refuses a setting the game would silently ignore.** A mistyped field name in mod data is not an error in RimWorld - it is logged and skipped - and one had been quietly doing nothing for fourteen definitions until it was caught by hand.
+
+Full record: [every coordinate in the game was made of wood](docs/implementation/GENERATION_MATERIALS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.36-dev - 2026-09-29 - roofs, snow, and reporting in
 
 - **Colonists will cross a gate to build a roof or take one down**, wherever you paint the area. On a Backrooms coordinate there is nothing to do, because it is already solid rock overhead and taking a roof off in there was never allowed.
