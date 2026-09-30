@@ -145,6 +145,14 @@ namespace RimroomsAsyncIndustries.UI
                     foreach (CoordinateRecord coordinate in campaign.Coordinates.ToList())
                     {
                         listing.Label("RR_UI_CoordinateRow".Translate(coordinate.Label, ("RR_Coordinate_" + coordinate.Status).Translate()));
+                        // How hostile the space currently is. The pressure ladder has decided
+                        // this since 0.8.4-dev and drives anomaly events and incursion, and it
+                        // had never been shown to anybody -- inferable only by being hurt by it,
+                        // which is the opposite of invariant 28’s learnable rule.
+                        listing.Label("RR_UI_CoordinateBand".Translate(
+                            Threats.CoordinatePressureLadder.BandLabelKey(
+                                Threats.CoordinatePressureLadder.BandFor(coordinate,
+                                    Threats.CoordinatePressureLadder.ColonyWealth())).Translate()));
                         listing.Label("RR_UI_SurveyedRooms".Translate(coordinate.Rooms.Count(r => r.Surveyed)));
                         if (campaign.HasRouteTelemetry)
                         {

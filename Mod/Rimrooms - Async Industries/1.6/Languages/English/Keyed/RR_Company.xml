@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <RR_UI_CoordinateBand>   pressure: {0}</RR_UI_CoordinateBand>
+  <RR_Exchange_SellConfirm>Sell all {0} tradeable items inside the beacon radius for {1} USD?
+
+This cannot be undone.</RR_Exchange_SellConfirm>
   <RR_Company_UnsupportedSave>This company record belongs to another Rimrooms version. Keep the original save and use the matching build.</RR_Company_UnsupportedSave>
   <RR_Company_InvalidStart>The company start is incomplete. Check the headquarters, starting staff and scenario report before continuing.</RR_Company_InvalidStart>
   <RR_Company_AlreadyStarted>This save already belongs to a company branch. A second start cannot replace its records or grant more supplies.</RR_Company_AlreadyStarted>

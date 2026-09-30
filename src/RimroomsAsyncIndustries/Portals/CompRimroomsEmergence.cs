@@ -77,6 +77,8 @@ namespace RimroomsAsyncIndustries.Portals
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) { yield return gizmo; }
+            // A natural way out is a door too, and a player may order somebody through it.
+            foreach (Gizmo gizmo in DoorCrossingGizmo.For(parent)) { yield return gizmo; }
             if (parent == null || !parent.Spawned) { yield break; }
 
             // A recorded way out to the world, offered BEFORE the faction and ordinary-map checks

@@ -125,7 +125,18 @@ namespace RimroomsAsyncIndustries.Economy
                     oddValue.ToString("N0"),
                     ordinaryValue.ToString("N0")),
                 icon = TexCommand.ForbidOff,
-                action = SellValuables,
+                // Confirmed rather than immediate. Selling everything inside the radius is large
+                // and irreversible, and the gizmo's own description is the only warning a player
+                // gets otherwise -- read after the click, which is too late. Core ships the
+                // confirmation dialog for exactly this, so no window of ours is added.
+                action = delegate
+                {
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                        "RR_Exchange_SellConfirm".Translate(
+                            itemCount.ToString("N0"),
+                            (oddValue + ordinaryValue).ToString("N0")),
+                        SellValuables, false, null, WindowLayer.Dialog));
+                },
             };
             if (itemCount <= 0)
             { sell.Disable("RR_Exchange_NothingInRange".Translate()); }

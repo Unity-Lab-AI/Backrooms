@@ -1,6 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
+  <RR_DoorCross_Label>Send somebody through</RR_DoorCross_Label>
+  <RR_DoorCross_Desc>Order a selected colonist or animal to cross here.
+
+Select who you mean first. Anyone who cannot cross is listed with the reason rather than left out.</RR_DoorCross_Desc>
+  <RR_DoorCross_Send>Send {0}</RR_DoorCross_Send>
+  <RR_DoorCross_Refused>{0} cannot cross: {1}</RR_DoorCross_Refused>
+  <RR_DoorCross_NobodySelected>Select a colonist or animal first</RR_DoorCross_NobodySelected>
+  <RR_Band_Quiet>quiet</RR_Band_Quiet>
+  <RR_Band_Unsettled>unsettled</RR_Band_Unsettled>
+  <RR_Band_Active>active</RR_Band_Active>
+  <RR_Band_Hostile>hostile</RR_Band_Hostile>
   <!-- Gates and connections pane -->
   <RR_Portals_Heading>Gates and connections</RR_Portals_Heading>
   <RR_Event_AccountFiled>{0}: the company has filed {1}’s account after an interview by {2}. The disagreeing account stays on the record.</RR_Event_AccountFiled>

@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.32-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.33-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **179 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `B86715C2EBD0300B0888F9C613EC3645AD9CEAAEA314FD45ED55230971D848CD`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **180 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `B7EA5785E49DD0B8F123A560C3752AC86F7D213FA74476A0FF720E9E389908C6`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **ELEVEN**, all passing. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
-| Proofs | **TWENTY-EIGHT** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Proofs | **THIRTY** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -58,7 +58,7 @@ because rows closed by work that shipped the same day still carried `[ ]`.
 
 | | |
 |---|---|
-| Genuine build items left | **~25** at 0.12.31-dev, some spanning several rows |
+| Genuine build items left | **~21** at 0.12.33-dev, some spanning several rows |
 | Rows that **cannot** close before a first launch | **~8** |
 | Rows the owner excluded (Steam, site, collection) | **9** |
 | Open rows already built and never closed | **~13** |
@@ -92,7 +92,33 @@ touched and nothing was launched.**
 
 ---
 
-## DO THIS FIRST — surgery across a gate, and the rest of the medical routes
+## DO THIS FIRST — the eleven DLC container hauling givers
+
+Row 1266, and `HaulingUpkeepProvider` already names them rather than guessing:
+
+> `HaulToGeneBank`, `HaulToGrowthVat`, `CarryToGrowthVat`, `CarryToGeneExtractor`,
+> `CarryToSubcoreScanner`, `HaulMechsToCharger`, `EmptyWasteContainer` (Biotech),
+> `HaulToBiosculpterPod` (Ideology), `TakeBioferriteOutOfHarvester`,
+> `TakeEntityToHoldingPlatform`, `TransferEntity` (Anomaly)
+
+The provider's own note says why they were left: *"Each carries a pawn or a live subject into a
+machine, or moves an entity between platforms, and each needs its own source review of what that
+does to custody before a worker is sent across a gate to do it."*
+
+Four things to settle:
+
+1. **Custody is the whole question.** Three of the eleven move a **pawn** (growth vat, gene
+   extractor, subcore scanner) and three move an **entity** (holding platform, transfer). Invariant
+   55 rules a pawn transfer absolutely: a transfer that can lose a pawn is a corruption, not a
+   threat. **A worker crossing to operate a machine is fine; a worker crossing to CARRY somebody
+   into one is a pawn transfer.**
+2. **The provider pattern justifies a crossing and lets Core do the work** — it hands out no job
+   of its own. Check whether that is enough for each giver, or whether the carry happens on the far
+   side and never crosses at all.
+3. **Every one is DLC.** `MayRequire` on any def, `GetNamedSilentFail` in code, and nothing may
+   throw when the DLC is absent. `check-dlc-gating.py` is the backstop.
+4. **`python tools/register-query.py use RR-DLC`** — 40 rows, and Core’s own instruction is
+   *"do not make a DLC feature the sole route through the campaign"*.
 
 Queue row 227, and the last named gap in the cross-map work families. The row states the hard part
 itself:
@@ -327,7 +353,7 @@ section and 294 review records on disk. `card` and `use` now read them.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.32
+## What shipped this session, 0.7.1 → 0.12.33
 
 | Version | What |
 |---|---|
@@ -399,6 +425,7 @@ section and 294 review records on disk. `card` and `use` now read them.
 | 0.12.30 | **You can call the company** — `EstablishCorporationContact` had no caller, so **two of three starts had no campaign at all**. Earned on a comms console, and it opens the line that already existed |
 | 0.12.31 | **A wide gate out of plain doors** — 1×3 and 2×3 with no mods, as one gate of one width. **Three rows were one feature**, and the union of a run is the `CellRect` everything already read |
 | 0.12.32 | **Everything is read by something** — the **eleventh checker**. 258 defs and 102 actions audited; one unwired capability given a surface, one duplicate retired |
+| 0.12.33 | **Surgery cannot cross, and three things were invisible** — row 227 closed **by proof**, plus the door crossing order, the coordinate band readout and a sale confirmation |
 
 ---
 

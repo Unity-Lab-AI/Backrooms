@@ -99,6 +99,30 @@ namespace RimroomsAsyncIndustries.Threats
         /// failure modes the owner named, and avoiding them is a property of this function
         /// rather than of its callers.
         /// </summary>
+        /// <summary>
+        /// The band a player can read, as a keyed label.
+        ///
+        /// The ladder has decided how hostile a space is since 0.8.4-dev -- it drives anomaly
+        /// events and gates incursion -- and **was never shown to anybody.** The pacing was
+        /// inferable only by being hurt by it, which is the opposite of invariant 28's learnable
+        /// rule.
+        ///
+        /// Keys are literals rather than built from the enum name. A key assembled at run time
+        /// cannot be checked in either direction, and this project has caught that pattern five
+        /// times.
+        /// </summary>
+        public static string BandLabelKey(Band band)
+        {
+            switch (band)
+            {
+                case Band.Quiet: return "RR_Band_Quiet";
+                case Band.Unsettled: return "RR_Band_Unsettled";
+                case Band.Active: return "RR_Band_Active";
+                case Band.Hostile: return "RR_Band_Hostile";
+                default: return "RR_Band_Quiet";
+            }
+        }
+
         public static Band BandFor(CoordinateRecord coordinate, float colonyWealth)
         {
             if (coordinate == null) { return Band.Quiet; }

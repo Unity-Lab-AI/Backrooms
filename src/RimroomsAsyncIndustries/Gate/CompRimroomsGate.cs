@@ -452,6 +452,9 @@ namespace RimroomsAsyncIndustries.Gate
                 };
             }
 
+            // Ordering a crossing from the door itself, with the refusal named in place.
+            foreach (Gizmo gizmo in Portals.DoorCrossingGizmo.For(parent)) { yield return gizmo; }
+
             yield return EquipmentLinkGizmo();
 
             // The run fallback. Shown only when there is a neighbour to take or a run to give

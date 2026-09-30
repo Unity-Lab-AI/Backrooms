@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.33-dev - 2026-09-29 - three things you could not see
+
+- **You can send somebody through a gate from the gate itself now.** Select who you mean, click the door, pick them off the list. Anyone who cannot cross is listed with the reason instead of being left out.
+- **Every coordinate now tells you how hostile it is** - quiet, unsettled, active or hostile. The game has always known; it never said.
+- **Selling everything at a credit beacon asks first.** It is a large, irreversible action and the only warning used to be text you read after clicking.
+- **Surgery on a crew member always happens at home, and now that is written down as a rule rather than a gap.** The base game needs the patient, the doctor and the medicine in one place, so a casualty is carried back through the gate to a bed - which the rescue work has always done.
+- **Patient feeding and prisoner care across a gate were already working.** Checked rather than assumed.
+
+Full record: [surgery cannot cross, and three things were invisible](docs/implementation/MEDICAL_AND_SURFACES_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.32-dev - 2026-09-29 - everything is read by something
 
 - **You can cut a connection now without disabling the gate.** A new button on a working gate ends the opening immediately and starts the emergency return window, so anyone on the far side comes home - and the gate is still there for next time. That is different from the kill switch, which stays thrown until you clear it.
