@@ -26,8 +26,8 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | Branch | `feature/connected-colony-portals` |
 | Published | **0.12.43-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **197 C# files, 89 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `5D8BE10B01AB9C4DA1D8CDCD4A3BD61742E5D5D9DB89510A4C3D37308B972D7E`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **198 C# files, 89 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `4A2986BEA5B4A315FFF93773F58340C01750BC317040B79EC463E40BBD33EB7B`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **THIRTEEN**, all passing. The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **THIRTY-NINE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -152,6 +152,17 @@ overriding hotkeys."* **Needs an owner decision** — see the queue row.
 **OPEN — EdB cannot classify our GlowPod scenario grant.** Logged twice per setup. `GlowPod` is a
 Core **Building** granted as a starting thing in two scenarios; vanilla minifies it automatically,
 EdB's equipment database has no entry for it. Cosmetic-looking, ours, and noise on every setup.
+
+**ANSWERED, and it found an asymmetry nothing stated.** Owner: *"shouldnt that page list the
+starting equipment and supplies added from the company to get a gate up quickly as building
+minified"*. **No, minified buildings are not needed** — the Async facility already places a
+machining table, a console, a battery at half charge, three generators and nine doors, and the
+scenario grants 250 steel against the bill's 100. **The page just never connected any of it to the
+gate**, which is why the question got asked. It now reads the recipe for the cost and the bench and
+states what is standing. **And counting the three starts turned up this:** Async 9/1/1/1/3;
+**Furniture Store 8/0/1/1/1**; **Solo 1/0/0/0/0**. **Two of three cannot raise a gate from what
+they arrive with.** Solo is the design and the readout says so. **The Store missing only a bench
+looks like an oversight and is recorded for a decision.**
 
 ### The lesson that outranks the fix
 

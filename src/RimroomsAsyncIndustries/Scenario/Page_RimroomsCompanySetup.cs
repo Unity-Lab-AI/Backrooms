@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using RimroomsAsyncIndustries.UI;
 using RimWorld;
@@ -139,6 +140,15 @@ namespace RimroomsAsyncIndustries.Scenario
                 // The company name field used to be here. It is pinned above this scroll view
                 // now -- see DrawBody. Every start names its own company, so it is offered on
                 // every one, and it must be reachable without scrolling to find it.
+
+                // FIRST, because it is the only thing on this page that answers "what can I
+                // actually do when the game starts". Owner question, 2026-09-30: *"shouldnt that
+                // page list the starting equipment and supplies added from the company to get a
+                // gate up quickly"*. The page listed the facility and never connected any of it
+                // to the gate.
+                DrawGateReadiness(listing, start);
+                listing.GapLine();
+
                 listing.Label("RR_Setup_Site".Translate(Find.GameInitData.startingTile.ToString(), start.mapSize));
                 listing.Label("RR_Setup_StaffCount".Translate(pawns.Count));
                 listing.Label("RR_Setup_Funding".Translate(start.initialFundingUsd.ToString("N0"),
@@ -190,6 +200,42 @@ namespace RimroomsAsyncIndustries.Scenario
                 // need scrolling -- so Start refused and its reason was off screen. It is pinned
                 // above the buttons now; see DrawBody.
             }
+        }
+
+        /// <summary>
+        /// What this start arrives able to do about a gate, and what it does not.
+        ///
+        /// Every figure is read from the gate recipe and from this start's own def, so retuning
+        /// either retunes the readout. **A missing prerequisite is stated rather than omitted:**
+        /// two of the three shipped starts do not place everything a gate needs, and until this
+        /// existed nothing anywhere said so.
+        /// </summary>
+        private static void DrawGateReadiness(Listing_Standard listing, RimroomsStartDef start)
+        {
+            listing.Label("RR_Setup_GateHeading".Translate());
+
+            string cost = GateReadinessReview.AssemblyCost();
+            listing.Label(cost == null
+                ? "RR_Setup_GateNoRecipe".Translate()
+                : "RR_Setup_GateCost".Translate(cost));
+
+            var missing = new List<string>();
+            foreach (GateReadinessReview.Prerequisite item in GateReadinessReview.Check(start))
+            {
+                string name = item.Detail == null
+                    ? item.LabelKey.Translate().ToString()
+                    : item.LabelKey.Translate(item.Detail).ToString();
+                listing.Label(item.Present > 0
+                    ? "RR_Setup_GatePresent".Translate(name,
+                        item.Present.ToString(CultureInfo.CurrentCulture))
+                    : "RR_Setup_GateAbsent".Translate(name));
+                if (item.Present <= 0) { missing.Add(name); }
+            }
+
+            // The conclusion, in one line, because a list of five rows is not an answer.
+            listing.Label(missing.Count == 0
+                ? "RR_Setup_GateReady".Translate()
+                : "RR_Setup_GateNotReady".Translate(string.Join(", ", missing.ToArray())));
         }
 
         private void SynchronizeRoles(RimroomsStartDef start, List<Pawn> pawns)
