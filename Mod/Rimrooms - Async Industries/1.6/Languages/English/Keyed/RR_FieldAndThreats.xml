@@ -13,7 +13,7 @@
   <RR_Room_return_gallery>Return Gallery</RR_Room_return_gallery>
   <RR_Event_AccountsDisagree>{0}: {1} does not place the displaced marker where the record already puts it. Both accounts are on file and the evidence readout names them. Two crew who disagree about one room is itself worth reporting.</RR_Event_AccountsDisagree>
   <RR_Event_RoomSurveyed>{0}: surveyed room {1}, {2}.</RR_Event_RoomSurveyed>
-  <RR_Event_CorridorMismatch>{0}: a door repeats the last room's label, but the route counter disagrees. Stop and compare the physical route tags. The last validated junction is room {1}; a tag and return beacon there identify the safe route. Continuing deeper risks a loop.</RR_Event_CorridorMismatch>
+  <RR_Event_CorridorMismatch>{0}: a door repeats the last room’s label, but the route counter disagrees. Stop and compare the markers a crew has actually placed. The last validated junction is room {1}; a numbered marker there identifies the safe route, and the coordinate’s own return threshold is the way out. Continuing deeper risks a loop.</RR_Event_CorridorMismatch>
   <RR_Event_CorridorCountered>Tag and beacon agree at room {0}. The crew identified the false connection and preserved the return path.</RR_Event_CorridorCountered>
   <RR_Event_CorridorLoop>The door returned the crew to room {0}. Three reported in-game minutes were lost; no injury occurred and the gate exit is unchanged.</RR_Event_CorridorLoop>
   <RR_Event_CorridorRouteBlocked>The last junction is obstructed. The route distortion stopped without moving the crew. Clear the route or request recall.</RR_Event_CorridorRouteBlocked>
@@ -23,7 +23,7 @@
   <RR_Event_PursuerInjury>{0} was struck once and injured. The figure withdrew. Assess the wound and use ordinary medical treatment.</RR_Event_PursuerInjury>
   <RR_Event_PursuerRepelled>The attack forced the figure back to room {0}. The crew has another warning interval to withdraw.</RR_Event_PursuerRepelled>
   <RR_Event_PursuerWithdrawn>The figure withdrew. This opening will not spawn another encounter.</RR_Event_PursuerWithdrawn>
-  <RR_UI_RecoverEvidence>Order {0} to collect the route recording</RR_UI_RecoverEvidence>
-  <RR_UI_FieldObjectives>Survey the six required room families with the recorder, document the route mismatch, collect the physical recording, and return it with the evidence case. A clear entity observation and all three original crew returning qualify for the bonus. Place tags and the return beacon at a known junction to counter the loop.</RR_UI_FieldObjectives>
+  <RR_UI_RecoverEvidence>Order {0} to collect the record book</RR_UI_RecoverEvidence>
+  <RR_UI_FieldObjectives>Survey the six required room families with the record book, document the route mismatch, carry the book home and shelve it in the records archive. A clear entity observation and all three original crew returning qualify for the bonus. Set glow pods down at known junctions and designate them as route markers to counter the loop.</RR_UI_FieldObjectives>
   <RR_Event_PursuerPlacementFailed>The encounter could not be placed safely. No entity sighting was recorded. The crew and saved route remain available; consult the game log before a later visit.</RR_Event_PursuerPlacementFailed>
 </LanguageData>

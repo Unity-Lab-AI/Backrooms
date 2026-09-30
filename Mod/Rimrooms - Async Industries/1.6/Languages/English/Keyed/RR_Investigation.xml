@@ -9,7 +9,7 @@
   <RR_EvidenceStatus_Missing>Missing or destroyed</RR_EvidenceStatus_Missing>
   <RR_Evidence_InvalidRecord>The recording cannot be linked to this coordinate and case. Preserve it and review the case record.</RR_Evidence_InvalidRecord>
   <RR_Evidence_NotReady>Analysis requires all six required room surveys, a recorded route mismatch, the secured recording, a powered headquarters analysis bench and a capable researcher with Intellectual 4.</RR_Evidence_NotReady>
-  <RR_Event_EvidenceSecured>The route recording and its physical evidence case are at headquarters. Complete the route and distortion observations, then assign a researcher to analysis.</RR_Event_EvidenceSecured>
+  <RR_Event_EvidenceSecured>The record book is at headquarters. Complete the route and distortion observations, shelve it in the records archive, then assign a researcher to analysis.</RR_Event_EvidenceSecured>
   <RR_Event_SurveySettled>Survey accepted after physical evidence analysis. Company Account receipt: ${0} USD.</RR_Event_SurveySettled>
   <RR_Event_SurveyBonus>All three original crew returned with the required observations. Company Account bonus: ${0} USD.</RR_Event_SurveyBonus>
   <RR_Research_MissingProject>The saved company project definition is unavailable. Restore the required Rimrooms content before proceeding.</RR_Research_MissingProject>
@@ -41,7 +41,7 @@
   <RR_UI_ObservationRecorded>Recorded</RR_UI_ObservationRecorded>
   <RR_UI_ObservationMissing>Still needed</RR_UI_ObservationMissing>
   <RR_UI_LocateRecording>Locate physical recording</RR_UI_LocateRecording>
-  <RR_UI_EvidenceFieldWorkRemaining>Carry the field recorder through each required room. At the corridor junction, deploy a numbered tag before investigating the next passage. Bring a return beacon for a stable comparison. Incomplete observations can be finished on a later trip to the same site.</RR_UI_EvidenceFieldWorkRemaining>
+  <RR_UI_EvidenceFieldWorkRemaining>Carry the record book through each required room. At the corridor junction, set a glow pod down and designate it as a numbered marker before investigating the next passage. A second marker at the last good junction gives you something stable to compare against. Incomplete observations can be finished on a later trip to the same site.</RR_UI_EvidenceFieldWorkRemaining>
   <RR_UI_AnalysisReportHeader>Analysis report — {0}, branch day {1}</RR_UI_AnalysisReportHeader>
   <RR_UI_AnalysisSnapshotNote>This report preserves the observations available when analysis finished.</RR_UI_AnalysisSnapshotNote>
   <RR_UI_LegacyReportUnavailable>This older analyzed record has no saved observation details. Its recorded completion remains valid.</RR_UI_LegacyReportUnavailable>
@@ -51,7 +51,7 @@
   <RR_UI_ObservationWitness>Witness: {0}. Branch day {1}. Recorder carried by {2}.</RR_UI_ObservationWitness>
   <RR_UI_AccountAgrees>Corroborated by {0} on day {1}: the same junction, room {2}, marker {3}.</RR_UI_AccountAgrees>
   <RR_UI_AccountDisagrees>Disputed by {0} on day {1}: they place it at room {2}, marker {3}. The company has filed the first account and kept theirs on the record.</RR_UI_AccountDisagrees>
-  <RR_Observation_room_survey>Room {0}: surveyed with the crew's field recorder present.</RR_Observation_room_survey>
+  <RR_Observation_room_survey>Room {0}: surveyed with the crew’s record book in hand.</RR_Observation_room_survey>
   <RR_Observation_route_mismatch>Room {0}: survey marker {2} was found here despite being placed in room {1}.</RR_Observation_route_mismatch>
   <RR_Observation_recorder_gap>Room {0}: the field recording contains a gap around marker {2}'s displacement from room {1}. The cause remains unresolved.</RR_Observation_recorder_gap>
   <RR_Observation_entity_sighting>Entity reported in room {0}; the witnessing crew member was in room {1}. Its origin remains unknown.</RR_Observation_entity_sighting>

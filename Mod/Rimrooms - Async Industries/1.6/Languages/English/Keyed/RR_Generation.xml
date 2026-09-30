@@ -27,9 +27,6 @@
   <RR_Generation_NoReturnCell>The return anchor has no safe adjacent return cell.</RR_Generation_NoReturnCell>
   <RR_Generation_InvalidStartOrObjectiveCell>The generated entry, return point, or evidence space is unsafe.</RR_Generation_InvalidStartOrObjectiveCell>
   <RR_Generation_UnreachableRoom>The generated room graph is not physically reachable from the entry.</RR_Generation_UnreachableRoom>
-  <RR_Generation_FluorescentLabel>liminal fluorescent fixture</RR_Generation_FluorescentLabel>
-  <RR_Generation_FluorescentDescription>An original, damaged fluorescent fixture. It emits light without drawing from the crew's power grid, but it can be broken.</RR_Generation_FluorescentDescription>
-  <RR_Generation_ClimateUnitLabel>liminal climate unit</RR_Generation_ClimateUnitLabel>
   <RR_Generation_ClimateUnitDescription>An original passive unit that warms its sealed room up to 20°C. It draws no site power, cannot cool a hot room, and can be damaged.</RR_Generation_ClimateUnitDescription>
   <RR_Generation_NoSafeCandidate>No safe first-site layout was found within the bounded attempt limit.</RR_Generation_NoSafeCandidate>
   <RR_Generation_ContentAlreadyStarted>Room contents were already started; the saved partial site is retained.</RR_Generation_ContentAlreadyStarted>
@@ -42,11 +39,11 @@
   <RR_Clue_Label_survey_lobby>Survey station — room {0}</RR_Clue_Label_survey_lobby>
   <RR_Clue_Text_survey_lobby>A table and chair mark the first survey station. Compare the saved coordinate and surveyed-room count in Operations before leaving this junction. Gate Telemetry later adds the recorded room connections.</RR_Clue_Text_survey_lobby>
   <RR_Clue_Label_office_copy>Duplicated workstation — room {0}</RR_Clue_Label_office_copy>
-  <RR_Clue_Text_office_copy>Two workstations repeat the same arrangement. The physical route recording is stored separately in this room; pick it up and carry it back for analysis.</RR_Clue_Text_office_copy>
+  <RR_Clue_Text_office_copy>Two workstations repeat the same arrangement. The record book is stored separately in this room; pick it up and carry it back for analysis.</RR_Clue_Text_office_copy>
   <RR_Clue_Label_service_passage>Route-marking point — room {0}</RR_Clue_Label_service_passage>
-  <RR_Clue_Text_service_passage>A shelf and disconnected standing lamp mark this passage. Place a numbered survey tag at a verified junction before proceeding into the Borrowed Corridor.</RR_Clue_Text_service_passage>
+  <RR_Clue_Text_service_passage>A shelf and disconnected standing lamp mark this passage. Set a glow pod down at a verified junction and designate it as a numbered route marker before proceeding into the Borrowed Corridor.</RR_Clue_Text_service_passage>
   <RR_Clue_Label_borrowed_corridor>Repeated planters — room {0}</RR_Clue_Label_borrowed_corridor>
-  <RR_Clue_Text_borrowed_corridor>The paired planters offer a familiar shape without a reliable direction. Compare the real numbered tag and return beacon with their recorded rooms when the route changes.</RR_Clue_Text_borrowed_corridor>
+  <RR_Clue_Text_borrowed_corridor>The paired planters offer a familiar shape without a reliable direction. Compare the real numbered markers with their recorded rooms when the route changes.</RR_Clue_Text_borrowed_corridor>
   <RR_Clue_Label_storage_nook>Recoverable stock — room {0}</RR_Clue_Label_storage_nook>
   <RR_Clue_Text_storage_nook>This loose salvage is a physical cargo item. Taking it uses actual crew capacity; it is never credited or returned remotely.</RR_Clue_Text_storage_nook>
   <RR_Clue_Label_utility_room>Disconnected fixture — room {0}</RR_Clue_Label_utility_room>

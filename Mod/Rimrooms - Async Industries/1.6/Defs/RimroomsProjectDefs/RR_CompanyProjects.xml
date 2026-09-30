@@ -362,7 +362,7 @@ The branch may ask for applicants again in half the time. The corporation was ne
   <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
     <defName>RR_GateTelemetry</defName>
     <label>Gate Telemetry</label>
-    <description>Compare recovered route recordings with the gate's own timing records. Unlocks a persistent route-planning view of surveyed rooms and their known connections before a repeat expedition; unexplored rooms stay unknown.\n\nThe first rung. One completed route log is enough, because one survey is all a branch has when it starts.</description>
+    <description>Compare recovered record books with the gate's own timing records. Unlocks a persistent route-planning view of surveyed rooms and their known connections before a repeat expedition; unexplored rooms stay unknown.\n\nThe first rung. One completed route log is enough, because one survey is all a branch has when it starts.</description>
     <insightCost>1</insightCost>
     <workRequired>6000</workRequired>
     <minimumIntellectual>4</minimumIntellectual>

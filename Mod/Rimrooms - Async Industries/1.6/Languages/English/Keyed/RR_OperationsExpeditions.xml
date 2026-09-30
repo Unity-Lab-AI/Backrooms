@@ -51,8 +51,8 @@
   <RR_UI_NextRecovery>The crew is stranded. Restore gate power and its return reserve, staff the console, then reopen the saved route or send a relief worker.</RR_UI_NextRecovery>
   <RR_UI_NextFieldSurvey>Explore with the recorder, mark the junction, investigate the repeated route, and recover the office recording. Watch the gate window and recall through the saved return anchor.</RR_UI_NextFieldSurvey>
   <RR_UI_NextDispatch>Staff the console. In Expedition, choose up to three field workers, queue the physical kit, wait for pickup, then dispatch to AI-01.</RR_UI_NextDispatch>
-  <RR_UI_NextRecoverEvidence>Return the physical route recording and its expedition evidence case to headquarters. A missing item stays missing until recovered; another opening does not produce a copy.</RR_UI_NextRecoverEvidence>
-  <RR_UI_NextAnalysis>Assign Research work to an available staff member with Intellectual 4. Keep the recording, its evidence case, and a powered analysis bench at headquarters. Completed analysis settles the survey once.</RR_UI_NextAnalysis>
+  <RR_UI_NextRecoverEvidence>Return the record book to headquarters and shelve it in the records archive. A missing item stays missing until recovered; another opening does not produce a copy.</RR_UI_NextRecoverEvidence>
+  <RR_UI_NextAnalysis>Assign Research work to an available staff member with Intellectual 4. Keep the record book, the shelf designated as the records archive, and a powered analysis bench at headquarters. Completed analysis settles the survey once.</RR_UI_NextAnalysis>
   <RR_UI_NextTelemetry>Commit the earned insight to Gate Telemetry in Investigation. A researcher must finish the work at the powered bench before known route connections appear in the Atlas.</RR_UI_NextTelemetry>
   <RR_UI_NextRevisit>Gate Telemetry is complete. Review the surveyed route in Atlas, prepare replacement supplies, and reopen the saved coordinate to recover remaining cargo or continue building there.</RR_UI_NextRevisit>
   <RR_Exp_Status_Abandoned>Closed as abandoned; recovery remains possible</RR_Exp_Status_Abandoned>

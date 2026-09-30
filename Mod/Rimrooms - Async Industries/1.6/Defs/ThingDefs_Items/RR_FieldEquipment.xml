@@ -27,7 +27,7 @@
   </ThingDef>
   <ThingDef ParentName="RR_FieldItemBase">
     <defName>RR_RouteRecording</defName><label>route recording</label>
-    <description>A unique physical recording recovered from an explored coordinate. Preserve it, return it with the field evidence case, then analyze it at a powered field analysis bench. Case identity, observations and analysis progress are saved. Destroyed evidence is not recreated on revisiting the site.</description>
+    <description>A unique physical recording recovered from an explored coordinate, from before crews wrote into the record book they carry. Preserve it, bring it home to the shelf designated as the records archive, then analyse it at a powered field analysis bench. Its identity, observations and analysis progress are saved. Destroyed evidence is not recreated on revisiting the site.</description>
     <thingCategories Inherit="False"><li>RR_Evidence</li></thingCategories>
     <tradeability>None</tradeability>
     <graphicData><texPath>Things/Item/Book/Schematic/Schematic</texPath></graphicData>

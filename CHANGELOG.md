@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.26-dev - 2026-09-29 - the in-game text stops naming things that do not exist
+
+- **Fourteen pieces of in-game text told you to use equipment this mod no longer has.** The objectives panel, the contract terms, three room clues and the what-to-do-next readouts were all naming a return beacon, a survey tag, a sealed evidence case or a field recorder - gear retired between four and fifteen checkpoints ago.
+- **They now name what the game actually gives you:** the record book you carry, glow pods designated as numbered route markers, and the shelf designated as your records archive.
+- **Two of those are different instructions, not different words.** Custody is a place now, so a crew brings the book home to a shelf rather than returning it inside a case. And a marker is still numbered - the numbering survived the tag.
+- **Three dead labels were removed** - text describing two fixtures that stopped existing long ago.
+- **A check now refuses to ship text that names retired equipment**, so this cannot come back.
+
+Full record: [the in-game text stops naming things that do not exist](docs/implementation/RETIRED_VOCABULARY_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.25-dev - 2026-09-29 - two crew who disagree
 
 - **A second crew member's account of the same thing is now kept.** Before, whoever spoke first was the only one on the record: an identical account was folded into theirs and a **different** account was thrown away silently.

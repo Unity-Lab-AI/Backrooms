@@ -47,7 +47,7 @@
   <RR_Contract_Cancelled>Cancelled</RR_Contract_Cancelled>
   <RR_UI_ContractRow>{0} — {1}</RR_UI_ContractRow>
   <RR_UI_ContractValue>Quoted payment: {0} USD; optional records bonus: {1} USD</RR_UI_ContractValue>
-  <RR_UI_ContractTerms>Survey the route, record the distortion, recover the route recording and analyze it at headquarters. The optional bonus requires all three crew to return with route, distortion and entity observations. Combat is optional; a recoverable injury does not cancel the bonus.</RR_UI_ContractTerms>
+  <RR_UI_ContractTerms>Survey the route, record the distortion, recover the record book and analyse it at headquarters. The optional bonus requires all three crew to return with route, distortion and entity observations. Combat is optional; a recoverable injury does not cancel the bonus.</RR_UI_ContractTerms>
   <RR_UI_LedgerRow>Day {0}: {1} — {2} USD; balance {3} USD</RR_UI_LedgerRow>
   <RR_UI_LedgerRecent>Most recent 60 transactions are shown here. Earlier receipts remain saved in the company ledger.</RR_UI_LedgerRecent>
   <RR_Coordinate_Discovered>Signal registered; site not yet visited</RR_Coordinate_Discovered>
