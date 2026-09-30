@@ -191,6 +191,11 @@ namespace RimroomsAsyncIndustries.UI
         { this.pawn = pawn; forcePause = true; absorbInputAroundWindow = true; doCloseX = true; doCloseButton = true; }
         public override void DoWindowContents(Rect inRect)
         {
+            using (RimroomsWindowState.Clean()) { DrawDossier(inRect); }
+        }
+
+        private void DrawDossier(Rect inRect)
+        {
             inRect.yMax -= 40f;
             var content = new Rect(0f, 0f, inRect.width - 20f, height);
             Widgets.BeginScrollView(inRect, ref scroll, content);
@@ -213,6 +218,11 @@ namespace RimroomsAsyncIndustries.UI
             forcePause = true; absorbInputAroundWindow = true; doCloseX = true;
         }
         public override void DoWindowContents(Rect inRect)
+        {
+            using (RimroomsWindowState.Clean()) { DrawConfirmation(inRect); }
+        }
+
+        private void DrawConfirmation(Rect inRect)
         {
             RimroomsPersonnelComponent personnel = Current.Game == null ? null : Current.Game.GetComponent<RimroomsPersonnelComponent>();
             RimroomsCampaignComponent campaign = Current.Game == null ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();

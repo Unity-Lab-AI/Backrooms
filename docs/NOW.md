@@ -24,16 +24,16 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.42-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.43-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **196 C# files, 89 package files** (unchanged this checkpoint: no C# was added), zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `CFAB1B96356D0F7BD7B40A19C22951E577E4597B2ADAFCD56A706F24A3244582`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **197 C# files, 89 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `FD9190DACFEF79624B6E4481764169B10D17706902CF711EC369F9C0577446E8`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **THIRTEEN**, all passing. The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **THIRTY-NINE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
-| Game launches | **none, ever** |
+| Game launches | **ONE, by the owner, 2026-09-30.** It found three defects in the first minute and all three were ours. See *What the first launch found*. The staged copy is current as of this checkpoint |
 
 ### How to work, owner direction 2026-09-29
 
@@ -115,6 +115,48 @@ It backs up the existing folder, hash-verifies every file against the build mani
 `ProfileChanged = false; GameLaunched = false`. **It never touches the mod list and never starts the
 game.** When it was first run this session the staged copy was **0.4.0-dev** — twenty-two
 checkpoints stale, so nothing built in this project's history had ever reached the game folder.
+
+---
+
+## WHAT THE FIRST LAUNCH FOUND — read this before anything else
+
+**The game ran for the first time in this project's history on 2026-09-30, and found three defects
+in the first minute. All three were ours.** That is the single most valuable hour this repository
+has had, and it is the argument for launching again rather than building more.
+
+**FIXED — the blank page.** `Page_RimroomsCompanySetup` opened after EdB Prepare Carefully with its
+title and both buttons drawn and its body **completely empty**, and **nothing in the log**. Cause:
+**Unity's IMGUI state is process-wide and not one of this package's six window entry points reset
+any of it.** Each inherited whatever the previously drawn mod left in `GUI.color`, `Text.Font` and
+`Text.Anchor`; a leaked zero-alpha colour paints nothing and logs nothing. Core draws the page title
+and buttons and sets its own state, which is exactly why the frame was visible and only our content
+was not.
+
+**That is the other half of a claim made at 0.12.40-dev.** This package authors no colour and no
+font size — true, and still true. **Authoring nothing is not the same as assuming nothing.** And
+`check-display-style.py`, written in the same checkpoint to hold that claim, **forbade `GUI.color =`
+outright and so blocked its own fix.** A rule stated as a pattern ban rather than as a purpose will
+eventually forbid the right thing.
+
+**OPEN — F12 collides with HugsLib.** HugsLib binds F12 to *Publish log file*, the exact thing
+wanted while bug-hunting. 0.12.40-dev took F12 after checking it against **Core only**. **Every one
+of F1–F12 is bound across Core plus the 288 installed mods.** Register row 85 says *"avoid
+overriding hotkeys."* **Needs an owner decision** — see the queue row.
+
+**OPEN — EdB cannot classify our GlowPod scenario grant.** Logged twice per setup. `GlowPod` is a
+Core **Building** granted as a starting thing in two scenarios; vanilla minifies it automatically,
+EdB's equipment database has no entry for it. Cosmetic-looking, ours, and noise on every setup.
+
+### The lesson that outranks the fix
+
+**`docs/PLAYING.md` promises nothing fails silently.** A blank page with an empty log was that
+promise broken. So the setup page now **cannot go blank silently regardless of cause**: the
+introduction draws outside the scroll view, the body is wrapped so a throw is logged **and painted
+on the page**, and the listing closes on every path. **If it fails again it will say what broke.**
+
+**And be honest about the state guard: it is a diagnosis, not an observation.** The evidence is
+strong — frame drawn, body not, nothing logged, six windows resetting nothing in a 288-mod load.
+But nobody has yet seen that page draw correctly. What is certain is the reporting half.
 
 ---
 

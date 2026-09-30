@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimroomsAsyncIndustries.UI;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -14,23 +16,67 @@ namespace RimroomsAsyncIndustries.Scenario
         private float contentHeight = 1000f;
         private bool reviewed;
         private string companyNameBuffer;
+
+        /// <summary>Set when a draw throws, and then shown on the page rather than swallowed.</summary>
+        private string drawFault;
         public override string PageTitle { get { return "RR_Setup_Title".Translate(); } }
 
         public override void DoWindowContents(Rect rect)
+        {
+            // Known-good IMGUI state for this draw, restored on the way out. The first real
+            // launch of this mod opened this page with its title and buttons drawn and its body
+            // completely empty, with nothing in the log -- the signature of inherited global
+            // draw state in a 288-mod load. See RimroomsWindowState.
+            using (RimroomsWindowState.Clean())
+            {
+                DrawBody(rect);
+            }
+        }
+
+        private void DrawBody(Rect rect)
         {
             DrawPageTitle(rect);
             Rect body = rect;
             body.yMin += 45f;
             DoBottomButtons(body, "Start".Translate(), null, null, true, false);
             body.yMax -= 60f;
+
+            // The introduction is drawn OUTSIDE the scroll view on purpose. It is the one thing
+            // on this page that is true in every state, so a failure anywhere below cannot take
+            // it down with it -- and a page that shows something is a page a player can report.
+            Rect intro = body;
+            intro.height = Text.CalcHeight("RR_Setup_Introduction".Translate(), body.width - 20f);
+            Widgets.Label(intro, "RR_Setup_Introduction".Translate());
+            body.yMin += intro.height + 8f;
+            if (body.height <= 0f) { return; }
+
             Rect content = new Rect(0f, 0f, body.width - 20f, contentHeight);
             Widgets.BeginScrollView(body, ref scroll, content);
             var listing = new Listing_Standard();
             listing.Begin(content);
+            try
+            {
+                DrawReview(listing);
+            }
+            catch (Exception exception)
+            {
+                // A throw here used to leave the listing open, wedge the GUI group stack, and
+                // paint nothing. Saying what broke, on the page, is worth more than a clean
+                // stack trace nobody sees -- and the log is written too.
+                drawFault = exception.GetType().Name + ": " + exception.Message;
+                Log.Error("[Rimrooms] Company setup page failed to draw: " + exception);
+            }
+            if (drawFault != null) { listing.Label("RR_Setup_DrawFault".Translate(drawFault)); }
+            contentHeight = listing.CurHeight + 20f;
+            listing.End();
+            Widgets.EndScrollView();
+        }
+
+        private void DrawReview(Listing_Standard listing)
+        {
             RimroomsStartDef start = ScenPart_RimroomsStart.Current?.startDef;
             List<Pawn> pawns = null;
             string reason = null;
-            listing.Label("RR_Setup_Introduction".Translate());
             if (start == null || start.ConfigErrors().Any() || !StartupReview.TrySelected(out pawns, out reason))
             {
                 listing.Label((start == null ? "RR_Start_MissingSetup" : reason ?? "RR_Setup_InvalidConfiguration").Translate());
@@ -93,9 +139,6 @@ namespace RimroomsAsyncIndustries.Scenario
                 listing.Label("RR_Setup_FixedCapacity".Translate());
                 listing.CheckboxLabeled("RR_Setup_Confirm".Translate(), ref reviewed);
             }
-            contentHeight = listing.CurHeight + 20f;
-            listing.End();
-            Widgets.EndScrollView();
         }
 
         private void SynchronizeRoles(RimroomsStartDef start, List<Pawn> pawns)

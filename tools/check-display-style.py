@@ -309,6 +309,39 @@ def check(surface, key, text, problems):
 # the menu art are pictures, not text, and the contrast rule is about text a player reads.
 READOUT_DIR = os.path.join(SRC, "RimroomsAsyncIndustries", "UI")
 
+# The single named exception, and it is the opposite of the thing the rule forbids.
+#
+# **The first real launch of this mod found the hole in this rule.** The company setup page opened
+# with its title and buttons drawn and its body completely empty, and nothing in the log. Unity's
+# IMGUI state -- `GUI.color`, `Text.Font`, `Text.Anchor` -- is process-wide, and **not one of this
+# package's six window entry points reset any of it**, so each inherited whatever the previously
+# drawn mod left behind. With 288 other mods loaded, a leaked `GUI.color` with zero alpha paints
+# nothing and logs nothing.
+#
+# So *authoring no colour* was true and was never the whole claim: **authoring nothing is not the
+# same as assuming nothing.** The rule's purpose is *do not impose a palette on the player*, and
+# resetting to `Color.white` imposes nothing -- white is the absence of a tint, which is precisely
+# what lets the player's own contrast and colourblind settings decide.
+#
+# Exactly one file may touch that state, and the rules below police that file rather than waving
+# it through: it may only reset to Core's defaults, and it must put back what it found.
+STATE_GUARD = "RimroomsWindowState.cs"
+GUARD_REQUIRED = (
+    ("GUI.color = Color.white;", "reset the tint to nothing"),
+    ("Text.Font = GameFont.Small;", "reset the font to Core's body size"),
+    ("Text.Anchor = TextAnchor.UpperLeft;", "reset the anchor"),
+    ("GUI.color = color;", "RESTORE the caller's tint"),
+    ("Text.Font = font;", "RESTORE the caller's font"),
+    ("Text.Anchor = anchor;", "RESTORE the caller's anchor"),
+    ("IDisposable", "be usable in a `using` so an early return cannot skip the restore"),
+)
+# Anything the guard is NOT allowed to do. A reset is one specific value; a tint is a choice.
+GUARD_FORBIDDEN = (
+    (re.compile(r"GUI\.color\s*=\s*new\s"), "build a colour"),
+    (re.compile(r"GUI\.color\s*=\s*Color\.(?!white\b)[a-z]"), "reset to anything but white"),
+    (re.compile(r"ColorLibrary"), "reach for a ColorLibrary colour"),
+)
+
 # Every pattern tolerates a namespace qualifier. A first version matched `new Color(` only and
 # a planted `new UnityEngine.Color(1f, 0f, 0f)` walked straight past it -- the one spelling a
 # file that has no `using UnityEngine;` would actually have to use, which is to say the likeliest
@@ -333,6 +366,7 @@ AUTHORED_FONT_SIZE = re.compile(r"\bfontSize\s*=")
 
 def check_readability(problems):
     """Refuse an authored colour or an authored font in anything a player reads text from."""
+    guard_seen = False
     for path in sorted(glob.glob(os.path.join(READOUT_DIR, "*.cs"))):
         rel = os.path.relpath(path, REPO)
         text = io.open(path, encoding="utf-8-sig").read()
@@ -340,6 +374,19 @@ def check_readability(problems):
         # names every pattern below. Strip comments before matching.
         code = re.sub(r"//[^\n]*", " ", text)
         code = re.sub(r"/\*.*?\*/", " ", code, flags=re.S)
+        code = re.sub(r"^\s*///.*$", " ", code, flags=re.M)
+
+        if os.path.basename(path) == STATE_GUARD:
+            guard_seen = True
+            for needle, why in GUARD_REQUIRED:
+                if needle not in code:
+                    problems.append("%s is the state guard and must %s -- %r is missing"
+                                    % (rel, why, needle))
+            for pattern, what in GUARD_FORBIDDEN:
+                if pattern.search(code):
+                    problems.append("%s is the state guard and must not %s. It resets to Core's "
+                                    "defaults and restores; it does not choose" % (rel, what))
+            continue
 
         for pattern, what in AUTHORED_COLOUR:
             if pattern.search(code):
@@ -362,6 +409,31 @@ def check_readability(problems):
         if AUTHORED_FONT_SIZE.search(code):
             problems.append("%s sets a font size directly -- that bypasses the player's "
                             "interface scale entirely (rows 822, 833)" % rel)
+
+    # The guard must EXIST. A rule with a named exception and no file to apply it to is a rule
+    # that quietly stopped being enforced -- and the guard going missing is exactly the
+    # regression that would bring back the blank page the first launch found.
+    if not guard_seen:
+        problems.append("%s is missing. Every window entry point would inherit whatever the "
+                        "previously drawn mod left in Unity's global draw state, which is the "
+                        "defect that made the company setup page render empty on the first real "
+                        "launch" % os.path.join("src", "RimroomsAsyncIndustries", "UI",
+                                                STATE_GUARD))
+
+    # And every window entry point must USE it. One unguarded draw is one window that can go
+    # blank, and it will be the one a player sees first.
+    unguarded = []
+    for path in sorted(glob.glob(os.path.join(SRC, "RimroomsAsyncIndustries", "**", "*.cs"),
+                                 recursive=True)):
+        code = re.sub(r"//[^\n]*", " ", io.open(path, encoding="utf-8-sig").read())
+        if "override void DoWindowContents" not in code:
+            continue
+        if "RimroomsWindowState.Clean()" not in code:
+            unguarded.append(os.path.relpath(path, REPO))
+    if unguarded:
+        problems.append("%s draw a window without RimroomsWindowState.Clean(). Unity's draw "
+                        "state is process-wide; an unguarded window inherits it and can render "
+                        "invisibly with nothing in the log" % ", ".join(unguarded))
 
 
 def main():

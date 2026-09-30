@@ -28,7 +28,14 @@ namespace RimroomsAsyncIndustries.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            using (Core.RimroomsDiagnostics.Measure("operations-draw")) { DrawOperations(inRect); }
+            // Known-good IMGUI state for this draw, restored on the way out.
+            // Unity's draw state is process-wide and every mod's OnGUI shares
+            // it; a mod that leaves GUI.color set paints every window after it.
+            // See RimroomsWindowState -- this is the fix for the first bug a
+            // real launch found.
+            using (RimroomsWindowState.Clean())
+            using (Core.RimroomsDiagnostics.Measure("operations-draw"))
+            { DrawOperations(inRect); }
         }
 
         private void DrawOperations(Rect inRect)

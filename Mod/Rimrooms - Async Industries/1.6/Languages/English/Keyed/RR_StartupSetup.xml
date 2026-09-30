@@ -34,4 +34,7 @@
   <RR_Setup_UnknownReceipt>This headquarters receipt belongs to an unsupported setup version. Preserve the save and use the matching build; initialization will not replay physical grants.</RR_Setup_UnknownReceipt>
   <RR_Setup_Welcome>Your selected people have arrived and the branch allocation is recorded.&#10;&#10;Native starting supplies are near the arrival point, and equipped or carried items stay with their owners. The fixed facility is separate from those supplies.&#10;&#10;Review Operations, assign a capable operator, complete the gate and prepare a real return route. A small or underqualified roster may need recruitment or training first.&#10;&#10;Native Work, Research, Architect and pawn controls all remain available.</RR_Setup_Welcome>
   <RR_Setup_CompanyName>Company name. This is your company; call it whatever you like.</RR_Setup_CompanyName>
+  <RR_Setup_DrawFault>This page could not finish drawing: {0}
+
+The rest of the company review is unavailable, but Back and Start both still work. Please report this text.</RR_Setup_DrawFault>
 </LanguageData>

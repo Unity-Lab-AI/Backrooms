@@ -22,6 +22,11 @@ namespace RimroomsAsyncIndustries.UI
         { this.run = run; forcePause = true; absorbInputAroundWindow = true; doCloseX = true; }
         public override void DoWindowContents(Rect inRect)
         {
+            using (RimroomsWindowState.Clean()) { DrawClosure(inRect); }
+        }
+
+        private void DrawClosure(Rect inRect)
+        {
             Rect content = new Rect(0, 0, inRect.width - 20f, contentHeight);
             Widgets.BeginScrollView(inRect, ref scroll, content);
             var listing = new Listing_Standard(); listing.Begin(content);
@@ -71,6 +76,11 @@ namespace RimroomsAsyncIndustries.UI
             forcePause = true; absorbInputAroundWindow = true; doCloseX = true;
         }
         public override void DoWindowContents(Rect inRect)
+        {
+            using (RimroomsWindowState.Clean()) { DrawDeclaration(inRect); }
+        }
+
+        private void DrawDeclaration(Rect inRect)
         {
             var listing = new Listing_Standard(); listing.Begin(inRect);
             listing.Label("RR_UI_DeclareCargoTitle".Translate(entry.Label));
