@@ -53,6 +53,26 @@ namespace RimroomsAsyncIndustries.Company
         private bool corporationContact;
 
         /// <summary>
+        /// The branch's standing order for a containment failure: cut every open connection.
+        ///
+        /// **Defaults to true**, which is the safe reading and also the one a save written
+        /// before this field existed gets for free — `Scribe_Values` hands back the default
+        /// for a missing field, so an older save loads with the procedure armed rather than
+        /// with a silently disarmed one. See <see cref="ContainmentProtocol"/>.
+        /// </summary>
+        private bool cutConnectionsOnBreach = true;
+
+        /// <summary>
+        /// Whether the procedure has already fired for the incident in progress. Latched so a
+        /// second subject starting to escape during the same breach does not slam the doors a
+        /// second time, and cleared only when nothing anywhere is getting out.
+        ///
+        /// Saved, because a save made mid-breach must reload mid-breach rather than re-firing
+        /// the procedure and sending a second letter about connections that are already shut.
+        /// </summary>
+        private bool breachResponded;
+
+        /// <summary>
         /// Capabilities this branch has earned, rebuilt from completed projects.
         ///
         /// Cached rather than computed per call because the read sites include a gate power
@@ -175,6 +195,18 @@ namespace RimroomsAsyncIndustries.Company
         /// <summary>True once this branch is in communication with the parent corporation.</summary>
         public bool CorporationContact { get { return corporationContact; } }
 
+        public bool CutConnectionsOnBreach { get { return cutConnectionsOnBreach; } }
+
+        public bool BreachResponded { get { return breachResponded; } }
+
+        // Written only through ContainmentProtocol, which owns every rule about when the
+        // procedure runs. These are stores, not decisions.
+        internal void SetCutConnectionsOnBreach(bool cut) { cutConnectionsOnBreach = cut; }
+
+        internal void NoteBreachResponded() { breachResponded = true; }
+
+        internal void ClearBreachResponded() { breachResponded = false; }
+
         /// <summary>
         /// Establish contact. One-way: there is deliberately no method to take it back.
         /// </summary>
@@ -217,6 +249,8 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref nextOperatingCostTick, "rr_nextOperatingCostTick");
             Scribe_Values.Look(ref researchInsights, "rr_researchInsights");
             Scribe_Values.Look(ref corporationContact, "rr_corporationContact", false);
+            Scribe_Values.Look(ref cutConnectionsOnBreach, "rr_cutConnectionsOnBreach", true);
+            Scribe_Values.Look(ref breachResponded, "rr_breachResponded", false);
             Scribe_Collections.Look(ref ledger, "rr_ledger", LookMode.Deep);
             Scribe_Collections.Look(ref staff, "rr_staff", LookMode.Deep);
             Scribe_Collections.Look(ref obligations, "rr_obligations", LookMode.Deep);

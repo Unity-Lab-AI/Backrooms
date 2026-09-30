@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.35-dev - 2026-09-29 - containment you can see from the other side of a gate
+
+- **You are now told when containment fails somewhere you are not looking.** The base game warns you about the map you have open; this warns you about every other place the company holds something, which is the warning that actually matters when you are standing in a coordinate watching a crew work.
+- **A holding platform that has lost power with something on it now says so.** The base game has no warning for that at all.
+- **The branch has a standing order for a containment failure: cut every open connection and bring the crews home.** It is on by default, the facilities pane says which way it is set, and you can turn it off if you would rather decide each time.
+- **You can sound the alarm yourself** from the comms console, which does the same thing on demand.
+- **The facilities report has a containment section** listing what the company is holding across every site, and a containment category that finds any holding platform or prisoner bed without naming a single one.
+
+Full record: [containment you can see from the other side of a gate](docs/implementation/CONTAINMENT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.34-dev - 2026-09-29 - fifteen more reasons to walk through a gate
 
 - **Colonists will now cross a gate to load and empty machines on the other side** - gene banks, growth vats, gene extractors, subcore scanners, mech chargers, waste containers, biosculpter pods, bioferrite harvesters and entity holding platforms. Everything the worker handles is already on the far side; nobody and nothing is ever carried through the gate into a machine.

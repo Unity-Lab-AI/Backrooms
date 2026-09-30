@@ -317,6 +317,11 @@ namespace RimroomsAsyncIndustries.Company
             // Odd-supply demand rides the same cadence. Offering is interval-gated inside,
             // so this is a counter comparison almost every time it runs.
             if (now % 60 == 0) { UpdateOddSupplyContracts(); }
+            // The containment procedure. Same cadence as the clean-up team and for the same
+            // reason: it has to land inside the window where a response still means something,
+            // and it is cheap -- a latched bool, then a holder list that is built at most once
+            // per tick and is empty on any branch holding nothing.
+            if (now % 60 == 15) { ContainmentProtocol.TickProcedure(this); }
             // The clean-up team. Checked often enough to land inside Core's 400-tick
             // game-over countdown, and cheap: a bool, then a scan that stops at the
             // first living employee.

@@ -67,4 +67,19 @@ This cannot be undone.</RR_Exchange_SellConfirm>
   <RR_Company_NameHeading>Company: {0}</RR_Company_NameHeading>
   <RR_Company_RenameButton>Rename company</RR_Company_RenameButton>
   <RR_Event_CompanyRenamed>The company is now called {0}.</RR_Event_CompanyRenamed>
+
+  <!-- Containment: the procedure, the alarm and what the branch is holding. Row 761. -->
+  <RR_Company_Unavailable>The company records are unavailable. Nothing can be ordered right now.</RR_Company_Unavailable>
+  <RR_Containment_Held>Subjects held across every site: {0}</RR_Containment_Held>
+  <RR_Containment_Escaping>Getting loose right now: {0}. Whatever is on that platform is on its way off it.</RR_Containment_Escaping>
+  <RR_Containment_Unpowered>Holding without power: {0}. A platform with no power will not hold for long.</RR_Containment_Unpowered>
+  <RR_Containment_ProcedureOn>Standing order: if anything gets loose, every open connection is cut and the crews come home.</RR_Containment_ProcedureOn>
+  <RR_Containment_ProcedureOff>Standing order: connections stay open through a containment failure. Nothing will be closed for you.</RR_Containment_ProcedureOff>
+  <RR_Containment_Arm>Cut connections on a containment failure</RR_Containment_Arm>
+  <RR_Containment_Disarm>Leave connections open through a containment failure</RR_Containment_Disarm>
+  <RR_Containment_AlarmLabel>Sound the containment alarm</RR_Containment_AlarmLabel>
+  <RR_Containment_AlarmDesc>Cut every connection the company has open, right now, and start the return window on each so the crews walk home.\n\nThis is the same action the standing order takes by itself when something gets loose. Use it when you can see the problem coming and the order is disarmed.</RR_Containment_AlarmDesc>
+  <RR_Containment_NothingOpen>There is nothing open to cut. No connection is live.</RR_Containment_NothingOpen>
+  <RR_Letter_ContainmentCutLabel>Containment failure: connections cut</RR_Letter_ContainmentCutLabel>
+  <RR_Letter_ContainmentCutText>Something is coming off a holding platform, and the standing order was to shut the doors.\n\nConnections cut: {0}. Every crew on the far side is inside its return window and walking back. You can disarm this order from the facilities pane if you would rather decide each time yourself.</RR_Letter_ContainmentCutText>
 </LanguageData>

@@ -213,4 +213,11 @@ Nothing warns you again.</RR_Portals_RemoveWayInConfirm>
   <RR_Event_WorldExitClaimed>The company has taken on {0}. Whoever walked out is standing in it.</RR_Event_WorldExitClaimed>
   <RR_Event_WorldExitCaravan>The company is already running as many places as it can, so {0} set out on foot instead.</RR_Event_WorldExitCaravan>
 
+
+  <!-- Containment alerts. These speak ONLY about maps the player is not looking at; the base
+       game already warns about containment strength, activity and tending on the map in view. -->
+  <RR_Alert_ContainmentBreach>Containment failing elsewhere</RR_Alert_ContainmentBreach>
+  <RR_Alert_ContainmentBreachDesc>Something is coming off a holding platform at a site you are not currently looking at.\n\nThe base game warns you about containment on the map you have open. This warns you about every other place the company holds something, because a breach at home while you are watching a crew work is exactly the one you will miss.</RR_Alert_ContainmentBreachDesc>
+  <RR_Alert_ContainmentUnpowered>Containment without power elsewhere</RR_Alert_ContainmentUnpowered>
+  <RR_Alert_ContainmentUnpoweredDesc>A holding platform with something on it has lost power, at a site you are not currently looking at.\n\nA platform without power will not hold. Restore the power, or move the subject, before it decides to leave.</RR_Alert_ContainmentUnpoweredDesc>
 </LanguageData>

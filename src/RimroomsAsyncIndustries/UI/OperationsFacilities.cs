@@ -15,6 +15,51 @@ namespace RimroomsAsyncIndustries.UI
         private string facilityCategory;
         private int facilityPage;
 
+        /// <summary>
+        /// What the branch is holding across every map it owns, and the standing order for a
+        /// breach.
+        ///
+        /// Deliberately **not** limited to the headquarters, unlike the rest of this pane. The
+        /// facility report is an HQ readiness report and that is right for beds and benches; a
+        /// containment count that stopped at the HQ would hide the exact thing
+        /// <see cref="Threats.ContainmentWatch"/> exists to surface — a platform on a
+        /// coordinate you are not looking at.
+        ///
+        /// It reads `ContainmentWatch` rather than counting holders itself, so the pane, the
+        /// two alerts and the procedure cannot disagree about how many subjects are held.
+        /// </summary>
+        private void DrawContainment(Listing_Standard listing, RimroomsCampaignComponent campaign)
+        {
+            List<Threats.ContainmentWatch.HolderState> holders =
+                Threats.ContainmentWatch.OccupiedHolders();
+            int escaping = 0;
+            int unpowered = 0;
+            for (int index = 0; index < holders.Count; index++)
+            {
+                if (holders[index].Escaping) { escaping++; }
+                else if (holders[index].Unpowered) { unpowered++; }
+            }
+            listing.Label("RR_Containment_Held".Translate(holders.Count));
+            if (escaping > 0) { listing.Label("RR_Containment_Escaping".Translate(escaping)); }
+            if (unpowered > 0) { listing.Label("RR_Containment_Unpowered".Translate(unpowered)); }
+
+            // The standing order, said out loud in both states. A procedure the player cannot
+            // read is a procedure they cannot plan around, and this one closes connections.
+            bool cut = ContainmentProtocol.CutOnBreach(campaign);
+            listing.Label(cut ? "RR_Containment_ProcedureOn".Translate()
+                : "RR_Containment_ProcedureOff".Translate());
+            if (listing.ButtonText(cut ? "RR_Containment_Disarm".Translate()
+                : "RR_Containment_Arm".Translate()))
+            {
+                CompanyActionResult result = ContainmentProtocol.SetCutOnBreach(campaign, !cut);
+                if (!result.Success)
+                {
+                    Messages.Message(result.MessageKey.Translate(),
+                        MessageTypeDefOf.RejectInput, false);
+                }
+            }
+        }
+
         private void DrawFacilities(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
             if (!FacilityReport.Available(campaign.Headquarters))
@@ -34,6 +79,8 @@ namespace RimroomsAsyncIndustries.UI
             if (facilityReport.RefreshErrors > 0) { listing.Label("RR_Fac_ObservationErrors".Translate(facilityReport.RefreshErrors)); }
             if (listing.ButtonText("RR_Fac_OpenAssignments".Translate()))
             { OpenNativeTab(DefDatabase<MainButtonDef>.GetNamedSilentFail("Assign")); }
+            listing.GapLine();
+            DrawContainment(listing, campaign);
             listing.GapLine();
 
             string filter = facilityCategory == null ? "RR_Fac_All".Translate().ToString() :

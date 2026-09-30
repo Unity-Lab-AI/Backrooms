@@ -32,6 +32,15 @@
     <defName>RR_Facility_Power</defName><label>power sources and reserves</label><description>What keeps the lights on and a connection open. A gate draws heavily while open and draws more the wider it is, and it is fed from the battery you bound to it rather than from the grid directly.</description><displayOrder>80</displayOrder>
     <includePowerSources>true</includePowerSources><buildingDefNames><li>PowerConduit</li><li>HiddenConduit</li><li>PowerSwitch</li></buildingDefNames>
   </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+  <!-- Containment is matched by capability rather than by name, so there is no
+       buildingDefNames list here at all: includeContainment picks up anything carrying
+       CompEntityHolder plus any bed Core classifies as a prisoner bed. Naming the shipped
+       holding platform would have been an ungated expansion reference in a Core-only mod,
+       and would have covered no modded holder. -->
+  <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
+    <defName>RR_Facility_Containment</defName><label>containment</label><description>Where what you brought back is held. A platform without power is a platform that is about to let go, and a branch that cannot see its own containment from the far side of a gate finds out about a breach when it walks into one.</description><displayOrder>95</displayOrder>
+    <includeContainment>true</includeContainment>
+  </RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
   <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>
     <defName>RR_Facility_Storage</defName><label>storage furniture</label><description>Where stock is kept off the floor. Shelving decides how much a branch can actually hold and how quickly haulers can find what a bill is short of.</description><displayOrder>90</displayOrder>
     <buildingDefNames><li>Shelf</li><li>ShelfSmall</li></buildingDefNames>

@@ -102,6 +102,8 @@ namespace RimroomsAsyncIndustries.Gate
             { yield return gizmo; }
             // The call that puts a branch on the corporation's books. Only ever appears on a
             // comms console, and only while the branch is out of contact.
+            foreach (Gizmo gizmo in Company.ContainmentAlarmGizmo.For(parent))
+            { yield return gizmo; }
             foreach (Gizmo gizmo in Company.CorporateContactGizmo.For(parent))
             { yield return gizmo; }
         }

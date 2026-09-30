@@ -12,6 +12,25 @@ namespace RimroomsAsyncIndustries.Facilities
     {
         public List<string> buildingDefNames = new List<string>();
         public bool includePowerSources;
+
+        /// <summary>
+        /// Match anything that can hold a contained subject, by **capability** rather than by
+        /// name: any building carrying `CompEntityHolder`, plus any bed Core classifies as a
+        /// prisoner bed.
+        ///
+        /// Named defs were the first design and were wrong twice over. `HoldingPlatform` is an
+        /// Anomaly defName, so a `<li>` naming it would be read by `check-dlc-gating.py` as an
+        /// ungated expansion reference; and a named list covers no modded holder. Matching the
+        /// comp covers a modded holder for free, needs no gate at all because
+        /// `CompEntityHolder` lives in the always-present base assembly, and on an install
+        /// without Anomaly simply matches nothing.
+        ///
+        /// Prisoner beds are in because containment is not an Anomaly-only idea in this mod: a
+        /// branch holding somebody it brought back is a branch with a containment problem, and
+        /// on a Core-only install that is the only kind there is.
+        /// </summary>
+        public bool includeContainment;
+
         public int displayOrder;
 
         public bool Matches(Building building)
@@ -21,6 +40,12 @@ namespace RimroomsAsyncIndustries.Facilities
                 Gate.CompRimroomsGate gate = building.TryGetComp<Gate.CompRimroomsGate>();
                 Gate.CompRimroomsGateConsole console = building.TryGetComp<Gate.CompRimroomsGateConsole>();
                 if ((gate != null && gate.IsDesignated) || (console != null && console.Gate != null)) { return true; }
+            }
+            if (includeContainment)
+            {
+                if (building.TryGetComp<CompEntityHolder>() != null) { return true; }
+                var bed = building as Building_Bed;
+                if (bed != null && bed.ForPrisoners) { return true; }
             }
             return (buildingDefNames != null && buildingDefNames.Contains(building.def.defName)) || (includePowerSources &&
                 (building.TryGetComp<CompPowerPlant>() != null || building.TryGetComp<CompPowerBattery>() != null));

@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.34-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.35-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **182 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `5731D2E470D7B196DA671EBD81CFD8F002FC38A0235081FB21536C50EFB01FBD`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **186 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `F4252E3F04A178EB6B2FCB3C0D8C2B5D1A8114883404C46088278D9FA0B6892D`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **ELEVEN**, all passing. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
-| Proofs | **THIRTY-ONE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Proofs | **THIRTY-TWO** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -52,7 +52,7 @@ everything below:
 
 ## Is it done? NO, and the shape of what is left
 
-**20 genuine build items**, counted at 0.12.34-dev, listed in full under **What is left** below.
+**20 genuine build items**, counted at 0.12.35-dev, listed in full under **What is left** below. Row 761 lost three of its five halves this checkpoint and still holds two, so the *count* has not moved even though the work has — which is why the count is a command and not a memory.
 Plus about **8 rows that cannot close before the game runs once** and **9 the owner excluded**.
 
 Queue, one consistent pattern, command beside the number:
@@ -71,7 +71,7 @@ session than it cost.
 
 ### The package is staged, and one checkpoint behind
 
-The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.34-dev**. Re-stage
+The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.35-dev**. Re-stage
 before any launch:
 
 ```
@@ -85,48 +85,42 @@ checkpoints stale, so nothing built in this project's history had ever reached t
 
 ---
 
-## DO THIS FIRST — containment, quarantine and the alarm
+## DO THIS FIRST — staff debrief and quarantine, the last two halves of row 761
 
-Row 761, and it is the largest unbuilt system left rather than the easiest. Its own words:
+Three of row 761's five remaining halves shipped at 0.12.35-dev: containment rooms, the security
+procedure and the alarm. **These two are what is left of it**, and they are one mechanism rather
+than two, which is the thing to settle before writing anything.
 
-> *"Containment rooms, security procedures, staff debrief, quarantine, alarm and escape
-> response."*
+Four things to establish:
 
-**Two of the six are already shipped and must not be rebuilt.** Evidence custody and case records
-have shipped since 0.7.x, and **witness interviews shipped 0.12.28-dev** — `EvidenceInterview.cs`,
-with nine refusals and an interviewer chosen on Social. Check each of the six against the code
-before writing a line of it: **four separate rows in this session turned out to be already built**,
-and a fifth (1266) turned out to be answered by Core rather than needing anything.
-
-Four things to settle first:
-
-1. **What a containment room *is* in this mod has a precedent, and it is not a new building.**
-   0.10.8-dev established that *"a gate's facility is the equipment linked into it"* — shelves,
-   analysers and cabinets link like furniture to a bed, through walls and by hand — and
-   0.9.7-dev established that a facility is a **contiguous run** of cells. A containment room is
-   almost certainly a room role read off equipment already linked, not a `ThingDef`. **No new
-   gameplay ThingDefs** is a standing constraint, so if the design needs one, ask.
-2. **An alarm has exactly one honest surface and 0.10.5-dev already measured it.** The seventh
-   checker calibrated every display surface against Core per surface, and found this mod used
-   **none** of the alerts readout. An escape or a breach is what `Alert` exists for. Anything
-   drawn instead of an `Alert` is a second opinion beside the one the player already watches.
-3. **Quarantine is an area question, and three area rows are still open** — 1215, 1235 and 1239
+1. **There is no exposure hediff in this mod, and that decides quarantine's shape.** Measured:
+   the package has **no `HediffDefs` folder at all**. So there is nothing medical to hold somebody
+   *for*, and quarantine cannot be *"wait until the sickness clears"* without inventing a hediff —
+   which the existing-content-only constraint forbids. **The honest reading is that quarantine is
+   "held apart until debriefed"**, which makes it the same mechanism as the debrief and gives the
+   debrief a consequence.
+2. **Debrief has most of its machinery already built, and it must not be rebuilt.**
+   `EvidenceObservations.RecordFieldObservation` files what a crew member saw;
+   `EvidenceInterview.SettleDisputedAccount` (0.12.28-dev) settles two accounts that disagree, with
+   nine refusals and an interviewer chosen on Social. **Read both before designing.** What is
+   plausibly missing is the *home-side* step: a returning crew member reporting in, as against an
+   observation being written down in the field.
+3. **Quarantine is an area question and three area rows are still open** — 1215, 1235 and 1239
    cover `Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear` and `Area_PollutionClear` across
-   a gate. Quarantine may be the fifth of those rather than its own machinery, and if it is, build
-   it with them.
-4. **`python tools/register-query.py use RR-EVD` and `family security`** before designing. The
-   security family is swept; **subject casework and evidence are swept too**, so this one has
-   register guidance already read rather than owing a sweep.
+   a gate. **Measured at 0.12.33-dev: one incidental `Area_NoRoof` use and no cross-gate
+   coverage.** If quarantine is an area, build it with those three rather than beside them.
+4. **`python tools/register-query.py family "staff psychology"`** — it is one of the **seven**
+   families the register retro sweep has not reached (rows 206, 302), and a debrief is a mood event
+   about what somebody saw. This is the sweep that owes this work its guidance.
 
-**The escape half has a hard constraint from 0.9.6-dev.** *"It came through with them"* is a
-**bounded, named exception** to the founding rule that nothing crosses but people. An escaping
-contained subject is the same class of event and must be the same kind of exception — named,
-bounded and refusable — rather than a new general capability. Read `CompRimroomsEmergence` and the
-0.9.6-dev record first.
+**The thing to be careful about:** a debrief that hands out a mood effect is writing a `ThoughtDef`
+consequence, and `ThoughtDefs` already ship in this package — so check what is there before adding
+anything. 0.12.5-dev deleted four research projects for being unlocks with nothing to unlock, and a
+debrief that changes nothing observable is the same defect.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.34
+## What shipped this session, 0.7.1 → 0.12.35
 
 | Version | What |
 |---|---|
@@ -204,19 +198,22 @@ bounded and refusable — rather than a new general capability. Read `CompRimroo
 
 ## What is left, in order — rewritten 0.12.34-dev, measured not carried
 
-**20 genuine build items**, counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Two closed this checkpoint. Anything marked closed below stays as a record so nobody rebuilds it.
+**20 genuine build items**, counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
 
 ### Systems still unbuilt
 
-1. **Containment rooms, security procedures, staff debrief, quarantine, alarm and escape
-   response.** Row 761. Evidence custody and case records already ship; **witness interviews
-   shipped 0.12.28-dev.** This is the rest of that row, and **it is the DO THIS FIRST item** —
-   see the top of this file for the four things to settle.
-   **Row 1266 is closed** (0.12.34-dev): the eleven DLC container hauling givers are built as
-   `machine-loading`, and the custody review they were waiting on found that **Core forbids every
-   one of them from moving anything between maps**, so invariant 55 was never engaged. **The four
-   painting givers in `Art` are closed with them** — `Art` had a bill family and no designation
-   family, so nobody would ever have crossed to paint anything.
+1. **Staff debrief and quarantine** — the last two halves of row 761, and **the DO THIS
+   FIRST item**; see the top of this file for the four things to settle, of which *"there is no
+   exposure hediff in this mod"* is the one that decides the shape.
+   **Closed from that row at 0.12.35-dev:** containment rooms (a tenth facility category matched
+   by capability, naming no expansion def), the security procedure (a standing order that cuts
+   every open connection on a breach, through the gate's own existing cutoff) and the alarm. The
+   finding worth keeping: **Core already ships four containment alerts and every one reads
+   `Find.CurrentMap`**, so the gap was never that containment has no warning but that it has none
+   about the maps you are not looking at.
+   **Also closed, 0.12.34-dev:** row 1266's eleven DLC container hauling givers as
+   `machine-loading` — **Core forbids every one of them from moving anything between maps**, so
+   invariant 55 was never engaged — and the four `Art` painting givers as `painting`.
 2. **Crew composition and cargo planner** with skill, health, weight and window checks, ready and
    unready reasons, and a cost preview. Row 728. *"must not own connection existence"*.
 3. **Quests and missions for odd goods**, as distinct from contracts — contracts shipped 0.7.3-dev
