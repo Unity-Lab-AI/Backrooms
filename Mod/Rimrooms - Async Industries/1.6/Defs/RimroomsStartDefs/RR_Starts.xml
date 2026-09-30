@@ -106,6 +106,18 @@
       <li><thing>StandingLamp</thing><cell>(21, 0, 28)</cell></li>
       <li><thing>ElectricSmithy</thing><cell>(17, 0, 41)</cell></li>
       <li><thing>TableMachining</thing><cell>(17, 0, 44)</cell></li>
+      <!-- Eight glow pods, on the store-room floor beside the stock cell. Moved here
+           from the scenario's starting things at 0.12.44-dev; see RR_Scenarios.xml.
+           Every cell computed free against the occupied set, because
+           GenStep_Headquarters throws rather than skipping a clash. -->
+      <li><thing>GlowPod</thing><cell>(12, 0, 25)</cell></li>
+      <li><thing>GlowPod</thing><cell>(13, 0, 25)</cell></li>
+      <li><thing>GlowPod</thing><cell>(14, 0, 25)</cell></li>
+      <li><thing>GlowPod</thing><cell>(15, 0, 25)</cell></li>
+      <li><thing>GlowPod</thing><cell>(16, 0, 25)</cell></li>
+      <li><thing>GlowPod</thing><cell>(17, 0, 25)</cell></li>
+      <li><thing>GlowPod</thing><cell>(18, 0, 25)</cell></li>
+      <li><thing>GlowPod</thing><cell>(19, 0, 25)</cell></li>
       <li><thing>StandingLamp</thing><cell>(21, 0, 36)</cell></li>
       <li><thing>Heater</thing><cell>(12, 0, 36)</cell></li>
       <li><thing>Autodoor</thing><stuff>Steel</stuff><cell>(29, 0, 33)</cell></li>
@@ -214,6 +226,13 @@
     </doors>
     <buildings>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 13)</cell></li>
+      <!-- Three glow pods on the sales-floor edge. Moved here from the scenario's starting
+           things at 0.12.44-dev for the same EdB reason as the Async eight; every cell was
+           computed free against the occupied set, because GenStep_Headquarters throws on a
+           clash rather than skipping it. -->
+      <li><thing>GlowPod</thing><cell>(9, 0, 9)</cell></li>
+      <li><thing>GlowPod</thing><cell>(10, 0, 9)</cell></li>
+      <li><thing>GlowPod</thing><cell>(11, 0, 9)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(17, 0, 13)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(21, 0, 13)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 20)</cell></li>

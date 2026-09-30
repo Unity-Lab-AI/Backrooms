@@ -24,10 +24,10 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.43-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.44-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **198 C# files, 89 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `4A2986BEA5B4A315FFF93773F58340C01750BC317040B79EC463E40BBD33EB7B`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Assembly | SHA-256 `D0EF34D3358A9390E74D5DEA7BB066AB3F8FC27A343AECD35A02009112378F63`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **THIRTEEN**, all passing. The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **THIRTY-NINE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -144,7 +144,13 @@ font size — true, and still true. **Authoring nothing is not the same as assum
 outright and so blocked its own fix.** A rule stated as a pattern ban rather than as a purpose will
 eventually forbid the right thing.
 
-**OPEN — F12 collides with HugsLib.** HugsLib binds F12 to *Publish log file*, the exact thing
+**FIXED — the hotkey is `Backslash`.** Bound by nothing in Core and nothing in the profile, and **the proof now refuses any function key at all** rather than only the ones Core takes, which is the portable form of the rule that would have caught this.
+
+**FIXED — the glow pods are pre-placed** in each start's fixed facility, so EdB never parses them and the warning is gone. Eleven cells, **every one computed free**, because `GenStep_Headquarters` throws on a clash rather than skipping it.
+
+**NOT A DEFECT — the Store's missing bench.** Owner: *"the store start has a natural portal and to build a machanical one they need to contact the company and resaerch whats needed"*. `beginsInCorporationContact` false and `completedProjects` empty for the Store and solo, against Async's eight. **The readout was the defect**, calling a designed progression step a deficiency; it has three conclusions now for the three real situations.
+
+**The original, for the record — F12 collided with HugsLib.** HugsLib binds F12 to *Publish log file*, the exact thing
 wanted while bug-hunting. 0.12.40-dev took F12 after checking it against **Core only**. **Every one
 of F1–F12 is bound across Core plus the 288 installed mods.** Register row 85 says *"avoid
 overriding hotkeys."* **Needs an owner decision** — see the queue row.

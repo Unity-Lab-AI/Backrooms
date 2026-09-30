@@ -44,9 +44,14 @@ Supplies arrive physically with your people and stay editable separately from th
              taken in blank, written in in the field, carried home as the evidence. A
              branch that loses it buys another from the company catalogue. -->
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>TextBook</thingDef><count>1</count></li>
-        <!-- Six survey tags became eight glow pods. Core content, no cap, and a player
-             who wants more buys more; the retired tag was six because a kit check said so. -->
-        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>GlowPod</thingDef><count>8</count></li>
+        <!-- Six survey tags became eight glow pods at 0.10.7-dev. The eight moved OUT of
+             this list at 0.12.44-dev and into the fixed facility in RR_Starts.xml, because
+             `GlowPod` is a Core *Building* and EdB Prepare Carefully's equipment database has
+             no entry for a building with no stuff - it logged "Couldn't initialize all
+             scenario equipment" on every single setup. Vanilla copes (ScenPart_StartingThing_
+             Defined calls MakeMinified on anything minifiable); EdB does not. A placed glow
+             pod can still be uninstalled, minified and carried, so the only thing given up is
+             editing them in Prepare Carefully. -->
         <!-- The sealed evidence case was retired in 0.10.9-dev. Custody is a shelf linked
              to a gate as a records archive, so the start grants the shelf instead of a
              custom item whose only job was to exist somewhere on the map. -->
@@ -132,7 +137,8 @@ Stay alive, learn one rule this place obeys, mark the way you came, and decide w
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>MedicineHerbal</thingDef><count>2</count></li>
         <!-- A book was the one piece of company property worth having on you. -->
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>TextBook</thingDef><count>1</count></li>
-        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>GlowPod</thingDef><count>3</count></li>
+        <!-- The Store's three glow pods moved to its fixed facility at 0.12.44-dev, for
+             the same EdB reason as the Async eight. -->
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>Steel</thingDef><count>40</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>ComponentIndustrial</thingDef><count>2</count></li>
       </parts>

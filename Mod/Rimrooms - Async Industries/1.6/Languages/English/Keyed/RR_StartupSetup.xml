@@ -48,5 +48,8 @@ The rest of the company review is unavailable, but Back and Start both still wor
   <RR_Setup_GatePresent>Standing already: {0} - {1}.</RR_Setup_GatePresent>
   <RR_Setup_GateAbsent>NOT here: {0}. You will have to build or buy one.</RR_Setup_GateAbsent>
   <RR_Setup_GateReady>Everything a gate needs is already standing. Designate the door, console, battery and bench on Operations' Machine pane, then run the assembly bill.</RR_Setup_GateReady>
-  <RR_Setup_GateNotReady>This branch does not arrive able to raise a gate. Missing: {0}. That may be the point of this opening rather than an oversight - the inside start begins in the Backrooms and looks for a way out - but it is worth knowing before you start.</RR_Setup_GateNotReady>
+  <RR_Setup_GateNotReady>This branch is in contact and holds the gate research, but is missing hardware: {0}. Build it or order it from the company before an opening is possible.</RR_Setup_GateNotReady>
+  <RR_Setup_GateLaterWork>A built gate is later work for this opening, not a missing piece of it. Not here yet: {0}.</RR_Setup_GateLaterWork>
+  <RR_Setup_GateContactRoute>This branch starts outside company contact and with no gate research finished, so it is not meant to assemble one yet. There is already a way through that nobody built. Reach the corporation, research what a gate needs, then order the equipment.</RR_Setup_GateContactRoute>
+  <RR_Setup_GateInsideRoute>This opening begins inside the Backrooms, outside company contact and with no gate research finished. Finding a way out comes first; ways through that nobody built reach only so deep, and going further needs a gate you have earned the right to build.</RR_Setup_GateInsideRoute>
 </LanguageData>

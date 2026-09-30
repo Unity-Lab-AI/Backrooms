@@ -10,9 +10,19 @@
     defaultHotKey is Core's own keyboard path and costs no def of ours:
     KeyBindingDefGenerator.ImpliedKeyBindingDefs emits `MainTab_RR_Operations` into the
     MainTabs category for any MainButtonDef that sets it, so the binding appears in the
-    player's Key Bindings dialog and is rebindable there. F12 is the only function key
-    Core leaves unbound - it uses Tab and F1..F9 for main tabs, F10 for a screenshot and
-    F11 for screenshot mode.
+    player's Key Bindings dialog and is rebindable there.
+
+    **This was F12 until 0.12.44-dev, and the first real launch found the mistake.** F12 is
+    the only function key CORE leaves unbound - Core takes Tab and F1..F9 for main tabs, F10
+    for a screenshot and F11 for screenshot mode - and that measurement was right about Core
+    and wrong about the profile this mod exists to work with. **HugsLib binds F12 to "Publish
+    log file"**, which is the exact key somebody wants while bug-hunting, and every one of
+    F1..F12 is bound across Core plus the 288 installed mods. Register row 85 says in its own
+    words: *"avoid overriding hotkeys."*
+
+    Backslash is bound by nothing in Core and nothing in the profile. It is still only a
+    DEFAULT: the generated binding is rebindable in Options, and the help pane reads the
+    player's live binding rather than this line.
   -->
   <MainButtonDef>
     <defName>RR_Operations</defName>
@@ -20,7 +30,7 @@
     <description>View company operations and return to ordinary work and research controls.</description>
     <tabWindowClass>RimroomsAsyncIndustries.UI.MainTabWindow_Operations</tabWindowClass>
     <order>0</order>
-    <defaultHotKey>F12</defaultHotKey>
+    <defaultHotKey>Backslash</defaultHotKey>
     <validWithoutMap>true</validWithoutMap>
   </MainButtonDef>
 </Defs>

@@ -233,9 +233,36 @@ namespace RimroomsAsyncIndustries.Scenario
             }
 
             // The conclusion, in one line, because a list of five rows is not an answer.
-            listing.Label(missing.Count == 0
-                ? "RR_Setup_GateReady".Translate()
-                : "RR_Setup_GateNotReady".Translate(string.Join(", ", missing.ToArray())));
+            //
+            // **And the conclusion depends on the start, not only on the list.** Owner, verbatim:
+            // *"the store start has a natural portal and to build a machanical one they need to
+            // contact the company and resaerch whats needed"*. The defs already say exactly that
+            // -- `beginsInCorporationContact` is false and `completedProjects` is empty for both
+            // the Store and the solo start, against Async's eight including `RR_GateTelemetry`.
+            //
+            // So a start that is missing equipment AND out of contact is not deficient, it is
+            // **earlier in its own progression**, and the first version of this readout called
+            // that *"does not arrive able to raise a gate"* -- describing a designed step as a
+            // fault. Three different conclusions, because there are three different situations.
+            if (missing.Count == 0)
+            {
+                listing.Label("RR_Setup_GateReady".Translate());
+            }
+            else if (!start.beginsInCorporationContact)
+            {
+                listing.Label("RR_Setup_GateLaterWork".Translate(
+                    string.Join(", ", missing.ToArray())));
+                listing.Label(start.insideStart
+                    ? "RR_Setup_GateInsideRoute".Translate()
+                    : "RR_Setup_GateContactRoute".Translate());
+            }
+            else
+            {
+                // In contact, with the research, and still missing hardware: that one really is
+                // something to build or buy.
+                listing.Label("RR_Setup_GateNotReady".Translate(
+                    string.Join(", ", missing.ToArray())));
+            }
         }
 
         private void SynchronizeRoles(RimroomsStartDef start, List<Pawn> pawns)
