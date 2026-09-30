@@ -197,6 +197,75 @@ if foreign:
 else:
     notes.append("every shipped file belongs to this package; no other mod's content is present")
 
+# ------------------------------------------------ 5b. the last seven families, swept 0.12.42-dev
+#
+# Rows 206 and 302 asked for a retroactive sweep of every system family. Fourteen were swept
+# between 0.10.4-dev and 0.12.33-dev; the last seven -- medical, world operations, cargo,
+# hospitality, materials, visitor economy, staff psychology -- collapse into **five family strings**
+# in the register, because the register groups two or three names per family.
+#
+# Every one of the five turned out to be **already honoured**, which is worth stating plainly
+# rather than dressing up: no code changed. What DID change is that four of the five rules were
+# satisfied by nothing but the current shape of the package, and a rule with no check behind it is
+# a promise. So the sweep's product is these assertions.
+#
+# Each rule is quoted from the family's own Integration Approach, with the row it came from.
+#
+# The one that is worth reading twice: the medical family's rule is *"the core expedition loop must
+# not require one medical or Biotech mod to treat a pawn"*, and **0.12.41-dev came within one
+# decision of breaking it.** The crew planner reports a crew with no medical skill as a gap and
+# does **not** refuse the dispatch. Had that gap been a refusal -- which is the obvious way to
+# write it -- the expedition loop would have required a medic, and on a profile where a medical mod
+# owns treatment that is a requirement on that mod. It was written as advisory for a different
+# reason, and the register independently requires it.
+PATCH_STEERED = {
+    "ThoughtDef": "row 2 SF Grim Reality: \"Keep any future company thoughts isolated and "
+                  "additive; do not overwrite its thought definitions.\" This package authors one "
+                  "ThoughtDef of its own and patches none",
+    "TraderKindDef": "row 17 [KV] Call Trade Ships: \"Leave calls and trader options on the "
+                     "existing Comms Console; no Rimrooms trade-ship override planned.\" The "
+                     "corporate trader is a new TraderKindDef reached through a gizmo on Core's "
+                     "own console",
+    "HediffDef": "the medical family, rows 23-272: \"The core expedition loop must not require "
+                 "one medical or Biotech mod to treat a pawn.\" This package has no HediffDefs "
+                 "folder at all, and the only medical reference in the expedition code is "
+                 "SkillDefOf.Medicine, read to report a gap and never to refuse a dispatch",
+    "MainButtonDef": "the hospitality family, rows 62-286: test state changes \"instead of "
+                     "replacing their native menus.\" Row 821's company-first layout is this "
+                     "package's own button's order field and nothing else",
+}
+patches_root = os.path.join(MOD, "1.6", "Patches")
+for def_type, reason in sorted(PATCH_STEERED.items()):
+    offenders = []
+    for path in package_xml_files():
+        if not path.startswith(patches_root):
+            continue
+        if re.search(r"\b%s\b" % re.escape(def_type), read(path)):
+            offenders.append(os.path.relpath(path, REPO).replace(os.sep, "/"))
+    if offenders:
+        fail("a patch in this package names %s (%s). %s"
+             % (def_type, ", ".join(offenders), reason))
+    else:
+        notes.append("patches no %s" % def_type)
+
+# The materials and cargo family, rows 52-228: *"Preserve each mod's normal material and weight
+# behavior; add only a Backrooms cargo manifest and appraisal layer."* Setting a mass on **our own**
+# def is normal and is not what the rule is about; altering **theirs** is. So the check is on the
+# patches, where a stat override would have to live.
+mass_patches = []
+for path in package_xml_files():
+    if not path.startswith(patches_root):
+        continue
+    if re.search(r"<Mass>|statBases", read(path)):
+        mass_patches.append(os.path.relpath(path, REPO).replace(os.sep, "/"))
+if mass_patches:
+    fail("a patch in this package alters stat bases (%s). The materials and cargo family, rows "
+         "52-228: \"Preserve each mod's normal material and weight behavior\" -- every mass this "
+         "package reads comes from the item's own StatDefOf.Mass or from MassUtility"
+         % ", ".join(mass_patches))
+else:
+    notes.append("no patch alters another def's stat bases")
+
 # ---------------------------------------------------------------- 6. no new gameplay art
 # Invariant 10: no new gameplay ThingDef, PawnKindDef, art or audio. Original main-menu images are
 # the single declared exception, so the rule is checkable as a shape rather than a count: every PNG

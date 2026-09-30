@@ -1,0 +1,2895 @@
+{
+  "note": "Transcribed from Rimrooms_Campaign_Economy_v0.2.xlsx by tools/extract-economy-workbook.py. Not verified against the build, and not observed in play.",
+  "workbook": "outputs/4b7976f0-1820-4ffa-a191-bf7c7f79b010/Rimrooms_Campaign_Economy_v0.2.xlsx",
+  "sheets": [
+    {
+      "name": "Economy",
+      "rows": [
+        [],
+        [
+          "Rimrooms - Async Industries: economy v0.2"
+        ],
+        [
+          "30-day company-account forecast in USD. Editable pre-code targets; not tested play balance."
+        ],
+        [],
+        [
+          "30-day opening account forecast"
+        ],
+        [
+          "Metric",
+          "Value (USD unless noted)",
+          "",
+          "Explanation"
+        ],
+        [
+          "Opening Company Account",
+          "50000000",
+          "",
+          "Provisional authorized branch allocation; parent valuation is not this balance."
+        ],
+        [
+          "AI-01 survey payment",
+          "5000000",
+          "",
+          "Paid once after valid extraction and accepted evidence delivery."
+        ],
+        [
+          "Optional records bonus",
+          "0",
+          "",
+          "Zero in opening forecast; listed bonus is optional."
+        ],
+        [
+          "Payroll",
+          "-750000",
+          "",
+          "Five staff at the editable daily pay target."
+        ],
+        [
+          "HQ overhead",
+          "-750000",
+          "",
+          "Routine company administration and communications."
+        ],
+        [
+          "Automatic food cash debit",
+          "0",
+          "",
+          "Must stay zero for ordinary meals; only an accepted physical shipment charges cash."
+        ],
+        [
+          "New-hire setup",
+          "0",
+          "",
+          "No additional hire in the opening forecast."
+        ],
+        [
+          "Survey-kit shipments",
+          "0",
+          "",
+          "No order placed in the opening forecast."
+        ],
+        [
+          "Research-material orders",
+          "0",
+          "",
+          "No order placed in the opening forecast."
+        ],
+        [
+          "Outpost operation",
+          "0",
+          "",
+          "No active outpost in the opening forecast."
+        ],
+        [
+          "Additional facility lease",
+          "0",
+          "",
+          "No lease cost until extra space is rented."
+        ],
+        [
+          "Accepted contract penalties",
+          "0",
+          "",
+          "Only a term accepted on a contract may create a penalty."
+        ],
+        [
+          "Ending Company Account",
+          "53500000",
+          "",
+          "Opening balance plus actual posted receipts/costs."
+        ],
+        [
+          "Fixed HQ daily outflow",
+          "50000",
+          "",
+          "Wages plus HQ overhead; physical food and optional orders excluded."
+        ],
+        [
+          "Runway at fixed HQ outflow (days)",
+          "1000",
+          "",
+          "Opening balance divided by fixed HQ daily outflow."
+        ],
+        [
+          "Gate capacity target with reserve (W)",
+          "3000",
+          "",
+          "Machine capacity hypothesis; power is not converted to dollars."
+        ],
+        [
+          "First opening window (minutes)",
+          "20",
+          "",
+          "First expedition window hypothesis."
+        ],
+        [
+          "Maximum field crew (pawns)",
+          "3",
+          "",
+          "A qualified operator stays at the facility."
+        ],
+        [
+          "Optional first-run salvage test envelope (kg)",
+          "30",
+          "",
+          "Test-only ceiling; lower actual carry/exit/storage capacity wins."
+        ],
+        [
+          "Research insight per successful survey",
+          "1",
+          "",
+          "A local research input, not transferable currency."
+        ],
+        [
+          "Added quotes",
+          "0",
+          "",
+          "Separate USD quote inputs; delivered goods remain physical stock."
+        ],
+        [
+          "Editable model inputs"
+        ],
+        [
+          "Inputs below match the v0.2 model. Food and all purchased goods remain physical; the account is a ledger, never a silver stack."
+        ],
+        [
+          "Group",
+          "Driver",
+          "Value",
+          "Unit",
+          "Basis / status"
+        ],
+        [
+          "Account",
+          "Starting authorized branch allocation",
+          "50000000",
+          "USD",
+          "Scenario start; finite local budget, not the parent valuation."
+        ],
+        [
+          "Period",
+          "Forecast horizon",
+          "30",
+          "days",
+          "Editable model horizon."
+        ],
+        [
+          "Staff",
+          "Starting roster",
+          "5",
+          "pawns",
+          "Scenario start."
+        ],
+        [
+          "Staff",
+          "Base pay",
+          "5000",
+          "USD / pawn / day",
+          "Provisional salary target; specialist premiums are open."
+        ],
+        [
+          "Facility",
+          "HQ administration and communications",
+          "25000",
+          "USD / day",
+          "Excludes physical electricity, fuel, construction materials, and orders."
+        ],
+        [
+          "Food",
+          "Starter physical food coverage",
+          "5",
+          "days",
+          "Food is real stock grown/cooked or shipped."
+        ],
+        [
+          "Food",
+          "Automatic cash cost per person-day",
+          "0",
+          "USD / person / day",
+          "Zero by rule; only an explicit food shipment invoice debits account."
+        ],
+        [
+          "Contract",
+          "Accepted onboarding survey count",
+          "1",
+          "contracts",
+          "One accepted opening contract."
+        ],
+        [
+          "Contract",
+          "Survey payment target",
+          "5000000",
+          "USD / contract",
+          "Posted once for the accepted deliverable."
+        ],
+        [
+          "Contract",
+          "Bonus count in base forecast",
+          "0",
+          "contracts",
+          "Optional records bonus is not assumed."
+        ],
+        [
+          "Contract",
+          "Records bonus target",
+          "1000000",
+          "USD / contract",
+          "Optional; exact condition is shown before dispatch."
+        ],
+        [
+          "Contract",
+          "Failed/late contracts in base forecast",
+          "0",
+          "contracts",
+          "No penalty in the opening case."
+        ],
+        [
+          "Contract",
+          "Maximum penalty target",
+          "1250000",
+          "USD / contract",
+          "Never above 25% of the first payment; only accepted terms apply."
+        ],
+        [
+          "Staff",
+          "Additional hires",
+          "0",
+          "pawns",
+          "Starting roster excluded."
+        ],
+        [
+          "Staff",
+          "Setup per additional hire",
+          "100000",
+          "USD / hire",
+          "One-time onboarding allowance; not a pawn purchase."
+        ],
+        [
+          "Orders",
+          "Survey-kit restock orders",
+          "0",
+          "orders",
+          "No restock order in the base forecast."
+        ],
+        [
+          "Orders",
+          "Survey-kit quote",
+          "750000",
+          "USD / order",
+          "Quoted physical shipment; charge once when ordered."
+        ],
+        [
+          "Research",
+          "Research-material orders",
+          "0",
+          "orders",
+          "Starter stock used first."
+        ],
+        [
+          "Research",
+          "Material order quote",
+          "2000000",
+          "USD / order",
+          "Physical supplies only; research itself uses evidence and staffed work."
+        ],
+        [
+          "Outpost",
+          "Active outpost days",
+          "0",
+          "days",
+          "No active outpost in base forecast."
+        ],
+        [
+          "Outpost",
+          "Lease and service target",
+          "250000",
+          "USD / outpost-day",
+          "Editable allowance; wages, defense, food, and physical supply remain separate."
+        ],
+        [
+          "Facility",
+          "Additional leased-facility days",
+          "0",
+          "days",
+          "No extra rented space in base forecast."
+        ],
+        [
+          "Facility",
+          "Rent target",
+          "100000",
+          "USD / active day",
+          "Only applies after an optional lease starts."
+        ],
+        [
+          "Gate",
+          "Standby draw",
+          "500",
+          "W",
+          "First-slice engineering hypothesis."
+        ],
+        [
+          "Gate",
+          "Open draw",
+          "2000",
+          "W",
+          "First-slice engineering hypothesis."
+        ],
+        [
+          "Gate",
+          "First opening window",
+          "20",
+          "minutes",
+          "Scenario start."
+        ],
+        [
+          "Gate",
+          "Reserve multiplier",
+          "1.5",
+          "x draw",
+          "50% above open draw."
+        ],
+        [
+          "Expedition",
+          "Maximum first crew",
+          "3",
+          "pawns",
+          "Actual readiness and operator rules still apply."
+        ],
+        [
+          "Expedition",
+          "Optional salvage test envelope",
+          "30",
+          "kg",
+          "Not a promise: actual carry, return, storage, and time capacities may lower this."
+        ],
+        [
+          "Research",
+          "Insight per successful survey",
+          "1",
+          "insight",
+          "Local research input, not cash or a transferable balance."
+        ]
+      ]
+    },
+    {
+      "name": "Campaign Scenarios",
+      "rows": [
+        [],
+        [
+          "Rimrooms - Async Industries: campaign scenarios v0.2"
+        ],
+        [
+          "Later stages use editable 30-day USD planning cases, not tested prices. Cash stays on each branch ledger; item cargo is separate."
+        ],
+        [
+          "Downside starts without the first survey receipt and earns fewer contracts. Negative close means the listed plan needs adjustment; it does not imply debt or automatic parent funding."
+        ],
+        [],
+        [
+          "Thirty-day stage account outlook (USD)"
+        ],
+        [
+          "Campaign stage",
+          "Base close (USD)",
+          "Downside close (USD)",
+          "Base paid contracts",
+          "Downside paid contracts",
+          "No-contract close (USD)",
+          "Recovery close before funding (USD)",
+          "Approved milestone release (USD)",
+          "Recovery close after funding (USD)"
+        ],
+        [
+          "Stage 1: First safe survey",
+          "53500000",
+          "48500000",
+          "1",
+          "0",
+          "48500000",
+          "48500000",
+          "0",
+          "48500000"
+        ],
+        [
+          "Repeat access",
+          "56250000",
+          "48750000",
+          "2",
+          "1",
+          "51250000",
+          "52000000",
+          "0",
+          "52000000"
+        ],
+        [
+          "Specialist services",
+          "81500000",
+          "54000000",
+          "3",
+          "1",
+          "51500000",
+          "54750000",
+          "0",
+          "54750000"
+        ],
+        [
+          "Leases and remote sites",
+          "169200000",
+          "91700000",
+          "4",
+          "2",
+          "69200000",
+          "79700000",
+          "0",
+          "79700000"
+        ],
+        [
+          "Large recovery and network work",
+          "518750000",
+          "216250000",
+          "5",
+          "2",
+          "143750000",
+          "167250000",
+          "0",
+          "167250000"
+        ],
+        [
+          "Vehicle and optional orbital support",
+          "1203500000",
+          "451000000",
+          "5",
+          "2",
+          "453500000",
+          "516500000",
+          "0",
+          "516500000"
+        ],
+        [
+          "Deep-site operations",
+          "2285000000",
+          "632500000",
+          "4",
+          "1",
+          "1085000000",
+          "1201250000",
+          "0",
+          "1201250000"
+        ],
+        [],
+        [
+          "Opening cost and balance inputs linked from Economy"
+        ],
+        [
+          "Linked input",
+          "Value",
+          "Unit",
+          "Source",
+          "Use in cases"
+        ],
+        [
+          "Base staff pay",
+          "5000",
+          "USD / pawn / day",
+          "Economy!C34",
+          "Payroll only; add specialist premiums after estimating them."
+        ],
+        [
+          "HQ overhead",
+          "25000",
+          "USD / day",
+          "Economy!C35",
+          "Routine administration/communications."
+        ],
+        [
+          "Automatic food cash debit",
+          "0",
+          "USD / person / day",
+          "Economy!C37",
+          "Zero by rule; physical food shipments use a separate accepted order."
+        ],
+        [
+          "New-hire setup",
+          "100000",
+          "USD / hire",
+          "Economy!C45",
+          "One-time onboarding."
+        ],
+        [
+          "Outpost lease and service",
+          "250000",
+          "USD / outpost-day",
+          "Economy!C51",
+          "Physical supplies and wages remain separate."
+        ],
+        [
+          "Additional facility rent",
+          "100000",
+          "USD / active day",
+          "Economy!C53",
+          "Only applies to a started lease."
+        ],
+        [
+          "Survey-kit restock",
+          "750000",
+          "USD / order",
+          "Economy!C47",
+          "An order creates physical cargo on delivery."
+        ],
+        [
+          "Research-material order",
+          "2000000",
+          "USD / order",
+          "Economy!C49",
+          "An order creates physical stock on delivery."
+        ],
+        [
+          "Stage 1 close after survey",
+          "53500000",
+          "USD",
+          "Economy!B19",
+          "Planning case opening for Stage 2."
+        ],
+        [
+          "Stage 1 close without survey",
+          "48500000",
+          "USD",
+          "Economy!B19 minus Economy!B8",
+          "Downside opening for Stage 2."
+        ],
+        [],
+        [],
+        [
+          "Stage 2: Repeat access"
+        ],
+        [
+          "Type",
+          "Driver",
+          "Value",
+          "Unit",
+          "Basis / status"
+        ],
+        [
+          "Input",
+          "Period length",
+          "30",
+          "days",
+          "Full 30-day period."
+        ],
+        [
+          "Input",
+          "Active staff",
+          "5",
+          "pawns",
+          "Current five-person roster."
+        ],
+        [
+          "Input",
+          "New hires",
+          "0",
+          "pawns",
+          "No hires."
+        ],
+        [
+          "Input",
+          "Contracts paid, planning case",
+          "2",
+          "contracts",
+          "Two accepted contract results paid in period."
+        ],
+        [
+          "Input",
+          "Contracts paid, downside case",
+          "1",
+          "contracts",
+          "One fewer paid contract."
+        ],
+        [
+          "Input",
+          "Average contract receipt",
+          "2500000",
+          "USD / contract",
+          "Planning average only; generated quotes depend on scope and evidence."
+        ],
+        [
+          "Input",
+          "Active outpost days",
+          "0",
+          "days",
+          "No outpost."
+        ],
+        [
+          "Input",
+          "Additional facility lease days",
+          "0",
+          "days",
+          "No additional company lease."
+        ],
+        [
+          "Input",
+          "Survey-kit orders",
+          "1",
+          "orders",
+          "One physical kit order."
+        ],
+        [
+          "Input",
+          "Research-material orders",
+          "0",
+          "orders",
+          "No research-supply order."
+        ],
+        [
+          "Input",
+          "Other explicit quoted costs",
+          "0",
+          "USD / period",
+          "No extra quoted support cost."
+        ],
+        [
+          "Calculation",
+          "Opening account, planning",
+          "53500000",
+          "USD",
+          "Carries the prior stage balance on this branch."
+        ],
+        [
+          "Calculation",
+          "Contract receipts, planning",
+          "5000000",
+          "USD",
+          "Only completed, accepted, paid deliverables create receipts."
+        ],
+        [
+          "Calculation",
+          "Payroll",
+          "-750000",
+          "USD",
+          "Full-period staffing at linked base pay."
+        ],
+        [
+          "Calculation",
+          "HQ overhead",
+          "-750000",
+          "USD",
+          "Routine overhead; not a charge for power draw."
+        ],
+        [
+          "Calculation",
+          "Automatic food debit",
+          "0",
+          "USD",
+          "Zero for ordinary meals; purchased food needs an explicit invoice."
+        ],
+        [
+          "Calculation",
+          "New-hire setup",
+          "0",
+          "USD",
+          "One-time hiring setup."
+        ],
+        [
+          "Calculation",
+          "Outpost operation",
+          "0",
+          "USD",
+          "Local site/service cost; staff and physical goods remain separate."
+        ],
+        [
+          "Calculation",
+          "Additional facility rent",
+          "0",
+          "USD",
+          "Only for leased company space."
+        ],
+        [
+          "Calculation",
+          "Survey-kit orders",
+          "-750000",
+          "USD",
+          "Paid once; physical shipment arrives later."
+        ],
+        [
+          "Calculation",
+          "Research-material orders",
+          "0",
+          "USD",
+          "Paid once; physical research supplies arrive later."
+        ],
+        [
+          "Calculation",
+          "Other quoted support costs",
+          "0",
+          "USD",
+          "Explicit quote only; not automatic event taxation."
+        ],
+        [
+          "Output",
+          "Closing account, planning",
+          "56250000",
+          "USD",
+          "Planning close after listed receipts and costs."
+        ],
+        [
+          "Calculation",
+          "Opening account, downside",
+          "48500000",
+          "USD",
+          "Carries the prior no-survey/fewer-receipt balance."
+        ],
+        [
+          "Calculation",
+          "Contract receipts, downside",
+          "2500000",
+          "USD",
+          "Only completed, accepted, paid deliverables create receipts."
+        ],
+        [
+          "Output",
+          "Closing account, downside",
+          "48750000",
+          "USD",
+          "Downside close after listed receipts and costs."
+        ],
+        [
+          "Output",
+          "Downside funding gap",
+          "0",
+          "USD",
+          "Shortfall in this plan; no borrowing rule is implied."
+        ],
+        [],
+        [
+          "Stage 3: Specialist services"
+        ],
+        [
+          "Type",
+          "Driver",
+          "Value",
+          "Unit",
+          "Basis / status"
+        ],
+        [
+          "Input",
+          "Period length",
+          "30",
+          "days",
+          "Full 30-day period."
+        ],
+        [
+          "Input",
+          "Active staff",
+          "7",
+          "pawns",
+          "Seven assigned staff; premium pay remains open."
+        ],
+        [
+          "Input",
+          "New hires",
+          "2",
+          "pawns",
+          "Two new hires."
+        ],
+        [
+          "Input",
+          "Contracts paid, planning case",
+          "3",
+          "contracts",
+          "Three paid commissioned studies/services."
+        ],
+        [
+          "Input",
+          "Contracts paid, downside case",
+          "1",
+          "contracts",
+          "One fewer paid contract."
+        ],
+        [
+          "Input",
+          "Average contract receipt",
+          "10000000",
+          "USD / contract",
+          "Planning average only; no fixed event payout."
+        ],
+        [
+          "Input",
+          "Active outpost days",
+          "0",
+          "days",
+          "No outpost."
+        ],
+        [
+          "Input",
+          "Additional facility lease days",
+          "0",
+          "days",
+          "No additional company lease."
+        ],
+        [
+          "Input",
+          "Survey-kit orders",
+          "1",
+          "orders",
+          "One physical kit order."
+        ],
+        [
+          "Input",
+          "Research-material orders",
+          "1",
+          "orders",
+          "One physical research-supply order."
+        ],
+        [
+          "Input",
+          "Other explicit quoted costs",
+          "0",
+          "USD / period",
+          "No extra quoted support cost."
+        ],
+        [
+          "Calculation",
+          "Opening account, planning",
+          "56250000",
+          "USD",
+          "Carries the prior stage balance on this branch."
+        ],
+        [
+          "Calculation",
+          "Contract receipts, planning",
+          "30000000",
+          "USD",
+          "Only completed, accepted, paid deliverables create receipts."
+        ],
+        [
+          "Calculation",
+          "Payroll",
+          "-1050000",
+          "USD",
+          "Full-period staffing at linked base pay."
+        ],
+        [
+          "Calculation",
+          "HQ overhead",
+          "-750000",
+          "USD",
+          "Routine overhead; not a charge for power draw."
+        ],
+        [
+          "Calculation",
+          "Automatic food debit",
+          "0",
+          "USD",
+          "Zero for ordinary meals; purchased food needs an explicit invoice."
+        ],
+        [
+          "Calculation",
+          "New-hire setup",
+          "-200000",
+          "USD",
+          "One-time hiring setup."
+        ],
+        [
+          "Calculation",
+          "Outpost operation",
+          "0",
+          "USD",
+          "Local site/service cost; staff and physical goods remain separate."
+        ],
+        [
+          "Calculation",
+          "Additional facility rent",
+          "0",
+          "USD",
+          "Only for leased company space."
+        ],
+        [
+          "Calculation",
+          "Survey-kit orders",
+          "-750000",
+          "USD",
+          "Paid once; physical shipment arrives later."
+        ],
+        [
+          "Calculation",
+          "Research-material orders",
+          "-2000000",
+          "USD",
+          "Paid once; physical research supplies arrive later."
+        ],
+        [
+          "Calculation",
+          "Other quoted support costs",
+          "0",
+          "USD",
+          "Explicit quote only; not automatic event taxation."
+        ],
+        [
+          "Output",
+          "Closing account, planning",
+          "81500000",
+          "USD",
+          "Planning close after listed receipts and costs."
+        ],
+        [
+          "Calculation",
+          "Opening account, downside",
+          "48750000",
+          "USD",
+          "Carries the prior no-survey/fewer-receipt balance."
+        ],
+        [
+          "Calculation",
+          "Contract receipts, downside",
+          "10000000",
+          "USD",
+          "Only completed, accepted, paid deliverables create receipts."
+        ],
+        [
+          "Output",
+          "Closing account, downside",
+          "54000000",
+          "USD",
+          "Downside close after listed receipts and costs."
+        ],
+        [
+          "Output",
+          "Downside funding gap",
+          "0",
+          "USD",
+          "Shortfall in this plan; no borrowing rule is implied."
+        ],
+        [],
+        [
+          "Stage 4: Leases and remote sites"
+        ],
+        [
+          "Type",
+          "Driver",
+          "Value",
+          "Unit",
+          "Basis / status"
+        ],
+        [
+          "Input",
+          "Period length",
+          "30",
+          "days",
+          "Full 30-day period."
+        ],
+        [
+          "Input",
+          "Active staff",
+          "8",
+          "pawns",
+          "Eight active staff."
+        ],
+        [
+          "Input",
+          "New hires",
+          "1",
+          "pawns",
+          "One new hire."
+        ],
+        [
+          "Input",
+          "Contracts paid, planning case",
+          "4",
+          "contracts",
+          "Four paid site/service results."
+        ],
+        [
+          "Input",
+          "Contracts paid, downside case",
+          "2",
+          "contracts",
+          "Two fewer paid contracts."
+        ],
+        [
+          "Input",
+          "Average contract receipt",
+          "25000000",
+          "USD / contract",
+          "Planning average only; client lease receipts are included only if accepted."
+        ],
+        [
+          "Input",
+          "Active outpost days",
+          "30",
+          "days",
+          "One active outpost for the full period."
+        ],
+        [
+          "Input",
+          "Additional facility lease days",
+          "0",
+          "days",
+          "No additional HQ lease."
+        ],
+        [
+          "Input",
+          "Survey-kit orders",
+          "1",
+          "orders",
+          "One physical kit order."
+        ],
+        [
+          "Input",
+          "Research-material orders",
+          "1",
+          "orders",
+          "One physical research-supply order."
+        ],
+        [
+          "Input",
+          "Other explicit quoted costs",
+          "0",
+          "USD / period",
+          "No extra quoted support cost."
+        ],
+        [
+          "Calculation",
+          "Opening account, planning",
+          "81500000",
+          "USD",
+          "Carries the prior stage balance on this branch."
+        ],
+        [
+          "Calculation",
+          "Contract receipts, planning",
+          "100000000",
+          "USD",
+          "Only completed, accepted, paid deliverables create receipts."
+        ],
+        [
+          "Calculation",
+          "Payroll",
+          "-1200000",
+          "USD",
+          "Full-period staffing at linked base pay."
+        ],
+        [
+          "Calculation",
+          "HQ overhead",
+          "-750000",
+          "USD",
+          "Routine overhead; not a charge for power draw."
+        ],
+        [
+          "Calculation",
+          "Automatic food debit",
+          "0",
+          "USD",
+          "Zero for ordinary meals; purchased food needs an explicit invoice."
+        ],
+        [
+          "Calculation",
+          "New-hire setup",
+          "-100000",
+          "USD",
+          "One-time hiring setup."
+        ],
+        [
+          "Calculation",
+          "Outpost operation",
+          "-7500000",
+          "USD",
+          "Local site/service cost; staff and physical goods remain separate."
+        ],
+        [
+          "Calculation",
+          "Additional facility rent",
+          "0",
+          "USD",
+          "Only for leased company space."
+        ],
+        [
+          "Calculation",
+          "Survey-kit orders",
+          "-750000",
+          "USD",
+          "Paid once; physical shipment arrives later."
+        ],
+        [
+          "Calculation",
+          "Research-material orders",
+          "-2000000",
+          "USD",
+          "Paid once; physical research supplies arrive later."
+        ],
+        [
+          "Calculation",
+          "Other quoted support costs",
+          "0",
+          "USD",
+          "Explicit quote only; not automatic event taxation."
+        ],
+        [
+          "Output",
+          "Closing account, planning",
+          "169200000",
+          "USD",
+          "Planning close after listed receipts and costs."
+        ],
+        [
+          "Calculation",
+          "Opening account, downside",
+          "54000000",
+          "USD",
+          "Carries the prior no-survey/fewer-receipt balance."
+        ],
+        [
+          "Calculation",
+          "Contract receipts, downside",
+          "50000000",
+          "USD",
+          "Only completed, accepted, paid deliverables create receipts."
+        ],
+        [
+          "Output",
+          "Closing account, downside",
+          "91700000",
+          "USD",
+          "Downside close after listed receipts and costs."
+        ],
+        [
+          "Output",
+          "Downside funding gap",
+          "0",
+          "USD",
+          "Shortfall in this plan; no borrowing rule is implied."
+        ],
+        [],
+        [
+          "Stage 5: Large recovery and network work"
+        ],
+        [
+          "Type",
+          "Driver",
+          "Value",
+          "Unit",
+          "Basis / status"
+        ],
+        [
+          "Input",
+          "Period length",
+          "30",
+          "days",
+          "Full 30-day period."
+        ],
+        [
+          "Input",
+          "Active staff",
+          "10",
+          "pawns",
+          "Ten active staff."
+        ],
+        [
+          "Input",
+          "New hires",
+          "2",
+          "pawns",
+          "Two new hires."
+        ],
+        [
+          "Input",
+          "Contracts paid, planning case",
+          "5",
+          "contracts",
+          "Five paid network/recovery results."
+        ],
+        [
+          "Input",
+          "Contracts paid, downside case",
+          "2",
+          "contracts",
+          "Three fewer paid contracts."
+        ],
+        [
+          "Input",
+          "Average contract receipt",
+          "75000000",
+          "USD / contract",
+          "Planning average only; each saved offer has its own quote."
+        ],
+        [
+          "Input",
+          "Active outpost days",
+          "30",
+          "days",
+          "One active outpost for the full period."
+        ],
+        [
+          "Input",
+          "Additional facility lease days",
+          "0",
+          "days",
+          "No additional HQ lease."
+        ],
+        [
+          "Input",
+          "Survey-kit orders",
+          "2",
+          "orders",
+          "Two physical kit orders."
+        ],
+        [
+          "Input",
+          "Research-material orders",
+          "2",
+          "orders",
+          "Two physical research-supply orders."
+        ],
+        [
+          "Input",
+          "Other explicit quoted costs",
+          "10000000",
+          "USD / period",
+          "Explicit $10M contingency quote placeholder; not a flat fee."
+        ],
+        [
+          "Calculation",
+          "Opening account, planning",
+          "169200000",
+          "USD",
+          "Carries the prior stage balance on this branch."
+        ],
+        [
+          "Calculation",
+          "Contract receipts, planning",
+          "375000000",
+          "USD",
+          "Only completed, accepted, paid deliverables create receipts."
+        ],
+        [
+          "Calculation",
+          "Payroll",
+          "-1500000",
+          "USD",
+          "Full-period staffing at linked base pay."
+        ],
+        [
+          "Calculation",
+          "HQ overhead",
+          "-750000",
+          "USD",
+          "Routine overhead; not a charge for power draw."
+        ],
+        [
+          "Calculation",
+          "Automatic food debit",
+          "0",
+          "USD",
+          "Zero for ordinary meals; purchased food needs an explicit invoice."
+        ],
+        [
+          "Calculation",
+          "New-hire setup",
+          "-200000",
+          "USD",
+          "One-time hiring setup."
+        ],
+        [
+          "Calculation",
+          "Outpost operation",
+          "-7500000",
+          "USD",
+          "Local site/service cost; staff and physical goods remain separate."
+        ],
+        [
+          "Calculation",
+          "Additional facility rent",
+          "0",
+          "USD",
+          "Only for leased company space."
+        ],
+        [
+          "Calculation",
+          "Survey-kit orders",
+          "-1500000",
+          "USD",
+          "Paid once; physical shipment arrives later."
+        ],
+        [
+          "Calculation",
+          "Research-material orders",
+          "-4000000",
+          "USD",
+          "Paid once; physical research supplies arrive later."
+        ],
+        [
+          "Calculation",
+          "Other quoted support costs",
+          "-10000000",
+          "USD",
+          "Explicit quote only; not automatic event taxation."
+        ],
+        [
+          "Output",
+          "Closing account, planning",
+          "518750000",
+          "USD",
+          "Planning close after listed receipts and costs."
+        ],
+        [
+          "Calculation",
+          "Opening account, downside",
+          "91700000",
+          "USD",
+          "Carries the prior no-survey/fewer-receipt balance."
+        ],
+        [
+          "Calculation",
+          "Contract receipts, downside",
+          "150000000",
+          "USD",
+          "Only completed, accepted, paid deliverables create receipts."
+        ],
+        [
+          "Output",
+          "Closing account, downside",
+          "216250000",
+          "USD",
+          "Downside close after listed receipts and costs."
+        ],
+        [
+          "Output",
+          "Downside funding gap",
+          "0",
+          "USD",
+          "Shortfall in this plan; no borrowing rule is implied."
+        ],
+        [],
+        [
+          "Stage 6: Vehicle and optional orbital support"
+        ],
+        [
+          "Type",
+          "Driver",
+          "Value",
+          "Unit",
+          "Basis / status"
+        ],
+        [
+          "Input",
+          "Period length",
+          "30",
+          "days",
+          "Full 30-day period."
+        ],
+        [
+          "Input",
+          "Active staff",
+          "10",
+          "pawns",
+          "Ten active staff."
+        ],
+        [
+          "Input",
+          "New hires",
+          "0",
+          "pawns",
+          "No additional hires."
+        ],
+        [
+          "Input",
+          "Contracts paid, planning case",
+          "5",
+          "contracts",
+          "Five paid transport/recon results."
+        ],
+        [
+          "Input",
+          "Contracts paid, downside case",
+          "2",
+          "contracts",
+          "Three fewer paid contracts."
+        ],
+        [
+          "Input",
+          "Average contract receipt",
+          "150000000",
+          "USD / contract",
+          "Planning average only; optional vehicle systems remain separate."
+        ],
+        [
+          "Input",
+          "Active outpost days",
+          "30",
+          "days",
+          "One active outpost for the full period."
+        ],
+        [
+          "Input",
+          "Additional facility lease days",
+          "0",
+          "days",
+          "No additional HQ lease."
+        ],
+        [
+          "Input",
+          "Survey-kit orders",
+          "2",
+          "orders",
+          "Two physical kit orders."
+        ],
+        [
+          "Input",
+          "Research-material orders",
+          "2",
+          "orders",
+          "Two physical research-supply orders."
+        ],
+        [
+          "Input",
+          "Other explicit quoted costs",
+          "50000000",
+          "USD / period",
+          "Explicit transport quote placeholder; not an automatic fee."
+        ],
+        [
+          "Calculation",
+          "Opening account, planning",
+          "518750000",
+          "USD",
+          "Carries the prior stage balance on this branch."
+        ],
+        [
+          "Calculation",
+          "Contract receipts, planning",
+          "750000000",
+          "USD",
+          "Only completed, accepted, paid deliverables create receipts."
+        ],
+        [
+          "Calculation",
+          "Payroll",
+          "-1500000",
+          "USD",
+          "Full-period staffing at linked base pay."
+        ],
+        [
+          "Calculation",
+          "HQ overhead",
+          "-750000",
+          "USD",
+          "Routine overhead; not a charge for power draw."
+        ],
+        [
+          "Calculation",
+          "Automatic food debit",
+          "0",
+          "USD",
+          "Zero for ordinary meals; purchased food needs an explicit invoice."
+        ],
+        [
+          "Calculation",
+          "New-hire setup",
+          "0",
+          "USD",
+          "One-time hiring setup."
+        ],
+        [
+          "Calculation",
+          "Outpost operation",
+          "-7500000",
+          "USD",
+          "Local site/service cost; staff and physical goods remain separate."
+        ],
+        [
+          "Calculation",
+          "Additional facility rent",
+          "0",
+          "USD",
+          "Only for leased company space."
+        ],
+        [
+          "Calculation",
+          "Survey-kit orders",
+          "-1500000",
+          "USD",
+          "Paid once; physical shipment arrives later."
+        ],
+        [
+          "Calculation",
+          "Research-material orders",
+          "-4000000",
+          "USD",
+          "Paid once; physical research supplies arrive later."
+        ],
+        [
+          "Calculation",
+          "Other quoted support costs",
+          "-50000000",
+          "USD",
+          "Explicit quote only; not automatic event taxation."
+        ],
+        [
+          "Output",
+          "Closing account, planning",
+          "1203500000",
+          "USD",
+          "Planning close after listed receipts and costs."
+        ],
+        [
+          "Calculation",
+          "Opening account, downside",
+          "216250000",
+          "USD",
+          "Carries the prior no-survey/fewer-receipt balance."
+        ],
+        [
+          "Calculation",
+          "Contract receipts, downside",
+          "300000000",
+          "USD",
+          "Only completed, accepted, paid deliverables create receipts."
+        ],
+        [
+          "Output",
+          "Closing account, downside",
+          "451000000",
+          "USD",
+          "Downside close after listed receipts and costs."
+        ],
+        [
+          "Output",
+          "Downside funding gap",
+          "0",
+          "USD",
+          "Shortfall in this plan; no borrowing rule is implied."
+        ],
+        [],
+        [
+          "Stage 7: Deep-site operations"
+        ],
+        [
+          "Type",
+          "Driver",
+          "Value",
+          "Unit",
+          "Basis / status"
+        ],
+        [
+          "Input",
+          "Period length",
+          "30",
+          "days",
+          "Full 30-day period."
+        ],
+        [
+          "Input",
+          "Active staff",
+          "12",
+          "pawns",
+          "Twelve active staff."
+        ],
+        [
+          "Input",
+          "New hires",
+          "2",
+          "pawns",
+          "Two new hires."
+        ],
+        [
+          "Input",
+          "Contracts paid, planning case",
+          "4",
+          "contracts",
+          "Four paid deep-site deliverables."
+        ],
+        [
+          "Input",
+          "Contracts paid, downside case",
+          "1",
+          "contracts",
+          "Three fewer paid contracts."
+        ],
+        [
+          "Input",
+          "Average contract receipt",
+          "300000000",
+          "USD / contract",
+          "Planning average only; exceptional value requires buyer-specific deliverables and accepted rights."
+        ],
+        [
+          "Input",
+          "Active outpost days",
+          "30",
+          "days",
+          "One active outpost for the full period."
+        ],
+        [
+          "Input",
+          "Additional facility lease days",
+          "0",
+          "days",
+          "No additional HQ lease."
+        ],
+        [
+          "Input",
+          "Survey-kit orders",
+          "3",
+          "orders",
+          "Three physical kit orders."
+        ],
+        [
+          "Input",
+          "Research-material orders",
+          "3",
+          "orders",
+          "Three physical research-supply orders."
+        ],
+        [
+          "Input",
+          "Other explicit quoted costs",
+          "100000000",
+          "USD / period",
+          "Explicit stabilization/recovery quote placeholder; not an automatic fee."
+        ],
+        [
+          "Calculation",
+          "Opening account, planning",
+          "1203500000",
+          "USD",
+          "Carries the prior stage balance on this branch."
+        ],
+        [
+          "Calculation",
+          "Contract receipts, planning",
+          "1200000000",
+          "USD",
+          "Only completed, accepted, paid deliverables create receipts."
+        ],
+        [
+          "Calculation",
+          "Payroll",
+          "-1800000",
+          "USD",
+          "Full-period staffing at linked base pay."
+        ],
+        [
+          "Calculation",
+          "HQ overhead",
+          "-750000",
+          "USD",
+          "Routine overhead; not a charge for power draw."
+        ],
+        [
+          "Calculation",
+          "Automatic food debit",
+          "0",
+          "USD",
+          "Zero for ordinary meals; purchased food needs an explicit invoice."
+        ],
+        [
+          "Calculation",
+          "New-hire setup",
+          "-200000",
+          "USD",
+          "One-time hiring setup."
+        ],
+        [
+          "Calculation",
+          "Outpost operation",
+          "-7500000",
+          "USD",
+          "Local site/service cost; staff and physical goods remain separate."
+        ],
+        [
+          "Calculation",
+          "Additional facility rent",
+          "0",
+          "USD",
+          "Only for leased company space."
+        ],
+        [
+          "Calculation",
+          "Survey-kit orders",
+          "-2250000",
+          "USD",
+          "Paid once; physical shipment arrives later."
+        ],
+        [
+          "Calculation",
+          "Research-material orders",
+          "-6000000",
+          "USD",
+          "Paid once; physical research supplies arrive later."
+        ],
+        [
+          "Calculation",
+          "Other quoted support costs",
+          "-100000000",
+          "USD",
+          "Explicit quote only; not automatic event taxation."
+        ],
+        [
+          "Output",
+          "Closing account, planning",
+          "2285000000",
+          "USD",
+          "Planning close after listed receipts and costs."
+        ],
+        [
+          "Calculation",
+          "Opening account, downside",
+          "451000000",
+          "USD",
+          "Carries the prior no-survey/fewer-receipt balance."
+        ],
+        [
+          "Calculation",
+          "Contract receipts, downside",
+          "300000000",
+          "USD",
+          "Only completed, accepted, paid deliverables create receipts."
+        ],
+        [
+          "Output",
+          "Closing account, downside",
+          "632500000",
+          "USD",
+          "Downside close after listed receipts and costs."
+        ],
+        [
+          "Output",
+          "Downside funding gap",
+          "0",
+          "USD",
+          "Shortfall in this plan; no borrowing rule is implied."
+        ]
+      ]
+    },
+    {
+      "name": "Bulk Logistics",
+      "rows": [
+        [],
+        [
+          "Rimrooms - Async Industries: bulk money and cargo"
+        ],
+        [
+          "Cash stays on the branch ledger. Physical goods use the effective stack rules from the active save and still need bounded storage and handling."
+        ],
+        [],
+        [
+          "Case",
+          "Quantity",
+          "Core base limit",
+          "OgreStack profile default",
+          "Stacks with profile default",
+          "Stacks Core-only"
+        ],
+        [
+          "One million silver",
+          "1000000",
+          "500",
+          "15000",
+          "67",
+          "2000"
+        ],
+        [
+          "One billion-dollar Company Account",
+          "1000000000",
+          "ledger entry",
+          "ledger entry",
+          "no item stacks",
+          "no item stacks"
+        ],
+        [],
+        [
+          "Interpretation"
+        ],
+        [
+          "Silver: Core base 500, smallVolume. OgreStack row 157 default ×30 means 15,000 per stack, 67 stacks. Active save settings/overrides still need runtime check."
+        ],
+        [],
+        [
+          "Design requirement",
+          "Rule"
+        ],
+        [
+          "Cash",
+          "Never create item stacks for Company Account balances."
+        ],
+        [
+          "Carry",
+          "Use the actual saved item limit and pawn capacity after mandatory kit."
+        ],
+        [
+          "Storage",
+          "Physical quantity occupies bounded, inspectable stockpile/container capacity."
+        ],
+        [
+          "Throughput",
+          "Show stacks, receiving batches, hauling labor/time, and route constraints before acceptance."
+        ],
+        [
+          "Shipment",
+          "Stage or split bulk deliveries; reconcile the arrived manifest to physical items."
+        ],
+        [
+          "OgreStack",
+          "Use effective runtime limits and preserve Core-only gameplay; do not bake one preset into Rimrooms."
+        ],
+        [
+          "RWT",
+          "Test configured stack transfer, receipts, save/reload, and recovery separately."
+        ],
+        [],
+        [
+          "Source and evidence"
+        ],
+        [
+          "Core source: installed Data/Core/Defs/ThingDefs_Items/Items_Resource_Stuff.xml, Silver: stackLimit 500 and smallVolume true. Profile row 157: OgreStack / Ogre.OgreStack. Published defaults: Small Volume Resources ×30. Source review: docs/research/reviews/mods/1447140290-Ogre.OgreStack.md; interaction map: docs/research/PRIORITY_PROFILE_INTERACTIONS.md. The active save preset and transfers are not yet runtime-verified."
+        ]
+      ]
+    },
+    {
+      "name": "Recovery & Capital",
+      "rows": [
+        [],
+        [
+          "Rimrooms - Async Industries: recovery and capital planning"
+        ],
+        [
+          "30-day pre-code cases. New quotes, recovery actions, and milestone amounts are editable hypotheses, not approved prices or automatic funding."
+        ],
+        [
+          "Fixed product rules: USD ledger stays separate from physical goods; pawns haul real stock; Core remains supported; OgreStack is only a planning baseline. All other values below are scenario inputs pending design approval and playtesting."
+        ],
+        [
+          "Added monthly cost inputs"
+        ],
+        [
+          "Campaign stage",
+          "Specialists (FTE)",
+          "Premium / specialist / day (USD)",
+          "Transport runs / month",
+          "Quoted transport / run (USD)",
+          "Equipment replacement quotes (USD / month)",
+          "Cargo replacement purchases (USD / month)",
+          "Security and site maintenance quote (USD / month)",
+          "Added monthly cost (USD)",
+          "Basis / status"
+        ],
+        [
+          "Stage 1: First safe survey",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable planning quote only. Zero means unquoted, not free or owner-approved."
+        ],
+        [
+          "Stage 2: Repeat access",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable planning quote only. Zero means unquoted, not free or owner-approved."
+        ],
+        [
+          "Stage 3: Specialist services",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable planning quote only. Zero means unquoted, not free or owner-approved."
+        ],
+        [
+          "Stage 4: Leases and remote sites",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable planning quote only. Zero means unquoted, not free or owner-approved."
+        ],
+        [
+          "Stage 5: Large recovery and network work",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable planning quote only. Zero means unquoted, not free or owner-approved."
+        ],
+        [
+          "Stage 6: Vehicle and optional orbital support",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable planning quote only. Zero means unquoted, not free or owner-approved."
+        ],
+        [
+          "Stage 7: Deep-site operations",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable planning quote only. Zero means unquoted, not free or owner-approved."
+        ],
+        [],
+        [
+          "Milestone capital request controls"
+        ],
+        [
+          "Campaign stage",
+          "Candidate milestone (original game design)",
+          "Illustrative request target (USD)",
+          "Milestone achieved? (0/1)",
+          "Explicit approval? (0/1)",
+          "Release if both gates pass (USD)",
+          "Status"
+        ],
+        [
+          "Stage 1: First safe survey",
+          "Accepted first survey records and returned crew",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Request target is a hypothesis; release is zero until achieved and explicitly approved."
+        ],
+        [
+          "Stage 2: Repeat access",
+          "Three routes verified; equipment and cargo reconciled",
+          "25000000",
+          "0",
+          "0",
+          "0",
+          "Request target is a hypothesis; release is zero until achieved and explicitly approved."
+        ],
+        [
+          "Stage 3: Specialist services",
+          "Usable sample analysis or specialist deliverable accepted",
+          "50000000",
+          "0",
+          "0",
+          "0",
+          "Request target is a hypothesis; release is zero until achieved and explicitly approved."
+        ],
+        [
+          "Stage 4: Leases and remote sites",
+          "Relay or outpost operating; evacuation route demonstrated",
+          "100000000",
+          "0",
+          "0",
+          "0",
+          "Request target is a hypothesis; release is zero until achieved and explicitly approved."
+        ],
+        [
+          "Stage 5: Large recovery and network work",
+          "Town response or large recovery closed with staff and cargo reconciled",
+          "250000000",
+          "0",
+          "0",
+          "0",
+          "Request target is a hypothesis; release is zero until achieved and explicitly approved."
+        ],
+        [
+          "Stage 6: Vehicle and optional orbital support",
+          "Transport or gravship logistics test completed with cargo records",
+          "500000000",
+          "0",
+          "0",
+          "0",
+          "Request target is a hypothesis; release is zero until achieved and explicitly approved."
+        ],
+        [
+          "Stage 7: Deep-site operations",
+          "Deep-site objective returned with route and containment records",
+          "1000000000",
+          "0",
+          "0",
+          "0",
+          "Request target is a hypothesis; release is zero until achieved and explicitly approved."
+        ],
+        [],
+        [
+          "No-contract recovery actions"
+        ],
+        [
+          "Recovery case keeps the selected payroll and HQ overhead, freezes unstarted hires and optional orders/dispatches, and pauses only site days that can legally or operationally be stopped. Enter committed costs before relying on the close."
+        ],
+        [
+          "Campaign stage",
+          "Retained payroll headcount",
+          "Specialists retained (FTE)",
+          "Additional hires approved",
+          "Outpost service days retained",
+          "Extra facility lease days retained",
+          "Survey-kit orders",
+          "Research-material orders",
+          "Transport runs",
+          "Equipment replacement quote (USD)",
+          "Cargo replacement purchases (USD)",
+          "Security / maintenance quote (USD)",
+          "Other committed quote (USD)",
+          "Basis / status"
+        ],
+        [
+          "Stage 1: First safe survey",
+          "5",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable response case. Headcount assumes unstarted hires can be deferred. Set retained days and quotes to actual non-cancelable commitments. Zero quotes are unpriced, not free."
+        ],
+        [
+          "Stage 2: Repeat access",
+          "5",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable response case. Headcount assumes unstarted hires can be deferred. Set retained days and quotes to actual non-cancelable commitments. Zero quotes are unpriced, not free."
+        ],
+        [
+          "Stage 3: Specialist services",
+          "5",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable response case. Headcount assumes unstarted hires can be deferred. Set retained days and quotes to actual non-cancelable commitments. Zero quotes are unpriced, not free."
+        ],
+        [
+          "Stage 4: Leases and remote sites",
+          "7",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable response case. Headcount assumes unstarted hires can be deferred. Set retained days and quotes to actual non-cancelable commitments. Zero quotes are unpriced, not free."
+        ],
+        [
+          "Stage 5: Large recovery and network work",
+          "8",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable response case. Headcount assumes unstarted hires can be deferred. Set retained days and quotes to actual non-cancelable commitments. Zero quotes are unpriced, not free."
+        ],
+        [
+          "Stage 6: Vehicle and optional orbital support",
+          "10",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable response case. Headcount assumes unstarted hires can be deferred. Set retained days and quotes to actual non-cancelable commitments. Zero quotes are unpriced, not free."
+        ],
+        [
+          "Stage 7: Deep-site operations",
+          "10",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Editable response case. Headcount assumes unstarted hires can be deferred. Set retained days and quotes to actual non-cancelable commitments. Zero quotes are unpriced, not free."
+        ],
+        [],
+        [
+          "Monthly stage case bridge (USD)"
+        ],
+        [
+          "No-new-contract removes contract receipts. Delivered services, earned leases, and accepted claims count only when entered. Recovery applies actual commitments above and below; funding needs both milestone completion and explicit approval."
+        ],
+        [
+          "Campaign stage",
+          "Opening balance on base path",
+          "Planned receipts: contracts + services + leases + claims",
+          "Planned costs, including risk/long-run quotes",
+          "No-new-contract month close",
+          "Recovery case costs",
+          "Recovery close before funding",
+          "Approved milestone release",
+          "Recovery close after funding",
+          "Change vs no-contract close"
+        ],
+        [
+          "Stage 1: First safe survey",
+          "50000000",
+          "5000000",
+          "-1500000",
+          "48500000",
+          "-1500000",
+          "48500000",
+          "0",
+          "48500000",
+          "0"
+        ],
+        [
+          "Stage 2: Repeat access",
+          "53500000",
+          "5000000",
+          "-2250000",
+          "51250000",
+          "-1500000",
+          "52000000",
+          "0",
+          "52000000",
+          "750000"
+        ],
+        [
+          "Stage 3: Specialist services",
+          "56250000",
+          "30000000",
+          "-4750000",
+          "51500000",
+          "-1500000",
+          "54750000",
+          "0",
+          "54750000",
+          "3250000"
+        ],
+        [
+          "Stage 4: Leases and remote sites",
+          "81500000",
+          "100000000",
+          "-12300000",
+          "69200000",
+          "-1800000",
+          "79700000",
+          "0",
+          "79700000",
+          "10500000"
+        ],
+        [
+          "Stage 5: Large recovery and network work",
+          "169200000",
+          "375000000",
+          "-25450000",
+          "143750000",
+          "-1950000",
+          "167250000",
+          "0",
+          "167250000",
+          "23500000"
+        ],
+        [
+          "Stage 6: Vehicle and optional orbital support",
+          "518750000",
+          "750000000",
+          "-65250000",
+          "453500000",
+          "-2250000",
+          "516500000",
+          "0",
+          "516500000",
+          "63000000"
+        ],
+        [
+          "Stage 7: Deep-site operations",
+          "1203500000",
+          "1200000000",
+          "-118500000",
+          "1085000000",
+          "-2250000",
+          "1201250000",
+          "0",
+          "1201250000",
+          "116250000"
+        ]
+      ]
+    },
+    {
+      "name": "Extended Cases",
+      "rows": [
+        [],
+        [
+          "Rimrooms - Async Industries: extended economy cases"
+        ],
+        [
+          "Editable pre-code hypotheses, default zero. Only accepted/delivered work, earned leases, signed penalties, and approved claims post; goods and vehicles remain physical inventory."
+        ],
+        [
+          "Optional VGE costs are scenarios, not a dependency. Expedition extension costs are added beyond the monthly base horizon. Enter only incremental amounts; do not double-count costs already entered on the other workbook sheets."
+        ],
+        [
+          "Separate receipts, capped penalties, and cargo incidents"
+        ],
+        [
+          "Campaign stage",
+          "Separate service deliveries / month",
+          "Receipt per accepted service (USD)",
+          "Service receipts (USD)",
+          "Billable lease days",
+          "Receipt per earned day (USD)",
+          "Lease receipts (USD)",
+          "Contracts with penalty due",
+          "Claimed penalty per contract (USD)",
+          "Average accepted contract value cap basis (USD)",
+          "Penalty after 25% cap (USD)",
+          "Cargo/crew incident count",
+          "Response/rescue per incident (USD)",
+          "Incident response cost (USD)",
+          "Contract receipts delayed/lost this period (USD)",
+          "Accepted claim reimbursement received (USD)",
+          "Core contract receipts before incident adjustment (USD)",
+          "Incident receipt adjustment (USD)",
+          "Basis / status"
+        ],
+        [
+          "Stage 1: First safe survey",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "5000000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "5000000",
+          "0",
+          "Stage 1 penalties remain in Economy."
+        ],
+        [
+          "Stage 2: Repeat access",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "2500000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "5000000",
+          "0",
+          "Count accepted work/claims only; delayed cash is held."
+        ],
+        [
+          "Stage 3: Specialist services",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "10000000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "30000000",
+          "0",
+          "Count accepted work/claims only; delayed cash is held."
+        ],
+        [
+          "Stage 4: Leases and remote sites",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "25000000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "100000000",
+          "0",
+          "Count accepted work/claims only; delayed cash is held."
+        ],
+        [
+          "Stage 5: Large recovery and network work",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "75000000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "375000000",
+          "0",
+          "Count accepted work/claims only; delayed cash is held."
+        ],
+        [
+          "Stage 6: Vehicle and optional orbital support",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "150000000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "750000000",
+          "0",
+          "Count accepted work/claims only; delayed cash is held."
+        ],
+        [
+          "Stage 7: Deep-site operations",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "300000000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "1200000000",
+          "0",
+          "Count accepted work/claims only; delayed cash is held."
+        ],
+        [],
+        [],
+        [
+          "Optional VGE vehicle/gravship and itemized outpost case"
+        ],
+        [
+          "Campaign stage",
+          "Optional vehicle/gravship acquisition quote (USD)",
+          "Vehicle/gravship operating, fuel, maintenance quote (USD / case)",
+          "Additional outpost hires beyond stage roster (FTE)",
+          "Outpost extra payroll + setup (USD)",
+          "Outpost security/defense quote (USD)",
+          "Physical resupply shipments (count)",
+          "Invoice per physical shipment (USD)",
+          "Extra communications beyond basic site allowance (USD)",
+          "Evacuation/closure reserve quote (USD)",
+          "Total vehicle + outpost additions (USD)",
+          "Basis / status"
+        ],
+        [
+          "Stage 1: First safe survey",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "VGE is optional; delivered vehicles stay physical. Base site fee is included."
+        ],
+        [
+          "Stage 2: Repeat access",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "VGE is optional; delivered vehicles stay physical. Base site fee is included."
+        ],
+        [
+          "Stage 3: Specialist services",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "VGE is optional; delivered vehicles stay physical. Base site fee is included."
+        ],
+        [
+          "Stage 4: Leases and remote sites",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "VGE is optional; delivered vehicles stay physical. Base site fee is included."
+        ],
+        [
+          "Stage 5: Large recovery and network work",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "VGE is optional; delivered vehicles stay physical. Base site fee is included."
+        ],
+        [
+          "Stage 6: Vehicle and optional orbital support",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "VGE is optional; delivered vehicles stay physical. Base site fee is included."
+        ],
+        [
+          "Stage 7: Deep-site operations",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "VGE is optional; delivered vehicles stay physical. Base site fee is included."
+        ],
+        [],
+        [],
+        [
+          "Long expedition extension beyond the 30-day base case"
+        ],
+        [
+          "Campaign stage",
+          "Additional expedition days",
+          "Field crew count",
+          "Extra specialist premium / crew / day (USD)",
+          "Provision/support invoice / person-day (USD)",
+          "Extended base payroll (USD)",
+          "Extended specialist premium (USD)",
+          "Physical provisions/support quote (USD)",
+          "Transport/fuel/return quote (USD)",
+          "Equipment/consumable replacement (USD)",
+          "Rescue/evacuation reserve (USD)",
+          "Total extension cost (USD)",
+          "Basis / status"
+        ],
+        [
+          "Stage 1: First safe survey",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Beyond day 30 only; supplies stay physical. Avoid duplicate quotes."
+        ],
+        [
+          "Stage 2: Repeat access",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Beyond day 30 only; supplies stay physical. Avoid duplicate quotes."
+        ],
+        [
+          "Stage 3: Specialist services",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Beyond day 30 only; supplies stay physical. Avoid duplicate quotes."
+        ],
+        [
+          "Stage 4: Leases and remote sites",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Beyond day 30 only; supplies stay physical. Avoid duplicate quotes."
+        ],
+        [
+          "Stage 5: Large recovery and network work",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Beyond day 30 only; supplies stay physical. Avoid duplicate quotes."
+        ],
+        [
+          "Stage 6: Vehicle and optional orbital support",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Beyond day 30 only; supplies stay physical. Avoid duplicate quotes."
+        ],
+        [
+          "Stage 7: Deep-site operations",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Beyond day 30 only; supplies stay physical. Avoid duplicate quotes."
+        ],
+        [],
+        [],
+        [
+          "No-contract recovery: costs still committed and receipts actually realized"
+        ],
+        [
+          "Campaign stage",
+          "Penalty contracts still due (count)",
+          "Penalty claimed per contract (USD)",
+          "Average contract value cap basis (USD)",
+          "Capped penalty still due (USD)",
+          "Cargo/crew response and rescue still due (USD)",
+          "Replacement orders still committed (USD)",
+          "Vehicle/gravship commitment still due (USD)",
+          "Additional outpost hires outside retained payroll (FTE)",
+          "Outpost security/defense due (USD)",
+          "Outpost resupply shipments due (count)",
+          "Invoice per shipment (USD)",
+          "Additional communications due (USD)",
+          "Outpost evacuation/closure reserve due (USD)",
+          "Long expedition extension still committed (USD)",
+          "Service receipts actually collected in recovery (USD)",
+          "Lease receipts actually earned in recovery (USD)",
+          "Accepted claim reimbursement collected (USD)",
+          "Total recovery additions cost (USD)",
+          "Total recovery receipts (USD)",
+          "Basis / status"
+        ],
+        [
+          "Stage 1: First safe survey",
+          "0",
+          "0",
+          "5000000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Enter binding commitments only. Payroll remains on Recovery & Capital."
+        ],
+        [
+          "Stage 2: Repeat access",
+          "0",
+          "0",
+          "2500000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Enter binding commitments only. Payroll remains on Recovery & Capital."
+        ],
+        [
+          "Stage 3: Specialist services",
+          "0",
+          "0",
+          "10000000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Enter binding commitments only. Payroll remains on Recovery & Capital."
+        ],
+        [
+          "Stage 4: Leases and remote sites",
+          "0",
+          "0",
+          "25000000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Enter binding commitments only. Payroll remains on Recovery & Capital."
+        ],
+        [
+          "Stage 5: Large recovery and network work",
+          "0",
+          "0",
+          "75000000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Enter binding commitments only. Payroll remains on Recovery & Capital."
+        ],
+        [
+          "Stage 6: Vehicle and optional orbital support",
+          "0",
+          "0",
+          "150000000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Enter binding commitments only. Payroll remains on Recovery & Capital."
+        ],
+        [
+          "Stage 7: Deep-site operations",
+          "0",
+          "0",
+          "300000000",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "Enter binding commitments only. Payroll remains on Recovery & Capital."
+        ]
+      ]
+    }
+  ]
+}

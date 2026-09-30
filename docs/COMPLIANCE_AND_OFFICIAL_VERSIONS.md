@@ -16,25 +16,34 @@ A `FactionDef` needs a faction icon and pawn kinds. The lazy way to get an icon 
 
 The decision already recorded in [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) — factions reference **existing icon paths and existing `PawnKindDef`s by name** — is therefore not only a content-policy choice. It is the compliant choice, and it is now also a compliance rule.
 
-## Verified position at 0.5.6-dev
+## Verified position — re-run every checkpoint by `tools/check-compliance.py`
 
-Each row was checked against the package and source, not recalled.
+**This table used to be dated, and that was the defect.** It was verified at 0.5.6-dev, read as current for **thirty-six checkpoints**, and its own closing section said *"everything in the verified table is mechanically checkable, so it is re-run rather than trusted."* It was never re-run. Over those thirty-six checkpoints **three of its rows stopped being true**: the package went from 76 approved files to 89, the fourteen gameplay PNGs it enumerated were deleted at 0.12.22-dev, and it stated there were **zero** DLC references in package XML while the DLC-gated defs added since are exactly the supported way to write them.
+
+A dated table of mechanical checks is the same defect as a dated count. So the table is now **executable**, and the queue row asked for precisely that: *"one compliance test, applied to all of them."*
+
+```
+python tools/check-compliance.py
+```
+
+Exit 0 passed, 1 failed, **2 skipped** — and two is not a pass. Three rules are delegated so that no rule has two owners that can disagree about it: hard dependencies and `loadAfter` to `check-register-compliance.py`, DLC gating and the five official package ids to `check-dlc-gating.py`, and what the package may contain to `tools/package-files.json`.
 
 | Requirement | Status | How it was checked |
 |---|---|---|
 | Targets official RimWorld only | **Pass** — `supportedVersions` is `1.6` alone; `LoadFolders.xml` maps `v1.6` → `1.6` | `About/About.xml`, `LoadFolders.xml` |
 | No required third-party mod | **Pass** — zero `modDependencies`, `loadAfter` is `Ludeon.RimWorld` only | grep of `About.xml`: 0 matches for `modDependencies` / `incompatibleWith` |
-| No game or DLC asset redistributed | **Pass** — all 18 non-XML package files are ours: 14 historical `RR_` gameplay PNGs, 2 original `RR_Menu_*` images, `About/Preview.png`, `About/License.txt`, plus our own compiled assembly | enumerated the 76-entry approved package list; every texture is `RR_`-prefixed |
+| No game or DLC asset redistributed | **Pass** — every non-XML file in the **89**-entry package is ours: **6** original `RR_Menu_*` images, `About/Preview.png`, `About/License.txt` and our own compiled assembly. The **14 historical gameplay PNGs this row used to enumerate were deleted at 0.12.22-dev**, replaced by paths read out of Core's own defs | `check-compliance.py`, from `tools/package-files.json` rather than a directory walk |
 | No Core texture copied in under a new name | **Pass** — no `texPath` anywhere points at a non-`RR_` path | grep of every package XML for `texPath` excluding `RR_`: 0 results |
-| No Core or DLC def overwritten or deleted | **Pass** — the only patch operations used anywhere are 4 × `PatchOperationAdd`, 2 × `PatchOperationConditional`, 1 × `PatchOperationSequence`. **There is no `PatchOperationReplace` and no `PatchOperationRemove` in the package.** | grep of all package XML for `Class="Patch*"` |
-| No DLC content required or referenced from XML | **Pass** — zero references to Royalty, Ideology, Biotech, Anomaly or Odyssey in any package XML | grep across `1.6/` |
-| No DLC assembly referenced from code | **Pass** — the single DLC-adjacent code path is `pawn.Ideo` in `ConstructionFinishingProvider`, and it is null-guarded. `Ideo` is a type in the official `Assembly-CSharp`, present with or without Ideology; without the DLC `pawn.Ideo` is simply null | grep of all C# for `ModsConfig.` / `.Ideo` / `*Active`: 1 result |
-| Official game assemblies only, unmodified | **Pass** — 5 reference assemblies, all from the official install, hashes recomputed each checkpoint with no drift | `docs/implementation/evidence/*/reference-manifest.json` |
-| No game assembly patching | **Pass** — no Harmony, no detours, no reflection writes into game types; behaviour is added through Core's own `ThingComp`, `GameComponent`, `WorkGiver`, `JobDriver` and `Def` extension points | audited in [`DEPENDENCIES_AND_CAPABILITY_MATCHING.md`](implementation/DEPENDENCIES_AND_CAPABILITY_MATCHING.md) |
+| No Core or DLC def overwritten or deleted | **Pass** — the operations in use are **16 × `PatchOperationAdd`, 10 × `PatchOperationConditional`, 1 × `PatchOperationFindMod`, 1 × `PatchOperationSequence`**. **There is no `PatchOperationReplace` and no `PatchOperationRemove` in the package**, and the checker fails the build if one arrives — a replace takes ownership of a def, so the last mod to load wins and every other mod touching it loses | `check-compliance.py` counts them every run |
+| DLC content referenced from XML is gated | **Pass, and this row's old text was stale** — it claimed **zero** DLC references. There are now **six**, all of them `MayRequire`: two each for `Ludeon.RimWorld.Anomaly`, `Ludeon.RimWorld.Biotech` and `Ludeon.RimWorld.Odyssey`. `MayRequire` is the official mechanism and Core and the DLC use it nearly two thousand times in their own data, so the correct rule was never *no references* but *no ungated reference* | `check-dlc-gating.py`, which owns this rule |
+| No DLC assembly referenced from code | **Pass, and this row's old text was stale** — it said one `ModsConfig` reference; there are **five**: `AnomalyActive`, `BiotechActive`, two `IsActive` for tracked optional mods, and one generic. **Every DLC type this package names lives in the official `Assembly-CSharp`** — there is no separate DLC assembly to reference, which is why the rule holds however many call sites there are. Each is a runtime question answered by the game itself | `check-dlc-gating.py`; enumerated fresh each checkpoint |
+| Official game assemblies only, unmodified | **Pass** — **5** reference assemblies, all from the official install, hashes recomputed each checkpoint with no drift. **Zero parsed references now fails rather than passing**: the first version of the check read the wrong manifest key and reported *"0 assemblies, all from the official install"*, which is the exact false-pass shape this file exists to remove | `check-compliance.py` against `docs/implementation/evidence/*/reference-manifest.json`; **exit 2, skipped, when no manifest is present** |
+| No game assembly patching | **Pass** — no Harmony, no detours, no reflection writes into game types; behaviour is added through Core's own `ThingComp`, `GameComponent`, `WorkGiver`, `JobDriver` and `Def` extension points. **Reflection is the loophole this now closes:** a `SetValue` into a game type is an assembly modification no dependency list would show | `check-compliance.py` refuses Harmony, MonoMod, a reflection write and a non-public field read |
 | No game binary or data bundled | **Pass** — the package contains no game file of any kind | approved package list |
-| No third-party mod code or asset copied | **Pass** — no mod source or asset is vendored. Noted specifically because **Stargates! (profile row 218) is GPL-3.0**: copying from it would force this mod to GPL. It is explicitly not a dependency and nothing is taken from it | dependency audit, per-mod review rows |
-| Our own licence, stated | **Pass** — MIT, in `About/License.txt` | file present in the package |
-| QA overlay not shipped | **Pass** — the rim api / RimBridgeServer overlay is not in the package and is not declared a dependency; it is a separate owner-attached QA tool | approved package list; `research/RIMBRIDGE_TEST_HARNESS.md` |
+| No third-party mod code or asset copied | **Pass** — no mod source or asset is vendored. Noted specifically because **Stargates! (profile row 218) is GPL-3.0**: copying from it would force this mod to GPL. It is explicitly not a dependency and nothing is taken from it. **The check tests for assertion, not mention** — its first run flagged `ConnectedFoodAdapter.cs`, whose comment says Gastronomy's rights are unresolved *so its code must not be adapted*, which is the sentence the rule wants the code to contain | `check-compliance.py`, with a negator list documented as maintained rather than complete |
+| Our own licence, stated | **Pass** — MIT, in `About/License.txt` | `check-compliance.py` reads the file and the licence name |
+| No AI attribution in any shipped file | **Pass** — a standing project LAW, and the honest authorship position for a store page. **Nothing had ever checked the package for it**; only commits and documents were considered | `check-compliance.py` scans every shipped XML and text file |
+| QA overlay not shipped | **Pass** — the rim api / RimBridgeServer overlay is not in the package and is not declared a dependency; it is a separate owner-attached QA tool | `check-compliance.py` |
 
 ## Rules that bind every def added from here on
 
@@ -65,4 +74,6 @@ These are genuinely the owner's to answer, and none of them blocks further build
 
 ## Re-verification
 
-Everything in the verified table is mechanically checkable, so it is re-run rather than trusted. The checks are: the approved package list for non-`RR_` assets, a grep of package XML for `Class="Patch"` operations and for `texPath` values outside `RR_`, a grep for DLC package ids in XML, and the reference manifest for assembly drift. Any future checkpoint that adds content re-runs them before publishing.
+**It is `tools/check-compliance.py`, and it runs in the standard sweep with the other twelve checkers.** That sentence is the whole of this section now, because the previous version of it described the checks in prose and asked to be trusted — which is how the table above went thirty-six checkpoints without being re-run while saying it was re-run rather than trusted.
+
+The one thing the checker cannot answer is below, and it is not a check.
