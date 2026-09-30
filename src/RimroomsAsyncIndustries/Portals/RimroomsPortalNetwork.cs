@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -317,6 +317,33 @@ namespace RimroomsAsyncIndustries.Portals
             }
             if (moved > 0) { topologyRevision++; }
             return moved;
+        }
+
+        /// <summary>
+        /// Remove one connection, because the place at one end of it is being released.
+        ///
+        /// **This is the only removal this class has, and it is deliberately narrow.** The load
+        /// path says outright that it must *"preserve malformed evidence. Never silently remove an
+        /// edge or reconnect it to a similarly named replacement door/map."* That rule is about
+        /// **silence** and about **faults** — an edge that looks broken is evidence and must be
+        /// kept. This is neither: the player asked for it, and every endpoint of it is about to
+        /// stop existing because the map it lives on is being torn down.
+        ///
+        /// Leaving it would be leaving a record pointing at nothing, which is this project's most
+        /// expensive defect class.
+        ///
+        /// Returns true when an edge was actually removed.
+        /// </summary>
+        internal bool ForgetConnection(string connectionId)
+        {
+            if (string.IsNullOrWhiteSpace(connectionId) || HasStateFault) { return false; }
+            PortalConnectionRecord edge;
+            if (!connectionById.TryGetValue(connectionId, out edge) || edge == null) { return false; }
+            connections.Remove(edge);
+            connectionIdentity.Remove(edge);
+            connectionById.Remove(connectionId);
+            topologyRevision++;
+            return true;
         }
 
         private static bool EndpointPresent(PortalEndpointRecord endpoint)

@@ -15,14 +15,14 @@ namespace RimroomsAsyncIndustries.UI
         private Vector2 scrollPosition;
         private float contentHeight = 420f;
         private int selectedPane;
-        private static readonly string[] PaneKeys = { "RR_UI_Overview", "RR_UI_Personnel", "RR_UI_Contracts", "RR_UI_Ledger", "RR_UI_Atlas", "RR_UI_Activity", "RR_UI_Investigation", "RR_UI_Machine", "RR_UI_Expedition", "RR_UI_Facilities", "RR_UI_Procurement", "RR_UI_Sites", "RR_UI_Help" };
+        private static readonly string[] PaneKeys = { "RR_UI_Overview", "RR_UI_Personnel", "RR_UI_Contracts", "RR_UI_Ledger", "RR_UI_Atlas", "RR_UI_Activity", "RR_UI_Investigation", "RR_UI_Machine", "RR_UI_Expedition", "RR_UI_Facilities", "RR_UI_Procurement", "RR_UI_Sites", "RR_UI_Places", "RR_UI_Help" };
 
         /// <summary>
         /// The help pane is the one pane that does not read company state, so it is drawn
         /// beside the campaign block rather than inside it. A glossary that needs a running
         /// company before it will open is not help.
         /// </summary>
-        private const int HelpPane = 12;
+        private const int HelpPane = 13;
 
         public override Vector2 RequestedTabSize { get { return new Vector2(820f, 580f); } }
 
@@ -158,6 +158,7 @@ namespace RimroomsAsyncIndustries.UI
                 case 9: DrawFacilities(listing, campaign); break;
                 case 10: DrawProcurement(listing, campaign); break;
                 case 11: DrawRemoteSites(listing, campaign); break;
+                case 12: DrawHeldPlaces(listing, campaign); break;
                 case 1:
                     DrawPersonnel(listing, campaign);
                     break;

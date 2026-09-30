@@ -5073,3 +5073,60 @@ suites touched.
 **One piece is deliberately not shipped and not half-built:** the Operations held-places Release
 list. It needs a save-schema field on `CoordinateRecord` to tell a deliberate release from a broken
 reference, teardown that orphans nothing, and a refusal set. Next checkpoint, first thing.
+
+---
+
+## Session 2026-09-30 - letting a place go (0.12.51-dev)
+
+**Verbatim user quote:** *"yeah so if the player discovers and goes through a natural gate how do
+they turn them off to use the machine gates for more controll and aiming deeper?"*
+
+**Verbatim user quote:** *"get 5 natural gates u cant use a machine gate"*
+
+**Verbatim user quote:** *"get to work"*
+
+**Files touched:** `Generation/CoordinateRelease.cs` (new), `UI/OperationsHeldPlaces.cs` (new),
+`Company/CampaignRecords.cs`, `Generation/DestinationService.cs`,
+`Portals/RimroomsPortalNetwork.cs`, `Portals/CompRimroomsEmergence.cs`,
+`UI/MainTabWindow_Operations.cs`, `Keyed/RR_Portals.xml`, About/csproj/README,
+`docs/implementation/RELEASE_A_PLACE_IMPLEMENTATION.md`, and
+`WARREN_AND_DOORWAYS_IMPLEMENTATION.md` **annotated with a correction**.
+
+**Closure notes.** **A correction is owed and is the first thing in this entry.** The previous
+checkpoint's record said discovering a natural gate was free because no map was generated until
+somebody crossed. That is wrong. `NaturalFrontierService.Discover` calls
+`PortalAddressService.RegisterNaturalAddress`, which calls `DestinationService.EnsureSite`
+**immediately**, because a natural edge is registered against the far side's own `ReturnAnchor` and
+that `Thing` does not exist until the map does. **A discovery costs a slot the moment it is made.**
+The budget check in `Discover` is therefore load-bearing rather than over-eager, and the owner's
+trap is real exactly as they described it - which is why this shipped now instead of being deferred.
+The prior record is annotated rather than rewritten, per invariant 135.
+
+**A natural gate is permanently open and is never closed.** What a release lets go of is the space
+behind it. The door stays, still marked, and remembers which place it led to on its own comp -
+written at release **while the edge still says so**, because the edge must be removed and is the
+only other record of the pairing.
+
+**The teardown order is the whole of the safety**, and the proof asserts it as an ordering rather
+than as the presence of three calls: doors told **before** edges removed, edges removed **before**
+the map is torn down. Reverse either pair and a record points at something that no longer exists.
+
+**`releasedByPlayer` exists because one question cannot otherwise be answered.** `EnsureSite`
+rightly refuses to rebuild a coordinate with no site whose rooms were surveyed - a broken reference
+must not replace an explored graph - and a deliberate release is indistinguishable from that unless
+it says so. The exemption covers nothing else: a competing owner or a live map still refuses, and
+it is cleared the moment the place exists again.
+
+**Refusals name themselves**, and a prisoner or an animal counts as somebody inside, because a
+released map takes its contents with it. Re-opening reuses `RegisterNaturalAddress` rather than a
+second implementation, is disabled rather than hidden at the budget, and only forgets the shelved
+place on success.
+
+**Two plants found two more loose claims of mine**, both the duplicate-string trap: the
+`EnsureSite` call appears **twice** in `PortalAddressService`, so a presence test survived deleting
+one, and `connections.Remove(` did not match a planted `connections.RemoveAll(`. Counted and
+widened. That trap is now the single most recurrent failure mode in this project's proofs.
+
+**200 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`378493F20F4B7CD8BB932608073434CC00315C00EE94567C50FE995CCADF1A79`, reproduced by two clean
+recompiles. **Thirteen checkers pass, forty-one proofs hold.** **88 of 88** planted faults caught.

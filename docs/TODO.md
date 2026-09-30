@@ -1510,6 +1510,26 @@ thir natual gate spawns to different levels within"**
 
 ---
 
+## Releasing a place — 2026-09-30 (0.12.51-dev)
+
+- [x] **"yeah so if the player discovers and goes through a natural gate how do they turn them off to use the machine gates for more controll and aiming deeper?"** and **"get 5 natural gates u cant use a machine gate"** — **DONE, as the Operations held-places list the owner chose.**
+
+  **And the trap was worse than the previous record said.** That record claimed discovering a gate was free because no map existed until somebody crossed. **It was wrong:** `Discover` calls `RegisterNaturalAddress`, which calls `EnsureSite` **immediately**, because a natural edge is registered against the far side's own `ReturnAnchor` and that `Thing` does not exist until the map does. **A discovery costs a slot at the moment it is made**, so the budget check in `Discover` is load-bearing rather than over-eager, and five discoveries really do lock a player out of their machine gates. The previous record is **annotated, not rewritten**, per invariant 135.
+
+  A natural gate is permanently open (invariant 12) and is never closed. What is released is **the space behind it**. The door stays, still marked, and **remembers which place it led to** on its own comp — written at release while the edge still says so, because the edge has to be removed and is the only other record of the pairing.
+
+  **The teardown order is the whole of the safety, and it is asserted as an ordering:** the doors are told where they led **before** the edges are removed, and the edges are removed **before** the map is torn down. Reverse either pair and a record points at something that no longer exists, which is this project's most expensive defect class.
+
+  **`releasedByPlayer` is the only thing that can tell a deliberate release from a broken reference** — both look identical from outside, no site and surveyed rooms — and `EnsureSite`'s explored-graph guard exempts exactly that and nothing else. It still refuses a competing owner or a live map, and the exemption is **spent the moment the place exists again**, because an exemption that outlives its reason is a hole.
+
+  Refusals name themselves: the headquarters, crew inside (**a prisoner or an animal counts**), a crossing in flight, or a place with no live map. Re-opening goes through the same `RegisterNaturalAddress` path that first created it, is **disabled rather than hidden** at the budget, and **only forgets the shelved place on success** — forgetting on failure would strand it for ever over a transient refusal.
+
+  Record `implementation/RELEASE_A_PLACE_IMPLEMENTATION.md`. **88 of 88** planted faults caught.
+
+- [ ] **still open from the same direction** — the wild variation of materials across items, equipment, walls, floors, lights, furniture and benches, with the events, layouts and loot deeper in.
+
+---
+
 ## TOMBSTONES
 
 _(none)_

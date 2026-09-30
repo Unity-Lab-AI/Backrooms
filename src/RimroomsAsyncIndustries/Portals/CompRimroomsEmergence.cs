@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Linq;
 using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Generation;
 using RimWorld;
@@ -44,6 +45,17 @@ namespace RimroomsAsyncIndustries.Portals
     {
         private bool designated;
         private string branchId;
+
+        /// <summary>
+        /// The place this door led to, while that place is not being held open.
+        ///
+        /// **Written at release, read at re-open.** A natural gate is permanently open and is
+        /// never closed — what a release lets go of is the space behind it. The edge that recorded
+        /// the pairing has to be removed, because every endpoint of it lives on the map being torn
+        /// down, so the pairing is written here instead. Without it the door would become an
+        /// ordinary marked door and the place behind it would be unreachable for ever.
+        /// </summary>
+        private string shelvedCoordinateId;
 
         /// <summary>
         /// Whether this door is a usable way home right now. Every clause is checked live
@@ -93,7 +105,20 @@ namespace RimroomsAsyncIndustries.Portals
             base.PostExposeData();
             Scribe_Values.Look(ref designated, "rr_emergenceDesignated", false);
             Scribe_Values.Look(ref branchId, "rr_emergenceBranchId");
+            Scribe_Values.Look(ref shelvedCoordinateId, "rr_emergenceShelvedCoordinate");
         }
+
+        /// <summary>The place this door led to, while it is shelved. Null when it is open.</summary>
+        internal string ShelvedCoordinateId { get { return shelvedCoordinateId; } }
+
+        /// <summary>Called by the release, while the edge still says where this door led.</summary>
+        internal void RememberShelvedPlace(string coordinateId)
+        {
+            if (!string.IsNullOrWhiteSpace(coordinateId)) { shelvedCoordinateId = coordinateId; }
+        }
+
+        /// <summary>Called when the place is open again, so the door stops offering to re-open it.</summary>
+        internal void ForgetShelvedPlace() { shelvedCoordinateId = null; }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
@@ -134,6 +159,51 @@ namespace RimroomsAsyncIndustries.Portals
                 icon = parent.def.uiIcon,
                 action = delegate { Show(marked ? Withdraw() : Mark()); }
             };
+
+            // The place this door led to, while the company is not holding it open. Offered on
+            // the door rather than only in Operations because this is where a player is standing
+            // when they wonder why the door no longer goes anywhere.
+            if (string.IsNullOrWhiteSpace(shelvedCoordinateId)) { yield break; }
+            RimroomsCampaignComponent reopenCampaign = Campaign();
+            CoordinateRecord shelved = reopenCampaign == null ? null
+                : reopenCampaign.Coordinates.FirstOrDefault(record => record != null &&
+                    record.Id == shelvedCoordinateId);
+            if (shelved == null) { yield break; }
+            bool room = OpenMapBudget.CanOpenAnother;
+            yield return new Command_Action
+            {
+                defaultLabel = "RR_Release_ReopenLabel".Translate(),
+                defaultDesc = (room ? "RR_Release_ReopenDesc" : "RR_Release_ReopenNoRoomDesc")
+                    .Translate(OpenMapBudget.Describe()),
+                icon = parent.def.uiIcon,
+                // Disabled rather than hidden when there is no room: a player at their limit
+                // needs to see that this is the thing they are at the limit of.
+                Disabled = !room,
+                disabledReason = room ? null : "RR_Release_ReopenNoRoomDesc".Translate(OpenMapBudget.Describe()),
+                action = delegate { Show(Reopen(reopenCampaign, shelved)); }
+            };
+        }
+
+        /// <summary>
+        /// Open the shelved place again, through the same registration path that first created it.
+        ///
+        /// Nothing bespoke: `RegisterNaturalAddress` generates the site and registers the edge,
+        /// exactly as it did at discovery. The coordinate record and its rooms were kept, so the
+        /// place that comes back is the same place -- the same rooms in the same shape. **Its
+        /// contents are not**, because the interior is generated from the seed, and the player was
+        /// told that before they released it.
+        /// </summary>
+        private CompanyActionResult Reopen(RimroomsCampaignComponent campaign, CoordinateRecord shelved)
+        {
+            if (campaign == null || shelved == null) { return CompanyActionResult.Refused("RR_Release_UnknownPlace"); }
+            if (!OpenMapBudget.CanOpenAnother)
+            { return CompanyActionResult.Refused(OpenMapBudget.BlockedKey); }
+            CompanyActionResult registered = PortalAddressService.RegisterNaturalAddress(
+                parent, ApproachCell, shelved);
+            // Only forgotten once the place is genuinely back. A failed re-open must leave the
+            // door still offering to try, or a transient refusal would strand the place for ever.
+            if (registered.Success) { ForgetShelvedPlace(); }
+            return registered;
         }
 
         /// <summary>

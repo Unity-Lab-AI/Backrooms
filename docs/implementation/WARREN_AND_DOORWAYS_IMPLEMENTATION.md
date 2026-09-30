@@ -90,11 +90,23 @@ Checking the budget first would strand a crew that is deep and full up with noth
 they walked in by — the same trap the depth cap is explicitly ordered to avoid. **The budget stops
 the mod opening another place; it never closes the last door home.**
 
-### And discovering is free
+### And discovering is free — **WRONG, corrected at 0.12.51-dev**
 
-Worth stating because it changes the mental model: `Discover` mints a coordinate *record* and
-registers an address. **No map is generated until somebody crosses.** So a player may find many
-natural gates at no cost; what costs a slot is a place left open.
+> **This section was wrong and is annotated rather than rewritten**, per invariant 135.
+>
+> `Discover` calls `PortalAddressService.RegisterNaturalAddress`, which calls
+> `DestinationService.EnsureSite` **immediately** — because a natural edge is registered against
+> the far side's own `ReturnAnchor`, and that `Thing` does not exist until the map does. **A
+> discovery costs a slot the moment it is made.**
+>
+> Two things follow. The budget check in `Discover` is **load-bearing rather than over-eager**, as
+> this record wrongly implied. And the owner's trap — *"get 5 natural gates u cant use a machine
+> gate"* — is real exactly as they described it, not a late-game edge case. That is why the
+> release list moved from "next checkpoint" to done at 0.12.51-dev.
+
+The original text, preserved: *Worth stating because it changes the mental model: `Discover` mints
+a coordinate record and registers an address. No map is generated until somebody crosses. So a
+player may find many natural gates at no cost; what costs a slot is a place left open.*
 
 ## Ways onward now scale with the size of the place
 
@@ -198,6 +210,12 @@ rewritten as files.
 **200 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
 `0B307BD06299AE6EA7028267A1663D5D15315F540FEBDD8898432E60F1150599`, reproduced by two clean
 recompiles. Staged to Local Mods and hash-verified; the game was not running.
+
+## The one piece deliberately not shipped — **SHIPPED at 0.12.51-dev**
+
+> The three things named below were built exactly as described: the save-schema field on
+> `CoordinateRecord` (`releasedByPlayer`), teardown ordered so nothing is ever orphaned, and the
+> refusal set. See `RELEASE_A_PLACE_IMPLEMENTATION.md`.
 
 ## The one piece deliberately not shipped, and exactly what it needs
 

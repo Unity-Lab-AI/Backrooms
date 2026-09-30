@@ -59,7 +59,17 @@ namespace RimroomsAsyncIndustries.Generation
                 return CompanyActionResult.Refused("RR_Generation_InvalidRequest");
             }
 
-            if (coordinate.Site == null && (coordinate.Status == CoordinateStatus.Ready ||
+            // **A deliberate release is exempt, and nothing else is.** A coordinate the player
+            // let go has no site and surveyed rooms, which is byte-for-byte what a broken
+            // reference looks like -- so the only honest way to tell them apart is that a release
+            // wrote it down. See CoordinateRecord.releasedByPlayer.
+            //
+            // A competing owner or a live map still refuses even then: those are real conflicts
+            // rather than an explored graph, and a release is required to have removed both.
+            bool releasedAndRebuildable = coordinate.releasedByPlayer &&
+                !Find.WorldObjects.AllWorldObjects.OfType<RimroomsDestinationMapParent>().Any(owner => owner.CoordinateId == coordinate.Id) &&
+                !Find.Maps.Any(existing => (existing.Parent as RimroomsDestinationMapParent)?.CoordinateId == coordinate.Id);
+            if (!releasedAndRebuildable && coordinate.Site == null && (coordinate.Status == CoordinateStatus.Ready ||
                 (coordinate.rooms != null && coordinate.rooms.Any(room => room != null && room.Surveyed)) ||
                 Find.WorldObjects.AllWorldObjects.OfType<RimroomsDestinationMapParent>().Any(owner => owner.CoordinateId == coordinate.Id) ||
                 Find.Maps.Any(existing => (existing.Parent as RimroomsDestinationMapParent)?.CoordinateId == coordinate.Id)))
@@ -192,6 +202,10 @@ namespace RimroomsAsyncIndustries.Generation
 
             coordinate.status = CoordinateStatus.Ready;
             coordinate.lastFailureKey = null;
+            // The place exists again, so the exemption is spent. Leaving it set would let a real
+            // broken reference through on some later load, which is the thing the guard above is
+            // for -- an exemption that outlives its reason is a hole.
+            coordinate.releasedByPlayer = false;
             entry = parent.EntryCell;
             return CompanyActionResult.Applied();
         }

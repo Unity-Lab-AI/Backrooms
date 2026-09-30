@@ -216,6 +216,20 @@ namespace RimroomsAsyncIndustries.Company
         /// </summary>
         internal int depth = 1;
 
+        /// <summary>
+        /// The player let this place go on purpose, and it may be regenerated.
+        ///
+        /// **This flag exists to answer one question that cannot otherwise be answered.**
+        /// <see cref="Generation.DestinationService.EnsureSite"/> refuses to build a map for a
+        /// coordinate that has no site but whose rooms have been surveyed, because *"a broken
+        /// reference must not create a competing owner or replace an already explored graph"*.
+        /// That is exactly right for a fault. It is exactly wrong for a deliberate release, and
+        /// from the outside the two look identical: no site, rooms surveyed.
+        ///
+        /// So a release says so, in the save. Cleared the moment the place is generated again.
+        /// </summary>
+        internal bool releasedByPlayer;
+
         public int Depth { get { return depth < 1 ? 1 : depth; } }
 
         /// <summary>
@@ -293,6 +307,7 @@ namespace RimroomsAsyncIndustries.Company
         public int Seed { get { return seed; } }
         public int GeneratorVersion { get { return generatorVersion; } }
         public CoordinateStatus Status { get { return status; } }
+        public bool ReleasedByPlayer { get { return releasedByPlayer; } }
         public MapParent Site { get { return site; } }
         public IReadOnlyList<RoomRecord> Rooms { get { return rooms; } }
         public void ExposeData()
@@ -308,6 +323,7 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Collections.Look(ref rooms, "rr_rooms", LookMode.Deep);
             Scribe_Collections.Look(ref oddGoodsDefNames, "rr_oddGoodsDefNames", LookMode.Value);
             Scribe_Values.Look(ref depth, "rr_depth", 1);
+            Scribe_Values.Look(ref releasedByPlayer, "rr_releasedByPlayer", false);
             Scribe_Values.Look(ref openings, "rr_openings", 0);
             Scribe_Values.Look(ref occupancyTicks, "rr_occupancyTicks", 0);
             Scribe_Collections.Look(ref firedEventDefNames, "rr_firedEvents", LookMode.Value);
