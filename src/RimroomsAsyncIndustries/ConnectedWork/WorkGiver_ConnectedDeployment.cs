@@ -570,6 +570,34 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         protected override bool ContinueOnly { get { return true; } }
     }
 
+    public sealed class WorkGiver_ConnectedMachineLoading : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.MachineLoading; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedMachineLoadingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.MachineLoading; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
+    public sealed class WorkGiver_ConnectedPainting : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Painting; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedPaintingContinue : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.Painting; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
     public sealed class WorkGiver_ConnectedBasicWorker : WorkGiver_ConnectedDeployment
     {
         protected override string ProviderId

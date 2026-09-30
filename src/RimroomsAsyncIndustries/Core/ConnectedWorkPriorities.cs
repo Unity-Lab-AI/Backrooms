@@ -51,8 +51,20 @@ namespace RimroomsAsyncIndustries.Core
         internal const int MinimumPriority = 0;
 
         /// <summary>
-        /// Above Core's highest construction giver (120) with headroom, so a family can be
-        /// lifted over anything native if that is what play calls for.
+        /// The *floor* of each slider's ceiling, not the ceiling itself. Above Core's
+        /// highest construction giver (120) with headroom, which is enough range for the
+        /// families whose shipped numbers are small.
+        ///
+        /// It is not a hard cap, and it must not become one: this was written as one and
+        /// **silently overwrote six of this mod's own shipped defaults** at 0.12.33-dev,
+        /// eight as of the two families added at 0.12.34-dev, because
+        /// <see cref="Apply"/> pushes <see cref="Effective"/> into every def on every game
+        /// load and Effective used to clamp against this number unconditionally. The worst
+        /// of the seven was the far-side operating family at 502, authored to sit one above
+        /// Core's `Flick` (500) and landing on 130 instead — below every local BasicWorker
+        /// giver, so a worker part way to a gate to flick a switch was turned around by any
+        /// switch at home. Exactly the failure the two-giver split exists to prevent, in
+        /// the code that exists to prevent it. See <see cref="Ceiling"/>.
         /// </summary>
         internal const int MaximumPriority = 130;
 
@@ -75,6 +87,10 @@ namespace RimroomsAsyncIndustries.Core
                 "RR_ConnectedFishingContinue", "RR_ConnectedFishing"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyHaulingUpkeep",
                 "RR_ConnectedHaulingUpkeepContinue", "RR_ConnectedHaulingUpkeep"),
+            new ConnectedWorkPriorityPair("RR_Settings_FamilyMachineLoading",
+                "RR_ConnectedMachineLoadingContinue", "RR_ConnectedMachineLoading"),
+            new ConnectedWorkPriorityPair("RR_Settings_FamilyPainting",
+                "RR_ConnectedPaintingContinue", "RR_ConnectedPainting"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyDarkStudy",
                 "RR_ConnectedDarkStudyContinue", "RR_ConnectedDarkStudy"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyBillWorkCooking",
@@ -166,8 +182,8 @@ namespace RimroomsAsyncIndustries.Core
             int value;
             if (settings != null && settings.ConnectedWorkPriorities != null &&
                 settings.ConnectedWorkPriorities.TryGetValue(defName, out value))
-            { return Clamp(value); }
-            return Clamp(Shipped(defName));
+            { return Clamp(value, defName); }
+            return Clamp(Shipped(defName), defName);
         }
 
         internal static void Set(RimroomsSettings settings, string defName, int value)
@@ -175,10 +191,11 @@ namespace RimroomsAsyncIndustries.Core
             if (settings == null || defName == null) { return; }
             settings.ConnectedWorkPriorities = settings.ConnectedWorkPriorities ??
                 new Dictionary<string, int>(StringComparer.Ordinal);
-            int clamped = Clamp(value);
+            int clamped = Clamp(value, defName);
             // An override equal to the shipped value is not stored, so resetting a slider
             // by hand leaves no residue and a future change to the XML default is picked up.
-            if (clamped == Clamp(Shipped(defName))) { settings.ConnectedWorkPriorities.Remove(defName); }
+            if (clamped == Clamp(Shipped(defName), defName))
+            { settings.ConnectedWorkPriorities.Remove(defName); }
             else { settings.ConnectedWorkPriorities[defName] = clamped; }
         }
 
@@ -199,10 +216,29 @@ namespace RimroomsAsyncIndustries.Core
                 Effective(settings, pair.PlanDefName) >= Effective(settings, pair.ContinueDefName);
         }
 
-        private static int Clamp(int value)
+        /// <summary>
+        /// How high this one giver's slider may go: the shared floor, or this giver's own
+        /// shipped value when that is higher.
+        ///
+        /// A shipped number is authored against the native givers it has to beat and is
+        /// reviewed in the def file beside its reasoning, so **it is never a value the
+        /// player is refused.** The alternative — one cap above the game's own highest
+        /// giver, which is `ChildcarerTeach` at 9999 — would make every slider in the pane
+        /// a 0-to-10000 drag in which the numbers that matter are all inside the first two
+        /// percent. So the range is per giver, and every family keeps a usable slider while
+        /// no authored default is unreachable.
+        /// </summary>
+        internal static int Ceiling(string defName)
+        {
+            int shippedValue = Shipped(defName);
+            return shippedValue > MaximumPriority ? shippedValue : MaximumPriority;
+        }
+
+        private static int Clamp(int value, string defName)
         {
             if (value < MinimumPriority) { return MinimumPriority; }
-            return value > MaximumPriority ? MaximumPriority : value;
+            int ceiling = Ceiling(defName);
+            return value > ceiling ? ceiling : value;
         }
 
         /// <summary>

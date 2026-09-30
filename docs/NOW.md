@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.33-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.34-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **180 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `B7EA5785E49DD0B8F123A560C3752AC86F7D213FA74476A0FF720E9E389908C6`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **182 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `5731D2E470D7B196DA671EBD81CFD8F002FC38A0235081FB21536C50EFB01FBD`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **ELEVEN**, all passing. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
-| Proofs | **THIRTY** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Proofs | **THIRTY-ONE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -52,15 +52,15 @@ everything below:
 
 ## Is it done? NO, and the shape of what is left
 
-**~21 genuine build items**, measured at 0.12.33-dev, listed in full under **What is left** below.
+**20 genuine build items**, counted at 0.12.34-dev, listed in full under **What is left** below.
 Plus about **8 rows that cannot close before the game runs once** and **9 the owner excluded**.
 
 Queue, one consistent pattern, command beside the number:
 
 ```
-grep -c '^\s*- \[ \]' docs/TODO.md     # 75 open
+grep -c '^\s*- \[ \]' docs/TODO.md     # 74 open
 grep -c '^\s*- \[~\]' docs/TODO.md    # 50 partial
-grep -c '^\s*- \[x\]' docs/TODO.md    # 457 done
+grep -c '^\s*- \[x\]' docs/TODO.md    # 458 done
 ```
 
 **The raw open count overstates.** Rows closed by work that shipped the same day keep their `[ ]`
@@ -71,7 +71,7 @@ session than it cost.
 
 ### The package is staged, and one checkpoint behind
 
-The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.33-dev**. Re-stage
+The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.34-dev**. Re-stage
 before any launch:
 
 ```
@@ -85,64 +85,48 @@ checkpoints stale, so nothing built in this project's history had ever reached t
 
 ---
 
-## DO THIS FIRST — the eleven DLC container hauling givers
+## DO THIS FIRST — containment, quarantine and the alarm
 
-Row 1266, and `HaulingUpkeepProvider` already names them rather than guessing:
+Row 761, and it is the largest unbuilt system left rather than the easiest. Its own words:
 
-> `HaulToGeneBank`, `HaulToGrowthVat`, `CarryToGrowthVat`, `CarryToGeneExtractor`,
-> `CarryToSubcoreScanner`, `HaulMechsToCharger`, `EmptyWasteContainer` (Biotech),
-> `HaulToBiosculpterPod` (Ideology), `TakeBioferriteOutOfHarvester`,
-> `TakeEntityToHoldingPlatform`, `TransferEntity` (Anomaly)
+> *"Containment rooms, security procedures, staff debrief, quarantine, alarm and escape
+> response."*
 
-The provider's own note says why they were left: *"Each carries a pawn or a live subject into a
-machine, or moves an entity between platforms, and each needs its own source review of what that
-does to custody before a worker is sent across a gate to do it."*
+**Two of the six are already shipped and must not be rebuilt.** Evidence custody and case records
+have shipped since 0.7.x, and **witness interviews shipped 0.12.28-dev** — `EvidenceInterview.cs`,
+with nine refusals and an interviewer chosen on Social. Check each of the six against the code
+before writing a line of it: **four separate rows in this session turned out to be already built**,
+and a fifth (1266) turned out to be answered by Core rather than needing anything.
 
-Four things to settle:
+Four things to settle first:
 
-1. **Custody is the whole question.** Three of the eleven move a **pawn** (growth vat, gene
-   extractor, subcore scanner) and three move an **entity** (holding platform, transfer). Invariant
-   55 rules a pawn transfer absolutely: a transfer that can lose a pawn is a corruption, not a
-   threat. **A worker crossing to operate a machine is fine; a worker crossing to CARRY somebody
-   into one is a pawn transfer.**
-2. **The provider pattern justifies a crossing and lets Core do the work** — it hands out no job
-   of its own. Check whether that is enough for each giver, or whether the carry happens on the far
-   side and never crosses at all.
-3. **Every one is DLC.** `MayRequire` on any def, `GetNamedSilentFail` in code, and nothing may
-   throw when the DLC is absent. `check-dlc-gating.py` is the backstop.
-4. **`python tools/register-query.py use RR-DLC`** — 40 rows, and Core’s own instruction is
-   *"do not make a DLC feature the sole route through the campaign"*.
+1. **What a containment room *is* in this mod has a precedent, and it is not a new building.**
+   0.10.8-dev established that *"a gate's facility is the equipment linked into it"* — shelves,
+   analysers and cabinets link like furniture to a bed, through walls and by hand — and
+   0.9.7-dev established that a facility is a **contiguous run** of cells. A containment room is
+   almost certainly a room role read off equipment already linked, not a `ThingDef`. **No new
+   gameplay ThingDefs** is a standing constraint, so if the design needs one, ask.
+2. **An alarm has exactly one honest surface and 0.10.5-dev already measured it.** The seventh
+   checker calibrated every display surface against Core per surface, and found this mod used
+   **none** of the alerts readout. An escape or a breach is what `Alert` exists for. Anything
+   drawn instead of an `Alert` is a second opinion beside the one the player already watches.
+3. **Quarantine is an area question, and three area rows are still open** — 1215, 1235 and 1239
+   cover `Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear` and `Area_PollutionClear` across
+   a gate. Quarantine may be the fifth of those rather than its own machinery, and if it is, build
+   it with them.
+4. **`python tools/register-query.py use RR-EVD` and `family security`** before designing. The
+   security family is swept; **subject casework and evidence are swept too**, so this one has
+   register guidance already read rather than owing a sweep.
 
-Queue row 227, and the last named gap in the cross-map work families. The row states the hard part
-itself:
-
-> *"Surgery across a gate (`Bill_Medical` needs the patient present, and `uniqueRequiredIngredients`
-> is a case no other family has); patient feeding, which belongs with the food family; prisoner and
-> guest care including Hospitality."*
-
-Five things to establish before writing a line:
-
-1. **`Bill_Medical` needs the patient present, and that is not negotiable** — the patient is the
-   bill's target. So the question is not *"how do we do surgery remotely"*, it is **who travels**.
-   Every other family answers by sending the worker; this one may have to send the patient, and
-   invariant 55 rules that absolutely: **a transfer that can lose a pawn is a corruption, not a
-   threat.** Preflight fully, then move, and restore on failure.
-2. **`uniqueRequiredIngredients` has no precedent here.** Decompile `Bill_Medical` and
-   `Recipe_Surgery` before designing — a medicine reserved for one specific patient behaves unlike
-   any quantity lease the adapter families already hold.
-3. **Invariant 8: one commitment per worker**, across every record kind. A surgery that reserves a
-   surgeon, a patient, a bed and a specific medicine is four reservations and must still be one
-   commitment.
-4. **`python tools/register-query.py use RR-EVD` and `family medical`** — the medical family is one
-   of the **seven** still unswept by the register retro sweep, and its rows carry *"check pawn
-   health/custody state, treatment choice, and transfer; preserve a vanilla fallback"*, which is
-   almost a specification for this row.
-5. **Hospitality is an optional mod**, so guest care is a `PatchOperationFindMod` case at most, and
-   must do nothing at all when it is absent.
+**The escape half has a hard constraint from 0.9.6-dev.** *"It came through with them"* is a
+**bounded, named exception** to the founding rule that nothing crosses but people. An escaping
+contained subject is the same class of event and must be the same kind of exception — named,
+bounded and refusable — rather than a new general capability. Read `CompRimroomsEmergence` and the
+0.9.6-dev record first.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.33
+## What shipped this session, 0.7.1 → 0.12.34
 
 | Version | What |
 |---|---|
@@ -218,71 +202,73 @@ Five things to establish before writing a line:
 
 ---
 
-## What is left, in order — rewritten 0.12.33-dev, measured not carried
+## What is left, in order — rewritten 0.12.34-dev, measured not carried
 
-**~21 genuine build items**, and the previous version of this list had two that shipped this session
-still written as open. Anything marked closed below stays as a record so nobody rebuilds it.
+**20 genuine build items**, counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Two closed this checkpoint. Anything marked closed below stays as a record so nobody rebuilds it.
 
 ### Systems still unbuilt
 
-1. **The eleven DLC container hauling givers.** Named, not guessed at, in
-   `HaulingUpkeepProvider`'s own note. **This is the DO THIS FIRST item** — see the top of this
-   file for the four things to settle, of which custody is the real one.
-2. **Containment rooms, security procedures, staff debrief, quarantine, alarm and escape
+1. **Containment rooms, security procedures, staff debrief, quarantine, alarm and escape
    response.** Row 761. Evidence custody and case records already ship; **witness interviews
-   shipped 0.12.28-dev.** This is the rest of that row.
-3. **Crew composition and cargo planner** with skill, health, weight and window checks, ready and
+   shipped 0.12.28-dev.** This is the rest of that row, and **it is the DO THIS FIRST item** —
+   see the top of this file for the four things to settle.
+   **Row 1266 is closed** (0.12.34-dev): the eleven DLC container hauling givers are built as
+   `machine-loading`, and the custody review they were waiting on found that **Core forbids every
+   one of them from moving anything between maps**, so invariant 55 was never engaged. **The four
+   painting givers in `Art` are closed with them** — `Art` had a bill family and no designation
+   family, so nobody would ever have crossed to paint anything.
+2. **Crew composition and cargo planner** with skill, health, weight and window checks, ready and
    unready reasons, and a cost preview. Row 728. *"must not own connection existence"*.
-4. **Quests and missions for odd goods**, as distinct from contracts — contracts shipped 0.7.3-dev
+3. **Quests and missions for odd goods**, as distinct from contracts — contracts shipped 0.7.3-dev
    and the owner asked for *"quests and missions and contracts"*. Plus a player-facing surface for
    open odd demands: offers and settlements are recorded events and the Operations pane does not
    list them. Rows 1031, 1032, 1033.
-5. **Mining and building behind a gate.** Rows 98 and 99. The cells around a gate are ordinary map;
+4. **Mining and building behind a gate.** Rows 98 and 99. The cells around a gate are ordinary map;
    the one exception is linked equipment, which has placement requirements **of its own**.
    **Row 113 is closed** (0.12.27-dev) — the approach cell is reserved against blocking, and
    flooring is fine.
-6. **Mineable materials and recoverable floors** in a stripped interior. Row 1101. `FillWithRock`
+5. **Mineable materials and recoverable floors** in a stripped interior. Row 1101. `FillWithRock`
    and `NaturalRockTypesIn` already ship; the floors half is what remains.
-7. **The four area types across a gate** — `Area_BuildRoof`, `Area_NoRoof`,
+6. **The four area types across a gate** — `Area_BuildRoof`, `Area_NoRoof`,
    `Area_SnowOrSandClear`, `Area_PollutionClear`. Rows 1215, 1235, 1239. **Measured: one incidental
    `Area_NoRoof` use and no cross-gate coverage.**
-8. **Inhabitant and monstrosity families tiered by depth and wealth**, every variation seeded.
+7. **Inhabitant and monstrosity families tiered by depth and wealth**, every variation seeded.
    Row 1011. The bands, archetypes and pressure ladder they sit on all ship.
-9. **Material variety per coordinate** — archetype fixtures take their default stuff today.
+8. **Material variety per coordinate** — archetype fixtures take their default stuff today.
    Row 1005.
-10. **Gate subsystems**: monitoring, cool-down, modules, repair and reliability. Row 725. Power
+9. **Gate subsystems**: monitoring, cool-down, modules, repair and reliability. Row 725. Power
     reserves, calibration and the cutoff already ship.
-11. **Vehicles, space travel and the two VGE chapter hooks.** Rows 764, 765, 766. **Optional by
+10. **Vehicles, space travel and the two VGE chapter hooks.** Rows 764, 765, 766. **Optional by
     construction** — a `PatchOperationFindMod` that does nothing when the mod is absent.
-12. **RWT multiplayer feature detection and its documentation.** Rows 784, 791. Requires the mod
+11. **RWT multiplayer feature detection and its documentation.** Rows 784, 791. Requires the mod
     present to detect anything, and **no statement may describe live shared-colony control** unless
     implemented and demonstrated.
 
 ### Surfaces and words
 
-13. **The player-facing how-to for gameplay and systems.** Rows 1193, 1220. `docs/HOWTO.md`
+12. **The player-facing how-to for gameplay and systems.** Rows 1193, 1220. `docs/HOWTO.md`
     documents the **build**, not play. Written **once**, for both the repo and the site.
-14. **The native menu remap** into the company-first layout. Row 821. Twelve panes and reason codes
+13. **The native menu remap** into the company-first layout. Row 821. Twelve panes and reason codes
     ship; this is the Architect/Work/Assign/Research integration.
-15. **Tutorial, glossary, keyboard paths, contrast and scale.** Rows 822, 833. Localization
+14. **Tutorial, glossary, keyboard paths, contrast and scale.** Rows 822, 833. Localization
     completeness is already measurable: `check-keyed-strings.py` reports every declared key
     resolving.
 
 ### Housekeeping with teeth
 
-16. **The unknown-def-field checker**, written once and **removed rather than shipped** because it
+15. **The unknown-def-field checker**, written once and **removed rather than shipped** because it
     passed its own planted fault. Row 922.
-17. **Fix `disposition_stance()`** in the register generator: it counts a **negated** "required" as
+16. **Fix `disposition_stance()`** in the register generator: it counts a **negated** "required" as
     Required, and **14 of the 17** "Required" rows say the opposite. Row 1055.
-18. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
+17. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
     research and coarse for code.
-19. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
+18. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
     expedition logistics, interface, facilities, furniture, storage, power, contracts, faction
     standing, subject casework, evidence, policies. **Not yet: medical, world operations, cargo,
     hospitality, materials, visitor economy, staff psychology.** Rows 206, 302.
-20. **The campaign economy workbook has no generator**, and the register preview PNGs under
+19. **The campaign economy workbook has no generator**, and the register preview PNGs under
     `outputs/` depict a superseded layout. Rows 1268, 1269.
-21. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
+20. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
     terms and the Steam agreements, and keep the position current. Rows 1286–1290.
 
 ### Cannot close before the game runs once — about 8 rows

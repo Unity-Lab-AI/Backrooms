@@ -115,6 +115,24 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         /// <summary>Container work on the far map: barrels, egg boxes, carriers.</summary>
         public const string HaulingUpkeep = "hauling-upkeep";
 
+        /// <summary>
+        /// The machines the expansions ship, loaded and emptied on the far map: gene
+        /// banks, growth vats, gene extractors, subcore scanners, mech chargers, waste
+        /// containers, biosculpter pods, bioferrite harvesters and holding platforms.
+        /// Separate from <see cref="HaulingUpkeep"/> because every route here can involve a
+        /// *subject* — a pawn, a mech or an entity — and Core's refusal to let any of them
+        /// change maps is the single finding that justifies the whole family. It carries no
+        /// expansion branch: absent content is an empty world, not a condition.
+        /// </summary>
+        public const string MachineLoading = "machine-loading";
+
+        /// <summary>
+        /// Painting and stripping paint on the far map. `Art`'s second family: the bill
+        /// family crosses for a sculpting bench, and paint lives on a designation, so a
+        /// coordinate marked blue with no bench on it attracted nobody at all.
+        /// </summary>
+        public const string Painting = "painting";
+
         /// <summary>Designation-driven: flick, open, eject fuel.</summary>
         public const string BasicWorker = "basic-worker";
 
@@ -149,6 +167,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             new BillWorkProvider(BillWorkArt, "Art", "RR_ConnectedWork_BillWorkArtLabel");
         private static readonly DarkStudyProvider darkStudy = new DarkStudyProvider();
         private static readonly HaulingUpkeepProvider haulingUpkeep = new HaulingUpkeepProvider();
+        private static readonly MachineLoadingProvider machineLoading =
+            new MachineLoadingProvider();
+        private static readonly PaintingProvider painting = new PaintingProvider();
         private static readonly BasicWorkerProvider basicWorker = new BasicWorkerProvider();
         private static readonly FishingProvider fishing = new FishingProvider();
         private static readonly Dictionary<string, ConnectedDeploymentProvider> registry =
@@ -176,6 +197,8 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 { BillWorkArt, billArt },
                 { DarkStudy, darkStudy },
                 { HaulingUpkeep, haulingUpkeep },
+                { MachineLoading, machineLoading },
+                { Painting, painting },
                 { BasicWorker, basicWorker },
                 { Fishing, fishing }
             };

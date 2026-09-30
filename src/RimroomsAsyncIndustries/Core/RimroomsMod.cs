@@ -106,7 +106,8 @@ namespace RimroomsAsyncIndustries.Core
             int current = ConnectedWorkPriorities.Effective(Settings, giverDefName);
             listing.Label(labelKey.Translate(current, ConnectedWorkPriorities.Shipped(giverDefName)));
             int updated = (int)Math.Round(listing.Slider(current,
-                ConnectedWorkPriorities.MinimumPriority, ConnectedWorkPriorities.MaximumPriority));
+                ConnectedWorkPriorities.MinimumPriority,
+                ConnectedWorkPriorities.Ceiling(giverDefName)));
             if (updated != current) { ConnectedWorkPriorities.Set(Settings, giverDefName, updated); }
         }
 

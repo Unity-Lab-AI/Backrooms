@@ -961,6 +961,75 @@
     <canBeDoneByMechs>false</canBeDoneByMechs>
   </WorkGiverDef>
 
+  <!-- MachineLoading: the machines the expansions ship, loaded and emptied on the far
+       side. Continue sits at 301, one above TakeEntityToHoldingPlatform (300), which is the
+       highest priority giver in Hauling anywhere in the game. That is higher than any other
+       continue giver in this mod and it is forced rather than chosen: the rule every family
+       follows is that continue must outrank every local giver it travels for, so a worker
+       part way to a gate is not turned around, and this family travels for that one. Plan
+       sits at 3, below HaulingUpkeep (4) and below HaulMerge (5), which is the lowest local
+       giver in the type. Being planned after container upkeep is an accepted cost: both
+       plan only when nothing of their kind is waiting on this side at all, and the map scan
+       rotates, so neither can starve the other. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedMachineLoadingContinue</defName>
+    <label>travel on to load a machine through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedMachineLoadingContinue</giverClass>
+    <workType>Hauling</workType>
+    <verb>load</verb>
+    <gerund>loading a machine</gerund>
+    <priorityInType>301</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedMachineLoading</defName>
+    <label>cross a gate to load a machine</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedMachineLoading</giverClass>
+    <workType>Hauling</workType>
+    <verb>load</verb>
+    <gerund>loading a machine</gerund>
+    <priorityInType>3</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
+  <!-- Painting: apply or strip paint on the far side. Art's second family, and the one
+       BillWorkArt could never reach: a bill lives on a bench, paint lives on a designation.
+       Continue sits at 203, above RemovePaintFloor and RemovePaintBuilding (both 202), which
+       are the highest givers this family travels for, and below BillWorkArtContinue (204) so
+       the two Art families never tie. Plan sits at 1, below DoBillsSculpt (100), which is the
+       lowest local giver in the type, and below BillWorkArt's plan (2) because a sculpture
+       somebody ordered outranks a wall somebody wants a different colour. -->
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedPaintingContinue</defName>
+    <label>travel on to paint through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedPaintingContinue</giverClass>
+    <workType>Art</workType>
+    <verb>paint</verb>
+    <gerund>painting</gerund>
+    <priorityInType>203</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>RR_ConnectedPainting</defName>
+    <label>cross a gate to paint</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedPainting</giverClass>
+    <workType>Art</workType>
+    <verb>paint</verb>
+    <gerund>painting</gerund>
+    <priorityInType>1</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
   <!-- BasicWorker: flick a switch, open a container, eject fuel on the far side. Purely
        designation driven, like the fieldwork families, so nothing is inferred. Continue sits
        at 502, above Core's Flick (500). Plan sits at 2, below everything local. -->

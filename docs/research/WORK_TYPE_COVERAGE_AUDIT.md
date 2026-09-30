@@ -19,14 +19,14 @@ No claim here rests on memory. Where a decision turns on a Core fact, the fact i
 | Construction | 15 | Core | `construction-finishing`, `repair` deployments + `construction-supply` carry | **Covered** |
 | Doctor | 14 | Core/Biotech/Anomaly | `tending`, `patient-feeding`, `rescue-in-place` deployments + `medicine-supply` carry | **Covered** |
 | Warden | 18 | Core/Ideology/Biotech/Anomaly | `warden` deployment + `food-supply` carry reaches prisoners | **Covered** |
-| Hauling | 30 | Core/Ideology/Biotech/Anomaly | carry families + `hauling-upkeep` deployment | **Covered 0.6.7-dev** for Core; eleven DLC container givers named and open |
+| Hauling | 30 | Core/Ideology/Biotech/Anomaly | carry families + `hauling-upkeep` and `machine-loading` deployments | **Fully covered 0.12.34-dev** — the eleven DLC container givers closed, and none of them can move anything between maps |
 | Handling | 8 | Core | `animal-handling` deployment, designation-driven | **Covered** |
 | Research | 6 | Core/Biotech | `research` deployment | **Covered** |
 | Childcare | 6 | Biotech | `childcare` deployment | **Covered** |
 | BasicWorker | 6 | Core/Ideology | `basic-worker` deployment | **Covered 0.6.7-dev** |
 | Crafting | 6 | Core/Anomaly | `bill-ingredients` carry | **Covered 0.6.5-dev** — bill work deployment |
 | Smithing | 7 | Core/Biotech/Anomaly | `bill-ingredients` carry | **Covered 0.6.5-dev** — bill work deployment |
-| Art | 5 | Core | `bill-ingredients` carry + `bill-work-art` deployment | **Covered 0.6.5-dev** for sculpting; painting is designation work and belongs with `basic-worker`, recorded below |
+| Art | 5 | Core | `bill-ingredients` carry + `bill-work-art` and `painting` deployments | **Fully covered 0.12.34-dev** — painting is designation work, so it needed its own family; a bill lives on a bench and paint lives on a designation |
 | Cooking | 4 | Core | `bill-ingredients` carry | **Covered 0.6.5-dev** — bill work deployment |
 | Growing | 4 | Core | `growing` deployment | **Covered** |
 | Cleaning | 3 | Core/Biotech | `cleaning` deployment | **Covered** |
@@ -40,7 +40,11 @@ No claim here rests on memory. Where a decision turns on a Core fact, the fact i
 | **DarkStudy** | 1 | Anomaly | `dark-study` deployment | **Covered 0.6.6-dev** |
 | **Fishing** | 1 | Odyssey | `fishing` deployment | **Covered 0.6.7-dev** |
 
-**As of 0.6.7-dev: twenty-one work types have a deployment.** Two are decided against permanently. **No work-type gaps remain.** Every work type in Core and all five expansions is either covered or decided against with its reason recorded. What stays open is narrower and named: the eleven DLC *container* hauling givers, which each need a custody review, and the four painting givers in `Art`. Two of the original four were absent from the remembered list this audit replaced.
+**As of 0.6.7-dev: twenty-one work types have a deployment.** Two are decided against permanently. **No work-type gaps remain.** Every work type in Core and all five expansions is either covered or decided against with its reason recorded. Two of the original four were absent from the remembered list this audit replaced.
+
+**As of 0.12.34-dev both remaining named gaps are closed.** The eleven DLC container hauling givers became `machine-loading`, and the custody review they were waiting on found that **Core forbids every one of them from moving anything between maps** — so the worker crosses and the subject is always already there. The four painting givers became `painting`, a second `Art` family, because `bill-work-art` asks whether a bench has a deliverable bill and paint is a designation on a floor or a wall.
+
+**What remains is one thing and it is not buildable against an unknown:** a wholly mod-added work type gets no provider, because the providers and their giver defs are shipped rather than derived. The bill family already covers modded *benches* inside existing work types, and every capability-matched route added since covers modded *content* inside covered types.
 
 ## The two decided against, permanently
 

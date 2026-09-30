@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.34-dev - 2026-09-29 - fifteen more reasons to walk through a gate
+
+- **Colonists will now cross a gate to load and empty machines on the other side** - gene banks, growth vats, gene extractors, subcore scanners, mech chargers, waste containers, biosculpter pods, bioferrite harvesters and entity holding platforms. Everything the worker handles is already on the far side; nobody and nothing is ever carried through the gate into a machine.
+- **Colonists will cross a gate to paint, and to strip paint.** Mark a floor or a wall on a coordinate and somebody will come and do it, provided there is dye over there. Marking nothing means nobody comes.
+- **A travel priority you set is the priority that gets used.** Six of the mod's own shipped travel priorities were being quietly replaced with a lower number every time a game loaded, which could turn a worker around part way to a gate. Each family's slider now reaches its own shipped value.
+- No expansion is required for any of this. With Biotech, Ideology or Anomaly missing, the machines simply are not there and nothing is offered.
+
+Full record: [fifteen work givers, and a clamp that was overwriting the mod's own numbers](docs/implementation/MACHINE_LOADING_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.33-dev - 2026-09-29 - three things you could not see
 
 - **You can send somebody through a gate from the gate itself now.** Select who you mean, click the door, pick them off the list. Anyone who cannot cross is listed with the reason instead of being left out.
