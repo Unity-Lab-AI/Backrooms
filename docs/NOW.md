@@ -23,7 +23,7 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 
 | | |
 |---|---|
-| Branch | `feature/connected-colony-portals` |
+| Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
 | Published | **0.12.45-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **199 C# files, 89 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
@@ -198,6 +198,29 @@ on the page**, and the listing closes on every path. **If it fails again it will
 **And be honest about the state guard: it is a diagnosis, not an observation.** The evidence is
 strong — frame drawn, body not, nothing logged, six windows resetting nothing in a 288-mod load.
 But nobody has yet seen that page draw correctly. What is certain is the reporting half.
+
+---
+
+## THE BRANCH CHANGED — read this before publishing anything
+
+**Work happens on `feature/bug-testing` from 2026-09-30.** It was cut from
+`feature/connected-colony-portals` at `12e12da`, the commit that fixed the map placement and the
+Store's natural gate, and pushed to both remotes.
+
+**The cascade is now TEN refs, not eight.** The eight-ref read-back that has been the only receipt
+for forty-five checkpoints was:
+
+```
+forgejo, github  x  feature/connected-colony-portals, Prep, Develop, Main
+```
+
+and it is now that **plus `feature/bug-testing` on both remotes**. A publish that reads back eight
+and stops has left the branch the work is actually on unpublished. **Read back the branch you are
+on, every time, and count it.**
+
+`feature/connected-colony-portals` is not deleted and not abandoned — it holds the build history
+and sits at `12e12da`. Bug fixes found in play land on `feature/bug-testing` and cascade from
+there.
 
 ---
 
