@@ -26,7 +26,22 @@ namespace RimroomsAsyncIndustries.Gate
         private NativeEnergyDebitFault nativeEnergyDebit;
         private List<NativeEnergyDebitFault> nativeDebitHistory = new List<NativeEnergyDebitFault>();
 
-        public bool IsDesignated { get { return NativeDoorProvider() && nativeBindingSchema == 1 && nativeDesignated; } }
+        /// <summary>
+        /// This door is an operable gate.
+        ///
+        /// **False for a run extension**, which is what keeps invariant 32 true: exactly one way a
+        /// laboratory gate opens, and every entry point routes into it. An extension has no
+        /// spin-up, no address, no console, no window and no operator, because as far as every
+        /// other system in this mod is concerned it is not a gate -- it is part of one.
+        /// </summary>
+        public bool IsDesignated
+        {
+            get
+            {
+                return !IsRunExtension && NativeDoorProvider() &&
+                    nativeBindingSchema == 1 && nativeDesignated;
+            }
+        }
         public bool OppositeEntrySide { get { return nativeOppositeEntrySide; } }
         public Thing LinkedBattery { get { return nativeBattery; } }
         public Thing AssemblyBench { get { return nativeAssemblyBench; } }
@@ -143,8 +158,24 @@ namespace RimroomsAsyncIndustries.Gate
         /// are declared. What still has to be checked here is the shape, because the
         /// capability ladder is defined for four footprints and nothing else.
         /// </summary>
+        /// <summary>
+        /// Whether this door can be a gate at all.
+        ///
+        /// The footprint tested is the **run's**, not the def's, so three adjacent ordinary doors
+        /// bound together are a legal 1x3 and any one of them alone is a legal 1x1. A door whose
+        /// own def is already a legal shape stays legal with no run, which is every gate that has
+        /// never been extended.
+        ///
+        /// An **extension** is deliberately still a provider by this test -- it is a door of a
+        /// legal shape. What stops it being operated is `IsDesignated`, which refuses it outright.
+        /// </summary>
         private bool NativeDoorProvider()
-        { return parent is Building_Door && parent.def != null && LegalGateFootprint(parent.def.size); }
+        {
+            if (!(parent is Building_Door) || parent.def == null) { return false; }
+            if (LegalGateFootprint(parent.def.size)) { return true; }
+            CellRect run = RunRect;
+            return run.Area > 0 && LegalGateFootprint(new IntVec2(run.Width, run.Height));
+        }
 
         private bool HasUnresolvedNativeTrip()
         {

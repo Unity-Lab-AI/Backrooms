@@ -1,5 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <RR_GateRun_Label>Opening: {0} door(s), {1} wide</RR_GateRun_Label>
+  <RR_GateRun_Desc>Bind an ordinary door next to this gate into the same opening, so a wider gate can be built out of several plain doors.
+
+The whole run becomes one gate with one width on both sides. It costs more to power and more work to bring up, because it is more machine. Releasing the run turns the extra doors back into ordinary doors.
+
+Neither can be done while the gate is working.</RR_GateRun_Desc>
+  <RR_GateRun_Extend>Take in {0}</RR_GateRun_Extend>
+  <RR_GateRun_Release>Release the run back to ordinary doors</RR_GateRun_Release>
+  <RR_GateRun_NoCandidate>No ordinary door beside this gate could join it</RR_GateRun_NoCandidate>
+  <RR_GateRun_NotAGate>That door is not a designated gate.</RR_GateRun_NotAGate>
+  <RR_GateRun_AlreadyAnExtension>That door is already part of another gate.</RR_GateRun_AlreadyAnExtension>
+  <RR_GateRun_AlreadyAGate>That door is a gate in its own right. Undesignate it first.</RR_GateRun_AlreadyAGate>
+  <RR_GateRun_ActiveCannotExtend>A gate’s opening cannot be changed while the gate is working. Wait for the opening to end, or abort the spin-up.</RR_GateRun_ActiveCannotExtend>
+  <RR_GateRun_NotADoor>That is not an ordinary door this branch owns.</RR_GateRun_NotADoor>
+  <RR_GateRun_SameDoor>A gate cannot take in itself.</RR_GateRun_SameDoor>
+  <RR_GateRun_NotSingleCell>Only a one-cell door can be taken into a run. A wider door is already a wider gate.</RR_GateRun_NotSingleCell>
+  <RR_GateRun_NotASolidRun>That would not make a solid opening. A run has to be a filled rectangle, and no larger than the biggest gate size.</RR_GateRun_NotASolidRun>
+  <RR_Event_GateRunExtended>{0} is now an opening of {1} doors, {2} cells wide.</RR_Event_GateRunExtended>
   <RR_NativeGate_Heading>Native gate infrastructure</RR_NativeGate_Heading>
   <RR_NativeGate_Explanation>Choose one specific Core door and explicitly link its control console, real battery, and machining bench. Rimrooms never chooses the nearest door or infrastructure automatically.</RR_NativeGate_Explanation>
   <RR_NativeGate_HQContext>Current company branch: {0}. Eligible links below are limited to headquarters map {1}.</RR_NativeGate_HQContext>

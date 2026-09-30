@@ -71,10 +71,20 @@ namespace RimroomsAsyncIndustries.Gate
             return false;
         }
 
-        /// <summary>Every cell this gate's door stands on.</summary>
+        /// <summary>
+        /// Every cell this gate's doorway stands on.
+        ///
+        /// **The whole run**, not just the parent door. A gate bound across a run of adjacent
+        /// ordinary doors is one doorway that happens to be built out of several things, and
+        /// everything downstream of this property -- the entry cells, the width, the cell count,
+        /// the power draw and the spin-up work -- is derived from it without needing to know that.
+        ///
+        /// `RunRect` returns the parent's own rect for a single-door gate, which is every gate
+        /// that has not been extended, so this is the same value it always was in that case.
+        /// </summary>
         public CellRect GateOccupiedRect
         {
-            get { return parent == null || !parent.Spawned ? CellRect.Empty : parent.OccupiedRect(); }
+            get { return RunRect; }
         }
 
         /// <summary>The whole footprint, in cells. Drives what it costs to power and to bring up.</summary>
@@ -82,6 +92,12 @@ namespace RimroomsAsyncIndustries.Gate
         {
             get
             {
+                // Measured off the occupied rectangle rather than the def's size, so a gate bound
+                // across three ordinary doors costs three cells of machine to energise and to
+                // bring up -- which is the owner's "costs more to run" applied to the fallback
+                // exactly as it applies to a real wide door.
+                CellRect rect = GateOccupiedRect;
+                if (rect.Area > 0) { return rect.Area; }
                 if (parent == null || parent.def == null) { return 1; }
                 int area = parent.def.size.x * parent.def.size.z;
                 return area < 1 ? 1 : area;

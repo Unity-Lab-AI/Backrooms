@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.30-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.31-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **178 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `90E0885C229B6972E5209E3C30B4487F9BB3431AB5B5490A75B6B36188AA1923`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **179 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `BA503ACA67B06719663B35D406E536C63DF266F55F926602B6958DE7CF76F757`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **TEN**, all passing. The tenth, `check-retired-content.py`, refuses player-facing text that names equipment this mod retired — **fourteen strings were doing it** |
-| Proofs | **TWENTY-SEVEN** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Proofs | **TWENTY-EIGHT** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -58,7 +58,7 @@ because rows closed by work that shipped the same day still carried `[ ]`.
 
 | | |
 |---|---|
-| Genuine build items left | **~26** at 0.12.30-dev, some spanning several rows |
+| Genuine build items left | **~25** at 0.12.31-dev, some spanning several rows |
 | Rows that **cannot** close before a first launch | **~8** |
 | Rows the owner excluded (Steam, site, collection) | **9** |
 | Open rows already built and never closed | **~13** |
@@ -92,7 +92,49 @@ touched and nothing was launched.**
 
 ---
 
-## DO THIS FIRST — the adjacent-door-run fallback
+## DO THIS FIRST — surgery across a gate, and the rest of the medical routes
+
+Queue row 227, and the last named gap in the cross-map work families. The row states the hard part
+itself:
+
+> *"Surgery across a gate (`Bill_Medical` needs the patient present, and `uniqueRequiredIngredients`
+> is a case no other family has); patient feeding, which belongs with the food family; prisoner and
+> guest care including Hospitality."*
+
+Five things to establish before writing a line:
+
+1. **`Bill_Medical` needs the patient present, and that is not negotiable** — the patient is the
+   bill's target. So the question is not *"how do we do surgery remotely"*, it is **who travels**.
+   Every other family answers by sending the worker; this one may have to send the patient, and
+   invariant 55 rules that absolutely: **a transfer that can lose a pawn is a corruption, not a
+   threat.** Preflight fully, then move, and restore on failure.
+2. **`uniqueRequiredIngredients` has no precedent here.** Decompile `Bill_Medical` and
+   `Recipe_Surgery` before designing — a medicine reserved for one specific patient behaves unlike
+   any quantity lease the adapter families already hold.
+3. **Invariant 8: one commitment per worker**, across every record kind. A surgery that reserves a
+   surgeon, a patient, a bed and a specific medicine is four reservations and must still be one
+   commitment.
+4. **`python tools/register-query.py use RR-EVD` and `family medical`** — the medical family is one
+   of the **seven** still unswept by the register retro sweep, and its rows carry *"check pawn
+   health/custody state, treatment choice, and transfer; preserve a vanilla fallback"*, which is
+   almost a specification for this row.
+5. **Hospitality is an optional mod**, so guest care is a `PatchOperationFindMod` case at most, and
+   must do nothing at all when it is absent.
+
+---
+
+## Done, 0.12.31-dev — a wide gate out of plain doors
+
+**Three rows were one feature**, and the answer was on record as **BOTH paths**. A run of adjacent
+Core 1×1 doors binds into one gate. The change is small because **a straight line of N adjacent 1×1
+doors is a 1×N `CellRect`**, which is exactly what every existing size derivation already works off
+— so the width, the entry cells, the power draw and the spin-up work all came out right with nothing
+written for them. Full record:
+[a wide gate out of plain doors](implementation/GATE_DOOR_RUN_IMPLEMENTATION.md).
+
+**Both defects in that checkpoint were mine and the checkers caught both** — a runtime-built keyed
+string (fifth time) and the word *"doorway"* five times, a rule I had been corrected on hours
+earlier.
 
 Three rows point at one feature (568, 610, 959) and the owner answered it long ago, verbatim:
 
@@ -285,7 +327,7 @@ section and 294 review records on disk. `card` and `use` now read them.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.30
+## What shipped this session, 0.7.1 → 0.12.31
 
 | Version | What |
 |---|---|
@@ -355,6 +397,7 @@ section and 294 review records on disk. `card` and `use` now read them.
 | 0.12.28 | **Nobody is lying** — the interview files one account and keeps both. **The code made a lie detector impossible and the design better**: a disputing account was already validated against the map |
 | 0.12.29 | **Six rungs, and two that could not exist** — research tier 4. **Logistics gets none and the gate line cannot have one**, and both absences are asserted rather than assumed |
 | 0.12.30 | **You can call the company** — `EstablishCorporationContact` had no caller, so **two of three starts had no campaign at all**. Earned on a comms console, and it opens the line that already existed |
+| 0.12.31 | **A wide gate out of plain doors** — 1×3 and 2×3 with no mods, as one gate of one width. **Three rows were one feature**, and the union of a run is the `CellRect` everything already read |
 
 ---
 
@@ -828,6 +871,20 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
      meant no parallel line, no discriminator on the def, no second selector — the existing gate on
      `corporationContact` was already the whole mechanism. **Ask before building the bigger
      version.**
+244. **Find the ONE value everything already derives from, and change that.** A gate's width, entry
+     cells, cell count, power draw and spin-up work all come off a single `CellRect`. A run of 1×1
+     doors **is** a rect, so returning the union made every one of those correct with nothing
+     written for it. **Look for the existing seam before adding a parallel path.**
+245. **Validate the WHOLE, not the part, when legality is a property of the whole.** Whether a door
+     may join a run cannot be answered about that door: it is answered about the run it would
+     make. So propose, check, and put it back on failure — and have the candidate search ask the
+     same way rather than keeping a second copy of the rule to drift out of step.
+246. **A legal-looking bounding box is not a shape.** A ring of doors around a gap passes every
+     size test and is not an opening. **Assert the area equals the parts.**
+247. **The checkers do not care that you know the rule.** Both defects at 0.12.31-dev were mine: a
+     runtime-built keyed string for the fifth time in this project, and the banned word *"doorway"*
+     five times — **a rule I had personally been corrected on hours earlier in the same session.**
+     That is the entire argument for having them.
 
 ---
 

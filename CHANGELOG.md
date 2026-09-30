@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.12.31-dev - 2026-09-29 - a wide gate out of plain doors
+
+- **You can build a wide gate out of ordinary doors now.** Put two or three plain doors side by side in the same wall, designate one as a gate, and bind the others into it. The whole run becomes one gate.
+- **No mod needed for any gate size.** One-cell and two-cell were already free - the base game's ornate door is two wide - and a bound run covers three-wide and the big two-by-three shape. If you do run a door mod, its real wide doors still work exactly as before.
+- **It is one gate, not several.** One opening, one spin-up, one address, and the same width read from both sides. The extra doors are part of the gate rather than gates of their own.
+- **A bigger opening costs more.** More power to hold open and more work to bring up, in proportion, exactly as a real wide door does.
+- **The run has to be a filled rectangle** and no bigger than the largest gate size. A ring of doors around a gap is not an opening.
+- **Neither binding nor releasing can be done while the gate is working.** Release turns the extra doors back into ordinary doors.
+
+Full record: [a wide gate out of plain doors](docs/implementation/GATE_DOOR_RUN_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.30-dev - 2026-09-29 - you can call the company
 
 - **Two of the three starts could never reach the campaign at all.** The shop opening and the solo/group opening both begin with no corporation watching, and there was no way to change that - which meant no contracts, no company catalogue, and no clean-up team coming for a stranded crew, for the whole game.

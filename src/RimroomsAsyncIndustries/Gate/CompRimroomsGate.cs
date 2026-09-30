@@ -320,6 +320,7 @@ namespace RimroomsAsyncIndustries.Gate
         public override void PostExposeData()
         {
             base.PostExposeData();
+            ExposeGateRun();
             ExposeConnectionHistory();
             ExposeSpinUp();
             Scribe_References.Look(ref assignedOperator, "rr_gateAssignedOperator");
@@ -452,6 +453,21 @@ namespace RimroomsAsyncIndustries.Gate
             }
 
             yield return EquipmentLinkGizmo();
+
+            // The run fallback. Shown only when there is a neighbour to take or a run to give
+            // back, so a gate in the middle of a wall with nothing beside it gets no button that
+            // could only refuse.
+            if (RunDoorCount > 1 || AdjacentRunCandidates().Count > 0)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "RR_GateRun_Label".Translate(RunDoorCount.ToString(),
+                        GateWidth.ToString()),
+                    defaultDesc = "RR_GateRun_Desc".Translate(),
+                    icon = parent.def.uiIcon,
+                    action = OpenGateRunMenu
+                };
+            }
 
             yield return new Command_Action
             {
