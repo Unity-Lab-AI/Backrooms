@@ -27,7 +27,7 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | Published | **0.12.43-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **197 C# files, 89 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `FD9190DACFEF79624B6E4481764169B10D17706902CF711EC369F9C0577446E8`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Assembly | SHA-256 `5D8BE10B01AB9C4DA1D8CDCD4A3BD61742E5D5D9DB89510A4C3D37308B972D7E`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **THIRTEEN**, all passing. The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **THIRTY-NINE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -124,7 +124,13 @@ checkpoints stale, so nothing built in this project's history had ever reached t
 in the first minute. All three were ours.** That is the single most valuable hour this repository
 has had, and it is the argument for launching again rather than building more.
 
-**FIXED — the blank page.** `Page_RimroomsCompanySetup` opened after EdB Prepare Carefully with its
+**FIXED — the blank page, and the fix is now CONFIRMED by a second launch: the page renders.** The state guard was a diagnosis when it shipped; it is an observation now.
+
+**FIXED — two controls that were drawn but unreachable.** With the page rendering, the next report was *"i cant start the game"* and *"there is no box to type in my company name"*. The confirm checkbox was the **last line of a scrolling list**, so Start refused and the thing that would satisfy it was off screen; the name field sat a few hundred pixels down that same list. The log proved `DrawReview` completed, so both were drawn — **and drawn is not the same as reachable.** Both are pinned outside the scroll view now. **A control the player is required to use must never be scrollable out of view.**
+
+**And the same change nearly shipped an authored palette.** The name field's first draft used `DrawBoxSolid(field, new Color(0.12f, 0.12f, 0.12f))`, and it would have gone through because `check-display-style.py` scanned only `UI/` while that page lives in `Scenario/`. **A rule that only looks where it expects trouble has a blind side.** The scope is every file that draws a window now — 21 instead of 20.
+
+**The original diagnosis, for the record.** `Page_RimroomsCompanySetup` opened after EdB Prepare Carefully with its
 title and both buttons drawn and its body **completely empty**, and **nothing in the log**. Cause:
 **Unity's IMGUI state is process-wide and not one of this package's six window entry points reset
 any of it.** Each inherited whatever the previously drawn mod left in `GUI.color`, `Text.Font` and

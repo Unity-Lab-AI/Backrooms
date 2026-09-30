@@ -41,6 +41,7 @@ namespace RimroomsAsyncIndustries.Scenario
             DoBottomButtons(body, "Start".Translate(), null, null, true, false);
             body.yMax -= 60f;
 
+            // ------------------------------------------------------------------ pinned, top
             // The introduction is drawn OUTSIDE the scroll view on purpose. It is the one thing
             // on this page that is true in every state, so a failure anywhere below cannot take
             // it down with it -- and a page that shows something is a page a player can report.
@@ -49,6 +50,50 @@ namespace RimroomsAsyncIndustries.Scenario
             Widgets.Label(intro, "RR_Setup_Introduction".Translate());
             body.yMin += intro.height + 8f;
             if (body.height <= 0f) { return; }
+
+            RimroomsStartDef pinned = ScenPart_RimroomsStart.Current?.startDef;
+
+            // **The company name field is pinned too, and this is the second thing the first
+            // launch found.** It used to sit inside the scroll view, a few hundred pixels down a
+            // list long enough to need scrolling, and the owner's report was *"there is no box to
+            // type in my company name"*. It was drawn -- the log proves DrawReview completed --
+            // and that is not the same as reachable.
+            //
+            // **A control the player is required to use must not be scrollable out of view.**
+            if (pinned != null)
+            {
+                if (companyNameBuffer == null)
+                { companyNameBuffer = RimroomsStartupComponent.SuggestedName(pinned); }
+                Rect nameLabel = body;
+                nameLabel.height = Text.CalcHeight("RR_Setup_CompanyName".Translate(),
+                    body.width - 20f);
+                Widgets.Label(nameLabel, "RR_Setup_CompanyName".Translate());
+                body.yMin += nameLabel.height + 2f;
+
+                Rect field = new Rect(body.x, body.yMin, Mathf.Min(420f, body.width - 20f), 30f);
+                // Given a visible border so it reads as something to type in rather than as
+                // another line of the paragraph above it. `Widgets.DrawBox` is Core's own and
+                // authors no colour -- the first draft of this used
+                // `DrawBoxSolid(field, new Color(0.12f, 0.12f, 0.12f))`, which is exactly the
+                // authored palette this package refuses to impose, in the one folder
+                // `check-display-style.py` was not scanning. The checker's scope was widened
+                // rather than the exception being taken.
+                Widgets.DrawBox(field);
+                companyNameBuffer = Widgets.TextField(field.ContractedBy(2f), companyNameBuffer);
+                body.yMin += field.height + 10f;
+                if (body.height <= 0f) { return; }
+            }
+
+            // ------------------------------------------------------- pinned, bottom: the gate
+            // The confirm checkbox is what blocks Start, and it used to be the LAST line of a
+            // list that needed scrolling -- so the page refused to start and the reason for the
+            // refusal was off screen. Reserved before the scroll view is measured, so the thing
+            // that blocks the button is always beside the button.
+            float confirmHeight = Mathf.Max(30f, Text.CalcHeight("RR_Setup_Confirm".Translate(),
+                body.width - 48f));
+            Rect confirm = new Rect(body.x, body.yMax - confirmHeight, body.width - 20f,
+                confirmHeight);
+            body.yMax -= confirmHeight + 8f;
 
             Rect content = new Rect(0f, 0f, body.width - 20f, contentHeight);
             Widgets.BeginScrollView(body, ref scroll, content);
@@ -70,6 +115,13 @@ namespace RimroomsAsyncIndustries.Scenario
             contentHeight = listing.CurHeight + 20f;
             listing.End();
             Widgets.EndScrollView();
+
+            // The gate, drawn last into the space reserved above the buttons. Never inside the
+            // scroll view: a player who cannot see why Start refuses has no way to satisfy it.
+            var gate = new Listing_Standard();
+            gate.Begin(confirm);
+            gate.CheckboxLabeled("RR_Setup_Confirm".Translate(), ref reviewed);
+            gate.End();
         }
 
         private void DrawReview(Listing_Standard listing)
@@ -84,12 +136,9 @@ namespace RimroomsAsyncIndustries.Scenario
             else
             {
                 SynchronizeRoles(start, pawns);
-                // Every start names its own company, so this is offered on every one.
-                if (companyNameBuffer == null)
-                { companyNameBuffer = RimroomsStartupComponent.SuggestedName(start); }
-                listing.Label("RR_Setup_CompanyName".Translate());
-                companyNameBuffer = Widgets.TextField(listing.GetRect(28f), companyNameBuffer);
-                listing.Gap(4f);
+                // The company name field used to be here. It is pinned above this scroll view
+                // now -- see DrawBody. Every start names its own company, so it is offered on
+                // every one, and it must be reachable without scrolling to find it.
                 listing.Label("RR_Setup_Site".Translate(Find.GameInitData.startingTile.ToString(), start.mapSize));
                 listing.Label("RR_Setup_StaffCount".Translate(pawns.Count));
                 listing.Label("RR_Setup_Funding".Translate(start.initialFundingUsd.ToString("N0"),
@@ -137,7 +186,9 @@ namespace RimroomsAsyncIndustries.Scenario
                     { listing.Label("RR_Setup_FixedBattery".Translate(plan.thing.LabelCap, Mathf.Clamp01(plan.batteryFraction).ToString("P0"))); }
                 }
                 listing.Label("RR_Setup_FixedCapacity".Translate());
-                listing.CheckboxLabeled("RR_Setup_Confirm".Translate(), ref reviewed);
+                // The confirm checkbox used to be here, at the bottom of a list long enough to
+                // need scrolling -- so Start refused and its reason was off screen. It is pinned
+                // above the buttons now; see DrawBody.
             }
         }
 

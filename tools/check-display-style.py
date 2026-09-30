@@ -97,6 +97,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+scanned_readouts = []
 MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries")
 SRC = os.path.join(REPO, "src")
 
@@ -367,7 +368,18 @@ AUTHORED_FONT_SIZE = re.compile(r"\bfontSize\s*=")
 def check_readability(problems):
     """Refuse an authored colour or an authored font in anything a player reads text from."""
     guard_seen = False
-    for path in sorted(glob.glob(os.path.join(READOUT_DIR, "*.cs"))):
+    # `UI/` plus any other file that draws a window. The scenario setup page lives under
+    # `Scenario/` and was therefore **not scanned**, which is how a first draft of its company
+    # name field shipped `DrawBoxSolid(field, new Color(0.12f, 0.12f, 0.12f))` -- an authored
+    # palette, in the one folder this rule could not see. A rule that only looks where it expects
+    # trouble is a rule with a blind side.
+    scanned = sorted(set(glob.glob(os.path.join(READOUT_DIR, "*.cs"))) | set(
+        path for path in glob.glob(os.path.join(SRC, "RimroomsAsyncIndustries", "**", "*.cs"),
+                                   recursive=True)
+        if "override void DoWindowContents" in io.open(path, encoding="utf-8-sig").read()))
+    global scanned_readouts
+    scanned_readouts = scanned
+    for path in scanned:
         rel = os.path.relpath(path, REPO)
         text = io.open(path, encoding="utf-8-sig").read()
         # A comment explaining the rule is not a violation of it, and this file's own header
@@ -458,7 +470,7 @@ def main():
     print("  not reached by any pattern : %d  (held by check-info-cards.py for vocabulary "
           "and walls)" % len([k for k in strings if k not in surfaces]))
     print("  readout files held to Core's palette and fonts : %d"
-          % len(glob.glob(os.path.join(READOUT_DIR, "*.cs"))))
+          % len(scanned_readouts))
     print("")
     print("  surface census -- every place RimWorld displays text, used or not:")
     for surface, where in SURFACE_CENSUS:
