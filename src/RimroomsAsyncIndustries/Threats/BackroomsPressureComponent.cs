@@ -106,7 +106,7 @@ namespace RimroomsAsyncIndustries.Threats
                 Pawn pawn = pawns[index];
                 if (pawn == null) { Remove(index); continue; }
                 if (inside.Contains(pawn)) { continue; }
-                pressure[index] -= Mathf.RoundToInt(Interval * BackroomsPressure.RecoveryRate);
+                pressure[index] -= Mathf.RoundToInt(Interval * BackroomsPressure.RecoveryRateFor());
                 if (pressure[index] <= 0) { Remove(index); }
             }
         }

@@ -112,6 +112,17 @@ namespace RimroomsAsyncIndustries.Portals
         internal const int WorldFrontierRarity = 40;
 
         /// <summary>
+        /// Ordinary-map rarity for a branch that has learned to read a surface.
+        ///
+        /// **RR_Cap_SurfaceReading** (Spatial, tier 4). This is the ORDINARY-MAP number and not
+        /// the per-coordinate one: the restraint that the per-coordinate frontier cap is not a
+        /// research knob still holds, and `MaximumFrontiersPerOrdinaryMap` is untouched too. What
+        /// changes is how often a door on your own map turns out to lead somewhere, which is a
+        /// different question about a different place.
+        /// </summary>
+        internal const int ReadSurfaceFrontierRarity = 28;
+
+        /// <summary>
         /// Where a frontier draw is anchored. A generated coordinate has its own saved seed
         /// and its own id; an ordinary map has neither, so it uses the branch seed and an id
         /// derived from the map. Both are stable for the life of the save, which is the only
@@ -326,7 +337,8 @@ namespace RimroomsAsyncIndustries.Portals
                 {
                     OriginId = "map:" + door.Map.uniqueID,
                     Seed = campaign.BranchSeed,
-                    Rarity = WorldFrontierRarity,
+                    Rarity = campaign.HasCapability("RR_Cap_SurfaceReading")
+                        ? ReadSurfaceFrontierRarity : WorldFrontierRarity,
                     Cap = MaximumFrontiersPerOrdinaryMap,
                     // A distinct key, so an ordinary-map draw can never collide with a
                     // Backrooms one even if a seed and a position happened to coincide.

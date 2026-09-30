@@ -49,6 +49,31 @@ namespace RimroomsAsyncIndustries.Company
         public const int MinimumInterviewerSocial = 4;
 
         /// <summary>
+        /// The floor for a branch that has learned how to take a statement.
+        ///
+        /// **RR_Cap_StatementDiscipline** (Measurement and evidence, tier 4). Two rather than four,
+        /// which is the difference between *"one of our two most sociable people has to do this"*
+        /// and *"most of the branch can"* — and on a small crew where the only sociable person is
+        /// often one of the witnesses, that is the difference between settling a disagreement and
+        /// not being able to.
+        ///
+        /// **Not zero.** Somebody with no ability to talk to people still cannot take a statement
+        /// the company will file, for the same reason shelter never reaches zero: a research
+        /// project may cheapen a thing without abolishing it.
+        /// </summary>
+        public const int PractisedInterviewerSocial = 2;
+
+        /// <summary>The floor in force for this branch right now.</summary>
+        public int InterviewerSocialFloor
+        {
+            get
+            {
+                return HasCapability("RR_Cap_StatementDiscipline")
+                    ? PractisedInterviewerSocial : MinimumInterviewerSocial;
+            }
+        }
+
+        /// <summary>
         /// Who the company would send, or null if nobody can go.
         ///
         /// The most socially capable employed staff member who is not one of the people being
@@ -60,6 +85,7 @@ namespace RimroomsAsyncIndustries.Company
         {
             if (observation == null) { return null; }
             var speakers = new HashSet<string>(observation.WitnessLoadIds, StringComparer.Ordinal);
+            int floor = InterviewerSocialFloor;
             Pawn best = null;
             int bestSkill = -1;
             string bestId = null;
@@ -72,7 +98,7 @@ namespace RimroomsAsyncIndustries.Company
                 string loadId = candidate.GetUniqueLoadID();
                 if (speakers.Contains(loadId)) { continue; }
                 int skill = candidate.skills.GetSkill(SkillDefOf.Social).Level;
-                if (skill < MinimumInterviewerSocial) { continue; }
+                if (skill < floor) { continue; }
                 if (skill > bestSkill || (skill == bestSkill &&
                     string.Compare(loadId, bestId, StringComparison.Ordinal) < 0))
                 {
@@ -129,7 +155,7 @@ namespace RimroomsAsyncIndustries.Company
             string interviewerId = interviewer.GetUniqueLoadID();
             if (observation.WitnessLoadIds.Contains(interviewerId, StringComparer.Ordinal))
             { return CompanyActionResult.Refused("RR_Interview_InterviewerIsWitness"); }
-            if (interviewer.skills.GetSkill(SkillDefOf.Social).Level < MinimumInterviewerSocial)
+            if (interviewer.skills.GetSkill(SkillDefOf.Social).Level < InterviewerSocialFloor)
             { return CompanyActionResult.Refused("RR_Interview_InterviewerUnskilled"); }
 
             observation.Settle(filedWitnessLoadId, interviewer, interviewerId,

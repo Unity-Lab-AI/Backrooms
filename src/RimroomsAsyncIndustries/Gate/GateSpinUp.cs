@@ -72,6 +72,16 @@ namespace RimroomsAsyncIndustries.Gate
         /// <summary>The rate assumed before anybody has worked the ramp at all.</summary>
         private const float DefaultSpinUpRate = 1f;
 
+        /// <summary>
+        /// What RR_Cap_PractisedDialling multiplies the spin-up work by.
+        ///
+        /// A fifth off. Applied to the requirement itself rather than to the floor, so the floor
+        /// still bounds a well-worn route and the discount cannot make a gate free -- the owner's
+        /// condition on the larger sizes was that they cost more to run, and a research project
+        /// must not undo that.
+        /// </summary>
+        private const float PractisedDiallingFactor = 0.8f;
+
         /// <summary>A ramp is running toward an opening on this gate.</summary>
         public bool IsSpinningUp
         { get { return !string.IsNullOrEmpty(spinUpConnectionId) && !IsOpening; } }
@@ -165,6 +175,15 @@ namespace RimroomsAsyncIndustries.Gate
             // gate is more machine to energise, and the owner made "costs more to run" a
             // condition of the larger sizes rather than a side effect of them.
             float required = GateProps.dialSpinUpWorkRequired * GateCellCount;
+
+            // **RR_Cap_PractisedDialling** (Facilities, tier 4) takes a fifth off the work of
+            // bringing any gate up, before familiarity is applied. A branch that has learned to
+            // dial does the whole procedure faster, not just the routes it already knows -- which
+            // is the difference between this and the familiarity discount below it.
+            Company.RimroomsCampaignComponent dialCampaign = Current.Game == null
+                ? null : Current.Game.GetComponent<Company.RimroomsCampaignComponent>();
+            if (dialCampaign != null && dialCampaign.HasCapability("RR_Cap_PractisedDialling"))
+            { required *= PractisedDiallingFactor; }
             float floor = required * GateProps.dialSpinUpFloorFraction;
             int prior = PriorConnectionsTo(coordinateId);
             float familiarity = SpinUpFamiliarityFactor;

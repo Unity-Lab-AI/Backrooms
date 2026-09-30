@@ -105,12 +105,54 @@ namespace RimroomsAsyncIndustries.Threats
         /// Converts accumulated pressure into the mood offset a thought should carry.
         /// Returns 0 when a pawn has no pressure at all, so no thought is applied.
         /// </summary>
+        /// <summary>
+        /// How fast pressure drains from somebody who is out of a coordinate.
+        ///
+        /// **RR_Cap_Decompression** (Fieldcraft, tier 4) doubles it again. A branch that has
+        /// learned how to bring people back down gets them ready for the next trip sooner; it does
+        /// nothing at all while they are still down there, which is the point -- the place is not
+        /// less bad, the rotation is better.
+        /// </summary>
+        public static float RecoveryRateFor()
+        {
+            Company.RimroomsCampaignComponent campaign = Current.Game == null ? null
+                : Current.Game.GetComponent<Company.RimroomsCampaignComponent>();
+            return campaign != null && campaign.HasCapability("RR_Cap_Decompression")
+                ? PractisedRecoveryRate : RecoveryRate;
+        }
+
+        /// <summary>Recovery for a branch that has learned to decompress a crew.</summary>
+        private const float PractisedRecoveryRate = 4f;
+
+        /// <summary>
+        /// The worst mood offset the place can carry for a pawn right now.
+        ///
+        /// **RR_Cap_SteadyNerve** (Entities, tier 4) lowers the ceiling. It never reaches
+        /// <see cref="MinPenalty"/>, for the same reason shelter never reaches zero: the
+        /// Backrooms always cost something, and a research project that made them free would be
+        /// the campaign contradicting itself.
+        /// </summary>
+        private static int MaxPenaltyFor()
+        {
+            Company.RimroomsCampaignComponent campaign = Current.Game == null ? null
+                : Current.Game.GetComponent<Company.RimroomsCampaignComponent>();
+            return campaign != null && campaign.HasCapability("RR_Cap_SteadyNerve")
+                ? SteadyNervePenalty : MaxPenalty;
+        }
+
+        /// <summary>
+        /// The reduced ceiling. Six rather than ten, and deliberately well above MinPenalty of
+        /// one so the place is never shrugged off.
+        /// </summary>
+        private const int SteadyNervePenalty = 6;
+
         public static int PenaltyFor(int pressureTicks)
         {
             if (pressureTicks <= 0) { return 0; }
             float fraction = Mathf.Clamp01((float)pressureTicks / FullPressureTicks);
-            int scaled = MinPenalty + (int)Math.Round(fraction * (MaxPenalty - MinPenalty));
-            return Math.Max(MinPenalty, Math.Min(MaxPenalty, scaled));
+            int ceiling = MaxPenaltyFor();
+            int scaled = MinPenalty + (int)Math.Round(fraction * (ceiling - MinPenalty));
+            return Math.Max(MinPenalty, Math.Min(ceiling, scaled));
         }
 
         /// <summary>

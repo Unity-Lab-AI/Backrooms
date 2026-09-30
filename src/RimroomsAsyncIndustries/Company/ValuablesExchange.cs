@@ -46,6 +46,12 @@ namespace RimroomsAsyncIndustries.Company
         public const float OrdinaryExchangeRate = 0.85f;
 
         /// <summary>
+        /// The ordinary rate for a branch that has learned the market. Still below 1, because the
+        /// company is a buyer of last resort and never a generous one.
+        /// </summary>
+        public const float OpenMarketOrdinaryRate = 0.95f;
+
+        /// <summary>
         /// What the company would pay for everything currently in range, split by origin so the
         /// player can see the premium before committing.
         /// </summary>
@@ -118,7 +124,16 @@ namespace RimroomsAsyncIndustries.Company
             if (thing == null || thing.Destroyed || thing.def == null) { return 0L; }
             float unit = thing.MarketValue;
             if (float.IsNaN(unit) || float.IsInfinity(unit) || unit <= 0f) { return 0L; }
-            float rate = OddOriginService.IsOdd(thing) ? OddExchangeRate : OrdinaryExchangeRate;
+            // **RR_Cap_OpenMarket** (Commerce, tier 4) improves what the company pays for
+            // ORDINARY goods only. The odd rate is the premium the whole economy is built on and
+            // is deliberately untouched: a branch learns to stop being fleeced on scrap, it does
+            // not learn to make the Backrooms pay better.
+            float ordinary = OrdinaryExchangeRate;
+            RimroomsCampaignComponent marketCampaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (marketCampaign != null && marketCampaign.HasCapability("RR_Cap_OpenMarket"))
+            { ordinary = OpenMarketOrdinaryRate; }
+            float rate = OddOriginService.IsOdd(thing) ? OddExchangeRate : ordinary;
             double total = (double)unit * Math.Max(1, thing.stackCount) * rate;
             if (total < 0d) { total = 0d; }
             if (total > 1e15d) { total = 1e15d; }

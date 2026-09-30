@@ -80,8 +80,7 @@ namespace RimroomsAsyncIndustries.UI
             Pawn interviewer = campaign.InterviewerFor(observation);
             if (interviewer == null)
             {
-                listing.Label("RR_Interview_NoInterviewer".Translate(
-                    RimroomsCampaignComponent.MinimumInterviewerSocial));
+                listing.Label("RR_Interview_NoInterviewer".Translate(campaign.InterviewerSocialFloor));
                 return;
             }
 

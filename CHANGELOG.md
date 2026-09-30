@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.12.29-dev - 2026-09-29 - the top of the research ladder
+
+- **Six new company projects, one for each branch that had somewhere left to go.**
+  - **Practised Dialling** - bringing any gate up takes a fifth less work, on every route rather than only familiar ones.
+  - **Decompression** - a crew shakes the place off twice as fast once they are out of it.
+  - **Open Market** - the company stops underpaying you for ordinary salvage.
+  - **Statement Discipline** - most of the branch can take a statement, not just your two most sociable staff.
+  - **Surface Reading** - ways into the Backrooms turn up on your own maps noticeably more often.
+  - **Steady Nerve** - the worst the place can weigh on somebody drops from severe to noticeable.
+- **Two branches get nothing, on purpose.** Company logistics has already learned everything there is to learn about delivery, and the gate line's top project already stops the countdown entirely - there is nothing above a connection that does not end.
+- **Nothing was invented to fill a gap.** Every one of the six moves a number that was already in the game and that nothing else was touching.
+
+Full record: [six rungs, and two that could not exist](docs/implementation/RESEARCH_TIER_4_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.28-dev - 2026-09-29 - nobody is lying
 
 - **You can now settle a disagreement between two crew.** A staff member takes both statements and the company files one of them as its version of events.
