@@ -119,6 +119,22 @@ namespace RimroomsAsyncIndustries.Scenario
                     && mapSize.z >= extent.Height + EdgeMargin * 2);
         }
 
+        /// <summary>
+        /// The ground this facility occupies on the map, optionally with a margin.
+        ///
+        /// The bounding box rather than the union of the rooms, because that is the ground the
+        /// site preparation has to own: `GenStep_HeadquartersTerrain` lowers elevation across it
+        /// so Core generates no rock formation under the building, and
+        /// `HeadquartersBuilder.BurnIntoPlace` carves, cuts and fills across it before the first
+        /// wall is placed.
+        /// </summary>
+        internal static CellRect Site(RimroomsStartDef start, IntVec3 offset, int margin)
+        {
+            CellRect extent = Extent(start);
+            if (extent.IsEmpty) { return CellRect.Empty; }
+            return extent.MovedBy(new IntVec2(offset.x, offset.z)).ExpandedBy(margin);
+        }
+
         /// <summary>Every room rect, shifted.</summary>
         internal static List<CellRect> Rooms(RimroomsStartDef start, IntVec3 offset)
         {

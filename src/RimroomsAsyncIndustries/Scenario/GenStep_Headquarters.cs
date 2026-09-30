@@ -7,9 +7,40 @@ using Verse;
 
 namespace RimroomsAsyncIndustries.Scenario
 {
-    /// <summary>RR-FAC: terrain prepared before any site/biome extra steps run.</summary>
+    /// <summary>
+    /// RR-FAC: the site is reserved and flattened before Core generates rock on it.
+    ///
+    /// **Order 100 is load-bearing.** Core's `ElevationFertility` runs at 10 and
+    /// `RocksFromGrid` at 200, and `RocksFromGrid` spawns a rock formation in every cell whose
+    /// elevation exceeds **0.7** -- plus natural rock roof above 0.728 and 0.798. Sitting at
+    /// order 100, between the two, this step can lower the elevation under the facility so
+    /// those rocks are **never generated in the first place**.
+    ///
+    /// That is the difference between a building on open ground and a building inside a
+    /// 234-cell hole carved out of a mountain. The carve still happens -- see
+    /// `HeadquartersBuilder.BurnIntoPlace` -- because rivers, ruins and other mods' gen steps
+    /// can still put something here, but for rock it is prevention rather than demolition.
+    ///
+    /// This step used to sit at order 5, where it also set terrain across the footprint. Both
+    /// were wrong: at order 5 it ran before `ElevationFertility` created the grid at all, and
+    /// any terrain it wrote was overwritten by Core's `Terrain` step at order 210.
+    /// </summary>
     public sealed class GenStep_HeadquartersTerrain : GenStep
     {
+        /// <summary>
+        /// The elevation written under the facility. Core's `GenStep_RocksFromGrid` uses
+        /// **0.7** as its rock threshold, so anything comfortably below it yields open ground
+        /// with no formation and no natural roof.
+        /// </summary>
+        private const float BuildableElevation = 0.55f;
+
+        /// <summary>
+        /// Cells of flattened ground kept outside the footprint. Rock roof generates from the
+        /// same grid, so a formation flush against an outer wall would hang its roof over the
+        /// building.
+        /// </summary>
+        private const int FlattenMargin = 2;
+
         public override int SeedPart { get { return 81940261; } }
 
         public override void Generate(Map map, GenStepParams parms)
@@ -19,23 +50,18 @@ namespace RimroomsAsyncIndustries.Scenario
             // The layout is authored in its own coordinates and offset onto whatever map the
             // player chose; see HeadquartersLayout.
             IntVec3 offset = HeadquartersLayout.Offset(start, map.Size);
-            // **The rest of the tile is left exactly as Core generated it.** This used to be
-            //     foreach (IntVec3 cell in map.AllCells) SetTerrain(cell, start.outdoorTerrain);
-            // which flattened the entire map to one terrain -- the *"bare dirt not even
-            // vegitation"* the owner reported. Only the footprint is prepared, and the room
-            // loop in HeadquartersBuilder floors the interiors.
-            foreach (CellRect rect in HeadquartersLayout.Rooms(start, offset))
+            MapGenFloatGrid elevation = MapGenerator.Elevation;
+            foreach (IntVec3 cell in HeadquartersLayout.Site(start, offset, FlattenMargin).Cells)
             {
-                foreach (IntVec3 cell in rect.Cells)
-                {
-                    if (cell.InBounds(map))
-                    { map.terrainGrid.SetTerrain(cell, start.outdoorTerrain); }
-                }
+                if (!cell.InBounds(map)) { continue; }
+                if (elevation[cell] > BuildableElevation) { elevation[cell] = BuildableElevation; }
             }
             MapGenerator.PlayerStartSpot = start.arrivalCell + offset;
             MapGenerator.rootsToUnfog.Add(start.arrivalCell + offset);
+            // Registered before Core's scatterers run: ScatterRuinsSimple and ScatterShrines
+            // both read UsedRects at order 750 and will not place on top of the facility.
             foreach (CellRect rect in HeadquartersLayout.Rooms(start, offset))
-            { MapGenerator.GetOrGenerateVar<List<CellRect>>("UsedRects").Add(rect); }
+            { MapGenerator.UsedRects.Add(rect); }
         }
     }
 
@@ -69,7 +95,14 @@ namespace RimroomsAsyncIndustries.Scenario
             {
                 receipt.failure = "RR_Start_PhysicalSetupFailed";
                 Log.Error("[Rimrooms][Scenario] Headquarters setup stopped; existing placements are retained: " + exception);
-                throw;
+                // **Hand the start spot back to Core rather than re-throwing.**
+                //
+                // Re-throwing only reached `MapGenerator.GenerateContentsIntoMap`, which logs
+                // and carries on, so it bought nothing -- and it left the player standing on an
+                // arrival cell inside a building that does not exist. Core's
+                // `GenStep_FindPlayerStartSpot` runs at order 850, after this step, and only
+                // picks a spot when none is valid. Clearing it lets Core choose a real one.
+                MapGenerator.PlayerStartSpot = IntVec3.Invalid;
             }
         }
     }
@@ -98,11 +131,74 @@ namespace RimroomsAsyncIndustries.Scenario
             return part.startDef;
         }
 
+        /// <summary>
+        /// Clear the ground the facility needs before a single wall is placed.
+        ///
+        /// ## Why this exists
+        ///
+        /// Owner direction, 2026-09-30, verbatim: *"i think the issue was there was shit where it
+        /// planned on putting the store and pawns so it errored it needs a like a burn into place
+        /// functiions to carve everyhting out and cut everything down and fill in with soil where
+        /// water is unmder where the store needs to propigate before game start"*.
+        ///
+        /// Until 0.12.47-dev `Build` **refused** a footprint it did not own: it threw
+        /// `Headquarters wall intersects generated structure` at the first occupied cell. That
+        /// was survivable while a generator of ours handed it flat, empty Soil. Once Core
+        /// generated the map, the Store's 1020-cell footprint on the owner's 300x300 map held
+        /// **164 Marble and 70 Granite formations, 177 cells of natural rock roof, roughly 440
+        /// plant cells, 34 cells of rubble and chunks, and two monkeys** -- measured cell by cell
+        /// in the live game. It threw on its very first cell.
+        ///
+        /// Refusing was the wrong instinct in the first place. Every vanilla structure gen step
+        /// -- ruins, shrines, ancient complexes -- clears what is under it. This does the same
+        /// thing, in one pass, before anything is placed, so a site that cannot be prepared
+        /// fails before the map has a half-built building on it.
+        ///
+        /// ## What it deliberately does not touch
+        ///
+        /// **Pawns.** Nothing here destroys a living thing; Core spawns animals at order 1200,
+        /// after this, and they walk in from the edges. And a `Building` that belongs to a
+        /// faction is destroyed but **named in a warning first** -- that would mean another
+        /// mod's gen step placed a structure inside the footprint despite the `UsedRects`
+        /// reservation, and it should be visible rather than silent.
+        /// </summary>
+        internal static void BurnIntoPlace(RimroomsStartDef start, Map map, IntVec3 offset)
+        {
+            foreach (IntVec3 cell in HeadquartersLayout.Site(start, offset, 0).Cells)
+            {
+                if (!cell.InBounds(map)) { continue; }
+                // Carve everything out and cut everything down. Copied first: destroying a
+                // thing mutates the cell's own thing list.
+                List<Thing> present = new List<Thing>(cell.GetThingList(map));
+                foreach (Thing thing in present)
+                {
+                    if (thing.def.category == ThingCategory.Pawn || !thing.def.destroyable) { continue; }
+                    if (thing.def.category == ThingCategory.Building && thing.Faction != null)
+                    {
+                        Log.Warning("[Rimrooms][Scenario] Clearing a faction structure inside the reserved company footprint at "
+                            + cell + ": " + thing.def.defName + " (" + thing.Faction.GetUniqueLoadID() + ")");
+                    }
+                    thing.Destroy(DestroyMode.Vanish);
+                }
+                // Natural rock roof outlives the formation under it, and an unsupported one
+                // leaves the facility in permanent darkness.
+                RoofDef roof = map.roofGrid.RoofAt(cell);
+                if (roof != null && roof.isNatural) { map.roofGrid.SetRoof(cell, null); }
+                // Fill in with soil where water is. Impassable terrain is included: a wall on
+                // it would be unreachable from inside.
+                TerrainDef terrain = map.terrainGrid.TerrainAt(cell);
+                if (terrain.IsWater || terrain.passability == Traversability.Impassable)
+                { map.terrainGrid.SetTerrain(cell, start.outdoorTerrain); }
+            }
+        }
+
         internal static void Build(RimroomsStartDef start, Map map, HeadquartersSetupComponent receipt)
         {
             IntVec3 offset = HeadquartersLayout.Offset(start, map.Size);
             if (!(start.arrivalCell + offset).InBounds(map) || !(start.stockCell + offset).InBounds(map))
             { throw new InvalidOperationException("Headquarters arrival or receiving position is outside the map."); }
+            // Before a single wall: the whole site, in one pass.
+            BurnIntoPlace(start, map, offset);
             foreach (RimroomsRoomPlan room in start.rooms)
             {
                 CellRect rect = room.Rect.MovedBy(new IntVec2(offset.x, offset.z));
@@ -114,7 +210,6 @@ namespace RimroomsAsyncIndustries.Scenario
                     if (room.floor) { map.terrainGrid.SetTerrain(cell, start.floorTerrain); }
                     if (edge)
                     {
-                        if (cell.GetEdifice(map) != null) { throw new InvalidOperationException("Headquarters wall intersects generated structure at " + cell); }
                         Thing wall = ThingMaker.MakeThing(ThingDefOf.Wall, start.wallStuff);
                         wall.SetFactionDirect(Faction.OfPlayer);
                         GenSpawn.Spawn(wall, cell, map);
@@ -141,6 +236,9 @@ namespace RimroomsAsyncIndustries.Scenario
                 IntVec3 where = plan.cell + offset;
                 foreach (IntVec3 cell in GenAdj.OccupiedRect(where, rotation, plan.thing.size).Cells)
                 {
+                    // The burn cleared natural cover, so an edifice here is one of OUR OWN walls
+                    // -- an authored furniture cell overlapping an authored wall. That is a def
+                    // error, not a map-generation collision, and it must still be refused.
                     if (!cell.InBounds(map) || cell.GetEdifice(map) != null)
                     { throw new InvalidOperationException("Headquarters furniture intersects a wall/building at " + cell); }
                 }

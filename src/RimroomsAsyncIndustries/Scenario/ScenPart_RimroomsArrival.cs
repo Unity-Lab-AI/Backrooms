@@ -6,7 +6,22 @@ using Verse;
 
 namespace RimroomsAsyncIndustries.Scenario
 {
-    /// <summary>One guarded native arrival. No retry may re-enumerate native starting-thing factories.</summary>
+    /// <summary>
+    /// One guarded native arrival. No retry may re-enumerate native starting-thing factories.
+    ///
+    /// **This class must never throw, and that is the whole lesson of the fourth launch.**
+    /// Owner report, 2026-09-30, verbatim: *"i have no pawns on the map to control"*.
+    ///
+    /// `GenerateIntoMap` is called from Core's `GenStep_ScenParts`, and
+    /// `MapGenerator.GenerateContentsIntoMap` abandons a gen step at its first exception. This
+    /// method threw when the headquarters receipt was incomplete, so **Core's entire scenario
+    /// step died and the player received no colonists and no starting supplies** -- confirmed
+    /// against the live game: `rimworld/list_colonists` returned zero.
+    ///
+    /// A subclass of `ScenPart_PlayerPawnsArriveMethod` is an addition to Core's arrival, not a
+    /// replacement for it. When our own part of the work is not ready, Core's still has to
+    /// happen.
+    /// </summary>
     public sealed class ScenPart_RimroomsArrival : ScenPart_PlayerPawnsArriveMethod
     {
         public override void GenerateIntoMap(Map map)
@@ -15,7 +30,23 @@ namespace RimroomsAsyncIndustries.Scenario
                 map.Tile != Find.GameInitData.startingTile) { return; }
             HeadquartersSetupComponent receipt = map.GetComponent<HeadquartersSetupComponent>();
             if (receipt == null || receipt.receiptVersion != 2 || !receipt.setupComplete)
-            { throw new InvalidOperationException("[Rimrooms] Native arrival requires the prepared headquarters receipt."); }
+            {
+                // The facility did not get built. Deliver Core's arrival anyway: the player
+                // keeps the colonists and the supplies they chose, and the failed-startup
+                // letter from PostGameStart tells them what is missing.
+                Log.Error("[Rimrooms][Scenario] Headquarters receipt incomplete at arrival; " +
+                    "falling back to the native arrival so the colony still has its people and stock.");
+                if (receipt != null)
+                {
+                    // Recorded even on the fallback path, so a retry cannot grant stock twice.
+                    if (receipt.arrivalStarted) { return; }
+                    receipt.arrivalStarted = true;
+                }
+                try { base.GenerateIntoMap(map); }
+                catch (Exception exception)
+                { Log.Error("[Rimrooms][Scenario] Native arrival fallback interrupted: " + exception); }
+                return;
+            }
             if (receipt.arrivalStarted) { return; }
             receipt.arrivalStarted = true;
             var before = new HashSet<Thing>(map.listerThings.AllThings);

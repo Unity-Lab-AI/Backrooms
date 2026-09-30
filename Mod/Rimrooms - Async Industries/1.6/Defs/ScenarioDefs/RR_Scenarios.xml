@@ -158,9 +158,14 @@ Stay alive, learn one rule this place obeys, mark the way you came, and decide w
        a tile the mod then discarded. Core generates the map now; the two gen steps below are
        patched into Base_Player in Patches/RR_StartGenSteps.xml so the facility is placed ONTO
        it. Both steps return immediately unless the map is the initial company start. -->
+  <!-- Order 100 sits between Core's ElevationFertility (10) and RocksFromGrid (200), which
+       spawns a rock formation in every cell whose elevation exceeds 0.7. Lowering the
+       elevation under the facility there means Core never generates rock on the site at all.
+       At the previous order of 5 the elevation grid did not exist yet. Fourth-launch
+       measurement: 234 of the Store's 1020 footprint cells held Marble or Granite. -->
   <GenStepDef>
     <defName>RR_HeadquartersTerrain</defName>
-    <order>5</order>
+    <order>100</order>
     <genStep Class="RimroomsAsyncIndustries.Scenario.GenStep_HeadquartersTerrain" />
   </GenStepDef>
   <GenStepDef>
