@@ -114,7 +114,7 @@ namespace RimroomsAsyncIndustries.Threats
             if (Campaign?.CanOperate != true || coordinate == null || coordinate.Rooms.Count == 0) { return; }
             List<Pawn> present = crew.Where(p => p != null && !p.Dead && p.Spawned && p.Map == map).ToList();
             if (present.Count == 0) { return; }
-            bool recording = present.Any(p => HasItem(p, "RR_FieldRecorder"));
+            bool recording = present.Any(CarriesRecordBook);
             EvidenceRecord record = Campaign.FindEvidence(coordinate.Id + ":evidence:route");
             foreach (Pawn pawn in present)
             {
@@ -234,9 +234,23 @@ namespace RimroomsAsyncIndustries.Threats
         public void AcknowledgeDistortionCost() { distortionTimeSpent = false; }
 
         public RoomRecord RoomAt(IntVec3 cell) { return Coordinate?.Rooms.FirstOrDefault(r => r.Bounds.Contains(cell)); }
-        internal static bool HasItem(Pawn pawn, string defName)
+        /// <summary>
+        /// Whether this crew member is carrying something the company's record can be written in.
+        ///
+        /// The field recorder this replaced was a mod item matched by def name, and 0.12.24-dev
+        /// folded its job into the record book a crew already carries. The book is matched by
+        /// <see cref="CompRouteEvidence.IsSupportedCarrier"/>, which asks a stricter question
+        /// than a name does: it has to be Core's own book, unstacked, undestroyed, and actually
+        /// carrying our comp. A book another mod replaced, or one whose comp never got patched
+        /// on, is not a company record book and a crew holding it is not recording.
+        ///
+        /// A legacy route recording still counts, because saves made before the switch contain
+        /// them and a crew holding one has never stopped being a crew that can write.
+        /// </summary>
+        internal static bool CarriesRecordBook(Pawn pawn)
         {
-            return pawn?.inventory != null && pawn.inventory.innerContainer.Any(t => !t.Destroyed && t.def.defName == defName && t.stackCount > 0);
+            return pawn?.inventory != null &&
+                pawn.inventory.innerContainer.Any(t => CompRouteEvidence.IsSupportedCarrier(t));
         }
         /// <summary>
         /// Every marker this coordinate has, placed by the player designating a glow pod.

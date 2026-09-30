@@ -20,6 +20,25 @@
     <leadTimeTicks>120000</leadTimeTicks>
     <maxOrderQuantity>500</maxOrderQuantity>
   </RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+  <!-- Added in 0.12.24-dev, with the record book itself. A crew cannot be dispatched without a
+       book to write in, and a book burns: Core gives it flammability 1 and a deterioration rate
+       of 5. Core does sell textbooks, but only as random outlander stock at nought to two a
+       visit, which is not a supply line a branch can plan around. Leaving it at that would make
+       a burnt book a dead end, which is the same shape of defect as a way out that has no
+       marked anchor to lead to.
+
+       Priced the way glow pods are priced, and for the same reason: the company is buying its
+       own paperwork, so it does not charge a branch a fair market rate for the privilege. -->
+  <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
+    <defName>RR_Procurement_RecordBooks</defName>
+    <label>Record books</label>
+    <description>Blank company record books, boxed. A crew writes its observations into one of these in the field and brings it home as the evidence, so the company keeps every branch stocked and bills for them at cost.\n\nThey are ordinary textbooks. Anyone at the branch may read one when it is not out on a coordinate.</description>
+    <thingDefName>TextBook</thingDefName>
+    <unitPriceUsd>12000</unitPriceUsd>
+    <dispatchDelayTicks>60000</dispatchDelayTicks>
+    <leadTimeTicks>120000</leadTimeTicks>
+    <maxOrderQuantity>500</maxOrderQuantity>
+  </RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
   <RimroomsAsyncIndustries.Procurement.RimroomsProcurementCatalogDef>
     <defName>RR_Procurement_Steel</defName>
     <label>Steel</label>

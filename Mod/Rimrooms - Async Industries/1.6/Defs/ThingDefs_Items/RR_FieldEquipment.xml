@@ -8,11 +8,22 @@
     <tradeability>Buyable</tradeability>
     <graphicData><graphicClass>Graphic_Single</graphicClass><drawSize>(0.7,0.7)</drawSize></graphicData>
   </ThingDef>
+  <!-- Superseded in 0.12.24-dev. The recorder's job belongs to the record book a crew already
+       carries: one textbook, taken in blank, written in in the field, brought home as the
+       evidence. The recorder and the record were two things that could get separated.
+
+       THE DEF STAYS, DELIBERATELY. Saves made before the switch contain recorders in crew
+       inventories and on the floors of coordinates, and a def a saved thing references is not
+       removed without a migration decision or a declared save break. So it still loads, still
+       weighs what it weighed, and still recovers from a failed site. It is simply never granted
+       and never sold again: tradeability is None and its recipe is gone. A branch that owns one
+       keeps it as the company-issue relic it now is. -->
   <ThingDef ParentName="RR_FieldItemBase">
     <defName>RR_FieldRecorder</defName><label>field recorder and radio</label>
-    <description>A rugged recorder with a short-range radio. Carry it into a coordinate to log visited rooms, route mismatches and entity observations. It is physical equipment and must return with the crew or be recovered later.</description>
+    <description>An older company-issue recorder with a short-range radio. Superseded: field crews now write their observations straight into the record book they carry, so nothing reads a recorder any more. It is still physical equipment and can still be recovered from a coordinate, but it is no longer issued, built or bought.</description>
     <graphicData><texPath>Things/Item/Equipment/WeaponSpecial/OrbitalTargeter</texPath></graphicData>
     <statBases><Mass>1.6</Mass><MarketValue>160</MarketValue></statBases>
+    <tradeability>None</tradeability>
   </ThingDef>
   <ThingDef ParentName="RR_FieldItemBase">
     <defName>RR_RouteRecording</defName><label>route recording</label>

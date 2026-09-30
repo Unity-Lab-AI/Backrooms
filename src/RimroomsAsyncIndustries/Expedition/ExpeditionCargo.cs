@@ -26,19 +26,41 @@ namespace RimroomsAsyncIndustries.Expedition
         // The sealed evidence case left in 0.10.9-dev with its requirement. Custody is a
         // shelf linked to a gate as a records archive, which is a place at headquarters
         // rather than an item a crew has to remember to carry out and back.
-        private static readonly string[] KitDefs = { "RR_FieldRecorder" };
-        private static readonly int[] KitCounts = { 1 };
+        //
+        // And the field recorder left in 0.12.24-dev, which is the last of the four and the
+        // one that closes this list. Its job folded into the record book a crew already
+        // carries: one Core TextBook, taken in blank, written in in the field, carried home
+        // as the evidence. The recorder and the record stop being two things that can get
+        // separated -- which is the answer the 0.9.9-dev plan wrote down and never executed.
+        //
+        // The kit is one item and this mod does not author it. It is resolved through
+        // CompRouteEvidence.NativeCarrierDef rather than by name, so a textbook that is not
+        // Core's, or has lost our comp, or is some other mod's book, can never pass as
+        // company gear. A pair of parallel arrays is gone with it; the comment above about
+        // arrays that disagree about their own length no longer has anything to warn about.
+        private const int RecordBooksRequired = 1;
+
+        /// <summary>
+        /// The one thing a crew must carry, and the game already ships it.
+        ///
+        /// Null when it cannot be resolved -- Core's book missing, our comp not patched on,
+        /// another mod having replaced it -- and every caller refuses visibly on null rather
+        /// than carrying on with no kit requirement at all. A silent null here would make the
+        /// kit check pass for a crew carrying nothing, which is the same failure shape as
+        /// Named&lt;TerrainDef&gt;("Carpet") returning null and a fallback making the wrong
+        /// floor look deliberate for months.
+        /// </summary>
+        internal static ThingDef RecordBookDef { get { return CompRouteEvidence.NativeCarrierDef; } }
 
         public static CompanyActionResult CheckKit(IEnumerable<Pawn> crew, Map deployedSite = null, string coordinateId = null)
         {
+            ThingDef book = RecordBookDef;
+            if (book == null) { return CompanyActionResult.Refused("RR_Exp_MissingRecordBook"); }
             List<Pawn> pawns = crew.Where(p => p != null && !p.Destroyed).Distinct().ToList();
-            for (int i = 0; i < KitDefs.Length; i++)
-            {
-                string name = KitDefs[i];
-                if (pawns.Sum(p => InventoryCount(p, name)) + DeployedCount(name, deployedSite, coordinateId) < KitCounts[i])
-                { return CompanyActionResult.Refused("RR_Exp_Missing_" + name); }
-            }
-            return CompanyActionResult.Applied();
+            return pawns.Sum(p => InventoryCount(p, book.defName)) +
+                DeployedCount(book.defName, deployedSite, coordinateId) >= RecordBooksRequired
+                ? CompanyActionResult.Applied()
+                : CompanyActionResult.Refused("RR_Exp_MissingRecordBook");
         }
 
         public static CompanyActionResult CheckCapacity(Pawn pawn)
@@ -90,32 +112,32 @@ namespace RimroomsAsyncIndustries.Expedition
                 return Math.Max(0f, MassUtility.FreeSpace(p) - mass);
             });
             var requests = new List<PickupRequest>();
-            for (int i = 0; i < KitDefs.Length; i++)
+            ThingDef def = RecordBookDef;
+            if (def == null) { return CompanyActionResult.Refused("RR_Exp_MissingRecordBook"); }
+            int remaining = Math.Max(0, RecordBooksRequired - kitOwners.Sum(p => InventoryCount(p, def.defName)) -
+                DeployedCount(def.defName, deployedSite, coordinateId));
+            // Mass comes from the item, never from a constant here. The register's cargo family
+            // asks for exactly that -- *"preserve each mod's normal material and weight
+            // behavior"* -- and a Core book weighs what Core says it weighs, not what this mod
+            // would like it to.
+            foreach (Thing item in headquarters.listerThings.ThingsOfDef(def).OrderBy(t => t.thingIDNumber))
             {
-                string name = KitDefs[i];
-                int remaining = Math.Max(0, KitCounts[i] - kitOwners.Sum(p => InventoryCount(p, name)) - DeployedCount(name, deployedSite, coordinateId));
-                ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(name);
-                if (remaining > 0 && def == null) { return CompanyActionResult.Refused("RR_Exp_Missing_" + name); }
-                if (remaining == 0) { continue; }
-                foreach (Thing item in headquarters.listerThings.ThingsOfDef(def).OrderBy(t => t.thingIDNumber))
+                if (remaining == 0) { break; }
+                int available = item.stackCount;
+                foreach (Pawn pawn in crew.OrderByDescending(p => free[p]))
                 {
-                    int available = item.stackCount;
-                    foreach (Pawn pawn in crew.OrderByDescending(p => free[p]))
-                    {
-                        if (remaining == 0 || available == 0) { break; }
-                        if (item.IsForbidden(pawn)) { continue; }
-                        float mass = Math.Max(0.001f, item.GetStatValue(StatDefOf.Mass));
-                        int count = Math.Min(remaining, Math.Min(available, (int)Math.Floor(free[pawn] / mass)));
-                        if (count < 1 || !pawn.CanReserveAndReach(item, PathEndMode.ClosestTouch, Danger.Deadly, 10, count)) { continue; }
-                        requests.Add(new PickupRequest { pawn = pawn, item = item, count = count });
-                        remaining -= count;
-                        available -= count;
-                        free[pawn] -= mass * count;
-                    }
-                    if (remaining == 0) { break; }
+                    if (remaining == 0 || available == 0) { break; }
+                    if (item.IsForbidden(pawn)) { continue; }
+                    float mass = Math.Max(0.001f, item.GetStatValue(StatDefOf.Mass));
+                    int count = Math.Min(remaining, Math.Min(available, (int)Math.Floor(free[pawn] / mass)));
+                    if (count < 1 || !pawn.CanReserveAndReach(item, PathEndMode.ClosestTouch, Danger.Deadly, 10, count)) { continue; }
+                    requests.Add(new PickupRequest { pawn = pawn, item = item, count = count });
+                    remaining -= count;
+                    available -= count;
+                    free[pawn] -= mass * count;
                 }
-                if (remaining > 0) { return CompanyActionResult.Refused("RR_Exp_LoadoutUnavailable"); }
             }
+            if (remaining > 0) { return CompanyActionResult.Refused("RR_Exp_LoadoutUnavailable"); }
             if (requests.Count == 0) { return CompanyActionResult.Existing(); }
             var ordered = new HashSet<Pawn>();
             foreach (PickupRequest request in requests)

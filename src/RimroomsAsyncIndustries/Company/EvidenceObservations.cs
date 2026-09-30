@@ -255,7 +255,7 @@ namespace RimroomsAsyncIndustries.Company
 
             Thing recorder;
             Pawn recorderCarrier;
-            if (!TryFindFieldRecorder(run, map, out recorder, out recorderCarrier))
+            if (!TryFindRecordBook(run, map, record, out recorder, out recorderCarrier))
             { return CompanyActionResult.Refused("RR_Evidence_NotReady"); }
 
             bool validFact;
@@ -322,18 +322,34 @@ namespace RimroomsAsyncIndustries.Company
             return CompanyActionResult.Applied();
         }
 
-        private static bool TryFindFieldRecorder(ExpeditionRecord run, Map map, out Thing recorder, out Pawn carrier)
+        /// <summary>
+        /// The record this observation is written into, and the crew member writing in it.
+        ///
+        /// Until 0.12.24-dev this looked for a <i>second</i> object -- a field recorder somewhere
+        /// in the crew's inventories -- and attributed the observation to that. It was always
+        /// redundant: by the time this runs the caller has already established that
+        /// <c>record.item</c> is a bound route-evidence book held on this map. So the record and
+        /// the thing recording it were two objects that could get separated, which is exactly
+        /// what the 0.9.9-dev plan said they should stop being.
+        ///
+        /// **The book has to be in a crew member's inventory.** A book lying on the floor two
+        /// rooms back is not being written in. That is the same discipline the recorder's own
+        /// inventory check enforced -- and it closes a disagreement between two gates that had
+        /// never agreed: surveying needed the recorder <i>carried</i>, while the observation
+        /// needed the book merely somewhere on the map.
+        /// </summary>
+        private static bool TryFindRecordBook(ExpeditionRecord run, Map map, EvidenceRecord record,
+            out Thing book, out Pawn carrier)
         {
-            recorder = null;
+            book = null;
             carrier = null;
-            ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail("RR_FieldRecorder");
-            if (run == null || map == null || definition == null) { return false; }
+            if (run == null || map == null || record == null || record.item == null || record.item.Destroyed ||
+                !CompRouteEvidence.IsSupportedCarrier(record.item)) { return false; }
             foreach (Pawn member in run.InitialCrew.Concat(run.RescueCrew).Concat(run.RecoveryPassengers))
             {
-                if (member == null || member.Dead || member.Destroyed || !member.Spawned || member.Map != map || member.inventory == null) { continue; }
-                Thing found = member.inventory.innerContainer.FirstOrDefault(t => !t.Destroyed && t.def == definition && t.stackCount > 0);
-                if (found == null) { continue; }
-                recorder = found;
+                if (member == null || member.Dead || member.Destroyed || !member.Spawned || member.Map != map ||
+                    member.inventory == null || !member.inventory.innerContainer.Contains(record.item)) { continue; }
+                book = record.item;
                 carrier = member;
                 return true;
             }

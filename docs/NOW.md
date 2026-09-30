@@ -24,14 +24,14 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.23-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.24-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **174 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `3CED6004E9AC406FAC52BB1FE20A5297E6C7390180C810B31DBFF30C7B389C44`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **174 C# files, 86 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `B382E45C0ADF918FFF8BBAAC643C88DAB1B7CF8F0E9CDA74D60ABB22617030BE`, reproduced by **three** clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **NINE**, all passing |
-| Proofs | **TWENTY-ONE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Proofs | **TWENTY-TWO** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
-| Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>` — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
+| Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
 | Game launches | **none, ever** |
 
@@ -50,50 +50,52 @@ everything below:
 
 ---
 
-## DO THIS FIRST — fold the field recorder into the record book
+## DO THIS FIRST — contradictory accounts, and the interview that resolves them
 
-**Owner-answered 2026-09-29, in the turn it was found.** This is the only remaining breach of
-invariant 10: `RR_FieldRecorder` is the one genuinely **buyable, carryable gameplay `ThingDef`** this
-mod authors. Its art is already gone (0.12.22-dev); the def is what remains.
+Queue item 4. **From the prep material, and it is the oldest unbuilt content direction left**: a
+returning crew whose accounts of the same coordinate **do not agree**, and a workflow that resolves
+which account the company files.
 
-**The decision, verbatim in effect:** *fold its job into the record book crews already carry.* A
-crew already takes Core's **`TextBook`** into a coordinate — that is the native evidence carrier,
-resolved by `CompRouteEvidence.NativeCarrierDef` and patched with our comp in
-`1.6/Patches/RR_ExistingEvidenceBook.xml`. The same book logs visited rooms, route mismatches and
-entity sightings. **One item, two jobs.**
+Three things to establish before writing a line, in this order:
 
-**NO SAVE BREAK.** The recorder def stays loadable so existing saves open; it is simply never
-granted or sold again. That is the whole of the migration.
-
-### The four live read sites, already located
-
-| File | What it does there |
-|---|---|
-| `Expedition/ExpeditionCargo.cs:29` | `KitDefs = { "RR_FieldRecorder" }` — the kit a crew must carry |
-| `Threats/FirstSliceSiteComponent.cs:117` | `HasItem(p, "RR_FieldRecorder")` — whether anyone present is recording |
-| `Company/EvidenceObservations.cs:329` | resolves the def to attribute an observation to a recorder |
-| `Generation/FailedSiteRecovery.cs:289` | recovery tolerance list; **leave this one naming the def**, because old saves still contain instances |
-
-### Where it is granted or sold, and must stop being
-
-- `1.6/Defs/RecipeDefs/RR_FieldEquipmentRecipes.xml:20` — the crafting recipe's product
-- `1.6/Defs/ScenarioDefs/RR_Scenarios.xml:43` and `:130` — two starts grant one
-- `1.6/Languages/English/Keyed/RR_Expedition.xml:3` — `RR_Exp_Missing_RR_FieldRecorder`, the refusal
-  a crew gets without one. **Reword rather than delete**: the book can be missing too.
-
-### Before writing a line
-
-- **Check the register by trace**, not by family: `python tools/register-query.py trace RR-EVD` and
-  `trace RR-STA`. It is guidance.
-- **`GetNamedSilentFail` returns null silently.** If the book cannot be resolved, the recording job
-  must refuse visibly rather than fall through — that is exactly how
-  `Named<TerrainDef>("Carpet")` left the yellow rooms in wood plank flooring for months.
-- **Write the proof to assert the def is never granted**, and fault-plant it by adding the recipe
-  back. A check that cannot fail is the thing this project keeps catching.
+1. **`python tools/register-query.py use RR-EVD` and `use RR-STA`.** The prisoner, casework and
+   interview families have real instructions in them — *"Keep custody, casework, and interview goals
+   reachable through vanilla prisoner controls"* — and RR-STA is the largest trace at 149 rows.
+2. **Read `docs/CAMPAIGN_CHART.md` before the prep documents.** The chart is the authority and beats
+   any prep document; the prep names the feature, the chart says where it sits.
+3. **Find the real read site first.** Invariant 136 deleted four tier 3 projects for being unlocks
+   with nothing to unlock. `EvidenceObservationRecord` already saves `witness`, `witnessLoadId` and
+   `witnessRoomIndex` per observation, and `EvidenceObservationKinds.RecorderGap` already exists and
+   already requires a prior `RouteMismatch` on the same room and marker. **A contradiction may
+   already be expressible in the saved schema** — check that before adding anything to it.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.23
+## Done, 0.12.24-dev — the field recorder is folded into the record book
+
+**Owner-answered 2026-09-29, in the turn it was found**, and the answer had already been written
+down at 0.9.9-dev. `RR_FieldRecorder` was the last genuinely **buyable, carryable gameplay
+`ThingDef`** this mod authored. Its art went at 0.12.22-dev; **the def now stays deliberately** —
+loadable so saves open, never granted or sold again. Full record:
+[the recorder became the book](implementation/RECORD_BOOK_IMPLEMENTATION.md).
+
+**One item, two jobs.** The kit is resolved through `CompRouteEvidence.NativeCarrierDef` rather
+than named, both callers refuse visibly on its null, and **two gates that had never agreed now ask
+one question**: surveying needed the recorder *carried* while the observation needed the book merely
+*somewhere on the map*. Both now want the book in a crew member's hands.
+
+**A dead end was found and closed on the way.** Core gives books `Flammability 1` and sells
+`TextBook` only as random outlander stock, so a branch whose only book burned would have failed every
+future dispatch for ever. `RR_Procurement_RecordBooks` fixes it. **That was not in the row, the plan,
+or the owner's answer** — it came out of reading what Core actually does with the object.
+
+**And the register's own guidance had been unreachable from its own tool.** `row 4` printed
+`card : open card`, a hyperlink label, while every real instruction sat in the register's `#cards`
+section and 294 review records on disk. `card` and `use` now read them.
+
+---
+
+## What shipped this session, 0.7.1 → 0.12.24
 
 | Version | What |
 |---|---|
@@ -156,6 +158,7 @@ granted or sold again. That is the whole of the migration.
 | 0.12.21 | **A way out into the world** — the last unbuilt piece of the topology. Claim a tile under five maps, caravan over. **A dead end removed** |
 | 0.12.22 | **The last new art is gone** — four custom textures replaced with paths enumerated from Core. **Zero gameplay art ships**, and it is checked |
 | 0.12.23 | **The handoff, audited again** — six defects in it. A question I had parked in a document, asked and answered instead |
+| 0.12.24 | **The recorder became the book** — the last authored gameplay item retired without a save break, a dead end closed, and the register made readable |
 
 ---
 
@@ -283,7 +286,15 @@ would always have paid) · a way out with no marked anchor was a dead end · two
 reported unreferenced on every run.
 
 **And the queue was re-measured against the code**: 155 rows, **114 built or superseded**, open rows
-**254 → 90**. It could not answer *"how close are we"* before that, because nobody had checked.
+**254 → 86**. It could not answer *"how close are we"* before that, because nobody had checked.
+
+**The count itself was measured two ways and reported as 90.** Under one consistent pattern it is **86 open, 50 partial, 446 done** at 0.12.24-dev. Neither reading was wrong about the file; they were different greps. So the command lives beside the number now:
+
+```
+grep -c '^\s*- \[ \]' docs/TODO.md     # open
+grep -c '^\s*- \[~\]' docs/TODO.md    # partial
+grep -c '^\s*- \[x\]' docs/TODO.md    # done
+```
 
 ---
 
@@ -508,6 +519,24 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 213. **Enumerate the replacement, never remember it.** `Data/Core/Defs` holds **908** distinct `texPath` values; every path used here was confirmed present in a real Core def first. This is the same discipline that `Named<TerrainDef>("Carpet")` skipped, and that one shipped a wrong floor for months.
 214. **Check a rule as a SHAPE, not a count.** *"Remove the 14 historical PNGs"* was stale by ten. The durable assertion is *"every image this package ships is a menu slide"* — which needs no number and cannot go out of date.
 215. **When a def is infrastructure, the art is the breach.** Three of the four legacy defs were mechanics or generator-placed markers that invariant 10 permits. Rebuilding working systems was never the fix. **Separate the def from its texture before deciding what to retire.**
+216. **A decision nobody proved is a decision that does not ship.** The recorder became the book at
+     **0.12.24-dev**; the answer was written down at **0.9.9-dev** and sat for fourteen checkpoints
+     with every checker and every proof green. **No proof mentioned `RR_FieldRecorder` at all.** A
+     recorded decision with no assertion behind it is indistinguishable from an idea.
+217. **Retire a def by removing every way to GET one, not by deleting it.** Recipe, scenario grant,
+     trade and catalogue — four routes, all closable — while the def stays loadable so saves open.
+     The owner's rule is a *"migration decision or declared development-save break before removing
+     any Def a saved Thing references"*, and **never granting one again satisfies it without needing
+     either.** Saved field names stay too: renaming one is a save break for a cosmetic gain.
+219. **When a replacement is Core content, read what Core DOES with it.** `TextBook` has
+     `Flammability 1` and sells only as random outlander stock, so swapping our recorder for it
+     would have made a burnt book refuse every future dispatch for ever. **That defect was in none
+     of the row, the plan or the owner's answer** — only in the Core def.
+220. **A LAW that points at a document its own tool cannot open is a LAW that gets skipped.** The
+     register's `card` column printed the words *"open card"* — a hyperlink label — while Planned
+     Use, Integration Approach and Compatibility Watch sat in the `#cards` section and 294 review
+     records on disk. **Four short columns got read instead, and it counted as consulted.** Reach the
+     guidance from the tool or the rule is decorative.
 216. **A handoff that contains an open question is a handoff that deferred work.** `RR_FieldRecorder` was written into this document as *"needs an owner decision"*; the owner said **ask me, asap**. Invariant 34 already said so. **Ask in the turn you find it, then record the decision.**
 217. **Measure the proof-output split, never carry it.** It said four `PASS:` and eleven `PROOF HELD` when there were twenty-one proofs, and **two of them announce nothing at all** — their last line is a wrapped continuation. Every phrasing-based runner misses those two, not just the wrong one.
 218. **When your measurement and the document disagree, suspect the measurement first.** An invariant-count regex caught ordinary numbered lists and reported duplicates 1–9. The document was right: **209 invariants, no duplicates, gaps deliberate.**

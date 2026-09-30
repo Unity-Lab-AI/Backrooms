@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.24-dev - 2026-09-29 - the recorder became the book
+
+- **Field crews now write straight into the record book they carry.** The separate field recorder is gone from every start and can no longer be built or bought. One item does both jobs, so the record and the thing that made it can no longer get separated.
+- **Nothing in your save breaks.** A recorder you already own still loads, still weighs the same, and can still be recovered from a coordinate. It is simply never issued again.
+- **The company now sells blank record books.** Books burn, and the base game only sells them to you by chance, so a branch that loses its book can order more instead of being unable to send anyone out.
+- **Surveying and recording now follow the same rule:** somebody on the crew has to be carrying the book. Before, a book left on the floor still counted for one of the two.
+- **Losing the book is now the thing that stops a survey**, rather than losing a second piece of equipment nobody could see the point of.
+
+Full record: [the recorder became the book](docs/implementation/RECORD_BOOK_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.23-dev - 2026-09-29 - the handoff, audited again
 
 - **Nothing in the game changed.** This is the session handoff, and writing it properly turned up six things in it that were no longer true.
