@@ -100,4 +100,28 @@ This cannot be undone.</RR_Exchange_SellConfirm>
   <RR_Debrief_NotHome>they are not back at the headquarters yet</RR_Debrief_NotHome>
   <RR_Debrief_NotTogether>the two of them are not in the same place</RR_Debrief_NotTogether>
   <RR_Event_StaffDebriefed>Staff debriefed after returning from the field</RR_Event_StaffDebriefed>
+
+  <!-- Rows 764, 765, 766, 784: what optional mods are loaded and what this mod does about each.
+       Every position is the register's own words turned into something a player can read, and
+       every one ends in the same caveat because nothing has been tested in play. -->
+  <RR_Integration_Heading>Optional mods this company has a position on: {0} of {1} loaded</RR_Integration_Heading>
+  <RR_Integration_Caveat>None of these has been tested in play. Loaded means present, not proven.</RR_Integration_Caveat>
+  <RR_Integration_RowActive>{0} - loaded (register row {1})</RR_Integration_RowActive>
+  <RR_Integration_RowAbsent>{0} - not loaded (register row {1})</RR_Integration_RowAbsent>
+  <RR_Integration_OpenWorld>Open the world map</RR_Integration_OpenWorld>
+
+  <RR_Integration_VehicleFrameworkName>Vehicle Framework</RR_Integration_VehicleFrameworkName>
+  <RR_Integration_VehicleFrameworkPosition>Vehicles stay entirely the other mod's business. Nothing here needs one: a gate is opened on foot, a crew walks through it, and no route, contract or expedition will ever ask you for a vehicle.</RR_Integration_VehicleFrameworkPosition>
+
+  <RR_Integration_RimWorldTogetherName>RimWorld Together</RR_Integration_RimWorldTogetherName>
+  <RR_Integration_RimWorldTogetherPosition>Each player runs their own company: their own facility, their own gate, their own discoveries, their own research and their own books. Visits and supply exchange are the other mod's features and work as it makes them work. There is no shared map, no shared research, and nothing here transfers a case file or a crew between companies.</RR_Integration_RimWorldTogetherPosition>
+
+  <RR_Integration_GravshipOneName>Vanilla Gravship Expanded - Chapter 1</RR_Integration_GravshipOneName>
+  <RR_Integration_GravshipOnePosition>Orbital travel is a separate way to get about and stays that way. Its air, fuel, power, heat and crew systems are untouched. A gate remains the only way into the Backrooms, and nothing here reads or changes a gravship.</RR_Integration_GravshipOnePosition>
+
+  <RR_Integration_VehiclesExpandedName>Vanilla Vehicles Expanded</RR_Integration_VehiclesExpandedName>
+  <RR_Integration_VehiclesExpandedPosition>Use its vehicles for whatever you like - staging a team, moving stock, carrying somebody home. None of it is required and none of it is changed here.</RR_Integration_VehiclesExpandedPosition>
+
+  <RR_Integration_GravshipTwoName>Vanilla Gravship Expanded - Chapter 2</RR_Integration_GravshipTwoName>
+  <RR_Integration_GravshipTwoPosition>Its orbital combat, contracts and salvage are its own and are not patched. Nothing it fights will ever turn up in a Backrooms space: what lives in there is drawn only from this mod's own list of inhabitants, and that is checked on every build.</RR_Integration_GravshipTwoPosition>
 </LanguageData>

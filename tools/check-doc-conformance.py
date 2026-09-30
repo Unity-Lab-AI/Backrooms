@@ -139,6 +139,7 @@ READER_FACING = (
     "README.md",
     os.path.join("docs", "HOWTO.md"),
     os.path.join("docs", "COMPATIBILITY.md"),
+    os.path.join("docs", "MULTIPLAYER.md"),
     os.path.join("docs", "GAME_DESIGN.md"),
     os.path.join("docs", "SCENARIOS.md"),
     os.path.join("docs", "BUILDING.md"),
@@ -210,6 +211,61 @@ def paragraphs(text):
     return found
 
 
+# Row 791, verbatim: "No statement may describe live shared-colony control or synchronized
+# research unless implemented and demonstrated." Nothing has been demonstrated, because no game
+# has ever been launched from this repository, so no reader-facing document may assert any of
+# these.
+#
+# The rule is about **asserting**, not mentioning. `docs/MULTIPLAYER.md` exists to deny every
+# one of these in so many words, and a naive substring ban would fail the one document written to
+# obey it -- the same trap `disposition_stance()` fell into by testing `"required" in text` and
+# calling "not required" a requirement. So each occurrence is checked for a negator in its own
+# sentence, and only an un-negated one is a claim.
+FORBIDDEN_CLAIMS = (
+    "shared colony",
+    "shared map",
+    "shared research",
+    "synchronised research",
+    "synchronized research",
+    "shared colony control",
+    "same colony together",
+)
+
+# Maintained, not complete, and the comment says so on purpose. The first version of this list
+# held only the obvious negators and immediately flagged a real denial in `docs/SCENARIOS.md`:
+# *"shared research ... stay **unpromised** until the exact RWT profile passes the
+# disposable-server test"*. That is exactly the sentence this rule wants documents to contain.
+#
+# A phrase list cannot anticipate every way English denies something -- the same limitation that
+# made `disposition_stance()` wrong -- so the failure mode was chosen deliberately: a missing
+# negator produces a **false positive that blocks a build**, which is loud and gets fixed, rather
+# than a false negative that lets a claim ship, which is silent. Add to this list when a genuine
+# denial is flagged; never widen a forbidden phrase to make a failure go away.
+CLAIM_NEGATORS = ("no ", "not ", "never ", "without ", "cannot ", "neither ", "nor ",
+                  "there is no", "does not", "do not", "is not", "are not", "none",
+                  "unpromised", "unproven", "untested", "unverified", "unsupported",
+                  "instead of", "rather than")
+
+
+def sentences(prose):
+    return [part.strip() for part in re.split(r"(?<=[.!?])\s+|\n", prose) if part.strip()]
+
+
+def check_forbidden_claims(rel, prose, problems):
+    """Refuse an un-negated claim of live shared-colony control or synchronised research."""
+    for sentence in sentences(prose):
+        lowered = sentence.lower()
+        for phrase in FORBIDDEN_CLAIMS:
+            if phrase not in lowered:
+                continue
+            if any(negator in lowered for negator in CLAIM_NEGATORS):
+                continue
+            problems.append("%s claims %r without denying it -- row 791: no statement may "
+                            "describe live shared-colony control or synchronised research "
+                            "unless implemented and demonstrated, and nothing has been "
+                            "demonstrated (%r)" % (rel, phrase, sentence[:90]))
+
+
 def check_reader_facing(problems):
     for rel in READER_FACING:
         path = os.path.join(REPO, rel)
@@ -223,6 +279,8 @@ def check_reader_facing(problems):
             if match:
                 problems.append("%s says %r to a reader -- %s"
                                 % (rel, match.group(0), DOC_BANNED_TERMS[term]))
+
+        check_forbidden_claims(rel, prose, problems)
 
         for paragraph in paragraphs(prose):
             if len(paragraph) > DOC_WALL_CHARS:

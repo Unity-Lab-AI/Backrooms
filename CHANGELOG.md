@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.39-dev - 2026-09-29 - the game now tells you what it does with your other mods
+
+- **The company panel lists the optional mods this mod has a position on, and what that position is.** Five of them, with the register row each came from, whether it is loaded, and in plain words what this mod will and will not do with it. That answer used to live only in a spreadsheet outside the game.
+- **Nothing changes because a mod is installed.** No route, contract, gate or expedition will ever ask you for a vehicle or a gravship. Nothing another mod owns is patched, read or copied.
+- **Nothing from orbit will ever turn up in a Backrooms space.** What lives in there comes only from this mod's own list, and that is checked on every build.
+- **There is a page about playing together now**, with the server setup and what the experience actually is. It says plainly that each player runs their own company - no shared colony, no shared map, no shared research - and that none of it has been tested in play.
+- **Every line of that says "loaded", never "supported".** No game has been launched from this project yet, and the build now refuses any document that claims otherwise.
+
+Full record: [the register said don't patch, so the hook is a sentence](docs/implementation/INTEGRATIONS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.38-dev - 2026-09-29 - a shot-up gate will not hold a connection
 
 - **Damage to a gate now matters.** A gate could be shot to twelve per cent and still open a connection and hold it perfectly. Below half condition it loses its calibration, refuses to open, and says why - repair it with ordinary construction work and calibrate it again, exactly as you did the first time. If a connection is live when it goes, the crews get their return window rather than being cut off.

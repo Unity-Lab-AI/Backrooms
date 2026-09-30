@@ -125,6 +125,48 @@ namespace RimroomsAsyncIndustries.UI
                 .FirstOrDefault();
         }
 
+        /// <summary>
+        /// Which optional mods this package has a recorded position on are loaded, and what that
+        /// position is.
+        ///
+        /// Rows 764, 765, 766 and 784. The register forbids patching any of them -- *"no patch
+        /// or code/assets copied"* for both gravship chapters, *"do not add vehicles solely
+        /// because the framework is installed"* for the vehicle framework -- so what a hook can
+        /// honestly be is this: **a statement, in the game, of what is installed and what this
+        /// mod does about it.** Until now that answer lived only in a register HTML file outside
+        /// the game.
+        ///
+        /// **Every line ends with the same caveat and that is deliberate.** No game has ever
+        /// been launched from this repository, so *"supported"* is a claim nobody has earned and
+        /// row 791 forbids exactly that kind of statement. The readout says *installed* and
+        /// *untested in play*, separately, because they are different facts.
+        ///
+        /// The links are `OpenNativeTab`, the same helper the bed summary above uses: row 765
+        /// asks for *"operations links"* and a button that opens the game's own surface is the
+        /// whole of that, with nothing patched.
+        /// </summary>
+        private void DrawIntegrations(Listing_Standard listing)
+        {
+            System.Collections.Generic.IReadOnlyList<Core.IntegrationState> tracked =
+                Core.InstalledIntegrations.AllInOrder();
+            listing.Label("RR_Integration_Heading".Translate(
+                Core.InstalledIntegrations.ActiveCount(), tracked.Count));
+            listing.Label("RR_Integration_Caveat".Translate());
+            for (int index = 0; index < tracked.Count; index++)
+            {
+                Core.IntegrationState state = tracked[index];
+                string name = state.NameKey.Translate();
+                listing.Label(state.Active
+                    ? "RR_Integration_RowActive".Translate(name, state.RegisterRow)
+                    : "RR_Integration_RowAbsent".Translate(name, state.RegisterRow));
+                // The position is said in both states on purpose: a player deciding whether to
+                // install one of these needs to know what this mod will do with it beforehand.
+                listing.Label(state.PositionKey.Translate());
+            }
+            if (listing.ButtonText("RR_Integration_OpenWorld".Translate()))
+            { OpenNativeTab(DefDatabase<MainButtonDef>.GetNamedSilentFail("World")); }
+        }
+
         private void DrawFacilities(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
             if (!FacilityReport.Available(campaign.Headquarters))
@@ -148,6 +190,8 @@ namespace RimroomsAsyncIndustries.UI
             DrawContainment(listing, campaign);
             listing.GapLine();
             DrawDebriefs(listing, campaign);
+            listing.GapLine();
+            DrawIntegrations(listing);
             listing.GapLine();
 
             string filter = facilityCategory == null ? "RR_Fac_All".Translate().ToString() :

@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.38-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.39-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **190 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `24BF762A9D3C767167102FFCABCC77E08B418A0DF062E34AC6D9706FA4F7DE7C`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **191 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `13031FCBAE5FB6238197D3EB36AD6B2AE0042B91E4B5F05E0AFF6252A736EFCD`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **TWELVE**, all passing. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
-| Proofs | **THIRTY-FIVE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Proofs | **THIRTY-SIX** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -62,15 +62,15 @@ everything below:
 
 ## Is it done? NO, and the shape of what is left
 
-**12 genuine build items**, counted at 0.12.38-dev, listed in full under **What is left** below. **Row 725 closed completely this batch** — seven of its nine subsystems turned out already built. **Twelve rows across the last three batches.**
+**10 genuine build items**, counted at 0.12.39-dev, listed in full under **What is left** below. **Five rows closed this batch** — 764, 765, 766, 784 and 791, all one family. **Seventeen rows across the last four batches.**
 Plus about **8 rows that cannot close before the game runs once** and **9 the owner excluded**.
 
 Queue, one consistent pattern, command beside the number:
 
 ```
-grep -c '^\s*- \[ \]' docs/TODO.md     # 64 open
+grep -c '^\s*- \[ \]' docs/TODO.md     # 59 open
 grep -c '^\s*- \[~\]' docs/TODO.md    # 48 partial
-grep -c '^\s*- \[x\]' docs/TODO.md    # 470 done
+grep -c '^\s*- \[x\]' docs/TODO.md    # 475 done
 ```
 
 **The raw open count overstates.** Rows closed by work that shipped the same day keep their `[ ]`
@@ -81,7 +81,7 @@ session than it cost.
 
 ### The package is staged, and one checkpoint behind
 
-The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.38-dev**. Re-stage
+The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.39-dev**. Re-stage
 before any launch:
 
 ```
@@ -95,45 +95,45 @@ checkpoints stale, so nothing built in this project's history had ever reached t
 
 ---
 
-## DO THIS FIRST — the gate subsystems batch
+## DO THIS FIRST — the player-facing words batch
 
-Row 725, and it is the largest single unbuilt row left: *"monitoring, cool-down, modules, repair
-and reliability"* for a gate. Five nouns, and **three of them already have machinery that must be
-read before anything is written.**
+Rows 1193, 1220, 821, 822 and 833. **Five rows, one family**: everything left that is about what
+the player reads and how they reach it.
 
-| Noun | What already ships |
+| Row | What |
 |---|---|
-| monitoring | the gate inspect pane, the three gate alerts (0.10.5-dev), the containment alerts (0.12.35-dev) |
-| cool-down | **the return window and the opening clock** — `emergencyReturnTicksRemaining`, `openingTicksRemaining` |
-| modules | **`GateEquipmentLinks`** (0.10.8-dev) — shelves, analysers and cabinets link into a gate with no reach limit |
-| repair | `RR_ConnectedRepair` crosses for damaged buildings; a gate is a building |
-| reliability | power reserves, calibration and the cutoff all ship |
+| 1193, 1220 | the player-facing how-to for gameplay and systems — `docs/HOWTO.md` documents the **build**, not play |
+| 821 | the native menu remap into the company-first layout — Architect, Work, Assign, Research |
+| 822, 833 | tutorial, glossary, keyboard paths, contrast and scale |
 
 Four things to settle:
 
-1. **Find out which of the five are already built before writing any of them.** This session
-   closed **eight** rows that turned out to be done or answered by Core — 227, 308, 493, 1266,
-   98, 99, 1011, 1101. On the measured evidence, *monitoring* and *reliability* are the likely
-   already-shipped pair and *cool-down* the likely genuine gap.
-2. **A gate has exactly six ways to stop working, and that set is asserted** by
-   `proof-areas-and-debrief.py`: the kill switch, power, the operator, two clocks and the
-   deliberate cutoff. **Anything new that can stop a gate has to be added to that set on purpose**,
-   and the proof will fail until it is — which is the point.
-3. **"Modules" is the word to be careful with.** `GateEquipmentLinks` already is a module system,
-   built to the owner's *"reach fare and through walls"* direction with **no distance and no
-   line-of-sight check**. If row 725's modules are the same thing, close it by proof; if they are
-   something else, **ask before authoring a def** — a module as a new `ThingDef` is forbidden by
-   the existing-content-only constraint.
-4. **`python tools/register-query.py family facilities` and `trace RR-GATE`** — facilities is
-   swept, so the guidance is already read; the gate trace is the one to re-read for this row.
+1. **Written once, for both the repo and the site.** Row 1193 says so explicitly. `docs/HOWTO.md`
+   exists and is about building the mod; the play document is a different document, and naming it
+   `HOWTO.md` would collide. **`docs/PLAYING.md`** is the obvious name, and it must join the
+   reader-facing set in `check-doc-conformance.py` — now twelve documents, holding the vocabulary
+   rule, the wall rule and the row 791 claim guard.
+2. **Most of the tutorial content already exists.** `docs/TUTORIAL_SCRIPT.md` is already in the
+   reader-facing set, and the mission line, the solo/group hints and the twelve Operations panes
+   all ship. **Read those before writing anything** — nine rows this session turned out already
+   built.
+3. **Row 821 is a question about Core's surfaces, not a document.** *"Remap the native menus"* has
+   to mean something a player can see; `OpenNativeTab` already opens Architect, Work, Assign and
+   Research from the company panel, so establish what remains before designing. **A `MainButtonDef`
+   reorder is content; changing Core's own tabs is not ours to do.**
+4. **822 and 833 are accessibility, and they are measurable.** `check-keyed-strings.py` already
+   reports every declared key resolving, and `check-display-style.py` holds every surface against
+   Core's own practice per surface. **Contrast and scale mean using Core's own `GameFont`,
+   `Text.Font` and `ColorLibrary` values rather than authored ones** — measure what the panes do
+   today first.
 
-**The batch to pair it with** is items 8–10 below: vehicles and space hooks (764, 765, 766) and the
-RWT multiplayer detection (784, 791), because all three are *optional-by-construction*
-`PatchOperationFindMod` work that does nothing when the mod is absent, and all three touch the gate.
+**The one thing to be careful about:** a how-to that describes behaviour nobody has observed is the
+defect `docs/MULTIPLAYER.md` was written to avoid. Every play instruction is a structural claim
+about the code, and the document has to say so.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.38
+## What shipped this session, 0.7.1 → 0.12.39
 
 | Version | What |
 |---|---|
@@ -211,7 +211,7 @@ RWT multiplayer detection (784, 791), because all three are *optional-by-constru
 
 ## What is left, in order — rewritten 0.12.34-dev, measured not carried
 
-**12 genuine build items**, counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
+**10 genuine build items**, counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
 
 ### Systems still unbuilt
 
@@ -233,33 +233,28 @@ RWT multiplayer detection (784, 791), because all three are *optional-by-constru
    and the owner asked for *"quests and missions and contracts"*. Plus a player-facing surface for
    open odd demands: offers and settlements are recorded events and the Operations pane does not
    list them. Rows 1031, 1032, 1033.
-4. **Vehicles, space travel and the two VGE chapter hooks.** Rows 764, 765, 766. **Optional by
-    construction** — a `PatchOperationFindMod` that does nothing when the mod is absent.
-5. **RWT multiplayer feature detection and its documentation.** Rows 784, 791. Requires the mod
-    present to detect anything, and **no statement may describe live shared-colony control** unless
-    implemented and demonstrated.
 
 ### Surfaces and words
 
-6. **The player-facing how-to for gameplay and systems.** Rows 1193, 1220. `docs/HOWTO.md`
+4. **The player-facing how-to for gameplay and systems.** Rows 1193, 1220. `docs/HOWTO.md`
     documents the **build**, not play. Written **once**, for both the repo and the site.
-7. **The native menu remap** into the company-first layout. Row 821. Twelve panes and reason codes
+5. **The native menu remap** into the company-first layout. Row 821. Twelve panes and reason codes
     ship; this is the Architect/Work/Assign/Research integration.
-8. **Tutorial, glossary, keyboard paths, contrast and scale.** Rows 822, 833. Localization
+6. **Tutorial, glossary, keyboard paths, contrast and scale.** Rows 822, 833. Localization
     completeness is already measurable: `check-keyed-strings.py` reports every declared key
     resolving.
 
 ### Housekeeping with teeth
 
-9. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
+7. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
     research and coarse for code.
-10. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
+8. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
     expedition logistics, interface, facilities, furniture, storage, power, contracts, faction
     standing, subject casework, evidence, policies. **Not yet: medical, world operations, cargo,
     hospitality, materials, visitor economy, staff psychology.** Rows 206, 302.
-11. **The campaign economy workbook has no generator**, and the register preview PNGs under
+9. **The campaign economy workbook has no generator**, and the register preview PNGs under
     `outputs/` depict a superseded layout. Rows 1268, 1269.
-12. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
+10. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
     terms and the Steam agreements, and keep the position current. Rows 1286–1290.
 
 ### Cannot close before the game runs once — about 8 rows
@@ -706,6 +701,29 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
      wired. `RenameCompany` duplicated a live path with identical validation and an identical
      event, so it was retired. **Decide which before fixing either**, because wiring a duplicate
      doubles the drift instead of closing it.
+
+---
+
+## VERIFY THE PROOF PASSES BEFORE YOU PLANT ANYTHING
+
+At 0.12.39-dev a fault-plant run reported **17 of 17 caught** and it was **worthless**. A fix to
+the proof had introduced a syntax error, so the proof exited non-zero unconditionally and **every
+plant registered as caught**. It looked like a clean sweep.
+
+**A plant run against a broken proof proves nothing and looks perfect.** The first step of every
+plant run is now:
+
+```
+python .local/register/proof-<name>.py >/dev/null 2>&1; echo "must be 0: $?"
+```
+
+and only then plant. The harness already re-reads every write to guard against a half-restore
+(0.12.36-dev); this is the other half of the same lesson.
+
+**And the same shape bit the doc scripts twice.** A patch script whose `sub()` throws part way
+leaves the file untouched, so the edits *before* the throw are lost silently — six state edits at
+0.12.38-dev, eight at 0.12.39-dev, both found only by grepping the file afterwards. **Assert every
+anchor first, write once at the end, and grep the result.**
 
 ---
 
