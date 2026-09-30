@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.32-dev - 2026-09-29 - everything is read by something
+
+- **You can cut a connection now without disabling the gate.** A new button on a working gate ends the opening immediately and starts the emergency return window, so anyone on the far side comes home - and the gate is still there for next time. That is different from the kill switch, which stays thrown until you clear it.
+- **The whole mod was audited for things that were built and then never hooked up.** 258 definitions and 102 actions checked. The cutoff above was one of two that had no way to reach them; the other turned out to be a duplicate of something that already worked, and was removed.
+- **A check now refuses to ship anything this mod adds that nothing reads.** Four times in this project's history something was written and left unreachable - once it was the entire contract line.
+
+Full record: [everything is read by something](docs/implementation/WIRING_AUDIT_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.31-dev - 2026-09-29 - a wide gate out of plain doors
 
 - **You can build a wide gate out of ordinary doors now.** Put two or three plain doors side by side in the same wall, designate one as a gate, and bind the others into it. The whole run becomes one gate.

@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <RR_Gate_CutoffLabel>Cut the connection now</RR_Gate_CutoffLabel>
+  <RR_Gate_CutoffDesc>End this opening immediately and start the emergency return window, so anyone on the far side comes home.
+
+The gate stays usable afterwards. This is not the kill switch, which stays thrown until you clear it.</RR_Gate_CutoffDesc>
   <RR_GateRun_Label>Opening: {0} door(s), {1} wide</RR_GateRun_Label>
   <RR_GateRun_Desc>Bind an ordinary door next to this gate into the same opening, so a wider gate can be built out of several plain doors.
 

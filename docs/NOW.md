@@ -24,11 +24,11 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.31-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.32-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **179 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `BA503ACA67B06719663B35D406E536C63DF266F55F926602B6958DE7CF76F757`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
-| Checkers | **TEN**, all passing. The tenth, `check-retired-content.py`, refuses player-facing text that names equipment this mod retired — **fourteen strings were doing it** |
+| Assembly | SHA-256 `B86715C2EBD0300B0888F9C613EC3645AD9CEAAEA314FD45ED55230971D848CD`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Checkers | **ELEVEN**, all passing. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **TWENTY-EIGHT** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
@@ -327,7 +327,7 @@ section and 294 review records on disk. `card` and `use` now read them.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.31
+## What shipped this session, 0.7.1 → 0.12.32
 
 | Version | What |
 |---|---|
@@ -398,6 +398,7 @@ section and 294 review records on disk. `card` and `use` now read them.
 | 0.12.29 | **Six rungs, and two that could not exist** — research tier 4. **Logistics gets none and the gate line cannot have one**, and both absences are asserted rather than assumed |
 | 0.12.30 | **You can call the company** — `EstablishCorporationContact` had no caller, so **two of three starts had no campaign at all**. Earned on a comms console, and it opens the line that already existed |
 | 0.12.31 | **A wide gate out of plain doors** — 1×3 and 2×3 with no mods, as one gate of one width. **Three rows were one feature**, and the union of a run is the `CellRect` everything already read |
+| 0.12.32 | **Everything is read by something** — the **eleventh checker**. 258 defs and 102 actions audited; one unwired capability given a surface, one duplicate retired |
 
 ---
 
@@ -885,6 +886,20 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
      runtime-built keyed string for the fifth time in this project, and the banned word *"doorway"*
      five times — **a rule I had personally been corrected on hours earlier in the same session.**
      That is the entire argument for having them.
+248. **A PUBLIC VERB WITH NO CALLER IS A FEATURE THAT DOES NOT EXIST**, and this project has been
+     bitten by it four times: five PawnKinds, no `IncidentDef` at all, the entire request line, and
+     `EstablishCorporationContact`. **All four passed every checker of their day**, because nothing
+     was wrong with any individual file. `check-wiring.py` is the eleventh checker and exists for
+     exactly this.
+249. **"Wired" has three routes, not one.** By name in C#, by TYPE through `DefDatabase<T>` or
+     RimWorld's own consumption, or by cross-reference from another def's XML. Checking only the
+     first reported **106** false positives; only the first two reported **3**. **The real answer
+     was zero** — twice the measurement was the defect.
+250. **An unwired verb is either a missing surface or a duplicate path, and the two get opposite
+     treatment.** `TriggerEmergencyCutoff` was a real capability nobody could reach, so it was
+     wired. `RenameCompany` duplicated a live path with identical validation and an identical
+     event, so it was retired. **Decide which before fixing either**, because wiring a duplicate
+     doubles the drift instead of closing it.
 
 ---
 
@@ -961,7 +976,7 @@ every single time.
 4. `CHANGELOG.md` in plain player-facing language.
 5. Implementation record under `docs/implementation/`.
 6. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
-7. **Every checker** (TEN): `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-display-style.py`, `check-campaign-absolutes.py`, `check-doc-conformance.py`, `check-register-compliance.py`, `check-retired-content.py`, `research/audit-gate0.py`.
+7. **Every checker** (ELEVEN): `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-display-style.py`, `check-campaign-absolutes.py`, `check-doc-conformance.py`, `check-register-compliance.py`, `check-retired-content.py`, `check-wiring.py`, `research/audit-gate0.py`.
 7b. **Every proof (TWENTY-ONE), by exit status:**
 
 ```sh

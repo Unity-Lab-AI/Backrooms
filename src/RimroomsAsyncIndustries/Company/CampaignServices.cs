@@ -232,18 +232,15 @@ namespace RimroomsAsyncIndustries.Company
             RecordEvent("RR_Event_CompanyRenamed", branchId, CompanyName);
         }
 
-        /// <summary>
-        /// Rename the company. Available at any time and to every start, because every
-        /// start can build a full company of its own.
-        /// </summary>
-        public CompanyActionResult RenameCompany(string proposed)
-        {
-            if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
-            if (proposed != null && proposed.Trim() == CompanyName) { return CompanyActionResult.Existing(); }
-            if (!TrySetCompanyName(proposed)) { return CompanyActionResult.Refused("RR_Company_InvalidName"); }
-            RecordEvent("RR_Event_CompanyRenamed", branchId, CompanyName);
-            return CompanyActionResult.Applied();
-        }
+        // RenameCompany was retired in 0.12.32-dev, by the wiring checker that found it had no
+        // caller. It was not a missing feature -- it was a SECOND path to a change that already
+        // works. `Dialog_RenameCompany` uses Core's `Dialog_Rename<T>`, whose accept sets
+        // `RenamableLabel`, whose setter calls the same `TrySetCompanyName`; and its `OnRenamed`
+        // calls `NoteRenamed()`, which records the same RR_Event_CompanyRenamed event. Identical
+        // validation, identical record, one of them unreachable.
+        //
+        // Two entry points to one state change is how two validations drift apart, and the one
+        // nobody uses is the one that drifts without anybody noticing.
 
         /// <summary>
         /// Whether this branch owns a loaded map: its headquarters, or a destination

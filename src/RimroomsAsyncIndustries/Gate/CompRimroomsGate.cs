@@ -469,6 +469,24 @@ namespace RimroomsAsyncIndustries.Gate
                 };
             }
 
+            // Ending this opening now, without disabling the gate.
+            //
+            // NOT the same as the kill switch below it, which is a persistent thrown state that
+            // has to be cleared before the next opening. A cutoff starts the emergency return
+            // window and leaves the gate usable, which is what a player wants while watching a
+            // crew get into trouble. It had no surface at all until the wiring checker found the
+            // method with no caller, at 0.12.32-dev.
+            if (IsOpening && !IsEmergency)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "RR_Gate_CutoffLabel".Translate(),
+                    defaultDesc = "RR_Gate_CutoffDesc".Translate(),
+                    icon = parent.def.uiIcon,
+                    action = delegate { ShowOrderResult(TriggerEmergencyCutoff()); }
+                };
+            }
+
             yield return new Command_Action
             {
                 defaultLabel = "RR_Gate_KillSwitchLabel".Translate(),
