@@ -11,8 +11,23 @@ Assemblies/*.dll
 Assemblies/*.pdb
 *.log
 
-# Machine-local tooling, package caches, decompiled reference inspection, build evidence
-.local/
+# Machine-local tooling, package caches, decompiled reference inspection, build evidence.
+#
+# The 40 register PROOFS and the 11 PLANT suites are the exception, un-ignored below. Owner
+# direction, 2026-09-30, verbatim: *"i need someone else to work on this in parrellel through
+# git hub and i need to make sure they have it all but the temp stuff i told you to git ignore"*.
+# Those scripts are neither machine-local nor temp -- they are this project's primary
+# verification instrument, and a clone without them can run the 13 checkers and none of the 40
+# proofs. Everything else under .local/ stays out: a 132 MB nuget cache, 19 MB of decompiler
+# binaries, the per-subsystem source inspections, and the one-shot record/ship/fix scripts.
+#
+# Git does not descend into an ignored directory, so the parent has to be re-admitted a level
+# at a time before a negation inside it can match. Same pattern as !.claude/bin/ below.
+.local/*
+!.local/register/
+.local/register/*
+!.local/register/proof-*.py
+!.local/register/plant-*.py
 artifacts/
 Mod/**/Assemblies/*.dll
 Mod/**/Assemblies/*.pdb

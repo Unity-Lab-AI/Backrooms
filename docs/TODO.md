@@ -1421,6 +1421,31 @@ from the live map, not inferred.
 
 ---
 
+## Fifth launch findings — 2026-09-30
+
+Owner, verbatim: **"okay check it the store and pawns are there now but i dont see a natural gate
+thats suppose to be on the back wall of one of the storage rooms so that they can eneter theri
+300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels with
+thir natual gate spawns to different levels within"**
+
+- [x] **"the store and pawns are there now"** — **0.12.47-dev confirmed by the owner and measured live.** `get_cell_info` at (133, 135) returns a granite-block `Wall` on Concrete where a Granite `Mineable` stood before the burn. The burn and the arrival fallback both hold.
+
+- [x] **"i dont see a natural gate thats suppose to be on the back wall of one of the storage rooms"** — **FIXED 0.12.48-dev. The door was always there; it was never marked.** Measured live: (160, 161) holds a steel `RimWorld.Building_Door` with its emergence gizmo **"Mark as way home" enabled**. `SoloGroupOpening.Open` runs coordinate → site → mark the door → register the connection, and **step 2 failed**, so the marking and the registration never happened.
+
+  The site failed in `ValidateNativePowerNetwork`, which required `count(def == lightDef)` to equal `Rooms.Count + Rooms.Count(service_passage or utility_room)`. The extra lamps in that sum are `RoomContentBuilder`'s hard-coded **`StandingLamp`**; `BackroomsPalette` switched `lightDef` to **`WallLamp`** at **0.7.8-dev**. `climateRoom` guarantees at least one such room exists, so the shortfall was arithmetic, not chance: **no Backrooms coordinate could generate for thirty-nine checkpoints**, and no proof caught it because they read source text and nothing had ever run the generator.
+
+  The validator now checks the lights **actually placed** and sweeps **every `CompPowerTrader` on the map** — it names no def and predicts no count. And a power fault is **reported, never fatal**: a dark, cold coordinate is playable, a missing one costs the player the gate. `ValidatePlacedLayout` stays fatal. Record `implementation/NATURAL_GATE_UNBLOCKED_IMPLEMENTATION.md`, **28 of 28** plants caught.
+
+- [x] **the wall lamp was hanging in mid-floor** — same root. `WallLamp` draws with `drawOffsetNorth (0,0,0.9)`, into the wall it mounts on. `FindWallAttachmentCell` now returns an interior cell with the room's **own wall def** behind it and the `Rot4` facing it, branching on `lightDef.building.isAttachment` rather than the def name, and returning `IntVec3.Invalid` rather than throwing when a small room has nowhere to mount.
+
+- [x] **"make sure to push to both remotes too i need someone else to work on this in parrellel through git hub and i need to make sure they have it all but the temp stuff i told you to git ignore"** — **DONE, and it found a real gap.** `.local/` was hiding the **40 proofs and 11 plant suites**, so a clone could run the 13 checkers and nothing else. `.gitignore` now admits exactly `.local/register/proof-*.py` and `.local/register/plant-*.py` — measured **51 newly tracked files, exactly 40 proofs and 11 plants**. Still excluded: a 132 MB nuget cache, 19 MB of decompiler binaries, the per-subsystem inspections, the scratch bridge client and the one-shot record scripts. A collaborator needs the same RimWorld install: `build.ps1` refuses any Core assembly that does not hash to the reviewed target.
+
+- [x] **`NaturalFrontierService` reported as orphaned — WRONG, and the correction belongs on the record.** The grep excluded the file holding the caller, and the caller is a `JobDriver` in that same file. Verified end to end: `WorkGiverDef RR_SurveyFrontier` → `WorkGiver_SurveyFrontier` → `JobDef RR_SurveyFrontier` → `JobDriver` → `NaturalFrontierService.Discover`. `check-wiring.py` was right. **The onward-gate machinery exists and is reachable; the only thing blocking it was that no level could generate.**
+
+- [ ] **"theri 300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels with thir natual gate spawns to different levels within"** — **OPEN, and fully specified by the owner across four questions this checkpoint.** Levels become **300×300** (from 60×60); **60–100 rooms** in a dense warren on a **10×10** planning grid at the existing 19-cell spacing; **threshold_room / office_copy / return_gallery stay unique**, the other five families **repeat**, and **new structural families** are authored (flooded_room, stairwell, dead_end, pillar_hall) — **layout and dressing only, no new ThingDefs**; **4–6 onward gates per level**, one per ~15 rooms, with `MaximumNaturalDepth` **3 → 6**; and a **fresh save**, dropping the 60×60 path entirely for one shape, the simplest code and the cleanest proofs.
+
+---
+
 ## TOMBSTONES
 
 _(none)_

@@ -94,12 +94,36 @@ namespace RimroomsAsyncIndustries.Generation
                     { officeEvidenceCell, anchorPosition, entryCell, returnCell };
                 foreach (IntVec3 cell in anchor.OccupiedRect().ExpandedBy(1).Cells)
                 { reservedProviderCells.Add(cell); }
+                // **The fixture decides where it can go.** `BackroomsPalette` resolves `WallLamp`,
+                // which is `building.isAttachment` with a `Placeworker_AttachedToWall` and
+                // `drawOffsetNorth (0,0,0.9)` -- it draws almost a full cell INTO the wall it is
+                // mounted on. Placed on an open interior cell it drew a sconce hanging in the
+                // middle of the floor, which also defeats the reason the palette chose it: an
+                // endless corridor reads as endless precisely because nothing is standing in it.
+                //
+                // Branching on the def rather than the def NAME, because the palette still falls
+                // back to `StandingLamp`, which stands on the floor and must keep doing so.
                 var lightCells = new List<IntVec3>();
+                var lightFacings = new List<Rot4>();
+                bool wallMounted = lightDef.building != null && lightDef.building.isAttachment;
                 foreach (RoomRecord room in coordinate.Rooms.OrderBy(value => value.Index))
                 {
-                    IntVec3 lightCell = FindClearInteriorCell(map, room,
-                        room.Bounds.CenterCell + new IntVec3(0, 0, 2), reservedProviderCells);
+                    IntVec3 lightCell;
+                    Rot4 facing = Rot4.North;
+                    lightCell = wallMounted
+                        ? FindWallAttachmentCell(map, room, room.Bounds.CenterCell,
+                            wallDef, reservedProviderCells, out facing)
+                        : IntVec3.Invalid;
+                    if (!lightCell.IsValid)
+                    {
+                        // No wall to mount on, or a floor-standing fixture. Either way it goes
+                        // where it always went, facing north.
+                        facing = Rot4.North;
+                        lightCell = FindClearInteriorCell(map, room,
+                            room.Bounds.CenterCell + new IntVec3(0, 0, 2), reservedProviderCells);
+                    }
                     lightCells.Add(lightCell);
+                    lightFacings.Add(facing);
                     reservedProviderCells.Add(lightCell);
                 }
                 IntVec3 generatorCell = FindPoweredBuildingCell(map, climateRoom, generatorDef,
@@ -135,22 +159,39 @@ namespace RimroomsAsyncIndustries.Generation
                 if (!climate.Spawned || climate.Map != map)
                 { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
 
+                // Kept, rather than counted again later. Re-deriving how many lights should exist
+                // is what broke this generator for thirty-nine checkpoints; see
+                // ValidateNativePowerNetwork.
+                var placedLights = new List<Thing>();
                 for (int index = 0; index < coordinate.Rooms.Count; index++)
                 {
                     Thing light = MakeBuilding(lightDef, lightDef.MadeFromStuff ? ThingDefOf.Steel : null);
                     light.SetFaction(Faction.OfPlayer);
-                    GenSpawn.Spawn(light, lightCells[index], map, Rot4.North);
+                    GenSpawn.Spawn(light, lightCells[index], map, lightFacings[index]);
                     if (!light.Spawned || light.Map != map)
                     { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+                    placedLights.Add(light);
                 }
 
                 RoomContentBuilder.Populate(map, coordinate, entryCell, returnCell, officeEvidenceCell, anchor);
                 // Native spawn notifications are queued; rebuild connections now without ticking
                 // the power simulation so readiness checks see the actual shared grid.
                 map.powerNetManager.UpdatePowerNetsAndConnections_First();
-                int expectedPowerLights = coordinate.Rooms.Count + coordinate.Rooms.Count(room =>
-                    room.familyId == "service_passage" || room.familyId == "utility_room");
-                ValidateNativePowerNetwork(map, generator, climate, lightDef, expectedPowerLights);
+                // **Reported, never fatal.** A coordinate whose heater or one lamp failed to join
+                // the grid is dark and cold and completely playable. A coordinate that does not
+                // exist costs the player the gate that leads to it -- which is exactly what
+                // happened on the fifth launch: the owner reported *"i dont see a natural gate"*,
+                // and the cause was this validation aborting the whole layout, so
+                // `MarkLayoutReady` never ran, so `SoloGroupOpening` had no threshold anchor to
+                // register against. The structural validation below stays fatal, because a
+                // coordinate you cannot walk through really is broken.
+                string powerFault = ValidateNativePowerNetwork(map, generator, climate, placedLights);
+                if (powerFault != null)
+                {
+                    Log.Warning("[Rimrooms][Generation] Coordinate " + coordinate.Id +
+                        " generated with an incomplete native power grid (" + powerFault +
+                        "). The space, its gate anchor and its way home are unaffected.");
+                }
                 MapGenerator.PlayerStartSpot = entryCell;
                 MapGenerator.rootsToUnfog.Add(entryCell);
                 MapGenerator.rootsToUnfog.Add(returnCell);
@@ -412,26 +453,70 @@ namespace RimroomsAsyncIndustries.Generation
             { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
         }
 
-        private static void ValidateNativePowerNetwork(Map map, Thing generator, Thing heater,
-            ThingDef lightDef, int expectedRoomLights)
+        /// <summary>
+        /// Whether everything on this coordinate that needs power is on the generator's grid.
+        /// Returns a short human-readable fault, or **null** when the grid is complete.
+        ///
+        /// ## The bug this replaces, because it is the most expensive one this project has had
+        ///
+        /// Until 0.12.48-dev this method counted things whose `def == lightDef` and required the
+        /// total to equal a formula re-derived from the coordinate:
+        ///
+        ///     Rooms.Count + Rooms.Count(service_passage or utility_room)
+        ///
+        /// The extra lamps in that formula are placed by <see cref="RoomContentBuilder"/>, which
+        /// spawns a hard-coded **`StandingLamp`**. The formula was correct while `lightDef` was
+        /// also `StandingLamp`. **`BackroomsPalette` switched the fixture to `WallLamp` at
+        /// 0.7.8-dev**, so from that checkpoint the count of `WallLamp`s could never include the
+        /// `StandingLamp`s the formula expected. `climateRoom` requires at least one
+        /// service_passage or utility_room to exist, so the shortfall was **guaranteed** and
+        /// **every coordinate failed to generate for thirty-nine checkpoints.** No proof caught
+        /// it because they read source text, and nothing had ever run this generator until a
+        /// player reached a gate.
+        ///
+        /// ## Why this shape cannot go stale the same way
+        ///
+        /// It never names a def and never predicts a count. The lights are the list the caller
+        /// **actually spawned**, and the last check sweeps **every `CompPowerTrader` on the map**
+        /// — so a lamp, bench or heater that any other code adds later is covered automatically,
+        /// which is what the formula was trying and failing to do by arithmetic.
+        /// </summary>
+        private static string ValidateNativePowerNetwork(Map map, Thing generator, Thing heater,
+            List<Thing> placedLights)
         {
             CompPowerPlant plant = generator == null ? null : generator.TryGetComp<CompPowerPlant>();
             CompRefuelable fuel = generator == null ? null : generator.TryGetComp<CompRefuelable>();
-            if (plant == null || plant.PowerNet == null || fuel == null || !fuel.HasFuel ||
-                heater == null || !heater.Spawned || heater.Map != map)
-            { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+            if (plant == null) { return "the generator has no power-plant component"; }
+            if (plant.PowerNet == null) { return "the generator is not on any power net"; }
+            if (fuel == null || !fuel.HasFuel) { return "the generator has no fuel"; }
+            if (heater == null || !heater.Spawned || heater.Map != map)
+            { return "the climate unit is not on this map"; }
 
-            List<Thing> lights = map.listerThings.AllThings.Where(thing => thing != null &&
-                thing.Spawned && thing.Map == map && thing.def == lightDef).ToList();
-            if (lights.Count != expectedRoomLights)
-            { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
-            var consumers = new List<Thing>(lights) { heater };
+            foreach (Thing light in placedLights)
+            {
+                if (light == null || !light.Spawned || light.Map != map)
+                { return "a room light is not on this map"; }
+            }
+
+            // Every consumer, whatever placed it and whatever def it is. This is the invariant a
+            // player can actually see -- nothing here is dark or cold -- and it covers the lamps
+            // RoomContentBuilder adds after the grid is laid without naming them.
+            var consumers = new List<Thing>(placedLights) { heater };
+            foreach (Thing thing in map.listerThings.AllThings)
+            {
+                if (thing == null || !thing.Spawned || thing.Map != map || consumers.Contains(thing))
+                { continue; }
+                if (thing.TryGetComp<CompPowerTrader>() != null) { consumers.Add(thing); }
+            }
             foreach (Thing consumer in consumers)
             {
                 CompPowerTrader power = consumer.TryGetComp<CompPowerTrader>();
-                if (power == null || power.PowerNet == null || power.PowerNet != plant.PowerNet)
-                { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+                if (power == null)
+                { return consumer.def.defName + " cannot draw power"; }
+                if (power.PowerNet == null || power.PowerNet != plant.PowerNet)
+                { return consumer.def.defName + " is not on the generator's power net"; }
             }
+            return null;
         }
 
         private static void ClearMapContents(Map map)
@@ -682,6 +767,44 @@ namespace RimroomsAsyncIndustries.Generation
                 }
             }
             throw new InvalidOperationException("RR_Generation_NoSafeRoomCell");
+        }
+
+        /// <summary>
+        /// An interior cell with one of the room's own walls directly behind it, and the rotation
+        /// that faces that wall.
+        ///
+        /// A wall attachment draws itself almost a full cell in its facing direction, so the
+        /// rotation is not decoration -- it is the difference between a lamp on the wall and a
+        /// lamp hanging over the floor. The wall must be the room's own wall def: a door also
+        /// holds up roof, and a lamp mounted on a door is mounted on nothing the moment it opens.
+        /// </summary>
+        private static IntVec3 FindWallAttachmentCell(Map map, RoomRecord room, IntVec3 preferred,
+            ThingDef wallDef, HashSet<IntVec3> reserved, out Rot4 facing)
+        {
+            facing = Rot4.North;
+            IntVec3[] directions = { IntVec3.North, IntVec3.East, IntVec3.South, IntVec3.West };
+            foreach (IntVec3 candidate in OrderedInteriorCells(room, preferred))
+            {
+                if ((reserved != null && reserved.Contains(candidate)) || !candidate.InBounds(map) ||
+                    !candidate.Standable(map) || candidate.GetEdifice(map) != null)
+                { continue; }
+                foreach (IntVec3 direction in directions)
+                {
+                    IntVec3 behind = candidate + direction;
+                    if (!behind.InBounds(map)) { continue; }
+                    Building wall = behind.GetEdifice(map);
+                    if (wall == null || wall.def != wallDef) { continue; }
+                    facing = Rot4.FromIntVec3(direction);
+                    return candidate;
+                }
+            }
+            // **Invalid rather than a throw, deliberately.** A small room whose wall-adjacent
+            // cells are all reserved -- the threshold room holds the gate anchor, the entry cell,
+            // the return cell and the anchor's whole expanded rect -- would otherwise fail the
+            // coordinate outright. A lamp standing on the floor is a cosmetic compromise; a
+            // coordinate that does not generate costs the player the gate. This method exists
+            // BECAUSE a light placement rule took the whole map down for thirty-nine checkpoints.
+            return IntVec3.Invalid;
         }
 
         private static IEnumerable<IntVec3> OrderedInteriorCells(RoomRecord room, IntVec3 preferred)

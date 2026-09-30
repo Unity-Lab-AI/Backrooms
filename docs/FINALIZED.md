@@ -4839,3 +4839,83 @@ recompiles. **Thirteen checkers pass, forty proofs hold**, all read by exit stat
 `implementation/BURN_INTO_PLACE_IMPLEMENTATION.md`.
 
 **Four launches, ten defects, every one ours. Still not a single mod conflict.**
+
+---
+
+## Session 2026-09-30 - a light count took every Backrooms level down (0.12.48-dev)
+
+**Verbatim user quote:** *"okay check it the store and pawns are there now but i dont see a natural
+gate thats suppose to be on the back wall of one of the storage rooms so that they can eneter theri
+300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels with
+thir natual gate spawns to different levels within"*
+
+**Verbatim user quote:** *"kill it again when rimsort is ready for m,e and u are done checking the
+old runtime test"*
+
+**Verbatim user quote:** *"make sure to push to both remotes too i need someone else to work on this
+in parrellel through git hub and i need to make sure they have it all but the temp stuff i told you
+to git ignore"*
+
+**Files touched:** `src/RimroomsAsyncIndustries/Generation/GenStep_BackroomsDestination.cs`,
+`.gitignore`, `Mod/Rimrooms - Async Industries/About/About.xml`,
+`src/RimroomsAsyncIndustries/RimroomsAsyncIndustries.csproj`, `README.md`,
+`docs/implementation/NATURAL_GATE_UNBLOCKED_IMPLEMENTATION.md`, `docs/TODO.md`, `docs/NOW.md`,
+plus **51 newly tracked verification scripts** under `.local/register/`.
+
+**Closure notes.** **The most expensive defect this project has had, and the cheapest to state.**
+`ValidateNativePowerNetwork` counted things whose `def == lightDef` and required the total to equal
+`Rooms.Count + Rooms.Count(service_passage or utility_room)`. The extra lamps in that formula are
+`RoomContentBuilder`'s hard-coded `StandingLamp`; `BackroomsPalette` switched `lightDef` to
+`WallLamp` at **0.7.8-dev**. `climateRoom` guarantees at least one service_passage or utility_room,
+so the shortfall was **arithmetic, not chance**: from 0.7.8-dev to 0.12.47-dev **no Backrooms
+coordinate could generate**, and no proof saw it because they read source text and nothing had ever
+run the generator until a player reached a gate. A comment three hundred lines away proves the
+author knew RoomContentBuilder adds another lamp — **the coupling was by count, and a count cannot
+notice that the thing being counted changed identity.**
+
+**The door was always there.** Read live from the owner's process: (160, 161) holds a steel
+`Building_Door` whose emergence gizmo **"Mark as way home" is enabled**, and `mapCount` was **2** —
+the level had been created. `SoloGroupOpening.Open` stops at step 2 when the site fails, so the
+marking and the connection never happened. The same reads confirmed 0.12.47-dev: a granite-block
+`Wall` now stands where a Granite `Mineable` stood.
+
+**The fix stops predicting and starts observing.** The validator takes the lights the caller
+actually spawned and sweeps **every `CompPowerTrader` on the map** — no def named, no count
+predicted, so a lamp any other code adds later is covered automatically. And it is **reported, never
+fatal**: a dark, cold coordinate is playable; a missing one costs the player the gate.
+`ValidatePlacedLayout` stays fatal, because a coordinate you cannot walk through really is broken.
+
+**The lamp was in the wrong place for the same reason.** `WallLamp` draws with
+`drawOffsetNorth (0,0,0.9)`, into the wall it mounts on, and was being placed mid-floor.
+`FindWallAttachmentCell` mounts it on the room's own wall def with the facing rotation, branches on
+`lightDef.building.isAttachment` rather than the def name, and returns `IntVec3.Invalid` rather
+than throwing.
+
+**A correction, stated plainly.** `NaturalFrontierService` was reported mid-investigation as
+orphaned. That was wrong, and the mistake was in the search: the grep excluded the file holding the
+caller, a `JobDriver` in that same file. `check-wiring.py` was right. The whole chain was then
+verified end to end.
+
+**The collaborator gap was real.** `.local/` hid the **40 proofs and 11 plant suites**, so a clone
+could run the 13 checkers and nothing else. `.gitignore` now admits exactly those two globs —
+measured 51 newly tracked files — while still excluding a 132 MB nuget cache, 19 MB of binaries,
+the per-subsystem inspections and the one-shot scripts.
+
+**A plant walked past the first version of the fatality claim.** Inserting a `throw` inside
+`if (powerFault != null)` did not disturb `Log.Warning` or the condition, and the claim asserted
+only that both were present. **A claim that a warning exists is not a claim that a throw does not**
+— sixth time this shape has defeated a claim here. Fixed by reading the block body on its own.
+
+**199 C# files, 90 package files**, zero warnings, zero errors. Assembly SHA-256
+`D0441DC4DA5D1255362FA5D81865561A50C134984519E69E26739FB00508BEA4`, reproduced by two clean
+recompiles. **Thirteen checkers pass, forty proofs hold.** 28 of 28 plants in the generation suite,
+56 of 56 in start placement. Record:
+`implementation/NATURAL_GATE_UNBLOCKED_IMPLEMENTATION.md`.
+
+**Five launches, eleven defects, every one ours. Still not a single mod conflict.**
+
+**Owner decisions taken this checkpoint, for the queued 300x300 warren:** levels **300x300**;
+**60-100 rooms** on a 10x10 grid at 19-cell spacing; threshold/office/return **unique**, the other
+five **repeating**, plus **new structural families** (flooded_room, stairwell, dead_end,
+pillar_hall) that are layout and dressing only with **no new ThingDefs**; **4-6 onward gates** per
+level and `MaximumNaturalDepth` **3 to 6**; **fresh save**, the 60x60 path dropped.
