@@ -49,6 +49,8 @@
   <RR_UI_FieldLogHeader>Recorded field observations</RR_UI_FieldLogHeader>
   <RR_UI_NoFieldObservations>No witnessed observations have been recorded yet.</RR_UI_NoFieldObservations>
   <RR_UI_ObservationWitness>Witness: {0}. Branch day {1}. Recorder carried by {2}.</RR_UI_ObservationWitness>
+  <RR_UI_AccountAgrees>Corroborated by {0} on day {1}: the same junction, room {2}, marker {3}.</RR_UI_AccountAgrees>
+  <RR_UI_AccountDisagrees>Disputed by {0} on day {1}: they place it at room {2}, marker {3}. The company has filed the first account and kept theirs on the record.</RR_UI_AccountDisagrees>
   <RR_Observation_room_survey>Room {0}: surveyed with the crew's field recorder present.</RR_Observation_room_survey>
   <RR_Observation_route_mismatch>Room {0}: survey marker {2} was found here despite being placed in room {1}.</RR_Observation_route_mismatch>
   <RR_Observation_recorder_gap>Room {0}: the field recording contains a gap around marker {2}'s displacement from room {1}. The cause remains unresolved.</RR_Observation_recorder_gap>

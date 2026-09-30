@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.12.25-dev - 2026-09-29 - two crew who disagree
+
+- **A second crew member's account of the same thing is now kept.** Before, whoever spoke first was the only one on the record: an identical account was folded into theirs and a **different** account was thrown away silently.
+- **Two crew who disagree about one room now produce a real disagreement.** The company files the first account, keeps the second, and the evidence readout names both, who gave them, when, and where each of them puts the marker.
+- **You are told when it happens**, once, at the coordinate.
+- **A disagreement still counts as testimony.** The company does not pretend the second person never spoke, so the contract that asks you to report a disagreement is now satisfied by an actual disagreement instead of only by visiting two different coordinates.
+- **One person counts once**, however long they stand there.
+- **Nothing in your save breaks.** A save with no accounts on record simply has none, which is true of it.
+
+**Not yet:** nothing resolves a disagreement. The accounts sit on the record and the analysis reports them; deciding which one the company files is the next piece of work.
+
+Full record: [two crew who disagree](docs/implementation/CONTRADICTORY_ACCOUNTS_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.24-dev - 2026-09-29 - the recorder became the book
 
 - **Field crews now write straight into the record book they carry.** The separate field recorder is gone from every start and can no longer be built or bought. One item does both jobs, so the record and the thing that made it can no longer get separated.

@@ -181,10 +181,18 @@ namespace RimroomsAsyncIndustries.Threats
                     a.RoomIndex != room.Index && RoomAt(a.parent.Position)?.Index == room.Index);
                 if (distortionWarned && displaced != null)
                 {
+                    // A second crew member whose account of this same displacement does not match
+                    // the filed one opens a dispute, and the player has to be told: invariant 28
+                    // wants every rule learnable, and a contradiction the company never mentions
+                    // is not learnable. Compared across the call because the dispute is saved on
+                    // the observation rather than reported back through the result.
+                    bool disputedBefore = HasDisputedAccount(record);
                     Campaign.RecordFieldObservation(record, EvidenceObservationKinds.RouteMismatch,
                         room.Index, displaced.RoomIndex, displaced.Number, witness);
                     Campaign.RecordFieldObservation(record, EvidenceObservationKinds.RecorderGap,
                         room.Index, displaced.RoomIndex, displaced.Number, witness);
+                    if (!disputedBefore && HasDisputedAccount(record))
+                    { Note("RR_Event_AccountsDisagree", Coordinate.Label, witness.LabelShortCap.ToString()); }
                 }
                 if (pursuer != null && pursuer.Spawned && !pursuerWithdrawn && pursuer.Map == map)
                 {
@@ -247,6 +255,24 @@ namespace RimroomsAsyncIndustries.Threats
         /// A legacy route recording still counts, because saves made before the switch contain
         /// them and a crew holding one has never stopped being a crew that can write.
         /// </summary>
+        /// <summary>
+        /// Whether any fact on this record already carries an account that contradicts it.
+        ///
+        /// Read either side of a recording call, because a dispute is saved onto the observation
+        /// and not reported back through the action result -- and the result is ignored here
+        /// anyway, which is how a contradiction between two crew used to leave no trace at all.
+        /// </summary>
+        private static bool HasDisputedAccount(EvidenceRecord record)
+        {
+            if (record == null || record.Observations == null) { return false; }
+            for (int index = 0; index < record.Observations.Count; index++)
+            {
+                EvidenceObservationRecord observation = record.Observations[index];
+                if (observation != null && observation.Disputed) { return true; }
+            }
+            return false;
+        }
+
         internal static bool CarriesRecordBook(Pawn pawn)
         {
             return pawn?.inventory != null &&

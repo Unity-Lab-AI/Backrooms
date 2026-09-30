@@ -11,6 +11,7 @@
   <RR_Room_storage_nook>Storage Nook</RR_Room_storage_nook>
   <RR_Room_utility_room>Utility Room</RR_Room_utility_room>
   <RR_Room_return_gallery>Return Gallery</RR_Room_return_gallery>
+  <RR_Event_AccountsDisagree>{0}: {1} does not place the displaced marker where the record already puts it. Both accounts are on file and the evidence readout names them. Two crew who disagree about one room is itself worth reporting.</RR_Event_AccountsDisagree>
   <RR_Event_RoomSurveyed>{0}: surveyed room {1}, {2}.</RR_Event_RoomSurveyed>
   <RR_Event_CorridorMismatch>{0}: a door repeats the last room's label, but the route counter disagrees. Stop and compare the physical route tags. The last validated junction is room {1}; a tag and return beacon there identify the safe route. Continuing deeper risks a loop.</RR_Event_CorridorMismatch>
   <RR_Event_CorridorCountered>Tag and beacon agree at room {0}. The crew identified the false connection and preserved the return path.</RR_Event_CorridorCountered>

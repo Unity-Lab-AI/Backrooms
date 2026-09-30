@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Expedition;
@@ -32,6 +33,21 @@ namespace RimroomsAsyncIndustries.UI
                     observation.ReferencedRoomIndex + 1, observation.MarkerNumber));
                 listing.Label("RR_UI_ObservationWitness".Translate(observation.WitnessName,
                     Day(observation.Tick), observation.RecorderCarrierName));
+
+                // Corroborating and disputing accounts, each named. A dispute the company records
+                // but never shows anybody is a dispute that may as well have been discarded, which
+                // is what happened to every second crew account until 0.12.25-dev.
+                IReadOnlyList<WitnessAccountRecord> accounts = observation.Accounts;
+                if (accounts != null)
+                {
+                    foreach (WitnessAccountRecord account in accounts)
+                    {
+                        if (account == null) { continue; }
+                        listing.Label((account.Agrees ? "RR_UI_AccountAgrees" : "RR_UI_AccountDisagrees")
+                            .Translate(account.WitnessName, Day(account.Tick),
+                                account.ReferencedRoomIndex + 1, account.MarkerNumber));
+                    }
+                }
                 listing.Gap(4f);
             }
         }

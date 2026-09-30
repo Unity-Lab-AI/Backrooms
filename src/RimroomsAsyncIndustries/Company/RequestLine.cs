@@ -706,9 +706,28 @@ namespace RimroomsAsyncIndustries.Company
                     if (observation == null || string.IsNullOrEmpty(observation.WitnessLoadId)) { continue; }
                     if (!ObservationCarries(observation.Kind, kind)) { continue; }
                     Pawn witness = observation.Witness;
-                    if (witness == null || witness.Dead || witness.Destroyed) { continue; }
-                    if (!IsEmployedPawn(witness)) { continue; }
-                    witnesses.Add(observation.WitnessLoadId);
+                    if (witness != null && !witness.Dead && !witness.Destroyed && IsEmployedPawn(witness))
+                    { witnesses.Add(observation.WitnessLoadId); }
+
+                    // Corroborating and disputing accounts are testimony too, and until
+                    // 0.12.25-dev there was nowhere to hold them: one fact carried exactly one
+                    // witness, so "two crew accounts of the same room" was unreachable and a
+                    // request asking for two could only ever be satisfied across two coordinates.
+                    //
+                    // A DISPUTE COUNTS. Somebody was there and said something. The company files
+                    // one version and the disagreement is a fact about the record, not a reason to
+                    // pretend the second crew member never spoke.
+                    IReadOnlyList<WitnessAccountRecord> accounts = observation.Accounts;
+                    if (accounts == null) { continue; }
+                    for (int seat = 0; seat < accounts.Count; seat++)
+                    {
+                        WitnessAccountRecord account = accounts[seat];
+                        if (account == null || string.IsNullOrEmpty(account.WitnessLoadId)) { continue; }
+                        Pawn speaker = account.Witness;
+                        if (speaker == null || speaker.Dead || speaker.Destroyed) { continue; }
+                        if (!IsEmployedPawn(speaker)) { continue; }
+                        witnesses.Add(account.WitnessLoadId);
+                    }
                 }
             }
             return witnesses.Count;

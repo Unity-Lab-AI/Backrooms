@@ -17,6 +17,85 @@ namespace RimroomsAsyncIndustries.Company
         public const string EntitySighting = "entity_sighting";
     }
 
+    /// <summary>
+    /// A second crew member's account of a fact somebody has already filed.
+    ///
+    /// **This is the thing that was being thrown away.** `StableId` is per-room only for a room
+    /// survey, so an evidence record could hold exactly one route mismatch, one recorder gap and
+    /// one entity sighting — and therefore exactly **one witness** each. Meanwhile
+    /// `RecordEncounterObservations` loops over *every* present crew member, so the second one's
+    /// account was either silently merged into the first (identical facts) or silently refused as
+    /// a receipt mismatch (different facts), and the site tick ignores the result either way.
+    ///
+    /// The chart asks request 5 for *"two crew accounts of the same room"*. Two crew in the same
+    /// room could never both be recorded, so that request was only ever satisfiable across two
+    /// separate coordinates.
+    ///
+    /// An account that <see cref="agrees"/> is corroboration. One that does not is a
+    /// **contradictory account**, which is the prep material's own words and opens a dispute.
+    /// </summary>
+    public sealed class WitnessAccountRecord : IExposable
+    {
+        internal Pawn witness;
+        internal string witnessLoadId;
+        internal string witnessName;
+        internal int witnessRoomIndex = -1;
+        internal int referencedRoomIndex = -1;
+        internal int markerNumber;
+        internal int tick = -1;
+        internal bool agrees;
+
+        public Pawn Witness { get { return witness; } }
+        public string WitnessLoadId { get { return witnessLoadId; } }
+        public string WitnessName { get { return witnessName; } }
+        public int WitnessRoomIndex { get { return witnessRoomIndex; } }
+        public int ReferencedRoomIndex { get { return referencedRoomIndex; } }
+        public int MarkerNumber { get { return markerNumber; } }
+        public int Tick { get { return tick; } }
+        public bool Agrees { get { return agrees; } }
+
+        internal WitnessAccountRecord SnapshotCopy()
+        {
+            return new WitnessAccountRecord
+            {
+                witness = witness,
+                witnessLoadId = witnessLoadId,
+                witnessName = witnessName,
+                witnessRoomIndex = witnessRoomIndex,
+                referencedRoomIndex = referencedRoomIndex,
+                markerNumber = markerNumber,
+                tick = tick,
+                agrees = agrees
+            };
+        }
+
+        internal bool SameSnapshot(WitnessAccountRecord other)
+        {
+            return other != null && witnessLoadId == other.witnessLoadId && witnessName == other.witnessName &&
+                witnessRoomIndex == other.witnessRoomIndex && referencedRoomIndex == other.referencedRoomIndex &&
+                markerNumber == other.markerNumber && tick == other.tick && agrees == other.agrees;
+        }
+
+        internal bool IsValidFor(IReadOnlyList<RoomRecord> rooms)
+        {
+            return tick >= 0 && witnessRoomIndex >= 0 && !string.IsNullOrWhiteSpace(witnessLoadId) &&
+                !string.IsNullOrWhiteSpace(witnessName) && rooms != null &&
+                rooms.Any(r => r != null && r.index == witnessRoomIndex);
+        }
+
+        public void ExposeData()
+        {
+            Scribe_References.Look(ref witness, "rr_witness");
+            Scribe_Values.Look(ref witnessLoadId, "rr_witnessLoadId");
+            Scribe_Values.Look(ref witnessName, "rr_witnessName");
+            Scribe_Values.Look(ref witnessRoomIndex, "rr_witnessRoomIndex", -1);
+            Scribe_Values.Look(ref referencedRoomIndex, "rr_referencedRoomIndex", -1);
+            Scribe_Values.Look(ref markerNumber, "rr_markerNumber");
+            Scribe_Values.Look(ref tick, "rr_tick", -1);
+            Scribe_Values.Look(ref agrees, "rr_agrees");
+        }
+    }
+
     /// <summary>A saved, witnessed fact associated with one physical route recording.</summary>
     public sealed class EvidenceObservationRecord : IExposable
     {
@@ -35,6 +114,11 @@ namespace RimroomsAsyncIndustries.Company
         internal Pawn recorderCarrier;
         internal string recorderCarrierLoadId;
         internal string recorderCarrierName;
+        // Additive. An old save has no accounts, which is TRUE of it -- nobody was recording them.
+        // No version bump: the existing observationSchemaVersion distinguishes "booleans predate
+        // structured observations", and its own comment forbids synthesizing rows from them. An
+        // empty accounts list needs no such distinction, because empty is the honest answer.
+        internal List<WitnessAccountRecord> accounts = new List<WitnessAccountRecord>();
 
         public string Id { get { return id; } }
         public string Kind { get { return kind; } }
@@ -51,12 +135,87 @@ namespace RimroomsAsyncIndustries.Company
         public Pawn RecorderCarrier { get { return recorderCarrier; } }
         public string RecorderCarrierLoadId { get { return recorderCarrierLoadId; } }
         public string RecorderCarrierName { get { return recorderCarrierName; } }
+        public IReadOnlyList<WitnessAccountRecord> Accounts { get { return accounts; } }
+
+        /// <summary>Somebody who was there says it did not happen the way it is filed.</summary>
+        public bool Disputed { get { return accounts != null && accounts.Any(a => a != null && !a.agrees); } }
+
+        /// <summary>
+        /// Every distinct crew member whose account this fact carries, filed one plus corroborating
+        /// and disputing ones. A dispute still counts as an account: somebody was there and said
+        /// something, and a corporation that discards testimony because it is inconvenient is not
+        /// what this campaign is about.
+        /// </summary>
+        internal IEnumerable<string> WitnessLoadIds
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(witnessLoadId)) { yield return witnessLoadId; }
+                if (accounts == null) { yield break; }
+                foreach (WitnessAccountRecord account in accounts)
+                {
+                    if (account != null && !string.IsNullOrEmpty(account.witnessLoadId))
+                    { yield return account.witnessLoadId; }
+                }
+            }
+        }
+
+        /// <summary>
+        /// File a second crew member's account of this same fact.
+        ///
+        /// Refuses a witness who is already on the record -- including the one who filed it --
+        /// because the same person saying the same thing twice is not a second account, and
+        /// `LivingWitnessCount` counts distinct people. A crew of two standing in one room ticks
+        /// every fifteen ticks; without this the account list would grow without bound.
+        /// </summary>
+        internal bool AddAccount(Pawn accountWitness, int witnessRoom, int referencedRoom,
+            int marker, int atTick, bool matchesFiledFact)
+        {
+            if (accountWitness == null || atTick < 0 || witnessRoom < 0) { return false; }
+            accounts = accounts ?? new List<WitnessAccountRecord>();
+            string loadId = accountWitness.GetUniqueLoadID();
+            if (string.IsNullOrEmpty(loadId)) { return false; }
+            foreach (string existing in WitnessLoadIds)
+            {
+                if (string.Equals(existing, loadId, StringComparison.Ordinal)) { return false; }
+            }
+            accounts.Add(new WitnessAccountRecord
+            {
+                witness = accountWitness,
+                witnessLoadId = loadId,
+                witnessName = accountWitness.LabelShortCap.ToString(),
+                witnessRoomIndex = witnessRoom,
+                referencedRoomIndex = referencedRoom,
+                markerNumber = marker,
+                tick = atTick,
+                agrees = matchesFiledFact
+            });
+            return true;
+        }
 
         internal static string StableId(string evidenceId, string observationKind, int observedRoom)
         {
             return observationKind == EvidenceObservationKinds.RoomSurvey
                 ? evidenceId + ":observation:" + observationKind + ":" + observedRoom
                 : evidenceId + ":observation:" + observationKind;
+        }
+
+        /// <summary>
+        /// Accounts compared in order, because they are appended in the order they were given and
+        /// a report snapshot is a copy of that same list. Order-insensitive comparison here would
+        /// hide a reordering, and reordering testimony is exactly the kind of thing this record
+        /// exists to make impossible.
+        /// </summary>
+        private bool SameAccounts(EvidenceObservationRecord other)
+        {
+            List<WitnessAccountRecord> mine = accounts ?? new List<WitnessAccountRecord>();
+            List<WitnessAccountRecord> theirs = other.accounts ?? new List<WitnessAccountRecord>();
+            if (mine.Count != theirs.Count) { return false; }
+            for (int index = 0; index < mine.Count; index++)
+            {
+                if (mine[index] == null || !mine[index].SameSnapshot(theirs[index])) { return false; }
+            }
+            return true;
         }
 
         internal bool SameFact(string observationKind, int observedRoom, int referencedRoom, int marker, int witnessRoomValue)
@@ -72,7 +231,7 @@ namespace RimroomsAsyncIndustries.Company
                 witnessRoomIndex == other.witnessRoomIndex && tick == other.tick &&
                 witnessLoadId == other.witnessLoadId && witnessName == other.witnessName &&
                 recorderLoadId == other.recorderLoadId && recorderCarrierLoadId == other.recorderCarrierLoadId &&
-                recorderCarrierName == other.recorderCarrierName;
+                recorderCarrierName == other.recorderCarrierName && SameAccounts(other);
         }
 
         internal EvidenceObservationRecord SnapshotCopy()
@@ -93,7 +252,9 @@ namespace RimroomsAsyncIndustries.Company
                 recorderLoadId = recorderLoadId,
                 recorderCarrier = recorderCarrier,
                 recorderCarrierLoadId = recorderCarrierLoadId,
-                recorderCarrierName = recorderCarrierName
+                recorderCarrierName = recorderCarrierName,
+                accounts = (accounts ?? new List<WitnessAccountRecord>())
+                    .Where(a => a != null).Select(a => a.SnapshotCopy()).ToList()
             };
         }
 
@@ -106,6 +267,15 @@ namespace RimroomsAsyncIndustries.Company
                 string.IsNullOrWhiteSpace(recorderCarrierName) || rooms == null ||
                 !rooms.Any(r => r != null && r.index == roomIndex) ||
                 !rooms.Any(r => r != null && r.index == witnessRoomIndex)) { return false; }
+
+            // Accounts are validated as strictly as the fact they attach to, and every witness on
+            // the record has to be a different person. A duplicate would inflate
+            // LivingWitnessCount, which is what decides whether a Testify route has been satisfied
+            // -- so a repeated name would be a request paying out on one person's word twice.
+            List<WitnessAccountRecord> filed = accounts ?? new List<WitnessAccountRecord>();
+            if (filed.Any(a => a == null || !a.IsValidFor(rooms))) { return false; }
+            List<string> speakers = WitnessLoadIds.ToList();
+            if (speakers.Distinct(StringComparer.Ordinal).Count() != speakers.Count) { return false; }
 
             switch (kind)
             {
@@ -139,6 +309,9 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_References.Look(ref recorderCarrier, "rr_recorderCarrier");
             Scribe_Values.Look(ref recorderCarrierLoadId, "rr_recorderCarrierLoadId");
             Scribe_Values.Look(ref recorderCarrierName, "rr_recorderCarrierName");
+            Scribe_Collections.Look(ref accounts, "rr_accounts", LookMode.Deep);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && accounts == null)
+            { accounts = new List<WitnessAccountRecord>(); }
         }
     }
 
@@ -287,10 +460,24 @@ namespace RimroomsAsyncIndustries.Company
             record.observations = record.observations ?? new List<EvidenceObservationRecord>();
             string observationId = EvidenceObservationRecord.StableId(record.id, kind, roomIndex);
             EvidenceObservationRecord prior = record.observations.FirstOrDefault(o => o != null && o.id == observationId);
+            // A fact somebody has already filed, and a second crew member who was also there.
+            //
+            // This used to be the end of the road. An identical account returned Existing() and
+            // vanished; a DIFFERENT account was refused as a receipt mismatch and also vanished,
+            // and since the site tick ignores the result, a contradiction between two crew in the
+            // same room left no trace anywhere. The prep material asks for exactly that
+            // contradiction, and the chart asks request 5 for "two crew accounts of the same room".
+            //
+            // Both are now filed as accounts. Agreement is corroboration and disagreement is a
+            // dispute; neither is discarded, and a witness already on the record is not added
+            // twice -- a crew standing still ticks every fifteen ticks.
             if (prior != null)
             {
-                return prior.SameFact(kind, roomIndex, referencedRoomIndex, markerNumber, witnessRoom.index)
-                    ? CompanyActionResult.Existing() : CompanyActionResult.Refused("RR_Company_ReceiptMismatch");
+                bool agrees = prior.SameFact(kind, roomIndex, referencedRoomIndex, markerNumber, witnessRoom.index);
+                bool added = prior.AddAccount(witness, witnessRoom.index, referencedRoomIndex,
+                    markerNumber, Find.TickManager.TicksGame, agrees);
+                if (added) { record.observationSchemaVersion = EvidenceRecord.CurrentObservationSchemaVersion; }
+                return added ? CompanyActionResult.Applied() : CompanyActionResult.Existing();
             }
 
             record.observationSchemaVersion = EvidenceRecord.CurrentObservationSchemaVersion;
