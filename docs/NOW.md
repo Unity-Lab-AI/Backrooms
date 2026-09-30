@@ -73,16 +73,30 @@ grep -c '^\s*- \[~\]' docs/TODO.md    # 48 partial
 grep -c '^\s*- \[x\]' docs/TODO.md    # 475 done
 ```
 
-**The raw open count overstates.** Rows closed by work that shipped the same day keep their `[ ]`
-until somebody flips them, and four separate rows this session turned out to be **already built** —
-227 (medical routes), 308 (contradictory accounts), 493 (the recorder fold) and 1266's neighbours.
-**Check a row against the code before building for it.** That habit has saved more work this
-session than it cost.
+**The raw open count overstates, and the reason is worth the paragraph.** Rows closed by work
+that shipped the same day keep their `[ ]` until somebody flips them — and **NINE separate rows
+this session turned out to be already built, already true, or answered by Core**:
 
-### The package is staged, and one checkpoint behind
+| Row | What it actually was |
+|---|---|
+| 227 | surgery across a gate **cannot be built** — `Bill_Medical`'s patient *is* the bill giver |
+| 308 | the contradiction was already computed and thrown away |
+| 493 | the recorder fold had been decided fourteen checkpoints earlier |
+| 1266 | **Core forbids all eleven givers from moving anything between maps** |
+| 98 | six reasons can stop a gate and **not one reads an adjacent cell** |
+| 99 | the row's premise was wrong — a gate link has **no distance or LOS check** |
+| 1011 | depth, band, wealth and seeding all already there |
+| 1101 | a coordinate's floors were **ordinary layerable Core terrain** all along |
+| 725 | **seven of its nine subsystems** existed under different names |
 
-The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.39-dev**. Re-stage
-before any launch:
+**CHECK A ROW AGAINST THE CODE BEFORE BUILDING FOR IT.** That habit is the single highest-value
+thing in this file. It has saved more work this session than every other practice combined, and
+twice the row's own *“confirmed absent by grep”* was the thing that was wrong.
+
+### The package is staged, and THIRTEEN checkpoints behind
+
+The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.39-dev** —
+**thirteen checkpoints of work are not in the game folder.** Re-stage before any launch:
 
 ```
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
@@ -206,10 +220,18 @@ about the code, and the document has to say so.
 | 0.12.31 | **A wide gate out of plain doors** — 1×3 and 2×3 with no mods, as one gate of one width. **Three rows were one feature**, and the union of a run is the `CellRect` everything already read |
 | 0.12.32 | **Everything is read by something** — the **eleventh checker**. 258 defs and 102 actions audited; one unwired capability given a surface, one duplicate retired |
 | 0.12.33 | **Surgery cannot cross, and three things were invisible** — row 227 closed **by proof**, plus the door crossing order, the coordinate band readout and a sale confirmation |
+| 0.12.34 | **Fifteen more reasons to walk through a gate** — the eleven DLC container givers and the four `Art` painting givers. **Core forbids all eleven from moving anything between maps**, so invariant 55 was never engaged; and a clamp was silently overwriting six shipped priorities |
+| 0.12.35 | **Containment you can see from the other side of a gate** — **Core's four containment alerts all read `Find.CurrentMap`**, so the gap was never "no warning" but "no warning about the maps you are not looking at". Plus the security procedure and the alarm |
+| 0.12.36 | **Roofs, snow, and reporting in** — **six rows in one batch.** The area rows closed themselves because somebody had written down *why* they were uncovered; quarantine turned out to be the debrief, because this package has no `HediffDefs` at all |
+| 0.12.37 | **Every coordinate in the game was made of wood** — one hardcoded material for every stuffable fixture in every room. Plus the **twelfth checker**, which caught itself twice, and the stance classifier fixed to its own row's prediction |
+| 0.12.38 | **A gate read no damage at all** — it could be shot to twelve per cent and still hold a connection. **Seven of row 725's nine subsystems were already built** under different names. Reliability is a record, not a dice roll |
+| 0.12.39 | **The register said don't patch, so the hook is a sentence** — reading the integration approach first made the obvious build the wrong one. Five rows, a read-only readout, and **row 791's absolute got a checker**
 
 ---
 
-## What is left, in order — rewritten 0.12.34-dev, measured not carried
+## What is left, in order — maintained through 0.12.39-dev, measured not carried
+
+**Re-measure this list before trusting it.** It has been correct at every checkpoint since 0.12.33-dev because each batch edited it, but the count at the top of the file is a command for a reason: the item numbers are renumbered on every close and a stale count is the most expensive thing this file can hold.
 
 **10 genuine build items**, counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
 
@@ -280,64 +302,75 @@ idea. [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md) holds them, and **it is
 
 ### Done since the last handoff, so nobody rebuilds it
 
-**Ten checkpoints, 0.12.24 → 0.12.33.** Every one published to all eight refs with a read-back, a
-deterministic assembly, and the full checker and proof sweep. Twelve rows closed.
+**Six checkpoints, 0.12.34 → 0.12.39, seventeen rows closed in four batches.** Every one published
+to all eight refs with a read-back, a deterministic assembly, and the full checker and proof sweep.
 
-**Two of the three shipped starts had no campaign at all.** `EstablishCorporationContact()` had
-**no caller anywhere**, and `corporationContact` gates the tutorial line, generated requests, the
-Purchase route **and the clean-up team's rescue**. The Store and Solo/Group starts were a sandbox
-with a locked door, permanently, while the chart and `RR_Starts.xml` both said *"reaching contact is
-the achievement"*. The owner named the mechanism mid-build — *"once they contact the cvompany in
-comms they can start async quest line"* — and it **deleted most of the planned work**: no parallel
-solo line was needed, because the existing gate on `corporationContact` was the whole mechanism.
-**Starts that can reach the campaign: was 1 of 3, now 3 of 3.**
+**The owner changed how to work, mid-run:** *"lets start doing shit correctly and efficiently and
+keep going iin batches of items completed so we have less work constantly pushing"*. So related
+rows are grouped into one checkpoint and published once. It works — 0.12.36-dev closed **six rows
+in one publish**.
 
-**The last authored gameplay item is retired, without a save break.** `RR_FieldRecorder`'s job
-folded into Core's `TextBook` — the answer had been written down at 0.9.9-dev and sat fourteen
-checkpoints because **no proof asserted anything about it.** The def stays loadable so saves open;
-it is simply never granted or sold again. A dead end was found on the way: Core gives books
-`Flammability 1` and sells them only as random outlander stock, so `RR_Procurement_RecordBooks`
-exists.
+**NINE ROWS TURNED OUT ALREADY BUILT, ALREADY TRUE, OR ANSWERED BY CORE.** The table under *Is it
+done?* lists all nine. Twice the row's own *"confirmed absent by grep"* was itself the defect: row
+725 said stabilizers and modules were absent and **both existed under different names**
+(`PortalWindowTier`, `GateEquipmentLinks`). **Check a row against the code before building for
+it** — it is the highest-value habit in this file.
 
-**Two crew who disagree now produce a real disagreement, and an interview settles it.** The
-contradiction was **already being computed and thrown away** as `RR_Company_ReceiptMismatch`, and
-chart line 226 asked request 5 for *"two crew accounts of the same room"* — unreachable, because one
-evidence record could carry only one witness per fact. And **nobody is lying**: `validFact` runs
-against the real map *before* the prior-observation branch, so a disputing account was already
-checked and found true. The marker moved. That is 0.10.3-dev's displacement seen from inside an
-evidence file, and it is why no reliability statistic was invented.
+**Custody across a gate was never a problem, and Core says so.** All eleven DLC container hauling
+givers were decompiled. Every one refuses to act unless the thing it moves is already on the
+worker's own map — `WorkGiver_CarryToBuilding` returns false unless `selectedPawn.Map == pawn.Map`,
+`TakeEntityToHoldingPlatform` unless `targetHolder.MapHeld == t.MapHeld`, and the rest search
+`pawn.Map`. So **invariant 55 was never engaged**, the family is the ordinary deployment shape, and
+twenty-seven checkpoints of caution were spent on a question Core had already closed.
 
-**The research ladder is complete at six rungs, and two branches deliberately have none.** Tier 4
-was surveyed rather than assumed, because 0.12.5-dev deleted four tier 3 projects for being unlocks
-with nothing to unlock. **Logistics gets no tier 4** — all four of its knobs are claimed and what
-remains are safety bounds no player reaches — and the **gate line cannot have one**, because its
-fourth rung already stops the countdown. Both absences are proof claims, since an absence cannot be
-read.
+**A clamp was silently overwriting the mod's own shipped numbers on every game load.** `Effective`
+clamped every value against one `MaximumPriority = 130` **including the shipped default**, and
+`Apply` writes that into the defs at `FinalizeInit`. Six authored priorities were being replaced
+before a pawn ever ran — worst, the far-side operating family authored at **502** to sit one above
+Core's `Flick`, landing on **130**, below every local giver. **That is the exact failure the
+two-giver split exists to prevent, inside the code that exists to prevent it.** The ceiling is now
+per giver.
 
-**1×3 and 2×3 gates exist with no mods at all.** A run of adjacent Core 1×1 doors binds into one
-gate, one width, read the same from both sides. The change is small because **a line of N adjacent
-1×1 doors is a 1×N `CellRect`**, which is what every existing size derivation already worked off.
+**Core's four containment alerts all read `Find.CurrentMap`.** Enumerating Core's own alert classes
+before writing any found `Alert_InsufficientContainmentStrength`, `Alert_DangerousActivity`,
+`Alert_EntityNeedsTend` and `Alert_NeedHoldingPlatform` — so shipping ours would have been a second
+opinion beside a rule the player already sees. **The real gap is that Core's warnings are about the
+map on screen**, and this mod's premise is several live maps at once. The two new alerts skip
+`Find.CurrentMap` entirely, so the sets can never overlap.
 
-**Fourteen pieces of in-game text told the player to use equipment that does not exist** — a return
-beacon, a survey tag, an evidence case, a field recorder. `check-keyed-strings` verifies a key
-*resolves*, not that it is *true*. The **tenth checker** derives retired names from the archive, and
-repairing the archive came first: `RR_ReturnBeacon` had never been archived, so the derivation
-would have been quietly partial and passed.
+**Quarantine could not be medical, and that is a measurement.** This package has **no `HediffDefs`
+folder at all**, so there is nothing of ours to clear and inventing one is forbidden content.
+Quarantine is therefore *you do not go back out until you have reported in* — which makes it and
+the staff debrief **one mechanism**. The hold bites on `Dispatch`, deliberately **not** on
+`PortalTraversalPolicy`, because a player walking one colonist through a door by hand is not a
+company dispatch.
 
-**Everything this mod authors is now read by something** — the **eleventh checker**, 258 defs and
-102 actions audited. One unwired capability got a surface (cutting a connection without disabling
-the gate); one duplicate was retired.
+**Every stuffable fixture on every coordinate in the game was wooden.** Not the def's default —
+`ThingDefOf.WoodLog`, hardcoded. A coordinate now takes a three-entry palette from its own seed,
+and **the load-bearing line is a sort by defName**: the def database returns defs in an order that
+depends on the installed mod list, so indexing it unsorted would give two players on one seed
+different materials and change a coordinate when an unrelated mod is installed.
 
-**Surgery across a gate cannot be built, and that is now a proof rather than a gap.** `Bill_Medical`'s
-patient *is* the bill giver, reserved from the doctor's map, with ingredients searched on the
-doctor's map. The patient comes home — which the casualty route has done since 0.5.2-dev.
+**A gate read no damage at all.** It could be shot to twelve per cent, set on fire and hit by a
+mortar and still hold a connection perfectly. **The machine the entire mod is built around was the
+one building in the colony that damage did not affect.** Below half condition it now loses
+calibration — a state that already had a work giver, a refusal and a readout — so the fix adds no
+mechanic.
 
-**Three things the game knew and never said:** the crossing order is on the door with its refusal
-named in place, every coordinate reports its pressure band, and selling everything at a beacon asks
-first.
+**The register said don't patch, and reading it first is the only reason the last batch is right.**
+*"No patch or code/assets copied"* for both gravship chapters; *"do not add vehicles solely because
+the framework is installed"* for the vehicle framework. So the hook is a **read-only statement** of
+what is installed and what this package does about it — which is what the rows asked for in their
+own words. The defence that cannot rot is asserted: **only two files mention the detection class,
+and no tracked package id appears in any other source file.**
 
-**Four rows were already built and just never closed** — 227, 308, 493 and the recorder fold.
-**Check a row against the code before building for it.**
+**Two new checkers, taking it to twelve.** The def-field checker (row 922) **caught itself twice**
+before it was right, both times in the same function — first reporting nothing, then reporting 159
+false positives, because the field parser rejected any line containing `(` and every collection
+field has one in its initialiser. And the row 791 claim guard, which **found a real denial in
+`SCENARIOS.md` on its first run**.
+
+---
 
 ## Invariants — do not break these
 
@@ -745,7 +778,20 @@ Three of this project's largest types are partial across many files: `CompRimroo
 ## The warning that matters most right now
 
 **SUSPECT YOUR OWN MEASUREMENT FIRST.** A search that finds nothing is not evidence, and across
-0.12.24 → 0.12.33 **the measurement was the defect five separate times while the code was fine:**
+0.12.24 → 0.12.39 **the measurement was the defect at least twelve separate times while the code
+was fine.** Five from 0.12.24 → 0.12.33 are tabulated below; the seven since are:
+
+| Measured wrong | The truth |
+|---|---|
+| the queue count, **twice** (90 vs 86, then an item count of 19 and 13 vs 20 and 12) | the list is renumbered on every close, so the count must come from the file |
+| **six** shipped work-giver priorities above the clamp | **seven** — the pattern was `<WorkGiverDef>` and missed `<WorkGiverDef MayRequire=…>` |
+| **five** ways a gate can stop working | **six** — I forgot the deliberate cutoff. Then a seventh arrived and the proof kept passing, because it read one file of a **partial class** |
+| a replant of the historical `maxTechLevel` defect **passed** | 0.8.7-dev fixed it by **adding the field to the class**, so the field is valid now. The plant was wrong, not the checker |
+| `CompHoldingPlatformTarget` flagged as an ungated expansion defName | it is a **comp type** in the always-present base assembly |
+| `MULTIPLAYER.md` reported as missing a sentence it contains | the document is **hard-wrapped** and a literal phrase search cannot cross a newline |
+| a fault-plant run reporting **17 of 17 caught** | **worthless** — a syntax error made the proof fail unconditionally, so every plant registered as caught |
+
+The five earlier ones:
 
 | Measured wrong | The truth |
 |---|---|
