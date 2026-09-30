@@ -24,12 +24,12 @@ LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced**
 | | |
 |---|---|
 | Branch | `feature/connected-colony-portals` |
-| Published | **0.12.26-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.27-dev**. This handoff is the tip; `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **174 C# files, 86 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `0E265705F23D1CC907E25CF48C767B5548ED99F8EB3588FD992DD9488DD68EA5`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Build | **175 C# files, 87 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `977BC6016FDF88FEADA0E7DA032BD5F8074DCB2C81E5078478B269D2E5B6CF2C`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **TEN**, all passing. The tenth, `check-retired-content.py`, refuses player-facing text that names equipment this mod retired — **fourteen strings were doing it** |
-| Proofs | **TWENTY-THREE** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Proofs | **TWENTY-FOUR** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
@@ -47,6 +47,48 @@ everything below:
 - **Tests are not the concern yet.** *"test cases arnt being worried about right now we are trying
   to get the build complete so we can test"*. **Unverifiable-without-a-launch is never a reason to
   defer building something.** I parked the world exit for that reason and was overruled, correctly.
+
+---
+
+## THE ANSWER TO "IS IT DONE" — measured 2026-09-29, and the answer is NO
+
+The owner asked directly: *"are all build items complete and mod 100% but bug testing?"* Measured
+rather than estimated, and **the queue could not answer it** — the raw open count overstates,
+because rows closed by work that shipped the same day still carried `[ ]`.
+
+| | |
+|---|---|
+| Genuine build items left | **~30**, some spanning several rows |
+| Rows that **cannot** close before a first launch | **~8** |
+| Rows the owner excluded (Steam, site, collection) | **9** |
+| Open rows already built and never closed | **~13** |
+
+**Three things I was tempted to assume were done and checked instead — all three genuinely
+unbuilt:** the solo/group tutorial line (zero solo-specific requests exist), research tier 4 (zero
+tier-4 projects), and the four area types across a gate (one incidental use, no cross-gate
+coverage). **Measuring first is what keeps the done column honest.**
+
+### The ~8 that cannot be finished before the game runs once
+
+Not evasion — it is what they are, in their own words:
+
+- **exchange-rate and catalogue balance** — *"neither has any play behind it"*
+- **duplicate def and patch collisions in the exact 294 profile** — needs the profile loaded for a
+  conflict to be reproducible
+- **performance measurement and profiling under a long save**
+- **the user-facing compatibility report** — *"cannot honestly state a tested order before anything
+  has been tested"*
+- **whether the creepy-versus-normal balance lands** — *"a play question"*
+
+So *"all build items complete, then bug test"* has a hard edge. Everything structural can be
+finished first; those rows are waiting on a launch, not on more building.
+
+### The package is staged and loadable right now
+
+The copy in the owner's Local Mods folder was **`0.4.0-dev`, twenty-two checkpoints stale** —
+nothing built since the start of the project had ever been staged. Re-staged at 0.12.26-dev, 87
+files hash-verified, old copy backed up to `artifacts/staging-backups/`. **The mod list was not
+touched and nothing was launched.**
 
 ---
 
@@ -130,7 +172,7 @@ section and 294 review records on disk. `card` and `use` now read them.
 
 ---
 
-## What shipped this session, 0.7.1 → 0.12.26
+## What shipped this session, 0.7.1 → 0.12.27
 
 | Version | What |
 |---|---|
@@ -196,6 +238,7 @@ section and 294 review records on disk. `card` and `use` now read them.
 | 0.12.24 | **The recorder became the book** — the last authored gameplay item retired without a save break, a dead end closed, and the register made readable |
 | 0.12.25 | **Two crew who disagree** — the prep material’s contradictory accounts. **The contradiction was already computed and discarded**, and a tutorial request was unreachable as the chart writes it |
 | 0.12.26 | **The in-game text names only what exists** — fourteen strings instructed the player to use retired gear. **A tenth checker**, and an archive hole repaired so its derivation is complete |
+| 0.12.27 | **You cannot brick your own gate** — the approach cell is reserved against blocking, flooring is free. **Owner-answered at the fork**, and the integrity checker taught to verify an abstract-parent patch |
 
 ---
 
@@ -606,6 +649,21 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
      survived the item cannot be derived: an emergency return is live while its cutoff is not; an
      analysis bench is live while the custom building is not. Record the decision **with its
      reason**, and make a new retirement fail until somebody makes it.
+228. **Pick the mechanism whose SHAPE gives you the exception for free.** *"Option 2 but flooring is
+     fine"* cost nothing to honour as a `PlaceWorker`, because a floor is a `TerrainDef` and terrain
+     placement never consults one. The map-component version — my first instinct — would have
+     needed the carve-out written by hand and then remembered.
+229. **Derive a rule from Core's own predicate, never from a list of def names.** Blocking is
+     `passability != Traversability.Standable`, straight out of `GenGrid.Standable`. A list would
+     have been wrong for the 294 mods the moment one of them shipped a new wall.
+230. **When a check runs on everything, doubt must allow.** A place worker fires on every placement
+     check for every building in the game. A wrong refusal is a player who cannot build; a wrong
+     allowance is a gate re-deriving a cell it already re-derives. **Catch the exception and
+     accept.**
+231. **A tool that cannot verify a technique is forbidding it.** `check-package-integrity.py`
+     understood only `defName="X"`, so every patch on an abstract inheritance parent was refused as
+     unverifiable — ruling out the one way to reach a property of every building at once. Teach the
+     tool; do not route around it.
 
 ---
 

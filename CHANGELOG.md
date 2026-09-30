@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.27-dev - 2026-09-29 - you cannot brick your own gate
+
+- **Nothing can be built on the cell your crew has to stand on to use a gate.** The game refuses the placement and says which gate it is protecting, instead of letting you wall your own way in and find out later.
+- **Laying a floor there is fine.** Carpet it, tile it, do what you like with the ground.
+- **A power conduit or anything else you can walk over is fine too.** The rule is only about things that would stop somebody standing there.
+- **It works with buildings from other mods** without any of those mods being changed.
+- **Your existing gates already could not break this way** - that was fixed earlier. This stops you doing it by accident in the first place.
+
+Full record: [you cannot brick your own gate](docs/implementation/GATE_APPROACH_CELL_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.26-dev - 2026-09-29 - the in-game text stops naming things that do not exist
 
 - **Fourteen pieces of in-game text told you to use equipment this mod no longer has.** The objectives panel, the contract terms, three room clues and the what-to-do-next readouts were all naming a return beacon, a survey tag, a sealed evidence case or a field recorder - gear retired between four and fifteen checkpoints ago.

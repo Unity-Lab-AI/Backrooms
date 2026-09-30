@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Owner direction, 2026-09-29: "option 2 but flooring is fine" - a gate's approach cell cannot be
+  built on, and laying a floor there is not building on it.
+
+  PATCHED ONTO CORE'S ABSTRACT BuildingBase, DELIBERATELY. A place worker only exists on a def, and
+  the set of things that could block an approach cell is every wall, barricade and door in Core, in
+  five DLC and in 294 other mods. Enumerating that is impossible and would be wrong the moment one
+  of them shipped a new wall. BuildingBase is the parent of nearly all of them, including other
+  mods' buildings, and RimWorld merges an inherited list node with a child's own - so one addition
+  here reaches everything that descends from it without touching a single other mod's file.
+
+  FLOORING NEEDS NO CARVE-OUT. A floor is a TerrainDef, and terrain placement never consults a
+  place worker at all, so the owner's exception is structural rather than a special case.
+
+  TWO STAGES, because BuildingBase declares no placeWorkers today and might one day. Adding the
+  element when it is absent and appending to it when it is present are different operations, and
+  doing only the first would append a SECOND placeWorkers element the day Core or a load-order
+  predecessor adds one - which is malformed and would take the list with it.
+
+  The worker itself allows the placement on any uncertainty, including a thrown exception. It runs
+  on every placement check for every building in the game; a refusal it gets wrong is a player who
+  cannot build, while an allowance it gets wrong is a gate re-deriving its approach cell exactly as
+  it already does since 0.12.3-dev.
+-->
+<Patch>
+
+  <!-- Stage one: no placeWorkers at all. Create it holding ours. -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThingDef[@Name="BuildingBase"]/placeWorkers</xpath>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[@Name="BuildingBase"]</xpath>
+      <value>
+        <placeWorkers>
+          <li>RimroomsAsyncIndustries.Portals.PlaceWorker_GateApproach</li>
+        </placeWorkers>
+      </value>
+    </nomatch>
+  </Operation>
+
+  <!-- Stage two: the list exists but is not ours yet. Append, never replace. -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThingDef[@Name="BuildingBase"]/placeWorkers</xpath>
+    <match Class="PatchOperationConditional">
+      <xpath>Defs/ThingDef[@Name="BuildingBase"]/placeWorkers/li[text()="RimroomsAsyncIndustries.Portals.PlaceWorker_GateApproach"]</xpath>
+      <nomatch Class="PatchOperationAdd">
+        <xpath>Defs/ThingDef[@Name="BuildingBase"]/placeWorkers</xpath>
+        <value>
+          <li>RimroomsAsyncIndustries.Portals.PlaceWorker_GateApproach</li>
+        </value>
+      </nomatch>
+    </match>
+  </Operation>
+
+</Patch>

@@ -88,6 +88,9 @@ ROOT_FILES = ("LoadFolders.xml",)
 
 # defName( = 'X' ) or defName="X" inside a patch xpath.
 XPATH_DEFNAME = re.compile(r"defName\s*=\s*[\"']([^\"']+)[\"']")
+# An abstract inheritance parent, addressed by its Name attribute. Verified against
+# the game's own abstract defs, so a patch on a parent that does not exist still fails.
+XPATH_ABSTRACT = re.compile(r"@Name\s*=\s*[\"']([^\"']+)[\"']")
 
 
 def fail(problems, message):
@@ -118,7 +121,21 @@ def package_version():
 
 
 def index_game_defs():
-    """defName -> True for every def the installed game ships, Core and DLC alike."""
+    """Every def name the installed game ships, Core and DLC alike.
+
+    Two kinds of name, because patches legitimately target both:
+
+      * `defName` -- a concrete def.
+      * the `Name` attribute of an **abstract** def, which is an inheritance parent rather than a
+        def the game instantiates. Patching one is the only way to reach a property of every
+        building in the game at once, including buildings belonging to mods this project has never
+        seen. Until 0.12.27-dev this indexer knew nothing about them, so **every patch on an
+        abstract parent was unverifiable and therefore refused** -- which ruled the technique out
+        rather than checking it.
+
+    An abstract name is indexed only when the def really declares itself abstract. A `Name` on a
+    concrete def is an alias, and matching one would prove nothing about what a patch reaches.
+    """
     names = {}
     if not os.path.isdir(GAME_DATA):
         return None
@@ -131,6 +148,10 @@ def index_game_defs():
         for node in root.iter("defName"):
             if node.text:
                 names[node.text.strip()] = True
+        for node in root.iter():
+            name = node.get("Name")
+            if name and (node.get("Abstract") or "").strip().lower() == "true":
+                names[name.strip()] = True
     return names
 
 
@@ -404,7 +425,7 @@ def check_patches(problems, declared, game_defs, notes):
         for xpath_node in root.iter("xpath"):
             found_any = True
             xpath = (xpath_node.text or "").strip()
-            targets = XPATH_DEFNAME.findall(xpath)
+            targets = XPATH_DEFNAME.findall(xpath) + XPATH_ABSTRACT.findall(xpath)
             if not targets:
                 fail(problems, "%s has an xpath selecting no named def, so what it "
                                "patches cannot be verified: %s" % (rel(path), xpath))
