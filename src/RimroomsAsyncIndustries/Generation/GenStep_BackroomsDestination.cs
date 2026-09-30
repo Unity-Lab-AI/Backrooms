@@ -46,6 +46,20 @@ namespace RimroomsAsyncIndustries.Generation
                 // Walls take the palette's material too, so the shallow yellow rooms are
                 // wood and the deeper bands are not. Steel stays the fallback if a
                 // palette material is somehow unavailable.
+                // The band's own choice is the fallback, and at depth 1 it is the answer: the
+                // yellow rooms are wood-walled and stay that way, for the same reason nothing
+                // else deforms at the surface band.
+                //
+                // **Deeper, the walls come from the coordinate's palette.** Owner direction:
+                // *"wild variatiosn of material typeds in all items equaipment walls floors ..."*.
+                // `BackroomsPalette` names exactly two wall materials -- WoodLog or Steel --
+                // across five bands, which is a hard-coded pair where every other material in
+                // the place is drawn from whatever the profile offers. Asking
+                // CoordinateMaterials means a profile that adds stone or metal widens the walls
+                // exactly as it already widens the furniture, and nothing here names a material.
+                // The band's own choice, which at level 0 IS the answer: owner direction,
+                // *"depth 0 in the backrroms is the standard yellow style"*, and the yellow rooms
+                // are wood-walled. It stays the fallback everywhere.
                 ThingDef wallStuff = BackroomsPalette.For(coordinate.Depth, coordinate.Seed).wallStuff
                     ?? ThingDefOf.Steel;
                 ThingDef anchorDef = DefDatabase<ThingDef>.GetNamedSilentFail("Door");
@@ -296,7 +310,18 @@ namespace RimroomsAsyncIndustries.Generation
 
             foreach (RoomRecord room in coordinate.Rooms)
             {
-                BuildRoomWalls(room, coordinate.Rooms, map, wallDef, wallStuff);
+                // **Walls are chosen PER ROOM deeper in.** Owner correction: *"we want every
+                // type of wall and material for all things randomly"*. One material for the whole
+                // level was the thing being corrected -- and per ROOM rather than per CELL because
+                // a wall whose every cell is a different stone is a patchwork rather than a wall,
+                // and BuildRoomWalls places one room's ring at a time, so the room is the unit
+                // the geometry already has.
+                //
+                // At level 0 every room takes the band's wood, unchanged.
+                ThingDef roomWallStuff = coordinate.Depth <= CoordinateMaterials.CoherentDepth
+                    ? wallStuff
+                    : (CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index) ?? wallStuff);
+                BuildRoomWalls(room, coordinate.Rooms, map, wallDef, roomWallStuff);
                 // Owner direction, 2026-09-30, verbatim: *"u can use walls as pillars making the
                 // 0 level rooms be grand large spaces"*. A depth-1 hall is eighty cells across,
                 // and an eighty-cell room with nothing in it is a field, not a hall.

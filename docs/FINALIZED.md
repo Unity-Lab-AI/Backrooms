@@ -5130,3 +5130,64 @@ widened. That trap is now the single most recurrent failure mode in this project
 **200 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
 `378493F20F4B7CD8BB932608073434CC00315C00EE94567C50FE995CCADF1A79`, reproduced by two clean
 recompiles. **Thirteen checkers pass, forty-one proofs hold.** **88 of 88** planted faults caught.
+
+---
+
+## Session 2026-09-30 - every type of material, and level 0 stays yellow (0.12.52-dev)
+
+**Verbatim user quote:** *"get to it"*
+
+**Verbatim user quote:** *"this is wrong we want every type of wall and material for all things
+randomly : WALLS GO BACK TO ONE OF TWO NAMED MATERIALS"*
+
+**Verbatim user quote:** *"but depth 0 in the backrroms is the standard yellow style"*
+
+**Verbatim user quote:** *"ive already lkayed this out"*
+
+**Files touched:** `Generation/CoordinateMaterials.cs`, `Generation/RoomContentBuilder.cs`,
+`Generation/GenStep_BackroomsDestination.cs`, About/csproj/README,
+`docs/implementation/WILD_MATERIALS_IMPLEMENTATION.md`, `docs/TODO.md`, `docs/NOW.md`.
+
+**Closure notes.** **The owner corrected me once and they were right both halves of the way.**
+
+The line they quoted back - *"WALLS GO BACK TO ONE OF TWO NAMED MATERIALS"* - was a **plant
+label**, the name of a fault deliberately planted to prove the proof catches it, not a statement
+of shipped behaviour. Worth recording because a plant label reads exactly like a bug report.
+
+**The substantive correction was real and I had it too narrow.** The first pass grew the
+per-coordinate palette with depth, 2 to 6. A growing palette is still a palette: every fixture
+takes the first entry it can use, so a deep level still reads as *fitted out in three materials*.
+The palette's own doc argued FOR that and called per-item choice a jumble - **that argument was
+mine**, and for the deep bands the owner is right, because *"very varied and weird"* is the brief
+and coherence is what is being left behind as you go inward.
+
+**And they had already laid it out**, which is why *"ive already lkayed this out"* was the right
+thing to say to me: their two sentences from 2026-09-29 are quoted inside `BackroomsPalette`
+already - *"yellow carpet and yellow wood walls for the main backrooms look"* and *"further in it
+gets very varied and weird"*. The specification was in the codebase, in their words, and I built a
+compromise instead of reading it.
+
+So: **level 0 shares one narrow palette** and stays the standard yellow style; **deeper, every
+thing draws from the full set Core allows for its own def**, indexed per fixture, so two tables in
+one room can differ. Walls are per ROOM deeper in rather than per cell, because a wall whose every
+cell is a different stone is a patchwork and `BuildRoomWalls` already works a room at a time.
+
+**Three gaps were closed in the first pass and all three were the same shape** - a material chosen
+somewhere the palette could not reach: a flat palette size, the depth-scaled dressing path using
+`GenStuff.DefaultStuffFor` and never consulting the palette at all, and walls as one of two named
+defs across five bands.
+
+**Deliberately unchanged:** `ColonistEcho.CopyApparel`, which copies one of the player's own
+colonists - the source pawn's material is the right one there, and an echo should mirror the
+colonist rather than the coordinate.
+
+**Six proof claims objected correctly across two passes**, every one of them encoding a previous
+decision rather than a property: `PaletteSize = 3`, then the grown palette, then four whose exact
+strings moved. And **three plants found loose claims**: a `CoherentDepth` with no upper bound
+passed 99, the variant never had to reach the hash key, and a 16-space anchor was a substring of a
+20-space one so the harness refused to run rather than mis-score. The duplicate-string trap, twice
+in one checkpoint.
+
+**200 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`9D7DCDAF2FFA06C740F800437458571351511B56DDBDC1123463886B46ED7DF4`, reproduced by two clean
+recompiles. **Thirteen checkers pass, forty-one proofs hold.** **43 of 43** planted faults caught.

@@ -83,13 +83,32 @@ namespace RimroomsAsyncIndustries.Generation
     internal static class CoordinateMaterials
     {
         /// <summary>
-        /// How many materials one coordinate may be fitted out in. Three, so a coordinate has a
-        /// character and a fixture that cannot take the first choice still has somewhere to go.
+        /// How many materials the **shallowest** coordinate is fitted out in.
+        ///
+        /// Two, and deliberately fewer than the three this used to be at every depth. The yellow
+        /// rooms read as a place because they are monotonous, which is the same reason `Derange`
+        /// and `RockIntrusionCells` leave depth 1 alone. A coordinate needs at least two, so a
+        /// fixture that cannot take the first choice still has somewhere to go.
         /// </summary>
-        private const int PaletteSize = 3;
+        private const int ShallowPaletteSize = 2;
 
-        /// <summary>Bumped when the derivation changes, so a palette cannot silently shift.</summary>
-        private const int MaterialVersion = 1;
+        /// <summary>
+        /// The shallowest band a coordinate can have, which is the one that stays coherent.
+        ///
+        /// **Owner direction, 2026-09-30, verbatim:** *"but depth 0 in the backrroms is the
+        /// standard yellow style"*, and earlier, *"we can use the floor lights i guess for the
+        /// yellow carpet and yellow wood walls for the main backrooms look"* followed
+        /// immediately by *"andf remmebr thats just the main backrooms looks further in it gets
+        /// very varied and weird"*.
+        ///
+        /// At or below this depth a coordinate shares one narrow palette, which is what makes the
+        /// yellow rooms read as a place. Above it, see <see cref="StuffFor"/>: every thing draws
+        /// its own material from everything Core allows for it.
+        /// </summary>
+        internal const int CoherentDepth = 1;
+
+        /// <summary>Bumped when the derivation changes, so a material cannot silently shift.</summary>
+        private const int MaterialVersion = 3;
 
         /// <summary>
         /// The palette for one coordinate, cached per coordinate id for the duration of a
@@ -110,8 +129,48 @@ namespace RimroomsAsyncIndustries.Generation
         /// pass must not fail over a furnishing choice.
         /// </summary>
         internal static ThingDef StuffFor(ThingDef definition, CoordinateRecord coordinate)
+        { return StuffFor(definition, coordinate, 0); }
+
+        /// <summary>
+        /// What this particular fixture is made of on this coordinate.
+        ///
+        /// ## Two behaviours, and the split is the owner's specification
+        ///
+        /// **At <see cref="CoherentDepth"/> and below: one narrow shared palette.** The yellow
+        /// rooms are monotonous on purpose, and a level where the table, the shelf and the walls
+        /// are the same material is what makes them read as a place rather than a warehouse of
+        /// samples.
+        ///
+        /// **Deeper: every type, for all things, randomly.** Owner correction, verbatim: *"this is
+        /// wrong we want every type of wall and material for all things randomly"*. So there is no
+        /// palette down there at all — this fixture draws from **the full set of materials Core
+        /// allows for its own def**, indexed by its own <paramref name="variant"/>. Two tables in
+        /// one room can be different woods, different metals, or one of each.
+        ///
+        /// ## Still deterministic, and that is not negotiable
+        ///
+        /// A coordinate is regenerated from its seed, so the choice is a pure function of the
+        /// coordinate's seed and id, the fixture's def name, and the variant the caller passes.
+        /// **No `Rand` call**, and the candidate list is sorted by defName before anything indexes
+        /// into it — because `AllowedStuffsFor` returns database order, which depends on the
+        /// installed mod list, and a coordinate must not change appearance because the player
+        /// installed something unrelated.
+        ///
+        /// ## Still existing content only
+        ///
+        /// `GenStuff.AllowedStuffsFor` is Core's own answer to *"what may this be made of"*, so a
+        /// mod that adds a material widens this automatically and a mod that restricts one is
+        /// obeyed. **Nothing here names a material.**
+        /// </summary>
+        internal static ThingDef StuffFor(ThingDef definition, CoordinateRecord coordinate, int variant)
         {
             if (definition == null || !definition.MadeFromStuff) { return null; }
+            int depth = coordinate == null ? 1 : coordinate.Depth;
+            if (depth > CoherentDepth)
+            {
+                ThingDef wild = WildStuffFor(definition, coordinate, variant);
+                if (wild != null) { return wild; }
+            }
             List<ThingDef> palette = PaletteFor(coordinate);
             for (int index = 0; index < palette.Count; index++)
             {
@@ -120,6 +179,32 @@ namespace RimroomsAsyncIndustries.Generation
             }
             // Core's own answer, which is always buildable for a stuffable def.
             return GenStuff.DefaultStuffFor(definition);
+        }
+
+        /// <summary>
+        /// One material out of everything this def may be made of, chosen per fixture.
+        ///
+        /// Asked through <c>GenStuff.AllowedStuffsFor</c> rather than through the eligibility test
+        /// this file uses for its palette, because that is Core's complete answer for this
+        /// particular def and the point of this path is to leave nothing out.
+        ///
+        /// Returns null when Core allows nothing, so the caller falls through to the palette and
+        /// then to Core's default. A generation pass must never fail over a furnishing choice.
+        /// </summary>
+        private static ThingDef WildStuffFor(ThingDef definition, CoordinateRecord coordinate, int variant)
+        {
+            List<ThingDef> allowed = GenStuff.AllowedStuffsFor(definition)
+                .Where(candidate => candidate != null && candidate.stuffProps != null &&
+                    candidate.stuffProps.allowedInStuffGeneration)
+                .OrderBy(candidate => candidate.defName, StringComparer.Ordinal)
+                .ToList();
+            if (allowed.Count == 0) { return null; }
+            int seed = coordinate == null
+                ? MaterialVersion
+                : DestinationService.StableHash(coordinate.Seed,
+                    (coordinate.Id ?? "") + ":wild:" + definition.defName + ":" + variant,
+                    MaterialVersion);
+            return allowed[Math.Abs(seed) % allowed.Count];
         }
 
         /// <summary>
@@ -154,7 +239,10 @@ namespace RimroomsAsyncIndustries.Generation
                 cache.Clear();
             }
 
-            string key = coordinate == null ? "" : coordinate.Id ?? "";
+            // Keyed by id AND depth. The id alone was enough while the palette was the same
+            // size everywhere; it is not now, and a cache that ignored depth would hand a deep
+            // coordinate a shallow palette for the rest of the session.
+            string key = coordinate == null ? "" : (coordinate.Id ?? "") + ":" + coordinate.Depth;
             List<ThingDef> palette;
             if (cache.TryGetValue(key, out palette)) { return palette; }
 
@@ -186,7 +274,7 @@ namespace RimroomsAsyncIndustries.Generation
             // not produce a coordinate fitted out in three shades of the same thing.
             int stride = 1 + Math.Abs(seed / 7) % Math.Max(1, available.Count);
             int position = Math.Abs(seed) % available.Count;
-            for (int step = 0; step < PaletteSize && chosen.Count < available.Count; step++)
+            for (int step = 0; step < ShallowPaletteSize && chosen.Count < available.Count; step++)
             {
                 for (int probe = 0; probe < available.Count; probe++)
                 {

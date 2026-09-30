@@ -69,10 +69,17 @@ print("-" * 78)
 check("the hardcoded WoodLog is gone from the placement helper",
       "ThingDefOf.WoodLog" not in content,
       "-- every stuffable fixture on every coordinate in the game was this one material")
-check("the material comes from the coordinate",
-      "CoordinateMaterials.StuffFor(definition, coordinate)" in content,
-      "-- per coordinate, not per room and not per item: a room with three materials in it "
-      "reads as noise, a coordinate fitted out in one reads as a place")
+# **RESTATED, and this claim was right to fail.** It asserted "per coordinate, not per room and
+# not per item", with a rationale that was MINE: that per-item choice reads as noise. The owner
+# overruled it in their own words -- *"this is wrong we want every type of wall and material for
+# all things randomly"* -- while holding the other half fixed: *"but depth 0 in the backrroms is
+# the standard yellow style"*. What is worth protecting is that SPLIT.
+check("the material comes from the coordinate, and per fixture",
+      "CoordinateMaterials.StuffFor(definition, coordinate, seed * 31 + slot)" in content
+      and content.count("CoordinateMaterials.StuffFor(definition, coordinate, seed * 31 + slot)") == 2,
+      "-- the variant is what lets two identical fixtures in one room be different materials "
+      "deeper in, and BOTH placement helpers have to pass it or the dressing path silently goes "
+      "back to one material per place")
 check("the coordinate reaches both placement helpers",
       "Thing Place(Map map, RoomRecord room, CoordinateRecord coordinate," in content and
       "Thing TryPlace(Map map, RoomRecord room, CoordinateRecord coordinate," in content)
@@ -94,8 +101,80 @@ check("no Rand call anywhere in the derivation",
       "Rand." not in materials,
       "-- a pure function of the seed cannot be perturbed by how many Rand calls happened "
       "earlier in generation, and the room-content pass has changed shape once already")
-check("the palette is small enough to give a coordinate a character",
-      "PaletteSize = 3" in materials)
+# **RESTATED TWICE.** First it asserted `PaletteSize = 3`, the flat constant the owner asked to
+# remove. Then it asserted a palette that grows with depth -- which the owner ALSO overruled,
+# because a growing palette is still a palette, and *"every type of wall and material for all
+# things randomly"* is not a palette at all. The specification is a split, and this is it.
+shallow = re.search(r"const\s+int\s+ShallowPaletteSize\s*=\s*(\d+)", materials)
+coherent = re.search(r"const\s+int\s+CoherentDepth\s*=\s*(\d+)", materials)
+wild_body = body_of(materials, "ThingDef WildStuffFor(ThingDef definition, CoordinateRecord coordinate, int variant)")
+
+check("LEVEL ZERO IS THE STANDARD YELLOW STYLE, SHARING ONE NARROW PALETTE",
+      coherent is not None and 1 <= int(coherent.group(1)) <= 2
+      and shallow is not None and int(shallow.group(1)) <= 3
+      and "if (depth > CoherentDepth)" in materials,
+      "-- owner direction, verbatim: *\"but depth 0 in the backrroms is the standard yellow "
+      "style\"*, and earlier *\"yellow carpet and yellow wood walls for the main backrooms "
+      "look\"*. A level where the table, the shelf and the walls match is what makes the yellow "
+      "rooms read as a place. CoherentDepth %s, palette %s"
+      % (coherent.group(1) if coherent else "MISSING",
+         shallow.group(1) if shallow else "MISSING"))
+
+check("DEEPER IN, EVERY THING DRAWS FROM EVERY TYPE CORE ALLOWS IT",
+      "GenStuff.AllowedStuffsFor(definition)" in wild_body
+      and "allowed[Math.Abs(seed) % allowed.Count]" in wild_body,
+      "-- owner correction, verbatim: *\"this is wrong we want every type of wall and material "
+      "for all things randomly\"*. Not a palette down there at all: the full set for this "
+      "particular def, indexed per fixture")
+
+check("THE VARIANT REACHES THE HASH KEY, OR EVERY FIXTURE GETS ONE MATERIAL AGAIN",
+      '":" + variant' in wild_body,
+      "-- without it the derivation is per def rather than per fixture, and two tables in one "
+      "room are the same material however wide the set is. A plant that deleted it walked past "
+      "every other claim in this section")
+check("the wild path is still a pure function of the seed",
+      "DestinationService.StableHash(coordinate.Seed," in wild_body
+      and "Rand." not in wild_body,
+      "-- a coordinate is regenerated from its seed, so two players on one seed must see the "
+      "same place")
+
+check("AND IT IS STILL SORTED, SO A MOD LIST CANNOT CHANGE A COORDINATE",
+      "OrderBy(candidate => candidate.defName, StringComparer.Ordinal)" in wild_body,
+      "-- AllowedStuffsFor returns database order, which depends on which mods are installed and "
+      "in what order. This is the load-bearing line in the whole file")
+
+check("it honours Core's own opt-out even on the wild path",
+      "allowedInStuffGeneration" in wild_body,
+      "-- Core already marks the materials that should not turn up in generated content, which is "
+      "why no exclusion list of ours is needed anywhere in this file")
+
+check("a def Core allows nothing for falls through rather than failing",
+      "if (allowed.Count == 0) { return null; }" in wild_body
+      and "if (wild != null) { return wild; }" in materials,
+      "-- a generation pass must never fail over a furnishing choice; it falls to the palette and "
+      "then to Core's own default")
+
+check("THE PALETTE REACHES THE DEPTH-SCALED DRESSING, NOT ONLY THE FAMILY FIXTURES",
+      content.count("GenStuff.DefaultStuffFor") == 0,
+      "-- TryPlace places the archetype dressing, which is the benches, equipment and loot the "
+      "owner means by *\"found everywher deeper in\"*, and it was taking Core's default material "
+      "while the family fixtures a few lines below took the coordinate's palette. The content "
+      "that was supposed to vary was the one content that could not")
+
+check("WALLS ARE NO LONGER ONE OF TWO NAMED MATERIALS, AND ARE CHOSEN PER ROOM",
+      "CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index)" in genstep
+      and "coordinate.Depth <= CoordinateMaterials.CoherentDepth" in genstep
+      and "BuildRoomWalls(room, coordinate.Rooms, map, wallDef, roomWallStuff);" in genstep,
+      "-- BackroomsPalette names exactly two wall materials across five bands, WoodLog or Steel, "
+      "which is a hard-coded pair where every other material in the place is drawn from whatever "
+      "the profile offers")
+
+check("and the surface band keeps its wood walls",
+      "ThingDef wallStuff = BackroomsPalette.For(coordinate.Depth, coordinate.Seed).wallStuff"
+      in genstep
+      and "?? wallStuff);" in genstep,
+      "-- depth 1 is the canonical look and the band's own choice is still the fallback "
+      "everywhere, so a coordinate with no usable palette material for a wall is unchanged")
 
 usable = body_of(materials, "bool Usable(ThingDef definition)")
 check("only Core's own stuff is eligible, and Core's own opt-out is honoured",
@@ -111,7 +190,10 @@ check("this mod's own defs can never become fixture material",
       'StartsWith("RR_"' in usable,
       "-- a coordinate is furnished out of the world's materials, not ours")
 
-stuff_for = body_of(materials, "ThingDef StuffFor(ThingDef definition, CoordinateRecord coordinate)")
+# The overload that actually decides. The old lookup found the two-argument forwarder, whose
+# body is one line, so both claims below were reading almost nothing.
+stuff_for = body_of(materials,
+                    "ThingDef StuffFor(ThingDef definition, CoordinateRecord coordinate, int variant)")
 check("a fixture the palette cannot supply falls back to Core's own default",
       "GenStuff.DefaultStuffFor(definition)" in stuff_for,
       "-- a stuffable def with no material cannot be built, and a generation pass must not "

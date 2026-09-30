@@ -15,9 +15,14 @@ GEN = SRC + "/Generation/GenStep_BackroomsDestination.cs"
 PROOF = ".local/register/proof-generation-batch.py"
 
 PLANTS = [
+    # Anchored on the WHOLE statement since 0.12.52-dev. The dressing path now uses the same
+    # call, four spaces deeper, and a 16-space anchor is a substring of a 20-space one -- so this
+    # matched twice and the harness refused to run rather than mis-score a fault it never planted.
     ("the hardcoded wood comes back", CONTENT,
-     "                CoordinateMaterials.StuffFor(definition, coordinate));",
-     "                definition.MadeFromStuff ? ThingDefOf.WoodLog : null);"),
+     "            Thing thing = ThingMaker.MakeThing(definition," + chr(10)
+     + "                CoordinateMaterials.StuffFor(definition, coordinate, seed * 31 + slot));",
+     "            Thing thing = ThingMaker.MakeThing(definition," + chr(10)
+     + "                definition.MadeFromStuff ? ThingDefOf.WoodLog : null);"),
 
     ("THE SORT GOES, so a mod list can change a coordinate's appearance", MAT,
      "                .OrderBy(definition => definition.defName, StringComparer.Ordinal)\n", ""),
@@ -69,6 +74,71 @@ PLANTS = [
 
     ("rock stops coming from the world's own types", GEN,
      "Find.World.NaturalRockTypesIn(map.Tile)", "System.Linq.Enumerable.Empty<ThingDef>()"),
+    # ------------------------------------------ 0.12.52-dev: every type, for all things, randomly
+    ("LEVEL ZERO STOPS BEING THE STANDARD YELLOW STYLE", MAT,
+     "            if (depth > CoherentDepth)", "            if (depth >= 0)"),
+
+    ("the coherent band swallows every depth", MAT,
+     "        internal const int CoherentDepth = 1;", "        internal const int CoherentDepth = 99;"),
+
+    ("the yellow-room palette widens until it is not monotonous", MAT,
+     "        private const int ShallowPaletteSize = 2;",
+     "        private const int ShallowPaletteSize = 9;"),
+
+    ("DEEPER IN STOPS DRAWING FROM EVERY TYPE CORE ALLOWS", MAT,
+     "            List<ThingDef> allowed = GenStuff.AllowedStuffsFor(definition)",
+     "            List<ThingDef> allowed = new List<ThingDef>(PaletteFor(coordinate))"),
+
+    ("the wild path stops being indexed per fixture", MAT,
+     '                    (coordinate.Id ?? "") + ":wild:" + definition.defName + ":" + variant,',
+     '                    (coordinate.Id ?? "") + ":wild",'),
+
+    ("THE WILD PATH STOPS BEING SORTED AND A MOD LIST CHANGES A COORDINATE", MAT,
+     "                .OrderBy(candidate => candidate.defName, StringComparer.Ordinal)" + chr(10)
+     + "                .ToList();",
+     "                .ToList();"),
+
+    ("the wild path stops honouring Core's stuff-generation opt-out", MAT,
+     "                    candidate.stuffProps.allowedInStuffGeneration)",
+     "                    true)"),
+
+    ("a Rand call creeps into the wild path", MAT,
+     "            return allowed[Math.Abs(seed) % allowed.Count];",
+     "            return allowed[Rand.Range(0, allowed.Count)];"),
+
+    ("a def with no allowed material fails the pass instead of falling through", MAT,
+     "            if (allowed.Count == 0) { return null; }",
+     "            if (allowed.Count == 0) { return allowed[0]; }"),
+
+    ("the wild result is computed and then ignored", MAT,
+     "                if (wild != null) { return wild; }", "                if (false) { return wild; }"),
+
+    ("TWO IDENTICAL FIXTURES IN ONE ROOM GO BACK TO ONE MATERIAL", CONTENT,
+     "                    CoordinateMaterials.StuffFor(definition, coordinate, seed * 31 + slot));",
+     "                    CoordinateMaterials.StuffFor(definition, coordinate, 0));"),
+
+    # Anchored on the whole statement: the 16-space form is a substring of the 20-space one in
+    # TryPlace, so a bare indented line matches twice and the harness refuses to run.
+    ("only one of the two placement helpers passes a variant", CONTENT,
+     "            Thing thing = ThingMaker.MakeThing(definition," + chr(10)
+     + "                CoordinateMaterials.StuffFor(definition, coordinate, seed * 31 + slot));",
+     "            Thing thing = ThingMaker.MakeThing(definition," + chr(10)
+     + "                CoordinateMaterials.StuffFor(definition, coordinate, 0));"),
+
+    ("WALLS GO BACK TO ONE MATERIAL FOR THE WHOLE LEVEL", GEN,
+     "                ThingDef roomWallStuff = coordinate.Depth <= CoordinateMaterials.CoherentDepth" + chr(10)
+     + "                    ? wallStuff" + chr(10)
+     + "                    : (CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index) ?? wallStuff);",
+     "                ThingDef roomWallStuff = wallStuff;"),
+
+    ("the surface band loses its wood walls", GEN,
+     "coordinate.Depth <= CoordinateMaterials.CoherentDepth" + chr(10) + "                    ? wallStuff",
+     "false" + chr(10) + "                    ? wallStuff"),
+
+    ("the wall material loses its fallback", GEN,
+     "(CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index) ?? wallStuff);",
+     "CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index);"),
+
     # ------------------------------------------ 0.12.48-dev: the light count that killed everything
     ("THE LIGHT COUNT FORMULA COMES BACK", GEN,
      "                string powerFault = ValidateNativePowerNetwork(map, generator, climate, placedLights);",

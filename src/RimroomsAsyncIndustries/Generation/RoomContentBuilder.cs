@@ -214,8 +214,20 @@ namespace RimroomsAsyncIndustries.Generation
             Thing thing;
             try
             {
+                // **The palette reaches the dressing now, and this was the worst of the three
+                // gaps.** This path places the depth-scaled archetype dressing -- the benches,
+                // the equipment, the loot, everything the owner means by *"found everywher deeper
+                // in"* -- and it was taking Core's default material while the family fixtures a
+                // few lines below took the coordinate's palette. So the content that was supposed
+                // to vary was the one content that could not.
+                //
+                // StuffFor falls back to GenStuff.DefaultStuffFor when the palette has nothing
+                // this fixture can be made of, so this is strictly wider than what it replaces.
+                // The variant is what lets two identical fixtures in one room be different
+                // materials deeper in. Built from the slot and the placement seed, both of which
+                // are already deterministic per coordinate.
                 thing = ThingMaker.MakeThing(definition,
-                    definition.MadeFromStuff ? GenStuff.DefaultStuffFor(definition) : null);
+                    CoordinateMaterials.StuffFor(definition, coordinate, seed * 31 + slot));
                 if (thing == null) { return null; }
                 thing.TryGetComp<CompQuality>()?.SetQuality(QualityCategory.Normal, ArtGenerationContext.Outsider);
                 if (definition.useHitPoints)
@@ -269,7 +281,7 @@ namespace RimroomsAsyncIndustries.Generation
             // derived from its seed, so a coordinate looks like somewhere and two coordinates
             // look different. See CoordinateMaterials.
             Thing thing = ThingMaker.MakeThing(definition,
-                CoordinateMaterials.StuffFor(definition, coordinate));
+                CoordinateMaterials.StuffFor(definition, coordinate, seed * 31 + slot));
             thing.TryGetComp<CompQuality>()?.SetQuality(QualityCategory.Normal, ArtGenerationContext.Outsider);
             if (definition.useHitPoints) { thing.HitPoints = Math.Max(1, (int)(thing.MaxHitPoints * (0.65f + (seed % 4) * 0.08f))); }
             if (minified)
