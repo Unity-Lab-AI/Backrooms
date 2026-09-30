@@ -3,6 +3,7 @@
 
   <!-- Gates and connections pane -->
   <RR_Portals_Heading>Gates and connections</RR_Portals_Heading>
+  <RR_Event_AccountFiled>{0}: the company has filed {1}’s account after an interview by {2}. The disagreeing account stays on the record.</RR_Event_AccountFiled>
   <RR_Portals_ApproachCellReserved>{0} needs this cell to be stood on. Lay a floor here if you like, but nothing can be built on it while the gate holds an address. Build one cell over, or clear the address first.</RR_Portals_ApproachCellReserved>
   <RR_Portals_Explanation>Remembered addresses connect a real door on this map to the saved return threshold of a Backrooms coordinate. A laboratory address needs its designated gate, power and operator; a natural threshold stays open permanently.</RR_Portals_Explanation>
   <RR_Portals_NoBranch>No company branch is active, so no address can be remembered.</RR_Portals_NoBranch>

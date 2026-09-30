@@ -48,7 +48,50 @@ namespace RimroomsAsyncIndustries.UI
                                 account.ReferencedRoomIndex + 1, account.MarkerNumber));
                     }
                 }
+                DrawInterview(listing, record, observation);
                 listing.Gap(4f);
+            }
+        }
+
+        /// <summary>
+        /// The interview: which of two accounts the company files.
+        ///
+        /// Only drawn for a fact two crew actually disagree about. The player chooses the account;
+        /// the interviewer is whoever the company would send, named on the button so the choice is
+        /// not made blind. A refusal is shown in place rather than the button being hidden, because
+        /// *"nobody on staff can take a statement"* is information and a missing button is not.
+        /// </summary>
+        private static void DrawInterview(Listing_Standard listing, EvidenceRecord record,
+            EvidenceObservationRecord observation)
+        {
+            if (observation == null || !observation.Disputed) { return; }
+            RimroomsCampaignComponent campaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (campaign == null) { return; }
+
+            if (observation.Settled)
+            {
+                listing.Label("RR_UI_AccountFiled".Translate(
+                    observation.NameForAccount(observation.FiledWitnessLoadId),
+                    observation.InterviewerName, Day(observation.InterviewTick)));
+                return;
+            }
+
+            Pawn interviewer = campaign.InterviewerFor(observation);
+            if (interviewer == null)
+            {
+                listing.Label("RR_Interview_NoInterviewer".Translate(
+                    RimroomsCampaignComponent.MinimumInterviewerSocial));
+                return;
+            }
+
+            listing.Label("RR_UI_InterviewPrompt".Translate(interviewer.LabelShortCap));
+            foreach (string loadId in observation.WitnessLoadIds.ToList())
+            {
+                string name = observation.NameForAccount(loadId);
+                if (string.IsNullOrEmpty(name)) { continue; }
+                if (listing.ButtonText("RR_UI_FileAccount".Translate(name)))
+                { ShowResult(campaign.SettleDisputedAccount(record, observation, loadId, interviewer)); }
             }
         }
 

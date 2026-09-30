@@ -119,6 +119,13 @@ namespace RimroomsAsyncIndustries.Company
         // structured observations", and its own comment forbids synthesizing rows from them. An
         // empty accounts list needs no such distinction, because empty is the honest answer.
         internal List<WitnessAccountRecord> accounts = new List<WitnessAccountRecord>();
+        // The interview, 0.12.28-dev. Additive in the same way and for the same reason: an old
+        // save has settled nothing, which is true of it.
+        internal string filedWitnessLoadId;
+        internal Pawn interviewer;
+        internal string interviewerLoadId;
+        internal string interviewerName;
+        internal int interviewTick = -1;
 
         public string Id { get { return id; } }
         public string Kind { get { return kind; } }
@@ -139,6 +146,58 @@ namespace RimroomsAsyncIndustries.Company
 
         /// <summary>Somebody who was there says it did not happen the way it is filed.</summary>
         public bool Disputed { get { return accounts != null && accounts.Any(a => a != null && !a.agrees); } }
+
+        /// <summary>
+        /// The company has chosen which account it files. The other one is still on the record.
+        ///
+        /// Settling does not rewrite the fact and does not delete anybody's account, deliberately.
+        /// Both accounts were validated against the map when they were given, so **neither is
+        /// wrong** — the marker moved between the two observations, which is what silent
+        /// between-visit displacement looks like from the inside. An evidence chain that erased the
+        /// account it did not file would be worth less than one that keeps both and says which.
+        /// </summary>
+        public bool Settled { get { return interviewTick >= 0; } }
+        public string FiledWitnessLoadId { get { return filedWitnessLoadId; } }
+        public Pawn Interviewer { get { return interviewer; } }
+        public string InterviewerName { get { return interviewerName; } }
+        public int InterviewTick { get { return interviewTick; } }
+
+        /// <summary>The pawn behind one of the accounts on this fact, filed or otherwise.</summary>
+        internal Pawn PawnForAccount(string loadId)
+        {
+            if (string.IsNullOrEmpty(loadId)) { return null; }
+            if (string.Equals(witnessLoadId, loadId, StringComparison.Ordinal)) { return witness; }
+            if (accounts == null) { return null; }
+            foreach (WitnessAccountRecord account in accounts)
+            {
+                if (account != null && string.Equals(account.witnessLoadId, loadId, StringComparison.Ordinal))
+                { return account.witness; }
+            }
+            return null;
+        }
+
+        /// <summary>The name on the account, so a settled record reads without its pawns loaded.</summary>
+        internal string NameForAccount(string loadId)
+        {
+            if (string.IsNullOrEmpty(loadId)) { return null; }
+            if (string.Equals(witnessLoadId, loadId, StringComparison.Ordinal)) { return witnessName; }
+            if (accounts == null) { return null; }
+            foreach (WitnessAccountRecord account in accounts)
+            {
+                if (account != null && string.Equals(account.witnessLoadId, loadId, StringComparison.Ordinal))
+                { return account.witnessName; }
+            }
+            return null;
+        }
+
+        internal void Settle(string filedLoadId, Pawn conductedBy, string conductedById, int atTick)
+        {
+            filedWitnessLoadId = filedLoadId;
+            interviewer = conductedBy;
+            interviewerLoadId = conductedById;
+            interviewerName = conductedBy == null ? null : conductedBy.LabelShortCap.ToString();
+            interviewTick = atTick;
+        }
 
         /// <summary>
         /// Every distinct crew member whose account this fact carries, filed one plus corroborating
@@ -231,7 +290,10 @@ namespace RimroomsAsyncIndustries.Company
                 witnessRoomIndex == other.witnessRoomIndex && tick == other.tick &&
                 witnessLoadId == other.witnessLoadId && witnessName == other.witnessName &&
                 recorderLoadId == other.recorderLoadId && recorderCarrierLoadId == other.recorderCarrierLoadId &&
-                recorderCarrierName == other.recorderCarrierName && SameAccounts(other);
+                recorderCarrierName == other.recorderCarrierName && SameAccounts(other) &&
+                filedWitnessLoadId == other.filedWitnessLoadId &&
+                interviewerLoadId == other.interviewerLoadId &&
+                interviewerName == other.interviewerName && interviewTick == other.interviewTick;
         }
 
         internal EvidenceObservationRecord SnapshotCopy()
@@ -254,7 +316,12 @@ namespace RimroomsAsyncIndustries.Company
                 recorderCarrierLoadId = recorderCarrierLoadId,
                 recorderCarrierName = recorderCarrierName,
                 accounts = (accounts ?? new List<WitnessAccountRecord>())
-                    .Where(a => a != null).Select(a => a.SnapshotCopy()).ToList()
+                    .Where(a => a != null).Select(a => a.SnapshotCopy()).ToList(),
+                filedWitnessLoadId = filedWitnessLoadId,
+                interviewer = interviewer,
+                interviewerLoadId = interviewerLoadId,
+                interviewerName = interviewerName,
+                interviewTick = interviewTick
             };
         }
 
@@ -276,6 +343,25 @@ namespace RimroomsAsyncIndustries.Company
             if (filed.Any(a => a == null || !a.IsValidFor(rooms))) { return false; }
             List<string> speakers = WitnessLoadIds.ToList();
             if (speakers.Distinct(StringComparer.Ordinal).Count() != speakers.Count) { return false; }
+
+            // A settlement is only coherent if it settles something, files an account that is
+            // actually on this record, and names who took the statement. A half-written settlement
+            // would read as "the company filed somebody's account" without saying whose.
+            if (interviewTick >= 0)
+            {
+                if (!Disputed || string.IsNullOrWhiteSpace(filedWitnessLoadId) ||
+                    string.IsNullOrWhiteSpace(interviewerLoadId) ||
+                    string.IsNullOrWhiteSpace(interviewerName) ||
+                    !speakers.Contains(filedWitnessLoadId, StringComparer.Ordinal) ||
+                    string.Equals(interviewerLoadId, filedWitnessLoadId, StringComparison.Ordinal))
+                { return false; }
+            }
+            else if (!string.IsNullOrEmpty(filedWitnessLoadId) ||
+                !string.IsNullOrEmpty(interviewerLoadId) || !string.IsNullOrEmpty(interviewerName))
+            {
+                // Settlement details without a tick is the same defect from the other side.
+                return false;
+            }
 
             switch (kind)
             {
@@ -310,6 +396,11 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref recorderCarrierLoadId, "rr_recorderCarrierLoadId");
             Scribe_Values.Look(ref recorderCarrierName, "rr_recorderCarrierName");
             Scribe_Collections.Look(ref accounts, "rr_accounts", LookMode.Deep);
+            Scribe_Values.Look(ref filedWitnessLoadId, "rr_filedWitnessLoadId");
+            Scribe_References.Look(ref interviewer, "rr_interviewer");
+            Scribe_Values.Look(ref interviewerLoadId, "rr_interviewerLoadId");
+            Scribe_Values.Look(ref interviewerName, "rr_interviewerName");
+            Scribe_Values.Look(ref interviewTick, "rr_interviewTick", -1);
             if (Scribe.mode == LoadSaveMode.PostLoadInit && accounts == null)
             { accounts = new List<WitnessAccountRecord>(); }
         }

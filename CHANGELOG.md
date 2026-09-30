@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.28-dev - 2026-09-29 - nobody is lying
+
+- **You can now settle a disagreement between two crew.** A staff member takes both statements and the company files one of them as its version of events.
+- **Neither crew member is wrong, and the game does not pretend otherwise.** Both accounts were checked against the coordinate when they were given. They disagree because the marker moved between the two visits - which is a thing that happens down there.
+- **The account you do not file stays on the record**, with the name of the person who gave it. Nothing is erased.
+- **An interviewer needs Social 4**, has to be awake and able to talk, and cannot be one of the crew who gave an account. If nobody on staff qualifies, the readout says so and says what is needed.
+- **A finished analysis cannot be reopened.** Once a report is written, the disagreement stays on the record exactly as it was.
+
+Full record: [nobody is lying](docs/implementation/INTERVIEW_IMPLEMENTATION.md). No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.27-dev - 2026-09-29 - you cannot brick your own gate
 
 - **Nothing can be built on the cell your crew has to stand on to use a gate.** The game refuses the placement and says which gate it is protecting, instead of letting you wall your own way in and find out later.
