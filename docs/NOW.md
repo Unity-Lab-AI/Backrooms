@@ -50,45 +50,38 @@ everything below:
 
 ---
 
-## THE ANSWER TO "IS IT DONE" — measured 2026-09-29, and the answer is NO
+## Is it done? NO, and the shape of what is left
 
-The owner asked directly: *"are all build items complete and mod 100% but bug testing?"* Measured
-rather than estimated, and **the queue could not answer it** — the raw open count overstates,
-because rows closed by work that shipped the same day still carried `[ ]`.
+**~21 genuine build items**, measured at 0.12.33-dev, listed in full under **What is left** below.
+Plus about **8 rows that cannot close before the game runs once** and **9 the owner excluded**.
 
-| | |
-|---|---|
-| Genuine build items left | **~21** at 0.12.33-dev, some spanning several rows |
-| Rows that **cannot** close before a first launch | **~8** |
-| Rows the owner excluded (Steam, site, collection) | **9** |
-| Open rows already built and never closed | **~13** |
+Queue, one consistent pattern, command beside the number:
 
-**Three things I was tempted to assume were done and checked instead — all three genuinely
-unbuilt:** the solo/group tutorial line (zero solo-specific requests exist), research tier 4 (zero
-tier-4 projects), and the four area types across a gate (one incidental use, no cross-gate
-coverage). **Measuring first is what keeps the done column honest.**
+```
+grep -c '^\s*- \[ \]' docs/TODO.md     # 75 open
+grep -c '^\s*- \[~\]' docs/TODO.md    # 50 partial
+grep -c '^\s*- \[x\]' docs/TODO.md    # 457 done
+```
 
-### The ~8 that cannot be finished before the game runs once
+**The raw open count overstates.** Rows closed by work that shipped the same day keep their `[ ]`
+until somebody flips them, and four separate rows this session turned out to be **already built** —
+227 (medical routes), 308 (contradictory accounts), 493 (the recorder fold) and 1266's neighbours.
+**Check a row against the code before building for it.** That habit has saved more work this
+session than it cost.
 
-Not evasion — it is what they are, in their own words:
+### The package is staged, and one checkpoint behind
 
-- **exchange-rate and catalogue balance** — *"neither has any play behind it"*
-- **duplicate def and patch collisions in the exact 294 profile** — needs the profile loaded for a
-  conflict to be reproducible
-- **performance measurement and profiling under a long save**
-- **the user-facing compatibility report** — *"cannot honestly state a tested order before anything
-  has been tested"*
-- **whether the creepy-versus-normal balance lands** — *"a play question"*
+The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.33-dev**. Re-stage
+before any launch:
 
-So *"all build items complete, then bug test"* has a hard edge. Everything structural can be
-finished first; those rows are waiting on a launch, not on more building.
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
+```
 
-### The package is staged and loadable right now
-
-The copy in the owner's Local Mods folder was **`0.4.0-dev`, twenty-two checkpoints stale** —
-nothing built since the start of the project had ever been staged. Re-staged at 0.12.26-dev, 87
-files hash-verified, old copy backed up to `artifacts/staging-backups/`. **The mod list was not
-touched and nothing was launched.**
+It backs up the existing folder, hash-verifies every file against the build manifest, and records
+`ProfileChanged = false; GameLaunched = false`. **It never touches the mod list and never starts the
+game.** When it was first run this session the staged copy was **0.4.0-dev** — twenty-two
+checkpoints stale, so nothing built in this project's history had ever reached the game folder.
 
 ---
 
@@ -146,210 +139,6 @@ Five things to establish before writing a line:
    almost a specification for this row.
 5. **Hospitality is an optional mod**, so guest care is a `PatchOperationFindMod` case at most, and
    must do nothing at all when it is absent.
-
----
-
-## Done, 0.12.31-dev — a wide gate out of plain doors
-
-**Three rows were one feature**, and the answer was on record as **BOTH paths**. A run of adjacent
-Core 1×1 doors binds into one gate. The change is small because **a straight line of N adjacent 1×1
-doors is a 1×N `CellRect`**, which is exactly what every existing size derivation already works off
-— so the width, the entry cells, the power draw and the spin-up work all came out right with nothing
-written for them. Full record:
-[a wide gate out of plain doors](implementation/GATE_DOOR_RUN_IMPLEMENTATION.md).
-
-**Both defects in that checkpoint were mine and the checkers caught both** — a runtime-built keyed
-string (fifth time) and the word *"doorway"* five times, a rule I had been corrected on hours
-earlier.
-
-Three rows point at one feature (568, 610, 959) and the owner answered it long ago, verbatim:
-
-> *"i suppose the fallback is okay of building mulitple doors 1x1 to make the sizes needed to fit
-> vehicals and the like"*
-
-**The answer on record is BOTH paths** — Doors Expanded when present, and a run of adjacent Core
-1×1 doors when not. The single-door half shipped at 0.9.2-dev, where Core's own `OrnateDoor` gives
-2×1 free. **1×3 and 2×3 are what remain.**
-
-What to establish first:
-
-1. **Invariant 47: a connection has one width, in both directions.** Per-endpoint measuring traps
-   an animal in the Backrooms. A bound run must present *one* width to both sides.
-2. **Invariant 40: width and footprint are different numbers.** Width decides what fits; footprint
-   decides what it costs. A run of three 1×1 doors is footprint 3 and width 3, which is the easy
-   case — **2×3 is the one to think about.**
-3. **Invariant 41: throughput is never capped.** A wide gate gets more doorway cells, never a
-   quota. There is no counter, deliberately.
-4. **Invariant 12 and 32:** there is exactly one way a laboratory gate opens, through the spin-up,
-   and every entry point routes into it. A bound run is **one gate**, not three.
-5. **`python tools/register-query.py use RR-GATE`** — the construction family has real instructions
-   about reachability and native build costs, and 0.12.27-dev already found two that applied.
-
-The framing correction on record, which must not be undone: the option was once written as
-*"Core-only must reach every width"*, which treats a vanilla install as the audience. **It is not.**
-Zero hard dependencies is a *build* property; the 294-mod register is the *play* property.
-
----
-
-## Done, 0.12.30-dev — two of three starts had no campaign
-
-**The largest reachability hole found in this project so far**, and it turned up while following the
-solo-tutorial row. `EstablishCorporationContact()` had **no caller anywhere**, and
-`corporationContact` gates the tutorial line, generated requests, the Purchase route and the
-clean-up team's rescue — so the Store and Solo/Group starts had **no campaign at all, permanently.**
-
-The owner named the mechanism mid-build and it deleted most of the planned work: a call on a comms
-console, starting **the existing Async line**. No solo line was needed. Full record:
-[two of three starts had no campaign](implementation/CORPORATE_CONTACT_IMPLEMENTATION.md).
-
-**Measured: zero solo-specific requests exist.** `RR_Requests.xml` holds 7 fixed tutorial requests
-and 18 generated families, all of them the Async Industries line. The solo/group start ships (0.12.0
-to 0.12.2) and **teaches nothing.**
-
-`docs/CAMPAIGN_CHART.md` is the authority. The owner's direction for this line, verbatim:
-
-> *"and the tutorial like quest chains should lay it all out"* — the solo/group start gets **its own
-> tutorial line**, the way Async Industries has one. It has to teach, in order: that there is a way
-> out and where to look, that coming out gives you a tile to build on, that the natural chain
-> reaches through depth 3 and no further, and that deeper needs a gate you built.
-
-And the standing constraint on both lines:
-
-> *"this is all open eneded they can play how they choose"* — **the tutorial chain guides, it never
-> rails.**
-
-Four things to settle before writing a def:
-
-1. **There is no company in a solo start**, so `RimroomsRequestDef` may not fit as-is. The Async
-   line is a *corporation asking*. A solo crew has nobody to ask them. **Check what the request
-   machinery actually requires** — `corporationContact` is a branch state in `RequestGeneration`,
-   and a line that needs a corporation cannot be the solo line.
-2. **`RR_Requests_NoTimeLimit` is the rule.** No clock, ever — the only clock is the gate.
-3. **Every route must name a def that exists**, or the request can never fire and only
-   `proof-request-generation.py` will say so.
-4. **`python tools/register-query.py use RR-SCEN` and `use RR-MSN`** before designing.
-
----
-
-## Done, 0.12.29-dev — the research ladder is complete
-
-**Six rungs, and two that could not exist.** Surveyed rather than assumed, because 0.12.5-dev
-deleted four tier 3 projects for being unlocks with nothing to unlock. **Logistics gets no tier 4**
-— all four of its knobs are claimed and what remains are safety bounds no player reaches — and the
-**gate line cannot have one**, because its fourth rung already stops the countdown. Both absences
-are proof claims, since an absence cannot be seen by reading. Full record:
-[six rungs, and two that could not exist](implementation/RESEARCH_TIER_4_IMPLEMENTATION.md).
-
-**Measured, not assumed: zero tier-4 projects exist.** `RR_CompanyProjects.xml` holds tiers 0 to 3
-across seven branches, and the row for tier 4 has been open since the ladder was first declared.
-
-**Survey it the way tier 3 was surveyed, and do not carry the old verdict.** The 0.12.5-dev deletion
-of four tier 3 projects was correct at the time and became writeable only because arc 5 wrote the
-systems underneath. Invariant 136 deleted those four for being unlocks with nothing to unlock, so:
-
-1. **Find a real observable knob per branch before authoring anything.** A project that changes no
-   number a player could name is not a project. The knobs that existed at tier 3 were
-   `MaximumFrontiersPerCoordinate`, `FrontierRarity`, `EmergenceShare` and `SurveyTicks` — and
-   three of those are Spatial's, so one branch cannot take them all.
-2. **The ~30 `Maximum*` constants in `ConnectedWork/` are scan budgets, not unlocks.** Raising one
-   is a performance decision with no effect a player could name. Do not reach for them.
-3. **Two restraints from 0.12.18-dev still hold:** the per-coordinate frontier cap is **not** a
-   research knob, and shelter never reaches zero.
-4. **`python tools/register-query.py use RR-STA`** before designing — research and staff
-   development is where the *"check research tab replacements, prerequisite edits, and project
-   speed changes"* instruction lives, and Backrooms milestones need stable definitions with an
-   independent route when optional trees are absent.
-
-Systems that have grown since tier 3 and may now carry a knob: the five-map cap and world exits
-(0.12.21), remote site count and overhead divisor (0.12.18), request generation (0.12.12), and the
-interview just built — **a Social floor is a number, and a project that lowers it is observable.**
-
----
-
-## Done, 0.12.28-dev — the interview
-
-**Nobody is lying, and that is the design.** `RecordFieldObservation` validates a fact against the
-real map **before** it looks for a prior observation, so a disputing account was already checked and
-found true. Two crew disagree because **the marker moved between their visits** — 0.10.3-dev's
-displacement, seen from inside an evidence file. So an interview decides **which account the
-corporation files**, no reliability statistic was invented, and **the account not filed stays on the
-record**. Full record: [nobody is lying](implementation/INTERVIEW_IMPLEMENTATION.md).
-
-Queue item 4's remainder, and `TODO.md`'s *"Add analyze/interview/compare/review workflows"*, where
-**compare now ships and interview does not.** Two crew who disagree produce a saved dispute
-(0.12.25-dev) and **nothing resolves it.** That is the piece that makes a dispute a decision rather
-than a note.
-
-What already exists, so this is not built from nothing:
-
-- **`EvidenceObservationRecord.Disputed`** and the `WitnessAccountRecord` list, each with a named
-  witness, their room, and what they place the marker at.
-- **`CaseRecord`** — id, `titleKey`, `coordinateId`, `evidenceIds`, `closed` — one per coordinate,
-  created at contract time in `CampaignServices.cs:127`. **A case is where a resolution belongs.**
-- The Operations panes, and `DrawEvidenceDetails` already rendering each account.
-
-Four things to settle before writing a line:
-
-1. **`python tools/register-query.py use RR-STA`** — 149 rows, and the interview instruction is
-   explicit: *"Keep custody, casework, and interview goals reachable through vanilla prisoner
-   controls"*. **These are employed staff, not prisoners** — do not reach for detention mechanics.
-2. **Do not invent a reliability stat.** RimWorld has none, and the register says *"Keep the
-   company's evaluation based on actual pawn traits, skills, and relationships"*. Real and available:
-   `SkillDefOf.Social` on the interviewer, and real traits.
-3. **Decide what resolution MEANS** before writing it. Filing one account as the company's version
-   is honest for a corporation. Deciding who is *right* is not something the game can know.
-4. **A resolution must be refusable.** Invariant 136: every clause has to be able to refuse. No
-   interviewer available, a witness dead, a witness no longer employed, the evidence already
-   analysed — each is a real reason it cannot happen, and each needs a keyed refusal.
-
----
-
-## Done, 0.12.26-dev — the in-game text names only what exists
-
-**Fourteen pieces of player-facing text told the player to use retired equipment**, and three keys
-were labelling defs that stopped existing long ago. I found nine by eye; **the check found fourteen,
-then two more in def descriptions** — and my first version of the check would have passed while one
-of them sat in a live research project, because its def pattern was blind to this mod's own
-namespaced def types. Full record:
-[the in-game text stops naming things that do not exist](implementation/RETIRED_VOCABULARY_IMPLEMENTATION.md).
-
----
-
-## Done, 0.12.25-dev — two crew who disagree
-
-The prep material's *"contradictory accounts"*, the oldest unbuilt content direction left. **The
-contradiction was already being computed and thrown away** as a receipt mismatch, and chart line 226
-asks request 5 for *"two crew accounts of the same room"* — which was unreachable, because one
-evidence record could only ever carry one witness per fact. Accounts are saved now, corroborating or
-disputing, **a dispute counts as testimony**, and the readout names them. Full record:
-[two crew who disagree](implementation/CONTRADICTORY_ACCOUNTS_IMPLEMENTATION.md).
-
-**Nothing resolves a dispute yet**, and that is said plainly rather than implied: the interview is
-the checkpoint after next.
-
----
-
-## Done, 0.12.24-dev — the field recorder is folded into the record book
-
-**Owner-answered 2026-09-29, in the turn it was found**, and the answer had already been written
-down at 0.9.9-dev. `RR_FieldRecorder` was the last genuinely **buyable, carryable gameplay
-`ThingDef`** this mod authored. Its art went at 0.12.22-dev; **the def now stays deliberately** —
-loadable so saves open, never granted or sold again. Full record:
-[the recorder became the book](implementation/RECORD_BOOK_IMPLEMENTATION.md).
-
-**One item, two jobs.** The kit is resolved through `CompRouteEvidence.NativeCarrierDef` rather
-than named, both callers refuse visibly on its null, and **two gates that had never agreed now ask
-one question**: surveying needed the recorder *carried* while the observation needed the book merely
-*somewhere on the map*. Both now want the book in a crew member's hands.
-
-**A dead end was found and closed on the way.** Core gives books `Flammability 1` and sells
-`TextBook` only as random outlander stock, so a branch whose only book burned would have failed every
-future dispatch for ever. `RR_Procurement_RecordBooks` fixes it. **That was not in the row, the plan,
-or the owner's answer** — it came out of reading what Core actually does with the object.
-
-**And the register's own guidance had been unreachable from its own tool.** `row 4` printed
-`card : open card`, a hyperlink label, while every real instruction sat in the register's `#cards`
-section and 294 review records on disk. `card` and `use` now read them.
 
 ---
 
@@ -429,141 +218,154 @@ section and 294 review records on disk. `card` and `use` now read them.
 
 ---
 
-## What is left, in order
+## What is left, in order — rewritten 0.12.33-dev, measured not carried
 
-The order is the one `docs/CAMPAIGN_CHART.md` §7 authorises. **Read the chart before starting
-anything in this list** — it is the authority, and steps 1–5 of its build order are done.
+**~21 genuine build items**, and the previous version of this list had two that shipped this session
+still written as open. Anything marked closed below stays as a record so nobody rebuilds it.
 
-1. ~~**Arcs 5–8.**~~ **CLOSED, 0.12.13-dev.** `docs/CAMPAIGN_CHART.md` §7 step 8 is done: every
-   arc now has work a player can be asked to do — **18 generated families across arcs 4–8**, one
-   per item the chart names, plus the seven fixed tutorial requests. Arc 5’s *"still unwritten"*
-   list turned out to have had real read sites since 0.11.6: the chart’s arc names and the
-   research tree’s branch names were describing the same things from two directions.
-   **The systems each arc needs still have room to grow**; what is closed is that nothing in the
-   chart’s eight arcs is unreachable content. Historical detail follows.
-   - **Arc 5, "Build beyond headquarters".** *"Remote sites need people, supplies, signals,
-     protection, and an exit plan... A remote base is a costly responsibility rather than free map
-     ownership."* **The first piece shipped in 0.12.6-dev**: a branch registers a map it already
-     holds, which puts it inside `OwnsMap` and on the daily bill. **Acquisition stays RimWorld's.**
-     - **Supplying it: DONE, 0.12.7-dev.** Procurement delivers to any place on the books, and a
-       latent cross-map reroute bug was found and fixed before it could swallow a shipment.
-     - **Staffing it: DONE, 0.12.8-dev.** A shipment to an unstaffed site waits rather than
-       landing in an empty field, checked at arrival so ordering ahead stays possible.
-     - **The exit plan: DONE, 0.12.9-dev.** A gate may be designated at a registered site, and it
-       needs **its own console, battery and assembly bench there** — a site with a gate is a real
-       facility or it is nothing. A way out may come up at a site too, which came free from the
-       ownership predicate.
-     - **Arc 5's named list is complete**: people, supplies, signals, protection, exit plan.
-     - **Still unwritten from the chart:** relay stations, caches, field shelters, guarded leases,
-       and resupply and evacuation missions. **Check each against a real read site before
-       building** — invariant 136, which deleted four tier 3 projects at 0.12.5.
-     - **The chart also names** relay stations, caches, field shelters, guarded leases, resupply
-       and evacuation missions. None is written.
-   - Arc 6, the outside world — **the `IncidentDef` surface built in 0.11.8 is its home.**
-   - Arc 7, industrial reach. **DLC-optional throughout.**
-   - Arc 8, deeper systems — partly built already: depth bands, archetypes, the pressure ladder.
-2. ~~**Research tier 3.**~~ **CLOSED, 0.12.18-dev — all seven branches**, each moving a real observable knob, with two restraints asserted: the per-coordinate frontier cap is **not** a research knob, and shelter never reaches zero.
-   **TIER 4 REMAINS, and survey it the same way rather than assuming it has knobs.** The 0.12.5-dev deletion of tier 3 was correct at the time and became writeable only because arc 5 wrote the systems — so re-run the sweep, do not carry an old verdict. Historical detail on tier 3’s original deletion follows.
-   Tier 3
-   is *"remote operations: support more than one site; work beyond headquarters"*, and the knob
-   sweep found **nothing to move** for Facilities, Fieldcraft, Entities or Commerce, because the
-   systems such an unlock would modify are not written. Four of seven projects would have been
-   invented effects. Record: `implementation/BUILD_ORDER_CORRECTION.md`.
-   - The knobs that **do** exist and are real: `MaximumFrontiersPerCoordinate`, `FrontierRarity`
-     and `EmergenceShare` (all three Spatial's, so one branch cannot take them all) and
-     `SurveyTicks` (Measurement's).
-   - **The ~30 `Maximum*` constants in `ConnectedWork/` are scan budgets, not unlocks.** Raising
-     one is a performance decision with no effect a player could name. Do not reach for them.
-3. **Generated requests after the hinge. THE MACHINERY IS DONE, 0.12.12-dev.** The eligibility
-   filter, the generated offer routine and **arc 4's five families** ship, and progress on a
-   generated request is counted from when it appeared. **The thirteen remaining families shipped
-   0.12.13-dev**, so this item is closed too: 18 generated families across arcs 4–8, with
-   coverage asserted **per arc** — a total would be satisfied by eighteen copies of one arc.
-   **Every new route must name a def that exists**, or it can never fire and nothing but
-   `proof-request-generation.py` will say so.
-   - **Route selection is ANSWERED** (chart §6 item 3 closed): *"Both — filter picks the family,
-     card never shrinks."* A family is offered only if the branch can take **two routes of two
-     different kinds** from its pool; the card it then shows is the **full authored floor,
-     unfiltered**. `RequestRoutes.Available` is not to be modified.
-   - **The filter must have teeth.** Invariant 136: every clause has to be able to refuse. A
-     `Deliver` route that is "always takeable" makes the whole filter hollow. Refusable readings
-     exist for all seven kinds — catalogue carriage, completed logs, living witnesses, project
-     availability, redirect target existence.
-4. **Still unbuilt from the prep material** — *"contradictory accounts"* from a returning crew;
-   staff **prior exposure**; *"respond to openings in settlements"*.
-5. **The adjacent-door-run fallback** — 1×3 and 2×3 by binding one gate across a run of adjacent
-   1×1 Core doors, for players without Doors Expanded.
-6. ~~**`RR_QuietPursuer` presentation.**~~ **CLOSED, 0.12.22-dev** — it uses Core’s `Things/Mote/Black`, a shape you cannot resolve, which is closer to its own description than a drawing was. **Zero gameplay art or audio now ships** and a checker asserts it as a shape rather than a count.
-   **NEXT: fold `RR_FieldRecorder` into the record book.** Fully specified at the top of this file under **DO THIS FIRST** — decision, read sites, grant sites and constraints, all located. Historical detail follows.
-   **The five `RR_*Staff` PawnKinds are NO LONGER part of this item:** they were found already
-   authored and read by nothing, and wired as the clean-up team's relief crew in 0.11.7-dev.
-   `proof-facility-relief.py` now asserts both directions so they cannot go dead again.
-7. **The player-facing how-to.** Written **once**, for both the repo and the site.
-8. **Public release** — site, Workshop page, collection. [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md).
-    **Correctly last.**
-9. **Continue the register retro sweep.** Swept: animals, security, spatial construction,
+### Systems still unbuilt
+
+1. **The eleven DLC container hauling givers.** Named, not guessed at, in
+   `HaulingUpkeepProvider`'s own note. **This is the DO THIS FIRST item** — see the top of this
+   file for the four things to settle, of which custody is the real one.
+2. **Containment rooms, security procedures, staff debrief, quarantine, alarm and escape
+   response.** Row 761. Evidence custody and case records already ship; **witness interviews
+   shipped 0.12.28-dev.** This is the rest of that row.
+3. **Crew composition and cargo planner** with skill, health, weight and window checks, ready and
+   unready reasons, and a cost preview. Row 728. *"must not own connection existence"*.
+4. **Quests and missions for odd goods**, as distinct from contracts — contracts shipped 0.7.3-dev
+   and the owner asked for *"quests and missions and contracts"*. Plus a player-facing surface for
+   open odd demands: offers and settlements are recorded events and the Operations pane does not
+   list them. Rows 1031, 1032, 1033.
+5. **Mining and building behind a gate.** Rows 98 and 99. The cells around a gate are ordinary map;
+   the one exception is linked equipment, which has placement requirements **of its own**.
+   **Row 113 is closed** (0.12.27-dev) — the approach cell is reserved against blocking, and
+   flooring is fine.
+6. **Mineable materials and recoverable floors** in a stripped interior. Row 1101. `FillWithRock`
+   and `NaturalRockTypesIn` already ship; the floors half is what remains.
+7. **The four area types across a gate** — `Area_BuildRoof`, `Area_NoRoof`,
+   `Area_SnowOrSandClear`, `Area_PollutionClear`. Rows 1215, 1235, 1239. **Measured: one incidental
+   `Area_NoRoof` use and no cross-gate coverage.**
+8. **Inhabitant and monstrosity families tiered by depth and wealth**, every variation seeded.
+   Row 1011. The bands, archetypes and pressure ladder they sit on all ship.
+9. **Material variety per coordinate** — archetype fixtures take their default stuff today.
+   Row 1005.
+10. **Gate subsystems**: monitoring, cool-down, modules, repair and reliability. Row 725. Power
+    reserves, calibration and the cutoff already ship.
+11. **Vehicles, space travel and the two VGE chapter hooks.** Rows 764, 765, 766. **Optional by
+    construction** — a `PatchOperationFindMod` that does nothing when the mod is absent.
+12. **RWT multiplayer feature detection and its documentation.** Rows 784, 791. Requires the mod
+    present to detect anything, and **no statement may describe live shared-colony control** unless
+    implemented and demonstrated.
+
+### Surfaces and words
+
+13. **The player-facing how-to for gameplay and systems.** Rows 1193, 1220. `docs/HOWTO.md`
+    documents the **build**, not play. Written **once**, for both the repo and the site.
+14. **The native menu remap** into the company-first layout. Row 821. Twelve panes and reason codes
+    ship; this is the Architect/Work/Assign/Research integration.
+15. **Tutorial, glossary, keyboard paths, contrast and scale.** Rows 822, 833. Localization
+    completeness is already measurable: `check-keyed-strings.py` reports every declared key
+    resolving.
+
+### Housekeeping with teeth
+
+16. **The unknown-def-field checker**, written once and **removed rather than shipped** because it
+    passed its own planted fault. Row 922.
+17. **Fix `disposition_stance()`** in the register generator: it counts a **negated** "required" as
+    Required, and **14 of the 17** "Required" rows say the opposite. Row 1055.
+18. **Reconcile 0.5.0–0.7.1 into the master backlog.** Row 1054 — the master TODO is granular for
+    research and coarse for code.
+19. **The register retro sweep's last families.** Swept: animals, security, spatial construction,
     expedition logistics, interface, facilities, furniture, storage, power, contracts, faction
-    standing, subject casework, evidence, policies. Not yet: medical, world operations, cargo,
-    hospitality, materials, visitor economy, staff psychology.
-10. Reconcile 0.5.0–0.7.1 into the master backlog; fix the register's `disposition_stance()`
-    negation bug; the unknown-def-field checker, **written, proved broken and removed rather than
-    shipped**.
+    standing, subject casework, evidence, policies. **Not yet: medical, world operations, cargo,
+    hospitality, materials, visitor economy, staff psychology.** Rows 206, 302.
+20. **The campaign economy workbook has no generator**, and the register preview PNGs under
+    `outputs/` depict a superseded layout. Rows 1268, 1269.
+21. **The TOS and official-versions compliance pass** — hold the package against Ludeon's modding
+    terms and the Steam agreements, and keep the position current. Rows 1286–1290.
+
+### Cannot close before the game runs once — about 8 rows
+
+Not evasion; it is what they are, in their own words:
+
+- **exchange-rate and catalogue balance** — *"neither has any play behind it"* (rows 890, 891)
+- **duplicate def and patch collisions in the exact 294 profile** — a conflict has to be
+  reproducible to fix (row 810)
+- **performance measurement and profiling** under a long save (rows 212, 742)
+- **the user-facing compatibility report** — *"cannot honestly state a tested order before anything
+  has been tested"* (row 812)
+- **whether the creepy-versus-normal balance lands** — *"a play question"* (row 975)
+- **the invalid-state matrix half** of row 835, and the release tag of row 849
+
+### Excluded by the owner — 9 rows
+
+*"lets not count the test items and the steam collection and mod workshop setup and stuff like
+that"*. Rows 268–271, 275–278, 572: the site, the Workshop page, the collection, and the Playwright
+idea. [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md) holds them, and **it is correctly last.**
+
+---
 
 ### Done since the last handoff, so nobody rebuilds it
 
-**Twelve checkpoints, 0.12.11 → 0.12.22.** Every one published to all eight refs with a read-back,
-a deterministic assembly, and the full checker and proof sweep.
+**Ten checkpoints, 0.12.24 → 0.12.33.** Every one published to all eight refs with a read-back, a
+deterministic assembly, and the full checker and proof sweep. Twelve rows closed.
 
-**THE CAMPAIGN NOW EXISTS IN THE GAME.** It did not before. `RimroomsRequestDef`, `RequestRoutes`
-and seven authored requests — the tutorial line and the hinge — shipped at 0.11.1 and 0.11.2 and
-were **read by zero lines of C#**. Chart §7 steps 4 and 5 were both recorded *done*. Now: requests
-reach a player, are accepted, complete when any one route comes true, and pay.
+**Two of the three shipped starts had no campaign at all.** `EstablishCorporationContact()` had
+**no caller anywhere**, and `corporationContact` gates the tutorial line, generated requests, the
+Purchase route **and the clean-up team's rescue**. The Store and Solo/Group starts were a sandbox
+with a locked door, permanently, while the chart and `RR_Starts.xml` both said *"reaching contact is
+the achievement"*. The owner named the mechanism mid-build — *"once they contact the cvompany in
+comms they can start async quest line"* — and it **deleted most of the planned work**: no parallel
+solo line was needed, because the existing gate on `corporationContact` was the whole mechanism.
+**Starts that can reach the campaign: was 1 of 3, now 3 of 3.**
 
-**25 request defs** — 7 fixed tutorial plus **18 generated across arcs 4–8**, one per item the chart
-names. **Chart §7 step 8 is closed**: every arc has work a player can be asked to do. Coverage is
-asserted **per arc**, because a total of eighteen is satisfied by eighteen copies of one arc.
+**The last authored gameplay item is retired, without a save break.** `RR_FieldRecorder`'s job
+folded into Core's `TextBook` — the answer had been written down at 0.9.9-dev and sat fourteen
+checkpoints because **no proof asserted anything about it.** The def stays loadable so saves open;
+it is simply never granted or sold again. A dead end was found on the way: Core gives books
+`Flammability 1` and sells them only as random outlander stock, so `RR_Procurement_RecordBooks`
+exists.
 
-**Generation after the hinge**, with an eligibility filter whose every clause can refuse, and
-progress measured **from when a request appeared** — absolute state is permanently true once true,
-so a repeatable request would otherwise have paid out on acceptance.
+**Two crew who disagree now produce a real disagreement, and an interview settles it.** The
+contradiction was **already being computed and thrown away** as `RR_Company_ReceiptMismatch`, and
+chart line 226 asked request 5 for *"two crew accounts of the same room"* — unreachable, because one
+evidence record could carry only one witness per fact. And **nobody is lying**: `validFact` runs
+against the real map *before* the prior-observation branch, so a disputing account was already
+checked and found true. The marker moved. That is 0.10.3-dev's displacement seen from inside an
+evidence file, and it is why no reliability statistic was invented.
 
-**Research tier 3, all seven branches**, each moving a knob a player can watch change. Two
-restraints kept and asserted: the per-coordinate frontier cap is **not** a research knob, and
-shelter never reaches zero.
+**The research ladder is complete at six rungs, and two branches deliberately have none.** Tier 4
+was surveyed rather than assumed, because 0.12.5-dev deleted four tier 3 projects for being unlocks
+with nothing to unlock. **Logistics gets no tier 4** — all four of its knobs are claimed and what
+remains are safety bounds no player reaches — and the **gate line cannot have one**, because its
+fourth rung already stops the countdown. Both absences are proof claims, since an absence cannot be
+read.
 
-**The seven universe factions ship** — the largest completely unbuilt owner direction, found by the
-backlog audit. All neutral, **no settlements** so world generation is untouched, and no new pawn
-kind or art.
+**1×3 and 2×3 gates exist with no mods at all.** A run of adjacent Core 1×1 doors binds into one
+gate, one width, read the same from both sides. The change is small because **a line of N adjacent
+1×1 doors is a 1×N `CellRect`**, which is what every existing size derivation already worked off.
 
-**A way out into the world.** The last unbuilt piece of the topology, and the gap was worse than
-the row said: with no marked door a way out silently became a way **deeper**, so a branch with
-nothing marked could never get out. Now it leads to an unheld tile — **claimed under the five-map
-cap, a caravan at or over it.**
+**Fourteen pieces of in-game text told the player to use equipment that does not exist** — a return
+beacon, a survey tag, an evidence case, a field recorder. `check-keyed-strings` verifies a key
+*resolves*, not that it is *true*. The **tenth checker** derives retired names from the archive, and
+repairing the archive came first: `RR_ReturnBeacon` had never been archived, so the derivation
+would have been quietly partial and passed.
 
-**Zero gameplay art or audio ships.** Four custom textures replaced with paths **enumerated from
-Core's own defs**, all four archived.
+**Everything this mod authors is now read by something** — the **eleventh checker**, 258 defs and
+102 actions audited. One unwired capability got a surface (cutting a connection without disabling
+the gate); one duplicate was retired.
 
-**The register is queryable by the column that answers the question.** `trace` names which Rimrooms
-feature a row bears on; it had no query, which is why it was the column that got skipped. **A ninth
-checker** verifies this build still uses other mods the way the register says to.
+**Surgery across a gate cannot be built, and that is now a proof rather than a gap.** `Bill_Medical`'s
+patient *is* the bill giver, reserved from the doctor's map, with ingredients searched on the
+doctor's map. The patient comes home — which the casualty route has done since 0.5.2-dev.
 
-**Real defects fixed, all of them shipped and player-visible:** the depth-1 yellow rooms had never
-been carpeted · two labels lied (request 5 accepted one crew account while promising two; `bonusUsd`
-would always have paid) · a way out with no marked anchor was a dead end · two menu textures were
-reported unreferenced on every run.
+**Three things the game knew and never said:** the crossing order is on the door with its refusal
+named in place, every coordinate reports its pressure band, and selling everything at a beacon asks
+first.
 
-**And the queue was re-measured against the code**: 155 rows, **114 built or superseded**, open rows
-**254 → 86**. It could not answer *"how close are we"* before that, because nobody had checked.
-
-**The count itself was measured two ways and reported as 90.** Under one consistent pattern it is **86 open, 50 partial, 446 done** at 0.12.24-dev. Neither reading was wrong about the file; they were different greps. So the command lives beside the number now:
-
-```
-grep -c '^\s*- \[ \]' docs/TODO.md     # open
-grep -c '^\s*- \[~\]' docs/TODO.md    # partial
-grep -c '^\s*- \[x\]' docs/TODO.md    # done
-```
-
----
+**Four rows were already built and just never closed** — 227, 308, 493 and the recorder fold.
+**Check a row against the code before building for it.**
 
 ## Invariants — do not break these
 
@@ -932,8 +734,23 @@ Each is a real defect or a pinned fact. Numbering is historical; gaps are delibe
 
 ## The warning that matters most right now
 
-**A search that finds nothing is not evidence, and this session I twice took one as proof.**
-Both directions of that failed, and both cost real things:
+**SUSPECT YOUR OWN MEASUREMENT FIRST.** A search that finds nothing is not evidence, and across
+0.12.24 → 0.12.33 **the measurement was the defect five separate times while the code was fine:**
+
+| Measured wrong | The truth |
+|---|---|
+| a grep for the documented assembly hash returned nothing | the pattern was wrong; the line was correct |
+| the queue reported **90 open** | 86 under one consistent pattern — two different greps, neither wrong about the file |
+| a keyed-string parser found **33** strings | it matched the `<LanguageData>` wrapper; there are **1,499** |
+| **three gate projects "grant nothing"** | they drive `PortalWindowTier` by counting completed projects **by defName**, which the def file's own comment says. I nearly shipped a three-hollow-projects finding |
+| the wiring check reported **106 dangling defs**, then **3** | **zero.** Defs are consumed by name, **by type**, or by cross-reference from another def's XML, and I had only implemented the first, then the first two |
+
+And a fault plant caught a **blind claim** of mine at 0.12.33-dev: *"the readout is wired"* checked
+that a key **appeared** in the file, so replacing `listing.Label` with a no-op left the claim passing
+while nothing was drawn. **A claim that searches for a string is not a claim about behaviour.**
+
+The older instances below are kept because they are the evidence, and because two of them are the
+reason `GetNamedSilentFail` is treated as dangerous here:
 
 | What happened | Why it was worse than being wrong |
 |---|---|
