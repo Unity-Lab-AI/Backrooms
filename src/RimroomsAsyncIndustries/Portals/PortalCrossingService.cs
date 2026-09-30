@@ -38,6 +38,20 @@ namespace RimroomsAsyncIndustries.Portals
         { heldThings = new ThingOwner<Thing>(this); }
 
         public IReadOnlyList<PortalCrossingReceipt> Receipts { get { return receipts.AsReadOnly(); } }
+
+        /// <summary>
+        /// Whether anybody is part-way through this connection right now.
+        ///
+        /// Asked before a door is allowed to take its route with it. A receipt that is not
+        /// terminal is a pawn mid-transfer, and moving an endpoint under one is precisely what
+        /// invariant 55 forbids.
+        /// </summary>
+        public bool IsConnectionInFlight(string connectionId)
+        {
+            if (string.IsNullOrWhiteSpace(connectionId)) { return false; }
+            return receipts.Any(receipt => receipt != null && !receipt.IsTerminal &&
+                receipt.ConnectionId == connectionId);
+        }
         public string StateFaultKey { get { return stateFaultKey; } }
         public int HeldThingCount { get { return heldThings == null ? 0 : heldThings.Count; } }
         public IThingHolder ParentHolder { get { return null; } }

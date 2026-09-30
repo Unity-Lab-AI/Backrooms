@@ -1488,6 +1488,28 @@ thir natual gate spawns to different levels within"**
 
 ---
 
+## Coordinate rebuild, stages two to four — 2026-09-30 (0.12.50-dev)
+
+- [x] **"dont let them go more than 5 remember the games mechanics and limits built in ... they should gett a warning this gate is blocked your holding open too many gates, but per scerio styled"** and **"5 is the limit of other colonies available so a backrooms level should be one colonly bacskicly in my thinking"** — **DONE.** `OpenMapBudget` reads **`Prefs.MaxNumberOfPlayerSettlements`** (the player's own 1-to-5 slider, which Core enforces in `SettleUtility`) rather than hard-coding a 5, counts coordinate maps alongside Core's settlements because Core cannot see ours, and accepts a per-scenario override via `RimroomsStartDef.openMapBudget`. **A floor of 2 is load-bearing**: the slider can be 1, and the solo/group start opens a coordinate while the surface map already counts, so without it that start refuses its own opening. Enforced at the doorway before any coordinate is minted, and again at `EnsureSite` as the backstop — but **after** the way-out attempt, because a way home costs no map and blocking it would strand a deep crew.
+
+- [x] **ways onward and depth raised** — **DONE.** `FrontiersFor` gives **4 to 6**, one more per 20 rooms, read from the room count rather than depth. `MaximumNaturalDepth` **3 → 6**. What made it safe is the budget, not a change of mind about finiteness. **Two proofs objected correctly** and their restraints are kept and asserted harder: no research capability may buy more ways onward or reach further, now checked by reading `FrontiersFor`'s body.
+
+- [x] **"and everything doesnt have to be square rooms and rectangle halways"** — **DONE.** `RockIntrusionCells` leaves rock standing in the **corners only**, as quarter-ellipses, **never on the centre cross or an edge midpoint** — which is what makes it provably unable to disconnect a doorway, modelled at every depth by filling every corner at full reach and flood-filling to all four edge midpoints. Depth 1 stays rectangular. Corridors are three or five cells from `CorridorHalfWidthBetween`, and the planner reads the same function the generator carves from.
+
+- [x] **"make sure u are using prep and mod registry as needed"** — **DONE, and it found a live defect nothing in our own code could have.** Register row **[188] Removable Mt.Rock Roof Patch** is installed and patches `RoofRockThick.isThickRoof` to **false**, so in this profile Core's overhead mountain **vanishes on collapse**. Invariant 13 was **already broken before this session**; the new roof def repairs it, and it is a second reason patching Core's roof would have been wrong. Rows [69] Craftable Mountains and [63] Change map edge limit checked and clear.
+
+- [x] **"they are just doors too right that dont need the mechine gate systems"** — **CONFIRMED by live measurement, not inference.** The natural gate in the owner's running game is a plain `RimWorld.Building_Door` in steel with Deconstruct, Uninstall, Reinstall and the emergence gizmo, no power, console, calibration or assembly.
+
+- [x] **"so we need a way to deconstruct natural gates too i think"** and **"and then u lose them forever"** — **ALREADY HELD; nothing had to be added.** `EndpointPresent` refuses an edge whose anchor is destroyed, and `PortalDoorWarningMapComponent` already warned with informed consent.
+
+- [x] **"but maybe allow minify move"** — **DONE, and it did not work before.** `EndpointPresent` also requires `Anchor.Position == AnchorCell`, and `PortalEndpointRecord` says the cell is a deliberate snapshot so *"moving a door cannot silently redirect a saved route"* — right under the old no-move rule, wrong now. `TryFollowMovedAnchor` is a **move**, not a refresh: same `Thing` instance only, branch-owned ground only, **refused while a crossing is in flight** (invariant 55), and not on load. Uninstall and deconstruct now say different things, and the red destructive confirmation is reserved for the one that is.
+
+- [ ] **"how do they turn them off to use the machine gates for more controll and aiming deeper?"** / **"get 5 natural gates u cant use a machine gate"** — **OPEN, and deliberately NOT half-built. Next checkpoint, first thing.** The owner chose an **Operations held-places list with Release**. Releasing a place is not a UI problem; it needs (1) a **save-schema field on `CoordinateRecord`**, because `EnsureSite` deliberately refuses to regenerate a coordinate whose rooms were surveyed and only a flag can distinguish a deliberate release from a broken reference; (2) map teardown that orphans neither the world object, the `Site` reference, nor a portal edge pointing in; (3) a refusal set — crew present, crossing in flight, or the headquarters. Getting any of those wrong produces an unreachable place or a dead record, which is the exact defect class that cost thirty-nine checkpoints. **Mitigation meanwhile: discovering gates is free** — no map is generated until somebody crosses — so the cap is only met after five places are held open.
+
+- [ ] **still open from the same direction** — the wild variation of materials across items, equipment, walls, floors, lights, furniture and benches, with the events, layouts and loot deeper in.
+
+---
+
 ## TOMBSTONES
 
 _(none)_

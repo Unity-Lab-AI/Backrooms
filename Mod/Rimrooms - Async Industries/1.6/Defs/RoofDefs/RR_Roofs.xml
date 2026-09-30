@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
   <!-- THE BACKROOMS DO NOT CAVE IN.
@@ -42,6 +42,34 @@
        view, so ours draws white there - cosmetic, and only inside that toggle. And
        `MechClusterUtility` avoids cells whose roof IS `RoofRockThick`; mech clusters are a
        colony-map incident and do not target coordinate maps.
+
+       WHAT THE MOD REGISTER FOUND, AND IT IS BIGGER THAN THE CAVE-IN.
+
+       Register row [188] **Removable Mt.Rock Roof Patch** (Workshop 1541438898,
+       Proxyer.RemovableMtRockRoofPatche, family "Facilities and spatial construction", Optional,
+       Provisional) is INSTALLED IN THIS PROFILE, and its patch reads:
+
+           <xpath>*/RoofDef[defName = "RoofRockThick"]/isThickRoof</xpath>
+           <value><isThickRoof>false</isThickRoof></value>
+
+       So in this player's game **Core's overhead mountain is not thick.** And
+       `RoofDef.VanishOnCollapse => !isThickRoof`, which means it **VANISHES ON COLLAPSE** and
+       leaves open sky.
+
+       That breaks invariant 13 outright, and it was already broken before any of today's work: a
+       coordinate roofed with `RoofRockThick` in this profile could be mined into a hole in the
+       world. The claim in BackroomsContainment that thick roof "never vanishes" was reasoning
+       from unpatched Core, and this profile is not unpatched Core.
+
+       Two things follow. First, this def is not only about cave-ins - **it restores invariant 13
+       for this profile**, because it carries its own `isThickRoof` that nothing patches. Second,
+       it is another reason patching `RoofRockThick` would have been wrong: two mods editing one
+       def at startup, resolved by load order, and that mod asks to be loaded last.
+
+       Also checked, and clear: row [69] **Craftable Mountains** (2906276423) only *sets*
+       `RoofDefOf.RoofRockThick` from its own assembly and adds terrain defs, so it consumes the
+       def rather than redefining it. Row [63] **Change map edge limit** (1546494565) affects
+       player map sizing; a coordinate is a fixed size this mod creates, so it is unaffected.
 
        WHAT THIS DOES NOT CLAIM. `canCollapse` closes the reachable path - mine or deconstruct a
        wide span, get "roof collapsed". It does not gate

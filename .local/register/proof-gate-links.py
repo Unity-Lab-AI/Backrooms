@@ -140,6 +140,95 @@ check("MultiAnalyzer still carries Core's own facility comp", "MultiAnalyzer" in
 check("ToolCabinet still carries Core's own facility comp", "ToolCabinet" in core_facility)
 
 print("")
+print("A NATURAL GATE IS AN OBJECT YOU OWN: BREAK IT AND LOSE IT, CARRY IT AND KEEP IT")
+print("-" * 78)
+
+# Owner direction, 2026-09-30, verbatim: *"so we need a way to deconstruct natural gates too i
+# think"*, *"and then u lose them forever but maybe allow minify move"*, and *"they are just doors
+# too right that dont need the mechine gate systems"*.
+#
+# The third was confirmed by live measurement rather than inference: the natural gate in the
+# owner's running game was a plain RimWorld.Building_Door in steel, already offering Deconstruct,
+# Uninstall, Reinstall and the emergence gizmo, with no power, console, calibration or assembly.
+import os as _os
+_SRC = _os.path.join(REPO, "src", "RimroomsAsyncIndustries")
+
+
+def _read(*parts):
+    return io.open(_os.path.join(*parts), encoding="utf-8", errors="replace").read()
+
+
+records = _read(_SRC, "Portals", "PortalConnectionRecord.cs")
+network = _read(_SRC, "Portals", "RimroomsPortalNetwork.cs")
+crossing = _read(_SRC, "Portals", "PortalCrossingService.cs")
+comp = _read(_SRC, "Portals", "CompRimroomsEmergence.cs")
+warning = _read(_SRC, "Portals", "PortalDoorWarning.cs")
+portal_keyed = io.open(_os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6",
+                                     "Languages", "English", "Keyed", "RR_Portals.xml"),
+                       encoding="utf-8-sig", errors="replace").read()
+
+check("A DESTROYED GATE STILL ENDS ITS ROUTE, WHICH IS WHAT THE OWNER ASKED FOR",
+      "ValidDoor(endpoint.Anchor, endpoint.ApproachCell)" in network
+      and "!anchor.Destroyed" in network,
+      "-- *\"and then u lose them forever\"*. EndpointPresent refuses an edge whose anchor is "
+      "destroyed, so the route is gone the moment the door is. That already held; nothing had to "
+      "be added for it")
+
+check("and the player is warned before they do it",
+      "RR_Portals_RemoveWayInConfirm" in warning and "destructive: breaking" in warning,
+      "-- informed consent rather than prohibition, which is what the owner asked for on "
+      "2026-09-29 and this mod cannot honestly do otherwise: Core decides destructibility at the "
+      "def level")
+
+follow_at = records.find("internal bool TryFollowMovedAnchor(Thing thing, IntVec3 approach)")
+follow_body = records[follow_at:records.find(chr(10) + "        }", follow_at)] \
+    if follow_at >= 0 else ""
+
+check("A CARRIED GATE TAKES ITS ROUTE WITH IT",
+      follow_at >= 0
+      and "public int NotifyAnchorInstalled(Thing anchor)" in network
+      and "network.NotifyAnchorInstalled(parent)" in comp,
+      "-- *\"but maybe allow minify move\"*. Before this, uninstalling lost the route exactly "
+      "as destroying did, because EndpointPresent also requires Anchor.Position == AnchorCell")
+
+check("IT ONLY EVER FOLLOWS THE SAME DOOR, NEVER A LOOKALIKE",
+      follow_at >= 0 and "anchor != thing) { return false; }" in follow_body,
+      "-- the snapshot this replaces existed so a moved door could not silently redirect a "
+      "route. A different door rebuilt in the same cell is not this endpoint and never becomes "
+      "one, so a route cannot be captured by building something that looks like it")
+
+check("a move is refused unless the door is on ground the branch owns",
+      "if (!OwnsMap(Campaign, anchor.Map)) { return 0; }" in network,
+      "-- the same test registration had to pass")
+
+# Scoped to the method's own body: `!receipt.IsTerminal` appears elsewhere in this file, so a
+# whole-file claim passed a plant that deleted it from precisely this test.
+flight_at = crossing.find("public bool IsConnectionInFlight(string connectionId)")
+flight_body = crossing[flight_at:crossing.find(chr(10) + "        }", flight_at)]     if flight_at >= 0 else ""
+check("NOBODY CAN BE MID-CROSSING WHEN A ROUTE MOVES",
+      flight_at >= 0
+      and "!receipt.IsTerminal" in flight_body
+      and "receipt.ConnectionId == connectionId" in flight_body
+      and "crossings.IsConnectionInFlight(edge.Id)) { continue; }" in network,
+      "-- invariant 55: a receipt that is not terminal is a pawn part-way through. The route is "
+      "left broken and visible rather than re-pointed under a traveller, which is the safer of "
+      "the two")
+
+check("loading a save is not a move",
+      "if (respawningAfterLoad || parent == null || Current.Game == null) { return; }" in comp,
+      "-- respawningAfterLoad means the door is being restored where it already was and the "
+      "saved route already points there; re-anchoring then would turn every load into a move")
+
+check("uninstalling and deconstructing no longer say the same thing",
+      "RR_Portals_MoveWayInConfirm" in warning
+      and "<RR_Portals_MoveWayInConfirm>" in portal_keyed
+      and "<RR_Portals_WayThroughMoved>" in portal_keyed
+      and "bool carrying = map.designationManager.DesignationOn(anchor, DesignationDefOf.Uninstall) != null;"
+      in warning,
+      "-- telling a player the same thing for both would be telling them something false about "
+      "one of them, and the red destructive confirmation is reserved for the one that is")
+
+print("")
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))
     sys.exit(1)

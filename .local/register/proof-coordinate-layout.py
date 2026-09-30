@@ -300,8 +300,15 @@ check("THE LATTICE IS DECIDED IN EXACTLY ONE PLACE",
       "them in it. Two independent derivations of the same lattice is precisely the defect that "
       "stopped every coordinate generating for thirty-nine checkpoints")
 
+# Scoped to PillarCells' own body. Stage three added the SAME guard line to RockIntrusionCells,
+# and the plant harness replaces only the first occurrence -- so a plant that deleted the pillar
+# guard left the intrusion copy standing and satisfying a whole-file claim. That is the
+# duplicate-string trap this project has been caught by before, and it caught this claim the
+# moment a second function needed the same rule.
+pillar_at = planner.find("internal static IEnumerable<IntVec3> PillarCells(RoomRecord room)")
+pillar_body = planner[pillar_at:planner.find(chr(10) + "        }" + chr(10), pillar_at)]     if pillar_at >= 0 else ""
 check("no pillar is placed on the centre cross",
-      "if (x == center.x || z == center.z) { continue; }" in planner,
+      pillar_at >= 0 and "if (x == center.x || z == center.z) { continue; }" in pillar_body,
       "-- doors and corridors meet a room at the midpoint of each wall, so a straight walk from "
       "any doorway to any other must never be blocked, whatever the room's size")
 
@@ -414,6 +421,246 @@ check("THE FILE THAT USED TO CALL A CAVE-IN ACCEPTABLE NO LONGER DOES",
       and "can not and shall not" in containment,
       "-- that paragraph reasoned from VanishOnCollapse being false, which only means no HOLE "
       "opens; the roof still drops CollapsedRocks. The wording hid the severity")
+
+print("")
+print("rooms are not rectangles and hallways are not one width")
+print("-" * 78)
+
+# Owner direction, 2026-09-30, verbatim: *"and everything doesnt have to be square rooms and
+# rectangle halways"*.
+check("ROCK IS LEFT STANDING INSIDE A ROOM, SO IT IS NOT A RECTANGLE",
+      "internal static IEnumerable<IntVec3> RockIntrusionCells(RoomRecord room, int depth)" in planner
+      and "RoomLayoutPlanner.RockIntrusionCells(room, coordinateDepth)" in genstep,
+      "-- the Bounds stays a rect because the validator, the doors, the corridors and the pillar "
+      "lattice all read it. What changed is which cells get CARVED")
+
+intrusion_at = planner.find("internal static IEnumerable<IntVec3> RockIntrusionCells")
+intrusion_body = planner[intrusion_at:planner.find(chr(10) + "        }" + chr(10), intrusion_at)] \
+    if intrusion_at >= 0 else ""
+
+check("THE CENTRE CROSS IS NEVER FILLED, WHICH IS WHAT MAKES A SHAPE SAFE",
+      intrusion_at >= 0 and "if (x == center.x || z == center.z) { continue; }" in intrusion_body,
+      "-- doors are placed at the midpoint of each side and corridors aim at CenterCell, so a "
+      "clear centre cross means every doorway reaches every other doorway WHATEVER shape the "
+      "corners take. That is why no candidate is ever rejected for its shape")
+
+check("rock is left only in the corners, inset from the walls",
+      intrusion_at >= 0
+      and "if (x <= bounds.minX + 1 || x >= bounds.maxX - 1) { continue; }" in intrusion_body
+      and "if (z <= bounds.minZ + 1 || z >= bounds.maxZ - 1) { continue; }" in intrusion_body,
+      "-- the perimeter is wall and the ring inside it is the walkway that keeps every doorway "
+      "reachable")
+
+check("the reach of a corner mass can never eat the middle of the room",
+      "/ 3" in intrusion_body and "Math.Min" in intrusion_body,
+      "-- clamped to a third of the room, so even at the deepest band a shape is an intrusion "
+      "rather than a partition")
+
+check("SHALLOW COORDINATES STAY RECTANGULAR",
+      "if (room == null || depth <= 1) { yield break; }" in intrusion_body,
+      "-- the yellow rooms read as a place precisely because they are monotonous, which is the "
+      "same reason Derange leaves depth 1 alone. The wrongness is travelled toward")
+
+check("the shape is decided in one place, like the pillars",
+      planner.count("internal static IEnumerable<IntVec3> RockIntrusionCells") == 1
+      and "foreach (IntVec3 rock in RockIntrusionCells(room, depth))" in planner
+      and genstep.count("RoomLayoutPlanner.RockIntrusionCells(room, coordinateDepth)") == 1,
+      "-- the generator leaves these cells uncarved and CandidateIsSafe marks them unwalkable; "
+      "two derivations of one rule is the defect that cost thirty-nine checkpoints")
+
+# Scoped to the CARVE LOOP's own body. `SetRoof(cell, overheadRoof)` appears twice in this file --
+# once in the base pass over every cell, once here - so a plant that reordered these two lines
+# passed a claim that compared `find()` results across the whole file: the first hit was the base
+# pass, hundreds of lines earlier, and the comparison was of the wrong pair.
+carve_at = genstep.find("var intrusions = new HashSet<IntVec3>(")
+carve_body = genstep[carve_at:genstep.find(chr(10) + "            }", carve_at)]     if carve_at >= 0 else ""
+check("an intrusion is rock inside a room, never a hole in the world",
+      carve_at >= 0
+      and "map.roofGrid.SetRoof(cell, overheadRoof);" in carve_body
+      and "if (intrusions.Contains(cell)) { continue; }" in carve_body
+      and carve_body.find("map.roofGrid.SetRoof(cell, overheadRoof);") <
+          carve_body.find("if (intrusions.Contains(cell)) { continue; }"),
+      "-- the roof is set BEFORE the skip, so an uncarved cell is still roofed and invariant 13 "
+      "holds across every shape")
+
+check("HALLWAYS ARE NOT ALL ONE WIDTH",
+      "internal static int CorridorHalfWidthBetween(RoomRecord first, RoomRecord second, int depth)"
+      in planner
+      and "RoomLayoutPlanner.CorridorHalfWidthBetween(room, other, depth)" in genstep
+      and "private const int CorridorHalfWidth" not in genstep,
+      "-- the constant is gone; the width comes from the shared function, so the reachability "
+      "the planner proved is the reachability that gets built")
+
+check("the planner models the same corridor width the generator carves",
+      "int reach = CorridorHalfWidthBetween(room, other, depth) - 1;" in planner
+      and "for (int dz = -reach; dz <= reach; dz++)" in planner,
+      "-- a model with a different width than the build is a model of a different map")
+
+# The shape rule, modelled: fill every corner at the deepest reach and prove the room still
+# flood-fills from its centre to all four edge midpoints, which is where the doors are.
+def room_still_connected(span, depth):
+    inset_x, inset_z = 2, 2
+    extent_x, extent_z = span - 3, span - 3
+    if extent_x - inset_x < 4 or extent_z - inset_z < 4:
+        return True
+    reach = min((depth - 1) * 2, min(extent_x - inset_x, extent_z - inset_z) // 3)
+    if reach < 1:
+        return True
+    cx, cz = span // 2, span // 2
+    rock = set()
+    for east in (False, True):
+        for north in (False, True):
+            for dx in range(reach):
+                for dz in range(reach):
+                    if dx * dx + dz * dz > reach * reach:
+                        continue
+                    x = extent_x - dx if east else inset_x + dx
+                    z = extent_z - dz if north else inset_z + dz
+                    if x == cx or z == cz:
+                        continue
+                    if x <= 1 or x >= span - 2 or z <= 1 or z >= span - 2:
+                        continue
+                    rock.add((x, z))
+    # Interior floor is every non-perimeter cell that is not rock.
+    floor = set((x, z) for x in range(1, span - 1) for z in range(1, span - 1)
+                if (x, z) not in rock)
+    seen = set([(cx, cz)])
+    queue = [(cx, cz)]
+    while queue:
+        x, z = queue.pop()
+        for nx, nz in ((x + 1, z), (x - 1, z), (x, z + 1), (x, z - 1)):
+            if (nx, nz) in floor and (nx, nz) not in seen:
+                seen.add((nx, nz))
+                queue.append((nx, nz))
+    doors = [(cx, 1), (cx, span - 2), (1, cz), (span - 2, cz)]
+    return all(door in seen for door in doors)
+
+
+broken = []
+for depth, _slots, _spacing, span, _chain, _lo, _hi, _gap, _adj in profile:
+    if not room_still_connected(span, depth):
+        broken.append((depth, span))
+check("NO SHAPE CAN EVER DISCONNECT A DOORWAY, AT ANY DEPTH",
+      not broken,
+      "-- modelled by filling every corner at the deepest reach and flood-filling from the room "
+      "centre to all four edge midpoints, which is where the doors are: %s" % broken)
+
+print("")
+print("HOW MANY PLACES MAY BE HELD OPEN AT ONCE")
+print("-" * 78)
+
+# Owner direction, 2026-09-30, verbatim: *"dont let them go more than 5 remember the games
+# mechanics and limits built in if they find a gate to a world map tile or a deeper backrroms and
+# they have 5 mpas they should gett a warning this gate is blocked your holding open too many
+# gates, but per scerio styled"*, clarified by *"5 is the limit of other colonies available so a
+# backrooms level should be one colonly bacskicly in my thinking"*.
+budget = read(os.path.join(SRC, "Portals", "OpenMapBudget.cs"))
+frontier = read(os.path.join(SRC, "Portals", "NaturalFrontierService.cs"))
+startdef = read(os.path.join(SRC, "Scenario", "RimroomsStartDef.cs"))
+keyed = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+                          "English", "Keyed", "RR_Portals.xml"))
+parent = read(os.path.join(SRC, "Generation", "RimroomsDestinationMapParent.cs"))
+
+# The method body alone. `return false;` appears several times in this file -- CanBeSettled,
+# GravShipCanLandOn, InitializeCoordinate -- so a plant that flipped THIS one to true left the
+# string present elsewhere and the claim satisfied.
+remove_at = parent.find("public override bool ShouldRemoveMapNow(out bool alsoRemoveWorldObject)")
+remove_body = parent[remove_at:parent.find(chr(10) + "        }", remove_at)] \
+    if remove_at >= 0 else ""
+check("A COORDINATE MAP IS STILL NEVER UNLOADED, WHICH IS WHY A CAP IS NEEDED AT ALL",
+      remove_at >= 0 and "return false;" in remove_body and "return true;" not in remove_body,
+      "-- a coordinate is a place you can go back to. That was free at 60x60 and is not at "
+      "300x300, and the cap is what replaced the eviction the owner first asked for and then "
+      "superseded")
+
+# The BODY of the Budget property, comments stripped. The first version of this claim read the
+# whole file and passed a plant that replaced the pref with a literal 5 in the code -- because the
+# pref's NAME is also in the doc comment directly above it. A comment satisfied a claim about code.
+budget_code = re.sub(r"///.*", "", budget)
+budget_code = re.sub(r"//.*", "", budget_code)
+budget_at = budget_code.find("internal static int Budget")
+budget_body = budget_code[budget_at:budget_code.find(chr(10) + "        }", budget_at)] \
+    if budget_at >= 0 else ""
+check("THE BUDGET IS READ FROM THE GAME'S OWN COLONY LIMIT, NOT HARD-CODED",
+      budget_at >= 0
+      and "Prefs.MaxNumberOfPlayerSettlements" in budget_body
+      and not re.search(r":\s*\d+\s*;", budget_body),
+      "-- *\"remember the games mechanics and limits built in\"*. Core enforces that pref in "
+      "SettleUtility as count >= Prefs.MaxNumberOfPlayerSettlements, and it is a 1-to-5 player "
+      "slider, so a player who moves it to 3 gets 3")
+
+check("a scenario may set its own budget, which is what per-scenario means",
+      "public int openMapBudget;" in startdef
+      and "part.startDef.openMapBudget" in budget
+      and "scenario > 0 ? scenario" in budget,
+      "-- *\"but per scerio styled\"*; zero defers to the player's own limit")
+
+check("THE BUDGET HAS A FLOOR, OR THE SOLO START BREAKS ON A CLEAN NEW GAME",
+      "MinimumBudget = 2" in budget and "Mathf.Max(MinimumBudget, budget)" in budget,
+      "-- the pref can be set to 1, and the solo/group start opens a coordinate during "
+      "PostGameStart when the surface map already counts as one held place. Without the floor "
+      "that scenario would refuse its own opening")
+
+check("a Backrooms level counts against the budget exactly as a colony does",
+      "map.Parent is Generation.RimroomsDestinationMapParent) { held++; }" in budget
+      and "map.IsPlayerHome && map.Parent is Settlement) { held++; }" in budget,
+      "-- *\"a backrooms level should be one colonly bacskicly in my thinking\"*. Core's own "
+      "count cannot see a coordinate map, so this counts both")
+
+# The ORDER of the two checks inside Discover is the whole argument, so it is measured as an
+# ordering rather than as the presence of a call.
+way_out_at = frontier.find("CompanyActionResult wayOut = TryRecordWayOut(door, origin, campaign);")
+block_at = frontier.find("if (!OpenMapBudget.CanOpenAnother)")
+mint_at = frontier.find("campaign.CreateDiscoveredCoordinate(discoveryId, depth, out discovered)")
+check("A BLOCKED GATE IS REFUSED BEFORE ANY COORDINATE IS MINTED",
+      block_at >= 0 and mint_at >= 0 and block_at < mint_at,
+      "-- minting one and then refusing would leave a place nobody can reach recorded against "
+      "the branch. Block at %d, mint at %d" % (block_at, mint_at))
+
+check("THE BUDGET NEVER CLOSES THE LAST DOOR HOME",
+      way_out_at >= 0 and block_at >= 0 and way_out_at < block_at,
+      "-- a doorway may lead OUT instead of deeper, and a way home costs no map: it records a "
+      "world tile rather than minting a place. Checking the budget first would strand a crew "
+      "that is deep and full up, which is the same trap the depth cap is ordered to avoid. "
+      "Way-out at %d, budget at %d" % (way_out_at, block_at))
+
+check("the one place a coordinate map is generated also enforces it",
+      "coordinate.Site == null && !Portals.OpenMapBudget.CanOpenAnother" in service,
+      "-- the doorway refusal is where a player should be TOLD; this is the backstop for a "
+      "machine gate, a saved address or a recovery path. Only when a NEW map would be made: "
+      "recalling a coordinate that already has its site must never be refused")
+
+check("the refusal says what the owner said",
+      "<RR_Frontier_TooManyGatesHeld>" in keyed
+      and "</RR_Frontier_TooManyGatesHeld>" in keyed
+      and "holding open too many gates" in keyed
+      and 'BlockedKey = "RR_Frontier_TooManyGatesHeld"' in budget,
+      "-- *\"they should gett a warning this gate is blocked your holding open too many "
+      "gates\"*, and the message names the way out of it")
+
+frontiers_at = frontier.find("internal static int FrontiersFor(CoordinateRecord coordinate)")
+frontiers_body = frontier[frontiers_at:frontier.find(chr(10) + "        }", frontiers_at)] \
+    if frontiers_at >= 0 else ""
+check("WAYS ONWARD SCALE WITH THE SIZE OF THE PLACE",
+      "MinimumFrontiersPerCoordinate = 4" in frontier
+      and "MaximumFrontiersPerCoordinate = 6" in frontier
+      and "Cap = FrontiersFor(record)" in frontier
+      and "coordinate.Rooms.Count" in frontiers_body
+      and "Depth" not in frontiers_body,
+      "-- owner direction: four to six per level. Two was right for a six-room 60x60 coordinate "
+      "and wrong for a 300x300 one")
+
+check("THE CEILING ON WAYS ONWARD IS ACTUALLY APPLIED, NOT MERELY DECLARED",
+      frontiers_at >= 0 and "MaximumFrontiersPerCoordinate" in frontiers_body,
+      "-- a plant that deleted the clamp while leaving the constant walked past the first "
+      "version of this, which only asked whether the constant existed. A chain of spaces still "
+      "has to be finite")
+
+depth_reach = re.search(r"MaximumNaturalDepth\s*=\s*(\d+)", frontier)
+check("the natural chain reaches deeper than it did",
+      depth_reach is not None and int(depth_reach.group(1)) >= 6,
+      "-- raised from 3 to %s, together with the budget that makes a deeper chain affordable"
+      % (depth_reach.group(1) if depth_reach else "MISSING"))
 
 print("")
 if failures:

@@ -323,7 +323,8 @@ if os.path.isfile(OPENING):
 
 # --------------------------------------------------------------------------- the natural chain
 # Owner direction: "with natural portals deeper to an extent till they would need to buidl theri
-# own gate", and the extent chosen at the fork was through depth 3.
+# own gate", and the extent chosen at the fork was through depth 3 -- raised to SIX on
+# 2026-09-30, together with the open-map budget that makes a deeper chain affordable.
 FRONTIER = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Portals",
                         "NaturalFrontierService.cs")
 frontier = io.open(FRONTIER, encoding="utf-8-sig").read()
@@ -333,8 +334,15 @@ cap = re.search(r"MaximumNaturalDepth\s*=\s*(\d+)", frontier)
 check("the natural chain has a declared depth limit", cap is not None,
       "-- without one the Backrooms hands out free doorways forever and no gate is ever needed")
 if cap:
-    check("the natural depth limit is 3 (%s)" % cap.group(1), cap.group(1) == "3",
-          "-- the owner chose through depth 3 at the fork")
+    # **The owner raised this to six on 2026-09-30**, having chosen three at an earlier fork,
+    # alongside the map budget that makes a deeper chain affordable. What is asserted is that the
+    # reach is a real, finite, stated number -- not that it is any particular one, because that is
+    # the owner's to move and this claim failing for the right reason cost a checkpoint to notice.
+    reach = int(cap.group(1))
+    check("the natural depth limit is a stated, finite reach (%d)" % reach,
+          2 <= reach <= 8,
+          "-- a doorway chain has to stop somewhere or the graph is unbounded; the owner sets "
+          "where, and it is 6 since 0.12.49-dev")
 
 # THE one that matters. The cap must be applied AFTER the way-out attempt, or a crew standing at
 # the deepest natural band can never find a door home and the band becomes a trap. Invariant 28

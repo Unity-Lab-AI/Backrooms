@@ -125,17 +125,35 @@ pressure = io.open(os.path.join(SRC, "RimroomsAsyncIndustries", "Threats",
 # looked for the capability name within 400 characters of the cap and failed the moment the
 # capability-aware RARITY line was written directly above it -- proximity is not the thing that
 # happens, and that is the same mistake this project has caught four times.
+# **RESTATED 0.12.49-dev. The restraint is unchanged; only its wording is.** The owner raised the
+# count to four-to-six per level, so a claim that the assignment is a bare constant no longer
+# describes anything worth protecting. What this restraint always protected is that **RESEARCH
+# cannot buy more ways onward**, and that is now asserted MORE strictly: by reading the deciding
+# function's own body rather than by inspecting the shape of an assignment. Scaling with the size
+# of the place is a property of the place; a capability would be a tuning knob.
 cap_assignment = re.search(r"Cap\s*=\s*([^,\r\n]+),", frontier)
-check("the per-coordinate frontier cap is assigned the bare constant",
+frontiers_at = frontier.find("internal static int FrontiersFor(CoordinateRecord coordinate)")
+frontiers_body = frontier[frontiers_at:frontier.find(chr(10) + "        }", frontiers_at)] \
+    if frontiers_at >= 0 else ""
+check("the per-coordinate frontier count comes from one named function",
       cap_assignment is not None
-      and cap_assignment.group(1).strip() == "MaximumFrontiersPerCoordinate",
-      "-- raising the cap is a DESIGN decision, not a tuning knob: the cap is what keeps a chain "
-      "of spaces finite. Found %r"
+      and cap_assignment.group(1).strip() == "FrontiersFor(record)"
+      and frontiers_at >= 0,
+      "-- one deciding place, so there is exactly one body to read. Found %r"
       % (cap_assignment.group(1).strip() if cap_assignment else None))
-check("no second per-coordinate cap constant exists to switch to",
-      len(re.findall(r"const\s+int\s+\w*FrontiersPerCoordinate\s*=", frontier)) == 1,
-      "-- an 'expanded cap' constant is the shape this restraint exists to forbid")
-check("only the rarity is capability-aware, and it still refuses more than two",
+check("NO RESEARCH CAPABILITY CAN BUY MORE WAYS ONWARD",
+      frontiers_at >= 0 and "Capability" not in frontiers_body,
+      "-- THIS is the restraint, and it survives the count being raised: how many ways onward a "
+      "place offers is a property of the place, never something a branch can research")
+check("the count is still bounded by a constant ceiling",
+      "MaximumFrontiersPerCoordinate" in frontiers_body
+      and re.search(r"const\s+int\s+MaximumFrontiersPerCoordinate\s*=\s*\d+", frontier) is not None,
+      "-- a chain of spaces still has to be finite, and the ceiling is what keeps it so")
+check("it scales on the size of the place and nothing else",
+      "coordinate.Rooms.Count" in frontiers_body and "Depth" not in frontiers_body,
+      "-- read from the room count rather than the depth, so it stays correct if the planner's "
+      "depth profile changes again")
+check("only the rarity is capability-aware, and it moves WHEN not HOW MANY",
       'HasCapability("RR_Cap_CoordinateReading")' in frontier
       and "PractisedFrontierRarity : FrontierRarity" in frontier,
       "-- the unlock must move how SOON a way onward is found, never how many exist")

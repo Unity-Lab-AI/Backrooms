@@ -66,6 +66,24 @@ namespace RimroomsAsyncIndustries.Scenario
         /// <summary>How deep the coordinate is. Higher is deeper; depth 1 is the yellow rooms.</summary>
         public int insideStartDepth = 1;
 
+        /// <summary>
+        /// How many places this company may hold open at once, or **0 to use the game's own
+        /// colony limit**.
+        ///
+        /// **Owner direction, 2026-09-30, verbatim:** *"dont let them go more than 5 remember the
+        /// games mechanics and limits built in ... they should gett a warning this gate is blocked
+        /// your holding open too many gates, but per scerio styled"*, and *"5 is the limit of
+        /// other colonies available so a backrooms level should be one colonly bacskicly in my
+        /// thinking"*.
+        ///
+        /// *"Per scerio styled"* is why this lives on the start def rather than being a constant:
+        /// a start can be given a tighter or looser budget than another. Zero means defer to
+        /// <c>Prefs.MaxNumberOfPlayerSettlements</c>, the player's own 1-to-5 slider, which is the
+        /// *"limits built in"* the direction points at. See
+        /// <see cref="Portals.OpenMapBudget"/>.
+        /// </summary>
+        public int openMapBudget;
+
         public long initialFundingUsd = 50000000L;
         public long dailyWageUsd = 5000L;
         public long dailyOverheadUsd = 25000L;

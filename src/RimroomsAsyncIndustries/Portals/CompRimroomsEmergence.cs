@@ -67,6 +67,27 @@ namespace RimroomsAsyncIndustries.Portals
         public IntVec3 ApproachCell
         { get { return parent == null ? IntVec3.Invalid : PortalAddressService.ApproachCellFor(parent); } }
 
+        /// <summary>
+        /// Installed. If this door carries a way through, the way through came with it.
+        ///
+        /// **Not on load.** `respawningAfterLoad` means the door is being restored where it
+        /// already was, and a saved route is already pointing at that cell. Re-anchoring then
+        /// would turn every load into a move.
+        /// </summary>
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            if (respawningAfterLoad || parent == null || Current.Game == null) { return; }
+            RimroomsPortalNetwork network = Current.Game.GetComponent<RimroomsPortalNetwork>();
+            if (network == null) { return; }
+            int moved = network.NotifyAnchorInstalled(parent);
+            if (moved > 0)
+            {
+                Messages.Message("RR_Portals_WayThroughMoved".Translate(parent.LabelShortCap),
+                    parent, MessageTypeDefOf.PositiveEvent, false);
+            }
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();

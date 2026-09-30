@@ -91,10 +91,10 @@ namespace RimroomsAsyncIndustries.Generation
             for (int candidate = 0; candidate < CandidateBudget; candidate++)
             {
                 List<RoomRecord> rooms = Build(coordinate, candidate);
-                if (CandidateIsSafe(rooms)) { selected = rooms; return true; }
+                if (CandidateIsSafe(rooms, DepthOf(coordinate))) { selected = rooms; return true; }
             }
             List<RoomRecord> fallback = Build(coordinate, FallbackCandidate);
-            if (!CandidateIsSafe(fallback)) { return false; }
+            if (!CandidateIsSafe(fallback, DepthOf(coordinate))) { return false; }
             selected = fallback;
             return true;
         }
@@ -106,7 +106,7 @@ namespace RimroomsAsyncIndustries.Generation
                 coordinate.GeneratorVersion < 1 || coordinate.roomLibraryVersion < 1)
             { return false; }
             List<RoomRecord> candidate = Build(coordinate, FallbackCandidate);
-            if (!CandidateIsSafe(candidate)) { return false; }
+            if (!CandidateIsSafe(candidate, DepthOf(coordinate))) { return false; }
             fallback = candidate;
             return true;
         }
@@ -122,6 +122,12 @@ namespace RimroomsAsyncIndustries.Generation
                 if (same) { return candidate; }
             }
             return -1; // Existing saved graph: never relabel it as a newly selected candidate.
+        }
+
+        /// <summary>A coordinate's depth, floored at one, in one place so every reader agrees.</summary>
+        internal static int DepthOf(CoordinateRecord coordinate)
+        {
+            return coordinate == null || coordinate.Depth < 1 ? 1 : coordinate.Depth;
         }
 
         /// <summary>Slots per axis for this depth. Deeper means more, smaller rooms.</summary>
@@ -178,6 +184,103 @@ namespace RimroomsAsyncIndustries.Generation
                     yield return new IntVec3(x, 0, z);
                 }
             }
+        }
+
+        /// <summary>
+        /// Cells inside a room that are left as solid rock, so the room is not a rectangle.
+        ///
+        /// ## Owner direction, 2026-09-30, verbatim
+        ///
+        /// *"and everything doesnt have to be square rooms and rectangle halways"*.
+        ///
+        /// ## Why rock in the corners rather than a different rectangle
+        ///
+        /// The room's `Bounds` has to stay a rect: the validator bounds-checks it, the doors are
+        /// placed at the midpoint of each side, the corridors aim at `CenterCell`, and the pillar
+        /// lattice is laid out across it. Changing the rect would mean changing all four.
+        ///
+        /// So the rect stays and the **carve** changes. Rock is left standing inside the room, and
+        /// it is left **only in the corners** -- never on the centre cross, never at an edge
+        /// midpoint. That single restriction buys four things at once:
+        ///
+        ///   * every doorway still opens onto clear floor;
+        ///   * a straight walk from any doorway to any other is still clear, so **no shape can
+        ///     ever disconnect a room** and no candidate is rejected for having one;
+        ///   * the pillar lattice needs no special case, because rock already holds roof; and
+        ///   * the intrusions are `Mineable`, so a player who wants the rectangle can dig for it.
+        ///
+        /// **Shallow coordinates barely deform.** Depth 1 gets nothing, for the same reason
+        /// <see cref="Derange"/> leaves it alone: the yellow rooms read as a place precisely
+        /// because they are monotonous, and the wrongness is something the player travels toward.
+        ///
+        /// **Decided here and nowhere else**, like <see cref="PillarCells"/>: the generator leaves
+        /// these cells uncarved and <see cref="CandidateIsSafe"/> marks them unwalkable, and two
+        /// independent derivations of one rule is the defect that cost this project thirty-nine
+        /// checkpoints.
+        /// </summary>
+        internal static IEnumerable<IntVec3> RockIntrusionCells(RoomRecord room, int depth)
+        {
+            if (room == null || depth <= 1) { yield break; }
+            CellRect bounds = room.Bounds;
+            // The interior only. The perimeter is wall and the ring inside it is the walkway that
+            // keeps every doorway reachable.
+            int insetX = bounds.minX + 2;
+            int insetZ = bounds.minZ + 2;
+            int extentX = bounds.maxX - 2;
+            int extentZ = bounds.maxZ - 2;
+            if (extentX - insetX < 4 || extentZ - insetZ < 4) { yield break; }
+
+            IntVec3 center = bounds.CenterCell;
+            // How far a corner mass reaches in, growing with depth and never past the centre
+            // cross. Clamped to a third of the room so a shape can never eat the middle.
+            int reach = System.Math.Min((depth - 1) * 2, System.Math.Min(extentX - insetX, extentZ - insetZ) / 3);
+            if (reach < 1) { yield break; }
+
+            int roll = DestinationService.StableHash(room.index * 31 + depth,
+                (room.familyId ?? "") + ":shape", depth);
+            if (roll < 0) { roll = ~roll; }
+            // Which corners are filled. Four bits, and never all four of a small room.
+            int corners = 1 + roll % 15;
+
+            for (int index = 0; index < 4; index++)
+            {
+                if ((corners & (1 << index)) == 0) { continue; }
+                bool east = index == 1 || index == 2;
+                bool north = index >= 2;
+                // Each corner mass is a quarter-ellipse, so the edge it presents to the room is
+                // curved rather than another right angle.
+                for (int dx = 0; dx < reach; dx++)
+                {
+                    for (int dz = 0; dz < reach; dz++)
+                    {
+                        if (dx * dx + dz * dz > reach * reach) { continue; }
+                        int x = east ? extentX - dx : insetX + dx;
+                        int z = north ? extentZ - dz : insetZ + dz;
+                        // The centre cross is inviolable: it is what guarantees every doorway
+                        // reaches every other doorway whatever shape the corners take.
+                        if (x == center.x || z == center.z) { continue; }
+                        if (x <= bounds.minX + 1 || x >= bounds.maxX - 1) { continue; }
+                        if (z <= bounds.minZ + 1 || z >= bounds.maxZ - 1) { continue; }
+                        yield return new IntVec3(x, 0, z);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Half the width of the corridor between two rooms, so hallways are not all one size.
+        ///
+        /// Two gives a three-cell walkway, three gives five. Derived from the two rooms' own
+        /// indices so it is stable across a reload, and **shared with
+        /// <see cref="CandidateIsSafe"/>** for the usual reason.
+        /// </summary>
+        internal static int CorridorHalfWidthBetween(RoomRecord first, RoomRecord second, int depth)
+        {
+            if (first == null || second == null || depth <= 1) { return 2; }
+            int roll = DestinationService.StableHash(first.index * 101 + second.index,
+                "corridor:width", depth);
+            if (roll < 0) { roll = ~roll; }
+            return roll % 3 == 0 ? 3 : 2;
         }
 
         private static List<RoomRecord> Build(CoordinateRecord coordinate, int candidate)
@@ -409,7 +512,7 @@ namespace RimroomsAsyncIndustries.Generation
             rooms[b].links.Add(a);
         }
 
-        private static bool CandidateIsSafe(List<RoomRecord> rooms)
+        private static bool CandidateIsSafe(List<RoomRecord> rooms, int depth)
         {
             if (!DestinationService.ValidateRooms(rooms, out _)) { return false; }
             // Project the exact boundary walls, one-cell openable doors, three-cell corridors and
@@ -426,6 +529,9 @@ namespace RimroomsAsyncIndustries.Generation
                 // The pillars, from the SAME function the generator spawns them from.
                 foreach (IntVec3 pillar in PillarCells(room))
                 { floor[pillar.x, pillar.z] = false; }
+                // And the rock left standing in the corners, from the same function again.
+                foreach (IntVec3 rock in RockIntrusionCells(room, depth))
+                { floor[rock.x, rock.z] = false; }
             }
             foreach (RoomRecord room in rooms)
             {
@@ -434,15 +540,17 @@ namespace RimroomsAsyncIndustries.Generation
                     RoomRecord other = rooms[linked];
                     IntVec3 a = room.Bounds.CenterCell;
                     IntVec3 b = other.Bounds.CenterCell;
+                    // The same width the generator will carve, from the shared function.
+                    int reach = CorridorHalfWidthBetween(room, other, depth) - 1;
                     if (a.z == b.z)
                     {
                         for (int x = Math.Min(room.Bounds.maxX, other.Bounds.maxX) + 1; x < Math.Max(room.Bounds.minX, other.Bounds.minX); x++)
-                        { for (int dz = -1; dz <= 1; dz++) { floor[x, a.z + dz] = true; } }
+                        { for (int dz = -reach; dz <= reach; dz++) { floor[x, a.z + dz] = true; } }
                     }
                     else
                     {
                         for (int z = Math.Min(room.Bounds.maxZ, other.Bounds.maxZ) + 1; z < Math.Max(room.Bounds.minZ, other.Bounds.minZ); z++)
-                        { for (int dx = -1; dx <= 1; dx++) { floor[a.x + dx, z] = true; } }
+                        { for (int dx = -reach; dx <= reach; dx++) { floor[a.x + dx, z] = true; } }
                     }
                 }
             }

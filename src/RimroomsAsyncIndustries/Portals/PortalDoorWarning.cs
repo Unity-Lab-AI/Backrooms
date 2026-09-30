@@ -73,8 +73,13 @@ namespace RimroomsAsyncIndustries.Portals
         {
             Thing anchor = endpoint == null ? null : endpoint.Anchor;
             if (anchor == null || !anchor.Spawned || anchor.Destroyed || anchor.Map != map) { return; }
-            bool doomed = map.designationManager.DesignationOn(anchor, DesignationDefOf.Deconstruct) != null
-                || map.designationManager.DesignationOn(anchor, DesignationDefOf.Uninstall) != null;
+            // **Uninstall and deconstruct are no longer the same event**, owner direction
+            // 2026-09-30: *"and then u lose them forever but maybe allow minify move"*. Taking a
+            // doorway with you keeps the route; breaking it up does not. Telling the player the
+            // same thing for both would be telling them something false about one of them.
+            bool breaking = map.designationManager.DesignationOn(anchor, DesignationDefOf.Deconstruct) != null;
+            bool carrying = map.designationManager.DesignationOn(anchor, DesignationDefOf.Uninstall) != null;
+            bool doomed = breaking || carrying;
             if (!doomed)
             {
                 // Cleared by hand or carried out; either way the next designation asks again.
@@ -84,12 +89,14 @@ namespace RimroomsAsyncIndustries.Portals
             if (!warned.Add(anchor.thingIDNumber)) { return; }
 
             Thing subject = anchor;
+            // Carrying it is not destructive, so it does not get the red confirmation that
+            // teaches a player to click through warnings.
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
-                "RR_Portals_RemoveWayInConfirm".Translate(),
+                (breaking ? "RR_Portals_RemoveWayInConfirm" : "RR_Portals_MoveWayInConfirm").Translate(),
                 delegate { /* Confirmed. The designation stands and the work proceeds. */ },
                 delegate { ClearDesignations(subject); },
-                destructive: true,
-                title: "RR_Portals_RemoveWayInTitle".Translate()));
+                destructive: breaking,
+                title: (breaking ? "RR_Portals_RemoveWayInTitle" : "RR_Portals_MoveWayInTitle").Translate()));
         }
 
         /// <summary>

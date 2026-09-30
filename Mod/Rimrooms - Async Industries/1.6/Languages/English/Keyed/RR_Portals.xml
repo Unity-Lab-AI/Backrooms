@@ -155,6 +155,16 @@ Select who you mean first. Anyone who cannot cross is listed with the reason rat
   <RR_Frontier_NotADoor>That is not a door this company can study.</RR_Frontier_NotADoor>
   <RR_Frontier_PlayerBuilt>A door your own people built is not a way onward. Ways onward are found in what was already standing there.</RR_Frontier_PlayerBuilt>
   <RR_Frontier_IsAMachineGate>That door is already a gate.</RR_Frontier_IsAMachineGate>
+  <!-- The owner's own words for this refusal, 2026-09-30: "this gate is blocked your holding
+       open too many gates". The number comes from Prefs.MaxNumberOfPlayerSettlements unless the
+       scenario sets its own budget, because a Backrooms level costs a loaded map exactly as a
+       colony does. -->
+  <!-- Owner direction, 2026-09-30: "and then u lose them forever but maybe allow minify move".
+       Uninstalling a way through moves it; deconstructing it ends it. -->
+  <RR_Portals_MoveWayInTitle>Move a way into the Backrooms</RR_Portals_MoveWayInTitle>
+  <RR_Portals_MoveWayInConfirm>Uninstalling this door will take the way through with it. Your people will carry the door and the route it holds, and it will work again wherever it is reinstalled on this company's ground.\n\nIf anybody is part-way through it when it comes down, the route will be left broken instead of moved.</RR_Portals_MoveWayInConfirm>
+  <RR_Portals_WayThroughMoved>{0} has been installed, and the way through came with it.</RR_Portals_WayThroughMoved>
+  <RR_Frontier_TooManyGatesHeld>This gate is blocked: your company is holding open too many gates. A Backrooms level costs as much to hold open as a colony does, and you are at your limit. Abandon a colony or a level, or raise the maximum number of colonies in Options, and this door will open.</RR_Frontier_TooManyGatesHeld>
   <RR_Frontier_NotInTheBackrooms>Doors only lead elsewhere from inside the Backrooms.</RR_Frontier_NotInTheBackrooms>
   <RR_Frontier_IsTheWayBack>That door is the way back. It leads home, not onward.</RR_Frontier_IsTheWayBack>
   <RR_Frontier_Obstructed>There is no clear space beside that door to work from.</RR_Frontier_Obstructed>

@@ -72,6 +72,16 @@ namespace RimroomsAsyncIndustries.Generation
             {
                 return Fail(coordinate, null, graphFailure);
             }
+            // **The one place a coordinate map is ever generated, so the one place the budget
+            // must be unavoidable.** NaturalFrontierService refuses at the doorway, which is
+            // where a player should be told; this is the backstop for every other route in --
+            // a machine gate, a saved address, a recovery path. See Portals/OpenMapBudget.
+            //
+            // Only when a NEW map would be made. A coordinate that already has its site is being
+            // recalled, not opened, and refusing that would lock a player out of a place they are
+            // standing next to.
+            if (coordinate.Site == null && !Portals.OpenMapBudget.CanOpenAnother)
+            { return CompanyActionResult.Refused(Portals.OpenMapBudget.BlockedKey); }
             int fingerprint = ComputeFingerprint(coordinate);
 
             RimroomsDestinationMapParent parent = coordinate.Site as RimroomsDestinationMapParent;

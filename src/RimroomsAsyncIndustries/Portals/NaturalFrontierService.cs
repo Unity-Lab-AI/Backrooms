@@ -49,11 +49,41 @@ namespace RimroomsAsyncIndustries.Portals
         public const string SurveyJobDefName = "RR_SurveyFrontier";
 
         /// <summary>
-        /// How many natural gates may ever be found on one coordinate. Raising this is
-        /// a design decision, not a tuning knob; the cap is what keeps a chain of
-        /// spaces finite.
+        /// Fewest ways onward a coordinate offers, whatever its size.
+        ///
+        /// **Owner direction, 2026-09-30:** four to six per level, *"1 per ~15 rooms"*. Two was
+        /// right when a coordinate was six rooms on a 60x60 map; a 300x300 level with dozens of
+        /// rooms and two doors onward is a maze with the exits hidden rather than a place with
+        /// ways through it.
+        ///
+        /// **What made raising this safe is the map budget**, not a change of mind about
+        /// finiteness. The old summary said raising it was a design decision because the cap was
+        /// the only thing keeping the chain finite. It no longer is: `OpenMapBudget` bounds how
+        /// many places can be open at once regardless of how many doors exist, so the number of
+        /// doors and the cost of the graph are now separate questions.
         /// </summary>
-        internal const int MaximumFrontiersPerCoordinate = 2;
+        internal const int MinimumFrontiersPerCoordinate = 4;
+
+        /// <summary>Most ways onward a coordinate will ever offer.</summary>
+        internal const int MaximumFrontiersPerCoordinate = 6;
+
+        /// <summary>Rooms per extra way onward, above the minimum.</summary>
+        internal const int RoomsPerExtraFrontier = 20;
+
+        /// <summary>
+        /// How many ways onward THIS coordinate offers: the minimum, plus one for every
+        /// <see cref="RoomsPerExtraFrontier"/> rooms it has, never more than
+        /// <see cref="MaximumFrontiersPerCoordinate"/>.
+        ///
+        /// Read from the coordinate's own room count rather than from its depth, so it stays
+        /// correct if the planner's depth profile changes again.
+        /// </summary>
+        internal static int FrontiersFor(CoordinateRecord coordinate)
+        {
+            int rooms = coordinate == null || coordinate.Rooms == null ? 0 : coordinate.Rooms.Count;
+            int allowed = MinimumFrontiersPerCoordinate + rooms / RoomsPerExtraFrontier;
+            return allowed > MaximumFrontiersPerCoordinate ? MaximumFrontiersPerCoordinate : allowed;
+        }
 
         /// <summary>
         /// The deepest coordinate a found doorway will ever lead to.
@@ -76,7 +106,12 @@ namespace RimroomsAsyncIndustries.Portals
         /// is all open eneded they can play how they choose"*. A built gate reaches any depth it
         /// has earned, exactly as before.
         /// </summary>
-        internal const int MaximumNaturalDepth = 3;
+        /// <summary>
+        /// **Raised from 3 to 6 at 0.12.49-dev**, owner direction 2026-09-30, alongside the map
+        /// budget that makes a deeper chain affordable. The original three bands were chosen when
+        /// a level was 60x60 and two doors wide.
+        /// </summary>
+        internal const int MaximumNaturalDepth = 6;
 
         /// <summary>
         /// Roughly one doorway in this many is a frontier. Combined with the cap above,
@@ -90,10 +125,8 @@ namespace RimroomsAsyncIndustries.Portals
         /// **Spatial tier 3: `RR_Cap_CoordinateReading`.** One doorway in eight rather than one in
         /// twelve.
         ///
-        /// **The CAP is deliberately not touched.** Its own summary says raising
-        /// <see cref="MaximumFrontiersPerCoordinate"/> is a design decision rather than a tuning
-        /// knob, because the cap is what keeps a chain of spaces finite. So this makes the two a
-        /// branch may find arrive sooner; it never makes them three.
+        /// **This changes WHEN, never HOW MANY.** The number a coordinate offers is
+        /// <see cref="FrontiersFor"/>, and this capability only makes them easier to spot.
         /// </summary>
         internal const int PractisedFrontierRarity = 8;
 
@@ -197,6 +230,26 @@ namespace RimroomsAsyncIndustries.Portals
             // told plainly that nothing natural goes further than this.
             if (depth > MaximumNaturalDepth)
             { return CompanyActionResult.Refused("RR_Frontier_BeyondNaturalReach"); }
+            // **This gate is blocked; you are holding open too many gates.**
+            //
+            // Owner direction, 2026-09-30, verbatim: *"dont let them go more than 5 remember the
+            // games mechanics and limits built in if they find a gate to a world map tile or a
+            // deeper backrroms and they have 5 mpas they should gett a warning this gate is
+            // blocked your holding open too many gates, but per scerio styled"*, and *"5 is the
+            // limit of other colonies available so a backrooms level should be one colonly
+            // bacskicly in my thinking"*. See Portals/OpenMapBudget.
+            //
+            // **Asked here, after the way-out attempt above, and that is deliberate.** A doorway
+            // may lead OUT instead of deeper, and a way home costs no map: it records a world
+            // tile, it does not mint a place. Blocking it at the cap would strand a crew that is
+            // deep and full up with nothing but the route they walked in by -- the same trap the
+            // depth cap above is ordered to avoid. So the budget stops the mod opening ANOTHER
+            // PLACE; it never closes the last door home.
+            //
+            // Refused before `CreateDiscoveredCoordinate`, so a blocked gate leaves no
+            // half-minted coordinate recorded against the branch.
+            if (!OpenMapBudget.CanOpenAnother)
+            { return CompanyActionResult.Refused(OpenMapBudget.BlockedKey); }
             CompanyActionResult created = campaign.CreateDiscoveredCoordinate(discoveryId, depth, out discovered);
             if (!created.Success || discovered == null) { return created; }
 
@@ -315,7 +368,7 @@ namespace RimroomsAsyncIndustries.Portals
                     Seed = record.Seed,
                     Rarity = campaign.HasCapability("RR_Cap_CoordinateReading")
                         ? PractisedFrontierRarity : FrontierRarity,
-                    Cap = MaximumFrontiersPerCoordinate,
+                    Cap = FrontiersFor(record),
                     KeyPrefix = "frontier:"
                 };
                 sourceCoordinate = record;

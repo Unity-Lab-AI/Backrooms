@@ -34,7 +34,9 @@ And three restraints had to survive the tier:
   * the per-coordinate frontier cap is **not** a research knob (0.12.18-dev);
   * shelter never reaches zero (0.12.18-dev) -- so Entities took the penalty ceiling, not the
     shelter rate a second time;
-  * `MaximumNaturalDepth` stays at three, because the owner answered **"option 1"** on exactly that.
+  * `MaximumNaturalDepth` is **six** since 0.12.49-dev, and **still not research-driven** -- the
+     owner raised the reach on 2026-09-30, having chosen three at an earlier fork. The restraint
+     here was never the number; it is that no capability may move it.
 
 Run from the repository root.
 """
@@ -178,17 +180,17 @@ check("no gate project costs insight 5",
 print("")
 print("4. the restraints survived the tier")
 frontier = source.get(os.path.join(SRC, "Portals", "NaturalFrontierService.cs"), "")
-check("the per-coordinate frontier cap is still not a research knob",
-      re.search(r"Cap = MaximumFrontiersPerCoordinate", frontier) is not None and
+check("the per-coordinate frontier count is still not a research knob",
+      re.search(r"Cap = FrontiersFor\(record\)", frontier) is not None and
       "MaximumFrontiersPerCoordinate" in frontier and
-      not re.search(r"HasCapability\([^)]*\)\s*\?\s*\w*MaximumFrontiersPerCoordinate", frontier),
+      not re.search(r"HasCapability\([^)]*\)\s*\?\s*\w*Frontiers", frontier),
       "-- 0.12.18-dev asserted this and Spatial took the ordinary-map rarity instead")
 check("the ordinary-map frontier CAP is untouched too",
       "Cap = MaximumFrontiersPerOrdinaryMap" in frontier and
       not re.search(r"HasCapability\([^)]*\)\s*\?\s*\w*MaximumFrontiersPerOrdinaryMap", frontier),
       "-- only the rarity moved, which is how often, not how many")
-check("the natural depth reach is still three and not research-driven",
-      "MaximumNaturalDepth = 3" in frontier and
+check("THE NATURAL DEPTH REACH IS NOT RESEARCH-DRIVEN, WHATEVER ITS VALUE",
+      re.search(r"MaximumNaturalDepth\s*=\s*\d+", frontier) is not None and
       not re.search(r"HasCapability\([^)]*\)\s*\?\s*\w*MaximumNaturalDepth", frontier),
       "-- the owner answered \"option 1\": through depth 3, then stop")
 

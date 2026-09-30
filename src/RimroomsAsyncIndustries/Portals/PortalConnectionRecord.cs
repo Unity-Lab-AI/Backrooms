@@ -53,6 +53,47 @@ namespace RimroomsAsyncIndustries.Portals
         /// sealed on all four sides returns false, which is the honest answer: the player closed
         /// their own door in.
         /// </summary>
+        /// <summary>
+        /// Follow this endpoint's own door to where it has been reinstalled.
+        ///
+        /// ## Why this exists, and why it is not the thing the snapshot was guarding against
+        ///
+        /// **Owner direction, 2026-09-30, verbatim:** *"and then u lose them forever but maybe
+        /// allow minify move"*.
+        ///
+        /// The comment above says the anchor cell is deliberately never refreshed, so *"moving a
+        /// door cannot silently redirect a saved route"*. That was exactly right while the rule
+        /// was that naturals could not be moved at all. It is still right about the danger: the
+        /// thing to prevent is a route changing **silently**.
+        ///
+        /// So this is not a refresh. It is a **move**, and it has three properties the snapshot
+        /// was protecting:
+        ///
+        ///   * it only ever follows the **same `Thing` instance**. A different door in the same
+        ///     cell is not this endpoint and never becomes it, so a route cannot be captured by
+        ///     rebuilding something that looks like it.
+        ///   * it refuses unless the door is spawned, player-owned and on a map the branch owns,
+        ///     which is the same test registration had to pass.
+        ///   * the caller refuses it outright while a crossing is in flight, so nobody is ever
+        ///     mid-transit through an endpoint that moves under them -- the guard invariant 55
+        ///     exists for.
+        ///
+        /// Returns true when the endpoint actually moved, so the caller can report it.
+        /// </summary>
+        internal bool TryFollowMovedAnchor(Thing thing, IntVec3 approach)
+        {
+            if (thing == null || anchor == null || anchor != thing) { return false; }
+            if (!thing.Spawned || thing.Destroyed || thing.Map == null) { return false; }
+            if (!approach.IsValid || !approach.InBounds(thing.Map) ||
+                !approach.AdjacentToCardinal(thing.Position)) { return false; }
+            if (map == thing.Map && anchorCell == thing.Position && approachCell == approach)
+            { return false; }
+            map = thing.Map;
+            anchorCell = thing.Position;
+            approachCell = approach;
+            return true;
+        }
+
         internal bool TryRepairApproach()
         {
             if (anchor == null || !anchor.Spawned || anchor.Destroyed || map == null ||

@@ -13,7 +13,6 @@ namespace RimroomsAsyncIndustries.Generation
     {
         private const int GeneratorSeedPart = 72910463;
         private const float InitialRoomTemperature = 20f;
-        private const int CorridorHalfWidth = 2;
         private const int MaxNativePowerConduits = 512;
         private const int MaxInitialFuelStacks = 16;
 
@@ -272,19 +271,28 @@ namespace RimroomsAsyncIndustries.Generation
             }
             FillWithRock(map, coordinate, rockTypes);
 
+            int coordinateDepth = RoomLayoutPlanner.DepthOf(coordinate);
             foreach (RoomRecord room in coordinate.Rooms)
             {
+                // Owner direction, 2026-09-30: *"everything doesnt have to be square rooms"*.
+                // Rock is left standing in the corners, from the SAME function CandidateIsSafe
+                // proved the room walkable against -- see RoomLayoutPlanner.RockIntrusionCells.
+                var intrusions = new HashSet<IntVec3>(
+                    RoomLayoutPlanner.RockIntrusionCells(room, coordinateDepth));
                 foreach (IntVec3 cell in room.Bounds.Cells)
                 {
+                    // The roof goes overhead either way: an intrusion is rock inside the room,
+                    // not a hole in the world.
+                    map.roofGrid.SetRoof(cell, overheadRoof);
+                    if (intrusions.Contains(cell)) { continue; }
                     // Carve the room out of the rock, keeping the thick roof overhead. The
                     // roof is deliberately NOT RoofConstructed: constructed roof is
                     // removable, and all roof in a Backrooms coordinate must never be.
                     ClearRock(map, cell);
                     map.terrainGrid.SetTerrain(cell, concrete);
-                    map.roofGrid.SetRoof(cell, overheadRoof);
                 }
             }
-            BuildCorridors(coordinate.Rooms, map, concrete);
+            BuildCorridors(coordinate.Rooms, map, concrete, coordinateDepth);
 
             foreach (RoomRecord room in coordinate.Rooms)
             {
@@ -601,13 +609,23 @@ namespace RimroomsAsyncIndustries.Generation
             }
         }
 
-        private static void BuildCorridors(IReadOnlyList<RoomRecord> rooms, Map map, TerrainDef floor)
+        /// <summary>
+        /// The corridors between linked rooms.
+        ///
+        /// **The width is not a constant any more.** Owner direction, 2026-09-30: *"everything
+        /// doesnt have to be ... rectangle halways"*. It comes from
+        /// `RoomLayoutPlanner.CorridorHalfWidthBetween`, which `CandidateIsSafe` also reads, so
+        /// the reachability the planner proved is the reachability that gets built.
+        /// </summary>
+        private static void BuildCorridors(IReadOnlyList<RoomRecord> rooms, Map map, TerrainDef floor,
+            int depth)
         {
             foreach (RoomRecord room in rooms)
             {
                 foreach (int linkedIndex in room.Links.Where(index => index > room.Index))
                 {
                     RoomRecord other = rooms.First(candidate => candidate.Index == linkedIndex);
+                    int halfWidth = RoomLayoutPlanner.CorridorHalfWidthBetween(room, other, depth);
                     CellRect first = room.Bounds;
                     CellRect second = other.Bounds;
                     if (first.CenterCell.z == second.CenterCell.z)
@@ -617,12 +635,12 @@ namespace RimroomsAsyncIndustries.Generation
                         int centerZ = first.CenterCell.z;
                         for (int x = fromX; x <= toX; x++)
                         {
-                            for (int offset = -CorridorHalfWidth + 1; offset <= CorridorHalfWidth - 1; offset++)
+                            for (int offset = -halfWidth + 1; offset <= halfWidth - 1; offset++)
                             {
                                 SetWalkableRoofedCell(map, new IntVec3(x, 0, centerZ + offset), floor);
                             }
-                            PlaceWall(map, new IntVec3(x, 0, centerZ - CorridorHalfWidth), ThingDefOf.Wall, ThingDefOf.Steel);
-                            PlaceWall(map, new IntVec3(x, 0, centerZ + CorridorHalfWidth), ThingDefOf.Wall, ThingDefOf.Steel);
+                            PlaceWall(map, new IntVec3(x, 0, centerZ - halfWidth), ThingDefOf.Wall, ThingDefOf.Steel);
+                            PlaceWall(map, new IntVec3(x, 0, centerZ + halfWidth), ThingDefOf.Wall, ThingDefOf.Steel);
                         }
                     }
                     else if (first.CenterCell.x == second.CenterCell.x)
@@ -632,12 +650,12 @@ namespace RimroomsAsyncIndustries.Generation
                         int centerX = first.CenterCell.x;
                         for (int z = fromZ; z <= toZ; z++)
                         {
-                            for (int offset = -CorridorHalfWidth + 1; offset <= CorridorHalfWidth - 1; offset++)
+                            for (int offset = -halfWidth + 1; offset <= halfWidth - 1; offset++)
                             {
                                 SetWalkableRoofedCell(map, new IntVec3(centerX + offset, 0, z), floor);
                             }
-                            PlaceWall(map, new IntVec3(centerX - CorridorHalfWidth, 0, z), ThingDefOf.Wall, ThingDefOf.Steel);
-                            PlaceWall(map, new IntVec3(centerX + CorridorHalfWidth, 0, z), ThingDefOf.Wall, ThingDefOf.Steel);
+                            PlaceWall(map, new IntVec3(centerX - halfWidth, 0, z), ThingDefOf.Wall, ThingDefOf.Steel);
+                            PlaceWall(map, new IntVec3(centerX + halfWidth, 0, z), ThingDefOf.Wall, ThingDefOf.Steel);
                         }
                     }
                     else

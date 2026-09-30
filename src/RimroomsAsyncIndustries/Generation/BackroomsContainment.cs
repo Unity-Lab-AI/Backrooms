@@ -131,9 +131,16 @@ namespace RimroomsAsyncIndustries.Generation
         /// measures, and **non-collapsing**.
         ///
         /// Resolved by name with a fallback to Core's own thick roof, so a package missing the
-        /// def degrades to vanilla behaviour instead of generating an unroofed coordinate. The
-        /// fallback is strictly worse -- it can cave in -- and that is still better than a
-        /// coordinate with a sky.
+        /// def degrades instead of generating an unroofed coordinate.
+        ///
+        /// **The fallback is worse than it looks in this particular profile.** Register row
+        /// [188] *Removable Mt.Rock Roof Patch* is installed and patches
+        /// `RoofRockThick.isThickRoof` to **false**, so Core's overhead mountain here is thin --
+        /// and `VanishOnCollapse => !isThickRoof` means it **vanishes on collapse**. Falling back
+        /// to it would give a coordinate a roof that can disappear and leave open sky, which is
+        /// invariant 13 broken rather than merely a cave-in. It is still better than no roof at
+        /// all, and it is the reason the def above is the thing that actually carries the
+        /// invariant.
         /// </summary>
         internal static RoofDef OverheadRoof
         {

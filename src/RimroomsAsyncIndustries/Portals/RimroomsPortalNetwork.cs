@@ -281,6 +281,44 @@ namespace RimroomsAsyncIndustries.Portals
                 Verse.Find.Maps.Contains(anchor.Map) && approach.IsValid && approach.InBounds(anchor.Map) &&
                 approach.AdjacentToCardinal(anchor.Position);
         }
+        /// <summary>
+        /// A door has been installed somewhere. If it is an endpoint of any connection, the
+        /// connection follows it.
+        ///
+        /// **Owner direction, 2026-09-30:** *"maybe allow minify move"*. A natural gate is an
+        /// ordinary door the player owns, so they may uninstall it, carry it and put it somewhere
+        /// else -- and the way through should come with it rather than being quietly lost.
+        ///
+        /// Refused while a crossing is in flight, which is the one case where a moving endpoint
+        /// could strand somebody. The door is already installed by the time this runs, so the
+        /// refusal cannot un-move it; what it does is leave the route broken and visible rather
+        /// than silently re-pointed under a traveller. That is the safer of the two, and the
+        /// warning the player already confirmed told them a move was consequential.
+        ///
+        /// Returns how many connections moved, so the caller can tell the player.
+        /// </summary>
+        public int NotifyAnchorInstalled(Thing anchor)
+        {
+            if (anchor == null || !anchor.Spawned || anchor.Destroyed || HasStateFault) { return 0; }
+            if (!OwnsMap(Campaign, anchor.Map)) { return 0; }
+            IntVec3 approach = PortalAddressService.ApproachCellFor(anchor);
+            RimroomsPortalCrossingService crossings = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsPortalCrossingService>();
+            int moved = 0;
+            for (int index = 0; index < connections.Count; index++)
+            {
+                PortalConnectionRecord edge = connections[index];
+                if (edge == null || edge.First == null || edge.Second == null) { continue; }
+                if (edge.First.Anchor != anchor && edge.Second.Anchor != anchor) { continue; }
+                if (crossings != null && crossings.IsConnectionInFlight(edge.Id)) { continue; }
+                bool changed = edge.First.TryFollowMovedAnchor(anchor, approach)
+                    || edge.Second.TryFollowMovedAnchor(anchor, approach);
+                if (changed) { moved++; }
+            }
+            if (moved > 0) { topologyRevision++; }
+            return moved;
+        }
+
         private static bool EndpointPresent(PortalEndpointRecord endpoint)
         {
             return endpoint != null && endpoint.Map != null && Verse.Find.Maps.Contains(endpoint.Map) &&

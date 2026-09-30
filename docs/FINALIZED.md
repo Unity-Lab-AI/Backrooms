@@ -4995,3 +4995,81 @@ from the pref and a coordinate counts against it.
 
 **And the heredoc rule in NOW.md earned its place again this checkpoint** - a bash heredoc died on
 an apostrophe mid-closure, which is the sixth time in two days. This file exists because of it.
+
+---
+
+## Session 2026-09-30 - the warren, the map budget, and a doorway you can carry (0.12.50-dev)
+
+**Verbatim user quote:** *"dont let them go more than 5 remember the games mechanics and limits
+built in if they find a gate to a world map tile or a deeper backrroms and they have 5 mpas they
+should gett a warning this gate is blocked your holding open too many gates, but per scerio
+styled"*
+
+**Verbatim user quote:** *"5 is the limit of other colonies available so a backrooms level should be
+one colonly bacskicly in my thinking"*
+
+**Verbatim user quote:** *"and everything doesnt have to be square rooms and rectangle halways"*
+
+**Verbatim user quote:** *"yeah so if the player discovers and goes through a natural gate how do
+they turn them off to use the machine gates for more controll and aiming deeper?"*
+
+**Verbatim user quote:** *"get 5 natural gates u cant use a machine gate"*
+
+**Verbatim user quote:** *"so we need a way to deconstruct natural gates too i think"*
+
+**Verbatim user quote:** *"and then u lose them forever but maybe allow minify move"*
+
+**Verbatim user quote:** *"they are just doors too right that dont need the mechine gate systems"*
+
+**Verbatim user quote:** *"make sure u are using prep and mod registry as needed"*
+
+**Files touched:** `Portals/OpenMapBudget.cs` (new), `Portals/NaturalFrontierService.cs`,
+`Portals/PortalConnectionRecord.cs`, `Portals/PortalCrossingService.cs`,
+`Portals/RimroomsPortalNetwork.cs`, `Portals/CompRimroomsEmergence.cs`,
+`Portals/PortalDoorWarning.cs`, `Generation/RoomLayoutPlanner.cs`,
+`Generation/GenStep_BackroomsDestination.cs`, `Generation/DestinationService.cs`,
+`Generation/BackroomsContainment.cs`, `Defs/RoofDefs/RR_Roofs.xml`, `Keyed/RR_Portals.xml`,
+`Scenario/RimroomsStartDef.cs`, About/csproj/README,
+`docs/implementation/WARREN_AND_DOORWAYS_IMPLEMENTATION.md`.
+
+**Closure notes.** **The register instruction paid for itself in one query.** Row [188] *Removable
+Mt.Rock Roof Patch* is installed in this profile and patches `RoofRockThick.isThickRoof` to false,
+so Core's overhead mountain here **vanishes on collapse** - meaning invariant 13, *a Backrooms
+coordinate has no outside*, **was already broken before this session's work**, and
+`BackroomsContainment`'s claim that thick roof "never vanishes" was reasoning from unpatched Core.
+The non-collapsing roof def introduced one checkpoint earlier for the cave-in direction repairs
+that breach, and this is a second independent reason patching Core's roof would have been wrong.
+**Nothing in our own code could have found this.**
+
+**The map budget reads Core rather than writing a 5.** `Prefs.MaxNumberOfPlayerSettlements` is a
+1-to-5 player slider Core enforces in `SettleUtility`, and Core's count cannot see a coordinate
+map, so `OpenMapBudget` counts both. A floor of 2 exists because the slider can be 1 and the
+solo/group start opens a coordinate while the surface map already counts. The budget is checked
+**after** the way-out attempt, because a way home costs no map and blocking it would strand a deep
+crew: the budget stops the mod opening another place, never closes the last door home. **And
+discovering a gate is free** - no map exists until somebody crosses.
+
+**Rooms stopped being rectangles in a way that is provably safe.** Rock is left in the corners
+only, never on the centre cross, and the proof fills every corner at full reach and flood-fills
+from the room centre to all four edge midpoints at every depth.
+
+**A doorway can be carried now.** Destroying one already ended its route and already warned the
+player; carrying one silently lost it, because the endpoint's cell is a deliberate snapshot.
+`TryFollowMovedAnchor` is a move rather than a refresh: same Thing only, branch-owned ground only,
+refused mid-crossing, and not on load.
+
+**Eight of my own proof claims were too loose and plants found every one** - a doc comment, a
+prefix, a surviving declaration, a shape appearing four times, the same line added to a second
+function, a comment counting toward a count, an ordering compared across the wrong pair, and a
+string appearing seven times. All eight are now scoped to a method body, an exact tag, or a call
+site. **A claim about code must never be satisfiable by a comment, a prefix, a declaration, or a
+duplicate.** And the heredoc rule earned its place twice more, the seventh and eighth times.
+
+**200 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`0B307BD06299AE6EA7028267A1663D5D15315F540FEBDD8898432E60F1150599`, reproduced by two clean
+recompiles. **Thirteen checkers pass, forty-one proofs hold.** 62 of 62 and 15 of 15 in the two
+suites touched.
+
+**One piece is deliberately not shipped and not half-built:** the Operations held-places Release
+list. It needs a save-schema field on `CoordinateRecord` to tell a deliberate release from a broken
+reference, teardown that orphans nothing, and a refusal set. Next checkpoint, first thing.
