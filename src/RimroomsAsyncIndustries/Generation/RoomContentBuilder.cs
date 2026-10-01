@@ -23,10 +23,9 @@ namespace RimroomsAsyncIndustries.Generation
             foreach (IntVec3 cell in anchor.OccupiedRect().ExpandedBy(1).Cells) { reserved.Add(cell); }
             foreach (RoomRecord room in coordinate.Rooms)
             {
-                IntVec3 center = room.Bounds.CenterCell;
                 // Keep the whole three-cell route cross clear. The existing center support remains.
                 foreach (IntVec3 cell in room.Bounds.Cells)
-                { if (Math.Abs(cell.x - center.x) <= 1 || Math.Abs(cell.z - center.z) <= 1) { reserved.Add(cell); } }
+                { if (OnRouteCross(room, cell)) { reserved.Add(cell); } }
             }
             foreach (RoomRecord room in coordinate.Rooms.OrderBy(r => r.index))
             {
@@ -42,42 +41,42 @@ namespace RimroomsAsyncIndustries.Generation
                     {
                         case "threshold_room":
                             landmark = Place(map, room, coordinate, "Stool", reserved, seed, 0);
-                            Place(map, room, coordinate, "Stool", reserved, seed, 1);
+                            Decorate(map, room, coordinate, "Stool", reserved, seed, 1);
                             break;
                         case "survey_lobby":
                             landmark = Place(map, room, coordinate, "Table1x2c", reserved, seed, 0);
-                            Place(map, room, coordinate, "DiningChair", reserved, seed, 1);
-                            Place(map, room, coordinate, "PlantPot", reserved, seed, 2);
+                            Decorate(map, room, coordinate, "DiningChair", reserved, seed, 1);
+                            Decorate(map, room, coordinate, "PlantPot", reserved, seed, 2);
                             break;
                         case "office_copy":
                             landmark = Place(map, room, coordinate, "Table1x2c", reserved, seed, 0);
-                            Place(map, room, coordinate, "DiningChair", reserved, seed, 1);
-                            Place(map, room, coordinate, "Table1x2c", reserved, seed, 2);
-                            Place(map, room, coordinate, "DiningChair", reserved, seed, 3);
-                            if (variant == 2) { Place(map, room, coordinate, "PlantPot", reserved, seed, 4); }
+                            Decorate(map, room, coordinate, "DiningChair", reserved, seed, 1);
+                            Decorate(map, room, coordinate, "Table1x2c", reserved, seed, 2);
+                            Decorate(map, room, coordinate, "DiningChair", reserved, seed, 3);
+                            if (variant == 2) { Decorate(map, room, coordinate, "PlantPot", reserved, seed, 4); }
                             break;
                         case "service_passage":
                             landmark = Place(map, room, coordinate, "Shelf", reserved, seed, 0);
-                            Place(map, room, coordinate, "StandingLamp", reserved, seed, 1);
+                            Decorate(map, room, coordinate, "StandingLamp", reserved, seed, 1);
                             break;
                         case "borrowed_corridor":
                             landmark = Place(map, room, coordinate, "PlantPot", reserved, seed, 0);
-                            Place(map, room, coordinate, "PlantPot", reserved, seed, 1);
+                            Decorate(map, room, coordinate, "PlantPot", reserved, seed, 1);
                             break;
                         case "storage_nook":
-                            Place(map, room, coordinate, "Shelf", reserved, seed, 0);
+                            Decorate(map, room, coordinate, "Shelf", reserved, seed, 0);
                             landmark = variant == 0 ? Place(map, room, coordinate, "Steel", reserved, seed, 1, false, 12) :
                                 Place(map, room, coordinate, variant == 1 ? "Stool" : "DiningChair", reserved, seed, 1, true);
                             salvage = true;
                             break;
                         case "utility_room":
                             landmark = Place(map, room, coordinate, "StandingLamp", reserved, seed, 0);
-                            Place(map, room, coordinate, "Stool", reserved, seed, 1);
+                            Decorate(map, room, coordinate, "Stool", reserved, seed, 1);
                             break;
                         case "return_gallery":
                             landmark = Place(map, room, coordinate, "Stool", reserved, seed, 0);
-                            Place(map, room, coordinate, "Stool", reserved, seed, 1);
-                            if (variant != 0) { Place(map, room, coordinate, "PlantPot", reserved, seed, 2); }
+                            Decorate(map, room, coordinate, "Stool", reserved, seed, 1);
+                            if (variant != 0) { Decorate(map, room, coordinate, "PlantPot", reserved, seed, 2); }
                             break;
                         default: throw new InvalidOperationException("RR_Generation_InvalidRoomGraph");
                     }
@@ -103,6 +102,26 @@ namespace RimroomsAsyncIndustries.Generation
                 finally { Rand.PopState(); }
             }
             content.CompletePopulation();
+        }
+
+        /// <summary>
+        /// The three-cell walk through the middle of a room, both ways, which nothing is ever
+        /// placed on.
+        ///
+        /// **This is what actually keeps a room walkable**, and it is why the margin around a
+        /// fixture can be a preference rather than a requirement -- see
+        /// <see cref="FixtureCell"/>. Every doorway sits at the midpoint of a wall, so a clear
+        /// cross from midpoint to midpoint is a clear walk between any two of them.
+        ///
+        /// **Exposed because the layout probe counts against it.** A room whose cross, pillars
+        /// and rock between them leave no cell at all cannot take a landmark, and that failure
+        /// aborted a whole level once. The probe asks this rather than re-deriving it; a second
+        /// copy of a one-line rule is still a second derivation.
+        /// </summary>
+        internal static bool OnRouteCross(RoomRecord room, IntVec3 cell)
+        {
+            IntVec3 center = room.Bounds.CenterCell;
+            return Math.Abs(cell.x - center.x) <= 1 || Math.Abs(cell.z - center.z) <= 1;
         }
 
         private static void PaintRoom(Map map, RoomRecord room, int variant, int depth, int seed)
@@ -288,7 +307,50 @@ namespace RimroomsAsyncIndustries.Generation
             // All four facings, not two. A room where everything faces north or south reads
             // as arranged; the Backrooms are not arranged.
             Rot4 rotation = new Rot4(Scatter(seed, slot, "facing", 4));
+            IntVec3 cell = FixtureCell(map, room, reserved, thing, rotation, preferred);
+            if (!cell.IsValid) { return null; }
+            GenSpawn.Spawn(thing, cell, map, rotation);
+            if (!thing.Spawned || thing.Map != map) { return null; }
+            thing.SetForbidden(false, false);
+            return thing;
+        }
+
+        /// <summary>
+        /// A cell in this room that will take this footprint: one with a walkable margin around
+        /// it if there is one, and one without if there is not.
+        ///
+        /// ## Why the margin has to be a preference and not a requirement
+        ///
+        /// **A room with no margined cell aborted the whole level.** The margin rule refuses any
+        /// cell whose footprint has an edifice within one, and every one of these is an edifice:
+        /// the room's own perimeter wall, the pillar lattice, the rock left standing in the
+        /// shaped corners, **and every fixture already placed in the room.** On top of that
+        /// `Populate` reserves the three-cell route cross outright.
+        ///
+        /// So in a room at the minimum eight cells across, the margin and the reserved cross
+        /// between them leave **exactly one** placeable cell -- and a family that places two
+        /// fixtures took it with the first and threw on the second. 0.12.61-dev made that
+        /// reachable at depth 1 for the first time, by varying room spans and letting `Derange`
+        /// cut hallways on a first level.
+        ///
+        /// The throw reached `GenStep.Generate`, so **the level stopped being built halfway**:
+        /// the owner got a Backrooms map with no finished content, `EnsureSite` reported failure,
+        /// and `SoloGroupOpening` never marked the door or registered the edge. Their report was
+        /// *"i see the backrooms is there but the gate natural door is not"* -- a furniture
+        /// placement rule, two steps removed.
+        ///
+        /// **The margin was never what keeps the room walkable.** The reserved route cross is,
+        /// and it is reserved separately and unconditionally. So a cell without a margin is a
+        /// fixture against a wall, which is what furniture against a wall looks like.
+        ///
+        /// **One function, three callers.** `TryPlace` had its own copy of this loop; now it asks
+        /// here, because two derivations of one rule is the defect this project keeps meeting.
+        /// </summary>
+        private static IntVec3 FixtureCell(Map map, RoomRecord room, HashSet<IntVec3> reserved,
+            Thing thing, Rot4 rotation, IntVec3 preferred)
+        {
             CellRect interior = room.Bounds.ContractedBy(1);
+            IntVec3 withoutMargin = IntVec3.Invalid;
             foreach (IntVec3 cell in interior.Cells
                 .OrderBy(c => c.DistanceToSquared(preferred)).ThenBy(c => c.x).ThenBy(c => c.z))
             {
@@ -296,19 +358,53 @@ namespace RimroomsAsyncIndustries.Generation
                 if (footprint.Cells.Any(c => !interior.Contains(c) || reserved.Contains(c) ||
                     !c.Standable(map) || c.GetEdifice(map) != null || c.GetFirstItem(map) != null))
                 { continue; }
-                if (footprint.ExpandedBy(1).Cells.Any(c => c.InBounds(map) && c.GetEdifice(map) != null))
-                { continue; }
-                GenSpawn.Spawn(thing, cell, map, rotation);
-                if (!thing.Spawned || thing.Map != map) { return null; }
-                thing.SetForbidden(false, false);
-                return thing;
+                // Keep a walkable margin around each fixture where the room allows one.
+                if (!footprint.ExpandedBy(1).Cells.Any(c => c.InBounds(map) && c.GetEdifice(map) != null))
+                { return cell; }
+                // The first acceptable cell without a margin, kept in case nothing better turns
+                // up. Still the one nearest the scatter anchor, because the ordering is the same.
+                if (!withoutMargin.IsValid) { withoutMargin = cell; }
             }
-            return null;
+            return withoutMargin;
         }
 
+        /// <summary>
+        /// The room's landmark: the one fixture that has to exist, because
+        /// <c>RoomContentMapComponent.AddClue</c> is handed it and the investigation chain reads
+        /// it. Refused loudly if it cannot be placed.
+        /// </summary>
         private static Thing Place(Map map, RoomRecord room, CoordinateRecord coordinate,
             string defName, HashSet<IntVec3> reserved,
             int seed, int slot, bool minified = false, int count = 1)
+        {
+            return PlaceFixture(map, room, coordinate, defName, reserved, seed, slot, minified,
+                count, true);
+        }
+
+        /// <summary>
+        /// Everything else in the room, and **a fixture that will not fit is simply not there.**
+        ///
+        /// This is `DressRoom`'s rule, applied where it was always missing. That method says it
+        /// out loud -- *"a fixture that will not fit is skipped, and a room that ends up bare is
+        /// a bare room. The alternative -- failing generation because a decorative shelf had
+        /// nowhere to go -- would take a working coordinate away from a player over scenery"* --
+        /// and then the family fixtures a few lines above it did exactly that.
+        ///
+        /// A second stool is a second stool. The clue is the landmark, the route is the reserved
+        /// cross, and the power network is routed to whatever is actually there. **Nothing
+        /// downstream counts these.**
+        /// </summary>
+        private static Thing Decorate(Map map, RoomRecord room, CoordinateRecord coordinate,
+            string defName, HashSet<IntVec3> reserved,
+            int seed, int slot, bool minified = false, int count = 1)
+        {
+            return PlaceFixture(map, room, coordinate, defName, reserved, seed, slot, minified,
+                count, false);
+        }
+
+        private static Thing PlaceFixture(Map map, RoomRecord room, CoordinateRecord coordinate,
+            string defName, HashSet<IntVec3> reserved,
+            int seed, int slot, bool minified, int count, bool required)
         {
             ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
             if (definition == null || count < 1 || count > definition.stackLimit)
@@ -333,20 +429,31 @@ namespace RimroomsAsyncIndustries.Generation
             // All four facings, not two. A room where everything faces north or south reads
             // as arranged; the Backrooms are not arranged.
             Rot4 rotation = new Rot4(Scatter(seed, slot, "facing", 4));
-            foreach (IntVec3 cell in room.Bounds.ContractedBy(1).Cells.OrderBy(c => c.DistanceToSquared(preferred)).ThenBy(c => c.x).ThenBy(c => c.z))
+            IntVec3 cell = FixtureCell(map, room, reserved, thing, rotation, preferred);
+            if (!cell.IsValid)
             {
-                CellRect footprint = GenAdj.OccupiedRect(cell, rotation, thing.def.size);
-                if (footprint.Cells.Any(c => !room.Bounds.ContractedBy(1).Contains(c) || reserved.Contains(c) || !c.Standable(map) ||
-                    c.GetEdifice(map) != null || c.GetFirstItem(map) != null)) { continue; }
-                // Keep a walkable margin around each fixture; native furniture never seals the room cross.
-                if (footprint.ExpandedBy(1).Cells.Any(c => c.InBounds(map) && c.GetEdifice(map) != null)) { continue; }
-                GenSpawn.Spawn(thing, cell, map, rotation);
-                if (!thing.Spawned || thing.Map != map) { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
-                thing.SetForbidden(false, false);
-                return thing;
+                // Do not reroll or remove earlier placed content after a surprising runtime
+                // Def/footprint failure. The landmark is refused loudly because the clue chain
+                // reads it -- `ValidatePlacedLayout` requires exactly one clue per room -- and a
+                // decoration is simply absent.
+                if (required)
+                {
+                    // **SAY WHICH ROOM.** The last time this threw, the log carried the method
+                    // and the key and nothing else, so the room it happened in had to be
+                    // reasoned about from the arithmetic of every room it could have been. One
+                    // line here is the difference between that and an answer.
+                    Log.Warning("[Rimrooms][Generation] No cell for the landmark " + defName
+                                + " in room " + room.index + " (" + room.familyId + ", "
+                                + room.width + "x" + room.height + " at " + room.Bounds.CenterCell
+                                + ") of a depth " + coordinate.Depth + " coordinate.");
+                    throw new InvalidOperationException("RR_Generation_NoSafeRoomCell");
+                }
+                return null;
             }
-            // Do not reroll or remove earlier placed content after a surprising runtime Def/footprint failure.
-            throw new InvalidOperationException("RR_Generation_NoSafeRoomCell");
+            GenSpawn.Spawn(thing, cell, map, rotation);
+            if (!thing.Spawned || thing.Map != map) { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+            thing.SetForbidden(false, false);
+            return thing;
         }
     }
 }

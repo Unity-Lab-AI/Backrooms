@@ -529,9 +529,43 @@ namespace RimroomsAsyncIndustries.Generation
         {
             if (!cell.InBounds(map) || map.terrainGrid.TerrainAt(cell) == voidFloor) { return; }
             if (!wiredCells.Add(cell)) { return; }
+            if (AlreadyTransmits(map, cell)) { return; }
             Thing conduit = MakeBuilding(conduitDef, null);
             conduit.SetFaction(Faction.OfPlayer);
             GenSpawn.Spawn(conduit, cell, map, Rot4.North);
+        }
+
+        /// <summary>
+        /// Whether something on this cell already carries power along it.
+        ///
+        /// **TWO TRANSMITTERS ON ONE CELL IS A PERMANENT FAULT, not a warning.** Core's
+        /// `PowerNetManager` refuses the second one -- *"there is already a power net here. There
+        /// can't be two transmitters on the same cell"* -- and leaves its own bookkeeping
+        /// inconsistent, so `PowerConnectionMaker.TryConnectToAnyPowerNet` throws a
+        /// `NullReferenceException` out of `Map.FinalizeInit` **and then out of every single
+        /// Update for the rest of the session.** The owner's log had hundreds of them.
+        ///
+        /// `wiredCells` is this generator's own bookkeeping and **cannot see a transmitter
+        /// somebody else put there.** Several mods in the owner's profile attach a hidden conduit
+        /// under a powered building automatically, and the lamps this generator now places on
+        /// every pillar are powered buildings -- so a conduit route crossing a lamp's cell lands
+        /// on a transmitter that is already there.
+        ///
+        /// Core answers the question itself through `ThingDef.EverTransmitsPower`, which is the
+        /// same property `PowerNetManager` registers on, so this cannot disagree with it. Asked
+        /// of whatever is on the cell rather than of a def we expect, because the point is
+        /// precisely that we did not put it there.
+        /// </summary>
+        private static bool AlreadyTransmits(Map map, IntVec3 cell)
+        {
+            List<Thing> things = cell.GetThingList(map);
+            for (int index = 0; index < things.Count; index++)
+            {
+                Thing thing = things[index];
+                if (thing != null && thing.def != null && thing.def.EverTransmitsPower)
+                { return true; }
+            }
+            return false;
         }
 
         private static List<IntVec3> FindConduitRoute(Map map, TerrainDef voidFloor,
@@ -588,6 +622,9 @@ namespace RimroomsAsyncIndustries.Generation
             if (!wiredCells.Add(cell)) { return; }
             if (wiredCells.Count > MaxNativePowerConduits)
             { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+            // Not a generator fault: the cell is already wired, by somebody else, and that is
+            // exactly as good as wiring it ourselves.
+            if (AlreadyTransmits(map, cell)) { return; }
             Thing conduit = MakeBuilding(conduitDef, null);
             conduit.SetFaction(Faction.OfPlayer);
             GenSpawn.Spawn(conduit, cell, map, Rot4.North);

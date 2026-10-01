@@ -1930,6 +1930,23 @@ Owner, verbatim:
 
 ---
 
+## The eleventh launch: the map was there and the gate was not - 2026-10-01 (0.12.63-dev) - DONE
+
+Owner, verbatim:
+
+> **"okay i see the backrooms is there but the gate natural door is not. its jsut a normal door no
+> blue no blue hue no stargate fx"**
+
+- [x] **"i see the backrooms is there"** - the map was created, then `GenStep.Generate` threw
+  partway through content placement, so it was never finished
+- [x] **"but the gate natural door is not"** - `EnsureSite` reported the failure, so
+  `SoloGroupOpening` stopped before step 3 and the door was never marked
+- [x] **"its jsut a normal door no blue no blue hue no stargate fx"** - `IsLiveGate` needs a mark
+  AND a registered edge; with neither, the glower stays dark, the tint is never applied and no
+  Stargate component is attached
+
+---
+
 ## TOMBSTONES
 
 _(none)_

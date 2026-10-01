@@ -25,6 +25,10 @@ namespace PlannerProbe
         private static MethodInfo validateRooms;
         private static MethodInfo sharesWall;
         private static PropertyInfo widestSpan;
+        private static MethodInfo pillarCells;
+        private static MethodInfo rockCells;
+        private static MethodInfo shapeDepthOf;
+        private static MethodInfo onRouteCross;
 
         private static int Main()
         {
@@ -39,6 +43,11 @@ namespace PlannerProbe
             validateRooms = service.GetMethod("ValidateRooms", Statics);
             sharesWall = planner.GetMethod("SharesWall", Statics);
             widestSpan = planner.GetProperty("WidestRoomSpan", Statics);
+            pillarCells = planner.GetMethod("PillarCells", Statics);
+            rockCells = planner.GetMethod("RockIntrusionCells", Statics);
+            shapeDepthOf = planner.GetMethod("ShapeDepthOf", Statics);
+            Type builder = assembly.GetType("RimroomsAsyncIndustries.Generation.RoomContentBuilder", true);
+            onRouteCross = builder.GetMethod("OnRouteCross", Statics);
 
             Console.WriteLine("WidestRoomSpan = " + widestSpan.GetValue(null, null));
             Console.WriteLine();
@@ -51,6 +60,8 @@ namespace PlannerProbe
                 int rooms = 0;
                 int widest = 0;
                 int backToBack = 0;
+                int tightest = int.MaxValue;
+                int starved = 0;
                 var reasons = new SortedSet<string>();
                 const int Seeds = 200;
                 for (int seed = 0; seed < Seeds; seed++)
@@ -76,14 +87,37 @@ namespace PlannerProbe
                         if (height > widest) { widest = height; }
                     }
                     backToBack += BackToBackPairs(layout);
+
+                    // **CAN EVERY ROOM TAKE ITS LANDMARK?** A room's walls, pillar lattice and
+                    // shaped rock, plus the reserved three-cell route cross, can between them
+                    // leave a room with nowhere to put anything -- and a landmark that cannot be
+                    // placed throws out of `GenStep.Generate`, which stops the level being built
+                    // halfway. That cost a launch: the owner got a Backrooms map with no content,
+                    // `EnsureSite` reported failure, and the gate was never marked.
+                    foreach (object room in layout)
+                    {
+                        int margined = MarginedCells(layout, room, depth);
+                        if (margined < tightest) { tightest = margined; }
+                        if (margined <= 1) { starved++; }
+                        if (LandmarkCells(layout, room, depth) == 0)
+                        {
+                            reasons.Add("room " + Field<int>(room, "index") + " ("
+                                        + Field<string>(room, "familyId") + ", "
+                                        + Field<int>(room, "width") + "x"
+                                        + Field<int>(room, "height")
+                                        + ") has nowhere to place a landmark");
+                            refused++;
+                            break;
+                        }
+                    }
                 }
 
                 totalBackToBack += backToBack;
                 string verdict = refused == 0 ? "OK  " : "FAIL";
                 Console.WriteLine(string.Format(
-                    "{0} depth {1,-2}  refused {2,3}/{3}  avg rooms {4,5:0.0}  widest {5,3}  back-to-back pairs {6,4}",
+                    "{0} depth {1,-2}  refused {2,3}/{3}  avg rooms {4,5:0.0}  widest {5,3}  pairs {6,4}  tightest margin {7,3}  starved rooms {8,5}",
                     verdict, depth, refused, Seeds, refused == Seeds ? 0.0 : (double)rooms / (Seeds - refused),
-                    widest, backToBack));
+                    widest, backToBack, tightest == int.MaxValue ? -1 : tightest, starved));
                 foreach (string reason in reasons) { Console.WriteLine("        reason: " + reason); }
                 if (refused != 0) { failures++; }
             }
@@ -104,6 +138,107 @@ namespace PlannerProbe
             Console.WriteLine("PROBE HELD: every depth produced a layout the validator accepts, "
                               + "and " + totalBackToBack + " back-to-back pairs exist.");
             return 0;
+        }
+
+        /// <summary>
+        /// Cells in this room that could hold a landmark: inside the walls, off the reserved
+        /// route cross, and not on a pillar or on shaped rock.
+        ///
+        /// **Every rule here is asked of the shipping code**, not re-derived: `PillarCells`,
+        /// `RockIntrusionCells` and `ShapeDepthOf` from the planner, `OnRouteCross` from the
+        /// content builder. The walkable margin a fixture prefers is deliberately NOT applied,
+        /// because it is a preference -- what this counts is whether a landmark can be placed at
+        /// all, which is the thing that throws.
+        /// </summary>
+        private static int LandmarkCells(IList layout, object room, int depth)
+        {
+            var bounds = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(room, null);
+            Verse.CellRect interior = bounds.ContractedBy(1);
+            var blocked = new HashSet<Verse.IntVec3>();
+            foreach (Verse.IntVec3 cell in (IEnumerable<Verse.IntVec3>)pillarCells.Invoke(
+                null, new[] { room }))
+            { blocked.Add(cell); }
+            int shapeDepth = (int)shapeDepthOf.Invoke(null, new object[] { layout, room, depth });
+            foreach (Verse.IntVec3 cell in (IEnumerable<Verse.IntVec3>)rockCells.Invoke(
+                null, new object[] { room, shapeDepth }))
+            { blocked.Add(cell); }
+
+            int count = 0;
+            foreach (Verse.IntVec3 cell in interior.Cells)
+            {
+                if (blocked.Contains(cell)) { continue; }
+                if ((bool)onRouteCross.Invoke(null, new object[] { room, cell })) { continue; }
+                count++;
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Of those, how many also have a clear walkable margin -- no wall, pillar or rock within
+        /// one cell -- **before a single fixture is placed.**
+        ///
+        /// This is the measurement, not an argument. A room reporting **one** is a room where the
+        /// first fixture takes the only margined cell and the second has none, which is exactly
+        /// the throw that stopped a level being built. It is reported rather than enforced,
+        /// because a room with one margined cell is now a room with one margined fixture and the
+        /// rest against the walls -- which is fine.
+        /// </summary>
+        private static int MarginedCells(IList layout, object room, int depth)
+        {
+            var bounds = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(room, null);
+            Verse.CellRect interior = bounds.ContractedBy(1);
+            var blocked = new HashSet<Verse.IntVec3>();
+            foreach (Verse.IntVec3 cell in (IEnumerable<Verse.IntVec3>)pillarCells.Invoke(
+                null, new[] { room }))
+            { blocked.Add(cell); }
+            int shapeDepth = (int)shapeDepthOf.Invoke(null, new object[] { layout, room, depth });
+            foreach (Verse.IntVec3 cell in (IEnumerable<Verse.IntVec3>)rockCells.Invoke(
+                null, new object[] { room, shapeDepth }))
+            { blocked.Add(cell); }
+            // The room's own perimeter is wall, and wall is an edifice like any other.
+            foreach (Verse.IntVec3 cell in bounds.Cells)
+            { if (!interior.Contains(cell)) { blocked.Add(cell); } }
+
+            // **AND THE LAMP ON EVERY PILLAR.** `SpawnPillarLamps` puts one at the first free
+            // cardinal neighbour of each pillar, and a wall lamp is an edifice, so it shrinks the
+            // margin exactly as a pillar does. It was added the same checkpoint as the varied
+            // room spans, and modelling the pillars without it understates the pressure by half.
+            Verse.IntVec3[] sides =
+            {
+                Verse.IntVec3.North, Verse.IntVec3.East, Verse.IntVec3.South, Verse.IntVec3.West,
+            };
+            var lamps = new List<Verse.IntVec3>();
+            foreach (Verse.IntVec3 pillar in (IEnumerable<Verse.IntVec3>)pillarCells.Invoke(
+                null, new[] { room }))
+            {
+                for (int side = 0; side < sides.Length; side++)
+                {
+                    Verse.IntVec3 cell = pillar + sides[side];
+                    if (!interior.Contains(cell) || blocked.Contains(cell) || lamps.Contains(cell))
+                    { continue; }
+                    lamps.Add(cell);
+                    break;
+                }
+            }
+            foreach (Verse.IntVec3 cell in lamps) { blocked.Add(cell); }
+
+            int count = 0;
+            foreach (Verse.IntVec3 cell in interior.Cells)
+            {
+                if (blocked.Contains(cell)) { continue; }
+                if ((bool)onRouteCross.Invoke(null, new object[] { room, cell })) { continue; }
+                bool clear = true;
+                for (int dx = -1; dx <= 1 && clear; dx++)
+                {
+                    for (int dz = -1; dz <= 1 && clear; dz++)
+                    {
+                        if (blocked.Contains(new Verse.IntVec3(cell.x + dx, 0, cell.z + dz)))
+                        { clear = false; }
+                    }
+                }
+                if (clear) { count++; }
+            }
+            return count;
         }
 
         /// <summary>Linked pairs standing wall against wall, by the planner's own predicate.</summary>

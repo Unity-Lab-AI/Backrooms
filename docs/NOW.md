@@ -46,10 +46,10 @@ been enough; the only thing that has worked is reaching for the Write tool first
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
-| Published | **0.12.62-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.63-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **204 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `5201C4A6D368DE5E2E3A94939BEC0D0AF5858A870A1A05F4AC991F2D94BE8774`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Assembly | SHA-256 `B61001A7DB056FC142650421231773F757A41297AE9BD294AB5EC7CECA423193`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **FOURTEEN**, all passing. **The fourteenth is the only one that runs code rather than reading it**, and it exists because the thirteen that read text, the forty-five proofs and five hundred and fifty plants **all passed over a planner that could not produce one valid layout** -- `MaxRoomSpan` said 34 while the grand hall was 80, and no amount of reading either file can see two numbers disagree. `check-planner-layouts.py` builds `.local/harness/PlannerProbe` and runs `TrySelect` and `ValidateRooms` over 200 seeds at seven depths, demanding both that a layout is accepted **and that back-to-back pairs exist** -- because a plant that moved a pushed room one cell was missed by every proof when the revert guard quietly switched the feature off. **It never skips**: no dotnet, no install or no built assembly is a failure, not a pass. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -259,6 +259,98 @@ and sits at `12e12da`. Bug fixes found in play land on `feature/bug-testing` and
 there.
 
 ---
+
+## DO THIS FIRST — READ THE **FIRST** RED LINE, NOT THE LOUDEST ONE
+
+The eleventh launch's log had **hundreds** of `NullReferenceException`s, repeating every frame,
+from Core's power net and from four different mods' map components. **Every single one was
+downstream.** The cause was the first red line in the file and it was ours:
+
+```
+[Rimrooms][Generation] Site layout stopped: InvalidOperationException: RR_Generation_NoSafeRoomCell
+  at RoomContentBuilder.Place(...)  ->  Populate(...)  ->  GenStep.Generate(...)
+```
+
+So the order is: **`Player.log` first, `grep` for the FIRST `[Rimrooms]` line, then
+`bridge.py call rimworld/list_letters` for anything this package refused on purpose.** A
+half-generated map makes every other mod on it throw, and chasing those is chasing our own
+wreckage.
+
+### THE CHAIN, BECAUSE IT WILL REPEAT IN SOME OTHER FORM
+
+A stool had nowhere to go → `Place` threw → `GenStep.Generate` aborted → the map existed but was
+never finished → `EnsureSite` reported failure → `SoloGroupOpening` stopped at step 2 → the door
+was never marked and no edge was registered → **`IsLiveGate` needs both, so the gate was a plain
+door with no glow and no Stargate component.**
+
+**Owner's words were about a door. The defect was in furniture placement.** Twice now the gate has
+been reported broken and the cause was two steps upstream in generation. **Check whether the
+coordinate finished generating before looking at anything about the door at all.**
+
+### WHAT WAS ACTUALLY WRONG
+
+`Place` required a walkable margin — no edifice within one cell of the footprint — and **a room's
+perimeter wall, its pillar lattice, the rock in its shaped corners, the lamp on every pillar and
+every fixture already placed are all edifices**, on top of the three-cell route cross `Populate`
+reserves. 0.12.61-dev made that reachable by varying room spans and letting shape and lamps run at
+depth 1.
+
+Measured, not argued — `python tools/check-planner-layouts.py` reports it per depth:
+
+```
+depth 1   tightest margin  43   starved rooms     0
+depth 2   tightest margin   0   starved rooms    33
+depth 5   tightest margin   0   starved rooms   928
+```
+
+The margin is a **preference** now, and **only the landmark is required** — because
+`ValidatePlacedLayout` demands exactly one clue per room and the clue IS the landmark. Everything
+else is scenery, which is what `DressRoom` four lines below had always said.
+
+### THE ONE MOD INTERACTION IN ELEVEN LAUNCHES
+
+Core refuses a second transmitter on a cell and leaves its bookkeeping inconsistent, so
+`PowerConnectionMaker.TryConnectToAnyPowerNet` throws from `FinalizeInit` **and from every Update
+for the rest of the session.** `wiredCells` is our own bookkeeping and cannot see a transmitter
+another mod put there — and several mods in the owner's profile attach a hidden conduit under a
+powered building, which is what the new pillar lamps are. Both conduit paths now ask Core's own
+`ThingDef.EverTransmitsPower`.
+
+**Twenty-three defects across eleven launches and this is the first that involved another mod at
+all.** Their mod is untouched; we simply decline a cell that is already wired.
+
+### WHAT THE TWELFTH LAUNCH HAS TO SETTLE
+
+1. **Does a coordinate finish generating** — gate blue, glow, Stargate FX, a pawn able to cross
+2. **Is the log clean after the first `[Rimrooms]` line** — no power-net spam
+3. **24 rooms at depth 1** plus one grand hall of eighty cells, back-to-back pairs, shaped
+   corners, varied corridors
+4. **Is it a maze**, and does the yellow stop a few rooms out from a still-grand spawn hall
+5. **Two portals per level**: one out to the world map, one deeper. Guaranteed, not drawn
+6. **Loot, weird rooms, people, bodies, events** out past the yellow rooms
+7. **A lamp on every pillar** in four tones; **doors that go nowhere**; **furniture spread
+   through rooms** rather than in the four corners
+
+### THINGS THAT WILL WASTE A LAUNCH IF FORGOTTEN
+
+* **A new start, every time.** A coordinate is generated once and recorded, and a branch whose
+  startup failed keeps its failure. Three launches in a row have needed a fresh start.
+* **Run `tools/check-planner-layouts.py` before asking for a launch.** It is checker fourteen and
+  the only one that runs code rather than reading it.
+* **Register row [218] Stargates! is stance "No integration", and the owner overruled it.** The
+  register is guidance.
+
+### THE TRAPS, ALL FOUR OF THEM, FROM THIS CHECKPOINT ALONE
+
+* **An anchored span is a delete.** A fix script rebuilt a proof as
+  `text[:start] + new + text[end:]` and removed two claims written four minutes earlier. The plant
+  suite reported both as MISSED. **Read what is between the anchors.**
+* **The machinery is not the behaviour.** The margin claim asserted the fallback variable and its
+  return; a plant restoring the hard `continue` left all of it in place, unreached, and passed.
+  **Fourth time this week.** Assert the branch.
+* **An absence claim must be scoped.** `Place(..., "Shelf", ..., 0)` is a substring of
+  `service_passage`'s own landmark. Thirty-seventh instance.
+* **Use the Write tool.** A heredoc mangled an escaped newline for the **eleventh** time.
 
 ## DO THIS FIRST — READ THE LOG FROM THE ELEVENTH LAUNCH, AND THEN READ THE LETTERS
 

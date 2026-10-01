@@ -16,6 +16,68 @@ GEN = SRC + "/Generation/GenStep_BackroomsDestination.cs"
 PROOF = ".local/register/proof-generation-batch.py"
 
 PLANTS = [
+    # ------------------------------- the furniture rule that stopped a level being built
+    # `Place` refused any cell whose footprint had an edifice within one. The room's wall, its
+    # pillar lattice, the rock in its shaped corners, the lamp on every pillar and every fixture
+    # already placed are all edifices, on top of the reserved three-cell route cross -- so a room
+    # could be left with ONE placeable cell. The first fixture took it and the second threw out
+    # of `GenStep.Generate`, stopping the level halfway: the owner got a Backrooms map with no
+    # content and a door that was never marked.
+    ("THE WALKABLE MARGIN GOES BACK TO BEING MANDATORY", CONTENT,
+     "                if (!footprint.ExpandedBy(1).Cells.Any(c => c.InBounds(map) && c.GetEdifice(map) != null))"
+     + NL + "                { return cell; }",
+     "                if (footprint.ExpandedBy(1).Cells.Any(c => c.InBounds(map) && c.GetEdifice(map) != null))"
+     + NL + "                { continue; }"),
+
+    ("the cell without a margin is found and then thrown away", CONTENT,
+     "            return withoutMargin;", "            return IntVec3.Invalid;"),
+
+    ("EVERY FAMILY FIXTURE BECOMES REQUIRED AGAIN", CONTENT,
+     "                count, false);", "                count, true);"),
+
+    ("a decoration goes back to being a throwing Place call", CONTENT,
+     '                            Decorate(map, room, coordinate, "Stool", reserved, seed, 1);'
+     + NL + "                            break;" + NL + '                        case "survey_lobby":',
+     '                            Place(map, room, coordinate, "Stool", reserved, seed, 1);'
+     + NL + "                            break;" + NL + '                        case "survey_lobby":'),
+
+    ("the cell search is derived a second time inside TryPlace", CONTENT,
+     "            IntVec3 cell = FixtureCell(map, room, reserved, thing, rotation, preferred);"
+     + NL + "            if (!cell.IsValid) { return null; }",
+     "            IntVec3 cell = interior_unused;" + NL + "            if (!cell.IsValid) { return null; }"),
+
+    ("A LANDMARK REFUSAL GOES SILENT AGAIN", CONTENT,
+     '                    Log.Warning("[Rimrooms][Generation] No cell for the landmark " + defName',
+     '                    Log.Warning("[Rimrooms][Generation] No cell for a landmark" + ("" + defName'),
+
+    ("the route cross is derived in two places again", CONTENT,
+     "                { if (OnRouteCross(room, cell)) { reserved.Add(cell); } }",
+     "                { if (Math.Abs(cell.x - room.Bounds.CenterCell.x) <= 1) { reserved.Add(cell); } }"),
+
+    # ------------------------------------------- two transmitters on one cell
+    # Core refuses the second and leaves its bookkeeping inconsistent, so
+    # PowerConnectionMaker.TryConnectToAnyPowerNet throws out of Map.FinalizeInit and then out of
+    # every Update for the rest of the session.
+    ("A SECOND TRANSMITTER LANDS ON A CELL THAT ALREADY HAS ONE", GEN,
+     "            if (AlreadyTransmits(map, cell)) { return; }" + NL
+     + "            Thing conduit = MakeBuilding(conduitDef, null);" + NL
+     + "            conduit.SetFaction(Faction.OfPlayer);" + NL
+     + "            GenSpawn.Spawn(conduit, cell, map, Rot4.North);" + NL
+     + "        }",
+     "            Thing conduit = MakeBuilding(conduitDef, null);" + NL
+     + "            conduit.SetFaction(Faction.OfPlayer);" + NL
+     + "            GenSpawn.Spawn(conduit, cell, map, Rot4.North);" + NL
+     + "        }"),
+
+    ("the guard is kept on one path and dropped from the other", GEN,
+     "            // Not a generator fault: the cell is already wired, by somebody else, and that is"
+     + NL + "            // exactly as good as wiring it ourselves." + NL
+     + "            if (AlreadyTransmits(map, cell)) { return; }" + NL, ""),
+
+    ("and it stops asking Core whether the thing transmits", GEN,
+     "                if (thing != null && thing.def != null && thing.def.EverTransmitsPower)",
+     "                if (thing != null && thing.def != null && thing.def == conduitDefUnused)"),
+
     # Anchored on the WHOLE statement since 0.12.52-dev. The dressing path now uses the same
     # call, four spaces deeper, and a 16-space anchor is a substring of a 20-space one -- so this
     # matched twice and the harness refused to run rather than mis-score a fault it never planted.
