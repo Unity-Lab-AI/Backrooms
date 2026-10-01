@@ -47,13 +47,33 @@ PLANTS = [
      "            if (span % 2 != 0) { span--; }" + NL, ""),
 
     ("depth stops changing the slot grid", PLANNER,
-     "internal const int MaxSlotsPerAxis = 8;", "internal const int MaxSlotsPerAxis = 3;"),
+     "internal const int MaxSlotsPerAxis =", "internal const int MaxSlotsPerAxisUnused ="),
+
+    # The SECOND span source. Deleting the evenness guard from one of them used to pass, because
+    # the claim counted a string that exists in both.
+    ("THE VARIED SPAN STOPS BEING EVEN, so doors miss the slot centre", PLANNER,
+     "            int span = baseline + offset;" + NL
+     + "            if (span % 2 != 0) { span--; }" + NL,
+     "            int span = baseline + offset;" + NL),
+
+    ("rooms stop varying in size, so the level is a grid of identical boxes again", PLANNER,
+     "VariedRoomSpan(spacing, slot, seed, depth)", "SlotRoomSpan(spacing)"),
+
+    ("THE GRAND THRESHOLD HALL IS LOST", PLANNER,
+     "rooms.Add(MakeHall(coordinate, order[0], order[1], spacing, seed, depth));", ""),
+
+    ("the hall grows to four slots and breaks the chain's adjacency", PLANNER,
+     "                consumed = 2;", "                consumed = 4;"),
+
+    ("the maze goes back to one branch in three", PLANNER,
+     "% 4 == 3)", "% 3 != 0)"),
 
     ("THE WARREN STOPS TIGHTENING INWARD", PLANNER,
      "internal const int MaxRooms = 60;", "internal const int MaxRooms = 6;"),
 
-    ("level zero stops being grand", PLANNER,
-     "internal const int MinSlotsPerAxis = 3;", "internal const int MinSlotsPerAxis = 7;"),
+    # The first level stops being a maze and goes back to a handful of halls.
+    ("THE FIRST LEVEL GOES BACK TO A WAREHOUSE", PLANNER,
+     "internal const int MinSlotsPerAxis = 6;", "internal const int MinSlotsPerAxis = 3;"),
 
     # ---------------------------------------- the formulas the proof's model only copies
     ("the spacing formula stops dividing by the slot count", PLANNER,

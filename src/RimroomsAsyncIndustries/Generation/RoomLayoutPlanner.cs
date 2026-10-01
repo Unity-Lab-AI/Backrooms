@@ -57,8 +57,19 @@ namespace RimroomsAsyncIndustries.Generation
         internal const int SlotGap = 10;
 
         /// <summary>Fewest and most slots per axis, mapped from depth 1 upward.</summary>
-        internal const int MinSlotsPerAxis = 3;
-        internal const int MaxSlotsPerAxis = 8;
+        /// <summary>
+        /// Slots per axis at depth 1, and **the number that made the first walked level feel
+        /// like a warehouse.**
+        ///
+        /// At 3 this was a nine-slot grid on a 300x300 map and rooms came out eighty cells
+        /// across; the owner walked it and said *"not enough rooms"*. At 6 the first level is a
+        /// thirty-six-slot grid with rooms about thirty-four across, and the deepest levels reach
+        /// <see cref="MaxSlotsPerAxis"/> -- so **deeper is more rooms, smaller and tighter**,
+        /// which is what *"the numner of branch hallways and rooms distancing from the main
+        /// portal spawn"* describes.
+        /// </summary>
+        internal const int MinSlotsPerAxis = 6;
+        internal const int MaxSlotsPerAxis = 10;
 
         /// <summary>The ceiling the owner named: *"leas than 60-100 romms"*.</summary>
         internal const int MaxRooms = 60;
@@ -148,6 +159,35 @@ namespace RimroomsAsyncIndustries.Generation
         internal static int SlotRoomSpan(int spacing)
         {
             int span = spacing - SlotGap;
+            if (span % 2 != 0) { span--; }
+            return span < 8 ? 8 : span;
+        }
+
+        /// <summary>How far either side of the default a room's span may vary, in cells.</summary>
+        internal const int SpanVariation = 6;
+
+        /// <summary>
+        /// This room's span, varied from the default by its own slot.
+        ///
+        /// Owner: *"it needs to be more maze liek"*. **A grid of identical boxes reads as a grid
+        /// however many boxes you add.** Unequal ones read as rooms, and the gap between a small
+        /// room and its slot becomes more rock, which is more wall to walk around.
+        ///
+        /// Seeded from the slot, so a coordinate is the same place every time it is visited --
+        /// the record system, the revisit check and every saved route depend on that.
+        ///
+        /// Always even, because the door placement puts a doorway at the midpoint of each side,
+        /// and never below eight, because a room has to hold a doorway on each wall and a walk
+        /// between them.
+        /// </summary>
+        internal static int VariedRoomSpan(int spacing, IntVec2 slot, int seed, int depth)
+        {
+            int baseline = SlotRoomSpan(spacing);
+            int reach = SpanVariation < baseline / 3 ? SpanVariation : baseline / 3;
+            if (reach < 1) { return baseline; }
+            int offset = DestinationService.StableHash(seed, "span:" + slot.x + "," + slot.z, depth)
+                % (reach * 2 + 1) - reach;
+            int span = baseline + offset;
             if (span % 2 != 0) { span--; }
             return span < 8 ? 8 : span;
         }
@@ -313,14 +353,36 @@ namespace RimroomsAsyncIndustries.Generation
 
             var rooms = new List<RoomRecord>();
             var taken = new HashSet<IntVec2>();
-            for (int index = 0; index < chainLength; index++)
+
+            // **THE GRAND HALL YOU ARRIVE IN, AND THEN THE MAZE.** Owner: *"the normal yellow
+            // backrooms look isnt the whole floor but the main spanw room"*. The threshold takes
+            // the first TWO slots, so at depth 1 it is about eighty cells across -- the span the
+            // entire level used to have -- while everything past it is a third of that.
+            //
+            // Two and not four: the chain is a serpentine so consecutive rooms are always grid
+            // neighbours and linking needs no pathfinding. Consuming two keeps that true, because
+            // the next room neighbours the second slot and the hall already contains that slot's
+            // centre. A 2x2 hall breaks the adjacency the whole layout rests on.
+            int consumed = 0;
+            if (!fallback && order.Count >= 2)
+            {
+                rooms.Add(MakeHall(coordinate, order[0], order[1], spacing, seed, depth));
+                taken.Add(order[0]);
+                taken.Add(order[1]);
+                consumed = 2;
+            }
+
+            for (int index = consumed; index < order.Count && rooms.Count < chainLength; index++)
             {
                 IntVec2 slot = order[index];
+                if (taken.Contains(slot)) { continue; }
                 taken.Add(slot);
-                string family = ChainFamilyFor(index, chainLength, seed);
-                rooms.Add(MakeRoom(coordinate, rooms.Count, family, slot, spacing, span, seed, fallback, depth));
+                string family = ChainFamilyFor(rooms.Count, chainLength, seed);
+                rooms.Add(MakeRoom(coordinate, rooms.Count, family, slot, spacing,
+                    VariedRoomSpan(spacing, slot, seed, depth), seed, fallback, depth));
             }
-            for (int index = 1; index < chainLength; index++) { Link(rooms, index - 1, index); }
+            int chainRooms = rooms.Count;
+            for (int index = 1; index < chainRooms; index++) { Link(rooms, index - 1, index); }
 
             // Dead ends, from slots the chain walked past. Bounded by MaxRooms so a deep
             // coordinate cannot grow without limit.
@@ -330,13 +392,18 @@ namespace RimroomsAsyncIndustries.Generation
                 {
                     IntVec2 slot = order[index];
                     if (taken.Contains(slot)) { continue; }
-                    int host = ChainNeighbourOf(rooms, chainLength, slot, slots, spacing);
+                    int host = ChainNeighbourOf(rooms, chainRooms, slot, slots, spacing);
                     if (host < 0) { continue; }
-                    if (DestinationService.StableHash(seed, "spur:" + slot.x + "," + slot.z, depth) % 3 != 0)
+                    // THREE IN FOUR, not one in three. Owner: *"it needs to be more maze liek"*.
+                    // A chain with a handful of dead ends is a corridor with alcoves; a chain with
+                    // a branch off most slots is something you can get lost in. The quarter that
+                    // stays rock is what keeps it a maze rather than an open floor.
+                    if (DestinationService.StableHash(seed, "spur:" + slot.x + "," + slot.z, depth) % 4 == 3)
                     { continue; }
                     taken.Add(slot);
                     string family = SpurFamilies[rooms.Count % SpurFamilies.Length];
-                    rooms.Add(MakeRoom(coordinate, rooms.Count, family, slot, spacing, span, seed, false, depth));
+                    rooms.Add(MakeRoom(coordinate, rooms.Count, family, slot, spacing,
+                        VariedRoomSpan(spacing, slot, seed, depth), seed, false, depth));
                     Link(rooms, rooms.Count - 1, host);
                 }
             }
@@ -371,6 +438,42 @@ namespace RimroomsAsyncIndustries.Generation
             if (index == 1 && officeAt != 1) { return "service_passage"; }
             if (index == 2 && officeAt == 1) { return "service_passage"; }
             return ChainFamilies[Math.Abs(seed / 7 + index) % ChainFamilies.Length];
+        }
+
+        /// <summary>
+        /// The room you arrive in: one grand space across two slots, and the only one.
+        ///
+        /// Owner: *"the normal yellow backrooms look isnt the whole floor but the main spanw
+        /// room"*, and earlier *"making the 0 level rooms be grand large spaces"*. Both are true
+        /// of this room and neither is true of the rest of the level.
+        ///
+        /// Centred between the two slot centres and spanning both, so the corridor from the next
+        /// chain room meets it exactly where it would have met a one-slot room -- the second
+        /// slot's centre is inside these bounds.
+        ///
+        /// No `Derange`, no span variation: this is the one room that is meant to read as built,
+        /// so that everything beyond it reads as not.
+        /// </summary>
+        private static RoomRecord MakeHall(CoordinateRecord coordinate, IntVec2 first,
+            IntVec2 second, int spacing, int seed, int depth)
+        {
+            int centerX = (SlotCenter(first.x, spacing) + SlotCenter(second.x, spacing)) / 2;
+            int centerZ = (SlotCenter(first.z, spacing) + SlotCenter(second.z, spacing)) / 2;
+            bool horizontal = first.z == second.z;
+            int longSpan = Even(spacing * 2 - SlotGap, spacing * 2);
+            int shortSpan = Even(SlotRoomSpan(spacing), spacing);
+            int width = horizontal ? longSpan : shortSpan;
+            int height = horizontal ? shortSpan : longSpan;
+            return new RoomRecord
+            {
+                index = 0,
+                familyId = UniqueFamilies[0],
+                x = centerX - width / 2,
+                z = centerZ - height / 2,
+                width = width,
+                height = height,
+                links = new List<int>(),
+            };
         }
 
         private static RoomRecord MakeRoom(CoordinateRecord coordinate, int index, string family,

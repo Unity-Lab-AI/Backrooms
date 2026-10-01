@@ -189,9 +189,12 @@ check("every room is an even number of cells across",
 print("")
 print("     the formulas the model copies, asserted against the source")
 check("THE SPAN IS FORCED EVEN IN THE SOURCE, NOT JUST IN THIS PROOF'S MODEL",
-      "if (span % 2 != 0) { span--; }" in planner,
+      planner.count("if (span % 2 != 0) { span--; }") >= 2,
       "-- a plant that deleted this line passed the computed evenness claim, because the model "
-      "was still doing the subtraction itself. A modelled property needs a source claim beside it")
+      "was still doing the subtraction itself. A modelled property needs a source claim beside "
+      "it -- and there are TWO span sources now, `SlotRoomSpan` and `VariedRoomSpan`, so "
+      "counting one of them was satisfied by the other. CellRect.CenterCell is where every door "
+      "and corridor is aimed; an odd span moves it off the slot centre")
 
 check("the slot spacing is still computed from the margin and the slot count",
       "return (DestinationService.MapWidth - Margin * 2) / slots;" in planner,
@@ -241,11 +244,57 @@ check("the room count stays inside what the validator accepts",
       all(6 <= chain <= MAX_ROOMS for _, _, _, _, chain, _, _, _, _ in profile),
       "-- ValidateRooms refuses fewer than 6 or more than MaxRooms=%d" % MAX_ROOMS)
 
-check("LEVEL ZERO IS GRAND, AND THE ROOM COUNT GOES DOWN TO PAY FOR IT",
-      profile[0][3] >= 60 and profile[0][4] <= 8,
-      "-- owner direction, verbatim: *\"making the 0 level rooms be grand large spaces and leas "
-      "than 60-100 romms\"*. Depth 1 is %d rooms of %d cells; a hall that size cannot fit in the "
-      "19-cell slot the planner used before" % (profile[0][4], profile[0][3]))
+# **THE GRAND PART IS THE ROOM YOU ARRIVE IN, AND THE REST IS MAZE.** Owner, after walking the
+# first level that ever generated: *"not enough rooms"*, *"it needs to be more maze liek and scary
+# inducing beyond the main starting themed opening room"*, and the resolution of what had looked
+# like a contradiction with *"making the 0 level rooms be grand large spaces"*:
+#
+#   *"the normal yellow backrooms look isnt the whole floor but the main spanw room"*
+#
+# The previous claim here required depth 1 to be at most eight rooms of at least sixty cells, and
+# that is exactly what produced the nine-room warehouse. It refused this change, the refusal sent
+# me back to the owner's words, and the words were more precise than the claim.
+_hall_span = SPACING_AT_DEPTH_1 * 2 - SLOT_GAP if 'SPACING_AT_DEPTH_1' in dir() else None
+
+check("A FIRST LEVEL IS A MAZE, NOT A WAREHOUSE",
+      profile[0][4] >= 18,
+      "-- *\"not enough rooms\"*. Depth 1 builds %d rooms; nine on a 300x300 map is a warehouse"
+      % profile[0][4])
+
+check("and its rooms are small enough to be rooms rather than halls",
+      profile[0][3] <= 48,
+      "-- %d cells across. Eighty-cell rooms are what the owner walked through and called not "
+      "enough rooms: a handful of them fills the map" % profile[0][3])
+
+check("AND ROOM SIZES ARE ACTUALLY VARIED, not merely variable",
+      "internal static int VariedRoomSpan(" in planner
+      and planner.count("VariedRoomSpan(spacing, slot, seed, depth)") >= 2,
+      "-- defined and called at BOTH room-making sites. A plant swapped the calls back to the "
+      "flat span and left the function sitting there, and every claim about variation still held")
+
+check("MOST LEFTOVER SLOTS BECOME BRANCHES, which is what makes it a maze",
+      "% 4 == 3)" in planner,
+      "-- owner: *\"it needs to be more maze liek\"*. One slot in three became a branch and the "
+      "level read as a corridor with alcoves; three in four is something you can get lost in, and "
+      "the quarter left as rock is what keeps it a maze rather than an open floor")
+
+# DEFINED **AND CALLED**. Two plants walked past the first draft of these claims -- one deleted
+# the `MakeHall` call and left the method, the other swapped `VariedRoomSpan` back to the flat
+# one and left the function. **Computing a value correctly and using it are two different facts**,
+# and that is the third time today the same gap has been found by running the plants.
+check("THE THRESHOLD IS STILL A GRAND HALL, AND IT IS THE ONLY ONE",
+      "private static RoomRecord MakeHall(" in planner
+      and "rooms.Add(MakeHall(coordinate, order[0], order[1], spacing, seed, depth));" in planner
+      and "spacing * 2 - SlotGap" in planner,
+      "-- *\"the normal yellow backrooms look isnt the whole floor but the main spanw room\"*. "
+      "It spans two slots, so at depth 1 it is about eighty cells across -- the span the whole "
+      "level used to have -- while everything past it is about a third of that")
+
+check("the hall takes TWO slots and not four, which is what keeps the chain connected",
+      "consumed = 2;" in planner,
+      "-- the serpentine exists so consecutive rooms are always grid neighbours and linking needs "
+      "no pathfinding. Consuming two keeps that true; a 2x2 hall breaks the adjacency the whole "
+      "layout rests on")
 
 check("it gets denser and smaller deeper in, which is the other half of the direction",
       profile[-1][4] > profile[0][4] and profile[-1][3] < profile[0][3],
