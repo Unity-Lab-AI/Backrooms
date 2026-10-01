@@ -29,7 +29,8 @@ namespace RimroomsAsyncIndustries.UI
         {
             Rect content = new Rect(0, 0, inRect.width - 20f, contentHeight);
             Widgets.BeginScrollView(inRect, ref scroll, content);
-            var listing = new Listing_Standard(); listing.Begin(content);
+            var listing = new Listing_Standard(); listing.maxOneColumn = true;
+            listing.Begin(content);
             listing.Label("RR_UI_AbandonPreview".Translate(run.ExpeditionId));
             ExpeditionClosureRecord preview = Current.Game.GetComponent<RimroomsExpeditionComponent>().PreviewAbandonment(run.ExpeditionId);
             if (preview != null)
@@ -82,7 +83,8 @@ namespace RimroomsAsyncIndustries.UI
 
         private void DrawDeclaration(Rect inRect)
         {
-            var listing = new Listing_Standard(); listing.Begin(inRect);
+            var listing = new Listing_Standard(); listing.maxOneColumn = true;
+            listing.Begin(inRect);
             listing.Label("RR_UI_DeclareCargoTitle".Translate(entry.Label));
             listing.Label("RR_UI_DeclareCargoExplanation".Translate(entry.OriginalCount, entry.ObservedCount, entry.UnresolvedCount));
             if (listing.ButtonText(("RR_Cargo_" + disposition).Translate()))

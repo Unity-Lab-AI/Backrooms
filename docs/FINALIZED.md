@@ -5356,3 +5356,56 @@ recompiles. **Thirteen checkers pass, forty-two proofs hold. 474 of 474** plante
 across fourteen suites.
 
 **Seven launches, seventeen defects, every one ours. Still not a single mod conflict.**
+
+---
+
+## Session 2026-09-30 - the setup page that stopped drawing (0.12.56-dev)
+
+**Verbatim user quote:** *"the review company start up screen when i press start game on prepare
+carfully says: \"Those are in the supplies list below\" but there are no lists or supplies on the
+card pop up at all.. so what the fuck? if i do the company start will things actually be listed
+there?"* and *"like in the company start up that pop up should list all the equipemnet for the
+gate that u get added to ur start on top of what u fill out in edb prepare carfully"*
+
+**Files touched:** `Scenario/Page_RimroomsCompanySetup.cs`, `Scenario/RimroomsStartupComponent.cs`,
+`UI/MainTabWindow_Operations.cs`, `UI/OperationsPersonnel.cs`, `UI/ExpeditionRecordDialogs.cs`,
+`Keyed/RR_StartupSetup.xml`, About/csproj/README, `docs/TODO.md`, `docs/NOW.md`.
+
+**Closure notes.** **The missing supplies list was a symptom. The page stopped drawing after three
+lines.**
+
+A screenshot of the owner's running game, brightened four times over, is blank below the third
+line - no roster, no funding, no supplies, no facility, and one of five gate prerequisites - and
+**the log holds no exception at all.** `Verse.Listing.GetRect` calls `NewColumnIfNeeded`, which
+unless `maxOneColumn` is set runs `curY = 0f; curX += ColumnWidth + 17f` the moment content
+outgrows the rect. `Begin` sets `ColumnWidth` to the full width, so the overflow is drawn a whole
+width to the right, **outside the group `Begin` opened and clips to.** Painted off the edge of the
+world, silently.
+
+**And it feeds on itself:** `CurHeight` is `curY`, which `NewColumn` just zeroed, so
+`contentHeight = CurHeight + 20f` measured the second column. The content shrank, the wrap came
+sooner, and it settled at three lines - which is also why there was no scrollbar.
+
+**Eight listings in the package, not one set the flag.** Seven fixed, including the Operations
+board. The eighth - the settings window - sets its own `ColumnWidth` to half the window so the
+sliders wrap into a real second column, and is deliberately left alone. That distinction is the
+difference between a sweep and a find-and-replace.
+
+**The supplies section was also asking the wrong object.** It read `Find.Scenario.AllParts`, and
+EdB Prepare Carefully rewrites exactly those parts - its assembly carries `ReplaceScenarioPatch`,
+`ShouldReplaceScenarioPart`, `OriginalScenarioParts`, `ReplacedScenarioParts` and
+`CreateScenarioPartForCustomizedEquipment`. It now reads the **authored ScenarioDef**, found by
+the start it declares, and draws **both** lists - the company's own contribution and whatever is
+live - because the ask was *"on top of what u fill out"*. Public API only: the count fields are
+protected and this package uses no reflection. Register row [85] is Optional/Provisional and says
+*never a runtime dependency*; nothing is patched, named or required.
+
+**A content bug the screenshot exposed by accident:** the gate line promised *"Those are in the
+supplies below"*, and the Furniture Store arrives with **80 steel and no components** against a
+bill wanting **100 steel and 8 components**. Written against the Async start, asserted for all
+three. It points at the list now instead of promising.
+
+**200 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`A0AE0AA2A671B846663EEB19F3E37BF0F052CBAA29D342538E81043AE5D9D536`, reproduced by two clean
+recompiles. **Thirteen checkers pass, forty-three proofs hold. 490 of 490** planted faults caught
+across fifteen suites.

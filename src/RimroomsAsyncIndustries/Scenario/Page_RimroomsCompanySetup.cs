@@ -99,6 +99,10 @@ namespace RimroomsAsyncIndustries.Scenario
             Rect content = new Rect(0f, 0f, body.width - 20f, contentHeight);
             Widgets.BeginScrollView(body, ref scroll, content);
             var listing = new Listing_Standard();
+            // One column. Core's Listing silently wraps a full column-width to the RIGHT when content
+            // outgrows the rect, outside the group it clips to, and resets CurHeight doing it -- so the
+            // page loses its tail AND under-reports its height, which shrinks the rect again.
+            listing.maxOneColumn = true;
             listing.Begin(content);
             try
             {
@@ -120,6 +124,9 @@ namespace RimroomsAsyncIndustries.Scenario
             // The gate, drawn last into the space reserved above the buttons. Never inside the
             // scroll view: a player who cannot see why Start refuses has no way to satisfy it.
             var gate = new Listing_Standard();
+            // Same flag for the same reason: this rect is sized to one checkbox, so a
+            // label that wraps to a second line would push the box off to the right.
+            gate.maxOneColumn = true;
             gate.Begin(confirm);
             gate.CheckboxLabeled("RR_Setup_Confirm".Translate(), ref reviewed);
             gate.End();
@@ -184,8 +191,28 @@ namespace RimroomsAsyncIndustries.Scenario
                     { listing.Label("RR_Setup_Possessions".Translate(string.Join(", ", possessions.Select(p => p.ThingDef.LabelCap + " ×" + p.Count)))); }
                 }
                 listing.GapLine();
+
+                // WHAT THE COMPANY ADDS, FIRST AND NAMED AS SUCH. Owner, verbatim: *"that pop up
+                // should list all the equipemnet for the gate that u get added to ur start on top
+                // of what u fill out in edb prepare carfully"*.
+                //
+                // Read from the authored scenario def, so a setup utility that rewrites the live
+                // scenario's starting-thing parts cannot empty this list -- which is exactly what
+                // left the section blank.
+                listing.Label("RR_Setup_CompanySupplies".Translate());
+                List<string> company = StartupReview.CompanySupplies(start);
+                if (company.Count == 0) { listing.Label("RR_Setup_None".Translate()); }
+                foreach (string supply in company) { listing.Label(supply); }
+
+                listing.GapLine();
                 listing.Label("RR_Setup_Supplies".Translate());
-                foreach (string supply in StartupReview.SupplySummary()) { listing.Label(supply); }
+                List<string> live = StartupReview.SupplySummary();
+                if (live.Count == 0) { listing.Label("RR_Setup_None".Translate()); }
+                foreach (string supply in live) { listing.Label(supply); }
+                // Said plainly rather than reconciled: something else is managing the equipment,
+                // which is a legitimate choice, and the two lists differing is the fact to report.
+                if (StartupReview.EquipmentManagedElsewhere(start))
+                { listing.Label("RR_Setup_SuppliesDiffer".Translate()); }
                 listing.GapLine();
                 listing.Label("RR_Setup_Facility".Translate());
                 foreach (var group in start.buildings.Where(b => b.thing != null).GroupBy(b => b.thing))

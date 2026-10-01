@@ -38,7 +38,9 @@
 
 The rest of the company review is unavailable, but Back and Start both still work. Please report this text.</RR_Setup_DrawFault>
   <RR_Setup_GateHeading>Bringing a gate up, and whether this branch arrives able to</RR_Setup_GateHeading>
-  <RR_Setup_GateCost>The assembly bill wants {0}, carried to the bench and worked by a crafter. Those are in the supplies below.</RR_Setup_GateCost>
+  <RR_Setup_GateCost>The assembly bill wants {0}, carried to the bench and worked by a crafter. Check the starting supplies below for them.</RR_Setup_GateCost>
+  <RR_Setup_CompanySupplies>Starting supplies the company adds to this start</RR_Setup_CompanySupplies>
+  <RR_Setup_SuppliesDiffer>The starting equipment in play differs from the company's own list above, so another setup mod is managing it. What arrives is the list directly above this line; edit it there if the gate materials are missing.</RR_Setup_SuppliesDiffer>
   <RR_Setup_GateNoRecipe>The gate assembly recipe is missing from this build, so no gate can be assembled. This is a fault, not a setting.</RR_Setup_GateNoRecipe>
   <RR_Setup_GateNeedsDoor>a door to designate as the gate</RR_Setup_GateNeedsDoor>
   <RR_Setup_GateNeedsBench>a {0} to run the assembly on</RR_Setup_GateNeedsBench>

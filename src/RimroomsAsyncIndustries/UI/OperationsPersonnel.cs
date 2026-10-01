@@ -199,7 +199,8 @@ namespace RimroomsAsyncIndustries.UI
             inRect.yMax -= 40f;
             var content = new Rect(0f, 0f, inRect.width - 20f, height);
             Widgets.BeginScrollView(inRect, ref scroll, content);
-            var listing = new Listing_Standard(); listing.Begin(content);
+            var listing = new Listing_Standard(); listing.maxOneColumn = true;
+            listing.Begin(content);
             try { PersonnelView.DrawDetails(listing, pawn); height = Mathf.Max(600f, listing.CurHeight + 20f); }
             finally { listing.End(); Widgets.EndScrollView(); }
         }
@@ -229,7 +230,8 @@ namespace RimroomsAsyncIndustries.UI
             ApplicantRecord offer = personnel == null ? null : personnel.Offers.FirstOrDefault(o => o.Id == applicantId);
             var content = new Rect(0f, 0f, inRect.width - 20f, contentHeight);
             Widgets.BeginScrollView(inRect, ref scroll, content);
-            var listing = new Listing_Standard(); listing.Begin(content);
+            var listing = new Listing_Standard(); listing.maxOneColumn = true;
+            listing.Begin(content);
             try
             {
                 if (offer == null || campaign == null) { listing.Label("RR_Personnel_InvalidOffer".Translate()); return; }

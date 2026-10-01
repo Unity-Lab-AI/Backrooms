@@ -57,6 +57,10 @@ namespace RimroomsAsyncIndustries.UI
             Rect content = new Rect(0f, 0f, Mathf.Max(120f, viewport.width - 20f), contentHeight);
             Widgets.BeginScrollView(viewport, ref scrollPosition, content);
             Listing_Standard listing = new Listing_Standard();
+            // One column. Core's Listing silently wraps a full column-width to the RIGHT when content
+            // outgrows the rect, outside the group it clips to, and resets CurHeight doing it -- so the
+            // page loses its tail AND under-reports its height, which shrinks the rect again.
+            listing.maxOneColumn = true;
             listing.Begin(content);
             try
             {

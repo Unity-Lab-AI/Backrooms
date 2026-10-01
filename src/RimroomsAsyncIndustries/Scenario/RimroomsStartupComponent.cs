@@ -141,6 +141,88 @@ namespace RimroomsAsyncIndustries.Scenario
             return lines;
         }
 
+        /// <summary>
+        /// The scenario this start is authored in, found by the start it declares.
+        ///
+        /// By the def rather than by `Find.Scenario`, because the live scenario is not reliably
+        /// this one: a setup utility may have swapped its parts out for the player's edited
+        /// equipment while its own page is open. Matching on `startDef` means a renamed or
+        /// re-ordered scenario still resolves, and a start with no scenario returns null rather
+        /// than guessing at the first one.
+        /// </summary>
+        internal static ScenarioDef AuthoredScenario(RimroomsStartDef start)
+        {
+            if (start == null) { return null; }
+            foreach (ScenarioDef candidate in DefDatabase<ScenarioDef>.AllDefsListForReading)
+            {
+                if (candidate.scenario == null) { continue; }
+                foreach (ScenPart part in candidate.scenario.AllParts)
+                {
+                    ScenPart_RimroomsStart ours = part as ScenPart_RimroomsStart;
+                    if (ours != null && ours.startDef == start) { return candidate; }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// What the company itself adds to the start, as the shipped scenario declares it.
+        ///
+        /// Owner, verbatim: *"that pop up should list all the equipemnet for the gate that u get
+        /// added to ur start on top of what u fill out in edb prepare carfully"*.
+        ///
+        /// **Read from the def, never from the live scenario.** A setup utility that rewrites the
+        /// scenario's starting-thing parts makes `SupplySummary` report that utility's list
+        /// instead of the company's -- which is why this page showed no supplies at all. This
+        /// answers the question the owner actually asked, and answers it the same way whether
+        /// such a utility is installed or not.
+        ///
+        /// `GetSummaryListEntries` is Core's own public phrasing of a starting thing and costs
+        /// nothing. `PlayerStartingThings` is deliberately not used: it builds real objects.
+        /// </summary>
+        internal static List<string> CompanySupplies(RimroomsStartDef start)
+        {
+            var lines = new List<string>();
+            ScenarioDef authored = AuthoredScenario(start);
+            if (authored == null) { return lines; }
+            foreach (ScenPart part in authored.scenario.AllParts)
+            {
+                foreach (string entry in part.GetSummaryListEntries("PlayerStartsWith"))
+                { if (!string.IsNullOrEmpty(entry)) { lines.Add(entry); } }
+            }
+            return lines;
+        }
+
+        /// <summary>
+        /// Whether the live scenario is carrying a different starting-equipment list from the one
+        /// this company authored.
+        ///
+        /// Stated on the page rather than reconciled. Something else is managing the equipment --
+        /// which is a legitimate thing for a player to have chosen -- and the honest report is
+        /// that the two lists differ, not a guess about which one will win.
+        /// </summary>
+        internal static bool EquipmentManagedElsewhere(RimroomsStartDef start)
+        {
+            List<string> authored = CompanySupplies(start);
+            if (authored.Count == 0) { return false; }
+            var live = new List<string>();
+            if (Find.Scenario != null)
+            {
+                foreach (ScenPart part in Find.Scenario.AllParts)
+                {
+                    foreach (string entry in part.GetSummaryListEntries("PlayerStartsWith"))
+                    { if (!string.IsNullOrEmpty(entry)) { live.Add(entry); } }
+                }
+            }
+            if (live.Count != authored.Count) { return true; }
+            var remaining = new List<string>(live);
+            foreach (string entry in authored)
+            {
+                if (!remaining.Remove(entry)) { return true; }
+            }
+            return false;
+        }
+
         internal static List<string> Warnings(Pawn pawn, RimroomsStaffRole role)
         {
             var warnings = new List<string>();
