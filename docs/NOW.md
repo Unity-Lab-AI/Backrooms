@@ -260,10 +260,10 @@ there.
 
 ---
 
-## DO THIS FIRST — READ THE LOG FROM THE SIXTH LAUNCH
+## DO THIS FIRST — READ THE LOG FROM THE SEVENTH LAUNCH
 
-**The owner is testing 0.12.52-dev right now and asked for exactly this:** *"you can check the
-player.log on the other side of the compact to see if it works and our gates are working"*.
+**The owner is testing 0.12.53-dev. Read the log before anything else**, and read it before
+telling them anything works.
 
 ```
 grep -n -i "rimrooms\|Error in GenStep\|Exception" \
@@ -284,8 +284,14 @@ That split still holds and the next session must not quietly upgrade it:
 | **Measured in the running game** | the Store's back-room **door exists** at (160, 161) carrying the emergence comp with `Mark as way home` enabled; Deconstruct and Uninstall both offered; a granite-block wall where the burn removed a Granite formation; `list_colonists` non-zero after the arrival fix |
 | **Source-verified only, NEVER EXECUTED** | the light-count fix, the **entire 300x300 generator**, pillars, room shapes, corridor widths, the map budget, release, carry-a-doorway, and the material split. **Forty-one proofs check properties of code, not behaviour of a running game.** |
 
-**Nothing from 0.12.48-dev onward has run once.** The coordinate generator in particular was
-rewritten from a hard-coded 3x3 grid to a depth-driven one and has never executed.
+**The sixth launch DID run 0.12.52-dev, and the generator failed again** — on a different
+constant, the conduit cap. So the correct statement is sharper than *"never run"*: **the
+coordinate generator has never once completed.** Everything downstream of it — the gate marking,
+the connection, the glow, the walk-through, level 0's look, the material split, the pillars, the
+shapes — has therefore **still never executed**, because none of it is reached until a level
+exists.
+
+That is why item 1 of the seventh-launch list is the only one that matters until it passes.
 
 **The one thing de-risked without a launch:** `CandidateIsSafe` was modelled against the new
 layouts at **every depth across six seeds** — every room reachable, zero failures — so generation
@@ -316,15 +322,69 @@ door/console/battery/bench on Operations' **Machine** pane, then run `RR_Assembl
 **100 Steel + 8 ComponentIndustrial, 6000 work, Crafting**, no research prerequisite on the recipe
 itself. The setup page's readiness review already names the missing hardware.
 
-### What the sixth launch should settle, in order
+### WHAT THE SIXTH LAUNCH FOUND, AND WHY IT IS THE SAME SHAPE TWICE
 
-1. **does a coordinate generate at all** — the whole generator is unrun
-2. **is the back-room door a natural gate** rather than a steel door
-3. **level 0 reads as the yellow rooms** — wood walls, yellow carpet, coherent, everything matching
-4. **one level in, the materials go wild** — two tables in one room in different stuffs, each room's
-   walls a different material. This is the newest thing and the least like anything that has run
-5. **no cave-in** when a wall or a pillar is deconstructed
-6. **Operations → Places** lists the colony and any level, with the budget as `n/5`
+**The level never generated. Again. The cause was new and it was ours.**
+
+```
+[Rimrooms][Generation] Site layout stopped: RR_Generation_ContentPlacementFailed
+  at GenStep_BackroomsDestination.SpawnNativeConduit
+  at GenStep_BackroomsDestination.SpawnNativePowerNetwork
+```
+
+`MarkLayoutReady` never ran → `SoloGroupOpening` stopped at step 2 → the Store's back door was
+**never marked**. **An unmarked door is an ordinary steel door**, which is the whole of what the
+owner saw: *"its not blue!!! it doesnt have a light aura, and it in no way is a portal"*.
+
+**The cause, measured:** the power grid carpeted every powered room with conduit. ~100 cells at
+12x12 rooms. At depth 1 a `service_passage` is **60x80**, so `ContractedBy(1)` is **4,524 cells**
+against `MaxNativePowerConduits = 512` — **an eightfold blowout on the first powered room, every
+time.** No 300x300 coordinate could ever have generated.
+
+**THE LESSON, AND IT HAS NOW COST TWO LAUNCHES IN A ROW.** Both the light count at 0.12.48-dev and
+this conduit carpet were **assumptions about scale that a constant quietly encoded**, and both
+survived every proof because a proof reads source text and cannot see that a number no longer
+fits. **When a dimension changes, go and size everything that was written against the old one.**
+The 4,524 figure is a proof claim now, computed from the planner's own constants, so any future
+per-room area pass fails on the number that proves it.
+
+### What the SEVENTH launch has to settle, in this order
+
+1. **DOES A COORDINATE GENERATE AT ALL.** Third attempt. Everything below depends on it, and the
+   generator has still never run end to end.
+2. **is the back-room door blue and glowing** once a level exists
+3. **select a colonist, right-click the gate → "Enter the gate"** — they should walk over and come
+   out on the other map
+4. **every other door in the colony is unlit and unchanged** — the `IThingGlower` veto
+5. **level 0 reads as the yellow rooms** — wood walls, yellow carpet, coherent, everything matching
+6. **one level in, the materials go wild** — two tables in one room in different stuffs, each
+   room's walls a different material. Newest thing in the build, least like anything that has run
+7. **no cave-in** when a wall or a pillar is deconstructed
+8. **Operations → Places** lists the colony and any level, with the budget as `n/5`
+
+### The three things the sixth launch changed, and how to check each
+
+| | |
+|---|---|
+| **it generates** | the carpet is gone. `ConnectStrayConsumers` wires whatever the dressing added, **after** it exists, using the same `CompPowerTrader` sweep the validator uses to detect a stray — so report and repair cannot disagree. `TrySpawnNativeConduit` returns where the throwing form threw: a dark corner can never cost the coordinate again |
+| **it looks like a gate** | `CompGlower` + `CompColorable`, both Core, both settable per instance — blue and casting light with **no new texture and no new def**. **The trap was that a glower on `Door` lights every door in the game**; Core's `IThingGlower` lets our comp veto it, so every ordinary door is provably dark by Core's own rule. Only a gate with a **real network edge** lights up |
+| **you walk through it** | the travel job always did this correctly. **What was missing was where a player looks for it** — it was a gizmo plus a float menu, which is a dispatch console rather than a door. `CompFloatMenuOptions` is Core's right-click hook and that is where it lives now. The order is still `OrderCrossing`, the rule is still `PortalTraversalPolicy` |
+
+### AND THE STARGATE COMPLAINT WAS FAIRLY AIMED — read this before designing anything else
+
+Owner, after saying it repeatedly: *"ive said stargate mod repeaditly is how the gates work but u
+keep fucking ignoring me and doing you own fucking thing"*.
+
+**They were right, and the specific failure is worth naming so it is not repeated.** *"Like the
+stargate mod"* was a statement about the **interaction** — you walk a pawn into a door and they
+come out on another map — and it was repeatedly heard as a statement about the **destination**,
+which the build already handled. The travel was correct for checkpoints; the way to ask for it was
+buried where no RimWorld player would look.
+
+**Register row [218] Stargates! is stance "No integration".** That means *do not depend on it or
+adapt to it*. **It has never meant ignore it as the interaction model**, and treating those as the
+same thing is how three checkpoints passed with the order in a gizmo. When the owner names a mod
+as how something should *feel*, read it.
 
 ---
 
@@ -1292,6 +1352,18 @@ reason `GetNamedSilentFail` is treated as dangerous here:
 | **Claims matching the code's own comments** | Twice more, including a rule defeated by the two doc comments explaining why the thing it looked for is deliberately absent. **Sixth instance.** |
 
 ### THE TRAP THAT NOW OUTRANKS EVERY OTHER ONE
+
+**0.12.53-dev added eight more, bringing it to twenty, and one of them is the lesson in miniature:
+the fix written to close the prefix trap fell into the prefix trap.** Asserting
+`"SpawnNativeConduit(…" not in body` fails against **correct** code, because
+`TrySpawnNativeConduit` *contains* `SpawnNativeConduit`. It strips the safe calls first now.
+
+The eight from this checkpoint, on top of the twelve below: a **retired symbol name** (so a
+re-carpet under a new name walked past); a `"throw" not in body` test that a **call-site swap** does
+not disturb; a cap check appearing **twice**; **two prefixes** (`CompProperties_Glower` inside
+`…GlowerUnused`, same for Colorable); a `SetColor` surviving being wrapped in **`if (false)`**; a
+lookup whose later use survived an early **`return true`**; and a guard **nothing asserted at
+all**.
 
 **A claim satisfiable by something other than the thing it is about.** It has defeated a proof
 claim **in every single checkpoint from 0.12.46 to 0.12.52**, and the plants caught all of them.
