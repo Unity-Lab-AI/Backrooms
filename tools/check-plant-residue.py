@@ -24,21 +24,27 @@ recovery is one `git checkout` of the path it prints.
 
 A false alarm costs one command. A missed one ships a deliberate fault.
 """
+import glob
 import io
 import os
 import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SENTINEL = os.path.join(REPO, ".local", "register", ".plant-in-progress")
+# **GLOBBED, because there is one sentinel per suite now.** They shared a single path until
+# 0.12.72-dev, so a later suite's success deleted an earlier suite's unresolved failure and this
+# checker reported a clean tree with `campaign.ClearBreachResponded();` missing from the source.
+SENTINELS = os.path.join(REPO, ".local", "register", ".plant-in-progress*")
 
 
 def main():
-    if not os.path.isfile(SENTINEL):
+    stale = sorted(glob.glob(SENTINELS))
+    if not stale:
         print("OK: no planted fault is in the source tree.")
         return 0
 
     try:
-        detail = io.open(SENTINEL, encoding="utf-8").read().strip()
+        detail = "; ".join(io.open(path, encoding="utf-8").read().strip()
+                            for path in stale)
     except Exception as problem:
         detail = "(the sentinel could not be read: %s)" % problem
 
@@ -51,7 +57,8 @@ def main():
     print("")
     print("  git status --porcelain       # see what is modified")
     print("  git checkout -- <the file>   # restore it")
-    print("  rm .local/register/.plant-in-progress")
+    for path in stale:
+        print("  rm %s" % path)
     print("")
     print("If a suite is running, wait for it to finish and run this again.")
     return 1

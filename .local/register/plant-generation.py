@@ -20,7 +20,13 @@ PROOF = ".local/register/proof-generation-batch.py"
 # does nothing for an interrupted sweep, and that is how a planted fault reached the working tree
 # for the third time. The sentinel makes it visible: `tools/check-plant-residue.py` refuses while
 # this file exists and prints the path to restore.
-_RR_SENTINEL = os.path.join(".local", "register", ".plant-in-progress")
+# **ONE SENTINEL PER SUITE, named after the suite.** All sixteen shared a single path, so when
+# `plant-containment.py` left one behind after a failed restore, the next suite's `_rr_unmark()`
+# deleted it -- and `check-plant-residue.py` reported a clean tree with a planted fault in it.
+# Fourth instance of residue reaching the tree and the first the sentinel could not see.
+_RR_SENTINEL = os.path.join(".local", "register",
+                            ".plant-in-progress-"
+                            + os.path.splitext(os.path.basename(os.path.abspath(__file__)))[0])
 
 
 def _rr_mark(path, label):
@@ -35,7 +41,95 @@ def _rr_unmark():
         pass
 
 
+def _rr_restore(path, original):
+    """Put the file back, and do not believe it until it reads back identical.
+
+    The failure this exists for was transient -- `OSError: [Errno 22]` on a path this same loop
+    had already written twice -- so a retry turns it into a non-event. A restore that still will
+    not verify raises with the sentinel left in place, which is what stops the sweep from planting
+    the next fault on top of this one.
+    """
+    last = None
+    for attempt in range(5):
+        try:
+            io.open(path, "w", encoding="utf-8", newline="").write(original)
+            if io.open(path, encoding="utf-8").read() == original:
+                return
+            last = "the file read back different from what was written"
+        except (OSError, IOError) as error:
+            last = repr(error)
+        time.sleep(0.25 * (attempt + 1))
+    raise RuntimeError("RESTORE FAILED for %s after 5 attempts: %s. The sentinel %s is left in "
+                       "place; tools/check-plant-residue.py will refuse until the file is "
+                       "restored." % (path, last, _RR_SENTINEL))
+
+
 PLANTS = [
+    # ------------------------------ the wall attachment that had no wall behind it
+    ("THE ATTACHMENT RULE STOPS ASKING CORE", GEN,
+     "            return GenConstruct.GetWallAttachedTo(cell, facing, map) != null;",
+     "            return true;"),
+
+    ("a non-attachment is treated as needing a wall", GEN,
+     "            if (map == null || def == null || def.building == null || !def.building.isAttachment)",
+     "            if (map == null || def == null || def.building == null)"),
+
+    ("THE PILLAR LAMP FACES AWAY FROM THE PILLAR AGAIN", GEN,
+     "                        Rot4 facing = Rot4.FromIntVec3(directions[side]).Opposite;",
+     "                        Rot4 facing = Rot4.FromIntVec3(directions[side]);"),
+
+    ("the pillar lamp stops checking that it attached", GEN,
+     "                        if (!WallAttachmentHolds(map, lightDef, cell, facing)) { continue; }" + NL,
+     ""),
+
+    ("THE CORRIDOR LAMP GOES BACK TO A BARE NORTH-FACING SPAWN", GEN,
+     "                    Thing lamp = SpawnAttachableLight(map, lightDef, floorLightDef, cell, Rot4.North);",
+     "                    Thing lamp = MakeBuilding(lightDef, null);" + NL
+     + "                    GenSpawn.Spawn(lamp, cell, map, Rot4.North);"),
+
+    ("the spawner stops trying the other three walls", GEN,
+     "                for (int index = 0; index < 4; index++)" + NL
+     + "                {" + NL
+     + "                    var candidate = new Rot4(index);" + NL
+     + "                    if (!WallAttachmentHolds(map, lightDef, cell, candidate)) { continue; }",
+     "                for (int index = 0; index < 0; index++)" + NL
+     + "                {" + NL
+     + "                    var candidate = new Rot4(index);" + NL
+     + "                    if (!WallAttachmentHolds(map, lightDef, cell, candidate)) { continue; }"),
+
+    ("A ROOM WITH NO WALL GETS THE WALL FIXTURE ON THE FLOOR AGAIN", GEN,
+     "                        roomLightDef = wallMounted ? floorLightDef ?? lightDef : lightDef;",
+     "                        roomLightDef = lightDef;"),
+
+    ("the floor-standing fallback is never resolved", GEN,
+     '                ThingDef floorLightDef = DefDatabase<ThingDef>.GetNamedSilentFail("StandingLamp");',
+     "                ThingDef floorLightDef = null;"),
+
+    ("THE SWEEP THAT CATCHES THE FOURTH PLACER GOES", GEN,
+     "                RemoveUnattachedAttachments(map, coordinate, placedLights);" + NL,
+     ""),
+
+    # `thing.Destroy(DestroyMode.Vanish);` appears twice in this file, so the anchor carries the
+    # line above it. Duplicate-string trap, again.
+    ("the sweep finds them and leaves them standing", GEN,
+     "                if (placedLights != null) { placedLights.Remove(thing); }" + NL
+     + "                thing.Destroy(DestroyMode.Vanish);",
+     "                if (placedLights != null) { placedLights.Remove(thing); }" + NL
+     + "                thing.SetForbidden(false, false);"),
+
+    ("a swept lamp stays in the list the power validation reads", GEN,
+     "                if (placedLights != null) { placedLights.Remove(thing); }" + NL,
+     ""),
+
+    ("the sweep runs after Core has already been asked to wire", GEN,
+     "                RemoveUnattachedAttachments(map, coordinate, placedLights);" + NL + NL
+     + "                HashSet<IntVec3> wiredCells = SpawnNativePowerNetwork(",
+     "                HashSet<IntVec3> wiredCells = SpawnNativePowerNetwork("),
+
+    ("a corridor fixture stops being checked", GEN,
+     "                if (!WallAttachmentHolds(map, definition, cell, Rot4.North)) { continue; }" + NL,
+     ""),
+
     # --------------------------------------- the landmark's approach, and the retry
     ("THE LANDMARK IS NO LONGER OFFERED A CROSS-ADJACENT CELL", CONTENT,
      "            HashSet<IntVec3> trunk = required ? RouteTrunk(map, room) : null;",
@@ -94,7 +188,7 @@ PLANTS = [
      "            { wall.TryGetComp<CompColorable>()?.SetColor(look.wallColor); }", "            { }"),
 
     ("THE CORRIDOR SIDE CELLS ARE COLLECTED AND NEVER SPENT", GEN,
-     "                DressCorridors(map, coordinate, corridorSides, lightDef, placedLights," + NL
+     "                DressCorridors(map, coordinate, corridorSides, lightDef, floorLightDef, placedLights," + NL
      + "                    reservedProviderCells);" + NL, ""),
 
     ("the hallways stop being lit", GEN,
@@ -464,9 +558,15 @@ PLANTS = [
      "                ValidatePlacedLayout(map, coordinate, entryCell, returnCell, officeEvidenceCell, anchor);" + chr(10),
      ""),
 
+    # The room lights go through `SpawnAttachableLight` now, so the fault is the facing the
+    # spawner is HANDED, not a bare spawn. The spawner would try the other three walls and then
+    # fall back to the floor lamp -- which is exactly the behaviour the claim asserts -- so the
+    # fault planted here is the spawner no longer being asked at all.
     ("THE WALL LAMP GOES BACK TO FLOATING OVER THE FLOOR", GEN,
-     "                    GenSpawn.Spawn(light, lightCells[index], map, lightFacings[index]);",
-     "                    GenSpawn.Spawn(light, lightCells[index], map, Rot4.North);"),
+     "                    Thing light = SpawnAttachableLight(map, lightDefs[index], floorLightDef," + NL
+     + "                        lightCells[index], lightFacings[index]);",
+     "                    Thing light = MakeBuilding(lightDefs[index], null);" + NL
+     + "                    GenSpawn.Spawn(light, lightCells[index], map, Rot4.North);"),
 
     ("the lamp stops being mounted on a wall", GEN,
      "                bool wallMounted = lightDef.building != null && lightDef.building.isAttachment;",

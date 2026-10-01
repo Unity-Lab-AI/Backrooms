@@ -28,7 +28,13 @@ NL = chr(10)
 # does nothing for an interrupted sweep, and that is how a planted fault reached the working tree
 # for the third time. The sentinel makes it visible: `tools/check-plant-residue.py` refuses while
 # this file exists and prints the path to restore.
-_RR_SENTINEL = os.path.join(".local", "register", ".plant-in-progress")
+# **ONE SENTINEL PER SUITE, named after the suite.** All sixteen shared a single path, so when
+# `plant-containment.py` left one behind after a failed restore, the next suite's `_rr_unmark()`
+# deleted it -- and `check-plant-residue.py` reported a clean tree with a planted fault in it.
+# Fourth instance of residue reaching the tree and the first the sentinel could not see.
+_RR_SENTINEL = os.path.join(".local", "register",
+                            ".plant-in-progress-"
+                            + os.path.splitext(os.path.basename(os.path.abspath(__file__)))[0])
 
 
 def _rr_mark(path, label):
@@ -41,6 +47,29 @@ def _rr_unmark():
         os.remove(_RR_SENTINEL)
     except OSError:
         pass
+
+
+def _rr_restore(path, original):
+    """Put the file back, and do not believe it until it reads back identical.
+
+    The failure this exists for was transient -- `OSError: [Errno 22]` on a path this same loop
+    had already written twice -- so a retry turns it into a non-event. A restore that still will
+    not verify raises with the sentinel left in place, which is what stops the sweep from planting
+    the next fault on top of this one.
+    """
+    last = None
+    for attempt in range(5):
+        try:
+            io.open(path, "w", encoding="utf-8", newline="").write(original)
+            if io.open(path, encoding="utf-8").read() == original:
+                return
+            last = "the file read back different from what was written"
+        except (OSError, IOError) as error:
+            last = repr(error)
+        time.sleep(0.25 * (attempt + 1))
+    raise RuntimeError("RESTORE FAILED for %s after 5 attempts: %s. The sentinel %s is left in "
+                       "place; tools/check-plant-residue.py will refuse until the file is "
+                       "restored." % (path, last, _RR_SENTINEL))
 
 
 PLANTS = [

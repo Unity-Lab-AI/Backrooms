@@ -347,7 +347,11 @@ check("the structural validation is still fatal",
 check("THE WALL LAMP IS MOUNTED ON A WALL, FACING IT",
       "FindWallAttachmentCell(" in genstep
       and "lightDef.building.isAttachment" in genstep
-      and "GenSpawn.Spawn(light, lightCells[index], map, lightFacings[index]);" in genstep
+      # **THROUGH THE SPAWNER.** This asserted a bare `GenSpawn.Spawn` with the found facing,
+      # which is exactly what two later placers did without finding a facing at all. The claim
+      # now requires the one spawner that asks Core whether the attachment holds.
+      and ("Thing light = SpawnAttachableLight(map, lightDefs[index], floorLightDef," + chr(10)
+           + "                        lightCells[index], lightFacings[index]);") in genstep
       and "facing = Rot4.FromIntVec3(direction);" in genstep,
       "-- WallLamp draws with drawOffsetNorth (0,0,0.9), almost a full cell INTO the wall it is "
       "mounted on, so the rotation is the difference between a lamp on the wall and a lamp "
@@ -779,7 +783,8 @@ check("A CORRIDOR IS FLOORED AND WALLED LIKE THE ROOMS IT JOINS",
 # passing, while no hallway was ever lit again. Fifth instance this run of the same gap.
 check("and the hallways are lit and furnished, against their walls only",
       corridor_dress_body is not None
-      and "DressCorridors(map, coordinate, corridorSides, lightDef, placedLights," in genstep
+      and "DressCorridors(map, coordinate, corridorSides, lightDef, floorLightDef, placedLights,"
+      in genstep
       # **BOTH AXES.** The guard that keeps the centre line out of the reported cells exists
       # once in the horizontal run and once in the vertical, so a plant that removed one was
       # satisfied by the other. Counted rather than merely found -- thirty-ninth instance.
@@ -901,6 +906,93 @@ check("and the exception is logged IN FULL, once",
       and "will not be asked again this" in genstep,
       "-- sixty-two lines reading `(NullReferenceException)` could not name the Core method or "
       "the thing, and that was the whole question")
+
+# ------------------------------------ the wall lamp that had no wall behind it
+# `PowerConnectionMaker.TryConnectToAnyPowerNet`, Core 1.6, dereferences
+# `GenConstruct.GetWallAttachedTo(pc.parent).Position` for any `isAttachment` def WITHOUT a null
+# check. `BackroomsPalette` resolves `WallLamp`, which is one. Core's power rebuild is step four of
+# fifteen in `Map.FinalizeInit`, so the throw discarded the finished level, `EnsureSite` reported
+# failure, and `SoloGroupOpening` never moved anybody inside. Owner: *"why are my colonists on the
+# world map!!!!!!!!! they should be in the backrooms in this scenerio"*.
+#
+# And: *"we loaded solo/group start into the backrooms correctly before"* -- **they did.**
+# `FindWallAttachmentCell` finds the wall and then faces it, and for a long time it was the only
+# placer. The two added after it both got the arithmetic wrong.
+check("THE ATTACHMENT RULE IS ASKED OF CORE'S OWN FUNCTION",
+      "private static bool WallAttachmentHolds(Map map, ThingDef def, IntVec3 cell, Rot4 facing)"
+      in genstep
+      and "return GenConstruct.GetWallAttachedTo(cell, facing, map) != null;" in genstep
+      and "if (map == null || def == null || def.building == null || !def.building.isAttachment)"
+      in genstep,
+      "-- Core is what dereferences the answer, so Core is the only thing whose opinion matters. A "
+      "local copy of the rule could disagree with it, and that disagreement is this project's most "
+      "expensive defect shape")
+
+check("ONE SPAWNER PLACES EVERY LAMP, and it refuses an unattached one",
+      "private static Thing SpawnAttachableLight(Map map, ThingDef lightDef, ThingDef floorLightDef,"
+      in genstep
+      and genstep.count("SpawnAttachableLight(map,") == 3
+      # Not one bare spawn of a light or lamp left anywhere in the generator.
+      and "GenSpawn.Spawn(lamp," not in genstep
+      and genstep.count("GenSpawn.Spawn(light,") == 1,
+      "-- the room lights, the pillar lamps and the corridor dressing. All three placed a WallLamp "
+      "their own way and two of the three were wrong; a rule enforced in one place cannot be "
+      "forgotten by the next placer somebody adds")
+
+check("THE PILLAR LAMP FACES THE PILLAR, which is the opposite of what it did",
+      "Rot4 facing = Rot4.FromIntVec3(directions[side]).Opposite;" in genstep
+      and "if (!WallAttachmentHolds(map, lightDef, cell, facing)) { continue; }" in genstep,
+      "-- Core reads the wall at `position + rotation.FacingCell`, so a lamp one cell north of a "
+      "pillar must face SOUTH. Facing north looked two cells past the pillar, found open floor, "
+      "and handed Core a null wall. The comment's intent was right and the arithmetic was inverted")
+
+check("and the corridor lamp no longer assumes a wall to the north",
+      "Thing lamp = SpawnAttachableLight(map, lightDef, floorLightDef, cell, Rot4.North);" in genstep
+      and "for (int index = 0; index < 4; index++)" in genstep
+      and "if (!WallAttachmentHolds(map, lightDef, cell, candidate)) { continue; }" in genstep,
+      "-- a corridor side cell has its wall on exactly one side and almost never the north one, "
+      "so the spawner tries all four before giving up on the fixture")
+
+check("and a room with no wall to mount on gets a FLOOR lamp, not the wall fixture",
+      'ThingDef floorLightDef = DefDatabase<ThingDef>.GetNamedSilentFail("StandingLamp");'
+      in genstep
+      and "roomLightDef = wallMounted ? floorLightDef ?? lightDef : lightDef;" in genstep
+      and "lightDefs.Add(roomLightDef);" in genstep
+      and "lightDefs[index].size));" in genstep,
+      "-- this used to fall through placing the palette's WallLamp on an open floor cell facing "
+      "north. The room still gets a light, which is what *\"the basic rooms are well lit\"* asked "
+      "for; it is a standing one, which is the palette's own fallback")
+
+check("AND A SWEEP CATCHES WHATEVER STILL SLIPS THROUGH, before Core is asked to wire",
+      "private static void RemoveUnattachedAttachments(Map map, CoordinateRecord coordinate,"
+      in genstep
+      and "GenConstruct.GetWallAttachedTo(thing) == null)" in genstep
+      # **THE DESTROY INSIDE THE SWEEP, not anywhere in the file.** `thing.Destroy(
+      # DestroyMode.Vanish);` appears twice more in this generator -- the rock clearance
+      # and one other -- so asserting it bare passed against a sweep that found every
+      # stranded lamp and left all of them standing. **A plant caught this claim**, which
+      # is the forty-third instance of the scoping trap and the first this session where
+      # the suite caught the proof rather than the other way round.
+      and ("                if (placedLights != null) { placedLights.Remove(thing); }" + chr(10)
+           + "                thing.Destroy(DestroyMode.Vanish);") in genstep
+      and genstep.index("RemoveUnattachedAttachments(map, coordinate, placedLights);")
+      < genstep.index("HashSet<IntVec3> wiredCells = SpawnNativePowerNetwork("),
+      "-- the rule has three obedient callers; this is what makes the FOURTH harmless. It also "
+      "covers the archetype dressing, which spawns arbitrary modded defs at a scattered facing "
+      "and never checked. The worst case is a dark corner")
+
+check("and the removed lamp leaves the power validation's list with it",
+      "RemoveUnattachedAttachments(map, coordinate, placedLights);" in genstep
+      and genstep.index("RemoveUnattachedAttachments(map, coordinate, placedLights);")
+      < genstep.index("string powerFault = ValidateNativePowerNetwork("),
+      "-- the validation reads the lights that were PLACED rather than recounting them, which is "
+      "the fix that ended thirty-nine checkpoints of dead coordinates. A destroyed lamp left in "
+      "that list would report a fault that is not there")
+
+check("and a corridor fixture is checked too, not only the lamp",
+      "if (!WallAttachmentHolds(map, definition, cell, Rot4.North)) { continue; }" in genstep,
+      "-- they are Core defs by name, but a profile is free to patch one into an attachment, and "
+      "an unattached attachment costs the whole level")
 
 print("")
 if failures:

@@ -89,6 +89,12 @@ namespace RimroomsAsyncIndustries.Generation
                 // standing in it. Generation used StandingLamp before, which put
                 // furniture in the middle of every room.
                 ThingDef lightDef = BackroomsPalette.For(coordinate.Depth, coordinate.Seed).light;
+                // **The floor-standing fallback for a light that cannot be mounted.** The
+                // palette resolves `WallLamp` for most bands, and an attachment with no wall
+                // behind it is a guaranteed throw inside Core's power rebuild -- see
+                // WallAttachmentHolds. Not in the required-def check below: a profile without
+                // a standing lamp gets a darker corridor, not a refused coordinate.
+                ThingDef floorLightDef = DefDatabase<ThingDef>.GetNamedSilentFail("StandingLamp");
                 ThingDef climateDef = DefDatabase<ThingDef>.GetNamedSilentFail("Heater");
                 ThingDef generatorDef = DefDatabase<ThingDef>.GetNamedSilentFail("ChemfuelPoweredGenerator");
                 ThingDef fuelDef = DefDatabase<ThingDef>.GetNamedSilentFail("Chemfuel");
@@ -139,25 +145,34 @@ namespace RimroomsAsyncIndustries.Generation
                 // back to `StandingLamp`, which stands on the floor and must keep doing so.
                 var lightCells = new List<IntVec3>();
                 var lightFacings = new List<Rot4>();
+                var lightDefs = new List<ThingDef>();
                 bool wallMounted = lightDef.building != null && lightDef.building.isAttachment;
                 foreach (RoomRecord room in coordinate.Rooms.OrderBy(value => value.Index))
                 {
                     IntVec3 lightCell;
                     Rot4 facing = Rot4.North;
+                    ThingDef roomLightDef = lightDef;
                     lightCell = wallMounted
                         ? FindWallAttachmentCell(map, room, room.Bounds.CenterCell,
                             wallDef, reservedProviderCells, out facing)
                         : IntVec3.Invalid;
                     if (!lightCell.IsValid)
                     {
-                        // No wall to mount on, or a floor-standing fixture. Either way it goes
-                        // where it always went, facing north.
+                        // **No wall to mount on, so it cannot be the wall fixture.** This used to
+                        // fall through placing `lightDef` on an open floor cell facing north --
+                        // and when the palette's light is `WallLamp`, that is an attachment with
+                        // nothing behind it, which is a guaranteed throw inside Core's power
+                        // rebuild. See WallAttachmentHolds. The room still gets a light; it is a
+                        // floor-standing one, which is what the palette's own fallback has
+                        // always been.
                         facing = Rot4.North;
+                        roomLightDef = wallMounted ? floorLightDef ?? lightDef : lightDef;
                         lightCell = FindClearInteriorCell(map, room,
                             room.Bounds.CenterCell + new IntVec3(0, 0, 2), reservedProviderCells);
                     }
                     lightCells.Add(lightCell);
                     lightFacings.Add(facing);
+                    lightDefs.Add(roomLightDef);
                     reservedProviderCells.Add(lightCell);
                 }
                 IntVec3 generatorCell = FindPoweredBuildingCell(map, climateRoom, generatorDef,
@@ -171,8 +186,11 @@ namespace RimroomsAsyncIndustries.Generation
 
                 var consumerFootprints = new List<CellRect>
                 { GenAdj.OccupiedRect(climateCell, Rot4.North, climateDef.size) };
-                consumerFootprints.AddRange(lightCells.Select(cell =>
-                    GenAdj.OccupiedRect(cell, Rot4.North, lightDef.size)));
+                for (int index = 0; index < lightCells.Count; index++)
+                {
+                    consumerFootprints.Add(GenAdj.OccupiedRect(lightCells[index], Rot4.North,
+                        lightDefs[index].size));
+                }
                 Thing generator = MakeBuilding(generatorDef, generatorDef.MadeFromStuff ? ThingDefOf.Steel : null);
                 generator.SetFaction(Faction.OfPlayer);
                 GenSpawn.Spawn(generator, generatorCell, map, Rot4.North);
@@ -192,10 +210,11 @@ namespace RimroomsAsyncIndustries.Generation
                 var placedLights = new List<Thing>();
                 for (int index = 0; index < coordinate.Rooms.Count; index++)
                 {
-                    Thing light = MakeBuilding(lightDef, lightDef.MadeFromStuff ? ThingDefOf.Steel : null);
-                    light.SetFaction(Faction.OfPlayer);
-                    GenSpawn.Spawn(light, lightCells[index], map, lightFacings[index]);
-                    if (!light.Spawned || light.Map != map)
+                    // **Through the one spawner**, which refuses to leave an attachment hanging
+                    // in mid-air; see WallAttachmentHolds for what that cost.
+                    Thing light = SpawnAttachableLight(map, lightDefs[index], floorLightDef,
+                        lightCells[index], lightFacings[index]);
+                    if (light == null)
                     { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
                     placedLights.Add(light);
                 }
@@ -211,7 +230,7 @@ namespace RimroomsAsyncIndustries.Generation
                 // the exact shit thats in the rooms"*. A corridor that is lit and furnished is
                 // part of the building; one that is neither is a tunnel between beads, which is
                 // what *"a string of pears"* was describing.
-                DressCorridors(map, coordinate, corridorSides, lightDef, placedLights,
+                DressCorridors(map, coordinate, corridorSides, lightDef, floorLightDef, placedLights,
                     reservedProviderCells);
 
                 RoomContentBuilder.Populate(map, coordinate, entryCell, returnCell, officeEvidenceCell, anchor);
@@ -242,6 +261,13 @@ namespace RimroomsAsyncIndustries.Generation
                 // conduit is not an edifice and does not block standability, so no placement
                 // decision above changes. It is also the direction this generator already moved
                 // once -- see `ConnectStrayConsumers`, which replaced pre-wiring whole rooms.
+                // **Before a single conduit, and before Core is asked to connect anything.** An
+                // attachment with no wall behind it makes Core's own power rebuild throw out of
+                // `Map.FinalizeInit`, which discards the finished level; see
+                // RemoveUnattachedAttachments. Run after every placer, because the point is to
+                // not depend on all of them being right.
+                RemoveUnattachedAttachments(map, coordinate, placedLights);
+
                 HashSet<IntVec3> wiredCells = SpawnNativePowerNetwork(map, voidFloor, conduitDef,
                     GenAdj.OccupiedRect(generatorCell, Rot4.North, generatorDef.size), consumerFootprints);
                 // Native spawn notifications are queued; rebuild connections now without ticking
@@ -1234,14 +1260,20 @@ namespace RimroomsAsyncIndustries.Generation
                         if (!cell.InBounds(map) || reserved.Contains(cell)) { continue; }
                         if (!room.Bounds.ContractedBy(1).Contains(cell)) { continue; }
                         if (!cell.Standable(map) || cell.GetEdifice(map) != null) { continue; }
-                        // Facing out of the pillar: the lamp draws into the wall behind it, and
-                        // the wall behind it is the pillar.
-                        Rot4 facing = Rot4.FromIntVec3(directions[side]);
-                        Thing lamp = MakeBuilding(lightDef, lightDef.MadeFromStuff ? ThingDefOf.Steel : null);
-                        if (lamp == null) { break; }
-                        lamp.SetFaction(Faction.OfPlayer);
-                        GenSpawn.Spawn(lamp, cell, map, facing);
-                        if (!lamp.Spawned || lamp.Map != map) { break; }
+                        // **Facing INTO the pillar, which is the opposite of what this did.**
+                        // Core reads the wall at `position + rotation.FacingCell`, so a lamp one
+                        // cell north of a pillar has to face SOUTH to be attached to it. Facing
+                        // north looked for a wall two cells past the pillar, found open floor,
+                        // and left `GenConstruct.GetWallAttachedTo` returning null -- which Core
+                        // dereferences without checking. See WallAttachmentHolds.
+                        //
+                        // The comment that was here said *"facing out of the pillar: the lamp
+                        // draws into the wall behind it, and the wall behind it is the pillar"*.
+                        // The intent was right and the arithmetic was inverted.
+                        Rot4 facing = Rot4.FromIntVec3(directions[side]).Opposite;
+                        if (!WallAttachmentHolds(map, lightDef, cell, facing)) { continue; }
+                        Thing lamp = SpawnAttachableLight(map, lightDef, null, cell, facing);
+                        if (lamp == null) { continue; }
                         reserved.Add(cell);
                         TintLamp(lamp, coordinate, room, pillar);
                         placedLights.Add(lamp);
@@ -1276,7 +1308,7 @@ namespace RimroomsAsyncIndustries.Generation
         /// dark stretch of corridor, and a coordinate must never be lost over scenery.
         /// </summary>
         private static void DressCorridors(Map map, CoordinateRecord coordinate,
-            List<IntVec3> sides, ThingDef lightDef, List<Thing> placedLights,
+            List<IntVec3> sides, ThingDef lightDef, ThingDef floorLightDef, List<Thing> placedLights,
             HashSet<IntVec3> reserved)
         {
             if (map == null || coordinate == null || sides == null || sides.Count == 0) { return; }
@@ -1303,12 +1335,15 @@ namespace RimroomsAsyncIndustries.Generation
 
                 if (lightDef != null && index % CorridorLampSpacing == 0)
                 {
-                    Thing lamp = MakeBuilding(lightDef,
-                        lightDef.MadeFromStuff ? ThingDefOf.Steel : null);
+                    // **Through the one spawner, which finds the wall.** This was
+                    // `GenSpawn.Spawn(lamp, cell, map, Rot4.North)` with no wall test of any
+                    // kind, and `BackroomsPalette` resolves `WallLamp`, which is an attachment.
+                    // A corridor side cell has its wall on exactly one side and almost never the
+                    // north one, so most corridor lamps in the place were hanging in mid-air --
+                    // and one of those is enough to throw Core's power rebuild out of
+                    // `Map.FinalizeInit` and cost the whole level. See WallAttachmentHolds.
+                    Thing lamp = SpawnAttachableLight(map, lightDef, floorLightDef, cell, Rot4.North);
                     if (lamp == null) { continue; }
-                    lamp.SetFaction(Faction.OfPlayer);
-                    GenSpawn.Spawn(lamp, cell, map, Rot4.North);
-                    if (!lamp.Spawned || lamp.Map != map) { continue; }
                     reserved.Add(cell);
                     placedLights.Add(lamp);
                     continue;
@@ -1322,6 +1357,10 @@ namespace RimroomsAsyncIndustries.Generation
                 // Single-cell only: a wider footprint against a corridor wall is how a route
                 // stops being a route.
                 if (definition.size.x != 1 || definition.size.z != 1) { continue; }
+                // The corridor fixtures are Core defs by name, but a profile is free to patch one
+                // into a wall attachment, and an unattached attachment costs the whole level. The
+                // sweep would catch it; refusing to place it is cheaper. See WallAttachmentHolds.
+                if (!WallAttachmentHolds(map, definition, cell, Rot4.North)) { continue; }
                 Thing fixture = ThingMaker.MakeThing(definition,
                     CoordinateMaterials.StuffFor(definition, coordinate, roll));
                 if (fixture == null) { continue; }
@@ -1377,6 +1416,151 @@ namespace RimroomsAsyncIndustries.Generation
                     glower.GlowRadius = glower.GlowRadius * 2f / 3f;
                     return;
             }
+        }
+
+        /// <summary>
+        /// Whether a wall attachment standing on this cell with this facing really is attached to
+        /// something.
+        ///
+        /// ## This is the defect that cost the owner two launches, and it is a one-line rule
+        ///
+        /// `RimWorld.PowerConnectionMaker.TryConnectToAnyPowerNet`, Core 1.6, verbatim:
+        ///
+        /// <code>
+        /// BestTransmitterForConnector(pc.parent.def.building.isAttachment
+        ///     ? GenConstruct.GetWallAttachedTo(pc.parent).Position
+        ///     : pc.parent.Position, pc.parent.Map, disallowedNets);
+        /// </code>
+        ///
+        /// **Core dereferences that wall without checking it.** `GetWallAttachedTo` returns null
+        /// when the cell at `position + rotation.FacingCell` holds nothing with
+        /// `building.supportsWallAttachments`, so **an attachment facing open floor is a
+        /// guaranteed `NullReferenceException` inside Core's own power rebuild** -- and that
+        /// rebuild is step four of fifteen in `Map.FinalizeInit`, so regions, pens, plant growth
+        /// rates, every `PostMapInit` and the wealth recount never run. The throw leaves
+        /// `MapGenerator.GenerateMap`, so `GetOrGenerateMap` throws, so `EnsureSite` reports
+        /// failure and `SoloGroupOpening` never moves anybody inside.
+        ///
+        /// Owner: *"why are my colonists on the world map!!!!!!!!! they should be in the backrooms
+        /// in this scenerio"*. And: *"we loaded solo/group start into the backrooms correctly
+        /// before"* -- **they did.** `BackroomsPalette` resolves `WallLamp`, which is
+        /// `isAttachment`, and the only placer that existed then was
+        /// <see cref="FindWallAttachmentCell"/>, which finds the wall first and faces it. The two
+        /// placers added afterwards did not: the pillar lamps faced **away** from the pillar they
+        /// were mounted on, and the corridor lamps were spawned `Rot4.North` with no wall test at
+        /// all. One mistake, made twice, in the two checkpoints the owner is calling a regression.
+        ///
+        /// Because the queue Core throws out of is never cleared, it re-runs every tick --
+        /// `Root level exception in Update()` for the rest of the session, plus *"there is already
+        /// a power net here"* when the re-run re-registers the generator.
+        ///
+        /// **Asked of Core's own function, not re-derived.** Core is what dereferences the answer,
+        /// so Core is the only thing whose opinion matters; a local copy of the rule could
+        /// disagree with it, and that disagreement is this project's most expensive defect shape.
+        /// Non-attachments answer true, because they have nothing to be attached to.
+        /// </summary>
+        /// <summary>
+        /// Removes anything on this coordinate that is a wall attachment and is not attached to a
+        /// wall, before Core is asked to wire the place.
+        ///
+        /// ## Why a sweep as well as a correct spawner
+        ///
+        /// `SpawnAttachableLight` is the rule and three callers obey it. **This is what makes the
+        /// fourth caller harmless.** The cost of getting it wrong is not a missing lamp, it is
+        /// `Map.FinalizeInit` throwing at step four of fifteen, the whole level discarded, and
+        /// `Root level exception in Update()` every tick afterwards -- and that cost was paid
+        /// twice, by two different placers, written two checkpoints apart. A failure that
+        /// expensive and that easy to reintroduce deserves a net under it.
+        ///
+        /// So the invariant is enforced on the finished map rather than trusted from the
+        /// placements: whatever put it there, an attachment facing open floor does not survive to
+        /// be wired. The worst case is a dark corner, which is the trade this generator makes
+        /// everywhere else.
+        ///
+        /// **Only things on this coordinate's own map, spawned by this generation.** Nothing here
+        /// reaches another map or another mod's buildings.
+        /// </summary>
+        private static void RemoveUnattachedAttachments(Map map, CoordinateRecord coordinate,
+            List<Thing> placedLights)
+        {
+            if (map == null || map.listerThings == null) { return; }
+            List<Thing> stranded = map.listerThings.AllThings
+                .Where(thing => thing != null && thing.Spawned && thing.Map == map &&
+                    thing.def != null && thing.def.building != null && thing.def.building.isAttachment &&
+                    GenConstruct.GetWallAttachedTo(thing) == null)
+                .OrderBy(thing => thing.Position.x).ThenBy(thing => thing.Position.z)
+                .ThenBy(thing => thing.def.defName, StringComparer.Ordinal)
+                .ToList();
+            if (stranded.Count == 0) { return; }
+            Log.Warning("[Rimrooms][Generation] Coordinate " + (coordinate == null ? "(unknown)" : coordinate.Id)
+                + ": removed " + stranded.Count + " wall attachment(s) with no wall behind them ("
+                + string.Join(", ", stranded.Select(thing => thing.def.defName + " at " + thing.Position
+                    + " facing " + thing.Rotation).Distinct().ToArray())
+                + "). Core dereferences that wall without checking it, so leaving one would cost "
+                + "the whole level. The space, its gate anchor and its way home are unaffected.");
+            for (int index = 0; index < stranded.Count; index++)
+            {
+                Thing thing = stranded[index];
+                if (placedLights != null) { placedLights.Remove(thing); }
+                thing.Destroy(DestroyMode.Vanish);
+            }
+        }
+
+        private static bool WallAttachmentHolds(Map map, ThingDef def, IntVec3 cell, Rot4 facing)
+        {
+            if (map == null || def == null || def.building == null || !def.building.isAttachment)
+            { return true; }
+            if (!cell.IsValid || !cell.InBounds(map)) { return false; }
+            return GenConstruct.GetWallAttachedTo(cell, facing, map) != null;
+        }
+
+        /// <summary>
+        /// One lamp, spawned only in a way Core can survive: the palette's fixture when it is
+        /// genuinely against a wall, the floor-standing fallback when it is not, and **nothing at
+        /// all** rather than an attachment hanging in mid-air.
+        ///
+        /// **One spawner, three callers** -- the room lights, the pillar lamps and the corridor
+        /// dressing. All three placed a `WallLamp` their own way and two of the three were wrong;
+        /// see <see cref="WallAttachmentHolds"/>. A rule enforced in one place cannot be forgotten
+        /// by the next placer somebody adds.
+        ///
+        /// The preferred facing is tried first so a caller that already knows which wall it meant
+        /// keeps it, and the other three are tried before the fixture is given up on: a lamp on a
+        /// corridor side cell has a wall on exactly one side and the caller cannot know which.
+        /// </summary>
+        private static Thing SpawnAttachableLight(Map map, ThingDef lightDef, ThingDef floorLightDef,
+            IntVec3 cell, Rot4 preferredFacing)
+        {
+            if (map == null || !cell.IsValid || !cell.InBounds(map)) { return null; }
+            ThingDef chosen = lightDef;
+            Rot4 rotation = preferredFacing;
+            if (!WallAttachmentHolds(map, lightDef, cell, preferredFacing))
+            {
+                bool held = false;
+                for (int index = 0; index < 4; index++)
+                {
+                    var candidate = new Rot4(index);
+                    if (!WallAttachmentHolds(map, lightDef, cell, candidate)) { continue; }
+                    rotation = candidate;
+                    held = true;
+                    break;
+                }
+                if (!held)
+                {
+                    // The floor-standing fallback, and it is checked too: a profile that made its
+                    // standing lamp an attachment would otherwise reintroduce the same throw
+                    // through the thing meant to avoid it.
+                    chosen = floorLightDef;
+                    rotation = Rot4.North;
+                    if (chosen == null || !WallAttachmentHolds(map, chosen, cell, rotation))
+                    { return null; }
+                }
+            }
+            Thing light = MakeBuilding(chosen, chosen.MadeFromStuff ? ThingDefOf.Steel : null);
+            if (light == null) { return null; }
+            light.SetFaction(Faction.OfPlayer);
+            GenSpawn.Spawn(light, cell, map, rotation);
+            return light.Spawned && light.Map == map ? light : null;
         }
 
         private static IntVec3 FindWallAttachmentCell(Map map, RoomRecord room, IntVec3 preferred,
