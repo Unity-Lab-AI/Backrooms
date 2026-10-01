@@ -202,6 +202,13 @@ namespace RimroomsAsyncIndustries.Generation
                     placedLights.Add(light);
                 }
 
+                // **A LAMP ON EVERY PILLAR.** Owner: *"the main grand themed backrooms universe
+                // rooms need like a wall light on every column wall used as in the universe of
+                // backrooms the basic rooms are well lit"*. One lamp in an eighty-cell hall is
+                // not the Backrooms; flat even over-lighting is the whole look.
+                SpawnPillarLamps(map, coordinate, wallDef, lightDef, wallMounted,
+                    reservedProviderCells, placedLights);
+
                 RoomContentBuilder.Populate(map, coordinate, entryCell, returnCell, officeEvidenceCell, anchor);
                 // Native spawn notifications are queued; rebuild connections now without ticking
                 // the power simulation so readiness checks see the actual shared grid.
@@ -338,8 +345,18 @@ namespace RimroomsAsyncIndustries.Generation
                 // and BuildRoomWalls places one room's ring at a time, so the room is the unit
                 // the geometry already has.
                 //
-                // At level 0 every room takes the band's wood, unchanged.
-                ThingDef roomWallStuff = coordinate.Depth <= CoordinateMaterials.CoherentDepth
+                // **THE YELLOW LOOK IS THE HALL AND WHAT SURROUNDS IT, NOT THE FLOOR.** Owner:
+                // *"the normal yellow backrooms look isnt the whole floor but the main spanw
+                // room"*. This used to test `coordinate.Depth`, so at level 0 EVERY room on a
+                // three-hundred-cell map took the band's wood and the whole level read as one
+                // corridor -- which is the level the owner walked and called *"nothing but what
+                // it currently is"*.
+                //
+                // Measured per room now, by distance from the spawn hall: the arrival and its
+                // neighbours keep the band's wood exactly as before, and the further out a room
+                // is the more its walls are drawn from whatever the profile offers.
+                int wallDepth = RoomArchetypeService.EffectiveDepth(coordinate, room, coordinate.Depth);
+                ThingDef roomWallStuff = wallDepth <= CoordinateMaterials.CoherentDepth
                     ? wallStuff
                     : (CoordinateMaterials.StuffForRoom(wallDef, coordinate, room, room.Index) ?? wallStuff);
                 BuildRoomWalls(room, coordinate.Rooms, map, wallDef, roomWallStuff);
@@ -959,6 +976,61 @@ namespace RimroomsAsyncIndustries.Generation
         /// lamp hanging over the floor. The wall must be the room's own wall def: a door also
         /// holds up roof, and a lamp mounted on a door is mounted on nothing the moment it opens.
         /// </summary>
+        /// <summary>
+        /// A wall lamp on each of a room's pillars, so the basic rooms are lit the way the
+        /// Backrooms are lit.
+        ///
+        /// Owner: *"we need more lights ... the main grand themed backrooms universe rooms need
+        /// like a wall light on every column wall used as in the universe of backrooms the basic
+        /// rooms are well lit"*.
+        ///
+        /// **The lattice comes from `RoomLayoutPlanner.PillarCells` and nowhere else.** That is
+        /// the same method the pillar spawner and `CandidateIsSafe` use, so this cannot drift
+        /// from where the pillars actually are -- two readers deriving the same lattice
+        /// independently is precisely the defect that stopped every coordinate generating from
+        /// 0.7.8-dev to 0.12.47-dev.
+        ///
+        /// Only for a wall-mounted fixture. The palette falls back to `StandingLamp`, which
+        /// stands on the floor, and a floor lamp beside every pillar is furniture rather than
+        /// lighting.
+        ///
+        /// Silent on failure, every time. A pillar with no free cell beside it simply has no
+        /// lamp: this is lighting, and a coordinate must never be lost over how bright it is.
+        /// </summary>
+        private static void SpawnPillarLamps(Map map, CoordinateRecord coordinate, ThingDef wallDef,
+            ThingDef lightDef, bool wallMounted, HashSet<IntVec3> reserved, List<Thing> placedLights)
+        {
+            if (!wallMounted || map == null || coordinate == null || lightDef == null) { return; }
+            if (coordinate.Rooms == null) { return; }
+            IntVec3[] directions = { IntVec3.North, IntVec3.East, IntVec3.South, IntVec3.West };
+            for (int index = 0; index < coordinate.Rooms.Count; index++)
+            {
+                RoomRecord room = coordinate.Rooms[index];
+                if (room == null) { continue; }
+                foreach (IntVec3 pillar in RoomLayoutPlanner.PillarCells(room))
+                {
+                    for (int side = 0; side < directions.Length; side++)
+                    {
+                        IntVec3 cell = pillar + directions[side];
+                        if (!cell.InBounds(map) || reserved.Contains(cell)) { continue; }
+                        if (!room.Bounds.ContractedBy(1).Contains(cell)) { continue; }
+                        if (!cell.Standable(map) || cell.GetEdifice(map) != null) { continue; }
+                        // Facing out of the pillar: the lamp draws into the wall behind it, and
+                        // the wall behind it is the pillar.
+                        Rot4 facing = Rot4.FromIntVec3(directions[side]);
+                        Thing lamp = MakeBuilding(lightDef, lightDef.MadeFromStuff ? ThingDefOf.Steel : null);
+                        if (lamp == null) { break; }
+                        lamp.SetFaction(Faction.OfPlayer);
+                        GenSpawn.Spawn(lamp, cell, map, facing);
+                        if (!lamp.Spawned || lamp.Map != map) { break; }
+                        reserved.Add(cell);
+                        placedLights.Add(lamp);
+                        break;
+                    }
+                }
+            }
+        }
+
         private static IntVec3 FindWallAttachmentCell(Map map, RoomRecord room, IntVec3 preferred,
             ThingDef wallDef, HashSet<IntVec3> reserved, out Rot4 facing)
         {

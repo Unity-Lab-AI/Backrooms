@@ -7,6 +7,7 @@ import sys
 import time
 
 SRC = "src/RimroomsAsyncIndustries"
+NL = chr(10)
 MAT = SRC + "/Generation/CoordinateMaterials.cs"
 CONTENT = SRC + "/Generation/RoomContentBuilder.cs"
 INHAB = SRC + "/Threats/InhabitantService.cs"
@@ -110,8 +111,31 @@ PLANTS = [
      "            if (allowed.Count == 0) { return null; }",
      "            if (allowed.Count == 0) { return allowed[0]; }"),
 
+    # Disambiguated when StuffForRoom was added: the same line now exists in both, and the
+    # harness refused to run rather than score the wrong one. The preceding condition is what
+    # tells them apart - `depth` in StuffFor, `effective` in StuffForRoom.
     ("the wild result is computed and then ignored", MAT,
-     "                if (wild != null) { return wild; }", "                if (false) { return wild; }"),
+     "            if (depth > CoherentDepth)" + NL
+     + "            {" + NL
+     + "                ThingDef wild = WildStuffFor(definition, coordinate, variant);" + NL
+     + "                if (wild != null) { return wild; }",
+     "            if (depth > CoherentDepth)" + NL
+     + "            {" + NL
+     + "                ThingDef wild = WildStuffFor(definition, coordinate, variant);" + NL
+     + "                if (false) { return wild; }"),
+
+    # ------------------------------------------- the yellow look stops being local to the hall
+    ("THE WHOLE FLOOR GOES BACK TO ONE MATERIAL, not just the spawn hall", GEN,
+     "int wallDepth = RoomArchetypeService.EffectiveDepth(coordinate, room, coordinate.Depth);",
+     "int wallDepth = coordinate.Depth;"),
+
+    ("the per-room wall choice is computed and then ignored", GEN,
+     "CoordinateMaterials.StuffForRoom(wallDef, coordinate, room, room.Index)",
+     "CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index)"),
+
+    ("StuffForRoom stops looking at the room at all", MAT,
+     "            int effective = RoomArchetypeService.EffectiveDepth(coordinate, room, depth);",
+     "            int effective = depth;"),
 
     ("TWO IDENTICAL FIXTURES IN ONE ROOM GO BACK TO ONE MATERIAL", CONTENT,
      "                    CoordinateMaterials.StuffFor(definition, coordinate, seed * 31 + slot));",
@@ -126,18 +150,18 @@ PLANTS = [
      + "                CoordinateMaterials.StuffFor(definition, coordinate, 0));"),
 
     ("WALLS GO BACK TO ONE MATERIAL FOR THE WHOLE LEVEL", GEN,
-     "                ThingDef roomWallStuff = coordinate.Depth <= CoordinateMaterials.CoherentDepth" + chr(10)
-     + "                    ? wallStuff" + chr(10)
-     + "                    : (CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index) ?? wallStuff);",
+     "                ThingDef roomWallStuff = wallDepth <= CoordinateMaterials.CoherentDepth" + NL
+     + "                    ? wallStuff" + NL
+     + "                    : (CoordinateMaterials.StuffForRoom(wallDef, coordinate, room, room.Index) ?? wallStuff);",
      "                ThingDef roomWallStuff = wallStuff;"),
 
-    ("the surface band loses its wood walls", GEN,
-     "coordinate.Depth <= CoordinateMaterials.CoherentDepth" + chr(10) + "                    ? wallStuff",
-     "false" + chr(10) + "                    ? wallStuff"),
+    ("the spawn hall loses its wood walls, so the arrival stops reading as the Backrooms", GEN,
+     "wallDepth <= CoordinateMaterials.CoherentDepth" + NL + "                    ? wallStuff",
+     "false" + NL + "                    ? wallStuff"),
 
     ("the wall material loses its fallback", GEN,
-     "(CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index) ?? wallStuff);",
-     "CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index);"),
+     "(CoordinateMaterials.StuffForRoom(wallDef, coordinate, room, room.Index) ?? wallStuff);",
+     "CoordinateMaterials.StuffForRoom(wallDef, coordinate, room, room.Index);"),
 
     # ------------------------------------------ 0.12.54-dev: the scale sweep
     ("THE CONDUIT CAP GOES BACK TO THE 60x60 NUMBER", GEN,

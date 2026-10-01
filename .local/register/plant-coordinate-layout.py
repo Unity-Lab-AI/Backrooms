@@ -114,6 +114,19 @@ PLANTS = [
      "foreach (IntVec3 pillar in RoomLayoutPlanner.PillarCells(room))",
      "foreach (IntVec3 pillar in new List<IntVec3> { room.Bounds.CenterCell })"),
 
+    # The pillar LAMPS stop sharing the lattice, so lamps hang where no pillar is.
+    ("THE PILLAR LAMPS DERIVE THEIR OWN LATTICE", GEN,
+     "                foreach (IntVec3 pillar in RoomLayoutPlanner.PillarCells(room))" + NL
+     + "                {" + NL
+     + "                    for (int side = 0; side < directions.Length; side++)",
+     "                foreach (IntVec3 pillar in new List<IntVec3> { room.Bounds.CenterCell })" + NL
+     + "                {" + NL
+     + "                    for (int side = 0; side < directions.Length; side++)"),
+
+    ("the pillar lamps are never hung at all", GEN,
+     "                SpawnPillarLamps(map, coordinate, wallDef, lightDef, wallMounted," + NL
+     + "                    reservedProviderCells, placedLights);", ""),
+
     ("the lone centre support comes back", GEN,
      "                foreach (IntVec3 pillar in RoomLayoutPlanner.PillarCells(room))",
      "                PlaceWall(map, room.Bounds.CenterCell, wallDef, wallStuff);" + NL

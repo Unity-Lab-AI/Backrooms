@@ -272,6 +272,20 @@ check("AND ROOM SIZES ARE ACTUALLY VARIED, not merely variable",
       "-- defined and called at BOTH room-making sites. A plant swapped the calls back to the "
       "flat span and left the function sitting there, and every claim about variation still held")
 
+# **THE LAMPS ARE HUNG, NOT MERELY HANGABLE.** Owner: *"the main grand themed backrooms universe
+# rooms need like a wall light on every column wall used as in the universe of backrooms the basic
+# rooms are well lit"*. One light per room, in an eighty-cell hall, is not that. Defined AND
+# called -- the fourth time today a claim guarded a definition while a plant deleted the call.
+check("A WALL LAMP IS HUNG ON EVERY PILLAR",
+      "private static void SpawnPillarLamps(" in genstep
+      and "SpawnPillarLamps(map, coordinate, wallDef, lightDef, wallMounted," in genstep,
+      "-- one lamp per room left a depth-1 hall with a single sconce in eighty cells")
+
+check("and they are counted as lights, not left for a re-derivation to miss",
+      "placedLights.Add(lamp);" in genstep,
+      "-- re-deriving how many lights should exist is the defect that stopped every coordinate "
+      "generating for thirty-nine checkpoints. What was placed is what is counted")
+
 check("MOST LEFTOVER SLOTS BECOME BRANCHES, which is what makes it a maze",
       "% 4 == 3)" in planner,
       "-- owner: *\"it needs to be more maze liek\"*. One slot in three became a branch and the "
@@ -343,7 +357,12 @@ check("THE PILLAR LATTICE NEVER SEALS A ROOM",
 
 check("THE LATTICE IS DECIDED IN EXACTLY ONE PLACE",
       "internal static IEnumerable<IntVec3> PillarCells(RoomRecord room)" in planner
-      and "RoomLayoutPlanner.PillarCells(room)" in genstep
+      # **BOTH READERS IN THE GENERATOR.** The pillar spawner and the pillar LAMPS both walk
+      # this lattice, and a plant that rewrote one of them was satisfied by the other still
+      # calling it. Two places deriving the same lattice independently is the defect that
+      # stopped every coordinate generating for thirty-nine checkpoints; a lamp hung where no
+      # pillar is would be the same mistake wearing a different hat.
+      and genstep.count("RoomLayoutPlanner.PillarCells(room)") >= 2
       and "foreach (IntVec3 pillar in PillarCells(room))" in planner,
       "-- the generator spawns them and CandidateIsSafe proves the room is still walkable with "
       "them in it. Two independent derivations of the same lattice is precisely the defect that "

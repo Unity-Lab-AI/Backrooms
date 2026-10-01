@@ -150,7 +150,10 @@ check("it honours Core's own opt-out even on the wild path",
 
 check("a def Core allows nothing for falls through rather than failing",
       "if (allowed.Count == 0) { return null; }" in wild_body
-      and "if (wild != null) { return wild; }" in materials,
+      # BOTH of them. `StuffFor` and `StuffForRoom` each compute a wild material and each must
+      # return it; a plant that neutered one was satisfied by the other still containing the
+      # line. The same two-call-sites gap as the AllComps.Add claim and the span-evenness claim.
+      and materials.count("if (wild != null) { return wild; }") >= 2,
       "-- a generation pass must never fail over a furnishing choice; it falls to the palette and "
       "then to Core's own default")
 
@@ -162,12 +165,24 @@ check("THE PALETTE REACHES THE DEPTH-SCALED DRESSING, NOT ONLY THE FAMILY FIXTUR
       "that was supposed to vary was the one content that could not")
 
 check("WALLS ARE NO LONGER ONE OF TWO NAMED MATERIALS, AND ARE CHOSEN PER ROOM",
-      "CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index)" in genstep
-      and "coordinate.Depth <= CoordinateMaterials.CoherentDepth" in genstep
+      "CoordinateMaterials.StuffForRoom(wallDef, coordinate, room, room.Index)" in genstep
+      # **MEASURED PER ROOM, NOT PER COORDINATE.** This claim used to require
+      # `coordinate.Depth <= CoherentDepth`, which short-circuited the whole of level 0 to the
+      # band's wood -- so every room on a 300-cell map read as one corridor, and that is the
+      # level the owner walked. It caught exactly that when the call changed and the gate did
+      # not: a proof earning its keep.
+      and "int wallDepth = RoomArchetypeService.EffectiveDepth(coordinate, room, coordinate.Depth);" in genstep
+      and "wallDepth <= CoordinateMaterials.CoherentDepth" in genstep
       and "BuildRoomWalls(room, coordinate.Rooms, map, wallDef, roomWallStuff);" in genstep,
       "-- BackroomsPalette names exactly two wall materials across five bands, WoodLog or Steel, "
       "which is a hard-coded pair where every other material in the place is drawn from whatever "
       "the profile offers")
+
+check("AND StuffForRoom ACTUALLY MEASURES THE ROOM",
+      "int effective = RoomArchetypeService.EffectiveDepth(coordinate, room, depth);" in materials,
+      "-- it takes a room and must use it. A plant replaced the measurement with the "
+      "coordinate's own depth and every other claim about per-room walls still held, because "
+      "they checked the call and not what the callee does with it")
 
 check("and the surface band keeps its wood walls",
       "ThingDef wallStuff = BackroomsPalette.For(coordinate.Depth, coordinate.Seed).wallStuff"

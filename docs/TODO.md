@@ -1890,6 +1890,32 @@ shows **nine rectangular rooms on straight corridors**, and the planner explains
 
 ---
 
+## IN PROGRESS — lights and geometry — 2026-09-30 (0.12.61-dev)
+
+Owner, verbatim:
+
+> **"and we need more lights and mixedered varies of lights but the main grand themed backrooms
+> universe rooms need like a wall light on every column wall used as in the universe of backrooms
+> the basic rooms are well lit"**
+
+> **"and you can have back to back roomes and mazes of halways of varied widtchs and lengs and odd
+> variers walls and contructions making narrows , expansies, triangle, octangones, rombones, all
+> the geomentry and mixetrues and odd contructions of doors walls corners deadends doors to now
+> where not just doors on 4 cosides of nothing but square rooms"**
+
+- [ ] **"we need more lights and mixedered varies of lights"**
+- [ ] **"the main grand themed backrooms universe rooms need like a wall light on every column wall used"** — the pillar lattice already exists in `RoomLayoutPlanner.PillarCells`, so every pillar is a known cell with a wall to hang a lamp on
+- [ ] **"as in the universe of backrooms the basic rooms are well lit"** — brightness is part of the theme, not a convenience
+- [ ] **"you can have back to back roomes"** — rooms sharing a wall, with no corridor between
+- [ ] **"mazes of halways of varied widtchs and lengs"**
+- [ ] **"odd variers walls and contructions making narrows , expansies"**
+- [ ] **"triangle, octangones, rombones, all the geomentry and mixetrues"**
+- [ ] **"odd contructions of doors walls corners deadends"**
+- [ ] **"doors to now where"** — a door that opens onto solid rock or a sealed closet
+- [ ] **"not just doors on 4 cosides of nothing but square rooms"** — the current rule is literally a doorway at the midpoint of each of four walls
+
+---
+
 ## TOMBSTONES
 
 _(none)_
