@@ -9,10 +9,11 @@ is entirely possible to write this and have it never once form a group.
 Mirrors FacilityPlanner.Plan and Grow, including the quiet-room exclusion.
 """
 import math
+import re
 
 MIN_ROOMS = 2
-MAX_ROOMS = 4
-ELIGIBLE_SHARE = 0.45  # must mirror FacilityPlanner.EligibleShare exactly
+MAX_ROOMS = 6
+ELIGIBLE_SHARE = 0.6  # mirrors FacilityPlanner.EligibleShare -- CHECKED below, not assumed
 QUIET_FRACTION = 0.5
 
 
@@ -150,5 +151,82 @@ assert with_facility > 0, 'NO coordinate ever formed a facility: the planner is 
 assert rate > 40.0, 'facilities are too rare to be a feature (%.1f%%)' % rate
 assert rate < 100.0, 'every coordinate has one, so a plain coordinate never exists'
 print('')
-print('PASS: facilities form, are contiguous, bounded 2-4, never consume a quiet or threshold room,')
+print('PASS: facilities form, are contiguous, bounded 2-6, never consume a quiet or threshold room,')
 print('      leave the quiet guarantee intact, and replan identically from the same seed')
+
+# --------------------------------------------------------------------------- source claims
+# **THE MODEL ABOVE HAD NO SOURCE CLAIMS AND DRIFTED.** It carried `MAX_ROOMS = 4` and
+# `ELIGIBLE_SHARE = 0.45` with a comment saying they must mirror the C# exactly, and nothing
+# checked that they did -- so when the planner moved to 6 and 0.6 this proof kept passing while
+# asserting bounds the code no longer used. `proof-coordinate-layout.py` already wrote the rule
+# down: the model asserts the property, a source claim asserts the code still computes it, and
+# one without the other is the mention-versus-assertion defect.
+import io as _io
+import os as _os
+
+_REPO = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
+
+def _read(*parts):
+    return _io.open(_os.path.join(_REPO, *parts), encoding="utf-8-sig").read()
+
+
+facility_source = _read("src", "RimroomsAsyncIndustries", "Generation", "FacilityPlanner.cs")
+archetype_source = _read("Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+                         "RimroomsRoomArchetypeDefs", "RR_RoomArchetypes.xml")
+
+_failures = []
+
+
+def _claim(label, condition, detail=""):
+    print("  %s %s %s" % ("OK  " if condition else "FAIL", label, detail if not condition else ""))
+    if not condition:
+        _failures.append(label)
+
+
+print("")
+print("source claims -- the model above is only worth its agreement with these")
+
+_claim("THE MODELLED BOUNDS ARE THE CODE'S BOUNDS",
+       ("private const int MinRooms = %d;" % MIN_ROOMS) in facility_source
+       and ("private const int MaxRooms = %d;" % MAX_ROOMS) in facility_source
+       and ("private const float EligibleShare = %gf;" % ELIGIBLE_SHARE) in facility_source,
+       "-- read out of FacilityPlanner.cs rather than trusted. This proof asserted 2-4 against "
+       "its own copy while the code said 2-6, and passed")
+
+# Owner: *"facilitys and buildings and neighboorhoods and complexes and shools and hospitals and
+# military and storages need loot inside of them too"*. `Anchors` opened with
+# `coordinate.Depth <= 1` and returned null, so a FIRST LEVEL HAD NO INSTITUTIONS AT ALL -- the
+# fourth system found gated on the coordinate's own depth rather than on distance from the
+# arrival.
+_claim("INSTITUTIONS REACH A FIRST LEVEL",
+       "if (coordinate == null || coordinate.Rooms == null) { return null; }" in facility_source
+       and "coordinate.Depth <= 1) { return null; }" not in facility_source,
+       "-- the global depth gate is GONE, not bypassed")
+
+_claim("and the arrival still stays sparse, measured per room",
+       "RoomArchetypeService.EffectiveDepth(coordinate, room, coordinate.Depth) <= 1"
+       in facility_source,
+       "-- the property the gate protected is kept and measured per room, by the SAME function "
+       "the archetypes, the inhabitants, the events and the wall materials all read. A room the "
+       "dressing treats as deep and the facility planner treats as shallow cannot exist")
+
+# Owner: *"...need loot inside of them too"*. Four of the sixteen archetypes carried none.
+_blocks = archetype_source.split("<RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>")[1:]
+_without = []
+for _block in _blocks:
+    _name = re.search(r"<defName>(.*?)</defName>", _block)
+    if _name is None:
+        continue
+    if "<category>" not in _block:
+        _without.append(_name.group(1))
+
+_claim("EVERY ARCHETYPE HOLDS SOMETHING WORTH CARRYING OUT",
+       len(_blocks) >= 16 and not _without,
+       "-- %d archetype(s) carry no loot at all: %s. The office, the nursery, the gallery and the "
+       "duplicate were the four" % (len(_without), ", ".join(_without) or "none"))
+
+if _failures:
+    print("")
+    print("PROOF FAILED: %d source claim(s)" % len(_failures))
+    raise SystemExit(1)

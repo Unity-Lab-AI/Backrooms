@@ -23,8 +23,58 @@ SCENARIOS = "Mod/Rimrooms - Async Industries/1.6/Defs/ScenarioDefs/RR_Scenarios.
 ARRIVAL = SCEN + "/ScenPart_RimroomsArrival.cs"
 PROOF = ".local/register/proof-startplacement.py"
 STARTS_PROOF = ".local/register/proof-starts.py"
+FACILITY_PROOF = ".local/register/proof-facilities.py"
+FACILITY = "src/RimroomsAsyncIndustries/Generation/FacilityPlanner.cs"
+ARCHETYPES = ("Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsRoomArchetypeDefs/"
+              "RR_RoomArchetypes.xml")
+
+
+# **THE RESTORE DOES NOT SURVIVE THE PROCESS BEING KILLED.** `finally` handles an exception; it
+# does nothing for an interrupted sweep, and that is how a planted fault reached the working tree
+# for the third time. The sentinel makes it visible: `tools/check-plant-residue.py` refuses while
+# this file exists and prints the path to restore.
+_RR_SENTINEL = os.path.join(".local", "register", ".plant-in-progress")
+
+
+def _rr_mark(path, label):
+    io.open(_RR_SENTINEL, "w", encoding="utf-8", newline="").write(
+        u"planted %r into %s" % (label, path))
+
+
+def _rr_unmark():
+    try:
+        os.remove(_RR_SENTINEL)
+    except OSError:
+        pass
+
 
 PLANTS = [
+    # ------------------------------------- institutions, and the loot in them
+    # Owner: *"facilitys and buildings and neighboorhoods and complexes and shools and hospitals
+    # and military and storages need loot inside of them too"*. `Anchors` opened with
+    # `coordinate.Depth <= 1` and returned null, so a FIRST LEVEL HAD NO INSTITUTIONS AT ALL.
+    ("A FIRST LEVEL LOSES EVERY INSTITUTION AGAIN", FACILITY,
+     "            if (coordinate == null || coordinate.Rooms == null) { return null; }",
+     "            if (coordinate == null || coordinate.Rooms == null || coordinate.Depth <= 1) { return null; }",
+     FACILITY_PROOF),
+
+    ("the arrival stops staying sparse, so the yellow rooms become a complex", FACILITY,
+     "                if (RoomArchetypeService.EffectiveDepth(coordinate, room, coordinate.Depth) <= 1)"
+     + chr(10) + "                { continue; }" + chr(10), "", FACILITY_PROOF),
+
+    ("a complex shrinks back to four rooms while the proof models six", FACILITY,
+     "        private const int MaxRooms = 6;", "        private const int MaxRooms = 4;",
+     FACILITY_PROOF),
+
+    ("the eligible share drifts from the model that mirrors it", FACILITY,
+     "        private const float EligibleShare = 0.6f;",
+     "        private const float EligibleShare = 0.45f;", FACILITY_PROOF),
+
+    ("AN ARCHETYPE GOES BACK TO HOLDING NOTHING WORTH CARRYING OUT", ARCHETYPES,
+     "      <li>" + chr(10) + "        <kind>CategoryMember</kind>" + chr(10)
+     + "        <category>Apparel</category>" + chr(10) + "        <count>1~3</count>" + chr(10)
+     + "        <chance>0.8</chance>" + chr(10) + "      </li>" + chr(10), "", FACILITY_PROOF),
+
     # ------------------------- the fault that disabled a whole scenario on turn one
     ("THE CORPORATE START DISABLES ITSELF ON TURN ONE AGAIN", SERVICES,
      '                    insightOperationId = done ? projectId + ":insight" : null,' + chr(10), "",
@@ -321,7 +371,9 @@ for label, path, old, new, command in PLANTS:
     if original.count(old) < 1:
         print("PLANT SETUP BROKEN (0 matches): %s" % label)
         sys.exit(2)
+    _rr_mark(path, label)
     write_verified(path, original.replace(old, new, 1))
+    _rr_unmark()
     try:
         code = subprocess.call([sys.executable, command],
                                stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
@@ -331,6 +383,7 @@ for label, path, old, new, command in PLANTS:
         # protected: a leaked devnull handle raised OSError mid-run twice
         # and left planted source on disk both times.
         write_verified(path, original)
+        _rr_unmark()
     ok = code != 0
     caught += 1 if ok else 0
     print("%s  %s" % ("CAUGHT " if ok else "MISSED!", label))

@@ -6338,3 +6338,79 @@ fallback.
 `298068EE470739CF278A6972F3723770BFE2C1631C9B2386C7D65ADCE9E1076E`, measured after the version
 bump, reproduced by two clean recompiles. **Fourteen checkers pass, forty-five proofs hold. 606 of
 606** planted faults caught across sixteen suites.
+
+---
+
+## Session 2026-10-01 - institutions on every level, and loot in all of them (0.12.69-dev)
+
+**Verbatim user quotes:** *"and facilitys and :\"buildings and neighboorhoods and complexes and
+shools and hospitals and military and storages need loot inside of them too"*; *"get to it"*.
+
+**Files touched:** `Generation/FacilityPlanner.cs`,
+`Defs/RimroomsRoomArchetypeDefs/RR_RoomArchetypes.xml`, `tools/check-plant-residue.py` (new,
+checker fifteen), all sixteen plant suites, `proof-facilities.py`,
+`.local/harness/PlannerProbe/Program.cs`.
+
+**Mod register.** Nothing applied. The facility grouping is our own, and the loot slots name Core's
+own thing categories.
+
+### A first level had no institutions, and it is the fourth system found the same way
+
+`FacilityPlanner.Anchors` opened with `coordinate.Depth <= 1` and returned null, so **a first
+level had no school, no hospital, no military post and no storage complex** -- only rooms that
+each happened to have a bench. The archetypes for all four already existed.
+
+That is the fourth system found gated on the coordinate's own depth rather than on distance from
+the arrival, after the archetypes, the inhabitants and the shapes. The rule that replaced it
+everywhere else applies here: **distance from the spawn hall counts as depth.** The gate's intent
+-- the yellow arrival stays sparse -- is kept and now measured **per room**, through the same
+`RoomArchetypeService.EffectiveDepth` every other reader uses, so a room the dressing treats as
+deep and the facility planner treats as shallow cannot exist.
+
+**And a complex is allowed to be one.** `MaxRooms` was four, written when a level was a
+twenty-four-room line and four rooms was a sixth of it. A braided maze at depth 2 has forty-eight
+rooms and the owner asked for *"neighboorhoods and complexes"* by name. Six, with the eligible
+share raised from 0.45 to 0.6 -- still under two thirds, because single rooms of their own kind are
+what an institution stands out against.
+
+Measured by the probe, which now counts them: **depth 1 forms 2.5 institutions per level with the
+largest at six rooms**, rising to 5.0 per level from depth 3. Before this, every depth-1 level
+formed **zero**.
+
+### Twelve of sixteen archetypes already held loot. Four held none
+
+The office, the nursery, the gallery and the duplicate. Each has a loot slot now, in the kind a
+player would expect to find there, drawn from Core's own categories.
+
+### The facilities proof was a model with no source claims, and it had drifted
+
+`proof-facilities.py` mirrors the planner in Python and carried `MAX_ROOMS = 4` and
+`ELIGIBLE_SHARE = 0.45` with a comment saying they *"must mirror FacilityPlanner.EligibleShare
+exactly"*. **Nothing checked that they did.** The C# moved to 6 and 0.6 and the proof kept passing,
+asserting bounds against its own copy of numbers the code no longer used -- and its summary line
+still announced *"bounded 2-4"*.
+
+`proof-coordinate-layout.py` had already written the rule down: *"the model asserts the property,
+the source claim asserts the code still computes it. One without the other is exactly the
+mention-versus-assertion defect this project keeps meeting."* This proof had the model and none of
+the claims. It reads the constants out of `FacilityPlanner.cs` now, and claims the removed gate,
+the per-room measurement, and that **every** archetype holds something worth carrying out.
+
+### Checker fifteen, because the restore cannot survive being killed
+
+**A plant suite left a deliberate fault in the working tree for the third time** -- this run it was
+`!anchor.Destroyed` deleted out of `RimroomsPortalNetwork.cs`, found by a proof refusing rather
+than by anybody looking. The sweep had been interrupted between the plant and the restore.
+
+The `finally` added earlier handles an exception and does nothing for a killed process. So every
+suite now writes `.local/register/.plant-in-progress` naming the file and the plant before it
+mutates anything, and deletes it in the same `finally`. `tools/check-plant-residue.py` refuses
+while that sentinel exists and prints the path to restore. **Verified both ways**: clean when
+nothing is planted, refusing when something is, and the sentinel is gitignored.
+
+A false alarm costs one command. A missed one ships a deliberate fault.
+
+**204 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`8E9ACA791C636A9636F3BAACD243DAB78BA720D7A102F250327EC9884089511F`, measured after the version
+bump, reproduced by two clean recompiles. **Fifteen checkers pass, forty-five proofs hold. 611 of
+611** planted faults caught across sixteen suites.

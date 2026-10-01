@@ -23,6 +23,26 @@ SRC = "src/RimroomsAsyncIndustries"
 ROOF = SRC + "/ConnectedWork/Providers/RoofWorkProvider.cs"
 PANE = SRC + "/UI/OperationsFacilities.cs"
 
+
+# **THE RESTORE DOES NOT SURVIVE THE PROCESS BEING KILLED.** `finally` handles an exception; it
+# does nothing for an interrupted sweep, and that is how a planted fault reached the working tree
+# for the third time. The sentinel makes it visible: `tools/check-plant-residue.py` refuses while
+# this file exists and prints the path to restore.
+_RR_SENTINEL = os.path.join(".local", "register", ".plant-in-progress")
+
+
+def _rr_mark(path, label):
+    io.open(_RR_SENTINEL, "w", encoding="utf-8", newline="").write(
+        u"planted %r into %s" % (label, path))
+
+
+def _rr_unmark():
+    try:
+        os.remove(_RR_SENTINEL)
+    except OSError:
+        pass
+
+
 PLANTS = [
     ("the roof provider grows a Backrooms exception of its own", ROOF,
      "            Area area = map.areaManager == null ? null : map.areaManager.NoRoof;",
@@ -65,7 +85,9 @@ for label, path, old, new in PLANTS:
     if original.count(old) != 1:
         print("PLANT SETUP BROKEN (%d matches): %s" % (original.count(old), label))
         sys.exit(2)
+    _rr_mark(path, label)
     write_verified(path, original.replace(old, new, 1), "plant into")
+    _rr_unmark()
     try:
         code = subprocess.call([sys.executable, ".local/register/proof-areas-and-debrief.py"],
                                stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
@@ -74,6 +96,7 @@ for label, path, old, new in PLANTS:
         # instrument safe, and it was the one line not protected: a leaked devnull handle raised
         # OSError mid-run twice and left planted source on disk both times.
         write_verified(path, original, "restore")
+        _rr_unmark()
     ok = code != 0
     caught += 1 if ok else 0
     print("%s  %s" % ("CAUGHT " if ok else "MISSED!", label))

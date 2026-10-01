@@ -21,6 +21,26 @@ INHAB = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsInhabitantDefs/RR_Inha
 GIVERS = "Mod/Rimrooms - Async Industries/1.6/Defs/WorkGiverDefs/RR_ConnectedWork.xml"
 
 # (label, path, old, new, expected exit)
+
+# **THE RESTORE DOES NOT SURVIVE THE PROCESS BEING KILLED.** `finally` handles an exception; it
+# does nothing for an interrupted sweep, and that is how a planted fault reached the working tree
+# for the third time. The sentinel makes it visible: `tools/check-plant-residue.py` refuses while
+# this file exists and prints the path to restore.
+_RR_SENTINEL = os.path.join(".local", "register", ".plant-in-progress")
+
+
+def _rr_mark(path, label):
+    io.open(_RR_SENTINEL, "w", encoding="utf-8", newline="").write(
+        u"planted %r into %s" % (label, path))
+
+
+def _rr_unmark():
+    try:
+        os.remove(_RR_SENTINEL)
+    except OSError:
+        pass
+
+
 PLANTS = [
     # The historical defect was `maxTechLevel` on a room archetype. It cannot be replanted
     # verbatim, because 0.8.7-dev fixed it by **adding the field to the class** rather than
@@ -75,7 +95,9 @@ for label, path, old, new, want in PLANTS:
     if original.count(old) < 1:
         print("PLANT SETUP BROKEN (0 matches): %s" % label)
         sys.exit(2)
+    _rr_mark(path, label)
     write_verified(path, original.replace(old, new, 1))
+    _rr_unmark()
     try:
         code = subprocess.call([sys.executable, CHECK],
                                stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
@@ -85,6 +107,7 @@ for label, path, old, new, want in PLANTS:
         # protected: a leaked devnull handle raised OSError mid-run twice
         # and left planted source on disk both times.
         write_verified(path, original)
+        _rr_unmark()
     ok = code == want
     caught += 1 if ok else 0
     print("%s  %s (exit %d, wanted %d)"

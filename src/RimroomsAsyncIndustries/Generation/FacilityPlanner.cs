@@ -49,16 +49,25 @@ namespace RimroomsAsyncIndustries.Generation
         private const int MinRooms = 2;
 
         /// <summary>
-        /// Largest. Beyond four the coordinate stops having variety in it, and the owner's
-        /// condition is that a solo group can read the place and get out of it.
+        /// Largest.
+        ///
+        /// **This was four**, written when a level was a twenty-four-room line and four rooms was
+        /// a sixth of it. A braided maze at depth 2 has forty-eight rooms, and the owner has asked
+        /// for *"neighboorhoods and complexes"* by name -- which is a word for something bigger
+        /// than four rooms. The condition it is still held to is theirs: a solo group has to be
+        /// able to read the place and get out of it, which is why this is six and not twelve.
         /// </summary>
-        private const int MaxRooms = 4;
+        private const int MaxRooms = 6;
 
         /// <summary>
-        /// Share of eligible rooms that may end up inside a facility. Under a half on purpose:
-        /// single rooms of their own kind are what a facility stands out against.
+        /// Share of eligible rooms that may end up inside a facility.
+        ///
+        /// Still under two thirds on purpose -- single rooms of their own kind are what a facility
+        /// stands out against, and a floor that is nothing but institutions has no institutions.
+        /// Raised from 0.45 with `MaxRooms`, because the owner asked for complexes and a maze has
+        /// the room count to carry them.
         /// </summary>
-        private const float EligibleShare = 0.45f;
+        private const float EligibleShare = 0.6f;
 
         private static string cachedKey;
         private static Dictionary<int, int> cachedAnchors;
@@ -80,7 +89,18 @@ namespace RimroomsAsyncIndustries.Generation
 
         private static Dictionary<int, int> Anchors(CoordinateRecord coordinate)
         {
-            if (coordinate == null || coordinate.Rooms == null || coordinate.Depth <= 1) { return null; }
+            // **NO DEPTH GATE.** This read `coordinate.Depth <= 1`, so **a first level had no
+            // facilities at all** -- no school, no hospital, no military post, no storage complex,
+            // just rooms that each happened to have a bench. Owner: *"facilitys and buildings and
+            // neighboorhoods and complexes and shools and hospitals and military and storages need
+            // loot inside of them too"*.
+            //
+            // It is the fourth system found gated on the coordinate's own depth rather than on
+            // distance from the arrival, and the rule that replaced it everywhere else applies
+            // here: **distance from the spawn hall counts as depth.** The gate's intent -- the
+            // yellow arrival stays sparse -- is kept and measured per room in `Plan`, which is
+            // where the eligible set is decided.
+            if (coordinate == null || coordinate.Rooms == null) { return null; }
             string key = coordinate.Id + ":" + coordinate.Seed + ":" + coordinate.Rooms.Count;
             if (string.Equals(key, cachedKey, StringComparison.Ordinal)) { return cachedAnchors; }
             cachedAnchors = Plan(coordinate);
@@ -107,6 +127,14 @@ namespace RimroomsAsyncIndustries.Generation
                 byIndex[room.Index] = room;
                 if (string.Equals(room.FamilyId, "threshold_room", StringComparison.Ordinal)) { continue; }
                 if (CoordinatePressureLadder.IsQuietRoom(coordinate.Seed, room.Index, total)) { continue; }
+                // **THE ARRIVAL STAYS SPARSE, AND THAT IS MEASURED PER ROOM.** This is the
+                // property the old `coordinate.Depth <= 1` gate was protecting, kept -- the hall
+                // and its immediate neighbours are never part of an institution, and everything
+                // further out can be. The SAME function the archetypes, the inhabitants, the
+                // events and the wall materials all read, so a room the dressing treats as deep
+                // and the facility planner treats as shallow cannot exist.
+                if (RoomArchetypeService.EffectiveDepth(coordinate, room, coordinate.Depth) <= 1)
+                { continue; }
                 eligible.Add(room.Index);
             }
             if (eligible.Count < MinRooms) { return anchors; }

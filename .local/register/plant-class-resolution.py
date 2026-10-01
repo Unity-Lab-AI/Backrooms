@@ -27,6 +27,26 @@ GENSTEP = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsCoordinateDefs/RR_Co
 COLORABLE = "          <li>\n            <compClass>CompColorable</compClass>\n          </li>"
 
 # (label, path, old, new, target)
+
+# **THE RESTORE DOES NOT SURVIVE THE PROCESS BEING KILLED.** `finally` handles an exception; it
+# does nothing for an interrupted sweep, and that is how a planted fault reached the working tree
+# for the third time. The sentinel makes it visible: `tools/check-plant-residue.py` refuses while
+# this file exists and prints the path to restore.
+_RR_SENTINEL = os.path.join(".local", "register", ".plant-in-progress")
+
+
+def _rr_mark(path, label):
+    io.open(_RR_SENTINEL, "w", encoding="utf-8", newline="").write(
+        u"planted %r into %s" % (label, path))
+
+
+def _rr_unmark():
+    try:
+        os.remove(_RR_SENTINEL)
+    except OSError:
+        pass
+
+
 PLANTS = [
     ("THE SEVENTH-LAUNCH DEFECT, REPLANTED VERBATIM: Class=\"CompProperties_Colorable\"",
      PATCH, COLORABLE, '          <li Class="CompProperties_Colorable" />', INTEGRITY),
@@ -104,7 +124,9 @@ for label, path, old, new, target in PLANTS:
     if hits != 1:
         print("PLANT SETUP BROKEN (%d matches, need exactly 1): %s" % (hits, label))
         sys.exit(2)
+    _rr_mark(path, label)
     write_verified(path, original.replace(old, new, 1))
+    _rr_unmark()
     try:
         code = run(target)
     finally:
@@ -113,6 +135,7 @@ for label, path, old, new, target in PLANTS:
         # protected: a leaked devnull handle raised OSError mid-run twice
         # and left planted source on disk both times.
         write_verified(path, original)
+        _rr_unmark()
     if io.open(path, encoding="utf-8").read() != original:
         sys.stderr.write("FATAL: %s not restored -- CHECK BY HAND\n" % path)
         sys.exit(3)

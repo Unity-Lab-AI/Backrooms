@@ -2073,7 +2073,7 @@ Owner, verbatim:
 
 ---
 
-## The lab name comes out, and every level becomes a maze - 2026-10-01 (0.12.68-dev) - PARTLY DONE
+## The lab name comes out, and every level becomes a maze - 2026-10-01 (0.12.68-dev, 0.12.69-dev) - DONE
 
 Owner, verbatim:
 
@@ -2096,7 +2096,7 @@ Owner, verbatim:
   and calls it a *serpentine*; it is one line that snakes, by construction
 - [x] **"i want them to be mazes like xcrazy like all levels mazes do you unerstand!"**
 - [x] **"lsd crazy shaped mazes"**
-- [~] **"and facilitys and buildings and neighboorhoods and complexes and shools and hospitals and
+- [x] **"and facilitys and buildings and neighboorhoods and complexes and shools and hospitals and
   military and storages need loot inside of them too"**
 
 ---

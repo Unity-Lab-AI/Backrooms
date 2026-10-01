@@ -30,6 +30,8 @@ namespace PlannerProbe
         private static MethodInfo shapeDepthOf;
         private static MethodInfo onRouteCross;
         private static MethodInfo buildCandidate;
+        private static MethodInfo anchorFor;
+        private static FieldInfo coordinateRooms;
         private static MethodInfo candidateIsSafe;
         private static int candidateBudget;
 
@@ -52,6 +54,11 @@ namespace PlannerProbe
             Type builder = assembly.GetType("RimroomsAsyncIndustries.Generation.RoomContentBuilder", true);
             onRouteCross = builder.GetMethod("OnRouteCross", Statics);
             buildCandidate = planner.GetMethod("Build", Statics);
+            Type facilities = assembly.GetType(
+                "RimroomsAsyncIndustries.Generation.FacilityPlanner", true);
+            anchorFor = facilities.GetMethod("AnchorFor", Statics);
+            coordinateRooms = coordinateType.GetField("rooms",
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             candidateIsSafe = planner.GetMethod("CandidateIsSafe", Statics);
             candidateBudget = (int)planner.GetField("CandidateBudget", Statics).GetValue(null);
 
@@ -61,6 +68,7 @@ namespace PlannerProbe
             int failures = 0;
             int totalBackToBack = 0;
             bool fellBackEverywhere = false;
+            bool noInstitutions = false;
             foreach (int depth in new[] { 1, 2, 3, 4, 5, 6, 8 })
             {
                 int refused = 0;
@@ -71,6 +79,8 @@ namespace PlannerProbe
                 int starved = 0;
                 int shapedRooms = 0;
                 int fellBack = 0;
+                int institutions = 0;
+                int biggest = 0;
                 int totalRooms = 0;
                 long rockTotal = 0;
                 long interiorTotal = 0;
@@ -115,6 +125,25 @@ namespace PlannerProbe
                         reasons.Add("candidate refused: " + key + " -- " + Describe((IList)built));
                     }
                     if (safeCandidates == 0) { fellBack++; }
+
+                    // **DO INSTITUTIONS ACTUALLY FORM?** `FacilityPlanner` was gated on
+                    // `coordinate.Depth <= 1`, so a first level had none -- and nothing in
+                    // the battery could see it, because the planner existed, was called,
+                    // and returned an empty map. Seventh instance of that shape this run.
+                    coordinateRooms.SetValue(coordinate, layout);
+                    var groups = new Dictionary<int, int>();
+                    foreach (object room in layout)
+                    {
+                        int index = Field<int>(room, "index");
+                        var anchor = (int)anchorFor.Invoke(
+                            null, new object[] { coordinate, index });
+                        if (anchor < 0) { continue; }
+                        int seen;
+                        groups[anchor] = groups.TryGetValue(anchor, out seen) ? seen + 1 : 1;
+                    }
+                    institutions += groups.Count;
+                    foreach (int size in groups.Values)
+                    { if (size > biggest) { biggest = size; } }
                     backToBack += BackToBackPairs(layout);
 
                     // **CAN EVERY ROOM TAKE ITS LANDMARK?** A room's walls, pillar lattice and
@@ -157,15 +186,18 @@ namespace PlannerProbe
                 totalBackToBack += backToBack;
                 string verdict = refused == 0 ? "OK  " : "FAIL";
                 Console.WriteLine(string.Format(
-                    "{0} depth {1,-2} refused {2,3}/{3} rooms {4,4:0.0} widest {5,3} pairs {6,4} margin {7,3} starved {8,4} shaped {9,5:0.0}% rock {10,4:0.0}% fellback {11,4}",
+                    "{0} depth {1,-2} refused {2,3}/{3} rooms {4,4:0.0} widest {5,3} pairs {6,4} margin {7,3} starved {8,4} shaped {9,5:0.0}% rock {10,4:0.0}% fellback {11,4} institutions {12,5:0.0} biggest {13,3}",
                     verdict, depth, refused, Seeds, refused == Seeds ? 0.0 : (double)rooms / (Seeds - refused),
                     widest, backToBack, tightest == int.MaxValue ? -1 : tightest, starved,
                     totalRooms == 0 ? 0.0 : 100.0 * shapedRooms / totalRooms,
                     interiorTotal == 0 ? 0.0 : 100.0 * rockTotal / interiorTotal,
-                    fellBack));
+                    fellBack,
+                    refused == Seeds ? 0.0 : (double)institutions / (Seeds - refused),
+                    biggest));
                 foreach (string reason in reasons) { Console.WriteLine("        reason: " + reason); }
                 if (refused != 0) { failures++; }
                 if (fellBack >= Seeds) { fellBackEverywhere = true; }
+                if (institutions == 0) { noInstitutions = true; }
             }
 
             Console.WriteLine();
@@ -178,6 +210,13 @@ namespace PlannerProbe
             {
                 Console.WriteLine("PROBE FAILED: at least one depth band built no real candidate "
                                   + "at all and the fallback caught every seed.");
+                return 1;
+            }
+            if (noInstitutions)
+            {
+                Console.WriteLine("PROBE FAILED: a depth band formed no institutions at "
+                                  + "all, so no school, hospital, armoury or storage "
+                                  + "complex can exist there.");
                 return 1;
             }
             if (totalBackToBack == 0)
