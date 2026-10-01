@@ -166,8 +166,13 @@ namespace RimroomsAsyncIndustries.Generation
                     if (candidate != null && candidate.Index == anchor) { dresser = candidate; break; }
                 }
             }
+            // **Distance from the spawn hall counts as depth.** A room beside the hall is
+            // dressed as the shallow yellow rooms always were; one a dozen links out is dressed
+            // like somewhere several levels down. Owner: *"variations and oddity and events and
+            // locations and places that vary more even on the first level"*.
+            int dressingDepth = RoomArchetypeService.EffectiveDepth(coordinate, dresser, depth);
             RimroomsRoomArchetypeDef archetype =
-                RoomArchetypeService.Select(dresser.familyId, depth, seed, dresser.index);
+                RoomArchetypeService.Select(dresser.familyId, dressingDepth, seed, dresser.index);
             if (archetype == null || archetype.slots == null) { return; }
 
             // Slots start well past the family fixtures' slot indices so the quadrant spread
@@ -177,7 +182,7 @@ namespace RimroomsAsyncIndustries.Generation
             {
                 RoomFurnitureSlot slot = archetype.slots[index];
                 if (!RoomArchetypeService.SlotAppears(slot, seed, index)) { continue; }
-                ThingDef definition = RoomArchetypeService.Resolve(archetype, slot, seed, index, depth);
+                ThingDef definition = RoomArchetypeService.Resolve(archetype, slot, seed, index, dressingDepth);
                 if (definition == null) { continue; }
 
                 int wanted = RoomArchetypeService.SlotCount(slot, seed, index);
@@ -205,6 +210,39 @@ namespace RimroomsAsyncIndustries.Generation
         /// because the clue system and the saved layout depend on it, and a shared code path
         /// with a "do not throw" switch is exactly how that guarantee gets lost later.
         /// </summary>
+        /// <summary>
+        /// Where a fixture would like to stand: anywhere in the room, not a corner.
+        ///
+        /// Owner, after walking the first level: *"the furnature is only in the four corners of
+        /// the rooms that nots very random"*. **They were reading the code off the screen.** The
+        /// anchor used to be one of exactly four cells -- each corner inset by two -- and every
+        /// candidate cell was sorted by distance to it, so four slots cycling four quadrants
+        /// filled the corners and left the middle bare.
+        ///
+        /// Deterministic, because a coordinate has to be the same place on every visit: drawn
+        /// from the same seed and slot the rest of the placement already uses.
+        ///
+        /// **This only moves where the search starts.** The caller still walks every cell in the
+        /// room, so a cramped room places exactly what it placed before.
+        /// </summary>
+        private static IntVec3 ScatterAnchor(RoomRecord room, int seed, int slot)
+        {
+            CellRect inner = room.Bounds.ContractedBy(2);
+            if (inner.Width < 1 || inner.Height < 1) { inner = room.Bounds.ContractedBy(1); }
+            if (inner.Width < 1 || inner.Height < 1) { return room.Bounds.CenterCell; }
+            return new IntVec3(inner.minX + Scatter(seed, slot, "x", inner.Width), 0,
+                inner.minZ + Scatter(seed, slot, "z", inner.Height));
+        }
+
+        /// <summary>A stable non-negative draw below <paramref name="bound"/>.</summary>
+        private static int Scatter(int seed, int slot, string key, int bound)
+        {
+            if (bound < 1) { return 0; }
+            int derived = Company.CampaignSeed.Derive(seed, key + ":" + slot, 1);
+            if (derived < 0) { derived = -derived; }
+            return derived % bound;
+        }
+
         private static Thing TryPlace(Map map, RoomRecord room, CoordinateRecord coordinate,
             ThingDef definition,
             HashSet<IntVec3> reserved, int seed, int slot, bool minified, int count)
@@ -246,10 +284,10 @@ namespace RimroomsAsyncIndustries.Generation
                 return null;
             }
 
-            int quadrant = (seed % 4 + slot) % 4;
-            IntVec3 preferred = new IntVec3(quadrant % 2 == 0 ? room.x + 2 : room.Bounds.maxX - 2, 0,
-                quadrant < 2 ? room.z + 2 : room.Bounds.maxZ - 2);
-            Rot4 rotation = slot % 2 == 0 ? Rot4.North : Rot4.South;
+            IntVec3 preferred = ScatterAnchor(room, seed, slot);
+            // All four facings, not two. A room where everything faces north or south reads
+            // as arranged; the Backrooms are not arranged.
+            Rot4 rotation = new Rot4(Scatter(seed, slot, "facing", 4));
             CellRect interior = room.Bounds.ContractedBy(1);
             foreach (IntVec3 cell in interior.Cells
                 .OrderBy(c => c.DistanceToSquared(preferred)).ThenBy(c => c.x).ThenBy(c => c.z))
@@ -291,10 +329,10 @@ namespace RimroomsAsyncIndustries.Generation
                 if (thing == null) { throw new InvalidOperationException("RR_Generation_InvalidSalvageDef"); }
             }
             thing.stackCount = count;
-            int quadrant = (seed % 4 + slot) % 4;
-            IntVec3 preferred = new IntVec3(quadrant % 2 == 0 ? room.x + 2 : room.Bounds.maxX - 2, 0,
-                quadrant < 2 ? room.z + 2 : room.Bounds.maxZ - 2);
-            Rot4 rotation = slot % 2 == 0 ? Rot4.North : Rot4.South;
+            IntVec3 preferred = ScatterAnchor(room, seed, slot);
+            // All four facings, not two. A room where everything faces north or south reads
+            // as arranged; the Backrooms are not arranged.
+            Rot4 rotation = new Rot4(Scatter(seed, slot, "facing", 4));
             foreach (IntVec3 cell in room.Bounds.ContractedBy(1).Cells.OrderBy(c => c.DistanceToSquared(preferred)).ThenBy(c => c.x).ThenBy(c => c.z))
             {
                 CellRect footprint = GenAdj.OccupiedRect(cell, rotation, thing.def.size);

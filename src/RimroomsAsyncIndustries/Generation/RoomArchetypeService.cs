@@ -1,4 +1,5 @@
 using System;
+using RimroomsAsyncIndustries.Company;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -47,6 +48,96 @@ namespace RimroomsAsyncIndustries.Generation
         /// emptiness *is* the look; filling them with laboratory equipment would destroy the
         /// exact image the setting rests on.
         /// </summary>
+        /// <summary>Links walked before a room counts as one level deeper.</summary>
+        public const int LinksPerDepthBand = 3;
+
+        /// <summary>The most a room's distance can add to its depth.</summary>
+        public const int MaximumDistanceBand = 4;
+
+        /// <summary>
+        /// **Distance from the spawn hall counts as depth.** Owner: *"the normal yellow backrooms
+        /// look isnt the whole floor but the main spanw room and going deeping in can mean the
+        /// numner of branch hallways and rooms distancing from the main portal spawn ... with
+        /// variations and oddity ... even on the first level"*.
+        ///
+        /// Every archetype declares `minDepth` of 2 or more and `Select` refuses depth 1
+        /// outright, so a first level was **built to be empty** and the owner walked one and said
+        /// so. Rather than lowering fourteen thresholds, the room's own distance is added to the
+        /// depth: near the hall nothing qualifies and the yellow rooms stay yellow, and the
+        /// further out a room is the more of the existing library it can reach.
+        ///
+        /// Measured in LINKS, because the link graph is what a player walks -- a room across the
+        /// map that is two doors from the hall is still near it.
+        ///
+        /// Capped, so a first level cannot reach the deepest content at its far edge and leave
+        /// nothing for the sixth.
+        /// </summary>
+        public static int EffectiveDepth(CoordinateRecord coordinate, RoomRecord room, int depth)
+        {
+            if (coordinate == null || room == null) { return depth; }
+            int hops = HopsFromThreshold(coordinate, room.Index);
+            if (hops < 0) { return depth; }
+            int band = hops / LinksPerDepthBand;
+            if (band > MaximumDistanceBand) { band = MaximumDistanceBand; }
+            return depth + band;
+        }
+
+        /// <summary>
+        /// Links from the threshold room to this one, or -1 when it cannot be reached.
+        ///
+        /// Breadth-first over the saved link graph, cached per coordinate because every room in
+        /// the level asks the same question during one dressing pass.
+        /// </summary>
+        private static int HopsFromThreshold(CoordinateRecord coordinate, int roomIndex)
+        {
+            Dictionary<int, int> hops;
+            if (!hopCache.TryGetValue(coordinate.Id, out hops) || hops == null)
+            {
+                hops = MeasureHops(coordinate);
+                hopCache[coordinate.Id] = hops;
+            }
+            int found;
+            return hops.TryGetValue(roomIndex, out found) ? found : -1;
+        }
+
+        private static readonly Dictionary<string, Dictionary<int, int>> hopCache =
+            new Dictionary<string, Dictionary<int, int>>();
+
+        private static Dictionary<int, int> MeasureHops(CoordinateRecord coordinate)
+        {
+            var hops = new Dictionary<int, int>();
+            if (coordinate.Rooms == null || coordinate.Rooms.Count == 0) { return hops; }
+            var byIndex = new Dictionary<int, RoomRecord>();
+            for (int index = 0; index < coordinate.Rooms.Count; index++)
+            {
+                RoomRecord room = coordinate.Rooms[index];
+                if (room != null) { byIndex[room.Index] = room; }
+            }
+            // The threshold is room zero: where the player arrives, and the hall everything is
+            // measured from.
+            if (!byIndex.ContainsKey(0)) { return hops; }
+            var queue = new Queue<int>();
+            queue.Enqueue(0);
+            hops[0] = 0;
+            while (queue.Count > 0)
+            {
+                int current = queue.Dequeue();
+                RoomRecord room;
+                if (!byIndex.TryGetValue(current, out room) || room.links == null) { continue; }
+                for (int index = 0; index < room.links.Count; index++)
+                {
+                    int next = room.links[index];
+                    if (hops.ContainsKey(next) || !byIndex.ContainsKey(next)) { continue; }
+                    hops[next] = hops[current] + 1;
+                    queue.Enqueue(next);
+                }
+            }
+            return hops;
+        }
+
+        /// <summary>Forget the measured graphs; the maps they describe belong to another game.</summary>
+        public static void ClearHopCache() { hopCache.Clear(); }
+
         public static RimroomsRoomArchetypeDef Select(string familyId, int depth, int seed,
             int roomIndex)
         {

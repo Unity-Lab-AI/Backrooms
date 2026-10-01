@@ -84,7 +84,12 @@ namespace RimroomsAsyncIndustries.Threats
         {
             if (map == null || coordinate == null) { return; }
             int seed = DestinationServiceSeed(coordinate);
-            List<RimroomsInhabitantDef> legal = Legal(coordinate.Depth,
+            // **Drawn against what this level can REACH, not against its doorstep.** Every
+            // dead family declares minDepth 2 or more, so a depth-1 coordinate produced an empty
+            // list and the owner walked a level with no bodies in it at all. The reach is the
+            // coordinate's depth plus how far a player can walk from the spawn hall, which is
+            // the same rule the dressing uses.
+            List<RimroomsInhabitantDef> legal = Legal(ReachOf(coordinate),
                 CoordinatePressureLadder.Band.Hostile, true);
             if (legal.Count == 0) { return; }
 
@@ -98,6 +103,38 @@ namespace RimroomsAsyncIndustries.Threats
                     if (!PlaceCorpse(map, coordinate, family, seed + made * 29, reserved)) { break; }
                 }
             }
+        }
+
+        /// <summary>
+        /// The deepest content this coordinate can hold anywhere in it.
+        ///
+        /// Its own depth plus the distance band a room can earn by being far from the spawn
+        /// hall. **A level is not one depth** -- the room you arrive in and the room twelve
+        /// doors away are different places, and gating on the coordinate's own number treated
+        /// them as the same.
+        /// </summary>
+        internal static int ReachOf(CoordinateRecord coordinate)
+        {
+            int depth = coordinate == null || coordinate.Depth < 1 ? 1 : coordinate.Depth;
+            return depth + Generation.RoomArchetypeService.MaximumDistanceBand;
+        }
+
+        /// <summary>
+        /// Whether this room is far enough from the spawn hall to hold this family.
+        ///
+        /// The reach above says what the LEVEL can hold; this says where. Without it a depth-1
+        /// coordinate would scatter the deepest dead across the yellow rooms by the door, which
+        /// is the opposite of *"places that vary more"* -- it would make the arrival the
+        /// strangest part.
+        /// </summary>
+        internal static bool RoomEarns(CoordinateRecord coordinate, RoomRecord room,
+            RimroomsInhabitantDef family)
+        {
+            if (family == null) { return false; }
+            if (coordinate == null || room == null) { return true; }
+            int depth = coordinate.Depth < 1 ? 1 : coordinate.Depth;
+            return Generation.RoomArchetypeService.EffectiveDepth(coordinate, room, depth)
+                >= family.minDepth;
         }
 
         private static List<RimroomsInhabitantDef> Legal(int depth,
@@ -158,7 +195,7 @@ namespace RimroomsAsyncIndustries.Threats
             if (kind == null) { return false; }
 
             IntVec3 cell;
-            if (!FindCell(map, coordinate, seed, out cell)) { return false; }
+            if (!FindCell(map, coordinate, seed, family, out cell)) { return false; }
 
             Faction faction = FactionFor(family);
             Pawn pawn;
@@ -207,7 +244,7 @@ namespace RimroomsAsyncIndustries.Threats
             if (kind == null) { return false; }
 
             IntVec3 cell;
-            if (!FindCell(map, coordinate, seed, out cell)) { return false; }
+            if (!FindCell(map, coordinate, seed, family, out cell)) { return false; }
             if (reserved != null && reserved.Contains(cell)) { return false; }
 
             Pawn pawn;
@@ -330,6 +367,18 @@ namespace RimroomsAsyncIndustries.Threats
         /// so the empty half of a space stays empty of people as well as of furniture.
         /// </summary>
         private static bool FindCell(Map map, CoordinateRecord coordinate, int seed, out IntVec3 cell)
+        { return FindCell(map, coordinate, seed, null, out cell); }
+
+        /// <summary>
+        /// A cell for somebody, in a room far enough from the spawn hall to deserve them.
+        ///
+        /// **`family` null means any room**, which is what every caller that does not care about
+        /// distance passes. When it is given, `RoomEarns` is what stops a depth-1 coordinate
+        /// scattering the deepest dead across the yellow rooms by the door -- the arrival must
+        /// not be the strangest part of the level.
+        /// </summary>
+        private static bool FindCell(Map map, CoordinateRecord coordinate, int seed,
+            RimroomsInhabitantDef family, out IntVec3 cell)
         {
             cell = IntVec3.Invalid;
             if (coordinate.Rooms == null || coordinate.Rooms.Count == 0) { return false; }
@@ -345,6 +394,8 @@ namespace RimroomsAsyncIndustries.Threats
                 if (CoordinatePressureLadder.IsQuietRoom(coordinate.Seed, room.Index,
                     coordinate.Rooms.Count))
                 { continue; }
+                // Distance from the spawn hall has to earn this family.
+                if (family != null && !RoomEarns(coordinate, room, family)) { continue; }
 
                 foreach (IntVec3 candidate in room.Bounds.ContractedBy(1).Cells
                     .OrderBy(c => Gen.HashCombineInt(seed, c.x * 1000 + c.z)))

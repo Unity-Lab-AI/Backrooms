@@ -341,7 +341,7 @@ namespace RimroomsAsyncIndustries.Generation
                 // At level 0 every room takes the band's wood, unchanged.
                 ThingDef roomWallStuff = coordinate.Depth <= CoordinateMaterials.CoherentDepth
                     ? wallStuff
-                    : (CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index) ?? wallStuff);
+                    : (CoordinateMaterials.StuffForRoom(wallDef, coordinate, room, room.Index) ?? wallStuff);
                 BuildRoomWalls(room, coordinate.Rooms, map, wallDef, roomWallStuff);
                 // Owner direction, 2026-09-30, verbatim: *"u can use walls as pillars making the
                 // 0 level rooms be grand large spaces"*. A depth-1 hall is eighty cells across,

@@ -96,6 +96,13 @@ namespace RimroomsAsyncIndustries.Generation
         public override void FinalizeInit()
         {
             base.FinalizeInit();
+            // **Before the Contained check, because it applies to every map.** The guaranteed-
+            // frontier cache holds `Thing` references belonging to the game that was loaded
+            // before this one; keeping them would hand a new game the previous game's doors.
+            // This runs on every map's FinalizeInit, and clearing twice costs nothing.
+            Portals.GuaranteedFrontiers.Clear();
+            // Same reasoning: the measured link graphs describe maps the previous game owned.
+            RoomArchetypeService.ClearHopCache();
             if (!Contained) { return; }
             // On load, correct anything a previous session or an absent mod left behind before
             // the player can see it, rather than waiting for the rotating sweep to reach it.
