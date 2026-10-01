@@ -218,13 +218,60 @@ namespace RimroomsAsyncIndustries.Scenario
                     map.areaManager.Home[cell] = true;
                 }
             }
+            // **THE COLUMNS, before anything is glazed or opened.** A roof is supported only
+            // within 6.9 cells of a wall, and the gate hall is twenty cells across: without
+            // these its middle is unsupported, and an unsupported roof collapses on whoever is
+            // standing under it the first time somebody deconstructs the wall holding it up.
+            foreach (IntVec3 authored in start.pillars)
+            {
+                IntVec3 cell = authored + offset;
+                if (!cell.InBounds(map) || cell.GetEdifice(map) != null)
+                { throw new InvalidOperationException("Headquarters column has no free cell at " + cell); }
+                Thing column = ThingMaker.MakeThing(ThingDefOf.Wall, start.wallStuff);
+                column.SetFactionDirect(Faction.OfPlayer);
+                GenSpawn.Spawn(column, cell, map);
+            }
+            // **THE VIEWING WALLS, before the doors.** Owner: *"ballistic glass  walls for
+            // viewing the machine remotely and safely"*. Done after the rooms, so the run is
+            // replacing a wall this generator placed itself, and before the doors so a door cell
+            // is never glazed over -- the door loop below still demands an ordinary wall, which
+            // is the check that catches an authored overlap between the two lists.
+            foreach (RimroomsWallRunPlan run in start.glazing)
+            {
+                ThingDef glass = ResolveFirstLoaded(run.thingDefNames);
+                ThingDef pane = glass == null || !glass.MadeFromStuff
+                    ? null : ResolveFirstLoaded(run.stuffDefNames) ?? start.wallStuff;
+                for (int step = 0; step < run.length; step++)
+                {
+                    IntVec3 cell = run.CellAt(step) + offset;
+                    Building wall = cell.InBounds(map) ? cell.GetEdifice(map) : null;
+                    if (wall == null || wall.def != ThingDefOf.Wall)
+                    { throw new InvalidOperationException("Headquarters glazing has no generated wall at " + cell); }
+                    // Nothing to swap to. An ordinary wall is left standing: a solid viewing wall
+                    // is a cosmetic loss and a missing wall is a hole in a sealed gate hall.
+                    if (glass == null) { continue; }
+                    wall.Destroy(DestroyMode.Vanish);
+                    Thing glazed = ThingMaker.MakeThing(glass, pane);
+                    glazed.SetFactionDirect(Faction.OfPlayer);
+                    GenSpawn.Spawn(glazed, cell, map);
+                }
+            }
             foreach (IntVec3 authored in start.doors)
             {
                 IntVec3 cell = authored + offset;
                 Building wall = cell.GetEdifice(map);
                 if (wall == null || wall.def != ThingDefOf.Wall) { throw new InvalidOperationException("Headquarters door has no generated wall at " + cell); }
                 wall.Destroy(DestroyMode.Vanish);
-                Thing door = ThingMaker.MakeThing(ThingDefOf.Door, ThingDefOf.Steel);
+                // An airlock's doors are automatic; every other door is ordinary. Autodoor is
+                // Core, so this is not an optional resolution -- a start that named one and did
+                // not get it would be a package fault, not a profile difference.
+                // `ThingDefOf.Autodoor` does not exist; Core's named-def set has `Door` and not
+                // the automatic one. Looked up by name, and an ordinary door stands in rather
+                // than failing a start over a door's kind.
+                ThingDef doorDef = ThingDefOf.Door;
+                if (start.autodoors.Contains(authored))
+                { doorDef = DefDatabase<ThingDef>.GetNamedSilentFail("Autodoor") ?? ThingDefOf.Door; }
+                Thing door = ThingMaker.MakeThing(doorDef, ThingDefOf.Steel);
                 door.SetFactionDirect(Faction.OfPlayer);
                 GenSpawn.Spawn(door, cell, map);
             }
@@ -275,13 +322,45 @@ namespace RimroomsAsyncIndustries.Scenario
                 }
             }
             // Resolve queued native connections only. Core ticks own power, fuel and battery simulation.
-            map.powerNetManager.UpdatePowerNetsAndConnections_First();
+            //
+            // **Guarded, for the reason the destination generator was.** Core throws out of this
+            // when its transmitter bookkeeping is inconsistent, and a throw here is inside a
+            // GenStep: it would stop the headquarters being built and cost the player the start.
+            // A facility with an unresolved power net is a facility that resolves it on the next
+            // tick; a facility that does not exist is a dead game.
+            try { map.powerNetManager.UpdatePowerNetsAndConnections_First(); }
+            catch (Exception error)
+            {
+                Log.Warning("[Rimrooms][Start] The headquarters power net could not be resolved at "
+                    + "generation. The facility is built and Core will resolve it on the next "
+                    + "tick. " + error);
+            }
             // Editable native scenario parts/possessions own supplies. Never replay start.stock here.
             if (!(start.arrivalCell + offset).Standable(map))
             { throw new InvalidOperationException("Headquarters arrival position is not walkable."); }
             MapGenerator.PlayerStartSpot = start.arrivalCell + offset;
             MapGenerator.rootsToUnfog.Add(start.arrivalCell + offset);
             foreach (IntVec3 door in start.doors) { MapGenerator.rootsToUnfog.Add(door + offset); }
+        }
+
+        /// <summary>
+        /// The first named def the game has actually loaded, or null.
+        ///
+        /// This is how an Optional mod's content is used without depending on it. A `ThingDef`
+        /// field in the def would be a cross-reference, and an unresolved cross-reference
+        /// discards the whole containing def -- which took `Door` and `Autodoor` out of the game
+        /// once and produced 587 errors before the main menu.
+        /// </summary>
+        private static ThingDef ResolveFirstLoaded(List<string> names)
+        {
+            if (names == null) { return null; }
+            for (int index = 0; index < names.Count; index++)
+            {
+                if (string.IsNullOrWhiteSpace(names[index])) { continue; }
+                ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(names[index]);
+                if (def != null) { return def; }
+            }
+            return null;
         }
     }
 }

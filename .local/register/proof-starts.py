@@ -198,8 +198,46 @@ for start in starts:
                     interior.add((cx, cz))
                 floors.add((cx, cz))
 
-    check("%s has no two rooms sharing a wall cell" % name, not overlap_fault,
-          "-- generator throws at " + str(sorted(set(overlap_fault))[:4]))
+    # **THE PREMISE OF THIS CLAIM WAS FALSE, corrected 0.12.73-dev.** It read *"wall on wall is
+    # the collision the generator actually throws on"* and refused any two rooms sharing a wall
+    # cell. `Verse.GenSpawn.Spawn`, decompiled from the installed 1.6 assembly, **never throws**:
+    # it logs for out-of-bounds or already-spawned and otherwise calls `WipeExistingThings`, and
+    # `SpawningWipes(Wall, Wall)` is true, so the second wall simply replaces the first. A wing
+    # built against the compound's outer wall is ordinary architecture and the rule forbade it.
+    #
+    # **This is the third time a claim here has been wrong about its own premise** -- the version
+    # before it refused an interior room inside an outer shell (invariant 130), which is how this
+    # headquarters has always been built. So the rule is now the one that is actually true and
+    # actually harmful, and it is the same rule `tools/check-start-layout.py` enforces: a room's
+    # wall must not cross another room's INTERIOR unless it is nested inside it.
+    def _contains(outer, inner):
+        return (outer[0] <= inner[0] and outer[1] <= inner[1]
+                and outer[0] + outer[2] >= inner[0] + inner[2]
+                and outer[1] + outer[3] >= inner[1] + inner[3])
+
+    crossing_fault = []
+    for outer in start["rooms"]:
+        outer_interior = {(cx, cz)
+                          for cx in range(outer[0] + 1, outer[0] + outer[2] - 1)
+                          for cz in range(outer[1] + 1, outer[1] + outer[3] - 1)}
+        for inner in start["rooms"]:
+            if inner is outer or _contains(outer, inner):
+                continue
+            imx, imz = inner[0] + inner[2] - 1, inner[1] + inner[3] - 1
+            inner_walls = {(cx, cz)
+                           for cx in range(inner[0], imx + 1)
+                           for cz in range(inner[1], imz + 1)
+                           if cx in (inner[0], imx) or cz in (inner[1], imz)}
+            crossing_fault.extend(sorted(inner_walls & outer_interior))
+
+    check("%s has no wall crossing another room's interior" % name, not crossing_fault,
+          "-- a wall in the middle of a room at " + str(sorted(set(crossing_fault))[:4]))
+
+    check("%s is re-validated cell by cell by checker sixteen" % name,
+          os.path.isfile(os.path.join(REPO, "tools", "check-start-layout.py")),
+          "-- `tools/check-start-layout.py` reads the emitted XML and re-derives every door, "
+          "glazed cell, footprint and conduit from Core's own sizes. Two readers, and the one "
+          "that validates did not author")
 
     # Doors must replace a wall the generator actually built.
     for door in start["doors"]:
@@ -449,6 +487,134 @@ check("and an ambiguous or missing provider is named rather than silent",
       and "RR_NativeGate_ChooseBench" in gatecomp,
       "-- the player needs to know which piece to build or which choice to make, and *\"it did "
       "nothing\"* tells them neither")
+
+def _file(*parts):
+    return io.open(os.path.join(SRC, "RimroomsAsyncIndustries", *parts),
+                   encoding="utf-8-sig").read()
+
+
+_steps = _file("UI", "OperationsGateSteps.cs")
+_gate = _file("Gate", "CompRimroomsGate.cs")
+_portals = _file("UI", "OperationsPortalNetwork.cs")
+_hq = _file("Scenario", "GenStep_Headquarters.cs")
+_startdef = _file("Scenario", "RimroomsStartDef.cs")
+_expeditions = _file("UI", "OperationsExpeditions.cs")
+
+# ------------------------------------------- the machine tab is numbered, and the checks are live
+# Owner: *"the whole machine  tab needs to be numbered and everything step 1 step 2... ect ect so
+# fucking simple a 6 yr old chimp can do it"*, *"it needs to have checks showing the start up
+# connection checks are complete or unfinished yet"*, *"and it need to explain conciselky how"*.
+check("THE MACHINE TAB OPENS WITH NUMBERED START-UP CHECKS",
+      "private void DrawGateStartupChecks(Listing_Standard listing" in _steps
+      and "DrawGateStartupChecks(listing, campaign);" in _expeditions
+      and _expeditions.index("DrawGateStartupChecks(listing, campaign);")
+      < _expeditions.index("DrawNativeGateBinding(listing, campaign);"),
+      "-- DEFINED AND CALLED, and called FIRST: the checks are the thing that says which of the "
+      "two panels below to use, and in which order")
+
+check("and there are ELEVEN of them, each with a done flag and a how",
+      all(("Number = %d," % n) in _steps for n in range(1, 12))
+      and all(('"RR_Steps_%dLabel"' % n) in _steps for n in range(1, 12))
+      and all(('"RR_Steps_%dHow"' % n) in _steps for n in range(1, 12))
+      and "public string How;" in _steps
+      and "public bool Done;" in _steps,
+      "-- a step with a label and no instruction is the panel the owner was already looking at")
+
+check("AND THE FIRST UNFINISHED ONE IS NAMED ON ITS OWN LINE",
+      "GateStep next = steps.FirstOrDefault(step => !step.Done);" in _steps
+      and '"RR_Steps_NextUp".Translate(next.Number.ToString(), next.Label, next.How)' in _steps
+      and '"RR_Steps_Progress".Translate(' in _steps,
+      "-- *\"im fucking lost on what to do ive done like 50 things in a row\"*. Eleven lines is "
+      "still a list to read; the answer to *what do i do* is one of them and it is said once at "
+      "the top")
+
+check("and the done ones do NOT repeat their instruction",
+      '"RR_Steps_LineDone".Translate(step.Number.ToString(), step.Label)' in _steps
+      and '"RR_Steps_LineToDo".Translate(step.Number.ToString(), step.Label, step.How)' in _steps,
+      "-- otherwise the list becomes a wall of advice about things already handled")
+
+check("and a binding fault is reported as a FAULT rather than as a step",
+      '"RR_Steps_Fault".Translate(gate.NativeBindingFailureKey.Translate())' in _steps,
+      "-- it is something that was done and has since broken, and it blocks every step after the "
+      "one it broke")
+
+check("THE ORDER MATCHES WHAT THE CODE ACTUALLY ENFORCES",
+      _steps.index("Number = 4,") < _steps.index("Number = 5,")
+      and _steps.index("Number = 8,") < _steps.index("Number = 10,")
+      and "workshop != null && workshop.IsGateControl" in _steps
+      and "station != null && station.IsGateControl" in _steps,
+      "-- gate control on the TABLE must precede the assembly, because `AvailableOnNow` withdraws "
+      "the recipe from a bench in normal operation; gate control on the CONSOLE must precede "
+      "staffing, because `BeginSpinUp` refuses while either is doing its day job. A player "
+      "following the list top to bottom never meets a step that cannot be done yet")
+
+# ---------------------------------------------- the refusals name their cause
+check("CALIBRATION REFUSES WITH THE REASON, AND 'ALREADY DONE' IS ONE OF THEM",
+      "public string CalibrationBlockerKey()" in _gate
+      and 'if (calibrated) { return "RR_Gate_AlreadyCalibrated"; }' in _gate
+      and "string blocker = CalibrationBlockerKey();" in _gate
+      and "return pawn != null && pawn == assignedOperator && CalibrationBlockerKey() == null;"
+      in _gate,
+      "-- one message covered all eight conditions INCLUDING `calibrated`, so a player whose crew "
+      "had finished the work was told it could not start. And `CanCalibrate` asks the blocker "
+      "rather than restating it, so the predicate and the message cannot disagree")
+
+check("and staffing the console does the same",
+      "public string StaffConsoleBlockerKey()" in _gate
+      and "string blocker = StaffConsoleBlockerKey();" in _gate
+      # **SCOPED TO THE METHOD.** The first draft asserted the key was gone from the whole file
+      # and failed against correct code: `OrderAssignedJob` still uses it for a missing job def
+      # and a pawn who cannot take the job, which are the things it actually describes. Forty-
+      # fourth instance of the scoping trap. What matters is that `OrderStaffConsole` no longer
+      # answers four different questions with it.
+      and '"RR_Gate_JobUnavailable"' not in _gate[
+          _gate.index("public CompanyActionResult OrderStaffConsole()"):
+          _gate.index("public string CalibrationBlockerKey()")],
+      "-- one key covered four problems with four different fixes, and that method no longer "
+      "reaches for it")
+
+check("AND THE PORTAL PANEL SAYS WHY WHEN IT HAS NO BUTTON TO OFFER",
+      '"RR_Portals_NoLaboratoryAddress".Translate()' in _portals
+      and "private static IEnumerable<string> GateOpeningBlockers(CompRimroomsGate gate)" in _portals
+      and "foreach (string blocker in GateOpeningBlockers(gate))" in _portals
+      and '"RR_Portals_BlockedConsoleNormalOp".Translate(gate.LinkedConsole.LabelCap)' in _portals,
+      "-- the open buttons are drawn per remembered address, so a gate with none showed an empty "
+      "panel. **That is what the owner spent an afternoon on.** It names which component is in "
+      "normal operation, because the save said the table was switched and the console was not")
+
+# ---------------------------------------------- the facility is a plan, and it is checked
+# Owner: *"it should be designed intelligently with like ballistic glass  walls for viewing the
+# machine remotely and safely with security zones and shit and lab rooms and shit i mean wtf is
+# this this is a 50million dollar facilty"*.
+check("THE VIEWING WALLS ARE NAMED AS STRINGS, NEVER AS A CROSS-REFERENCE",
+      "public List<RimroomsWallRunPlan> glazing" in _startdef
+      and "public List<string> thingDefNames" in _startdef
+      and "private static ThingDef ResolveFirstLoaded(List<string> names)" in _hq
+      and "DefDatabase<ThingDef>.GetNamedSilentFail(names[index])" in _hq,
+      "-- a `ThingDef` field is resolved at load and an unresolved one discards the WHOLE "
+      "containing def. That took `Door` and `Autodoor` out of the game once and produced 587 red "
+      "lines before the main menu. The glass is from an Optional mod")
+
+check("and a profile without the glass gets a wall, not a hole",
+      "if (glass == null) { continue; }" in _hq
+      and 'throw new InvalidOperationException("Headquarters glazing has no generated wall at "'
+      in _hq,
+      "-- a solid viewing wall is a cosmetic loss; a missing wall is a hole in a sealed gate hall")
+
+check("THE AIRLOCK IS TWO AUTOMATIC DOORS IN SERIES",
+      "public List<IntVec3> autodoors" in _startdef
+      and 'DefDatabase<ThingDef>.GetNamedSilentFail("Autodoor") ?? ThingDefOf.Door' in _hq
+      and "An autodoor cell must also be listed in doors" in _startdef,
+      "-- *\"with security zones and shit\"*. `ThingDefOf.Autodoor` does not exist, so it is "
+      "looked up by name with an ordinary door standing in rather than failing a start over a "
+      "door's kind")
+
+check("AND THE HEADQUARTERS POWER REBUILD CAN NO LONGER COST THE START",
+      "try { map.powerNetManager.UpdatePowerNetsAndConnections_First(); }" in _hq
+      and "The headquarters power net could not be resolved at " in _hq,
+      "-- this was bare inside a GenStep, which is exactly the shape that cost two launches in "
+      "the destination generator. A facility that resolves its net one tick late is playable; one "
+      "that does not exist is a dead game")
 
 print("")
 if failures:

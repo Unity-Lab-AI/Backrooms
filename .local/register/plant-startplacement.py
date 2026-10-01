@@ -18,6 +18,9 @@ SERVICES = "src/RimroomsAsyncIndustries/Company/CampaignServices.cs"
 COMPONENT = "src/RimroomsAsyncIndustries/Company/RimroomsCampaignComponent.cs"
 GATECOMP = "src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs"
 CHR_NL = chr(10)
+STEPS = "src/RimroomsAsyncIndustries/UI/OperationsGateSteps.cs"
+TABS = "src/RimroomsAsyncIndustries/UI/OperationsExpeditions.cs"
+PORTALUI = "src/RimroomsAsyncIndustries/UI/OperationsPortalNetwork.cs"
 PATCHFILE = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_StartGenSteps.xml"
 SCENARIOS = "Mod/Rimrooms - Async Industries/1.6/Defs/ScenarioDefs/RR_Scenarios.xml"
 ARRIVAL = SCEN + "/ScenPart_RimroomsArrival.cs"
@@ -78,6 +81,59 @@ def _rr_restore(path, original):
 
 
 PLANTS = [
+    # ---------------------------- the numbered checks, the refusals, and the facility
+    ("THE NUMBERED CHECKS STOP BEING DRAWN", TABS,
+     "            DrawGateStartupChecks(listing, campaign);" + CHR_NL, "", STARTS_PROOF),
+
+    ("the checks are drawn after the panels they are meant to direct", TABS,
+     "            DrawGateStartupChecks(listing, campaign);" + CHR_NL
+     + "            DrawNativeGateBinding(listing, campaign);",
+     "            DrawNativeGateBinding(listing, campaign);" + CHR_NL
+     + "            DrawGateStartupChecks(listing, campaign);", STARTS_PROOF),
+
+    ("A STEP LOSES ITS INSTRUCTION", STEPS,
+     '                How = "RR_Steps_9How".Translate(),', "                How = null,", STARTS_PROOF),
+
+    ("the first unfinished step stops being named", STEPS,
+     '            { listing.Label("RR_Steps_NextUp".Translate(next.Number.ToString(), next.Label, next.How)); }',
+     "            { }", STARTS_PROOF),
+
+    ("the gate-control steps stop reading the components", STEPS,
+     "                Done = workshop != null && workshop.IsGateControl,",
+     "                Done = true,", STARTS_PROOF),
+
+    ("CALIBRATION GOES BACK TO ONE MESSAGE FOR EIGHT CAUSES", GATECOMP,
+     "            string blocker = CalibrationBlockerKey();" + CHR_NL
+     + "            if (blocker != null) { return CompanyActionResult.Refused(blocker); }",
+     '            if (!CanCalibrate(assignedOperator)) { return CompanyActionResult.Refused("RR_Gate_CalibrationUnavailable"); }',
+     STARTS_PROOF),
+
+    ("an already-calibrated gate stops saying so", GATECOMP,
+     '            if (calibrated) { return "RR_Gate_AlreadyCalibrated"; }' + CHR_NL, "", STARTS_PROOF),
+
+    ("the predicate derives the conditions a second time", GATECOMP,
+     "            return pawn != null && pawn == assignedOperator && CalibrationBlockerKey() == null;",
+     "            return !IsOpening && assemblyComplete && !calibrated && pawn != null;", STARTS_PROOF),
+
+    ("THE EMPTY PORTAL PANEL GOES SILENT AGAIN", PORTALUI,
+     '                    { listing.Label("RR_Portals_NoLaboratoryAddress".Translate()); }',
+     "                    { }", STARTS_PROOF),
+
+    ("the blockers are listed and then not drawn", PORTALUI,
+     "                    foreach (string blocker in GateOpeningBlockers(gate))" + CHR_NL
+     + "                    { listing.Label(blocker); }" + CHR_NL, "", STARTS_PROOF),
+
+    ("THE GLAZING BECOMES A HARD CROSS-REFERENCE", DEF,
+     "        public List<string> thingDefNames = new List<string>();",
+     "        public List<ThingDef> thingDefNames = new List<ThingDef>();", STARTS_PROOF),
+
+    ("a missing glass def leaves a hole instead of a wall", GEN,
+     "                    if (glass == null) { continue; }" + CHR_NL, "", STARTS_PROOF),
+
+    ("the headquarters power rebuild goes bare again", GEN,
+     "            try { map.powerNetManager.UpdatePowerNetsAndConnections_First(); }",
+     "            map.powerNetManager.UpdatePowerNetsAndConnections_First(); if (false)", STARTS_PROOF),
+
     # ------------------------------------- institutions, and the loot in them
     # Owner: *"facilitys and buildings and neighboorhoods and complexes and shools and hospitals
     # and military and storages need loot inside of them too"*. `Anchors` opened with
@@ -148,8 +204,8 @@ PLANTS = [
      "        public override void PostGameStart()", PROOF),
 
     ("a start def names a generator again", STARTS,
-     "    <arrivalCell>(30, 0, 23)</arrivalCell>",
-     "    <mapGenerator>RR_Headquarters</mapGenerator>\n    <arrivalCell>(30, 0, 23)</arrivalCell>",
+     "    <arrivalCell>(39, 0, 29)</arrivalCell>",
+     "    <mapGenerator>RR_Headquarters</mapGenerator>\n    <arrivalCell>(39, 0, 29)</arrivalCell>",
      PROOF),
 
     ("THE PATCH BECOMES DESTRUCTIVE", PATCHFILE,
@@ -363,8 +419,10 @@ PLANTS = [
      "", PROOF),
 
     ("a layout grows past the smallest map RimWorld offers", STARTS,
-     "<li><x>8</x><z>8</z><width>44</width><height>44</height><roofed>false</roofed><floor>false</floor></li>",
-     "<li><x>8</x><z>8</z><width>240</width><height>240</height><roofed>false</roofed><floor>false</floor></li>",
+     # The compound is roofed and floored now: the whole facility is one building and its gaps
+     # are interior service corridors rather than open yard.
+     "<li><x>8</x><z>8</z><width>44</width><height>44</height><roofed>true</roofed><floor>true</floor></li>",
+     "<li><x>8</x><z>8</z><width>240</width><height>240</height><roofed>true</roofed><floor>true</floor></li>",
      PROOF),
 ]
 

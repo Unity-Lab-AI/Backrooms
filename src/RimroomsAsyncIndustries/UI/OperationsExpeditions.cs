@@ -70,6 +70,11 @@ namespace RimroomsAsyncIndustries.UI
 
         private void DrawMachine(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
+            // **THE NUMBERED CHECKS FIRST.** Owner: *"the whole machine  tab needs to be numbered
+            // and everything step 1 step 2... ect ect so fucking simple a 6 yr old chimp can do
+            // it"*. Drawn above the binding and network panels because it is the thing that says
+            // which of them to go and use, and in which order.
+            DrawGateStartupChecks(listing, campaign);
             DrawNativeGateBinding(listing, campaign);
             DrawPortalNetwork(listing, campaign);
             CompRimroomsGate gate = CurrentGate(campaign);

@@ -80,9 +80,18 @@ namespace RimroomsAsyncIndustries.UI
                 }
                 else
                 {
-                    foreach (PortalConnectionRecord address in network.Connections
+                    List<PortalConnectionRecord> openable = network.Connections
                         .Where(edge => edge != null && edge.Kind == PortalConnectionKind.Laboratory &&
-                            edge.First != null && edge.First.Anchor == gate.parent).ToList())
+                            edge.First != null && edge.First.Anchor == gate.parent).ToList();
+                    // **AN EMPTY LIST USED TO DRAW NOTHING AT ALL.** No button and no sentence:
+                    // a player who has commissioned the door, run the assembly bill and
+                    // calibrated has done everything the gate itself asks for and still sees no
+                    // way to open it, because the address has to be remembered first and nothing
+                    // said so. Owner, 2026-10-01: *"what do i do to get this gate open? ive tried
+                    // everything"*. The register button is further down this same tab.
+                    if (openable.Count == 0)
+                    { listing.Label("RR_Portals_NoLaboratoryAddress".Translate()); }
+                    foreach (PortalConnectionRecord address in openable)
                     {
                         PortalConnectionRecord captured = address;
                         // Routed through the ramp rather than straight to the opening, so there
@@ -92,6 +101,14 @@ namespace RimroomsAsyncIndustries.UI
                         if (listing.ButtonText("RR_Portals_OpenSession".Translate(captured.CoordinateId)))
                         { ShowResult(gate.BeginSpinUp(captured.Id)); }
                     }
+                    // **AND WHAT IS STILL IN THE WAY, NAMED.** Every one of these refuses the
+                    // ramp, and before this the player had to press the button and read a single
+                    // refusal to find out which -- or, with no address remembered, had no button
+                    // to press at all. Listed rather than first-only, because a gate is usually
+                    // missing more than one thing and finding them one launch at a time is what
+                    // this costs.
+                    foreach (string blocker in GateOpeningBlockers(gate))
+                    { listing.Label(blocker); }
                 }
             }
 
@@ -158,6 +175,55 @@ namespace RimroomsAsyncIndustries.UI
                 listing.Label("RR_Portals_AddressLine".Translate(address.Id, address.CoordinateId, kind,
                     AvailabilityLabel(network.Availability(address))));
             }
+        }
+
+        /// <summary>
+        /// Everything that would refuse a spin-up on this gate right now, in the order a player
+        /// would fix it.
+        ///
+        /// ## Why this exists
+        ///
+        /// `BeginSpinUp` checks eight things and reports **one** refusal, and the player only
+        /// sees it after pressing a button that may not be drawn at all -- the open buttons come
+        /// from the remembered laboratory addresses, so a gate with none shows an empty panel.
+        ///
+        /// Owner, 2026-10-01, verbatim: *"what do i do to get this gate open? ive tried
+        /// everything.. follow my past attempts and tell me what im missing"*. They had
+        /// commissioned the door, run the eight-component bill at the machining table and let
+        /// the crew calibrate -- everything the gate itself asks for -- and the panel still had
+        /// no button and no sentence. **Finding preconditions one launch at a time is what that
+        /// costs**, so all of them are listed rather than the first.
+        ///
+        /// Read-only: it names causes and changes nothing. The authority on whether a gate opens
+        /// is still `BeginSpinUp`, which is why every line here corresponds to one of its
+        /// refusals rather than restating the rule in a second place.
+        /// </summary>
+        private static IEnumerable<string> GateOpeningBlockers(CompRimroomsGate gate)
+        {
+            if (gate == null || !gate.IsDesignated) { yield break; }
+            if (!gate.AssemblyComplete)
+            { yield return "RR_Portals_BlockedAssembly".Translate(); }
+            else if (!gate.Calibrated)
+            { yield return "RR_Portals_BlockedCalibration".Translate(); }
+            if (gate.AssignedOperator == null)
+            { yield return "RR_Portals_BlockedNoOperator".Translate(); }
+            else if (!gate.IsOperatorOnStation)
+            { yield return "RR_Portals_BlockedOperatorAway".Translate(gate.AssignedOperator.LabelShortCap); }
+
+            // **WHICH component is still doing its day job.** The switch defaults to normal
+            // operation on purpose -- commissioning a door must not change how the colony works
+            // -- so a player who never saw the gizmo has two components quietly refusing.
+            CompRimroomsGateConsole station = gate.LinkedConsole == null
+                ? null : gate.LinkedConsole.TryGetComp<CompRimroomsGateConsole>();
+            CompRimroomsGateConsole workshop = gate.AssemblyBench == null
+                ? null : gate.AssemblyBench.TryGetComp<CompRimroomsGateConsole>();
+            if (station != null && !station.IsGateControl)
+            { yield return "RR_Portals_BlockedConsoleNormalOp".Translate(gate.LinkedConsole.LabelCap); }
+            if (workshop != null && !workshop.IsGateControl)
+            { yield return "RR_Portals_BlockedBenchNormalOp".Translate(gate.AssemblyBench.LabelCap); }
+
+            if (gate.NativeBindingFailureKey != null)
+            { yield return gate.NativeBindingFailureKey.Translate(); }
         }
 
         private static string AvailabilityLabel(PortalNetworkResult result)

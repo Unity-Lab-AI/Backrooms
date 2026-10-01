@@ -880,22 +880,62 @@ namespace RimroomsAsyncIndustries.Gate
 
         public CompanyActionResult OrderCalibration()
         {
-            if (!CanCalibrate(assignedOperator)) { return CompanyActionResult.Refused("RR_Gate_CalibrationUnavailable"); }
+            // **NAMES THE CAUSE.** This refused with `RR_Gate_CalibrationUnavailable` -- *"the
+            // gate is not ready for calibration"* -- for all eight of `CanCalibrate`'s conditions,
+            // **including `calibrated` itself.** So a player whose crew had already done the work
+            // was told the work could not start, which is how the owner lost an afternoon:
+            // *"now it just says gate is not ready to calibrate,, what am i missing"* against a
+            // save that read `rr_gateCalibrated True`.
+            string blocker = CalibrationBlockerKey();
+            if (blocker != null) { return CompanyActionResult.Refused(blocker); }
             return OrderAssignedJob("RR_CalibrateGate");
         }
 
         public CompanyActionResult OrderStaffConsole()
         {
             if (IsOperatorOnStation) { return CompanyActionResult.Existing(); }
-            if ((IsOpening && !IsEmergency) || !calibrated || assignedOperator == null || !IsEmployedStaff(assignedOperator))
-            { return CompanyActionResult.Refused("RR_Gate_JobUnavailable"); }
+            // Same correction: one `RR_Gate_JobUnavailable` covered four different problems with
+            // four different fixes.
+            string blocker = StaffConsoleBlockerKey();
+            if (blocker != null) { return CompanyActionResult.Refused(blocker); }
             return OrderAssignedJob("RR_OperateGate");
+        }
+
+        /// <summary>
+        /// Why calibration cannot be ordered, as a keyed reason, or null when it can.
+        ///
+        /// **One authority.** `CanCalibrate` asks this rather than restating the conditions, so
+        /// the predicate the work giver uses and the message the player reads cannot disagree --
+        /// two derivations of one rule is the defect this project keeps meeting.
+        /// </summary>
+        public string CalibrationBlockerKey()
+        {
+            if (calibrated) { return "RR_Gate_AlreadyCalibrated"; }
+            if (IsOpening) { return "RR_Gate_AlreadyOpen"; }
+            if (!assemblyComplete) { return "RR_Gate_NotAssembled"; }
+            if (assignedOperator == null) { return "RR_Gate_NoAssignedOperator"; }
+            if (!IsEmployedStaff(assignedOperator)) { return "RR_Gate_OperatorNotEmployed"; }
+            if (!parent.Spawned) { return "RR_Gate_MachineUnavailable"; }
+            // The binding fault carries its own key, which is always more specific than anything
+            // that could be written here: it names the component and the problem.
+            if (NativeBindingFailureKey != null) { return NativeBindingFailureKey; }
+            if (!IsConsolePowered(FindConsole())) { return "RR_NativeGate_PowerUnavailable"; }
+            return null;
+        }
+
+        /// <summary>Why the operator cannot be sent to the console, as a keyed reason, or null.</summary>
+        public string StaffConsoleBlockerKey()
+        {
+            if (IsOpening && !IsEmergency) { return "RR_Gate_AlreadyOpen"; }
+            if (!calibrated) { return "RR_Gate_NotCalibrated"; }
+            if (assignedOperator == null) { return "RR_Gate_NoAssignedOperator"; }
+            if (!IsEmployedStaff(assignedOperator)) { return "RR_Gate_OperatorNotEmployed"; }
+            return null;
         }
 
         public bool CanCalibrate(Pawn pawn)
         {
-            return !IsOpening && assemblyComplete && !calibrated && pawn != null && pawn == assignedOperator &&
-                IsEmployedStaff(pawn) && parent.Spawned && HasPowerAndHeadroom() && IsConsolePowered(FindConsole());
+            return pawn != null && pawn == assignedOperator && CalibrationBlockerKey() == null;
         }
 
         public CompanyActionResult CompleteCalibration(Pawn pawn)

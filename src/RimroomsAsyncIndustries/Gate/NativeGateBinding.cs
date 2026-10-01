@@ -45,6 +45,12 @@ namespace RimroomsAsyncIndustries.Gate
         public bool OppositeEntrySide { get { return nativeOppositeEntrySide; } }
         public Thing LinkedBattery { get { return nativeBattery; } }
         public Thing AssemblyBench { get { return nativeAssemblyBench; } }
+        /// <summary>
+        /// The bound communications console. Exposed so the operations window can say **which**
+        /// component is still in normal operation, rather than leaving the player to find a
+        /// switch they were never told about -- see `MainTabWindow_Operations.GateOpeningBlockers`.
+        /// </summary>
+        public Thing LinkedConsole { get { return nativeConsole; } }
         public float NativeEnergyRequiredToOpenWattDays
         {
             get { return GateProps.openingWindowTicks * OpeningPowerDrawWatts * CompPower.WattsToWattDaysPerTick

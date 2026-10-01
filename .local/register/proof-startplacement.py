@@ -437,7 +437,7 @@ check("nothing in the facility path blocks a deconstruct or uninstall designatio
 ROOF_SUPPORT_DISTANCE = 6.9
 
 
-def unsupported_roof(rooms):
+def unsupported_roof(rooms, pillars=frozenset()):
     walls = set()
     roofed = set()
     for x, z, w, h, is_roofed in rooms:
@@ -447,6 +447,10 @@ def unsupported_roof(rooms):
                     walls.add((cx, cz))
                 elif is_roofed:
                     roofed.add((cx, cz))
+    # **A COLUMN IS A WALL, and it holds a roof up exactly as the perimeter does.** `pillars`
+    # was added to the start schema at 0.12.73-dev *because* this claim refused a twenty-cell-wide
+    # gate hall, and a model that ignored them would go on refusing a layout that is now correct.
+    walls |= set(pillars)
     # A wall cell beats an enclosing room's interior: the wall is what actually gets spawned.
     roofed -= walls
     bad = []
@@ -483,7 +487,12 @@ for name in ("RR_AsyncIndustriesStart", "RR_FurnitureStoreStart", "RR_SoloGroupS
     plans = [(int(x), int(z), int(w), int(h), roofed == "true") for x, z, w, h, roofed in
              re.findall(r"<li><x>(-?\d+)</x><z>(-?\d+)</z><width>(\d+)</width>"
                         r"<height>(\d+)</height><roofed>(\w+)</roofed>", body)]
-    roofed_cells, wall_cells, bad_cells = unsupported_roof(plans)
+    pillar_cells = set()
+    if "<pillars>" in body:
+        pillar_cells = {(int(px), int(pz)) for px, pz in re.findall(
+            r"<li>\((-?\d+),\s*0,\s*(-?\d+)\)</li>",
+            body[body.index("<pillars>"):body.index("</pillars>")])}
+    roofed_cells, wall_cells, bad_cells = unsupported_roof(plans, pillar_cells)
     check("%s ROOFS NOTHING IT CANNOT HOLD UP" % name,
           len(plans) > 0 and not bad_cells,
           "-- %d roofed cell(s) and %d wall cell(s); %d cell(s) out of support range, e.g. %s. "

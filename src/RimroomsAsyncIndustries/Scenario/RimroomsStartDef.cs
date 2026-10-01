@@ -36,6 +36,49 @@ namespace RimroomsAsyncIndustries.Scenario
         public List<IntVec3> doors = new List<IntVec3>();
         public List<RimroomsBuildingPlan> buildings = new List<RimroomsBuildingPlan>();
         public List<RimroomsConduitPlan> conduits = new List<RimroomsConduitPlan>();
+
+        /// <summary>
+        /// Wall runs replaced with something else once the rooms are built -- the viewing walls.
+        ///
+        /// **Owner direction, 2026-10-01, verbatim:** *"it now weays looks like a working
+        /// "machine" that should be designed intelligently with like ballistic glass  walls for
+        /// viewing the machine remotely and safely with security zones and shit and lab rooms and
+        /// shit i mean wtf is this this is a 50million dollar facilty"*.
+        ///
+        /// **Named as STRINGS, not as `ThingDef`s, and that is the whole point of the field.** A
+        /// `ThingDef` field is a hard cross-reference resolved at load: a def that is not present
+        /// discards the **entire** containing def and everything that referenced it. That is
+        /// exactly what cost the seventh launch -- one bad `Class` attribute took `Door` and
+        /// `Autodoor` out of the game and produced **587 red lines**, and the game never left the
+        /// main menu. Glass walls come from an Optional mod, so they are resolved at runtime with
+        /// `GetNamedSilentFail` and the run falls back to an ordinary wall when nothing matches.
+        /// A profile without that mod gets a solid viewing wall and a working facility.
+        /// </summary>
+        public List<RimroomsWallRunPlan> glazing = new List<RimroomsWallRunPlan>();
+
+        /// <summary>
+        /// Free-standing wall cells inside a room: the columns that hold a big roof up.
+        ///
+        /// **A roof is only supported within 6.9 cells of a wall, and an unsupported one
+        /// collapses when a pawn deconstructs the wall holding it** -- on top of whoever is
+        /// standing there. The gate hall is twenty cells across, so its middle is out of range of
+        /// every perimeter wall it has, and `proof-startplacement.py` refuses a layout like that
+        /// for exactly that reason. It caught this facility on its first authoring.
+        ///
+        /// A column is not furniture: it is structure, so it is listed apart from
+        /// <see cref="buildings"/> and takes the start's own `wallStuff`. It also happens to be
+        /// what a hall for a large machine actually looks like.
+        /// </summary>
+        public List<IntVec3> pillars = new List<IntVec3>();
+
+        /// <summary>
+        /// Which of this start's doors are automatic, for the security airlocks.
+        ///
+        /// Every cell here must also be in <see cref="doors"/>: this marks a door's kind, it does
+        /// not add one. An airlock is two doors in series through a vestibule, and both being
+        /// automatic is what makes it read as a controlled threshold rather than two doors.
+        /// </summary>
+        public List<IntVec3> autodoors = new List<IntVec3>();
         public List<RimroomsStockPlan> stock = new List<RimroomsStockPlan>();
         public List<RimroomsStaffRole> roles = new List<RimroomsStaffRole>();
         /// <summary>
@@ -124,6 +167,24 @@ namespace RimroomsAsyncIndustries.Scenario
             { yield return "Missing headquarters layout/stock list."; }
             if (rooms != null && rooms.Count < 1)
             { yield return "Every start needs at least one room on its surface map."; }
+            if (autodoors != null && doors != null)
+            {
+                foreach (IntVec3 cell in autodoors)
+                {
+                    if (!doors.Contains(cell))
+                    { yield return "An autodoor cell must also be listed in doors: " + cell; }
+                }
+            }
+            if (glazing != null)
+            {
+                foreach (RimroomsWallRunPlan run in glazing)
+                {
+                    if (run == null || run.length < 1 || run.length > mapSize)
+                    { yield return "Invalid glazed wall run."; continue; }
+                    if (run.thingDefNames == null || run.thingDefNames.Count < 1)
+                    { yield return "A glazed wall run must name at least one candidate def."; }
+                }
+            }
             if (insideStart && (insideStartDepth < 1 || insideStartDepth > 9))
             { yield return "Inside start depth must be between 1 and 9."; }
             // The way out has to be one of this start's own doors. A cell that is not in the
@@ -184,6 +245,26 @@ namespace RimroomsAsyncIndustries.Scenario
         public IntVec3 start;
         public int length;
         public bool alongX = true;
+    }
+
+    /// <summary>
+    /// A straight run of wall cells to be replaced after the rooms are built.
+    ///
+    /// Candidates are tried in order and the first def the game has actually loaded wins, so an
+    /// Optional mod's glass is used when it is there and an ordinary wall stands in when it is
+    /// not. Nothing here is a cross-reference; see <see cref="RimroomsStartDef.glazing"/> for why
+    /// that matters more than it looks.
+    /// </summary>
+    public sealed class RimroomsWallRunPlan
+    {
+        public IntVec3 start;
+        public int length;
+        public bool alongX = true;
+        public List<string> thingDefNames = new List<string>();
+        public List<string> stuffDefNames = new List<string>();
+
+        public IntVec3 CellAt(int step)
+        { return start + new IntVec3(alongX ? step : 0, 0, alongX ? 0 : step); }
     }
 
     public sealed class RimroomsStockPlan

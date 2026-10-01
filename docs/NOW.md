@@ -46,11 +46,11 @@ been enough; the only thing that has worked is reaching for the Write tool first
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
-| Published | **0.12.72-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.73-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **204 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `8FFCF0F0BE7CA434F2883F94F7693B53AE65F4CF08B353F1CB0F7086BC1739D6`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
-| Checkers | **FIFTEEN**, all passing. **The fifteenth refuses while a planted fault is still in the source tree.** A suite has left one there three times -- twice deleting `Campaign.NoteReturnedFromField(...)`, once deleting `!anchor.Destroyed` -- and each would have shipped silently if a build had gone out first. The `finally` added at 0.12.65-dev handles an exception and does nothing for a killed process, so the suites write a sentinel naming the file before they mutate it and `check-plant-residue.py` refuses while it exists. **A false alarm costs one command; a missed one ships a deliberate fault.** **The fourteenth is the only one that runs code rather than reading it**, and it exists because the thirteen that read text, the forty-five proofs and five hundred and fifty plants **all passed over a planner that could not produce one valid layout** -- `MaxRoomSpan` said 34 while the grand hall was 80, and no amount of reading either file can see two numbers disagree. `check-planner-layouts.py` builds `.local/harness/PlannerProbe` and runs `TrySelect` and `ValidateRooms` over 200 seeds at seven depths, demanding both that a layout is accepted **and that back-to-back pairs exist** -- because a plant that moved a pushed room one cell was missed by every proof when the revert guard quietly switched the feature off. **It never skips**: no dotnet, no install or no built assembly is a failure, not a pass. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
+| Assembly | SHA-256 `C6988A04423FE4A656A15D29EEE97C21BA2D323C842C07EE9A96B81AEF9F57D6`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Checkers | **SIXTEEN**, all passing. **The sixteenth validates every authored starting facility offline, cell by cell.** `GenStep_Headquarters` throws on any geometry mistake and a throw inside a GenStep costs the player the start; the Async facility is ten rooms, sixteen doors and 122 fixture cells, and nothing else in this battery looked at a single one of them. It derives footprints from **Core's own `<size>`** with ParentName inheritance rather than from a table, because a table is a second derivation that goes stale. **It cried wolf on its first run** -- 368 legitimate cells -- before the nesting case was understood, which is the fifth false alarm in this battery and the reason each is written down. **The fifteenth refuses while a planted fault is still in the source tree.** A suite has left one there three times -- twice deleting `Campaign.NoteReturnedFromField(...)`, once deleting `!anchor.Destroyed` -- and each would have shipped silently if a build had gone out first. The `finally` added at 0.12.65-dev handles an exception and does nothing for a killed process, so the suites write a sentinel naming the file before they mutate it and `check-plant-residue.py` refuses while it exists. **A false alarm costs one command; a missed one ships a deliberate fault.** **The fourteenth is the only one that runs code rather than reading it**, and it exists because the thirteen that read text, the forty-five proofs and five hundred and fifty plants **all passed over a planner that could not produce one valid layout** -- `MaxRoomSpan` said 34 while the grand hall was 80, and no amount of reading either file can see two numbers disagree. `check-planner-layouts.py` builds `.local/harness/PlannerProbe` and runs `TrySelect` and `ValidateRooms` over 200 seeds at seven depths, demanding both that a layout is accepted **and that back-to-back pairs exist** -- because a plant that moved a pushed room one cell was missed by every proof when the revert guard quietly switched the feature off. **It never skips**: no dotnet, no install or no built assembly is a failure, not a pass. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
@@ -343,6 +343,82 @@ It should not appear, because the conduits are laid last now — but it is a war
 * **An absence claim cannot read raw source** — it reads the comment explaining the removal.
   `proof-coordinate-layout.py` keeps a `code()` view; `proof-generation-batch.py` strips comments.
 * **Use the Write tool.** A heredoc mangled an escaped newline for the **eleventh** time.
+
+## STATE AT THIS HANDOFF — `0.12.73-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.73-dev  92 files
+assembly    C6988A04423FE4A656A15D29EEE97C21BA2D323C842C07EE9A96B81AEF9F57D6
+            read back out of the game folder after staging, not from the build
+battery     17 checkers - 45 proofs - 659 of 659 plants - 16 suites
+tree        no planted fault, porcelain 0
+```
+
+### READ THIS BEFORE TOUCHING THE GATE: THE ELEVEN STEPS ARE ON SCREEN NOW
+
+The owner lost an afternoon to a gate that was **already assembled, already calibrated, already
+crewed and un-tripped**, blocked by **one switch**: the machining table was in gate control and the
+communications console on the same gate was not. `Autosave-5.rws` at 11:38 proved it, and nothing
+in the interface could say it.
+
+**Three things hid it, and all three are fixed:**
+
+| | |
+|---|---|
+| `RR_Gate_CalibrationUnavailable` | said *"not ready for calibration"* for all eight of `CanCalibrate`'s conditions **including `calibrated`**. `CalibrationBlockerKey` names the real one, and `CanCalibrate` **asks** it rather than restating the conditions |
+| `RR_Gate_JobUnavailable` | one key for four problems. `StaffConsoleBlockerKey` replaces it in `OrderStaffConsole`; the key still exists for `OrderAssignedJob`, which is what it actually describes |
+| the portal panel | drew **no button and no sentence** with no address remembered. It lists every unmet precondition now, naming **which component** is in normal operation |
+
+**`DrawGateStartupChecks` is the headline.** Eleven numbered checks at the top of the Machine tab,
+read from live state, each with one sentence naming the thing to click, plus the first unfinished
+one called out on its own line. **The order is enforced by proof**: gate control on the **table**
+before the assembly, because the recipe is withdrawn from a bench in normal operation; gate control
+on the **console** before staffing, because spin-up refuses while either is doing its day job.
+
+### THE FACILITY IS A PLAN NOW, AND IT IS AUTHORED BY A PROGRAM
+
+Thirteen rooms, twenty doors, two of them an airlock, **eleven cells of ballistic glass**, four
+support columns, 145 fixture cells. A gate hall that is deliberately empty, a control room behind
+the glass, a security airlock of two automatic doors in series, a lab wing, secure storage, a
+workshop, a security office, decontamination, an archive.
+
+**Do not hand-edit `RR_AsyncIndustriesStart`'s geometry.** Edit
+`.local/register/build-async-facility.py` and re-run it: it derives every door from the wall it
+belongs to and checks every footprint against Core's own `<size>` before emitting a line.
+`GenStep_Headquarters.Build` **throws** on any geometry mistake and a throw inside a GenStep costs
+the player the start.
+
+**The existing battery caught the first authoring twice, and both were real:**
+
+* `proof-startplacement.py` found **121 roofed cells beyond roof support**. An unsupported roof
+  collapses on the pawn who deconstructs the wall holding it. The western wing and the gate hall's
+  **columns** exist because of that, and `pillars` was added to the start schema for it.
+* A claim that refused any two rooms sharing a wall cell was **wrong about its own premise** --
+  `GenSpawn.Spawn` never throws on wall-over-wall; `SpawningWipes(Wall, Wall)` replaces it. Third
+  time that claim has been wrong. It now asserts what checker sixteen asserts.
+
+### TWO NEW CHECKERS, AND THE BATTERY IS SEVENTEEN
+
+| | |
+|---|---|
+| `check-start-layout.py` | **SIXTEEN.** Re-validates every authored facility cell by cell from the emitted XML -- doors on walls, glazing on walls and not on doors, footprints on free interiors from **Core's own sizes**, columns on free interiors, conduits in extent. Two readers, and the one that validates did not author |
+| `check-plant-anchors.py` | **SEVENTEEN.** Reads all sixteen `PLANTS` tables with `ast` and reports **every** stale anchor at once. This checkpoint paid the one-stale-anchor-per-four-minute-run toll **eight times** before it existed |
+
+**Both cried wolf before they were right** -- 368 legitimate cells for the first, and for the
+second `chr(10)` reading as unevaluable plus an entry `plant-def-fields.py` skips itself. That is
+five and six in this battery's history of false alarms, and each is written down because a checker
+stricter than the thing it guards is its own defect.
+
+### WHAT IS LEFT, HONESTLY, AND IT IS NOT A BUILD QUEUE
+
+Owner scope, 2026-10-01: *"basicly the build items not tests and steam and worklshop stuff.."*.
+The 72 raw open rows in `docs/TODO.md` are **not** 72 build items. They are:
+
+| Kind | What unblocks it |
+|---|---|
+| **launch-gated** -- balance, the 294-profile conflict sweep, the compatibility report, the release tag, screenshots, performance measurement | **an owner launch**, and the owner's standing direction is *"we are not testing again till its all done"*. These cannot close before that |
+| **owner-decision** -- the site's domain, the Steam/Workshop Playwright session, a design brief for new starts, the PawnKind save-break | **an owner answer**. Excluded from scope by *"not tests and steam and worklshop stuff"* |
+| **buildable** -- staff **prior exposure** on an expedition, the **review** workflow (the fourth of analyse/interview/compare/review), and verifying the stranded-crew rows against `LostPawnRegister` | **nothing. These are next.** |
 
 ## STATE AT THIS HANDOFF — `0.12.72-dev`, STAGED AND VERIFIED
 

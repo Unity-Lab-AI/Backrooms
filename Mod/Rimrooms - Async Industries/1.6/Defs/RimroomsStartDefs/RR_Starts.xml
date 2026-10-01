@@ -46,100 +46,206 @@
     <outdoorTerrain>Soil</outdoorTerrain>
     <floorTerrain>Concrete</floorTerrain>
     <wallStuff>BlocksGranite</wallStuff>
-    <arrivalCell>(30, 0, 23)</arrivalCell>
-    <stockCell>(17, 0, 27)</stockCell>
-    <initialFundingUsd>50000000</initialFundingUsd>
-    <dailyWageUsd>5000</dailyWageUsd>
-    <dailyOverheadUsd>25000</dailyOverheadUsd>
-    <surveyRewardUsd>5000000</surveyRewardUsd>
-    <surveyBonusUsd>1000000</surveyBonusUsd>
+    <arrivalCell>(39, 0, 29)</arrivalCell>
+    <stockCell>(27, 0, 19)</stockCell>
+    <!-- The facility, as a plan rather than eight boxes in a rectangle. Owner direction
+         2026-10-01. Authored by .local/register/build-async-facility.py and re-validated
+         offline by tools/check-start-layout.py, because GenStep_Headquarters throws on any
+         geometry mistake and a throw there costs the player the start. -->
     <rooms>
-      <li><x>8</x><z>8</z><width>44</width><height>44</height><roofed>false</roofed><floor>false</floor></li>
-      <li><x>10</x><z>10</z><width>13</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
-      <li><x>24</x><z>10</z><width>10</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
-      <li><x>35</x><z>10</z><width>14</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
-      <li><x>10</x><z>21</z><width>14</width><height>12</height><roofed>true</roofed><floor>true</floor></li>
-      <li><x>10</x><z>34</z><width>14</width><height>15</height><roofed>true</roofed><floor>true</floor></li>
-      <li><x>25</x><z>26</z><width>9</width><height>14</height><roofed>true</roofed><floor>true</floor></li>
-      <li><x>35</x><z>21</z><width>14</width><height>12</height><roofed>true</roofed><floor>true</floor></li>
-      <li><x>35</x><z>34</z><width>14</width><height>15</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- compound -->
+      <li><x>8</x><z>8</z><width>44</width><height>44</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- gatehall -->
+      <li><x>28</x><z>34</z><width>22</width><height>16</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- control -->
+      <li><x>28</x><z>25</z><width>22</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- airlock -->
+      <li><x>36</x><z>30</z><width>7</width><height>5</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- labs -->
+      <li><x>8</x><z>14</z><width>14</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- storage -->
+      <li><x>23</x><z>14</z><width>13</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- workshop -->
+      <li><x>37</x><z>14</z><width>15</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- housing -->
+      <li><x>8</x><z>8</z><width>14</width><height>7</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- mess -->
+      <li><x>23</x><z>8</z><width>13</width><height>7</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- medical -->
+      <li><x>37</x><z>8</z><width>15</width><height>7</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- security -->
+      <li><x>8</x><z>25</z><width>11</width><height>9</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- decon -->
+      <li><x>8</x><z>34</z><width>11</width><height>9</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- archive -->
+      <li><x>8</x><z>43</z><width>11</width><height>8</height><roofed>true</roofed><floor>true</floor></li>
     </rooms>
     <doors>
-      <li>(30, 0, 8)</li>
-      <li>(22, 0, 16)</li>
-      <li>(29, 0, 19)</li>
-      <li>(35, 0, 16)</li>
-      <li>(23, 0, 26)</li>
-      <li>(23, 0, 40)</li>
-      <li>(29, 0, 26)</li>
-      <li>(35, 0, 26)</li>
-      <li>(35, 0, 40)</li>
+      <li>(8, 0, 24)</li>
+      <li>(14, 0, 23)</li>
+      <li>(29, 0, 23)</li>
+      <li>(44, 0, 23)</li>
+      <li>(39, 0, 25)</li>
+      <li>(21, 0, 11)</li>
+      <li>(23, 0, 11)</li>
+      <li>(35, 0, 11)</li>
+      <li>(37, 0, 11)</li>
+      <li>(14, 0, 25)</li>
+      <li>(18, 0, 29)</li>
+      <li>(18, 0, 38)</li>
+      <li>(18, 0, 46)</li>
+      <li>(21, 0, 19)</li>
+      <li>(23, 0, 19)</li>
+      <li>(35, 0, 19)</li>
+      <li>(37, 0, 19)</li>
+      <li>(39, 0, 30)</li>
+      <li>(39, 0, 34)</li>
+      <li>(39, 0, 49)</li>
     </doors>
+    <!-- The airlock between the control room and the gate hall: two thresholds in series
+         through a vestibule, both automatic. Owner: "with security zones and shit". -->
+    <autodoors>
+      <li>(39, 0, 30)</li>
+      <li>(39, 0, 34)</li>
+    </autodoors>
+    <!-- The viewing wall. Owner: "ballistic glass  walls for viewing the machine remotely
+         and safely". ReBuild: Doors and Corners is register row 185, stance Optional, and
+         its Planned Use is verbatim "use the construction and layout tools to create gate
+         control, labs, secure storage, accommodation, service corridors". Named as
+         STRINGS so a profile without it gets a solid wall instead of a discarded def. -->
+    <glazing>
+      <li>
+        <start>(30, 0, 34)</start><length>6</length><alongX>true</alongX>
+        <thingDefNames>
+          <li>RB_ReinforcedGlassWall</li>
+          <li>RB_GlassWall</li>
+        </thingDefNames>
+        <stuffDefNames>
+          <li>Steel</li>
+        </stuffDefNames>
+      </li>
+      <li>
+        <start>(43, 0, 34)</start><length>5</length><alongX>true</alongX>
+        <thingDefNames>
+          <li>RB_ReinforcedGlassWall</li>
+          <li>RB_GlassWall</li>
+        </thingDefNames>
+        <stuffDefNames>
+          <li>Steel</li>
+        </stuffDefNames>
+      </li>
+    </glazing>
+    <!-- Columns. A roof is supported only within 6.9 cells of a wall and the gate hall is
+         twenty across, so without these its middle is unsupported and collapses on the
+         pawn who deconstructs the wall holding it. proof-startplacement.py caught exactly
+         that on the first authoring of this facility. -->
+    <pillars>
+      <li>(35, 0, 39)</li>
+      <li>(42, 0, 39)</li>
+      <li>(35, 0, 44)</li>
+      <li>(42, 0, 44)</li>
+    </pillars>
     <buildings>
-      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(12, 0, 12)</cell></li>
-      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(15, 0, 12)</cell></li>
-      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(18, 0, 12)</cell></li>
-      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(12, 0, 15)</cell></li>
-      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(15, 0, 15)</cell></li>
-      <li><thing>StandingLamp</thing><cell>(20, 0, 12)</cell></li>
-      <li><thing>Heater</thing><cell>(20, 0, 17)</cell></li>
-      <li><thing>ElectricStove</thing><cell>(28, 0, 13)</cell></li>
-      <li><thing>Table2x2c</thing><stuff>WoodLog</stuff><cell>(28, 0, 16)</cell></li>
-      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(26, 0, 16)</cell></li>
-      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(31, 0, 16)</cell></li>
-      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(28, 0, 15)</cell></li>
-      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(29, 0, 18)</cell></li>
-      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(31, 0, 17)</cell></li>
-      <li><thing>StandingLamp</thing><cell>(32, 0, 12)</cell></li>
-      <li><thing>Heater</thing><cell>(25, 0, 12)</cell></li>
-      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(38, 0, 12)</cell><medical>true</medical></li>
-      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(42, 0, 12)</cell><medical>true</medical></li>
-      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(38, 0, 17)</cell></li>
-      <li><thing>StandingLamp</thing><cell>(46, 0, 12)</cell></li>
-      <li><thing>Heater</thing><cell>(46, 0, 17)</cell></li>
-      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(12, 0, 23)</cell></li>
-      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(16, 0, 23)</cell></li>
-      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(20, 0, 23)</cell></li>
-      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(12, 0, 30)</cell></li>
-      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(20, 0, 30)</cell></li>
-      <li><thing>StandingLamp</thing><cell>(21, 0, 28)</cell></li>
-      <li><thing>ElectricSmithy</thing><cell>(17, 0, 41)</cell></li>
-      <li><thing>TableMachining</thing><cell>(17, 0, 44)</cell></li>
-      <!-- Eight glow pods, on the store-room floor beside the stock cell. Moved here
-           from the scenario's starting things at 0.12.44-dev; see RR_Scenarios.xml.
-           Every cell computed free against the occupied set, because
-           GenStep_Headquarters throws rather than skipping a clash. -->
-      <li><thing>GlowPod</thing><cell>(12, 0, 25)</cell></li>
-      <li><thing>GlowPod</thing><cell>(13, 0, 25)</cell></li>
-      <li><thing>GlowPod</thing><cell>(14, 0, 25)</cell></li>
-      <li><thing>GlowPod</thing><cell>(15, 0, 25)</cell></li>
-      <li><thing>GlowPod</thing><cell>(16, 0, 25)</cell></li>
-      <li><thing>GlowPod</thing><cell>(17, 0, 25)</cell></li>
-      <li><thing>GlowPod</thing><cell>(18, 0, 25)</cell></li>
-      <li><thing>GlowPod</thing><cell>(19, 0, 25)</cell></li>
-      <li><thing>StandingLamp</thing><cell>(21, 0, 36)</cell></li>
-      <li><thing>Heater</thing><cell>(12, 0, 36)</cell></li>
-      <li><thing>Autodoor</thing><stuff>Steel</stuff><cell>(29, 0, 33)</cell></li>
-      <li><thing>CommsConsole</thing><cell>(28, 0, 29)</cell></li>
+      <li><thing>CommsConsole</thing><cell>(32, 0, 27)</cell></li>
+      <li><thing>Battery</thing><cell>(36, 0, 27)</cell><batteryFraction>0.6</batteryFraction></li>
+      <li><thing>Battery</thing><cell>(38, 0, 27)</cell><batteryFraction>0.6</batteryFraction></li>
+      <li><thing>Table1x2c</thing><stuff>WoodLog</stuff><cell>(45, 0, 27)</cell></li>
+      <li><thing>DiningChair</thing><stuff>WoodLog</stuff><cell>(44, 0, 27)</cell></li>
+      <li><thing>DiningChair</thing><stuff>WoodLog</stuff><cell>(46, 0, 27)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(30, 0, 27)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(47, 0, 27)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(30, 0, 32)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(47, 0, 32)</cell></li>
+      <li><thing>Heater</thing><cell>(34, 0, 32)</cell></li>
       <li><thing>StandingLamp</thing><cell>(31, 0, 37)</cell></li>
-      <li><thing>WoodFiredGenerator</thing><cell>(40, 0, 26)</cell><fuelFraction>0.5</fuelFraction></li>
-      <li><thing>WoodFiredGenerator</thing><cell>(40, 0, 29)</cell><fuelFraction>0.5</fuelFraction></li>
-      <li><thing>WoodFiredGenerator</thing><cell>(44, 0, 29)</cell><fuelFraction>0.5</fuelFraction></li>
-      <li><thing>Battery</thing><cell>(44, 0, 26)</cell><batteryFraction>0.5</batteryFraction></li>
-      <li><thing>StandingLamp</thing><cell>(46, 0, 23)</cell></li>
-      <li><thing>SimpleResearchBench</thing><stuff>Steel</stuff><cell>(41, 0, 42)</cell></li>
-      <li><thing>StandingLamp</thing><cell>(46, 0, 36)</cell></li>
-      <li><thing>Heater</thing><cell>(46, 0, 46)</cell></li>
-      <li><thing>HorseshoesPin</thing><stuff>Steel</stuff><cell>(28, 0, 44)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(46, 0, 37)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(31, 0, 46)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(46, 0, 46)</cell></li>
+      <li><thing>Heater</thing><cell>(33, 0, 37)</cell></li>
+      <li><thing>Heater</thing><cell>(44, 0, 37)</cell></li>
+      <li><thing>TableMachining</thing><cell>(41, 0, 16)</cell></li>
+      <li><thing>ElectricSmithy</thing><cell>(46, 0, 16)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(39, 0, 21)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(42, 0, 21)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(45, 0, 21)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(49, 0, 19)</cell></li>
+      <li><thing>Heater</thing><cell>(49, 0, 16)</cell></li>
+      <li><thing>SimpleResearchBench</thing><stuff>Steel</stuff><cell>(12, 0, 16)</cell></li>
+      <li><thing>SimpleResearchBench</thing><stuff>Steel</stuff><cell>(17, 0, 16)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 21)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 21)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(16, 0, 21)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(19, 0, 19)</cell></li>
+      <li><thing>Heater</thing><cell>(19, 0, 16)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(25, 0, 16)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(28, 0, 16)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(31, 0, 16)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(25, 0, 21)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(28, 0, 21)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(31, 0, 21)</cell></li>
+      <li><thing>GlowPod</thing><cell>(33, 0, 16)</cell></li>
+      <li><thing>GlowPod</thing><cell>(33, 0, 17)</cell></li>
+      <li><thing>GlowPod</thing><cell>(33, 0, 18)</cell></li>
+      <li><thing>GlowPod</thing><cell>(33, 0, 19)</cell></li>
+      <li><thing>GlowPod</thing><cell>(33, 0, 20)</cell></li>
+      <li><thing>GlowPod</thing><cell>(33, 0, 21)</cell></li>
+      <li><thing>GlowPod</thing><cell>(24, 0, 16)</cell></li>
+      <li><thing>GlowPod</thing><cell>(24, 0, 17)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(34, 0, 21)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(10, 0, 10)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(12, 0, 10)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(14, 0, 10)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(16, 0, 10)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(18, 0, 10)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(20, 0, 12)</cell></li>
+      <li><thing>Heater</thing><cell>(20, 0, 10)</cell></li>
+      <li><thing>ElectricStove</thing><cell>(26, 0, 10)</cell></li>
+      <li><thing>Table2x2c</thing><stuff>WoodLog</stuff><cell>(30, 0, 10)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(29, 0, 10)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(32, 0, 10)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(30, 0, 12)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(31, 0, 12)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(34, 0, 12)</cell></li>
+      <li><thing>Heater</thing><cell>(24, 0, 12)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(40, 0, 10)</cell><medical>true</medical></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(42, 0, 10)</cell><medical>true</medical></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(45, 0, 10)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(49, 0, 12)</cell></li>
+      <li><thing>Heater</thing><cell>(49, 0, 10)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(10, 0, 27)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(16, 0, 27)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 31)</cell></li>
+      <li><thing>Heater</thing><cell>(16, 0, 31)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(10, 0, 36)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(16, 0, 36)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 40)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 40)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(10, 0, 45)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(16, 0, 45)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 48)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 48)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(16, 0, 48)</cell></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(21, 0, 27)</cell><fuelFraction>0.5</fuelFraction></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(25, 0, 27)</cell><fuelFraction>0.5</fuelFraction></li>
+      <li><thing>HorseshoesPin</thing><stuff>Steel</stuff><cell>(23, 0, 33)</cell></li>
     </buildings>
     <conduits>
-      <li><start>(17, 0, 24)</start><length>28</length><alongX>true</alongX></li>
-      <li><start>(30, 0, 15)</start><length>30</length><alongX>false</alongX></li>
-      <li><start>(17, 0, 40)</start><length>27</length><alongX>true</alongX></li>
-      <li><start>(17, 0, 16)</start><length>27</length><alongX>true</alongX></li>
-      <li><start>(17, 0, 16)</start><length>28</length><alongX>false</alongX></li>
-      <li><start>(41, 0, 16)</start><length>29</length><alongX>false</alongX></li>
-      <li><start>(41, 0, 29)</start><length>5</length><alongX>true</alongX></li>
+      <li><start>(9, 0, 24)</start><length>42</length><alongX>true</alongX></li>
+      <li><start>(22, 0, 9)</start><length>15</length><alongX>false</alongX></li>
+      <li><start>(36, 0, 9)</start><length>15</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 15)</start><length>9</length><alongX>false</alongX></li>
+      <li><start>(29, 0, 15)</start><length>9</length><alongX>false</alongX></li>
+      <li><start>(44, 0, 15)</start><length>9</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 9)</start><length>6</length><alongX>false</alongX></li>
+      <li><start>(29, 0, 9)</start><length>6</length><alongX>false</alongX></li>
+      <li><start>(44, 0, 9)</start><length>6</length><alongX>false</alongX></li>
+      <li><start>(39, 0, 25)</start><length>10</length><alongX>false</alongX></li>
+      <li><start>(39, 0, 35)</start><length>14</length><alongX>false</alongX></li>
+      <li><start>(21, 0, 25)</start><length>7</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 26)</start><length>8</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 35)</start><length>8</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 44)</start><length>7</length><alongX>false</alongX></li>
+      <li><start>(19, 0, 25)</start><length>26</length><alongX>false</alongX></li>
     </conduits>
     <!-- Editable stock is owned by native starting-thing parts in RR_Scenarios.xml. -->
     <roles>

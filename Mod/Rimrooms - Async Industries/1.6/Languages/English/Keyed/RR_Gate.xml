@@ -48,7 +48,12 @@
   <RR_Gate_EmergencyWindowExpired>Emergency-return window expired</RR_Gate_EmergencyWindowExpired>
   <RR_Gate_EmergencyCutoff>Emergency cutoff activated</RR_Gate_EmergencyCutoff>
   <RR_Gate_NotOpen>The gate has no active expedition to interrupt.</RR_Gate_NotOpen>
+  <!-- Kept as the last resort only. It used to be the answer for all eight of CanCalibrate's
+       conditions, including the one that means the work is already finished, which is how the
+       owner was told "the gate is not ready for calibration" about a calibrated gate. -->
   <RR_Gate_CalibrationUnavailable>The gate is not ready for calibration.</RR_Gate_CalibrationUnavailable>
+  <RR_Gate_AlreadyCalibrated>This gate is already calibrated. That step is done.</RR_Gate_AlreadyCalibrated>
+  <RR_Gate_OperatorNotEmployed>The assigned operator is not employed staff any more. Assign one who is.</RR_Gate_OperatorNotEmployed>
   <RR_Gate_MachineUnavailable>The gate is no longer available.</RR_Gate_MachineUnavailable>
   <RR_Gate_InvalidAssemblyBill>The assembly bill did not target this installation's assigned assembly station.</RR_Gate_InvalidAssemblyBill>
   <RR_Event_GateAssemblyCompleted>The gate assembly is complete. Assign a qualified operator and calibrate the gate.</RR_Event_GateAssemblyCompleted>

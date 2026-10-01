@@ -2194,6 +2194,73 @@ which is outside this mod's generator entirely. It left `MapGenerator.GenerateMa
 
 ---
 
+## The gate nobody could open, and the facility - 2026-10-01 (0.12.73-dev) - DONE
+
+Owner, verbatim:
+
+> **"okay i need help. .. check the game what do i do to get this gate open? ive tried
+> everything.. follow my past attempts and tell me what im missing as they built the 8 componet
+> thing at the attached machining table and then with out notice they went to the coms console and
+> did something un pormpted(i thought the portal would open after he finished, but it didnt) so
+> why does the game show the portal gate didnt open? what am i missing or is something major
+> broken"**
+
+> **"well what the fuck i already told you the company start needs a fulley connect and set up
+> sweet ass facility.. currently it looks like a 6yr old chimp made the facility as the gate is
+> rfree standing and it now weays looks like a working "machine" that should be designed
+> intelligently with like ballistic glass  walls for viewing the machine remotely and safely with
+> security zones and shit and lab rooms and shit i mean wtf is this this is a 50million dollar
+> facilty"**
+
+- [x] **"what do i do to get this gate open? ive tried everything"** - **nothing is broken.** The
+  chain is intact; the interface never said which of eight preconditions was unmet, and with no
+  address remembered it drew **no button and no sentence at all**
+- [x] **"follow my past attempts and tell me what im missing"**
+- [x] **"they built the 8 componet thing at the attached machining table"** - that completed the
+  assembly. `RecipeWorker_RimroomsGateAssembly.Notify_IterationCompleted` -> `CompleteAssemblyFromBill`
+- [x] **"then with out notice they went to the coms console and did something un
+  pormpted(i thought the portal would open after he finished, but it didnt)"** - that was
+  **calibration**, taken by `WorkGiver_RimroomsGate`. It is the step after assembly, not the
+  opening
+- [x] **"so why does the game show the portal gate didnt open?"**
+- [x] **"what am i missing or is something major broken"**
+- [x] **"the company start needs a fulley connect and set up sweet ass facility"**
+- [x] **"currently it looks like a 6yr old chimp made the facility"**
+- [x] **"the gate is rfree standing"**
+- [x] **"it now weays looks like a working \"machine\" that should be designed intelligently"**
+- [x] **"with like ballistic glass walls for viewing the machine remotely and safely"**
+- [x] **"with security zones and shit"**
+- [x] **"and lab rooms and shit"**
+- [x] **"i mean wtf is this this is a 50million dollar facilty"**
+- [x] **"now it just says gate is not ready to calibrate,, what am i missing"** - **nothing. It
+  was already calibrated.** `CanCalibrate` requires `!calibrated` and the refusal
+  `RR_Gate_CalibrationUnavailable` reads *"The gate is not ready for calibration"* for all eight
+  of its conditions, including the one that means **it is already done**
+- [x] **"check the game cxurrently"** - `Autosave-5.rws`, 11:38: gate `Thing_Autodoor55338`,
+  `rr_gateAssemblyComplete True`, `rr_gateCalibrated True`, operator `Thing_Human979`, kill switch
+  null, **`TableMachining55327` gateControl True and the `CommsConsole` on the same gate absent,
+  which is false.** That one component was the whole blocker
+- [x] **"the whole machine  tab needs to be numbered and everything step 1 step 2... ect ect so
+  fucking simple a 6 yr old chimp can do it"**
+- [x] **"okay fucking do it then because im fucking lost on what to do ive done like 50 things in
+  a row and its still not opening"**
+- [x] **"this is fucking rediculous and it needs to have checks showing the start up connection
+  checks are complete or unfinished yet"**
+- [x] **"and it need to explain conciselky how, becuse this is fucking confusing"**
+
+### The eight preconditions, and which the interface hid
+
+`BeginSpinUp` refuses for eight reasons and reports **one**, after a button press -- and the open
+buttons are drawn per remembered laboratory address, so **a gate with none shows an empty panel**.
+A player who has commissioned the door, run the bill and let the crew calibrate has done
+everything the gate itself asks for and is looking at nothing.
+
+Worse, two of the eight are the **gate-control switch added at 0.12.70-dev, which defaults to
+normal operation on purpose** -- commissioning a door must not change how the colony works -- so a
+player who never saw that gizmo has two components quietly refusing.
+
+---
+
 ## TOMBSTONES
 
 _(none)_
