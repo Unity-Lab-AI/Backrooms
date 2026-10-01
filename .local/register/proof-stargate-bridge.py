@@ -215,7 +215,9 @@ check("the far end is read from the edge rather than searched for",
       "opinion that could disagree with it")
 
 check("WE DIAL, IN THE BACKGROUND, FROM OUR OWN NETWORK",
-      "StargateBridge.Dial(near, far.Map, 0)" in emergence,
+      # The whole guard, not the call: a plant wrapped it in `if (false && ...)` and the call was
+      # still "in" the file.
+      "if (!StargateBridge.Dial(near, far.Map, 0))" in emergence,
       "-- owner: *\"we just use our own dialing converstion in the background\"*. The address is "
       "read off the destination map; the player never touches a DHD for the Backrooms")
 
@@ -225,6 +227,24 @@ check("the address conversion handles a pocket map as well as a world tile",
       "-- their InitGate registers a map index for a pocket map and a tile otherwise, so the dial "
       "has to speak both. `destination.IsPocketMap` appears in two ternaries, so naming the "
       "string was not enough to prove the ADDRESS half survived")
+
+# **EVERY REFUSAL NAMES ITSELF.** The wormhole took a whole launch to diagnose because these
+# paths returned silently and the owner's log held nothing at all. Silence is correct for a colony
+# without their mod; it is useless the moment something does not work, which is every time it
+# matters.
+check("A LIVE GATE THAT CANNOT DIAL SAYS WHY, ONCE",
+      "private void ReportGateState(string reason)" in emergence
+      and "if (reportedGateState) { return; }" in emergence
+      and emergence.count("ReportGateState(") >= 5,
+      "-- Log.Message, not Log.Error: a gate that cannot dial is information, not a fault. Once "
+      "per door, because this runs on a tick")
+
+check("and the far end being a non-door is one of the reasons it can give",
+      # `"not a doorway"` CONTAINS `"not a door"`. The prefix trap, so the clause continues.
+      'is not a door, so no gate can be ' in emergence,
+      "-- a destination below DoorThresholdContentVersion keeps a historical anchor that is not "
+      "a door, so `as ThingWithComps` yields null and the route has no far end to put a gate on. "
+      "That was the one stop that said nothing")
 
 check("a receiving or hibernating end is never dialled",
       "StargateBridge.IsReceiving(near)" in emergence

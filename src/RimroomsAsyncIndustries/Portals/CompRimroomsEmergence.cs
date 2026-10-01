@@ -43,8 +43,29 @@ namespace RimroomsAsyncIndustries.Portals
     /// </summary>
     public class CompRimroomsEmergence : ThingComp, IThingGlower
     {
-        /// <summary>The blue the owner asked for, and the reach of its light.</summary>
+        /// <summary>
+        /// The blue the owner asked for, as a **glow** colour.
+        ///
+        /// Alpha zero is the convention for a `ColorInt` handed to `CompGlower` -- their own
+        /// stargate def uses `(115,171,224,0)` -- because a glower reads the channels and not the
+        /// opacity.
+        /// </summary>
         private static readonly ColorInt LiveGlowColor = new ColorInt(70, 130, 220, 0);
+
+        /// <summary>
+        /// The same blue as a **tint**, and it has to be opaque.
+        ///
+        /// **This is the defect the owner reported as a missing door.** `ColorInt.ToColor`
+        /// divides every channel by 255 including alpha, so reusing the glow constant here
+        /// painted the door with zero opacity: `Thing.DrawColor` returns what `CompColorable`
+        /// holds, so the door was drawn fully transparent while its glower kept lighting the
+        /// room. It was never destroyed -- the paused game showed it intact with 160 hit points.
+        ///
+        /// **A glow colour and a draw colour are not the same kind of colour**, and sharing one
+        /// constant between them is what hid that.
+        /// </summary>
+        private static readonly Color LiveTintColor = new Color(70f / 255f, 130f / 255f,
+            220f / 255f, 1f);
         private const float LiveGlowRadius = 6f;
 
         /// <summary>
@@ -108,7 +129,7 @@ namespace RimroomsAsyncIndustries.Portals
             CompColorable colorable = parent.TryGetComp<CompColorable>();
             if (colorable != null)
             {
-                if (live) { colorable.SetColor(LiveGlowColor.ToColor); }
+                if (live) { colorable.SetColor(LiveTintColor); }
                 else if (colorable.Active) { colorable.Disable(); }
             }
         }
@@ -148,15 +169,56 @@ namespace RimroomsAsyncIndustries.Portals
             // NATURAL on both ends: this is a way out that was always there, not a machine
             // a player dialled, so neither end carries an unstable vortex.
             StargateBridge.Attach(near, true);
-            if (far == null || far.Map == null) { return; }
+            if (far == null)
+            {
+                // **The likeliest silent stop, and it used to say nothing.** A destination below
+                // `DoorThresholdContentVersion` keeps a historical anchor that is not a door, so
+                // `as ThingWithComps` yields null and the route has no far end to put a gate on.
+                ReportGateState("the far end of this route is not a door, so no gate can be "
+                                + "attached there");
+                return;
+            }
+            if (far.Map == null)
+            {
+                ReportGateState("the far end is not on a loaded map");
+                return;
+            }
             StargateBridge.Attach(far, true);
 
             // Dialled only from this side, and only when nothing is already open. Their gate is
             // one-way by design, so dialling a receiving end would fight their own rule rather
             // than use it.
-            if (StargateBridge.IsOpen(near) || StargateBridge.IsReceiving(near)) { return; }
-            if (StargateBridge.IsHibernating(near)) { return; }
-            StargateBridge.Dial(near, far.Map, 0);
+            if (StargateBridge.IsOpen(near)) { return; }
+            if (StargateBridge.IsReceiving(near)) { ReportGateState("it is the receiving end"); return; }
+            if (StargateBridge.IsHibernating(near))
+            { ReportGateState("their mod has it hibernating, which means another stargate is on this map"); return; }
+            if (StargateBridge.On(near) == null)
+            { ReportGateState("their component did not attach to this door"); return; }
+            if (!StargateBridge.Dial(near, far.Map, 0))
+            { ReportGateState("the dial was refused"); }
+        }
+
+        /// <summary>Whether this gate has already explained itself once.</summary>
+        private bool reportedGateState;
+
+        /// <summary>
+        /// Say, once, why a live natural gate is not showing a wormhole.
+        ///
+        /// **Every refusal in this path used to be silent**, which is correct for a colony
+        /// without the Stargate mod and useless the moment something does not work. The owner's
+        /// report -- *"i do not see the portal fx from stargate"* -- came with a log containing
+        /// nothing at all, because this code was written to say nothing at all.
+        ///
+        /// `Log.Message`, not `Log.Error`: a gate that cannot dial is information, not a fault.
+        /// Once per door, because this runs on a tick.
+        /// </summary>
+        private void ReportGateState(string reason)
+        {
+            if (reportedGateState) { return; }
+            reportedGateState = true;
+            Log.Message("[Rimrooms][Stargate] " + parent.LabelShortCap + " at "
+                        + parent.Position + " is a live gate but is not showing a wormhole: "
+                        + reason + ".");
         }
 
         /// <summary>The door at the other end of this route, as a thing that can carry comps.</summary>

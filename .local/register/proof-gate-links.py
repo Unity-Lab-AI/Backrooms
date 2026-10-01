@@ -259,7 +259,14 @@ check("A LIVE GATE IS BLUE AND CASTS LIGHT",
       and "<compClass>CompColorable</compClass>" in doorpatch
       and 'Class="CompProperties_Colorable"' not in doorpatch
       and "LiveGlowColor" in gatecomp and "LiveGlowRadius" in gatecomp
-      and "if (live) { colorable.SetColor(LiveGlowColor.ToColor); }" in gatecomp,
+      # **THE TINT MUST BE OPAQUE, AND IT MUST NOT COME FROM THE GLOW CONSTANT.** This claim used
+      # to require `SetColor(LiveGlowColor.ToColor)` -- which is the line that made the door
+      # invisible, because `ColorInt.ToColor` divides alpha by 255 and the glow constant is
+      # `a: 0`. The second time this file has held a bug in place by naming it exactly. Assert
+      # the property, not the line.
+      and "if (live) { colorable.SetColor(LiveTintColor); }" in gatecomp
+      and "LiveGlowColor.ToColor" not in gatecomp
+      and "220f / 255f, 1f)" in gatecomp,
       "-- both comps are Core and both are settable per instance, so this needs no new texture "
       "and no new def. The colourable one must be spelled the way Core spells it: there is no "
       "CompProperties_Colorable type, and naming it discarded the whole Door def")

@@ -75,8 +75,8 @@ PLANTS = [
      "<RR_Portals_MoveWayInConfirm>", "<RR_Portals_MoveWayInConfirmUnused>"),
     # ------------------------------------------ 0.12.53-dev: a gate looks like a gate
     ("A LIVE GATE STOPS BEING BLUE", COMP,
-     "                if (live) { colorable.SetColor(LiveGlowColor.ToColor); }",
-     "                if (false) { colorable.SetColor(LiveGlowColor.ToColor); }"),
+     "                if (live) { colorable.SetColor(LiveTintColor); }",
+     "                if (false) { colorable.SetColor(LiveTintColor); }"),
 
     ("a live gate stops casting light", COMP,
      "                glower.GlowRadius = live ? LiveGlowRadius : 0f;",
@@ -84,6 +84,16 @@ PLANTS = [
 
     ("the glower comp is never added to the door", DOORPATCH,
      '<li Class="CompProperties_Glower">', '<li Class="CompProperties_GlowerUnused">'),
+
+    # THE DOOR GOES INVISIBLE AGAIN. `ColorInt.ToColor` divides alpha by 255, so reusing the
+    # glow constant as a tint paints the door at zero opacity -- which is exactly what the owner
+    # reported as a missing door, with the glow still lighting the room around it.
+    ("THE DOOR IS TINTED WITH THE GLOW CONSTANT AND GOES INVISIBLE", COMP,
+     "if (live) { colorable.SetColor(LiveTintColor); }",
+     "if (live) { colorable.SetColor(LiveGlowColor.ToColor); }"),
+
+    ("the tint loses its opacity", COMP,
+     "220f / 255f, 1f);", "220f / 255f, 0f);"),
 
     ("the colourable comp is never added to the door", DOORPATCH,
      "<compClass>CompColorable</compClass>", "<compClass>CompColorableUnused</compClass>"),

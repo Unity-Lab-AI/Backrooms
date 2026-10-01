@@ -27,7 +27,8 @@ PLANTS = [
      "StargateBridge.Attach(far, true);", "// StargateBridge.Attach(far, true);"),
 
     ("WE STOP DIALLING, so the player is back to doing it by hand", EMERGENCE,
-     "StargateBridge.Dial(near, far.Map, 0);", "// StargateBridge.Dial(near, far.Map, 0);"),
+     "if (!StargateBridge.Dial(near, far.Map, 0))",
+     "if (false && !StargateBridge.Dial(near, far.Map, 0))"),
 
     ("the near end is never wired", EMERGENCE,
      "StargateBridge.Attach(near, true);", "// StargateBridge.Attach(near, true);"),
@@ -49,7 +50,17 @@ PLANTS = [
      "StargateBridge.IsReceiving(near)", "false"),
 
     ("a hibernating gate is dialled, fighting their one-gate-per-map rule", EMERGENCE,
-     "if (StargateBridge.IsHibernating(near)) { return; }", ""),
+     "if (StargateBridge.IsHibernating(near))", "if (false)"),
+
+    # EVERY SILENT REFUSAL MUST NAME ITSELF. The wormhole took a whole launch to diagnose
+    # because these paths returned without a word and the owner's log held nothing at all.
+    ("A REFUSAL GOES SILENT AGAIN, so the next launch cannot say why", EMERGENCE,
+     "private void ReportGateState(string reason)",
+     "private void ReportGateStateUnused(string reason)"),
+
+    ("the far end being a non-door stops being reported", EMERGENCE,
+     "the far end of this route is not a door",
+     "the far end of this route is not a doorway"),
 
     # ------------------------------------------------------- the line around their mod
     ("THE BRIDGE REPORTS AVAILABLE WITH THEIR MOD ABSENT, which crashes a Core-only colony",

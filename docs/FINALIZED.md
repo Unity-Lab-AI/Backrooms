@@ -5550,3 +5550,50 @@ so each now restores a way to re-open and requires refusal. And a plant renamed 
 `F267F664D0DB8B70E147FC035614F033BA8546BE12983824622089B260F4F1E9`, measured **after** the version
 bump this time, reproduced by two clean recompiles. **Thirteen checkers pass, forty-five proofs
 hold. 522 of 522** planted faults caught across sixteen suites.
+
+---
+
+## Session 2026-09-30 - the door was invisible, not missing (0.12.60-dev)
+
+**Verbatim user quote:** *"i see the blue glow, i do not see the door, i do not see the portal fx
+from stargate ... clicking on where the door and portal should be only gives \"go here\" option"*
+and *"check the game i paused it see whats up"*
+
+**Files touched:** `Portals/CompRimroomsEmergence.cs`, About/csproj/README, `docs/TODO.md`,
+`docs/NOW.md`.
+
+**Closure notes.** **Everything here was read out of the paused game.**
+
+The door was never gone: cell (160,161) holds an intact `Building_Door` with 160 hit points. It
+was drawn fully transparent, because `ColorInt.ToColor` divides alpha by 255 as well and the glow
+constant is `a: 0`. One constant was doing two jobs - a glow colour and a draw colour are not the
+same kind of colour, and their own stargate def uses `(115,171,224,0)` for the glow half for
+exactly that reason.
+
+**The float menu was never broken.** Selecting a colonist and right-clicking the cell through the
+live UI returns exactly one option: *"Enter the gate"*. The owner could not click the door because
+the door was invisible.
+
+**Their component is attached and healthy.** The door carries our `CompTransporter` ("Load"), and
+its inspect string is their unconditional `CompInspectStringExtra` nag for a gate that is not on
+`Building_Stargate` - cosmetic, not a fault. No event horizon means the gate is simply not active,
+because their `PostDraw` only paints one while `StargateIsActive`.
+
+**And the reason that took a launch to narrow is mine.** Every refusal in the dialling path
+returned silently, so the log held nothing. Correct for a colony without their mod; useless the
+moment something does not work. A live gate that cannot show a wormhole now names the guard that
+stopped it, once per door, at Log.Message.
+
+**A plant suite had left a line deleted in the source tree and it would have shipped.**
+`RimroomsExpeditionComponent.cs` was missing `Campaign.NoteReturnedFromField(...)`, so no crew
+member would have had a debrief hold raised on return. A suite was interrupted mid-plant and never
+restored it, and it was found only because the suite that plants it refused to run and the tree
+was checked.
+
+**And `proof-gate-links.py` asserted the exact line that caused the bug** - the second time that
+file has held a defect in place by naming it. Asserting an exact line proves we wrote it and says
+nothing about whether it is right.
+
+**181 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`0862FB8D411E16755614AABF316DFFEB7FD1AB2ABF98714235AD0FD050DBD93D`, reproduced by two clean
+recompiles. **Thirteen checkers pass, forty-five proofs hold. 526 of 526** planted faults caught.
