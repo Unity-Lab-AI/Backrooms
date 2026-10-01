@@ -152,12 +152,8 @@ namespace RimroomsAsyncIndustries.Generation
                 { GenAdj.OccupiedRect(climateCell, Rot4.North, climateDef.size) };
                 consumerFootprints.AddRange(lightCells.Select(cell =>
                     GenAdj.OccupiedRect(cell, Rot4.North, lightDef.size)));
-                List<CellRect> poweredRoomCoverage = coordinate.Rooms
-                    .Where(room => room.familyId == "service_passage" || room.familyId == "utility_room")
-                    .Select(room => room.Bounds.ContractedBy(1)).ToList();
-                SpawnNativePowerNetwork(map, voidFloor, conduitDef,
-                    GenAdj.OccupiedRect(generatorCell, Rot4.North, generatorDef.size), consumerFootprints,
-                    poweredRoomCoverage);
+                HashSet<IntVec3> wiredCells = SpawnNativePowerNetwork(map, voidFloor, conduitDef,
+                    GenAdj.OccupiedRect(generatorCell, Rot4.North, generatorDef.size), consumerFootprints);
 
                 Thing generator = MakeBuilding(generatorDef, generatorDef.MadeFromStuff ? ThingDefOf.Steel : null);
                 generator.SetFaction(Faction.OfPlayer);
@@ -189,6 +185,11 @@ namespace RimroomsAsyncIndustries.Generation
                 RoomContentBuilder.Populate(map, coordinate, entryCell, returnCell, officeEvidenceCell, anchor);
                 // Native spawn notifications are queued; rebuild connections now without ticking
                 // the power simulation so readiness checks see the actual shared grid.
+                map.powerNetManager.UpdatePowerNetsAndConnections_First();
+                // Whatever the dressing just placed that draws power, wired now that it exists.
+                // This is what replaced pre-wiring whole rooms on the chance something would land
+                // in them -- see SpawnNativePowerNetwork.
+                ConnectStrayConsumers(map, voidFloor, conduitDef, wiredCells, generator);
                 map.powerNetManager.UpdatePowerNetsAndConnections_First();
                 // **Reported, never fatal.** A coordinate whose heater or one lamp failed to join
                 // the grid is dark and cold and completely playable. A coordinate that does not
@@ -384,9 +385,24 @@ namespace RimroomsAsyncIndustries.Generation
             { reserved.Add(cell); }
         }
 
-        private static void SpawnNativePowerNetwork(Map map, TerrainDef voidFloor, ThingDef conduitDef,
-            CellRect generatorFootprint, IEnumerable<CellRect> consumerFootprints,
-            IEnumerable<CellRect> poweredRoomCoverage)
+        /// <summary>
+        /// Conduit from the generator to each known consumer, and nothing more.
+        ///
+        /// **This used to carpet every powered room with conduit, and that is what stopped every
+        /// 300x300 coordinate from generating.** The carpet existed for one stated reason:
+        /// `RoomContentBuilder` adds another lamp to each powered room *after* the grid is laid,
+        /// so the room was pre-wired to catch it. At 12x12 rooms that was about a hundred cells.
+        /// At depth 1 a service_passage is 60x80, so `ContractedBy(1)` is **4,524 cells** against
+        /// a `MaxNativePowerConduits` cap of **512** — an eightfold blowout on the first powered
+        /// room, every time.
+        ///
+        /// Wiring four thousand cells to catch one lamp is the wrong shape at any size. The lamp
+        /// is picked up by <see cref="ConnectStrayConsumers"/> after content placement instead.
+        ///
+        /// Returns the wired set, so that later pass can route from the grid that exists.
+        /// </summary>
+        private static HashSet<IntVec3> SpawnNativePowerNetwork(Map map, TerrainDef voidFloor,
+            ThingDef conduitDef, CellRect generatorFootprint, IEnumerable<CellRect> consumerFootprints)
         {
             var wiredCells = new HashSet<IntVec3>();
             foreach (IntVec3 cell in generatorFootprint.Cells.OrderBy(value => value.x).ThenBy(value => value.z))
@@ -405,11 +421,69 @@ namespace RimroomsAsyncIndustries.Generation
                 { SpawnNativeConduit(map, voidFloor, conduitDef, cell, wiredCells); }
             }
 
-            // RoomContentBuilder adds another Core lamp to every service/utility room after this
-            // method. Wire each such room first so those later loads join the real native network.
-            foreach (IntVec3 cell in poweredRoomCoverage.SelectMany(room => room.Cells)
-                .Distinct().OrderBy(value => value.x).ThenBy(value => value.z))
-            { SpawnNativeConduit(map, voidFloor, conduitDef, cell, wiredCells); }
+            return wiredCells;
+        }
+
+        /// <summary>
+        /// Connect anything that draws power and is not on the generator's net yet.
+        ///
+        /// Run **after** `RoomContentBuilder.Populate`, because that is when the lamps and benches
+        /// the archetype dressing places actually exist. This replaces pre-wiring whole rooms on
+        /// the chance that something would land in them.
+        ///
+        /// Uses the same map-wide `CompPowerTrader` sweep `ValidateNativePowerNetwork` uses to
+        /// *detect* the problem — so the thing that reports a stray consumer and the thing that
+        /// fixes one agree by construction rather than by two people remembering the same rule.
+        ///
+        /// **Never throws.** A lamp that cannot be reached is a dark corner; the validation below
+        /// reports it and the coordinate still exists. Losing the whole place over a conduit is
+        /// what this checkpoint is fixing.
+        /// </summary>
+        private static void ConnectStrayConsumers(Map map, TerrainDef voidFloor, ThingDef conduitDef,
+            HashSet<IntVec3> wiredCells, Thing generator)
+        {
+            CompPowerPlant plant = generator == null ? null : generator.TryGetComp<CompPowerPlant>();
+            if (plant == null || wiredCells == null) { return; }
+            // Ordered, so the routing is the same on a regenerated coordinate.
+            List<Thing> consumers = map.listerThings.AllThings
+                .Where(thing => thing != null && thing.Spawned && thing.Map == map &&
+                    thing.TryGetComp<CompPowerTrader>() != null)
+                .OrderBy(thing => thing.Position.x).ThenBy(thing => thing.Position.z)
+                .ThenBy(thing => thing.def.defName, StringComparer.Ordinal)
+                .ToList();
+            for (int index = 0; index < consumers.Count; index++)
+            {
+                Thing consumer = consumers[index];
+                CompPowerTrader power = consumer.TryGetComp<CompPowerTrader>();
+                if (power == null || power.PowerNet == plant.PowerNet) { continue; }
+                if (wiredCells.Count >= MaxNativePowerConduits) { return; }
+                List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells,
+                    consumer.OccupiedRect());
+                for (int step = 0; step < route.Count; step++)
+                {
+                    if (wiredCells.Count >= MaxNativePowerConduits) { return; }
+                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);
+                }
+                map.powerNetManager.UpdatePowerNetsAndConnections_First();
+            }
+        }
+
+        /// <summary>
+        /// A conduit where one will fit, and silence where it will not.
+        ///
+        /// The throwing form is kept for the generator's own footprint and the known consumer
+        /// routes, where a failure really is a generator fault. This form is for the opportunistic
+        /// pass, where a cell that cannot take a conduit is a dark corner rather than a broken
+        /// coordinate.
+        /// </summary>
+        private static void TrySpawnNativeConduit(Map map, TerrainDef voidFloor, ThingDef conduitDef,
+            IntVec3 cell, HashSet<IntVec3> wiredCells)
+        {
+            if (!cell.InBounds(map) || map.terrainGrid.TerrainAt(cell) == voidFloor) { return; }
+            if (!wiredCells.Add(cell)) { return; }
+            Thing conduit = MakeBuilding(conduitDef, null);
+            conduit.SetFaction(Faction.OfPlayer);
+            GenSpawn.Spawn(conduit, cell, map, Rot4.North);
         }
 
         private static List<IntVec3> FindConduitRoute(Map map, TerrainDef voidFloor,

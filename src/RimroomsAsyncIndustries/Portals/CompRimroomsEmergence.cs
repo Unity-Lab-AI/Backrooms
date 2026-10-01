@@ -41,8 +41,149 @@ namespace RimroomsAsyncIndustries.Portals
     /// outside. The branch id is recorded at the moment of marking so a mark cannot be
     /// inherited by another company through a saved map.
     /// </summary>
-    public class CompRimroomsEmergence : ThingComp
+    public class CompRimroomsEmergence : ThingComp, IThingGlower
     {
+        /// <summary>The blue the owner asked for, and the reach of its light.</summary>
+        private static readonly ColorInt LiveGlowColor = new ColorInt(70, 130, 220, 0);
+        private const float LiveGlowRadius = 6f;
+
+        /// <summary>
+        /// Whether Core should light this door.
+        ///
+        /// **This one method is why adding a glower to `Door` does not change any other door in
+        /// the game.** `CompGlower.ShouldBeLitNow` walks every comp on its parent and asks any
+        /// that implements <see cref="IThingGlower"/>; a single false from any of them keeps the
+        /// glower dark and unregistered. So every ordinary door in every colony, and every door
+        /// any other mod ships, carries an inert glower — refused by Core's own rule rather than
+        /// by hoping the radius of zero is enough.
+        /// </summary>
+        public bool ShouldBeLitNow() { return IsLiveGate; }
+
+        /// <summary>
+        /// A marked door on a branch map that the portal network actually has an edge for.
+        ///
+        /// Stricter than <see cref="IsDesignated"/> on purpose: a door the player marked but
+        /// which nothing leads through yet is a plan, not a gate, and lighting it blue would
+        /// promise a way through that does not exist.
+        /// </summary>
+        public bool IsLiveGate
+        {
+            get
+            {
+                if (!IsDesignated || parent == null || Verse.Current.Game == null) { return false; }
+                RimroomsPortalNetwork network = Verse.Current.Game.GetComponent<RimroomsPortalNetwork>();
+                if (network == null || network.Connections == null) { return false; }
+                IReadOnlyList<PortalConnectionRecord> edges = network.Connections;
+                for (int index = 0; index < edges.Count; index++)
+                {
+                    PortalConnectionRecord edge = edges[index];
+                    if (edge == null) { continue; }
+                    if ((edge.First != null && edge.First.Anchor == parent) ||
+                        (edge.Second != null && edge.Second.Anchor == parent))
+                    { return true; }
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Make the door read as a gate, or stop. Idempotent, and safe to call every rare tick.
+        ///
+        /// The colour and the radius are set through the per-instance overrides Core exposes, so
+        /// nothing here edits a shared `CompProperties` — which would recolour every door at once.
+        /// </summary>
+        private void RefreshGateAppearance()
+        {
+            if (parent == null || !parent.Spawned) { return; }
+            bool live = IsLiveGate;
+            CompGlower glower = parent.TryGetComp<CompGlower>();
+            if (glower != null)
+            {
+                glower.GlowRadius = live ? LiveGlowRadius : 0f;
+                glower.GlowColor = LiveGlowColor;
+                // UpdateLit is the whole of it: Core registers or deregisters the light with
+                // the glow grid itself. There is no separate cache to dirty.
+                glower.UpdateLit(parent.Map);
+            }
+            CompColorable colorable = parent.TryGetComp<CompColorable>();
+            if (colorable != null)
+            {
+                if (live) { colorable.SetColor(LiveGlowColor.ToColor); }
+                else if (colorable.Active) { colorable.Disable(); }
+            }
+        }
+
+        /// <summary>Rare, because a gate going live is an event and not a per-frame question.</summary>
+        public override void CompTickRare()
+        {
+            base.CompTickRare();
+            RefreshGateAppearance();
+        }
+
+        /// <summary>
+        /// Right-click the gate with a colonist selected and walk through it.
+        ///
+        /// **Owner direction, repeated and then repeated angrily:** *"ive said stargate mod
+        /// repeaditly is how the gates work ... the pawns can walk from tmap to map like the
+        /// stargate mod works but with normal does"*.
+        ///
+        /// The order and the job already existed and already did exactly that:
+        /// `PortalTravelService.OrderCrossing` makes a real job that walks the pawn to the cell
+        /// beside the door and crosses to the other map. **What was missing was the place a
+        /// player looks for it.** It was only reachable by selecting pawns, selecting the door,
+        /// clicking a gizmo and choosing from a float menu — which is a dispatch console, not a
+        /// door you walk through.
+        ///
+        /// `CompFloatMenuOptions` is Core's own hook for *"right-click this with that colonist
+        /// selected"*, and it is the same hook every piece of Core content uses for *go here and
+        /// do this*. Nothing is decided here: the order is still
+        /// <see cref="PortalTravelService.OrderCrossing"/> and the rule is still
+        /// `PortalTraversalPolicy`, so invariant 1 holds — this is where the question is asked,
+        /// not a second opinion about the answer.
+        /// </summary>
+        public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
+        {
+            foreach (FloatMenuOption option in base.CompFloatMenuOptions(selPawn))
+            { yield return option; }
+            if (selPawn == null || parent == null || !parent.Spawned) { yield break; }
+            if (!IsLiveGate) { yield break; }
+            PortalConnectionRecord edge = EdgeFor();
+            if (edge == null) { yield break; }
+            // Refusals are shown as a disabled row with the reason, never hidden: a name missing
+            // from a menu tells the player nothing, and "drafted" or "in transit" is something
+            // they need told.
+            string refusal = RimroomsPortalCrossingService.EligibilityFailureKey(selPawn);
+            if (refusal != null)
+            {
+                yield return new FloatMenuOption(
+                    "RR_DoorCross_EnterRefused".Translate(refusal.Translate()), null);
+                yield break;
+            }
+            PortalConnectionRecord subject = edge;
+            yield return new FloatMenuOption("RR_DoorCross_Enter".Translate(), delegate
+            {
+                Show(PortalTravelService.OrderCrossing(selPawn, subject));
+            });
+        }
+
+        /// <summary>The live edge this door is an endpoint of, or null.</summary>
+        private PortalConnectionRecord EdgeFor()
+        {
+            RimroomsPortalNetwork network = Verse.Current.Game == null
+                ? null : Verse.Current.Game.GetComponent<RimroomsPortalNetwork>();
+            if (network == null || network.Connections == null) { return null; }
+            IReadOnlyList<PortalConnectionRecord> edges = network.Connections;
+            for (int index = 0; index < edges.Count; index++)
+            {
+                PortalConnectionRecord edge = edges[index];
+                if (edge == null) { continue; }
+                if ((edge.First != null && edge.First.Anchor == parent) ||
+                    (edge.Second != null && edge.Second.Anchor == parent))
+                { return edge; }
+            }
+            return null;
+        }
+
         private bool designated;
         private string branchId;
 

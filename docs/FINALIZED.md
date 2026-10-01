@@ -5191,3 +5191,62 @@ in one checkpoint.
 **200 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
 `9D7DCDAF2FFA06C740F800437458571351511B56DDBDC1123463886B46ED7DF4`, reproduced by two clean
 recompiles. **Thirteen checkers pass, forty-one proofs hold.** **43 of 43** planted faults caught.
+
+---
+
+## Session 2026-09-30 - a gate that looks like a gate and is walked through like one (0.12.53-dev)
+
+**Verbatim user quote:** *"okay read the now.md and check the player log and see whats up with the
+gate that u placesd in the running game!!! its not blue!!! it doesnt have a light aura, and it in
+no way is a portal to the back rooms.. wtf!!! im getting tired of this shit... you actually have to
+plug all the work we did on the gates into the game so they work and the pawns can walk from tmap
+to map like the stargate mod works but with normal does.. wtf!!! ive said stargate mod repeaditly
+is how the gates work but u keep fucking ignoring me and doing you own fucking thing instead of
+codeing the door into gates properly so that the doors work like startgates repurposed into the
+backrroms gate to travel to it"*
+
+**Files touched:** `Generation/GenStep_BackroomsDestination.cs`,
+`Portals/CompRimroomsEmergence.cs`, `Patches/RR_NativeGateProviders.xml`, `Keyed/RR_Portals.xml`,
+About/csproj/README, `docs/implementation/GATE_IS_A_GATE_IMPLEMENTATION.md`.
+
+**Closure notes.** **Three complaints, all three correct, and the first one caused the other two to
+be invisible.**
+
+**The level never generated, again, and the cause was new and mine.** `SpawnNativeConduit` threw,
+so `MarkLayoutReady` never ran, so the Store's back door was never marked - and an unmarked door is
+an ordinary steel door. The grid carpeted every powered room with conduit: ~100 cells at 12x12,
+**4,524 cells** at the 60x80 a depth-1 service_passage actually is, against a cap of **512**. An
+eightfold blowout on the first powered room, every time, so **no 300x300 coordinate could ever have
+generated.** The carpet was sized for small rooms and the 300x300 change invalidated it; sizing it
+would have found this before shipping it, and that is the lesson rather than the fix.
+
+**It did not look like a gate, and Core had the answer to the thing that made that hard.** A
+glower on `Door` would light every door in every colony and every door every other mod ships.
+`CompGlower.ShouldBeLitNow` asks every comp implementing `IThingGlower`, so one false from ours
+keeps them all dark - a guarantee from Core's own rule rather than a hope about a zero radius. A
+live gate is blue and casts light with no new texture and no new def.
+
+**And the Stargate complaint was fairly aimed.** The travel already made a real job that walks a
+pawn to the door and crosses them to the other map - that part has been right for checkpoints. What
+was missing was the place a player looks: it was only reachable through a gizmo and a float menu,
+which is a dispatch console rather than a door. *"Like the stargate mod"* was a statement about the
+INTERACTION and it kept being heard as one about the destination.
+`ThingComp.CompFloatMenuOptions` is Core's own right-click hook and that is where it lives now.
+Register row [218] Stargates! is stance *No integration*, which means do not depend on it - it
+never meant ignore it as the model.
+
+**Eight claims written this checkpoint were loose enough for a plant to walk through**, all one
+family: a retired symbol name, a `throw` test that a call-site swap does not disturb, a cap check
+appearing twice, two prefixes, a `SetColor` surviving `if (false)`, a lookup surviving an early
+`return true`, and a guard nothing asserted. **And the fix for the prefix trap fell into the prefix
+trap** - `TrySpawnNativeConduit` contains `SpawnNativeConduit`, so the naive test failed against
+correct code. It strips the safe calls first now.
+
+`check-package-integrity.py` refused the new patch because an XML comment contained `--`, which is
+illegal in XML and would have been a silent def-load failure.
+
+**200 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`3FD8054EB0EA1F3BFC9DA7D954F6E0796B3462A52D7B115E632D9905E7758A7C`, reproduced by two clean
+recompiles. **Thirteen checkers pass, forty-one proofs hold.** **50 of 50** and **32 of 32**.
+
+**Six launches, fourteen defects, every one ours. Still not a single mod conflict.**

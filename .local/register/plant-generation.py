@@ -139,6 +139,40 @@ PLANTS = [
      "(CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index) ?? wallStuff);",
      "CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index);"),
 
+    # ------------------------------------------ 0.12.53-dev: the conduit blowout
+    ("THE WHOLE-ROOM CONDUIT CARPET COMES BACK", GEN,
+     "            return wiredCells;" + chr(10) + "        }",
+     "            foreach (IntVec3 cell in consumerFootprints.SelectMany(room => room.Cells)" + chr(10)
+     + "                .Distinct()) { SpawnNativeConduit(map, voidFloor, conduitDef, cell, wiredCells); }" + chr(10)
+     + "            return wiredCells;" + chr(10) + "        }"),
+
+    ("the grid stops handing back what it wired", GEN,
+     "        private static HashSet<IntVec3> SpawnNativePowerNetwork(Map map, TerrainDef voidFloor,",
+     "        private static HashSet<IntVec3> SpawnNativePowerNetworkUnused(Map map, TerrainDef voidFloor,"),
+
+    ("THE STRAY PASS RUNS BEFORE THE DRESSING EXISTS", GEN,
+     "                ConnectStrayConsumers(map, voidFloor, conduitDef, wiredCells, generator);" + chr(10),
+     ""),
+
+    ("the stray pass stops sweeping for power consumers", GEN,
+     "                    thing.TryGetComp<CompPowerTrader>() != null)" + chr(10)
+     + "                .OrderBy(thing => thing.Position.x).ThenBy(thing => thing.Position.z)",
+     "                    false)" + chr(10)
+     + "                .OrderBy(thing => thing.Position.x).ThenBy(thing => thing.Position.z)"),
+
+    ("THE STRAY PASS STARTS THROWING AND CAN COST THE COORDINATE", GEN,
+     "                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);",
+     "                    SpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);"),
+
+    ("the non-throwing conduit form disappears", GEN,
+     "        private static void TrySpawnNativeConduit(Map map, TerrainDef voidFloor, ThingDef conduitDef,",
+     "        private static void TrySpawnNativeConduitUnused(Map map, TerrainDef voidFloor, ThingDef conduitDef,"),
+
+    ("the stray pass stops respecting the conduit cap", GEN,
+     "                if (wiredCells.Count >= MaxNativePowerConduits) { return; }" + chr(10)
+     + "                List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells,",
+     "                List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells,"),
+
     # ------------------------------------------ 0.12.48-dev: the light count that killed everything
     ("THE LIGHT COUNT FORMULA COMES BACK", GEN,
      "                string powerFault = ValidateNativePowerNetwork(map, generator, climate, placedLights);",

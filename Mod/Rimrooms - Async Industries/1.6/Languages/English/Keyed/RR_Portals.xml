@@ -1,6 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
+  <!-- Right-click a live gate with a colonist selected. Owner direction, 2026-09-30: "the pawns
+       can walk from tmap to map like the stargate mod works but with normal does". The order and
+       the job already did that; this is the place a player actually looks for it. -->
+  <RR_DoorCross_Enter>Enter the gate</RR_DoorCross_Enter>
+  <RR_DoorCross_EnterRefused>Cannot enter the gate: {0}</RR_DoorCross_EnterRefused>
   <RR_DoorCross_Label>Send somebody through</RR_DoorCross_Label>
   <RR_DoorCross_Desc>Order a selected colonist or animal to cross here.
 

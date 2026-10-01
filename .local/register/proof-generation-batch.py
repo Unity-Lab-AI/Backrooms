@@ -346,6 +346,90 @@ check("A ROOM WITH NOWHERE TO MOUNT FALLS BACK INSTEAD OF FAILING",
       "the floor is a cosmetic compromise; a coordinate that does not generate is not")
 
 print("")
+print("THE CONDUIT BLOWOUT THAT STOPPED EVERY 300x300 COORDINATE")
+print("-" * 78)
+
+# The sixth launch: SpawnNativeConduit threw RR_Generation_ContentPlacementFailed, so
+# MarkLayoutReady never ran, so SoloGroupOpening stopped at step 2 again and the Store's back door
+# was never marked. An unmarked door is an ordinary steel door, which is everything the owner
+# reported: *"its not blue!!! it doesnt have a light aura, and it in no way is a portal"*.
+#
+# The cause, measured: the grid carpeted every powered room with conduit. At 12x12 rooms that was
+# ~100 cells. At depth 1 a service_passage is 60x80, so ContractedBy(1) is 4,524 cells against
+# MaxNativePowerConduits = 512 -- an EIGHTFOLD blowout on the first powered room, every time.
+cap = re.search(r"const\s+int\s+MaxNativePowerConduits\s*=\s*(\d+)", genstep)
+
+# Read the grid method's own BODY. The first version of this named the two retired symbols, so a
+# plant that re-carpeted using different names walked straight past it. What is forbidden is the
+# SHAPE -- flattening whole rects into conduit cells -- not the old variable name.
+grid_at = genstep.find("private static HashSet<IntVec3> SpawnNativePowerNetwork(")
+grid_body = genstep[grid_at:genstep.find(chr(10) + "        }" + chr(10), grid_at)] \
+    if grid_at >= 0 else ""
+check("THE WHOLE-ROOM CONDUIT CARPET IS GONE",
+      grid_at >= 0
+      and "poweredRoomCoverage" not in genstep
+      and "ContractedBy(1)).ToList()" not in genstep
+      and "SelectMany" not in grid_body,
+      "-- wiring four thousand cells to catch one lamp is the wrong shape at any size, and at "
+      "80x80 it made the coordinate impossible to generate rather than merely wasteful")
+
+check("the grid hands back what it wired, so a later pass can route from it",
+      "private static HashSet<IntVec3> SpawnNativePowerNetwork(" in genstep
+      and "HashSet<IntVec3> wiredCells = SpawnNativePowerNetwork(" in genstep,
+      "-- the carpet existed because the lamps the dressing adds did not exist yet; the answer is "
+      "to wire them after they do, which needs the grid that was built")
+
+stray_at = genstep.find("private static void ConnectStrayConsumers(")
+stray_body = genstep[stray_at:genstep.find(chr(10) + "        }" + chr(10), stray_at)] \
+    if stray_at >= 0 else ""
+populate_at = genstep.find("RoomContentBuilder.Populate(map, coordinate, entryCell")
+call_at = genstep.find("ConnectStrayConsumers(map, voidFloor, conduitDef, wiredCells, generator);")
+check("ANYTHING THAT DRAWS POWER IS WIRED AFTER THE DRESSING PLACES IT",
+      stray_at >= 0 and populate_at >= 0 and call_at >= 0 and populate_at < call_at,
+      "-- the lamps and benches the archetype dressing places only exist after Populate. Wiring "
+      "before that is guessing where they will land. Populate at %d, pass at %d"
+      % (populate_at, call_at))
+
+check("it finds them the same way the validator finds them",
+      "TryGetComp<CompPowerTrader>() != null" in stray_body
+      and "map.listerThings.AllThings" in stray_body,
+      "-- the thing that REPORTS a stray consumer and the thing that FIXES one now agree by "
+      "construction rather than by two people remembering the same rule")
+
+check("THE STRAY PASS CAN NEVER COST THE COORDINATE",
+      stray_at >= 0 and "throw" not in stray_body
+      and "private static void TrySpawnNativeConduit(" in genstep
+      and "TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);" in stray_body
+      # The Try form CONTAINS the throwing form as a substring, so the naive test fails against
+      # correct code. Strip the safe calls first and then look for a bare one. This claim fell
+      # into the exact prefix trap it was written to close, which is the most on-the-nose lesson
+      # this session has produced.
+      and "SpawnNativeConduit(" not in stray_body.replace("TrySpawnNativeConduit(", ""),
+      "-- a lamp that cannot be reached is a dark corner. Losing the whole place over a conduit "
+      "is the defect this checkpoint exists to fix, and the throwing form is kept only for the "
+      "generator's own footprint where a failure really is a generator fault")
+
+check("and it still respects the conduit cap",
+      stray_body.count("wiredCells.Count >= MaxNativePowerConduits") >= 2
+      and cap is not None,
+      "-- bounded, so a pathological map cannot carpet itself. Cap is %s"
+      % (cap.group(1) if cap else "MISSING"))
+
+# The arithmetic that caused it, so the shape cannot come back unnoticed.
+MAPW, MARGIN, GAP, MINS = 300, 14, 10, 3
+_spacing = (MAPW - MARGIN * 2) // MINS
+_span = _spacing - GAP
+if _span % 2:
+    _span -= 1
+_passage = (_span * 3 // 4) - ((_span * 3 // 4) % 2)
+_carpet = (_passage - 2) * (_span - 2)
+check("the arithmetic that caused it is recorded, not just the fix",
+      cap is not None and _carpet > int(cap.group(1)),
+      "-- one powered room at depth 1 is %d cells contracted by one, against a cap of %s. Any "
+      "future per-room area pass has the same problem and this is the number that proves it"
+      % (_carpet, cap.group(1) if cap else "MISSING"))
+
+print("")
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))
     sys.exit(1)
