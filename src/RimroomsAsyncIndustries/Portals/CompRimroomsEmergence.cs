@@ -113,7 +113,41 @@ namespace RimroomsAsyncIndustries.Portals
             }
         }
 
-        /// <summary>Rare, because a gate going live is an event and not a per-frame question.</summary>
+        /// <summary>How often a gate is asked whether it should look like one.</summary>
+        private const int AppearanceInterval = 250;
+
+        /// <summary>
+        /// **THIS, NOT `CompTickRare`, AND THE DIFFERENCE IS WHY NO GATE WAS EVER BLUE.**
+        ///
+        /// Owner, verbatim: *"the back wall door is not correctly blue ... does not cortrectly
+        /// have the blue light glow"*. Everything else about the gate was working — the live
+        /// session showed the coordinate generated, the door marked, the edge registered and the
+        /// crossing offered — but `RefreshGateAppearance` had never executed once.
+        ///
+        /// `Verse.Thing.DoTick` dispatches on the def's ticker type: a `Normal` ticker gets
+        /// `Tick()` and `TickInterval(delta)`, a `Rare` ticker gets `TickRare()`. **Core's
+        /// `DoorBase` is `tickerType Normal`**, and `Door` and `Autodoor` inherit it, so
+        /// `TickRare` is never called on them and `CompTickRare` never ran.
+        ///
+        /// Throttled with Core's own interval-safe `IsHashIntervalTick(interval, delta)` because
+        /// 1.6 varies a thing's update rate — and because <see cref="IsLiveGate"/> walks every
+        /// edge in the portal network, which is not a per-tick question for every door in a
+        /// colony.
+        /// </summary>
+        public override void CompTickInterval(int delta)
+        {
+            base.CompTickInterval(delta);
+            if (parent == null || !parent.IsHashIntervalTick(AppearanceInterval, delta)) { return; }
+            RefreshGateAppearance();
+        }
+
+        /// <summary>
+        /// Kept as well, and deliberately.
+        ///
+        /// This comp is attached to **door defs**, not to one def this package owns, so another
+        /// mod's door may legitimately be a `Rare` ticker. Covering both costs nothing and means
+        /// the appearance does not depend on a ticker type we do not control.
+        /// </summary>
         public override void CompTickRare()
         {
             base.CompTickRare();
@@ -230,6 +264,11 @@ namespace RimroomsAsyncIndustries.Portals
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
+            // **Painted on every spawn, including after a load, and BEFORE the early return.**
+            // A saved gate was an ordinary grey door until the next appearance interval came
+            // round, which is up to 250 ticks of a player looking at the thing they are about to
+            // report as broken.
+            RefreshGateAppearance();
             if (respawningAfterLoad || parent == null || Current.Game == null) { return; }
             RimroomsPortalNetwork network = Current.Game.GetComponent<RimroomsPortalNetwork>();
             if (network == null) { return; }
@@ -367,6 +406,9 @@ namespace RimroomsAsyncIndustries.Portals
             designated = true;
             branchId = campaign.BranchId;
             campaign.RecordEvent("RR_Event_EmergenceAnchorMarked", parent.GetUniqueLoadID());
+            // Painted on the click, not up to an interval later: a player who marks a door and
+            // sees nothing change assumes the mark failed.
+            RefreshGateAppearance();
             return CompanyActionResult.Applied();
         }
 
@@ -385,6 +427,8 @@ namespace RimroomsAsyncIndustries.Portals
             RimroomsCampaignComponent campaign = Campaign();
             if (campaign != null && campaign.CanOperate)
             { campaign.RecordEvent("RR_Event_EmergenceAnchorWithdrawn", parent.GetUniqueLoadID()); }
+            // Unpainted on the click, for the same reason.
+            RefreshGateAppearance();
             return CompanyActionResult.Applied();
         }
 
