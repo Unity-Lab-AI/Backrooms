@@ -403,7 +403,7 @@ stray_at = genstep.find("private static void ConnectStrayConsumers(")
 stray_body = genstep[stray_at:genstep.find(chr(10) + "        }" + chr(10), stray_at)] \
     if stray_at >= 0 else ""
 populate_at = genstep.find("RoomContentBuilder.Populate(map, coordinate, entryCell")
-call_at = genstep.find("ConnectStrayConsumers(map, voidFloor, conduitDef, wiredCells, generator);")
+call_at = genstep.find("ConnectStrayConsumers(map, coordinate, voidFloor, conduitDef, wiredCells, generator);")
 check("ANYTHING THAT DRAWS POWER IS WIRED AFTER THE DRESSING PLACES IT",
       stray_at >= 0 and populate_at >= 0 and call_at >= 0 and populate_at < call_at,
       "-- the lamps and benches the archetype dressing places only exist after Populate. Wiring "
@@ -674,7 +674,11 @@ check("and the route cross is derived in exactly one place",
 check("A CONDUIT IS NEVER PUT ON A CELL THAT ALREADY TRANSMITS",
       "private static bool AlreadyTransmits(Map map, IntVec3 cell)" in genstep
       and "thing.def.EverTransmitsPower" in genstep
-      and genstep.count("if (AlreadyTransmits(map, cell)) { return; }") == 2,
+      # ONE path now. The other was `SpawnNativeConduit`, which had no callers and threw
+      # `RR_Generation_ContentPlacementFailed` on a cell that could not take a conduit -- the
+      # exact behaviour this checkpoint removed everywhere else. A claim that counts call sites
+      # refusing a correctly deleted call site is the claim working.
+      and genstep.count("if (AlreadyTransmits(map, cell)) { return; }") == 1,
       "-- BOTH spawn paths, because `wiredCells` is this generator's own bookkeeping and cannot "
       "see a transmitter somebody else put there. Several mods in the owner's profile attach a "
       "hidden conduit under a powered building, and the lamps this generator puts on every "
@@ -682,10 +686,40 @@ check("A CONDUIT IS NEVER PUT ON A CELL THAT ALREADY TRANSMITS",
 
 check("and it asks Core's own property rather than naming a def",
       "List<Thing> things = cell.GetThingList(map);" in genstep
-      and 'GetNamedSilentFail("HiddenConduit")' in genstep,
+      and 'GetNamedSilentFail("HiddenConduit")' in genstep
+      and "private static void SpawnNativeConduit(" not in genstep,
       "-- `EverTransmitsPower` is the same property `PowerNetManager` registers on, so this "
       "cannot disagree with the thing that refuses the duplicate. The point is that we did not "
       "put the other transmitter there, so we cannot know its def")
+
+# -------------------------------------------- the wiring goes down last
+# **THE GUARD WAS RIGHT AND RAN TOO EARLY.** `SpawnNativePowerNetwork` was the first thing in the
+# generator, before the generator building, the climate unit, the ceiling lights and the pillar
+# lamps existed -- so conduits went onto empty cells and every powered building was then spawned
+# on top of one. Several mods attach a hidden conduit under a powered building automatically, so
+# that is a second transmitter on a cell that already had ours, on every one of those cells.
+check("THE CONDUITS ARE LAID AFTER EVERYTHING THAT DRAWS POWER EXISTS",
+      genstep.index("RoomContentBuilder.Populate(map, coordinate, entryCell")
+      < genstep.index("HashSet<IntVec3> wiredCells = SpawnNativePowerNetwork(")
+      and genstep.index("SpawnPillarLamps(map, coordinate, wallDef, lightDef, wallMounted,")
+      < genstep.index("HashSet<IntVec3> wiredCells = SpawnNativePowerNetwork("),
+      "-- the ORDER is the fix. `AlreadyTransmits` can only answer truthfully about cells that "
+      "already hold what they are going to hold, and a conduit is not an edifice and does not "
+      "block standability, so nothing placed above it changes")
+
+check("and a power-grid failure can no longer cost the coordinate",
+      "private static void RebuildPowerNets(Map map, CoordinateRecord coordinate)" in genstep
+      and "try { map.powerNetManager.UpdatePowerNetsAndConnections_First(); }" in genstep
+      and genstep.count("map.powerNetManager.UpdatePowerNetsAndConnections_First();") == 1
+      and genstep.count("RebuildPowerNets(map, coordinate);") == 3,
+      "-- THREE call sites, one implementation. Core throws out of the rebuild when its "
+      "transmitter bookkeeping is inconsistent, and because that runs inside `GenStep.Generate` "
+      "the throw stopped the whole level: the map existed unfinished, `EnsureSite` reported "
+      "failure and `SoloGroupOpening` never marked the gate door. **The decision was already "
+      "written down twelve lines below** about the power validation -- *\"a coordinate whose "
+      "heater or one lamp failed to join the grid is dark and cold and completely playable. A "
+      "coordinate that does not exist costs the player the gate that leads to it\"* -- and the "
+      "rebuild it validates did not honour it")
 
 print("")
 if failures:

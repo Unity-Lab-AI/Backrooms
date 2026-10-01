@@ -1947,6 +1947,30 @@ Owner, verbatim:
 
 ---
 
+## The twelfth launch: the gate again, and the cause again upstream - 2026-10-01 (0.12.64-dev) - DONE
+
+Owner, verbatim:
+
+> **"okay im getting worried, there still is not correctly the blue aura, the door isnt blue, and
+> its not portaling people to the backrooms... what happened it used to work fine until we
+> reformulated the back rooms seed genrations. you do remmeber when it was working and i said i
+> loved the backrooms... i currently see the backrooms is available but i cant get my pawns to it
+> as the door is just a normal door not corrtly the natural gate it should and shall be"**
+
+- [x] **"there still is not correctly the blue aura, the door isnt blue"** - the coordinate's
+  generation aborted again, so the door was never marked and no edge was registered
+- [x] **"its not portaling people to the backrooms"** - same cause: no registered edge means no
+  crossing is ever offered
+- [x] **"what happened it used to work fine until we reformulated the back rooms seed
+  genrations"** - **the owner is right.** The ninth launch worked. Every failure since has been a
+  consequence of the generation work that followed it
+- [x] **"i currently see the backrooms is available but i cant get my pawns to it"** - the map is
+  created by Core before our GenStep runs, so an aborted GenStep leaves a visible, unfinished map
+- [x] **"the door is just a normal door not corrtly the natural gate it should and shall be"** -
+  `IsLiveGate` requires a mark AND a registered edge; the door itself was never at fault
+
+---
+
 ## TOMBSTONES
 
 _(none)_

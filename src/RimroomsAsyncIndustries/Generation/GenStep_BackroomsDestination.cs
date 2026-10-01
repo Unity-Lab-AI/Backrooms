@@ -172,9 +172,6 @@ namespace RimroomsAsyncIndustries.Generation
                 { GenAdj.OccupiedRect(climateCell, Rot4.North, climateDef.size) };
                 consumerFootprints.AddRange(lightCells.Select(cell =>
                     GenAdj.OccupiedRect(cell, Rot4.North, lightDef.size)));
-                HashSet<IntVec3> wiredCells = SpawnNativePowerNetwork(map, voidFloor, conduitDef,
-                    GenAdj.OccupiedRect(generatorCell, Rot4.North, generatorDef.size), consumerFootprints);
-
                 Thing generator = MakeBuilding(generatorDef, generatorDef.MadeFromStuff ? ThingDefOf.Steel : null);
                 generator.SetFaction(Faction.OfPlayer);
                 GenSpawn.Spawn(generator, generatorCell, map, Rot4.North);
@@ -210,14 +207,43 @@ namespace RimroomsAsyncIndustries.Generation
                     reservedProviderCells, placedLights);
 
                 RoomContentBuilder.Populate(map, coordinate, entryCell, returnCell, officeEvidenceCell, anchor);
+
+                // **WIRED LAST, AND THAT ORDER IS THE WHOLE FIX.**
+                //
+                // This ran FIRST, before the generator, the climate unit, the ceiling lights and
+                // the pillar lamps were spawned -- so conduits went down on empty cells and then
+                // every powered building in the coordinate was spawned **on top of one**. Several
+                // mods in the owner's profile attach a hidden conduit under a powered building
+                // automatically, which makes a second transmitter on a cell that already had
+                // ours, on every single one of those cells.
+                //
+                // Core refuses the second transmitter -- *"there can't be two transmitters on the
+                // same cell"* -- and leaves its own bookkeeping inconsistent, so the rebuild
+                // below threw a `NullReferenceException` out of
+                // `PowerConnectionMaker.TryConnectToAnyPowerNet`. **That threw out of
+                // `GenStep.Generate`, so the level stopped being built, `EnsureSite` reported
+                // failure, and `SoloGroupOpening` never marked the gate door.** The owner's
+                // report was *"the door isnt blue, and its not portaling people to the
+                // backrooms"*, three launches running.
+                //
+                // Wiring after everything exists is what makes `AlreadyTransmits` able to answer
+                // truthfully: a cell another mod has already wired is skipped, because it is
+                // already wired. The guard was right and it simply ran too early to see anything.
+                //
+                // Nothing between the old position and this one reads the power grid, and a
+                // conduit is not an edifice and does not block standability, so no placement
+                // decision above changes. It is also the direction this generator already moved
+                // once -- see `ConnectStrayConsumers`, which replaced pre-wiring whole rooms.
+                HashSet<IntVec3> wiredCells = SpawnNativePowerNetwork(map, voidFloor, conduitDef,
+                    GenAdj.OccupiedRect(generatorCell, Rot4.North, generatorDef.size), consumerFootprints);
                 // Native spawn notifications are queued; rebuild connections now without ticking
                 // the power simulation so readiness checks see the actual shared grid.
-                map.powerNetManager.UpdatePowerNetsAndConnections_First();
+                RebuildPowerNets(map, coordinate);
                 // Whatever the dressing just placed that draws power, wired now that it exists.
                 // This is what replaced pre-wiring whole rooms on the chance something would land
                 // in them -- see SpawnNativePowerNetwork.
-                ConnectStrayConsumers(map, voidFloor, conduitDef, wiredCells, generator);
-                map.powerNetManager.UpdatePowerNetsAndConnections_First();
+                ConnectStrayConsumers(map, coordinate, voidFloor, conduitDef, wiredCells, generator);
+                RebuildPowerNets(map, coordinate);
                 // **Reported, never fatal.** A coordinate whose heater or one lamp failed to join
                 // the grid is dark and cold and completely playable. A coordinate that does not
                 // exist costs the player the gate that leads to it -- which is exactly what
@@ -487,7 +513,8 @@ namespace RimroomsAsyncIndustries.Generation
         /// reports it and the coordinate still exists. Losing the whole place over a conduit is
         /// what this checkpoint is fixing.
         /// </summary>
-        private static void ConnectStrayConsumers(Map map, TerrainDef voidFloor, ThingDef conduitDef,
+        private static void ConnectStrayConsumers(Map map, CoordinateRecord coordinate,
+            TerrainDef voidFloor, ThingDef conduitDef,
             HashSet<IntVec3> wiredCells, Thing generator)
         {
             CompPowerPlant plant = generator == null ? null : generator.TryGetComp<CompPowerPlant>();
@@ -512,7 +539,7 @@ namespace RimroomsAsyncIndustries.Generation
                     if (wiredCells.Count >= MaxNativePowerConduits) { return; }
                     TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);
                 }
-                map.powerNetManager.UpdatePowerNetsAndConnections_First();
+                RebuildPowerNets(map, coordinate);
             }
         }
 
@@ -533,6 +560,41 @@ namespace RimroomsAsyncIndustries.Generation
             Thing conduit = MakeBuilding(conduitDef, null);
             conduit.SetFaction(Faction.OfPlayer);
             GenSpawn.Spawn(conduit, cell, map, Rot4.North);
+        }
+
+        /// <summary>
+        /// Rebuild Core's power nets, and **never let the power grid cost the coordinate.**
+        ///
+        /// This was `map.powerNetManager.UpdatePowerNetsAndConnections_First()`, called bare in
+        /// three places. Core throws out of it when its transmitter bookkeeping is inconsistent --
+        /// which a duplicate transmitter on one cell makes it -- and because this runs inside
+        /// `GenStep.Generate`, **that one throw stopped the whole level being built.** The
+        /// coordinate's map existed and was never finished, `EnsureSite` reported failure, and
+        /// `SoloGroupOpening` never reached the step that marks the gate door. Three launches in a
+        /// row the owner reported a door that was not blue, and all three times the door was
+        /// fine and the level behind it was not.
+        ///
+        /// **The decision was already made and written down twelve lines below**, about the power
+        /// validation: *"A coordinate whose heater or one lamp failed to join the grid is dark and
+        /// cold and completely playable. A coordinate that does not exist costs the player the
+        /// gate that leads to it."* The validation honoured it. The rebuild it validates did not.
+        ///
+        /// Caught broadly on purpose: the throw comes from inside Core, through another mod's
+        /// comp in the general case, and there is no exception type that usefully distinguishes
+        /// *"this grid is wrong"* from *"this grid is wrong in a way we predicted"*. The warning
+        /// names the coordinate so a bad grid is still findable in a log.
+        /// </summary>
+        private static void RebuildPowerNets(Map map, CoordinateRecord coordinate)
+        {
+            if (map == null || map.powerNetManager == null) { return; }
+            try { map.powerNetManager.UpdatePowerNetsAndConnections_First(); }
+            catch (Exception exception)
+            {
+                Log.Warning("[Rimrooms][Generation] Coordinate "
+                    + (coordinate == null ? "(unknown)" : coordinate.Id)
+                    + " could not rebuild its power connections (" + exception.GetType().Name
+                    + "). The space, its gate anchor and its way home are unaffected.");
+            }
         }
 
         /// <summary>
@@ -612,24 +674,6 @@ namespace RimroomsAsyncIndustries.Generation
             }
             route.Reverse();
             return route;
-        }
-
-        private static void SpawnNativeConduit(Map map, TerrainDef voidFloor, ThingDef conduitDef,
-            IntVec3 cell, HashSet<IntVec3> wiredCells)
-        {
-            if (!cell.InBounds(map) || map.terrainGrid.TerrainAt(cell) == voidFloor)
-            { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
-            if (!wiredCells.Add(cell)) { return; }
-            if (wiredCells.Count > MaxNativePowerConduits)
-            { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
-            // Not a generator fault: the cell is already wired, by somebody else, and that is
-            // exactly as good as wiring it ourselves.
-            if (AlreadyTransmits(map, cell)) { return; }
-            Thing conduit = MakeBuilding(conduitDef, null);
-            conduit.SetFaction(Faction.OfPlayer);
-            GenSpawn.Spawn(conduit, cell, map, Rot4.North);
-            if (!conduit.Spawned || conduit.Map != map)
-            { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
         }
 
         private static void PrimeNativeGenerator(Thing generator, ThingDef fuelDef, IntVec3 preferredFuelCell,
