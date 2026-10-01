@@ -47,9 +47,17 @@ namespace RimroomsAsyncIndustries.Threats
             if (band <= CoordinatePressureLadder.Band.Quiet) { return; }
 
             int seed = Gen.HashCombineInt(coordinate.Seed, coordinate.Openings * 104729);
+            // **DRAWN AGAINST WHAT THIS LEVEL CAN REACH, NOT AGAINST ITS DOORSTEP.** Owner, after
+            // walking a first level end to end: *"i explored it all and there were zero weird
+            // events or people"*. Every event def declares minDepth 2 or more and this filtered
+            // on `coordinate.Depth`, so a depth-1 coordinate produced an empty list and nothing
+            // could ever happen on it. The reach is the coordinate's depth plus the distance a
+            // player can walk from the spawn hall -- the same rule the dressing, the inhabitants
+            // and the wall material now use.
+            int reach = InhabitantService.ReachOf(coordinate);
             List<RimroomsAnomalyEventDef> legal = DefDatabase<RimroomsAnomalyEventDef>
                 .AllDefsListForReading
-                .Where(candidate => candidate.minDepth <= coordinate.Depth
+                .Where(candidate => candidate.minDepth <= reach
                     && (candidate.maxDepth <= 0 || candidate.maxDepth >= coordinate.Depth)
                     && candidate.minBand <= band
                     && (candidate.repeatable || !coordinate.HasFiredEvent(candidate.defName)))

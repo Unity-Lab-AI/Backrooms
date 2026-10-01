@@ -775,6 +775,10 @@ namespace RimroomsAsyncIndustries.Generation
                 foreach (int linkedIndex in room.Links.Where(index => index > room.Index))
                 {
                     RoomRecord other = rooms.First(candidate => candidate.Index == linkedIndex);
+                    // A back-to-back pair is joined by the doorway in the wall they share.
+                    // Carving between their centres would cut a five-cell hole through that wall
+                    // and make them one room. The SAME predicate CandidateIsSafe used.
+                    if (RoomLayoutPlanner.SharesWall(room, other)) { continue; }
                     // The pair's own shaping depth, the SAME call CandidateIsSafe made when
                     // it proved the route through this corridor.
                     int halfWidth = RoomLayoutPlanner.CorridorHalfWidthBetween(room, other,

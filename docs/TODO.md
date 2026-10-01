@@ -1843,7 +1843,7 @@ paused it see whats up"**
 
 ---
 
-## IN PROGRESS — the first walked level — 2026-09-30 (0.12.61-dev)
+## The first walked level — 2026-09-30 (0.12.61-dev) — DONE
 
 **IT WORKED. The owner is in the Backrooms for the first time, on the ninth launch:**
 **"okay it fucking worked!!! im in the backrooms!!! but issues..."**
@@ -1890,7 +1890,7 @@ shows **nine rectangular rooms on straight corridors**, and the planner explains
 
 ---
 
-## IN PROGRESS — lights and geometry — 2026-09-30 (0.12.61-dev)
+## Lights and geometry — 2026-09-30 (0.12.61-dev) — DONE
 
 Owner, verbatim:
 

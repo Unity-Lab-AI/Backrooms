@@ -46,16 +46,16 @@ been enough; the only thing that has worked is reaching for the Write tool first
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
-| Published | **0.12.60-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.61-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **200 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `0862FB8D411E16755614AABF316DFFEB7FD1AB2ABF98714235AD0FD050DBD93D`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Assembly | SHA-256 `29F1BAA124DB807247C148F5D514E6AB53F6ED614EBB2EAD2166FC7BC0EDE791`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **THIRTEEN**, all passing. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
-| Game launches | **EIGHT, all by the owner on 2026-09-30. Twenty defects, every one ours, still not a single mod conflict.** The eighth confirmed the `Door` fix in the running game — **587 cross-reference errors down to ZERO** — but never reached a map: the company setup page stopped drawing after three lines because not one of the package's eight listings set Core's `maxOneColumn`, so an overflowing listing painted itself off the edge of the world with no exception.** The seventh produced **587 red lines from one line**: `<li Class="CompProperties_Colorable" />` names a type RimWorld does not have, and a bad `Class` discards the **whole ThingDef** — so `Door` and `Autodoor` left the game, 585 further errors were other defs failing to cross-reference them, and the game **never left the main menu**. The sixth found a conduit carpet sized for 12x12 rooms blowing a 512-cell cap **eightfold** at 80x80, which meant **no 300x300 coordinate could ever have generated**. An EIGHTH is what settles whether a coordinate generates at all. They have found **eleven defects** and every one was ours. **The fifth found the most expensive one in the project's history: a light count that had stopped every Backrooms level from generating since 0.7.8-dev, thirty-nine checkpoints.** **Still not a single mod conflict.** The fourth launch is also the first whose evidence came from the **running game** rather than from the log alone: the owner said *"you can use the api mod you have that we installed last so u can see wtf rimworld is doing"*, so RimBridgeServer 2.1.1 in direct mode, read-only, against their own launched process. See *What the fourth launch found*. The staged copy is current at this checkpoint, hash-verified |
+| Game launches | **NINE, all by the owner on 2026-09-30. THE NINTH WORKED: the owner walked a Backrooms level for the first time — the coordinate generated, the gate was blue, the crossing carried a pawn across. Twenty-three defects, every one ours, still not a single mod conflict.** What the ninth found was almost entirely content that was switched off at depth 1 on purpose.** The eighth confirmed the `Door` fix in the running game — **587 cross-reference errors down to ZERO** — but never reached a map: the company setup page stopped drawing after three lines because not one of the package's eight listings set Core's `maxOneColumn`, so an overflowing listing painted itself off the edge of the world with no exception.** The seventh produced **587 red lines from one line**: `<li Class="CompProperties_Colorable" />` names a type RimWorld does not have, and a bad `Class` discards the **whole ThingDef** — so `Door` and `Autodoor` left the game, 585 further errors were other defs failing to cross-reference them, and the game **never left the main menu**. The sixth found a conduit carpet sized for 12x12 rooms blowing a 512-cell cap **eightfold** at 80x80, which meant **no 300x300 coordinate could ever have generated**. An EIGHTH is what settles whether a coordinate generates at all. They have found **eleven defects** and every one was ours. **The fifth found the most expensive one in the project's history: a light count that had stopped every Backrooms level from generating since 0.7.8-dev, thirty-nine checkpoints.** **Still not a single mod conflict.** The fourth launch is also the first whose evidence came from the **running game** rather than from the log alone: the owner said *"you can use the api mod you have that we installed last so u can see wtf rimworld is doing"*, so RimBridgeServer 2.1.1 in direct mode, read-only, against their own launched process. See *What the fourth launch found*. The staged copy is current at this checkpoint, hash-verified |
 
 ### How to work, owner direction 2026-09-29
 
@@ -259,6 +259,80 @@ and sits at `12e12da`. Bug fixes found in play land on `feature/bug-testing` and
 there.
 
 ---
+
+## DO THIS FIRST — READ THE LOG FROM THE TENTH LAUNCH
+
+**Read `Player.log` before anything else, and read it before telling the owner anything works.**
+Four checkpoints in a row were answered from proofs rather than from a log and four times the
+answer was wrong.
+
+### THE NINTH LAUNCH WORKED. THE OWNER WALKED A BACKROOMS LEVEL.
+
+*"okay it fucking worked!!! im in the backrooms!!!"* — first time in nine launches. The coordinate
+generated, the gate was blue, the crossing worked, and they explored a whole level.
+
+**And almost everything they found wrong was switched off on purpose.** Three separate systems
+carried the same gate, and the defs said so out loud:
+
+```
+RR_RoomArchetypes.xml:  "minDepth is what keeps the shallow yellow rooms empty.
+                         Nothing here can appear at [depth 1]"
+```
+
+All fourteen archetypes were `minDepth >= 2`; every inhabitant family, including the missing
+person and the recent dead, was `minDepth >= 2`; every anomaly event was `minDepth >= 2`; and
+`RockIntrusionCells`, `CorridorHalfWidthBetween` and `Derange` each refused to run at depth 1.
+**A first level had no laboratory, no ward, no storeroom, no loot, no people, no bodies, no
+events, no shapes and no varied corridors. It was built to be empty and the owner explored all of
+it.**
+
+### THE RULE THAT REPLACED ALL OF THEM
+
+**Distance from the spawn hall counts as depth.** Three links out is one level deeper, capped at
+four bands. Near the arrival it is the yellow rooms exactly as before; the further you walk the
+more of the existing library the level can reach. **Fourteen archetypes were already written and
+the first level could not touch one of them.**
+
+It is the owner's own sentence made literal: *"the normal yellow backrooms look isnt the whole
+floor but the main spanw room and going deeping in can mean the numner of branch hallways and
+rooms distancing from the main portal spawn"*.
+
+### WHAT THE TENTH LAUNCH HAS TO SETTLE
+
+1. **Does a level still generate at all**, with 24 rooms at depth 1 instead of 9, back-to-back
+   pairs, shaped corners and varied corridors. **Everything else depends on this.**
+2. **Is it a maze** — branches, dead ends, rooms of different sizes and shapes
+3. **Is the spawn hall still grand and yellow**, and does the yellow stop a few rooms out
+4. **Two portals per level**: one out to the world map, one deeper. Guaranteed, not drawn
+5. **Loot, weird rooms, people, bodies, events** — out past the yellow rooms, not beside the door
+6. **A lamp on every pillar**, in four tones, and the dim one dim rather than off
+7. **Doors that go nowhere** — an opening a third along a blank wall, onto rock
+8. **Furniture spread through rooms** rather than in the four corners
+
+### THINGS THAT WILL WASTE A LAUNCH IF FORGOTTEN
+
+* **The owner's save will not change.** A coordinate is generated once and recorded; everything
+  here affects levels generated from now on. A new level, or a new start, is what shows it.
+* **`GuaranteedFrontiers` and `RoomArchetypeService` hold caches of live `Thing`s and link
+  graphs**, cleared in `BackroomsContainment.FinalizeInit`. If either leaks across a load it
+  hands a new game the previous game's doors.
+* **Register row [218] Stargates! is stance "No integration", and the owner overruled it.** The
+  register is guidance. Their gate component rides an ordinary Core door, their mod is untouched,
+  and the build has no reference to their assembly.
+
+### THE TRAP THAT KEEPS COSTING CHECKPOINTS
+
+**Three times in this checkpoint a claim guarded a DEFINITION while a plant deleted the CALL.**
+`MakeHall`, `VariedRoomSpan`, `SpawnPillarLamps` — each defined, each correct, each unreached, and
+every numeric claim about them still passing. **Computing a value correctly and using it are two
+different facts.** Assert the call site.
+
+And nine claims refused these changes outright, every refusal correct. One required depth 1 to be
+*"at most eight rooms of at least sixty cells"* — a faithful reading of an earlier direction, and
+**the exact claim that produced the nine-room warehouse.** Another caught that the wall-material
+gate still tested `coordinate.Depth`, so the per-room material was never reached on the level the
+owner actually walked. **A proof refusing a change is the proof working; go back and read what it
+was protecting before you edit it.**
 
 ## DO THIS FIRST — READ THE LOG FROM THE NEXT LAUNCH
 

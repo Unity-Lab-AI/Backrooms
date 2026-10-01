@@ -342,6 +342,36 @@ check("and the dim one is dimmer, never off",
       and "GlowRadius = 0" not in genstep,
       "-- *\"the basic rooms are well lit\"* is the theme. A dark Backrooms is a different place")
 
+# ---------------------------------------------------------------- back to back rooms
+# Owner: *"and you can have back to back roomes"*. Every room sat at the centre of its own slot
+# with a ten-cell gap, and every link was a carved corridor, so nothing ever touched anything.
+check("TWO ROOMS CAN SHARE A WALL, AND ONE FUNCTION DECIDES IT",
+      "internal static bool SharesWall(" in planner
+      and planner.count("SharesWall(") >= 3
+      and "RoomLayoutPlanner.SharesWall(room, other)" in genstep,
+      "-- three readers: the doorway goes in the shared wall, the validator routes through it, "
+      "and the generator skips the corridor. Two derivations of one rule is the defect that cost "
+      "thirty-nine checkpoints")
+
+check("THE SHARED DOORWAY IS COMPUTED FROM THE OVERLAP, NOT FROM EITHER ROOM'S CENTRE",
+      "internal static IntVec3 SharedDoorCell(" in planner
+      and "int low = Math.Max(a.minZ, b.minZ) + 1;" in planner
+      and "if (cell == SharedDoorCell(room, other)) { return true; }" in planner,
+      "-- the shared column belongs to BOTH rooms' bounds and the floor grid is written room by "
+      "room. Each opening its own centre would name different cells and the second write would "
+      "seal the first: a back-to-back pair would have been a SEALED pair")
+
+check("the generator carves no corridor where a wall is shared",
+      "if (RoomLayoutPlanner.SharesWall(room, other)) { continue; }" in genstep,
+      "-- carving between two touching centres cuts a five-cell hole through the shared wall and "
+      "makes them one room")
+
+check("and only a spur is ever pushed, never a chain room",
+      "PushAgainst(rooms[rooms.Count - 1], rooms[host]);" in planner
+      and "private static void PushAgainst(" in planner,
+      "-- a spur has exactly one connection, so moving it can only affect that pair and can "
+      "never re-route the spine")
+
 check("MOST LEFTOVER SLOTS BECOME BRANCHES, which is what makes it a maze",
       "% 4 == 3)" in planner,
       "-- owner: *\"it needs to be more maze liek\"*. One slot in three became a branch and the "

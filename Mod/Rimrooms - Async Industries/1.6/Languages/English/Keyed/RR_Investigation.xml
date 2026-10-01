@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <RR_Evidence_Unregistered>Evidence has no branch case record. Preserve the item and inspect the company record.</RR_Evidence_Unregistered>
-  <RR_Evidence_Inspect>Case status: {0}\nAnalysis: {1}</RR_Evidence_Inspect>
+  <RR_Evidence_Unregistered>Somebody left this here before you. It has no case record on this branch yet - carry it out and take it home, and it will open one.</RR_Evidence_Unregistered>
+  <RR_Evidence_Inspect>Case status: {0}\nAnalysis: {1}\n{2}</RR_Evidence_Inspect>
+  <RR_Evidence_NextStep>Right-click it with a colonist to carry it out. Take it home, put it on the shelf you designate as the records archive, then analyse it at a powered field analysis bench.</RR_Evidence_NextStep>
   <RR_EvidenceStatus_Located>Located at the coordinate</RR_EvidenceStatus_Located>
   <RR_EvidenceStatus_Recovered>Recovered by the crew</RR_EvidenceStatus_Recovered>
   <RR_EvidenceStatus_Secured>Secured at headquarters</RR_EvidenceStatus_Secured>

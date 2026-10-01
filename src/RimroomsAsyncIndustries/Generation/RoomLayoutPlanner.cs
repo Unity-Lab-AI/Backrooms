@@ -469,6 +469,13 @@ namespace RimroomsAsyncIndustries.Generation
                     rooms.Add(MakeRoom(coordinate, rooms.Count, family, slot, spacing,
                         VariedRoomSpan(spacing, slot, seed, depth), seed, false, depth));
                     Link(rooms, rooms.Count - 1, host);
+                    // **BACK TO BACK.** Owner: *"and you can have back to back roomes"*. A spur
+                    // has exactly one connection, so pushing it against its host can only affect
+                    // that one pair and can never re-route the spine -- which is why this is done
+                    // to spurs and not to chain rooms.
+                    if (host > 0 && DestinationService.StableHash(seed,
+                        "backtoback:" + slot.x + "," + slot.z, depth) % 3 == 0)
+                    { PushAgainst(rooms[rooms.Count - 1], rooms[host]); }
                 }
             }
 
@@ -620,7 +627,17 @@ namespace RimroomsAsyncIndustries.Generation
         private static void Derange(CoordinateRecord coordinate, ref int width, ref int height,
             int seed, int roomIndex, int span)
         {
-            int depth = coordinate.Depth;
+            // **PROPORTIONS COME APART WITH DISTANCE, NOT ONLY WITH DEPTH.** Owner: *"odd variers
+            // walls and contructions making narrows , expansies"*. This returned immediately at
+            // depth 1, so every room on a first level kept its family's tidy proportions.
+            //
+            // The room's chain index IS its distance here: the serpentine is built in order from
+            // the threshold, so room N is N links along it. The link graph does not exist yet at
+            // this point -- rooms are made first and joined afterwards -- so the index is both
+            // the only distance available and the correct one.
+            int band = roomIndex / LinksPerShapeBand;
+            if (band > MaximumShapeBand) { band = MaximumShapeBand; }
+            int depth = coordinate.Depth + band;
             if (depth <= 1) { return; }
 
             int roll = DestinationService.StableHash(seed, "derange:" + roomIndex, depth);
@@ -718,6 +735,9 @@ namespace RimroomsAsyncIndustries.Generation
                     // The pair's own shaping depth, so a corridor near the hall stays the
                     // plain three cells and one deep in the maze may narrow or open out. The
                     // SAME number the generator will cut with.
+                    // A back-to-back pair has no corridor to model: the doorway in the
+                    // shared wall is the route, and the floor grid already carries it.
+                    if (SharesWall(room, other)) { continue; }
                     int reach = CorridorHalfWidthBetween(room, other,
                         Math.Max(ShapeDepthOf(rooms, room, depth),
                             ShapeDepthOf(rooms, other, depth))) - 1;
@@ -752,6 +772,92 @@ namespace RimroomsAsyncIndustries.Generation
                 rooms.Where(room => room.familyId == "utility_room" || room.familyId == "storage_nook").All(room => room.links.Count == 1);
         }
 
+        /// <summary>
+        /// Whether these two rooms share a wall, so there is no corridor between them.
+        ///
+        /// Owner: *"and you can have back to back roomes"*. Every room used to sit at the centre
+        /// of its own slot with a ten-cell gap to its neighbour and every link was a carved
+        /// corridor, so nothing ever touched anything -- a level of islands joined by tubes.
+        ///
+        /// **THE SINGLE PLACE THIS IS DECIDED.** `DoorOpening` puts the doorway in the shared
+        /// wall, `BuildCorridors` skips the pair, and `CandidateIsSafe` proves the route through
+        /// the doorway rather than through a corridor. Three readers, one rule -- the same reason
+        /// `PillarCells` exists, and the same defect avoided.
+        ///
+        /// Edges equal, overlap along the shared axis, so a pair that merely passes close does
+        /// not count.
+        /// </summary>
+        /// <summary>
+        /// Slide this room until its wall meets the other's, along whichever axis they are
+        /// already separated on.
+        ///
+        /// Only moved, never resized, so every property the planner already proved about the
+        /// room -- its span is even, its doorways sit at its wall midpoints, its pillar lattice
+        /// clears the centre cross -- survives the move untouched.
+        ///
+        /// Refuses a diagonal pair, because two rooms offset on both axes have no wall to share.
+        /// </summary>
+        private static void PushAgainst(RoomRecord mover, RoomRecord anchorRoom)
+        {
+            if (mover == null || anchorRoom == null) { return; }
+            CellRect a = mover.Bounds;
+            CellRect b = anchorRoom.Bounds;
+            bool verticalOverlap = a.minZ <= b.maxZ && b.minZ <= a.maxZ;
+            bool horizontalOverlap = a.minX <= b.maxX && b.minX <= a.maxX;
+            if (verticalOverlap && a.minX > b.maxX) { mover.x = b.maxX; return; }
+            if (verticalOverlap && a.maxX < b.minX) { mover.x = b.minX - a.Width; return; }
+            if (horizontalOverlap && a.minZ > b.maxZ) { mover.z = b.maxZ; return; }
+            if (horizontalOverlap && a.maxZ < b.minZ) { mover.z = b.minZ - a.Height; return; }
+        }
+
+        /// <summary>
+        /// The one cell in a shared wall that is a doorway, computed identically from either side.
+        ///
+        /// **SYMMETRY IS THE WHOLE POINT, and the first draft did not have it.** The shared column
+        /// belongs to BOTH rooms' bounds, and the floor grid is written room by room: if each room
+        /// opened the wall at its OWN centre, the two rooms would name different cells in the same
+        /// column and whichever was written second would seal the other's doorway. A back-to-back
+        /// pair would have been a sealed pair, and it would have looked like a layout bug rather
+        /// than a rule that disagreed with itself.
+        ///
+        /// So the cell comes from the OVERLAP of the two rooms, which is the same span whichever
+        /// side asks -- the same discipline as `PillarCells`, applied to a doorway.
+        /// </summary>
+        internal static IntVec3 SharedDoorCell(RoomRecord first, RoomRecord second)
+        {
+            CellRect a = first.Bounds;
+            CellRect b = second.Bounds;
+            if (a.maxX == b.minX || b.maxX == a.minX)
+            {
+                int x = a.maxX == b.minX ? a.maxX : a.minX;
+                int low = Math.Max(a.minZ, b.minZ) + 1;
+                int high = Math.Min(a.maxZ, b.maxZ) - 1;
+                if (high < low) { return IntVec3.Invalid; }
+                return new IntVec3(x, 0, (low + high) / 2);
+            }
+            if (a.maxZ == b.minZ || b.maxZ == a.minZ)
+            {
+                int z = a.maxZ == b.minZ ? a.maxZ : a.minZ;
+                int low = Math.Max(a.minX, b.minX) + 1;
+                int high = Math.Min(a.maxX, b.maxX) - 1;
+                if (high < low) { return IntVec3.Invalid; }
+                return new IntVec3((low + high) / 2, 0, z);
+            }
+            return IntVec3.Invalid;
+        }
+
+        internal static bool SharesWall(RoomRecord first, RoomRecord second)
+        {
+            if (first == null || second == null) { return false; }
+            CellRect a = first.Bounds;
+            CellRect b = second.Bounds;
+            bool verticalOverlap = a.minZ <= b.maxZ && b.minZ <= a.maxZ;
+            bool horizontalOverlap = a.minX <= b.maxX && b.minX <= a.maxX;
+            if ((a.maxX == b.minX || b.maxX == a.minX) && verticalOverlap) { return true; }
+            if ((a.maxZ == b.minZ || b.maxZ == a.minZ) && horizontalOverlap) { return true; }
+            return false;
+        }
+
         internal static bool DoorOpening(RoomRecord room, IReadOnlyList<RoomRecord> rooms, IntVec3 cell)
         {
             foreach (int index in room.links)
@@ -761,6 +867,15 @@ namespace RimroomsAsyncIndustries.Generation
                 if (other.Bounds.maxX < room.Bounds.minX && cell.x == room.Bounds.minX && cell.z == room.Bounds.CenterCell.z) { return true; }
                 if (other.Bounds.minZ > room.Bounds.maxZ && cell.z == room.Bounds.maxZ && cell.x == room.Bounds.CenterCell.x) { return true; }
                 if (other.Bounds.maxZ < room.Bounds.minZ && cell.z == room.Bounds.minZ && cell.x == room.Bounds.CenterCell.x) { return true; }
+            }
+            // **A SHARED WALL NEEDS A DOORWAY TOO.** The four tests above all require the other
+            // room to be strictly beyond this one's edge, which is false when the edges are
+            // equal -- so a back-to-back pair would be sealed, with no way in at all.
+            foreach (int index in room.links)
+            {
+                RoomRecord other = rooms.First(r => r.index == index);
+                if (!SharesWall(room, other)) { continue; }
+                if (cell == SharedDoorCell(room, other)) { return true; }
             }
             return FalseOpening(room, rooms, cell);
         }

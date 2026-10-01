@@ -153,6 +153,23 @@ PLANTS = [
      "                    glower.GlowRadius = glower.GlowRadius * 2f / 3f;",
      "                    glower.GlowRadius = 0;"),
 
+    # ---------------------------------------------------------- back to back rooms
+    ("BACK-TO-BACK ROOMS ARE SEALED: each side opens its own centre", PLANNER,
+     "                if (cell == SharedDoorCell(room, other)) { return true; }",
+     "                if (cell.z == room.Bounds.CenterCell.z) { return true; }"),
+
+    ("the shared doorway is never opened at all", PLANNER,
+     "                if (cell == SharedDoorCell(room, other)) { return true; }", ""),
+
+    ("a corridor is carved through the shared wall, merging the two rooms", GEN,
+     "                    if (RoomLayoutPlanner.SharesWall(room, other)) { continue; }", ""),
+
+    ("the validator still models a corridor the generator will not carve", PLANNER,
+     "                    if (SharesWall(room, other)) { continue; }", ""),
+
+    ("rooms stop being pushed together at all", PLANNER,
+     "                    { PushAgainst(rooms[rooms.Count - 1], rooms[host]); }", ""),
+
     ("the lone centre support comes back", GEN,
      "                foreach (IntVec3 pillar in RoomLayoutPlanner.PillarCells(room))",
      "                PlaceWall(map, room.Bounds.CenterCell, wallDef, wallStuff);" + NL

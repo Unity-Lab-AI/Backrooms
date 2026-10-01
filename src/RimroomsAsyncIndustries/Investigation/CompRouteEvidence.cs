@@ -112,8 +112,14 @@ namespace RimroomsAsyncIndustries.Investigation
             RimroomsCampaignComponent campaign = Current.Game == null ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
             EvidenceRecord record = campaign == null ? null : campaign.FindEvidence(evidenceId);
             return !HasValidBinding || record == null || record.Item != parent ? "RR_Evidence_Unregistered".Translate().ToString()
+                // **THE NEXT THING TO DO, not just the state.** Owner, on finding one on a
+                // shelf in the Backrooms: *"it was confusing at what i was suppose to do with
+                // it"*. A status readout is only useful to somebody who already knows the
+                // procedure exists, and the description that explains it is four sentences long
+                // on an item lying in a maze.
                 : "RR_Evidence_Inspect".Translate(("RR_EvidenceStatus_" + record.Status).Translate(),
-                    (record.AnalysisWork / WorkRequired).ToString("P0")).ToString();
+                    (record.AnalysisWork / WorkRequired).ToString("P0"),
+                    "RR_Evidence_NextStep".Translate()).ToString();
         }
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
         {
