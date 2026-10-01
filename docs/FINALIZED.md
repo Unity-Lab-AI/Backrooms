@@ -5409,3 +5409,58 @@ three. It points at the list now instead of promising.
 `A0AE0AA2A671B846663EEB19F3E37BF0F052CBAA29D342538E81043AE5D9D536`, reproduced by two clean
 recompiles. **Thirteen checkers pass, forty-three proofs hold. 490 of 490** planted faults caught
 across fifteen suites.
+
+---
+
+## Session 2026-09-30 - their stargate, our door, our dialling (0.12.57-dev)
+
+**Verbatim user quotes:** *"we use the fucjkign stargate MOD but use a normal door im not telling
+u again"*, *"and connect them together to the backrooms and the map"*, *"we just use our own
+dialing converstion in the background"*, *"we still use the stargate mod as normal but we also use
+it for our backrroms purposes"*, and *"i shouldnt have to click on the door right to send a pawn
+through it and how the fuck are they suppose to auto pick up materials on one side and use them on
+the other"*.
+
+**Files touched:** `Portals/StargateBridge.cs` (new), `Portals/CompRimroomsEmergence.cs`,
+About/csproj/README, `docs/TODO.md`, `docs/NOW.md`.
+
+**Closure notes.** **The connection was already real; the paint and the plumbing were not.**
+
+The live game settled the first question before any code was written: mapCount 2, the welcome
+letter that is only sent when the opening fully succeeds, the emergence Door at (160,161) carrying
+*"Stop being a way home"* and *"Send somebody through"*, and zero exceptions. So the route worked
+and only the appearance was wrong - `RefreshGateAppearance()` had one call site, `CompTickRare()`,
+and Core's `DoorBase` is `tickerType Normal`, which never receives `TickRare`. **That method had
+never run on any door in any session.**
+
+**Then the real instruction, which had been given three times and misread three times.**
+`CompStargate` is a `ThingComp`, so their gate goes on an ordinary Core door with no new ThingDef.
+`StargateBridge` attaches it per INSTANCE to the designated door, because a comps patch is per def
+and their `InitGate` hibernates every extra gate on a map with a message. Both ends of the route
+are wired from the edge, their `InitGate` registers each end's own address, and our dialling
+conversion reads the destination map's address and calls their public
+`OpenStargateDelayed`. Core's `CompTransporter` goes on beside it, which is what their own gate
+uses - that is the automatic hauling, and it is their mod doing it.
+
+**The hard limit was stated rather than papered over:** RimWorld cannot run a job across two maps.
+Jobs, reachability and haul listers are per-Map, and Core's own pit gate does not do it either.
+
+**Nothing of theirs is edited and nothing of theirs is required.** No XML names their defs, the
+build has no reference to their assembly so a collaborator can still compile, their type is found
+with Core's `GenTypes.GetTypeInAnyAssembly`, their `CompProperties` is borrowed off their own def
+rather than constructed, and only two public methods are invoked.
+
+**Register row [218] is stance "No integration", and reading that as "do not use it" cost three
+checkpoints while the owner said the opposite every time.** The register is guidance. What the row
+protects is state ownership, and that is kept exactly.
+
+**Nine of my own claims were too loose**, in two batches: three satisfied by commented-out code,
+one by a second legitimate call site, one by counting guards instead of checking the guard, one by
+two of three lookups surviving, one by a string appearing in two ternaries, and one by a
+fixed-width window that swallowed the next method once comments were stripped - **a fix in the
+same batch moving the ground under another claim.**
+
+**181 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`59F77C337E26C59B55355B10E1C7EC7B7EA29A137E529D3B4EA597CDF5C68546`, reproduced by two clean
+recompiles. **Thirteen checkers pass, forty-five proofs hold. 509 of 509** planted faults caught
+across sixteen suites.
