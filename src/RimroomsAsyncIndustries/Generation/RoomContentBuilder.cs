@@ -307,7 +307,7 @@ namespace RimroomsAsyncIndustries.Generation
             // All four facings, not two. A room where everything faces north or south reads
             // as arranged; the Backrooms are not arranged.
             Rot4 rotation = new Rot4(Scatter(seed, slot, "facing", 4));
-            IntVec3 cell = FixtureCell(map, room, reserved, thing, rotation, preferred);
+            IntVec3 cell = FixtureCell(map, room, reserved, thing, rotation, preferred, null);
             if (!cell.IsValid) { return null; }
             GenSpawn.Spawn(thing, cell, map, rotation);
             if (!thing.Spawned || thing.Map != map) { return null; }
@@ -347,7 +347,7 @@ namespace RimroomsAsyncIndustries.Generation
         /// here, because two derivations of one rule is the defect this project keeps meeting.
         /// </summary>
         private static IntVec3 FixtureCell(Map map, RoomRecord room, HashSet<IntVec3> reserved,
-            Thing thing, Rot4 rotation, IntVec3 preferred)
+            Thing thing, Rot4 rotation, IntVec3 preferred, HashSet<IntVec3> approach)
         {
             CellRect interior = room.Bounds.ContractedBy(1);
             IntVec3 withoutMargin = IntVec3.Invalid;
@@ -358,6 +358,9 @@ namespace RimroomsAsyncIndustries.Generation
                 if (footprint.Cells.Any(c => !interior.Contains(c) || reserved.Contains(c) ||
                     !c.Standable(map) || c.GetEdifice(map) != null || c.GetFirstItem(map) != null))
                 { continue; }
+                // A landmark has to keep a way up to it; see RouteTrunk. Null for everything
+                // else, which places exactly where it placed before.
+                if (approach != null && !TouchesApproach(footprint, approach)) { continue; }
                 // Keep a walkable margin around each fixture where the room allows one.
                 if (!footprint.ExpandedBy(1).Cells.Any(c => c.InBounds(map) && c.GetEdifice(map) != null))
                 { return cell; }
@@ -366,6 +369,107 @@ namespace RimroomsAsyncIndustries.Generation
                 if (!withoutMargin.IsValid) { withoutMargin = cell; }
             }
             return withoutMargin;
+        }
+
+        /// <summary>
+        /// Whether a cell in <paramref name="approach"/> lies orthogonally beside this footprint.
+        ///
+        /// Orthogonally, because that is the test `ValidatePlacedLayout` applies to a clue
+        /// landmark -- `|dx| + |dz| == 1` against a footprint cell. A diagonal neighbour is not
+        /// an approach there, so it is not one here either; two derivations of one rule is the
+        /// defect this project keeps meeting.
+        /// </summary>
+        private static bool TouchesApproach(CellRect footprint, HashSet<IntVec3> approach)
+        {
+            foreach (IntVec3 cell in footprint.ExpandedBy(1).Cells)
+            {
+                if (!approach.Contains(cell)) { continue; }
+                foreach (IntVec3 part in footprint.Cells)
+                {
+                    if (Math.Abs(cell.x - part.x) + Math.Abs(cell.z - part.z) == 1) { return true; }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// The part of the room's reserved route cross that is clear and joined up.
+        ///
+        /// ## Why the landmark has to touch this, and why that is new
+        ///
+        /// `ValidatePlacedLayout` requires every clue landmark to have a standable,
+        /// entry-reachable cell orthogonally beside it, and **nothing was keeping one.** Every
+        /// landmark this builder places is `PassThroughOnly`, so the landmark's own cell never
+        /// counts and the approach is always a neighbour.
+        ///
+        /// Two correct decisions met and left a hole between them. `FixtureCell` relaxed its
+        /// margin from a requirement to a preference -- rightly, because requiring one aborted
+        /// whole levels -- and `DressRoom` places fixtures until one will not fit, so **the last
+        /// cells it takes are the no-margin cells flush against whatever is already there.**
+        /// Including every neighbour of the landmark. Dressing sixteen archetypes with loot at
+        /// 0.12.69-dev is what made a room dense enough to reach that point.
+        ///
+        /// That is what stopped the owner's solo/group start: `RR_Generation_UnreachableRequiredCell`
+        /// from the clue loop, so the level was never finished, so `EnsureSite` reported failure,
+        /// so `SoloGroupOpening` never moved anybody inside and never registered the way out.
+        /// Their report was *"i ended up in the world map with no connection to the back rooms"*
+        /// -- a furniture placement rule, four steps removed.
+        ///
+        /// **The margin was never what kept a room walkable**, and `FixtureCell` says so and is
+        /// right. It was read one step too far: the reserved cross keeps the ROOM walkable and
+        /// says nothing about the landmark's own approach, which is off the cross by
+        /// construction, because cross cells are reserved.
+        ///
+        /// So the approach is taken from the cross itself. Those cells are reserved outright and
+        /// stay clear for the rest of generation, so a landmark beside one **cannot** be sealed
+        /// in by anything placed later. The guarantee is structural rather than lucky.
+        ///
+        /// **Joined up, not merely on the cross.** A pillar or a stand of shaped rock can sever
+        /// an arm, and a cell in a severed arm is standable and unreachable -- exactly the pair
+        /// of properties the validator rejects. This walks out from the middle, so only cells
+        /// continuous with the room's own trunk are offered.
+        ///
+        /// Empty when the room has no clear cross at all, and the caller then places the landmark
+        /// the way it always did: refusing one would abort the level, which is the thing being
+        /// fixed here.
+        /// </summary>
+        private static HashSet<IntVec3> RouteTrunk(Map map, RoomRecord room)
+        {
+            CellRect interior = room.Bounds.ContractedBy(1);
+            var trunk = new HashSet<IntVec3>();
+            IntVec3 start = interior.Cells
+                .Where(cell => OnRouteCross(room, cell) && ClearTrunkCell(map, cell))
+                .OrderBy(cell => cell.DistanceToSquared(room.Bounds.CenterCell))
+                .ThenBy(cell => cell.x).ThenBy(cell => cell.z)
+                .FirstOrDefault();
+            if (!start.IsValid || !interior.Contains(start)) { return trunk; }
+
+            var pending = new Queue<IntVec3>();
+            trunk.Add(start);
+            pending.Enqueue(start);
+            IntVec3[] directions = { IntVec3.North, IntVec3.East, IntVec3.South, IntVec3.West };
+            while (pending.Count > 0)
+            {
+                IntVec3 current = pending.Dequeue();
+                for (int index = 0; index < directions.Length; index++)
+                {
+                    IntVec3 next = current + directions[index];
+                    if (!interior.Contains(next) || !OnRouteCross(room, next)) { continue; }
+                    if (!ClearTrunkCell(map, next) || !trunk.Add(next)) { continue; }
+                    pending.Enqueue(next);
+                }
+            }
+            return trunk;
+        }
+
+        /// <summary>
+        /// A cross cell nothing is standing in. Asked of the map rather than of the reserved set,
+        /// because the thing that disqualifies a cross cell is a pillar or the rock left in a
+        /// shaped corner, and neither of those is reserved -- they were built.
+        /// </summary>
+        private static bool ClearTrunkCell(Map map, IntVec3 cell)
+        {
+            return cell.InBounds(map) && cell.Standable(map) && cell.GetEdifice(map) == null;
         }
 
         /// <summary>
@@ -429,7 +533,18 @@ namespace RimroomsAsyncIndustries.Generation
             // All four facings, not two. A room where everything faces north or south reads
             // as arranged; the Backrooms are not arranged.
             Rot4 rotation = new Rot4(Scatter(seed, slot, "facing", 4));
-            IntVec3 cell = FixtureCell(map, room, reserved, thing, rotation, preferred);
+            // **The landmark keeps a way up to it, and only the landmark needs one**: the clue
+            // chain reads it and `ValidatePlacedLayout` demands a standable, reachable cell
+            // orthogonally beside it. See RouteTrunk for what that cost the owner.
+            //
+            // Asked FIRST and fallen back from, never refused on: a cross-adjacent cell if the
+            // room has one, otherwise wherever the landmark would have gone anyway. This can
+            // move a landmark; it can never fail to place one that would have been placed.
+            HashSet<IntVec3> trunk = required ? RouteTrunk(map, room) : null;
+            IntVec3 cell = FixtureCell(map, room, reserved, thing, rotation, preferred,
+                trunk != null && trunk.Count > 0 ? trunk : null);
+            if (!cell.IsValid && trunk != null && trunk.Count > 0)
+            { cell = FixtureCell(map, room, reserved, thing, rotation, preferred, null); }
             if (!cell.IsValid)
             {
                 // Do not reroll or remove earlier placed content after a surprising runtime
@@ -453,6 +568,17 @@ namespace RimroomsAsyncIndustries.Generation
             GenSpawn.Spawn(thing, cell, map, rotation);
             if (!thing.Spawned || thing.Map != map) { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
             thing.SetForbidden(false, false);
+            // **And nothing else goes beside the landmark.** The same thing `Populate` already
+            // does for the gate anchor, for the same reason: the ring it was placed with is the
+            // ring it keeps. Without this, a cross-adjacent landmark still survives -- cross
+            // cells are reserved -- but a landmark that had to fall back off the cross would be
+            // sealed in by the next fixture that ran out of margined cells. Decorations are
+            // allowed to be absent; a clue is not allowed to be unreachable.
+            if (required)
+            {
+                foreach (IntVec3 ring in thing.OccupiedRect().ExpandedBy(1).Cells)
+                { reserved.Add(ring); }
+            }
             return thing;
         }
     }

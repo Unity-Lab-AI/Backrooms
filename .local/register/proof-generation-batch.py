@@ -406,11 +406,11 @@ check("the grid hands back what it wired, so a later pass can route from it",
       "-- the carpet existed because the lamps the dressing adds did not exist yet; the answer is "
       "to wire them after they do, which needs the grid that was built")
 
-stray_at = genstep.find("private static void ConnectStrayConsumers(")
+stray_at = genstep.find("private static bool ConnectStrayConsumers(")
 stray_body = genstep[stray_at:genstep.find(chr(10) + "        }" + chr(10), stray_at)] \
     if stray_at >= 0 else ""
 populate_at = genstep.find("RoomContentBuilder.Populate(map, coordinate, entryCell")
-call_at = genstep.find("ConnectStrayConsumers(map, coordinate, voidFloor, conduitDef, wiredCells, generator);")
+call_at = genstep.find("ConnectStrayConsumers(map, coordinate, voidFloor, conduitDef, wiredCells, generator)")
 check("ANYTHING THAT DRAWS POWER IS WIRED AFTER THE DRESSING PLACES IT",
       stray_at >= 0 and populate_at >= 0 and call_at >= 0 and populate_at < call_at,
       "-- the lamps and benches the archetype dressing places only exist after Populate. Wiring "
@@ -631,7 +631,7 @@ check("THE WALKABLE MARGIN IS A PREFERENCE, NOT A REQUIREMENT",
       "and unconditionally. A fixture with no margin is a fixture against a wall")
 
 check("and ONE function finds the cell, for every caller",
-      content.count("FixtureCell(map, room, reserved, thing, rotation, preferred)") == 2
+      content.count("FixtureCell(map, room, reserved, thing, rotation, preferred") == 3
       and content.count("OrderBy(c => c.DistanceToSquared(preferred))") == 1,
       "-- `TryPlace` kept its own copy of the search loop. Two derivations of one rule is the "
       "defect that cost this project thirty-nine checkpoints")
@@ -715,11 +715,19 @@ check("THE CONDUITS ARE LAID AFTER EVERYTHING THAT DRAWS POWER EXISTS",
       "block standability, so nothing placed above it changes")
 
 check("and a power-grid failure can no longer cost the coordinate",
-      "private static void RebuildPowerNets(Map map, CoordinateRecord coordinate)" in genstep
-      and "try { map.powerNetManager.UpdatePowerNetsAndConnections_First(); }" in genstep
+      "private static bool RebuildPowerNets(Map map, CoordinateRecord coordinate)" in genstep
+      # **THE GUARD, not just the call.** Re-aiming this claim at 0.12.71-dev briefly left
+      # only the call, which passes against an unguarded rebuild -- the defect the claim
+      # exists for. The whole block is asserted, in order.
+      and ("            try" + chr(10)
+           + "            {" + chr(10)
+           + "                map.powerNetManager.UpdatePowerNetsAndConnections_First();" + chr(10)
+           + "                return true;" + chr(10)
+           + "            }" + chr(10)
+           + "            catch (Exception exception)") in genstep
       and genstep.count("map.powerNetManager.UpdatePowerNetsAndConnections_First();") == 1
-      and genstep.count("RebuildPowerNets(map, coordinate);") == 3,
-      "-- THREE call sites, one implementation. Core throws out of the rebuild when its "
+      and genstep.count("RebuildPowerNets(map, coordinate)") == 3,
+      "-- THREE call sites, one implementation, and two of them guarded. Core throws out of the rebuild when its "
       "transmitter bookkeeping is inconsistent, and because that runs inside `GenStep.Generate` "
       "the throw stopped the whole level: the map existed unfinished, `EnsureSite` reported "
       "failure and `SoloGroupOpening` never marked the gate door. **The decision was already "
@@ -806,6 +814,93 @@ check("and the canteen can appear on a FIRST level",
       and "<minDepth>1</minDepth>" in canteen_block,
       "-- it was `minDepth 2`, so the level the owner walked could not contain the only room in "
       "the library that held anything to eat")
+
+# ----------------------------------------------- the landmark keeps a way up to it
+# `ValidatePlacedLayout` requires a standable, entry-reachable cell orthogonally beside every clue
+# landmark, and **nothing reserved one.** Every landmark this builder places is PassThroughOnly, so
+# its own cell never counts; `FixtureCell` relaxed its margin to a preference; and `DressRoom`
+# places fixtures until one will not fit, so the last cells it takes are the no-margin cells flush
+# against whatever is there. Including all four neighbours of the landmark.
+#
+# That threw `RR_Generation_UnreachableRequiredCell` out of `GenStep.Generate`, so the level was
+# never finished, so `EnsureSite` failed, so `SoloGroupOpening` never moved anybody inside and
+# never registered the way out. Owner: *"i ended up in the world map with no connection to the
+# back rooms.. i should of been in the back rooms and i dont have a warp do to get back"*.
+check("THE LANDMARK IS OFFERED A CELL BESIDE THE ROOM'S OWN RESERVED ROUTE CROSS",
+      "private static HashSet<IntVec3> RouteTrunk(Map map, RoomRecord room)" in content
+      and "HashSet<IntVec3> trunk = required ? RouteTrunk(map, room) : null;" in content
+      and "trunk != null && trunk.Count > 0 ? trunk : null);" in content,
+      "-- DEFINED AND CALLED, and called only for the landmark. A cross cell is reserved for the "
+      "whole of population, so a landmark beside one cannot be sealed in by anything placed "
+      "later: the guarantee is structural instead of lucky")
+
+check("and the trunk is the JOINED-UP part of the cross, not merely the cross",
+      "if (!interior.Contains(next) || !OnRouteCross(room, next)) { continue; }" in content
+      and "if (!ClearTrunkCell(map, next) || !trunk.Add(next)) { continue; }" in content
+      and "private static bool ClearTrunkCell(Map map, IntVec3 cell)" in content
+      and "return cell.InBounds(map) && cell.Standable(map) && cell.GetEdifice(map) == null;"
+      in content,
+      "-- a pillar or a stand of shaped rock severs an arm, and a cell in a severed arm is "
+      "standable and unreachable, which is the exact pair of properties the validator rejects")
+
+check("and the approach test is ORTHOGONAL, the same test the validator applies",
+      "private static bool TouchesApproach(CellRect footprint, HashSet<IntVec3> approach)"
+      in content
+      and "if (Math.Abs(cell.x - part.x) + Math.Abs(cell.z - part.z) == 1) { return true; }"
+      in content
+      and "if (approach != null && !TouchesApproach(footprint, approach)) { continue; }" in content,
+      "-- a diagonal neighbour is not an approach in `ValidatePlacedLayout`, so it is not one "
+      "here. Two derivations of one rule is the defect this project keeps meeting")
+
+check("and it FALLS BACK rather than refusing, so it can never cost a level",
+      "if (!cell.IsValid && trunk != null && trunk.Count > 0)" + chr(10)
+      + "            { cell = FixtureCell(map, room, reserved, thing, rotation, preferred, null); }"
+      in content,
+      "-- refusing a landmark throws `RR_Generation_NoSafeRoomCell`, which is the same dead level "
+      "by another name. `check-planner-layouts.py` measures how often the fallback is needed and "
+      "fails if it ever is")
+
+check("AND NOTHING ELSE IS PLACED BESIDE THE LANDMARK AFTERWARDS",
+      "if (required)" in content
+      and ("foreach (IntVec3 ring in thing.OccupiedRect().ExpandedBy(1).Cells)" + chr(10)
+           + "                { reserved.Add(ring); }") in content,
+      "-- the ring it was placed with is the ring it keeps, which is exactly what `Populate` "
+      "already does for the gate anchor. Decorations are allowed to be absent; a clue is not "
+      "allowed to be unreachable")
+
+check("and an unreachable clue is REPORTED rather than fatal",
+      "has no reachable cell beside it, so that one room's" in genstep
+      and genstep.count('throw new InvalidOperationException("RR_Generation_UnreachableRequiredCell")')
+      == 1,
+      "-- the generator's own rule, applied where it had been missed: *\"A coordinate whose "
+      "heater or one lamp failed to join the grid is dark and cold and completely playable. A "
+      "coordinate that does not exist costs the player the gate that leads to it.\"* One throw "
+      "site left for that key, because two raising one key is why the log could not say which "
+      "had fired")
+
+# -------------------------------------------- the power rebuild that asked sixty-two times
+# The owner's log carried sixty-two copies of one warning and, in the middle of them, Core's
+# *"Tried to register trasmitter ... but there is already a power net here"* naming the generator
+# on the generator's own cell -- which no conduit of ours can occupy. Core clears its delayed
+# queue only after the loop that processes it, so a throw part-way leaves applied entries queued
+# and the next call re-applies them. The retry made the permanent fault.
+check("A FAILED POWER REBUILD IS NOT ASKED AGAIN THIS GENERATION",
+      "private static bool RebuildPowerNets(Map map, CoordinateRecord coordinate)" in genstep
+      and "if (!RebuildPowerNets(map, coordinate)) { return false; }" in genstep
+      and "if (RebuildPowerNets(map, coordinate) &&" in genstep,
+      "-- the first failure was the real one and the next sixty-one were self-inflicted")
+
+check("and the sweep that produced them stops with it",
+      "private static bool ConnectStrayConsumers(Map map, CoordinateRecord coordinate," in genstep
+      and "if (plant == null || wiredCells == null) { return true; }" in genstep,
+      "-- every decision after a failed rebuild reads `power.PowerNet` out of bookkeeping Core "
+      "has already said is wrong")
+
+check("and the exception is logged IN FULL, once",
+      '+ exception);' in genstep
+      and "will not be asked again this" in genstep,
+      "-- sixty-two lines reading `(NullReferenceException)` could not name the Core method or "
+      "the thing, and that was the whole question")
 
 print("")
 if failures:

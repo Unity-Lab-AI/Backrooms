@@ -46,10 +46,10 @@ been enough; the only thing that has worked is reaching for the Write tool first
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
-| Published | **0.12.70-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.71-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **204 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `EC6AAA0B82D00F3884994DEDECC2460B4E6777C0F90B4C64398725DB3CA0D30A`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Assembly | SHA-256 `F4E367E7C4DBC3C3AF92E7A06FF7CF59E421A397426A3F404206367BF91ACE41`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **FIFTEEN**, all passing. **The fifteenth refuses while a planted fault is still in the source tree.** A suite has left one there three times -- twice deleting `Campaign.NoteReturnedFromField(...)`, once deleting `!anchor.Destroyed` -- and each would have shipped silently if a build had gone out first. The `finally` added at 0.12.65-dev handles an exception and does nothing for a killed process, so the suites write a sentinel naming the file before they mutate it and `check-plant-residue.py` refuses while it exists. **A false alarm costs one command; a missed one ships a deliberate fault.** **The fourteenth is the only one that runs code rather than reading it**, and it exists because the thirteen that read text, the forty-five proofs and five hundred and fifty plants **all passed over a planner that could not produce one valid layout** -- `MaxRoomSpan` said 34 while the grand hall was 80, and no amount of reading either file can see two numbers disagree. `check-planner-layouts.py` builds `.local/harness/PlannerProbe` and runs `TrySelect` and `ValidateRooms` over 200 seeds at seven depths, demanding both that a layout is accepted **and that back-to-back pairs exist** -- because a plant that moved a pushed room one cell was missed by every proof when the revert guard quietly switched the feature off. **It never skips**: no dotnet, no install or no built assembly is a failure, not a pass. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -343,6 +343,80 @@ It should not appear, because the conduits are laid last now — but it is a war
 * **An absence claim cannot read raw source** — it reads the comment explaining the removal.
   `proof-coordinate-layout.py` keeps a `code()` view; `proof-generation-batch.py` strips comments.
 * **Use the Write tool.** A heredoc mangled an escaped newline for the **eleventh** time.
+
+## STATE AT THIS HANDOFF — `0.12.71-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.71-dev  91 files
+assembly    F4E367E7C4DBC3C3AF92E7A06FF7CF59E421A397426A3F404206367BF91ACE41
+            read back out of the game folder after staging, not from the build
+battery     15 checkers - 45 proofs - 633 of 633 plants - 16 suites
+tree        no planted fault, porcelain 0
+```
+
+### WHY THE OWNER'S SOLO/GROUP START PUT THEM ON THE WORLD MAP
+
+**One clue nobody could walk up to killed the whole level.** Their words: *"i ended up in the world
+map with no connection to the back rooms.. i should of been in the back rooms and i dont have a
+warp do to get back"*.
+
+`SoloGroupOpening.Open` is five steps. Step 2 -- the coordinate's own map -- threw
+`RR_Generation_UnreachableRequiredCell`, so steps 3, 4 and 5 never ran: **the surface door was
+never marked, no address was registered, and nobody was moved inside.** Their own guess,
+*"i think it was the issue of the building starting door being the same as the warp gate door"*,
+is wrong and it is recorded as wrong in `docs/TODO.md` -- the door was never reached at all.
+
+**Three things changed, and one of them is a judgment call worth knowing about:**
+
+| | |
+|---|---|
+| `RouteTrunk` | The landmark is offered a cell beside the room's **clear, joined-up route cross**, which is reserved for the whole of population. Nothing placed later can take it, so the approach is structural rather than lucky. It falls back when a room has no such cell, and **the probe measures how often that happens** -- zero, across 1,400 layouts |
+| the landmark's ring | Reserved once it is placed, exactly as `Populate` already does for the gate anchor |
+| **an unreachable clue now WARNS** | It used to throw and take the level with it. One clue nobody can reach is one awkward room; the generator's own written rule says a coordinate that does not exist costs the player the gate that leads to it. **The structural checks around it stay fatal.** This is a deliberate downgrade, not an oversight |
+
+### AND THE SIXTY-TWO POWER WARNINGS WERE MOSTLY OUR OWN RETRY
+
+Core clears its delayed power queue **after** the loop that processes it, so a throw part-way
+leaves applied entries queued -- and `ConnectStrayConsumers` rebuilt once per stray consumer, so
+it called again and re-applied them. That is where Core's *"there is already a power net here"*
+came from, naming the generator on the generator's own cell.
+
+`RebuildPowerNets` returns a bool now, the sweep stops on false, and nothing asks twice.
+**The root of the FIRST throw is still unknown** -- it is inside Core, through a 294-mod profile,
+and the log only ever printed `(NullReferenceException)`. It logs the full exception now, so the
+next launch answers it. **That is not claimed as fixed.**
+
+### WHAT THE OWNER HAS NOT SEEN YET
+
+**Ten checkpoints are built and never run.** The last launch to reach a playable level was
+`0.12.67-dev`; `0.12.71-dev` is the first to attempt the solo/group start since the maze landed.
+
+| Checkpoint | Unseen in a game |
+|---|---|
+| 0.12.68-dev | the braided maze, the raised graph ceiling, **the new packageId** |
+| 0.12.69-dev | institutions on a first level, complexes to six rooms, loot in all sixteen archetypes |
+| 0.12.70-dev | the assembly as a player-queued bill, and gate control on the components |
+| 0.12.71-dev | **the solo/group start reaching a Backrooms level at all** |
+
+**A NEW START IS REQUIRED.** The failed coordinate is recorded `Unavailable` and nothing retries
+the opening. Owner's decision when asked, 2026-10-01: *"Just the fix, I'll restart"* -- so a
+replacement-coordinate recovery path for `lone_survivor` was **deliberately not built**.
+`ReaddressPristineInitialSurvey` still refuses any scenario but `async_industries`.
+
+### A NEW INSTRUMENT, AND WHY IT IS TRACKED
+
+`.local/harness/PdbLine` maps an IL offset from a RimWorld stack trace to a source line, by
+reading the portable PDB's sequence points, and prints the assembly MVID so the answer can be
+tied to the assembly that actually threw.
+
+It exists because `ValidatePlacedLayoutCore` raised **one key from two places**, the trace carried
+`[0x001f8]` and nothing else, and no amount of reading the source can tell those apart. It
+answered line 1446 with a matching MVID. **There is one throw site for that key now**, but the
+shape recurs, so the tool is tracked rather than thrown away.
+
+```
+.local/harness/PdbLine/bin/Release/net8.0/PdbLine.exe <assembly.dll> <Type> <Method> [0xOFFSET ...]
+```
 
 ## STATE AT THIS HANDOFF — `0.12.70-dev`, STAGED AND VERIFIED
 

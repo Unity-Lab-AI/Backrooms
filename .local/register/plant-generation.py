@@ -36,6 +36,43 @@ def _rr_unmark():
 
 
 PLANTS = [
+    # --------------------------------------- the landmark's approach, and the retry
+    ("THE LANDMARK IS NO LONGER OFFERED A CROSS-ADJACENT CELL", CONTENT,
+     "            HashSet<IntVec3> trunk = required ? RouteTrunk(map, room) : null;",
+     "            HashSet<IntVec3> trunk = null;"),
+
+    ("the trunk takes severed arms as well as the joined-up part", CONTENT,
+     "                    if (!ClearTrunkCell(map, next) || !trunk.Add(next)) { continue; }",
+     "                    if (!trunk.Add(next)) { continue; }"),
+
+    ("a diagonal neighbour counts as an approach", CONTENT,
+     "                    if (Math.Abs(cell.x - part.x) + Math.Abs(cell.z - part.z) == 1) { return true; }",
+     "                    return true;"),
+
+    ("THE DRESSING CAN STILL FILL THE CELLS BESIDE THE LANDMARK", CONTENT,
+     "                foreach (IntVec3 ring in thing.OccupiedRect().ExpandedBy(1).Cells)" + NL
+     + "                { reserved.Add(ring); }" + NL, ""),
+
+    ("the approach requirement is read and then not applied", CONTENT,
+     "                if (approach != null && !TouchesApproach(footprint, approach)) { continue; }" + NL,
+     ""),
+
+    ("AN UNREACHABLE CLUE TAKES THE WHOLE LEVEL AGAIN", GEN,
+     "                    Log.Warning(\"[Rimrooms][Generation] Coordinate \" + coordinate.Id + \": the clue \"",
+     "                    throw new InvalidOperationException(\"RR_Generation_UnreachableRequiredCell\"); Log.Warning(\"[Rimrooms][Generation] Coordinate \" + coordinate.Id + \": the clue \""),
+
+    ("the stray-consumer sweep carries on after a failed rebuild", GEN,
+     "                if (!RebuildPowerNets(map, coordinate)) { return false; }",
+     "                RebuildPowerNets(map, coordinate);"),
+
+    ("the rebuild is asked again after it refused", GEN,
+     "                if (RebuildPowerNets(map, coordinate) &&",
+     "                RebuildPowerNets(map, coordinate);" + NL + "                if (true &&"),
+
+    ("the exception is logged by type name only, as it was", GEN,
+     "                    + exception);",
+     "                    + exception.GetType().Name + \").\");"),
+
     # ------------------------------------------------- a hallway is a room
     # Two hardcoded values made every corridor a grey steel service tunnel between themed rooms.
     # Owner: *"the hall ways are just rectangles and arnt correctly the themed color and
@@ -94,17 +131,22 @@ PLANTS = [
      "                // Native spawn notifications are queued; rebuild connections now without ticking"),
 
     ("A POWER-GRID THROW TAKES THE WHOLE LEVEL AGAIN", GEN,
-     "            try { map.powerNetManager.UpdatePowerNetsAndConnections_First(); }",
-     "            if (true) { map.powerNetManager.UpdatePowerNetsAndConnections_First(); }"),
+     "            try" + NL + "            {" + NL
+     + "                map.powerNetManager.UpdatePowerNetsAndConnections_First();",
+     "            if (true)" + NL + "            {" + NL
+     + "                map.powerNetManager.UpdatePowerNetsAndConnections_First();"),
+
+    ("the rebuild stops reporting whether it worked", GEN,
+     "                return true;" + NL + "            }" + NL
+     + "            catch (Exception exception)",
+     "            }" + NL + "            catch (Exception exception)"),
 
     ("the rebuild is guarded in one place and bare in another", GEN,
-     "                RebuildPowerNets(map, coordinate);" + NL
-     + "                // Whatever the dressing just placed that draws power, wired now that it exists.",
-     "                map.powerNetManager.UpdatePowerNetsAndConnections_First();" + NL
-     + "                // Whatever the dressing just placed that draws power, wired now that it exists."),
+     "                    RebuildPowerNets(map, coordinate);",
+     "                    map.powerNetManager.UpdatePowerNetsAndConnections_First();"),
 
     ("and the stray pass stops naming the coordinate it failed on", GEN,
-     "                RebuildPowerNets(map, coordinate);" + NL + "            }" + NL + "        }",
+     "                if (!RebuildPowerNets(map, coordinate)) { return false; }",
      "                map.powerNetManager.UpdatePowerNetsAndConnections_First();" + NL
      + "            }" + NL + "        }"),
 
@@ -143,7 +185,7 @@ PLANTS = [
      + NL + "                            break;" + NL + '                        case "survey_lobby":'),
 
     ("the cell search is derived a second time inside TryPlace", CONTENT,
-     "            IntVec3 cell = FixtureCell(map, room, reserved, thing, rotation, preferred);"
+     "            IntVec3 cell = FixtureCell(map, room, reserved, thing, rotation, preferred, null);"
      + NL + "            if (!cell.IsValid) { return null; }",
      "            IntVec3 cell = interior_unused;" + NL + "            if (!cell.IsValid) { return null; }"),
 
@@ -366,7 +408,7 @@ PLANTS = [
      "        private static HashSet<IntVec3> SpawnNativePowerNetworkUnused(Map map, TerrainDef voidFloor,"),
 
     ("THE STRAY PASS RUNS BEFORE THE DRESSING EXISTS", GEN,
-     "                ConnectStrayConsumers(map, coordinate, voidFloor, conduitDef, wiredCells, generator);" + chr(10),
+     "                    ConnectStrayConsumers(map, coordinate, voidFloor, conduitDef, wiredCells, generator))" + chr(10),
      ""),
 
     ("the stray pass stops sweeping for power consumers", GEN,
@@ -378,9 +420,9 @@ PLANTS = [
     # The call line now exists in BOTH wiring loops, so it is anchored on the `return` that only
     # the stray pass uses -- the consumer loop uses `break`. Duplicate-string trap, again.
     ("THE STRAY PASS STARTS THROWING AND CAN COST THE COORDINATE", GEN,
-     "                    if (wiredCells.Count >= MaxNativePowerConduits) { return; }" + chr(10)
+     "                    if (wiredCells.Count >= MaxNativePowerConduits) { capped = true; break; }" + chr(10)
      + "                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);",
-     "                    if (wiredCells.Count >= MaxNativePowerConduits) { return; }" + chr(10)
+     "                    if (wiredCells.Count >= MaxNativePowerConduits) { capped = true; break; }" + chr(10)
      + "                    SpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);"),
 
     ("the non-throwing conduit form disappears", GEN,
@@ -388,7 +430,7 @@ PLANTS = [
      "        private static void TrySpawnNativeConduitUnused(Map map, TerrainDef voidFloor, ThingDef conduitDef,"),
 
     ("the stray pass stops respecting the conduit cap", GEN,
-     "                if (wiredCells.Count >= MaxNativePowerConduits) { return; }" + chr(10)
+     "                if (wiredCells.Count >= MaxNativePowerConduits) { return true; }" + chr(10)
      + "                List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells,",
      "                List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells,"),
 

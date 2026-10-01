@@ -69,6 +69,7 @@ namespace PlannerProbe
             int totalBackToBack = 0;
             bool fellBackEverywhere = false;
             bool noInstitutions = false;
+            int roomsWithNoApproach = 0;
             foreach (int depth in new[] { 1, 2, 3, 4, 5, 6, 8 })
             {
                 int refused = 0;
@@ -77,6 +78,8 @@ namespace PlannerProbe
                 int backToBack = 0;
                 int tightest = int.MaxValue;
                 int starved = 0;
+                int tightestApproach = int.MaxValue;
+                int noApproach = 0;
                 int shapedRooms = 0;
                 int fellBack = 0;
                 int institutions = 0;
@@ -170,6 +173,13 @@ namespace PlannerProbe
                         int margined = MarginedCells(layout, room, depth);
                         if (margined < tightest) { tightest = margined; }
                         if (margined <= 1) { starved++; }
+                        // **AND CAN THE LANDMARK KEEP A WAY UP TO IT?** See ApproachCells: a
+                        // landmark off the clear route cross is back to the lottery that cost the
+                        // owner a start, so the count that matters is how often the structural
+                        // guarantee is available rather than how often the fallback saves it.
+                        int approach = ApproachCells(layout, room, depth);
+                        if (approach < tightestApproach) { tightestApproach = approach; }
+                        if (approach == 0) { noApproach++; }
                         if (LandmarkCells(layout, room, depth) == 0)
                         {
                             reasons.Add("room " + Field<int>(room, "index") + " ("
@@ -186,18 +196,20 @@ namespace PlannerProbe
                 totalBackToBack += backToBack;
                 string verdict = refused == 0 ? "OK  " : "FAIL";
                 Console.WriteLine(string.Format(
-                    "{0} depth {1,-2} refused {2,3}/{3} rooms {4,4:0.0} widest {5,3} pairs {6,4} margin {7,3} starved {8,4} shaped {9,5:0.0}% rock {10,4:0.0}% fellback {11,4} institutions {12,5:0.0} biggest {13,3}",
+                    "{0} depth {1,-2} refused {2,3}/{3} rooms {4,4:0.0} widest {5,3} pairs {6,4} margin {7,3} starved {8,4} shaped {9,5:0.0}% rock {10,4:0.0}% fellback {11,4} institutions {12,5:0.0} biggest {13,3} approach {14,3} noapproach {15,4}",
                     verdict, depth, refused, Seeds, refused == Seeds ? 0.0 : (double)rooms / (Seeds - refused),
                     widest, backToBack, tightest == int.MaxValue ? -1 : tightest, starved,
                     totalRooms == 0 ? 0.0 : 100.0 * shapedRooms / totalRooms,
                     interiorTotal == 0 ? 0.0 : 100.0 * rockTotal / interiorTotal,
                     fellBack,
                     refused == Seeds ? 0.0 : (double)institutions / (Seeds - refused),
-                    biggest));
+                    biggest,
+                    tightestApproach == int.MaxValue ? -1 : tightestApproach, noApproach));
                 foreach (string reason in reasons) { Console.WriteLine("        reason: " + reason); }
                 if (refused != 0) { failures++; }
                 if (fellBack >= Seeds) { fellBackEverywhere = true; }
                 if (institutions == 0) { noInstitutions = true; }
+                if (noApproach != 0) { roomsWithNoApproach += noApproach; }
             }
 
             Console.WriteLine();
@@ -219,6 +231,19 @@ namespace PlannerProbe
                                   + "complex can exist there.");
                 return 1;
             }
+            if (roomsWithNoApproach != 0)
+            {
+                // **The fallback must not be the thing that works.** A room with no landmark cell
+                // beside its clear route cross puts that landmark back on the lottery that cost
+                // the owner a start: no reserved approach, so the dressing fills every neighbour,
+                // so `ValidatePlacedLayout` finds a clue nobody can reach. Measured at zero
+                // across every band when it was written, so anything above zero is new.
+                Console.WriteLine("PROBE FAILED: " + roomsWithNoApproach + " room(s) have no "
+                                  + "landmark cell beside their clear route cross, so the "
+                                  + "landmark's approach is not reserved and the dressing can "
+                                  + "seal the clue in.");
+                return 1;
+            }
             if (totalBackToBack == 0)
             {
                 // A silent nothing is the failure mode this whole checkpoint is about: the feature
@@ -227,7 +252,8 @@ namespace PlannerProbe
                 return 1;
             }
             Console.WriteLine("PROBE HELD: every depth produced a layout the validator accepts, "
-                              + "and " + totalBackToBack + " back-to-back pairs exist.");
+                              + totalBackToBack + " back-to-back pairs exist, and every room can "
+                              + "put its landmark beside a reserved route cross.");
             return 0;
         }
 
@@ -320,14 +346,7 @@ namespace PlannerProbe
         {
             var bounds = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(room, null);
             Verse.CellRect interior = bounds.ContractedBy(1);
-            var blocked = new HashSet<Verse.IntVec3>();
-            foreach (Verse.IntVec3 cell in (IEnumerable<Verse.IntVec3>)pillarCells.Invoke(
-                null, new[] { room }))
-            { blocked.Add(cell); }
-            int shapeDepth = (int)shapeDepthOf.Invoke(null, new object[] { layout, room, depth });
-            foreach (Verse.IntVec3 cell in (IEnumerable<Verse.IntVec3>)rockIntrusionCells.Invoke(
-                null, new object[] { room, shapeDepth }))
-            { blocked.Add(cell); }
+            HashSet<Verse.IntVec3> blocked = BlockedCells(layout, room, depth);
 
             int count = 0;
             foreach (Verse.IntVec3 cell in interior.Cells)
@@ -350,6 +369,132 @@ namespace PlannerProbe
         /// rest against the walls -- which is fine.
         /// </summary>
         private static int MarginedCells(IList layout, object room, int depth)
+        {
+            var bounds = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(room, null);
+            Verse.CellRect interior = bounds.ContractedBy(1);
+            HashSet<Verse.IntVec3> blocked = BlockedCells(layout, room, depth);
+
+            int count = 0;
+            foreach (Verse.IntVec3 cell in interior.Cells)
+            {
+                if (blocked.Contains(cell)) { continue; }
+                if ((bool)onRouteCross.Invoke(null, new object[] { room, cell })) { continue; }
+                bool clear = true;
+                for (int dx = -1; dx <= 1 && clear; dx++)
+                {
+                    for (int dz = -1; dz <= 1 && clear; dz++)
+                    {
+                        if (blocked.Contains(new Verse.IntVec3(cell.x + dx, 0, cell.z + dz)))
+                        { clear = false; }
+                    }
+                }
+                if (clear) { count++; }
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Of the cells that could hold a landmark, how many sit orthogonally beside a cell of
+        /// the room's **clear, joined-up route cross** -- which is what
+        /// `RoomContentBuilder.RouteTrunk` offers a landmark, and what
+        /// `ValidatePlacedLayout` then demands of it.
+        ///
+        /// ## Why this is measured and not assumed
+        ///
+        /// A landmark beside a cross cell can never be sealed in, because cross cells are
+        /// reserved for the whole of population. A landmark that had to fall back off the cross
+        /// is back to the old lottery, and the old lottery is what cost the owner a start:
+        /// `RR_Generation_UnreachableRequiredCell`, so no level, so no gate, so
+        /// *"i ended up in the world map with no connection to the back rooms"*.
+        ///
+        /// **Zero here means the fallback is carrying that room**, and a net that catches
+        /// everything is a net nobody can see through. That is the same blind spot as the
+        /// `fellback` column, which reported a clean `refused 0/200` while not one real maze had
+        /// been built.
+        ///
+        /// Pillar lamps are in the blocked set, because `SpawnPillarLamps` reserves against
+        /// `reservedProviderCells` and **the route cross is not in that set** -- it belongs to
+        /// `RoomContentBuilder`. So a lamp really can stand on a cross cell and really does take
+        /// it out of the trunk, exactly as `ClearTrunkCell` finds when it asks the live map.
+        /// </summary>
+        private static int ApproachCells(IList layout, object room, int depth)
+        {
+            var bounds = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(room, null);
+            Verse.CellRect interior = bounds.ContractedBy(1);
+            HashSet<Verse.IntVec3> blocked = BlockedCells(layout, room, depth);
+
+            // The trunk: clear cross cells continuous with the one nearest the middle.
+            var cross = new List<Verse.IntVec3>();
+            foreach (Verse.IntVec3 cell in interior.Cells)
+            {
+                if (blocked.Contains(cell)) { continue; }
+                if (!(bool)onRouteCross.Invoke(null, new object[] { room, cell })) { continue; }
+                cross.Add(cell);
+            }
+            if (cross.Count == 0) { return 0; }
+            Verse.IntVec3 centre = bounds.CenterCell;
+            cross.Sort(delegate (Verse.IntVec3 left, Verse.IntVec3 right)
+            {
+                int byDistance = Squared(left, centre) - Squared(right, centre);
+                if (byDistance != 0) { return byDistance; }
+                if (left.x != right.x) { return left.x - right.x; }
+                return left.z - right.z;
+            });
+            var available = new HashSet<Verse.IntVec3>(cross);
+            var trunk = new HashSet<Verse.IntVec3> { cross[0] };
+            var pending = new Queue<Verse.IntVec3>();
+            pending.Enqueue(cross[0]);
+            Verse.IntVec3[] sides =
+            {
+                Verse.IntVec3.North, Verse.IntVec3.East, Verse.IntVec3.South, Verse.IntVec3.West,
+            };
+            while (pending.Count > 0)
+            {
+                Verse.IntVec3 current = pending.Dequeue();
+                for (int side = 0; side < sides.Length; side++)
+                {
+                    Verse.IntVec3 next = current + sides[side];
+                    if (!available.Contains(next) || !trunk.Add(next)) { continue; }
+                    pending.Enqueue(next);
+                }
+            }
+
+            int count = 0;
+            foreach (Verse.IntVec3 cell in interior.Cells)
+            {
+                if (blocked.Contains(cell)) { continue; }
+                if ((bool)onRouteCross.Invoke(null, new object[] { room, cell })) { continue; }
+                for (int side = 0; side < sides.Length; side++)
+                {
+                    if (!trunk.Contains(cell + sides[side])) { continue; }
+                    count++;
+                    break;
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Squared distance between two cells on the floor plane. Written out rather than taken
+        /// from Verse, which the probe's reference set does not reach.
+        /// </summary>
+        private static int Squared(Verse.IntVec3 from, Verse.IntVec3 to)
+        {
+            int dx = from.x - to.x;
+            int dz = from.z - to.z;
+            return dx * dx + dz * dz;
+        }
+
+        /// <summary>
+        /// Everything standing in this room before a single fixture is placed: its own perimeter
+        /// wall, the pillar lattice, the shaped rock, and the lamp on every pillar.
+        ///
+        /// **One derivation, three callers.** `LandmarkCells`, `MarginedCells` and
+        /// `ApproachCells` each built this set, and three copies of one rule is the defect this
+        /// project keeps meeting -- it is why the planner and the validator once disagreed about
+        /// the widest room in the place.
+        /// </summary>
+        private static HashSet<Verse.IntVec3> BlockedCells(IList layout, object room, int depth)
         {
             var bounds = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(room, null);
             Verse.CellRect interior = bounds.ContractedBy(1);
@@ -387,24 +532,7 @@ namespace PlannerProbe
                 }
             }
             foreach (Verse.IntVec3 cell in lamps) { blocked.Add(cell); }
-
-            int count = 0;
-            foreach (Verse.IntVec3 cell in interior.Cells)
-            {
-                if (blocked.Contains(cell)) { continue; }
-                if ((bool)onRouteCross.Invoke(null, new object[] { room, cell })) { continue; }
-                bool clear = true;
-                for (int dx = -1; dx <= 1 && clear; dx++)
-                {
-                    for (int dz = -1; dz <= 1 && clear; dz++)
-                    {
-                        if (blocked.Contains(new Verse.IntVec3(cell.x + dx, 0, cell.z + dz)))
-                        { clear = false; }
-                    }
-                }
-                if (clear) { count++; }
-            }
-            return count;
+            return blocked;
         }
 
         /// <summary>Linked pairs standing wall against wall, by the planner's own predicate.</summary>

@@ -246,12 +246,19 @@ namespace RimroomsAsyncIndustries.Generation
                     GenAdj.OccupiedRect(generatorCell, Rot4.North, generatorDef.size), consumerFootprints);
                 // Native spawn notifications are queued; rebuild connections now without ticking
                 // the power simulation so readiness checks see the actual shared grid.
-                RebuildPowerNets(map, coordinate);
-                // Whatever the dressing just placed that draws power, wired now that it exists.
-                // This is what replaced pre-wiring whole rooms on the chance something would land
-                // in them -- see SpawnNativePowerNetwork.
-                ConnectStrayConsumers(map, coordinate, voidFloor, conduitDef, wiredCells, generator);
-                RebuildPowerNets(map, coordinate);
+                //
+                // **Nothing asks twice after a refusal.** A failed rebuild leaves Core's delayed
+                // queue half-applied, and calling again re-applies it; see RebuildPowerNets.
+                if (RebuildPowerNets(map, coordinate) &&
+                    // Whatever the dressing just placed that draws power, wired now that it
+                    // exists. This is what replaced pre-wiring whole rooms on the chance
+                    // something would land in them -- see SpawnNativePowerNetwork.
+                    ConnectStrayConsumers(map, coordinate, voidFloor, conduitDef, wiredCells, generator))
+                {
+                    // The sweep rebuilds after each consumer it wires, so this only matters for
+                    // the conduit-cap exit, which leaves the last conduits unregistered.
+                    RebuildPowerNets(map, coordinate);
+                }
                 // **Reported, never fatal.** A coordinate whose heater or one lamp failed to join
                 // the grid is dark and cold and completely playable. A coordinate that does not
                 // exist costs the player the gate that leads to it -- which is exactly what
@@ -530,13 +537,16 @@ namespace RimroomsAsyncIndustries.Generation
         /// **Never throws.** A lamp that cannot be reached is a dark corner; the validation below
         /// reports it and the coordinate still exists. Losing the whole place over a conduit is
         /// what this checkpoint is fixing.
+        ///
+        /// Returns whether the grid is still answering. False means a rebuild refused part-way
+        /// and the sweep stopped, so the caller must not rebuild again either.
         /// </summary>
-        private static void ConnectStrayConsumers(Map map, CoordinateRecord coordinate,
+        private static bool ConnectStrayConsumers(Map map, CoordinateRecord coordinate,
             TerrainDef voidFloor, ThingDef conduitDef,
             HashSet<IntVec3> wiredCells, Thing generator)
         {
             CompPowerPlant plant = generator == null ? null : generator.TryGetComp<CompPowerPlant>();
-            if (plant == null || wiredCells == null) { return; }
+            if (plant == null || wiredCells == null) { return true; }
             // Ordered, so the routing is the same on a regenerated coordinate.
             List<Thing> consumers = map.listerThings.AllThings
                 .Where(thing => thing != null && thing.Spawned && thing.Map == map &&
@@ -549,16 +559,23 @@ namespace RimroomsAsyncIndustries.Generation
                 Thing consumer = consumers[index];
                 CompPowerTrader power = consumer.TryGetComp<CompPowerTrader>();
                 if (power == null || power.PowerNet == plant.PowerNet) { continue; }
-                if (wiredCells.Count >= MaxNativePowerConduits) { return; }
+                if (wiredCells.Count >= MaxNativePowerConduits) { return true; }
                 List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells,
                     consumer.OccupiedRect());
+                bool capped = false;
                 for (int step = 0; step < route.Count; step++)
                 {
-                    if (wiredCells.Count >= MaxNativePowerConduits) { return; }
+                    if (wiredCells.Count >= MaxNativePowerConduits) { capped = true; break; }
                     TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);
                 }
-                RebuildPowerNets(map, coordinate);
+                // **Stop the sweep the first time the rebuild fails.** Every decision after that
+                // reads `power.PowerNet` out of bookkeeping Core has already told us is wrong, and
+                // every further call re-applies its half-processed queue. See RebuildPowerNets:
+                // this loop is where the owner's sixty-two warnings came from.
+                if (!RebuildPowerNets(map, coordinate)) { return false; }
+                if (capped) { return true; }
             }
+            return true;
         }
 
         /// <summary>
@@ -602,16 +619,39 @@ namespace RimroomsAsyncIndustries.Generation
         /// *"this grid is wrong"* from *"this grid is wrong in a way we predicted"*. The warning
         /// names the coordinate so a bad grid is still findable in a log.
         /// </summary>
-        private static void RebuildPowerNets(Map map, CoordinateRecord coordinate)
+        /// <remarks>
+        /// **Returns false once, and then is not asked again.** The owner's log carried
+        /// **sixty-two** copies of the warning below and, in the middle of them, Core's
+        /// *"Tried to register trasmitter ... but there is already a power net here"* -- naming
+        /// the generator, on the generator's own cell, which no conduit of ours can ever occupy.
+        ///
+        /// **The retry is what produced that.** Core processes its delayed register/deregister
+        /// queue inside this call and only clears the entries it processed **after** the loop, so
+        /// a throw part-way through leaves the already-applied entries queued. Calling again
+        /// re-applies them, and re-registering a transmitter that is already registered is the
+        /// permanent fault this generator documents in `AlreadyTransmits`. So the first failure
+        /// was the real one and the next sixty-one were self-inflicted.
+        ///
+        /// The exception is logged **in full** rather than by type name. Sixty-two lines reading
+        /// `(NullReferenceException)` could not say which Core method or which thing, and that
+        /// was the whole question; one line with a stack can answer it next time.
+        /// </remarks>
+        private static bool RebuildPowerNets(Map map, CoordinateRecord coordinate)
         {
-            if (map == null || map.powerNetManager == null) { return; }
-            try { map.powerNetManager.UpdatePowerNetsAndConnections_First(); }
+            if (map == null || map.powerNetManager == null) { return false; }
+            try
+            {
+                map.powerNetManager.UpdatePowerNetsAndConnections_First();
+                return true;
+            }
             catch (Exception exception)
             {
                 Log.Warning("[Rimrooms][Generation] Coordinate "
                     + (coordinate == null ? "(unknown)" : coordinate.Id)
-                    + " could not rebuild its power connections (" + exception.GetType().Name
-                    + "). The space, its gate anchor and its way home are unaffected.");
+                    + " could not rebuild its power connections, and will not be asked again this"
+                    + " generation. The space, its gate anchor and its way home are unaffected. "
+                    + exception);
+                return false;
             }
         }
 
@@ -1438,12 +1478,35 @@ namespace RimroomsAsyncIndustries.Generation
                 Thing landmark = clue.Landmark;
                 if (landmark == null || !landmark.Spawned || landmark.Map != map)
                 { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
-                // A furniture clue may be impassable; require a real, reachable adjacent inspection/pickup cell.
+                // A furniture clue may be impassable; a real, reachable adjacent inspection or
+                // pickup cell is what makes it readable.
                 CellRect footprint = landmark.OccupiedRect();
                 bool reachable = footprint.ExpandedBy(1).Cells.Any(cell => cell.InBounds(map) && cell.Standable(map) &&
                     (footprint.Contains(cell) || footprint.Cells.Any(part =>
                         Math.Abs(cell.x - part.x) + Math.Abs(cell.z - part.z) == 1)) && Reachable(map, entry, cell));
-                if (!reachable) { throw new InvalidOperationException("RR_Generation_UnreachableRequiredCell"); }
+                // **Reported, never fatal, and that is the decision this generator already made
+                // twice.** Its own words about the power grid: *"A coordinate whose heater or one
+                // lamp failed to join the grid is dark and cold and completely playable. A
+                // coordinate that does not exist costs the player the gate that leads to it."*
+                // One clue nobody can walk up to is one awkward room. Throwing here took the
+                // whole level, and with it the gate, the way home and the owner's start --
+                // *"i ended up in the world map with no connection to the back rooms"*.
+                //
+                // `RoomContentBuilder.RouteTrunk` is what makes this rare; this is what makes it
+                // survivable. The structural checks below and above stay fatal, because a
+                // coordinate you cannot walk through really is broken.
+                //
+                // **It also leaves one throw site for `RR_Generation_UnreachableRequiredCell`.**
+                // Two sites raising one key is why that log could not say which had fired, and
+                // reading the source could not answer it either.
+                if (!reachable)
+                {
+                    Log.Warning("[Rimrooms][Generation] Coordinate " + coordinate.Id + ": the clue "
+                        + landmark.def.defName + " in room " + clue.RoomIndex + " at "
+                        + landmark.Position + " has no reachable cell beside it, so that one room's"
+                        + " evidence cannot be collected. The space, its gate anchor and its way"
+                        + " home are unaffected.");
+                }
             }
         }
 

@@ -22,12 +22,24 @@ The planner is pure -- no map, no world, no defs, no global random -- so the que
 answerable here. This builds the probe against the compiled assembly and runs it over two hundred
 seeds at every depth band, demanding:
 
-  * every depth produces a layout `ValidateRooms` accepts, and
-  * back-to-back pairs actually exist.
+  * every depth produces a layout `ValidateRooms` accepts,
+  * back-to-back pairs actually exist, and
+  * **every room can stand its landmark beside its own clear route cross.**
 
 The second one matters as much as the first. A plant that moved a pushed room one cell back made
 it overlap its host, the revert guard put it back, and the feature was **switched off with every
 proof still passing.** Absence is the thing this checker is for.
+
+The third was added at 0.12.71-dev, after `RR_Generation_UnreachableRequiredCell` stopped the
+owner's solo/group start -- *"i ended up in the world map with no connection to the back rooms"*.
+A clue landmark needs a standable, reachable cell orthogonally beside it; nothing reserved one;
+`DressRoom` places fixtures until one will not fit, so the last cells it takes are exactly the
+no-margin cells flush against the landmark. `RoomContentBuilder.RouteTrunk` now offers the
+landmark a cell of the reserved cross instead, **and falls back to the old behaviour when a room
+has none** -- so the number that matters is how often the guarantee is available rather than how
+often the fallback saves it. It was zero rooms short across all seven bands when measured, which
+is why anything above zero fails here. The `fellback` column exists for the same reason: it once
+read `refused 0/200` while the net was catching every seed.
 
 It never skips
 --------------
@@ -95,8 +107,8 @@ def main():
         fail("the planner did not produce an acceptable layout at every depth.")
     if "PROBE HELD" not in output:
         fail("the probe exited zero without holding, which means it did not run its claims.")
-    print("OK: every depth produces a layout the validator accepts, "
-          "and back-to-back pairs exist.")
+    print("OK: every depth produces a layout the validator accepts, back-to-back pairs exist, "
+          "and every room can put its landmark beside a reserved route cross.")
     return 0
 
 
