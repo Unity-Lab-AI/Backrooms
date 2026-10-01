@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Expedition;
@@ -17,6 +17,19 @@ namespace RimroomsAsyncIndustries.UI
             {
                 listing.Label("RR_UI_AnalysisReportHeader".Translate(report.AnalystName, Day(report.CompletedTick)));
                 listing.Label("RR_UI_AnalysisSnapshotNote".Translate());
+                // **The review workflow's readout.** A sign-off nobody can see is a sign-off
+                // that may as well not have happened -- which is what became of every second
+                // crew account until 0.12.25-dev.
+                if (record.Reviewed)
+                {
+                    listing.Label((record.ReviewEndorsed
+                        ? "RR_UI_ReviewEndorsed" : "RR_UI_ReviewReturned").Translate(
+                            record.Reviewer == null
+                                ? "RR_UI_ReviewerUnknown".Translate().ToString()
+                                : record.Reviewer.LabelShortCap.ToString(),
+                            Day(record.ReviewedTick)));
+                }
+                else { DrawReview(listing, record); }
                 if (report.DetailsUnavailable)
                 {
                     listing.Label((report.LegacyDetailsUnavailable ? "RR_UI_LegacyReportUnavailable" : "RR_UI_ReportUnavailable").Translate());
@@ -61,6 +74,49 @@ namespace RimroomsAsyncIndustries.UI
         /// not made blind. A refusal is shown in place rather than the button being hidden, because
         /// *"nobody on staff can take a statement"* is information and a missing button is not.
         /// </summary>
+        /// <summary>
+        /// The sign-off, and the button that performs it.
+        ///
+        /// **Review is the fourth of the owner's four workflows** -- *"Add
+        /// analyze/interview/compare/review workflows"* -- and the last to ship. Analyse, compare
+        /// and interview were already here.
+        ///
+        /// Every refusal `ReviewAnalysis` can return is a named key the player is shown, because
+        /// a control that refuses in silence is how somebody concludes a button is broken. That
+        /// cost the owner an afternoon on the gate at 0.12.73-dev.
+        /// </summary>
+        private static void DrawReview(Listing_Standard listing, EvidenceRecord record)
+        {
+            RimroomsCampaignComponent campaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (campaign == null) { return; }
+            if (!campaign.AwaitsReview(record)) { return; }
+
+            listing.Label("RR_UI_ReviewAwaiting".Translate());
+
+            // An outstanding dispute is two of the branch's own people contradicting each other
+            // on the record. The interview is what clears it, and saying so is more use than a
+            // greyed-out button: it names the step that unblocks this one.
+            int disputes = campaign.UnsettledDisputes(record).Count();
+            if (disputes > 0)
+            {
+                listing.Label("RR_Review_DisputesOutstanding".Translate(disputes));
+                return;
+            }
+
+            Pawn reviewer = campaign.ReviewerFor(record);
+            if (reviewer == null)
+            {
+                listing.Label("RR_Review_NoReviewer".Translate(
+                    RimroomsCampaignComponent.MinimumReviewerIntellectual));
+                return;
+            }
+
+            listing.Label("RR_UI_ReviewPrompt".Translate(reviewer.LabelShortCap));
+            if (listing.ButtonText("RR_UI_SignOffReport".Translate()))
+            { ShowResult(campaign.ReviewAnalysis(record, reviewer)); }
+        }
+
         private static void DrawInterview(Listing_Standard listing, EvidenceRecord record,
             EvidenceObservationRecord observation)
         {

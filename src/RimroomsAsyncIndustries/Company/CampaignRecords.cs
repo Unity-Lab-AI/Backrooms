@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimWorld.Planet;
 using Verse;
 
@@ -415,6 +415,16 @@ namespace RimroomsAsyncIndustries.Company
         internal bool legacyRouteRecorded;
         internal List<EvidenceObservationRecord> observations = new List<EvidenceObservationRecord>();
         internal EvidenceAnalysisReport analysisReport;
+
+        // **Review: the fourth workflow, additive on purpose.** Recorded BESIDE the status and
+        // never instead of it -- `EvidenceStatus.Analyzed` is terminal and eight places compare
+        // against it, so a sixth enum member would change all of them and break saves that
+        // store the value. A record from before this existed loads with reviewer null and
+        // reviewedTick -1, which reads as "not reviewed" and is exactly true.
+        internal Pawn reviewer;
+        internal int reviewedTick = -1;
+        internal bool reviewEndorsed;
+
         public string Id { get { return id; } }
         public EvidenceStatus Status { get { return status; } }
         public Thing Item { get { return item; } }
@@ -425,6 +435,33 @@ namespace RimroomsAsyncIndustries.Company
         public bool EntityRecorded { get { return entityRecorded; } }
         public IReadOnlyList<EvidenceObservationRecord> Observations { get { return observations; } }
         public EvidenceAnalysisReport AnalysisReport { get { return analysisReport; } }
+
+        /// <summary>The analyst who completed the report, so a reviewer can be refused for being them.</summary>
+        public Pawn Analyst { get { return analyst; } }
+
+        /// <summary>Whether somebody has signed this report off, either way.</summary>
+        public bool Reviewed { get { return reviewedTick >= 0; } }
+
+        /// <summary>Who signed it off. Null until somebody has.</summary>
+        public Pawn Reviewer { get { return reviewer; } }
+
+        /// <summary>When it was signed off, or -1.</summary>
+        public int ReviewedTick { get { return reviewedTick; } }
+
+        /// <summary>
+        /// Whether the branch stood behind the report. **False is a real outcome, not a
+        /// failure**: a report whose observation detail never existed is one the company cannot
+        /// endorse, and saying so is worth more to the player than a rubber stamp.
+        /// </summary>
+        public bool ReviewEndorsed { get { return reviewEndorsed; } }
+
+        internal void MarkReviewed(Pawn signingReviewer, int tick, bool endorsed)
+        {
+            if (reviewedTick >= 0) { return; }
+            reviewer = signingReviewer;
+            reviewedTick = tick;
+            reviewEndorsed = endorsed;
+        }
         public bool LegacyObservationDetailsUnavailable
         { get { return analysisReport != null && analysisReport.LegacyDetailsUnavailable; } }
 
@@ -454,6 +491,9 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref legacyRouteRecorded, "rr_legacyRouteRecorded");
             Scribe_Collections.Look(ref observations, "rr_observations", LookMode.Deep);
             Scribe_Deep.Look(ref analysisReport, "rr_analysisReport");
+            Scribe_References.Look(ref reviewer, "rr_reviewer");
+            Scribe_Values.Look(ref reviewedTick, "rr_reviewedTick", -1);
+            Scribe_Values.Look(ref reviewEndorsed, "rr_reviewEndorsed");
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 observations = observations ?? new List<EvidenceObservationRecord>();

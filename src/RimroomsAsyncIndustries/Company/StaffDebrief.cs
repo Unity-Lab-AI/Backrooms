@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using RimWorld;
 using Verse;
@@ -161,6 +161,11 @@ namespace RimroomsAsyncIndustries.Company
             foreach (Pawn pawn in crew)
             {
                 if (pawn == null || pawn.Dead || pawn.Destroyed) { continue; }
+                // **Staff prior exposure, recorded here because this is where the fact is
+                // known.** Above the idempotence guard on purpose: the hold is a transient
+                // debrief obligation and the exposure is a permanent field history, so a
+                // second completion must not be able to skip the history along with the hold.
+                NoteFieldExposure(pawn, coordinateId);
                 if (HoldFor(pawn) != null) { continue; }
                 debriefHolds.Add(new DebriefHold
                 {

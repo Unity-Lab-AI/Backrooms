@@ -68,6 +68,16 @@
 A clean-up team came in on all-access passes, removed {1} hostiles from the site and left. Behind them: {0} replacement staff and enough supplies to start again.
 
 Nobody asked {2} whether it wanted the help, and no invoice came with it. The crew are on the ordinary wage from today.</RR_Relief_Body>
+  <RR_Event_ClearSquad>The Company cleared the laboratory, took its dead and its paper, and left three people to run it. Nobody was asked.</RR_Event_ClearSquad>
+  <RR_Clear_Title>The Company cleared the site</RR_Clear_Title>
+  <RR_Clear_Body>Everyone at the laboratory went down. The Company does not lose a facility.
+
+They came in on all-access passes and left no one standing: {1} of your people resolved on site, {2} of the dead buried or burned on the property, {3} structures repaired, every connection shut down at the gate.
+
+The paper is gone. {4} credits of bonds were taken and will not be seen again, and {5} credits drawn from the account as restocking the petty cash.
+
+{6} replacement staff are on the ground today, on the ordinary wage. The gate is still commissioned. {0} is open.</RR_Clear_Body>
+  <RR_Clear_RestockingReason>Restocking the petty cash</RR_Clear_RestockingReason>
   <RR_Contact_Call>Call the corporation</RR_Contact_Call>
   <RR_Contact_CallDesc>Tell the parent corporation this branch exists, and that it has a finding worth reading.
 

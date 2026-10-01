@@ -46,10 +46,10 @@ been enough; the only thing that has worked is reaching for the Write tool first
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
-| Published | **0.12.75-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.76-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **204 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `AABE696E79D3745FEDC3397C2E21B179D43538C3C6FB71A9276D444D4663483A`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Assembly | SHA-256 `B3B0B052445A706CF8A1F1BED154C9CA813B756AA019F773B7C26EE2225F6774`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **SIXTEEN**, all passing. **The sixteenth validates every authored starting facility offline, cell by cell.** `GenStep_Headquarters` throws on any geometry mistake and a throw inside a GenStep costs the player the start; the Async facility is ten rooms, sixteen doors and 122 fixture cells, and nothing else in this battery looked at a single one of them. It derives footprints from **Core's own `<size>`** with ParentName inheritance rather than from a table, because a table is a second derivation that goes stale. **It cried wolf on its first run** -- 368 legitimate cells -- before the nesting case was understood, which is the fifth false alarm in this battery and the reason each is written down. **The fifteenth refuses while a planted fault is still in the source tree.** A suite has left one there three times -- twice deleting `Campaign.NoteReturnedFromField(...)`, once deleting `!anchor.Destroyed` -- and each would have shipped silently if a build had gone out first. The `finally` added at 0.12.65-dev handles an exception and does nothing for a killed process, so the suites write a sentinel naming the file before they mutate it and `check-plant-residue.py` refuses while it exists. **A false alarm costs one command; a missed one ships a deliberate fault.** **The fourteenth is the only one that runs code rather than reading it**, and it exists because the thirteen that read text, the forty-five proofs and five hundred and fifty plants **all passed over a planner that could not produce one valid layout** -- `MaxRoomSpan` said 34 while the grand hall was 80, and no amount of reading either file can see two numbers disagree. `check-planner-layouts.py` builds `.local/harness/PlannerProbe` and runs `TrySelect` and `ValidateRooms` over 200 seeds at seven depths, demanding both that a layout is accepted **and that back-to-back pairs exist** -- because a plant that moved a pushed room one cell was missed by every proof when the revert guard quietly switched the feature off. **It never skips**: no dotnet, no install or no built assembly is a failure, not a pass. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -343,6 +343,234 @@ It should not appear, because the conduits are laid last now — but it is a war
 * **An absence claim cannot read raw source** — it reads the comment explaining the removal.
   `proof-coordinate-layout.py` keeps a `code()` view; `proof-generation-batch.py` strips comments.
 * **Use the Write tool.** A heredoc mangled an escaped newline for the **eleventh** time.
+
+## STATE AT THIS HANDOFF — `0.12.76-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.76-dev  92 files
+assembly    B3B0B052445A706CF8A1F1BED154C9CA813B756AA019F773B7C26EE2225F6774
+            read back out of the game folder after staging, not from the build
+battery     16 checkers - 48 proofs - 19 plant suites - 738 anchors findable
+            new suites: 27 of 27, 20 of 20, 7 of 7
+tree        no planted fault, porcelain 0
+```
+
+### THE OWNER'S QUESTION FOUND TWO FALSE STATEMENTS IN THE PREVIOUS HANDOFF
+
+*"are u shure zero goon squad code is written weve gone over this before by a different name"*.
+
+The handoff had said **"ZERO code written"** on the strength of `src/` matching 0.12.75-dev — which
+proves only that **that session** wrote none. It says nothing about what was built earlier under
+another name, and this repository has been caught by exactly that **nine times**.
+
+| The claim | What was true |
+|---|---|
+| *"Nothing in the battery claims anything about `FacilityRelief`"* | **`proof-facility-relief.py` is proof FIVE** and two of its claims contradicted the direction |
+| *"Core defs confirmed present: ... `Pyre`"* | **`Pyre` is Ideology.** The check ran against the **installed game** instead of against **Core**, and for a Core-only mod that is the whole distinction |
+
+**Read it as a standing rule:** *"it is identical to the last checkpoint"* answers a different
+question from *"does this exist"*. Only a grep for the feature answers the second.
+
+### THE SCOPING SAVED TWO PROOF CLAIMS THAT LOOKED LIKE CASUALTIES
+
+`proof-facility-relief.py` asserts *five roles* and *the living-staff scan does not treat downed as
+dead*. Both looked doomed until the owner's own words resolved it — *"this only happens for the lab
+secnerio for now"* — so the squad is a **separate path** and the fork sits **above** the relief's
+trigger:
+
+```
+TickFacilityRelief()
+  laboratory  -> TickClearSquad()    downed counts as lost, three staff
+  store, solo -> AnyLivingStaff()    dead only, five staff   [UNCHANGED]
+```
+
+Both old claims hold untouched. The comment carrying the old reasoning is **scoped, not deleted** —
+it is still true about the path it guards. **Making it universal would have silently rewritten the
+bargain for two scenarios the owner excluded.**
+
+### THE GRAVE DOES NOT FIT INDOORS, AND IT WAS MEASURED
+
+Core's `Grave` is **(1,2)** and needs **`Diggable`**. **Ten** Core terrains carry it; **every
+constructed floor is excluded** — `Concrete`, `SterileTile`, `MetalTile`, every stone tile, every
+carpet. **A grave cannot be dug inside the facility at all.** Burial goes to open ground and the
+fallback is destruction, which is *"incenerate on propery"*. **No crematorium is built**: a bill
+needs a worker and nobody is alive to work it.
+
+### THE DEPENDENCIES, AND THE DEFECT DECLARING THEM EXPOSED
+
+*"the mod DOES HAVE HARD DEPENDANCIES SO GET IT RIGHT AND MAKE SURE ITS LAYED OUT RIGHT FOR RIMSORT
+TO NOTICE AND ENFORCE"*, and *"WE ARE USING ALL OF THEM!!!!"*.
+
+`About.xml` declared **nothing** and a description reading *"Core only ... No Harmony, no
+dependencies."* It now declares **294** — five expansions and 289 mods, each with a `displayName`
+and a `steamWorkshopUrl` — plus **295 `loadAfter` entries**.
+
+**THE REAL FIND: the package sat at position 197 of 296, with 99 mods loading after it.** A patch
+cannot see a def from a mod that loads later. `modDependencies` is what a manager reads to warn;
+**`loadAfter` is what makes the order right**, and there was one entry.
+
+**NEVER HAND-EDIT THOSE BLOCKS.** `.local/register/build-dependencies.py` generates them from the
+owner's own `ModsConfig.xml`, **read-only**, with a cycle check over every active mod's four
+load-order tags. 1815 lines of About.xml is not a file anyone edits by hand.
+
+### TWO CHECKERS CARRIED THE OLD PREMISE AND NEITHER WAS DEFECTIVE
+
+`check-register-compliance.py` refused the work with *"The package must load and run against Core
+alone."* **The checker was not wrong; its premise was**, and the register is *"not law but
+guidance"* by the owner's standing correction. **A prohibition became an assertion** rather than
+being deleted. 7 of 7 planted faults caught.
+
+`check-dlc-gating.py`'s rule survives and matters **more** — `MayRequire` is the same graceful
+guard in XML that `GetNamedSilentFail` is in C#, which is the posture the owner chose. Only its
+stated reason was stale.
+
+### AND THE SIXTH INSTANCE OF AN INSTRUMENT READING ITS OWN PROSE WAS MINE
+
+The fix script searched its own result for the phrase it had removed, and the replacement prose
+*quotes* that phrase in the sentence retiring it. **The write had landed; the verification was the
+defect.** Then a second of the same family: `"Pawn" not in register` is a **substring test wearing
+a type test's clothes** and it is false — `NoteLostPawn` and `lostPawnNames` contain those letters.
+**Assert the thing, not letters that spell it.**
+
+### THE THREE PREP ITEMS ARE CLOSED
+
+* **the stranded crew** — `LostPawnRegister.cs` holds a `List<string>` and cannot remove player
+  control by construction. But `proof-stranded-crew.py` had **eleven claims and not one mentioned
+  it**, so the guarantee rested on nobody adding a `Pawn` field to a file whose name sounds exactly
+  like somewhere a pawn would go. **Three claims make it permanent.**
+* **review**, the fourth workflow — additive fields, **never a sixth `EvidenceStatus`**:
+  `Analyzed` is terminal, eight places compare against it, and the enum is saved by value. Ships
+  with a **button**, a readout and an objective line in the same checkpoint.
+* **staff prior exposure** — `NoteReturnedFromField` already knew *this person came back from
+  there* and **threw it away** as a transient debrief hold. Now kept per person **by load id, never
+  by reference**, and spent on the dial **once**, where the branch's own familiarity compounds.
+
+## BUILT AT 0.12.76-dev — THE SPEC THAT PRECEDED IT, KEPT FOR THE RECORD
+
+```
+state       SPEC ONLY. 25 rows recorded verbatim in docs/TODO.md. ZERO code written.
+published   0.12.75-dev is the last staged, cascaded checkpoint and it is clean.
+tree        docs/TODO.md and docs/NOW.md are MODIFIED AND UNCOMMITTED.
+            Owner direction: *"no need for stage and cascade this one time"*.
+            Nothing else is touched; src/ and Mod/ are exactly 0.12.75-dev.
+```
+
+**Do not re-ask the owner anything below. All of it is settled.**
+
+### THE DIRECTION, AND THE ONE QUESTION THAT WAS ASKED
+
+Owner, verbatim, is in `docs/TODO.md` under *"the goon squad, and never losing the game"* — 25
+rows, one per clause. The short version in their words: *"if u die all pawns incompacitated...
+\"The Company\" sends in a goon squad kills every thing takes the dead and leeaves three new pawns
+to run the facility"*.
+
+**One fork was asked and answered: the downed.** Owner: ***"the downed: No Witnesses"***. The
+trigger is *all pawns incapacitated*, so the squad lands on colonists who are **down but alive**,
+and **they do not survive it.** Every downed member of the branch is killed and goes into the
+ground or the fire with the already-dead. **This is a deliberate, destructive reset of the
+player's roster**, confirmed before a line was written, because the other reading — stabilise and
+keep them — would have preserved colonists the owner has decided do not get preserved.
+
+### THIS EXPANDS CODE THAT ALREADY EXISTS. READ IT FIRST
+
+`Company/FacilityRelief.cs` **is** the clean-up team, built from the owner's 2026-09-29 direction
+*"so that facilities never die"*. Today it already:
+
+* fires on `corporationContact` and **no living staff anywhere**, on the company tick,
+* destroys every pawn hostile to the player (`ClearHostiles`, `Destroy(Vanish)` — not killed, so
+  no corpses and no rot for the replacement crew),
+* drops `CompanySupplyDrop.Fill(payload, 1f)` — the corporation's crate at full scale,
+* lands **five** staff from the five `RR_*Staff` PawnKinds, registering each on the payroll,
+* clears `Find.GameEnder.gameEnding`, which is the *"never losing the game"* half,
+* records `reliefCount` and `lastReliefTick` as **history, never a limit** — there is deliberately
+  no cap and no escalating penalty, because *"the corporation will put up with anything"*.
+
+**Its trigger comment is now wrong and says so:** *"Downed is also not dead. A branch whose staff
+are all unconscious is in trouble, not gone."* The owner has overruled that. Change the condition,
+and correct the comment rather than leaving a reason nobody believes.
+
+### THE GAPS, WHICH ARE THE WORK
+
+| Owner's clause | What has to change |
+|---|---|
+| *"when all pawns incompacitated"* | trigger counts **downed as lost**, not only dead |
+| *"this only happens for the lab secnerio for now"* | gate the whole thing on `ScenarioId == "async_industries"`. The other two are **owner-excluded for now**, recorded in TODO and **not** in `docs/DEFERRED.md`, which stays closed at zero rows |
+| *"the downed: No Witnesses"* | kill every downed player pawn, then treat them as dead |
+| *"burry the dead or incenerate on propery"*, *"might need to build graves in the moment"*, *"use and or build a crematoryium"* | Core defs confirmed present, counted against **Core only** and not against the installed game: **`Grave`**, **`Sarcophagus`**, **`ElectricCrematorium`**. **There is no def called `Crematorium`** — it is `ElectricCrematorium`. **AND `Pyre` IS NOT CORE** — it is `Ideology/Defs/ThingDefs_Buildings/Buildings_Ideo.xml`, so this handoff was wrong to list it and nothing may name it: the mod has **zero hard dependencies** and a player without Ideology must lose nothing. Burial is `Grave`; the fire is `ElectricCrematorium` if one stands, and otherwise destruction, which is *"incenerate on propery"* either way. Build graves on free cells and inter the corpses; anything that will not fit is destroyed, which is *"incenerate on propery"* |
+| *"leeaves three new pawns"* | **three**, not the five `ReliefRoles` currently lands |
+| *"fix broken walls and equipment"*, *"and repair"* | restore `HitPoints` to max on every damaged player building. A **destroyed** wall leaves no record, so it cannot be rebuilt — say so rather than implying otherwise |
+| *"disconnect the gate"*, *"shut down the gate"* | close any open session, abort a spin-up, throw the kill switch. **Leave it commissioned** — *"like starting all over again"* means the new crew bring it back up |
+| *"haull abay all bonds printed that are on the map u lose it all"* | destroy every bond on every map and credit **nothing**. `BondService.FaceValueOf` finds them; do **not** route through `DepositBondPaper`, which pays |
+| *"25M is deducted ... upto 25M ... never going under 0 dollars"* | `min(25_000_000, BalanceUsd)`, through `PostTransaction` with a stable operation id so a reload cannot charge twice |
+| *"leave supplies food asurvival meals"* | the crate already drops; add `MealSurvivalPack` explicitly (def confirmed present) |
+| *"full sweep of every rroom"*, *"they haul everything"* | the sweep is the clearance, the corpses and the bonds. Nothing else in the facility is the squad's business |
+
+### THE ONE DESIGN DECISION ALREADY MADE, AND IT NEEDS NO PERMISSION
+
+**The squad is an event, not a unit.** Owner: *"can kill anything without dying"* and *"they have
+keeys to all doors on map"*.
+
+**Core-only cannot make a pawn invulnerable**, and a simulated squad that could be killed, or
+blocked by a door, would break the one thing this feature is for: a guarantee. So the squad's work
+is applied as **one deterministic operation** — hostiles destroyed instantly, corpses interred,
+repairs applied, bonds taken, supplies and three staff dropped — and the pawns the player sees are
+the three who stay. The existing `ClearHostiles` already works exactly this way and already
+satisfies *"kills every thing"* and *"without dying"* by never being a combatant at all.
+
+Door keys and invulnerability are then **moot rather than unimplemented**, and that distinction
+belongs in the implementation record.
+
+### AND THE THREE BACKLOG ITEMS, WHICH THE OWNER ALSO ASKED FOR
+
+Owner: *"andf yes do those three things you listed as well"*.
+
+1. **staff prior exposure** affecting how an expedition goes — `docs/TODO.md` line ~308, the
+   still-open half of the *"contradictory accounts"* row.
+2. **the `review` workflow** — the fourth of analyse / interview / compare / review. The other
+   three ship; `review` does not.
+3. **the stranded-crew rows** — verify against `Company/LostPawnRegister.cs` that closing a gate
+   on a crew never takes player control of them. The row itself says it: *"If a closing gate hands
+   its crew to the world-pawn pool, or despawns them, or marks them lost in any way that removes
+   player control, that is a defect against this direction and the most consequential kind."*
+
+### WHEN IT IS BUILT
+
+**CORRECTED 2026-10-01, BY THE OWNER, BEFORE A LINE WAS WRITTEN.** This section previously read
+*"Nothing in the battery claims anything about `FacilityRelief`"*. **That was false.** The owner
+asked *"are u shure zero goon squad code is written weve gone over this before by a different
+name"* and the grep that answers it found three things.
+
+**`proof-facility-relief.py` is proof FIVE and it already exists** (0.11.7-dev). Two of its claims
+**contradict this direction outright**, so the work is to RE-AIM them, not to add beside them:
+
+| The existing claim | Why it now fails |
+|---|---|
+| `check("the relief requisitions five roles", len(relief_roles) == 5)` | the owner said **three** |
+| `check("the living-staff scan does not treat downed as dead", "Downed" not in living_text)` | the owner said ***"the downed: No Witnesses"*** |
+
+That second claim is the **old reasoning written into the battery as an assertion**, not merely a
+stale comment. A build that followed the uncorrected handoff would have hit two red FAILs and read
+them as a regression it had just caused.
+
+**And the repair clause already has its instrument.** `ConnectedWork/Providers/UpkeepProviders.cs`
+has `RepairableOn(map, faction)` wrapping **Core's own** `map.listerBuildingsRepairable
+.RepairableBuildings(faction)` — map-explicit and already proven. **Do not write a second
+damaged-building scan;** a second derivation of one rule is the defect this project keeps meeting.
+
+What is genuinely absent, measured rather than assumed: `grep -rn` over `src/` for `goon`,
+`GoonSquad`, `ClearSquad`, `CleanupTeam`, `FacilitySweep`, `Grave`, `Sarcophagus`, `Crematorium`,
+`Pyre`, `Bury`, `25000000`, `restock` and `pedycash` returns **nothing**. No burial, no cremation,
+no confiscation, no deduction.
+
+The claims still have to assert the squad is **called**, not merely written: four of the five bond
+defects, and seven defects before them, were *built, correct, and unreachable*.
+
+**The lesson is this file's own rule, applied to this file.** *"CHECK A ROW AGAINST THE CODE
+BEFORE BUILDING FOR IT"* — nine rows were saved by it this session, and the handoff asserting a
+battery gap had not run the one grep that checks for one.
+
+Then the owner's standing order, which resumes next checkpoint:
+**STAGE → NOW.md → CASCADE.**
 
 ## STATE AT THIS HANDOFF — `0.12.75-dev`, STAGED AND VERIFIED
 

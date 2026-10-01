@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.12.76-dev - 2026-10-01 - the company clears the site, and the mod finally admits what it needs
+
+- **If everyone at the laboratory goes down, The Company comes.** Not when they die - when they are
+  all *down*. A squad arrives on all-access passes, and it does not leave anybody standing who was
+  there. The dead are buried on the property where there is ground that will take a grave, and put
+  in the fire where there is not. Damaged walls and fixtures come back to full repair. Every open
+  connection is shut at the gate, and the gate is left commissioned. Three replacement staff land
+  with supplies, on the ordinary wage, and **you never lose the game.**
+- **It costs you everything on paper.** Every bearer bond anywhere on your maps is collected and
+  credited nowhere, and up to 25,000,000 credits is drawn from the account as restocking the petty
+  cash - whatever is there, and never below zero. The letter tells you the figures rather than
+  saying the site has been secured.
+- **This happens at the laboratory only.** The furniture store and the solo start keep the clean-up
+  team they already had: five staff, and a trigger that waits for actual death.
+- **The mod now declares what it needs, so your mod manager can tell you what is missing.** All five
+  expansions and the 289 mods this build is authored against, each with a name and a link, and every
+  one of them also declared as a load-order constraint - so a sorting manager puts this mod where it
+  belongs on its own. It was previously declaring nothing at all and loading **197th of 296, with 99
+  mods coming after it.**
+- **Nothing from another mod is assumed.** Content is looked up by name and a missing one degrades
+  what depends on it rather than throwing.
+- **Reports get signed off now.** A second person reads a finished analysis and either stands behind
+  it or returns it - the fourth of the four workflows, after analyse, compare and interview. The
+  analyst cannot review their own work, and nothing can be signed off while two of your crew are
+  still contradicting each other on the record.
+- **Your people remember where they have been.** Field history is kept per person, and an operator
+  who has personally walked an address brings the gate up faster on it. The crew panel says who is a
+  novice, who is a veteran, and who knows this particular route.
+
+Full record: [the company clears the site](docs/implementation/CLEAR_SQUAD_IMPLEMENTATION.md). No
+gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.39-dev - 2026-09-29 - the game now tells you what it does with your other mods
 
 - **The company panel lists the optional mods this mod has a position on, and what that position is.** Five of them, with the register row each came from, whether it is loaded, and in plain words what this mod will and will not do with it. That answer used to live only in a spreadsheet outside the game.

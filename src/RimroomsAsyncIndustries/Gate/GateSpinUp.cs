@@ -83,6 +83,15 @@ namespace RimroomsAsyncIndustries.Gate
         private const float PractisedDiallingFactor = 0.8f;
 
         /// <summary>A ramp is running toward an opening on this gate.</summary>
+        /// <summary>
+        /// The address this gate is ramping toward, or null when it is not ramping.
+        ///
+        /// Read-only on purpose. The crew panel needs it to say whether a candidate has walked
+        /// this route before -- staff prior exposure -- and nothing outside the gate may change
+        /// what it is dialling.
+        /// </summary>
+        public string SpinUpCoordinateId { get { return spinUpCoordinateId; } }
+
         public bool IsSpinningUp
         { get { return !string.IsNullOrEmpty(spinUpConnectionId) && !IsOpening; } }
 
@@ -192,6 +201,13 @@ namespace RimroomsAsyncIndustries.Gate
                 required *= familiarity;
                 if (required <= floor) { return floor; }
             }
+            // **Staff prior exposure.** The loop above is the BRANCH's history -- one discount
+            // per previous connection, because a branch keeps records. This is the PERSON's,
+            // and it applies **once**: the operator has either walked this address or they have
+            // not, and the tenth walk does not teach them the way a tenth filed report teaches
+            // the branch. Owner's prep item: *"field history, trust/stress/exposure"*.
+            if (dialCampaign != null)
+            { required *= dialCampaign.ExposureDialFactor(assignedOperator, coordinateId); }
             return Mathf.Max(floor, required);
         }
 

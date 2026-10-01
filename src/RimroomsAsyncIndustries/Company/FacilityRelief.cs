@@ -100,6 +100,14 @@ namespace RimroomsAsyncIndustries.Company
         /// Downed is also not dead. A branch whose staff are all unconscious is in trouble, not
         /// gone, and replacing people who are going to stand back up would be the corporation
         /// paying twice for the same jobs.
+        ///
+        /// **That reasoning holds for the Store and the Solo/Group branches and the owner has
+        /// overruled it for the laboratory.** Owner, 2026-10-01: *"a the company clear squad when
+        /// all pawns incompacitated"*, and on the people it lands on: *"the downed: No
+        /// Witnesses"*. The laboratory's trigger is <c>AnyCapableStaff</c> in
+        /// <c>CompanyClearSquad.cs</c>, which counts downed as lost; this one is unchanged and is
+        /// still what the other two scenarios use. The comment is scoped rather than deleted
+        /// because it is still a true statement about the path it guards.
         /// </summary>
         private bool AnyLivingStaff()
         {
@@ -122,6 +130,12 @@ namespace RimroomsAsyncIndustries.Company
             if (!corporationContact) { return; }
             Map map = headquarters;
             if (map == null || !Find.Maps.Contains(map)) { return; }
+            // **The laboratory takes a different path entirely and never reaches the relief.**
+            // Owner: *"this only happens for the lab secnerio for now we will figure out how to
+            // impliment it in other scenreios later"*. Returning here is what keeps that scoping
+            // real: the squad handles the dead as well as the downed, so running both would land
+            // eight people and charge twenty-five million for three of them.
+            if (IsLaboratoryBranch) { TickClearSquad(map); return; }
             if (AnyLivingStaff()) { return; }
             try { RunFacilityRelief(map); }
             catch (Exception error)

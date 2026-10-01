@@ -34,6 +34,9 @@ namespace RimroomsAsyncIndustries.UI
             else if (record.Status != EvidenceStatus.Secured && record.Status != EvidenceStatus.Analyzed)
             { key = "RR_UI_NextRecoverEvidence"; pane = 8; }
             else if (record.Status != EvidenceStatus.Analyzed) { key = "RR_UI_NextAnalysis"; pane = 6; }
+            // **Review is the step between a finished report and the next lead**, and the
+            // objective line is how the player learns the step exists at all.
+            else if (campaign.AwaitsReview(record)) { key = "RR_UI_NextReview"; pane = 6; }
             else if (!campaign.HasRouteTelemetry) { key = "RR_UI_NextTelemetry"; pane = 6; }
             else { key = "RR_UI_NextRevisit"; pane = 8; }
             listing.Label("RR_UI_CurrentObjective".Translate());

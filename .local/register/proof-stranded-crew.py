@@ -117,6 +117,44 @@ for token in ["Expire", "expiry", "Deadline", "deadline", "TicksUntil"]:
           "-- a stranded crew is somewhere hard, not on a countdown")
 
 # 5. The player is told. A silent guarantee is one nobody can act on.
+# --------------------------------------------------------- the register of the lost
+# **The owner asked for this verification by name**, 2026-10-01: check the stranded-crew rows
+# against `Company/LostPawnRegister.cs`. The row names the fear: *"If a closing gate hands its
+# crew to the world-pawn pool, or despawns them, or marks them lost in any way that removes
+# player control, that is a defect against this direction and the most consequential kind."*
+#
+# **Eleven claims above and not one mentioned the register**, so the guarantee rested on nobody
+# ever adding a `Pawn` field to a file whose name sounds exactly like somewhere a pawn would go.
+register = strip_comments(io.open(os.path.join(
+    SRC, "Company", "LostPawnRegister.cs"), encoding="utf-8-sig").read())
+
+check("THE LOST-PAWN REGISTER HOLDS NAMES, NOT PAWNS",
+      "private List<string> lostPawnNames = new List<string>();" in register
+      and "public void NoteLostPawn(string name)" in register
+      and "public string TakeLostPawnName()" in register
+      # **NOT `"Pawn" not in register`.** That is a substring test wearing a type test's clothes,
+      # and it is false: `NoteLostPawn`, `TakeLostPawnName`, `LostPawnCapacity`, `lostPawnNames`
+      # and `LostPawnCount` all contain those letters. Duplicate-string trap, same shape as
+      # 0.12.75-dev's label claim. What matters is whether the **type** is referenced at all.
+      and not any(token in register for token in
+                  ("List<Pawn>", "Pawn pawn", "Pawn ", "(Pawn", "<Pawn>", "Pawn)")),
+      "-- *\"marks them lost in any way that removes player control\"* is impossible here BY "
+      "CONSTRUCTION: there is no pawn to mark. It is a list of names, so a stranger in a corridor "
+      "can be somebody the player recognises")
+
+check("and it cannot despawn, destroy or hand anybody to the world",
+      not any(token in register for token in
+              ("PassToWorld", "DeSpawn", "Destroy", "worldPawns", "Discard")),
+      "-- the four verbs that would take a colonist away. **None of them is in the file**, and "
+      "this claim is what keeps it that way")
+
+check("and nothing it stores can outlive the save or point at a living colonist",
+      "Scribe_Collections.Look(ref lostPawnNames" in register
+      and "LookMode.Value" in register
+      and "Scribe_References" not in register,
+      "-- saved by VALUE. A `Scribe_References` list in this file would be a set of live pawn "
+      "handles, which is the shape the row is afraid of")
+
 check("an alert reports a crew awaiting recovery",
       "class Alert_RimroomsRecoveryOverdue" in alerts,
       "-- the player would have to notice a stranded crew themselves")

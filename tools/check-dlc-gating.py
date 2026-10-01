@@ -4,10 +4,21 @@ Why this exists
 ---------------
 On 2026-09-29 the two childcare work giver defs were found referencing
 ``<workType>Childcare</workType>`` with no gate. `Childcare` is a Biotech
-`WorkTypeDef`, so on a Core-only install that is an **unresolved cross-reference at
-load** -- a red error in a mod whose entire claim is that it needs nothing but Core.
+`WorkTypeDef`, so on an install without Biotech that is an **unresolved cross-reference
+at load** -- a red error, and the kind nothing in the package was watching for.
 The C# side had always degraded correctly through `GetNamedSilentFail`; only the XML
 had been forgotten, and nothing was checking it.
+
+**This rule survives the 2026-10-01 dependency change, and matters more because of it.**
+`About.xml` now declares 294 hard dependencies, the five expansions among them, after the
+owner's direction *"the mod DOES HAVE HARD DEPENDANCIES SO GET IT RIGHT AND MAKE SURE ITS
+LAYED OUT RIGHT FOR RIMSORT TO NOTICE AND ENFORCE"*. So the old justification -- *a mod
+whose entire claim is that it needs nothing but Core* -- is **no longer true and has been
+removed rather than left standing**. What replaces it is the owner's own answer on posture:
+declare the dependency so a manager enforces it, **and keep the graceful guard anyway**, so
+a player who ignores the warning degrades instead of crashing. `MayRequire` is that guard in
+XML exactly as `GetNamedSilentFail` is in C#, and a gate is now a deliberate second line
+rather than the only line.
 
 The existing compliance check looks for DLC *package ids* appearing ungated. It could
 never have caught this, because the def never mentions Biotech at all -- it mentions

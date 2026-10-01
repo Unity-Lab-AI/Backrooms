@@ -7165,3 +7165,145 @@ never a bash heredoc"* and the only thing that has ever worked is reaching for t
 `AABE696E79D3745FEDC3397C2E21B179D43538C3C6FB71A9276D444D4663483A`, measured after the version bump, reproduced by two clean recompiles.
 **Seventeen checkers pass, FORTY-SIX proofs hold, 20 of 20 planted faults caught in the suite that
 carries the bonds, 684 plant anchors findable.**
+
+---
+
+## Session 2026-10-01 - the clear squad, the hard dependencies, and the last two prep items (0.12.76-dev)
+
+**Verbatim user quotes:** *"are u shure zero goon squad code is written weve gone over this before
+by a different name"*; *"see thats WRONG the mod DOES HAVE HARD DEPENDANCIES SO GET IT RIGHT AND
+MAKE SURE ITS LAYED OUT RIGHT FOR RIMSORT TO NOTICE AND ENFORCE"*; *"there are alot more
+depeandacies than just the DLC we have alkinds of mods in the 274 mod list WE ARE USING ALL OF
+THEM!!!!"*; *"6 row gap is dlcs"*; *"lets get it all done come on"*. And the settled fork from the
+spec: *"the downed: No Witnesses"*.
+
+**Files touched:** `Company/CompanyClearSquad.cs` (new), `Company/EvidenceReview.cs` (new),
+`Company/StaffExposure.cs` (new), `Company/FacilityRelief.cs`, `Company/CampaignRecords.cs`,
+`Company/RimroomsCampaignComponent.cs`, `Company/StaffDebrief.cs`, `Gate/GateSpinUp.cs`,
+`ConnectedWork/Providers/UpkeepProviders.cs`, `UI/OperationsEvidence.cs`,
+`UI/OperationsExpeditions.cs`, `UI/OperationsCrewPlanner.cs`, `About/About.xml`,
+`Keyed/RR_Requests.xml`, `Keyed/RR_Investigation.xml`, `Keyed/RR_CrewPlanner.xml`,
+`tools/check-register-compliance.py`, `tools/check-dlc-gating.py`, `proof-clear-squad.py` (new,
+proof FORTY-SEVEN), `proof-review-exposure.py` (new, proof FORTY-EIGHT),
+`proof-stranded-crew.py`, `plant-clearsquad.py` (new, suite EIGHTEEN),
+`plant-review-exposure.py` (new, suite NINETEEN), `plant-dependencies.py` (new, suite
+SEVENTEEN).
+
+**Mod register.** Rows **4-9** are Core and the five expansions, and rows 5-9 carry stance
+*Optional* with row 5 at firmness *Provisional*. **The owner has overruled all five into hard
+dependencies**, which is the register being *"not law but guidance"* working exactly as the
+owner's standing correction says. Row 77, *Doors Expanded*, is still patched through
+`PatchOperationFindMod` and nothing about that changed.
+
+### THE OWNER'S FIRST QUESTION FOUND TWO FALSE STATEMENTS IN MY OWN HANDOFF
+
+*"are u shure zero goon squad code is written weve gone over this before by a different name"*. I
+had written *"ZERO code written"* on the strength of `src/` being identical to 0.12.75-dev, which
+proves only that **I** had not written any. It says nothing about what past-me built under another
+name, and this repository has been caught by exactly that **nine times**.
+
+| My claim | What was true |
+|---|---|
+| *"Nothing in the battery claims anything about `FacilityRelief`"* | **`proof-facility-relief.py` is proof FIVE**, and two of its claims contradicted the new direction outright |
+| *"Core defs confirmed present: Grave, Sarcophagus, ElectricCrematorium, **Pyre**"* | **`Pyre` is Ideology**, not Core |
+
+The Pyre error is the uglier one: the check was run against the **installed game** rather than
+against **Core**, and for a Core-only mod that is the entire distinction. It read as a pass because
+it answered the wrong question.
+
+**And the third find was pure profit.** `ConnectedWork/Providers/UpkeepProviders.cs` already wraps
+Core's `listerBuildingsRepairable.RepairableBuildings(faction)`. A second damaged-building scan was
+deleted from the plan before it existed.
+
+### THE SCOPING SAVED TWO PROOF CLAIMS THAT LOOKED LIKE CASUALTIES
+
+`proof-facility-relief.py` asserts *the relief requisitions five roles* and *the living-staff scan
+does not treat downed as dead*. Both read as doomed by the new direction -- until the owner's own
+scoping resolved it: *"this only happens for the lab secnerio for now"*.
+
+So the squad is a **separate path**, not an edit. The laboratory forks before the relief's trigger
+is ever consulted; the Store and Solo/Group branches keep five staff and a death-only trigger.
+**Both old claims still hold, untouched**, and the trigger comment that explained the old reasoning
+is **scoped rather than deleted** -- it is still true about the path it guards.
+
+Making it universal would have silently rewritten the bargain for two scenarios the owner excluded.
+That is the defect shape this project keeps meeting: one rule, quietly applied where nobody asked.
+
+### THE GRAVE DOES NOT FIT INDOORS, AND THAT WAS MEASURED
+
+Core's `Grave` is **(1,2)** -- two cells -- and needs the **`Diggable`** affordance. **Ten** Core
+terrains carry it. **Every constructed floor is excluded**: `Concrete`, `SterileTile`, `MetalTile`,
+every stone tile, every carpet, every bridge.
+
+**So a grave cannot be dug inside the facility at all.** Found by reading the game's data rather
+than at runtime, which is the difference between a feature and a feature that never worked. Burial
+goes to open ground -- the facility's unroofed breezeway and compound are exactly that -- and where
+no ground will take one the corpse is destroyed, which is *"incenerate on propery"*. **No
+crematorium is built**: a bill needs a worker and there is nobody alive to work it, so an unpowered
+one would be scenery pretending to be a mechanism.
+
+### THE DEPENDENCY WORK EXPOSED A DEFECT NOBODY WAS LOOKING FOR
+
+`About.xml` declared **no dependencies at all** and a description reading *"Core only ... No
+Harmony, no dependencies."* It now declares **294** -- five expansions and 289 mods, each with a
+`displayName` and a `steamWorkshopUrl` -- plus **295 `loadAfter` entries**.
+
+**And the load order was the real find.** The package sat at **position 197 of 296** in the owner's
+live order, so **99 mods were loading after it**, and a patch cannot see a def from a mod that loads
+later. `modDependencies` is what a manager reads to warn; `loadAfter` is what makes the order right,
+and we had one entry.
+
+Generated from the owner's own `ModsConfig.xml`, **read-only**. Every active mod resolved to an
+installed folder and every non-expansion has a Workshop id. The cycle check read every active mod's
+four load-order tags and **none names us**. **Never hand-edit the blocks; edit
+`build-dependencies.py`.**
+
+### TWO CHECKERS CARRIED THE OLD PREMISE, AND NEITHER WAS DEFECTIVE
+
+`check-register-compliance.py` refused the whole thing: *"The package must load and run against
+Core alone."* **The checker was not wrong; its premise was.** A prohibition became an **assertion**
+rather than being deleted -- every declaration must carry a name, a way to obtain it and a matching
+`loadAfter`; our own id, Core and duplicates are refused. **Seven planted faults, 7 of 7 caught.**
+
+`check-dlc-gating.py`'s rule survives and matters **more**: `MayRequire` in XML is the same
+graceful guard `GetNamedSilentFail` is in C#, which is the posture the owner chose. Only its stated
+reason was stale. **A reason nobody believes is worse than no reason.**
+
+### AND THE SIXTH INSTANCE OF AN INSTRUMENT READING ITS OWN PROSE WAS MINE
+
+The fix script searched its result for the phrase it had removed -- and the replacement prose
+*quotes* that phrase in the sentence retiring it. The write had landed; **the verification was the
+defect.** Same shape as `check-compliance.py` flagging `PatchOperationReplace` inside the comment
+explaining why a replace is wrong (0.12.46-dev) and `check-register-compliance.py` matching
+`statBases` inside the comment saying it cannot be one (0.12.75-dev). The fix is the one both
+checkers took: **assert against the live form, not the mention.**
+
+A second instance of the same family turned up in the new claims: `"Pawn" not in register` is a
+**substring test wearing a type test's clothes**, and it is false -- `NoteLostPawn`,
+`TakeLostPawnName` and `lostPawnNames` all contain those letters. Duplicate-string trap, same as
+0.12.75-dev's label claim.
+
+### THE THREE PREP ITEMS THE OWNER ALSO ASKED FOR
+
+**The stranded-crew verification.** `LostPawnRegister.cs` cannot remove player control **by
+construction**: it holds a `List<string>`. But `proof-stranded-crew.py` had **eleven claims and not
+one mentioned it**, so the guarantee rested on nobody ever adding a `Pawn` field to a file whose
+name sounds exactly like somewhere a pawn would go. **Three claims make it permanent.**
+
+**Review, the fourth workflow.** A second person signs a finished report off or returns it.
+Recorded as **additive fields, never a sixth `EvidenceStatus`** -- `Analyzed` is terminal, eight
+places compare against it, and the enum is saved by value. It ships with a **button**, a readout and
+an objective line in the same checkpoint, because a service with no reachable caller is the defect
+that accounted for four of five bond defects.
+
+**Staff prior exposure.** `NoteReturnedFromField` already knew *this person came back from there*
+and **threw it away** -- the fact lived as a transient debrief hold and was deleted on debrief.
+Same shape as the contradictory-accounts defect: *a mechanism that existed and threw the
+disagreement away*. Now kept per person by load id, never by reference, and **spent on the dial**:
+an operator who has walked an address brings the gate up faster on it, applied **once** where the
+branch's own familiarity compounds. The floor still holds, so a well-worn route is never free.
+
+**210 C# files, 92 package files**, zero warnings, zero errors. Assembly SHA-256
+`B3B0B052445A706CF8A1F1BED154C9CA813B756AA019F773B7C26EE2225F6774`, measured after the version bump, reproduced by two clean rebuilds.
+**Sixteen checkers pass, FORTY-EIGHT proofs hold, 27 of 27 and 20 of 20 and 7 of 7 planted faults
+caught in the three new suites, 738 plant anchors findable.**

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -40,6 +40,24 @@ namespace RimroomsAsyncIndustries.UI
                 listing.Label(candidate.Ready
                     ? "RR_Plan_RowReady".Translate(name, Kilograms(candidate.FreeMass))
                     : "RR_Plan_RowUnready".Translate(name, candidate.ReasonKey.Translate()));
+
+                // **Staff prior exposure, said out loud.** The operator's own experience of an
+                // address takes work off the dial, and a discount nobody can see is a discount
+                // the player reads as noise. A novice is named a novice rather than left blank,
+                // for the same reason this list shows unready candidates instead of hiding them.
+                int trips = campaign.FieldTripsFor(candidate.Pawn);
+                string address = gate == null ? null : gate.SpinUpCoordinateId;
+                if (trips <= 0) { listing.Label("RR_Plan_ExposureNone".Translate()); }
+                else if (campaign.HasBeenTo(candidate.Pawn, address))
+                {
+                    listing.Label("RR_Plan_ExposureKnowsRoute".Translate(
+                        trips.ToString(CultureInfo.CurrentCulture)));
+                }
+                else
+                {
+                    listing.Label("RR_Plan_ExposureTrips".Translate(
+                        trips.ToString(CultureInfo.CurrentCulture)));
+                }
             }
             listing.GapLine();
 

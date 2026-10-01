@@ -33,4 +33,7 @@
   <RR_Plan_CostUnknown>The draw for a full window cannot be quoted from this gate's current state.</RR_Plan_CostUnknown>
   <RR_Plan_Reserve>Reserve stored: {0} Wd. A return costs {1} Wd.</RR_Plan_Reserve>
   <RR_Plan_ReserveShort>The reserve does not currently cover a return.</RR_Plan_ReserveShort>
+  <RR_Plan_ExposureNone>    No field history. This would be their first trip through.</RR_Plan_ExposureNone>
+  <RR_Plan_ExposureTrips>    {0} trips through, none of them to this address.</RR_Plan_ExposureTrips>
+  <RR_Plan_ExposureKnowsRoute>    {0} trips through, and they have walked this address before. As operator they bring the gate up faster.</RR_Plan_ExposureKnowsRoute>
 </LanguageData>

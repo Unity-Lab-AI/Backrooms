@@ -3,14 +3,1775 @@
   <name>Rimrooms - Async Industries</name>
   <author>Operator</author>
   <packageId>Rimrooms.AsyncIndustries</packageId>
-  <modVersion>0.12.75-dev</modVersion>
+  <modVersion>0.12.76-dev</modVersion>
   <supportedVersions>
     <li>1.6</li>
   </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>SF.Grim.Reality</packageId>
+      <displayName>SF Grim Reality</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1543063349</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ilyvion.LoadingProgress</packageId>
+      <displayName>Loading Progress</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3535481557</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Ludeon.RimWorld.Royalty</packageId>
+      <displayName>RimWorld - Royalty</displayName>
+    </li>
+    <li>
+      <packageId>Ludeon.RimWorld.Ideology</packageId>
+      <displayName>RimWorld - Ideology</displayName>
+    </li>
+    <li>
+      <packageId>Ludeon.RimWorld.Biotech</packageId>
+      <displayName>RimWorld - Biotech</displayName>
+    </li>
+    <li>
+      <packageId>Ludeon.RimWorld.Anomaly</packageId>
+      <displayName>RimWorld - Anomaly</displayName>
+    </li>
+    <li>
+      <packageId>Ludeon.RimWorld.Odyssey</packageId>
+      <displayName>RimWorld - Odyssey</displayName>
+    </li>
+    <li>
+      <packageId>adaptive.storage.framework</packageId>
+      <displayName>Adaptive Storage Framework</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3033901359</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>SmashPhil.VehicleFramework</packageId>
+      <displayName>Vehicle Framework</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3014915404</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>imranfish.xmlextensions</packageId>
+      <displayName>XML Extensions</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2574315206</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>UnlimitedHugs.HugsLib</packageId>
+      <displayName>HugsLib</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/818773962</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId>
+      <displayName>Vanilla Expanded Framework</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2023507013</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Arylice.Rimworld.AutomaticStumpChopping</packageId>
+      <displayName>[ARY] Automatic Stump Chopping [1.5 - 1.6]</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3357749890</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>kittahkhan.grazeup</packageId>
+      <displayName>[Kit] Graze up</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2302739121</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>zal.calltradeships</packageId>
+      <displayName>[KV] Call Trade Ships (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3722921543</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>LingLuo.MoveSteamGeyser</packageId>
+      <displayName>[Ling]Move Steam Geyser</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1547361568</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Og.AutomaticPowerSwitch</packageId>
+      <displayName>[Og] Automatic Power Switch</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3031634496</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>SR.ModRimworld.FactionalWarContinued</packageId>
+      <displayName>[SR]Factional War (fork)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3423264477</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.XNDProfitableWeapons</packageId>
+      <displayName>[XND] Profitable Weapons (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2269697598</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>XeoNovaDan.VisiblePants</packageId>
+      <displayName>[XND] Visible Pants</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2264108215</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>SamBucher.ADogSaidAnimalProsthetics2</packageId>
+      <displayName>A Dog Said... Animal Prosthetics 2</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3238353862</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Adaptive.Ideology.Storage</packageId>
+      <displayName>Adaptive Ideology Storage</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3301337278</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Adaptive.PrimitiveStorage</packageId>
+      <displayName>Adaptive Primitive Storage</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3400037215</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Adaptive.SimpleStorage</packageId>
+      <displayName>Adaptive Simple Storage</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3297307747</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>LegendaryMinuteman.AgeRMechSerum</packageId>
+      <displayName>Age Reversing Mech Serum</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1826684801</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.AllMemoriesFade</packageId>
+      <displayName>All Memories Fade</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2800155563</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.AllTurretsCanSetForcedTarget</packageId>
+      <displayName>All Turrets Can Set Forced Target (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3256513109</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>UnlimitedHugs.AllowTool</packageId>
+      <displayName>Allow Tool</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/761421485</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Ingendum.AnimalApparelFramework</packageId>
+      <displayName>Animal Apparel: Framework</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3513825850</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Ingendum.AnimalArmorVacBelt</packageId>
+      <displayName>Animal Apparel: Vac Belt</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3525740284</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>avilmask.AnimalControls</packageId>
+      <displayName>Animal Controls</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2426119067</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>GodlyAnnihilator.AnimalMedicalBed</packageId>
+      <displayName>Animal Medical Bed</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3221610549</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>overpl.AnimalSarcophagus</packageId>
+      <displayName>Animal Sarcophagus</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2876565401</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Fluffy.AnimalTab</packageId>
+      <displayName>Animal Tab (Continued 1.6)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3575480305</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ColossalFossil.AnimalsAreFunContinued</packageId>
+      <displayName>Animals are fun! (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3245454244</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Oblitus.AnimalsLogic</packageId>
+      <displayName>Animals Logic</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1098354593</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>zoarak.anomalyplat</packageId>
+      <displayName>Anomaly Research Asteroid</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3527726648</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>com.bymarcin.ArchitectIcons</packageId>
+      <displayName>Architect Icons</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1195427067</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.AreaUnlocker</packageId>
+      <displayName>Area Unlocker (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3550817577</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Broms.AsteroidMineralScanner</packageId>
+      <displayName>Asteroid Mineral Scanner</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3536585361</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>automatic.autolinks</packageId>
+      <displayName>Auto links</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2059389912</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Defi.AutoCutBlight</packageId>
+      <displayName>Auto-Cut Blight - 1.6</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3520167264</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.BadCanBeGood</packageId>
+      <displayName>Bad Can Be Good (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2889440091</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>BinarySpark.CaravanDogs</packageId>
+      <displayName>Barky's Caravan Dogs</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1497792975</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Meltup.BeautifulOutdoors</packageId>
+      <displayName>Beautiful Outdoors</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2011794898</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>bedrestforfoodpoisoning.1trickPonyta</packageId>
+      <displayName>Bed Rest For Food Poisoning</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2567901366</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>AdamBucior.BetterElectronics</packageId>
+      <displayName>Better Electronics</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1555743957</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>nephlite.advexplosions</packageId>
+      <displayName>Better Explosions</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2572683272</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>RedMattis.BetterGeneInheritance</packageId>
+      <displayName>Better Gene Inheritance</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3046776238</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ArchieV.BetterWeight</packageId>
+      <displayName>BetterWeight</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2221387317</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Daria40K.BigLittleModPatch</packageId>
+      <displayName>Big Little Mod Patch</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2710382569</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Fuu.BloodAnimations</packageId>
+      <displayName>Blood Animations</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3228047321</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Defi.Blueprints.fork</packageId>
+      <displayName>Blueprints Forked - 1.6</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3525001145</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Bos.MilkableAnimals</packageId>
+      <displayName>Bo's Milkable Animals</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/841092540</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Memegoddess.BuildFromInventory</packageId>
+      <displayName>Build From Inventory - Continued</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3534185281</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Buildable.Terrain</packageId>
+      <displayName>Buildable Terrain v1</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1420979918</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>arakos.callatrader.acat</packageId>
+      <displayName>Call A Trader</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2784149999</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.CaptureThem</packageId>
+      <displayName>Capture Them (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3255137581</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.CarryallsIntercontinentalTransport</packageId>
+      <displayName>Carryalls | Intercontinental Transport (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3642349335</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Orion.CashRegister</packageId>
+      <displayName>Cash Register (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3509487668</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>kapitanoczywisty.changemapedge</packageId>
+      <displayName>Change map edge limit</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1546494565</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>void.charactereditor</packageId>
+      <displayName>Character Editor</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1874644848</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>CrashM.ColorCodedMoodBar.11</packageId>
+      <displayName>CM Color Coded Mood Bar [1.1+]</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2006605356</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>avilmask.CommonSense</packageId>
+      <displayName>Common Sense</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1561769193</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.CompactWorkTab</packageId>
+      <displayName>Compact Work Tab (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3250322299</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>arl85.CorpseInfo</packageId>
+      <displayName>Corpse info</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2913588675</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>GwinnBleidd.CraftableMountains</packageId>
+      <displayName>Craftable Mountains</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2906276423</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>CaesarV6.DamageIndicators</packageId>
+      <displayName>Damage Indicators [1.6]</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2016331497</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Troopersmith1.DeathRattle</packageId>
+      <displayName>Death Rattle Continued [1.2+]</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2896207870</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>TheCafFiend.OverdoseDependencyFix</packageId>
+      <displayName>Dependency Overdose Fix</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3421951605</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Garwel.DestroyItem</packageId>
+      <displayName>Destroy Item</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2423311270</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.DingOnGameLoaded</packageId>
+      <displayName>Ding On Game Loaded</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2425530959</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Xercaine.DoRecreationWhenIdle</packageId>
+      <displayName>Do Recreation When Idle</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3368214339</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>MD.PrioritizeResearch</packageId>
+      <displayName>Do Your F****** Research</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3523205869</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>jecrell.doorsexpanded</packageId>
+      <displayName>Doors Expanded</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3532342422</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Wolfcub05.DraftableAnimals</packageId>
+      <displayName>Draftable Animals - Releashed</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3534629428</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>telardo.DragSelect</packageId>
+      <displayName>DragSelect</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2599942235</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>MemeGoddess.DualWield</packageId>
+      <displayName>Dual Wield - Continued</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3630049419</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Dubwise.DubsMintMenus</packageId>
+      <displayName>Dubs Mint Menus</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1446523594</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>dubwise.dubsmintminimap</packageId>
+      <displayName>Dubs Mint Minimap</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1662119905</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Dubwise.Rimatomics</packageId>
+      <displayName>Dubs Rimatomics</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1127530465</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Dubwise.DubsRimkit</packageId>
+      <displayName>Dubs Rimkit</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/832333531</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>EdB.PrepareCarefully</packageId>
+      <displayName>EdB Prepare Carefully</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/735106432</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>efficient.batteries</packageId>
+      <displayName>Efficient batteries</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/865497369</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.EggIncubator</packageId>
+      <displayName>Egg Incubator</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2505566813</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Cocaine.ElectricStonecuttingTable</packageId>
+      <displayName>Electric Stonecutting Table</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1649368867</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.ExplosiveImplant</packageId>
+      <displayName>Explosive Implant (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2162909284</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Aelanna.FistNerf</packageId>
+      <displayName>Fists Aren't Made of Steel</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2845980214</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.FlickableStorage</packageId>
+      <displayName>Flickable Storage</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2497907804</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Hawkwood.FloorsAreAlmostWorthless</packageId>
+      <displayName>Floors Are (Absolutely) Worthless</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2960126462</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.FoodPoisoningStackFix</packageId>
+      <displayName>Food Poisoning Stack Fix (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2843483188</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>zed.0xff.ForceXenogermImplantation</packageId>
+      <displayName>Force Xenogerm Implantation</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2958300354</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>notfood.FrameRateControl</packageId>
+      <displayName>FrameRateControl</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1591142767</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Xercaine.FueledCrematorium</packageId>
+      <displayName>Fueled Crematoriums</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3286907608</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>zylle.Gemstones</packageId>
+      <displayName>Gemstones</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2000801414</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>MemeGoddess.GiddyUp</packageId>
+      <displayName>Giddy-Up 2 - Continued</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3674332861</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>amunra.gmc</packageId>
+      <displayName>Glitterworld medicine craftable</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1541794953</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Albion.GoExplore</packageId>
+      <displayName>Go Explore!</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1814100216</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>kongkim.GSingots</packageId>
+      <displayName>Gold &amp; Silver Ingots</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2527544142</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Arkymn.AgingVisuals</packageId>
+      <displayName>Graying Hair</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2807132773</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.GreyerMorals</packageId>
+      <displayName>Greyer morals (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2018947066</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Sirprook.HardenedArmor</packageId>
+      <displayName>Hardened Armor</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3515052580</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Smuffle.HarvestOrgansPostMortem</packageId>
+      <displayName>Harvest Organs Post Mortem Continued</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1204502413</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.HarvestWhenButchering</packageId>
+      <displayName>Harvest When Butchering</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2898826891</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>jkluch.HaulToStack</packageId>
+      <displayName>Haul to Stack</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/949498803</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Syrus.HMSChoice</packageId>
+      <displayName>Healer Mech Serum Choice</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2714095848</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Adamas.Hospital</packageId>
+      <displayName>Hospital</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2992224079</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>FLASHPOINT55.HumanPowerGeneratorMod</packageId>
+      <displayName>Human Power Generator Mod</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1706030487</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.IClearlyHaveEnough</packageId>
+      <displayName>I Clearly Have Enough! (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2023661266</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Zaf.InjectGene</packageId>
+      <displayName>Inject Genes</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2918091446</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Haecriver.InjuredCarry</packageId>
+      <displayName>Injured Carry</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2413690575</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Turnovus.Biotech.IntegratedGenes</packageId>
+      <displayName>Integrated Genes</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2884115974</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>kazepsi.irbm</packageId>
+      <displayName>InterRim Ballistic Missile</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3682304832</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.JustPutItOverThere</packageId>
+      <displayName>Just Put It Over There</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2856471776</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Linnun.KeepConverting</packageId>
+      <displayName>Keep Converting</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3461478214</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.LadiesCanFlirtToo</packageId>
+      <displayName>Ladies Can Flirt Too! (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3559816908</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.LessStupidRomanceAttempt</packageId>
+      <displayName>Less Stupid Romance Attempt (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2014603702</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.LiveWithThePain</packageId>
+      <displayName>Live With The Pain</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2659985388</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>amunra.lc</packageId>
+      <displayName>Luciferium craftable</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1541795146</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ASF.DeepStorage</packageId>
+      <displayName>LWM's Adaptive Deep Storage</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3373064575</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ratys.madskills</packageId>
+      <displayName>Mad Skills</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/731111514</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>m00nl1ght.MapPreview</packageId>
+      <displayName>Map Preview</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2800857642</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Memegoddess.MealsOnWheels</packageId>
+      <displayName>Meals On Wheels - Continued</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3538082807</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>cantaloupetheclown.MedicalIVsFork</packageId>
+      <displayName>Medical IVs Fork</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3480177412</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>rabiosus.minesight</packageId>
+      <displayName>Mine Sight</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3769804600</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>erdelf.MinifyEverything</packageId>
+      <displayName>MinifyEverything</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/872762753</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Haplo.Miscellaneous.Training</packageId>
+      <displayName>Misc. Training</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/717575199</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Burpee.MoreBeautifulBodies</packageId>
+      <displayName>More Beautiful Bodies</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3341372760</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>AtamanDolinskaja.MoreCrashedShipParts</packageId>
+      <displayName>More Crashed Ship Parts</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1638467041</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.MoreFactionInteraction</packageId>
+      <displayName>More Faction Interaction (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2379076640</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>arl85.AnimalsAgeFilter</packageId>
+      <displayName>More filters for animals' pen</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2558978295</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>4loris4.MoreLinkables</packageId>
+      <displayName>More Linkables</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1103809207</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>KobeRiddle.MilkAndWoolPatches</packageId>
+      <displayName>More Milkable and Shearable Animals</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3453878341</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>zylle.MoreVanillaBiomes</packageId>
+      <displayName>More Vanilla Biomes</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1931453053</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>hobtook.mortaraccuracy</packageId>
+      <displayName>Mortar Accuracy</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1729446857</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ferny.moveyourmonolith</packageId>
+      <displayName>Move Your Monolith</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3221480525</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>IssacZhuang.MuzzleFlash</packageId>
+      <displayName>Muzzle Flash</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2917732219</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ferny.NameYourEntities</packageId>
+      <displayName>Name Your Entities</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3229905841</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>zal.namesgalore</packageId>
+      <displayName>NamesGalore (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3263018536</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>AmCh.NeedBarOverflow</packageId>
+      <displayName>Need Bar Overflow</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2566316158</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>amunra.nc</packageId>
+      <displayName>Neutroamine craftable</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1541795281</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Unon.NoBurnMetal</packageId>
+      <displayName>No Burn Metal</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1923990111</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>cucumpear.cooties</packageId>
+      <displayName>No Death Cooties On Armour</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/914638336</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Dark.NoHemogenFarmMedicalAlert</packageId>
+      <displayName>No Hemogen Farm Medical Alert</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2887053053</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>walkingproblem.noinfestation</packageId>
+      <displayName>No Infestation</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2890080496</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>eBae.NoQuestsWithoutComms</packageId>
+      <displayName>No Quests Without Comms</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2557302879</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>No.Royal.Clothing.Reqs</packageId>
+      <displayName>No Royal Clothing Reqs (1.6)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2558797536</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>laura7z.noflares</packageId>
+      <displayName>No Solar Flares</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2879659174</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>sk.noprisonersympathy</packageId>
+      <displayName>No Sympathy For Prisoners</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3533769253</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>avilmask.NonUnoPinata</packageId>
+      <displayName>Non uno Pinata (don't drop items)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1778821244</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Vesper.NotMyFault</packageId>
+      <displayName>Not My Fault</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2870045856</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>io.github.cvrunmin.OrbitTradeNotOnlyGeneBank</packageId>
+      <displayName>Not Only GeneBank in Orbit Trade</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3465476199</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mehni.Numbers</packageId>
+      <displayName>Numbers</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1414302321</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.OffspringInheritXenogenes</packageId>
+      <displayName>Offspring Inherit Xenogenes (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3266000468</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Ogre.OgreStack</packageId>
+      <displayName>OgreStack</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1447140290</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>redundant.oopsallgenepacks</packageId>
+      <displayName>Oops All Gene Banks</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2883683444</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>PackMulesExtended.Standard</packageId>
+      <displayName>Pack Mules Extended</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1501052499</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>turnovus.submod.backpacksarenotbelts</packageId>
+      <displayName>Packs Are Not Belts</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2509511179</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.PassItThroughTheWindow</packageId>
+      <displayName>Pass It Through The Window! (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3583129312</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>fed1sPlay.PawnTargetFix</packageId>
+      <displayName>Pawn Target Fix</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2014789938</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Owlchemist.PermeableTerrain</packageId>
+      <displayName>Permeable Terrain</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3261312042</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mehni.PickUpAndHaul</packageId>
+      <displayName>Pick Up And Haul</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1279012058</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.PlantGrowthSync</packageId>
+      <displayName>Plant Growth Sync (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2807616911</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.PlasteelSurgery</packageId>
+      <displayName>Plasteel Surgery (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2018276375</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>co.uk.epicguru.rimforgepoles</packageId>
+      <displayName>Power Poles</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2507086460</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>tk421storm.PriorityTreatmentRessurected</packageId>
+      <displayName>Priority Treatment Ressurected</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3009738919</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.PrisonCommons</packageId>
+      <displayName>Prison Commons (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2898000489</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.PrisonerArena</packageId>
+      <displayName>Prisoner Arena (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2022581505</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Extracting.Organs.1.5</packageId>
+      <displayName>Prisoner Harvesting 1.5</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3347850851</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ocarina.prisonerjumpsuits</packageId>
+      <displayName>Prisoner Jumpsuits</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3402467889</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>erdelf.PrisonerRansom</packageId>
+      <displayName>PrisonerRansom</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/794038005</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>divineDerivative.PrisonerReading</packageId>
+      <displayName>Prisoners Can Read</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3409290110</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.PrisonersDontHaveKeys</packageId>
+      <displayName>Prisoners Dont Have Keys</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2595360307</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>MadaraUchiha.PrisonersNeedRecruiting</packageId>
+      <displayName>Prisoners Need Recruiting</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2076235181</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.PrisonersShouldFearTurrets</packageId>
+      <displayName>Prisoners Should Fear Turrets</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2602436826</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.ProstheticDidgets</packageId>
+      <displayName>Prosthetic Didgets (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2012507402</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.ProstheticNoMissingBodyParts</packageId>
+      <displayName>Prosthetic No Missing Body Parts (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2739055353</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>DawnsGlow.qualcolor</packageId>
+      <displayName>Quality Colors (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3513846773</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>hatti.qualitybuilder</packageId>
+      <displayName>QualityBuilder Unofficial 1.6</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3512466087</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.QuestionableEthicsEnhanced</packageId>
+      <displayName>Questionable Ethics Enhanced (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2850854272</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.RealFactionGuest</packageId>
+      <displayName>Real Faction Guest (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2886929245</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Lucifer.RealisticRooms</packageId>
+      <displayName>Realistic Rooms Rewritten</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2558042766</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ReBuild.COTR.DoorsAndCorners</packageId>
+      <displayName>ReBuild: Doors and Corners</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3262718980</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.RecipeIcons</packageId>
+      <displayName>Recipe icons (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2904906618</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.RemoteDoors</packageId>
+      <displayName>Remote Doors (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2243274070</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Proxyer.RemovableMtRockRoofPatche</packageId>
+      <displayName>Removable Mt.Rock Roof Patch</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1541438898</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Memegoddess.ReplaceStuff</packageId>
+      <displayName>Replace Stuff - Continued</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3526354009</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Spuffy.AnimaReplant</packageId>
+      <displayName>Replantable Anima Trees (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3503586725</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>eheieh.researchtree</packageId>
+      <displayName>ResearchTree (Eheieh Version)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3569150345</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>BDew.Restraints</packageId>
+      <displayName>Restraints</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1578234826</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>temmie3754.retend.1</packageId>
+      <displayName>ReTend</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3523724230</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>brrainz.rimbridgeserver</packageId>
+      <displayName>RimBridgeServer</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3727949765</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Dubwise.Rimefeller</packageId>
+      <displayName>Rimefeller</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1321849735</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>rimfridge.kv.rw</packageId>
+      <displayName>RimFridge: Now with Shelves!</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2898411376</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>nova.rimworldtogether</packageId>
+      <displayName>RimWorld Together</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3005289691</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>telardo.RomanceOnTheRim</packageId>
+      <displayName>Romance On The Rim</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2654432921</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>MemeGoddess.RunAndGun</packageId>
+      <displayName>RunAndGun - Continued</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3562365100</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.SafelyHiddenAway</packageId>
+      <displayName>Safely Hidden Away (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3546378186</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>MemeGoddess.SearchAndDestroy</packageId>
+      <displayName>Search and Destroy (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3232242247</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.SecretPassageDoors</packageId>
+      <displayName>Secret Passage Doors (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2412682633</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>FlyingSloth.SCFilthReducer</packageId>
+      <displayName>Sentience Catalyst Filth Rate Reducer</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3525790312</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.ShitRimworldSays</packageId>
+      <displayName>Shit Rimworld Says (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3374039039</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.ShowMeYourHands</packageId>
+      <displayName>Show Me Your Hands</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2475965842</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>PeteTimesSix.SimpleSidearms</packageId>
+      <displayName>Simple sidearms</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/927155256</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>NightKosh.SlaveOutfitFix</packageId>
+      <displayName>Slave Outfit Fix</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2926945131</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Xercaine.Furniture.Small</packageId>
+      <displayName>Small Furniture</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3696700829</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Longman.SmallerRadiusForAnimaTreesAndShrines</packageId>
+      <displayName>Smaller radius for Anima Trees, Shrines and Animus Stones</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2812513517</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Memegoddess.SmartMedicine</packageId>
+      <displayName>Smart Medicine - Continued</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3526251680</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>PureMJ.MjRimMods.SmartMeditation</packageId>
+      <displayName>Smart Meditation</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2800676538</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>denev.SmartTurretCovering</packageId>
+      <displayName>Smart Turret Covering</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2636621800</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>dhultgren.smarterconstruction</packageId>
+      <displayName>Smarter Construction</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2202185773</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.SmarterVisitors</packageId>
+      <displayName>Smarter Visitors</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3012491521</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>weilbyte.snapout</packageId>
+      <displayName>Snap Out!</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1319782555</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Krelinos.SocialEXPFromTrade</packageId>
+      <displayName>Social Experience from Trade</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3400608063</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Albion.SparklingWorlds.Full</packageId>
+      <displayName>Sparkling Worlds - Full Mod</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1123043922</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.SSLightningRod</packageId>
+      <displayName>SS Lightning Rod (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2358261479</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ccyt.stargatesmod</packageId>
+      <displayName>Stargates!</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2831698056</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Scherub.StonecuttingExtended</packageId>
+      <displayName>Stonecutting Extended</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2571676542</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>balistafreak.StopDropAndRoll</packageId>
+      <displayName>Stop, Drop, And Roll! [BAL]</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2362707956</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.StuffMassMatters</packageId>
+      <displayName>Stuff Mass Matters</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2787438435</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>moistestWhale.stuffOnTablesForked</packageId>
+      <displayName>Stuff on Tables Forked</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3289533061</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>sov.det.surrogatemech</packageId>
+      <displayName>Surrogate Mechanoid</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3246748490</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>rabiosus.TakeCover</packageId>
+      <displayName>TakeCover</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3749200746</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>msd.tendyourself</packageId>
+      <displayName>TendYourself</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3476618866</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>GodlyAnnihilator.TheLowCooler</packageId>
+      <displayName>The Cooler</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3221592105</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>santa.titantreatment</packageId>
+      <displayName>The Titan Treatment</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3523427789</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Jaxe.ToggleHarvest</packageId>
+      <displayName>Toggle Harvest</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1499848654</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Meow.TradableMeals</packageId>
+      <displayName>Tradable Meals</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1506931205</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Meow.TradableStoneBlocks</packageId>
+      <displayName>Tradable Stone Blocks</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1522257424</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>smashphil.dropspot</packageId>
+      <displayName>Trade Ships Drop Spot</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1969732297</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>WindowsXP.TradeShipsNoMatterWhat</packageId>
+      <displayName>Trade Ships No Matter What</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2296557502</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>CarnySenpai.TraitRarityColors</packageId>
+      <displayName>Trait Rarity Colors</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1751884355</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>archie.turrettargetpatch</packageId>
+      <displayName>Turrets Shoot Hunting Predators</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3221646589</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.TVIsEducational</packageId>
+      <displayName>TV is Educational</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2921021769</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.TVForPrison</packageId>
+      <displayName>TVForPrison (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2194535018</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>marvinkosh.ughyougotme</packageId>
+      <displayName>Ugh You Got Me</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1542424705</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>uglytogether.leeh</packageId>
+      <displayName>Ugly Together</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2884233923</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>madarauchiha.undraftaftertucking</packageId>
+      <displayName>Undraft After Tucking</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2157495459</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>BlackFranky.UnsterilizeAnimals</packageId>
+      <displayName>Unsterilize Animals</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2895378449</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>dd.useyourgun</packageId>
+      <displayName>Use Your Gun!</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3229291869</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>VanillaExpanded.VAPPE</packageId>
+      <displayName>Vanilla Apparel Expanded</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1814987817</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>VanillaExpanded.VAEAccessories</packageId>
+      <displayName>Vanilla Apparel Expanded — Accessories</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2521176396</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>VanillaExpanded.VARME</packageId>
+      <displayName>Vanilla Armour Expanded</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1814988282</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>PureMJ.MjRimMods.VanillaFixHaulAfterSlaughter</packageId>
+      <displayName>Vanilla Fix: Haul After Slaughter</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2801452324</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>VanillaExpanded.VFEFactory</packageId>
+      <displayName>Vanilla Furniture Expanded - Factory</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3686924415</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>vanillaexpanded.gravship</packageId>
+      <displayName>Vanilla Gravship Expanded - Chapter 1</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3609835606</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>VanillaExpanded.VHE</packageId>
+      <displayName>Vanilla Hair Expanded</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1888705256</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>OskarPotocki.VanillaVehiclesExpanded</packageId>
+      <displayName>Vanilla Vehicles Expanded</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3014906877</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>VanillaExpanded.VWENL</packageId>
+      <displayName>Vanilla Weapons Expanded - Non-Lethal</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2454918354</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.VariousSpaceShipChunk</packageId>
+      <displayName>Various Space Ship Chunk (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2014616487</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>SickBoyWi.Vault.OnePointOne</packageId>
+      <displayName>Vault Walls and Doors</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2000708343</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.WalkableSolarPanels</packageId>
+      <displayName>Walkable Solar Panels</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2511096015</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Xercaine.WallHeater</packageId>
+      <displayName>Wall Heater</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3286518227</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Xercaine.WallOrbitalTradeBeacon</packageId>
+      <displayName>Wall Orbital Trade Beacon</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3655704055</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Xercaine.WallTelevisions</packageId>
+      <displayName>Wall Televisions</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3582096423</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Xercaine.WallVitalsMonitor</packageId>
+      <displayName>Wall Vitals Monitor</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3655382525</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mersid.WCE2Updated.Core</packageId>
+      <displayName>War Crimes Expanded 2 Core (Updated)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3032870787</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>vin.warehouse.storage</packageId>
+      <displayName>Warehouse Storage</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3519963835</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>PureMJ.MjRimMods.WhileYouAreNearby</packageId>
+      <displayName>While You Are Nearby</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2784585275</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Tixiv.WhoShotMyLegOff</packageId>
+      <displayName>Who shot my leg off?</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3491552121</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>RedMattis.BetterConversion</packageId>
+      <displayName>Wololoo - Better Conversion and Recruitment</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3108763487</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Spacemoth.YouDriveISleep</packageId>
+      <displayName>You Drive, I Sleep</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3324430833</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.ZoneToSchedule</packageId>
+      <displayName>Zone To Schedule</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2436086611</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Endy.Airtightgarage</packageId>
+      <displayName>AirtightGarageDoors</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3534740420</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>sarg.alphavehiclesageofsail</packageId>
+      <displayName>Alpha Vehicles - Age of Sail</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3177395100</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Ingendum.AnimalArmorBasic</packageId>
+      <displayName>Animal Apparel: Basic Armor</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3513849448</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>mireia.bodies</packageId>
+      <displayName>Beautiful Bodies</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2068281501</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Orion.Gastronomy</packageId>
+      <displayName>Gastronomy (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3509488152</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Orion.Hospitality</packageId>
+      <displayName>Hospitality (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3509486825</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>kikohi.jewelry</packageId>
+      <displayName>Jewelry</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3203280763</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Troopersmith1.LifeSupport</packageId>
+      <displayName>Life Support Continued [1.1+]</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2937012139</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>avius.locks</packageId>
+      <displayName>Locks</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1157085076</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Heremeus.MedicalDissection</packageId>
+      <displayName>Medical Dissection</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1328216966</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Smxrez.nonlethalreexamined</packageId>
+      <displayName>Non-Lethal: Re-Examined</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3455926746</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>gy.ppextend</packageId>
+      <displayName>Power Poles Extended</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3339142899</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Rebuild.Embrasures</packageId>
+      <displayName>Rebuild: Embrasures</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3500482839</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Deadmano.ReplaceStuffCoolerVentPlacementFix</packageId>
+      <displayName>Replace Stuff: Cooler And Vent Placement Fix</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3093303048</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>avilmask.ResearchWhatever</packageId>
+      <displayName>Research Whatever</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2552092060</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>SirVan.MiscTrainingRetexture</packageId>
+      <displayName>Van's Retexture : Misc. Training</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2848956469</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>vanillaexpanded.gravship2</packageId>
+      <displayName>Vanilla Gravship Expanded - Chapter 2</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3799737423</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>OskarPotocki.VanillaVehiclesExpandedTier3</packageId>
+      <displayName>Vanilla Vehicles Expanded - Tier 3</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3047892432</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>OskarPotocki.VanillaVehiclesExpandedUpgrades</packageId>
+      <displayName>Vanilla Vehicles Expanded - Upgrades</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3302208420</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>FrozenSnowFox.FrozenSnowFoxTweaks</packageId>
+      <displayName>[FSF] FrozenSnowFox Tweaks</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2893432492</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>gatoviejo.hospitality.invitetostay</packageId>
+      <displayName>Hospitality - Invite to Stay</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3783522506</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Adamas.Storefront</packageId>
+      <displayName>Hospitality: Storefront</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2952321484</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>AgentBlac.MakePawnsPrisoners</packageId>
+      <displayName>Imprisonment On The Go! (Continued)</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3358620558</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>avius.prisonlabor</packageId>
+      <displayName>Prison Labor</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1899474310</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>LegendaryMinuteman.SimpleIvory.fork</packageId>
+      <displayName>Simple Ivory</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1724270693</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Explorern11.VehiclesWrecksExpanded</packageId>
+      <displayName>Vehicles Wrecks Expanded</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3299034372</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>tgbm.vve.secondary.weapons</packageId>
+      <displayName>VVE - Secondary Weapons</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3459650108</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Mlie.CustomPrisonerInteractions</packageId>
+      <displayName>Custom Prisoner Interactions</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2841231775</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>proxyer.dismantleancientjunk</packageId>
+      <displayName>Dismantle Ancient Junk</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2871064871</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>VehiclesWrecksExpanded.Revisited</packageId>
+      <displayName>Vehicles Wrecks Expanded - Revisited</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3348827283</steamWorkshopUrl>
+    </li>
+  </modDependencies>
   <loadAfter>
     <li>Ludeon.RimWorld</li>
+    <li>brrainz.harmony</li>
+    <li>SF.Grim.Reality</li>
+    <li>ilyvion.LoadingProgress</li>
+    <li>Ludeon.RimWorld.Royalty</li>
+    <li>Ludeon.RimWorld.Ideology</li>
+    <li>Ludeon.RimWorld.Biotech</li>
+    <li>Ludeon.RimWorld.Anomaly</li>
+    <li>Ludeon.RimWorld.Odyssey</li>
+    <li>adaptive.storage.framework</li>
+    <li>SmashPhil.VehicleFramework</li>
+    <li>imranfish.xmlextensions</li>
+    <li>UnlimitedHugs.HugsLib</li>
+    <li>OskarPotocki.VanillaFactionsExpanded.Core</li>
+    <li>Arylice.Rimworld.AutomaticStumpChopping</li>
+    <li>kittahkhan.grazeup</li>
+    <li>zal.calltradeships</li>
+    <li>LingLuo.MoveSteamGeyser</li>
+    <li>Og.AutomaticPowerSwitch</li>
+    <li>SR.ModRimworld.FactionalWarContinued</li>
+    <li>Mlie.XNDProfitableWeapons</li>
+    <li>XeoNovaDan.VisiblePants</li>
+    <li>SamBucher.ADogSaidAnimalProsthetics2</li>
+    <li>Adaptive.Ideology.Storage</li>
+    <li>Adaptive.PrimitiveStorage</li>
+    <li>Adaptive.SimpleStorage</li>
+    <li>LegendaryMinuteman.AgeRMechSerum</li>
+    <li>Mlie.AllMemoriesFade</li>
+    <li>Mlie.AllTurretsCanSetForcedTarget</li>
+    <li>UnlimitedHugs.AllowTool</li>
+    <li>Ingendum.AnimalApparelFramework</li>
+    <li>Ingendum.AnimalArmorVacBelt</li>
+    <li>avilmask.AnimalControls</li>
+    <li>GodlyAnnihilator.AnimalMedicalBed</li>
+    <li>overpl.AnimalSarcophagus</li>
+    <li>Fluffy.AnimalTab</li>
+    <li>ColossalFossil.AnimalsAreFunContinued</li>
+    <li>Oblitus.AnimalsLogic</li>
+    <li>zoarak.anomalyplat</li>
+    <li>com.bymarcin.ArchitectIcons</li>
+    <li>Mlie.AreaUnlocker</li>
+    <li>Broms.AsteroidMineralScanner</li>
+    <li>automatic.autolinks</li>
+    <li>Defi.AutoCutBlight</li>
+    <li>Mlie.BadCanBeGood</li>
+    <li>BinarySpark.CaravanDogs</li>
+    <li>Meltup.BeautifulOutdoors</li>
+    <li>bedrestforfoodpoisoning.1trickPonyta</li>
+    <li>AdamBucior.BetterElectronics</li>
+    <li>nephlite.advexplosions</li>
+    <li>RedMattis.BetterGeneInheritance</li>
+    <li>ArchieV.BetterWeight</li>
+    <li>Daria40K.BigLittleModPatch</li>
+    <li>Fuu.BloodAnimations</li>
+    <li>Defi.Blueprints.fork</li>
+    <li>Bos.MilkableAnimals</li>
+    <li>Memegoddess.BuildFromInventory</li>
+    <li>Buildable.Terrain</li>
+    <li>arakos.callatrader.acat</li>
+    <li>Mlie.CaptureThem</li>
+    <li>Mlie.CarryallsIntercontinentalTransport</li>
+    <li>Orion.CashRegister</li>
+    <li>kapitanoczywisty.changemapedge</li>
+    <li>void.charactereditor</li>
+    <li>CrashM.ColorCodedMoodBar.11</li>
+    <li>avilmask.CommonSense</li>
+    <li>Mlie.CompactWorkTab</li>
+    <li>arl85.CorpseInfo</li>
+    <li>GwinnBleidd.CraftableMountains</li>
+    <li>CaesarV6.DamageIndicators</li>
+    <li>Troopersmith1.DeathRattle</li>
+    <li>TheCafFiend.OverdoseDependencyFix</li>
+    <li>Garwel.DestroyItem</li>
+    <li>Mlie.DingOnGameLoaded</li>
+    <li>Xercaine.DoRecreationWhenIdle</li>
+    <li>MD.PrioritizeResearch</li>
+    <li>jecrell.doorsexpanded</li>
+    <li>Wolfcub05.DraftableAnimals</li>
+    <li>telardo.DragSelect</li>
+    <li>MemeGoddess.DualWield</li>
+    <li>Dubwise.DubsMintMenus</li>
+    <li>dubwise.dubsmintminimap</li>
+    <li>Dubwise.Rimatomics</li>
+    <li>Dubwise.DubsRimkit</li>
+    <li>EdB.PrepareCarefully</li>
+    <li>efficient.batteries</li>
+    <li>Mlie.EggIncubator</li>
+    <li>Cocaine.ElectricStonecuttingTable</li>
+    <li>Mlie.ExplosiveImplant</li>
+    <li>Aelanna.FistNerf</li>
+    <li>Mlie.FlickableStorage</li>
+    <li>Hawkwood.FloorsAreAlmostWorthless</li>
+    <li>Mlie.FoodPoisoningStackFix</li>
+    <li>zed.0xff.ForceXenogermImplantation</li>
+    <li>notfood.FrameRateControl</li>
+    <li>Xercaine.FueledCrematorium</li>
+    <li>zylle.Gemstones</li>
+    <li>MemeGoddess.GiddyUp</li>
+    <li>amunra.gmc</li>
+    <li>Albion.GoExplore</li>
+    <li>kongkim.GSingots</li>
+    <li>Arkymn.AgingVisuals</li>
+    <li>Mlie.GreyerMorals</li>
+    <li>Sirprook.HardenedArmor</li>
+    <li>Smuffle.HarvestOrgansPostMortem</li>
+    <li>Mlie.HarvestWhenButchering</li>
+    <li>jkluch.HaulToStack</li>
+    <li>Syrus.HMSChoice</li>
+    <li>Adamas.Hospital</li>
+    <li>FLASHPOINT55.HumanPowerGeneratorMod</li>
+    <li>Mlie.IClearlyHaveEnough</li>
+    <li>Zaf.InjectGene</li>
+    <li>Haecriver.InjuredCarry</li>
+    <li>Turnovus.Biotech.IntegratedGenes</li>
+    <li>kazepsi.irbm</li>
+    <li>Mlie.JustPutItOverThere</li>
+    <li>Linnun.KeepConverting</li>
+    <li>Mlie.LadiesCanFlirtToo</li>
+    <li>Mlie.LessStupidRomanceAttempt</li>
+    <li>Mlie.LiveWithThePain</li>
+    <li>amunra.lc</li>
+    <li>ASF.DeepStorage</li>
+    <li>ratys.madskills</li>
+    <li>m00nl1ght.MapPreview</li>
+    <li>Memegoddess.MealsOnWheels</li>
+    <li>cantaloupetheclown.MedicalIVsFork</li>
+    <li>rabiosus.minesight</li>
+    <li>erdelf.MinifyEverything</li>
+    <li>Haplo.Miscellaneous.Training</li>
+    <li>Burpee.MoreBeautifulBodies</li>
+    <li>AtamanDolinskaja.MoreCrashedShipParts</li>
+    <li>Mlie.MoreFactionInteraction</li>
+    <li>arl85.AnimalsAgeFilter</li>
+    <li>4loris4.MoreLinkables</li>
+    <li>KobeRiddle.MilkAndWoolPatches</li>
+    <li>zylle.MoreVanillaBiomes</li>
+    <li>hobtook.mortaraccuracy</li>
+    <li>ferny.moveyourmonolith</li>
+    <li>IssacZhuang.MuzzleFlash</li>
+    <li>ferny.NameYourEntities</li>
+    <li>zal.namesgalore</li>
+    <li>AmCh.NeedBarOverflow</li>
+    <li>amunra.nc</li>
+    <li>Unon.NoBurnMetal</li>
+    <li>cucumpear.cooties</li>
+    <li>Dark.NoHemogenFarmMedicalAlert</li>
+    <li>walkingproblem.noinfestation</li>
+    <li>eBae.NoQuestsWithoutComms</li>
+    <li>No.Royal.Clothing.Reqs</li>
+    <li>laura7z.noflares</li>
+    <li>sk.noprisonersympathy</li>
+    <li>avilmask.NonUnoPinata</li>
+    <li>Vesper.NotMyFault</li>
+    <li>io.github.cvrunmin.OrbitTradeNotOnlyGeneBank</li>
+    <li>Mehni.Numbers</li>
+    <li>Mlie.OffspringInheritXenogenes</li>
+    <li>Ogre.OgreStack</li>
+    <li>redundant.oopsallgenepacks</li>
+    <li>PackMulesExtended.Standard</li>
+    <li>turnovus.submod.backpacksarenotbelts</li>
+    <li>Mlie.PassItThroughTheWindow</li>
+    <li>fed1sPlay.PawnTargetFix</li>
+    <li>Owlchemist.PermeableTerrain</li>
+    <li>Mehni.PickUpAndHaul</li>
+    <li>Mlie.PlantGrowthSync</li>
+    <li>Mlie.PlasteelSurgery</li>
+    <li>co.uk.epicguru.rimforgepoles</li>
+    <li>tk421storm.PriorityTreatmentRessurected</li>
+    <li>Mlie.PrisonCommons</li>
+    <li>Mlie.PrisonerArena</li>
+    <li>Extracting.Organs.1.5</li>
+    <li>ocarina.prisonerjumpsuits</li>
+    <li>erdelf.PrisonerRansom</li>
+    <li>divineDerivative.PrisonerReading</li>
+    <li>Mlie.PrisonersDontHaveKeys</li>
+    <li>MadaraUchiha.PrisonersNeedRecruiting</li>
+    <li>Mlie.PrisonersShouldFearTurrets</li>
+    <li>Mlie.ProstheticDidgets</li>
+    <li>Mlie.ProstheticNoMissingBodyParts</li>
+    <li>DawnsGlow.qualcolor</li>
+    <li>hatti.qualitybuilder</li>
+    <li>Mlie.QuestionableEthicsEnhanced</li>
+    <li>Mlie.RealFactionGuest</li>
+    <li>Lucifer.RealisticRooms</li>
+    <li>ReBuild.COTR.DoorsAndCorners</li>
+    <li>Mlie.RecipeIcons</li>
+    <li>Mlie.RemoteDoors</li>
+    <li>Proxyer.RemovableMtRockRoofPatche</li>
+    <li>Memegoddess.ReplaceStuff</li>
+    <li>Spuffy.AnimaReplant</li>
+    <li>eheieh.researchtree</li>
+    <li>BDew.Restraints</li>
+    <li>temmie3754.retend.1</li>
+    <li>brrainz.rimbridgeserver</li>
+    <li>Dubwise.Rimefeller</li>
+    <li>rimfridge.kv.rw</li>
+    <li>nova.rimworldtogether</li>
+    <li>telardo.RomanceOnTheRim</li>
+    <li>MemeGoddess.RunAndGun</li>
+    <li>Mlie.SafelyHiddenAway</li>
+    <li>MemeGoddess.SearchAndDestroy</li>
+    <li>Mlie.SecretPassageDoors</li>
+    <li>FlyingSloth.SCFilthReducer</li>
+    <li>Mlie.ShitRimworldSays</li>
+    <li>Mlie.ShowMeYourHands</li>
+    <li>PeteTimesSix.SimpleSidearms</li>
+    <li>NightKosh.SlaveOutfitFix</li>
+    <li>Xercaine.Furniture.Small</li>
+    <li>Longman.SmallerRadiusForAnimaTreesAndShrines</li>
+    <li>Memegoddess.SmartMedicine</li>
+    <li>PureMJ.MjRimMods.SmartMeditation</li>
+    <li>denev.SmartTurretCovering</li>
+    <li>dhultgren.smarterconstruction</li>
+    <li>Mlie.SmarterVisitors</li>
+    <li>weilbyte.snapout</li>
+    <li>Krelinos.SocialEXPFromTrade</li>
+    <li>Albion.SparklingWorlds.Full</li>
+    <li>Mlie.SSLightningRod</li>
+    <li>ccyt.stargatesmod</li>
+    <li>Scherub.StonecuttingExtended</li>
+    <li>balistafreak.StopDropAndRoll</li>
+    <li>Mlie.StuffMassMatters</li>
+    <li>moistestWhale.stuffOnTablesForked</li>
+    <li>sov.det.surrogatemech</li>
+    <li>rabiosus.TakeCover</li>
+    <li>msd.tendyourself</li>
+    <li>GodlyAnnihilator.TheLowCooler</li>
+    <li>santa.titantreatment</li>
+    <li>Jaxe.ToggleHarvest</li>
+    <li>Meow.TradableMeals</li>
+    <li>Meow.TradableStoneBlocks</li>
+    <li>smashphil.dropspot</li>
+    <li>WindowsXP.TradeShipsNoMatterWhat</li>
+    <li>CarnySenpai.TraitRarityColors</li>
+    <li>archie.turrettargetpatch</li>
+    <li>Mlie.TVIsEducational</li>
+    <li>Mlie.TVForPrison</li>
+    <li>marvinkosh.ughyougotme</li>
+    <li>uglytogether.leeh</li>
+    <li>madarauchiha.undraftaftertucking</li>
+    <li>BlackFranky.UnsterilizeAnimals</li>
+    <li>dd.useyourgun</li>
+    <li>VanillaExpanded.VAPPE</li>
+    <li>VanillaExpanded.VAEAccessories</li>
+    <li>VanillaExpanded.VARME</li>
+    <li>PureMJ.MjRimMods.VanillaFixHaulAfterSlaughter</li>
+    <li>VanillaExpanded.VFEFactory</li>
+    <li>vanillaexpanded.gravship</li>
+    <li>VanillaExpanded.VHE</li>
+    <li>OskarPotocki.VanillaVehiclesExpanded</li>
+    <li>VanillaExpanded.VWENL</li>
+    <li>Mlie.VariousSpaceShipChunk</li>
+    <li>SickBoyWi.Vault.OnePointOne</li>
+    <li>Mlie.WalkableSolarPanels</li>
+    <li>Xercaine.WallHeater</li>
+    <li>Xercaine.WallOrbitalTradeBeacon</li>
+    <li>Xercaine.WallTelevisions</li>
+    <li>Xercaine.WallVitalsMonitor</li>
+    <li>Mersid.WCE2Updated.Core</li>
+    <li>vin.warehouse.storage</li>
+    <li>PureMJ.MjRimMods.WhileYouAreNearby</li>
+    <li>Tixiv.WhoShotMyLegOff</li>
+    <li>RedMattis.BetterConversion</li>
+    <li>Spacemoth.YouDriveISleep</li>
+    <li>Mlie.ZoneToSchedule</li>
+    <li>Endy.Airtightgarage</li>
+    <li>sarg.alphavehiclesageofsail</li>
+    <li>Ingendum.AnimalArmorBasic</li>
+    <li>mireia.bodies</li>
+    <li>Orion.Gastronomy</li>
+    <li>Orion.Hospitality</li>
+    <li>kikohi.jewelry</li>
+    <li>Troopersmith1.LifeSupport</li>
+    <li>avius.locks</li>
+    <li>Heremeus.MedicalDissection</li>
+    <li>Smxrez.nonlethalreexamined</li>
+    <li>gy.ppextend</li>
+    <li>Rebuild.Embrasures</li>
+    <li>Deadmano.ReplaceStuffCoolerVentPlacementFix</li>
+    <li>avilmask.ResearchWhatever</li>
+    <li>SirVan.MiscTrainingRetexture</li>
+    <li>vanillaexpanded.gravship2</li>
+    <li>OskarPotocki.VanillaVehiclesExpandedTier3</li>
+    <li>OskarPotocki.VanillaVehiclesExpandedUpgrades</li>
+    <li>FrozenSnowFox.FrozenSnowFoxTweaks</li>
+    <li>gatoviejo.hospitality.invitetostay</li>
+    <li>Adamas.Storefront</li>
+    <li>AgentBlac.MakePawnsPrisoners</li>
+    <li>avius.prisonlabor</li>
+    <li>LegendaryMinuteman.SimpleIvory.fork</li>
+    <li>Explorern11.VehiclesWrecksExpanded</li>
+    <li>tgbm.vve.secondary.weapons</li>
+    <li>Mlie.CustomPrisonerInteractions</li>
+    <li>proxyer.dismantleancientjunk</li>
+    <li>VehiclesWrecksExpanded.Revisited</li>
   </loadAfter>
-  <description>Development build 0.12.75-dev. Gameplay acceptance is pending; this is not a finished campaign release.
+  <description>Development build 0.12.76-dev. Gameplay acceptance is pending; this is not a finished campaign release.
 
 Rimrooms - Async Industries is a company-management campaign about an authorised research branch that investigates, contains and profits from unstable spaces beyond a gate.
 
@@ -44,7 +1805,11 @@ Your colonists work across a gate the way they work anywhere: hauling, construct
 
 --- REQUIREMENTS ---
 
-Core only. Royalty, Ideology, Biotech, Anomaly and Odyssey are optional and used when present. No Harmony, no dependencies.
+This build is authored against a specific collection and declares every member of it as a dependency, so your mod manager can tell you what is missing instead of letting the game fail later: RimWorld - Royalty, Ideology, Biotech, Anomaly and Odyssey, and the 289 mods loaded alongside them.
+
+Load this mod last. Every dependency is declared with loadAfter as well as being a requirement, so a sorting manager will place it correctly on its own.
+
+Nothing here is patched through Harmony. Content from another mod is looked up by name and never assumed, so a missing one degrades what depends on it rather than throwing.
 
 Original Backrooms menu backgrounds show the mod title and loaded version beside the native version information.</description>
 </ModMetaData>

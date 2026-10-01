@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -245,7 +245,15 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
             return false;
         }
 
-        private static List<Thing> RepairableOn(Map map, Faction faction)
+        /// <summary>
+        /// Core's own repairable list for a named map and faction.
+        ///
+        /// **Internal rather than private because the clear squad calls it.** *"fix broken walls
+        /// and equipment"* needs the set of damaged player buildings, and this is already the
+        /// mod's single wrapper for the question. A second hand-rolled scan would be a second
+        /// derivation of a rule Core owns, which is the defect this project keeps meeting.
+        /// </summary>
+        internal static List<Thing> RepairableOn(Map map, Faction faction)
         {
             if (map.listerBuildingsRepairable == null || faction == null) { return null; }
             return map.listerBuildingsRepairable.RepairableBuildings(faction);
