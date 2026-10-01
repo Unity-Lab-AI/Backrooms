@@ -344,28 +344,24 @@ It should not appear, because the conduits are laid last now — but it is a war
   `proof-coordinate-layout.py` keeps a `code()` view; `proof-generation-batch.py` strips comments.
 * **Use the Write tool.** A heredoc mangled an escaped newline for the **eleventh** time.
 
-## STATE AT THIS HANDOFF — `0.12.77-dev`, BUILT AND NOT YET STAGED
+## STATE AT THIS HANDOFF — `0.12.77-dev`, STAGED AND VERIFIED
 
 ```
-built       Rimrooms.AsyncIndustries  0.12.77-dev  92 files
+staged      Rimrooms.AsyncIndustries  0.12.77-dev  92 files
 assembly    5E87D3842B559E8ABCF44654D2178923D39D8EBE2A7D9F9D36A4FCAB441E39CC
-            measured after the version bump, reproduced by two clean rebuilds
+            read back out of the game folder after staging, not from the build
+package     294 declared dependencies, and the description names the wiki
 battery     16 checkers - 49 proofs - 20 plant suites - 752 anchors
             new suite: 12 of 12
 tree        no planted fault, porcelain 0
 ```
 
-### ⚠ STAGING IS PENDING AND THAT IS THE FIRST THING TO DO
+**Staging refused on the first attempt** -- *"Close RimWorld before staging a new DLL"* -- because
+the owner had the game open with 3.8 GB resident. They authorised closing it: *"saves dont matter
+shits getting remade they are always trash tests"*. `RimWorldWin64.exe` was stopped, the package
+staged, and the hash read back out of the game folder matches the build.
 
-`tools/stage-mod.ps1` **refused**: *"Close RimWorld before staging a new DLL."* The owner had the
-game open. **The owner's fix is in this build and not in their game folder yet.** Re-run staging
-once RimWorld is closed:
-
-```
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
-```
-
-Then read the hash back out of the game folder and confirm it matches the line above.
+**Refresh local mods in RimSort before launching.** The staged copy is current at this checkpoint.
 
 ### ONE BATTERY WAS THE WHOLE RESERVE
 
