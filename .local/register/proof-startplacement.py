@@ -447,6 +447,12 @@ def unsupported_roof(rooms, pillars=frozenset()):
                     walls.add((cx, cz))
                 elif is_roofed:
                     roofed.add((cx, cz))
+                else:
+                    # **A LATER ROOM WITH `roofed: false` CLEARS what an earlier one laid**, which
+                    # is what the generator does and what makes the breezeway possible: the
+                    # generators sit under open sky inside a walled, doored room. A model that
+                    # only skipped would call the breezeway roofed and then demand support for it.
+                    roofed.discard((cx, cz))
     # **A COLUMN IS A WALL, and it holds a roof up exactly as the perimeter does.** `pillars`
     # was added to the start schema at 0.12.73-dev *because* this claim refused a twenty-cell-wide
     # gate hall, and a model that ignored them would go on refusing a layout that is now correct.

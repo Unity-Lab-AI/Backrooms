@@ -27,6 +27,8 @@ For every `RimroomsStartDef` in the package:
   * **every building's full footprint** -- resolved from Core's own `<size>`, with ParentName
     inheritance -- lies on room interior cells, never on a wall, a door or another building,
   * every column stands on a free interior cell, never on a door or under furniture,
+  * **every interaction cell is a standable interior cell**, so a bench or console can
+    actually be used -- Core requires a pawn to stand on exactly that cell,
   * every conduit cell is inside the layout's own extent,
   * the arrival, stock and emergence cells are interior cells, and the emergence cell is a door,
   * no room's wall runs through another room's interior.
@@ -86,6 +88,8 @@ def thing_sizes(core: str) -> dict:
                     "size": node.findtext("size"),
                     "parent": node.get("ParentName"),
                     "abstract": node.get("Abstract") == "True",
+                    "interaction": node.findtext("interactionCellOffset"),
+                    "hasInteraction": node.findtext("hasInteractionCell"),
                 }
                 for handle in filter(None, [node.findtext("defName"), node.get("Name")]):
                     by_name[handle] = record
@@ -108,13 +112,71 @@ def size_of(name: str, sizes: dict) -> tuple:
     return 1, 1
 
 
-def occupied(cell: tuple, rotation: int, size: tuple) -> list:
-    """Core's GenAdj.OccupiedRect, for the rotations a start may author."""
+def adjust_for_rotation(cell, size, rotation):
+    """Core's `GenAdj.AdjustForRotation`, which shifts the centre of an even-dimension building.
+
+    **This was missing and it mattered.** A 3x2 comms console at rotation South does NOT occupy
+    the two rows north of its position: `size.z % 2 == 0` so Core moves the centre one cell south
+    first. Without this the console the owner placed against the viewing glass read as overlapping
+    the glass, and the only reason that was caught is that the game had already accepted it.
+
+    Decompiled from the installed 1.6 assembly rather than remembered -- reasoning from memory
+    about Core is what produced the wrong answer twice today.
+    """
     width, height = size
     if rotation % 2 == 1:
         width, height = height, width
-    min_x = cell[0] - (width - 1) // 2
-    min_z = cell[1] - (height - 1) // 2
+    shift = {0: (0, 0), 1: (0, -1), 2: (-1, -1), 3: (-1, 0)}[rotation % 4]
+    x, z = cell
+    if not (size[0] == 1 and size[1] == 1):
+        if width % 2 == 0:
+            x += shift[0]
+        if height % 2 == 0:
+            z += shift[1]
+    return (x, z), (width, height)
+
+
+def interaction_cell(cell, offset, rotation):
+    """Core's `ThingUtility.InteractionCellWhenAt`: the position plus the offset, rotated."""
+    ox, oz = offset
+    rotation %= 4
+    if rotation == 0:
+        dx, dz = ox, oz
+    elif rotation == 1:
+        dx, dz = oz, -ox
+    elif rotation == 2:
+        dx, dz = -ox, -oz
+    else:
+        dx, dz = -oz, ox
+    return (cell[0] + dx, cell[1] + dz)
+
+
+def interaction_of(name: str, sizes: dict):
+    """(offset, True) when this def has an interaction cell, else (None, False)."""
+    seen = set()
+    cursor = name
+    offset = None
+    has = False
+    while cursor and cursor in sizes and cursor not in seen:
+        seen.add(cursor)
+        record = sizes[cursor]
+        if offset is None and record.get("interaction"):
+            numbers = re.findall(r"-?\d+", record["interaction"])
+            if len(numbers) >= 3:
+                offset = (int(numbers[0]), int(numbers[2]))
+            elif len(numbers) == 2:
+                offset = (int(numbers[0]), int(numbers[1]))
+        if record.get("hasInteraction") and record["hasInteraction"].strip().lower() == "true":
+            has = True
+        cursor = record["parent"]
+    return offset, has
+
+
+def occupied(cell: tuple, rotation: int, size: tuple) -> list:
+    """Core's `GenAdj.OccupiedRect`, rotation adjustment included."""
+    (cx, cz), (width, height) = adjust_for_rotation(cell, size, rotation)
+    min_x = cx - (width - 1) // 2
+    min_z = cz - (height - 1) // 2
     return [(x, z) for x in range(min_x, min_x + width) for z in range(min_z, min_z + height)]
 
 
@@ -267,6 +329,19 @@ def check_start(node, sizes: dict) -> None:
             fail("%s: building %r is not a Core def -- a ThingDef field cannot resolve it safely"
                  % (label, thing))
             continue
+        # **A BENCH WHOSE INTERACTION CELL IS A WALL CAN NEVER BE USED**, and the owner's whole
+        # gate saga was a console they could not staff. `IsOperatorOnStation` requires the pawn to
+        # stand on exactly that cell, so a layout that puts it in a wall makes the gate
+        # unopenable with nothing on screen to explain it.
+        offset, has_interaction = interaction_of(thing, sizes)
+        if has_interaction and offset is not None:
+            spot = interaction_cell(cell, offset, rotation)
+            if spot in walls:
+                fail("%s: %s at %s has its interaction cell on the wall %s -- nobody can ever "
+                     "stand there to use it" % (label, thing, cell, spot))
+            elif spot not in interiors:
+                fail("%s: %s at %s has its interaction cell at %s, outside every room"
+                     % (label, thing, cell, spot))
         for occupied_cell in occupied(cell, rotation, size_of(thing, sizes)):
             if occupied_cell in walls:
                 fail("%s: %s at %s covers the wall cell %s -- the generator throws here"

@@ -72,12 +72,16 @@ for path in glob.glob(os.path.join(MOD, "Defs", "RimroomsStartDefs", "*.xml")):
             continue
         rooms = []
         for room in (node.find("rooms") or []):
+            # The roofed flag comes along now: it is load-bearing for the breezeway, which is
+            # the only unroofed room in the facility and the reason the generators can vent.
             rooms.append((int(room.findtext("x")), int(room.findtext("z")),
-                          int(room.findtext("width")), int(room.findtext("height"))))
+                          int(room.findtext("width")), int(room.findtext("height")),
+                          (room.findtext("roofed") or "true").strip().lower() != "false"))
         doors = [cell(li.text) for li in (node.find("doors") or [])]
         buildings = []
         for plan in (node.find("buildings") or []):
-            buildings.append((plan.findtext("thing"), cell(plan.findtext("cell"))))
+            buildings.append((plan.findtext("thing"), cell(plan.findtext("cell")),
+                              int(plan.findtext("rotation") or "0")))
         starts.append({
             "defName": node.findtext("defName"),
             "mapSize": int(node.findtext("mapSize") or "60"),
@@ -181,7 +185,7 @@ for start in starts:
     #    two rooms must not share a wall CELL.
     walls, interior, floors = set(), set(), set()
     overlap_fault = []
-    for (x, z, w, h) in start["rooms"]:
+    for (x, z, w, h, _roofed) in start["rooms"]:
         check("%s room %d,%d is at least 3x3" % (name, x, z), w >= 3 and h >= 3)
         check("%s room %d,%d fits the map" % (name, x, z),
               0 <= x and 0 <= z and x + w - 1 < size and z + h - 1 < size,
@@ -248,10 +252,30 @@ for start in starts:
 
     # Buildings must not sit on a wall, and must not sit on each other.
     taken = {}
-    for thing, origin in start["buildings"]:
+    for thing, origin, rotation in start["buildings"]:
         sx, sz = sizes.get(thing, (1, 1))
-        minx = origin[0] - (sx - 1) // 2
-        minz = origin[1] - (sz - 1) // 2
+        # **CORE MOVES THE CENTRE OF AN EVEN-DIMENSION BUILDING BEFORE TAKING THE RECT.**
+        # `GenAdj.AdjustForRotation`, decompiled from the installed 1.6 assembly: for a rotation
+        # other than north it swaps the axes if horizontal and then, if a dimension is even,
+        # shifts the centre by one. So a 3x2 comms console facing SOUTH occupies the two rows at
+        # and below its position, not above it.
+        #
+        # **This was the third copy of that rule in this repository** -- checker sixteen and the
+        # facility generator had the same gap -- and all three said the owner's console overlapped
+        # the viewing glass it is actually sitting against. Three derivations of one Core rule is
+        # the defect this project keeps meeting; these are now the same arithmetic in three
+        # places, each citing the decompiled source.
+        ax, az = origin
+        if not (sx == 1 and sz == 1):
+            if rotation % 2 == 1:
+                sx, sz = sz, sx
+            shift = {0: (0, 0), 1: (0, -1), 2: (-1, -1), 3: (-1, 0)}[rotation % 4]
+            if sx % 2 == 0:
+                ax += shift[0]
+            if sz % 2 == 0:
+                az += shift[1]
+        minx = ax - (sx - 1) // 2
+        minz = az - (sz - 1) // 2
         for cx in range(minx, minx + sx):
             for cz in range(minz, minz + sz):
                 if (cx, cz) in walls:
@@ -294,7 +318,7 @@ for start in starts:
             seen.add(nxt)
             queue.append(nxt)
 
-    for (x, z, w, h) in start["rooms"]:
+    for (x, z, w, h, _roofed) in start["rooms"]:
         if w < 3 or h < 3:
             continue
         inner = {(cx, cz) for cx in range(x + 1, x + w - 1) for cz in range(z + 1, z + h - 1)}
@@ -615,6 +639,102 @@ check("AND THE HEADQUARTERS POWER REBUILD CAN NO LONGER COST THE START",
       "-- this was bare inside a GenStep, which is exactly the shape that cost two launches in "
       "the destination generator. A facility that resolves its net one tick late is playable; one "
       "that does not exist is a dead game")
+
+# ------------------------------------- a ramp is not an open connection
+# Owner, 2026-10-01: *"every check mark is complete but it still says: the lab connection to that
+# address is not connected.. but the checked staps says otherwise"*. Step 11 read
+# `IsOpening || IsSpinningUp`, so pressing "open a session" ticked all eleven while the connection
+# was still ramping -- and `PortalTravelService` then refused the crossing with
+# `RR_PortalTravel_SessionClosed`, **which was true**. The tick was the thing that was wrong.
+check("A RAMPING CONNECTION DOES NOT COUNT AS AN OPEN ONE",
+      "Done = haveGate && gate.IsOpening," in _steps
+      and "bool ramping = haveGate && gate.IsSpinningUp;" in _steps
+      and "(gate.SpinUpProgress * 100f).ToString(\"F0\")" in _steps
+      # **THE BRANCH, not the flag and the key.** This asserted that `ramping` was computed and
+      # that the keyed string existed; a plant setting `How = false` left both true and the ramp
+      # never reported its progress again. **Ninth instance of machinery-not-behaviour**, and the
+      # plant caught the claim rather than the other way round.
+      and ("                How = ramping" + chr(10)
+           + '                    ? "RR_Steps_11HowRamping".Translate(') in _steps
+      # The old disjunction is GONE, not merely bypassed.
+      and "gate.IsOpening || gate.IsSpinningUp" not in _steps,
+      "-- `IsSpinningUp` is defined as `!IsOpening`, so they are distinct states and the step says "
+      "which one it is in, with the live percentage. The ramp is work and it bleeds back down if "
+      "the operator leaves, which is the one thing a player watching it needs told")
+
+check("AND THE LIST SAYS WHAT TO DO ONCE IT IS OPEN",
+      '"RR_Steps_NowCross".Translate()' in _steps
+      and "if (gate != null && gate.IsOpening)" in _steps,
+      "-- the eleven checks end at a live connection and the player's goal is on the far side of "
+      "it. Nothing said *now send somebody*, which is why a completed list still left the owner "
+      "asking what they were missing")
+
+# ------------------------------- Core moves the centre of an even-dimension building
+check("THE FOOTPRINT MODEL APPLIES CORE'S ROTATION ADJUSTMENT",
+      "{0: (0, 0), 1: (0, -1), 2: (-1, -1), 3: (-1, 0)}" in
+      io.open(os.path.join(REPO, "tools", "check-start-layout.py"), encoding="utf-8").read()
+      and "{0: (0, 0), 1: (0, -1), 2: (-1, -1), 3: (-1, 0)}" in
+      io.open(os.path.join(REPO, ".local", "register", "build-async-facility.py"),
+              encoding="utf-8").read(),
+      "-- `GenAdj.AdjustForRotation` swaps the axes for a horizontal rotation and then shifts the "
+      "centre by one for an even dimension, so a 3x2 console facing SOUTH occupies the rows at "
+      "and BELOW its position. **Three copies of this rule disagreed with Core** and all three "
+      "said the owner's console overlapped the glass it is sitting against")
+
+_layout_checker = io.open(os.path.join(REPO, "tools", "check-start-layout.py"),
+                          encoding="utf-8").read()
+check("AND A BENCH WHOSE INTERACTION CELL IS A WALL IS REFUSED",
+      # **THE CALL, not the words in it.** This asserted the message text appeared in the file,
+      # and a plant that commented the whole `fail(...)` out left the words sitting in a comment.
+      # Forty-fifth instance of the scoping trap, and again a plant caught the claim.
+      ("            if spot in walls:" + chr(10)
+       + '                fail("%s: %s at %s has its interaction cell on the wall %s')
+      in _layout_checker
+      and "def interaction_cell(" in _layout_checker,
+      "-- `IsOperatorOnStation` requires the pawn to stand on exactly that cell. **The rule found "
+      "a real defect the day it was written**: the Furniture Store's comms console had its "
+      "interaction cell in the staff room's north wall, so it had never been usable -- and "
+      "reaching the corporation is that scenario's whole achievement")
+
+# ---------------------------------------- the power room and the breezeway
+# Owner: *"actuall make onbe of the rooms a power room and where the generators are should be a
+# breeze way thats unroffeced area complete just that area they are in thats inclose by walls and
+# doors"*, and *"generators out side batteries inside"*.
+_async = [s for s in starts if s["defName"] == "RR_AsyncIndustriesStart"][0]
+_rooms = {(r[0], r[1]): r for r in _async["rooms"]}
+check("ROOFED FALSE CLEARS A ROOF RATHER THAN SKIPPING IT",
+      "map.roofGrid.SetRoof(cell, room.roofed ? RoofDefOf.RoofConstructed : null);" in
+      io.open(os.path.join(SRC, "RimroomsAsyncIndustries", "Scenario",
+                           "GenStep_Headquarters.cs"), encoding="utf-8-sig").read(),
+      "-- every room is nested inside a roofed compound, so a nested room asking for no roof got "
+      "one anyway from the pass that ran first. `roofed: false` was meaningless for exactly the "
+      "case it is needed in")
+
+check("THE GENERATORS STAND IN A WALLED, DOORED, UNROOFED BREEZEWAY",
+      (22, 34) in _rooms and _rooms[(22, 34)][4] is False
+      and any(thing == "WoodFiredGenerator" and 23 <= origin[0] <= 26 and 35 <= origin[1] <= 40
+              for thing, origin, _rot in _async["buildings"])
+      and (22, 37) in [tuple(d) for d in _async["doors"]],
+      "-- *\"generators out side batteries inside\"*. A fuel generator in a sealed room cooks the "
+      "room; venting it to the sky while keeping it inside the compound is what a breezeway is "
+      "for. It is the only unroofed room in the facility and it has a door like any other")
+
+check("and the batteries are inside, in a power room of their own",
+      (22, 25) in _rooms and _rooms[(22, 25)][4] is True
+      and sum(1 for thing, origin, _rot in _async["buildings"]
+              if thing == "Battery" and 23 <= origin[0] <= 26 and 26 <= origin[1] <= 31) >= 4
+      and not any(thing == "Battery" and origin[0] >= 29 for thing, origin, _rot
+                  in _async["buildings"]),
+      "-- the bank moved out of the control room, which is where it was only because the first "
+      "authoring had nowhere better to put it")
+
+check("AND THE OWNER'S OWN POSITIONS ARE WHERE THE OWNER PUT THEM",
+      any(thing == "CommsConsole" and origin == (32, 33) and rot == 2
+          for thing, origin, rot in _async["buildings"])
+      and any(thing == "TableMachining" and origin == (45, 33)
+              for thing, origin, _rot in _async["buildings"]),
+      "-- read out of `Autosave-3.rws` and converted by the layout offset of (120,120) on their "
+      "300-cell map. *\"thats where i want them so fix there spawn position\"*")
 
 print("")
 if failures:

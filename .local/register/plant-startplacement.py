@@ -81,6 +81,53 @@ def _rr_restore(path, original):
 
 
 PLANTS = [
+    # ------------------- a ramp is not an open connection, and the facility's power
+    ("A RAMPING CONNECTION COUNTS AS OPEN AGAIN", STEPS,
+     "                Done = haveGate && gate.IsOpening,",
+     "                Done = haveGate && (gate.IsOpening || gate.IsSpinningUp),", STARTS_PROOF),
+
+    ("the ramp stops reporting its progress", STEPS,
+     "                How = ramping" + CHR_NL
+     + '                    ? "RR_Steps_11HowRamping".Translate(',
+     "                How = false" + CHR_NL
+     + '                    ? "RR_Steps_11HowRamping".Translate(', STARTS_PROOF),
+
+    ("THE LIST STOPS SAYING HOW TO SEND SOMEBODY THROUGH", STEPS,
+     '            { listing.Label("RR_Steps_NowCross".Translate()); }',
+     "            { }", STARTS_PROOF),
+
+    ("CORE'S ROTATION ADJUSTMENT IS DROPPED FROM THE CHECKER",
+     "tools/check-start-layout.py",
+     "    shift = {0: (0, 0), 1: (0, -1), 2: (-1, -1), 3: (-1, 0)}[rotation % 4]",
+     "    shift = {0: (0, 0), 1: (0, 0), 2: (0, 0), 3: (0, 0)}[rotation % 4]", STARTS_PROOF),
+
+    ("the interaction-cell rule goes", "tools/check-start-layout.py",
+     '                fail("%s: %s at %s has its interaction cell on the wall %s'
+     ' -- nobody can ever "',
+     '                pass  # ("%s: %s at %s has its interaction cell on the wall %s'
+     ' -- nobody can ever "', STARTS_PROOF),
+
+    ("ROOFED FALSE GOES BACK TO MERELY SKIPPING", GEN,
+     "                        map.roofGrid.SetRoof(cell, room.roofed ? RoofDefOf.RoofConstructed : null);",
+     "                        if (room.roofed) { map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed); }",
+     STARTS_PROOF),
+
+    ("THE BREEZEWAY GETS A ROOF OVER THE GENERATORS", STARTS,
+     "      <li><x>22</x><z>34</z><width>6</width><height>8</height><roofed>false</roofed><floor>true</floor></li>",
+     "      <li><x>22</x><z>34</z><width>6</width><height>8</height><roofed>true</roofed><floor>true</floor></li>",
+     STARTS_PROOF),
+
+    ("the breezeway loses its door, so it stops being a room", STARTS,
+     "      <li>(22, 0, 37)</li>" + CHR_NL, "", STARTS_PROOF),
+
+    ("THE CONSOLE MOVES OFF WHERE THE OWNER PUT IT", STARTS,
+     "      <li><thing>CommsConsole</thing><cell>(32, 0, 33)</cell><rotation>2</rotation></li>",
+     "      <li><thing>CommsConsole</thing><cell>(32, 0, 27)</cell></li>", STARTS_PROOF),
+
+    ("the assembly bench moves off where the owner put it", STARTS,
+     "      <li><thing>TableMachining</thing><cell>(45, 0, 33)</cell></li>",
+     "      <li><thing>TableMachining</thing><cell>(41, 0, 16)</cell></li>", STARTS_PROOF),
+
     # ---------------------------- the numbered checks, the refusals, and the facility
     ("THE NUMBERED CHECKS STOP BEING DRAWN", TABS,
      "            DrawGateStartupChecks(listing, campaign);" + CHR_NL, "", STARTS_PROOF),

@@ -224,6 +224,16 @@ namespace RimroomsAsyncIndustries.Scenario
         public int z;
         public int width;
         public int height;
+        /// <summary>
+        /// Whether this room is roofed. **It sets or clears, in authored order.**
+        ///
+        /// Rooms are nested inside a compound rectangle, so a later room with `roofed: false`
+        /// cuts a hole in the roof an earlier one laid. That is what makes a breezeway possible:
+        /// owner direction, 2026-10-01, *"where the generators are should be a breeze way thats
+        /// unroffeced area complete just that area they are in thats inclose by walls and
+        /// doors"*. Before 0.12.74-dev this only skipped, so a nested room could never be open to
+        /// the sky.
+        /// </summary>
         public bool roofed = true;
         public bool floor = true;
         public CellRect Rect { get { return new CellRect(x, z, width, height); } }

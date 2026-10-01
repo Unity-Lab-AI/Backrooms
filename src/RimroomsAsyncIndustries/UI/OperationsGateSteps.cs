@@ -86,6 +86,13 @@ namespace RimroomsAsyncIndustries.UI
                     : "RR_Steps_LineToDo".Translate(step.Number.ToString(), step.Label, step.How).ToString());
             }
 
+            // **AND WHAT TO DO ONCE IT IS OPEN**, because the eleven checks end at a live
+            // connection and the player's actual goal is on the far side of it. Nothing in the
+            // list said *now send somebody*, which is why a completed list still left the owner
+            // asking what they were missing.
+            if (gate != null && gate.IsOpening)
+            { listing.Label("RR_Steps_NowCross".Translate()); }
+
             // A fault is not a step: it is something that was done and has since gone wrong, and
             // it blocks every remaining one. Said after the list so it reads as a problem rather
             // than as the next thing to do.
@@ -202,12 +209,28 @@ namespace RimroomsAsyncIndustries.UI
                 How = "RR_Steps_10How".Translate(),
             });
 
+            // **A RAMP IS NOT AN OPEN CONNECTION, and conflating them was a defect.** This read
+            // `IsOpening || IsSpinningUp`, so the moment a player pressed "open a session" every
+            // one of the eleven checks showed complete -- and then `PortalTravelService` refused
+            // the crossing with *"the laboratory connection for that address is not open"*,
+            // because it is not. Owner: *"every check mark is complete but it still says: the lab
+            // connection to that address is not connected.. but the checked staps says
+            // otherwise"*. **They were reading a tick that was wrong.**
+            //
+            // `IsSpinningUp` is explicitly `!IsOpening`, so the ramp is a distinct state and the
+            // step says which one it is in, with the live percentage the portal panel already
+            // shows. Opening is work and it **bleeds back down** if the operator leaves, which is
+            // the one thing a player watching a progress bar needs told.
+            bool ramping = haveGate && gate.IsSpinningUp;
             steps.Add(new GateStep
             {
                 Number = 11,
                 Label = "RR_Steps_11Label".Translate(),
-                Done = haveGate && (gate.IsOpening || gate.IsSpinningUp),
-                How = "RR_Steps_11How".Translate(),
+                Done = haveGate && gate.IsOpening,
+                How = ramping
+                    ? "RR_Steps_11HowRamping".Translate(
+                        (gate.SpinUpProgress * 100f).ToString("F0")).ToString()
+                    : "RR_Steps_11How".Translate().ToString(),
             });
             return steps;
         }

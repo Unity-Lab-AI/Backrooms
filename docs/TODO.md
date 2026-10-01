@@ -2261,6 +2261,39 @@ player who never saw that gizmo has two components quietly refusing.
 
 ---
 
+## A ramp is not an open connection, and the power room - 2026-10-01 (0.12.74-dev) - DONE
+
+Owner, verbatim:
+
+> **"check the game last notices every check mark is complete but it still says:  the lab
+> connection to that address is not connected.. but the checked staps says otherwise.. i see the
+> glow and all boxes where done"**
+
+> **"and do u see where i moved the comms to and the machining bench thats where i want them so
+> fix there spawn position"**
+
+> **"and actuall make onbe of the rooms a power room and where the generators are should be a
+> breeze way thats unroffeced area complete just that area they are in thats inclose by walls and
+> doors"**
+
+> **"generators out side batteries inside"**
+
+- [x] **"every check mark is complete but it still says: the lab connection to that address is not
+  connected.. but the checked staps says otherwise"** - **the tick was wrong, and it was mine.**
+  Step 11 read `IsOpening || IsSpinningUp`, so pressing *open a session* completed all eleven while
+  the connection was only ramping, and `PortalTravelService` then refused the crossing with
+  `RR_PortalTravel_SessionClosed` - which was true
+- [x] **"i see the glow and all boxes where done"**
+- [x] **"do u see where i moved the comms to and the machining bench thats where i want them so
+  fix there spawn position"** - read out of `Autosave-3.rws` and converted by the layout offset of
+  (120,120) on their 300-cell map: console **(32, 33) facing south**, assembly bench **(45, 33)**
+- [x] **"actuall make onbe of the rooms a power room"**
+- [x] **"where the generators are should be a breeze way thats unroffeced area complete just that
+  area they are in thats inclose by walls and doors"**
+- [x] **"generators out side batteries inside"**
+
+---
+
 ## TOMBSTONES
 
 _(none)_

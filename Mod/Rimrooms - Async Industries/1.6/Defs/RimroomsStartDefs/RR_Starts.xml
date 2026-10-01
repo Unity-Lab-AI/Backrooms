@@ -79,6 +79,10 @@
       <li><x>8</x><z>34</z><width>11</width><height>9</height><roofed>true</roofed><floor>true</floor></li>
       <!-- archive -->
       <li><x>8</x><z>43</z><width>11</width><height>8</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- powerroom -->
+      <li><x>22</x><z>25</z><width>6</width><height>8</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- breezeway -->
+      <li><x>22</x><z>34</z><width>6</width><height>8</height><roofed>false</roofed><floor>true</floor></li>
     </rooms>
     <doors>
       <li>(8, 0, 24)</li>
@@ -94,6 +98,8 @@
       <li>(18, 0, 29)</li>
       <li>(18, 0, 38)</li>
       <li>(18, 0, 46)</li>
+      <li>(22, 0, 29)</li>
+      <li>(22, 0, 37)</li>
       <li>(21, 0, 19)</li>
       <li>(23, 0, 19)</li>
       <li>(35, 0, 19)</li>
@@ -146,9 +152,8 @@
       <li>(42, 0, 44)</li>
     </pillars>
     <buildings>
-      <li><thing>CommsConsole</thing><cell>(32, 0, 27)</cell></li>
-      <li><thing>Battery</thing><cell>(36, 0, 27)</cell><batteryFraction>0.6</batteryFraction></li>
-      <li><thing>Battery</thing><cell>(38, 0, 27)</cell><batteryFraction>0.6</batteryFraction></li>
+      <li><thing>CommsConsole</thing><cell>(32, 0, 33)</cell><rotation>2</rotation></li>
+      <li><thing>TableMachining</thing><cell>(45, 0, 33)</cell></li>
       <li><thing>Table1x2c</thing><stuff>WoodLog</stuff><cell>(45, 0, 27)</cell></li>
       <li><thing>DiningChair</thing><stuff>WoodLog</stuff><cell>(44, 0, 27)</cell></li>
       <li><thing>DiningChair</thing><stuff>WoodLog</stuff><cell>(46, 0, 27)</cell></li>
@@ -163,7 +168,6 @@
       <li><thing>StandingLamp</thing><cell>(46, 0, 46)</cell></li>
       <li><thing>Heater</thing><cell>(33, 0, 37)</cell></li>
       <li><thing>Heater</thing><cell>(44, 0, 37)</cell></li>
-      <li><thing>TableMachining</thing><cell>(41, 0, 16)</cell></li>
       <li><thing>ElectricSmithy</thing><cell>(46, 0, 16)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(39, 0, 21)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(42, 0, 21)</cell></li>
@@ -225,9 +229,14 @@
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 48)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 48)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(16, 0, 48)</cell></li>
-      <li><thing>WoodFiredGenerator</thing><cell>(21, 0, 27)</cell><fuelFraction>0.5</fuelFraction></li>
-      <li><thing>WoodFiredGenerator</thing><cell>(25, 0, 27)</cell><fuelFraction>0.5</fuelFraction></li>
-      <li><thing>HorseshoesPin</thing><stuff>Steel</stuff><cell>(23, 0, 33)</cell></li>
+      <li><thing>Battery</thing><cell>(23, 0, 27)</cell><batteryFraction>0.6</batteryFraction></li>
+      <li><thing>Battery</thing><cell>(25, 0, 27)</cell><batteryFraction>0.6</batteryFraction></li>
+      <li><thing>Battery</thing><cell>(23, 0, 30)</cell><batteryFraction>0.6</batteryFraction></li>
+      <li><thing>Battery</thing><cell>(25, 0, 30)</cell><batteryFraction>0.6</batteryFraction></li>
+      <li><thing>StandingLamp</thing><cell>(26, 0, 26)</cell></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(23, 0, 36)</cell><fuelFraction>0.5</fuelFraction></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(25, 0, 39)</cell><fuelFraction>0.5</fuelFraction></li>
+      <li><thing>HorseshoesPin</thing><stuff>Steel</stuff><cell>(20, 0, 33)</cell></li>
     </buildings>
     <conduits>
       <li><start>(9, 0, 24)</start><length>42</length><alongX>true</alongX></li>
@@ -241,11 +250,12 @@
       <li><start>(44, 0, 9)</start><length>6</length><alongX>false</alongX></li>
       <li><start>(39, 0, 25)</start><length>10</length><alongX>false</alongX></li>
       <li><start>(39, 0, 35)</start><length>14</length><alongX>false</alongX></li>
-      <li><start>(21, 0, 25)</start><length>7</length><alongX>false</alongX></li>
+      <li><start>(23, 0, 26)</start><length>8</length><alongX>false</alongX></li>
+      <li><start>(23, 0, 34)</start><length>7</length><alongX>false</alongX></li>
       <li><start>(14, 0, 26)</start><length>8</length><alongX>false</alongX></li>
       <li><start>(14, 0, 35)</start><length>8</length><alongX>false</alongX></li>
       <li><start>(14, 0, 44)</start><length>7</length><alongX>false</alongX></li>
-      <li><start>(19, 0, 25)</start><length>26</length><alongX>false</alongX></li>
+      <li><start>(20, 0, 25)</start><length>26</length><alongX>false</alongX></li>
     </conduits>
     <!-- Editable stock is owned by native starting-thing parts in RR_Scenarios.xml. -->
     <roles>
@@ -350,7 +360,12 @@
       <li><thing>Battery</thing><cell>(33, 0, 17)</cell><batteryFraction>0.4</batteryFraction></li>
       <li><thing>Table1x2c</thing><stuff>WoodLog</stuff><cell>(13, 0, 30)</cell></li>
       <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(15, 0, 30)</cell></li>
-      <li><thing>CommsConsole</thing><cell>(17, 0, 32)</cell></li>
+      <!-- Rotated south at 0.12.74-dev. At rotation 0 its interaction cell fell on the
+           staff room's north wall at (17,34), so NOBODY COULD EVER STAND AT IT, and
+           reaching the corporation is this scenario's whole achievement. Facing south it
+           sits against the same wall and the operator stands at (17,30). Found by
+           tools/check-start-layout.py the day that rule was written. -->
+      <li><thing>CommsConsole</thing><cell>(17, 0, 32)</cell><rotation>2</rotation></li>
       <li><thing>StandingLamp</thing><cell>(12, 0, 32)</cell></li>
       <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(23, 0, 27)</cell></li>
       <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(25, 0, 27)</cell></li>

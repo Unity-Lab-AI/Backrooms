@@ -214,7 +214,21 @@ namespace RimroomsAsyncIndustries.Scenario
                         wall.SetFactionDirect(Faction.OfPlayer);
                         GenSpawn.Spawn(wall, cell, map);
                     }
-                    else if (room.roofed) { map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed); }
+                    // **`roofed` SETS OR CLEARS, it no longer merely skips.** Every room here is
+                    // nested inside the compound, and the compound is roofed, so a nested room
+                    // asking for no roof got one anyway from the pass that ran before it. That
+                    // made `roofed: false` meaningless for exactly the case it is needed in:
+                    // owner direction, 2026-10-01, *"where the generators are should be a breeze
+                    // way thats unroffeced area complete just that area they are in thats inclose
+                    // by walls and doors"*. A fuel generator in a sealed room cooks the room.
+                    //
+                    // Order matters and is the authored order: a later room wins over an earlier
+                    // one on the same cell, which is what lets the breezeway cut a hole in the
+                    // compound's roof without any special case.
+                    else
+                    {
+                        map.roofGrid.SetRoof(cell, room.roofed ? RoofDefOf.RoofConstructed : null);
+                    }
                     map.areaManager.Home[cell] = true;
                 }
             }

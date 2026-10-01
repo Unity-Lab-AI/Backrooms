@@ -56,4 +56,12 @@
   <RR_Steps_11Label>A session opened</RR_Steps_11Label>
   <RR_Steps_11How>Lower down this tab, press "Open a session" on the address you want. Opening is work, not a timer, and it falls back if the operator leaves.</RR_Steps_11How>
 
+  <!-- A ramp is not an open connection. This step read IsOpening or IsSpinningUp until
+       0.12.74-dev, so pressing "open a session" ticked every check and the crossing was then
+       refused with "the laboratory connection for that address is not open", which was true.
+       (A double hyphen cannot appear inside an XML comment; that is what broke this file on the
+       first write.) -->
+  <RR_Steps_11HowRamping>Bringing the connection up: {0}% done. Keep the assigned operator on the console - the charge bleeds back down while nobody is holding it, and at zero the ramp lapses.</RR_Steps_11HowRamping>
+  <RR_Steps_NowCross>THE CONNECTION IS OPEN. To send somebody: select one colonist, then press "Order a crossing" on that address further down this tab. Walking through the door on its own never moves anyone.</RR_Steps_NowCross>
+
 </LanguageData>
