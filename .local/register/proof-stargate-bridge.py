@@ -202,8 +202,9 @@ print("")
 print("BOTH ENDS, AND WE DIAL")
 print("-" * 78)
 
-check("BOTH ANCHORS OF THE ROUTE GET THE GATE",
-      "StargateBridge.Attach(near)" in emergence and "StargateBridge.Attach(far)" in emergence,
+check("BOTH ANCHORS OF THE ROUTE GET THE GATE, BOTH AS NATURAL",
+      "StargateBridge.Attach(near, true)" in emergence
+      and "StargateBridge.Attach(far, true)" in emergence,
       "-- owner: *\"and connect them together to the backrooms and the map\"*. The far anchor "
       "stands inside a coordinate, which is not an ordinary branch map, so it can never mark "
       "itself; the near side knows the edge and attaches both")
@@ -302,18 +303,32 @@ if _ratio_match is not None:
           "right for a ring standing in the open and wrong for a shop's back wall" % _worst)
 
 check("THE GATE IS ACTUALLY GIVEN THE SIZED PROPERTIES",
-      "gate.Initialize(SizedProps(door.def));" in bridge,
+      "gate.Initialize(SizedProps(door.def, naturalGate));" in bridge,
       "-- every other claim here proves the sizing is COMPUTED correctly. This is the one that "
       "proves it is USED. A plant swapped this back to their unsized properties and the whole "
       "section still passed while a 1x1 door got a seven-by-seven kawoosh")
 
-check("the vortex is one cell deep, across the door's width",
+check("A NATURAL GATE HAS NO UNSTABLE VORTEX AT ALL",
+      "naturalGate ? false : offset <= width - 1 - half" in bridge,
+      "-- owner: *\"the natural portals are open always right?\"*. A natural gate never OPENS, "
+      "so nothing spins up and nothing is vaporised. **And this is not cosmetic:** their wormhole "
+      "closes itself after about forty seconds idle, so a permanently-open gate is re-dialled on "
+      "a loop -- a vortex on it would have detonated its own doorway every time, for ever")
+
+check("the machine gate's vortex is one cell deep, across the door's width",
       '.Append(",0,1)</li>")' in bridge
-      and "for (int offset = -half; offset <= width - 1 - half; offset++)" in bridge
+      and "for (int offset = -half; naturalGate ? false : offset <= width - 1 - half; offset++)"
+      in bridge
       and bridge.count('Append("<li>(') == 1,
-      "-- the threshold, whichever way the door faces: their VortexCells rotates these offsets by "
-      "the door's rotation. EVERY cell must come from the one loop -- checking that the right "
-      "cell is emitted does not stop a second one being appended after it")
+      "-- owner: *\"i understand the machine gate opening and closing and will kill anyone "
+      "standing near in front on start up\"*. The threshold, whichever way the door faces. EVERY "
+      "cell must come from the one loop -- checking that the right cell is emitted does not stop "
+      "a second one being appended after it")
+
+check("and the two kinds cannot share a cached result",
+      'door.defName + (naturalGate ? "|natural" : "|machine")' in bridge,
+      "-- caching on the def alone would hand the first kind asked for to the second, which is "
+      "how a natural gate quietly inherits a machine gate's kawoosh")
 
 check("an iris is offered only where there is an opening worth covering",
       'Append(width >= 2 ? "true" : "false")' in bridge,
@@ -335,7 +350,7 @@ check("a failure to size falls back to their properties rather than breaking the
       "how it is drawn")
 
 check("and the result is cached per def rather than rebuilt per door",
-      "sizedProps.TryGetValue(door, out cached)" in bridge,
+      "sizedProps.TryGetValue(key, out cached)" in bridge,
       "-- a shop has nine doors and a coordinate has dozens; parsing XML for each one would be a "
       "load-time cost for a value that depends only on the def")
 

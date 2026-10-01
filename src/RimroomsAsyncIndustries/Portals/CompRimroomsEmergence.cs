@@ -145,9 +145,11 @@ namespace RimroomsAsyncIndustries.Portals
 
             ThingWithComps near = parent;
             ThingWithComps far = FarAnchor(edge);
-            StargateBridge.Attach(near);
+            // NATURAL on both ends: this is a way out that was always there, not a machine
+            // a player dialled, so neither end carries an unstable vortex.
+            StargateBridge.Attach(near, true);
             if (far == null || far.Map == null) { return; }
-            StargateBridge.Attach(far);
+            StargateBridge.Attach(far, true);
 
             // Dialled only from this side, and only when nothing is already open. Their gate is
             // one-way by design, so dialling a receiving end would fight their own rule rather
@@ -398,51 +400,25 @@ namespace RimroomsAsyncIndustries.Portals
                 action = delegate { Show(marked ? Withdraw() : Mark()); }
             };
 
-            // The place this door led to, while the company is not holding it open. Offered on
-            // the door rather than only in Operations because this is where a player is standing
-            // when they wonder why the door no longer goes anywhere.
-            if (string.IsNullOrWhiteSpace(shelvedCoordinateId)) { yield break; }
-            RimroomsCampaignComponent reopenCampaign = Campaign();
-            CoordinateRecord shelved = reopenCampaign == null ? null
-                : reopenCampaign.Coordinates.FirstOrDefault(record => record != null &&
-                    record.Id == shelvedCoordinateId);
-            if (shelved == null) { yield break; }
-            bool room = OpenMapBudget.CanOpenAnother;
-            yield return new Command_Action
-            {
-                defaultLabel = "RR_Release_ReopenLabel".Translate(),
-                defaultDesc = (room ? "RR_Release_ReopenDesc" : "RR_Release_ReopenNoRoomDesc")
-                    .Translate(OpenMapBudget.Describe()),
-                icon = parent.def.uiIcon,
-                // Disabled rather than hidden when there is no room: a player at their limit
-                // needs to see that this is the thing they are at the limit of.
-                Disabled = !room,
-                disabledReason = room ? null : "RR_Release_ReopenNoRoomDesc".Translate(OpenMapBudget.Describe()),
-                action = delegate { Show(Reopen(reopenCampaign, shelved)); }
-            };
+            // **THERE IS NO RE-OPEN, AND THAT IS THE FIVE-MAP LIMIT.** Owner, verbatim:
+            // *"we do need to be able to close natural portals u just can not re open them"* and
+            // *"thats the whole 5 limit issue"*.
+            //
+            // A door that led somewhere and no longer does keeps saying so, because a player
+            // standing in front of it needs to know this was a way through and is spent -- but it
+            // is a record, not an offer. Closing a place is how a slot is freed, and a decision
+            // that can be undone is not a decision.
+            //
+            // The door itself is not spent: minifying and reinstalling it moves any route it
+            // still carries, through `NotifyAnchorInstalled`. **Moving a gate keeps it; closing
+            // its place spends it.**
         }
 
-        /// <summary>
-        /// Open the shelved place again, through the same registration path that first created it.
-        ///
-        /// Nothing bespoke: `RegisterNaturalAddress` generates the site and registers the edge,
-        /// exactly as it did at discovery. The coordinate record and its rooms were kept, so the
-        /// place that comes back is the same place -- the same rooms in the same shape. **Its
-        /// contents are not**, because the interior is generated from the seed, and the player was
-        /// told that before they released it.
-        /// </summary>
-        private CompanyActionResult Reopen(RimroomsCampaignComponent campaign, CoordinateRecord shelved)
-        {
-            if (campaign == null || shelved == null) { return CompanyActionResult.Refused("RR_Release_UnknownPlace"); }
-            if (!OpenMapBudget.CanOpenAnother)
-            { return CompanyActionResult.Refused(OpenMapBudget.BlockedKey); }
-            CompanyActionResult registered = PortalAddressService.RegisterNaturalAddress(
-                parent, ApproachCell, shelved);
-            // Only forgotten once the place is genuinely back. A failed re-open must leave the
-            // door still offering to try, or a transient refusal would strand the place for ever.
-            if (registered.Success) { ForgetShelvedPlace(); }
-            return registered;
-        }
+        // `Reopen` lived here until 0.12.59-dev. **Closing a natural portal
+        // is one-way now** -- owner: *"we do need to be able to close
+        // natural portals u just can not re open them"*, *"thats the whole
+        // 5 limit issue"*. A slot is freed by a decision that cannot be
+        // undone, because one that can be undone is not a decision.
 
         /// <summary>
         /// Mark this door as the place a way out comes up. Refused rather than silently

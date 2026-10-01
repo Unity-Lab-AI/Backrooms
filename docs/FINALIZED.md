@@ -5505,3 +5505,48 @@ using it are two different facts, and only one was being proved.
 `F513B9D2B17ABF1B10DF36CED4B7DFE868B2FB423712338F1780F3BA2A5EEDA3`, reproduced by two clean
 recompiles. **Thirteen checkers pass, forty-five proofs hold. 519 of 519** planted faults caught
 across sixteen suites.
+
+---
+
+## Session 2026-09-30 - natural gates are one-way (0.12.59-dev)
+
+**Verbatim user quotes:** *"the gate is a natural one and shouuld always be open"*, *"but
+remember we do need to be able to close natural portals u just can not re open them"*, *"thats the
+whole 5 limit issue"*, *"so deconstructing the door ie braeaks the connection, but uninstaslling
+the door and storing it or placing it else where does not"*.
+
+**Files touched:** `Portals/StargateBridge.cs`, `Portals/CompRimroomsEmergence.cs`,
+`Keyed/RR_Portals.xml`, About/csproj/README, `docs/TODO.md`, `docs/NOW.md`.
+
+**Closure notes.** **One question caught a defect that every proof had passed.**
+
+Their vortex fires inside `OpenStargate`, once per open, and their wormhole closes itself after
+about forty seconds idle. A permanently-open natural gate is therefore re-dialled every time that
+timeout fires - so the door-sized vortex shipped one checkpoint earlier **would have detonated its
+own doorway every forty seconds, for ever.** A natural gate now carries no vortex at all, which is
+also the honest fiction: it never opens, because it was always there. The machine gate keeps its
+kawoosh, because a player dialled that. The two kinds cannot share a cached result, since caching
+on the def alone would hand whichever was asked for first to the other.
+
+**And releasing a place reversed.** It used to be undoable - the door remembered where it led and
+could open it again, and the copy promised it. By owner direction that is now one-way: the gizmo,
+the method and the three strings are gone, and the confirmation says the gate will not open again
+and that this frees one of the held places. A decision that can be undone is not a decision, and
+that is what makes the five-map limit bite. The door still remembers, as a record and not an
+offer.
+
+**Deconstruct versus uninstall was already right** and was verified rather than rebuilt: a
+destroyed gate ends its route, a carried gate takes its route with it, and the two commands no
+longer say the same thing.
+
+**Running every suite found a dead method and three plants guarding a feature that no longer
+exists.** `Reopen()` outlived its gizmo as unreachable code, and three claims still held because
+the method they inspected was the dead one - **a proof passing by reading unreachable code, which
+reports a feature that cannot happen.** The claims and plants were inverted rather than deleted,
+so each now restores a way to re-open and requires refusal. And a plant renamed an accessor to
+`...Unused` while the claim tested the backing field, which is the prefix trap once more.
+
+**181 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`F267F664D0DB8B70E147FC035614F033BA8546BE12983824622089B260F4F1E9`, measured **after** the version
+bump this time, reproduced by two clean recompiles. **Thirteen checkers pass, forty-five proofs
+hold. 522 of 522** planted faults caught across sixteen suites.

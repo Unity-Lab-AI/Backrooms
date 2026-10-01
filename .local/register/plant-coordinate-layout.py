@@ -342,16 +342,28 @@ PLANTS = [
      "            emergence.RememberShelvedPlace(coordinate.Id);",
      "            emergence.ForgetShelvedPlace();"),
 
-    ("re-opening stops using the path that created it", EMERGENCE,
-     "            CompanyActionResult registered = PortalAddressService.RegisterNaturalAddress(" + NL
-     + "                parent, ApproachCell, shelved);",
-     "            CompanyActionResult registered = CompanyActionResult.Applied();"),
+    # **RE-OPENING IS GONE, SO THESE PLANTS INVERTED.** Owner: *"we do need to be able to
+    # close natural portals u just can not re open them"*, *"thats the whole 5 limit
+    # issue"*. They used to break the SHAPE of a re-open; each one now RESTORES a way to
+    # re-open and requires the proof to refuse it. Replaced rather than deleted, so the
+    # count stays honest.
+    ("THE REOPEN METHOD COMES BACK", EMERGENCE,
+     "        // `Reopen` lived here until 0.12.59-dev.",
+     "        private CompanyActionResult Reopen(CoordinateRecord shelved)" + NL
+     + "        { return PortalAddressService.RegisterNaturalAddress("
+     + "parent, ApproachCell, shelved); }" + NL + NL
+     + "        // `Reopen` lived here until 0.12.59-dev."),
 
-    ("A FAILED RE-OPEN STRANDS THE PLACE FOR EVER", EMERGENCE,
-     "            if (registered.Success) { ForgetShelvedPlace(); }", "            ForgetShelvedPlace();"),
+    ("THE REOPEN GIZMO COMES BACK", EMERGENCE,
+     "            bool marked = IsDesignated;",
+     "            bool marked = IsDesignated;" + NL
+     + "            yield return new Command_Action { defaultLabel = "
+     + chr(34) + "RR_Release_ReopenLabel" + chr(34) + ".Translate() };"),
 
-    ("re-opening stops being refused at the budget", EMERGENCE,
-     "                Disabled = !room,", "                Disabled = false,"),
+    ("the door stops remembering where it led, so a spent gate looks like any door",
+     EMERGENCE,
+     "internal string ShelvedCoordinateId { get { return shelvedCoordinateId; } }",
+     "internal string ShelvedCoordinateIdUnused { get { return shelvedCoordinateId; } }"),
 
     ("THE HELD-PLACES PANE IS NEVER DISPATCHED TO", OPTABS,
      "                case 12: DrawHeldPlaces(listing, campaign); break;" + NL, ""),

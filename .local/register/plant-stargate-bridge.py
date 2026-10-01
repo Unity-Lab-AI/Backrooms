@@ -24,13 +24,13 @@ CSPROJ = SRC + "/RimroomsAsyncIndustries.csproj"
 PLANTS = [
     # ------------------------------------------------- the integration stops being one
     ("THE FAR END IS NEVER WIRED, so a route has a gate on one side only", EMERGENCE,
-     "StargateBridge.Attach(far);", "// StargateBridge.Attach(far);"),
+     "StargateBridge.Attach(far, true);", "// StargateBridge.Attach(far, true);"),
 
     ("WE STOP DIALLING, so the player is back to doing it by hand", EMERGENCE,
      "StargateBridge.Dial(near, far.Map, 0);", "// StargateBridge.Dial(near, far.Map, 0);"),
 
     ("the near end is never wired", EMERGENCE,
-     "StargateBridge.Attach(near);", "// StargateBridge.Attach(near);"),
+     "StargateBridge.Attach(near, true);", "// StargateBridge.Attach(near, true);"),
 
     ("the far anchor is searched for instead of read off the edge", EMERGENCE,
      "private ThingWithComps FarAnchor(PortalConnectionRecord edge)",
@@ -94,7 +94,7 @@ PLANTS = [
 
     # -------------------------------------------------------- the effects stop being sized
     ("THE GATE GOES BACK TO THEIR UNSIZED PROPERTIES, so a 1x1 door gets a 7x7 kawoosh", BRIDGE,
-     "gate.Initialize(SizedProps(door.def));", "gate.Initialize(donorProps);"),
+     "gate.Initialize(SizedProps(door.def, naturalGate));", "gate.Initialize(donorProps);"),
 
     ("the puddle stops being read off the door's footprint", BRIDGE,
      "int width = Math.Max(1, Math.Max(door.size.x, door.size.z));", "int width = 5;"),
@@ -106,8 +106,8 @@ PLANTS = [
      '.Append(",0,1)</li>");', '.Append(",0,1)</li>").Append("<li>(0,0,2)</li>");'),
 
     ("the vortex stops spanning the door's width", BRIDGE,
-     "for (int offset = -half; offset <= width - 1 - half; offset++)",
-     "for (int offset = -half; offset <= -half; offset++)"),
+     "for (int offset = -half; naturalGate ? false : offset <= width - 1 - half; offset++)",
+     "for (int offset = -half; naturalGate ? false : offset <= -half; offset++)"),
 
     ("an iris is offered on a door with no opening to cover", BRIDGE,
      'Append(width >= 2 ? "true" : "false")', 'Append("true")'),
@@ -124,7 +124,19 @@ PLANTS = [
      "cached = built ?? donorProps;", "cached = built;"),
 
     ("the properties are rebuilt for every door instead of cached per def", BRIDGE,
-     "if (sizedProps.TryGetValue(door, out cached)) { return cached; }", ""),
+     "if (sizedProps.TryGetValue(key, out cached)) { return cached; }", ""),
+
+    # ------------------------------------------- a natural gate must never carry a vortex
+    ("A NATURAL GATE GETS A VORTEX, detonating its own doorway every re-dial", BRIDGE,
+     "for (int offset = -half; naturalGate ? false : offset <= width - 1 - half; offset++)",
+     "for (int offset = -half; offset <= width - 1 - half; offset++)"),
+
+    ("the natural and machine kinds share one cached result", BRIDGE,
+     'string key = door.defName + (naturalGate ? "|natural" : "|machine");',
+     "string key = door.defName;"),
+
+    ("a natural route is attached as a machine gate", EMERGENCE,
+     "StargateBridge.Attach(near, true);", "StargateBridge.Attach(near, false);"),
 
     ("the pocket-map half of the address conversion is dropped", BRIDGE,
      "destination.IsPocketMap\n                    ? new PlanetTile(destination.Index) : destination.Tile",

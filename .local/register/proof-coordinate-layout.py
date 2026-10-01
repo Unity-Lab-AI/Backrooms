@@ -732,7 +732,7 @@ check("AND THE EDGES ARE REMOVED BEFORE THE MAP IS TORN DOWN",
       "-- every endpoint lives on the map being destroyed, so the other order leaves records "
       "pointing at nothing. Forget at %d, teardown at %d" % (forget_at, teardown_at))
 
-check("the place itself is kept, so re-opening returns to the SAME place",
+check("the record and its rooms survive the release, so the history is not rewritten",
       "coordinate.site = null;" in release
       and "coordinate.status = CoordinateStatus.Discovered;" in release
       and "Coordinates.Remove" not in release
@@ -773,21 +773,32 @@ check("THE DOOR REMEMBERS WHERE IT LED, AND IT IS SAVED",
       "-- a natural gate is permanently open and is never closed; what is released is the space "
       "behind it, and the door is the only thing left that knows which space")
 
-reopen_at = emergence.find("private CompanyActionResult Reopen(")
-reopen_body = emergence[reopen_at:emergence.find(chr(10) + "        }", reopen_at)] \
-    if reopen_at >= 0 else ""
-check("re-opening goes through the same path that first created it",
-      reopen_at >= 0 and "PortalAddressService.RegisterNaturalAddress(" in reopen_body,
-      "-- nothing bespoke, so there is no second implementation to drift")
+# **CLOSING A NATURAL PORTAL IS ONE-WAY, AND THAT IS WHAT THE FIVE-MAP LIMIT IS FOR.**
+# Owner: *"we do need to be able to close natural portals u just can not re open them"* and
+# *"thats the whole 5 limit issue"*.
+#
+# These claims used to describe the SHAPE of a re-open. Three of them still held after the gizmo
+# was removed, because the method they inspected had been left behind as dead code -- a proof
+# passing by reading something unreachable, which reports a feature that cannot happen.
+check("NOTHING RE-OPENS A RELEASED PLACE",
+      "private CompanyActionResult Reopen(" not in emergence
+      and "RR_Release_ReopenLabel" not in emergence,
+      "-- a slot is freed by a decision that cannot be undone. A decision that can be undone is "
+      "not a decision, and the limit would not bite")
 
-check("A FAILED RE-OPEN LEAVES THE DOOR STILL OFFERING TO TRY",
-      reopen_at >= 0 and "if (registered.Success) { ForgetShelvedPlace(); }" in reopen_body,
-      "-- forgetting on failure would strand the place for ever over a transient refusal")
+check("and the method is deleted rather than orphaned",
+      "Reopen(" not in emergence,
+      "-- dead code that no gizmo reaches is exactly what a `...Unused` rename hides. If it is "
+      "not reachable it should not be here")
 
-check("re-opening is refused, and visibly, when the budget is full",
-      "Disabled = !room," in emergence and "RR_Release_ReopenNoRoomDesc" in emergence,
-      "-- disabled rather than hidden: a player at their limit needs to see what they are at the "
-      "limit of")
+check("THE DOOR STILL REMEMBERS WHERE IT LED, as a record and not an offer",
+      "shelvedCoordinateId" in emergence and "RememberShelvedPlace" in emergence
+      # The ACCESSOR by its exact signature, not just the backing field: a plant renamed the
+      # property to `...Unused` and the field-only test stayed satisfied. The prefix trap, again.
+      and "internal string ShelvedCoordinateId { get" in emergence,
+      "-- a player standing in front of a spent door needs to know it was a way through. Losing "
+      "the memory would make a released place indistinguishable from a door that never led "
+      "anywhere")
 
 check("THE HELD-PLACES PANE EXISTS AND IS REACHABLE",
       "private void DrawHeldPlaces(Listing_Standard listing, RimroomsCampaignComponent campaign)"
@@ -817,8 +828,8 @@ release_keys = ["RR_Release_Heading", "RR_Release_Budget", "RR_Release_Button",
                 "RR_Release_Confirm", "RR_Release_Done", "RR_Release_Failed",
                 "RR_Release_Blocked", "RR_Release_Inactive", "RR_Release_UnknownPlace",
                 "RR_Release_NotHeldOpen", "RR_Release_Headquarters", "RR_Release_CrewInside",
-                "RR_Release_CrossingInFlight", "RR_Release_ReopenLabel",
-                "RR_Release_ReopenNoRoomDesc", "RR_Event_CoordinateReleased", "RR_UI_Places"]
+                "RR_Release_CrossingInFlight",
+                "RR_Event_CoordinateReleased", "RR_UI_Places"]
 missing_keys = [key for key in release_keys if ("<" + key + ">") not in keyed]
 check("every release string the player can meet is written",
       not missing_keys,

@@ -152,7 +152,11 @@ namespace RimroomsAsyncIndustries.Portals
         /// *"how the fuck are they suppose to auto pick up materials on one side and use them on
         /// the other"*. Without it a gate accepts pawns and nothing else.
         /// </summary>
-        internal static bool Attach(ThingWithComps door)
+        /// <param name="naturalGate">
+        /// True for a way out that was always there, false for a machine a player dialled.
+        /// **A natural gate gets no unstable vortex** -- see <see cref="SizedProps"/>.
+        /// </param>
+        internal static bool Attach(ThingWithComps door, bool naturalGate)
         {
             if (!Available || door == null) { return false; }
             if (On(door) != null) { return true; }
@@ -166,7 +170,7 @@ namespace RimroomsAsyncIndustries.Portals
                 // Core's own two-step: props first, then the spawn hook that registers the
                 // address. `false` because this door is not being restored from a save -- it is
                 // becoming a gate now, which is exactly what their InitGate expects.
-                gate.Initialize(SizedProps(door.def));
+                gate.Initialize(SizedProps(door.def, naturalGate));
                 if (door.Spawned) { gate.PostSpawnSetup(false); }
                 return true;
             }
@@ -217,16 +221,40 @@ namespace RimroomsAsyncIndustries.Portals
         /// `SetValue` and no `BindingFlags`. The texture paths are **read** from their own gate's
         /// properties, so retextured gates retexture these too.
         /// </summary>
-        private static readonly Dictionary<ThingDef, CompProperties> sizedProps =
-            new Dictionary<ThingDef, CompProperties>();
+        private static readonly Dictionary<string, CompProperties> sizedProps =
+            new Dictionary<string, CompProperties>();
 
-        private static CompProperties SizedProps(ThingDef door)
+        /// <summary>
+        /// **A NATURAL GATE HAS NO UNSTABLE VORTEX, AND THAT IS NOT A SAFETY TWEAK — IT IS WHAT A
+        /// NATURAL GATE IS.**
+        ///
+        /// Owner, verbatim: *"the gate is a natural one and shouuld always be open.... i
+        /// understand the machine gate opening and closing and will kill anyone standing near in
+        /// front on start up. but the natural portals are open always right?"*
+        ///
+        /// **Yes, and that distinction catches a defect that would otherwise have shipped.** Their
+        /// vortex fires inside `OpenStargate`, once per open, and their wormhole closes itself:
+        /// `IsReceivingGate &amp;&amp; _ticksSinceBufferUnloaded > 2500 &amp;&amp;
+        /// !GateIsLoadingTransporter &amp;&amp; _sendBuffer.Empty()` calls `CloseStargate(true)`.
+        /// A natural gate held permanently open is therefore **re-dialled every time their
+        /// timeout closes it** — so with a vortex it would detonate its own doorway roughly every
+        /// forty seconds, for ever.
+        ///
+        /// An empty pattern is also the honest fiction. **A natural gate never opens.** It was
+        /// always there; nothing spins up, so nothing is vaporised. The kawoosh belongs to the
+        /// machine gate, where a player chose to dial and the thing visibly starts — exactly as
+        /// the owner described it.
+        ///
+        /// The event horizon stays on both, because that is what an open way through looks like.
+        /// </summary>
+        private static CompProperties SizedProps(ThingDef door, bool naturalGate)
         {
+            string key = door.defName + (naturalGate ? "|natural" : "|machine");
             CompProperties cached;
-            if (sizedProps.TryGetValue(door, out cached)) { return cached; }
+            if (sizedProps.TryGetValue(key, out cached)) { return cached; }
 
             CompProperties built = null;
-            try { built = BuildSizedProps(door); }
+            try { built = BuildSizedProps(door, naturalGate); }
             catch (Exception problem)
             {
                 Log.Warning("[Rimrooms][Stargate] Could not size the gate effects for "
@@ -235,18 +263,21 @@ namespace RimroomsAsyncIndustries.Portals
             // Theirs unchanged is a worse look, never a broken gate. Falling back keeps a route
             // working when the only thing that failed was how it is drawn.
             cached = built ?? donorProps;
-            sizedProps[door] = cached;
+            sizedProps[key] = cached;
             return cached;
         }
 
-        private static CompProperties BuildSizedProps(ThingDef door)
+        private static CompProperties BuildSizedProps(ThingDef door, bool naturalGate)
         {
             int width = Math.Max(1, Math.Max(door.size.x, door.size.z));
             float puddle = width * 1.6f;
 
             var pattern = new System.Text.StringBuilder();
             int half = width / 2;
-            for (int offset = -half; offset <= width - 1 - half; offset++)
+            // EMPTY FOR A NATURAL GATE. It is always open, so it never opens, so there is nothing
+            // for an unstable vortex to be unstable about -- and our own permanent re-dial would
+            // otherwise fire one on a loop. A machine gate keeps it: a player dialled that.
+            for (int offset = -half; naturalGate ? false : offset <= width - 1 - half; offset++)
             {
                 // One cell in front, across the door's own width. `VortexCells` rotates these by
                 // the door's rotation, so this is the threshold whichever way the door faces.

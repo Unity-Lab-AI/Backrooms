@@ -175,7 +175,7 @@ Select who you mean first. Anyone who cannot cross is listed with the reason rat
   <RR_UI_Places>Places</RR_UI_Places>
   <RR_Release_Heading>Places held open</RR_Release_Heading>
   <RR_Release_Budget>Holding {0} of {1}. A Backrooms level costs a loaded map exactly as a colony does, and the limit is the maximum number of colonies set in Options.</RR_Release_Budget>
-  <RR_Release_Explanation>Releasing a place does not close the way to it. The door stays permanently open and remembers where it led, and the place can be opened again from that door. What is lost is everything left inside: the space is found again as it is, not as you left it.</RR_Release_Explanation>
+  <RR_Release_Explanation>Releasing a place closes the way to it for good. A natural gate is open from the moment it is found and stays open, and closing one is the only way to free a slot - but it cannot be opened again, and everything left inside is gone with it. The door remains, and still remembers where it led; it simply leads nowhere now.</RR_Release_Explanation>
   <RR_Release_ColonyRow>Colony: {0} — cannot be released here.</RR_Release_ColonyRow>
   <RR_Release_NoneHeld>This company is holding no Backrooms levels open.</RR_Release_NoneHeld>
   <RR_Release_PlaceRow>{0}, depth {1}</RR_Release_PlaceRow>
@@ -183,15 +183,12 @@ Select who you mean first. Anyone who cannot cross is listed with the reason rat
   <RR_Release_Blocked>Cannot release: {0}</RR_Release_Blocked>
   <RR_Release_Button>Release this place</RR_Release_Button>
   <RR_Release_ConfirmTitle>Release a place</RR_Release_ConfirmTitle>
-  <RR_Release_Confirm>Stop holding {0} open?\n\nThe way in stays permanently open and remembers where it led, so you can open this place again from the same door. Everything left inside will be gone: {1} item(s), and anything your people built there.</RR_Release_Confirm>
+  <RR_Release_Confirm>Close the way to {0}?\n\nTHIS CANNOT BE UNDONE. The gate will not open again and this place cannot be reached from it a second time. Everything left inside will be gone: {1} item(s), and anything your people built there.\n\nThis frees one of your held places.</RR_Release_Confirm>
   <RR_Release_Done>{0} is no longer held open. Holding {1}.</RR_Release_Done>
   <RR_Release_Failed>{0} could not be released: {1}</RR_Release_Failed>
   <RR_Release_ShelvedHeading>Released, and reachable again from the door that found them</RR_Release_ShelvedHeading>
   <RR_Release_ShelvedRow>{0}, depth {1}</RR_Release_ShelvedRow>
   <RR_Release_ShelvedHint>Select the door that led to one of these and use Open this place again.</RR_Release_ShelvedHint>
-  <RR_Release_ReopenLabel>Open this place again</RR_Release_ReopenLabel>
-  <RR_Release_ReopenDesc>Hold this place open again. It will be the same rooms in the same shape, and none of what was left inside. Holding {0}.</RR_Release_ReopenDesc>
-  <RR_Release_ReopenNoRoomDesc>This company is already holding open as many places as it can ({0}). Release one from the Places pane in Operations first.</RR_Release_ReopenNoRoomDesc>
 
   <!-- The release refusals. Each names itself, because a player who pressed Release and saw
        nothing happen has been told nothing. -->
