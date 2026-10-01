@@ -14,13 +14,48 @@ OPENING = SCEN + "/SoloGroupOpening.cs"
 DEF = SCEN + "/RimroomsStartDef.cs"
 PAGE = SCEN + "/Page_RimroomsCompanySetup.cs"
 STARTS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsStartDefs/RR_Starts.xml"
+SERVICES = "src/RimroomsAsyncIndustries/Company/CampaignServices.cs"
+COMPONENT = "src/RimroomsAsyncIndustries/Company/RimroomsCampaignComponent.cs"
+GATECOMP = "src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs"
 CHR_NL = chr(10)
 PATCHFILE = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_StartGenSteps.xml"
 SCENARIOS = "Mod/Rimrooms - Async Industries/1.6/Defs/ScenarioDefs/RR_Scenarios.xml"
 ARRIVAL = SCEN + "/ScenPart_RimroomsArrival.cs"
 PROOF = ".local/register/proof-startplacement.py"
+STARTS_PROOF = ".local/register/proof-starts.py"
 
 PLANTS = [
+    # ------------------------- the fault that disabled a whole scenario on turn one
+    ("THE CORPORATE START DISABLES ITSELF ON TURN ONE AGAIN", SERVICES,
+     '                    insightOperationId = done ? projectId + ":insight" : null,' + chr(10), "",
+     STARTS_PROOF),
+
+    ("a pre-completed project is committed with an empty receipt", SERVICES,
+     '                    insightOperationId = done ? projectId + ":insight" : null,',
+     '                    insightOperationId = done ? "" : null,', STARTS_PROOF),
+
+    ("THE VALIDATOR STOPS REQUIRING A RECEIPT, so a double payment can hide", COMPONENT,
+     "(!p.insightCommitted || !string.IsNullOrWhiteSpace(p.insightOperationId))",
+     "(!p.insightCommitted || true)", STARTS_PROOF),
+
+    ("the corporate start stops beginning with its research finished", STARTS,
+     "      <li>RR_GateTelemetry</li>" + chr(10), "", STARTS_PROOF),
+
+    # ------------------------------------------- the toggle on the door
+    ("AN UNDESIGNATED DOOR GOES BACK TO OFFERING NOTHING", GATECOMP,
+     "            if (!IsDesignated)" + chr(10) + "            {" + chr(10)
+     + "                foreach (Gizmo gizmo in MakeGateGizmos()) { yield return gizmo; }" + chr(10)
+     + "                yield break;" + chr(10) + "            }",
+     "            if (!IsDesignated) { yield break; }", STARTS_PROOF),
+
+    ("the toggle appears on a door away from the headquarters", GATECOMP,
+     "                || campaign.Headquarters != parent.Map",
+     "                || false", STARTS_PROOF),
+
+    ("the toggle binds the first of several providers instead of refusing", GATECOMP,
+     "                    if (console == null || battery == null || bench == null)",
+     "                    if (false)", STARTS_PROOF),
+
     # ------------------------------------------------------ the map size is the player's
     ("THE MOD STARTS OVERRIDING THE CHOSEN MAP SIZE AGAIN", PART,
      "        public override void PostGameStart()",

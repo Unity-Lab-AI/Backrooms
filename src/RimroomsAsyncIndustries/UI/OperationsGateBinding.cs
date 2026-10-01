@@ -160,22 +160,41 @@ namespace RimroomsAsyncIndustries.UI
                 .ThenBy(door => door.thingIDNumber).ToList();
         }
 
-        private static IEnumerable<Thing> AvailableNativeConsoles(RimroomsCampaignComponent campaign)
+        internal static IEnumerable<Thing> AvailableNativeConsoles(RimroomsCampaignComponent campaign)
         {
             return AvailableNativeBuildings(campaign, "CommsConsole")
                 .Where(thing => thing is Building_CommsConsole && thing.TryGetComp<CompRimroomsGateConsole>() != null);
         }
 
-        private static IEnumerable<Thing> AvailableNativeBatteries(RimroomsCampaignComponent campaign)
+        internal static IEnumerable<Thing> AvailableNativeBatteries(RimroomsCampaignComponent campaign)
         {
             return AvailableNativeBuildings(campaign, "Battery")
                 .Where(thing => thing.TryGetComp<CompPowerBattery>() != null);
         }
 
-        private static IEnumerable<Thing> AvailableNativeAssemblyBenches(RimroomsCampaignComponent campaign)
+        internal static IEnumerable<Thing> AvailableNativeAssemblyBenches(RimroomsCampaignComponent campaign)
         {
             return AvailableNativeBuildings(campaign, "TableMachining")
                 .Where(thing => thing is Building_WorkTable && thing.TryGetComp<CompRimroomsGateConsole>() != null);
+        }
+
+        /// <summary>
+        /// The one candidate of a kind, or null when there is none or more than one.
+        ///
+        /// **The door toggle's whole contract.** A branch with exactly one console, one battery
+        /// and one machining table -- which is every start this mod ships -- can be switched on
+        /// from the door. Anything ambiguous is refused by name and chosen in this pane instead,
+        /// because picking one of several on the player's behalf is a decision, not a shortcut.
+        /// </summary>
+        internal static Thing SoleCandidate(IEnumerable<Thing> candidates)
+        {
+            Thing only = null;
+            foreach (Thing candidate in candidates)
+            {
+                if (only != null) { return null; }
+                only = candidate;
+            }
+            return only;
         }
 
         private static IEnumerable<Thing> AvailableNativeBuildings(RimroomsCampaignComponent campaign, string defName)

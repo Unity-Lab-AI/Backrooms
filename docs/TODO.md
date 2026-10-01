@@ -2036,6 +2036,43 @@ Owner, verbatim:
 
 ---
 
+## The corporate start disabled itself on turn one - 2026-10-01 (0.12.67-dev) - DONE
+
+Owner, verbatim:
+
+> **"okay i moved on top the company scenerio start. the gate is not set up.. there should be
+> everthing basic needed to operate the gate already align and ready to operate.. and it says :
+> Company Records could not be reconsiled blah blah blah.... and none of our buttons work and i
+> have no idea how the gate is suppose to work as there doesnt be a toggle option to turn it from
+> a normal door to a machine gate door . so it looke like some work is needed on the design of the
+> machine gate room and facility. and we probably need to fix the load shit becasue it seems like
+> our mod isnt there in the corporate start.. but i could be wrong as corporate start doent have a
+> operating gate at first, but it should at least have all its basic components there and
+> connected just waiting to be switched on"**
+
+> **"u can check the gasme, but like you said it been busted since scenerio write so might not get
+> much"**
+
+- [x] **"it says : Company Records could not be reconsiled blah blah blah"** - `BuildProjectTree`
+  set `insightCommitted = done` and never set `insightOperationId`, which
+  `ValidateRecordRelationships` requires. Every pre-completed project was a save-integrity fault
+- [x] **"and none of our buttons work"** - the fault set `stateFaultKey`, so `CanOperate` went
+  false and every company action in the mod refused
+- [x] **"i have no idea how the gate is suppose to work as there doesnt be a toggle option to turn
+  it from a normal door to a machine gate door"** - `CompGetGizmosExtra` returned early for any
+  undesignated door, so an ordinary door offered nothing; the only route was a pane the fault was
+  also refusing
+- [x] **"it seems like our mod isnt there in the corporate start.. but i could be wrong"** - the
+  owner was right to doubt it and wrong about the cause: the mod was there and every component
+  was placed. **The controls were unreachable**
+- [x] **"it should at least have all its basic components there and connected just waiting to be
+  switched on"** - they already are: `CommsConsole` (28,0,29), `Battery` (44,0,26),
+  `TableMachining` (17,0,44) and an `Autodoor` (29,0,33). Recorded because the owner doubted it
+- [x] **"so it looke like some work is needed on the design of the machine gate room and
+  facility"** - the toggle is on the door now, and it commissions with the branch's own equipment
+
+---
+
 ## TOMBSTONES
 
 _(none)_

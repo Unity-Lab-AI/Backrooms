@@ -437,10 +437,74 @@ namespace RimroomsAsyncIndustries.Gate
             }
         }
 
+        /// <summary>
+        /// Turn this door into a machine gate, with the branch's own equipment.
+        ///
+        /// Offered only on a door at the headquarters, because `BindNativeInfrastructure` requires
+        /// every provider to stand there and a button that can only refuse is worse than no
+        /// button.
+        ///
+        /// **Nothing is decided here.** The binding applies every rule it always did -- the exact
+        /// provider defs, the reserve size, the entry cell, the branch -- and this only answers
+        /// *which* console, battery and bench, and only when there is exactly one of each. That
+        /// is every start this mod ships, so the owner's *"basic components there and connected
+        /// just waiting to be switched on"* is a single click; anything ambiguous is named and
+        /// chosen in the Operations pane, because picking one of several for the player is a
+        /// decision rather than a shortcut.
+        /// </summary>
+        private IEnumerable<Gizmo> MakeGateGizmos()
+        {
+            RimroomsCampaignComponent campaign = NativeCampaign;
+            if (campaign == null || !campaign.CanOperate || parent.Map == null
+                || campaign.Headquarters != parent.Map)
+            { yield break; }
+            if (!NativeDoorProvider()) { yield break; }
+
+            yield return new Command_Action
+            {
+                defaultLabel = "RR_NativeGate_MakeLabel".Translate(),
+                defaultDesc = "RR_NativeGate_MakeDesc".Translate(),
+                icon = parent.def.uiIcon,
+                action = delegate
+                {
+                    Thing console = UI.MainTabWindow_Operations.SoleCandidate(
+                        UI.MainTabWindow_Operations.AvailableNativeConsoles(campaign));
+                    Thing battery = UI.MainTabWindow_Operations.SoleCandidate(
+                        UI.MainTabWindow_Operations.AvailableNativeBatteries(campaign));
+                    Thing bench = UI.MainTabWindow_Operations.SoleCandidate(
+                        UI.MainTabWindow_Operations.AvailableNativeAssemblyBenches(campaign));
+                    if (console == null || battery == null || bench == null)
+                    {
+                        // Named, not silent: the player needs to know which piece to build or
+                        // which choice to make, and "it did nothing" tells them neither.
+                        ShowOrderResult(CompanyActionResult.Refused(
+                            console == null ? "RR_NativeGate_NoSingleConsole"
+                            : battery == null ? "RR_NativeGate_NoSingleBattery"
+                            : "RR_NativeGate_ChooseBench"));
+                        return;
+                    }
+                    // The fourth argument is the entry side, which defaults to the near side.
+                    // The Operations pane is where a player chooses the far side deliberately.
+                    ShowOrderResult(BindNativeInfrastructure(console, battery, bench));
+                }
+            };
+        }
+
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) { yield return gizmo; }
-            if (parent.Faction != Faction.OfPlayer || !IsDesignated) { yield break; }
+            if (parent.Faction != Faction.OfPlayer) { yield break; }
+            // **THE TOGGLE, ON THE DOOR.** Owner: *"i have no idea how the gate is suppose to
+            // work as there doesnt be a toggle option to turn it from a normal door to a machine
+            // gate door"*. This method used to yield break here for any undesignated door, so
+            // **an ordinary door offered nothing at all** and the only route from a door to a
+            // gate was a provider-picking pane in the Operations tab -- which the company's
+            // state fault was also refusing. There was no route a player would find.
+            if (!IsDesignated)
+            {
+                foreach (Gizmo gizmo in MakeGateGizmos()) { yield return gizmo; }
+                yield break;
+            }
 
             yield return new Command_Action
             {

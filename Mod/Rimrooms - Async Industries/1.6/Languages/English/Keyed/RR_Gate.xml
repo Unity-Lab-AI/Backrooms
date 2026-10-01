@@ -66,6 +66,11 @@
   <RR_Gate_KillSwitchThrown>Emergency cutoff: {0} is OPEN. The gate has no supply.</RR_Gate_KillSwitchThrown>
   <RR_Gate_NoKillSwitchCandidates>No power switch on this gate's circuit</RR_Gate_NoKillSwitchCandidates>
   <RR_Gate_ClearKillSwitch>Clear emergency cutoff</RR_Gate_ClearKillSwitch>
+  <RR_NativeGate_MakeLabel>Commission this door as the gate</RR_NativeGate_MakeLabel>
+  <RR_NativeGate_MakeDesc>Commission this door as the branch's gate, using the headquarters comms console, battery reserve and machining table. The gate still has to be assembled, calibrated and powered before it will open.</RR_NativeGate_MakeDesc>
+  <RR_NativeGate_NoSingleConsole>No single comms console to commission against. Build one at the headquarters, or choose between them on the Operations gate pane.</RR_NativeGate_NoSingleConsole>
+  <RR_NativeGate_NoSingleBattery>No single battery to hold the gate's reserve. Build one at the headquarters, or choose between them on the Operations gate pane.</RR_NativeGate_NoSingleBattery>
+  <RR_NativeGate_ChooseBench>No single machining table to commission against. Build one at the headquarters, or choose between them on the Operations gate pane.</RR_NativeGate_ChooseBench>
   <RR_NativeGate_KillSwitchThrown>The emergency cutoff was thrown.</RR_NativeGate_KillSwitchThrown>
   <RR_NativeGate_UnsupportedSwitch>That is not a power switch.</RR_NativeGate_UnsupportedSwitch>
   <RR_NativeGate_SwitchMustBeOnToBind>The switch must be closed when it is chosen, so its circuit can be checked against the gate's.</RR_NativeGate_SwitchMustBeOnToBind>

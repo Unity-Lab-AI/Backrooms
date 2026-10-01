@@ -55,15 +55,30 @@ namespace RimroomsAsyncIndustries.Company
                 Investigation.RimroomsProjectDef definition = definitions[index];
                 if (definition == null || string.IsNullOrEmpty(definition.defName)) { continue; }
                 bool done = finished.Contains(definition.defName);
+                string projectId = branchId + ":project:" + definition.defName;
                 records.Add(new ProjectRecord
                 {
-                    id = branchId + ":project:" + definition.defName,
+                    id = projectId,
                     researchDefName = definition.defName,
                     completed = done,
                     // A project that begins finished has had its insight paid for by whoever
                     // ran this branch before you. Leaving it uncommitted would offer the player
                     // a "start" button on work that is already done.
                     insightCommitted = done,
+                    // **AND A PAID INSIGHT HAS A RECEIPT.** This field was never set, and
+                    // `ValidateRecordRelationships` requires a committed insight to carry one --
+                    // so every pre-completed project was a save-integrity fault, `stateFaultKey`
+                    // was set during `InitializeBranch` itself, `CanOperate` went false and
+                    // **every button in the mod refused.** Owner: *"it says : Company Records
+                    // could not be reconsiled ... and none of our buttons work"*.
+                    //
+                    // Only the corporate start names completed projects -- the other two carry
+                    // an empty list -- so it is the only start this ever broke, and it broke it
+                    // on turn one, from the day it was written.
+                    //
+                    // The same format `InvestigationServices` writes when the player commits an
+                    // insight, built from the record's own id so the two cannot drift.
+                    insightOperationId = done ? projectId + ":insight" : null,
                     workDone = done ? definition.workRequired : 0f,
                 });
             }
