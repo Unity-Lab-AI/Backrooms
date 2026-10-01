@@ -166,7 +166,7 @@ namespace RimroomsAsyncIndustries.Portals
                 // Core's own two-step: props first, then the spawn hook that registers the
                 // address. `false` because this door is not being restored from a save -- it is
                 // becoming a gate now, which is exactly what their InitGate expects.
-                gate.Initialize(donorProps);
+                gate.Initialize(SizedProps(door.def));
                 if (door.Spawned) { gate.PostSpawnSetup(false); }
                 return true;
             }
@@ -176,6 +176,117 @@ namespace RimroomsAsyncIndustries.Portals
                             + " a gate; the Backrooms route still works without it: " + problem);
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Their visual effects, sized to the door they are on.
+        ///
+        /// Owner: *"lets use the fx and visual stuff if we can and make them appropriate sizes to
+        /// the sizes of possible doors natural and maching gate types"*.
+        ///
+        /// **Their event horizon and their iris, at a door's scale rather than a stargate's.**
+        /// The ratio is taken from their own defs rather than invented — measured across all
+        /// three of their gates, the puddle is about 1.6 to 1.77 times the gate's width and
+        /// square:
+        ///
+        ///     StargateMod_Stargate          size (5,1)   puddle 8.7   = 1.74x
+        ///     StargateMod_OrlinStargate     size (3,1)   puddle 5.3   = 1.77x
+        ///     StargateMod_AdvancedStargate  size (5,1)   puddle 7.9   = 1.58x
+        ///
+        /// So a 1x1 door gets a 1.6-cell shimmer that fills its opening, and a three-wide door
+        /// gets one three times that. **Every footprint a gate may use is covered** — Core's 1x1
+        /// `Door`, the 2x1 `OrnateDoor` and Anomaly's `SecurityDoor`, and the wider doors another
+        /// mod ships — because the number is read off `def.size` rather than listed.
+        ///
+        /// **The vortex is the part that had to shrink.** Theirs is thirteen cells, three wide and
+        /// four deep, which is a ring standing in the open; on a shop's back wall that is a
+        /// demolition charge. A door's unstable vortex is **its own opening, one cell deep,
+        /// across its own width** — still fatal to stand in, which is the Stargate rule, and still
+        /// a doorway rather than a crater.
+        ///
+        /// An iris needs something to close over, so it is offered only on a door wide enough to
+        /// have an opening worth covering — their own makeshift gate sets `canHaveIris` false for
+        /// the same reason.
+        ///
+        /// ## And not one field of theirs is assigned
+        ///
+        /// The properties are built by handing **Core's own XML-to-object loader** the same shape
+        /// of node a def file would contain. `DirectXmlToObject.ObjectFromXml` reads the
+        /// `Class="..."` attribute and populates the fields exactly as def loading does, so the
+        /// values arrive through the game's own machinery and this file still contains no
+        /// `SetValue` and no `BindingFlags`. The texture paths are **read** from their own gate's
+        /// properties, so retextured gates retexture these too.
+        /// </summary>
+        private static readonly Dictionary<ThingDef, CompProperties> sizedProps =
+            new Dictionary<ThingDef, CompProperties>();
+
+        private static CompProperties SizedProps(ThingDef door)
+        {
+            CompProperties cached;
+            if (sizedProps.TryGetValue(door, out cached)) { return cached; }
+
+            CompProperties built = null;
+            try { built = BuildSizedProps(door); }
+            catch (Exception problem)
+            {
+                Log.Warning("[Rimrooms][Stargate] Could not size the gate effects for "
+                            + door.defName + "; using theirs unchanged: " + problem);
+            }
+            // Theirs unchanged is a worse look, never a broken gate. Falling back keeps a route
+            // working when the only thing that failed was how it is drawn.
+            cached = built ?? donorProps;
+            sizedProps[door] = cached;
+            return cached;
+        }
+
+        private static CompProperties BuildSizedProps(ThingDef door)
+        {
+            int width = Math.Max(1, Math.Max(door.size.x, door.size.z));
+            float puddle = width * 1.6f;
+
+            var pattern = new System.Text.StringBuilder();
+            int half = width / 2;
+            for (int offset = -half; offset <= width - 1 - half; offset++)
+            {
+                // One cell in front, across the door's own width. `VortexCells` rotates these by
+                // the door's rotation, so this is the threshold whichever way the door faces.
+                pattern.Append("<li>(").Append(offset).Append(",0,1)</li>");
+            }
+
+            var xml = new System.Text.StringBuilder();
+            xml.Append("<li Class=\"").Append(PropsTypeName).Append("\">");
+            xml.Append("<canHaveIris>").Append(width >= 2 ? "true" : "false").Append("</canHaveIris>");
+            xml.Append("<explodeOnUse>false</explodeOnUse>");
+            AppendTexture(xml, "puddleTexture");
+            AppendTexture(xml, "irisTexture");
+            xml.Append("<puddleDrawSize>(")
+               .Append(puddle.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))
+               .Append(",")
+               .Append(puddle.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))
+               .Append(")</puddleDrawSize>");
+            xml.Append("<vortexPattern>").Append(pattern).Append("</vortexPattern>");
+            xml.Append("</li>");
+
+            var document = new System.Xml.XmlDocument();
+            document.LoadXml(xml.ToString());
+            // Core's own loader, the same call def loading makes. No field of theirs is assigned
+            // by this package; the game populates its own type from its own XML.
+            return DirectXmlToObject.ObjectFromXml<CompProperties>(document.DocumentElement, false);
+        }
+
+        /// <summary>
+        /// Copy a texture path off their own gate's properties, so a retextured gate retextures
+        /// these. A public field read; nothing is written and nothing private is touched.
+        /// </summary>
+        private static void AppendTexture(System.Text.StringBuilder xml, string fieldName)
+        {
+            if (donorProps == null) { return; }
+            FieldInfo field = donorProps.GetType().GetField(fieldName);
+            if (field == null) { return; }
+            string path = field.GetValue(donorProps) as string;
+            if (string.IsNullOrEmpty(path)) { return; }
+            xml.Append("<").Append(fieldName).Append(">")
+               .Append(path).Append("</").Append(fieldName).Append(">");
         }
 
         /// <summary>

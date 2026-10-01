@@ -60,9 +60,11 @@ PLANTS = [
      "if (!Available || door == null) { return false; }\n            if (On(door) != null)",
      "if (door == null) { return false; }\n            if (On(door) != null)"),
 
+    # Retargeted when the gate started taking SIZED properties: the "constructed, not borrowed"
+    # risk moved to the fallback, which is now the only place their own instance is used.
     ("their properties are CONSTRUCTED instead of borrowed, so our copy goes stale", BRIDGE,
-     "gate.Initialize(donorProps);",
-     "gate.Initialize(new CompProperties_Stargate());"),
+     "cached = built ?? donorProps;",
+     "cached = built ?? new CompProperties_Stargate();"),
 
     ("the component is added to the DEF, so every door in every colony becomes a gate", BRIDGE,
      "door.AllComps.Add(gate);", "door.def.comps.Add(donorProps);"),
@@ -89,6 +91,40 @@ PLANTS = [
     ("their type is looked up with a bare Type.GetType that cannot see mod assemblies", BRIDGE,
      "compType = GenTypes.GetTypeInAnyAssembly(CompTypeName);",
      "compType = Type.GetType(CompTypeName);"),
+
+    # -------------------------------------------------------- the effects stop being sized
+    ("THE GATE GOES BACK TO THEIR UNSIZED PROPERTIES, so a 1x1 door gets a 7x7 kawoosh", BRIDGE,
+     "gate.Initialize(SizedProps(door.def));", "gate.Initialize(donorProps);"),
+
+    ("the puddle stops being read off the door's footprint", BRIDGE,
+     "int width = Math.Max(1, Math.Max(door.size.x, door.size.z));", "int width = 5;"),
+
+    ("THE RATIO LEAVES THE BAND THEIR OWN GATES SIT IN", BRIDGE,
+     "float puddle = width * 1.6f;", "float puddle = width * 4f;"),
+
+    ("the vortex gets deeper than a doorway", BRIDGE,
+     '.Append(",0,1)</li>");', '.Append(",0,1)</li>").Append("<li>(0,0,2)</li>");'),
+
+    ("the vortex stops spanning the door's width", BRIDGE,
+     "for (int offset = -half; offset <= width - 1 - half; offset++)",
+     "for (int offset = -half; offset <= -half; offset++)"),
+
+    ("an iris is offered on a door with no opening to cover", BRIDGE,
+     'Append(width >= 2 ? "true" : "false")', 'Append("true")'),
+
+    ("the properties stop being built by Core's loader", BRIDGE,
+     "return DirectXmlToObject.ObjectFromXml<CompProperties>(document.DocumentElement, false);",
+     "return donorProps;"),
+
+    ("the texture paths stop following their gate", BRIDGE,
+     "FieldInfo field = donorProps.GetType().GetField(fieldName);",
+     "FieldInfo field = null;"),
+
+    ("A SIZING FAILURE BREAKS THE ROUTE instead of just looking wrong", BRIDGE,
+     "cached = built ?? donorProps;", "cached = built;"),
+
+    ("the properties are rebuilt for every door instead of cached per def", BRIDGE,
+     "if (sizedProps.TryGetValue(door, out cached)) { return cached; }", ""),
 
     ("the pocket-map half of the address conversion is dropped", BRIDGE,
      "destination.IsPocketMap\n                    ? new PlanetTile(destination.Index) : destination.Tile",

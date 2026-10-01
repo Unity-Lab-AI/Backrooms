@@ -5464,3 +5464,44 @@ same batch moving the ground under another claim.**
 `59F77C337E26C59B55355B10E1C7EC7B7EA29A137E529D3B4EA597CDF5C68546`, reproduced by two clean
 recompiles. **Thirteen checkers pass, forty-five proofs hold. 509 of 509** planted faults caught
 across sixteen suites.
+
+---
+
+## Session 2026-09-30 - their effects, at a door's scale (0.12.58-dev)
+
+**Verbatim user quote:** *"yeah lets use the fx and visual stuff if we can and make them
+appropriate sizes to the sizes of possible doors natural and maching gate types"*
+
+**Files touched:** `Portals/StargateBridge.cs`, About/csproj/README, `docs/TODO.md`,
+`docs/NOW.md`.
+
+**Closure notes.** **Their event horizon and their iris, sized off the door rather than off a
+stargate.**
+
+The ratio was measured across all three of their gate defs rather than invented - 8.7/5, 5.3/3
+and 7.9/5, so 1.74, 1.77 and 1.58 - and 1.6 sits inside that band. The puddle is read off
+`def.size`, so a 1x1 Door gets 1.6, a 2x1 OrnateDoor or SecurityDoor gets 3.2, and a three-wide
+door gets 4.8. **Every footprint is covered because the number is computed rather than
+enumerated**, including doors this package has never seen.
+
+**The vortex had to shrink and that is the safety note.** Theirs is thirteen cells, three wide and
+four deep - correct for a ring standing in the open, a demolition charge on a shop's back wall. A
+door's vortex is its own opening, one cell deep, across its own width: still fatal to stand in,
+still a doorway. An iris is offered only where there is an opening worth covering, which is why
+their own makeshift gate sets canHaveIris false.
+
+**No field of theirs is assigned.** The properties are built by handing Core's own
+`DirectXmlToObject.ObjectFromXml` the same node a def file would contain, so the game populates
+its own type through its own loader. The texture paths are READ off their gate, so a retexture
+follows. A sizing failure falls back to their properties rather than breaking the route, and the
+result is cached per def.
+
+**Two more claims of mine proved the sizing without requiring it to be used:** nothing asserted
+that `Attach` passes the sized properties on, so a plant restoring the unsized ones satisfied
+every numeric claim while a 1x1 door got a seven-by-seven kawoosh. Computing a value correctly and
+using it are two different facts, and only one was being proved.
+
+**181 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`521BCBE4EA437ED9A9BD93C5A054B1ADA4179F00A74303F89BADECCDAFCA6DC6`, reproduced by two clean
+recompiles. **Thirteen checkers pass, forty-five proofs hold. 519 of 519** planted faults caught
+across sixteen suites.

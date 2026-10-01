@@ -1737,6 +1737,41 @@ suppose to auto pick up materials on one side and use them on the other"**
 
 ---
 
+## Their effects, at a door's scale — 2026-09-30 (0.12.58-dev)
+
+Owner, verbatim: **"yeah lets use the fx and visual stuff if we can and make them appropriate
+sizes to the sizes of possible doors natural and maching gate types"**
+
+- [x] **"lets use the fx and visual stuff"** — **their event horizon and their iris, on an ordinary door.** The texture paths are **read off their own gate's properties**, so a retextured stargate retextures these too; nothing is copied into this package and no art is shipped.
+
+- [x] **"make them appropriate sizes to the sizes of possible doors"** — **THE RATIO IS THEIRS, MEASURED ACROSS ALL THREE OF THEIR GATES, NOT INVENTED:**
+
+      StargateMod_Stargate          size (5,1)   puddleDrawSize 8.7   = 1.74x
+      StargateMod_OrlinStargate     size (3,1)   puddleDrawSize 5.3   = 1.77x
+      StargateMod_AdvancedStargate  size (5,1)   puddleDrawSize 7.9   = 1.58x
+
+  So **1.6 sits inside their own band**, and the puddle is read off `def.size` rather than listed per def:
+
+      footprint        width  puddle  vortex cells  iris
+      Door                 1    1.60             1  no
+      OrnateDoor           2    3.20             2  yes
+      SecurityDoor         2    3.20             2  yes
+      gate 1x2             2    3.20             2  yes
+      gate 1x3             3    4.80             3  yes
+      gate 2x3             3    4.80             3  yes
+
+  **Every footprint a gate may use is covered** — Core's 1x1 `Door`, the 2x1 `OrnateDoor`, Anomaly's `SecurityDoor`, and the four shapes a gate run may take — **because the number is computed, not enumerated.** A door this package has never seen is sized correctly the first time it carries a gate.
+
+- [x] **"natural and maching gate types"** — the size comes from the **parent def**, so whichever gate attaches the component gets the right scale without either one knowing about the other.
+
+- [x] **THE VORTEX IS THE PART THAT HAD TO SHRINK, and this is the safety note.** Theirs is **thirteen cells, three wide and four deep** — right for a ring standing in the open, and a demolition charge on a shop's back wall. A door's unstable vortex is now **its own opening, one cell deep, across its own width**: still fatal to stand in, which is the Stargate rule, and still a doorway rather than a crater. An iris is offered only where there is an opening worth covering, which is the same reason their own makeshift gate sets `canHaveIris` false.
+
+- [x] **and not one field of theirs is assigned** — the properties are built by handing **Core's own `DirectXmlToObject.ObjectFromXml`** the same shape of node a def file contains. The game populates its own type through its own machinery, so this package still holds no `SetValue` and no `BindingFlags`. A failure to size **falls back to their properties rather than breaking the gate** — theirs unchanged is a worse look, never a dead route — and the result is cached per def, because a shop has nine doors and a coordinate has dozens.
+
+- [x] **two more of my own claims proved the sizing without requiring it to be used** — nothing asserted that `Attach` passes the sized properties to the component, so a plant swapping them back for the unsized ones passed every numeric claim while a 1x1 door got a seven-by-seven kawoosh; and the vortex-depth claim checked that the right cell is emitted rather than that no others are. **Computing a value correctly and using it are two different facts.** **29 of 29** planted faults caught.
+
+---
+
 ## TOMBSTONES
 
 _(none)_
