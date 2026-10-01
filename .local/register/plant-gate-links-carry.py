@@ -11,6 +11,9 @@ RECORDS = SRC + "/Portals/PortalConnectionRecord.cs"
 NETWORK = SRC + "/Portals/RimroomsPortalNetwork.cs"
 CROSSING = SRC + "/Portals/PortalCrossingService.cs"
 COMP = SRC + "/Portals/CompRimroomsEmergence.cs"
+FRONTIER = SRC + "/Portals/NaturalFrontierService.cs"
+GUARANTEE = SRC + "/Portals/GuaranteedFrontiers.cs"
+SERVICES = SRC + "/Company/CampaignServices.cs"
 WARNING = SRC + "/Portals/PortalDoorWarning.cs"
 KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml"
 DOORPATCH = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_NativeGateProviders.xml"
@@ -18,6 +21,50 @@ PROOF = ".local/register/proof-gate-links.py"
 NL = chr(10)
 
 PLANTS = [
+    # ------------------------------- a gate on a door somebody needs
+    ("A NATURAL GATE LANDS ON AN ORDINARY INTERIOR DOOR AGAIN", FRONTIER,
+     '        if (!LeadsNowhere(door)) { return "RR_Frontier_LeadsNowhere"; }',
+     '        if (false) { return "RR_Frontier_LeadsNowhere"; }'),
+
+    ("the guarantee picks from every door on the map again", GUARANTEE,
+     "                if (!NaturalFrontierService.LeadsNowhere(door)) { continue; }" + chr(10), ""),
+
+    ("a door with two ways out counts as a dead end", FRONTIER,
+     "            return open == 1;", "            return open <= 2;"),
+
+    ("and a second door beside it stops counting as a route", FRONTIER,
+     "                if (side.Walkable(map) || side.GetEdifice(map) is Building_Door) { open++; }",
+     "                if (side.Walkable(map)) { open++; }"),
+
+    # ------------------- the string length that capped the Backrooms at two levels
+    ("GOING DEEPER IS CAPPED BY A STRING LENGTH AGAIN", FRONTIER,
+     "            string discoveryId = DiscoveryIdFor(origin, door);",
+     '            string discoveryId = origin.OriginId + ":" + origin.KeyPrefix +' + chr(10)
+     + '                door.Position.x + "," + door.Position.z;'),
+
+    ("the composer carries its own copy of the limit", SERVICES,
+     "                discoveryId.Length > MaximumDiscoveryIdLength ||",
+     "                discoveryId.Length > 128 ||"),
+
+    ("the shortened id drops one of its two hashes, so two places can merge", FRONTIER,
+     '            return "o" + first.ToString("x8") + second.ToString("x8") + ":" + position;',
+     '            return "o" + first.ToString("x8") + ":" + position;'),
+
+    # --------------------------------------- a way out offered a crossing that does not exist
+    ("A WAY OUT IS OFFERED A MAP CROSSING THAT DOES NOT EXIST", COMP,
+     "                RimroomsCampaignComponent campaign = Campaign();" + chr(10)
+     + "                if (campaign != null && campaign.WorldExitFor(parent) != null)",
+     "                RimroomsCampaignComponent campaign = Campaign();" + chr(10)
+     + "                if (false)"),
+
+    # --------------------------------------- a recorded gate that nothing could enter
+    ("A DISCOVERED GATE GOES DARK AND DEAD AGAIN", COMP,
+     "            if (!IsLiveGate && !IsRecordedGate)", "            if (!IsLiveGate)"),
+
+    ("the recorded gate stops being lit", COMP,
+     "        public bool ShouldBeLitNow() { return IsLiveGate || recordedGate || frontierGate; }",
+     "        public bool ShouldBeLitNow() { return IsLiveGate || frontierGate; }"),
+
     ("A DESTROYED DOOR STOPS ENDING ITS ROUTE", NETWORK,
      "            return anchor is Building_Door && anchor.Spawned && !anchor.Destroyed &&",
      "            return anchor is Building_Door && anchor.Spawned &&"),
@@ -111,7 +158,7 @@ PLANTS = [
      "    public class CompRimroomsEmergence : ThingComp"),
 
     ("the glow veto stops asking whether this is a live gate", COMP,
-     "        public bool ShouldBeLitNow() { return IsLiveGate || frontierGate; }",
+     "        public bool ShouldBeLitNow() { return IsLiveGate || recordedGate || frontierGate; }",
      "        public bool ShouldBeLitNow() { return true; }"),
 
     # **`NaturalFrontierService.Discover` HAD ZERO CALLERS.** The draw, the cap, the guaranteed
@@ -165,7 +212,8 @@ PLANTS = [
      "                yield break;"),
 
     ("the menu is offered on a door that is not a live gate", COMP,
-     "            if (!IsLiveGate)" + chr(10) + "            {", "            if (false)" + chr(10) + "            {"),
+     "            if (!IsLiveGate && !IsRecordedGate)" + chr(10) + "            {",
+     "            if (false)" + chr(10) + "            {"),
 
     ("the enter string is never written", KEYED,
      "<RR_DoorCross_Enter>", "<RR_DoorCross_EnterUnused>"),

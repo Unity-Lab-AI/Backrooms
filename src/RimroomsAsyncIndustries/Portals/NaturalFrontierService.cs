@@ -171,6 +171,49 @@ namespace RimroomsAsyncIndustries.Portals
         }
 
         /// <summary>
+        /// Whether this door is a dead end: walkable on exactly one side, with rock behind it.
+        ///
+        /// ## The owner's rule
+        ///
+        /// *"gates natural need to not also be used and needed as normal doors, becasue on the
+        /// other side was the rest of the backrooms map"*.
+        ///
+        /// A door between two rooms is a door the player walks through to get around the level.
+        /// Making it a permanently open one-way gate to another map takes that route away and
+        /// turns ordinary movement into a trap. **And a way onward is something you find; you
+        /// cannot find a door you were already using.**
+        ///
+        /// ## Why a dead-end door is exactly the right answer
+        ///
+        /// These already exist, and the owner asked for them one checkpoint ago:
+        /// `RoomLayoutPlanner.FalseOpening` puts *"doors to now where"* a third of the way along
+        /// a blank wall, and `PlaceNativeDoors` builds a real Core door in each. **So the door
+        /// that should not be there is the door that leads somewhere else** -- which is the
+        /// setting, written in geometry, at no content cost.
+        ///
+        /// Measured from the MAP, not from the room graph, because that is what the player sees.
+        /// A door with one walkable side has nothing behind it whatever the planner intended, and
+        /// a door the player has since walled off stops being a candidate on its own.
+        /// </summary>
+        internal static bool LeadsNowhere(Thing door)
+        {
+            if (door == null || !door.Spawned || door.Map == null) { return false; }
+            Map map = door.Map;
+            int open = 0;
+            IntVec3[] directions = { IntVec3.North, IntVec3.East, IntVec3.South, IntVec3.West };
+            for (int index = 0; index < directions.Length; index++)
+            {
+                IntVec3 side = door.Position + directions[index];
+                if (!side.InBounds(map)) { continue; }
+                // Another door counts as a way through: two doors in a row is still a route.
+                if (side.Walkable(map) || side.GetEdifice(map) is Building_Door) { open++; }
+            }
+            // Exactly one walkable side. A door in open floor has four, an ordinary door between
+            // two spaces has two, and a dead end has one.
+            return open == 1;
+        }
+
+        /// <summary>
         /// Whether this doorway is one that leads onward and has not been recorded yet.
         /// Pure and side-effect free: it generates nothing and records nothing, so it
         /// is safe to ask about every door on a map during work scanning.
@@ -201,8 +244,7 @@ namespace RimroomsAsyncIndustries.Portals
             // inventing another one. For a Backrooms origin this is byte-for-byte the id the
             // service produced before ordinary maps were allowed, so every coordinate already
             // discovered in an existing save still resolves to exactly the same space.
-            string discoveryId = origin.OriginId + ":" + origin.KeyPrefix +
-                door.Position.x + "," + door.Position.z;
+            string discoveryId = DiscoveryIdFor(origin, door);
             // A doorway inside the Backrooms may lead *out* instead of deeper. That is the
             // other half of the owner's topology direction, and it is what makes
             // `backrooms > map > backrooms` chains route end to end.
@@ -263,6 +305,42 @@ namespace RimroomsAsyncIndustries.Portals
                 campaign.RecordEvent("RR_Event_FrontierDiscovered", discovered.Id, origin.OriginId);
             }
             return registered;
+        }
+
+        /// <summary>
+        /// The id of the space this doorway leads to, **bounded so that going deeper stays
+        /// possible.**
+        ///
+        /// ## What was wrong
+        ///
+        /// This was `origin.OriginId + ":" + KeyPrefix + x + "," + z`, and a coordinate's id
+        /// embeds its parent's entire id. So the id grew by about eighty characters per level:
+        /// 88 for the first step inward, **168 for the second** -- past
+        /// <see cref="RimroomsCampaignComponent.MaximumDiscoveryIdLength"/>, refused with
+        /// `RR_Company_InvalidRequest`. **The Backrooms could never be more than two levels
+        /// deep**, and `MaximumNaturalDepth` was unreachable.
+        ///
+        /// ## Why the long form is kept whenever it fits
+        ///
+        /// Byte-for-byte what it always was, so **every coordinate already discovered in a save
+        /// resolves to exactly the same space.** Only an id that would be refused is shortened,
+        /// and an id that would be refused never existed in a save to begin with.
+        ///
+        /// ## Why two hashes
+        ///
+        /// `StableHash` is a 31-bit FNV value. One of them shared by two parents would merge two
+        /// different places into one coordinate -- a far worse outcome than a refusal. Two
+        /// independent derivations of the same saved id make that vanishingly unlikely, and both
+        /// are derived from the id alone, so a reload resolves identically.
+        /// </summary>
+        private static string DiscoveryIdFor(FrontierOrigin origin, Thing door)
+        {
+            string position = origin.KeyPrefix + door.Position.x + "," + door.Position.z;
+            string full = origin.OriginId + ":" + position;
+            if (full.Length <= RimroomsCampaignComponent.MaximumDiscoveryIdLength) { return full; }
+            int first = DestinationService.StableHash(0, origin.OriginId, 1);
+            int second = DestinationService.StableHash(origin.OriginId.Length, origin.OriginId, 7);
+            return "o" + first.ToString("x8") + second.ToString("x8") + ":" + position;
         }
 
         /// <summary>
@@ -421,6 +499,12 @@ namespace RimroomsAsyncIndustries.Portals
             IntVec3 approach = PortalAddressService.ApproachCellFor(door);
             if (!PortalAddressService.UsableThreshold(door, approach, door.Map))
             { return "RR_Frontier_Obstructed"; }
+
+            // **A GATE IS NEVER A DOOR SOMEBODY NEEDS.** Owner: *"gates natural need to not also
+            // be used and needed as normal doors, becasue on the other side was the rest of the
+            // backrooms map"*. Checked here so the glow, the float menu and the discovery all
+            // agree -- `IsFrontierCandidate` and `Discover` both come through this method.
+            if (!LeadsNowhere(door)) { return "RR_Frontier_LeadsNowhere"; }
 
             IReadOnlyList<PortalConnectionRecord> edges = network.Connections;
             int foundHere = 0;

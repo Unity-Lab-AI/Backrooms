@@ -78,7 +78,7 @@ namespace RimroomsAsyncIndustries.Portals
         /// any other mod ships, carries an inert glower — refused by Core's own rule rather than
         /// by hoping the radius of zero is enough.
         /// </summary>
-        public bool ShouldBeLitNow() { return IsLiveGate || frontierGate; }
+        public bool ShouldBeLitNow() { return IsLiveGate || recordedGate || frontierGate; }
 
         /// <summary>
         /// Whether this door is an undiscovered way onward, as of the last appearance refresh.
@@ -90,6 +90,13 @@ namespace RimroomsAsyncIndustries.Portals
         /// <see cref="CompTickInterval"/>.
         /// </summary>
         private bool frontierGate;
+
+        /// <summary>
+        /// Whether this door is an endpoint of a live edge, as of the last appearance refresh.
+        /// Cached for the same reason <see cref="frontierGate"/> is: Core asks `ShouldBeLitNow`
+        /// whenever it likes, and answering walks the whole edge list.
+        /// </summary>
+        private bool recordedGate;
 
         /// <summary>
         /// A door inside the Backrooms that leads somewhere else and has not been recorded yet.
@@ -140,6 +147,34 @@ namespace RimroomsAsyncIndustries.Portals
         }
 
         /// <summary>
+        /// Whether this door is an endpoint of a live portal edge, **marked or not.**
+        ///
+        /// ## Why this is not <see cref="IsLiveGate"/>
+        ///
+        /// `IsLiveGate` requires <see cref="IsDesignated"/>, which means *the player marked this
+        /// door as a way home* -- and also demands the door belong to the player's faction and
+        /// stand on an ordinary branch map. **None of that is ever true of a door generated
+        /// inside a coordinate.**
+        ///
+        /// So a way onward, once discovered, had a real `Natural` edge and no way to use it: the
+        /// crossing option was never offered, the glow went out, and asking again returned
+        /// `RR_Frontier_AlreadyRecorded` -- which the owner read as *"this address is already
+        /// being used"*. **It worked once and then went dark and dead.**
+        ///
+        /// Both questions are kept because both are needed. `PortalAddressService` and the
+        /// emergence rules depend on `IsLiveGate` meaning the stronger thing; the appearance and
+        /// the crossing menu only ever needed the weaker one.
+        /// </summary>
+        public bool IsRecordedGate
+        {
+            get
+            {
+                if (parent == null || !parent.Spawned || parent.Destroyed) { return false; }
+                return EdgeFor() != null;
+            }
+        }
+
+        /// <summary>
         /// A marked door on a branch map that the portal network actually has an edge for.
         ///
         /// Stricter than <see cref="IsDesignated"/> on purpose: a door the player marked but
@@ -178,7 +213,11 @@ namespace RimroomsAsyncIndustries.Portals
             // A way onward is a natural gate that nobody has written down yet, and it is
             // already permanently open. Cached here so Core's glower can ask cheaply.
             frontierGate = IsFrontierGate;
-            bool live = IsLiveGate || frontierGate;
+            // **AND ONE THAT HAS BEEN WRITTEN DOWN IS STILL A GATE.** `IsLiveGate` needs a player
+            // mark, which a door inside a coordinate never has, so a discovered way onward used
+            // to stop glowing the moment it started working.
+            recordedGate = IsRecordedGate;
+            bool live = IsLiveGate || recordedGate || frontierGate;
             CompGlower glower = parent.TryGetComp<CompGlower>();
             if (glower != null)
             {
@@ -364,7 +403,10 @@ namespace RimroomsAsyncIndustries.Portals
             foreach (FloatMenuOption option in base.CompFloatMenuOptions(selPawn))
             { yield return option; }
             if (selPawn == null || parent == null || !parent.Spawned) { yield break; }
-            if (!IsLiveGate)
+            // **A RECORDED GATE IS A GATE, MARKED OR NOT.** `IsLiveGate` needs a player
+            // mark and an ordinary branch map, so a discovered way onward inside a coordinate was
+            // never offered a crossing however correctly its edge was registered.
+            if (!IsLiveGate && !IsRecordedGate)
             {
                 foreach (FloatMenuOption option in FrontierOptions(selPawn)) { yield return option; }
                 yield break;
@@ -435,14 +477,60 @@ namespace RimroomsAsyncIndustries.Portals
                 // Painted on the click, not up to an interval later, and for the same reason
                 // marking a door is: a player who acts and sees nothing change assumes it failed.
                 RefreshGateAppearance();
+
+                // **A WAY OUT IS NOT A WAY DEEPER, AND THEY ARE RECORDED DIFFERENTLY.** A deeper
+                // find mints a coordinate and registers a portal EDGE between this door and the
+                // new place's threshold. A way out to the world saves a `WorldExitRecord` with a
+                // planet tile and **registers no edge at all**, because leaving the Backrooms for
+                // the world map is a caravan rather than a map-to-map crossing.
+                //
+                // The first draft asked `EdgeFor()` in both cases, so a world exit recorded
+                // correctly and then reported *"surveying doors is unavailable until this branch
+                // is operating"* -- which is not true and says nothing. The owner read it as
+                // *"somthing about generationg the next world map or deeper backrroms"*, which
+                // is precisely what it was.
                 PortalConnectionRecord edge = EdgeFor();
-                if (edge == null)
+                if (edge != null)
                 {
-                    Show(CompanyActionResult.Refused("RR_Frontier_Unavailable"));
+                    Show(PortalTravelService.OrderCrossing(selPawn, edge));
                     return;
                 }
-                Show(PortalTravelService.OrderCrossing(selPawn, edge));
+                RimroomsCampaignComponent campaign = Campaign();
+                if (campaign != null && campaign.WorldExitFor(parent) != null)
+                {
+                    // The SAME method the gizmo calls, which is the only thing in the package
+                    // that reaches the leave routine -- see WalkOutToWorld.
+                    Show(WalkOutToWorld());
+                    return;
+                }
+                Show(CompanyActionResult.Refused("RR_Frontier_Unavailable"));
             });
+        }
+
+        /// <summary>
+        /// Walk out of the Backrooms onto the world map, as a caravan.
+        ///
+        /// **THE ONLY THING IN THIS PACKAGE THAT REACHES THE LEAVE ROUTINE**, and therefore the
+        /// only thing that can reach `CaravanExitMapUtility.ExitMapAndCreateCaravan`. The gizmo
+        /// and the float-menu option both come here.
+        ///
+        /// `proof-world-exit.py` asserts there is exactly one caller of
+        /// `LeaveThroughWorldExit`, and when the float menu added a second one it refused --
+        /// correctly. Both callers were player clicks, so the narrowed stranded-crew guarantee
+        /// in `WorldExit.cs` still held, but *"every caller is a player command"* is not
+        /// something a source claim can decide and *"there is one caller"* is. **A weaker claim
+        /// that can be checked beats a stronger one that cannot**, so this exists instead of the
+        /// claim being relaxed.
+        ///
+        /// Nothing automatic can reach it: no tick, work giver, incident or scheduler calls
+        /// either of the two UI paths above.
+        /// </summary>
+        private CompanyActionResult WalkOutToWorld()
+        {
+            RimroomsCampaignComponent campaign = Campaign();
+            if (campaign == null || parent == null || campaign.WorldExitFor(parent) == null)
+            { return CompanyActionResult.Refused("RR_WorldExit_DoorUnavailable"); }
+            return campaign.LeaveThroughWorldExit(parent);
         }
 
         /// <summary>The live edge this door is an endpoint of, or null.</summary>
@@ -567,7 +655,7 @@ namespace RimroomsAsyncIndustries.Portals
                     defaultLabel = "RR_WorldExit_LeaveLabel".Translate(),
                     defaultDesc = "RR_WorldExit_LeaveDesc".Translate(),
                     icon = parent.def.uiIcon,
-                    action = delegate { Show(worldExitCampaign.LeaveThroughWorldExit(parent)); }
+                    action = delegate { Show(WalkOutToWorld()); }
                 };
             }
 

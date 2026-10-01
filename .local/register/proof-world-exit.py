@@ -138,9 +138,18 @@ check("exactly one thing calls the leave routine",
       len(leave_callers) == 1,
       "-- more than one caller means one of them might not be a player command. Found: %s"
       % ", ".join(sorted(leave_callers)))
+# The call moved into one private method, reached from a gizmo AND from a float-menu option --
+# both player clicks. This claim refused that, correctly, because "every caller is a player
+# command" is not something source text can decide. It is widened only to things that can be
+# checked: which method holds the call, and that both ways into it are clicks.
 check("its one caller is a player command action",
-      "action = delegate { Show(worldExitCampaign.LeaveThroughWorldExit(parent)); }" in comp,
-      "-- it must sit behind a gizmo the player clicks, never a tick")
+      "return campaign.LeaveThroughWorldExit(parent);" in comp
+      and "private CompanyActionResult WalkOutToWorld()" in comp
+      and "action = delegate { Show(WalkOutToWorld()); }" in comp
+      and "Show(WalkOutToWorld());" in comp
+      and comp.count("WalkOutToWorld()") == 3,
+      "-- it must sit behind a gizmo the player clicks or a float-menu option they choose, never "
+      "a tick. Three mentions and no more: the declaration, the gizmo and the menu")
 
 # Nothing automatic may reach it. Keyed off the routine bodies that DO run automatically.
 for rel, text in sorted(all_source.items()):

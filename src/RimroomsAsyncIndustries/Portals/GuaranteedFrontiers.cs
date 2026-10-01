@@ -121,6 +121,12 @@ namespace RimroomsAsyncIndustries.Portals
                 if (door == null || !door.Spawned || door.Destroyed) { continue; }
                 // The way home is never a frontier, so it can never be one of the two either.
                 if (site != null && door == site.ReturnAnchor) { continue; }
+                // **AND NEITHER IS A DOOR THE PLAYER NEEDS.** Owner: *"gates natural need to not
+                // also be used and needed as normal doors"*. The guarantee chose from every door
+                // on the map, so a door between two rooms could become a permanently open one-way
+                // gate and take an ordinary route away. The same predicate `Evaluate` uses, so
+                // the pair cannot be chosen from doors the service would then refuse.
+                if (!NaturalFrontierService.LeadsNowhere(door)) { continue; }
                 doors.Add(door);
             }
             // Two distinct doorways, so a level with one door has no guarantee to give -- which

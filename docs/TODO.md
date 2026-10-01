@@ -2009,6 +2009,33 @@ Owner, verbatim, second message:
 
 ---
 
+## A gate where a normal door should have been - 2026-10-01 (0.12.66-dev) - DONE
+
+Owner, verbatim:
+
+> **"okay i got into the backrooms but i found a door that was a gate, but it was where a normal
+> door should of been(gates natural need to not also be used and needed as normal doors, becasue
+> on the other side was the rest of the backrooms map and when i went to send my pawn through that
+> door with a click, it said somthing like : this address is already being used, and anoother door
+> said somthing like you cant doo that, request is not valid for this branch, and a differnet
+> sdave address alread uses one of these doorsso it must be something about generationg the next
+> world map or deeper backrroms idk for sure"**
+
+> **"chack the game if you u need to"**
+
+- [x] **"i found a door that was a gate, but it was where a normal door should of been"**
+- [x] **"gates natural need to not also be used and needed as normal doors"**
+- [x] **"becasue on the other side was the rest of the backrooms map"**
+- [x] **"it said somthing like : this address is already being used"**
+- [x] **"anoother door said somthing like you cant doo that, request is not valid for this
+  branch"**
+- [x] **"and a differnet sdave address alread uses one of these doors"**
+- [x] **"so it must be something about generationg the next world map or deeper backrroms idk for
+  sure"** - the owner's read is right: the world-map half and the deeper half are two different
+  recordings, and only one of them was wired to a way through
+
+---
+
 ## TOMBSTONES
 
 _(none)_

@@ -273,7 +273,12 @@ check("A LIVE GATE IS BLUE AND CASTS LIGHT",
 
 check("NO OTHER DOOR IN THE GAME IS AFFECTED, AND CORE'S OWN RULE IS WHAT GUARANTEES IT",
       "ThingComp, IThingGlower" in gatecomp
-      and "public bool ShouldBeLitNow() { return IsLiveGate || frontierGate; }" in gatecomp
+      and "public bool ShouldBeLitNow() { return IsLiveGate || recordedGate || frontierGate; }"
+      in gatecomp
+      # **AND A RECORDED GATE COUNTS.** IsLiveGate needs a player mark, which a door inside a
+      # coordinate never has, so a discovered way onward stopped glowing the moment it started
+      # working. Sixth instance this run of a path built, registered and gated off.
+      and "public bool IsRecordedGate" in gatecomp
       # **AND THE NEW CONDITION IS CONFINED TO A COORDINATE.** Evaluate serves ordinary
       # maps under its own worldfrontier: origin, so without this a door in an ancient
       # structure on the player's OWN colony map would glow blue on install. This claim
@@ -324,7 +329,7 @@ check("RIGHT-CLICK THE GATE WITH A COLONIST SELECTED AND WALK THROUGH IT",
       # The TEST as well as the branch. A plant turning `if (!IsLiveGate)` into `if (false)`
       # leaves the frontier branch written and simply never reaches it -- the branch is the
       # machinery, the test is the behaviour.
-      and "if (!IsLiveGate)" in menu_body
+      and "if (!IsLiveGate && !IsRecordedGate)" in menu_body
       and "foreach (FloatMenuOption option in FrontierOptions(selPawn)) { yield return option; }"
       in menu_body
       and "private IEnumerable<FloatMenuOption> FrontierOptions(Pawn selPawn)" in gatecomp
@@ -349,6 +354,70 @@ check("a pawn who cannot cross is told why rather than omitted",
 check("both menu strings are written",
       "<RR_DoorCross_Enter>" in portal_keyed and "<RR_DoorCross_EnterRefused>" in portal_keyed,
       "-- an option the player cannot read is a silent failure")
+
+frontier = _read(_SRC, "Portals", "NaturalFrontierService.cs")
+guarantee = _read(_SRC, "Portals", "GuaranteedFrontiers.cs")
+services = _read(_SRC, "Company", "CampaignServices.cs")
+
+# ------------------------------------------ a gate is never a door somebody needs
+# Owner: *"i found a door that was a gate, but it was where a normal door should of been (gates
+# natural need to not also be used and needed as normal doors, becasue on the other side was the
+# rest of the backrooms map)"*. The guarantee collected EVERY door on the coordinate and picked
+# two, so a door between two rooms could become a permanently open one-way gate and take an
+# ordinary route away.
+check("A NATURAL GATE IS ONLY EVER A DEAD-END DOOR",
+      "internal static bool LeadsNowhere(Thing door)" in frontier
+      and "return open == 1;" in frontier
+      and 'if (!LeadsNowhere(door)) { return "RR_Frontier_LeadsNowhere"; }' in frontier
+      and "if (!NaturalFrontierService.LeadsNowhere(door)) { continue; }" in guarantee,
+      "-- checked inside `Evaluate`, so the glow, the float menu and the discovery all agree, AND "
+      "inside the guarantee, so the chosen pair cannot be doors the service would then refuse. "
+      "`FalseOpening` already builds *\"doors to now where\"* onto rock, so **the door that should "
+      "not be there is the one that leads somewhere else**")
+
+check("and another door counts as a way through, not as rock",
+      "side.Walkable(map) || side.GetEdifice(map) is Building_Door" in frontier,
+      "-- two doors in a row is still a route somebody walks")
+
+# ------------------------------- the string length that capped the Backrooms at two
+# **THE BIGGEST OF THE FOUR.** A coordinate's id embeds its parent's entire id, so a discovery id
+# grew about eighty characters per level: 88 for the first step inward, 168 for the second -- past
+# the 128 limit, refused with `RR_Company_InvalidRequest`, *"that request is not valid for this
+# branch"*. `MaximumNaturalDepth` was unreachable and *"the backrooms never ends persay"* could
+# not happen.
+check("GOING DEEPER IS NOT CAPPED BY A STRING LENGTH",
+      "public const int MaximumDiscoveryIdLength = 128;" in services
+      and "discoveryId.Length > MaximumDiscoveryIdLength" in services
+      and "private static string DiscoveryIdFor(FrontierOrigin origin, Thing door)" in frontier
+      # **THE CALL SITE.** A plant reverting the inline composition left the method defined
+      # and this claim passing while the id grew unbounded again. Sixth instance this run.
+      and "string discoveryId = DiscoveryIdFor(origin, door);" in frontier
+      and 'origin.OriginId + ":" + origin.KeyPrefix +' not in frontier
+      and "if (full.Length <= RimroomsCampaignComponent.MaximumDiscoveryIdLength) { return full; }"
+      in frontier,
+      "-- the composer reads the limit the enforcer uses. A validator and its caller carrying "
+      "separate copies of one number is the defect this project has paid for three times in a week")
+
+check("and the long form is kept whenever it fits, so saved coordinates still resolve",
+      'string full = origin.OriginId + ":" + position;' in frontier
+      and 'return "o" + first.ToString("x8") + second.ToString("x8") + ":" + position;' in frontier,
+      "-- byte-for-byte what it always was below the limit, and an id that would be refused never "
+      "existed in a save to begin with. **Two hashes, not one**: a single 31-bit FNV value shared "
+      "by two parents would merge two different places into one coordinate, which is worse than "
+      "any refusal")
+
+# ----------------------------------- a way out is not a way deeper, and both work now
+# A deeper find registers a portal EDGE. A way out saves a world-exit record and registers NO
+# edge, because leaving for the world map is a caravan. The first draft asked for an edge in both
+# cases, so a world exit recorded correctly and then reported that surveying was unavailable.
+check("A WAY OUT AND A WAY DEEPER ARE BOTH WALKABLE FROM THE MENU",
+      "PortalConnectionRecord edge = EdgeFor();" in gatecomp
+      and "if (edge != null)" in gatecomp
+      and "campaign.WorldExitFor(parent) != null" in gatecomp
+      and "Show(WalkOutToWorld());" in gatecomp,
+      "-- the edge for a deeper find, the caravan for a way out. Asking `EdgeFor()` for a world "
+      "exit returns null BY DESIGN, and the first draft read that as a failure and said "
+      "*\"surveying doors is unavailable\"*, which is neither true nor useful")
 
 print("")
 if failures:

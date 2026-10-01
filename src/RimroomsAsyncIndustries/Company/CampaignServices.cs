@@ -180,11 +180,31 @@ namespace RimroomsAsyncIndustries.Company
         /// the ordinary world and is what the palette and room library read to decide how
         /// strange a coordinate looks.
         /// </summary>
+        /// <summary>
+        /// The longest discovery id this branch will accept, and **the number that capped the
+        /// Backrooms at two levels deep.**
+        ///
+        /// A coordinate's id embeds its parent's entire id, so a discovery id grows by about
+        /// eighty characters per level: 88 for the first step inward, **168 for the second**,
+        /// which was refused with `RR_Company_InvalidRequest` -- *"that request is not valid for
+        /// this branch"*. So `MaximumNaturalDepth`, the cap the owner designed, was never
+        /// reachable, and *"have more natural portals guaranteeed so the backrooms never ends
+        /// persay"* could not happen.
+        ///
+        /// **It is a named constant because its composer has to read it.** A validator and its
+        /// caller carrying separate copies of one number is the defect that stopped every
+        /// coordinate generating for thirty-nine checkpoints and refused every candidate layout
+        /// two checkpoints ago. `NaturalFrontierService` asks this before composing an id, and
+        /// shortens the parent rather than being refused.
+        /// </summary>
+        public const int MaximumDiscoveryIdLength = 128;
+
         public CompanyActionResult CreateDiscoveredCoordinate(string discoveryId, int depth, out CoordinateRecord coordinate)
         {
             coordinate = null;
             if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
-            if (string.IsNullOrWhiteSpace(discoveryId) || discoveryId.Length > 128 ||
+            if (string.IsNullOrWhiteSpace(discoveryId) ||
+                discoveryId.Length > MaximumDiscoveryIdLength ||
                 discoveryId.Any(character => char.IsWhiteSpace(character)))
             { return CompanyActionResult.Refused("RR_Company_InvalidRequest"); }
             string stableKey = "coordinate:discovery:" + discoveryId;
