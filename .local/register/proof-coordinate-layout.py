@@ -286,6 +286,62 @@ check("and they are counted as lights, not left for a re-derivation to miss",
       "-- re-deriving how many lights should exist is the defect that stopped every coordinate "
       "generating for thirty-nine checkpoints. What was placed is what is counted")
 
+# **SHAPE REACHES THE FIRST LEVEL AT ALL.** Owner: *"you can have back to back roomes and mazes
+# of halways of varied widtchs and lengs ... triangle, octangones, rombones, all the geomentry ...
+# not just doors on 4 cosides of nothing but square rooms"*. Three shape systems each opened with
+# `depth <= 1` and refused to run, so every room on the level the owner walked was a rectangle
+# joined by identical corridors. Distance from the spawn hall is depth now.
+check("SHAPE AND WIDTH ARE MEASURED FROM THE SPAWN HALL, NOT FROM THE COORDINATE",
+      "internal static int ShapeDepthOf(" in planner
+      and "int band = hops / LinksPerShapeBand;" in planner,
+      "-- the hall and its neighbours stay square, which is the arrival reading as the one built "
+      "thing, and everything past it comes apart")
+
+# ------------------------------------------------------------------ doors to nowhere
+# Owner: *"odd contructions of doors walls corners deadends doors to now where not just doors on
+# 4 cosides of nothing but square rooms"*. `DoorOpening` was that complaint written as code: an
+# opening existed only at the midpoint of a wall facing a linked room.
+check("A WALL WITH NOTHING BEHIND IT CAN STILL OPEN",
+      "internal static bool FalseOpening(" in planner
+      and "return FalseOpening(room, rooms, cell);" in planner,
+      "-- defined AND reached from DoorOpening, which is the one function both the validator and "
+      "the generator ask. A false door decided anywhere else would be a wall the validator proved "
+      "and the generator did not build")
+
+check("it is offset from the centre, because the centre is where a real door goes",
+      "int at = low + (high - low) / 3;" in planner,
+      "-- a door in the middle of a blank wall reads as a corridor that failed to arrive; a third "
+      "along reads as somebody having put a door there")
+
+check("never on the threshold hall",
+      "if (room == null || room.index == 0) { return false; }" in planner,
+      "-- that is where a player arrives and the one room meant to read as built. The maze starts "
+      "after it")
+
+check("and never on a wall that already carries a real doorway",
+      "if (side == 0 && other.Bounds.minX > bounds.maxX) { return false; }" in planner,
+      "-- two openings in one wall reads as a mistake rather than as a door that goes nowhere")
+
+check("A FALSE OPENING CANNOT DISCONNECT ANYTHING",
+      "int walls = (onEastWall ? 1 : 0) + (onWestWall ? 1 : 0)" in planner
+      and "if (walls != 1) { return false; }" in planner,
+      "-- one wall only, so never a corner, and the cell beyond is rock. It adds a dead end and "
+      "removes no route, which is the only property CandidateIsSafe is proving")
+
+# ----------------------------------------------------------------------- lamp tones
+# Owner: *"we need more lights and mixedered varies of lights"*.
+check("LAMPS DIFFER FROM EACH OTHER, PER INSTANCE",
+      "private static void TintLamp(" in genstep
+      and "TintLamp(lamp, coordinate, room, pillar);" in genstep,
+      "-- CompGlower.GlowColor and GlowRadius are per-instance overrides in Core, the same "
+      "mechanism that lights one door blue without touching any other door in the game. Defined "
+      "AND called")
+
+check("and the dim one is dimmer, never off",
+      "glower.GlowRadius = glower.GlowRadius * 2f / 3f;" in genstep
+      and "GlowRadius = 0" not in genstep,
+      "-- *\"the basic rooms are well lit\"* is the theme. A dark Backrooms is a different place")
+
 check("MOST LEFTOVER SLOTS BECOME BRANCHES, which is what makes it a maze",
       "% 4 == 3)" in planner,
       "-- owner: *\"it needs to be more maze liek\"*. One slot in three became a branch and the "
@@ -498,7 +554,8 @@ print("-" * 78)
 # rectangle halways"*.
 check("ROCK IS LEFT STANDING INSIDE A ROOM, SO IT IS NOT A RECTANGLE",
       "internal static IEnumerable<IntVec3> RockIntrusionCells(RoomRecord room, int depth)" in planner
-      and "RoomLayoutPlanner.RockIntrusionCells(room, coordinateDepth)" in genstep,
+      and "RoomLayoutPlanner.RockIntrusionCells(room," in genstep
+      and "RoomLayoutPlanner.ShapeDepthOf(coordinate.Rooms, room, coordinateDepth)" in genstep,
       "-- the Bounds stays a rect because the validator, the doors, the corridors and the pillar "
       "lattice all read it. What changed is which cells get CARVED")
 
@@ -529,10 +586,16 @@ check("SHALLOW COORDINATES STAY RECTANGULAR",
       "-- the yellow rooms read as a place precisely because they are monotonous, which is the "
       "same reason Derange leaves depth 1 alone. The wrongness is travelled toward")
 
+# **BOTH READERS PASS THE SAME SHAPING DEPTH.** This used to assert that the generator passed
+# `coordinateDepth` and the validator passed `depth` -- which is precisely what kept every shape
+# system off at depth 1. The property was never the parameter name; it was that the room the
+# validator proves walkable is the room that gets built.
 check("the shape is decided in one place, like the pillars",
       planner.count("internal static IEnumerable<IntVec3> RockIntrusionCells") == 1
-      and "foreach (IntVec3 rock in RockIntrusionCells(room, depth))" in planner
-      and genstep.count("RoomLayoutPlanner.RockIntrusionCells(room, coordinateDepth)") == 1,
+      and "foreach (IntVec3 rock in RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth)))"
+      in planner
+      and genstep.count("RoomLayoutPlanner.RockIntrusionCells(room,") == 1
+      and planner.count("internal static int ShapeDepthOf(") == 1,
       "-- the generator leaves these cells uncarved and CandidateIsSafe marks them unwalkable; "
       "two derivations of one rule is the defect that cost thirty-nine checkpoints")
 
@@ -554,13 +617,15 @@ check("an intrusion is rock inside a room, never a hole in the world",
 check("HALLWAYS ARE NOT ALL ONE WIDTH",
       "internal static int CorridorHalfWidthBetween(RoomRecord first, RoomRecord second, int depth)"
       in planner
-      and "RoomLayoutPlanner.CorridorHalfWidthBetween(room, other, depth)" in genstep
+      and "RoomLayoutPlanner.CorridorHalfWidthBetween(room, other," in genstep
+      and "RoomLayoutPlanner.ShapeDepthOf(rooms, room, depth)" in genstep
       and "private const int CorridorHalfWidth" not in genstep,
       "-- the constant is gone; the width comes from the shared function, so the reachability "
       "the planner proved is the reachability that gets built")
 
 check("the planner models the same corridor width the generator carves",
-      "int reach = CorridorHalfWidthBetween(room, other, depth) - 1;" in planner
+      "int reach = CorridorHalfWidthBetween(room, other," in planner
+      and "ShapeDepthOf(rooms, room, depth)" in planner
       and "for (int dz = -reach; dz <= reach; dz++)" in planner,
       "-- a model with a different width than the build is a model of a different map")
 

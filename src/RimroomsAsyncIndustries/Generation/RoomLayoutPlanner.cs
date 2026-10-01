@@ -258,6 +258,70 @@ namespace RimroomsAsyncIndustries.Generation
         /// independent derivations of one rule is the defect that cost this project thirty-nine
         /// checkpoints.
         /// </summary>
+        /// <summary>Links walked before a room counts as one level deeper, for shaping.</summary>
+        internal const int LinksPerShapeBand = 3;
+
+        /// <summary>The most distance can add to a room's shaping depth.</summary>
+        internal const int MaximumShapeBand = 4;
+
+        /// <summary>
+        /// The depth this room is SHAPED at: the coordinate's own, plus how far it is from the
+        /// spawn hall.
+        ///
+        /// Owner: *"you can have back to back roomes and mazes of halways of varied widtchs and
+        /// lengs ... triangle, octangones, rombones, all the geomentry"*, and *"not just doors on
+        /// 4 cosides of nothing but square rooms"*.
+        ///
+        /// **Every shape system in this file refused to run at depth 1**, so the level the owner
+        /// walked was all rectangles with identical corridors. The hall and its neighbours should
+        /// stay square -- that is the arrival, and it is meant to read as the one built thing --
+        /// and everything past it should come apart. Distance is what says which is which.
+        ///
+        /// **Called by both readers.** The generator carves rock from it and `CandidateIsSafe`
+        /// proves the room walkable against it; a shaped room the validator believed was square
+        /// is the defect that stopped every coordinate generating for thirty-nine checkpoints,
+        /// wearing a prettier outline.
+        /// </summary>
+        internal static int ShapeDepthOf(IReadOnlyList<RoomRecord> rooms, RoomRecord room, int depth)
+        {
+            if (rooms == null || room == null) { return depth; }
+            int hops = HopsTo(rooms, room.index);
+            if (hops < 0) { return depth; }
+            int band = hops / LinksPerShapeBand;
+            if (band > MaximumShapeBand) { band = MaximumShapeBand; }
+            return depth + band;
+        }
+
+        /// <summary>Links from the threshold room to this one, or -1 when unreachable.</summary>
+        private static int HopsTo(IReadOnlyList<RoomRecord> rooms, int roomIndex)
+        {
+            var byIndex = new Dictionary<int, RoomRecord>();
+            for (int index = 0; index < rooms.Count; index++)
+            {
+                if (rooms[index] != null) { byIndex[rooms[index].index] = rooms[index]; }
+            }
+            if (!byIndex.ContainsKey(0)) { return -1; }
+            var seen = new Dictionary<int, int> { { 0, 0 } };
+            var pending = new Queue<int>();
+            pending.Enqueue(0);
+            while (pending.Count > 0)
+            {
+                int current = pending.Dequeue();
+                if (current == roomIndex) { return seen[current]; }
+                RoomRecord room;
+                if (!byIndex.TryGetValue(current, out room) || room.links == null) { continue; }
+                for (int index = 0; index < room.links.Count; index++)
+                {
+                    int next = room.links[index];
+                    if (seen.ContainsKey(next) || !byIndex.ContainsKey(next)) { continue; }
+                    seen[next] = seen[current] + 1;
+                    pending.Enqueue(next);
+                }
+            }
+            int found;
+            return seen.TryGetValue(roomIndex, out found) ? found : -1;
+        }
+
         internal static IEnumerable<IntVec3> RockIntrusionCells(RoomRecord room, int depth)
         {
             if (room == null || depth <= 1) { yield break; }
@@ -492,6 +556,10 @@ namespace RimroomsAsyncIndustries.Generation
                 }
                 else if (family == "storage_nook" || family == "utility_room")
                 { width = span * 2 / 3; height = span * 2 / 3; }
+                // **Proportions come apart with distance, not with a library version.**
+                // Owner: *"odd variers walls and contructions making narrows , expansies"*. This
+                // used to wait on `GetRoomLibraryVersion >= 2`, which is a content revision
+                // rather than a statement about where in the maze a room is.
                 if (DestinationService.GetRoomLibraryVersion(coordinate) >= 2)
                 { Derange(coordinate, ref width, ref height, seed, index, span); }
             }
@@ -633,7 +701,10 @@ namespace RimroomsAsyncIndustries.Generation
                 foreach (IntVec3 pillar in PillarCells(room))
                 { floor[pillar.x, pillar.z] = false; }
                 // And the rock left standing in the corners, from the same function again.
-                foreach (IntVec3 rock in RockIntrusionCells(room, depth))
+                // The SAME shaping depth the generator will carve with. Passing the
+                // coordinate's own depth here while the generator used a per-room one would be
+                // a validator proving a room that is not the room that gets built.
+                foreach (IntVec3 rock in RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth)))
                 { floor[rock.x, rock.z] = false; }
             }
             foreach (RoomRecord room in rooms)
@@ -644,7 +715,12 @@ namespace RimroomsAsyncIndustries.Generation
                     IntVec3 a = room.Bounds.CenterCell;
                     IntVec3 b = other.Bounds.CenterCell;
                     // The same width the generator will carve, from the shared function.
-                    int reach = CorridorHalfWidthBetween(room, other, depth) - 1;
+                    // The pair's own shaping depth, so a corridor near the hall stays the
+                    // plain three cells and one deep in the maze may narrow or open out. The
+                    // SAME number the generator will cut with.
+                    int reach = CorridorHalfWidthBetween(room, other,
+                        Math.Max(ShapeDepthOf(rooms, room, depth),
+                            ShapeDepthOf(rooms, other, depth))) - 1;
                     if (a.z == b.z)
                     {
                         for (int x = Math.Min(room.Bounds.maxX, other.Bounds.maxX) + 1; x < Math.Max(room.Bounds.minX, other.Bounds.minX); x++)
@@ -686,7 +762,74 @@ namespace RimroomsAsyncIndustries.Generation
                 if (other.Bounds.minZ > room.Bounds.maxZ && cell.z == room.Bounds.maxZ && cell.x == room.Bounds.CenterCell.x) { return true; }
                 if (other.Bounds.maxZ < room.Bounds.minZ && cell.z == room.Bounds.minZ && cell.x == room.Bounds.CenterCell.x) { return true; }
             }
-            return false;
+            return FalseOpening(room, rooms, cell);
+        }
+
+        /// <summary>One wall in this many with nothing behind it opens anyway.</summary>
+        internal const int FalseOpeningRarity = 3;
+
+        /// <summary>
+        /// A doorway onto solid rock.
+        ///
+        /// Owner: *"odd contructions of doors walls corners deadends doors to now where not just
+        /// doors on 4 cosides of nothing but square rooms"*. The rule above IS that complaint
+        /// written as code -- an opening exists only at the midpoint of a wall facing a linked
+        /// room, so every room was a box with up to four doors dead centre.
+        ///
+        /// **A wall with no link behind it may open anyway**, offset from the centre so it does
+        /// not read as another corridor that failed to arrive. Beyond it is rock.
+        ///
+        /// ## Why this is safe to decide here
+        ///
+        /// It **adds a dead end and removes no route**. The cell is on the room's own perimeter
+        /// and the cell past it is rock, so reachability is untouched -- which is the only thing
+        /// `CandidateIsSafe` is proving. And both the validator and the generator reach it
+        /// through `DoorOpening`, so the wall that is proved is the wall that is built. A second
+        /// derivation of one rule is the defect that cost thirty-nine checkpoints.
+        ///
+        /// **Never on the threshold hall.** That is where a player arrives and the one room meant
+        /// to read as built; the maze starts after it.
+        ///
+        /// Offset by a third of the wall rather than any cell, so it still looks like somebody
+        /// put a door there, which is what makes it unsettling rather than merely broken.
+        /// </summary>
+        internal static bool FalseOpening(RoomRecord room, IReadOnlyList<RoomRecord> rooms, IntVec3 cell)
+        {
+            if (room == null || room.index == 0) { return false; }
+            CellRect bounds = room.Bounds;
+            // Corners are structure, never openings.
+            bool onEastWall = cell.x == bounds.maxX;
+            bool onWestWall = cell.x == bounds.minX;
+            bool onNorthWall = cell.z == bounds.maxZ;
+            bool onSouthWall = cell.z == bounds.minZ;
+            int walls = (onEastWall ? 1 : 0) + (onWestWall ? 1 : 0)
+                + (onNorthWall ? 1 : 0) + (onSouthWall ? 1 : 0);
+            if (walls != 1) { return false; }
+
+            int side = onEastWall ? 0 : onWestWall ? 1 : onNorthWall ? 2 : 3;
+            // A wall that already carries a real doorway is left alone: two openings in one wall
+            // reads as a mistake rather than as a door that goes nowhere.
+            foreach (int index in room.links)
+            {
+                RoomRecord other = rooms.First(r => r.index == index);
+                if (side == 0 && other.Bounds.minX > bounds.maxX) { return false; }
+                if (side == 1 && other.Bounds.maxX < bounds.minX) { return false; }
+                if (side == 2 && other.Bounds.minZ > bounds.maxZ) { return false; }
+                if (side == 3 && other.Bounds.maxZ < bounds.minZ) { return false; }
+            }
+
+            int roll = DestinationService.StableHash(room.index * 17 + side,
+                (room.familyId ?? "") + ":falsedoor", side);
+            if (roll < 0) { roll = ~roll; }
+            if (roll % FalseOpeningRarity != 0) { return false; }
+
+            // A third along the wall, not the middle: the middle is where a real door goes.
+            bool horizontal = side >= 2;
+            int low = horizontal ? bounds.minX : bounds.minZ;
+            int high = horizontal ? bounds.maxX : bounds.maxZ;
+            if (high - low < 4) { return false; }
+            int at = low + (high - low) / 3;
+            return horizontal ? cell.x == at : cell.z == at;
         }
     }
 }

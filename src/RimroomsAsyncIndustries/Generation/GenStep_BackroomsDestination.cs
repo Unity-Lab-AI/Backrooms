@@ -319,8 +319,13 @@ namespace RimroomsAsyncIndustries.Generation
                 // Owner direction, 2026-09-30: *"everything doesnt have to be square rooms"*.
                 // Rock is left standing in the corners, from the SAME function CandidateIsSafe
                 // proved the room walkable against -- see RoomLayoutPlanner.RockIntrusionCells.
+                // Shaped by how far this room is from the spawn hall, not by the
+                // coordinate's own depth -- which switched every shape system off on level 0 and
+                // made the first level all rectangles. The SAME call CandidateIsSafe made when
+                // it proved this room walkable.
                 var intrusions = new HashSet<IntVec3>(
-                    RoomLayoutPlanner.RockIntrusionCells(room, coordinateDepth));
+                    RoomLayoutPlanner.RockIntrusionCells(room,
+                        RoomLayoutPlanner.ShapeDepthOf(coordinate.Rooms, room, coordinateDepth)));
                 foreach (IntVec3 cell in room.Bounds.Cells)
                 {
                     // The roof goes overhead either way: an intrusion is rock inside the room,
@@ -770,7 +775,11 @@ namespace RimroomsAsyncIndustries.Generation
                 foreach (int linkedIndex in room.Links.Where(index => index > room.Index))
                 {
                     RoomRecord other = rooms.First(candidate => candidate.Index == linkedIndex);
-                    int halfWidth = RoomLayoutPlanner.CorridorHalfWidthBetween(room, other, depth);
+                    // The pair's own shaping depth, the SAME call CandidateIsSafe made when
+                    // it proved the route through this corridor.
+                    int halfWidth = RoomLayoutPlanner.CorridorHalfWidthBetween(room, other,
+                        Math.Max(RoomLayoutPlanner.ShapeDepthOf(rooms, room, depth),
+                            RoomLayoutPlanner.ShapeDepthOf(rooms, other, depth)));
                     CellRect first = room.Bounds;
                     CellRect second = other.Bounds;
                     if (first.CenterCell.z == second.CenterCell.z)
@@ -1024,10 +1033,57 @@ namespace RimroomsAsyncIndustries.Generation
                         GenSpawn.Spawn(lamp, cell, map, facing);
                         if (!lamp.Spawned || lamp.Map != map) { break; }
                         reserved.Add(cell);
+                        TintLamp(lamp, coordinate, room, pillar);
                         placedLights.Add(lamp);
                         break;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Give this lamp a tone of its own.
+        ///
+        /// Owner: *"we need more lights and mixedered varies of lights"*. The count is answered by
+        /// a lamp on every pillar; this is the variety.
+        ///
+        /// **`CompGlower.GlowColor` and `GlowRadius` are per-instance overrides in Core** -- the
+        /// same mechanism that lights one door blue without touching any other door in the game --
+        /// so lamps differ from each other with no new def, no new texture and no patch.
+        ///
+        /// Four tones: office white, a colder fluorescent, the green-yellow of a tube on its way
+        /// out, and a dim one with its reach cut by a third. **The dim one is dimmer, never off**:
+        /// the owner's *"the basic rooms are well lit"* is the theme, and a dark Backrooms is a
+        /// different place entirely.
+        ///
+        /// Seeded from the coordinate and the pillar, so the same lamp is the same colour on
+        /// every visit.
+        /// </summary>
+        private static void TintLamp(Thing lamp, CoordinateRecord coordinate, RoomRecord room,
+            IntVec3 pillar)
+        {
+            if (lamp == null) { return; }
+            CompGlower glower = lamp.TryGetComp<CompGlower>();
+            if (glower == null) { return; }
+            int seed = coordinate == null ? 0 : coordinate.Seed;
+            int draw = DestinationService.StableHash(seed,
+                "lamp:" + pillar.x + "," + pillar.z, room == null ? 0 : room.Index);
+            if (draw < 0) { draw = ~draw; }
+            switch (draw % 4)
+            {
+                case 0:
+                    return;                                   // the ordinary office white
+                case 1:
+                    glower.GlowColor = new ColorInt(188, 206, 232, 0);   // colder fluorescent
+                    return;
+                case 2:
+                    glower.GlowColor = new ColorInt(214, 222, 142, 0);   // a tube going out
+                    return;
+                default:
+                    // Dimmer, not off. A stretch of corridor darker than the rest reads as a
+                    // building left running; a dark one reads as a different game.
+                    glower.GlowRadius = glower.GlowRadius * 2f / 3f;
+                    return;
             }
         }
 

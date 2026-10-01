@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
   <!-- Owner direction 2026-09-29: "lots of furnature and equipment and different types of
@@ -19,6 +19,82 @@
        variation of them" is answered without authoring each variation: two laboratories in one
        coordinate share an archetype and are not the same room, and the same room is identical
        every time it loads. -->
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Classroom</defName>
+    <label>class room</label>
+    <description>Chairs facing a table at the front. Somebody set it out for a lesson that was never given, and the chairs are all pointing the right way.</description>
+    <minDepth>2</minDepth>
+    <weight>1.1</weight>
+    <slots>
+      <li>
+        <kind>Seat</kind>
+        <count>4~9</count>
+      </li>
+      <li>
+        <kind>Table</kind>
+        <count>1~2</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Books</category>
+        <count>1~3</count>
+        <chance>0.75</chance>
+        <stackCount>1~4</stackCount>
+      </li>
+      <li>
+        <kind>Art</kind>
+        <count>0~1</count>
+        <chance>0.35</chance>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>0~1</count>
+        <chance>0.4</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_WeaponsLocker</defName>
+    <label>weapons locker</label>
+    <description>Racks and lockers, most of them open and most of them empty. Whoever cleared this room was in a hurry, and did not finish.</description>
+    <minDepth>3</minDepth>
+    <weight>0.9</weight>
+    <slots>
+      <li>
+        <kind>Storage</kind>
+        <count>2~4</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Weapons</category>
+        <count>1~3</count>
+        <chance>0.8</chance>
+        <stackCount>1~1</stackCount>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Apparel</category>
+        <count>1~2</count>
+        <chance>0.5</chance>
+        <stackCount>1~1</stackCount>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Manufactured</category>
+        <count>1~2</count>
+        <chance>0.6</chance>
+        <stackCount>3~12</stackCount>
+      </li>
+      <li>
+        <kind>Table</kind>
+        <count>0~1</count>
+        <chance>0.45</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
 
   <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
     <defName>RR_Room_Laboratory</defName>

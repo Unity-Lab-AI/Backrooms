@@ -127,6 +127,32 @@ PLANTS = [
      "                SpawnPillarLamps(map, coordinate, wallDef, lightDef, wallMounted," + NL
      + "                    reservedProviderCells, placedLights);", ""),
 
+    # ------------------------------------------------------------ doors to nowhere
+    ("DOORS TO NOWHERE ARE NEVER OPENED", PLANNER,
+     "            return FalseOpening(room, rooms, cell);", "            return false;"),
+
+    ("a false door moves to the centre, where a real door goes", PLANNER,
+     "            int at = low + (high - low) / 3;", "            int at = (low + high) / 2;"),
+
+    ("the threshold hall grows a door to nowhere", PLANNER,
+     "            if (room == null || room.index == 0) { return false; }",
+     "            if (room == null) { return false; }"),
+
+    ("A FALSE OPENING IS ALLOWED ON A CORNER, which cuts the room open", PLANNER,
+     "            if (walls != 1) { return false; }", "            if (walls < 1) { return false; }"),
+
+    ("a wall that already has a real door gets a second opening", PLANNER,
+     "                if (side == 0 && other.Bounds.minX > bounds.maxX) { return false; }",
+     "                if (false) { return false; }"),
+
+    # ------------------------------------------------------------------- lamp tones
+    ("LAMPS GO BACK TO ALL BEING THE SAME COLOUR", GEN,
+     "                        TintLamp(lamp, coordinate, room, pillar);", ""),
+
+    ("the dim lamp becomes a dark one", GEN,
+     "                    glower.GlowRadius = glower.GlowRadius * 2f / 3f;",
+     "                    glower.GlowRadius = 0;"),
+
     ("the lone centre support comes back", GEN,
      "                foreach (IntVec3 pillar in RoomLayoutPlanner.PillarCells(room))",
      "                PlaceWall(map, room.Bounds.CenterCell, wallDef, wallStuff);" + NL
@@ -214,8 +240,17 @@ PLANTS = [
      "            if (room == null) { yield break; }"),
 
     ("the planner stops modelling the rock it leaves standing", PLANNER,
-     "                foreach (IntVec3 rock in RockIntrusionCells(room, depth))" + NL
+     "                foreach (IntVec3 rock in RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth)))" + NL
      + "                { floor[rock.x, rock.z] = false; }" + NL, ""),
+
+    # The two readers stop agreeing: the validator proves a square room and the generator
+    # carves a shaped one. The defect that cost thirty-nine checkpoints, in a new place.
+    ("THE VALIDATOR AND THE GENERATOR SHAPE DIFFERENTLY", PLANNER,
+     "RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth))",
+     "RockIntrusionCells(room, depth)"),
+
+    ("shape stops reaching the first level at all", PLANNER,
+     "            int band = hops / LinksPerShapeBand;", "            int band = 0;"),
 
     ("AN UNCARVED CELL LOSES ITS ROOF AND OPENS A HOLE IN THE WORLD", GEN,
      "                    map.roofGrid.SetRoof(cell, overheadRoof);" + NL
@@ -224,11 +259,15 @@ PLANTS = [
      + "                    map.roofGrid.SetRoof(cell, overheadRoof);"),
 
     ("HALLWAYS GO BACK TO ONE WIDTH", GEN,
-     "int halfWidth = RoomLayoutPlanner.CorridorHalfWidthBetween(room, other, depth);",
-     "int halfWidth = 2;"),
+     "                    int halfWidth = RoomLayoutPlanner.CorridorHalfWidthBetween(room, other," + NL
+     + "                        Math.Max(RoomLayoutPlanner.ShapeDepthOf(rooms, room, depth)," + NL
+     + "                            RoomLayoutPlanner.ShapeDepthOf(rooms, other, depth)));",
+     "                    int halfWidth = 2;"),
 
     ("the planner models a corridor width the generator does not carve", PLANNER,
-     "                    int reach = CorridorHalfWidthBetween(room, other, depth) - 1;",
+     "                    int reach = CorridorHalfWidthBetween(room, other," + NL
+     + "                        Math.Max(ShapeDepthOf(rooms, room, depth)," + NL
+     + "                            ShapeDepthOf(rooms, other, depth))) - 1;",
      "                    int reach = 1;"),
 
     # ------------------------------------------------------ the open-map budget
