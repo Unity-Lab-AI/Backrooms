@@ -28,6 +28,31 @@ namespace RimroomsAsyncIndustries.Gate
     {
         private Thing linkedGate;
         private bool assemblyBillCreated;
+
+        /// <summary>
+        /// Whether this component is running the gate instead of doing its ordinary job.
+        ///
+        /// Owner: *"we should have a set to gate control for these components so other things
+        /// arnt available and can toggle between normal op and gate op depending whats
+        /// wanted.."*.
+        ///
+        /// **Begins false.** Commissioning a door must not change how the colony works -- that
+        /// was the other half of the complaint this came from, where binding queued a hundred
+        /// steel of assembly work nobody asked for.
+        /// </summary>
+        private bool gateControl;
+
+        /// <summary>
+        /// The bills **this** mode suspended, by Core's own unique load id, so returning to normal
+        /// operation un-suspends exactly those.
+        ///
+        /// Recorded rather than inferred: a bill the player had already suspended must stay
+        /// suspended, and guessing from the current state cannot tell the two apart.
+        /// </summary>
+        private List<string> suspendedByGateControl = new List<string>();
+
+        /// <summary>Whether this component is running the gate rather than its ordinary job.</summary>
+        public bool IsGateControl { get { return gateControl && linkedGate != null; } }
         public Building_WorkTable WorkTable { get { return parent as Building_WorkTable; } }
         public Thing LinkedGate { get { return linkedGate; } }
         public bool HasAssemblyJob
@@ -96,6 +121,28 @@ namespace RimroomsAsyncIndustries.Gate
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) { yield return gizmo; }
+
+            // **THE SWITCH.** Offered only on a component actually bound to a gate: a button that
+            // can only refuse is worse than no button.
+            if (linkedGate != null)
+            {
+                bool running = gateControl;
+                yield return new Command_Action
+                {
+                    defaultLabel = (running ? "RR_NativeGate_NormalOpLabel"
+                        : "RR_NativeGate_GateControlLabel").Translate(),
+                    defaultDesc = (running ? "RR_NativeGate_NormalOpDesc"
+                        : "RR_NativeGate_GateControlDesc").Translate(),
+                    icon = parent.def.uiIcon,
+                    action = delegate { SetGateControl(!running); }
+                };
+            }
+
+            // **ORDINARY COMPANY FUNCTIONS ARE WITHDRAWN IN GATE CONTROL.** Owner: *"so other
+            // things arnt available"*. A console running the gate is not also taking deliveries,
+            // paying out credit, raising the containment alarm or placing the corporation call.
+            if (IsGateControl) { yield break; }
+
             foreach (Gizmo gizmo in Procurement.CorporateSupplyGizmos.For(parent))
             { yield return gizmo; }
             foreach (Gizmo gizmo in Procurement.CreditWithdrawalGizmo.For(parent))
@@ -108,11 +155,54 @@ namespace RimroomsAsyncIndustries.Gate
             { yield return gizmo; }
         }
 
+        /// <summary>
+        /// Put this component into gate control, or back to its ordinary job.
+        ///
+        /// On a machining table, entering gate control **suspends every bill that is not the gate
+        /// assembly** and records which ones it suspended by Core's own bill id; leaving
+        /// un-suspends exactly those. **A bill the player had already suspended stays
+        /// suspended**, which is why the ids are recorded rather than the state inferred.
+        /// </summary>
+        public void SetGateControl(bool running)
+        {
+            if (gateControl == running) { return; }
+            gateControl = running;
+            Building_WorkTable table = WorkTable;
+            if (table == null || table.BillStack == null) { return; }
+
+            if (running)
+            {
+                suspendedByGateControl.Clear();
+                foreach (Bill bill in table.BillStack.Bills)
+                {
+                    if (bill == null || bill.suspended) { continue; }
+                    if (bill.recipe != null && bill.recipe.defName == "RR_AssembleMachineGate")
+                    { continue; }
+                    bill.suspended = true;
+                    suspendedByGateControl.Add(bill.GetUniqueLoadID());
+                }
+                return;
+            }
+
+            foreach (Bill bill in table.BillStack.Bills)
+            {
+                if (bill == null || !suspendedByGateControl.Contains(bill.GetUniqueLoadID()))
+                { continue; }
+                bill.suspended = false;
+            }
+            suspendedByGateControl.Clear();
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_References.Look(ref linkedGate, "rr_gateConsoleLinkedGate");
             Scribe_Values.Look(ref assemblyBillCreated, "rr_gateAssemblyBillCreated", false);
+            Scribe_Values.Look(ref gateControl, "rr_gateConsoleGateControl", false);
+            Scribe_Collections.Look(ref suspendedByGateControl, "rr_gateConsoleSuspendedBills",
+                LookMode.Value);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            { suspendedByGateControl = suspendedByGateControl ?? new List<string>(); }
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -120,33 +210,47 @@ namespace RimroomsAsyncIndustries.Gate
             base.PostSpawnSetup(respawningAfterLoad);
         }
 
-        public void EnsureAssemblyBill()
+        /// <summary>
+        /// Keep a player's gate-assembly bill honest. **It never adds one.**
+        ///
+        /// ## What this used to do, and why it was wrong
+        ///
+        /// It was called `EnsureAssemblyBill`, and *ensure* was the whole defect: it **added an
+        /// unsuspended `Bill_Production` to the machining table the instant a door was
+        /// commissioned.** Crafters walked off to carry a hundred steel and eight components and
+        /// assemble the gate with nothing connected, nothing built and no mission begun.
+        ///
+        /// Owner: *"the machining table to op[en the gate needs to be a bill currently they
+        /// instantly try to open the gate and build it and i have no say in the mattter even tho
+        /// nothing is connected or built yet and havent started the mission line yet"*.
+        ///
+        /// **The recipe's own description had said otherwise the whole time** -- *"Designate the
+        /// native door, communications console, battery and machining table in Operations
+        /// first"* is an instruction to a player who then adds the bill. And
+        /// `RR_AssembleMachineGate` carries `recipeUsers: TableMachining`, so it has always been
+        /// in the table's own list. Nothing had to be built to give the player the choice; **the
+        /// choice had been taken.**
+        ///
+        /// ## The one direction it may act in
+        ///
+        /// Suspending a bill once the gate exists cannot take a decision away -- it stops a
+        /// repeating bill spending another hundred steel on a gate that is already assembled. So
+        /// that is all it does. It **never un-suspends**, because a player who suspended a bill
+        /// meant it, and it **never touches the repeat mode or count**, because those are theirs.
+        /// </summary>
+        public void SyncAssemblyBill()
         {
             Building_WorkTable table = WorkTable;
             if (table == null || table.BillStack == null) { return; }
-            if (Gate == null) { return; }
+            if (Gate == null || !Gate.AssemblyComplete) { return; }
             RecipeDef recipe = DefDatabase<RecipeDef>.GetNamedSilentFail("RR_AssembleMachineGate");
             if (recipe == null) { return; }
-            Bill_Production existing = table.BillStack.Bills.OfType<Bill_Production>()
-                .FirstOrDefault(b => b.recipe == recipe);
-            if (existing != null)
+            foreach (Bill_Production bill in table.BillStack.Bills.OfType<Bill_Production>()
+                .Where(candidate => candidate.recipe == recipe))
             {
-                existing.repeatMode = BillRepeatModeDefOf.RepeatCount;
-                existing.repeatCount = 1;
-                if (Gate != null) { existing.suspended = Gate.AssemblyComplete; }
-                else if (Gate != null && Gate.AssemblyComplete) { existing.suspended = true; }
+                bill.suspended = true;
                 assemblyBillCreated = true;
-                return;
             }
-            if (assemblyBillCreated && Gate != null && Gate.AssemblyComplete) { return; }
-            Bill_Production bill = new Bill_Production(recipe)
-            {
-                repeatMode = BillRepeatModeDefOf.RepeatCount,
-                repeatCount = 1,
-                suspended = Gate != null && Gate.AssemblyComplete
-            };
-            table.BillStack.AddBill(bill);
-            assemblyBillCreated = true;
         }
 
         public void MarkAssemblyBillComplete()
@@ -171,7 +275,11 @@ namespace RimroomsAsyncIndustries.Gate
         {
             CompRimroomsGateConsole console = thing == null ? null : thing.TryGetComp<CompRimroomsGateConsole>();
             CompRimroomsGate gate = console == null ? null : console.Gate;
-            return gate != null && !gate.AssemblyComplete;
+            // **NOT AVAILABLE ON A BENCH DOING ITS DAY JOB.** Owner: *"can toggle between normal
+            // op and gate op depending whats wanted"*. The two modes are exclusive in both
+            // directions: gate control suspends the ordinary bills, and normal operation withdraws
+            // the gate recipe.
+            return gate != null && !gate.AssemblyComplete && console.IsGateControl;
         }
 
         public override void Notify_IterationCompleted(Pawn billDoer, List<Thing> ingredients)

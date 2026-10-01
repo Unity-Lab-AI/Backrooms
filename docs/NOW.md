@@ -46,10 +46,10 @@ been enough; the only thing that has worked is reaching for the Write tool first
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
-| Published | **0.12.69-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.70-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **204 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `8E9ACA791C636A9636F3BAACD243DAB78BA720D7A102F250327EC9884089511F`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Assembly | SHA-256 `EC6AAA0B82D00F3884994DEDECC2460B4E6777C0F90B4C64398725DB3CA0D30A`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **FIFTEEN**, all passing. **The fifteenth refuses while a planted fault is still in the source tree.** A suite has left one there three times -- twice deleting `Campaign.NoteReturnedFromField(...)`, once deleting `!anchor.Destroyed` -- and each would have shipped silently if a build had gone out first. The `finally` added at 0.12.65-dev handles an exception and does nothing for a killed process, so the suites write a sentinel naming the file before they mutate it and `check-plant-residue.py` refuses while it exists. **A false alarm costs one command; a missed one ships a deliberate fault.** **The fourteenth is the only one that runs code rather than reading it**, and it exists because the thirteen that read text, the forty-five proofs and five hundred and fifty plants **all passed over a planner that could not produce one valid layout** -- `MaxRoomSpan` said 34 while the grand hall was 80, and no amount of reading either file can see two numbers disagree. `check-planner-layouts.py` builds `.local/harness/PlannerProbe` and runs `TrySelect` and `ValidateRooms` over 200 seeds at seven depths, demanding both that a layout is accepted **and that back-to-back pairs exist** -- because a plant that moved a pushed room one cell was missed by every proof when the revert guard quietly switched the feature off. **It never skips**: no dotnet, no install or no built assembly is a failure, not a pass. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -343,6 +343,68 @@ It should not appear, because the conduits are laid last now — but it is a war
 * **An absence claim cannot read raw source** — it reads the comment explaining the removal.
   `proof-coordinate-layout.py` keeps a `code()` view; `proof-generation-batch.py` strips comments.
 * **Use the Write tool.** A heredoc mangled an escaped newline for the **eleventh** time.
+
+## STATE AT THIS HANDOFF — `0.12.70-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.70-dev  91 files
+assembly    EC6AAA0B82D00F3884994DEDECC2460B4E6777C0F90B4C64398725DB3CA0D30A
+            read back out of the game folder after staging, not from the build
+battery     15 checkers · 45 proofs · 623 of 623 plants · 16 suites
+tree        no planted fault, porcelain 0
+```
+
+**Nothing is half-finished and nothing waits on a decision.** The last two checkpoints answered
+the gate's controls; everything before them answered the generator.
+
+### WHAT THE OWNER HAS NOT SEEN YET
+
+**Nine checkpoints are built, measured at the desk, and never run.** The last launch reported on
+was `0.12.67-dev`.
+
+| Checkpoint | Unseen in a game |
+|---|---|
+| 0.12.68-dev | the braided maze, the raised graph ceiling, **the new packageId** |
+| 0.12.69-dev | institutions on a first level, complexes to six rooms, loot in all sixteen archetypes |
+| 0.12.70-dev | the assembly as a player-queued bill, and gate control on the components |
+
+**A NEW START IS REQUIRED** — all of the generation work lands on newly generated levels.
+
+### THE TWO NEWEST THINGS, BECAUSE THEY CHANGE HOW THE GATE IS OPERATED
+
+**1. The gate no longer assembles itself.** `BindNativeInfrastructure` used to add an unsuspended
+`Bill_Production` to the machining table, so commissioning a door sent crafters off with a hundred
+steel immediately. Owner: *"i have no say in the mattter even tho nothing is connected or built
+yet"*. The recipe is on the table's own list and **the player queues it.** `SyncAssemblyBill` never
+adds a bill; it only suspends one once the gate exists.
+
+**2. A component does its ordinary job or the gate's.** Owner: *"we should have a set to gate
+control for these components so other things arnt available and can toggle between normal op and
+gate op depending whats wanted"*. Every bound component carries a switch and **begins in normal
+operation**. In gate control its company functions are withdrawn and a worktable's other bills are
+suspended by load id; in normal operation **the assembly recipe is unavailable and spin-up
+refuses**, naming the installation still doing its day job.
+
+**The honest limit, stated here so nobody re-discovers it as a bug:** Core-only, a comms console's
+own Core gizmo cannot be removed and a battery cannot be partitioned out of a power net. Gate
+control withdraws **our** functions and gates **our** operations. Core's call button stays
+pressable.
+
+## THE ORDER OF OPERATIONS, AND IT IS THE OWNER'S
+
+> *"and dont forget to stage , now.md , then cascade"* — *"thats the definiative order of
+> operation(remember it and document)"*, 2026-10-01
+
+**STAGE → NOW.md → CASCADE.** In that order, every time, once the work and the battery are done.
+
+| # | Step | Why it is here and not later |
+|---|---|---|
+| 1 | `tools/stage-mod.ps1 -UpdateExisting` | The owner can start playing the moment the work is done, instead of waiting on documentation they are not reading yet. Staging also refuses while RimWorld runs, so it is the step most likely to need attention. |
+| 2 | Write `docs/NOW.md` | Written **after** the stage, the handoff can quote the hash and version **verified in the game folder** rather than the one that was intended. |
+| 3 | Commit, then cascade ten refs | Last, so the published commit **contains** the handoff. Cascading before NOW.md publishes a tree whose own notes are out of date and needs a second cascade to correct it. |
+
+**The read-back is the only receipt**, and it is ten refs: `feature/bug-testing`,
+`feature/connected-colony-portals`, `Prep`, `Develop`, `Main`, on both `forgejo` and `github`.
 
 ## DO THIS FIRST — THE PACKAGE ID CHANGED, AND EIGHT CHECKPOINTS SHIPPED UNVERIFIED
 

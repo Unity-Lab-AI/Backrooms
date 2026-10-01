@@ -528,7 +528,11 @@ namespace RimroomsAsyncIndustries.Gate
         {
             try
             {
-                workshop.EnsureAssemblyBill();
+                // **THE BILL IS THE PLAYER'S.** This called `EnsureAssemblyBill`, which added
+                // an unsuspended production bill the instant a door was commissioned, so the
+                // gate assembled itself with nothing connected and no mission begun. The recipe
+                // is on the machining table's own list; the player queues it when they are ready.
+                workshop.SyncAssemblyBill();
                 if (assemblyComplete) { workshop.MarkAssemblyBillComplete(); }
                 return existing ? CompanyActionResult.Existing() : CompanyActionResult.Applied();
             }

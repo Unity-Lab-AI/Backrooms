@@ -1,0 +1,6 @@
+{
+  "tool": "built-in image_gen",
+  "prompt": "Edit this existing 960x540 mod preview graphic, maintaining its exact minimalist layout and visual style. Make ONLY two text changes: (1) Replace top-left 'RIMWORLD MOD' with 'RIMWORLD 1.6' using the same thin uppercase font, size, color and position. (2) Completely remove the entire lower-left 'DEVELOPMENT BUILD  0.3.0-dev' line, restoring uninterrupted matching charcoal background there; do not replace it with any text. Preserve all other content, typography, placement, colors, proportions and lines exactly: large cream RIMROOMS, gold Async Industries, COMPANY RESEARCH / UNKNOWN SPACES, small Operator credit, nested gold/gray doorway motif, small 01, decorative lines. Do not redesign, add imagery, add texture, change fonts or shift layout. Flat crisp graphic. Output PNG, landscape 16:9, ideally original 960x540.",
+  "output": "Mod/Rimrooms - Async Industries/About/Preview.png",
+  "backup": "outputs/preview-touchup-2026-10-01/Preview-before.png"
+}

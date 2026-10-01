@@ -66,6 +66,11 @@
   <RR_Gate_KillSwitchThrown>Emergency cutoff: {0} is OPEN. The gate has no supply.</RR_Gate_KillSwitchThrown>
   <RR_Gate_NoKillSwitchCandidates>No power switch on this gate's circuit</RR_Gate_NoKillSwitchCandidates>
   <RR_Gate_ClearKillSwitch>Clear emergency cutoff</RR_Gate_ClearKillSwitch>
+  <RR_NativeGate_GateControlLabel>Set to gate control</RR_NativeGate_GateControlLabel>
+  <RR_NativeGate_GateControlDesc>Hand this installation over to the gate. Its ordinary company functions are withdrawn while it does, and on a machining table every bill except the gate assembly is suspended until it returns to normal operation.</RR_NativeGate_GateControlDesc>
+  <RR_NativeGate_NormalOpLabel>Return to normal operation</RR_NativeGate_NormalOpLabel>
+  <RR_NativeGate_NormalOpDesc>Give this installation back to its ordinary work. The bills gate control suspended are resumed, and the gate will not spin up or be assembled until it is handed over again.</RR_NativeGate_NormalOpDesc>
+  <RR_NativeGate_NotInGateControl>One of the gate's installations is still in normal operation. Set the comms console and the machining table to gate control first.</RR_NativeGate_NotInGateControl>
   <RR_NativeGate_MakeLabel>Commission this door as the gate</RR_NativeGate_MakeLabel>
   <RR_NativeGate_MakeDesc>Commission this door as the branch's gate, using the headquarters comms console, battery reserve and machining table. The gate still has to be assembled, calibrated and powered before it will open.</RR_NativeGate_MakeDesc>
   <RR_NativeGate_NoSingleConsole>No single comms console to commission against. Build one at the headquarters, or choose between them on the Operations gate pane.</RR_NativeGate_NoSingleConsole>

@@ -236,6 +236,27 @@ print("-" * 78)
 # a portal to the back rooms.. wtf!!! ... ive said stargate mod repeaditly is how the gates work
 # but with normal does"*.
 gatecomp = _read(_SRC, "Portals", "CompRimroomsEmergence.cs")
+
+
+def _code(text):
+    """The source with its line comments removed.
+
+    **An absence claim cannot read raw source.** `"EnsureAssemblyBill" not in console` failed
+    against correct code because the comment explaining the method's removal names it. Forty-first
+    instance of that trap in this project; `proof-coordinate-layout.py` has had this view since
+    0.12.62-dev and `proof-generation-batch.py` strips comments outright.
+    """
+    kept = []
+    for line in text.split(chr(10)):
+        if line.lstrip().startswith("//"):
+            continue
+        kept.append(line)
+    return chr(10).join(kept)
+
+
+def _read_mod(*parts):
+    return io.open(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", *parts),
+                   encoding="utf-8-sig").read()
 doorpatch = io.open(_os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Patches",
                                   "RR_NativeGateProviders.xml"),
                     encoding="utf-8-sig", errors="replace").read()
@@ -418,6 +439,105 @@ check("A WAY OUT AND A WAY DEEPER ARE BOTH WALKABLE FROM THE MENU",
       "-- the edge for a deeper find, the caravan for a way out. Asking `EdgeFor()` for a world "
       "exit returns null BY DESIGN, and the first draft read that as a failure and said "
       "*\"surveying doors is unavailable\"*, which is neither true nor useful")
+
+console = _read(_SRC, "Gate", "CompRimroomsGateConsole.cs")
+nativebinding = _read(_SRC, "Gate", "NativeGateBinding.cs")
+# Comment-free views, for the absence clauses only.
+console_code = _code(console)
+nativebinding_code = _code(nativebinding)
+gaterecipe = _read_mod("Defs", "RecipeDefs", "RR_GateRecipes.xml")
+
+# ----------------------------------------- the assembly is the player's decision
+# Owner: *"the machining table to op[en the gate needs to be a bill currently they instantly try
+# to open the gate and build it and i have no say in the mattter even tho nothing is connected or
+# built yet and havent started the mission line yet"*.
+#
+# `BindNativeInfrastructure` ended with `EnsureAssemblyBill`, which **added an unsuspended
+# `Bill_Production` to the machining table**, so commissioning a door sent crafters off with a
+# hundred steel and eight components immediately. **Nothing in this battery mentioned the bill**,
+# so it was never asserted and never planted against.
+check("COMMISSIONING A GATE QUEUES NOBODY'S WORK",
+      "public void SyncAssemblyBill()" in console
+      and "EnsureAssemblyBill" not in console_code
+      and "EnsureAssemblyBill" not in nativebinding_code
+      and "BillStack.AddBill" not in console_code
+      and "new Bill_Production(" not in console_code,
+      "-- *ensure* was the whole defect. The bill is added by the player, from the machining "
+      "table's own recipe list, when they are ready")
+
+check("and it may only suspend, never un-suspend and never re-time",
+      "if (Gate == null || !Gate.AssemblyComplete) { return; }" in console
+      and "bill.suspended = true;" in console
+      and "existing.suspended = Gate.AssemblyComplete" not in console_code
+      # **COUNTED, not merely absent under an old name.** The first draft asserted the absence of
+      # `existing.repeatMode`, which a plant adding `bill.repeatCount = 1` to the sync method
+      # sailed straight past. Exactly TWO repeat writes exist and both are in
+      # `MarkAssemblyBillComplete`, which runs after the work is finished -- where there is no
+      # decision left to take. A third would be the sync method re-timing a player's bill.
+      and console_code.count("repeatMode") == 1
+      and console_code.count("repeatCount = ") == 1,
+      "-- suspending a finished bill cannot take a decision away; it stops a repeating bill "
+      "spending another hundred steel on a gate that exists. Un-suspending one would overrule a "
+      "player who suspended it on purpose, and the repeat mode and count are theirs")
+
+check("and the recipe was on the table's own list the whole time",
+      "<recipeUsers><li>TableMachining</li></recipeUsers>" in gaterecipe
+      and "Designate the native door, communications console, battery and machining table in"
+      in gaterecipe,
+      "-- **the recipe's own description is an instruction to a player who then adds the bill**, "
+      "and nothing had to be built to give them the choice. The choice had been taken")
+
+spinup = _read(_SRC, "Gate", "GateSpinUp.cs")
+
+# ------------------------------------------------- gate control, and it cuts both ways
+# Owner: *"we should have a set to gate control for these components so other things arnt
+# available and can toggle between normal op and gate op depending whats wanted.."*
+check("A COMPONENT DOES ITS ORDINARY JOB OR THE GATE'S, AND THE PLAYER CHOOSES",
+      "public bool IsGateControl { get { return gateControl && linkedGate != null; } }" in console
+      and "public void SetGateControl(bool running)" in console
+      and "action = delegate { SetGateControl(!running); }" in console
+      and "RR_NativeGate_GateControlLabel" in console
+      and "RR_NativeGate_NormalOpLabel" in console,
+      "-- DEFINED AND CALLED, and the switch is offered only on a component actually bound to a "
+      "gate, because a button that can only refuse is worse than no button")
+
+check("and it BEGINS in normal operation",
+      "private bool gateControl;" in console
+      and 'Scribe_Values.Look(ref gateControl, "rr_gateConsoleGateControl", false);' in console,
+      "-- commissioning a door must not change how the colony works. That was the other half of "
+      "the complaint this came from, where binding queued a hundred steel of assembly nobody "
+      "asked for")
+
+check("ORDINARY COMPANY FUNCTIONS ARE WITHDRAWN IN GATE CONTROL",
+      "if (IsGateControl) { yield break; }" in console
+      and console.index("if (IsGateControl) { yield break; }")
+      < console.index("Procurement.CorporateSupplyGizmos.For(parent)"),
+      "-- *\"so other things arnt available\"*. The withdrawal is BEFORE the four gizmos, not "
+      "after: a console running the gate is not also taking deliveries, paying credit, raising "
+      "the alarm or placing the corporation call")
+
+check("and a machining table's other bills are suspended, by id, and resumed exactly",
+      # **THE SUSPENDING, not just the recording.** A plant deleted `bill.suspended = true`
+      # and left the Add line, so gate control recorded which bills it had suspended while
+      # suspending none of them, and every asserted line was still there. Eighth instance this
+      # session. The two are pinned together and in order, so neither can go without the other.
+      (u"bill.suspended = true;" + chr(10)
+       + "                    suspendedByGateControl.Add(bill.GetUniqueLoadID());") in console
+      and "if (bill == null || bill.suspended) { continue; }" in console
+      and 'bill.recipe.defName == "RR_AssembleMachineGate")' in console
+      and "suspendedByGateControl.Contains(bill.GetUniqueLoadID())" in console
+      and "suspendedByGateControl.Clear();" in console,
+      "-- **recorded rather than inferred.** A bill the player had already suspended must stay "
+      "suspended, and the current state cannot tell those two apart")
+
+check("AND NORMAL OPERATION REFUSES THE GATE, so the modes are exclusive both ways",
+      "&& console.IsGateControl;" in console
+      and "RR_NativeGate_NotInGateControl" in spinup
+      and "!spinUpStation.IsGateControl" in spinup
+      and "!spinUpWorkshop.IsGateControl" in spinup,
+      "-- the recipe is unavailable on a bench doing its day job, and spin-up refuses while "
+      "either installation is still in normal operation. *\"depending whats wanted\"* only means "
+      "something if both directions hold")
 
 print("")
 if failures:

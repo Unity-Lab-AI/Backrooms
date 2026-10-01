@@ -2101,6 +2101,24 @@ Owner, verbatim:
 
 ---
 
+## The gate assembles itself without being asked - 2026-10-01 (0.12.70-dev) - DONE
+
+Owner, verbatim:
+
+> **"the machining table to op[en the gate needs to be a bill currently they instantly try to open
+> the gate and build it and i have no say in the mattter even tho nothing is connected or built
+> yet and havent started the mission line yet"**
+
+- [x] **"the machining table to op[en the gate needs to be a bill"**
+- [x] **"currently they instantly try to open the gate and build it and i have no say in the
+  mattter"**
+- [x] **"even tho nothing is connected or built yet and havent started the mission line yet"**
+- [x] **"we should have a set to gate control for these components so other things arnt
+  available and can toggle between normal op and gate op depending whats wanted.."**
+
+
+---
+
 ## TOMBSTONES
 
 _(none)_

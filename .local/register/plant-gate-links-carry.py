@@ -11,6 +11,9 @@ RECORDS = SRC + "/Portals/PortalConnectionRecord.cs"
 NETWORK = SRC + "/Portals/RimroomsPortalNetwork.cs"
 CROSSING = SRC + "/Portals/PortalCrossingService.cs"
 COMP = SRC + "/Portals/CompRimroomsEmergence.cs"
+CONSOLE = SRC + "/Gate/CompRimroomsGateConsole.cs"
+SPINUP = SRC + "/Gate/GateSpinUp.cs"
+RECIPE = ("Mod/Rimrooms - Async Industries/1.6/Defs/RecipeDefs/RR_GateRecipes.xml")
 FRONTIER = SRC + "/Portals/NaturalFrontierService.cs"
 GUARANTEE = SRC + "/Portals/GuaranteedFrontiers.cs"
 SERVICES = SRC + "/Company/CampaignServices.cs"
@@ -41,6 +44,58 @@ def _rr_unmark():
 
 
 PLANTS = [
+    # --------------------------------------------------- gate control, both directions
+    ("THE GATE-CONTROL SWITCH IS GONE", CONSOLE,
+     "                    action = delegate { SetGateControl(!running); }",
+     "                    action = delegate { }"),
+
+    ("a component begins in gate control instead of its ordinary job", CONSOLE,
+     'Scribe_Values.Look(ref gateControl, "rr_gateConsoleGateControl", false);',
+     'Scribe_Values.Look(ref gateControl, "rr_gateConsoleGateControl", true);'),
+
+    ("ORDINARY FUNCTIONS STAY AVAILABLE WHILE THE GATE IS RUNNING", CONSOLE,
+     "            if (IsGateControl) { yield break; }" + chr(10), ""),
+
+    ("the other bills are never suspended", CONSOLE,
+     "                    bill.suspended = true;" + chr(10)
+     + "                    suspendedByGateControl.Add(bill.GetUniqueLoadID());",
+     "                    suspendedByGateControl.Add(bill.GetUniqueLoadID());"),
+
+    ("a bill the player had already suspended is resumed on the way back", CONSOLE,
+     "                    if (bill == null || bill.suspended) { continue; }",
+     "                    if (bill == null) { continue; }"),
+
+    ("THE RECIPE IS AVAILABLE ON A BENCH DOING ITS DAY JOB", CONSOLE,
+     "            return gate != null && !gate.AssemblyComplete && console.IsGateControl;",
+     "            return gate != null && !gate.AssemblyComplete;"),
+
+    ("spin-up stops caring whether the installations were handed over", SPINUP,
+     "            if (spinUpStation != null && !spinUpStation.IsGateControl)" + chr(10)
+     + '            { return CompanyActionResult.Refused("RR_NativeGate_NotInGateControl"); }' + chr(10),
+     ""),
+
+    # ------------------- the gate assembling itself the moment it is commissioned
+    ("THE GATE QUEUES ITS OWN ASSEMBLY AGAIN", CONSOLE,
+     "        public void SyncAssemblyBill()", "        public void EnsureAssemblyBill()"),
+
+    ("commissioning adds an unsuspended bill to somebody's table", CONSOLE,
+     "            foreach (Bill_Production bill in table.BillStack.Bills.OfType<Bill_Production>()",
+     "            table.BillStack.AddBill(new Bill_Production(recipe));" + chr(10)
+     + "            foreach (Bill_Production bill in table.BillStack.Bills.OfType<Bill_Production>()"),
+
+    ("THE BILL IS UN-SUSPENDED BEHIND THE PLAYER'S BACK", CONSOLE,
+     "            if (Gate == null || !Gate.AssemblyComplete) { return; }",
+     "            if (Gate == null) { return; }"),
+
+    ("the player's repeat count is overruled", CONSOLE,
+     "                bill.suspended = true;",
+     "                bill.suspended = true;" + chr(10)
+     + "                bill.repeatCount = 1;"),
+
+    ("the recipe leaves the machining table's own list", RECIPE,
+     "<recipeUsers><li>TableMachining</li></recipeUsers>",
+     "<recipeUsers><li>ElectricSmithy</li></recipeUsers>"),
+
     # ------------------------------- a gate on a door somebody needs
     ("A NATURAL GATE LANDS ON AN ORDINARY INTERIOR DOOR AGAIN", FRONTIER,
      '        if (!LeadsNowhere(door)) { return "RR_Frontier_LeadsNowhere"; }',

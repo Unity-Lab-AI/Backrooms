@@ -79,6 +79,8 @@ Backrooms/
     1.6/                                       Defs, Assemblies, Languages, Patches, Textures, Sounds
 ```
 
+**Order of operations when work is finished: STAGE, then write `docs/NOW.md`, then commit and cascade.** Owner direction, 2026-10-01, verbatim: *"and dont forget to stage , now.md , then cascade"*, *"thats the definiative order of operation(remember it and document)"*. Stage first so play can begin immediately; NOW.md second so the handoff quotes a hash verified in the game folder rather than an intended one; cascade last so the published commit contains the handoff. The read-back of all ten refs is the only receipt.
+
 The package title must be `Rimrooms - Async Industries`, package ID `Rimrooms.AsyncIndustries`, author/publisher `Operator`, and internal namespace `RimroomsAsyncIndustries`. Put only finished game-loadable output in `Mod/Rimrooms - Async Industries/`. A staging tool copies only that directory into the **Local Mods location shown in RimSort**; do not assume a hard-coded Steam path, copy the repository root, or ship docs, source, workbook, logs, test tools, or third-party files.
 
 ## RimSort and test ownership

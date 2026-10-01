@@ -229,6 +229,18 @@ namespace RimroomsAsyncIndustries.Gate
             if (portalOwnerFault || !IsDesignated)
             { return CompanyActionResult.Refused("RR_Gate_InvalidOperation"); }
             if (IsOpening) { return CompanyActionResult.Refused("RR_Gate_AlreadyOpen"); }
+            // **A COMPONENT DOING ITS ORDINARY JOB DOES NOT RUN A GATE.** Owner: *"we should have
+            // a set to gate control for these components so other things arnt available and can
+            // toggle between normal op and gate op depending whats wanted"*. Named rather than
+            // silent: the player needs to know which switch is still the wrong way round.
+            CompRimroomsGateConsole spinUpStation = nativeConsole == null
+                ? null : nativeConsole.TryGetComp<CompRimroomsGateConsole>();
+            CompRimroomsGateConsole spinUpWorkshop = nativeAssemblyBench == null
+                ? null : nativeAssemblyBench.TryGetComp<CompRimroomsGateConsole>();
+            if (spinUpStation != null && !spinUpStation.IsGateControl)
+            { return CompanyActionResult.Refused("RR_NativeGate_NotInGateControl"); }
+            if (spinUpWorkshop != null && !spinUpWorkshop.IsGateControl)
+            { return CompanyActionResult.Refused("RR_NativeGate_NotInGateControl"); }
             if (IsSpinningUp)
             {
                 return string.Equals(spinUpConnectionId, connectionId, StringComparison.Ordinal)
