@@ -150,14 +150,13 @@ check("it records that the server does NOT enforce mods",
       "-- the single most likely cause of trouble, and the server will not warn anybody")
 check("it records the forced scenario and the disposable-copy advice",
       "Crashlanded" in multiplayer and "disposable copy" in multiplayer)
-check("it is held to the reader-facing rules",
-      '"MULTIPLAYER.md"' in conformance,
-      "-- otherwise the vocabulary and wall rules skip the newest reader-facing document")
-
-# The CALL, with its indentation, not the bare name. A first version matched the bare name and
-# the function's own `def` line satisfied it, so deleting the call left the claim passing while
-# the guard never ran. Fourth time in this batch that a claim searched for a string instead of
-# behaviour.
+check("THE MULTIPLAYER PAGE A READER OPENS IS HELD TO THE READER-FACING RULES",
+      'os.path.join(WIKI, "multiplayer.md")' in conformance
+      and os.path.isfile(os.path.join(REPO, "docs", "wiki", "multiplayer.md")),
+      "-- **re-aimed 2026-10-01.** The concise public page is `docs/wiki/multiplayer.md` and it "
+      "is in the set; `MULTIPLAYER.md` keeps the server detail a player does not need and a "
+      "maintainer does. Otherwise the vocabulary and wall rules skip the page people actually "
+      "read")
 check("THE CLAIM GUARD EXISTS and is wired into the reader-facing walk",
       "FORBIDDEN_CLAIMS" in conformance and
       "def check_forbidden_claims(" in conformance and

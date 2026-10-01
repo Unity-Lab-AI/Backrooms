@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -95,14 +95,48 @@ namespace RimroomsAsyncIndustries.Gate
             }
         }
 
+        /// <summary>
+        /// Why a crossing cannot use this window right now, as a keyed reason, or null when it
+        /// can.
+        ///
+        /// **Seven conditions used to collapse into one bool**, and the one message a player got
+        /// was *"The laboratory connection for that address is not open."* So a drained battery
+        /// reported an address fault, which cost the owner a session in a running game:
+        /// *"its the same problem as before: the laboratory address for that is not open"*, and
+        /// *"which i think is a power porblem"* -- they were right, and the text had sent them
+        /// looking at the address.
+        ///
+        /// Third of its kind, after <c>CalibrationBlockerKey</c> and
+        /// <c>StaffConsoleBlockerKey</c>, both added because one generic refusal covered several
+        /// problems with several different fixes.
+        /// </summary>
+        public string PortalWindowBlockerKey(string connectionId, string openingId)
+        {
+            if (portalOwnerFault) { return "RR_PortalTravel_OwnerFault"; }
+            if (string.IsNullOrEmpty(portalOpeningId) ||
+                portalConnectionId != connectionId || portalOpeningId != openingId)
+            { return "RR_PortalTravel_SessionClosed"; }
+            if (!string.IsNullOrEmpty(activeExpeditionId))
+            { return "RR_PortalTravel_ExpeditionHolds"; }
+            if (IsEmergency) { return "RR_PortalTravel_InEmergency"; }
+            if (openingTicksRemaining <= 0 && !PortalOpeningIsIndefinite)
+            { return "RR_PortalTravel_WindowExpired"; }
+            CompanyActionResult station = CheckStationReadiness(assignedOperator);
+            if (!station.Success) { return station.MessageKey ?? "RR_Gate_OperatorLost"; }
+            // **The one that was invisible.** Reported in watt-days so the number matches the
+            // gate's own power readout rather than being a second unit nobody can compare.
+            float needed = OpeningPowerDrawWatts * CompPower.WattsToWattDaysPerTick;
+            if (NativeStoredEnergy < needed) { return "RR_PortalTravel_NoCharge"; }
+            return null;
+        }
+
+        /// <summary>
+        /// **Asks the blocker key rather than restating the conditions.** One authority, so the
+        /// predicate that gates a crossing and the message a player reads cannot disagree.
+        /// </summary>
         public bool HasUsablePortalWindow(string connectionId, string openingId)
         {
-            return !portalOwnerFault && !string.IsNullOrEmpty(portalOpeningId) &&
-                portalConnectionId == connectionId && portalOpeningId == openingId &&
-                string.IsNullOrEmpty(activeExpeditionId) && !IsEmergency &&
-                (openingTicksRemaining > 0 || PortalOpeningIsIndefinite) &&
-                CheckStationReadiness(assignedOperator).Success &&
-                NativeStoredEnergy >= OpeningPowerDrawWatts * CompPower.WattsToWattDaysPerTick;
+            return PortalWindowBlockerKey(connectionId, openingId) == null;
         }
 
         private void ExposePortalOpening()

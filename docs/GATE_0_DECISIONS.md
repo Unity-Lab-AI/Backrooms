@@ -1,4 +1,10 @@
-# Rimrooms - Async Industries: Gate 0 decisions
+﻿# Rimrooms - Async Industries: Gate 0 decisions
+
+> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
+> package has hard dependencies. `About.xml` now declares all five expansions and the whole
+> collection as requirements, so anything here describing a Core-only route is history rather than
+> a current claim. Recorded as a change to D3 and D4 in
+> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
 
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
@@ -167,8 +173,8 @@ These are execution work, not owner questions: the exact RimWorld/RWT/Harmony bu
 | --- | --- | --- | --- |
 | D1 | **B — public Steam Workshop is the first distribution target; do not announce compatibility until validation is complete.** Changed by the owner 2026-09-29: *"option 3 and remeber we dont have other peoples saves we just publish it all and update it as we go fixing bugs"*. Supersedes A (private RWT test first), recorded 2026-09-27 before the mod existed. The private RWT prototype is no longer a release prerequisite; the no-compatibility-claim rule is now the main protection. | 2026-09-27, **changed 2026-09-29** | TODO, roadmap, release plan, ARCHITECTURE, SKILL_TREE, AGENTS, CONTRIBUTING |
 | D2 | Exact title; author/publisher metadata `Operator`; package ID `Rimrooms.AsyncIndustries`; namespace `RimroomsAsyncIndustries`; semantic versions | 2026-09-27 | TODO, About.xml/package metadata, technical architecture |
-| D3 | B — all 294 are the research/test target; only Core + Harmony/RWT required; other profile mods optional. Owner says test rows 182 and 274 in the co-op candidate despite publisher warnings; no support claim before results. | 2026-09-27 | TODO, compatibility, mod plan, technical architecture, interaction map |
-| D4 | A — all five DLC optional; Core-only campaign; validate all-five profile | 2026-09-27 | TODO, compatibility, scenario, mod plan, systems catalog |
+| D3 | **CHANGED by the owner 2026-10-01: every mod in the collection is a hard dependency.** *"there are alot more depeandacies than just the DLC we have alkinds of mods in the 274 mod list WE ARE USING ALL OF THEM!!!!"*. `About.xml` declares 289 mods plus the five expansions, each with a display name and a link, and every one also as a load-order constraint. Supersedes B (all 294 are the research/test target; only Core + Harmony/RWT required; other profile mods optional), recorded 2026-09-27. | 2026-09-27, **changed 2026-10-01** | About.xml, compatibility, mod plan, technical architecture, the wiki |
+| D4 | **CHANGED by the owner 2026-10-01: all five expansions are hard dependencies.** *"the mod DOES HAVE HARD DEPENDANCIES SO GET IT RIGHT AND MAKE SURE ITS LAYED OUT RIGHT FOR RIMSORT TO NOTICE AND ENFORCE"*. Supersedes A (all five DLC optional; a Core-only campaign), recorded 2026-09-27. **The graceful guards stay** — the owner chose to declare the requirement and still look content up by name, so a player who ignores the warning degrades rather than crashes. | 2026-09-27, **changed 2026-10-01** | About.xml, compatibility, scenario, mod plan, systems catalog, the wiki |
 | D5 | B + customized D — Kane Pixels and A24 only; indirect use of canon/lore/themes/styles | 2026-09-27 | TODO, source register, research, universe adaptation, feature map |
 | D6 | A + B — tradeable dossiers plus shared research ledger only if supported and safely tested | 2026-09-27 | TODO, technical architecture, mod plan, roadmap |
 | D7 | A — English first/localization-ready; solo Core path; RWT co-op | 2026-09-27 | TODO, technical architecture, build plan |

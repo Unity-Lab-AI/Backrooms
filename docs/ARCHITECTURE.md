@@ -1,4 +1,10 @@
-# ARCHITECTURE
+﻿# ARCHITECTURE
+
+> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
+> package has hard dependencies. `About.xml` now declares all five expansions and the whole
+> collection as requirements, so anything here describing a Core-only route is history rather than
+> a current claim. Recorded as a change to D3 and D4 in
+> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
 
 > Rimrooms - Async Industries — a RimWorld 1.6 company-management campaign about operating a facility that opens, investigates and profits from unstable spaces beyond a machine gate.
 > Gee, Red, Sponge, Alfreddo

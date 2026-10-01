@@ -1,8 +1,18 @@
 ﻿# Playing Rimrooms — Async Industries
 
-**This is the player-facing how-to.** [`HOWTO.md`](HOWTO.md) is the other one: it documents how the
-mod is *built*. This page documents how it is *played*, and it is written once — the repository and
-the public page use this file, not two drifting copies of it.
+> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
+> package has hard dependencies. `About.xml` now declares all five expansions and the whole
+> collection as requirements, so anything here describing a Core-only route is history rather than
+> a current claim. Recorded as a change to D3 and D4 in
+> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
+
+> **The player documentation is the [wiki](wiki/index.md).** Start there — it is shorter, it is
+> organised for reading, and it is what the published site serves.
+>
+> This page is kept as the long-form working version behind it.
+
+[`HOWTO.md`](HOWTO.md) is the other document: it covers how the mod is *built*, not how it is
+played.
 
 ## Read this part first
 
@@ -241,9 +251,12 @@ There is no synchronised research either.
 
 ## What this page is not
 
-It is not a balance document, it is not a compatibility report, and it is not a play report. The
-mod is developed against RimWorld 1.6 with **no hard dependencies and no Harmony**, it is
-Core-only, and every expansion feature it touches is gated on that expansion being present.
+It is not a balance document, it is not a compatibility report, and it is not a play report.
+
+The mod is developed against RimWorld 1.6. **It declares hard dependencies**: all five
+expansions and every mod in the collection it is built alongside, so a mod manager can name
+anything missing before the game loads. Content from another mod is still looked up by name, so a
+missing one degrades what depends on it rather than throwing.
 
 For what the systems are meant to achieve, read [`GAME_DESIGN.md`](GAME_DESIGN.md). For the opening
 script in the company's own voice, read [`TUTORIAL_SCRIPT.md`](TUTORIAL_SCRIPT.md). For what is

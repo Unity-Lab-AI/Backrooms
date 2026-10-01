@@ -1,5 +1,11 @@
 ﻿# Existing-content-only gameplay policy
 
+> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
+> package has hard dependencies. `About.xml` now declares all five expansions and the whole
+> collection as requirements, so anything here describing a Core-only route is history rather than
+> a current claim. Recorded as a change to D3 and D4 in
+> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
+
 **Binding owner direction, 2026-09-28:** Rimrooms repurposes content already in RimWorld and the selected installed mods. The owner does not want a new item, equipment, furniture, production-bench or in-game asset production project. This supersedes earlier instructions to create original gameplay art/audio and custom physical item/building content. The full company/procedural campaign scope is retained.
 
 ## What implementation must do

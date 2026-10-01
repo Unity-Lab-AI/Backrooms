@@ -19,6 +19,10 @@ INTEG = SRC + "/Core/InstalledIntegrations.cs"
 PANE = SRC + "/UI/OperationsFacilities.cs"
 INHAB = SRC + "/Threats/InhabitantService.cs"
 DOC = "docs/MULTIPLAYER.md"
+# **The reader-facing claim guard moved to the wiki.** `MULTIPLAYER.md` keeps the
+# server detail a maintainer needs and is no longer held to the row 791 guard, which
+# is what the plant below detected by going MISSED.
+WIKI_DOC = "docs/wiki/multiplayer.md"
 CONF = "tools/check-doc-conformance.py"
 PROOF = ".local/register/proof-integrations.py"
 CHECKER = "tools/check-doc-conformance.py"
@@ -135,8 +139,9 @@ PLANTS = [
      "        check_forbidden_claims(rel, prose, problems)\n", "", PROOF),
 
     # The guard itself, planted with a real claim in a real reader-facing document.
-    ("ROW 791: a real shared-research claim lands in a reader-facing document", DOC,
-     "## What you need", "## What you need\n\nResearch is synchronised research across every "
+    ("ROW 791: a real shared-research claim lands in a reader-facing document", WIKI_DOC,
+     "## What it would be",
+     "## What it would be\n\nResearch is synchronised research across every "
      "company on the server.", CHECKER),
 
     ("ROW 791: a real shared-colony claim lands in a reader-facing document", "README.md",

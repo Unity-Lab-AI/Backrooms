@@ -46,10 +46,10 @@ been enough; the only thing that has worked is reaching for the Write tool first
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
-| Published | **0.12.76-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.77-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **204 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `B3B0B052445A706CF8A1F1BED154C9CA813B756AA019F773B7C26EE2225F6774`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Assembly | SHA-256 `5E87D3842B559E8ABCF44654D2178923D39D8EBE2A7D9F9D36A4FCAB441E39CC`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **SIXTEEN**, all passing. **The sixteenth validates every authored starting facility offline, cell by cell.** `GenStep_Headquarters` throws on any geometry mistake and a throw inside a GenStep costs the player the start; the Async facility is ten rooms, sixteen doors and 122 fixture cells, and nothing else in this battery looked at a single one of them. It derives footprints from **Core's own `<size>`** with ParentName inheritance rather than from a table, because a table is a second derivation that goes stale. **It cried wolf on its first run** -- 368 legitimate cells -- before the nesting case was understood, which is the fifth false alarm in this battery and the reason each is written down. **The fifteenth refuses while a planted fault is still in the source tree.** A suite has left one there three times -- twice deleting `Campaign.NoteReturnedFromField(...)`, once deleting `!anchor.Destroyed` -- and each would have shipped silently if a build had gone out first. The `finally` added at 0.12.65-dev handles an exception and does nothing for a killed process, so the suites write a sentinel naming the file before they mutate it and `check-plant-residue.py` refuses while it exists. **A false alarm costs one command; a missed one ships a deliberate fault.** **The fourteenth is the only one that runs code rather than reading it**, and it exists because the thirteen that read text, the forty-five proofs and five hundred and fifty plants **all passed over a planner that could not produce one valid layout** -- `MaxRoomSpan` said 34 while the grand hall was 80, and no amount of reading either file can see two numbers disagree. `check-planner-layouts.py` builds `.local/harness/PlannerProbe` and runs `TrySelect` and `ValidateRooms` over 200 seeds at seven depths, demanding both that a layout is accepted **and that back-to-back pairs exist** -- because a plant that moved a pushed room one cell was missed by every proof when the revert guard quietly switched the feature off. **It never skips**: no dotnet, no install or no built assembly is a failure, not a pass. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -343,6 +343,96 @@ It should not appear, because the conduits are laid last now — but it is a war
 * **An absence claim cannot read raw source** — it reads the comment explaining the removal.
   `proof-coordinate-layout.py` keeps a `code()` view; `proof-generation-batch.py` strips comments.
 * **Use the Write tool.** A heredoc mangled an escaped newline for the **eleventh** time.
+
+## STATE AT THIS HANDOFF — `0.12.77-dev`, BUILT AND NOT YET STAGED
+
+```
+built       Rimrooms.AsyncIndustries  0.12.77-dev  92 files
+assembly    5E87D3842B559E8ABCF44654D2178923D39D8EBE2A7D9F9D36A4FCAB441E39CC
+            measured after the version bump, reproduced by two clean rebuilds
+battery     16 checkers - 49 proofs - 20 plant suites - 752 anchors
+            new suite: 12 of 12
+tree        no planted fault, porcelain 0
+```
+
+### ⚠ STAGING IS PENDING AND THAT IS THE FIRST THING TO DO
+
+`tools/stage-mod.ps1` **refused**: *"Close RimWorld before staging a new DLL."* The owner had the
+game open. **The owner's fix is in this build and not in their game folder yet.** Re-run staging
+once RimWorld is closed:
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
+```
+
+Then read the hash back out of the game folder and confirm it matches the line above.
+
+### ONE BATTERY WAS THE WHOLE RESERVE
+
+Owner, from a running game: *"looks like only being able to connect 1 battery isnt anough and
+there should be no loimit"*, and *"which i think is a power porblem"*. **Both halves were right.**
+
+`nativeBattery` is the **anchor** that identifies the gate's circuit. `NativeGenerationWatts` has
+always summed the whole net and `NativePowerConnected` has always checked it — **stored energy was
+the one reading that never followed.** And the spend was worse: `TrySpendNativeEnergy` refused
+outright when the anchor alone could not cover a cost, so **a drained anchor stalled a gate with
+ten full batteries beside it on the same net.**
+
+Fixed through Core: `PowerNet.CurrentStoredEnergy()` for the sum (EMP-aware for free), and the draw
+**copied from `ChangeStoredEnergy`**, which does exactly this and is private.
+
+**The anchor is still required.** Removing the limit is not removing the binding.
+
+### AND THE REFUSAL NAMED THE WRONG THING, WHICH COST THE OWNER THE SESSION
+
+`HasUsablePortalWindow` collapsed **seven** conditions into one bool, and the player read *"The
+laboratory connection for that address is not open."* **A flat battery reported an address fault.**
+
+`PortalWindowBlockerKey` is the third blocker key after `CalibrationBlockerKey` and
+`StaffConsoleBlockerKey`, both added for the same reason. **`HasUsablePortalWindow` delegates to
+it**, so the predicate and the message cannot disagree.
+
+**Nothing in forty-eight proofs had ever claimed anything about the energy a gate runs on.** That
+is why this reached play.
+
+### THE READER-FACING LIST WAS MOSTLY NOT READER-FACING
+
+Owner: *"public facing docs ... have no in house dev names and no todo numbering and no actual work
+information"*, and *"ARE NOT to be text walls get to each point in as short a way as possible"*.
+
+`READER_FACING` held thirteen entries and **most were never reader documents** — `HOWTO.md` opens
+*"the practical guide for anyone (human or build agent) opening this repository"*; `SCENARIOS.md`
+calls itself a *"design contract"*. Holding a dev document to a reader's vocabulary made it look
+supervised while nothing was going to notice it was the wrong **kind** of document.
+
+**`docs/wiki/` is thirteen pages and nothing else**, served by `docs/_config.yml`. The wall limit
+is **360**, down from 700; the wiki tops out at **307**, so the limit is a floor under a standard
+already met. Workshop links are authored as **clearly-marked placeholders** — nothing claims a page
+that does not exist.
+
+### A RULE NOW CATCHES THE DOCUMENTS THAT LIE ABOUT DEPENDENCIES
+
+Yesterday's decision made *"Core only"* false in **twenty-six living documents**. The count is read
+from `About.xml`, never typed, so **if the owner reverses the decision the rule stops firing on its
+own.** D3 and D4 are recorded as changed in `GATE_0_DECISIONS.md`, following D1's own pattern.
+
+**The verbatim ledger is exempt and the reason is a LAW.** `TODO.md`, `NOW.md`, `ROADMAP.md` and
+the master backlog hold twenty-nine of the seventy-two matches, and **LAW #0 forbids altering the
+owner's recorded words.**
+
+### THE PLANTS CAUGHT FIVE CONSEQUENCES OF THIS SESSION'S OWN WORK
+
+* **three went MISSED** because `PLAYING.md` left the supervised set — the one thing a
+  reader-facing rule set loses silently. Re-aimed at the wiki,
+* **one was only passing because of a bug**: it planted a stat base **inside an XML comment**, and
+  that checker strips comments now. **A plant that tests a bug instead of a rule goes green while
+  the rule is unguarded.**
+* **one claim was the duplicate-string trap, third instance in one session** —
+  `List<CompPowerBattery> batteries = net.batteryComps;` appears twice, so gutting the capacity
+  reader left the claim true. **Count, never test presence.**
+
+And the new dependency rule **reported wrong line numbers on its first run**, enumerating stripped
+text while reporting file positions. **A finding with the wrong address is worse than no finding.**
 
 ## STATE AT THIS HANDOFF — `0.12.76-dev`, STAGED AND VERIFIED
 

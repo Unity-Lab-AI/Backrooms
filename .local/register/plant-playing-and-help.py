@@ -28,6 +28,10 @@ BUTTON = "Mod/Rimrooms - Async Industries/1.6/Defs/MainButtonDefs/RR_MainButtons
 HELP_KEYS = ("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Help.xml")
 PATCH = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_GlowPodMarker.xml"
 DOC = "docs/PLAYING.md"
+# **The reader-facing rules live on the wiki now.** `PLAYING.md` is the long-form
+# working version behind it and is no longer held to the vocabulary rule, the wall rule
+# or the row 791 claim guard -- which three plants below detected by going MISSED.
+WIKI_DOC = "docs/wiki/troubleshooting.md"
 CONF = "tools/check-doc-conformance.py"
 STYLE = "tools/check-display-style.py"
 PROOF = ".local/register/proof-playing-and-help.py"
@@ -260,8 +264,14 @@ PLANTS = [
      'listing.Label("RR_Help_Untested".Translate());', "// nothing", PROOF),
 
     # ------------------------------------------------------------------- rows 1193/1220, the doc
-    ("THE PLAY DOCUMENT LEAVES THE READER-FACING SET", CONF,
-     '    os.path.join("docs", "PLAYING.md"),\n', "", PROOF),
+    ("A WIKI PAGE LEAVES THE READER-FACING SET", CONF,
+     '    os.path.join(WIKI, "troubleshooting.md"),\n', "", PROOF),
+
+    ("the wall limit goes back to the one the owner superseded", CONF,
+     "DOC_WALL_CHARS = 360", "DOC_WALL_CHARS = 700", PROOF),
+
+    ("a wiki page is deleted and nothing notices", CONF,
+     '    os.path.join(WIKI, "install.md"),\n', "", PROOF),
 
     ("the play document stops saying no game has been launched", DOC,
      "**No game has ever been launched from this repository.**",
@@ -284,29 +294,20 @@ PLANTS = [
      "appears in your Key Bindings dialog", "is fixed", PROOF),
 
     # The reader-facing rules, planted in the document this batch just added to that set.
-    ("ROW 791: A REAL SHARED-COLONY CLAIM LANDS IN THE PLAY DOCUMENT", DOC,
-     "\n## The money", "\n\nTwo players run one shared colony together.\n\n## The money", CONF),
+    ("ROW 791: A REAL SHARED-COLONY CLAIM LANDS IN A WIKI PAGE", WIKI_DOC,
+     "\n## Reporting a problem",
+     "\n\nTwo players run one shared colony together.\n\n## Reporting a problem", CONF),
 
-    ("the retired vocabulary lands in the play document", DOC,
-     "A **gate** is the built machine.", "A **portal** is the built machine.", CONF),
+    ("the retired vocabulary lands in a wiki page", WIKI_DOC,
+     "A gate needs a registered coordinate to dial",
+     "A portal needs a registered coordinate to dial", CONF),
 
     # DOC_WALL_CHARS is 700, so the filler has to clear 700 rendered characters in a single
     # paragraph. A first attempt came to roughly 590 and passed, which made the plant wrong
     # rather than the rule -- the same shape as the `maxTechLevel` replant at 0.12.37-dev.
-    ("a wall of text lands in the play document", DOC,
-     "\n## The money",
-     "\n\n" + ("The company account is a ledger in dollars and it pays quoted company costs "
-               "such as staff wages and site fees and procurement orders and outstanding "
-               "obligations and it is never spawned as physical silver for somebody to haul "
-               "around the map by hand, which is the whole point of keeping it separate from "
-               "physical stock like silver and steel and food and gear and salvage, all of "
-               "which behave exactly as they always have in the base game with no changes at "
-               "all to any of it whatsoever, and the ledger pane lists every recent movement "
-               "with the reason recorded beside it so that a player can always account for "
-               "where the money went and why it went there rather than having to guess from "
-               "the balance alone, which would be the opposite of the learnable rule this "
-               "mod holds itself to everywhere else.") + "\n\n## The money",
-     CONF),
+    ("A WALL OF TEXT LANDS IN A WIKI PAGE", WIKI_DOC,
+     "\n## Reporting a problem",
+     "\n\n" + "The company account is a ledger in dollars and it pays quoted company costs such as staff wages and site fees and procurement orders and outstanding obligations, and it is never spawned as physical silver for somebody to haul across a map on foot, which is the whole distinction the two kinds of money exist to draw in the first place, and it is also the reason the ledger pane lists a written reason beside every movement rather than leaving a player to work out where the money went on their own." + "\n\n## Reporting a problem", CONF),
 ]
 
 

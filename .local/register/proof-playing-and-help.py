@@ -370,9 +370,38 @@ print("-" * 90)
 
 check("the play document exists", os.path.isfile(os.path.join(REPO, "docs", "PLAYING.md")))
 
-check("it is held to the reader-facing rules",
-      'os.path.join("docs", "PLAYING.md")' in conformance,
-      "-- the vocabulary rule, the wall rule and the row 791 claim guard all hang off that set")
+# **The play document is the wiki now.** Owner, 2026-10-01: *"laying out the full wiki of the
+# dame how to play how to set it all up rimsort all of it"*. `PLAYING.md` is the long-form
+# working version behind it, and this claim follows the role rather than the filename.
+#
+# **Stronger than it was**, in two ways: every page is required rather than one document, so
+# adding a page without supervising it fails; and these are held to a 360-character wall where
+# `PLAYING.md` was held to 700.
+WIKI_PAGES = ("index", "install", "first-hour", "scenarios", "gates", "backrooms", "company",
+              "interface", "mods", "multiplayer", "troubleshooting", "links", "credits")
+missing_pages = [name for name in WIKI_PAGES
+                 if not os.path.isfile(os.path.join(REPO, "docs", "wiki", name + ".md"))]
+unsupervised = [name for name in WIKI_PAGES
+                if ('os.path.join(WIKI, "%s.md")' % name) not in conformance]
+
+check("THE PLAY DOCUMENTATION IS A WIKI, AND EVERY PAGE OF IT EXISTS",
+      not missing_pages,
+      "-- missing: %s" % ", ".join(missing_pages))
+
+check("and every page of it is held to the reader-facing rules",
+      not unsupervised,
+      "-- unsupervised: %s. The vocabulary rule, the wall rule and the row 791 claim guard all "
+      "hang off that set, so a page outside it is a page nothing reads"
+      % ", ".join(unsupervised))
+
+check("and the wall limit is tighter than the old document was held to",
+      "DOC_WALL_CHARS = 360" in conformance,
+      "-- owner: *\"public facing documnets ARE NOT to be text walls get to each point in as "
+      "short a way as possible\"*. It was 700")
+
+check("and the long-form version points at it rather than competing with it",
+      "wiki/index.md" in playing,
+      "-- one canonical place, not two drifting copies")
 
 check("it says no game has ever been launched",
       "no game has ever been launched from this repository" in playing_flat,
@@ -384,13 +413,18 @@ check("it says the game's readouts outrank it",
       "live state")
 
 check("it distinguishes itself from the build how-to",
-      "documents how the mod is" in playing_flat and "howto.md" in playing_flat,
+      "howto.md" in playing_flat
+      and ("built" in playing_flat or "building" in playing_flat),
       "-- HOWTO.md already exists and is about building; two documents with one job is how the "
-      "wrong one gets read")
+      "wrong one gets read. **Re-aimed 2026-10-01**: the header was rewritten to point at the "
+      "wiki, so the property is asserted rather than the old sentence quoted")
 
-check("it is written once for both the repository and the site",
-      "written once" in playing_flat,
-      "-- row 1193's own requirement")
+check("THE PLAY DOCUMENTATION EXISTS ONCE, AND THIS POINTS AT IT",
+      "wiki/index.md" in playing_flat
+      and os.path.isfile(os.path.join(REPO, "docs", "wiki", "index.md")),
+      "-- one canonical place, not two drifting copies. The requirement has not changed; the "
+      "canonical place has. **Putting the old wording back to satisfy a claim would be writing "
+      "documentation for the checker instead of the reader**")
 
 check("it records that Core's menus are deliberately not remapped",
       "does not remap rimworld's own menus" in playing_flat,

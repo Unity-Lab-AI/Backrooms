@@ -1,5 +1,11 @@
 ﻿# Rimrooms - Async Industries: campaign scenarios
 
+> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
+> package has hard dependencies. `About.xml` now declares all five expansions and the whole
+> collection as requirements, so anything here describing a Core-only route is history rather than
+> a current claim. Recorded as a change to D3 and D4 in
+> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
+
 **Gate traversal and pacing rule (owner, 2026-09-28):** inhabitants and monstrosities stay in the Backrooms. Nothing but this company's own pawns crosses a gate under its own will, and an open gate is never an objective, lure, spawn target, raid route or attack trigger. Everything else comes back only because one of our pawns physically carried it through by ordinary work, including people and monstrosities that are genuinely downed, dead or imprisoned. Pressure escalates gradually from saved causes, bounded per opening and per coordinate, with quiet stretches as required content. Every start can eventually run several gates.
 
 **Two later directions refine this rule and are not in conflict with it.** The words are now three rather than one: the **gate** is the designated door, the **connection** is the live link it holds open, and the **threshold** is where you arrive. And there is exactly one bounded exception to nothing-crosses-under-its-own-will: at the deepest pressure band, through an advanced gate, while an opening is live, something that fits may follow a crew out. A gate is still never an objective, a lure or a spawn target, and nothing is ever drawn toward one. See [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side).

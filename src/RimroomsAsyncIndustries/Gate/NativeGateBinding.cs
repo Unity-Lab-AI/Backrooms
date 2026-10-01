@@ -88,21 +88,99 @@ namespace RimroomsAsyncIndustries.Gate
 
         private CompPowerBattery NativeBatteryComp
         { get { return nativeBattery == null || nativeBattery.Destroyed ? null : nativeBattery.TryGetComp<CompPowerBattery>(); } }
+        /// <summary>
+        /// The power net the gate's circuit is. **The bound battery is an anchor, not the
+        /// reserve.**
+        ///
+        /// Owner, 2026-10-01, from a running game: *"only being able to connect 1 battery isnt
+        /// anough and there should be no loimit"*. `NativeGenerationWatts` has always summed this
+        /// whole net and `NativePowerConnected` has always checked it; the stored-energy reading
+        /// was the one that never followed, and it read a single battery.
+        /// </summary>
+        private PowerNet NativePowerNet
+        {
+            get
+            {
+                CompPowerBattery battery = NativeBatteryComp;
+                return battery == null ? null : battery.PowerNet;
+            }
+        }
+
+        /// <summary>
+        /// Everything stored on the gate's circuit, through **Core's own sum**.
+        ///
+        /// `PowerNet.CurrentStoredEnergy()` walks `batteryComps` and skips anything stunned by
+        /// EMP, so an EMP'd battery stops counting toward a reserve without this having to know
+        /// what EMP is.
+        /// </summary>
         private float NativeStoredEnergy
         {
             get
             {
-                CompPowerBattery battery = NativeBatteryComp;
-                return battery == null || !FiniteNonnegative(battery.StoredEnergy) ? 0f : battery.StoredEnergy;
+                PowerNet net = NativePowerNet;
+                if (net == null) { return 0f; }
+                float stored = net.CurrentStoredEnergy();
+                return FiniteNonnegative(stored) ? stored : 0f;
             }
         }
+
+        /// <summary>
+        /// What the gate's circuit could hold if full. Summed across the net for the same reason
+        /// the stored figure is: the readout a player reads has to be about the circuit they
+        /// built, not about whichever battery they happened to click first.
+        /// </summary>
         private float NativeBatteryCapacity
         {
             get
             {
-                CompPowerBattery battery = NativeBatteryComp;
-                return battery == null || !FiniteNonnegative(battery.Props.storedEnergyMax) ? 0f : battery.Props.storedEnergyMax;
+                PowerNet net = NativePowerNet;
+                if (net == null) { return 0f; }
+                float total = 0f;
+                List<CompPowerBattery> batteries = net.batteryComps;
+                for (int index = 0; index < batteries.Count; index++)
+                {
+                    CompPowerBattery battery = batteries[index];
+                    if (battery == null || battery.StunnedByEMP || battery.Props == null) { continue; }
+                    float most = battery.Props.storedEnergyMax;
+                    if (FiniteNonnegative(most)) { total += most; }
+                }
+                return total;
             }
+        }
+
+        /// <summary>
+        /// Draws across every battery on the circuit and reports what was actually taken.
+        ///
+        /// **Copied from Core rather than called**: `PowerNet.ChangeStoredEnergy` does exactly
+        /// this with `givingBats[j].DrawPower(num3)` and is `private`, so the pattern is
+        /// reproduced and the behaviour matches what the game does to its own batteries.
+        ///
+        /// Returns the observed total, never the requested one. A battery that refuses to give
+        /// what it said it held is the case the debit-fault machinery exists for, and that
+        /// machinery compares observed against requested.
+        /// </summary>
+        private float DrawFromNativeCircuit(float amount)
+        {
+            PowerNet net = NativePowerNet;
+            if (net == null || !FiniteNonnegative(amount) || amount <= 0f) { return 0f; }
+            float remaining = amount;
+            float drawn = 0f;
+            List<CompPowerBattery> batteries = net.batteryComps;
+            for (int index = 0; index < batteries.Count && remaining > 0f; index++)
+            {
+                CompPowerBattery battery = batteries[index];
+                if (battery == null || battery.StunnedByEMP) { continue; }
+                float available = battery.StoredEnergy;
+                if (!FiniteNonnegative(available) || available <= 0f) { continue; }
+                float take = available < remaining ? available : remaining;
+                float before = battery.StoredEnergy;
+                battery.DrawPower(take);
+                float observed = before - battery.StoredEnergy;
+                if (!FiniteNonnegative(observed)) { continue; }
+                drawn += observed;
+                remaining -= observed;
+            }
+            return drawn;
         }
         private IntVec3 NativeEntryCell
         {
@@ -439,10 +517,10 @@ namespace RimroomsAsyncIndustries.Gate
             // so what the gate reports drawing and what it actually takes can never diverge.
             float cost = IdlePowerDrawWatts * CompPower.WattsToWattDaysPerTick;
             if (!(cost > 0f) || float.IsNaN(cost) || float.IsInfinity(cost)) { return; }
-            CompPowerBattery battery = NativeBatteryComp;
-            if (battery == null) { return; }
+            if (NativePowerNet == null) { return; }
             if (NativeStoredEnergy - cost < GateProps.emergencyReturnCostWattDays) { return; }
-            battery.DrawPower(cost);
+            // Across the whole circuit, not out of one battery.
+            DrawFromNativeCircuit(cost);
         }
 
         private bool SpendNativeOpeningTick()
@@ -479,13 +557,19 @@ namespace RimroomsAsyncIndustries.Gate
             }
             float remaining = Math.Max(0f, amount - paid);
             if (remaining <= NativeDebitTolerance(amount)) { ArchiveNativeDebit(); return true; }
-            CompPowerBattery battery = NativeBatteryComp;
-            if (battery == null || !FiniteNonnegative(battery.StoredEnergy) || battery.StoredEnergy < remaining) { return false; }
-            float before = battery.StoredEnergy;
+            // **The circuit, not the one bound battery.** This refused outright when the bound
+            // battery alone could not cover the cost, so a drained anchor stalled a gate that had
+            // ten full batteries beside it on the same net. That is the defect the owner found in
+            // a running game: *"only being able to connect 1 battery isnt anough"*.
+            float availableNow = NativeStoredEnergy;
+            if (NativePowerNet == null || !FiniteNonnegative(availableNow) || availableNow < remaining)
+            { return false; }
+            float before = availableNow;
             Exception interrupted = null;
-            try { battery.DrawPower(remaining); }
+            float taken = 0f;
+            try { taken = DrawFromNativeCircuit(remaining); }
             catch (Exception exception) { interrupted = exception; }
-            float observed = before - battery.StoredEnergy;
+            float observed = FiniteNonnegative(taken) ? taken : before - NativeStoredEnergy;
             bool finiteObserved = FiniteNonnegative(observed);
             if (finiteObserved) { nativeEnergyDrawnWattDays += observed; }
             if (interrupted != null || !finiteObserved || Math.Abs(observed - remaining) > NativeDebitTolerance(before))

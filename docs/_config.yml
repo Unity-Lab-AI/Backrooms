@@ -1,0 +1,20 @@
+title: Rimrooms — Async Industries
+description: A company-management campaign for RimWorld about contract work beyond a gate.
+theme: jekyll-theme-primer
+
+# The wiki is the landing page. Everything else under docs/ is project working
+# material and is deliberately excluded from the published site.
+include:
+  - wiki
+
+exclude:
+  - implementation
+  - research
+  - evidence
+  - reviews
+
+defaults:
+  - scope:
+      path: wiki
+    values:
+      layout: default

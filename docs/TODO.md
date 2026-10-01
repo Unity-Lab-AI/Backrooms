@@ -2495,6 +2495,82 @@ a player who ignores the warning degrades instead of crashing.
 
 ---
 
+## The public wiki - 2026-10-01 (0.12.77-dev) - DONE
+
+Owner, verbatim:
+
+> **"make sure to update all the public facing doc and workflow docs(remember public facing docs
+> are concise easy to read and have no in house dev names and no todo numbering and no actual work
+> information but are concise and informatitve laying out the full wiki of the dame how to play how
+> to set it all up rimsort all of it, we will add links later to the mod workfshop and collection
+> workshop for this collection and mod makeing sure all are propely all linked to gether when we
+> build a github page repo deployed hosting the full howto readmes and wiki of the full mod and all
+> of that( the mod registar can be a good resources fo laying everyhting out but public facing
+> documnets ARE NOT to be text walls get to each point in as short a way as possible"**
+
+- [x] **"make sure to update all the public facing doc and workflow docs"**
+- [x] **"public facing docs are concise easy to read"**
+- [x] **"and have no in house dev names"**
+- [x] **"and no todo numbering"**
+- [x] **"and no actual work information"**
+- [x] **"but are concise and informatitve"**
+- [x] **"laying out the full wiki of the dame how to play how to set it all up rimsort all of it"**
+- [x] **"we will add links later to the mod workfshop and collection workshop for this collection
+  and mod"** - placeholders authored now, clearly marked, so the page has the slots and nothing
+  claims a link that does not exist yet
+- [x] **"makeing sure all are propely all linked to gether"**
+- [x] **"when we build a github page repo deployed hosting the full howto readmes and wiki of the
+  full mod and all of that"**
+- [x] **"the mod registar can be a good resources fo laying everyhting out"**
+- [x] **"public facing documnets ARE NOT to be text walls get to each point in as short a way as
+  possible"**
+- [x] **`docs/HOWTO.md` IS IN THE READER-FACING LIST AND IS NOT A READER DOCUMENT.** It opens
+  *"This is the practical guide for anyone (human or build agent) opening this repository"* and
+  carries in-house tooling names, owner-decision identifiers, branch cascade procedure, the
+  task-record pattern and the workflow ledger. **It violates three of the owner's four rules at
+  once** and has been held to the reader vocabulary by `check-doc-conformance.py` for its whole
+  life, which is why nobody noticed it was the wrong kind of document
+
+---
+
+## One battery was the whole reserve - 2026-10-01 (0.12.77-dev) - DONE
+
+Owner, verbatim, from a running game:
+
+> **"its the same problem as before: the laboratory address for that is not open.... thats just
+> clicking on the portal and trying to send them through not working,,, and using operations
+> clicking send pawns through which i think is a power porblem but you can check the game current
+> running,, looks like only being able to connect 1 battery isnt anough and there should be no
+> loimit"**
+
+**The owner's diagnosis is correct and the mechanism is worse than the symptom suggests.**
+
+- [x] **"only being able to connect 1 battery isnt anough and there should be no loimit"** - a gate
+  binds `private Thing nativeBattery`, **one battery**, and `NativeStoredEnergy` reads that one
+  battery's `StoredEnergy`. **Every battery else on the same power net counts for nothing.** The
+  bound battery was only ever meant to be the anchor that identifies the gate's circuit --
+  `NativeGenerationWatts` already sums the whole net, and `NativePowerConnected` already checks
+  the whole net. **The stored energy was the one reading that never followed**
+- [x] **"the laboratory address for that is not open"** - the refusal is
+  `RR_PortalTravel_SessionClosed`, produced by `RimroomsPortalNetwork.Availability` when
+  `gate.HasUsablePortalWindow(...)` returns false. Its last condition is
+  `NativeStoredEnergy >= OpeningPowerDrawWatts * WattsToWattDaysPerTick`, **checked on every
+  attempt to cross**, so a drained bound battery reads as *the connection is not open* rather than
+  as *the gate has no charge*. **The message names the wrong thing**, which is why it looked like
+  an address fault
+- [x] **"thats just clicking on the portal and trying to send them through not working"** - same
+  cause, same predicate. Both routes ask `Availability` first
+- [x] **"which i think is a power porblem"** - **it is.** And the spend is worse than the read:
+  `TrySpendNativeEnergy` refuses outright when `battery.StoredEnergy < remaining`, so a drained
+  bound battery stalls the gate **with ten full batteries beside it on the same net**
+- [x] **"you can check the game current running"** - **the bridge was not reachable**, so this was
+  diagnosed from the source rather than from the running game. Said plainly because a diagnosis
+  from reading is a weaker claim than a diagnosis from observing, and the difference matters
+- [ ] **`returnReserveCapacityWattDays` is 2 and a Core `Battery` holds 600**, so the bind-time
+  *ReserveTooSmall* refusal is **not** the cause. Checked and ruled out rather than assumed
+
+---
+
 ## TOMBSTONES
 
 _(none)_

@@ -1,5 +1,11 @@
 ﻿# Rimrooms - Async Industries: build-agent guide
 
+> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
+> package has hard dependencies. `About.xml` now declares all five expansions and the whole
+> collection as requirements, so anything here describing a Core-only route is history rather than
+> a current claim. Recorded as a change to D3 and D4 in
+> [Gate 0 decisions](docs/GATE_0_DECISIONS.md#decision-log).
+
 This file is the operating guide for anyone preparing, designing, implementing, or documenting the complete RimWorld mod. It points to the detailed project contracts; it does not replace them. Use saved project documents and evidence rather than reconstructing requirements from chat history.
 
 ## Project state and next gate

@@ -3,7 +3,7 @@
   <name>Rimrooms - Async Industries</name>
   <author>Operator</author>
   <packageId>Rimrooms.AsyncIndustries</packageId>
-  <modVersion>0.12.76-dev</modVersion>
+  <modVersion>0.12.77-dev</modVersion>
   <supportedVersions>
     <li>1.6</li>
   </supportedVersions>
@@ -1771,7 +1771,7 @@
     <li>proxyer.dismantleancientjunk</li>
     <li>VehiclesWrecksExpanded.Revisited</li>
   </loadAfter>
-  <description>Development build 0.12.76-dev. Gameplay acceptance is pending; this is not a finished campaign release.
+  <description>Development build 0.12.77-dev. Gameplay acceptance is pending; this is not a finished campaign release.
 
 Rimrooms - Async Industries is a company-management campaign about an authorised research branch that investigates, contains and profits from unstable spaces beyond a gate.
 
@@ -1810,6 +1810,10 @@ This build is authored against a specific collection and declares every member o
 Load this mod last. Every dependency is declared with loadAfter as well as being a requirement, so a sorting manager will place it correctly on its own.
 
 Nothing here is patched through Harmony. Content from another mod is looked up by name and never assumed, so a missing one degrades what depends on it rather than throwing.
+
+--- THE WIKI ---
+
+How to install it, how to set up your mod manager, how to play, what is through the gate, and what to do when something refuses: https://github.com/Unity-Lab-AI/Backrooms
 
 Original Backrooms menu backgrounds show the mod title and loaded version beside the native version information.</description>
 </ModMetaData>

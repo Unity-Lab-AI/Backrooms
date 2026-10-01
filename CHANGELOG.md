@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.12.77-dev - 2026-10-01 - every battery counts, and the refusal tells you the truth
+
+- **A gate now runs off its whole circuit.** It used to read charge from the single battery you
+  bound to it and ignore every other battery on the same power net, so adding batteries did
+  nothing. Bind one as the anchor, then put **as many on the circuit as you like** — there is no
+  limit, and the readout shows the circuit's total.
+- **And it spends from the whole circuit too.** Worse than the reading: a drained anchor battery
+  refused to open or hold a connection *while ten full batteries sat beside it on the same net*.
+- **A refusal now names the real cause.** Seven different problems used to produce one message:
+  *"The laboratory connection for that address is not open."* So a flat battery reported an
+  address fault. There are now separate reasons for no stored charge, an expedition holding the
+  connection, an emergency in progress, an expired window, and an operator off station.
+- **The wiki.** How to install it, how to set up your mod manager, how to play, what is through
+  the gate, and what to do when something refuses — written as short pages instead of one long
+  document, and linked from the mod description in game.
+- **Reports get signed off, and your people remember where they have been** — carried over from
+  the previous build and now documented.
+
+Full record: [every battery counts](docs/implementation/GATE_CIRCUIT_IMPLEMENTATION.md). No
+gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.76-dev - 2026-10-01 - the company clears the site, and the mod finally admits what it needs
 
 - **If everyone at the laboratory goes down, The Company comes.** Not when they die - when they are

@@ -135,24 +135,36 @@ DEFERRED_CLOSED_WORDS = re.compile(r"(closed|never add|nothing is deferred|zero 
 #   a worse failure than an old word.
 #
 # The remainder is counted in `TODO.md` with its number rather than left to be rediscovered.
+# The documents a player reads. **Nothing else belongs on this list.**
+#
+# Owner direction, 2026-10-01: *"public facing docs are concise easy to read and have no in house
+# dev names and no todo numbering and no actual work information"*.
+#
+# This list used to hold `HOWTO.md`, `SCENARIOS.md`, `GAME_DESIGN.md`, `RESEARCH.md`,
+# `TUTORIAL_SCRIPT.md`, `CONTENT_REUSE_POLICY.md`, `BUILDING.md` and `PLAYING.md`. **Most of
+# those were never reader documents.** `HOWTO.md` opens *"the practical guide for anyone (human or
+# build agent) opening this repository"*; `SCENARIOS.md` calls itself a *"design contract"* with
+# *"tuning hypotheses"*. Holding a development document to a reader's vocabulary made it look
+# supervised while nothing was ever going to notice it was the wrong KIND of document.
+#
+# They are still checked as living documents. They are no longer checked as public ones, because
+# they are not public ones.
+WIKI = os.path.join("docs", "wiki")
 READER_FACING = (
     "README.md",
-    os.path.join("docs", "HOWTO.md"),
-    # The play document, rows 1193 and 1220. It belongs here for the same reason `HOWTO.md`
-    # does and for one more: it is the one document whose every sentence is an instruction to
-    # a player, so a stale claim in it is a lie about what will happen rather than a lie about
-    # the repository.
-    os.path.join("docs", "PLAYING.md"),
-    os.path.join("docs", "COMPATIBILITY.md"),
-    os.path.join("docs", "MULTIPLAYER.md"),
-    os.path.join("docs", "GAME_DESIGN.md"),
-    os.path.join("docs", "SCENARIOS.md"),
-    os.path.join("docs", "BUILDING.md"),
-    os.path.join("docs", "RESEARCH.md"),
-    os.path.join("docs", "CONTENT_REUSE_POLICY.md"),
-    os.path.join("docs", "RIMROOMS_MOD_OVERVIEW.md"),
-    os.path.join("docs", "TUTORIAL_SCRIPT.md"),
-    os.path.join("docs", "CREDITS.md"),
+    os.path.join(WIKI, "index.md"),
+    os.path.join(WIKI, "install.md"),
+    os.path.join(WIKI, "first-hour.md"),
+    os.path.join(WIKI, "scenarios.md"),
+    os.path.join(WIKI, "gates.md"),
+    os.path.join(WIKI, "backrooms.md"),
+    os.path.join(WIKI, "company.md"),
+    os.path.join(WIKI, "interface.md"),
+    os.path.join(WIKI, "mods.md"),
+    os.path.join(WIKI, "multiplayer.md"),
+    os.path.join(WIKI, "troubleshooting.md"),
+    os.path.join(WIKI, "links.md"),
+    os.path.join(WIKI, "credits.md"),
 )
 
 # The same words `check-info-cards.py` bans from anything the game displays, for the same
@@ -166,11 +178,26 @@ DOC_BANNED_TERMS = {
 DOC_BANNED = [(term, re.compile(r"\b" + term.replace(" ", r"\s+") + r"s?\b", re.I))
               for term in DOC_BANNED_TERMS]
 
-# A paragraph past this many characters with no break. Grounded in this project's own
-# accepted practice rather than picked: the documents rewritten deliberately for readability
-# top out at 393 and 542 characters per paragraph, so 700 is real headroom above the shape
-# already agreed to be readable, and still less than half the worst offender found (1,467).
-DOC_WALL_CHARS = 700
+# **One exemption, and it is two words wide.** The Operations pane a player clicks is labelled
+# exactly `Machine` -- `RR_OperationsExpeditions.xml` declares
+# `<RR_UI_Machine>Machine</RR_UI_Machine>` -- so a page that cannot write *"the Machine pane"*
+# cannot tell anybody where to click.
+#
+# Capital M, immediately followed by `pane`. **Nothing else.** The ban on calling a gate "the
+# machine" is otherwise untouched, which matters: it caught two real violations in the wiki's own
+# first draft, in the one document set whose whole job is to use the project's words.
+DOC_BANNED_EXEMPT = re.compile(r"\bMachine\s+pane\b")
+
+# A paragraph past this many characters with no break.
+#
+# **Lowered from 700 to 360 on 2026-10-01**, on the owner's direction: *"public facing documnets
+# ARE NOT to be text walls get to each point in as short a way as possible"*.
+#
+# 700 was derived from the old documents' own paragraph shapes, and the owner has asked for
+# shorter than those -- so the number comes down with the instruction rather than staying at a
+# figure the instruction supersedes. The wiki as written tops out well below 360, which makes this
+# **a floor under a standard already met**, not a target to grow into.
+DOC_WALL_CHARS = 360
 
 FENCED = re.compile(r"```.*?```", re.S)
 INLINE_CODE = re.compile(r"`[^`]*`")
@@ -279,8 +306,12 @@ def check_reader_facing(problems):
             continue
         prose = readable_prose(io.open(path, encoding="utf-8-sig").read())
 
+        # The pane's own name is removed BEFORE the ban scans, not excused after it. A page
+        # that says both "the Machine pane" and "the machine" must still fail on the second,
+        # and excusing matches one at a time would let the first hide the second.
+        scanned = DOC_BANNED_EXEMPT.sub(" ", prose)
         for term, pattern in DOC_BANNED:
-            match = pattern.search(prose)
+            match = pattern.search(scanned)
             if match:
                 problems.append("%s says %r to a reader -- %s"
                                 % (rel, match.group(0), DOC_BANNED_TERMS[term]))
@@ -314,6 +345,90 @@ def is_historical(rel):
         if rel == directory or rel.startswith(directory + os.sep):
             return True
     return False
+
+
+# Phrases that assert the package needs nothing but Core. Each was true until 2026-10-01 and
+# none is true now: `About.xml` declares 294 dependencies, five of them expansions.
+#
+# **The count is read from About.xml, never typed here.** If the owner reverses the decision the
+# rule stops firing on its own, which is the difference between a check and a dated assertion --
+# and a dated assertion read as current is this project's most repeated documentation defect.
+NO_DEPENDENCY_CLAIMS = (
+    "no hard dependencies",
+    "no hard dependency",
+    "core only",
+    "core-only",
+    "needs core only",
+    "no dependencies",
+    "without dlc",
+    "zero hard dependencies",
+)
+
+# A line may name the old claim while saying it is over. The retirement has to be ON the line,
+# the same shape as the retired-def rule above.
+DEPENDENCY_RETIREMENT = re.compile(
+    r"\b(no longer|superseded|used to|previously|until|was true|retired|overruled|"
+    r"changed on|historically|before)\b", re.I)
+
+
+def declared_dependency_count():
+    """How many dependencies About.xml declares. Zero when it declares none."""
+    about = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "About", "About.xml")
+    if not os.path.isfile(about):
+        return 0
+    text = io.open(about, encoding="utf-8-sig").read()
+    blocks = re.findall(r"<modDependencies>(.*?)</modDependencies>", text, re.S)
+    return sum(block.count("<packageId>") for block in blocks)
+
+
+# **The verbatim ledger is exempt, and the reason is a LAW.** These four carry the owner's own
+# recorded words, and LAW #0 forbids altering them. They are records of what was said, not claims
+# about what is true, and twenty-nine of the seventy-two matches live in them.
+DEPENDENCY_LEDGER = {
+    os.path.join("docs", "TODO.md"),
+    os.path.join("docs", "NOW.md"),
+    os.path.join("docs", "ROADMAP.md"),
+    os.path.join("docs", "PREPRODUCTION_AND_IMPLEMENTATION_TODO.md"),
+}
+
+# A document may carry one supersession banner instead of rewriting forty-three sentences that
+# were each true when written. It has to be near the top, because a supersession a reader meets
+# after the prose it supersedes has not superseded anything.
+DEPENDENCY_SUPERSEDED = re.compile(r"Superseded 2026-10-01 .{0,4} dependencies", re.I)
+
+
+def check_dependency_claims(rel, raw, declared, problems):
+    """Refuse a living document saying the package needs nothing, when it declares 294.
+
+    **Walks the RAW text and tracks fence state itself.** The first version was handed
+    `strip_code(raw)` and enumerated that while reporting numbers as if they came from the file,
+    so every number after a document's first code fence was wrong. A finding with the wrong
+    address is worse than no finding: somebody reads the named line, sees nothing, and concludes
+    the checker is noise.
+    """
+    if declared <= 0:
+        return
+    if rel in DEPENDENCY_LEDGER:
+        return
+    head = u"\n".join(raw.split(u"\n")[:18])
+    if DEPENDENCY_SUPERSEDED.search(head):
+        return
+    fenced = False
+    for number, line in enumerate(raw.split("\n"), start=1):
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+            continue
+        if fenced:
+            continue
+        lowered = line.lower()
+        for phrase in NO_DEPENDENCY_CLAIMS:
+            if phrase not in lowered:
+                continue
+            if DEPENDENCY_RETIREMENT.search(line):
+                continue
+            problems.append("%s:%d says %r, and About.xml declares %d dependencies"
+                            % (rel, number, phrase, declared))
+            break
 
 
 def living_docs():
@@ -407,6 +522,7 @@ def main():
     branch = current_branch()
     problems = []
     docs = living_docs()
+    declared_dependencies = declared_dependency_count()
 
     for rel, path in docs:
         raw = io.open(path, encoding="utf-8-sig").read()
@@ -429,6 +545,8 @@ def main():
                     problems.append("%s:%d names retired def %s with nothing saying it is gone"
                                     % (rel, number, definition))
 
+        check_dependency_claims(rel, raw, declared_dependencies, problems)
+
         for pattern in CHECKER_PHRASES:
             found = pattern.search(text)
             if found:
@@ -447,6 +565,8 @@ def main():
 
     print("doc-conformance")
     print("  living documents checked : %d" % len(docs))
+    print("  declared dependencies    : %d (no living document may say there are none)"
+          % declared_dependencies)
     print("  reader-facing documents  : %d, held to the vocabulary and the wall rule"
           % len(READER_FACING))
     print("  dated records skipped    : implementation records, FINALIZED, CHANGELOG, reviews")

@@ -282,4 +282,9 @@ Nothing warns you again.</RR_Portals_RemoveWayInConfirm>
   <RR_Alert_ContainmentBreachDesc>Something is coming off a holding platform at a site you are not currently looking at.\n\nThe base game warns you about containment on the map you have open. This warns you about every other place the company holds something, because a breach at home while you are watching a crew work is exactly the one you will miss.</RR_Alert_ContainmentBreachDesc>
   <RR_Alert_ContainmentUnpowered>Containment without power elsewhere</RR_Alert_ContainmentUnpowered>
   <RR_Alert_ContainmentUnpoweredDesc>A holding platform with something on it has lost power, at a site you are not currently looking at.\n\nA platform without power will not hold. Restore the power, or move the subject, before it decides to leave.</RR_Alert_ContainmentUnpoweredDesc>
+  <RR_PortalTravel_NoCharge>The gate has no stored charge to hold the aperture. Its circuit needs power in the batteries, not just a generator running — check the batteries on the same net as the gate. Any number of them count.</RR_PortalTravel_NoCharge>
+  <RR_PortalTravel_OwnerFault>This gate is not the one that holds that connection.</RR_PortalTravel_OwnerFault>
+  <RR_PortalTravel_ExpeditionHolds>An expedition is using that connection. Recall or close it first.</RR_PortalTravel_ExpeditionHolds>
+  <RR_PortalTravel_InEmergency>That connection is in emergency. The crew have a return window; nobody else goes through.</RR_PortalTravel_InEmergency>
+  <RR_PortalTravel_WindowExpired>That opening has run out of time.</RR_PortalTravel_WindowExpired>
 </LanguageData>

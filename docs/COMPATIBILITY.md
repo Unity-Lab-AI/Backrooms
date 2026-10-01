@@ -1,11 +1,17 @@
 ﻿# Compatibility and local multiplayer profile
 
+> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
+> package has hard dependencies. `About.xml` now declares all five expansions and the whole
+> collection as requirements, so anything here describing a Core-only route is history rather than
+> a current claim. Recorded as a change to D3 and D4 in
+> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
+
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
 ## Support target
 
-**Selected support target:** RimWorld **1.6**. Core-only solo play is supported by design; Royalty, Ideology, Biotech, Anomaly, and Odyssey are optional integrations. Co-op requires RimWorld Together and Harmony. All other entries in the 294-entry server profile are optional, while the complete ordered list is the required research/test target. All 294 entries have source-fact reviews; no profile entry is treated as runtime-compatible until the relevant exact-profile test is recorded.
+**Selected support target:** RimWorld **1.6**. **All five expansions and the whole collection are declared requirements** as of 2026-10-01; the earlier Core-only-with-optional-expansions target is superseded. Co-op requires RimWorld Together and Harmony. All other entries in the 294-entry server profile are optional, while the complete ordered list is the required research/test target. All 294 entries have source-fact reviews; no profile entry is treated as runtime-compatible until the relevant exact-profile test is recorded.
 
 ## Local server snapshot
 

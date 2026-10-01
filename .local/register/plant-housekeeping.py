@@ -95,8 +95,14 @@ PLANTS = [
     ("a patch starts naming a MainButtonDef", PATCH,
      "<Patch>", "<Patch>\n  <!-- MainButtonDef -->", REGISTER),
 
+    # **Not inside a comment.** The first version of this plant wrapped the stat
+    # base in `<!-- ... -->`, and `check-register-compliance.py` strips XML
+    # comments since 0.12.56-dev -- so the checker was right to ignore it and the
+    # plant was only ever tripping on the defect that fix removed. A plant that
+    # tests a bug instead of a rule goes green while the rule is unguarded.
     ("A PATCH STARTS ALTERING ANOTHER DEF'S STAT BASES", PATCH,
-     "<Patch>", "<Patch>\n  <!-- <Mass>5</Mass> -->", REGISTER),
+     "<Patch>",
+     "<Patch>\n  <Operation Class=\"PatchOperationAdd\">\n    <xpath>/Defs/ThingDef[defName=\"GlowPod\"]/statBases</xpath>\n    <value><Mass>5</Mass></value>\n  </Operation>", REGISTER),
 
     ("the ThoughtDef rule loses its register citation", REGISTER,
      '"ThoughtDef": "row 2 SF Grim Reality', '"ThoughtDef": "because it is tidier', PROOF),

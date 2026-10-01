@@ -1,4 +1,10 @@
-# Public release plan — the site, the Workshop page, the collection
+﻿# Public release plan — the site, the Workshop page, the collection
+
+> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
+> package has hard dependencies. `About.xml` now declares all five expansions and the whole
+> collection as requirements, so anything here describing a Core-only route is history rather than
+> a current claim. Recorded as a change to D3 and D4 in
+> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
 
 **Status: planned, not started.** Owner direction was explicitly *"when we get to it"*, and this
 document exists so that when we do, the shape is already decided and the decisions that are

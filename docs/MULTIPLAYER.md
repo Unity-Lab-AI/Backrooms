@@ -1,4 +1,4 @@
-# Playing together
+﻿# Playing together
 
 **Nothing on this page has been tested in play.** No game has ever been launched from this
 repository. What follows is what the mod is built to do and what it is built not to do, read out
@@ -32,7 +32,7 @@ that mod makes them behave. This mod neither extends nor restricts them.
 | Harmony | required by RimWorld Together, not by this mod |
 | This mod | no multiplayer-specific setting, and nothing to turn on |
 
-**This mod requires none of the above.** It is built Core-only with no hard dependencies, and it
+**This mod requires none of the above for solo play.** Its declared requirements are the
 does not know whether you are playing alone until it looks — which it only does to tell you, on
 the facilities page of the company panel.
 

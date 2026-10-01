@@ -1,4 +1,10 @@
-# SKILL_TREE
+﻿# SKILL_TREE
+
+> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
+> package has hard dependencies. `About.xml` now declares all five expansions and the whole
+> collection as requirements, so anything here describing a Core-only route is history rather than
+> a current claim. Recorded as a change to D3 and D4 in
+> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
 
 Capability inventory for Rimrooms - Async Industries as of 0.6.4-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
 

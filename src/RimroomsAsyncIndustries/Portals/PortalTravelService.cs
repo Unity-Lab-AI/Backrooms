@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Gate;
@@ -64,7 +64,20 @@ namespace RimroomsAsyncIndustries.Portals
             { return CompanyActionResult.Refused("RR_PortalTravel_AddressUnavailable"); }
             PortalNetworkResult availability = network.ValidateRouteStep(step);
             if (availability != PortalNetworkResult.Success)
-            { return CompanyActionResult.Refused(AvailabilityKey(availability)); }
+            {
+                // **Ask the gate why before falling back to the generic text.** `Closed` covers
+                // seven conditions, and the one the owner hit -- no stored charge -- read as an
+                // address fault. A refusal that names the wrong thing is worse than a vague one,
+                // because it sends somebody to fix something that is not broken.
+                CompRimroomsGate blocked = connection.First == null || connection.First.Anchor == null
+                    ? null : connection.First.Anchor.TryGetComp<CompRimroomsGate>();
+                if (availability == PortalNetworkResult.Closed && blocked != null)
+                {
+                    string why = blocked.PortalWindowBlockerKey(connection.Id, connection.OpeningId);
+                    if (why != null) { return CompanyActionResult.Refused(why); }
+                }
+                return CompanyActionResult.Refused(AvailabilityKey(availability));
+            }
             if (!step.Source.ApproachCell.IsValid || !step.Source.ApproachCell.Standable(pawn.Map))
             { return CompanyActionResult.Refused("RR_PortalTravel_ApproachBlocked"); }
             if (!pawn.CanReach(step.Source.ApproachCell, PathEndMode.OnCell, Danger.Deadly))
