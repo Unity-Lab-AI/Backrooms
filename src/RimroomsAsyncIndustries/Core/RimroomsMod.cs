@@ -9,7 +9,7 @@ namespace RimroomsAsyncIndustries.Core
     /// <summary>RR-COMPAT: Core-only bootstrap; no profile changes or runtime patching.</summary>
     public sealed class RimroomsMod : Mod
     {
-        public const string PackageId = "UnityLabAI.RimroomsAsyncIndustries";
+        public const string PackageId = "Rimrooms.AsyncIndustries";
         private static readonly string CachedModVersion = ResolveModVersion();
 
         public static string ModVersion { get { return CachedModVersion; } }

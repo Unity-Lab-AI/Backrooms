@@ -30,7 +30,7 @@ $backup = $null
 if (Test-Path -LiteralPath $destination) {
     if (-not $UpdateExisting) { throw 'An installed Rimrooms folder exists. Inspect it, then use -UpdateExisting to back it up and replace only this mod.' }
     [xml] $existingAbout = [IO.File]::ReadAllText((Join-Path $destination 'About/About.xml'))
-    if ($existingAbout.ModMetaData.packageId -cne 'UnityLabAI.RimroomsAsyncIndustries') { throw 'Existing folder belongs to another package; refusing to move it.' }
+    if ($existingAbout.ModMetaData.packageId -cne 'Rimrooms.AsyncIndustries') { throw 'Existing folder belongs to another package; refusing to move it.' }
     $backup = Assert-RimroomsChildPath (Join-Path $repoRoot ('artifacts/staging-backups/' + [Guid]::NewGuid().ToString('N'))) $repoRoot
     $null = New-Item -ItemType Directory -Path ([IO.Path]::GetDirectoryName($backup)) -Force
     # Both resolved absolute targets were checked above; keep the old mod recoverable.

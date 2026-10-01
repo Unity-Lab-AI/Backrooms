@@ -1,6 +1,6 @@
 ﻿{
   "schemaVersion": 1,
-  "packageId": "UnityLabAI.RimroomsAsyncIndustries",
+  "packageId": "Rimrooms.AsyncIndustries",
   "note": "Reviewed explicit game-loadable package files. Update with each implemented content addition; source, evidence and third-party files stay outside this list.",
   "files": [
     "1.6/Assemblies/RimroomsAsyncIndustries.dll",

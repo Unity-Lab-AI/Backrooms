@@ -29,6 +29,9 @@ namespace PlannerProbe
         private static MethodInfo rockIntrusionCells;
         private static MethodInfo shapeDepthOf;
         private static MethodInfo onRouteCross;
+        private static MethodInfo buildCandidate;
+        private static MethodInfo candidateIsSafe;
+        private static int candidateBudget;
 
         private static int Main()
         {
@@ -48,12 +51,16 @@ namespace PlannerProbe
             shapeDepthOf = planner.GetMethod("ShapeDepthOf", Statics);
             Type builder = assembly.GetType("RimroomsAsyncIndustries.Generation.RoomContentBuilder", true);
             onRouteCross = builder.GetMethod("OnRouteCross", Statics);
+            buildCandidate = planner.GetMethod("Build", Statics);
+            candidateIsSafe = planner.GetMethod("CandidateIsSafe", Statics);
+            candidateBudget = (int)planner.GetField("CandidateBudget", Statics).GetValue(null);
 
             Console.WriteLine("WidestRoomSpan = " + widestSpan.GetValue(null, null));
             Console.WriteLine();
 
             int failures = 0;
             int totalBackToBack = 0;
+            bool fellBackEverywhere = false;
             foreach (int depth in new[] { 1, 2, 3, 4, 5, 6, 8 })
             {
                 int refused = 0;
@@ -63,6 +70,7 @@ namespace PlannerProbe
                 int tightest = int.MaxValue;
                 int starved = 0;
                 int shapedRooms = 0;
+                int fellBack = 0;
                 int totalRooms = 0;
                 long rockTotal = 0;
                 long interiorTotal = 0;
@@ -90,6 +98,23 @@ namespace PlannerProbe
                         if (width > widest) { widest = width; }
                         if (height > widest) { widest = height; }
                     }
+                    // **WHICH CANDIDATE WON.** `TrySelect` falls back to a serpentine when
+                    // all three real candidates are refused, so a clean `refused` column
+                    // can still mean not one real layout was built. It meant exactly that
+                    // the first time the maze was measured.
+                    int safeCandidates = 0;
+                    for (int which = 0; which < candidateBudget; which++)
+                    {
+                        object built = buildCandidate.Invoke(
+                            null, new object[] { coordinate, which });
+                        if ((bool)candidateIsSafe.Invoke(null, new object[] { built, depth }))
+                        { safeCandidates++; continue; }
+                        object[] why = { built, null };
+                        validateRooms.Invoke(null, why);
+                        string key = why[1] == null ? "reachability or a family rule" : why[1].ToString();
+                        reasons.Add("candidate refused: " + key + " -- " + Describe((IList)built));
+                    }
+                    if (safeCandidates == 0) { fellBack++; }
                     backToBack += BackToBackPairs(layout);
 
                     // **CAN EVERY ROOM TAKE ITS LANDMARK?** A room's walls, pillar lattice and
@@ -132,19 +157,27 @@ namespace PlannerProbe
                 totalBackToBack += backToBack;
                 string verdict = refused == 0 ? "OK  " : "FAIL";
                 Console.WriteLine(string.Format(
-                    "{0} depth {1,-2} refused {2,3}/{3} rooms {4,4:0.0} widest {5,3} pairs {6,4} margin {7,3} starved {8,4} shaped {9,5:0.0}% rock {10,4:0.0}%",
+                    "{0} depth {1,-2} refused {2,3}/{3} rooms {4,4:0.0} widest {5,3} pairs {6,4} margin {7,3} starved {8,4} shaped {9,5:0.0}% rock {10,4:0.0}% fellback {11,4}",
                     verdict, depth, refused, Seeds, refused == Seeds ? 0.0 : (double)rooms / (Seeds - refused),
                     widest, backToBack, tightest == int.MaxValue ? -1 : tightest, starved,
                     totalRooms == 0 ? 0.0 : 100.0 * shapedRooms / totalRooms,
-                    interiorTotal == 0 ? 0.0 : 100.0 * rockTotal / interiorTotal));
+                    interiorTotal == 0 ? 0.0 : 100.0 * rockTotal / interiorTotal,
+                    fellBack));
                 foreach (string reason in reasons) { Console.WriteLine("        reason: " + reason); }
                 if (refused != 0) { failures++; }
+                if (fellBack >= Seeds) { fellBackEverywhere = true; }
             }
 
             Console.WriteLine();
             if (failures != 0)
             {
                 Console.WriteLine("PROBE FAILED: " + failures + " depth band(s) refused a layout.");
+                return 1;
+            }
+            if (fellBackEverywhere)
+            {
+                Console.WriteLine("PROBE FAILED: at least one depth band built no real candidate "
+                                  + "at all and the fallback caught every seed.");
                 return 1;
             }
             if (totalBackToBack == 0)
@@ -157,6 +190,81 @@ namespace PlannerProbe
             Console.WriteLine("PROBE HELD: every depth produced a layout the validator accepts, "
                               + "and " + totalBackToBack + " back-to-back pairs exist.");
             return 0;
+        }
+
+        /// <summary>
+        /// Facts about a refused layout, so `RR_Generation_InvalidRoomGraph` stops being a dozen
+        /// rules wearing one name.
+        ///
+        /// **Observations, not a second validator.** Every line here reads the layout and
+        /// reports; none of it decides whether the layout is acceptable. Re-implementing
+        /// `ValidateRooms` in the probe would give two opinions about one question, which is the
+        /// defect this whole harness exists to catch.
+        /// </summary>
+        private static string Describe(IList layout)
+        {
+            var families = new Dictionary<string, int>();
+            foreach (object room in layout)
+            {
+                string family = Field<string>(room, "familyId") ?? "(null)";
+                int seen;
+                families[family] = families.TryGetValue(family, out seen) ? seen + 1 : 1;
+            }
+            var report = new List<string> { layout.Count + " rooms" };
+            foreach (string unique in new[] { "threshold_room", "office_copy", "return_gallery",
+                                              "service_passage" })
+            {
+                int seen;
+                report.Add(unique + "=" + (families.TryGetValue(unique, out seen) ? seen : 0));
+            }
+
+            for (int index = 0; index < layout.Count; index++)
+            {
+                object room = layout[index];
+                int width = Field<int>(room, "width");
+                int height = Field<int>(room, "height");
+                if (width % 2 != 0 || height % 2 != 0)
+                { report.Add("odd span at room " + index + " (" + width + "x" + height + ")"); break; }
+            }
+
+            for (int index = 0; index < layout.Count; index++)
+            {
+                var a = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(layout[index], null);
+                if (a.minX < 1 || a.minZ < 1 || a.maxX > 298 || a.maxZ > 298)
+                { report.Add("room " + index + " off the map " + a); break; }
+            }
+
+            bool overlapFound = false;
+            for (int index = 0; index < layout.Count && !overlapFound; index++)
+            {
+                var a = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(layout[index], null);
+                for (int other = index + 1; other < layout.Count; other++)
+                {
+                    var b = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(layout[other], null);
+                    if (!a.Overlaps(b)) { continue; }
+                    report.Add("rooms " + index + " and " + other + " overlap " + a + " / " + b);
+                    overlapFound = true;
+                    break;
+                }
+            }
+
+            bool axisFound = false;
+            for (int index = 0; index < layout.Count && !axisFound; index++)
+            {
+                var a = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(layout[index], null);
+                foreach (int linked in Field<List<int>>(layout[index], "links"))
+                {
+                    if (linked <= index || linked >= layout.Count) { continue; }
+                    var b = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(layout[linked], null);
+                    if (a.CenterCell.x == b.CenterCell.x || a.CenterCell.z == b.CenterCell.z) { continue; }
+                    report.Add("link " + index + "-" + linked + " shares no axis "
+                               + a.CenterCell + " / " + b.CenterCell);
+                    axisFound = true;
+                    break;
+                }
+            }
+
+            return string.Join(", ", report.ToArray());
         }
 
         /// <summary>

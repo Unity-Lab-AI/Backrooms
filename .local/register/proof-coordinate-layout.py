@@ -240,9 +240,52 @@ check("the serpentine still alternates direction row by row",
       "-- row-major WITHOUT the alternation makes consecutive entries jump the full width of the "
       "grid, and the chain would be linked between rooms that are not neighbours")
 
-check("the chain still takes two thirds of the grid",
-      "order.Count * 2 / 3" in planner,
-      "-- taking all of it leaves no rock between the arms of the chain")
+check("THE SPINE IS A BRAIDED MAZE, NOT A LINE THAT SNAKES",
+      "private static List<RoomRecord> BuildMaze(" in planner
+      and "return BuildMaze(coordinate, slots, spacing, seed, depth);" in planner
+      and "var stack = new List<IntVec2> { hallSecond };" in planner
+      and 'int turn = DestinationService.StableHash(seed,' in planner
+      and "if (!advanced) { stack.RemoveAt(stack.Count - 1); }" in planner,
+      "-- owner: *\"all the backrooms so far are just one lone strain of perals arangement that "
+      "snakes back and forth across the map like one series line... i want them to be mazes like "
+      "xcrazy\"*. **That was a description of the code**: the slot grid walked row-major with "
+      "alternating direction, room N linked to N-1. A randomised depth-first walk whose turn "
+      "order comes from each slot's own hash branches instead of sweeping")
+
+check("and it is BRAIDED, so there is more than one way through",
+      "internal const int BraidRarity = 3;" in planner
+      and "roll % BraidRarity != 0" in planner
+      and "if (!AreNeighbourRooms(rooms[here], rooms[there])) { continue; }" in planner,
+      "-- a spanning tree has exactly one route between any two rooms: walk it wrong and you "
+      "backtrack. Linking back one in three of the adjacent pairs the walk left alone gives "
+      "loops, junctions that lie and corridors that rejoin somewhere unexpected. Checked against "
+      "the SAME predicate the validator uses, so a braid it would refuse is never made")
+
+check("and the graph ceiling admits a maze at all",
+      "directedEdges > 2 * MaximumUndirectedEdgesPerRoom * rooms.Count" in service
+      and "private const int MaximumUndirectedEdgesPerRoom = 2;" in service
+      and "directedEdges > 2 * rooms.Count" not in service_code,
+      "-- **the old ceiling allowed a tree plus exactly ONE edge**, which is one loop in the whole "
+      "level at every depth. The line with alcoves was not a choice the generator made, it was "
+      "the only shape `ValidateRooms` would accept: every braided candidate was refused and the "
+      "fallback serpentine caught every seed. The floor is untouched, and it is the half of that "
+      "check that was always doing the work")
+
+check("and the walk declines a step the validator would refuse",
+      "if (!AreNeighbourRooms(rooms[parent], room)) { continue; }" in planner,
+      "-- the hall spans two slots so its centre sits BETWEEN them, matching no slot's centre, and "
+      "a step from it in any direction but along its own row produces a link `AreGridNeighbors` "
+      "refuses. **That one link made every maze candidate illegal.** Declined rather than forced: "
+      "the slot is reached later from another parent, which a maze can do and a line cannot")
+
+check("the fallback candidate is still the simple serpentine",
+      "private static List<RoomRecord> BuildSerpentine(" in planner
+      and "if (fallback) { return BuildSerpentine(coordinate, order, spacing, seed, depth); }"
+      in planner,
+      "-- the layout taken when all three real candidates are refused, and the thing you fall "
+      "back to should be the thing with the fewest ways to be surprising. **It is also what "
+      "silently caught every seed while the maze was illegal**, which is why the probe now "
+      "fails when the net catches everything")
 
 check("the slot count still rises with depth",
       "int slots = MinSlotsPerAxis + (depth < 1 ? 0 : depth - 1);" in planner,
@@ -294,7 +337,8 @@ check("and its rooms are small enough to be rooms rather than halls",
 
 check("AND ROOM SIZES ARE ACTUALLY VARIED, not merely variable",
       "internal static int VariedRoomSpan(" in planner
-      and planner.count("VariedRoomSpan(spacing, slot, seed, depth)") >= 2,
+      and planner.count("VariedRoomSpan(spacing, next, seed, depth)") == 1
+      and planner.count("VariedRoomSpan(spacing, slot, seed, depth)") == 1,
       "-- defined and called at BOTH room-making sites. A plant swapped the calls back to the "
       "flat span and left the function sitting there, and every claim about variation still held")
 
@@ -404,11 +448,13 @@ check("the generator carves no corridor where a wall is shared",
       "-- carving between two touching centres cuts a five-cell hole through the shared wall and "
       "makes them one room")
 
-check("and only a spur is ever pushed, never a chain room",
-      "PushAgainst(rooms, rooms[rooms.Count - 1], rooms[host]);" in planner
+check("and only a DEAD END is ever pushed, found by its link count",
+      "if (rooms[index].links.Count != 1) { continue; }" in planner
+      and "PushAgainst(rooms, rooms[index], rooms[host]);" in planner
       and "private static void PushAgainst(List<RoomRecord> rooms, RoomRecord mover," in planner,
-      "-- a spur has exactly one connection, so moving it can only affect that pair and can "
-      "never re-route the spine")
+      "-- a room with one connection cannot re-route anything by moving, and in a braided maze a "
+      "dead end is found by asking rather than by knowing which rooms were added last. The old "
+      "claim pinned `rooms[rooms.Count - 1]`, which was the spur loop's last-added room")
 
 check("THE PUSH LANDS ONE CELL CLEAR, ON ALL FOUR SIDES",
       "if (verticalOverlap && a.minX > b.maxX) { mover.x = b.maxX + 1; }" in planner
@@ -463,8 +509,10 @@ check("THE SPINE NEVER TAKES THE WHOLE ROOM BUDGET",
       "deepest levels had NO dead ends, NO branches and NO back-to-back pairs -- the opposite of "
       "*\"it needs to be more maze liek\"*. A sixty-room chain with no branches is a corridor")
 
-check("MOST LEFTOVER SLOTS BECOME BRANCHES, which is what makes it a maze",
-      "% 4 == 3)" in planner,
+check("BRANCHING IS THE MAZE ITSELF, not a draw over leftover slots",
+      "% 4 == 3)" not in planner_code
+      and "private static void AssignMazeFamilies(" in planner
+      and "if (rooms[index].links.Count == 1)" in planner,
       "-- owner: *\"it needs to be more maze liek\"*. One slot in three became a branch and the "
       "level read as a corridor with alcoves; three in four is something you can get lost in, and "
       "the quarter left as rock is what keeps it a maze rather than an open floor")
@@ -475,17 +523,21 @@ check("MOST LEFTOVER SLOTS BECOME BRANCHES, which is what makes it a maze",
 # and that is the third time today the same gap has been found by running the plants.
 check("THE THRESHOLD IS STILL A GRAND HALL, AND IT IS THE ONLY ONE",
       "private static RoomRecord MakeHall(" in planner
-      and "rooms.Add(MakeHall(coordinate, order[0], order[1], spacing, seed, depth));" in planner
+      and "rooms.Add(MakeHall(coordinate, hallFirst, hallSecond, spacing, seed, depth));"
+      in planner
       and "spacing * 2 - SlotGap" in planner,
       "-- *\"the normal yellow backrooms look isnt the whole floor but the main spanw room\"*. "
       "It spans two slots, so at depth 1 it is about eighty cells across -- the span the whole "
       "level used to have -- while everything past it is about a third of that")
 
-check("the hall takes TWO slots and not four, which is what keeps the chain connected",
-      "consumed = 2;" in planner,
-      "-- the serpentine exists so consecutive rooms are always grid neighbours and linking needs "
-      "no pathfinding. Consuming two keeps that true; a 2x2 hall breaks the adjacency the whole "
-      "layout rests on")
+check("the hall takes TWO slots and not four, and the maze starts from the second",
+      "var hallFirst = new IntVec2(0, 0);" in planner
+      and "var hallSecond = new IntVec2(1, 0);" in planner
+      and "{ hallFirst, 0 }, { hallSecond, 0 }" in planner
+      and "var stack = new List<IntVec2> { hallSecond };" in planner,
+      "-- both slots are marked as the hall so nothing is built inside it, and the walk begins "
+      "at the second. A 2x2 hall would leave a slot the walk could never link to along a "
+      "shared axis, which is the same arithmetic that made the hall link illegal")
 
 check("it gets denser and smaller deeper in, which is the other half of the direction",
       profile[-1][4] > profile[0][4] and profile[-1][3] < profile[0][3],

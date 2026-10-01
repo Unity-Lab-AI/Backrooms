@@ -49,11 +49,11 @@ function Get-RimroomsPackageManifest {
     [xml] $about = [IO.File]::ReadAllText((Join-Path $root 'About/About.xml'))
     if ($about.ModMetaData.name -cne 'Rimrooms - Async Industries' -or
         $about.ModMetaData.author -cne 'Operator' -or
-        $about.ModMetaData.packageId -cne 'UnityLabAI.RimroomsAsyncIndustries') {
+        $about.ModMetaData.packageId -cne 'Rimrooms.AsyncIndustries') {
         throw 'Package identity does not match the accepted project identity.'
     }
     $contract = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'package-files.json')) | ConvertFrom-Json
-    if ($contract.schemaVersion -ne 1 -or $contract.packageId -cne 'UnityLabAI.RimroomsAsyncIndustries') {
+    if ($contract.schemaVersion -ne 1 -or $contract.packageId -cne 'Rimrooms.AsyncIndustries') {
         throw 'Unsupported package file contract.'
     }
     $required = @($contract.files)
@@ -73,7 +73,7 @@ function Get-RimroomsPackageManifest {
         $entries += [ordered]@{ Path = $relative; Bytes = $file.Length; SHA256 = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash }
     }
     return [ordered]@{
-        PackageId = 'UnityLabAI.RimroomsAsyncIndustries'
+        PackageId = 'Rimrooms.AsyncIndustries'
         Version = [string] $about.ModMetaData.modVersion
         Files = $entries
     }

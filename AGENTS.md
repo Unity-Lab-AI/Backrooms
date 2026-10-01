@@ -79,7 +79,7 @@ Backrooms/
     1.6/                                       Defs, Assemblies, Languages, Patches, Textures, Sounds
 ```
 
-The package title must be `Rimrooms - Async Industries`, package ID `UnityLabAI.RimroomsAsyncIndustries`, author/publisher `Operator`, and internal namespace `RimroomsAsyncIndustries`. Put only finished game-loadable output in `Mod/Rimrooms - Async Industries/`. A staging tool copies only that directory into the **Local Mods location shown in RimSort**; do not assume a hard-coded Steam path, copy the repository root, or ship docs, source, workbook, logs, test tools, or third-party files.
+The package title must be `Rimrooms - Async Industries`, package ID `Rimrooms.AsyncIndustries`, author/publisher `Operator`, and internal namespace `RimroomsAsyncIndustries`. Put only finished game-loadable output in `Mod/Rimrooms - Async Industries/`. A staging tool copies only that directory into the **Local Mods location shown in RimSort**; do not assume a hard-coded Steam path, copy the repository root, or ship docs, source, workbook, logs, test tools, or third-party files.
 
 ## RimSort and test ownership
 

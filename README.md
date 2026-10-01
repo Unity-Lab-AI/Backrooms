@@ -13,7 +13,7 @@ The scenario opening cards live in [`docs/SCENARIOS.md`](docs/SCENARIOS.md); the
 
 ## Build and installation
 
-**Current development version: 0.12.67-dev.** Every checkpoint has its own record under [`docs/implementation/`](docs/implementation/), and [`docs/NOW.md`](docs/NOW.md) is the single page that says what is true right now: the published commit, the build counts, the reproduced assembly hash, and what is open in order.
+**Current development version: 0.12.68-dev.** Every checkpoint has its own record under [`docs/implementation/`](docs/implementation/), and [`docs/NOW.md`](docs/NOW.md) is the single page that says what is true right now: the published commit, the build counts, the reproduced assembly hash, and what is open in order.
 
 What works in source today:
 
@@ -87,7 +87,7 @@ Build a clone before copying `Mod/Rimrooms - Async Industries/`; generated DLLs 
 
 ## Working on the mod with the Claude Code workflow
 
-Development continues under the Unity AI Lab `.claude/` workflow from 2026-09-28. Start with [`docs/HOWTO.md`](docs/HOWTO.md): it explains how the workflow ledger sits on top of the project contracts above, the daily task ceremony, the build/stage/publish commands, and the rules a build agent must never break (existing content only, the owner alone launches RimWorld, the connected-colony contract supersede dispatch-only travel). The ledger files are:
+Development continues under the `.claude/` workflow from 2026-09-28. Start with [`docs/HOWTO.md`](docs/HOWTO.md): it explains how the workflow ledger sits on top of the project contracts above, the daily task ceremony, the build/stage/publish commands, and the rules a build agent must never break (existing content only, the owner alone launches RimWorld, the connected-colony contract supersede dispatch-only travel). The ledger files are:
 
 - [`docs/ROADMAP.md`](docs/ROADMAP.md) — major milestones layered on the Stage 0–6 roadmap; [`docs/TODO.md`](docs/TODO.md) — the working queue; [`docs/DECOMPOSED.md`](docs/DECOMPOSED.md) — single-edit slices of the active task; [`docs/NOW.md`](docs/NOW.md) — the one task in motion.
 - [`docs/FINALIZED.md`](docs/FINALIZED.md) — permanent archive of completed work, including the inherited pre-workflow history.

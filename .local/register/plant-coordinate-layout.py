@@ -60,13 +60,42 @@ PLANTS = [
      "VariedRoomSpan(spacing, slot, seed, depth)", "SlotRoomSpan(spacing)"),
 
     ("THE GRAND THRESHOLD HALL IS LOST", PLANNER,
-     "rooms.Add(MakeHall(coordinate, order[0], order[1], spacing, seed, depth));", ""),
+     "rooms.Add(MakeHall(coordinate, hallFirst, hallSecond, spacing, seed, depth));", ""),
 
-    ("the hall grows to four slots and breaks the chain's adjacency", PLANNER,
-     "                consumed = 2;", "                consumed = 4;"),
+    ("the maze starts inside the hall instead of beside it", PLANNER,
+     "            var stack = new List<IntVec2> { hallSecond };",
+     "            var stack = new List<IntVec2> { hallFirst };"),
+
+    # ------------------------------------------------------- the maze itself
+    # Owner: *"all the backrooms so far are just one lone strain of perals arangement that snakes
+    # back and forth across the map like one series line... i want them to be mazes like xcrazy"*.
+    ("THE SPINE GOES BACK TO BEING A LINE THAT SNAKES", PLANNER,
+     "            return BuildMaze(coordinate, slots, spacing, seed, depth);",
+     "            return BuildSerpentine(coordinate, order, spacing, seed, depth);"),
+
+    ("the walk sweeps instead of turning, so it is a line again", PLANNER,
+     "                int turn = DestinationService.StableHash(seed," + chr(10)
+     + '                    "maze:" + current.x + "," + current.z, depth);',
+     "                int turn = 0;" + chr(10)
+     + '                string unusedMazeKey = "maze:" + current.x + "," + current.z;'),
+
+    ("THE BRAID IS GONE, so the maze is a tree with one route through it", PLANNER,
+     "                    if (roll % BraidRarity != 0) { continue; }",
+     "                    if (true) { continue; }"),
+
+    ("the graph ceiling goes back to allowing a tree plus one loop", SERVICE,
+     "                directedEdges > 2 * MaximumUndirectedEdgesPerRoom * rooms.Count)",
+     "                directedEdges > 2 * rooms.Count)"),
+
+    ("the walk stops declining a step the validator would refuse", PLANNER,
+     "                    if (!AreNeighbourRooms(rooms[parent], room)) { continue; }" + chr(10), ""),
+
+    ("a braid is made that the validator would refuse", PLANNER,
+     "                    if (!AreNeighbourRooms(rooms[here], rooms[there])) { continue; }" + chr(10), ""),
 
     ("the maze goes back to one branch in three", PLANNER,
-     "% 4 == 3)", "% 3 != 0)"),
+     "if (rooms[index].links.Count != 1) { continue; }",
+     "if (rooms[index].links.Count < 1) { continue; }"),
 
     ("THE WARREN STOPS TIGHTENING INWARD", PLANNER,
      "internal const int MaxRooms = 60;", "internal const int MaxRooms = 6;"),
@@ -90,8 +119,9 @@ PLANTS = [
     ("THE SERPENTINE STOPS ALTERNATING AND THE CHAIN JUMPS THE GRID", PLANNER,
      "int x = row % 2 == 0 ? column : slots - 1 - column;", "int x = column;"),
 
-    ("the chain takes the whole grid and leaves no rock between its arms", PLANNER,
-     "order.Count * 2 / 3", "order.Count"),
+    ("THE FALLBACK SERPENTINE IS NEVER REACHED, so there is no safety net", PLANNER,
+     "            if (fallback) { return BuildSerpentine(coordinate, order, spacing, seed, depth); }",
+     "            if (false) { return BuildSerpentine(coordinate, order, spacing, seed, depth); }"),
 
     ("the slot count stops rising with depth", PLANNER,
      "int slots = MinSlotsPerAxis + (depth < 1 ? 0 : depth - 1);",
@@ -184,7 +214,7 @@ PLANTS = [
      "                    if (SharesWall(room, other)) { continue; }", ""),
 
     ("rooms stop being pushed together at all", PLANNER,
-     "                    { PushAgainst(rooms, rooms[rooms.Count - 1], rooms[host]); }", ""),
+     "                PushAgainst(rooms, rooms[index], rooms[host]);" + chr(10), ""),
 
     # -------------------------------------------- the ceiling the hall has to pass
     # **NOTHING COULD REACH THIS BEFORE.** `MaxRoomSpan` recomputed the span of a room filling

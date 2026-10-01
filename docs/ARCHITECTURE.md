@@ -1,7 +1,7 @@
 # ARCHITECTURE
 
 > Rimrooms - Async Industries — a RimWorld 1.6 company-management campaign about operating a facility that opens, investigates and profits from unstable spaces beyond a machine gate.
-> Unity AI Lab — Gee, Red, Sponge, Alfreddo
+> Gee, Red, Sponge, Alfreddo
 
 ### Credits
 
@@ -35,7 +35,7 @@ Compilation status at 0.6.4-dev: zero warnings/errors, warnings treated as error
 | **Build Tool** | `dotnet build` (SDK 9.0.308 via `global.json`) targeting `net472`, deterministic, `TreatWarningsAsErrors`, `PathMap` normalized; wrapped by `tools/build.ps1` |
 | **Package Manager** | NuGet with locked restore (`packages.lock.json`); sole package `Microsoft.NETFramework.ReferenceAssemblies.net472 1.0.3`; caches in ignored `.local/` |
 | **Linting** | Compiler warnings-as-errors; `.editorconfig` (four spaces, block namespaces, explicit braces); `BuildCommon.ps1` package allowlist + XML well-formedness check |
-| **Mod loader** | RimWorld `LoadFolders.xml` single `1.6/` folder; `About.xml` packageId `UnityLabAI.RimroomsAsyncIndustries`, author `Operator`, `loadAfter: Ludeon.RimWorld` |
+| **Mod loader** | RimWorld `LoadFolders.xml` single `1.6/` folder; `About.xml` packageId `Rimrooms.AsyncIndustries`, author `Operator`, `loadAfter: Ludeon.RimWorld` |
 | **Optional runtime peers** | RimWorld Together + Harmony (co-op only, not referenced yet); five DLC (optional, not referenced yet); 294-mod profile (research/test target, none referenced) |
 
 ---
@@ -47,7 +47,7 @@ Backrooms/
 ├── AGENTS.md                      build-agent operating guide (authority order, rules)
 ├── README.md · CONTRIBUTING.md · CHANGELOG.md · LICENSE (MIT, source only)
 ├── global.json · NuGet.Config · .editorconfig · .gitattributes · .gitignore
-├── .claude/                       Unity AI Lab workflow (tracked; session state ignored; see docs/HOWTO.md)
+├── .claude/                       Workflow harness (tracked; session state ignored; see docs/HOWTO.md)
 ├── .github/ISSUE_TEMPLATE/        bug report form
 ├── .local/                        ignored: dotnet/nuget caches, decompiled inspection-*/ trees, QA
 ├── artifacts/                     ignored: build manifests, staging backups
@@ -342,7 +342,7 @@ Condensed 2026-09-28 from the canonical contracts. Status vocabulary: **Source**
 
 | Decision | Effect on architecture |
 |----------|------------------------|
-| D2 identity | Title `Rimrooms - Async Industries`, author `Operator`, package `UnityLabAI.RimroomsAsyncIndustries`, namespace `RimroomsAsyncIndustries`, semver `0.x` → `1.0.0` |
+| D2 identity | Title `Rimrooms - Async Industries`, author `Operator`, package `Rimrooms.AsyncIndustries`, namespace `RimroomsAsyncIndustries`, semver `0.x` → `1.0.0` |
 | D3/D4 dependencies | Core-only solo path is complete; Harmony + RimWorld Together only for co-op; all five DLC and all other 294 profile rows optional; rows 182 and 274 stay in the co-op candidate test despite publisher warnings |
 | D5 sources | Kane Pixels continuity + A24 feature, adapted indirectly; every entity, room, story, rule is original; wider community canon excluded |
 | D6 tech exchange | Physical Research Dossier items (bound to an existing document object); shared ledger only via a supported RWT extension point, none identified |

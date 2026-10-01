@@ -84,7 +84,7 @@ This changes the release gate only. It does not change evidence standards, featu
 
 - Displayed mod title: `Rimrooms - Async Industries`
 - Public author/publisher metadata: `Operator`
-- RimWorld package ID: `UnityLabAI.RimroomsAsyncIndustries`
+- RimWorld package ID: `Rimrooms.AsyncIndustries`
 - Internal C# namespace: `RimroomsAsyncIndustries`
 - Version policy: semantic versions; `0.x` while pre-release and `1.0.0` at the first stable public release.
 
@@ -166,7 +166,7 @@ These are execution work, not owner questions: the exact RimWorld/RWT/Harmony bu
 | ID | Final answer | Date | Documents updated |
 | --- | --- | --- | --- |
 | D1 | **B — public Steam Workshop is the first distribution target; do not announce compatibility until validation is complete.** Changed by the owner 2026-09-29: *"option 3 and remeber we dont have other peoples saves we just publish it all and update it as we go fixing bugs"*. Supersedes A (private RWT test first), recorded 2026-09-27 before the mod existed. The private RWT prototype is no longer a release prerequisite; the no-compatibility-claim rule is now the main protection. | 2026-09-27, **changed 2026-09-29** | TODO, roadmap, release plan, ARCHITECTURE, SKILL_TREE, AGENTS, CONTRIBUTING |
-| D2 | Exact title; author/publisher metadata `Operator`; package ID `UnityLabAI.RimroomsAsyncIndustries`; namespace `RimroomsAsyncIndustries`; semantic versions | 2026-09-27 | TODO, About.xml/package metadata, technical architecture |
+| D2 | Exact title; author/publisher metadata `Operator`; package ID `Rimrooms.AsyncIndustries`; namespace `RimroomsAsyncIndustries`; semantic versions | 2026-09-27 | TODO, About.xml/package metadata, technical architecture |
 | D3 | B — all 294 are the research/test target; only Core + Harmony/RWT required; other profile mods optional. Owner says test rows 182 and 274 in the co-op candidate despite publisher warnings; no support claim before results. | 2026-09-27 | TODO, compatibility, mod plan, technical architecture, interaction map |
 | D4 | A — all five DLC optional; Core-only campaign; validate all-five profile | 2026-09-27 | TODO, compatibility, scenario, mod plan, systems catalog |
 | D5 | B + customized D — Kane Pixels and A24 only; indirect use of canon/lore/themes/styles | 2026-09-27 | TODO, source register, research, universe adaptation, feature map |
