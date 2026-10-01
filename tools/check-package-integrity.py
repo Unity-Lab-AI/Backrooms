@@ -60,6 +60,7 @@ import io
 import json
 import os
 import re
+import struct
 import sys
 import xml.etree.ElementTree as ET
 
@@ -69,6 +70,7 @@ ABOUT = os.path.join(MOD, "About", "About.xml")
 ALLOWLIST = os.path.join(REPO, "tools", "package-files.json")
 CSPROJ = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "RimroomsAsyncIndustries.csproj")
 GAME_DATA = r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Data"
+GAME_MANAGED = r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed"
 
 # Directories RimWorld reads inside a version folder. Anything else is inert.
 LOADABLE_DIRS = ("Defs", "Patches", "Languages", "Assemblies", "Textures", "Sounds")
@@ -118,6 +120,114 @@ def package_version():
     text = read_text(CSPROJ)
     match = re.search(r"<Version>([^<]+)</Version>", text)
     return match.group(1).strip() if match else None
+
+
+def strings_heap(path):
+    """Every name in one managed assembly's CLI metadata `#Strings` heap.
+
+    Read straight from the PE: section table -> CLI header -> metadata root -> stream headers.
+    No reflection and no DLL load, so it works off any copy of the game on any platform and
+    cannot execute anything it reads.
+
+    Returned as the raw blob rather than a set of entries, because the heap permits SUFFIX
+    SHARING: a name may be stored only as the tail of a longer one and referenced by pointing
+    partway into it. `Building` is exactly that, so splitting on NUL finds every obvious name
+    and silently misses real types -- the first draft of this check failed
+    `<thingClass>Building</thingClass>`, which is correct code. Membership is therefore a
+    search for `name + NUL`, which finds whole entries and shared suffixes alike.
+
+    The heap holds every metadata name -- types, fields, methods, parameters -- so a hit proves
+    a name EXISTS somewhere in the assembly rather than proving it is a type. That makes this an
+    over-approximation: it can let an unusual mis-spelling through, and it can never reject a
+    name that really is there. Deliberate in that direction, because a check that rejects
+    correct code gets deleted and a check that is merely generous keeps catching this.
+    """
+    try:
+        data = io.open(path, "rb").read()
+    except IOError:
+        return None
+    try:
+        pe = struct.unpack_from("<I", data, 0x3C)[0]
+        if data[pe:pe + 4] != b"PE\0\0":
+            return None
+        coff = pe + 4
+        section_count = struct.unpack_from("<H", data, coff + 2)[0]
+        optional_size = struct.unpack_from("<H", data, coff + 16)[0]
+        optional = coff + 20
+        magic = struct.unpack_from("<H", data, optional)[0]
+        directories = optional + (96 if magic == 0x10B else 112)
+        cli_rva = struct.unpack_from("<I", data, directories + 14 * 8)[0]
+
+        sections = []
+        table = optional + optional_size
+        for index in range(section_count):
+            base = table + index * 40
+            virtual_size, virtual_address, _, raw = struct.unpack_from("<IIII", data, base + 8)
+            sections.append((virtual_address, max(virtual_size, 1), raw))
+
+        def file_offset(rva):
+            for virtual_address, virtual_size, raw in sections:
+                if virtual_address <= rva < virtual_address + virtual_size:
+                    return raw + (rva - virtual_address)
+            return None
+
+        cli = file_offset(cli_rva)
+        if cli is None:
+            return None
+        metadata = file_offset(struct.unpack_from("<I", data, cli + 8)[0])
+        if metadata is None or data[metadata:metadata + 4] != b"BSJB":
+            return None
+        version_length = struct.unpack_from("<I", data, metadata + 12)[0]
+        cursor = metadata + 16 + version_length + ((-version_length) % 4) + 2
+        stream_count = struct.unpack_from("<H", data, cursor)[0]
+        cursor += 2
+        for index in range(stream_count):
+            offset, size = struct.unpack_from("<II", data, cursor)
+            cursor += 8
+            end = data.index(b"\0", cursor)
+            name = data[cursor:end].decode("ascii", "replace")
+            cursor = end + 1
+            cursor += (-(cursor - metadata)) % 4
+            if name == "#Strings":
+                return data[metadata + offset:metadata + offset + size]
+    except (struct.error, ValueError, IndexError):
+        return None
+    return None
+
+
+def index_game_type_names():
+    """Type names the installed game can resolve: Core plus every installed DLC.
+
+    DLC code lives in `Data/<Dlc>/Assemblies`, so a def naming an Anomaly or Odyssey type
+    resolves here exactly as the game resolves it -- and if the DLC is absent, so is the name,
+    which is the honest answer rather than a pass.
+
+    Returns the concatenated `#Strings` heaps. Ask it a question with `type_name_exists`.
+    """
+    paths = []
+    for name in ("Assembly-CSharp.dll", "Assembly-CSharp-firstpass.dll"):
+        paths.append(os.path.join(GAME_MANAGED, name))
+    paths += sorted(glob.glob(os.path.join(GAME_DATA, "*", "Assemblies", "*.dll")))
+
+    blobs = []
+    for path in paths:
+        found = strings_heap(path)
+        if found:
+            blobs.append(found)
+    return b"\0".join(blobs) or None
+
+
+def type_name_exists(heaps, simple):
+    """Whether the installed game holds a metadata name equal to `simple`.
+
+    `name + NUL` rather than equality against split entries, so a suffix-shared name such as
+    `Building` resolves. See `strings_heap` for why that matters.
+    """
+    try:
+        needle = simple.encode("utf-8") + b"\0"
+    except UnicodeEncodeError:
+        return False
+    return needle in heaps
 
 
 def index_game_defs():
@@ -362,7 +472,7 @@ def check_comment_dashes(problems):
                      % (rel(path), line))
 
 
-def check_class_references(problems):
+def check_class_references(problems, notes):
     """Every RimroomsAsyncIndustries type named in XML must exist in the source.
 
     A def naming a class that is not there fails at load with a red error, and nothing was
@@ -389,12 +499,51 @@ def check_class_references(problems):
         for value in re.findall(r'Class="([^"]+)"', text):
             referenced.add(value.strip())
 
+    game_types = index_game_type_names()
+    if game_types is None:
+        notes.append("game assemblies not found, so Core and DLC type names in defs were not "
+                     "resolved; that part is skipped, not passed")
+
+    for value, reason in unresolved_class_names(referenced, declared_types, game_types):
+        fail(problems, "a def names %s, %s" % (value, reason))
+
+
+def unresolved_class_names(referenced, declared_types, game_types):
+    """The type names in `referenced` the game will not be able to resolve, with the reason.
+
+    A PURE FUNCTION ON PURPOSE, AND THIS IS THE LESSON OF THE SEVENTH LAUNCH TWICE OVER.
+
+    The first lesson was the defect: `<li Class="CompProperties_Colorable" />` names a type that
+    does not exist, and a `Class` the game cannot resolve throws out of `DirectXmlToObjectNew`,
+    which discards the WHOLE ThingDef rather than the one node. `Door` and `Autodoor` left the
+    game and 587 red lines followed from one line.
+
+    The second lesson was how nearly the fix shipped unguarded. A plant that restored the old
+    exemption as `if True: continue` walked past the proof, because the proof asserted that a
+    COMMENT was absent rather than that a bad name is reported. So the verdict lives here, where
+    a proof can hand it a crafted set of names and demand the right answer -- blinding it,
+    exempting it or short-circuiting it all change the OUTPUT, which is the only thing the proof
+    now accepts as evidence.
+
+    Ours are matched against declared type names in the C# source rather than by reflecting over
+    the built assembly, so that half stays honest even when the DLL is stale. Core and DLC names
+    are matched against the installed game's own metadata, because a Core-shaped typo is the
+    likeliest typo there is and taking those on trust was the wrong half to trust.
+    """
+    verdicts = []
     for value in sorted(referenced):
-        if not value.startswith("RimroomsAsyncIndustries"):
-            continue                      # Core and DLC types; not ours to verify from source.
         simple = value.split(".")[-1]
-        if simple not in declared_types:
-            fail(problems, "a def names %s, which no C# source file declares" % value)
+        if value.startswith("RimroomsAsyncIndustries"):
+            if simple not in declared_types:
+                verdicts.append((value, "which no C# source file declares"))
+            continue
+        if game_types is None:
+            continue
+        if not type_name_exists(game_types, simple):
+            verdicts.append((value, "and no type of that name exists in the installed game's "
+                                    "assemblies. A Class the game cannot resolve discards the "
+                                    "entire def being parsed, not just that one node"))
+    return verdicts
 
 
 def optional_compat_xpaths(root):
@@ -607,7 +756,7 @@ def main():
     check_comment_dashes(problems)
     keyed = collect_keyed(problems)
     check_def_references(problems, declared, keyed)
-    check_class_references(problems)
+    check_class_references(problems, notes)
     check_patches(problems, declared, game_defs, notes)
     check_textures(problems, notes)
     check_sounds(problems, declared)
@@ -618,6 +767,8 @@ def main():
     print("  package files:      %d" % len(allowlist.get("files", [])))
     print("  supported versions: %s" % (", ".join(versions) or "none"))
     print("  game defs indexed:  %s" % ("%d" % len(game_defs) if game_defs else "skipped"))
+    _heaps = index_game_type_names()
+    print("  game name heap:     %s" % ("%d bytes" % len(_heaps) if _heaps else "skipped"))
 
     for note in notes:
         print("  note: %s" % note)

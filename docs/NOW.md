@@ -46,16 +46,16 @@ been enough; the only thing that has worked is reaching for the Write tool first
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
-| Published | **0.12.54-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.55-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **200 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `1FA1CEE1987B5FF32042F6DBA8D4ED279F76843B59A9881C331CE0F174EBF39C`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Assembly | SHA-256 `154428928909D68FFA599193CCE8997FBF10AC70671118AB958EEE701E3A3CF9`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **THIRTEEN**, all passing. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
-| Game launches | **SIX, all by the owner on 2026-09-30. Sixteen defects, every one ours, still not a single mod conflict.** The sixth found a conduit carpet sized for 12x12 rooms blowing a 512-cell cap **eightfold** at 80x80, which meant **no 300x300 coordinate could ever have generated** — so the gate was never marked and the owner was looking at an ordinary steel door. A SEVENTH is what settles whether a coordinate generates at all. They have found **eleven defects** and every one was ours. **The fifth found the most expensive one in the project's history: a light count that had stopped every Backrooms level from generating since 0.7.8-dev, thirty-nine checkpoints.** **Still not a single mod conflict.** The fourth launch is also the first whose evidence came from the **running game** rather than from the log alone: the owner said *"you can use the api mod you have that we installed last so u can see wtf rimworld is doing"*, so RimBridgeServer 2.1.1 in direct mode, read-only, against their own launched process. See *What the fourth launch found*. The staged copy is current at this checkpoint, hash-verified |
+| Game launches | **SEVEN, all by the owner on 2026-09-30. Seventeen defects, every one ours, still not a single mod conflict.** The seventh produced **587 red lines from one line**: `<li Class="CompProperties_Colorable" />` names a type RimWorld does not have, and a bad `Class` discards the **whole ThingDef** — so `Door` and `Autodoor` left the game, 585 further errors were other defs failing to cross-reference them, and the game **never left the main menu**. The sixth found a conduit carpet sized for 12x12 rooms blowing a 512-cell cap **eightfold** at 80x80, which meant **no 300x300 coordinate could ever have generated**. An EIGHTH is what settles whether a coordinate generates at all. They have found **eleven defects** and every one was ours. **The fifth found the most expensive one in the project's history: a light count that had stopped every Backrooms level from generating since 0.7.8-dev, thirty-nine checkpoints.** **Still not a single mod conflict.** The fourth launch is also the first whose evidence came from the **running game** rather than from the log alone: the owner said *"you can use the api mod you have that we installed last so u can see wtf rimworld is doing"*, so RimBridgeServer 2.1.1 in direct mode, read-only, against their own launched process. See *What the fourth launch found*. The staged copy is current at this checkpoint, hash-verified |
 
 ### How to work, owner direction 2026-09-29
 
@@ -260,11 +260,66 @@ there.
 
 ---
 
-## DO THIS FIRST — READ THE LOG FROM THE SEVENTH LAUNCH
+## DO THIS FIRST — READ THE LOG FROM THE EIGHTH LAUNCH
 
-**0.12.54-dev is staged and the owner has not launched it yet.** Read `Player.log` before anything
-else, and **read it before telling them anything works** — the last two times that question was
-answered from proofs rather than from a log, the answer was wrong.
+**Read `Player.log` before anything else, and read it before telling the owner anything works.**
+Three checkpoints in a row have now been answered from proofs rather than from a log, and three
+times the answer was wrong.
+
+### WHAT THE SEVENTH LAUNCH FOUND: 587 RED LINES FROM ONE LINE
+
+**The game never left the main menu, so the seventh launch tested NOTHING but def load.**
+
+```
+Exception loading def from file Buildings_Structure.xml: System.ArgumentException:
+  Could not find type named CompProperties_Colorable from node
+  <li Class="CompProperties_Colorable" />
+Could not resolve cross-reference to Verse.ThingDef named Door ...        (x529)
+Could not resolve cross-reference: No Verse.ThingDef named Autodoor ...   (x59)
+```
+
+Every one of the 587 errors named `Door`, `Autodoor` or `CompProperties_Colorable` **and nothing
+else**. There is no `CompProperties_Colorable` type: `CompColorable` takes a plain
+`CompProperties` with a `compClass`, as Core does for textiles, apparel and the Ideology floor
+coverings — and the last of those are buildings, so it was the right mechanism for a door all
+along, spelled with a class that does not exist. **A bad `Class` throws out of
+`DirectXmlToObjectNew`, which discards the entire ThingDef**, so `Door` and `Autodoor` left the
+game and 585 further errors were other defs — 541 of them vanilla prefabs — failing to
+cross-reference them.
+
+**Still not one mod conflict in seven launches.** Doors Expanded and Mechhive appear in that log
+only as victims of our missing `Door`.
+
+### THREE THINGS TO KNOW BEFORE WRITING ANOTHER PROOF
+
+1. **A proof that reads text cannot tell whether a resolver resolves.** The forty-second proof,
+   `proof-class-resolution.py`, is the first that **imports the checker and interrogates it**.
+   When a claim is about whether something *works* rather than whether it is *written*, execute
+   it. The first draft of that very resolver split the metadata heap on NUL, which misses
+   suffix-shared names and **rejected `Building`** — failing correct code, which is worse than
+   the hole it closed, and entirely invisible to a text-reading proof.
+2. **Asserting our XML contains a string proves we wrote it, never that the game can use it.**
+   `proof-gate-links.py` required `'<li Class="CompProperties_Colorable" />'` as its evidence that
+   a gate is blue — **it held the bug in place**, and the matching plant mangled that string and
+   watched the proof fail, which is a plant proving a broken line was load-bearing.
+3. **Run EVERY plant suite, not the ones you touched.** Doing so found a plant that could never
+   have been caught: it planted a comment at a proof that strips comments on purpose. The proof
+   was right and the plant was wrong — the inverse of the usual trap.
+
+### What the EIGHTH launch has to settle, in this order
+
+1. **DOES A COORDINATE GENERATE AT ALL.** Fourth attempt, and the generator has still never run
+   end to end. Everything below depends on it.
+2. **is the back-room door blue and glowing** once a level exists
+3. **select a colonist, right-click the gate → "Enter the gate"** — they should walk over and
+   come out on the other map
+4. **every other door in the colony is unlit and unchanged** — the `IThingGlower` veto
+5. **level 0 reads as the yellow rooms** — wood walls, yellow carpet, coherent, everything
+   matching
+6. **one level in, the materials go wild** — two tables in one room in different stuffs, each
+   room's walls a different material. Newest thing in the build, least like anything that has run
+7. **no cave-in** when a wall or a pillar is deconstructed
+8. **Operations → Places** lists the colony and any level, with the budget as `n/5`
 
 **What changed since the sixth launch, and why it matters more than it sounds:** a systematic sizing
 pass over every constant in the generation path found **two more that would have killed a

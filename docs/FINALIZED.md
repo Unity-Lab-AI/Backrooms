@@ -5300,3 +5300,59 @@ plant anchor match twice - the harness refused to run rather than mis-score, whi
 **200 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
 `1FA1CEE1987B5FF32042F6DBA8D4ED279F76843B59A9881C331CE0F174EBF39C`, reproduced by two clean
 recompiles. **Thirteen checkers pass, forty-one proofs hold.** **56 of 56** planted faults caught.
+
+---
+
+## Session 2026-09-30 - one line deleted `Door` from RimWorld (0.12.55-dev)
+
+**Verbatim user quote:** *"oh my god! look at the debug log!!!! its nothing but red!!!!!!!!!!!!!"*
+and *"mkae sure to kill the exe and set up the mod for me so i can run rimsort again , only once
+your sure you fixed these issues"*
+
+**Files touched:** `Patches/RR_NativeGateProviders.xml`, `tools/check-package-integrity.py`,
+`.local/register/proof-class-resolution.py` (new), `plant-class-resolution.py` (new),
+`proof-gate-links.py`, `plant-gate-links-carry.py`, `plant-areas-and-debrief.py`,
+About/csproj/README, `docs/TODO.md`, `docs/NOW.md`.
+
+**Closure notes.** **587 red lines. One line.**
+
+Every error in the log named `Door`, `Autodoor` or `CompProperties_Colorable` and nothing else.
+`<li Class="CompProperties_Colorable" />` names a type RimWorld does not have - `CompColorable`
+is declared with a plain `CompProperties` carrying a `compClass`, as Core does for textiles,
+apparel and the Ideology floor coverings, the last of which are buildings. And a bad `Class`
+throws out of `DirectXmlToObjectNew`, which **discards the whole ThingDef**: `Door` and `Autodoor`
+left the game and 585 further errors were other defs failing to cross-reference them. The game
+never left the main menu, so **the seventh launch tested nothing but def load.** Not one mod
+conflict - Doors Expanded and Mechhive appear only as victims of our missing `Door`.
+
+**The hole was an exemption, and it was explicit.** `check_class_references` skipped every name
+that was not ours, commented *"Core and DLC types; not ours to verify from source"* - so the one
+category it trusted is the category that killed the game, and a Core-shaped name is exactly what
+a typo produces. Those names now resolve against the installed game's own assemblies, read out of
+the CLI metadata `#Strings` heap with no reflection and no DLL load, DLC assemblies included.
+
+**And the proof was holding the bug in place.** `proof-gate-links.py` asserted
+`'<li Class="CompProperties_Colorable" />' in doorpatch` as its evidence that a gate is blue, and
+the matching plant mangled that string and watched the proof fail - a plant proving a broken line
+was load-bearing. **Asserting our XML contains a string proves we wrote it, never that the game
+can use it.**
+
+**Two of my own mistakes inside the fix, both caught by running it.** The first draft split the
+`#Strings` heap on NUL, which misses suffix-shared names and **rejected `Building`** - failing
+correct code, which is worse than the hole. And a plant restoring the exemption as
+`if True: continue` walked past the new proof, because the claim asserted a **comment** was
+absent: the claim-scoping trap for the twenty-first time, mine, in the proof written to close a
+bug caused by trusting a name. Fixed structurally - the verdict is a pure function and the proof
+demands its **output**, so blinding, exempting, always-true and suffix-blind all fail.
+
+**The forty-second proof is the first that executes what it checks**, because a proof that reads
+text cannot tell whether a resolver resolves. Running every plant suite rather than the ones I
+touched also surfaced a plant that could never have been caught: it planted a comment at a proof
+that strips comments on purpose. The proof was right and the plant was wrong.
+
+**200 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`154428928909D68FFA599193CCE8997FBF10AC70671118AB958EEE701E3A3CF9`, reproduced by two clean
+recompiles. **Thirteen checkers pass, forty-two proofs hold. 474 of 474** planted faults caught
+across fourteen suites.
+
+**Seven launches, seventeen defects, every one ours. Still not a single mod conflict.**

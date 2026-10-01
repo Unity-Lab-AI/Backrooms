@@ -44,7 +44,18 @@
             <glowRadius>0</glowRadius>
             <glowColor>(70,130,220,0)</glowColor>
           </li>
-          <li Class="CompProperties_Colorable" />
+          <!-- NO `Class` ATTRIBUTE, AND THIS COST THE SEVENTH LAUNCH. There is no
+               `CompProperties_Colorable` type in the game; `CompColorable` is declared with a
+               plain `CompProperties` carrying a `compClass`, exactly as Core does it for
+               apparel, textiles and the Ideology floor coverings — the last of which are
+               buildings, so it is the right mechanism for a door, it was only spelled with a
+               class that does not exist. Naming a type the game cannot resolve throws out of
+               `DirectXmlToObjectNew`, and that does not fail the one comp: it discards the
+               WHOLE ThingDef being parsed. `Door` and `Autodoor` left the game, every def
+               referencing them failed to cross-resolve, and the log went red from the top. -->
+          <li>
+            <compClass>CompColorable</compClass>
+          </li>
         </value>
       </li>
       <!-- Owner direction 2026-09-29: "like orbital beacons to beable to show that available

@@ -44,10 +44,15 @@ PLANTS = [
      "        /// <summary>\n"
      "        /// A cell the player marked for no roof that has one."),
 
+    # REAL CODE, NOT A COMMENT. This plant used to insert
+    # `/* Backrooms Coordinate check */` and demand a failure, which the proof could never
+    # deliver: it reads this file through `strip_cs_comments` on purpose, because a comment
+    # naming the Backrooms is not a second opinion that can drift out of step with the rule.
+    # A depth test that short-circuits the provider is, so that is what gets planted.
     ("the roof provider grows a Backrooms exception of its own", ROOF,
      "        private static bool AnyRoofToRemove(Map map, Pawn pawn, RimroomsConnectedWorkComponent work)\n        {",
      "        private static bool AnyRoofToRemove(Map map, Pawn pawn, RimroomsConnectedWorkComponent work)\n"
-     "        {\n            if (map.ParentHolder is object) { /* Backrooms Coordinate check */ }"),
+     "        {\n            if (BackroomsCoordinateDepthOf(map) > 0) { return false; }"),
 
     ("the roof provider is built but never registered",
      SRC + "/ConnectedWork/ConnectedDeploymentProvider.cs",

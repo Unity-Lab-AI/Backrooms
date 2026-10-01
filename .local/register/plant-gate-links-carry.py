@@ -86,7 +86,15 @@ PLANTS = [
      '<li Class="CompProperties_Glower">', '<li Class="CompProperties_GlowerUnused">'),
 
     ("the colourable comp is never added to the door", DOORPATCH,
-     '<li Class="CompProperties_Colorable" />', '<li Class="CompProperties_ColorableUnused" />'),
+     "<compClass>CompColorable</compClass>", "<compClass>CompColorableUnused</compClass>"),
+
+    # THE DEFECT THAT COST THE SEVENTH LAUNCH, PLANTED WHERE IT WAS BORN. This plant used to
+    # mangle `Class="CompProperties_Colorable"` -- a type that does not exist -- so it proved a
+    # broken line was load-bearing. Now it restores that line and requires the proof to refuse
+    # it, which is the opposite verdict on the same string.
+    ("THE COLOURABLE COMP GOES BACK TO THE CLASS THAT DOES NOT EXIST", DOORPATCH,
+     "          <li>\n            <compClass>CompColorable</compClass>\n          </li>",
+     '          <li Class="CompProperties_Colorable" />'),
 
     ("EVERY DOOR IN THE GAME STARTS GLOWING", COMP,
      "    public class CompRimroomsEmergence : ThingComp, IThingGlower",
