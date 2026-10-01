@@ -13,7 +13,27 @@ namespace RimroomsAsyncIndustries.Generation
     {
         private const int GeneratorSeedPart = 72910463;
         private const float InitialRoomTemperature = 20f;
-        private const int MaxNativePowerConduits = 512;
+        /// <summary>
+        /// The most conduit cells one coordinate may hold.
+        ///
+        /// **512 was sized for a 60x60 map and it killed every level below depth 1.** Modelled
+        /// against what the routing actually does — `FindConduitRoute` BFSes from the whole wired
+        /// set, so routes share a spine and the total is far under the sum of the distances:
+        ///
+        ///     depth 1:   460 cells    depth 4: 1,061
+        ///     depth 2:   625          depth 5: 1,211
+        ///     depth 3:   828          depth 6: 1,436
+        ///
+        /// Depth 1 fitted under 512 **by forty cells**, which is the worst possible failure mode:
+        /// the first level a player opens would have generated and every one below it would have
+        /// died, so it would have looked fixed.
+        ///
+        /// Four thousand leaves room for a deranged layout and for whatever the dressing adds,
+        /// and the conduit is `HiddenConduit` so a long run costs nothing visually. **Exceeding
+        /// it now stops the wiring rather than destroying the coordinate** — see
+        /// <see cref="TrySpawnNativeConduit"/>.
+        /// </summary>
+        private const int MaxNativePowerConduits = 4000;
         private const int MaxInitialFuelStacks = 16;
 
         public override int SeedPart { get { return GeneratorSeedPart; } }
@@ -416,9 +436,15 @@ namespace RimroomsAsyncIndustries.Generation
 
             foreach (CellRect consumer in consumerFootprints)
             {
+                if (wiredCells.Count >= MaxNativePowerConduits) { break; }
                 List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells, consumer);
-                foreach (IntVec3 cell in route)
-                { SpawnNativeConduit(map, voidFloor, conduitDef, cell, wiredCells); }
+                // An empty route means this consumer could not be reached. Skipped, not fatal:
+                // the same rule the stray pass and the power validation already follow.
+                for (int step = 0; step < route.Count; step++)
+                {
+                    if (wiredCells.Count >= MaxNativePowerConduits) { break; }
+                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);
+                }
             }
 
             return wiredCells;
@@ -512,7 +538,10 @@ namespace RimroomsAsyncIndustries.Generation
                     pending.Enqueue(next);
                 }
             }
-            if (!destination.IsValid) { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+            // **Empty rather than fatal.** A consumer the conduit cannot reach is a dark
+            // corner; the caller skips it and `ValidateNativePowerNetwork` reports it. Throwing
+            // here destroyed the whole coordinate, which is the defect that cost two launches.
+            if (!destination.IsValid) { return new List<IntVec3>(); }
 
             var route = new List<IntVec3>();
             IntVec3 cursor = destination;
@@ -520,8 +549,8 @@ namespace RimroomsAsyncIndustries.Generation
             while (!roots.Contains(cursor))
             {
                 IntVec3 predecessor;
-                if (!previous.TryGetValue(cursor, out predecessor))
-                { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
+                // Same reasoning: a broken trail is a dark corner, not a dead place.
+                if (!previous.TryGetValue(cursor, out predecessor)) { return new List<IntVec3>(); }
                 cursor = predecessor;
                 route.Add(cursor);
             }

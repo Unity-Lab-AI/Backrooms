@@ -139,6 +139,39 @@ PLANTS = [
      "(CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index) ?? wallStuff);",
      "CoordinateMaterials.StuffFor(wallDef, coordinate, room.Index);"),
 
+    # ------------------------------------------ 0.12.54-dev: the scale sweep
+    ("THE CONDUIT CAP GOES BACK TO THE 60x60 NUMBER", GEN,
+     "        private const int MaxNativePowerConduits = 4000;",
+     "        private const int MaxNativePowerConduits = 512;"),
+
+    ("the cap is raised so high it can never bind", GEN,
+     "        private const int MaxNativePowerConduits = 4000;",
+     "        private const int MaxNativePowerConduits = 400000;"),
+
+    ("AN UNREACHABLE CONSUMER DESTROYS THE COORDINATE AGAIN", GEN,
+     "            if (!destination.IsValid) { return new List<IntVec3>(); }",
+     '            if (!destination.IsValid) { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }'),
+
+    ("a broken conduit trail destroys the coordinate again", GEN,
+     "                if (!previous.TryGetValue(cursor, out predecessor)) { return new List<IntVec3>(); }",
+     '                if (!previous.TryGetValue(cursor, out predecessor)) { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }'),
+
+    ("the known-consumer routes go back to the throwing placement", GEN,
+     "                // An empty route means this consumer could not be reached. Skipped, not fatal:" + chr(10)
+     + "                // the same rule the stray pass and the power validation already follow." + chr(10)
+     + "                for (int step = 0; step < route.Count; step++)" + chr(10)
+     + "                {" + chr(10)
+     + "                    if (wiredCells.Count >= MaxNativePowerConduits) { break; }" + chr(10)
+     + "                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);",
+     "                for (int step = 0; step < route.Count; step++)" + chr(10)
+     + "                {" + chr(10)
+     + "                    SpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);"),
+
+    ("one of the two cap guards goes", GEN,
+     "                if (wiredCells.Count >= MaxNativePowerConduits) { break; }" + chr(10)
+     + "                List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells, consumer);",
+     "                List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells, consumer);"),
+
     # ------------------------------------------ 0.12.53-dev: the conduit blowout
     ("THE WHOLE-ROOM CONDUIT CARPET COMES BACK", GEN,
      "            return wiredCells;" + chr(10) + "        }",
@@ -160,9 +193,13 @@ PLANTS = [
      "                    false)" + chr(10)
      + "                .OrderBy(thing => thing.Position.x).ThenBy(thing => thing.Position.z)"),
 
+    # The call line now exists in BOTH wiring loops, so it is anchored on the `return` that only
+    # the stray pass uses -- the consumer loop uses `break`. Duplicate-string trap, again.
     ("THE STRAY PASS STARTS THROWING AND CAN COST THE COORDINATE", GEN,
-     "                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);",
-     "                    SpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);"),
+     "                    if (wiredCells.Count >= MaxNativePowerConduits) { return; }" + chr(10)
+     + "                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);",
+     "                    if (wiredCells.Count >= MaxNativePowerConduits) { return; }" + chr(10)
+     + "                    SpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);"),
 
     ("the non-throwing conduit form disappears", GEN,
      "        private static void TrySpawnNativeConduit(Map map, TerrainDef voidFloor, ThingDef conduitDef,",

@@ -5250,3 +5250,53 @@ illegal in XML and would have been a silent def-load failure.
 recompiles. **Thirteen checkers pass, forty-one proofs hold.** **50 of 50** and **32 of 32**.
 
 **Six launches, fourteen defects, every one ours. Still not a single mod conflict.**
+
+---
+
+## Session 2026-09-30 - the scale sweep (0.12.54-dev)
+
+**Verbatim user quote:** *"what the fuck do you mean its a design instruction??? its suppose to be
+built and working 100% we finished the build yesterday!"*
+
+**Files touched:** `Generation/GenStep_BackroomsDestination.cs`, About/csproj/README, `docs/TODO.md`,
+`docs/NOW.md`.
+
+**Closure notes.** **Two corrections, one of wording and one of method.**
+
+*"Design instruction"* was the wrong phrase and it was mine. The Stargate behaviour **is built and
+shipped** - right-click a live gate, *"Enter the gate"*, with `CompFloatMenuOptions` and
+`RR_DoorCross_Enter` both verified in the staged assembly. What went into NOW.md was the LESSON, so
+the next session does not repeat the misreading, and describing that as a design instruction read as
+though the work were filed for later. It is done.
+
+**The method correction is the substance.** The build is complete; runtime kept failing, and two
+launches in a row had been spent discovering one scale bug at a time. So every constant in the
+generation path was listed and sized against a 300x300 map, 80-cell rooms and 42 rooms - and **two
+more would have killed a coordinate.**
+
+**Modelled, not guessed.** `FindConduitRoute` BFSes from the whole wired set, so routes share a
+spine: 460 cells at depth 1, rising to 1,436 at depth 6, against a cap of **512**. Depth 1 fitted
+under it **by forty cells**, so the seventh launch would probably have generated level 0 and killed
+every level below it - the worst failure mode there is, because it looks fixed.
+
+Fixed on the principle the power validation already followed, *a dark corner beats no coordinate*:
+the cap is 4,000 with 2.5x headroom at double the consumers, exceeding it stops the wiring rather
+than throwing, and a consumer the routing cannot reach is skipped where `FindConduitRoute` threw
+twice. **The sizing is a proof claim computed from the planner's own constants**, so it cannot
+silently stop fitting again, and it also refuses a cap so large it could never bind.
+
+**Seven constants were checked and are fine**, and that is on record rather than implied:
+`MaxInitialFuelStacks`, containment's sweep window, `ConstructionEcho`'s window and capacity,
+`FacilityPlanner`'s group sizing, `MaxFixtureSide`, `RevisitDisplacement.MaxMoved` and
+`WorldTileCandidateBudget`.
+
+**An operational mistake worth recording:** a proof was run while a plant suite was still executing
+in the background, so it read a planted fault and reported a failure that did not exist. Never read
+the tree during a plant run.
+
+**Two more duplicate-string anchors** had to be disambiguated, both because a new line made an old
+plant anchor match twice - the harness refused to run rather than mis-score, which is it working.
+
+**200 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`1FA1CEE1987B5FF32042F6DBA8D4ED279F76843B59A9881C331CE0F174EBF39C`, reproduced by two clean
+recompiles. **Thirteen checkers pass, forty-one proofs hold.** **56 of 56** planted faults caught.

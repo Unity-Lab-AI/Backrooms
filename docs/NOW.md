@@ -46,16 +46,16 @@ been enough; the only thing that has worked is reaching for the Write tool first
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
-| Published | **0.12.53-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.54-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **200 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `3FD8054EB0EA1F3BFC9DA7D954F6E0796B3462A52D7B115E632D9905E7758A7C`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Assembly | SHA-256 `1FA1CEE1987B5FF32042F6DBA8D4ED279F76843B59A9881C331CE0F174EBF39C`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **THIRTEEN**, all passing. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
-| Game launches | **SIX, all by the owner on 2026-09-30. Fourteen defects, every one ours, still not a single mod conflict.** The sixth found a conduit carpet sized for 12x12 rooms blowing a 512-cell cap **eightfold** at 80x80, which meant **no 300x300 coordinate could ever have generated** — so the gate was never marked and the owner was looking at an ordinary steel door. A SEVENTH is what settles whether a coordinate generates at all. They have found **eleven defects** and every one was ours. **The fifth found the most expensive one in the project's history: a light count that had stopped every Backrooms level from generating since 0.7.8-dev, thirty-nine checkpoints.** **Still not a single mod conflict.** The fourth launch is also the first whose evidence came from the **running game** rather than from the log alone: the owner said *"you can use the api mod you have that we installed last so u can see wtf rimworld is doing"*, so RimBridgeServer 2.1.1 in direct mode, read-only, against their own launched process. See *What the fourth launch found*. The staged copy is current at this checkpoint, hash-verified |
+| Game launches | **SIX, all by the owner on 2026-09-30. Sixteen defects, every one ours, still not a single mod conflict.** The sixth found a conduit carpet sized for 12x12 rooms blowing a 512-cell cap **eightfold** at 80x80, which meant **no 300x300 coordinate could ever have generated** — so the gate was never marked and the owner was looking at an ordinary steel door. A SEVENTH is what settles whether a coordinate generates at all. They have found **eleven defects** and every one was ours. **The fifth found the most expensive one in the project's history: a light count that had stopped every Backrooms level from generating since 0.7.8-dev, thirty-nine checkpoints.** **Still not a single mod conflict.** The fourth launch is also the first whose evidence came from the **running game** rather than from the log alone: the owner said *"you can use the api mod you have that we installed last so u can see wtf rimworld is doing"*, so RimBridgeServer 2.1.1 in direct mode, read-only, against their own launched process. See *What the fourth launch found*. The staged copy is current at this checkpoint, hash-verified |
 
 ### How to work, owner direction 2026-09-29
 
@@ -262,8 +262,15 @@ there.
 
 ## DO THIS FIRST — READ THE LOG FROM THE SEVENTH LAUNCH
 
-**The owner is testing 0.12.53-dev. Read the log before anything else**, and read it before
-telling them anything works.
+**0.12.54-dev is staged and the owner has not launched it yet.** Read `Player.log` before anything
+else, and **read it before telling them anything works** — the last two times that question was
+answered from proofs rather than from a log, the answer was wrong.
+
+**What changed since the sixth launch, and why it matters more than it sounds:** a systematic sizing
+pass over every constant in the generation path found **two more that would have killed a
+coordinate**, and one of them would have killed it *invisibly* — level 0 would have generated and
+every level below it would have died. See *THE LESSON* below. So the seventh launch is the first one
+where the generator has a real chance of completing.
 
 ```
 grep -n -i "rimrooms\|Error in GenStep\|Exception" \
@@ -341,12 +348,23 @@ owner saw: *"its not blue!!! it doesnt have a light aura, and it in no way is a 
 against `MaxNativePowerConduits = 512` — **an eightfold blowout on the first powered room, every
 time.** No 300x300 coordinate could ever have generated.
 
-**THE LESSON, AND IT HAS NOW COST TWO LAUNCHES IN A ROW.** Both the light count at 0.12.48-dev and
+**THE LESSON, AND IT HAD ALREADY COST TWO LAUNCHES.** Both the light count at 0.12.48-dev and
 this conduit carpet were **assumptions about scale that a constant quietly encoded**, and both
 survived every proof because a proof reads source text and cannot see that a number no longer
 fits. **When a dimension changes, go and size everything that was written against the old one.**
-The 4,524 figure is a proof claim now, computed from the planner's own constants, so any future
-per-room area pass fails on the number that proves it.
+
+**0.12.54-dev did exactly that, once, instead of one bug per launch** — and found **two more that
+would have killed a coordinate.** `FindConduitRoute` threw twice when a consumer could not be
+reached, and `MaxNativePowerConduits = 512` was sized for 60x60: modelled against what the routing
+actually does, a coordinate needs **460 cells at depth 1 rising to 1,436 at depth 6**. Depth 1
+fitted under 512 **by forty cells**, so the seventh launch would probably have generated level 0
+and killed every level below it — **the worst failure mode there is, because it looks fixed.**
+
+The cap is 4,000 with 2.5x headroom at double the consumers, exceeding it stops the wiring instead
+of throwing, and an unreachable consumer is skipped. **The sizing is a proof claim computed from
+the planner's own constants**, so it cannot silently stop fitting again — and it refuses a cap so
+large it could never bind, because that is not a cap. Seven other constants were sized and are
+fine, recorded in `docs/TODO.md` rather than left implied.
 
 ### What the SEVENTH launch has to settle, in this order
 
