@@ -5502,6 +5502,6 @@ every numeric claim while a 1x1 door got a seven-by-seven kawoosh. Computing a v
 using it are two different facts, and only one was being proved.
 
 **181 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
-`521BCBE4EA437ED9A9BD93C5A054B1ADA4179F00A74303F89BADECCDAFCA6DC6`, reproduced by two clean
+`F513B9D2B17ABF1B10DF36CED4B7DFE868B2FB423712338F1780F3BA2A5EEDA3`, reproduced by two clean
 recompiles. **Thirteen checkers pass, forty-five proofs hold. 519 of 519** planted faults caught
 across sixteen suites.
