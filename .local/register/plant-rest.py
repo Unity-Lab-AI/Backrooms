@@ -22,6 +22,14 @@ import time
 SRC = "src/RimroomsAsyncIndustries"
 ROOF = SRC + "/ConnectedWork/Providers/RoofWorkProvider.cs"
 PANE = SRC + "/UI/OperationsFacilities.cs"
+PAPER = SRC + "/Economy/BondPaper.cs"
+BONDCOMP = SRC + "/Economy/CompRimroomsBond.cs"
+BONDSVC = SRC + "/Economy/BondService.cs"
+HANDLING = SRC + "/Economy/BondHandling.cs"
+TREASURY = SRC + "/Company/BondTreasury.cs"
+BONDTEXT = ("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Bonds.xml")
+BONDS_PROOF = ".local/register/proof-bonds.py"
+AREAS_PROOF = ".local/register/proof-areas-and-debrief.py"
 
 
 # **THE RESTORE DOES NOT SURVIVE THE PROCESS BEING KILLED.** `finally` handles an exception; it
@@ -73,23 +81,90 @@ def _rr_restore(path, original):
 
 
 PLANTS = [
+    # ------------------------------------------------------------------ the bonds
+    # Nothing in this battery had ever claimed anything about bonds, which is why five defects
+    # shipped in one feature. Four of the five were the same shape: built, correct, unreachable.
+    ("THE CARRIER'S CLASS IS NEVER SWAPPED, SO THE LABEL GOES BACK TO A NOVEL TITLE", BONDSVC,
+     "                { bond.thingClass = typeof(Book_RimroomsBond); }",
+     "                { }", BONDS_PROOF),
+
+    ("the label override stops reading the face value", PAPER,
+     '                return "RR_Bond_Label".Translate(CreditDenominations.ShortName(bond.FaceValue));',
+     "                return base.LabelNoCount;", BONDS_PROOF),
+
+    ("an ordinary novel loses its own name too", PAPER,
+     "                if (bond == null) { return base.LabelNoCount; }",
+     "                if (bond == null) { return null; }", BONDS_PROOF),
+
+    ("THE DEAD COMP HOOK COMES BACK, READING LIKE A FIX", BONDCOMP,
+     "        public override string CompInspectStringExtra()",
+     "        public override string TransformLabel(string label)" + chr(10)
+     + "        {" + chr(10)
+     + '            return "RR_Bond_Label".Translate(faceValue);' + chr(10)
+     + "        }" + chr(10) + chr(10)
+     + "        public override string CompInspectStringExtra()", BONDS_PROOF),
+
+    ("the label stops being the value and goes back to a bare word", BONDTEXT,
+     "  <RR_Bond_Label>{0} credit bearer bond</RR_Bond_Label>",
+     "  <RR_Bond_Label>company bond</RR_Bond_Label>", BONDS_PROOF),
+
+    ("A BOND GOES BACK TO BEING WORTH A NOVEL", PAPER,
+     "            if (face > 0L) { value = face; }", "            return;", BONDS_PROOF),
+
+    ("the stat part is written and never added to the stat", BONDSVC,
+     "                        market.parts.Add(valuePart);", "                        _ = valuePart;",
+     BONDS_PROOF),
+
+    ("the value part stops asking for a thing, so it answers for defs too", PAPER,
+     "            if (!request.HasThing) { return 0L; }", "            if (false) { return 0L; }",
+     BONDS_PROOF),
+
+    ("DEPOSIT IS DEFINED AND NEVER OFFERED", BONDCOMP,
+     "                action = delegate { Show(BondHandling.Deposit(parent)); }",
+     "                action = delegate { }", BONDS_PROOF),
+
+    ("combine is defined and never offered", BONDCOMP,
+     "                action = delegate { Show(BondHandling.Combine(parent)); }",
+     "                action = delegate { }", BONDS_PROOF),
+
+    ("the treasury loses the deposit it is asked for", TREASURY,
+     "        internal CompanyActionResult DepositBondPaper(",
+     "        internal CompanyActionResult DepositBondPaperUnused(", BONDS_PROOF),
+
+    ("COMBINING STOPS BALANCING THE LEDGER", TREASURY,
+     '            CompanyActionResult paid = PostTransaction(operationId + ".out", -payable,',
+     '            CompanyActionResult paid = PostTransaction(operationId + ".out", 0L,',
+     BONDS_PROOF),
+
+    ("combining shreds a pile it cannot improve", HANDLING,
+     "            if (wanted >= paper.Count && remainder <= 0L)",
+     "            if (false)", BONDS_PROOF),
+
+    ("a refusal goes silent", BONDCOMP,
+     '            Messages.Message((result.MessageKey ?? "RR_Bond_NoneInRange").Translate(),',
+     "            if (false) Messages.Message((result.MessageKey ?? \"RR_Bond_NoneInRange\").Translate(),",
+     BONDS_PROOF),
+
+    ("the description stops describing the instrument", BONDTEXT,
+     "COMPANY BEARER BOND", "A company bearer bond", BONDS_PROOF),
+
     ("the roof provider grows a Backrooms exception of its own", ROOF,
      "            Area area = map.areaManager == null ? null : map.areaManager.NoRoof;",
      "            if (map.ParentHolder != null) { int Coordinate = 0; Coordinate++; }\n"
-     "            Area area = map.areaManager == null ? null : map.areaManager.NoRoof;"),
+     "            Area area = map.areaManager == null ? null : map.areaManager.NoRoof;", AREAS_PROOF),
 
     ("the pane goes silent when nobody is waiting", PANE,
      '            { listing.Label("RR_Debrief_NoneOutstanding".Translate()); return; }',
-     '            { return; }'),
+     '            { return; }', AREAS_PROOF),
 
     ("the interviewer choice stops being deterministic", PANE,
-     "                .ThenBy(candidate => candidate.ThingID, StringComparer.Ordinal)\n", ""),
+     "                .ThenBy(candidate => candidate.ThingID, StringComparer.Ordinal)\n", "", AREAS_PROOF),
 
     ("the pane offers the crew member as their own interviewer", PANE,
-     "candidate != null && candidate != crewMember &&", "candidate != null &&"),
+     "candidate != null && candidate != crewMember &&", "candidate != null &&", AREAS_PROOF),
 
     ("the debrief pane is never reached", PANE,
-     "            DrawDebriefs(listing, campaign);\n", ""),
+     "            DrawDebriefs(listing, campaign);\n", "", AREAS_PROOF),
 ]
 
 
@@ -109,7 +184,11 @@ def write_verified(path, text, what):
 
 
 caught = 0
-for label, path, old, new in PLANTS:
+# **THE PROOF COMES FROM THE ROW.** This suite ran one fixed proof for every plant, which is
+# fine while every plant belongs to one subsystem and wrong the moment one does not: a bond plant
+# run against the areas proof would pass and prove nothing. Same shape
+# `plant-startplacement.py` already uses.
+for label, path, old, new, command in PLANTS:
     original = io.open(path, encoding="utf-8").read()
     if original.count(old) != 1:
         print("PLANT SETUP BROKEN (%d matches): %s" % (original.count(old), label))
@@ -118,7 +197,7 @@ for label, path, old, new in PLANTS:
     write_verified(path, original.replace(old, new, 1), "plant into")
     _rr_unmark()
     try:
-        code = subprocess.call([sys.executable, ".local/register/proof-areas-and-debrief.py"],
+        code = subprocess.call([sys.executable, command],
                                stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     finally:
         # **THE RESTORE IS THE ONE LINE THAT MUST ALWAYS RUN.** It is what makes a destructive

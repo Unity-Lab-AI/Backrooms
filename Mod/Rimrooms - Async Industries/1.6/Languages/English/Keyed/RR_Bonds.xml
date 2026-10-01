@@ -1,8 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <RR_Bond_Label>{0}-credit company bond</RR_Bond_Label>
+  <!-- The bond's NAME IS ITS VALUE. Owner direction, 2026-10-01: "they need a name that is theri
+       value and better description and value is not correct", and "now the books as bonds just say
+       noprmal the quality which is normal".
+
+       This is written into the book's own title by BondPaper, not returned from TransformLabel:
+       Verse.Book overrides LabelNoCount and never walks comps, so the comp method that was meant
+       to name a bond had never run and every bond showed a random novel title plus its quality. -->
+  <RR_Bond_Label>{0} credit bearer bond</RR_Bond_Label>
   <RR_Bond_Inspect>Company bearer bond. Face value {0} credits.</RR_Bond_Inspect>
-  <RR_Bond_Description>A company bearer bond with a face value of {0} credits. Whoever holds it owns it, so it can be hauled, stored, stolen and burned like any other object. Bank it at a designated credit beacon to put the credits back into the company account; the bond is consumed when it is banked.</RR_Bond_Description>
+  <RR_Bond_Description>COMPANY BEARER BOND
+
+Face value: {0} credits.
+
+Payable to the holder on presentation. Whoever has it owns it: there is no name on it and no record of who drew it. It hauls, stores, sells, burns and can be stolen like any other object, and that is the whole trade against leaving the money in the company account where nobody can touch it.
+
+Select it and press Deposit to put the credits straight back into the account. Several bonds lying together can be combined into the fewest, largest notes of the same total. A designated credit beacon still banks everything within its reach in one go.</RR_Bond_Description>
+  <RR_Bond_Flavour>Heavy paper, intaglio printing, a serial number and the company seal. It is worth exactly what it says and nothing else about it matters.</RR_Bond_Flavour>
+  <RR_Bond_ValueExplanation>Bearer bond face value: {0} credits</RR_Bond_ValueExplanation>
+
+  <!-- The two actions, on the paper itself. Before 0.12.75-dev the only thing that put a bond back
+       into the account was a credit beacon, and it was the ONLY caller of that code, so a player
+       without one had no route at all. -->
+  <RR_Bond_DepositLabel>Deposit ({0} credits)</RR_Bond_DepositLabel>
+  <RR_Bond_DepositDesc>Put this bond's credits back into the company account. The paper is consumed; there is no spent husk left behind.</RR_Bond_DepositDesc>
+  <RR_Bond_CombineLabel>Combine bonds here</RR_Bond_CombineLabel>
+  <RR_Bond_CombineDesc>Replace every bond lying within a few cells with the fewest, largest notes of the same total value. Anything below the smallest denomination goes back into the account rather than being rounded away.</RR_Bond_CombineDesc>
+  <RR_Bond_NoCompany>There is no company account to move credits into.</RR_Bond_NoCompany>
+  <RR_Bond_NothingToCombine>There is only one bond here. Put two or more together to combine them.</RR_Bond_NothingToCombine>
+  <RR_Bond_AlreadyCombined>These bonds are already the fewest notes their total can be paid in.</RR_Bond_AlreadyCombined>
+  <RR_Event_BondsCombined>{0} bonds combined into {1}, for {2} credits.</RR_Event_BondsCombined>
   <RR_Bond_PrintUnfunded>The company account cannot cover a {0}-credit bond.</RR_Bond_PrintUnfunded>
   <RR_Bond_InvalidDenomination>That is not a company bond denomination.</RR_Bond_InvalidDenomination>
   <RR_Bond_InvalidAmount>Enter an amount to withdraw.</RR_Bond_InvalidAmount>

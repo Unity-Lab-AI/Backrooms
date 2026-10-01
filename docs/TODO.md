@@ -2294,6 +2294,30 @@ Owner, verbatim:
 
 ---
 
+## The bonds - 2026-10-01 (0.12.75-dev) - DONE
+
+Owner, verbatim:
+
+> **"and nother thing the bonds i pull out i dont sdeem to be able to put them back in and and to
+> combine them"**
+
+> **"and they need a name that is theri value and better description and value is not correct"**
+
+> **"now the books as bonds just say noprmal the quality which is normal"**
+
+- [x] **"the bonds i pull out i dont sdeem to be able to put them back in"**
+- [x] **"and and to combine them"**
+- [x] **"they need a name that is theri value"**
+- [x] **"and better description"**
+- [x] **"and value is not correct"**
+- [x] **"now the books as bonds just say noprmal the quality which is normal"** - **the cause of
+  the naming half, and it is the project's signature defect.** `Verse.Book` overrides
+  `LabelNoCount` as `title + GenLabel.LabelExtras(this, includeHp: true, includeQuality: true)`
+  and **never consults comps**, so `CompRimroomsBond.TransformLabel` has not run once since the
+  day it was written. The owner was reading the book's generated title and its quality suffix
+
+---
+
 ## TOMBSTONES
 
 _(none)_

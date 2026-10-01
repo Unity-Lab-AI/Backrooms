@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 
@@ -34,6 +35,33 @@ namespace RimroomsAsyncIndustries.Economy
                 if (bond.comps == null) { bond.comps = new List<CompProperties>(); }
                 if (!bond.HasComp(typeof(CompRimroomsBond)))
                 { bond.comps.Add(new CompProperties_RimroomsBond()); }
+                // **AND THE CLASS, for the same reason and by the same mechanism.** `Verse.Book`
+                // overrides `LabelNoCount` and never walks comps, so `TransformLabel` could never
+                // name a bond -- every one of them showed a random novel title and its quality.
+                // Owner: *"now the books as bonds just say noprmal the quality which is normal"*.
+                //
+                // A Def field, which is the boundary `check-compliance.py` states: behaviour
+                // through *"Core's own ThingComp, GameComponent, WorkGiver, JobDriver and Def
+                // extension points"*. The first attempt wrote Book's private `title` by
+                // reflection and that checker refused it, correctly.
+                //
+                // **An ordinary novel is unaffected**: every member of the subclass defers to
+                // base unless the thing carries a stamped face value, and it still satisfies
+                // every `is Book` test in the game.
+                if (bond.thingClass == typeof(Book) || bond.thingClass == null)
+                { bond.thingClass = typeof(Book_RimroomsBond); }
+                // The value, by the one mechanism that can read a per-instance face value. See
+                // StatPart_RimroomsBondValue; `MarketValue`'s own parts are untouched.
+                StatDef market = StatDefOf.MarketValue;
+                if (market != null)
+                {
+                    if (market.parts == null) { market.parts = new List<StatPart>(); }
+                    if (!market.parts.Any(part => part is StatPart_RimroomsBondValue))
+                    {
+                        var valuePart = new StatPart_RimroomsBondValue { parentStat = market };
+                        market.parts.Add(valuePart);
+                    }
+                }
             }
             catch (Exception error)
             {

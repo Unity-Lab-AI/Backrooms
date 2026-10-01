@@ -74,6 +74,98 @@ namespace RimroomsAsyncIndustries.Company
         }
 
         /// <summary>
+        /// Puts named paper back into the account and destroys it.
+        ///
+        /// **Owner direction, 2026-10-01, verbatim:** *"the bonds i pull out i dont sdeem to be
+        /// able to put them back in"*. `RedeemBondsInRadius` already did this for a whole radius
+        /// and had exactly one caller — a credit beacon — so a player without one had no route
+        /// at all. This is the same operation for a named list, which is what a button on the
+        /// paper itself can offer.
+        ///
+        /// **Destroyed first, then posted**, and posted once for the total under a caller-stable
+        /// operation id: a reload between the two cannot credit the same paper twice, and paper
+        /// that failed to destroy is never paid for.
+        /// </summary>
+        internal CompanyActionResult DepositBondPaper(List<Thing> paper, long expected, string operationId)
+        {
+            if (paper == null || paper.Count == 0 || expected <= 0L)
+            { return CompanyActionResult.Refused("RR_Bond_NoneInRange"); }
+            if (string.IsNullOrWhiteSpace(operationId))
+            { return CompanyActionResult.Refused("RR_Bond_InvalidAmount"); }
+
+            long destroyed = BondService.ConsumeBonds(paper);
+            if (destroyed <= 0L) { return CompanyActionResult.Refused("RR_Bond_NoneInRange"); }
+
+            CompanyActionResult result = PostTransaction(operationId, destroyed,
+                "RR_Ledger_BondRedeemed", operationId);
+            if (!result.Success) { return result; }
+            RecordEvent("RR_Event_BondsRedeemed", operationId,
+                paper.Count.ToString("N0"), destroyed.ToString("N0"));
+            return result;
+        }
+
+        /// <summary>
+        /// Replaces a pile of paper with the fewest possible bonds of the same total value.
+        ///
+        /// **Owner direction, 2026-10-01, verbatim:** *"and and to combine them"*.
+        ///
+        /// ## Value is conserved, and the ledger is how
+        ///
+        /// The paper is destroyed and its total **credited**, then the replacement is issued and
+        /// its total **debited** — two halves of one operation id. So the account is square at
+        /// the end, and if the second half cannot place every bond the unplaced remainder simply
+        /// stays credited rather than evaporating between the ledger and the floor. That is the
+        /// rule <see cref="IssueBonds"/> already follows and the reason this goes through the
+        /// ledger at all instead of swapping objects: the ledger is the only thing in this mod
+        /// that cannot lose a credit.
+        ///
+        /// Credits below the smallest denomination cannot be held as paper, so they stay in the
+        /// account. A player's money is never rounded away.
+        /// </summary>
+        internal CompanyActionResult CombineBondPaper(List<Thing> paper, long expected,
+            IntVec3 cell, Map map, string operationId)
+        {
+            if (paper == null || paper.Count == 0 || expected <= 0L || map == null)
+            { return CompanyActionResult.Refused("RR_Bond_NoneInRange"); }
+            if (string.IsNullOrWhiteSpace(operationId))
+            { return CompanyActionResult.Refused("RR_Bond_InvalidAmount"); }
+
+            long destroyed = BondService.ConsumeBonds(paper);
+            if (destroyed <= 0L) { return CompanyActionResult.Refused("RR_Bond_NoneInRange"); }
+
+            CompanyActionResult credited = PostTransaction(operationId + ".in", destroyed,
+                "RR_Ledger_BondRedeemed", operationId);
+            if (!credited.Success) { return credited; }
+
+            long remainder;
+            List<KeyValuePair<long, int>> plan = CreditDenominations.Decompose(destroyed, out remainder);
+            long payable = CreditDenominations.TotalOf(plan);
+            if (payable <= 0L)
+            {
+                // Everything fell below the smallest denomination. It is already back in the
+                // account, which is where it should stay.
+                RecordEvent("RR_Event_BondsRedeemed", operationId,
+                    paper.Count.ToString("N0"), destroyed.ToString("N0"));
+                return credited;
+            }
+
+            CompanyActionResult paid = PostTransaction(operationId + ".out", -payable,
+                "RR_Ledger_BondIssued", operationId);
+            if (!paid.Success) { return paid; }
+
+            long unplaced;
+            int issued = BondService.IssueTo(map, cell, payable, out unplaced);
+            if (unplaced > 0L)
+            {
+                PostTransaction(operationId + ".unplaced", unplaced, "RR_Ledger_BondRefunded", operationId);
+            }
+            RecordEvent("RR_Event_BondsCombined", operationId,
+                paper.Count.ToString("N0"), issued.ToString("N0"),
+                (payable - unplaced).ToString("N0"));
+            return paid;
+        }
+
+        /// <summary>
         /// Issues an amount from the account as the fewest possible bonds, largest first, at a
         /// cell — the owner's *"u are always payed in the highest values with least amount of
         /// bonds"*.

@@ -7056,3 +7056,112 @@ claim.
 `39C05DB8EFD9852A29BB0C8DD7FD7F25550D204431AD5C7F4C38F3A2DBE88941`, measured after the version bump, reproduced by two clean recompiles.
 **Seventeen checkers pass, forty-five proofs hold, 91 of 91 planted faults caught in the
 start-placement suite, 669 plant anchors findable.**
+
+---
+
+## Session 2026-10-01 - the bonds (0.12.75-dev)
+
+**Verbatim user quotes:** *"and nother thing the bonds i pull out i dont sdeem to be able to put
+them back in and and to combine them"*; *"and they need a name that is theri value and better
+description and value is not correct"*; *"now the books as bonds just say noprmal the quality which
+is normal"*.
+
+**Files touched:** `Economy/BondPaper.cs` (new), `Economy/BondHandling.cs` (new),
+`Economy/CompRimroomsBond.cs`, `Economy/BondService.cs`, `Company/BondTreasury.cs`,
+`Keyed/RR_Bonds.xml`, `tools/check-register-compliance.py`, `proof-bonds.py` (new, proof
+FORTY-SIX), `plant-rest.py`.
+
+**Mod register.** Nothing applied. Bonds are a Core `Novel` carrying our own comp, and the one
+register rule that bears on this -- the materials and cargo family, *"preserve each mod's normal
+material and weight behavior"* -- is **honoured by construction**: the value change is a `StatPart`
+that answers only for a stamped bond, so every other object in every other mod gets the number it
+got before.
+
+### Nothing in the battery had ever claimed anything about bonds
+
+`grep -l Bond` across forty-five proofs and sixteen plant suites returned **nothing**. That is why
+five separate defects shipped in one feature and the owner found all five in one sitting. **Four of
+the five are the same shape: built, correct, and unreachable** -- this project's most repeated
+defect, and the only thing that catches it is a claim asserting something is *called*.
+
+| Reported | Cause |
+|---|---|
+| *"the books as bonds just say noprmal the quality"* | `CompRimroomsBond.TransformLabel` **had never run.** `Verse.Book.LabelNoCount` is `title + GenLabel.LabelExtras(...)` and never walks `comps` |
+| *"value is not correct"* | a `Novel` is `MarketValue 160`, so a million-credit bond was 160 silver of paper |
+| *"i dont sdeem to be able to put them back in"* | `RedeemBondsInRadius` worked and had **exactly one caller**: a credit beacon the player had not built |
+| *"and to combine them"* | did not exist |
+| *"better description"* | one sentence, telling the player to use the beacon they did not have |
+
+### The name is the value, and the first attempt was refused for the right reason
+
+The label comes from `Book_RimroomsBond`, assigned as the carrier's **`thingClass`** in the same
+startup constructor that already adds the comp. An ordinary novel is untouched: every member defers
+to `base` unless the thing carries a stamped face value, and the subclass satisfies every `is Book`
+test in the game.
+
+**The first attempt wrote `Book`'s private `title` by reflection, and `check-compliance.py` refused
+it.** Its rule is principled and worth quoting: *"Reflection is the loophole: a `SetValue` into a
+game type is a game-assembly modification that no dependency list would show"* -- a Ludeon-terms
+question as much as an architecture one. Its stated boundary is behaviour through *"Core's own
+ThingComp, GameComponent, WorkGiver, JobDriver and **Def extension points**"*, and `thingClass` is
+one. **The checker was right and the code changed, not the checker.**
+
+**And the dead hook is deleted rather than left in place.** A method that cannot be called is worse
+than the bug it was meant to fix, because it reads like the problem is solved.
+
+### The value, and the consequence stated rather than hidden
+
+`StatPart_RimroomsBondValue` sets `MarketValue` to the face value. The face value lives **per
+instance**, so no entry on a def can express it and a StatPart is the only mechanism that reads the
+thing. It is additive; `MarketValue`'s own parts are untouched.
+
+**No new exchange rate was invented.** `ValuablesExchange.UnitCreditsFor` already buys ordinary
+goods at 0.85, so selling a bond through the company fetches 85% of face -- a spread -- while
+depositing or banking it returns the full face. **Neither route prints money, and that was checked
+before the stat was touched.**
+
+Colony wealth counts market value, so a fortune held as paper raises raid points in a way the
+ledger does not. **That is the trade the bond exists to offer** and `CompRimroomsBond` already said
+it: *"Liquidity costs risk."*
+
+### A way back in, and a way to combine
+
+Both actions are **gizmos on the paper itself**, because a `Book` is a selectable item and
+`ThingWithComps.GetGizmos` walks its comps -- the one surface that reaches a bond lying on a floor.
+The beacon still banks a whole radius at once, which is what it is for.
+
+Combining goes **through the ledger**: the paper is destroyed and credited, the replacement debited,
+and anything that cannot be placed stays credited. Two halves of one operation id, so a reload
+cannot pay twice and a credit cannot fall between the ledger and the floor. It uses the one
+`CreditDenominations` decomposition every other payout uses, and it **refuses** rather than
+shredding a pile it cannot improve.
+
+### A checker read its own explanatory prose, for the fifth time
+
+`check-register-compliance.py` refused the value change because the patch's **comment** contained
+the word `statBases` -- in the sentence explaining that the face value *cannot* be a `statBases`
+entry. **Fifth instance**, and the precedent was already documented: `check-compliance.py` strips
+XML comments since 0.12.46-dev, where it flagged a patch for containing `PatchOperationReplace` in
+the comment explaining why a replace is wrong. It strips comments now too.
+
+**Two checkers refused this work and exactly one of them was wrong.** Knowing which is the whole
+skill: the reflection rule stood and the code changed; the comment-matching rule was a defect and
+the checker changed.
+
+### And my own plants caught my own claims, for the third checkpoint running
+
+`18 of 20`. The label claim asserted an expression that appears in **both** overrides, so a plant
+that gutted `LabelNoCount` left the one in `LabelNoParenthesis` and the claim held while no bond
+was named -- **duplicate-string trap, counted now rather than found.** The refusal claim asserted
+the `Messages.Message` call was *written*; a plant prefixing `if (false)` left every asserted
+character in place -- **tenth instance of machinery-not-behaviour**, pinned to the line above it
+now.
+
+**And the heredoc rule was broken a twelfth time** writing this very record: an apostrophe in the
+prose killed the shell. `docs/NOW.md` says *"Use a FILE for any script with escapes or apostrophes,
+never a bash heredoc"* and the only thing that has ever worked is reaching for the file first.
+
+**206 C# files, 92 package files**, zero warnings, zero errors. Assembly SHA-256
+`AABE696E79D3745FEDC3397C2E21B179D43538C3C6FB71A9276D444D4663483A`, measured after the version bump, reproduced by two clean recompiles.
+**Seventeen checkers pass, FORTY-SIX proofs hold, 20 of 20 planted faults caught in the suite that
+carries the bonds, 684 plant anchors findable.**

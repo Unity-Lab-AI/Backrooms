@@ -53,6 +53,11 @@ def fail(message):
     problems.append(message)
 
 
+def strip_xml_comments(text):
+    """XML comments out, so a rule never matches the prose explaining it."""
+    return re.sub(r"<!--.*?-->", " ", text, flags=re.S)
+
+
 def read(path):
     return io.open(path, encoding="utf-8-sig").read()
 
@@ -256,7 +261,14 @@ mass_patches = []
 for path in package_xml_files():
     if not path.startswith(patches_root):
         continue
-    if re.search(r"<Mass>|statBases", read(path)):
+    # **COMMENTS STRIPPED FIRST.** This matched the word `statBases` inside the comment of a patch
+    # explaining that the face value *cannot* be a statBases entry -- so the patch was refused for
+    # saying what it does not do. **Fifth instance of a checker reading its own explanatory
+    # prose**, and the precedent is documented: `check-compliance.py` strips XML comments since
+    # 0.12.46-dev, where it flagged a patch for containing `PatchOperationReplace` in the comment
+    # explaining why a replace is wrong. A checker that tests for MENTION rather than for the
+    # thing itself cries wolf, and this battery has now had five.
+    if re.search(r"<Mass>|statBases", strip_xml_comments(read(path))):
         mass_patches.append(os.path.relpath(path, REPO).replace(os.sep, "/"))
 if mass_patches:
     fail("a patch in this package alters stat bases (%s). The materials and cargo family, rows "

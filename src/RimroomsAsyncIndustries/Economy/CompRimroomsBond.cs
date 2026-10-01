@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using RimroomsAsyncIndustries.Company;
+using RimWorld;
 using Verse;
 
 namespace RimroomsAsyncIndustries.Economy
@@ -91,10 +94,51 @@ namespace RimroomsAsyncIndustries.Economy
             if (split != null) { split.Issue(faceValue); }
         }
 
-        public override string TransformLabel(string label)
+        // **`TransformLabel` is GONE from this comp, because it never ran.** `Verse.Book`
+        // overrides `LabelNoCount` as `title + GenLabel.LabelExtras(...)` and never walks
+        // `comps`, so the method meant to name a bond was unreachable from the day it was
+        // written: every bond showed a random novel title and its quality, which is exactly what
+        // the owner reported. The label now comes from `Book_RimroomsBond`, the carrier's
+        // `thingClass`. Keeping a method that cannot be called would be worse than the bug,
+        // because it reads like the problem is solved.
+
+        /// <summary>
+        /// The two actions a player needs on a piece of paper they are holding: put it back, and
+        /// make several into fewer.
+        ///
+        /// On the comp, because a `Book` is a selectable item and `ThingWithComps.GetGizmos`
+        /// walks its comps — which is the only surface that reaches a bond on a floor. Before
+        /// this, the single caller of `RedeemBondsInRadius` was a credit beacon, so a player
+        /// without one had no way to put a bond back anywhere. Owner: *"the bonds i pull out i
+        /// dont sdeem to be able to put them back in and and to combine them"*.
+        /// </summary>
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (!IsBond) { return label; }
-            return "RR_Bond_Label".Translate(CreditDenominations.ShortName(faceValue));
+            foreach (Gizmo inherited in base.CompGetGizmosExtra()) { yield return inherited; }
+            if (!IsBond || parent == null || !parent.Spawned) { yield break; }
+
+            yield return new Command_Action
+            {
+                defaultLabel = "RR_Bond_DepositLabel".Translate(faceValue.ToString("N0")),
+                defaultDesc = "RR_Bond_DepositDesc".Translate(),
+                icon = parent.def.uiIcon,
+                action = delegate { Show(BondHandling.Deposit(parent)); }
+            };
+            yield return new Command_Action
+            {
+                defaultLabel = "RR_Bond_CombineLabel".Translate(),
+                defaultDesc = "RR_Bond_CombineDesc".Translate(),
+                icon = parent.def.uiIcon,
+                action = delegate { Show(BondHandling.Combine(parent)); }
+            };
+        }
+
+        /// <summary>Says what happened, by the refusal's own key. Never silent.</summary>
+        private void Show(CompanyActionResult result)
+        {
+            if (result.Success) { return; }
+            Messages.Message((result.MessageKey ?? "RR_Bond_NoneInRange").Translate(),
+                parent, MessageTypeDefOf.RejectInput, false);
         }
 
         public override string CompInspectStringExtra()
