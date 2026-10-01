@@ -36,11 +36,10 @@ you are on.**
 ### The second thing
 
 **Use a FILE for any script with escapes or apostrophes, never a bash heredoc.** It mangled
-`\n` into real newlines **five times** in the 0.12.46-dev batch alone, each time producing a
-Python syntax error in a proof or plant file that then had to be repaired. It is written down
-here because writing it down has not yet been enough.
-
-**Nothing in flight. Tree clean, everything published, no half-finished task.** Written deliberately for the session after a compaction.
+`\n` into real newlines **five times** in the 0.12.46-dev batch, and then **three more times**
+across 0.12.49 to 0.12.51 — once on a plain apostrophe in a closure script, twice on `\\s` inside
+a regex. **Eight times in two days.** It is written down here because writing it down has not yet
+been enough; the only thing that has worked is reaching for the Write tool first.
 
 ### State
 
@@ -52,11 +51,11 @@ here because writing it down has not yet been enough.
 | Build | **200 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
 | Assembly | SHA-256 `9D7DCDAF2FFA06C740F800437458571351511B56DDBDC1123463886B46ED7DF4`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **THIRTEEN**, all passing. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
-| Proofs | **FORTY** in `.local/register/proof-*.py`. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Proofs | **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
 | Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
-| Game launches | **FIVE, all by the owner on 2026-09-30.** They have found **eleven defects** and every one was ours. **The fifth found the most expensive one in the project's history: a light count that had stopped every Backrooms level from generating since 0.7.8-dev, thirty-nine checkpoints.** **Still not a single mod conflict.** The fourth launch is also the first whose evidence came from the **running game** rather than from the log alone: the owner said *"you can use the api mod you have that we installed last so u can see wtf rimworld is doing"*, so RimBridgeServer 2.1.1 in direct mode, read-only, against their own launched process. See *What the fourth launch found*. The staged copy is current at this checkpoint, hash-verified |
+| Game launches | **FIVE, all by the owner on 2026-09-30, and a SIXTH is in flight right now — reading its log is the first job of the next session.** They have found **eleven defects** and every one was ours. **The fifth found the most expensive one in the project's history: a light count that had stopped every Backrooms level from generating since 0.7.8-dev, thirty-nine checkpoints.** **Still not a single mod conflict.** The fourth launch is also the first whose evidence came from the **running game** rather than from the log alone: the owner said *"you can use the api mod you have that we installed last so u can see wtf rimworld is doing"*, so RimBridgeServer 2.1.1 in direct mode, read-only, against their own launched process. See *What the fourth launch found*. The staged copy is current at this checkpoint, hash-verified |
 
 ### How to work, owner direction 2026-09-29
 
@@ -141,7 +140,7 @@ checkpoints stale, so nothing built in this project's history had ever reached t
 
 ---
 
-## WHAT THE FIRST LAUNCH FOUND — read this before anything else
+## WHAT THE LAUNCHES HAVE FOUND — eleven defects, every one ours
 
 **Third pass, and this one was the root of the map complaints.** Owner: **"the map generator
 is not our mod"**. `ScenPart_RimroomsStart` replaced Core's `Base_Player` — elevation, fertility,
@@ -261,7 +260,75 @@ there.
 
 ---
 
-## DO THIS FIRST — read the play-testing log, then launch again
+## DO THIS FIRST — READ THE LOG FROM THE SIXTH LAUNCH
+
+**The owner is testing 0.12.52-dev right now and asked for exactly this:** *"you can check the
+player.log on the other side of the compact to see if it works and our gates are working"*.
+
+```
+grep -n -i "rimrooms\|Error in GenStep\|Exception" \
+  "$USERPROFILE/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Player.log"
+```
+
+**And the bridge, if the process is still up**, which answers in one call what the log only hints
+at — see *The bridge is available now*. `.local/qa/bridge.py` is the scratch client:
+`list`, `call <tool> '<json>'`, `scan <minx> <minz> <maxx> <maxz>`.
+
+### What is actually verified, and what is not — be honest about this
+
+The owner asked *"they work now right?"* and the answer given was **no, and I will not claim it**.
+That split still holds and the next session must not quietly upgrade it:
+
+| | |
+|---|---|
+| **Measured in the running game** | the Store's back-room **door exists** at (160, 161) carrying the emergence comp with `Mark as way home` enabled; Deconstruct and Uninstall both offered; a granite-block wall where the burn removed a Granite formation; `list_colonists` non-zero after the arrival fix |
+| **Source-verified only, NEVER EXECUTED** | the light-count fix, the **entire 300x300 generator**, pillars, room shapes, corridor widths, the map budget, release, carry-a-doorway, and the material split. **Forty-one proofs check properties of code, not behaviour of a running game.** |
+
+**Nothing from 0.12.48-dev onward has run once.** The coordinate generator in particular was
+rewritten from a hard-coded 3x3 grid to a depth-driven one and has never executed.
+
+**The one thing de-risked without a launch:** `CandidateIsSafe` was modelled against the new
+layouts at **every depth across six seeds** — every room reachable, zero failures — so generation
+should be *accepted* rather than refused with `RR_Generation_NoSafeCandidate`. That was the
+likeliest silent killer. It is not proof that it runs.
+
+### The two gates are completely different things, and only one should exist yet
+
+**The natural gate** is the one to check first, and the chain that has to hold is:
+
+```
+SoloGroupOpening.Open
+  1. CreateDiscoveredCoordinate      mint the place
+  2. DestinationService.EnsureSite   GENERATE THE 300x300 MAP   <- failed at launch 5
+  3. CompRimroomsEmergence.Mark()    mark the Store's back door
+  4. RegisterNaturalAddress          register the connection
+```
+
+Step 2 failed on the fifth launch for the light-count reason, so **steps 3 and 4 have never run.**
+If the back-room door is still an ordinary steel door, step 2 failed again and the log names the
+key. Look for `RR_Event_NaturalGateOpening`.
+
+**The machine gate is NOT there and is not supposed to be.** Owner, verbatim: *"the store start
+has a natural portal and to build a machanical one they need to contact the company and resaerch
+whats needed"*. The Store ships `Battery`, `CommsConsole` and `WoodFiredGenerator` — **no Autodoor
+and no TableMachining.** So the player must build a Machining Table and an Autodoor, designate
+door/console/battery/bench on Operations' **Machine** pane, then run `RR_AssembleMachineGate`:
+**100 Steel + 8 ComponentIndustrial, 6000 work, Crafting**, no research prerequisite on the recipe
+itself. The setup page's readiness review already names the missing hardware.
+
+### What the sixth launch should settle, in order
+
+1. **does a coordinate generate at all** — the whole generator is unrun
+2. **is the back-room door a natural gate** rather than a steel door
+3. **level 0 reads as the yellow rooms** — wood walls, yellow carpet, coherent, everything matching
+4. **one level in, the materials go wild** — two tables in one room in different stuffs, each room's
+   walls a different material. This is the newest thing and the least like anything that has run
+5. **no cave-in** when a wall or a pillar is deconstructed
+6. **Operations → Places** lists the colony and any level, with the budget as `n/5`
+
+---
+
+## The re-stage command and the old fifth-launch list
 
 ### The bridge is available now, and it changes how to diagnose
 
@@ -379,7 +446,7 @@ what the player or the base game already owns. Add to it.** Every fix in 0.12.45
 the same move — stop overriding, start contributing. The map generator patch is
 `PatchOperationAdd` for exactly this reason.
 
-### What a FIFTH launch should settle
+### What the fifth launch settled, and the sixth-launch list that replaced this
 
 - the Store stands on the owner's tile and map size, on **open ground with no rock crater**, and
   the rest of the tile keeps its biome character
@@ -1126,6 +1193,60 @@ Three of this project's largest types are partial across many files: `CompRimroo
 
 ---
 
+## THE REGISTER FOUND A LIVE DEFECT NOTHING IN OUR OWN CODE COULD HAVE
+
+Owner instruction, 2026-09-30: *"make sure u are using prep and mod registry as needed"*. It paid
+for itself in **one query**, and this is the strongest argument for the LAW that exists.
+
+Register row **[188] Removable Mt.Rock Roof Patch** (Workshop `1541438898`) is **installed in this
+profile** and patches:
+
+```xml
+<xpath>*/RoofDef[defName = "RoofRockThick"]/isThickRoof</xpath>
+<value><isThickRoof>false</isThickRoof></value>
+```
+
+`RoofDef.VanishOnCollapse => !isThickRoof`. **So in this player's game Core's overhead mountain
+vanishes on collapse and leaves open sky** — meaning invariant 13, *a Backrooms coordinate has no
+outside*, **was already broken before any of this session's work**, and
+`BackroomsContainment`'s claim that thick roof "never vanishes" was reasoning from unpatched Core.
+
+The non-collapsing roof def added for the owner's *"backrooms can not and shall not have cave
+ins"* direction repairs that breach as a side effect. And it is a second, independent reason
+patching `RoofRockThick` would have been wrong: two mods editing one def at startup, load-order
+dependent, and that mod asks to be loaded last.
+
+**Also checked and clear:** [69] Craftable Mountains only *sets* `RoofDefOf.RoofRockThick` from
+its own assembly; [63] Change map edge limit affects player map sizing and a coordinate is a fixed
+size this mod creates; [128] MinifyEverything mutates `minifiedDef` on **defs, not instances**, so
+every Core def the facility places is covered; [221] Stuff Mass Matters means a wider material set
+changes hauling weight, which is native and correct.
+
+## WHAT THE COLLABORATOR GETS
+
+Owner direction: *"i need someone else to work on this in parrellel through git hub and i need to
+make sure they have it all but the temp stuff i told you to git ignore"*.
+
+**`.local/` was hiding the entire verification suite.** A clone could run the 13 checkers in
+`tools/` and **none of the 41 proofs or 13 plant suites**. `.gitignore` now admits exactly two
+globs and nothing else:
+
+```
+.local/*
+!.local/register/
+.local/register/*
+!.local/register/proof-*.py
+!.local/register/plant-*.py
+```
+
+Git will not descend into an ignored directory, so the parent has to be re-admitted a level at a
+time — the same pattern as the existing `!.claude/bin/`. Still excluded: a 132 MB nuget cache,
+19 MB of decompiler binaries, the per-subsystem inspections, the scratch bridge client, and the
+hundreds of one-shot record scripts.
+
+**A collaborator needs the same RimWorld install:** `tools/build.ps1` refuses to build unless the
+Core assembly hashes to `5CF1B5BE399D5B1C9C56CA72C9D35B4ECF307FEACF5859D04AC5A1AA5926356A`.
+
 ## The warning that matters most right now
 
 **SUSPECT YOUR OWN MEASUREMENT FIRST.** A search that finds nothing is not evidence, and across
@@ -1169,6 +1290,34 @@ reason `GetNamedSilentFail` is treated as dangerous here:
 | **A check I wrote to catch one specific thing PASSED that exact planted fault** | The floor-value claim skipped terrains with no cost list as *"never built"* — which excused `PackedDirt`, the precise case it existed for. **A filter that skips the case it guards against is worse than no check**, and only the planted fault found it. |
 | **A claim keyed off proximity broke when correct code moved near it** | It searched for a capability name within 400 characters of a constant. **Proximity is not the thing that happens.** Fifth instance of that class. |
 | **Claims matching the code's own comments** | Twice more, including a rule defeated by the two doc comments explaining why the thing it looked for is deliberately absent. **Sixth instance.** |
+
+### THE TRAP THAT NOW OUTRANKS EVERY OTHER ONE
+
+**A claim satisfiable by something other than the thing it is about.** It has defeated a proof
+claim **in every single checkpoint from 0.12.46 to 0.12.52**, and the plants caught all of them.
+The full list, because the shape is only obvious once it is in a table:
+
+| What the claim read | Why a plant walked past it |
+|---|---|
+| `"Prefs.MaxNumberOfPlayerSettlements" in budget` | the name is also in the **doc comment** above the code |
+| `"RR_Frontier_TooManyGatesHeld" in keyed` | it is a **prefix** of `…HeldUnused` |
+| `"MaximumFrontiersPerCoordinate" in frontier` | the **declaration** survived while the *use* was deleted |
+| `"return false;" in parent` | that shape appears **four times** in the file |
+| `"if (x == center.x …)" in planner` | a later feature added the **same line** to a second function, and the harness replaces only the first |
+| `genstep.count("RockIntrusionCells") == 1` | a **comment** mentioning the name counted |
+| `find(a) < find(b)` across a file | `SetRoof(cell, overheadRoof)` appears **twice**, so the wrong pair was compared |
+| `"!receipt.IsTerminal" in crossing` | it appears **seven times** in that file |
+| `"EnsureSite(campaign, coordinate, …)" in address` | the call appears **twice**; a presence test survived deleting one |
+| `"connections.Remove(" ` | did not match a planted `connections.RemoveAll(` |
+| `CoherentDepth >= 1` | a planted **99** passed — no upper bound |
+| nothing asserted the **variant** reached the hash key | and that variant *is* the entire per-fixture feature |
+
+**The rule, and it is cheap to follow:** scope a claim to the **method body**, the **exact tag**,
+or the **call site** — and **count what should exist** rather than testing that something does. A
+claim about code must never be satisfiable by a comment, a prefix, a declaration, or a duplicate.
+
+**Twice this session the plant harness refused to run** because a new line made an old anchor
+match twice. That is the harness working: it will not score a fault it never planted.
 
 ### The rules that come out of it
 
@@ -1268,6 +1417,31 @@ for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: 
 - **A def field emitted in XML that no class declares is ignored silently at load.**
 - Core's `StockGenerator_Category` has **all-private fields**. `GenRecipe.PostProcessProduct` is **private static**.
 - `SetTerrain` **clears** the colour grid. `CompFlickable.SwitchIsOn` has a **public setter**.
+
+## WHAT IS OPEN AFTER 0.12.52-dev
+
+**Nothing in flight and nothing half-built.** Every decision the owner made this session is
+implemented and verified at source level. What remains is **runtime acceptance**, which only a
+launch can give.
+
+One thing was explicitly deferred and then shipped the next checkpoint, so the pattern is worth
+keeping: when a piece needs a save-schema change and a teardown order, say so and do it properly
+next rather than half-building it. The Operations release list was that piece, and it is done.
+
+**Owner decisions taken this session, all implemented:**
+
+| Decision | Answer |
+|---|---|
+| level size | **300x300**, up from 60x60 |
+| room count | **grand at level 0** — 6 halls of 80x80 with 144 pillars each — tightening to 42 rooms of 24 by depth 6 |
+| families | threshold / office_copy / return_gallery **unique**; the other five repeat |
+| onward gates | **4–6 per level**, one per 20 rooms; `MaximumNaturalDepth` **3 → 6** |
+| saves | **fresh save**; the 60x60 path is dropped, `PlannerVersion` 3 |
+| cave-ins | **never**, via a coordinate-only `RoofDef` with `canCollapse false`; Core's roof untouched |
+| map budget | **`Prefs.MaxNumberOfPlayerSettlements`** (the player's own 1–5 slider), floor of 2, per-scenario override |
+| natural gates | **deconstructable** (route lost) and **minifiable/movable** (route follows the door) |
+| releasing a place | **Operations → Places**, with a Release button and a `releasedByPlayer` save flag |
+| materials | **level 0 coherent and yellow**; deeper, **every type for all things**, per fixture |
 
 ## Open owner questions — THERE ARE NONE
 
