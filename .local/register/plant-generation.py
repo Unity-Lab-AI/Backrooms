@@ -16,6 +16,50 @@ GEN = SRC + "/Generation/GenStep_BackroomsDestination.cs"
 PROOF = ".local/register/proof-generation-batch.py"
 
 PLANTS = [
+    # ------------------------------------------------- a hallway is a room
+    # Two hardcoded values made every corridor a grey steel service tunnel between themed rooms.
+    # Owner: *"the hall ways are just rectangles and arnt correctly the themed color and
+    # materials"*, and *"i see the whole map is almost like a string of pears. when it should just
+    # be basicly \"rooms\" as halways with the exact shit thats in the rooms"*.
+    ("CORRIDOR WALLS GO BACK TO BEING HARDCODED STEEL", GEN,
+     "            PlaceWall(map, cell, wallDef, wallStuff);" + NL
+     + "            Thing wall = cell.InBounds(map) ? cell.GetEdifice(map) : null;",
+     "            PlaceWall(map, cell, ThingDefOf.Wall, ThingDefOf.Steel);" + NL
+     + "            Thing wall = cell.InBounds(map) ? cell.GetEdifice(map) : null;"),
+
+    ("a corridor stops taking the band's floor", GEN,
+     "            TerrainDef terrain = look.accent != null && along % 4 == 0 ? look.accent : look.floor;",
+     "            TerrainDef terrain = look.floor;" + NL
+     + "            if (terrain == null) { return; }" + NL
+     + "            terrain = terrain;"),
+
+    ("a corridor wall stops taking the band's colour", GEN,
+     "            { wall.TryGetComp<CompColorable>()?.SetColor(look.wallColor); }", "            { }"),
+
+    ("THE CORRIDOR SIDE CELLS ARE COLLECTED AND NEVER SPENT", GEN,
+     "                DressCorridors(map, coordinate, corridorSides, lightDef, placedLights," + NL
+     + "                    reservedProviderCells);" + NL, ""),
+
+    ("the hallways stop being lit", GEN,
+     "                if (lightDef != null && index % CorridorLampSpacing == 0)",
+     "                if (false)"),
+
+    ("the hallways stop carrying anything the rooms carry", GEN,
+     "                if (fixtures.Count == 0 || index % CorridorFixtureSpacing != 0) { continue; }",
+     "                if (true) { continue; }"),
+
+    # Anchored on the horizontal run only: the same guard exists on both axes, so the bare
+    # condition matches twice and a plant that matches twice proves nothing while looking fine.
+    ("furniture lands on the middle of a corridor and blocks the route", GEN,
+     "                                SetWalkableRoofedCell(map, cell, look.floor);" + NL
+     + "                                PaintCorridorCell(map, cell, look, x);" + NL
+     + "                                // One in from the wall, and never the centre line." + NL
+     + "                                if (offset != 0 && (offset == halfWidth - 1 || offset == 1 - halfWidth))"
+     + NL + "                                { sides.Add(cell); }",
+     "                                SetWalkableRoofedCell(map, cell, look.floor);" + NL
+     + "                                PaintCorridorCell(map, cell, look, x);" + NL
+     + "                                sides.Add(cell);"),
+
     # ------------------------------------ the wiring order, and the rebuild that threw
     # The conduit guard was correct and ran too early to see anything: conduits were laid before
     # the generator, the climate unit, the ceiling lights and the pillar lamps were spawned, so
@@ -408,9 +452,15 @@ for label, path, old, new in PLANTS:
         print("PLANT SETUP BROKEN (%d matches): %s" % (original.count(old), label))
         sys.exit(2)
     write_verified(path, original.replace(old, new, 1))
-    code = subprocess.call([sys.executable, PROOF],
-                           stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
-    write_verified(path, original)
+    try:
+        code = subprocess.call([sys.executable, PROOF],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    finally:
+        # **THE RESTORE IS THE ONE LINE THAT MUST ALWAYS RUN.** It is what
+        # makes a destructive instrument safe, and it was the one line not
+        # protected: a leaked devnull handle raised OSError mid-run twice
+        # and left planted source on disk both times.
+        write_verified(path, original)
     ok = code != 0
     caught += 1 if ok else 0
     print("%s  %s" % ("CAUGHT " if ok else "MISSED!", label))

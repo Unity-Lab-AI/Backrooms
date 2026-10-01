@@ -271,8 +271,24 @@ PLANTS = [
      + "    /// ## And it does not collapse either, which this file used to get wrong"),
     # ------------------------------------------------------ rooms are not rectangles
     ("ROOMS GO BACK TO BEING PLAIN RECTANGLES", PLANNER,
-     "            if (room == null || depth <= 1) { yield break; }",
+     "            if (room == null || room.index == 0 || depth <= 1) { yield break; }",
      "            if (room != null) { yield break; }"),
+
+    # **THE PROBE MEASURED THE OLD SHAPING RUNNING THE WHOLE TIME** -- 89% of depth-1 rooms
+    # carried rock at 7% of their interior -- so the amount was never the problem and the obvious
+    # guess, more reach, would only have produced rounder squares. There was exactly ONE form.
+    # Owner: *"they were all just square rooms again..wtf dont u know any other compbinations"*.
+    ("THERE IS ONLY ONE ROOM FORM AGAIN", PLANNER,
+     "            int form = roll % ShapeForms;",
+     "            int form = 0;"),
+
+    ("the form count collapses to the corner masses", PLANNER,
+     "        internal const int ShapeForms = 7;",
+     "        internal const int ShapeForms = 1;"),
+
+    ("the grand hall starts being deranged like every other room", PLANNER,
+     "            if (room == null || room.index == 0 || depth <= 1) { yield break; }",
+     "            if (room == null || depth <= 1) { yield break; }"),
 
     ("the generator stops leaving any rock standing inside a room", GEN,
      "                    if (intrusions.Contains(cell)) { continue; }" + NL, ""),
@@ -285,12 +301,13 @@ PLANTS = [
      ""),
 
     ("the corner reach stops being clamped to a third of the room", PLANNER,
-     "            int reach = System.Math.Min((depth - 1) * 2, System.Math.Min(extentX - insetX, extentZ - insetZ) / 3);",
+     "            int reach = System.Math.Min((depth - 1) * 2," + NL
+     + "                System.Math.Min(extentX - insetX, extentZ - insetZ) / 3);",
      "            int reach = (depth - 1) * 2;"),
 
     ("SHALLOW COORDINATES START DEFORMING TOO", PLANNER,
-     "            if (room == null || depth <= 1) { yield break; }",
-     "            if (room == null) { yield break; }"),
+     "            if (room == null || room.index == 0 || depth <= 1) { yield break; }",
+     "            if (room == null || room.index == 0) { yield break; }"),
 
     ("the planner stops modelling the rock it leaves standing", PLANNER,
      "                foreach (IntVec3 rock in RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth)))" + NL
@@ -532,7 +549,7 @@ def write_verified(path, text):
 
 print("baseline -- the target must pass before anything is planted")
 code = subprocess.call([sys.executable, PROOF],
-                       stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
+                       stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 print("  exit %d  %s" % (code, PROOF))
 if code != 0:
     sys.stderr.write("BASELINE BROKEN: the proof already fails, so every plant would register "
@@ -547,9 +564,15 @@ for label, path, old, new in PLANTS:
         print("PLANT SETUP BROKEN (0 matches): %s" % label)
         sys.exit(2)
     write_verified(path, original.replace(old, new, 1))
-    code = subprocess.call([sys.executable, PROOF],
-                           stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
-    write_verified(path, original)
+    try:
+        code = subprocess.call([sys.executable, PROOF],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    finally:
+        # **THE RESTORE IS THE ONE LINE THAT MUST ALWAYS RUN.** It is what
+        # makes a destructive instrument safe, and it was the one line not
+        # protected: a leaked devnull handle raised OSError mid-run twice
+        # and left planted source on disk both times.
+        write_verified(path, original)
     ok = code != 0
     caught += 1 if ok else 0
     print("%s  %s" % ("CAUGHT " if ok else "MISSED!", label))

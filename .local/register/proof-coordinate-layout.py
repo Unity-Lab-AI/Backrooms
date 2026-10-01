@@ -703,7 +703,17 @@ check("the reach of a corner mass can never eat the middle of the room",
       "rather than a partition")
 
 check("SHALLOW COORDINATES STAY RECTANGULAR",
-      "if (room == null || depth <= 1) { yield break; }" in intrusion_body,
+      "if (room == null || room.index == 0 || depth <= 1) { yield break; }" in intrusion_body
+      # The hall is excluded as well now, for the reason `FalseOpening` excludes it: it is the
+      # room the player arrives in and the one meant to read as built.
+      and "room.index == 0" in intrusion_body
+      # **AND THERE IS MORE THAN ONE FORM NOW.** The probe measured the old shaping running on
+      # 89% of depth-1 rooms at 7% of their interior -- so the amount was never the problem and
+      # the obvious guess, more reach, would only have made rounder squares. There was exactly
+      # ONE form: a quarter-ellipse per corner. Owner: *"they were all just square rooms
+      # again..wtf dont u know any other compbinations"*.
+      and "internal const int ShapeForms = 7;" in planner
+      and "int form = roll % ShapeForms;" in planner,
       "-- the yellow rooms read as a place precisely because they are monotonous, which is the "
       "same reason Derange leaves depth 1 alone. The wrongness is travelled toward")
 

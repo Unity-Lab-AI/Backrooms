@@ -85,7 +85,7 @@ def write_verified(path, text):
 
 def run(target):
     return subprocess.call([sys.executable, target],
-                           stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
+                           stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
 
 print("clean run first, so a plant that 'fails' cannot be a pre-existing fault")
@@ -105,8 +105,14 @@ for label, path, old, new, target in PLANTS:
         print("PLANT SETUP BROKEN (%d matches, need exactly 1): %s" % (hits, label))
         sys.exit(2)
     write_verified(path, original.replace(old, new, 1))
-    code = run(target)
-    write_verified(path, original)
+    try:
+        code = run(target)
+    finally:
+        # **THE RESTORE IS THE ONE LINE THAT MUST ALWAYS RUN.** It is what
+        # makes a destructive instrument safe, and it was the one line not
+        # protected: a leaked devnull handle raised OSError mid-run twice
+        # and left planted source on disk both times.
+        write_verified(path, original)
     if io.open(path, encoding="utf-8").read() != original:
         sys.stderr.write("FATAL: %s not restored -- CHECK BY HAND\n" % path)
         sys.exit(3)

@@ -213,6 +213,13 @@
         <count>0~2</count>
         <chance>0.5</chance>
       </li>
+          <li>
+        <kind>CategoryMember</kind>
+        <category>FoodMeals</category>
+        <count>1~2</count>
+        <chance>0.5</chance>
+        <stackCount>2~6</stackCount>
+      </li>
     </slots>
   </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
 
@@ -220,8 +227,10 @@
     <defName>RR_Room_Canteen</defName>
     <label>canteen</label>
     <description>Tables set for a shift that never came off.</description>
-    <minDepth>2</minDepth>
-    <weight>1.1</weight>
+    <!-- Reaches a FIRST level. The solo start begins inside a coordinate with whatever the
+         coordinate holds, and food lived only here, behind minDepth 2 and a 70% roll. -->
+    <minDepth>1</minDepth>
+    <weight>1.6</weight>
     <slots>
       <li>
         <kind>Table</kind>
@@ -234,9 +243,15 @@
       <li>
         <kind>CategoryMember</kind>
         <category>FoodMeals</category>
+        <count>3~6</count>
+        <stackCount>6~16</stackCount>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>FoodRaw</category>
         <count>1~3</count>
-        <chance>0.7</chance>
-        <stackCount>2~8</stackCount>
+        <chance>0.8</chance>
+        <stackCount>20~45</stackCount>
       </li>
       <li>
         <kind>Storage</kind>
@@ -250,12 +265,27 @@
     <defName>RR_Room_Storeroom</defName>
     <label>storeroom</label>
     <description>Racking, crates, and stock counted by nobody.</description>
-    <minDepth>2</minDepth>
+    <!-- The highest weight of any archetype, so this is the slot that actually feeds anybody.
+         A storeroom in a facility holds food; it held everything except food. -->
+    <minDepth>1</minDepth>
     <weight>1.4</weight>
     <slots>
       <li>
         <kind>Storage</kind>
         <count>2~5</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>FoodRaw</category>
+        <count>2~4</count>
+        <stackCount>25~60</stackCount>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>FoodMeals</category>
+        <count>1~2</count>
+        <chance>0.6</chance>
+        <stackCount>4~10</stackCount>
       </li>
       <li>
         <kind>CategoryMember</kind>

@@ -111,8 +111,24 @@ PLANTS = [
      "    public class CompRimroomsEmergence : ThingComp"),
 
     ("the glow veto stops asking whether this is a live gate", COMP,
-     "        public bool ShouldBeLitNow() { return IsLiveGate; }",
+     "        public bool ShouldBeLitNow() { return IsLiveGate || frontierGate; }",
      "        public bool ShouldBeLitNow() { return true; }"),
+
+    # **`NaturalFrontierService.Discover` HAD ZERO CALLERS.** The draw, the cap, the guaranteed
+    # pair and twenty `RR_Frontier_*` strings were all written for a float menu that did not
+    # exist. Owner, after walking a whole finished level: *"i never found any natural cates to the
+    # world map tiles or natural portals to deep into the backrroooms"*.
+    ("NOTHING ASKS A DOOR WHETHER IT IS A WAY ONWARD AGAIN", COMP,
+     "                foreach (FloatMenuOption option in FrontierOptions(selPawn)) { yield return option; }"
+     + chr(10), ""),
+
+    ("the way onward can be seen but never walked through", COMP,
+     "                CompanyActionResult found = NaturalFrontierService.Discover(parent);",
+     "                CompanyActionResult found = CompanyActionResult.Applied();"),
+
+    ("AN ORDINARY COLONY DOOR STARTS GLOWING BLUE ON INSTALL", COMP,
+     "                if (!(parent.Map != null && parent.Map.Parent is RimroomsDestinationMapParent))"
+     + chr(10) + "                { return false; }" + chr(10), ""),
 
     ("the patch default radius stops being dark", DOORPATCH,
      "<glowRadius>0</glowRadius>", "<glowRadius>8</glowRadius>"),
@@ -149,7 +165,7 @@ PLANTS = [
      "                yield break;"),
 
     ("the menu is offered on a door that is not a live gate", COMP,
-     "            if (!IsLiveGate) { yield break; }", "            if (false) { yield break; }"),
+     "            if (!IsLiveGate)" + chr(10) + "            {", "            if (false)" + chr(10) + "            {"),
 
     ("the enter string is never written", KEYED,
      "<RR_DoorCross_Enter>", "<RR_DoorCross_EnterUnused>"),
@@ -176,7 +192,7 @@ def write_verified(path, text):
 
 print("baseline -- the target must pass before anything is planted")
 code = subprocess.call([sys.executable, PROOF],
-                       stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
+                       stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 print("  exit %d  %s" % (code, PROOF))
 if code != 0:
     sys.stderr.write("BASELINE BROKEN: the proof already fails, so every plant would register as "
@@ -191,9 +207,15 @@ for label, path, old, new in PLANTS:
         print("PLANT SETUP BROKEN (0 matches): %s" % label)
         sys.exit(2)
     write_verified(path, original.replace(old, new, 1))
-    code = subprocess.call([sys.executable, PROOF],
-                           stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
-    write_verified(path, original)
+    try:
+        code = subprocess.call([sys.executable, PROOF],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    finally:
+        # **THE RESTORE IS THE ONE LINE THAT MUST ALWAYS RUN.** It is what
+        # makes a destructive instrument safe, and it was the one line not
+        # protected: a leaked devnull handle raised OSError mid-run twice
+        # and left planted source on disk both times.
+        write_verified(path, original)
     ok = code != 0
     caught += 1 if ok else 0
     print("%s  %s" % ("CAUGHT " if ok else "MISSED!", label))

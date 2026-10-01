@@ -155,6 +155,7 @@ Select who you mean first. Anyone who cannot cross is listed with the reason rat
   <RR_PortalCrossing_UnownedCargo>A saved crossing references an item that is neither carried nor in custody. The record is retained.</RR_PortalCrossing_UnownedCargo>
   <RR_PortalCrossing_OrphanedHeldThing>Something is held for a crossing that no longer references it. The record is retained.</RR_PortalCrossing_OrphanedHeldThing>
 
+  <RR_Frontier_WalkThrough>Walk through - this door leads somewhere else</RR_Frontier_WalkThrough>
   <RR_Frontier_Discovered>{0} found a door that leads somewhere else. The way through is permanently open and is now a remembered address.</RR_Frontier_Discovered>
   <RR_Frontier_Unavailable>Surveying doors is unavailable until this branch is operating.</RR_Frontier_Unavailable>
   <RR_Frontier_NotADoor>That is not a door this company can study.</RR_Frontier_NotADoor>

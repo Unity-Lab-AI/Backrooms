@@ -78,7 +78,66 @@ namespace RimroomsAsyncIndustries.Portals
         /// any other mod ships, carries an inert glower — refused by Core's own rule rather than
         /// by hoping the radius of zero is enough.
         /// </summary>
-        public bool ShouldBeLitNow() { return IsLiveGate; }
+        public bool ShouldBeLitNow() { return IsLiveGate || frontierGate; }
+
+        /// <summary>
+        /// Whether this door is an undiscovered way onward, as of the last appearance refresh.
+        ///
+        /// **Cached, because Core asks `ShouldBeLitNow` whenever it likes.**
+        /// <see cref="NaturalFrontierService.IsFrontierCandidate"/> walks the coordinate list and
+        /// the whole portal edge list, which is not a question to answer from inside a glower.
+        /// Recomputed on the same interval as the rest of the appearance, in
+        /// <see cref="CompTickInterval"/>.
+        /// </summary>
+        private bool frontierGate;
+
+        /// <summary>
+        /// A door inside the Backrooms that leads somewhere else and has not been recorded yet.
+        ///
+        /// ## Why this exists at all, which is the whole defect
+        ///
+        /// Owner, after walking a finished level end to end: *"i never found any natural cates to
+        /// the world map tiles or natural portals to deep into the backrroooms ... i just never
+        /// found any other gates with option to \"walk through\""*.
+        ///
+        /// **`NaturalFrontierService.Discover` and `IsFrontierCandidate` had ZERO callers in the
+        /// entire package.** The draw, the cap, the emergence share, the world-exit fallback, the
+        /// guaranteed pair added last checkpoint, and every one of the twenty-odd
+        /// `RR_Frontier_*` strings the player was meant to read -- all written, all correct, and
+        /// **nothing ever asked a door whether it was a way onward.** It is the same defect that
+        /// has now been found five times in this run: computing a value correctly and using it
+        /// are two different facts.
+        ///
+        /// ## Why it glows before it is discovered
+        ///
+        /// A natural gate is permanently open -- invariant 12 -- so a door that leads elsewhere
+        /// is already leading elsewhere before anybody writes it down. And the owner's own cue
+        /// for a natural gate is the blue: *"i see the blue glow"*. A way onward that can only be
+        /// found by right-clicking every door on a three-hundred-cell floor is a way onward
+        /// nobody finds, which is exactly what happened.
+        ///
+        /// It is never a way home and never a machine gate: `Evaluate` refuses the threshold
+        /// anchor, a player-built door and a designated gate before this can be true.
+        /// </summary>
+        public bool IsFrontierGate
+        {
+            get
+            {
+                if (IsDesignated || parent == null || !parent.Spawned) { return false; }
+                // **INSIDE A COORDINATE ONLY, and a proof caught this.** `Evaluate` serves
+                // ordinary maps too, under its own `worldfrontier:` origin -- so without this,
+                // a door in an ancient structure on the player's own colony map would start
+                // glowing blue the moment this mod was installed. `CONTENT_REUSE_POLICY.md`
+                // forbids changing an existing colony by installing, and the claim *"no other
+                // door in the game is affected"* is there to hold that line.
+                //
+                // A world frontier on an ordinary map is still found and still crossable; it
+                // simply does not advertise itself with the Backrooms' own colour.
+                if (!(parent.Map != null && parent.Map.Parent is RimroomsDestinationMapParent))
+                { return false; }
+                return NaturalFrontierService.IsFrontierCandidate(parent);
+            }
+        }
 
         /// <summary>
         /// A marked door on a branch map that the portal network actually has an edge for.
@@ -116,7 +175,10 @@ namespace RimroomsAsyncIndustries.Portals
         private void RefreshGateAppearance()
         {
             if (parent == null || !parent.Spawned) { return; }
-            bool live = IsLiveGate;
+            // A way onward is a natural gate that nobody has written down yet, and it is
+            // already permanently open. Cached here so Core's glower can ask cheaply.
+            frontierGate = IsFrontierGate;
+            bool live = IsLiveGate || frontierGate;
             CompGlower glower = parent.TryGetComp<CompGlower>();
             if (glower != null)
             {
@@ -302,7 +364,11 @@ namespace RimroomsAsyncIndustries.Portals
             foreach (FloatMenuOption option in base.CompFloatMenuOptions(selPawn))
             { yield return option; }
             if (selPawn == null || parent == null || !parent.Spawned) { yield break; }
-            if (!IsLiveGate) { yield break; }
+            if (!IsLiveGate)
+            {
+                foreach (FloatMenuOption option in FrontierOptions(selPawn)) { yield return option; }
+                yield break;
+            }
             PortalConnectionRecord edge = EdgeFor();
             if (edge == null) { yield break; }
             // Refusals are shown as a disabled row with the reason, never hidden: a name missing
@@ -319,6 +385,63 @@ namespace RimroomsAsyncIndustries.Portals
             yield return new FloatMenuOption("RR_DoorCross_Enter".Translate(), delegate
             {
                 Show(PortalTravelService.OrderCrossing(selPawn, subject));
+            });
+        }
+
+        /// <summary>
+        /// Walk through a way onward: record it, then cross it, in one order.
+        ///
+        /// ## The defect this closes
+        ///
+        /// Owner: *"i just never found any other gates with option to \"walk through\" adding them
+        /// to the loaded maps of my game play through"*.
+        ///
+        /// **`NaturalFrontierService.Discover` had no callers.** Every refusal string the player
+        /// was meant to read -- `RR_Frontier_LeadsNowhere`, `RR_Frontier_NoneLeftHere`,
+        /// `RR_Frontier_TooManyGatesHeld`, twenty of them -- was written for a float menu that
+        /// did not exist, and `RR_Frontier_Discovered` announced an event nothing could raise.
+        ///
+        /// ## Why discovering and crossing are one click
+        ///
+        /// They are one act. A player who walks a colonist to a door that is glowing blue has
+        /// already decided; making them record it, then find it again in a list, then order a
+        /// crossing is the dispatch console this project removed from the gate door for exactly
+        /// the same reason.
+        ///
+        /// `Discover` is idempotent -- the coordinate id and the seed are derived from the
+        /// doorway's position, and both the campaign record and the graph edge answer *"already
+        /// exists"* on a replay -- so a second click on a door already recorded simply crosses it.
+        ///
+        /// Nothing is decided here. `Discover` applies the draw, the cap, the guarantee and every
+        /// obstruction check; `PortalTraversalPolicy` decides who may cross. This is where the
+        /// question is asked, not a second opinion about the answer.
+        /// </summary>
+        private IEnumerable<FloatMenuOption> FrontierOptions(Pawn selPawn)
+        {
+            if (!NaturalFrontierService.IsFrontierCandidate(parent)) { yield break; }
+            // Shown as a disabled row with the reason, never hidden, for the same reason the
+            // live-gate path does it: a name missing from a menu tells the player nothing.
+            string refusal = RimroomsPortalCrossingService.EligibilityFailureKey(selPawn);
+            if (refusal != null)
+            {
+                yield return new FloatMenuOption(
+                    "RR_DoorCross_EnterRefused".Translate(refusal.Translate()), null);
+                yield break;
+            }
+            yield return new FloatMenuOption("RR_Frontier_WalkThrough".Translate(), delegate
+            {
+                CompanyActionResult found = NaturalFrontierService.Discover(parent);
+                if (!found.Success) { Show(found); return; }
+                // Painted on the click, not up to an interval later, and for the same reason
+                // marking a door is: a player who acts and sees nothing change assumes it failed.
+                RefreshGateAppearance();
+                PortalConnectionRecord edge = EdgeFor();
+                if (edge == null)
+                {
+                    Show(CompanyActionResult.Refused("RR_Frontier_Unavailable"));
+                    return;
+                }
+                Show(PortalTravelService.OrderCrossing(selPawn, edge));
             });
         }
 

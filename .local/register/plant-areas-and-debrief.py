@@ -138,9 +138,15 @@ for label, path, old, new in PLANTS:
         print("PLANT SETUP BROKEN (%d matches): %s" % (original.count(old), label))
         sys.exit(2)
     io.open(path, "w", encoding="utf-8", newline="").write(original.replace(old, new, 1))
-    code = subprocess.call([sys.executable, ".local/register/proof-areas-and-debrief.py"],
-                           stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
-    io.open(path, "w", encoding="utf-8", newline="").write(original)
+    try:
+        code = subprocess.call([sys.executable, ".local/register/proof-areas-and-debrief.py"],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    finally:
+        # **THE RESTORE IS THE ONE LINE THAT MUST ALWAYS RUN.** It is
+        # what makes a destructive instrument safe, and it was the one
+        # line not protected -- a leaked devnull handle raised OSError
+        # mid-run twice and left the planted source on disk.
+        io.open(path, "w", encoding="utf-8", newline="").write(original)
     ok = code != 0
     caught += 1 if ok else 0
     print("%s  %s" % ("CAUGHT " if ok else "MISSED!", label))

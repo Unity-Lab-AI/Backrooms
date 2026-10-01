@@ -63,6 +63,13 @@ content = strip_cs_comments(read(os.path.join(SRC, "Generation", "RoomContentBui
 BARE_FIXTURE = chr(10) + " " * 28 + "Place(map, room, coordinate,"
 genstep = strip_cs_comments(read(os.path.join(SRC, "Generation",
                                               "GenStep_BackroomsDestination.cs")))
+archetypes = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6",
+                              "Defs", "RimroomsRoomArchetypeDefs",
+                              "RR_RoomArchetypes.xml"))
+# The canteen's own block, so a claim about its depth cannot be satisfied by some
+# other archetype's minDepth somewhere else in the same file.
+_c = archetypes.find("<defName>RR_Room_Canteen</defName>")
+canteen_block = None if _c < 0 else archetypes[_c:archetypes.find("</RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>", _c)]
 inhabitants = strip_cs_comments(read(os.path.join(SRC, "Threats", "InhabitantService.cs")))
 inhabitant_def = strip_cs_comments(read(os.path.join(SRC, "Threats",
                                                      "RimroomsInhabitantDef.cs")))
@@ -720,6 +727,85 @@ check("and a power-grid failure can no longer cost the coordinate",
       "heater or one lamp failed to join the grid is dark and cold and completely playable. A "
       "coordinate that does not exist costs the player the gate that leads to it\"* -- and the "
       "rebuild it validates did not honour it")
+
+# ------------------------------------------------------- a hallway is a room
+# Owner: *"the hall ways are just rectangles and arnt correctly the themed color and materials"*,
+# and *"i see the whole map is almost like a string of pears. when it should just be basicly
+# \"rooms\" as halways with the exact shit thats in the rooms"*.
+#
+# **Two hardcoded values were the whole of it.** The corridor floor was the raw carve terrain --
+# `concrete`, what rock becomes when you clear it -- while every room got the band's palette floor
+# from `PaintRoom`. And the corridor walls were `ThingDefOf.Steel`, literally, while a room's
+# walls come from the coordinate's own materials and carry the band's colour. A themed yellow room
+# opened onto a grey steel tunnel, on every link, at every depth.
+#
+# `docs/UNIVERSE_ADAPTATION.md` had already said so: a coordinate is *"made of rooms and routes"*
+# and the instruction is to *"reuse recognizable room categories, materials, fluorescent lighting,
+# service infrastructure, and furniture as the baseline"*.
+corridor_wall_body = body_of(genstep,
+      "private static void PlaceCorridorWall(Map map, IntVec3 cell, ThingDef wallDef,")
+corridor_paint_body = body_of(genstep,
+      "private static void PaintCorridorCell(Map map, IntVec3 cell, BackroomsPalette.Look look,")
+corridor_dress_body = body_of(genstep, "private static void DressCorridors(")
+
+# **SCOPED TO THE CORRIDOR'S OWN METHOD.** `PlaceWall(map, cell, wallDef, wallStuff);` occurs
+# TWICE in this file -- once for a room's wall ring, once for a corridor wall -- so a plant that
+# reverted the corridor one to hardcoded steel left the room one standing and a whole-file claim
+# was satisfied by it. Thirty-eighth instance of the scoping trap.
+check("A CORRIDOR IS FLOORED AND WALLED LIKE THE ROOMS IT JOINS",
+      corridor_wall_body is not None and corridor_paint_body is not None
+      and "BackroomsPalette.SetFloor(map, cell, terrain, look.floorColor);" in corridor_paint_body
+      and "look.accent != null && along % 4 == 0 ? look.accent : look.floor" in corridor_paint_body
+      and "PlaceWall(map, cell, wallDef, wallStuff);" in corridor_wall_body
+      and "wall.TryGetComp<CompColorable>()?.SetColor(look.wallColor);" in corridor_wall_body
+      and "ThingDefOf.Steel" not in corridor_wall_body
+      and "PlaceWall(map, new IntVec3(x, 0, centerZ - halfWidth), ThingDefOf.Wall, ThingDefOf.Steel)"
+      not in genstep,
+      "-- the palette comes from `BackroomsPalette.SetFloor`, which is the call `PaintRoom` makes, "
+      "so a corridor cannot drift from the rooms it joins. And the hardcoded steel is GONE, not "
+      "merely overridden")
+
+# **THE BRANCHES, not the constants.** The first draft asserted that `CorridorLampSpacing` and
+# `CorridorFixtureSpacing` exist. A plant replacing `if (lightDef != null && index %
+# CorridorLampSpacing == 0)` with `if (false)` left both constants defined and both claims
+# passing, while no hallway was ever lit again. Fifth instance this run of the same gap.
+check("and the hallways are lit and furnished, against their walls only",
+      corridor_dress_body is not None
+      and "DressCorridors(map, coordinate, corridorSides, lightDef, placedLights," in genstep
+      # **BOTH AXES.** The guard that keeps the centre line out of the reported cells exists
+      # once in the horizontal run and once in the vertical, so a plant that removed one was
+      # satisfied by the other. Counted rather than merely found -- thirty-ninth instance.
+      and genstep.count(
+          "if (offset != 0 && (offset == halfWidth - 1 || offset == 1 - halfWidth))") == 2
+      and "if (lightDef != null && index % CorridorLampSpacing == 0)" in corridor_dress_body
+      and "if (fixtures.Count == 0 || index % CorridorFixtureSpacing != 0) { continue; }"
+      in corridor_dress_body
+      and "placedLights.Add(lamp);" in corridor_dress_body,
+      "-- DEFINED AND CALLED. `BuildCorridors` reports the cells one in from each corridor wall "
+      "and **never the centre line**, so everything placed is against a wall and the route stays "
+      "as clear as a room's reserved cross. A collected list nothing spends is this run's most "
+      "repeated defect")
+
+check("and a corridor fixture can never be wider than one cell",
+      "if (definition.size.x != 1 || definition.size.z != 1) { continue; }" in genstep,
+      "-- a wider footprint against a corridor wall is how a route stops being a route")
+
+# --------------------------------------------------------------- food down there
+# Owner: *"there wasnt enough \"people-food\" in the back rooms need to be able to survive a bit
+# if it was a solo start"*. Food was in ONE of sixteen archetypes, behind `minDepth 2` and a 70%
+# roll -- and the solo start begins inside a coordinate with whatever the coordinate holds.
+check("A COORDINATE HOLDS FOOD, IN MORE THAN ONE KIND OF ROOM",
+      archetypes.count("<category>FoodMeals</category>") >= 3
+      and archetypes.count("<category>FoodRaw</category>") >= 2,
+      "-- the canteen, the storeroom and the dormitory. The storeroom carries the highest weight "
+      "of any archetype at 1.4, so that is the one that actually feeds somebody")
+
+check("and the canteen can appear on a FIRST level",
+      "<defName>RR_Room_Canteen</defName>" in archetypes
+      and canteen_block is not None
+      and "<minDepth>1</minDepth>" in canteen_block,
+      "-- it was `minDepth 2`, so the level the owner walked could not contain the only room in "
+      "the library that held anything to eat")
 
 print("")
 if failures:

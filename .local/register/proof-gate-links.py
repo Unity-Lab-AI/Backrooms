@@ -273,7 +273,12 @@ check("A LIVE GATE IS BLUE AND CASTS LIGHT",
 
 check("NO OTHER DOOR IN THE GAME IS AFFECTED, AND CORE'S OWN RULE IS WHAT GUARANTEES IT",
       "ThingComp, IThingGlower" in gatecomp
-      and "public bool ShouldBeLitNow() { return IsLiveGate; }" in gatecomp,
+      and "public bool ShouldBeLitNow() { return IsLiveGate || frontierGate; }" in gatecomp
+      # **AND THE NEW CONDITION IS CONFINED TO A COORDINATE.** Evaluate serves ordinary
+      # maps under its own worldfrontier: origin, so without this a door in an ancient
+      # structure on the player's OWN colony map would glow blue on install. This claim
+      # refused the change that introduced it, correctly, and is widened not relaxed.
+      and "parent.Map != null && parent.Map.Parent is RimroomsDestinationMapParent" in gatecomp,
       "-- CompGlower.ShouldBeLitNow walks every comp on its parent and asks any that implements "
       "IThingGlower; one false keeps the glower dark and unregistered. So every ordinary door in "
       "every colony, and every door any other mod ships, carries an inert glower refused by Core "
@@ -311,7 +316,19 @@ check("RIGHT-CLICK THE GATE WITH A COLONIST SELECTED AND WALK THROUGH IT",
       menu_at >= 0
       and "PortalTravelService.OrderCrossing(selPawn, subject)" in menu_body
       and "RR_DoorCross_Enter" in menu_body
-      and "if (!IsLiveGate) { yield break; }" in menu_body,
+      # A door that is NOT a live gate is now asked whether it is an undiscovered way onward
+      # before the menu gives up. **`NaturalFrontierService.Discover` had ZERO callers** -- the
+      # draw, the cap, the guaranteed pair and twenty `RR_Frontier_*` strings were all written
+      # for a menu that did not exist. Owner: *"i just never found any other gates with option
+      # to walk through"*.
+      # The TEST as well as the branch. A plant turning `if (!IsLiveGate)` into `if (false)`
+      # leaves the frontier branch written and simply never reaches it -- the branch is the
+      # machinery, the test is the behaviour.
+      and "if (!IsLiveGate)" in menu_body
+      and "foreach (FloatMenuOption option in FrontierOptions(selPawn)) { yield return option; }"
+      in menu_body
+      and "private IEnumerable<FloatMenuOption> FrontierOptions(Pawn selPawn)" in gatecomp
+      and "NaturalFrontierService.Discover(parent)" in gatecomp,
       "-- the order and the job already walked a pawn to the door and crossed them to the other "
       "map. What was missing was the place a player looks: it was only reachable by selecting "
       "pawns, selecting the door, clicking a gizmo and choosing from a float menu, which is a "

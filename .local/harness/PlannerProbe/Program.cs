@@ -26,7 +26,7 @@ namespace PlannerProbe
         private static MethodInfo sharesWall;
         private static PropertyInfo widestSpan;
         private static MethodInfo pillarCells;
-        private static MethodInfo rockCells;
+        private static MethodInfo rockIntrusionCells;
         private static MethodInfo shapeDepthOf;
         private static MethodInfo onRouteCross;
 
@@ -44,7 +44,7 @@ namespace PlannerProbe
             sharesWall = planner.GetMethod("SharesWall", Statics);
             widestSpan = planner.GetProperty("WidestRoomSpan", Statics);
             pillarCells = planner.GetMethod("PillarCells", Statics);
-            rockCells = planner.GetMethod("RockIntrusionCells", Statics);
+            rockIntrusionCells = planner.GetMethod("RockIntrusionCells", Statics);
             shapeDepthOf = planner.GetMethod("ShapeDepthOf", Statics);
             Type builder = assembly.GetType("RimroomsAsyncIndustries.Generation.RoomContentBuilder", true);
             onRouteCross = builder.GetMethod("OnRouteCross", Statics);
@@ -62,6 +62,10 @@ namespace PlannerProbe
                 int backToBack = 0;
                 int tightest = int.MaxValue;
                 int starved = 0;
+                int shapedRooms = 0;
+                int totalRooms = 0;
+                long rockTotal = 0;
+                long interiorTotal = 0;
                 var reasons = new SortedSet<string>();
                 const int Seeds = 200;
                 for (int seed = 0; seed < Seeds; seed++)
@@ -96,6 +100,19 @@ namespace PlannerProbe
                     // `EnsureSite` reported failure, and the gate was never marked.
                     foreach (object room in layout)
                     {
+                        // **HOW SQUARE IS IT, REALLY.** The owner's complaint, as a number.
+                        totalRooms++;
+                        int roomShapeDepth = (int)shapeDepthOf.Invoke(
+                            null, new object[] { layout, room, depth });
+                        int rock = 0;
+                        foreach (Verse.IntVec3 rockCell in (IEnumerable<Verse.IntVec3>)
+                            rockIntrusionCells.Invoke(null, new object[] { room, roomShapeDepth }))
+                        { rock++; }
+                        if (rock > 0) { shapedRooms++; }
+                        rockTotal += rock;
+                        var roomBounds = (Verse.CellRect)roomType.GetProperty("Bounds")
+                            .GetValue(room, null);
+                        interiorTotal += roomBounds.ContractedBy(1).Area;
                         int margined = MarginedCells(layout, room, depth);
                         if (margined < tightest) { tightest = margined; }
                         if (margined <= 1) { starved++; }
@@ -115,9 +132,11 @@ namespace PlannerProbe
                 totalBackToBack += backToBack;
                 string verdict = refused == 0 ? "OK  " : "FAIL";
                 Console.WriteLine(string.Format(
-                    "{0} depth {1,-2}  refused {2,3}/{3}  avg rooms {4,5:0.0}  widest {5,3}  pairs {6,4}  tightest margin {7,3}  starved rooms {8,5}",
+                    "{0} depth {1,-2} refused {2,3}/{3} rooms {4,4:0.0} widest {5,3} pairs {6,4} margin {7,3} starved {8,4} shaped {9,5:0.0}% rock {10,4:0.0}%",
                     verdict, depth, refused, Seeds, refused == Seeds ? 0.0 : (double)rooms / (Seeds - refused),
-                    widest, backToBack, tightest == int.MaxValue ? -1 : tightest, starved));
+                    widest, backToBack, tightest == int.MaxValue ? -1 : tightest, starved,
+                    totalRooms == 0 ? 0.0 : 100.0 * shapedRooms / totalRooms,
+                    interiorTotal == 0 ? 0.0 : 100.0 * rockTotal / interiorTotal));
                 foreach (string reason in reasons) { Console.WriteLine("        reason: " + reason); }
                 if (refused != 0) { failures++; }
             }
@@ -159,7 +178,7 @@ namespace PlannerProbe
                 null, new[] { room }))
             { blocked.Add(cell); }
             int shapeDepth = (int)shapeDepthOf.Invoke(null, new object[] { layout, room, depth });
-            foreach (Verse.IntVec3 cell in (IEnumerable<Verse.IntVec3>)rockCells.Invoke(
+            foreach (Verse.IntVec3 cell in (IEnumerable<Verse.IntVec3>)rockIntrusionCells.Invoke(
                 null, new object[] { room, shapeDepth }))
             { blocked.Add(cell); }
 
@@ -192,7 +211,7 @@ namespace PlannerProbe
                 null, new[] { room }))
             { blocked.Add(cell); }
             int shapeDepth = (int)shapeDepthOf.Invoke(null, new object[] { layout, room, depth });
-            foreach (Verse.IntVec3 cell in (IEnumerable<Verse.IntVec3>)rockCells.Invoke(
+            foreach (Verse.IntVec3 cell in (IEnumerable<Verse.IntVec3>)rockIntrusionCells.Invoke(
                 null, new object[] { room, shapeDepth }))
             { blocked.Add(cell); }
             // The room's own perimeter is wall, and wall is an edifice like any other.

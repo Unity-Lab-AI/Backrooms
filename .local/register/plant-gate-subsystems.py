@@ -113,9 +113,15 @@ for label, path, old, new, proof in PLANTS:
         print("PLANT SETUP BROKEN (%d matches): %s" % (original.count(old), label))
         sys.exit(2)
     write_verified(path, original.replace(old, new, 1))
-    code = subprocess.call([sys.executable, proof],
-                           stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
-    write_verified(path, original)
+    try:
+        code = subprocess.call([sys.executable, proof],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    finally:
+        # **THE RESTORE IS THE ONE LINE THAT MUST ALWAYS RUN.** It is what
+        # makes a destructive instrument safe, and it was the one line not
+        # protected: a leaked devnull handle raised OSError mid-run twice
+        # and left planted source on disk both times.
+        write_verified(path, original)
     ok = code != 0
     caught += 1 if ok else 0
     print("%s  %s" % ("CAUGHT " if ok else "MISSED!", label))

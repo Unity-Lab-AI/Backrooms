@@ -100,7 +100,8 @@ namespace RimroomsAsyncIndustries.Generation
                     throw new InvalidOperationException("RR_Generation_RequiredCoreOrSiteDefMissing");
                 }
 
-                BuildShell(map, coordinate, concrete, voidFloor, wallDef, wallStuff);
+                List<IntVec3> corridorSides = BuildShell(map, coordinate, concrete,
+                    voidFloor, wallDef, wallStuff);
 
                 RoomRecord threshold = coordinate.Rooms.First(room => room.familyId == "threshold_room");
                 IntVec3 anchorPosition = FindBuildingCell(
@@ -205,6 +206,13 @@ namespace RimroomsAsyncIndustries.Generation
                 // not the Backrooms; flat even over-lighting is the whole look.
                 SpawnPillarLamps(map, coordinate, wallDef, lightDef, wallMounted,
                     reservedProviderCells, placedLights);
+
+                // **AND THE HALLWAYS GET THE SAME TREATMENT.** Owner: *"rooms as halways with
+                // the exact shit thats in the rooms"*. A corridor that is lit and furnished is
+                // part of the building; one that is neither is a tunnel between beads, which is
+                // what *"a string of pears"* was describing.
+                DressCorridors(map, coordinate, corridorSides, lightDef, placedLights,
+                    reservedProviderCells);
 
                 RoomContentBuilder.Populate(map, coordinate, entryCell, returnCell, officeEvidenceCell, anchor);
 
@@ -315,7 +323,12 @@ namespace RimroomsAsyncIndustries.Generation
         /// walls floors columns shall not cause mountain overhead to column collapse"*, scoped
         /// to *"tgis is only for backrooms"*. See `BackroomsContainmentMapComponent.OverheadRoof`.
         /// </summary>
-        internal static void BuildShell(Map map, CoordinateRecord coordinate, TerrainDef concrete,
+        /// <summary>
+        /// Carve the coordinate and return the cells along its corridor walls, so the hallways
+        /// can be lit and dressed like the rooms they join.
+        /// </summary>
+        internal static List<IntVec3> BuildShell(Map map, CoordinateRecord coordinate,
+            TerrainDef concrete,
             TerrainDef voidFloor, ThingDef wallDef, ThingDef wallStuff)
         {
             ClearMapContents(map);
@@ -365,7 +378,11 @@ namespace RimroomsAsyncIndustries.Generation
                     map.terrainGrid.SetTerrain(cell, concrete);
                 }
             }
-            BuildCorridors(coordinate.Rooms, map, concrete, coordinateDepth);
+            // **A HALLWAY IS A ROOM.** Owner: *"rooms as halways with the exact shit thats
+            // in the rooms"*. The palette and the wall material go in with the carve, so a
+            // corridor is part of the same building rather than a service tunnel between rooms.
+            List<IntVec3> corridorSides = BuildCorridors(coordinate.Rooms, map, coordinate,
+                wallDef, wallStuff, coordinateDepth);
 
             foreach (RoomRecord room in coordinate.Rooms)
             {
@@ -408,6 +425,7 @@ namespace RimroomsAsyncIndustries.Generation
                 { PlaceWall(map, pillar, wallDef, wallStuff); }
             }
             PlaceNativeDoors(coordinate.Rooms, map);
+            return corridorSides;
         }
 
         public override void PostMapInitialized(Map map, GenStepParams parms)
@@ -848,9 +866,34 @@ namespace RimroomsAsyncIndustries.Generation
         /// `RoomLayoutPlanner.CorridorHalfWidthBetween`, which `CandidateIsSafe` also reads, so
         /// the reachability the planner proved is the reachability that gets built.
         /// </summary>
-        private static void BuildCorridors(IReadOnlyList<RoomRecord> rooms, Map map, TerrainDef floor,
-            int depth)
+        /// <summary>
+        /// Carve the routes between rooms, **as rooms**, and report the cells along their walls
+        /// that can hold something.
+        ///
+        /// Owner: *"the hall ways are just rectangles and arnt correctly the themed color and
+        /// materials"*, and *"i see the whole map is almost like a string of pears. when it
+        /// should just be basicly \"rooms\" as halways with the exact shit thats in the rooms"*.
+        ///
+        /// **Two hardcoded values were the whole of it.** The floor was the raw carve terrain --
+        /// `concrete`, what rock becomes when you clear it -- while every room got the band's
+        /// palette floor with accent stripes from `PaintRoom`. And the walls were
+        /// `ThingDefOf.Steel`, literally, while a room's walls come from the coordinate's own
+        /// materials and carry the band's colour. So a themed yellow room opened onto a grey
+        /// steel tunnel, on every link, at every depth.
+        ///
+        /// The palette comes from `BackroomsPalette.SetFloor`, which is the same call `PaintRoom`
+        /// makes, so a corridor cannot drift from the rooms it joins.
+        ///
+        /// Returns the cells one in from each corridor wall, for the lamps and the dressing. The
+        /// **centre line is never included**: a corridor is a route, and the same reasoning that
+        /// reserves a room's route cross applies to the whole of a corridor's length.
+        /// </summary>
+        private static List<IntVec3> BuildCorridors(IReadOnlyList<RoomRecord> rooms, Map map,
+            CoordinateRecord coordinate, ThingDef wallDef, ThingDef wallStuff, int depth)
         {
+            var sides = new List<IntVec3>();
+            BackroomsPalette.Look look = BackroomsPalette.For(depth,
+                DestinationService.StableHash(coordinate.Seed, coordinate.Id + ":corridors", 1));
             foreach (RoomRecord room in rooms)
             {
                 foreach (int linkedIndex in room.Links.Where(index => index > room.Index))
@@ -876,10 +919,15 @@ namespace RimroomsAsyncIndustries.Generation
                         {
                             for (int offset = -halfWidth + 1; offset <= halfWidth - 1; offset++)
                             {
-                                SetWalkableRoofedCell(map, new IntVec3(x, 0, centerZ + offset), floor);
+                                IntVec3 cell = new IntVec3(x, 0, centerZ + offset);
+                                SetWalkableRoofedCell(map, cell, look.floor);
+                                PaintCorridorCell(map, cell, look, x);
+                                // One in from the wall, and never the centre line.
+                                if (offset != 0 && (offset == halfWidth - 1 || offset == 1 - halfWidth))
+                                { sides.Add(cell); }
                             }
-                            PlaceWall(map, new IntVec3(x, 0, centerZ - halfWidth), ThingDefOf.Wall, ThingDefOf.Steel);
-                            PlaceWall(map, new IntVec3(x, 0, centerZ + halfWidth), ThingDefOf.Wall, ThingDefOf.Steel);
+                            PlaceCorridorWall(map, new IntVec3(x, 0, centerZ - halfWidth), wallDef, wallStuff, look);
+                            PlaceCorridorWall(map, new IntVec3(x, 0, centerZ + halfWidth), wallDef, wallStuff, look);
                         }
                     }
                     else if (first.CenterCell.x == second.CenterCell.x)
@@ -891,10 +939,14 @@ namespace RimroomsAsyncIndustries.Generation
                         {
                             for (int offset = -halfWidth + 1; offset <= halfWidth - 1; offset++)
                             {
-                                SetWalkableRoofedCell(map, new IntVec3(centerX + offset, 0, z), floor);
+                                IntVec3 cell = new IntVec3(centerX + offset, 0, z);
+                                SetWalkableRoofedCell(map, cell, look.floor);
+                                PaintCorridorCell(map, cell, look, z);
+                                if (offset != 0 && (offset == halfWidth - 1 || offset == 1 - halfWidth))
+                                { sides.Add(cell); }
                             }
-                            PlaceWall(map, new IntVec3(centerX - halfWidth, 0, z), ThingDefOf.Wall, ThingDefOf.Steel);
-                            PlaceWall(map, new IntVec3(centerX + halfWidth, 0, z), ThingDefOf.Wall, ThingDefOf.Steel);
+                            PlaceCorridorWall(map, new IntVec3(centerX - halfWidth, 0, z), wallDef, wallStuff, look);
+                            PlaceCorridorWall(map, new IntVec3(centerX + halfWidth, 0, z), wallDef, wallStuff, look);
                         }
                     }
                     else
@@ -903,6 +955,39 @@ namespace RimroomsAsyncIndustries.Generation
                     }
                 }
             }
+            return sides;
+        }
+
+        /// <summary>
+        /// A corridor cell takes the band's floor, with the same accent stripe a room gets.
+        ///
+        /// `BackroomsPalette.SetFloor` is the call `PaintRoom` makes, so a corridor and the rooms
+        /// it joins cannot read as different buildings -- which is what *"arnt correctly the
+        /// themed color and materials"* was describing.
+        /// </summary>
+        private static void PaintCorridorCell(Map map, IntVec3 cell, BackroomsPalette.Look look,
+            int along)
+        {
+            if (look.floor == null) { return; }
+            TerrainDef terrain = look.accent != null && along % 4 == 0 ? look.accent : look.floor;
+            BackroomsPalette.SetFloor(map, cell, terrain, look.floorColor);
+        }
+
+        /// <summary>
+        /// A corridor wall is the coordinate's wall in the coordinate's material, in the band's
+        /// colour.
+        ///
+        /// It was `ThingDefOf.Steel`, hardcoded, on every corridor of every coordinate at every
+        /// depth -- so the owner's *"every type of wall and material for all things randomly"*
+        /// was honoured for rooms and contradicted one cell outside them.
+        /// </summary>
+        private static void PlaceCorridorWall(Map map, IntVec3 cell, ThingDef wallDef,
+            ThingDef wallStuff, BackroomsPalette.Look look)
+        {
+            PlaceWall(map, cell, wallDef, wallStuff);
+            Thing wall = cell.InBounds(map) ? cell.GetEdifice(map) : null;
+            if (wall != null && wall.def == wallDef)
+            { wall.TryGetComp<CompColorable>()?.SetColor(look.wallColor); }
         }
 
         /// <summary>
@@ -1123,6 +1208,88 @@ namespace RimroomsAsyncIndustries.Generation
                         break;
                     }
                 }
+            }
+        }
+
+        /// <summary>How many cells of corridor wall per lamp.</summary>
+        private const int CorridorLampSpacing = 7;
+
+        /// <summary>How many cells of corridor wall per fixture.</summary>
+        private const int CorridorFixtureSpacing = 11;
+
+        /// <summary>
+        /// Light and furnish the hallways, against their walls only.
+        ///
+        /// Owner: *"i see the whole map is almost like a string of pears. when it should just be
+        /// basicly \"rooms\" as halways with the exact shit thats in the rooms"*.
+        ///
+        /// `BuildCorridors` reports the cells one in from each corridor wall and **never the
+        /// centre line**, so everything placed here is against a wall and the route through the
+        /// corridor stays as clear as a room's reserved cross. A three-cell corridor has no side
+        /// to speak of and gets nothing; a five-cell one does.
+        ///
+        /// The fixtures are the families the rooms already use, so a hallway reads as more of the
+        /// same building rather than as a themed set of its own -- which is the whole of the
+        /// owner's correction.
+        ///
+        /// Silent on every failure, like `DressRoom`: a corridor that could not take a lamp is a
+        /// dark stretch of corridor, and a coordinate must never be lost over scenery.
+        /// </summary>
+        private static void DressCorridors(Map map, CoordinateRecord coordinate,
+            List<IntVec3> sides, ThingDef lightDef, List<Thing> placedLights,
+            HashSet<IntVec3> reserved)
+        {
+            if (map == null || coordinate == null || sides == null || sides.Count == 0) { return; }
+            // Ordered, so a regenerated coordinate dresses its corridors identically.
+            sides.Sort(delegate (IntVec3 left, IntVec3 right)
+            {
+                if (left.z != right.z) { return left.z - right.z; }
+                return left.x - right.x;
+            });
+
+            var fixtures = new List<ThingDef>();
+            foreach (string name in new[] { "Shelf", "Stool", "PlantPot", "StandingLamp" })
+            {
+                ThingDef candidate = DefDatabase<ThingDef>.GetNamedSilentFail(name);
+                if (candidate != null) { fixtures.Add(candidate); }
+            }
+
+            for (int index = 0; index < sides.Count; index++)
+            {
+                IntVec3 cell = sides[index];
+                if (!cell.InBounds(map) || reserved.Contains(cell)) { continue; }
+                if (!cell.Standable(map) || cell.GetEdifice(map) != null) { continue; }
+                if (cell.GetFirstItem(map) != null) { continue; }
+
+                if (lightDef != null && index % CorridorLampSpacing == 0)
+                {
+                    Thing lamp = MakeBuilding(lightDef,
+                        lightDef.MadeFromStuff ? ThingDefOf.Steel : null);
+                    if (lamp == null) { continue; }
+                    lamp.SetFaction(Faction.OfPlayer);
+                    GenSpawn.Spawn(lamp, cell, map, Rot4.North);
+                    if (!lamp.Spawned || lamp.Map != map) { continue; }
+                    reserved.Add(cell);
+                    placedLights.Add(lamp);
+                    continue;
+                }
+
+                if (fixtures.Count == 0 || index % CorridorFixtureSpacing != 0) { continue; }
+                int roll = DestinationService.StableHash(coordinate.Seed,
+                    "corridorfixture:" + cell.x + "," + cell.z, 1);
+                if (roll < 0) { roll = ~roll; }
+                ThingDef definition = fixtures[roll % fixtures.Count];
+                // Single-cell only: a wider footprint against a corridor wall is how a route
+                // stops being a route.
+                if (definition.size.x != 1 || definition.size.z != 1) { continue; }
+                Thing fixture = ThingMaker.MakeThing(definition,
+                    CoordinateMaterials.StuffFor(definition, coordinate, roll));
+                if (fixture == null) { continue; }
+                fixture.SetFaction(Faction.OfPlayer);
+                GenSpawn.Spawn(fixture, cell, map, Rot4.North);
+                if (!fixture.Spawned || fixture.Map != map) { continue; }
+                reserved.Add(cell);
+                if (definition == lightDef) { placedLights.Add(fixture); }
             }
         }
 
