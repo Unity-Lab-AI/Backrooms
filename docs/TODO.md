@@ -1916,6 +1916,20 @@ Owner, verbatim:
 
 ---
 
+## The tenth launch regressed the gate - 2026-10-01 (0.12.62-dev) - DONE
+
+Owner, verbatim:
+
+> **"oka read now.md and i started it up after last stage and this run through the door is not
+> blue and i dont see the backrooms is there and cant portal to it, check whats rrunning and what
+> broke since last run where it was working"**
+
+- [x] **"this run through the door is not blue"** - `IsLiveGate` needs a mark AND an edge, and the opening registers neither once the coordinate fails
+- [x] **"i dont see the backrooms is there and cant portal to it"** - no coordinate generated: `MaxRoomSpan` was 34 and the grand hall is 80, so all four candidates were refused
+- [x] **"check whats rrunning and what broke since last run where it was working"** - read out of the running game through the bridge: the startup letter named it. Broken by 0.12.61-dev's own grand hall and back-to-back rooms
+
+---
+
 ## TOMBSTONES
 
 _(none)_

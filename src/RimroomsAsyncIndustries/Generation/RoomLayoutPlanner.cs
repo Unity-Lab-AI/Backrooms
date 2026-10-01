@@ -25,18 +25,25 @@ namespace RimroomsAsyncIndustries.Generation
     ///
     /// The slot grid is now a **function of depth**, and so is everything derived from it:
     ///
-    ///     depth   slots    spacing   room span   rooms
-    ///       1      3x3        90         80        6      grand pillared halls
-    ///       2      4x4        68         58       10
-    ///       3      5x5        54         44       16
-    ///       4      6x6        45         35       24
-    ///       5      7x7        38         28       32
-    ///       6      8x8        34         24       42      a warren
+    ///     depth   slots     spacing   room span   rooms
+    ///       1      6x6         45        34        24      a grand hall, then a maze
+    ///       2      7x7         38        28        32
+    ///       3      8x8         34        24        42
+    ///       4      9x9         30        20        54
+    ///       5+    10x10        27        16        60      a warren, at the room cap
     ///
-    /// **Depth 1 is six rooms eighty cells across.** That is the owner's *"grand large spaces"*,
-    /// and it is also why the room count goes DOWN rather than up: a hall that size cannot fit in
-    /// a 19-cell slot, and *"leas than 60-100 romms"* is satisfied at every depth by construction
-    /// rather than by a cap.
+    /// **Depth 1 is twenty-four rooms of thirty-four cells, and one hall of eighty.** The hall is
+    /// the owner's *"grand large spaces"* and *"the main spanw room"*; it takes two slots and it
+    /// is the only room that does. Everything past it is a third of its size, which is what
+    /// *"going deeping in can mean the numner of branch hallways and rooms distancing from the
+    /// main portal spawn"* asks for. *"leas than 60-100 romms"* is held by
+    /// <see cref="MaxRooms"/>.
+    ///
+    /// **The table above was wrong for a whole checkpoint**, describing the 3x3 grid this file
+    /// had already stopped using -- and the same staleness in `MaxRoomSpan`, which is the ceiling
+    /// the hall has to pass, is what stopped every coordinate generating. See
+    /// <see cref="WidestRoomSpan"/>. **A table of numbers in a comment is a claim, and this one
+    /// is checked against the constants beside it.**
     ///
     /// The shape is a **serpentine chain** through the slot grid, so consecutive rooms are always
     /// grid neighbours and the chain is connected without needing a search. Dead-end spur rooms
@@ -165,6 +172,43 @@ namespace RimroomsAsyncIndustries.Generation
 
         /// <summary>How far either side of the default a room's span may vary, in cells.</summary>
         internal const int SpanVariation = 6;
+
+        /// <summary>
+        /// The widest span this planner can actually produce, at its coarsest slot grid.
+        ///
+        /// **THIS IS WHY NO COORDINATE WOULD GENERATE AFTER 0.12.61-dev.**
+        /// `DestinationService.ValidateRooms` refuses any room wider than this, and the number it
+        /// was reading was <see cref="SlotRoomSpan"/> alone -- the span of a room that fills one
+        /// slot and does not vary. By then the planner was producing two rooms that are wider by
+        /// construction:
+        ///
+        ///   * the grand hall spans **two** slots less the gap -- 80 cells at depth 1, against a
+        ///     ceiling of 34, so **candidates 0, 1 and 2 were rejected every single time**;
+        ///   * <see cref="VariedRoomSpan"/> may add up to <see cref="SpanVariation"/>, so the
+        ///     fallback candidate was rejected whenever any one of its rooms rolled wider --
+        ///     which, over twenty-odd rooms, is every time in practice.
+        ///
+        /// All four candidates refused, `TrySelect` returned false, and the player got
+        /// *"No safe first-site layout was found within the bounded attempt limit"* with nothing
+        /// in the log. The opening stops at that point, so the door was never marked and no edge
+        /// was ever registered -- which is exactly the owner's report: *"this run through the door
+        /// is not blue and i dont see the backrooms is there and cant portal to it"*.
+        ///
+        /// **The ceiling is a statement about the planner, so the planner is where it belongs.**
+        /// A validator carrying its own copy of a number the planner decides is the same defect
+        /// as the literal 19 that this file already removed once, and as the light count that
+        /// stopped generation for thirty-nine checkpoints.
+        /// </summary>
+        internal static int WidestRoomSpan
+        {
+            get
+            {
+                int spacing = SlotSpacing(MinSlotsPerAxis);
+                int hall = spacing * 2 - SlotGap;
+                int varied = SlotRoomSpan(spacing) + SpanVariation;
+                return hall > varied ? hall : varied;
+            }
+        }
 
         /// <summary>
         /// This room's span, varied from the default by its own slot.
@@ -412,7 +456,16 @@ namespace RimroomsAsyncIndustries.Generation
             // Two thirds of the grid, so there is always rock left between the arms of the chain.
             int chainLength = fallback ? MinSlotsPerAxis * MinSlotsPerAxis * 2 / 3 : order.Count * 2 / 3;
             if (chainLength < 6) { chainLength = 6; }
-            if (chainLength > MaxRooms) { chainLength = MaxRooms; }
+            // **THE SPINE NEVER TAKES THE WHOLE BUDGET, and it used to.** The cap was `MaxRooms`,
+            // so from depth 5 the serpentine alone reached sixty rooms and the spur loop -- which
+            // runs `while (rooms.Count < MaxRooms)` -- never executed once. **The deepest levels
+            // had no dead ends, no branches and no back-to-back pairs at all**, which is the exact
+            // opposite of *"it needs to be more maze liek"*: a sixty-room chain with no branches
+            // is a corridor you walk end to end.
+            //
+            // Found by probing the planner over every depth rather than by playing one, which is
+            // the only way a thing that is merely absent gets noticed.
+            if (chainLength > MaxRooms * 2 / 3) { chainLength = MaxRooms * 2 / 3; }
             if (chainLength > order.Count) { chainLength = order.Count; }
 
             var rooms = new List<RoomRecord>();
@@ -475,7 +528,7 @@ namespace RimroomsAsyncIndustries.Generation
                     // to spurs and not to chain rooms.
                     if (host > 0 && DestinationService.StableHash(seed,
                         "backtoback:" + slot.x + "," + slot.z, depth) % 3 == 0)
-                    { PushAgainst(rooms[rooms.Count - 1], rooms[host]); }
+                    { PushAgainst(rooms, rooms[rooms.Count - 1], rooms[host]); }
                 }
             }
 
@@ -796,56 +849,80 @@ namespace RimroomsAsyncIndustries.Generation
         /// clears the centre cross -- survives the move untouched.
         ///
         /// Refuses a diagonal pair, because two rooms offset on both axes have no wall to share.
+        ///
+        /// ## Wall against wall, and the move is put back if it does not work
+        ///
+        /// **The first draft moved the room onto its host's wall column and left it there.** Two
+        /// of its four branches overlapped the host by exactly one cell -- which `ValidateRooms`
+        /// refuses outright -- and the other two abutted, which the old `SharesWall` did not
+        /// recognise, so the pair got neither a corridor nor a doorway and the spur was sealed.
+        /// **Every push killed the candidate, one way or the other, and no coordinate generated.**
+        ///
+        /// So it lands one cell clear, each room keeping its own wall, and then **three things
+        /// are checked and the move is undone if any of them fails**:
+        ///
+        ///   * it is still on the map;
+        ///   * <see cref="SharesWall"/> agrees, so the readers that skip the corridor and the
+        ///     reader that opens the doorway all see the same pair;
+        ///   * **it has not landed on a third room.** A spur only has one link, so the move
+        ///     cannot re-route the spine -- but the slot it leaves is not the slot it arrives in,
+        ///     and the arrival may belong to somebody else.
+        ///
+        /// Undone rather than refused in advance, because the position is the only thing that
+        /// decides any of it, and a room that goes back where it was is simply a room that is
+        /// not back to back with anything.
         /// </summary>
-        private static void PushAgainst(RoomRecord mover, RoomRecord anchorRoom)
+        private static void PushAgainst(List<RoomRecord> rooms, RoomRecord mover, RoomRecord anchorRoom)
         {
-            if (mover == null || anchorRoom == null) { return; }
+            if (rooms == null || mover == null || anchorRoom == null) { return; }
             CellRect a = mover.Bounds;
             CellRect b = anchorRoom.Bounds;
             bool verticalOverlap = a.minZ <= b.maxZ && b.minZ <= a.maxZ;
             bool horizontalOverlap = a.minX <= b.maxX && b.minX <= a.maxX;
-            if (verticalOverlap && a.minX > b.maxX) { mover.x = b.maxX; return; }
-            if (verticalOverlap && a.maxX < b.minX) { mover.x = b.minX - a.Width; return; }
-            if (horizontalOverlap && a.minZ > b.maxZ) { mover.z = b.maxZ; return; }
-            if (horizontalOverlap && a.maxZ < b.minZ) { mover.z = b.minZ - a.Height; return; }
+            int originalX = mover.x;
+            int originalZ = mover.z;
+            if (verticalOverlap && a.minX > b.maxX) { mover.x = b.maxX + 1; }
+            else if (verticalOverlap && a.maxX < b.minX) { mover.x = b.minX - a.Width - 1; }
+            else if (horizontalOverlap && a.minZ > b.maxZ) { mover.z = b.maxZ + 1; }
+            else if (horizontalOverlap && a.maxZ < b.minZ) { mover.z = b.minZ - a.Height - 1; }
+            else { return; }
+
+            bool onMap = mover.Bounds.minX >= 1 && mover.Bounds.minZ >= 1 &&
+                mover.Bounds.maxX < DestinationService.MapWidth - 1 &&
+                mover.Bounds.maxZ < DestinationService.MapHeight - 1;
+            bool collides = rooms.Any(other => other != mover && mover.Bounds.Overlaps(other.Bounds));
+            if (onMap && !collides && SharesWall(mover, anchorRoom)) { return; }
+            mover.x = originalX;
+            mover.z = originalZ;
         }
 
         /// <summary>
-        /// The one cell in a shared wall that is a doorway, computed identically from either side.
+        /// Whether these two rooms stand wall against wall, with no rock between them to run a
+        /// corridor through.
         ///
-        /// **SYMMETRY IS THE WHOLE POINT, and the first draft did not have it.** The shared column
-        /// belongs to BOTH rooms' bounds, and the floor grid is written room by room: if each room
-        /// opened the wall at its OWN centre, the two rooms would name different cells in the same
-        /// column and whichever was written second would seal the other's doorway. A back-to-back
-        /// pair would have been a sealed pair, and it would have looked like a layout bug rather
-        /// than a rule that disagreed with itself.
+        /// **ABUTTING, NOT OVERLAPPING, and the first draft had it the other way round.** It
+        /// tested `a.maxX == b.minX` -- one shared wall column belonging to both rooms -- and
+        /// `CellRect.Overlaps` is **inclusive on both edges**, so a pair like that overlaps by
+        /// RimWorld's own reckoning. `ValidateRooms` has refused overlapping rooms since the
+        /// first version of the layout, so **every back-to-back pair made the whole candidate
+        /// illegal** and no coordinate would generate.
         ///
-        /// So the cell comes from the OVERLAP of the two rooms, which is the same span whichever
-        /// side asks -- the same discipline as `PillarCells`, applied to a doorway.
+        /// So the two rooms each keep their own wall and stand one cell apart: room A's east wall
+        /// at `a.maxX`, room B's west wall at `a.maxX + 1`. Which is what a wall between two
+        /// rooms in a building looks like anyway, and it leaves the overlap rule intact.
+        ///
+        /// **And then there is nothing more to decide.** `DoorOpening`'s existing rule already
+        /// covers it: `other.Bounds.minX > room.Bounds.maxX` is true of an abutting neighbour, so
+        /// each room opens the midpoint of its own wall, and `ValidateRooms` guarantees through
+        /// `AreGridNeighbors` that linked rooms' centres share a row or a column -- so the two
+        /// midpoints are the same cell on the shared axis and the openings meet. No second rule,
+        /// no shared-cell arithmetic, nothing new to keep in agreement.
+        ///
+        /// This is still **the single place the condition is decided** -- `BuildCorridors` skips
+        /// the pair and `CandidateIsSafe` skips modelling a corridor for it -- for the same
+        /// reason `PillarCells` is: two readers deriving one rule independently is the defect
+        /// that stopped every coordinate generating for thirty-nine checkpoints.
         /// </summary>
-        internal static IntVec3 SharedDoorCell(RoomRecord first, RoomRecord second)
-        {
-            CellRect a = first.Bounds;
-            CellRect b = second.Bounds;
-            if (a.maxX == b.minX || b.maxX == a.minX)
-            {
-                int x = a.maxX == b.minX ? a.maxX : a.minX;
-                int low = Math.Max(a.minZ, b.minZ) + 1;
-                int high = Math.Min(a.maxZ, b.maxZ) - 1;
-                if (high < low) { return IntVec3.Invalid; }
-                return new IntVec3(x, 0, (low + high) / 2);
-            }
-            if (a.maxZ == b.minZ || b.maxZ == a.minZ)
-            {
-                int z = a.maxZ == b.minZ ? a.maxZ : a.minZ;
-                int low = Math.Max(a.minX, b.minX) + 1;
-                int high = Math.Min(a.maxX, b.maxX) - 1;
-                if (high < low) { return IntVec3.Invalid; }
-                return new IntVec3((low + high) / 2, 0, z);
-            }
-            return IntVec3.Invalid;
-        }
-
         internal static bool SharesWall(RoomRecord first, RoomRecord second)
         {
             if (first == null || second == null) { return false; }
@@ -853,8 +930,8 @@ namespace RimroomsAsyncIndustries.Generation
             CellRect b = second.Bounds;
             bool verticalOverlap = a.minZ <= b.maxZ && b.minZ <= a.maxZ;
             bool horizontalOverlap = a.minX <= b.maxX && b.minX <= a.maxX;
-            if ((a.maxX == b.minX || b.maxX == a.minX) && verticalOverlap) { return true; }
-            if ((a.maxZ == b.minZ || b.maxZ == a.minZ) && horizontalOverlap) { return true; }
+            if ((a.maxX + 1 == b.minX || b.maxX + 1 == a.minX) && verticalOverlap) { return true; }
+            if ((a.maxZ + 1 == b.minZ || b.maxZ + 1 == a.minZ) && horizontalOverlap) { return true; }
             return false;
         }
 
@@ -868,15 +945,16 @@ namespace RimroomsAsyncIndustries.Generation
                 if (other.Bounds.minZ > room.Bounds.maxZ && cell.z == room.Bounds.maxZ && cell.x == room.Bounds.CenterCell.x) { return true; }
                 if (other.Bounds.maxZ < room.Bounds.minZ && cell.z == room.Bounds.minZ && cell.x == room.Bounds.CenterCell.x) { return true; }
             }
-            // **A SHARED WALL NEEDS A DOORWAY TOO.** The four tests above all require the other
-            // room to be strictly beyond this one's edge, which is false when the edges are
-            // equal -- so a back-to-back pair would be sealed, with no way in at all.
-            foreach (int index in room.links)
-            {
-                RoomRecord other = rooms.First(r => r.index == index);
-                if (!SharesWall(room, other)) { continue; }
-                if (cell == SharedDoorCell(room, other)) { return true; }
-            }
+            // **A BACK-TO-BACK PAIR NEEDS NO EXTRA RULE HERE.** The four tests above ask whether
+            // the neighbour lies strictly beyond this room's edge, and an abutting neighbour's
+            // near edge is `maxX + 1`, which is strictly beyond `maxX`. So each room already
+            // opens the midpoint of the wall it shares, and `AreGridNeighbors` guarantees linked
+            // centres share that axis, so the two midpoints line up and the openings meet.
+            //
+            // The first draft added a second rule and a `SharedDoorCell` to go with it, computed
+            // from the overlap of two rooms whose edges were equal. Both are gone: the edges are
+            // no longer equal, there is nothing left for it to compute, and **two rules deciding
+            // one doorway is the defect this file keeps paying for.**
             return FalseOpening(room, rooms, cell);
         }
 

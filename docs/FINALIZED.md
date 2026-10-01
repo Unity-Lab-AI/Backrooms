@@ -5672,3 +5672,87 @@ that produced the warehouse - and one caught that the wall-material gate still t
 `29F1BAA124DB807247C148F5D514E6AB53F6ED614EBB2EAD2166FC7BC0EDE791`, measured after the version
 bump, reproduced by two clean recompiles. **Thirteen checkers pass, forty-five proofs hold. 550 of
 550** planted faults caught across sixteen suites.
+
+---
+
+## Session 2026-10-01 - the layout the validator would never accept (0.12.62-dev)
+
+**Verbatim user quotes:** *"oka read now.md and i started it up after last stage and this run
+through the door is not blue and i dont see the backrooms is there and cant portal to it, check
+whats rrunning and what broke since last run where it was working"*.
+
+**Files touched:** `Generation/RoomLayoutPlanner.cs`, `Generation/DestinationService.cs`,
+`tools/check-planner-layouts.py` (new, checker fourteen),
+`.local/harness/PlannerProbe/` (new), `.gitignore`,
+`.local/register/proof-coordinate-layout.py`, `.local/register/plant-coordinate-layout.py`.
+
+**Mod register.** Checked `RR-SCEN` (3 rows: Core [4], Character Editor [64], Hospitality:
+Storefront [286]). **Nothing applied.** The room planner is pure arithmetic over our own
+constants, no other mod reaches it, and the defect was two numbers in two of our own files
+disagreeing. Recorded rather than skipped, because *"nothing applied"* is a finding.
+
+**Closure notes.** **The tenth launch regressed the gate, and the cause was shipped by the ninth
+checkpoint's own geometry work.**
+
+The log was clean -- zero red, `0.12.62-dev`'s predecessor loaded, the company branch initialised.
+**The evidence was a letter on the owner's screen**, read out of the running game through the
+bridge: *"The company could not finish startup: No safe first-site layout was found within the
+bounded attempt limit."*
+
+`SoloGroupOpening.Open` does five things in order, and step 2 is the coordinate's map. It failed,
+so step 3 never marked the door and step 4 never registered the edge -- and `IsLiveGate` requires
+both a mark and an edge. **So the door was not blue because there was no Backrooms to be a gate
+to.** Every symptom the owner reported is one failure.
+
+**Three span defects, and the first is deterministic.** `ValidateRooms` refuses any room wider
+than `MaxRoomSpan`, a property documented as *"the widest room the planner can produce"* and
+computing `SlotRoomSpan(SlotSpacing(MinSlotsPerAxis))` -- the span of a room filling one slot, 34
+cells. The grand hall added at 0.12.61-dev spans **two** slots less the gap: **80.** Candidates 0,
+1 and 2 carry the hall, so **all three were refused every single time.** The fallback carries no
+hall but does carry `VariedRoomSpan`, which may add up to 6 -- 40 against a ceiling of 34 -- so it
+was refused whenever any one of its twenty-odd rooms rolled upward, which is every time in
+practice. **Four refusals, every seed, every start.**
+
+And `PushAgainst` broke the candidate two different ways at once. `CellRect.Overlaps` is
+**inclusive on both edges**, so two rooms whose bounds share a wall column overlap by RimWorld's
+own reckoning -- and overlapping rooms have been refused since the first layout. Two of its four
+branches produced exactly that. The other two abutted, which the old `SharesWall` tested for
+equality and therefore could not see, so the pair got neither a corridor nor a doorway and the
+spur was **sealed**. The fix is abutment on all four sides, one wall each, with the move **put
+back** if it leaves the map, collides with a third room, or `SharesWall` disagrees.
+
+**And then the second doorway rule was deleted rather than fixed.** An abutting neighbour's near
+edge is `maxX + 1`, which is strictly beyond `maxX`, so `DoorOpening`'s existing rule already
+opens each room's own wall midpoint -- and `AreGridNeighbors` guarantees linked centres share that
+axis, so the midpoints are the same cell on it and the openings meet. `SharedDoorCell` was a
+second rule deciding one doorway, which is the defect this file keeps paying for.
+
+**THE PROBE IS THE REAL OUTCOME.** The planner is pure -- no map, no world, no defs, no global
+random -- so *"does this produce a layout the validator accepts"* was always answerable at the
+desk, and for one whole checkpoint nobody asked. `.local/harness/PlannerProbe` runs
+`TrySelect` and `ValidateRooms` over two hundred seeds at seven depth bands and counts what comes
+out; `tools/check-planner-layouts.py` is **checker fourteen** and runs it. It never skips: a
+missing `dotnet`, a missing install or an unbuilt assembly is a failure, because a check that
+passes when it could not run is worse than no check.
+
+It immediately found a second thing nothing else could. `chainLength` was capped at `MaxRooms`, so
+**from depth 5 the serpentine alone reached sixty rooms and the spur loop never executed once** --
+no dead ends, no branches, no back-to-back pairs on the deepest levels, the exact opposite of
+*"it needs to be more maze liek"*. Capped at two thirds of the budget, depth 5 went from **0
+back-to-back pairs to 493**.
+
+**And a plant proved the point in one character.** Reverting `mover.x = b.maxX + 1` to
+`mover.x = b.maxX` was **missed by all forty-five proofs**: the new revert guard saw the overlap
+and put the room back, so every layout stayed valid and the feature was simply **never produced
+again.** Switched off, silently, with every claim passing -- which is this project's dominant
+defect class, and the probe counts the pairs precisely because a source claim cannot.
+
+**An absence claim also read my own comment and called it code** -- `"a.maxX == b.minX" not in
+planner` failed against correct source because the comment explaining why that test was wrong
+quotes it. Thirty-sixth instance of one class; `check-compliance.py` met it from the other side.
+The proof now keeps a comment-free view and every absence claim reads that instead.
+
+**204 C# files, 91 package files**, zero warnings, zero errors. Assembly SHA-256
+`5201C4A6D368DE5E2E3A94939BEC0D0AF5858A870A1A05F4AC991F2D94BE8774`, measured after the version
+bump, reproduced by two clean recompiles. **Fourteen checkers pass, forty-five proofs hold. 556 of
+556** planted faults caught across sixteen suites.

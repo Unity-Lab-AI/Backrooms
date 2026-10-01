@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    A diagnostic probe, not a test and not a shipped artifact.
+
+    The room planner is pure: no map, no world, no defs, no global random. So the question
+    "does this layout validate" can be asked outside RimWorld, in a loop, over every depth and
+    hundreds of seeds. That question went unasked for one checkpoint and the answer was NO for
+    every single candidate, which cost the owner a launch.
+
+    Nothing here is referenced by the mod. It reads the built assembly by reflection.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>PlannerProbe</AssemblyName>
+    <RootNamespace>PlannerProbe</RootNamespace>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldPath)\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(RimWorldPath)\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(RimWorldPath)\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="RimroomsAsyncIndustries">
+      <HintPath>..\..\..\src\RimroomsAsyncIndustries\bin\Release\net472\RimroomsAsyncIndustries.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

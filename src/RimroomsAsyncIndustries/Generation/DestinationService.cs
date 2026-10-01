@@ -405,14 +405,23 @@ namespace RimroomsAsyncIndustries.Generation
                 bounds.maxX < MapWidth - 1 && bounds.maxZ < MapHeight - 1;
         }
 
-        /// <summary>The widest room the planner can produce, at its coarsest slot grid.</summary>
+        /// <summary>
+        /// The widest room the planner can produce, **asked of the planner rather than rebuilt
+        /// here.**
+        ///
+        /// This used to compute `SlotRoomSpan(SlotSpacing(MinSlotsPerAxis))`, which is the span
+        /// of a room that fills one slot exactly. It was a true sentence when it was written and
+        /// stopped being one the moment the planner gained a two-slot grand hall and a varied
+        /// span: the ceiling said 34 while the hall was 80, so **every candidate layout was
+        /// refused and no coordinate could generate at all.**
+        ///
+        /// See <see cref="RoomLayoutPlanner.WidestRoomSpan"/> for the whole account. The rule
+        /// stays enforced here -- a room wider than the planner can produce is still a refusal --
+        /// but the number comes from the one place that knows it.
+        /// </summary>
         private static int MaxRoomSpan
         {
-            get
-            {
-                return RoomLayoutPlanner.SlotRoomSpan(
-                    RoomLayoutPlanner.SlotSpacing(RoomLayoutPlanner.MinSlotsPerAxis));
-            }
+            get { return RoomLayoutPlanner.WidestRoomSpan; }
         }
 
         /// <summary>

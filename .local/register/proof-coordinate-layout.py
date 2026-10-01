@@ -59,9 +59,35 @@ def read(path):
     return io.open(path, encoding="utf-8", errors="replace").read()
 
 
+def code(text):
+    """The source with its comments removed.
+
+    **An absence claim cannot read raw source.** `"a.maxX == b.minX" not in planner` failed
+    against correct code, because the comment explaining why that test was wrong quotes it --
+    which is exactly what a comment about a removed thing does. Thirty-six instances of this one
+    defect class now, and `check-compliance.py` met it from the other side when it flagged a patch
+    for naming `PatchOperationReplace` in the comment saying not to use one.
+
+    Line comments and documentation comments only. A `//` inside a string literal would be
+    mangled by this, and there is none in the files it reads; a claim is not the place to write a
+    C# parser.
+    """
+    kept = []
+    for line in text.split("\n"):
+        stripped = line.lstrip()
+        if stripped.startswith("//"):
+            continue
+        kept.append(line)
+    return "\n".join(kept)
+
+
 planner = read(os.path.join(SRC, "Generation", "RoomLayoutPlanner.cs"))
 service = read(os.path.join(SRC, "Generation", "DestinationService.cs"))
 genstep = read(os.path.join(SRC, "Generation", "GenStep_BackroomsDestination.cs"))
+
+# Comment-free views, for absence claims only.
+planner_code = code(planner)
+service_code = code(service)
 
 
 def constant(text, name, kind="int"):
@@ -353,13 +379,25 @@ check("TWO ROOMS CAN SHARE A WALL, AND ONE FUNCTION DECIDES IT",
       "and the generator skips the corridor. Two derivations of one rule is the defect that cost "
       "thirty-nine checkpoints")
 
-check("THE SHARED DOORWAY IS COMPUTED FROM THE OVERLAP, NOT FROM EITHER ROOM'S CENTRE",
-      "internal static IntVec3 SharedDoorCell(" in planner
-      and "int low = Math.Max(a.minZ, b.minZ) + 1;" in planner
-      and "if (cell == SharedDoorCell(room, other)) { return true; }" in planner,
-      "-- the shared column belongs to BOTH rooms' bounds and the floor grid is written room by "
-      "room. Each opening its own centre would name different cells and the second write would "
-      "seal the first: a back-to-back pair would have been a SEALED pair")
+check("A BACK-TO-BACK PAIR ABUTS, IT DOES NOT OVERLAP",
+      "a.maxX + 1 == b.minX || b.maxX + 1 == a.minX" in planner
+      and "a.maxZ + 1 == b.minZ || b.maxZ + 1 == a.minZ" in planner
+      and "a.maxX == b.minX" not in planner_code
+      and "SharedDoorCell" not in planner_code,
+      "-- `CellRect.Overlaps` is INCLUSIVE on both edges, so two rooms sharing a wall column "
+      "overlap by RimWorld's own reckoning, and `ValidateRooms` has refused overlapping rooms "
+      "since the first layout. The first draft tested for equal edges, so EVERY back-to-back "
+      "pair made the whole candidate illegal and no coordinate would generate. Each room keeps "
+      "its own wall, one cell apart")
+
+check("and the doorway in it needs no second rule, so there is not one",
+      "SharedDoorCell" not in planner_code
+      and "other.Bounds.minX > room.Bounds.maxX && cell.x == room.Bounds.maxX" in planner,
+      "-- an abutting neighbour's near edge is `maxX + 1`, which IS strictly beyond `maxX`, so "
+      "`DoorOpening`'s existing rule already opens each room's own wall midpoint -- and "
+      "`AreGridNeighbors` guarantees linked centres share that axis, so the two midpoints are "
+      "the same cell on it and the openings meet. The deleted `SharedDoorCell` was a second rule "
+      "deciding one doorway")
 
 check("the generator carves no corridor where a wall is shared",
       "if (RoomLayoutPlanner.SharesWall(room, other)) { continue; }" in genstep,
@@ -367,10 +405,63 @@ check("the generator carves no corridor where a wall is shared",
       "makes them one room")
 
 check("and only a spur is ever pushed, never a chain room",
-      "PushAgainst(rooms[rooms.Count - 1], rooms[host]);" in planner
-      and "private static void PushAgainst(" in planner,
+      "PushAgainst(rooms, rooms[rooms.Count - 1], rooms[host]);" in planner
+      and "private static void PushAgainst(List<RoomRecord> rooms, RoomRecord mover," in planner,
       "-- a spur has exactly one connection, so moving it can only affect that pair and can "
       "never re-route the spine")
+
+check("THE PUSH LANDS ONE CELL CLEAR, ON ALL FOUR SIDES",
+      "if (verticalOverlap && a.minX > b.maxX) { mover.x = b.maxX + 1; }" in planner
+      and "else if (verticalOverlap && a.maxX < b.minX) { mover.x = b.minX - a.Width - 1; }" in planner
+      and "else if (horizontalOverlap && a.minZ > b.maxZ) { mover.z = b.maxZ + 1; }" in planner
+      and "else if (horizontalOverlap && a.maxZ < b.minZ) { mover.z = b.minZ - a.Height - 1; }" in planner,
+      "-- all four, because the first draft had two branches overlap and two abut, and the two "
+      "that abutted were the ones the old `SharesWall` could not see. **A plant that dropped the "
+      "+ 1 from one branch was missed by every proof**: the revert guard caught the overlap and "
+      "put the room back, so the layout stayed valid and simply never produced a back-to-back "
+      "pair again. Switched off, silently, with every claim still passing -- which is what "
+      "`PlannerProbe` counts and a source claim cannot")
+
+check("AND THE PUSH IS PUT BACK IF IT LANDED ON SOMEBODY",
+      "bool collides = rooms.Any(other => other != mover && mover.Bounds.Overlaps(other.Bounds));"
+      in planner
+      and "if (onMap && !collides && SharesWall(mover, anchorRoom)) { return; }" in planner
+      and "mover.x = originalX;" in planner,
+      "-- the slot a spur leaves is not the slot it arrives in, and the arrival may belong to a "
+      "third room. All three conditions are checked -- on the map, no collision, and `SharesWall` "
+      "agrees -- because a pair the pushing code thinks is back to back and the doorway code "
+      "does not is a sealed room")
+
+# --------------------------------------------- the ceiling the hall has to pass
+# **THIS IS THE ONE NOBODY WROTE, AND IT IS THE ONE THAT BROKE THE GAME.** `ValidateRooms` refuses
+# any room wider than `MaxRoomSpan`, and that property recomputed the span of a room filling one
+# slot -- 34 at depth 1 -- while the planner's grand hall takes two slots and is 80. Candidates 0,
+# 1 and 2 were refused every time; the fallback was refused whenever any room's span varied upward,
+# which over twenty-odd rooms is every time. Four refusals, `TrySelect` false, and the player got
+# *"No safe first-site layout was found within the bounded attempt limit"* with a clean log.
+#
+# The number is a statement about the planner, so the planner states it, and the validator asks.
+check("THE VALIDATOR ASKS THE PLANNER HOW WIDE A ROOM CAN BE, AND DOES NOT RECOMPUTE IT",
+      "get { return RoomLayoutPlanner.WidestRoomSpan; }" in service
+      and "RoomLayoutPlanner.SlotRoomSpan(" not in service_code,
+      "-- a validator carrying its own copy of a number the planner decides is the same defect as "
+      "the literal 19 this file already removed once, and as the light count that stopped "
+      "generation for thirty-nine checkpoints")
+
+check("and the planner's answer counts BOTH the two-slot hall and the span variation",
+      "internal static int WidestRoomSpan" in planner
+      and "int hall = spacing * 2 - SlotGap;" in planner
+      and "int varied = SlotRoomSpan(spacing) + SpanVariation;" in planner
+      and "return hall > varied ? hall : varied;" in planner,
+      "-- the hall is the widest thing the planner builds and the variation is the widest an "
+      "ordinary room gets. Either one alone is a ceiling the other walks straight through")
+
+check("THE SPINE NEVER TAKES THE WHOLE ROOM BUDGET",
+      "if (chainLength > MaxRooms * 2 / 3) { chainLength = MaxRooms * 2 / 3; }" in planner,
+      "-- the cap was `MaxRooms`, so from depth 5 the serpentine alone reached sixty rooms and "
+      "the spur loop, which runs while `rooms.Count < MaxRooms`, never executed once. The "
+      "deepest levels had NO dead ends, NO branches and NO back-to-back pairs -- the opposite of "
+      "*\"it needs to be more maze liek\"*. A sixty-room chain with no branches is a corridor")
 
 check("MOST LEFTOVER SLOTS BECOME BRANCHES, which is what makes it a maze",
       "% 4 == 3)" in planner,

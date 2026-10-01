@@ -46,11 +46,11 @@ been enough; the only thing that has worked is reaching for the Write tool first
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
-| Published | **0.12.61-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.62-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
-| Build | **200 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `29F1BAA124DB807247C148F5D514E6AB53F6ED614EBB2EAD2166FC7BC0EDE791`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
-| Checkers | **THIRTEEN**, all passing. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
+| Build | **204 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `5201C4A6D368DE5E2E3A94939BEC0D0AF5858A870A1A05F4AC991F2D94BE8774`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Checkers | **FOURTEEN**, all passing. **The fourteenth is the only one that runs code rather than reading it**, and it exists because the thirteen that read text, the forty-five proofs and five hundred and fifty plants **all passed over a planner that could not produce one valid layout** -- `MaxRoomSpan` said 34 while the grand hall was 80, and no amount of reading either file can see two numbers disagree. `check-planner-layouts.py` builds `.local/harness/PlannerProbe` and runs `TrySelect` and `ValidateRooms` over 200 seeds at seven depths, demanding both that a layout is accepted **and that back-to-back pairs exist** -- because a plant that moved a pushed room one cell was missed by every proof when the revert guard quietly switched the feature off. **It never skips**: no dotnet, no install or no built assembly is a failure, not a pass. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
 | Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
@@ -259,6 +259,100 @@ and sits at `12e12da`. Bug fixes found in play land on `feature/bug-testing` and
 there.
 
 ---
+
+## DO THIS FIRST — READ THE LOG FROM THE ELEVENTH LAUNCH, AND THEN READ THE LETTERS
+
+**The log was CLEAN and the game was broken.** That is the single most useful thing the tenth
+launch taught, and it changes the first job.
+
+Zero red lines. `0.12.61-dev` loaded, the mod's own build line printed, the company branch
+initialised, no exception anywhere. And the owner had no Backrooms, no blue door and no way
+through. **The evidence was a letter**, sitting unread on their screen:
+
+```
+The company could not finish startup:
+No safe first-site layout was found within the bounded attempt limit.
+```
+
+So: **`Player.log` first, and then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.**
+A refusal this package produces on purpose is a letter, not an error -- it is written that way
+deliberately -- so a clean log says nothing about whether anything worked.
+
+### WHAT BROKE IT, AND IT WAS OURS, FROM THE CHECKPOINT BEFORE
+
+`ValidateRooms` refuses any room wider than `MaxRoomSpan`, which computed the span of a room
+filling **one** slot: 34 cells. 0.12.61-dev gave the threshold a grand hall spanning **two**
+slots: 80. Candidates 0, 1 and 2 all carry the hall, so **all three were refused every single
+time**, and the fallback was refused whenever any room's span varied upward -- which over twenty
+rooms is always.
+
+`SoloGroupOpening.Open` is five steps in order and the coordinate is step 2. **Step 3 marks the
+door and step 4 registers the edge, and `IsLiveGate` needs both.** So one failure produced every
+symptom the owner reported, and none of them were about the door.
+
+### THE INSTRUMENT THAT CAME OUT OF IT -- USE IT BEFORE ASKING FOR A LAUNCH
+
+```
+python tools/check-planner-layouts.py
+```
+
+**Checker fourteen, and the only one in the battery that runs code rather than reading it.** It
+builds `.local/harness/PlannerProbe` against the compiled assembly and runs the real
+`TrySelect` and `ValidateRooms` over 200 seeds at seven depth bands.
+
+Thirteen checkers, forty-five proofs and five hundred and fifty planted faults **all passed over a
+planner that could not produce one valid layout.** They read source text, and two numbers in two
+files disagreeing is not a thing source text shows. **The planner is pure -- no map, no world, no
+defs, no global random -- so this was always answerable at the desk, and for a whole checkpoint
+nobody asked.**
+
+It demands two things, and the second matters as much as the first: that a layout is accepted,
+**and that back-to-back pairs actually exist.** A plant that reverted one `+ 1` was missed by all
+forty-five proofs, because the new revert guard caught the resulting overlap and put the room back
+-- so every layout stayed valid and the feature was simply **never produced again.** Switched off,
+silently, with every claim still passing. That is this project's dominant defect class and the
+probe is the answer to it.
+
+**Anything else that is pure and has a validator deserves the same treatment.** The content
+builder, the frontier draw and the archetype selector are all candidates.
+
+### WHAT THE ELEVENTH LAUNCH HAS TO SETTLE
+
+**Everything the tenth was supposed to settle, because it never generated a level.** In order:
+
+1. **Does a coordinate generate at all** -- the gate blue, the Backrooms map present, a pawn able
+   to cross. **Everything below depends on this.**
+2. **24 rooms at depth 1** plus one grand hall of eighty cells, back-to-back pairs, shaped
+   corners, varied corridors
+3. **Is it a maze** -- branches off three slots in four, dead ends, rooms of different sizes
+4. **Is the spawn hall still grand and yellow**, and does the yellow stop a few rooms out
+5. **Two portals per level**: one out to the world map, one deeper. Guaranteed, not drawn
+6. **Loot, weird rooms, people, bodies, events** -- out past the yellow rooms
+7. **A lamp on every pillar**, in four tones, the dim one dim rather than off
+8. **Doors that go nowhere** -- an opening a third along a blank wall, onto rock
+9. **Furniture spread through rooms** rather than in the four corners
+
+### THINGS THAT WILL WASTE A LAUNCH IF FORGOTTEN
+
+* **The owner's existing save still will not change.** A coordinate is generated once and
+  recorded, and the one in their current game was never generated at all -- it failed. **A new
+  start is what shows this work.** The branch that failed startup keeps its failure.
+* **`GuaranteedFrontiers` and `RoomArchetypeService` hold caches of live `Thing`s and link
+  graphs**, cleared in `BackroomsContainment.FinalizeInit`.
+* **Register row [218] Stargates! is stance "No integration", and the owner overruled it.** The
+  register is guidance. Their component rides an ordinary Core door, their mod is untouched, and
+  the build has no reference to their assembly.
+
+### THE TRAP, UPDATED
+
+**A claim that pins call text proves a call happened. It cannot prove the call was legal.**
+`PushAgainst(rooms[rooms.Count - 1], rooms[host])` was pinned as literal text and held while two
+of that method's four branches produced a layout the validator refuses outright.
+
+And **an absence claim cannot read raw source**: `"a.maxX == b.minX" not in planner` failed
+against correct code because the comment explaining why that test is wrong quotes it. Thirty-sixth
+instance of that one class. `proof-coordinate-layout.py` keeps a comment-free `code()` view now
+and every absence claim reads that.
 
 ## DO THIS FIRST — READ THE LOG FROM THE TENTH LAUNCH
 

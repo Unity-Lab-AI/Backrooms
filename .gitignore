@@ -23,11 +23,19 @@ Assemblies/*.pdb
 #
 # Git does not descend into an ignored directory, so the parent has to be re-admitted a level
 # at a time before a negation inside it can match. Same pattern as !.claude/bin/ below.
+#
+# .local/harness/ joined them at 0.12.62-dev for the same reason. `check-planner-layouts.py` is
+# checker FOURTEEN and it runs the planner for real, which is the only thing in this battery that
+# can see a feature go absent -- and a checker whose source a clone does not get is a checker that
+# silently stops existing. Its bin/ and obj/ stay out; they are build output.
 .local/*
 !.local/register/
 .local/register/*
 !.local/register/proof-*.py
 !.local/register/plant-*.py
+!.local/harness/
+.local/harness/**/bin/
+.local/harness/**/obj/
 artifacts/
 Mod/**/Assemblies/*.dll
 Mod/**/Assemblies/*.pdb
