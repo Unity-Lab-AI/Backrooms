@@ -2624,6 +2624,85 @@ Owner, verbatim:
 
 ---
 
+## The doc sweep picked back up, and a site that does not pop like a text wall - 2026-10-01
+
+Owner, verbatim:
+
+> **"i docs and pages for when we deploy on github"**
+
+> **"we were doing the massive update and corrections to content style and formate of all the docs
+> pertaining to that doc push earlier that we neeed to pick back up on and docs and pages when we
+> deploy the wiki and docs on github"**
+
+and at the two forks, verbatim:
+
+> **"docs/ root on this repo, github.io for now"**
+
+> **"the beautiful and masterfully way paossible so the thing needs to NOT pop like a text wall"**
+
+- [x] **"we were doing the massive update and corrections to content style and formate of all the
+  docs pertaining to that doc push earlier"** - **DONE 0.12.79-dev. Twenty documents de-bannered
+  and corrected, 60 offending lines to zero, 16 of 16 checkers passing, 49 of 49 proofs holding.**
+  the push is 0.12.77-dev, *the public wiki*. It
+  shipped the thirteen wiki pages, `docs/_config.yml` and the conformance rules, and **it
+  band-aided the hard half**: twenty-six living documents went false in one commit when the
+  dependencies became hard, and **nineteen of them carry a supersession banner on line 3 instead of
+  a corrected body**. The banner says *"anything here describing a Core-only route is history rather
+  than a current claim"* - a note admitting the document is wrong, not a document that is right.
+- [x] **"that we neeed to pick back up on"** - **DONE 0.12.79-dev.** Every body corrected and every
+  banner retired, so all twenty are back under the rule instead of exempt from it. Four findings the
+  sweep produced beyond the stale text: a **hole in `check-doc-conformance.py`** (the retirement
+  escape matched anywhere on a line, so one incidental *"until"* hid three false claims inside a
+  1,200-character paragraph — now scoped to the claim's own clause, with five planted cases, and the
+  first draft of that fix was wrong and the plants caught it); a **proof enforcing a lie**
+  (`proof-playing-and-help.py` asserted `PLAYING.md` must say *"no game has ever been launched"*,
+  false since 2026-09-30 — re-aimed at the caveat that launched and played-through differ, asserted
+  both ways, plant re-aimed to match); **`AGENTS.md` telling the next agent to pause work** against
+  the standing do-not-stop direction, while claiming no in-game test could run; and
+  **`FIRST_SLICE_CONTENT_INVENTORY.md` instructing banned work** - the field kit *"need their own
+  art, text, and Def records"*, which the content-reuse policy forbids and which four Core providers
+  had already replaced. Original finding follows: the bodies are still false. `ARCHITECTURE.md:27`
+  still opens a numbered invariant with *"Core-only, no Harmony ... `About.xml` declares no
+  dependencies"*; line 45 still lists the five expansions and the 294-mod profile as *"optional
+  runtime peers ... not referenced"*; `SKILL_TREE.md` still ships *"Core-only solo campaign"* as a
+  capability in two places including the dependency diagram. Same shape in
+  `CONTENT_REUSE_POLICY.md`, `FIRST_PLAYABLE_CONTRACT.md`, `CAMPAIGN_ROSTER_FREEZE.md` and
+  `PUBLIC_RELEASE_PLAN.md`. **Correct the body, then retire the banner** - a banner that outlives
+  the defect it describes is the same dated-claim defect the checker battery exists to catch.
+- [x] **"corrections to content style and formate of all the docs"** - **DONE for the working-doc
+  set at 0.12.79-dev**, where style and format meant one vocabulary for two facts that had been
+  sharing one phrase: *"Core-only"* as an implementation fact (the assembly references Core APIs and
+  no Harmony — still true) versus *"Core-only"* as a dependency claim (the package needs nothing but
+  Core — false since 2026-10-01). One phrase, two meanings, opposite truth values, which is why a
+  banner got stapled on instead of a fix. The implementation sense is now *"Core APIs"* or *"Core
+  content"*; the dependency sense is *"declared requirements"*. Original wording: style and format,
+  not only truth. One heading shape, one status vocabulary, one table idiom, one link idiom across
+  the set.
+- [ ] **Style and format across the thirteen WIKI pages is the remaining half**, and it belongs with
+  the site build below rather than here, because *"NOT pop like a text wall"* is a layout answer as
+  much as a prose one.
+- [ ] **"and docs and pages when we deploy the wiki and docs on github"** - the deploy half.
+- [ ] **"docs/ root on this repo, github.io for now"** - Pages serves `docs/` on this repository.
+  `_config.yml` keeps `include: wiki` and the working material excluded. **CNAME support authored
+  now, the domain left open** - no document names a URL the deploy does not have.
+- [ ] **"the beautiful and masterfully way paossible so the thing needs to NOT pop like a text
+  wall"** - `jekyll-theme-primer` is a text wall with a margin. Real layout and stylesheet, and the
+  thirteen pages restructured so each one is scannable rather than read from the top.
+- [ ] **The generator stays internal, by the finding that opened this.** `outputs/readable/` renders
+  `TODO.html` and `NOW.html` - the work ledger - to standalone HTML. Nothing publishes them today
+  because `_config.yml` includes `wiki` alone, but TODO row 270 names
+  `tools/make-readable-html.py` as the site's seed, and pointing it at the site would publish the
+  ledger. **It stays an internal reading convenience and is never wired to the published tree.**
+- [ ] **`check-doc-conformance.py` must cover the published site** (row 271), so a page cannot claim
+  a version or a branch the build does not have.
+
+**Mod register.** Checked before designing: it bears on this as the **source** for what
+`COMPATIBILITY.md` and the wiki's `mods.md` may claim - `RR-COMPAT` carries 293 of the 295 rows and
+`RR-DLC` 40 - and the standing no-compatibility-claim rule means those pages state **declared
+requirements**, never tested-together claims. Nothing else in the register applies to a docs sweep.
+
+---
+
 ## TOMBSTONES
 
 _(none)_

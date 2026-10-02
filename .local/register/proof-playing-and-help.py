@@ -6,9 +6,10 @@ Five rows, one family. What each one asks for, and what this file asserts about 
   * **1193, 1220** -- *"eventually we will need to write a how to to the game paly and systems"*,
     written **once** for the repository and the site. `docs/PLAYING.md` is that document, and it
     joins the reader-facing set so the vocabulary rule, the wall rule and the row 791 claim guard
-    all apply to it. The claim that matters most is the caveat: no game has ever been launched
-    from this repository, so every play instruction is a structural claim about the code and the
-    document has to say so in its own words.
+    all apply to it. The claim that matters most is the caveat, and **the caveat changed on
+    2026-09-30**: the mod HAS been launched, twelve times, and has never been played through. So
+    every play instruction is still a structural claim about the code rather than a play report,
+    and the document still has to say so in its own words -- just not with the old sentence.
 
   * **821** -- *"Remap RimWorld's menus, tabs, and campaign views into the finished company-first
     Company Command layout ... Keep every relevant Architect, Work, Assign, Research, World, map,
@@ -403,9 +404,25 @@ check("and the long-form version points at it rather than competing with it",
       "wiki/index.md" in playing,
       "-- one canonical place, not two drifting copies")
 
-check("it says no game has ever been launched",
-      "no game has ever been launched from this repository" in playing_flat,
-      "-- the load-bearing sentence of the whole document")
+# **This claim was re-aimed at 0.12.79-dev, and the reason matters more than the edit.** It used
+# to assert the document said *"no game has ever been launched from this repository"*, which was
+# the load-bearing sentence right up until 2026-09-30 and has been false ever since: twelve owner
+# launches, the ninth of them a walked Backrooms level. So the proof was enforcing a lie, and it
+# would have gone on enforcing it because a passing check is nobody's first suspect.
+#
+# What the row actually protects is the CAVEAT, not that sentence. Launched and played through are
+# different claims, and the document owes the reader the second one. Asserted both ways: the
+# honest caveat present, and the overclaim absent -- a positive check alone would pass a document
+# that said both.
+check("it says the mod has not been played through",
+      "it has not been played through" in playing_flat,
+      "-- launched is not played through, and the second is the caveat every play instruction "
+      "in the document rests on")
+
+check("and it does not claim it has been played through",
+      "has been played through and it works" not in playing_flat
+      and "played through and it works" not in playing_flat,
+      "-- the overclaim this guard exists to refuse")
 
 check("it says the game's readouts outrank it",
       "the game's own readouts are right and this page is wrong" in playing_flat,

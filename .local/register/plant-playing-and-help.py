@@ -273,9 +273,13 @@ PLANTS = [
     ("a wiki page is deleted and nothing notices", CONF,
      '    os.path.join(WIKI, "install.md"),\n', "", PROOF),
 
-    ("the play document stops saying no game has been launched", DOC,
-     "**No game has ever been launched from this repository.**",
-     "This has been played through and it works.", PROOF),
+    # Re-aimed at 0.12.79-dev with the claim it plants against. The old anchor removed the
+    # sentence *"No game has ever been launched from this repository"*, which the document stopped
+    # saying because it stopped being true. The claim is the caveat, so the plant still turns the
+    # caveat into the overclaim -- the same defect, aimed at the words that carry it now.
+    ("the play document stops saying the mod is unplayed", DOC,
+     "and it has not been played through",
+     "and it has been played through and it works", PROOF),
 
     ("the play document claims to outrank the game's own readouts", DOC,
      "the game's own readouts are right and this page is wrong",

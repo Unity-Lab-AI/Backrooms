@@ -1,11 +1,5 @@
 ﻿# Existing-content-only gameplay policy
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
-
 **Binding owner direction, 2026-09-28:** Rimrooms repurposes content already in RimWorld and the selected installed mods. The owner does not want a new item, equipment, furniture, production-bench or in-game asset production project. This supersedes earlier instructions to create original gameplay art/audio and custom physical item/building content. The full company/procedural campaign scope is retained.
 
 ## What implementation must do
@@ -23,9 +17,13 @@
 
 ## Content provider and dependency rules
 
-Every repurposed role needs a saved binding: functional role, actual provider package ID, existing Def name, reviewed version/source, prerequisite, Core-only fallback, player assignment/action, save ownership and failure recovery. Use the 294-row register and the exact per-mod review before depending on that mod's behavior. Modded objects should contribute useful function where supported; there is no requirement to replace them with Rimrooms equivalents.
+Every repurposed role needs a saved binding: functional role, actual provider package ID, existing Def name, reviewed version/source, prerequisite, a fallback built from Core content alone, player assignment/action, save ownership and failure recovery. Use the 294-row register and the exact per-mod review before depending on that mod's behavior. Modded objects should contribute useful function where supported; there is no requirement to replace them with Rimrooms equivalents.
 
-Keep a complete Core-only solo route and optional DLC/profile support under the existing owner decisions. If Core has no literal version of a specialist object, use a clearly explained existing Core mechanism that delivers the same gameplay function; do not pretend a fallback has an unsupported capability. If a faithful function genuinely requires an optional provider, expose that optional route and retain a working Core route to campaign progression. Do not silently make all 294 mods mandatory.
+**The collection is mandatory now, and the fallbacks still have to exist.** Those sound contradictory and are not, because the owner chose both halves on 2026-10-01: declare every member of the collection in `About.xml` so a mod manager names anything missing, *and* keep looking content up by name so a player who ignored that warning degrades instead of crashing. The declaration is the promise; the fallback is what happens when the promise is broken anyway.
+
+So the rule that used to read *"retain a working Core route to campaign progression"* is retained — not as a supported way to play, but as the behaviour when a declared provider is absent at runtime. If Core has no literal version of a specialist object, use a clearly explained Core mechanism that delivers the same gameplay function, and never pretend a fallback has a capability it lacks.
+
+**What is retired is the old sentence's closing instruction, *"do not silently make all 294 mods mandatory."*** Nothing is silent about it: every requirement carries a display name and a way to obtain it, which is the opposite of the failure that line was written to prevent.
 
 Mappings are opt-in to the company's designated facilities and marked objects. Do not globally rename/rebalance every native workbench, turn ordinary component stacks into evidence, or change an unrelated colony by installing Rimrooms. Distinct object identity, split/merge behavior, loss, sale, recovery and save migration need explicit handling.
 

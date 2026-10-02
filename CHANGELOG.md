@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.12.79-dev - 2026-10-01 - you do not need a debug server to play this
+
+- **The mod no longer tells you it requires a debug server.** A QA instrument that only its author
+  attaches to a running game was declared as a hard requirement, so a mod manager would have asked
+  you to install one. It is gone from the requirement list and from the load order. **293
+  requirements, not 294.**
+- Nothing else about the requirement list changed, and it was checked rather than assumed: every
+  requirement declared is still installed and active, and nothing active is undeclared.
+
+Nothing in the game changed. No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.78-dev - 2026-10-01 - a locked door said nothing, and no start shipped the book
 
 - **A locked gate refused every crossing in silence.** Ordering somebody through checked that the

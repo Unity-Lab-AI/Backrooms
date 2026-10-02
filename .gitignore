@@ -33,6 +33,21 @@ Assemblies/*.pdb
 .local/register/*
 !.local/register/proof-*.py
 !.local/register/plant-*.py
+# `build-dependencies.py` joined them at 0.12.79-dev, and it is the third instance of this exact
+# defect. `AGENTS.md` and the queue both name it as the ONLY sanctioned way to change the
+# dependency blocks -- *never hand-edit them, edit this script and re-run it* -- while the script
+# itself was not in the repository. A clone got 293 generated rows and no generator, so the only
+# way to change them in a clone was the one way the rule forbids.
+!.local/register/build-dependencies.py
+# And the same reasoning one directory over, caught before it became the FOURTH instance in one
+# day. `.local/qa/` is machine-local scratch, but two of its scripts are instruments rather than
+# scratch: the plant that proves the clause-scoped dependency rule can still fail, and the
+# measurement that reports whether any living document has drifted back to a false claim. A rule
+# whose plant a clone does not get is a rule that silently stops being guarded.
+!.local/qa/
+.local/qa/*
+!.local/qa/plant-retirement-scope.py
+!.local/qa/measure-dependency-claims.py
 !.local/harness/
 .local/harness/**/bin/
 .local/harness/**/obj/

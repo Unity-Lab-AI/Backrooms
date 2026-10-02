@@ -1,18 +1,12 @@
 ﻿# Rimrooms - Async Industries: first-slice content inventory
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
-
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
 
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
-**Status:** content contract, version 0.1. The [0.2.0 development build](implementation/PHASE_2_BUILD_RECORD.md) identifies the actual starting staff/facility, field equipment, original sprites, furnished saved site, observation report and encounter implementation; unfinished presentation and acceptance remain listed there. Names and counts below are original working content, not confirmed canon or runtime evidence. The slice targets Core-only solo operation.
+**Status:** content contract, version 0.1. The [0.2.0 development build](implementation/PHASE_2_BUILD_RECORD.md) identifies the actual starting staff/facility, field equipment, original sprites, furnished saved site, observation report and encounter implementation; unfinished presentation and acceptance remain listed there. Names and counts below are original working content, not confirmed canon or runtime evidence. The slice targets solo operation, and since 2026-10-01 the package declares the five expansions and the collection as requirements — so "runs on Core content" describes how it degrades when one is absent, not what a player needs installed.
 
 **Purpose:** make the Async Industries opening concrete enough to prepare implementation without expanding the first build into the whole campaign. Shared systems and optional integrations are mapped in [FEATURE_TRACEABILITY.md](FEATURE_TRACEABILITY.md), [SYSTEMS_CATALOG.md](SYSTEMS_CATALOG.md), and the [294-mod register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.html).
 
@@ -26,7 +20,7 @@ Use the canonical start card in [SCENARIOS.md](SCENARIOS.md): a 60×60 headquart
 | Facility | Gate chamber, power room, workshop, research bench, receiving/storage, small infirmary, dormitory, mess/recreation area, secured entrance | Each area has a visible building or stock function. No hidden room score gates progress. |
 | Machine | Incomplete gate frame, control console, emergency cutoff, utility generator, reserve battery | Finish assembly, verify power, assign an operator, open and recall once. |
 | Starting stock | 250 steel, 18 components, 2 advanced components, five days of food for the five staff, medicine for two serious treatments, two serviceable firearms, one protective vest | The final gate step uses 100 steel and 8 components. Existing stock covers the first expedition; no purchase is needed to complete it. |
-| Field kit | One recorder/radio, six numbered survey tags, one short return tether/beacon, one sealed evidence case, basic medical supplies, guard's firearm and vest | The crew can record a route, identify a changed doorway, request recall, stabilize a sample, and retreat. These are original Rimrooms items and need their own art, text, and Def records. |
+| Field kit | One recorder/radio, six numbered survey tags, one short return tether/beacon, one sealed evidence case, basic medical supplies, guard's firearm and vest | The crew can record a route, identify a changed door, request recall, stabilise a sample, and retreat. **All four are bound to existing Core providers and none ships art** — the recorder folded into a Core `TextBook`, the survey tag became a `GlowPod`, custody completes at a designated `Shelf`, and the return beacon was retired once the gate's own address book took its job. The sentence here used to say they *"need their own art, text, and Def records"*, which the content-reuse policy forbids. |
 | Company records | Accepted AI-01 onboarding survey, branch-local USD Company Account ledger, coordinate card, first case record | Show what the company asked for, what the crew found, and why payment was posted. |
 
 The named field-kit items are already included among the starting resources on the [`async_industries` scenario card](SCENARIOS.md); they are not an additional starting grant. Allocate those physical items to the field loadout exactly once, then record their return, consumption, damage, or loss normally. They must not silently duplicate on reload.

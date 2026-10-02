@@ -1,17 +1,17 @@
 ﻿# Compatibility and local multiplayer profile
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
-
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
 ## Support target
 
-**Selected support target:** RimWorld **1.6**. **All five expansions and the whole collection are declared requirements** as of 2026-10-01; the earlier Core-only-with-optional-expansions target is superseded. Co-op requires RimWorld Together and Harmony. All other entries in the 294-entry server profile are optional, while the complete ordered list is the required research/test target. All 294 entries have source-fact reviews; no profile entry is treated as runtime-compatible until the relevant exact-profile test is recorded.
+**Selected support target:** RimWorld **1.6**. **The five expansions and the collection loaded alongside them are declared requirements** in `About.xml`, by owner decision 2026-10-01; the earlier target of an optional-expansion, Core-playable package is superseded. Co-op additionally requires RimWorld Together and Harmony.
+
+**Nothing in the profile is optional any more, and that is the change.** The sentence that used to follow this one said every entry beyond the expansions was optional, which stopped being true the moment the requirements were declared. The ordered list is still the research and test target it always was; it is now also the requirement set.
+
+**Read the count from `About.xml`, never from this page.** A typed figure went stale here within a day of being written. The file is the authority, `.local/register/build-dependencies.py` is the only thing that writes it, and attach-only QA tooling is excluded from it by name — a player is never told they need a debug server.
+
+Every profile row has a source-fact review. **A review is not a runtime result:** no entry is treated as runtime-compatible until the relevant exact-profile test is recorded, and declaring a requirement does not record one.
 
 ## Local server snapshot
 
@@ -60,7 +60,7 @@ The local list also contains a large set of combat, medical, pawn, and quality-o
 
 ## Compatibility rules
 
-1. Keep the main package independent from optional DLC/profile content and preserve a complete Core path; require Harmony/RWT only for the co-op path.
+1. **Declare the requirement, and keep the graceful guard anyway.** Declaring a dependency is what lets a mod manager say *this is missing*; looking content up by name, never assuming it, is what lets a player who ignored the warning degrade instead of crash. The owner chose both, not either. Harmony and RWT remain specific to the co-op path.
 2. Detect DLC and optional user mods by their stable package IDs; place each integration in isolated XML patches or adapter code.
 3. Avoid overwriting another mod's Def. Prefer targeted `PatchOperation` changes only when there is a concrete interaction to solve.
 4. Keep a minimal recommended load-order note after the 1.6 folder and metadata rules are checked against the final package.

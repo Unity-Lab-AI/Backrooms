@@ -1,11 +1,5 @@
 ﻿# Rimrooms - Async Industries: first playable contract
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
-
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
 
@@ -20,7 +14,7 @@
 
 ## Starting offer
 
-Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquarters map, five staff in flexible roles, a provisional $50,000,000 Company Account, 150 physical silver, a partially assembled gate, the starter stock listed on that card, and one already-accepted onboarding survey contract. The $5,000,000 target reward is paid only after the survey requirements are recorded as complete. An optional $1,000,000 bonus pays if all three crew return and the route, distortion, and entity observation records are delivered; a recoverable injury does not cancel it. Start with the project board visible and the next actionable step highlighted. Do not require a DLC, optional profile mod, RWT, or a named pawn to complete the solo first run.
+Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquarters map, five staff in flexible roles, a provisional $50,000,000 Company Account, 150 physical silver, a partially assembled gate, the starter stock listed on that card, and one already-accepted onboarding survey contract. The $5,000,000 target reward is paid only after the survey requirements are recorded as complete. An optional $1,000,000 bonus pays if all three crew return and the route, distortion, and entity observation records are delivered; a recoverable injury does not cancel it. Start with the project board visible and the next actionable step highlighted. **No step of the first run may be gated on a specific profile mod, on RWT, or on a named pawn.** The expansions and the collection are declared requirements as of 2026-10-01, so this is no longer a statement about what a player must install; it is a statement about what the slice is allowed to *depend* on. A missing provider weakens what uses it and never blocks the loop.
 
 | Measure | v0.1 starting target | Player-facing meaning |
 | --- | --- | --- |
@@ -54,11 +48,11 @@ Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquar
 
 ## First-session acceptance evidence
 
-These are future in-game acceptance checks, not tests already run. The first post-build test is the full 295-entry product target (the existing 294 plus Rimrooms), sorted and launched by the owner through RimSort. For bridge-driven checks, RimBridgeServer is a separate QA overlay, normally bringing the actual loaded profile to 296 entries; record target and overlay IDs separately. After that initial full-profile startup, run the focused Core-only baseline and pinned Core+Harmony/RWT profile as separate RimSort-prepared cases. Record the RimWorld build, DLC, RimSort version, ordered mod lists, scenario seed, save, log, bridge version, and observed result for each run. The post-build [RimBridgeServer harness](research/RIMBRIDGE_TEST_HARNESS.md), [power/gate acceptance cases](research/POWER_GATE_AND_TURRET_SOURCE_AUDIT.md), and [physical-logistics plan](research/PHYSICAL_LOGISTICS_BASELINE_TEST_PLAN.md) do not verify the unimplemented Rimrooms gate, custom field kit, expedition cargo handling, or company shipment flow until those cases pass.
+These are future in-game acceptance checks, not tests already run. The first post-build test is the full 295-entry product target (the existing 294 plus Rimrooms), sorted and launched by the owner through RimSort. For bridge-driven checks, RimBridgeServer is a separate QA overlay, normally bringing the actual loaded profile to 296 entries; record target and overlay IDs separately. After that initial full-profile startup, run the focused baseline of Core content alone and the pinned Core+Harmony/RWT profile as separate RimSort-prepared cases. **The bare baseline is a diagnostic, not a supported configuration** — it isolates whether a fault is ours, which is what every launch so far has established. Record the RimWorld build, DLC, RimSort version, ordered mod lists, scenario seed, save, log, bridge version, and observed result for each run. The post-build [RimBridgeServer harness](research/RIMBRIDGE_TEST_HARNESS.md), [power/gate acceptance cases](research/POWER_GATE_AND_TURRET_SOURCE_AUDIT.md), and [physical-logistics plan](research/PHYSICAL_LOGISTICS_BASELINE_TEST_PLAN.md) do not verify the unimplemented Rimrooms gate, custom field kit, expedition cargo handling, or company shipment flow until those cases pass.
 
 | Case | Expected result |
 | --- | --- |
-| Fresh Core-only start | Async Industries setup appears once; the player can identify the first objective and required materials. |
+| Fresh start on the declared profile | Async Industries setup appears once; the player can identify the first objective and required materials. |
 | Gate has too little power | Opening is refused with a reason and a path to add reserve; no crew or cargo disappears. |
 | No qualified operator | Opening is refused and identifies the staffing requirement. |
 | Blocked or invalid route | Dispatch is refused before entry; the generator records a recoverable failure and does not create a dead-end site. |
@@ -68,7 +62,7 @@ These are future in-game acceptance checks, not tests already run. The first pos
 | Evidence is analyzed | One analysis outcome links to the physical evidence, coordinate, researcher, and project/contract result. |
 | Payment is posted | The owning branch ledger gets one transaction; reloading cannot pay it twice. |
 | Save and revisit | The same coordinate identity and prior discoveries return; no duplicate starting grant, mission, or reward appears. |
-| Optional content absent | No optional mod or DLC is needed to assemble, open, explore, recover, analyze, and continue. |
+| A declared provider is absent anyway | The loop still assembles, opens, explores, recovers, analyses and continues; what depended on the missing provider degrades with a stated reason and nothing throws. |
 
 ## Boundaries
 

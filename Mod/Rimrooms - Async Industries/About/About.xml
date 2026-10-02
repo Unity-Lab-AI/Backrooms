@@ -3,7 +3,7 @@
   <name>Rimrooms - Async Industries</name>
   <author>Operator</author>
   <packageId>Rimrooms.AsyncIndustries</packageId>
-  <modVersion>0.12.78-dev</modVersion>
+  <modVersion>0.12.79-dev</modVersion>
   <supportedVersions>
     <li>1.6</li>
   </supportedVersions>
@@ -964,11 +964,6 @@
       <steamWorkshopUrl>steam://url/CommunityFilePage/3523724230</steamWorkshopUrl>
     </li>
     <li>
-      <packageId>brrainz.rimbridgeserver</packageId>
-      <displayName>RimBridgeServer</displayName>
-      <steamWorkshopUrl>steam://url/CommunityFilePage/3727949765</steamWorkshopUrl>
-    </li>
-    <li>
       <packageId>Dubwise.Rimefeller</packageId>
       <displayName>Rimefeller</displayName>
       <steamWorkshopUrl>steam://url/CommunityFilePage/1321849735</steamWorkshopUrl>
@@ -1668,7 +1663,6 @@
     <li>eheieh.researchtree</li>
     <li>BDew.Restraints</li>
     <li>temmie3754.retend.1</li>
-    <li>brrainz.rimbridgeserver</li>
     <li>Dubwise.Rimefeller</li>
     <li>rimfridge.kv.rw</li>
     <li>nova.rimworldtogether</li>
@@ -1771,7 +1765,7 @@
     <li>proxyer.dismantleancientjunk</li>
     <li>VehiclesWrecksExpanded.Revisited</li>
   </loadAfter>
-  <description>Development build 0.12.78-dev. Gameplay acceptance is pending; this is not a finished campaign release.
+  <description>Development build 0.12.79-dev. Gameplay acceptance is pending; this is not a finished campaign release.
 
 Rimrooms - Async Industries is a company-management campaign about an authorised research branch that investigates, contains and profits from unstable spaces beyond a gate.
 
@@ -1805,7 +1799,7 @@ Your colonists work across a gate the way they work anywhere: hauling, construct
 
 --- REQUIREMENTS ---
 
-This build is authored against a specific collection and declares every member of it as a dependency, so your mod manager can tell you what is missing instead of letting the game fail later: RimWorld - Royalty, Ideology, Biotech, Anomaly and Odyssey, and the 289 mods loaded alongside them.
+This build is authored against a specific collection and declares every member of it as a dependency, so your mod manager can tell you what is missing instead of letting the game fail later: RimWorld - Royalty, Ideology, Biotech, Anomaly and Odyssey, and the 288 mods loaded alongside them.
 
 Load this mod last. Every dependency is declared with loadAfter as well as being a requirement, so a sorting manager will place it correctly on its own.
 

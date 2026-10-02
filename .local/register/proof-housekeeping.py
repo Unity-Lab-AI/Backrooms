@@ -269,7 +269,8 @@ flipped_runtime = [line for line in master.split("\n")
                    and "RECONCILED 0.12.42-dev" in line
                    and re.search(r"[Rr]untime acceptance|after the owner launches", line)]
 check("NO RUNTIME-ACCEPTANCE ROW WAS FLIPPED", not flipped_runtime,
-      "-- %s. No game has ever been launched from this repository"
+      "-- %s. Runtime acceptance is still unrecorded: the mod has been launched and never played "
+      "through"
       % "; ".join(line.strip()[:80] for line in flipped_runtime))
 
 check("runtime acceptance rows are still open",

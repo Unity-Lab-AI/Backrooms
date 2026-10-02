@@ -1,11 +1,5 @@
 ﻿# Playing Rimrooms — Async Industries
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
-
 > **The player documentation is the [wiki](wiki/index.md).** Start there — it is shorter, it is
 > organised for reading, and it is what the published site serves.
 >
@@ -16,14 +10,19 @@ played.
 
 ## Read this part first
 
-**No game has ever been launched from this repository.** Everything below is a description of how
-the code is written, checked against the code. None of it is a report of how the mod felt to play,
-because nobody has played it.
+**The mod has been launched, and it has not been played through.** Those are different claims and
+this page needs both. Twelve launches by the owner from 2026-09-30 onward got as far as walking a
+Backrooms level: a coordinate generated, a gate held a connection, and a colonist crossed. What has
+never happened is a campaign played end to end, so nothing below is a report of how any of it felt
+over time, or whether it is balanced.
 
 That distinction is not modesty, it changes how to use the page. Where this document and the game
 disagree, **the game's own readouts are right and this page is wrong** — the panes read live state,
 and a sentence here was written from source at a particular checkpoint. Numbers are given only where
 the code fixes them; anything the game computes is described rather than quoted.
+
+**Every launch so far found defects, and every one of them was ours** — never a conflict with another
+mod. That record is the reason the refusal messages below are worth reading rather than guessing past.
 
 ## What the mod is
 

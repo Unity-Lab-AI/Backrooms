@@ -364,11 +364,53 @@ NO_DEPENDENCY_CLAIMS = (
     "zero hard dependencies",
 )
 
-# A line may name the old claim while saying it is over. The retirement has to be ON the line,
-# the same shape as the retired-def rule above.
+# A line may name the old claim while saying it is over. The retirement has to be in the SAME
+# CLAUSE as the claim, not merely somewhere on the line.
+#
+# **Scoping this to the clause is a fix, and the defect it fixes was live.**
+# `TECHNICAL_ARCHITECTURE.md` carried `Core-only solo path; optional support for all five DLC;
+# other 294-profile mods optional` inside a 1,200-character paragraph that also said *"no
+# compatibility announced until validation is complete"*. One incidental `until`, about an
+# entirely different subject, exempted the whole paragraph -- so three false claims sat in a
+# supervised document reading green.
+#
+# This is the inverse of the mention-versus-assertion defect this battery has caught four times.
+# There, a checker FLAGGED a phrase that was only mentioned. Here, a checker EXCUSED a claim
+# because a retirement word was mentioned. Same root cause: matching a line instead of the thing
+# the line is doing.
 DEPENDENCY_RETIREMENT = re.compile(
     r"\b(no longer|superseded|used to|previously|until|was true|retired|overruled|"
-    r"changed on|historically|before)\b", re.I)
+    r"changed on|changed \d{4}-\d{2}-\d{2}|historically|before)\b", re.I)
+
+# Independent claims in these documents are separated by sentence stops and by semicolons, which
+# is how the offending paragraph packed nine decisions onto one line.
+CLAUSE_SPLIT = re.compile(r"[.;]")
+
+
+def retirement_covers(line, phrase):
+    """True when a retirement word sits in the same clause as the claim, not just on the line."""
+    lowered = line.lower()
+    start = 0
+    while True:
+        found = lowered.find(phrase, start)
+        if found < 0:
+            # Every occurrence on this line was covered by a retirement in its own clause.
+            # Returning False here was the first draft's bug, and the planted cases caught it
+            # immediately: a correctly-retired claim came back as a finding.
+            return True
+        # The clause is the span between the nearest delimiters either side of the match.
+        left = 0
+        right = len(line)
+        for match in CLAUSE_SPLIT.finditer(line):
+            if match.end() <= found:
+                left = match.end()
+            elif match.start() >= found + len(phrase):
+                right = match.start()
+                break
+        if not DEPENDENCY_RETIREMENT.search(line[left:right]):
+            # This occurrence is unretired, so the line is a finding regardless of the others.
+            return False
+        start = found + 1
 
 
 def declared_dependency_count():
@@ -424,7 +466,7 @@ def check_dependency_claims(rel, raw, declared, problems):
         for phrase in NO_DEPENDENCY_CLAIMS:
             if phrase not in lowered:
                 continue
-            if DEPENDENCY_RETIREMENT.search(line):
+            if retirement_covers(line, phrase):
                 continue
             problems.append("%s:%d says %r, and About.xml declares %d dependencies"
                             % (rel, number, phrase, declared))

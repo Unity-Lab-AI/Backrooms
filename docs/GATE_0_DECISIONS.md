@@ -1,10 +1,11 @@
 ﻿# Rimrooms - Async Industries: Gate 0 decisions
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
+> **This file is the authority on owner decisions, and decisions change.** Read the
+> [decision log](#decision-log) rather than a remembered answer: **D1 changed 2026-09-29** (public
+> Workshop is the first distribution target) and **D3 and D4 changed 2026-10-01** (the five
+> expansions and the collection are declared requirements). The ballots in the sections below keep
+> their original wording with a supersession note, because a decision record that is edited to
+> match the present loses the thing it exists to hold.
 
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
@@ -78,8 +79,8 @@ Option 3 as presented was *"Public Workshop directly once complete — skip the 
 Consequences, propagated in the same change:
 
 - The private RWT prototype stage is **no longer a release prerequisite**. It remains available as a test route and the [RWT run sheet](research/RWT_BASELINE_TEST_PLAN.md) and [RimBridgeServer harness](research/RIMBRIDGE_TEST_HARNESS.md) are unaffected.
-- **M6's exit condition changes.** It was "private RWT prototype passes the Core-only solo path and the pinned co-op tests". It is now the Core-only solo path passing, with co-op validation no longer gating the first publication.
-- **The no-compatibility-claim rule survives intact and is now the main protection.** B's own text — *"do not announce compatibility until validation is complete"* — stays binding. Publishing early makes this stricter, not looser: the mod page may claim Core-only solo support and must not claim any of the 294 profile rows, any DLC interaction, or RWT co-op until that row has a recorded result. 200 of the 294 dispositions are still provisional.
+- **M6's exit condition changes.** It previously read "private RWT prototype passes the Core-only solo path and the pinned co-op tests". It is now the solo path passing against the declared profile, with co-op validation no longer gating the first publication.
+- **The no-compatibility-claim rule survives intact and is now the main protection.** B's own text — *"do not announce compatibility until validation is complete"* — stays binding. Publishing early makes this stricter, not looser. **And the D3/D4 change on 2026-10-01 narrowed what the mod page may say even further:** it may state what the package *declares as requirements*, read from `About.xml`, and it may state that the solo loop is reachable on Core content. It must not claim that any declared row has been **validated together** — not a profile row, not a DLC interaction, not RWT co-op — until that row has a recorded result. Declaring a dependency is a requirement, never evidence of compatibility, and conflating the two is exactly the claim this rule exists to stop. 200 of the dispositions are still provisional.
 - **Update-and-fix becomes a supported path rather than an afterthought.** Save migration stops being a release-day checkbox and becomes an ongoing obligation from the first published version, since from publication onward there *are* other people's saves. [`SAVE_MIGRATION_POLICY.md`](SAVE_MIGRATION_POLICY.md) owns that, and the version policy in D2 is unchanged: `0.x` while pre-release, `1.0.0` at the first stable public release.
 
 This changes the release gate only. It does not change evidence standards, feature scope, the existing-content rule, or the rule that only the owner launches the game.
@@ -96,13 +97,13 @@ This changes the release gate only. It does not change evidence standards, featu
 
 ### D3. What the 294-mod profile means at launch
 
-- [ ] **A — Suggested:** keep a Core-only solo/dev path; define the exact ordered 294-entry profile as the supported RWT co-op profile and require matching that profile to join that co-op server. Review every row before code, then implement native-feature support or a narrow adapter where justified.
-- [x] **B — Selected:** keep the 294 entries as a full test target, but require only RimWorld Core plus Harmony/RWT; every other profile mod stays optional for players.
+- [ ] **A — Suggested, not selected.** *(Worth noting in hindsight: this unselected option was the closest of the three to where the project actually landed on 2026-10-01, since it treated the exact ordered profile as a thing to match rather than a loose test target.)* Keep a Core-only solo/dev path (that clause superseded 2026-10-01); define the exact ordered 294-entry profile as the supported RWT co-op profile and require matching that profile to join that co-op server. Review every row before code, then implement native-feature support or a narrow adapter where justified.
+- [x] **B — Selected, then SUPERSEDED 2026-10-01:** keep the 294 entries as a full test target, but require only RimWorld Core plus Harmony/RWT; every other profile mod stays optional for players. *(Original wording kept. The owner has since made every collection member a declared requirement — see the D3 row in the [decision log](#decision-log).)*
 - [ ] **C:** ship a Core package plus separate optional integration packages; do not define the 294 list as one required launch profile.
 
 ### D4. DLC support contract
 
-- [x] **A — Selected:** Core-only campaign remains playable; Royalty, Ideology, Biotech, Anomaly, and Odyssey each add optional detected content. Validate the all-five local profile and test every DLC interaction identified by the feature map.
+- [x] **A — Selected, then SUPERSEDED 2026-10-01:** Core-only campaign remains playable; Royalty, Ideology, Biotech, Anomaly, and Odyssey each add optional detected content. Validate the all-five local profile and test every DLC interaction identified by the feature map. *(Original wording kept. All five are now declared requirements — see the D4 row in the [decision log](#decision-log). The all-five validation and the per-interaction tests still stand.)*
 - [ ] **B:** require the full five-DLC set for the supported campaign.
 - [ ] **C:** select a smaller explicit DLC support list: `____________________`.
 
@@ -125,7 +126,7 @@ The owner's stated MIT/court-case rights premise is retained as an owner-provide
 
 ### D7. First-release language and standalone play
 
-- [x] **A — Selected:** English player-facing text at first release; build every label through localization keys so translations can follow. Keep a Core-only solo development/play path, with RWT used for the co-op campaign.
+- [x] **A — Selected:** English player-facing text at first release; build every label through localization keys so translations can follow. Keep a Core-only solo development/play path (that clause superseded 2026-10-01), with RWT used for the co-op campaign. *(The language half stands unchanged. The dependency clause was superseded on 2026-10-01 by the D3 and D4 changes: the solo path must still work on Core content, as degradation rather than as a supported configuration.)*
 - [ ] **B:** English only, with no localization structure required for the first release.
 - [ ] **C:** launch with these languages: `____________________`; make RWT required for every supported mode.
 
@@ -173,8 +174,8 @@ These are execution work, not owner questions: the exact RimWorld/RWT/Harmony bu
 | --- | --- | --- | --- |
 | D1 | **B — public Steam Workshop is the first distribution target; do not announce compatibility until validation is complete.** Changed by the owner 2026-09-29: *"option 3 and remeber we dont have other peoples saves we just publish it all and update it as we go fixing bugs"*. Supersedes A (private RWT test first), recorded 2026-09-27 before the mod existed. The private RWT prototype is no longer a release prerequisite; the no-compatibility-claim rule is now the main protection. | 2026-09-27, **changed 2026-09-29** | TODO, roadmap, release plan, ARCHITECTURE, SKILL_TREE, AGENTS, CONTRIBUTING |
 | D2 | Exact title; author/publisher metadata `Operator`; package ID `Rimrooms.AsyncIndustries`; namespace `RimroomsAsyncIndustries`; semantic versions | 2026-09-27 | TODO, About.xml/package metadata, technical architecture |
-| D3 | **CHANGED by the owner 2026-10-01: every mod in the collection is a hard dependency.** *"there are alot more depeandacies than just the DLC we have alkinds of mods in the 274 mod list WE ARE USING ALL OF THEM!!!!"*. `About.xml` declares 289 mods plus the five expansions, each with a display name and a link, and every one also as a load-order constraint. Supersedes B (all 294 are the research/test target; only Core + Harmony/RWT required; other profile mods optional), recorded 2026-09-27. | 2026-09-27, **changed 2026-10-01** | About.xml, compatibility, mod plan, technical architecture, the wiki |
-| D4 | **CHANGED by the owner 2026-10-01: all five expansions are hard dependencies.** *"the mod DOES HAVE HARD DEPENDANCIES SO GET IT RIGHT AND MAKE SURE ITS LAYED OUT RIGHT FOR RIMSORT TO NOTICE AND ENFORCE"*. Supersedes A (all five DLC optional; a Core-only campaign), recorded 2026-09-27. **The graceful guards stay** — the owner chose to declare the requirement and still look content up by name, so a player who ignores the warning degrades rather than crashes. | 2026-09-27, **changed 2026-10-01** | About.xml, compatibility, scenario, mod plan, systems catalog, the wiki |
+| D3 | **CHANGED by the owner 2026-10-01: every mod in the collection is a hard dependency.** *"there are alot more depeandacies than just the DLC we have alkinds of mods in the 274 mod list WE ARE USING ALL OF THEM!!!!"*. `About.xml` declares the collection plus the five expansions, each with a display name and a link, and every one also as a load-order constraint. **Read the count from `About.xml`, never from here** — this row said *289 mods* and went stale within two days, when attach-only QA tooling was excluded by name at 0.12.79-dev because declaring a debug server as a player requirement tells a player something false. Supersedes B (all 294 are the research/test target; only Core + Harmony/RWT required; other profile mods optional), recorded 2026-09-27. | 2026-09-27, **changed 2026-10-01** | About.xml, compatibility, mod plan, technical architecture, the wiki |
+| D4 | **CHANGED by the owner 2026-10-01: all five expansions are hard dependencies.** *"the mod DOES HAVE HARD DEPENDANCIES SO GET IT RIGHT AND MAKE SURE ITS LAYED OUT RIGHT FOR RIMSORT TO NOTICE AND ENFORCE"*. Supersedes A (all five DLC optional; a Core-only campaign, now retired), recorded 2026-09-27. **The graceful guards stay** — the owner chose to declare the requirement and still look content up by name, so a player who ignores the warning degrades rather than crashes. | 2026-09-27, **changed 2026-10-01** | About.xml, compatibility, scenario, mod plan, systems catalog, the wiki |
 | D5 | B + customized D — Kane Pixels and A24 only; indirect use of canon/lore/themes/styles | 2026-09-27 | TODO, source register, research, universe adaptation, feature map |
 | D6 | A + B — tradeable dossiers plus shared research ledger only if supported and safely tested | 2026-09-27 | TODO, technical architecture, mod plan, roadmap |
 | D7 | A — English first/localization-ready; solo Core path; RWT co-op | 2026-09-27 | TODO, technical architecture, build plan |
@@ -267,7 +268,7 @@ Recorded verbatim, then their consequences. Three answers to one question set, a
 
 19. **M6 splits into M6a and M6b.** M6a is the four rows that can be closed without the game running: package and def validation, the fresh-start checklist, the mod page and provenance, and the tag-and-archive ritual. M6b is the six rows that structurally cannot: scenario acceptance per opening, the invalid-state matrix, performance, economy balance, the release report and the install/uninstall/server tests. The split is bookkeeping, not scope: no row is dropped, reworded or moved out of Phase 6. It exists because one major reading 0% hid the fact that nearly half of it was buildable today.
 20. **The no-tests rule gains one scoped exception, and it is deferred.** The owner selected *both* the automated-fixtures option and the defer option for the Phase 6 fixtures row. Read together: **automated fixtures are authorised**, replacing the manual-checklist-only reading, **and they are not written until after the first launch**, so their content is shaped by observed failures rather than guessed ones. The exception is **narrow and belongs to that row alone**: deterministic room generation, gate transitions, ledger idempotency, transfer receipt IDs and schema migration. It is **not** permission for a general test suite, and `CONTRIBUTING.md`'s rule stands everywhere else. Nothing about it may be built before the owner has launched the game once.
-21. **Publication no longer waits on validation, but claims still do.** See [D1 superseded](#d1-superseded-2026-09-29--public-workshop-is-the-first-distribution-target). The mod page may claim the Core-only solo path and must not claim a profile row, a DLC interaction or RWT co-op until that row has a recorded result. Publishing early makes the no-compatibility-claim rule the main protection rather than a formality, and makes save migration a standing obligation from the first published version.
+21. **Publication no longer waits on validation, but claims still do.** See [D1 superseded](#d1-superseded-2026-09-29--public-workshop-is-the-first-distribution-target). The mod page may state what `About.xml` declares as requirements, and that the solo loop runs on Core content; it must not claim a profile row, a DLC interaction or RWT co-op has been validated until that row has a recorded result. Publishing early makes the no-compatibility-claim rule the main protection rather than a formality, and makes save migration a standing obligation from the first published version.
 
 ---
 

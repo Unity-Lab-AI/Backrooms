@@ -1,11 +1,5 @@
 ﻿# Rimrooms - Async Industries: Operations action contracts
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
-
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
 
@@ -67,6 +61,6 @@ The Async Industries slice needs Overview, Personnel, Facilities, Gate, Expediti
 - Success changes the named owner exactly once; save/load does not repeat grants, payments, launches, transfers, or scenario setup.
 - Every refusal names the missing requirement and an actionable recovery route.
 - Costs, consumed stock, assigned pawns, cargo, and returned/lost items are visible before or after the action.
-- Disabled DLC, optional mods, RWT settings, and unavailable adapters produce a plain unavailable state and preserve the Core-only solo campaign.
+- An absent expansion, an absent declared mod, an RWT setting that is off, or an adapter with nothing to bind to each produce a plain **unavailable** state with a stated reason — never a fake success — and the solo campaign keeps running on Core content. The collection is declared, so this is the behaviour when a requirement is missing anyway, not a supported configuration.
 - Accessibility checks cover readable labels, keyboard navigation, non-color warnings, and alerts that remain clear without sound.
 - Record actual RimWorld/DLC/mod/RWT versions and save/log evidence before calling any action tested.

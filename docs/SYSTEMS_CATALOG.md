@@ -1,11 +1,5 @@
 ﻿# Systems catalog
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
-
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
 
@@ -137,4 +131,4 @@ Room templates carry tags for dimensions, doors, passages, materials, lighting, 
 
 ## DLC and third-party integrations
 
-Royalty, Ideology, Biotech, Anomaly, and Odyssey are optional content layers. Content should load only when its DLC exists, and the campaign must retain a Core-only route. Hospitality, prisoner, storage, research, vehicle, and power mods are optional integration examples from the 294-profile research target. Core systems should avoid undocumented or unreviewed bridges.
+Royalty, Ideology, Biotech, Anomaly and Odyssey are **declared requirements** since 2026-10-01, and their content layers stay conditionally loaded regardless: content loads only when its expansion exists, and the campaign still has to hold together on Core content alone when one is missing anyway. The conditional load is the guard, not an advertisement that absence is supported. Hospitality, prisoner, storage, research, vehicle, and power mods are optional integration examples from the 294-profile research target. Core systems should avoid undocumented or unreviewed bridges.

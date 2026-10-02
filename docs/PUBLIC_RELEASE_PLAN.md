@@ -1,14 +1,9 @@
 ﻿# Public release plan — the site, the Workshop page, the collection
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
-
-**Status: planned, not started.** Owner direction was explicitly *"when we get to it"*, and this
-document exists so that when we do, the shape is already decided and the decisions that are
-the owner's to make are already named.
+**Status: started 2026-10-01.** Owner direction was *"when we get to it"*, and we got to it:
+*"i docs and pages for when we deploy on github"*. Two of the three questions in §7 are now
+answered, recorded in §3.3 and §3.4 in the owner's own words. The Workshop half is still
+untouched and still correctly last.
 
 ---
 
@@ -65,7 +60,7 @@ Proposed structure:
 | **What is down there** | Inhabitants, survivors, anomalies, pursuit, incursion — and the rules each of them obeys. |
 | **The company** | Staff, procurement, contracts, the odd-origin economy, bonds, the corporate trader, cross-gate work. |
 | **How to play** | The player-facing how-to, which is already a queued task and should be written **once**, for both this and the in-repo copy. |
-| **Compatibility** | Core-only claim, DLC use, the 294-mod profile, what is optional. |
+| **Requirements** | What the package declares, read from `About.xml`: the five expansions and the collection. What a missing one does. What is still untested, stated as untested. |
 | **Changelog** | Generated from `CHANGELOG.md`. |
 
 ### 3.2 It must be generated, never hand-maintained
@@ -100,16 +95,28 @@ A GitHub Pages site can deploy either way:
 which one is used — a project-path deploy needs a base path, a custom domain does not.
 Building for the wrong one means rebuilding.
 
-**Open question for the owner, to be asked before the site is built, not assumed:** which
-domain, and is it already registered?
+**ANSWERED 2026-10-01, verbatim: *"docs/ root on this repo, github.io for now"*.** So the
+project-path deploy is what gets built: `unity-lab-ai.github.io/Backrooms/`, every internal link
+relative so a base path cannot break them. **CNAME support is authored and the domain row stays
+open** — no page names a URL the deploy does not have, which is the same rule that keeps a version
+out of a document. Moving to a custom domain later is then adding one file, not a rebuild.
 
 ### 3.4 Where it is deployed from
 
-The repository is private and mirrors to two remotes. Pages publishes from a branch or a
-directory in one of them. That interacts with the existing four-branch cascade
-(`feature/* → Prep → Develop → Main`), so the publishing branch and its relationship to that
-cascade is a decision to make deliberately rather than by accident — most likely a dedicated
-branch that the cascade does not touch.
+**ANSWERED 2026-10-01: the `docs/` directory, on this repository.**
+
+**And the sentence that stood here was wrong in a way that mattered.** It said *"the repository is
+private and mirrors to two remotes"*. The Forgejo remote is private; **the GitHub remote is
+deliberately public**, by the owner's own recorded decision — *"i made it public on purpose
+becasue thats how its suppose to be"* — declared in `.claude/project-config.json`. That is not a
+detail: GitHub Pages is free on a public repository and needs a paid plan on a private one, so the
+whole plan rested on a false premise about which of the two it was.
+
+Publishing from a directory rather than a branch is what keeps this out of the cascade's way: no
+dedicated publishing branch, nothing for `feature/* → Prep → Develop → Main` to reconcile, and the
+site updates when `docs/wiki/` does. `_config.yml` includes `wiki` alone and excludes
+`implementation`, `research`, `evidence` and `reviews`, so the working material cannot be served
+by accident.
 
 ---
 
@@ -178,10 +185,22 @@ all of the work without anybody automating a login.
 
 ---
 
-## 7. The first three questions to ask when this starts
+## 7. The three questions — two answered, one still open
 
-1. **Which domain**, and is it registered?
-2. **Publish Pages from which branch**, given the four-branch cascade?
-3. **Playwright against Steam: yes or no** — and if yes, with what scope?
+1. ~~**Which domain**, and is it registered?~~ **ANSWERED 2026-10-01:** *"docs/ root on this repo,
+   github.io for now"*. Project path, CNAME support authored, domain row left open.
+2. ~~**Publish Pages from which branch**, given the four-branch cascade?~~ **ANSWERED 2026-10-01:**
+   from the `docs/` **directory**, not a branch — so the cascade is untouched.
+3. **Playwright against Steam: yes or no** — and if yes, with what scope? **STILL OPEN, and not to
+   be assumed.** It remains an authenticated session on the owner's account, which is a different
+   class of action from anything this project has done.
 
-None of them can be answered from the code, and guessing any of them wastes the work.
+The remaining one cannot be answered from the code, and guessing it wastes the work.
+
+**A fourth question the owner has already answered, recorded so it is not re-asked:** what the site
+must feel like. Verbatim: *"the beautiful and masterfully way paossible so the thing needs to NOT
+pop like a text wall"*. That rules out the stock `jekyll-theme-primer` the config started with — a
+theme that renders a document as one column of prose is the text wall, with a margin. It needs real
+layout and a stylesheet, and the thirteen pages restructured so each is scannable rather than read
+from the top. The 360-character paragraph ceiling in `check-doc-conformance.py` is the floor under
+that, not the goal.

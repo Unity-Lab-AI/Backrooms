@@ -1,12 +1,8 @@
 ﻿# SKILL_TREE
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
+Capability inventory for Rimrooms - Async Industries, covering **every system the finished mod contains**, not only what exists in source.
 
-Capability inventory for Rimrooms - Async Industries as of 0.6.4-dev (2026-09-28, branch `feature/connected-colony-portals`), covering **every system the finished mod contains**, not only what exists in source. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
+> **This page's per-row statuses were last swept at 0.6.4-dev and the build is 0.12.79-dev.** Rows below reading **Design** may well be built; the connected-work layer alone went from one family to **31** after that sweep. Treat a `Design` marker here as *unverified*, not as *absent*, and **check the row against the code before building for it** — nine rows in one session turned out to be already built, already true, or answered by Core. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
 
 | Status | Meaning |
 |--------|---------|
@@ -134,7 +130,8 @@ Canonical detail: [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md), [`FEATURE_TRACEABI
 - Cascade publication procedure — **Build** (`PUBLISHING.md`)
 
 ### 10. Compatibility [RR-MP, RR-DLC, RR-SPACEFLIGHT, RR-COMPAT]
-- Core-only solo campaign — **Build / Runtime-pending**
+- Declared-collection requirement set in `About.xml`, with by-name guards so an absent provider degrades — **Build / Runtime-pending**
+- Solo campaign playable from Core content alone, as degradation behaviour rather than a supported configuration — **Build / Runtime-pending**
 - RWT feature detection, setup diagnostics, unavailable states; no custom server schema — **Design**
 - RWT verification: visits, transfer spot, aid, gifts, trading, dossier transfer, reconnect, server restart — **Blocked** (owner two-client run)
 - Five DLC conditional layers via isolated LoadFolders + guarded patches — **Design**
@@ -189,7 +186,7 @@ Canonical detail: [`SYSTEMS_CATALOG.md`](SYSTEMS_CATALOG.md), [`FEATURE_TRACEABI
 ## By Dependency (Skill Tree Visualization)
 
 ```
-[Build + package pipeline] ──► [Core-only solo campaign] ──► [Async Industries start]
+[Build + package pipeline] ──► [Solo campaign on Core content] ──► [Async Industries start]
                                       │
         ┌─────────────────────────────┼──────────────────────────────┐
         ▼                             ▼                              ▼
@@ -324,7 +321,7 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 | 294-row profile runtime closure | Compatibility | Expert | Blocked |
 | Five named later-threat sketches | Threats | Advanced | Deferred (S1/B) |
 | Outpost, town-distortion, company-crisis starts | Scenario | Advanced | Deferred until design briefs exist |
-| Public Workshop release | Release | — | **First distribution target (D1 changed 2026-09-29).** Waits on M6a and the Core-only solo path passing, not on a private RWT prototype |
+| Public Workshop release | Release | — | **First distribution target (D1 changed 2026-09-29).** Waits on M6a and on the solo path passing against the declared profile, not on a private RWT prototype |
 
 ---
 
@@ -394,7 +391,7 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 
 **Description:** a Rimrooms lease (map + Thing/load ID + quantity + endpoint + final target; bounded, expiring, excludes nobody) plus a carry-preserving dedicated transit job (`carryThingAfterJob=true`, `dropThingBeforeJob=false`) that crosses the same pawn and reacquires native reservations on the destination. Adapter order: storage hauling (`WorkGiver_Haul`, `StoreUtility.TryFindBestBetterStorageFor` use the carrier's map), construction supply/finish, bills (`WorkGiver_DoBill.JobOnThing`, never `Notify_IterationCompleted` remotely), research, tend/rescue (`RestUtility` rejects off-map beds), food, rest, then the remaining families and every installed profile work giver.
 
-**Implementation Notes:** Architecture A (Core-only staged adapters via XML-inserted WorkGiver/ThinkNode + JobDefs) recommended; Harmony not intrinsically required; automatic work never `playerForced`; native recovery guards fire on excessive `StartJob`. Provider absence must yield a Core-only base path.
+**Implementation Notes:** Architecture A (staged adapters on Core APIs alone, via XML-inserted WorkGiver/ThinkNode + JobDefs) recommended; Harmony not intrinsically required; automatic work never `playerForced`; native recovery guards fire on excessive `StartJob`. Provider absence must yield a base path built on Core content alone.
 
 **Files Involved (as built):** `Portals/JobDriver_CrossPortal.cs`, `ConnectedWork/ConnectedWorkRecords.cs`, `ConnectedWork/RimroomsConnectedWorkComponent.cs`, `ConnectedWork/Adapters/*`, and for travel-to-work `ConnectedWork/ConnectedDeploymentRecords.cs`, `ConnectedDeploymentProvider.cs`, `Providers/*`, `WorkGiver_ConnectedDeployment.cs`, `ConnectedCrossing.cs`; review basis `docs/implementation/CONNECTED_WORK_CORE_API.md`, `CONNECTED_WORK_PROFILE_BOUNDARIES.md`.
 

@@ -1,11 +1,5 @@
 ﻿# Technical architecture proposal
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
-
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
 
@@ -14,15 +8,16 @@
 
 Most of this document is the full-campaign design target. The [0.3.0-dev company wave](implementation/PHASE_3_BUILD_RECORD.md) adds independent schema-1 personnel, procurement, laboratory-binding and evidence-creation owners, all linked to the existing branch; the campaign component remains the only USD/payroll owner. Facilities are transient observations, and the menu owns settings/presentation only. The [0.2.0 build record](implementation/PHASE_2_BUILD_RECORD.md) maps the implemented company/scenario/gate/destination/expedition/investigation/threat/UI subset and its source reviews. [BUILDING.md](BUILDING.md) records the compiler/reference/package setup; [SAVE_MIGRATION_POLICY.md](SAVE_MIGRATION_POLICY.md) records actual saved owners. First-slice company research uses a custom insight-gated `RimroomsProjectDef` with native Research work, preserving Core research. Expedition transfer moves the same native objects and journals interruptions. Other proposed types and optional integrations still require their own source review and implementation.
 
-**Gate 0 decisions recorded:** public Steam Workshop as the first distribution target (**D1 changed 2026-09-29**; was a private RWT prototype first), with no compatibility announced until validation is complete; exact displayed title `Rimrooms - Async Industries`; author/publisher value `Operator`; package ID `Rimrooms.AsyncIndustries`; internal namespace `RimroomsAsyncIndustries`; semantic versions; Core-only solo path; optional support for all five DLC; other 294-profile mods optional; indirect adaptation of Kane Pixels/A24 references, with wider community canon excluded from shipped content; dossier transfer plus shared research ledger only if supported and safely tested; English-first localization-ready; MIT for original source code; and supplemental S1/B, which freezes broad later threat families and defers named sketches. Gate 0 documentation/source preparation passed; the foundation compile/staging evidence is linked above, while all in-game/runtime checks remain pending.
+**Gate 0 decisions recorded:** public Steam Workshop as the first distribution target (**D1 changed 2026-09-29**; was a private RWT prototype first), with no compatibility announced until validation is complete; exact displayed title `Rimrooms - Async Industries`; author/publisher value `Operator`; package ID `Rimrooms.AsyncIndustries`; internal namespace `RimroomsAsyncIndustries`; semantic versions; **D3 and D4 changed 2026-10-01 — the five expansions and the collection are declared requirements, replacing the optional-expansion and optional-profile positions recorded here**; indirect adaptation of Kane Pixels/A24 references, with wider community canon excluded from shipped content; dossier transfer plus shared research ledger only if supported and safely tested; English-first localization-ready; MIT for original source code; and supplemental S1/B, which freezes broad later threat families and defers named sketches. Gate 0 documentation/source preparation passed; the foundation compile/staging evidence is linked above, while all in-game/runtime checks remain pending.
 
 **Native door/network work:** use [SCENARIO_SETUP_AND_PORTAL_NETWORK.md](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) for setup-page compatibility, preserved customized pawn instances, saved door/endpoint/provider bindings, physical electrical connections, explicit control links, duration/aperture upgrades and deterministic map recall. This implementation replaces the historical custom gate owners through an explicit migration boundary.
 
 ## Runtime and package boundaries
 
 - Target RimWorld **1.6** and its Core APIs first.
-- Keep Royalty, Ideology, Biotech, Anomaly, and Odyssey as optional conditional integrations; the Core campaign remains complete.
-- Use the exact 294-entry profile as the full research/test target. Require only Core plus Harmony/RWT for the co-op path; all other profile mods remain optional.
+- **Declare the five expansions and the collection as requirements** (owner, 2026-10-01) and **keep every conditional integration guarded anyway**. `MayRequire` in XML and name lookups in C# are the same graceful guard; declaring the dependency is what makes a mod manager report an absence before the game loads. Both, not either.
+- Use the ordered profile as the research and test target it has always been. It is now also the requirement set, so **read the declared count from `About.xml`** rather than from any document — a typed figure here went stale within a day. Harmony and RWT remain specific to the co-op path.
+- **Attach-only QA tooling is never declared.** `.local/register/build-dependencies.py` generates both dependency blocks from the live load order and excludes it by name: a player told they need a debug server has been told something false.
 - Ship one main mod package initially. Keep content and code organized so future optional extension packages can be split out without changing saved identifiers.
 - Keep repository source under `src/` and make `Mod/Rimrooms - Async Industries/` the only loadable, copyable package root. Documentation, research, workbook, source files, build utilities, and evidence stay outside this folder; the packaging/staging script must copy only this root to RimSort's configured Local Mods directory.
 - The product target is the existing 294 entries plus Rimrooms (295). RimSort owns the load order and profile; the owner launches each session through RimSort. RimBridgeServer is a separate QA overlay, normally making the attached test profile 296 entries; it does not replace any target mod. GABS must not start or rewrite this project's test profile.
@@ -109,7 +104,7 @@ Design around RWT's advertised separate-colony model, not a presumed shared simu
 - Seed a destination from its saved coordinate ID, generator version, and explicit mission inputs. Never make the two players independently recreate what is supposed to be one shared map; RWT visits and Backrooms expedition maps are distinct features.
 - Do not make outcomes depend on client-only UI, local wall-clock time, external web requests, or unsaved random draws.
 - Keep compatibility code behind one small adapter layer. Do not scatter multiplayer-specific checks throughout XML defs and gameplay systems.
-- Keep a Core-only solo path. The multiplayer path requires RimWorld Together and Harmony; the remaining 294-profile entries are optional.
+- Keep the solo path playable from Core content alone **as degradation behaviour, not as a supported configuration** — the collection is declared, and a missing member must weaken what depends on it rather than throw. The multiplayer path additionally requires RimWorld Together and Harmony.
 - Treat the scenario presets as alternate starting conditions over one data model, as specified in [`SCENARIOS.md`](SCENARIOS.md). After a Rimrooms build exists, the owner launches disposable vanilla-started RWT branches through RimSort and attaches RimBridgeServer for evidence capture; test Rimrooms scenario creation and mixed starts after those scenarios exist. Do not promise that clients can independently choose different Rimrooms starts until the pinned build demonstrates it.
 
 The older `rwmt/Multiplayer` compatibility wiki is for a distinct multiplayer project and should not be treated as proof of RimWorld Together behavior. Implement against a documented, supported RWT client extension API only if one is identified in future source review; none was identified in the 2026-09-27 audit.
@@ -118,7 +113,7 @@ The local RWT snapshot has Aid and Trade enabled, but no Visit/Activity setting 
 
 ## DLC strategy
 
-Build the base game loop without DLC-only types or content. Add conditional integrations by expansion:
+Build the base game loop so it does not *depend* on expansion-only types, then add conditional integrations by expansion. **All five are declared requirements**; the guard is what keeps an absent one from throwing, not a claim that absence is supported.
 
 - **Royalty:** honor existing quest, title, psycast, and faction systems when present; avoid requiring them for gate progress.
 - **Ideology:** allow ideoligions and rituals to affect staff needs, cohesion, or company policies only after the baseline system is stable.

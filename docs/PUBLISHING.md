@@ -10,8 +10,8 @@ This is the procedure that works. It was written after doing it, not before. Fol
 | Transport | **SSH, key-based.** The signed-in browser session does nothing for Git; the ed25519 key registered on the Forgejo account does. | **HTTPS with the `gh` credential helper.** `gh auth status` must show a logged-in account with `Git operations protocol: https`. |
 | Host CLI | None. Do not point `gh` at it. Verify with `git ls-remote`. | `gh` works for visibility checks (`gh repo view Unity-Lab-AI/Backrooms --json visibility,owner`) and nothing else in this procedure. |
 | Push-to-create | **Disabled server-side.** The repo must already exist. It does. | n/a |
-| Visibility | Lab-owned host on the `.claude/` IP-boundary allowlist | PRIVATE, owner `Unity-Lab-AI` (verified 2026-09-28) |
-| Branches | `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` — **capitalised** | identical set, identical casing |
+| Visibility | Lab-owned host on the `.claude/` IP-boundary allowlist | **PUBLIC on purpose**, owner `Unity-Lab-AI`. The line here read `PRIVATE` until 0.12.79-dev and was wrong: the owner made it public deliberately — *"i made it public on purpose becasue thats how its suppose to be"* — and the exception is declared by exact URL in `.claude/project-config.json` under `claude_ip_boundary`. A new remote never inherits that approval |
+| Branches | `feature/bug-testing` (**the working branch since 2026-09-30**), `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` — **capitalised** | identical set, identical casing |
 | Remote named `origin` | **does not exist** | **does not exist** |
 
 Consequences:
@@ -85,7 +85,14 @@ If the two remotes disagree with each other, reconcile against Forgejo first (it
 
 **Never:** `git push --force`, `--force-with-lease`, `-f`, or deleting a remote branch to "clean up". Never merge `Main` back into a feature branch to "sync" unless the owner asks.
 
-## 5. Read back all eight refs — this IS the publication evidence
+## 5. Read back all TEN refs — this IS the publication evidence
+
+> **It is ten, not eight, and the count is the trap.** The eight-ref read-back was the only
+> publication receipt for forty-five checkpoints, and it was written when the work lived on
+> `feature/connected-colony-portals`. Work moved to `feature/bug-testing` on 2026-09-30, so the set
+> is now that branch on both remotes **plus** the original feature branch, `Prep`, `Develop` and
+> `Main` on both. A publish that reads back eight and stops has left the branch the work is actually
+> on unpublished, silently. **Count the branch you are on.**
 
 ```bash
 git ls-remote --heads forgejo
@@ -104,11 +111,12 @@ All eight lines must show the same commit hash as local `HEAD` (Case A) or the e
 ## 7. One-screen version
 
 ```bash
+BRANCH=$(git rev-parse --abbrev-ref HEAD)                  # never hard-code it; that is how eight became wrong
 git status --short && git log -1 --oneline                 # sanity
-git push forgejo feature/connected-colony-portals
-git push github  feature/connected-colony-portals
+git push forgejo "$BRANCH"
+git push github  "$BRANCH"
 for r in forgejo github; do
-  for b in Prep Develop Main; do git push $r feature/connected-colony-portals:$b; done
+  for b in Prep Develop Main; do git push $r "$BRANCH:$b"; done
 done
 git ls-remote --heads forgejo; git ls-remote --heads github; git rev-parse HEAD
 ```

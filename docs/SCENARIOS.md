@@ -1,11 +1,5 @@
 ﻿# Rimrooms - Async Industries: campaign scenarios
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
-
 **Gate traversal and pacing rule (owner, 2026-09-28):** inhabitants and monstrosities stay in the Backrooms. Nothing but this company's own pawns crosses a gate under its own will, and an open gate is never an objective, lure, spawn target, raid route or attack trigger. Everything else comes back only because one of our pawns physically carried it through by ordinary work, including people and monstrosities that are genuinely downed, dead or imprisoned. Pressure escalates gradually from saved causes, bounded per opening and per coordinate, with quiet stretches as required content. Every start can eventually run several gates.
 
 **Two later directions refine this rule and are not in conflict with it.** The words are now three rather than one: the **gate** is the designated door, the **connection** is the live link it holds open, and the **threshold** is where you arrive. And there is exactly one bounded exception to nothing-crosses-under-its-own-will: at the deepest pressure band, through an advanced gate, while an opening is live, something that fits may follow a crew out. A gate is still never an objective, a lure or a spawn target, and nothing is ever drawn toward one. See [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side).
@@ -18,7 +12,7 @@
 
 **Status:** design contract for selectable campaign openings. Async Industries is the first playable implementation target; this file describes the shared rules and the planned alternate starts. The scenario list is extensible, but each added start must pass the common contract below. Use the linked [first-slice inventory](FIRST_SLICE_CONTENT_INVENTORY.md), [threat sheets](THREAT_DESIGN_SHEETS.md), and [economy model](CAMPAIGN_ECONOMY_MODEL.md) with this contract.
 
-**Selected dependency contract:** all three starts remain playable on Core without DLC or optional profile mods. Co-op requires Harmony/RWT; the rest of the 294 profile is optional. See [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md).
+**Selected dependency contract, changed 2026-10-01:** the five expansions and the collection are **declared requirements** in `About.xml`, replacing the earlier optional position. What survives unchanged is the design rule underneath it: **no start may be gated on a specific provider.** Every opening still has to reach its first objective on Core content when a declared provider is absent, degrading what depended on it rather than refusing. Co-op additionally requires Harmony and RWT. See [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md).
 
 **Latest setup refinement:** [Scenario setup and physical door gates](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) supersedes fixed-roster assumptions below. Each start preserves native/Prepare Carefully customization. The company selects its real-world tile. The inside-start solo/group and initial exit-selection proposals remain pending clarification; its stable `lone_survivor` ID is retained. Existing counts and staff templates are defaults, not permission to replace edited pawns.
 
@@ -41,7 +35,7 @@ Every scenario definition must provide:
 | Failure and recovery | Explicit handling for death, incapacitation, lost gear, sealed route, failed generation, broken gate, or abandoned settlement as applicable; no unrecoverable softlock. |
 | Convergence | A documented route into shared systems: company operation, paid investigation, rescued survivor, established outpost, or continued solo expedition. Convergence must preserve evidence and coordinate identity. |
 | Save/load idempotency | New-game grants, map setup, objectives, quests, items, pawns, and site links must not duplicate after reload or migration. |
-| Dependency boundary | Complete solo route using RimWorld Core. All five DLC and other 294-profile mods are optional. Harmony/RWT are required for co-op only. |
+| Dependency boundary | A complete solo route that works on RimWorld Core content. The expansions and the collection are declared requirements, so this is the start's **degradation guarantee**, not a supported configuration: no first objective may be gated on a specific provider. Harmony and RWT are co-op only. |
 | Multiplayer eligibility | Declared as solo, co-op compatible, or unverified. Do not assume multiple players can select independent new-game scenarios inside one RWT world. |
 
 Scenario generation may vary roster, stock, starting damage, early signals, and objective order by seed, but the opening must remain bounded and legible. The scenario chooses starting conditions; common campaign services own transactions, coordinates, evidence custody, gate and connection state, and saved progression.
@@ -72,7 +66,7 @@ These cards make the opening playable on paper before code begins. Counts, costs
 ### `furniture_knickknack_store` — breach investigation
 
 - **Starting site and faction:** one 50×50 shop map. The owner, employee, and guard belong to the player's small local store faction; nearby settlement factions begin neutral. The map has a sales floor, stockroom, office, staff room, and a basement containing a narrow anomalous threshold. The threshold is not a working machine gate. Store walls, doors, and stock use original scenario setup and available RimWorld content; no third-party mod assets are copied into the project.
-- **Starting people:** three controlled people: the owner/manager, one employee, and one capable night guard. Up to two ordinary visitors can be present as independent visitors; one expected customer is already missing when the scenario begins. Visitor handling must have a Core-only route and cannot depend on Hospitality.
+- **Starting people:** three controlled people: the owner/manager, one employee, and one capable night guard. Up to two ordinary visitors can be present as independent visitors; one expected customer is already missing when the scenario begins. Visitor handling must work through Core's own mechanisms and must not depend on Hospitality, which is declared like the rest of the collection and still may not be a single point of failure for an opening.
 - **Starting resources:** store stock worth an estimated 500 silver in ordinary furnishings and curios, 200 silver in the till, two days of food, basic first aid, and a radio with unreliable reception. The store begins outside a corporate branch account; its opening investigation offer may advance a provisional $500,000 against a separately quoted multi-million-dollar contract. The scenario begins without company research, a corporation, or a powered machine gate.
 - **First incident and choices:** secure the public entrance and basement; account for staff and visitors; then choose one of three readable approaches: evacuate and seal the basement, conduct a short supervised search for the missing customer, or document the threshold and request outside help. Each choice records what was secured, who is missing, and which evidence was recovered. The first threshold trip uses a bounded 4–6-room site with a generated return clue.
 - **Failure and recovery:** a breached perimeter raises an incident and limits access but does not delete the shop. A pawn injury triggers ordinary medical recovery. A failed search can still return a clue and open a later rescue lead. The player can close the threshold and continue the shop's ordinary survival loop, or reopen only after a visible safety action.
@@ -103,7 +97,7 @@ These are options for future scenario content, not promised release features. Gi
 - [ ] Appears with an accurate name and opening summary in scenario selection.
 - [ ] Has a unique new-game setup and shares the same stable campaign, coordinate, and evidence services.
 - [ ] Gives every start an actionable first objective, visible failure state, and recovery/exit route.
-- [ ] Remains playable without optional DLC or the optional 294-profile mods; co-op setup requires the pinned Harmony/RWT stack.
+- [ ] Still reaches its first objective when a declared expansion or collection mod is absent, degrading with a stated reason rather than refusing; co-op setup requires the pinned Harmony/RWT stack.
 - [ ] Saves and reloads without duplicating starting pawns, items, buildings, objectives, contracts, or rewards.
 - [ ] Generated destinations remain reproducible and revisitable under their saved coordinate and generator version.
 - [ ] Joins or is excluded from RWT co-op based on a pinned-build result; mixed scenario starts are not promised before that result.

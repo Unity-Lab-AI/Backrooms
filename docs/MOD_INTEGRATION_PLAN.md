@@ -1,11 +1,5 @@
 ﻿# Rimrooms - Async Industries: complete systems and mod integration plan
 
-> **Superseded 2026-10-01 — dependencies.** This document predates the owner's decision that the
-> package has hard dependencies. `About.xml` now declares all five expansions and the whole
-> collection as requirements, so anything here describing a Core-only route is history rather than
-> a current claim. Recorded as a change to D3 and D4 in
-> [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
-
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
 
@@ -29,14 +23,14 @@ The campaign begins at a small, underfunded research/security facility. The play
 | Area | Decision |
 | --- | --- |
 | Game version | RimWorld 1.6; publish only for game builds actually verified. |
-| DLC | Royalty, Ideology, Biotech, Anomaly, and Odyssey are optional integrations. The full company campaign must remain playable with Core alone. |
+| DLC | **Changed 2026-10-01: all five are declared requirements.** Royalty, Ideology, Biotech, Anomaly and Odyssey stay conditionally loaded behind `MayRequire` guards, so the company campaign still has to hold together on Core content when one is absent — that is degradation behaviour, not a supported configuration. |
 | Multiplayer | RimWorld Together (RWT) is the co-op environment. Players run separate company branches and use only verified world transfers/activities. There is no live co-control of a shared map. Research dossiers are the baseline exchange; shared research is conditional on a supported, safely tested RWT extension. |
-| Required dependencies | RimWorld Core is required. The co-op profile also requires Harmony and RimWorld Together. Every other mod in the 294 profile is optional; verify exact dependencies before packaging. |
-| Local 294 profile | All 294 records are the required research target, not a required player dependency list. Each has an accepted source-fact note and a proposed treatment with evidence status; proposed treatments are not final compatibility dispositions. The [first-slice interaction map](research/FIRST_SLICE_MOD_INTERACTION_MAP.md) records source-backed ownership/treatment and post-build checks or deferrals for the actual opening. Inspect each optional API before implementing its adapter; no full-profile runtime compatibility is claimed. |
+| Required dependencies | **Changed 2026-10-01.** `About.xml` declares the five expansions and the collection loaded alongside them, each with a display name and a Workshop link, mirrored in `loadAfter` so a manager places us last. Attach-only QA tooling is excluded by name. Co-op additionally needs Harmony and RimWorld Together. **Read the count from `About.xml`; never type it into a document.** |
+| Local profile | Every record is the research target **and now the declared requirement list**. Each has an accepted source-fact note and a proposed treatment with evidence status; proposed treatments are not final compatibility dispositions. The [first-slice interaction map](research/FIRST_SLICE_MOD_INTERACTION_MAP.md) records source-backed ownership/treatment and post-build checks or deferrals for the actual opening. Inspect each optional API before implementing its adapter; no full-profile runtime compatibility is claimed. |
 | Gravships | Proposed optional roles: Chapter 1 may supply late-game mobile-base/logistics content, and Chapter 2 may supply optional orbital threat/defense content, using native features only where the exact release and selected profile support them. Neither replaces the machine gate or creates Backrooms coordinates. Their APIs, compatibility, and wider orbital scope remain unverified; do not promise stations or moon play from these two chapters. |
 | Source material | Use Kane Pixels' continuity and the A24 feature as indirect references. Do not directly recreate specific scenes or characters; exclude broader community canon from shipped content. Maintain source/provenance records. Third-party RimWorld mod assets and code are not bundled or copied by this plan. |
 | Project identity and license | Displayed title is exactly `Rimrooms - Async Industries`. Author/publisher metadata is `Operator`. Use package ID `Rimrooms.AsyncIndustries`, namespace `RimroomsAsyncIndustries`, semantic versions, and MIT for original source code; track asset/audio licensing separately. |
-| First release and language | **Public Steam Workshop is the first distribution target (D1 changed 2026-09-29; was: private RWT test build first).** Do not announce compatibility until validation is complete — publishing early makes that rule the main protection, not a formality. English first with localization keys; retain a Core-only solo path. |
+| First release and language | **Public Steam Workshop is the first distribution target (D1 changed 2026-09-29; was: private RWT test build first).** Do not announce compatibility until validation is complete — publishing early makes that rule the main protection, not a formality. English first with localization keys; the solo path must still hold up on Core content when a declared provider is absent. |
 
 The official Workshop page advertises separate colonies and shared-world activities. RWT's official wiki describes configurable offline visits/raids and exchange of items or pawns; the trading guide says direct trades and gifts require both players online. Direct real-time play on shared world tiles is future work. The local server's Aid and Trade actions are enabled, but offline-visit availability is not established and the enforced start is Crashlanded. A closed upstream report describes errors during remote settlement View loading, while an open report describes pawn-state changes after aid; both are test leads, not proof of current-release defects. Keep branch ledgers and research separate. Follow the [RWT feasibility audit](research/RWT_AND_GRAVSHIP_FEASIBILITY.md), [baseline test plan](research/RWT_BASELINE_TEST_PLAN.md), and [RWT story/design review](research/reviews/mods/3005289691-nova.rimworldtogether.md).
 
@@ -264,7 +258,7 @@ The map groups mods by intended use; a single mod may touch multiple systems. Th
 ### Design is specified in this workspace
 
 - [x] Initial company start, operation loop, facility functions, work roles, research/evidence, economy, incidents, coordinates, procedural sites, and late-stage expansion.
-- [x] Record D4: all five DLC are optional; maintain a complete Core-only campaign and validate the all-five local profile.
+- [x] Record D4: all five DLC optional, a campaign complete on Core alone, and the all-five profile validated. **D4 was changed by the owner on 2026-10-01** — all five became declared requirements. This row stays as the record of what was decided then; the current position is in the requirements table above and in [Gate 0 decisions](GATE_0_DECISIONS.md#decision-log).
 - [x] Record the RWT design boundary: separate branches and no live shared-map promise; trade/aid/guild/visits remain conditional on documented or tested RWT behavior.
 - [x] Record proposed, optional late-game roles and dependency boundaries for Gravship Chapters 1 and 2; native capabilities and exact-profile compatibility remain unverified.
 - [x] All 294 local profile rows captured and assigned to a design family in the workbook.

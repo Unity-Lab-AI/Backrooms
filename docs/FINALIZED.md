@@ -7421,6 +7421,152 @@ text while reporting file positions, so every number after a document's first co
 
 ---
 
+## Session 2026-10-01 - twenty banners came off, and a proof was enforcing a lie (0.12.79-dev)
+
+**Verbatim user quotes:** *"i docs and pages for when we deploy on github"*; *"we were doing the
+massive update and corrections to content style and formate of all the docs pertaining to that doc
+push earlier that we neeed to pick back up on and docs and pages when we deploy the wiki and docs on
+github"*; *"docs/ root on this repo, github.io for now"*; *"the beautiful and masterfully way
+paossible so the thing needs to NOT pop like a text wall"*; *"hold the shit! we have a major console
+log debug error that needs asap rectify. i think maybe you changed key thingsd to a mod we use and
+broke the game"*; *"look at the game"*; *"all of that in thqat order"*; *"wtf u mean staging
+without?"*; *"carry on"*; *"write now.md and cascade. if you already did do nothing"*.
+
+**Files touched:** `AGENTS.md`, `README.md`, `CHANGELOG.md`, `.gitignore`,
+`Mod/.../About/About.xml`, `src/.../RimroomsAsyncIndustries.csproj`,
+`tools/check-doc-conformance.py`, `docs/PUBLISHING.md`, and the twenty swept documents:
+`docs/ARCHITECTURE.md`, `SKILL_TREE.md`, `TECHNICAL_ARCHITECTURE.md`, `COMPATIBILITY.md`,
+`PLAYING.md`, `CONTENT_REUSE_POLICY.md`, `FIRST_PLAYABLE_CONTRACT.md`,
+`FIRST_SLICE_CONTENT_INVENTORY.md`, `SYSTEMS_CATALOG.md`, `OPERATIONS_ACTION_CONTRACTS.md`,
+`CAMPAIGN_CONTENT_CATALOG.md`, `CAMPAIGN_ECONOMY_MODEL.md`, `CAMPAIGN_ECONOMY_PROGRESSION.md`,
+`CAMPAIGN_ROSTER_FREEZE.md`, `FEATURE_TRACEABILITY.md`, `GATE_0_DECISIONS.md`,
+`MOD_INTEGRATION_PLAN.md`, `PUBLIC_RELEASE_PLAN.md`, `SCENARIOS.md`;
+plus `.local/register/build-dependencies.py` (**now tracked**),
+`proof-playing-and-help.py`, `plant-playing-and-help.py`, `proof-housekeeping.py`.
+
+**Mod register.** Checked before designing, and it bears on this one narrowly: it is the **source**
+for what `COMPATIBILITY.md` and the wiki's `mods.md` may claim — `RR-COMPAT` carries 293 of the 295
+rows, `RR-DLC` 40 — and the standing no-compatibility-claim rule means those pages state **declared
+requirements**, never tested-together claims. Nothing else in it applies to a documentation sweep.
+
+### THE GAME ERROR WAS NOT OURS, AND THE LOG SAID SO IN ONE LINE
+
+Owner, mid-session: *"i think maybe you changed key thingsd to a mod we use and broke the game"*.
+
+```
+ReflectionTypeLoadException getting types in assembly RimBridgeServer:
+expected class 'HarmonyLib.CodeInstruction' in assembly '0Harmony, Version=2.4.2.0'
+```
+
+`RimBridgeServer.dll` is built against **0Harmony 2.4.2.0**. The Harmony mod that actually loads
+(`brrainz.harmony`, position **5** of 301) ships **2.4.1.0**, and **2.4.2.0 exists nowhere on the
+machine** — 2.4.1.0 is the highest of 150+ copies on disk. Binding fails, the bridge's types never
+load, nothing listens on 5174. **Not a load-order fault:** Harmony loads 193 slots before the
+bridge. Our package loaded clean in the same log — `odd-origin marker attached to 1204 thing
+definitions`, zero Rimrooms errors, zero cross-reference errors, 38 lines total.
+
+**And 0.12.76-dev's `loadAfter` declaration did exactly what it was built to do:** Rimrooms moved
+from position 197 to **300 of 301**.
+
+### WE WERE TELLING EVERY PLAYER THEY NEED A DEBUG SERVER
+
+`brrainz.rimbridgeserver` was a hard `modDependencies` row **with a Workshop link**, plus a
+`loadAfter`. `AGENTS.md` forbids exactly that — *"it is not a player dependency and must not replace
+a target mod"*. `build-dependencies.py` generated the list from the owner's live load order, which
+has the bridge in it, and had no exclusion for QA-only tooling. **293 requirements now, not 294**,
+with the exclusion named and reasoned and asserted against the **re-parsed file** rather than the
+loop that performed it.
+
+**Measured rather than assumed, and it corrected a guess made out loud:** the declared set is **not**
+behind the machine. Zero stale, zero undeclared. The 301-vs-296 gap is `ModsConfig.xml` listing the
+five expansions twice — once in `activeMods`, once in `knownExpansions` — not drift.
+
+### TWO MORE DEFECTS IN THE SAME GENERATOR, BOTH THE SAME SHAPE
+
+**It could only ever run once.** Its anchors matched the pre-0.12.76 `About.xml`, so the rule
+recorded beside it — *never hand-edit the dependency blocks, edit this script and re-run it* —
+described something impossible: the second run died on its own output. It is idempotent now and
+reports which mode it took.
+
+**And it was not in the repository.** `.gitignore` admits only `proof-*.py` and `plant-*.py` back
+under `.local/register/`. A clone got 293 generated rows and **no generator**, so the only way to
+change them in a clone was the one way the rule forbids. **Third instance of this exact `.local/`
+defect**, after the proof suite and the planner harness.
+
+### TWENTY DOCUMENTS WERE EXEMPT, NOT CORRECTED
+
+0.12.77-dev's supersession banner was a **whole-file exemption**: in the first 18 lines it makes
+`check-doc-conformance.py` skip the document entirely. Twenty documents read green while their
+bodies carried **60 false lines**. Both now zero, every banner retired, every body corrected.
+
+**The root cause of why no bulk fix existed: one phrase wearing two facts.** *"Core-only"* meaning
+*the assembly references Core APIs and no Harmony* is still completely true. *"Core-only"* meaning
+*the package needs nothing but Core* died on 2026-10-01. Opposite truth values, identical words. The
+implementation sense is now *"Core APIs"* / *"Core content"*; the dependency sense is *"declared
+requirements"*.
+
+### A CHECKER EXCUSED BY MENTION, WHICH IS THE INVERSE OF THE DEFECT WE KEEP CATCHING
+
+`DEPENDENCY_RETIREMENT` matched **anywhere on a line**, so `TECHNICAL_ARCHITECTURE.md` hid three
+false claims in a 1,200-character paragraph that also said *"no compatibility announced until
+validation is complete"*. One incidental `until`, about a different subject, exempted the lot.
+
+This battery has caught *mention-instead-of-assertion* four times, where a checker **flagged** a
+phrase that was only mentioned. This is the mirror: a checker **excused** a claim because a
+retirement word was mentioned. Now scoped to the claim's own clause. **The first draft of the fix
+was wrong and the planted cases caught it immediately** — it returned `False` when a line ran out of
+occurrences, so a correctly-retired claim came back as a finding. 5 of 5 after. It then caught four
+lines in `GATE_0_DECISIONS.md` whose annotations sat in an adjacent sentence.
+
+### A PROOF WAS ENFORCING A LIE
+
+`proof-playing-and-help.py` asserted `PLAYING.md` must contain *"no game has ever been launched from
+this repository"* — **the load-bearing sentence of that document, and false since 2026-09-30.** It
+would have gone on enforcing it indefinitely, because a passing check is nobody's first suspect.
+
+Re-aimed at what the row protects: **launched and played through are different claims.** Asserted
+both ways — the caveat present and the overclaim absent — because a positive check alone passes a
+document that says both. Plant re-aimed to the words that carry it now, without weakening.
+
+### TWO DOCUMENTS WERE ACTIVELY WORKING AGAINST THE PROJECT
+
+**`AGENTS.md`** told the next agent to *"pause new implementation after the final full-batch cascades
+to conserve weekly usage"* — against the standing *"you are NOT to stop untill i tell you to stop"* —
+claimed *"no in-game Rimrooms test can run before a Rimrooms build exists"* after twelve launches,
+and named `0.4.1-dev` with 71 package files against a real 92.
+
+**`FIRST_SLICE_CONTENT_INVENTORY.md`** said the field-kit items *"need their own art, text, and Def
+records"*. The content-reuse policy forbids that, and four Core providers had already replaced them.
+
+### AND TWO ERRORS IN THE DOCS THAT GOVERN PUBLISHING ITSELF
+
+`PUBLIC_RELEASE_PLAN.md` and `PUBLISHING.md` both said **the repository is private**. The Forgejo
+remote is; the GitHub remote is **public on purpose** by the owner's own recorded decision. That is
+load-bearing twice over: GitHub Pages is free on a public repository and needs a paid plan on a
+private one, so the site plan rested on a false premise — and it is the premise the `.claude/`
+IP-boundary exception exists to handle. `PUBLISHING.md` also still said **eight refs** and hard-coded
+`feature/connected-colony-portals`; it reads the branch now, and says ten.
+
+### OWNER ANSWERS RECORDED SO THEY ARE NOT RE-ASKED
+
+Two of the three open questions in `PUBLIC_RELEASE_PLAN.md` §7 are closed: the site deploys from the
+**`docs/` directory** on this repository at the project path, CNAME support authored with the domain
+row deliberately open; and publishing from a directory rather than a branch keeps the cascade
+untouched. **Playwright against Steam stays open and is not to be assumed.**
+
+**212 C# files, 92 package files**, zero warnings, zero errors. Assembly SHA-256
+`228493390F9C28B18EA019D531F17FC0F41A60DBFD50A08997D3F827B32E4E0E`, measured after the version bump
+and reproduced after deleting `obj/` and `bin/`. **Sixteen checkers pass, FORTY-NINE proofs hold, 56
+of 56 planted faults caught in the re-aimed suite.** Published via the cascade in `PUBLISHING.md`;
+refs read back in session output.
+
+**Not staged, and the reason is recorded rather than worked around.** `stage-mod.ps1` refuses while
+RimWorld is running and it will not stop a process; the owner's session was live for this whole
+checkpoint. So the definitive order — stage, then `NOW.md`, then cascade — ran with its first step
+outstanding, which `NOW.md` states plainly instead of implying a hash verified in the game folder.
+
+---
+
 ## Session 2026-10-01 - the api, a locked door, and a start that could not run its own first job (0.12.78-dev)
 
 **Verbatim user quotes:** *"if i use approach gate and dispach to coordinate it says no book, i
