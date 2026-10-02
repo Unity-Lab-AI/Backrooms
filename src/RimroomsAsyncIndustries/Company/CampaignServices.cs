@@ -364,6 +364,8 @@ namespace RimroomsAsyncIndustries.Company
             // game-over countdown, and cheap: a bool, then a scan that stops at the
             // first living employee.
             if (now % 60 == 30) { TickFacilityRelief(); }
+            // Offset from the relief so the two map scans never land together.
+            if (now % 60 == 45) { TickRecordBookDelivery(); }
             // The mission line. Offered on contact, completed when a route comes true. Slow on
             // purpose: every check it runs is a scan, and no route in this mod can be satisfied
             // and un-satisfied inside four seconds.

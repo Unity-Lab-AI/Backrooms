@@ -190,6 +190,90 @@ check("the solo hint still points at a comms console",
       "RR_Hint_Comms" in source[os.path.join(SRC, "Company", "SoloGroupHints.cs")],
       "-- the hint told a player to build one and there was nothing to do with it until now")
 
+# =============================================================== the book, and the quest
+# Owner, 2026-10-01: *"make sure the other scenerios properly get the book in a drop when they
+# need it and start the quest to go through their built gate"*.
+_delivery = io.open(os.path.join(SRC, "Company", "RecordBookDelivery.cs"),
+                    encoding="utf-8-sig").read()
+_services = io.open(os.path.join(SRC, "Company", "CampaignServices.cs"),
+                    encoding="utf-8-sig").read()
+_line = io.open(os.path.join(SRC, "Company", "RequestLine.cs"), encoding="utf-8-sig").read()
+_reqdef = io.open(os.path.join(SRC, "Company", "RimroomsRequestDef.cs"),
+                  encoding="utf-8-sig").read() if os.path.isfile(
+                      os.path.join(SRC, "Company", "RimroomsRequestDef.cs")) else ""
+_starts = io.open(os.path.join(
+    REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs", "RimroomsStartDefs",
+    "RR_Starts.xml"), encoding="utf-8-sig").read()
+
+check("THE CORPORATION SENDS A RECORD BOOK TO A BRANCH THAT HAS NONE",
+      "internal void TickRecordBookDelivery()" in _delivery
+      and "TickRecordBookDelivery();" in _services,
+      "-- **DEFINED AND CALLED.** Only the laboratory start ships a book, and only since today. "
+      "The Store spawns 27 fixtures and no book; the solo start spawns nothing at all, so a "
+      "player who builds a gate from nothing hits RR_Exp_MissingRecordBook with no idea what a "
+      "record book is")
+
+check("and it waits for a gate the player actually finished",
+      "if (!HasFinishedGate()) { return; }" in _delivery
+      and "gate.IsDesignated && gate.Calibrated" in _delivery,
+      "-- calibrated, not merely designated. Before that a book is a mystery item with nothing "
+      "to use it on")
+
+check("and it refuses while a book exists ANYWHERE the branch can reach",
+      "if (AnyRecordBookHeld(book)) { return; }" in _delivery
+      and "map.listerThings.ThingsOfDef(book)" in _delivery
+      and "pawn.inventory.innerContainer.Contains(book)" in _delivery,
+      "-- a floor, a shelf, or somebody's pack on either side of an open connection. **This is "
+      "what stops it being a tap**: it can fire again if the book is lost, and never while one "
+      "still exists")
+
+check("and it asks the same question a dispatch asks, never by name",
+      "Expedition.ExpeditionCargo.RecordBookDef" in _delivery
+      and '"TextBook"' not in _delivery,
+      "-- asking by def name here and by comp there is how a branch ends up holding a book the "
+      "dispatch refuses")
+
+check("and it sends a spare",
+      "private const int RecordBookDeliveryCount = 2;" in _delivery,
+      "-- a branch that loses its only book is blocked until it makes another")
+
+check("and nothing is recorded or announced when nothing was made",
+      "if (payload.Count == 0) { return; }" in _delivery,
+      "-- a letter announcing an empty crate is worse than silence")
+
+check("THE QUEST LINE HAS NO SCENARIO GATE, SO IT REACHES EVERY START",
+      "scenarioId" not in _line and "async_industries" not in _line
+      and "async_industries" not in _reqdef,
+      "-- *\"start the quest to go through their built gate\"*. It already did, and **a "
+      "negative claim is the only kind that keeps it that way**: a positive one listing three "
+      "scenarios would pass while a fourth was quietly excluded")
+
+# Read out of the request defs, in tutorial order, so the claim is about what the line
+# actually offers first rather than about two names existing somewhere.
+_reqxml = io.open(os.path.join(
+    REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs", "RimroomsRequestDefs",
+    "RR_Requests.xml"), encoding="utf-8-sig").read()
+_tutorial = re.findall(
+    r"<defName>(RR_Request_[A-Za-z]+)</defName>(?:(?!</RimroomsAsync).)*?"
+    r"<tutorial>true</tutorial>(?:(?!</RimroomsAsync).)*?<tutorialOrder>(\d+)</tutorialOrder>",
+    _reqxml, re.S)
+_ordered = [name for name, _order in sorted(_tutorial, key=lambda pair: int(pair[1]))]
+
+check("AND THE FIRST TWO REQUESTS ARE BUILD-A-GATE-AND-GO-THROUGH-IT",
+      len(_ordered) >= 2
+      and _ordered[0] == "RR_Request_PowerTheGate"
+      and _ordered[1] == "RR_Request_AssembleAndCalibrate",
+      "-- read in tutorial order, so this is about what the line OFFERS first rather than two "
+      "names existing somewhere. Found: %s" % ", ".join(_ordered[:3]))
+
+check("and the other two starts begin outside contact, which is the owner's own rule",
+      _starts.count("<beginsInCorporationContact>false</beginsInCorporationContact>") == 2
+      and _starts.count("<beginsInCorporationContact>true</beginsInCorporationContact>") == 1,
+      "-- *\"clena up tema is only once u are in communication and working with the "
+      "corporation\"*. They call the corporation, and the line opens. The book delivery is "
+      "gated on the same flag for the same reason")
+
+
 print("")
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))

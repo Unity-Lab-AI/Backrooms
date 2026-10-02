@@ -2571,6 +2571,59 @@ Owner, verbatim, from a running game:
 
 ---
 
+## The crossing, the book, and the live read - 2026-10-01 (0.12.78-dev) - DONE
+
+Owner, verbatim:
+
+> **"if i use approach gate and dispach to coordinate it says no book, i have no books... and if i
+> try directly clicking a pawn on it it mentions a bunch of shit about the power not being enough
+> reservers. look at the game and dont give me shit the api mod is not working make it work look at
+> the running game look at those messages look at the logs wtf!"**
+
+> **"fix the api u fuck"**
+
+> **"and check where i had to move stuff and where i had to add a door and add power conduit and fix
+> the spawn to have current lsaayout of devices generators batteries and the like"**
+
+> **"and you fixed both those problems with sending someone through dirrectly and whith sending them
+> through with the operations tab?"**
+
+> **"make sure the other scenerios properly get the book in a drop when they need it and start the
+> quest to go through their built gate"**
+
+- [x] **"the api mod is not working make it work"** - **it was running the whole time**, port 5174
+  with a token, both in the log. I had probed four wrong ports over plain HTTP. **What was genuinely
+  missing** is that the read allowlist had no selector for messages, so *"look at those messages"*
+  was unanswerable by the instrument. Five parameterless reads added, plus a bounded cell-rect read
+  and camera state
+- [x] **"it says no book, i have no books"** - every dispatch needs one Core `TextBook`; the start
+  spawned **112 fixtures across 17 types and no book**. Two go on the archive shelves
+- [x] **"it mentions a bunch of shit about the power not being enough reservers"** - the live gate
+  reads **533 stored against 49.59 needed**. Power was never the problem; that is the **inspect
+  readout**, not a refusal
+- [x] **"clicking on the portal and trying to send them through not working"** - **`Door locked`**.
+  `OrderCrossing` validated the approach cell on the near side and never asked whether the door
+  would open
+- [x] **"and you fixed both those problems"** - **answered honestly: no, not at the time.** Both
+  were diagnosed and neither was fixed until after that question
+- [x] **"where i had to add a door"** - exactly one, at facility-relative **(51, 24)**, the
+  compound's east perimeter wall at the dead end of the service corridor. **No authored door was
+  missing**
+- [x] **"and add power conduit"** - **the owner added none.** I claimed they had hand-laid about a
+  hundred; I had counted **17 runs against 191 cells**. Expanded the runs are **205**, and live is
+  **205**. A published claim that was wrong
+- [x] **"where i had to move stuff"** - **nothing was moved.** Conduits, glass, generators, bench,
+  smithy, research benches and glow pods are all exactly as authored. Every delta is furniture
+  deconstructed
+- [x] **"make sure the other scenerios properly get the book in a drop when they need it"** -
+  `RecordBookDelivery`, deterministic, on a calibrated gate with no book anywhere the branch can
+  reach
+- [x] **"and start the quest to go through their built gate"** - **already worked**, and is asserted
+  now rather than assumed: no scenario id anywhere in the request line, first two requests are power
+  the gate and assemble and calibrate
+
+---
+
 ## TOMBSTONES
 
 _(none)_

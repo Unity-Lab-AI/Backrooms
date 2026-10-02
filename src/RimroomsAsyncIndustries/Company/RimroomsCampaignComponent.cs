@@ -269,6 +269,7 @@ namespace RimroomsAsyncIndustries.Company
             ExposeFacilityRelief();
             ExposeClearSquad();
             ExposeFieldExposure();
+            ExposeRecordBookDelivery();
             ExposeSoloGroupHints();
             ExposeRemoteSites();
             ExposeLostPawns();

@@ -72,6 +72,26 @@ PLANTS = [
 
     ("the charge message stops telling the player the limit is gone", KEYED,
      "Any number of them count.", "Bind one battery.", PROOF),
+
+    # ====================================================== the door, found in a running game
+    ("THE CROSSING STOPS ASKING WHETHER THE DOOR OPENS", TRAVEL,
+     "            string doorBlock = DoorBlockerKey(connection, pawn);" + NL
+     + "            if (doorBlock != null) { return CompanyActionResult.Refused(doorBlock); }"
+     + NL, "", PROOF),
+
+    ("the door check is written and never called", TRAVEL,
+     "            if (doorBlock != null) { return CompanyActionResult.Refused(doorBlock); }",
+     "            if (false) { return CompanyActionResult.Refused(doorBlock); }", PROOF),
+
+    ("a held-open door starts being refused", TRAVEL,
+     "            if (door.HoldOpen || door.FreePassage) { return null; }" + NL, "", PROOF),
+
+    # **Not a comment.** The first version appended `// DoorsExpanded` and the proof strips
+    # comments, so it tested nothing. What matters is a real TYPE reference, which is what would
+    # actually add a hard dependency on another mod's assembly.
+    ("the door question stops going through Core and names another mod", TRAVEL,
+     "            var door = connection.First.Anchor as Building_Door;",
+     "            var door = connection.First.Anchor as DoorsExpanded.Building_DoorRemote;", PROOF),
 ]
 
 

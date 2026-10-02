@@ -7418,3 +7418,130 @@ text while reporting file positions, so every number after a document's first co
 `5E87D3842B559E8ABCF44654D2178923D39D8EBE2A7D9F9D36A4FCAB441E39CC`, measured after the version bump, reproduced by two clean rebuilds.
 **Sixteen checkers pass, FORTY-NINE proofs hold, 12 of 12 planted faults caught in the new suite,
 752 plant anchors findable.**
+
+---
+
+## Session 2026-10-01 - the api, a locked door, and a start that could not run its own first job (0.12.78-dev)
+
+**Verbatim user quotes:** *"if i use approach gate and dispach to coordinate it says no book, i
+have no books... and if i try directly clicking a pawn on it it mentions a bunch of shit about the
+power not being enough reservers. look at the game and dont give me shit the api mod is not working
+make it work look at the running game look at those messages look at the logs wtf!"*; *"fix the api
+u fuck"*; *"and check where i had to move stuff and where i had to add a door and add power conduit
+and fix the spawn to have current lsaayout of devices generators batteries and the like"*; *"and you
+fixed both those problems with sending someone through dirrectly and whith sending them through
+with the operations tab?"*; *"make sure the other scenerios properly get the book in a drop when
+they need it and start the quest to go through their built gate"*.
+
+**Files touched:** `Company/RecordBookDelivery.cs` (new), `Portals/PortalTravelService.cs`,
+`Company/CampaignServices.cs`, `Company/RimroomsCampaignComponent.cs`, `Keyed/RR_Portals.xml`,
+`Keyed/RR_Requests.xml`, `build-async-facility.py`, `RR_Starts.xml`,
+`tools/qa/rimbridge_readonly.py`, `.local/qa/scan-facility.py` (new),
+`proof-gate-circuit.py`, `proof-starts.py`, `proof-corporate-contact.py`,
+`plant-gate-circuit.py`, `plant-startplacement.py`,
+`plant-contact-and-book.py` (new, suite TWENTY-ONE).
+
+**Mod register.** Row **77, Doors Expanded**, applied directly and for the first time in anger:
+the owner's gate is a `DoorsExpanded.Building_DoorRemote`, because that mod replaces Core's
+`Autodoor` thingClass. The fix goes through Core's `Building_Door.PawnCanOpen`, which is public and
+virtual, so **nothing names that mod or references its assembly** — the register's own disposition
+for that row.
+
+### THE API WAS WORKING AND I WAS LOOKING IN THE WRONG PLACE
+
+Owner: *"the api mod is not working make it work"*. **It was running the whole time.**
+`[RimBridge] GABP server running standalone on port 5174` and a bridge token were both in the log.
+I had probed 8765, 8080, 9000 and 5000 over plain HTTP with no token. GABP is a framed protocol and
+`tools/qa/rimbridge_readonly.py` already spoke it.
+
+**What was genuinely missing is what the owner asked for.** The client's fixed allowlist had five
+selectors — ping, status, game, mods, logs — and **not one read a message**. So *"look at those
+messages"* was not answerable by the instrument. Five parameterless reads added (messages, alerts,
+letters, selection, colonists) plus a bounded cell-rect read and camera state. Still read-only; it
+still never discovers, starts, configures or controls a process.
+
+### THE LIVE GATE ANSWERED EVERYTHING IN ONE INSPECT STRING
+
+```
+Door locked
+Grid excess: 1185 W (533 Wd stored)
+Calibrated | Operator on station: Gee
+Linked battery charge: 533.13/2400.00 watt-days
+Charge needed for normal window plus emergency return: 49.59 watt-days
+Opening time: 7075 in-game minutes remaining | Status: Normal
+```
+
+**2400 watt-days of capacity is four batteries summed**, so the previous checkpoint's net-wide fix
+was live and working. **533 stored against 49.59 needed** — power was never the problem. The
+"bunch of shit about power" was the **inspect readout**, not a refusal.
+
+**`Door locked` was the whole blocker**, and `OrderCrossing` never asked. It validated the
+APPROACH cell — on the near side — so a crew was ordered somewhere they could reach, through
+something they could not pass, with no reason given.
+
+### I TOLD THE OWNER TWO THINGS THAT WERE WRONG
+
+Both were the same mistake: **comparing counts without reading the footprints.**
+
+| What I said | What was true |
+|---|---|
+| *"You hand-laid ~100 power conduits; the start wires almost nothing"* | I counted **17 runs** against **191 cells**. Expanded, the runs are **205 cells**, and live is **191 PowerConduit + 14 HiddenConduit = 205**. **Exact match.** The owner added none |
+| *"You added 10 shelves"* | A shelf is 1x2. **19 live against 28 authored — nine were removed** |
+
+Same shape as the grave footprint earlier in the day, which was caught by reading Core's `<size>`
+rather than assuming. **The second time it was not caught, it was published to the owner.**
+
+### WHAT THE OWNER ACTUALLY CHANGED, MEASURED
+
+Facility origin solved at **(120, 120)** from three single-instance devices. Every multi-cell
+device compared against Core's own `<size>`.
+
+**Conduits, ballistic glass, generators, the machining table, the smithy, the research benches and
+the glow pods are all exactly as authored.** Nothing was moved — including the comms console and
+machining bench repositioned at 0.12.74-dev. Everything with a delta is **fewer**: nine shelves,
+five lamps, three beds, two stools, two tables, one battery, one comms console, one stove, one
+heater.
+
+**One door, at facility-relative (51, 24)** — the compound's **east perimeter wall**, at the dead
+end of the service corridor the 42-cell conduit run follows. **No authored door was missing.** It
+is authored now.
+
+### THE BOOK, AND WHY NO CLAIM CAUGHT IT
+
+`ExpeditionCargo.RecordBooksRequired` is **1** of Core's `TextBook`. The laboratory start spawned
+**112 fixtures across 17 types and none of them a book**, so `RR_Exp_MissingRecordBook` refused the
+first dispatch on every fresh lab start.
+
+The recorder was folded into the book at 0.12.24-dev and **the stock was never updated.** Nothing
+in the battery asserted that a start ships what its own systems require, so the claim added for it
+is **derived** — it reads the required count and the carrier def out of the source. A hand-typed
+item list is how the original change slipped past.
+
+### AND THE STARTS THAT BEGIN WITH NOTHING GET THEM SENT
+
+Owner: *"make sure the other scenerios properly get the book in a drop when they need it"*. The
+Store spawns 27 fixtures and no book; the solo start spawns nothing at all.
+
+`RecordBookDelivery` is **deterministic, not an incident** — same reasoning as the clean-up team,
+*"a promise must not be at the mercy of a dice roll"*. It fires on corporation contact, a
+**calibrated** gate, and **no book anywhere the branch can reach**: a floor, a shelf, or a pack on
+either side of an open connection. That last test is what stops it being a tap — it can fire again
+if a book is lost and never while one still exists.
+
+**The quest half already worked and is now asserted rather than assumed.** `RequestLine.cs` and
+`RimroomsRequestDef.cs` contain **no scenario id at all**, and the claim for it is negative and
+derived: a positive claim listing three scenarios would pass while a fourth was quietly excluded.
+
+### `proof-corporate-contact.py` HAD NEVER BEEN PLANTED AGAINST
+
+One of the oldest proofs in the battery, and **no suite verified that any of its claims could
+fail** — which is exactly the shape of the defect beside it. Suite **twenty-one**, 12 of 12.
+
+And the new claims caught two of their own defects before shipping: a door claim that asserted the
+**call** and not the **act**, which a plant defeated with `if (false)` (**twelfth instance of
+machinery-not-behaviour**), and a plant that tested a mod name in a **comment** the proof strips.
+
+**212 C# files, 92 package files**, zero warnings, zero errors. Assembly SHA-256
+`80A40D4655E2D6AF1A7CD3861F341431CD6D8C2FCCE7265FD4487D94BF92F759`, measured after the version bump, reproduced by two clean rebuilds.
+**Sixteen checkers pass, FORTY-NINE proofs hold, 12 of 12 in the new suite, 771 plant anchors
+findable.**

@@ -244,4 +244,11 @@ There is no date on this and there will not be one. Open the Operations tab, loo
   <RR_Route_UnfamiliarCorroborationLabel>Do the corroboration work</RR_Route_UnfamiliarCorroborationLabel>
   <RR_Route_UnfamiliarCorroborationDesc>Complete the corroboration project and one account becomes a finding. This is the version the company can charge for.</RR_Route_UnfamiliarCorroborationDesc>
 
+  <RR_Event_RecordBookDelivery>The corporation sent blank record books. A branch with a working gate and nothing to write in is a branch that cannot file anything.</RR_Event_RecordBookDelivery>
+  <RR_BookDrop_Title>Record books delivered</RR_BookDrop_Title>
+  <RR_BookDrop_Body>{0} has a gate that works and nothing to write in.
+
+The corporation sent {1} blank record books. A crew takes one into a coordinate, writes the route, the distortion and whatever was down there into it, and carries it home. The book is the evidence; there is no separate recorder to lose.
+
+No invoice came with them. Keep one in reserve - a branch that loses its only book cannot file anything until it makes another.</RR_BookDrop_Body>
 </LanguageData>

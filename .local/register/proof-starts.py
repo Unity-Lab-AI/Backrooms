@@ -737,6 +737,43 @@ check("AND THE OWNER'S OWN POSITIONS ARE WHERE THE OWNER PUT THEM",
       "300-cell map. *\"thats where i want them so fix there spawn position\"*")
 
 print("")
+# =============================================================== what a dispatch requires
+# **The owner found this in a running game**: *"if i use approach gate and dispach to coordinate
+# it says no book, i have no books"*. `ExpeditionCargo.RecordBooksRequired` is 1, of
+# `CompRouteEvidence.NativeCarrierDef`, and the laboratory start spawned none -- so the first
+# dispatch on every fresh lab start refused, and nothing in the battery noticed.
+#
+# **Derived, never listed.** The count and the def name are read out of the source, so a change
+# to either fails here instead of silently making the start short. A hand-typed list is how the
+# recorder-to-book change at 0.12.24-dev slipped past in the first place.
+_cargo = io.open(os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Expedition",
+                              "ExpeditionCargo.cs"), encoding="utf-8-sig").read()
+_route = io.open(os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Investigation",
+                              "CompRouteEvidence.cs"), encoding="utf-8-sig").read()
+_required = re.search(r"RecordBooksRequired\s*=\s*(\d+)", _cargo)
+_carrier = re.search(r'GetNamedSilentFail\("([A-Za-z_]+)"\)', _route)
+_starts_xml = io.open(os.path.join(
+    REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs", "RimroomsStartDefs",
+    "RR_Starts.xml"), encoding="utf-8-sig").read()
+_lab = re.search(r"<scenarioId>async_industries</scenarioId>.*?(?=<RimroomsStartDef>|$)",
+                 _starts_xml, re.S)
+_lab_block = _lab.group(0) if _lab else ""
+_book_count = len(re.findall(r"<thing>%s</thing>" % (_carrier.group(1) if _carrier else "NOPE"),
+                             _lab_block))
+
+check("THE LABORATORY START SHIPS THE BOOK EVERY DISPATCH REQUIRES",
+      _required is not None and _carrier is not None
+      and _book_count >= int(_required.group(1)),
+      "-- `ExpeditionCargo` needs %s of %r and the start spawns %d. **A start that cannot run "
+      "its own first objective is the defect the owner hit in play**"
+      % (_required.group(1) if _required else "?",
+         _carrier.group(1) if _carrier else "?", _book_count))
+
+check("and it ships a spare, because a branch that loses its only book cannot work",
+      _book_count >= 2,
+      "-- one to take into the field and one in reserve")
+
+
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))
     sys.exit(1)

@@ -26,6 +26,9 @@ SCENARIOS = "Mod/Rimrooms - Async Industries/1.6/Defs/ScenarioDefs/RR_Scenarios.
 ARRIVAL = SCEN + "/ScenPart_RimroomsArrival.cs"
 PROOF = ".local/register/proof-startplacement.py"
 STARTS_PROOF = ".local/register/proof-starts.py"
+# The dispatch requirement itself: a start can go short either by losing the item
+# or by the requirement rising under it.
+EXPCARGO = "src/RimroomsAsyncIndustries/Expedition/ExpeditionCargo.cs"
 FACILITY_PROOF = ".local/register/proof-facilities.py"
 FACILITY = "src/RimroomsAsyncIndustries/Generation/FacilityPlanner.cs"
 ARCHETYPES = ("Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsRoomArchetypeDefs/"
@@ -471,6 +474,20 @@ PLANTS = [
      "<li><x>8</x><z>8</z><width>44</width><height>44</height><roofed>true</roofed><floor>true</floor></li>",
      "<li><x>8</x><z>8</z><width>240</width><height>240</height><roofed>true</roofed><floor>true</floor></li>",
      PROOF),
+
+    # ---------------------- what a dispatch requires, found by the owner in a running game
+    # *"if i use approach gate and dispach to coordinate it says no book, i have no books"*.
+    # The laboratory start spawned none of the `TextBook` every expedition requires, and
+    # nothing in the battery asserted that a start ships what its own systems demand.
+    ("THE LABORATORY START LOSES ITS RECORD BOOKS AGAIN", STARTS,
+     "<li><thing>TextBook</thing>", "<li><thing>Beer</thing>", STARTS_PROOF),
+
+    ("the start keeps one book and no spare", STARTS,
+     "<li><thing>TextBook</thing>", "<li><thing>Beer</thing>", STARTS_PROOF),
+
+    ("the dispatch requirement rises and the start is silently short", EXPCARGO,
+     "private const int RecordBooksRequired = 1;",
+     "private const int RecordBooksRequired = 3;", STARTS_PROOF),
 ]
 
 

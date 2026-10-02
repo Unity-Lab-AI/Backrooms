@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.12.78-dev - 2026-10-01 - a locked door said nothing, and no start shipped the book
+
+- **A locked gate refused every crossing in silence.** Ordering somebody through checked that the
+  cell on the near side was standable and reachable, and never asked whether the door would open.
+  It now says so: *"That gate's door is locked, so nobody can walk through it."*
+- **No start shipped the record book every expedition requires.** The laboratory spawned 112
+  fixtures and not one book, so the first dispatch always refused. It carries two now - one to
+  take, one in reserve.
+- **And for the starts that begin with nothing, the corporation sends them.** Build and calibrate
+  a gate with no book anywhere and blank record books arrive. It will send again if you lose
+  them, and never while you still have one.
+- **The quest to go through your own gate already reached every start** and is now asserted rather
+  than assumed - the request line has no scenario check anywhere in it, and its first two requests
+  are power the gate and assemble and calibrate it.
+- **One door the facility was missing.** The east-west service corridor was walled off at its east
+  end, with no way out of the compound on that side.
+
+Full record: [a locked door said nothing](docs/implementation/CROSSING_AND_BOOK_IMPLEMENTATION.md).
+No gameplay, balance, performance or compatibility result is claimed.
+
 ## 0.12.77-dev - 2026-10-01 - every battery counts, and the refusal tells you the truth
 
 - **A gate now runs off its whole circuit.** It used to read charge from the single battery you

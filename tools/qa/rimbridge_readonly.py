@@ -54,6 +54,20 @@ READ_TOOLS = {
     "game": ("rimworld/get_game_info", {}),
     "mods": ("rimworld/get_mod_configuration_status", {}),
     "logs": ("rimbridge/list_logs", {"limit": 50, "minimumLevel": "warning", "afterSequence": 0}),
+    # Added 2026-10-01 on the owner's direction: *"look at the running game look at those
+    # messages look at the logs"*. The allowlist had no way to read a message, so the question
+    # was not answerable by the instrument -- a real gap, and the reason a refusal the owner was
+    # staring at had to be diagnosed from source instead of from the game.
+    #
+    # Every one is parameterless and read-only. The file's premise is unchanged: it never
+    # discovers, starts, configures or controls a process.
+    "messages": ("rimworld/list_messages", {}),
+    "alerts": ("rimworld/list_alerts", {}),
+    "letters": ("rimworld/list_letters", {}),
+    "selection": ("rimworld/get_selection_semantics", {}),
+    "colonists": ("rimworld/list_colonists", {}),
+    "camera": ("rimworld/get_camera_state", {}),
+    "maps": ("rimworld/list_maps", {}),
 }
 
 
@@ -485,11 +499,26 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--select",
         action="append",
-        choices=tuple(READ_TOOLS),
+        # `cells` is added at runtime by --rect, so it is named here rather than derived.
+        choices=tuple(READ_TOOLS) + ("cells",),
         help="fixed read-only query; repeat to select multiple",
     )
     parser.add_argument("--timeout", type=float, default=3.0, help="per-request timeout in seconds (1 to 10)")
+    # A read of a bounded rectangle. Read-only like every other selector; parameterised because
+    # "where are this player's generators" cannot be asked without coordinates.
+    parser.add_argument("--rect", help="x,z,width,height to inspect with rimworld/get_cells_info "
+                                       "(max 1024 cells)")
     args = parser.parse_args(argv)
+    if args.rect:
+        try:
+            rx, rz, rw, rh = (int(part.strip()) for part in args.rect.split(","))
+        except ValueError:
+            raise ClientError("--rect must be x,z,width,height")
+        if rw < 1 or rh < 1 or rw * rh > 1024:
+            raise ClientError("--rect must cover between 1 and 1024 cells")
+        READ_TOOLS["cells"] = ("rimworld/get_cells_info",
+                               {"x": rx, "z": rz, "width": rw, "height": rh})
+        args.select = list(args.select or []) + ["cells"]
     if not 1.0 <= args.timeout <= 10.0:
         parser.error("--timeout must be between 1 and 10 seconds")
     if args.connect and (not args.select or "ping" not in args.select):

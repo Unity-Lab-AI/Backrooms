@@ -59,6 +59,17 @@ namespace RimroomsAsyncIndustries.Portals
             string fit = PortalTraversalPolicy.FitFailureKey(pawn, DoorwayWidth(connection));
             if (fit != null) { return CompanyActionResult.Refused(fit); }
 
+            // **A locked gate is a gate nobody walks through, and nothing used to say so.**
+            // The checks below ask whether the APPROACH cell is standable and reachable -- that
+            // cell is on the near side. None of them asks whether the door itself will open, so
+            // a crew was ordered to a cell they could reach, through a door they could not pass,
+            // and the player got no reason at all.
+            //
+            // `Building_Door.PawnCanOpen` is public and virtual in Core, so a door whose
+            // thingClass another mod replaced answers for itself. Nothing here names that mod.
+            string doorBlock = DoorBlockerKey(connection, pawn);
+            if (doorBlock != null) { return CompanyActionResult.Refused(doorBlock); }
+
             PortalRouteStep step = StepFrom(connection, pawn.Map);
             if (step == null || network.Find(connection.Id) != connection)
             { return CompanyActionResult.Refused("RR_PortalTravel_AddressUnavailable"); }
@@ -111,6 +122,29 @@ namespace RimroomsAsyncIndustries.Portals
             if (anchor.def == null) { return 1; }
             int span = anchor.def.size.x > anchor.def.size.z ? anchor.def.size.x : anchor.def.size.z;
             return span < 1 ? 1 : span;
+        }
+
+        /// <summary>
+        /// Why this person cannot pass the gate's own door, or null when they can.
+        ///
+        /// **Found in a running game**, where the gate read `Door locked` and every other
+        /// condition was green: calibrated, operator on station, connection open, charge ten
+        /// times what the opening cost. The crossing refused for no stated reason because
+        /// nothing asked the door.
+        ///
+        /// Asked through Core's `Building_Door`, whose `PawnCanOpen` is public and virtual, so a
+        /// door another mod has re-classed answers for itself. A gate that is not a
+        /// `Building_Door` at all is left alone rather than guessed about.
+        /// </summary>
+        private static string DoorBlockerKey(PortalConnectionRecord connection, Pawn pawn)
+        {
+            if (connection == null || connection.First == null || pawn == null) { return null; }
+            var door = connection.First.Anchor as Building_Door;
+            if (door == null) { return null; }
+            // Held open is passable whatever else is true, and a door standing open now is
+            // passable for anyone -- neither needs permission.
+            if (door.HoldOpen || door.FreePassage) { return null; }
+            return door.PawnCanOpen(pawn) ? null : "RR_PortalTravel_DoorLocked";
         }
 
         /// <summary>Reconcile one interrupted crossing. Never invents a person or item.</summary>

@@ -98,6 +98,7 @@
       <li>(18, 0, 29)</li>
       <li>(18, 0, 38)</li>
       <li>(18, 0, 46)</li>
+      <li>(51, 0, 24)</li>
       <li>(22, 0, 29)</li>
       <li>(22, 0, 37)</li>
       <li>(21, 0, 19)</li>
@@ -237,6 +238,8 @@
       <li><thing>WoodFiredGenerator</thing><cell>(23, 0, 36)</cell><fuelFraction>0.5</fuelFraction></li>
       <li><thing>WoodFiredGenerator</thing><cell>(25, 0, 39)</cell><fuelFraction>0.5</fuelFraction></li>
       <li><thing>HorseshoesPin</thing><stuff>Steel</stuff><cell>(20, 0, 33)</cell></li>
+      <li><thing>TextBook</thing><cell>(11, 0, 47)</cell></li>
+      <li><thing>TextBook</thing><cell>(14, 0, 47)</cell></li>
     </buildings>
     <conduits>
       <li><start>(9, 0, 24)</start><length>42</length><alongX>true</alongX></li>

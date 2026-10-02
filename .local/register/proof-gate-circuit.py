@@ -145,6 +145,34 @@ check("and the charge message tells the player the limit is gone",
       "-- the owner asked for no limit; the text has to say so, or somebody binds one battery "
       "and assumes that is all a gate will take")
 
+# =============================================================== the door itself
+# **The owner's gate read `Door locked` with every other condition green**: calibrated, operator
+# on station, connection open, charge ten times the opening cost. `OrderCrossing` validated the
+# APPROACH cell -- on the near side -- and never asked whether the door would open, so the crew
+# were ordered somewhere they could reach through something they could not pass, with no reason.
+check("A CROSSING ASKS WHETHER THE GATE'S DOOR WILL ACTUALLY OPEN",
+      "private static string DoorBlockerKey(PortalConnectionRecord connection, Pawn pawn)" in travel
+      # **THE REFUSAL REACHED, not the call written.** A plant swapping the guard for
+      # `if (false)` left every asserted character in place and the lock went unchecked.
+      # Twelfth instance of machinery-not-behaviour, so the act is pinned to the line above it.
+      and ("            string doorBlock = DoorBlockerKey(connection, pawn);" + chr(10)
+           + "            if (doorBlock != null) { return CompanyActionResult.Refused(doorBlock); }")
+      in travel
+      and "door.PawnCanOpen(pawn)" in travel,
+      "-- **DEFINED AND CALLED.** Found in a running game, where a locked door refused every "
+      "crossing silently")
+
+check("and it asks through Core, so a re-classed door answers for itself",
+      "as Building_Door" in travel and "DoorsExpanded" not in travel,
+      "-- `PawnCanOpen` is public and virtual. The owner's gate is a door another mod re-classed, "
+      "and nothing here names that mod or references its assembly")
+
+check("and a held-open or already-open door is never refused",
+      "if (door.HoldOpen || door.FreePassage) { return null; }" in travel,
+      "-- neither needs permission, and refusing one would break a gate the player had "
+      "deliberately pinned open")
+
+
 print("")
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))

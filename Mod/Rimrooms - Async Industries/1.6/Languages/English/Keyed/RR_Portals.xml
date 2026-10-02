@@ -287,4 +287,5 @@ Nothing warns you again.</RR_Portals_RemoveWayInConfirm>
   <RR_PortalTravel_ExpeditionHolds>An expedition is using that connection. Recall or close it first.</RR_PortalTravel_ExpeditionHolds>
   <RR_PortalTravel_InEmergency>That connection is in emergency. The crew have a return window; nobody else goes through.</RR_PortalTravel_InEmergency>
   <RR_PortalTravel_WindowExpired>That opening has run out of time.</RR_PortalTravel_WindowExpired>
+  <RR_PortalTravel_DoorLocked>That gate's door is locked, so nobody can walk through it. Select the door and unlock it, or set it to hold open.</RR_PortalTravel_DoorLocked>
 </LanguageData>
