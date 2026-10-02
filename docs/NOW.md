@@ -24,22 +24,29 @@ So: **replace this file, never append to it.** It had grown to 3,053 lines and 2
 | Build | **211 C# files, 92 package files**, zero warnings, zero errors. Measure, never carry: `git ls-tree -r HEAD --name-only \| grep -c '^src/.*\.cs$'` and the `files` array in `tools/package-files.json` |
 | Dependencies | **293 declared**, `loadAfter` 294 with Core first. Read from `About.xml` |
 | Instruments | **16 checkers** (`tools/check-*.py`), **49 proofs** (`.local/register/proof-*.py`), **23 plant suites**. Run by **exit status**, never by grepping output — they end on five different phrasings and two end mid-sentence |
-| Staged | **See below. This is the one blocking item.** |
+| Staged | **YES — `0.12.80-dev`, 92 files hash-checked into the game folder.** Assembly SHA-256 `BE8B0474657BBDF9DAD912A48E86F182EFCAB7D5D72DC9264BB2C4F0D096699D`, read **from the game folder**, not from the build |
 | Launches | **At least twelve**, all by the owner. The ninth walked a Backrooms level. **Every defect any launch has found was ours — not one was a mod conflict** |
 
 ---
 
-## THE ONE BLOCKING ITEM
+## STAGED AND VERIFIED — the next action is a launch
 
-**The package is not staged and could not be.** `stage-mod.ps1` refuses while RimWorld is running and the owner's session was live through this whole checkpoint. **It refused correctly — it will not stop a process.** The game folder holds **`0.12.78-dev`**; the build is **`0.12.80-dev`**, so the running game is two checkpoints behind and neither fix below is in it yet.
-
-**First action once RimWorld is closed:**
+`0.12.80-dev` is in the game folder, **92 files hash-checked**, and the two fixes were read back out of the staged copy rather than assumed: `<order>5</order>` and the Store's `MealSurvivalPack` 100 (Async 50 and solo 5 unchanged).
 
 ```
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
+staged      Rimrooms.AsyncIndustries  0.12.80-dev  92 files
+assembly    BE8B0474657BBDF9DAD912A48E86F182EFCAB7D5D72DC9264BB2C4F0D096699D   (read from the GAME FOLDER)
 ```
 
-It backs up the existing folder, hash-verifies every file against the build manifest, never touches the mod list and never starts the game. **Then cascade** — ten refs, see below.
+`stage-mod.ps1` refused twice first, correctly — it will not stop a process, and the owner's session was live. **The owner then directed the kill explicitly** (*"dont forget to kill the exe and stage"*), so PID 21632 was terminated and staging ran. The save lost to it was disposable by construction: a changed `ScenPart_StartingThing_Defined` only applies to a **new** game, so testing these fixes needs a fresh start anyway.
+
+**Next: RimSort refresh → review the 295-entry target → sort → launch a fresh Furniture & Knickknack Store start.** Run `python tools/check-planner-layouts.py` first — checker 14, the only one that runs the planner for real.
+
+**What a launch has to settle, in this order:**
+
+1. **Architect is the far-left tab** and Operations sits immediately right of it.
+2. **100 packaged survival meals** are on the map at the Store start.
+3. **Whether the rest of the grants land** — `Silver` 200, `WoodLog` 200, `Cloth` 120, `Steel` 80, `MedicineHerbal` 8, `Gun_Revolver` 1 — plus whatever Prepare Carefully was given. **This is the open bug below, and it is the reason to launch.**
 
 ---
 
