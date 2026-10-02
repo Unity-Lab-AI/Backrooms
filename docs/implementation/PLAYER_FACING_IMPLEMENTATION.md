@@ -77,8 +77,27 @@ words rather than doing nothing.
 
 ### Row 821, company-first — and the half that is deliberately absent
 
-`RR_MainButtons.xml` moves to **`<order>0</order>`**, left of Architect's 1. That is one field on
-this package's own def and changes nothing about Core's buttons or any other mod's.
+`RR_MainButtons.xml` moves to **`<order>5</order>`**, between Architect's 1 and Work's 10. That is
+one field on this package's own def and changes nothing about Core's buttons or any other mod's.
+
+**It was `<order>0</order>` from 0.12.40-dev to 0.12.80-dev, and that was wrong.** Owner direction,
+2026-10-02, verbatim: *"and i want you to fix the operations tab it should not replace the
+architects default possition, i find my self trying to click archetic(which was in far left) but
+find my self out of habit click operations(because it took the archetect postioton) So we need to
+swap theri postions at the bottom so archetic is back in the far left tab position and operations
+tab moves to where archetic tab is... so we are swapping theri positions the archetect and
+operations tab so archetect tab is back in its default far left position"*
+
+Order 0 sorts **below** Core's Architect at 1, so Operations took the far-left slot and Architect
+moved right. **A tab bar is muscle memory**, and the owner kept clicking Operations while reaching
+for Architect — a cost nothing in the original reasoning had weighed. Being first in the bar was
+never what row 821 asked for; **reachability** was, and that half is built and is independent of
+this field.
+
+The proof claim is re-aimed and now asserts **both** bounds, because a one-sided bound would pass
+a value that re-broke the other end: above Architect (1) so Architect keeps far left, and below
+Work (10) so Operations lands in the slot Architect used to hold. Three plants hold it — the far
+right of the bar, order 0 taking the slot back, and order 1 sorting level with Architect.
 
 **The remap is not built, on purpose, and the absence is asserted rather than assumed.** The proof
 refuses a patch against `MainButtonDef` in the package's `Patches/` folder, and refuses any C# of

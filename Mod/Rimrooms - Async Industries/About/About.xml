@@ -3,7 +3,7 @@
   <name>Rimrooms - Async Industries</name>
   <author>Operator</author>
   <packageId>Rimrooms.AsyncIndustries</packageId>
-  <modVersion>0.12.79-dev</modVersion>
+  <modVersion>0.12.80-dev</modVersion>
   <supportedVersions>
     <li>1.6</li>
   </supportedVersions>
@@ -1765,7 +1765,7 @@
     <li>proxyer.dismantleancientjunk</li>
     <li>VehiclesWrecksExpanded.Revisited</li>
   </loadAfter>
-  <description>Development build 0.12.79-dev. Gameplay acceptance is pending; this is not a finished campaign release.
+  <description>Development build 0.12.80-dev. Gameplay acceptance is pending; this is not a finished campaign release.
 
 Rimrooms - Async Industries is a company-management campaign about an authorised research branch that investigates, contains and profits from unstable spaces beyond a gate.
 

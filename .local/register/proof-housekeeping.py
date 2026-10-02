@@ -296,12 +296,26 @@ print("")
 print("the queue rows these close")
 print("-" * 90)
 
+# RE-AIMED 2026-10-02, and the re-aim strengthens the claim rather than relaxing it.
+#
+# Owner direction, verbatim: *"we need to move all finished items to finalized.md from the
+# todo, the todods sahll never hold completed items, they are always to be moved to finalized
+# first then deleted from the todods once confirmed virbatium transfer"*. A closed row no
+# longer sits in the queue at all, so reading the closure marker out of `docs/TODO.md` is
+# reading the wrong file -- these four rows closed and were archived.
+#
+# "Closed" is now asserted in BOTH directions, which the single-file read could not do:
+# the closure is recorded in the archive, AND the row is gone from the queue. A row that was
+# flipped to [x] and left sitting in the queue would have passed the old claim and fails this
+# one; so would a row deleted from the queue with nothing written to the archive.
+archive = read(os.path.join(REPO, "docs", "FINALIZED.md"))
+
 # Counted where a marker is used twice, because the plant harness replaces the first
 # occurrence and a second one left the claim passing.
 check("both retro-sweep rows are closed",
-      queue.count("**SWEPT 0.12.42-dev") >= 2,
+      archive.count("**SWEPT 0.12.42-dev") >= 2,
       "-- rows 206 and 302 are one sweep and both carry the marker (found %d)"
-      % queue.count("**SWEPT 0.12.42-dev"))
+      % archive.count("**SWEPT 0.12.42-dev"))
 
 for marker, what in (
         ("**SWEPT 0.12.42-dev. All twenty-one families are now done",
@@ -309,7 +323,10 @@ for marker, what in (
         ("**RECONCILED 0.12.42-dev, and the row underestimated", "row 1054, the master backlog"),
         ("**BUILT 0.12.42-dev as `tools/extract-economy-workbook.py`", "rows 1268 and 1269"),
         ("**BUILT 0.12.42-dev as `tools/check-compliance.py`", "rows 1286-1290")):
-    check("%s is closed in the queue" % what, marker in queue)
+    check("%s is closed in the archive" % what, marker in archive)
+    check("%s no longer sits in the queue" % what, marker not in queue,
+          "-- a finished row left in docs/TODO.md is the defect the 2026-10-02 direction "
+          "names: the queue shall never hold completed items")
 
 print("")
 if failures:

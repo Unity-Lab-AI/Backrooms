@@ -27,6 +27,9 @@ README = "outputs/rimrooms-async-industries-register-2026-09-27/README.md"
 MASTER = "docs/PREPRODUCTION_AND_IMPLEMENTATION_TODO.md"
 DOC = "docs/COMPLIANCE_AND_OFFICIAL_VERSIONS.md"
 QUEUE = "docs/TODO.md"
+# The queue no longer holds a finished row: owner direction 2026-10-02 moves every
+# [x] row to the archive, so a closure marker is planted against the archive now.
+ARCHIVE = "docs/FINALIZED.md"
 PLANNER = "src/RimroomsAsyncIndustries/Expedition/CrewPlanner.cs"
 PATCH = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_GlowPodMarker.xml"
 ABOUT = "Mod/Rimrooms - Async Industries/About/About.xml"
@@ -237,19 +240,19 @@ PLANTS = [
      "Done.", PROOF),
 
     # ---------------------------------------------- the queue closures
-    ("the retro sweep is not closed in the queue", QUEUE,
+    ("the retro sweep is not closed in the archive", ARCHIVE,
      "**SWEPT 0.12.42-dev. All twenty-one families are now done",
      "**Still to sweep", PROOF),
 
-    ("the master reconciliation is not closed in the queue", QUEUE,
+    ("the master reconciliation is not closed in the archive", ARCHIVE,
      "**RECONCILED 0.12.42-dev, and the row underestimated",
      "**RECONCILED later, and the row underestimated", PROOF),
 
-    ("the workbook generator is not closed in the queue", QUEUE,
+    ("the workbook generator is not closed in the archive", ARCHIVE,
      "**BUILT 0.12.42-dev as `tools/extract-economy-workbook.py`",
      "**BUILT later as `tools/extract-economy-workbook.py`", PROOF),
 
-    ("the compliance checker is not closed in the queue", QUEUE,
+    ("the compliance checker is not closed in the archive", ARCHIVE,
      "**BUILT 0.12.42-dev as `tools/check-compliance.py`",
      "**BUILT later as `tools/check-compliance.py`", PROOF),
 ]

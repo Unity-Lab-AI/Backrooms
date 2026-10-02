@@ -199,6 +199,21 @@ Describe features by **WHAT THEY DO**, not by which task built them:
 
 Never delete a TODO entry — or remove its content — until its verbatim text has been written to `docs/FINALIZED.md` AND the write has been verified.
 
+## The second rule — A QUEUE NEVER HOLDS A COMPLETED ITEM
+
+Added 2026-10-02 by owner direction, verbatim: *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+The first rule above governs the ORDER of a removal. This one makes the removal **mandatory**, which the first never said:
+
+- **Every queue tier carries pending, in-progress and post-completion-test rows ONLY.** `docs/TODO.md` and `docs/DECOMPOSED.md` — and any queue file a project adds — hold `[ ]`, `[~]` and `[T]`. **`[x]` is a transient state in a queue file**, legal only between finishing a task and archiving it in the same piece of work.
+- **A `[x]` row still sitting in a queue is a defect to be cleared, not a record to be kept there.** It is not "harmless history". It makes the queue read as outstanding work, and at volume it buries what is actually left: the direction above was given when `docs/TODO.md` held 727 `[x]` rows in 2,716 lines, and taking them out moved the open count from 42 to 79 without closing or opening a single thing. The old number was a count of a prefix nobody could read to the end of.
+- **Archive at the end of every batch that closes rows.** Not "eventually", not at a milestone. The same checkpoint that flips a row to `[x]` moves it.
+- **`[T]` is NOT finished work** and never archives on these grounds. A `[T]` row belongs to the post-completion test phase, cannot be closed without the game running, and gates nothing.
+- **A section titled DONE whose rows are still `[ ]` does not move.** The title is not the marker. Promoting a row the owner never ticked is inventing a closure — read it and tick it by hand, or leave it.
+- **Verbatim is proved, not asserted.** "Confirmed verbatim transfer" means a mechanical identity, not a reading: partition the source file's line indices into kept and moved, assert that reassembling the two halves reproduces the original byte for byte, write the archive first, confirm every moved line is present in it, and only then rewrite the queue. A failed confirmation restores the archive and leaves the queue untouched. This project's implementation is `.local/qa/archive-finished-todo.py` with `.local/qa/verify-archive-move.py` re-checking the result independently.
+- **A closed item moves WITH its context.** A whole section that is a closed record end to end, or a whole owner-direction group whose every row is done, moves intact — header, prose and rows. Shredding a closure into loose bullets strands the owner's words over empty space and is itself a LAW #0 problem.
+- **Moved rows land in a delimited archive region**, so a checker can tell "archived from the queue" apart from "never reached the queue". The two are opposite facts and the second is still a build failure.
+
 ## The sequence
 
 1. Identify the completed task in `docs/TODO.md`

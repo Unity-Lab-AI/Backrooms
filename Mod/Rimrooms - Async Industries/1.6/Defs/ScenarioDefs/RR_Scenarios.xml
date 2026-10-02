@@ -95,7 +95,17 @@ Three people by default. Customise your staff and stock with native setup or Pre
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>WoodLog</thingDef><count>200</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>Cloth</thingDef><count>120</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>Steel</thingDef><count>80</count></li>
-        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>MealSimple</thingDef><count>24</count></li>
+        <!-- Owner direction 2026-10-02, verbatim: "should start scenerio with survival meals
+             not simple meals and should be like 100 to start besides whats set in prepare
+             carfully", narrowed to "it was just the simple meals that need to be survioval
+             meals and they need to properly spawn in with starting goods".
+
+             This was MealSimple 24 and it was the only simple meal any scenario granted;
+             Async grants MealSurvivalPack 50 and solo/group 5, so the Store was the odd one
+             out. A packaged survival meal does not spoil, which is the behaviour a shop full
+             of stock wants - MealSimple carries daysToRotStart and a start that hands the
+             player two dozen rotting meals is a start that quietly takes them away again. -->
+        <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>MealSurvivalPack</thingDef><count>100</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>MedicineHerbal</thingDef><count>8</count></li>
         <li Class="ScenPart_StartingThing_Defined"><def>StartingThing_Defined</def><thingDef>Gun_Revolver</thingDef><count>1</count></li>
       </parts>

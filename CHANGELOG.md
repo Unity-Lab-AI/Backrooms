@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.12.80-dev - 2026-10-02 - Architect gets its corner back, and the shop stocks a meal that keeps
+
+- **The Architect tab is at the far left again.** The Operations tab had taken that slot, so
+  reaching for Architect out of habit opened Operations instead. The two have swapped: Architect
+  sits where it always did and Operations is immediately to its right. **Nothing about Core's own
+  buttons or any other mod's was changed to do it** - only this mod's own button moved.
+- **The Furniture & Knickknack Store starts with 100 packaged survival meals instead of 24 simple
+  meals.** A simple meal spoils, so a shop start was handing you two dozen meals and then quietly
+  taking them away. It was also the only start granting a simple meal at all; the other two
+  already used survival packs.
+
+Nothing else in the game changed. No gameplay, balance, performance or compatibility result is
+claimed.
+
 ## 0.12.79-dev - 2026-10-01 - you do not need a debug server to play this
 
 - **The mod no longer tells you it requires a debug server.** A QA instrument that only its author

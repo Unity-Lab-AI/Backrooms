@@ -7691,3 +7691,6265 @@ machinery-not-behaviour**), and a plant that tested a mod name in a **comment** 
 `80A40D4655E2D6AF1A7CD3861F341431CD6D8C2FCCE7265FD4487D94BF92F759`, measured after the version bump, reproduced by two clean rebuilds.
 **Sixteen checkers pass, FORTY-NINE proofs hold, 12 of 12 in the new suite, 771 plant anchors
 findable.**
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-02)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **30 whole `##` sections** that were closed records end to end, **51 whole direction groups** whose every row was done, and **237 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TODO.md`
+
+- [x] **"(You do know how to properly make rimworld mods right for 1.6?)"** - answered plainly in the session, and the answer is the shape of the repo: `loadFolders.xml` with a `1.6` folder, `About.xml` carrying `packageId` and `<supportedVersions><li>1.6</li>`, defs as XML under `1.6/Defs/`, behaviour as `ThingComp` / `GameComponent` / `WorkGiver` / `JobDriver` subclasses in a net472 C# 7.3 assembly at `1.6/Assemblies/`, keyed strings under `1.6/Languages/`, **Core-only, zero dependencies, no Harmony, no patch operations against other mods' defs.**
+- [x] **"should of asked that before now"** - fair. Recorded here rather than answered and forgotten.
+- [x] **"get to work!"** - research tier 2 SHIPPED in 0.11.6-dev: seven projects, one per branch, each requiring its tier 1 sibling and a completed distortion log. Record: `docs/implementation/RESEARCH_TIER2_IMPLEMENTATION.md`.
+**Verbatim owner question (2026-09-29), at the fork:** *"we may need our own story teller right? or is that way way to much work? with the “AI” like ai thats not an ai that the storytellers use"*
+
+- [x] **"we may need our own story teller right?"** - **No, and it is not a question of effort.** A `StorytellerDef` is an **exclusive slot**: the player picks exactly one, so shipping ours means asking somebody running 295 mods to abandon Cassandra or Randy to play this one. That is the opposite of *"we are making a mod that works with the other 274"*. It also needs `portraitLarge` / `portraitTiny` art, which the no-new-art rule forbids, and its job is pacing **global** incidents when this mod's pressure comes from the gate, which the player controls deliberately.
+- [x] **"with the “AI” like ai thats not an ai that the storytellers use"** - **exactly right, and that is why we do not need the storyteller itself.** There is no intelligence in one: a `StorytellerComp` rolls a mean-time-between against colony wealth and population and picks from a weighted `IncidentDef` list. The part that feels like a director is **`IncidentWorker.CanFireNowSub`** - the conditions - and that is ours to write without owning the slot.
+- [x] **A real gap found while answering: this mod has ZERO `IncidentDef`s.** Everything fires from its own `GameComponent` ticks, so whatever storyteller the player chose knows nothing about the mod and never paces a single thing it does.
+
+**Owner decision at that fork: "Both - guaranteed floor, storyteller flavour".**
+
+- [x] **The clean-up team fires from our own component, deterministically** - SHIPPED in 0.11.7-dev. Record: `docs/implementation/FACILITY_RELIEF_IMPLEMENTATION.md`. It also wired **five `PawnKindDef`s that were authored and read by nothing**. - the guaranteed floor. *"so that facilities never die"* is a promise, and a promise must never be at the mercy of a dice roll.
+- [x] **Lighter world-facing events register as `IncidentDef`s with our own `IncidentWorker`s** - SHIPPED in 0.11.8-dev, the mod’s first two. Record: `docs/implementation/INCIDENT_SURFACE_IMPLEMENTATION.md`. **No `StorytellerDef`, now asserted as a never.**, so the player's chosen storyteller paces them and the mod joins the game's event economy instead of running beside it. This is also the correct home for arc 6, *"respond to openings in settlements"*.
+
+**Verbatim owner direction (2026-09-29), correcting 0.12.0-dev:** *"and remember the solo/group start in a backroom needs to 100% have a exit to map natural portal on their first backrroms level with natural portals deeper to an extent till they would need to buidl theri own gate"*
+
+- [x] **"needs to 100% have a exit to map natural portal on their first backrroms level"** - SHIPPED 0.12.2-dev. - **THIS CORRECTS WHAT 0.12.0-dev SHIPPED.** That checkpoint's record says, in as many words, *"No gate anchor and no return cell... There is no way home and finding one is the whole opening."* That is wrong. The first level must have a **guaranteed** natural portal that exits to a map - not a discovered one, not a rarity draw. `NaturalFrontierService` finds frontiers at roughly one doorway in twelve, capped at two per coordinate, and a way out additionally requires a marked way home that a solo start does not have. **None of that can deliver 100%.**
+- [x] **"with natural portals deeper to an extent"** - SHIPPED 0.12.1-dev, through depth 3. - natural portals also lead **inward** from the first level, and keep doing so for a bounded number of depths.
+- [x] **"till they would need to buidl theri own gate"** - SHIPPED 0.12.1-dev. - past that extent the natural chain stops, and going deeper requires a gate the player built. That is the convergence into company play for this start: the Backrooms hands you a few levels for free and then asks you to become an engineer.
+
+**What this means concretely, before any of it is built:**
+
+- A natural gate is **permanently open**, has no timer, operator, power, close command or address book, and may not dial (invariant 12). So the exit is not a mechanism the player operates; it is a door that is simply a way out.
+- The exit must be created **at generation**, by `GenStep_InsideStart`, not discovered by survey work. A survey draw is a probability and the direction says **100%**.
+- The existing way-out path registers against a `CompRimroomsEmergence` anchor, which is **a door the player marked on their own map**. A solo/group start has no colony and no marked door, so that path cannot be the one used. The exit needs a destination that exists at new-game.
+- The depth extent needs a number and it is **not yet chosen**. It is the difference between "a few levels of free exploration" and "the whole game without ever building anything".
+
+**Verbatim owner answers (2026-09-29), four open questions closed at once:**
+
+**1. Natural gates. CLOSED 0.12.4-dev as a confirmation warning.** *"we with minify i guess dont worry about it, can we at least do a rim style pop up warning ull lose valuable access to the backrooms and will have to find your own way back in"*
+
+- [x] **This deliberately RELAXES the earlier direction** *"natruals can not be destoryed or moved"*. The owner's own words are *"dont worry about it"* - so the mod does **not** fight Core over destructibility or movability, and does not absorb damage either, because that was not asked for.
+- [x] **What is asked for is a warning:** SHIPPED 0.12.4-dev. a RimWorld-style confirmation when a player designates a natural gate for deconstruction, saying plainly that they will lose valuable access to the Backrooms and will have to find their own way back in.
+- [x] **So the rule becomes informed consent rather than prohibition.** A player may close their own way in; they may not do it by accident. That is a better fit with *"this is all open eneded they can play how they choose"* than a prohibition would have been.
+
+**2. Solo/group guidance. CLOSED 0.12.4-dev.** *"option three with hints like i need to contact someone about this crazy shit"*
+
+- [x] **Option three: no tutorial line at all until contact**, and then the ordinary line begins. Nobody is helping them because nobody knows they exist.
+- [x] **Plus hints, in the survivors' own voice** - SHIPPED 0.12.4-dev, four of them.** ORIGINAL NOTE FOLLOWS:** - *"i need to contact someone about this crazy shit"*. Not requests, not objectives, not a quest chain: things the people down there think and say. **A hint describes; it never asks**, which is what keeps this open-ended.
+
+**3. `reserveChargePowerWatts`. CLOSED 0.12.4-dev, and it revived a tier 0 capability that promised an unlock and delivered nothing.** *"A supply requirement before opening"*
+
+- [x] The gate **refuses to open unless its circuit can deliver this much power**. Distinct from `minimumPowerHeadroomWatts` as the stricter check: it means real generation rather than a charged battery, so a player cannot open a gate on one battery and no generator.
+
+**4. Idle draw.** *"Keep 250 W (Recommended)"*
+
+- [x] **SETTLED. The 250 W idle draw stays.** A designated gate is a machine that is on: it holds calibration, keeps its address book live and keeps the reserve warm. It never drains below what an emergency return costs, so it is a visible cost and never a trap. **This closes the open balance question raised in 0.11.5-dev** - no change needed, the shipped behaviour is the intended behaviour.
+
+**Verbatim owner clarification (2026-09-29), immediately after the above:** *"if u get what i mean .. in the real world maps the portals dont extend into the real world environment so in the real world you can mine and build and explore directly behind the gates with out actually effecting the gate, unless there is connected need requipremd equipemnet directly required placemnets behind the pgate doors.. so yeah you get it"*
+
+- [x] **"in the real world maps the portals dont extend into the real world environment"** - SHIPPED 0.12.3-dev, and asserted by `proof-portal-footprint.py`. - **a portal is exactly its own door cell and reserves nothing else.** There is no aura, no claimed radius, no protected zone and no reservation projected onto the local map. This is the rule the two preceding directions were pointing at.
+- [x] **"in the real world you can mine and build and explore directly behind the gates with out actually effecting the gate"** — **PROVED 0.12.36-dev rather than built, because it was already true.** Every reason a gate can stop working was enumerated — **six**: the kill switch, power, the operator, two clocks, and the deliberate cutoff — and **not one reads an adjacent cell**. Nothing in the gate calls `CellsAdjacent`. The proof asserts the whole **set**, so a seventh reason cannot appear without this being reconsidered. The one placement constraint is the approach cell (row 113, closed 0.12.27-dev): reserved against **blocking** placement, flooring fine, every uncertainty accepted. Roofing behind a gate became real work in the same checkpoint. Was:  - the cells around and behind a gate are **ordinary map**. Mine them, wall them, roof them, put a bedroom there. The gate does not care and must keep working.
+- [x] **"unless there is connected need requipremd equipemnet directly required placemnets behind the pgate doors"** — **CLOSED 0.12.36-dev, and the row's premise turned out to be wrong about this mod.** It says linked equipment constrains placement *"because a link has a reach"*. `GateEquipmentLinks` deliberately has **no distance check and no line-of-sight check** — owner direction was *"reach fare and through walls"*, and Core's own `CompProperties_Facility` defaults (`maxDistance = 8f`, `requiresLOS = true`) are the opposite of that, so the reach was removed rather than reused. **Same map and same branch is the whole spatial rule.** The real constraints are power-net membership for anything with a power component, and single ownership across gates. Was:  - **the one exception, and it is not the portal's doing.** Linked equipment - the console, the bound battery, shelves, analysers, tool cabinets - has placement requirements **of its own**, because a link has a reach. That is the equipment's constraint, not the portal projecting a zone, and the distinction matters: a player who is told "the gate needs space" would build differently from one told "this cabinet has to be within reach of that gate".
+
+**Where this is very likely broken today, to check before building:**
+
+- `PortalEndpointRecord` **snapshots the approach cell** - *"Endpoint cells are snapshots: moving a door cannot silently redirect a saved route"* - and `Matches(thing, approach)` demands exact equality.
+- `PortalAddressService.UsableThreshold(door, approach, map)` then validates that saved cell.
+- So **a wall built on a saved approach cell would break a live connection**, which is precisely the *"affecting the gate"* the owner says must not happen.
+- **The likely correct shape:** keep the **anchor** cell snapshotted, because that is what stops a moved door silently redirecting a route, and **re-derive the approach cell** from the door's current surroundings at use time. Walling off your own door should stop you walking through it exactly as it does for any RimWorld door - and no more than that.
+
+**Verbatim owner direction (2026-09-29), gate placement and building around a portal:** *"and technically the way the gate works and make a portal when placing it on your map or having a natural one(natruals can not be destoryed or moved, so one can technically build a roomm directly on the other side of the portal door and it shouldnt interfere with the portal transition to the seeded backrooms"*
+
+- [x] **"natruals can not be destoryed or moved"** - **RELAXED by the owner and CLOSED 0.12.4-dev** as a confirmation warning rather than a prohibition. - a natural gate is **indestructible and immovable**. It is not something the branch built and it is not something the branch can unbuild. **Check first whether this is already true:** a natural gate is a Core `Door` with a registered natural address, and a Core door has hit points and a deconstruct designation, so a player can very probably destroy one today - which would break a connection the design calls **permanently open**.
+- [x] **"one can technically build a roomm directly on the other side of the portal door"** - SHIPPED 0.12.3-dev. - the player may build **on the local map**, right up against and around the portal door, including enclosing its far face in a room of their own.
+- [x] **"and it shouldnt interfere with the portal transition to the seeded backrooms"** - SHIPPED 0.12.3-dev. A real defect: the approach cell was frozen at registration. - and none of that may break the crossing. **This is the part most likely to be broken today:** every threshold is validated through `PortalAddressService.UsableThreshold(door, approach, map)` against an **approach cell**, and a wall built on that cell would make a permanently open gate refuse. A player who builds a proper airlock around their own gate must not lose it by doing so.
+- [x] **What to work out before building any of it:** whether the approach cell should be re-derived when the local geometry changes, or whether the rule should be that a portal door's approach cell simply cannot be built on - and if the latter, how the player is told. Both readings are defensible, which by invariant 134 means asking rather than guessing. — **ASKED AND BUILT, 0.12.27-dev. Owner answer, verbatim:** *"option 2 but flooring is fine"* — sharper than either option offered, because it carves terrain out of "built on". **And it was not either/or:** re-derivation already shipped at 0.12.3-dev and is the guarantee; this is the protection, so a player is stopped before bricking a gate and told which gate. **Flooring is free by construction** — a floor is a `TerrainDef` and terrain placement never consults a `PlaceWorker`. Blocking is decided by Core’s own `GenGrid.Standable` rule (`passability != Traversability.Standable`), never a list of def names, so another mod’s unknown wall is handled. One addition to Core’s abstract `BuildingBase` reaches every descendant including other mods’ buildings, without touching their files. Record: [you cannot brick your own gate](implementation/GATE_APPROACH_CELL_IMPLEMENTATION.md).
+
+- [x] **"Emerges on a fresh tile chosen by the seed"** - **SUPERSEDED** by the owner at the exit-route fork: *"Two maps at start, coordinate is real"*. Shipped 0.12.2-dev. - the exit opens onto a **fresh world tile**, and the tile is **derived deterministically from the coordinate's own seed** rather than chosen by the player. The survivor crawls out of a hole and comes out where the hole comes out. That surface map is then theirs to build a facility on, which is the older direction this serves: *"the solo/group start has to be able to get out and start building thsir facility"*.
+- [x] **"and the tutorial like quest chains should lay it all out"** - the solo/group start gets **its own tutorial line**, the way Async Industries has one. It has to teach, in order: that there is a way out and where to look, that coming out gives you a tile to build on, that the natural chain runs out at depth 3, and that a gate is how you go further. **Requests currently have no per-start scoping** - the six tutorial requests plus the hinge are Async's, unconditionally - so a second line needs the request shape to know which start it belongs to. — **ANSWERED AND BUILT, 0.12.30-dev. Owner direction, verbatim:** *"once they "contact the cvompany in comms" they can start async quest line"*. **There is no separate solo line, and that is the answer, not a shortcut:** a branch out of contact calls the corporation from a comms console, and the EXISTING Async line starts on its own because `OfferNextTutorialRequest` already gated on contact. **What was actually wrong was far worse than this row:** `EstablishCorporationContact()` had **no caller anywhere**, so the Store and Solo/Group starts — two of three — had no tutorial, no requests, no catalogue and no clean-up team rescue, permanently. Record: [two of three starts had no campaign](implementation/CORPORATE_CONTACT_IMPLEMENTATION.md).
+**Verbatim owner answers (2026-09-29), at the starts fork:** *"All seven tier-0 roots"* / *"option 1 and remember the other one is solo/group start.. group have been known to end up together inside so leets use the in backrooms start to be 1-5 pawns player settable with normal set up or edb prepare carefully mod and or character editor"*
+
+- [x] **"All seven tier-0 roots"** - SHIPPED 0.11.9-dev. Async Industries listed `<completedProjects />`, nothing finished, which contradicted *"Async industries starts with this tech research and other basic gate techs it needs to operate and begin researching and gate operations at basic levels"*. It now begins with all seven tier 0 branch roots **plus `RR_GateTelemetry`**. Named before the choice and taken knowingly: Telemetry puts `PortalWindowTier` at 1, the floor at which something may follow a crew out, so **Async is exposed to incursion from its first opening**.
+- [x] **The Store start** - SHIPPED 0.11.9-dev. 50x50 shop, three ordinary people, 200 silver in the till, an ordinary door in the back room, **no corporation contact and no completed research**.
+- [x] **"remember the other one is solo/group start"** - SHIPPED 0.12.0-dev. It is `lone_survivor` by stable scenario ID and **solo/group** by name.
+- [x] **"group have been known to end up together inside so leets use the in backrooms start to be 1-5 pawns player settable"** - SHIPPED. - a `ScenPart_ConfigPage_ConfigureStartingPawns` with a default the player may raise to five. The fiction is that a group can be taken together.
+- [x] **"with normal set up or edb prepare carefully mod and or character editor"** - SHIPPED. - already the pattern both shipped starts follow: the native config page goes first, every starting item is a native `ScenPart_StartingThing_Defined`, and the mod's own scen parts are `visible=false` and carry only the layout and the branch. Register row **[85] EdB Prepare Carefully** and Character Editor see an ordinary scenario.
+
+### Research tier 2 - what the sweep changed before a line was written
+
+- [x] **Three of the seven knobs named in the previous handoff were verified hollow and replaced.** The handoff listed them as "already identified and none of them needs inventing", and checking them against their real read sites is what caught it:
+  - `stablePowerTicksRequired` is **60 ticks, one second**. A project halving it would be imperceptible.
+  - `MaximumOpenOrders` is a private sanity cap of **100** open orders. No player reaches it.
+  - catalogue `maxOrderQuantity` is already **500 to 1,000,000** per row and clamped again by `MaximumActiveQuantity`. Raising it changes nothing anyone sees.
+  - All three would have shipped exactly the lie `proof-research-branches.py` exists to prevent: a capability that **is** read, moving a number that does not matter. The proof cannot catch that, because the read site is real.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+  - [x] Finish resumable route scheduling, same-pawn/cargo crossing recovery and player-facing connection controls; integrate their compilation evidence. — **BUILT.** A crossing preflights fully, then moves, and restores on failure — invariant 55: a transfer that can lose a pawn is a corruption, not a threat. A bounded scan that ran out of budget is **pending**, never "no route" (invariant 4).
+  - [x] Implement and integrate native work/needs adapters, physical ingredient logistics and per-provider coverage without separate mandatory labor/material pools. — **BUILT.** Seven adapter families, with physical ingredient logistics through `ConnectedBillAdapter` and real cargo movement rather than teleported quantities.
+- [x] **Resume step 1:** "Review the crossing service's documented permission, recovery and state boundaries before connecting callers. Finish unresolved constraints rather than weakening checks. Preserve original pawns/cargo and no-wipe landings." — CLOSED 2026-09-28, record `implementation/CONNECTED_CROSSING_CALLER_REVIEW.md`. Archived in `FINALIZED.md`.
+- [x] **Resume step 2:** "Add explicit address registration and discovery using the existing campaign coordinate/site owner. Preserve seeds and visited maps; provide an explicit legacy saved-endpoint repair path. No auto-conversion of active legacy missions." — CLOSED 2026-09-28 in 0.4.2-dev, record `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`. Archived in `FINALIZED.md`.
+- [x] **Resume step 3:** "Implement ordinary local threshold approach/crossing jobs and player controls without crew/manifests. Wire laboratory open/close/recovery and permanent natural links. Define the remaining emergency-return route without duplicate debits or teleporting stranded workers home." — CLOSED 2026-09-28 in 0.4.2-dev, record `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`. Archived in `FINALIZED.md`.
+  - [x] Saved work intents, quantity leases and native destination job revalidation — BUILT 2026-09-28 in 0.5.0-dev. `RimroomsConnectedWorkComponent` (saved intents, leases, bounded maintenance), `ConnectedWorkIntent`, `ConnectedRouteService` (bounded; a budget-limited search is pending, never "no route"), `ConnectedWorkAdapter` (candidate half explicitly separated from the definitive native half). Record `implementation/CONNECTED_WORK_IMPLEMENTATION.md`.
+  - [x] Physical hauling — BUILT 2026-09-28 in 0.5.0-dev. `ConnectedHaulingAdapter` plus `RR_ConnectedFetch` / `RR_ConnectedDeliver` and two work givers for the family (one high-priority that only finishes committed trips, one low-priority that only starts them). Priorities, schedules, areas, locks, custody and actual inventory are preserved by riding Core's own `JobGiver_Work`; nothing is ever player-forced. Cell storage destinations only; container and provider destinations are deferred.
+  - [x] Rescue and remains — BUILT 2026-09-28 in 0.5.2-dev. Our own downed people carried home to a bed (`ConnectedCasualtyAdapter`, Core's `CanRescueNow` far-side check and Core's `Toils_Bed` handoff on arrival); our dead carried home to a grave or storage through the ordinary hauling family. Capture stays a player order by design. Record `implementation/CONNECTED_CASUALTIES_IMPLEMENTATION.md`.
+  - [x] Tending across a gate — a doctor crossing to a patient who stays put, or medicine carried to them. A different capability from carrying a person back; not implemented. — BUILT 2026-09-28 in 0.5.9-dev, **both halves as one item**. `TendingProvider` (doctor travels; third deployment provider) and `ConnectedMedicineAdapter` (medicine travels; first family whose cargo is consumed by the work). Nine medical profile rows read from their reviews first. Surgery, patient feeding and prisoner/guest care remain as separately reviewed native routes, recorded in `DEFERRED.md`. Record `implementation/CONNECTED_TENDING_IMPLEMENTATION.md`.
+  - [x] Construction supply — BUILT 2026-09-28 in 0.5.3-dev. Real material carried through a gate into a real build site (frame or blueprint), using the site's own material requirement and Core's own container and construct toils. Record `implementation/CONNECTED_CONSTRUCTION_IMPLEMENTATION.md`.
+  - [x] Construction finishing — a worker crossing to do build work with nothing carried. Needs the travel-to-work intent shape rather than another adapter; see `DEFERRED.md`. **Owner-selected as the next build (2026-09-28).** — BUILT 2026-09-28 in 0.5.5-dev. `ConnectedDeploymentIntent` (a sibling record, not a new phase on the work intent), `ConnectedDeploymentProvider` with `ConstructionFinishingProvider`, two work givers in Core's `Construction` type at 82 (continue) and 5 (plan), and `ConnectedCrossing` as the one shared gate step. On arrival the deployment issues nothing: Core's own `WorkGiver_ConstructFinishFrames` does the building. Nobody is ever walked home. Record `implementation/CONNECTED_TRAVEL_TO_WORK_IMPLEMENTATION.md`.
+  - [x] Bills and unfinished work. **Owner-selected as next (2026-09-28): finish the remaining work families before the faction layer.** — BUILT 2026-09-28 in 0.5.7-dev. `ConnectedBillAdapter` carries real ingredients through a gate into storage inside the bill's own `ingredientSearchRadius`, and Core's own `WorkGiver_DoBill` then finds and allocates them. The actual `Bill` is saved by reference, as Core's own `UnfinishedThing` does. **Unfinished work is deliberately out of scope**: Core binds a part-made thing to one creator (`Creator == pawn`, plus `BoundUft`/`BoundWorker`), so no other colonist may ever finish one — delivering material and stopping is the correct behaviour, not a shortfall. `Bill_Medical`, `Bill_Autonomous` and `Bill_Mech` each still need their own source review. Record `implementation/CONNECTED_BILLS_IMPLEMENTATION.md`.
+  - [x] Research and stationary work. **Next (2026-09-28).** Should reuse the travel-to-work *deployment* shape rather than a carry adapter: stationary work at a real bench with nothing carried. — BUILT 2026-09-28 in 0.5.8-dev, and it did reuse the shape exactly: `ResearchProvider` is one new file with no new record, driver or JobDef. Five profile rows were read from their existing reviews first (279, 76, 191, 83, 39) and none needed an adapter, because a deployment never issues the work. Record `implementation/CONNECTED_RESEARCH_IMPLEMENTATION.md`.
+  - [x] Food. **Next (2026-09-28).** Includes patient feeding (`DoctorFeedHumanlikes` / `DoctorFeedAnimals`), which belongs here rather than with tending. — BUILT 2026-09-29 in 0.6.0-dev as one item with three parts. `ConnectedFoodAdapter` (carry) and `FeedingProvider` (deployment) shipped; the third part, a hungry pawn walking through a gate to eat, is **decided against** rather than deferred, because eating is a think-tree need and a closing gate would strand a starving pawn. Rows 125 Meals On Wheels and 269 Gastronomy were reviewed as part of this item. Record `implementation/CONNECTED_FOOD_IMPLEMENTATION.md`.
+  - [x] Rest and beds. **Next (2026-09-29).** Note the same question food just answered: sleeping is a think-tree need, not work, so expect the answer to be logistical (beds available where people are) rather than sending a tired pawn through a gate. `RestUtility` rejects off-map beds, which is already pinned. — BUILT 2026-09-29 in 0.6.1-dev. The off-map bed rejection was **verified at source** (`CanUseBedNow` returns false when the bed's map differs from the sleeper's `MapHeld`), which closes the tired-pawn question outright rather than by preference, and closes bed ownership across a gate with it. Beds existing on the far side was verified as already covered by the construction families. The one real gap, `RescueInPlaceProvider`, was built: crossing to bed a casualty where they lie rather than hauling them home. Record `implementation/CONNECTED_REST_IMPLEMENTATION.md`.
+- [x] **Bill work deployment** — **BUILT 0.6.5-dev** as five families, one per work type, because `WorkGiver_DoBill.StartOrResumeBillJob` compares a recipe's `requiredGiverWorkType` against `def.workType` and a bench belongs to a work type only through `fixedBillGiverDefs`. The bench set is unioned from the loaded giver defs, so a modded bench in an existing work type is covered with nothing named. Also **closed a shipped defect**: the carry family's `is Bill_Production` filter admitted `Bill_Autonomous` and `Bill_Mech`, which derive from it, contrary to that family's own record. Record `implementation/CONNECTED_BILL_WORK_IMPLEMENTATION.md`. Was: the largest gap and the one the bills record left open. `CONNECTED_BILLS_IMPLEMENTATION.md` settles delivering ingredients to a bill that `ShouldDoNow()` but never decides **who runs the bill** once the material is there, so a bench on a coordinate with nobody standing on it accumulates ingredients and produces nothing. The `UnfinishedThing` fact that record pins argues *for* a deployment: `ClosestUnfinishedThingForBill` validates `Creator == pawn` and `Bill_ProductionWithUft` binds `BoundUft` to a `BoundWorker`, so a half-made thing belongs to one colonist — which is why the *carry* family must never touch one, and why a **deployed** worker running Core's own `WorkGiver_DoBill` locally is correct by construction. One family covers `Cooking`, `Crafting`, `Smithing`, `Tailoring` and the sculpting half of `Art`.
+- [x] **DarkStudy deployment** — **BUILT 0.6.6-dev.** **28 families, 20 of them deployments**. Core's own scanner takes an explicit map (`GetStudiableThingsAndPlatforms(pawn.Map)`) and that method is a pure read of a per-map cache, so the candidate half is exact rather than reimplemented. Also **closed a second shipped defect**: the two childcare giver defs referenced the Biotech-only `Childcare` work type with **no `MayRequire`**, an unresolved cross-reference at load on a Core-only install since 0.6.4-dev — the same careful-C#-beside-a-contradicting-def shape as the `Bill_Production` defect. `tools/check-dlc-gating.py` now indexes the game's own data (6,063 DLC-only defs) so it cannot recur. Record `implementation/CONNECTED_DARK_STUDY_IMPLEMENTATION.md`. Was: Anomaly's single giver `StudyInteract` / `WorkGiver_DarkStudyInteract`, priority 110. Studying a contained entity is what this company does and a containment facility behind a portal is the premise, making this the most thematically apt item in the audit. `WorkTypeDefOf.DarkStudy` is `[MayRequireAnomaly]`, so it gates through `GetNamedSilentFail` exactly as `Childcare` does for Biotech.
+- [x] **Hauling upkeep deployment** — **BUILT 0.6.7-dev.** All thirty `Hauling` givers enumerated and classified: seven covered by existing carry families, three **decided against** because their semantics are map-bound (`HelpGatheringItemsForCaravan` and `LoadTransporters` depart from their own map; `HaulToPortal` is Core's own portal system), eleven DLC container givers named and left open pending a custody review — **all eleven BUILT 0.12.34-dev**, the review finding that Core forbids every one of them from moving anything between maps — and four built here. Its continue priority follows the **Hauling ladder's own documented exception** rather than the generic rule. Was: the carry families cover material crossing a gate, but the `Hauling` givers that are **local container operations on the far map** have no coverage at all: `EmptyEggBox`, `FillFermentingBarrel`, `TakeBeerOutOfFermentingBarrel`, `EmptyWasteContainer`, `HaulMechsToCharger`, `UnloadCarriers`, `TakeBioferriteOutOfHarvester`. Same shape as the bill gap. This also covers the `HaulMechsToCharger` half of the *"animals and mechs"* item above; `RepairMech` sits in `Smithing` and belongs to the bill row.
+- [x] **BasicWorker deployment, and Fishing settled first** — **BOTH BUILT 0.6.7-dev.** BasicWorker is purely designation-driven (`Flick`, `Open`, `EjectFuel`), so it reuses `FieldworkScan`. `Fishing` was settled and then overtaken: a coordinate *does* carry water (`GenStep_BackroomsDestination` uses `WaterDeep` as its void floor), but the deciding fact is that Core will not fish anywhere the player has not painted a `Zone_Fishing` — so it is the growing-zone shape and the terrain question is not load-bearing. Was:  — `Flick` is designation-driven, which puts it with the fieldwork families where nothing is inferred, and toggling a switch on a far map is a real thing a player cannot currently get; `Open` is likewise a designation on a specific container. `Fishing` (Odyssey, one giver, `[MayRequireOdyssey]`) needs water on the map, so **settle the generation question first** — if a generated coordinate never has fishable water the honest record is that the family is unnecessary rather than unbuilt.
+- [x] Save a portal/endpoint graph independent of expedition records, with distinct laboratory and permanent-natural lifetimes. *(source complete in 0.4.2-dev: graph from 0.4.1-dev plus the address registration that actually creates edges; runtime acceptance open)*
+- [x] Implement bidirectional free pawn movement, persistent crossing receipts and stable return endpoints. *(source complete in 0.4.2-dev: `RR_CrossPortal` job + `PortalTravelService`; the step is directional per call and both directions are orderable; runtime acceptance open)*
+- [x] Implement actual cross-portal hauling, construction ingredients, bills/production, research and care/needs access; list each supported native work route with source/acceptance evidence. — **BUILT.** All of these route through the adapter families, with real items carried by real pawns across a real threshold.
+- [x] Reconcile jobs and original cargo on closure/reopen, blocked endpoints, death, save/load and interrupted crossing without duplicating consumption or objects. — **BUILT.** And the hardest case is guaranteed rather than best-effort: **a gate closing on a crew strands them and never takes them.** `ShouldRemoveMapNow` returns false unconditionally and no gate source may call `PassToWorld`, proved by `proof-stranded-crew.py`.
+- [x] **SWEPT 0.12.42-dev. All twenty-one families are now done, and the last seven collapse into five family strings** because the register groups two or three names per family: *Materials, cargo and recovered resources*; *Medical, biological and recovery systems*; *World operations, contracts and commerce*; *Hospitality and visitor economy*; *Staff psychology, relationships and faction standing*. **Every one was already honoured and no code changed** -- which is the honest result and is worth stating plainly rather than dressing up. What did change is that **four of the rules were true only because of the current shape of the package**, and a rule with no check behind it is a promise, so `check-register-compliance.py` gained them with their row citations: no patch may name a `ThoughtDef` (row 2 -- *"keep any future company thoughts isolated and additive"*), a `TraderKindDef` (row 17 -- *"leave calls and trader options on the existing Comms Console"*), a `HediffDef` (the medical family) or a `MainButtonDef` (the hospitality family -- *"instead of replacing their native menus"*), and no patch may alter another def's stat bases (the materials family -- *"preserve each mod's normal material and weight behavior"*). **The finding worth keeping:** the medical family's rule is *"the core expedition loop must not require one medical or Biotech mod to treat a pawn"*, and **0.12.41-dev came within one decision of breaking it** -- had the crew planner's missing-medic gap been written as a refusal, which is the obvious way, the loop would have required a medic. It was advisory for a different reason and the register independently requires it. Record `implementation/HOUSEKEEPING_IMPLEMENTATION.md`, proof `proof-housekeeping.py`. Was: Integrate relevant profile work/storage/hauling providers; account for all 294 rows without asserting universal support from a successful load. — **PARTLY BUILT.** 14 of 21 system families swept. **7 remain:** medical, world operations, cargo, hospitality, materials, visitor economy, staff psychology. The row is right to forbid asserting coverage without evidence — invariant 23.
+- [x] Replace dispatch-only ordinary travel controls and scenario prerequisites; keep optional missions distinct from connection ownership. — **BUILT.** Crossing is a real ordered job (`RR_CrossPortal`) rather than a dispatch abstraction, and optional missions stay optional.
+- [x] Persist coordinate/seed/version/site/complexity and generated inhabitants/events; revisit the same saved space without reset. — **BUILT.** And anything feeding the layout fingerprint is **snapshotted rather than read live** — invariant 27, which was a live trap before it was a rule.
+- [x] Implement bounded procedural inhabitants/state combinations, rare monstrosities, evolving events and technology-driven complexity families. — **BUILT.** 0.8.2-dev through 0.8.5-dev: wanderers, survivors, anomalies and colonist echoes, with undiscovered inhabitants **held** until fog of war reveals them — because a cautious player would otherwise arrive to find everyone already starved.
+- [x] Keep inhabitants and monstrosities in the Backrooms: no non-player pawn crosses any gate on its own, an open gate is never an objective, lure, spawn target, raid route or attack trigger, and anything else returns only carried through by our own pawns, including people and monstrosities that are genuinely downed, dead or imprisoned. Enforced at one chokepoint; see [the rule](CONNECTED_COLONY_PORTALS.md#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side) and the [travel record](implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md).
+- [x] Author and implement the saved, bounded escalation ladder: a new coordinate starts quiet; pressure rises only from saved observable causes (operating history at that coordinate, depth and complexity, unlocked technology, what has already been taken out); caps on simultaneous encounters, inhabitants and events per opening and per coordinate, with raising a cap being itself a recorded progression step; quiet stretches as required content; no summing pressure across several open gates; and a revisit that resumes saved pressure without rerolling it up or down. — **BUILT.** The pressure ladder with depth bands, `Band.Hostile` as the single *"deeper levels"* threshold (invariant 50), and coherence decay. Below the band a hostile holds ground; at it, it hunts.
+- [x] Machine ownership adapter, natural discovery registration and player controls. *(0.4.2-dev: laboratory + natural address registration, deterministic discovered-coordinate API, Operations portal pane with open/close/emergency/crossing/reconcile controls. The discovery **trigger** that finds a new natural threshold in play is owned by step 5 and tracked in `DEFERRED.md`.)*
+- [x] Same-pawn crossing, carried-object custody and interrupted-transfer recovery. *(0.4.2-dev: the crossing job and reconcile surface connect the 0.4.1 API; runtime acceptance open)*
+- [x] Saved work intents, quantity leases and native destination job revalidation. — **BUILT.** One commitment per worker across every record kind (invariant 8), and destinations revalidated rather than trusted from the record.
+- [x] Work-specific hauling, construction, bill, research, medical and needs adapters. — **BUILT.** All present in `ConnectedWork/Adapters/`.
+- [x] **The remaining medical routes, each needing its own source review.** Surgery across a gate (`Bill_Medical` needs the patient present, and `uniqueRequiredIngredients` is a case no other family has); patient feeding, which belongs with the food family; prisoner and guest care including Hospitality's guest patients. Self-tend is local by definition and needs nothing from this layer. Source: `implementation/CONNECTED_TENDING_IMPLEMENTATION.md`. — **STILL OPEN.** Tending and medicine delivery ship (`ConnectedMedicineAdapter`, `TendingProvider`). **Surgery across a gate does not**, and it deliberately waits for its own source review rather than being assumed to work like tending. — **CLOSED, 0.12.33-dev. Two were already built; the third CANNOT be.** `Bill_Medical.GiverPawn` is the bill giver, so **the patient IS the bill**; `WorkGiver_DoBill` reserves it through `pawn.MapHeld.reservationManager`, which is per-map; and ingredients are searched on the **doctor’s** map around the patient. Doctor, patient and ingredients must be co-located, so there is no seam — **the patient comes home**, which `ConnectedCasualtyAdapter` has done since 0.5.2-dev. `uniqueRequiredIngredients` needs no handling for the same reason. Patient feeding (`FeedPatientUtility.IsHungry`, registered) and prisoner/guest care (`WardenProvider`, registered) were already done, and **Hospitality needs nothing**. Record: [surgery cannot cross](implementation/MEDICAL_AND_SURFACES_IMPLEMENTATION.md).
+- [x] **Procedural inhabitants, rare monstrosities, evolving saved events, technology-driven complexity families.** Source: `CONNECTED_COLONY_PORTALS.md` §People, monstrosities and increasing complexity. — **BUILT.** 0.8.2-dev through 0.8.8-dev, and 0.8.7-dev corrected a wrong finding of mine: a bench standing in a corridor **is** the content, so an archetype’s family constraint now lapses in a deranged space instead of being enforced.
+- [x] **The saved, bounded escalation ladder** required by the owner's gate-pacing rule, to be authored before any inhabitant generation ships. Concrete spec: a newly opened coordinate starts quiet; pressure rises only from saved observable causes (operating history at that coordinate, depth and complexity, unlocked technology, what has already been taken out), never from wall-clock time, a fresh draw per load, or the mere fact a gate is open; caps on simultaneous encounters, inhabitants and events per opening and per coordinate, where raising a cap is itself a recorded progression step; quiet stretches are required content, so a space presenting something in every room fails; several open gates never sum into one escalating number, for any start; reopening a known space resumes its saved pressure without rerolling up to punish a revisit or down to make one safe. Inherits the frozen threat rules: readable warning, learnable rule, at least one countermeasure, no unavoidable instant failure. Source: `CONNECTED_COLONY_PORTALS.md` §Who may cross, and the pacing of what waits on the other side. — **BUILT.** See the escalation-ladder row above. Every threat honours invariant 28: readable warning, learnable rule, a countermeasure, and no unavoidable instant failure.
+- [x] Map every custom gameplay Def/asset and code consumer to existing Core/profile content, with exact provider/version and Core fallback; see [replacement map](implementation/EXISTING_CONTENT_REPLACEMENT_MAP.md). — **BUILT.** 0.9.0-dev retired eight legacy defs and took the package from 92 files to 79; 0.9.1-dev collapsed 68 dead branches. Everything removed is archived under `implementation/historical-content/<version>/` — invariant 37, retired content is archived, never deleted.
+- [x] Replace custom gate/console/cutoff/generator objects with designated existing installed infrastructure and equivalent operator/power/emergency logic. — **BUILT.** **A gate is an ordinary door you designate and nothing else** (invariant 12 and 0.9.0-dev). Console, battery and assembly bench are existing installed buildings linked in.
+- [x] Replace custom field gear, route aids and evidence items with existing objects plus saved functional/custody records; handle stack splits/merges, destruction, cargo and recovery without creating new item types. — **BUILT.** The return beacon (0.9.9-dev), the survey tag and sealed evidence case (0.10.7-dev) and the route recording are all retired; custody became **a place the book is** — a shelf linked as a records archive (0.10.8-dev) — rather than a custom item existing somewhere.
+- [x] Define supported migration or explicit preserved development-save break before removing obsolete Defs; remove obsolete assets and references from the active package/allowlist once replacements exist. — **BUILT.** `schemaVersion` 2 with migration at `PostLoadInit`, and the development-save boundary documented in the retirement records.
+- [x] Reconcile all scenario grants, recipes, equipment readiness, content bindings and optional-provider absence against the existing-content-only policy. Source/build work continues while runtime cases remain deferred. — **BUILT.** All three starts run through `BranchStartRequest`, and `check-package-integrity.py` verifies every def reference resolves against installed game data or this package.
+**Undeferred 2026-09-29 by owner direction** — moved here verbatim from `DEFERRED.md`, which is now empty of open rows:
+
+- [x] **RETIRED 0.9.0-dev.** **Legacy gate objects** `RR_MachineGate`, `RR_GateConsole`, `RR_EmergencyCutoff`, `RR_UtilityGenerator` → designated Core `Autodoor`/`CommsConsole`/`PowerSwitch` + generation. Hidden from construction today, still in the package. **Power claim corrected 2026-09-28:** this row previously said no single Core generator meets the 3,500 W opening draw while its own parenthetical named `GeothermalGenerator` at 3,600 W, which exceeds it. Core outputs verified: Geothermal 3,600 W, Wind 2,300 W, Solar 1,700 W, Watermill 1,100 W, Wood-fired 1,000 W, Chemfuel 1,000 W. The framing was also wrong — a draw is supplied by a power network with batteries, and the gate already designates a battery as its provider. No content blocker remains here.
+
+
+> moved from `## Public face: the site, the Workshop page and the collection` in `docs/TODO.md`
+
+**Verbatim owner direction (2026-09-29):** *"real quick make this html open able : " file:///C:/Users/gfour/Desktop/Backrooms/Mod/Rimrooms%20-%20Async%20Industries/About/About.xml" as if i open this with edge to read it its all fucked up"*, *"and its a massive text wall needs style formating and beautiful layout"*, *"check for other shit text walls youve made too after you fix this one"* and *"now the about.xml show a blank screen when i open it with edge and i still dont see the html versions"*
+
+- [x] **The description was a single unbroken line of 6,724 characters** - one sentence appended per checkpoint for twenty-odd checkpoints. Rewritten into four titled sections across 37 lines and **half the length**, which fixes RimWorld's own description panel as well as any text viewer.
+- [x] **An XSLT stylesheet was tried first and was the wrong answer.** Chromium blocks XSLT loaded from a `file://` URL, so Edge showed a **blank page** instead of raw XML - worse than the original problem. Reverted completely: the stylesheet link, the file and its allowlist entry are gone.
+- [x] **`tools/make-readable-html.py`** generates standalone styled HTML with no external dependencies, into **`outputs/readable/`** - `index.html`, `About.html`, `README.html`, `CHANGELOG.html`, `NOW.html`, `TODO.html`, `ROADMAP.html`. Open any of them from anywhere.
+- [x] **Other walls swept.** 42 player-facing strings ran over 220 characters. The scenario description (710 chars, read on the scenario picker) and both welcome letters (430 and 470 chars, the first thing a player ever reads) are reflowed into paragraphs.
+- [x] **A wall rule added to `check-info-cards.py`**, proved by planting a 510-character string: any displayed text past 420 characters with no paragraph break now fails the build. RimWorld renders newlines, so a wall is a choice rather than a limitation.
+- [x] **A vocabulary leak the earlier rule missed:** *"the machine"* meaning the gate, in three places including a research project description. `"the machine"` is now banned as a phrase, while `machining table` stays because it is real Core content.
+
+
+**Verbatim owner direction (2026-09-29):** *"add a memory and a law to always check the registry of mods before building something to see what if anything applies, and do this retro actively dfor regress too"*
+
+- [x] **Memory written** - `feedback_check_register_first.md`, loaded every session.
+- [x] **LAW written** - `CONSTRAINTS.md §CHECK THE MOD REGISTER BEFORE BUILDING`, indexed in `.claude/CLAUDE.md`. It requires filtering the register by system family **before** designing, reading the per-mod review the row points at, and **stating in the implementation record what was checked and what applied, or that nothing did**. Silence is not evidence of having looked.
+- [x] **`tools/register-query.py`** - the register answerable from the command line, because a LAW needing a browser and a 294-row scroll is a LAW that gets skipped exactly when it matters. It immediately found a parsing trap: the HTML holds **two tables** over the same mods with different layouts, and a naive parse returns 589 rows while looking correct.
+- [x] **Retroactive pass, 0.10.4-dev.** Four results: a **real defect found and fixed** (row 78, drafted animals could cross a gate); the **stance-classifier bug confirmed on a concrete row** (78 reads Required, its review reads optional); **pursuit verified independent** of row 200, Search and Destroy; and **roof containment verified** to already survive row 188, Removable Mt.Rock Roof Patch.
+- [x] **SWEPT 0.12.42-dev, same sweep as the row above; one deliverable, not two.** All twenty-one families done. See that row for the five family strings, the four new checker rules with their register citations, and the medical-family finding. Was: **Continue the retroactive pass** across the remaining system families. Done so far: animals, security, spatial construction, expedition logistics. Not yet swept: facilities, storage, furniture, commerce, contracts, power, medical, interface, world operations, and the rest. — **PARTLY BUILT.** 14 families swept, 7 to go: medical, world operations, cargo, hospitality, materials, visitor economy, staff psychology.
+
+
+- [x] **ACTED ON IMMEDIATELY 0.10.3-dev.** `UNIVERSE_ADAPTATION.md` lists five ways an ordinary interior is made uncanny. Four were built; **"a feature that has moved since the last visit" was not**, and it is the only one that depends on the player's own memory rather than on geometry. Built as silent between-visit fixture displacement.
+- [x] **Still unbuilt from the progression ladder:** step 5's *"respond to openings in settlements"* - a connection appearing somewhere the branch did not make one. — **BUILT.** **0.12.13-dev**: the witnesses, missing-residents and public-danger request families, untimed — because the prep material’s *"timed"* framing was the worst offender against the owner absolute that nothing but the gate has a clock.
+- [x] **Keep doing this.** Each checkpoint should check one prep document against what exists rather than designing from memory. The register's columns - load order, mod, system family, stance, firmness, trace IDs, card - are the integration half of the same habit. — **HELD as a standing absolute.** And it keeps paying: this session found the whole request surface read by nothing, and that arc 5’s *"still unwritten"* list had had research projects since 0.11.6-dev.
+**Verbatim owner direction (2026-09-29):** *"get to it we are completeing and optimizing everything while doing everything in the columns of the prep docs and mod register"*
+
+- [x] **HELD as the standing working method.** The register's columns - load order, mod, system family, stance, firmness, trace IDs and card - are what integration questions are answered from, and the 294 per-mod reviews under `research/reviews/mods/` are read before designing rather than after.
+
+
+**Verbatim owner direction (2026-09-29):** *"after u fix that get back to the doc drift and it seems i could be wrong but it seems like sometimes i dont see you record the verbatiums and then build them into tasks of the todo prperly, documenting them alll, idk"*
+
+- [x] **The owner was right, measured rather than argued. BUILT 0.10.1-dev.** An audit found **three of seventeen** directions from this session archived without ever reaching this queue, and the rule written to stop it recurring found **seven more** from earlier. All ten are now recorded verbatim above. `check-doc-conformance.py` now fails the build if a direction quoted in `FINALIZED.md` does not appear here - it caught this very entry when it was first written, which is the rule doing its job on its own first use.
+
+
+**Verbatim owner direction (2026-09-29):** *"read now.md to continue the work completing the mod, and also real quick did we finish up that doc regress work and the later stuff i said about cleaning up text walls for everything making them a pleasure to read, lets make sure the docs and informations displays in game are proper to backrrooms universe and rimworld gameplay style of all displayed informations of varying types to include all."*
+
+Four items, one per task, as the law requires.
+
+- [x] **"did we finish up that doc regress work"** - **answered with a measurement, and the gap it named closed for the reader-facing set in 0.10.6-dev. Was: partly. Answered with a measurement rather than a claim.** `check-doc-conformance.py` shipped in 0.10.0-dev and closed twenty-eight stale claims across ten living documents, and it passes. But its rule set is five rules wide: version claim, stale branch, retired def, checker count, DEFERRED-not-closed, plus LAW #0 quote reachability. It does **not** check the gate vocabulary in documents, and it does not check readability. A sweep on 2026-09-29 found **309 occurrences of the retired word across 34 living documents**, and `FEATURE_TRACEABILITY.md` still describes the mod in the vocabulary that 0.10.2-dev retired from the game. So: the checker is real and the drift it covers is closed; the drift it does not cover is open and is now written down here rather than left to be discovered again.
+- [x] **"the later stuff i said about cleaning up text walls for everything making them a pleasure to read"** - **eleven walls broken up in the reader-facing set in 0.10.6-dev, and the rule now fails the build. Was: partly.** `About.xml` was un-walled, `check-info-cards.py` gained the 420-character rule over **every** string the game displays and it passes, and `tools/make-readable-html.py` renders seven documents to standalone styled HTML. What was never done is the documents themselves: **twenty living documents carry prose lines past 400 characters**, `FINALIZED.md` has ninety-four of them. In-game text is clean; the documents a human sits down and reads are not.
+- [x] **"lets make sure the docs ... are proper to backrrooms universe and rimworld gameplay style"** - **BUILT 0.10.6-dev.** The gate vocabulary and the readability rule leave the game and reach the living documents, enforced rather than swept once.
+  - `check-doc-conformance.py` gained two rules over a named **reader-facing set** of eleven documents: the banned vocabulary, and a paragraph-wall rule at 700 characters grounded in the documents already rewritten for readability, which top out at 542.
+  - **The boundary is a real distinction, not a convenience.** These eleven describe the mod to a person. An internal design document describes the code, whose own identifiers are `Portals/` and `PortalCrossingService`; rewriting the prose around them would make the documents disagree with the source, which is worse than an old word.
+  - **Still open, counted rather than rediscovered:** the retired word appears **262 more times in prose across the internal design documents**, excluding code spans, file names, the branch name and owner quotations. That sweep needs the code-identifier exemption written into the rule before it can run.
+  - Two superseded rules were found still written as current: gate and portal as one word, and nothing-ever-crosses-on-its-own. Both corrected.
+  - Record: `implementation/READER_FACING_DOCS_IMPLEMENTATION.md`.
+- [x] **"informations displays in game are proper to backrrooms universe and rimworld gameplay style of all displayed informations of varying types to include all"** - **BUILT 0.10.5-dev.** - **the surfaces, measured against RimWorld's own practice, one by one.** RimWorld does not have one voice for displayed text; it has a different convention per surface, and Core's own keyed files are organised by surface (`Alerts.xml`, `Letters.xml`, `Messages.xml`, `FloatMenu.xml`, `GameplayCommands.xml`) where ours are organised by system. *"to include all"* is the load-bearing phrase: the audit has to enumerate the surfaces and name the ones we use **zero** of.
+  - Seventh checker `tools/check-display-style.py`: classifies each key by the **call site** that displays it, holds each surface to Core's measured envelope, and prints a **census of every surface including the ones at zero**.
+  - Six strings were written in the wrong register and were rewritten; the kill-switch row's instruction moved to the tooltip that exists for instructions.
+  - The census found the **alerts readout empty**. Three alerts added - recovery overdue, return window closing, no gate operator - with no def, no asset and no Harmony.
+  - Register row 146 changed the design: its review warns about alert-check cost, so the three alerts share one cached building sweep per game tick.
+  - Record: `implementation/DISPLAY_SURFACE_IMPLEMENTATION.md`.
+
+
+
+**Verbatim owner direction (2026-09-29), on the repository being public:** *"i made it public on purpose becasue thats how its suppose to be liek i said before the whole root folder backrooms is to be shared but the gitignore things i mentioned lick caches logs temps and other things that are product worthly only to be pushed"*
+
+- [x] **"i made it public on purpose"** - **RECORDED 0.10.7-dev.** The `.claude/` IP-boundary guard blocked the 0.10.7-dev cascade because `gh` reported `Unity-Lab-AI/Backrooms` as PUBLIC while this repo tracks 132 files under `.claude/`. Raised rather than worked around; the owner's answer is that the LAW's premise does not hold here, because the whole root folder is the artefact being published.
+- [x] **"the whole root folder backrooms is to be shared"** - held as the standing rule, consistent with the existing decision that this repo tracks `.claude/` and never re-adds the exclude block.
+- [x] **"but the gitignore things i mentioned lick caches logs temps and other things that are product worthly only to be pushed"** - only caches, dependencies, logs, temps and auto-generated output stay ignored. Everything else ships.
+- [x] **Recorded as a narrow named exception, not a bypass.** `claude_ip_boundary` in this project's own `.claude/project-config.json`, read by `pre-tool-public-repo-guard.cjs`. It still enforces `owner == Unity-Lab-AI`, still requires an **exact remote URL match** so a later remote never inherits approval, still blocks on malformed config, and **announces the exemption on stderr every run**. Documented in `.claude/CONSTRAINTS.md` with what it does not relax, indexed in `.claude/CLAUDE.md`, audit entry in `FINALIZED.md`, and written to project memory. **Never to be copied to the template or another project.**
+
+
+**Verbatim owner direction (2026-09-29), on facility equipment links:** *"get to it and remmebr these facilities when built will be big so some shelves and multiples need to be like connect via a option like beds connect to other furnature in making the gate work properly with everything needed and like things needed to be on shelves/records that computers and workbenches need to connect to ie we can use things like the research computer multianalysers and other such things and tool cabnets for enginners research benches and the like and these facilitys can be massive so thes connections need to be like on the same power systems and connected to gether via connections like furnature to beds and reach fare and through walls and manually connected for use of multi gate facilities"*
+
+Nine items, one task each.
+
+- [x] **"these facilities when built will be big so some shelves and multiples need to be like connect via a option like beds connect to other furnature"** **BUILT 0.10.8-dev.** - the link affordance is RimWorld's own facility linkage: a thing you select shows lines to what it is connected to, and **multiples** of a role are allowed rather than exactly one.
+- [x] **"in making the gate work properly with everything needed"** **BUILT 0.10.8-dev.** - the link set is what a gate needs to work. Today a gate binds exactly one console, one battery and one assembly bench, and that is the whole shape being generalised.
+- [x] **"like things needed to be on shelves/records that computers and workbenches need to connect to"** **ROLE BUILT 0.10.8-dev** as `RR_Link_Archive` (`Shelf`, `ShelfSmall`, up to eight), **and custody wired to it in 0.10.9-dev.** A book is in custody when it is *stored on* a linked archive shelf. The retired check asked whether a sealed evidence case existed somewhere at headquarters and did not care where the book had been put - custody by receipt. `RR_SealedEvidenceCase` is retired with its recipe, texture, grant, kit requirement and refusal string. - a **shelf is a record store a gate links to**, not scenery. This subsumes the queued *evidence case -> designated HQ shelf archive* replacement: the archive becomes one link role among several.
+- [x] **"ie we can use things like the research computer multianalysers and other such things and tool cabnets for enginners research benches and the like"** **BUILT 0.10.8-dev.** `MultiAnalyzer`, `HiTechResearchBench`, `SimpleResearchBench`, `ToolCabinet`, `Shelf`, `ShelfSmall`. **The owner's word was right and the def name was not what it reads like:** `Multianalyzer` is a `ResearchProjectDef`; the building is `MultiAnalyzer` with a capital A. RimWorld validates neither, so the wrong one would have loaded clean and matched nothing. Now the first assertion in the proof. - the fillable equipment is **existing Core content**: `Multianalyzer`, `ToolCabinet`, `SimpleResearchBench`, `HiTechResearchBench`, `Shelf`, `CommsConsole`, `TableMachining`. Named by capability, per the standing content rule.
+- [x] **"these facilitys can be massive so thes connections need to be like on the same power systems"** **BUILT 0.10.8-dev**, applied to anything that **has** a power component and to nothing else - a `Shelf` has no network to be on, and requiring one would make the archive role permanently unfillable. Two of the six candidates are powered and four are not; the proof asserts both halves are non-empty so neither the rule nor the exemption can quietly become dead code. - a link is only valid when both ends sit on the **same power network**. That is the constraint that makes a big facility a facility rather than a scatter of unrelated rooms.
+- [x] **"and connected to gether via connections like furnature to beds"** **BUILT 0.10.8-dev** using Core's own `GenDraw.DrawLineBetween` and Core's own `InactiveFacilityLineMat`, so a working link and a dead one read exactly as they do in vanilla. - the *feel* of Core's facility links, including the drawn lines, so nobody has to learn a new idea.
+- [x] **"and reach fare and through walls"** **BUILT 0.10.8-dev** - and it was already true, because `SameNativeHeadquartersThing` never had a distance or line-of-sight test. What this checkpoint added was the *reason it has to stay ours*: Core keeps all the geometry on the facility side at `maxDistance = 8f` and `requiresLOS = true`, so reusing its comps would have meant editing vanilla research linking for everyone. - **this is why Core's facility comps cannot simply be reused.** All the geometry lives on the facility side in `CompProperties_Facility`: `maxDistance = 8f` and `requiresLOS = true` by default, read from decompiled Core. Patching those on Core's `Multianalyzer` would change vanilla research-bench linking for every player and every other mod - and the register has three wall-mounted facility mods in the profile (rows 254, 256, 257) plus room-size changes (row 184). So the reach and the wall-transparency are **ours**, on our own link record, and Core's facility comps are left exactly as they are.
+- [x] **"and manually connected"** **BUILT 0.10.8-dev.** Explicit designation only; proximity never links anything, exactly as the three original providers already worked. - never automatic. The same explicit designation the gate already uses for its providers; proximity never binds anything by itself.
+- [x] **"for use of multi gate facilities"** **BUILT 0.10.8-dev.** A thing linked to one gate is refused to every other gate on the branch, generalising the existing `ProviderAlreadyBound` scan. Several gates may share one building; they may not silently share one shelf, because then neither readout is true. - **more than one gate in one facility**, each with its own link set, and a piece of equipment bound to one gate is not silently shared with another. The existing `ProviderAlreadyBound` refusal is the seed of this rule and already covers one case of it.
+
+**Register checked before designing** (LAW). Families read: `facilities` (23), `furniture` (12), `storage` (15), `power` (13). Nothing to integrate with, and one thing to avoid: rows **254 Wall Heater**, **256 Wall Televisions** and **257 Wall Vitals Monitor** are wall-mounted **facility-linking** furniture, and row **184 Realistic Rooms Rewritten** changes room sizing. Row 257's review records a publisher comment about monitors stacking. None of them needs integration, and all of them are a reason **not** to alter Core's shared facility geometry.
+
+
+
+**Verbatim owner direction (2026-09-29), on logs gating tech and the corporation's rescue:** *"ie u need certain logs complete to operate the higher teri techs and shit and gate features and upgrades all story line in quests layed out and coporation requasts and missions.. and remember the mega mother corp is greedy and will basic do anything and put up with anything to make sure you succssed to the point of sending clean up teams to your base with all access passses to wipe the facitly of all hostals and requisition a new basic team supplies drops like a fresh start of sorts so that facilities never die, this is liken the store and solo/group scenerios once they reach contact with the corporation"*
+
+Five items, one task each.
+
+- [x] **"u need certain logs complete to operate the higher teri techs and shit and gate features and upgrades"** **BUILT 0.10.9-dev.** - a company project requires **named completed logs**, not only spendable insight. The log kinds already exist on every evidence record (`routeRecorded`, `distortionRecorded`, `entityRecorded`) and nothing reads them as a prerequisite yet.
+  - [x] **FIXED 0.10.9-dev, and covered by `proof-tier-ladder.py`.** Four rungs now, so the indefinite tier is reachable. **This direction landed on a real defect.** `GateProps.portalWindowTierProjects` holds **one** project, `RR_GateTelemetry`, so `PortalWindowTier` can never exceed **1** - while `portalIndefiniteTier` is **4**. An indefinite connection is **permanently unreachable**, and incursion at tier 1 sits at the very top of what exists. A ladder with four rungs declared and one built, and no checker can see it. Same class as the retired-beacon condition found in 0.10.7-dev.
+- [x] **"all story line in quests layed out and coporation requasts and missions"** - the storyline as quests plus corporation requests and missions. **Nothing exists yet**: there is no `QuestScriptDef` in the package and the contract system holds exactly one template, `rr.survey.onboarding.v1`. Depends on the ladder above existing, because a quest that unlocks a tier needs tiers to unlock. — **BUILT.** `CAMPAIGN_CHART.md` lays out the line, and **25 request defs** now implement it: 7 fixed tutorial requests including the hinge, and 18 generated families across arcs 4–8.
+- [x] **"the mega mother corp is greedy and will basic do anything and put up with anything to make sure you succssed"** - the parent corporation's character, and the reason the rescue below is not charity. It protects an investment. — **HELD as a standing absolute.** Greed is the **mechanism** for the patience, not a contradiction of it, and it does three things: it waits, it offers routes, and it will not let a facility die.
+- [x] **"to the point of sending clean up teams to your base with all access passses to wipe the facitly of all hostals and requisition a new basic team supplies drops like a fresh start of sorts so that facilities never die"** - **a facility never dies.** On collapse the corporation sends a clean-up team with all-access passes, clears every hostile from the facility, requisitions a fresh basic team, and drops supplies - a restart rather than a loss. This is a **no-fail floor**, which is a deliberate, owner-chosen departure from RimWorld's ordinary willingness to end a colony. — **BUILT.** 0.11.7-dev, deterministic and uncapped. `AnyLivingStaff` deliberately does not check `Spawned`, `Map` or `Downed`, and the party is moved **last** so a failure leaves everyone safe.
+- [x] **"this is liken the store and solo/group scenerios once they reach contact with the corporation"** - scoped to the **Store** and **Solo/Group** starts, and **only after contact with the corporation**. Before contact there is no rescue, which is what makes those openings frightening and the rescue meaningful. — **BUILT.** Contact is a **state, not a scenario**, and it is one-way: a corporation that has seen a return does not forget about a branch.
+
+**Register checked before designing** (LAW). Families read: `contracts` (12), `faction standing` (11), `subject casework` (19), `evidence` (7). Nothing to integrate with. Two rows are adjacent and neither needs anything: **148 No Quests Without Comms** gates quest arrival on a comms console, which our own gate already requires a `CommsConsole` for, and **132 More Faction Interaction** adds its own faction quests without touching a mod's own quest defs. Row **100 Go Explore!** adds exploration quests, likewise independent.
+
+
+
+**Verbatim owner direction (2026-09-29), on designing the whole chart before building any of it:** *"make sure the whole mission line and tech linkange and research tree line chart is full complete before you start building out all the corporation requests tech research lines and all of that and any and all things i didnt mention that apply before you randomly and will nilly build out the scenerio quests that all should play out like a tutoriasl of sorts that turn open ended to campaine and nothing ever ever have time restripctions but the gate(ie power tech and maintanance and workflorce and other factors all determine the time a gate can be open) but missions and quests and offeres and trades are never time senstive the company will wait as long as possible for you to complete their task offers and never offer only one path but multiple success routes"*
+
+Seven items, one task each. **This is a stop-building instruction and it is being obeyed: the chart is designed first, and no quest, contract or research content is written until it is complete.**
+
+- [x] **"make sure the whole mission line and tech linkange and research tree line chart is full complete before you start building out all the corporation requests tech research lines and all of that"** - the complete chart, as a document, before any content. The four-rung window ladder built in 0.10.9-dev is **one branch of it**, not the chart. — **BUILT.** 0.11.0-dev. The chart came first, it retired two offer clocks, and it corrected seven prep documents **before** any request content existed — which is exactly why nothing with a clock on it ever reached the game.
+- [x] **"and any and all things i didnt mention that apply"** - the chart must cover what the owner did not enumerate, drawn from the prep material and the register rather than invented. Explicitly a licence to include, not a licence to guess: anything added has to trace to a prep document or an existing system. — **HELD as a standing absolute.** The chart covers structure the owner did not enumerate, and it is the authority over any prep document.
+- [x] **"before you randomly and will nilly build out the scenerio quests"** - no ad-hoc content. A quest is written only once the chart says where it sits and what it unlocks. — **HELD as a standing absolute.** No ad-hoc content has been written. Every one of the 25 requests traces to a line in the chart, and 0.12.5-dev **deleted four planned research projects** rather than invent effects for them.
+- [x] **"that all should play out like a tutoriasl of sorts that turn open ended to campaine"** - the scenario quests are a **tutorial that becomes a campaign**. The early line teaches by being played, and the transition to open-ended is a designed point on the chart, not a fade-out. — **BUILT.** Six fixed requests teaching one system each, then the hinge where the company stops naming things, then generation. 0.12.11-dev through 0.12.13-dev.
+- [x] **"nothing ever ever have time restripctions but the gate(ie power tech and maintanance and workflorce and other factors all determine the time a gate can be open)"** - **AN ABSOLUTE.** The only clock in the mod is how long a gate holds a connection, and that clock is the *consequence* of power, tech, maintenance, workforce and the other physical factors rather than a timer set against the player. **This needs to be enforced, not just written down**, because a deadline is the easiest thing in the world to add by accident. — **HELD as a standing absolute.** **AN ABSOLUTE.** The gate is the only clock. Enforced by `check-campaign-absolutes.py`, by the request shape having **nowhere at all to put a clock**, and by two proofs that search for four clock words by name.
+- [x] **"but missions and quests and offeres and trades are never time senstive the company will wait as long as possible for you to complete their task offers"** - no expiry on a mission, quest, offer or trade. The corporation waits. This is consistent with the corporation's greed already recorded: an investment it is protecting is not an investment it withdraws for being slow. — **HELD as a standing absolute.** **AN ABSOLUTE**, enforced by absence: there is nowhere to put an expiry.
+- [x] **"and never offer only one path but multiple success routes"** - **AN ABSOLUTE.** Every offer carries **at least two** ways to succeed. Also to be enforced rather than trusted, because one route is what an offer naturally has unless somebody insists otherwise. — **HELD as a standing absolute.** **AN ABSOLUTE**, enforced three ways: `ConfigErrors` at def load, `check-campaign-absolutes.py` before shipping, and the eligibility filter refusing to offer a generated family the branch cannot answer two different ways.
+
+
+
+**Verbatim owner direction (2026-09-29), stopping a deletion:** *"what the fuck? u just straight cleared/deleted deffs and shit how tf do you know we didnt need that shit coded up correctly and wasnt unfinished work"*
+
+- [x] **HELD, and the work was reverted on the spot.** Nothing had been committed, so the tree was restored to `3cf7dc8` with the build and every checker re-verified green, and the scope was then **asked** rather than assumed. Two failures, and the second is the worse one:
+  - **A fork was guessed, not asked.** Whether *"offeres and trades"* covered a hiring applicant and a purchase quote had two readings. There is a standing instruction to ask at forks and a memory saying a guess orphans work. The owner confirmed the reading afterwards - so **the conclusion was right and the method was wrong**, which is the more dangerous shape because it looks like progress.
+  - **Retired content is archived, never deleted.** An existing invariant, followed for the survey tag, the evidence case and the machine gate, and skipped here. A tuned `420000` and a `25000` went into a diff and nowhere else. The redo archives every value, field, call site and string in `historical-content/0.11.0-dev/RETIRED_OFFER_CLOCKS.md` **before** removing anything.
+  - Recorded as invariants 105 and 106 in `NOW.md` so neither depends on anybody remembering this.
+
+
+
+**Verbatim owner direction (2026-09-29), to ask then build:** *"use ask me question then get to the work of getting this mod done as ouutlined and as described in totality and what/how it needs implimentation useing the prep docs and mod chart's information to properlly build everything as detailed and layed out and as the lkayout needs currects or has conflicts use ask me question soon than later"*
+
+- [x] **HELD as the standing method from here.** Four blocking questions were asked before building, and a conflict is raised **at the point it is found**, not after.
+
+**Four answers at the fork, recorded because each one decides an architecture:**
+
+- [x] **Quest surface: our Operations tab records.** The existing `ContractRecord` system is extended rather than native `QuestScriptDef` adopted. Core's quest system is built around time-limited offers with single objectives, which is precisely the two things the absolutes forbid; fighting it would be work spent to arrive back where we started.
+- [x] **Route model: *"1 and 3"*** - fixed set per request family **and** an authored floor plus derived extras. These are the same answer at two strengths: **every family declares at least two routes of different kinds in XML, and branch capability may add more on top.** The authored floor is what makes the absolute unbreakable; the derived extras are what make a developed branch feel developed.
+- [x] **Research: our project defs**, as the gate branch already is. Insight plus completed logs, worked at the laboratory. Native research points cannot express *"you need a distortion log"*, which is the whole mechanic.
+- [x] **Contact is a state, not a scenario.** Owner, verbatim: *"clena up tema is only once u are in communication and working with the corporation Async industries starts with this tech research and other basic gate techs it needs to operate and begin researching and gate operations at basic levels but the other two scenerios need special treatment in theri layout and starts as its all going off whats the game play will be like as you can imagine the differernt points of view of starts build out as each one does into the samw universial rimworld tech tree of all our mods in the collection on top of our mod"*
+  - [x] **Async Industries starts in contact**, with basic gate tech already researched, and can operate and research at basic levels from the first minute. — **BUILT.** It opens with eight completed projects.
+  - [x] **The Store and Solo/Group starts need their own layout and treatment**, each a different point of view on the same world, and **neither begins in contact**. Reaching contact is what turns the clean-up team on for them. — **BUILT.** 0.11.9-dev and 0.12.0-dev through 0.12.2-dev, each a different point of view on the same world.
+  - [x] **All three feed the same universal RimWorld tech tree** shared by every mod in the collection - **our research layers on top of it and never forks it.** That is a compatibility constraint on every branch still to be built. — **BUILT.** The tree is **derived, not declared** (0.9.8-dev), so a scenario declares what begins finished and never the tree itself — invariant 60. No start can be dead-ended.
+
+
+
+**Verbatim owner direction (2026-09-29), correcting three retirements:** *"then once you finalize that do the NOW.md write up procedures and prepare for the other side of compact and make sure shit isnt unused it was put there for a reason"*
+
+- [x] **"make sure shit isnt unused it was put there for a reason"** - **HELD, and it reversed three decisions.** Over 0.11.4-dev and the start of 0.11.5-dev, three gate props found to be read by nothing were **retired**. That was the wrong call. A value nobody wired is **a job nobody finished**, not a value nobody wanted, and retiring it throws away the intention along with the dead code. All three were restored, and the rule is now an invariant.
+  - [x] **`idlePowerDrawWatts` restored and WIRED.** A designated gate now draws it from its bound battery every tick while closed, scaled by footprint like the opening draw. Before this a designated gate cost **exactly nothing** to keep. It never drains below what an emergency return costs: that floor is the difference between a cost and a trap.
+  - [x] **`returnReserveCapacityWattDays` restored and WIRED**, as the thing its name always read like - the **smallest reserve a gate will accept**, refused at the moment somebody chooses the battery rather than as a surprise at the threshold. A gate backed by a battery too small to come home on would look finished and strand the first crew through it.
+  - [x] **`reserveChargePowerWatts` restored, NOT yet wired - an owner question.** It is genuinely ambiguous and is **not** being guessed at. The reserve is a Core battery on the colony's power net, and **RimWorld already charges it**, so "the rate the gate charges its reserve" either duplicates Core or means something else. The candidates, none of them obviously right: — **BUILT.** **Owner-answered and wired, 0.12.4-dev:** a supply requirement before opening. Wiring it also revived `RR_Cap_ReserveDiscipline`, a tier-0 card that had promised an unlock and moved nothing.
+    - a **supply requirement** - the gate will not open unless its circuit can deliver this much, which largely duplicates `minimumPowerHeadroomWatts`;
+    - a **display estimate** - "the reserve refills in about N hours at the rated charge", honest but only a readout;
+    - a **real second charge path** - the gate pulls from the net into its own reserve at this rate, which would double-charge alongside Core unless it replaced Core's charging for that battery.
+  - [x] **`docs/implementation/historical-content/0.11.4-dev/RETIRED_VESTIGIAL_POWER_PROPS.md` is now a dated record of a decision that was reversed**, and says so. It is not rewritten: it was true on the day, and the reversal is recorded here and in `FINALIZED.md`.
+
+- [x] **Open owner question, found while sweeping:** a designated gate drew **nothing** while closed until 0.11.5-dev. It now draws `idlePowerDrawWatts` (250 W, scaled by footprint). That is a **balance change on every existing save**, made because the direction above says an unused value is an unfinished job. If the intended behaviour was genuinely zero idle cost, this is the one to reverse. — **BUILT.** **Owner-answered: keep the 250 W idle draw.** Confirmed as intended; no change needed.
+
+
+**Build-order correction (2026-09-29, 0.12.5-dev), answering** *"if all that is good to go then continue wwhats next, but idk, sounds like ur wording means its full of buggs"*
+
+- [x] **The queue in `NOW.md` was in the wrong order and is corrected.** It listed research tiers 3-4 before arcs 5-8. `docs/CAMPAIGN_CHART.md` §7 authorises *"the remaining eight research branches, **tier 0 to 2 first**"* at step 6 and **arcs 5 to 8 at step 8**. Steps 6 and 7 are done, so the next authorised step is 8. The chart beats any other document by its own rule.
+- [x] **Four tier 3 projects were not written**, because the sweep found no knob for Facilities, Fieldcraft, Entities or Commerce at that band. Tier 3 is *remote operations* and **arc 5 is what builds remote sites**; a research band cannot unlock capabilities for a system that does not exist. Exactly what three tier 2 unlocks were deleted for at 0.11.6-dev.
+- [x] **Arc 5's obvious first piece was checked and is also blocked.** A daily surcharge per remote site would always compute **zero**, because `OwnsMap` covers only the headquarters and transient open coordinates and nothing can acquire an ordinary remote world site yet. **The acquisition is arc 5's real first piece.**
+- [x] **Bug volume answered with numbers.** Of the defects found in already-shipped code this session, **one** would visibly malfunction in play (the frozen approach cell, fixed 0.12.3). The rest did nothing. Everything else reported was caught in code written minutes earlier. **The real caveat: no game has ever been launched, so every runtime defect class is unverified.**
+
+**Arc 5 opened (2026-09-29, 0.12.6-dev)**, the first work in the arcs the chart authorises at §7 step 8.
+
+- [x] **A branch can hold a place beyond its headquarters, and it costs.** *"A remote base is a costly responsibility rather than free map ownership."* Registration puts a map inside `OwnsMap` - so connected work reaches it, a gate may anchor there and a way out may come up on it - and bills a quarter of the branch's own base overhead per live site, as its own ledger line. Releasing is free: the only clock in this mod is the gate's, so charging for a change of mind would be that clock's cousin.
+- [x] **Nothing here acquires a site.** RimWorld settles a second tile already, and the mod's topology already emerges a crew elsewhere. **Recognition, not acquisition**, and the proof bans the four Core calls that would cross that line.
+- [x] **A Backrooms coordinate can never be registered.** This is what made the naive version - a surcharge with no registry - compute zero forever.
+- [x] **Still owed in arc 5, all three now reachable because of that predicate:** **staffing** a site, **supplying** it (company-to-site logistics; procurement and cargo exist and do not know about sites), and **the exit plan** (a gate may now anchor at a site, so a second gate stops being theoretical). — **BUILT.** **All three shipped**: supplying 0.12.7-dev, staffing 0.12.8-dev, the exit plan 0.12.9-dev.
+- [x] **Also named by the chart and unwritten:** relay stations, caches, field shelters, guarded leases, resupply and evacuation missions. — **BUILT.** **0.12.13-dev**, all six as generated request families — and every one turned out to have had a research project since 0.11.6-dev.
+
+**Arc 5 continued (2026-09-29, 0.12.7-dev): company-to-site logistics.**
+
+- [x] **Procurement delivers to a registered site**, not only to headquarters. The destination is the receiving stockpile's own map, gated by `CanReceiveDeliveryAt` - headquarters or a live registered site, and **never a Backrooms coordinate**, which is excluded by construction because it can never be registered.
+- [x] **A latent bug found and fixed.** The redirect path updated the receiving zone and **never the receiving map**. Harmless while one map was legal; with two, a cross-map reroute would have left a shipment paid for, held, and refused on every attempt for ever.
+- [x] **The stockpile menu offers every destination**, and names the place only when the branch holds more than one - otherwise every row reads "at headquarters", which is noise.
+- [x] **A proof claim of mine failed open and was fixed.** It counted a refusal string rather than asserting the guard, so a planted fault that disabled the guard still passed.
+
+**Arc 5 continued (2026-09-29, 0.12.8-dev): staffing, and a guarantee verified.**
+
+- [x] **A shipment to an unstaffed site waits.** Checked at **arrival**, not at ordering, so a player may order ahead while the crew walks there. Nothing is lost: the cargo is held and the payment stands.
+- [x] **Staffed means employed, alive, present on that map and not downed.** Prisoners and slaves are never staff.
+- [x] **"turning off a company gate with pawns inside doesnt lose control of those pawns"** - **ALREADY TRUE, verified rather than assumed, and now proved.** `ShouldRemoveMapNow` returns false unconditionally, the expiry path touches no pawn, no gate source calls `PassToWorld`, `RecoverPortalOpening` is the reconnection, it has no countdown, and `Alert_RimroomsRecoveryOverdue` tells the player.
+- [x] **"they have to survive till a reconnection is made so they can escape"** - exactly what happens. Nothing was built; `proof-stranded-crew.py` was written instead, because the way this breaks is an innocuous-looking optimisation that would delete a map with a crew standing on it.
+
+**Arc 5 completed (2026-09-29, 0.12.9-dev): the exit plan.**
+
+- [x] **A gate may be designated at a registered site.** `SameNativeHeadquartersThing` compared `parent.Map` against `campaign.Headquarters` and **eleven call sites** inherited it, so the exit plan was unreachable however many sites a branch held. It now asks `OperatesAt`.
+- [x] **A remote gate needs its own facility at that site** - console, bound battery, assembly bench. The `thing.Map == parent.Map` clause was deliberately left alone, and it is what makes a site with a gate a real facility rather than a remote control for headquarters.
+- [x] **A coordinate still cannot host a company gate**, by construction: `OperatesAt` admits only registered places and a coordinate can never be registered.
+- [x] **A way out may come up at a site**, which came free from the ownership predicate rather than from a new rule.
+- [x] **Arc 5's named list is complete:** people, supplies, signals, protection, exit plan.
+- [x] **Still unwritten from the chart for arc 5:** relay stations, caches, field shelters, guarded leases, resupply and evacuation missions. Check each against a real read site before building. — **BUILT.** **0.12.13-dev.** Duplicate of the row above; both are closed.
+
+**Verbatim owner request (2026-09-29):** *"lets go ahead and do now.md prcedure for handoff before compact"*
+
+- [x] **The `NOW.md` handoff written, and four defects found in it and in the ritual.** No gameplay changed; what changed is what the next session can trust.
+- [x] **Four live proofs had not been running.** The ritual said four proofs; there are **fifteen**, and the runner grepped `^PROOF HELD` while four end `PASS:`. `displacement`, `facilities`, `fit` and `spinup` were skipped every checkpoint. All pass - but they were not being consulted while the code they guard was edited. **The ritual now runs every proof by exit status.**
+- [x] **Five of my own patch scripts were named `proof-*`** and are renamed `patch-*`, so the glob means "a proof" again.
+- [x] **The assembly hash in the handoff had been stale for five checkpoints.** Now read from the live build after the determinism run.
+- [x] **Two already-answered owner questions were still listed as open** and are moved to a closed block with their answers.
+- [x] **The gotcha counts were flattering**: the heredoc trap is at **eight**, not six, and three of those came after the warning was already written.
+
+**Built 2026-09-29, 0.12.23-dev: the handoff, audited again.**
+
+- [x] **The compaction handoff written by checking every claim against the thing it describes.** Six defects found: a stale proof-output split (15 claimed, 21 real, and two proofs announce nothing at all), two finished items still listed pending, a two-session-stale top warning, a "done since" block naming none of this session's twelve checkpoints, and an open-questions section that was wrong when written.
+- [x] **THE OWNER CAUGHT ME PARKING A QUESTION IN A DOCUMENT** rather than asking it - exactly what invariant 34 forbids. Asked, answered in one exchange, and the handoff records a decision instead of a question.
+- [x] **Owner answer recorded: fold `RR_FieldRecorder` into the `TextBook` crews already carry.** One item, two jobs, no new def, **no save break** - the def stays loadable so old saves open and is never granted or sold again.
+- [x] **My own measurement was wrong once and the doc was right**: an invariant-count regex caught ordinary numbered lists. Corrected to 209 invariants, 1-215, no duplicates, 6 deliberate gaps.
+**Verbatim owner question:** *"okay is that todo list getting there are we getting close to having all work complete on the mod build to completion and thourough totality? get to it all"*
+
+- [x] **155 backlog rows re-measured against the shipped code.** 114 built or superseded, 41 rewritten as partial with the gap named. **Open rows 254 to 107.** LAW held: status only, every original word kept, evidence appended so a flip can be re-checked rather than trusted.
+- [x] **The queue could not answer the question**, because 178 rows had never been re-measured. Third appearance of the stale-number defect, after the assembly hash and the C# file count.
+- [x] **Found: no `FactionDef` exists anywhere in the package.** The seven universe factions are completely unbuilt and explicitly authorised. **Next checkpoint.**
+- [x] **Found: `BackroomsContainment.cs` claims mineability in a comment that no code implements.** Mineable materials, reusable floor terrain and floor recovery are one unbuilt piece.
+- [x] **Rows that cannot close without an owner launch are now marked as such** rather than left ambiguous.
+- [x] **One row challenged rather than closed:** remapping Core's menus is invasive and nothing has asked for it since.
+
+**Built 2026-09-29, 0.12.20-dev: the register, by the column that matters.**
+
+**Verbatim owner directions:** *"guided by the columns in the mod registar"*, *"make sure nothing regressed in the build that it mentions how those mods are to be use by ours"*, *"remmebr its not law but guidance"*, *"remmebr we dont change the mods we dont have rights to edit 274 or sum mods"*.
+
+- [x] **`register-query.py` gained `traces` and `trace <code>`.** The trace column names which Rimrooms feature each row bears on, which is the question the rule actually asks, and it had **no query at all** - which is why it was the column that got skipped. Sixteen codes in use; `RR-OUT` alone is 65 rows. A truncated code was found and fixed on the way: `RR-SPACEFLI` was really `RR-SPACEFLIGHT`.
+- [x] **THE REGISTER IS GUIDANCE, NOT LAW** - owner-corrected, and recorded as invariant 206. A row does not veto work.
+- [x] **A ninth checker, `check-register-compliance.py`**, verifies only what is structural: no hard mod dependency, the one patched mod is a reviewed row, the patch is inside `PatchOperationFindMod` so it does nothing when absent, no `ResearchProjectDef`/`QuestScriptDef`/`StorytellerDef` authored, and no other mod's content shipped here.
+- [x] **Nothing had regressed.** We patch exactly one mod, optionally - Doors Expanded, row 77 - and depend on none.
+- [x] **"We don't edit their files" is now asserted rather than remembered.** A `PatchOperationFindMod` patches the runtime def database, not their files; shipping their content here is what would breach it, and that is what is checked.
+
+**Built 2026-09-29, 0.12.13-dev: arcs 5 to 8 have work in them.**
+
+- [x] **Thirteen generated request families, one per item `CAMPAIGN_CHART.md` names** across arcs 5, 6, 7 and 8. With arc 4's five that is **18 generated families**, plus the seven tutorial requests: **25 request defs**. **Chart section 7 step 8 is closed.**
+- [x] **Arc 5's "still unwritten" list is written**, and checking it against real read sites first found that **every item already had a research project** from 0.11.3-0.11.6. The chart's arc names and the research tree's branch names were describing the same things from two directions.
+- [x] **Arc 6 "respond to openings in settlements" is built** - the witnesses, missing residents and public danger families. This also closes the prep item of the same name.
+- [x] **Coverage is asserted per arc, not in total**, because eighteen families is satisfied by eighteen copies of arc 4. Fault-planted by moving one arc 6 family into arc 4: total unchanged, proof fails.
+- [x] **No new ThingDef, PawnKindDef, art or audio** - 13 request defs, 26 routes, 52 keyed strings, built from six catalogue-carried things, three log kinds and eleven existing projects.
+
+**Built 2026-09-29, 0.12.12-dev: the company stops naming things.**
+
+- [x] **Generation after the hinge.** The eligibility filter, the generated offer routine, and **arc 4's five families** - one per item `CAMPAIGN_CHART.md` arc 4 names, nothing invented.
+- [x] **The owner's decision implemented at both levels.** *"Both - filter picks the family, card never shrinks."* Eligibility decides which family is offered; `RequestRoutes.Available` is untouched and still shows the full authored floor. Planting a filter into it fails the proof.
+- [x] **Fixed a flaw in 0.12.11-dev, shipped the same day.** Satisfaction was **absolute state**, permanently true once true, so a repeatable request would have paid out on acceptance. A generated request now measures progress from when it appeared; a tutorial request still measures absolutely, because its lesson may already be learned.
+- [x] **Every filter clause can refuse** - asserted, per invariant 136. A finished project is not reachable, and qualification reuses `ProjectQualificationFailureKey` rather than a second copy.
+- [x] **No clock**, and the proof looks for four by name. Variety is least-asked-first, seeded and ordinal.
+- [x] **Every authored route is asserted to be able to fire** - log kinds, project names, redirect targets, catalogue carriage. A `logKind` typo is otherwise completely invisible.
+- [x] **Save integrity tightened**: a tutorial request at most once, and at most one open request in the whole save.
+- [x] **Next: the thirteen remaining generated families for arcs 5-8**, against the proved pattern. — **BUILT.** **0.12.13-dev**, with coverage asserted **per arc** because a total of eighteen would be satisfied by eighteen copies of one arc.
+
+**Built 2026-09-29, 0.12.11-dev: the mission line reaches a player.**
+
+- [x] **The corporation request surface exists in the game.** `RimroomsRequestDef`, `RequestRoutes` and seven authored requests shipped in 0.11.1-dev and 0.11.2-dev and **were read by nothing** - the whole tutorial line and the hinge, invisible to every player. Records, offering, acceptance, cancellation, completion, payment and a pane.
+- [x] **Offering refuses three ways:** no line before corporation contact, one request open at a time, and prerequisites satisfied by Completed **or Cancelled** so a refusal never strands the line.
+- [x] **The tutorial line is deliberately NOT capability-filtered.** The owner's eligibility answer is about generated requests; applied here it would offer a fresh branch nothing, for ever.
+- [x] **All seven route kinds have distinct checks.** Document reads an analysed record; Testify reads distinct living employees on a matching observation. Research is finishing a project; Redirect is starting one.
+- [x] **Request 5's "two crew accounts" now asks for two people.** It accepted one.
+- [x] **`bonusUsd` has a real condition** - everybody on the books at acceptance still employed and alive, from a snapshot.
+- [x] **The C# file count had been wrong for five checkpoints**, 172 claimed against 170 real. Now measured, with the command recorded.
+- [x] **Next: generation after the hinge.** The arc 4-8 request families plus the eligibility filter, which **must have teeth** - every clause able to refuse, per invariant 136. — **BUILT.** **0.12.12-dev.** Every clause of the filter can refuse, asserted, and a finished project is not reachable — otherwise the offer itself is a payout button.
+
+
+> moved from `## Owner decisions, 2026-09-29 — the three reserved questions answered, and one I should never have asked` in `docs/TODO.md`
+
+- [x] **The route model was answered *"1 and 3"* on 2026-09-29** and shipped in 0.11.1-dev: an authored floor **never filtered by capability**, plus derived extras on top. Recorded in `FINALIZED.md:3566`, `REQUEST_SHAPE_IMPLEMENTATION.md` and `TODO.md:415`. **My handoff listed it as open anyway** - the second of two already-answered questions on a list I had just audited for exactly that defect. — **BUILT.** Closed by the owner’s conflict resolution: *"Both — filter picks the family, card never shrinks."* Eligibility gates the offer; `RequestRoutes.Available` is untouched.
+- [x] **CONFLICT RESOLVED BY THE OWNER: "Both - filter picks the family, card never shrinks."** The two answers operate at different levels and both stand:
+  - **Eligibility (new).** A generated request family is offered **only if** the branch can take at least two routes of at least two different kinds from that family's pool. This is today's answer, and it is a **generation gate**.
+  - **The card (shipped, unchanged).** Once a request is on the table it shows its **full authored floor, unfiltered**, including routes the branch cannot take yet, plus derived extras. `RequestRoutes.Available` is **not** modified. The rationale from 0.11.1-dev holds: a route you cannot take yet is a route you can see and work toward, and a card that shrinks when the branch is poor is worse.
+  - **Net effect:** *you never see a request you cannot finish, and the request you do see never hides a route from you.* **Nothing already shipped is reversed.** Closes chart §6 item 3.
+- [x] **The question was closed on 2026-09-29 and I re-opened it.** The answer on record is *"BOTH paths"*, from *"i suppose the fallback is okay of building mulitple doors 1x1 to make the sizes needed to fit vehicals and the like and bigger creatures"*. It is the same defect the 0.12.10-dev handoff audit had just fixed - two answered questions still sitting in an open list - committed again one turn later. — **RECORDED, and the feature it governs shipped 0.12.31-dev.** This row is the record of a correction rather than work; the framing it names is now invariant 180.
+- [x] **The framing was also wrong, and that is what the correction names.** The option was written as *"Core-only must reach every width"*, which treats a vanilla install as the audience. It is not. **Zero hard dependencies is a build property** - the package must load and run against Core alone. **The 294 is the play property** - it is the install this mod is designed for. Those are two different statements and only the first is about Core. — **RECORDED, and the feature it governs shipped 0.12.31-dev.** This row is the record of a correction rather than work; the framing it names is now invariant 180.
+- [x] **Build the fallback**, unchanged from the owner's original answer: bind one gate across a run of adjacent 1x1 Core doors, so 1x3 and 2x3 are reachable. Purpose is the owner's own - **to fit vehicles and bigger creatures** - which is why it lands against the body-size fit ladder from 0.9.4-dev. — **BUILT, 0.12.31-dev.** A run of adjacent Core 1×1 doors binds into one gate: **one opening, one spin-up, one address, one width read from both sides.** The union of the run is a `CellRect`, which is what every existing size derivation already works off, so the width, the entry cells, the power draw and the spin-up work all came out right with nothing written for them. Validated against the **same four shapes** a single door may be, and the rectangle has to be **solid** — a ring of doors around a gap is not an opening. Refused while the gate is working, in both directions. Record: [a wide gate out of plain doors](implementation/GATE_DOOR_RUN_IMPLEMENTATION.md).
+## Owner directions recorded late, second pass
+
+`check-doc-conformance.py` gained a rule on 2026-09-29 requiring that every owner direction
+quoted in `FINALIZED.md` also appear here. It immediately found **seven more** that had been
+acted on and archived without ever being written into this queue. Each was implemented, so
+nothing was lost - but the queue is supposed to be the record of what was asked for, and for
+these it was not.
+
+**Verbatim owner direction:** *"make sure u are using the prep docs and the mod spreadsheet and still thinking critical at how we impliment our mods needs across the mods"*
+
+- [x] **HELD as a standing working rule.** The 294 per-mod reviews under `research/reviews/mods/` and the generated register are read before designing, not after. It has recovered misread owner references and, in 0.9.2-dev, produced the Doors Expanded footprints that matched the requested gate sizes exactly.
+
+**Verbatim owner direction:** *"rememrb we are making a mod that works with the other 274, WE ARE NOT EDITING OTHER PEOPLES MODS!"*
+
+- [x] **HELD absolutely.** No file belonging to another mod is ever modified. Compatibility is reached only through conditional runtime patches that apply nothing when the other mod is absent - the owner confirmed this reading explicitly on 2026-09-29 when asked whether a `PatchOperationFindMod` counts as editing. It does not: their files are never touched.
+
+**Verbatim owner direction:** *"continue the work to finish the mod making sure you are using the mod integration register in what all needs to be done"*
+
+- [x] **HELD as a standing working rule.** The register is consulted for every integration question, and **the HTML is the register**, not the spreadsheet.
+
+**Verbatim owner direction:** *"and we cant have backrooms npc pawns all dying off if a person is slow to explore so something needs to be done about like stat or need freezing until discovered with the fog of war"*
+
+- [x] **BUILT 0.8.5-dev, and it was a real defect in work that was otherwise ready to ship.** Everything placed in a coordinate is a live pawn on a live map, so a survivor three rooms away would **starve before a cautious player ever reached them** - impossible for exactly the player most likely to want the rescue. Fog of war was the right signal and the owner named it: RimWorld already tracks per cell whether the player has seen it, so nothing had to be invented or kept in sync. Needs are topped back up on a bounded sweep rather than frozen, because stopping them ticking needs Harmony and the observable result is identical. **Discovery starts their clock.**
+
+**Verbatim owner direction:** *"yes yes continue and remember the back rooms is random on crack and lsd creepy horror flick"*
+
+- [x] **HELD as the tone contract for generation.** Depth 1 stays the sparse yellow rooms; everything past it grows stranger through the palette bands, the coherence decay and the anomalous archetype weighting, so the wrongness is travelled toward rather than presented at the door.
+
+**Verbatim owner direction:** *"get to it hallways can have furniture and produiction benches too remember things are almost completely fucking werid and crazy odd and scary looking the deeping in the backrooms and higher the gete quality and rtesarch levels and tech and stuff ec t ect"*
+
+- [x] **BUILT 0.8.7-dev, and it corrected a wrong finding of mine.** A bench standing in a corridor had been treated as a gap to constrain; the owner's direction is that it **is** the content. So an archetype's declared family constraint now **lapses in a deranged space** instead of being enforced, and what a coordinate produces rises with research finished and depth reached, never above the archetype's own declared ceiling.
+
+**Verbatim owner direction:** *"i suppose the fallback is okay of building mulitple doors 1x1 to make the sizes needed to fit vehicals and the like and bigger creatures"*
+
+- [x] **The adjacent-door-run fallback.** Binding one gate across a run of adjacent 1x1 Core doors, so 1x3 and 2x3 are reachable without Doors Expanded. **Still open.** The single-door half shipped in 0.9.2-dev, where Core's own `OrnateDoor` turned out to supply 1x2 with no mods at all, and the body-size ladder that makes the sizes mean something shipped in 0.9.4-dev. — **BUILT, 0.12.31-dev.** A run of adjacent Core 1×1 doors binds into one gate: **one opening, one spin-up, one address, one width read from both sides.** The union of the run is a `CellRect`, which is what every existing size derivation already works off, so the width, the entry cells, the power draw and the spin-up work all came out right with nothing written for them. Validated against the **same four shapes** a single door may be, and the rectangle has to be **solid** — a ring of doors around a gap is not an opening. Refused while the gate is working, in both directions. Record: [a wide gate out of plain doors](implementation/GATE_DOOR_RUN_IMPLEMENTATION.md).
+
+
+
+> moved from `## Owner directions recorded late` in `docs/TODO.md`
+
+**Verbatim owner direction (2026-09-29):** *"dopnt flag shit!!! ask me then and there"* and *"write that to mem,ory to not flag shit, it just becomes orphaned work"*
+
+- [x] **HELD as a standing working rule.** No unresolved question is written down for later: it is asked immediately with `AskUserQuestion`. A flagged item becomes orphaned work - it lands in a doc nobody actions while the build carries an unresolved assumption forward. Recorded as a persistent memory and as invariant #44 in `NOW.md`.
+
+**Verbatim owner direction (2026-09-29):** *"2 should really limit numbers through at once because in vinilla any number of pawns can use a door at once so we dont want limitations"*
+
+- [x] **HELD 0.9.2-dev by adding nothing.** A wide gate gets **more doorway cells**, never a quota, and ordinary pathfinding spreads people across them exactly as at any wide vanilla door. `OrderCrossing` was checked first and only ever refused *the same pawn twice*, never a second pawn, so the existing behaviour was already vanilla-equivalent and the correct action was to leave it alone. There is no counter anywhere in `GateFootprint.cs`, deliberately.
+
+**Verbatim owner direction (2026-09-29):** *"gate doors expansions can NOT be done on a working gate"*
+
+- [x] **BUILT 0.9.2-dev.** Binding and unbinding already refused while a gate was open or had an unresolved trip. **A ramp is the gate working too**, so spinning up now blocks a rebind by the same rule. Resizing a gate means swapping the door, which means taking it out of service first.
+
+
+**Verbatim owner direction (2026-09-29):** *"we need to keep using the mod register and all the prep docs while updating old out of date docs, readmes, how tos and other docs making sure they conform to the wanted stake state"*
+
+- [x] **BUILT 0.10.0-dev as `check-doc-conformance.py`, the sixth checker.** 28 stale claims across 10 living documents corrected, including a readme claiming version 0.4.1-dev against a 0.9.9-dev build and a publishing procedure naming a branch that has not been the working branch all run. **Dated records are exempt by design** - an implementation record stating the checker count of its day was true when written, and rewriting it would falsify the evidence trail.
+
+**Verbatim owner direction (2026-09-29):** *"also ive used alot of differnt terms for the gates.. from portals, gates, doors , the machine, the gizmo, ect ect we need a unified name throught the entire mode in all the equipment information and cards of things items resources and buildings and all things that our mod touches"*
+
+**Owner answer, asked at the fork:** **gate / connection / threshold** - three words for three genuinely different things, rather than one word that would lose the distinction.
+
+- [x] **BUILT 0.10.2-dev.** **`gate`** - the machine in your wall. Always a designated door. Already dominant at 171 player-facing uses against 13 for "portal".
+- [x] **BUILT 0.10.2-dev.** **`connection`** - the live link a gate holds open to one coordinate. Lets the game say *"the gate is fine, the connection dropped"*, which is a real thing that happens and currently cannot be said clearly.
+- [x] **BUILT 0.10.2-dev.** **`threshold`** - the doorway you arrive at on the far side.
+- [x] **BUILT 0.10.2-dev** as a vocabulary rule in `check-info-cards.py`, proved by planting each banned term and by confirming key names and the blessed words stay allowed. **Enforce it over player-facing text** - keyed strings and def labels and descriptions - so the vocabulary cannot drift back. Same reasoning as every other checker here.
+
+
+- [x] **"lets not limit the amount"** — no cap on how many glow pods a crew carries or deploys. A 300x300 instance can have hundreds of rooms and the kit must not assume six. **BUILT 0.10.7-dev.** Three caps were found and removed rather than one: the survey tag's **one deployed aid per room**, the expedition kit check refusing dispatch below **six tags per crew**, and the recipe that made exactly six. There is now no cap of any kind.
+- [x] **"color means differnt types of the needs markers"** — **mod-defined marker types, each with its own colour**: route home, cleared, danger, supply cache, unexplored lead. Chosen when a pod is placed, and countable per coordinate in the operations readout because the mod knows what each one means rather than only what colour it is. **BUILT 0.10.7-dev** as `RimroomsMarkerTypeDef`, five of them. **RimWorld's own free colour picker is deliberately not enabled**: a picker lets a player paint a danger marker the same green as a cleared one, and the point of the colour is that it reads across a dark room. Marker type also carries `countersDistortion`, so what a colour means is mechanical and not only visual.
+- [x] **`CompGlower.GlowColor` has a public setter** backed by a **saved per-instance `glowColorOverride`**, and `CompProperties_Glower.colorPickerEnabled` turns on RimWorld's own colour picker. Verified by decompiling, 0.9.9-dev. **Settable colour needs no new UI.**
+- [x] **Legacy field gear** `RR_FieldRecorder`, `RR_SurveyTag`, `RR_ReturnBeacon`, `RR_SealedEvidenceCase`, `RR_RouteRecording` → existing objects with saved role bindings. Removing the mechanics remains a **rejected** scope reduction, and `MedicineIndustrial` remains an unsafe substitute because other systems consume it. **Content blocker dissolved 2026-09-28:** "Core has no portable recorder/tag/case" was a framing problem, not a content one. Rimrooms already binds behaviour to Core objects through a patched comp plus runtime designation, so the question is which Core object has the needed *capability*: per-instance identity for a tag (Core art via `CompArt` is the only Core thing that generates one), a Core beacon for a route marker, a saved comp record for a recorder, and a real `ThingOwner` container for evidence custody — which the connected container haul route already reaches. Remaining work is implementation and the migration decision, not finding content. Method and mapping: `implementation/DEPENDENCIES_AND_CAPABILITY_MATCHING.md`. — **BUILT, 0.12.22-dev.** The art half is closed: all four remaining textures now name Core paths. **`RR_RouteRecording` was already superseded** — `CompRouteEvidence.NativeCarrierDef` resolves Core’s `TextBook` and `IsLegacyCarrier` exists only so old saves keep loading. **CLOSED, 0.12.24-dev — and the migration decision was the owner’s: *"Fold it into the record book crews already carry"*.** The kit is now Core’s `TextBook`, resolved through `CompRouteEvidence.NativeCarrierDef` rather than by name, and **the def was NOT deleted** — so there is no save break. It stays loadable because saves contain recorders, and is never granted or sold again: the recipe retired with its whole file, both scenario grants became `TextBook`, and `tradeability` is `None`. **All four field-gear replacements are now done.** The answer had been written down at 0.9.9-dev and sat for fourteen checkpoints because no proof asserted anything about it. Record: [the recorder became the book](implementation/RECORD_BOOK_IMPLEMENTATION.md).
+- [x] **RETIRED 0.9.0-dev.** **Legacy fixtures and terrain** `RR_SiteFluorescent`, `RR_SiteClimateUnit`, `RR_FadedInstitutionalCarpet`, plus `RR_FieldAnalysisBench` retirement. **All four had no C# consumer whatsoever** and had been shipping textures nobody could see. Archived to `historical-content/0.2.0/`.
+- [x] **`RR_QuietPursuer` presentation** → existing native pawn presentation (`Megascarab` reskin candidate) or removal, keeping the learned rules and encounter. — **BUILT, 0.12.22-dev.** Presented with Core’s `Things/Mote/Black` — a shape you cannot resolve, which is closer to its own description than a drawing was. **Every learned rule is unchanged.** The row’s `Megascarab` suggestion was declined: it would have put an insect where a figure belongs.
+- [x] **Five recipes.** `RR_MakeReturnBeacon` was **retired with its item in 0.9.9-dev**, and `RR_AssembleMachineGate` is **live and kept**: it is the bill a branch runs on a Core machining table to assemble a gate, and only its name still refers to the retired machine. `RR_MakeSurveyTags` was **retired with its item in 0.10.7-dev**; glow pods are bought by the crate from the company catalogue instead. Remaining: `RR_MakeFieldRecorder`, `RR_MakeEvidenceCase`. — **CLOSED, 0.12.24-dev. The row was stale by one:** `RR_MakeEvidenceCase` had already gone with the sealed case in 0.10.9-dev and nobody updated this line, so the remaining count was one, not two. `RR_MakeFieldRecorder` is **retired with its whole file** — `RR_FieldFabricationBase` had no other child — and the package allowlist no longer names it. Its precondition was met first: `RR_Procurement_RecordBooks` wires the procurement route, so a branch that loses its book orders another instead of being unable to dispatch anyone. **One recipe remains of the original five, `RR_AssembleMachineGate`, live and kept.**
+- [x] **DONE 0.9.1-dev, net minus 112 lines, and it uncovered a whole dead power model.** **The remaining `IsNativeProvider` branches.** Sixty-odd sites whose else-side became unreachable when `RR_MachineGate` was retired in 0.9.0-dev. **Deliberately left for its own checkpoint** rather than mixed into the content retirement: the value is code clarity for the multi-cell gate work, and a diff that says only "remove the dead branch" is reviewable in a way a mixed one is not.
+- [x] **Remove the 14 historical gameplay PNGs from the package allowlist** once their references are gone. — **BUILT, 0.12.22-dev.** **The count was stale by ten: four shipped, not fourteen.** All four are gone, archived to `historical-content/0.12.22-dev/textures/` per invariant 37, and every def now names a path enumerated out of Core’s own defs. **Zero gameplay art or audio ships**, and `check-register-compliance.py` asserts it as a shape rather than a count.
+**Core contracts:**
+
+- [x] Implement one authoritative gate state machine with validated transitions, actions, preconditions, costs, warnings, timers, and event log. — **BUILT.** The spin-up is the one way a gate opens and every entry point routes into it (invariant 32); 68 dead branches were collapsed in 0.9.1-dev to leave exactly one.
+- [x] Implement a single transaction service for stock/currency/job/project changes; prevent duplicate delivery/reward and never silently discard unsupported transferred items. — **BUILT.** `PostTransaction` with idempotent operation ids and a receipt-mismatch refusal; the running balance is revalidated on load and a mismatch disables company actions rather than silently correcting itself.
+- [x] Implement stable site/coordinate IDs, deterministic seed construction, generator version, room graph records, map ownership, revisit behavior, and bounded cleanup policy. — **BUILT.** `CampaignSeed.Derive` (FNV, never `String.GetHashCode`), `generatorVersion`, `roomLibraryVersion`, saved room graphs, `OwnsMap`, and revisit displacement.
+- [x] Implement stable references to pawns/buildings/sites via game-supported serialization; avoid stale references and duplicated pawn inventories. — **BUILT.** `Scribe_References` throughout, `GetUniqueLoadID` bindings, and `Company/LostPawnRegister.cs` for a reference that does go missing.
+- [x] Add structured log categories and debug summaries for campaign/coordinate/gate/contract/case/RWT operations. Include seed and failing stage for generated-site errors. — **BUILT.** `Core/RimroomsDiagnostics.cs`, with `Measure(...)` scopes on the company and expedition ticks.
+- [x] Add versioned save components and migration from each released schema before saving or loading content updates. — **BUILT.** `schemaVersion` with `CurrentSchemaVersion` 2, migration at `PostLoadInit`, and a save-integrity fault that disables actions rather than corrupting a save.
+
+- [x] Create the Async Industries new-game scenario with starter facility, staff, stock, limited funds, disabled gate, first project, and tutorial, following `SCENARIOS.md`. — **BUILT.** And it now opens with **eight completed research projects**, so the branch can operate from the first minute.
+- [x] Add gate frame, control console, power requirements, emergency cutoff, assembly/calibration work, operation feedback, failure states, and repair costs. — **BUILT.** Console, power and reserve requirement, kill switch, assembly and calibration work, inspect feedback and failure states all ship. **Repair and reliability are still open** and are tracked on the machine-subsystems row in M3.
+- [x] Create one seeded, finite Backrooms site with a short room graph, one hazard, one learnable entity, one evidence chain, one exit/recall path, and one reward. — **BUILT.** And considerably exceeded: archetypes, depth bands, facilities as contiguous runs, four anomaly effects, inhabitants with a bounded escalation ladder, and the evidence chain.
+- [x] Add expedition dispatch/recall/close flow; track crew/cargo/location/return and handle death, injury, missing, late return, and aborted runs. — **BUILT.** `Expedition/RimroomsExpeditionComponent.cs`, with the stranded-crew guarantee: a gate closing on a crew **strands them and never takes them**, proved rather than asserted.
+- [x] Add evidence intake, one lab analysis recipe/project, one researched capability, a payment/contract result, and a traceable company ledger entry. — **BUILT.** Intake, custody on a linked archive shelf, analysis, insight, research capabilities that real code must read, contract settlement and the ledger entry.
+- [x] Provide a safe fallback map and recoverable error message when generation cannot produce a valid route. — **BUILT.** `Generation/FailedSiteRecovery.cs`.
+- [x] Preserve native/Prepare Carefully edited pawn instances, relationships, inventory and role choice in all three starts; replace the historical fixed custom-kind roster checks with visible capability/role validation. — **DONE.** All three starts build native pawns through `BranchStartRequest` (`Scenario/ScenPart_RimroomsStart.cs`), and the five historical `RR_*Staff` PawnKinds were found read by nothing and repurposed as the clean-up crew in 0.11.7-dev. EdB Prepare Carefully is register row 85 and is not patched.
+- [x] Honor the company-selected surface world tile through native setup, and give the store its distinct setup/grant/objective flow. — **DONE, 0.11.9-dev.** The Furniture & Knickknack Store start ships with its own setup, grants and objective flow.
+- [x] Implement the inside-start setup using the recorded provisional defaults while the grouped party/first-exit answers remain pending: direct Backrooms entry without a disposable surface colony, retained real-world state, discoverable physical exit and same-pawn/cargo transfer. — **DONE, and both pending answers are now closed.** Party size is player-settable (0.12.0-dev) and the first exit is a guaranteed registered way out on a real coordinate (0.12.2-dev). No provisional default remains.
+- [x] Keep the first acceptance target on Async Industries while making its scenario setup consume the same versioned start contract intended for alternate starts. — **DONE.** `BranchStartRequest` **is** the versioned start contract and all three starts consume it; `scenarioVersion` is saved per branch.
+- [x] Implement Furniture & Knickknack Store after Gate 2: validate public-area security, store stock/ownership, basement threshold, missing-person objective, and return/contract convergence. — **DONE, 0.11.9-dev.** `proof-starts.py` caught three new-game crashes in its layout before it shipped.
+- [x] Implement Lone Survivor after Gate 2: validate a seeded inside start, one-pawn survival, finite field kit, learned-rule/evidence persistence, return/rescue/outpost alternatives, and no facility prerequisite. — **DONE, 0.12.0-dev and 0.12.2-dev.** The map itself is a real Backrooms coordinate with a guaranteed registered way out, and the natural chain stops at depth 3.
+- [x] Add applicant/talent pools for candidates, specialists, contractors, survivors, returning staff, and referrals, with inspectable skills, health, traits, salary/term, and recruit action. — **DONE.** `Personnel/ApplicantRecord.cs` and `Personnel/HiringServices.cs`, with `RegisterHiredStaff` in `PersonnelServices.cs`.
+- [x] Add cafeteria, sleep, recreation, injury recovery, shift rotation, staff needs, conflict/wellbeing alerts, and accommodation capacity. — **SUPERSEDED by the existing-content-only rule.** RimWorld already ships every one of these natively and does them better than a mod should. Building parallel versions would fight Core for no gain. Invariant 10.
+- [x] Integrate existing hospitality, guest, prisoner, medical, and QoL systems only through evidence-backed adapters; keep native interactions available. — **DONE as a compliance rule, and it is held.** The register sweep covered hospitality, medical and QoL; no file belonging to another mod is modified, and every native interaction stays available. Owner direction: *"WE ARE NOT EDITING OTHER PEOPLES MODS!"*
+- [x] Implement native door/endpoint bindings for controlled and mysterious portals, including existing supported sizes, native recolor/aura and deliberate crossing actions. — **DONE, 0.9.0-dev through 0.9.4-dev.** A gate is an ordinary door you designate; Core’s `OrnateDoor` supplies 1×2 with no mods; gates are tinted blue; crossing runs through `PortalTraversalPolicy`, the single chokepoint.
+- [x] Bind actual control/laboratory equipment and native power grids/batteries to gate installations; show connection failures, consume real energy once and use researched upgrades for aperture, duration, efficiency and saved-coordinate recall. — **DONE.** Equipment links 0.10.8-dev, real power draw 0.11.5-dev, and the reserve requirement before opening 0.12.4-dev, which also revived a tier-0 card that had promised an unlock and moved nothing.
+- [x] Migrate the older custom gate/console state or document a preserved development-save boundary; retain existing maps, endpoints, crews and cargo through interruptions. — **DONE.** Eight legacy defs retired in 0.9.0-dev and 68 dead branches collapsed in 0.9.1-dev, all archived under `implementation/historical-content/`, with the save boundary carried by `schemaVersion` 2.
+- [x] Add machine subsystems/upgrades: power reserves, calibration, stabilizers, monitoring, emergency cutoff, cool-down, modules, repair, and reliability. — **COMPLETE 0.12.38-dev.** **Seven of the nine were already built and this row's own grep was looking for the wrong words:** stabilizers exist as **`PortalWindowTier`** (a four-rung project ladder that multiplies the window and stops the countdown entirely at tier 4) and modules exist as **`GateEquipmentLinks`** (roles, `maxLinked`, single ownership across gates). Both are now asserted by proof so nobody rebuilds them. **Repair and reliability were the real gaps, and the finding was that a gate read NO DAMAGE AT ALL** — it could be shot to twelve per cent and still hold a connection. Below half condition it now loses calibration, refuses to open with a readable reason, and a live opening ends through the **emergency** path so the crews get their return window. Fixing it is Core's own repair; bringing it back is the calibration job that already existed. **Reliability is a record, not a dice roll** — outcomes counted per coordinate, the rate derived on read, **-1 for no data** so nothing invents a claim about an address nobody has come back from, and **no `Rand` call anywhere**. The seventh gate failure reason was added deliberately to the asserted set. Record `implementation/GATE_SUBSYSTEMS_IMPLEMENTATION.md`, proof `proof-gate-subsystems.py`. Was: **Partly built.** Power reserves, calibration work, the emergency cutoff/kill switch and monitoring all ship. **Not built, and confirmed absent by grep:** stabilizers, modules, repair and a reliability model. Each would need a real read site before it is written — invariant 136.
+- [x] Add field equipment: protective gear, weapons, restraints, med kits, recorder/camera, radio/repeater, mapping gear, detector/scanner, beacon/tether, sample kit, cargo frame, portable power, and tools. *(under the content-reuse rule: existing gear with saved role bindings, no new item Defs)* — **SUPERSEDED, deliberately and repeatedly.** Every custom field item was retired: the return beacon (0.9.9-dev), the survey tag and evidence case (0.10.7-dev), the route recording. **No new gameplay ThingDef may be authored** — invariant 10 — and this row predates that rule.
+- [x] Give every piece of gear a visible effect on detection, safety, information, cargo, route finding, or return reliability. — **SUPERSEDED with the row above.** There is no custom field gear to give an effect to. The principle survives and is enforced more strictly as invariant 136: an unlock that changes nothing observable is deleted rather than shipped.
+- [x] **BUILT 0.12.41-dev, and the measurement decided the whole shape of it: every check this row asks for was already enforced and not one of them was named.** `Dispatch` refuses on **fifteen** distinct grounds and `CheckCrew` collapses **five** of them -- wrong crew size, a duplicate, cannot walk, not employed, and by extension dead, downed, mid-mental-break or incapable of moving -- into the single key **`RR_Exp_InvalidCrew`**. Weight was already checked, hauling was already checked, the operator was already held back and the debrief hold was already enforced. So a player ticked three boxes, pressed dispatch and was told *"invalid crew"*: **one message for five conditions across three people, naming neither the person nor the condition.** So this is not a second set of checks, it is **the same conditions attributed** -- ten named reasons, one per person, each reading the state dispatch itself reads (`gate.AssignedOperator`, `campaign.AwaitingDebrief`, `ExpeditionCargo.CheckCapacity`, `PawnCapacityDefOf.Moving`). **Skill was the one thing genuinely absent**: best level per field skill across the selected crew, with the gaps named and **deliberately not enforced**, because a player may have good reasons to send two shooters and no medic. Weight is `MassUtility`, per person and for the crew. The window is the gate's own tier calculation, said as *held* rather than as a number at the indefinite tier. The cost preview is watt-days for a full window quoted beside the reserve it has to cover -- and it reads `OpeningPowerDrawWatts` off `GateFootprint`, **not** the raw prop: a duplicate accessor for the raw prop was written and **the compiler refused it**, which was right twice over, because the footprint-scaled one is discounted by `RR_Cap_EfficientAperture` and the raw value is not what any gate above 1x1 actually draws. **This row's absolute -- *"must not own connection existence"* -- is asserted structurally:** the planner constructs no `CompanyActionResult`, and the proof enumerates every C# file in the package and **refuses any reference to the type from outside `UI/`**, so a call from dispatch or gate code fails the build. Deleting the planner would change no outcome in the game. Record `implementation/PLANNER_AND_MISSIONS_IMPLEMENTATION.md`, proof `proof-planner-and-missions.py`. Was: Add crew composition and cargo planner with skill/health/weight/gate-window checks, ready/unready reasons, and cost preview. *(optional mission UI under the connected-colony contract; must not own connection existence)* — **Still open, and the row already marks it optional.** Expeditions carry crew and cargo; the planner UI does not exist.
+- [x] Add gate-window progression minutes → hours → days → weeks/months with power, heat, maintenance, supplies, crew rotation, communication, and increasing complexity costs. — **DONE, 0.5.4-dev.** The tier ladder: 108,000 ticks base, ×3 per earned tier, and **no countdown at all** at the indefinite tier. Owner-directed.
+- [x] Add fog-of-war atlas, route notes, last-known position, evidence chain, return beacon, route clues, saved room graph, and revisit changes. — **DONE.** Fog of war holds undiscovered inhabitants (0.8.5-dev), the room graph is saved, revisit displacement ships (0.10.3-dev), and the evidence chain runs through a linked archive shelf (0.10.8-dev). The return beacon is deliberately retired.
+- [x] Implement a tagged room/corridor library and deterministic topology generation by coordinate, mission, equipment, research, company tier, and saved history. — **DONE.** Room archetypes with declared family constraints, deterministic derivation from the branch seed, and a saved `generatorVersion` and `roomLibraryVersion`.
+- [x] Validate map size, accessible entrances/exits, walkable paths, mission objects, safe return clues, playable combat spaces, and generation budget. — **DONE.** Generation validates before returning, and `proof-starts.py` reads building sizes from Core’s own ThingDefs — which is how three new-game crashes were caught.
+- [x] Add room families, furnishing rules, lighting/material palettes, loot, salvage, hazards, clue placement, threat events, and theme variations. — **DONE, 0.7.8-dev through 0.8.1-dev**, plus 0.8.7-dev, where the owner’s direction that a bench in a corridor **is** the content made an archetype’s family constraint lapse in a deranged space instead of being enforced.
+- [x] Implement bounded non-Euclidean effects: repeats, moved door/exit, impossible adjacency across site links, altered room dimensions, topology loops, changed object/room identity, and controlled map transitions. — **DONE, 0.8.6-dev through 0.8.8-dev**, with revisit displacement in 0.10.3-dev — weakened from firing 100% of the time to 66.7% **because a proof disagreed**, per invariant 74: a horror mechanic that fires every time is a mechanic, not horror.
+- [x] Add saved, rule-based anomaly propagation across room graphs with observable clues, equipment detection, player countermeasures, cap/decay, event log, and deterministic save/reload. — **DONE.** `AnomalyEventService` with four effects, coherence decay, and every threat honouring invariant 28: readable warning, learnable rule, a countermeasure, and no unavoidable instant failure.
+- [x] Add map state versioning, archival, generator upgrades, explicit migration tests, and recovery if an old site cannot load. — **DONE.** `generatorVersion`, `roomLibraryVersion`, `schemaVersion`, and `Generation/FailedSiteRecovery.cs` for a coordinate that cannot load.
+- [x] Implement branch-local USD financial ledger with auditable entries, payroll, upkeep, purchases, shipments, contract advances, salvage, penalties, compensation, and profit report. Keep ledger balances separate from physical silver/items and prevent duplicate posting. — **DONE.** An append-only ledger with a running balance validated on load, `PostTransaction` with idempotent operation ids, obligations, payroll, overhead, bonds, salvage and the corporate trader.
+- [x] Implement equipment/material procurement, source/price/**expected arrival** (a supplier estimate, never a deadline), shipment manifest, receiving area, delay/loss/damage events, cancellation, and delivery receipt. — **DONE.** The procurement catalogue with price and lead time, shipments, a receiving zone, and delivery to any registered site (0.12.7-dev) — which is where a latent cross-map reroute bug was found and fixed before it could swallow a paid shipment.
+- [x] Implement contract/quest templates for surveys, retrieval, furniture/salvage, samples, transcripts, rescue, containment, security, lease/site construction, town distortion, outpost delivery, and gravship support. — **DONE, 0.12.12-dev and 0.12.13-dev.** **18 generated request families across arcs 4–8**, one per item the chart names, covering surveys, samples, instruments, rescue, secure access, relay stations, caches, shelters, leases, resupply, evacuation, witnesses, missing residents, public danger, heavy cargo, staff, and deeper systems.
+- [x] Define research IDs, tier gates, evidence prerequisites, benches, labor/cost, alternative discovery routes, unlocks, dossier output, and fallback when optional research mods/DLC are absent. — **DONE, 0.9.8-dev through 0.11.6-dev.** The tree is **derived, not declared**; projects require completed logs of named kinds; every granted capability is asserted to be read by real source by `proof-research-branches.py`.
+- [x] Implement containment rooms, security procedures, prisoner/witness interviews, staff debrief, quarantine, alarm/escape response, evidence custody, and case records. — **Still open, confirmed by grep.** `Generation/BackroomsContainment.cs` is **map** containment — a coordinate having no outside — and is unrelated to entity containment. Evidence custody and case records do ship. — **WITNESS INTERVIEWS BUILT, 0.12.28-dev** (see the workflows row): two crew who disagree about a fact are interviewed and one account is filed. **CONTAINMENT ROOMS, SECURITY PROCEDURES AND ALARM/ESCAPE RESPONSE BUILT 0.12.35-dev.** Core already ships four containment alerts and **every one reads `Find.CurrentMap`**, so the real gap was never *"containment has no warning"* but *"containment has no warning about the maps you are not looking at"* - which is this mod's whole premise. Two alerts cover exactly that and skip the current map entirely so they can never duplicate Core's. Containment rooms are a tenth facility category matched by **capability** (`CompEntityHolder` plus Core's own prisoner-bed test), naming no expansion def. The security procedure is a standing order - on a breach, cut every open connection through the gate's own existing `TriggerEmergencyCutoff`, which also starts the return window - armed by default, readable in both directions, with a manual alarm on the console running the same body. Record `implementation/CONTAINMENT_IMPLEMENTATION.md`, proof `proof-containment.py`. **STAFF DEBRIEF AND QUARANTINE BUILT 0.12.36-dev, SO THIS ROW IS COMPLETE.** They turned out to be **one mechanism**: this package has **no `HediffDefs` folder at all**, so quarantine cannot be *"hold until an infection clears"* without inventing content the existing-content-only constraint forbids. So it is the other thing the word means in a company that sends people into places it does not understand: **you do not go back out until you have reported in.** The hold is raised in `Complete(run)`, the one place *"they came home"* was already established, and it bites on `Dispatch` beside the kit check -- **deliberately not on `PortalTraversalPolicy`**, because a player walking one colonist through a door by hand is not a company dispatch. The debrief reuses `InterviewerSocialFloor` rather than inventing a number, nobody debriefs themselves, and it writes **no thought, no mood effect and no hediff** -- the staff-psychology rows ask that native social behaviour be preserved. Record `implementation/AREAS_AND_DEBRIEF_IMPLEMENTATION.md`, proof `proof-areas-and-debrief.py`. Evidence custody and case records already shipped.
+- [x] Implement anomaly openings at ordinary RimWorld settlements as timed quests with perimeter, rescue, evidence, witness, close/stabilize, and follow-up objectives. — **SUPERSEDED by chart §1.1, and the untimed version is BUILT.** *"timed quests"* breaks the owner absolute that nothing but the gate has a clock; `CAMPAIGN_CHART.md` §5 records arc 6’s prep description as **the worst offender against it**. 0.12.13-dev shipped the untimed form: witnesses, missing residents and public danger, with consequences for **abandonment, never for delay**.
+- [x] Add outside-gate and inside-site radio stations, supply points, relief teams, depots, guarded space rental, research/shelter outposts, servicing, loss/evacuation, and return routes. — **DONE, 0.12.13-dev**, plus the clean-up team in 0.11.7-dev. Relay stations, caches, field shelters, guarded leases, resupply and evacuation all ship as request families, and every one of them turned out to have had a research project since 0.11.6-dev.
+- [x] **CLOSED 0.12.39-dev, and the register changed what a hook could be.** Its integration approach forbids exactly the obvious build, in its own words: **"No patch or code/assets copied"** for both gravship chapters, and *"do not add vehicles solely because the framework is installed"* for the vehicle framework. So a hook here is a **read-only statement of what is installed and what this package does about it** — which is what these rows ask for in their own words (*"logistics summary/operations links"*, *"feature detection and setup diagnostics"*). `InstalledIntegrations` detects five mods by **package id read from the register**, and the readout on the facilities page says the row, whether it is loaded, and this mod's position on it in both states. **The defence that cannot rot:** the proof asserts only two files in the package mention the detection class, and **no tracked package id appears in any other source file** — an id outside that class is a dependency forming. Operations links are `OpenNativeTab`, the game's own surface, with nothing patched. Record `implementation/INTEGRATIONS_IMPLEMENTATION.md`, proof `proof-integrations.py`. Was: Add vehicles and space travel as logistics branches; maintain the gate as the defining Backrooms access mechanism. — **Still open.** Arc 7’s heavy-cargo and staff-transfer request families ship (0.12.13-dev), but no vehicle or space system is written. **DLC- and mod-optional throughout**, so this can never become a requirement.
+- [x] **CLOSED 0.12.39-dev, and the register changed what a hook could be.** Its integration approach forbids exactly the obvious build, in its own words: **"No patch or code/assets copied"** for both gravship chapters, and *"do not add vehicles solely because the framework is installed"* for the vehicle framework. So a hook here is a **read-only statement of what is installed and what this package does about it** — which is what these rows ask for in their own words (*"logistics summary/operations links"*, *"feature detection and setup diagnostics"*). `InstalledIntegrations` detects five mods by **package id read from the register**, and the readout on the facilities page says the row, whether it is loaded, and this mod's position on it in both states. **The defence that cannot rot:** the proof asserts only two files in the package mention the detection class, and **no tracked package id appears in any other source file** — an id outside that class is a dependency forming. Operations links are `OpenNativeTab`, the game's own surface, with nothing patched. Record `implementation/INTEGRATIONS_IMPLEMENTATION.md`, proof `proof-integrations.py`. Was: Add VGE Chapter 1 logistics summary/operations links without replacing its oxygen/fuel/power/heat/crew systems. — **Still open, and optional by construction.** Any hook lives inside a `PatchOperationFindMod`, which applies nothing when the mod is absent — invariant 42.
+- [x] **CLOSED 0.12.39-dev.** Same read-only shape as rows 764 and 765 — nothing patched, nothing copied. **This row's absolute is now asserted by proof:** *"orbital enemies must never mix into Backrooms entity generation"* — `InhabitantService` draws only from `DefDatabase<RimroomsInhabitantDef>`, and the proof also asserts the absence of any `PawnGroupMaker`, `FactionDef` or `DefDatabase<PawnKindDef>.AllDefs` source, so no installed content can leak in. A planted fault that opens generation to any pawn kind is caught. Record `implementation/INTEGRATIONS_IMPLEMENTATION.md`. Was: Add VGE Chapter 2 orbital security/contracts/wreck salvage hooks without patching its gravship internals or mixing orbital enemies into Backrooms entity generation. — **Still open, and optional by construction**, with the same `PatchOperationFindMod` rule. Orbital enemies must never mix into Backrooms entity generation.
+- [x] **The remaining rungs of the laboratory duration ladder.** The mechanism ships in 0.5.4-dev and is data-driven, but `portalWindowTierProjects` currently names the single company project that exists, so the highest attainable tier is 1 (~90 real minutes) and the indefinite tier is **unreachable**. **Genuine dependency:** the T0–T6 research tree across nine branches has to exist before its rungs can be climbed. Appending its projects to the def list grows the ladder with no code change. Must be authored as **one tree available to every start**, per the owner's 2026-09-28 clarification. Source: `implementation/GATE_DURATION_AND_COMPANY_NAMING.md`. — **DONE, and this row’s own complaint is stale.** `CompRimroomsGate.portalWindowTierProjects` is a list that now names **three** gate projects — `RR_GateFieldStability`, `RR_GateTelemetry`, `RR_GateSustainedAperture` — and 0.10.9-dev shipped the log-gated ladder with four rungs.
+- [x] **Inside-start scenario implementation now that both its questions are decided:** a configurable solo-or-small-group party, and a first exit where **the player chooses the destination settlement** rather than being shown a fixed one. The second is a change from the old provisional assumption, so the scenario must implement a choice, not a reveal. — **DONE, 0.12.0-dev and 0.12.2-dev.** Configurable party, and a guaranteed way out on a real coordinate rather than a revealed fixed destination.
+- [x] Contract/quest templates for the 13 mission families, leases, shipment incidents. — **DONE, 0.12.12-dev and 0.12.13-dev: 18 generated families, more than the 13 asked for**, plus the guarded-lease family. Shipment incidents ride the existing procurement delay and loss paths.
+- [x] Store start; Lone Survivor start. Both starts are fully specified in [`SCENARIOS.md`](SCENARIOS.md), so this is implementation rather than design, and **neither is blocked on the owner**. — **DONE. All three starts ship** — Async Industries, the Furniture & Knickknack Store (0.11.9-dev) and solo/group (0.12.0-dev, 0.12.2-dev).
+- [x] **BUILT 0.12.39-dev.** Detection is `ModsConfig.IsActive` against the **package id read from the register**, re-read when `ModLister.InstalledModsListHash` changes because a player can enable a mod and restart into the same save. **The three states this row asks for**, said in the readout: *not loaded*, *loaded*, and — for every one of them — **unverified in play**, because no game has ever been launched from this repository. Saying *"supported"* would be a claim nobody has earned. **It remains unverifiable without a launch the owner performs**, and per the standing instruction that is never a reason to defer building: the detection is built and proved structurally, and the readout says plainly that it is unproven. Was: Implement feature detection and setup diagnostics for the pinned RWT release; support unavailable/admin-disabled feature states. — **STILL OPEN.** Multiplayer. Requires the RWT mod present to detect anything, so it cannot be verified without a launch the owner performs.
+- [x] Implement no custom server schema or patches until supported extension points are identified from the exact code version. — **BUILT.** Held as a rule: no server schema or patch exists, and none may be written until extension points are read out of the exact pinned version.
+- [x] **WRITTEN 0.12.39-dev as `docs/MULTIPLAYER.md`, and this row's absolute now has a checker.** The document opens with *"Nothing on this page has been tested in play"* and states outright that there is **no shared colony, no live shared map and no synchronised research**. The setup section records what was actually observed: the server reports `AllowAllMods=true` and `EnforceSettings=false`, so **every player must match their mod list by hand and nothing will warn them**; `ScenarioConfig.json` forces `Crashlanded`, so any other start needs a disposable configuration copy; and whether offline visiting works is **unknown** from what was inspected. **`check-doc-conformance.py` gained a claim guard** — an absolute with no check is a promise. It tests for **assertion rather than mention**, because a naive substring ban would fail the one document written to obey the rule (the exact trap `disposition_stance()` fell into), and it **found a real denial on its first run** in `SCENARIOS.md`. Two fault plants put a real forbidden claim into a real reader-facing document and both are caught. Was: Document exact server setup and player experience. No statement may describe live shared-colony control or synchronized research unless implemented and demonstrated. — **STILL OPEN.** Documentation, and it must never claim live shared-colony control. Belongs with the player-facing how-to.
+- [x] Base Core-only campaign works and loads with every DLC absent. — **BUILT.** **Zero hard dependencies, and it is checked every build:** `check-dlc-gating.py` passes and every DLC-touching def carries `MayRequire` (invariant 15).
+- [x] Check DLC-only XML folders, Def references, textures, recipes, quests, C# type lookups, startup without DLC, and save load after toggling DLC. — **BUILT.** `tools/check-dlc-gating.py`, run every checkpoint.
+- [x] Build the Operations overview and panes: Overview, Personnel, Facilities, Gate, Expeditions, Atlas/Routes, Research/Evidence, Contracts/Ledger, Cases/Containment, Outposts/Company Network, Gravship Operations. — **BUILT.** **Twelve panes ship**, one more than the eleven asked for: Overview, Personnel, Contracts, Ledger, Atlas, Activity, Investigation, Machine, Expedition, Facilities, Procurement, Sites.
+- [x] Add explainable alerts, reason codes, action previews, confirmation only for irreversible losses, undo/recovery where possible, and clear empty/loading/error states. — **BUILT.** The alerts readout (0.10.5-dev), `CompanyActionResult` refusal keys everywhere, and confirmation on exactly the irreversible case — the deconstruct warning (0.12.4-dev). Refusals are stated **before** the click as well as enforced after it.
+- [x] **CLOSED 0.12.40-dev, and the challenge in this row's own text is what decided it.** The row asks two things and they are answered differently. **Reachability is built**: the company panel now opens **all five surfaces this row names, in this row's own order** -- Architect, Work, Assign, Research, World -- each through `MainButtonDef.Worker.InterfaceTryActivate()`, the game's own button pressed on the player's behalf, which is what preserves Core's research, tutorial and world-selection behaviour. **Architect opened from nowhere in this package before this**, by any route: `grep -rn "Architect" --include=*.cs src` returned nothing at all, while the handoff claimed it was already reachable. **Company-first is built**: `RR_MainButtons.xml` moves from `<order>95</order>` to `<order>0</order>`, left of Core's Architect at 1 -- it had been sitting between Factions (90) and Menu (500), which is as far from first as the bar allows. **The remap itself is deliberately NOT built**, exactly as this row says to consider, and the absence is now asserted rather than assumed: the proof refuses a patch against `MainButtonDef` and refuses any C# of ours that assigns through a `MainButtonDef`-typed expression, because rewriting Core's bar through the def database is the one route a Harmony-free mod still has. Remapping the base game's interface would fight every interface mod in the register at once, and **reachability was the requirement this row actually states**. Record `implementation/PLAYER_FACING_IMPLEMENTATION.md`. Was: Remap RimWorld's menus, tabs, and campaign views into the finished company-first Company Command layout, growing from the first-playable Operations tab. Keep every relevant Architect, Work, Assign, Research, World, map, building, and pawn action reachable; change navigation and presentation without replacing the underlying colony simulation. — **STILL OPEN.** **And it should be challenged before it is built.** Remapping Core’s own menus is invasive, would fight every interface mod in the register, and no owner direction has asked for it since. The twelve-pane tab is the company-first surface.
+- [x] **CLOSED 0.12.40-dev.** **Tutorial and glossary:** a thirteenth Operations pane, `Help`, holding the first-session sequence and a definition for every word this package enforces -- gate, connection, threshold, coordinate, band, branch, request, contract, dispatch, debrief, evidence, insight, facility, site. It draws **outside** the company block and the tab is `validWithoutMap`, because **a glossary you need a running company to open is not help**; the proof asserts both that it is drawn and that it is *not* drawn from inside the company block, since that failure looks identical from the outside until there is no company. **Keyboard path:** one XML field. `KeyBindingDefGenerator.ImpliedKeyBindingDefs` emits a rebindable `MainTab_RR_Operations` into the `MainTabs` category for any `MainButtonDef` that sets `defaultHotKey`, so **Core's own machinery supplies the binding and this package authors no `KeyBindingDef` at all**. The default is **F12, the only function key Core leaves free** -- it takes Tab and F1-F9 for main tabs, F10 for a screenshot and F11 for screenshot mode -- and the help pane prints the player's *live* binding through `MainKeyLabel`, not the shipped one. **Colour, contrast and scale:** measured first, and the answer was already true with nothing holding it true -- **not one file under `UI/` authored a colour**, and the only font work in the folder is one `GameFont.Medium` heading with the caller's font restored. So the position is that this package authors **neither colour nor font size in anything a player reads text from**, which means the player's own Options for scale, font and colourblind mode apply to it exactly as to the base game; an option of ours would be a second, worse copy of a setting the game already has. **That is now a checker**, not a claim: `check-display-style.py` gained `check_readability()`. **Icons/tooltips and localization** were already measurable -- `check-keyed-strings.py` reports every declared key resolving. Record `implementation/PLAYER_FACING_IMPLEMENTATION.md`. Was: Add tutorial/guide, help glossary, keyboard/controller paths as appropriate, color/contrast/readability options, scalable UI, icons/tooltips, and localization support. — **STILL OPEN.** This is queue item 7, the player-facing how-to, written **once** for the repo and the site.
+- [x] Create and integrate the approved original RimWorld-style Backrooms main-menu slideshow, preserving provenance, native fallback, supported crops and truthful feature coverage. Show the exact mod title and loaded version beside native top-left version information; use dynamic UI text, not baked image version labels. — **BUILT.** `Presentation/RimroomsMenuBackground.cs`. Original images are **the single declared exception** to the no-new-art rule.
+- [x] Integrate the slideshow through the verified 1.6 menu surface without redistributing vanilla/DLC art; keep a disable/fallback route and test it alongside the profile's menu-changing mods. — **BUILT.** No vanilla or DLC art is redistributed, and `MenuSlideshowEnabled` is a real settings toggle that turns it off.
+- [x] **Door gizmo for the deliberate-cross order, naming the refusal reason in place.** Re-owned here 2026-09-28 from step 3. The *capability* is done: every refusal is a keyed reason and the player sees it. What is outstanding is surfacing the order and its reason on the door itself rather than in the Operations pane, which is presentation. Source: `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`. — **STILL OPEN.** **Crossing itself works** — `RR_CrossPortal`, `PortalCrossingService`, ordered from the Atlas pane — so this is a convenience and a readability gap, not a functional one. The refusal keys it would print already exist in `PortalTraversalPolicy`. — **BUILT, 0.12.33-dev.** On a designated gate and on a natural way out, both being doors. **It decides nothing:** eligibility comes from `RimroomsPortalCrossingService.EligibilityFailureKey` and the order from `PortalTravelService.OrderCrossing`, per invariant 1. A pawn who cannot cross is listed **with the reason** rather than hidden.
+- [x] **CLOSED 0.12.40-dev with row 822** -- same batch, same mechanisms, one implementation record. The help pane carries the tutorial sequence and the glossary, the keyboard path is Core's own generated binding on F12, and contrast and scale are the **absence** of authored colour and authored font in every readout, held by a new rule in `check-display-style.py`. Localization completeness was already measurable and still is. Was: Tutorial, glossary, keyboard paths, contrast/scale, localization completeness. — **STILL OPEN.** With the how-to. Localization completeness is measurable now: `check-keyed-strings.py` reports 1408 declared keys with zero unresolved references.
+**Verbatim owner request (2026-09-29):** *"and silver anfd gold are still in the game and all usable from building to selling but we need a ingame credit system with denominations in the exponents so that when the playthroughts build scrudge mcduck vaults they can store all the stuff like silver and gold and gems and ivory and everything pricey in theri vaults(this is already in the game) but we want also to be able to store the corprate credits(dollars since 1990 america?) in like company bonds or something that can be used easily and reposed with out leaveing a dead item or thing u are using (repurposing to be our cash bonds or what ever that can be converted and such to bigger values so if u wanted u can have a million credits as one item so we might need a processing facilies production chain simple and easy for handling storing and using like orbital beacons to beable to show that available credits and a way to turn gold silver gems ingots maybe needs to exchange for cradits with the company ect ect and all things pertaining, mind you these are ideas that are good but i expect u to expound on them"*
+
+**Then, answering the three forks:** *"option 1 works but they need to go up to values of 1 million like 10, 100, 1000, 10000 ... ect ect and a production bench with buills for makeing the differnt sizes and u are always payed in the highest values with least amount of bonds"*; *"above market for (odd) resources as everything in it entirety that comes out of the backrooms get marked odd(im not sure the best way of doing it maybe mark it at the gate but idk it should be odd when in the backrooms too and all pawns in the backrooms get a -1 to -10 mood debuff -1 first enter and -10 after being in for long time like 1hr real game time and you can do things to lower it like security useing real materials not (odd) in theri surroundings ect ect expound on this too"*; and *"Yes — physical means physical"*.
+
+**Silver and gold are untouched.** Three layers: physical valuables (vanilla, vaults already work), the company account (the existing abstract ledger, un-stealable), and bearer bonds (physical, hauled, stored, lost). The bond is the bridge, and redeeming one consumes it cleanly with **no dead husk left behind**, which is what the owner asked for.
+
+- [x] **"it should be odd when in the backrooms too"** — **BUILT 0.7.4-dev.** Already true of generated contents; now true of everything, via a three-state origin stamped at first spawn.
+- [x] **"maybe mark it at the gate but idk"** — the owner's doubt was right and gate-marking was **not** built. It is a laundering route (carry ordinary goods in, carry them out odd) and it fails the owner's own next clause, since nothing would be odd until it crossed. Record: [`implementation/BACKROOMS_PRESSURE_IMPLEMENTATION.md`](implementation/BACKROOMS_PRESSURE_IMPLEMENTATION.md).
+- [x] **"everything in it entirety that comes out of the backrooms get marked odd"** — **BUILT 0.7.4-dev.** Mined rock, deconstruction returns, cut plants and butchered meat are all odd now, with no special case for any of them.
+- [x] **"all pawns in the backrooms get a -1 to -10 mood debuff -1 first enter and -10 after being in for long time like 1hr real game time"** — **BUILT 0.7.4-dev.** 216,000 ticks to full, the same unit the gate's 108,000-tick opening window uses. Saved per person so it **decays on leaving rather than snapping back**, which forces shift rotation.
+- [x] **"you can do things to lower it like security useing real materials not (odd) in theri surroundings"** — **BUILT 0.7.4-dev**, scored from the pawn's actual surroundings rather than a research unlock: ordinary-origin construction (0.45), an enclosed room (0.25), ordinary seating or a bed (0.15), light (0.15). Best case slows accumulation to 20%, **never to zero**. Odd fixtures found in place score nothing, which is the entire point.
+- [x] **"a ingame credit system with denominations in the exponents"** — **BUILT 0.7.5-dev.** Bearer bonds on the Core `Novel`. **The ladder runs 10 to one quadrillion — fifteen rungs — not stopping at a million**, per the owner's follow-up *"yeah keep teriing it then dont stop at 1 million"*. Record: [`implementation/COMPANY_BONDS_IMPLEMENTATION.md`](implementation/COMPANY_BONDS_IMPLEMENTATION.md). — bearer bonds repurposing the Core `Novel`, at **10, 100, 1,000, 10,000, 100,000 and 1,000,000**. Ten of any denomination consolidates into one of the next, and breaks back down so change is possible.
+- [x] **"a production bench with buills for makeing the differnt sizes"** — **BUILT 0.7.5-dev**, fifteen recipes at `TableMachining`. They declare **no products**: a bond's value is per-instance and Core's product post-process hook is private and static, so the worker mints the bond itself in the documented `Notify_IterationCompleted`. An unfunded print therefore produces **nothing** rather than a book worth free market value. Adding a rung needs one more RecipeDef and no code. — bills on an existing bench for each denomination, both directions.
+- [x] **"u are always payed in the highest values with least amount of bonds"** — **BUILT 0.7.5-dev.** Greedy largest-first, which is **provably optimal** here because every rung is an exact multiple of every rung below. Anything under ten credits stays in the account rather than being rounded away. — greedy highest-denomination-first payout whenever the company issues bonds.
+- [x] **"stored ... without leaveing a dead item or thing u are using"** — **BUILT 0.7.5-dev.** Banking destroys the paper in the same operation that credits the account. No spent certificate, no zero-value object to haul away. — redeeming a bond consumes it; no husk.
+- [x] **"like orbital beacons to beable to show that available credits"** — **BUILT 0.7.5-dev**, and it was the best reuse in the batch. A Core `OrbitalTradeBeacon`, designated, reporting face value in range and banking on command. Dormant until designated, so a trade beacon in an existing colony behaves exactly as it always has. — designate a Core `OrbitalTradeBeacon` as a credit beacon reporting the face value of bonds in its radius. The owner's own idea, and it reuses exactly.
+- [x] **"ther should be a trader that is the multi trillion dollar corporation"** — **BUILT 0.7.6-dev.** An orbital `TraderKindDef` called in from the gate console through Core's own `passingShipManager`, so the trade window, the beacon rule and delivery are all vanilla. Record: [`implementation/CORPORATE_SUPPLY_IMPLEMENTATION.md`](implementation/CORPORATE_SUPPLY_IMPLEMENTATION.md). — the parent corporation as a trader in its own right, reachable from the company console rather than waiting on a passing caravan.
+- [x] **"with all kinds of equipenmnt tools amaterials and supplies like a universersal trader"** — **BUILT 0.7.6-dev.** Each tier names a `ThingCategoryDef` rather than a list, so it sells whatever the loaded game puts in that category — Core, DLC and any of the other 274 mods alike. **This mod lists no items and invents none.** — a catalogue spanning every category rather than a themed subset, built from existing Core and profile defs so it needs no new item.
+- [x] **"but things are tech and company quest locked out till passed"** — **BUILT 0.7.6-dev.** The quest lock reuses the existing `ContractRecord` rather than inventing a parallel quest system, so an odd-goods supply contract or the onboarding survey **is** what earns a tier. A locked tier also refuses to **buy** its category, since `HandlesThingDef` governs purchasing — otherwise a player could sell into a catalogue they had not unlocked. — stock is tiered, and a tier is invisible until its research **and** its company quest are both passed. Needs a custom `StockGenerator` since Core has no research-gated stock.
+- [x] **"and even cost credits to unlock item and materials and equipment gates in buying"** — **BUILT 0.7.6-dev**, and it is the lock that matters most structurally: **it is what makes the bond layer worth anything beyond storage.** A vault of paper now buys capability rather than only goods. — a tier also costs credits to unlock, on top of the tech and quest gates. Three locks per tier, and the credit one is what makes the bond layer matter beyond storage.
+- [x] **A confirmation step on the beacon sale.** Today the gizmo shows the total and the click is the commitment. With a full beacon that is a large irreversible action and it deserves a confirmation before release. — **BUILT, 0.12.33-dev.** `Dialog_MessageBox.CreateConfirmation`, naming the count and the total and saying it cannot be undone. `SellValuables` is untouched.
+- [x] **Withdrawing credits as paper at a console** — **BUILT 0.7.7-dev.** The menu **is** the denomination ladder, filtered to what the account can cover, largest first: no number to type and no way to ask for an amount that cannot be represented.
+- [x] **"a way to turn gold silver gems ingots maybe needs to exchange for cradits with the company"** — **BUILT 0.7.7-dev**, on the credit beacon's radius. **Odd ×1.5, ordinary ×0.85**, per the owner's *"above market for (odd) resources"*. Traders stay the better price for ordinary goods if you will wait for one — deliberate, so the company does not make every valuables trader pointless. Record: [`implementation/VALUABLES_EXCHANGE_IMPLEMENTATION.md`](implementation/VALUABLES_EXCHANGE_IMPLEMENTATION.md). — an exchange at the company console. **Above market for odd resources** per the owner's answer; ordinary valuables below market, so traders stay the better price if you will wait for one.
+- [x] **"Yes — physical means physical"** — **BUILT 0.7.5-dev.** Bonds burn and can be carried off. That is the price of liquidity and the reason the account still exists as the safe option. — bonds burn and can be stolen. That is the price of liquidity and the reason the ledger still exists as the safe option.
+- [x] **Scale tension, resolved by the owner rather than assumed:** *"yeah keep teriing it then dont stop at 1 million"*. The ladder now reaches 10^15, so a multi-trillion sum is three or four bonds. Well inside `long` (~9.2 × 10^18), so even thousands of top bonds cannot overflow a total. Was:  the ladder tops out at 1,000,000 as instructed, while the parent corporation is recorded as operating at multi-trillion scale. A trillion credits is a million top bonds. The ladder is built as data so it can be extended if the owner wants a higher rung.
+**Verbatim owner request (2026-09-29):** *"and we need a dynamic procederually gernation of BAckrroms so that new equipement and rooms and shit going into the backrooms and build there or in the real world can start appearing in lower levels of back rooms seeds"*
+
+**And immediately after:** *"alla trhings are possible finding random pawns of disappering, findeding dead ones pasycholitc ones lost pawns all kinds of crazy variations as per the lore"*
+
+- [x] **"new equipement ... going into the backrooms and build there or in the real world can start appearing in lower levels"** — **BUILT 0.8.1-dev** as a saved, bounded register of what the branch has actually built, sampled on a rotating window rather than hooked into construction. Deep coordinates answer 40% of their furniture slots from it. Record: [`implementation/CONSTRUCTION_ECHO_IMPLEMENTATION.md`](implementation/CONSTRUCTION_ECHO_IMPLEMENTATION.md).
+- [x] **"build there or in the real world"** — faction ownership is the test, so a bench assembled inside a coordinate counts exactly as much as one in the colony. **Generated Backrooms furniture is excluded**, or the place would echo its own furniture back at itself and every deep coordinate would converge on the same room.
+- [x] **Recruiting a survivor** — **BUILT 0.8.3-dev.** The comp is dormant on every pawn and does nothing unless a coordinate marked that person as a survivor it produced, the same dormant-until-designated pattern the gate and beacon comps use. One of the branch's own people must be **present** to make the offer.
+- [x] **"and rooms"** — **BUILT 0.8.6-dev.** The fingerprint problem was the whole difficulty and it is solved by **snapshotting at discovery rather than reading live**: planning is re-run to verify a saved graph, so a planner consulting the colony's *current* rooms would replan a coordinate differently once the player built an extension and **fail its own fingerprint check**. Existing coordinates stay on `roomLibraryVersion` 1 and plan byte-identically. Record: [`implementation/ROOM_SHAPE_ECHO_IMPLEMENTATION.md`](implementation/ROOM_SHAPE_ECHO_IMPLEMENTATION.md).
+
+**Verbatim owner directions (2026-09-29, three more):** *"remember the back rooms is random on crack and lsd creepy horror flick"*; *"and remebre it not just rooms its weirtd and lots of halways and halway/rooms and facilitys and noraml like rooms all furnished with theri proper room equipement to the extent we want normal and really want the creepy insane looks and feel of the universe"*; *"and items"*.
+
+- [x] **"random on crack and lsd creepy horror flick"** — **BUILT 0.8.6-dev** as depth-driven derangement: proportions stretch further the deeper a coordinate sits. **Depth 1 is deliberately exempt** — the yellow rooms read as a place precisely because they are monotonous, and deranging them would throw away the image the setting rests on. The wrongness is something the player travels toward.
+- [x] **"lots of halways and halway/rooms"** — **BUILT 0.8.6-dev**, and made **deliberately rather than hoped for**: a corridor is one of the two shapes the setting is built on, and leaving it to a symmetric stretch roll would produce one rarely and by accident. Its own branch, long and narrow on one axis.
+- [x] **"all furnished with theri proper room equipement"** and **"and items"** — **ALREADY COVERED** by the archetype library built in 0.7.9-dev: fourteen archetypes fill rooms by capability, including item slots drawn from thing categories, so a workshop gets benches and material and a ward gets beds and medicine. Said plainly rather than rebuilt.
+- [x] **Archetypes are not constrained by structural family, and the owner confirmed that is correct** — **RESOLVED 0.8.7-dev.** The gap named in the previous checkpoint was **not a bug**: *"hallways can have furniture and produiction benches too"*. A bench in a corridor is exactly right for the setting, because **the wrongness is the content**. So nothing was constrained; instead **coherence decays** with depth and branch advancement. Record: [`implementation/COHERENCE_AND_TECH_SCALING_IMPLEMENTATION.md`](implementation/COHERENCE_AND_TECH_SCALING_IMPLEMENTATION.md).
+
+**Verbatim owner direction (2026-09-29):** *"hallways can have furniture and produiction benches too remember things are almost completely fucking werid and crazy odd and scary looking the deeping in the backrooms and higher the gete quality and rtesarch levels and tech and stuff ec t ect"*
+
+- [x] **"things are almost completely fucking werid ... the deeping in the backrooms"** — **BUILT 0.8.7-dev.** Rolled **per room**, so some rooms in a deep space still read as ordinary: **a space where everything is wrong stops being unsettling and starts being noise. The contrast is what works.** Anomalous archetypes also grow heavier until the ordinary ones are the surprise.
+- [x] **"higher the gete quality and rtesarch levels and tech and stuff"** — **BUILT 0.8.7-dev.** What a coordinate produces rises with research finished and depth reached, never above the archetype's own declared ceiling. **Also means a deep space is worth revisiting**: the same coordinate after a hundred hours of research is a different place, with nothing authored twice.
+- [x] **Depth and advancement are capped separately** so neither alone can max the place out — depth is what the player chose to risk, advancement is what they earned, and the worst of it wants both.
+- [x] **A real defect fixed:** `maxTechLevel` was emitted in the archetype XML for fourteen defs while the C# class had no such field, so it had been **failing silently at load since 0.7.9-dev**. RimWorld logs an unknown field and carries on; nothing in the build or any checker noticed.
+- [x] **An unknown-def-field checker, written and then removed rather than shipped.** — **BUILT 0.12.37-dev as `tools/check-def-fields.py`, the twelfth checker**, starting from the verified parts as this row asked. Three sources: our own C# classes with the base chain walked, the names the game's own defs of each type use, and **the real fields decompiled from the assembly and cached** -- the third because the second has a hole the checker itself found: `canMakeRandomly` on a FactionDef is a real field Core never writes. **It caught itself twice.** First run: **159 false positives**, because the field parser rejected any line containing `(` and every collection field has one in its initialiser -- the original attempt reported nothing and this one reported everything, **same mistake, same function**. **The guard this row asks for is exit 2**, skipped rather than passed, when it has looked at nothing; two of six fault plants test it. Record `implementation/GENERATION_MATERIALS_IMPLEMENTATION.md`. Was:  It would have caught the defect above. Every part was verified correct in isolation — the field parser reads all seven fields, the XML walk reaches the right node, the comparison flags a planted bad child — but **the assembled function reported nothing**. It was removed because **a checker that silently passes everything is worse than no checker: it manufactures confidence**, and that is the same failure mode designed out of the layout derangement one checkpoint earlier. The next attempt should start from the verified parts rather than from scratch.
+
+**Verbatim owner direction (2026-09-29), arriving during this checkpoint:** *"and we need a proper history list that lab gates are connected have connected to in a easily editable clear able and manage bench connected to the portal gates natural gates dont get to call a seed they are what they are"*
+
+- [x] **"a proper history list that lab gates are connected have connected to"** — **BUILT 0.8.8-dev.** Recorded at exactly one point: the success branch of `RegisterLaboratoryAddress`, which is the single moment a laboratory gate dials a coordinate. Repeat connections **update** the entry rather than appending, keeping it an address book rather than a log. Record: [`implementation/GATE_CONNECTION_HISTORY_IMPLEMENTATION.md`](implementation/GATE_CONNECTION_HISTORY_IMPLEMENTATION.md). — an address book of every coordinate a laboratory gate has dialled, held against the gate.
+- [x] **"easily editable clear able and manage"** — **BUILT 0.8.8-dev.** Rename, pin, remove, clear. **Clear keeps pinned entries deliberately**: in a long game "clear" means get rid of the noise, and a button that also destroyed the addresses somebody explicitly marked would be a **trap rather than a convenience**. Renaming reuses **the game's own rename dialog**, so there is no second rename UI to keep consistent. — the player can rename, reorder, remove and clear entries. A history nobody can prune becomes unusable in a long game.
+- [x] **"connected to the portal gates"** — **BUILT 0.8.8-dev**, per gate rather than per branch. **Two gates keep different address books**, which is the right shape rather than a convenience: a gate at headquarters and one at an outpost are running two different operations, and merging them would lose the distinction that makes a second gate worth building. — the list belongs to the gate rather than to the branch, so two gates can keep different address books.
+- [x] **"natural gates dont get to call a seed they are what they are"** — **HELD 0.8.8-dev, and it needed no new guard.** Every gate gizmo already sits behind `IsDesignated`, true only of a laboratory gate the player assembled; a natural threshold registers through `RegisterNaturalAddress`, has no gate behind it, and never reaches the code. **Adding a second check would have implied the first was unreliable** — the same reasoning that kept survivor recruitment from special-casing a gate. — **a natural gate has no address book and may not dial.** Its destination is fixed at discovery and permanent. This is already true of the traversal layer and must stay true: the history feature is a *laboratory gate* capability and must not be offered on a natural one.
+- [x] **Dialling from the history.** The list records and manages; selecting an entry to *re-open* that coordinate is the natural next step, and is a separate interaction with its own permission checks. — **BUILT 0.8.9-dev as a spin-up rather than a button**, per the owner direction recorded below. Dialling registers the address (idempotent) and then **ramps**; the ramp is the only way a laboratory gate opens, from any entry point.
+
+**Verbatim owner direction (2026-09-29), arriving during the 0.8.9-dev checkpoint:** *"when u establish a backrooms portal connection the specific addresss should be connected and the gate opened but it neededs to be a ramp up process that takes a bit of time like with everything the pawns needs to do/maintaing/ operate to opening the gate process like a item build in a way"*
+
+- [x] **"a ramp up process that takes a bit of time"** — **BUILT 0.8.9-dev.** Opening a laboratory connection is now **work, not a button**. It accumulates at the assigned operator's own working speed, shows a progress bar on the console, and only then opens the gate.
+- [x] **"like with everything the pawns needs to do/maintaing/ operate"** — **BUILT 0.8.9-dev.** The ramp climbs **only while the gate is actually held**: operator on station, power and headroom present, cutoff not thrown. Left alone it **bleeds back down** and lapses at zero with a message. **Decay is slower than progress on purpose** — walking away costs real time but never instantly erases a long ramp, which is the same "no unavoidable instant failure" rule every threat in this mod obeys.
+- [x] **"like a item build in a way"** — **BUILT 0.8.9-dev.** Taken literally: a work amount, a progress bar, and a readout in the same shape as a build in progress. The existing `RR_OperateGate` station job already sat the operator at the console with a **useless binary progress bar**; it now shows the real ramp, so **no new job def was needed**.
+- [x] **The ramp belongs to opening, not to one button.** Three things could start an opening — dialling a remembered address, opening a session from the operations window, and opening straight after registering. All three now route through the same ramp, so **there is exactly one way a gate opens** and it cannot be skipped by choosing a different entry point.
+- [x] **The address book now earns its keep.** Required work falls with every previous connection this gate has made to that address, floored so a well-worn route is quick but **never free**. That turns the 0.8.8 history from a convenience list into the gate's **learned routes**, and it is why pinning an entry protects something real: the familiarity count lives on the entry, so evicting it costs the discount too.
+
+**Verbatim owner direction (2026-09-29):** *"yes the gates are just repurosed doors of the game with a bue tint and maybe a blue light glow hue around it like light through a glass wall does"*
+
+- [x] **"just repurosed doors of the game"** — **ALREADY TRUE, and stated rather than rebuilt.** A gate is a Core `Door` or `Autodoor` carrying a dormant component; it becomes a gate only when the player designates it. No gate object is added by this mod.
+- [x] **"a bue tint"** — **BUILT 0.8.9-dev, and it needed no new component and no new patch operation.** `ThingWithComps.DrawColor` already consults **`ThingComp.ForceColor()`** on every component a thing carries, and the gate component is already on the door. Overriding that one hook tints a designated gate and leaves **every other door in the game untouched**. Verified by decompiling `Verse.ThingWithComps` and `Verse.ThingComp` rather than assumed.
+- [x] **"a blue light glow hue around it like light through a glass wall does"** — **BUILT 0.8.9-dev.** The cosmetic aura already existed but only appeared **while the gate was open**; it is now the gate's permanent identity — a soft steady blue when designated, brighter while a connection is live, and the existing amber when something has gone wrong. Still a native fleck with fixed colour and size: **no new art, no new graphic resource**.
+- [x] **A player's own paint still wins.** Core checks a painted colour *before* `ForceColor()`, so somebody who deliberately painted that door keeps their colour. That is the right outcome — an explicit choice beats an automatic tint — and the glow still marks it as a gate.
+
+- [x] **BUILT 0.9.2-dev, and Core turned out to ship a 2x1 door of its own (`OrnateDoor`), so a 1x2 gate needs no mods at all.** **"1x1 1x2 and 1x3 and 2x3 gate doors"** — **OWNER ANSWERED 2026-09-29: BOTH paths.** Core ships only 1x1 `Door` and `Autodoor`, verified against installed game data. So: **(a)** a gate binds across a **run of adjacent Core doors** — two side by side is a 1x2 gate, three is 1x3, a 2x3 block is six doors — which is existing-content-only and works with zero dependencies; **and (b)** when **Doors Expanded** (register row 77) is installed, its multi-cell door defs are **also** accepted as single-thing gates of the matching size. Core path always works; the mod path is a bonus, never a requirement.
+- [x] **BUILT 0.9.3-dev.** Calibrated against Core's own practice, which was counted rather than assumed: Core describes 0 of 105 work givers and 80 of 80 recipes, so demanding one everywhere would have added text no player sees. **Every def this mod ships carries a real label and description**, in the same shape and register the game uses, so an info card is never blank or placeholder.
+- [x] **BUILT 0.9.3-dev as `check-info-cards.py`, the fifth checker**, and proved by planting three faults - one of which exposed a real bug inside the checker itself, a literal backspace byte where a word boundary was meant. **Enforce it rather than trust it** — a checker that fails the build when a shipped def has no description, an empty one, or a placeholder. The same reasoning as every other checker here: a description nobody verifies is one nobody notices is missing.
+- [x] **BUILT 0.9.4-dev**, and it first required letting animals cross at all - they could not, so the rule had no subject. Owner answered: any player-owned animal may cross freely. Proved across all 113 installed races: 73 fit one wide, 97 fit two, 113 fit three. **What a gate's size lets through.** Body-size limits at `PortalTraversalPolicy`, so *"vehicals and the like and bigger creatures"* need a wider gate. Its own checkpoint: it belongs at the single traversal chokepoint and deserves a diff that says only that.
+- [x] **The adjacent-door-run fallback** for reaching 1x3 and 2x3 without Doors Expanded, per *"i suppose the fallback is okay of building mulitple doors 1x1 to make the sizes needed"*. — **BUILT, 0.12.31-dev.** A run of adjacent Core 1×1 doors binds into one gate: **one opening, one spin-up, one address, one width read from both sides.** The union of the run is a `CellRect`, which is what every existing size derivation already works off, so the width, the entry cells, the power draw and the spin-up work all came out right with nothing written for them. Validated against the **same four shapes** a single door may be, and the rectangle has to be **solid** — a ring of doors around a gap is not an opening. Refused while the gate is working, in both directions. Record: [a wide gate out of plain doors](implementation/GATE_DOOR_RUN_IMPLEMENTATION.md).
+- [x] **BUILT 0.9.8-dev, taken literally.** A start declares **only what begins finished**; the tree is built from every `RimroomsProjectDef` loaded, so it is identical for every start **by construction** rather than by keeping three lists in agreement. Replaced a hardcoded single `RR_GateTelemetry` record. No behaviour changed today, because there is exactly one project def. **"all starts have same tech tree just differnt starting researches finished based on scenerio"** — **one tech tree, never a per-scenario tree.** A scenario differs only in **which projects are already complete at the start**. This directly shapes the three starting sites and must be built into the versioned start contract rather than bolted onto each scenario.
+**Verbatim owner direction (2026-09-29):** *"and at deeper levels i do want monstrosities and npcs to "Chase" pawns/ kill them all the way to the gate, and even at higher techs they can come through the portal into your base and attack, kidnap, steal, do everything npcs can do in game"*
+
+- [x] **BUILT 0.9.5-dev, and it needed no pursuit code.** At `Band.Hostile` a hostile gets an assault lord instead of a defend lord, and vanilla AI walks it to whoever it can reach; the threshold room was only ever excluded from *spawning*, never from being walked into. Below that band the warning-first retreat rule is untouched. **"Chase" pawns/ kill them all the way to the gate"** — pursuit that does not give up at a room boundary. At qualifying depth an inhabitant follows a fleeing pawn to the threshold itself.
+- [x] **BUILT 0.9.6-dev**, bounded on five axes: live opening, `Band.Hostile`, `PortalWindowTier >= 1`, it must fit the opening, and once per opening so closing the gate genuinely stops it. **"they can come through the portal into your base"** — **OWNER ANSWERED 2026-09-29: depth plus tech, while an opening is live.** It must chase a pawn to the threshold while the gate is open; reaching it before the gate closes is what brings it through. **Closing the gate is the countermeasure** — which makes the emergency cutoff a real tactical decision instead of only a safety feature, at the cost of stranding whoever is still inside.
+- [x] **BUILT 0.9.6-dev by writing no behaviour at all.** Once through it is an ordinary hostile pawn on a player map and every native behaviour applies. **"attack, kidnap, steal, do everything npcs can do in game"** — once through, it is an ordinary hostile pawn on a player map and every native behaviour applies. Nothing bespoke should be written for behaviour the game already has.
+- [x] **HELD 0.9.6-dev.** `MayApproachThresholdForTraversal` still returns false for everything and `AutonomousNonPlayerTraversalPermitted` is still a constant false; a hostile walks to the doorway because the player's people are there, and `PortalTraversalPolicy.IncursionFailureKey` is the only thing that may say yes. The class documentation was rewritten rather than left describing code that no longer exists. **This does not break the traversal chokepoint, and must not.** Invariant #1 says an inhabitant may never decide anything about a gate. That stays true: **`PortalTraversalPolicy` gains a rule permitting hostile crossing under named conditions**, and the inhabitant still decides nothing. The policy is the only thing that may ever say yes.
+
+- [x] **Order chosen and recorded, by dependency direction rather than preference:** **(1) M2 existing-content replacement**, because it *deletes* defs and anything built against content about to be removed gets built twice; **(2) facilities**, because generation must be finished before the scenarios that consume it; **(3) new-game playability** — the world tile and the three starting sites — which consumes the final content set *and* the finished generator; **(4) the player-facing how-to**, because documentation describes a finished thing and writing it earlier means rewriting it. Content set → generator → scenarios → docs, one direction, no backtracking.
+- [x] **BUILT 0.9.7-dev** as a contiguous run of 2-4 rooms dressed as one kind, off the coordinate's own graph, with nothing stored and the quiet guarantee untouched by construction. **Facilities** — larger functional spaces, as distinct from rooms and corridors.
+- [x] **BUILT 0.9.7-dev** as a contiguous run of 2-4 rooms dressed as one kind, off the coordinate's own graph, with nothing stored and the quiet guarantee untouched by construction. **"facilitys"** — larger functional spaces, as distinct from rooms and corridors.
+- [x] **"items and equipment and production benches"** — **BUILT 0.8.4-dev.** Benches were already covered as buildings; items needed a **different test**, and getting it right mattered: faction ownership cannot work for them, because a stack of steel in a colony stockpile has a null faction exactly like one lying in a Backrooms corridor. **Origin is the test instead** — anything stamped `Outside` came into existence somewhere the player was, which excludes the coordinate's own contents by the same stroke. Bonds are never echoed.
+- [x] **"we cant have backrooms npc pawns all dying off if a person is slow to explore so something needs to be done about like stat or need freezing until discovered with the fog of war"** — **CAUGHT BY THE OWNER AND FIXED IN 0.8.5-dev.** This was **a real defect in what had just been built**, not a refinement: everything placed in a coordinate is a live pawn on a live map, so a survivor three rooms away would **starve before a cautious player ever reached them** — impossible for the exact player most likely to want the rescue, and it would read as a broken feature rather than as a death. Same for a hostile freezing in a cold band and a body rotting behind an unopened door. **Fog of war was the right signal and the owner named it**: RimWorld already tracks per cell whether the player has seen it, so nothing had to be invented, saved or kept in sync. Needs are **topped back up** on a bounded sweep rather than frozen, because stopping them ticking needs Harmony and the observable result is identical. Mood is deliberately left alone — a held pawn is kept alive, not made happy. **Discovery starts their clock.**
+- [x] **"echos of thier inhabitance in weird ways"** — **BUILT 0.8.5-dev.** An echo carries the **name and apparel of a colonist who is alive and at home right now** — deliberately not somebody lost, because that is the Missing family and a different, sadder feeling. **The uncanniness depends entirely on the real one being in the base at the same moment.** Only the surface is copied: no skills, traits, backstory or relationships, because copying the interior would make it a duplicate and hand the player a free second copy of their best worker. **Never hostile, never recruitable.** Apparel is copied rather than taken, or a living colonist would be stripped from across a gate. Record: [`implementation/COLONIST_ECHO_IMPLEMENTATION.md`](implementation/COLONIST_ECHO_IMPLEMENTATION.md).
+- [x] **CONFIRMED BY THE OWNER 2026-09-29 — higher number means deeper.** Asked directly rather than left as a flag; the built reading is correct and nothing changes. Original note retained: **a reading the owner may want to reversed:** *"lower levels"* is implemented as **deeper** coordinates. In Backrooms lore a lower *number* is usually shallower, so this is genuinely ambiguous. It is read as deeper because the owner has consistently said *"further in"* for depth and the mechanic is far stronger as a progression reveal than as something present at the entrance. **Flipping it is a one-constant change.**
+**The pawn direction, which is what the escalation ladder was built to pace:**
+
+- [x] **"finding random pawns"** — **BUILT 0.8.2-dev** as the wanderer family, placed on **arrival** against the ladder's band rather than baked in at generation. Record: [`implementation/INHABITANTS_IMPLEMENTATION.md`](implementation/INHABITANTS_IMPLEMENTATION.md). — people present in a coordinate who were not put there by the player, found rather than spawned at them.
+- [x] **"of disappering"** — **BUILT 0.8.2-dev**, and it lands because **the name is one the player knows**. A missing person draws from the branch's own register of people it lost inside a coordinate. Bounded at 24, drops the oldest, and **consumes** a name when used, so the same colonist is never found twice — the only honest reading of "missing". — pawns who have gone missing, including, where the lore supports it, ones the branch itself lost.
+- [x] **"findeding dead ones"** — **BUILT 0.8.2-dev** as three body families placed at **generation**, because a corpse is discoverable content and finding one should not wait on a danger band. Generated then **killed** rather than spawned dead, so a body has a real cause, a real age and real belongings; **a body with nothing on it is a prop rather than a find.** One family is deliberately stripped — an old one, long picked over. — corpses and what they were carrying, as discoverable content rather than as a threat.
+- [x] **"pasycholitc ones"** — **BUILT 0.8.2-dev** as two families, one of them a pack at depth 5+. **Hostility is enforced in code, not trusted in data**: a `ConfigErrors` check rejects any hostile family that is not Psychotic, because a hostile family that does not read as hostile breaks the warning-first rule. They get a **defend-point lord, not an assault lord**, so backing off is a real countermeasure rather than a delayed death. — hostile or unstable people, which is where the ladder's encounter cap and its warning-first rule actually bind.
+- [x] **"lost pawns"** — **SURVIVORS BUILT 0.8.2-dev**: alive, neutral, and carryable out through a gate by the branch's own people. **RECOVERY BUILT 0.8.3-dev.** Offering passage, not recruiting: no negotiation and no roll, because somebody lost down there who meets a team with a way out wants to leave. **Joining is also what lets them walk out** — until they accept they are an inhabitant and cannot use a gate at all, so the only way out for them is to be carried. Nothing special-cases a gate; `PortalTraversalPolicy` stays the one chokepoint and this is one more caller obeying it. Record: [`implementation/SURVIVORS_AND_CAP_PROGRESSION_IMPLEMENTATION.md`](implementation/SURVIVORS_AND_CAP_PROGRESSION_IMPLEMENTATION.md). — survivors who can be recovered, which is the counterweight that makes a coordinate worth entering rather than only worth surviving.
+- [x] **"all kinds of crazy variations as per the lore"** — **BUILT 0.8.2-dev.** Counts, appearance chances and identities all roll from the coordinate seed combined with its opening count, so a later arrival is not a rerun of the first while a single arrival stays stable. Eight families across the five kinds. — variations generated from depth and seed rather than authored one by one, the same shape the room archetypes use.
+- [x] **Every one of these is held to the frozen threat rules** — **ENFORCED 0.8.2-dev.** Readable warning (a letter pointing at the pawn, before contact), learnable rule (hostiles hold ground), countermeasure (withdrawal genuinely works), no unavoidable instant failure (the ladder's absolute cap of three, quiet rooms never used for people). Was:  already recorded: readable warning, learnable rule, at least one countermeasure, and no unavoidable instant failure. The ladder built in 0.8.0-dev already caps how many may act at once and guarantees half of every coordinate is quiet.
+- [x] **And to the traversal invariant:** — **HELD 0.8.2-dev.** Nothing in the inhabitant layer touches gates; `PortalTraversalPolicy` remains the single chokepoint. The **threshold room is never used** either, so nothing is ever standing between the player and the way back. Was:  an inhabitant may never decide anything about a gate. Anything found in a coordinate leaves only carried out by the branch's own people.
+
+- [x] **"the yellow carpet and yellow wood walls for the main backrooms look"** — **BUILT 0.7.8-dev.** Core `Carpet` tinted `Structure_Mustard` through the public `TerrainGrid.colorGrid`, and Core `Wall` from `WoodLog` tinted through `CompColorable`. **No new texture, no new terrain, no new building** — the look is Core content wearing a colour.
+- [x] **"we dont have over head florrecent lights unless we could repurpose floor lights correctly"** — **the game already had one.** Core ships **`WallLamp`**, wall-mounted rather than standing, which is closer to the intended look *and* frees the floor: an endless corridor reads as endless precisely because nothing is standing in it. Generation had been using `StandingLamp`, which put furniture in the middle of every room.
+- [x] **"thats just the main backrooms looks further in it gets very varied and weird"** — **BUILT 0.7.8-dev** as `CoordinateRecord.depth`, counted in portals from the ordinary world. **Depth 1 is fixed and never rolls**, because the first space a player ever sees must be the yellow rooms on every seed; deeper bands roll from the coordinate's own seed and stay stable across reloads.
+- [x] **"lots of furnature and equipment and different types of rooms"** — **BUILT 0.7.9-dev.** Fourteen room archetypes dressing rooms on top of their structural family, tiered by depth. Record: [`implementation/ROOM_ARCHETYPES_IMPLEMENTATION.md`](implementation/ROOM_ARCHETYPES_IMPLEMENTATION.md). — a room archetype library with per-archetype furniture and equipment density. Today generation has six or seven room families and places a handful of fixtures.
+- [x] **"from labs, to workshops, to nursaries, to everything imanginable and every variation of them"** — **BUILT 0.7.9-dev.** Every slot asks for a **capability** rather than naming furniture, so the answer includes Core, every DLC and all 274 profile mods; a hand-written list could never have delivered *"everything imanginable"*. **"Every variation"** is answered by per-slot count ranges and appearance chances rolled from the room's own seed, so two laboratories in one coordinate are not the same room while the same room is identical every load. — the archetype set itself, and **variations within each archetype** so two labs are not the same lab. Built from existing Core and profile defs by capability, never by a hand-listed item.
+- [x] **"materials of all types"** — **BUILT 0.12.37-dev as `CoordinateMaterials`, and the defect was worse than this row said.** The code read `definition.MadeFromStuff ? ThingDefOf.WoodLog : null` — **not the def’s default, one hardcoded material** — so every stuffable fixture in every room of every coordinate in the game was wooden. A coordinate now gets a **three-entry palette** derived from its own seed and each fixture takes the first entry it can be made of, because rolling per fixture gives a steel table beside a wooden chair in one room, which reads as noise. **The load-bearing line is a sort by defName**: the def database returns defs in an order that depends on the installed mod list, so indexing it unsorted would give two players on one seed different materials and change a coordinate when an unrelated mod is installed. **No material is named**, eligibility is Core’s `stuffProps` plus its own `allowedInStuffGeneration` opt-out, and no `Rand` call is used at all. Was:  **Narrowed 0.7.9-dev:** archetype fixtures currently take their default stuff, so choosing stuff per coordinate is the remaining half and is its own pass. — material variety drawn from what the loaded game actually offers rather than a fixed list, so a profile that adds materials shows them here.
+- [x] **"even wild waky carzxzy creepy things when u add places and events"** — **PLACES BUILT 0.7.9-dev**, four of them, flagged `anomalous` so the escalation ladder can later cap how many one coordinate holds: a gallery, *the same room again* laid out identically, an assembly of things that belong in different rooms, and a hoard. **EVENTS BUILT 0.8.4-dev**: seven of them, every one with an answer the player can actually perform, because the frozen threat rules demand one. The lights case is the best — `CompFlickable.SwitchIsOn` has a public setter, so the countermeasure is **vanilla's own switch** rather than a bespoke darkness mechanic. **No effect damages a pawn, destroys a thing, or blocks a route**, and the threshold room is excluded from every one, always. Record: [`implementation/ANOMALY_EVENTS_IMPLEMENTATION.md`](implementation/ANOMALY_EVENTS_IMPLEMENTATION.md). — anomalous places and events as **saved, bounded** content rather than random noise, so a revisit resumes rather than rerolls. Inherits the frozen threat rules: readable warning, learnable rule, at least one countermeasure, no unavoidable instant failure.
+- [x] **"to proper balance levels of colony wealth and the like"** — **BUILT 0.8.0-dev.** The ladder had left *what pressure scales against* deliberately open since 2026-09-28; the owner answered it. Wealth is read from **player home maps only** — a Backrooms map full of generated furniture is not something the player earned, and counting it would make a space escalate simply because it was well stocked. **Wealth raises the ceiling and never the floor.** Record: [`implementation/ESCALATION_LADDER_IMPLEMENTATION.md`](implementation/ESCALATION_LADDER_IMPLEMENTATION.md). — the escalation ladder scales against **colony wealth**, not wall-clock time. This is a concrete answer to a question the ladder spec previously left open, and it should be read as the owner choosing the pacing input.
+- [x] **Raising an encounter cap as a recorded progression step** — **BUILT 0.8.3-dev**, closing the **last unmet clause of the 2026-09-28 ladder direction**. The cap opens at **1**, not at the ceiling, and rises only when the branch reaches a depth it has never reached. Deliberately not research and not wealth: wealth already feeds the ladder's ceiling so reusing it would **double-count one input**, and research is not an act of exploration. **A branch that stays shallow stays at one forever**, however rich it becomes. Idempotent, so a cap cannot be walked up by re-entering one space, and a step that hits the ceiling is still recorded because the history should show the branch went deeper.
+- [x] **A player-facing readout of a coordinate's band**, so the pacing is legible rather than inferred. — **BUILT, 0.12.33-dev.** A row per coordinate: quiet, unsettled, active, hostile. The pane calls `BandFor` and prints; **the ladder still decides**.
+- [x] **CLOSED BY PROOF 0.12.37-dev — already built, and checked against the code before building for it.** `RimroomsInhabitantDef` declares `minDepth`, `maxDepth`, `minBand` and `weight`; `InhabitantService.Legal()` filters on depth; and **wealth reaches it through the ladder** — `BandFor(coordinate, ColonyWealth())` — which is where the one wealth rule in this mod lives and is deliberately not duplicated. Selection is seeded from `Gen.HashCombineInt(coordinate.Seed, …)`, which is the *"every variation seeded"* this row asks for. Proof `proof-generation-batch.py`. Was: **"from metting monstrositeitys and insay psychopaths and the like in high teir hard seed ed levels of all variations"** — the inhabitant and monstrosity families, tiered by depth and wealth, with every variation seeded rather than authored one by one.
+**Verbatim owner request (2026-09-29):** *"un deffer everything in defferments.md and put it all back in the todod properly LIKE I SAID NOTHING SHALL BE DEFFERED SO USE ASK ME FUCKIGN QUESTION OR FUCKING RE MAKE IT IN THE TODO CORRECTLY AS MOST ARE TEST SHIT THAT IVE BEEN SAYING SINCE THE START WE DO WHEN ITS ALL COMPLETE AND 100% FINISHED!!!! DO YOU UNDERSTAND THIS!!!!!"*
+
+Recorded as decisions 22–25 in [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md).
+
+- [x] **"un deffer everything in defferments.md and put it all back in the todod properly"** — **DONE 2026-09-29.** All **43** open rows moved into this file byte-for-byte: 38 as ordinary open work under the major that owns it, 5 as `[T]`. `DEFERRED.md` now holds **zero** open rows and is closed as an archive with a banner forbidding new ones.
+- [x] **"NOTHING SHALL BE DEFFERED"** — the rule is now written into `DEFERRED.md` itself so the file cannot quietly refill. Work not being done right now has exactly three homes: **build it**, **put it here under its major** (`[T]` if it cannot close without the game running), or **ask, immediately, with multiple choice and a write-in**. A genuine fork is a question, never a deferment.
+- [x] **"MOST ARE TEST SHIT THAT IVE BEEN SAYING SINCE THE START WE DO WHEN ITS ALL COMPLETE AND 100% FINISHED"** — those rows are `[T]` under the post-completion test phase, which gates nothing and stops nothing. **Worth being straight about the split, though: of the 43, only 5 were test rows. The other 38 were real build work** that had been parked behind an owning step rather than done.
+
+- [x] **"add a flag to item from the back rooms like (odd) or something like that"** — **BUILT 0.7.2-dev.** `CompRimroomsOddOrigin` plus `OddOriginService`. The marker is appended to `ThingDef.comps` at startup rather than by an XML patch, because a `PatchOperationAdd` can only append to a `comps` node that already exists and most item defs have none — a patch would have applied to an arbitrary subset and **failed silently on the rest**, including every mod item. Purely additive: no def replaced, nothing removed, no other mod's files touched. Record: [`implementation/ODD_ORIGIN_IMPLEMENTATION.md`](implementation/ODD_ORIGIN_IMPLEMENTATION.md). — a saved marker set on a thing at the moment it leaves a Backrooms coordinate. A comp added to existing Core things via `PatchOperationAdd` (permitted; `Replace`/`Remove` on a Core def stay forbidden) plus a saved flag. **No new item, no new texture, no new resource** — inside [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md). The "(odd)" label decoration is a keyed string, so its exact wording is translatable and not frozen.
+- [x] **COMPLETE 0.12.41-dev: all three thirds now exist.** Contracts shipped 0.7.3-dev; the 18 generated mission families shipped 0.12.12-dev and 0.12.13-dev; the **odd-goods consignment mission** closes the last of it. See rows 1031-1033 below for the mission's shape and why it is distinct from a contract. Was: **"have quests and missions and contracts and stuff for like 1000 (odd) cotton or like 10 uninstalled electic stoves(odd)"** — **CONTRACTS BUILT 0.7.3-dev**; quests and missions remain, owned by the 13 mission families under M3. Demands are drawn only from what a coordinate **actually produced**, recorded at generation, because picking any def in the game would offer contracts a player cannot possibly fill. Bounded at three open, deterministic from the branch seed so a reload cannot reroll a hard demand into an easy one, priced from the thing's own market value × 6. Record: [`implementation/ODD_SUPPLY_CONTRACTS_IMPLEMENTATION.md`](implementation/ODD_SUPPLY_CONTRACTS_IMPLEMENTATION.md). — contract, quest and mission templates that demand a quantity of a *specific existing thing* that must carry the odd marker. Lands on [`CAMPAIGN_ECONOMY_MODEL.md`](CAMPAIGN_ECONOMY_MODEL.md), [`CAMPAIGN_ECONOMY_PROGRESSION.md`](CAMPAIGN_ECONOMY_PROGRESSION.md) and the 13 mission families under M3.
+- [x] **"and the such for all things materials and resources ect ect"** — **BUILT 0.7.2-dev**, generic by construction rather than a hand-listed set: any def that can instantiate comps and is either an item (`thingCategories`) or an uninstallable building (`minifiedDef`). Whatever a colonist can carry out can be asked for. — the marker is generic across every material and resource, not a hand-listed set. Whatever a colonist can carry out can be asked for.
+- [x] **"10 uninstalled electic stoves(odd)"** — **BUILT 0.7.2-dev.** Uninstalling wraps the building in a `MinifiedThing` whose `InnerThing` is the original, so the comp and its saved flag travel untouched. The cost is that **every read must look through the wrapper** — asking a `MinifiedThing` directly reports every uninstalled stove as ordinary — so `IsOdd` and `Mark` both resolve through `InnerThing`. — note the owner's own example is an **uninstalled building**, not just a resource. Minable/deconstructable furniture carried out of a coordinate must keep the marker through uninstall and rebuild, which is the harder half and is called out here rather than discovered later.
+- [x] **BUILT 0.12.41-dev as the consignment mission, and what makes it a mission rather than a contract with a longer title is a field condition.** The owner's reason names four things a demand should make a player do -- **advance, explore, haul, use the spaces** -- and the odd-supply contract built at 0.7.3-dev pays for **haul and nothing else**: it draws from the union of everything every coordinate ever produced, and settles the moment the goods sit at headquarters, so a branch with a shelf of odd cotton can fill one without opening a connection at all. A mission names **one coordinate**, wants goods **that coordinate produced**, and **does not settle until a space at that depth has been surveyed further than it had been when the mission was offered**. One open at a time against the contracts' three, offered every three days rather than every day, paying double because it also buys the survey work. **No deadline** -- `check-campaign-absolutes.py` forbids one and a plant that adds an `expiryTick` is caught; a mission is harder because of what it asks, never because of a clock. **The obvious design cannot be built and the code is why:** `ThingOrigin` has three values and **carries no coordinate at all**, and `CompRimroomsOddOrigin.AllowStackWith` lets odd stacks merge, so nothing can ever verify *which* coordinate a good came from -- the condition is checked against recorded survey state, which cannot be faked by hauling, and the proof asserts the mark still carries no coordinate so that tightening it later is possible. **Settlement is the contract's settlement** plus one call, because two paths that both consume goods and both pay money will eventually disagree about one of them; a record with no condition reports it met, so every existing save behaves exactly as it did. Record `implementation/PLANNER_AND_MISSIONS_IMPLEMENTATION.md`, proof `proof-planner-and-missions.py`. Was: **"that can give reason for the players to have to advance and excplore and haul and use the spaces iin the backrooms"**
+- [x] **BUILT 0.12.41-dev.** Same mechanism as row 1031 above; one deliverable, not two. **The 13 mission families this row names were already built** -- 18 of them, at 0.12.12-dev and 0.12.13-dev -- and **none of them was about odd goods**, which is the gap this closes. Was: **Quests and missions for odd goods**, as distinct from contracts. The owner asked for *"quests and missions and contracts"* and 0.7.3-dev built the contract third. Owned by the 13 mission families under M3.
+- [x] **BUILT 0.12.41-dev, and this row understates what was wrong.** The pane did list them -- and printed **`RR_UI_ContractTerms` on every contract**, which is the *survey* contract's terms, written for a different job. So a demand for two hundred odd cotton displayed *"Survey the route, record the distortion, recover the record book and analyse it at headquarters."* **A confident wrong answer is worse than silence**: silence sends a player looking, this stopped them. Meanwhile `requiredThingDefName`, `requiredCount` and `deliveredCount` were saved, given public accessors and **read by nothing but the settlement code** -- the `check-wiring.py` defect class, in C# where it cannot see it. The pane now says what is wanted, how much has been handed over, that ordinary stock will not do, and for a mission which coordinate it came out of, the survey progress toward the requirement and whether the requirement is met. The survey terms are still shown on a survey contract, because they were right for the contract they were written for. Was: **A player-facing surface for open odd demands.** Offers and settlements are recorded events today; the Operations pane does not list them. Owned by M5.
+- [x] **Materials recovered by deconstructing a marked building.** — **BUILT 0.7.4-dev** as part of the three-state origin model, and it needed no special case. Anything spawning outside a coordinate is stamped `Outside` permanently, so anything appearing on a Backrooms map still `Unknown` genuinely came into existence there: mined rock, deconstruction returns, cut plants, butchered meat. One acknowledged seam, named rather than fought: hauling ordinary material in, building with it and deconstructing it yields odd returns, but deconstruction refunds roughly half so the cycle **loses material** and is economically irrational. Was:  Uninstalling preserves the mark because the building survives; **deconstructing destroys it** and spawns fresh resources through `GenLeaving`, which exposes no public hook. Named here rather than quietly assumed to work. Owned by M3 with the contracts.
+- [x] **Floors recovered when lifted — settled as Rimrooms floors only.** Only floors this mod places return materials on removal; Core floors keep vanilla behaviour, so installing the mod never changes an existing colony. Was an open row in `DEFERRED.md`.
+**Verbatim owner request (2026-09-29), on the save break:** *"option 1 weve never made a save and the rimworld together server ands saves you may have been used in prep have nothing to do with how our mod will work as it was all pre build and we havent tested as the build is not complete"*
+
+- [x] **A clean development-save break is declared.** M2 may remove any custom Def a saved `Thing` references — gate objects, field gear, the five `RR_*Staff` PawnKinds, the five recipes — **with no migration written for any of them**. The old build stays archived. Correct on its own terms too: `0.x` promises no save compatibility under D2. **Boundary worth holding on to: decision 21 made save migration a standing obligation from the first *published* version. This is the last free break.**
+- [x] **The Quiet Pursuer keeps its rules and loses its art.** Rebind the encounter to an existing Core pawn presentation, preserving the readable warning, the learnable rule and the countermeasure exactly as authored. No new art exception opened.
+
+- [x] **"Split M6a / M6b, build all of M6a"** — **DONE 2026-09-29.** M6 was the only major that cannot be closed by building: six of its ten rows need the owner's launch. Split into **M6a** (four rows that close without a launch) and **M6b** (six that do not, every row `[T]`). Bookkeeping only — no row dropped, reworded or moved out of Phase 6. It exists because one major reading 0% hid that nearly half of it was buildable today.
+- [x] **"option 2 and option 3"** (fixtures) — **RECORDED as decision 20.** Options 2 and 3 were *automated fixtures in code* and *defer until after the first launch*. Taken together: **automated fixtures are authorised**, replacing the manual-checklist-only reading, **and none is written until after the owner's first launch**, so content follows observed failures rather than guesses. **This is a scoped exception to the `CONTRIBUTING.md` no-tests rule** covering the five subjects in that one row and nothing else. Not a general test suite. The rule is unchanged everywhere else in this repo.
+- [x] **"option 3 and remeber we dont have other peoples saves we just publish it all and update it as we go fixing bugs"** — **D1 SUPERSEDED, recorded as decision 21.** Public Steam Workshop is now the first distribution target; the private RWT prototype stops being a release prerequisite. The owner's reason answers the exact objection that was put to them: the risk raised against this option was first real-world validation happening in public against other players' saves, and **there are no other players' saves** — nothing has shipped, so there is no installed base to break.
+- [x] **RECONCILED 0.12.42-dev, and the row underestimated itself.** It predicted the master row count *"understates the build by roughly thirty points"*. **It was 56.** The master backlog went from **122 open / 134 done to 66 open / 190 done**, and every flip names the checkpoint that closed it -- the cross-map work engine row this row was written about, the escalation ladder, the gate state machine, the transaction service, all three starts, the existing-content replacement, the room library, the economy and evidence systems, research tiers 0-3, containment, the vehicle and VGE hooks, and the RWT detection. **Two rules were obeyed without exception.** Every original word of every row was kept and the note appended after it -- marking a task done changes the status ONLY. And **no runtime-acceptance row was flipped**: no game has ever been launched from this repository, and marking those accepted would erase the only honest caveat this project has. The proof asserts both. Record `implementation/HOUSEKEEPING_IMPLEMENTATION.md`. Was: **Consequence: reconcile 0.5.0–0.7.1 back into the master backlog.** Surfaced while counting for this answer. The master TODO is granular for research (81 rows on Phase 0) and coarse for code: the entire cross-map work engine — 31 work families, 23 deployments, containment, emergence, the kill switch, gate servicing, **27 shipped versions** — sits under one unchecked row. A raw count reads ~12% on code while the source tree went 78 → 120 files. Until this is reconciled the master row count understates the build by roughly thirty points.
+- [x] **Consequence: fix `disposition_stance()` in the register generator.** — **FIXED 0.12.37-dev, to this row's own prediction: Required 17 → 3, exactly rows 1, 4 and 14.** Negated occurrences are skipped rather than negative phrases being listed, because a phrase list must anticipate every way English negates something across 104 forms. **The first attempt gave four**: row 288 contains *"Pawn.IsColonist requires Faction.IsPlayer"*, a sentence about **Core's source code** in a row whose claim is *"no Rimrooms dependency"* -- window negation cannot tell those apart because nothing is being negated, so the question is asked of the disposition's **own claim**, its first sentence. Row 196 is fixed too: measured, it and row 2 were the **only two** falling through to `Unclassified` of 294, and both describe a planned use without asserting a requirement, which is what Optional means everywhere else -- so **Unclassified 2 → 0**. Register HTML regenerated, 294 cards intact. Was:  Also surfaced while counting. The classifier counts a **negated** "required" as Required: **14 of the 17** "Required" rows say the opposite — row 88 *"not required for materials/progression"*, row 101 *"never a required input"*, row 259 *"do not make it a required Rimrooms path"*. Only Harmony (1), Core (4) and Vanilla Expanded Framework (14) are genuinely required, so **82% of that bucket is wrong**. Same class of bug as the classifier-priority defect that silently moved 59 mods. Row 196 (RimWorld Together, the co-op backbone) additionally falls through to `Unclassified`.
+### Owner universe direction — period and factions (2026-09-28)
+
+**Verbatim owner request (2026-09-28, ten items):** *"and i havent talked about it but this is 1990's when this all starts and the factions should be the factions of the universe, so US government, other corporations trying to get propietary tech, ex employes disgruntleed, high tech theives, corporate spys and sbaatosh, concerned citizens.. and anything other type of factions along these lines that will increses the backrromms universe feeling as all this needs to be defgault set in the game settup for the differernt scenerios tailored to their scenrerio"*
+
+New binding world direction. It lands on [`UNIVERSE_ADAPTATION.md`](UNIVERSE_ADAPTATION.md), [`SCENARIOS.md`](SCENARIOS.md), [`SCENARIO_SETUP_AND_PORTAL_NETWORK.md`](SCENARIO_SETUP_AND_PORTAL_NETWORK.md) and the M3 scenario framework above, and it **intersects** [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md): that policy bans new physical gameplay Defs and M2 already lists `five RR_*Staff PawnKinds` for removal, so whether these factions may author new `FactionDef`/`PawnKindDef` content is an open owner question recorded below, not an assumption.
+
+- [x] **"this is 1990's when this all starts"** — the campaign's opening period is the 1990s. Affects naming, faction framing, in-world technology language and every scenario's presented setting. — **STILL OPEN.** **No `FactionDef` exists anywhere in the package** — verified by searching the whole `Defs` tree. This is the largest completely unbuilt owner direction remaining. — **BUILT, 0.12.15-dev.** `techLevel` Industrial is the 1990s in RimWorld's vocabulary, and the decade lives in how the seven organisations talk about themselves. The proof also asserts **no start grants spacer-tier content**.
+- [x] **"the factions should be the factions of the universe"** — the world's factions are the Backrooms universe's own factions, not RimWorld's default rimworld factions. — **STILL OPEN.** Nothing built. — **BUILT, 0.12.15-dev.** Seven `FactionDef`s ship.
+- [x] **"so US government"** — a US government faction. — **STILL OPEN.** Nothing built. — **BUILT, 0.12.15-dev.** `RR_Faction_Government` — the federal oversight office.
+- [x] **"other corporations trying to get propietary tech"** — rival corporation faction(s) whose motive is acquiring the company's proprietary technology. — **STILL OPEN.** Nothing built. — **BUILT, 0.12.15-dev.** `RR_Faction_RivalCorporations` — competing interests.
+- [x] **"ex employes disgruntleed"** — a disgruntled ex-employee faction. — **STILL OPEN.** Nothing built. — **BUILT, 0.12.15-dev.** `RR_Faction_FormerStaff` — the former staff association, and the only group on the list that has stood where your crews stand.
+- [x] **"high tech theives"** — a high-tech thief faction. — **STILL OPEN.** Nothing built. — **BUILT, 0.12.15-dev.** `RR_Faction_TechThieves` — the acquisition crew.
+- [x] **"corporate spys and sbaatosh"** — a corporate espionage and sabotage faction. — **STILL OPEN.** Nothing built. — **BUILT, 0.12.15-dev.** `RR_Faction_Espionage` — industrial intelligence.
+- [x] **"concerned citizens.."** — a concerned-citizens faction. — **STILL OPEN.** Nothing built. — **BUILT, 0.12.15-dev.** `RR_Faction_ConcernedCitizens`.
+- [x] **"and anything other type of factions along these lines that will increses the backrromms universe feeling"** — further factions in the same vein wherever they increase the Backrooms universe feeling. — **STILL OPEN.** Nothing built. — **BUILT, 0.12.15-dev.** `RR_Faction_Press` — the independent press, whose whole purpose is that other people find out, which is the thing every other faction on the list is trying to prevent.
+- [x] **"as all this needs to be defgault set in the game settup for the differernt scenerios tailored to their scenrerio"** — all of the above is default-set during game setup, per scenario, tailored to that scenario. — **STILL OPEN.** Nothing built. — **BUILT, 0.12.15-dev.** All seven exist in every world at `requiredCountAtGameStart` 1 and **all begin neutral**, which is the owner's own answer to what the per-scenario default should be. What differs per scenario is what the branch then does.
+
+**Undeferred 2026-09-29 by owner direction** — moved here verbatim from `DEFERRED.md`, which is now empty of open rows:
+
+- [x] **The seven named universe factions** as new `FactionDef`s: US government, rival corporations after proprietary tech, disgruntled ex-employees, high-tech thieves, corporate espionage and sabotage, concerned citizens, plus further factions in the same vein. Verbatim owner wording is in `TODO.md` under the universe direction heading; do not paraphrase it into def descriptions. — **STILL OPEN.** **And explicitly authorised:** the owner answered on 2026-09-28 that these are new `FactionDef`s reusing existing pawn kinds and existing faction icon paths, because a `FactionDef` is world configuration rather than a physical gameplay Def. **This is the next checkpoint.** — **BUILT, 0.12.15-dev.** Six named plus one in the same vein. Every pawn kind and every icon path is one the installed game already ships, enumerated rather than remembered, and fault-planted both ways.
+- [x] **Per-scenario default faction setup** so each start begins with the factions tailored to that scenario, wired through the existing versioned start contract (`RimroomsStartDef` → `BranchStartRequest` → `InitializeBranch`) rather than a scenario-identity branch in code. — **STILL OPEN.** Owner-answered: all seven begin **neutral**, and hostility is earned by what the branch actually does, from saved observable causes. — **BUILT, 0.12.15-dev.** All seven neutral in every start, per the owner's answer. Hostility is earned from saved observable causes rather than declared per scenario.
+- [x] **Period-plausible starting grants** for every start, and the 1990s framing across faction names, descriptions and scenario text. Must not gate research, which stays one tree available to every start. — **STILL OPEN.** Owner-answered: the 1990s framing **does** constrain starting grants, while research may still climb anywhere, so no start can be dead-ended. — **BUILT, 0.12.15-dev.** Asserted by the proof: **no start grants spacer-tier content** (no Glitterworld, bionic, archotech, charge weapons, power armour, persona or luciferium). Research may still climb anywhere, so no start is dead-ended.
+
+### Owner universe direction — the Backrooms has no outside (2026-09-29)
+
+**Verbatim owner request (2026-09-29, five items):** *"and remembr a backrooms environment can never have an out side in of itselfe so mods like remove roof for removing mountain need something in our mod so that the full seed map for a backrroms seed instance is entirely inside "mountain roof" and all roof in a backrroms is never revovable and no one in any scerio can find them selfs in a world map eara but by finding a portal in the backrromms leading out of the backrrooms liken the one the scenerio start has for the furnature store and the one that the solo/group start has to be able to get out and start building thsir facility"*
+
+**Binding containment rule, and the strongest world constraint in the project.** It governs `Generation/`, the roof handling on every generated coordinate, and every scenario start. It also **constrains work families already built** — see the conflict note below.
+
+- [x] **"a backrooms environment can never have an out side in of itselfe"** — no generated Backrooms map may contain an outdoor cell. There is no sky and no exterior anywhere inside one. — **BUILT.** `Generation/BackroomsContainment.cs` roofs every unroofed cell with `RoofDefOf.RoofRockThick`. Invariant 13.
+- [x] **"so mods like remove roof for removing mountain need something in our mod so that the full seed map for a backrroms seed instance is entirely inside \"mountain roof\""** — the whole seed map, edge to edge, sits under thick mountain roof, and the mod must supply whatever is needed to hold that against mods that remove roof or mountain. — **BUILT.** A thick rock roof is what makes this survive another mod’s roof removal, rather than a check on a specific mod — which is why it also survives mods nobody has seen yet.
+- [x] **"and all roof in a backrroms is never revovable"** — no roof anywhere in a Backrooms map may ever be removed, by any means. — **BUILT.** Thick roof, and the containment component re-roofs on a sweep, so a hole made by any means closes again.
+- [x] **"and no one in any scerio can find them selfs in a world map eara but by finding a portal in the backrromms leading out of the backrrooms"** — the **only** way out of the Backrooms into a world map area is a portal found inside the Backrooms. No scenario may provide any other route out. — **BUILT.** The only way out of a coordinate is a registered portal, and the solo/group start is **guaranteed** one on its first level (0.12.2-dev).
+- [x] **"liken the one the scenerio start has for the furnature store and the one that the solo/group start has to be able to get out and start building thsir facility"** — the furniture store start and the solo/group start each begin with exactly such a portal, which is how those starts reach the world and begin building a facility. — **BUILT.** The Store’s basement threshold (0.11.9-dev) and the solo/group guaranteed way out (0.12.2-dev).
+
+**Superseded by the refinement below:** an earlier note here guessed that mining, roof removal and roof building would all have to be refused inside a Backrooms map. Mining and deconstruction are **not** refused; see the refinement and the verified Core fact that thick roof never vanishes on collapse.
+
+**Verbatim owner refinement (2026-09-29, four items):** *"but all rooms and walls and doors are all deconstructable and areas minable and of all types of materisals throughout and capte ands  tile can all be uninstalled , moved, resued , sold , studied, all of it"*
+
+This **narrows** the containment rule above rather than widening it, and it is the better design: the interior is fully interactable, and only the roof and the absence of an outside are inviolable.
+
+- [x] **"all rooms and walls and doors are all deconstructable"** — every wall and door inside a Backrooms coordinate can be deconstructed like any other building. — **BUILT.** Generation places with **no faction** (invariant 75), so every wall and door is an ordinary deconstructable building.
+- [x] **"and areas minable and of all types of materisals throughout"** — the solid areas of a coordinate are mineable, and in a variety of materials across the map. — **CORRECTED 0.12.19-dev: my 0.12.14-dev verdict was WRONG.** **BUILT, and it was built all along.** `FillWithRock` plus `NaturalRockTypesFor` in `GenStep_BackroomsDestination.cs`, asking `Find.World.NaturalRockTypesIn(map.Tile)` so the materials are whatever that tile actually has, seeded deterministically per cell. The audit grepped for *"Mineable"*, *"Granite"* and *"RockRubble"*, **none of which the code contains**. A grep for the words I expected is not a search.
+- [x] **"and capte ands tile can all be uninstalled , moved, resued , sold , studied"** — carpet and tile can be uninstalled, moved, reused, sold and studied. — **CORRECTED 0.12.19-dev: my 0.12.14-dev verdict was WRONG.** **SATISFIED by Core, and now asserted.** Every floor the palette lays is a real `TerrainDef` with a cost list, and `TerrainGrid.RemoveTopLayer` defaults `doLeavings: true`, returning `CostListAdjusted()` times `resourcesFractionWhenDeconstructed` — **0.5** by default. Carpet returns Cloth, wood returns WoodLog, tile returns Steel or Silver, all at half. `proof-interior-resource.py` guards the one way this breaks: a palette swap to `PackedDirt`, `BrokenAsphalt` or a stone tile, which return nothing.
+- [x] **"all of it"** — the whole interior, without exception, is available to strip, move and use. — **COMPLETE 0.12.37-dev.** Walls, doors and buildings: already. Mineable materials: already — `FillWithRock` places rock from `Find.World.NaturalRockTypesIn(map.Tile)`. **Recoverable floors needed no code, and the reason is the good part:** a coordinate’s floors are Core’s `Concrete` and `PavedTile`, both descend from Core’s `FloorBase` which sets `layerable: true`, and **`TerrainDef.Removable` IS `layerable`** — read from the decompiled class. So Core’s own floor-removal designator already works there and returns the `costList` material. **The floors were never special.** Stripping one is also safe: `SetTerrain` refuses to file an impassable terrain as under-terrain and the void floor is `WaterDeep`, which is impassable, so Core substitutes the generator’s default rather than putting deep water under a room. Proof `proof-generation-batch.py`.
+
+**Position recorded 2026-09-29, and it corrects a wrong instinct of mine:** the earlier conflict note guessed that mining inside a Backrooms coordinate would have to be *refused* to protect the roof. That guess was wrong and this refinement overrides it. **Mining stays fully allowed**, because of one Core fact verified in source: `RoofDef.VanishOnCollapse => !isThickRoof`, so **thick rock roof never vanishes when it collapses**. Mining out the support under it produces rubble and a collapse, exactly as it does under any mountain — and the map stays roofed. Containment therefore survives unlimited mining without a single restriction on the player.
+
+What does need real work, because vanilla does not provide it:
+
+- **The roof itself.** `WorkGiver_RemoveRoof` is driven by `map.areaManager.NoRoof` and contains **no** check for natural or thick roof, so vanilla alone can already strip a Backrooms ceiling. A guard is required, which is precisely what the owner meant by *"mods like remove roof for removing mountain need something in our mod"*.
+- **Floors being recovered.** Vanilla returns no materials when a floor is removed, so *"uninstalled, moved, resued, sold"* for carpet and tile is a content feature rather than a setting, and it needs its own decision under `CONTENT_REUSE_POLICY.md`. Named here rather than assumed.
+
+**Verbatim owner constraint (2026-09-29, three items):** *"but we still have to be able to use build roof and maountain roof remove and bbuild mountain wall on the normal maps of the world"*
+
+- [x] **"we still have to be able to use build roof"** — roof building stays fully available on ordinary world maps.
+- [x] **"and maountain roof remove"** — mountain-roof removal stays fully available on ordinary world maps.
+- [x] **"and bbuild mountain wall on the normal maps of the world"** — building mountain wall stays fully available on ordinary world maps.
+
+**Satisfied by construction, not by a special case.** `BackroomsContainmentMapComponent` tests one thing before it does anything at all: whether the map is a `RimroomsDestinationMapParent` with a ready layout. On a colony map, a quest site, or any other ordinary world map that test fails and the component returns immediately — it never clears a no-roof area and never re-roofs a cell there. So every vanilla roof and mountain tool behaves exactly as it always did outside the Backrooms, and the containment rule applies only where the fiction requires it.
+
+This also means the guard cannot regress an existing colony, which is the same standard the content policy sets for everything else in this mod.
+
+**Undeferred 2026-09-29 by owner direction** — moved here verbatim from `DEFERRED.md`, which is now empty of open rows:
+
+- [x] **Floors recovered when lifted.** Vanilla returns no materials when a floor is removed, so the owner's *"capte ands tile can all be uninstalled , moved, resued , sold , studied"* is a content feature rather than a setting. Needs its own decision under `CONTENT_REUSE_POLICY.md`; named rather than assumed. — **CORRECTED 0.12.19-dev: my 0.12.14-dev verdict was WRONG.** **THE PREMISE WAS WRONG.** This row said vanilla returns no materials when a floor is removed. It does: `RemoveTopLayer(c, doLeavings = true)` calls `GenLeaving.DoLeavingsFor(TerrainDef, cell, map)`. Nothing needed building. What was missing was anything **watching** which terrains the palette picks, and that is what shipped.
+
+### Owner universe direction — continuous portal topology across every start (2026-09-29)
+
+**Verbatim owner request (2026-09-29, seven items):** *"and remember the solo/group start  and industry async start and furnature store start all need thier portals and back rooms to sum what be continues... ie a back room can have a protal to another normal worlds map or a portal to a deep level of the backrooms ect ect so that any one backrooms portal corroridanet weither from a lab portal or a natural portal can lead to other places and other backroom instance seeds, and or pop out any where in the game world on a tile map"*
+
+Binding topology requirement. It governs `RimroomsPortalNetwork`, `PortalAddressService`, `NaturalFrontierService`, the generation layer in `Generation/`, and all three scenario starts. Read [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md) and [`PROCEDURAL_SPACE_CONTRACT.md`](PROCEDURAL_SPACE_CONTRACT.md) alongside it.
+
+- [x] **"the solo/group start  and industry async start and furnature store start all need thier portals and back rooms to sum what be continues"** — all three starts share one continuous portal topology; no start gets a dead-end or a different set of rules. — **BUILT.** All three starts ship with their portals, 0.11.9-dev through 0.12.2-dev.
+- [x] **"a back room can have a protal to another normal worlds map"** — a Backrooms coordinate may hold a portal leading to an ordinary world map. — **BUILT.** `Portals/CompRimroomsEmergence.cs` — a way out surfaces on an ordinary map the branch owns.
+- [x] **"or a portal to a deep level of the backrooms"** — a Backrooms coordinate may hold a portal leading deeper into the Backrooms. — **BUILT.** `Portals/NaturalFrontierService.cs`. Found doors stop at depth 3 (0.12.1-dev); deeper needs a gate the branch builds.
+- [x] **"ect ect"** — and onward in the same manner; the topology is not limited to a fixed set of link kinds. — **BUILT.** By construction, not by enumeration: invariant 18, the topology is an **unbounded alternation** of world maps and coordinates, so no fixed set of link kinds exists to limit.
+- [x] **"so that any one backrooms portal corroridanet weither from a lab portal or a natural portal can lead to other places"** — every Backrooms coordinate, reached by a laboratory gate **or** a natural portal, can lead onward to further places. The link kind that brought you there never restricts where you can go next. — **BUILT.** `RimroomsPortalNetwork` links arbitrary endpoints regardless of which kind of portal reached them.
+- [x] **"and other backroom instance seeds"** — onward links may reach other Backrooms instance seeds, not only the one you are in. — **BUILT.** Each coordinate carries its own seed and the network links endpoints across them.
+- [x] **"and or pop out any where in the game world on a tile map"** — an onward link may emerge anywhere in the game world, on a world tile. — **BUILT, 0.12.21-dev.** Both halves now ship: onto a map the branch already holds, and onto a tile it does not.
+
+
+**Verbatim owner clarification (2026-09-29, five items):** *"so what i mean by that is there can be portals with in portals and portals found on world maps when u do the cites and build the furnature store and starting lab maps basic defaults for starting equipment and posible starting facilities if you know how to do that or we just give them starting equipment building and supplies and they build it all, i dont know how good you will be at designing starting building faciliteis and portals  and stuff but we can try"*
+
+- [x] **"there can be portals with in portals"** — a portal may be reached from inside a space that was itself reached by a portal, without limit on nesting. — **BUILT.** Nesting is unbounded, again by invariant 18 rather than by a depth counter.
+- [x] **"and portals found on world maps"** — portals exist to be found on ordinary world maps, not only inside the Backrooms. — **BUILT.** `NaturalFrontierService.MaximumFrontiersPerOrdinaryMap` — a separate budget from the per-coordinate one, so frontiers appear on ordinary maps too.
+- [x] **"when u do the cites and build the furnature store and starting lab maps basic defaults for starting equipment and posible starting facilities"** — site generation and the store and starting-lab maps carry basic defaults for starting equipment and, where possible, starting facilities. — **BUILT.** All three starts have authored layouts with starting equipment and facilities, and `proof-starts.py` reads building sizes from Core’s own ThingDefs to guard them — which is how three new-game crashes were caught before shipping.
+- [x] **"if you know how to do that or we just give them starting equipment building and supplies and they build it all"** — owner-offered fallback: if authored starting facilities are not workable, ship starting equipment, building materials and supplies and let the player build everything. — **SUPERSEDED.** The owner offered a fallback of *"just give them equipment and they build it"*. It was **not needed**: authored layouts ship for all three starts.
+- [x] **"i dont know how good you will be at designing starting building faciliteis and portals  and stuff but we can try"** — explicit permission to attempt authored starting facilities, with the fallback above available. — **BUILT.** The attempt was made and it shipped, and the honest note is that it needed a proof to be safe — a start layout is a new-game crash nothing else can see (invariant 146).
+
+**Verbatim owner clarification (2026-09-29, two items):** *"remember map>backrrooms>backrroms , map > backrooms > map > backrooms , and backrromms > map>backrooms>backrooms>map are just a few of the portal connections allowed in the game to different maps in the world"* and *"with different portal combos built and found"*
+
+This settles the shape of the topology: **an unbounded alternation of ordinary world maps and Backrooms coordinates, in any order, to any depth.** Not "the Backrooms nests inside itself" and not "the Backrooms has an exit" — those are two special cases of one rule. A chain may re-enter the world and leave it again as many times as it likes, and the sequence of map and Backrooms segments is arbitrary. "different maps in the world" means the ordinary-map endpoints are not all the same map either.
+
+- [x] **"map>backrrooms>backrroms"** — an ordinary world map leads to a Backrooms coordinate, which leads to another Backrooms coordinate. **This chain already routes end to end.** 0.6.3-dev made a way onward findable on an ordinary map, and a coordinate has always been able to hold onward links into further coordinates, so nothing is needed for this one. — **BUILT.** This chain already routes, as the row itself notes.
+- [x] **"map > backrooms > map > backrooms"** — the chain returns to an ordinary world map partway along and then re-enters the Backrooms. **Blocked on the one open piece:** a portal whose far side is an ordinary map. `RegisterNaturalAddress` takes a `CoordinateRecord` and `DestinationService.EnsureSite` produces a generated Backrooms map for it, so the far endpoint cannot yet be anything else. — **BUILT, 0.12.21-dev.** Every step of this chain now routes. The remaining dependency was the unheld tile.
+- [x] **"backrromms > map>backrooms>backrooms>map"** — starts inside the Backrooms, leaves to the world, goes two coordinates deep, and leaves to the world again. Needs the same open piece, used twice, and confirms that a chain may both begin and end outside the Backrooms. — **BUILT, 0.12.21-dev.** Every step now routes, including the second departure to the world.
+- [x] **"are just a few of the portal connections allowed"** — these three are examples, not an enumeration. No length limit, no ordering rule, and no forbidden combination of map and Backrooms segments. — **BUILT.** No length limit, no ordering rule and no forbidden combination exists, deliberately.
+- [x] **"to different maps in the world"** — separate ordinary-map endpoints along one chain may be separate world maps. A chain that leaves the Backrooms twice need not come out in the same place. — **BUILT, 0.12.21-dev.** Separate unheld tiles along one chain now work, up to the five-map cap, after which the crew arrives as a caravan instead.
+- [x] **"with different portal combos built and found"** — laboratory-built gates and naturally-found frontiers may be mixed freely along a single chain. **The non-restriction half of this is already true:** routing does not discriminate by `PortalConnectionKind`, and `Availability` consults the gate window only for `Laboratory` edges, so arriving by one kind never constrains which kind you may leave by. — **BUILT.** Laboratory-built gates and natural frontiers mix freely along a chain; `PortalConnectionKind` distinguishes them without restricting how they compose.
+
+**Ordering note:** every unchecked row above resolves to the same single piece of work — the ordinary-map endpoint, already queued. Building it once satisfies all of them, which is why they are recorded as one direction rather than split into separate tasks.
+
+**Position on the last two rows, recorded 2026-09-29 so it is not re-litigated:** the starting facilities do **not** need designing from scratch. [`SCENARIOS.md`](SCENARIOS.md) already specifies all three in detail — the Async Industries 60x60 headquarters with its secured perimeter, dormitory, mess, storage, infirmary corner, workshop, research bench, utility generator with reserve battery and a gate chamber assembled to roughly three-quarters that cannot open yet; the 50x50 store with sales floor, stockroom, office, staff room and a basement threshold that is not a working machine gate; and the lone-survivor generated 6-8 room coordinate with a restable shelter, limited supplies, at least two connected route clues and a traversable path to an objective and a possible exit. So this is implementation against an existing specification, not invention, and the fallback is not needed unless a specified element turns out to be unbuildable under the existing-content-only policy.
+
+**Undeferred 2026-09-29 by owner direction** — moved here verbatim from `DEFERRED.md`, which is now empty of open rows:
+
+- [x] **A portal whose far side is an already-owned ordinary map** — the cheap half of *"pop out any where in the game world"*. A Backrooms door opening onto the colony, or onto a world site the branch holds. Needs a far-side threshold chosen on that map, which is the same work `RegisterLaboratoryAddress` already does for a site. **Do this one first:** it is bounded, immediately useful as a shortcut home, and it exercises the endpoint plumbing the full version reuses. — **BUILT.** `CompRimroomsEmergence.OrdinaryBranchMap`, and 0.12.6-dev widened it to any registered site for free, from the ownership predicate rather than a new rule.
+- [x] **A portal whose far side is a world tile the branch does not yet hold** — the full half. Needs a new world object and a generated map, so it touches world generation and map lifecycle and wants its own checkpoint and its own review. Everything today assumes the far side is a branch-owned coordinate: `RegisterNaturalAddress` takes a `CoordinateRecord` and `DestinationService.EnsureSite` produces a generated Backrooms map for it. — **BUILT, 0.12.21-dev.** A way out leads to a tile chosen by Core’s own `TileFinder.TryFindNewSiteTile`, seeded so it does not move on reload. **Under the five-map cap the tile is claimed** through `SettleUtility.AddNewHome` and the crew walks onto a new map, touching `PassToWorld` not at all; **at or over the cap they form a caravan** they control. No new world object and no bespoke map generation — the register’s `RR-OUT` trace showed the four Settled transport mods bearing on this all integrate with caravans and none with a world object of ours.
+- [x] **The three starting sites, implemented against their existing specification.** `SCENARIOS.md` already specifies all three in full — the Async 60x60 headquarters down to a gate chamber assembled to roughly three-quarters that cannot open yet, the 50x50 store down to a basement threshold that is explicitly not a working machine gate, and the lone-survivor 6-8 room coordinate with its route clues and a possible exit. The owner offered a fallback of shipping equipment and supplies instead; it is only needed if a specified element proves unbuildable under the existing-content-only policy, and if so, say which element and why. — **BUILT.** 0.11.9-dev and 0.12.0-dev through 0.12.2-dev.
+
+### Owner direction — model gate upkeep on Questionable Ethics' vats (2026-09-29)
+
+**Verbatim owner requests (2026-09-29, two items):** *"kinda like maintaince for growth vats questionable ethitcs so pawns dont have to always do it but there is a cool down dead zone where its fine"* and, correcting my misreading, *"i said i was refresncing the mod \"Questional ethics\" and how maintaince works on cloning vats and organ vats"*.
+
+**I first read "questionable ethics" as flavour and went as far as asking which way to take the ethics angle. That was wrong.** It is a **mod name** — *Questionable Ethics Enhanced*, **profile row 182** — and the owner was pointing at a concrete, proven mechanic. **The register recovered it in one query**, and its review carried the package id and install path that led to the mod's own defs.
+
+Record: [`implementation/GATE_SERVICING_IMPLEMENTATION.md`](implementation/GATE_SERVICING_IMPLEMENTATION.md).
+
+- [x] **"how maintaince works on cloning vats and organ vats"** — read from that mod's own shipped description: *"Requires regular maintenance by a skilled scientist and doctor. A sterile room will significantly decrease the maintenance required. If the vat loses power, it will rapidly lose maintenance."* Three ideas, all better than a service timer: a condition that **decays continuously**; **the room modulating the decay**; and **power loss degrading it fast**.
+- [x] **"so pawns dont have to always do it but there is a cool down dead zone where its fine"** — the dead zone **falls out of the model rather than being bolted on**. A well-kept room decays so slowly that nobody is called for a long stretch; a filthy one calls somebody constantly. **The player controls the dead zone by looking after the place.** Reinforced by a hard threshold: the work is offered only below a quarter condition and restores full in one visit, so nobody tops it up continuously — the growth-vat-one-nutrition-short trap.
+- [x] **Nothing of that mod is copied, referenced or depended on.** Its defs and assembly are untouched and the feature works with it absent. The idea was read from its public description exactly as every profile row is read, which honours *"we are making a mod that works with the other 274, WE ARE NOT EDITING OTHER PEOPLES MODS!"*
+- [x] **It plugs into what already exists** rather than sitting beside it: cleanliness is kept by the cleaning family (which already crosses a gate), power ties to the kill switch built the checkpoint before, and skill reuses the `Research` work type calibration already uses, so **no new work type is added**.
+- [x] **Lapsing stops the next opening and never closes one already running** — ending an opening for a bookkeeping reason would strand whoever is on the far side.
+
+### Owner direction — the gate must keep meeting its requirements, and a how-to is owed (2026-09-29)
+
+**Verbatim owner request (2026-09-29):** *"and remember the gate doent always stay open we need requirment s to be maintained and reached.. ie power(its a big draw if power runs out gate closes, research(maintained amounts of maintance and research on equipment but not crazy amounts like i say the first gate opening should be liek 30minuites real time only increasing from there, and eventually we will need to write a how to to the game paly and systems"*
+
+**Checked against the shipped values rather than assumed. Three of the four already match exactly**, and saying so is more useful than rebuilding them:
+
+- [x] **"power(its a big draw if power runs out gate closes"** — already true every tick: `HasPowerAndHeadroom()` fails and `TickGate` calls `EnterEmergency("RR_Gate_PowerLost")`. An open gate also spends energy every tick through `SpendNativeOpeningTick()`, so running the supply dry ends a sustained session exactly as losing power does.
+- [x] **"the first gate opening should be liek 30minuites real time"** — already exactly that. `portalBaseWindowTicks = 108000`, and 108,000 ÷ 60 ticks per second = **1,800 seconds = exactly 30 real minutes** at normal speed.
+- [x] **"only increasing from there"** — already: `portalWindowMultiplierPerTier = 3f` per earned tier, and `portalIndefiniteTier = 4` stops the countdown entirely while power, operator and energy hold.
+- [x] **"research"** — already: tiers come from **completed** projects listed in `portalWindowTierProjects`, never from spendable insight, so a tier can never be lost by spending currency on the next one.
+- [x] **"maintained amounts of maintance ... on equipment but not crazy amounts"** — **BUILT 0.7.1-dev**, modelled on the reference the owner gave in a later message (see below). Was: **GENUINELY NEW. There is no equipment-upkeep concept anywhere in the gate today.** Needs its own checkpoint: what wears, what restores it, what lapsing costs, and the owner's explicit ceiling that it must not be *"crazy amounts"*. Build it from existing content only — Core's own repair, `CompRefuelable`, breakdown or bill-driven servicing, matched by capability rather than by name.
+- [x] **WRITTEN 0.12.40-dev as `docs/PLAYING.md`.** The play document, written **once** for the repository and the site as this row requires. `docs/HOWTO.md` documents the build and keeps doing so. It opens with the caveat that governs everything under it -- **no game has ever been launched from this repository**, so every instruction in it is a structural claim about the code rather than a report of play -- and it says which side wins on a disagreement: **the game's own readouts are right and the page is wrong**, because the panes read live state and a sentence was written from source at one checkpoint. Numbers appear only where the code fixes them. It joins `READER_FACING` in `check-doc-conformance.py`, now **thirteen documents**, so the vocabulary rule, the wall rule and the row 791 claim guard all apply to it -- and **both caught something on the first run**: *"on the Machine pane"* tripped the banned phrase *"the machine"*, and a denial of synchronised research tripped the claim guard because the sentence splitter breaks on newlines and the negator was hard-wrapped onto the line above. Record `implementation/PLAYER_FACING_IMPLEMENTATION.md`, proof `proof-playing-and-help.py`. Was: **"eventually we will need to write a how to to the game paly and systems"** — a player-facing how-to for the gameplay and the systems. `docs/HOWTO.md` exists but documents **the build**, not play. This is a real deliverable and is owed; scope it once the systems stop moving.
+
+### Owner direction — a kill switch for the laboratory gate (2026-09-29)
+
+**Verbatim owner request (2026-09-29):** *"we also need to have the ability to use a switch so cutting power instantly closes the lab gate in emergencies.. idk think of cool shit in how all the equipment needs to connect and operate for a lab gate"*
+
+Not yet built. Recorded here in full the moment it was asked so it cannot be lost, and scoped to its own checkpoint rather than folded into the emergence work that was in flight.
+
+- [x] **"we also need to have the ability to use a switch so cutting power instantly closes the lab gate in emergencies"** — **BUILT 0.7.0-dev.** An optional cutoff bound to a Core power switch, refused unless the switch is **closed and on the gate's own power net**, which is what separates a real kill switch from a decorative one: sharing a net while closed means opening it *necessarily* severs the supply, using Core's own power graph rather than simulating anything. Thrown ends the opening at once with its own cause, checked **before** the generic power test so a deliberate shutdown is never logged as a snapped conduit. **The emergency-return window is deliberately kept** — it is why the gate reserves watt-days, and one flick should not permanently strand the far side. Record `implementation/GATE_KILL_SWITCH_IMPLEMENTATION.md`. Was:  — a player-operable switch that closes an open laboratory gate at once by cutting its power. What already exists to build on: `CompRimroomsGate` is a native provider carrying `nativeConsole`, `nativeBattery` and `nativeAssemblyBench`; `NativeBindingFailureKey` already reports `RR_NativeGate_PowerUnavailable` when power is unavailable; and there is already an emergency-return window with its own reserved watt-days. What is missing is the **deliberate** act: cutting power today makes a gate *unavailable*, which is not the same as *closing it now on purpose*, and the difference matters when somebody is on the far side.
+- [x] **"idk think of cool shit in how all the equipment needs to connect and operate for a lab gate"** — answered by making the **wiring real rather than cosmetic**: the bind is refused unless the switch genuinely carries the gate's power, matched by capability (`CompFlickable` + `CompPowerTransmitter`) so a modded switch works unnamed, one switch to one gate, and the whole thing optional so no saved gate needs rebinding. A further consequence fell out for free: flicking is ordinary `Flick` work and this mod gained cross-gate `BasicWorker` support in 0.6.7-dev, so somebody at home can be ordered to throw the cutoff while a team is still inside. Was:  — open design latitude on how the equipment interconnects. Read `implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md` and the gate records before proposing, and keep every piece existing content: Core's own `PowerSwitch`, conduits, batteries and consoles, matched by capability rather than by name.
+
+- [x] **A portal whose far side is an ordinary map** — **BUILT 0.6.9-dev** as `PortalConnectionKind.Emergence`, an appended enum value. Recorded **anchor-first** (`First` = the marked door on the ordinary branch-owned map, `Second` = the coordinate doorway), which is the same orientation every other kind uses — so `Availability`, the site check in `Register` and the uniqueness rule all needed **no change at all**. This is what makes `map > backrooms > map > backrooms` and `backrooms > map > backrooms > backrooms > map` route end to end.
+- [x] **The player marks where it comes up, and nothing ever picks for them** — `CompRimroomsEmergence` on Core `Door` and `Autodoor`, added by one additive patch beside the existing gate comp, dormant until marked. This inherits 0.6.3-dev's rule with more force, because a way out arrives **at** the player's own map: *a door the player built is never quietly turned into a hole in the world*. Marking is refused inside the Backrooms — a way out cannot come up in the place it leads away from — and the command is not even offered there.
+- [x] **Withdrawing a mark leaves an existing way out alone** — it means "no more ways out here", not "close the one that exists". A saved edge is evidence of a place somebody found.
+- [x] **Found by surveying, with its own independent draw** — a distinct seed key from the frontier draw so the two can never correlate, derived from the coordinate's own seed and the doorway's position so it is stable across saves and revisits. **One in three** ways onward leads out, deliberately common, because a way home is what makes the topology usable rather than a trap. With nothing marked the doorway leads deeper instead: a fallback, not a refusal.
+- [x] **`Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear` and `Area_PollutionClear` across a gate** — **BUILT 0.12.36-dev.** `Area_BuildRoof` and `Area_NoRoof` as `RoofWorkProvider`, a **third `Construction` family** rather than routes on the finishing one: that family's continue giver is **82**, below Core's `BuildRoofs` (100) and `RemoveRoofs` (90), and a continue giver below the work it travels for turns a committed worker around. So roof work sits at 101/1 and the tuned numbers are untouched. `Area_SnowOrSandClear` and `Area_PollutionClear` became routes on the **existing cleaning family**, whose continue is already 22, above `CleanClearSnow` (10) and `CleanClearPollution` (0). Almost nothing needed a presence substitute -- every condition takes the map explicitly and takes no pawn. **The Backrooms rule still keeps itself**: `BackroomsContainment` empties `Area_NoRoof` on a coordinate, so the family finds nothing there, and the proof asserts the provider holds no Backrooms exception of its own. Record `implementation/AREAS_AND_DEBRIEF_IMPLEMENTATION.md`, proof `proof-areas-and-debrief.py`. Was: `research/ZONES_AND_AREAS_ACROSS_A_GATE.md` recorded these as a dependency of exactly this endpoint, and they are **now genuinely live rather than hypothetical**: an ordinary map is reachable through a gate, and a colony map gets snow, wants roofs built, and may be polluted.
+- [x] **WRITTEN 0.12.40-dev as `docs/PLAYING.md`.** Same document as row 1193; one deliverable, not two. See that row for what it says and why. Was: **A player-facing how-to for the gameplay and systems** — requested 2026-09-29. `docs/HOWTO.md` documents the build, not play. Owed; scope it once the systems stop moving.
+### Owner direction — zones must work on both sides of any gate (2026-09-29)
+
+**Verbatim owner requests (2026-09-29, two items):** *"we also need to make sure zones work properly when putting them on boith sides of any type of gate"* and *"and as a continueations through the gate"*
+
+Full audit in [`research/ZONES_AND_AREAS_ACROSS_A_GATE.md`](research/ZONES_AND_AREAS_ACROSS_A_GATE.md), which covers every zone and area type in the game against what the work layer does with it.
+
+**The constraint that shapes every answer:** a RimWorld `Zone` **cannot span two maps** — `Zone.Map` is single-valued and `ZoneManager` is per-map, and the same holds for every `Area`. So a zone that "continues through the gate" cannot be one object. What it has to mean instead is that two zones, one each side, **behave as one**: goods flow between them, work on either side attracts somebody, and the far one's own settings are what get respected. That is the standard the audit holds every case to.
+
+- [x] **"we also need to make sure zones work properly when putting them on boith sides of any type of gate"** — audited every zone and area type. `Zone_Stockpile` works both directions (the far zone's own filter and priority decide, through `IsValidStorageFor(storeMap, thing)`); `Zone_Fishing` works; `Area_Home` works for cleaning, repair and firefighting; `Area_Allowed` works as a recorded observation plus the definitive check on arrival; `Area_NoRoof` is deliberately emptied inside the Backrooms by the containment rule. **`Zone_Growing` was broken and is fixed** — see below.
+- [x] **"and as a continueations through the gate"** — continuation is satisfied functionally rather than by linking objects, and deliberately so. Nothing gives two zones a shared name or copies settings between them, and neither would be an improvement. Two stockpiles either side of a gate are already continuous in the sense that matters: put something in one and a hauler moves it to the other when the other is a better home for it. The failure mode to avoid was never "they are not linked" but **"a zone on the far side is invisible to the work layer, or visible but impossible"**.
+- [x] **Zones persist across visits, which is the precondition for all of it** — `RimroomsDestinationMapParent.ShouldRemoveMapNow` returns `false` unconditionally, so a coordinate map is never removed and every zone painted there survives leaving and returning, with its settings.
+- [x] **DEFECT FIXED: a growing zone inside the Backrooms could never be sown, and held the worker there anyway.** `ZoneHasWork` decided sowing was wanted from three facts about the *zone* and never asked whether the *cell* could be sown. Coordinate rooms are floored with `Concrete` and `PavedTile`, both of which inherit `FloorBase`, declare no `fertility` and so carry the field default of **0**, while every Core plant needs `fertilityMin` of at least **0.01**. So a grower was sent, Core refused on arrival — **and `HasWorkHere` asked the identical question and also said yes, so the deployment was never released** and the worker stood in the Backrooms indefinitely with a live commitment. Worse than a wasted trip: a wasted trip costs one walk, a deployment that will not release costs a colonist. Fixed by adding Core's own `CanEverPlantAt` and `PlantUtility.GrowthSeasonNow`, both of which read the cell and its own map and take no pawn.
+- [x] **A wrong hypothesis corrected on the way** — the first theory was that a fully-roofed coordinate blocks sowing for lack of **sunlight**. It does not: `GrowthSeasonNow` reads room and temperature, not light, and Core sows indoors happily. The real gate is **fertility**, and building on the light theory would have produced a check that tested the wrong thing.
+- [x] **Three area types are not covered, and that is correct only until the far side of a gate can be an ordinary world map.** — **THE CONDITION EXPIRED AND THE WORK IS DONE, 0.12.36-dev.** The ordinary-map endpoint landed at 0.6.9-dev, so a registered site is a world map that wants roofs, gets snow and can be polluted. **This row is the reason the work was findable at all**: it recorded *why* the areas were uncovered rather than just that they were. Was:  `Area_BuildRoof` (a coordinate is already all thick rock), `Area_NoRoof` (removal is forbidden there by the world rule), and `Area_SnowOrSandClear` / `Area_PollutionClear` (a coordinate has no outside, so no weather). **Revisit all of them when the ordinary-map endpoint lands** — a colony map does get snow, does want roofs built, and may be polluted.
+
+**Undeferred 2026-09-29 by owner direction** — moved here verbatim from `DEFERRED.md`, which is now empty of open rows:
+
+- [x] **`Area_BuildRoof`, `Area_NoRoof`, `Area_SnowOrSandClear`, `Area_PollutionClear` across a gate** — **BUILT 0.12.36-dev**, and the row's own instruction to *"build it in that checkpoint"* was followed one checkpoint late rather than never. Was: **now genuinely live as of 0.6.9-dev**, because an ordinary map is reachable through a gate. Was correctly not covered while the far side of a gate was always a Backrooms coordinate: a coordinate is already all thick rock, roof removal there is forbidden by the world rule, and it has no outside and therefore no weather. **This row is a dependency of the ordinary-map portal endpoint, not an independent one** — build it in that checkpoint, because a colony map genuinely gets snow, genuinely wants roofs built, and may be polluted.
+
+- [x] **"wtf is this xlsx??? i thought it was a spread sheet but it just opens up codex for chatgpt???"** — **not a file problem, and it outranks every XML defect below.** Checked the machine: `.xlsx` has **no registered association at all** (`assoc .xlsx` returns nothing, no `UserChoice` key) and **no spreadsheet application is installed anywhere** — no Excel, no LibreOffice, no OnlyOffice, no WPS. Windows handed the extension to an unrelated app that loosely claimed it, the Codex desktop app. The workbook was never openable on this machine however correct its XML became, which is the actual reason the owner never saw what the previews showed.
+- [x] **"i thought it was the mod spreedsheeet! fix it"** — fixed by building a format the machine *can* open: **`Rimrooms_Async_Industries_294_Mod_Integration_Register.html`**, in the same folder as the workbook. Double-click, opens in the browser, no install, and **no external asset** so it works offline. Same four views as tabs, plus two things a spreadsheet could not give: a **live search across all seventeen columns of every row**, and stance / firmness / family filters with a running match count. The workbook is still built and still verified for anyone who does have a spreadsheet application; the HTML is the primary deliverable.
+- [x] **File association and installing software** — **deliberately not done.** Changing associations or installing an application on the owner's machine is the owner's call, not a build step. The HTML removes the need. If the owner ever does want the workbook openable, LibreOffice would do it and the file itself is now verified correct.
+- [x] **"there is a mode .xlml like thing that im not sure is fully working"** — the owner was right to doubt it. Four defects found, all real: every one of its 5,009 text cells was typed `t="str"` (the OOXML type for a cached *formula* result) with no formula anywhere in the file and an empty `<sst/>` sharedStrings part still declared as a relationship; all 294 rows were pinned `ht="78" customHeight="1"`, which *forbids* auto-fit, while five columns carry up to 300 characters; the Overview's family tallies were stale, listing 45 families where the rows hold 66, with eleven wrong counts; and it had **no generator anywhere in the repository**, so it could not be rebuilt, updated or verified.
+- [x] **"i try to open it but its not human navigatable"** — rebuilt as four sheets to the owner's selection: **Overview** (measures, computed tallies, sources), **Index** (fits one screen wide, one line per mod, links into the card), **Mod Register** (all seventeen columns, autofilter, frozen header and first two columns, row heights computed to fit their own tallest cell and left auto-fittable), and **Mod Cards** (a vertical label/value block per mod where nothing is ever clipped).
+- [x] **"but its suppose to spreeadsheet out all the mods and potential uses and issues and theri uses and descriptions and shit if i remember correctly"** — the owner's memory was accurate. It carries all 294 rows across seventeen columns including Planned Use, Integration Approach, Compatibility Watch, Backrooms Dependency, Research Status, FinalDisposition, EvidenceBuild and AcceptanceEvidence.
+- [x] **"and you should definatly be using it"** — used immediately: the three hauling rows (164 Pick Up And Haul, 107 Haul to Stack, 288 Prison Labor) were worked out of the register and their reviews, and the register's own `SystemFamily` column drove the tally correction.
+- [x] **"and or fixing it up as you go along with build the Mod here"** — six columns of integration analysis existed **only** inside that one binary and nowhere else in the repository. They are now tracked text at `research/mod-register-integration-fields-2026-09-29.csv`, and the overview prose at `research/mod-register-overview-2026-09-29.csv`. The workbook is generated output and holds nothing unique.
+- [x] **"and or update it where need of past work already done"** — the stale Overview tallies are gone: family, stance and firmness counts are now **computed from the rows on every build**, so they cannot drift from what they describe again. The three hauling rows carry their connected-work findings.
+- [x] **"and continue it forward and making sure it is human havigate able"** — `tools/research/build-mod-register.py` rebuilds it from the CSVs (byte-identical on an unchanged source), `tools/research/check-mod-register.py` round-trips every cell back out and proves nothing is clipped, and `tools/research/audit-gate0.py` independently compares 3,234 workbook cells against the inventory. Rebuilding after any register edit is now a step in the checkpoint ritual.
+- [x] **"becasue i open it up and i dont see what the preview images show, so idk how it works or if it does"** — explained: the preview PNGs are 5160-pixel-wide renders of the whole grid, so they show all seventeen columns at once, while the file itself pinned every row shut. Those PNGs now depict a **superseded layout**; see the note in `implementation/MOD_REGISTER_REBUILD.md`.
+- [x] **The eleven DLC container hauling givers** — **BUILT 0.12.34-dev** as `MachineLoadingProvider`, id `machine-loading`, nine routes covering all eleven. **The custody question was already answered by Core and reading it was the work:** every one of the eleven refuses to act unless the thing it moves is already on the worker's own map — `WorkGiver_CarryToBuilding` returns false unless `selectedPawn.Map == pawn.Map`, `FindGeneBank` requires `targetContainer.Map == genepack.Map`, `TakeEntityToHoldingPlatform` requires `targetHolder.MapHeld == t.MapHeld`, and the rest search `pawn.Map`. **So nothing ever crosses but the worker, and invariant 55 is never engaged.** No expansion branch anywhere: the `MayRequire` DefOfs are null-checked and every other route matches a group or a comp, so an absent expansion is an empty world rather than a condition — which also covers a modded `Building_Enterable` with nothing naming it. Record `implementation/MACHINE_LOADING_IMPLEMENTATION.md`, proof `proof-machine-loading.py`. Was: open, and named rather than guessed at: `HaulToGeneBank`, `HaulToGrowthVat`, `CarryToGrowthVat`, `CarryToGeneExtractor`, `CarryToSubcoreScanner`, `HaulMechsToCharger`, `EmptyWasteContainer` (Biotech), `HaulToBiosculpterPod` (Ideology), `TakeBioferriteOutOfHarvester`, `TakeEntityToHoldingPlatform`, `TransferEntity` (Anomaly). Each carries a pawn or a live subject into a machine or moves an entity between platforms, so each needs its own review of what that does to **custody** before a worker is sent across a gate for it.
+- [x] **BUILT 0.12.42-dev as `tools/extract-economy-workbook.py`, and "unopenable" was about Excel rather than about the bytes.** An xlsx is a zip of XML and the standard library reads both -- the same realisation that made the register queryable, applied to the other workbook. **Five documents linked a file nobody in this repository could read**; it transcribes to **five sheets and 381 rows**. It got exactly the treatment this row asks for: **tracked source** at `docs/research/campaign-economy-workbook.json`, a **generator** with a `--check` mode that re-reads the xlsx and refuses a source that has drifted, and an **HTML output** at `outputs/readable/campaign-economy.html`. **Not one number was touched.** This row is explicit that it is a different dataset with different owners whose content has not been verified, so the transcription is exact and both the source and the page say at the top that the figures are transcribed rather than verified and that nothing has been observed in play. A generator that silently corrected a figure would destroy the only useful property the file has: being what its author wrote. Was: **`Rimrooms_Campaign_Economy_v0.2.xlsx` has the same problem and no generator.** The campaign economy workbook is linked from `CAMPAIGN_ECONOMY_MODEL.md`, `CAMPAIGN_ECONOMY_PROGRESSION.md`, `CAMPAIGN_ROSTER_FREEZE.md`, `FEATURE_TRACEABILITY.md` and `AI_BUILD_HANDOFF.md`, and it is **equally unopenable on this machine** for exactly the same reason. It was left alone here deliberately rather than swept up in a register checkpoint: it is a different dataset with different owners, and its content has not been verified. When it is addressed it should get the same treatment — tracked source, a generator, and an HTML output.
+- [x] **NOTED 0.12.42-dev, and deliberately not deleted** -- this row says removing them is the owner's call, so a `README.md` sits beside them instead and states which file is authoritative. **Nothing in that folder was removed.** The images are wrong rather than merely old: they show **two** sheets, while the register parses **295 rows** out of its HTML and the companion economy workbook transcribes to **five** sheets. An image of a two-sheet layout is a view of a different file. Was: **The register preview PNGs under `outputs/`** depict the superseded two-sheet layout. Not deleted — they are tracked artifacts and removing them is the owner's call — but they must not be read as showing the current file.
+### Owner direction — always check the mods, and the prep work is where that lives (2026-09-28)
+
+**Verbatim owner requests (2026-09-28, two items):** *"remembre there are research mods you should always be checking mods too"* and *"thats what the prep work was for"*
+
+Standing method, not a one-off task. Before implementing any work family, read the relevant rows of the 294-mod profile — the per-mod reviews in [`research/reviews/mods/`](research/reviews/mods/) already carry verified source facts and a recorded disposition for each one, and re-deriving them from scratch wastes the preparation.
+
+- [x] **"remembre there are research mods you should always be checking mods too"** — applied for the research family in 0.5.8-dev. Four profile rows are research-relevant: 39 Anomaly Research Asteroid, 76 Do Your F\*\*\*\*\*\* Research (`MD.PrioritizeResearch`), 191 ResearchTree Eheieh (`eheieh.researchtree`), 279 Research Whatever (`avilmask.ResearchWhatever`); plus row 83 Dubs Rimatomics, which has its **own separate research table and screen** and is therefore not vanilla `ResearchManager` work at all. All carry the same recorded disposition: optional, no Rimrooms dependency, must work when absent, do not copy code or assets. Position recorded in `implementation/CONNECTED_RESEARCH_IMPLEMENTATION.md`.
+- [x] **"thats what the prep work was for"** — binding method for every session from here: consult the existing per-mod reviews and the profile register **first**, rather than re-investigating. Added to the reading order in `NOW.md`.
+
+### Owner compliance direction — RimWorld and Steam terms, official versions (2026-09-28)
+
+**Verbatim owner request (2026-09-28):** *"make sure we are foillowing all rimworld and steam TOS and requirments when it comes to issues similar and the issue of factions and pawn heduffs and the like this mod has to be working with official versions"*
+
+Binding release requirement, and it governs the faction layer above before a line of it is authored. Position and verification: [`COMPLIANCE_AND_OFFICIAL_VERSIONS.md`](COMPLIANCE_AND_OFFICIAL_VERSIONS.md).
+
+- [x] **BUILT 0.12.42-dev as `tools/check-compliance.py`, the thirteenth checker, and the queue row four below asked for exactly this: *"one compliance test, applied to all of them"*.** `COMPLIANCE_AND_OFFICIAL_VERSIONS.md` held the position as a thirteen-row table whose own closing line said it *"is re-run rather than trusted"*. **It was never re-run** -- verified at 0.5.6-dev, read as current for **thirty-six checkpoints**, and over those checkpoints **three of its rows stopped being true**: the package went from 76 approved files to 89, the fourteen gameplay PNGs it enumerated were deleted at 0.12.22-dev, and it stated there were **zero** DLC references in package XML while the six `MayRequire` gated defs added since are exactly the supported way to write them. **A dated table of mechanical checks is the same defect as a dated count**, so the table is now executable. It refuses a destructive patch operation, a bundled game binary, Harmony, a detour framework, a reflection write into a game type, a non-public field read, a shipped file at a texture path that is not ours, AI attribution in anything shipped, the QA overlay inside the package, and a reference to an assembly outside the official install. **Two of its own rules caught it first:** the licence check flagged a comment that *denies* the GPL applies, so it tests for assertion rather than mention; and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"* -- **zero parsed references now fails rather than passing**, because a compliance check that finds nothing and says ok is worse than no check. Exit 2 means skipped, and skipped is not a pass. Record `implementation/HOUSEKEEPING_IMPLEMENTATION.md`, proof `proof-housekeeping.py`. Was: **"make sure we are foillowing all rimworld and steam TOS and requirments"** — hold the whole package against Ludeon's modding terms and the Steam Workshop and Steam Subscriber agreements, and keep the position current as content is added.
+- [x] **CLOSED 0.12.42-dev by the same checker.** `FactionDef` authoring adds definitions only: `RR_UniverseFactions.xml` names existing pawn kinds and icon paths, and the checker refuses a shipped file sitting at a texture path that is not this package's own -- which is the exact line between a reference and a redistribution. Was: **"when it comes to issues similar and the issue of factions"** — `FactionDef` authoring must add definitions only, never redistribute a game or DLC asset. Faction icons and pawn kinds are **referenced by path and defName**, never copied into the package.
+- [x] **CLOSED 0.12.42-dev, and the answer is a measurement: this package has no `HediffDefs` folder at all.** The checker asserts no patch names a `HediffDef` either, and the same rule is now in `check-register-compliance.py` sourced from the medical family's own instruction that the expedition loop must not require one medical mod. If a hediff is ever added, rule 5 of the compliance document binds it: a missing def is an unavailable effect, never an exception. Was: **"and pawn heduffs"** — the same rule for `HediffDef` and any pawn-attached definition: additive definitions referencing existing content, guarded patches on Core defs, never a copied asset and never a destructive overwrite of a Core def.
+- [x] **CLOSED 0.12.42-dev, and this row is the one that decided the shape of the whole pass.** *"And the like"* generalises the rule to every def class the mod may ever add, and this row spells out what that means: **one compliance test, applied to all of them.** Not a note per def class -- a test. That is `tools/check-compliance.py`, and it tests the **shape** rather than a list: no destructive patch operation anywhere, every non-XML shipped file this package's own, no file at a texture path that is not ours. Those hold for a def class nobody has thought of yet, which is what *"and the like"* requires. Was: **"and the like"** — the rule generalises to every def class the mod may add later (thoughts, traits, backstories, incidents, quests, world objects, research). One compliance test, applied to all of them.
+- [x] **CLOSED 0.12.42-dev by the same checker.** `supportedVersions` is `1.6` alone, `LoadFolders.xml` maps `v1.6`, the package bundles no game binary or data file of any kind, there is no Harmony and no reflection write into a game type, and the build references **five** assemblies -- all from the official install, hashes recomputed each checkpoint. **Zero parsed references fails rather than passing**, and a missing manifest exits **2, skipped**, because a check that could not run must not report what a check that ran and found nothing reports. Was: **"this mod has to be working with official versions"** — the mod targets official RimWorld 1.6 and official DLC only. No modified or patched game assembly, no bundled game binary, no reliance on a non-official build, and no shipped QA overlay.
+
+### Open owner questions (not tasks; answers unblock items above)
+
+- [x] Inside start (`lone_survivor`): configurable party versus strictly lone start. — **ANSWERED 2026-09-28: configurable party, the player chooses.** Recorded in `GATE_0_DECISIONS.md` and `implementation/GATE_DURATION_AND_COMPANY_NAMING.md`. The M3 scenario row above consumes it.
+- [x] Inside start: first reliable exit reveals a fixed discovered surface destination, or the player chooses a settlement. — **ANSWERED 2026-09-28: the player chooses the destination settlement.** This *changed* the earlier provisional fixed-reveal assumption, so M3 must implement a choice, not a reveal.
+- [x] Opening-duration clarification (the accepted 20 in-game-minute first window is retained until directed otherwise). — **ANSWERED 2026-09-28 and superseded:** *"you should have the first opening be like 30 minutes of real time not game time there has to be time to acually do shit and it only greatly increases from there once u can re call seeds and better tech and levels to being able to open it indefintality at higherr tech and research and staff and power supplies"*. Implemented in 0.5.4-dev as the tier ladder (108,000 ticks base, ×3 per earned tier, no countdown at the indefinite tier). Natural gates stay permanently open and are exempt.
+
+**Newly opened by the 2026-09-28 universe direction (factions and period):**
+
+- [x] Do the universe factions author new `FactionDef` / `PawnKindDef` content, or must they be built by repurposing existing installed faction and pawn-kind content under `CONTENT_REUSE_POLICY.md`? — **ANSWERED 2026-09-28: new `FactionDef`s, reusing existing pawn kinds.** A `FactionDef` is world configuration, not a physical gameplay Def, so it sits inside the content policy. Each faction's `pawnGroupMakers` point at existing Core/profile `PawnKindDef`s and existing faction icon paths: no new pawn kind, no new texture, no new item. This is what keeps the faction layer clear of M2's deletion of the five `RR_*Staff` PawnKinds.
+- [x] Starting hostility per faction per scenario: which of the seven named factions begin hostile, neutral or allied in each start, and what escalates them. — **ANSWERED 2026-09-28: all neutral, escalating from play.** Hostility is earned by what the company actually does, from saved observable causes, reusing the existing bounded escalation-ladder rule rather than a second unrelated one.
+- [x] Whether the 1990s period is presentation-and-naming only, or also constrains which existing technology and content a start may grant. — **ANSWERED 2026-09-28: it also constrains starting grants.** Scenario starting equipment and buildings are period-plausible; research may still climb anywhere, so the one-tree-for-every-scenario rule holds and no start can be dead-ended.
+- [x] Ordering of the faction layer against the remaining cross-map work families. — **ANSWERED 2026-09-28: keep going down the work families first** (bills, research, tending, food, rest), then the faction and period layer as one clean content checkpoint.
+
+---
+
+## First launch findings — 2026-09-30
+
+**The first launch in this project's history.** Owner words are verbatim.
+
+- [x] **"okay the game is up and running with the bridge and the first thing i see as a bug is in the edb prepare carfully on the set up when pressing start game it shows - Comapny Overview" and its a blank pop up page... is that noraml? dont seem it"** — **FIXED 0.12.43-dev.** `Page_RimroomsCompanySetup` drew its title and both buttons and an entirely empty body, with **nothing in the log**. Cause: **Unity's IMGUI state is process-wide and not one of this package's six window entry points reset any of it**, so each inherited whatever the previously drawn mod left in `GUI.color`, `Text.Font` and `Text.Anchor` — and a leaked zero-alpha colour paints nothing and logs nothing. Core draws the page title and buttons and sets its own state, which is exactly why the frame was visible and only our content was not. **This is the other half of the 0.12.40-dev claim that this package authors no colour:** authoring nothing is not the same as assuming nothing. `RimroomsWindowState` now resets to Core's defaults and **restores what it found**, on all six entry points, and `check-display-style.py` — which forbade `GUI.color =` outright and so blocked its own fix — was taught that resetting to white imposes no palette. The setup page additionally **cannot go blank silently any more regardless of cause**: the introduction draws outside the scroll view, the body is wrapped so a throw is logged **and painted on the page**, and the listing closes on every path. Record `implementation/FIRST_LAUNCH_BLANK_PAGE_IMPLEMENTATION.md`.
+
+- [x] **"its blank once use set up edb prepare carfully for building game pawns out then pressing start opens this async industries pop up"** — same finding as the row above, and this is the sentence that identified it: the page opens **after** EdB hands off, which is where a mod that leaves draw state dirty would sit in the draw order. Closed by the same fix.
+
+- [x] **"okay now when i perss start on our page there is says review selected colonist and starting resources and buildings... and i cant start the game.. oh and its like its telling me to name my company but ther is no box to type in my company name i want in this page is just says Company Name: This is your company name."** — **FIXED 0.12.43-dev, and the state-guard fix above worked: the page renders now.** Two separate layout defects, both mine, both the same mistake. **The confirm checkbox was the LAST line of a scrolling list** — so Start refused with `RR_Setup_NeedsReview` and the thing that would satisfy it was off screen. **The company name field sat a few hundred pixels down that same list**, which is why it read as *"there is no box to type in"*: the log proves `DrawReview` completed, so it was drawn, and **drawn is not the same as reachable.** Both are pinned outside the scroll view now — the name field under the introduction at the top with a visible `Widgets.DrawBox` border, and the confirm checkbox in space reserved above Back and Start. **A control the player is required to use must never be scrollable out of view.** One more thing caught in the same change: the field's first draft used `DrawBoxSolid(field, new Color(0.12f, 0.12f, 0.12f))` — an authored palette, and it would have shipped because `check-display-style.py` scanned only `UI/` while this page lives in `Scenario/`. **The checker's scope was widened to every file that draws a window rather than the exception being taken**, and it now holds 21 files instead of 20.
+
+- [x] **"and shouldnt that page list the starting equipment and supplies added from the company to get a gate up quickly as building minified"** — **ANSWERED AND BUILT 0.12.43-dev, and the question was the defect.** **No, minified buildings are not needed:** the Async start's fixed facility already places a machining table, a communications console, a battery at half charge, three generators at half fuel and **nine doors**, all standing before the first tick, and the scenario grants **250 steel and 18 industrial components** against the assembly bill's 100 and 8. Handing the player furniture to plant would be worse and would break the premise that you arrive at a branch office that exists. **But the page never connected any of it to the gate** — it said *"Fixed prebuilt facility"* and printed forty-three buildings grouped by type, so a player had to already know that a bench plus a console plus a battery plus a door is what an opening requires. That is why the question got asked. `GateReadinessReview` now reads the **gate recipe itself** for the cost and the bench (`recipeUsers`, never a hardcoded name) and this start's own def for what it places, and the page states the five prerequisites, how many of each is standing, and a one-line conclusion. **And it surfaced a real asymmetry nothing anywhere stated:** counted across the three shipped starts — Async 9 doors / 1 bench / 1 console / 1 battery / 3 generators; **Furniture Store 8 / 0 / 1 / 1 / 1**; **Solo or group 1 / 0 / 0 / 0 / 0**. **Two of three cannot raise a gate from what they arrive with.** For the solo start that is the design — you begin inside and look for a way out — and the readout says so rather than reading as a fault; for the Store it is at least a question, recorded below.
+
+- [x] **NOT A DEFECT — owner's answer, verbatim: *"the store start has a natural portal and to build a machanical one they need to contact the company and resaerch whats needed"*.** The defs already said exactly that and I had not read them together: `beginsInCorporationContact` is **false** and `completedProjects` is **empty** for both the Store and the solo start, against Async's **eight** including `RR_GateTelemetry`. So the bench is not the gate to building a gate — **contact and research are** — and the Store is simply earlier in its own progression. **What needed fixing was the readout**, which called it *"does not arrive able to raise a gate"* and described a designed step as a deficiency. It now has three conclusions for the three real situations: everything standing; missing hardware **while in contact and holding the research**, which really is something to build or buy; and **out of contact with no research**, where a built gate is later work and there is already a way through that nobody built. No change to the Store's facility. Was: **The Furniture Store start places no machining table, so it cannot run the gate assembly bill from what it arrives with.** Found 2026-09-30 by the gate-readiness readout. It has a comms console, a battery and a generator, so the bench is the only gap — which reads more like an oversight than a design choice, unlike the solo start where every prerequisite is deliberately absent. **Owner decision:** add a `TableMachining` to the Store's fixed facility, or confirm the player is meant to build one and leave the readout to say so.
+
+- [x] **FIXED 0.12.44-dev: the default is `Backslash`, owner's choice, and it is bound by nothing in Core and nothing in the 288-mod profile.** The proof now refuses **any** function key rather than only the ones Core takes — that is the rule which would have stopped 0.12.40-dev shipping the collision, and it is portable in a way "free in this profile" is not. A plant puts F12 back and is caught. It remains only a **default**: Core's generator still emits a rebindable `MainTab_RR_Operations`, and the help pane reads the player's live binding rather than the shipped one. Was: **F12 collides with HugsLib's "Publish log file", and every function key F1–F12 is bound across Core plus the 288 installed mods.** 0.12.40-dev took F12 after checking it against **Core only** and writing *"the only function key Core leaves free"* — true about Core, and misleading about the profile this mod exists to work with. Register row 85 (EdB Prepare Carefully) says in its own words *"avoid overriding hotkeys."* **Owner decision needed:** ship no default and author our own rebindable `KeyBindingDef`; keep F12 and document the collision; or pick a non-function key. Found 2026-09-30 on the first launch.
+
+- [x] **FIXED 0.12.44-dev: the glow pods are pre-placed in each start's fixed facility, owner's choice.** EdB never sees them now, so the warning is gone — and a placed glow pod can still be uninstalled, minified and carried, so the only thing given up is editing them in Prepare Carefully. **Eight cells for Async, three for the Store, every one computed free against the occupied set rather than eyeballed**, because `GenStep_Headquarters` **throws** on an occupied or out-of-bounds cell: a wrong coordinate is a hard crash at map generation, not a cosmetic slip. The Async eight sit on the store-room floor beside the stock cell rather than in a bedroom. Was: **EdB Prepare Carefully cannot classify our GlowPod scenario grant** — *"Couldn't initialize all scenario equipment. Didn't find an equipment entry for GlowPod (no material)"*, logged **twice per setup**. `GlowPod` is a Core **Building** granted as a starting thing in two of our scenarios. Vanilla copes, because `ScenPart_StartingThing_Defined` calls `MakeMinified()` on anything minifiable; EdB's equipment database has no entry for a building with no stuff. It logs and continues, so it looks cosmetic — but it is ours and it is noise on every single setup. Found 2026-09-30 on the first launch.
+
+---
+
+## First launch findings, second pass — 2026-09-30
+
+- [x] **"store stare was not the map i chose with the buildings being built there instead i was stuck in a super micro blocked in area AND there wasnt a Backrooms natural Gate for me to enter"** — **BOTH FIXED 0.12.45-dev, and both were exactly as reported.**
+
+  **The mod threw away the chosen map size.** `ScenPart_RimroomsStart` did `Find.GameInitData.mapSize = startDef.mapSize`, forcing **50 for the Store** and 60 for the others — against RimWorld's smallest new-game option of **200**. A 50×50 map is **2,500 cells where a default map is 62,500**, with the shop occupying **41%** of it behind an 8-cell margin. Owner direction: *"the map size is selected on world seteup before world generation by the player and they select the tile they appear in so the store gets genreeate in that selected tiles map"*. It does now: the override is gone, and `HeadquartersLayout` offsets the authored layout onto whatever map exists, centred, clamped so it can never cross an edge. **The defs keep their coordinates** — rewriting ~100 hand-placed cells across three starts would be a large unverifiable diff, and those coordinates encode which room is the stockroom and which door is the back door. On a 250×250 map the shop lands at x 108..141 with about 108 cells of real terrain on every side. **Nothing was ever sealed:** all three layouts flood-fill to **100% reachable** from their arrival cell, which is the measurement that should have existed before any of them shipped and now runs in the proof.
+
+  **The Store had no Backrooms connection of any kind.** `SoloGroupOpening.Open` returned immediately unless `insideStart`, and nothing in the headquarters generator creates a connection, so there was genuinely no door to enter. Owner direction: *"ther is a natural gate that leads to a seeded fixed backrooms and all backrooms have portals that lead deeper and lead to the world maps tiles"* — and **the deeper and world-tile halves already existed**: `NaturalFrontierService` bounds onward ways to two per coordinate at depth ≤ 3, and `RecordWorldExit` already makes a way out lead to a world tile the branch does not hold. **Only the seeding was missing.** Steps 1–4 of `Open` — mint the coordinate, generate its map, mark the named door, register the connection — are exactly what a surface start needs; only step 5, moving the party inside, is specific to beginning in the Backrooms. So **any start that names an `emergenceDoorCell` now begins with a permanently open natural gate**, and the Store names its back-room door at (35, 0, 34). `CONNECTED_COLONY_PORTALS.md` already called *"the starts that begin with only a natural gate"* load-bearing; this is the first time one actually did.
+
+  **The door lookup had to be offset too** — the single easiest thing to miss in the change, since the layout now moves and reading the authored cell would look for a door where no door is. Record `implementation/START_PLACEMENT_IMPLEMENTATION.md`, proof `proof-startplacement.py`, **19 of 19 planted faults caught**.
+
+- [x] **The three glow pods were put in the wrong start at 0.12.44-dev, and pre-placing them was wrong for that start anyway.** They belonged to the **solo/group** scenario, not the Store — whose own note says *"no company kit, no field recorder, no glow pods"*. I read line 135 of `RR_Scenarios.xml` and assumed Store because Store is second in `RR_Starts.xml`; the scenario file's order is Async, Store, Solo. **And the fix itself was wrong for solo:** `SoloGroupOpening` moves that party **inside a coordinate on the first tick**, so anything left standing in the surface shell is abandoned immediately. So the solo three are restored as **carried** starting things and the Store's three are removed. EdB logs its warning for the solo scenario and that is the right trade: **a warning is cheaper than a start whose only light source is left behind.** The Async eight stay pre-placed, because that crew starts on the surface beside them.
+
+---
+
+## First launch findings, third pass — 2026-09-30
+
+- [x] **"same problem but differnt now the map is bigger but its not the 300x300 i choose and its not the tilemap i chose the land features are all barren to just bare dirt not even vegitation and the map still is the wrong size not the exact map i picked useing the mod for viewing the map and rerolling them before selection"** — **FIXED 0.12.46-dev, and the owner named the cause: "the map generator is not our mod".**
+
+  `ScenPart_RimroomsStart` set `Find.GameInitData.mapGeneratorDef = startDef.mapGenerator`, replacing Core's **`Base_Player`** with `RR_Headquarters`. `Base_Player` inherits `MapCommonBase` and runs the whole chain — elevation, fertility, biome terrain, caves, rocks from grid, plants, animals, ruins, rivers, roads, plus the Royalty, Biotech and Anomaly steps. **`RR_Headquarters` had four steps:** our terrain pass, our facility, `ScenParts`, `Fog`. And our terrain pass did `foreach (IntVec3 cell in map.AllCells) SetTerrain(cell, outdoorTerrain)` — **flattening the entire map to one terrain.** That is precisely *"all barren to just bare dirt not even vegitation"*.
+
+  **And it explains the preview mismatch exactly.** The mod the owner uses is **Map Preview** (`m00nl1ght.MapPreview`, installed), which simulates the **real** generator for a tile. So every map previewed and rerolled against was a picture of a map this mod then discarded. **The preview was right and the game was wrong.**
+
+  Fixed as the owner directed: **the override is gone**, Core generates the tile at the size the player picked, and the two gen steps are added to `Base_Player` by `Patches/RR_StartGenSteps.xml`. **`PatchOperationAdd`, never a replace** — a replace would take ownership of the list and silently drop every step Core and every other mod put there, which is why `check-compliance.py` refuses destructive operations outright.
+
+  **The load-bearing half is that the gen steps had to stop throwing.** `RequireStart` threw when a map was not the company start, which was harmless while only our own generator could reach it. Inside `Base_Player` it would break **every** player map a game ever generates — a second settlement, a quest site, a reloaded world. It is `StartForMap` now and returns **null**, and both steps return immediately on null. The proof reads the guard's own body and refuses a `throw` in it.
+
+  **The terrain step only floors the facility footprint now.** The rest of the tile is whatever Core generated, which was the entire point.
+
+  `RR_Headquarters` and the `mapGenerator` def field are **retired, not orphaned** — removed from the class, from `ConfigErrors` and from all three start defs, because a value nothing reads is a job nobody finished. Record `implementation/START_PLACEMENT_IMPLEMENTATION.md`, proof `proof-startplacement.py`, **27 of 27 planted faults caught**.
+
+  **Two of my own checkers caught me during this.** `check-compliance.py` flagged the new patch for containing `PatchOperationReplace` — in the **comment explaining why a replace is wrong.** It strips XML comments now, for the same reason `check-display-style.py` does: testing for mention rather than assertion is the defect class this project has been caught by four times. And `proof-starts.py` asserted the exact thing being reversed, with wording that revealed the old assumption — it called Core falling back to *"an ordinary colony map"* the failure, when an ordinary colony map for the chosen tile is what the player wants.
+
+---
+
+## Fourth launch findings — 2026-09-30
+
+Owner, verbatim: **"i did a store start the map loaded correctly but i had pop up company could
+not finish startup company placement stopped... so wtf is up with this??? also the starting store
+structure was not built and i have no pawns on the map to control"**
+
+And, verbatim: **"you can use the api mod you have that we installed last so u can see wtf
+rimworld is doing"** — done. RimBridgeServer 2.1.1, direct mode, port read from the owner's own
+live log, read-only calls against the running game (PID 43756). Every number below is measured
+from the live map, not inferred.
+
+- [x] **"i had pop up company could not finish startup company placement stopped... so wtf is up with this???"** — **CAUSE FOUND, measured in the live game.** The letter is ours (`RR_Start_Failed` + `RR_Start_PhysicalSetupFailed`) and it is telling the truth. `HeadquartersBuilder.Build` threw on its **very first cell**: `Headquarters wall intersects generated structure at (133, 0, 135)`. `rimworld/get_cell_info` at that cell returns a **`Granite` `RimWorld.Mineable` with 900 hit points** — a natural rock formation.
+
+  **This is 0.12.46-dev's own consequence, and it was predictable.** Core generates the map now, so the footprint lands on real terrain instead of the flat Soil our retired generator handed it. A `rimworld/get_cell_info` sweep of all **1020 footprint cells** (x 133..166, z 135..164 — the Store's outer room offset onto the owner's 300x300 map) found:
+
+      Marble  (Mineable)   164 cells      Plant_Grass          107 cells
+      Granite (Mineable)    70 cells      Plant_ShrubLow        86 cells
+      Filth_RubbleRock      29 cells      Plant_TallGrass       84 cells
+      ChunkGranite           6 cells      Plant_Alocasia        44 cells
+      ChunkMarble            5 cells      trees/bushes/reeds   ~80 cells
+      Monkey                 2 cells      natural rock roof    177 cells
+
+  **234 of 1020 cells held natural rock.** The build did not have a rare collision; it had no chance. `Build` refuses a footprint it does not own instead of preparing it — the exact inverse of what every vanilla structure gen step does.
+
+  **Owner direction for the fix, verbatim:** *"i think the issue was there was shit where it
+  planned on putting the store and pawns so it errored it needs a like a burn into place
+  functiions to carve everyhting out and cut everything down and fill in with soil where water is
+  unmder where the store needs to propigate before game start"*.
+
+- [x] **"the starting store structure was not built"** — same root cause. `Build` throws on the first blocked cell and re-throws out of `Generate`, so `receipt.setupComplete` is never set, nothing after the first wall cell is placed, and `PostGameStart` correctly reports a failed startup.
+
+- [x] **"i have no pawns on the map to control"** — **a SECOND, independent defect, and the one that made the game unplayable rather than merely wrong.** `ScenPart_RimroomsArrival.GenerateIntoMap` **throws** when the receipt is not complete. That method is called from Core's `GenStep_ScenParts`, and `MapGenerator.GenerateContentsIntoMap` abandons a gen step at its first exception. The log shows it: `Error in GenStep: [Rimrooms] Native arrival requires the prepared headquarters receipt.` **Core's entire scenario step died, so the player got no colonists and no starting supplies.** `rimworld/list_colonists` on the live map returns `count: 0`, and `rimworld/list_letters` returns exactly one letter — ours.
+
+  **This is the eight-defect pattern again.** We subclass a Core ScenPart and then refuse to do Core's job when our own addition is not ready. A subclass of `ScenPart_PlayerPawnsArriveMethod` must never leave the player worse off than Core alone would have.
+
+- [x] **"and the store facilities walls floors and all of it have to be reconfigureable deconstructable and minifyable(the minify mod) just like the game with the mods allows"** — **VERIFIED, and it already held; the work was turning an assumption into a check.**
+
+  **Minifiable.** Register row **[128] MinifyEverything** (Workshop `872762753`, family *Facility construction and material access*, stance Optional, firmness Settled, traces RR-FAC / RR-OUT / RR-SPACEFLIGHT / RR-COMPAT). Read its installed assembly rather than the card: it mutates **`ThingDef.minifiedDef`** and **`building.alwaysUninstallable`** for every qualifying def at startup, skipping only natural rock, zero-work defs, mineables and `Smooth*`. **It operates on defs, not on instances.** The facility is built from `ThingDefOf.Wall`, `ThingDefOf.Door` and the authored furniture list — **all Core defs** — so whatever MinifyEverything does to a wall applies to ours identically. This is the existing-content-only rule paying off: a ThingDef of our own would be outside its reach and could not be made minifiable by it at all.
+
+  **Deconstructable.** Every thing the facility places is given `Faction.OfPlayer` before it is spawned, which is all `Designator_Deconstruct` and `Designator_Uninstall` require. Nothing in the scenario path adds, blocks or removes a Deconstruct or Uninstall designation on the facility.
+
+  **Floors removable.** The floor is written with `map.terrainGrid.SetTerrain`, and `TerrainGrid.SetTerrain` records the displaced terrain in `underGrid` whenever the new terrain is `layerable` — `CanRemoveTopLayerAt` needs exactly that. Concrete is layerable, so **Remove Floor works and reveals what Core generated.** The burn's water fill is deliberately ordered before it: Soil goes down first, then Concrete over it, so the under-terrain is Soil rather than water.
+
+  **Reconfigurable, which is the one that needed measuring.** Deconstructing a wall under an unsupported roof collapses it. `RoofCollapseUtility.RoofMaxSupportDistance` is **6.9** and support is found by flood-filling roofed cells within that distance looking for a `holdsRoof` edifice. Replicating that rule against all three layouts:
+
+      RR_AsyncIndustriesStart    roofed 884   walls 540   UNSUPPORTED 0
+      RR_FurnitureStoreStart     roofed 686   walls 334   UNSUPPORTED 0
+      RR_SoloGroupStart          roofed  25   walls  24   UNSUPPORTED 0
+
+  **Not one unsupported roof cell in any layout.** The Store's outer room is 34x30, far wider than a 6.9 span, and it is supported because the inner rooms' walls stand inside it. That was luck rather than design, so it is now a proof claim: any future room that roofs a span nothing holds up will fail the proof instead of dropping a roof on the player's pawns the first time they remodel.
+
+- [x] **"the map loaded correctly"** — **0.12.46-dev confirmed good by the owner and by measurement.** The footprint offset resolves to x 133 / z 135, which is only consistent with a **300x300** map, exactly what the owner picked; and the footprint sweep found biome plants, marble, granite, rubble, palms, teak, bamboo, reeds and wildlife. The barren-flat-dirt defect is gone.
+
+---
+
+
+> moved from `## Fifth launch findings — 2026-09-30` in `docs/TODO.md`
+
+- [x] **"the store and pawns are there now"** — **0.12.47-dev confirmed by the owner and measured live.** `get_cell_info` at (133, 135) returns a granite-block `Wall` on Concrete where a Granite `Mineable` stood before the burn. The burn and the arrival fallback both hold.
+- [x] **"i dont see a natural gate thats suppose to be on the back wall of one of the storage rooms"** — **FIXED 0.12.48-dev. The door was always there; it was never marked.** Measured live: (160, 161) holds a steel `RimWorld.Building_Door` with its emergence gizmo **"Mark as way home" enabled**. `SoloGroupOpening.Open` runs coordinate → site → mark the door → register the connection, and **step 2 failed**, so the marking and the registration never happened.
+- [x] **the wall lamp was hanging in mid-floor** — same root. `WallLamp` draws with `drawOffsetNorth (0,0,0.9)`, into the wall it mounts on. `FindWallAttachmentCell` now returns an interior cell with the room's **own wall def** behind it and the `Rot4` facing it, branching on `lightDef.building.isAttachment` rather than the def name, and returning `IntVec3.Invalid` rather than throwing when a small room has nowhere to mount.
+- [x] **"make sure to push to both remotes too i need someone else to work on this in parrellel through git hub and i need to make sure they have it all but the temp stuff i told you to git ignore"** — **DONE, and it found a real gap.** `.local/` was hiding the **40 proofs and 11 plant suites**, so a clone could run the 13 checkers and nothing else. `.gitignore` now admits exactly `.local/register/proof-*.py` and `.local/register/plant-*.py` — measured **51 newly tracked files, exactly 40 proofs and 11 plants**. Still excluded: a 132 MB nuget cache, 19 MB of decompiler binaries, the per-subsystem inspections, the scratch bridge client and the one-shot record scripts. A collaborator needs the same RimWorld install: `build.ps1` refuses any Core assembly that does not hash to the reviewed target.
+- [x] **`NaturalFrontierService` reported as orphaned — WRONG, and the correction belongs on the record.** The grep excluded the file holding the caller, and the caller is a `JobDriver` in that same file. Verified end to end: `WorkGiverDef RR_SurveyFrontier` → `WorkGiver_SurveyFrontier` → `JobDef RR_SurveyFrontier` → `JobDriver` → `NaturalFrontierService.Discover`. `check-wiring.py` was right. **The onward-gate machinery exists and is reachable; the only thing blocking it was that no level could generate.**
+
+> moved from `## Coordinate rebuild, stage one — 2026-09-30 (0.12.49-dev)` in `docs/TODO.md`
+
+- [x] **300x300 coordinates, grand pillared halls at level zero, and the depth-scaled warren** — **DONE.** The 3x3 eight-slot grid at 19-cell spacing is gone; slots, spacing, room span and room count are all functions of depth. Depth 1 is **6 halls of 80x80 with 144 pillars each**; depth 6 is **42 rooms of 24**. Verified at every depth: nothing off the map, every span even, 10 cells of rock between neighbours, serpentine chain connected. Record `implementation/GRAND_SPACES_IMPLEMENTATION.md`.
+- [x] **"u can use walls as pillars"** — **DONE.** Lattice at 6 against Core's `RoofMaxSupportDistance` of 6.9, never on the centre cross, narrowest free run 5 cells. **Decided in `RoomLayoutPlanner.PillarCells` and nowhere else**, because the planner must prove walkability before a map exists, and two independent derivations of one rule is the defect that cost thirty-nine checkpoints.
+- [x] **"and remember backrooms can not and shall not have cave ins so removing walls floors columns shall not cause mountain overhead to column collapse"**, scoped by **"tgis is only for backrooms"** — **DONE, and the old code was wrong about this.** `BackroomsContainment` claimed a coordinate could be "mined to nothing and still never open a hole", treating the collapse as acceptable. Core gates cave-ins on `RoofDef.canCollapse`, which **defaults to true and which Core sets false on none of its three roofs**, so `RoofRockThick` drops `CollapsedRocks` and crushes what is under it. A roof def of our own, `RR_RoofBackroomsOverhead`, `canCollapse false`, `isThickRoof true`. **Core's roof is deliberately not patched** — that would stop mountains collapsing in every colony, for every mod in the profile.
+- [x] **the coordinate geometry had no proof coverage at all** — **FIXED, and measured rather than guessed: every constant in the planner was changed and all forty existing proofs still passed.** `proof-coordinate-layout.py` is the **41st proof**; it parses the constants out of the C# and recomputes rather than hard-coding them. A plant then found a hole in that design — the model copies the formulas, so deleting an algorithm step was invisible to it — and **every modelled formula is now paired with a source claim**. `plant-coordinate-layout.py` is the 12th suite, **34 of 34**.
+
+> moved from `## Coordinate rebuild, stages two to four — 2026-09-30 (0.12.50-dev)` in `docs/TODO.md`
+
+- [x] **"dont let them go more than 5 remember the games mechanics and limits built in ... they should gett a warning this gate is blocked your holding open too many gates, but per scerio styled"** and **"5 is the limit of other colonies available so a backrooms level should be one colonly bacskicly in my thinking"** — **DONE.** `OpenMapBudget` reads **`Prefs.MaxNumberOfPlayerSettlements`** (the player's own 1-to-5 slider, which Core enforces in `SettleUtility`) rather than hard-coding a 5, counts coordinate maps alongside Core's settlements because Core cannot see ours, and accepts a per-scenario override via `RimroomsStartDef.openMapBudget`. **A floor of 2 is load-bearing**: the slider can be 1, and the solo/group start opens a coordinate while the surface map already counts, so without it that start refuses its own opening. Enforced at the doorway before any coordinate is minted, and again at `EnsureSite` as the backstop — but **after** the way-out attempt, because a way home costs no map and blocking it would strand a deep crew.
+- [x] **ways onward and depth raised** — **DONE.** `FrontiersFor` gives **4 to 6**, one more per 20 rooms, read from the room count rather than depth. `MaximumNaturalDepth` **3 → 6**. What made it safe is the budget, not a change of mind about finiteness. **Two proofs objected correctly** and their restraints are kept and asserted harder: no research capability may buy more ways onward or reach further, now checked by reading `FrontiersFor`'s body.
+- [x] **"and everything doesnt have to be square rooms and rectangle halways"** — **DONE.** `RockIntrusionCells` leaves rock standing in the **corners only**, as quarter-ellipses, **never on the centre cross or an edge midpoint** — which is what makes it provably unable to disconnect a doorway, modelled at every depth by filling every corner at full reach and flood-filling to all four edge midpoints. Depth 1 stays rectangular. Corridors are three or five cells from `CorridorHalfWidthBetween`, and the planner reads the same function the generator carves from.
+- [x] **"make sure u are using prep and mod registry as needed"** — **DONE, and it found a live defect nothing in our own code could have.** Register row **[188] Removable Mt.Rock Roof Patch** is installed and patches `RoofRockThick.isThickRoof` to **false**, so in this profile Core's overhead mountain **vanishes on collapse**. Invariant 13 was **already broken before this session**; the new roof def repairs it, and it is a second reason patching Core's roof would have been wrong. Rows [69] Craftable Mountains and [63] Change map edge limit checked and clear.
+- [x] **"they are just doors too right that dont need the mechine gate systems"** — **CONFIRMED by live measurement, not inference.** The natural gate in the owner's running game is a plain `RimWorld.Building_Door` in steel with Deconstruct, Uninstall, Reinstall and the emergence gizmo, no power, console, calibration or assembly.
+- [x] **"so we need a way to deconstruct natural gates too i think"** and **"and then u lose them forever"** — **ALREADY HELD; nothing had to be added.** `EndpointPresent` refuses an edge whose anchor is destroyed, and `PortalDoorWarningMapComponent` already warned with informed consent.
+- [x] **"but maybe allow minify move"** — **DONE, and it did not work before.** `EndpointPresent` also requires `Anchor.Position == AnchorCell`, and `PortalEndpointRecord` says the cell is a deliberate snapshot so *"moving a door cannot silently redirect a saved route"* — right under the old no-move rule, wrong now. `TryFollowMovedAnchor` is a **move**, not a refresh: same `Thing` instance only, branch-owned ground only, **refused while a crossing is in flight** (invariant 55), and not on load. Uninstall and deconstruct now say different things, and the red destructive confirmation is reserved for the one that is.
+
+> moved from `## Releasing a place — 2026-09-30 (0.12.51-dev)` in `docs/TODO.md`
+
+- [x] **"yeah so if the player discovers and goes through a natural gate how do they turn them off to use the machine gates for more controll and aiming deeper?"** and **"get 5 natural gates u cant use a machine gate"** — **DONE, as the Operations held-places list the owner chose.**
+## Every type of material, and level 0 stays yellow — 2026-09-30 (0.12.52-dev)
+
+- [x] **"with the wild variatiosn of material typeds in all items equaipment walls floors lights furnature and benches that are found everywher deeper in"** — **DONE, after one round of getting it wrong.**
+
+  **What was already right and needed nothing.** `CoordinateMaterials` already derived its choice from the coordinate's seed, sorted by defName so a mod list cannot change a coordinate's appearance, drawn from `GenStuff.AllowedStuffsFor` so any material the profile adds widens it and any it restricts is obeyed, with no material named anywhere. `RoomArchetypeService` already gates **which** defs appear by depth. The variety of *things* already grew inward.
+
+  **Three gaps, all the same shape — a material chosen somewhere the palette could not reach.** The palette was a flat 3 at every depth. `TryPlace` — the path that places the depth-scaled archetype dressing, which is the benches, equipment and loot the owner means — used `GenStuff.DefaultStuffFor` and never consulted the palette at all, so the content that was meant to vary was the one content that could not. And walls were **one of two named defs**, `WoodLog` or `Steel`, across five bands.
+
+- [x] **"this is wrong we want every type of wall and material for all things randomly"** and **"but depth 0 in the backrroms is the standard yellow style"** and **"ive already lkayed this out"** — **CORRECTED. The owner had laid it out, in their own words, already quoted inside `BackroomsPalette`:** *"yellow carpet and yellow wood walls for the main backrooms look"* followed immediately by *"andf remmebr thats just the main backrooms looks further in it gets very varied and weird"*.
+
+  The first fix grew the palette with depth, from 2 to 6. **That was still wrong, because a growing palette is still a palette:** every fixture takes the first entry it can use, so a deep level still reads as *fitted out in three materials* and a table and a wall in one place tend to match. The palette's own doc argued **for** that, calling per-item choice *"a jumble ... which reads as noise rather than as a place"* — **that argument was mine, and for the deep bands the owner is right: "very varied and weird" is the brief, and coherence is the thing being left behind as you go inward.**
+
+  So the behaviour is a **split**, which is the specification:
+
+  | | |
+  |---|---|
+  | **Level 0** (`CoherentDepth`) | one narrow shared palette — the standard yellow style, monotonous on purpose, yellow wood walls |
+  | **Deeper** | **no palette at all.** Every fixture draws from **the full set Core allows for its own def**, indexed per fixture, so two tables in one room can be different woods, different metals, or one of each |
+
+  Walls are chosen **per room** deeper in — not per cell, because a wall whose every cell is a different stone is a patchwork rather than a wall, and `BuildRoomWalls` places one room's ring at a time so the room is the unit the geometry already has.
+
+  Still deterministic: a pure function of the coordinate's seed and id, the def's name and the fixture's variant, **no `Rand` call**, and the candidate list **sorted by defName** before anything indexes into it — because `AllowedStuffsFor` returns database order, which depends on the installed mod list. Still existing-content-only: Core's own `allowedInStuffGeneration` opt-out is honoured on the wild path too, and **nothing names a material**.
+
+  **`ColonistEcho.CopyApparel` was deliberately not changed.** It copies one of the player's own colonists, so the source pawn's material is the right one and `DefaultStuffFor` there is only a fallback for a piece that had none. An echo should mirror the colonist, not the coordinate.
+
+  **Register rows read first, per LAW:** family `materials` — **[221] Stuff Mass Matters** and **[52] BetterWeight** (mass scales with stuff, so a wider material set changes hauling weight, which is native behaviour and correct), **[101] Gold & Silver Ingots** and **[144] No Burn Metal** (add or alter stuff defs, picked up automatically because nothing is named), **[53] Big Little Mod Patch** (furniture/workbench bundle). A profile that adds materials makes coordinates **more** varied, which is the intended direction.
+
+  Record `implementation/WILD_MATERIALS_IMPLEMENTATION.md`. **43 of 43** planted faults caught.
+
+---
+
+## Sixth launch findings — 2026-09-30 (0.12.53-dev)
+
+Owner, verbatim: **"its not blue!!! it doesnt have a light aura, and it in no way is a portal to
+the back rooms.. wtf!!! im getting tired of this shit... you actually have to plug all the work we
+did on the gates into the game so they work and the pawns can walk from tmap to map like the
+stargate mod works but with normal does.. wtf!!! ive said stargate mod repeaditly is how the gates
+work but u keep fucking ignoring me and doing you own fucking thing instead of codeing the door
+into gates properly so that the doors work like startgates repurposed into the backrroms gate to
+travel to it"**
+
+- [x] **"it in no way is a portal to the back rooms"** — **THE LEVEL NEVER GENERATED, AGAIN, AND THE CAUSE WAS NEW AND MINE.** `SpawnNativeConduit` threw `RR_Generation_ContentPlacementFailed`, so `MarkLayoutReady` never ran, so `SoloGroupOpening` stopped at step 2 and the back door was **never marked**. **An unmarked door is an ordinary steel door** — every symptom the owner reports follows from that one throw.
+
+  **Measured:** the grid carpeted every powered room with conduit. At 12x12 rooms that was ~100 cells. At depth 1 a `service_passage` is **60x80**, so `ContractedBy(1)` is **4,524 cells** against `MaxNativePowerConduits = 512` — **an eightfold blowout on the first powered room, every time.** No 300x300 coordinate could ever have generated. The carpet was a trick sized for small rooms and **the 300x300 change invalidated it**; it should have been found by sizing it rather than by shipping it.
+
+  Fixed better than by raising the cap: the carpet existed to catch the lamp `RoomContentBuilder` adds *after* the grid is laid, and wiring four thousand cells to catch one lamp is the wrong shape at any size. `ConnectStrayConsumers` now runs **after** content placement and uses **the same map-wide `CompPowerTrader` sweep** the validator uses to *detect* a stray consumer, so report and repair agree by construction. `TrySpawnNativeConduit` returns where the throwing form would throw, so **a dark corner can never cost the coordinate again**. The 4,524-cell arithmetic is now a **proof claim** computed from the planner's own constants, so any future per-room area pass fails on the number that proves it.
+
+- [x] **"its not blue!!! it doesnt have a light aura"** — **DONE, with no new content.** `CompGlower` and `CompColorable` are both Core and both settable **per instance**, so a live gate is blue and casts light with no new texture and no new def.
+
+  **The trap was that adding a glower to `Door` would light every door in every colony and every door every other mod ships.** Core solves it: `CompGlower.ShouldBeLitNow` walks every comp on the parent and asks any that implements **`IThingGlower`**, and one false keeps the glower dark and unregistered. `CompRimroomsEmergence` implements it and answers `IsLiveGate`, so every ordinary door is **provably** unlit by Core's own rule rather than by hoping a radius of zero is enough. The patch sets `glowRadius 0` as well, belt and braces.
+
+  **Only a gate with a real way through lights up** — `IsLiveGate` wants the player's mark *and* a live network edge, because a marked door nothing leads through is a plan, not a gate.
+
+- [x] **"the pawns can walk from tmap to map like the stargate mod works but with normal does"** and **"ive said stargate mod repeaditly ... but u keep fucking ignoring me"** — **FAIRLY AIMED, and fixed.**
+
+  The travel already did exactly that: `PortalTravelService.OrderCrossing` makes a **real job** that walks the pawn to the cell beside the door and crosses them to the other map. **What was missing was the place a player looks for it.** The only way to ask was select pawns, select the door, click a gizmo, choose from a float menu — **a dispatch console, not a door you walk through.** *"Like the stargate mod"* was a statement about the **interaction**, and it kept being heard as one about the destination.
+
+  `ThingComp.CompFloatMenuOptions(Pawn selPawn)` is Core's own hook for *"right-click this with that colonist selected"*. **Select a colonist, right-click the gate, "Enter the gate".** Nothing is decided there — the order is still `OrderCrossing` and the rule is still `PortalTraversalPolicy`, so invariant 1 holds. A pawn who cannot cross gets a **disabled row with the reason**.
+
+  **Register row [218] Stargates!** is stance **No integration**, which means *do not depend on it* — **it never meant ignore it as the interaction model**, and treating those as the same thing is how three checkpoints passed with the order buried in a gizmo.
+
+  Record `implementation/GATE_IS_A_GATE_IMPLEMENTATION.md`. **50 of 50** and **32 of 32** planted faults caught.
+
+---
+
+## The scale sweep — 2026-09-30 (0.12.54-dev)
+
+Owner, verbatim: **"what the fuck do you mean its a design instruction??? its suppose to be built
+and working 100% we finished the build yesterday!"**
+
+- [x] **"its a design instruction" was the wrong phrase and it was mine** — the Stargate behaviour **is built and shipped**: right-click a live gate with a colonist selected, *"Enter the gate"*, and `CompFloatMenuOptions` plus `RR_DoorCross_Enter` are both verified present in the staged assembly. What went into NOW.md was the **lesson** so the next session does not repeat the misreading, and calling that "a design instruction" read as though the work were filed for later rather than done. **It is done.**
+
+- [x] **"its suppose to be built and working 100%"** — **the build is complete; what kept failing was runtime, and the right response was to stop finding it one launch at a time.** Every constant in the generation path was listed and sized against a 300x300 map, 80-cell rooms and 42 rooms. **Two more would have killed a coordinate.**
+
+  **Modelled rather than guessed.** `FindConduitRoute` BFSes from the whole wired set, so routes share a spine and the total is far below the sum of the distances:
+
+      depth  rooms  consumers  conduit cells needed   against the old cap of 512
+        1      6        7            460              under, by forty cells
+        2     10       11            625              THROWS
+        3     16       17            828              THROWS
+        4     24       25          1,061              THROWS
+        5     32       33          1,211              THROWS
+        6     42       43          1,436              THROWS
+
+  **So the seventh launch would probably have generated level 0 and killed every level below it** — the worst failure mode there is, because it looks fixed.
+
+  Two fixes, both the principle the power validation already followed, *a dark corner beats no coordinate*: the cap is **4,000**, sized with 2.5x headroom at double the consumers, and **exceeding it stops the wiring instead of throwing**; and a consumer the routing cannot reach is **skipped**, where `FindConduitRoute` threw twice.
+
+  **The sizing is a proof claim now**, computed from the planner's own constants rather than written down, so the cap cannot silently stop fitting again — and it checks the cap is not absurdly oversized either, because a cap that can never bind is not a cap.
+
+- [x] **checked and fine, so the sweep is on record rather than implied** — `MaxInitialFuelStacks` (generator capacity, independent of map size), containment's `CellsPerSweep`/`Interval` (a rotating window; `ReroofWholeMap` does the real work on load), `ConstructionEcho`'s `WindowCells`/`Capacity` (windowed), `FacilityPlanner`'s 2-to-4 room groups at 45% eligibility (scales), `RoomArchetypeService.MaxFixtureSide` (fixture size, not map size), `RevisitDisplacement.MaxMoved`, `WorldTileCandidateBudget` (world tiles, unrelated).
+
+- [x] **an operational mistake worth recording** — a proof was run **while a plant suite was still executing in the background**, so it read a planted fault and reported a failure that did not exist. **Never read the tree during a plant run.**
+
+---
+
+## Seventh launch findings — 2026-09-30 (0.12.55-dev)
+
+Owner, verbatim: **"oh my god! look at the debug log!!!! its nothing but red!!!!!!!!!!!!!"**
+
+and then: **"mkae sure to kill the exe and set up the mod for me so i can run rimsort again ,
+only once your sure you fixed these issues"**
+
+- [x] **"its nothing but red"** — **587 red lines, and every single one of them named `Door`, `Autodoor` or `CompProperties_Colorable` and nothing else.** One line in one patch file:
+
+      <li Class="CompProperties_Colorable" />
+
+  **There is no `CompProperties_Colorable` type in RimWorld.** `CompColorable` is declared with a plain `CompProperties` carrying a `compClass`, which is how Core declares it for textiles, apparel and the Ideology floor coverings — and the last of those are **buildings**, so it was the right mechanism for a door all along, spelled with a class that does not exist.
+
+  **And a bad `Class` does not fail the one comp.** It throws out of `DirectXmlToObjectNew`, which **discards the entire ThingDef being parsed.** `Door` and `Autodoor` left the game; the remaining 585 errors were other defs — 541 of them vanilla `PrefabThingData` — failing to cross-reference doors that no longer existed. The owner's log went red from line 57 and the game **never left the main menu**, so nothing about generation, gates, materials or budgets was tested at all.
+
+  **Not one mod conflict. Again.** Doors Expanded and Mechhive appear in the wreckage only as victims of our missing `Door`.
+
+- [x] **why thirteen checkers and forty-one proofs passed it** — `check_class_references` has resolved `Class="..."` for a long time, and carried this line:
+
+      if not value.startswith("RimroomsAsyncIndustries"):
+          continue                      # Core and DLC types; not ours to verify from source.
+
+  **The one category it exempted is the category that killed the game**, and a Core-shaped name is exactly what a typo produces — so the half taken on trust was the wrong half. Core and DLC names are resolved now against the type names in the installed game's **own assemblies**, read straight out of the CLI metadata `#Strings` heap: no reflection, no DLL load, no dependency, and DLC assemblies under `Data/<Dlc>/Assemblies` included so an Anomaly or Odyssey type resolves exactly as the game resolves it.
+
+- [x] **AND THE PROOF WAS HOLDING THE BUG IN PLACE, which is the sharpest thing here** — `proof-gate-links.py` asserted, as its evidence that a gate is blue, `'<li Class="CompProperties_Colorable" />' in doorpatch`. **That string is the defect.** The proof did not merely miss it, it *required it to be present*, and `plant-gate-links-carry.py` planted a mangled version and watched the proof fail — a plant proving a broken line was load-bearing.
+
+  **The rule this yields: asserting that our XML contains a string proves only that we wrote it, never that the game can use it.** Both assertions are retargeted, and the plant now restores the broken spelling and requires refusal — the opposite verdict on the same string.
+
+- [x] **the first draft of my own fix would have failed correct code, which is worse than the hole** — the metadata `#Strings` heap permits **suffix sharing**: a name may be stored only as the tail of a longer one. `Building` is exactly that, so splitting the heap on NUL rejected `<thingClass>Building</thingClass>`. Membership is a search for `name + NUL`, which finds whole entries and shared suffixes alike and therefore cannot reject a real type.
+
+- [x] **a tenth plant walked past the new proof, and it was the claim-scoping trap for the twenty-first time — mine, in the proof written to close a bug caused by trusting a name.** Restoring the exemption as `if True: continue` passed, because the claim asserted that a **comment** was absent. Fixed structurally rather than with a tighter string: the verdict is a pure function, `unresolved_class_names`, and the proof hands it a crafted set of names and **demands the output**. Blinding it, exempting it, making it always-true and removing its suffix awareness all fail now, and none of those could be caught by reading source text.
+
+- [x] **the forty-second proof is the first one that EXECUTES what it checks** — `proof-class-resolution.py` imports the checker and interrogates the resolver, because a proof that reads text cannot tell whether a resolver resolves. That is the general lesson of the last three launches in one sentence.
+
+- [x] **a plant that could never have been caught, found by running every suite instead of the ones I touched** — `plant-areas-and-debrief.py` planted `/* Backrooms Coordinate check */` into the roof provider and required a failure the proof could not deliver: it reads that file through `strip_cs_comments` **on purpose**, because a comment naming the Backrooms is not a second opinion that can drift. The proof was right and the plant was wrong — the inverse of the usual trap. It plants real code now.
+
+---
+
+## The setup page that stopped drawing — 2026-09-30 (0.12.56-dev)
+
+Owner, verbatim: **"the review company start up screen when i press start game on prepare carfully
+says: \"Those are in the supplies list below\" but there are no lists or supplies on the card pop up
+at all.. so what the fuck? if i do the company start will things actually be listed there?"**
+
+and: **"like in the company start up that pop up should list all the equipemnet for the gate that u
+get added to ur start on top of what u fill out in edb prepare carfully"**
+
+- [x] **"there are no lists or supplies on the card pop up at all"** — **THE SUPPLIES WERE NOT THE ONLY THING MISSING. THE PAGE STOPPED DRAWING AFTER THREE LINES.** No roster, no funding, no supplies, no facility, and only the first of five gate prerequisites. A screenshot of the owner's running game, brightened four times over, is genuinely blank below that line, and **the log contains no exception at all** — so nothing threw and the page's own `RR_Setup_DrawFault` had nothing to report.
+
+  **The cause is Core, and it is silent by design.** `Verse.Listing.GetRect` calls `NewColumnIfNeeded`, which — unless `maxOneColumn` is set — calls `NewColumn()` the moment content exceeds the listing rect: `curY = 0f; curX += ColumnWidth + 17f;`. `Listing.Begin` sets `ColumnWidth` to the **full rect width**, so overflowing moves drawing a whole width to the right, **outside the `Widgets.BeginGroup(rect)` that `Begin` opened** — which clips it. Everything past the overflow is painted off the edge of the world.
+
+  **And it is self-reinforcing, which is why it collapsed to three lines instead of losing a tail.** `CurHeight` returns `curY`, which `NewColumn` just reset to zero, so `contentHeight = listing.CurHeight + 20f` recorded the second column rather than the total. The scroll content shrank, the wrap came sooner, and it settled at a few lines. It also explains the missing scrollbar: by then the content really did fit.
+
+  **Swept, not patched where it hurt.** Eight listings exist in this package and **not one set the flag**, so every scrolling list carried the same silent truncation — including **the Operations board, the main window of the mod**. Seven are fixed. **The eighth is deliberately left alone:** the settings window sets its own `ColumnWidth` to half the window precisely so the priority sliders wrap into a real, visible second column.
+
+- [x] **"that pop up should list all the equipemnet for the gate that u get added to ur start on top of what u fill out in edb prepare carfully"** — **DONE, and the section was asking the wrong object.** `SupplySummary` walks `Find.Scenario.AllParts` — the **live** scenario — and EdB Prepare Carefully rewrites exactly those parts. Its assembly carries `ReplaceScenarioPatch`, `ShouldReplaceScenarioPart`, `OriginalScenarioParts`, `ReplacedScenarioParts`, `RestoreScenarioParts` and `CreateScenarioPartForCustomizedEquipment`: **it swaps the scenario's starting-thing parts out for parts built from the player's edited equipment and restores the originals afterwards.** So while its page is open the live scenario is not the company's scenario, and what the company contributes is unreportable from it.
+
+  `CompanySupplies` reads the **authored `ScenarioDef`**, found by the start it declares, so it is the same whether a setup utility is installed, absent or mid-edit. **Both lists are drawn** — the company's own contribution under its own heading, then whatever the live scenario carries — because the ask was *"on top of what u fill out"*. When the two disagree the page says so rather than leaving the player to spot it.
+
+  **Public API only.** `ScenPart_ThingCount.thingDef`/`stuff`/`count` are `protected`, and this package uses no Harmony and no reflection; `ScenPart.GetSummaryListEntries` is public and already returns Core's own phrasing. `PlayerStartingThings` is still never called — it builds real objects.
+
+  **Register LAW.** Row **[85] EdB Prepare Carefully**, family *Interface, scenario setup, and quality of life*, stance **Optional**, firmness **Provisional**. Its review says *"Check authored company starts, initial gear and limits"* and *"never a runtime dependency"*. Both honoured: nothing patched, nothing named in code, nothing required — the page just stopped asking a question the live scenario cannot answer.
+
+- [x] **a content bug the screenshot exposed by accident** — `RR_Setup_GateCost` ended *"Those are in the supplies below."* **For the Furniture Store start that is false.** The bill wants **100 steel and 8 components**; the Store arrives with **80 steel and no components at all**. The sentence was written against the Async start and asserted for all three. It now names the cost and points at the list, and the list is the evidence.
+
+- [x] **the forty-third proof, and why it had to exist** — every line of our code was correct; the defect was **an unset Core default interacting with a height we compute from a value Core resets.** Same family as the seventh launch: a claim about what our text says, where the truth lived in the game's behaviour. So the proof asserts the **Core contract** — every listing in the package declares whether it is one column or more, and a new listing that declares neither fails. **16 of 16** planted faults caught.
+
+---
+
+## The Stargate mod on a normal door — 2026-09-30 (0.12.57-dev)
+
+Owner, verbatim, across five messages:
+
+**"as you can see the back wall door is not correctly blue, is not correctly a stargate portal to
+the back rooms and does not cortrectly have the blue light glow. so wtf is going on here? are you
+even useing the stargate capabilities to for connections to the backrooms and the map the pawns
+start on?"**
+
+**"i shouldnt have to click on the door right to send a pawn through it and how the fuck are they
+suppose to auto pick up materials on one side and use them on the other"**
+
+**"we use the fucjkign stargate MOD but use a normal door im not telling u again"**
+
+**"and connect them together to the backrooms and the map"**
+
+**"we just use our own dialing converstion in the background"**
+
+**"we still use the stargate mod as normal but we also use it for our backrroms purposes"**
+
+- [x] **"are you even useing the stargate capabilities"** — **THE CONNECTION WAS ALREADY REAL, AND THE LIVE GAME PROVED IT BEFORE ANY CODE WAS WRITTEN.** `mapCount` **2** — the Backrooms coordinate had generated, for the first time ever. One letter, *"Branch authorization received"*, which is only sent when `SoloGroupOpening` returns null, so every step of the opening had succeeded. Cell (160,161) held the emergence `Door`, and its gizmos were **"Stop being a way home"** (so `IsDesignated` was true) and **"Send somebody through"** (so a live crossing existed). **Zero exceptions in the whole log.**
+
+- [x] **"is not correctly blue ... does not cortrectly have the blue light glow"** — **FIXED, and the cause was one word wide.** `RefreshGateAppearance()` — glow radius, glow colour, `CompGlower.UpdateLit`, `CompColorable.SetColor` — had exactly one call site: `CompTickRare()`. `Verse.Thing.DoTick` dispatches on the def's ticker type, and **Core's `DoorBase` is `tickerType Normal`**, so `TickRare` is never called on a `Door` or an `Autodoor`. **That method had never executed on any door in any session.** Every other line was correct. It runs from `CompTickInterval(int delta)` now — what a Normal ticker actually receives — throttled with Core's interval-safe `IsHashIntervalTick(interval, delta)`, plus on spawn and on mark/withdraw.
+
+- [x] **"we use the fucjkign stargate MOD but use a normal door"** — **DONE, and their source says it is exactly right.** `CompStargate` is a **`ThingComp`**, so it goes on an ordinary Core `Door` with **no new ThingDef and nothing to build**. `StargateBridge` attaches it **per instance** to the door this company designated, because a `comps` patch is per def and would make every door in every colony a stargate — their `InitGate` allows one gate per map and **hibernates the rest with a message**, so a nine-door shop would have announced eight hibernating gates on the first tick.
+
+- [x] **"and connect them together to the backrooms and the map"** — **both ends.** The far anchor stands inside a coordinate, which is not an ordinary branch map, so it can never mark itself; the near side knows the edge and attaches both. Their `InitGate` then registers each end's own address — `parent.Map.Tile` for an ordinary map, `parent.Map.Index` for a pocket map — so **we never write to their address list.**
+
+- [x] **"we just use our own dialing converstion in the background"** — **done, and it is a conversion rather than a UI.** `OpenStargateDelayed(PlanetTile, int, DialMode)` is public; this company already knows which door leads to which coordinate, so the conversion is reading the destination map's own address and handing it over. **The player never touches a DHD for the Backrooms.** A receiving end or a hibernating gate is never dialled — their one-way rule and their one-gate-per-map rule are theirs to enforce.
+
+- [x] **"how the fuck are they suppose to auto pick up materials on one side"** — **Core's transporter, which is what their own gate uses.** `_transComp ??= parent.GetComp<CompTransporter>()` and `JobDriver_BringToStargate` are theirs; the bridge puts `CompTransporter` on the door beside the gate, and colonists then **haul the chosen materials to the door on their own** and the gate sends them through. No per-pawn right-click.
+
+  **And the hard limit was stated rather than papered over:** RimWorld cannot run a job across two maps — jobs, reachability and haul listers are all per-`Map`, and Core's own Anomaly pit gate does not do it either. What is deliverable is automatic hauling **to** the gate and crossing together, which is what this is.
+
+- [x] **"we still use the stargate mod as normal"** — **nothing of theirs is edited, patched, or required.** No XML of ours names their defs or types. **The build has no reference to their assembly**, so a collaborator without the Workshop item still compiles the package. Their type is found with Core's own `GenTypes.GetTypeInAnyAssembly`, their `CompProperties` is **borrowed off their own gate def rather than constructed** — so a Backrooms gate is configured exactly as their stargate is and retunes when they retune it — and only two public methods are ever invoked. No Harmony, no detour, no `SetValue`, no `BindingFlags.NonPublic`. **With their mod absent every path answers "not available" and the Backrooms behave exactly as before.**
+
+- [x] **REGISTER, AND THE CORRECTION THAT CAME WITH IT** — row **[218] Stargates!** is stance *"No integration"*, and **that was read as "do not use it" for three checkpoints while the owner said the opposite every time.** The register is **guidance**; the owner's direction is not. What the row actually protects is ownership of state — *"Backrooms coordinates and the company's machine must keep their own stable IDs and state"* — and that is kept exactly: their addresses stay theirs, our coordinate records stay ours, and the only thing crossing is a dial.
+
+- [x] **the forty-fifth proof reads THEIR source, and nine plants in two batches walked past my own claims** — the proof checks `CompStargate` really is a `ThingComp`, that `OpenStargateDelayed` still has the signature we pass, and that the fields we read are still public, **against the installed mod's own code**, so a version of theirs this was not written for fails here rather than in the owner's colony. **19 of 19** planted faults caught, after fixing nine claims that were satisfied by commented-out code, by a second legitimate call site, by two of three lookups, or by a window that swallowed the next method once comments were stripped.
+
+---
+
+## Their effects, at a door's scale — 2026-09-30 (0.12.58-dev)
+
+Owner, verbatim: **"yeah lets use the fx and visual stuff if we can and make them appropriate
+sizes to the sizes of possible doors natural and maching gate types"**
+
+- [x] **"lets use the fx and visual stuff"** — **their event horizon and their iris, on an ordinary door.** The texture paths are **read off their own gate's properties**, so a retextured stargate retextures these too; nothing is copied into this package and no art is shipped.
+
+- [x] **"make them appropriate sizes to the sizes of possible doors"** — **THE RATIO IS THEIRS, MEASURED ACROSS ALL THREE OF THEIR GATES, NOT INVENTED:**
+
+      StargateMod_Stargate          size (5,1)   puddleDrawSize 8.7   = 1.74x
+      StargateMod_OrlinStargate     size (3,1)   puddleDrawSize 5.3   = 1.77x
+      StargateMod_AdvancedStargate  size (5,1)   puddleDrawSize 7.9   = 1.58x
+
+  So **1.6 sits inside their own band**, and the puddle is read off `def.size` rather than listed per def:
+
+      footprint        width  puddle  vortex cells  iris
+      Door                 1    1.60             1  no
+      OrnateDoor           2    3.20             2  yes
+      SecurityDoor         2    3.20             2  yes
+      gate 1x2             2    3.20             2  yes
+      gate 1x3             3    4.80             3  yes
+      gate 2x3             3    4.80             3  yes
+
+  **Every footprint a gate may use is covered** — Core's 1x1 `Door`, the 2x1 `OrnateDoor`, Anomaly's `SecurityDoor`, and the four shapes a gate run may take — **because the number is computed, not enumerated.** A door this package has never seen is sized correctly the first time it carries a gate.
+
+- [x] **"natural and maching gate types"** — the size comes from the **parent def**, so whichever gate attaches the component gets the right scale without either one knowing about the other.
+
+- [x] **THE VORTEX IS THE PART THAT HAD TO SHRINK, and this is the safety note.** Theirs is **thirteen cells, three wide and four deep** — right for a ring standing in the open, and a demolition charge on a shop's back wall. A door's unstable vortex is now **its own opening, one cell deep, across its own width**: still fatal to stand in, which is the Stargate rule, and still a doorway rather than a crater. An iris is offered only where there is an opening worth covering, which is the same reason their own makeshift gate sets `canHaveIris` false.
+
+- [x] **and not one field of theirs is assigned** — the properties are built by handing **Core's own `DirectXmlToObject.ObjectFromXml`** the same shape of node a def file contains. The game populates its own type through its own machinery, so this package still holds no `SetValue` and no `BindingFlags`. A failure to size **falls back to their properties rather than breaking the gate** — theirs unchanged is a worse look, never a dead route — and the result is cached per def, because a shop has nine doors and a coordinate has dozens.
+
+- [x] **two more of my own claims proved the sizing without requiring it to be used** — nothing asserted that `Attach` passes the sized properties to the component, so a plant swapping them back for the unsized ones passed every numeric claim while a 1x1 door got a seven-by-seven kawoosh; and the vortex-depth claim checked that the right cell is emitted rather than that no others are. **Computing a value correctly and using it are two different facts.** **29 of 29** planted faults caught.
+
+---
+
+## Natural gates are one-way, and that is the 5 limit — 2026-09-30 (0.12.59-dev)
+
+Owner, verbatim:
+
+**"hold up tho im doing the store run scenerio.. the gate is a natural one and shouuld always be
+open.... so whats this mean? i understand the machine gate opening and closing and will kill
+anyone standing near in front on start up. but the natural portals are open always right? except
+if minified and put elsewhere or in storage like a building in storage"**
+
+**"but remember we do need to be able to close natural portals u just can not re open them"**
+
+**"thats the whole 5 limit issue"**
+
+**"so deconstructing the door ie braeaks the connection, but uninstaslling the door and storing it
+or placing it else where does not"**
+
+- [x] **"the natural portals are open always right?"** — **YES, AND ASKING IT CAUGHT A DEFECT BEFORE IT SHIPPED.** Their unstable vortex fires inside `OpenStargate`, once per open, and their wormhole closes itself after roughly forty seconds idle — `IsReceivingGate && _ticksSinceBufferUnloaded > 2500 && !GateIsLoadingTransporter && _sendBuffer.Empty()` calls `CloseStargate(true)`. A natural gate held permanently open is therefore **re-dialled every time their timeout closes it**, so the door-sized vortex shipped at 0.12.58-dev **would have detonated its own doorway roughly every forty seconds, for ever.**
+
+  **A natural gate now carries no vortex at all**, which is also the honest fiction: it never opens, because it was always there. **The machine gate keeps its kawoosh** — a player dialled that, and the owner named the behaviour exactly: *"will kill anyone standing near in front on start up"*. The event horizon stays on both, because that is what an open way through looks like.
+
+  The two kinds **cannot share a cached result**, because caching on the def alone would hand whichever was asked for first to the other — which is precisely how a natural gate would quietly inherit a machine gate's kawoosh.
+
+- [x] **"we do need to be able to close natural portals u just can not re open them"** and **"thats the whole 5 limit issue"** — **DONE, and it reversed something this package had shipped.** Releasing a place used to be undoable: the door remembered where it led and could open it again, and both the Operations copy and the confirmation promised exactly that. **That is now wrong.** The gizmo, the method and the three strings that promised it are gone, and the copy says what is true — *the way in closes and does not re-open, and this frees one of your held places.*
+
+  **A decision that can be undone is not a decision**, and that is what makes the limit bite.
+
+  **The door still remembers where it led** — as a record, never an offer. A player standing in front of a spent door needs to know it was a way through; losing the memory would make a released place indistinguishable from a door that never led anywhere.
+
+- [x] **"deconstructing the door ie braeaks the connection, but uninstaslling the door and storing it or placing it else where does not"** — **already true, and verified rather than rebuilt.** `proof-gate-links.py` holds *"A DESTROYED GATE STILL ENDS ITS ROUTE"*, *"A CARRIED GATE TAKES ITS ROUTE WITH IT"* and *"uninstalling and deconstructing no longer say the same thing"*. **Moving a gate keeps it; closing its place spends it.**
+
+- [x] **running every suite found a dead method and three plants guarding a feature that no longer exists** — `Reopen()` survived the gizmo's removal as unreachable code, and **three proof claims still held because the method they inspected was the dead one.** A proof that passes by reading unreachable code is worse than no proof: it reports a feature that cannot happen. The method is deleted, and the claims and plants are **inverted rather than removed** — each plant now restores a way to re-open and requires refusal, so the count stays honest instead of quietly shrinking.
+
+- [x] **and the accessor trap again** — a plant renamed `ShelvedCoordinateId` to `…Unused` and the claim stayed satisfied because it tested the backing **field**. The exact accessor signature is required now. **522 of 522** planted faults caught across sixteen suites.
+
+---
+
+## The door was invisible, not missing — 2026-09-30 (0.12.60-dev)
+
+Owner, verbatim: **"okay , i see the blue glow, i do not see the door, i do not see the portal fx
+from stargate, i do see the backrooms map option at the top where pawns appear when they travel
+there, clicking on where the door and portal should be only gives \"go here\" option like clicking
+anywewhere with a pawen does. walking a pawn to the empty spot in the wall where the door used to
+be(with the blue aura is there in the opening and surrounding area"** and **"check the game i
+paused it see whats up"**
+
+**EVERY LINE BELOW IS READ OUT OF THE OWNER'S PAUSED GAME, NOT INFERRED.**
+
+- [x] **"i do not see the door"** — **THE DOOR WAS NEVER GONE.** Cell (160,161) holds a `Door`, `RimWorld.Building_Door`, Steel, **160 hit points, intact.** It was drawn **fully transparent**.
+
+      private static readonly ColorInt LiveGlowColor = new ColorInt(70, 130, 220, 0);
+      glower.GlowColor = LiveGlowColor;              // correct
+      colorable.SetColor(LiveGlowColor.ToColor);     // ALPHA ZERO
+
+  `ColorInt.ToColor` divides **every** channel by 255 **including alpha**, so `a: 0` became a fully transparent `Color`, and `Thing.DrawColor` returns whatever `CompColorable` holds. **A glow colour and a draw colour are not the same kind of colour** — alpha zero is the convention for a `ColorInt` glow, and their own stargate def uses `(115,171,224,0)` for exactly that reason. One constant was doing both jobs. There are two now, and the tint is opaque.
+
+- [x] **"clicking ... only gives \"go here\" option"** — **THE FLOAT MENU WORKS.** Selecting a colonist in the paused game and right-clicking (160,161) through the live UI returns exactly one option: **"Enter the gate"**. Nothing was wrong with it. **The owner could not click the door because the door was invisible.**
+
+- [x] **"i do not see the portal fx from stargate"** — **their component is attached and healthy, and the gate is simply not active yet.** The door's gizmos include **"Load"**, which is our `CompTransporter`, so `Attach` ran and `Available` was true. Its inspect string reads *"Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it"* — that is `CompStargate.CompInspectStringExtra`, which is **unconditional**: it is their nag for a gate that is not on `Building_Stargate`, whose own `GetInspectString` calls `sgComp.GetInspectString()` and never lets it run. **Cosmetic noise, not a fault.** Their `PostDraw` only paints an event horizon while `StargateIsActive`, so no puddle means the dial has not succeeded.
+
+- [x] **AND THE REASON THAT TOOK A WHOLE LAUNCH TO NARROW IS MINE.** Every refusal in the dialling path returned **silently** — not available, no component, hibernating, already open, receiving, no far end. That is right for a colony without the Stargate mod and **useless the moment something does not work.** The owner's log contained nothing at all because this code was written to say nothing at all. A live gate that cannot show a wormhole now **names the guard that stopped it, once per door**, at `Log.Message` — information, not a fault.
+
+  **The prime suspect is now reported rather than guessed:** `RimroomsDestinationMapParent.DoorThresholdContentVersion = 4`, and a site below it *"keeps its historical anchor until repaired"* — an anchor that is not a door, which `as ThingWithComps` turns into null, which returned without a word.
+
+- [x] **A PLANT SUITE HAD LEFT A LINE DELETED IN THE SOURCE TREE, AND IT WOULD HAVE SHIPPED.** `git status` showed `RimroomsExpeditionComponent.cs` modified when nothing in this checkpoint touched it: `Campaign.NoteReturnedFromField(run.crew, run.coordinateId);` was **missing**, so no crew member would have had a debrief hold raised on return. A suite was interrupted mid-plant and never restored it. **Found only because the suite that plants it refused to run and the tree was checked.**
+
+- [x] **and `proof-gate-links.py` asserted the exact line that caused the bug** — it required `SetColor(LiveGlowColor.ToColor)`, the invisible-door call. **The second time that same file has held a bug in place by naming it**, after it required `Class="CompProperties_Colorable"` at the seventh launch. **Asserting an exact line proves we wrote it and says nothing about whether it is right.** The claim asserts the property now: the tint must be opaque and must not derive from the glow constant.
+
+- [x] **four more claims of mine were too loose**, including `"not a doorway"` satisfying `"not a door"` — the prefix trap again. **526 of 526** planted faults caught across sixteen suites.
+
+---
+
+## The tenth launch regressed the gate - 2026-10-01 (0.12.62-dev) - DONE
+
+Owner, verbatim:
+
+> **"oka read now.md and i started it up after last stage and this run through the door is not
+> blue and i dont see the backrooms is there and cant portal to it, check whats rrunning and what
+> broke since last run where it was working"**
+
+- [x] **"this run through the door is not blue"** - `IsLiveGate` needs a mark AND an edge, and the opening registers neither once the coordinate fails
+- [x] **"i dont see the backrooms is there and cant portal to it"** - no coordinate generated: `MaxRoomSpan` was 34 and the grand hall is 80, so all four candidates were refused
+- [x] **"check whats rrunning and what broke since last run where it was working"** - read out of the running game through the bridge: the startup letter named it. Broken by 0.12.61-dev's own grand hall and back-to-back rooms
+
+---
+
+## The eleventh launch: the map was there and the gate was not - 2026-10-01 (0.12.63-dev) - DONE
+
+Owner, verbatim:
+
+> **"okay i see the backrooms is there but the gate natural door is not. its jsut a normal door no
+> blue no blue hue no stargate fx"**
+
+- [x] **"i see the backrooms is there"** - the map was created, then `GenStep.Generate` threw
+  partway through content placement, so it was never finished
+- [x] **"but the gate natural door is not"** - `EnsureSite` reported the failure, so
+  `SoloGroupOpening` stopped before step 3 and the door was never marked
+- [x] **"its jsut a normal door no blue no blue hue no stargate fx"** - `IsLiveGate` needs a mark
+  AND a registered edge; with neither, the glower stays dark, the tint is never applied and no
+  Stargate component is attached
+
+---
+
+## The twelfth launch: the gate again, and the cause again upstream - 2026-10-01 (0.12.64-dev) - DONE
+
+Owner, verbatim:
+
+> **"okay im getting worried, there still is not correctly the blue aura, the door isnt blue, and
+> its not portaling people to the backrooms... what happened it used to work fine until we
+> reformulated the back rooms seed genrations. you do remmeber when it was working and i said i
+> loved the backrooms... i currently see the backrooms is available but i cant get my pawns to it
+> as the door is just a normal door not corrtly the natural gate it should and shall be"**
+
+- [x] **"there still is not correctly the blue aura, the door isnt blue"** - the coordinate's
+  generation aborted again, so the door was never marked and no edge was registered
+- [x] **"its not portaling people to the backrooms"** - same cause: no registered edge means no
+  crossing is ever offered
+- [x] **"what happened it used to work fine until we reformulated the back rooms seed
+  genrations"** - **the owner is right.** The ninth launch worked. Every failure since has been a
+  consequence of the generation work that followed it
+- [x] **"i currently see the backrooms is available but i cant get my pawns to it"** - the map is
+  created by Core before our GenStep runs, so an aborted GenStep leaves a visible, unfinished map
+- [x] **"the door is just a normal door not corrtly the natural gate it should and shall be"** -
+  `IsLiveGate` requires a mark AND a registered edge; the door itself was never at fault
+
+---
+
+## The floor is a string of pearls - 2026-10-01 (0.12.65-dev) - DONE
+
+Owner, verbatim, first message:
+
+> **"okay its working. if u check the game i explored the full map i think and i never found any
+> natural cates to the world map tiles or natural portals to deep into the backrroooms so its
+> great it working i just never found any other gates with option to \"walk through\" adding them
+> to the loaded maps of my game play through"**
+
+Owner, verbatim, second message:
+
+> **"and another thing as you can see the hall ways are just rectangles and arnt correctly the
+> themed color and materials and there wasnt enough \"people-food\" in the back rooms need to be
+> able to survive a bit if it was a solo start. and i see the whole map is almost like a string of
+> pears. when it should just be basicly \"rooms\" as halways with the exact shit thats in the
+> rooms... get it? do you need to check prep work on the Universe of the backrooms?"**
+
+- [x] **"i never found any natural cates to the world map tiles or natural portals to deep into
+  the backrroooms"**
+- [x] **"i just never found any other gates with option to \"walk through\" adding them to the
+  loaded maps of my game play through"**
+- [x] **"the hall ways are just rectangles and arnt correctly the themed color and materials"**
+- [x] **"there wasnt enough \"people-food\" in the back rooms need to be able to survive a bit if
+  it was a solo start"**
+- [x] **"i see the whole map is almost like a string of pears. when it should just be basicly
+  \"rooms\" as halways with the exact shit thats in the rooms"**
+- [x] **"they were all just square rooms again..wtf dont u know any other compbinations"**
+- [x] **"do you need to check prep work on the Universe of the backrooms?"** - **yes, and it
+  exists.** `docs/UNIVERSE_ADAPTATION.md` says a coordinate is *"a stable, seeded expedition site
+  made of rooms and routes"* and to *"reuse recognizable room categories, materials, fluorescent
+  lighting, service infrastructure, and furniture as the baseline"* with a *"repeated hall"* as an
+  intentional spatial change. `docs/PROCEDURAL_SPACE_CONTRACT.md` adds *"Unseen connections appear
+  as unknown, not as empty corridors."* **The owner's correction is what the prep work already
+  said**: a corridor is a room, with the same floors, walls, lights and contents, not a carved
+  tunnel between rooms.
+
+---
+
+## A gate where a normal door should have been - 2026-10-01 (0.12.66-dev) - DONE
+
+Owner, verbatim:
+
+> **"okay i got into the backrooms but i found a door that was a gate, but it was where a normal
+> door should of been(gates natural need to not also be used and needed as normal doors, becasue
+> on the other side was the rest of the backrooms map and when i went to send my pawn through that
+> door with a click, it said somthing like : this address is already being used, and anoother door
+> said somthing like you cant doo that, request is not valid for this branch, and a differnet
+> sdave address alread uses one of these doorsso it must be something about generationg the next
+> world map or deeper backrroms idk for sure"**
+
+> **"chack the game if you u need to"**
+
+- [x] **"i found a door that was a gate, but it was where a normal door should of been"**
+- [x] **"gates natural need to not also be used and needed as normal doors"**
+- [x] **"becasue on the other side was the rest of the backrooms map"**
+- [x] **"it said somthing like : this address is already being used"**
+- [x] **"anoother door said somthing like you cant doo that, request is not valid for this
+  branch"**
+- [x] **"and a differnet sdave address alread uses one of these doors"**
+- [x] **"so it must be something about generationg the next world map or deeper backrroms idk for
+  sure"** - the owner's read is right: the world-map half and the deeper half are two different
+  recordings, and only one of them was wired to a way through
+
+---
+
+## The corporate start disabled itself on turn one - 2026-10-01 (0.12.67-dev) - DONE
+
+Owner, verbatim:
+
+> **"okay i moved on top the company scenerio start. the gate is not set up.. there should be
+> everthing basic needed to operate the gate already align and ready to operate.. and it says :
+> Company Records could not be reconsiled blah blah blah.... and none of our buttons work and i
+> have no idea how the gate is suppose to work as there doesnt be a toggle option to turn it from
+> a normal door to a machine gate door . so it looke like some work is needed on the design of the
+> machine gate room and facility. and we probably need to fix the load shit becasue it seems like
+> our mod isnt there in the corporate start.. but i could be wrong as corporate start doent have a
+> operating gate at first, but it should at least have all its basic components there and
+> connected just waiting to be switched on"**
+
+> **"u can check the gasme, but like you said it been busted since scenerio write so might not get
+> much"**
+
+- [x] **"it says : Company Records could not be reconsiled blah blah blah"** - `BuildProjectTree`
+  set `insightCommitted = done` and never set `insightOperationId`, which
+  `ValidateRecordRelationships` requires. Every pre-completed project was a save-integrity fault
+- [x] **"and none of our buttons work"** - the fault set `stateFaultKey`, so `CanOperate` went
+  false and every company action in the mod refused
+- [x] **"i have no idea how the gate is suppose to work as there doesnt be a toggle option to turn
+  it from a normal door to a machine gate door"** - `CompGetGizmosExtra` returned early for any
+  undesignated door, so an ordinary door offered nothing; the only route was a pane the fault was
+  also refusing
+- [x] **"it seems like our mod isnt there in the corporate start.. but i could be wrong"** - the
+  owner was right to doubt it and wrong about the cause: the mod was there and every component
+  was placed. **The controls were unreachable**
+- [x] **"it should at least have all its basic components there and connected just waiting to be
+  switched on"** - they already are: `CommsConsole` (28,0,29), `Battery` (44,0,26),
+  `TableMachining` (17,0,44) and an `Autodoor` (29,0,33). Recorded because the owner doubted it
+- [x] **"so it looke like some work is needed on the design of the machine gate room and
+  facility"** - the toggle is on the door now, and it commissions with the branch's own equipment
+
+---
+
+
+> moved from `## The lab name comes out, and every level becomes a maze - 2026-10-01 (0.12.68-dev, 0.12.69-dev) - DONE` in `docs/TODO.md`
+
+- [x] **"take the Unity Lab AI and the Unity AI Lab out of all refrences and nameing"**
+- [x] **"but we will keep the repos as is for now"** - the remotes, the org and the repo names are
+  untouched; this is the shipped package and its text only
+- [x] **"especially remove the Unitylabai from the mod information that i see on Rimsort ie the
+  package id and folder naming and such and files"**
+- [x] **"i want them to be mazes like xcrazy like all levels mazes do you unerstand!"**
+- [x] **"lsd crazy shaped mazes"**
+- [x] **"and facilitys and buildings and neighboorhoods and complexes and shools and hospitals and
+  military and storages need loot inside of them too"**
+## The gate assembles itself without being asked - 2026-10-01 (0.12.70-dev) - DONE
+
+Owner, verbatim:
+
+> **"the machining table to op[en the gate needs to be a bill currently they instantly try to open
+> the gate and build it and i have no say in the mattter even tho nothing is connected or built
+> yet and havent started the mission line yet"**
+
+- [x] **"the machining table to op[en the gate needs to be a bill"**
+- [x] **"currently they instantly try to open the gate and build it and i have no say in the
+  mattter"**
+- [x] **"even tho nothing is connected or built yet and havent started the mission line yet"**
+- [x] **"we should have a set to gate control for these components so other things arnt
+  available and can toggle between normal op and gate op depending whats wanted.."**
+
+
+---
+
+## The solo/group start never got inside - 2026-10-01 (0.12.71-dev) - DONE
+
+Owner, verbatim:
+
+> **"read now.md to resume. i just started it up and tried solo/group start and for some weird
+> reason i ended up in the world map with no connection to the back rooms.. i should of been in
+> the back rooms and i dont have a warp do to get back.. i think it was the issue of the building
+> starting door being the same as the warp gate door, but im suppose to find the gate to the world
+> map in the backrooms before i can get my pawns to the world map tile i selected at game and
+> world setup,.... so wtf is up can u fix this easily by checking the game running"**
+
+- [x] **"i just started it up and tried solo/group start and for some weird reason i ended up in
+  the world map with no connection to the back rooms"**
+- [x] **"i should of been in the back rooms and i dont have a warp do to get back"**
+- [x] **"i think it was the issue of the building starting door being the same as the warp gate
+  door"** - **the hypothesis is wrong and the log says so.** The door was never reached. Step 2 of
+  the opening, the coordinate's own map, failed; steps 3 and 4 that mark the door and register the
+  way out never ran
+- [x] **"but im suppose to find the gate to the world map in the backrooms before i can get my
+  pawns to the world map tile i selected at game and world setup"** - that is what the start
+  already does, and the reason they saw none of it
+- [x] **"so wtf is up can u fix this easily by checking the game running"**
+
+### What the log said, and what pinned it
+
+`RR_Generation_UnreachableRequiredCell` out of `ValidatePlacedLayoutCore`, which **throws that one
+key from two different places**. The stack carried `[0x001f8]` and nothing else, so the source
+could not answer which. `.local/harness/PdbLine` reads the portable PDB's sequence points and
+resolved it to **line 1446** -- the clue landmark's approach, not the office or return cell -- with
+the assembly MVID matching the one in the stack trace.
+
+Also in the same log, from the same generation: **sixty-two power-net rebuild failures** and one
+`Tried to register trasmitter ... but there is already a power net here`.
+
+---
+
+## The wall lamp that had no wall behind it - 2026-10-01 (0.12.72-dev) - DONE
+
+Owner, verbatim:
+
+> **"check the game!!! why are my colonists on the world map!!!!!!!!! they should be in the
+> backrooms in this scenerio... and wtf there is nt even a gate to get there but that dont matter
+> the scenerio for starting in the backroromms is fucked if i keep starting in the world tile
+> map"**
+
+> **"we loaded solo/group start into the backrooms correctly before so what the fuck these regress
+> isssues are getting annoying"**
+
+- [x] **"why are my colonists on the world map!!!!!!!!! they should be in the backrooms in this
+  scenerio"**
+- [x] **"and wtf there is nt even a gate to get there"** - the same cause. The gate is registered
+  at step 3 of the opening and generation failed at step 2, so there was nothing to register
+  against
+- [x] **"the scenerio for starting in the backroromms is fucked if i keep starting in the world
+  tile map"**
+- [x] **"we loaded solo/group start into the backrooms correctly before"** - **they did, and this
+  is a regression, and the owner is right to call it one.** `FindWallAttachmentCell` finds a wall
+  and then faces it, and for a long time it was the only thing that placed the palette's light.
+  The two placers added after it both got the arithmetic wrong
+- [x] **"so what the fuck these regress isssues are getting annoying"**
+
+### What the log said this time, and it is a different step
+
+The clue-approach fix from 0.12.71-dev held: **no `RR_Generation_UnreachableRequiredCell`, and the
+level generated.** What killed it was `NullReferenceException` in
+`RimWorld.PowerConnectionMaker.TryConnectToAnyPowerNet`, raised from
+`PowerNetManager.UpdatePowerNetsAndConnections_First`, called by **`Verse.Map.FinalizeInit`** --
+which is outside this mod's generator entirely. It left `MapGenerator.GenerateMap`, so
+`GetOrGenerateMap` threw, so `DestinationService.EnsureSite` reported failure.
+
+**The full exception text added at 0.12.71-dev is what named it.** The previous log printed
+`(NullReferenceException)` sixty-two times and could not say where.
+
+---
+
+## The gate nobody could open, and the facility - 2026-10-01 (0.12.73-dev) - DONE
+
+Owner, verbatim:
+
+> **"okay i need help. .. check the game what do i do to get this gate open? ive tried
+> everything.. follow my past attempts and tell me what im missing as they built the 8 componet
+> thing at the attached machining table and then with out notice they went to the coms console and
+> did something un pormpted(i thought the portal would open after he finished, but it didnt) so
+> why does the game show the portal gate didnt open? what am i missing or is something major
+> broken"**
+
+> **"well what the fuck i already told you the company start needs a fulley connect and set up
+> sweet ass facility.. currently it looks like a 6yr old chimp made the facility as the gate is
+> rfree standing and it now weays looks like a working "machine" that should be designed
+> intelligently with like ballistic glass  walls for viewing the machine remotely and safely with
+> security zones and shit and lab rooms and shit i mean wtf is this this is a 50million dollar
+> facilty"**
+
+- [x] **"what do i do to get this gate open? ive tried everything"** - **nothing is broken.** The
+  chain is intact; the interface never said which of eight preconditions was unmet, and with no
+  address remembered it drew **no button and no sentence at all**
+- [x] **"follow my past attempts and tell me what im missing"**
+- [x] **"they built the 8 componet thing at the attached machining table"** - that completed the
+  assembly. `RecipeWorker_RimroomsGateAssembly.Notify_IterationCompleted` -> `CompleteAssemblyFromBill`
+- [x] **"then with out notice they went to the coms console and did something un
+  pormpted(i thought the portal would open after he finished, but it didnt)"** - that was
+  **calibration**, taken by `WorkGiver_RimroomsGate`. It is the step after assembly, not the
+  opening
+- [x] **"so why does the game show the portal gate didnt open?"**
+- [x] **"what am i missing or is something major broken"**
+- [x] **"the company start needs a fulley connect and set up sweet ass facility"**
+- [x] **"currently it looks like a 6yr old chimp made the facility"**
+- [x] **"the gate is rfree standing"**
+- [x] **"it now weays looks like a working \"machine\" that should be designed intelligently"**
+- [x] **"with like ballistic glass walls for viewing the machine remotely and safely"**
+- [x] **"with security zones and shit"**
+- [x] **"and lab rooms and shit"**
+- [x] **"i mean wtf is this this is a 50million dollar facilty"**
+- [x] **"now it just says gate is not ready to calibrate,, what am i missing"** - **nothing. It
+  was already calibrated.** `CanCalibrate` requires `!calibrated` and the refusal
+  `RR_Gate_CalibrationUnavailable` reads *"The gate is not ready for calibration"* for all eight
+  of its conditions, including the one that means **it is already done**
+- [x] **"check the game cxurrently"** - `Autosave-5.rws`, 11:38: gate `Thing_Autodoor55338`,
+  `rr_gateAssemblyComplete True`, `rr_gateCalibrated True`, operator `Thing_Human979`, kill switch
+  null, **`TableMachining55327` gateControl True and the `CommsConsole` on the same gate absent,
+  which is false.** That one component was the whole blocker
+- [x] **"the whole machine  tab needs to be numbered and everything step 1 step 2... ect ect so
+  fucking simple a 6 yr old chimp can do it"**
+- [x] **"okay fucking do it then because im fucking lost on what to do ive done like 50 things in
+  a row and its still not opening"**
+- [x] **"this is fucking rediculous and it needs to have checks showing the start up connection
+  checks are complete or unfinished yet"**
+- [x] **"and it need to explain conciselky how, becuse this is fucking confusing"**
+
+### The eight preconditions, and which the interface hid
+
+`BeginSpinUp` refuses for eight reasons and reports **one**, after a button press -- and the open
+buttons are drawn per remembered laboratory address, so **a gate with none shows an empty panel**.
+A player who has commissioned the door, run the bill and let the crew calibrate has done
+everything the gate itself asks for and is looking at nothing.
+
+Worse, two of the eight are the **gate-control switch added at 0.12.70-dev, which defaults to
+normal operation on purpose** -- commissioning a door must not change how the colony works -- so a
+player who never saw that gizmo has two components quietly refusing.
+
+---
+
+## A ramp is not an open connection, and the power room - 2026-10-01 (0.12.74-dev) - DONE
+
+Owner, verbatim:
+
+> **"check the game last notices every check mark is complete but it still says:  the lab
+> connection to that address is not connected.. but the checked staps says otherwise.. i see the
+> glow and all boxes where done"**
+
+> **"and do u see where i moved the comms to and the machining bench thats where i want them so
+> fix there spawn position"**
+
+> **"and actuall make onbe of the rooms a power room and where the generators are should be a
+> breeze way thats unroffeced area complete just that area they are in thats inclose by walls and
+> doors"**
+
+> **"generators out side batteries inside"**
+
+- [x] **"every check mark is complete but it still says: the lab connection to that address is not
+  connected.. but the checked staps says otherwise"** - **the tick was wrong, and it was mine.**
+  Step 11 read `IsOpening || IsSpinningUp`, so pressing *open a session* completed all eleven while
+  the connection was only ramping, and `PortalTravelService` then refused the crossing with
+  `RR_PortalTravel_SessionClosed` - which was true
+- [x] **"i see the glow and all boxes where done"**
+- [x] **"do u see where i moved the comms to and the machining bench thats where i want them so
+  fix there spawn position"** - read out of `Autosave-3.rws` and converted by the layout offset of
+  (120,120) on their 300-cell map: console **(32, 33) facing south**, assembly bench **(45, 33)**
+- [x] **"actuall make onbe of the rooms a power room"**
+- [x] **"where the generators are should be a breeze way thats unroffeced area complete just that
+  area they are in thats inclose by walls and doors"**
+- [x] **"generators out side batteries inside"**
+
+---
+
+## The bonds - 2026-10-01 (0.12.75-dev) - DONE
+
+Owner, verbatim:
+
+> **"and nother thing the bonds i pull out i dont sdeem to be able to put them back in and and to
+> combine them"**
+
+> **"and they need a name that is theri value and better description and value is not correct"**
+
+> **"now the books as bonds just say noprmal the quality which is normal"**
+
+- [x] **"the bonds i pull out i dont sdeem to be able to put them back in"**
+- [x] **"and and to combine them"**
+- [x] **"they need a name that is theri value"**
+- [x] **"and better description"**
+- [x] **"and value is not correct"**
+- [x] **"now the books as bonds just say noprmal the quality which is normal"** - **the cause of
+  the naming half, and it is the project's signature defect.** `Verse.Book` overrides
+  `LabelNoCount` as `title + GenLabel.LabelExtras(this, includeHp: true, includeQuality: true)`
+  and **never consults comps**, so `CompRimroomsBond.TransformLabel` has not run once since the
+  day it was written. The owner was reading the book's generated title and its quality suffix
+
+---
+
+## The goon squad, and never losing the game - 2026-10-01 (0.12.76-dev) - DONE
+
+Owner, verbatim:
+
+> **"a the company clear squad when all pawns incompacitated.. they should arrive do a full sweep
+> of every rroom on the reall world map, disconnect the gate and burry the dead or incenerate on
+> propery might need to build graves in the moment then they go through the whole facility fix
+> broken walls and equipment leave supplies food asurvival meals like starting all over again but
+> this happens in game with the player never losing the game. but this only happens for the lab
+> secnerio for now we will figure out how to impliment it in other scenreios later and that can be
+> differed short version:if u die all pawns incompacitated... \"The Company\" sends in a goon squad
+> kills every thing takes the dead and leeaves three new pawns to run the facility they have keeys
+> to all doors on map and can turn off the game and leave supplies and can kill anything without
+> dying and use and or build a crematoryium and or graves to bury everthing dead then they haul
+> everything and repair and shut down the gate and haull abay all bonds printed that are on the map
+> u lose it all and 25M is deducted from account for \":restocking the pedycash\" upto 25M from
+> account never going under 0 dollars in account andf yes do those three things you listed as
+> well"**
+
+**This expands `Company/FacilityRelief.cs`, which already exists** from the owner's 2026-09-29
+direction: *"sending clean up teams to your base with all access passses to wipe the facitly of
+all hostals and requisition a new basic team supplies drops like a fresh start of sorts so that
+facilities never die"*. Today it clears hostiles, drops the corporation's crate at full scale,
+lands **five** staff and clears `Find.GameEnder.gameEnding`. Every row below is a gap against the
+new direction.
+
+- [x] **"a the company clear squad when all pawns incompacitated"** - the existing trigger fires on
+  **no living staff anywhere** and deliberately excludes downed, with a written reason: *"Downed is
+  also not dead. A branch whose staff are all unconscious is in trouble, not gone."* **The owner
+  is overruling that**, and it is recorded here because the old reasoning is now wrong rather than
+  forgotten
+- [x] **"they should arrive do a full sweep of every rroom on the reall world map"**
+- [x] **"disconnect the gate"**
+- [x] **"and burry the dead or incenerate on propery"**
+- [x] **"might need to build graves in the moment"**
+- [x] **"then they go through the whole facility fix broken walls and equipment"**
+- [x] **"leave supplies food asurvival meals like starting all over again"**
+- [x] **"but this happens in game with the player never losing the game"**
+- [x] **"but this only happens for the lab secnerio for now"**
+- [x] **"we will figure out how to impliment it in other scenreios later and that can be
+  differed"** - **recorded here and NOT in `docs/DEFERRED.md`**, which is closed with zero rows
+  and the standing instruction is never to add one. Scoped to the lab start; the other two
+  scenarios are owner-excluded for now
+- [x] **"if u die all pawns incompacitated..."**
+- [x] **"\"The Company\" sends in a goon squad kills every thing"**
+- [x] **"takes the dead"**
+- [x] **"the downed: No Witnesses"** - asked and answered, 2026-10-01. The trigger is *all pawns
+  incapacitated*, so the squad lands on colonists who are **down but alive**. They do not survive
+  it. Every downed member of the branch is killed by the squad and goes into the ground or the
+  fire with the already-dead, and the three who replace them never met anybody who was there.
+  **This is a deliberate, destructive reset of the player's roster** and it was confirmed before
+  a line of it was written, because the other reading -- stabilise the downed and keep them --
+  would have preserved colonists the owner has decided do not get preserved
+- [x] **"and leeaves three new pawns to run the facility"** - the existing relief lands **five**
+- [x] **"they have keeys to all doors on map"**
+- [x] **"and can turn off the game"**
+- [x] **"and leave supplies"**
+- [x] **"and can kill anything without dying"**
+- [x] **"and use and or build a crematoryium and or graves to bury everthing dead"**
+- [x] **"then they haul everything"**
+- [x] **"and repair"**
+- [x] **"and shut down the gate"**
+- [x] **"and haull abay all bonds printed that are on the map u lose it all"**
+- [x] **"and 25M is deducted from account for \":restocking the pedycash\""**
+- [x] **"upto 25M from account never going under 0 dollars in account"**
+- [x] **"andf yes do those three things you listed as well"** - staff **prior exposure** on an
+  expedition, the **review** workflow (the fourth of analyse/interview/compare/review), and
+  verifying the stranded-crew rows against `Company/LostPawnRegister.cs`
+- [x] **"are u shure zero goon squad code is written weve gone over this before by a different
+  name"** - **the owner was right to ask, and the handoff was wrong.** It asserted *"Nothing in
+  the battery claims anything about `FacilityRelief`"*. **`proof-facility-relief.py` is proof
+  FIVE and has existed since 0.11.7-dev**, and two of its claims contradict this direction
+  outright: `len(relief_roles) == 5` against the owner's **three**, and *"the living-staff scan
+  does not treat downed as dead"* against ***"the downed: No Witnesses"***. **The old reasoning
+  was written into the battery as an assertion**, so the work is to RE-AIM two claims, not add
+  beside them - and a build following the uncorrected handoff would have read two red FAILs as a
+  regression it had just caused. Also found: `ConnectedWork/Providers/UpkeepProviders.cs` already
+  wraps **Core's own** `listerBuildingsRepairable.RepairableBuildings(faction)` as
+  `RepairableOn(map, faction)`, so *"fix broken walls and equipment"* needs **no second
+  damaged-building scan**. What is genuinely absent was then measured rather than assumed: `goon`,
+  `GoonSquad`, `ClearSquad`, `CleanupTeam`, `FacilitySweep`, `Grave`, `Sarcophagus`,
+  `Crematorium`, `Pyre`, `Bury`, `25000000`, `restock`, `pedycash` - **zero hits across `src/`**.
+  **This is the project's own highest-value habit, which the handoff stated and then failed to
+  apply to itself:** *"CHECK A ROW AGAINST THE CODE BEFORE BUILDING FOR IT"*
+- [x] **`Pyre` is not a Core def** - the **second** factual error the owner's challenge found in
+  the same handoff, which listed it among *"Core defs confirmed present"*. It lives in
+  `Ideology/Defs/ThingDefs_Buildings/Buildings_Ideo.xml`. The mod ships **zero hard
+  dependencies**, so nothing may name it. **The first check was run against the installed game
+  rather than against Core**, and for a Core-only mod that is the whole distinction - which is
+  why it read as a pass. `Grave`, `Sarcophagus` and `ElectricCrematorium` are genuinely Core;
+  `Crematorium` does not exist under that name
+
+---
+
+## The hard dependencies, and RimSort enforcing them - 2026-10-01 (0.12.76-dev) - DONE
+
+Owner, verbatim:
+
+> **"see thats WRONG the mod DOES HAVE HARD DEPENDANCIES SO GET IT RIGHT AND MAKE SURE ITS LAYED
+> OUT RIGHT FOR RIMSORT TO NOTICE AND ENFORCE"**
+
+and when asked which ones, verbatim:
+
+> **"there are alot more depeandacies than just the DLC we have alkinds of mods in the 274 mod
+> list WE ARE USING ALL OF THEM!!!!"**
+
+and on how the code should then treat that content, the owner chose **keep the graceful guards
+anyway**: declare the dependency so a mod manager enforces it, and keep the name-based lookups so
+a player who ignores the warning degrades instead of crashing.
+
+- [x] **"the mod DOES HAVE HARD DEPENDANCIES"** - `About.xml` declared **none at all**. It carried
+  `loadAfter: Ludeon.RimWorld` and a description reading *"Core only. Royalty, Ideology, Biotech,
+  Anomaly and Odyssey are optional and used when present. No Harmony, no dependencies."* **294
+  hard dependencies are now declared** - the five expansions and 289 mods - generated from the
+  owner's live load order by `.local/register/build-dependencies.py`. **Never hand-edit the
+  dependency blocks; edit that script and re-run it**
+- [x] **"MAKE SURE ITS LAYED OUT RIGHT FOR RIMSORT TO NOTICE AND ENFORCE"** - two blocks, because
+  they do different jobs. **`modDependencies`** is what a manager reads to say *this is missing*,
+  and each row carries a `displayName` and a `steamWorkshopUrl` so it can tell the player which
+  mod and where to get it. **`loadAfter`** is what makes the order right, and it is the
+  functionally load-bearing half
+- [x] **The defect this exposed, which nobody was looking for** - our package sat at **position
+  197 of 296** in the owner's live order, so **99 mods were loading after us**. A patch cannot see
+  a def from a mod that loads later, so anything we patch against those 99 was reading a def that
+  did not exist yet. Declaring `loadAfter` against all of them is what moves us last; RimSort does
+  the sorting itself
+- [x] **"WE ARE USING ALL OF THEM!!!!"** - the source of truth is the owner's own
+  `ModsConfig.xml`, read **read-only**: 296 active entries, Core plus five expansions plus 290
+  mods, one of which is ours. Every one resolved to an installed folder and **every non-expansion
+  dependency has a Workshop id**, so no row sends the player nowhere. **The active RimSort list
+  was never written to**, per the standing constraint
+- [x] **The cycle check, which is not optional** - declaring `loadAfter` against 289 mods
+  deadlocks if any one of them declares a constraint back on us. Every active mod's `loadAfter`,
+  `loadBefore`, `forceLoadAfter` and `forceLoadBefore` was read and **none names us**. The
+  generator refuses rather than emitting an order no sorter can satisfy
+- [x] **`check-register-compliance.py` refused the whole thing, and its premise was what was
+  wrong** - the rule read *"About.xml must declare no `modDependencies`. The package must load and
+  run against Core alone."* **That was a fair reading of the register's guidance in September and
+  the owner has overruled it** - and the register is *"not law but guidance"* by the owner's own
+  standing correction, so an owner decision supersedes a register-derived rule. **A prohibition
+  became an assertion** rather than being deleted: every declaration must carry a name, a way to
+  obtain it, and a matching `loadAfter` entry; our own id and Core are refused; duplicates are
+  refused
+- [x] **Seven planted faults, 7 of 7 caught** - `.local/register/plant-dependencies.py`, suite
+  SEVENTEEN. **A rule that cannot fail is not a rule**, and the branch that matters most plants
+  the position-197 defect back in: a dependency required and never ordered. **The first draft used
+  `(name, function)` tuples and `check-plant-anchors.py` refused all seven as malformed** - it was
+  right, the house shape exists so a seventeenth instrument can read every anchor. **691 anchors
+  findable**, up from 684
+- [x] **`check-dlc-gating.py`'s rule survives and its stated reason did not** - the rule refuses a
+  def referencing DLC-only content without a `MayRequire` gate, and that **is** the owner's chosen
+  posture: `MayRequire` in XML is the same graceful guard `GetNamedSilentFail` is in C#. But it
+  justified itself with *"a mod whose entire claim is that it needs nothing but Core"*, which is
+  no longer true. **The reason was replaced and the rule was not touched** - a reason nobody
+  believes is worse than no reason
+- [x] **The sixth instance of an instrument reading its own explanatory prose, and the first that
+  was mine** - the fix script searched its own result for the phrase it had removed, and the
+  replacement prose *quotes* that phrase in the sentence retiring it. **The write had already
+  landed; only the verification was wrong.** Same shape as `check-compliance.py` flagging
+  `PatchOperationReplace` inside the comment explaining why a replace is wrong (0.12.46-dev) and
+  `check-register-compliance.py` matching `statBases` inside the comment saying it cannot be one
+  (0.12.75-dev). The fix is the one both checkers took: **assert against the live form, not the
+  mention**
+- [x] **The register drift this surfaced, not yet resolved** - `tools/register-query.py` parses
+  **295 rows** against **289 live other-mods**. The live load order is the right source for a
+  dependency list and was used; **the gap between the two is unexamined** and belongs to the
+  register, not to About.xml. **CLOSED by the owner, verbatim: *"6 row gap is dlcs"*.** Verified
+  rather than taken: rows **4-9** are `Core`, `Royalty`, `Ideology`, `Biotech`, `Anomaly` and
+  `Odyssey` -- six rows that are not third-party mods. **295 - 6 = 289**, the live count exactly,
+  nothing left over. **There was no drift.** Worth recording while closing it: rows 5-9 carry
+  stance **`Optional`** and row 5 carries firmness **`Provisional`**, and the owner has made all
+  five expansions **hard dependencies** - which is *"remmebr its not law but guidance"* working as
+  intended. The rows are not wrong, they are superseded, by the only authority that can supersede
+  them
+
+---
+
+## The public wiki - 2026-10-01 (0.12.77-dev) - DONE
+
+Owner, verbatim:
+
+> **"make sure to update all the public facing doc and workflow docs(remember public facing docs
+> are concise easy to read and have no in house dev names and no todo numbering and no actual work
+> information but are concise and informatitve laying out the full wiki of the dame how to play how
+> to set it all up rimsort all of it, we will add links later to the mod workfshop and collection
+> workshop for this collection and mod makeing sure all are propely all linked to gether when we
+> build a github page repo deployed hosting the full howto readmes and wiki of the full mod and all
+> of that( the mod registar can be a good resources fo laying everyhting out but public facing
+> documnets ARE NOT to be text walls get to each point in as short a way as possible"**
+
+- [x] **"make sure to update all the public facing doc and workflow docs"**
+- [x] **"public facing docs are concise easy to read"**
+- [x] **"and have no in house dev names"**
+- [x] **"and no todo numbering"**
+- [x] **"and no actual work information"**
+- [x] **"but are concise and informatitve"**
+- [x] **"laying out the full wiki of the dame how to play how to set it all up rimsort all of it"**
+- [x] **"we will add links later to the mod workfshop and collection workshop for this collection
+  and mod"** - placeholders authored now, clearly marked, so the page has the slots and nothing
+  claims a link that does not exist yet
+- [x] **"makeing sure all are propely all linked to gether"**
+- [x] **"when we build a github page repo deployed hosting the full howto readmes and wiki of the
+  full mod and all of that"**
+- [x] **"the mod registar can be a good resources fo laying everyhting out"**
+- [x] **"public facing documnets ARE NOT to be text walls get to each point in as short a way as
+  possible"**
+- [x] **`docs/HOWTO.md` IS IN THE READER-FACING LIST AND IS NOT A READER DOCUMENT.** It opens
+  *"This is the practical guide for anyone (human or build agent) opening this repository"* and
+  carries in-house tooling names, owner-decision identifiers, branch cascade procedure, the
+  task-record pattern and the workflow ledger. **It violates three of the owner's four rules at
+  once** and has been held to the reader vocabulary by `check-doc-conformance.py` for its whole
+  life, which is why nobody noticed it was the wrong kind of document
+
+---
+
+
+> moved from `## One battery was the whole reserve - 2026-10-01 (0.12.77-dev) - DONE` in `docs/TODO.md`
+
+- [x] **"only being able to connect 1 battery isnt anough and there should be no loimit"** - a gate
+  binds `private Thing nativeBattery`, **one battery**, and `NativeStoredEnergy` reads that one
+  battery's `StoredEnergy`. **Every battery else on the same power net counts for nothing.** The
+  bound battery was only ever meant to be the anchor that identifies the gate's circuit --
+  `NativeGenerationWatts` already sums the whole net, and `NativePowerConnected` already checks
+  the whole net. **The stored energy was the one reading that never followed**
+- [x] **"the laboratory address for that is not open"** - the refusal is
+  `RR_PortalTravel_SessionClosed`, produced by `RimroomsPortalNetwork.Availability` when
+  `gate.HasUsablePortalWindow(...)` returns false. Its last condition is
+  `NativeStoredEnergy >= OpeningPowerDrawWatts * WattsToWattDaysPerTick`, **checked on every
+  attempt to cross**, so a drained bound battery reads as *the connection is not open* rather than
+  as *the gate has no charge*. **The message names the wrong thing**, which is why it looked like
+  an address fault
+- [x] **"thats just clicking on the portal and trying to send them through not working"** - same
+  cause, same predicate. Both routes ask `Availability` first
+- [x] **"which i think is a power porblem"** - **it is.** And the spend is worse than the read:
+  `TrySpendNativeEnergy` refuses outright when `battery.StoredEnergy < remaining`, so a drained
+  bound battery stalls the gate **with ten full batteries beside it on the same net**
+- [x] **"you can check the game current running"** - **the bridge was not reachable**, so this was
+  diagnosed from the source rather than from the running game. Said plainly because a diagnosis
+  from reading is a weaker claim than a diagnosis from observing, and the difference matters
+## The crossing, the book, and the live read - 2026-10-01 (0.12.78-dev) - DONE
+
+Owner, verbatim:
+
+> **"if i use approach gate and dispach to coordinate it says no book, i have no books... and if i
+> try directly clicking a pawn on it it mentions a bunch of shit about the power not being enough
+> reservers. look at the game and dont give me shit the api mod is not working make it work look at
+> the running game look at those messages look at the logs wtf!"**
+
+> **"fix the api u fuck"**
+
+> **"and check where i had to move stuff and where i had to add a door and add power conduit and fix
+> the spawn to have current lsaayout of devices generators batteries and the like"**
+
+> **"and you fixed both those problems with sending someone through dirrectly and whith sending them
+> through with the operations tab?"**
+
+> **"make sure the other scenerios properly get the book in a drop when they need it and start the
+> quest to go through their built gate"**
+
+- [x] **"the api mod is not working make it work"** - **it was running the whole time**, port 5174
+  with a token, both in the log. I had probed four wrong ports over plain HTTP. **What was genuinely
+  missing** is that the read allowlist had no selector for messages, so *"look at those messages"*
+  was unanswerable by the instrument. Five parameterless reads added, plus a bounded cell-rect read
+  and camera state
+- [x] **"it says no book, i have no books"** - every dispatch needs one Core `TextBook`; the start
+  spawned **112 fixtures across 17 types and no book**. Two go on the archive shelves
+- [x] **"it mentions a bunch of shit about the power not being enough reservers"** - the live gate
+  reads **533 stored against 49.59 needed**. Power was never the problem; that is the **inspect
+  readout**, not a refusal
+- [x] **"clicking on the portal and trying to send them through not working"** - **`Door locked`**.
+  `OrderCrossing` validated the approach cell on the near side and never asked whether the door
+  would open
+- [x] **"and you fixed both those problems"** - **answered honestly: no, not at the time.** Both
+  were diagnosed and neither was fixed until after that question
+- [x] **"where i had to add a door"** - exactly one, at facility-relative **(51, 24)**, the
+  compound's east perimeter wall at the dead end of the service corridor. **No authored door was
+  missing**
+- [x] **"and add power conduit"** - **the owner added none.** I claimed they had hand-laid about a
+  hundred; I had counted **17 runs against 191 cells**. Expanded the runs are **205**, and live is
+  **205**. A published claim that was wrong
+- [x] **"where i had to move stuff"** - **nothing was moved.** Conduits, glass, generators, bench,
+  smithy, research benches and glow pods are all exactly as authored. Every delta is furniture
+  deconstructed
+- [x] **"make sure the other scenerios properly get the book in a drop when they need it"** -
+  `RecordBookDelivery`, deterministic, on a calibrated gate with no book anywhere the branch can
+  reach
+- [x] **"and start the quest to go through their built gate"** - **already worked**, and is asserted
+  now rather than assumed: no scenario id anywhere in the request line, first two requests are power
+  the gate and assemble and calibrate
+
+---
+
+
+> moved from `## The doc sweep picked back up, and a site that does not pop like a text wall - 2026-10-01` in `docs/TODO.md`
+
+- [x] **"we were doing the massive update and corrections to content style and formate of all the
+  docs pertaining to that doc push earlier"** - **DONE 0.12.79-dev. Twenty documents de-bannered
+  and corrected, 60 offending lines to zero, 16 of 16 checkers passing, 49 of 49 proofs holding.**
+  the push is 0.12.77-dev, *the public wiki*. It
+  shipped the thirteen wiki pages, `docs/_config.yml` and the conformance rules, and **it
+  band-aided the hard half**: twenty-six living documents went false in one commit when the
+  dependencies became hard, and **nineteen of them carry a supersession banner on line 3 instead of
+  a corrected body**. The banner says *"anything here describing a Core-only route is history rather
+  than a current claim"* - a note admitting the document is wrong, not a document that is right.
+- [x] **"that we neeed to pick back up on"** - **DONE 0.12.79-dev.** Every body corrected and every
+  banner retired, so all twenty are back under the rule instead of exempt from it. Four findings the
+  sweep produced beyond the stale text: a **hole in `check-doc-conformance.py`** (the retirement
+  escape matched anywhere on a line, so one incidental *"until"* hid three false claims inside a
+  1,200-character paragraph — now scoped to the claim's own clause, with five planted cases, and the
+  first draft of that fix was wrong and the plants caught it); a **proof enforcing a lie**
+  (`proof-playing-and-help.py` asserted `PLAYING.md` must say *"no game has ever been launched"*,
+  false since 2026-09-30 — re-aimed at the caveat that launched and played-through differ, asserted
+  both ways, plant re-aimed to match); **`AGENTS.md` telling the next agent to pause work** against
+  the standing do-not-stop direction, while claiming no in-game test could run; and
+  **`FIRST_SLICE_CONTENT_INVENTORY.md` instructing banned work** - the field kit *"need their own
+  art, text, and Def records"*, which the content-reuse policy forbids and which four Core providers
+  had already replaced. Original finding follows: the bodies are still false. `ARCHITECTURE.md:27`
+  still opens a numbered invariant with *"Core-only, no Harmony ... `About.xml` declares no
+  dependencies"*; line 45 still lists the five expansions and the 294-mod profile as *"optional
+  runtime peers ... not referenced"*; `SKILL_TREE.md` still ships *"Core-only solo campaign"* as a
+  capability in two places including the dependency diagram. Same shape in
+  `CONTENT_REUSE_POLICY.md`, `FIRST_PLAYABLE_CONTRACT.md`, `CAMPAIGN_ROSTER_FREEZE.md` and
+  `PUBLIC_RELEASE_PLAN.md`. **Correct the body, then retire the banner** - a banner that outlives
+  the defect it describes is the same dated-claim defect the checker battery exists to catch.
+- [x] **"corrections to content style and formate of all the docs"** - **DONE for the working-doc
+  set at 0.12.79-dev**, where style and format meant one vocabulary for two facts that had been
+  sharing one phrase: *"Core-only"* as an implementation fact (the assembly references Core APIs and
+  no Harmony — still true) versus *"Core-only"* as a dependency claim (the package needs nothing but
+  Core — false since 2026-10-01). One phrase, two meanings, opposite truth values, which is why a
+  banner got stapled on instead of a fix. The implementation sense is now *"Core APIs"* or *"Core
+  content"*; the dependency sense is *"declared requirements"*. Original wording: style and format,
+  not only truth. One heading shape, one status vocabulary, one table idiom, one link idiom across
+  the set.
+
+Build at the time of the move: **0.12.79-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/DECOMPOSED.md (2026-10-02)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/DECOMPOSED.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **1 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+## Complete — moved to FINALIZED, descriptions retained per LAW
+
+### Parent minor task: Resume step 1 — CLOSED 2026-09-28 (0.4.2-dev) — connected-colony crossing service review
+
+**Parent minor task (from `docs/TODO.md`, verbatim from `implementation/CONNECTED_COLONY_CHECKPOINT.md`):**
+> Review the crossing service's documented permission, recovery and state boundaries before connecting callers. Finish unresolved constraints rather than weakening checks. Preserve original pawns/cargo and no-wipe landings.
+
+Decomposed proactively on 2026-09-28 from the crossing record (`implementation/CONNECTED_CROSSING_IMPLEMENTATION.md`) so the next session can start without re-deriving the slice. Each entry is one file read, one review, or one bounded edit.
+
+#### [x] Read the crossing service and its receipt records in full
+
+**Decomposition rationale:** the 800-line read LAW applies before any edit; the service is 535 lines and the records 207, so this is one read pass.
+
+**Files to touch:** `src/RimroomsAsyncIndustries/Portals/PortalCrossingService.cs`, `src/RimroomsAsyncIndustries/Portals/PortalCrossingRecords.cs` (read only)
+
+**Verification step:** the six documented boundaries from the crossing record are located in source by line: eligibility filter (player-faction humanlike colonists; rejects prisoners, slaves, quest lodgers, drafted, downed, dead, mental-state), source door/cell permission, nonmerging carry transfer, post-despawn graph recheck, post-spawn destination door/area check with rollback, 256-unresolved-crossing bound.
+
+#### [x] Enumerate the unresolved constraints the crossing record left open
+
+**Decomposition rationale:** the record names limits that are "still open"; step 1 says finish them rather than weaken checks, so they need a list before any caller is wired.
+
+**Files to touch:** new task record `docs/implementation/CONNECTED_CROSSING_CALLER_REVIEW.md` (written 2026-09-28)
+
+**Verification step:** the record lists at minimum: player-facing localization of API failure keys (`1.6/Languages/English/Keyed/`), the emergency-return route for portal sessions, the legacy saved-endpoint repair route (content versions 0–3 custom return anchor), receipt compaction policy, and mech/subhuman/optional-door support as explicitly out of scope.
+
+#### [x] Decide each open constraint: finish now, defer with reason, or hand to a later resume step
+
+**Decomposition rationale:** localization and emergency return belong to step 3 (crossing jobs + player controls); legacy endpoint repair belongs to step 2 (address registration). Step 1 should close only what callers need to be safe.
+
+**Files to touch:** `docs/implementation/CONNECTED_CROSSING_CALLER_REVIEW.md` (planned), `docs/TODO.md` (status notes alongside, never replacing, the step text)
+
+**Verification step:** every constraint has exactly one disposition and a pointer to the resume step that owns it.
+
+#### [x] Apply any source changes step 1 requires and compile
+
+**Decomposition rationale:** if the review finds a check that must be tightened before callers exist, the fix ships with compiler evidence; if none, this entry is closed as "no source change" and says so.
+
+**Files to touch:** `src/RimroomsAsyncIndustries/Portals/PortalCrossingService.cs` (only if a boundary must be tightened); `./tools/build.ps1 -NoRestore`
+
+**Verification step:** zero warnings/errors against the pinned Core references; compiler output saved under a new `docs/implementation/evidence/` folder only when a milestone checkpoint is being cut. No game launch.
+
+### Parent minor task: Resume step 2 — CLOSED 2026-09-28 (0.4.2-dev) — address registration, discovery and legacy endpoint repair
+
+**Parent minor task (from `docs/TODO.md`, verbatim from `implementation/CONNECTED_COLONY_CHECKPOINT.md`):**
+> Add explicit address registration and discovery using the existing campaign coordinate/site owner. Preserve seeds and visited maps; provide an explicit legacy saved-endpoint repair path. No auto-conversion of active legacy missions.
+
+Decomposed 2026-09-28 from the network record, the state-migration review and the destination service. Nothing in the repo calls `RimroomsPortalNetwork.Register` today; this step creates the first caller.
+
+#### [x] Read the network, connection record, destination service and map parent in full
+
+**Decomposition rationale:** four files own the pieces being joined (graph, edge record, coordinate/site owner, world-object anchors); the 800-line read LAW applies before wiring them.
+
+**Files to touch:** `src/RimroomsAsyncIndustries/Portals/RimroomsPortalNetwork.cs`, `PortalConnectionRecord.cs`, `Generation/DestinationService.cs`, `Generation/RimroomsDestinationMapParent.cs`, `Gate/PortalGateOpening.cs` (read only); `docs/implementation/CONNECTED_PORTAL_STATE_MIGRATION.md`
+
+**Verification step:** the registration preconditions in `Register(...)` are listed (actual door, branch-owned coordinate/site, distinct loaded maps, fixed approach cell, provider role, identity collision refusal), and the content-version gate in `DestinationService` (v4 Core door vs v0–3 `RR_ReturnAnchor`) is located by line.
+
+#### [x] Write the task record for step 2
+
+**Decomposition rationale:** `REGRESSION_CONTAINMENT.md` requires baseline, owned paths, affected callers/saved fields, deliberate changes, preserved behaviour and remaining runtime cases before a working path changes.
+
+**Files to touch:** `docs/implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md` (written 2026-09-28; steps 2 and 3 share one record because they shipped in one checkpoint)
+
+**Verification step:** the record names `rr_portalConnections`, `rr_gatePortalConnectionId`, `rr_gatePortalOpeningId`, `rr_contentVersion` and the coordinate record fields as the saved surfaces, and states that active legacy expeditions (`rr_gateActiveExpeditionId`) are never converted.
+
+#### [x] Register a laboratory address from an existing coordinate/site
+
+**Decomposition rationale:** the first real edge: when the campaign already owns a coordinate with a generated v4 site, a designated Core door on the HQ map plus the site's Core steel-door threshold become a `Laboratory` connection through `Register`.
+
+**Files to touch:** `src/RimroomsAsyncIndustries/Portals/RimroomsPortalNetwork.cs` (registration helper), `Generation/DestinationService.cs` (expose the saved threshold + approach for v4 sites), `Company/CampaignRecords.cs` (only if a coordinate needs a saved connection id; append, never renumber)
+
+**Verification step:** compiles; a repeated registration of the same address returns the existing record (idempotent); a v0–3 site is refused with a diagnosable key instead of being retargeted.
+
+#### [x] Add the explicit legacy saved-endpoint repair route
+
+**Decomposition rationale:** the checkpoint requires a repair path for sites whose return threshold is the historical `RR_ReturnAnchor`; registration accepts actual doors only and must not silently replace the anchor.
+
+**Files to touch:** `src/RimroomsAsyncIndustries/Generation/DestinationService.cs` and `Portals/PortalAddressService.cs`, `1.6/Languages/English/Keyed/RR_Portals.xml`
+
+**Verification step:** the repair is an explicit player/company action with its own receipt; it never rebuilds a visited map; on success the site can be registered; on failure the reason is keyed and the site stays readable under its old version.
+
+#### [x] Register natural (permanent) connections from discovery
+
+**Decomposition rationale:** natural portals have no timer and no close operation; the graph kind exists but nothing creates one. Discovery source for the first slice is a generated site's further doors/frontiers or a scenario opening.
+
+**Files to touch:** `src/RimroomsAsyncIndustries/Portals/RimroomsPortalNetwork.cs`, `Generation/GenStep_BackroomsDestination.cs` (frontier records), `Threats/FirstSliceSiteComponent.cs` (only if discovery is observed there)
+
+**Verification step:** a `Natural` edge registers without an opening id, `Availability` never consults gate timers for it, and a physically blocked doorway reports obstruction without removing the edge.
+
+#### [x] Compile and record
+
+**Decomposition rationale:** every resume step closes with compiler evidence and a master TODO bounded tick.
+
+**Files to touch:** `./tools/build.ps1 -NoRestore`; `docs/implementation/CONNECTED_ADDRESS_REGISTRATION_TASK.md`; `docs/PREPRODUCTION_AND_IMPLEMENTATION_TODO.md` (add a checked bounded subitem under the connected-colony item); `docs/TODO.md` (flip step 2); `docs/FINALIZED.md`
+
+**Verification step:** zero warnings/errors; the bounded subitem names its evidence; no game launch.
+
+### Parent minor task: Resume step 3 — CLOSED 2026-09-28 (0.4.2-dev) — ordinary crossing jobs, player controls, laboratory wiring, emergency return
+
+**Parent minor task (from `docs/TODO.md`, verbatim from `implementation/CONNECTED_COLONY_CHECKPOINT.md`):**
+> Implement ordinary local threshold approach/crossing jobs and player controls without crew/manifests. Wire laboratory open/close/recovery and permanent natural links. Define the remaining emergency-return route without duplicate debits or teleporting stranded workers home.
+
+Decomposed 2026-09-28. This is the step that makes the substrate reachable in play: the first `JobDriver` that walks a pawn to a registered threshold and calls `PortalCrossingService.Cross`, plus gizmos that call `BeginPortalOpening` / `ClosePortalOpening` / `RecoverPortalOpening`.
+
+#### [x] Read the existing approach/return job drivers and the gate job/work-giver pair
+
+**Decomposition rationale:** the new crossing job must reuse the native pathing pattern already proven in `JobDriver_ExpeditionApproach` and the gate jobs rather than invent a second one.
+
+**Files to touch:** `src/RimroomsAsyncIndustries/Expedition/JobDriver_ExpeditionApproach.cs`, `Gate/JobDriver_RimroomsGate.cs`, `Gate/WorkGiver_RimroomsGate.cs`, `Portals/PortalCrossingService.cs` (read only)
+
+**Verification step:** the toil sequence the crossing job needs is written down: goto saved approach cell → recheck `ValidateStepForTraversal` → `Cross(pawn, step, operationId)` → end job on the destination map.
+
+#### [x] Add `JobDef` + `JobDriver_CrossPortal` + keyed text
+
+**Decomposition rationale:** one job, one Def, one keyed file; failure keys from the crossing service become player text here.
+
+**Files to touch:** `src/RimroomsAsyncIndustries/Portals/PortalTravelService.cs` (holds `JobDriver_CrossPortal`), `Mod/Rimrooms - Async Industries/1.6/Defs/JobDefs/RR_PortalJobs.xml`, `1.6/Languages/English/Keyed/RR_Portals.xml`, `tools/package-files.json` (add the two XML files to the allowlist)
+
+**Verification step:** compiles; package validation accepts the new files; every `FailureKey` string the crossing service can return has a keyed entry.
+
+#### [x] Add player controls: deliberate cross gizmo on a registered threshold, open/close/recover gizmos on the gate
+
+**Decomposition rationale:** the scenario/portal contract requires deliberate enter/return/recall/dial/close/emergency routes and forbids accidental teleport on ordinary door use.
+
+**Files to touch:** `src/RimroomsAsyncIndustries/Gate/PortalGateOpening.cs` (gizmo surface), `Gate/CompRimroomsGate.cs` (`CompGetGizmosExtra` only), `UI/OperationsGateBinding.cs` (network view)
+
+**Verification step:** compiles; opening a designated door normally never crosses; the gizmo calls the portal-session path (`BeginPortalOpening`) and never the legacy `BeginOpening`; refusal reasons surface through `CompanyActionResult`.
+
+#### [x] Wire laboratory session lifecycle and permanent natural links into the job
+
+**Decomposition rationale:** a laboratory edge is crossable only while `HasUsablePortalWindow(connectionId, openingId)`; a natural edge always is unless physically obstructed. The job must observe both.
+
+**Files to touch:** `src/RimroomsAsyncIndustries/Portals/JobDriver_CrossPortal.cs`, `Portals/RimroomsPortalNetwork.cs` (`Availability`)
+
+**Verification step:** closing a laboratory opening ends or suspends the job without moving anyone; a pawn already across stays there with its inventory; reopening the same address reconnects.
+
+#### [x] Define the emergency-return route for portal sessions
+
+**Decomposition rationale:** `RecoverPortalOpening` exists but the route home for stranded workers is undefined; the contract forbids teleporting everyone home and forbids double debits.
+
+**Files to touch:** `src/RimroomsAsyncIndustries/Gate/PortalGateOpening.cs`, `Portals/PortalCrossingService.cs` (`Recover` path only), `docs/implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md` (written 2026-09-28)
+
+**Verification step:** an emergency session debits the physical battery once through the existing receipt rules; a retry cannot restore duration; workers return only by physically crossing a reopened edge or via the saved receipt recovery.
+
+#### [x] Compile, record, tick, publish at milestone
+
+**Decomposition rationale:** step 3 is the first player-visible portal milestone and is worth a checkpoint + cascade.
+
+**Files to touch:** `./tools/build.ps1`; `docs/implementation/evidence/connected-travel-2026-09-28/`; `docs/implementation/CONNECTED_TRAVEL_IMPLEMENTATION.md`; `About.xml` + `CHANGELOG.md` version bump (0.4.2-dev); master TODO bounded ticks; `docs/TODO.md`, `docs/FINALIZED.md`; then `docs/PUBLISHING.md` procedure on both remotes
+
+**Verification step:** zero warnings/errors; manifests saved; all eight remote refs read back at the new commit; no game launch.
+
+---
+
+### Parent minor task: Resume step 4 (wave 1) — CLOSED 2026-09-28 (0.5.0-dev) — work intents, planning leases and the storage-hauling family
+
+> "Implement saved work intents, quantity leases and native destination job revalidation; then physical hauling, construction, bills, research, medical/food/bed and other work/needs families. Preserve priorities, schedules, areas, locks, custody and actual inventory. A generic graph does not implement these adapters."
+
+**Decomposition rationale:** the step covers every work family. The engine plus exactly one family is the smallest increment that proves the design actually works end to end, and the remaining families are then additive against a settled contract rather than speculative.
+
+- [x] **Slice 1 — close the reference gap before writing anything.** Inspect Core 1.6's own map-portal system and every API the adapters would stand on, against the pinned assembly hash. Files: `.local/inspection-connected-work/*` (evidence only). Verification: each signature read from the decompile, not memory; findings written up as an appendix to `implementation/CONNECTED_WORK_CORE_API.md`.
+- [x] **Slice 2 — the saved intent.** Files: `ConnectedWork/ConnectedWorkRecords.cs`. Verification: every field the pinned review demanded is present, including adapter version and the unused final-target reference later families need.
+- [x] **Slice 3 — bounded routing for automatic callers.** Files: `ConnectedWork/ConnectedRouteService.cs`. Verification: a budget-limited or invalidated status returns pending, never unreachable; cursors are transient and cleared on load.
+- [x] **Slice 4 — the adapter contract.** Files: `ConnectedWork/ConnectedWorkAdapter.cs`. Verification: the candidate half and the definitive half are separate abstract members, so a future family cannot accidentally merge them.
+- [x] **Slice 5 — the component, leases and maintenance.** Files: `ConnectedWork/RimroomsConnectedWorkComponent.cs`, plus one new public `OwnsMap` accessor on `Company/CampaignServices.cs`. Verification: withdraw-on-fault on open; one live intent per worker enforced in the save validator; full sweep bounded by the live cap.
+- [x] **Slice 6 — the storage-hauling family.** Files: `ConnectedWork/Adapters/ConnectedHaulingAdapter.cs`. Verification: two candidate sources so stored objects are not silently invisible; rotating windows so no map or stockpile is starved; `Pawn` and `Corpse` refused by design.
+- [x] **Slice 7 — work givers and segment drivers.** Files: `ConnectedWork/WorkGiver_ConnectedWork.cs`, `ConnectedWork/JobDriver_ConnectedHauling.cs`, `Defs/JobDefs/RR_ConnectedWorkJobs.xml`, `Defs/WorkGiverDefs/RR_ConnectedWork.xml`. Verification: plan/continue pair per family; carry-between-jobs flags set from the verified `Pawn_JobTracker` rules; outcomes recorded from a global finish action so a failure cannot skip them.
+- [x] **Slice 8 — make it visible.** Files: `UI/OperationsConnectedWork.cs`, one added call in `UI/OperationsPortalNetwork.cs`, `Languages/English/Keyed/RR_ConnectedWork.xml`. Verification: every live trip is listed; all 31 referenced keys resolve.
+- [x] **Slice 9 — checkpoint.** Files: `About.xml`, csproj, `tools/package-files.json`, `CHANGELOG.md`, the implementation record, the evidence folder, and the workflow ledger. Verification: clean build, XML parse sweep, key-coverage sweep, manifests recomputed.
+
+### Parent minor task: Deferment audit — CLOSED 2026-09-28 (0.5.1-dev) — nine rows closed, natural gates findable
+
+> lets get to work.. and try not to deffer anything you may need to properly bbuild other coded systems so that you can do the deffered items(I DONT WANT YOU JUST DEFFERING SHIT THAT WE NEED WORKING !!! WE CANT NOT BUILD SHIT THAT THE MOD DEPENDS ON AND JUST MARK IT DEFFERED BECAUSE SOMETHING WELSE NEEDS DONE FIRST!!! DO THE FIRST THING TO UNDEFER SHIT! I DONT WANT TO GET COMPLETED WITH THIS MOD AND HAVE 1000s of defferments, we need to critical solve these issues wirthin the confines of the mods and the game
+
+**Decomposition rationale:** audit before building, because the register turned out to contain rows that had already shipped and rows blocked on nothing — and building the next feature on top of that would have inherited both.
+
+- [x] **Slice 1 — audit the register and the source.** Ask of every row: is it still open, is it blocked on anything, does anything depend on it; and of the source: which public APIs have no callers. Verification: three rows verified as already-shipped against source; `CreateDiscoveredCoordinate` confirmed at zero callers.
+- [x] **Slice 2 — one `OwnsMap`.** Files: `Portals/RimroomsPortalNetwork.cs`, `Portals/PortalCrossingService.cs`. Verification: both delegate to the campaign accessor, which is the strictest of the three.
+- [x] **Slice 3 — bound the finished-receipt archive.** Files: `Portals/PortalCrossingService.cs`. Verification: unresolved receipts provably untouched; replay protection reasoned from how operation ids are derived.
+- [x] **Slice 4 — container delivery destinations.** Files: `ConnectedWork/Adapters/ConnectedHaulingAdapter.cs`, `ConnectedWork/JobDriver_ConnectedHauling.cs`, `ConnectedWork/ConnectedWorkRecords.cs`, `Defs/JobDefs/RR_ConnectedWorkJobs.xml`. Verification: branch mirrors Core's `HaulToStorageJob` exactly; Core's own container toils used.
+- [x] **Slice 5 — observed remote allowed areas.** Files: `ConnectedWork/ConnectedWorkRecords.cs`, `ConnectedWork/RimroomsConnectedWorkComponent.cs`, `ConnectedWork/Adapters/ConnectedHaulingAdapter.cs`, `ConnectedWork/WorkGiver_ConnectedWork.cs`. Verification: public API only; unobserved reads as unrestricted, matching Core's own default; arrival check still definitive.
+- [x] **Slice 6 — natural-gate discovery.** Files: `Portals/NaturalFrontierService.cs` (new), `Portals/PortalAddressService.cs`, `UI/OperationsPortalNetwork.cs`, `Defs/JobDefs/RR_PortalJobs.xml`, `Defs/WorkGiverDefs/RR_InvestigationWork.xml`, `Languages/English/Keyed/RR_Portals.xml`. Verification: `CreateDiscoveredCoordinate` now has a caller; the draw is deterministic per doorway position under the coordinate seed; capped per coordinate; `Sight` and `Moving` confirmed as real capacity defNames before shipping the def.
+- [x] **Slice 7 — the four missing keyed strings.** Files: `RR_Company.xml`, `RR_Procurement.xml`, `RR_Generation.xml`. Verification: sweep of every `RR_` identifier in source re-run; only concatenation prefixes remain, each family spot-checked.
+- [x] **Slice 8 — checkpoint.** Files: `About.xml`, csproj, `CHANGELOG.md`, the audit record, the evidence folder, and the workflow ledger including the four audit questions now in `DEFERRED.md`'s header.
+
+### Parent minor task: Casualties and remains — CLOSED 2026-09-28 (0.5.2-dev) — our own people and our dead come home
+
+> okay lets get to it, whats logically next and/or needs finished already built or onto the next
+
+**Decomposition rationale:** the owner's gate rule names people and monstrosities among what comes back through an opening, and no route reached it. A gap in a stated requirement is built before the next addition, so this went ahead of construction supply.
+
+- [x] **Slice 1 — read Core's rescue path before writing.** Verification: `WorkGiver_RescueDowned`, `HealthAIUtility.CanRescueNow` (confirmed to have no bed requirement), `WorkGiver_TakeToBed.FindBed`, `JobDriver_TakeToBed` (confirmed it already jumps past goto and pickup when already carrying), `Toils_Bed`, `Building_Bed`, `WorkGiver_HaulCorpses`, and Core's `DoctorRescue` priority — all against the pinned assembly.
+- [x] **Slice 2 — share the scan rules.** Files: `ConnectedWork/ConnectedWorkScan.cs` (new), `Adapters/ConnectedHaulingAdapter.cs`. Verification: the hauling adapter's private copies removed, not left alongside.
+- [x] **Slice 3 — remains as ordinary hauling.** Files: `Adapters/ConnectedHaulingAdapter.cs`. Verification: `Corpse` exclusion removed with Core's feeding-animal guard added; category check relaxed for corpses only.
+- [x] **Slice 4 — the cell-only candidate defect.** Files: `Adapters/ConnectedHaulingAdapter.cs`. Verification: a grave is reachable as a candidate destination, so the container delivery route is no longer unreachable for the case it was built for.
+- [x] **Slice 5 — the casualty adapter.** Files: `Adapters/ConnectedCasualtyAdapter.cs` (new), `ConnectedWorkAdapter.cs` (registry). Verification: one direction only; destination is the map the worker stands on and only if it has a candidate bed; capture deliberately absent.
+- [x] **Slice 6 — the bed handoff driver.** Files: `JobDriver_ConnectedCasualty.cs` (new), `Defs/JobDefs/RR_ConnectedWorkJobs.xml`. Verification: Core's own bed toils and reservation pattern; `carryThingAfterJob` false so a failed placement hands off to native rescue instead of stranding a carried person.
+- [x] **Slice 7 — work givers and the shared fetch.** Files: `WorkGiver_ConnectedWork.cs`, `JobDriver_ConnectedHauling.cs`, `Defs/WorkGiverDefs/RR_ConnectedWork.xml`, `Languages/English/Keyed/RR_ConnectedWork.xml`. Verification: plan below and continue above Core's `DoctorRescue`; a person reserved whole rather than by quantity.
+- [x] **Slice 8 — checkpoint.** Files: `About.xml`, csproj, `CHANGELOG.md`, the casualties record, the evidence folder, and the workflow ledger.
+
+### Parent minor task: Construction supply and the dependency audit — CLOSED 2026-09-28 (0.5.3-dev)
+
+> get to it we are doing great! make sure mods needed specifically for our mod as dependacies are properly handled with our single mod Rimrooms properly using them as needed to impliment all features of the mod properly
+
+**Decomposition rationale:** the dependency audit ran first because if a feature genuinely needed another mod it would have changed what got built. It did not — and the audit instead dissolved a content blocker and found a factually wrong row.
+
+- [x] **Slice 1 — audit what the mod actually requires.** Verification: twelve non-Rimrooms defs each traced to base Core in the game's own `Data` folders; both patch files confirmed guarded by parsing Core defs; stack-mod and modded-door compatibility confirmed from what the code does.
+- [x] **Slice 2 — fix the throwing def lookups.** Files: `Expedition/RimroomsExpeditionComponent.cs`, `Gate/WorkGiver_RimroomsGate.cs`, `Threats/FirstSliceSiteComponent.cs`, `Languages/English/Keyed/RR_Expedition.xml`. Verification: zero `GetNamed` calls remain.
+- [x] **Slice 3 — read Core's construction path before writing.** Verification: `IConstructible`, `IHaulEnroute`, `Frame`'s declaration and `resourceContainer`, `Toils_Construct`, `Toils_Goto.MoveOffTargetBlueprint`, `JobDriver_HaulToContainer`'s already-carrying jump, and Core's delivery giver priorities — all against the pinned assembly.
+- [x] **Slice 4 — the construction adapter.** Files: `Adapters/ConnectedConstructionAdapter.cs` (new), `ConnectedWorkAdapter.cs`. Verification: quantity clamped by stack, carry capacity and the site's remaining need; site revalidated on the fetch side as well as on arrival.
+- [x] **Slice 5 — the delivery driver.** Files: `JobDriver_ConnectedConstruction.cs` (new), `Defs/JobDefs/RR_ConnectedWorkJobs.xml`. Verification: blueprints included via Core's own conversion toil rather than excluded.
+- [x] **Slice 6 — work givers.** Files: `WorkGiver_ConnectedWork.cs`, `Defs/WorkGiverDefs/RR_ConnectedWork.xml`. Verification: continue above and plan below Core's own delivery givers, with `prioritizeSustains` matching them.
+- [x] **Slice 7 — record the capability-matching method and correct the register.** Files: `implementation/DEPENDENCIES_AND_CAPABILITY_MATCHING.md` (new), `DEFERRED.md`. Verification: Core generator outputs extracted from `Buildings_Power.xml`; each M2 legacy object given a capability-based Core answer.
+- [x] **Slice 8 — checkpoint.** Files: `About.xml`, csproj, `CHANGELOG.md`, the construction record, the evidence folder, and the workflow ledger.
+
+### Parent minor task: Owner decisions round — CLOSED 2026-09-28 (0.5.4-dev) — duration ladder, scenario parity, company naming
+
+> sound good, track the goal of completing todo work and anything else needed to make this mod work as layed out and use ask me questions with muliple choice suggestions and wwrite in options where you need guidance or blocked or holes needed filled or any guildance needed.
+
+**Decomposition rationale:** the open forks were asked before building, because the duration answer determined whether the three work families already shipped were usable at all.
+
+- [x] **Slice 1 — ask, with options and trade-offs.** Four questions: gate duration, validation timing, next build, inside start. All answered, including two rows owner-blocked since Gate 0.
+- [x] **Slice 2 — verify the natural-gate exemption before touching any timer.** Verification: the window is consulted only for laboratory edges; a natural connection has no machine, operator or energy draw. No change needed.
+- [x] **Slice 3 — pick a tier driver that cannot go backwards.** Verification: `researchInsights` is decremented on commit, so it was rejected in favour of completed projects.
+- [x] **Slice 4 — the ladder.** Files: `Gate/CompRimroomsGate.cs` (props, config errors, tick, readout), `Gate/PortalGateOpening.cs` (tier, indefinite, ticks-for-tier, both session starts). Verification: legacy window untouched; sustained sessions still spend energy every tick.
+- [x] **Slice 5 — company naming, end to end.** Files: `Scenario/RimroomsStartDef.cs`, `Scenario/RimroomsStartupComponent.cs`, `Scenario/Page_RimroomsCompanySetup.cs`, `Scenario/ScenPart_RimroomsStart.cs`, `Company/CompanyActionResult.cs`, `Company/RimroomsCampaignComponent.cs`, `Company/CampaignServices.cs`, `UI/Dialog_RenameCompany.cs` (new), `UI/MainTabWindow_Operations.cs`, `Defs/RimroomsStartDefs/RR_Starts.xml`. Verification: renames through Core's own dialog; blank and over-long names refused; additive save keys only.
+- [x] **Slice 6 — record the decisions where decisions live.** Files: `GATE_0_DECISIONS.md`, `SCENARIO_SETUP_AND_PORTAL_NETWORK.md`, `CONNECTED_COLONY_PORTALS.md`, `DEFERRED.md`. Verification: three owner-blocked rows resolved; the unreachable top of the ladder recorded as a content gap with a named owner rather than left implied.
+- [x] **Slice 7 — checkpoint.** Files: `About.xml`, csproj, `CHANGELOG.md`, the record, the evidence folder, the ledger.
+
+
+Build at the time of the move: **0.12.79-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Session 2026-10-02 - the queue was eight parts archive to one part work (0.12.79-dev)
+
+**Verbatim user direction:** *"we need to move all finished items to finalized.md from the todo,
+the todods sahll never hold completed items, they are always to be moved to finalized first then
+deleted from the todods once confirmed virbatium transfer"*
+
+**Files touched:** `docs/TODO.md`, `docs/DECOMPOSED.md`, `docs/FINALIZED.md`, `docs/NOW.md`,
+`.claude/CONSTRAINTS.md`, `.claude/CLAUDE.md`, `.claude/memory-templates/MEMORY.md`,
+`.claude/memory-templates/feedback_finalized_before_delete.md`,
+`tools/check-doc-conformance.py`, `.local/register/proof-housekeeping.py`,
+`.local/register/plant-housekeeping.py`, `.local/qa/archive-finished-todo.py` (new),
+`.local/qa/verify-archive-move.py` (new), `.local/qa/plant-archived-queue-scope.py` (new, suite
+TWENTY-TWO), `.local/qa/check-queue-orphans.py` (new), `.local/qa/todo-census.py` (new),
+`.local/qa/todo-inventory.py` (new), `.local/qa/preview-kept-todo.py` (new).
+
+**No source file was touched.** This is a ledger change, a LAW change and a two-instrument
+re-aim. The build is unchanged at 0.12.79-dev.
+
+### WHAT THE QUEUE ACTUALLY WAS
+
+`docs/TODO.md` held **727 `[x]` rows across 2,716 lines**. Of that, **thirty whole `##`
+sections** were closed session records end to end and **fifty-one whole owner-direction groups**
+had every row done. **2,039 lines moved out. 676 remain.**
+
+**The open count went UP, 42 to 79, and that is the finding rather than a side effect.** Nothing
+closed and nothing opened. The old number was a count of a prefix of a file nobody could read to
+the end of, and `NOW.md` had been quoting it as the queue depth for weeks.
+
+### `DECOMPOSED.md` ASSERTED A TRANSFER THAT HAD NEVER HAPPENED
+
+Its heading read *"Complete - moved to FINALIZED, descriptions retained per LAW"* over
+**fifty-six entries**. Checked by string against `FINALIZED.md`: **zero hits for any of them.**
+Not one of those decomposed units had ever been archived. The file was not stale, it was wrong,
+and it had been wrong in a way that read as compliance. 228 lines moved, 79 remain.
+
+**This is the defect the direction exists to prevent**, found by acting on the direction rather
+than by auditing for it.
+
+### VERBATIM IS AN IDENTITY HERE, NOT A READING
+
+`.local/qa/archive-finished-todo.py` **never rewrites a line.** It labels every line index of the
+source either KEEP or MOVE and asserts
+
+```
+reassemble(KEEP + MOVE, by original index) == original bytes
+```
+
+before writing anything. Then the user's order exactly: archive written **first**, every moved
+line confirmed present in it, and only then is the queue rewritten - and a missing line restores
+`FINALIZED.md` and leaves the queue untouched rather than half-finishing.
+
+`.local/qa/verify-archive-move.py` re-checks the finished result against a pre-move backup
+**independently of the mover**, five ways: the queue is byte-identical to the recomputed KEEP
+half; every moved line is in the archive region in the same relative order; the line multiset is
+conserved; the archive is unaltered above the append point; zero `[x]` rows remain. All five
+hold, for both files.
+
+### A CLOSURE MOVES WITH ITS CONTEXT, AND THE FIRST CUT GOT THAT WRONG
+
+The first pass moved `[x]` rows at bullet granularity and left **verbatim owner directions
+standing over empty space** - the quote with nothing under it, reading as outstanding work. That
+is a LAW #0 problem, not a cosmetic one.
+
+So the cut has three granularities, coarsest first: a whole `##` section that is a closed record;
+a whole direction group, from a `###` heading or a `**Verbatim` line to the next, whose every row
+is done; then individual rows. A fixed-point sweep then moves any heading or `**...:**` lead-in
+whose entire body has gone. **677 lines became 676** on that sweep alone, and the queue stopped
+having holes in it.
+
+### TWO SECTIONS TITLED DONE WERE DELIBERATELY NOT MOVED
+
+*The first walked level* and *Lights and geometry*, both 0.12.61-dev, carry **twenty-two `[ ]`
+rows** between them under headings that say DONE. **The title is not the marker.** Promoting a
+row the user never ticked would be inventing a closure, so they stayed, the mover reports them
+every run, and they are now the first thing in the queue to look at.
+
+### ONE RULE AND ONE PROOF RE-AIMED, AND BOTH CAME OUT STRONGER
+
+**`check-doc-conformance.py` rule 6** fails the build when a direction quoted in `FINALIZED.md`
+never reached `TODO.md`. Read literally it would now fail for **every archived direction** -
+demanding the queue keep exactly what the direction says it must not. It is scoped to a delimited
+`archived-queue:begin` / `:end` region, written only by the mover and only alongside the rows
+that closed it. A direction acted on and never queued still appears only in a session write-up,
+outside every region, and still fails.
+
+**Proved both ways** by `.local/qa/plant-archived-queue-scope.py`, suite twenty-two, **4 of 4**: a
+direction outside every region fails; the same direction inside a region passes, so the escape is
+not dead code; a region whose markers are stripped fails, so the markers are load-bearing.
+
+**`proof-housekeeping.py`** read four closure markers out of `docs/TODO.md`, where a closed row no
+longer sits. It reads the archive now **and additionally asserts the row is gone from the queue** -
+which the single-file read could not express. **A row flipped to `[x]` and left sitting in the
+queue now fails a claim that used to pass it**, and so does a row deleted with nothing archived.
+Four plant anchors in `plant-housekeeping.py` re-aimed with it; **41 of 41 still caught**.
+
+### THE LAW GAINED ITS MISSING HALF
+
+`§FINALIZED BEFORE DELETE` governed the **order** of a removal and never said the removal was
+**mandatory**. It does now, as its second rule: every queue tier carries `[ ]`, `[~]` and `[T]`
+only; `[x]` is transient, legal between finishing and archiving **in the same batch**; `[T]` is
+not finished work; a DONE title is not a marker; closures move with their context; and verbatim
+means the reassembly identity above. Indexed in `.claude/CLAUDE.md` and written to project memory
+and the memory template.
+
+**Sixteen checkers pass, forty-nine proofs hold**, 41 of 41 in the re-aimed housekeeping suite and
+4 of 4 in the new one. **Not published** - the cascade is the user's call.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-02)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TODO.md`
+
+### Owner direction — the queue is not an archive (2026-10-02)
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+- [x] **"we need to move all finished items to finalized.md from the todo"** — **DONE 2026-10-02.** This file held **727 `[x]` rows across 2,716 lines** when the direction was given: **thirty whole `##` sections** and **fifty-one whole direction groups** that were closed records end to end, plus **237 further `[x]` rows** inside groups that still hold open work. **2,039 lines moved**, leaving **676**. `docs/DECOMPOSED.md` went with it — **56 entries, 228 lines, leaving 79** — and its case was worse than stale: its heading read *"Complete — moved to FINALIZED, descriptions retained per LAW"* over entries that were **never in `FINALIZED.md` at all**, zero string hits for any of them. It asserted a transfer that had not happened.
+- [x] **"the todods sahll never hold completed items"** — **HELD as a standing absolute, and enforced rather than remembered.** Every tier of the queue carries pending, partial and `[T]` rows only; a `[x]` row in a queue file is a defect to be cleared, not a record to be kept there. Written into `.claude/CONSTRAINTS.md §FINALIZED BEFORE DELETE` as its second clause, and into project memory. **The open count went UP, 42 to 79**, which is the whole point: nothing closed and nothing opened, the queue just stopped burying what was left under eight times its own volume in finished work.
+- [x] **"they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"** — **DONE, and the confirmation is an identity rather than a reading.** `.local/qa/archive-finished-todo.py` never rewrites a line: it labels every line index KEEP or MOVE and asserts that reassembling the two halves in original order reproduces the original **byte for byte**, aborting if it does not. Then the owner's order exactly — archive written **first**, every moved line confirmed present in it, and only then is the queue rewritten; a missing line restores `FINALIZED.md` and leaves the queue untouched. `.local/qa/verify-archive-move.py` re-checks the finished result against a pre-move backup **independently of the mover**: queue byte-identical to the recomputed KEEP half, every moved line present in the archive in order, line multiset conserved, archive unaltered above the append point, zero `[x]` left. All five hold.
+- [x] **One rule and one proof had to be re-aimed, and both got stronger.** `check-doc-conformance.py` rule 6 fails the build when a direction quoted in `FINALIZED.md` never reached `TODO.md` — read literally it would now fail for every archived direction, demanding the queue keep exactly what this direction says it must not. It is scoped to a delimited `archived-queue` region written only by the mover and only alongside the rows that closed it, so a direction acted on and never queued still appears only in a session write-up and still fails. Proved both ways by `.local/qa/plant-archived-queue-scope.py`, 4 of 4. `proof-housekeeping.py` read four closure markers out of the queue; it reads the archive now **and** asserts the row is gone from the queue, so a row flipped to `[x]` and left sitting there fails a claim that used to pass it. Four plant anchors re-aimed with it, 41 of 41 still caught.
+- [x] **Two sections titled DONE were deliberately not moved.** *The first walked level* and *Lights and geometry*, both 0.12.61-dev, carry **twenty-two `[ ]` rows** between them. **The title is not the marker**, and promoting a row the owner never ticked would be inventing a closure. They are reported by the mover every run and need reading and ticking by hand.
+
+---
+
+
+Build at the time of the move: **0.12.79-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - the dated checkpoint sections (2026-10-02)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+**And, on being shown the queue still at ~96 KB after the row-level pass:** *"BEcause the todos are still like 100kb and i know that not all unfinished work and only unfinished work like it shall be"* / *"what the fuck are you doing this is a simple move completed item to another folder"*
+
+The owner was right and the row-level pass had missed this. **Nine `##` sections of `docs/TODO.md` were titled as dated checkpoint records** - a launch finding, a coordinate-rebuild stage, a doc sweep - holding **20.9 KB**, most of it the finished write-up of what was measured, diagnosed and shipped. The row-level mover could not take them because each still held a few open rows, and a section with an open row in it is not a closed record. **But the section is a record.** Each is below, whole and unaltered; the **38 open rows** they held were carried forward into `TODO.md` under *Open rows carried out of the play-testing checkpoints*, verbatim and tagged with their source, so nothing open was lost. An open row therefore appears in both files on purpose: splitting the prose from the rows would leave a record that no longer says what it found.
+
+**1 open row(s) repeated verbatim across checkpoints.** Carried once into the queue, named here so the consolidation is on the record rather than silent:
+
+- In `## Releasing a place — 2026-09-30 (0.12.51-dev)`, repeating a row already carried from `## Coordinate rebuild, stages two to four — 2026-09-30 (0.12.50-dev)`: - [ ] **still open from the same direction** — the wild variation of materials a
+
+> moved from `## Fifth launch findings — 2026-09-30` in `docs/TODO.md`
+
+## Fifth launch findings — 2026-09-30
+
+Owner, verbatim: **"okay check it the store and pawns are there now but i dont see a natural gate
+thats suppose to be on the back wall of one of the storage rooms so that they can eneter theri
+300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels with
+thir natual gate spawns to different levels within"**
+
+
+
+  The site failed in `ValidateNativePowerNetwork`, which required `count(def == lightDef)` to equal `Rooms.Count + Rooms.Count(service_passage or utility_room)`. The extra lamps in that sum are `RoomContentBuilder`'s hard-coded **`StandingLamp`**; `BackroomsPalette` switched `lightDef` to **`WallLamp`** at **0.7.8-dev**. `climateRoom` guarantees at least one such room exists, so the shortfall was arithmetic, not chance: **no Backrooms coordinate could generate for thirty-nine checkpoints**, and no proof caught it because they read source text and nothing had ever run the generator.
+
+  The validator now checks the lights **actually placed** and sweeps **every `CompPowerTrader` on the map** — it names no def and predicts no count. And a power fault is **reported, never fatal**: a dark, cold coordinate is playable, a missing one costs the player the gate. `ValidatePlacedLayout` stays fatal. Record `implementation/NATURAL_GATE_UNBLOCKED_IMPLEMENTATION.md`, **28 of 28** plants caught.
+
+
+
+
+- [ ] **"and everything doesnt have to be square rooms and rectangle halways and u can use walls as pillars making the 0 level rooms be grand large spaces and leas than 60-100 romms and this can propigate depper with the wild variatiosn of material typeds in all items equaipment walls floors lights furnature and benches that are found everywher deeper in with wild random events and layouts and spawns to find and loot!!!!!!"** — **OPEN. This REVISES the room-count answer given an hour earlier and it is the better call.** Taken apart into what each clause actually requires:
+
+  | Clause, verbatim | What it means in the generator |
+  |---|---|
+  | *"everything doesnt have to be square rooms and rectangle halways"* | a room's `Bounds` stays a rect for bookkeeping, but the **carved shape** does not: L, T, cross and ragged-edged rooms, and corridors that change width and bend |
+  | *"u can use walls as pillars"* | interior `ThingDefOf.Wall` on a support lattice. **This is the thing that makes grand spaces possible at all** — `RoofCollapseUtility.RoofMaxSupportDistance` is **6.9**, so a roofed span wider than ~13 cells needs something holding it up, and a pillar is exactly that |
+  | *"making the 0 level rooms be grand large spaces"* | shallow depth is **few, very large, pillared halls** — not the tidy 10-16 cell boxes the planner builds today |
+  | *"leas than 60-100 romms"* | **supersedes the 60-100 dense-warren answer.** Fewer rooms, each far bigger. The warren idea moves inward rather than being dropped |
+  | *"this can propigate depper"* | the variation is a **function of depth**, which `BackroomsPalette` and `Derange` already are. Same axis, more of it |
+  | *"wild variatiosn of material typeds in all items equaipment walls floors lights furnature and benches"* | `CoordinateMaterials` already picks stuff per coordinate; widen it across **every** placed category and let the spread grow with depth |
+  | *"found everywher deeper in"* | material variety is discovered content, so what a room is **built from** is part of the loot |
+  | *"with wild random events and layouts and spawns to find and loot!!!!!!"* | `AnomalyEventService`, `InhabitantService` and `RoomArchetypeService` all exist; the layouts and the loot density scale inward with the rest |
+
+  **What stands from the four earlier answers:** levels are **300x300**; `threshold_room` / `office_copy` / `return_gallery` stay **unique** while other families **repeat**; **new structural families** are authored as layout and dressing only with **no new ThingDefs**; **4-6 onward gates** per level with `MaximumNaturalDepth` **3 to 6**; **fresh save**, the 60x60 path dropped.
+
+  **What changes:** *"leas than 60-100 romms"* replaces the 60-100 count, and grand pillared halls at shallow depth replace the uniform small-room grid. The 10x10 planning grid at 19-cell spacing was sized for the old shape and is superseded with it — a grand hall does not fit in a 19-cell slot.
+
+- [ ] **SUPERSEDED IN PART, same day, by the row above** -- the *"leas than 60-100 romms"* direction replaces this row's 60-100 count and its uniform small-room grid. Kept whole because the size, family, gate-count, depth-cap and save decisions in it all still stand.
+- [ ] **"theri 300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels with thir natual gate spawns to different levels within"** — **OPEN, and fully specified by the owner across four questions this checkpoint.** Levels become **300×300** (from 60×60); **60–100 rooms** in a dense warren on a **10×10** planning grid at the existing 19-cell spacing; **threshold_room / office_copy / return_gallery stay unique**, the other five families **repeat**, and **new structural families** are authored (flooded_room, stairwell, dead_end, pillar_hall) — **layout and dressing only, no new ThingDefs**; **4–6 onward gates per level**, one per ~15 rooms, with `MaximumNaturalDepth` **3 → 6**; and a **fresh save**, dropping the 60×60 path entirely for one shape, the simplest code and the cleanest proofs.
+
+---
+
+
+> moved from `## Coordinate rebuild, stage one — 2026-09-30 (0.12.49-dev)` in `docs/TODO.md`
+
+## Coordinate rebuild, stage one — 2026-09-30 (0.12.49-dev)
+
+
+
+
+
+- [ ] **"dont let them go more than 5 remember the games mechanics and limits built in if they find a gate to a world map tile or a deeper backrroms and they have 5 mpas they should gett a warning this gate is blocked your holding open too many gates, but per scerio styled"**, clarified by **"5 is the limit of other colonies available so a backrooms level should be one colonly bacskicly in my thinking"** — **OPEN, stage two, and it SUPERSEDES the LRU-eviction answer given minutes earlier.**
+
+  A hard cap with **no eviction** is strictly better: nothing the player looted or built ever resets, memory is bounded by construction, and the limit is **diegetic** rather than an apology about memory.
+
+  **And the owner's clarification grounds the number in Core.** `Prefs.MaxNumberOfPlayerSettlements` is a player option, a slider from **1 to 5, default 5**, enforced by `SettleUtility` as `count >= Prefs.MaxNumberOfPlayerSettlements`. Core counts only `map.IsPlayerHome && map.Parent is Settlement` plus gravship landings, so a `RimroomsDestinationMapParent` is **invisible to it**. So the budget is read from that pref rather than hard-coded, and a coordinate map counts against it — *"a backrooms level should be one colonly bacskicly"*. A player who sets the slider to 3 gets 3.
+
+  *"per scerio styled"* means the budget belongs on the scenario, not a global constant.
+
+  **This ships together with raising onward gates to 4-6 and `MaximumNaturalDepth` 3 to 6**, because the cap without the gates is pointless and the gates without the cap is what kills the game: `RimroomsDestinationMapParent.ShouldRemoveMapNow` always returns false, so at 90,000 cells and ~70,000 mineables per level, hundreds of reachable levels against a `MaximumCoordinates` of 512 would be fatal.
+
+- [ ] **still open from the same direction** — non-rectangular rooms and corridors; and the wild variation of materials across items, equipment, walls, floors, lights, furniture and benches, with the events, layouts and loot deeper in.
+
+---
+
+
+> moved from `## Coordinate rebuild, stages two to four — 2026-09-30 (0.12.50-dev)` in `docs/TODO.md`
+
+## Coordinate rebuild, stages two to four — 2026-09-30 (0.12.50-dev)
+
+
+
+
+
+
+
+
+- [ ] **"how do they turn them off to use the machine gates for more controll and aiming deeper?"** / **"get 5 natural gates u cant use a machine gate"** — **OPEN, and deliberately NOT half-built. Next checkpoint, first thing.** The owner chose an **Operations held-places list with Release**. Releasing a place is not a UI problem; it needs (1) a **save-schema field on `CoordinateRecord`**, because `EnsureSite` deliberately refuses to regenerate a coordinate whose rooms were surveyed and only a flag can distinguish a deliberate release from a broken reference; (2) map teardown that orphans neither the world object, the `Site` reference, nor a portal edge pointing in; (3) a refusal set — crew present, crossing in flight, or the headquarters. Getting any of those wrong produces an unreachable place or a dead record, which is the exact defect class that cost thirty-nine checkpoints. **Mitigation meanwhile: discovering gates is free** — no map is generated until somebody crosses — so the cap is only met after five places are held open.
+
+- [ ] **still open from the same direction** — the wild variation of materials across items, equipment, walls, floors, lights, furniture and benches, with the events, layouts and loot deeper in.
+
+---
+
+
+> moved from `## Releasing a place — 2026-09-30 (0.12.51-dev)` in `docs/TODO.md`
+
+## Releasing a place — 2026-09-30 (0.12.51-dev)
+
+
+  **And the trap was worse than the previous record said.** That record claimed discovering a gate was free because no map existed until somebody crossed. **It was wrong:** `Discover` calls `RegisterNaturalAddress`, which calls `EnsureSite` **immediately**, because a natural edge is registered against the far side's own `ReturnAnchor` and that `Thing` does not exist until the map does. **A discovery costs a slot at the moment it is made**, so the budget check in `Discover` is load-bearing rather than over-eager, and five discoveries really do lock a player out of their machine gates. The previous record is **annotated, not rewritten**, per invariant 135.
+
+  A natural gate is permanently open (invariant 12) and is never closed. What is released is **the space behind it**. The door stays, still marked, and **remembers which place it led to** on its own comp — written at release while the edge still says so, because the edge has to be removed and is the only other record of the pairing.
+
+  **The teardown order is the whole of the safety, and it is asserted as an ordering:** the doors are told where they led **before** the edges are removed, and the edges are removed **before** the map is torn down. Reverse either pair and a record points at something that no longer exists, which is this project's most expensive defect class.
+
+  **`releasedByPlayer` is the only thing that can tell a deliberate release from a broken reference** — both look identical from outside, no site and surveyed rooms — and `EnsureSite`'s explored-graph guard exempts exactly that and nothing else. It still refuses a competing owner or a live map, and the exemption is **spent the moment the place exists again**, because an exemption that outlives its reason is a hole.
+
+  Refusals name themselves: the headquarters, crew inside (**a prisoner or an animal counts**), a crossing in flight, or a place with no live map. Re-opening goes through the same `RegisterNaturalAddress` path that first created it, is **disabled rather than hidden** at the budget, and **only forgets the shelved place on success** — forgetting on failure would strand it for ever over a transient refusal.
+
+  Record `implementation/RELEASE_A_PLACE_IMPLEMENTATION.md`. **88 of 88** planted faults caught.
+
+- [ ] **still open from the same direction** — the wild variation of materials across items, equipment, walls, floors, lights, furniture and benches, with the events, layouts and loot deeper in.
+
+---
+
+
+> moved from `## The first walked level — 2026-09-30 (0.12.61-dev) — DONE` in `docs/TODO.md`
+
+## The first walked level — 2026-09-30 (0.12.61-dev) — DONE
+
+**IT WORKED. The owner is in the Backrooms for the first time, on the ninth launch:**
+**"okay it fucking worked!!! im in the backrooms!!! but issues..."**
+
+Owner, verbatim, in full:
+
+> **"1. i explored it all and there were zero weird events or people, there were zero portals to
+> be discovered. as in the didfferent scernios they all should have an additional portal to other
+> maps and levels... and i love the backrooms level i looked at and went into one issue not enough
+> rooms and not enough loot and not enough weird stuff like a room with a lost person or a room
+> full of bodies or suppplies or a labratory ofr class room or hospital of manufactuing room or
+> tool sheed or weapons locker with loot and supplies anssd furnuture all ot of it randomly like
+> and scary freaky spooky like. . its currently really nice but the furnature is only in the four
+> corners of the rooms that nots very random. 2. there is a weird route thing name a self in one of
+> the rooms and this is kinda weird and odd and we probably havent gotten to a routing system yet
+> for emergency exit and glow pods with the company start but lets try and fix this so the normal
+> yellow backrooms look isnt the whole floor but the main spanw room and going deeping in can mean
+> the numner of branch hallways and rooms distancing from the main portal spawn in the back rooms
+> continuw on into the map with variations and oddity and events and locations and places that vary
+> more even on the first level. cant have a whole backrooms be nothing but what it currently is if
+> u look at the game and where Gee is at it needs to be more maze liek and scary inducing beyond
+> the main starting themed opening room and have more natural portals guaranteeed so the backrooms
+> never ends \"persay\""**
+
+> **"every backrooms instance need a protal to the world map and a deeper in portal"**
+
+**MEASURED FROM THE LIVE MAP, so the scale of the gap is known rather than guessed.** The minimap
+shows **nine rectangular rooms on straight corridors**, and the planner explains it exactly:
+`slots = MinSlotsPerAxis + (depth - 1)` is **3** at depth 1, so a 3x3 grid of nine slots, of which
+`chain` takes six and spurs take three. **Nine rooms, all boxes, one serpentine corridor.**
+
+- [ ] **"every backrooms instance need a protal to the world map and a deeper in portal"** — a hard guarantee of **two** natural gates per instance: one out to the world map, one deeper. Not a chance roll.
+- [ ] **"there were zero portals to be discovered"** and **"have more natural portals guaranteeed so the backrooms never ends persay"**
+- [ ] **"not enough rooms"** — nine is not a Backrooms level
+- [ ] **"it needs to be more maze liek and scary inducing beyond the main starting themed opening room"**
+- [ ] **"the normal yellow backrooms look isnt the whole floor but the main spanw room"**
+- [ ] **"going deeping in can mean the numner of branch hallways and rooms distancing from the main portal spawn in the back rooms continuw on into the map with variations and oddity and events and locations and places that vary more even on the first level"**
+- [ ] **"not enough loot"**
+- [ ] **"not enough weird stuff like a room with a lost person or a room full of bodies or suppplies or a labratory ofr class room or hospital of manufactuing room or tool sheed or weapons locker with loot and supplies anssd furnuture"**
+- [ ] **"all ot of it randomly like and scary freaky spooky like"**
+- [ ] **"the furnature is only in the four corners of the rooms that nots very random"**
+- [ ] **"zero weird events or people"**
+- [ ] **"there is a weird route thing name a self in one of the rooms and this is kinda weird and odd"** — owner's own read: *"we probably havent gotten to a routing system yet for emergency exit and glow pods with the company start but lets try and fix this"*
+
+---
+
+
+> moved from `## Lights and geometry — 2026-09-30 (0.12.61-dev) — DONE` in `docs/TODO.md`
+
+## Lights and geometry — 2026-09-30 (0.12.61-dev) — DONE
+
+Owner, verbatim:
+
+> **"and we need more lights and mixedered varies of lights but the main grand themed backrooms
+> universe rooms need like a wall light on every column wall used as in the universe of backrooms
+> the basic rooms are well lit"**
+
+> **"and you can have back to back roomes and mazes of halways of varied widtchs and lengs and odd
+> variers walls and contructions making narrows , expansies, triangle, octangones, rombones, all
+> the geomentry and mixetrues and odd contructions of doors walls corners deadends doors to now
+> where not just doors on 4 cosides of nothing but square rooms"**
+
+- [ ] **"we need more lights and mixedered varies of lights"**
+- [ ] **"the main grand themed backrooms universe rooms need like a wall light on every column wall used"** — the pillar lattice already exists in `RoomLayoutPlanner.PillarCells`, so every pillar is a known cell with a wall to hang a lamp on
+- [ ] **"as in the universe of backrooms the basic rooms are well lit"** — brightness is part of the theme, not a convenience
+- [ ] **"you can have back to back roomes"** — rooms sharing a wall, with no corridor between
+- [ ] **"mazes of halways of varied widtchs and lengs"**
+- [ ] **"odd variers walls and contructions making narrows , expansies"**
+- [ ] **"triangle, octangones, rombones, all the geomentry and mixetrues"**
+- [ ] **"odd contructions of doors walls corners deadends"**
+- [ ] **"doors to now where"** — a door that opens onto solid rock or a sealed closet
+- [ ] **"not just doors on 4 cosides of nothing but square rooms"** — the current rule is literally a doorway at the midpoint of each of four walls
+
+---
+
+
+> moved from `## The lab name comes out, and every level becomes a maze - 2026-10-01 (0.12.68-dev, 0.12.69-dev) - DONE` in `docs/TODO.md`
+
+## The lab name comes out, and every level becomes a maze - 2026-10-01 (0.12.68-dev, 0.12.69-dev) - DONE
+
+Owner, verbatim:
+
+> **"take the Unity Lab AI and the Unity AI Lab out of all refrences and nameing but we will keep
+> the repos as is for now. especially remove the Unitylabai from the mod information that i see on
+> Rimsort ie the package id and folder naming and such and files, and there is one issue all the
+> backrooms so far are just one lone strain of perals arangement that snakes back and forth across
+> the map like one series line... i want them to be mazes like xcrazy like all levels mazes do you
+> unerstand! lsd crazy shaped mazes and facilitys and :\"buildings and neighboorhoods and
+> complexes and shools and hospitals and military and storages need loot inside of them too"**
+
+- [~] **"all the backrooms so far are just one lone strain of perals arangement that snakes back
+  and forth across the map like one series line"** - **the owner is describing the algorithm
+  exactly.** `RoomLayoutPlanner.Build` walks the slot grid row-major with alternating direction
+  and calls it a *serpentine*; it is one line that snakes, by construction
+
+---
+
+
+> moved from `## One battery was the whole reserve - 2026-10-01 (0.12.77-dev) - DONE` in `docs/TODO.md`
+
+## One battery was the whole reserve - 2026-10-01 (0.12.77-dev) - DONE
+
+Owner, verbatim, from a running game:
+
+> **"its the same problem as before: the laboratory address for that is not open.... thats just
+> clicking on the portal and trying to send them through not working,,, and using operations
+> clicking send pawns through which i think is a power porblem but you can check the game current
+> running,, looks like only being able to connect 1 battery isnt anough and there should be no
+> loimit"**
+
+**The owner's diagnosis is correct and the mechanism is worse than the symptom suggests.**
+
+- [ ] **`returnReserveCapacityWattDays` is 2 and a Core `Battery` holds 600**, so the bind-time
+  *ReserveTooSmall* refusal is **not** the cause. Checked and ruled out rather than assumed
+
+---
+
+
+> moved from `## The doc sweep picked back up, and a site that does not pop like a text wall - 2026-10-01` in `docs/TODO.md`
+
+## The doc sweep picked back up, and a site that does not pop like a text wall - 2026-10-01
+
+Owner, verbatim:
+
+> **"i docs and pages for when we deploy on github"**
+
+> **"we were doing the massive update and corrections to content style and formate of all the docs
+> pertaining to that doc push earlier that we neeed to pick back up on and docs and pages when we
+> deploy the wiki and docs on github"**
+
+and at the two forks, verbatim:
+
+> **"docs/ root on this repo, github.io for now"**
+
+> **"the beautiful and masterfully way paossible so the thing needs to NOT pop like a text wall"**
+
+- [ ] **Style and format across the thirteen WIKI pages is the remaining half**, and it belongs with
+  the site build below rather than here, because *"NOT pop like a text wall"* is a layout answer as
+  much as a prose one.
+- [ ] **"and docs and pages when we deploy the wiki and docs on github"** - the deploy half.
+- [ ] **"docs/ root on this repo, github.io for now"** - Pages serves `docs/` on this repository.
+  `_config.yml` keeps `include: wiki` and the working material excluded. **CNAME support authored
+  now, the domain left open** - no document names a URL the deploy does not have.
+- [ ] **"the beautiful and masterfully way paossible so the thing needs to NOT pop like a text
+  wall"** - `jekyll-theme-primer` is a text wall with a margin. Real layout and stylesheet, and the
+  thirteen pages restructured so each one is scannable rather than read from the top.
+- [ ] **The generator stays internal, by the finding that opened this.** `outputs/readable/` renders
+  `TODO.html` and `NOW.html` - the work ledger - to standalone HTML. Nothing publishes them today
+  because `_config.yml` includes `wiki` alone, but TODO row 270 names
+  `tools/make-readable-html.py` as the site's seed, and pointing it at the site would publish the
+  ledger. **It stays an internal reading convenience and is never wired to the published tree.**
+- [ ] **`check-doc-conformance.py` must cover the published site** (row 271), so a page cannot claim
+  a version or a branch the build does not have.
+
+**Mod register.** Checked before designing: it bears on this as the **source** for what
+`COMPATIBILITY.md` and the wiki's `mods.md` may claim - `RR-COMPAT` carries 293 of the 295 rows and
+`RR-DLC` 40 - and the standing no-compatibility-claim rule means those pages state **declared
+requirements**, never tested-together claims. Nothing else in the register applies to a docs sweep.
+
+---
+
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - finished work written inside open rows (2026-10-02)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+**And, on being shown the queue still large after the row-level pass:** *"BEcause the todos are still like 100kb and i know that not all unfinished work and only unfinished work like it shall be"*
+
+**The row-level mover takes `[x]` rows. It cannot see a finished item written INSIDE an open one, and that is where the rest of the weight was.** One `[~]` row was **3,796 characters**, of which roughly 3,000 were **six completed build passes** - FIRST PASS BUILT 0.6.2-dev through SIXTH PASS BUILT 0.6.7-dev - three implementation records, and one closing sentence naming the single thing actually left. Twenty-six rows were like that to some degree.
+
+Each row below is reproduced **whole and unaltered** as it stood in the queue. What was left in `docs/TODO.md` is the original ask, verbatim, plus the clause saying what is actually open. **Nothing was summarised away** - every word of every closure narrative is here, which is what makes removing it from a work queue safe.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Implement every open item in [connected colony portals](CONNECTED_COLONY_PORTALS.md#required-implementation-backlog): independent connection ownership, permanent natural portals, free crossing, shared cross-map work/materials, persistent seeds and dynamic inhabitants/complexity. This supersedes dispatch-only travel as the target. — **PARTLY BUILT**; what shipped is archived. **Open:** the individual routes listed below.
+
+**Full original row, verbatim:**
+
+- [~] Implement every open item in [connected colony portals](CONNECTED_COLONY_PORTALS.md#required-implementation-backlog): independent connection ownership, permanent natural portals, free crossing, shared cross-map work/materials, persistent seeds and dynamic inhabitants/complexity. This supersedes dispatch-only travel as the target. — **PARTLY BUILT.** The foundation ships: **seven adapters** in `ConnectedWork/Adapters/` — bill, casualty, construction, food, fuel, hauling, medicine — plus the tending provider, two work givers per family, and every scan a bounded rotating window rather than a prefix (invariant 5). Individual open routes are listed below.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+  - [~] The remaining work/needs families, and every installed work giver in the 294-row profile. **Next (2026-09-29):** cleaning, repair, firefighting, plants/mining/hunting, prisoner and guest care, wardening, childcare, animals and mechs, refuel and rearm, joy, rituals, hauling providers. Expect most to be short: the deployment shape covers anything done at the far site, and the carry shape covers anything delivered. Read the relevant profile rows for each before writing. — **31 families built, 23 of them deployments; every Core and DLC work type is covered or decided against with its reason recorded. Six build passes archived.** **ONLY REMAINDER: a mod-added work type with its own givers.** The bill family covers modded *benches* inside existing work types automatically, but a wholly new work type gets no provider, because the providers and their giver defs are shipped rather than derived — and it cannot be built against a mod nobody has named. Coverage: [`research/WORK_TYPE_COVERAGE_AUDIT.md`](research/WORK_TYPE_COVERAGE_AUDIT.md), 23 work types, 145 giver defs.
+
+**Full original row, verbatim:**
+
+  - [~] The remaining work/needs families, and every installed work giver in the 294-row profile. **Next (2026-09-29):** cleaning, repair, firefighting, plants/mining/hunting, prisoner and guest care, wardening, childcare, animals and mechs, refuel and rearm, joy, rituals, hauling providers. Expect most to be short: the deployment shape covers anything done at the far site, and the carry shape covers anything delivered. Read the relevant profile rows for each before writing. — **FIRST PASS BUILT 2026-09-29 in 0.6.2-dev:** cleaning, repair, firefighting, mining, hunting, plant cutting, growing-zone work and refuel-with-rearm (eight families, three files, no new record/driver/JobDef). Refuel and rearm turned out to be **one** family, confirmed from Core. **SECOND PASS BUILT 2026-09-29 in 0.6.4-dev:** wardening, childcare and animal handling (three more deployment providers, twenty-two families total). **THIRD PASS 2026-09-29, no new source:** joy and rituals **both decided no**, and the three hauling providers closed as register rows. **Joy has no work type at all** — 23 work types exist across Core and all five DLC and `Joy` is not among them; `JobGiver_GetJoy` is a `ThinkNode_JobGiver` reading `pawn.needs.joy`, so the needs invariant applies exactly as it did to food and rest. **No `WorkGiverDef` anywhere in Core or any DLC is ritual-driven**; a `LordJob_Ritual` owns its participants' duties, so this layer never sees a ritual participant. Hauling rows: Pick Up And Haul (164) has no seam because the connected families run their own job driver rather than `WorkGiver_HaulGeneral`; Haul to Stack (107) is inert alongside 164 by the publisher's own claim, unreproduced; Prison Labor (288) **can never send a prisoner through a gate**, verified from `Pawn.IsColonist` requiring `Faction.IsPlayer`, which a prisoner of the colony never has. Records: `implementation/CONNECTED_WORK_FAMILIES_IMPLEMENTATION.md` and `research/WORK_TYPE_COVERAGE_AUDIT.md`. **FOURTH PASS BUILT 2026-09-29 in 0.6.5-dev:** bill work as **five** families, one per work type — 27 families. Record `implementation/CONNECTED_BILL_WORK_IMPLEMENTATION.md`. **FIFTH PASS BUILT 2026-09-29 in 0.6.6-dev:** dark study — 28 families. Record `implementation/CONNECTED_DARK_STUDY_IMPLEMENTATION.md`. **SIXTH PASS BUILT 2026-09-29 in 0.6.7-dev:** hauling upkeep, BasicWorker and Fishing — **31 families, 23 of them deployments**. **Every work type in the game is now either covered or decided against with its reason recorded.** Record `implementation/WORK_TYPE_GAPS_CLOSED_IMPLEMENTATION.md`. **Why this row stays `[~]` and not `[x]`:** the Core half is finished, but the row's own words are *"and every installed work giver in the 294-row profile"*, which is broader. What remains is named rather than vague: the **eleven DLC container hauling givers** (each needs a custody review before a worker crosses for it) — **BUILT 0.12.34-dev**, and the review found that Core forbids all eleven from moving anything between maps — the **four painting givers** in `Art` — **BUILT 0.12.34-dev** as `PaintingProvider`; `Art` already had `bill-work-art` for sculpting, which is why they were nearly lost, but a bill lives on a bench and paint lives on a **designation**, so nobody would ever have crossed for any of it — and any **mod-added work type** with its own givers — the bill family covers modded *benches* inside existing work types automatically, but a wholly new work type gets no provider, because the providers and their giver defs are shipped rather than derived. **This is now the only thing left on this row**, and it cannot be built against an unknown: a wholly new work type from a mod nobody has named has no giver defs to write. `DEFERRED.md` is closed with zero rows and this pointer to it was stale.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] **Resume step 5:** "Integrate exact optional work/storage providers and scenario openings, then procedural inhabitants, rare monstrosities, saved events and tech-driven complexity. Keep every wider master TODO feature in scope." — **Open:** optional provider adapters, on their own row below. (Scenario openings closed; archived.)
+
+**Full original row, verbatim:**
+
+- [~] **Resume step 5:** "Integrate exact optional work/storage providers and scenario openings, then procedural inhabitants, rare monstrosities, saved events and tech-driven complexity. Keep every wider master TODO feature in scope." — **PARTLY BUILT.** Scenario openings: **done**, all three starts. Optional provider adapters remain — see their own row below.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] **Resume step 6:** "Continue source/build milestones. Runtime acceptance remains deferred until the owner launches through RimSort; no agent game launch or profile change." — each milestone: `./tools/build.ps1`, evidence folder under `implementation/evidence/<name>-<date>/`, build record, master TODO ticks, then cascade-publish per `PUBLISHING.md`. — **Open and structurally must stay open:** runtime acceptance, because only the owner launches.
+
+**Full original row, verbatim:**
+
+- [~] **Resume step 6:** "Continue source/build milestones. Runtime acceptance remains deferred until the owner launches through RimSort; no agent game launch or profile change." — each milestone: `./tools/build.ps1`, evidence folder under `implementation/evidence/<name>-<date>/`, build record, master TODO ticks, then cascade-publish per `PUBLISHING.md`. — **PARTLY BUILT.** Source and build milestones have continued without a break through 0.12.13-dev. **Runtime acceptance is still deferred and structurally must be: only the owner launches.**
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Optional profile interfaces and native priority/schedule/restriction coverage. — **Open:** the optional provider interfaces, on their own row below. (Native priority, schedule and restriction handling closed; archived.)
+
+**Full original row, verbatim:**
+
+- [~] Optional profile interfaces and native priority/schedule/restriction coverage. — **PARTLY BUILT.** Native priority, schedule and restriction handling is respected — nothing is ever `playerForced` and no quantity is hardcoded (invariant 9). **Optional provider interfaces remain**, on their own row below.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] **Adapter families, one at a time with source evidence per route.** Eighteen families and decisions closed in order from 0.5.0-dev to 0.6.7-dev; the sequence and the reason for each is archived. Sources: [`research/WORK_TYPE_COVERAGE_AUDIT.md`](research/WORK_TYPE_COVERAGE_AUDIT.md), `CONNECTED_WORK_CORE_API.md`, `CONNECTED_WORK_PROFILE_BOUNDARIES.md`. — **Open:** this row's own remainder clause reads *"Surgery across a gate is the named remainder"*, and the surgery row was separately CLOSED at 0.12.33-dev as something Core forbids being built. **Flagged 2026-10-02 rather than resolved** — see *Contradictions found while splitting rows* below.
+
+**Full original row, verbatim:**
+
+- [~] **Adapter families, one at a time with source evidence per route:** ~~storage hauling~~ (BUILT 0.5.0-dev) → ~~casualties and remains~~ (BUILT 0.5.2-dev) → ~~construction supply~~ (BUILT 0.5.3-dev) → ~~construction finishing~~ (BUILT 0.5.5-dev as the first travel-to-work provider, the shape the intent model previously lacked) → ~~bills~~ (BUILT 0.5.7-dev; unfinished things are deliberately out of scope because Core binds a part-made thing to one worker, and medical, autonomous and mech bills each still need their own review) → ~~research~~ (BUILT 0.5.8-dev as the *second* travel-to-work provider — one new file, no new record, driver or JobDef, which is the first real evidence the deployment shape was right) → ~~tend/rescue~~ (BUILT 0.5.9-dev as both halves in one item: the doctor travels as the third deployment provider, and medicine travels as the seventh adapter; surgery and prisoner/guest care remain as separately reviewed routes) → ~~food~~ (BUILT 0.6.0-dev as three parts, one of which was *decided against* rather than deferred: a hungry pawn does not walk through a gate to eat, because eating is a think-tree need and a closing gate would strand a starving pawn) → ~~remaining families, first pass~~ (BUILT 0.6.2-dev: cleaning, repair, firefighting, mining, hunting, plant cutting, growing-zone work and refuel-with-rearm, eight families in one pass; prisoner/guest care, wardening, childcare, animals/mechs, joy, rituals and the three hauling providers remain) → ~~rest~~ (BUILT 0.6.1-dev; a tired pawn crossing to sleep is closed by **Core's own rule** rather than our caution, because `RestUtility.CanUseBedNow` rejects any bed whose map differs from the sleeper's, so the one real gap was bedding a casualty where they lie) → ~~remaining families, second pass~~ (BUILT 0.6.4-dev: wardening, childcare and animal handling — 22 families) → ~~joy, rituals, `Patient`, `PatientBedRest`~~ (**DECIDED AGAINST 2026-09-29**, each with its Core reason; joy has no work type at all and no `WorkGiverDef` anywhere is ritual-driven) → ~~the three hauling providers~~ (closed as register rows 2026-09-29) → ~~bill work~~ (BUILT 0.6.5-dev as **five** families, one per work type; **27 families, 19 of them deployments**) → ~~DarkStudy~~ (BUILT 0.6.6-dev; **28 families, 20 of them deployments**) → ~~hauling upkeep, BasicWorker and Fishing~~ (ALL BUILT 0.6.7-dev; **31 families, 23 of them deployments**). **Every work type in the game is now either covered or decided against with its reason recorded.** The remembered families list was **incomplete** — it omitted `DarkStudy` and `Fishing` entirely. Source: `research/WORK_TYPE_COVERAGE_AUDIT.md` (23 work types, 145 giver defs), `CONNECTED_WORK_CORE_API.md`, `CONNECTED_WORK_PROFILE_BOUNDARIES.md`. — **PARTLY BUILT.** Seven families built with source evidence each. **Surgery across a gate is the named remainder** and has its own row.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Replace custom creature presentation, room fixtures and terrain with existing native/provider content, retaining learned rules, encounters, procedural variation and saved routes. — **Open:** `RR_QuietPursuer` presentation, the last one, queue item 6. (Room fixtures and terrain closed; archived.)
+
+**Full original row, verbatim:**
+
+- [~] Replace custom creature presentation, room fixtures and terrain with existing native/provider content, retaining learned rules, encounters, procedural variation and saved routes. — **PARTLY BUILT.** Room fixtures and terrain use existing content throughout (`BackroomsPalette` names Core `TerrainDef`s). **`RR_QuietPursuer` presentation is the last one open** and is queue item 6.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Replace the historical custom gameplay items, benches, terrain, sprites and audio with source-verified existing Core/profile content and saved role bindings; preserve the gate, field gear, evidence, threat and discovery functions. Follow `CONTENT_REUSE_POLICY.md` and the existing-content replacement map. *(master TODO Phase 5)* — **Open:** fourteen historical gameplay PNGs still in the package allowlist; they come out once the last references go, which is gated on the `RR_QuietPursuer` decision. (Items, benches and terrain closed; archived.)
+
+**Full original row, verbatim:**
+
+- [~] Replace the historical custom gameplay items, benches, terrain, sprites and audio with source-verified existing Core/profile content and saved role bindings; preserve the gate, field gear, evidence, threat and discovery functions. Follow `CONTENT_REUSE_POLICY.md` and the existing-content replacement map. *(master TODO Phase 5)* — **PARTLY BUILT.** Items, benches and terrain: **done**. **Fourteen historical gameplay PNGs remain in the package allowlist** and come out once the last references go, which is gated on the `RR_QuietPursuer` decision.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [ ] **Still unbuilt from the same prep document:** *"contradictory accounts"* from a returning crew - a report that does not match what another crew saw - and staff **prior exposure** affecting how an expedition goes. — **Open:** staff prior exposure. (Contradictory accounts closed 0.12.25-dev; archived.)
+
+**Full original row, verbatim:**
+
+- [ ] **Still unbuilt from the same prep document:** *"contradictory accounts"* from a returning crew - a report that does not match what another crew saw - and staff **prior exposure** affecting how an expedition goes. — **CONTRADICTORY ACCOUNTS BUILT, 0.12.25-dev.** And the *"short step"* reading was wrong in an important way: two crew who disagree was not a step from a mechanism that exists, it was **a mechanism that existed and threw the disagreement away.** `StableId` is per-room only for a room survey, so one evidence record carried one witness per fact, and the second crew member was either merged in or refused as `RR_Company_ReceiptMismatch` — with the site tick ignoring the result. **Chart line 226 asks request 5 for "two crew accounts of the same room" and that was unreachable.** Accounts are now saved, corroborating or disputing, a dispute counts as testimony, and the readout names them. **Still open in this row: staff prior exposure**, and resolving a dispute (the interview). Record: [two crew who disagree](implementation/CONTRADICTORY_ACCOUNTS_IMPLEMENTATION.md).
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Add staff role recommendations, field kit assignment, readiness checks, and basic company tasks while retaining vanilla pawn/work controls. — **Open:** nothing new; field kit assignment is **superseded** with the rest of the custom field gear. Closure archived — review whether this row should now be `[x]`.
+
+**Full original row, verbatim:**
+
+- [~] Add staff role recommendations, field kit assignment, readiness checks, and basic company tasks while retaining vanilla pawn/work controls. — **PARTLY BUILT.** Configurable roles, operator assignment and readiness refusals ship. **Field kit assignment is superseded** with the rest of the custom field gear, and native pawn and work controls are untouched throughout.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [ ] Add analyze/interview/compare/review workflows for equipment, furniture, people, entity remains, recordings, transcripts, route notes, and recovered documents. — **Open:** **review**, the last of the four. (Analyse, interview and compare all closed by 0.12.28-dev; archived, along with the retired-vocabulary sweep that rode with it.)
+
+**Full original row, verbatim:**
+
+- [ ] Add analyze/interview/compare/review workflows for equipment, furniture, people, entity remains, recordings, transcripts, route notes, and recovered documents. — **Analysis ships; interview does not, confirmed by grep.** This is the same gap as the *"contradictory accounts"* prep item, and the two should be built together. — **HALF BUILT, 0.12.25-dev: compare ships.** Two accounts of one fact are now recorded and compared, and the readout shows the comparison. **Interview remains**, and it is now the thing that resolves what the comparison found rather than a workflow with nothing to work on. — **INTERVIEW BUILT, 0.12.28-dev. Analyse, interview and compare all ship now.** A staff member with Social 4 takes both statements and the company files one; **the other account stays on the record**. And the design changed on a reading of the code: `RecordFieldObservation` validates a fact against the real map **before** it looks for a prior observation, so **a disputing account was already checked and found true**. Nobody is lying — the marker moved between the two visits, which is 0.10.3-dev’s displacement seen from inside an evidence file. So no reliability statistic was invented, per the register. **Review remains** of the four. Record: [nobody is lying](implementation/INTERVIEW_IMPLEMENTATION.md). — **AND THE TEXT DESCRIBING THEM WAS STALE, fixed 0.12.26-dev:** fourteen player-facing strings instructed the player to use a return beacon, a survey tag, an evidence case, a field recorder or a route recording — gear retired between four and fifteen checkpoints ago. `check-retired-content.py` is the **tenth checker** and refuses it now. Record: [the in-game text stops naming things that do not exist](implementation/RETIRED_VOCABULARY_IMPLEMENTATION.md).
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Add repeated missing-person mysteries with radio fragments, missing crews, delayed return, witness conflict, reappearance/death, rescue, and case closure. — **Open:** radio fragments. (Case records, missing status, the lost-pawn register, the missing-residents request family and witness conflict all closed; archived.)
+
+**Full original row, verbatim:**
+
+- [~] Add repeated missing-person mysteries with radio fragments, missing crews, delayed return, witness conflict, reappearance/death, rescue, and case closure. — **Partly built.** Case records, missing status, the lost-pawn register, and the missing-residents request family (0.12.13-dev). **Not built:** radio fragments and **witness conflict**, which is the *"contradictory accounts"* prep item. — **WITNESS CONFLICT BUILT, 0.12.25-dev.** Two crew who disagree about one room now produce a saved dispute the player is told about and the readout names. **Radio fragments remain.**
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [x] Complete research branches for facility/power, engineering, field safety, equipment, mapping, communication, stability, containment, medicine, logistics, commerce, orbital operations, and deep topology. — **CLOSED 0.12.29-dev: the ladder is complete, tiers 0 to 4.** Flipped from `[~]` to `[x]` on 2026-10-02 because the row's own body already said so — *"TIER 4 BUILT ... AND THE LADDER IS COMPLETE"* — and nothing in it named anything left. Detail archived.
+
+**Full original row, verbatim:**
+
+- [~] Complete research branches for facility/power, engineering, field safety, equipment, mapping, communication, stability, containment, medicine, logistics, commerce, orbital operations, and deep topology. — **TIERS 0–3 COMPLETE across seven branches, 0.12.18-dev.** Tier 3 was deleted rather than written at 0.12.5-dev because four of seven branches had nothing observable to move; arc 5 wrote those systems and the re-run sweep found a real read site for **all seven**. Two restraints kept and asserted: the per-coordinate frontier cap is **not** a research knob, and shelter never reaches zero. **Tier 4 remains**, and should be surveyed the same way rather than assumed to have knobs. — **TIER 4 BUILT, 0.12.29-dev, AND THE LADDER IS COMPLETE.** Surveyed rather than assumed, and the survey said **six, not eight**: Facilities (spin-up work), Fieldcraft (recovery rate), Commerce (ordinary exchange rate), Measurement (the interview Social floor, which only existed because 0.12.28-dev built the interview), Spatial (ordinary-map frontier rarity) and Entities (the pressure penalty ceiling). **Logistics gets none** — all four of its knobs are claimed by tiers 0–3 and what remains are safety bounds no player reaches. **The gate line CANNOT have a fifth rung** — its fourth already stops the countdown and `portalIndefiniteTier` is 4. Both absences are proof claims, because an absence cannot be seen by reading. Record: [six rungs, and two that could not exist](implementation/RESEARCH_TIER_4_IMPLEMENTATION.md).
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Containment, interviews, settlement openings, outposts, vehicles, VGE hooks. — **Open:** containment, vehicles and the VGE hooks, each listed individually above. (Settlement openings and outposts closed 0.12.13-dev; interviews closed 0.12.28-dev; archived.)
+
+**Full original row, verbatim:**
+
+- [~] Containment, interviews, settlement openings, outposts, vehicles, VGE hooks. — **Settlement openings and outposts are DONE (0.12.13-dev).** Containment, interviews, vehicles and the VGE hooks remain open and are listed individually above.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Royalty conditional content: titles/quests/faction/psycasts only as optional company routes. — **Open:** no Royalty-specific content is authored. That is honest rather than a gap: it must be an optional route or nothing. (Gating mechanism closed and enforced; archived.)
+
+**Full original row, verbatim:**
+
+- [~] Royalty conditional content: titles/quests/faction/psycasts only as optional company routes. — **PARTLY BUILT.** The **gating mechanism** ships and is enforced. **No Royalty-specific content is authored**, which is honest rather than a gap: it must be an optional route or nothing.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Ideology conditional content: beliefs, meditation, rituals, staff policies, and recreation only when available. — **Open:** no Ideology-specific content authored. (Gating closed; archived.)
+
+**Full original row, verbatim:**
+
+- [~] Ideology conditional content: beliefs, meditation, rituals, staff policies, and recreation only when available. — **PARTLY BUILT.** Gating ships; no Ideology-specific content authored.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Biotech conditional content: genes, mechanitors, children, medicine, pollution, and mechanoid options; no mandatory gene/resource dependency. — **Open:** no Biotech-specific content authored. Nothing is mandatory. (Gating closed; archived.)
+
+**Full original row, verbatim:**
+
+- [~] Biotech conditional content: genes, mechanitors, children, medicine, pollution, and mechanoid options; no mandatory gene/resource dependency. — **PARTLY BUILT.** Gating ships; no Biotech-specific content authored. Nothing is mandatory.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Anomaly conditional content: containment/research links; Backrooms entities retain a base-game implementation. — **Open:** the containment/research links themselves. (Gating closed, and the Backrooms entities **do** retain a base-game implementation, which is the load-bearing half; `SecurityDoor` is already recognised as a 2x1 gate when present. Archived.)
+
+**Full original row, verbatim:**
+
+- [~] Anomaly conditional content: containment/research links; Backrooms entities retain a base-game implementation. — **PARTLY BUILT.** Gating ships, and the Backrooms entities **do** retain a base-game implementation, which is the load-bearing half of this row. Anomaly’s `SecurityDoor` is already recognised as a 2×1 gate when present.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Odyssey conditional content: gravship/off-world logistics and any compatible space travel. — **Open:** no gravship integration is written, and it stays DLC-optional throughout. (Gating and arc 7's request families closed; archived.)
+
+**Full original row, verbatim:**
+
+- [~] Odyssey conditional content: gravship/off-world logistics and any compatible space travel. — **PARTLY BUILT.** Gating ships. Arc 7’s request families exist; no gravship integration is written, and it stays DLC-optional throughout.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] For each workbook row, close its status with evidence: reviewed version, load-order placement, applicable DLC, behavior used/preserved, patch/adaptor/no-code reason, and result. — **Open, and the remainder is in dispute.** This row says 14 of 21 register families swept with 7 to go; the retro-sweep row closed at 0.12.42-dev saying **all twenty-one are done**. **Flagged 2026-10-02 rather than resolved** — see *Contradictions found while splitting rows* below.
+
+**Full original row, verbatim:**
+
+- [~] For each workbook row, close its status with evidence: reviewed version, load-order placement, applicable DLC, behavior used/preserved, patch/adaptor/no-code reason, and result. — **PARTLY BUILT.** The register retro sweep is genuinely in progress: 14 families swept, 7 not yet (medical, world operations, cargo, hospitality, materials, visitor economy, staff psychology).
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Make each screen deep-link to the relevant pawn, building, map, quest, item, research project, evidence record, contract, or RWT site. — **Open:** deep links out to a pawn, building or research project. (Pane-to-pane links closed; archived.)
+
+**Full original row, verbatim:**
+
+- [~] Make each screen deep-link to the relevant pawn, building, map, quest, item, research project, evidence record, contract, or RWT site. — **PARTLY BUILT.** Pane-to-pane deep links exist (a failed coordinate jumps to the Expedition pane, a facility jumps to the Machine pane). **Deep links out to a pawn, building or research project do not.**
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Eleven-pane Company Command, deep links, reason codes, native menu remap. — **Open:** deep links are partial, and the native menu remap is open and questioned on its own row above. (Twelve panes and reason codes closed; archived.)
+
+**Full original row, verbatim:**
+
+- [~] Eleven-pane Company Command, deep links, reason codes, native menu remap. — **PARTLY BUILT.** **Twelve panes and reason codes: done.** Deep links partial; the native menu remap is open and questioned on its own row above.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] Slideshow integration review, additional menu images per shipped scenario. — **Open, and it needs a launch:** the integration **review** itself — how the slides read behind the menu buttons, and whether 30 s dwell and 2 s crossfade feel right — cannot be judged from here. (Six slides and `proof-menu-slides.py` closed at 0.12.17-dev; archived.)
+
+**Full original row, verbatim:**
+
+- [~] Slideshow integration review, additional menu images per shipped scenario. — **MOSTLY BUILT.** **Six slides ship as of 0.12.17-dev** — the four new ones landed on the owner’s parallel art track and the folder scan picked them up with no code change. `proof-menu-slides.py` now guards the naming contract, structural PNG validity, a shared aspect and the provenance record. **Still open: the integration REVIEW itself, which needs a launch** — how they read behind the menu buttons, and whether 30 s dwell and 2 s crossfade feel right, cannot be judged from here.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] **Gate size and what it lets through.** **"allow differnt capabilities"** — width is the capability. **Open:** what size lets *through* (body size at the traversal chokepoint); hostiles needing width; how many people cross abreast; whether bulk cargo, pack animals or a vehicle fits; and what the opening draws. To be specified per size as part of the multi-cell gate work. (Costs-more-to-run and more-people-abreast closed 0.9.2-dev, with **no quota anywhere** per *"we dont want limitations"*; archived.)
+
+**Full original row, verbatim:**
+
+- [~] **PART BUILT 0.9.2-dev.** Costs-more-to-run and more-people-abreast are done: draw and spin-up scale on footprint, and width adds doorway cells with **no quota anywhere**, per *"we dont want limitations"*. Still open: what size lets *through* (body size at the traversal chokepoint) and hostiles needing width. **"allow differnt capabilities"** — width is the capability. How many people cross abreast, whether bulk cargo, pack animals or a vehicle fits through, and what the opening draws. To be specified per size as part of the multi-cell gate work.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] **Informational text on the inspect cards** for everything a player can select or inspect: gates, the station, the beacon, bonds, coordinates and the rest. What it is, what it needs, and why it is not working when it is not. **Open:** an audit of inspect-card text on the station and the beacon, the way the gate already has one. (Our own defs closed 0.9.3-dev — the facilities overview and the procurement list are described and rendered; archived.)
+
+**Full original row, verbatim:**
+
+- [~] **PART BUILT 0.9.3-dev** for our own defs, which are now described **and rendered** - the facilities overview and the procurement list. **Still open:** an audit of inspect-card text on the station and the beacon, the way the gate already has one. **Informational text on the cards** for everything a player can select or inspect: gates, the station, the beacon, bonds, coordinates and the rest. What it is, what it needs, and why it is not working when it is not.
+
+> moved from `docs/TODO.md`; the row now reads:
+
+- [~] **"start on the todo weork"** — **Open:** resume step 4's remaining families, listed under Major M1. (Resume steps 1 to 3 and the gate traversal rule closed in 0.4.2-dev and 0.4.3-dev; archived.)
+
+**Full original row, verbatim:**
+
+- [~] **"start on the todo weork"** — M1 resume steps 1, 2 and 3 CLOSED in 0.4.2-dev, plus the owner's gate traversal rule in 0.4.3-dev (see `FINALIZED.md`). Step 4 is IN PROGRESS: the intent/lease engine and the first adapter family (storage hauling, both directions) shipped in 0.5.0-dev; the remaining families are next.
+
+### Contradictions found while splitting rows, flagged and NOT resolved
+
+Two rows carry a remainder clause that contradicts a row closed elsewhere. **Resolving a contradiction is a judgement, not a side effect of a file move**, so both are reported and left exactly as written.
+
+- **Adapter families / surgery across a gate.** The adapter-families row's remainder clause says *"Surgery across a gate is the named remainder"*. The surgery row was separately **CLOSED at 0.12.33-dev** with the finding that it **cannot** be built: `Bill_Medical.GiverPawn` is the bill giver, so the patient *is* the bill, `WorkGiver_DoBill` reserves it per-map, and ingredients are searched on the doctor's map around the patient -- doctor, patient and ingredients must be co-located, so there is no seam and the patient comes home instead. **If that closure stands, the adapter-families row has no remainder and should be `[x]`.** Not flipped here: promoting a row on an inference is the thing that put twenty-two unticked rows under headings saying DONE.
+
+- **Workbook rows / the register retro sweep.** The workbook row says **14 of 21** register families swept, **7 to go** (medical, world operations, cargo, hospitality, materials, visitor economy, staff psychology). The retro-sweep row closed at **0.12.42-dev** stating **all twenty-one families are done**, with four new checker rules and a medical-family finding. **One of the two is wrong and they cannot both be current.** Not resolved here, because deciding which is true needs the register read rather than a file moved.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - the whole of docs/NOW.md before it was reset (2026-10-02)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02):** *"and the now.md needs to be completedy deleted, then written current. The NOW .md is a temp read file not a history of all work ever done.. its a one time record only ever holding one record"*
+
+`docs/NOW.md` is the **handoff**: one record, read at the start of a session and replaced at the end of one. It had become a history instead - **3054 lines, 238.4 KB, 37 `##` sections, and NINE separate `STATE AT THIS HANDOFF` records stacked on top of each other**, each one a checkpoint's worth of narrative that nobody was ever going to delete. A file that only grows is not a handoff; it is an archive with a misleading name, and `FINALIZED.md` is the archive.
+
+**"Completely deleted" means deleted from `NOW.md`, not destroyed.** The entire file as it stood is reproduced below, unaltered, and was confirmed present here before `NOW.md` was touched - `§FINALIZED BEFORE DELETE` applies to any verbatim record, not only to a task row. The replacement handoff was then written by hand, because what the next session needs to know is a judgement rather than a transform of this one.
+
+> the whole of `docs/NOW.md`, as it stood on 2026-10-02 before the reset
+
+# NOW — handoff after compaction
+
+**Single-focus tracker.** Distinct from the three-tier ledger:
+
+| File | Grain |
+|------|-------|
+| `docs/ROADMAP.md` | MAJOR — phases and milestones |
+| `docs/TODO.md` | MINOR — the working queue, **every owner direction verbatim** |
+| `docs/DECOMPOSED.md` | smallest execution units |
+| **`docs/NOW.md`** (this file) | **the handoff** |
+| `docs/FINALIZED.md` | permanent archive |
+| ~~`docs/DEFERRED.md`~~ | **CLOSED. Zero open rows. Never add one.** |
+
+LAW #0 applies: owner words go in verbatim, everywhere. **This is now enforced** — see invariant #69.
+
+---
+
+## Active
+
+**One thing is outstanding, and it is not a code task: THE PACKAGE IS NOT STAGED.**
+
+`0.12.79-dev` is built, deterministic and published. It is **not** in the owner's Local Mods folder,
+because `stage-mod.ps1` refuses while RimWorld is running — correctly; it will not stop a process —
+and the owner's session was live for the whole checkpoint. One command, nothing else needed:
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
+```
+
+**So this handoff quotes a hash verified from the BUILD, not from the game folder**, which is exactly
+the thing the stage-first rule exists to prevent. Said plainly here rather than papered over. Stage
+it before the next launch or the next launch tests 0.12.78-dev.
+
+### The live bug that is NOT ours, so nobody hunts it in our source
+
+```
+ReflectionTypeLoadException getting types in assembly RimBridgeServer:
+expected class 'HarmonyLib.CodeInstruction' in assembly '0Harmony, Version=2.4.2.0'
+```
+
+`RimBridgeServer.dll` wants **0Harmony 2.4.2.0**. `brrainz.harmony` ships **2.4.1.0**, and 2.4.2.0 is
+on this machine **nowhere** — 2.4.1.0 is the highest of 150+ copies. The bridge's types never load,
+so nothing listens on 5174 and the read-only API is dead. **Harmony loads at position 5 and the
+bridge at 198, so it is not ordering.** Our package loaded clean in the same 38-line log: zero
+Rimrooms errors, zero cross-reference errors. The fix is on the machine — update the Harmony mod
+(its folder is dated Oct 11 2025) or roll the bridge back to a 2.4.1.0 build.
+
+### The one thing that will go wrong if you skip it
+
+**The cascade is TEN refs, not eight.** Work is on `feature/bug-testing` now. The eight-ref
+read-back that was the only publication receipt for forty-five checkpoints is:
+
+```
+forgejo, github  x  feature/connected-colony-portals, Prep, Develop, Main
+```
+
+and it is now that **plus `feature/bug-testing` on both remotes**. A publish that reads back eight
+and stops has left the branch the work is actually on unpublished, silently. **Count the branch
+you are on.**
+
+### The second thing
+
+**Use a FILE for any script with escapes or apostrophes, never a bash heredoc.** It mangled
+`\n` into real newlines **five times** in the 0.12.46-dev batch, and then **three more times**
+across 0.12.49 to 0.12.51 — once on a plain apostrophe in a closure script, twice on `\\s` inside
+a regex. **Eight times in two days.** It is written down here because writing it down has not yet
+been enough; the only thing that has worked is reaching for the Write tool first.
+
+### State
+
+| | |
+|---|---|
+| Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
+| Published | **0.12.79-dev**. `git log --oneline -1` is authoritative and the ten refs below match it. |
+| Staged | **NO — 0.12.78-dev is still in the game folder.** See *Active* above. The only outstanding item in this checkpoint |
+| Remotes | `forgejo` + `github`, all five refs each at that commit |
+| Build | **212 C# files, 92 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only \| grep -c '^src/.*\.cs$'` |
+| Assembly | SHA-256 `228493390F9C28B18EA019D531F17FC0F41A60DBFD50A08997D3F827B32E4E0E`, reproduced after deleting `obj/` and `bin/`. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Dependencies | **293 declared**, 5 expansions + 288 mods, `loadAfter` 294 with Core first. **Read the count from `About.xml`, never from a document** — the 294 figure went stale inside two days. Attach-only QA tooling is excluded by name: a player told they need a debug server has been told something false |
+| Docs | **Zero supersession banners anywhere.** Twenty were exempting their whole file from the dependency rule; all retired, all bodies corrected, 60 false lines to zero |
+| Next | **The site.** `docs/wiki/` is thirteen pages served from `docs/` at the project path (owner: *"docs/ root on this repo, github.io for now"*), and it has to stop reading like prose — owner: *"the beautiful and masterfully way paossible so the thing needs to NOT pop like a text wall"*. That means a real layout and stylesheet instead of `jekyll-theme-primer`, the thirteen pages restructured to be scannable, CNAME support authored with the domain row open, and `check-doc-conformance.py` extended over the published tree (row 271). **`make-readable-html.py` stays internal and is never wired to the site** — it renders `TODO.html` and `NOW.html`, so pointing it at the published tree would publish the work ledger |
+| Checkers | **SIXTEEN**, all passing. **The dependency rule was excusing by mention, not by scope** — `DEPENDENCY_RETIREMENT` matched anywhere on a line, so one incidental *"until"* about release claims exempted a 1,200-character paragraph carrying three false dependency claims. It is scoped to the claim's own clause now, with five planted cases in `.local/qa/plant-retirement-scope.py`, and **the first draft of that fix was wrong and the plants caught it** — it returned False once a line ran out of occurrences, turning correctly-retired claims into findings. This is the mirror of the mention-versus-assertion defect this battery has caught four times: there a checker flagged a phrase that was only mentioned, here a checker excused a claim because a retirement word was mentioned. **The sixteenth validates every authored starting facility offline, cell by cell.** `GenStep_Headquarters` throws on any geometry mistake and a throw inside a GenStep costs the player the start; the Async facility is ten rooms, sixteen doors and 122 fixture cells, and nothing else in this battery looked at a single one of them. It derives footprints from **Core's own `<size>`** with ParentName inheritance rather than from a table, because a table is a second derivation that goes stale. **It cried wolf on its first run** -- 368 legitimate cells -- before the nesting case was understood, which is the fifth false alarm in this battery and the reason each is written down. **The fifteenth refuses while a planted fault is still in the source tree.** A suite has left one there three times -- twice deleting `Campaign.NoteReturnedFromField(...)`, once deleting `!anchor.Destroyed` -- and each would have shipped silently if a build had gone out first. The `finally` added at 0.12.65-dev handles an exception and does nothing for a killed process, so the suites write a sentinel naming the file before they mutate it and `check-plant-residue.py` refuses while it exists. **A false alarm costs one command; a missed one ships a deliberate fault.** **The fourteenth is the only one that runs code rather than reading it**, and it exists because the thirteen that read text, the forty-five proofs and five hundred and fifty plants **all passed over a planner that could not produce one valid layout** -- `MaxRoomSpan` said 34 while the grand hall was 80, and no amount of reading either file can see two numbers disagree. `check-planner-layouts.py` builds `.local/harness/PlannerProbe` and runs `TrySelect` and `ValidateRooms` over 200 seeds at seven depths, demanding both that a layout is accepted **and that back-to-back pairs exist** -- because a plant that moved a pushed room one cell was missed by every proof when the revert guard quietly switched the feature off. **It never skips**: no dotnet, no install or no built assembly is a failure, not a pass. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
+| Proofs | **FORTY-NINE** holding, and **A PROOF WAS ENFORCING A LIE until 0.12.79-dev.** `proof-playing-and-help.py` asserted `PLAYING.md` must contain *"no game has ever been launched from this repository"* — false since 2026-09-30, and it would have enforced it indefinitely because **a passing check is nobody's first suspect.** Re-aimed at the claim that actually matters (launched and played-through are different), asserted in both directions because a positive check alone passes a document saying both, with its plant re-aimed and not weakened: 56 of 56. **When a document's load-bearing sentence stops being true, grep the battery for it before editing the document.** Earlier note follows, and its counts are superseded by the number above: **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
+| Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
+| Register | `python tools/register-query.py families\|family <x>\|find <x>\|row <n>\|traces\|trace <code>\|card <x>\|use <code>` — **`use <trace>` is the query the LAW actually describes**: for every mod bearing on what you are building, what the register says about how to use it. Added 0.12.24-dev, because until then the `card` column printed the words *"open card"* and every real instruction was unreachable from the tool — **query by `trace`**: it names the Rimrooms feature a row bears on, which is the question *"what applies to what I am building"*. **The HTML is the register**, never the xlsx. **It is GUIDANCE, not law** (owner, 2026-09-29) |
+| Readable HTML | `python tools/make-readable-html.py` → `outputs/readable/index.html` |
+| Game launches | **AT LEAST TWELVE, and this line said NINE for three checkpoints — count them from the `TODO.md` headings rather than trusting any number written here.** The twelfth is recorded at 0.12.64-dev, and a live read through the bridge happened again at 0.12.78-dev. **The ninth is the one that mattered: the owner walked a Backrooms level.** Every defect any launch has found was ours; not one was a mod conflict. Earlier note follows, superseded on its count: **NINE, all by the owner on 2026-09-30. THE NINTH WORKED: the owner walked a Backrooms level for the first time — the coordinate generated, the gate was blue, the crossing carried a pawn across. Twenty-three defects, every one ours, still not a single mod conflict.** What the ninth found was almost entirely content that was switched off at depth 1 on purpose.** The eighth confirmed the `Door` fix in the running game — **587 cross-reference errors down to ZERO** — but never reached a map: the company setup page stopped drawing after three lines because not one of the package's eight listings set Core's `maxOneColumn`, so an overflowing listing painted itself off the edge of the world with no exception.** The seventh produced **587 red lines from one line**: `<li Class="CompProperties_Colorable" />` names a type RimWorld does not have, and a bad `Class` discards the **whole ThingDef** — so `Door` and `Autodoor` left the game, 585 further errors were other defs failing to cross-reference them, and the game **never left the main menu**. The sixth found a conduit carpet sized for 12x12 rooms blowing a 512-cell cap **eightfold** at 80x80, which meant **no 300x300 coordinate could ever have generated**. An EIGHTH is what settles whether a coordinate generates at all. They have found **eleven defects** and every one was ours. **The fifth found the most expensive one in the project's history: a light count that had stopped every Backrooms level from generating since 0.7.8-dev, thirty-nine checkpoints.** **Still not a single mod conflict.** The fourth launch is also the first whose evidence came from the **running game** rather than from the log alone: the owner said *"you can use the api mod you have that we installed last so u can see wtf rimworld is doing"*, so RimBridgeServer 2.1.1 in direct mode, read-only, against their own launched process. See *What the fourth launch found*. The staged copy is current at this checkpoint, hash-verified |
+
+### How to work, owner direction 2026-09-29
+
+> *"lets start doing shit correctly and efficiently and keep going iin batches of items completed
+> so we have less work constantly pushing and all of that"*
+
+**Batch related rows into one checkpoint and publish once.** 0.12.36-dev closed **six** rows in one
+publish, and they were related on purpose: quarantine is an area question, so the area rows rode
+with it, and the two ordinary-map rows were proved in the same sweep. Chain the work, then do one
+build, one determinism run, one checker and proof sweep, one commit, one cascade.
+
+### The standing instruction
+
+> *"you are NOT to stop untill i tell you to stop or you reach the completeion of the mod's build out"*
+
+Chain checkpoints. Do not finish one and wait. Two standing corrections that change how to read
+everything below:
+
+- **The mod register is GUIDANCE, not law.** *"remmebr its not law but guidance"*. Consult it, let
+  it shape the design, say what it said — but a row never vetoes work.
+- **Tests are not the concern yet.** *"test cases arnt being worried about right now we are trying
+  to get the build complete so we can test"*. **Unverifiable-without-a-launch is never a reason to
+  defer building something.** I parked the world exit for that reason and was overruled, correctly.
+
+---
+
+## Is it done? THE BUILD IS. The play is not, and nothing else can start until it does
+
+**ZERO build items left.** Counted at 0.12.42-dev. **Ten rows closed this batch** — 206, 302, 1054, 1268, 1269 and 1286–1290. **Thirty-seven rows across the last seven batches.**
+
+**The one numbered entry under *What is left* is a closed record**, kept deliberately so nobody rebuilds row 761. Everything else in that section is either *cannot close before the game runs once* or *excluded by the owner*.
+
+**So the answer to the heading has changed.** The build is done. What is not done is **play**: about 8 rows need the game to run once, and the package in the game folder is sixteen checkpoints stale. **Re-staging and a first launch is now the only work that unblocks anything.**
+Plus about **8 rows that cannot close before the game runs once** and **9 the owner excluded**.
+
+Queue, one consistent pattern, command beside the number:
+
+```
+grep -c '^\s*- \[ \]' docs/TODO.md     # 79 open
+grep -c '^\s*- \[~\]' docs/TODO.md    # 49 partial
+grep -c '^\s*- \[T\]' docs/TODO.md    # 34 post-completion test phase
+grep -c '^\s*- \[x\]' docs/TODO.md    # 0, and it must stay 0
+```
+
+**THE LAST NUMBER IS ZERO AND THAT IS NOW A RULE.** Owner direction, 2026-10-02, verbatim:
+*"we need to move all finished items to finalized.md from the todo, the todods sahll never hold
+completed items, they are always to be moved to finalized first then deleted from the todods
+once confirmed virbatium transfer"*. The queue had **727 `[x]` rows across 2,716 lines** when
+that was given -- thirty whole `##` sections and fifty-one direction groups that were closed
+records end to end, read as outstanding work by anyone scanning the file. It is **676 lines**
+now and every row in it is open, partial or `[T]`.
+
+**And the open count went UP, from 42 to 79, which is the point.** The old number was counting
+a prefix of a file nobody could read to the end of. Taking 2,039 lines of finished work out did
+not close anything and did not open anything; it made the queue say what was actually left.
+
+`docs/DECOMPOSED.md` went the same way, and its claim was worse than stale: its heading read
+*"Complete -- moved to FINALIZED, descriptions retained per LAW"* over **fifty-six entries that
+were never in `FINALIZED.md` at all** -- checked by string, zero hits for any of them. The file
+asserted a transfer that had not happened. It has now, and the file is 79 lines.
+
+**The mover is `.local/qa/archive-finished-todo.py` and it proves the transfer rather than
+claiming it.** It never rewrites a line: it labels every line index KEEP or MOVE and asserts
+that reassembling the two halves reproduces the original byte for byte, then writes the archive
+**first**, confirms every moved line is present in it, and only then rewrites the queue -- the
+owner's stated order, which is `§FINALIZED BEFORE DELETE`. `.local/qa/verify-archive-move.py`
+re-checks the result against a pre-move backup independently of the mover, five ways.
+
+**Run it after any batch that closes rows:** `python .local/qa/archive-finished-todo.py` for the
+plan, `--apply` to move, `--queue docs/DECOMPOSED.md` for the other tier.
+
+**Two sections titled DONE were deliberately left where they are.** *The first walked level* and
+*Lights and geometry*, both 0.12.61-dev, carry twenty-two `[ ]` rows between them. The title is
+not the marker, and promoting a row the owner never ticked would be inventing a closure. They
+need reading and ticking by hand, and they are the first thing to look at in the queue.
+
+**And the master backlog, which row 1054 said understated the build by roughly thirty points.**
+It was **56**. `docs/PREPRODUCTION_AND_IMPLEMENTATION_TODO.md` went from **122 open / 134 done**
+to **66 open / 190 done**, every flip naming the checkpoint that closed it, every original word
+kept, and **not one runtime-acceptance row touched**.
+
+**The raw open count overstates, and the reason is worth the paragraph.** Rows closed by work
+that shipped the same day keep their `[ ]` until somebody flips them — and **NINE separate rows
+this session turned out to be already built, already true, or answered by Core**:
+
+| Row | What it actually was |
+|---|---|
+| 227 | surgery across a gate **cannot be built** — `Bill_Medical`'s patient *is* the bill giver |
+| 308 | the contradiction was already computed and thrown away |
+| 493 | the recorder fold had been decided fourteen checkpoints earlier |
+| 1266 | **Core forbids all eleven givers from moving anything between maps** |
+| 98 | six reasons can stop a gate and **not one reads an adjacent cell** |
+| 99 | the row's premise was wrong — a gate link has **no distance or LOS check** |
+| 1011 | depth, band, wealth and seeding all already there |
+| 1101 | a coordinate's floors were **ordinary layerable Core terrain** all along |
+| 725 | **seven of its nine subsystems** existed under different names |
+
+**CHECK A ROW AGAINST THE CODE BEFORE BUILDING FOR IT.** That habit is the single highest-value
+thing in this file. It has saved more work this session than every other practice combined, and
+twice the row's own *“confirmed absent by grep”* was the thing that was wrong.
+
+### The package is staged, and SIXTEEN checkpoints behind
+
+The copy in the owner's Local Mods folder is **0.12.26-dev**; the build is **0.12.42-dev** —
+**sixteen checkpoints of work are not in the game folder.** **This is now the single most useful thing anybody can do with this repository.** Re-stage before any launch:
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
+```
+
+It backs up the existing folder, hash-verifies every file against the build manifest, and records
+`ProfileChanged = false; GameLaunched = false`. **It never touches the mod list and never starts the
+game.** When it was first run this session the staged copy was **0.4.0-dev** — twenty-two
+checkpoints stale, so nothing built in this project's history had ever reached the game folder.
+
+---
+
+## WHAT THE LAUNCHES HAVE FOUND — eleven defects, every one ours
+
+**Third pass, and this one was the root of the map complaints.** Owner: **"the map generator
+is not our mod"**. `ScenPart_RimroomsStart` replaced Core's `Base_Player` — elevation, fertility,
+biome terrain, caves, rocks, plants, animals, ruins, rivers, roads — with a **four-step** generator
+of ours, and our terrain step flattened **every cell** to one terrain. Hence *"bare dirt not even
+vegitation"*. And the owner previews tiles with **Map Preview**, which simulates the **real**
+generator, so every map they rerolled against was a picture of a map the mod then discarded: **the
+preview was right and the game was wrong.**
+
+Core generates the tile now. The two gen steps are **added** to `Base_Player` by a patch — never a
+replace, which would drop every step Core and other mods put there. **The load-bearing half: the
+steps had to stop throwing.** They live in the generator that makes *every* player map now, so a
+throw would break a second settlement, a quest site, a reloaded world. `StartForMap` returns null
+and the proof refuses a `throw` in its body.
+
+**Second pass, and these two were the worst of the lot.**
+
+**The mod threw away the player's chosen map size.** `Find.GameInitData.mapSize = startDef.mapSize`
+forced **50 for the Store** against RimWorld's smallest option of **200** — 2,500 cells where a
+default map has 62,500, the shop taking 41% of it. *"Not the map i chose ... a super micro blocked
+in area"* was literally accurate. The layout is offset onto the player's own map now, centred and
+clamped. **Nothing was ever sealed** — all three layouts flood-fill to 100% reachable, and that
+measurement now runs every checkpoint.
+
+**The Store had no Backrooms connection at all.** `SoloGroupOpening` returned early unless
+`insideStart`, and nothing in the generator creates one. The **deeper** and **world-tile** halves
+the owner described already existed; only the seeding was missing. Any start naming an
+`emergenceDoorCell` now begins with a permanently open natural gate.
+
+---
+
+
+
+**The game ran for the first time in this project's history on 2026-09-30, and found three defects
+in the first minute. All three were ours.** That is the single most valuable hour this repository
+has had, and it is the argument for launching again rather than building more.
+
+**FIXED — the blank page, and the fix is now CONFIRMED by a second launch: the page renders.** The state guard was a diagnosis when it shipped; it is an observation now.
+
+**FIXED — two controls that were drawn but unreachable.** With the page rendering, the next report was *"i cant start the game"* and *"there is no box to type in my company name"*. The confirm checkbox was the **last line of a scrolling list**, so Start refused and the thing that would satisfy it was off screen; the name field sat a few hundred pixels down that same list. The log proved `DrawReview` completed, so both were drawn — **and drawn is not the same as reachable.** Both are pinned outside the scroll view now. **A control the player is required to use must never be scrollable out of view.**
+
+**And the same change nearly shipped an authored palette.** The name field's first draft used `DrawBoxSolid(field, new Color(0.12f, 0.12f, 0.12f))`, and it would have gone through because `check-display-style.py` scanned only `UI/` while that page lives in `Scenario/`. **A rule that only looks where it expects trouble has a blind side.** The scope is every file that draws a window now — 21 instead of 20.
+
+**The original diagnosis, for the record.** `Page_RimroomsCompanySetup` opened after EdB Prepare Carefully with its
+title and both buttons drawn and its body **completely empty**, and **nothing in the log**. Cause:
+**Unity's IMGUI state is process-wide and not one of this package's six window entry points reset
+any of it.** Each inherited whatever the previously drawn mod left in `GUI.color`, `Text.Font` and
+`Text.Anchor`; a leaked zero-alpha colour paints nothing and logs nothing. Core draws the page title
+and buttons and sets its own state, which is exactly why the frame was visible and only our content
+was not.
+
+**That is the other half of a claim made at 0.12.40-dev.** This package authors no colour and no
+font size — true, and still true. **Authoring nothing is not the same as assuming nothing.** And
+`check-display-style.py`, written in the same checkpoint to hold that claim, **forbade `GUI.color =`
+outright and so blocked its own fix.** A rule stated as a pattern ban rather than as a purpose will
+eventually forbid the right thing.
+
+**FIXED — the hotkey is `Backslash`.** Bound by nothing in Core and nothing in the profile, and **the proof now refuses any function key at all** rather than only the ones Core takes, which is the portable form of the rule that would have caught this.
+
+**FIXED — the glow pods are pre-placed** in each start's fixed facility, so EdB never parses them and the warning is gone. Eleven cells, **every one computed free**, because `GenStep_Headquarters` throws on a clash rather than skipping it.
+
+**NOT A DEFECT — the Store's missing bench.** Owner: *"the store start has a natural portal and to build a machanical one they need to contact the company and resaerch whats needed"*. `beginsInCorporationContact` false and `completedProjects` empty for the Store and solo, against Async's eight. **The readout was the defect**, calling a designed progression step a deficiency; it has three conclusions now for the three real situations.
+
+**The original, for the record — F12 collided with HugsLib.** HugsLib binds F12 to *Publish log file*, the exact thing
+wanted while bug-hunting. 0.12.40-dev took F12 after checking it against **Core only**. **Every one
+of F1–F12 is bound across Core plus the 288 installed mods.** Register row 85 says *"avoid
+overriding hotkeys."* **Needs an owner decision** — see the queue row.
+
+**OPEN — EdB cannot classify our GlowPod scenario grant.** Logged twice per setup. `GlowPod` is a
+Core **Building** granted as a starting thing in two scenarios; vanilla minifies it automatically,
+EdB's equipment database has no entry for it. Cosmetic-looking, ours, and noise on every setup.
+
+**ANSWERED, and it found an asymmetry nothing stated.** Owner: *"shouldnt that page list the
+starting equipment and supplies added from the company to get a gate up quickly as building
+minified"*. **No, minified buildings are not needed** — the Async facility already places a
+machining table, a console, a battery at half charge, three generators and nine doors, and the
+scenario grants 250 steel against the bill's 100. **The page just never connected any of it to the
+gate**, which is why the question got asked. It now reads the recipe for the cost and the bench and
+states what is standing. **And counting the three starts turned up this:** Async 9/1/1/1/3;
+**Furniture Store 8/0/1/1/1**; **Solo 1/0/0/0/0**. **Two of three cannot raise a gate from what
+they arrive with.** Solo is the design and the readout says so. **The Store missing only a bench
+looks like an oversight and is recorded for a decision.**
+
+### The lesson that outranks the fix
+
+**`docs/PLAYING.md` promises nothing fails silently.** A blank page with an empty log was that
+promise broken. So the setup page now **cannot go blank silently regardless of cause**: the
+introduction draws outside the scroll view, the body is wrapped so a throw is logged **and painted
+on the page**, and the listing closes on every path. **If it fails again it will say what broke.**
+
+**And be honest about the state guard: it is a diagnosis, not an observation.** The evidence is
+strong — frame drawn, body not, nothing logged, six windows resetting nothing in a 288-mod load.
+But nobody has yet seen that page draw correctly. What is certain is the reporting half.
+
+---
+
+## THE BRANCH CHANGED — read this before publishing anything
+
+**Work happens on `feature/bug-testing` from 2026-09-30.** It was cut from
+`feature/connected-colony-portals` at `12e12da`, the commit that fixed the map placement and the
+Store's natural gate, and pushed to both remotes.
+
+**The cascade is now TEN refs, not eight.** The eight-ref read-back that has been the only receipt
+for forty-five checkpoints was:
+
+```
+forgejo, github  x  feature/connected-colony-portals, Prep, Develop, Main
+```
+
+and it is now that **plus `feature/bug-testing` on both remotes**. A publish that reads back eight
+and stops has left the branch the work is actually on unpublished. **Read back the branch you are
+on, every time, and count it.**
+
+`feature/connected-colony-portals` is not deleted and not abandoned — it holds the build history
+and sits at `12e12da`. Bug fixes found in play land on `feature/bug-testing` and cascade from
+there.
+
+---
+
+## THE OWNER IS RIGHT: THE NINTH LAUNCH WORKED AND EVERY FAILURE SINCE IS OURS
+
+> *"what happened it used to work fine until we reformulated the back rooms seed genrations. you
+> do remmeber when it was working and i said i loved the backrooms"*
+
+**Yes. Three launches lost, three different causes, one chain**, and all three were introduced by
+the generation work that followed the launch that worked:
+
+| Launch | Threw | Where |
+|---|---|---|
+| 10th | no candidate layout was legal | `MaxRoomSpan` 34 vs an 80-cell hall |
+| 11th | a second stool had nowhere to go | `Place` demanded a walkable margin |
+| 12th | Core's power rebuild | a duplicate transmitter on one cell |
+
+**Each fix was correct and the next thing in the same method threw instead.** That is the real
+lesson of this run: the failures were not one bug, they were one *structure*.
+
+### THE STRUCTURE, AND IT IS STILL THERE
+
+`parent.MarkLayoutReady(...)` — the call that gives `SoloGroupOpening` its threshold anchor — is
+**the last line of `GenStep.Generate`.** Everything before it can abort the gate: the shell, the
+power grid, the lamps, the content, the validation, the bodies, the odd-origin pass. **Three
+separate phases have now done exactly that**, and a light count did it for thirty-nine checkpoints
+before them.
+
+**So the question to ask of any new generation phase is: can this throw, and should a coordinate
+cease to exist because it did?** The answer is almost always no. The project had already written
+the rule down, about the power validation:
+
+> *"A coordinate whose heater or one lamp failed to join the grid is dark and cold and completely
+> playable. A coordinate that does not exist costs the player the gate that leads to it."*
+
+The validation honoured it. **The rebuild it validates did not, and neither did the furniture.**
+
+### WHAT THE OWNER WILL SEE, AND WHY A NEW START IS NEEDED AGAIN
+
+Core creates the map **before** our GenStep runs, so an aborted GenStep leaves a map that is
+visible on the colony bar and unfinished — which is exactly *"i currently see the backrooms is
+available but i cant get my pawns to it"*. The coordinate is then recorded, and `EnsureSite`
+refuses to rebuild a map for a coordinate whose rooms are already surveyed, because that rule is
+what stops a broken reference replacing a place somebody explored.
+
+`SoloGroupOpening.Open` is idempotent and would finish the job, but **it is only ever called from
+`ScenPart_RimroomsStart`, so there is no retry surface.** If a fourth launch fails, building one is
+worth more than another fix.
+
+### BEFORE ASKING FOR A LAUNCH
+
+```
+python tools/check-planner-layouts.py     # checker 14: runs the planner for real
+```
+
+And read the log in this order: **`Player.log`, grep the FIRST `[Rimrooms]` line**, then
+`python .local/qa/bridge.py call rimworld/list_letters '{}'`. The eleventh launch's log had
+hundreds of red lines and every one was downstream of the first. The tenth had **none at all** and
+the answer was in a letter.
+
+### WHAT THE THIRTEENTH LAUNCH HAS TO SETTLE
+
+1. **Does the GenStep finish** — no `[Rimrooms][Generation] ... stopped` line at all
+2. **Gate blue, glow, Stargate FX, a pawn crossing**
+3. **24 rooms at depth 1** plus one grand hall of eighty cells, back-to-back pairs, shaped
+   corners, varied corridors; is it a maze; does the yellow stop a few rooms out
+4. **Two portals per level** — one world exit, one deeper. Guaranteed, not drawn
+5. **Loot, weird rooms, people, bodies, events** out past the yellow rooms
+6. **A lamp on every pillar** in four tones; **doors that go nowhere**; **furniture spread
+   through rooms**
+
+A `[Rimrooms][Generation] Coordinate ... could not rebuild its power connections` warning is now
+**acceptable**: the space, its gate and its way home are unaffected and the level still finishes.
+It should not appear, because the conduits are laid last now — but it is a warning, not a failure.
+
+### THE TRAPS FROM THIS RUN
+
+* **An anchored span is a delete.** A fix script rebuilt a proof as
+  `text[:start] + new + text[end:]` and removed two claims written minutes earlier. The plant
+  suite caught both. **Read what is between the anchors.**
+* **The machinery is not the behaviour.** A claim asserted a fallback variable and its return; a
+  plant restoring the hard `continue` left all of it unreached and passed.
+* **A claim that pins call text proves a call happened, not that it was legal.**
+* **An absence claim cannot read raw source** — it reads the comment explaining the removal.
+  `proof-coordinate-layout.py` keeps a `code()` view; `proof-generation-batch.py` strips comments.
+* **Use the Write tool.** A heredoc mangled an escaped newline for the **eleventh** time.
+
+## STATE AT THIS HANDOFF — `0.12.78-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.78-dev  92 files
+assembly    80A40D4655E2D6AF1A7CD3861F341431CD6D8C2FCCE7265FD4487D94BF92F759
+            read back out of the game folder after staging, not from the build
+package     294 dependencies - 2 record books in the lab start - the east door
+            RR_PortalTravel_DoorLocked and RR_BookDrop_Title both present
+battery     16 checkers - 49 proofs - 21 plant suites - 771 anchors
+            new suite: 12 of 12
+tree        no planted fault, porcelain 0
+```
+
+**Refresh local mods in RimSort before launching.**
+
+### THE BRIDGE WAS WORKING. READ THIS BEFORE CLAIMING IT IS NOT
+
+Owner: *"the api mod is not working make it work"*. **It was running the whole time.** Two lines
+are printed in `Player.log` on every launch:
+
+```
+[RimBridge] GABP server running standalone on port 5174
+[RimBridge] Bridge token: <token>
+```
+
+**Read the log for the port and the token.** GABP is a framed protocol, not HTTP — four wrong
+ports were probed with `curl` before the log was read. `tools/qa/rimbridge_readonly.py` already
+speaks it:
+
+```
+python tools/qa/rimbridge_readonly.py --pid <PID> --log "<Player.log>" \
+  --output .local/qa/live/<new>.json --connect --select ping --select messages --select selection
+```
+
+`--connect` requires `--select ping`. Every output path must be **new**; it never overwrites.
+
+**What was genuinely missing is what the owner asked for**: the allowlist had five selectors and
+**none read a message**, so *"look at those messages"* was unanswerable. Added, all read-only:
+`messages`, `alerts`, `letters`, `selection`, `colonists`, `camera`, `maps`, and `--rect` for a
+bounded `get_cells_info`.
+
+### THE SELECTION READ IS THE HIGHEST-VALUE ONE
+
+`--select selection` returns the inspect string of whatever the owner has clicked. One call
+answered a whole session's worth of guessing:
+
+```
+Door locked
+Grid excess: 1185 W (533 Wd stored)
+Linked battery charge: 533.13/2400.00 watt-days
+Charge needed for normal window plus emergency return: 49.59 watt-days
+Opening time: 7075 in-game minutes remaining | Status: Normal
+```
+
+**Ask for the selection before reasoning about a refusal.**
+
+### TWO PUBLISHED CLAIMS WERE WRONG, AND BOTH WERE THE SAME MISTAKE
+
+| Claimed to the owner | True |
+|---|---|
+| *"you hand-laid ~100 conduits; the start wires almost nothing"* | **17 RUNS were compared to 191 CELLS.** Expanded the runs are **205**; live is 191 + 14 hidden = **205**. Exact match, none added |
+| *"you added 10 shelves"* | a shelf is **1x2**. 19 live vs 28 authored — **nine removed** |
+
+**Never compare a count to a cell count without reading the footprint.** `<size>` is in Core's own
+defs and `tools/check-start-layout.py` already reads 975 of them. The grave footprint was caught
+this way the same day; this was the second instance and it reached the owner.
+
+### WHAT THE OWNER'S FACILITY ACTUALLY LOOKS LIKE
+
+Origin solved at **(120, 120)** from three single-instance devices. Scan with
+`.local/qa/scan-facility.py <PID>` — **16x16 tiles, because 32x32 truncates** and two runs
+disagreed about what the facility contained before that was found.
+
+**Exactly as authored:** conduits, ballistic glass, generators, machining table, smithy, research
+benches, glow pods. **Nothing was moved**, including the console and bench repositioned at
+0.12.74-dev. Every delta is **fewer** — furniture deconstructed.
+
+**One door added, at relative (51, 24)**, the compound's east perimeter wall at the dead end of the
+service corridor. **No authored door was missing.** Authored now.
+
+### THE TWO DEFECTS THE OWNER HIT IN PLAY
+
+**A locked door refused in silence.** `OrderCrossing` validated the **approach cell** — on the
+near side — and never asked whether the door would open. Now `DoorBlockerKey`, through Core's
+`public virtual Building_Door.PawnCanOpen`, so the owner's `DoorsExpanded.Building_DoorRemote`
+answers for itself and **nothing names that mod**. Register row 77's own disposition.
+
+**No start shipped the record book every dispatch requires.** Laboratory: 112 fixtures, 17 types,
+**zero books**. Store: 27, zero. Solo: nothing at all. The recorder folded into the book at
+0.12.24-dev and **the stock was never updated**, so the first dispatch refused on every fresh
+start, forever. The laboratory carries **two** now, and `RecordBookDelivery` sends two to any
+branch with a calibrated gate and **no book anywhere it can reach** — which is what stops it being
+a tap.
+
+### A PROOF WITH NO PLANT SUITE IS A PROOF NOBODY HAS CHECKED
+
+`proof-corporate-contact.py` is one of the oldest in the battery and **had never been planted
+against** — the same shape as the defect beside it. Suite **twenty-one**, 12 of 12.
+
+**Check for a suite before trusting a proof:**
+`grep -l <proof-name> .local/register/plant-*.py`
+
+And the new claims caught two of their own defects: a door claim asserting the **call** and not the
+**act** (twelfth machinery-not-behaviour), and a plant testing a mod name in a **comment the proof
+strips**.
+
+## STATE AT THIS HANDOFF — `0.12.77-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.77-dev  92 files
+assembly    5E87D3842B559E8ABCF44654D2178923D39D8EBE2A7D9F9D36A4FCAB441E39CC
+            read back out of the game folder after staging, not from the build
+package     294 declared dependencies, and the description names the wiki
+battery     16 checkers - 49 proofs - 20 plant suites - 752 anchors
+            new suite: 12 of 12
+tree        no planted fault, porcelain 0
+```
+
+**Staging refused on the first attempt** -- *"Close RimWorld before staging a new DLL"* -- because
+the owner had the game open with 3.8 GB resident. They authorised closing it: *"saves dont matter
+shits getting remade they are always trash tests"*. `RimWorldWin64.exe` was stopped, the package
+staged, and the hash read back out of the game folder matches the build.
+
+**Refresh local mods in RimSort before launching.** The staged copy is current at this checkpoint.
+
+### ONE BATTERY WAS THE WHOLE RESERVE
+
+Owner, from a running game: *"looks like only being able to connect 1 battery isnt anough and
+there should be no loimit"*, and *"which i think is a power porblem"*. **Both halves were right.**
+
+`nativeBattery` is the **anchor** that identifies the gate's circuit. `NativeGenerationWatts` has
+always summed the whole net and `NativePowerConnected` has always checked it — **stored energy was
+the one reading that never followed.** And the spend was worse: `TrySpendNativeEnergy` refused
+outright when the anchor alone could not cover a cost, so **a drained anchor stalled a gate with
+ten full batteries beside it on the same net.**
+
+Fixed through Core: `PowerNet.CurrentStoredEnergy()` for the sum (EMP-aware for free), and the draw
+**copied from `ChangeStoredEnergy`**, which does exactly this and is private.
+
+**The anchor is still required.** Removing the limit is not removing the binding.
+
+### AND THE REFUSAL NAMED THE WRONG THING, WHICH COST THE OWNER THE SESSION
+
+`HasUsablePortalWindow` collapsed **seven** conditions into one bool, and the player read *"The
+laboratory connection for that address is not open."* **A flat battery reported an address fault.**
+
+`PortalWindowBlockerKey` is the third blocker key after `CalibrationBlockerKey` and
+`StaffConsoleBlockerKey`, both added for the same reason. **`HasUsablePortalWindow` delegates to
+it**, so the predicate and the message cannot disagree.
+
+**Nothing in forty-eight proofs had ever claimed anything about the energy a gate runs on.** That
+is why this reached play.
+
+### THE READER-FACING LIST WAS MOSTLY NOT READER-FACING
+
+Owner: *"public facing docs ... have no in house dev names and no todo numbering and no actual work
+information"*, and *"ARE NOT to be text walls get to each point in as short a way as possible"*.
+
+`READER_FACING` held thirteen entries and **most were never reader documents** — `HOWTO.md` opens
+*"the practical guide for anyone (human or build agent) opening this repository"*; `SCENARIOS.md`
+calls itself a *"design contract"*. Holding a dev document to a reader's vocabulary made it look
+supervised while nothing was going to notice it was the wrong **kind** of document.
+
+**`docs/wiki/` is thirteen pages and nothing else**, served by `docs/_config.yml`. The wall limit
+is **360**, down from 700; the wiki tops out at **307**, so the limit is a floor under a standard
+already met. Workshop links are authored as **clearly-marked placeholders** — nothing claims a page
+that does not exist.
+
+### A RULE NOW CATCHES THE DOCUMENTS THAT LIE ABOUT DEPENDENCIES
+
+Yesterday's decision made *"Core only"* false in **twenty-six living documents**. The count is read
+from `About.xml`, never typed, so **if the owner reverses the decision the rule stops firing on its
+own.** D3 and D4 are recorded as changed in `GATE_0_DECISIONS.md`, following D1's own pattern.
+
+**The verbatim ledger is exempt and the reason is a LAW.** `TODO.md`, `NOW.md`, `ROADMAP.md` and
+the master backlog hold twenty-nine of the seventy-two matches, and **LAW #0 forbids altering the
+owner's recorded words.**
+
+### THE PLANTS CAUGHT FIVE CONSEQUENCES OF THIS SESSION'S OWN WORK
+
+* **three went MISSED** because `PLAYING.md` left the supervised set — the one thing a
+  reader-facing rule set loses silently. Re-aimed at the wiki,
+* **one was only passing because of a bug**: it planted a stat base **inside an XML comment**, and
+  that checker strips comments now. **A plant that tests a bug instead of a rule goes green while
+  the rule is unguarded.**
+* **one claim was the duplicate-string trap, third instance in one session** —
+  `List<CompPowerBattery> batteries = net.batteryComps;` appears twice, so gutting the capacity
+  reader left the claim true. **Count, never test presence.**
+
+And the new dependency rule **reported wrong line numbers on its first run**, enumerating stripped
+text while reporting file positions. **A finding with the wrong address is worse than no finding.**
+
+## STATE AT THIS HANDOFF — `0.12.76-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.76-dev  92 files
+assembly    B3B0B052445A706CF8A1F1BED154C9CA813B756AA019F773B7C26EE2225F6774
+            read back out of the game folder after staging, not from the build
+battery     16 checkers - 48 proofs - 19 plant suites - 738 anchors findable
+            new suites: 27 of 27, 20 of 20, 7 of 7
+tree        no planted fault, porcelain 0
+```
+
+### THE OWNER'S QUESTION FOUND TWO FALSE STATEMENTS IN THE PREVIOUS HANDOFF
+
+*"are u shure zero goon squad code is written weve gone over this before by a different name"*.
+
+The handoff had said **"ZERO code written"** on the strength of `src/` matching 0.12.75-dev — which
+proves only that **that session** wrote none. It says nothing about what was built earlier under
+another name, and this repository has been caught by exactly that **nine times**.
+
+| The claim | What was true |
+|---|---|
+| *"Nothing in the battery claims anything about `FacilityRelief`"* | **`proof-facility-relief.py` is proof FIVE** and two of its claims contradicted the direction |
+| *"Core defs confirmed present: ... `Pyre`"* | **`Pyre` is Ideology.** The check ran against the **installed game** instead of against **Core**, and for a Core-only mod that is the whole distinction |
+
+**Read it as a standing rule:** *"it is identical to the last checkpoint"* answers a different
+question from *"does this exist"*. Only a grep for the feature answers the second.
+
+### THE SCOPING SAVED TWO PROOF CLAIMS THAT LOOKED LIKE CASUALTIES
+
+`proof-facility-relief.py` asserts *five roles* and *the living-staff scan does not treat downed as
+dead*. Both looked doomed until the owner's own words resolved it — *"this only happens for the lab
+secnerio for now"* — so the squad is a **separate path** and the fork sits **above** the relief's
+trigger:
+
+```
+TickFacilityRelief()
+  laboratory  -> TickClearSquad()    downed counts as lost, three staff
+  store, solo -> AnyLivingStaff()    dead only, five staff   [UNCHANGED]
+```
+
+Both old claims hold untouched. The comment carrying the old reasoning is **scoped, not deleted** —
+it is still true about the path it guards. **Making it universal would have silently rewritten the
+bargain for two scenarios the owner excluded.**
+
+### THE GRAVE DOES NOT FIT INDOORS, AND IT WAS MEASURED
+
+Core's `Grave` is **(1,2)** and needs **`Diggable`**. **Ten** Core terrains carry it; **every
+constructed floor is excluded** — `Concrete`, `SterileTile`, `MetalTile`, every stone tile, every
+carpet. **A grave cannot be dug inside the facility at all.** Burial goes to open ground and the
+fallback is destruction, which is *"incenerate on propery"*. **No crematorium is built**: a bill
+needs a worker and nobody is alive to work it.
+
+### THE DEPENDENCIES, AND THE DEFECT DECLARING THEM EXPOSED
+
+*"the mod DOES HAVE HARD DEPENDANCIES SO GET IT RIGHT AND MAKE SURE ITS LAYED OUT RIGHT FOR RIMSORT
+TO NOTICE AND ENFORCE"*, and *"WE ARE USING ALL OF THEM!!!!"*.
+
+`About.xml` declared **nothing** and a description reading *"Core only ... No Harmony, no
+dependencies."* It now declares **294** — five expansions and 289 mods, each with a `displayName`
+and a `steamWorkshopUrl` — plus **295 `loadAfter` entries**.
+
+**THE REAL FIND: the package sat at position 197 of 296, with 99 mods loading after it.** A patch
+cannot see a def from a mod that loads later. `modDependencies` is what a manager reads to warn;
+**`loadAfter` is what makes the order right**, and there was one entry.
+
+**NEVER HAND-EDIT THOSE BLOCKS.** `.local/register/build-dependencies.py` generates them from the
+owner's own `ModsConfig.xml`, **read-only**, with a cycle check over every active mod's four
+load-order tags. 1815 lines of About.xml is not a file anyone edits by hand.
+
+### TWO CHECKERS CARRIED THE OLD PREMISE AND NEITHER WAS DEFECTIVE
+
+`check-register-compliance.py` refused the work with *"The package must load and run against Core
+alone."* **The checker was not wrong; its premise was**, and the register is *"not law but
+guidance"* by the owner's standing correction. **A prohibition became an assertion** rather than
+being deleted. 7 of 7 planted faults caught.
+
+`check-dlc-gating.py`'s rule survives and matters **more** — `MayRequire` is the same graceful
+guard in XML that `GetNamedSilentFail` is in C#, which is the posture the owner chose. Only its
+stated reason was stale.
+
+### AND THE SIXTH INSTANCE OF AN INSTRUMENT READING ITS OWN PROSE WAS MINE
+
+The fix script searched its own result for the phrase it had removed, and the replacement prose
+*quotes* that phrase in the sentence retiring it. **The write had landed; the verification was the
+defect.** Then a second of the same family: `"Pawn" not in register` is a **substring test wearing
+a type test's clothes** and it is false — `NoteLostPawn` and `lostPawnNames` contain those letters.
+**Assert the thing, not letters that spell it.**
+
+### THE THREE PREP ITEMS ARE CLOSED
+
+* **the stranded crew** — `LostPawnRegister.cs` holds a `List<string>` and cannot remove player
+  control by construction. But `proof-stranded-crew.py` had **eleven claims and not one mentioned
+  it**, so the guarantee rested on nobody adding a `Pawn` field to a file whose name sounds exactly
+  like somewhere a pawn would go. **Three claims make it permanent.**
+* **review**, the fourth workflow — additive fields, **never a sixth `EvidenceStatus`**:
+  `Analyzed` is terminal, eight places compare against it, and the enum is saved by value. Ships
+  with a **button**, a readout and an objective line in the same checkpoint.
+* **staff prior exposure** — `NoteReturnedFromField` already knew *this person came back from
+  there* and **threw it away** as a transient debrief hold. Now kept per person **by load id, never
+  by reference**, and spent on the dial **once**, where the branch's own familiarity compounds.
+
+## BUILT AT 0.12.76-dev — THE SPEC THAT PRECEDED IT, KEPT FOR THE RECORD
+
+```
+state       SPEC ONLY. 25 rows recorded verbatim in docs/TODO.md. ZERO code written.
+published   0.12.75-dev is the last staged, cascaded checkpoint and it is clean.
+tree        docs/TODO.md and docs/NOW.md are MODIFIED AND UNCOMMITTED.
+            Owner direction: *"no need for stage and cascade this one time"*.
+            Nothing else is touched; src/ and Mod/ are exactly 0.12.75-dev.
+```
+
+**Do not re-ask the owner anything below. All of it is settled.**
+
+### THE DIRECTION, AND THE ONE QUESTION THAT WAS ASKED
+
+Owner, verbatim, is in `docs/TODO.md` under *"the goon squad, and never losing the game"* — 25
+rows, one per clause. The short version in their words: *"if u die all pawns incompacitated...
+\"The Company\" sends in a goon squad kills every thing takes the dead and leeaves three new pawns
+to run the facility"*.
+
+**One fork was asked and answered: the downed.** Owner: ***"the downed: No Witnesses"***. The
+trigger is *all pawns incapacitated*, so the squad lands on colonists who are **down but alive**,
+and **they do not survive it.** Every downed member of the branch is killed and goes into the
+ground or the fire with the already-dead. **This is a deliberate, destructive reset of the
+player's roster**, confirmed before a line was written, because the other reading — stabilise and
+keep them — would have preserved colonists the owner has decided do not get preserved.
+
+### THIS EXPANDS CODE THAT ALREADY EXISTS. READ IT FIRST
+
+`Company/FacilityRelief.cs` **is** the clean-up team, built from the owner's 2026-09-29 direction
+*"so that facilities never die"*. Today it already:
+
+* fires on `corporationContact` and **no living staff anywhere**, on the company tick,
+* destroys every pawn hostile to the player (`ClearHostiles`, `Destroy(Vanish)` — not killed, so
+  no corpses and no rot for the replacement crew),
+* drops `CompanySupplyDrop.Fill(payload, 1f)` — the corporation's crate at full scale,
+* lands **five** staff from the five `RR_*Staff` PawnKinds, registering each on the payroll,
+* clears `Find.GameEnder.gameEnding`, which is the *"never losing the game"* half,
+* records `reliefCount` and `lastReliefTick` as **history, never a limit** — there is deliberately
+  no cap and no escalating penalty, because *"the corporation will put up with anything"*.
+
+**Its trigger comment is now wrong and says so:** *"Downed is also not dead. A branch whose staff
+are all unconscious is in trouble, not gone."* The owner has overruled that. Change the condition,
+and correct the comment rather than leaving a reason nobody believes.
+
+### THE GAPS, WHICH ARE THE WORK
+
+| Owner's clause | What has to change |
+|---|---|
+| *"when all pawns incompacitated"* | trigger counts **downed as lost**, not only dead |
+| *"this only happens for the lab secnerio for now"* | gate the whole thing on `ScenarioId == "async_industries"`. The other two are **owner-excluded for now**, recorded in TODO and **not** in `docs/DEFERRED.md`, which stays closed at zero rows |
+| *"the downed: No Witnesses"* | kill every downed player pawn, then treat them as dead |
+| *"burry the dead or incenerate on propery"*, *"might need to build graves in the moment"*, *"use and or build a crematoryium"* | Core defs confirmed present, counted against **Core only** and not against the installed game: **`Grave`**, **`Sarcophagus`**, **`ElectricCrematorium`**. **There is no def called `Crematorium`** — it is `ElectricCrematorium`. **AND `Pyre` IS NOT CORE** — it is `Ideology/Defs/ThingDefs_Buildings/Buildings_Ideo.xml`, so this handoff was wrong to list it and nothing may name it: the mod has **zero hard dependencies** and a player without Ideology must lose nothing. Burial is `Grave`; the fire is `ElectricCrematorium` if one stands, and otherwise destruction, which is *"incenerate on propery"* either way. Build graves on free cells and inter the corpses; anything that will not fit is destroyed, which is *"incenerate on propery"* |
+| *"leeaves three new pawns"* | **three**, not the five `ReliefRoles` currently lands |
+| *"fix broken walls and equipment"*, *"and repair"* | restore `HitPoints` to max on every damaged player building. A **destroyed** wall leaves no record, so it cannot be rebuilt — say so rather than implying otherwise |
+| *"disconnect the gate"*, *"shut down the gate"* | close any open session, abort a spin-up, throw the kill switch. **Leave it commissioned** — *"like starting all over again"* means the new crew bring it back up |
+| *"haull abay all bonds printed that are on the map u lose it all"* | destroy every bond on every map and credit **nothing**. `BondService.FaceValueOf` finds them; do **not** route through `DepositBondPaper`, which pays |
+| *"25M is deducted ... upto 25M ... never going under 0 dollars"* | `min(25_000_000, BalanceUsd)`, through `PostTransaction` with a stable operation id so a reload cannot charge twice |
+| *"leave supplies food asurvival meals"* | the crate already drops; add `MealSurvivalPack` explicitly (def confirmed present) |
+| *"full sweep of every rroom"*, *"they haul everything"* | the sweep is the clearance, the corpses and the bonds. Nothing else in the facility is the squad's business |
+
+### THE ONE DESIGN DECISION ALREADY MADE, AND IT NEEDS NO PERMISSION
+
+**The squad is an event, not a unit.** Owner: *"can kill anything without dying"* and *"they have
+keeys to all doors on map"*.
+
+**Core-only cannot make a pawn invulnerable**, and a simulated squad that could be killed, or
+blocked by a door, would break the one thing this feature is for: a guarantee. So the squad's work
+is applied as **one deterministic operation** — hostiles destroyed instantly, corpses interred,
+repairs applied, bonds taken, supplies and three staff dropped — and the pawns the player sees are
+the three who stay. The existing `ClearHostiles` already works exactly this way and already
+satisfies *"kills every thing"* and *"without dying"* by never being a combatant at all.
+
+Door keys and invulnerability are then **moot rather than unimplemented**, and that distinction
+belongs in the implementation record.
+
+### AND THE THREE BACKLOG ITEMS, WHICH THE OWNER ALSO ASKED FOR
+
+Owner: *"andf yes do those three things you listed as well"*.
+
+1. **staff prior exposure** affecting how an expedition goes — `docs/TODO.md` line ~308, the
+   still-open half of the *"contradictory accounts"* row.
+2. **the `review` workflow** — the fourth of analyse / interview / compare / review. The other
+   three ship; `review` does not.
+3. **the stranded-crew rows** — verify against `Company/LostPawnRegister.cs` that closing a gate
+   on a crew never takes player control of them. The row itself says it: *"If a closing gate hands
+   its crew to the world-pawn pool, or despawns them, or marks them lost in any way that removes
+   player control, that is a defect against this direction and the most consequential kind."*
+
+### WHEN IT IS BUILT
+
+**CORRECTED 2026-10-01, BY THE OWNER, BEFORE A LINE WAS WRITTEN.** This section previously read
+*"Nothing in the battery claims anything about `FacilityRelief`"*. **That was false.** The owner
+asked *"are u shure zero goon squad code is written weve gone over this before by a different
+name"* and the grep that answers it found three things.
+
+**`proof-facility-relief.py` is proof FIVE and it already exists** (0.11.7-dev). Two of its claims
+**contradict this direction outright**, so the work is to RE-AIM them, not to add beside them:
+
+| The existing claim | Why it now fails |
+|---|---|
+| `check("the relief requisitions five roles", len(relief_roles) == 5)` | the owner said **three** |
+| `check("the living-staff scan does not treat downed as dead", "Downed" not in living_text)` | the owner said ***"the downed: No Witnesses"*** |
+
+That second claim is the **old reasoning written into the battery as an assertion**, not merely a
+stale comment. A build that followed the uncorrected handoff would have hit two red FAILs and read
+them as a regression it had just caused.
+
+**And the repair clause already has its instrument.** `ConnectedWork/Providers/UpkeepProviders.cs`
+has `RepairableOn(map, faction)` wrapping **Core's own** `map.listerBuildingsRepairable
+.RepairableBuildings(faction)` — map-explicit and already proven. **Do not write a second
+damaged-building scan;** a second derivation of one rule is the defect this project keeps meeting.
+
+What is genuinely absent, measured rather than assumed: `grep -rn` over `src/` for `goon`,
+`GoonSquad`, `ClearSquad`, `CleanupTeam`, `FacilitySweep`, `Grave`, `Sarcophagus`, `Crematorium`,
+`Pyre`, `Bury`, `25000000`, `restock` and `pedycash` returns **nothing**. No burial, no cremation,
+no confiscation, no deduction.
+
+The claims still have to assert the squad is **called**, not merely written: four of the five bond
+defects, and seven defects before them, were *built, correct, and unreachable*.
+
+**The lesson is this file's own rule, applied to this file.** *"CHECK A ROW AGAINST THE CODE
+BEFORE BUILDING FOR IT"* — nine rows were saved by it this session, and the handoff asserting a
+battery gap had not run the one grep that checks for one.
+
+Then the owner's standing order, which resumes next checkpoint:
+**STAGE → NOW.md → CASCADE.**
+
+## STATE AT THIS HANDOFF — `0.12.75-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.75-dev  92 files
+assembly    AABE696E79D3745FEDC3397C2E21B179D43538C3C6FB71A9276D444D4663483A
+            read back out of the game folder after staging, not from the build
+battery     17 checkers - 46 proofs - 20 of 20 in the bond suite - 684 anchors findable
+tree        no planted fault, porcelain 0
+```
+
+### FIVE BOND DEFECTS, AND NO CLAIM HAD EVER BEEN MADE ABOUT BONDS
+
+`grep -l Bond` across forty-five proofs and sixteen plant suites returned **nothing**, which is why
+the owner found five defects in one feature in one sitting. **Four of the five were the same shape:
+built, correct, and unreachable.**
+
+| | |
+|---|---|
+| the label | `CompRimroomsBond.TransformLabel` **had never run**: `Verse.Book.LabelNoCount` is `title + GenLabel.LabelExtras(...)` and never walks `comps`. The label is a `thingClass` override now, and the dead hook is **deleted** |
+| the value | a `Novel` is `MarketValue 160`. A `StatPart` sets it to the face value, additively, reading the thing because the face value is per instance |
+| putting one back | `RedeemBondsInRadius` had **exactly one caller**, a beacon the player had not built. There is a gizmo on the paper now |
+| combining | did not exist. It goes through the ledger in two halves of one operation id, so a credit cannot fall between the ledger and the floor |
+| the description | told the player to use the beacon they did not have |
+
+**`proof-bonds.py` is proof FORTY-SIX** and the first claim ever made about this feature.
+
+### THE COMPLIANCE CHECKERS REFUSED THE FIRST ATTEMPT, AND ONE OF THEM WAS RIGHT
+
+The label was first written by **reflection into `Book`'s private `title`**, and
+`check-compliance.py` refused it: *"a `SetValue` into a game type is a game-assembly modification
+that no dependency list would show"* — a Ludeon-terms question, not only architecture. Its stated
+boundary is **Def extension points**, and `thingClass` is one. **The code changed, not the
+checker.**
+
+`check-register-compliance.py` then refused the value change because the patch's **comment**
+contained the word `statBases`, in the sentence saying the face value *cannot* be one. **Fifth
+instance of a checker reading its own prose**; it strips XML comments now, as
+`check-compliance.py` has since 0.12.46-dev. **That one was the checker's defect and the checker
+changed.** Knowing which of the two is wrong is the whole skill here.
+
+### NO MONEY IS PRINTED, AND THAT WAS CHECKED BEFORE THE STAT WAS TOUCHED
+
+Selling a bond through the company fetches **85%** of face, because `ValuablesExchange` already
+buys ordinary goods at 0.85. Depositing or banking returns **100%**. No new rate was invented.
+Holding paper raises colony wealth where the ledger does not, which is the trade the bond exists to
+offer: *"Liquidity costs risk."*
+
+## STATE AT THIS HANDOFF — `0.12.74-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.74-dev  92 files
+assembly    39C05DB8EFD9852A29BB0C8DD7FD7F25550D204431AD5C7F4C38F3A2DBE88941
+            read back out of the game folder after staging, not from the build
+battery     17 checkers - 45 proofs - 91 of 91 in the start suite - 669 anchors findable
+tree        no planted fault, porcelain 0
+```
+
+### THE CHECKLIST WAS LYING, AND THAT WAS THE WHOLE OF IT
+
+Step 11 read `IsOpening || IsSpinningUp`. **`IsSpinningUp` is defined as `!IsOpening`** -- it is the
+ramp. So pressing *open a session* completed all eleven checks while the connection was still
+coming up, the owner sent a colonist, and `PortalTravelService` refused with *"the laboratory
+connection for that address is not open"*, **which was true**.
+
+`Done = gate.IsOpening` now. While the ramp runs the step reports the **live percentage** and says
+the charge bleeds back down while nobody holds the console. And once the session IS open the list
+says what to do with it: select one colonist, order a crossing. **Opening a door never moves
+anybody by itself**, and nothing had ever said so in the place a player was looking.
+
+### READ CORE WITH THE DECOMPILER, NOT FROM MEMORY
+
+**Twice in one day reasoning from memory about Core produced the wrong answer.**
+`GenSpawn.Spawn` does **not** throw on wall-over-wall, and `GenAdj.AdjustForRotation` **shifts the
+centre of an even-dimension building** -- `(-1,-1)` for south -- before `OccupiedRect` is taken.
+
+Three of our models had that second gap at once: checker sixteen, `build-async-facility.py` and
+`proof-starts.py`. All three said the owner's 3x2 comms console overlapped the glass it is actually
+sitting against, and the only reason it was caught is that **the running game had already accepted
+the placement.** All three carry the same arithmetic now and cite the decompiled source.
+`.local/inspection-powernet/` holds the decompiled `GenAdj`, `GenSpawn`, `GenConstruct`, `Map` and
+`PowerConnectionMaker` if the question comes up again.
+
+### A NEW RULE THAT FOUND A DEFECT THE DAY IT WAS WRITTEN
+
+`IsOperatorOnStation` requires the pawn to stand on **exactly** the interaction cell. Checker
+sixteen refuses a bench whose interaction cell is a wall, and immediately refused the **Furniture
+Store's comms console**: its interaction cell was the staff room's north wall, so **it had never
+been usable** -- and reaching the corporation is that scenario's whole achievement.
+
+### THE FACILITY, AS THE OWNER WANTS IT
+
+Fifteen rooms, twenty-two doors, eleven glazed cells, four columns, 150 fixture cells.
+
+| | |
+|---|---|
+| console **(32,33) facing south**, bench **(45,33)** | where the owner moved them, read out of `Autosave-3.rws` and converted by the layout offset of (120,120) on their 300-cell map |
+| **breezeway**, the only unroofed room | walled, doored, open to the sky, both wood-fired generators in it. *"generators out side batteries inside"* |
+| **power room** next door, roofed | the four-battery bank, out of the control room where it had no business being |
+
+**`roofed: false` did nothing before this**: every room is nested in a roofed compound whose pass
+ran first. It sets **or clears** now, in authored order, and `proof-startplacement.py`'s roof model
+learned the same rule or it would have demanded roof support for the breezeway.
+
+**Never hand-edit this layout.** Edit `.local/register/build-async-facility.py` and re-run it.
+
+### MY OWN PLANTS CAUGHT MY OWN CLAIMS, TWICE IN TWO CHECKPOINTS
+
+`89 of 91`. The ramp claim proved `ramping` was **computed** and the keyed string **existed**, never
+that the branch used it -- **ninth instance of machinery-not-behaviour**. The interaction-cell
+claim proved the message **text was in the file**, and a plant that commented the whole `fail(...)`
+out left the words in a comment -- **forty-fifth instance of the scoping trap**. Both are claims I
+wrote, caught by plants I wrote, and that is the clearest argument there is for writing the plant
+before trusting the claim.
+
+## STATE AT THIS HANDOFF — `0.12.73-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.73-dev  92 files
+assembly    C6988A04423FE4A656A15D29EEE97C21BA2D323C842C07EE9A96B81AEF9F57D6
+            read back out of the game folder after staging, not from the build
+battery     17 checkers - 45 proofs - 659 of 659 plants - 16 suites
+tree        no planted fault, porcelain 0
+```
+
+### READ THIS BEFORE TOUCHING THE GATE: THE ELEVEN STEPS ARE ON SCREEN NOW
+
+The owner lost an afternoon to a gate that was **already assembled, already calibrated, already
+crewed and un-tripped**, blocked by **one switch**: the machining table was in gate control and the
+communications console on the same gate was not. `Autosave-5.rws` at 11:38 proved it, and nothing
+in the interface could say it.
+
+**Three things hid it, and all three are fixed:**
+
+| | |
+|---|---|
+| `RR_Gate_CalibrationUnavailable` | said *"not ready for calibration"* for all eight of `CanCalibrate`'s conditions **including `calibrated`**. `CalibrationBlockerKey` names the real one, and `CanCalibrate` **asks** it rather than restating the conditions |
+| `RR_Gate_JobUnavailable` | one key for four problems. `StaffConsoleBlockerKey` replaces it in `OrderStaffConsole`; the key still exists for `OrderAssignedJob`, which is what it actually describes |
+| the portal panel | drew **no button and no sentence** with no address remembered. It lists every unmet precondition now, naming **which component** is in normal operation |
+
+**`DrawGateStartupChecks` is the headline.** Eleven numbered checks at the top of the Machine tab,
+read from live state, each with one sentence naming the thing to click, plus the first unfinished
+one called out on its own line. **The order is enforced by proof**: gate control on the **table**
+before the assembly, because the recipe is withdrawn from a bench in normal operation; gate control
+on the **console** before staffing, because spin-up refuses while either is doing its day job.
+
+### THE FACILITY IS A PLAN NOW, AND IT IS AUTHORED BY A PROGRAM
+
+Thirteen rooms, twenty doors, two of them an airlock, **eleven cells of ballistic glass**, four
+support columns, 145 fixture cells. A gate hall that is deliberately empty, a control room behind
+the glass, a security airlock of two automatic doors in series, a lab wing, secure storage, a
+workshop, a security office, decontamination, an archive.
+
+**Do not hand-edit `RR_AsyncIndustriesStart`'s geometry.** Edit
+`.local/register/build-async-facility.py` and re-run it: it derives every door from the wall it
+belongs to and checks every footprint against Core's own `<size>` before emitting a line.
+`GenStep_Headquarters.Build` **throws** on any geometry mistake and a throw inside a GenStep costs
+the player the start.
+
+**The existing battery caught the first authoring twice, and both were real:**
+
+* `proof-startplacement.py` found **121 roofed cells beyond roof support**. An unsupported roof
+  collapses on the pawn who deconstructs the wall holding it. The western wing and the gate hall's
+  **columns** exist because of that, and `pillars` was added to the start schema for it.
+* A claim that refused any two rooms sharing a wall cell was **wrong about its own premise** --
+  `GenSpawn.Spawn` never throws on wall-over-wall; `SpawningWipes(Wall, Wall)` replaces it. Third
+  time that claim has been wrong. It now asserts what checker sixteen asserts.
+
+### TWO NEW CHECKERS, AND THE BATTERY IS SEVENTEEN
+
+| | |
+|---|---|
+| `check-start-layout.py` | **SIXTEEN.** Re-validates every authored facility cell by cell from the emitted XML -- doors on walls, glazing on walls and not on doors, footprints on free interiors from **Core's own sizes**, columns on free interiors, conduits in extent. Two readers, and the one that validates did not author |
+| `check-plant-anchors.py` | **SEVENTEEN.** Reads all sixteen `PLANTS` tables with `ast` and reports **every** stale anchor at once. This checkpoint paid the one-stale-anchor-per-four-minute-run toll **eight times** before it existed |
+
+**Both cried wolf before they were right** -- 368 legitimate cells for the first, and for the
+second `chr(10)` reading as unevaluable plus an entry `plant-def-fields.py` skips itself. That is
+five and six in this battery's history of false alarms, and each is written down because a checker
+stricter than the thing it guards is its own defect.
+
+### WHAT IS LEFT, HONESTLY, AND IT IS NOT A BUILD QUEUE
+
+Owner scope, 2026-10-01: *"basicly the build items not tests and steam and worklshop stuff.."*.
+The 72 raw open rows in `docs/TODO.md` are **not** 72 build items. They are:
+
+| Kind | What unblocks it |
+|---|---|
+| **launch-gated** -- balance, the 294-profile conflict sweep, the compatibility report, the release tag, screenshots, performance measurement | **an owner launch**, and the owner's standing direction is *"we are not testing again till its all done"*. These cannot close before that |
+| **owner-decision** -- the site's domain, the Steam/Workshop Playwright session, a design brief for new starts, the PawnKind save-break | **an owner answer**. Excluded from scope by *"not tests and steam and worklshop stuff"* |
+| **buildable** -- staff **prior exposure** on an expedition, the **review** workflow (the fourth of analyse/interview/compare/review), and verifying the stranded-crew rows against `LostPawnRegister` | **nothing. These are next.** |
+
+## STATE AT THIS HANDOFF — `0.12.72-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.72-dev  91 files
+assembly    8FFCF0F0BE7CA434F2883F94F7693B53AE65F4CF08B353F1CB0F7086BC1739D6
+            read back out of the game folder after staging, not from the build
+battery     15 checkers - 45 proofs - 646 of 646 plants - 16 suites
+tree        no planted fault, porcelain 0
+```
+
+### TWO LAUNCHES, TWO DIFFERENT CAUSES, SAME SYMPTOM
+
+The owner reported the same thing twice -- *"why are my colonists on the world map!!!!!!!!! they
+should be in the backrooms in this scenerio"* -- and it was **not** the same defect. Both stopped
+`SoloGroupOpening` before step 5, and that is the only thing they had in common.
+
+| | Launch | Cause | Where it threw |
+|---|---|---|---|
+| 0.12.71-dev | solo/group on the world map | **a clue landmark the dressing had sealed in** | our `ValidatePlacedLayoutCore` |
+| 0.12.72-dev | solo/group on the world map **again** | **a `WallLamp` with no wall behind it** | **Core's `Map.FinalizeInit`**, not our generator at all |
+
+**The second one is a regression and the owner was right to call it one.** *"we loaded solo/group
+start into the backrooms correctly before"* -- they did. `FindWallAttachmentCell` finds a wall and
+then faces it, and for a long time it was the only thing placing the palette's light. The pillar
+lamps and the corridor dressing, added after it, both got the arithmetic wrong.
+
+### THE CORE BEHAVIOUR TO KNOW BEFORE PLACING ANYTHING ELSE
+
+`RimWorld.PowerConnectionMaker.TryConnectToAnyPowerNet` does this, with no null check:
+
+```csharp
+pc.parent.def.building.isAttachment
+    ? GenConstruct.GetWallAttachedTo(pc.parent).Position
+    : pc.parent.Position
+```
+
+`GetWallAttachedTo` returns null unless the cell at `pos + GenAdj.CardinalDirections[rot.AsInt]`
+holds something with `building.supportsWallAttachments`. **`WallLamp` is `isAttachment`.** So one
+lamp facing open floor is a guaranteed `NullReferenceException` inside Core's power rebuild --
+**step four of fifteen in `Map.FinalizeInit`**, so regions, pens, plant growth, every
+`PostMapInit` and the wealth recount never run, and the finished level is discarded on the way out.
+Core never clears the queue it threw out of, so it re-runs every tick afterwards.
+
+**`EnsureSite` discarding that map is correct and was deliberately left alone.** Rescuing it was
+considered -- our GenStep had finished and `MarkLayoutReady` had run -- and **rejected after
+reading `Map.FinalizeInit`**: a map that dies at step four has no regions and no `PostMapInit`.
+
+**One rule, one home, plus a net:**
+
+| | |
+|---|---|
+| `WallAttachmentHolds` | asks **Core's own `GenConstruct.GetWallAttachedTo`**. Core is what dereferences the answer, so a local copy of the rule could disagree with it -- the `MaxRoomSpan` shape |
+| `SpawnAttachableLight` | the only thing that spawns a lamp, for all three callers. Preferred wall, then the other three, then a floor-standing lamp, then **nothing** rather than an attachment in mid-air |
+| `RemoveUnattachedAttachments` | sweeps the finished coordinate before any conduit is laid. **This is what makes the fourth placer harmless**, and it also covers the archetype dressing, which spawns arbitrary modded defs at a scattered facing and never checked |
+
+### THE RESIDUE CHECKER WAS BLIND IN EXACTLY THE CASE IT EXISTS FOR
+
+`plant-containment.py`'s restore raised `OSError: [Errno 22]`, so its `finally` never reached
+`_rr_unmark()` and the sentinel **was** left behind -- correctly. **Then the next suite's
+`_rr_unmark()` deleted it**, because all sixteen shared one sentinel path. `check-plant-residue.py`
+reported a clean tree with `campaign.ClearBreachResponded();` missing from
+`ContainmentProtocol.cs`.
+
+**Fourth instance of residue reaching the tree and the first the sentinel could not see.** Each
+suite names its sentinel after itself now, the checker globs them, and the restore retries and
+verifies before anything believes it. The error was transient -- the same path had just been
+written twice -- so one retry makes it a non-event.
+
+### WHAT THE OWNER HAS NOT SEEN YET
+
+**Eleven checkpoints are built; the last launch to reach a playable Backrooms level was
+`0.12.67-dev`.** Two launches since have each got one step further.
+
+| Checkpoint | Unseen in a game |
+|---|---|
+| 0.12.68-dev | the braided maze, the raised graph ceiling, **the new packageId** |
+| 0.12.69-dev | institutions on a first level, complexes to six rooms, loot in all sixteen archetypes |
+| 0.12.70-dev | the assembly as a player-queued bill, and gate control on the components |
+| 0.12.71-dev | the landmark's reserved approach -- **this one is confirmed working**, the level generated |
+| 0.12.72-dev | **a solo/group start surviving `Map.FinalizeInit`** |
+
+**A NEW START IS REQUIRED.** Nothing retries a failed opening; owner's decision when asked,
+2026-10-01: *"Just the fix, I'll restart"*.
+
+## STATE AT THIS HANDOFF — `0.12.71-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.71-dev  91 files
+assembly    F4E367E7C4DBC3C3AF92E7A06FF7CF59E421A397426A3F404206367BF91ACE41
+            read back out of the game folder after staging, not from the build
+battery     15 checkers - 45 proofs - 633 of 633 plants - 16 suites
+tree        no planted fault, porcelain 0
+```
+
+### WHY THE OWNER'S SOLO/GROUP START PUT THEM ON THE WORLD MAP
+
+**One clue nobody could walk up to killed the whole level.** Their words: *"i ended up in the world
+map with no connection to the back rooms.. i should of been in the back rooms and i dont have a
+warp do to get back"*.
+
+`SoloGroupOpening.Open` is five steps. Step 2 -- the coordinate's own map -- threw
+`RR_Generation_UnreachableRequiredCell`, so steps 3, 4 and 5 never ran: **the surface door was
+never marked, no address was registered, and nobody was moved inside.** Their own guess,
+*"i think it was the issue of the building starting door being the same as the warp gate door"*,
+is wrong and it is recorded as wrong in `docs/TODO.md` -- the door was never reached at all.
+
+**Three things changed, and one of them is a judgment call worth knowing about:**
+
+| | |
+|---|---|
+| `RouteTrunk` | The landmark is offered a cell beside the room's **clear, joined-up route cross**, which is reserved for the whole of population. Nothing placed later can take it, so the approach is structural rather than lucky. It falls back when a room has no such cell, and **the probe measures how often that happens** -- zero, across 1,400 layouts |
+| the landmark's ring | Reserved once it is placed, exactly as `Populate` already does for the gate anchor |
+| **an unreachable clue now WARNS** | It used to throw and take the level with it. One clue nobody can reach is one awkward room; the generator's own written rule says a coordinate that does not exist costs the player the gate that leads to it. **The structural checks around it stay fatal.** This is a deliberate downgrade, not an oversight |
+
+### AND THE SIXTY-TWO POWER WARNINGS WERE MOSTLY OUR OWN RETRY
+
+Core clears its delayed power queue **after** the loop that processes it, so a throw part-way
+leaves applied entries queued -- and `ConnectStrayConsumers` rebuilt once per stray consumer, so
+it called again and re-applied them. That is where Core's *"there is already a power net here"*
+came from, naming the generator on the generator's own cell.
+
+`RebuildPowerNets` returns a bool now, the sweep stops on false, and nothing asks twice.
+**The root of the FIRST throw is still unknown** -- it is inside Core, through a 294-mod profile,
+and the log only ever printed `(NullReferenceException)`. It logs the full exception now, so the
+next launch answers it. **That is not claimed as fixed.**
+
+### WHAT THE OWNER HAS NOT SEEN YET
+
+**Ten checkpoints are built and never run.** The last launch to reach a playable level was
+`0.12.67-dev`; `0.12.71-dev` is the first to attempt the solo/group start since the maze landed.
+
+| Checkpoint | Unseen in a game |
+|---|---|
+| 0.12.68-dev | the braided maze, the raised graph ceiling, **the new packageId** |
+| 0.12.69-dev | institutions on a first level, complexes to six rooms, loot in all sixteen archetypes |
+| 0.12.70-dev | the assembly as a player-queued bill, and gate control on the components |
+| 0.12.71-dev | **the solo/group start reaching a Backrooms level at all** |
+
+**A NEW START IS REQUIRED.** The failed coordinate is recorded `Unavailable` and nothing retries
+the opening. Owner's decision when asked, 2026-10-01: *"Just the fix, I'll restart"* -- so a
+replacement-coordinate recovery path for `lone_survivor` was **deliberately not built**.
+`ReaddressPristineInitialSurvey` still refuses any scenario but `async_industries`.
+
+### A NEW INSTRUMENT, AND WHY IT IS TRACKED
+
+`.local/harness/PdbLine` maps an IL offset from a RimWorld stack trace to a source line, by
+reading the portable PDB's sequence points, and prints the assembly MVID so the answer can be
+tied to the assembly that actually threw.
+
+It exists because `ValidatePlacedLayoutCore` raised **one key from two places**, the trace carried
+`[0x001f8]` and nothing else, and no amount of reading the source can tell those apart. It
+answered line 1446 with a matching MVID. **There is one throw site for that key now**, but the
+shape recurs, so the tool is tracked rather than thrown away.
+
+```
+.local/harness/PdbLine/bin/Release/net8.0/PdbLine.exe <assembly.dll> <Type> <Method> [0xOFFSET ...]
+```
+
+## STATE AT THIS HANDOFF — `0.12.70-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.70-dev  91 files
+assembly    EC6AAA0B82D00F3884994DEDECC2460B4E6777C0F90B4C64398725DB3CA0D30A
+            read back out of the game folder after staging, not from the build
+battery     15 checkers · 45 proofs · 623 of 623 plants · 16 suites
+tree        no planted fault, porcelain 0
+```
+
+**Nothing is half-finished and nothing waits on a decision.** The last two checkpoints answered
+the gate's controls; everything before them answered the generator.
+
+### WHAT THE OWNER HAS NOT SEEN YET
+
+**Nine checkpoints are built, measured at the desk, and never run.** The last launch reported on
+was `0.12.67-dev`.
+
+| Checkpoint | Unseen in a game |
+|---|---|
+| 0.12.68-dev | the braided maze, the raised graph ceiling, **the new packageId** |
+| 0.12.69-dev | institutions on a first level, complexes to six rooms, loot in all sixteen archetypes |
+| 0.12.70-dev | the assembly as a player-queued bill, and gate control on the components |
+
+**A NEW START IS REQUIRED** — all of the generation work lands on newly generated levels.
+
+### THE TWO NEWEST THINGS, BECAUSE THEY CHANGE HOW THE GATE IS OPERATED
+
+**1. The gate no longer assembles itself.** `BindNativeInfrastructure` used to add an unsuspended
+`Bill_Production` to the machining table, so commissioning a door sent crafters off with a hundred
+steel immediately. Owner: *"i have no say in the mattter even tho nothing is connected or built
+yet"*. The recipe is on the table's own list and **the player queues it.** `SyncAssemblyBill` never
+adds a bill; it only suspends one once the gate exists.
+
+**2. A component does its ordinary job or the gate's.** Owner: *"we should have a set to gate
+control for these components so other things arnt available and can toggle between normal op and
+gate op depending whats wanted"*. Every bound component carries a switch and **begins in normal
+operation**. In gate control its company functions are withdrawn and a worktable's other bills are
+suspended by load id; in normal operation **the assembly recipe is unavailable and spin-up
+refuses**, naming the installation still doing its day job.
+
+**The honest limit, stated here so nobody re-discovers it as a bug:** Core-only, a comms console's
+own Core gizmo cannot be removed and a battery cannot be partitioned out of a power net. Gate
+control withdraws **our** functions and gates **our** operations. Core's call button stays
+pressable.
+
+## THE ORDER OF OPERATIONS, AND IT IS THE OWNER'S
+
+> *"and dont forget to stage , now.md , then cascade"* — *"thats the definiative order of
+> operation(remember it and document)"*, 2026-10-01
+
+**STAGE → NOW.md → CASCADE.** In that order, every time, once the work and the battery are done.
+
+| # | Step | Why it is here and not later |
+|---|---|---|
+| 1 | `tools/stage-mod.ps1 -UpdateExisting` | The owner can start playing the moment the work is done, instead of waiting on documentation they are not reading yet. Staging also refuses while RimWorld runs, so it is the step most likely to need attention. |
+| 2 | Write `docs/NOW.md` | Written **after** the stage, the handoff can quote the hash and version **verified in the game folder** rather than the one that was intended. |
+| 3 | Commit, then cascade ten refs | Last, so the published commit **contains** the handoff. Cascading before NOW.md publishes a tree whose own notes are out of date and needs a second cascade to correct it. |
+
+**The read-back is the only receipt**, and it is ten refs: `feature/bug-testing`,
+`feature/connected-colony-portals`, `Prep`, `Develop`, `Main`, on both `forgejo` and `github`.
+
+## DO THIS FIRST — THE PACKAGE ID CHANGED, AND EIGHT CHECKPOINTS SHIPPED UNVERIFIED
+
+**State: `0.12.69-dev`, staged, hash-verified, ten refs, porcelain 0.** Nothing is half-finished
+and nothing is waiting on a decision.
+
+### THE ONE THING THAT WILL CONFUSE EVERYTHING IF MISSED
+
+**The packageId is `Rimrooms.AsyncIndustries` now.** It was `UnityLabAI.RimroomsAsyncIndustries`
+until 0.12.68-dev. Owner direction: *"take the Unity Lab AI and the Unity AI Lab out of all
+refrences and nameing but we will keep the repos as is for now"*, chosen at the fork as
+`Rimrooms.AsyncIndustries` with the sweep covering the shipped package and the live documentation.
+
+Consequences that are easy to trip over:
+
+* **RimWorld sees a different mod.** The old RimSort entry is gone and a new one appears. Any save
+  made before 0.12.68-dev will not find this package.
+* **The staging guard refuses a folder whose packageId differs** — that is what stops it
+  overwriting another mod. If it throws *"Existing folder belongs to another package"*, check the
+  staged `About.xml`, and only remove the folder once you have confirmed it is our own build.
+* **Dated records keep the old id on purpose.** `docs/FINALIZED.md` and
+  `docs/implementation/evidence/` are receipts of what was true when written. `docs/TODO.md` keeps
+  the lab's name too, because the owner's own words quote it and LAW #0 puts those in verbatim.
+* **`.claude/`, the git remotes and the org are untouched**, by the owner's choice.
+
+### WHAT IS UNVERIFIED, AND IT IS A LOT
+
+**Thirteen launches, and the last one the owner reported on was 0.12.67-dev.** Everything since is
+built, measured at the desk, and **never run**:
+
+| Checkpoint | What has not been seen in a game |
+|---|---|
+| 0.12.68-dev | the braided maze, the raised graph ceiling, the new packageId |
+| 0.12.69-dev | institutions on a first level, complexes up to six rooms, loot in all sixteen archetypes |
+
+**A NEW START IS REQUIRED.** Every one of those lands on newly generated levels, and the owner has
+been starting fresh each launch anyway.
+
+### THE INSTRUMENT IS NOW THE FIRST THING TO RUN
+
+```
+python tools/check-planner-layouts.py     # checker 14: runs the planner for real
+python tools/check-plant-residue.py       # checker 15: refuses while a fault is planted
+```
+
+**Checker 14 is the only one that runs code rather than reading it**, and it is what found every
+generation defect in the last four checkpoints. It reports, per depth: refusals, room count,
+widest span, back-to-back pairs, margin pressure, shaped-room share, rock share, **fallbacks**,
+and **institutions**. Read the whole line; each column exists because something hid in it.
+
+**Checker 15 exists because a plant suite left a deliberate fault in the source tree three
+times.** `finally` handles an exception and does nothing for a killed process, so the suites write
+a sentinel naming the file before they mutate it. **If you interrupt a plant sweep, run checker 15
+and restore what it names.**
+
+### THE TRAPS, AND EVERY ONE OF THEM BIT THIS SESSION
+
+* **The machinery is not the behaviour — SEVEN times.** A claim asserting that a constant,
+  a method or a variable *exists* passes while the branch that uses it is gone. `MakeHall`,
+  `VariedRoomSpan`, `SpawnPillarLamps`, the margin fallback, the corridor lamps, `DiscoveryIdFor`,
+  the gate toggle's refusal branch. **Assert the call site and the condition, never the
+  definition.**
+* **Claim scoping — FORTY instances.** A string that appears twice, or appears in a comment
+  explaining its own removal. `PlaceWall(map, cell, wallDef, wallStuff)` occurs in two methods;
+  `RR_GateTelemetry` occurs in the comment beside the list it was deleted from. **Scope to a
+  method body, or count.**
+* **An absence claim cannot read raw source.** `proof-coordinate-layout.py` keeps a comment-free
+  `code()` view; `proof-generation-batch.py` strips comments.
+* **A model with no source claim drifts silently.** `proof-facilities.py` carried
+  `MAX_ROOMS = 4` with a comment saying it must mirror the C# exactly, and nothing checked —
+  the code moved to 6 and the proof kept passing. **Every mirrored constant needs a claim that
+  reads it out of the source.**
+* **An anchored span is a delete.** A fix script rebuilt a proof as `text[:start] + new +
+  text[end:]` and removed two claims written four minutes earlier.
+* **Use the Write tool.** A bash heredoc has mangled an escape **eleven** times; the format-string
+  anchors in the probe defeated it twice more this session.
+
+### AND THE DEFECT SHAPE BEHIND ALMOST EVERYTHING
+
+**Seven systems this week were built, correct, and switched off by a condition meant for something
+else.** The archetypes, the inhabitants, the events, the shapes, the facilities — all gated on
+`coordinate.Depth <= 1`. `NaturalFrontierService.Discover` had **zero callers**. A discovered gate
+could never be entered because `IsLiveGate` wanted a player mark. The Backrooms could not go
+deeper than two levels because a derived id outgrew a 128-character limit. Every candidate layout
+was refused because `MaxRoomSpan` said 34 while the hall was 80. Every maze was refused because
+the graph ceiling allowed one loop.
+
+**So the question to ask of any feature the owner says is missing is not "is it written" but "can
+it run, and is it reached".** The probe answers the first. A caller search answers the second.
+
+### WHAT THE NEXT LAUNCH HAS TO SETTLE
+
+1. **Refresh local mods in RimSort** — the mod has a new id and will appear as a new entry
+2. **A fresh start**, any scenario; the corporate start is now playable for the first time
+3. **Is it a maze** — branches, loops, dead ends, no single snaking line
+4. **Institutions**: a school, a ward, an armoury, a storage complex, up to six rooms each, with
+   loot in them
+5. **The gate**: blue, glowing, Stargate FX, a pawn crossing; the door toggle on an ordinary door
+   at the headquarters
+6. **Ways onward**: blue dead-end doors offering *"Walk through"*, one world exit and one deeper
+   per level, and **depth 2 reachable for the first time**
+
+### STANDING CONSTRAINTS, UNCHANGED
+
+* **Only the owner launches RimWorld, through RimSort.** Never alter the active mod list. Killing
+  `RimWorldWin64.exe` is allowed only when staging requires it and a stage was asked for.
+* **No Claude or AI attribution** in commits, PR bodies, code comments, docs or shipped artefacts.
+* **Never force-push.** The cascade is **TEN refs** and the read-back is the only receipt.
+* **Existing content only** — no new gameplay ThingDefs, benches, items, textures or audio.
+* **Nothing is deferred.** Never add a row to `DEFERRED.md`.
+* **Ask, do not flag.** *"dopnt flag shit!!! ask me then and there"*.
+* **The mod register is guidance, not law**, and the check must still be stated in the record.
+* **Do not stop until the owner says stop or the build is complete.**
+
+## DO THIS FIRST — READ THE **FIRST** RED LINE, NOT THE LOUDEST ONE
+
+The eleventh launch's log had **hundreds** of `NullReferenceException`s, repeating every frame,
+from Core's power net and from four different mods' map components. **Every single one was
+downstream.** The cause was the first red line in the file and it was ours:
+
+```
+[Rimrooms][Generation] Site layout stopped: InvalidOperationException: RR_Generation_NoSafeRoomCell
+  at RoomContentBuilder.Place(...)  ->  Populate(...)  ->  GenStep.Generate(...)
+```
+
+So the order is: **`Player.log` first, `grep` for the FIRST `[Rimrooms]` line, then
+`bridge.py call rimworld/list_letters` for anything this package refused on purpose.** A
+half-generated map makes every other mod on it throw, and chasing those is chasing our own
+wreckage.
+
+### THE CHAIN, BECAUSE IT WILL REPEAT IN SOME OTHER FORM
+
+A stool had nowhere to go → `Place` threw → `GenStep.Generate` aborted → the map existed but was
+never finished → `EnsureSite` reported failure → `SoloGroupOpening` stopped at step 2 → the door
+was never marked and no edge was registered → **`IsLiveGate` needs both, so the gate was a plain
+door with no glow and no Stargate component.**
+
+**Owner's words were about a door. The defect was in furniture placement.** Twice now the gate has
+been reported broken and the cause was two steps upstream in generation. **Check whether the
+coordinate finished generating before looking at anything about the door at all.**
+
+### WHAT WAS ACTUALLY WRONG
+
+`Place` required a walkable margin — no edifice within one cell of the footprint — and **a room's
+perimeter wall, its pillar lattice, the rock in its shaped corners, the lamp on every pillar and
+every fixture already placed are all edifices**, on top of the three-cell route cross `Populate`
+reserves. 0.12.61-dev made that reachable by varying room spans and letting shape and lamps run at
+depth 1.
+
+Measured, not argued — `python tools/check-planner-layouts.py` reports it per depth:
+
+```
+depth 1   tightest margin  43   starved rooms     0
+depth 2   tightest margin   0   starved rooms    33
+depth 5   tightest margin   0   starved rooms   928
+```
+
+The margin is a **preference** now, and **only the landmark is required** — because
+`ValidatePlacedLayout` demands exactly one clue per room and the clue IS the landmark. Everything
+else is scenery, which is what `DressRoom` four lines below had always said.
+
+### THE ONE MOD INTERACTION IN ELEVEN LAUNCHES
+
+Core refuses a second transmitter on a cell and leaves its bookkeeping inconsistent, so
+`PowerConnectionMaker.TryConnectToAnyPowerNet` throws from `FinalizeInit` **and from every Update
+for the rest of the session.** `wiredCells` is our own bookkeeping and cannot see a transmitter
+another mod put there — and several mods in the owner's profile attach a hidden conduit under a
+powered building, which is what the new pillar lamps are. Both conduit paths now ask Core's own
+`ThingDef.EverTransmitsPower`.
+
+**Twenty-three defects across eleven launches and this is the first that involved another mod at
+all.** Their mod is untouched; we simply decline a cell that is already wired.
+
+### WHAT THE TWELFTH LAUNCH HAS TO SETTLE
+
+1. **Does a coordinate finish generating** — gate blue, glow, Stargate FX, a pawn able to cross
+2. **Is the log clean after the first `[Rimrooms]` line** — no power-net spam
+3. **24 rooms at depth 1** plus one grand hall of eighty cells, back-to-back pairs, shaped
+   corners, varied corridors
+4. **Is it a maze**, and does the yellow stop a few rooms out from a still-grand spawn hall
+5. **Two portals per level**: one out to the world map, one deeper. Guaranteed, not drawn
+6. **Loot, weird rooms, people, bodies, events** out past the yellow rooms
+7. **A lamp on every pillar** in four tones; **doors that go nowhere**; **furniture spread
+   through rooms** rather than in the four corners
+
+### THINGS THAT WILL WASTE A LAUNCH IF FORGOTTEN
+
+* **A new start, every time.** A coordinate is generated once and recorded, and a branch whose
+  startup failed keeps its failure. Three launches in a row have needed a fresh start.
+* **Run `tools/check-planner-layouts.py` before asking for a launch.** It is checker fourteen and
+  the only one that runs code rather than reading it.
+* **Register row [218] Stargates! is stance "No integration", and the owner overruled it.** The
+  register is guidance.
+
+### THE TRAPS, ALL FOUR OF THEM, FROM THIS CHECKPOINT ALONE
+
+* **An anchored span is a delete.** A fix script rebuilt a proof as
+  `text[:start] + new + text[end:]` and removed two claims written four minutes earlier. The plant
+  suite reported both as MISSED. **Read what is between the anchors.**
+* **The machinery is not the behaviour.** The margin claim asserted the fallback variable and its
+  return; a plant restoring the hard `continue` left all of it in place, unreached, and passed.
+  **Fourth time this week.** Assert the branch.
+* **An absence claim must be scoped.** `Place(..., "Shelf", ..., 0)` is a substring of
+  `service_passage`'s own landmark. Thirty-seventh instance.
+* **Use the Write tool.** A heredoc mangled an escaped newline for the **eleventh** time.
+
+## DO THIS FIRST — READ THE LOG FROM THE ELEVENTH LAUNCH, AND THEN READ THE LETTERS
+
+**The log was CLEAN and the game was broken.** That is the single most useful thing the tenth
+launch taught, and it changes the first job.
+
+Zero red lines. `0.12.61-dev` loaded, the mod's own build line printed, the company branch
+initialised, no exception anywhere. And the owner had no Backrooms, no blue door and no way
+through. **The evidence was a letter**, sitting unread on their screen:
+
+```
+The company could not finish startup:
+No safe first-site layout was found within the bounded attempt limit.
+```
+
+So: **`Player.log` first, and then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.**
+A refusal this package produces on purpose is a letter, not an error -- it is written that way
+deliberately -- so a clean log says nothing about whether anything worked.
+
+### WHAT BROKE IT, AND IT WAS OURS, FROM THE CHECKPOINT BEFORE
+
+`ValidateRooms` refuses any room wider than `MaxRoomSpan`, which computed the span of a room
+filling **one** slot: 34 cells. 0.12.61-dev gave the threshold a grand hall spanning **two**
+slots: 80. Candidates 0, 1 and 2 all carry the hall, so **all three were refused every single
+time**, and the fallback was refused whenever any room's span varied upward -- which over twenty
+rooms is always.
+
+`SoloGroupOpening.Open` is five steps in order and the coordinate is step 2. **Step 3 marks the
+door and step 4 registers the edge, and `IsLiveGate` needs both.** So one failure produced every
+symptom the owner reported, and none of them were about the door.
+
+### THE INSTRUMENT THAT CAME OUT OF IT -- USE IT BEFORE ASKING FOR A LAUNCH
+
+```
+python tools/check-planner-layouts.py
+```
+
+**Checker fourteen, and the only one in the battery that runs code rather than reading it.** It
+builds `.local/harness/PlannerProbe` against the compiled assembly and runs the real
+`TrySelect` and `ValidateRooms` over 200 seeds at seven depth bands.
+
+Thirteen checkers, forty-five proofs and five hundred and fifty planted faults **all passed over a
+planner that could not produce one valid layout.** They read source text, and two numbers in two
+files disagreeing is not a thing source text shows. **The planner is pure -- no map, no world, no
+defs, no global random -- so this was always answerable at the desk, and for a whole checkpoint
+nobody asked.**
+
+It demands two things, and the second matters as much as the first: that a layout is accepted,
+**and that back-to-back pairs actually exist.** A plant that reverted one `+ 1` was missed by all
+forty-five proofs, because the new revert guard caught the resulting overlap and put the room back
+-- so every layout stayed valid and the feature was simply **never produced again.** Switched off,
+silently, with every claim still passing. That is this project's dominant defect class and the
+probe is the answer to it.
+
+**Anything else that is pure and has a validator deserves the same treatment.** The content
+builder, the frontier draw and the archetype selector are all candidates.
+
+### WHAT THE ELEVENTH LAUNCH HAS TO SETTLE
+
+**Everything the tenth was supposed to settle, because it never generated a level.** In order:
+
+1. **Does a coordinate generate at all** -- the gate blue, the Backrooms map present, a pawn able
+   to cross. **Everything below depends on this.**
+2. **24 rooms at depth 1** plus one grand hall of eighty cells, back-to-back pairs, shaped
+   corners, varied corridors
+3. **Is it a maze** -- branches off three slots in four, dead ends, rooms of different sizes
+4. **Is the spawn hall still grand and yellow**, and does the yellow stop a few rooms out
+5. **Two portals per level**: one out to the world map, one deeper. Guaranteed, not drawn
+6. **Loot, weird rooms, people, bodies, events** -- out past the yellow rooms
+7. **A lamp on every pillar**, in four tones, the dim one dim rather than off
+8. **Doors that go nowhere** -- an opening a third along a blank wall, onto rock
+9. **Furniture spread through rooms** rather than in the four corners
+
+### THINGS THAT WILL WASTE A LAUNCH IF FORGOTTEN
+
+* **The owner's existing save still will not change.** A coordinate is generated once and
+  recorded, and the one in their current game was never generated at all -- it failed. **A new
+  start is what shows this work.** The branch that failed startup keeps its failure.
+* **`GuaranteedFrontiers` and `RoomArchetypeService` hold caches of live `Thing`s and link
+  graphs**, cleared in `BackroomsContainment.FinalizeInit`.
+* **Register row [218] Stargates! is stance "No integration", and the owner overruled it.** The
+  register is guidance. Their component rides an ordinary Core door, their mod is untouched, and
+  the build has no reference to their assembly.
+
+### THE TRAP, UPDATED
+
+**A claim that pins call text proves a call happened. It cannot prove the call was legal.**
+`PushAgainst(rooms[rooms.Count - 1], rooms[host])` was pinned as literal text and held while two
+of that method's four branches produced a layout the validator refuses outright.
+
+And **an absence claim cannot read raw source**: `"a.maxX == b.minX" not in planner` failed
+against correct code because the comment explaining why that test is wrong quotes it. Thirty-sixth
+instance of that one class. `proof-coordinate-layout.py` keeps a comment-free `code()` view now
+and every absence claim reads that.
+
+## DO THIS FIRST — READ THE LOG FROM THE TENTH LAUNCH
+
+**Read `Player.log` before anything else, and read it before telling the owner anything works.**
+Four checkpoints in a row were answered from proofs rather than from a log and four times the
+answer was wrong.
+
+### THE NINTH LAUNCH WORKED. THE OWNER WALKED A BACKROOMS LEVEL.
+
+*"okay it fucking worked!!! im in the backrooms!!!"* — first time in nine launches. The coordinate
+generated, the gate was blue, the crossing worked, and they explored a whole level.
+
+**And almost everything they found wrong was switched off on purpose.** Three separate systems
+carried the same gate, and the defs said so out loud:
+
+```
+RR_RoomArchetypes.xml:  "minDepth is what keeps the shallow yellow rooms empty.
+                         Nothing here can appear at [depth 1]"
+```
+
+All fourteen archetypes were `minDepth >= 2`; every inhabitant family, including the missing
+person and the recent dead, was `minDepth >= 2`; every anomaly event was `minDepth >= 2`; and
+`RockIntrusionCells`, `CorridorHalfWidthBetween` and `Derange` each refused to run at depth 1.
+**A first level had no laboratory, no ward, no storeroom, no loot, no people, no bodies, no
+events, no shapes and no varied corridors. It was built to be empty and the owner explored all of
+it.**
+
+### THE RULE THAT REPLACED ALL OF THEM
+
+**Distance from the spawn hall counts as depth.** Three links out is one level deeper, capped at
+four bands. Near the arrival it is the yellow rooms exactly as before; the further you walk the
+more of the existing library the level can reach. **Fourteen archetypes were already written and
+the first level could not touch one of them.**
+
+It is the owner's own sentence made literal: *"the normal yellow backrooms look isnt the whole
+floor but the main spanw room and going deeping in can mean the numner of branch hallways and
+rooms distancing from the main portal spawn"*.
+
+### WHAT THE TENTH LAUNCH HAS TO SETTLE
+
+1. **Does a level still generate at all**, with 24 rooms at depth 1 instead of 9, back-to-back
+   pairs, shaped corners and varied corridors. **Everything else depends on this.**
+2. **Is it a maze** — branches, dead ends, rooms of different sizes and shapes
+3. **Is the spawn hall still grand and yellow**, and does the yellow stop a few rooms out
+4. **Two portals per level**: one out to the world map, one deeper. Guaranteed, not drawn
+5. **Loot, weird rooms, people, bodies, events** — out past the yellow rooms, not beside the door
+6. **A lamp on every pillar**, in four tones, and the dim one dim rather than off
+7. **Doors that go nowhere** — an opening a third along a blank wall, onto rock
+8. **Furniture spread through rooms** rather than in the four corners
+
+### THINGS THAT WILL WASTE A LAUNCH IF FORGOTTEN
+
+* **The owner's save will not change.** A coordinate is generated once and recorded; everything
+  here affects levels generated from now on. A new level, or a new start, is what shows it.
+* **`GuaranteedFrontiers` and `RoomArchetypeService` hold caches of live `Thing`s and link
+  graphs**, cleared in `BackroomsContainment.FinalizeInit`. If either leaks across a load it
+  hands a new game the previous game's doors.
+* **Register row [218] Stargates! is stance "No integration", and the owner overruled it.** The
+  register is guidance. Their gate component rides an ordinary Core door, their mod is untouched,
+  and the build has no reference to their assembly.
+
+### THE TRAP THAT KEEPS COSTING CHECKPOINTS
+
+**Three times in this checkpoint a claim guarded a DEFINITION while a plant deleted the CALL.**
+`MakeHall`, `VariedRoomSpan`, `SpawnPillarLamps` — each defined, each correct, each unreached, and
+every numeric claim about them still passing. **Computing a value correctly and using it are two
+different facts.** Assert the call site.
+
+And nine claims refused these changes outright, every refusal correct. One required depth 1 to be
+*"at most eight rooms of at least sixty cells"* — a faithful reading of an earlier direction, and
+**the exact claim that produced the nine-room warehouse.** Another caught that the wall-material
+gate still tested `coordinate.Depth`, so the per-room material was never reached on the level the
+owner actually walked. **A proof refusing a change is the proof working; go back and read what it
+was protecting before you edit it.**
+
+## DO THIS FIRST — READ THE LOG FROM THE NEXT LAUNCH
+
+### THE EIGHTH LAUNCH NEVER REACHED A MAP: the setup page stopped drawing after three lines
+
+**0.12.55-dev loaded clean — the owner's log went from 587 cross-reference errors to ZERO**, and
+`[Rimrooms] odd-origin marker attached to 2744 thing definitions` is up from 2742, which is `Door`
+and `Autodoor` back in the game. The `CompProperties_Colorable` fix is **confirmed in the running
+game**, not from proofs.
+
+**But the company setup page drew three lines and stopped**, so that launch never reached a map.
+No roster, no funding, no supplies, no facility, one of five gate prerequisites — and **no
+exception anywhere in the log.** The owner: *"there are no lists or supplies on the card pop up at
+all.. so what the fuck?"*
+
+`Verse.Listing.GetRect` → `NewColumnIfNeeded` → unless `maxOneColumn` is set,
+`curY = 0f; curX += ColumnWidth + 17f` the moment content outgrows the rect. `Begin` sets
+`ColumnWidth` to the **full width**, so the overflow is drawn a whole width to the right —
+**outside the group `Begin` opened and clips to.** Painted off the edge, silently. And `CurHeight`
+is `curY`, which `NewColumn` just zeroed, so `contentHeight = CurHeight + 20f` measured the
+*second* column: the content shrank, the wrap came sooner, and it settled at three lines. That is
+also why there was no scrollbar.
+
+**Eight listings in the package, not one set the flag.** Seven fixed, including the Operations
+board — the main window of the mod, which was carrying the same silent truncation. The settings
+window keeps its deliberate two columns.
+
+**THE LESSON, AND IT IS THE SAME SHAPE AS THE SEVENTH LAUNCH.** Every line of our code was
+correct. The defect was **an unset Core default interacting with a value Core resets** — invisible
+to any proof that reads our source, exactly like a `Class` name that does not resolve. **When a
+claim is about whether something *works* rather than whether it is *written*, assert the engine's
+contract, not our text.** `proof-setup-page-draws.py` does that: every listing in the package must
+declare whether it is one column or more, and a new one that declares neither fails.
+
+### AND THE SUPPLIES SECTION WAS ASKING THE WRONG OBJECT
+
+It read `Find.Scenario.AllParts` — the **live** scenario — and EdB Prepare Carefully rewrites
+exactly those parts (`ReplaceScenarioPatch`, `ShouldReplaceScenarioPart`, `OriginalScenarioParts`,
+`ReplacedScenarioParts`, `CreateScenarioPartForCustomizedEquipment`). It reads the **authored
+`ScenarioDef`** now, found by the start it declares, and draws **both** lists, because the owner
+asked for *"the equipemnet for the gate that u get added to ur start on top of what u fill out in
+edb prepare carfully"*. Register row **[85]** is Optional/Provisional and says *never a runtime
+dependency* — nothing is patched, named in code, or required.
+
+**A content bug this exposed by accident:** `RR_Setup_GateCost` promised *"Those are in the
+supplies below."* The bill wants **100 steel and 8 components**; the **Furniture Store start
+arrives with 80 steel and no components at all.** Written against the Async start, asserted for
+all three.
+
+### ORIGINAL ORDER OF BUSINESS, STILL UNSETTLED
+
+**Read `Player.log` before anything else, and read it before telling the owner anything works.**
+Three checkpoints in a row have now been answered from proofs rather than from a log, and three
+times the answer was wrong.
+
+### WHAT THE SEVENTH LAUNCH FOUND: 587 RED LINES FROM ONE LINE
+
+**The game never left the main menu, so the seventh launch tested NOTHING but def load.**
+
+```
+Exception loading def from file Buildings_Structure.xml: System.ArgumentException:
+  Could not find type named CompProperties_Colorable from node
+  <li Class="CompProperties_Colorable" />
+Could not resolve cross-reference to Verse.ThingDef named Door ...        (x529)
+Could not resolve cross-reference: No Verse.ThingDef named Autodoor ...   (x59)
+```
+
+Every one of the 587 errors named `Door`, `Autodoor` or `CompProperties_Colorable` **and nothing
+else**. There is no `CompProperties_Colorable` type: `CompColorable` takes a plain
+`CompProperties` with a `compClass`, as Core does for textiles, apparel and the Ideology floor
+coverings — and the last of those are buildings, so it was the right mechanism for a door all
+along, spelled with a class that does not exist. **A bad `Class` throws out of
+`DirectXmlToObjectNew`, which discards the entire ThingDef**, so `Door` and `Autodoor` left the
+game and 585 further errors were other defs — 541 of them vanilla prefabs — failing to
+cross-reference them.
+
+**Still not one mod conflict in seven launches.** Doors Expanded and Mechhive appear in that log
+only as victims of our missing `Door`.
+
+### THREE THINGS TO KNOW BEFORE WRITING ANOTHER PROOF
+
+1. **A proof that reads text cannot tell whether a resolver resolves.** The forty-second proof,
+   `proof-class-resolution.py`, is the first that **imports the checker and interrogates it**.
+   When a claim is about whether something *works* rather than whether it is *written*, execute
+   it. The first draft of that very resolver split the metadata heap on NUL, which misses
+   suffix-shared names and **rejected `Building`** — failing correct code, which is worse than
+   the hole it closed, and entirely invisible to a text-reading proof.
+2. **Asserting our XML contains a string proves we wrote it, never that the game can use it.**
+   `proof-gate-links.py` required `'<li Class="CompProperties_Colorable" />'` as its evidence that
+   a gate is blue — **it held the bug in place**, and the matching plant mangled that string and
+   watched the proof fail, which is a plant proving a broken line was load-bearing.
+3. **Run EVERY plant suite, not the ones you touched.** Doing so found a plant that could never
+   have been caught: it planted a comment at a proof that strips comments on purpose. The proof
+   was right and the plant was wrong — the inverse of the usual trap.
+
+### What the EIGHTH launch has to settle, in this order
+
+1. **DOES A COORDINATE GENERATE AT ALL.** Fourth attempt, and the generator has still never run
+   end to end. Everything below depends on it.
+2. **is the back-room door blue and glowing** once a level exists
+3. **select a colonist, right-click the gate → "Enter the gate"** — they should walk over and
+   come out on the other map
+4. **every other door in the colony is unlit and unchanged** — the `IThingGlower` veto
+5. **level 0 reads as the yellow rooms** — wood walls, yellow carpet, coherent, everything
+   matching
+6. **one level in, the materials go wild** — two tables in one room in different stuffs, each
+   room's walls a different material. Newest thing in the build, least like anything that has run
+7. **no cave-in** when a wall or a pillar is deconstructed
+8. **Operations → Places** lists the colony and any level, with the budget as `n/5`
+
+**What changed since the sixth launch, and why it matters more than it sounds:** a systematic sizing
+pass over every constant in the generation path found **two more that would have killed a
+coordinate**, and one of them would have killed it *invisibly* — level 0 would have generated and
+every level below it would have died. See *THE LESSON* below. So the seventh launch is the first one
+where the generator has a real chance of completing.
+
+```
+grep -n -i "rimrooms\|Error in GenStep\|Exception" \
+  "$USERPROFILE/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Player.log"
+```
+
+**And the bridge, if the process is still up**, which answers in one call what the log only hints
+at — see *The bridge is available now*. `.local/qa/bridge.py` is the scratch client:
+`list`, `call <tool> '<json>'`, `scan <minx> <minz> <maxx> <maxz>`.
+
+### What is actually verified, and what is not — be honest about this
+
+The owner asked *"they work now right?"* and the answer given was **no, and I will not claim it**.
+That split still holds and the next session must not quietly upgrade it:
+
+| | |
+|---|---|
+| **Measured in the running game** | the Store's back-room **door exists** at (160, 161) carrying the emergence comp with `Mark as way home` enabled; Deconstruct and Uninstall both offered; a granite-block wall where the burn removed a Granite formation; `list_colonists` non-zero after the arrival fix |
+| **Source-verified only, NEVER EXECUTED** | the light-count fix, the **entire 300x300 generator**, pillars, room shapes, corridor widths, the map budget, release, carry-a-doorway, and the material split. **Forty-one proofs check properties of code, not behaviour of a running game.** |
+
+**The sixth launch DID run 0.12.52-dev, and the generator failed again** — on a different
+constant, the conduit cap. So the correct statement is sharper than *"never run"*: **the
+coordinate generator has never once completed.** Everything downstream of it — the gate marking,
+the connection, the glow, the walk-through, level 0's look, the material split, the pillars, the
+shapes — has therefore **still never executed**, because none of it is reached until a level
+exists.
+
+That is why item 1 of the seventh-launch list is the only one that matters until it passes.
+
+**The one thing de-risked without a launch:** `CandidateIsSafe` was modelled against the new
+layouts at **every depth across six seeds** — every room reachable, zero failures — so generation
+should be *accepted* rather than refused with `RR_Generation_NoSafeCandidate`. That was the
+likeliest silent killer. It is not proof that it runs.
+
+### The two gates are completely different things, and only one should exist yet
+
+**The natural gate** is the one to check first, and the chain that has to hold is:
+
+```
+SoloGroupOpening.Open
+  1. CreateDiscoveredCoordinate      mint the place
+  2. DestinationService.EnsureSite   GENERATE THE 300x300 MAP   <- failed at launch 5
+  3. CompRimroomsEmergence.Mark()    mark the Store's back door
+  4. RegisterNaturalAddress          register the connection
+```
+
+Step 2 failed on the fifth launch for the light-count reason, so **steps 3 and 4 have never run.**
+If the back-room door is still an ordinary steel door, step 2 failed again and the log names the
+key. Look for `RR_Event_NaturalGateOpening`.
+
+**The machine gate is NOT there and is not supposed to be.** Owner, verbatim: *"the store start
+has a natural portal and to build a machanical one they need to contact the company and resaerch
+whats needed"*. The Store ships `Battery`, `CommsConsole` and `WoodFiredGenerator` — **no Autodoor
+and no TableMachining.** So the player must build a Machining Table and an Autodoor, designate
+door/console/battery/bench on Operations' **Machine** pane, then run `RR_AssembleMachineGate`:
+**100 Steel + 8 ComponentIndustrial, 6000 work, Crafting**, no research prerequisite on the recipe
+itself. The setup page's readiness review already names the missing hardware.
+
+### WHAT THE SIXTH LAUNCH FOUND, AND WHY IT IS THE SAME SHAPE TWICE
+
+**The level never generated. Again. The cause was new and it was ours.**
+
+```
+[Rimrooms][Generation] Site layout stopped: RR_Generation_ContentPlacementFailed
+  at GenStep_BackroomsDestination.SpawnNativeConduit
+  at GenStep_BackroomsDestination.SpawnNativePowerNetwork
+```
+
+`MarkLayoutReady` never ran → `SoloGroupOpening` stopped at step 2 → the Store's back door was
+**never marked**. **An unmarked door is an ordinary steel door**, which is the whole of what the
+owner saw: *"its not blue!!! it doesnt have a light aura, and it in no way is a portal"*.
+
+**The cause, measured:** the power grid carpeted every powered room with conduit. ~100 cells at
+12x12 rooms. At depth 1 a `service_passage` is **60x80**, so `ContractedBy(1)` is **4,524 cells**
+against `MaxNativePowerConduits = 512` — **an eightfold blowout on the first powered room, every
+time.** No 300x300 coordinate could ever have generated.
+
+**THE LESSON, AND IT HAD ALREADY COST TWO LAUNCHES.** Both the light count at 0.12.48-dev and
+this conduit carpet were **assumptions about scale that a constant quietly encoded**, and both
+survived every proof because a proof reads source text and cannot see that a number no longer
+fits. **When a dimension changes, go and size everything that was written against the old one.**
+
+**0.12.54-dev did exactly that, once, instead of one bug per launch** — and found **two more that
+would have killed a coordinate.** `FindConduitRoute` threw twice when a consumer could not be
+reached, and `MaxNativePowerConduits = 512` was sized for 60x60: modelled against what the routing
+actually does, a coordinate needs **460 cells at depth 1 rising to 1,436 at depth 6**. Depth 1
+fitted under 512 **by forty cells**, so the seventh launch would probably have generated level 0
+and killed every level below it — **the worst failure mode there is, because it looks fixed.**
+
+The cap is 4,000 with 2.5x headroom at double the consumers, exceeding it stops the wiring instead
+of throwing, and an unreachable consumer is skipped. **The sizing is a proof claim computed from
+the planner's own constants**, so it cannot silently stop fitting again — and it refuses a cap so
+large it could never bind, because that is not a cap. Seven other constants were sized and are
+fine, recorded in `docs/TODO.md` rather than left implied.
+
+### What the SEVENTH launch has to settle, in this order
+
+1. **DOES A COORDINATE GENERATE AT ALL.** Third attempt. Everything below depends on it, and the
+   generator has still never run end to end.
+2. **is the back-room door blue and glowing** once a level exists
+3. **select a colonist, right-click the gate → "Enter the gate"** — they should walk over and come
+   out on the other map
+4. **every other door in the colony is unlit and unchanged** — the `IThingGlower` veto
+5. **level 0 reads as the yellow rooms** — wood walls, yellow carpet, coherent, everything matching
+6. **one level in, the materials go wild** — two tables in one room in different stuffs, each
+   room's walls a different material. Newest thing in the build, least like anything that has run
+7. **no cave-in** when a wall or a pillar is deconstructed
+8. **Operations → Places** lists the colony and any level, with the budget as `n/5`
+
+### The three things the sixth launch changed, and how to check each
+
+| | |
+|---|---|
+| **it generates** | the carpet is gone. `ConnectStrayConsumers` wires whatever the dressing added, **after** it exists, using the same `CompPowerTrader` sweep the validator uses to detect a stray — so report and repair cannot disagree. `TrySpawnNativeConduit` returns where the throwing form threw: a dark corner can never cost the coordinate again |
+| **it looks like a gate** | `CompGlower` + `CompColorable`, both Core, both settable per instance — blue and casting light with **no new texture and no new def**. **The trap was that a glower on `Door` lights every door in the game**; Core's `IThingGlower` lets our comp veto it, so every ordinary door is provably dark by Core's own rule. Only a gate with a **real network edge** lights up |
+| **you walk through it** | the travel job always did this correctly. **What was missing was where a player looks for it** — it was a gizmo plus a float menu, which is a dispatch console rather than a door. `CompFloatMenuOptions` is Core's right-click hook and that is where it lives now. The order is still `OrderCrossing`, the rule is still `PortalTraversalPolicy` |
+
+### AND THE STARGATE COMPLAINT WAS FAIRLY AIMED — read this before designing anything else
+
+Owner, after saying it repeatedly: *"ive said stargate mod repeaditly is how the gates work but u
+keep fucking ignoring me and doing you own fucking thing"*.
+
+**They were right, and the specific failure is worth naming so it is not repeated.** *"Like the
+stargate mod"* was a statement about the **interaction** — you walk a pawn into a door and they
+come out on another map — and it was repeatedly heard as a statement about the **destination**,
+which the build already handled. The travel was correct for checkpoints; the way to ask for it was
+buried where no RimWorld player would look.
+
+**Register row [218] Stargates! is stance "No integration".** That means *do not depend on it or
+adapt to it*. **It has never meant ignore it as the interaction model**, and treating those as the
+same thing is how three checkpoints passed with the order in a gizmo. When the owner names a mod
+as how something should *feel*, read it.
+
+---
+
+## The re-stage command and the old fifth-launch list
+
+### The bridge is available now, and it changes how to diagnose
+
+Owner direction, 2026-09-30, verbatim: **"you can use the api mod you have that we installed last
+so u can see wtf rimworld is doing"**. **RimBridgeServer 2.1.1 is installed and it answered
+questions in one call that would have taken a launch each to guess at.**
+
+Direct mode, and the only inputs are the owner's own log and process:
+
+```
+grep -n "RimBridge" "$USERPROFILE/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Player.log"
+    [RimBridge] GABP server running standalone on port <port>
+    [RimBridge] Bridge token: <token>
+```
+
+`.local/qa/bridge.py` is the scratch client for this — `list`, `call <tool> '<json>'`, and
+`scan <minx> <minz> <maxx> <maxz>` for a cell-by-cell rect survey. The shipped
+`tools/qa/rimbridge_readonly.py` keeps its five-tool allowlist and its fail-closed PID/log
+pairing; the scratch client is for diagnosis, not for evidence.
+
+The reads that earned their keep: `rimworld/get_cell_info` (what is actually in a cell — terrain,
+roof, every thing, its class and hit points), `rimworld/list_colonists`, `rimworld/list_letters`,
+`rimworld/get_game_info`, `rimworld/get_ui_layout` and `rimworld/take_screenshot` with
+`clipTargetId`, `rimworld/list_selected_gizmos`.
+
+**Only the owner launches. The bridge is read-only against a process they started, and they close
+it themselves.** `kill` the game only when the owner says so — they did, verbatim: *"and when ur
+ready to redo rimsort kill rimworld .exe and build the mod correctly in local with other mods and
+then ill start rimsort"*.
+
+### What the fourth launch found
+
+**Two defects, both consequences of 0.12.46-dev correctly handing map generation back to Core** —
+which was the right fix and had a bill nobody paid until a real launch.
+
+The owner diagnosed it themselves before any code was read: *"i think the issue was there was shit
+where it planned on putting the store and pawns so it errored it needs a like a burn into place
+functiions to carve everyhting out and cut everything down and fill in with soil where water is
+unmder where the store needs to propigate before game start"*.
+
+**Measured in the live game.** `Player.log` named the throw at `(133, 0, 135)`; the bridge found a
+**Granite Mineable with 900 hit points** there; a sweep of all **1020** footprint cells found
+**164 Marble and 70 Granite formations, 177 cells of natural rock roof, ~440 plant cells, 34 cells
+of rubble and chunks, and two monkeys**. `list_colonists` returned **0**. **234 of 1020 cells held
+natural rock** — the facility had no chance and threw on its very first cell.
+
+| | What went wrong | The fix |
+|---|---|---|
+| 9 | `Build` **refused** ground Core generated instead of preparing it | prevention **plus** the burn — see below |
+| 10 | the arrival step **threw out of Core's `GenStep_ScenParts`**, so Core's whole scenario step died: **no colonists, no supplies** | fall back to `base.GenerateIntoMap` and never throw |
+
+**Defect 10 is the important one to carry forward.** `MapGenerator.GenerateContentsIntoMap`
+abandons a gen step at its first exception. **Anything this mod does inside a Core gen step must
+not throw**, or the player loses everything else that step was going to do for them.
+
+**The fix for defect 9 has two halves, and the first is why the map still looks like a map.**
+`GenStep_RocksFromGrid` spawns a formation wherever `MapGenerator.Elevation` exceeds **0.7**, and
+it runs at order 200; Core builds that grid at order 10. `RR_HeadquartersTerrain` moved from
+**order 5 to order 100**, between them, and lowers site elevation to **0.55** — so the rock is
+**never generated**, rather than carved out afterwards into a 234-cell crater. Then
+`HeadquartersBuilder.BurnIntoPlace` runs **before a single wall** and carves, cuts, clears natural
+roof and fills water with soil.
+
+### Useful Core numbers, measured from the install this build targets
+
+```
+ElevationFertility   10      RocksFromGrid       200   (rock above elevation 0.7)
+Terrain             210      Roads               390
+MutatorCritical     500      MutatorNonCritical  700
+ScatterRuinsSimple  750      ScatterShrines      750   (both respect UsedRects)
+FindPlayerStartSpot 850      (only picks when PlayerStartSpot is invalid)
+ScenParts           875      Plants              900
+ScatterGeysers      950      RockChunks          970
+Snow               1150      Animals            1200      Fog   1500
+```
+
+`RR_HeadquartersTerrain` is **100**, `RR_HeadquartersFacility` is **800**.
+`RoofCollapseUtility.RoofMaxSupportDistance` is **6.9**.
+
+
+
+**The build is done. This is the play-testing phase**, on `feature/bug-testing`, and it has
+already been worth more than any equivalent stretch of building: **three launches, eight defects,
+every one ours.**
+
+**The staged copy is current** — 0.12.46-dev, hash-verified against the build. Nothing to re-stage
+unless the build moves.
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
+```
+
+**Only the owner launches, through RimSort.** Standing instruction, unchanged.
+
+### The pattern in all ten, because it is the same pattern
+
+**Seven of the eight were this mod overriding or replacing something the player or the base game
+already owned**, and the eighth was the mod inheriting global state it never set:
+
+| # | What was overridden | What it produced |
+|---|---|---|
+| 1 | Unity's IMGUI draw state, never reset | a blank page with an empty log |
+| 2 | the scroll view swallowed the confirm checkbox | Start refused and the reason was off screen |
+| 3 | the same for the company name field | *"there is no box to type in"* |
+| 4 | `GameInitData.mapSize` | a 50x50 map: *"a super micro blocked in area"* |
+| 5 | `GameInitData.mapGeneratorDef` | *"bare dirt not even vegitation"* |
+| 6 | the terrain grid, every cell | the tile's character erased |
+| 7 | `SoloGroupOpening` gated on `insideStart` | the Store had no gate to enter |
+| 8 | F12, measured against Core alone | collided with HugsLib's log publisher |
+| 9 | the footprint, assumed empty because our own generator made it | refused 234 cells of Core's rock |
+| 10 | Core's `GenStep_ScenParts`, aborted by our throw | **no colonists and no supplies at all** |
+
+**The rule that falls out of it, and it is the thing to carry into the next launch: do not replace
+what the player or the base game already owns. Add to it.** Every fix in 0.12.45 and 0.12.46 was
+the same move — stop overriding, start contributing. The map generator patch is
+`PatchOperationAdd` for exactly this reason.
+
+### What the fifth launch settled, and the sixth-launch list that replaced this
+
+- the Store stands on the owner's tile and map size, on **open ground with no rock crater**, and
+  the rest of the tile keeps its biome character
+- **colonists and starting supplies are present** — the thing that measured zero
+- select a wall: **Deconstruct and Uninstall both offered** (`rimworld/list_selected_gizmos` will
+  answer this without guessing), and Remove Floor works on the concrete
+- deconstruct an interior wall and **no roof collapses**
+- the back-room door nobody built, and the ways deeper or out to a world tile behind it
+- the Operations tab on Backslash, with no HugsLib double-fire
+
+### What the fourth launch settled, and the old list it replaces
+
+- **the map is yours**: your chosen size, your chosen tile, and **what Map Preview showed you**.
+  Rocks, plants, water, biome terrain all present; the facility centred with real ground round it.
+- **a door in the Store's back room that nobody built** — permanently open, to a seeded
+  coordinate, with an event announcing it.
+- **through it**, and then onward: ways deeper, or out to a world tile, found by surveying
+  doorways.
+- **the Operations tab on Backslash**, and no double-fire with HugsLib.
+
+**And the standing ask, which has paid for itself three times: if anything fails silently, that is
+the bug.** The setup page names its own draw faults, gate refusals name themselves, crew refusals
+name the person. Silence is the thing worth reporting.
+
+---
+
+## The re-stage command, for when the build does move
+
+**The build is done.** Every queue row that can close without the game running is closed. There is
+nothing left to build that does not first need somebody to press play.
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
+```
+
+The staged copy in Local Mods is **0.12.26-dev** against a build of **0.12.42-dev** — **sixteen
+checkpoints**. Staging backs up the existing folder, hash-verifies every file against the build
+manifest, and records `ProfileChanged = false; GameLaunched = false`. **It never touches the mod
+list and never starts the game.**
+
+**Only the owner launches, through RimSort.** That is a standing instruction and nothing below
+changes it.
+
+### What a first launch settles, in order of what it unblocks
+
+| Rows | What only a launch can answer |
+|---|---|
+| 810 | duplicate def and patch collisions in the exact 294 profile — a conflict has to be reproducible to fix |
+| 890, 891 | exchange-rate and catalogue balance — *"neither has any play behind it"* |
+| 212, 742 | performance and profiling under a long save |
+| 812 | the user-facing compatibility report — *"cannot honestly state a tested order before anything has been tested"* |
+| 975 | whether the creepy-versus-normal balance lands — *"a play question"* |
+| 835, 849 | the invalid-state matrix half, and the release tag |
+
+**Read `docs/PLAYING.md` first.** It is the play document written at 0.12.40-dev, and its opening
+caveat is the whole frame for a first session: every instruction in it is a structural claim about
+the code, because nobody has played this. **Where it and the game disagree, the game is right.**
+
+**The most likely first-launch failures, in the order they would appear**, each already carrying a
+named refusal rather than silence: the company failing to register headquarters (the Overview pane
+offers to retry), a coordinate failing to generate (the Atlas pane offers to re-address), and a
+colony control unavailable in the world view. Nine gate refusals and ten crew-planner refusals all
+name themselves. **If something fails silently, that is the bug worth reporting** — this package
+was built so that it should not be possible.
+
+---
+
+## What shipped this session, 0.7.1 → 0.12.42
+
+| Version | What |
+|---|---|
+| 0.7.2–0.7.7 | **The economy** — odd origin, supply contracts, pressure, bonds, corporate trader, exchange |
+| 0.7.8–0.8.1 | **The look and the ladder** — yellow rooms, archetypes, escalation, construction echo |
+| 0.8.2–0.8.5 | **Inhabitants** — wanderers, survivors, anomalies, colonist echoes, fog-of-war holding |
+| 0.8.6–0.8.8 | **Shape** — room echoes, hallways, coherence decay, the gate address book |
+| 0.8.9 | **Bringing a gate up is work** — operator-driven spin-up with familiarity; gates are blue |
+| 0.9.0 | **A gate is a door and nothing else** — 8 legacy defs retired, package 92 → 79 |
+| 0.9.1 | **One kind of gate** — 68 dead branches collapsed, a vestigial power model gone, −112 lines |
+| 0.9.2 | **A gate has a size** — 1×1 to 2×3; Core's own `OrnateDoor` gives 1×2 free |
+| 0.9.3 | **Everything you can look at says what it is** — info cards calibrated to Core's practice |
+| 0.9.4 | **What a gate's size lets through** — animals cross; width decides what fits |
+| 0.9.5 | **They follow you** — at `Band.Hostile` an inhabitant hunts to the threshold |
+| 0.9.6 | **It came through with them** — a bounded, named exception to the founding rule |
+| 0.9.7 | **Some places are bigger than a room** — facilities as contiguous runs |
+| 0.9.8 | **One tech tree, different starting points** — the tree is derived, not declared |
+| 0.9.9 | **The beacon had nothing left to do** — first field-gear retirement |
+| 0.10.0 | **The documents say what is true** — sixth checker, 28 stale claims in 10 living docs |
+| 0.10.1 | **LAW #0, made checkable** — 10 owner directions found unrecorded |
+| 0.10.2 | **One set of words** — gate / connection / threshold, enforced |
+| 0.10.3 | **Something is not where you left it** — silent between-visit displacement |
+| 0.10.4 | **The register checked backwards** — a LAW, a query tool, a real defect; plus a readable description |
+| 0.10.5 | **Every surface the game speaks through** — a seventh checker measured against Core per display surface, and the alerts readout, which this mod used none of |
+| 0.10.6 | **The documents use the mod's own words** — the vocabulary and the wall rule reach the reader-facing set; two superseded rules found while reading |
+| 0.10.7 | **The survey tag becomes a glow pod** — marker types with colours, three caps removed, and an outcome that could never fire |
+| 0.10.8 | **A gate's facility is the equipment linked into it** — shelves, analysers and cabinets link like furniture to a bed, but far, through walls and by hand |
+| 0.10.9 | **What you have learned is what you can build** — projects require completed logs; the ladder had one rung and a declared top tier of four |
+| 0.11.0 | **The only clock is the gate** — the campaign chart, two offer clocks retired, seven prep documents corrected, eighth checker |
+| 0.11.1 | **An offer with more than one way through** — the request shape, routes as a first-class field, contact as a branch state |
+| 0.11.2 | **The company asks for six things, then stops asking** — the tutorial line and the hinge; the two-kinds rule forced a better hinge |
+| 0.11.3 | **Seven ways into the tree** — research tier 0 across seven branches, each granting a capability real code honours |
+| 0.11.4 | **The second rung of every branch** — research tier 1; two vestigial power props found and retired |
+| 0.11.5 | **A designated gate is a machine that is on** — three unused props restored, two wired. **Reversed 0.11.4’s retirements.** |
+| 0.11.6 | **The second time you do a thing should be cheaper** — research tier 2; three planned unlocks deleted for changing nothing observable |
+| 0.11.7 | **The corporation does not write off a branch** — the clean-up team; five `PawnKindDef`s found authored and read by nothing |
+| 0.11.8 | **The storyteller finally knows this mod exists** — the first two `IncidentDef`s; no `StorytellerDef`, now asserted |
+| 0.11.9 | **A shop with a door in the back** — the Store start; three new-game crashes caught by a new proof |
+| 0.12.0 | **You are already in** — the solo/group start; the map itself is a coordinate. **All three starts ship.** |
+| 0.12.1 | **The free doors run out** — found doors stop at depth 3; deeper needs a built gate. Corrects 0.12.0 |
+| 0.12.2 | **The way out was already there** — the guaranteed exit; two maps, a real coordinate, `GenStep_InsideStart` retired |
+| 0.12.3 | **A portal is its own door cell** — a wall beside a gate no longer bricks it; eighth proof |
+| 0.12.4 | **Four answers** — supply requirement, deconstruct warning, solo hints; **a tier 0 unlock that did nothing**, found by a new general sweep |
+| 0.12.5 | **The queue was in the wrong order** — tier 3 has no knobs to move; the chart authorises arcs 5–8 next. Four hollow unlocks not written |
+| 0.12.6 | **A remote base is a costly responsibility** — arc 5 opens: sites on the books, billed daily, and a coordinate is never one |
+| 0.12.7 | **Company-to-site logistics** — shipments reach a registered site; a latent cross-map reroute bug fixed before it could bite |
+| 0.12.8 | **Remote sites need people** — a shipment to an empty site waits; the stranded-crew guarantee proved rather than rebuilt |
+| 0.12.9 | **The exit plan** — a gate may stand at a registered site, with its own facility. Arc 5’s named list complete |
+| 0.12.10 | **The handoff** — four live proofs found unrun, five patch scripts un-named as proofs, a stale hash corrected |
+| 0.12.11 | **The corporation starts asking** — the mission line reaches a player. **The whole campaign had been authored and read by nothing** |
+| 0.12.12 | **The company stops naming things** — generation after the hinge, a filter that can refuse, arc 4’s five families. Fixed 0.12.11’s absolute-state flaw |
+| 0.12.13 | **Arcs 5 to 8 have work in them** — thirteen more families, one per item the chart names. **Chart §7 step 8 closed** |
+| 0.12.14 | **The queue could not answer the question** — 155 backlog rows re-measured against the code; open rows 254 → 107. **No `FactionDef` exists at all** |
+| 0.12.15 | **The universe has factions in it** — seven, all neutral, **no settlements and no new content**. Closes the largest unbuilt owner direction |
+| 0.12.16 | **The menu takes any number of slides** — folder-scanned with a load-bearing name prefix, plus the art brief. Two integrity notes that were always wrong, fixed |
+| 0.12.17 | **Four more menu slides** — six now cycle. A slide that would never have appeared is caught before it ships; provenance ships for the Steam disclosure |
+| 0.12.18 | **The third rung of every branch** — research tier 3, **all seven**, every one moving an observable knob. Two design restraints asserted |
+| 0.12.19 | **The yellow rooms were never carpeted** — a real shipped defect; three of my own audit verdicts corrected. **Twentieth proof** |
+| 0.12.20 | **The register, by the column that matters** — `trace` querying, and a **ninth checker** verifying how this mod uses other mods |
+| 0.12.21 | **A way out into the world** — the last unbuilt piece of the topology. Claim a tile under five maps, caravan over. **A dead end removed** |
+| 0.12.22 | **The last new art is gone** — four custom textures replaced with paths enumerated from Core. **Zero gameplay art ships**, and it is checked |
+| 0.12.23 | **The handoff, audited again** — six defects in it. A question I had parked in a document, asked and answered instead |
+| 0.12.24 | **The recorder became the book** — the last authored gameplay item retired without a save break, a dead end closed, and the register made readable |
+| 0.12.25 | **Two crew who disagree** — the prep material’s contradictory accounts. **The contradiction was already computed and discarded**, and a tutorial request was unreachable as the chart writes it |
+| 0.12.26 | **The in-game text names only what exists** — fourteen strings instructed the player to use retired gear. **A tenth checker**, and an archive hole repaired so its derivation is complete |
+| 0.12.27 | **You cannot brick your own gate** — the approach cell is reserved against blocking, flooring is free. **Owner-answered at the fork**, and the integrity checker taught to verify an abstract-parent patch |
+| 0.12.28 | **Nobody is lying** — the interview files one account and keeps both. **The code made a lie detector impossible and the design better**: a disputing account was already validated against the map |
+| 0.12.29 | **Six rungs, and two that could not exist** — research tier 4. **Logistics gets none and the gate line cannot have one**, and both absences are asserted rather than assumed |
+| 0.12.30 | **You can call the company** — `EstablishCorporationContact` had no caller, so **two of three starts had no campaign at all**. Earned on a comms console, and it opens the line that already existed |
+| 0.12.31 | **A wide gate out of plain doors** — 1×3 and 2×3 with no mods, as one gate of one width. **Three rows were one feature**, and the union of a run is the `CellRect` everything already read |
+| 0.12.32 | **Everything is read by something** — the **eleventh checker**. 258 defs and 102 actions audited; one unwired capability given a surface, one duplicate retired |
+| 0.12.33 | **Surgery cannot cross, and three things were invisible** — row 227 closed **by proof**, plus the door crossing order, the coordinate band readout and a sale confirmation |
+| 0.12.34 | **Fifteen more reasons to walk through a gate** — the eleven DLC container givers and the four `Art` painting givers. **Core forbids all eleven from moving anything between maps**, so invariant 55 was never engaged; and a clamp was silently overwriting six shipped priorities |
+| 0.12.35 | **Containment you can see from the other side of a gate** — **Core's four containment alerts all read `Find.CurrentMap`**, so the gap was never "no warning" but "no warning about the maps you are not looking at". Plus the security procedure and the alarm |
+| 0.12.36 | **Roofs, snow, and reporting in** — **six rows in one batch.** The area rows closed themselves because somebody had written down *why* they were uncovered; quarantine turned out to be the debrief, because this package has no `HediffDefs` at all |
+| 0.12.37 | **Every coordinate in the game was made of wood** — one hardcoded material for every stuffable fixture in every room. Plus the **twelfth checker**, which caught itself twice, and the stance classifier fixed to its own row's prediction |
+| 0.12.38 | **A gate read no damage at all** — it could be shot to twelve per cent and still hold a connection. **Seven of row 725's nine subsystems were already built** under different names. Reliability is a record, not a dice roll |
+| 0.12.39 | **The register said don't patch, so the hook is a sentence** — reading the integration approach first made the obvious build the wrong one. Five rows, a read-only readout, and **row 791's absolute got a checker**
+| 0.12.40 | **The words a player reads** — five rows in one batch. **Architect, the first surface row 821 names, opened from nowhere in this package**, and the handoff said it was already reachable. The company tab was second from the right. `docs/PLAYING.md`, a help pane with the glossary, and Core's own generator supplying the keyboard binding for one XML field
+| 0.12.41 | **The last two systems** — **every check row 728 asks for was already enforced and not one was named**: five conditions across three people, all reported as `RR_Exp_InvalidCrew`. And a mission is a contract **plus survey work at depth**, because the odd mark carries no coordinate and stacks merge, so nothing can verify *where* a good came from
+| 0.12.42 | **The housekeeping, which was not housekeeping** — the compliance table had been *"re-run rather than trusted"* for **thirty-six checkpoints without being re-run**, and three of its rows had stopped being true. The register's last five families were all honoured, so **their rules became checks**. Row 1054 said the master backlog understated the build by thirty points; **it was 56**
+
+---
+
+## What is left, in order — maintained through 0.12.39-dev, measured not carried
+
+**Re-measure this list before trusting it.** It has been correct at every checkpoint since 0.12.33-dev because each batch edited it, but the count at the top of the file is a command for a reason: the item numbers are renumbered on every close and a stale count is the most expensive thing this file can hold.
+
+**1 numbered entry below, and it is a closed record.** Zero genuine build items. Counted rather than estimated: `sed -n '/^## What is left, in order/,/^### Cannot close/p' docs/NOW.md | grep -cE '^[0-9]+\. \*\*'`. Anything marked closed below stays as a record so nobody rebuilds it.
+
+### Systems still unbuilt — NONE. This heading holds a closed record only
+
+**Every gameplay system the queue asked for is built as of 0.12.41-dev.** The entry below stays so nobody rebuilds row 761.
+
+
+1. **ROW 761 IS CLOSED** (0.12.35-dev and 0.12.36-dev). Containment rooms, the security
+   procedure and the alarm shipped first; **staff debrief and quarantine closed it**, and they
+   turned out to be one mechanism because this package has **no `HediffDefs` folder at all**, so
+   quarantine is *"you do not go back out until you have reported in"* rather than anything
+   medical. Two findings worth keeping: **Core already ships four containment alerts and every one
+   reads `Find.CurrentMap`**, so the gap was never that containment has no warning but that it has
+   none about the maps you are not looking at; and the debrief hold bites on **`Dispatch`, not on
+   `PortalTraversalPolicy`**, because a player walking one colonist through a door by hand is not
+   a company dispatch.
+   **Also closed, 0.12.34-dev:** row 1266's eleven DLC container hauling givers as
+   `machine-loading` — **Core forbids every one of them from moving anything between maps**, so
+   invariant 55 was never engaged — and the four `Art` painting givers as `painting`.
+### Cannot close before the game runs once — about 8 rows
+
+Not evasion; it is what they are, in their own words:
+
+- **exchange-rate and catalogue balance** — *"neither has any play behind it"* (rows 890, 891)
+- **duplicate def and patch collisions in the exact 294 profile** — a conflict has to be
+  reproducible to fix (row 810)
+- **performance measurement and profiling** under a long save (rows 212, 742)
+- **the user-facing compatibility report** — *"cannot honestly state a tested order before anything
+  has been tested"* (row 812)
+- **whether the creepy-versus-normal balance lands** — *"a play question"* (row 975)
+- **the invalid-state matrix half** of row 835, and the release tag of row 849
+
+### Excluded by the owner — 9 rows
+
+*"lets not count the test items and the steam collection and mod workshop setup and stuff like
+that"*. Rows 268–271, 275–278, 572: the site, the Workshop page, the collection, and the Playwright
+idea. [`PUBLIC_RELEASE_PLAN.md`](PUBLIC_RELEASE_PLAN.md) holds them, and **it is correctly last.**
+
+---
+
+### Done since the last handoff, so nobody rebuilds it
+
+**Eight checkpoints, 0.12.34 → 0.12.41, twenty-seven rows closed in six batches.** Every one published
+to all eight refs with a read-back, a deterministic assembly, and the full checker and proof sweep.
+
+**The owner changed how to work, mid-run:** *"lets start doing shit correctly and efficiently and
+keep going iin batches of items completed so we have less work constantly pushing"*. So related
+rows are grouped into one checkpoint and published once. It works — 0.12.36-dev closed **six rows
+in one publish**.
+
+**NINE ROWS TURNED OUT ALREADY BUILT, ALREADY TRUE, OR ANSWERED BY CORE.** The table under *Is it
+done?* lists all nine. Twice the row's own *"confirmed absent by grep"* was itself the defect: row
+725 said stabilizers and modules were absent and **both existed under different names**
+(`PortalWindowTier`, `GateEquipmentLinks`). **Check a row against the code before building for
+it** — it is the highest-value habit in this file.
+
+**Custody across a gate was never a problem, and Core says so.** All eleven DLC container hauling
+givers were decompiled. Every one refuses to act unless the thing it moves is already on the
+worker's own map — `WorkGiver_CarryToBuilding` returns false unless `selectedPawn.Map == pawn.Map`,
+`TakeEntityToHoldingPlatform` unless `targetHolder.MapHeld == t.MapHeld`, and the rest search
+`pawn.Map`. So **invariant 55 was never engaged**, the family is the ordinary deployment shape, and
+twenty-seven checkpoints of caution were spent on a question Core had already closed.
+
+**A clamp was silently overwriting the mod's own shipped numbers on every game load.** `Effective`
+clamped every value against one `MaximumPriority = 130` **including the shipped default**, and
+`Apply` writes that into the defs at `FinalizeInit`. Six authored priorities were being replaced
+before a pawn ever ran — worst, the far-side operating family authored at **502** to sit one above
+Core's `Flick`, landing on **130**, below every local giver. **That is the exact failure the
+two-giver split exists to prevent, inside the code that exists to prevent it.** The ceiling is now
+per giver.
+
+**Core's four containment alerts all read `Find.CurrentMap`.** Enumerating Core's own alert classes
+before writing any found `Alert_InsufficientContainmentStrength`, `Alert_DangerousActivity`,
+`Alert_EntityNeedsTend` and `Alert_NeedHoldingPlatform` — so shipping ours would have been a second
+opinion beside a rule the player already sees. **The real gap is that Core's warnings are about the
+map on screen**, and this mod's premise is several live maps at once. The two new alerts skip
+`Find.CurrentMap` entirely, so the sets can never overlap.
+
+**Quarantine could not be medical, and that is a measurement.** This package has **no `HediffDefs`
+folder at all**, so there is nothing of ours to clear and inventing one is forbidden content.
+Quarantine is therefore *you do not go back out until you have reported in* — which makes it and
+the staff debrief **one mechanism**. The hold bites on `Dispatch`, deliberately **not** on
+`PortalTraversalPolicy`, because a player walking one colonist through a door by hand is not a
+company dispatch.
+
+**Every stuffable fixture on every coordinate in the game was wooden.** Not the def's default —
+`ThingDefOf.WoodLog`, hardcoded. A coordinate now takes a three-entry palette from its own seed,
+and **the load-bearing line is a sort by defName**: the def database returns defs in an order that
+depends on the installed mod list, so indexing it unsorted would give two players on one seed
+different materials and change a coordinate when an unrelated mod is installed.
+
+**A gate read no damage at all.** It could be shot to twelve per cent, set on fire and hit by a
+mortar and still hold a connection perfectly. **The machine the entire mod is built around was the
+one building in the colony that damage did not affect.** Below half condition it now loses
+calibration — a state that already had a work giver, a refusal and a readout — so the fix adds no
+mechanic.
+
+**The register said don't patch, and reading it first is the only reason the last batch is right.**
+*"No patch or code/assets copied"* for both gravship chapters; *"do not add vehicles solely because
+the framework is installed"* for the vehicle framework. So the hook is a **read-only statement** of
+what is installed and what this package does about it — which is what the rows asked for in their
+own words. The defence that cannot rot is asserted: **only two files mention the detection class,
+and no tracked package id appears in any other source file.**
+
+**Every check row 728 asks for was already enforced, and not one of them was named.** `Dispatch`
+refuses on fifteen distinct grounds and `CheckCrew` collapses **five** of them — wrong crew size, a
+duplicate, cannot walk, not employed, and by extension dead, downed, mid-mental-break or incapable
+of moving — into the single key `RR_Exp_InvalidCrew`. **One message for five conditions across
+three people, naming neither the person nor the condition.** So the planner is not a second set of
+checks, it is the same conditions attributed: ten named reasons, each reading the state dispatch
+itself reads. Skill was the one thing genuinely absent. **The row's absolute — *"must not own
+connection existence"* — is asserted structurally:** the proof enumerates every C# file and
+refuses a reference to the planner from outside `UI/`, so deleting it would change no outcome.
+
+**A mission is a contract plus survey work at depth, because that is all the code can verify.**
+*"Bring back odd goods from coordinate AI-04"* cannot be built: `ThingOrigin` has three values and
+**carries no coordinate at all**, and odd stacks merge, so nothing can ever check *where* a good
+came from. The field condition is checked against recorded survey state instead — which cannot be
+faked by hauling, and which is what makes the mission pay for **advance and explore** where the
+contract only ever paid for **haul**. One settlement path, plus one call; a record with no
+condition reports it met, so every existing save behaves exactly as it did.
+
+**The Contracts pane was not silent about odd demands, it was wrong about them.** It printed the
+*survey* contract's terms on every contract, so a demand for two hundred odd cotton displayed
+*"Survey the route, record the distortion, recover the record book and analyse it at
+headquarters."* **A confident wrong answer is worse than silence** — silence sends a player
+looking, this stopped them. Three demand fields were saved, given public accessors and read by
+nothing but the settlement code.
+
+**The plant harness caught a syntax error in its own proof and refused to plant anything.** That is
+the 0.12.39-dev failure reproduced one checkpoint later and caught by construction. The sweep then
+found **39 of 47**, and **six of the eight misses were the same defect as the previous batch**: a
+claim testing a mention rather than a use. The lesson, stated once because it has now cost two
+batches — **a name is a substring of its own declaration, of any renaming of it, and of every
+symbol that starts with it.** `RR_Plan_Reserve` is a prefix of `RR_Plan_ReserveShort`;
+`IsOddConsignment` is a prefix of `IsOddConsignmentUnused`; `return -1f;` appears three times in
+one method. A claim worth making is a claim about a **call**, and if a call happens twice the claim
+is about **how many times**.
+
+**The first surface row 821 names opened from nowhere at all.** Not from the company panel, not
+from any pane, not from anywhere in 191 files: `grep -rn "Architect" --include=*.cs src` returned
+**nothing**. And this file said it was already reachable, which makes it the worst kind of stale
+measurement — the one a fresh session would trust instead of checking. Architect is the surface
+every building action in RimWorld goes through. All five surfaces the row names now open from the
+panel, each through the game's own `MainButtonDef.Worker.InterfaceTryActivate()`.
+
+**A tab called company-first was second from the right.** Core's orders are Architect 1 through
+Factions 90 and Menu 500; Operations shipped at **95**, between the last two. It is order 0 now,
+left of Architect. One field, and **the invasive reading of "remap" stays unbuilt on purpose** —
+rewriting Core's own tab bar would fight every interface mod in the register at once, and
+reachability was what the row actually required. The absence is asserted rather than assumed,
+including against the def-database route a Harmony-free mod still has.
+
+**The whole keyboard requirement was one XML field, and Core writes the rest.**
+`KeyBindingDefGenerator.ImpliedKeyBindingDefs` emits a rebindable `MainTab_<defName>` into the
+`MainTabs` category for any `MainButtonDef` that sets `defaultHotKey`. So the binding appears in the
+player's own Key Bindings dialog and **this package authors no `KeyBindingDef` at all**. The default
+is **F12, the only function key Core leaves free** — it takes Tab and F1–F9 for main tabs,
+F10 for a screenshot and F11 for screenshot mode.
+
+**Contrast and scale were already right, with nothing holding them right.** Not one file under
+`UI/` authored a colour, and the only font work in the folder is one `GameFont.Medium` heading with
+the caller's font restored. So the position is that this package authors **neither colour nor font
+size in anything a player reads text from**, and the player's own Options for scale, font and
+colourblind mode apply exactly as they do to the base game. **An option of ours would have been a
+second, worse copy of a setting the game already has.** That is now a checker rule, because it was
+true by accident.
+
+**The plant harness verifies its targets before it plants anything**, and the first sweep of this
+batch justified it: **33 of 42, and all nine misses were real.** Two were gaps in the new checker
+— `new UnityEngine.Color(...)` walked past a pattern matching `new Color(`, and `(GameFont)7`
+walked past an exemption meant for the `previousFont` restore. Four were claims that tested a
+**mention** rather than a **use**: `def check_readability(` satisfies a probe for
+`check_readability(problems)`, and `AUTHORED_COLOUR` matches `AUTHORED_COLOUR_UNUSED`. One was a
+detector that depended on a variable being named conveniently. Two were weak plants — and one
+of those found a writing fault, because the document stated the same key in two places.
+
+---
+
+**Two new checkers, taking it to twelve.** The def-field checker (row 922) **caught itself twice**
+before it was right, both times in the same function — first reporting nothing, then reporting 159
+false positives, because the field parser rejected any line containing `(` and every collection
+field has one in its initialiser. And the row 791 claim guard, which **found a real denial in
+`SCENARIOS.md` on its first run**.
+
+---
+
+## Invariants — do not break these
+
+Each is a real defect or a pinned fact. Numbering is historical; gaps are deliberate.
+
+### The gate and crossing
+
+1. **`PortalTraversalPolicy` is the only traversal chokepoint.** An inhabitant may never decide anything about a gate.
+2. **Two halves of validation, never merged.** A candidate predicate runs against an explicit `Map`.
+3. **Remote forbidden checks use the *faction* overload.**
+4. **A bounded search that ran out of budget is *pending*, never "no route".**
+5. **Every bounded scan is a rotating window, never a prefix.**
+6. **Two work givers per family** — high-priority continue, low-priority plan.
+7. **Never infer "no local work" from a priority number.**
+8. **One commitment per worker**, across every record kind.
+9. **Nothing is ever `playerForced`. No quantity is hardcoded.**
+10. **No new gameplay ThingDef, PawnKindDef, art or audio.** Match by *capability*. A `FactionDef`, `ThoughtDef` or mechanics def is permitted.
+11. **Zero throwing def lookups.** `GetNamedSilentFail` everywhere.
+12. **Natural gates have no timer, operator, power, close command or address book, and may not dial.** Enforced by `IsDesignated`, not a second check.
+13. **A Backrooms coordinate has no outside**; its roof is never removable; its interior is fully strippable.
+14. **A candidate half must ask whether the *target* can take the work.**
+15. **A def referencing DLC carries `MayRequire`.**
+17. **A prisoner can never cross a gate; a *secure* slave can.**
+18. **The topology is an unbounded alternation** of world maps and coordinates.
+32. **There is exactly one way a laboratory gate opens** — through the spin-up. Every entry point routes into it.
+40. **A gate's width and its footprint are different numbers.** Width decides what fits; footprint decides what it costs.
+41. **Throughput is never capped.** A wide gate gets more doorway cells, never a quota. There is no counter, deliberately.
+43. **Core ships `OrnateDoor` at 2×1** and `Building_MultiTileDoor` to drive it; Anomaly adds `SecurityDoor`.
+47. **A connection has one width, in both directions.** Per-endpoint measuring traps an animal in the Backrooms.
+48. **Company work and player orders are two different rules.** `TravellerFailureKey` is colonists-only; `OrderedCrossingFailureKey` admits player animals. **Both refuse a drafted pawn.**
+53. **Incursion is the one named exception to the founding rule**, bounded on five axes: live opening, `Band.Hostile`, `PortalWindowTier >= 1`, it must fit, once per opening.
+54. **`MayApproachThresholdForTraversal` must stay false for everything, forever.** Incursion works *because* nothing is drawn to a gate.
+55. **A transfer that can lose a pawn is a corruption, not a threat.** Preflight fully, then move, and restore on failure.
+
+### Generation and threats
+
+16. **The register is generated output; the HTML one is the register.**
+25. **Depth 1 is sacred.** The yellow rooms are fixed, sparse, never deranged. Higher number = deeper (owner-confirmed).
+26. **Sort any candidate list ordinally before rolling.** A live trap three times.
+27. **Anything saved that feeds the layout fingerprint must be snapshotted, not read live.**
+28. **Every threat honours: readable warning, learnable rule, a countermeasure, no unavoidable instant failure.** The threshold room is excluded from every event and inhabitant.
+29. **Undiscovered inhabitants are held.** Discovery starts their clock.
+50. **`Band.Hostile` is the "deeper levels" threshold** — *"the space stops being forgiving"*. Do not invent a second number.
+51. **Below `Band.Hostile` a hostile holds ground; at it, it hunts.**
+52. **`LordJob_AssaultColony`'s first parameter is the ASSAULTER's faction.** Passing the player's compiles cleanly and no checker catches it.
+57. **A facility is a contiguous run of 2–4 rooms sharing one archetype**, anchored at the lowest index and **stored nowhere**.
+58. **Coherence is what wrongness needs.** Do not "fix" facilities by making deep coordinates tidier.
+74. **A horror mechanic that fires every time is a mechanic, not horror.** Revisit displacement was weakened from 100% to 66.7% deliberately.
+75. **Ownership is the test for "did the player make this".** Generation places with no faction.
+
+### Method
+
+19. **Never trust a remembered list against shipped game data. Enumerate.**
+20. **Owner words have been mod names twice.** Search the register before reading a phrase as flavour.
+21. **A D-numbered Gate 0 decision can change.** D1 changed 2026-09-29.
+22. **The no-tests rule has exactly one exception** (decision 20), in `CONTRIBUTING.md`. Never widen it.
+23. **Do not trust a progress percentage from a row count here.**
+24. **Nothing is deferred.** Build it, queue it in `TODO.md`, or ask. **Never add a row to `DEFERRED.md`.**
+31. **When an existing guarantee already covers a new requirement, say so and rely on it.**
+33. **Never tie a penalty rate to a flat constant without proving it against the real stat range.** Express it as a fraction of the observed rate.
+34. **Ask at the fork; never flag it for later.** *"dopnt flag shit!!! ask me then and there"*. A flagged question becomes orphaned work.
+35. **`ThingComp.ForceColor()` is the tint hook**; a painted colour wins over it. `Notify_ColorChanged()` drops Core's cached graphic.
+36. **A checker that reads only one kind of source has a blind side.** Ask both directions, of every source.
+37. **Retired content is archived, never deleted** — `docs/implementation/historical-content/<version>/`.
+38. **To remove a pervasive flag, delete it and let the compiler enumerate the sites.**
+39. **A def field and the XML that sets it are removed in the same change, always.**
+42. **A patch target inside `PatchOperationFindMod` is optional by construction**, and only there.
+44. **"Like the game does" is measurable. Measure it.** Core describes 0 of 105 work givers and 80 of 80 recipes.
+45. **A description nothing renders is text in a file.** Write it and show it in the same checkpoint.
+46. **Escapes written through a shell can collapse one level too far and leave an invisible byte.**
+49. **Before designing a rule, check it can fire.**
+56. **When a founding comment stops describing the code, rewrite it in the same commit.**
+59. **When a proof and the code disagree on a constant, change the proof.**
+60. **A scenario declares what begins finished, never the tech tree.**
+61. **A project that begins finished is also insight-committed.**
+66. **Living documents and dated records are different things.** Dated records are **never** rewritten.
+67. **A checker that cries wolf is worse than no checker.** Precision before coverage.
+68. **The vocabulary is gate / connection / threshold.** Never "portal", "machine gate", "the machine", "doorway" or "gizmo" in player-facing text. **Key names are exempt.**
+69. **Every owner direction quoted in `FINALIZED.md` must already exist in `TODO.md`.** A build failure. It found **ten**.
+70. **When the owner suspects a process failure, measure it — do not argue.**
+72. **A retired def's name outlives the def in player-facing text.** Retiring a def means retiring its vocabulary.
+73. **Check a prep document against the build every checkpoint.**
+76. **LAW: check the mod register before building.** Filter by system family, read the per-mod review, and **state in the record what was checked** — or that nothing applied. Retroactively too.
+77. **The register's `Stance` column is not trustworthy alone.** Row 78 reads `Required`; its review reads `optional`. The review is the authority.
+78. **The register HTML has TWO tables**; a naive parse yields 589 rows and silently halves every filter.
+79. **Chromium blocks XSLT from `file://`** — a stylesheet on About.xml gives a **blank page**, not a styled one.
+80. **RimWorld renders newlines, so a wall of text is a choice.** Fails past 420 chars with no break.
+81. **Do not quote a banned string verbatim in a living document** — it trips the rule that bans it. Rephrase.
+82. **RimWorld has a different convention per display surface, not one voice.** A float menu row ends with a full stop 7% of the time in Core; an explanatory tooltip does 93% of the time. Writing either in the other's register is the mistake.
+83. **Measure a surface, never a file.** The first run of `check-display-style.py` reported seven faults that were not faults, every one from sampling `Letters.xml` or `GameplayCommands.xml` alone when the surface spans several files. The baselines were corrected, not the text.
+84. **A census counts the zeroes.** *"to include all"* is only actionable if the report names the surfaces the mod uses **none** of. That is how the alerts readout was found unused. A zero is a question, not a failure.
+85. **A count printed with no rule behind it says so.** The inspect pane is counted and not ruled on, because Core builds inspect lines from strings scattered across its keyed files and there is no clean population to measure. A stated limit is not a forgotten one.
+86. **Cache an alert scan on the tick AND the game object.** Core calls `GetReport` on a rotating one-in-twenty-four schedule. Keying a cache on the tick alone hands a second save loaded at the same tick the first save's despawned components.
+87. **Words quoted from somewhere else are never ours to rewrite.** The vocabulary rule excludes any double-quoted span. The A24 synopsis calls it a doorway; changing that would be misquoting a source, not tidying a vocabulary.
+88. **A document that describes the CODE keeps the code's identifiers.** The vocabulary rule covers the eleven reader-facing documents only. Rewriting prose around `PortalCrossingService` would make the documents disagree with the source, which is worse than an old word.
+89. **Measure paragraphs, not source lines.** A hard-wrapped document hides a wall behind short lines; a one-line-per-paragraph document reports the paragraph. Threshold 700, grounded in the documents already rewritten for readability, which top out at 542.
+90. **A readability rule makes somebody read the paragraph, and reading it finds the lie.** Two superseded rules were found this way, neither of which anybody was looking for: gate and portal as one word, and nothing-ever-crosses-on-its-own after incursion was added.
+91. **Retiring a def means retiring every rule only it could satisfy.** A distortion counter tested for a beacon retired three checkpoints earlier, so the outcome was unreachable and no checker could see it.
+92. **A Building is moved by despawning and respawning, never by writing `Position`.** Its cells are registered in the map's thing grid at spawn.
+93. **Core's `ScenPart_StartingThing_Defined` minifies its own output**, and `MinifyUtility.TryMakeMinified` passes a non-minifiable thing through unchanged. An uncrated building in a cargo hold is a thing nobody can pick up.
+94. **`CompLifespan.age` is a public field.** A Core glow pod dies after 1,200,000 ticks; holding a designated one at zero leaves every other glow pod in the game alone.
+95. **Count the caps, not the cap.** *"lets not limit the amount"* named one limit and there were three: per room, per crew at dispatch, and per recipe batch.
+96. **Core keeps facility-link geometry on the FACILITY side.** `CompProperties_Facility` is `maxDistance = 8f`, `requiresLOS = true`; the consumer comp carries one field and no control over either. Long-range, wall-transparent links must be our own record, or vanilla research linking changes for everyone.
+97. **A def name that reads correctly can still be wrong, and nothing will tell you.** `Multianalyzer` is a ResearchProjectDef; the building is `MultiAnalyzer`. RimWorld's XML loader validates neither, so the wrong one loads clean and matches nothing. **Enumerate the installed data.**
+98. **A rule and its exemption must both be provably non-empty.** The same-power-net rule applies only to things with a power comp. If every candidate were powered the exemption would be dead code; if none were, the rule would be. Assert both halves.
+99. **State what already works before building it again.** Six of the nine items in this direction were already satisfied by rules written for the original three providers.
+100. **A ladder must be at least as long as the tier it declares.** `portalWindowTierProjects` held one rung while `portalIndefiniteTier` was 4, so the top of the gate's own capability ladder was unreachable for the whole life of the mod. **Every individual value was valid**; the fault existed only in the relationship between two settings in different files. Covered by `proof-tier-ladder.py`, which reads the ladder from the source and the rungs from the defs.
+101. **Fungible currency cannot express what a branch has learned.** Insight bought the same thing whatever produced it. Completed logs are the qualification and insight is only the price; a spent currency is gone and a completed log is not.
+102. **Check a qualification before charging for it.** `ProjectQualificationFailureKey` runs ahead of the insight deduction, so a branch short of logs is told which kind.
+103. **Custody is a place, not a receipt.** The retired check asked whether an evidence case existed somewhere at headquarters and never asked where the book was. A rule that can be satisfied without the thing it is about being anywhere in particular is not a rule.
+104. **A prerequisite chain needs a cycle check, transitively.** A cycle is unreachable content in which every individual def looks completely normal.
+105. **ARCHIVE BEFORE REMOVING. Always.** A removal was made by deleting a tuned def field, a const and a keyed string outright, with no `historical-content/` archive. The owner stopped it: *"how tf do you know we didnt need that shit coded up correctly and wasnt unfinished work"*. **The conclusion was right and the method was wrong**, which is the worse failure because it looks like progress.
+106. **ASK AT A FORK EVEN WHEN THE READING SEEMS OBVIOUS.** Whether *"offeres and trades"* covered a hiring applicant and a purchase quote was a real fork with two readings. It was guessed, not asked, and finished code was deleted on the strength of the guess.
+107. **The only clock is the gate.** No mission, quest, offer, contract or trade ever expires. A delay, a cooldown and a timestamp are all fine; a deadline is not. Enforced by `check-campaign-absolutes.py`.
+108. **Every offer carries two or more routes to success**, of at least two different kinds. Enforced before the content exists, so the first offer ever written has to satisfy it.
+109. **A clock that bounds nothing is pure pressure.** Both retired offer clocks sat beside a count cap that already bounded the pool. Check what actually bounds a list before believing a timer is load-bearing.
+110. **Never widen a rule so that existing text passes.** `banned` and `superseded` were briefly added to the deadline-negation list and taken straight back out; they would have masked a real promise sitting near either word.
+111. **Contact is a state on the branch, not a property of a scenario.** `corporationContact` is saved per branch; `beginsInCorporationContact` decides where a start opens. Async Industries begins true, the other two false. **One-way — there is no method to revoke it.**
+112. **Our research layers on the shared RimWorld tech tree and never forks it.** Owner: *"the samw universial rimworld tech tree of all our mods in the collection on top of our mod"*.
+113. **The authored route floor is assembled BEFORE capability is consulted.** If deriving returns nothing, a request must still offer two ways through. The safety property is the ordering, not the count.
+114. **Two routes of the same kind is one route written twice.** A request needs two routes of two DIFFERENT kinds, or the rule is satisfied by text rather than design.
+115. **Enforce by absence where you can.** `RimroomsRequestDef` has no deadline field, so one cannot be configured on. Stronger than any check that a value is unset.
+116. **Enforce an absolute in two places.** `ConfigErrors` catches a def arriving from a patch or another mod after shipping; a checker catches one in this repository before it ships.
+117. **When a rule bites your own design, redesign — do not carve out an exception.** The hinge as charted would have had every route of one kind. The carve-out was tempting and would have been the same failure as widening a negation list. The redesign is better than what it replaced.
+118. **A `ThingDef` does not have to live in a file named `ThingDefs*`.** `TextBook` is in `Core/Defs/Books/BookDefs.xml`. A proof that indexes by filename reports correct content as broken, and the obvious response is to "fix" something that works.
+119. **An unknown enum-ish string fails silently.** `CompletedLogCount` returns 0 for a log kind it does not recognise, so a typo produces a route that can never be satisfied and never complains. Assert the vocabulary.
+120. **The chart is living and must be corrected when it is wrong.** Four corrections this checkpoint, including one where the chart contradicted an owner answer given after it was written.
+121. **One generic mechanism beats N typed effect fields.** A `public bool unlocksSomething` tells you nothing about whether anything reads it. Capabilities are strings, and `proof-research-branches.py` asserts **both directions**: a grant with no read is a lie on the card, a read with no grant is dead code.
+122. **An unlock nothing honours is worse than no unlock.** The def loads, the project completes, the card reads correctly, and nothing happens. Invisible without a proof.
+123. **A plant that produces TWO failures means the proof checks both ends.** Renaming one side of a grant-and-read pair should fail as an orphaned grant AND an orphaned read.
+124. **Do not add a hollow entry so a count looks complete.** Transport has no tier 0 project because it is DLC-optional; inventing one to make it eight would be the exact lie the proof exists to catch.
+125. **A capability is neither a def nor a keyed string.** `check-package-integrity.py` and `check-keyed-strings.py` both had to be taught that, and both defer to the proof, which catches what neither can see.
+126. **A dead PROP is more dangerous than dead code.** It reads exactly like a live one: a plausible name, a sensible default, a validation rule implying somebody cared. `reserveChargePowerWatts` and `returnReserveCapacityWattDays` were declared, validated and read by nothing since 0.9.1-dev.
+127. **A property and a field differing only in casing is a trap.** `ReturnReserveCapacityWattDays` read the battery; `returnReserveCapacityWattDays` read nothing. Same class, one character apart.
+128. **A validation can guarantee nothing and still look like a guarantee.** The retired clause compared costs against a nominal capacity unrelated to the battery a player binds.
+129. **A deeper tier SUPERSEDES rather than stacks.** Read sites check the deeper capability first and fall through, so a card that says "twice as long" means twice.
+130. **When a new assertion fails, ask whether the assertion is wrong first.** The depth rule failed on the gate ladder, which is linear by design. The assertion was restated; the ladder was not widened to satisfy it.
+131. **UNUSED IS NOT UNWANTED. Wire it, do not retire it.** Owner, verbatim: *"make sure shit isnt unused it was put there for a reason"*. **A value nobody wired is a job nobody finished.** Three gate props were retired across 0.11.4 and 0.11.5 and all three were restored; two are now wired. This is the **second** correction of this shape — see 105, about deleting tuned values.
+132. **Sweep the class, do not grep for one name.** The first two dead props were found by stumbling. A sweep of all seventeen gate props found the third **and cleared one an earlier grep had wrongly called dead**, because that grep excluded every line containing `public ` and threw away the property wrapper reading it.
+133. **A cost must not become a trap.** Idle draw stops above the emergency-return reserve. A flat battery is a cost a player can see; a crew that cannot be recovered is not, and nothing would have warned them.
+134. **When two readings of a value are both defensible, ask.** `reserveChargePowerWatts` is restored and deliberately **not** wired: the reserve is a Core battery RimWorld already charges, so the phrase either duplicates Core or means something else. Guessing would invent a mechanic.
+135. **A reversed dated record is annotated, never rewritten.** The 0.11.4 archive opens with a note that the decision was reversed and its body is untouched.
+136. **A live read site is not a live effect.** Three tier 2 unlocks were deleted before being written because the knobs they moved were a one-second wait, a cap of 100 orders and a quantity limit already set to a million. **All three would have passed `proof-research-branches.py`**, because the capability would have been read by real code. Open the file, find the value, and ask what a player would observe.
+137. **A number displayed and a number spent must come from one place.** Idle draw is read by the gate’s readout and by the tick that drains the reserve; research applied to one and not the other would make the readout lie, silently, because nothing compares them.
+138. **Check that a new tier does not switch off the tier below it.** Forward Dispatch halves the dispatch delay, and the lead-time clamp had to be moved onto the effective value or Relays would have stopped biting for exactly the branches holding both.
+139. **An orphaned def is more dangerous than a missing one.** Five `RR_*Staff` `PawnKindDef`s were authored, loaded and validated every run and read by **nothing**, and the queue called them *"unbuilt"*. Built and orphaned looks finished from every angle except the one nobody checks. **Third instance of invariant 131 this session.**
+140. **A guarantee must not be an incident.** *"Facilities never die"* does not admit the two questions a storyteller asks — whether, and when. The floor is deterministic; the flavour is paced. Owner decision, verbatim: *"Both - guaranteed floor, storyteller flavour"*.
+141. **Never ship a `StorytellerDef`.** It is an exclusive slot the player would have to give up Cassandra or Randy for, and it needs portrait art the no-new-art rule forbids. **There is no intelligence in one to borrow** — a `StorytellerComp` rolls a mean-time-between against wealth and population. The director is `IncidentWorker.CanFireNowSub`, which is ours without the slot. Asserted by `proof-incidents.py`.
+142. **A proof must not punish an explanation.** The incursion claim failed on this mod’s own comment saying why incursion is excluded. Strip comments and ask about code — a rule that makes documenting a decision expensive teaches people to stop documenting decisions. **Second time this session an assertion was wrong and the code was right** (see 130).
+143. **One table, two scales.** The relief crate and the courier crate are one corporation with one warehouse. Two tables drift the first time either is tuned, and the letter keeps promising the old one.
+144. **A ledger patch must INSERT, never replace.** The 0.11.7 script’s helper consumed a `FINALIZED.md` section heading because its replacement text did not re-include the anchor. `FINALIZED.md` is append-only; every patch re-includes its anchor and the diff is checked for removed lines.
+145. **An assertion written from what the code LOOKS like is a guess; one written from what the code THROWS on is a fact.** All three wrong assertions this session came from the first kind — the depth rule, the incursion word-search, and the wall rule that would have failed the headquarters that ships and works. See 130, 142.
+146. **A start layout is a new-game crash nothing else can see.** `GenStep_Headquarters` throws on a wall collision, a door with no wall, or a bad rectangle, and the build and all eight checkers pass regardless. **Read building sizes from Core’s own `ThingDef`s** — a 2×2 generator on a 1×1 assumption put three crashes in a layout that built clean.
+147. **A sealed room does not throw.** The map generates and part of it can never be entered, forever, silently. Flood-fill every start from its arrival cell.
+148. **Exactly one start begins in corporation contact.** Async Industries. The other two earn it, and until they do there is no clean-up team and no courier. That absence is what makes those openings frightening, and it is asserted.
+149. **Core already lets a scenario choose the starting map’s generator.** `Game.InitNewGame` reads `initData.mapGeneratorDef ?? settlement.MapGeneratorDef`, and `GameInitData.mapGeneratorDef` is a public field. **No Harmony is needed to open a game anywhere**, and this mod had already been assigning it from the start def.
+150. **Share the half that carries the promises.** The coordinate shell — rock to every edge, `RoofRockThick` over every cell, rooms carved out — is one implementation used by both generators, because invariant 13 lives inside it. The furniture differs; the shell never may. Same reasoning as the anomaly effects at 0.11.8.
+151. **A `workerClass` or `genStep Class` that does not resolve fails as ORDINARY BEHAVIOUR, not as a crash.** A missing genstep gives the player a normal colony while the description promises the Backrooms. Assert that every class named in XML exists in source.
+152. **A claim that can fail for the wrong reason can also pass for the wrong reason.** The natural-depth ordering claim was a string-index search over a variable name; renaming the variable made it fail open. **Key an assertion off the thing that actually happens** — a refusal, a keyed string, a def name — never off an expression’s spelling. Fourth assertion corrected this session and the first of this kind (see 130, 142, 145).
+153. **Cap the free doors, never the way home.** `MaximumNaturalDepth` is checked after the way-out attempt. Capping both directions makes the deepest natural band a trap, which invariant 28 forbids.
+154. **Open-ended is a constraint on the content, not a mood.** Owner, verbatim: *"this is all open eneded they can play how they choose"*. A tutorial line offers and describes; it never requires an order, and a step already done by a player who got there first must read as done rather than skipped.
+155. **A portal is its own door cell and reserves nothing.** No radius, no claimed cells, no protected zone. Owner, verbatim: *"in the real world you can mine and build and explore directly behind the gates with out actually effecting the gate"*. The only placement rules near a gate belong to **linked equipment**, which has a reach of its own. Enforced by `proof-portal-footprint.py`, including a banned-name check.
+156. **A snapshot and a live check, in two different files, is a silent failure waiting.** The approach cell was frozen at registration and validated forever; a wall on it bricked a gate for the life of the save. **Both files read correctly alone.** When a value is snapshotted, ask what happens when the world moves under it.
+157. **Find every read site before changing a shared value.** Re-deriving the approach cell live everywhere — the obvious fix — would have tripped the crossing receipt’s equality guard, which is what stops a transfer losing a pawn. The repair is skipped while a crossing is in flight because the read sites were enumerated first.
+158. **Sweep the exposed surface, not the fields.** `MinimumPowerHeadroomWatts` applied a research capability and **was itself read by nothing**, so the tier 0 Facilities unlock promised a change and delivered none. `proof-live-effects.py` walks every public property that reads `GateProps` and found two more. **A live read site is not a live effect** (invariant 136); this is the sweep that catches it.
+159. **A dead accessor and a dead value are different problems.** `EmergencyReturnCostWattDays` was live as a field and dead as a property: the number reached the code and never reached the player. The fix is to display it, not to wire it again.
+160. **Never build a keyed string at runtime.** `"RR_Hint_" + id` cannot be verified in either direction, so a typo ships as a raw key on screen. `check-keyed-strings.py` refuses it and is right to.
+161. **Gate an opening requirement at the opening, never in the tick.** `NativeBindingFailureKey` is read every tick; a supply check there would emergency-return a crew already across. A lapse blocks the **next** opening, never the current one.
+162. **Acquisition is the game’s; recognition is ours.** RimWorld already settles a second tile and this mod’s topology already emerges a crew elsewhere. A remote site is **registered, never created** — `proof-remote-sites.py` bans `WorldObjectMaker.MakeWorldObject`, `GetOrGenerateMap`, `SettleInEmptyTileUtility` and `MapGenerator.GenerateMap` from that source. Inventing settling would be fighting Core for nothing and first to break on an update.
+163. **A recurring cost must be a ratio of the branch’s own economy, never an absolute.** Async runs on $25,000 a day of overhead and the Store on $1,500. One number is a rounding error for one and ruinous for the other; a share of a number each start already tunes is correct for both for free.
+164. **A coordinate is never a base.** It is reached through a gate, it is transient, and it is not the player’s to keep. A surcharge that counted coordinates computes zero and looks like progress.
+165. **Extend the one predicate, do not thread a second one.** `OwnsMap` has 30 call sites across 16 files; its third clause is what makes work, gates and emergence anchors all reach a registered site at once. Check that **every** consequence is wanted before widening it.
+166. **A bug that only exists once you add the feature is the hardest kind to find, because it is not there while you are looking.** The procurement redirect updated the receiving zone and never the receiving map — harmless with one legal map, a shipment lost for ever with two. **Read every WRITE to a record before changing what the record may hold.**
+167. **Check what your claim survives before believing it.** The on-the-books claim counted a refusal string; a planted fault removed the guard, left the string, and the proof passed. **Key a claim off the thing that happens** — a guard expression, a refusal, an assignment — never off a token near it. Second instance in one day (see 152).
+168. **Permitted is not reachable.** Widening procurement without widening the stockpile menu would have left site delivery legal and unofferable. Every widening needs its surface widened in the same checkpoint.
+169. **A crew left on the far side is stranded, never taken.** Owner, verbatim: *"turning off a company gate with pawns inside doesnt lose control of those pawns they have to survive till a reconnection is made so they can escape"*. `ShouldRemoveMapNow` returns false **unconditionally** — any condition there is a condition under which somebody’s colonists vanish. No gate source may ever call `PassToWorld`. Asserted by `proof-stranded-crew.py`.
+170. **A claim with a conditional fallback is a claim that can be trivially true.** The ordering claim keyed off a method name absent from the file and collapsed to a tautology. **Third fail-open in one day, all three found by fault-planting and none by reading** — which is what fault-planting is for (109, 152, 167).
+171. **Gate a requirement where it bites, not where it is convenient.** Staffing is checked at a shipment’s **arrival**, never at its ordering: gating the order punishes planning, and gating nothing makes the rule a sentence in a document.
+172. **A gate runs on the equipment beside it.** `thing.Map == parent.Map` is what makes a remote gate a real facility rather than a remote control for the headquarters. Widening *where* a gate may stand must never widen *what it may draw on*.
+173. **Exclude by construction, not by a check somebody must remember.** A designated gate cannot appear in a coordinate because `OperatesAt` admits only registered places and a coordinate can never be registered. Invariant 12 then holds with nothing to forget.
+174. **Two questions may share a place-set and must not share a name.** `OperatesAt` and `CanReceiveDeliveryAt` agree today and are different questions; one implementation stops them drifting, two names give the difference somewhere to go when it arrives.
+175. **A def shape with content and no reader is not a feature.** `ConfigErrors`, a checker and a proof can all validate a def while nothing in the game consumes it — which is how the entire campaign shipped twice as content nobody could see. **Assert that a content surface is read from outside its own definition**, and restage the defect as a planted fault.
+176. **Where two route kinds could resolve to the same expression, split them on what actually differs.** A def rule demanding two different kinds is satisfied by text alone if the runtime asks one question twice. Document is the paperwork and survives the witness dying; Testify is the person and survives the book burning.
+177. **Re-measure every count in the handoff; never carry one forward.** The C# file count was wrong by two for five checkpoints, exactly as the assembly hash was. A plausible number is never checked by reading.
+178. **Narrowing what a rule measures is legitimate; softening the rule is not.** A word search matching a comment is the wrong population (invariant 130). Strip the comments — then **plant a fault to prove the narrowing did not blind it.**
+179. **Grep the ledger before asking the owner anything.** Two of the three questions in the 0.12.10 handoff had already been answered and recorded, and one of them was re-asked the turn after that handoff shipped. One `grep` across `.local/register/` and `docs/` is cheaper than the owner’s patience.
+180. **Zero hard dependencies and Core-only are different claims.** The package must load and run against Core alone — a build property. The install it is *designed for* is the 294. Never write an option, doc line or design argument treating a vanilla install as the audience. *"wtf are you talking about core only we have 294 recommend mods you fuck!!!!"*
+181. **Absolute state is permanently true once true.** A check like *"does the branch hold twenty meals"* is right for a request asked **once** and wrong for anything repeatable, where it pays out on acceptance. A repeatable job records where it started and asks for that much **more** — keyed by label key, never by list index.
+182. **A route naming something that does not exist can never fire, and nothing says so.** A `logKind` typo makes the measurement zero while still counting toward the two-different-kinds rule, so every checker passes and the request ships promising two ways and having one. **Parse the content and assert each route names a real def.** Invariant 49.
+183. **A filter clause that cannot refuse is a hollow knob.** Assert no arm of an eligibility switch is `return true`. Invariant 136 has already deleted four projects and three constants here for the same reason.
+184. **A route against work already finished is satisfied on sight.** Exclude the completed case at the point of offering, not only at the point of measuring — otherwise the offer itself is a payout button.
+185. **A proof failing because its subject MOVED is the proof working.** Retarget it and say so. A claim that survives an arbitrary refactor of the thing it describes is keyed off nothing.
+186. **Count coverage per category, never in total.** Eighteen generated families is satisfied by eighteen copies of one arc. The claim that matters is that **each** arc has somewhere to put work, and only a per-arc count catches a family moving between them.
+187. **Two documents can describe the same thing from two directions and nobody notices.** Arc 5’s *"still unwritten"* list — relay stations, caches, leases, resupply, evacuation — had had research projects since 0.11.6. **Before building a named item, grep the def names for its nouns.**
+188. **A queue nobody re-measures cannot answer "how much is left".** 178 rows carried a status that was never re-checked; 114 of them were built. **Re-measure the queue against the code before answering any question about progress**, and append the evidence so the next reader can re-check rather than trust.
+189. **Close a row with a named read site, or leave it open.** A flip on a guess is worse than a stale row, because it removes the thing from view. Anything unverifiable stays open.
+190. **Say when a row cannot close without the owner.** Performance, balance, the 294 profile and the compatibility report all need a launch, and only the owner launches. Marking that is honesty, not deferral — and `DEFERRED.md` still gets no rows.
+191. **A `FactionDef` is world configuration, and that is the whole of the permission.** It may reuse existing pawn kinds and existing icon paths and nothing else. **Enumerate the installed game for both** — a `factionIconPath` Core does not ship loads clean and fails at runtime, because `ContentFinder` returns null and the faction simply has no icon.
+192. **`settlementGenerationWeight` 0 for anything this mod adds to the world.** Seven settlement-generating factions would change every world map every player generates, alongside 294 other mods. An interest group has people and intentions, not towns.
+193. **Some correctness is achieved by NOT setting a field.** `FactionDef` has no starting-goodwill field, so *all neutral* is the default and the risk is a flag quietly appearing later. **Assert the absence**, because nothing looks wrong when it does.
+194. **`ContentFinder` resolves across every loaded mod, so a folder scan is not ours.** `UI/Menu` is a generic content path; without a name prefix another mod’s art appears in our slideshow. **Scan the folder, then filter by prefix**, and say at the site that the prefix is load-bearing.
+195. **A note nobody can act on is noise, and noise is how a real finding gets scrolled past.** Both menu textures were reported unreferenced on every run for months because the checker could not follow `Get(variable)`. **Teach the checker the API** rather than leaving a permanent false note.
+196. **When a checker flags something legitimately new, fix it by its own design.** `check-keyed-strings.py` classifies by **call site, not spelling**, so a texture prefix counts as internal only when it is passed to `StartsWith` — and the narrowing was fault-planted to prove it still catches an undeclared key.
+197. **A drop-in folder needs a proof that nothing dropped in can fail silently.** A slide named without the prefix is loaded by nothing and shown to nobody, and no build, checker or log says so. When content arrives from outside the code, **assert the naming contract** and plant a stray file to prove it fails.
+198. **Validate delivered binary assets structurally, at build.** A truncated PNG fails when Unity reads it, long after the build reported success. Check the signature **and** that `IEND` is the final chunk. My first version of that check compared the last eight bytes literally and condemned every file, including ones already shipping — **the check was wrong, not the files.**
+199. **Provenance for generated art is a release obligation, not a nicety.** Steam requires AI-content disclosure and menu images are the single exception to the no-new-art rule. `prompts-and-provenance.json` records tool and prompt per image, and a proof asserts it exists.
+200. **A tier deleted for having no knobs is worth re-surveying once the systems land.** Tier 3 had nothing to move for four of seven branches at 0.12.5-dev and a real read site for **all seven** at 0.12.18-dev, because arc 5 wrote the systems in between. **Re-run the sweep; do not carry the old verdict.**
+201. **A restraint is only a restraint if breaking it fails.** The per-coordinate frontier cap must never become a research knob, and shelter must never reach zero. Both are asserted and both were fault-planted — otherwise they are comments.
+202. **Proximity is not the thing that happens.** A claim that looked for a capability name within 400 characters of a constant broke the moment a legitimate line was written above it. **Key off the assignment, the guard, the exit status — never off what sits nearby.** Fifth time.
+203. **A grep for the words you expected, in the file you expected, is not a search.** The mineable-rock fill was marked *"confirmed unbuilt by grep"* while fully shipping, because the code says `Find.World.NaturalRockTypesIn` and contains none of the words searched for. **Condemning correct code on a failed search is worse than trusting a wrong comment.**
+204. **`Named<X>("Foo")` on a TEMPLATE def returns null, silently, and a `??` fallback makes the wrong result look deliberate.** Core ships `Carpet` as a `TerrainTemplateDef` and generates `Carpet<Colour>`. The yellow rooms were wood plank flooring from the day they shipped. **Assert that every def a generator names actually resolves.**
+205. **A filter that skips the case it guards against is worse than no check.** The floor claim excused terrains with no cost list as *"never built"*, which excused `PackedDirt` — the exact plant it existed to catch. **Only the planted fault found it; reading it would not have.**
+206. **The mod register is GUIDANCE, not law.** Owner-corrected 2026-09-29: *"remmebr its not law but guidance"*. Consult it, let it shape the design, and say what it said — but a row does not veto work, and a checker built on it must only assert what is **structural**.
+207. **Query the register by `trace`, not only by family.** The trace column names the **Rimrooms feature** a row bears on, which is the question the rule actually asks. It had no query until 0.12.20-dev, and that is precisely why it was the column that got skipped. **A column nobody can ask about is a column nobody consults.**
+208. **A `PatchOperationFindMod` does not edit anybody’s files** — owner-confirmed. It patches the loaded def database at runtime and applies nothing when the mod is absent. What would breach *"WE ARE NOT EDITING OTHER PEOPLES MODS"* is **shipping their content here**, and that is what `check-register-compliance.py` asserts.
+209. **A guarantee narrowed on a directory boundary is a guarantee evaded.** `proof-stranded-crew.py` watched `Gate/*.cs` only, so a `PassToWorld` shipped in `Portals/` would have passed on a technicality. **Say so, ask the owner, and assert the forbidden paths by name** — closing, expiry, traversal — rather than relying on where a file sits.
+210. **The five-map cap is the stricter of ours and the player’s.** Ours is five, counting the coordinate they are standing in; the player’s is `Prefs.MaxNumberOfPlayerSettlements`. **A setting the player chose is never overruled by this mod.**
+211. **Generate the destination before despawning anybody.** The claimed map exists before a pawn is touched, so a failure means nothing moved, and a failed spawn puts that pawn back. Invariant 55 in the one place it would have been easiest to get wrong.
+212. **Let Core choose the world tile.** `TileFinder.TryFindNewSiteTile` already refuses water, space and impassable terrain and honours every mod that patches tile validity. **Seed the roll**, or the way out moves on every reload.
+213. **Enumerate the replacement, never remember it.** `Data/Core/Defs` holds **908** distinct `texPath` values; every path used here was confirmed present in a real Core def first. This is the same discipline that `Named<TerrainDef>("Carpet")` skipped, and that one shipped a wrong floor for months.
+214. **Check a rule as a SHAPE, not a count.** *"Remove the 14 historical PNGs"* was stale by ten. The durable assertion is *"every image this package ships is a menu slide"* — which needs no number and cannot go out of date.
+215. **When a def is infrastructure, the art is the breach.** Three of the four legacy defs were mechanics or generator-placed markers that invariant 10 permits. Rebuilding working systems was never the fix. **Separate the def from its texture before deciding what to retire.**
+216. **A decision nobody proved is a decision that does not ship.** The recorder became the book at
+     **0.12.24-dev**; the answer was written down at **0.9.9-dev** and sat for fourteen checkpoints
+     with every checker and every proof green. **No proof mentioned `RR_FieldRecorder` at all.** A
+     recorded decision with no assertion behind it is indistinguishable from an idea.
+217. **Retire a def by removing every way to GET one, not by deleting it.** Recipe, scenario grant,
+     trade and catalogue — four routes, all closable — while the def stays loadable so saves open.
+     The owner's rule is a *"migration decision or declared development-save break before removing
+     any Def a saved Thing references"*, and **never granting one again satisfies it without needing
+     either.** Saved field names stay too: renaming one is a save break for a cosmetic gain.
+219. **When a replacement is Core content, read what Core DOES with it.** `TextBook` has
+     `Flammability 1` and sells only as random outlander stock, so swapping our recorder for it
+     would have made a burnt book refuse every future dispatch for ever. **That defect was in none
+     of the row, the plan or the owner's answer** — only in the Core def.
+220. **A LAW that points at a document its own tool cannot open is a LAW that gets skipped.** The
+     register's `card` column printed the words *"open card"* — a hyperlink label — while Planned
+     Use, Integration Approach and Compatibility Watch sat in the `#cards` section and 294 review
+     records on disk. **Four short columns got read instead, and it counted as consulted.** Reach the
+     guidance from the tool or the rule is decorative.
+216. **A handoff that contains an open question is a handoff that deferred work.** `RR_FieldRecorder` was written into this document as *"needs an owner decision"*; the owner said **ask me, asap**. Invariant 34 already said so. **Ask in the turn you find it, then record the decision.**
+217. **Measure the proof-output split, never carry it.** It said four `PASS:` and eleven `PROOF HELD` when there were twenty-one proofs, and **two of them announce nothing at all** — their last line is a wrapped continuation. Every phrasing-based runner misses those two, not just the wrong one.
+218. **When your measurement and the document disagree, suspect the measurement first.** An invariant-count regex caught ordinary numbered lists and reported duplicates 1–9. The document was right: **209 invariants, no duplicates, gaps deliberate.**
+221. **A refusal is a place where information goes to die.** `RR_Company_ReceiptMismatch` was
+     *computing* the contradiction this campaign's prep material asks for, and then discarding it —
+     and the only caller ignores results, so nothing anywhere saw it. **When a guard refuses
+     something interesting, ask what it knew.**
+222. **A new saved field must be threaded through every snapshot, copy and validity check that
+     existed before it.** `EvidenceAnalysisReport` freezes observations and compares them back with
+     `SameSnapshot`; a field those do not know about makes a frozen report agree with a record it no
+     longer matches, **with no observable symptom until much later**. Fault-plant those two
+     specifically — they cannot be found by reading.
+223. **Do not let a reading of the queue substitute for reading the code.** The row said two crew
+     who disagree was *"a short step from a mechanism that exists"*. It was not a step from
+     anything: the mechanism existed and threw the answer away. **The row was optimistic in the
+     wrong direction, which is rarer and worse than a stale row.**
+224. **A string that resolves is not a string that is true.** `check-keyed-strings.py` verifies
+     every key resolves and every used key exists; fourteen strings satisfied it while instructing
+     the player to use a return beacon, a survey tag, an evidence case or a field recorder. **Text
+     can be well-formed, translated, referenced and wrong.**
+225. **A derived list is only as complete as what it derives from.** The retired-content check
+     derives its names from the archive, and `RR_ReturnBeacon` had never been archived — so the
+     check would have been quietly partial **and passed**. Repair the source before trusting the
+     derivation.
+226. **A rule that reads defs must know this mod's OWN def types.** My first retired-content check
+     listed Core def types only, so it was blind to `RimroomsProjectDef`, `RimroomsRequestDef` and
+     the procurement catalogue — most of what this mod authors. It would have passed with the defect
+     in a live research project description.
+227. **Retiring a thing leaves its WORDS behind, and they need a disposition.** Whether the concept
+     survived the item cannot be derived: an emergency return is live while its cutoff is not; an
+     analysis bench is live while the custom building is not. Record the decision **with its
+     reason**, and make a new retirement fail until somebody makes it.
+228. **Pick the mechanism whose SHAPE gives you the exception for free.** *"Option 2 but flooring is
+     fine"* cost nothing to honour as a `PlaceWorker`, because a floor is a `TerrainDef` and terrain
+     placement never consults one. The map-component version — my first instinct — would have
+     needed the carve-out written by hand and then remembered.
+229. **Derive a rule from Core's own predicate, never from a list of def names.** Blocking is
+     `passability != Traversability.Standable`, straight out of `GenGrid.Standable`. A list would
+     have been wrong for the 294 mods the moment one of them shipped a new wall.
+230. **When a check runs on everything, doubt must allow.** A place worker fires on every placement
+     check for every building in the game. A wrong refusal is a player who cannot build; a wrong
+     allowance is a gate re-deriving a cell it already re-derives. **Catch the exception and
+     accept.**
+231. **A tool that cannot verify a technique is forbidding it.** `check-package-integrity.py`
+     understood only `defName="X"`, so every patch on an abstract inheritance parent was refused as
+     unverifiable — ruling out the one way to reach a property of every building at once. Teach the
+     tool; do not route around it.
+232. **Read the ORDER of the checks before designing on top of them.** I set out to build a lie
+     detector; `validFact` runs *before* the prior-observation branch, so every disputing account
+     had already been checked against the map and found true. **Nobody is lying** — the marker
+     moved. The code did not merely constrain the design, it improved it, and only reading the
+     sequence showed that.
+233. **When two mechanics meet, one of them is already the explanation.** Between-visit displacement
+     (0.10.3-dev) is *why* two honest crew accounts conflict. Nothing new had to be invented to
+     justify the disagreement, and inventing a reliability statistic would have contradicted a
+     mechanic that already shipped.
+234. **Settle a dispute by recording the choice, never by rewriting the fact.** Both accounts stay,
+     with both names. `Disputed` and `Settled` are two separate questions and a settled fact is
+     still disputed. **An evidence chain that erases the testimony it declined is worth less than
+     one that keeps both and says which.**
+235. **A workflow that writes a saved decision must refuse once the record is frozen — AND be
+     threaded through the snapshot anyway.** The refusal is the rule; the snapshot comparison is
+     what catches the rule being wrong. Ship both, and fault-plant the second, because it has no
+     symptom until much later.
+236. **ASSERT AN ABSENCE, because an absence cannot be read.** Tier 4 has six projects and two
+     branches deliberately without one. A reader sees six and cannot tell whether the other two
+     were declined or forgotten. **The proof is the only thing that carries that difference
+     forward** — and it also asserts *why*, so if a lower tier ever stops claiming Logistics' lead
+     time, the proof fails and the decision gets revisited.
+237. **Some absences are the shape of the thing, not a gap in the work.** The gate line's top rung
+     is *"a connection that no longer counts down"*. There is nothing above indefinite. A fifth
+     rung is impossible rather than unwritten, and writing one would have been the fifth invented
+     effect this project has caught.
+238. **A new system creates knobs for the tier above it.** Measurement had no fifth knob until the
+     interview shipped one checkpoint earlier and gave it a Social floor to lower. **Sweep after
+     building, not before** — which is exactly why the old verdict must not be carried.
+239. **Four times this session my measurement was the defect, not the code.** The queue count, the
+     assembly-hash grep, the keyed-string parser, and a grep that reported three hollow gate
+     projects when the mechanism is a defName count. **Check before asserting a defect in working
+     code** — invariant 203, and it keeps earning its place.
+240. **A public method with no caller is a feature that does not exist.** `EstablishCorporationContact`
+     was one-way, recorded its event, had its keyed string written — and was unreachable, which left
+     **two of three starts with no campaign at all**. Grep for callers, not for definitions. The
+     nine checkers and twenty-six proofs were all green over it.
+241. **When two documents agree about something nobody built, they are not wrong — they are a
+     specification.** The chart and `RR_Starts.xml` both said *"reaching contact is the
+     achievement"*. Neither was stale. **The achievement had no mechanism**, and a hint was already
+     pointing the player at a console with nothing to do with it.
+242. **Follow the row into the code before scoping the work.** The row said *"the solo start has no
+     tutorial line"*. The defect was that two starts had no campaign. **The row was accurate and
+     far too small**, which is a different failure from a stale row and harder to see.
+243. **An owner answer can delete work, not just direct it.** *"they can start async quest line"*
+     meant no parallel line, no discriminator on the def, no second selector — the existing gate on
+     `corporationContact` was already the whole mechanism. **Ask before building the bigger
+     version.**
+244. **Find the ONE value everything already derives from, and change that.** A gate's width, entry
+     cells, cell count, power draw and spin-up work all come off a single `CellRect`. A run of 1×1
+     doors **is** a rect, so returning the union made every one of those correct with nothing
+     written for it. **Look for the existing seam before adding a parallel path.**
+245. **Validate the WHOLE, not the part, when legality is a property of the whole.** Whether a door
+     may join a run cannot be answered about that door: it is answered about the run it would
+     make. So propose, check, and put it back on failure — and have the candidate search ask the
+     same way rather than keeping a second copy of the rule to drift out of step.
+246. **A legal-looking bounding box is not a shape.** A ring of doors around a gap passes every
+     size test and is not an opening. **Assert the area equals the parts.**
+247. **The checkers do not care that you know the rule.** Both defects at 0.12.31-dev were mine: a
+     runtime-built keyed string for the fifth time in this project, and the banned word *"doorway"*
+     five times — **a rule I had personally been corrected on hours earlier in the same session.**
+     That is the entire argument for having them.
+248. **A PUBLIC VERB WITH NO CALLER IS A FEATURE THAT DOES NOT EXIST**, and this project has been
+     bitten by it four times: five PawnKinds, no `IncidentDef` at all, the entire request line, and
+     `EstablishCorporationContact`. **All four passed every checker of their day**, because nothing
+     was wrong with any individual file. `check-wiring.py` is the eleventh checker and exists for
+     exactly this.
+249. **"Wired" has three routes, not one.** By name in C#, by TYPE through `DefDatabase<T>` or
+     RimWorld's own consumption, or by cross-reference from another def's XML. Checking only the
+     first reported **106** false positives; only the first two reported **3**. **The real answer
+     was zero** — twice the measurement was the defect.
+250. **An unwired verb is either a missing surface or a duplicate path, and the two get opposite
+     treatment.** `TriggerEmergencyCutoff` was a real capability nobody could reach, so it was
+     wired. `RenameCompany` duplicated a live path with identical validation and an identical
+     event, so it was retired. **Decide which before fixing either**, because wiring a duplicate
+     doubles the drift instead of closing it.
+
+---
+
+## VERIFY THE PROOF PASSES BEFORE YOU PLANT ANYTHING
+
+At 0.12.39-dev a fault-plant run reported **17 of 17 caught** and it was **worthless**. A fix to
+the proof had introduced a syntax error, so the proof exited non-zero unconditionally and **every
+plant registered as caught**. It looked like a clean sweep.
+
+**A plant run against a broken proof proves nothing and looks perfect.** The first step of every
+plant run is now:
+
+```
+python .local/register/proof-<name>.py >/dev/null 2>&1; echo "must be 0: $?"
+```
+
+and only then plant. The harness already re-reads every write to guard against a half-restore
+(0.12.36-dev); this is the other half of the same lesson.
+
+**And the same shape bit the doc scripts twice.** A patch script whose `sub()` throws part way
+leaves the file untouched, so the edits *before* the throw are lost silently — six state edits at
+0.12.38-dev, eight at 0.12.39-dev, both found only by grepping the file afterwards. **Assert every
+anchor first, write once at the end, and grep the result.**
+
+---
+
+## The scope lesson from 0.12.38-dev, because it will happen again
+
+**A proof that reads one file of a partial class does not know about the class.**
+`proof-areas-and-debrief.py` enumerated *"every way a gate can stop working"* out of
+`CompRimroomsGate.cs`, and **kept passing** when a seventh way was added in `GateIntegrity.cs` —
+another file of the same `partial class`. The count was right and the scope was wrong, so a claim
+that reads as *these are all of them* was really *these are the ones in this file*.
+
+Anything asserting a **complete set** over a partial class must glob the class, not name a file.
+Three of this project's largest types are partial across many files: `CompRimroomsGate`
+(`Gate/*.cs`), `RimroomsCampaignComponent` (`Company/*.cs`) and `MainTabWindow_Operations`
+(`UI/*.cs`). **Check every existing completeness claim against that list before trusting it.**
+
+---
+
+## THE REGISTER FOUND A LIVE DEFECT NOTHING IN OUR OWN CODE COULD HAVE
+
+Owner instruction, 2026-09-30: *"make sure u are using prep and mod registry as needed"*. It paid
+for itself in **one query**, and this is the strongest argument for the LAW that exists.
+
+Register row **[188] Removable Mt.Rock Roof Patch** (Workshop `1541438898`) is **installed in this
+profile** and patches:
+
+```xml
+<xpath>*/RoofDef[defName = "RoofRockThick"]/isThickRoof</xpath>
+<value><isThickRoof>false</isThickRoof></value>
+```
+
+`RoofDef.VanishOnCollapse => !isThickRoof`. **So in this player's game Core's overhead mountain
+vanishes on collapse and leaves open sky** — meaning invariant 13, *a Backrooms coordinate has no
+outside*, **was already broken before any of this session's work**, and
+`BackroomsContainment`'s claim that thick roof "never vanishes" was reasoning from unpatched Core.
+
+The non-collapsing roof def added for the owner's *"backrooms can not and shall not have cave
+ins"* direction repairs that breach as a side effect. And it is a second, independent reason
+patching `RoofRockThick` would have been wrong: two mods editing one def at startup, load-order
+dependent, and that mod asks to be loaded last.
+
+**Also checked and clear:** [69] Craftable Mountains only *sets* `RoofDefOf.RoofRockThick` from
+its own assembly; [63] Change map edge limit affects player map sizing and a coordinate is a fixed
+size this mod creates; [128] MinifyEverything mutates `minifiedDef` on **defs, not instances**, so
+every Core def the facility places is covered; [221] Stuff Mass Matters means a wider material set
+changes hauling weight, which is native and correct.
+
+## WHAT THE COLLABORATOR GETS
+
+Owner direction: *"i need someone else to work on this in parrellel through git hub and i need to
+make sure they have it all but the temp stuff i told you to git ignore"*.
+
+**`.local/` was hiding the entire verification suite.** A clone could run the 13 checkers in
+`tools/` and **none of the 41 proofs or 13 plant suites**. `.gitignore` now admits exactly two
+globs and nothing else:
+
+```
+.local/*
+!.local/register/
+.local/register/*
+!.local/register/proof-*.py
+!.local/register/plant-*.py
+```
+
+Git will not descend into an ignored directory, so the parent has to be re-admitted a level at a
+time — the same pattern as the existing `!.claude/bin/`. Still excluded: a 132 MB nuget cache,
+19 MB of decompiler binaries, the per-subsystem inspections, the scratch bridge client, and the
+hundreds of one-shot record scripts.
+
+**A collaborator needs the same RimWorld install:** `tools/build.ps1` refuses to build unless the
+Core assembly hashes to `5CF1B5BE399D5B1C9C56CA72C9D35B4ECF307FEACF5859D04AC5A1AA5926356A`.
+
+## The warning that matters most right now
+
+**SUSPECT YOUR OWN MEASUREMENT FIRST.** A search that finds nothing is not evidence, and across
+0.12.24 → 0.12.41 **the measurement was the defect at least fifteen separate times while the code
+was fine.** Five from 0.12.24 → 0.12.33 are tabulated below; the ten since are:
+
+| Measured wrong | The truth |
+|---|---|
+| a public `OpeningPowerDrawWatts` written for the cost preview | **one already existed** in `GateFootprint.cs`, footprint-scaled and discounted by `RR_Cap_EfficientAperture`. The compiler caught it, which is the cheapest way this ever gets caught — and the existing one was *better*: the raw prop is not what any gate above 1×1 draws |
+| **this file said `OpenNativeTab` already opens Architect** | it did not and never had. `grep -rn "Architect" --include=*.cs src` returned **nothing at all**. The stale measurement was in the handoff itself, which is the worst place for one |
+| a colour guard that matched `new Color(` | `new UnityEngine.Color(...)` walked past it — and the qualified spelling is the one a file without the `using` would have to write |
+| the queue count, **twice** (90 vs 86, then an item count of 19 and 13 vs 20 and 12) | the list is renumbered on every close, so the count must come from the file |
+| **six** shipped work-giver priorities above the clamp | **seven** — the pattern was `<WorkGiverDef>` and missed `<WorkGiverDef MayRequire=…>` |
+| **five** ways a gate can stop working | **six** — I forgot the deliberate cutoff. Then a seventh arrived and the proof kept passing, because it read one file of a **partial class** |
+| a replant of the historical `maxTechLevel` defect **passed** | 0.8.7-dev fixed it by **adding the field to the class**, so the field is valid now. The plant was wrong, not the checker |
+| `CompHoldingPlatformTarget` flagged as an ungated expansion defName | it is a **comp type** in the always-present base assembly |
+| `MULTIPLAYER.md` reported as missing a sentence it contains | the document is **hard-wrapped** and a literal phrase search cannot cross a newline |
+| a fault-plant run reporting **17 of 17 caught** | **worthless** — a syntax error made the proof fail unconditionally, so every plant registered as caught |
+
+The five earlier ones:
+
+| Measured wrong | The truth |
+|---|---|
+| a grep for the documented assembly hash returned nothing | the pattern was wrong; the line was correct |
+| the queue reported **90 open** | 86 under one consistent pattern — two different greps, neither wrong about the file |
+| a keyed-string parser found **33** strings | it matched the `<LanguageData>` wrapper; there are **1,499** |
+| **three gate projects "grant nothing"** | they drive `PortalWindowTier` by counting completed projects **by defName**, which the def file's own comment says. I nearly shipped a three-hollow-projects finding |
+| the wiring check reported **106 dangling defs**, then **3** | **zero.** Defs are consumed by name, **by type**, or by cross-reference from another def's XML, and I had only implemented the first, then the first two |
+
+And a fault plant caught a **blind claim** of mine at 0.12.33-dev: *"the readout is wired"* checked
+that a key **appeared** in the file, so replacing `listing.Label` with a no-op left the claim passing
+while nothing was drawn. **A claim that searches for a string is not a claim about behaviour.**
+
+The older instances below are kept because they are the evidence, and because two of them are the
+reason `GetNamedSilentFail` is treated as dangerous here:
+
+| What happened | Why it was worse than being wrong |
+|---|---|
+| **`Named<TerrainDef>("Carpet")` returned null, silently, for months** | Core ships `Carpet` as a `TerrainTemplateDef`; there is no `TerrainDef` of that name. `GetNamedSilentFail` is silent **by design** and a `??` fallback made wood plank flooring look deliberate. **The depth-1 yellow rooms — the one look invariant 25 calls sacred — were never carpeted.** |
+| **I marked working code *"confirmed unbuilt by grep"*** | The mineable-rock fill ships. My grep searched `Generation/` for *"Mineable"*, *"Granite"*, *"RockRubble"* — **words the code does not contain**, because it asks `Find.World.NaturalRockTypesIn`. I then accused a correct comment of lying. **Condemning working code on a failed search is worse than trusting a wrong comment**, because it invites somebody to "fix" what works. |
+| **A check I wrote to catch one specific thing PASSED that exact planted fault** | The floor-value claim skipped terrains with no cost list as *"never built"* — which excused `PackedDirt`, the precise case it existed for. **A filter that skips the case it guards against is worse than no check**, and only the planted fault found it. |
+| **A claim keyed off proximity broke when correct code moved near it** | It searched for a capability name within 400 characters of a constant. **Proximity is not the thing that happens.** Fifth instance of that class. |
+| **Claims matching the code's own comments** | Twice more, including a rule defeated by the two doc comments explaining why the thing it looked for is deliberately absent. **Sixth instance.** |
+
+### THE TRAP THAT NOW OUTRANKS EVERY OTHER ONE
+
+**0.12.53-dev added eight more, bringing it to twenty, and one of them is the lesson in miniature:
+the fix written to close the prefix trap fell into the prefix trap.** Asserting
+`"SpawnNativeConduit(…" not in body` fails against **correct** code, because
+`TrySpawnNativeConduit` *contains* `SpawnNativeConduit`. It strips the safe calls first now.
+
+The eight from this checkpoint, on top of the twelve below: a **retired symbol name** (so a
+re-carpet under a new name walked past); a `"throw" not in body` test that a **call-site swap** does
+not disturb; a cap check appearing **twice**; **two prefixes** (`CompProperties_Glower` inside
+`…GlowerUnused`, same for Colorable); a `SetColor` surviving being wrapped in **`if (false)`**; a
+lookup whose later use survived an early **`return true`**; and a guard **nothing asserted at
+all**.
+
+**A claim satisfiable by something other than the thing it is about.** It has defeated a proof
+claim **in every single checkpoint from 0.12.46 to 0.12.52**, and the plants caught all of them.
+The full list, because the shape is only obvious once it is in a table:
+
+| What the claim read | Why a plant walked past it |
+|---|---|
+| `"Prefs.MaxNumberOfPlayerSettlements" in budget` | the name is also in the **doc comment** above the code |
+| `"RR_Frontier_TooManyGatesHeld" in keyed` | it is a **prefix** of `…HeldUnused` |
+| `"MaximumFrontiersPerCoordinate" in frontier` | the **declaration** survived while the *use* was deleted |
+| `"return false;" in parent` | that shape appears **four times** in the file |
+| `"if (x == center.x …)" in planner` | a later feature added the **same line** to a second function, and the harness replaces only the first |
+| `genstep.count("RockIntrusionCells") == 1` | a **comment** mentioning the name counted |
+| `find(a) < find(b)` across a file | `SetRoof(cell, overheadRoof)` appears **twice**, so the wrong pair was compared |
+| `"!receipt.IsTerminal" in crossing` | it appears **seven times** in that file |
+| `"EnsureSite(campaign, coordinate, …)" in address` | the call appears **twice**; a presence test survived deleting one |
+| `"connections.Remove(" ` | did not match a planted `connections.RemoveAll(` |
+| `CoherentDepth >= 1` | a planted **99** passed — no upper bound |
+| nothing asserted the **variant** reached the hash key | and that variant *is* the entire per-fixture feature |
+
+**The rule, and it is cheap to follow:** scope a claim to the **method body**, the **exact tag**,
+or the **call site** — and **count what should exist** rather than testing that something does. A
+claim about code must never be satisfiable by a comment, a prefix, a declaration, or a duplicate.
+
+**Twice this session the plant harness refused to run** because a new line made an old anchor
+match twice. That is the harness working: it will not score a fault it never planted.
+
+### The rules that come out of it
+
+- **Key a claim off the thing that happens** — an assignment, a guard, an exit status. Never a
+  token near it, a variable's spelling, or a count of a string.
+- **Strip comments before searching source.** Six times now.
+- **A grep for the words you expected, in the file you expected, is not a search.** Check the API
+  the code actually calls.
+- **`GetNamedSilentFail` plus a `??` fallback is a silent wrong answer.** Assert that every def a
+  generator names actually resolves — including template-generated ones.
+- **Plant the fault and confirm it fails for the RIGHT reason.** A check that passes its own
+  motivating case is the worst outcome available, and reading will never reveal it.
+- **Never widen a rule so your own text passes.** Refused three times this session: a key was
+  renamed, two descriptions were reworded, and the vocabulary rule was obeyed rather than relaxed.
+
+### The rules that come out of that
+
+- **Key a claim off the thing that happens** — a guard expression, an assignment, a refusal, an
+  exit status. Never off a token near it, a variable's spelling, or a count of a string.
+- **A claim with a conditional fallback can be trivially true.** If the anchor is missing, the
+  whole expression degenerates and says nothing.
+- **Plant the fault and confirm it fails for the RIGHT reason.** A claim that fails for the wrong
+  reason will pass for the wrong reason too.
+- **Check the plant landed.** A patch script asserts before it writes, so a mistyped anchor plants
+  nothing — and the proof passing afterwards proves nothing.
+- **A wrong claim is far better than an unfalsifiable one.** Three times this session a corrected
+  claim was *also* wrong on its first try and failed immediately. That is the system working: the
+  wrong one tells you.
+
+**And the older lesson still holds:** when a proof only ever confirms, suspect it. Two designs
+changed *because* a proof disagreed — the spin-up decay rate, and revisit displacement firing
+every single time.
+
+---
+
+## Standing method
+
+- **Check the register first** (LAW). `python tools/register-query.py family <x>`, then the per-mod review under `docs/research/reviews/mods/`. Say what you checked.
+- **Read the prep work.** `UNIVERSE_ADAPTATION.md` had an unbuilt item nobody had noticed for the whole project.
+- **A TODO item carries all its related work.**
+- **At a fork: ask immediately**, multiple choice with a write-in. Never flag.
+- **State what already works before building it again.**
+- **Name what is not done, in `TODO.md`, in the same checkpoint.**
+
+## Read these first
+
+1. `docs/NOW.md` — this file.
+2. `docs/TODO.md` — every owner direction verbatim.
+3. `.claude/CONSTRAINTS.md` — the LAWs, including the register LAW.
+4. `docs/GATE_0_DECISIONS.md` — D1–D9 **and** decisions 13–25. D1 changed.
+5. `docs/implementation/CONNECTED_WORK_CORE_API.md` — pinned Core facts.
+6. `docs/PUBLISHING.md` — the cascade. Follow it literally.
+
+## The checkpoint ritual
+
+1. **Check the register** for the system family being touched, and record what it said.
+2. Read every file in full before editing.
+3. `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build.ps1` — zero warnings. It refuses if csproj and `About.xml` disagree, so bump both.
+4. `CHANGELOG.md` in plain player-facing language.
+5. Implementation record under `docs/implementation/`.
+6. Ledger: `TODO.md`, `NOW.md`, `FINALIZED.md` (verbatim owner words), `ROADMAP.md`.
+7. **Every checker** (ELEVEN): `check-package-integrity.py`, `check-keyed-strings.py`, `check-dlc-gating.py`, `check-info-cards.py`, `check-display-style.py`, `check-campaign-absolutes.py`, `check-doc-conformance.py`, `check-register-compliance.py`, `check-retired-content.py`, `check-wiring.py`, `research/audit-gate0.py`.
+7b. **Every proof (TWENTY-ONE), by exit status:**
+
+```sh
+for p in .local/register/proof-*.py; do python "$p" >/dev/null || echo "FAILED: $p"; done
+```
+
+   **Do not grep their output.** Eleven end `PROOF HELD` and four end `PASS:`; grepping one
+   phrasing skipped four live proofs for most of one session. Exit status is phrasing-independent.
+
+   The set: `displacement`, `facilities`, `facility-relief`, `fit`, `gate-links`, `incidents`,
+   `interior-resource`, `live-effects`, `menu-slides`, `offer-routes`, `portal-footprint`, `remote-sites`, `request-generation`,
+   `request-line`, `research-branches`, `spinup`, `starts`, `stranded-crew`, `tier-ladder`,
+   `world-exit`,
+   `universe-factions`.
+
+   **`patch-*.py` in that directory are one-shot edit scripts, not proofs.** They were once named
+   `proof-*` and re-running one would try to re-apply a landed patch and fail confusingly.
+
+   **Sanity-test any new claim by planting a fault** and confirming it fails **for the right
+   reason**. Three claims this session passed a planted fault; all three were mine.
+8. **Determinism**: delete `obj/` and `bin/`, rebuild **twice**, hashes must match.
+9. Commit once atomically; cascade to `Prep`, `Develop`, `Main` on **both** remotes; **read back all eight refs**.
+
+## Gotchas learned the hard way
+
+- **XML comments cannot contain `--`.** Hit **five times**. The checker names the rule and the line.
+- **Bash heredocs mangle `\n` and break on apostrophes.** Hit **TEN times**, the last three after this line already said so. **Stop reaching for a heredoc when the payload contains a backslash escape or an apostrophe** — use the Write tool, and a message file for commits.
+- **A GitHub push can silently drop some refs.** Read back all eight, every time — it happened once this session.
+- **A failed `assert` in a patch script means nothing was written** — the write comes last. So a fault-plant whose anchor was wrong plants nothing, and the proof passing afterwards proves nothing. Check the plant landed.
+- `git` index lock goes stale; `rm -f .git/index.lock`.
+- **`cd` inside a Bash call persists.** Absolute paths.
+- Package manifests are UTF-8 **with BOM** — `encoding="utf-8-sig"`.
+- Decompile with `.local/tools/ilspycmd.exe -t <FullTypeName> "<RimWorld>/RimWorldWin64_Data/Managed/Assembly-CSharp.dll"`. **Empty output means the type name was wrong.**
+- C# 7.3: no target-typed conditionals.
+- **A def field emitted in XML that no class declares is ignored silently at load.**
+- Core's `StockGenerator_Category` has **all-private fields**. `GenRecipe.PostProcessProduct` is **private static**.
+- `SetTerrain` **clears** the colour grid. `CompFlickable.SwitchIsOn` has a **public setter**.
+
+## WHAT IS OPEN AFTER 0.12.52-dev
+
+**Nothing in flight and nothing half-built.** Every decision the owner made this session is
+implemented and verified at source level. What remains is **runtime acceptance**, which only a
+launch can give.
+
+One thing was explicitly deferred and then shipped the next checkpoint, so the pattern is worth
+keeping: when a piece needs a save-schema change and a teardown order, say so and do it properly
+next rather than half-building it. The Operations release list was that piece, and it is done.
+
+**Owner decisions taken this session, all implemented:**
+
+| Decision | Answer |
+|---|---|
+| level size | **300x300**, up from 60x60 |
+| room count | **grand at level 0** — 6 halls of 80x80 with 144 pillars each — tightening to 42 rooms of 24 by depth 6 |
+| families | threshold / office_copy / return_gallery **unique**; the other five repeat |
+| onward gates | **4–6 per level**, one per 20 rooms; `MaximumNaturalDepth` **3 → 6** |
+| saves | **fresh save**; the 60x60 path is dropped, `PlannerVersion` 3 |
+| cave-ins | **never**, via a coordinate-only `RoofDef` with `canCollapse false`; Core's roof untouched |
+| map budget | **`Prefs.MaxNumberOfPlayerSettlements`** (the player's own 1–5 slider), floor of 2, per-scenario override |
+| natural gates | **deconstructable** (route lost) and **minifiable/movable** (route follows the door) |
+| releasing a place | **Operations → Places**, with a Release button and a `releasedByPlayer` save flag |
+| materials | **level 0 coherent and yellow**; deeper, **every type for all things**, per fixture |
+
+## Open owner questions — THERE ARE NONE
+
+**Nothing in this project is waiting on the owner.** Every remaining item in the queue above is
+buildable, and the owner's standing instruction is that the register is **guidance, not law** and
+that *"test cases arnt being worried about right now we are trying to get the build complete so we
+can test"* — so **unverifiable-without-a-launch is never a reason to defer building something.**
+
+### Answered this session, so nobody re-asks
+
+- ~~**The route model**~~ — *"Both — filter picks the family, card never shrinks."* Eligibility
+  gates which family is offered; the card shows the full authored floor, unfiltered.
+- ~~**Branch unlock order after the hinge**~~ — **all eight open, any order.**
+- ~~**The world exit vs the stranded-crew guarantee**~~ — **build it, a player caravan is still
+  yours.** The narrowing is asserted by name: closing, expiry and traversal still never take a crew.
+- ~~**The map cap**~~ — **five, universally**, counting the Backrooms map and every claimed tile;
+  over that, caravans. The player's own `Prefs.MaxNumberOfPlayerSettlements` wins if stricter.
+- ~~**The register's standing**~~ — **guidance, not law.** A row does not veto work.
+- ~~**The public face**~~ — everything, including Playwright driving Steam. Still correctly last,
+  and it needs the owner present.
+- ~~**Testing**~~ — *"test cases arnt being worried about right now we are trying to get the build
+  complete so we can test."* **Unverifiable-without-a-launch is not a reason to slow the build.**
+- ~~**`RR_FieldRecorder`, the last authored gameplay item**~~ — **fold its job into the record book
+  crews already carry.** Core's `TextBook` is already the native evidence carrier; the same book now
+  logs rooms, mismatches and sightings. **No new def, no save break** — the recorder stays loadable
+  so old saves open, and is never granted or sold again. **This is the next thing to build.**
+
+### Answered 2026-09-29 — the last three
+
+- ~~**How a generated request picks its routes**~~ — **a declared pool, filtered by capability.**
+  A family declares a route **pool** in XML; generation filters it to what the branch can take,
+  and **if fewer than two routes of two different kinds survive, the request does not generate.**
+  Unblocks queue item 3, closes chart §6 item 3.
+- ~~**Whether the eight branches unlock in any order after the hinge**~~ — **all eight, any
+  order.** Each branch keeps its own internal tier ladder; no branch gates another. Closes chart
+  §6 item 2.
+- ~~**The public face**~~ — **everything, including Playwright driving Steam.** The concern was
+  stated before the choice and the owner chose it anyway, so it stands and is not re-litigated.
+  Still last, and it needs the owner present for the Steam session.
+
+### The question that was never open, and I asked it anyway
+
+**The adjacent-door-run fallback was owner-answered on 2026-09-29 — *"BOTH paths"* — and I put it
+back on the table one turn after the handoff audit fixed exactly this defect.** *"wtf are you
+talking about core only we have 294 recommend mods you fuck!!!!"*
+
+Two lessons, both load-bearing:
+
+1. **Search the ledger before asking.** `grep` for the subject across `.local/register/` and
+   `docs/` costs one command. The answer was sitting in `todo-089.py:37` in capitals.
+2. **Zero hard dependencies and Core-only are not the same claim.** The package must *load and
+   run* against Core alone — that is a **build** property and it holds. The install this mod is
+   *designed for* is **the 294**. Never write an option, a doc line or a design argument that
+   treats a vanilla install as the audience.
+
+### Closed earlier this session, so nobody re-asks
+
+- ~~**`reserveChargePowerWatts`**~~ — **a supply requirement before opening.** Wired 0.12.4-dev,
+  and wiring it revived `RR_Cap_ReserveDiscipline`, a tier-0 card that had promised an unlock and
+  moved nothing.
+- ~~**The 250 W idle draw**~~ — **kept.** Confirmed as the intended behaviour; no change needed.
+- ~~**Natural gates indestructible**~~ — **relaxed by the owner** to a confirmation warning.
+  *"dont worry about it, can we at least do a rim style pop up warning"*.
+- ~~**The solo/group tutorial line**~~ — **option three:** no request line until contact, plus four
+  hints in the survivors' own voice. None is an objective.
+- ~~**The solo/group exit**~~ — **two maps, coordinate is real.** Superseded the earlier
+  seed-tile answer once `RimroomsPortalNetwork.Register` was read.
+
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-02)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TODO.md`
+
+### Owner direction — `NOW.md` is one record, not a history (2026-10-02)
+
+**Verbatim owner direction (2026-10-02):** *"and the now.md needs to be completedy deleted, then written current. The NOW .md is a temp read file not a history of all work ever done.. its a one time record only ever holding one record"*
+
+- [x] **"the now.md needs to be completedy deleted, then written current"** — `docs/NOW.md` had grown to **3,053 lines, 238.4 KB, 37 `##` sections, nine of them separate `STATE AT THIS HANDOFF` records** going back checkpoints. **DONE 2026-10-02: 3,053 lines / 238.4 KB → 116 lines / 9.1 KB.** The whole old file is archived verbatim in `FINALIZED.md` and was confirmed present there — all 2,445 non-blank lines — before `NOW.md` was touched, per `§FINALIZED BEFORE DELETE`. "Completely deleted" means deleted from `NOW.md`, not destroyed. The replacement was written by hand, because what the next session needs to know is a judgement rather than a transform of what this one did.
+- [x] **"The NOW .md is a temp read file not a history of all work ever done"** — standing rule: it is the **handoff**, read at the start of a session and replaced at the end of one. Narrative about what past checkpoints found belongs in `FINALIZED.md`; rules that must survive belong in `CONSTRAINTS.md` or a checker; open work belongs in this file.
+- [x] **"its a one time record only ever holding one record"** — **exactly one** state record at any time. A new handoff **replaces** the previous one; it never appends beside it. Nine stacked handoffs is the defect.
+
+
+> moved from `## Owner directions recorded late` in `docs/TODO.md`
+
+- [x] Complete research branches for facility/power, engineering, field safety, equipment, mapping, communication, stability, containment, medicine, logistics, commerce, orbital operations, and deep topology. — **CLOSED 0.12.29-dev: the ladder is complete, tiers 0 to 4.** Flipped from `[~]` to `[x]` on 2026-10-02 because the row's own body already said so — *"TIER 4 BUILT ... AND THE LADDER IS COMPLETE"* — and nothing in it named anything left. Detail archived.
+
+Build at the time of the move: **0.12.79-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Session 2026-10-02 - the tab that stole Architect's corner, and a shop stocked with food that rots (0.12.80-dev)
+
+**Verbatim user direction, the start:** *"okay bug hunt feature branch 1. im not correctly starting
+weith my set up prepare carfully goods and the scenerios starting good... as you can see they are
+not accurate if you check the current running game, just as an example of whats not right.. my
+preparecarfully mod food did not appear and the starting scenerio supplies of food did not appear
+and should start scenerio with survival meals not simple meals and should be like 100 to start
+besides whats set in prepare carfully so check the current game and whats on the map versus what
+they were suppose to start with verses how to fix it properly now"*
+
+**Verbatim user narrowing, after the live read:** *"as far as that start bug it was just the simple
+meals that need to be survioval meals and they need to properly spawn in with starting goods"* and
+*"wtf its fucking simple to see the simple meals didnt appear"*
+
+**Verbatim user direction, the tab bar:** *"and i want you to fix the operations tab it should not
+replace the architects default possition, i find my self trying to click archetic(which was in far
+left) but find my self out of habit click operations(because it took the archetect postioton) So we
+need to swap theri postions at the bottom so archetic is back in the far left tab position and
+operations tab moves to where archetic tab is... so we are swapping theri positions the archetect
+and operations tab so archetect tab is back in its default far left position"*
+
+**Files touched:** `Mod/.../Defs/ScenarioDefs/RR_Scenarios.xml`,
+`Mod/.../Defs/MainButtonDefs/RR_MainButtons.xml`, `Mod/.../About/About.xml`, the csproj,
+`CHANGELOG.md`, `README.md`, `docs/implementation/PLAYER_FACING_IMPLEMENTATION.md`,
+`docs/TODO.md`, `docs/NOW.md`, `.local/register/proof-playing-and-help.py`,
+`.local/register/plant-playing-and-help.py`, `.local/qa/scan-starting-goods.py` (new).
+
+**Mod register.** Checked before either change, per the LAW. The **Interface / scenario setup and
+quality of life** family is **eleven rows and every one is Optional, none Required** - row 85 EdB
+Prepare Carefully (traces `RR-FAC;RR-STA;RR-UI;RR-COMPAT`, directly on the starting-goods path),
+row 81 Dubs Mint Menus, row 155 Numbers, row 64 Character Editor and the rest. **Nothing in it
+constrains either fix**, and that is the reason the tab move is a value on this mod's own def
+rather than a patch against Core's Architect: a `PatchOperation` on Core's button bar is the one
+route a Harmony-free mod still has, and it would fight every row in that family at once.
+
+### THE LIVE READ, BECAUSE THE REPORT WAS ABOUT A RUNNING GAME
+
+Read through the bridge against the owner's own process, read-only. **The bridge was working** -
+`127.0.0.1:5174` listening on PID 21632 - which is worth stating because a previous session
+declared it broken while probing the wrong ports.
+
+`.local/qa/scan-starting-goods.py` swept **9,216 cells** around the three colonists at (147, 151)
+and tallied every thing in them. Two facts came out of it that no amount of reading the defs would
+have given:
+
+- **The running package was `0.12.78-dev`, not the built `0.12.79-dev`.** The staged copy was a
+  checkpoint behind, so the game under inspection was not the game in the repository.
+- **The scenario was `furniture_knickknack_store`** - confirmed from the branch-init line in
+  `Player.log`, and matching the three colonists. The log also shows a `lone_survivor` init and a
+  second Store init earlier, so the owner had been rerolling.
+
+**No simple meal was anywhere on the map**, and the sweep reads shelf contents - it reported
+`Steel`, `MedicineUltratech` and `Gun_ChargeRifle` sitting inside shelf cells - so the absence is
+measured, not inferred from a gap in the instrument.
+
+**What was on the map was mostly not the start at all.** The single `MealSurvivalPack` on the
+ground and the one in each pawn's inventory are **Core's default pawn possession**. The
+`Gun_ChargeRifle` x3, `MedicineUltratech`, `MechSerumYouth` and `Neurotrainer_Mining` are
+**ancient-danger loot** from Core's own scatter, beside `AncientCryptosleepCasket`,
+`AncientHermeticCrate`, `Sarcophagus` x6 and `SteleLarge` x12. Reading those as a broken start
+would have been the obvious mistake.
+
+### THE MEAL, AND WHY SIMPLE WAS THE WRONG DEF TWICE OVER
+
+The Store granted `MealSimple` **24**. It is now `MealSurvivalPack` **100**.
+
+**It was the only simple meal any scenario granted** - Async already gave `MealSurvivalPack` 50 and
+solo/group 5 - so the Store was the odd one out rather than the pattern. And **a simple meal
+spoils**: `MealSimple` carries `daysToRotStart`, so a shop start was handing the player two dozen
+meals and then quietly taking them away again. A packaged survival meal is what a stocked shop
+should hold.
+
+**Both defs were verified present in the installed game data before the swap** rather than assumed
+- `MealSimple` and `MealSurvivalPack` both resolve in `Data/Core/Defs/ThingDefs_Items/Items_Food.xml`
+- so a missing reference was ruled out as the cause instead of being left as a theory.
+
+### ARCHITECT GETS ITS CORNER BACK
+
+`RR_MainButtons.xml` went `<order>95</order>` to `<order>0</order>` at 0.12.40-dev under a
+"company-first means first" reading of master row 821. **Core's Architect is order 1, so order 0
+takes the far-left slot off it.**
+
+**A tab bar is muscle memory, and that cost was never weighed.** The owner kept clicking Operations
+while reaching for Architect. `<order>5</order>` sits between Architect (1) and Work (10), so
+Core's own sort puts Architect back at far left and Operations immediately to its right - the swap,
+as one field, with nothing of Core's touched.
+
+**Being first in the bar was never what row 821 asked for.** *Reachability* was, and that half -
+all five surfaces opened through `MainButtonDef.Worker.InterfaceTryActivate()` - is built and is
+completely independent of this value.
+
+### THE RE-AIM MADE THE CLAIM STRONGER, WHICH IS THE THIRD TIME THAT HAS HAPPENED
+
+`proof-playing-and-help.py` asserted *"the company tab sorts left of Architect"* as `order < 1`.
+That claim now encodes the owner's rule and asserts **both** bounds, because a one-sided bound
+would pass a value that re-broke the other end: **above** Architect (1) so Architect keeps far
+left, and **below** Work (10) so Operations lands in the slot Architect held.
+
+Three plants hold it where there were two: the far right of the bar, **order 0 taking the slot back
+off Architect**, and order 1 sorting level with it. **57 of 57 caught.**
+
+### WHAT IS NOT CLOSED, STATED PLAINLY
+
+The owner's narrowing says *"they need to properly spawn in with starting goods"*. The meal def is
+changed and the spoilage reason is gone, **but no fix was written for a spawn path, because the
+measurement did not isolate one.** The sweep found none of the Store's other consumable grants
+either - no `Silver` 200, no `WoodLog` 200, no `Cloth` 120, no `MedicineHerbal` 8, no
+`Gun_Revolver`, and 6 `Steel` against 80 - while every shop **fixture** was present. That is either
+a real break in the `PlayerStartingThings()` enumeration or goods placed outside the swept band,
+and **guessing between those two would have meant editing the arrival path on a hunch**. The
+arrival part has two silent `return` sites before it ever calls `base.GenerateIntoMap`, which is
+where to look first, and it needs a fresh start on a staged `0.12.80-dev` to measure against.
+
+**No game was launched.** The package could **not** be staged in this checkpoint:
+`stage-mod.ps1` refuses while RimWorld is running and the owner's session was live throughout. It
+refused correctly - it will not stop a process - so staging is the first action once the game is
+closed, and until then the game folder holds `0.12.78-dev`.
+
+**0.12.80-dev. 211 C# files, 92 package files, zero warnings, zero errors. Sixteen checkers pass,
+forty-nine proofs hold, 57 of 57 in the re-aimed plant suite.** Two checkers caught the version
+bump mid-change - `README.md` and the `About.xml` description still naming 0.12.79-dev - which is
+the dated-claim rule doing its job on the same commit that created the claim.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-02)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **2 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TODO.md`
+
+- [x] **"should start scenerio with survival meals not simple meals and should be like 100 to start"** — **DONE 0.12.80-dev.** — the Store start (`RR_FurnitureStore`) is the only scenario granting `MealSimple`, at **24**. Becomes `MealSurvivalPack` at **100**. Async already grants `MealSurvivalPack` 50 and solo/group 5; neither names a simple meal.
+- [x] **"check the current game and whats on the map versus what they were suppose to start with verses how to fix it properly now"** — **DONE 0.12.80-dev: 9,216 cells swept through the bridge against the owner's own live process, read-only.** — live read done via the bridge (`.local/qa/scan-starting-goods.py`, report at `.local/qa/live-goods-report.txt`). **Note the running package is `0.12.78-dev` while the build is `0.12.79-dev`** — the staged copy is one checkpoint behind, so no fix is testable until `stage-mod.ps1` runs.
+**Verbatim owner direction (2026-10-02), the tab bar:** *"and i want you to fix the operations tab it should not replace the architects default possition, i find my self trying to click archetic(which was in far left) but find my self out of habit click operations(because it took the archetect postioton) So we need to swap theri postions at the bottom so archetic is back in the far left tab position and operations tab moves to where archetic tab is... so we are swapping theri positions the archetect and operations tab so archetect tab is back in its default far left position"*
+
+- [x] **"it should not replace the architects default possition"** — **DONE 0.12.80-dev.** — `RR_MainButtons.xml` ships `<order>0</order>`, and Core's Architect is order **1**, so Operations sorts **left of it** and takes the far-left slot. That was deliberate at 0.12.40-dev under a "company-first means first" reading of master row 821; the owner has now overridden it on the ground that it breaks an established muscle-memory click.
+- [x] **"so we are swapping theri positions ... so archetect tab is back in its default far left position"** — **DONE 0.12.80-dev.** — one field. Operations moves to an order **between Architect (1) and Work (10)**, so Architect returns to far-left by Core's own sort and Operations lands in the slot Architect had. **No `PatchOperation` against a Core def**, which matters: rewriting Core's bar is the one route a Harmony-free mod still has and it would fight every interface mod in the register (rows 67, 156, 30). The existing proof claim *"the company tab sorts left of Architect"* and its two plant anchors are re-aimed, not removed.
+
+
+Build at the time of the move: **0.12.80-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

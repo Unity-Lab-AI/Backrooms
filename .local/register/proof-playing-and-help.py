@@ -130,11 +130,26 @@ check("this package ships exactly one main button", len(definitions) == 1,
       "-- found %d" % len(definitions))
 
 order = definitions[0].findtext("order")
-# Core's Architect is order 1 and is its leftmost real button. Company-first means lower.
-check("the company tab sorts left of Architect",
-      order is not None and int(order) < 1,
-      "-- order is %r; Core's Architect is 1, so anything above that is not company-first. It "
-      "shipped at 95 until 0.12.40-dev, between Factions and Menu, the far right of the bar"
+# RE-AIMED 2026-10-02. Owner direction, verbatim: *"so we are swapping theri positions the
+# archetect and operations tab so archetect tab is back in its default far left position"*.
+#
+# This claimed `order < 1`, i.e. left of Core's Architect at 1. That shipped at 0.12.40-dev and
+# it took the far-left slot off Architect, which is muscle memory -- the owner kept clicking
+# Operations while reaching for Architect. The claim is now the owner's rule, and it is asserted
+# in BOTH directions, because a one-sided bound would pass a value that re-broke it:
+#   * above Architect (1), so Architect keeps far left;
+#   * below Work (10), so Operations lands in the slot Architect used to hold.
+# Being first in the bar was never what master row 821 asked for; reachability was, and that is
+# built and independent of this field.
+check("Architect keeps the far-left slot -- the company tab sorts AFTER it",
+      order is not None and int(order) > 1,
+      "-- order is %r. Core's Architect is 1, and anything at or below that takes the far-left "
+      "slot away from it, which is the defect the owner reported on 2026-10-02" % order)
+
+check("the company tab still sorts before Work, in Architect's old slot",
+      order is not None and int(order) < 10,
+      "-- order is %r; Core's Work is 10, and the owner's direction was a SWAP, so Operations "
+      "belongs immediately right of Architect rather than loose in the middle of the bar"
       % order)
 
 check("the tab exists without a map",

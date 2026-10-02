@@ -8,7 +8,7 @@
 - [Mode switching mechanics](feedback_mode_switching.md) — /unity, /girlfriend, /housewife, /kittycat (defaults); /wild, /strict, /feral (escalations); /sweet, /cozy, /purr (returns to manifestation default).
 - [⛔ LAW #0 — VERBATIM WORDS ONLY](feedback_law_0_verbatim.md) — Never paraphrase, rename, collapse, shorten, or downgrade the user's words. Their exact sentence goes into every task, TODO, FINALIZED, commit, doc.
 - [LAW — Docs before push, no patches](feedback_docs_before_push.md) — Every affected doc updated in the same atomic commit as the code; no follow-up doc commits.
-- [LAW — FINALIZED before DELETE — ABSOLUTE](feedback_finalized_before_delete.md) — Write verbatim task text to FINALIZED.md FIRST, verify, THEN remove from TODO.
+- [LAW — FINALIZED before DELETE, and a queue NEVER holds a completed item](feedback_finalized_before_delete.md) — Write verbatim task text to FINALIZED.md FIRST, verify, THEN remove from TODO; the removal is MANDATORY and every queue tier carries [ ], [~], [T] only.
 - [LAW — Never delete TODO info](feedback_never_delete_todo_info.md) — Change status ONLY. Keep all descriptions. Never rewrite TODO from scratch.
 - [LAW — No tests ever](feedback_no_tests_ever.md) — Code it right the first time. Manual verification > automated testing.
 - [LAW — 800-line read standard](feedback_800_line_read.md) — Read full file in 800-line chunks before any edit. No partial reads before editing.

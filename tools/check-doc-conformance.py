@@ -532,6 +532,20 @@ def owner_quotes(text):
     return found
 
 
+# Written only by the queue mover, and only around rows lifted verbatim out of a
+# queue file. Explicit begin/end markers rather than "everything after a heading",
+# because later session entries append below and must not fall inside a region.
+ARCHIVED_QUEUE = re.compile(
+    r"<!--\s*archived-queue:begin\s*-->(.*?)<!--\s*archived-queue:end\s*-->",
+    re.S,
+)
+
+
+def archived_queue_regions(text):
+    """The delimited regions holding rows moved out of a queue file."""
+    return [match.group(1) for match in ARCHIVED_QUEUE.finditer(text)]
+
+
 def check_directions_reached_the_queue(problems):
     """LAW #0, made checkable.
 
@@ -545,19 +559,41 @@ def check_directions_reached_the_queue(problems):
 
     A direction quoted in the permanent archive is by definition something that shipped. If it
     never appeared in the working queue, it skipped the queue entirely. That is now a failure.
+
+    SCOPED 2026-10-02, and the scoping is what keeps the rule true rather than what weakens it.
+
+    Owner direction, verbatim: *"we need to move all finished items to finalized.md from the
+    todo, the todods sahll never hold completed items, they are always to be moved to finalized
+    first then deleted from the todods once confirmed virbatium transfer"*. A direction whose
+    every row has closed now leaves `TODO.md` **with its rows**, archived into a delimited
+    `archived-queue` region of `FINALIZED.md`. Read literally, the old rule would fail the build
+    for every one of those -- it would be demanding the queue keep exactly what the owner just
+    said it must not keep.
+
+    So absence from the queue is excused by **one** thing: the direction appearing inside an
+    `archived-queue` region, which is written only by the mover and only together with the
+    queue rows that closed it. A direction that was acted on and never queued still appears
+    only in a session write-up, outside every region, and still fails. The rule's teeth are
+    where they were; what changed is that it now recognises the queue's own archive as the
+    queue's history rather than as a missing entry.
     """
     archive = os.path.join(REPO, "docs", "FINALIZED.md")
     queue = os.path.join(REPO, "docs", "TODO.md")
     if not (os.path.isfile(archive) and os.path.isfile(queue)):
         return
-    archived = owner_quotes(io.open(archive, encoding="utf-8-sig").read())
+    archive_text = io.open(archive, encoding="utf-8-sig").read()
+    archived = owner_quotes(archive_text)
     queue_text = normalise(io.open(queue, encoding="utf-8-sig").read())
+    moved_out = normalise("\n".join(archived_queue_regions(archive_text)))
     for quote in archived:
         if normalise(quote) in CONTINUATION_QUOTES:
             continue
-        if normalise(quote) not in queue_text:
-            problems.append("docs/FINALIZED.md quotes an owner direction that never reached "
-                            "docs/TODO.md: %r" % (quote[:90] + ("..." if len(quote) > 90 else "")))
+        if normalise(quote) in queue_text:
+            continue
+        if normalise(quote) in moved_out:
+            continue
+        problems.append("docs/FINALIZED.md quotes an owner direction that never reached "
+                        "docs/TODO.md: %r" % (quote[:90] + ("..." if len(quote) > 90 else "")))
 
 def main():
     version = package_version()

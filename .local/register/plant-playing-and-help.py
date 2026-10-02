@@ -112,12 +112,17 @@ PLANTS = [
      'Messages.Message("RR_Operations_TabUnavailable".Translate(), MessageTypeDefOf.RejectInput, false);',
      "return;", PROOF),
 
-    # ------------------------------------------------------------------ row 821, company-first
+    # ------------------------------------- row 821 + owner direction 2026-10-02, the tab swap
+    # Re-aimed with the claim: Architect keeps far left, Operations sits in its old slot. Both
+    # bounds are planted, because a one-sided claim passes a value that re-breaks the other end.
     ("THE TAB GOES BACK TO THE FAR RIGHT OF THE BAR", BUTTON,
-     "<order>0</order>", "<order>95</order>", PROOF),
+     "<order>5</order>", "<order>95</order>", PROOF),
 
-    ("the tab sorts level with Architect instead of before it", BUTTON,
-     "<order>0</order>", "<order>1</order>", PROOF),
+    ("THE TAB TAKES THE FAR-LEFT SLOT BACK OFF ARCHITECT", BUTTON,
+     "<order>5</order>", "<order>0</order>", PROOF),
+
+    ("the tab sorts level with Architect instead of after it", BUTTON,
+     "<order>5</order>", "<order>1</order>", PROOF),
 
     ("the tab stops existing without a map", BUTTON,
      "<validWithoutMap>true</validWithoutMap>", "<validWithoutMap>false</validWithoutMap>",

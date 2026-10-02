@@ -1,11 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <!--
-    Company-first means first. Core's own orders are Architect 1, Work 10, Schedule 20,
-    Assign 30, Animals 40, Wildlife 50, Research 60, Quests 65, World 70, History 80,
-    Factions 90, Menu 500. This tab sat at 95 - between Factions and Menu, the far right
-    of the bar - which is the opposite of the layout row 821 asks for. Order 0 puts it
-    left of Architect and changes nothing about Core's own buttons or any other mod's.
+    Core's own orders are Architect 1, Work 10, Schedule 20, Assign 30, Animals 40,
+    Wildlife 50, Research 60, Quests 65, World 70, History 80, Factions 90, Menu 500.
+
+    **ARCHITECT KEEPS THE FAR-LEFT SLOT. Owner direction 2026-10-02, verbatim:** *"and i
+    want you to fix the operations tab it should not replace the architects default
+    possition, i find my self trying to click archetic(which was in far left) but find my
+    self out of habit click operations(because it took the archetect postioton) So we need
+    to swap theri postions at the bottom so archetic is back in the far left tab position
+    and operations tab moves to where archetic tab is... so we are swapping theri positions
+    the archetect and operations tab so archetect tab is back in its default far left
+    position"*
+
+    This tab went 95 -> 0 at 0.12.40-dev under a "company-first means first" reading of
+    master row 821. Order 0 sorts BELOW Core's Architect at 1, so Operations took the
+    far-left slot and Architect moved right - and a tab bar is muscle memory. Being first
+    in the bar was never what row 821 asked for; **reachability** was, and that is built
+    and unaffected by this line.
+
+    Order 5 sits between Architect (1) and Work (10), so Core's own sort puts Architect
+    back at far left and Operations immediately to its right - the swap the owner asked
+    for, as one field.
+
+    **Deliberately NOT a `PatchOperation` against Core's Architect def.** Rewriting Core's
+    bar through the def database is the one route a Harmony-free mod still has, and it would
+    fight every interface mod in the register at once (rows 67, 156, 30; row 81 Dubs Mint
+    Menus and row 155 Numbers are in the same family, all Optional). Moving our own button
+    changes nothing about Core's buttons or any other mod's. Register checked 2026-10-02:
+    the Interface / scenario-setup family is eleven rows, every one Optional, none Required,
+    so nothing in it constrains this.
 
     defaultHotKey is Core's own keyboard path and costs no def of ours:
     KeyBindingDefGenerator.ImpliedKeyBindingDefs emits `MainTab_RR_Operations` into the
@@ -29,7 +53,7 @@
     <label>Operations</label>
     <description>View company operations and return to ordinary work and research controls.</description>
     <tabWindowClass>RimroomsAsyncIndustries.UI.MainTabWindow_Operations</tabWindowClass>
-    <order>0</order>
+    <order>5</order>
     <defaultHotKey>Backslash</defaultHotKey>
     <validWithoutMap>true</validWithoutMap>
   </MainButtonDef>
