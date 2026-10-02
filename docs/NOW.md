@@ -46,10 +46,10 @@ been enough; the only thing that has worked is reaching for the Write tool first
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, cut from `feature/connected-colony-portals` at `12e12da` on 2026-09-30 for the play-testing phase. **Ten refs now**, not eight: the original feature branch plus Prep, Develop and Main on both remotes, and the new branch on both. `feature/connected-colony-portals` carries the build and stays where it is |
-| Published | **0.12.77-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
+| Published | **0.12.78-dev**. `git log --oneline -1` is authoritative and the eight refs below match it. |
 | Remotes | `forgejo` + `github`, all four refs each at that commit |
 | Build | **204 C# files, 91 package files**, zero warnings, zero errors. **Measure this, never carry it** — it said 172 against a real 170 for five checkpoints and only came true by accident: `git ls-tree -r HEAD --name-only | grep -c '^src/.*\.cs$'` |
-| Assembly | SHA-256 `5E87D3842B559E8ABCF44654D2178923D39D8EBE2A7D9F9D36A4FCAB441E39CC`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
+| Assembly | SHA-256 `80A40D4655E2D6AF1A7CD3861F341431CD6D8C2FCCE7265FD4487D94BF92F759`, reproduced by two clean recompiles. **Re-read this from the build after the determinism run, never from memory or from this line** |
 | Checkers | **SIXTEEN**, all passing. **The sixteenth validates every authored starting facility offline, cell by cell.** `GenStep_Headquarters` throws on any geometry mistake and a throw inside a GenStep costs the player the start; the Async facility is ten rooms, sixteen doors and 122 fixture cells, and nothing else in this battery looked at a single one of them. It derives footprints from **Core's own `<size>`** with ParentName inheritance rather than from a table, because a table is a second derivation that goes stale. **It cried wolf on its first run** -- 368 legitimate cells -- before the nesting case was understood, which is the fifth false alarm in this battery and the reason each is written down. **The fifteenth refuses while a planted fault is still in the source tree.** A suite has left one there three times -- twice deleting `Campaign.NoteReturnedFromField(...)`, once deleting `!anchor.Destroyed` -- and each would have shipped silently if a build had gone out first. The `finally` added at 0.12.65-dev handles an exception and does nothing for a killed process, so the suites write a sentinel naming the file before they mutate it and `check-plant-residue.py` refuses while it exists. **A false alarm costs one command; a missed one ships a deliberate fault.** **The fourteenth is the only one that runs code rather than reading it**, and it exists because the thirteen that read text, the forty-five proofs and five hundred and fifty plants **all passed over a planner that could not produce one valid layout** -- `MaxRoomSpan` said 34 while the grand hall was 80, and no amount of reading either file can see two numbers disagree. `check-planner-layouts.py` builds `.local/harness/PlannerProbe` and runs `TrySelect` and `ValidateRooms` over 200 seeds at seven depths, demanding both that a layout is accepted **and that back-to-back pairs exist** -- because a plant that moved a pushed room one cell was missed by every proof when the revert guard quietly switched the feature off. **It never skips**: no dotnet, no install or no built assembly is a failure, not a pass. **The proof count is FORTY-ONE since 0.12.49-dev** -- `proof-coordinate-layout.py` was added after measuring that every constant in the coordinate planner could be changed with all forty existing proofs still passing. `check-info-cards.py` also caught a new keyed string saying *doorway* where the project's vocabulary says *door*. **The interpreter caught one during 0.12.47-dev** -- new proof claims named a variable `arrival` that the reachability section already used for an `re.search` match 200 lines later, and `TypeError: argument of type 're.Match' is not iterable` was the only thing standing between that and a silent pass. **Two of them caught me during 0.12.46-dev**: `check-compliance.py` flagged a patch for containing `PatchOperationReplace` **in the comment explaining why a replace is wrong** (it strips XML comments now), and `proof-starts.py` asserted the exact thing being reversed. **A checker that tests for mention rather than assertion has now cried wolf four times.** The thirteenth, `check-compliance.py`, is the compliance table made executable: a dated table of mechanical checks is the same defect as a dated count, and that one had been read as current for **thirty-six checkpoints** with three of its rows no longer true. **Two of its own rules caught it before any plant did** — the licence check flagged a comment that *denies* the GPL applies, and the assembly check read the wrong manifest key and reported *"0 assemblies, all from the official install"*. The twelfth, `check-def-fields.py`, refuses a def that sets a field the class does not have — RimWorld logs an unknown field and carries on, so one had been silently inert for fourteen defs across two checkpoints. It **caught itself twice** before it was right; see 0.12.37-dev. The tenth refuses player-facing text naming retired equipment; **the eleventh, `check-wiring.py`, refuses anything this mod authors that nothing reads** — the defect class that left the whole campaign unreachable until 0.12.11-dev |
 | Proofs | **FORTY-ONE** in `.local/register/proof-*.py`, and **THIRTEEN** plant suites in `plant-*.py`. **Both are tracked in git now** — see *What the collaborator gets* — after `.local/` was found to be hiding the entire verification suite from a clone. **Run them by exit status, not by grepping their output.** Measured at 0.12.22-dev: **17 end `PROOF HELD`, 2 end `PASS:`, and 2 end on a WRAPPED CONTINUATION LINE** whose last line is not a status token at all. A grep for any one phrasing skips the rest; that is how four live proofs went unrun for most of one session, and the two wrapped ones would be missed by every phrasing. **Exit status is the only reading that cannot be fooled by formatting** |
 | Chart | **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document |
@@ -343,6 +343,112 @@ It should not appear, because the conduits are laid last now — but it is a war
 * **An absence claim cannot read raw source** — it reads the comment explaining the removal.
   `proof-coordinate-layout.py` keeps a `code()` view; `proof-generation-batch.py` strips comments.
 * **Use the Write tool.** A heredoc mangled an escaped newline for the **eleventh** time.
+
+## STATE AT THIS HANDOFF — `0.12.78-dev`, STAGED AND VERIFIED
+
+```
+staged      Rimrooms.AsyncIndustries  0.12.78-dev  92 files
+assembly    80A40D4655E2D6AF1A7CD3861F341431CD6D8C2FCCE7265FD4487D94BF92F759
+            read back out of the game folder after staging, not from the build
+package     294 dependencies - 2 record books in the lab start - the east door
+            RR_PortalTravel_DoorLocked and RR_BookDrop_Title both present
+battery     16 checkers - 49 proofs - 21 plant suites - 771 anchors
+            new suite: 12 of 12
+tree        no planted fault, porcelain 0
+```
+
+**Refresh local mods in RimSort before launching.**
+
+### THE BRIDGE WAS WORKING. READ THIS BEFORE CLAIMING IT IS NOT
+
+Owner: *"the api mod is not working make it work"*. **It was running the whole time.** Two lines
+are printed in `Player.log` on every launch:
+
+```
+[RimBridge] GABP server running standalone on port 5174
+[RimBridge] Bridge token: <token>
+```
+
+**Read the log for the port and the token.** GABP is a framed protocol, not HTTP — four wrong
+ports were probed with `curl` before the log was read. `tools/qa/rimbridge_readonly.py` already
+speaks it:
+
+```
+python tools/qa/rimbridge_readonly.py --pid <PID> --log "<Player.log>" \
+  --output .local/qa/live/<new>.json --connect --select ping --select messages --select selection
+```
+
+`--connect` requires `--select ping`. Every output path must be **new**; it never overwrites.
+
+**What was genuinely missing is what the owner asked for**: the allowlist had five selectors and
+**none read a message**, so *"look at those messages"* was unanswerable. Added, all read-only:
+`messages`, `alerts`, `letters`, `selection`, `colonists`, `camera`, `maps`, and `--rect` for a
+bounded `get_cells_info`.
+
+### THE SELECTION READ IS THE HIGHEST-VALUE ONE
+
+`--select selection` returns the inspect string of whatever the owner has clicked. One call
+answered a whole session's worth of guessing:
+
+```
+Door locked
+Grid excess: 1185 W (533 Wd stored)
+Linked battery charge: 533.13/2400.00 watt-days
+Charge needed for normal window plus emergency return: 49.59 watt-days
+Opening time: 7075 in-game minutes remaining | Status: Normal
+```
+
+**Ask for the selection before reasoning about a refusal.**
+
+### TWO PUBLISHED CLAIMS WERE WRONG, AND BOTH WERE THE SAME MISTAKE
+
+| Claimed to the owner | True |
+|---|---|
+| *"you hand-laid ~100 conduits; the start wires almost nothing"* | **17 RUNS were compared to 191 CELLS.** Expanded the runs are **205**; live is 191 + 14 hidden = **205**. Exact match, none added |
+| *"you added 10 shelves"* | a shelf is **1x2**. 19 live vs 28 authored — **nine removed** |
+
+**Never compare a count to a cell count without reading the footprint.** `<size>` is in Core's own
+defs and `tools/check-start-layout.py` already reads 975 of them. The grave footprint was caught
+this way the same day; this was the second instance and it reached the owner.
+
+### WHAT THE OWNER'S FACILITY ACTUALLY LOOKS LIKE
+
+Origin solved at **(120, 120)** from three single-instance devices. Scan with
+`.local/qa/scan-facility.py <PID>` — **16x16 tiles, because 32x32 truncates** and two runs
+disagreed about what the facility contained before that was found.
+
+**Exactly as authored:** conduits, ballistic glass, generators, machining table, smithy, research
+benches, glow pods. **Nothing was moved**, including the console and bench repositioned at
+0.12.74-dev. Every delta is **fewer** — furniture deconstructed.
+
+**One door added, at relative (51, 24)**, the compound's east perimeter wall at the dead end of the
+service corridor. **No authored door was missing.** Authored now.
+
+### THE TWO DEFECTS THE OWNER HIT IN PLAY
+
+**A locked door refused in silence.** `OrderCrossing` validated the **approach cell** — on the
+near side — and never asked whether the door would open. Now `DoorBlockerKey`, through Core's
+`public virtual Building_Door.PawnCanOpen`, so the owner's `DoorsExpanded.Building_DoorRemote`
+answers for itself and **nothing names that mod**. Register row 77's own disposition.
+
+**No start shipped the record book every dispatch requires.** Laboratory: 112 fixtures, 17 types,
+**zero books**. Store: 27, zero. Solo: nothing at all. The recorder folded into the book at
+0.12.24-dev and **the stock was never updated**, so the first dispatch refused on every fresh
+start, forever. The laboratory carries **two** now, and `RecordBookDelivery` sends two to any
+branch with a calibrated gate and **no book anywhere it can reach** — which is what stops it being
+a tap.
+
+### A PROOF WITH NO PLANT SUITE IS A PROOF NOBODY HAS CHECKED
+
+`proof-corporate-contact.py` is one of the oldest in the battery and **had never been planted
+against** — the same shape as the defect beside it. Suite **twenty-one**, 12 of 12.
+
+**Check for a suite before trusting a proof:**
+`grep -l <proof-name> .local/register/plant-*.py`
+
+And the new claims caught two of their own defects: a door claim asserting the **call** and not the
+**act** (twelfth machinery-not-behaviour), and a plant testing a mod name in a **comment the proof
+strips**.
 
 ## STATE AT THIS HANDOFF — `0.12.77-dev`, STAGED AND VERIFIED
 
