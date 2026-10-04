@@ -26,5 +26,6 @@
   <RR_Event_PursuerWithdrawn>The figure withdrew. This opening will not spawn another encounter.</RR_Event_PursuerWithdrawn>
   <RR_UI_RecoverEvidence>Order {0} to collect the record book</RR_UI_RecoverEvidence>
   <RR_UI_FieldObjectives>Survey the six required room families with the record book, document the route mismatch, carry the book home and shelve it in the records archive. A clear entity observation and all three original crew returning qualify for the bonus. Set glow pods down at known junctions and designate them as route markers to counter the loop.</RR_UI_FieldObjectives>
+  <RR_UI_FieldObjectivesTitle>Contract objectives</RR_UI_FieldObjectivesTitle>
   <RR_Event_PursuerPlacementFailed>The encounter could not be placed safely. No entity sighting was recorded. The crew and saved route remain available; consult the game log before a later visit.</RR_Event_PursuerPlacementFailed>
 </LanguageData>

@@ -107,8 +107,10 @@ Once they have you on the books they start sending work, their clean-up team wil
   <!-- The pane -->
   <RR_Requests_Heading>Corporation requests</RR_Requests_Heading>
   <RR_Requests_NoContact>Nobody from the parent corporation has been in touch. Until they have, there is no work coming in and nothing here to read. Whatever this branch does next, it decides on its own.</RR_Requests_NoContact>
+  <RR_Requests_NoContactBrief>No contact from the corporation yet</RR_Requests_NoContactBrief>
   <RR_Requests_NoneOpen>Nothing is being asked for at the moment.</RR_Requests_NoneOpen>
   <RR_Requests_PastTheHinge>The company has stopped naming things. It asked for six, it asked where this branch intended to take it, and it got an answer. What comes next comes from what this branch has become.</RR_Requests_PastTheHinge>
+  <RR_Requests_PastTheHingeBrief>The company has stopped naming things</RR_Requests_PastTheHingeBrief>
   <RR_Requests_DefMissing>A request this branch was working on is no longer installed: {0}. The record stays until it is cancelled.</RR_Requests_DefMissing>
   <RR_Requests_OpenRow>{0} ({1})</RR_Requests_OpenRow>
   <RR_Requests_StatusOffered>on the table</RR_Requests_StatusOffered>

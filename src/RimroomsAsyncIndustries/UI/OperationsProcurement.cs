@@ -8,6 +8,8 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     public sealed partial class MainTabWindow_Operations
@@ -20,8 +22,11 @@ namespace RimroomsAsyncIndustries.UI
         private void DrawProcurement(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
             listing.Label("RR_Procurement_Title".Translate());
-            listing.Label("RR_Procurement_BranchBalance".Translate(Money(campaign.BalanceUsd)));
-            listing.Label("RR_Procurement_EstimateNotice".Translate());
+            // The twenty-two words about catalog prices being provisional estimates are a
+            // caveat on the balance they are quoted against, so they hang off the balance.
+            DrawHeading(listing,
+                heading: "RR_Procurement_BranchBalance".Translate(Money(campaign.BalanceUsd)),
+                detail: "RR_Procurement_EstimateNotice".Translate());
             listing.GapLine();
 
             RimroomsProcurementComponent procurement = Current.Game == null ? null : Current.Game.GetComponent<RimroomsProcurementComponent>();
@@ -37,9 +42,15 @@ namespace RimroomsAsyncIndustries.UI
             if (selectedZone == null && zones.Count > 0)
             { selectedZone = zones[0]; procurementReceivingZoneId = selectedZone.ID; }
 
-            listing.Label("RR_Procurement_OrderInstructions".Translate());
+            // **THE THIRTY-NINE WORDS OF METHOD GO ON THE FIRST STEP OF IT.** Choosing the
+            // item is where the order starts, so the explanation of what the quote snapshots
+            // and what it does not is the small print on that button. An empty catalog is a
+            // fault and stays a sentence on screen.
             if (catalog.Count == 0) { listing.Label("RR_Proc_CatalogUnavailable".Translate()); }
-            else if (listing.ButtonText("RR_Procurement_SelectItem".Translate(selectedCatalog.LabelCap)))
+            else if (DrawAction(listing,
+                    label: "RR_Procurement_SelectItem".Translate(selectedCatalog.LabelCap),
+                    refusal: TaggedString.Empty,
+                    detail: "RR_Procurement_OrderInstructions".Translate()))
             { OpenCatalogMenu(catalog); }
 
             if (selectedCatalog != null && !string.IsNullOrEmpty(selectedCatalog.description))

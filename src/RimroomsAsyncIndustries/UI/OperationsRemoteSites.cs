@@ -4,6 +4,8 @@ using RimroomsAsyncIndustries.Generation;
 using RimWorld;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     /// <summary>
@@ -18,6 +20,11 @@ namespace RimroomsAsyncIndustries.UI
     {
         private void DrawRemoteSites(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
+            // **NOTHING MOVED HERE AND THAT IS THE RIGHT ANSWER.** 48 words in six keys, the
+            // longest fourteen, and both of those are live readouts rather than instruction. The
+            // first attempt hung `RR_Sites_None` on this heading as its definition, which it is
+            // not -- it is the empty-list state, and a tooltip that reports state is a tooltip
+            // that lies whenever the list is not empty.
             listing.Label("RR_Sites_Heading".Translate());
             listing.Gap(6f);
 

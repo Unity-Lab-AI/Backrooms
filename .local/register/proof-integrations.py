@@ -185,11 +185,20 @@ print("the readout the player actually sees")
 print("-" * 78)
 
 check("the pane draws the heading with the live count",
-      'listing.Label("RR_Integration_Heading".Translate(' in pane and
+      'heading: "RR_Integration_Heading".Translate(' in pane and
       "Core.InstalledIntegrations.ActiveCount()" in pane,
       "-- a key present in the file is not a claim that anything is drawn")
+# **STILL UNCONDITIONAL, AND NOW A FINER ASSERTION THAN IT WAS.** The caveat moved to the
+# count's hover -- owner, 2026-10-04: *"with tools tips would less cluter it"* -- and
+# *"loaded means present, not proven"* is the definition of that count rather than a
+# separate announcement. It is still said on every draw: it is the `detail:` of the
+# heading itself, so there is no state in which the heading appears without it.
 check("the caveat is drawn every time, not only when something is loaded",
-      'listing.Label("RR_Integration_Caveat".Translate());' in pane,
+      'detail: "RR_Integration_Caveat".Translate());' in pane and
+      # On the heading, which is drawn unconditionally -- not on a row inside the loop,
+      # where it would appear once per tracked mod or not at all.
+      pane.index('detail: "RR_Integration_Caveat"')
+      < pane.index("for (int index = 0; index < tracked.Count; index++)"),
       "-- loaded means present, not proven, and that has to be said unconditionally")
 # Unconditionally, which means the line stands alone in the loop body. Wrapping it in
 # `if (state.Active)` leaves the inner text matching, so the indentation is part of the claim.

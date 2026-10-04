@@ -8,6 +8,8 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     public sealed partial class MainTabWindow_Operations
@@ -16,8 +18,13 @@ namespace RimroomsAsyncIndustries.UI
 
         private void DrawPersonnel(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
-            listing.Label("RR_Personnel_NativeExplanation".Translate());
-            if (listing.ButtonText("RR_Personnel_OpenAssignments".Translate()))
+            // **THE EXPLANATION BELONGS ON THE BUTTON IT IS ABOUT.** Seventeen words saying that
+            // company roles are assignments and that skills, needs, beds and priorities stay
+            // RimWorld's — drawn above the button that opens RimWorld's own Assign tab. No new
+            // string: the paragraph is the button's hover now.
+            if (DrawAction(listing, label: "RR_Personnel_OpenAssignments".Translate(),
+                    refusal: TaggedString.Empty,
+                    detail: "RR_Personnel_NativeExplanation".Translate()))
             { OpenNativeTab(DefDatabase<MainButtonDef>.GetNamedSilentFail("Assign")); }
             const int staffPageSize = 12;
             int staffPages = Math.Max(1, (campaign.Staff.Count + staffPageSize - 1) / staffPageSize);
@@ -57,7 +64,16 @@ namespace RimroomsAsyncIndustries.UI
             { listing.Label(personnel.FaultKey.Translate()); listing.Label("RR_Personnel_HeldCount".Translate(personnel.HeldCount)); return; }
             HiringPolicyDef policy = personnel.CurrentPolicy;
             if (policy != null && policy.Valid)
-            { listing.Label("RR_Personnel_BoardExplanation".Translate(policy.maxOffers, ((float)policy.refreshTicks / GenDate.TicksPerDay).ToString("0.##"))); }
+            {
+                DrawHeading(listing,
+                    heading: "RR_Personnel_BoardBrief".Translate(policy.maxOffers,
+                        ((float)policy.refreshTicks / GenDate.TicksPerDay).ToString("0.##")),
+                    detail: "RR_Personnel_BoardExplanation".Translate(policy.maxOffers,
+                        ((float)policy.refreshTicks / GenDate.TicksPerDay).ToString("0.##")));
+            }
+            // **THE MISSING-POLICY CASE STAYS A PARAGRAPH ON SCREEN.** It is a fault, not an
+            // explanation: the package is damaged and no applicant can be requested at all. A
+            // fault a player has to hover to find is a fault they will report as silence.
             else { listing.Label("RR_Personnel_PolicyMissing".Translate()); }
             listing.Label("RR_Personnel_RequestAt".Translate(Day(personnel.NextRequestTick)));
             if (listing.ButtonText("RR_Personnel_Request".Translate())) { ShowResult(personnel.RequestApplicants()); }
@@ -89,8 +105,11 @@ namespace RimroomsAsyncIndustries.UI
                 { ShowResult(personnel.RetryRelease(offer.Id)); }
                 else if (offer.Status == ApplicantStatus.Unavailable)
                 {
-                    listing.Label("RR_Personnel_UnavailableDisposition".Translate());
-                    if (listing.ButtonText("RR_Personnel_DismissUnavailable".Translate()))
+                    // Twenty-six words on exactly what dismissal does and does not touch — the
+                    // terms of this one button, on this one button.
+                    if (DrawAction(listing, label: "RR_Personnel_DismissUnavailable".Translate(),
+                            refusal: TaggedString.Empty,
+                            detail: "RR_Personnel_UnavailableDisposition".Translate()))
                     { ShowResult(personnel.DismissUnavailableApplicant(offer.Id)); }
                 }
             }
@@ -134,11 +153,15 @@ namespace RimroomsAsyncIndustries.UI
         internal static void DrawDetails(Listing_Standard listing, Pawn pawn)
         {
             if (pawn == null || pawn.Destroyed) { listing.Label("RR_Personnel_Missing".Translate()); return; }
-            listing.Label(pawn.LabelCap);
+            // **THE NOTE HANGS OFF THE NAME.** Twenty-four words about an off-site applicant
+            // keeping its offered profile, and what arrival does and does not enable. It is about
+            // this person, so it lives on this person's own line rather than as a paragraph under
+            // their needs — and it needed no new string to get there.
+            DrawHeading(listing, heading: pawn.LabelCap,
+                detail: "RR_Personnel_OffsiteNote".Translate());
             listing.Label(PawnCondition(pawn));
             if (pawn.ageTracker != null) { listing.Label("RR_Personnel_Age".Translate(pawn.ageTracker.AgeBiologicalYears)); }
             listing.Label(NeedsSummary(pawn));
-            listing.Label("RR_Personnel_OffsiteNote".Translate());
             listing.GapLine();
             listing.Label("RR_Personnel_Traits".Translate());
             if (pawn.story != null && pawn.story.traits != null)
@@ -236,19 +259,28 @@ namespace RimroomsAsyncIndustries.UI
             {
                 if (offer == null || campaign == null) { listing.Label("RR_Personnel_InvalidOffer".Translate()); return; }
                 listing.Label("RR_Personnel_HireTitle".Translate(offer.Name));
-                listing.Label("RR_Personnel_Quote".Translate(offer.OnboardingUsd.ToString("N0"), offer.DailyWageUsd.ToString("N0")));
+                // **THE QUOTE IS THE DECISION; THE TERMS ARE THE SMALL PRINT.** Sixty-five words
+                // of payroll boundary and arrival method were drawn under an eight-word quote, so
+                // the one number a player is actually agreeing to was the smallest thing on the
+                // dialog. Built inline rather than into a local, because a local would hide all
+                // three strings from the density measurement.
                 int nextPayroll = campaign.NextPayrollTick;
-                listing.Label(nextPayroll >= 0
-                    ? "RR_Personnel_PayrollTerms".Translate(nextPayroll / GenDate.TicksPerDay + 1)
-                    : "RR_Personnel_PayrollLimit".Translate());
-                listing.Label("RR_Personnel_ArrivalTerms".Translate());
+                DrawHeading(listing,
+                    heading: "RR_Personnel_Quote".Translate(offer.OnboardingUsd.ToString("N0"),
+                        offer.DailyWageUsd.ToString("N0")),
+                    detail: (nextPayroll >= 0
+                            ? "RR_Personnel_PayrollTerms".Translate(nextPayroll / GenDate.TicksPerDay + 1)
+                            : "RR_Personnel_PayrollLimit".Translate())
+                        + "\n\n" + "RR_Personnel_ArrivalTerms".Translate());
                 listing.GapLine();
-                if (listing.ButtonText("RR_Personnel_RoleChoice".Translate(("RR_Role_" + role).Translate())))
+                if (DrawAction(listing,
+                        label: "RR_Personnel_RoleChoice".Translate(("RR_Role_" + role).Translate()),
+                        refusal: TaggedString.Empty,
+                        detail: "RR_Personnel_RoleTerms".Translate()))
                 {
                     Find.WindowStack.Add(new FloatMenu(PersonnelRoles.Ids.Select(id => new FloatMenuOption(
                         ("RR_Role_" + id).Translate(), () => role = id)).ToList()));
                 }
-                listing.Label("RR_Personnel_RoleTerms".Translate());
                 if (listing.ButtonText("RR_Personnel_ConfirmHire".Translate()))
                 {
                     CompanyActionResult result = personnel.HireApplicant(applicantId, role);

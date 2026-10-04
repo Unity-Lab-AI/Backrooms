@@ -284,8 +284,15 @@ check("the pane no longer prints one set of terms for everything",
       "silence: silence sends a player looking, a confident wrong answer stops them")
 check("the survey terms are still shown on a survey contract",
       'if (!contract.IsOddSupply)' in terms
-      and 'listing.Label("RR_UI_ContractTerms".Translate());' in terms,
-      "-- the old text was right for the contract it was written for")
+      # **ON THE HOVER OF THE PANE'S OWN HEADING, which is a stronger assertion than the
+      # one it replaces.** This used to check that the string was passed to `Label`; it now
+      # checks that it is the `detail:` of a `DrawHeading` whose `heading:` is the short
+      # line, so a pass that dropped the hover and left the heading -- forty-one words of
+      # survey method silently gone -- fails here instead of reading as a tidy-up.
+      and 'heading: "RR_UI_ContractTermsBrief".Translate(),' in terms
+      and 'detail: "RR_UI_ContractTerms".Translate());' in terms,
+      "-- the old text was right for the contract it was written for, and every word of it is "
+      "still reachable -- it moved to the heading's tooltip rather than being cut")
 
 for key in ("RR_UI_DemandWanted", "RR_UI_DemandDelivered", "RR_UI_DemandOddOnly"):
     check("%s is drawn and resolves" % key,

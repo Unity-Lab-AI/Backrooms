@@ -8,6 +8,8 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     public sealed partial class MainTabWindow_Operations
@@ -17,8 +19,10 @@ namespace RimroomsAsyncIndustries.UI
 
         private void DrawPortalNetwork(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
-            listing.Label("RR_Portals_Heading".Translate());
-            listing.Label("RR_Portals_Explanation".Translate());
+            // The thirty-four words explaining what a remembered address IS belong on the word
+            // "addresses" in the heading, which is the term they define.
+            DrawHeading(listing, heading: "RR_Portals_Heading".Translate(),
+                detail: "RR_Portals_Explanation".Translate());
             if (campaign == null || !campaign.CanOperate)
             {
                 listing.Label("RR_Portals_NoBranch".Translate());
@@ -49,8 +53,8 @@ namespace RimroomsAsyncIndustries.UI
         private void DrawTravelControls(Listing_Standard listing, RimroomsCampaignComponent campaign,
             RimroomsPortalNetwork network, RimroomsPortalCrossingService crossings)
         {
-            listing.Label("RR_Portals_TravelHeading".Translate());
-            listing.Label("RR_Portals_TravelExplanation".Translate());
+            DrawHeading(listing, heading: "RR_Portals_TravelHeading".Translate(),
+                detail: "RR_Portals_TravelExplanation".Translate());
 
             CompRimroomsGate gate = CurrentGate(campaign);
             if (gate != null && gate.IsDesignated)
@@ -272,8 +276,10 @@ namespace RimroomsAsyncIndustries.UI
             RimroomsDestinationMapParent site = coordinate.Site as RimroomsDestinationMapParent;
             if (site != null && site.NeedsThresholdRepair)
             {
-                listing.Label("RR_Portals_LegacyRepairNeeded".Translate());
-                listing.Label("RR_Portals_RepairExplanation".Translate());
+                // The twenty-six words listing what survives a threshold repair are reassurance
+                // about a scary-sounding word, so they sit on the word.
+                DrawHeading(listing, heading: "RR_Portals_LegacyRepairNeeded".Translate(),
+                    detail: "RR_Portals_RepairExplanation".Translate());
                 if (!string.IsNullOrEmpty(site.ThresholdRepairReceipt))
                 { listing.Label("RR_Portals_RepairRecorded".Translate(site.ThresholdRepairReceipt)); }
                 else if (!site.HasMap) { listing.Label("RR_Portals_SiteNotLoaded".Translate()); }
@@ -283,9 +289,13 @@ namespace RimroomsAsyncIndustries.UI
             }
 
             CompRimroomsGate gate = CurrentGate(campaign);
-            if (gate == null || !gate.IsDesignated)
-            { listing.Label("RR_Portals_GateRequired".Translate()); }
-            else if (listing.ButtonText("RR_Portals_RememberLaboratory".Translate()))
+            // **THE REMEMBER BUTTON STAYS, DISABLED.** It used to be replaced by the sentence
+            // explaining what the gate still needs, so the control a player was looking for was
+            // missing at exactly the moment they went looking for it.
+            if (DrawAction(listing, label: "RR_Portals_RememberLaboratory".Translate(),
+                    refusal: gate == null || !gate.IsDesignated
+                        ? "RR_Portals_GateRequired".Translate()
+                        : TaggedString.Empty))
             {
                 // **THE NOTICE GOES BEFORE THE FREEZE, and a button callback is the one place it
                 // can.** Owner, 2026-10-03: *"using the operations tab machine when finally

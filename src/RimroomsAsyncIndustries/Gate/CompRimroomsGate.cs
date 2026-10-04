@@ -571,6 +571,13 @@ namespace RimroomsAsyncIndustries.Gate
                 };
             }
 
+            // **SETTING THE COORDINATE, AND OPENING IT, FROM THE DOOR.** Owner, 2026-10-04:
+            // *"everything that the machine needs to start up should be able to do in the worlkd
+            // from the devices themselfes with pawns controls and actrions not just in the
+            // opetaions tab,, ie setting the cordinace and all of those things need  to show"*.
+            // These were the last two start-up actions that existed only as panel buttons.
+            foreach (Gizmo gizmo in AddressGizmos()) { yield return gizmo; }
+
             if (IsSpinningUp)
             {
                 yield return new Command_Action
@@ -698,9 +705,55 @@ namespace RimroomsAsyncIndustries.Gate
             string ramp = SpinUpReadout();
             string links = EquipmentLinkReadout();
             string footprint = FootprintReadout();
-            return string.Join("\n", new[] { status, footprint, integrityText, operatorText, cutoffText,
-                    serviceText, powerText, ramp, links, active }
+            return string.Join("\n", new[] { NextStepReadout(), status, footprint, integrityText,
+                    operatorText, cutoffText, serviceText, powerText, ramp, links, active }
                 .Where(s => !string.IsNullOrEmpty(s)));
+        }
+
+        /// <summary>
+        /// What to do next, said on the door.
+        ///
+        /// ## Owner direction, 2026-10-04, verbatim
+        ///
+        /// *"and when u set a door to be a gatew  that gate should tell you next step in the game
+        /// world not just in the operations tab and machine tab"*
+        ///
+        /// ## Why it is first, and why it is one line
+        ///
+        /// **First**, because it is the only line on this card a player who is stuck needs. The
+        /// card already carried ten readouts — condition, operator, kill switch, servicing, power
+        /// reserve and its breakdown, the ramp, the equipment links, the live window — every one
+        /// of them an answer to *"what is the state"* and not one of them an answer to *"what do
+        /// I do"*. The owner's report on the panel was *"ive done like 50 things in a row and its
+        /// still not opening"*; this is the same gap, on the object itself.
+        ///
+        /// **One line**, because it asks `GateStartupChecklist` for the first unfinished check
+        /// rather than restating any condition. There is exactly one list of the eleven and both
+        /// the window and this card read it, so the card cannot tell a player something the
+        /// status board contradicts.
+        ///
+        /// ## Silent on every other door in the game
+        ///
+        /// `CompInspectStringExtra` has already returned on `!IsDesignated` before this is
+        /// reached. This component sits on **every** Core door via the native binding patch, so
+        /// a next-step line computed before that guard would print start-up advice on every
+        /// bedroom door on the map.
+        /// </summary>
+        private string NextStepReadout()
+        {
+            System.Collections.Generic.List<GateStartupChecklist.GateStep> steps =
+                GateStartupChecklist.Steps(this);
+            GateStartupChecklist.GateStep next = GateStartupChecklist.NextIncomplete(steps);
+            if (next.Number != 0)
+            {
+                return "RR_Steps_NextUp".Translate(next.Number.ToString(), next.Label, next.How)
+                    .ToString();
+            }
+            // Past the last check the goal is no longer the machine, so the line stops being
+            // about the machine. The same two outcomes the status board distinguishes.
+            return IsOpening
+                ? "RR_Steps_NowCross".Translate().ToString()
+                : "RR_Steps_AllDone".Translate().ToString();
         }
 
         /// <summary>

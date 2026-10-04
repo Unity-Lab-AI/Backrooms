@@ -7,6 +7,8 @@ using RimroomsAsyncIndustries.Gate;
 using RimWorld;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     public sealed partial class MainTabWindow_Operations
@@ -77,7 +79,10 @@ namespace RimroomsAsyncIndustries.UI
             var holds = campaign.OutstandingDebriefs().ToList();
             if (holds.Count == 0)
             { listing.Label("RR_Debrief_NoneOutstanding".Translate()); return; }
-            listing.Label("RR_Debrief_Outstanding".Translate(holds.Count));
+            // The count is the readout; that none of them go out again until they report is
+            // the rule behind it, and the rule does not change between visits.
+            DrawHeading(listing, heading: "RR_Debrief_Count".Translate(holds.Count),
+                detail: "RR_Debrief_Outstanding".Translate(holds.Count));
             foreach (Company.DebriefHold hold in holds.Take(8))
             {
                 Pawn crewMember = hold.Crew;
@@ -149,9 +154,11 @@ namespace RimroomsAsyncIndustries.UI
         {
             System.Collections.Generic.IReadOnlyList<Core.IntegrationState> tracked =
                 Core.InstalledIntegrations.AllInOrder();
-            listing.Label("RR_Integration_Heading".Translate(
-                Core.InstalledIntegrations.ActiveCount(), tracked.Count));
-            listing.Label("RR_Integration_Caveat".Translate());
+            // *"Loaded means present, not proven"* is the definition of the count beside it.
+            DrawHeading(listing,
+                heading: "RR_Integration_Heading".Translate(
+                    Core.InstalledIntegrations.ActiveCount(), tracked.Count),
+                detail: "RR_Integration_Caveat".Translate());
             for (int index = 0; index < tracked.Count; index++)
             {
                 Core.IntegrationState state = tracked[index];
@@ -172,13 +179,21 @@ namespace RimroomsAsyncIndustries.UI
             if (!FacilityReport.Available(campaign.Headquarters))
             { listing.Label("RR_Company_MapUnavailable".Translate()); return; }
             facilityReport.RefreshIfNeeded(campaign);
-            listing.Label("RR_Fac_Explanation".Translate());
-            if (listing.ButtonText("RR_Fac_Refresh".Translate())) { facilityReport.RefreshIfNeeded(campaign, true); }
+            // What "headquarters infrastructure" counts as, on the button that recounts it.
+            if (DrawAction(listing, label: "RR_Fac_Refresh".Translate(),
+                    refusal: TaggedString.Empty,
+                    detail: "RR_Fac_Explanation".Translate()))
+            { facilityReport.RefreshIfNeeded(campaign, true); }
             listing.Label("RR_Fac_SummaryAge".Translate(Math.Max(0, Find.TickManager.TicksGame - facilityReport.CapturedTick)));
             listing.Label("RR_Fac_BedSummary".Translate(facilityReport.OrdinaryBedSlots,
                 facilityReport.OrdinaryBedOwners, facilityReport.OrdinaryBedOccupants));
-            listing.Label("RR_Fac_OtherBeds".Translate(facilityReport.MedicalSlots, facilityReport.OtherBedSlots));
-            listing.Label("RR_Fac_BedLimit".Translate());
+            // **THE CAVEAT BELONGS ON THE COUNT IT QUALIFIES.** Thirty-four words saying an
+            // empty slot is not a usable bed -- body size, ideology, access, reservations --
+            // read as a paragraph of its own and as a contradiction of the number above it.
+            DrawHeading(listing,
+                heading: "RR_Fac_OtherBeds".Translate(facilityReport.MedicalSlots,
+                    facilityReport.OtherBedSlots),
+                detail: "RR_Fac_BedLimit".Translate());
             if (facilityReport.StaffWithoutOwnedBeds.Count > 0)
             { listing.Label("RR_Fac_UnassignedStaff".Translate(string.Join(", ", facilityReport.StaffWithoutOwnedBeds.ToArray()))); }
             if (facilityReport.StaffNeedingCare.Count > 0)

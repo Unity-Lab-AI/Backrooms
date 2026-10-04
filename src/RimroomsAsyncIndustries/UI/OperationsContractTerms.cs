@@ -3,6 +3,8 @@ using RimroomsAsyncIndustries.Company;
 using RimWorld;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     /// <summary>
@@ -32,7 +34,8 @@ namespace RimroomsAsyncIndustries.UI
             // Not a demand: the survey terms are this contract's real terms.
             if (!contract.IsOddSupply)
             {
-                listing.Label("RR_UI_ContractTerms".Translate());
+                DrawHeading(listing, heading: "RR_UI_ContractTermsBrief".Translate(),
+                    detail: "RR_UI_ContractTerms".Translate());
                 return;
             }
 
@@ -44,9 +47,12 @@ namespace RimroomsAsyncIndustries.UI
 
             listing.Label("RR_UI_DemandWanted".Translate(
                 contract.RequiredCount.ToString("N0"), label));
-            listing.Label("RR_UI_DemandDelivered".Translate(
-                contract.DeliveredCount.ToString("N0"), contract.RequiredCount.ToString("N0")));
-            listing.Label("RR_UI_DemandOddOnly".Translate());
+            // What counts toward the delivery, on the delivery count.
+            DrawHeading(listing,
+                heading: "RR_UI_DemandDelivered".Translate(
+                    contract.DeliveredCount.ToString("N0"),
+                    contract.RequiredCount.ToString("N0")),
+                detail: "RR_UI_DemandOddOnly".Translate());
 
             if (!contract.IsOddConsignment) { return; }
 

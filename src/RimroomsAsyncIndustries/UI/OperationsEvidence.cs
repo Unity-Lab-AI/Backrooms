@@ -6,6 +6,8 @@ using RimroomsAsyncIndustries.Generation;
 using RimWorld;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     public sealed partial class MainTabWindow_Operations
@@ -92,7 +94,8 @@ namespace RimroomsAsyncIndustries.UI
             if (campaign == null) { return; }
             if (!campaign.AwaitsReview(record)) { return; }
 
-            listing.Label("RR_UI_ReviewAwaiting".Translate());
+            DrawHeading(listing, heading: "RR_UI_ReviewAwaitingBrief".Translate(),
+                detail: "RR_UI_ReviewAwaiting".Translate());
 
             // An outstanding dispute is two of the branch's own people contradicting each other
             // on the record. The interview is what clears it, and saying so is more use than a
@@ -100,15 +103,20 @@ namespace RimroomsAsyncIndustries.UI
             int disputes = campaign.UnsettledDisputes(record).Count();
             if (disputes > 0)
             {
-                listing.Label("RR_Review_DisputesOutstanding".Translate(disputes));
+                // **THE SIGN-OFF BUTTON APPEARS, DISABLED, SAYING WHY.** It used to be a
+                // paragraph and then nothing, so the player could not tell whether sign-off
+                // was blocked or simply unimplemented.
+                DrawAction(listing, label: "RR_UI_SignOffReport".Translate(),
+                    refusal: "RR_Review_DisputesOutstanding".Translate(disputes));
                 return;
             }
 
             Pawn reviewer = campaign.ReviewerFor(record);
             if (reviewer == null)
             {
-                listing.Label("RR_Review_NoReviewer".Translate(
-                    RimroomsCampaignComponent.MinimumReviewerIntellectual));
+                DrawAction(listing, label: "RR_UI_SignOffReport".Translate(),
+                    refusal: "RR_Review_NoReviewer".Translate(
+                        RimroomsCampaignComponent.MinimumReviewerIntellectual));
                 return;
             }
 
@@ -136,11 +144,19 @@ namespace RimroomsAsyncIndustries.UI
             Pawn interviewer = campaign.InterviewerFor(observation);
             if (interviewer == null)
             {
-                listing.Label("RR_Interview_NoInterviewer".Translate(campaign.InterviewerSocialFloor));
+                // Same shape: the thing a player wants is "take the statements", so that is
+                // what they see, off, with the Social floor on it.
+                DrawAction(listing, label: "RR_UI_TakeStatements".Translate(),
+                    refusal: "RR_Interview_NoInterviewer".Translate(
+                        campaign.InterviewerSocialFloor));
                 return;
             }
 
-            listing.Label("RR_UI_InterviewPrompt".Translate(interviewer.LabelShortCap));
+            // Who can take the statements is the line; what filing one of them means to the
+            // company record is the consequence, and it only matters as you reach for it.
+            DrawHeading(listing,
+                heading: "RR_UI_InterviewBrief".Translate(interviewer.LabelShortCap),
+                detail: "RR_UI_InterviewPrompt".Translate(interviewer.LabelShortCap));
             foreach (string loadId in observation.WitnessLoadIds.ToList())
             {
                 string name = observation.NameForAccount(loadId);

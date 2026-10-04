@@ -61,6 +61,10 @@ evidence_ui = strip_comments(read(SRC, "UI", "OperationsEvidence.cs"))
 expeditions_ui = strip_comments(read(SRC, "UI", "OperationsExpeditions.cs"))
 crew_ui = strip_comments(read(SRC, "UI", "OperationsCrewPlanner.cs"))
 investigation_keyed = read(KEYED, "RR_Investigation.xml")
+# The objective chain's SHORT lines live beside the pane that draws them; the long
+# instructions stayed where they were. Both files have to be read or the claim below can
+# only see half of each branch.
+expeditions_keyed = read(KEYED, "RR_OperationsExpeditions.xml")
 crew_keyed = read(KEYED, "RR_CrewPlanner.xml")
 
 print("")
@@ -76,10 +80,16 @@ check("THE REVIEW WORKFLOW HAS A BUTTON, AND THE BUTTON CALLS THE SERVICE",
       "defect that accounts for four of five bond defects")
 
 check("and the objective hint names review as the next step",
-      'else if (campaign.AwaitsReview(record)) { key = "RR_UI_NextReview"; pane = 6; }'
+      # **TWO KEYS PER BRANCH NOW, and the claim asserts both.** The objective line draws
+      # a three-word `brief` and carries the full instruction on its hover, so this checks
+      # the branch sets BOTH -- a branch that set only the long key would show a blank
+      # objective, and one that set only the brief would lose the instruction entirely.
+      'else if (campaign.AwaitsReview(record))' in expeditions_ui
+      and '{ key = "RR_UI_NextReview"; brief = "RR_UI_NextReviewBrief"; pane = 6; }'
       in expeditions_ui
       and "public bool AwaitsReview(EvidenceRecord record)" in review
-      and "<RR_UI_NextReview>" in investigation_keyed,
+      and "<RR_UI_NextReview>" in investigation_keyed
+      and "<RR_UI_NextReviewBrief>" in expeditions_keyed,
       "-- a workflow the player is never told about is one nobody runs")
 
 check("and the sign-off is shown on the record afterwards",

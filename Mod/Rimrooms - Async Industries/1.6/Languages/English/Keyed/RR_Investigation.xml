@@ -33,6 +33,7 @@
   <RR_UI_ProjectUnstarted>Awaiting insight commitment</RR_UI_ProjectUnstarted>
   <RR_UI_ProjectWorking>Work progress: {0}</RR_UI_ProjectWorking>
   <RR_UI_LabInstructions>Designate an existing research bench above, then assign Research work to an available researcher with Intellectual 4 or higher. Secured evidence is analyzed before active company research. Native bench efficiency applies; a hi-tech bench needs power. Keep physical access to the interaction cell and evidence. Clearing the company designation leaves ordinary research available.</RR_UI_LabInstructions>
+  <RR_UI_LabTitle>Laboratory</RR_UI_LabTitle>
   <RR_UI_TelemetryRoom>Room {0}: {1}. Known connections: {2}.</RR_UI_TelemetryRoom>
   <RR_UI_TelemetryLocked>Gate Telemetry unlocks planning from your surveyed room records.</RR_UI_TelemetryLocked>
   <RR_UI_RetryCompanyRegistration>Register the prepared headquarters</RR_UI_RetryCompanyRegistration>
@@ -44,6 +45,7 @@
   <RR_UI_ObservationMissing>Still needed</RR_UI_ObservationMissing>
   <RR_UI_LocateRecording>Locate physical recording</RR_UI_LocateRecording>
   <RR_UI_EvidenceFieldWorkRemaining>Carry the record book through each required room. At the corridor junction, set a glow pod down and designate it as a numbered marker before investigating the next passage. A second marker at the last good junction gives you something stable to compare against. Incomplete observations can be finished on a later trip to the same site.</RR_UI_EvidenceFieldWorkRemaining>
+  <RR_UI_EvidenceFieldWorkTitle>Field work still outstanding</RR_UI_EvidenceFieldWorkTitle>
   <RR_UI_AnalysisReportHeader>Analysis report — {0}, branch day {1}</RR_UI_AnalysisReportHeader>
   <RR_UI_AnalysisSnapshotNote>This report preserves the observations available when analysis finished.</RR_UI_AnalysisSnapshotNote>
   <RR_UI_LegacyReportUnavailable>This older analyzed record has no saved observation details. Its recorded completion remains valid.</RR_UI_LegacyReportUnavailable>
@@ -52,9 +54,11 @@
   <RR_UI_NoFieldObservations>No witnessed observations have been recorded yet.</RR_UI_NoFieldObservations>
   <RR_UI_ObservationWitness>Witness: {0}. Branch day {1}. Recorder carried by {2}.</RR_UI_ObservationWitness>
   <RR_UI_InterviewPrompt>Two crew do not agree about this. {0} can take both statements and file one of them as the company’s version; the other stays on the record either way.</RR_UI_InterviewPrompt>
+  <RR_UI_InterviewBrief>{0} can settle this disagreement</RR_UI_InterviewBrief>
   <RR_UI_FileAccount>File {0}’s account</RR_UI_FileAccount>
   <RR_UI_AccountFiled>Filed: the company accepts {0}’s account, after an interview by {1} on day {2}. The other account remains on the record.</RR_UI_AccountFiled>
   <RR_Interview_NoInterviewer>Nobody on staff can take a statement about this. An interviewer needs Social {0}, has to be awake, able to talk and not one of the crew who gave an account.</RR_Interview_NoInterviewer>
+  <RR_UI_TakeStatements>Take both statements</RR_UI_TakeStatements>
   <RR_Interview_Inactive>The branch is not operating, so nothing can be filed.</RR_Interview_Inactive>
   <RR_Interview_RecordUnavailable>That record or that observation is no longer on the company’s books.</RR_Interview_RecordUnavailable>
   <RR_Interview_RecordClosed>Analysis on this record is already complete. A filed conclusion is not reopened; the disagreement stays on the record as it was when the report was written.</RR_Interview_RecordClosed>
@@ -76,6 +80,7 @@
   <!-- Review: the fourth workflow. A second person signs a finished report off, or returns it. -->
 
   <RR_UI_ReviewAwaiting>This report has not been signed off. A second pair of eyes decides whether the branch stands behind it.</RR_UI_ReviewAwaiting>
+  <RR_UI_ReviewAwaitingBrief>Awaiting sign-off</RR_UI_ReviewAwaitingBrief>
   <RR_UI_ReviewPrompt>{0} can review the report.</RR_UI_ReviewPrompt>
   <RR_UI_SignOffReport>Review the report</RR_UI_SignOffReport>
   <RR_UI_ReviewEndorsed>Signed off by {0} on day {1}. The branch stands behind this report.</RR_UI_ReviewEndorsed>

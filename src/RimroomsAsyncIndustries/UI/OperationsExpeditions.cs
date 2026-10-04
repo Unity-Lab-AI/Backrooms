@@ -8,6 +8,8 @@ using RimroomsAsyncIndustries.Investigation;
 using RimroomsAsyncIndustries.Threats;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     public sealed partial class MainTabWindow_Operations
@@ -23,29 +25,44 @@ namespace RimroomsAsyncIndustries.UI
             RimroomsExpeditionComponent trips = Current.Game.GetComponent<RimroomsExpeditionComponent>();
             ContractRecord survey = campaign.Contracts.FirstOrDefault(c => c.TemplateId == "rr.survey.onboarding.v1");
             EvidenceRecord record = survey == null ? null : campaign.Evidence.FirstOrDefault(e => e.CoordinateId == survey.CoordinateId);
+            // **TWO KEYS PER OBJECTIVE, AND THAT IS THE WHOLE REWRITE OF THIS LINE.** Owner:
+            // *"things can be shortend and more concise and dirrect  with tools tips would less
+            // cluter it"*. `brief` is the three or four words that say which objective this is;
+            // `key` is the same instruction as before, every word of it, on the hover. The
+            // objective line was between seventeen and thirty-five words of prose depending on
+            // the branch, drawn as a paragraph above a button.
             string key;
+            string brief;
             int pane;
-            if (gate == null || !gate.AssemblyComplete) { key = "RR_UI_NextAssembly"; pane = 7; }
-            else if (!gate.Calibrated) { key = "RR_UI_NextCalibration"; pane = 7; }
-            else if (trips.Active?.Status == ExpeditionStatus.Stranded) { key = "RR_UI_NextRecovery"; pane = 8; }
-            else if (trips.Active != null) { key = "RR_UI_NextFieldSurvey"; pane = 8; }
+            if (gate == null || !gate.AssemblyComplete)
+            { key = "RR_UI_NextAssembly"; brief = "RR_UI_NextAssemblyBrief"; pane = 7; }
+            else if (!gate.Calibrated)
+            { key = "RR_UI_NextCalibration"; brief = "RR_UI_NextCalibrationBrief"; pane = 7; }
+            else if (trips.Active?.Status == ExpeditionStatus.Stranded)
+            { key = "RR_UI_NextRecovery"; brief = "RR_UI_NextRecoveryBrief"; pane = 8; }
+            else if (trips.Active != null)
+            { key = "RR_UI_NextFieldSurvey"; brief = "RR_UI_NextFieldSurveyBrief"; pane = 8; }
             else if (record == null || !record.RouteRecorded || !record.DistortionRecorded)
-            { key = "RR_UI_NextDispatch"; pane = 8; }
+            { key = "RR_UI_NextDispatch"; brief = "RR_UI_NextDispatchBrief"; pane = 8; }
             else if (record.Status != EvidenceStatus.Secured && record.Status != EvidenceStatus.Analyzed)
-            { key = "RR_UI_NextRecoverEvidence"; pane = 8; }
-            else if (record.Status != EvidenceStatus.Analyzed) { key = "RR_UI_NextAnalysis"; pane = 6; }
+            { key = "RR_UI_NextRecoverEvidence"; brief = "RR_UI_NextRecoverEvidenceBrief"; pane = 8; }
+            else if (record.Status != EvidenceStatus.Analyzed)
+            { key = "RR_UI_NextAnalysis"; brief = "RR_UI_NextAnalysisBrief"; pane = 6; }
             // **Review is the step between a finished report and the next lead**, and the
             // objective line is how the player learns the step exists at all.
-            else if (campaign.AwaitsReview(record)) { key = "RR_UI_NextReview"; pane = 6; }
-            else if (!campaign.HasRouteTelemetry) { key = "RR_UI_NextTelemetry"; pane = 6; }
-            else { key = "RR_UI_NextRevisit"; pane = 8; }
-            listing.Label("RR_UI_CurrentObjective".Translate());
-            listing.Label(key.Translate());
+            else if (campaign.AwaitsReview(record))
+            { key = "RR_UI_NextReview"; brief = "RR_UI_NextReviewBrief"; pane = 6; }
+            else if (!campaign.HasRouteTelemetry)
+            { key = "RR_UI_NextTelemetry"; brief = "RR_UI_NextTelemetryBrief"; pane = 6; }
+            else { key = "RR_UI_NextRevisit"; brief = "RR_UI_NextRevisitBrief"; pane = 8; }
+            DrawHeading(listing, heading: "RR_UI_CurrentObjective".Translate(brief.Translate()),
+                detail: key.Translate());
             if (listing.ButtonText("RR_UI_OpenObjective".Translate()))
             { selectedPane = pane; scrollPosition = UnityEngine.Vector2.zero; }
             if (record?.Status == EvidenceStatus.Analyzed && trips.Active == null)
             {
-                listing.Label("RR_UI_NextLeadChoice".Translate());
+                DrawHeading(listing, heading: "RR_UI_NextLeadTitle".Translate(),
+                    detail: "RR_UI_NextLeadChoice".Translate());
                 if (!campaign.HasRouteTelemetry && listing.ButtonText("RR_UI_ReviewTelemetry".Translate()))
                 { selectedPane = 6; scrollPosition = UnityEngine.Vector2.zero; }
                 if (listing.ButtonText("RR_UI_PrepareResurvey".Translate()))
@@ -81,11 +98,32 @@ namespace RimroomsAsyncIndustries.UI
             DrawNativeGateBinding(listing, campaign);
             DrawPortalNetwork(listing, campaign);
             CompRimroomsGate gate = CurrentGate(campaign);
-            listing.Label((gate != null
-                ? "RR_NativeGate_MachineInstructions" : "RR_UI_MachineInstructions").Translate());
-            if (gate == null) { listing.Label("RR_NativeGate_NoSelectedGate".Translate()); return; }
-            if (!gate.IsDesignated) { listing.Label("RR_NativeGate_BindBeforeOperation".Translate()); return; }
+            // **THE BOARD ABOVE ALREADY SAYS WHAT TO DO NEXT.** Owner: *"not every step having
+            // its own type up of whats next"*. So this stops being a second set of
+            // instructions and becomes the machine's controls, with the fifty-seven-word
+            // version on the hover for anybody who wants the whole thing.
+            DrawHeading(listing, heading: "RR_UI_MachineControlsTitle".Translate(),
+                detail: (gate != null
+                    ? "RR_NativeGate_MachineInstructions" : "RR_UI_MachineInstructions").Translate());
+            // **THE CONTROLS STAY VISIBLE AND SAY WHY THEY ARE OFF**, rather than the pane
+            // printing a sentence where a button would have been. A player who cannot find the
+            // button cannot tell whether the sentence is about the button or about the game.
+            if (gate == null)
+            {
+                DrawAction(listing, label: "RR_UI_SelectMachine".Translate(),
+                    refusal: "RR_NativeGate_NoSelectedGate".Translate());
+                return;
+            }
+            // Jumping to the door comes before the designation check now. The gate exists, so
+            // the one control that always works should work -- and finding the thing on the map
+            // is how a player answers *"which door did I pick"* for themselves.
             if (listing.ButtonText("RR_UI_SelectMachine".Translate())) { CameraJumper.TryJumpAndSelect(gate.parent); }
+            if (!gate.IsDesignated)
+            {
+                DrawAction(listing, label: "RR_UI_CalibrateMachine".Translate(),
+                    refusal: "RR_NativeGate_BindBeforeOperation".Translate());
+                return;
+            }
             listing.Label(gate.CompInspectStringExtra());
             listing.GapLine();
             foreach (StaffRecord member in campaign.Staff.Where(s => s.Employed && s.Pawn != null && s.Pawn.Spawned && s.Pawn.Map == campaign.Headquarters))
@@ -100,7 +138,11 @@ namespace RimroomsAsyncIndustries.UI
         {
             RimroomsExpeditionComponent trips = Current.Game.GetComponent<RimroomsExpeditionComponent>();
             ExpeditionRecord run = trips.Active;
-            listing.Label("RR_UI_FieldObjectives".Translate());
+            // Fifty-six words of what the contract wants, which a player needs once and then
+            // never again. On the hover, in full, where it is available on the visit they do
+            // need it.
+            DrawHeading(listing, heading: "RR_UI_FieldObjectivesTitle".Translate(),
+                detail: "RR_UI_FieldObjectives".Translate());
             if (trips.InterruptedTransfers.Count > 0 && listing.ButtonText("RR_UI_RecoverTransfers".Translate()))
             { ShowResult(trips.RecoverInterruptedTransfers()); }
             if (run == null)
@@ -116,8 +158,16 @@ namespace RimroomsAsyncIndustries.UI
                     listing.Label("RR_UI_FieldRuleState".Translate(Observation(fieldState.DistortionObserved)));
                     if (fieldState.EntityObserved)
                     {
-                        listing.Label(fieldState.PursuerWithdrawn ? "RR_UI_EntityWithdrawn".Translate()
-                            : "RR_UI_EntityLastRoom".Translate(fieldState.LastSeenPursuerRoom + 1));
+                        // The room number is the readout; what to do about the thing in it is
+                        // advice, and advice that repeats every frame stops being read.
+                        if (fieldState.PursuerWithdrawn)
+                        { listing.Label("RR_UI_EntityWithdrawn".Translate()); }
+                        else
+                        {
+                            DrawHeading(listing,
+                                heading: "RR_UI_EntityRoomBrief".Translate(fieldState.LastSeenPursuerRoom + 1),
+                                detail: "RR_UI_EntityLastRoom".Translate(fieldState.LastSeenPursuerRoom + 1));
+                        }
                     }
                 }
                 if (!string.IsNullOrEmpty(run.FailureKey)) { listing.Label(run.FailureKey.Translate()); }
@@ -125,7 +175,8 @@ namespace RimroomsAsyncIndustries.UI
                 if ((run.Status == ExpeditionStatus.OnSite || run.Status == ExpeditionStatus.Returning) && listing.ButtonText("RR_UI_RecallCrew".Translate())) { ShowResult(trips.Recall()); }
                 if (run.Status == ExpeditionStatus.Stranded)
                 {
-                    listing.Label("RR_UI_StrandedInstructions".Translate());
+                    DrawHeading(listing, heading: "RR_UI_StrandedTitle".Translate(),
+                        detail: "RR_UI_StrandedInstructions".Translate());
                     if (listing.ButtonText("RR_UI_ReopenRecovery".Translate())) { ShowResult(trips.ReopenReturnRoute()); }
                     foreach (StaffRecord member in campaign.Staff.Where(s => s.Employed && s.Pawn != null && s.Pawn.Spawned && s.Pawn.Map == campaign.Headquarters && !run.InitialCrew.Contains(s.Pawn)))
                     {
@@ -189,7 +240,13 @@ namespace RimroomsAsyncIndustries.UI
             if (coordinate == null) { listing.Label("RR_UI_NoCoordinate".Translate()); return; }
             selectedCoordinateId = coordinate.Id;
             if (campaign.Evidence.Any(e => e.CoordinateId == coordinate.Id && e.Status == EvidenceStatus.Analyzed))
-            { listing.Label("RR_UI_ResurveyPurpose".Translate()); }
+            {
+                // **The short line keeps the part a player can be caught out by** -- that the
+                // survey payment does not come twice. The rest of the forty words is what
+                // persists and what can still be done there, which is reference, not a warning.
+                DrawHeading(listing, heading: "RR_UI_ResurveyTitle".Translate(),
+                    detail: "RR_UI_ResurveyPurpose".Translate());
+            }
             if (listing.ButtonText("RR_UI_SelectCoordinate".Translate(coordinate.Label)))
             {
                 var options = new List<FloatMenuOption>();
@@ -197,7 +254,8 @@ namespace RimroomsAsyncIndustries.UI
                 { CoordinateRecord captured = choice; options.Add(new FloatMenuOption(choice.Label, () => selectedCoordinateId = captured.Id)); }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
-            listing.Label("RR_UI_DispatchInstructions".Translate());
+            DrawHeading(listing, heading: "RR_UI_DispatchTitle".Translate(),
+                detail: "RR_UI_DispatchInstructions".Translate());
             selectedCrew.RemoveAll(p => p == null || !p.Spawned || p.Map != campaign.Headquarters || p.Dead || !campaign.Staff.Any(s => s.Pawn == p && s.Employed));
             foreach (StaffRecord member in campaign.Staff.Where(s => s.Employed && s.Pawn != null && s.Pawn.Spawned && s.Pawn.Map == campaign.Headquarters && !s.Pawn.Dead))
             {
@@ -216,9 +274,13 @@ namespace RimroomsAsyncIndustries.UI
             listing.GapLine();
             DrawCrewPlanner(listing, campaign, gate);
             listing.GapLine();
-            if (gate == null || !gate.IsDesignated)
-            { listing.Label("RR_NativeGate_DispatchNeedsBoundGate".Translate()); }
-            else if (listing.ButtonText("RR_UI_DispatchCrew".Translate()))
+            // **THE DISPATCH BUTTON IS ALWAYS THERE.** It used to be replaced by a sentence
+            // explaining its absence, which is the worst version of both: the player loses the
+            // control AND reads a paragraph. Disabled with the reason on it instead.
+            if (DrawAction(listing, label: "RR_UI_DispatchCrew".Translate(),
+                    refusal: gate == null || !gate.IsDesignated
+                        ? "RR_NativeGate_DispatchNeedsBoundGate".Translate()
+                        : TaggedString.Empty))
             { ShowResult(trips.Dispatch(gate, coordinate, new List<Pawn>(selectedCrew))); }
         }
 

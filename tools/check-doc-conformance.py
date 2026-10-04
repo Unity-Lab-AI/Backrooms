@@ -473,6 +473,62 @@ def check_dependency_claims(rel, raw, declared, problems):
             break
 
 
+# ---------------------------------------------------------------- the rule, inverted
+# **WITH NOTHING DECLARED, THE DANGEROUS SENTENCE REVERSES.** Until 0.12.86-dev `About.xml`
+# declared 293 hard dependencies and the hazard was a document claiming the package needed none.
+# The block is gone -- owner, 2026-10-03: *"rework mod to not need any depeancie mods"*, *"we hope
+# to have the mod as a complete stand alone"* -- and now the hazard is a document implying that
+# needing nothing means working with everything.
+#
+# D1's binding text has not moved: *"do not announce compatibility until validation is
+# complete"*. `docs/ROADMAP.md` already lists *"Promising compatibility with every mod simply
+# because the server has `AllowAllMods` enabled"* as a non-goal; this is the first thing that
+# enforces it.
+BROAD_COMPATIBILITY_CLAIMS = (
+    "compatible with every mod",
+    "compatible with all mods",
+    "works with every mod",
+    "works with all mods",
+    "works with all 294",
+    "compatible with the whole",
+    "fully compatible with",
+    "guaranteed compatible",
+    "no compatibility issues",
+    "universally compatible",
+)
+
+
+def check_broad_compatibility(rel, raw, declared, problems):
+    """Refuse a living document promising compatibility nobody has recorded a result for.
+
+    Runs only while `About.xml` declares nothing, because that is when a reader has no
+    declaration to calibrate against and silence reads as a guarantee. Same fence tracking and
+    same same-clause retirement test as the rule it replaces -- a document may name the claim
+    while saying it is not being made.
+    """
+    if declared > 0:
+        return
+    if rel in DEPENDENCY_LEDGER:
+        return
+    fenced = False
+    for number, line in enumerate(raw.split("\n"), start=1):
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+            continue
+        if fenced:
+            continue
+        lowered = line.lower()
+        for phrase in BROAD_COMPATIBILITY_CLAIMS:
+            if phrase not in lowered:
+                continue
+            if retirement_covers(line, phrase):
+                continue
+            problems.append("%s:%d says %r. Nothing is declared, and that is not a compatibility "
+                            "certificate -- D1: do not announce compatibility until validation "
+                            "is complete" % (rel, number, phrase))
+            break
+
+
 def living_docs():
     found = []
     for path in glob.glob(os.path.join(REPO, "**", "*.md"), recursive=True):
@@ -624,6 +680,7 @@ def main():
                                     % (rel, number, definition))
 
         check_dependency_claims(rel, raw, declared_dependencies, problems)
+        check_broad_compatibility(rel, raw, declared_dependencies, problems)
 
         for pattern in CHECKER_PHRASES:
             found = pattern.search(text)
@@ -643,7 +700,7 @@ def main():
 
     print("doc-conformance")
     print("  living documents checked : %d" % len(docs))
-    print("  declared dependencies    : %d (no living document may say there are none)"
+    print("  declared dependencies    : %d (declared>0: no document may say there are none; declared==0: none may promise broad compatibility)"
           % declared_dependencies)
     print("  reader-facing documents  : %d, held to the vocabulary and the wall rule"
           % len(READER_FACING))

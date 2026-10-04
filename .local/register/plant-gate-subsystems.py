@@ -90,7 +90,10 @@ PLANTS = [
      "            { return CompanyActionResult.Refused(IntegrityFailureKey); }\n", "", P_SUB),
 
     ("the readout is computed but never drawn", GATE,
-     "footprint, integrityText, operatorText", "footprint, operatorText", P_SUB),
+     # The card's array gained `NextStepReadout()` at the front on 2026-10-04 and wrapped,
+     # so this needle's neighbours moved onto the next line. Same fault: a readout that is
+     # computed and never joined into the card.
+     "footprint, integrityText,", "footprint,", P_SUB),
 
     ("the readout starts shouting on a perfectly sound gate", GATE,
      "            string integrityText = IntegritySound ? null",

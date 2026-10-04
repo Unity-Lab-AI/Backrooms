@@ -261,9 +261,16 @@ check("a hold whose pawn is gone from the save is dropped rather than blocking f
 
 debrief_pane = body_of(pane, "void DrawDebriefs(Listing_Standard listing")
 check("the pane lists who is waiting",
-      '"RR_Debrief_Outstanding".Translate(holds.Count)' in debrief_pane and
-      'listing.Label("RR_Debrief_Outstanding"' in debrief_pane,
-      "-- a key present in the file is not a claim that anything is drawn")
+      # **THE COUNT IS ON SCREEN; THE RULE BEHIND IT IS ON THE HOVER.** Owner,
+      # 2026-10-04: *"with tools tips would less cluter it"*. So the assertion is finer
+      # than it was: `heading:` must carry the count, because a player has to see it
+      # without hovering, and `detail:` must carry the standing rule that none of them go
+      # out again until they report. A key present in the file is still not a claim that
+      # anything is drawn -- and now neither is a key present in a tooltip.
+      'heading: "RR_Debrief_Count".Translate(holds.Count)' in debrief_pane and
+      'detail: "RR_Debrief_Outstanding".Translate(holds.Count)' in debrief_pane,
+      "-- a key present in the file is not a claim that anything is drawn, and a count a player "
+      "has to hover to find is a count they will not find")
 check("the pane says so when nobody is waiting",
       '"RR_Debrief_NoneOutstanding"' in debrief_pane,
       "-- a section that vanishes when empty cannot teach a player the rule exists")

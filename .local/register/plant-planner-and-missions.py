@@ -229,9 +229,10 @@ PLANTS = [
      "DrawContractTerms(listing, campaign, contract);",
      'listing.Label("RR_UI_ContractTerms".Translate());', PROOF),
 
+    # The survey terms are the hover on the pane's own short heading now.
     ("the survey contract loses its own terms", TERMS,
-     '                listing.Label("RR_UI_ContractTerms".Translate());\n                return;\n',
-     "                return;\n", PROOF),
+     '                    detail: "RR_UI_ContractTerms".Translate());',
+     '                    detail: TaggedString.Empty);', PROOF),
 
     ("the pane stops saying what is wanted", TERMS,
      '            listing.Label("RR_UI_DemandWanted".Translate(\n'
@@ -241,7 +242,8 @@ PLANTS = [
      "contract.DeliveredCount.ToString(\"N0\")", '"0"', PROOF),
 
     ("the pane stops saying ordinary stock will not do", TERMS,
-     'listing.Label("RR_UI_DemandOddOnly".Translate());', "// nothing", PROOF),
+     '                detail: "RR_UI_DemandOddOnly".Translate());',
+     '                detail: TaggedString.Empty);', PROOF),
 
     ("a demand key loses its string", SUPPLY_KEYS,
      "  <RR_UI_DemandWanted>", "  <RR_UI_DemandWantedX>", PROOF),

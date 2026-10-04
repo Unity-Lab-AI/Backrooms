@@ -6,7 +6,7 @@ Backrooms.**
 Ordinary colony play is untouched. What this adds is an employer, a machine that opens a way into
 somewhere else, and paperwork about both.
 
-**Current development version: 0.12.85-dev.** No balance, performance or compatibility result is
+**Current development version: 0.12.86-dev.** No balance, performance or compatibility result is
 claimed.
 
 ---

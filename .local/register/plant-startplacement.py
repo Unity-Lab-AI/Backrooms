@@ -17,8 +17,18 @@ STARTS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsStartDefs/RR_Starts.x
 SERVICES = "src/RimroomsAsyncIndustries/Company/CampaignServices.cs"
 COMPONENT = "src/RimroomsAsyncIndustries/Company/RimroomsCampaignComponent.cs"
 GATECOMP = "src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs"
+# Setting the coordinate and opening the connection, on the door. Owner, 2026-10-04:
+# *"ie setting the cordinace and all of those things need  to show"*.
+ADDRESS = "src/RimroomsAsyncIndustries/Gate/GateAddressControls.cs"
 CHR_NL = chr(10)
 STEPS = "src/RimroomsAsyncIndustries/UI/OperationsGateSteps.cs"
+# **THE ELEVEN CHECKS LEFT THE WINDOW.** Owner, 2026-10-04: *"and when u set a door to be a
+# gatew  that gate should tell you next step in the game world not just in the operations tab
+# and machine tab"*. `Gate/GateStartupChecklist.cs` is the one list; the window draws it and
+# the door's inspect card names the first unfinished one. Plants against the steps belong here
+# now -- aimed at the window they matched nothing, which registers as "nothing broke".
+CHECKLIST = "src/RimroomsAsyncIndustries/Gate/GateStartupChecklist.cs"
+
 TABS = "src/RimroomsAsyncIndustries/UI/OperationsExpeditions.cs"
 PORTALUI = "src/RimroomsAsyncIndustries/UI/OperationsPortalNetwork.cs"
 PATCHFILE = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_StartGenSteps.xml"
@@ -26,6 +36,12 @@ SCENARIOS = "Mod/Rimrooms - Async Industries/1.6/Defs/ScenarioDefs/RR_Scenarios.
 ARRIVAL = SCEN + "/ScenPart_RimroomsArrival.cs"
 PROOF = ".local/register/proof-startplacement.py"
 STARTS_PROOF = ".local/register/proof-starts.py"
+# **THE GLYPH CLAIM IS NOT IN THE STARTS PROOF.** `proof-playing-and-help.py` is where the
+# conditional colour exception lives -- the two indicator colours are permitted in the
+# status board ONLY while Core's checkbox glyph is drawn beside them -- so a plant that
+# removes the glyph has to be checked by that proof. Aimed at the starts proof it would
+# have reported MISSED against a perfectly working guard.
+HELP_PROOF = ".local/register/proof-playing-and-help.py"
 # The dispatch requirement itself: a start can go short either by losing the item
 # or by the requirement rising under it.
 EXPCARGO = "src/RimroomsAsyncIndustries/Expedition/ExpeditionCargo.cs"
@@ -85,11 +101,11 @@ def _rr_restore(path, original):
 
 PLANTS = [
     # ------------------- a ramp is not an open connection, and the facility's power
-    ("A RAMPING CONNECTION COUNTS AS OPEN AGAIN", STEPS,
+    ("A RAMPING CONNECTION COUNTS AS OPEN AGAIN", CHECKLIST,
      "                Done = haveGate && gate.IsOpening,",
      "                Done = haveGate && (gate.IsOpening || gate.IsSpinningUp),", STARTS_PROOF),
 
-    ("the ramp stops reporting its progress", STEPS,
+    ("the ramp stops reporting its progress", CHECKLIST,
      "                How = ramping" + CHR_NL
      + '                    ? "RR_Steps_11HowRamping".Translate(',
      "                How = false" + CHR_NL
@@ -100,13 +116,16 @@ PLANTS = [
      "                { }", STARTS_PROOF),
 
     # The board's own shape: one next-step line, and rows that carry no instruction.
+    # **FOUR ELEMENTS, SO THE WHOLE SUITE CRASHED.** `plant[4]` on this tuple raised
+    # `IndexError` while printing the baseline, which reads like the start of a run. Neither
+    # this plant nor the ninety-five after it had been set since the day it was added.
     ("THE ROWS GO BACK TO CARRYING THEIR OWN INSTRUCTIONS", STEPS,
      '            TooltipHandler.TipRegion(row, step.Done',
-     '            TooltipHandler.TipRegion(row, false'),
+     '            TooltipHandler.TipRegion(row, false', STARTS_PROOF),
 
     ("THE STATUS LIGHT LOSES ITS GLYPH, so the state is carried by hue alone", STEPS,
      "            Widgets.CheckboxDraw(light.xMax + 4f, row.y, step.Done, true, StatusRowHeight);"
-     + CHR_NL, ""),
+     + CHR_NL, "", HELP_PROOF),
 
     ("CORE'S ROTATION ADJUSTMENT IS DROPPED FROM THE CHECKER",
      "tools/check-start-layout.py",
@@ -150,16 +169,69 @@ PLANTS = [
      "            DrawNativeGateBinding(listing, campaign);" + CHR_NL
      + "            DrawGateStartupChecks(listing, campaign);", STARTS_PROOF),
 
-    ("A STEP LOSES ITS INSTRUCTION", STEPS,
+    ("A STEP LOSES ITS INSTRUCTION", CHECKLIST,
      '                How = "RR_Steps_9How".Translate(),', "                How = null,", STARTS_PROOF),
 
     ("the first unfinished step stops being named", STEPS,
      '            { listing.Label("RR_Steps_NextUp".Translate(next.Number.ToString(), next.Label, next.How)); }',
      "            { }", STARTS_PROOF),
 
-    ("the gate-control steps stop reading the components", STEPS,
+    ("the gate-control steps stop reading the components", CHECKLIST,
      "                Done = workshop != null && workshop.IsGateControl,",
      "                Done = true,", STARTS_PROOF),
+
+    # **THE SINGLE AUTHORITY ITSELF, PLANTED.** The whole point of the move is that there is
+    # one list; a second copy pasted back into the window would compile and drift. The claim
+    # that forbids it has to be shown to fail, or it is a comment.
+    ("THE WINDOW GROWS ITS OWN SECOND COPY OF THE STEPS AGAIN", STEPS,
+     "            CompRimroomsGate gate = CurrentGate(campaign);",
+     "            CompRimroomsGate gate = CurrentGate(campaign);" + CHR_NL
+     + "            int unused = 0; if (unused == 1) { } // Number = 1,", STARTS_PROOF),
+
+    # ------------------- setting the coordinate, and opening it, from the door
+    ("THE ADDRESS COMMAND VANISHES FROM THE DOOR AGAIN", GATECOMP,
+     "            foreach (Gizmo gizmo in AddressGizmos()) { yield return gizmo; }" + CHR_NL,
+     "", STARTS_PROOF),
+
+    ("the address registration skips the freeze notice", ADDRESS,
+     "                        Presentation.RimroomsGenerationNotice.Announce(captured, () =>"
+     + CHR_NL
+     + "                            ShowOrderResult("
+     + CHR_NL
+     + "                                PortalAddressService.RegisterLaboratoryAddress(this, captured)));",
+     "                        ShowOrderResult("
+     + CHR_NL
+     + "                            PortalAddressService.RegisterLaboratoryAddress(this, captured));",
+     STARTS_PROOF),
+
+    ("opening from the door bypasses the ramp", ADDRESS,
+     "delegate { ShowOrderResult(BeginSpinUp(captured.Id)); }",
+     "delegate { }", STARTS_PROOF),
+
+    # **HIDDEN IS THE FAILURE, NOT DISABLED.** This is the exact shape of *"ive done like 50
+    # things in a row and its still not opening"*: the control the player is hunting for is not
+    # there, and nothing says why.
+    ("the open command is HIDDEN instead of disabled when there is no address", ADDRESS,
+     '            { open.Disable("RR_GateAddress_NoAddressSet".Translate()); }',
+     "            { yield break; }", STARTS_PROOF),
+
+    ("the address menu prints the raw coordinate id at the player again", ADDRESS,
+     '                    "RR_GateAddress_Option".Translate(captured.AddressCode,',
+     '                    "RR_GateAddress_Option".Translate(captured.Id,', STARTS_PROOF),
+
+    # ------------------- the door says what to do next, in the world
+    ("THE DOOR STOPS NAMING THE NEXT STEP", GATECOMP,
+     "{ NextStepReadout(), status,", "{ status,", STARTS_PROOF),
+
+    ("the next step stops being FIRST on the card", GATECOMP,
+     "new[] { NextStepReadout(), status,", "new[] { status, NextStepReadout(),", STARTS_PROOF),
+
+    # **THE GUARD EVERY DOOR IN THE GAME DEPENDS ON.** This component is attached to every
+    # Core door by the native binding patch. Move the next-step line above the
+    # not-designated return and every bedroom door on the map starts giving gate advice.
+    ("THE NOT-DESIGNATED GUARD STOPS COMING FIRST", GATECOMP,
+     "            if (!IsDesignated) { return null; }" + CHR_NL,
+     "", STARTS_PROOF),
 
     ("CALIBRATION GOES BACK TO ONE MESSAGE FOR EIGHT CAUSES", GATECOMP,
      "            string blocker = CalibrationBlockerKey();" + CHR_NL

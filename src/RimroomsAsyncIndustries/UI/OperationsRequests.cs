@@ -3,6 +3,8 @@ using System.Linq;
 using RimroomsAsyncIndustries.Company;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     /// <summary>
@@ -39,7 +41,8 @@ namespace RimroomsAsyncIndustries.UI
             // is better than an empty panel, which reads as a bug.
             if (!campaign.CorporationContact)
             {
-                listing.Label("RR_Requests_NoContact".Translate());
+                DrawHeading(listing, heading: "RR_Requests_NoContactBrief".Translate(),
+                    detail: "RR_Requests_NoContact".Translate());
                 listing.GapLine();
                 return;
             }
@@ -47,9 +50,12 @@ namespace RimroomsAsyncIndustries.UI
             RequestRecord open = campaign.OpenRequest;
             if (open == null)
             {
-                listing.Label(campaign.PastTheHinge
-                    ? "RR_Requests_PastTheHinge".Translate()
-                    : "RR_Requests_NoneOpen".Translate());
+                if (campaign.PastTheHinge)
+                {
+                    DrawHeading(listing, heading: "RR_Requests_PastTheHingeBrief".Translate(),
+                        detail: "RR_Requests_PastTheHinge".Translate());
+                }
+                else { listing.Label("RR_Requests_NoneOpen".Translate()); }
             }
             else
             {

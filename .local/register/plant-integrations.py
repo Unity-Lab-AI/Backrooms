@@ -122,11 +122,14 @@ PLANTS = [
      "## What you need", "## What you need\n\nRimWorld Together is supported.", PROOF),
 
     ("the readout stops drawing the heading", PANE,
-     'listing.Label("RR_Integration_Heading".Translate(',
-     'string unusedHeading = "RR_Integration_Heading".Translate(', PROOF),
+     'heading: "RR_Integration_Heading".Translate(',
+     'unusedHeading: "RR_Integration_Heading".Translate(', PROOF),
 
+    # *"Loaded means present, not proven"* is the hover on the integration count now, so the
+    # way to take it away from the player is to empty the `detail:` argument.
     ("the caveat becomes conditional", PANE,
-     '            listing.Label("RR_Integration_Caveat".Translate());\n', "", PROOF),
+     '                detail: "RR_Integration_Caveat".Translate());',
+     '                detail: TaggedString.Empty);', PROOF),
 
     ("the position is hidden for a mod that is not loaded", PANE,
      "                listing.Label(state.PositionKey.Translate());",

@@ -65,6 +65,7 @@ Neither can be done while the gate is working.</RR_GateRun_Desc>
   <RR_NativeGate_ClearBinding>Clear this native gate designation</RR_NativeGate_ClearBinding>
   <RR_NativeGate_OpeningCannotRebind>The gate's saved opening is active. Infrastructure links cannot be changed until it closes.</RR_NativeGate_OpeningCannotRebind>
   <RR_NativeGate_SharedBatteryWarning>The linked battery is a real RimWorld battery on a shared power network. Other consumers can drain it; Rimrooms does not reserve its charge or guarantee emergency power.</RR_NativeGate_SharedBatteryWarning>
+  <RR_NativeGate_InfrastructureNotes>Shared power and door state</RR_NativeGate_InfrastructureNotes>
   <RR_NativeGate_DoorStateExplanation>The connection window is Rimrooms expedition state. The door's ordinary Open/Hold Open state only controls local pawn passage and is not proof that a connection is active.</RR_NativeGate_DoorStateExplanation>
   <RR_NativeGate_DispatchNeedsBoundGate>Select and designate a native gate before dispatch. Existing expeditions remain attached to their saved gate.</RR_NativeGate_DispatchNeedsBoundGate>
   <RR_NativeGate_PowerReadout>Linked battery charge: {0}/{1} watt-days. Rimrooms direct drain while open: {2} W. Charge needed for normal window plus emergency return: {3} watt-days; recovery opening total: {4} watt-days. The native battery remains shared with its power network.</RR_NativeGate_PowerReadout>
@@ -92,4 +93,14 @@ Neither can be done while the gate is working.</RR_GateRun_Desc>
   <RR_NativeGate_AuraEnabled>Show native gate aura</RR_NativeGate_AuraEnabled>
   <RR_NativeGate_ReducedMotion>Reduce gate motion (hide aura; keep status text)</RR_NativeGate_ReducedMotion>
   <RR_NativeGate_ReserveBreakdown>Of that, {0} watt-days is held back for an emergency return, and a recovery opening costs {1} watt-days.</RR_NativeGate_ReserveBreakdown>
+  <RR_GateAddress_SetLabel>Set this gate's address</RR_GateAddress_SetLabel>
+  <RR_GateAddress_SetDesc>Choose which place this gate connects to. Remembering an address costs nothing and can be changed; a map is only built when somebody crosses.</RR_GateAddress_SetDesc>
+  <RR_GateAddress_NoneKnown>This branch has no addresses yet. Dial an unknown address with this gate, or take a company request.</RR_GateAddress_NoneKnown>
+  <RR_GateAddress_Option>{0} — depth {1}</RR_GateAddress_Option>
+  <RR_GateAddress_OpenLabel>Open a connection ({0} remembered)</RR_GateAddress_OpenLabel>
+  <RR_GateAddress_OpenDesc>Bring up the connection to a remembered address. The assigned operator must stay on the powered console while it comes up.</RR_GateAddress_OpenDesc>
+  <RR_GateAddress_OpenOption>Open the connection to {0}</RR_GateAddress_OpenOption>
+  <RR_GateAddress_NoAddressSet>No address is remembered on this gate yet. Set one first.</RR_GateAddress_NoAddressSet>
+  <RR_GateAddress_AlreadyOpen>This gate already holds an open connection.</RR_GateAddress_AlreadyOpen>
+  <RR_GateAddress_AlreadyRamping>This gate is already coming up. Watch its readout, or abort.</RR_GateAddress_AlreadyRamping>
 </LanguageData>

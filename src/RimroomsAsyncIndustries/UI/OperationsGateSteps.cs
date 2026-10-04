@@ -45,15 +45,6 @@ namespace RimroomsAsyncIndustries.UI
     /// </summary>
     public sealed partial class MainTabWindow_Operations
     {
-        /// <summary>One numbered check: what it is, whether it is done, and how to finish it.</summary>
-        private struct GateStep
-        {
-            public int Number;
-            public string Label;
-            public bool Done;
-            public string How;
-        }
-
         /// <summary>Height of one status row, and the side of the light on it.</summary>
         private const float StatusRowHeight = 24f;
         private const float StatusLightSide = 12f;
@@ -110,14 +101,14 @@ namespace RimroomsAsyncIndustries.UI
         private void DrawGateStartupChecks(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
             CompRimroomsGate gate = CurrentGate(campaign);
-            List<GateStep> steps = GateStartupSteps(campaign, gate);
-            int done = steps.Count(step => step.Done);
+            List<GateStartupChecklist.GateStep> steps = GateStartupChecklist.Steps(gate);
+            int done = GateStartupChecklist.DoneCount(steps);
             listing.Label("RR_Steps_Progress".Translate(done.ToString(), steps.Count.ToString()));
 
             // **ONE next-step line for the whole board**, which is the owner's *"a next step
             // section showing what to do next"*. It carries the instruction because this is the
             // one place a player is told anything; the rows below do not repeat it.
-            GateStep next = steps.FirstOrDefault(step => !step.Done);
+            GateStartupChecklist.GateStep next = GateStartupChecklist.NextIncomplete(steps);
             if (next.Number != 0)
             { listing.Label("RR_Steps_NextUp".Translate(next.Number.ToString(), next.Label, next.How)); }
             else if (gate != null && gate.IsOpening)
@@ -147,7 +138,8 @@ namespace RimroomsAsyncIndustries.UI
         /// The whole row is the hover target rather than the light, because a twelve-pixel square
         /// is not something a player finds by accident.
         /// </summary>
-        private static void DrawStatusRow(Listing_Standard listing, GateStep step)
+        private static void DrawStatusRow(Listing_Standard listing,
+            GateStartupChecklist.GateStep step)
         {
             Rect row = listing.GetRect(StatusRowHeight);
             var light = new Rect(row.x + 2f,
@@ -168,138 +160,5 @@ namespace RimroomsAsyncIndustries.UI
                 : "RR_Steps_TipToDo".Translate(step.Label, step.How));
         }
 
-        /// <summary>
-        /// The eleven checks, in the order they have to be satisfied.
-        ///
-        /// **The order is not cosmetic.** Gate control on the machining table comes before the
-        /// assembly because `RecipeWorker_RimroomsGateAssembly.AvailableOnNow` withdraws the
-        /// recipe from a bench in normal operation, and gate control on the console comes before
-        /// staffing because `BeginSpinUp` refuses while either component is doing its day job.
-        /// A player following this list top to bottom never meets a step that cannot be done yet.
-        /// </summary>
-        private List<GateStep> GateStartupSteps(RimroomsCampaignComponent campaign, CompRimroomsGate gate)
-        {
-            var steps = new List<GateStep>();
-            bool haveGate = gate != null;
-            steps.Add(new GateStep
-            {
-                Number = 1,
-                Label = "RR_Steps_1Label".Translate(),
-                Done = haveGate,
-                How = "RR_Steps_1How".Translate(),
-            });
-
-            CompRimroomsGateConsole station = haveGate && gate.LinkedConsole != null
-                ? gate.LinkedConsole.TryGetComp<CompRimroomsGateConsole>() : null;
-            CompRimroomsGateConsole workshop = haveGate && gate.AssemblyBench != null
-                ? gate.AssemblyBench.TryGetComp<CompRimroomsGateConsole>() : null;
-            bool bound = haveGate && gate.LinkedConsole != null && gate.LinkedBattery != null &&
-                gate.AssemblyBench != null;
-            steps.Add(new GateStep
-            {
-                Number = 2,
-                Label = "RR_Steps_2Label".Translate(),
-                Done = bound,
-                How = "RR_Steps_2How".Translate(),
-            });
-
-            steps.Add(new GateStep
-            {
-                Number = 3,
-                Label = "RR_Steps_3Label".Translate(),
-                Done = haveGate && gate.IsDesignated,
-                How = "RR_Steps_3How".Translate(),
-            });
-
-            steps.Add(new GateStep
-            {
-                Number = 4,
-                Label = "RR_Steps_4Label".Translate(),
-                Done = workshop != null && workshop.IsGateControl,
-                How = "RR_Steps_4How".Translate(haveGate && gate.AssemblyBench != null
-                    ? gate.AssemblyBench.LabelCap.ToString()
-                    : "RR_Steps_TheTable".Translate().ToString()),
-            });
-
-            steps.Add(new GateStep
-            {
-                Number = 5,
-                Label = "RR_Steps_5Label".Translate(),
-                Done = haveGate && gate.AssemblyComplete,
-                How = "RR_Steps_5How".Translate(),
-            });
-
-            steps.Add(new GateStep
-            {
-                Number = 6,
-                Label = "RR_Steps_6Label".Translate(),
-                Done = haveGate && gate.AssignedOperator != null,
-                How = "RR_Steps_6How".Translate(),
-            });
-
-            steps.Add(new GateStep
-            {
-                Number = 7,
-                Label = "RR_Steps_7Label".Translate(),
-                Done = haveGate && gate.Calibrated,
-                How = "RR_Steps_7How".Translate(),
-            });
-
-            steps.Add(new GateStep
-            {
-                Number = 8,
-                Label = "RR_Steps_8Label".Translate(),
-                Done = station != null && station.IsGateControl,
-                How = "RR_Steps_8How".Translate(haveGate && gate.LinkedConsole != null
-                    ? gate.LinkedConsole.LabelCap.ToString()
-                    : "RR_Steps_TheConsole".Translate().ToString()),
-            });
-
-            RimroomsPortalNetwork network = Current.Game == null
-                ? null : Current.Game.GetComponent<RimroomsPortalNetwork>();
-            bool remembered = haveGate && network != null && !network.HasStateFault &&
-                network.Connections.Any(edge => edge != null && edge.Kind == PortalConnectionKind.Laboratory &&
-                    edge.First != null && edge.First.Anchor == gate.parent);
-            steps.Add(new GateStep
-            {
-                Number = 9,
-                Label = "RR_Steps_9Label".Translate(),
-                Done = remembered,
-                How = "RR_Steps_9How".Translate(),
-            });
-
-            steps.Add(new GateStep
-            {
-                Number = 10,
-                Label = "RR_Steps_10Label".Translate(),
-                Done = haveGate && gate.IsOperatorOnStation,
-                How = "RR_Steps_10How".Translate(),
-            });
-
-            // **A RAMP IS NOT AN OPEN CONNECTION, and conflating them was a defect.** This read
-            // `IsOpening || IsSpinningUp`, so the moment a player pressed "open a session" every
-            // one of the eleven checks showed complete -- and then `PortalTravelService` refused
-            // the crossing with *"the laboratory connection for that address is not open"*,
-            // because it is not. Owner: *"every check mark is complete but it still says: the lab
-            // connection to that address is not connected.. but the checked staps says
-            // otherwise"*. **They were reading a tick that was wrong.**
-            //
-            // `IsSpinningUp` is explicitly `!IsOpening`, so the ramp is a distinct state and the
-            // step says which one it is in, with the live percentage the portal panel already
-            // shows. Opening is work and it **bleeds back down** if the operator leaves, which is
-            // the one thing a player watching a progress bar needs told.
-            bool ramping = haveGate && gate.IsSpinningUp;
-            steps.Add(new GateStep
-            {
-                Number = 11,
-                Label = "RR_Steps_11Label".Translate(),
-                Done = haveGate && gate.IsOpening,
-                How = ramping
-                    ? "RR_Steps_11HowRamping".Translate(
-                        (gate.SpinUpProgress * 100f).ToString("F0")).ToString()
-                    : "RR_Steps_11How".Translate().ToString(),
-            });
-            return steps;
-        }
     }
 }

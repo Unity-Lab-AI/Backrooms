@@ -7,6 +7,8 @@ using RimroomsAsyncIndustries.Gate;
 using RimWorld;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     /// <summary>
@@ -50,8 +52,11 @@ namespace RimroomsAsyncIndustries.UI
                 if (trips <= 0) { listing.Label("RR_Plan_ExposureNone".Translate()); }
                 else if (campaign.HasBeenTo(candidate.Pawn, address))
                 {
-                    listing.Label("RR_Plan_ExposureKnowsRoute".Translate(
-                        trips.ToString(CultureInfo.CurrentCulture)));
+                    DrawHeading(listing,
+                        heading: "RR_Plan_ExposureKnowsRouteBrief".Translate(
+                            trips.ToString(CultureInfo.CurrentCulture)),
+                        detail: "RR_Plan_ExposureKnowsRoute".Translate(
+                            trips.ToString(CultureInfo.CurrentCulture)));
                 }
                 else
                 {

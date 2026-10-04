@@ -86,6 +86,19 @@ H2 = re.compile(r"^## (.*)$")
 H3 = re.compile(r"^### (.*)$")
 BOUNDARY = re.compile(r"^(\s*- \[| *#{1,6} |---\s*$|\s*$)")
 
+# What `item_block_end` reads. Split out one per shape rather than folded into
+# `BOUNDARY`, because the fix needed them to mean different things: a heading
+# ends a block, an indented paragraph continues one, and `BOUNDARY` could not
+# tell those apart -- it matched a blank line, which is what shredded the rows.
+RULE_ONLY = re.compile(r"^---\s*$")
+TABLE_ROW = re.compile(r"^\s*\|")
+FENCE = re.compile(r"^\s*```")
+CONTINUATION = re.compile(r"^  +\S")
+# `**From `## <section>`:**` -- the marker this queue uses when rows were lifted
+# out of a dated checkpoint. It introduces the rows under it, so it ends the
+# block above rather than continuing it.
+FROM_MARKER = re.compile(r"^\*\*From `")
+
 # Set from the command line so the same mover serves every queue tier.
 QUEUE = TODO
 QUEUE_NAME = "docs/TODO.md"
@@ -141,13 +154,91 @@ def census(lines, start, end):
 def item_block_end(lines, start, limit):
     """End index (exclusive) of the [x] item beginning at `start`.
 
-    The bullet line itself, plus any wrapped continuation lines. A continuation
-    ends at the next bullet of any indent, any heading, a rule, or a blank line.
+    ## A BLANK LINE USED TO END THE BLOCK, AND IT SHREDDED EVERY MULTI-PARAGRAPH ROW
+
+    This read `while not BOUNDARY.match(...)`, and `BOUNDARY` matches a blank
+    line. A row whose closure carries its own evidence -- the normal shape in
+    this queue -- therefore moved its **bullet line only**, and every indented
+    continuation paragraph stayed behind. Measured on 2026-10-04: **eleven
+    stranded lines** across four published versions, belonging to five rows that
+    are sitting in `docs/FINALIZED.md` without the record attached to them.
+
+    Both halves of the LAW broke at once and neither gate could see it. The
+    archive was **missing** the paragraphs, and `docs/TODO.md` was **holding
+    fragments of completed items** against the owner's own direction -- *"the
+    todods sahll never hold completed items"*. The reassembly identity in
+    `assert_lossless` proves `kept + moved == original`; it says nothing about
+    **where a row ended**, which is why this survived eight batches of a gate
+    working exactly as written.
+
+    ## What a continuation is now
+
+    Blank lines no longer end a block. The block runs on while the next non-blank
+    line is an **indented** continuation, a table row, or inside a fenced code
+    block -- and stops at the next bullet, heading, rule, direction group start or
+    bold lead-in. Trailing blanks are left in the queue so the separator between
+    rows survives the move.
+
+    **Unindented prose is deliberately NOT swallowed.** A paragraph at column
+    zero after a row is ambiguous: it is as likely to introduce the next row as
+    to finish this one, and guessing either way is silent. `prose_hazards` refuses
+    the run instead and names the lines, so the choice is made by somebody.
     """
     index = start + 1
-    while index < limit and not BOUNDARY.match(lines[index]):
+    fenced = False
+    last_content = start
+    while index < limit:
+        line = lines[index]
+        if FENCE.match(line):
+            fenced = not fenced
+            last_content = index
+            index += 1
+            continue
+        if fenced:
+            last_content = index
+            index += 1
+            continue
+        if not line.strip():
+            index += 1
+            continue
+        if (MARKER.match(line) or H2.match(line) or H3.match(line)
+                or RULE_ONLY.match(line) or GROUP_START.match(line)
+                or LEAD_IN.match(line) or FROM_MARKER.match(line)):
+            break
+        if not (CONTINUATION.match(line) or TABLE_ROW.match(line)):
+            break
+        last_content = index
         index += 1
-    return index
+    return last_content + 1
+
+
+def prose_hazards(lines, labels):
+    """Unindented prose immediately after a moved block -- the stranding shape.
+
+    Reported rather than guessed at, and it blocks `--apply`. The remedy is one
+    keystroke per line: indent the paragraph by two spaces so it is visibly part
+    of the row it belongs to, or lift it above the row if it belongs to the
+    group. Either way a person decides, because both readings are plausible from
+    the text and only one of them is true.
+    """
+    hazards = []
+    for index in range(len(lines) - 1):
+        if labels[index] != MOVE:
+            continue
+        walk = index + 1
+        while walk < len(lines) and not lines[walk].strip():
+            walk += 1
+        if walk >= len(lines) or labels[walk] == MOVE:
+            continue
+        line = lines[walk]
+        if (MARKER.match(line) or H2.match(line) or H3.match(line)
+                or RULE_ONLY.match(line) or GROUP_START.match(line)
+                or LEAD_IN.match(line) or FROM_MARKER.match(line)
+                or CONTINUATION.match(line) or TABLE_ROW.match(line)
+                or FENCE.match(line)):
+            continue
+        hazards.append((walk + 1, line.strip()[:96]))
+    return hazards
 
 
 def groups(lines, start, end):
@@ -429,6 +520,21 @@ def main():
     print()
     print("  queue after the move     : x=%d  open=%d  partial=%d  test=%d"
           % (remaining["x"], remaining[" "], remaining["~"], remaining["T"]))
+
+    hazards = prose_hazards(lines, labels)
+    if hazards:
+        print()
+        print("  UNARCHIVABLE PROSE DIRECTLY AFTER A MOVED BLOCK - %d line(s):" % len(hazards))
+        for line_number, text in hazards:
+            print("      line %-5d %s" % (line_number, text))
+        print()
+        print("  A paragraph at column zero after a closed row is ambiguous: it reads as the")
+        print("  end of that row and as the introduction to the next one, and the mover is")
+        print("  not allowed to guess. Indent it two spaces to make it part of the row, or")
+        print("  lift it above the row to make it part of the group. Nothing is written until")
+        print("  it is one or the other -- this is the exact shape that stranded eleven lines")
+        print("  across four published versions.")
+        return 3
 
     if not apply_it:
         print()

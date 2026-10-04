@@ -5,6 +5,8 @@ using RimroomsAsyncIndustries.Investigation;
 using RimWorld;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     public sealed partial class MainTabWindow_Operations
@@ -13,8 +15,8 @@ namespace RimroomsAsyncIndustries.UI
 
         private void DrawLaboratoryBinding(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
-            listing.Label("RR_Lab_Heading".Translate());
-            listing.Label("RR_Lab_Explanation".Translate());
+            DrawHeading(listing, heading: "RR_Lab_Heading".Translate(),
+                detail: "RR_Lab_Explanation".Translate());
             RimroomsLaboratoryComponent laboratory = Current.Game == null ? null : Current.Game.GetComponent<RimroomsLaboratoryComponent>();
             if (laboratory == null || campaign == null) { listing.Label("RR_Lab_BranchUnavailable".Translate()); return; }
             if (laboratory.FaultKey != null) { listing.Label(laboratory.FaultKey.Translate()); return; }
@@ -29,15 +31,26 @@ namespace RimroomsAsyncIndustries.UI
                 if (listing.ButtonText("RR_Lab_Clear".Translate())) { ShowResult(laboratory.ClearDesignation()); }
             }
             CompanyActionResult readiness = laboratory.Readiness();
-            listing.Label((readiness.Success ? "RR_Lab_Ready" : readiness.MessageKey).Translate());
-            listing.Label("RR_Lab_NativeResearch".Translate());
+            // **THE READINESS LINE STAYS; THE REASSURANCE MOVES.** Thirty-nine words saying
+            // ordinary research still works through native controls is a standing fact about
+            // the game, not a fact about this bench, and it was drawn under a readiness
+            // verdict as though it qualified it.
+            DrawHeading(listing,
+                heading: (readiness.Success ? "RR_Lab_Ready" : readiness.MessageKey).Translate(),
+                detail: "RR_Lab_NativeResearch".Translate());
 
             var candidates = laboratory.AvailableBenches().OrderBy(b => b.def.defName).ThenBy(b => b.thingIDNumber).ToList();
             const int pageSize = 6;
             int pages = Math.Max(1, (candidates.Count + pageSize - 1) / pageSize);
             laboratoryBenchPage = Math.Max(0, Math.Min(laboratoryBenchPage, pages - 1));
             if (candidates.Count == 0) { listing.Label("RR_Lab_NoCandidates".Translate()); return; }
-            listing.Label("RR_Lab_Candidates".Translate(candidates.Count, laboratoryBenchPage + 1, pages));
+            // The count and the page are the readout; that an unpowered bench may be
+            // designated and simply will not work is the caveat on it.
+            DrawHeading(listing,
+                heading: "RR_Lab_CandidateCount".Translate(candidates.Count,
+                    laboratoryBenchPage + 1, pages),
+                detail: "RR_Lab_Candidates".Translate(candidates.Count,
+                    laboratoryBenchPage + 1, pages));
             if (laboratoryBenchPage > 0 && listing.ButtonText("RR_Lab_Previous".Translate())) { laboratoryBenchPage--; }
             if (laboratoryBenchPage + 1 < pages && listing.ButtonText("RR_Lab_Next".Translate())) { laboratoryBenchPage++; }
             foreach (Building_ResearchBench candidate in candidates.Skip(laboratoryBenchPage * pageSize).Take(pageSize))

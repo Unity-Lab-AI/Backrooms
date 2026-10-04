@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
   <!-- Right-click a live gate with a colonist selected. Owner direction, 2026-09-30: "the pawns
@@ -186,6 +186,7 @@ Select who you mean first. Anyone who cannot cross is listed with the reason rat
   <RR_UI_Places>Places</RR_UI_Places>
   <RR_Release_Heading>Places held open</RR_Release_Heading>
   <RR_Release_Budget>Holding {0} of {1}. A Backrooms level costs a loaded map exactly as a colony does, and the limit is the maximum number of colonies set in Options.</RR_Release_Budget>
+  <RR_Release_Held>Holding {0} of {1} places</RR_Release_Held>
   <RR_Release_Explanation>Releasing a place closes the way to it for good. A natural gate is open from the moment it is found and stays open, and closing one is the only way to free a slot - but it cannot be opened again, and everything left inside is gone with it. The door remains, and still remembers where it led; it simply leads nowhere now.</RR_Release_Explanation>
   <RR_Release_ColonyRow>Colony: {0} — cannot be released here.</RR_Release_ColonyRow>
   <RR_Release_NoneHeld>This company is holding no Backrooms levels open.</RR_Release_NoneHeld>

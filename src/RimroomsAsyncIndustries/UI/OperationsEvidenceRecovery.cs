@@ -4,6 +4,8 @@ using RimroomsAsyncIndustries.Investigation;
 using RimWorld;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     public sealed partial class MainTabWindow_Operations
@@ -15,8 +17,8 @@ namespace RimroomsAsyncIndustries.UI
             if (creation.FaultKey != null) { listing.Label(creation.FaultKey.Translate()); }
             var pending = creation.Attempts.Where(a => a != null && !a.Registered).ToList();
             if (pending.Count == 0 && creation.HeldCount == 0) { return; }
-            listing.Label("RR_EvidenceRecovery_Title".Translate());
-            listing.Label("RR_EvidenceRecovery_Explanation".Translate());
+            DrawHeading(listing, heading: "RR_EvidenceRecovery_Title".Translate(),
+                detail: "RR_EvidenceRecovery_Explanation".Translate());
             listing.Label("RR_EvidenceRecovery_Held".Translate(creation.HeldCount));
             foreach (EvidenceCreationAttempt attempt in pending)
             {

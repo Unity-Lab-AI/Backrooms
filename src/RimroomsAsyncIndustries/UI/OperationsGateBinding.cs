@@ -7,6 +7,8 @@ using RimroomsAsyncIndustries.Expedition;
 using RimroomsAsyncIndustries.Gate;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     public sealed partial class MainTabWindow_Operations
@@ -19,8 +21,8 @@ namespace RimroomsAsyncIndustries.UI
 
         private void DrawNativeGateBinding(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
-            listing.Label("RR_NativeGate_Heading".Translate());
-            listing.Label("RR_NativeGate_Explanation".Translate());
+            DrawHeading(listing, heading: "RR_NativeGate_Heading".Translate(),
+                detail: "RR_NativeGate_Explanation".Translate());
             if (campaign?.HasBranch == true && campaign.Headquarters != null)
             { listing.Label("RR_NativeGate_HQContext".Translate(campaign.BranchId, campaign.Headquarters.uniqueID)); }
 
@@ -111,14 +113,24 @@ namespace RimroomsAsyncIndustries.UI
 
             string inspect = gate.CompInspectStringExtra();
             if (!string.IsNullOrEmpty(inspect)) { listing.Label(inspect); }
-            listing.Label("RR_NativeGate_SharedBatteryWarning".Translate());
-            listing.Label("RR_NativeGate_DoorStateExplanation".Translate());
+            // **FIFTY-FIVE WORDS OF STANDING TRUTH, DRAWN EVERY FRAME.** Neither of these
+            // changes with state: a shared battery is always shared, and the door's own
+            // Open/Hold state always means something different from the connection window.
+            // Both are things a player needs once, which is what a hover is for.
+            DrawHeading(listing, heading: "RR_NativeGate_InfrastructureNotes".Translate(),
+                detail: "RR_NativeGate_SharedBatteryWarning".Translate()
+                    + "\n\n" + "RR_NativeGate_DoorStateExplanation".Translate());
             if (gate.HasNativeEnergyDebitFault)
             {
                 listing.Label("RR_NativeGate_DebitFaultDetails".Translate(gate.NativeDebitOperationId ?? "?",
                     gate.NativeDebitRequestedWattDays.ToString("F4"), gate.NativeDebitObservedWattDays.ToString("F4")));
-                listing.Label("RR_NativeGate_DebitFaultExplanation".Translate());
-                if (listing.ButtonText("RR_NativeGate_AcknowledgeDebit".Translate()))
+                // **WHAT ACKNOWLEDGEMENT DOES AND DOES NOT DO, ON THE ACKNOWLEDGE BUTTON.**
+                // It does not refill the battery. A player pressing it to fix the fault has
+                // misread the paragraph that used to sit above it, and the one place they
+                // cannot misread it is the button itself.
+                if (DrawAction(listing, label: "RR_NativeGate_AcknowledgeDebit".Translate(),
+                        refusal: TaggedString.Empty,
+                        detail: "RR_NativeGate_DebitFaultExplanation".Translate()))
                 { ShowResult(gate.AcknowledgeNativeEnergyDebit()); }
             }
             if (gate.NativeBindingFailureKey != null) { listing.Label(gate.NativeBindingFailureKey.Translate()); }

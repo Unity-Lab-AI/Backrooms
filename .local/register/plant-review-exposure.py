@@ -48,7 +48,8 @@ PLANTS = [
      "                else { }", PROOF),
 
     ("the objective hint stops naming review, so nobody learns the step exists", EXPEDITIONS_UI,
-     '            else if (campaign.AwaitsReview(record)) { key = "RR_UI_NextReview"; pane = 6; }'
+     '            else if (campaign.AwaitsReview(record))' + NL
+     + '            { key = "RR_UI_NextReview"; brief = "RR_UI_NextReviewBrief"; pane = 6; }'
      + NL, "", PROOF),
 
     ("a refusal loses its string and prints a raw key at the player", KEYED,

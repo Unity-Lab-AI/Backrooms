@@ -41,6 +41,35 @@ def _rr_unmark():
         pass
 
 
+def _rr_plant(path, planted):
+    """Write the planted fault, with the same retry the restore has.
+
+    **The asymmetry this fixes aborted a full-battery run.** `_rr_restore` below
+    retries five times against `OSError: [Errno 22]` -- a transient this loop has
+    hit repeatedly on a path it had already written twice. The plant write did
+    not retry, so the same transient on the way in killed the sweep while on the
+    way out it was a non-event.
+
+    The sentinel is written before this is called and stays if every attempt
+    fails, so a half-written plant is refused by `check-plant-residue.py` rather
+    than built on. Raising with it in place is deliberate: the next plant must
+    not be set on top of this one.
+    """
+    last = None
+    for attempt in range(5):
+        try:
+            io.open(path, "w", encoding="utf-8", newline="").write(planted)
+            if io.open(path, encoding="utf-8").read() == planted:
+                return
+            last = "the file read back different from what was written"
+        except (OSError, IOError) as error:
+            last = repr(error)
+        time.sleep(0.4 * (attempt + 1))
+    raise SystemExit("FATAL: could not plant into %s after five attempts (%s). The sentinel is "
+                     "left in place on purpose -- run tools/check-plant-residue.py and check "
+                     "that file by hand before building anything." % (path, last))
+
+
 def _rr_restore(path, original):
     """Put the file back, and do not believe it until it reads back identical.
 
@@ -164,8 +193,11 @@ PLANTS = [
 
     # --- pane
     ("the pane stops drawing the outstanding count", PANE,
-     'listing.Label("RR_Debrief_Outstanding".Translate(holds.Count));',
-     'string unused = "RR_Debrief_Outstanding".Translate(holds.Count);'),
+     # The count draws through `DrawHeading` now: `RR_Debrief_Count` on screen, and the
+     # standing rule that none of them go out again until they report on the hover.
+     # Emptying the heading is what stops the player seeing the count.
+     'heading: "RR_Debrief_Count".Translate(holds.Count),',
+     'heading: TaggedString.Empty,'),
 
     ("the pane goes silent when nobody is waiting", PANE,
      '            { listing.Label("RR_Debrief_NoneOutstanding".Translate()); return; }',
@@ -188,7 +220,7 @@ for label, path, old, new in PLANTS:
         print("PLANT SETUP BROKEN (%d matches): %s" % (original.count(old), label))
         sys.exit(2)
     _rr_mark(path, label)
-    io.open(path, "w", encoding="utf-8", newline="").write(original.replace(old, new, 1))
+    _rr_plant(path, original.replace(old, new, 1))
     try:
         code = subprocess.call([sys.executable, ".local/register/proof-areas-and-debrief.py"],
                                stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)

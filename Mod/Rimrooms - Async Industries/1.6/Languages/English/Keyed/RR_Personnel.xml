@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Personnel_StaffPage>Staff page {0} of {1} — {2} records</RR_Personnel_StaffPage>
   <RR_Personnel_PreviousStaff>Previous staff page</RR_Personnel_PreviousStaff>
@@ -39,6 +39,7 @@
   <RR_Personnel_ApplicantHeading>Voluntary applicants</RR_Personnel_ApplicantHeading>
   <RR_Personnel_HeldCount>People retained in the personnel recovery holder: {0}</RR_Personnel_HeldCount>
   <RR_Personnel_BoardExplanation>Request up to {0} ordinary applicants every {1} game days. Inspect the actual person and equipment before accepting. Unaccepted candidates remain off-site; the board provides no free staff, work or supplies.</RR_Personnel_BoardExplanation>
+  <RR_Personnel_BoardBrief>Up to {0} applicants, refreshed every {1} days</RR_Personnel_BoardBrief>
   <RR_Personnel_RequestAt>Next applicant request: day {0} or later, after open offers are resolved.</RR_Personnel_RequestAt>
   <RR_Personnel_Request>Request applicants</RR_Personnel_Request>
   <RR_Personnel_OfferRow>{0} — {1}</RR_Personnel_OfferRow>

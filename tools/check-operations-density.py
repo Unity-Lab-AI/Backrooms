@@ -57,25 +57,42 @@ WORDS_WITHOUT_AN_ACTION = 120
 #
 # Measured 2026-10-04, immediately after the machine tab's status board replaced fourteen wrapped
 # paragraphs with two lines and eleven rows (356 on-screen words to 58).
+#
+# **TWO OF THESE WENT UP ON 2026-10-04 AND NEITHER WAS A REGRESSION.** `indirect_groups` was
+# added that day and found **367 words of keyed string this tool had been counting as zero** --
+# the longest instructions in the panel, picked into a variable and translated later. A ratchet
+# whose baseline was measured by a blind instrument is a ratchet holding the wrong line, so the
+# affected ceilings were re-measured honestly first and then brought down by the work. The
+# recorded number is always what the tool last measured; it is never relaxed to make a change fit.
 ONSCREEN_CEILING = {
-    "MainTabWindow_Operations.cs": 421,
+    # 421 to 195. The longest line left is the unsupported-save warning, which stays whole on
+    # screen on purpose: it is the one message a player must not be able to miss by not hovering.
+    "MainTabWindow_Operations.cs": 195,
     "OperationsConnectedWork.cs": 48,
-    "OperationsContractTerms.cs": 101,
-    "OperationsCrewPlanner.cs": 174,
-    "OperationsEvidence.cs": 183,
-    "OperationsEvidenceRecovery.cs": 62,
-    "OperationsExpeditions.cs": 442,
-    "OperationsFacilities.cs": 312,
-    "OperationsGateBinding.cs": 282,
+    "OperationsContractTerms.cs": 47,
+    # The shared primitives themselves author no text: every string they draw arrives from the
+    # pane that called them. Recorded at zero so that stays true -- a helper that starts carrying
+    # its own player-facing wording is a second place for the panel's voice to live.
+    "OperationsControls.cs": 0,
+    "OperationsCrewPlanner.cs": 163,
+    "OperationsEvidence.cs": 78,
+    "OperationsEvidenceRecovery.cs": 40,
+    # 442 when measured blind, 477 once the objective chain became visible, 215 after the
+    # paragraphs moved to hover and the two refusals moved onto the controls they refuse.
+    "OperationsExpeditions.cs": 215,
+    "OperationsFacilities.cs": 229,
+    "OperationsGateBinding.cs": 189,
     "OperationsGateSteps.cs": 58,
-    "OperationsHeldPlaces.cs": 187,
+    "OperationsHeldPlaces.cs": 86,
     "OperationsHelp.cs": 225,
-    "OperationsLaboratoryBinding.cs": 148,
-    "OperationsPersonnel.cs": 413,
-    "OperationsPortalNetwork.cs": 399,
-    "OperationsProcurement.cs": 323,
+    "OperationsLaboratoryBinding.cs": 61,
+    # 413 to 217. 130 of those words were in `PersonnelView` and `Dialog_ConfirmApplicantHire`,
+    # neither of which could reach the primitives until they stopped being private to the window.
+    "OperationsPersonnel.cs": 217,
+    "OperationsPortalNetwork.cs": 288,
+    "OperationsProcurement.cs": 262,
     "OperationsRemoteSites.cs": 48,
-    "OperationsRequests.cs": 157,
+    "OperationsRequests.cs": 102,
 }
 
 # The one pane where prose IS the product. Owner's complaint is that readouts read like a novel;
@@ -105,6 +122,136 @@ def keyed_strings():
     return found
 
 
+def without_comments(source):
+    """The C# source with its comments removed, string literals intact.
+
+    ## A COMMENT CHANGED A MEASUREMENT, AND IT WAS THIS FILE'S OWN WORD THAT DID IT
+
+    Classification reads each statement for the words `TipRegion` / `tooltip` /
+    `Tooltip` to decide whether a string is drawn or hovered. A comment written
+    above `listing.Label("RR_Sites_Heading".Translate())` happened to contain the
+    sentence *"a tooltip that reports state is a tooltip that lies"* -- and the
+    heading was reclassified as hover text. Seven words, in the right direction,
+    for entirely the wrong reason.
+
+    The same hazard runs the other way and is worse: a commented-out `.Label(`
+    call counts as a read, so deleting a draw by commenting it out would leave
+    the pane measuring exactly as before.
+
+    So the scan reads code only. Written as a scanner rather than a regex because
+    `//` inside a string literal is ordinary text and a regex cannot tell the
+    difference -- which is the same reason the keyed-string harvest in this file
+    reads one line at a time instead of using `re.S`.
+    """
+    out = []
+    index = 0
+    length = len(source)
+    while index < length:
+        character = source[index]
+        if character == '"':
+            out.append(character)
+            index += 1
+            while index < length:
+                if source[index] == "\\":
+                    out.append(source[index:index + 2])
+                    index += 2
+                    continue
+                out.append(source[index])
+                if source[index] == '"':
+                    index += 1
+                    break
+                index += 1
+            continue
+        if source.startswith("//", index):
+            while index < length and source[index] != NL:
+                index += 1
+            continue
+        if source.startswith("/*", index):
+            end = source.find("*/", index + 2)
+            index = length if end == -1 else end + 2
+            continue
+        out.append(character)
+        index += 1
+    return "".join(out)
+
+
+def indirect_groups(source):
+    """Keys the pane picks into a variable and translates later, grouped.
+
+    ## 367 WORDS THIS TOOL COULD NOT SEE, AND THEY WERE THE WORST WORDS IN THE PANEL
+
+    The expedition pane's objective line reads
+
+        if (...) { key = "RR_UI_NextAssembly"; }
+        else if (...) { key = "RR_UI_NextCalibration"; }
+        ...
+        listing.Label(key.Translate());
+
+    Thirteen strings of seventeen to fifty-seven words each. The per-statement
+    scan sees `key = "RR_UI_NextAssembly"` with no `.Translate` in it and counts
+    nothing, and sees `listing.Label(key.Translate())` with no literal in it and
+    counts nothing. **So the longest instructions in the Operations panel measured
+    zero**, and the pane that carries them reported 442 words while drawing more
+    than that. This is the defect class the header of this file names arriving in
+    the file a second time: a measurement that measures nothing still prints a
+    number.
+
+    ## Counted at the MAXIMUM of the group, not the sum
+
+    Exactly one branch of that chain draws per frame, so a player never reads the
+    sum and charging the pane for it would make the budget unmeetable by
+    construction. The honest figure is the **worst line the pane can show**, which
+    is what a player meets on their unluckiest visit. Summing a group would also
+    punish the right fix -- adding a clearer alternative to a chain -- which is how
+    a budget stops being believed.
+
+    Returns a list of key sets, one per identifier that is translated inside an
+    on-screen call. An identifier used only in a tooltip is a hover group and is
+    returned separately by the caller's own classification, which this does not
+    duplicate.
+    """
+    assignments = {}
+    for identifier, key in re.findall(
+            r"(\b[A-Za-z_][A-Za-z0-9_]*)\s*=\s*\"(RR_[A-Za-z0-9_]+)\"", source):
+        assignments.setdefault(identifier, set()).add(key)
+    if not assignments:
+        return [], []
+    onscreen, hover = [], []
+    for identifier in sorted(assignments):
+        # Word-bounded, so `key` does not match `monkey` and `stepKey` does not
+        # match `key`.
+        drawn = re.compile(r"\b%s\s*\.\s*Translate" % re.escape(identifier))
+        # The same argument labels the direct scan reads, but with a variable on
+        # the right rather than a literal -- `heading: brief.Translate()`. Without
+        # this the shared primitives would hide an indirect group completely:
+        # the statement carries no `RR_` literal for the direct scan to find and
+        # no `.Label(` for the fallback below to recognise.
+        labelled = re.compile(
+            r"\b(heading|label|detail|refusal)\s*:\s*%s\s*\.\s*Translate" % re.escape(identifier))
+        for statement in source.split(";"):
+            if not drawn.search(statement):
+                continue
+            argument = labelled.search(statement)
+            if argument:
+                if argument.group(1) in ("heading", "label"):
+                    onscreen.append(assignments[identifier])
+                else:
+                    hover.append(assignments[identifier])
+                continue
+            if "TipRegion" in statement or "ooltip" in statement:
+                hover.append(assignments[identifier])
+            elif (".Label(" in statement or ".ButtonText(" in statement
+                  or ".CheckboxLabeled(" in statement or "Widgets.Label(" in statement
+                  or ".RadioButton(" in statement
+                  or "DrawHeading(" in statement or "DrawAction(" in statement):
+                # **A POSITIONAL CALL TO A PRIMITIVE COUNTS AS ON SCREEN.** The
+                # pessimistic bucket on purpose: a call that forgot its argument
+                # labels should over-report, never disappear. Disappearing is the
+                # failure mode this whole function exists to end.
+                onscreen.append(assignments[identifier])
+    return onscreen, hover
+
+
 def words_of(value):
     """Words a player actually reads: markup and placeholders are not words."""
     plain = re.sub(r"\\n", " ", value)
@@ -125,7 +272,9 @@ def main():
             continue
         if not (name.startswith("Operations") or name.startswith("MainTabWindow_Operations")):
             continue
-        source = io.open(os.path.join(UI, name), encoding="utf-8-sig").read()
+        # **CODE ONLY.** A `///` doc block describing what a pane draws is not a thing a player
+        # reads, and leaving it in let one comment's prose move a heading into the hover bucket.
+        source = without_comments(io.open(os.path.join(UI, name), encoding="utf-8-sig").read())
 
         # **ON SCREEN AND ON HOVER ARE NOT THE SAME READING, and a first version could not tell
         # them apart.** It counted every keyed string a file referenced, so moving an instruction
@@ -144,17 +293,54 @@ def main():
             found = re.findall(r'"([A-Za-z0-9_]*RR_[A-Za-z0-9_]+)"\.Translate', statement)
             if not found:
                 continue
+            # **THE SHARED PRIMITIVES ARE READ BY ARGUMENT LABEL.**
+            # `UI/OperationsControls.cs` gives every pane one `DrawHeading` and one `DrawAction`,
+            # and each takes a short line that draws and a full text that hovers -- in ONE
+            # statement. Classifying that statement as a whole would put both keys in the same
+            # bucket and make the panel's own house style unmeasurable, so the call sites name
+            # their arguments and this reads the names. `heading:` and `label:` draw; `detail:`
+            # and `refusal:` hover.
+            #
+            # **READ BY SEGMENT, NOT BY ADJACENCY, and the adjacent version got it wrong on its
+            # first real call site.** A refusal is routinely conditional --
+            # `refusal: gate == null ? "RR_X".Translate() : TaggedString.Empty` -- so the key is
+            # not the token after the label. The statement is cut at each argument label and
+            # every key inside a segment belongs to that argument. Keys before the first label
+            # are counted as on-screen, which is the pessimistic side on purpose.
+            labels = [(found.start(), found.group(1)) for found in
+                      re.finditer(r"\b(heading|label|detail|refusal)\s*:", statement)]
+            if labels:
+                for position, (start, argument) in enumerate(labels):
+                    end = labels[position + 1][0] if position + 1 < len(labels) else len(statement)
+                    segment = statement[start:end]
+                    keys = re.findall(r'"([A-Za-z0-9_]*RR_[A-Za-z0-9_]+)"\.Translate', segment)
+                    if argument in ("heading", "label"):
+                        onscreen_keys.update(keys)
+                    else:
+                        tooltip_keys.update(keys)
+                leading = re.findall(r'"([A-Za-z0-9_]*RR_[A-Za-z0-9_]+)"\.Translate',
+                                     statement[:labels[0][0]])
+                onscreen_keys.update(leading)
+                continue
             if "TipRegion" in statement or "tooltip" in statement or "Tooltip" in statement:
                 tooltip_keys.update(found)
             elif (".Label(" in statement or ".ButtonText(" in statement
                   or ".CheckboxLabeled(" in statement or "Widgets.Label(" in statement
-                  or ".RadioButton(" in statement):
+                  or ".RadioButton(" in statement
+                  or "DrawHeading(" in statement or "DrawAction(" in statement):
                 onscreen_keys.update(found)
             else:
                 other_keys.update(found)
         # A key drawn on screen anywhere counts as on screen, whatever else also references it.
         tooltip_keys -= onscreen_keys
         other_keys -= onscreen_keys | tooltip_keys
+
+        indirect_onscreen, indirect_hover = indirect_groups(source)
+        # A group's keys are alternatives of one line, so they are not also loose keys.
+        grouped = {key for group in indirect_onscreen + indirect_hover for key in group}
+        onscreen_keys -= grouped
+        tooltip_keys -= grouped
+        other_keys -= grouped
 
         words = 0
         longest = 0
@@ -165,7 +351,16 @@ def main():
             if count > longest:
                 longest = count
                 longest_key = key
+        for group in indirect_onscreen:
+            worst_key = max(group, key=lambda k: words_of(strings.get(k, "")))
+            count = words_of(strings.get(worst_key, ""))
+            words += count
+            if count > longest:
+                longest = count
+                longest_key = worst_key + " (worst of %d)" % len(group)
         hover = sum(words_of(strings.get(key, "")) for key in tooltip_keys)
+        hover += sum(max(words_of(strings.get(key, "")) for key in group)
+                     for group in indirect_hover)
         elsewhere = sum(words_of(strings.get(key, "")) for key in other_keys)
 
         reads = len(re.findall(r"\.Label\(", source))

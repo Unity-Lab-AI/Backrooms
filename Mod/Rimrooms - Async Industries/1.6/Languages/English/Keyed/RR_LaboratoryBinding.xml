@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Lab_Heading>Company laboratory workstation</RR_Lab_Heading>
   <RR_Lab_Explanation>Designate one existing headquarters research bench for company evidence analysis and company projects. Simple and hi-tech research benches keep their native objects, ownership and power requirements. Designation supplies no bench or equipment.</RR_Lab_Explanation>
@@ -25,6 +25,7 @@
   <RR_Lab_NativeResearch>Ordinary research remains available through native Research controls when no company work is ready. Designation does not cancel an existing native job. Clear or change designation to stop company work at this bench; analysis and project progress are retained.</RR_Lab_NativeResearch>
   <RR_Lab_NoCandidates>No supported visible player-owned research bench is available at headquarters. Build or reinstall one with native Architect controls.</RR_Lab_NoCandidates>
   <RR_Lab_Candidates>{0} eligible benches — page {1} of {2}. An unpowered or obstructed bench can be designated; it will remain unavailable for work until repaired.</RR_Lab_Candidates>
+  <RR_Lab_CandidateCount>{0} eligible benches — page {1} of {2}</RR_Lab_CandidateCount>
   <RR_Lab_Previous>Previous benches</RR_Lab_Previous>
   <RR_Lab_Next>Next benches</RR_Lab_Next>
   <RR_Lab_Candidate>{0} at {1}</RR_Lab_Candidate>

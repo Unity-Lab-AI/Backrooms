@@ -16,6 +16,7 @@
   <RR_UI_MachineInstructions>Designate the door, communications console, battery and machining table above. Complete the table's gate assembly bill with 100 steel and 8 components. Assign a qualified operator, calibrate, and charge the connected battery through native generation. A real operator must remain at the powered console throughout a normal opening. Shared electrical loads can consume the same battery charge.</RR_UI_MachineInstructions>
   <RR_UI_NoMachine>No company gate was found at headquarters. Build or recover the gate before dispatch.</RR_UI_NoMachine>
   <RR_UI_SelectMachine>View the gate and its controls</RR_UI_SelectMachine>
+  <RR_UI_MachineControlsTitle>Machine controls</RR_UI_MachineControlsTitle>
   <RR_UI_AssignGateOperator>Assign {0} as gate operator</RR_UI_AssignGateOperator>
   <RR_UI_CalibrateMachine>Order assigned operator to calibrate</RR_UI_CalibrateMachine>
   <RR_UI_StaffMachine>Order assigned operator to staff console</RR_UI_StaffMachine>
@@ -24,6 +25,7 @@
   <RR_UI_AbortStaging>Cancel approach before entry</RR_UI_AbortStaging>
   <RR_UI_RecallCrew>Recall crew along the return route</RR_UI_RecallCrew>
   <RR_UI_StrandedInstructions>The crew and site remain saved. Restore power, recharge the return reserve and staff the console, then open a new recovery window. If the team cannot walk, prepare one headquarters relief worker to enter and carry casualties back.</RR_UI_StrandedInstructions>
+  <RR_UI_StrandedTitle>Crew stranded; the site is still held</RR_UI_StrandedTitle>
   <RR_UI_ReopenRecovery>Open a fresh recovery window at the saved site</RR_UI_ReopenRecovery>
   <RR_UI_LoadRelief>Load missing rescue supplies onto {0}</RR_UI_LoadRelief>
   <RR_UI_SendRelief>Send {0} as relief worker</RR_UI_SendRelief>
@@ -38,14 +40,26 @@
   <RR_UI_NoCoordinate>No company coordinate is available.</RR_UI_NoCoordinate>
   <RR_UI_SelectCoordinate>Destination: {0}</RR_UI_SelectCoordinate>
   <RR_UI_DispatchInstructions>Select one to three available field staff. Keep the assigned operator at headquarters. Load the shared kit, allow the physical pickup jobs to finish, and equip the guard using normal RimWorld equipment controls. Dispatch orders the team to walk to the gate; the opening begins after final readiness checks.</RR_UI_DispatchInstructions>
+  <RR_UI_DispatchTitle>Choose up to three crew, then load the kit</RR_UI_DispatchTitle>
   <RR_UI_LoadSharedKit>Order physical shared-kit pickup</RR_UI_LoadSharedKit>
   <RR_UI_KitReady>Required shared kit is in crew inventories.</RR_UI_KitReady>
   <RR_UI_DispatchCrew>Approach gate and dispatch to selected coordinate</RR_UI_DispatchCrew>
   <RR_UI_CargoManifest>Physical cargo manifest</RR_UI_CargoManifest>
   <RR_UI_CargoRow>{0}: departed {1}, currently observed {2}; {3} {4}</RR_UI_CargoRow>
   <RR_UI_Damaged>[damaged]</RR_UI_Damaged>
-  <RR_UI_CurrentObjective>Current company objective</RR_UI_CurrentObjective>
+  <RR_UI_CurrentObjective>Objective: {0}</RR_UI_CurrentObjective>
   <RR_UI_OpenObjective>Open the work board for this objective</RR_UI_OpenObjective>
+  <RR_UI_NextAssemblyBrief>Assemble the gate</RR_UI_NextAssemblyBrief>
+  <RR_UI_NextCalibrationBrief>Calibrate the gate</RR_UI_NextCalibrationBrief>
+  <RR_UI_NextRecoveryBrief>Recover the stranded crew</RR_UI_NextRecoveryBrief>
+  <RR_UI_NextFieldSurveyBrief>Survey the site</RR_UI_NextFieldSurveyBrief>
+  <RR_UI_NextDispatchBrief>Dispatch a crew</RR_UI_NextDispatchBrief>
+  <RR_UI_NextRecoverEvidenceBrief>Bring the record book home</RR_UI_NextRecoverEvidenceBrief>
+  <RR_UI_NextAnalysisBrief>Analyse the record book</RR_UI_NextAnalysisBrief>
+  <RR_UI_NextReviewBrief>Review the finished report</RR_UI_NextReviewBrief>
+  <RR_UI_NextTelemetryBrief>Research Gate Telemetry</RR_UI_NextTelemetryBrief>
+  <RR_UI_NextRevisitBrief>Revisit the surveyed site</RR_UI_NextRevisitBrief>
+  <RR_UI_NextLeadTitle>Next lead</RR_UI_NextLeadTitle>
   <RR_UI_NextAssembly>Designate the native installation in Gate controls, then complete the assembly bill at its linked machining table. A capable worker needs 100 steel and 8 components. Keep native generators fueled and connected.</RR_UI_NextAssembly>
   <RR_UI_NextCalibration>Assign a capable company operator to the gate, then order calibration. The powered console and gate must remain reachable.</RR_UI_NextCalibration>
   <RR_UI_NextRecovery>The crew is stranded. Restore gate power and its return reserve, staff the console, then reopen the saved route or send a relief worker.</RR_UI_NextRecovery>
@@ -78,14 +92,17 @@
   <RR_UI_AbandonTransfers>Interrupted transfer records retained: {0}. People held for safe transfer recovery: {1}. These people are not moved remotely; restoring a transfer still requires its original map and safe source position.</RR_UI_AbandonTransfers>
   <RR_UI_AbandonPerson>{0} — {1} {2}</RR_UI_AbandonPerson>
   <RR_Debug_CounterNote>Development counters: bounded component timings only. Whole-game baseline, achieved tick rate, startup and save/load timings require separate capture. Starting clears the prior counter window; nothing is saved in campaign state.</RR_Debug_CounterNote>
+  <RR_Debug_CounterTitle>Development counters</RR_Debug_CounterTitle>
   <RR_Debug_CounterStart>Start a new component timing window</RR_Debug_CounterStart>
   <RR_Debug_CounterStop>Stop component timing</RR_Debug_CounterStop>
   <RR_Debug_CounterLog>Write component timings and memory snapshot to Player.log</RR_Debug_CounterLog>
   <RR_UI_FieldRuleState>This expedition's route mismatch: {0}</RR_UI_FieldRuleState>
   <RR_UI_EntityWithdrawn>The reported figure has withdrawn. Its observation remains in the site record.</RR_UI_EntityWithdrawn>
   <RR_UI_EntityLastRoom>Last reported figure: room {0}. Check the written advance warnings. Withdraw behind a closed door or return to the threshold; combat is optional.</RR_UI_EntityLastRoom>
+  <RR_UI_EntityRoomBrief>Figure last reported in room {0}</RR_UI_EntityRoomBrief>
   <RR_UI_NextLeadChoice>Choose the next preparation step: develop Gate Telemetry or revisit the existing site with your current equipment.</RR_UI_NextLeadChoice>
   <RR_UI_ReviewTelemetry>Review Gate Telemetry research</RR_UI_ReviewTelemetry>
   <RR_UI_PrepareResurvey>Prepare an AI-01 resurvey</RR_UI_PrepareResurvey>
   <RR_UI_ResurveyPurpose>Return to the same saved site to inspect unexplored rooms, retrieve remaining salvage or equipment, recover crew, or continue building. Previous discoveries and construction persist. The initial survey payment and insight are one-time; this visit does not grant them again.</RR_UI_ResurveyPurpose>
+  <RR_UI_ResurveyTitle>Resurvey; the survey payment does not come twice</RR_UI_ResurveyTitle>
 </LanguageData>

@@ -28,6 +28,7 @@ This cannot be undone.</RR_Exchange_SellConfirm>
   <RR_Company_Insights>Available research insights: {0}</RR_Company_Insights>
   <RR_Company_StaffCount>Company staff: {0}</RR_Company_StaffCount>
   <RR_Company_OpeningObjective>Next objective: prepare the gate, appoint its operator and review the AI-01 survey before dispatch.</RR_Company_OpeningObjective>
+  <RR_Company_OpeningBriefTitle>Opening brief</RR_Company_OpeningBriefTitle>
   <RR_Company_OpenHeadquarters>View headquarters</RR_Company_OpenHeadquarters>
   <RR_Company_MapUnavailable>The headquarters is unavailable. Its company records have been retained.</RR_Company_MapUnavailable>
   <RR_UI_Overview>Overview</RR_UI_Overview>
@@ -52,8 +53,10 @@ This cannot be undone.</RR_Exchange_SellConfirm>
   <RR_UI_ContractRow>{0} — {1}</RR_UI_ContractRow>
   <RR_UI_ContractValue>Quoted payment: {0} USD; optional records bonus: {1} USD</RR_UI_ContractValue>
   <RR_UI_ContractTerms>Survey the route, record the distortion, recover the record book and analyse it at headquarters. The optional bonus requires all three crew to return with route, distortion and entity observations. Combat is optional; a recoverable injury does not cancel the bonus.</RR_UI_ContractTerms>
+  <RR_UI_ContractTermsBrief>Survey terms</RR_UI_ContractTermsBrief>
   <RR_UI_LedgerRow>Day {0}: {1} — {2} USD; balance {3} USD</RR_UI_LedgerRow>
   <RR_UI_LedgerRecent>Most recent 60 transactions are shown here. Earlier receipts remain saved in the company ledger.</RR_UI_LedgerRecent>
+  <RR_UI_LedgerTitle>Company ledger</RR_UI_LedgerTitle>
   <RR_Coordinate_Discovered>Signal registered; site not yet visited</RR_Coordinate_Discovered>
   <RR_Coordinate_Ready>Saved site available</RR_Coordinate_Ready>
   <RR_Coordinate_Unavailable>Route unavailable; recovery required</RR_Coordinate_Unavailable>
@@ -86,6 +89,7 @@ This cannot be undone.</RR_Exchange_SellConfirm>
   <!-- Staff debrief, and quarantine, which is the same mechanism: you do not go back out until
        you have reported in. Row 761, last two halves. -->
   <RR_Debrief_Outstanding>Crew home and not yet debriefed: {0}. None of them will be sent out again until they have reported in.</RR_Debrief_Outstanding>
+  <RR_Debrief_Count>Crew home and not yet debriefed: {0}</RR_Debrief_Count>
   <RR_Debrief_NoneOutstanding>Every returned crew member has reported in.</RR_Debrief_NoneOutstanding>
   <RR_Debrief_Row>{0} - cannot be debriefed: {1}</RR_Debrief_Row>
   <RR_Debrief_Take>Debrief {0} (report taken by {1})</RR_Debrief_Take>

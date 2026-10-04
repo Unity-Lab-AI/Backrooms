@@ -116,8 +116,14 @@ check("the readout speaks only when the machine is NOT sound",
       '-- a line reading "condition 100%" on every gate forever is noise, and Core already '
       "draws a health bar")
 check("and the readout is actually joined into the inspect string",
-      "footprint, integrityText, operatorText" in gate,
-      "-- a key present in the file is not a claim that anything is drawn")
+      # **THE ARRAY GAINED `NextStepReadout()` AT THE FRONT AND WRAPPED**, so these three
+      # tokens are no longer adjacent -- owner, 2026-10-04: *"that gate should tell you
+      # next step in the game world"*. The claim is the same: this readout is an element of
+      # the array that gets joined, not merely a local that was computed.
+      "footprint, integrityText," in gate and
+      "new[] { NextStepReadout(), status," in gate,
+      "-- a key present in the file is not a claim that anything is drawn, and a local that is "
+      "computed and never joined is the defect this claim exists for")
 check("nothing here repairs anything",
       not re.search(r"HitPoints\s*=|HitPoints\s*\+=|TryRepair|Repair\(", integrity),
       "-- fixing it is Core's own construction work; this only refuses to run on a broken "

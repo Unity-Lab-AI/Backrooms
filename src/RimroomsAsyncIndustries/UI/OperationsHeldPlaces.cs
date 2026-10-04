@@ -8,6 +8,8 @@ using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     /// <summary>
@@ -36,10 +38,16 @@ namespace RimroomsAsyncIndustries.UI
     {
         private void DrawHeldPlaces(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
-            listing.Label("RR_Release_Heading".Translate());
+            DrawHeading(listing, heading: "RR_Release_Heading".Translate(),
+                detail: "RR_Release_Explanation".Translate());
             listing.Gap(6f);
-            listing.Label("RR_Release_Budget".Translate(OpenMapBudget.Held, OpenMapBudget.Budget));
-            listing.Label("RR_Release_Explanation".Translate());
+            // **THE BUDGET LINE IS THE ONE NUMBER THIS PANE EXISTS FOR**, so it stays on
+            // screen; the twenty-six words explaining why a Backrooms level costs a map slot
+            // exactly as a colony does are the reasoning behind it, and reasoning does not
+            // change between visits.
+            DrawHeading(listing,
+                heading: "RR_Release_Held".Translate(OpenMapBudget.Held, OpenMapBudget.Budget),
+                detail: "RR_Release_Budget".Translate(OpenMapBudget.Held, OpenMapBudget.Budget));
             listing.Gap(8f);
 
             // Colonies first, because they are the other half of the budget and a player counting
@@ -101,13 +109,14 @@ namespace RimroomsAsyncIndustries.UI
 
             if (shelved.Count > 0)
             {
-                listing.Label("RR_Release_ShelvedHeading".Translate());
+                // How to get back to a shelved place, on the heading for the list of them.
+                DrawHeading(listing, heading: "RR_Release_ShelvedHeading".Translate(),
+                    detail: "RR_Release_ShelvedHint".Translate());
                 for (int index = 0; index < shelved.Count; index++)
                 {
                     listing.Label("RR_Release_ShelvedRow".Translate(
                         NaturalFrontierService.DiscoveredLabelFor(shelved[index]), shelved[index].Depth));
                 }
-                listing.Label("RR_Release_ShelvedHint".Translate());
             }
         }
 

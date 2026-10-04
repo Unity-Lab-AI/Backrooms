@@ -7,6 +7,8 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
+using static RimroomsAsyncIndustries.UI.OperationsControls;
+
 namespace RimroomsAsyncIndustries.UI
 {
     /// <summary>RR-UI: views read campaign state; commands call its services.</summary>
@@ -89,9 +91,12 @@ namespace RimroomsAsyncIndustries.UI
                 }
                 else if (!campaign.HasBranch)
                 {
-                    listing.Label("RR_Operations_Inactive".Translate());
+                    // Two paragraphs for one state. The short one says what is wrong, the longer
+                    // one says what to do about it, and a player who already knows does not need
+                    // to read it again every time they open the tab.
+                    DrawHeading(listing, heading: "RR_Operations_Inactive".Translate(),
+                        detail: "RR_Company_Inactive".Translate());
                     listing.Gap(8f);
-                    listing.Label("RR_Company_Inactive".Translate());
                     if (ScenPart_RimroomsStart.Current != null && Find.CurrentMap != null &&
                         listing.ButtonText("RR_UI_RetryCompanyRegistration".Translate()))
                     { ShowResult(ScenPart_RimroomsStart.Current.TryInitializeExistingHeadquarters(Find.CurrentMap)); }
@@ -153,7 +158,12 @@ namespace RimroomsAsyncIndustries.UI
             listing.Label("RR_Company_NameHeading".Translate(campaign.CompanyName));
             if (listing.ButtonText("RR_Company_RenameButton".Translate()))
             { Find.WindowStack.Add(new Dialog_RenameCompany(campaign)); }
-            listing.Label("RR_Company_Balance".Translate(Money(campaign.BalanceUsd)));
+            // **THE BALANCE CARRIES ITS OWN EXPLANATION NOW, ON EVERY PANE.** The twenty-one
+            // words about company USD being an accounting balance rather than physical silver
+            // were a paragraph in the overview and again in the ledger; they belong on the
+            // number they are about, where they are one hover away from wherever the player is.
+            DrawHeading(listing, heading: "RR_Company_Balance".Translate(Money(campaign.BalanceUsd)),
+                detail: "RR_Company_CashExplanation".Translate());
             listing.GapLine();
             switch (selectedPane)
             {
@@ -180,8 +190,11 @@ namespace RimroomsAsyncIndustries.UI
                     }
                     break;
                 case 3:
-                    listing.Label("RR_Company_CashExplanation".Translate());
-                    listing.Label("RR_UI_LedgerRecent".Translate());
+                    // The cash explanation moved onto the balance line above, which is on every
+                    // pane including this one. What is left here is the one thing specific to
+                    // the ledger: how far back the list goes.
+                    DrawHeading(listing, heading: "RR_UI_LedgerTitle".Translate(),
+                        detail: "RR_UI_LedgerRecent".Translate());
                     listing.Gap(8f);
                     foreach (LedgerEntry entry in campaign.Ledger.Reverse().Take(60))
                     {
@@ -217,8 +230,11 @@ namespace RimroomsAsyncIndustries.UI
                         {
                             string failure = (coordinate.Site as Generation.RimroomsDestinationMapParent)?.GenerationFailureKey;
                             if (!string.IsNullOrEmpty(failure)) { listing.Label(failure.Translate()); }
-                            listing.Label("RR_UI_FailedSiteRecoveryExplanation".Translate());
-                            if (listing.ButtonText("RR_UI_FailedSiteRecovery".Translate()))
+                            // The thirty words about when a replacement may be placed are the
+                            // terms of this one offer, so they live on the offer.
+                            if (DrawAction(listing, label: "RR_UI_FailedSiteRecovery".Translate(),
+                                    refusal: TaggedString.Empty,
+                                    detail: "RR_UI_FailedSiteRecoveryExplanation".Translate()))
                             {
                                 string failedId = coordinate.Id;
                                 Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("RR_UI_FailedSiteRecoveryConfirm".Translate(), () =>
@@ -237,7 +253,8 @@ namespace RimroomsAsyncIndustries.UI
                     DrawEvidenceCreationRecovery(listing, campaign);
                     DrawLaboratoryBinding(listing, campaign);
                     listing.GapLine();
-                    listing.Label("RR_UI_LabInstructions".Translate());
+                    DrawHeading(listing, heading: "RR_UI_LabTitle".Translate(),
+                        detail: "RR_UI_LabInstructions".Translate());
                     listing.Label("RR_Company_Insights".Translate(campaign.ResearchInsights));
                     listing.GapLine();
                     foreach (EvidenceRecord record in campaign.Evidence)
@@ -252,7 +269,13 @@ namespace RimroomsAsyncIndustries.UI
                             listing.ButtonText("RR_UI_LocateRecording".Translate()))
                         { CameraJumper.TryJumpAndSelect(record.Item); }
                         if (!record.RouteRecorded || !record.DistortionRecorded)
-                        { listing.Label("RR_UI_EvidenceFieldWorkRemaining".Translate()); }
+                        {
+                            // Fifty-seven words of field method, drawn once per unfinished
+                            // record. Three records and it was the pane.
+                            DrawHeading(listing,
+                                heading: "RR_UI_EvidenceFieldWorkTitle".Translate(),
+                                detail: "RR_UI_EvidenceFieldWorkRemaining".Translate());
+                        }
                         DrawEvidenceDetails(listing, record);
                         listing.Gap(8f);
                     }
@@ -274,7 +297,8 @@ namespace RimroomsAsyncIndustries.UI
                 case 5:
                     if (Prefs.DevMode)
                     {
-                        listing.Label("RR_Debug_CounterNote".Translate());
+                        DrawHeading(listing, heading: "RR_Debug_CounterTitle".Translate(),
+                            detail: "RR_Debug_CounterNote".Translate());
                         if (listing.ButtonText("RR_Debug_CounterStart".Translate())) { Core.RimroomsDiagnostics.Start(); }
                         if (listing.ButtonText("RR_Debug_CounterStop".Translate())) { Core.RimroomsDiagnostics.Stop(); }
                         if (listing.ButtonText("RR_Debug_CounterLog".Translate())) { Core.RimroomsDiagnostics.WriteSnapshot(); }
@@ -295,7 +319,7 @@ namespace RimroomsAsyncIndustries.UI
                     break;
                 default:
                     DrawOpeningObjective(listing, campaign);
-                    listing.Label("RR_Company_CashExplanation".Translate());
+                    // The cash explanation is on the balance line at the top of every pane now.
                     listing.Label("RR_Company_StaffCount".Translate(campaign.Staff.Count));
                     listing.Label("RR_Company_Insights".Translate(campaign.ResearchInsights));
                     long outstanding = campaign.Obligations.Where(o => !o.Paid).Sum(o => o.AmountUsd);
@@ -306,7 +330,12 @@ namespace RimroomsAsyncIndustries.UI
                         if (!result.Success) { Messages.Message(result.MessageKey.Translate(), MessageTypeDefOf.RejectInput, false); }
                     }
                     listing.Gap(12f);
-                    listing.Label("RR_Company_OpeningObjective".Translate());
+                    // **THE OBJECTIVE LINE ABOVE ALREADY SAYS WHICH STEP IS NEXT.** This is the
+                    // standing opening brief, which is a different thing and was being read as a
+                    // contradiction of it. Short title, brief on the hover, and the two no
+                    // longer compete for the same slot.
+                    DrawHeading(listing, heading: "RR_Company_OpeningBriefTitle".Translate(),
+                        detail: "RR_Company_OpeningObjective".Translate());
                     if (campaign.Headquarters != null)
                     {
                         if (listing.ButtonText("RR_Company_OpenHeadquarters".Translate()))

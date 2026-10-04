@@ -36,4 +36,5 @@
   <RR_Plan_ExposureNone>    No field history. This would be their first trip through.</RR_Plan_ExposureNone>
   <RR_Plan_ExposureTrips>    {0} trips through, none of them to this address.</RR_Plan_ExposureTrips>
   <RR_Plan_ExposureKnowsRoute>    {0} trips through, and they have walked this address before. As operator they bring the gate up faster.</RR_Plan_ExposureKnowsRoute>
+  <RR_Plan_ExposureKnowsRouteBrief>{0} trips through, and knows this address</RR_Plan_ExposureKnowsRouteBrief>
 </LanguageData>

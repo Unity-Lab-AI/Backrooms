@@ -518,6 +518,11 @@ def _file(*parts):
 
 
 _steps = _file("UI", "OperationsGateSteps.cs")
+# **THE ELEVEN CHECKS ARE NO LONGER IN THE WINDOW.** Owner, 2026-10-04: *"and when u set a
+# door to be a gatew  that gate should tell you next step in the game world not just in the
+# operations tab and machine tab"*. The list is read by the door now as well, so it lives in
+# the gate's own namespace and the window draws it.
+_checklist = _file("Gate", "GateStartupChecklist.cs")
 _gate = _file("Gate", "CompRimroomsGate.cs")
 _portals = _file("UI", "OperationsPortalNetwork.cs")
 _hq = _file("Scenario", "GenStep_Headquarters.cs")
@@ -537,15 +542,30 @@ check("THE MACHINE TAB OPENS WITH NUMBERED START-UP CHECKS",
       "two panels below to use, and in which order")
 
 check("and there are ELEVEN of them, each with a done flag and a how",
-      all(("Number = %d," % n) in _steps for n in range(1, 12))
-      and all(('"RR_Steps_%dLabel"' % n) in _steps for n in range(1, 12))
-      and all(('"RR_Steps_%dHow"' % n) in _steps for n in range(1, 12))
-      and "public string How;" in _steps
-      and "public bool Done;" in _steps,
+      all(("Number = %d," % n) in _checklist for n in range(1, 12))
+      and all(('"RR_Steps_%dLabel"' % n) in _checklist for n in range(1, 12))
+      and all(('"RR_Steps_%dHow"' % n) in _checklist for n in range(1, 12))
+      and "public string How;" in _checklist
+      and "public bool Done;" in _checklist,
       "-- a step with a label and no instruction is the panel the owner was already looking at")
 
+# **AND THERE IS EXACTLY ONE LIST OF THEM.** This is the property the extraction exists to
+# create and the one that would rot silently: pasting the eleven conditions back into the
+# window would compile, pass every other claim here, and then drift from the door. Two
+# derivations of one rule is the defect this project keeps meeting -- it is what made
+# `RR_Gate_CalibrationUnavailable` read *"the gate is not ready for calibration"* for eight
+# conditions including *already calibrated*.
+check("AND THE WINDOW HOLDS NO SECOND COPY OF THEM",
+      "Number = 1," not in _steps
+      and "struct GateStep" not in _steps
+      and "GateStartupChecklist.Steps(gate)" in _steps,
+      "-- the window draws the list and does not own it, so the status board and the door's "
+      "own inspect card cannot disagree about whether something is done")
+
 check("AND THE FIRST UNFINISHED ONE IS NAMED ON ITS OWN LINE",
-      "GateStep next = steps.FirstOrDefault(step => !step.Done);" in _steps
+      "GateStartupChecklist.NextIncomplete(steps)" in _steps
+      and "internal static GateStep NextIncomplete(" in _checklist
+      and "steps.FirstOrDefault(step => !step.Done)" in _checklist
       and '"RR_Steps_NextUp".Translate(next.Number.ToString(), next.Label, next.How)' in _steps
       and '"RR_Steps_Progress".Translate(' in _steps,
       "-- *\"im fucking lost on what to do ive done like 50 things in a row\"*. Eleven lines is "
@@ -573,14 +593,99 @@ check("and a binding fault is reported as a FAULT rather than as a step",
       "one it broke")
 
 check("THE ORDER MATCHES WHAT THE CODE ACTUALLY ENFORCES",
-      _steps.index("Number = 4,") < _steps.index("Number = 5,")
-      and _steps.index("Number = 8,") < _steps.index("Number = 10,")
-      and "workshop != null && workshop.IsGateControl" in _steps
-      and "station != null && station.IsGateControl" in _steps,
+      _checklist.index("Number = 4,") < _checklist.index("Number = 5,")
+      and _checklist.index("Number = 8,") < _checklist.index("Number = 10,")
+      and "workshop != null && workshop.IsGateControl" in _checklist
+      and "station != null && station.IsGateControl" in _checklist,
       "-- gate control on the TABLE must precede the assembly, because `AvailableOnNow` withdraws "
       "the recipe from a bench in normal operation; gate control on the CONSOLE must precede "
       "staffing, because `BeginSpinUp` refuses while either is doing its day job. A player "
       "following the list top to bottom never meets a step that cannot be done yet")
+
+# ------------------------------------------- the DOOR says what to do next, in the world
+# Owner, 2026-10-04, verbatim: *"and when u set a door to be a gatew  that gate should tell you
+# next step in the game world not just in the operations tab and machine tab"*.
+#
+# **The card carried ten readouts and not one answer.** Condition, operator, kill switch,
+# servicing, power reserve and its breakdown, the ramp, the equipment links, the live window --
+# every one of them answering *what is the state* and none of them *what do I do*. The owner's
+# report about the panel was *"ive done like 50 things in a row and its still not opening"*; this
+# is the same gap on the object itself.
+check("THE GATE'S OWN INSPECT CARD NAMES THE NEXT STEP",
+      "private string NextStepReadout()" in _gate
+      and "GateStartupChecklist.Steps(this)" in _gate
+      and "GateStartupChecklist.NextIncomplete(steps)" in _gate
+      and '"RR_Steps_NextUp".Translate(next.Number.ToString(), next.Label, next.How)' in _gate,
+      "-- and it asks the SAME list the status board draws, so the door and the window cannot "
+      "tell a player two different next steps")
+
+check("and it is FIRST on the card",
+      # **THE ARRAY LITERAL IS THE AUTHORITY ON ORDER.** The first draft compared the
+      # index of the method NAME against a later readout and failed against correct code:
+      # the method is defined below the call that uses it, so its first textual appearance
+      # says nothing about where its output lands on the card.
+      "new[] { NextStepReadout(), status," in _gate,
+      "-- it is the only line on that card a stuck player needs, and it was being added under ten "
+      "lines of state")
+
+# **THE GUARD IS THE LOAD-BEARING PART AND IT IS EASY TO LOSE.** `CompProperties_RimroomsGate` is
+# attached to EVERY Core door by the native binding patch, so a next-step line computed before the
+# `!IsDesignated` return would print gate start-up advice on every bedroom door on the map.
+check("AND EVERY OTHER DOOR IN THE GAME STAYS SILENT",
+      _gate.index('if (!IsDesignated) { return null; }')
+      < _gate.index("{ NextStepReadout(), status,"),
+      "-- the not-designated return comes FIRST, so a door nobody made a gate says nothing at all")
+
+# ------------------------------- setting the coordinate, and opening it, FROM THE DOOR
+# Owner, 2026-10-04, verbatim: *"and everything that the machine needs to start up should be able
+# to do in the worlkd from the devices themselfes with pawns controls and actrions not just in the
+# opetaions tab,, ie setting the cordinace and all of those things need  to show"*.
+#
+# A designated gate already offered eleven commands on the door. **The two it did not offer were
+# the two the owner named**: choosing which place it dials, and opening it. Both existed only as
+# buttons in the pane the same message calls a text wall, so a player could build, crew and
+# calibrate the machine entirely in the world and then had to go and find a tab to aim it.
+_address = _file("Gate", "GateAddressControls.cs")
+
+check("SETTING THE GATE'S ADDRESS IS A COMMAND ON THE DOOR",
+      "private IEnumerable<Gizmo> AddressGizmos()" in _address
+      and "foreach (Gizmo gizmo in AddressGizmos()) { yield return gizmo; }" in _gate
+      and '"RR_GateAddress_SetLabel".Translate()' in _address,
+      "-- DEFINED AND CALLED. A gizmo method with no caller in `CompGetGizmosExtra` is the defect "
+      "class the wiring checker exists for, and it accounts for four of five bond defects")
+
+check("and it calls THE SAME service the pane calls, with the freeze notice in front of it",
+      "PortalAddressService.RegisterLaboratoryAddress(this, captured)" in _address
+      and "Presentation.RimroomsGenerationNotice.Announce(captured, () =>" in _address,
+      "-- a second surface on one authority, not a second derivation of one rule. And the notice "
+      "needs a caller that is not waiting on a return value, which a gizmo action is and a tick "
+      "is not")
+
+check("AND OPENING IT GOES THROUGH BeginSpinUp, not straight to the opening",
+      "ShowOrderResult(BeginSpinUp(captured.Id))" in _address
+      and '"RR_GateAddress_OpenLabel".Translate(' in _address,
+      "-- opening is *\"a ramp up process that takes a bit of time\"*, and there is exactly one "
+      "way a laboratory gate opens whichever surface started it")
+
+# **DISABLED, NEVER HIDDEN.** Owner's standing complaint is *"ive done like 50 things in a row and
+# its still not opening"*. A command that vanishes when it cannot run teaches a player nothing.
+check("and both commands grey out WITH A REASON rather than disappearing",
+      'setAddress.Disable("RR_GateAddress_NoneKnown".Translate())' in _address
+      and 'open.Disable("RR_GateAddress_NoAddressSet".Translate())' in _address
+      and 'open.Disable("RR_GateAddress_AlreadyOpen".Translate())' in _address
+      and 'open.Disable("RR_GateAddress_AlreadyRamping".Translate())' in _address
+      # The commands are yielded unconditionally; only their enabled state varies.
+      and _address.index("yield return setAddress;") > _address.index("setAddress.Disable(")
+      and _address.index("yield return open;") > _address.index("open.Disable("),
+      "-- a player who cannot find the button cannot tell whether it is blocked or missing, and "
+      "the refusal is the answer to the question they are already asking")
+
+check("AND THE FLOAT MENUS SHOW THE ADDRESS CODE, NOT THE RAW ID",
+      "captured.AddressCode" in _address
+      and "place.AddressCode" in _address
+      and '"RR_GateAddress_Option".Translate(captured.AddressCode,' in _address,
+      "-- owner: *\"only like the !A-01 address code is needed to be displayed to thew player\"*, "
+      "and a float menu row has nowhere to put a tooltip carrying the internal identifier")
 
 # ---------------------------------------------- the refusals name their cause
 check("CALIBRATION REFUSES WITH THE REASON, AND 'ALREADY DONE' IS ONE OF THEM",
@@ -657,16 +762,19 @@ check("AND THE HEADQUARTERS POWER REBUILD CAN NO LONGER COST THE START",
 # was still ramping -- and `PortalTravelService` then refused the crossing with
 # `RR_PortalTravel_SessionClosed`, **which was true**. The tick was the thing that was wrong.
 check("A RAMPING CONNECTION DOES NOT COUNT AS AN OPEN ONE",
-      "Done = haveGate && gate.IsOpening," in _steps
-      and "bool ramping = haveGate && gate.IsSpinningUp;" in _steps
-      and "(gate.SpinUpProgress * 100f).ToString(\"F0\")" in _steps
+      "Done = haveGate && gate.IsOpening," in _checklist
+      and "bool ramping = haveGate && gate.IsSpinningUp;" in _checklist
+      and "(gate.SpinUpProgress * 100f).ToString(\"F0\")" in _checklist
       # **THE BRANCH, not the flag and the key.** This asserted that `ramping` was computed and
       # that the keyed string existed; a plant setting `How = false` left both true and the ramp
       # never reported its progress again. **Ninth instance of machinery-not-behaviour**, and the
       # plant caught the claim rather than the other way round.
       and ("                How = ramping" + chr(10)
-           + '                    ? "RR_Steps_11HowRamping".Translate(') in _steps
-      # The old disjunction is GONE, not merely bypassed.
+           + '                    ? "RR_Steps_11HowRamping".Translate(') in _checklist
+      # The old disjunction is GONE, not merely bypassed -- and now in BOTH places, because
+      # the door reads this list too and a copy of the old rule in the window would be
+      # invisible to the door.
+      and "gate.IsOpening || gate.IsSpinningUp" not in _checklist
       and "gate.IsOpening || gate.IsSpinningUp" not in _steps,
       "-- `IsSpinningUp` is defined as `!IsOpening`, so they are distinct states and the step says "
       "which one it is in, with the live percentage. The ramp is work and it bleeds back down if "
