@@ -181,6 +181,25 @@ check("a provenance record ships for the generated menu art",
       "-- Steam requires AI-content disclosure, and menu images are the one place this mod is "
       "allowed to add art at all; the record is what makes that auditable")
 
+# **AND IT HAS TO COVER EVERY SHIPPED SLIDE, WHICH THIS DID NOT NOTICE FOR FOUR OF THEM.** The
+# claim above is satisfied by ONE provenance file existing anywhere under outputs/ -- so when the
+# slide count went from six to twelve, four images from the 2026-09-29 batch were shipping with no
+# row in the register at all and nothing failed. Steam's disclosure requirement is per asset, and
+# the register is the artefact an audit would read. Found by counting twelve PNGs against eight
+# rows, not by reading either.
+register_path = os.path.join(REPO, "docs", "research", "provenance-register.csv")
+registered = set()
+if os.path.isfile(register_path):
+    import csv as _csv
+    for _row in _csv.reader(io.open(register_path, encoding="utf-8-sig")):
+        if _row and _row[0].startswith("RR-MENU-"):
+            registered.add(_row[0][len("RR-MENU-"):])
+undisclosed = sorted(n[:-4] for n in names if n[:-4] not in registered)
+check("and EVERY shipped slide has its own row in the provenance register",
+      os.path.isfile(register_path) and not undisclosed,
+      "-- %d shipped, %d registered; undisclosed: %s"
+      % (len(names), len(registered), ", ".join(undisclosed) or "none"))
+
 print("")
 
 # ======================================================================================

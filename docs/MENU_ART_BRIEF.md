@@ -1,8 +1,9 @@
-# Main-menu slideshow art brief
+# Shared menu and generation-notice art brief
 
 **Living document.** This is the hand-off spec for whoever produces the main-menu images —
-another tool, another person, or the owner. Every number in it was read out of
-`src/RimroomsAsyncIndustries/Presentation/RimroomsMenuBackground.cs`, not estimated.
+another tool, another person, or the owner. Current rendering details are read from
+`Presentation/RimroomsSlideArt.cs`, `RimroomsMenuBackground.cs` and `RimroomsGenerationNotice.cs`
+under `src/RimroomsAsyncIndustries/`; package dimensions are measured from the PNGs.
 
 **Original main-menu images are the single declared exception to this project's no-new-art rule**
 (invariant 10). Nothing else in this mod may add art. That exception exists specifically so the
@@ -18,7 +19,9 @@ menu can look like the game.
 Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/
 ```
 
-The code scans that folder with `ContentFinder<Texture2D>.GetAllInFolder`. The `RR_Menu_` prefix
+`RimroomsSlideArt` scans that folder once with `ContentFinder<Texture2D>.GetAllInFolder` and owns
+the shared ordering, cosmetic random selection and full-screen crop calculation. The menu and
+pre-generation notice read that one list; adding art does not require another C# list. The `RR_Menu_` prefix
 is **required, not cosmetic**: `UI/Menu` is a generic content path and `ContentFinder` resolves
 across every loaded mod, so without the prefix another mod's menu art would appear in this
 slideshow. In a 294-mod install that is a certainty rather than a risk.
@@ -33,7 +36,9 @@ allowlist, so each new PNG needs one line added to `tools/package-files.json`:
 ```
 
 **Do not add a line before the file exists** — a listed file that is missing breaks the staging
-script, which the checker also catches. Add the file, add the line, run the checker.
+script, which the checker also catches. Add the file, add the line, run the checker. Also append
+the asset's entry to `docs/research/provenance-register.csv` and retain its prompt, input-reference,
+actual-dimension, edit and hash record outside the loadable package.
 
 ---
 
@@ -42,10 +47,10 @@ script, which the checker also catches. Add the file, add the line, run the chec
 | | |
 |---|---|
 | **Format** | PNG. Alpha is permitted but unnecessary; these are full-bleed backgrounds |
-| **Size** | **1920 × 1080**. The two existing slides are 1672 × 941, which is the same 16:9 |
-| **Aspect** | 16:9. `BackgroundRect` reads each image's **own** aspect and scales to fit, so a different aspect will not break — but it will letterbox or crop differently from its neighbours, and the crossfade between two aspects looks like a mistake |
+| **Size** | Aim for 1920 × 1080 composition; preserve and report the actual delivered resolution. Before the October 4 additions, five PNGs are 1672 × 941 and LaboratoryOperations is 1672 × 940. Do not describe an upscale as a native master. |
+| **Aspect** | Approximately 16:9. `RimroomsSlideArt.FullScreenRect` reads each image's own aspect and fills the screen by cropping; it does not letterbox. Check subjects at other display aspects. |
 | **Naming** | `RR_Menu_<SceneName>.png`. For a deliberate running order use `RR_Menu_NN_<SceneName>.png` — slides are sorted **ordinally by filename** so the order is identical on every machine |
-| **Count** | Any. Two ship today. A slide dwells **30 s** and crossfades over **2 s** |
+| **Count** | Twelve local package slides after the October 4 addition: six preserved and six new. Use the package folder/allowlist for the current total. A slide dwells **30 s** and crossfades over **2 s**, starting at a cosmetic random index. |
 
 ### Keep these regions clear of critical detail
 
@@ -56,13 +61,22 @@ Read from the code, in screen pixels:
 | **Top-left band** | `x 350 → ~770`, `y 10 → 74` | the mod's version label |
 | **Bottom-left corner** | `x 8 → ~8 + 32 + 64n + 16(n-1)`, bottom 104 px | RimWorld's own DLC/expansion icon strip |
 | **Centre-left** | roughly the left third, vertically centred | RimWorld's own main-menu buttons |
+| **Centre** | centered 560 px-wide panel; height follows localized text | the mod's pre-generation notice and continue button |
 
 Nothing is forbidden in those areas — just do not put the subject of the image there.
+
+The shared art is already used by the main menu and the notice shown before Operations-origin
+coordinate generation. Core owns the subsequent long-event wait box. Adding PNGs does not extend
+coverage to the still-open tick/job-driven generation announcement paths.
 
 ### Style rules
 
 - **Painterly, not photographic.** RimWorld's own menu art is illustrated: soft brushwork, strong
   silhouettes, muted desaturated palette, one clear light source.
+- **Match the existing set's small, simply painted figures.** The owner rejected overly realistic
+  characters and a later pilot too similar to FieldSurvey. New images need new compositions and
+  **unsettling situations**, with distress, grief, fear or disorientation visible in body language.
+  Strange architecture supports the situation; it is not the only subject.
 - **No text, no logos, no watermarks, no UI.** The version label is the only text on screen.
 - **No visible faces in close-up.** RimWorld's art keeps figures small and read-by-silhouette.
 - **Wide, cinematic, one readable subject.** These are seen behind a menu, at a glance.
@@ -78,8 +92,10 @@ like here, and the art should match the game:
 
 - **Depth 1 is sacred** (invariant 25): the yellow rooms. Fixed, sparse, never deranged. Damp
   mono-yellow wallpaper, worn carpet, buzzing fluorescent ceiling, no windows, no outside.
-- **Deeper coordinates grow wrong** through palette bands and **coherence decay** — not through
-  gore. Furniture in a corridor is *content*, not a mistake (owner direction, 0.8.7-dev).
+- **Deeper coordinates grow wrong** through palette bands and **coherence decay**. Furniture in
+  a corridor is *content*, not a mistake (owner direction, 0.8.7-dev). The October 4 direction also
+  permits small blood splashes/trails and disturbing recoveries; preserve the painted style and
+  situational unease without turning every image into a gore tableau.
 - **A gate is an ordinary door, tinted blue.** Not a portal ring, not a swirling vortex. A door
   you could walk past, that is faintly the wrong colour.
 - **The company is 1990s industrial.** CRT monitors, beige plastic, paper, fluorescent strip
@@ -87,14 +103,33 @@ like here, and the art should match the game:
 
 ---
 
-## Scene list
+## Existing inventory and October 4 direction
+
+Preserve `RR_Menu_CorridorEncounter.png`, `RR_Menu_FacilityThreshold_v2.png`,
+`RR_Menu_FieldSurvey_v2.png`, `RR_Menu_IndustrialGateLogistics.png`,
+`RR_Menu_LaboratoryOperations.png` and `RR_Menu_SilentRecovery.png`.
+
+The October 4 addition is **six** distinct scenes: PanicJunction, LightsOut, EmptyCinema,
+FamiliarStranger, BreachedVault and RedTrail, all **1672 × 941 native PNGs**, copied unchanged.
+They were generated from text with no input images. The initial realistic batch and the duplicative
+reference-based pilot are rejected and unshipped. MirroredWard and BreakingPoint were initial
+ideas withdrawn from this batch. [Task and evidence](implementation/evidence/menu-art-2026-10-04/TASK.md)
+record package evidence and [exact prompts/hashes](../outputs/menu-art-2026-10-04-revised/prompts-and-provenance.json).
+These additions are in the local copyable package; this task does not stage or publish them.
+
+Ground the pictures in existing blackout, echo, survivor/dead-crew, pressure and room-generation
+systems. Pawns' emotional reactions are artistic depictions of normal RimWorld consequences,
+not promises of new scripted mental states or hallucination mechanics. Echoes remain neutral.
+
+## Earlier scene pitches — historical concepts, not a shipped inventory
 
 Twelve, covering the owner's request: *"content scenrio art like and ecounter and like lab
 opertions or gate industrial usage and scary creepy backrrom univers sill art … in dramatic and
 tragic and creepy moments of differnt scense and possible run ins"*.
 
-**Every scene below depicts something the mod actually ships.** None of it is invented lore, which
-is the point — the menu should show the game.
+These are preserved earlier pitches, not twelve installed slides or blanket feature verification.
+Re-check any selected pitch against current source and the connected-portal rules before producing
+it. The latest situation-focused direction above governs this batch.
 
 | # | Filename | Scene |
 |---|---|---|
@@ -111,8 +146,8 @@ is the point — the menu should show the game.
 | 11 | `RR_Menu_11_AlreadyInside.png` | The solo/group start. One to five ordinary people in street clothes in a yellow corridor, no equipment, no company, looking at a single unremarkable door. **They have no idea what they are looking at.** |
 | 12 | `RR_Menu_12_TownOpening.png` | Arc 6. An ordinary residential street at night, and between two houses a door frame standing free of any wall, with yellow light coming out of it. Neighbours at a distance, watching, not approaching. |
 
-Priority if the set has to be cut: **1, 3, 6, 7, 9** — those five carry the threshold, the
-drama, the wrongness, the encounter and the corporation, which is the whole mod in five images.
+The earlier pitch priority was **1, 3, 6, 7, 9**. It is historical and does not override the
+October 4 request for new unsettling situations deeper in the Backrooms.
 
 ---
 
@@ -120,13 +155,13 @@ drama, the wrongness, the encounter and the corporation, which is the whole mod 
 
 ```sh
 python tools/check-package-integrity.py     # allowlist, and it reports the folder's slide count
-python tools/check-display-style.py         # no string surface regressed
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/build.ps1
+python .local/register/proof-menu-slides.py  # existing source/package slideshow verifier
 ```
 
 `check-package-integrity.py` prints a note naming the scanned folder and how many textures it
 covers, so the count is verifiable without launching anything.
 
-**Nobody has seen any of this in motion.** No game has ever been launched from this repository, so
-dwell timing, crossfade and legibility behind the menu buttons are all **unverified by play** and
-only the owner can confirm them.
+An art-only addition does not require changing or rebuilding the C# assembly. Package/source
+checks and static previews do not establish actual menu/notice readability, supported display
+crops, transitions, reduced motion, fallback or profile compatibility. Those acceptance cases
+remain open for an owner-launched RimSort session; do not infer a result from an older launch.

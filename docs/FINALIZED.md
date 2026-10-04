@@ -14934,3 +14934,140 @@ that adds a bench, a shelf or an ore puts it in Backrooms rooms the day it is in
 adapter, no row. That is the `modDependencies` direction being served by construction rather than by
 a later pass.
 
+
+
+## Owner direction — deeper Backrooms menu and loading art (2026-10-04)
+
+**Verbatim owner request:** "okay i think it fixed those slideart issues so check it  out again and review the existing slide art... we are going to make about 5-8 more but we want the backrooms psychologically disterbing rimworld esk like feel maybe some red splaters here or ther a few with backrooms like dark and creepy vibe currently sall the slideshow images are tame and all are homely showing the gate, what about "deeper into the backrooms Universe" a few with the pawns freaking out, there are many mental states in rimworld and everyone so rar  looks uneffected by the strange oddity that is the backrooms, so we need more of the stuff (events random) that the player can experience in the mod. so lets begin doing what we need to do to add more images for the game/mod to use as backgrounds on loading and menu screens where backdrops are already used. this is a wild game and even a wilder mod, so lets keep it all themed as such making the additional images for the Mod Rimrooms -Async Industries"
+
+**Verbatim owner clarification:** "unsettling situuations not just archeteture"
+
+**Verbatim owner correction and stop:** "hold up those are too realism the current set need to match the style with are more arty"; "scrap those u just did".
+
+**Verbatim owner resume:** "come on ur burtrning my tokens!!! make thew artworks for the Mod already"
+
+**Verbatim owner pilot correction:** "hold up thats a duplicate of one we already have dont do that"
+
+- [x] Create and integrate six additional original backgrounds for the existing shared menu/generation-notice art pool. Show unsettling situations with visibly distressed pawns, deeper room families, blackout, an echo, recovery and restrained blood traces; preserve the six existing slides. Scope: RR-UI / RR-STYLE, master TODO Phase 5. [Task and acceptance record](implementation/evidence/menu-art-2026-10-04/TASK.md). Initial candidates were rejected as too realistic; a subsequent FieldSurvey-reference pilot was rejected as duplicative. Neither entered the package. The revised direction is entirely new scenes and compositions, matching the existing set's small, simply painted figures. Six final scenes remain within the owner's 5–8 request; MirroredWard and BreakingPoint from the original eight-scene plan are withdrawn. Package/static evidence closes this bounded addition; actual menu/crop/profile acceptance stays in the existing `[T]` rows. This one art task does not meet the standing 10–12 archived-item stage/cascade batch.
+
+**Completed 2026-10-04 — artwork and local package scope only.** Six new original 1672 × 941 PNGs, generated from text without image inputs and copied unchanged: PanicJunction, LightsOut, EmptyCinema, FamiliarStranger, BreachedVault and RedTrail. The previous six remain byte-identical; the pool now has twelve. Both earlier rejected attempts remain unshipped. Six allowlist entries and six original-art provenance rows were added; the living art brief now describes the shared loader and notice panel accurately.
+
+**Evidence:** [task record](implementation/evidence/menu-art-2026-10-04/TASK.md), [prompts and provenance](../outputs/menu-art-2026-10-04-revised/prompts-and-provenance.json), [verification](../outputs/menu-art-2026-10-04-revised/verification.json), [menu proof](../outputs/menu-art-2026-10-04-revised/slide-proof.txt), [package integrity](../outputs/menu-art-2026-10-04-revised/package-integrity.txt) and [diff check](../outputs/menu-art-2026-10-04-revised/diff-check.txt). All three checks exit 0; 98 package files / 12 textures. No C# edit, build, game launch, staging, version bump or publication. Actual menu/notice overlay, crop/UI-scale and profile acceptance stay in the existing runtime queue. One bounded task closed, below the 10–12-item publication cadence.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner direction — a door onto a vein, veins that lead somewhere, and hundreds of facility types (2026-10-03)
+
+**Verbatim owner direction (2026-10-03):** *"and we should have doors that lead no where but to an ore or gem vein, and veins leading to other rooms so insentive to mine things out to find isolated undiscorvered rooms when mining and deconsturcting wals and sucvh so u can find back to back rooms so its more rooma corradors facilites infastructure roads neighborrs hood malls shoopping centers military(i cant name theme all but there are hundred s and hundreds of facilities and room types like underground lsd cities"*
+
+**THIS ANSWERS A QUESTION THAT WAS OPEN AND BLOCKING, and it is worth saying so.** *"room connected to like 0 - 10 other rooms"* explicitly allows **0**, and a zero-link room is one `CandidateIsSafe` refuses outright — it asserts every room's centre is reachable across carved floor. The owner has now said what the zero case *is*: *"isolated undiscorvered rooms"* you reach *"when mining and deconsturcting wals"*. So a sealed room is not an unreachable room; **mineable rock is a route**, and the reachability proof has to learn the difference between rock it may dig through and a wall it may not. That is the one change that makes degree 0 legal.
+ — **CLOSED 0.12.83-dev as the acceptance condition on the engine, and the LSD register is its own theme rather than a footnote: `RR_Room_EndlessShelves` (the aisles meet at the far end), `RR_Room_FurnitureDrift` (everything moved to one wall, upright, still facing the way it was), `RR_Room_MirrorWard` (symmetrical about an axis the door is not on), `RR_Room_CarpetSea` (one chair, in the middle, facing a corner) and `RR_Room_Vending`. All are `anomalous`, so the existing escalation ladder makes them heavier the more deranged a coordinate is — and the motif dissolving with depth is the same curve in the architecture.**
+- [x] **"so its more rooma corradors facilites infastructure roads neighborrs hood malls shoopping centers military"** — named room and facility kinds, verbatim and each one its own thing: rooms, corridors, facilities, infrastructure, **roads**, **neighbourhoods**, **malls**, **shopping centres**, **military**. Eight structural families ship today (`threshold_room`, `office_copy`, `return_gallery`, `survey_lobby`, `service_passage`, `borrowed_corridor`, `storage_nook`, `utility_room`) and not one of them is any of these. *"roads"* and *"neighborrs hood"* in particular are not room shapes at all — they are arrangements of rooms, which is a layout feature rather than a dressing one. — ****PARTLY BUILT 0.12.83-dev, and the remaining half is named precisely.** Every kind listed exists as a room kind, including a `RR_Room_Roadway` with lane markings, a kerb and lighting at the spacing of a road. **But this row’s own text was right that two of them are not room shapes at all**: *"roads"* and *"neighborrs hood"* are **arrangements of rooms**, and an arrangement is a layout feature rather than a dressing one. A road is a run of rooms sharing a through-line; a neighbourhood is a cluster standing wall to wall off one spine. Both are reachable now that `PushAgainst` can press any room against any neighbour and the lane router can reach a slot two away — the parts exist and nothing composes them yet. Next slice.**
+
+
+Build at the time of the move: **0.12.83-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+## Roads are wide, neighbourhoods are blocks, and twelve slides are all disclosed - 0.12.84-dev, 2026-10-04
+
+**Staged and read back from the game folder**, not from the build output: `0.12.84-dev`,
+SHA-256 `DB1CA94067FC0BD955C87378D17EF683A26D53A2F19746FDBE910538AD200058`, 98 package files,
+12 menu slides staged.
+
+**Verified before publication:** build 0 warnings / 0 errors, 215 C# files; **16 of 16 checkers**
+exit 0; **49 of 49 proofs** hold; `plant-coordinate-layout` **158 of 158**, `plant-menu-slides`
+**21 of 21**; **842 plant anchors** findable. Queue after the archive: **69 open / 38 partial /
+38 `[T]` / 0 `[x]`**.
+
+### The row that was right about itself
+
+*"so its more rooma corradors facilites infastructure roads neighborrs hood malls shoopping
+centers military"*. The room kinds all landed at 0.12.83-dev and the row stayed open because its
+own text had already worked out why: *"roads and neighborrs hood in particular are not room shapes
+at all -- they are arrangements of rooms, which is a layout feature rather than a dressing one."*
+
+**A road** is `OnRoad`: a straight run of linked rooms carrying on past at least one of its ends,
+with every corridor along it cut at the wide half-width whatever that pair's own roll said. The run
+already existed -- what was missing was that it looked like a chain of ordinary hallways. Derived
+from the saved graph and stored nowhere, so the carver, the reachability proof and the probe cannot
+disagree about where a road is; a `bool isRoad` field would have needed a schema migration to say
+what the links already say.
+
+**A neighbourhood** is a block pressed wall to wall off one hub. Back-to-back pairs rose from
+**248 to 376** at the first level and **366 to 488** at depth 3, in blocks of four.
+
+### Three things the probe said and reading would not have
+
+1. **A road braid was written and then deleted on the measurement.** A pass that picked a row and
+   linked every occupied slot along it moved the longest straight run **not at all**: 6 to 8 either
+   way, which at depth 3 and deeper is the entire slot row. At an average of five links per room
+   the braids already join almost every adjacent collinear pair. A pass whose effect nobody can
+   measure is a pass nobody can defend, and the comment recording that sits where somebody would
+   otherwise write it again.
+2. **The neighbourhood push was a no-op where it was first written** -- largest wall-to-wall group
+   3 with it and 3 without. **A room holding five or six links cannot slide at all**, because
+   `PushAgainst` undoes any move carrying one past `FurthestLinkedCentres`, so by the time a hub
+   was picked nothing around it was mobile. Moving the pass ahead of the diagonal and reach braids,
+   and offering the hub's neighbours **least-connected first**, is what made it land. Nothing was
+   relaxed: every move still satisfies all four conditions or is put back.
+3. **`PruneUnroutableLinks` was leaking.** It refused to touch any link whose centres shared an
+   axis, reasoning that the spanning tree is non-diagonal so removing only diagonals cannot
+   disconnect the level. True, and too coarse: the reach braid makes links two slots apart **along**
+   an axis and the push could leave one routeless. The probe printed
+   `link 2-6 has no route under it`. It now removes the edge and keeps the removal only if every
+   room still claiming a route can still be reached from the threshold -- exact, and those
+   refusals are gone.
+
+### Two mistakes of mine, both recorded as rules
+
+- **A source slice ran backwards and destroyed a file.** `text[text.index(A):text.index(B)]` where
+  a marker had moved above its partner returned an empty match, and `str.replace("", new)` inserted
+  the replacement between **every character** -- 154,124 copies of one method in
+  `RoomLayoutPlanner.cs`. The retry asserts `B` comes after `A` and caught the identical fault
+  immediately, writing nothing.
+- **`git checkout -- <file>` discarded somebody else's uncommitted work.** Six provenance rows
+  written by the art pass were reverted while I restored a hand-made test edit, and had to be
+  reconstructed from the diff. Check `git status` for a file before reverting it.
+
+And a third worth naming: **disabling a pass with `if (false)` does not compile here.** `CS0162
+Unreachable code detected` is an error in this project, so the build failed, the probe linked the
+previous DLL, and it reported numbers identical to the run before -- which is exactly the
+rebuild-before-believing trap, arriving through an attempt to measure honestly. Gate on something
+opaque instead.
+
+### Four shipped images had been undisclosed, and nothing could see it
+
+Six new slides arrived -- twelve in total, all 1672x941, all picked up by the existing folder scan
+with no code change, and they are loading-screen backgrounds as well as menu backgrounds. The
+manifest and the register had already been updated for the new six.
+
+**But the disclosure claim was satisfied by one provenance file existing anywhere under
+`outputs/`.** So when the slide count went from six to twelve, the 2026-09-29 batch --
+`CorridorEncounter`, `IndustrialGateLogistics`, `LaboratoryOperations`, `SilentRecovery` -- was
+shipping with no row in the provenance register at all, and had been since 0.3.0-dev. **Steam's
+AI-content requirement is per asset** and the register is the artefact an audit reads. Found by
+counting twelve PNGs against eight rows, not by reading either. All four are registered
+retroactively, the claim now refuses any slide without its own row, and it was proved able to fail
+by removing a row by hand before being trusted.
+
+### Mod register
+
+`python tools/register-query.py trace RR-SPACE`. Nothing applied: this change adds no integration
+surface and touches no other mod's defs.
+

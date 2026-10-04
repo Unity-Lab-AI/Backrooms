@@ -139,6 +139,15 @@ namespace PlannerProbe
                 // random; the owner asked for the ground in between, and it has to be visible to
                 // be aimed at.
                 int onMotif = 0;
+                // **ARE THERE ROADS AND BLOCKS, OR ONLY THE INTENTION OF THEM?** Owner,
+                // 2026-10-03: *"roads neighborrs hood"*. A braid makes loops and a walk makes
+                // branches; neither ever deliberately makes a LINE, and the back-to-back push
+                // rolls per room so its pairs are scattered rather than clustered. Two numbers:
+                // the longest straight run of linked rooms on one level, and the largest group
+                // standing wall to wall. Both were invisible before, exactly as the average
+                // degree was.
+                int longestRoad = 0;
+                int largestBlock = 0;
                 var shapesSeen = new HashSet<int>();
                 // **WHERE THE GRAND HALL LANDS.** Owner, 2026-10-03: *"starting room is not to
                 // always be in bottom left of map"*. It was two literals, and nothing measured
@@ -219,6 +228,11 @@ namespace PlannerProbe
                         reasons.Add("candidate refused: " + key + " -- " + Describe((IList)built, depth));
                     }
                     if (safeCandidates == 0) { fellBack++; }
+
+                    int road = LongestRoad(layout);
+                    if (road > longestRoad) { longestRoad = road; }
+                    int block = LargestWallToWallBlock(layout);
+                    if (block > largestBlock) { largestBlock = block; }
 
                     // **DO INSTITUTIONS ACTUALLY FORM?** `FacilityPlanner` was gated on
                     // `coordinate.Depth <= 1`, so a first level had none -- and nothing in
@@ -313,7 +327,7 @@ namespace PlannerProbe
                 Console.WriteLine(string.Format(
                     "     maze  depth {0,-2} degree avg {1,4:0.00} max {2,2} deg0 {3,5:0.0}% deg1 {4,5:0.0}% roomfill {5,4:0.0}% of {6}x{7}"
                     + "  hallspots {8,3} corner {9,5:0.0}% vertical {10,5:0.0}%"
-                    + "  onmotif {11,5:0.0}% shapes {12}",
+                    + "  onmotif {11,5:0.0}% shapes {12} road {13,2} block {14,2}",
                     depth, (double)degreeTotal / measuredRooms, degreeMax,
                     100.0 * degreeZero / measuredRooms, 100.0 * degreeOne / measuredRooms,
                     refused == Seeds ? 0.0 : 100.0 * roomCellTotal / ((Seeds - refused) * (long)mapArea),
@@ -321,7 +335,8 @@ namespace PlannerProbe
                     hallOrigins.Count,
                     refused == Seeds ? 0.0 : 100.0 * hallAtOldCorner / (Seeds - refused),
                     refused == Seeds ? 0.0 : 100.0 * hallVertical / (Seeds - refused),
-                    100.0 * onMotif / measuredRooms, shapesSeen.Count));
+                    100.0 * onMotif / measuredRooms, shapesSeen.Count,
+                    longestRoad, largestBlock));
                 foreach (string reason in reasons) { Console.WriteLine("        reason: " + reason); }
                 if (refused != 0) { failures++; }
                 if (fellBack >= Seeds) { fellBackEverywhere = true; }
@@ -733,5 +748,96 @@ namespace PlannerProbe
             if (info == null) { throw new MissingFieldException(target.GetType().Name, field); }
             return (T)info.GetValue(target);
         }
+
+        /// <summary>
+        /// The longest straight run of rooms linked end to end on this layout.
+        ///
+        /// **Observation, not a second opinion.** It asks the planner's own `OnRoad` nothing; it
+        /// counts collinear consecutive links, which is the property `OnRoad` is a question about.
+        /// A road of three is the shortest thing the word can mean.
+        /// </summary>
+        private static int LongestRoad(IList layout)
+        {
+            int best = 0;
+            for (int index = 0; index < layout.Count; index++)
+            {
+                var from = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(layout[index], null);
+                foreach (int linked in Field<List<int>>(layout[index], "links"))
+                {
+                    if (linked < 0 || linked >= layout.Count) { continue; }
+                    var next = (Verse.CellRect)roomType.GetProperty("Bounds")
+                        .GetValue(layout[linked], null);
+                    bool alongX = from.CenterCell.z == next.CenterCell.z;
+                    bool alongZ = from.CenterCell.x == next.CenterCell.x;
+                    if (alongX == alongZ) { continue; }
+                    int run = 2 + WalkOn(layout, index, linked, alongX);
+                    if (run > best) { best = run; }
+                }
+            }
+            return best;
+        }
+
+        /// <summary>How many more rooms the line continues for past <paramref name="through"/>.</summary>
+        private static int WalkOn(IList layout, int from, int through, bool alongX)
+        {
+            var near = ((Verse.CellRect)roomType.GetProperty("Bounds").GetValue(layout[from], null))
+                .CenterCell;
+            var hub = ((Verse.CellRect)roomType.GetProperty("Bounds").GetValue(layout[through], null))
+                .CenterCell;
+            foreach (int linked in Field<List<int>>(layout[through], "links"))
+            {
+                if (linked == from || linked < 0 || linked >= layout.Count) { continue; }
+                var far = ((Verse.CellRect)roomType.GetProperty("Bounds")
+                    .GetValue(layout[linked], null)).CenterCell;
+                if (alongX)
+                {
+                    if (far.z != hub.z) { continue; }
+                    if (near.x < hub.x ? far.x <= hub.x : far.x >= hub.x) { continue; }
+                }
+                else
+                {
+                    if (far.x != hub.x) { continue; }
+                    if (near.z < hub.z ? far.z <= hub.z : far.z >= hub.z) { continue; }
+                }
+                return 1 + WalkOn(layout, through, linked, alongX);
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// The largest group of rooms standing wall to wall, asked of the planner's own
+        /// `SharesWall` so the probe keeps no third copy of that rule.
+        ///
+        /// A SCATTERED pair is not a neighbourhood. The push loop produced two to three hundred
+        /// pairs per depth and no blocks at all, which is the difference this counts.
+        /// </summary>
+        private static int LargestWallToWallBlock(IList layout)
+        {
+            var seen = new HashSet<int>();
+            int best = 0;
+            for (int start = 0; start < layout.Count; start++)
+            {
+                if (!seen.Add(start)) { continue; }
+                var pending = new Queue<int>();
+                pending.Enqueue(start);
+                int size = 0;
+                while (pending.Count > 0)
+                {
+                    int current = pending.Dequeue();
+                    size++;
+                    for (int other = 0; other < layout.Count; other++)
+                    {
+                        if (seen.Contains(other)) { continue; }
+                        if (!(bool)sharesWall.Invoke(null, new[] { layout[current], layout[other] }))
+                        { continue; }
+                        seen.Add(other);
+                        pending.Enqueue(other);
+                    }
+                }
+                if (size > best) { best = size; }
+            }
+            return best;
+        }
+
     }
 }

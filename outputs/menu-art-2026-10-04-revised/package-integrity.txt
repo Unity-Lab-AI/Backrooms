@@ -1,0 +1,18 @@
+Exit code: 0
+package-integrity
+  defs declared:      298
+  package files:      98
+  supported versions: 1.6
+  game defs indexed:  12174
+  game name heap:     1532377 bytes
+  note: optional compatibility patch targets 'PH_DoorDouble', which is not installed here and cannot be verified
+  note: optional compatibility patch targets 'PH_DoorTriple', which is not installed here and cannot be verified
+  note: optional compatibility patch targets 'PH_AutodoorDouble', which is not installed here and cannot be verified
+  note: optional compatibility patch targets 'PH_AutodoorTriple', which is not installed here and cannot be verified
+  note: optional compatibility patch targets 'PH_GateDoubleThick', which is not installed here and cannot be verified
+  note: optional compatibility patch targets 'PH_DoorBlastDoor', which is not installed here and cannot be verified
+  note: optional compatibility patch targets 'PH_DoorThickBlastDoor', which is not installed here and cannot be verified
+  note: folder scanned by GetAllInFolder, 12 texture(s) covered: UI/Menu
+  note: 4 non-RR texture path(s) point at game assets and cannot be checked from disk; they live in asset bundles, not Data/
+
+PASS

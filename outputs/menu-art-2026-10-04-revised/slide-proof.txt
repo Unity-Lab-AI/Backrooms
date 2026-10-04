@@ -1,0 +1,28 @@
+Exit code: 0
+  OK   the slide folder and prefix were read out of the source 
+folder 'UI/Menu', prefix 'RR_Menu_'
+  OK   the scan is a folder scan, not a hardcoded list 
+  OK   the scan is filtered by the prefix 
+  OK   slides are ordered ordinally 
+  OK   THE STARTING SLIDE IS DRAWN, not pinned to the first one 
+  OK   and the draw is kept away from the game's seeded randomness 
+  OK   the loading surfaces and the menu read ONE list 
+  OK   the slide folder exists 
+slides on disk: 12
+  OK   at least two slides ship 
+  OK   every file in the slide folder carries the prefix 
+  OK   every slide is on the package allowlist 
+  OK   every slide is a structurally complete PNG 
+  OK   every slide shares one aspect ratio to within a rounded pixel 
+  aspects: RR_Menu_BreachedVault.png 1672x941, RR_Menu_CorridorEncounter.png 1672x941, RR_Menu_EmptyCinema.png 1672x941, RR_Menu_FacilityThreshold_v2.png 1672x941, RR_Menu_FamiliarStranger.png 1672x941, RR_Menu_FieldSurvey_v2.png 1672x941, RR_Menu_IndustrialGateLogistics.png 1672x941, RR_Menu_LaboratoryOperations.png 1672x940, RR_Menu_LightsOut.png 1672x941, RR_Menu_PanicJunction.png 1672x941, RR_Menu_RedTrail.png 1672x941, RR_Menu_SilentRecovery.png 1672x941
+  OK   a provenance record ships for the generated menu art 
+
+  OK   THE NOTICE IS DRAWN BEFORE THE FREEZE, and the work moves into a long event 
+  OK   and it is announced ONLY when a space is actually being built 
+  OK   THE BUTTONS THAT CAN BUILD A MAP ACTUALLY CALL IT 
+  OK   THE BACKDROP IS THE MOD'S OWN ART, drawn at random from the same list the menu reads 
+  OK   AND THE DRAW IS GUARDED, because an invisible notice is worse than none 
+  OK   THERE IS A TONE PER SCENARIO, and a fallback that still says the pause is expected 
+  OK   and every shipped scenario has its own notice, with the generic one behind them 
+  OK   the notice says the pause is EXPECTED, which is the load-bearing half of the direction 
+PROOF HELD: every slide will appear, ships, loads, and matches its neighbours

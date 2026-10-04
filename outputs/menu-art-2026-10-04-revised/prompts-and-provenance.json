@@ -1,0 +1,133 @@
+{
+  "date": "2026-10-04",
+  "tool": "built-in image_gen",
+  "status": "integrated_package_checks_passed",
+  "baseline_commit": "0737357",
+  "baseline_version": "0.12.83-dev",
+  "scope": "Six additive original illustrations for the existing shared menu and generation-notice background pool. Existing artwork and C# unchanged.",
+  "owner_style_corrections": [
+    "unsettling situuations not just archeteture",
+    "hold up those are too realism the current set need to match the style with are more arty",
+    "hold up thats a duplicate of one we already have dont do that"
+  ],
+  "generation_method": "Entirely new compositions generated from text, simplified brush-painted style and small figures. No input images supplied. Earlier realistic drafts and reference-based duplicate pilot are rejected, not integrated.",
+  "image_review": "All six final outputs visually inspected: distinct new compositions, illustrated figures, readable emotional situations, dark left menu space, no baked wording or graphic wounds. Actual menu/notice UI crop/profile acceptance remains unverified.",
+  "assets": [
+    {
+      "id": "PanicJunction",
+      "title": "No Way Back",
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_PanicJunction.png",
+      "generated_source_path": "C:\\Users\\gfour\\.codex\\generated_images\\01a10581-e4f2-78f1-9c8d-5c4e03ec26be\\exec-425d5bd0-35fb-401e-80ad-46e7c2145832.png",
+      "actual_dimensions": [
+        1672,
+        941
+      ],
+      "bytes": 1522882,
+      "sha256": "BB8FFAA603D7BC72843983AB8C6C9D23BB1D762B4D754C8281735547E0A54AB1",
+      "transformations": "None. Original generated PNG copied byte-for-byte.",
+      "prompt": "Original 2D PAINTED GAME ILLUSTRATION for a RimWorld Backrooms mod menu. Wide 16:9 PNG. Art direction: stylized matte painting, broad visible brush strokes, simplified angular shapes, restrained cel-like shading, muted colors, illustrated texture. Small simply drawn adult colonists seen at a distance, faces only a few brush marks. NOT photorealistic, not a film still, no realistic skin, no detailed facial anatomy, no depth-of-field blur. Figures occupy at most one quarter of image height. Distress conveyed by silhouette and posture. Dark quiet left third for menu controls; no text, logos, UI, gates or portals. One fresh composition with a clear unsettling situation. Elevated diagonal view across a cramped olive-green office maze. At right a terrified explorer has crawled under an overturned desk and covers his ears; a companion reaches underneath to coax him out while a third watches the doorway. Loose supplies and a small red smear on carpet show things went wrong. Fluorescent islands of light, broken sightlines, nobody posing. Broad rough painted shadow shapes, tiny unreadable faces. Completely new office layout.",
+      "source_grounding": [
+        "src/RimroomsAsyncIndustries/Generation/RoomLayoutPlanner.cs",
+        "Mod/Rimrooms - Async Industries/1.6/Defs/ThoughtDefs/RR_BackroomsPressure.xml"
+      ]
+    },
+    {
+      "id": "LightsOut",
+      "title": "Do Not Let Go",
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_LightsOut.png",
+      "generated_source_path": "C:\\Users\\gfour\\.codex\\generated_images\\01a10581-e4f2-78f1-9c8d-5c4e03ec26be\\exec-dfbb97fb-94b3-48e7-84f0-77d4aa100f72.png",
+      "actual_dimensions": [
+        1672,
+        941
+      ],
+      "bytes": 1853767,
+      "sha256": "DB63DE41E09449D181A2DB640A28077965C6F59363C1A0FEF95C33FBDDA78156",
+      "transformations": "None. Original generated PNG copied byte-for-byte.",
+      "prompt": "Original 2D PAINTED GAME ILLUSTRATION for a RimWorld Backrooms mod menu. Wide 16:9 PNG. Art direction: stylized matte painting, broad visible brush strokes, simplified angular shapes, restrained cel-like shading, muted colors, illustrated texture. Small simply drawn adult colonists seen at a distance, faces only a few brush marks. NOT photorealistic, not a film still, no realistic skin, no detailed facial anatomy, no depth-of-field blur. Figures occupy at most one quarter of image height. Distress conveyed by silhouette and posture. Dark quiet left third for menu controls; no text, logos, UI, gates or portals. One fresh composition with a clear unsettling situation. A wide maintenance chamber full of rust-colored pipes and dead ceiling lights. At far right three small frightened adults clutch each other's sleeves beside a dropped toolbox; one holds the only lamp, another is frozen against the wall, a third looks toward a vast black ventilation passage. Harsh small pool of amber lamplight against desaturated teal-blue shadows. View from across the chamber, loose painted figures without facial detail.",
+      "source_grounding": [
+        "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsAnomalyEventDefs/RR_AnomalyEvents.xml",
+        "src/RimroomsAsyncIndustries/Threats/AnomalyEventService.cs"
+      ]
+    },
+    {
+      "id": "EmptyCinema",
+      "title": "The Audience",
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_EmptyCinema.png",
+      "generated_source_path": "C:\\Users\\gfour\\.codex\\generated_images\\01a10581-e4f2-78f1-9c8d-5c4e03ec26be\\exec-ef684b05-4377-4572-830b-297c51450379.png",
+      "actual_dimensions": [
+        1672,
+        941
+      ],
+      "bytes": 1543450,
+      "sha256": "6ED0DBAC11BEC717FE4F9CAFE260BBD7BEC8BDECF9401AA906093A18391A3313",
+      "transformations": "None. Original generated PNG copied byte-for-byte.",
+      "prompt": "Original 2D PAINTED GAME ILLUSTRATION for a RimWorld Backrooms mod menu. Wide 16:9 PNG. Art direction: stylized matte painting, broad visible brush strokes, simplified angular shapes, restrained cel-like shading, muted colors, illustrated texture. Small simply drawn adult colonists seen at a distance, faces only a few brush marks. NOT photorealistic, not a film still, no realistic skin, no detailed facial anatomy, no depth-of-field blur. Figures occupy at most one quarter of image height. Distress conveyed by silhouette and posture. Dark quiet left third for menu controls; no text, logos, UI, gates or portals. One fresh composition with a clear unsettling situation. View diagonally downward across sweeping curved rows of dusty burgundy cinema seats. At right a small adult is curled on the aisle floor, unable to move; a companion kneels beside them and another has turned toward the rear. A single motionless human silhouette sits far away among otherwise empty seats. Blank dark screen, cold green exit-corridor glow without signage. Stylized drawn figures, eerie illustrated silhouettes, no closeups.",
+      "source_grounding": [
+        "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsRoomArchetypeDefs/RR_RoomArchetypes.xml",
+        "Mod/Rimrooms - Async Industries/1.6/Defs/ThoughtDefs/RR_BackroomsPressure.xml"
+      ]
+    },
+    {
+      "id": "FamiliarStranger",
+      "title": "Someone From Home",
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_FamiliarStranger.png",
+      "generated_source_path": "C:\\Users\\gfour\\.codex\\generated_images\\01a10581-e4f2-78f1-9c8d-5c4e03ec26be\\exec-cd1ed3ea-b52c-433e-bca7-f5b197f8c002.png",
+      "actual_dimensions": [
+        1672,
+        941
+      ],
+      "bytes": 1637467,
+      "sha256": "E5E9BEFE1DD156478507C18BDDCB7B75F17FC5F1BFB1A419C37437ECF92C7E08",
+      "transformations": "None. Original generated PNG copied byte-for-byte.",
+      "prompt": "Original 2D PAINTED GAME ILLUSTRATION for a RimWorld Backrooms mod menu. Wide 16:9 PNG. Art direction: stylized matte painting, broad visible brush strokes, simplified angular shapes, restrained cel-like shading, muted colors, illustrated texture. Small simply drawn adult colonists seen at a distance, faces only a few brush marks. NOT photorealistic, not a film still, no realistic skin, no detailed facial anatomy, no depth-of-field blur. Figures occupy at most one quarter of image height. Distress conveyed by silhouette and posture. Dark quiet left third for menu controls; no text, logos, UI, gates or portals. One fresh composition with a clear unsettling situation. An enormous pantry of repeating tall shelves, faded ochre labels with NO readable text. At right a calm older colony worker in a red scarf stands alone in a pool of light, offering an ordinary tin cup. Two small expedition members recoil at a distance: they recognize someone who should have stayed at home. Their lowered packs and hesitant open hands show disbelief. The stranger is ordinary and harmless, not a monster. Wide view, tiny faces, warm paper-brown against dusty slate shadows.",
+      "source_grounding": [
+        "src/RimroomsAsyncIndustries/Threats/ColonistEcho.cs",
+        "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml"
+      ]
+    },
+    {
+      "id": "BreachedVault",
+      "title": "The Room Behind the Seam",
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_BreachedVault.png",
+      "generated_source_path": "C:\\Users\\gfour\\.codex\\generated_images\\01a10581-e4f2-78f1-9c8d-5c4e03ec26be\\exec-e1409c04-ef24-4268-a2b1-e174b4f3cd1f.png",
+      "actual_dimensions": [
+        1672,
+        941
+      ],
+      "bytes": 1506497,
+      "sha256": "50900CD035D4E0F08F2ECC59944F0C6A2AB70CEB5E3B3D791C20D0C52C1C90B4",
+      "transformations": "None. Original generated PNG copied byte-for-byte.",
+      "prompt": "Original 2D PAINTED GAME ILLUSTRATION for a RimWorld Backrooms mod menu. Wide 16:9 PNG. Art direction: stylized matte painting, broad visible brush strokes, simplified angular shapes, restrained cel-like shading, muted colors, illustrated texture. Small simply drawn adult colonists seen at a distance, faces only a few brush marks. NOT photorealistic, not a film still, no realistic skin, no detailed facial anatomy, no depth-of-field blur. Figures occupy at most one quarter of image height. Distress conveyed by silhouette and posture. Dark quiet left third for menu controls; no text, logos, UI, gates or portals. One fresh composition with a clear unsettling situation. A horizontal ore seam has been mined open into a sealed archive. View from within the dark archive toward the jagged hole at upper right, where two small miners have stopped in horror, one dropping a pick. In middle-right shadow an intact fully clothed dead adult sits slumped at a desk amid dusty file boxes; a small dried red spatter marks the wall. No wound detail. Tiny lantern light cuts across broad painterly mineral and furniture shapes. Discovery, silence, and frightened posture; not an architectural showcase.",
+      "source_grounding": [
+        "src/RimroomsAsyncIndustries/Generation/OreVeinBuilder.cs",
+        "src/RimroomsAsyncIndustries/Generation/RoomContentBuilder.cs",
+        "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml"
+      ]
+    },
+    {
+      "id": "RedTrail",
+      "title": "Keep Moving",
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_RedTrail.png",
+      "generated_source_path": "C:\\Users\\gfour\\.codex\\generated_images\\01a10581-e4f2-78f1-9c8d-5c4e03ec26be\\exec-d6723003-0b4a-45bf-ae3d-8daccd636318.png",
+      "actual_dimensions": [
+        1672,
+        941
+      ],
+      "bytes": 1813791,
+      "sha256": "83D28E7D088BEE73FA292FEE7DBADD72243DCB4E520E00985E7636125EE8338A",
+      "transformations": "None. Original generated PNG copied byte-for-byte.",
+      "prompt": "Original 2D PAINTED GAME ILLUSTRATION for a RimWorld Backrooms mod menu. Wide 16:9 PNG. Art direction: stylized matte painting, broad visible brush strokes, simplified angular shapes, restrained cel-like shading, muted colors, illustrated texture. Small simply drawn adult colonists seen at a distance, faces only a few brush marks. NOT photorealistic, not a film still, no realistic skin, no detailed facial anatomy, no depth-of-field blur. Figures occupy at most one quarter of image height. Distress conveyed by silhouette and posture. Dark quiet left third for menu controls; no text, logos, UI, gates or portals. One fresh composition with a clear unsettling situation. Sideways view through a deserted institutional cafeteria, long parallel tables fading into green-black darkness. Three small colonists at right are struggling to carry an injured fourth between them; one carrier looks back over her shoulder in terror, the other's knees buckle from the weight. A few red drops and one smeared handprint mark their retreat, injury hidden by a bandage and clothing. A distant ordinary hostile figure is barely suggested behind a pillar. Sickly pale mint and dull rust palette, rough brush-painted shapes, no gore, no faces in closeup.",
+      "source_grounding": [
+        "src/RimroomsAsyncIndustries/Threats/InhabitantService.cs",
+        "src/RimroomsAsyncIndustries/ConnectedWork/Adapters/ConnectedCasualtyAdapter.cs"
+      ]
+    }
+  ],
+  "validation": {
+    "slide_proof_exit": 0,
+    "package_integrity_exit": 0,
+    "git_diff_check_exit": 0,
+    "original_six_unchanged": true,
+    "runtime_review": "Not performed"
+  }
+}

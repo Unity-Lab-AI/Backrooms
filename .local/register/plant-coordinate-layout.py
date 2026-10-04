@@ -472,8 +472,33 @@ PLANTS = [
     # **RE-AIMED 2026-10-03.** The width was read in the carver; it is read inside `CorridorLegs`
     # now, which is the only place that needs it. Same fault, new home.
     ("HALLWAYS GO BACK TO ONE WIDTH", PLANNER,
-     "            int halfWidth = CorridorHalfWidthBetween(first, second, depth);",
+     "            int halfWidth = CorridorHalfWidthBetween(first, second, depth, rooms);",
      "            int halfWidth = 2;"),
+
+    # ------------------------------------------------- roads, blocks, and the exact prune
+    ("A ROAD STOPS BEING WIDE, so a through-line reads as ordinary hallways", PLANNER,
+     "            if (OnRoad(first, second, rooms)) { return 3; }" + chr(10), ""),
+
+    ("and a road is no longer recognised as a run that carries on past its ends", PLANNER,
+     "            return ContinuesPast(second, first, rooms, alongX)" + chr(10)
+     + "                || ContinuesPast(first, second, rooms, alongX);",
+     "            return false;"),
+
+    ("THE NEIGHBOURHOOD BLOCK IS NEVER FORMED", PLANNER,
+     "                { PushAgainst(rooms, terrace[index], rooms[hub], depth); }",
+     "                { }"),
+
+    ("and it stops offering the mobile rooms first, so every push snaps back", PLANNER,
+     "                terrace.Sort((left, right) => left.links.Count != right.links.Count" + chr(10)
+     + "                    ? left.links.Count - right.links.Count" + chr(10)
+     + "                    : left.index - right.index);" + chr(10), ""),
+
+    ("THE PRUNE GOES BACK TO GUESSING WHICH EDGES THE TREE OWNS", PLANNER,
+     "                    if (LinkedGraphIsWhole(rooms)) { continue; }",
+     "                    if (a.x == b.x || a.z == b.z) { continue; }"),
+
+    ("and a removal that disconnects the level is no longer put back", PLANNER,
+     "                    if (LinkedGraphIsWhole(rooms)) { continue; }" + chr(10), ""),
 
     # **RE-AIMED 2026-10-03 at the divergence that is still POSSIBLE.** There is one width now,
     # so "the planner models a width the generator does not carve" cannot be planted by changing a

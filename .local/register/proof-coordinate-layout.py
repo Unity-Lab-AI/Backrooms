@@ -861,12 +861,12 @@ check("an intrusion is rock inside a room, never a hole in the world",
       "holds across every shape")
 
 check("HALLWAYS ARE NOT ALL ONE WIDTH",
-      "internal static int CorridorHalfWidthBetween(RoomRecord first, RoomRecord second, int depth)"
-      in planner
+      ("internal static int CorridorHalfWidthBetween(RoomRecord first, RoomRecord second, int depth,"
+       + chr(10) + "            IReadOnlyList<RoomRecord> rooms)") in planner
       # **RE-AIMED 2026-10-03.** The width is read inside `CorridorLegs` now, so the generator
       # asks for it the same way the validator does: by asking for the corridor. The genstep
       # still supplies the pair's own shaping depth, which is the part that had to stay.
-      and "int halfWidth = CorridorHalfWidthBetween(first, second, depth);" in planner
+      and "int halfWidth = CorridorHalfWidthBetween(first, second, depth, rooms);" in planner
       and "RoomLayoutPlanner.ShapeDepthOf(rooms, room, depth)" in genstep
       and "private const int CorridorHalfWidth" not in genstep,
       "-- the constant is gone; the width comes from the shared function, so the reachability "
@@ -1341,13 +1341,20 @@ check("AND EVERY ROUTE IS PROVED CLEAR OF EVERY ROOM BEFORE IT IS CARVED",
 check("NO GRAPH EDGE STANDS WITHOUT A ROUTE UNDER IT",
       "private static void PruneUnroutableLinks(List<RoomRecord> rooms, int depth)" in planner
       and "PruneUnroutableLinks(rooms, depth);" in planner
-      and "if (a.x == b.x || a.z == b.z) { continue; }" in planner
-      and "other.links.Remove(room.index);" in planner,
-      "-- DEFINED AND CALLED, last, after every room has stopped moving. Two things decided after "
-      "the braid can take a lane away: `PushAgainst` slides a dead end into somebody's lane, and "
-      "`ShapeDepthOf` shifts as links are added, which changes the width the pair asks for. **It "
-      "only ever removes a diagonal, which is what makes it safe** -- the spanning tree the walk "
-      "built is entirely non-diagonal, so pruning cannot disconnect the level")
+      and "other.links.Remove(room.index);" in planner
+      # **EXACT NOW, NOT CONSERVATIVE.** It refused to touch anything whose centres shared an
+      # axis, reasoning that the spanning tree is entirely non-diagonal. True and too coarse:
+      # the reach braid makes links two slots apart ALONG an axis, and the neighbourhood push
+      # can leave one of those routeless. The clause skipped it and `CandidateIsSafe` refused
+      # the whole layout -- the probe printed `link 2-6 has no route under it`.
+      and "if (LinkedGraphIsWhole(rooms)) { continue; }" in planner
+      and "private static bool LinkedGraphIsWhole(List<RoomRecord> rooms)" in planner
+      and "if (a.x == b.x || a.z == b.z) { continue; }" not in planner_code,
+      "-- DEFINED AND CALLED, last, after every room has stopped moving. **Remove the edge, and "
+      "keep the removal only if every room still claiming a route can still be reached from the "
+      "threshold.** A load-bearing link stays and the candidate is refused, which is correct and "
+      "is what the next candidate answers. Asking the question directly is both exact and easier "
+      "to reason about than guessing which edges the tree owns")
 
 check("and the WALK refuses a step it could not carve, which is what makes that prune safe",
       "if (CorridorLegs(rooms[parent], room, depth, rooms).Count == 0 &&" in planner
@@ -1624,6 +1631,63 @@ check("every archetype still asks for a capability rather than naming furniture"
       "-- a hand-written list of defNames covers Core, misses every DLC, misses all 294 profile "
       "mods and rots the first time anything is renamed. Not one of the new kinds names a piece "
       "of furniture it hopes exists")
+
+
+# ======================================================================================
+# ROADS AND NEIGHBOURHOODS ARE ARRANGEMENTS, NOT KINDS OF ROOM
+#
+# Owner, 2026-10-03: *"so its more rooma corradors facilites infastructure roads neighborrs
+# hood malls shoopping centers military"*. The queue row worked this out about itself:
+# *"roads and neighborrs hood in particular are not room shapes at all -- they are
+# arrangements of rooms, which is a layout feature rather than a dressing one."*
+# ======================================================================================
+
+check("A ROAD IS A RUN THAT CARRIES ON, AND ITS CORRIDORS ARE THE WIDE ONES",
+      "internal static bool OnRoad(RoomRecord first, RoomRecord second," in planner
+      and "if (OnRoad(first, second, rooms)) { return 3; }" in planner
+      and "private static bool ContinuesPast(RoomRecord from, RoomRecord through," in planner
+      # **THE RETURN EXPRESSION, NOT THE HELPER.** A plant replaced it with `return false;`
+      # and every claim here still held: `OnRoad` existed, the width branch still called it,
+      # and `ContinuesPast` sat there untouched while no road was ever recognised again.
+      # Sixth instance of this one gap in two sessions, and all six were found by a plant.
+      and "            return ContinuesPast(second, first, rooms, alongX)" in planner
+      and "                || ContinuesPast(first, second, rooms, alongX);" in planner,
+      "-- a single room with lane markings in it is a room, not a road. A road is three or more "
+      "rooms in a line with **one wide corridor running through all of them**, and you can only "
+      "see that from the layout. Derived from the saved graph and stored nowhere, so the carver, "
+      "the reachability proof and the probe all get the same answer -- a `bool isRoad` on "
+      "`RoomRecord` would have needed a schema migration to say what the links already say")
+
+# **AND THE ROAD BRAID WAS MEASURED, FOUND TO DO NOTHING, AND DELETED.** A pass that picked a
+# row and linked every slot along it changed the longest straight run not at all: 6 to 8 either
+# way, which at depth 3 and deeper is the whole slot row. At an average of five links per room
+# the braids already join almost every adjacent collinear pair.
+check("and there is no road braid, with the measurement that removed it recorded",
+      "THERE IS NO ROAD BRAID, AND THAT IS A MEASUREMENT RATHER THAN AN OMISSION" in planner
+      and '"road:line"' not in planner_code,
+      "-- a pass whose effect nobody can measure is a pass nobody can defend. The comment is the "
+      "evidence, so the next person does not write it again")
+
+check("A NEIGHBOURHOOD IS A BLOCK, formed while the rooms can still move",
+      "{ PushAgainst(rooms, terrace[index], rooms[hub], depth); }" in planner
+      and "terrace.Sort((left, right) => left.links.Count != right.links.Count" in planner
+      and 'StableHash(seed, "neighbourhood:hub", depth)' in planner,
+      "-- the back-to-back push rolls per room, so its pairs are SCATTERED: two to three hundred "
+      "per depth and not one of them a block. **Order matters twice here.** It runs before the "
+      "diagonal and reach braids, because a room holding five or six links cannot slide at all -- "
+      "`PushAgainst` undoes any move carrying one past `FurthestLinkedCentres`, and placed after "
+      "them this measured as a no-op, 3 with it and 3 without. And the hub's neighbours are "
+      "offered least-connected first, so the mobile ones are tried before the hopeless ones have "
+      "shifted the geometry. Measured after both: back-to-back pairs up about half again, 248 to "
+      "376 at depth 1 and 366 to 488 at depth 3, with blocks of four")
+
+check("and every move still proves itself, because nothing here relaxes PushAgainst",
+      "bool blocksARoute = !EveryLinkRoutes(rooms, mover, depth);" in planner
+      and "if (onMap && !collides && !blocksARoute && SharesWall(mover, anchorRoom)) { return; }"
+      in planner,
+      "-- this chooses which rooms to offer and in what order. All four conditions still have to "
+      "hold or the move is undone: on the map, nothing overlapped, no existing link's route or "
+      "shape broken, and `SharesWall` agreeing afterwards")
 
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))

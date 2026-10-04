@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-04",
+  "original_slides_preserved": [
+    {
+      "name": "RR_Menu_CorridorEncounter.png",
+      "sha256": "4DBAB8ED8EC4BD4FEF14194739E00F0BC06A7B41A602F4C923D8079D8ED5760E",
+      "unchanged": true
+    },
+    {
+      "name": "RR_Menu_FacilityThreshold_v2.png",
+      "sha256": "AEB5091DE4568134980D36065C95C65DCD83472B4BB3E8D2DB92F092D3BF452C",
+      "unchanged": true
+    },
+    {
+      "name": "RR_Menu_FieldSurvey_v2.png",
+      "sha256": "3AC775159E46DB91163299DBE1B454B310BCFB9676FE93279AD9A5A520837843",
+      "unchanged": true
+    },
+    {
+      "name": "RR_Menu_IndustrialGateLogistics.png",
+      "sha256": "384975AFDBD1A632C27FE9B5F66E8ACCFA5F5BA5E8C223F4DFCB785FB5A2D93C",
+      "unchanged": true
+    },
+    {
+      "name": "RR_Menu_LaboratoryOperations.png",
+      "sha256": "FEE06AE37CB2ACD9E77990CFA0003467EFDF927DA309A5BB3C8DA7C7C70E3737",
+      "unchanged": true
+    },
+    {
+      "name": "RR_Menu_SilentRecovery.png",
+      "sha256": "009E3CF278BD3CB68E052FB894C406E0AD53F7DD82ECF1FAF7647501DD91AABB",
+      "unchanged": true
+    }
+  ],
+  "new_slide_count": 6,
+  "total_slide_count": 12,
+  "actual_new_dimensions": "1672 x 941",
+  "all_new_outputs_copied_byte_for_byte": true,
+  "visual_review": "Six new situations and compositions, simplified painted figures, no duplicate source layouts, left menu region kept dark. No runtime acceptance claimed.",
+  "runtime_acceptance": "Not performed. Owner launches RimWorld through RimSort."
+}

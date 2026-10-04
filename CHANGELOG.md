@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.12.84-dev - 2026-10-04 - Roads are wide, neighbourhoods are blocks, and twelve slides are all disclosed
+
+- **A road is now an arrangement rather than a room with lane markings in it.** A straight run of
+  linked rooms that carries on past either of its ends has every corridor along it cut at the wide
+  half-width, whatever that pair's own roll said. A run already existed; it looked like a chain of
+  ordinary hallways. Derived from the saved graph and stored nowhere, so the carver, the
+  reachability proof and the layout probe cannot disagree about where a road is.
+- **A road braid was written and then deleted, on the measurement.** A pass that picked a row and
+  linked every slot along it moved the longest straight run not at all: 6 to 8 either way, which at
+  depth 3 and deeper is the entire slot row. At an average of five links per room the braids
+  already join almost every adjacent collinear pair. A pass whose effect nobody can measure is a
+  pass nobody can defend.
+- **A neighbourhood is a block of rooms pressed wall to wall off one hub**, and two findings were
+  needed to make it happen at all. It has to run before the diagonal and reach braids, because a
+  room holding five or six links cannot slide - any move carrying one past its stated reach is
+  undone - and placed after them the whole pass measured as a no-op. And the hub's neighbours are
+  offered least-connected first, so the mobile ones are tried before the hopeless ones have shifted
+  the geometry. Back-to-back pairs rose from 248 to 376 at the first level and 366 to 488 at depth
+  3, in blocks of four. Nothing was relaxed: every move still satisfies all four conditions or is
+  put back.
+- **The link prune stopped guessing which edges the spanning tree owns.** It refused to touch
+  anything whose room centres shared an axis, which was true of the tree and too coarse for the
+  reach braid - that makes links two slots apart along an axis, and the neighbourhood push could
+  leave one with no route. It now removes the edge and keeps the removal only if every room still
+  claiming a route can still be reached from the threshold.
+- **Six new menu slides, twelve in total**, all 1672x941, all discovered by the existing folder
+  scan with no code change - and they are loading-screen backgrounds as well as menu backgrounds.
+- **Four shipped images had no provenance row at all, and nothing could see it.** The disclosure
+  claim was satisfied by one provenance file existing anywhere, so when the slide count went from
+  six to twelve the 2026-09-29 batch was shipping undisclosed. Steam's AI-content requirement is
+  per asset. All four are registered retroactively and the claim now refuses any slide without its
+  own row.
+
 ## 0.12.83-dev - 2026-10-04 - A floor has an architecture, forty-four kinds of room, and the freeze says so first
 
 - **A coordinate has a motif, and its rooms vary from it.** Seven room shapes already existed and

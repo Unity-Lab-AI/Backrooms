@@ -691,14 +691,91 @@ namespace RimroomsAsyncIndustries.Generation
         /// Two gives a three-cell walkway, three gives five. Derived from the two rooms' own
         /// indices so it is stable across a reload, and **shared with
         /// <see cref="CandidateIsSafe"/>** for the usual reason.
+        ///
+        /// **A corridor on a ROAD is always the wide one**, whatever the roll says, because that
+        /// is most of what makes a road read as one. See <see cref="OnRoad"/>.
         /// </summary>
-        internal static int CorridorHalfWidthBetween(RoomRecord first, RoomRecord second, int depth)
+        internal static int CorridorHalfWidthBetween(RoomRecord first, RoomRecord second, int depth,
+            IReadOnlyList<RoomRecord> rooms)
         {
             if (first == null || second == null || depth <= 1) { return 2; }
+            if (OnRoad(first, second, rooms)) { return 3; }
             int roll = DestinationService.StableHash(first.index * 101 + second.index,
                 "corridor:width", depth);
             if (roll < 0) { roll = ~roll; }
             return roll % 3 == 0 ? 3 : 2;
+        }
+
+        /// <summary>
+        /// Whether this corridor is a stretch of **road**: a straight run that carries on past at
+        /// least one of its two ends.
+        ///
+        /// ## Owner direction, 2026-10-03, verbatim
+        ///
+        /// *"so its more rooma corradors facilites infastructure roads neighborrs hood malls
+        /// shoopping centers military"*.
+        ///
+        /// ## Why a road is not a kind of room
+        ///
+        /// The queue row for that direction worked this out about itself: *"roads and neighborrs
+        /// hood in particular are not room shapes at all — they are arrangements of rooms,
+        /// which is a layout feature rather than a dressing one."* A single room called a roadway
+        /// is a room with lane markings in it. **A road is three or more rooms in a line with one
+        /// wide corridor running through all of them**, and you can only see it from the layout.
+        ///
+        /// ## Derived from the graph, stored nowhere
+        ///
+        /// A pair is a road segment when its two centres share an axis **and** one of them carries
+        /// a third link continuing that same line outward. That is a question about the saved graph
+        /// and nothing else — so the carver, the reachability proof and the probe all get the same
+        /// answer with no new save field and no chance of disagreeing. A `bool isRoad` on
+        /// `RoomRecord` would have needed a schema migration and would have been a second
+        /// derivation of something the links already say.
+        /// </summary>
+        internal static bool OnRoad(RoomRecord first, RoomRecord second,
+            IReadOnlyList<RoomRecord> rooms)
+        {
+            if (first == null || second == null || rooms == null) { return false; }
+            IntVec3 a = first.Bounds.CenterCell;
+            IntVec3 b = second.Bounds.CenterCell;
+            bool alongX = a.z == b.z && a.x != b.x;
+            bool alongZ = a.x == b.x && a.z != b.z;
+            if (!alongX && !alongZ) { return false; }
+            return ContinuesPast(second, first, rooms, alongX)
+                || ContinuesPast(first, second, rooms, alongX);
+        }
+
+        /// <summary>
+        /// Whether <paramref name="through"/> carries a link that continues the line beyond it,
+        /// away from <paramref name="from"/>.
+        /// </summary>
+        private static bool ContinuesPast(RoomRecord from, RoomRecord through,
+            IReadOnlyList<RoomRecord> rooms, bool alongX)
+        {
+            if (through.links == null) { return false; }
+            IntVec3 near = from.Bounds.CenterCell;
+            IntVec3 hub = through.Bounds.CenterCell;
+            for (int index = 0; index < through.links.Count; index++)
+            {
+                RoomRecord onward = null;
+                for (int at = 0; at < rooms.Count; at++)
+                {
+                    if (rooms[at] != null && rooms[at].index == through.links[index])
+                    { onward = rooms[at]; break; }
+                }
+                if (onward == null || onward == from) { continue; }
+                IntVec3 far = onward.Bounds.CenterCell;
+                if (alongX)
+                {
+                    // Same row, and on the far side of the hub from where we came.
+                    if (far.z != hub.z) { continue; }
+                    if (near.x < hub.x ? far.x > hub.x : far.x < hub.x) { return true; }
+                    continue;
+                }
+                if (far.x != hub.x) { continue; }
+                if (near.z < hub.z ? far.z > hub.z : far.z < hub.z) { return true; }
+            }
+            return false;
         }
 
         /// <summary>
@@ -759,7 +836,7 @@ namespace RimroomsAsyncIndustries.Generation
         {
             var legs = new List<CorridorLeg>();
             if (first == null || second == null || SharesWall(first, second)) { return legs; }
-            int halfWidth = CorridorHalfWidthBetween(first, second, depth);
+            int halfWidth = CorridorHalfWidthBetween(first, second, depth, rooms);
             CellRect a = first.Bounds;
             CellRect b = second.Bounds;
             IntVec3 centreA = a.CenterCell;
@@ -1005,7 +1082,7 @@ namespace RimroomsAsyncIndustries.Generation
             int roll = DestinationService.StableHash(first.index * 211 + second.index,
                 "corridor:bend", depth);
             if (roll < 0) { roll = ~roll; }
-            int widest = CorridorHalfWidthBetween(first, second, depth);
+            int widest = CorridorHalfWidthBetween(first, second, depth, rooms);
             var points = new List<IntVec3>();
 
             for (int attempt = 0; attempt < RouteForms; attempt++)
@@ -1528,6 +1605,62 @@ namespace RimroomsAsyncIndustries.Generation
                 }
             }
 
+            // **THE NEIGHBOURHOOD: a block of rooms wall to wall off one hub, formed WHILE
+            // THE ROOMS CAN STILL MOVE.** Owner, same
+            // direction, *"neighborrs hood"*, and from the vein direction *"so u can find back to
+            // back rooms"*.
+            //
+            // The push loop above rolls per room independently, so back-to-back pairs are scattered
+            // -- measured at 190 to 310 per depth, and not one of them is a *block*. A
+            // neighbourhood is a cluster: several rooms pressed against one hub so they share walls
+            // with it and sit a single doorway apart, which is what a terrace of houses off a
+            // street actually is.
+            //
+            // Every move still goes through `PushAgainst`, so every move still has to satisfy all
+            // four of its conditions or be undone -- on the map, nothing overlapped, no existing
+            // link's route or shape broken, and `SharesWall` agreeing afterwards. **This chooses
+            // which rooms to offer; it relaxes nothing.**
+            //
+            // **AND IT RUNS HERE, BEFORE THE DIAGONAL AND REACH BRAIDS, WHICH THE PROBE INSISTED
+            // ON.** Written after them it measured as a no-op: the largest wall-to-wall group came
+            // out at 3 with it and 3 without. A room holding five or six links cannot slide at
+            // all, because `PushAgainst` undoes any move that carries one of them past
+            // `FurthestLinkedCentres` -- so by the time a hub was picked, nothing around it was
+            // mobile. At this point a room holds about two and a half links and a push lands; the
+            // braids that follow route to where the rooms ended up. That is the right order
+            // anyway, because the arrangement is part of the layout rather than a nudge applied to
+            // a finished one.
+            int blockDraw = DestinationService.StableHash(seed, "neighbourhood:hub", depth);
+            if (blockDraw < 0) { blockDraw = ~blockDraw; }
+            var hubSlot = new IntVec2(blockDraw % slots, (blockDraw / 11) % slots);
+            int hub;
+            if (slotOf.TryGetValue(hubSlot, out hub) && hub != 0 && rooms[hub].links != null)
+            {
+                // Its own linked neighbours only. Pressing an unlinked room against the hub would
+                // make two rooms share a wall with no doorway in it, which is a sealed pair rather
+                // than a terrace.
+                // **LEAST-CONNECTED FIRST.** `PushAgainst` undoes a move that breaks an
+                // existing link's route or carries one past `FurthestLinkedCentres`, and a move is
+                // most of a room's own span -- so the more links a room holds the likelier it is
+                // to snap straight back. Offered in whatever order the link list happened to be
+                // in, the hopeless ones shifted the geometry before the mobile ones were tried.
+                var terrace = new List<RoomRecord>();
+                for (int index = 0; index < rooms[hub].links.Count; index++)
+                {
+                    int neighbour = rooms[hub].links[index];
+                    if (neighbour == 0 || neighbour == hub) { continue; }
+                    RoomRecord mover = rooms.FirstOrDefault(r => r != null && r.index == neighbour);
+                    if (mover == null || mover.links == null || SharesWall(mover, rooms[hub]))
+                    { continue; }
+                    terrace.Add(mover);
+                }
+                terrace.Sort((left, right) => left.links.Count != right.links.Count
+                    ? left.links.Count - right.links.Count
+                    : left.index - right.index);
+                for (int index = 0; index < terrace.Count; index++)
+                { PushAgainst(rooms, terrace[index], rooms[hub], depth); }
+            }
+
             // **THE DIAGONAL BRAID, AND IT IS WHAT ANSWERS THE DEGREE COMPLAINT.** Owner,
             // 2026-10-03: *"room connected to like 0 - 10 other rooms"* and *"multiple coices on
             // directions to take in every rooms"*. Measured before this existed: average degree
@@ -1610,6 +1743,24 @@ namespace RimroomsAsyncIndustries.Generation
                     Link(rooms, here, there);
                 }
             }
+
+            // **THERE IS NO ROAD BRAID, AND THAT IS A MEASUREMENT RATHER THAN AN OMISSION.**
+            // Owner, 2026-10-03: *"so its more rooma corradors facilites infastructure roads
+            // neighborrs hood malls shoopping centers military"*.
+            //
+            // One was written here -- pick a row or column, link every occupied slot along it --
+            // and the probe was taught to report the longest straight run of linked rooms before
+            // and after it. **The numbers were identical: 6 to 8 either way, which at depth 3 and
+            // deeper is the entire slot row.** At an average of five links per room the braids
+            // already join almost every adjacent collinear pair, so a line across the level exists
+            // by arithmetic and forcing one adds nothing. Deleted rather than kept as insurance: a
+            // pass whose effect nobody can measure is a pass nobody can defend.
+            //
+            // **What was missing was never the run. It was that the run did not LOOK like a
+            // road.** Every corridor along it was whatever width its own pair rolled, so a
+            // through-line read as a chain of ordinary hallways. `OnRoad` is the answer and it is
+            // a question about the finished graph: a corridor whose straight run carries on past
+            // either end is always cut at the wide half-width. See `CorridorHalfWidthBetween`.
 
             AssignMazeFamilies(rooms, hops, seed);
 
@@ -1752,22 +1903,69 @@ namespace RimroomsAsyncIndustries.Generation
                     int otherIndex = room.links[at];
                     if (otherIndex <= room.index) { continue; }
                     RoomRecord other = rooms.FirstOrDefault(r => r != null && r.index == otherIndex);
-                    if (other == null) { continue; }
-                    IntVec3 a = room.Bounds.CenterCell;
-                    IntVec3 b = other.Bounds.CenterCell;
-                    // Orthogonal pairs are never touched: see the summary for why that is what
-                    // makes this pass safe rather than merely conservative.
-                    if (a.x == b.x || a.z == b.z) { continue; }
+                    if (other == null || SharesWall(room, other)) { continue; }
                     int legDepth = Math.Max(ShapeDepthOf(rooms, room, depth),
                         ShapeDepthOf(rooms, other, depth));
                     if (CorridorLegs(room, other, legDepth, rooms).Count > 0) { continue; }
+                    // **TAKEN OUT, THEN PUT BACK IF THE PLACE FELL APART.** This refused to touch
+                    // anything whose centres shared an axis, on the reasoning that the spanning
+                    // tree is entirely non-diagonal so removing only diagonals cannot disconnect
+                    // the level. True, and too coarse: the reach braid makes links two slots apart
+                    // ALONG an axis, and the neighbourhood push can leave one of those with no
+                    // route. The clause skipped it, `CandidateIsSafe` then refused the whole
+                    // layout, and the probe printed `link 2-6 has no route under it`.
+                    //
+                    // Asking directly is exact and easier to reason about: remove the edge, and
+                    // keep the removal only if every room still claiming a route can still be
+                    // reached from the threshold. A load-bearing link stays and the candidate is
+                    // refused -- which is correct, and the next candidate answers it.
                     room.links.RemoveAt(at);
                     other.links.Remove(room.index);
+                    if (LinkedGraphIsWhole(rooms)) { continue; }
+                    room.links.Insert(at > room.links.Count ? room.links.Count : at, otherIndex);
+                    other.links.Add(room.index);
                 }
             }
         }
 
         /// <summary>
+        /// Whether every room that claims a route can still be reached from the threshold.
+        ///
+        /// The same question `DestinationService.ValidateRooms` asks of a saved graph, asked here
+        /// of one being built, so a removal cannot produce a layout the validator would refuse. A
+        /// room with no links is a sealed vault and is deliberately not expected to be reachable
+        /// across floor -- see <see cref="SealedFamily"/>.
+        /// </summary>
+        private static bool LinkedGraphIsWhole(List<RoomRecord> rooms)
+        {
+            var byIndex = new Dictionary<int, RoomRecord>();
+            for (int index = 0; index < rooms.Count; index++)
+            {
+                if (rooms[index] != null) { byIndex[rooms[index].index] = rooms[index]; }
+            }
+            if (!byIndex.ContainsKey(0)) { return false; }
+            var seen = new HashSet<int> { 0 };
+            var pending = new Queue<int>();
+            pending.Enqueue(0);
+            while (pending.Count > 0)
+            {
+                RoomRecord current;
+                if (!byIndex.TryGetValue(pending.Dequeue(), out current) || current.links == null)
+                { continue; }
+                for (int index = 0; index < current.links.Count; index++)
+                {
+                    if (seen.Add(current.links[index])) { pending.Enqueue(current.links[index]); }
+                }
+            }
+            for (int index = 0; index < rooms.Count; index++)
+            {
+                RoomRecord room = rooms[index];
+                if (room == null || room.links == null || room.links.Count == 0) { continue; }
+                if (!seen.Contains(room.index)) { return false; }
+            }
+            return true;
+        }
+
         /// Who each room is, once the maze exists.
         ///
         /// The three unique families are unique because something depends on there being exactly
