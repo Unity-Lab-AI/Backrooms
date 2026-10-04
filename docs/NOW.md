@@ -15,41 +15,44 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 ---
 
-## ⛔ FORGEJO CANNOT WRITE TO ITS OWN REPOSITORY. 0.12.91-dev IS ON GITHUB ONLY ⛔
+## ⛔ FORGEJO IS DOWN. THE CASCADE IS GITHUB-ONLY UNTIL IT IS BACK ⛔
 
-**The cascade is 5 of 10 refs.** GitHub has `6145f4a` on all five branches. **Forgejo is stuck at
-`2d0b677` (0.12.90-dev).**
+**Owner, 2026-10-05, verbatim:** *"okay apparently forgejo is down, so until we get it back up we
+are stuck cascading to github only"*
+
+So the cascade is **5 refs, not 10**, and that is correct rather than a shortfall:
 
 ```
-error: remote unpack failed: unable to create temporary object directory
- ! [remote rejected] feature/bug-testing -> feature/bug-testing (unpacker error)
+git push github feature/bug-testing
+git push github feature/bug-testing:Prep
+git push github feature/bug-testing:Develop
+git push github feature/bug-testing:Main
+git push github feature/bug-testing:feature/connected-colony-portals
 ```
 
-**That message is `tmp_objdir_create()` in Git, and knowing which function it is settles the
-diagnosis.** It creates the push **quarantine** directory — `objects/incoming-XXXXXX` inside the
-repository on the server — and `receive-pack` does it on **every** push, before any object is
-read. So the pack size, the object count, the refspec form and the number of refs are all
-irrelevant by construction: Forgejo cannot create a directory inside
-`GFourteen/Backrooms.git/objects/`. **Disk full, a quota, or permissions on that directory.**
+**Do not treat a Forgejo refusal as a defect to investigate.** It was investigated once, and the
+answer is recorded below so nobody spends that time again. **Do not switch Forgejo to HTTPS, and
+do not re-point the remote** — `PUBLISHING.md` says SSH is the transport and
+`UnityAILab/Backrooms` does not exist; `GFourteen/Backrooms` is the right and only target.
 
-**Ruled out from this end, each with evidence:**
+**Forgejo is stuck at `2d0b677` (0.12.90-dev).** Everything from 0.12.91-dev onward is GitHub-only
+until the host is back.
 
-| Candidate | How it was ruled out |
-|---|---|
-| The key | `ssh -T` → *"successfully authenticated with the key named `gfour-DumbAss-20260519`"* |
-| Write access vs read | `git ls-remote forgejo` lists every ref. Read works, write fails |
-| **My procedure** | `docs/PUBLISHING.md` §4 followed literally: no local branches, one refspec at a time, `feature/bug-testing:Prep` and so on. Same error |
-| Pack shape | `--no-thin`, single-threaded pack, one ref alone — same error |
-| Our repository | `git gc` and `git fsck` both clean, then retried — same error |
-| Wrong namespace | `UnityAILab/Backrooms` does not exist. `GFourteen/Backrooms` is the right and only target |
-| Transient | Six retries with pauses, then four more by refspec |
+### What it was, so it is not re-derived
 
-**This needs an admin on `git.unityailab.com`:** free space, or fix ownership/permissions on that
-repository's `objects/` directory. A `git gc` server-side on the repo would also clear it if the
-cause is a leftover `incoming-*` directory from an interrupted push.
+`error: remote unpack failed: unable to create temporary object directory` is
+**`tmp_objdir_create()`** in Git: the push *quarantine* directory,
+`objects/incoming-XXXXXX` inside the repository on the server. `receive-pack` creates it on
+**every** push, before reading any object — so pack size, object count, refspec form and ref
+count are irrelevant by construction. Ruled out from this end: the key (`ssh -T` authenticates),
+read versus write (`ls-remote` lists every ref), the procedure (`PUBLISHING.md` §4 followed
+literally), pack shape (`--no-thin`, single-threaded, one ref alone), our repository (`gc` and
+`fsck` clean), the namespace, and transience (ten attempts).
 
-**When it comes back, nothing needs rebuilding.** The commit is complete and on GitHub; the five
-Forgejo refs only need fast-forwarding, per `PUBLISHING.md` §4 Case A:
+### When it comes back
+
+Nothing needs rebuilding. The commits are complete on GitHub; the five Forgejo refs only need
+fast-forwarding, per `PUBLISHING.md` §4 Case A:
 
 ```
 git push forgejo feature/bug-testing
@@ -59,9 +62,14 @@ git push forgejo feature/bug-testing:Main
 git push forgejo feature/bug-testing:feature/connected-colony-portals
 ```
 
-**And the lesson that is mine:** `PUBLISHING.md` is the cascade authority and I improvised instead
-of reading it. Forcing local `Prep`/`Develop`/`Main` branches is listed in that file as a way
-previous agents have already got this wrong. It was not the cause here, and it was still wrong.
+**Then re-verify ten refs**, not five, and drop this section.
+
+### The lesson that is mine either way
+
+`docs/PUBLISHING.md` is the cascade authority and I improvised instead of reading it. Forcing
+local `Prep`/`Develop`/`Main` branches is listed in that file as a way previous agents have
+already got this wrong. It was not the cause here, and it was still the wrong way to do it.
+**Push by refspec from the feature branch.**
 
 ---
 
@@ -144,7 +152,7 @@ supplying starting equipment or clear it.
 - **A `catch` EXISTING IS NOT A `catch` SWALLOWING.** A planted `throw;` walked past a claim that only asserted the handler was there.
 - **THE FIX FOR DEAD CODE IS TO REACH IT.**
 - **THE BATTERY RUNS ONCE AND THE INSTRUMENTS STAY.** The only thing the owner has had to say three times.
-- **THE CASCADE IS TEN REFS.** `forgejo, github` × `feature/connected-colony-portals, Prep, Develop, Main`, **plus `feature/bug-testing` on both**. `PUBLISHING.md`.
+- **THE CASCADE IS FIVE REFS WHILE FORGEJO IS DOWN** — `github` × `feature/bug-testing, feature/connected-colony-portals, Prep, Develop, Main`, pushed **by refspec from the feature branch**, never by forcing local branches. It is ten again the day the host returns. `PUBLISHING.md` is the authority; read it rather than improvising.
 - **WRITING A FILE WITH THE WRONG ENCODING SILENTLY CHANGES IT.** Last batch the version bump stripped three BOMs and the changelog script added one. This batch the bump read with `utf-8-sig` and re-wrote the BOM it found; `git diff --stat` showed version lines only. **Always diff-stat after a scripted edit** — the line counts do not lie.
 - **§1.1 IS THE RULE A NEW FEATURE IS MOST LIKELY TO BREAK WITHOUT NOTICING.** Every leasing system ever played has a term. The test that passes: does it read the gate's own window, is it off by default or driven by the player, and can it take anything away?
 - **A BILL NEEDS A `Building_WorkTable`.** Core's research benches are `Building_ResearchBench` and have **no bill stack at all**, so a recipe placed on one is a feature nobody can ever reach. Nineteen Core worktables, enumerated from the installed data.
