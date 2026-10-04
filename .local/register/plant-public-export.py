@@ -254,6 +254,15 @@ PLANTS = [
 
     ("the findings stop going through the safe printer", CONFORM,
      '            say("  - %s" % problem)', '            print("  - %s" % problem)', 1),
+    # The image guard, planted three ways: not run, never failing, and satisfied by an empty set.
+    # Real code in every case -- a plant written as a comment is stripped by the proof and tests
+    # nothing, which this suite has already learned twice.
+    ("the audit stops running the image guard", EXPORTER,
+     "    check_images_resolve(problems)", "    pass", 1),
+    ("a missing image stops being a problem", EXPORTER,
+     "            if not os.path.isfile(target):", "            if False:", 1),
+    ("a site with no image at all stops being refused", EXPORTER,
+     "    if checked == 0:", "    if False:", 1),
 ]
 
 caught = 0

@@ -21,16 +21,22 @@ vanish — pay them from Overview.
 
 ## Bonds
 
-The account can be printed as **bearer bonds**, in denominations from ten up to a quadrillion.
+The account can be printed as **bearer bonds**, in fifteen denominations from ten up to a
+quadrillion.
 
 | | |
 |---|---|
 | **Named for their value** | A bond says what it is worth |
-| **Deposit** | Put one back in, from the paper itself |
+| **Deposit** | Put one back in, from the paper itself, at **full value** |
 | **Combine** | Fold several into the fewest |
-| **A beacon** | Banks a whole radius at once |
+| **A beacon** | Banks every bond in a radius at once, also at full value |
 
-Selling a bond through the company fetches **85%** of face. Depositing or banking returns **100%**.
+**A bond is never sold.** It is already credits, so banking one is the only thing that happens to
+it — and the company refuses to buy one deliberately, because selling a bond at a discount would
+be a way to destroy your own money by accident.
+
+**Ordinary valuables are a different trade.** Sell those to the company and you get **85%** of
+their worth: instant, no trader, no caravan, no travel, and the company takes a cut for that.
 
 **Paper raises colony wealth where the ledger does not.** Liquidity costs risk — and paper burns.
 
@@ -43,8 +49,12 @@ Selling a bond through the company fetches **85%** of face. Depositing or bankin
 | **Request** | What the corporation asks for next. Finish one and the next opens. |
 | **Contract** | A priced job with terms, a base payment and a bonus. |
 
-The corporation asks for six things and then stops asking. That is the hinge of the opening arc,
-not the end of the game.
+The corporation teaches you with **seven** requests in a fixed order and then stops asking:
+power the gate, assemble and calibrate it, bring back one record, mark a route home, report a
+disagreement, hold a connection open, choose a direction.
+
+That is the hinge of the opening arc, not the end of the game. **Everything after it is
+generated.**
 
 The Contracts pane shows both, **requests first** — because somebody on that pane is looking for
 what to do next.
@@ -55,6 +65,24 @@ what to do next.
 
 Hire, pay, and assign company roles. Pawn autonomy and ordinary RimWorld skills and traits are
 untouched.
+
+### Certification is something you make
+
+Three jobs need a certificate, and **you train people into them yourself**:
+
+| Certificate | Trained by | Needs |
+|---|---|---|
+| **Gate operator** | train gate operator | Intellectual 4 |
+| **Field analyst** | train field analyst | Intellectual 3 |
+| **Reserve technician** | train reserve technician | Crafting 5 |
+
+The first two run on a **machining table or a crafting spot**; the third needs the table. Training
+is real work over time, and it finishes by making that person certified.
+
+**Nobody arrives certified by accident.** A branch with no gate operator cannot open a connection,
+and the fix is a bill, not a recruit.
+
+### Field history and reporting in
 
 **Field history is kept per person.** The crew planner shows who is a novice, who is a veteran, and
 who has walked the address you are dialling.
@@ -68,7 +96,17 @@ Walking a single colonist through a door by hand is not a company dispatch and i
 
 ## Research
 
-Seven branches, four tiers. Insight from analysed records buys unlocks.
+**Seven branches** — commerce, entities, facilities, fieldcraft, logistics, measurement and
+spatial — across **five bands**, from facility foundations up to the practised branch. Insight from
+analysed records buys the unlocks.
+
+| Band | What it is for |
+|---|---|
+| **Foundations** | One root per branch, so no branch is ever locked out |
+| **First entry** | Getting out and back at all |
+| **Repeatable operations** | Doing it again without it being an event |
+| **Remote operations** | More than one site; work beyond headquarters |
+| **The practised branch** | The things a branch that has done this for a while can do |
 
 Every unlock grants a capability that real behaviour honours — there are no numbers on the ladder
 that quietly do nothing.
@@ -102,6 +140,42 @@ The Activity and Connected Work panes report what crossed, and why.
 
 ---
 
+## Places held open, and giving one back
+
+Every place you hold open costs a loaded map, exactly as a colony does. The **Places** pane shows
+the count — *Holding 4 of 5* — and lets you hand one back.
+
+**Releasing a place is permanent.** The game says so before it does it: *this cannot be undone, the
+gate will not open again.*
+
+| Before you release | |
+|---|---|
+| **Anything left there is lost** | The pane counts the items first and tells you how many |
+| **Not with people inside** | Refused while anybody is there, or part-way through crossing |
+| **Not your headquarters** | Refused outright |
+
+**Places you found rather than built are a gentler case.** Release one of those and it goes to a
+second list — *reachable again from the door that found them* — so selecting that door offers it
+back.
+
+---
+
+## When a crew does not come home
+
+A return window can expire with people still on the far side. **They are not dead and they are not
+deleted.**
+
+The crew and their cargo stay where they are, at the saved address. You have two ways to get them:
+
+1. **Restore the gate and reopen that route.** Whatever broke — power, calibration, the operator —
+   fix it and dial the same address.
+2. **Send a relief trip.** One extra person per run, and the same relief member is reused for
+   further attempts. The original crew is unchanged.
+
+**A closed gate does not take your people with it.** It just means you have to go back for them.
+
+---
+
 ## Containment
 
 Holding platforms and what they can hold are the base game's.
@@ -129,7 +203,8 @@ If everyone at the laboratory goes **down** — not dead, down — the company a
 
 **You never lose the game.** The gate is left commissioned, so the new crew can bring it back up.
 
-The letter gives you the figures.
+The letter gives you the figures. There is **no limit** on how many times this happens and no
+escalating penalty — the corporation does not write off a branch it has on its books.
 
 > This happens at the laboratory start. The other two openings keep a gentler version: a clean-up
 > team that arrives only once everyone is actually dead, and leaves five.

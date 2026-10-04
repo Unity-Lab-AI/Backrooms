@@ -140,7 +140,7 @@ PLANTS = [
      "            { depth = MaximumNaturalDepth; }", 1),
 
     ("the supersession record is deleted from the source", FRONTIER,
-     "Raised from 3 to 6", "Set to 6", 1),
+     "raised from 3 to 6", "set to 6", 1),
 
     # ---- letting a place go -------------------------------------------------------------
     ("THE TEARDOWN ORDER IS REVERSED -- the place becomes unreachable, silently", RELEASE,

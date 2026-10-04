@@ -336,6 +336,28 @@ claim("PLAYING.md no longer claims hard dependencies",
 claim("README.md no longer claims every requirement is declared",
       "requirement is **declared**" not in read(os.path.join(REPO, "README.md")))
 
+# ------------------------------------------------- the art must actually be in the published tree
+#
+# **The one silent failure mode the banner work could have had.** The pages reference the slides
+# where the *mod* puts them, one level above the site directory, precisely so twenty-one megabytes
+# are published once instead of twice. The cost is that the link crosses from the site into the
+# package -- so a renamed texture, a manifest that stops carrying the menu art, or a change to
+# `SITE_DIRECTORY` would publish **pages full of broken images with every instrument green.**
+images = slice_function(exporter_code, "check_images_resolve")
+audit_body = slice_function(exporter_code, "audit")
+claim("the audit runs the image guard",
+      "check_images_resolve(problems)" in audit_body,
+      "the guard existing is not the guard running; a word being present is not the word "
+      "doing anything")
+claim("the image guard resolves against the assembled tree on disk",
+      "os.path.isfile(target)" in images,
+      "resolved against the tree rather than against the mapping that generated it, for the "
+      "same reason the rest of the audit walks the tree")
+claim("the image guard refuses a site with no image at all",
+      "if checked == 0:" in images,
+      "an absence rule over an empty set is satisfied by construction, so finding no image is "
+      "itself the fault -- it means the banners stopped being generated")
+
 # ------------------------------------------------- a checker must be able to report what it finds
 claim("the report survives a character the console cannot encode",
       "def say(" in conform_code and "UnicodeEncodeError" in conform_code,

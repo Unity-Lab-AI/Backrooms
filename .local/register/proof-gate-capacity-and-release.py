@@ -172,8 +172,12 @@ claim("the gizmo is offered only where there is something to board up",
 # --------------------------------------------------- the depth cap, and the row that is stale
 claim("the natural depth cap is a constant",
       re.search(r"internal const int MaximumNaturalDepth\s*=\s*6\s*;", frontier) is not None)
+# Case-normalised, and that is not a weakening -- it is the repair of the thing this claim exists
+# to catch. The comment used to open with `Raised from 3 to 6`, matched here literally, and the
+# literal broke the moment the comment was rewritten to put the CURRENT value first. The claim is
+# about the supersession being recorded, never about which word starts the sentence.
 claim("the supersession from three to six is RECORDED IN THE SOURCE",
-      "Raised from 3 to 6" in read(FRONTIER),
+      "raised from 3 to 6" in read(FRONTIER).lower(),
       "the queue still records the 2026-09-29 answer of depth 3; the source says why it moved")
 claim("the cap refuses rather than quietly minting a shallower place",
       "RR_Frontier_BeyondNaturalReach" in frontier,

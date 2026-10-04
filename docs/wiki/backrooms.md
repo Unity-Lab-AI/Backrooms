@@ -13,11 +13,45 @@ A **coordinate** is an address, and the map it opens onto.
 
 ## Depth
 
-The shallow rooms are the yellow ones: sparse, and wrong in the way you expect.
+Every coordinate is a **300 by 300** map. What changes with depth is how that space is cut up.
 
-Further in it stops pretending. Rooms are furnished as laboratories, workshops, nurseries and
-dormitories. Runs of rooms are furnished as one place rather than three. Corridors have benches in
-them, because down there that is normal.
+| Depth | What it is like |
+|---|---|
+| **1** | Around **36 rooms**, large and open — and **one grand hall** more than twice the size of any other room |
+| **2** | Around **49 rooms**, smaller |
+| **3 and deeper** | Around **60 rooms** — a warren, at the ceiling |
+
+**Shallow is not small.** The first band is the fewest, biggest spaces you will see; going deeper
+means more rooms, more branching corridors, and less of it open.
+
+**Rooms too wide for a roof to span get pillars.** A hall carries columns because it has to, which
+is why the big spaces look built rather than drawn.
+
+A few spaces are **sealed** — no corridor reaches them at all.
+
+## What a room is made of
+
+The shallow rooms are the yellow ones: wood and worn plank, sparse, wrong in the way you expect.
+
+**Deeper, the building material changes with depth**, and each look is a whole place rather than a
+paint scheme:
+
+| | |
+|---|---|
+| **Poolrooms** | Wet tile and hard light |
+| **Machinery** | Plate, grating and grease |
+| **Abandoned offices** | Worn carpet under dead strip light |
+| **Cold storage** | Concrete and frost |
+| **Wrong** | Where the place stops agreeing with itself |
+
+Which one you get follows depth, with some variance — and it is **fixed per address**, so a place
+looks the same every time you go back.
+
+**What a room is built from is part of the loot.** Steel walls are steel.
+
+Further in it also stops pretending to be empty. Rooms are furnished as laboratories, workshops,
+nurseries and dormitories. Runs of rooms are furnished as one place rather than three. Corridors
+have benches in them, because down there that is normal.
 
 ## Things move
 

@@ -87,6 +87,55 @@ SECTIONS = [
     ("About", ["credits", "links"]),
 ]
 
+# ---------------------------------------------------------------------------- the art
+#
+# **Owner direction, 2026-10-05, verbatim:** *"and use our slide art as a banner or something
+# /background to where text writing is not fighting the art to be read ,, in the wiki pages"*, and
+# on which image leads: *"make sure the preview image is prominate becasue thats what mod loaders
+# see"*.
+#
+# These are the **only** art in the package -- twelve menu slides and the preview, the approved
+# exception to shipping no art. They are already in `package-manifest.json`, so the export already
+# carries them: a page references them where the mod puts them and **not one byte is duplicated.**
+#
+# ## Assigned by subject, never at random
+#
+# Twelve slides against thirteen pages, so a slide may serve more than one page. The alternative --
+# rotating them, or leaving a page blank -- would put a cinema behind the install instructions.
+#
+# ## The readability rule lives in the markup, not here
+#
+# The owner's direction carries its own acceptance test: *"to where text writing is not fighting
+# the art to be read"*. The answer is structural rather than a matter of opacity -- **no text is
+# ever drawn over a banner.** The band sits above the prose, the heading sits below it, and the
+# image is marked decorative so a screen reader skips it instead of reading out a filename.
+BANNER_DIRECTORY = "1.6/Textures/UI/Menu"
+PREVIEW_IMAGE = "About/Preview.png"
+
+# **All twelve are used.** Thirteen pages and twelve slides means exactly one repeat, and it is the
+# honest one: the two pages about the gate carry the gate slide. Leaving a slide unused would be
+# the same fault as a def nobody wired -- it was made for this and nothing else uses it.
+BANNERS = {
+    "index": "RR_Menu_FacilityThreshold_v2.png",      # the way in
+    "install": "RR_Menu_LaboratoryOperations.png",    # getting it running
+    "first-hour": "RR_Menu_IndustrialGateLogistics.png",
+    "gates": "RR_Menu_IndustrialGateLogistics.png",   # the one repeat, and the reason for it
+    "scenarios": "RR_Menu_EmptyCinema.png",           # choosing an opening
+    "company": "RR_Menu_BreachedVault.png",           # the account, the bonds
+    "backrooms": "RR_Menu_LightsOut.png",             # deep levels
+    "interface": "RR_Menu_SilentRecovery.png",        # reading the panels
+    "mods": "RR_Menu_FamiliarStranger.png",           # other people's content
+    "multiplayer": "RR_Menu_CorridorEncounter.png",   # meeting somebody
+    "troubleshooting": "RR_Menu_PanicJunction.png",   # when it goes wrong
+    "credits": "RR_Menu_FieldSurvey_v2.png",
+    "links": "RR_Menu_RedTrail.png",                  # a trail to follow
+}
+
+# Every slide is this size, checked rather than assumed, so the markup can carry `width` and
+# `height` and the page does not jump while the image loads.
+BANNER_WIDTH = 1672
+BANNER_HEIGHT = 941
+
 
 def page_title(text, slug):
     """The page's own first heading. Falls back to the slug rather than inventing a title."""

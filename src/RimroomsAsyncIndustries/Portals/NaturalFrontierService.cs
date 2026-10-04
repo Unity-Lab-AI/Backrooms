@@ -86,30 +86,36 @@ namespace RimroomsAsyncIndustries.Portals
         }
 
         /// <summary>
-        /// The deepest coordinate a found doorway will ever lead to.
+        /// The deepest coordinate a found door will ever lead to. **Six.**
+        ///
+        /// ## The number, and the one it replaced
         ///
         /// **Owner direction, 2026-09-29, verbatim:** *"with natural portals deeper to an extent
-        /// till they would need to buidl theri own gate"*, and the depth chosen at the fork was
-        /// **through depth 3**.
+        /// till they would need to buidl theri own gate"*. The depth chosen at that fork was
+        /// **three**, and it was **raised from 3 to 6 at 0.12.49-dev** by owner direction
+        /// 2026-09-30, alongside the map budget that makes a deeper chain affordable. The original
+        /// three bands were chosen when a level was 60x60 and two doors wide; at 300x300 they are
+        /// a different proposition.
         ///
-        /// So the Backrooms hands a branch three bands for free -- the shallow yellow rooms and
-        /// two steps in -- and then stops handing out doorways. Going further is a machine's job,
-        /// which is the convergence this start needs: the place gives you enough to learn on and
-        /// then asks you to become an engineer.
+        /// **The superseded three is recorded here and nowhere else, deliberately.** This comment
+        /// used to carry *two* `summary` blocks -- the first still arguing for three in full, the
+        /// second noting the raise -- and the published wiki copied the first one and told every
+        /// reader the free ways through stop at depth 3. **A stale doc comment is not a tidiness
+        /// problem; it is the upstream of a published lie**, because a comment is what somebody
+        /// reads when they write the page. One block, current value first.
+        ///
+        /// So the Backrooms hands a branch six bands for free and then stops handing out ways
+        /// onward. Going further is a machine's job, which is the convergence this start needs:
+        /// the place gives you enough to learn on and then asks you to become an engineer.
         ///
         /// **This caps going DEEPER, never coming OUT.** The way-out draw runs first and is not
-        /// subject to this, because a crew standing at depth 3 must always be able to find a door
-        /// that leads home. Capping both would have turned the deepest natural band into a trap,
-        /// and invariant 28 forbids an unavoidable failure.
+        /// subject to this, because a crew standing at the deepest band must always be able to
+        /// find a door that leads home. Capping both would have turned it into a trap, and
+        /// invariant 28 forbids an unavoidable failure.
         ///
-        /// **It does not restrain the player, only the free doorways.** Owner, verbatim: *"this
+        /// **It does not restrain the player, only the free ways in.** Owner, verbatim: *"this
         /// is all open eneded they can play how they choose"*. A built gate reaches any depth it
         /// has earned, exactly as before.
-        /// </summary>
-        /// <summary>
-        /// **Raised from 3 to 6 at 0.12.49-dev**, owner direction 2026-09-30, alongside the map
-        /// budget that makes a deeper chain affordable. The original three bands were chosen when
-        /// a level was 60x60 and two doors wide.
         /// </summary>
         internal const int MaximumNaturalDepth = 6;
 

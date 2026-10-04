@@ -25,6 +25,7 @@ Everything the company does lives in one tab: **Operations**, first on the botto
 | **Facilities** | Rooms, equipment links |
 | **Procurement** | The corporate catalogue |
 | **Sites** | Places on the books beyond headquarters |
+| **Places** | Every place held open, the count against your allowance, and Release |
 | **Help** | Glossary, your current keybind, readability |
 
 **Help works with no game loaded.** A glossary you need a running company to open is not help.

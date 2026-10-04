@@ -362,7 +362,50 @@ def audit(problems):
             # A queue row carries its own shape, and it is unmistakable at the start of a line.
             if re.search(r"(?m)^\s*- \[[ x~T]\] ", text):
                 problems.append("A QUEUE ROW IN THE EXPORT: %s" % rel)
+    check_images_resolve(problems)
     return seen
+
+
+def check_images_resolve(problems):
+    """Every `<img src>` in the published site must name a file that is actually in the export.
+
+    **This is the one failure mode the art work could have had, and it is silent.** The banners
+    reference the slides where the *mod* puts them -- `../1.6/Textures/UI/Menu/...` -- precisely so
+    that twenty-one megabytes are not duplicated into the site directory. The cost of that choice
+    is that the link crosses from the site into the package, so a renamed texture, a manifest that
+    stops carrying the menu art, or a change to `SITE_DIRECTORY` would publish **pages full of
+    broken images with every instrument still green.**
+
+    Resolved against the assembled tree on disk rather than against the mapping that generated it,
+    for the same reason the rest of this audit walks the tree: the point is to catch the difference
+    between what was intended and what is there.
+    """
+    site = os.path.join(EXPORT, SITE_DIRECTORY)
+    if not os.path.isdir(site):
+        return
+    checked = 0
+    for name in sorted(os.listdir(site)):
+        if not name.endswith(".html"):
+            continue
+        path = os.path.join(site, name)
+        try:
+            text = io.open(path, encoding="utf-8-sig").read()
+        except (UnicodeDecodeError, OSError):
+            continue
+        for src in re.findall(r"<img[^>]+src=\"([^\"]+)\"", text):
+            if src.startswith(("http://", "https://", "data:")):
+                continue
+            checked += 1
+            target = os.path.normpath(os.path.join(site, src.replace("/", os.sep)))
+            if not os.path.isfile(target):
+                problems.append("A PUBLISHED PAGE REFERENCES AN IMAGE THAT IS NOT IN THE EXPORT: "
+                                "%s/%s names %r" % (SITE_DIRECTORY, name, src))
+    # An absence rule over an empty set is satisfied by construction, which is the trap this
+    # project keeps meeting. The art is not optional, so finding none is itself the fault.
+    if checked == 0:
+        problems.append("NO PAGE IN THE PUBLISHED SITE REFERENCES AN IMAGE. The owner's direction "
+                        "is that the slide art is the wiki's banner and the preview leads; a site "
+                        "with no image means the banners stopped being generated.")
 
 
 def git(*args):

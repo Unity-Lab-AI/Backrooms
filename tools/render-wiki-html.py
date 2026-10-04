@@ -60,6 +60,25 @@ _spec.loader.exec_module(_bs)
 SECTIONS = _bs.SECTIONS
 page_title = _bs.page_title
 page_summary = _bs.page_summary
+BANNERS = _bs.BANNERS
+BANNER_DIRECTORY = _bs.BANNER_DIRECTORY
+BANNER_WIDTH = _bs.BANNER_WIDTH
+BANNER_HEIGHT = _bs.BANNER_HEIGHT
+PREVIEW_IMAGE = _bs.PREVIEW_IMAGE
+
+# The art sits where the mod puts it, one level above the site directory.
+#
+# `SITE_DIRECTORY` in `tools/export-public-repo.py` is `docs`, and the package files land at the
+# export root -- so `docs/gates.html` reaches a slide at `../1.6/Textures/UI/Menu/<file>`. **That
+# is why nothing is copied:** the images are already published as part of the mod, and duplicating
+# twenty-one megabytes into the site directory would double the repository to serve the same bytes
+# twice.
+#
+# It also means the banners resolve on the **published** site and not in a local preview of the
+# working repository, where the package lives under `Mod/` instead. That is the right trade: the
+# export is the only thing that is ever deployed, and `--check` compares generated text rather
+# than fetching an image.
+ART_PREFIX = "../"
 
 WIKI = os.path.join(REPO, "docs", "wiki")
 CSS = os.path.join(REPO, "docs", "assets", "css", "rimrooms.css")
@@ -304,7 +323,52 @@ def nav_html(found, current):
     return NL.join(out)
 
 
-def shell(site_title, site_description, page_name, summary, nav, body):
+def banner_html(slug):
+    """The page's decorative band, or nothing when no slide is assigned.
+
+    **Nothing is ever written across it.** The band is a sibling of the prose and sits above it,
+    so the owner's test -- *"to where text writing is not fighting the art to be read"* -- is
+    satisfied by the structure rather than by a colour choice somebody could later tune away.
+
+    `alt=""` plus `aria-hidden` is the correct pair for decoration: a screen reader skips it
+    entirely instead of announcing `RR_Menu_PanicJunction.png`, which is not information.
+
+    `width` and `height` are the real pixel dimensions so the browser reserves the space before
+    the bytes arrive and the heading does not jump down the page as it loads.
+    """
+    name = BANNERS.get(slug)
+    if not name:
+        return ""
+    return NL.join([
+        '    <div class="banner" role="presentation">',
+        '      <img src="%s%s/%s" alt="" aria-hidden="true" loading="lazy" decoding="async"'
+        % (ART_PREFIX, BANNER_DIRECTORY, esc(name)),
+        '           width="%d" height="%d">' % (BANNER_WIDTH, BANNER_HEIGHT),
+        "    </div>",
+    ])
+
+
+def preview_html(site_title):
+    """The front page's cover, and the one image that is NOT decoration.
+
+    **Owner, verbatim:** *"make sure the preview image is prominate becasue thats what mod loaders
+    see"*. That is exactly why it leads: a mod manager already renders this file in its list, so a
+    reader arriving at the wiki sees the same picture they will see in their launcher.
+
+    It carries a real `alt` rather than being hidden, because unlike the banners this one is
+    **content** -- it is the mod's cover, and a reader who cannot see it should still be told that
+    is what they are missing.
+    """
+    return NL.join([
+        '    <div class="cover">',
+        '      <img src="%s%s" alt="%s cover art" loading="eager" decoding="async"'
+        % (ART_PREFIX, PREVIEW_IMAGE, esc(site_title)),
+        '           width="%d" height="%d">' % (BANNER_WIDTH, BANNER_HEIGHT),
+        "    </div>",
+    ])
+
+
+def shell(site_title, site_description, page_name, summary, nav, body, slug=""):
     """The same structure as `_layouts/default.html`, so one stylesheet serves both sites."""
     head_title = ("%s — %s" % (page_name, site_title)) if page_name != site_title else site_title
     return NL.join([
@@ -341,6 +405,7 @@ def shell(site_title, site_description, page_name, summary, nav, body):
         "  </nav>",
         "",
         '  <main id="content" class="prose">',
+        preview_html(site_title) if slug == "index" else banner_html(slug),
         ('    <p class="summary">%s</p>' % esc(summary)) if summary else "",
         body,
         "  </main>",
@@ -382,7 +447,7 @@ def render_all():
         # reader landing mid-site needs to see what page they are on.
         name = "index.html" if slug == "index" else "%s.html" % slug
         out[name] = shell(site_title, site_description, title, summary,
-                          nav_html(meta, slug), body)
+                          nav_html(meta, slug), body, slug)
     out[os.path.join("assets", "css", "rimrooms.css").replace(os.sep, "/")] = read(CSS)
     return out
 

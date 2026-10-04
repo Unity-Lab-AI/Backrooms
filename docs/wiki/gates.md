@@ -57,6 +57,56 @@ paid for**. You cannot open a connection you could not bring people home through
 
 ---
 
+## Three gates, and any of them dials anything
+
+A branch may run **three operational gates at once**. The count is across every map you hold, not
+per map.
+
+**It is a cap on gates, not on addresses.** No gate is tied to a place — any operational gate
+dials anything the branch has on its records.
+
+That is what makes a second and third gate worth building rather than three copies of one route:
+three gates can hold three different places open at the same time.
+
+## Dialling an address nobody gave you
+
+Alongside requests and contracts, a gate can **dial an unknown address** — in the game's own words,
+*let the gate choose somewhere. No request, no contract, nobody waiting.*
+
+| | |
+|---|---|
+| **How deep** | Through depth 6, weighted toward the shallow end |
+| **Repeatable** | Dial the same slot again and you get the same place. Reloading does not reshuffle it |
+| **What it costs** | Nothing. It creates an **address**, not a map |
+
+Nothing is generated until somebody crosses. **So looking is free and arriving is the part that
+costs you.**
+
+---
+
+## Places held open, and when a gate refuses
+
+A Backrooms level is a loaded map. **So is a colony** — and the game only keeps so many at once.
+
+Your allowance is **your own colony limit**, the one in Options, so a player who runs three
+colonies gets three places and the default allowance is five. A start may set its own figure. It is
+never lower than two, because a branch needs somewhere to live and somewhere to go.
+
+Hold your allowance and the next way onward says **so**: the Places pane reads *Holding 4 of 5*,
+and a door that would open one map too many is refused before anything is generated.
+
+**Three gates each holding a place, plus home, is four of five** — which leaves one spare for
+somewhere you walk into without planning to.
+
+## Boarding one up
+
+A way through you did not build can be closed for good: **board it up for 25 wood**.
+
+A colonist walks over, nails the boards on, and the place behind it closes — **and that frees a
+place against your allowance.** It needs wood on the map and somebody who can reach both.
+
+---
+
 ## Damage matters
 
 Below **half condition** a gate loses calibration and will not hold a connection until repaired.
@@ -76,13 +126,13 @@ matter, clear the rest.
 
 ---
 
-## Free doors run out
+## Free ways through run out
 
-Early on you will find ways through you did not build. These reach **through depth 3 and no
+Early on you will find ways through you did not build. These reach **through depth 6 and no
 further**.
 
-Past that, the only way deeper is a gate you built, powered and calibrated yourself. **The found
-doors are a tutorial, not a strategy.**
+Past that, the only way deeper is a gate you built, powered and calibrated yourself. **The free
+ways in are a tutorial, not a strategy.**
 
 ## There is always a way home
 

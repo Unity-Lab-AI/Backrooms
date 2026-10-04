@@ -1,6 +1,6 @@
 ---
 title: Rimrooms — Async Industries
-summary: "What this mod is, and the four pages worth reading before you start a colony."
+summary: "What this mod is, and the three pages worth reading before you start a colony."
 ---
 
 # Rimrooms — Async Industries
@@ -45,12 +45,18 @@ way into somewhere else, and paperwork about both.
 
 ## In one minute
 
-- A **gate** is an ordinary door you designate. No custom machine, no new buildings.
+- A **gate** is an ordinary door you designate. No custom buildings.
 - Opening a **connection** is work, not a button. An operator brings it up at a console over time.
+- **Eleven checks** stand between a door and an open connection. The Machine pane numbers them.
+- You can run **three gates**, and any of them dials any address you know.
 - Everything through the gate is a **coordinate** — a saved address you can return to.
+- You can **dial an address nobody gave you**. Looking is free; arriving is what costs.
+- Each place held open costs a loaded map, so there is an **allowance** — and a gate says so when
+  you are at it.
 - Things move between visits. Nothing tells you.
 - The company pays in an **account**, not silver. Physical goods stay ordinary RimWorld goods.
 - Your colonists work across a live connection: hauling, building, bills, research, medicine.
+- **A closed gate does not take your people.** A stranded crew waits, and you go back for them.
 - **A branch never dies.** Lose everyone and the company sends a crew — and takes the cost out of
   your account.
 

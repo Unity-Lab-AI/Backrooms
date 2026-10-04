@@ -234,6 +234,55 @@ body {
   border-top: 1px solid var(--rule);
 }
 
+/* ---------------------------------------------------------------- art
+
+   Owner direction, verbatim: "and use our slide art as a banner or something /background to where
+   text writing is not fighting the art to be read ,, in the wiki pages", and on which image leads:
+   "make sure the preview image is prominate becasue thats what mod loaders see".
+
+   THE READABILITY RULE IS STRUCTURAL, NOT A MATTER OF OPACITY. Nothing is ever positioned over
+   either of these boxes. The band sits above the summary and the heading sits below it, so there
+   is no layer to get the contrast wrong on and no text for the art to compete with. A later edit
+   cannot accidentally break it by tuning a colour, because there is no overlay to tune.
+
+   Both carry width and height in the markup, so the space is reserved and the prose does not jump
+   while a 1.6 MB slide arrives. */
+
+.banner,
+.cover {
+  margin: 0 0 1.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--panel);
+}
+
+.banner img,
+.cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* A band, not a picture: the slides are 16:9 and a full one would push every heading below the
+   fold. Cropped to a letterbox so it reads as a masthead and the page still starts near the top. */
+.banner img {
+  aspect-ratio: 1672 / 420;
+  object-fit: cover;
+  object-position: center 42%;
+}
+
+/* The cover is the exception that is MEANT to dominate: it is what a mod manager shows, so the
+   front page leads with it uncropped at its own proportions. */
+.cover {
+  margin-bottom: 1.9rem;
+}
+
+/* Nobody needs a megabyte of letterbox on paper. */
+@media print {
+  .banner { display: none; }
+}
+
 /* ---------------------------------------------------------------- footer */
 
 .footer {
@@ -270,6 +319,13 @@ body {
   }
   .sidebar a { margin-left: 0; }
   .prose { padding-top: 1.4rem; }
+
+  /* A letterbox is the thing that breaks on a phone: the same crop that reads as a masthead at
+     1200px is a grey sliver at 380px. Deepen it so it still reads as a picture, and tighten the
+     gap so the heading stays on the first screen. */
+  .banner img { aspect-ratio: 1672 / 620; }
+  .banner { margin-bottom: 1.2rem; }
+  .cover { margin-bottom: 1.4rem; }
 }
 
 @media (prefers-color-scheme: dark) {
