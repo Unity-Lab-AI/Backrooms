@@ -113,7 +113,11 @@ namespace RimroomsAsyncIndustries.Gate
                 workDone += pawn.GetStatValue(StatDefOf.ResearchSpeed) * delta;
                 pawn.skills.Learn(SkillDefOf.Intellectual, 0.1f * delta);
                 pawn.GainComfortFromCellIfPossible(delta, chairsOnly: true);
-                if (workDone >= gate.ReconditionWorkRequired)
+                // **Asked for THIS pawn.** A trained technician (`RR_Cert_ReserveTechnician`)
+                // services the gate for less work; everybody else needs exactly what they
+                // always did. The progress bar below asks the same question, so the bar and
+                // the completion cannot disagree about how far along the job is.
+                if (workDone >= gate.ReconditionWorkFor(pawn))
                 {
                     CompanyActionResult result = gate.CompleteReconditioning(pawn);
                     EndJobWith(result.Success ? JobCondition.Succeeded : JobCondition.Incompletable);
@@ -121,7 +125,8 @@ namespace RimroomsAsyncIndustries.Gate
             };
             work.FailOnCannotTouch(TargetIndex.A, PathEndMode.InteractionCell);
             work.activeSkill = () => SkillDefOf.Intellectual;
-            work.WithProgressBar(TargetIndex.A, () => Gate == null ? 0f : workDone / Gate.ReconditionWorkRequired);
+            work.WithProgressBar(TargetIndex.A,
+                () => Gate == null ? 0f : workDone / Gate.ReconditionWorkFor(pawn));
             yield return work;
         }
     }

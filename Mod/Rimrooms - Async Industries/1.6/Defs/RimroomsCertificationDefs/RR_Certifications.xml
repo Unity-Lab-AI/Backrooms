@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Owner direction, verbatim: "Add configurable company roles, staff schedules,
+       certifications, training jobs, field history, trust/stress/exposure and equipment
+       familiarity; preserve pawn autonomy and vanilla skill/trait systems".
+
+       Roles, field history, exposure and equipment familiarity all shipped earlier.
+       CERTIFICATIONS AND TRAINING JOBS were the remainder on that row.
+
+       A certification is the PERSON-LEVEL twin of a company project. A project spends insight
+       and work to give the whole branch a capability; a certification spends one person's work
+       to give that person a qualification, and it stays with them rather than with the branch.
+       The owner's row lists roles and certifications separately, and that is the difference: a
+       role is what somebody is assigned to do, a certification is what they were trained to do.
+
+       THE TRAINING JOB IS A REAL BILL. Each one names a RecipeDef the player adds to a bench,
+       exactly like RR_AssembleMachineGate: a pawn walks over, does the work, and
+       RecipeWorker_RimroomsCertification records it against whoever did it. No new work giver,
+       no new job driver and no new building - Core's bill system already IS this mechanism.
+
+       AND CORE ENFORCES THE SKILL FLOOR, not this mod: the recipes carry skillRequirements, so
+       RimWorld itself refuses the bill to an unqualified pawn. A floor checked after the work
+       was finished would mean spending six thousand ticks of somebody's day and being told no
+       at the end.
+
+       EVERY ONE OF THESE IS READ BY SOMETHING. That rule is RimroomsProjectDef's and it is the
+       one worth keeping: "an unlock a player is told about and that changes nothing is worse
+       than no unlock: it is a lie on the card." proof-certifications.py asserts it.
+
+         RR_Cert_GateOperator       -> GateSpinUp, a trained operator dials faster
+         RR_Cert_FieldAnalyst       -> EvidenceReview, qualifies to sign off a report
+         RR_Cert_ReserveTechnician  -> JobDriver_RimroomsGate, reconditioning is less work
+
+       SECURITY AND MEDICAL LOGISTICS HAVE NO CERTIFICATION, DELIBERATELY. There is no existing
+       surface that would act on one, and a fourth and fifth card promising nothing is exactly
+       what the project tree refuses by leaving transport and orbital support without a tier 0.
+       Stated here rather than padded out. -->
+
+  <RimroomsAsyncIndustries.Personnel.RimroomsCertificationDef>
+    <defName>RR_Cert_GateOperator</defName>
+    <label>gate operator</label>
+    <description>Trained on the dialling procedure: what the reserve is doing, which readings mean stop, and how to hold a ramp without watching it climb.
+
+A trained operator takes work off the spin-up. It stacks with having personally walked the address, because being taught the procedure and having been down that route are two different things.</description>
+    <role>operations</role>
+    <recipeDefName>RR_TrainGateOperator</recipeDefName>
+  </RimroomsAsyncIndustries.Personnel.RimroomsCertificationDef>
+
+  <RimroomsAsyncIndustries.Personnel.RimroomsCertificationDef>
+    <defName>RR_Cert_FieldAnalyst</defName>
+    <label>field analyst</label>
+    <description>Trained to read somebody else's report and say whether the branch can stand behind it.
+
+Qualifies to sign off a finished analysis whatever their Intellectual. It only ever widens who can review - everybody who could before still can.</description>
+    <role>research</role>
+    <recipeDefName>RR_TrainFieldAnalyst</recipeDefName>
+  </RimroomsAsyncIndustries.Personnel.RimroomsCertificationDef>
+
+  <RimroomsAsyncIndustries.Personnel.RimroomsCertificationDef>
+    <defName>RR_Cert_ReserveTechnician</defName>
+    <label>reserve technician</label>
+    <description>Trained on the gate's own wear: which parts go first, and what reconditioning actually has to touch.
+
+Reconditioning a gate takes a trained technician noticeably less work. An untrained branch services the gate on exactly the terms it always did.</description>
+    <role>engineering</role>
+    <recipeDefName>RR_TrainReserveTechnician</recipeDefName>
+  </RimroomsAsyncIndustries.Personnel.RimroomsCertificationDef>
+
+</Defs>

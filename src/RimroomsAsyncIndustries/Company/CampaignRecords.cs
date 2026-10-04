@@ -7,6 +7,66 @@ namespace RimroomsAsyncIndustries.Company
     // Serialized enum values are fixed. Add new values without renumbering existing ones.
     public enum ContractStatus { Accepted = 0, Completed = 1, Failed = 2, Cancelled = 3 }
     public enum EvidenceStatus { Located = 0, Recovered = 1, Secured = 2, Analyzed = 3, Missing = 4 }
+
+    /// <summary>
+    /// What the branch decided to DO with a recovered thing, which is a different question from
+    /// what state the thing is in.
+    ///
+    /// **Owner direction, verbatim:** *"Make sale/study/use/contain/release/recruit/detain/transfer
+    /// choices visible with financial, staff, faction, legal-in-world, trust, and security
+    /// consequences"*. Sale shipped through the valuables exchange, study through analysis and
+    /// recruit through hiring. **Contain, release and transfer are the three that did not exist**,
+    /// and `detain` is the fourth — it belongs to a person rather than to a record, so it lives
+    /// on `CompRimroomsSurvivor` instead.
+    ///
+    /// ## Why this is its own enum rather than more EvidenceStatus members
+    ///
+    /// Exactly the reason review is additive: `EvidenceStatus.Analyzed` is terminal and **eight
+    /// separate places compare against it** — the laboratory job driver, the first-slice site
+    /// component, the objective hint, the resurvey gate. Three more members would silently change
+    /// every one of those comparisons and break every save that stores the enum by value.
+    ///
+    /// A disposition is also genuinely orthogonal: a record can be analysed **and** contained,
+    /// and squeezing both facts into one field would make the player choose which one they get to
+    /// know.
+    /// </summary>
+    public enum EvidenceDisposition
+    {
+        /// <summary>Nothing decided. Every record starts here and most stay here.</summary>
+        None = 0,
+
+        /// <summary>
+        /// Kept, secured, and not for sale. **Costs money every day** — containment is
+        /// storage and watching, and a branch that contains everything it finds goes broke.
+        /// </summary>
+        Contained = 1,
+
+        /// <summary>
+        /// Put back. Pays nothing, and the record is closed to further work: the thing is not
+        /// there any more. The honest cheap option.
+        /// </summary>
+        Released = 2,
+
+        /// <summary>
+        /// Handed to the parent corporation. Pays less than the exchange would, and the thing
+        /// is gone — what it buys is the corporation having it rather than the branch.
+        /// </summary>
+        Transferred = 3,
+
+        /// <summary>
+        /// Destroyed outright. The owner's *"destruction choice"*.
+        ///
+        /// **Distinct from <see cref="Released"/> and the difference matters.** Releasing puts a
+        /// thing back where it came from — it still exists, down there, and the coordinate is
+        /// still what it was. Destroying means it exists nowhere, which is the only answer to
+        /// something a branch has decided should not exist and cannot afford to keep containing.
+        ///
+        /// Pays nothing, costs nothing, and **is the one disposition available without the
+        /// corporation, without a buyer and without anywhere to put it.** That is the point of
+        /// having it: every other option needs something the branch might not have.
+        /// </summary>
+        Destroyed = 4,
+    }
     public enum CoordinateStatus { Discovered = 0, Ready = 1, Unavailable = 2 }
 
     public sealed class LedgerEntry : IExposable
@@ -449,6 +509,12 @@ namespace RimroomsAsyncIndustries.Company
         internal int reviewedTick = -1;
         internal bool reviewEndorsed;
 
+        // **Disposition: additive for the same reason review is.** A record written before this
+        // existed loads as `None` with tick -1, which reads as "nothing decided" and is exactly
+        // true. See the enum for why three more `EvidenceStatus` members would have been wrong.
+        internal EvidenceDisposition disposition;
+        internal int dispositionTick = -1;
+
         public string Id { get { return id; } }
         public EvidenceStatus Status { get { return status; } }
         public Thing Item { get { return item; } }
@@ -471,6 +537,28 @@ namespace RimroomsAsyncIndustries.Company
 
         /// <summary>When it was signed off, or -1.</summary>
         public int ReviewedTick { get { return reviewedTick; } }
+
+        /// <summary>What the branch decided to do with the thing. `None` until it decides.</summary>
+        public EvidenceDisposition Disposition { get { return disposition; } }
+
+        /// <summary>When that was decided, or -1.</summary>
+        public int DispositionTick { get { return dispositionTick; } }
+
+        /// <summary>
+        /// Records a disposition once.
+        ///
+        /// **One-way on purpose.** Releasing a thing puts it back and transferring it hands it
+        /// over; neither is something a branch can take back, and letting a player re-decide
+        /// would make the consequences the row asks for meaningless. Containment is the one that
+        /// could reasonably be undone, and it is — see `ReleaseFromContainment`, which moves
+        /// `Contained` to `Released` rather than back to `None`, because the thing still has to
+        /// go somewhere.
+        /// </summary>
+        internal void MarkDisposition(EvidenceDisposition decided, int tick)
+        {
+            disposition = decided;
+            dispositionTick = tick;
+        }
 
         /// <summary>
         /// Whether the branch stood behind the report. **False is a real outcome, not a
@@ -518,6 +606,8 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_References.Look(ref reviewer, "rr_reviewer");
             Scribe_Values.Look(ref reviewedTick, "rr_reviewedTick", -1);
             Scribe_Values.Look(ref reviewEndorsed, "rr_reviewEndorsed");
+            Scribe_Values.Look(ref disposition, "rr_disposition", EvidenceDisposition.None);
+            Scribe_Values.Look(ref dispositionTick, "rr_dispositionTick", -1);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 observations = observations ?? new List<EvidenceObservationRecord>();

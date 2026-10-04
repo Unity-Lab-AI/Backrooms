@@ -66,6 +66,12 @@ namespace RimroomsAsyncIndustries.UI
                 DrawInterview(listing, record, observation);
                 listing.Gap(4f);
             }
+
+            // **Outside the report block on purpose.** A secured record the branch has not
+            // analysed is still a thing sitting on a shelf that somebody has to decide about, so
+            // the disposition cannot be gated on there being a report. It draws nothing at all
+            // for a record the branch does not hold yet.
+            DrawDisposition(listing, record);
         }
 
         /// <summary>
@@ -128,6 +134,88 @@ namespace RimroomsAsyncIndustries.UI
             listing.Label("RR_UI_ReviewPrompt".Translate(reviewer.LabelShortCap));
             if (listing.ButtonText("RR_UI_SignOffReport".Translate()))
             { ShowResult(campaign.ReviewAnalysis(record, reviewer)); }
+        }
+
+        /// <summary>
+        /// What the branch is going to do with the thing: contain it, put it back, or hand it to
+        /// the corporation.
+        ///
+        /// **Owner direction, verbatim:** *"Make sale/study/use/contain/release/recruit/detain/
+        /// transfer choices visible with financial, staff, faction, legal-in-world, trust, and
+        /// security consequences"*. Sale, study and recruit already had surfaces. These three
+        /// did not exist at all, and `detain` is on the person rather than the record.
+        ///
+        /// **The three sit together on purpose.** They are mutually exclusive and one-way, so
+        /// showing them as one choice is the honest presentation — and the price is on the
+        /// transfer button, because a player deciding between keeping a thing and handing it over
+        /// needs the number in front of them rather than in a tooltip.
+        /// </summary>
+        private static void DrawDisposition(Listing_Standard listing, EvidenceRecord record)
+        {
+            RimroomsCampaignComponent campaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (campaign == null || record == null) { return; }
+
+            // Already decided: say what was decided and stop. A one-way choice that still shows
+            // its buttons reads as something the player can change.
+            if (record.Disposition != EvidenceDisposition.None)
+            {
+                listing.Label(("RR_UI_Disposition_" + record.Disposition).Translate());
+                // **The one way out of containment.** A charge that runs every day forever needs
+                // one, or a player who contained something before they understood the cost is
+                // paying for it permanently. It pays nothing, so it cannot launder a contained
+                // record into money.
+                if (record.Disposition == EvidenceDisposition.Contained
+                    && DrawAction(listing, label: "RR_UI_Destroy".Translate(),
+                        refusal: TaggedString.Empty,
+                        detail: "RR_UI_DestroyContainedDesc".Translate()))
+                { ShowResult(campaign.DestroyFromContainment(record)); }
+                return;
+            }
+
+            string refusal = campaign.DispositionFailureKey(record);
+            // **Nothing is drawn at all when the branch does not hold the thing yet.** A record
+            // still out in a coordinate is not a decision anybody can make, and offering three
+            // greyed buttons on every located record would be the text wall the owner asked to
+            // be rid of.
+            if (refusal == "RR_Disposition_NotRecovered") { return; }
+
+            // **Confidence, where the decision is made.** It is derived from the record's own
+            // observations, disputes and sign-off, and it moves what the corporation will pay --
+            // so the player seeing it beside the transfer price is the point rather than a
+            // decoration. The band names which fact to go and fix.
+            DrawHeading(listing,
+                heading: "RR_UI_DispositionBrief".Translate(
+                    ("RR_UI_Confidence_" + campaign.ConfidenceOf(record)).Translate()),
+                detail: "RR_UI_Disposition".Translate());
+
+            TaggedString blocked = refusal == null
+                ? TaggedString.Empty : refusal.Translate();
+            if (DrawAction(listing, label: "RR_UI_Contain".Translate(), refusal: blocked,
+                detail: "RR_UI_ContainDesc".Translate(campaign.DailyContainmentUsd.ToString("N0"))))
+            { ShowResult(campaign.ContainRecord(record)); }
+
+            if (DrawAction(listing, label: "RR_UI_Release".Translate(), refusal: blocked,
+                detail: "RR_UI_ReleaseDesc".Translate()))
+            { ShowResult(campaign.ReleaseRecord(record)); }
+
+            // The corporation half carries its own extra refusal: there is nobody to hand it to
+            // while the branch is out of contact, and that is worth saying rather than hiding.
+            TaggedString transferBlocked = blocked;
+            if (transferBlocked.NullOrEmpty() && !campaign.CorporationContact)
+            { transferBlocked = "RR_Disposition_NoContact".Translate(); }
+            if (DrawAction(listing,
+                label: "RR_UI_Transfer".Translate(campaign.TransferValueOf(record).ToString("N0")),
+                refusal: transferBlocked,
+                detail: "RR_UI_TransferDesc".Translate()))
+            { ShowResult(campaign.TransferRecord(record)); }
+
+            // **The one that needs nothing.** Containment needs money, transfer needs the
+            // corporation on the line, release needs somewhere to put it back. A branch out of
+            // options still has this, which is why the owner's row names it separately.
+            if (DrawAction(listing, label: "RR_UI_Destroy".Translate(), refusal: blocked,
+                detail: "RR_UI_DestroyDesc".Translate()))
+            { ShowResult(campaign.DestroyRecord(record)); }
         }
 
         private static void DrawInterview(Listing_Standard listing, EvidenceRecord record,

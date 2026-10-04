@@ -405,11 +405,31 @@ namespace RimroomsAsyncIndustries.Company
                 // until somebody registers one.
                 AddObligation(dayId + ":sites", "RR_Ledger_RemoteSites",
                     DailyRemoteSiteOverheadUsd, nextOperatingCostTick);
+                // **Containment, on its own line for the same reason the sites are.** Owner:
+                // *"Make ... contain/release ... choices visible with financial ...
+                // consequences"*. A branch that contains everything it finds should be able to
+                // watch itself going broke on the ledger and know exactly which line is doing
+                // it. Zero until somebody decides to contain something.
+                AddContainmentObligation(dayId, nextOperatingCostTick);
                 nextOperatingCostTick = nextOperatingCostTick <= int.MaxValue - GenDate.TicksPerDay
                     ? nextOperatingCostTick + GenDate.TicksPerDay : int.MaxValue;
             }
             CompanyActionResult payment = PayOutstandingObligations();
-            if (!payment.Success) { RecordEvent("RR_Event_OperatingArrears", branchId); }
+            if (!payment.Success)
+            {
+                RecordEvent("RR_Event_OperatingArrears", branchId);
+                // **Eviction, and it is a consequence rather than a clock.** §1.1 permits the
+                // gate's window because it is *"the consequence of things the player controls"*;
+                // this is built to the same test. A place goes only because the branch stopped
+                // paying for it, the unpaid bill is on the ledger where the player can read it,
+                // and paying clears it. **No time passing ever evicts anybody** -- a branch that
+                // keeps paying keeps its places for ever.
+                //
+                // One per operating day, so a cash-flow problem never becomes a
+                // campaign-ending event with no step in between. See `RemoteSiteTenure` for why
+                // *term* is refused outright rather than built smaller.
+                EvictOnePlace();
+            }
         }
 
         private void AddObligation(string id, string reasonKey, long amount, int dueTick)

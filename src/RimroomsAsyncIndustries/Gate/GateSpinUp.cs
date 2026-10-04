@@ -208,6 +208,12 @@ namespace RimroomsAsyncIndustries.Gate
             // the branch. Owner's prep item: *"field history, trust/stress/exposure"*.
             if (dialCampaign != null)
             { required *= dialCampaign.ExposureDialFactor(assignedOperator, coordinateId); }
+            // **And whether they were TRAINED to do it**, which is a different fact from having
+            // walked this particular address. `RR_Cert_GateOperator` is earned by running the
+            // training bill at a research bench; it applies once, for the same reason exposure
+            // does -- a person is not a record. Owner's row: *"certifications, training jobs"*.
+            if (dialCampaign != null)
+            { required *= dialCampaign.CertificationDialFactor(assignedOperator); }
             return Mathf.Max(floor, required);
         }
 

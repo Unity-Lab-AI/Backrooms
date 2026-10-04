@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- THE TRAINING JOBS. Owner's row: "certifications, training jobs".
+
+       Each one is an ordinary bill the player adds to a bench, modelled exactly on
+       RR_AssembleMachineGate: a pawn walks over, does the work, and
+       RecipeWorker_RimroomsCertification records the qualification against whoever did it. No
+       new work giver, no new job driver and no new building.
+
+       NO INGREDIENTS, AND THAT IS CHECKED RATHER THAN ASSUMED. Training costs work and a skill
+       floor, not materials - there is nothing physical to consume in a briefing. Eight Core
+       recipes ship with no <ingredients> element at all (Sterilize, ButcherCorpseMechanoid and
+       six others), read out of the installed game data, so a pure-work recipe is Core practice
+       and not a guess.
+
+       CORE ENFORCES THE SKILL FLOOR through skillRequirements, which is the whole reason it is
+       declared here rather than checked in code: RimWorld refuses the bill to an unqualified
+       pawn up front. A floor tested in Notify_IterationCompleted would mean spending thousands
+       of ticks of somebody's day and being told no at the end.
+
+       WHY THE BENCH IS A MACHINING TABLE OR A CRAFTING SPOT, which is a real limitation and is
+       recorded rather than hidden. Bills need a Building_WorkTable, and Core ships NO office or
+       study worktable - the research benches are Building_ResearchBench and have no bill stack
+       at all, so a recipe placed on one would be a certification nobody could ever earn. The
+       nineteen Core worktables were enumerated from the installed data to establish that. So
+       training happens at the branch's own bench, where the gate hardware and the manuals are:
+       TableMachining is already required by gate start-up step 2, so no branch is ever blocked
+       on building something new, and CraftingSpot costs nothing for a branch that has not got
+       that far. A profile that adds a study bench is not named here and does not need to be -
+       the player simply uses the bench they have. -->
+
+  <RecipeDef>
+    <defName>RR_TrainGateOperator</defName>
+    <label>train gate operator</label>
+    <description>Work through the dialling procedure at the branch's bench: what the reserve is doing, which readings mean stop, and how to hold a ramp without watching it climb. Whoever does the work is recorded as a trained gate operator, and a trained operator takes work off every spin-up afterwards.</description>
+    <jobString>training on the gate procedure</jobString>
+    <workAmount>5000</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <requiredGiverWorkType>Crafting</requiredGiverWorkType>
+    <skillRequirements>
+      <Intellectual>4</Intellectual>
+    </skillRequirements>
+    <workerClass>RimroomsAsyncIndustries.Personnel.RecipeWorker_RimroomsCertification</workerClass>
+    <recipeUsers>
+      <li>TableMachining</li>
+      <li>CraftingSpot</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_TrainFieldAnalyst</defName>
+    <label>train field analyst</label>
+    <description>Work through somebody else's finished report and learn to say whether the branch can stand behind it. Whoever does the work is recorded as a trained field analyst, and may sign off an analysis whatever their Intellectual.</description>
+    <jobString>training on report review</jobString>
+    <workAmount>5500</workAmount>
+    <workSkill>Intellectual</workSkill>
+    <requiredGiverWorkType>Crafting</requiredGiverWorkType>
+    <skillRequirements>
+      <Intellectual>3</Intellectual>
+    </skillRequirements>
+    <workerClass>RimroomsAsyncIndustries.Personnel.RecipeWorker_RimroomsCertification</workerClass>
+    <recipeUsers>
+      <li>TableMachining</li>
+      <li>CraftingSpot</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>RR_TrainReserveTechnician</defName>
+    <label>train reserve technician</label>
+    <description>Strip and rebuild the parts of a gate that wear first, until reconditioning one stops being guesswork. Whoever does the work is recorded as a trained reserve technician, and reconditions a gate for noticeably less work afterwards.</description>
+    <jobString>training on gate servicing</jobString>
+    <workAmount>6000</workAmount>
+    <workSkill>Crafting</workSkill>
+    <requiredGiverWorkType>Crafting</requiredGiverWorkType>
+    <skillRequirements>
+      <Crafting>5</Crafting>
+    </skillRequirements>
+    <workerClass>RimroomsAsyncIndustries.Personnel.RecipeWorker_RimroomsCertification</workerClass>
+    <recipeUsers>
+      <li>TableMachining</li>
+    </recipeUsers>
+  </RecipeDef>
+
+</Defs>

@@ -77,7 +77,16 @@ namespace RimroomsAsyncIndustries.Company
                 if (analyst != null && pawn == analyst) { continue; }
                 if (pawn.skills == null) { continue; }
                 int skill = pawn.skills.GetSkill(SkillDefOf.Intellectual).Level;
-                if (skill < MinimumReviewerIntellectual) { continue; }
+                // **A TRAINED ANALYST QUALIFIES WHATEVER THEIR INTELLECTUAL.** Owner's row:
+                // *"certifications, training jobs"*. `RR_Cert_FieldAnalyst` is earned by running
+                // the training bill at a research bench, and the point of training somebody is
+                // that it lets them do the job the floor would otherwise keep them from.
+                //
+                // **It widens the pool and never narrows it.** The floor still admits everybody
+                // it admitted before, so a branch that has trained nobody reviews exactly as it
+                // did, and the certification can only ever add a reviewer.
+                if (skill < MinimumReviewerIntellectual
+                    && !HasCertification(pawn, "RR_Cert_FieldAnalyst")) { continue; }
                 if (skill <= bestSkill) { continue; }
                 best = pawn;
                 bestSkill = skill;
@@ -146,8 +155,13 @@ namespace RimroomsAsyncIndustries.Company
             { return CompanyActionResult.Refused("RR_Review_ReviewerUnavailable"); }
             if (record.Analyst != null && reviewer == record.Analyst)
             { return CompanyActionResult.Refused("RR_Review_ReviewerIsAnalyst"); }
+            // **BOTH HALVES OF THE QUALIFICATION, and they have to agree.** `ReviewerFor` admits
+            // a trained analyst below the floor, so this must too -- a picker that offers
+            // somebody and an action that then refuses them is the defect that cost the owner an
+            // afternoon on the gate, in a different coat.
             if (reviewer.skills == null
-                || reviewer.skills.GetSkill(SkillDefOf.Intellectual).Level < MinimumReviewerIntellectual)
+                || (reviewer.skills.GetSkill(SkillDefOf.Intellectual).Level < MinimumReviewerIntellectual
+                    && !HasCertification(reviewer, "RR_Cert_FieldAnalyst")))
             { return CompanyActionResult.Refused("RR_Review_ReviewerUnskilled"); }
 
             // **A review cannot sign off on a record the company has not settled.** An unsettled

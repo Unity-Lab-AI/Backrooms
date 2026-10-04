@@ -206,7 +206,19 @@ namespace RimroomsAsyncIndustries.Company
 
             // Invariant 26: the list is sorted ordinally before anything is rolled against it.
             int roll = CampaignSeed.Derive(campaignSeed, "request-generation:" + requests.Count, 1);
-            OfferRequest(freshest[roll % freshest.Count]);
+            // **The tie is where the branch's own situation gets to speak.** Owner: *"Generate
+            // bounded story variations from client/faction, coordinate, staffing, discovered
+            // rules, company tier, previous outcomes, opening duration, and available
+            // equipment"*. Four of those reached generation in 0.12.12-dev through
+            // `CanTakeRoute`; company tier, previous outcome, opening duration and the world's
+            // faction pressure did not, and this is where they land.
+            //
+            // **Least-asked-first is untouched**, because that is the fairness rule that stops
+            // the company repeating its cheapest request forever. The weighting applies inside
+            // the tie, which is exactly where this line was choosing arbitrarily.
+            RimroomsRequestDef chosen = DrawWeightedFamily(freshest, roll);
+            if (chosen == null) { return; }
+            OfferRequest(chosen);
         }
     }
 }

@@ -91,6 +91,32 @@ namespace RimroomsAsyncIndustries.Gate
 
         public float ReconditionWorkRequired { get { return 1400f; } }
 
+        /// <summary>
+        /// How much of the reconditioning work a trained technician saves.
+        ///
+        /// `RR_Cert_ReserveTechnician` is earned by running the training bill at a machining
+        /// table. Owner's row: *"certifications, training jobs"*.
+        /// </summary>
+        public const float TechnicianServiceFactor = 0.7f;
+
+        /// <summary>
+        /// The work this particular person needs to recondition the gate.
+        ///
+        /// **Asked per pawn rather than folded into the flat figure**, because that is what a
+        /// certification is: a fact about somebody, not about the gate. The flat
+        /// <see cref="ReconditionWorkRequired"/> stays exactly what it was, so an untrained
+        /// branch services the gate on the same terms it always did and the training can only
+        /// ever make it cheaper.
+        /// </summary>
+        public float ReconditionWorkFor(Pawn servicer)
+        {
+            RimroomsCampaignComponent campaign = NativeCampaign;
+            if (campaign == null || servicer == null) { return ReconditionWorkRequired; }
+            return campaign.HasCertification(servicer, "RR_Cert_ReserveTechnician")
+                ? ReconditionWorkRequired * TechnicianServiceFactor
+                : ReconditionWorkRequired;
+        }
+
         /// <summary>A gate that has never been serviced starts in full condition.</summary>
         public int ServiceConditionTicks
         { get { return serviceConditionTicks < 0 ? ServiceCapacityTicks : serviceConditionTicks; } }

@@ -63,6 +63,20 @@ namespace RimroomsAsyncIndustries.UI
                     listing.Label("RR_Plan_ExposureTrips".Translate(
                         trips.ToString(CultureInfo.CurrentCulture)));
                 }
+
+                // **What the branch has trained them to do**, which is the other half of the
+                // owner's *"certifications, training jobs, field history"* and a different fact
+                // from the trips above: one is where they have been, the other is what they were
+                // taught. Printed only when they hold something, so a branch that has trained
+                // nobody reads exactly as it did -- the same rule the shortfall lines follow.
+                List<Personnel.RimroomsCertificationDef> held =
+                    campaign.CertificationsOf(candidate.Pawn);
+                if (held.Count > 0)
+                {
+                    listing.Label("RR_Plan_Certified".Translate(string.Join(", ",
+                        held.Select(certification => certification.LabelCap.ToString())
+                            .ToArray())));
+                }
             }
             listing.GapLine();
 

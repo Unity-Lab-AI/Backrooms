@@ -2,6 +2,16 @@
 <LanguageData>
   <RR_Survivor_Inspect>Lost in the Backrooms. Will leave with anyone who can get them out.</RR_Survivor_Inspect>
   <RR_Survivor_Offer>Offer passage home</RR_Survivor_Offer>
+  <!-- DETAIN: the fourth disposition, and the one that belongs to a person rather than to a
+       recovered thing. Offered beside the passage offer so the two read as the choice they are:
+       take them home as one of yours, or hold them. The consequence is Core's whole prisoner
+       system, which is why this needed no new mechanism. -->
+  <RR_Survivor_Detain>Detain them</RR_Survivor_Detain>
+  <RR_Survivor_DetainDesc>Hold them rather than taking them on. They become a prisoner of this colony and everything that follows is ordinary: they need feeding and tending, they can be recruited the usual way, and they can escape. The branch is choosing not to trust somebody it found down there.</RR_Survivor_DetainDesc>
+  <RR_Survivor_NoPrisonerBed>There is nowhere on this map to hold anybody. Build a prisoner bed first.</RR_Survivor_NoPrisonerBed>
+  <RR_Survivor_DetainedLabel>Detained</RR_Survivor_DetainedLabel>
+  <RR_Survivor_DetainedText>{0} has been detained rather than taken on. They are a prisoner of this colony now, with everything that means: they have to be fed and tended, they can be recruited in the ordinary way, and they can leave if nobody is watching.</RR_Survivor_DetainedText>
+  <RR_Event_SurvivorDetained>{0} was detained rather than taken on.</RR_Event_SurvivorDetained>
   <RR_Survivor_OfferDesc>Offer this person a way out. They have been lost down here and will accept. Until they do, they are an inhabitant and cannot cross a gate on their own - the only way out for them is to be carried. Once they join, they can walk out with your people like anyone else.</RR_Survivor_OfferDesc>
   <RR_Survivor_NobodyHere>One of your people has to be here to make the offer.</RR_Survivor_NobodyHere>
   <RR_Survivor_JoinedLabel>They accepted</RR_Survivor_JoinedLabel>

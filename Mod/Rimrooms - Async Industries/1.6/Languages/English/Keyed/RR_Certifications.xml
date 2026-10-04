@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Certifications and their training bills. A certification is the person-level twin of a
+       company project: one person's work buys that person a qualification, and it stays with
+       them rather than with the branch. -->
+
+  <RR_Cert_Earned>{0} is now a trained {1}.</RR_Cert_Earned>
+  <RR_Cert_Unavailable>There is nobody to record that training against.</RR_Cert_Unavailable>
+  <RR_Event_Certified>{0} completed training as {1}.</RR_Event_Certified>
+
+  <!-- The crew planner line. Printed only when somebody holds something, so a branch that has
+       trained nobody reads exactly as it did. -->
+  <RR_Plan_Certified>Trained: {0}</RR_Plan_Certified>
+
+</LanguageData>

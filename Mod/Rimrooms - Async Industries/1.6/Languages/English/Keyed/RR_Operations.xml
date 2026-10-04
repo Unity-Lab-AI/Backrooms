@@ -34,7 +34,58 @@
   <RR_Site_NotYours>The branch does not hold that place.</RR_Site_NotYours>
   <RR_Site_TooMany>The branch cannot account for another site.</RR_Site_TooMany>
   <RR_Site_NotRegistered>That site is not on the books.</RR_Site_NotRegistered>
+  <!-- EVICTION AND RENEWAL. There is no lease TERM and there will not be one: CAMPAIGN_CHART 1.1
+       forbids a countdown on anything a player is asked to maintain. Eviction is a consequence
+       of not paying - which the player can see on the ledger and fix by paying - and never of
+       time passing. Renewal costs nothing, because a fee for recovering from a mistake is
+       charging twice for it. -->
+  <RR_Site_ArrearsOutstanding>The corporation will not put another place on this branch's books while it still owes for the ones it has. Clear the outstanding bill first.</RR_Site_ArrearsOutstanding>
+  <RR_Site_EvictedLabel>Site taken off the books</RR_Site_EvictedLabel>
+  <RR_Site_EvictedText>The corporation has taken {0} off this branch's books. It has gone unpaid for {1} operating days, and the corporation does not carry a branch that will not pay for the places it runs.
+
+Nothing on that map has changed and the colony there is still yours. Clear what is owed and the place can go back on the books at no charge - there is no penalty for this beyond having lost it.</RR_Site_EvictedText>
+  <RR_Event_RemoteSiteEvicted>{0} was taken off the books for non-payment.</RR_Event_RemoteSiteEvicted>
   <RR_Ledger_RemoteSites>Remote sites</RR_Ledger_RemoteSites>
+  <!-- Containment gets its own ledger line for the same reason the remote sites do: a branch
+       that contains everything it finds should be able to watch itself going broke and know
+       which line is doing it. Zero until somebody decides to contain something. -->
+  <RR_Ledger_Containment>Containment</RR_Ledger_Containment>
+  <RR_Ledger_RecordTransfer>Record transferred to the corporation</RR_Ledger_RecordTransfer>
+
+  <!-- The three dispositions of a recovered thing. Mutually exclusive and one-way, so they are
+       drawn as one choice and the already-decided state replaces the buttons entirely. -->
+  <!-- Confidence is DERIVED from the record's own observations, disputes and sign-off - never
+       stored, because a stored score could disagree with its own inputs. It moves what the
+       corporation pays, so the band sits beside the transfer price rather than on its own. -->
+  <RR_UI_DispositionBrief>Disposition - confidence: {0}</RR_UI_DispositionBrief>
+  <RR_UI_Confidence_Unverified>unverified</RR_UI_Confidence_Unverified>
+  <RR_UI_Confidence_Weak>weak</RR_UI_Confidence_Weak>
+  <RR_UI_Confidence_Fair>fair</RR_UI_Confidence_Fair>
+  <RR_UI_Confidence_Strong>strong</RR_UI_Confidence_Strong>
+  <RR_UI_Destroy>Destroy it</RR_UI_Destroy>
+  <RR_UI_DestroyDesc>Destroy it outright. It pays nothing and costs nothing, and unlike putting it back it no longer exists anywhere. The one choice that needs no buyer, no contact and nowhere to put it.</RR_UI_DestroyDesc>
+  <RR_UI_DestroyContainedDesc>Stop paying to keep it. The containment charge ends and nothing is paid out, which is why this cannot be used to turn a contained record into money.</RR_UI_DestroyContainedDesc>
+  <RR_UI_Disposition_Destroyed>Destroyed. It no longer exists anywhere.</RR_UI_Disposition_Destroyed>
+  <RR_Disposition_NotContained>That record is not in containment.</RR_Disposition_NotContained>
+  <RR_Event_RecordDestroyed>A record was destroyed.</RR_Event_RecordDestroyed>
+  <RR_UI_Disposition>Contain it and pay to keep it, put it back, or hand it to the corporation. One choice, and it stands.</RR_UI_Disposition>
+  <RR_UI_Contain>Contain</RR_UI_Contain>
+  <RR_UI_ContainDesc>Keep it secured and off the exchange. Containment is charged on its own line every day; the branch is paying {0} a day for what it already holds.</RR_UI_ContainDesc>
+  <RR_UI_Release>Release</RR_UI_Release>
+  <RR_UI_ReleaseDesc>Return it to where it came from. It pays nothing and it costs nothing, and the thing is no longer here.</RR_UI_ReleaseDesc>
+  <RR_UI_Transfer>Transfer ({0})</RR_UI_Transfer>
+  <RR_UI_TransferDesc>Hand it over. It pays less than the exchange would, and the corporation has it rather than the branch.</RR_UI_TransferDesc>
+  <RR_UI_Disposition_Contained>Contained, charged daily.</RR_UI_Disposition_Contained>
+  <RR_UI_Disposition_Released>Released. It is no longer here.</RR_UI_Disposition_Released>
+  <RR_UI_Disposition_Transferred>Transferred to the corporation.</RR_UI_Disposition_Transferred>
+  <RR_Disposition_Inactive>The branch cannot act on records right now.</RR_Disposition_Inactive>
+  <RR_Disposition_RecordUnavailable>That record is not on the branch's books.</RR_Disposition_RecordUnavailable>
+  <RR_Disposition_NotRecovered>The branch does not hold this yet.</RR_Disposition_NotRecovered>
+  <RR_Disposition_AlreadyDecided>This has already been decided and it stands.</RR_Disposition_AlreadyDecided>
+  <RR_Disposition_NoContact>There is nobody to hand it to. The branch is out of contact with the corporation.</RR_Disposition_NoContact>
+  <RR_Event_RecordContained>A record was placed in containment.</RR_Event_RecordContained>
+  <RR_Event_RecordReleased>A record was put back.</RR_Event_RecordReleased>
+  <RR_Event_RecordTransferred>A record was transferred to the corporation for {0}.</RR_Event_RecordTransferred>
   <RR_Event_RemoteSiteRegistered>A place beyond headquarters went on the books. It costs something every day now.</RR_Event_RemoteSiteRegistered>
   <RR_Event_RemoteSiteReleased>A place came off the books. No fee, no notice, and the colony there is still the player's own business.</RR_Event_RemoteSiteReleased>
   <RR_Sites_RowUnstaffed>{0} - on the books and reachable, but nobody is there. Shipments to it will wait.</RR_Sites_RowUnstaffed>

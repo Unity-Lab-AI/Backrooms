@@ -208,6 +208,14 @@ namespace RimroomsAsyncIndustries.Company
             }
             if (remoteSites.Count >= RemoteSiteCap)
             { return CompanyActionResult.Refused("RR_Site_TooMany"); }
+            // **RENEWAL.** Owner's row: *"...maintenance, renewal, eviction..."*. Putting a place
+            // back on the books is the ordinary registration -- there is no renewal fee, for the
+            // same reason there is no release fee: *"a cost for changing your mind is the same
+            // trap in a different coat"*, and a branch that has lost a place and still owes for
+            // it has already paid twice. The one condition is that what is owed is cleared
+            // first, which the player does by paying rather than by waiting.
+            string arrears = RenewalFailureKey();
+            if (arrears != null) { return CompanyActionResult.Refused(arrears); }
 
             string id = branchId + ":site:" + parent.ID;
             remoteSites.Add(new RemoteSiteRecord

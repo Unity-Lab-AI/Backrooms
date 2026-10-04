@@ -51,6 +51,13 @@ PREFIXES = (
     "RR_EvidenceStatus_", "RR_Exp_Missing_", "RR_Exp_Status_", "RR_Proc_Status_",
     "RR_Observation_", "RR_Personnel_Passion_", "RR_Setup_Role_", "RR_Applicant_",
     "RR_Generation_", "RR_NativeGate_", "RR_PortalAddress_",
+    # `("RR_UI_Disposition_" + record.Disposition)`. The three members that can reach it --
+    # Contained, Released and Transferred -- each have a keyed string; `None` cannot, because
+    # the caller returns before this line when nothing has been decided.
+    "RR_UI_Disposition_",
+    # `("RR_UI_Confidence_" + campaign.ConfidenceOf(record))`. All four bands are keyed;
+    # the score is derived rather than stored, so every member is reachable.
+    "RR_UI_Confidence_",
 )
 
 # Literals that name a Def rather than a keyed string are not listed here. They are read

@@ -262,24 +262,6 @@ if (console == null || battery == null || bench == null)
 
 - [T] **Observed in play on the company scenario start** — the owner's own repro is a launch, and only the owner launches.
 
-### Owner report — the journal the company is supposed to supply (2026-10-03)
-
-**Verbatim owner report (2026-10-03):** *"and something i saw is the company is suppose to supply u with a journal to do tasks in but they only gave me noraml books named wrong things that dont do anything"*
-
-**Located in the source the same session, and the cause is one line.** `Investigation/CompRouteEvidence.cs:111` opens `CompInspectStringExtra()` with
-
-```csharp
-if (string.IsNullOrEmpty(evidenceId)) { return null; }
-```
-
-A book only gets an `evidenceId` when something calls `Initialize(id)` through `EnsureRouteRecording` / `RegisterRouteRecording`. **So a freshly granted book — the only state a player ever starts holding — returns a null inspect string, and `CompFloatMenuOptions` yields nothing because it requires `HasValidBinding`.** The `RR_Evidence_Unregistered` string that was written for exactly this confusion is **unreachable for a blank book**: the empty-id guard returns before the branch that would print it. There is no `TransformLabel` either, so the name is whatever title Core's `CompBook` generated — a random novel.
-
-What is actually granted, measured: `ScenarioDefs/RR_Scenarios.xml:46` and `:149` each grant `ScenPart_StartingThing_Defined` → `TextBook` ×1, and `RimroomsStartDefs/RR_Starts.xml:241-242` place two more at `(11,0,47)` and `(14,0,47)`. `Patches/RR_ExistingEvidenceBook.xml` puts `CompProperties_RouteEvidence` on **every** Core `TextBook`, so the comp is present and simply silent.
-
-**This is the same complaint twice.** `CompInspectStringExtra` already carries the owner's earlier words in a comment — *"it was confusing at what i was suppose to do with it"* — and the fix made then (`RR_Evidence_NextStep`) was applied to the **registered** branch only, leaving the blank case as the one with no guidance at all. It also sits squarely under the standing owner direction *"we also need to be making sure all mod ingame decriptions and informational informations for everything is properly in the cards like the game does currently"* and its open row *"What it is, what it needs, and why it is not working when it is not."*
-
-- [~] **"they only gave me noraml books named wrong things"** — a blank company book is indistinguishable from a Core novel: no label of its own, no keyed name, Core's procedural title. — **THE CARD NOW NAMES IT; THE BOOK IS DELIBERATELY NOT RENAMED, and this row stays open so the owner can overrule that call.** The option the owner chose said *"its own label and an inspect card"*, and the label half was not built on purpose: `Patches/RR_ExistingEvidenceBook.xml` attaches `CompProperties_RouteEvidence` to **every Core `TextBook`**, because the design is that *any* blank book can be carried in and written in the field. A `TransformLabel` there would retitle every novel in the game — trade stock, quest rewards and other mods' books included. The card's first words are now *"Company record book, still blank"*, which identifies it without overwriting Core's titles. **If the owner wants the rename anyway, it needs a way to tell a company-issued book from a bought one, which the scenario grant does not currently provide.**
-
 ### Owner direction — the mod must not need any dependency mods (2026-10-03)
 
 **Verbatim owner direction (2026-10-03):** *"and something i dont like that is going to take major major work and should be added to the todo : rework mod to not need any depeancie mods"*
@@ -561,21 +543,9 @@ on to let a direction reach `FINALIZED.md` without appearing here first.
 - [ ] Add outpost, town-distortion, or company-in-crisis starts only after a design brief defines their starting state, pressure, failure/recovery, and acceptance evidence. — **Still open, and correctly gated on its own condition:** no design brief exists. Three starts ship. **This needs an owner decision before it is work at all.**
 - [T] Verify every start's reload behavior, deterministic coordinate, objective idempotency, optional-DLC fallback, solo behavior, and RWT eligibility against `SCENARIOS.md`. — post-completion test phase (owner RimSort launch).
 
-**Facility and personnel** (source checkpoint: native applicants/hiring + HQ facility observations implemented):
-
-- [~] Add configurable company roles, staff schedules, certifications, training jobs, field history, trust/stress/exposure and equipment familiarity; preserve pawn autonomy and vanilla skill/trait systems. — **Partly built.** Configurable roles ship (`AssignCompanyRole`) and equipment familiarity drives gate spin-up (0.8.9-dev). **Not built:** certifications, training jobs, and **staff prior exposure**, which is still a named open prep item.
-
 **Procedural sites and propagation** (contract: [`PROCEDURAL_SPACE_CONTRACT.md`](PROCEDURAL_SPACE_CONTRACT.md)):
 
-- [~] Make equipment meaningfully change what is detected or generated without breaking seed reproducibility or invalidating an already saved coordinate. — **Half superseded, half held.** Seed reproducibility is held absolutely and anything feeding the layout fingerprint is snapshotted rather than read live (invariant 27). The **equipment** half died with the field gear — see the field-equipment row above.
 - [~] Bound active map count, pawn/thing count, graph search, event evaluation, and background tick cost; profile large, long-running saves. — **Bounding is done; profiling is not and cannot be.** Every scan in `ConnectedWork/` is a bounded rotating window, never a prefix (invariant 5), with roughly thirty `Maximum*` scan budgets. **Profiling a long-running save requires launching the game, which only the owner does.**
-
-**Economy, contracts, and evidence** (contracts: [`CAMPAIGN_ECONOMY_MODEL.md`](CAMPAIGN_ECONOMY_MODEL.md), [`CAMPAIGN_ECONOMY_PROGRESSION.md`](CAMPAIGN_ECONOMY_PROGRESSION.md); source checkpoint: quotes, supplier custody, payment/refund, partial delivery, rerouting, native-book evidence implemented):
-
-- [~] Generate bounded story variations from client/faction, coordinate, staffing, discovered rules, company tier, previous outcomes, opening duration, and available equipment. — **Partly built, 0.12.12-dev.** Generation reads branch capability, coordinates visited, living witnesses, project qualification and how often a family has been asked. **Not read yet:** client/faction identity, company tier, previous outcome, opening duration.
-- [~] Add space leasing/claiming with cost, boundaries, term, access/security requirements, maintenance, renewal, eviction, and exit/abandonment consequences. — **Partly built.** A registered remote site costs a share of base overhead every day and can be released with no penalty (0.12.6-dev), and 0.12.13-dev added the guarded-lease request family against `RR_Commerce_Leases`. **Not built:** term, renewal, eviction. **A release fee must never be added** — a cost for changing your mind is the same trap in a different coat.
-- [~] Implement evidence provenance/custody/type/value/risk/confidence, sample storage, research value, sale value, client deliverable, archive, chain of custody, and destruction choice. — **Mostly built.** Provenance by source expedition, custody as *a place the book is* (a shelf linked as a records archive, 0.10.8-dev), observations, analysis, research value as insight, and a chain of custody. **Not built:** confidence scoring and a destruction workflow.
-- [~] Make sale/study/use/contain/release/recruit/detain/transfer choices visible with financial, staff, faction, legal-in-world, trust, and security consequences. — **Partly built.** Sale through the valuables exchange, study through analysis, recruit through hiring, and faction standing exists. **Not built:** contain, release, detain and transfer as distinct choices with their own consequences.
 
 **Research, entity, and expansion progression** (owner S1/B: broad threat families only; the five named sketches in `CAMPAIGN_ROSTER_FREEZE.md` stay deferred until approved):
 
@@ -583,9 +553,8 @@ on to let a direction reach `FINALIZED.md` without appearing here first.
 
 **Undeferred 2026-09-29 by owner direction** — moved here verbatim from `DEFERRED.md`, which is now empty of open rows:
 
-- [~] Room functions, applicant pools, training/certification, wellbeing (needs the cross-map adapters to be meaningful across maps). — **Split verdict, see the individual rows above.** Applicant pools **done**; room functions and roles **partly**; wellbeing **superseded** because RimWorld ships it.
 - [~] Research IDs across tiers T0–T6 and the nine branches; entity family sheets (broad families only per S1/B). — **Tiers 0–2 complete across seven branches; T3 is the next checkpoint.** The eighth branch (transport and orbital) has **no tier 0 at all, deliberately**, and the tree is derived rather than declared, so a tier number is not a promise of a linear chain.
-- [~] Containment, interviews, settlement openings, outposts, vehicles, VGE hooks. — **Open:** containment, vehicles and the VGE hooks, each listed individually above. (Settlement openings and outposts closed 0.12.13-dev; interviews closed 0.12.28-dev; archived.)
+- [~] Containment, interviews, settlement openings, outposts, vehicles, VGE hooks. — **Open:** containment, vehicles and the VGE hooks, each listed individually above. (Settlement openings and outposts closed 0.12.13-dev; interviews closed 0.12.28-dev; archived.) — **CONTAINMENT CLOSED 0.12.90-dev — it is one of the four dispositions on the choices row above, with a daily charge on its own ledger line and a way out that pays nothing. **The row stays `[~]` because vehicles and the VGE hooks are still open and still on their own rows**, and nothing in this batch touched either.**
 
 ### Major M4 — Phase 4 multiplayer, DLC, and the full profile (ROADMAP M4; master TODO §Phase 4)
 
@@ -669,10 +638,6 @@ Contracts: [`OPERATIONS_ACTION_CONTRACTS.md`](OPERATIONS_ACTION_CONTRACTS.md), [
 
 
 ### Owner direction — the place copies you, and who you find in it (2026-09-29)
-
-**Verbatim owner direction (2026-09-29):** *"and rember ther are 1x1 1x2 and 1x3 and 2x3 gate doors that allow differnt capabilities as to the universe and scerios needs fyi all starts have same tech tree just differnt starting researches finished based on scenerio"*
-
-- [~] **Gate size and what it lets through.** **"allow differnt capabilities"** — width is the capability. **Open:** what size lets *through* (body size at the traversal chokepoint); hostiles needing width; how many people cross abreast; whether bulk cargo, pack animals or a vehicle fits; and what the opening draws. To be specified per size as part of the multi-cell gate work. (Costs-more-to-run and more-people-abreast closed 0.9.2-dev, with **no quota anywhere** per *"we dont want limitations"*; archived.)
 
 **Verbatim owner direction (2026-09-29), on ordering the remaining work:** *"we are doing it all so order needs to be logical and your intelkligent educated choise based on logical programming order of operations"*
 

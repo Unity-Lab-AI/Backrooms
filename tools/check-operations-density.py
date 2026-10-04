@@ -79,8 +79,19 @@ ONSCREEN_CEILING = {
     # answers *can this link arrive* and then arrives -- so every word it is involved in is
     # charged to the pane that called it, which is where the ceiling should bite.
     "OperationsLinks.cs": 0,
-    "OperationsCrewPlanner.cs": 163,
-    "OperationsEvidence.cs": 78,
+    # 163 -> 164. **One word**, to make a record the branch already keeps readable where the
+    # decision is made. A
+    # certification the crew planner cannot show is a certification that may as well not exist,
+    # and the string is already down to `Trained: {0}`. Recorded rather than absorbed.
+    "OperationsCrewPlanner.cs": 164,
+    # 78 -> 85. The disposition choice -- contain, release, transfer, destroy -- plus the
+    # derived confidence band and the line that replaces all four once one is taken.
+    # **First measured at 91 and trimmed to 82 before any raise** -- "Contain it" became
+    # "Contain", "Put it back" became "Release", and the transfer button dropped "to the
+    # corporation" because its tooltip says so. Seven words for four decisions the player could
+    # not make at all before and a score that moves the transfer price, against a global budget
+    # of 60 words per action.
+    "OperationsEvidence.cs": 85,
     "OperationsEvidenceRecovery.cs": 40,
     # 442 when measured blind, 477 once the objective chain became visible, 215 after the
     # paragraphs moved to hover and the two refusals moved onto the controls they refuse.
@@ -93,7 +104,7 @@ ONSCREEN_CEILING = {
     "OperationsLaboratoryBinding.cs": 61,
     # 413 to 217. 130 of those words were in `PersonnelView` and `Dialog_ConfirmApplicantHire`,
     # neither of which could reach the primitives until they stopped being private to the window.
-    # 217 -> 218. **The only ceiling this project has ever raised**, and it buys the pawn deep
+    # 217 -> 218. One word, and it buys the pawn deep
     # link: this pane holds the richest readout of a person anywhere in the package and had no
     # way to go and look at them. One word, for a control that replaces closing Operations and
     # hunting the colony by hand. Recorded rather than absorbed, which is what the ratchet is for.

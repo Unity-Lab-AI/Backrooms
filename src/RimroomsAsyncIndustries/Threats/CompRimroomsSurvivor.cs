@@ -147,6 +147,85 @@ namespace RimroomsAsyncIndustries.Threats
             if (!AnyColonistPresent(pawn))
             { offer.Disable("RR_Survivor_NobodyHere".Translate()); }
             yield return offer;
+
+            // **DETAIN: the fourth disposition, and the one that belongs to a person.** Owner:
+            // *"Make sale/study/use/contain/release/recruit/detain/transfer choices visible with
+            // financial, staff, faction, legal-in-world, trust, and security consequences"*.
+            // Contain, release and transfer are decisions about a recovered *thing* and live on
+            // the evidence record. Detaining is a decision about somebody, and offering it
+            // beside the passage offer is what makes the two read as the choice they are:
+            // **take them home as one of yours, or hold them.**
+            //
+            // The consequence is Core's entire prisoner system, which is exactly why this is
+            // three lines rather than a subsystem: needs, recruitment, escape risk, the warden
+            // job and the faction reading all already exist and all already apply.
+            var detain = new Command_Action
+            {
+                defaultLabel = "RR_Survivor_Detain".Translate(),
+                defaultDesc = "RR_Survivor_DetainDesc".Translate(),
+                icon = TexCommand.ForbidOn,
+                action = delegate { Detain(pawn); },
+            };
+            if (!AnyColonistPresent(pawn))
+            { detain.Disable("RR_Survivor_NobodyHere".Translate()); }
+            else if (!AnyPrisonerBed(pawn))
+            { detain.Disable("RR_Survivor_NoPrisonerBed".Translate()); }
+            yield return detain;
+        }
+
+        /// <summary>
+        /// Whether there is anywhere on this map to hold somebody.
+        ///
+        /// **Refused by name rather than hidden, and this is the refusal that matters most
+        /// here:** a player who detains somebody with nowhere to put them gets a prisoner
+        /// wandering their base, and the cause would be invisible. Core's own question, asked of
+        /// Core's own beds, so a prisoner bed from any mod answers it.
+        /// </summary>
+        private static bool AnyPrisonerBed(Pawn survivorPawn)
+        {
+            Map map = survivorPawn == null ? null : survivorPawn.Map;
+            if (map == null) { return false; }
+            foreach (Building building in map.listerBuildings.allBuildingsColonist)
+            {
+                Building_Bed bed = building as Building_Bed;
+                if (bed != null && bed.ForPrisoners && !bed.Destroyed) { return true; }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Holds somebody rather than taking them home.
+        ///
+        /// They become the player's prisoner through Core's own guest tracker, so **everything
+        /// that follows is vanilla**: they need feeding, they can be recruited the ordinary way,
+        /// they can escape, and a warden has to tend them. Nothing here is modelled a second
+        /// time.
+        ///
+        /// `joined` is set for the same reason `Accept` sets it — the offer is spent either
+        /// way. A person is taken home or held once; the gizmos go after that because
+        /// <see cref="IsSurvivor"/> is false.
+        /// </summary>
+        private void Detain(Pawn pawn)
+        {
+            if (joined) { return; }
+            joined = true;
+
+            pawn.SetFaction(Faction.OfPlayer);
+            if (pawn.guest != null)
+            {
+                pawn.guest.SetGuestStatus(Faction.OfPlayer, GuestStatus.Prisoner);
+            }
+
+            RimroomsCampaignComponent campaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (campaign != null)
+            { campaign.RecordEvent("RR_Event_SurvivorDetained", pawn.LabelShortCap, pawn.LabelShortCap); }
+
+            Find.LetterStack.ReceiveLetter(
+                "RR_Survivor_DetainedLabel".Translate(),
+                "RR_Survivor_DetainedText".Translate(pawn.LabelShortCap),
+                LetterDefOf.NeutralEvent,
+                new TargetInfo(pawn.Position, pawn.Map));
         }
 
         private static bool AnyColonistPresent(Pawn survivorPawn)
