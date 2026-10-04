@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Anomaly_PresenceLabel>Something was heard</RR_Anomaly_PresenceLabel>
   <RR_Anomaly_PresenceText>Somebody in the space heard something move in a room nobody was in. There is nothing there now. Nothing has changed and nothing is required.</RR_Anomaly_PresenceText>
@@ -15,4 +15,6 @@
   <RR_Anomaly_BlackoutLabel>Total blackout</RR_Anomaly_BlackoutLabel>
   <RR_Anomaly_BlackoutText>Everything in the space went dark at once. The switches still work. Somebody will have to cross the dark to reach them.</RR_Anomaly_BlackoutText>
   <RR_Event_AnomalyFired>Something happened at {0}: {1}.</RR_Event_AnomalyFired>
+  <RR_Anomaly_RadioFragmentLabel>A fragment of transmission</RR_Anomaly_RadioFragmentLabel>
+  <RR_Anomaly_RadioFragmentText>Something came through on a band nothing in the space should be using. Eleven seconds of it, and most of that is carrier. The voice gives a name and the name is {0}.</RR_Anomaly_RadioFragmentText>
 </LanguageData>

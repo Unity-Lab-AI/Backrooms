@@ -35,6 +35,33 @@ namespace RimroomsAsyncIndustries.Threats
         Survivor = 4,
 
         /// <summary>
+        /// Somebody who helps, and should not be able to.
+        ///
+        /// **Owner direction, 2026-10-04, verbatim:** *"they should be nutral, allies,
+        /// and enemy in all differnt kinds and relations and scenrios"*, under the
+        /// standing *"remember lsd unnerving feeling with all things"*.
+        ///
+        /// **An ally is the most unnerving of the three relations, not the friendliest.**
+        /// A thing that attacks you is explicable. Somebody who has been down here long
+        /// enough to be part of it, who takes your side against what else is in the
+        /// space, and who **will not leave with you**, is not. They are generated into an
+        /// existing non-hostile faction and given Core's own defend-the-area lord, so the
+        /// help is real: they fight the psychotic families for you with ordinary AI.
+        /// </summary>
+        Helper = 6,
+
+        /// <summary>
+        /// An animal that is simply in here.
+        ///
+        /// **Owner direction, 2026-10-04, verbatim:** *"things that chase you are just
+        /// npc pawns and wild animals and shit of the gasme"*. Animals reached the
+        /// player only as a chaser until now, never as something found standing in a
+        /// room. Unfactioned, like any wild animal anywhere -- the unnerving part is not
+        /// that it is dangerous but that it is **in here**, and something had to bring it.
+        /// </summary>
+        Fauna = 7,
+
+        /// <summary>
         /// Somebody wearing the name and clothes of a colonist who is **alive right now**.
         ///
         /// The owner's *"echos of thier inhabitance in weird ways"*. Deliberately not a copy of
@@ -118,6 +145,35 @@ namespace RimroomsAsyncIndustries.Threats
         public string letterLabelKey;
         public string letterTextKey;
 
+        /// <summary>
+        /// **The one exact thing that is wrong about this encounter, readable on the
+        /// pawn itself, forever.**
+        ///
+        /// Owner direction, 2026-10-04: *"remember lsd unnerving feeling with all things
+        /// ie events random spanwns, enemies, allies, nuetrals"*. The mechanism comes
+        /// from `docs/UNIVERSE_ADAPTATION.md`, which already said how the source's
+        /// feeling is produced: *"Ordinary industrial interiors become uncanny through
+        /// exact changes"*. The generator applies that to space; **nothing applied it to
+        /// people**, and the owner's version of the complaint was *"zero weird events or
+        /// people"*.
+        ///
+        /// **A letter is not a tell.** The letters this package writes are good, but they
+        /// fire once and scroll away, and then the pawn is just a pawn -- a player who
+        /// comes back next opening has nothing to read. `THREAT_DESIGN_SHEETS.md` requires
+        /// *"a visible or otherwise accessible warning"* and forbids colour or sound as
+        /// the only cue. This is that warning, on the thing, in text.
+        /// </summary>
+        public string tellKey;
+
+        /// <summary>
+        /// Whether this family takes the branch's side against what else is in the space.
+        ///
+        /// Only ever true for <see cref="InhabitantKind.Helper"/>, and checked rather
+        /// than assumed for the same reason `hostile` is: a family whose relation does not
+        /// match what it reads as breaks the warning-first rule in the other direction.
+        /// </summary>
+        public bool friendly;
+
         public override IEnumerable<string> ConfigErrors()
         {
             foreach (string error in base.ConfigErrors()) { yield return error; }
@@ -127,6 +183,26 @@ namespace RimroomsAsyncIndustries.Threats
             { yield return "RimroomsInhabitantDef " + defName + " has a non-positive weight."; }
             if (maxDepth > 0 && maxDepth < minDepth)
             { yield return "RimroomsInhabitantDef " + defName + " has maxDepth below minDepth."; }
+            // **A FAMILY WITHOUT A TELL IS THE DEFECT THIS FIELD EXISTS FOR.** Owner,
+            // 2026-10-04: the unnerving feeling applies to *"all things"*, and a family
+            // whose uncanny detail exists only in a letter that has scrolled away has no
+            // readable warning at all. Enforced at load so a new family cannot ship without
+            // one -- which is how the seven that existed before this got away with it.
+            if (string.IsNullOrEmpty(tellKey))
+            {
+                yield return "RimroomsInhabitantDef " + defName +
+                    " has no tellKey, so nothing on the pawn says what is wrong with it.";
+            }
+            if (friendly && kind != InhabitantKind.Helper)
+            {
+                yield return "RimroomsInhabitantDef " + defName +
+                    " is friendly but is not a Helper family, which breaks the warning-first rule.";
+            }
+            if (friendly && hostile)
+            {
+                yield return "RimroomsInhabitantDef " + defName +
+                    " is both friendly and hostile.";
+            }
             if (hostile && kind != InhabitantKind.Psychotic)
             {
                 // The warning-first rule depends on a player being able to tell what is

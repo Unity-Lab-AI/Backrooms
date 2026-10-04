@@ -219,6 +219,10 @@ namespace RimroomsAsyncIndustries.Threats
                 pawn.Destroy();
                 return false;
             }
+            // **EVERY INHABITANT CARRIES ITS FAMILY, so every one of them can be read.**
+            // Marked before the spawn so the tell is on the pawn the instant it exists and
+            // there is no frame in which it is an unexplained stranger.
+            pawn.TryGetComp<CompRimroomsSurvivor>()?.MarkInhabitant(family.defName);
             if (family.kind == InhabitantKind.Survivor)
             {
                 // Marks this person as somebody who can be offered passage home. Without
@@ -232,6 +236,17 @@ namespace RimroomsAsyncIndustries.Threats
             if (family.hostile && faction != null)
             {
                 LordMaker.MakeNewLord(faction, HostileLordJob(band, cell, faction), map, new List<Pawn> { pawn });
+            }
+            else if (family.friendly && faction != null)
+            {
+                // **THE HELP IS REAL, and it is Core's.** `LordJob_DefendPoint` makes them
+                // hold the room they are found in and fight whatever comes at it with
+                // ordinary AI -- which in a coordinate means the psychotic families. No
+                // bespoke assistance behaviour, and nothing here lets them near a gate:
+                // `PortalTraversalPolicy` is still the single chokepoint and an inhabitant
+                // still never decides anything about one.
+                LordMaker.MakeNewLord(faction, new LordJob_DefendPoint(cell), map,
+                    new List<Pawn> { pawn });
             }
             Announce(family, pawn, map);
             return true;
@@ -352,6 +367,20 @@ namespace RimroomsAsyncIndustries.Threats
 
         private static Faction FactionFor(RimroomsInhabitantDef family)
         {
+            // **AN ALLY NEEDS A FACTION THAT IS NOT HOSTILE, and an existing one.** Owner,
+            // 2026-10-04: *"they should be nutral, allies, and enemy"*. A new faction
+            // would be exactly the *"new type of np0c"* the same message forbids, so this
+            // takes the first loaded faction that is neither the player's nor hostile to
+            // them, and falls back to unfactioned -- which makes a helper merely neutral
+            // rather than turning them into a threat.
+            if (family.friendly)
+            {
+                return Find.FactionManager == null ? null
+                    : Find.FactionManager.AllFactionsListForReading
+                        .FirstOrDefault(candidate => candidate != null && !candidate.IsPlayer
+                            && !candidate.HostileTo(Faction.OfPlayer)
+                            && candidate.def != null && candidate.def.humanlikeFaction);
+            }
             if (!family.hostile) { return null; }
             // An existing hostile faction, never a new one. Falls back to null -- which makes
             // the pawn a wild, non-faction threat rather than an ally -- if the game somehow

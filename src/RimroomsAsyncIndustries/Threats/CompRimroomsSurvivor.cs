@@ -39,6 +39,23 @@ namespace RimroomsAsyncIndustries.Threats
     /// here special-cases a gate**, and that is deliberate: the rule is enforced in one place
     /// and this feature is one more caller that obeys it rather than an exception to it.
     ///
+    /// ## It also carries WHAT a coordinate produced this person as, and the tell that
+    /// goes with it
+    ///
+    /// **Owner direction, 2026-10-04, verbatim:** *"remember lsd unnerving feeling with
+    /// all things ie events random spanwns, enemies, allies, nuetrals"*. Every inhabitant
+    /// family now has one exact wrong detail, and this is where a player reads it --
+    /// **on the pawn, for as long as the pawn exists.** The letters fire once and scroll
+    /// away; `THREAT_DESIGN_SHEETS.md` wants *"a visible or otherwise accessible
+    /// warning"* and forbids colour or sound as the only cue.
+    ///
+    /// **THE CLASS NAME IS NOW NARROWER THAN THE JOB, and that is recorded rather than
+    /// renamed.** This comp already sits on the human race def, is carried dormant by
+    /// every pawn in the game, is saved and already prints an inspect line -- a second
+    /// comp on the same def would double the per-pawn cost across thousands of pawns to do
+    /// the same job. Renaming would mean touching the patch that attaches it and buys no
+    /// behaviour at all.
+    ///
     /// ## Dormant unless marked
     ///
     /// The comp sits on the human race def, so **every pawn in the game carries it**. It does
@@ -54,6 +71,16 @@ namespace RimroomsAsyncIndustries.Threats
         /// <summary>Saved. True once they have accepted passage, so the offer is not repeated.</summary>
         private bool joined;
 
+        /// <summary>
+        /// Saved. The `RimroomsInhabitantDef` a coordinate produced this person as, or
+        /// empty for everybody else in the game.
+        ///
+        /// Stored as a defName rather than a resolved def because this is saved on a pawn
+        /// that can outlive a content change: a family removed from the package must leave
+        /// the pawn standing and silent, not throw on load.
+        /// </summary>
+        private string inhabitantFamily;
+
         public bool IsSurvivor { get { return survivor && !joined; } }
 
         /// <summary>Marks this person as a survivor found in a coordinate.</summary>
@@ -67,11 +94,38 @@ namespace RimroomsAsyncIndustries.Threats
             base.PostExposeData();
             Scribe_Values.Look(ref survivor, "rr_survivor", false);
             Scribe_Values.Look(ref joined, "rr_survivorJoined", false);
+            Scribe_Values.Look(ref inhabitantFamily, "rr_inhabitantFamily");
+        }
+
+        /// <summary>Marks what a coordinate produced this person as.</summary>
+        public void MarkInhabitant(string familyDefName)
+        {
+            if (!string.IsNullOrEmpty(familyDefName)) { inhabitantFamily = familyDefName; }
+        }
+
+        /// <summary>The one exact wrong detail about this person, or null.</summary>
+        public string InhabitantTell
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(inhabitantFamily)) { return null; }
+                RimroomsInhabitantDef family =
+                    DefDatabase<RimroomsInhabitantDef>.GetNamedSilentFail(inhabitantFamily);
+                if (family == null || string.IsNullOrEmpty(family.tellKey)) { return null; }
+                return family.tellKey.Translate().ToString();
+            }
         }
 
         public override string CompInspectStringExtra()
         {
-            return IsSurvivor ? "RR_Survivor_Inspect".Translate().ToString() : null;
+            // **THE TELL COMES FIRST and it outlives the letter.** A player who dismissed
+            // the announcement, or who is back a dozen openings later, reads here why this
+            // person is wrong. The passage offer is state; the tell is what the thing IS.
+            var lines = new List<string>();
+            string tell = InhabitantTell;
+            if (!string.IsNullOrEmpty(tell)) { lines.Add(tell); }
+            if (IsSurvivor) { lines.Add("RR_Survivor_Inspect".Translate().ToString()); }
+            return lines.Count == 0 ? null : string.Join("\n", lines.ToArray());
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()

@@ -64,5 +64,22 @@ namespace RimroomsAsyncIndustries.Company
         {
             get { return lostPawnNames == null ? 0 : lostPawnNames.Count; }
         }
+
+        /// <summary>
+        /// The remembered names, read without taking any of them.
+        ///
+        /// **`TakeLostPawnName` removes what it returns**, which is right for the thing it was
+        /// written for -- a coordinate placing a missing person consumes the record, because
+        /// that person has now been found. It is wrong for anything that merely *mentions*
+        /// somebody: a radio fragment naming a lost colonist must not quietly delete the fact
+        /// that they are lost.
+        ///
+        /// Returns a copy, so a caller iterating it cannot be broken by a note arriving
+        /// mid-loop, and cannot reach in and edit the register through the accessor.
+        /// </summary>
+        public List<string> LostPawnNames()
+        {
+            return lostPawnNames == null ? new List<string>() : new List<string>(lostPawnNames);
+        }
     }
 }

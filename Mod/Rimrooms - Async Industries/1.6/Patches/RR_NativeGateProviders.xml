@@ -94,6 +94,38 @@
           <li Class="RimroomsAsyncIndustries.Threats.CompProperties_RimroomsSurvivor" />
         </value>
       </li>
+      <!-- **AND ON ANIMALS, so a found animal can say what is wrong with it.** Owner,
+           2026-10-04: "remember lsd unnerving feeling with all things ie events random
+           spanwns, enemies, allies, nuetrals". The comp carries which inhabitant family a
+           coordinate produced a pawn as, and therefore its tell; the two Fauna families are
+           animals, so without this their tell would have had nowhere to live.
+
+           AnimalThingBase is Core's own abstract parent and inheritance carries the comp to
+           every animal that uses it. A race-condition xpath looks like the right answer and is
+           not: patches run on the raw XML BEFORE def inheritance is resolved, so
+           ThingDef[race/intelligence="Animal"] matches only the few defs that state it
+           themselves and silently misses the rest.
+
+           KNOWN LIMIT, stated rather than hidden: an animal from a mod that does not inherit
+           AnimalThingBase carries no comp. Its tell then reaches the player in the family's
+           letter, which every family has, and nothing throws - TryGetComp returns null and the
+           mark is never made. A reduced reading, not a fault.
+
+           Dormant until marked, exactly like the human attachment: installing this mod must
+           never change an animal nobody asked it to change. -->
+      <li Class="PatchOperationConditional">
+        <xpath>Defs/ThingDef[@Name="AnimalThingBase"]/comps</xpath>
+        <nomatch Class="PatchOperationAdd">
+          <xpath>Defs/ThingDef[@Name="AnimalThingBase"]</xpath>
+          <value><comps /></value>
+        </nomatch>
+      </li>
+      <li Class="PatchOperationAdd">
+        <xpath>Defs/ThingDef[@Name="AnimalThingBase"]/comps</xpath>
+        <value>
+          <li Class="RimroomsAsyncIndustries.Threats.CompProperties_RimroomsSurvivor" />
+        </value>
+      </li>
       <!-- Owner direction 2026-09-29: "ther are 1x1 1x2 and 1x3 and 2x3 gate doors that
            allow differnt capabilities". The component is only ever attached here, so this
            file is the allowlist of what may become a gate, and the four legal footprints

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Inhabitant_WandererLabel>Somebody is here</RR_Inhabitant_WandererLabel>
   <RR_Inhabitant_WandererText>{0} is in this space. Nobody brought them in and they offer no account of themselves. They are not hostile.</RR_Inhabitant_WandererText>
@@ -13,4 +13,26 @@
   <RR_Event_PawnLostInside>{0} was lost inside a coordinate. The Backrooms remembers people it keeps.</RR_Event_PawnLostInside>
   <RR_Inhabitant_EchoLabel>Somebody you know is here</RR_Inhabitant_EchoLabel>
   <RR_Inhabitant_EchoText>{0} is standing in this space, wearing what they were wearing this morning. {0} is also at home right now. Whatever this is, it is not hostile, and it is not them.</RR_Inhabitant_EchoText>
+  <!-- THE TELLS. Owner, 2026-10-04: "remember lsd unnerving feeling with all things".
+       Read off the pawn forever, not once in a letter. Every one states a plain fact that
+       cannot be true, per UNIVERSE_ADAPTATION.md: "Ordinary industrial interiors become
+       uncanny through exact changes". None of them says eerie, strange or unsettling. -->
+  <RR_Inhabitant_WandererTell>There is no dust on them. Nothing in this space has been swept.</RR_Inhabitant_WandererTell>
+  <RR_Inhabitant_MissingTell>Their clothes are in better repair than the day they went missing.</RR_Inhabitant_MissingTell>
+  <RR_Inhabitant_SurvivorTell>They have been counting the days. The number they give is wrong, and not by a little.</RR_Inhabitant_SurvivorTell>
+  <RR_Inhabitant_PsychoticTell>They are standing on the spot where the last crew's recorder stopped.</RR_Inhabitant_PsychoticTell>
+  <RR_Inhabitant_PackTell>They are standing in a ring, facing outward. The floor is worn where they have been standing.</RR_Inhabitant_PackTell>
+  <RR_Inhabitant_EchoTell>Wearing what the real one put on this morning, down to the repairs.</RR_Inhabitant_EchoTell>
+  <RR_Inhabitant_DeadRecentTell>The file gives a cause of death that has not happened to them yet.</RR_Inhabitant_DeadRecentTell>
+  <RR_Inhabitant_DeadStrippedTell>Stripped tidily. Their gear was stacked beside them, not taken.</RR_Inhabitant_DeadStrippedTell>
+  <RR_Inhabitant_DeadCrewTell>They are lying in a circle, facing in. Nobody moved them afterwards.</RR_Inhabitant_DeadCrewTell>
+  <RR_Inhabitant_HelperTell>They used the branch's name before anybody said it, and they will not go near the threshold.</RR_Inhabitant_HelperTell>
+  <RR_Inhabitant_FaunaDomesticTell>Well fed. There is nothing to eat in this space and nothing to drink.</RR_Inhabitant_FaunaDomesticTell>
+  <RR_Inhabitant_FaunaWildTell>It is not thin, it is not frightened, and there is no way in here that it could have used.</RR_Inhabitant_FaunaWildTell>
+  <RR_Inhabitant_HelperLabel>Somebody is helping</RR_Inhabitant_HelperLabel>
+  <RR_Inhabitant_HelperText>{0} is in this space and has taken the crew's side. They will stand with the team against what else is down here. They will not leave with them, and they do not explain why.</RR_Inhabitant_HelperText>
+  <RR_Inhabitant_FaunaDomesticLabel>An animal, in here</RR_Inhabitant_FaunaDomesticLabel>
+  <RR_Inhabitant_FaunaDomesticText>{0} is in this space. It was somebody's animal and it is in good condition. Something brought it in here.</RR_Inhabitant_FaunaDomesticText>
+  <RR_Inhabitant_FaunaWildLabel>Something that lives outside</RR_Inhabitant_FaunaWildLabel>
+  <RR_Inhabitant_FaunaWildText>{0} is in this space, a long way from anywhere it could have walked in from. It is not thin and it is not frightened.</RR_Inhabitant_FaunaWildText>
 </LanguageData>

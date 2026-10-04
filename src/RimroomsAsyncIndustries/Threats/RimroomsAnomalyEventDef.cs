@@ -20,6 +20,29 @@ namespace RimroomsAsyncIndustries.Threats
 
         /// <summary>Loose items are not where they were left.</summary>
         Rearrangement = 4,
+
+        /// <summary>
+        /// A fragment of transmission arrives, in a voice the branch knows.
+        ///
+        /// **The row this answers, verbatim:** *"Add repeated missing-person mysteries
+        /// with radio fragments"* -- the one named item left open in it after everything
+        /// else closed. And the direction it serves, owner 2026-10-04: *"remember lsd
+        /// unnerving feeling with all things ie events random spanwns"*.
+        ///
+        /// **All seven events before this were environmental** -- lights, cold, damp,
+        /// moved objects, a noise. Not one had a person in it, while three of the owner's
+        /// own named examples are people. The inhabitant families cover somebody who is
+        /// *there*; nothing covered somebody who is **not**.
+        ///
+        /// **The voice is somebody the branch knows**: a colonist at home right now, or
+        /// a name off the lost-pawn register. A fragment from nobody is just noise -- the
+        /// uncanniness is the recognition, which is the same move the `Echo` inhabitant
+        /// family makes.
+        ///
+        /// Costs nothing, like <see cref="Presence"/>: damages nobody, destroys nothing,
+        /// blocks no route. It is `Presence` with a name on it.
+        /// </summary>
+        RadioFragment = 5,
     }
 
     /// <summary>
@@ -81,8 +104,31 @@ namespace RimroomsAsyncIndustries.Threats
         public string letterLabelKey;
         public string letterTextKey;
 
+        /// <summary>
+        /// The key fragment for the trace this event leaves in the coordinate.
+        ///
+        /// **Owner direction, 2026-10-04:** the unnerving register applies to *"all
+        /// things ie events random spanwns"*. A letter is not a record -- it fires once
+        /// and scrolls away, and `THREAT_DESIGN_SHEETS.md` asks for a *"recorded
+        /// outcome"* as well as a readable warning.
+        ///
+        /// Resolves `RR_Clue_Label_<traceKey>` and `RR_Clue_Text_<traceKey>`, which is the
+        /// same pair an ordinary room clue uses, so the Atlas listing and the on-map
+        /// label need no knowledge that this one came from an event.
+        /// </summary>
+        public string traceKey;
+
         public override IEnumerable<string> ConfigErrors()
         {
+            // **AN EVENT THAT LEAVES NOTHING BEHIND IS AN EVENT NOBODY CAN CONFIRM
+            // HAPPENED.** Enforced at load, for the same reason the inhabitant tell is:
+            // the five events that existed before this each announced once and left no
+            // record at all, and nothing objected.
+            if (string.IsNullOrEmpty(traceKey))
+            {
+                yield return "RimroomsAnomalyEventDef " + defName +
+                    " has no traceKey, so nothing in the coordinate records that it happened.";
+            }
             foreach (string error in base.ConfigErrors()) { yield return error; }
             if (string.IsNullOrEmpty(letterLabelKey) || string.IsNullOrEmpty(letterTextKey))
             {

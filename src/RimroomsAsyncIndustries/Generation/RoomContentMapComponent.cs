@@ -27,6 +27,49 @@ namespace RimroomsAsyncIndustries.Generation
             clues.Add(new RoomClueRecord { id = id + ":room:" + room.Index + ":clue", roomIndex = room.Index,
                 family = room.FamilyId, variant = variant, landmark = landmark, originCell = landmark.Position, salvage = salvage });
         }
+        /// <summary>
+        /// A clue left by something that **happened** rather than something that is here.
+        ///
+        /// **Owner direction, 2026-10-04:** *"remember lsd unnerving feeling with all
+        /// things ie events random spanwns"*, restating *"even wild waky carzxzy creepy
+        /// things when u add places and events"*. An anomaly event used to fire one
+        /// letter and leave nothing: the notification scrolled away, the coordinate
+        /// recorded no trace, and a crew arriving next opening walked through a space
+        /// that had gone dark or been rearranged with no sign of it.
+        ///
+        /// Two things differ from an ordinary clue and both are the reason this overload
+        /// exists at all:
+        ///
+        /// * **No landmark thing.** `AddClue` reads `landmark.Position`; an event has
+        ///   nothing to point at, so the cell is passed instead. The map label and the
+        ///   locate button already skip a clue whose landmark is null, so it degrades to
+        ///   a listed trace rather than breaking either surface.
+        /// * **Observed on arrival.** The crew lived through it. `MapComponentTick` marks
+        ///   an ordinary clue observed only once its landmark is unfogged in a surveyed
+        ///   room, so it would never mark this one and the trace would be invisible
+        ///   forever.
+        /// </summary>
+        internal void AddEventClue(string id, int roomIndex, string effectKey, IntVec3 cell)
+        {
+            if (string.IsNullOrEmpty(effectKey)) { return; }
+            string key = id + ":room:" + roomIndex + ":event:" + effectKey;
+            // One trace per event per room. A repeatable event that fires twice in the
+            // same room has left the same mark, and two identical lines in the Atlas read
+            // as a bug rather than as emphasis.
+            if (clues.Exists(existing => existing.id == key)) { return; }
+            clues.Add(new RoomClueRecord
+            {
+                id = key,
+                roomIndex = roomIndex,
+                family = effectKey,
+                variant = 0,
+                landmark = null,
+                originCell = cell,
+                salvage = false,
+                observed = true,
+            });
+        }
+
         internal void CompletePopulation() { populationComplete = true; }
         public override void ExposeData()
         {

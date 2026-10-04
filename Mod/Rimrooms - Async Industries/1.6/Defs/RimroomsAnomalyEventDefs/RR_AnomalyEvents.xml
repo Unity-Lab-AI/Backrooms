@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
   <!-- Owner direction 2026-09-29: "even wild waky carzxzy creepy things when u add places and
@@ -30,6 +30,7 @@
     <repeatable>true</repeatable>
     <letterLabelKey>RR_Anomaly_PresenceLabel</letterLabelKey>
     <letterTextKey>RR_Anomaly_PresenceText</letterTextKey>
+    <traceKey>AnomalyPresence</traceKey>
   </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
 
   <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
@@ -43,6 +44,7 @@
     <repeatable>true</repeatable>
     <letterLabelKey>RR_Anomaly_LightsLabel</letterLabelKey>
     <letterTextKey>RR_Anomaly_LightsText</letterTextKey>
+    <traceKey>AnomalyLightsFail</traceKey>
   </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
 
   <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
@@ -57,6 +59,7 @@
     <repeatable>true</repeatable>
     <letterLabelKey>RR_Anomaly_ColdLabel</letterLabelKey>
     <letterTextKey>RR_Anomaly_ColdText</letterTextKey>
+    <traceKey>AnomalyColdSnap</traceKey>
   </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
 
   <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
@@ -71,6 +74,7 @@
     <repeatable>true</repeatable>
     <letterLabelKey>RR_Anomaly_SeepageLabel</letterLabelKey>
     <letterTextKey>RR_Anomaly_SeepageText</letterTextKey>
+    <traceKey>AnomalySeepage</traceKey>
   </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
 
   <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
@@ -85,6 +89,7 @@
     <repeatable>true</repeatable>
     <letterLabelKey>RR_Anomaly_MovedLabel</letterLabelKey>
     <letterTextKey>RR_Anomaly_MovedText</letterTextKey>
+    <traceKey>AnomalyRearrangement</traceKey>
   </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
 
   <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
@@ -98,6 +103,7 @@
     <magnitude>25</magnitude>
     <letterLabelKey>RR_Anomaly_DeepColdLabel</letterLabelKey>
     <letterTextKey>RR_Anomaly_DeepColdText</letterTextKey>
+    <traceKey>AnomalyDeepCold</traceKey>
   </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
 
   <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
@@ -110,6 +116,35 @@
     <weight>0.7</weight>
     <letterLabelKey>RR_Anomaly_BlackoutLabel</letterLabelKey>
     <letterTextKey>RR_Anomaly_BlackoutText</letterTextKey>
+    <traceKey>AnomalyBlackout</traceKey>
   </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
 
+
+  <!-- **AN EVENT WITH A PERSON IN IT.** Closes the one item left open in "Add repeated
+       missing-person mysteries with radio fragments, missing crews, delayed return, witness
+       conflict, reappearance/death, rescue, and case closure" - everything else in that row
+       closed and was archived.
+
+       Owner, 2026-10-04: "remember lsd unnerving feeling with all things ie events random
+       spanwns". All seven events before this were environmental; three of the owner's own
+       named examples are people.
+
+       Costs nothing, like Presence: damages nobody, destroys nothing, blocks no route. Deep
+       enough that it is not a first-visit event, and repeatable because "repeated
+       missing-person mysteries" is the row's own word. -->
+  <RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
+    <defName>RR_Anomaly_RadioFragment</defName>
+    <label>a fragment of transmission</label>
+    <description>Something comes through on a band nothing should be using, in a voice the branch knows.</description>
+    <effect>RadioFragment</effect>
+    <minDepth>3</minDepth>
+    <minBand>Unsettled</minBand>
+    <weight>1.1</weight>
+    <durationTicks>1</durationTicks>
+    <magnitude>1</magnitude>
+    <repeatable>true</repeatable>
+    <traceKey>AnomalyRadioFragment</traceKey>
+    <letterLabelKey>RR_Anomaly_RadioFragmentLabel</letterLabelKey>
+    <letterTextKey>RR_Anomaly_RadioFragmentText</letterTextKey>
+  </RimroomsAsyncIndustries.Threats.RimroomsAnomalyEventDef>
 </Defs>

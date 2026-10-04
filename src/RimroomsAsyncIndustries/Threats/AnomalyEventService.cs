@@ -101,7 +101,11 @@ namespace RimroomsAsyncIndustries.Threats
             if (!FireEffect(map, RoomCells(map, coordinate).ToList(), definition.effect, definition.magnitude))
             { return false; }
 
-            Announce(map, coordinate, definition);
+            // **WHOSE VOICE IT IS, and it is somebody this branch knows.** A fragment from
+            // nobody is atmosphere; a fragment naming a colonist who is standing in the
+            // base right now is the owner's *"echos of thier inhabitance in weird ways"*.
+            // Null for every other effect, and `Announce` then behaves exactly as before.
+            Announce(map, coordinate, definition, VoiceFor(coordinate, definition));
             RimroomsCampaignComponent campaign = Verse.Current.Game == null
                 ? null : Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
             if (campaign != null)
@@ -130,6 +134,11 @@ namespace RimroomsAsyncIndustries.Threats
                 case AnomalyEffect.ColdSnap: return ColdSnap(map, cells, magnitude);
                 case AnomalyEffect.Seepage: return Seepage(map, cells, magnitude);
                 case AnomalyEffect.Rearrangement: return Rearrange(map, cells, magnitude);
+                // A fragment needs nothing to act on, exactly like `Presence`: it is a
+                // transmission, not a change to the space. Returning true unconditionally
+                // is the honest answer -- `FireEffect` returns false to mean *the effect
+                // found nothing to do*, and this one never can.
+                case AnomalyEffect.RadioFragment: return true;
                 default: return true;
             }
         }
@@ -225,15 +234,107 @@ namespace RimroomsAsyncIndustries.Threats
             return moved > 0;
         }
 
-        private static void Announce(Map map, CoordinateRecord coordinate, RimroomsAnomalyEventDef definition)
+        /// <summary>
+        /// The name a radio fragment carries, or null for every other effect.
+        ///
+        /// Prefers a **living colonist**, because the uncanny version is a voice whose
+        /// owner is in the base at the same moment. Falls back to the lost-pawn register,
+        /// which is the sadder reading and still a recognition. With neither -- a branch
+        /// with nobody at home and nobody lost -- there is no fragment at all, because a
+        /// transmission from a name nobody knows is the thing this is not.
+        ///
+        /// Derived from the coordinate's seed and its opening count, never `Rand`, so the
+        /// same opening always carries the same voice and a reload cannot reroll who is
+        /// on the radio.
+        /// </summary>
+        private static string VoiceFor(CoordinateRecord coordinate,
+            RimroomsAnomalyEventDef definition)
         {
-            if (string.IsNullOrEmpty(definition.letterLabelKey)) { return; }
+            if (definition == null || definition.effect != AnomalyEffect.RadioFragment)
+            { return null; }
+            RimroomsCampaignComponent campaign = Verse.Current.Game == null
+                ? null : Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
+            if (campaign == null) { return null; }
+            var voices = new List<string>();
+            foreach (StaffRecord member in campaign.Staff)
+            {
+                if (member != null && member.Employed && member.Pawn != null
+                    && !member.Pawn.Dead && !string.IsNullOrEmpty(member.Name))
+                { voices.Add(member.Name); }
+            }
+            if (voices.Count == 0)
+            {
+                foreach (string lost in campaign.LostPawnNames())
+                {
+                    if (!string.IsNullOrEmpty(lost)) { voices.Add(lost); }
+                }
+            }
+            if (voices.Count == 0) { return null; }
+            voices.Sort(System.StringComparer.Ordinal);
+            int draw = CampaignSeed.Derive(coordinate.Seed,
+                "radio:voice:" + coordinate.Openings, 1);
+            if (draw < 0) { draw = ~draw; }
+            return voices[draw % voices.Count];
+        }
+
+        private static void Announce(Map map, CoordinateRecord coordinate,
+            RimroomsAnomalyEventDef definition, string voice = null)
+        {
             IntVec3 focus = RoomCells(map, coordinate).FirstOrDefault();
+
+            // **THE TRACE OUTLIVES THE LETTER, and it is recorded before the letter is sent.**
+            // Owner, 2026-10-04: the unnerving register applies to *"all things ie events random
+            // spanwns"*. A notification scrolls away; `THREAT_DESIGN_SHEETS.md` asks for a
+            // *"recorded outcome"* too, and until now an event left nothing at all -- a crew
+            // arriving next opening walked through a space that had gone dark or been rearranged
+            // and found no sign of it.
+            //
+            // Written first on purpose: the letter is the thing that can fail (a missing key, a
+            // suppressed notification), and the record is the thing a player can still go and
+            // read afterwards. Ordering it the other way would make the record the optional half.
+            RecordTrace(map, coordinate, definition, focus);
+
+            if (string.IsNullOrEmpty(definition.letterLabelKey)) { return; }
+            // A voice is passed only when there is one. `Translate` ignores an extra
+            // argument a string has no placeholder for, so the other seven events read
+            // exactly as they did.
             Find.LetterStack.ReceiveLetter(
                 definition.letterLabelKey.Translate(),
-                definition.letterTextKey.Translate(),
+                voice == null ? definition.letterTextKey.Translate()
+                    : definition.letterTextKey.Translate(voice),
                 LetterDefOf.NeutralEvent,
                 focus.IsValid ? new TargetInfo(focus, map) : (LookTargets)null);
+        }
+
+        /// <summary>
+        /// Leave a readable mark in the coordinate saying this happened here.
+        ///
+        /// Reuses the clue record an ordinary room's furniture already leaves, so the Atlas
+        /// listing, the saved record and the on-map label need no knowledge that this one came
+        /// from an event. The room is the one the event focused on, which is where a player
+        /// would go looking.
+        /// </summary>
+        private static void RecordTrace(Map map, CoordinateRecord coordinate,
+            RimroomsAnomalyEventDef definition, IntVec3 focus)
+        {
+            if (map == null || coordinate == null || definition == null) { return; }
+            if (string.IsNullOrEmpty(definition.traceKey)) { return; }
+            Generation.RoomContentMapComponent content =
+                map.GetComponent<Generation.RoomContentMapComponent>();
+            if (content == null) { return; }
+            RoomRecord room = focus.IsValid
+                ? coordinate.Rooms.FirstOrDefault(candidate => candidate.familyId != "threshold_room"
+                    && candidate.Bounds.Contains(focus))
+                : null;
+            // No room under the focus cell is not a reason to lose the record: the coordinate
+            // still had the event. The first non-threshold room carries it instead.
+            if (room == null)
+            {
+                room = coordinate.Rooms.FirstOrDefault(candidate => candidate.familyId != "threshold_room");
+            }
+            if (room == null) { return; }
+            content.AddEventClue(coordinate.Id, room.Index, definition.traceKey,
+                focus.IsValid ? focus : room.Bounds.CenterCell);
         }
 
         /// <summary>

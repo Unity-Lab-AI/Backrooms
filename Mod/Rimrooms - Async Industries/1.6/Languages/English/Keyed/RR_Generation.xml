@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Generation_InvalidRequest>That coordinate cannot be opened from this branch.</RR_Generation_InvalidRequest>
   <RR_Generation_InvalidCoordinate>The coordinate record is incomplete or invalid.</RR_Generation_InvalidCoordinate>
@@ -75,4 +75,24 @@
   <RR_Generation_FreezeNotice_RR_AsyncIndustriesStart>GATE CONNECTION — HOLD\n\nThe aperture is resolving a coordinate that carries no index. Resolution is not interruptible and it does not share the tick: while it runs, the company clock and everything on it stops. You will see no movement and get no response.\n\nThis is expected. Async Industries records the interval as acquisition time and bills it to the client.\n\nThe hold ends when the far side has a shape.</RR_Generation_FreezeNotice_RR_AsyncIndustriesStart>
   <RR_Generation_FreezeNotice_RR_FurnitureStoreStart>BACK DOOR — PLEASE WAIT\n\nSomething behind the door is being measured out, and it is a great deal bigger than the stockroom. Until the measuring is done, nothing in the shop moves. Not the clock. Not the lights. Not you.\n\nThis happens every time a door opens onto somewhere new, and it has always finished.\n\nStay where you are.</RR_Generation_FreezeNotice_RR_FurnitureStoreStart>
   <RR_Generation_FreezeNotice_RR_SoloGroupStart>IT IS TAKING A MOMENT\n\nThe space past the threshold has not settled on what it is. While it settles, nothing moves — not the air, not the light, not your own hands.\n\nTime has not slowed down. It has stopped. It will start again and you will not have aged a second.\n\nWait. Everyone who has gone through has waited here.</RR_Generation_FreezeNotice_RR_SoloGroupStart>
+  <!-- EVENT TRACES. Owner, 2026-10-04: "remember lsd unnerving feeling with all things ie
+       events random spanwns". A letter scrolls away; these stay in the coordinate and in
+       the Atlas. Each states a plain fact that cannot be true, per UNIVERSE_ADAPTATION.md:
+       the lights going out is not uncanny, the switches being found already off is. -->
+  <RR_Clue_Label_AnomalyPresence>Room {0}: a gap in the recording</RR_Clue_Label_AnomalyPresence>
+  <RR_Clue_Text_AnomalyPresence>The route recorder kept running through room {0} and kept nothing. The interval is the right length and there is no one on it.</RR_Clue_Text_AnomalyPresence>
+  <RR_Clue_Label_AnomalyLightsFail>Room {0}: the switches were already off</RR_Clue_Label_AnomalyLightsFail>
+  <RR_Clue_Text_AnomalyLightsFail>Every light in room {0} went out at once. The switches were found in the off position, and nobody on the crew had reached them.</RR_Clue_Text_AnomalyLightsFail>
+  <RR_Clue_Label_AnomalyColdSnap>Room {0}: frost on an inside wall</RR_Clue_Label_AnomalyColdSnap>
+  <RR_Clue_Text_AnomalyColdSnap>Room {0} lost its heat. The frost formed on the inside face of a wall with another room behind it.</RR_Clue_Text_AnomalyColdSnap>
+  <RR_Clue_Label_AnomalySeepage>Room {0}: a stain that is already dry</RR_Clue_Label_AnomalySeepage>
+  <RR_Clue_Text_AnomalySeepage>Room {0} is dirtier than the crew left it. The stain is dry and it is not on the way-in recording.</RR_Clue_Text_AnomalySeepage>
+  <RR_Clue_Label_AnomalyRearrangement>Room {0}: things stacked in an order</RR_Clue_Label_AnomalyRearrangement>
+  <RR_Clue_Text_AnomalyRearrangement>Loose items in room {0} are not where they were put down. They are stacked, by size, against one wall.</RR_Clue_Text_AnomalyRearrangement>
+  <RR_Clue_Label_AnomalyDeepCold>Room {0}: cold coming up through the floor</RR_Clue_Label_AnomalyDeepCold>
+  <RR_Clue_Text_AnomalyDeepCold>The floor of room {0} is cold through boots that were warm a room ago. The air above it is not.</RR_Clue_Text_AnomalyDeepCold>
+  <RR_Clue_Label_AnomalyBlackout>Room {0}: every bulb intact, every one dark</RR_Clue_Label_AnomalyBlackout>
+  <RR_Clue_Text_AnomalyBlackout>Room {0} and everything around it went dark. Not one bulb is broken and not one of them lights.</RR_Clue_Text_AnomalyBlackout>
+  <RR_Clue_Label_AnomalyRadioFragment>Room {0}: eleven seconds of carrier</RR_Clue_Label_AnomalyRadioFragment>
+  <RR_Clue_Text_AnomalyRadioFragment>The recorder kept eleven seconds of transmission in room {0}. The band is one nothing in the space uses, and the name the voice gives belongs to somebody on the branch's own roster.</RR_Clue_Text_AnomalyRadioFragment>
 </LanguageData>
