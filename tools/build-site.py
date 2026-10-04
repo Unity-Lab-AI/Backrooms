@@ -95,8 +95,24 @@ SECTIONS = [
 # see"*.
 #
 # These are the **only** art in the package -- twelve menu slides and the preview, the approved
-# exception to shipping no art. They are already in `package-manifest.json`, so the export already
-# carries them: a page references them where the mod puts them and **not one byte is duplicated.**
+# exception to shipping no art.
+#
+# ## THE ART IS COPIED INTO THE SITE, AND THE FIRST ATTEMPT NOT TO WAS BROKEN ON THE LIVE SITE
+#
+# The obvious saving is to reference the slides where the mod already puts them -- the export
+# carries all thirteen as package files, so `../1.6/Textures/UI/Menu/<file>` costs **zero extra
+# bytes**. That shipped, the export audit verified every path against the assembled tree, and
+# **every banner was a 404 in the browser.**
+#
+# Why: **Pages serves `/docs` AS THE SITE ROOT.** `docs/gates.html` is published at
+# `<site>/gates.html`, so `../1.6/...` resolves to `<host>/1.6/...` -- above the project entirely.
+# Anything outside `docs/` is never served at all, at any URL. The path was correct on disk and
+# unreachable over HTTP, which is why the audit passed and the site was wrong.
+#
+# So the art is **copied into the site directory** and referenced site-relative. Twenty-one
+# megabytes are published twice in the export repository, and that is the honest price of the
+# direction. The rule it leaves behind is the general one: **a published page may never reference a
+# path that climbs out of the site directory**, and `export-public-repo.py` now refuses one.
 #
 # ## Assigned by subject, never at random
 #
@@ -109,8 +125,12 @@ SECTIONS = [
 # the art to be read"*. The answer is structural rather than a matter of opacity -- **no text is
 # ever drawn over a banner.** The band sits above the prose, the heading sits below it, and the
 # image is marked decorative so a screen reader skips it instead of reading out a filename.
-BANNER_DIRECTORY = "1.6/Textures/UI/Menu"
-PREVIEW_IMAGE = "About/Preview.png"
+# Where the art lives in the package, and where the site serves its own copy from. The second is
+# site-relative with no leading `..`, which is the whole point.
+BANNER_SOURCE_DIRECTORY = "1.6/Textures/UI/Menu"
+PREVIEW_SOURCE = "About/Preview.png"
+SITE_ART_DIRECTORY = "assets/art"
+PREVIEW_IMAGE = "assets/art/Preview.png"
 
 # **All twelve are used.** Thirteen pages and twelve slides means exactly one repeat, and it is the
 # honest one: the two pages about the gate carry the gate slide. Leaving a slide unused would be

@@ -263,6 +263,12 @@ PLANTS = [
      "            if not os.path.isfile(target):", "            if False:", 1),
     ("a site with no image at all stops being refused", EXPORTER,
      "    if checked == 0:", "    if False:", 1),
+    # The bug that actually shipped: a reference climbing out of the published site.
+    ("a path climbing out of the site stops being refused", EXPORTER,
+     '            if src.startswith("/") or ".." in src.split("/"):',
+     "            if False:", 1),
+    ("the art stops being copied into the site", EXPORTER,
+     "    copy_site_art(problems, target)", "    pass", 1),
 ]
 
 caught = 0

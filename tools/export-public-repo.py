@@ -103,6 +103,16 @@ ABOUT = os.path.join(PACKAGE, "About", "About.xml")
 # halves of the direction at once.
 SITE_DIRECTORY = "docs"
 
+# **IMPORTED, NEVER COPIED**, exactly as the renderer does it. The art mapping and the site's art
+# directory have one definition in `tools/build-site.py`; a second copy here would drift the first
+# time a slide is reassigned, and the exporter would then publish a directory of images no page
+# references while the pages point at files that are not there.
+import importlib.util as _ilu
+_spec = _ilu.spec_from_file_location("rr_build_site", os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "build-site.py"))
+_bs = _ilu.module_from_spec(_spec)
+_spec.loader.exec_module(_bs)
+
 # Anything matching these must never reach the export. Checked against the assembled tree, after
 # the allowlist has had its say.
 #
@@ -321,7 +331,41 @@ def render_site(problems):
     #
     # Empty by design: Pages tests for the file's presence, never its contents.
     io.open(os.path.join(target, ".nojekyll"), "w", encoding="utf-8", newline=NL).write("")
+    copy_site_art(problems, target)
     return len([n for n in os.listdir(target) if n.endswith(".html")])
+
+
+def copy_site_art(problems, target):
+    """The slide art and the preview, copied INTO the published site.
+
+    **Pages serves `SITE_DIRECTORY` as the site root**, so nothing outside it is served at any URL.
+    The first version of the banners referenced the package's own copies at `../1.6/Textures/...`
+    to avoid duplicating twenty-one megabytes -- every path existed on disk, the audit passed, and
+    **every banner was a 404 in the browser** because `../` climbs out of the published site.
+
+    So the bytes are duplicated on purpose. The art is part of the site now, and the site is
+    self-contained, which is the same property that made the flat output and the relative
+    stylesheet right.
+
+    Copied from the package rather than from `assets/`, because the package copies are the ones
+    whose SHA256 the manifest already verified in this same run.
+    """
+    art = os.path.join(target, _bs.SITE_ART_DIRECTORY.replace("/", os.sep))
+    if not os.path.isdir(art):
+        os.makedirs(art)
+    wanted = sorted(set(_bs.BANNERS.values()))
+    for name in wanted:
+        source = os.path.join(PACKAGE, _bs.BANNER_SOURCE_DIRECTORY.replace("/", os.sep), name)
+        if not os.path.isfile(source):
+            problems.append("a banner slide is missing from the package: %s" % name)
+            continue
+        shutil.copyfile(source, os.path.join(art, name))
+    preview = os.path.join(PACKAGE, _bs.PREVIEW_SOURCE.replace("/", os.sep))
+    if not os.path.isfile(preview):
+        problems.append("About/Preview.png is missing from the package, so the front page has no "
+                        "cover -- owner: it is what mod loaders see")
+    else:
+        shutil.copyfile(preview, os.path.join(art, os.path.basename(_bs.PREVIEW_IMAGE)))
 
 
 def audit(problems):
@@ -396,6 +440,17 @@ def check_images_resolve(problems):
             if src.startswith(("http://", "https://", "data:")):
                 continue
             checked += 1
+            # **THE RULE THAT WAS MISSING, AND IT IS THE ONE THAT MATTERED.** Pages serves
+            # SITE_DIRECTORY as the site root, so a reference that climbs above it is a 404 in the
+            # browser however well it resolves on disk. The on-disk check below passed happily
+            # while every banner on the live site was broken, because `docs/../1.6/...` is a real
+            # file and `<site>/../1.6/...` is nothing at all.
+            if src.startswith("/") or ".." in src.split("/"):
+                problems.append("A PUBLISHED PAGE REFERENCES A PATH OUTSIDE THE SITE: %s/%s names "
+                                "%r. Pages serves %r as the site root, so anything above it is "
+                                "never served -- this resolves on disk and 404s in a browser."
+                                % (SITE_DIRECTORY, name, src, SITE_DIRECTORY))
+                continue
             target = os.path.normpath(os.path.join(site, src.replace("/", os.sep)))
             if not os.path.isfile(target):
                 problems.append("A PUBLISHED PAGE REFERENCES AN IMAGE THAT IS NOT IN THE EXPORT: "

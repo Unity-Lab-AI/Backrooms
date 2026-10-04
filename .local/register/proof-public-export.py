@@ -353,6 +353,16 @@ claim("the image guard resolves against the assembled tree on disk",
       "os.path.isfile(target)" in images,
       "resolved against the tree rather than against the mapping that generated it, for the "
       "same reason the rest of the audit walks the tree")
+claim("the image guard refuses a path that climbs out of the site",
+      '".." in src.split("/")' in images,
+      "THE RULE THAT WAS ACTUALLY MISSING. Pages serves the site directory AS the site root, so "
+      "`../1.6/...` resolves on disk and 404s in a browser -- which is exactly what shipped: the "
+      "on-disk resolve check passed while every banner on the live site was broken")
+claim("the art is copied INTO the site rather than referenced above it",
+      "def copy_site_art(" in exporter_code
+      and "copy_site_art(problems, target)" in slice_function(exporter_code, "render_site"),
+      "twenty-one megabytes published twice on purpose; a self-contained site is the property "
+      "that makes it serveable at all")
 claim("the image guard refuses a site with no image at all",
       "if checked == 0:" in images,
       "an absence rule over an empty set is satisfied by construction, so finding no image is "

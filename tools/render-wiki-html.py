@@ -61,24 +61,21 @@ SECTIONS = _bs.SECTIONS
 page_title = _bs.page_title
 page_summary = _bs.page_summary
 BANNERS = _bs.BANNERS
-BANNER_DIRECTORY = _bs.BANNER_DIRECTORY
+SITE_ART_DIRECTORY = _bs.SITE_ART_DIRECTORY
 BANNER_WIDTH = _bs.BANNER_WIDTH
 BANNER_HEIGHT = _bs.BANNER_HEIGHT
 PREVIEW_IMAGE = _bs.PREVIEW_IMAGE
 
-# The art sits where the mod puts it, one level above the site directory.
+# EVERY PATH A PAGE EMITS IS SITE-RELATIVE, AND THERE IS NO `..` ANYWHERE.
 #
-# `SITE_DIRECTORY` in `tools/export-public-repo.py` is `docs`, and the package files land at the
-# export root -- so `docs/gates.html` reaches a slide at `../1.6/Textures/UI/Menu/<file>`. **That
-# is why nothing is copied:** the images are already published as part of the mod, and duplicating
-# twenty-one megabytes into the site directory would double the repository to serve the same bytes
-# twice.
+# Pages serves `/docs` **as the site root**, so `docs/gates.html` is published at
+# `<site>/gates.html`. A `../` in any reference climbs out of the published site and 404s, which is
+# precisely what happened the first time the banners pointed at the package copies of the slides:
+# correct on disk, unreachable over HTTP, and the on-disk audit could not see it.
 #
-# It also means the banners resolve on the **published** site and not in a local preview of the
-# working repository, where the package lives under `Mod/` instead. That is the right trade: the
-# export is the only thing that is ever deployed, and `--check` compares generated text rather
-# than fetching an image.
-ART_PREFIX = "../"
+# This is the same rule the flat output already follows for links and the stylesheet. The art now
+# obeys it too, and `export-public-repo.py` refuses any published page that breaks it.
+ART_PREFIX = ""
 
 WIKI = os.path.join(REPO, "docs", "wiki")
 CSS = os.path.join(REPO, "docs", "assets", "css", "rimrooms.css")
@@ -342,7 +339,7 @@ def banner_html(slug):
     return NL.join([
         '    <div class="banner" role="presentation">',
         '      <img src="%s%s/%s" alt="" aria-hidden="true" loading="lazy" decoding="async"'
-        % (ART_PREFIX, BANNER_DIRECTORY, esc(name)),
+        % (ART_PREFIX, SITE_ART_DIRECTORY, esc(name)),
         '           width="%d" height="%d">' % (BANNER_WIDTH, BANNER_HEIGHT),
         "    </div>",
     ])
