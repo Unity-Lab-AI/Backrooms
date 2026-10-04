@@ -240,6 +240,101 @@ def main():
                 continue
             silent_expansion += 1
 
+    # -------------------------------------------- 3b. a silent-fail result must DEGRADE, not deref
+    #
+    # **THE HALF THE GUARANTEE WAS MISSING.** Checks 2 and 3 prove the package only *names* what is
+    # safe to name, and that an expansion lookup uses `GetNamedSilentFail` rather than the throwing
+    # `GetNamed`. Neither proves the thing the queue row actually asks for, in its own words: that
+    # *"every by-name `GetNamedSilentFail` lookup degrades rather than returning null into a
+    # dereference"*.
+    #
+    # That distinction is the whole of the difference between **stopping advertising** and
+    # **actually running**. `GetNamedSilentFail` returning null is the designed outcome on a
+    # Core-only install; dereferencing it one line later is a `NullReferenceException` at the exact
+    # moment the guarantee is supposed to hold, and the player sees a red error rather than a
+    # feature quietly not being there.
+    #
+    # Every call site in the package already does this correctly -- `== null` guards, a fallback to
+    # Core's own `Colonist`, and one null-conditional `?.`. **Nothing enforced it**, which is
+    # precisely the condition this battery exists to remove: a discipline nobody checks is a
+    # discipline until the day somebody is in a hurry.
+    #
+    # The window is deliberately generous and the failure direction is deliberately loud. A guard
+    # further than six lines away from its lookup is reported rather than hunted for: being asked
+    # to move a null check next to the call it protects is a small cost, and it is the shape the
+    # rest of the package already has.
+    # **NO WINDOW, AND THE WINDOW IS WHAT WAS WRONG.** A six-line window reported nine findings on
+    # correct code. `GenStep_BackroomsDestination` looks up **eleven** Core defs in a block and then
+    # guards all eleven in one combined `if (a == null || b == null || ...) throw`, which sits about
+    # forty lines below the first lookup. That is a better shape than eleven separate guards, and a
+    # rule that demanded the guard be adjacent was demanding worse code.
+    #
+    # So the question is simply *is this result ever null-compared*, over the whole file.
+    #
+    # **The limitation, stated rather than hidden:** a variable of the same name null-checked in a
+    # different method would satisfy this. That is a false *negative*, and it is accepted on
+    # purpose — the immediate-dereference rule above catches the hazard that actually throws, and
+    # nine false positives on correct code is the failure mode this battery has paid for five times.
+    assignment = re.compile(r"(\w+)\s*=\s*[^;]*GetNamedSilentFail\s*\(")
+    guarded = 0
+    for path, text in source_files():
+        relative = os.path.relpath(path, REPO).replace(os.sep, "/")
+        lines = text.split("\n")
+        whole = " ".join(text.split())
+        for number, line in enumerate(lines):
+            if "GetNamedSilentFail" not in line:
+                continue
+            window = whole
+
+            # Used null-safely on the spot: `GetNamedSilentFail(x)?.Member`, the call coalesced
+            # with `??`, or the call itself compared against null. None needs a named variable.
+            #
+            # **THREE IDIOMS, NOT TWO.** The first version knew `?.` and a null comparison, and
+            # flagged two sites already safe through `??` --
+            # `doorDef = GetNamedSilentFail("Autodoor") ?? ThingDefOf.Door` is about as guarded as
+            # code gets. C# has three ways to make a possibly-null value safe, and a rule that
+            # knows two of them cries wolf at the third.
+            if re.search(r"GetNamedSilentFail\s*\([^)]*\)\s*\?\.", line) \
+                    or re.search(r"GetNamedSilentFail\s*\([^)]*\)\s*\?\?", line) \
+                    or re.search(r"GetNamedSilentFail\s*\([^)]*\)\s*(==|!=)\s*null", line):
+                guarded += 1
+                continue
+
+            # **A MEMBER ACCESS ON THE RESULT IS THE ONLY DEREFERENCE.** The first version of this
+            # rule demanded that every result be assigned or used null-safely, and reported
+            # **sixty-five findings of which fifty-six were innocent**: `OpenNativeTab(
+            # GetNamedSilentFail("Work"))` *passes* the result to a method, and
+            # `return ... GetNamedSilentFail(defName)` *returns* it for the caller to handle. A
+            # null argument and a null return are both perfectly safe, and the one that is not is
+            # `GetNamedSilentFail(...).Member`.
+            #
+            # Narrowed to that. Fifty-six false findings is the crying-wolf failure this battery has
+            # recorded repeatedly, and a rule nobody believes protects nothing.
+            if re.search(r"GetNamedSilentFail\s*\([^)]*\)\s*\.", line):
+                problems.append(
+                    "%s:%d: a GetNamedSilentFail result is dereferenced on the spot, so a "
+                    "Core-only install throws here. Use `?.` or assign it and guard it."
+                    % (relative, number + 1))
+                continue
+
+            named = assignment.search(line)
+            if named is None:
+                # Passed as an argument, returned, or discarded. None of those dereferences
+                # anything, so none of them can break the guarantee.
+                guarded += 1
+                continue
+
+            variable = named.group(1)
+            if re.search(r"\b" + re.escape(variable) + r"\s*(==|!=)\s*null", window) \
+                    or re.search(r"\b" + re.escape(variable) + r"\s*\?\?", window) \
+                    or re.search(r"\b" + re.escape(variable) + r"\s*\?\.", window):
+                guarded += 1
+                continue
+            problems.append(
+                "%s:%d: %r comes from GetNamedSilentFail and is never null-compared in this "
+                "file, so a Core-only install carries null forward from here -- the "
+                "guarantee's own failure mode." % (relative, number + 1, variable))
+
     # ---------------------------------------------------------------- 4. no third-party assembly
     references = 0
     if os.path.isfile(CSPROJ):
@@ -260,6 +355,8 @@ def main():
     print("  reference fields enumerated  : %d (%s)"
           % (len(fields), ", ".join(sorted(fields))))
     print("  packaged def references      : %d checked, %d expansion-gated" % (checked, gated))
+    print("  silent-fail results guarded  : %d, each degrading rather than dereferencing null"
+          % guarded)
     print("  C# def lookups               : %d checked, %d expansion via GetNamedSilentFail"
           % (cs_checked, silent_expansion))
     print("  assembly references          : %d, all game or Unity" % references)

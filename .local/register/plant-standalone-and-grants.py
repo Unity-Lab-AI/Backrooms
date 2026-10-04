@@ -33,12 +33,40 @@ LINKS = SRC + "/Gate/GateEquipmentLinks.cs"
 ARRIVAL = SRC + "/Scenario/ScenPart_RimroomsArrival.cs"
 START = SRC + "/Scenario/ScenPart_RimroomsStart.cs"
 RECEIPT = SRC + "/Scenario/HeadquartersSetupComponent.cs"
+HQ = SRC + "/Scenario/GenStep_Headquarters.cs"
 GUARANTEE = "tools/check-standalone-guarantee.py"
 GATING = "tools/check-dlc-gating.py"
 PROOF = ".local/register/proof-standalone-and-grants.py"
 NL = chr(10)
 
 PLANTS = [
+    # ====================== the guarantee's own failure mode: null carried forward
+    #
+    # 0.12.95-dev added the half the guarantee was missing. Checks 2 and 3 proved the package only
+    # *names* safe things and uses `GetNamedSilentFail` for expansion content. Neither proved what
+    # the queue row actually asks: that *"every by-name `GetNamedSilentFail` lookup degrades rather
+    # than returning null into a dereference"*. That is the difference between having stopped
+    # advertising and actually running on a Core-only install.
+    #
+    # **The rule was narrowed twice before it was right, and both narrowings are worth keeping in
+    # mind.** It first demanded every result be assigned or used null-safely and reported 65
+    # findings, 56 of them innocent -- passing a null argument and returning null are both
+    # perfectly safe. Then a six-line guard window reported 9 more on correct code, because
+    # `GenStep_BackroomsDestination` looks up eleven Core defs in a block and guards all eleven in
+    # one combined `if`, forty lines below the first. Then two sites turned out safe through `??`,
+    # which the recogniser did not yet know.
+    ("A SILENT-FAIL RESULT IS DEREFERENCED, so a Core-only install throws", HQ,
+     'doorDef = DefDatabase<ThingDef>.GetNamedSilentFail("Autodoor") ?? ThingDefOf.Door;',
+     'doorDef = DefDatabase<ThingDef>.GetNamedSilentFail("Autodoor");'
+     ' var tag = doorDef.label;', GUARANTEE),
+
+    # The third null-safe idiom, planted out of the recogniser rather than out of the source: with
+    # `??` unrecognised the checker reports two findings on code that is already correct, which is
+    # the crying-wolf failure. A recogniser that knows two of C# three idioms is not finished.
+    ("THE `??` IDIOM STOPS BEING RECOGNISED, so correct code is reported", GUARANTEE,
+     '                    or re.search(r"GetNamedSilentFail\\s*\\([^)]*\\)\\s*\\?\\?", line) \\',
+     "                    or False \\", GUARANTEE),
+
     # ================================================= expansions only add content
     ("AN EXPANSION ROLE DISAPPEARS", ROLES,
      "    <defName>RR_Link_Containment</defName>",
