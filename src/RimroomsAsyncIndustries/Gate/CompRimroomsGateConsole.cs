@@ -113,6 +113,58 @@ namespace RimroomsAsyncIndustries.Gate
         }
 
         /// <summary>
+        /// What this station is, what it is bound to, and which job it is currently doing.
+        ///
+        /// **Owner direction, 2026-09-29, verbatim:** *"we also need to be making sure all mod
+        /// ingame decriptions and informational informations for everything is properly in the
+        /// cards like the game does currently"*, and the standard the row sets is *"What it is,
+        /// what it needs, and why it is not working when it is not."*
+        ///
+        /// ## The gap the audit found
+        ///
+        /// **This comp had no inspect card at all.** The gate has one, the beacon has one, and
+        /// the station — which is the thing a player actually clicks on to run a gate — had
+        /// nothing. Every piece of state below was readable only by noticing *which label one of
+        /// the gizmos happened to be showing*: a station bound to no gate looked exactly like a
+        /// station bound to one, and a machining table silently holding every ordinary bill
+        /// suspended looked exactly like a machining table doing its day job.
+        ///
+        /// That last one is the sharp edge. `SetGateControl` suspends every unrelated bill on the
+        /// bench, which is correct and was asked for — *"so other things arnt available"* — but a
+        /// player who left it in gate control a week ago and cannot work out why nothing is being
+        /// crafted has no way to find out from the bench itself.
+        ///
+        /// ## Dormant on anything nobody bound
+        ///
+        /// Returns null with no binding and no mode set, so a comms console or machining table in
+        /// an ordinary colony reads exactly as it always did. Same rule as every other comp this
+        /// mod puts on existing content.
+        /// </summary>
+        public override string CompInspectStringExtra()
+        {
+            var lines = new List<string>();
+            if (linkedGate == null)
+            {
+                // Silent unless the branch exists. An unbound bench is not a broken bench, and a
+                // colony that has never opened Operations should not be told about gates at all.
+                RimroomsCampaignComponent campaign = Current.Game == null
+                    ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+                if (campaign == null) { return null; }
+                lines.Add("RR_NativeGate_StationUnbound".Translate().ToString());
+            }
+            else
+            {
+                lines.Add("RR_NativeGate_StationBound".Translate(linkedGate.LabelShortCap).ToString());
+                // **WHY NOTHING IS BEING CRAFTED, said on the bench rather than left to be
+                // deduced.** Gate control holds the ordinary bills suspended by design; without
+                // this line that design is indistinguishable from a fault.
+                lines.Add((gateControl ? "RR_NativeGate_StationGateControl"
+                    : "RR_NativeGate_StationNormalOp").Translate().ToString());
+            }
+            return lines.Count == 0 ? null : string.Join("\n", lines.ToArray());
+        }
+
+        /// <summary>
         /// The corporate catalogue is reached from this console, because the console is already
         /// the thing a branch talks to the company through. **No new building and no new UI
         /// window** was added for it -- a gizmo and a float menu, which is the lightest surface

@@ -52,6 +52,11 @@
 
   <RR_Steps_11Label>A session opened</RR_Steps_11Label>
   <RR_Steps_11How>Lower down this tab, press "Open a session" on the address you want. Opening is work, not a timer, and it falls back if the operator leaves.</RR_Steps_11How>
+  <!-- The company pays for each of the eleven goals reached, once per branch. It arrives in the
+       balance with a ledger receipt rather than as items appearing from nowhere, and the goal
+       being reached is the trigger - there is nothing to accept and nothing to decline. -->
+  <RR_Startup_PayoutReason>Start-up goal bonus</RR_Startup_PayoutReason>
+  <RR_Startup_PayoutMessage>Start-up goal {0} reached: {1}. The company has credited {2}.</RR_Startup_PayoutMessage>
 
   <!-- A ramp is not an open connection. This step read IsOpening or IsSpinningUp until
        0.12.74-dev, so pressing "open a session" ticked every check and the crossing was then

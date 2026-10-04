@@ -349,6 +349,139 @@ check("THE FRAGMENT COSTS NOTHING, like the Presence it is modelled on",
       "-- damages nobody, destroys nothing, blocks no route. `FireEffect` returns false to mean "
       "*the effect found nothing to do*, and a transmission never can")
 
+# ============================================ the object half: items, equipment and benches
+# Owner: *"not just room shape echoes but echos of thier inhabitance in weird ways and items and
+# equipment and production benches"*. The people-and-events register shipped at 0.12.88-dev and
+# reached no object at all.
+tell_def = read(SRC, "Generation", "RimroomsFixtureTellDef.cs")
+tell_comp = read(SRC, "Generation", "CompRimroomsFixtureTell.cs")
+tell_service = read(SRC, "Generation", "FixtureTellService.cs")
+archetypes = read(SRC, "Generation", "RoomArchetypeService.cs")
+builder = read(SRC, "Generation", "RoomContentBuilder.cs")
+tell_defs = read(MOD, "Defs", "RimroomsFixtureTellDefs", "RR_FixtureTells.xml")
+tell_keyed = read(MOD, "Languages", "English", "Keyed", "RR_FixtureTells.xml")
+
+fixture_names = re.findall(r"<defName>(RR_FixtureTell_[A-Za-z]+)</defName>", tell_defs)
+fixture_keys = re.findall(r"<tellKey>(RR_FixtureTell_[A-Za-z]+)</tellKey>", tell_defs)
+
+check("EVERY SHIPPED OBJECT TELL CARRIES ITS TEXT",
+      len(fixture_names) > 0 and len(fixture_keys) == len(fixture_names),
+      "-- %d tells, %d keys. An object tell with no text is a def that silently does nothing, "
+      "which is how seven inhabitant families shipped with no tell at all"
+      % (len(fixture_names), len(fixture_keys)))
+
+absent = [key for key in fixture_keys if ("<%s>" % key) not in tell_keyed]
+check("and every one resolves to a keyed string",
+      not absent,
+      "-- %s would print its own key at the player" % ", ".join(absent))
+
+# **THE SAME GATE THE PEOPLE AND THE EVENTS ARE HELD TO.** The lights going out is not uncanny;
+# the switches being found already off is. Taken from `UNIVERSE_ADAPTATION.md`, not from taste.
+fixture_bodies = {}
+for key in fixture_keys:
+    found = re.search(r"<%s>(.*?)</%s>" % (key, key), tell_keyed, re.S)
+    if found:
+        fixture_bodies[key] = found.group(1)
+fixture_mood = sorted(key for key, body in fixture_bodies.items()
+                      if any(word in body.lower() for word in ADJECTIVES))
+check("EVERY OBJECT TELL STATES A FACT, NOT A FEELING",
+      not fixture_mood and len(fixture_bodies) == len(fixture_keys),
+      "-- %s uses a mood adjective, or resolved to nothing at all" % ", ".join(fixture_mood))
+
+check("and no object tell is short enough to be a label",
+      len(fixture_bodies) == len(fixture_keys)
+      and all(len(body.split()) >= 6 for body in fixture_bodies.values()),
+      "-- a bench that is *wrong* says nothing; a bench whose bills are queued for a meal this "
+      "space cannot cook says something")
+
+check("THE SHALLOW YELLOW ROOMS STAY PLAIN, and it is refused at load rather than trusted",
+      "if (minDepth <= 1)" in tell_def
+      and "which would put a tell in the shallow rooms." in tell_def
+      and not re.search(r"<minDepth>[01]</minDepth>", tell_defs),
+      "-- that emptiness IS the look. One def with minDepth 1 would reach every arrival hall in "
+      "the game and spend the setting's one surprise in a player's first thirty seconds")
+
+check("and a tell def without text is refused at load",
+      "if (string.IsNullOrEmpty(tellKey))" in tell_def
+      and "has no tellKey, so nothing on the object says what is wrong with it." in tell_def,
+      "-- enforced, for the same reason the inhabitant families are")
+
+# ---------------------------------------------- the tell is read off the object, and survives
+check("THE TELL IS READ OFF THE OBJECT ITSELF",
+      "public override string CompInspectStringExtra()" in tell_comp
+      and "definition.tellKey.Translate()" in tell_comp,
+      "-- the same property the pawn tell has. A letter fires once and scrolls away; the object "
+      "is still standing there a dozen openings later")
+
+# **WITHOUT THIS, HAULING DESTROYS THE FACT.** `Thing.CanStackWith` compares def, stuff and hit
+# points and never looks at comp data, so a marked stack dropped on an ordinary one would merge
+# and the tell would survive or vanish depending on which absorbed which.
+check("AND TIDYING UP CANNOT SILENTLY ERASE IT",
+      "public override bool AllowStackWith(Thing other)" in tell_comp
+      and "string.Equals(mine, theirTell, System.StringComparison.Ordinal)" in tell_comp,
+      "-- a readable warning that disappears because somebody hauled it into a stack is not a "
+      "readable warning")
+
+check("and an object nobody marked stacks exactly as it always did",
+      "if (string.IsNullOrEmpty(tell)) { return null; }" in tell_comp
+      and "private string tell;" in tell_comp,
+      "-- this comp sits on Core resource defs in every colony in the game, so the dormant path "
+      "has to be the identity")
+
+# ------------------------------------------------- derived, ordered, and from one shared rule
+check("WHICH OBJECT IS WRONG IS DERIVED, NEVER Rand",
+      "DestinationService.StableHash(coordinate.Seed, key, TellVersion)" in tell_service
+      and "Rand." not in tell_service,
+      "-- a coordinate is regenerated from its seed. `Rand` would let a reload reseat which "
+      "bench was odd, which is a save-scum on the one beat a player can go back and re-read")
+
+check("and the candidates are ordered before anything indexes them",
+      "legal.Sort((left, right) => string.CompareOrdinal(left.defName, right.defName));"
+      in tell_service,
+      "-- `AllDefsListForReading` returns database order, which depends on the installed mod "
+      "list. The same rule already governs the materials and the archetypes")
+
+check("MOST OBJECTS CARRY NO TELL, which is the design and not a shortfall",
+      "internal const int TellPercent = 12;" in tell_service,
+      "-- *quiet stretches are required content*. A coordinate with a sentence on every stool "
+      "is a museum with too many placards, and it buries the sharper people and event beats")
+
+# **ONE RULE, ONE PLACE.** The set that can carry a tell has to be the set that can be placed.
+check("THE ELIGIBILITY RULE IS SHARED WITH THE GENERATOR, NOT COPIED",
+      "RoomArchetypeService.Placeable(definition)" in tell_service
+      and "internal static bool Placeable(ThingDef definition)" in archetypes,
+      "-- *two derivations of one rule is the defect this project keeps meeting*. If the "
+      "generator stops being able to place something, it stops carrying a tell in the same edit")
+
+# **A COMP ON A PLAIN `Thing` DOES NOTHING, SILENTLY.** Only `ThingWithComps` reads `def.comps`.
+check("AND A DEFINITION THAT CANNOT CARRY A COMP IS NEVER GIVEN ONE",
+      "typeof(ThingWithComps).IsAssignableFrom(definition.thingClass)" in tell_service,
+      "-- a plain `Thing` accepts the entry and never instantiates it, so the mark would be made "
+      "against a null comp and the tell would simply not exist")
+
+check("the attachment happens after inheritance resolves, which no xpath can do",
+      "[StaticConstructorOnStartup]" in tell_service
+      and "internal static class FixtureTellService" in tell_service,
+      "-- patches run on raw XML BEFORE inheritance, which is the limit recorded in "
+      "`RR_NativeGateProviders.xml`. `BuildingBase` is the only parent broad enough and it would "
+      "attach this to every building in every colony to reach the few that can be dressed")
+
+# ------------------------------------------------------- and both placement paths reach it
+check("BOTH PLACEMENT PATHS MARK, so the dressing and the landmark can both be wrong",
+      builder.count("FixtureTellService.Mark(thing, coordinate, room, slot);") == 2,
+      "-- the dressing path is where the owner's *items and equipment and production benches* "
+      "actually live, and the landmark is the one object the clue chain points a player at")
+
+marks_after_spawn = all(
+    body.index("GenSpawn.Spawn(thing, cell, map, rotation);")
+    < body.index("FixtureTellService.Mark(thing, coordinate, room, slot);")
+    for body in [builder[builder.index("private static Thing TryPlace("):],
+                 builder[builder.index("private static Thing PlaceFixture("):]])
+check("and marking happens after the spawn, never before it",
+      marks_after_spawn,
+      "-- a thing that failed to spawn is not an object anybody can read, and marking it first "
+      "would spend one of the room's few tells on nothing")
+
 print("")
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))

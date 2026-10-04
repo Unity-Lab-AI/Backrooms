@@ -45,6 +45,15 @@
   <RR_Gate_WarningTenMinutes>The gate opening has about 10 in-game minutes remaining.</RR_Gate_WarningTenMinutes>
   <RR_Gate_WarningFiveMinutes>The gate opening has about 5 in-game minutes remaining.</RR_Gate_WarningFiveMinutes>
   <RR_Gate_WarningTwoMinutes>The gate opening has about 2 in-game minutes remaining.</RR_Gate_WarningTwoMinutes>
+  <!-- The scheduling surface. Off by default, set per gate, and it rides the gate's own window
+       rather than adding a clock of its own - the only clock this mod is allowed, per
+       CAMPAIGN_CHART.md 1.1. A warning needs somebody watching; a standing order does not. -->
+  <RR_Gate_StandingRecallLabel>Standing recall: {0}</RR_Gate_StandingRecallLabel>
+  <RR_Gate_StandingRecallDesc>Order the crew home automatically when this gate's opening has a chosen amount of window left. It only ever tells them to walk back; it never closes the gate and never ends the trip. Off by default.</RR_Gate_StandingRecallDesc>
+  <RR_Gate_StandingRecallOff>no standing recall</RR_Gate_StandingRecallOff>
+  <RR_Gate_StandingRecallAt>with {0} of window left</RR_Gate_StandingRecallAt>
+  <RR_Gate_StandingRecallInspect>Standing recall: the crew is called home with {0} of window left.</RR_Gate_StandingRecallInspect>
+  <RR_Gate_StandingRecallIssued>Standing recall issued. The crew has been told to return through the gate.</RR_Gate_StandingRecallIssued>
   <RR_Gate_EmergencyWindowExpired>Emergency-return window expired</RR_Gate_EmergencyWindowExpired>
   <RR_Gate_EmergencyCutoff>Emergency cutoff activated</RR_Gate_EmergencyCutoff>
   <RR_Gate_NotOpen>The gate has no active expedition to interrupt.</RR_Gate_NotOpen>

@@ -74,6 +74,11 @@ ONSCREEN_CEILING = {
     # pane that called them. Recorded at zero so that stays true -- a helper that starts carrying
     # its own player-facing wording is a second place for the panel's voice to live.
     "OperationsControls.cs": 0,
+    # Also zero, and for the same reason: `UI/OperationsLinks.cs` is the one place a screen hands
+    # the player off to a pawn, a building or the research tree. It draws nothing itself -- it
+    # answers *can this link arrive* and then arrives -- so every word it is involved in is
+    # charged to the pane that called it, which is where the ceiling should bite.
+    "OperationsLinks.cs": 0,
     "OperationsCrewPlanner.cs": 163,
     "OperationsEvidence.cs": 78,
     "OperationsEvidenceRecovery.cs": 40,
@@ -88,7 +93,11 @@ ONSCREEN_CEILING = {
     "OperationsLaboratoryBinding.cs": 61,
     # 413 to 217. 130 of those words were in `PersonnelView` and `Dialog_ConfirmApplicantHire`,
     # neither of which could reach the primitives until they stopped being private to the window.
-    "OperationsPersonnel.cs": 217,
+    # 217 -> 218. **The only ceiling this project has ever raised**, and it buys the pawn deep
+    # link: this pane holds the richest readout of a person anywhere in the package and had no
+    # way to go and look at them. One word, for a control that replaces closing Operations and
+    # hunting the colony by hand. Recorded rather than absorbed, which is what the ratchet is for.
+    "OperationsPersonnel.cs": 218,
     "OperationsPortalNetwork.cs": 288,
     "OperationsProcurement.cs": 262,
     "OperationsRemoteSites.cs": 48,

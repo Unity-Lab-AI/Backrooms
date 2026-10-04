@@ -37,6 +37,13 @@ Neither can be done while the gate is working.</RR_GateRun_Desc>
   <RR_NativeGate_RecordedGateUnavailable>Saved expedition {0} has no available gate component. Keep its record intact and resolve the missing gate through recovery.</RR_NativeGate_RecordedGateUnavailable>
   <RR_NativeGate_BindBeforeOperation>Bind the selected door to valid infrastructure before calibration, staffing, or dispatch.</RR_NativeGate_BindBeforeOperation>
   <RR_NativeGate_InspectGate>Inspect and locate selected door</RR_NativeGate_InspectGate>
+  <!-- The station's own inspect card. It had none: a station bound to no gate looked exactly
+       like a station bound to one, and a machining bench holding every ordinary bill suspended
+       for gate control looked exactly like a bench doing its day job. -->
+  <RR_NativeGate_StationUnbound>Not bound to a gate. Designate a door as a gate in Operations, then bind this as its control station.</RR_NativeGate_StationUnbound>
+  <RR_NativeGate_StationBound>Control station for {0}.</RR_NativeGate_StationBound>
+  <RR_NativeGate_StationGateControl>Running the gate. Its other bills are suspended until it returns to normal operation.</RR_NativeGate_StationGateControl>
+  <RR_NativeGate_StationNormalOp>Normal operation. Switch to gate control to run the gate from here.</RR_NativeGate_StationNormalOp>
   <RR_NativeGate_ConsoleRole>Control console: {0}</RR_NativeGate_ConsoleRole>
   <RR_NativeGate_BatteryRole>Physical battery: {0}</RR_NativeGate_BatteryRole>
   <RR_NativeGate_AssemblyBenchRole>Assembly workbench: {0}</RR_NativeGate_AssemblyBenchRole>

@@ -72,6 +72,12 @@
   <RR_Personnel_NotApplicable>not applicable</RR_Personnel_NotApplicable>
   <RR_Personnel_Age>Biological age: {0}</RR_Personnel_Age>
   <RR_Personnel_OffsiteNote>Off-site applicants retain their offered native profile. Arrival enables ordinary colony work, needs and care; no need or skill is reset by this report.</RR_Personnel_OffsiteNote>
+  <!-- The pawn deep link. This screen holds the richest readout of a person anywhere in the
+       package and had no way to go and look at them. Refused by name rather than hidden: an
+       off-site applicant is a real person who is not standing anywhere yet. -->
+  <RR_Personnel_ShowPawn>Show {0}</RR_Personnel_ShowPawn>
+  <RR_Personnel_ShowPawnDesc>Move the camera to {0} and select them.</RR_Personnel_ShowPawnDesc>
+  <RR_Personnel_ShowPawnUnreachable>{0} is not standing anywhere this colony can look at yet.</RR_Personnel_ShowPawnUnreachable>
   <RR_Personnel_Traits>Traits</RR_Personnel_Traits>
   <RR_Personnel_Health>Health conditions</RR_Personnel_Health>
   <RR_Personnel_NoConditions>No recorded health conditions.</RR_Personnel_NoConditions>

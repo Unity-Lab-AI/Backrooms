@@ -70,16 +70,68 @@ for role in roles:
               name in thing_defs,
               "-- not a ThingDef in the installed data")
 
-# 2. No def name may appear in two roles: RoleFor() returns the first match in display order,
-#    so an overlap would make a thing's role depend on display order rather than on what it is.
-seen = {}
-overlap = []
+# 2. **THIS CLAIM USED TO BE "no def name appears in two roles", AND THAT BAN WAS A SYMPTOM.**
+#
+#    Its own reason, recorded here at the time: *"RoleFor() returns the first match in display
+#    order, so an overlap would make a thing's role depend on display order rather than on what it
+#    is."* True of a DERIVED role, and it quietly made a whole class of room function impossible:
+#    Core ships no weapon rack and no receiving bay, so the armory and the receiving bay can only
+#    be shelves, and the records archive already had `Shelf`. Derived, those two roles would have
+#    been offered in the picker, accepted a shelf, reported it as an archive, and counted one
+#    shelf toward all three at once.
+#
+#    This proof caught that the day the roles were added, which is what it is for. **The fix was
+#    to store the role the player chose rather than to drop the roles**, so overlap is now legal
+#    and expected -- and the claim is replaced by the two properties that make it safe.
+# Every def any role accepts, which is what the power claims below iterate. **A set now rather
+# than a def-to-role map:** a def can legitimately belong to several roles, so there is no single
+# role to map it to any more, and nothing downstream ever wanted one.
+seen = set()
 for role in roles:
     for name in role["things"]:
-        if name in seen:
-            overlap.append("%s is in both %s and %s" % (name, seen[name], role["defName"]))
-        seen[name] = role["defName"]
-check("no def name appears in two roles", not overlap, "-- " + "; ".join(overlap))
+        seen.add(name)
+
+links = io.open(os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Gate",
+                             "GateEquipmentLinks.cs"), encoding="utf-8-sig").read()
+if not links.strip():
+    raise SystemExit("ABORT: GateEquipmentLinks.cs is empty, so no claim about it means anything")
+
+# **A PLANT CORRECTED THIS CLAIM.** The first version asserted that the field, the scribe line
+# and `RoleOf` all EXISTED -- and a plant that put `return RimroomsGateEquipmentDef.RoleFor(thing)`
+# at the top of `RoleOf` left all three in place and reported MISSED. Existence is not behaviour.
+# The property is that **the derived answer is reached from exactly one place**: the migration.
+check("THE ROLE A LINK FILLS IS STORED, NOT DERIVED FROM THE DEF",
+      "private List<string> gateEquipmentRoles" in links
+      and 'Scribe_Collections.Look(ref gateEquipmentRoles, "rr_gateEquipmentRoles"' in links
+      and "return string.IsNullOrEmpty(defName)" in links
+      and links.count("RimroomsGateEquipmentDef.RoleFor(") == 1,
+      "-- one def can fill several roles, so only the player knows which this shelf is. That is "
+      "also the direction this feature came from: *manually connected*. `RoleFor` is reached "
+      "%d time(s); it must be exactly one, inside `AlignRoles`"
+      % links.count("RimroomsGateEquipmentDef.RoleFor("))
+
+check("and nothing counts a link by what its def COULD be",
+      "if (RoleOf(thing) == role) { count++; }" in links
+      and "if (RoleOf(linked) != role) { continue; }" in links
+      and "role.Accepts(t) && IsEquipmentLinkActive(t)" not in links,
+      "-- counting by `Accepts` would make one shelf satisfy the archive, the armory and the "
+      "receiving bay simultaneously, and all three readouts would be wrong differently")
+
+# **AND A PLANT CORRECTED THIS ONE, the same way, for the third time this session:** the lockstep
+# removal line appears TWICE -- once in `UnlinkEquipment` and once on load -- so a plant that
+# deleted the first was satisfied by the second. `in` cannot tell one site from two. Counted.
+check("AND THE TWO LISTS CANNOT DRIFT APART",
+      "private void AlignRoles()" in links
+      and links.count(
+          "if (index < gateEquipmentRoles.Count) { gateEquipmentRoles.RemoveAt(index); }") == 2
+      and "gateEquipment.RemoveAll(thing => thing == null || thing.Destroyed);" not in links,
+      "-- they are index-matched, so dropping a destroyed link from one alone would re-label "
+      "every link after the gap: a branch's armory would come back as its canteen")
+
+check("and a save written before the role was recorded keeps what it had",
+      "RimroomsGateEquipmentDef derived = RimroomsGateEquipmentDef.RoleFor(thing);" in links,
+      "-- `AlignRoles` is the migration: every old link gets the role the derived code would "
+      "have given it, which is the answer that save was already showing")
 
 # 3. Display order must be unique, or the picker order is arbitrary between ties.
 orders = [role["order"] for role in roles]

@@ -40,6 +40,10 @@ Select it and press Deposit to put the credits straight back into the account. S
   <RR_CreditBeacon_Designate>Credit beacon</RR_CreditBeacon_Designate>
   <RR_CreditBeacon_DesignateDesc>Treat this trade beacon as a company credit beacon. It will report the face value of every company bond within its range, and can bank them into the company account. Its ordinary trade behaviour is unchanged.</RR_CreditBeacon_DesignateDesc>
   <RR_CreditBeacon_Inspect>Available credits in range: {0}</RR_CreditBeacon_Inspect>
+  <!-- Said only when there are company bonds in range and nothing is banking them, which is the
+       one moment it is worth saying. An undesignated beacon used to be silent in exactly the
+       state where the player needed telling. -->
+  <RR_CreditBeacon_Undesignated>{0} credits of company bonds are in range and nothing is banking them. Designate this as a credit beacon to bank them.</RR_CreditBeacon_Undesignated>
   <RR_CreditBeacon_Bank>Bank bonds</RR_CreditBeacon_Bank>
   <RR_CreditBeacon_BankDesc>Bank every company bond within range into the company account. {0} credits are in range. The bonds are consumed.</RR_CreditBeacon_BankDesc>
   <RR_CreditBeacon_Banked>Banked {0} company bonds for {1} credits.</RR_CreditBeacon_Banked>

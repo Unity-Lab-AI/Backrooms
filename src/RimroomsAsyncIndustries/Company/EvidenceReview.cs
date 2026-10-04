@@ -100,10 +100,28 @@ namespace RimroomsAsyncIndustries.Company
         /// <summary>
         /// Every analysed record this branch has not signed off yet, so the readout can count
         /// them rather than the player hunting for them one at a time.
+        ///
+        /// **THIS HAD NO CALLER FOR A WHOLE CHECKPOINT**, which made it the exact thing this
+        /// file's own header warns about: *"Four of five bond defects, and seven before them, were
+        /// built, correct and unreachable."* It is wired now — `OperationsEvidence` prints the
+        /// count — because the fix for an unreachable surface is to reach it, not to remove it.
         /// </summary>
         public IEnumerable<EvidenceRecord> RecordsAwaitingReview()
         {
             return evidence.Where(AwaitsReview);
+        }
+
+        /// <summary>
+        /// How many finished reports are waiting for a second pair of eyes.
+        ///
+        /// **Counts <see cref="RecordsAwaitingReview"/> rather than re-asking the question.** A
+        /// second `evidence.Count(AwaitsReview)` here would be a second definition of *awaiting
+        /// review* that could drift from the first, which is the defect this project keeps
+        /// meeting — and it would have left the accessor unreached all over again.
+        /// </summary>
+        public int AwaitingReviewCount()
+        {
+            return RecordsAwaitingReview().Count();
         }
 
         /// <summary>

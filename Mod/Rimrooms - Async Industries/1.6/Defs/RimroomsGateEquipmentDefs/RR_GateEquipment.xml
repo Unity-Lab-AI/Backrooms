@@ -45,4 +45,112 @@
     <displayOrder>2</displayOrder>
   </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
 
+  <!-- ==================================================================================
+       THE FIVE ROOM FUNCTIONS THAT WERE NAMED AND NOT BUILT.
+
+       Owner direction, verbatim: "Implement physical room functions: gate, control, labs,
+       evidence archive, quarantine/decontamination, medical, armory, workshop, power, radio,
+       receiving, storage, cafeteria, recreation, quarters, and outpost" and "Connect each room
+       to concrete capabilities, stock needs, staff jobs, risks, and UI alerts; expose why a
+       room is not functional".
+
+       Gate, control, analysis and archive shipped as the three roles above. Quarantine,
+       armory, radio, receiving and cafeteria were the named gap.
+
+       WHY THESE ARE LINK ROLES AND NOT A NEW "ROOM" SYSTEM. RimWorld already builds rooms,
+       already knows which cells are one room, and already has a room-role system of its own.
+       What this mod adds is what a GATE IS LINKED TO - so a facility is defined by what the
+       branch designated, not by where walls happen to be. That also means a sprawling
+       installation works, which is the whole point of the direction these roles came from.
+
+       EVERY defName BELOW WAS READ OUT OF THE INSTALLED GAME DATA. `TableLong` was the first
+       choice for the cafeteria and DOES NOT EXIST - the Core dining tables are `Table2x2c`
+       and `Table3x3c`. That is the same class of mistake the header above records for
+       `MultiAnalyzer`, and it is why `Fillable` now hides a role nothing can fill rather than
+       offering one that silently accepts nothing.
+
+       STOCK AND RISK ARE WHAT MAKE THESE FUNCTIONS RATHER THAN LABELS. A role counts what is
+       actually stored ON ITS OWN LINKED THINGS - never map-wide, because a branch with five
+       rifles in a bedroom does not have an armory - and names what goes wrong when it is
+       short. The category is a ThingCategoryDef, so Core, every DLC and all 294 profile mods
+       answer the question of what counts.
+       ================================================================================== -->
+
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_Quarantine</defName>
+    <label>quarantine beds</label>
+    <description>Beds this facility keeps apart for anybody who came back from a coordinate wrong. A crew that walked through something is looked at here before they are let near the rest of the branch.\n\nKeep medicine on the linked beds. A quarantine with none is a room with a label on the door.</description>
+    <thingDefNames>
+      <li>HospitalBed</li>
+      <li>VitalsMonitor</li>
+    </thingDefNames>
+    <maxLinked>6</maxLinked>
+    <displayOrder>3</displayOrder>
+    <stockCategoryDefName>Medicine</stockCategoryDefName>
+    <stockTarget>10</stockTarget>
+    <riskKey>RR_GateLink_RiskQuarantine</riskKey>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_Armory</defName>
+    <label>armory</label>
+    <description>Where this facility keeps what a crew carries in. Shelves linked here are the branch's armory, and what is on them is what an expedition can be sent out with.\n\nCore ships no weapon rack, so this is shelves. A shelf in a bedroom with a rifle on it is not an armory - only what is linked here counts.</description>
+    <thingDefNames>
+      <li>Shelf</li>
+      <li>ShelfSmall</li>
+    </thingDefNames>
+    <maxLinked>8</maxLinked>
+    <displayOrder>4</displayOrder>
+    <stockCategoryDefName>Weapons</stockCategoryDefName>
+    <stockTarget>2</stockTarget>
+    <riskKey>RR_GateLink_RiskArmory</riskKey>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
+  <!-- A SECOND comms console, not the gate's own. The gate's control console is bound by its
+       own rules and `EquipmentLinkFailureKey` refuses it here as `AlreadyAProvider` - which is
+       correct and is what makes this role meaningful: a branch that wants a radio room builds
+       a radio, rather than relabelling the console it already needed. -->
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_Radio</defName>
+    <label>radio room</label>
+    <description>A communications console kept for listening rather than for running the gate. Fragments come up on it that nobody transmitted.\n\nThis is never the gate's own control console; that one is bound separately and is refused here. A radio room is a second console the branch chose to build.</description>
+    <thingDefNames>
+      <li>CommsConsole</li>
+    </thingDefNames>
+    <maxLinked>2</maxLinked>
+    <displayOrder>5</displayOrder>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_Receiving</defName>
+    <label>receiving bay</label>
+    <description>Where the company's deliveries are put down and where recovered cargo is stacked before anybody sorts it. A facility without one ends up with the corridor as its receiving bay.\n\nKeep raw materials here. It is the stock an installation runs on and the first thing a long opening eats through.</description>
+    <thingDefNames>
+      <li>Shelf</li>
+      <li>ShelfSmall</li>
+    </thingDefNames>
+    <maxLinked>8</maxLinked>
+    <displayOrder>6</displayOrder>
+    <stockCategoryDefName>ResourcesRaw</stockCategoryDefName>
+    <stockTarget>50</stockTarget>
+    <riskKey>RR_GateLink_RiskReceiving</riskKey>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_Canteen</defName>
+    <label>canteen</label>
+    <description>Where a crew eats before they go in and after they come out. Tables and a stove, linked so the branch knows it has somewhere to feed the people it sends down.\n\nKeep prepared meals here. A crew that goes in hungry is a crew that comes back worse.</description>
+    <thingDefNames>
+      <li>Table2x2c</li>
+      <li>Table3x3c</li>
+      <li>ElectricStove</li>
+      <li>FueledStove</li>
+    </thingDefNames>
+    <maxLinked>8</maxLinked>
+    <displayOrder>7</displayOrder>
+    <stockCategoryDefName>FoodMeals</stockCategoryDefName>
+    <stockTarget>8</stockTarget>
+    <riskKey>RR_GateLink_RiskCanteen</riskKey>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
 </Defs>

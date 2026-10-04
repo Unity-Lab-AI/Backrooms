@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RimroomsAsyncIndustries.Company;
 using RimWorld;
@@ -77,8 +78,24 @@ namespace RimroomsAsyncIndustries.Procurement
 
                 if (!campaign.SupplyTierResearchMet(tier))
                 {
-                    options.Add(new FloatMenuOption("RR_Supply_TierResearch".Translate(
-                        tier.LabelCap, tier.requiredResearchDefName), null));
+                    // **THIS ROW USED TO PRINT THE RAW defName AT THE PLAYER** -- an internal
+                    // identifier the game shows nowhere else -- behind a null action, so the one
+                    // screen that said *you need a research project* named it unrecognisably and
+                    // offered no way to go and look at it. Owner: *"Make each screen deep-link to
+                    // the relevant ... research project"*.
+                    //
+                    // The row is only clickable when the project is actually loaded. A tier
+                    // locked behind DLC research on a Core-only install still SAYS so -- the
+                    // label falls back to the name -- and simply does not offer a link to
+                    // somewhere that does not exist.
+                    ResearchProjectDef required =
+                        UI.OperationsLinks.ResearchNamed(tier.requiredResearchDefName);
+                    options.Add(new FloatMenuOption(
+                        "RR_Supply_TierResearch".Translate(tier.LabelCap,
+                            UI.OperationsLinks.ResearchLabel(tier.requiredResearchDefName)),
+                        required == null
+                            ? (Action)null
+                            : delegate { UI.OperationsLinks.ShowResearch(required); }));
                     continue;
                 }
                 if (!campaign.SupplyTierContractMet(tier))

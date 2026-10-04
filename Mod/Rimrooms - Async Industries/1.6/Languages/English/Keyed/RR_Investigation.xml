@@ -81,7 +81,10 @@
   <!-- Review: the fourth workflow. A second person signs a finished report off, or returns it. -->
 
   <RR_UI_ReviewAwaiting>This report has not been signed off. A second pair of eyes decides whether the branch stands behind it.</RR_UI_ReviewAwaiting>
-  <RR_UI_ReviewAwaitingBrief>Awaiting sign-off</RR_UI_ReviewAwaitingBrief>
+  <!-- Carries the branch-wide count, so the pane answers "how many are waiting" without a
+       second line. {0} is every analysed report this branch has not signed off, not just this
+       one - that is what RecordsAwaitingReview was written for. -->
+  <RR_UI_ReviewAwaitingBrief>Awaiting sign-off ({0})</RR_UI_ReviewAwaitingBrief>
   <RR_UI_ReviewPrompt>{0} can review the report.</RR_UI_ReviewPrompt>
   <RR_UI_SignOffReport>Review the report</RR_UI_SignOffReport>
   <RR_UI_ReviewEndorsed>Signed off by {0} on day {1}. The branch stands behind this report.</RR_UI_ReviewEndorsed>

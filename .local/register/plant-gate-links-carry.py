@@ -21,6 +21,9 @@ WARNING = SRC + "/Portals/PortalDoorWarning.cs"
 KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml"
 DOORPATCH = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_NativeGateProviders.xml"
 PROOF = ".local/register/proof-gate-links.py"
+# The equipment-link record. Added 0.12.89-dev when the role a link fills stopped being derived
+# from the def and started being the one the player chose.
+LINKS = SRC + "/Gate/GateEquipmentLinks.cs"
 NL = chr(10)
 
 
@@ -324,6 +327,60 @@ PLANTS = [
 
     ("the refusal string is never written", KEYED,
      "<RR_DoorCross_EnterRefused>", "<RR_DoorCross_EnterRefusedUnused>"),
+
+    # ------------------------------------------- the role a link fills is stored, not derived
+    # Added 0.12.89-dev with the armory, the receiving bay and the canteen. Core ships no weapon
+    # rack and no receiving bay, so three roles are filled by the same shelf def -- and a
+    # DERIVED role made two of them permanently unfillable while counting one shelf toward all
+    # three at once.
+    ("THE ROLE GOES BACK TO BEING DERIVED FROM THE DEF", LINKS,
+     "            int index = gateEquipment.IndexOf(thing);" + NL
+     + "            if (index < 0 || index >= gateEquipmentRoles.Count) { return null; }",
+     "            return RimroomsGateEquipmentDef.RoleFor(thing);" + NL
+     + "            int index = gateEquipment.IndexOf(thing);" + NL
+     + "            if (index < 0 || index >= gateEquipmentRoles.Count) { return null; }"),
+
+    ("the role stops being saved, so every link reverts on load", LINKS,
+     '            Scribe_Collections.Look(ref gateEquipmentRoles, "rr_gateEquipmentRoles",' + NL
+     + "                LookMode.Value);" + NL, ""),
+
+    ("A LINK IS COUNTED BY WHAT ITS DEF COULD BE, so one shelf fills three roles", LINKS,
+     "                if (RoleOf(thing) == role) { count++; }",
+     "                if (role.Accepts(thing)) { count++; }"),
+
+    ("the WORKING count goes back to Accepts, so it can exceed the linked count", LINKS,
+     "                int active = LinkedEquipment.Count(t => RoleOf(t) == role"
+     + " && IsEquipmentLinkActive(t));",
+     "                int active = LinkedEquipment.Count(t => role.Accepts(t)"
+     + " && IsEquipmentLinkActive(t));"),
+
+    ("the stock count goes back to Accepts, so one shelf stocks every shelf role", LINKS,
+     "                if (RoleOf(linked) != role) { continue; }",
+     "                if (!role.Accepts(linked)) { continue; }"),
+
+    # **THE INDEX-DRIFT FAULT.** Dropping a destroyed link from one list alone re-labels every
+    # link after the gap: a branch's armory comes back as its canteen.
+    ("A DESTROYED LINK IS DROPPED FROM ONE LIST ONLY, re-labelling everything after it", LINKS,
+     "                for (int index = gateEquipment.Count - 1; index >= 0; index--)" + NL
+     + "                {" + NL
+     + "                    Thing thing = gateEquipment[index];" + NL
+     + "                    if (thing != null && !thing.Destroyed) { continue; }" + NL
+     + "                    gateEquipment.RemoveAt(index);" + NL
+     + "                    if (index < gateEquipmentRoles.Count)"
+     + " { gateEquipmentRoles.RemoveAt(index); }" + NL
+     + "                }",
+     "                gateEquipment.RemoveAll(thing => thing == null || thing.Destroyed);"),
+
+    ("unlinking drops the thing and leaves its role behind", LINKS,
+     "            if (index < gateEquipmentRoles.Count) { gateEquipmentRoles.RemoveAt(index); }",
+     "            // role left in place"),
+
+    ("the alignment pass disappears, so an old save loses every role it had", LINKS,
+     "        private void AlignRoles()", "        private void UnusedAlignRoles()"),
+
+    ("the migration stops reproducing what the old save was showing", LINKS,
+     "                RimroomsGateEquipmentDef derived = RimroomsGateEquipmentDef.RoleFor(thing);",
+     "                RimroomsGateEquipmentDef derived = null;"),
 
 ]
 

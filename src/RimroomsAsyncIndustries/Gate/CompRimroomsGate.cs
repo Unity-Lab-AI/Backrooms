@@ -339,6 +339,7 @@ namespace RimroomsAsyncIndustries.Gate
             Scribe_Values.Look(ref emergencyReturnSpent, "rr_gateEmergencyReturnSpent", false);
             ExposeKillSwitch();
             ExposeServicing();
+            ExposeStandingRecall();
             Scribe_Values.Look(ref warnedHalfWindow, "rr_gateWarnedHalfWindow", false);
             Scribe_Values.Look(ref warnedQuarterWindow, "rr_gateWarnedQuarterWindow", false);
             Scribe_Values.Look(ref warnedTenthWindow, "rr_gateWarnedTenthWindow", false);
@@ -394,6 +395,14 @@ namespace RimroomsAsyncIndustries.Gate
             // Row 725's repair half. A gate read no damage at all before this: it could
             // be shot to twelve per cent and still hold a connection perfectly.
             TickIntegrity();
+
+            // **THE COMPANY PAYS FOR EACH GOAL REACHED.** Owner: *"full totorieal quest line
+            // payouts on each successful step(the company rewards getting to the goals)"*. Checked
+            // here rather than at each place a step can be satisfied, because there are eleven of
+            // those and the whole point is that one list decides. Rate-limited: resolving eleven
+            // keyed labels every tick for every gate would be real cost for an answer that
+            // changes a handful of times in a campaign.
+            if (GateStartupPayouts.ShouldCheck(parent)) { GateStartupPayouts.Pay(this); }
 
             if (!IsOpening) { return; }
             if (string.IsNullOrEmpty(failureKey))
@@ -577,6 +586,9 @@ namespace RimroomsAsyncIndustries.Gate
             // opetaions tab,, ie setting the cordinace and all of those things need  to show"*.
             // These were the last two start-up actions that existed only as panel buttons.
             foreach (Gizmo gizmo in AddressGizmos()) { yield return gizmo; }
+            // The scheduling surface. On the gate rather than in Operations, because a standing
+            // order about this gate's own window belongs on this gate.
+            foreach (Gizmo gizmo in StandingRecallGizmos()) { yield return gizmo; }
 
             if (IsSpinningUp)
             {
@@ -706,7 +718,8 @@ namespace RimroomsAsyncIndustries.Gate
             string links = EquipmentLinkReadout();
             string footprint = FootprintReadout();
             return string.Join("\n", new[] { NextStepReadout(), status, footprint, integrityText,
-                    operatorText, cutoffText, serviceText, powerText, ramp, links, active }
+                    operatorText, cutoffText, serviceText, powerText, ramp, links, active,
+                    StandingRecallReadout() }
                 .Where(s => !string.IsNullOrEmpty(s)));
         }
 
@@ -1204,6 +1217,11 @@ namespace RimroomsAsyncIndustries.Gate
                 Audio.RimroomsAudio.Play("RR_GateWarning", parent.Map, parent.Position, false);
                 RecordGateActivity("RR_Gate_WarningTwoMinutes", CurrentOpeningId);
             }
+            // **THE SCHEDULED RECALL RIDES THE SAME PASS OVER THE SAME NUMBER.** Deciding it
+            // anywhere else would let the order and the warning that accompanies it drift apart
+            // by a tick, which reads as a bug. A warning needs somebody watching; a standing
+            // order does not, and being busy elsewhere on the map is how a crew gets lost.
+            IssueStandingRecall();
         }
 
         private void ResetOpeningWarnings()
@@ -1211,6 +1229,8 @@ namespace RimroomsAsyncIndustries.Gate
             warnedHalfWindow = false;
             warnedQuarterWindow = false;
             warnedTenthWindow = false;
+            // An order issued during a previous opening says nothing about this one.
+            ResetStandingRecall();
         }
 
         /// <summary>

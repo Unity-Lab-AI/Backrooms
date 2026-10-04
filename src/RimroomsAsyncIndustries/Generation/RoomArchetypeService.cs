@@ -382,8 +382,14 @@ namespace RimroomsAsyncIndustries.Generation
         /// The footprint cap is the load-bearing one. A large machine placed in a Backrooms room
         /// can seal the route cross, and the whole point of a coordinate is that somebody has to
         /// be able to walk back out of it.
+        ///
+        /// **Internal because <see cref="FixtureTellService"/> asks it too**, rather than keeping
+        /// a second copy of the same question. The set of things that can carry a tell has to be
+        /// the set of things that can be placed; if this method stops admitting something, it
+        /// stops being able to carry a tell in the same edit. *"Two derivations of one rule is the
+        /// defect this project keeps meeting."*
         /// </summary>
-        private static bool Placeable(ThingDef definition)
+        internal static bool Placeable(ThingDef definition)
         {
             if (definition == null || definition.defName == null) { return false; }
             if (definition.destroyable == false) { return false; }

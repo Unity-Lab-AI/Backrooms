@@ -94,7 +94,12 @@ namespace RimroomsAsyncIndustries.UI
             if (campaign == null) { return; }
             if (!campaign.AwaitsReview(record)) { return; }
 
-            DrawHeading(listing, heading: "RR_UI_ReviewAwaitingBrief".Translate(),
+            // **THE COUNT IS THE BRANCH'S, NOT THIS RECORD'S**, which is what makes it worth
+            // showing: a player looking at one report learns how many others are also waiting,
+            // and that is the question `RecordsAwaitingReview` was written to answer. It rides
+            // the heading that was already here, so the pane gains a number and not a line.
+            DrawHeading(listing,
+                heading: "RR_UI_ReviewAwaitingBrief".Translate(campaign.AwaitingReviewCount()),
                 detail: "RR_UI_ReviewAwaiting".Translate());
 
             // An outstanding dispute is two of the branch's own people contradicting each other

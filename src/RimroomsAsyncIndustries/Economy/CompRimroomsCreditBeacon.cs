@@ -71,10 +71,45 @@ namespace RimroomsAsyncIndustries.Economy
             }
         }
 
+        /// <summary>
+        /// What this beacon is doing, and — the half the audit added — why it is doing nothing.
+        ///
+        /// **Owner direction, 2026-09-29, verbatim:** *"we also need to be making sure all mod
+        /// ingame decriptions and informational informations for everything is properly in the
+        /// cards like the game does currently"*. The row's standard is *"What it is, what it
+        /// needs, and why it is not working when it is not."*
+        ///
+        /// ## The gap
+        ///
+        /// This read `if (!designated) { return null; }` and stopped. **So the beacon was silent
+        /// in precisely the state where a player needs to be told something**: bonds piled up
+        /// inside its radius, nothing banking them, and no indication anywhere on the thing that
+        /// one toggle away is the answer. A card that explains itself only once it is already
+        /// working explains itself only to people who did not need it.
+        ///
+        /// ## Why it is still silent almost always, which is the constraint
+        ///
+        /// This comp is on Core's `OrbitalTradeBeacon`, so **every trade beacon in every colony
+        /// in the game carries it**, and the dormant-until-designated rule that governs the gate,
+        /// emergence and survivor comps governs this one too: installing this mod must not add a
+        /// line to a building somebody already owns.
+        ///
+        /// So an undesignated beacon speaks **only when there is actually something for it to
+        /// bank** — bonds of this branch's, inside this beacon's own radius, right now. That is
+        /// the exact moment the information is worth having and no earlier, and a colony with no
+        /// company bonds in range never sees it.
+        /// </summary>
         public override string CompInspectStringExtra()
         {
-            if (!designated) { return null; }
-            return "RR_CreditBeacon_Inspect".Translate(AvailableCredits.ToString("N0")).ToString();
+            if (designated)
+            {
+                return "RR_CreditBeacon_Inspect".Translate(AvailableCredits.ToString("N0")).ToString();
+            }
+            if (parent == null || !parent.Spawned) { return null; }
+            long waiting;
+            BondService.BondsInRadius(parent.Map, parent.Position, Props.radius, out waiting);
+            if (waiting <= 0L) { return null; }
+            return "RR_CreditBeacon_Undesignated".Translate(waiting.ToString("N0")).ToString();
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()

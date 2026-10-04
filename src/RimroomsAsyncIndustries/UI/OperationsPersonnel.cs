@@ -159,6 +159,21 @@ namespace RimroomsAsyncIndustries.UI
             // their needs — and it needed no new string to get there.
             DrawHeading(listing, heading: pawn.LabelCap,
                 detail: "RR_Personnel_OffsiteNote".Translate());
+            // **THE PAWN DEEP LINK.** Owner: *"Make each screen deep-link to the relevant pawn,
+            // building, map, quest, item, research project..."*. This screen holds the single
+            // richest readout of a person anywhere in the package and had no way to go and look
+            // at them -- the player had to close Operations and find them by hand.
+            //
+            // Refused by name rather than hidden, because the commonest reason it cannot work is
+            // interesting: an off-site applicant is a real person with a real profile who is not
+            // standing anywhere yet, and that is worth saying out loud.
+            if (DrawAction(listing,
+                label: "RR_Personnel_ShowPawn".Translate(pawn.LabelShortCap),
+                refusal: OperationsLinks.CanReach(pawn)
+                    ? TaggedString.Empty
+                    : "RR_Personnel_ShowPawnUnreachable".Translate(pawn.LabelShortCap),
+                detail: "RR_Personnel_ShowPawnDesc".Translate(pawn.LabelShortCap)))
+            { OperationsLinks.Show(pawn); }
             listing.Label(PawnCondition(pawn));
             if (pawn.ageTracker != null) { listing.Label("RR_Personnel_Age".Translate(pawn.ageTracker.AgeBiologicalYears)); }
             listing.Label(NeedsSummary(pawn));

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- ONE EXACT WRONG FACT PER TELL, AND NEVER A MOOD ADJECTIVE. The rule is
+       docs/UNIVERSE_ADAPTATION.md's: "Ordinary industrial interiors become uncanny through exact
+       changes." An adjective asks the player to supply the feeling the detail should be
+       producing. proof-unnerving-register.py reads this file and fails on any of: eerie, creepy,
+       unsettling, unnerving, strange, weird, sinister, ominous, uncanny, disturbing, horrifying,
+       terrifying - and on any tell under six words, because a tell of three words is a label. -->
+
+  <!-- production benches: a bench records WORK, so it can record work that cannot have happened -->
+  <RR_FixtureTell_BenchQueuedText>The bills are still queued on it. The last one is for a meal, and there is nothing in this space to cook.</RR_FixtureTell_BenchQueuedText>
+  <RR_FixtureTell_BenchHandedText>Worn down on the left side only. Everyone who ever stood at this bench stood the same way.</RR_FixtureTell_BenchHandedText>
+  <RR_FixtureTell_BenchClampedText>Something is still clamped in it, with the cut started and never finished.</RR_FixtureTell_BenchClampedText>
+  <RR_FixtureTell_BenchOurMarksText>The tool marks on it match the ones on the bench the branch uses at home.</RR_FixtureTell_BenchOurMarksText>
+
+  <!-- seating and tables: furniture records POSTURE -->
+  <RR_FixtureTell_SeatWornText>Worn through from years of sitting. The floor in front of it has no wear at all.</RR_FixtureTell_SeatWornText>
+  <RR_FixtureTell_SeatFacingText>Turned to face the wall. So is every other seat in this space.</RR_FixtureTell_SeatFacingText>
+  <RR_FixtureTell_TableRingsText>Cup rings across the top, all of them the same size, and not one of them overlapping another.</RR_FixtureTell_TableRingsText>
+  <RR_FixtureTell_TableSetText>Laid for four, four of everything, and one of the places is sized for a child.</RR_FixtureTell_TableSetText>
+
+  <!-- beds -->
+  <RR_FixtureTell_BedHandbookText>Made up with the corners folded the way the company handbook specifies.</RR_FixtureTell_BedHandbookText>
+  <RR_FixtureTell_BedImpressionText>Slept in. The impression left in it belongs to somebody much shorter than the bed.</RR_FixtureTell_BedImpressionText>
+
+  <!-- storage: storage records INTENT -->
+  <RR_FixtureTell_StorageSortedText>Emptied out, and whoever emptied it put the containers back in order afterwards.</RR_FixtureTell_StorageSortedText>
+  <RR_FixtureTell_StorageDatedText>Labelled in the branch's own filing format, under a date that has not come yet.</RR_FixtureTell_StorageDatedText>
+
+  <!-- lights: the owner's own example, inverted. The lights going out is not uncanny; the
+       switches being found already off is. -->
+  <RR_FixtureTell_LightSwitchedText>The switch was found in the off position. The bulb is still warm.</RR_FixtureTell_LightSwitchedText>
+  <RR_FixtureTell_LightReplacedText>Replaced recently. The one it replaced is standing beside it, undamaged and working.</RR_FixtureTell_LightReplacedText>
+
+  <!-- loot: an item records HANDLING -->
+  <RR_FixtureTell_ItemCountedText>Counted out into a stack, with the count written beside it. The count is correct.</RR_FixtureTell_ItemCountedText>
+  <RR_FixtureTell_ItemPackedText>Packed for carrying and then set down. There is nowhere in this space to carry it to.</RR_FixtureTell_ItemPackedText>
+
+  <!-- equipment: equipment records a BODY -->
+  <RR_FixtureTell_EquipmentFittedText>Taken in at the seams to fit somebody. Nobody on the crew is that size.</RR_FixtureTell_EquipmentFittedText>
+  <RR_FixtureTell_EquipmentKeptText>Cleaned and oiled on a schedule, and never once used for anything.</RR_FixtureTell_EquipmentKeptText>
+
+  <!-- anything: about the object's relationship to the room rather than to its own kind -->
+  <RR_FixtureTell_AnyDustText>There is dust on everything in this space except this.</RR_FixtureTell_AnyDustText>
+  <RR_FixtureTell_AnyMovedText>Standing a short way from the four clean marks its own feet left.</RR_FixtureTell_AnyMovedText>
+
+</LanguageData>

@@ -33,6 +33,13 @@ EVENT_SERVICE = "src/RimroomsAsyncIndustries/Threats/AnomalyEventService.cs"
 CONTENT = "src/RimroomsAsyncIndustries/Generation/RoomContentMapComponent.cs"
 REGISTER = "src/RimroomsAsyncIndustries/Company/LostPawnRegister.cs"
 GENERATION_KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Generation.xml"
+# The object half of the same register. Added 2026-10-05 with the fixture tells.
+TELL_DEF = "src/RimroomsAsyncIndustries/Generation/RimroomsFixtureTellDef.cs"
+TELL_COMP = "src/RimroomsAsyncIndustries/Generation/CompRimroomsFixtureTell.cs"
+TELL_SERVICE = "src/RimroomsAsyncIndustries/Generation/FixtureTellService.cs"
+BUILDER = "src/RimroomsAsyncIndustries/Generation/RoomContentBuilder.cs"
+TELL_DEFS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsFixtureTellDefs/RR_FixtureTells.xml"
+TELL_KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_FixtureTells.xml"
 CHR_NL = chr(10)
 
 PLANTS = [
@@ -156,6 +163,90 @@ PLANTS = [
     ("the fragment starts claiming it found nothing to do", EVENT_SERVICE,
      "                case AnomalyEffect.RadioFragment: return true;",
      "                case AnomalyEffect.RadioFragment: return false;", PROOF),
+
+    # ========================================= the object half: items, equipment and benches
+    ("AN OBJECT TELL LOSES ITS TEXT", TELL_DEFS,
+     "    <tellKey>RR_FixtureTell_BenchQueuedText</tellKey>" + CHR_NL, "", PROOF),
+
+    ("an object tell points at a keyed string that does not exist", TELL_DEFS,
+     "<tellKey>RR_FixtureTell_LightSwitchedText</tellKey>",
+     "<tellKey>RR_FixtureTell_LightSwitchedTextXX</tellKey>", PROOF),
+
+    # **THE PREP DOCUMENT'S RULE AGAIN, and the easiest thing here to lose by accident.**
+    ("AN OBJECT TELL BECOMES AN ADJECTIVE", TELL_KEYED,
+     "The switch was found in the off position. The bulb is still warm.",
+     "There is something deeply unsettling about this lamp.", PROOF),
+
+    ("an object tell is cut down to a label", TELL_KEYED,
+     "There is dust on everything in this space except this.", "No dust.", PROOF),
+
+    ("A TELL REACHES THE SHALLOW YELLOW ROOMS", TELL_DEFS,
+     "    <minDepth>2</minDepth>" + CHR_NL
+     + "    <weight>1.2</weight>" + CHR_NL
+     + "    <tellKey>RR_FixtureTell_LightSwitchedText</tellKey>",
+     "    <minDepth>1</minDepth>" + CHR_NL
+     + "    <weight>1.2</weight>" + CHR_NL
+     + "    <tellKey>RR_FixtureTell_LightSwitchedText</tellKey>", PROOF),
+
+    ("the load-time rule keeping tells out of the shallow rooms is removed", TELL_DEF,
+     "            if (minDepth <= 1)", "            if (false)", PROOF),
+
+    ("the load-time rule demanding tell text is removed", TELL_DEF,
+     "                    \" has no tellKey, so nothing on the object says what is wrong with it.\";",
+     "                    \" \";", PROOF),
+
+    # ------------------------------------------- the tell is read off the object and survives
+    ("THE OBJECT TELL STOPS BEING READABLE OFF THE OBJECT", TELL_COMP,
+     "        public override string CompInspectStringExtra()",
+     "        private string UnusedInspect()", PROOF),
+
+    ("HAULING SILENTLY ERASES THE FACT", TELL_COMP,
+     "        public override bool AllowStackWith(Thing other)",
+     "        private bool UnusedAllowStackWith(Thing other)", PROOF),
+
+    # ----------------------------------------------- derived, ordered, one shared rule
+    ("WHICH OBJECT IS WRONG GOES BACK TO Rand", TELL_SERVICE,
+     "            int roll = DestinationService.StableHash(coordinate.Seed, key, TellVersion);",
+     "            int roll = Rand.Range(0, 9999);", PROOF),
+
+    ("the tell candidates stop being ordered before the draw", TELL_SERVICE,
+     "            legal.Sort((left, right) => string.CompareOrdinal(left.defName, right.defName));"
+     + CHR_NL, "", PROOF),
+
+    ("EVERY OBJECT STARTS CARRYING A TELL, burying the people and event beats", TELL_SERVICE,
+     "        internal const int TellPercent = 12;",
+     "        internal const int TellPercent = 100;", PROOF),
+
+    ("THE ELIGIBILITY RULE IS COPIED INSTEAD OF SHARED", TELL_SERVICE,
+     "!RoomArchetypeService.Placeable(definition)",
+     "definition.category != ThingCategory.Item", PROOF),
+
+    ("A DEFINITION THAT CANNOT CARRY A COMP IS GIVEN ONE ANYWAY", TELL_SERVICE,
+     "                    || !typeof(ThingWithComps).IsAssignableFrom(definition.thingClass))",
+     "                    || false)", PROOF),
+
+    ("the comp attachment moves back to load time, before inheritance resolves", TELL_SERVICE,
+     "    [StaticConstructorOnStartup]" + CHR_NL, "", PROOF),
+
+    # ------------------------------------------------------- both placement paths reach it
+    ("THE DRESSING PATH STOPS MARKING, so loot and benches go back to saying nothing",
+     BUILDER,
+     "            FixtureTellService.Mark(thing, coordinate, room, slot);" + CHR_NL
+     + "            return thing;" + CHR_NL + "        }" + CHR_NL + CHR_NL
+     + "        /// <summary>" + CHR_NL
+     + "        /// A cell in this room that will take this footprint",
+     "            return thing;" + CHR_NL + "        }" + CHR_NL + CHR_NL
+     + "        /// <summary>" + CHR_NL
+     + "        /// A cell in this room that will take this footprint", PROOF),
+
+    ("MARKING MOVES ABOVE THE SPAWN, spending a tell on a thing that never appeared", BUILDER,
+     "            GenSpawn.Spawn(thing, cell, map, rotation);" + CHR_NL
+     + "            if (!thing.Spawned || thing.Map != map) { return null; }" + CHR_NL
+     + "            thing.SetForbidden(false, false);",
+     "            FixtureTellService.Mark(thing, coordinate, room, slot);" + CHR_NL
+     + "            GenSpawn.Spawn(thing, cell, map, rotation);" + CHR_NL
+     + "            if (!thing.Spawned || thing.Map != map) { return null; }" + CHR_NL
+     + "            thing.SetForbidden(false, false);", PROOF),
 
     # ================================================= the same register, applied to events
     ("AN EVENT LOSES ITS TRACE", EVENTS,

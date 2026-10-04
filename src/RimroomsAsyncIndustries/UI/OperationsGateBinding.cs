@@ -246,8 +246,14 @@ namespace RimroomsAsyncIndustries.UI
                 : "RR_NativeGate_RoleValue".Translate(choice.LabelCap, choice.def.defName, choice.Position).ToString();
             listing.Label(roleKey.Translate(value));
             if (listing.ButtonText(chooseKey.Translate())) { OpenNativeRoleMenu(chooseKey, candidates, SetRoleChoiceAction(chooseKey)); }
-            if (choice != null && choice.Spawned && listing.ButtonText("RR_NativeGate_InspectRole".Translate(choice.LabelCap)))
-            { CameraJumper.TryJumpAndSelect(choice); }
+            // The building deep link, which this pane already had -- routed through the shared
+            // helper so the pawn, the building and the research project all leave by the same
+            // door. **The guard changed with it**: `Spawned` was the wrong question, because Core
+            // answers *can I jump to this* for held things and world targets too, and asking
+            // `CanJump` is strictly wider while still never offering a link that goes nowhere.
+            if (choice != null && OperationsLinks.CanReach(choice)
+                && listing.ButtonText("RR_NativeGate_InspectRole".Translate(choice.LabelCap)))
+            { OperationsLinks.Show(choice); }
         }
 
         private Action<Thing> SetRoleChoiceAction(string roleKey)

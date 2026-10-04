@@ -326,6 +326,11 @@ namespace RimroomsAsyncIndustries.Generation
             GenSpawn.Spawn(thing, cell, map, rotation);
             if (!thing.Spawned || thing.Map != map) { return null; }
             thing.SetForbidden(false, false);
+            // **The dressing is where the owner's *"items and equipment and production benches"*
+            // actually lives**, so it is the path that most needed a tell. Marked after the spawn
+            // rather than before: a thing that failed to spawn is not an object anybody can read,
+            // and marking it first would spend one of the room's few tells on nothing.
+            FixtureTellService.Mark(thing, coordinate, room, slot);
             return thing;
         }
 
@@ -593,6 +598,12 @@ namespace RimroomsAsyncIndustries.Generation
                 foreach (IntVec3 ring in thing.OccupiedRect().ExpandedBy(1).Cells)
                 { reserved.Add(ring); }
             }
+            // The family fixtures and the landmark are marked too. **The landmark especially**:
+            // it is the one object in the room the clue chain points a player at, so it is the
+            // one they are most likely to be standing in front of and reading. Nothing about the
+            // clue changes — a tell is comp data on the thing, and `AddClue` is handed the same
+            // thing it always was.
+            FixtureTellService.Mark(thing, coordinate, room, slot);
             return thing;
         }
     }

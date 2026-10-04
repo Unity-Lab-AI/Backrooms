@@ -15,28 +15,11 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 ---
 
-## ⛔ FIRST THING NEXT SESSION: THE PLANT SWEEP WAS NOT RUN ON THIS PUBLICATION ⛔
+## ✅ THE SKIPPED SWEEP FROM LAST SESSION IS DISCHARGED
 
-**Say it plainly rather than imply the battery was complete.** 0.12.88-dev was published on the owner's instruction to *"wrap up all we are currently working on, stage, now.md, and cascade. i need to compact"*, and the 24-suite plant sweep takes roughly fifteen minutes. It was skipped.
-
-**What WAS run, all green:**
-
-| Instrument | Result |
-|---|---|
-| 18 checkers | **0 failed** |
-| 51 proofs | **0 failed** |
-| `check-plant-anchors.py` | **902 anchors findable** |
-| `check-plant-residue.py` | **nothing planted in the tree** |
-| `plant-chaser.py` (new) | **17 of 17 caught** |
-| `plant-unnerving-register.py` (new) | **32 of 32 caught** |
-| Build | 0 warnings, 0 errors, 98 package files |
-
-So the two suites written this batch are proved, every anchor in all 24 suites resolves, and no fault is left in the source. **What is unproved is the other 22 suites against this build.** Run this before anything else:
-
-```
-for p in .local/register/plant-*.py; do python "$p" || echo "FAILED $p"; done
-python tools/check-plant-residue.py
-```
+0.12.88-dev published without the plant sweep, and this file said so at the top. It was the first
+thing run this session: **25 suites, zero misses, zero tracebacks, every suite N-of-N, residue
+check clean.** Nothing was hiding in it. The obligation is closed and the warning is gone.
 
 ---
 
@@ -45,79 +28,99 @@ python tools/check-plant-residue.py
 **Owner, 2026-10-04, three times:** *"okay once again.. yu should be completeing like near a dozen items before you run the whole battery. i told you i can NOT be waiting 40 minutes when u run 10m batteries constantly with every item you work on"*, *"you have run batteries repeatily and you havent even done ten items yet"*, and when I over-corrected: *"no you fucking retard!!!! you still need to do instrament checks and build them when needed just dont run them for every fucking code change"*
 
 - **During the work:** run **only the one instrument covering the file you just touched.** One checker, or one proof, or one plant suite. **Keep writing and extending them** — the instruments are not the problem, sweeping them is.
-- **At publication, once:** 18 checkers → 51 proofs → 24 plant suites.
+- **At publication, once:** 18 checkers → 52 proofs → 26 plant suites.
 - **If a sweep finds something, fix it and re-run ONLY the instrument that failed.**
-- **Batch size is 10–12 closed rows.** 0.12.86 closed ten, 0.12.87 ten, 0.12.88 eight.
+- **Batch size is 10–12 closed rows.** 0.12.87 ten, 0.12.88 eight, 0.12.89 **eleven**.
 
 ---
 
-## State, measured 2026-10-04
+## ⛔ AND THE FIX FOR DEAD CODE IS TO REACH IT, NOT TO DELETE IT ⛔
+
+**Owner, mid-batch, verbatim:** *"okay sounds like your deleting shit rather than fixing it by what you said,, that better not be the case"*
+
+They were right, and the correction is worth keeping. I found `RecordsAwaitingReview()` with no
+caller anywhere and **removed it**, because wiring it would have pushed a density ceiling I had set
+myself. That is the wrong trade: **a ceiling I set is mine to manage, not a reason to delete a
+feature.** It is wired now, and it cost **zero** screen words — the count rides a heading string
+that already existed, which is what the ceiling was pushing me to find in the first place.
+
+One deletion in the batch, reversed. Everything else was additive.
+
+---
+
+## State, measured 2026-10-05
 
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`** |
-| Version | **0.12.88-dev** — read from `About.xml`, never from a document |
-| Build | **221 C# files, 98 package files**, zero warnings, zero errors |
+| Version | **0.12.89-dev** — read from `About.xml`, never from a document |
+| Build | **225 C# files, 100 package files**, zero warnings, zero errors |
 | Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile and is checked against the register |
-| Instruments | **18 checkers**, **51 proofs**, **24 plant suites**, **902 plant anchors** |
+| Instruments | **18 checkers**, **52 proofs**, **26 plant suites**, **957 plant anchors** |
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
-| Queue | **73 open · 35 partial · 38 `[T]` · 0 `[x]`** |
+| Queue | **67 open · 30 partial · 38 `[T]` · 0 `[x]`** |
 | Launches | **At least twelve**, all by the owner. **Every defect any launch found was ours** |
 
 ---
 
-## What 0.12.88-dev changed
+## What 0.12.89-dev changed
 
-1. **THE UNNERVING REGISTER REACHED PEOPLE AND EVENTS.** Owner: *"remember lsd unnerving feeling with all things ie events random spanwns, enemies, allies, nuetrals"*. The LSD direction had been read as an **architecture** direction for eight versions — all of it built — and reached no encounter, spawn or event. The owner's four-word version: *"zero weird events or people"*.
-2. **The prep documents held the mechanism.** `UNIVERSE_ADAPTATION.md`, written before this code existed: *"Ordinary industrial interiors become uncanny through exact changes"*. **The uncanny is one exact change to something ordinary** — testable, not a mood. That is now a **gate**: no tell and no trace may contain a mood adjective. The lights going out is not uncanny; the switches being found already off is.
-3. **A letter is not a tell.** 12 families carry a `tellKey`, 8 events a `traceKey`, both refused at load if absent, both read off the thing rather than out of a notification that has scrolled away.
-4. **Ally existed nowhere.** `RR_Inhabitant_Helper` fights for you with Core's `LordJob_DefendPoint` and **will not leave with you**. Animals are something you find, not only something that chases you.
-5. **Radio fragments** — the one event with a person in it, naming somebody the branch knows. And **mentioning somebody must not resolve them**: `TakeLostPawnName` removes what it returns, so a non-destructive accessor was added.
-6. **Two stale rows closed by measurement.** *"fourteen historical gameplay PNGs"* — audited: thirteen images, all accounted for. No gameplay art, no audio; the empty `Sounds` tree is gone so the absence reads off the tree.
+1. **THE REGISTER REACHED OBJECTS.** Owner: *"not just room shape echoes but echos of thier inhabitance in weird ways and items and equipment and production benches"*. 0.12.88 reached people and events and no object at all, though objects had been named specifically. **20 tells across nine classes of thing**, each one exact wrong fact, read off the thing, held to the same no-mood-adjective gate.
+2. **The comp is attached in code, not by XML, and that is the interesting part.** `StaticConstructorOnStartup` is the only moment the question *can this be placed in a room* can be asked **after inheritance resolves**. `BuildingBase` is the only xpath parent broad enough and would have put the comp on every wall, door and turret in every colony in the game.
+3. **Hauling can no longer destroy a tell.** `CanStackWith` never looks at comp data, so a marked stack merging with an ordinary one would lose the fact silently.
+4. **The station had no inspect card at all**, and the beacon was **silent in exactly the state where a player needed telling**. A card that explains itself only once it is working explains itself only to people who did not need it.
+5. **The locked supply tier row printed a raw `defName` at the player behind a null action.** Now the project's own label, linking into the research tree through Core's public `Select`.
+6. **A scheduling surface that adds no clock** — the gate's own window, off by default, thresholds identical to the three warnings, and it can only ever tell people to walk home.
+7. **The company pays for each of eleven goals**, off the same checklist the status board reads, with **no new saved state** because `PostTransaction` is already idempotent on its id.
+8. **Five room functions** — quarantine, armory, radio, receiving, canteen — each knowing what should be kept on it and what goes wrong when it is not.
 
 ---
 
 ## THE NEXT THING
 
-**Run the plant sweep** (above). Then:
+**Certifications and training jobs** (row 580) — prior exposure and configurable roles both ship
+and are wired; certifications and training jobs are the named remainder on that row.
 
-**Loot and equipment carry no tell of their own** — the one half of *"all things"* the register has not reached. Owner: *"not just room shape echoes but echos of thier inhabitance in weird ways and items and equipment and production benches"*.
+Then: **contain, release, detain and transfer** as distinct choices with their own consequences
+(row 597); **confidence scoring and a destruction workflow** on evidence (595); **client/faction
+identity, company tier, previous outcome and opening duration** feeding story variation (593);
+**term, renewal and eviction** on space leasing (594).
 
-Then in order: **deep links** out to a pawn/building/research project (rows 609, 616); the **inspect-card audit** on the station and the beacon (664); a **scheduling surface** (548); **room functions** — quarantine, armory, workshop, radio, receiving, storage, canteen, plus per-room stock and risk (542, 543); **certifications, training jobs and prior exposure** (544); the **quest-line payouts** at every step.
-
-And the one the owner keeps naming: **the stand-alone guarantee half** — every `GetNamedSilentFail` degrades, both `PatchOperation`s stay guarded, no Def assumes a DLC.
+And the one the owner keeps naming: **the stand-alone guarantee half** — every
+`GetNamedSilentFail` degrades, both `PatchOperation`s stay guarded, no Def assumes a DLC. The
+`Fillable` guard added to equipment roles this batch is that rule applied in one place; it belongs
+everywhere a defName is named.
 
 ---
 
 ## Read these before touching anything
 
+- **THE FIX FOR DEAD CODE IS TO REACH IT.** The only thing the owner has had to correct this session, and the deletion cost nothing to reverse.
 - **THE BATTERY RUNS ONCE AND THE INSTRUMENTS STAY.** The only thing the owner has had to say three times.
 - **THE CASCADE IS TEN REFS.** `forgejo, github` × `feature/connected-colony-portals, Prep, Develop, Main`, **plus `feature/bug-testing` on both**. `PUBLISHING.md`.
-- **FORGEJO REJECTS WITH `unable to create temporary object directory` AND IT IS THE SERVER.** Not the key — SSH auth succeeds. Disk or permissions on `git.unityailab.com`. It took one retry at 0.12.86 and refused five at 0.12.87.
-- **AN ABSENCE CLAIM PASSES AGAINST AN EMPTY FILE.** `proof-chaser.py`'s first run had the wrong repository root and **eight absence claims reported green**. `read()` now refuses an empty haystack. A `.local/register/` script is **three** levels from the root.
-- **A SOURCE-TEXT CLAIM MUST NOT ENCODE THE OLD CODE'S LAYOUT.** Three plants came back MISSED this session and **all three were claims being wrong, not code**: one compared call positions when the property was *a missing letter key must not lose the record*, one matched three specific lines, one tested a comment.
-- **A PLANT THAT EDITS A COMMENT TESTS NOTHING** — every proof here strips comments first.
-- **NO POST-PROCESSING OF A `PLANTS` TABLE.** A dedupe loop after the literal made `check-plant-anchors.py` report `has no readable PLANTS table`. If two plants need deduping, one of them is aimed wrong.
-- **ENUMERATE THE TAGS, DO NOT GUESS THEM.** The Core-only start rule listed `thingDef` and missed `<thing>` — 114 of 171 references — and passed a planted foreign def.
-- **A PATCH XPATH RUNS BEFORE DEF INHERITANCE.** `ThingDef[race/intelligence="Animal"]` matches only defs that state it themselves. Patch the abstract parent instead, and record which mods that misses.
-- **USE THE WRITE TOOL FOR ANY SCRIPT WITH ESCAPES — sixteenth and seventeenth instances this session.** A heredoc collapsed a regex's backslashes twice and a needle plainly present reported `NOT UNIQUE (0)`.
-- **A CLOSER APPENDS TO THE ROW'S OWN LINE.** `check-queue-integrity.py` fails on closure evidence that is not on a row.
-- **BANNED VOCABULARY, and it caught one of mine.** *"portal"* → **gate**/**connection**; *"doorway"* → **door**/**threshold**; *"the machine"* is reserved. `check-info-cards.py` is the authority.
+- **AN ABSENCE CLAIM READS THE DOCUMENTATION TOO, and good documentation names the thing it is avoiding.** Two claims failed on their first run this batch for exactly that: `GateStandingRecall.cs` explains in a comment that the standing recall is **not a deadline** and that names meaning one are refused, and `EvidenceReview.cs` says a second `evidence.Count(AwaitsReview)` would be a second definition. Both correct, both comments, both tripping assertions about code. Every absence claim goes through `code_only()`.
+- **A MESSAGE IS NOT A RULE.** A claim asserted that two `ConfigErrors` strings existed; a plant replaced the condition with `if (false)`, left both strings in place, and the suite reported MISSED. Assert the test, not the text it prints.
+- **A NEEDLE THAT APPEARS TWICE MATCHES THE WRONG ONE.** `for (int index = 0; index < RecallOptionTicks.Length; index++)` validates the setter **and** builds the float menu. A plant that tore the validation out satisfied the claim against the menu.
+- **WRITING A FILE WITH THE WRONG ENCODING SILENTLY CHANGES IT.** Bumping the version stripped the BOM from `About.xml`, `README.md` and the `.csproj`, and prepending the changelog **added** one to `CHANGELOG.md`, which has none. `git diff --stat` after a scripted edit is how all four were caught — the line counts do not lie.
+- **FORGEJO REJECTS WITH `unable to create temporary object directory` AND IT IS THE SERVER.** Not the key — SSH auth succeeds. One retry at 0.12.86, five refusals at 0.12.87, clean at 0.12.88.
+- **A PATCH XPATH RUNS BEFORE DEF INHERITANCE.** This is now a *recorded limit with a code answer*: when the set you need is a capability rather than a name, attach at `StaticConstructorOnStartup` and ask the same question the consumer asks.
+- **READ THE DEF NAME OUT OF THE INSTALLED GAME.** `TableLong` does not exist. Core's dining tables are `Table2x2c` and `Table3x3c`. `.local/tools/ilspycmd.exe` answers API questions the same way — `MainTabWindow_Research.Select` was confirmed, not remembered.
+- **ONE RULE, ONE PLACE.** `RoomArchetypeService.Placeable` became `internal` so the tell service asks it rather than copying it. If the generator stops placing something it stops carrying a tell, in the same edit.
+- **BANNED VOCABULARY.** *"portal"* → gate/connection; *"doorway"* → door/threshold; *"the machine"* is reserved. `check-info-cards.py` is the authority.
 - **THE STAGER REFUSES A PACKAGE EDITED AFTER THE BUILD**, by hash. Rebuild, then stage.
-- **A ROW WHOSE OWN EVIDENCE SAYS *PARTLY* MUST NOT BE ARCHIVED.**
-- **A ROW CAN BE STALE.** Two closed this batch on measurement alone — the fourteen PNGs were already gone. Measure before building.
-- **The mod register is GUIDANCE.** `python tools/register-query.py use <trace>`. **`docs/CAMPAIGN_CHART.md`** beats any prep document.
+- **A ROW CAN BE STALE.** Two closed on measurement alone this batch — seven room shapes and the full material palette were already built. Measure before building.
+- **The mod register is GUIDANCE.** `python tools/register-query.py use <trace>`. **`docs/CAMPAIGN_CHART.md`** beats any prep document, and its §1.1 is the rule most likely to be violated by accident.
 
 ---
 
 ## Findings recorded so nobody re-derives them
 
-- **`UNIVERSE_ADAPTATION.md` line 21 is the most useful sentence in the prep documents.** It says *how* the feeling is produced, and it is checkable.
-- **A gizmo action may queue a long event; a tick may not.** Why the door's address commands announce the generation freeze and the **gate-enter crossing still cannot**.
-- **A sighting must ask the site which pawn is the chaser.** Scanning for hostiles would count any raider as an entity observation — a false positive on a paid bonus.
-- **`TakeLostPawnName` removes what it returns.** Correct for placing a missing person, wrong for naming one.
-- **A derived index into an unordered list is reproducible by luck only.** Order before indexing; def-database and roster order are not promises.
-- **At degree 5 a well-connected room cannot be moved at all.** Arrangements must form before the later braids.
+- **`CAMPAIGN_CHART.md` §1.1 is the rule a new feature is most likely to break without noticing.** A schedule, a recall policy, a maintenance interval — every one of them wants a timer. The test that passes: does it read the gate's own window, is it off by default, and can it take anything away?
+- **A comp on a plain `Thing` does nothing, silently.** Only `ThingWithComps` reads `def.comps`; the entry is accepted and never instantiated.
+- **`Thing.CanStackWith` ignores comp data**, so any per-instance fact on a stackable item needs `AllowStackWith` or hauling erases it.
+- **An idempotent ledger is a record.** `PostTransaction` returning `Existing()` meant the payouts needed no saved state at all — a second bookkeeping field could only drift from the books.
+- **Counting map-wide is laundering.** A role's stock has to be counted on the role's own linked things, or a rifle in a bedroom makes an armory.
+- **A density ceiling is a prompt to write better, not a reason to cut a feature.** The review count fitted into a string that already existed.
 
 ---
 
@@ -153,6 +156,8 @@ python tools/check-queue-integrity.py                                 # and this
 
 ## Is it done?
 
-**The build is. The play is not.** `0.12.88-dev` is staged and published; the next action that unblocks anything is a launch, and only the owner launches.
+**The build is. The play is not.** `0.12.89-dev` is staged and published; the next action that unblocks anything is a launch, and only the owner launches.
 
-Read a launch log in this order: `Player.log`, grep the **first** `[Rimrooms]` line, then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.
+Read a launch log in this order: `Player.log`, grep the **first** `[Rimrooms]` line — it now
+carries the fixture-tell attachment count, which is the fastest way to tell whether the object
+register reached anything — then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.

@@ -13,6 +13,20 @@
   <RR_GateLink_NoCandidates>Nothing on this branch can be linked</RR_GateLink_NoCandidates>
 
   <RR_GateLink_RoleReadout>{0}: {1} of {2} working, {3} maximum</RR_GateLink_RoleReadout>
+  <!-- WHY A ROOM IS NOT FUNCTIONAL, read off the gate. Counted on the role's own linked things
+       and never map-wide: a branch with five rifles in a bedroom does not have an armory. Each
+       risk names what actually goes wrong rather than scoring it - the same rule the inhabitant
+       tells are held to, because a fact beats an adjective. -->
+  <RR_GateLink_RoleShortfall>{0} is short: {1} of {2} held.</RR_GateLink_RoleShortfall>
+  <!-- The picker names the ROLE as well as the thing. Core ships no weapon rack and no receiving
+       bay, so one shelf def answers the archive, the armory and the receiving bay - and only the
+       player knows which this shelf is. Three rows reading "link shelf" would be unusable. -->
+  <RR_GateLink_AddRole>Link {0} as {1}</RR_GateLink_AddRole>
+  <RR_GateLink_UnlinkRole>Unlink {0} ({1})</RR_GateLink_UnlinkRole>
+  <RR_GateLink_RiskQuarantine>A crew that comes back carrying something is treated in the open ward, beside everybody else.</RR_GateLink_RiskQuarantine>
+  <RR_GateLink_RiskArmory>A crew that meets something hostile down there has nothing to meet it with.</RR_GateLink_RiskArmory>
+  <RR_GateLink_RiskReceiving>Deliveries and recovered cargo are left wherever the hauler put them down.</RR_GateLink_RiskReceiving>
+  <RR_GateLink_RiskCanteen>A crew goes into a coordinate hungry and stays hungry until they are back.</RR_GateLink_RiskCanteen>
 
   <RR_GateLink_GateNotDesignated>Designate this door as a gate before linking equipment to it.</RR_GateLink_GateNotDesignated>
   <RR_GateLink_GateBusy>This gate is bringing a connection up. Wait for it to settle before changing its facility.</RR_GateLink_GateBusy>

@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Owner direction 2026-10-04: "remember lsd unnerving feeling with all things ie events
+       random spanwns, enemies, allies, nuetrals, even all the crazy things ive mentioned in the
+       past and anything u can find in the many many prep docs on the Backrooms Universe", and
+       the earlier line this file exists for: "not just room shape echoes but echos of thier
+       inhabitance in weird ways and items and equipment and production benches".
+
+       0.12.88-dev took the register to PEOPLE and EVENTS. It did not reach OBJECTS, and the
+       owner had already named objects specifically. A coordinate was full of things that were
+       materially varied, correctly placed, and said nothing about who had been using them.
+
+       EVERY TELL IS ONE EXACT WRONG FACT. The rule is docs/UNIVERSE_ADAPTATION.md's, not
+       invented here: "Ordinary industrial interiors become uncanny through exact changes." So
+       no tell may contain a mood adjective - eerie, creepy, unsettling, strange, weird,
+       sinister, ominous, uncanny, disturbing, horrifying, terrifying, unnerving. A bench that
+       is "eerie" tells the player nothing. A bench whose bills are still queued for a meal
+       nobody in this space could have ordered tells them something, and it says the same thing
+       every time they come back to read it. proof-unnerving-register.py enforces this against
+       the shipped Keyed XML.
+
+       MOST OBJECTS CARRY NO TELL, and that is the design rather than a shortfall. The rule is
+       the one CoordinatePressureLadder.IsQuietRoom already states - "quiet stretches are
+       required content". See FixtureTellService.TellPercent: a small derived minority, chosen
+       from the coordinate's own seed, so the same object says the same thing on every visit and
+       the room next door says nothing at all.
+
+       NOTHING HERE NAMES A ThingDef. appliesTo asks the definition a question - is this a work
+       table, is this sittable, does this emit light - so a bench from a mod installed tomorrow
+       is a bench today. Same discipline as RimroomsRoomArchetypeDef's capability slots.
+
+       minDepth is never 1. The shallow yellow rooms stay plain, for the same reason every room
+       archetype declares 2 or more: that emptiness IS the look, and a tell in the arrival hall
+       would spend the setting's one surprise on a player's first thirty seconds. Measured
+       against RoomArchetypeService.EffectiveDepth, so a room a dozen links out on a first level
+       qualifies and the hall it leads back to does not. -->
+
+  <!-- ============================================================ production benches
+       The owner named these specifically, and they are the strongest of the classes: a bench
+       records WORK, so a bench can record work that cannot have happened. -->
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_BenchQueued</defName>
+    <label>queued bills</label>
+    <description>A production bench whose outstanding bills describe work this space cannot support.</description>
+    <appliesTo>Bench</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1.2</weight>
+    <tellKey>RR_FixtureTell_BenchQueuedText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_BenchHanded</defName>
+    <label>one-sided wear</label>
+    <description>A bench worn down on one side only, as though everyone who ever used it stood the same way.</description>
+    <appliesTo>Bench</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1</weight>
+    <tellKey>RR_FixtureTell_BenchHandedText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_BenchClamped</defName>
+    <label>half-finished work</label>
+    <description>Something still clamped in the bench, with the rest of the cut never made.</description>
+    <appliesTo>Bench</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1</weight>
+    <tellKey>RR_FixtureTell_BenchClampedText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <!-- Deeper only. This is the branch's OWN work turning up, which is the owner's "echos of
+       thier inhabitance" at its sharpest - and it has to be rare and late or the place stops
+       being somewhere else and starts being a badly laid-out copy of the colony. The same
+       reasoning caps RoomArchetypeService.EchoPercent at 40. -->
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_BenchOurMarks</defName>
+    <label>familiar tool marks</label>
+    <description>A bench carrying the same tool marks as the one the branch uses at home.</description>
+    <appliesTo>Bench</appliesTo>
+    <minDepth>4</minDepth>
+    <weight>0.7</weight>
+    <tellKey>RR_FixtureTell_BenchOurMarksText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <!-- ============================================================ seating and tables
+       Furniture records POSTURE - where somebody sat, how long, and facing what. -->
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_SeatWorn</defName>
+    <label>worn seat, clean floor</label>
+    <description>A seat worn through by long use, standing on floor that shows none of it.</description>
+    <appliesTo>Seat</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1</weight>
+    <tellKey>RR_FixtureTell_SeatWornText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_SeatFacing</defName>
+    <label>turned to the wall</label>
+    <description>A seat turned to face the wall, in company with every other seat in the space.</description>
+    <appliesTo>Seat</appliesTo>
+    <minDepth>3</minDepth>
+    <weight>0.9</weight>
+    <tellKey>RR_FixtureTell_SeatFacingText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_TableRings</defName>
+    <label>identical cup rings</label>
+    <description>Cup rings on a table, all the same size and none of them overlapping.</description>
+    <appliesTo>Table</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1</weight>
+    <tellKey>RR_FixtureTell_TableRingsText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_TableSet</defName>
+    <label>set for a meal</label>
+    <description>A table laid for several people, one of the places sized for a child.</description>
+    <appliesTo>Table</appliesTo>
+    <minDepth>3</minDepth>
+    <weight>0.9</weight>
+    <tellKey>RR_FixtureTell_TableSetText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <!-- ============================================================ beds -->
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_BedHandbook</defName>
+    <label>made to the handbook</label>
+    <description>A bed made up with the corners folded the way the company handbook specifies.</description>
+    <appliesTo>Bed</appliesTo>
+    <minDepth>3</minDepth>
+    <weight>1</weight>
+    <tellKey>RR_FixtureTell_BedHandbookText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_BedImpression</defName>
+    <label>short impression</label>
+    <description>A slept-in bed holding the impression of somebody far shorter than it.</description>
+    <appliesTo>Bed</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1</weight>
+    <tellKey>RR_FixtureTell_BedImpressionText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <!-- ============================================================ storage
+       Storage records INTENT - somebody decided what went where, and in what order. -->
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_StorageSorted</defName>
+    <label>emptied in order</label>
+    <description>Storage cleared out, with the empty containers put back in order afterwards.</description>
+    <appliesTo>Storage</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1.1</weight>
+    <tellKey>RR_FixtureTell_StorageSortedText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_StorageDated</defName>
+    <label>dated ahead</label>
+    <description>Storage labelled in the branch's own filing format, dated to a day that has not come.</description>
+    <appliesTo>Storage</appliesTo>
+    <minDepth>4</minDepth>
+    <weight>0.7</weight>
+    <tellKey>RR_FixtureTell_StorageDatedText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <!-- ============================================================ lights
+       The owner's own example of how NOT to do this, inverted. The lights going out is not
+       uncanny; the switches being found already off is. -->
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_LightSwitched</defName>
+    <label>switched off, still warm</label>
+    <description>A lamp found switched off, with the bulb still warm to the touch.</description>
+    <appliesTo>Light</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1.2</weight>
+    <tellKey>RR_FixtureTell_LightSwitchedText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_LightReplaced</defName>
+    <label>replaced for no reason</label>
+    <description>A recently replaced lamp, with the one it replaced standing beside it undamaged.</description>
+    <appliesTo>Light</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1</weight>
+    <tellKey>RR_FixtureTell_LightReplacedText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <!-- ============================================================ loot
+       The owner's "items" and "loot deeper in". An item records HANDLING. -->
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_ItemCounted</defName>
+    <label>counted and correct</label>
+    <description>A stack counted out, with the count written beside it, and the count is right.</description>
+    <appliesTo>Item</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1.1</weight>
+    <tellKey>RR_FixtureTell_ItemCountedText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_ItemPacked</defName>
+    <label>packed to carry</label>
+    <description>Goods packed for carrying and then set down, in a space with nowhere to carry them.</description>
+    <appliesTo>Item</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1</weight>
+    <tellKey>RR_FixtureTell_ItemPackedText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <!-- ============================================================ equipment
+       The owner named this specifically alongside items and benches. Equipment records a BODY:
+       what size it is, and what it has been through. -->
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_EquipmentFitted</defName>
+    <label>taken in at the seams</label>
+    <description>Apparel altered to measurements nobody on the crew matches.</description>
+    <appliesTo>Equipment</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1.1</weight>
+    <tellKey>RR_FixtureTell_EquipmentFittedText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_EquipmentKept</defName>
+    <label>maintained, never used</label>
+    <description>Equipment cleaned and maintained to a schedule, and never once used.</description>
+    <appliesTo>Equipment</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1</weight>
+    <tellKey>RR_FixtureTell_EquipmentKeptText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <!-- ============================================================ anything
+       Tells about the object's relationship to the room rather than to its own kind, so they
+       are true of a stool, a shelf and a steel stack alike. -->
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_AnyDust</defName>
+    <label>the only clean thing</label>
+    <description>The one object in a dusty space that carries no dust at all.</description>
+    <appliesTo>Any</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1</weight>
+    <tellKey>RR_FixtureTell_AnyDustText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+    <defName>RR_FixtureTell_AnyMoved</defName>
+    <label>beside its own marks</label>
+    <description>An object standing a short way from the clean marks its own feet left.</description>
+    <appliesTo>Any</appliesTo>
+    <minDepth>2</minDepth>
+    <weight>1</weight>
+    <tellKey>RR_FixtureTell_AnyMovedText</tellKey>
+  </RimroomsAsyncIndustries.Generation.RimroomsFixtureTellDef>
+
+</Defs>
