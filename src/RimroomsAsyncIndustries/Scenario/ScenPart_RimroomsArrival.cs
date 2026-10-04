@@ -72,6 +72,15 @@ namespace RimroomsAsyncIndustries.Scenario
                 {
                     receipt.arrivalRecords.Add(thing.GetUniqueLoadID() + ":" + thing.def.defName + ":" + thing.stackCount);
                     if (thing.def.category == ThingCategory.Item) { thing.SetForbidden(false, false); }
+                    // **THE COMPANY'S OWN BOOKS GET THE COMPANY'S LABEL.** Owner,
+                    // 2026-10-04: *"Mark the company-issued ones"*. This sweep is already
+                    // enumerating exactly what Core created for this arrival, which is the
+                    // only moment at which a book is known to have been issued rather than
+                    // bought. Marking here means no later code has to go looking for books
+                    // -- and so no later code can mistake a traded novel for one of ours.
+                    Investigation.CompRouteEvidence issued =
+                        thing.TryGetComp<Investigation.CompRouteEvidence>();
+                    if (issued != null) { issued.MarkCompanyIssued(); }
                 }
             }
         }

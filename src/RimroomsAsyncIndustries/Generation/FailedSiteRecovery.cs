@@ -287,7 +287,7 @@ namespace RimroomsAsyncIndustries.Company
             {
                 "ChemfuelPoweredGenerator", "Chemfuel", "HiddenConduit",
                 "SimpleResearchBench", "RR_FieldRecorder", "GlowPod",
-                "Shelf", "TextBook", "RR_QuietPursuer",
+                "Shelf", "TextBook",
                 "Door", "Autodoor", "CommsConsole", "TableMachining", "Battery", "WoodFiredGenerator",
                 "Stool", "Table1x2c", "DiningChair", "PlantPot", "Shelf", "StandingLamp", "Heater"
             };

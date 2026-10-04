@@ -56,7 +56,8 @@ namespace RimroomsAsyncIndustries.Portals
             if (eligibility != null) { return CompanyActionResult.Refused(eligibility); }
             if (crossings.HasUnresolvedCrossing(pawn))
             { return CompanyActionResult.Refused("RR_PortalCrossing_PawnInTransit"); }
-            string fit = PortalTraversalPolicy.FitFailureKey(pawn, DoorwayWidth(connection));
+            string fit = PortalTraversalPolicy.FitFailureKey(pawn, DoorwayWidth(connection),
+                DoorwayDepth(connection));
             if (fit != null) { return CompanyActionResult.Refused(fit); }
 
             // **A locked gate is a gate nobody walks through, and nothing used to say so.**
@@ -121,6 +122,30 @@ namespace RimroomsAsyncIndustries.Portals
             if (gate != null && gate.IsDesignated) { return gate.GateWidth; }
             if (anchor.def == null) { return 1; }
             int span = anchor.def.size.x > anchor.def.size.z ? anchor.def.size.x : anchor.def.size.z;
+            return span < 1 ? 1 : span;
+        }
+
+        /// <summary>
+        /// How deep the doorway of a connection is, in cells.
+        ///
+        /// Mirrors <see cref="DoorwayWidth"/> and is read from the same endpoint for the same
+        /// reason: a connection has one aperture and the far doorway is just where you arrive.
+        ///
+        /// **It exists because three-wide is two different gates.** Owner, 2026-10-04:
+        /// *"vehicals through 3.1 and 3x2 depending size"*. Both are three wide; the depth is
+        /// the whole distinction, and without it the policy had to assume the shallower one.
+        ///
+        /// A non-gate anchor -- a generated return threshold, which is always an ordinary
+        /// one-cell door -- answers one, which is what it is.
+        /// </summary>
+        public static int DoorwayDepth(PortalConnectionRecord connection)
+        {
+            Thing anchor = connection == null || connection.First == null ? null : connection.First.Anchor;
+            if (anchor == null) { return 1; }
+            CompRimroomsGate gate = anchor.TryGetComp<CompRimroomsGate>();
+            if (gate != null && gate.IsDesignated) { return gate.GateOpeningDepth; }
+            if (anchor.def == null) { return 1; }
+            int span = anchor.def.size.x > anchor.def.size.z ? anchor.def.size.z : anchor.def.size.x;
             return span < 1 ? 1 : span;
         }
 

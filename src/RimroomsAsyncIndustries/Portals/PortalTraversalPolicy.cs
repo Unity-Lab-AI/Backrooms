@@ -111,6 +111,84 @@ namespace RimroomsAsyncIndustries.Portals
         }
 
         /// <summary>
+        /// The width a vehicle needs, and what decides which of the two vehicle gates.
+        ///
+        /// ## Owner specification, 2026-10-04, verbatim
+        ///
+        /// *"this is already layed out, people through 1x1 cdoor gates, herd animals through
+        /// 2x1 and vehicals through 3.1 and 3x2 depending size"*
+        ///
+        /// ## The body-size ladder above already did two of the three rungs
+        ///
+        /// A person is 1.0 and passes a 1x1; a muffalo is 2.4 and does not, so it needs the
+        /// 2-wide — *"people through 1x1 ... herd animals through 2x1"*, exactly. **The rung
+        /// that did not exist was the vehicle one**: width three returned *no limit*, so a
+        /// three-wide gate admitted anything of any footprint and **nothing anywhere could tell
+        /// a 1x3 gate from a 2x3 one.** Two of the four legal footprints were the same gate as
+        /// far as the game was concerned.
+        ///
+        /// ## What *"depending size"* resolves to
+        ///
+        /// A vehicle has a real footprint, and it drives through long-ways: the dimension that
+        /// has to clear the aperture is its **narrower** one. The two vehicle gates differ by
+        /// **depth** -- a 1x3 is one cell deep, a 2x3 is two -- so:
+        ///
+        /// - a 1x2 runabout has a narrow side of 1 and goes through the 1x3;
+        /// - a 2x3 truck has a narrow side of 2 and needs the 2x3;
+        /// - a 3x5 tank has a narrow side of 3 and **fits through neither**, which is the
+        ///   honest end of a ladder the owner bounded at four footprints.
+        ///
+        /// Depth is read as cells-per-width from the gate itself rather than from the def, so a
+        /// gate bound across a run of ordinary doors measures the same way a real wide door does.
+        ///
+        /// ## Recognised by footprint, never by type
+        ///
+        /// Vehicles come from a mod. Nothing here references one: a thing whose def occupies
+        /// more than a single cell is treated as a vehicle, which is true of every vehicle and
+        /// of nothing Core ships as a pawn. That keeps the rule working with the vehicle mods in
+        /// the profile and working identically with none of them installed.
+        /// </summary>
+        public const int WidthForPeople = 1;
+        public const int WidthForHerdAnimals = 2;
+        public const int WidthForVehicles = 3;
+
+        /// <summary>The footprint of a thing, as (narrow, long) in cells.</summary>
+        public static IntVec2 FootprintOf(Thing thing)
+        {
+            if (thing == null || thing.def == null) { return new IntVec2(1, 1); }
+            IntVec2 size = thing.def.size;
+            int narrow = size.x <= size.z ? size.x : size.z;
+            int wide = size.x <= size.z ? size.z : size.x;
+            return new IntVec2(narrow < 1 ? 1 : narrow, wide < 1 ? 1 : wide);
+        }
+
+        /// <summary>Whether this thing occupies more than one cell, and so drives rather than walks.</summary>
+        public static bool IsMultiCellBody(Thing thing)
+        {
+            IntVec2 footprint = FootprintOf(thing);
+            return footprint.x > 1 || footprint.z > 1;
+        }
+
+        /// <summary>
+        /// Why a multi-cell body cannot pass an aperture this wide and this deep, or null.
+        ///
+        /// Separate from <see cref="FitFailureKey(Pawn, int)"/> because a vehicle is not refused
+        /// for being heavy -- body size says nothing useful about a machine -- it is refused for
+        /// not physically fitting the hole.
+        /// </summary>
+        public static string VehicleFitFailureKey(Thing vehicle, int doorwayWidth, int doorwayDepth)
+        {
+            IntVec2 footprint = FootprintOf(vehicle);
+            if (doorwayWidth < WidthForVehicles)
+            { return "RR_PortalTraversal_NeedsVehicleGate"; }
+            if (footprint.z > doorwayWidth)
+            { return "RR_PortalTraversal_VehicleTooLong"; }
+            if (footprint.x > doorwayDepth)
+            { return "RR_PortalTraversal_VehicleTooWide"; }
+            return null;
+        }
+
+        /// <summary>
         /// Whether this pawn physically fits through a doorway of the given width.
         ///
         /// **Owner direction, 2026-09-29:** the larger gate sizes exist *"to fit vehicals and
@@ -125,7 +203,22 @@ namespace RimroomsAsyncIndustries.Portals
         /// </summary>
         public static string FitFailureKey(Pawn traveller, int doorwayWidth)
         {
+            return FitFailureKey(traveller, doorwayWidth, 1);
+        }
+
+        /// <summary>
+        /// The same question with the aperture's depth known, which is what tells the two
+        /// vehicle gates apart. Prefer this overload; the one above assumes the shallower gate,
+        /// which is the safe assumption rather than the convenient one.
+        /// </summary>
+        public static string FitFailureKey(Pawn traveller, int doorwayWidth, int doorwayDepth)
+        {
             if (traveller == null) { return "RR_PortalCrossing_PawnNotEligible"; }
+            // **A MULTI-CELL BODY IS A MACHINE, AND BODY SIZE SAYS NOTHING USEFUL ABOUT ONE.**
+            // Asked before the body-size ladder because the two answer different questions: that
+            // one is about a creature's bulk, this one is about whether a shape clears a hole.
+            if (IsMultiCellBody(traveller))
+            { return VehicleFitFailureKey(traveller, doorwayWidth, doorwayDepth); }
             float? limit = MaxBodySizeForWidth(doorwayWidth);
             if (!limit.HasValue) { return null; }
             float size = traveller.RaceProps == null ? 1f : traveller.BodySize;
@@ -224,7 +317,7 @@ namespace RimroomsAsyncIndustries.Portals
             int requiredTier = containmentCampaign != null &&
                 containmentCampaign.HasCapability("RR_Cap_ContainmentProtocol") ? 2 : 1;
             if (gate.PortalWindowTier < requiredTier) { return "RR_Incursion_TechTooLow"; }
-            return FitFailureKey(intruder, gate.GateWidth);
+            return FitFailureKey(intruder, gate.GateWidth, gate.GateOpeningDepth);
         }
     }
 }

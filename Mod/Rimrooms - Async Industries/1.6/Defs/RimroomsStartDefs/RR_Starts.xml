@@ -115,33 +115,27 @@
       <li>(39, 0, 30)</li>
       <li>(39, 0, 34)</li>
     </autodoors>
-    <!-- The viewing wall. Owner: "ballistic glass  walls for viewing the machine remotely
-         and safely". ReBuild: Doors and Corners is register row 185, stance Optional, and
-         its Planned Use is verbatim "use the construction and layout tools to create gate
-         control, labs, secure storage, accommodation, service corridors". Named as
-         STRINGS so a profile without it gets a solid wall instead of a discarded def. -->
-    <glazing>
-      <li>
-        <start>(30, 0, 34)</start><length>6</length><alongX>true</alongX>
-        <thingDefNames>
-          <li>RB_ReinforcedGlassWall</li>
-          <li>RB_GlassWall</li>
-        </thingDefNames>
-        <stuffDefNames>
-          <li>Steel</li>
-        </stuffDefNames>
-      </li>
-      <li>
-        <start>(43, 0, 34)</start><length>5</length><alongX>true</alongX>
-        <thingDefNames>
-          <li>RB_ReinforcedGlassWall</li>
-          <li>RB_GlassWall</li>
-        </thingDefNames>
-        <stuffDefNames>
-          <li>Steel</li>
-        </stuffDefNames>
-      </li>
-    </glazing>
+    <!-- **THE VIEWING WALL'S GLASS IS GONE, 0.12.87-dev.** Owner, 2026-10-04:
+         "issues like the ballistic glass we used needs to be taken out of the starting
+         scenerio to acturatley make sure it isnt needed to play the mod".
+
+         This named RB_ReinforcedGlassWall and RB_GlassWall from ReBuild: Doors and
+         Corners, register row 185, stance Optional. They were the ONLY two non-Core def
+         references in any shipped start, and the genstep already fell back to a plain
+         wall when ReBuild was absent, so nothing broke and nothing changes for a
+         Core-only player: the same eleven cells were plain steel wall before and are
+         plain steel wall now.
+
+         What changes is that the claim is checkable. A shipped start that names another
+         mod's defs cannot be audited as stand-alone by reading it; you have to go and
+         read the C# that resolves it. check-register-compliance.py now refuses any
+         non-Core def reference in a shipped start or scenario.
+
+         The glazing field, the run plan and the genstep all stay: they cost nothing and
+         a scenario may use them. The earlier owner direction this served, "ballistic
+         glass  walls for viewing the machine remotely and safely", stays open in the
+         queue - Core ships no see-through wall, so answering it Core-only is a decision
+         rather than a tidy-up. -->
     <!-- Columns. A roof is supported only within 6.9 cells of a wall and the gate hall is
          twenty across, so without these its middle is unsupported and collapses on the
          pawn who deconstructs the wall holding it. proof-startplacement.py caught exactly

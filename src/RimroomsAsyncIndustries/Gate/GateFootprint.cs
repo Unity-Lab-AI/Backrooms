@@ -119,6 +119,29 @@ namespace RimroomsAsyncIndustries.Gate
         }
 
         /// <summary>
+        /// How many cells deep the aperture is, front face to back face.
+        ///
+        /// **This is the number that tells the two vehicle gates apart.** Owner, 2026-10-04:
+        /// *"vehicals through 3.1 and 3x2 depending size"* — both are three wide and the only
+        /// thing that differs is the depth, so until this existed nothing in the game could
+        /// distinguish them and a 1x3 admitted exactly what a 2x3 did.
+        ///
+        /// Derived as cells-per-width rather than read off the def, for the same reason
+        /// <see cref="GateCellCount"/> is: a gate bound across a run of three ordinary doors is
+        /// a three-wide, one-deep aperture and has to measure as one.
+        /// </summary>
+        public int GateOpeningDepth
+        {
+            get
+            {
+                int width = GateWidth;
+                if (width < 1) { return 1; }
+                int depth = GateCellCount / width;
+                return depth < 1 ? 1 : depth;
+            }
+        }
+
+        /// <summary>
         /// Every cell on the approach side of the doorway.
         ///
         /// Derived from the occupied rectangle rather than from the door's drawn rotation,

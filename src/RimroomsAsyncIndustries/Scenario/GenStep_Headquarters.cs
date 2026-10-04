@@ -313,6 +313,11 @@ namespace RimroomsAsyncIndustries.Scenario
                 if (fuel != null && plan.fuelFraction > 0f) { fuel.Refuel(fuel.Props.fuelCapacity * Mathf.Clamp01(plan.fuelFraction)); }
                 CompPowerBattery battery = building.TryGetComp<CompPowerBattery>();
                 if (battery != null && plan.batteryFraction > 0f) { battery.SetStoredEnergyPct(Mathf.Clamp01(plan.batteryFraction)); }
+                // The start def places two record books among the furniture; they are issued
+                // by the company exactly as the scenario grant's are.
+                Investigation.CompRouteEvidence placedBook =
+                    building.TryGetComp<Investigation.CompRouteEvidence>();
+                if (placedBook != null) { placedBook.MarkCompanyIssued(); }
                 receipt.placedRecords.Add("building:" + index++ + ":" + building.GetUniqueLoadID());
             }
             foreach (RimroomsConduitPlan line in start.conduits)

@@ -25,17 +25,22 @@ namespace RimroomsAsyncIndustries.Threats
         private Pawn distortionPawn;
         private IntVec3 distortionWarningCell;
         private bool distortionTimeSpent;
-        private Thing_QuietPursuer pursuer;
+        /// <summary>
+        /// What is chasing the crew: an ordinary pawn. Owner, 2026-10-04: *"things that
+        /// chase you are just npc pawns and wild animals and shit of the gasme ... not some
+        /// blob figure, just normal core mechanics"*. This was a `Thing_QuietPursuer`, a
+        /// bespoke `ThingWithComps` that teleported between rooms.
+        /// </summary>
+        private Pawn pursuer;
         private bool pursuerEncounterStarted;
         private bool pursuerWithdrawn;
         private int pursuerRoom = -1;
-        private int advances;
-        private int nextAdvanceTick;
+        // **FIVE FIELDS WENT WITH THE TELEPORT.** `advances` counted scripted room hops,
+        // `nextAdvanceTick` paced them, `lastLoudTick` and `lastObservedCrewRoom` decided
+        // when one was allowed, and `attemptedStrike` recorded the single scripted two-point
+        // blow. A real hostile paces itself, so none of them has anything to hold.
         private int contactWarningTick = -1;
         private Pawn contactPawn;
-        private int lastLoudTick = -1;
-        private int lastObservedCrewRoom = -1;
-        private bool attemptedStrike;
 
         public FirstSliceSiteComponent(Map map) : base(map) { deploymentRecovery = new ThingOwner<Thing>(this); }
         public IThingHolder ParentHolder { get { return null; } }
@@ -49,6 +54,8 @@ namespace RimroomsAsyncIndustries.Threats
         public bool EntityObserved { get { return pursuerEncounterStarted; } }
         public int LastSeenPursuerRoom { get { return pursuerRoom; } }
         public bool PursuerWithdrawn { get { return pursuerWithdrawn; } }
+        /// <summary>The pawn currently chasing the crew, or null. Read-only: the site owns it.</summary>
+        public Pawn Chaser { get { return pursuer; } }
 
         public void BeginOpening(string expeditionId, List<Pawn> originalCrew)
         {
@@ -61,8 +68,9 @@ namespace RimroomsAsyncIndustries.Threats
             distortionWarned = false; distortionResolved = false; distortionTimeSpent = false;
             distortionPawn = null; distortionWarningCell = IntVec3.Invalid;
             pursuerEncounterStarted = false; pursuerWithdrawn = false; pursuerRoom = -1;
-            advances = 0; nextAdvanceTick = 0; contactWarningTick = -1; lastLoudTick = Find.TickManager.TicksGame;
-            lastObservedCrewRoom = -1; attemptedStrike = false;
+            // The teleport-era counters are gone with the teleport: a real hostile paces
+            // itself, so there is nothing here to reset but the detection warning.
+            contactWarningTick = -1;
             contactPawn = null;
         }
         public void AddReliefPawn(Pawn pawn) { if (pawn != null && !crew.Contains(pawn)) { crew.Add(pawn); } }
@@ -87,13 +95,8 @@ namespace RimroomsAsyncIndustries.Threats
             Scribe_Values.Look(ref pursuerEncounterStarted, "rr_pursuerEncounterStarted");
             Scribe_Values.Look(ref pursuerWithdrawn, "rr_pursuerWithdrawn");
             Scribe_Values.Look(ref pursuerRoom, "rr_pursuerRoom", -1);
-            Scribe_Values.Look(ref advances, "rr_advances");
-            Scribe_Values.Look(ref nextAdvanceTick, "rr_nextAdvanceTick");
             Scribe_Values.Look(ref contactWarningTick, "rr_contactWarningTick", -1);
             Scribe_References.Look(ref contactPawn, "rr_contactPawn");
-            Scribe_Values.Look(ref lastLoudTick, "rr_lastLoudTick", -1);
-            Scribe_Values.Look(ref lastObservedCrewRoom, "rr_lastObservedCrewRoom", -1);
-            Scribe_Values.Look(ref attemptedStrike, "rr_attemptedStrike");
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 crew = crew ?? new List<Pawn>(); crewRoutes = crewRoutes ?? new List<CrewRouteRecord>();

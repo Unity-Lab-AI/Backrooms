@@ -649,11 +649,24 @@ namespace RimroomsAsyncIndustries.Company
             return false;
         }
 
+        /// <summary>
+        /// Whether a chaser is standing in this room.
+        ///
+        /// **Asked of the site rather than of a def.** This searched the map for
+        /// `RR_QuietPursuer`, a bespoke thing that no longer exists -- owner, 2026-10-04:
+        /// *"things that chase you are just npc pawns and wild animals and shit of the gasme ...
+        /// not some blob figure, just normal core mechanics"*. A chaser is now an ordinary
+        /// hostile pawn, and the only thing that knows which pawn is the chaser is the site
+        /// component that spawned it. Scanning for a def would either find nothing or, worse,
+        /// count every raider on the map as a sighting.
+        /// </summary>
         private static bool HasSpawnedEntityInRoom(Map map, RoomRecord room)
         {
-            ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail("RR_QuietPursuer");
-            return definition != null && map.listerThings.ThingsOfDef(definition).Any(item =>
-                !item.Destroyed && item.Spawned && item.Map == map && room.Bounds.Contains(item.Position));
+            if (map == null || room == null) { return false; }
+            Threats.FirstSliceSiteComponent site = map.GetComponent<Threats.FirstSliceSiteComponent>();
+            Pawn chaser = site == null ? null : site.Chaser;
+            return chaser != null && !chaser.Destroyed && chaser.Spawned && chaser.Map == map &&
+                room.Bounds.Contains(chaser.Position);
         }
 
         private static bool ValidObservationState(EvidenceRecord record, CoordinateRecord coordinate)

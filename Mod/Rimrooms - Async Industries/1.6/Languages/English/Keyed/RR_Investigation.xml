@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Evidence_Blank>Company record book, still blank. This is the journal the company issues you: carry it through a gate and a colonist writes the route into it as they explore. Bring it home and it becomes the case record you analyse and get paid for. Lose the book, lose the run.</RR_Evidence_Blank>
+  <RR_Evidence_CompanyBookLabel>company record book</RR_Evidence_CompanyBookLabel>
   <RR_Evidence_Unregistered>Somebody left this here before you. It has no case record on this branch yet - carry it out and take it home, and it will open one.</RR_Evidence_Unregistered>
   <RR_Evidence_Inspect>Case status: {0}\nAnalysis: {1}\n{2}</RR_Evidence_Inspect>
   <RR_Evidence_NextStep>Right-click it with a colonist to carry it out. Take it home, put it on the shelf you designate as the records archive, then analyse it at a powered field analysis bench.</RR_Evidence_NextStep>

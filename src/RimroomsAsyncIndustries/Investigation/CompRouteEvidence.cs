@@ -28,6 +28,18 @@ namespace RimroomsAsyncIndustries.Investigation
         private int bindingSchema = 1;
         private string evidenceId;
         private string carrierLoadId;
+        /// <summary>
+        /// Whether the company issued this book, as opposed to it being any other blank
+        /// book in the game.
+        ///
+        /// **Set once, at the moment of granting, and saved.** Owner, 2026-10-04:
+        /// *"Mark the company-issued ones"*. Nothing scans for books later, which is what
+        /// makes it impossible to retro-tag something a player bought or looted -- there is
+        /// no code path that could. The comp itself is on **every** Core `TextBook` by
+        /// patch, because any blank book can be written in the field; this flag is the only
+        /// thing that distinguishes the ones the branch handed out.
+        /// </summary>
+        private bool companyIssued;
         public string EvidenceId { get { return evidenceId; } }
         /// <summary>
         /// Work needed to analyse this record.
@@ -96,12 +108,45 @@ namespace RimroomsAsyncIndustries.Investigation
             carrierLoadId = parent.GetUniqueLoadID();
             return true;
         }
+        /// <summary>Whether the branch issued this book.</summary>
+        public bool IsCompanyIssued { get { return companyIssued; } }
+
+        /// <summary>
+        /// Mark this book as one the company handed out.
+        ///
+        /// Refuses anything that is not a supported carrier, so a caller cannot brand a
+        /// thing that was never a record book. Idempotent: granting is recorded by a
+        /// receipt elsewhere and this must not care how many times it is asked.
+        /// </summary>
+        public bool MarkCompanyIssued()
+        {
+            if (bindingSchema != 1 || !IsSupportedCarrier(parent)) { return false; }
+            companyIssued = true;
+            return true;
+        }
+
+        /// <summary>
+        /// The company's own label on the company's own book, and Core's on everything else.
+        ///
+        /// **The guard is the whole point.** This comp is patched onto every Core
+        /// `TextBook`, so an unguarded transform here would retitle every novel in the
+        /// game: trade stock, quest rewards and other mods' books included. That is why the
+        /// label half of *"its own label and an inspect card"* was not built until the
+        /// owner chose how to tell the two apart.
+        /// </summary>
+        public override string TransformLabel(string label)
+        {
+            if (!companyIssued) { return label; }
+            return "RR_Evidence_CompanyBookLabel".Translate().ToString();
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Values.Look(ref bindingSchema, "rr_evidenceBindingSchema", 1);
             Scribe_Values.Look(ref evidenceId, "rr_evidenceId");
             Scribe_Values.Look(ref carrierLoadId, "rr_carrierLoadId");
+            Scribe_Values.Look(ref companyIssued, "rr_companyIssued", false);
             if (Scribe.mode == LoadSaveMode.PostLoadInit && bindingSchema == 1 && IsLegacyCarrier(parent) &&
                 !string.IsNullOrEmpty(evidenceId) && string.IsNullOrEmpty(carrierLoadId))
             { carrierLoadId = parent.GetUniqueLoadID(); }
