@@ -2,7 +2,7 @@
 
 **ONE RECORD. Owner direction, 2026-10-02, verbatim:** *"and the now.md needs to be completedy deleted, then written current. The NOW .md is a temp read file not a history of all work ever done.. its a one time record only ever holding one record"*
 
-So: **replace this file, never append to it.** It had grown to 3,053 lines and 238 KB carrying nine stacked `STATE AT THIS HANDOFF` records; all of it is archived in `FINALIZED.md`. Narrative about what a checkpoint found goes to `FINALIZED.md`. A rule that must survive goes to `.claude/CONSTRAINTS.md` or becomes a checker. Open work goes to `docs/TODO.md`. Nothing accumulates here.
+So: **replace this file, never append to it.** Narrative about what a checkpoint found goes to `FINALIZED.md`. A rule that must survive goes to `.claude/CONSTRAINTS.md` or becomes a checker. Open work goes to `docs/TODO.md`. Nothing accumulates here.
 
 | Ledger | Grain |
 |--------|-------|
@@ -15,77 +15,78 @@ So: **replace this file, never append to it.** It had grown to 3,053 lines and 2
 
 ---
 
-## State, measured 2026-10-02
+## State, measured 2026-10-03
 
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`** |
-| Version | **0.12.80-dev** — read from `About.xml`, never from a document |
+| Version | **0.12.81-dev** — read from `About.xml`, never from a document |
 | Build | **211 C# files, 92 package files**, zero warnings, zero errors. Measure, never carry: `git ls-tree -r HEAD --name-only \| grep -c '^src/.*\.cs$'` and the `files` array in `tools/package-files.json` |
-| Dependencies | **293 declared**, `loadAfter` 294 with Core first. Read from `About.xml` |
-| Instruments | **16 checkers** (`tools/check-*.py`), **49 proofs** (`.local/register/proof-*.py`), **23 plant suites**. Run by **exit status**, never by grepping output — they end on five different phrasings and two end mid-sentence |
-| Staged | **YES — `0.12.80-dev`, 92 files hash-checked into the game folder.** Assembly SHA-256 `BE8B0474657BBDF9DAD912A48E86F182EFCAB7D5D72DC9264BB2C4F0D096699D`, read **from the game folder**, not from the build |
-| Launches | **At least twelve**, all by the owner. The ninth walked a Backrooms level. **Every defect any launch has found was ours — not one was a mod conflict** |
+| Dependencies | **293 declared**, `loadAfter` 294 with Core first. Read from `About.xml`. **The owner has directed that this come out — see the stand-alone row in `TODO.md`** |
+| Instruments | **16 checkers** (`tools/check-*.py`), **49 proofs** (`.local/register/proof-*.py`), **23 plant suites**. Run by **exit status**, never by grepping output |
+| Queue | **79 open · 39 partial · 38 `[T]` · 0 `[x]`** |
+| Launches | **At least twelve**, all by the owner. **Every defect any launch has found was ours — not one was a mod conflict** |
 
 ---
 
-## STAGED AND VERIFIED — the next action is a launch
+## PUBLICATION CADENCE CHANGED — batches of 10 to 12, not every change
 
-`0.12.80-dev` is in the game folder, **92 files hash-checked**, and the two fixes were read back out of the staged copy rather than assumed: `<order>5</order>` and the Store's `MealSurvivalPack` 100 (Async 50 and solo 5 unchanged).
+**Verbatim owner direction (2026-10-03):** *"aftert u finish up go ahead and get back to the staging, now.md writeing, and the cascades but not every time u do something only after you finish like 10-12 items in the todo do u do another stage/cascade"*
 
-```
-staged      Rimrooms.AsyncIndustries  0.12.80-dev  92 files
-assembly    BE8B0474657BBDF9DAD912A48E86F182EFCAB7D5D72DC9264BB2C4F0D096699D   (read from the GAME FOLDER)
-```
+This replaced *"no need to stage and no need to cascade until told to start again"*, which was that direction's own stated exit. So: stage, rewrite this file, and run the **ten-ref** cascade — but only once a batch of **10–12 closed items** has landed. Count closed items as **rows archived out of the queue into `FINALIZED.md`**, because that count cannot be inflated: a row only leaves on a proved byte-for-byte transfer.
 
-`stage-mod.ps1` refused twice first, correctly — it will not stop a process, and the owner's session was live. **The owner then directed the kill explicitly** (*"dont forget to kill the exe and stage"*), so PID 21632 was terminated and staging ran. The save lost to it was disposable by construction: a changed `ScenPart_StartingThing_Defined` only applies to a **new** game, so testing these fixes needs a fresh start anyway.
-
-**Next: RimSort refresh → review the 295-entry target → sort → launch a fresh Furniture & Knickknack Store start.** Run `python tools/check-planner-layouts.py` first — checker 14, the only one that runs the planner for real.
-
-**What a launch has to settle, in this order:**
-
-1. **Architect is the far-left tab** and Operations sits immediately right of it.
-2. **100 packaged survival meals** are on the map at the Store start.
-3. **Whether the rest of the grants land** — `Silver` 200, `WoodLog` 200, `Cloth` 120, `Steel` 80, `MedicineHerbal` 8, `Gun_Revolver` 1 — plus whatever Prepare Carefully was given. **This is the open bug below, and it is the reason to launch.**
+**This publication carried 49 archived rows**, far past one batch, because the preceding session ran under the no-cascade direction.
 
 ---
 
-## What 0.12.80-dev changed
+## What 0.12.81-dev changed
 
-**Architect has the far-left tab slot back.** Owner: *"i find my self trying to click archetic(which was in far left) but find my self out of habit click operations(because it took the archetect postioton)"*. `RR_MainButtons.xml` went `<order>0</order>` → `<order>5</order>`, so Core's own sort puts Architect at 1 and Operations immediately right of it. **No patch against a Core def** — that would fight every row of the Interface family at once. The proof now asserts **both** bounds (above Architect, below Work), because one bound passes a value that re-breaks the other end; three plants hold it, 57 of 57.
-
-**The Store start grants 100 packaged survival meals instead of 24 simple ones.** It was the only scenario granting a simple meal, and **a simple meal spoils** — the start was handing over two dozen meals and quietly taking them back. Both defs were verified present in the installed game data before the swap rather than assumed.
+1. **A world tile is a round trip.** Emerging through a natural gate was one-way by construction — `LeaveThroughWorldExit` was the only direction, while `WorldExitRecord` had been saving `coordinateId` and `doorLoadId` all along with nothing reading them. `EstablishReturnGate` registers the claimed map as a remote site, spawns a marked Core `Door`, and registers an `Emergence` edge home **before anybody is despawned**. Every failure after the spawn destroys the door rather than leaving a false way home standing.
+2. **A door can be commissioned as the gate before its circuit exists.** `DesignateAsGate()`. The old button resolved three providers and refused if any was absent or ambiguous, so a company start with no battery had no route from door to gate at all.
+3. **An open gate is not charged power to pass somebody through.** `PortalWindowBlockerKey` was applying three *opening*-time power conditions to a crossing — including `ProjectedOpeningPowerFailure`, whose own docstring says *"This gates opening only"*.
+4. **The blank record book explains itself**, instead of returning a null inspect string in the one state a player ever starts holding.
+5. **The grand hall is placed from the seed**, position and orientation. It was two literals and had opened in the bottom-left corner of every level ever generated.
+6. **The corridor has one authority.** `RoomLayoutPlanner.CorridorLegs` — extents, width, walls, the back-to-back skip — read by both the validator and the carver. Extraction proved byte-identical across all seven depths.
 
 ---
 
-## THE REAL BUG IS STILL OPEN, AND THE MEASUREMENT IS WHY NO FIX WAS WRITTEN
+## THE NEXT THING, AND THE FINDING THAT SHAPES IT
 
-Owner: *"they need to properly spawn in with starting goods"*.
+**Bent corridors, and they unlock three other owner clauses at once.** Straight-only carving is *why* links must be grid-adjacent, so *"corradors arent all straight"*, *"room connected to like 0 - 10 other rooms"*, *"u -turns"* and *"multiple coices on directions to take in every rooms"* are **one job, not four**.
 
-A **9,216-cell sweep** around the three colonists at (147, 151), through the bridge against the live process, found **none of the Store's consumable grants**: no `Silver` 200, no `WoodLog` 200, no `Cloth` 120, no `MealSimple` 24, no `MedicineHerbal` 8, no `Gun_Revolver`, and **6 `Steel` against 80**. Every shop **fixture** was present — 18 `Shelf`, 6 `Bed`, 3 `ElectricStove`, 12 `Table2x2c` — so the layout ran and the grants did not.
+**Doglegging between room centres is UNSAFE, which is why this is not a loop change.** At depth 1 slots sit 45 apart and rooms are ~34 across: an L-corridor for the diagonal pair (0,0)→(1,1) runs from (36,36) toward x=81 and straight into the room at slot (1,0), which occupies x 64..98. Bends must run in the **rock gap lanes** between slots. `CorridorLegs` is now the one function that has to change.
 
-**The sweep reads shelf contents** (it reported `Steel`, `MedicineUltratech`, `Gun_ChargeRifle` inside shelf cells), so the absence is measured rather than a hole in the instrument.
+**Two hazards it must answer, both silent if missed:** a multi-leg corridor places a **wall at each joint** inside the next leg's floor, so wall placement must skip any leg's floor cells; and `CorridorSideCells` would report a joint cell that is another leg's **centre line**, so the dressing could furnish the middle of the route. A blocked corridor is the unreachable-room class that cost this project thirty-nine checkpoints.
 
-**Do not read the loot as the start.** The one `MealSurvivalPack` on the ground and the one in each pawn's inventory are **Core's default pawn possession**. The `Gun_ChargeRifle` ×3, `MedicineUltratech`, `MechSerumYouth` and `Neurotrainer_Mining` are **ancient-danger loot**, beside `AncientCryptosleepCasket`, `AncientHermeticCrate`, `Sarcophagus` ×6 and `SteleLarge` ×12.
+---
 
-**Where to look first.** Prepare Carefully's equipment and the scenario grants reach the map through the **same** `ScenPart.PlayerStartingThings()` enumeration, which is why one break explains both halves of the original report. `ScenPart_RimroomsArrival` has **two silent `return` sites before it ever calls `base.GenerateIntoMap`** — the tile/`Current` guard at the top, and `if (receipt.arrivalStarted) { return; }`. Neither logs anything. The receipt-incomplete path *does* log and **no such error was in `Player.log`**, so that branch did not run.
+## Measured numbers to aim at — `check-planner-layouts.py`
 
-**It needs a fresh start on a staged `0.12.80-dev` to measure against.** Rewriting the arrival path on a hunch is how three consecutive launches were lost to three different causes in the same method.
+Checker 14 is the only instrument that runs the planner for real, and it was taught to see degree, fill and hall placement this session because **every column it had was about whether a layout was LEGAL, not whether it reads as a maze.**
 
-**Instrument:** `python .local/qa/scan-starting-goods.py <rimworld pid> [x0 z0 x1 z1]` → `.local/qa/live-goods-report.txt`.
+| depth | avg degree | max degree | roomfill | hall spots | in old corner |
+|---|---|---|---|---|---|
+| 1 | 2.37 | **4** | 46.0% | 56 | 16% |
+| 3 | 2.39 | **4** | 38.8% | 59 | 7.5% |
+| 5–8 | ~2.2 | **4** | **17.1%** | 113–116 | ~13% |
+
+- **avg degree 2.2–2.4 is literally one entrance and one exit.** The braid adds ~0.4 over a bare spanning tree.
+- **max degree 4 is a hard ceiling**, because every link must join grid-adjacent slots. The owner's 0–10 is unreachable without bent corridors.
+- **roomfill falls to 17% by depth 5**, so a deep coordinate is 83% uncarved rock — and it gets *worse* with depth.
 
 ---
 
 ## Read these before touching anything
 
-- **The cascade is TEN refs, not eight.** `forgejo, github` × `feature/connected-colony-portals, Prep, Develop, Main`, **plus `feature/bug-testing` on both**. A publish that reads back eight has left the branch the work is on unpublished, silently. **Count the branch you are on.**
-- **The bridge works.** `127.0.0.1:5174`, read via `.local/qa/bridge.py` or the allowlisted `tools/qa/rimbridge_readonly.py`. A previous session declared it dead while probing the wrong ports; check the log for `[RimBridge] GABP server running standalone on port` before claiming otherwise. Its Lua is a lowered DSL over other capabilities, **not** general Lua — it cannot reach `listerThings`, so reading the map means cell sweeps.
-- **Use the Write tool for any script with escapes or apostrophes.** A bash heredoc has mangled `\n`, `\s` or a plain apostrophe **eleven times** here.
-- **CHECK A ROW AGAINST THE CODE BEFORE BUILDING FOR IT.** Nine rows in one session turned out already built, already true, or answered by Core.
-- **The mod register is GUIDANCE, not law.** Consult it, say what it said; a row never vetoes work. `python tools/register-query.py use <trace>`.
+- **The cascade is TEN refs, not eight.** `forgejo, github` × `feature/connected-colony-portals, Prep, Develop, Main`, **plus `feature/bug-testing` on both**. A publish that reads back eight has silently left the branch the work is on unpublished. **Count the branch you are on.** Full procedure: `PUBLISHING.md`.
+- **A CLAIM AFTER A PROOF'S EXIT GATE IS A CLAIM THAT CANNOT FAIL.** Appending checks after `if failures: sys.exit(1)` records failures nothing acts on. It happened this session and the plants caught it, not the author. Swept all 49 proofs: no other instance.
+- **An absence claim must read comment-stripped source.** `"x" not in planner` fails against correct code because the comment explaining the removed `x` quotes it. Use `planner_code` / `no_comments()`. `code()`'s docstring had counted thirty-six instances; this session made thirty-seven.
+- **REBUILD THE MOD BEFORE BELIEVING THE PROBE.** `check-planner-layouts.py` rebuilds the *probe* and links the already-built assembly. Measuring before `tools/build.ps1` reported a fix that had not shipped.
+- **CHECK A ROW AGAINST THE CODE BEFORE BUILDING FOR IT.** Twenty-one rows were closed this session as already-built; separately, two slices of a seven-slice plan turned out unnecessary or already done.
+- **A `[~]` row is not automatically honest.** Ten of fifty partials were governance wearing checkboxes or finished work nobody ticked.
+- **The mod register is GUIDANCE, not law.** `python tools/register-query.py use <trace>`.
 - **`docs/CAMPAIGN_CHART.md` is the authority on campaign structure** and beats any prep document.
-- **Tests are not the concern yet.** Unverifiable-without-a-launch is **never** a reason to defer building something.
-- **Do not stop.** Chain checkpoints; batch related rows and publish once.
+- **Use the Write tool for any script with escapes or apostrophes.** A bash heredoc has mangled `\n`, `\s` or an apostrophe eleven times here.
 
 ---
 
@@ -96,7 +97,7 @@ ReflectionTypeLoadException getting types in assembly RimBridgeServer:
 expected class 'HarmonyLib.CodeInstruction' in assembly '0Harmony, Version=2.4.2.0'
 ```
 
-`RimBridgeServer.dll` wants **0Harmony 2.4.2.0**; `brrainz.harmony` ships **2.4.1.0**. **Harmony loads at position 5 and the bridge at 198, so it is not ordering.** Our package loaded clean in the same log: zero Rimrooms errors, zero cross-reference errors. The fix is on the machine. (Note: the GABP standalone server on 5174 **is** running and answering regardless.)
+`RimBridgeServer.dll` wants **0Harmony 2.4.2.0**; `brrainz.harmony` ships **2.4.1.0**. Harmony loads at position 5 and the bridge at 198, so it is not ordering. Our package loaded clean in the same log. The fix is on the machine.
 
 ---
 
@@ -109,30 +110,21 @@ grep -c '^\s*- \[T\]' docs/TODO.md    # post-completion test phase
 grep -c '^\s*- \[x\]' docs/TODO.md    # 0, and it must stay 0
 ```
 
-**`docs/TODO.md` went from 493.8 KB to ~79 KB and `docs/DECOMPOSED.md` from 30.6 KB to 4.1 KB** by owner direction: *"the todods sahll never hold completed items"*. Three things came out, and the last two a row count cannot see: 727 `[x]` rows; nine `##` sections titled as dated checkpoint records (their 38 open rows carried forward into Pending); and **finished work written inside open rows** — one `[~]` row was 3,796 characters, ~3,000 of them six completed build passes.
-
 **Archive at the end of every batch that closes rows**, not at a milestone:
 
 ```
-python .local/qa/archive-finished-todo.py --apply
-python .local/qa/archive-finished-todo.py --queue docs/DECOMPOSED.md --apply
-python .local/qa/verify-archive-move.py
+python tools/archive-finished-todo.py --apply
+python tools/verify-archive-move.py                                   # straight after, every time
+python tools/archive-finished-todo.py --queue docs/DECOMPOSED.md --apply
+python tools/verify-archive-move.py
 ```
 
-The mover **never rewrites a line**: it labels every line index KEEP or MOVE and asserts reassembly reproduces the original **byte for byte**, writes the archive **first**, confirms every moved line present, and only then rewrites the queue. LAW: `.claude/CONSTRAINTS.md §FINALIZED BEFORE DELETE`.
-
----
-
-## Three things in the queue that need a human, first
-
-1. **Two sections titled DONE carry twenty-two unticked `[ ]` rows** — *The first walked level* and *Lights and geometry*, both 0.12.61-dev, under *Open rows carried out of the play-testing checkpoints*. **The title is not the marker.** Read them and tick what is actually done.
-2. **The adapter-families row contradicts the surgery row.** It says *"Surgery across a gate is the named remainder"*; the surgery row closed at 0.12.33-dev finding Core **forbids** it. If that closure stands, the adapter row is `[x]`. Flagged, not flipped.
-3. **The workbook row contradicts the retro-sweep row.** One says 14 of 21 register families swept with 7 to go; the other closed at 0.12.42-dev saying all twenty-one are done.
+Both tools **moved out of gitignored `.local/qa/` into tracked `tools/` on 2026-10-03** by owner direction: `CONSTRAINTS.md` names them as the proof of verbatim transfer, and a LAW instrument that exists on one machine is not an instrument the team has. The mover snapshots the queue and the archive **before** writing anything, and the verifier reads the newest snapshot — so run it straight after. `STALE SNAPSHOT` exit **2** (baseline predates other edits; nothing was checked) is distinct from `FAILED` exit 1 and `VERBATIM TRANSFER CONFIRMED` exit 0.
 
 ---
 
 ## Is it done?
 
-**The build is. The play is not.** Re-staging and a launch is the only work that unblocks anything, and `python tools/check-planner-layouts.py` (checker 14, which runs the planner for real) goes first.
+**The build is. The play is not.** `0.12.81-dev` is staged and published; the next action that unblocks anything is a launch, and only the owner launches. Run `python tools/check-planner-layouts.py` first — checker 14, the only one that runs the planner for real.
 
 Read a launch log in this order: `Player.log`, grep the **first** `[Rimrooms]` line, then `python .local/qa/bridge.py call rimworld/list_letters '{}'`. One launch's log had hundreds of red lines all downstream of the first; another had none and the answer was in a letter.

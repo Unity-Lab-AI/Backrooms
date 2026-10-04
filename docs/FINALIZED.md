@@ -13953,3 +13953,699 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.80-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-03)
+
+**Date corrected by hand, 2026-10-03, and the reason recorded rather than quietly fixed.** The mover wrote this heading `(2026-10-02)` on **2026-10-03**, because `archive-finished-todo.py` held `today = "2026-10-02"` as a literal in `main()`, so every region it would ever write carried that one day. The literal is now `datetime.date.today().isoformat()`. **Only the heading date changed; not one archived line was touched**, which is the thing `§FINALIZED BEFORE DELETE` protects. The owner-direction quote below stays dated 2026-10-02 because that is when the direction was given — it is quoted, not stamped.
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **21 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **"every backrooms instance need a protal to the world map and a deeper in portal"** — a hard guarantee of **two** natural gates per instance: one out to the world map, one deeper. Not a chance roll. — **BUILT, and it is its own file.** `Portals/GuaranteedFrontiers.cs` picks two doorways per coordinate, derived from the coordinate's own seed over its doorways sorted by position, and they **skip the rarity draw** and have their kind decided rather than drawn. They do **not** count against the cap, because a cap that could starve the guarantee would make it conditional. Re-derived if either door stops existing.
+- [x] **"there were zero portals to be discovered"** and **"have more natural portals guaranteeed so the backrooms never ends persay"** — **BUILT, same file, and it quotes this report verbatim as the reason it exists.** The cause is recorded there too: `Evaluate` ended on `if (draw % origin.Rarity != 0)` with `FrontierRarity = 12` — one doorway in twelve, so a whole level could roll none and the owner walked one that did.
+- [x] **"not enough rooms"** — nine is not a Backrooms level — **BUILT.** `RoomLayoutPlanner.SlotsPerAxis` runs **6×6 at depth 1 up to 10×10** at depth 5+, with `MaxRooms` **60** holding the owner's *"leas than 60-100 romms"*. The `MinSlotsPerAxis` doc comment names this row as the reason it is 6 and not 3.
+- [x] **"it needs to be more maze liek and scary inducing beyond the main starting themed opening room"** — **BUILT.** `BuildMaze` is a randomised depth-first maze over the slot grid whose carve order is rotated per slot, **then braided** — `BraidRarity` 3 links back one in three of the adjacent pairs the walk left alone, so there are loops and junctions that lie instead of one route between any two rooms. The serpentine survives as the fallback candidate only.
+- [x] **"the normal yellow backrooms look isnt the whole floor but the main spanw room"** — **BUILT, three mechanisms agreeing.** `MakeHall` gives the threshold **two slots** (~80 cells at depth 1) with no `Derange` and no span variation, so it is the one room meant to read as built; `BackroomsPalette` fixes depth 1 as the canonical yellow and diverges every step inward; and `RoomArchetypeService.Select` returns null for `threshold_room` outright, so the arrival hall is never dressed.
+- [x] **"going deeping in can mean the numner of branch hallways and rooms distancing from the main portal spawn in the back rooms continuw on into the map with variations and oddity and events and locations and places that vary more even on the first level"** — **BUILT, and this row is quoted in the code that implements it.** `RoomArchetypeService.EffectiveDepth` and `RoomLayoutPlanner.ShapeDepthOf` both add **distance from the hall, measured in links**, to the coordinate's depth — `LinksPerShapeBand` 3, capped at `MaximumShapeBand` 4 — which is what makes a first level vary at its far edge without reaching the sixth level's content.
+- [x] **"not enough loot"** — **BUILT.** `RoomContentBuilder.DressRoom` walks each archetype's slots with `SlotAppears` / `SlotCount` / `stackCount` rolls, and `RoomArchetypeService.Resolve` answers every slot by **asking the whole def database a capability question** — work table, bed, sittable, storage, glower, art — so the pool includes Core, every owned DLC and all 294 profile mods rather than a list that rots. Dressing takes the coordinate's palette material via `CoordinateMaterials.StuffFor`.
+- [x] **"not enough weird stuff like a room with a lost person or a room full of bodies or suppplies or a labratory ofr class room or hospital of manufactuing room or tool sheed or weapons locker with loot and supplies anssd furnuture"** — **BUILT, and the list is nearly one-for-one.** **Sixteen** `RimroomsRoomArchetypeDefs`: `RR_Room_Classroom`, `RR_Room_WeaponsLocker`, `RR_Room_Laboratory`, `RR_Room_Workshop`, `RR_Room_Nursery`, `RR_Room_Dormitory`, `RR_Room_Canteen`, `RR_Room_Storeroom`, `RR_Room_MachineHall`, `RR_Room_Ward`, `RR_Room_Office`, `RR_Room_Salvage`, `RR_Room_Gallery`, `RR_Room_Duplicate`, `RR_Room_Wrong`, `RR_Room_Hoard` — the classroom, the weapons locker and the laboratory by name, `Ward` for the hospital, `MachineHall` for the manufacturing room, `Workshop`/`Storeroom` for the tool shed. **Nine** `RimroomsInhabitantDefs` carry the people and the bodies: `RR_Inhabitant_Wanderer`, `_Missing`, `_Survivor`, `_Psychotic`, `_PsychoticPack`, `_DeadRecent`, `_DeadStripped`, `_DeadCrew`, `_Echo`.
+- [x] **"all ot of it randomly like and scary freaky spooky like"** — **BUILT as a weighting, not a flag.** `RoomArchetypeService.Select` multiplies any archetype marked `anomalous` by `SpaceSophistication.AnomalousWeightFactor(depth, campaign)`, so the strange archetypes **outweigh** the ordinary ones as a coordinate deranges rather than merely matching them — by which point the ordinary room is the surprise. The legal list is ordinal-sorted before rolling so a seed produces the same place on another machine with a different mod list.
+- [x] **"the furnature is only in the four corners of the rooms that nots very random"** — **BUILT, and the code quotes this row and credits the read.** `RoomContentBuilder.ScatterAnchor` is documented *"Where a fixture would like to stand: anywhere in the room, not a corner"* and *"**They were reading the code off the screen.** The anchor used to be one of exactly four cells — each corner inset by two — and every candidate cell was sorted by distance to it, so four slots cycling four quadrants filled the corners and left the middle bare."* Rotation is now `new Rot4(Scatter(seed, slot, "facing", 4))` — all four facings, because a room where everything faces north reads as arranged.
+- [x] **"zero weird events or people"** — **BUILT, both halves.** **Seven** `RimroomsAnomalyEventDefs` — `RR_Anomaly_Presence`, `_LightsFail`, `_ColdSnap`, `_Seepage`, `_Rearrangement`, `_DeepCold`, `_Blackout` — driven by `Threats/AnomalyEventService.cs`; and the nine inhabitant defs above through `Threats/InhabitantService.cs`.
+- [x] **"we need more lights and mixedered varies of lights"** — **BUILT, at three levels.** `BackroomsPalette.For(depth, seed)` resolves a light **per depth band**, Core `WallLamp` where one mounts and `StandingLamp` as the fallback; `GenStep_BackroomsDestination` builds a **per-room `lightDefs` list** rather than one global def, so one level mixes wall-mounted and floor lamps according to what each cell can take; and `RoomSlotKind.Light` resolves against **every def in the loaded game carrying `CompGlower`**, which is Core plus DLC plus all 294 profile mods.
+- [x] **"the main grand themed backrooms universe rooms need like a wall light on every column wall used"** — the pillar lattice already exists in `RoomLayoutPlanner.PillarCells`, so every pillar is a known cell with a wall to hang a lamp on — **BUILT exactly that way.** `GenStep_BackroomsDestination.SpawnPillarLamps` iterates `RoomLayoutPlanner.PillarCells(room)` — the single place the lattice is decided — and the code comment is *"**A LAMP ON EVERY PILLAR**"* quoting this row. One lamp in an eighty-cell hall was the thing it replaced.
+- [x] **"as in the universe of backrooms the basic rooms are well lit"** — brightness is part of the theme, not a convenience — **BUILT.** The pillar lamps above plus the per-room light, so a grand hall is lit across its whole span rather than from one corner.
+- [x] **"you can have back to back roomes"** — rooms sharing a wall, with no corridor between — **BUILT, and it is one rule with three readers.** `RoomLayoutPlanner.SharesWall` is the single place the condition is decided; `PushAgainst` slides a **dead-end** room until its wall meets its host's, one cell clear so each room keeps its own wall; `BuildCorridors` skips the pair and `CandidateIsSafe` proves the route through the doorway instead of a corridor. Only ever a dead end, because a room with one link cannot re-route anything by moving — and the move is **undone** if it leaves the map, collides with a third room, or `SharesWall` disagrees.
+- [x] **"mazes of halways of varied widtchs and lengs"** — **BUILT.** `CorridorHalfWidthBetween` derives each corridor's width from the two rooms' own indices — **three cells or five** — shared with `CandidateIsSafe` so the corridor proved is the corridor carved; and `Derange`'s hallway branch turns a room itself into a corridor at up to 35% at depth, long side the full span and short side a third of it.
+- [x] **"odd variers walls and contructions making narrows , expansies"** — **BUILT, and this row is quoted twice in the code.** `Derange` pulls proportions away from the family defaults harder with depth **and with distance from the hall** — the comment reads *"**PROPORTIONS COME APART WITH DISTANCE, NOT ONLY WITH DEPTH**"* against this row, because it used to return immediately at depth 1. Inside a single room the `PARTITION` form cuts a stub wall for a narrows and a dead-end alcove, and `BAYS` cuts a row of alcoves along one wall.
+- [x] **"triangle, octangones, rombones, all the geomentry and mixetrues"** — **BUILT as seven forms.** `RoomLayoutPlanner.ShapeForms` = 7: `ELL` one quadrant, `TEE` two, `CROSS` all four, **`WEDGE` a right triangle with its hypotenuse facing into the room** (*"the owner asked for triangles; this is one"*), `PARTITION`, `BAYS`, and `CORNERS` — quarter-**ellipse** masses whose filled-corner bitmask decides between a **trapezoid, a rhombus and an octagon**. Form 0 is a plain room on purpose: *"a floor where every room is deranged is as uniform as one where none is."*
+- [x] **"odd contructions of doors walls corners deadends"** — **BUILT.** The seven forms above leave `Mineable` rock standing inside rooms so a player who wants the rectangle can dig for it; `BuildMaze` produces dead ends in quantity and `AssignMazeFamilies` turns **every** one-link room into a `storage_nook` or `utility_room`; and the doors are below.
+- [x] **"doors to now where"** — a door that opens onto solid rock or a sealed closet — **BUILT.** `RoomLayoutPlanner.FalseOpening`: a wall carrying no link may open anyway, one in `FalseOpeningRarity` = 3, **offset a third along the wall rather than at the midpoint** so it reads as somebody having put a door there rather than as a corridor that failed to arrive. Never on the threshold hall. Safe by construction — it adds a dead end and removes no route — and both the generator and the validator reach it through `DoorOpening`, so the wall proved is the wall built.
+- [x] **"not just doors on 4 cosides of nothing but square rooms"** — the current rule is literally a doorway at the midpoint of each of four walls — **BUILT, and the trailing note is now stale: that is no longer the rule.** `FalseOpening`'s own doc comment quotes this row and says *"The rule above IS that complaint written as code"* — the four midpoint openings are still there for real links, and now any other wall may open onto rock. Combined with the seven shapes above, a room is neither square nor four-doored. **The note is kept rather than deleted** per `§NEVER DELETE TODO INFO`; it records what was true when the row was written.
+
+Build at the time of the move: **0.12.80-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Twenty-one rows were already built, and the LAW's own re-check could only ever check one day - 2026-10-03
+
+**Verbatim owner direction (2026-10-03), the session:** *"we are finishing buildable items still open in todos(test items and live runs are not being done yet so no need to stage and no need to cascade until told to start again"*
+
+**Verbatim owner direction (2026-10-03), mid-session:** *"and something i dont like that is going to take major major work and should be added to the todo : rework mod to not need any depeancie mods"*
+
+No game was launched, nothing was staged, nothing was cascaded. The staged copy stays `0.12.80-dev` and that is correct.
+
+### The first thing done was NOT building, and that was the point
+
+`docs/NOW.md` carries a standing warning - *"CHECK A ROW AGAINST THE CODE BEFORE BUILDING FOR IT. Nine rows in one session turned out already built"* - and names, as the first of three things needing a human, that **two sections titled DONE carried twenty-two unticked `[ ]` rows**. `.claude/CONSTRAINTS.md §FINALIZED BEFORE DELETE` is explicit that the heading is not the marker: *"A section titled DONE whose rows are still `[ ]` does not move."*
+
+So every one of the twenty-two was read against the source. `RoomLayoutPlanner.cs` (1,351 lines) and `RoomArchetypeService.cs` (392) were read in full in 800-line chunks; `RoomContentBuilder.cs`, `BackroomsPalette.cs`, `GuaranteedFrontiers.cs`, `About.xml`, the csproj and four Def folders at the named sites.
+
+**Twenty-one were built. Nobody had ticked them.** In several cases the implementing code **quotes the row it answers** and describes the old behaviour in the past tense - `ScatterAnchor` reads *"**They were reading the code off the screen.** The anchor used to be one of exactly four cells"*, and `FalseOpening` reads *"The rule above IS that complaint written as code"*. The twenty-second is the only one that could not be settled from here.
+
+### Register checked
+
+`python tools/register-query.py trace RR-SPACE` -> **15 rows**: Core *Required*, the rest *Optional* / *Configuration only* / *No integration*. **None applied**, because the pass changed no generator code. Stated explicitly per `§CHECK THE MOD REGISTER BEFORE BUILDING`, which requires saying so rather than leaving silence to stand as evidence of having looked.
+
+### The one row that moved to `[T]` instead of closing
+
+*"there is a weird route thing name a self in one of the rooms"*. The owner's own read was *"we probably havent gotten to a routing system yet"* - **and that supposition is wrong, the system exists**: `CompRimroomsMarker` with five marker types, `RR_Marker_Route` labelled *"route home"*, numbered through `FirstSliceSiteComponent.NextMarkerNumber`. But markers are player-deployed, so a freshly generated level should carry none, and **what the owner actually saw cannot be named from here**. Editing a label on a hunch is the move that lost three launches to three causes in one method, so it was not done.
+
+### THEN THE ARCHIVER'S OWN VERIFIER FAILED, AND READING THE FAILURE WAS THE REAL FINDING
+
+`archive-finished-todo.py --apply` moved the 21 rows with its reassembly identity holding and all 21 confirmed present. `verify-archive-move.py` - which **this LAW names as the independent re-check** - printed `FAILED`.
+
+It was right to print something and wrong about what. **Three hardcodings, each measured:**
+
+| Defect | Evidence |
+|---|---|
+| The mover wrote **no snapshot at all** | zero hits for `backup`/`shutil`/`copy` in the file; `backup-20261002/` was copied **by hand** |
+| The verifier hardcoded that folder | `BACKUP = os.path.join(HERE, "backup-20261002")`, plus `TODO.md`/`FINALIZED.md` by name, so a `--queue docs/DECOMPOSED.md` move was unverifiable |
+| The mover hardcoded the date | `today = "2026-10-02"` - this session's own region, written 2026-10-03, was stamped 2026-10-02 |
+
+**So the independent re-check the LAW promises worked on exactly one day and printed a confident `FAILED` on every move since** - while the mover's own identity assertion went on holding, so nothing was ever actually lost. The danger was never a lost line. It was that **a red light nobody can act on is a red light people learn to ignore**, and this one guards the only proof standing between a queue edit and a lost owner direction.
+
+**Fixed, and one fix is a new idea rather than a path change.** A verbatim move only ever *removes* lines - so a queue holding a line its baseline never had was edited by something other than the move. That is an exact discriminator, not a heuristic, and it makes `STALE SNAPSHOT` (exit 2) a third outcome distinct from `FAILED` (exit 1) and `VERBATIM TRANSFER CONFIRMED` (exit 0). Proved both ways before being believed: fresh snapshot -> five checks byte-identical, exit 0; legacy folder -> `STALE SNAPSHOT - nothing was checked`, exit 2, naming the first unexplained line.
+
+### The new owner direction was measured before it was queued
+
+*"rework mod to not need any depeancie mods"*. The words say *"major major work"*; the measurement says the job has two halves of wildly different size, and saying so is why it was measured first:
+
+- `About.xml` declares **294 hard `modDependencies`** and 294 `loadAfter`.
+- The assembly references **four** things: `Assembly-CSharp` and three Unity modules. **Nothing else. No Harmony.**
+
+So the half the player feels - the missing-dependency wall - is a `modDependencies` block. The *"major major"* half is **proving** the Core-only path: every by-name lookup degrading, both `PatchOperation`s staying guarded, and no Def, grant, recipe, archetype slot or keyed string assuming a DLC def exists. Queued as five rows plus a `[T]`, and recorded as **superseding owner decision D3/D4 as amended 2026-10-01**, which currently says the opposite in `GATE_0_DECISIONS.md`, `ROADMAP.md` and `ARCHITECTURE.md` - all three to be rewritten in the same commit as the work.
+
+### Queue effect
+
+`docs/TODO.md` went **80 open -> 62**, partial 45 -> 49, test 34 -> 36, `[x]` **0 both before and after**. The open count rose by the four new dependency rows and fell by twenty-one closures and one reclassification; the arithmetic was checked against the mover's own census before applying rather than after.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-03)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TODO.md`
+
+### The LAW's own instrument could only ever check one day — 2026-10-03
+
+**Found while archiving the twenty-one adjudicated rows above, by running the verifier the LAW names and reading its failure instead of dismissing it.**
+
+`.claude/CONSTRAINTS.md §FINALIZED BEFORE DELETE` says the transfer is proved by `.local/qa/archive-finished-todo.py` **"with `.local/qa/verify-archive-move.py` re-checking the result independently"**, and `docs/NOW.md` repeats it. The re-check has worked **exactly once, on 2026-10-02**, and has been structurally unable to work since — while still printing a confident `FAILED`, which is the worst possible state for a safety instrument: a red light nobody can act on teaches people to ignore red lights.
+
+Three separate hardcodings, each measured:
+
+- [x] **The mover writes no pre-move backup at all.** `grep -c 'backup\|shutil\|copy'` over `archive-finished-todo.py` is **0**. `.local/qa/backup-20261002/` was made **by hand** on 2026-10-02. So the verifier's entire basis for comparison exists only because somebody copied four files once. — **FIXED.** `write_backup()` snapshots the queue and `FINALIZED.md` into `.local/qa/backup-<YYYYMMDD-HHMMSS>/` **before the archive append**, writes `queue-name.txt` beside them recording which tier it came from, and `main()` prints the path and the follow-up command. A snapshot taken after the thing it snapshots is not one, so it runs first; the abort path names it too, so a refused move leaves a usable baseline.
+- [x] **The verifier hardcodes that folder:** `BACKUP = os.path.join(HERE, "backup-20261002")`, plus `"TODO.md"` and `"FINALIZED.md"` by name. So it compares **today's** queue against an **October 2nd** baseline and reports a difference as a verbatim-transfer failure. It also cannot verify a `--queue docs/DECOMPOSED.md` move at all, which `NOW.md` documents as a normal thing to run. — **FIXED, and it gained a third outcome rather than just a path.** `pick_backup()` takes `--backup <dir>` or the newest `backup-*` folder; `backed_up_queue()` reads the stamp and falls back to `docs/TODO.md` for the legacy folder, so any tier verifies on the same footing. **And a stale baseline now reports as `STALE SNAPSHOT` with exit 2, not `FAILED`** — the discriminator is exact rather than heuristic: *a verbatim move only ever removes lines*, so a queue holding a line its baseline never had was edited by something other than the move. Proved end to end on a fresh snapshot: all five checks byte-identical, `VERBATIM TRANSFER CONFIRMED`, exit 0; and against the legacy folder: `STALE SNAPSHOT - nothing was checked`, exit 2, naming the first unexplained line.
+- [x] **The mover hardcodes the date:** `today = "2026-10-02"` in `main()`. Every archive region it will ever write is stamped 2026-10-02. **`docs/FINALIZED.md` line 13959 is this session's own region, written 2026-10-03, carrying `(2026-10-02)`.** This project enforces a dated-claim rule on every other document and its own archiver was breaking it. — **FIXED.** `today = datetime.date.today().isoformat()`. The already-written heading was corrected by hand to `(2026-10-03)` with the reason recorded inline in `FINALIZED.md`; **only the heading date changed and no archived line was touched**, which is what `§FINALIZED BEFORE DELETE` protects. The quoted owner direction inside the region stays dated 2026-10-02 because that is when it was given — quoted, not stamped.
+
+**Docs updated in the same change, per `§DOCS BEFORE PUSH`:** `.claude/CONSTRAINTS.md §FINALIZED BEFORE DELETE` gained the two bullets describing who writes the baseline and why `STALE SNAPSHOT` is a separate outcome; `docs/NOW.md` §The queue gained the run-the-verifier-straight-after rule and the three exit codes.
+
+**Why this is worth stopping for rather than noting.** The LAW's proof of verbatim transfer is the only thing standing between a queue edit and a lost owner direction, and every future archive would have reported `FAILED` for a reason that has nothing to do with the transfer. The mover's own `assert_lossless` identity still held on every run, so nothing was ever actually lost — but the independent check the LAW promises was absent and looked present.
+
+
+Build at the time of the move: **0.12.80-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Two bug reports fixed from the running game, and a plant re-aimed to guard the new rule - 2026-10-03
+
+**Verbatim owner report (2026-10-03), the gate:** *"and another bug report on the company scenerio start i build and set up and open the gate but it incorrectly says i dont have power to send people through, even tho the gate is open and connected,,, thast is wrong if its open it doenst need special power to send things through the gate"*, then naming the message: *"when i try to send people through it gives me a error about not enough reserver power in the batteries or something incarrate that shouldnt be"*.
+
+**Verbatim owner report (2026-10-03), the journal:** *"and something i saw is the company is suppose to supply u with a journal to do tasks in but they only gave me noraml books named wrong things that dont do anything"*, and at the fork the owner chose *"It IS the record book - just say so"*.
+
+### The gate: an open aperture was being charged power to pass somebody through
+
+`PortalWindowBlockerKey` is the single authority gating a crossing - `HasUsablePortalWindow` only asks it - and it called `CheckStationReadiness` **whole**, so passing somebody through a **live** aperture was asked three *opening* questions: the `stablePowerTicks` spin-up counter, `HasPowerAndHeadroom()`, and `ProjectedOpeningPowerFailure()`.
+
+**The code said it was wrong in two places and nobody had read it that way.** `ProjectedOpeningPowerFailure`'s own docstring: *"This gates opening only. It is called once, from the can-open check, and never from the tick."* And its refusal `RR_Gate_SupplyTooLow` reads *"cannot deliver enough power **to start an opening**. A charged battery is not supply"* - which is the owner's *"reserver power in the batteries"*, shown to somebody whose opening was already running. `RR_Gate_PowerUnstable` is the other candidate and says *"a charged return reserve"* in as many words.
+
+**It was redundant as well as wrong, which is why this is a removal.** Power lost while open is owned by the tick, which calls `EnterEmergency("RR_Gate_PowerLost")`, and `PortalWindowBlockerKey` already refuses an emergency gate three lines earlier. The crossing path was deriving a rule the tick enforces, a second time and with a worse message.
+
+**Split, not copied.** New `CheckCrossingReadiness` holds the four conditions true of an aperture whether it is opened or crossed - saved-ownership sanity, native binding, operator employed, operator on station. `CheckStationReadiness` is now *that plus* the three power conditions, so the two paths cannot drift. `CanOpen`, `CanRecover`, `GateSpinUp` and `RecoverPortalOpening` still ask the full question; only the crossing asks the shorter one. The per-crossing `NativeStoredEnergy` toll is gone outright: every line above it already establishes the opening is live, so it could only ever fire in the case the direction forbids.
+
+### The journal: the only state a player ever starts holding was the one with no text at all
+
+`CompRouteEvidence.CompInspectStringExtra()` opened with `if (string.IsNullOrEmpty(evidenceId)) { return null; }`, and a book gets an `evidenceId` only when something calls `Initialize`. **So a freshly granted book said nothing and offered nothing**, and `RR_Evidence_Unregistered` - written for exactly this confusion - was unreachable, because the empty-id guard returned before the branch that prints it. The same owner's earlier *"it was confusing at what i was suppose to do with it"* had been answered on the **registered** branch only.
+
+Now `RR_Evidence_Blank` - *"Company record book, still blank. This is the journal the company issues you..."* - and only while the branch can operate and the book could actually serve.
+
+**The book is deliberately NOT renamed, and the owner can overrule it.** The chosen option said *"its own label and an inspect card"*; the label was declined because `Patches/RR_ExistingEvidenceBook.xml` attaches the comp to **every Core `TextBook`** - that is the design, any blank book can be carried in - so a `TransformLabel` would retitle every novel in the game, trade stock included. Recorded as still-open rather than closed, with what a rename would need: a way to tell a company-issued book from a bought one, which the scenario grant does not provide.
+
+### A plant had to be re-aimed, and the re-aim made the claim stronger - fourth time that has happened here
+
+`check-plant-anchors.py` caught it rather than letting the suite break open: `plant-gate-circuit.py` held *"THE REFUSAL STOPS NAMING A FLAT BATTERY"*, a **deletion** plant on the very line the direction removed. Its proof asserted a flat battery was a named cause of a refused crossing - a claim the owner has now overruled.
+
+So the regression to guard **inverted**: it is now an *addition*, somebody putting a power condition back on the crossing. Three plants replaced one, and all three are caught: swapping the readiness call back, inserting a stored-charge toll with *any* comparison, and the opposite mistake of dropping the power conditions from **starting** an opening. The proof claim was scoped to the blocker's own method body rather than the file, because `RecoverPortalOpening` legitimately reads `NativeStoredEnergy` below it, and a claim written as the absence of one exact line would have missed a toll reintroduced with a different comparison - which is exactly what the matching plant inserts.
+
+**A second plant then started missing, and the proof was right rather than the plant.** The proof derives the keys it guards from the code itself, so when the toll came off, `RR_PortalTravel_NoCharge` stopped being a reachable reason and the plant renaming its string was no longer catchable. A key no code can return is not a refusal that can print raw at a player. Re-aimed onto `RR_PortalTravel_SessionClosed`. The key itself stays, and **the first reason written for keeping it was wrong and was corrected in place rather than left standing**: the opening and recovery paths do not return it, they return `RR_NativeGate_OpeningEnergyLow` and `RR_NativeGate_RecoveryEnergyLow`. It stays because its text carries the owner's *"there should be no loimit"* as *"Any number of them count."*, which the proof asserts on its own line.
+
+### Evidence
+
+**0.12.80-dev, build clean: 0 warnings, 0 errors, 92 approved files, no game launched.** All **sixteen** checkers exit 0, including `check-plant-anchors` (774 anchors findable), `check-keyed-strings`, `check-wiring` (*"everything this mod authors is read by something"*) and `check-doc-conformance`. `proof-gate-circuit.py` exit 0. `plant-gate-circuit.py`: **18 of 18 planted faults caught**, every touched file verified byte-identical afterwards.
+
+**Not staged and not cascaded, by owner direction** - *"no need to stage and no need to cascade until told to start again"*. The game folder keeps `0.12.80-dev` and the version was not bumped, because a bump belongs to the publish ceremony this session is explicitly not running.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-03)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **5 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **"if its open it doenst need special power to send things through the gate"** — the binding design statement. A crossing through a live aperture must apply **no** opening-time power condition. — **DONE.** `PortalWindowBlockerKey` now applies none. Build clean, sixteen checkers pass, `proof-gate-circuit.py` holds, **18 of 18** in the plant suite.
+- [x] **"it incorrectly says i dont have power to send people through, even tho the gate is open and connected"** — split `CheckStationReadiness` so the conditions that stay true of an open aperture (owner fault, native binding fault, operator assigned/employed/on station) live in **one** shared authority used by both paths, and the three power conditions apply to **opening only**. Not a copied predicate: a second derivation is what produced this. — **DONE exactly that way.** New `CheckCrossingReadiness` holds the four shared conditions; `CheckStationReadiness` is now *that plus* `stablePowerTicks`, `HasPowerAndHeadroom()` and `ProjectedOpeningPowerFailure()`, so the opening and crossing paths cannot drift. `CanOpen`, `CanRecover`, `GateSpinUp` and `RecoverPortalOpening` still ask the full question; only the crossing asks the shorter one.
+- [x] **"a error about not enough reserver power in the batteries or something incarrate"** — drop the per-crossing `NativeStoredEnergy` charge at `PortalGateOpening.cs:128`, so `RR_PortalTravel_NoCharge` can no longer fire on a gate that is already open. ~~Keep the key: it is still correct for the paths that genuinely need stored energy to **start** or **recover** an opening.~~ — **DONE, and the struck clause was wrong, corrected rather than left standing:** the opening and recovery paths return `RR_NativeGate_OpeningEnergyLow` and `RR_NativeGate_RecoveryEnergyLow`, never this key. It is kept for a different and better reason — its text carries the owner's *"there should be no loimit"* as *"Any number of them count."*, which `proof-gate-circuit.py` asserts on its own line. The proof derives the keys it guards from the code, so an unreachable key is correctly no longer treated as a refusal that can print raw at a player; the plant that renamed it was re-aimed onto `RR_PortalTravel_SessionClosed`, a reason the crossing can still return.
+- [x] **"that dont do anything"** — the blank state is silent by construction at `CompRouteEvidence.cs:111`, so the inspect card says nothing and the right-click menu offers nothing. — **DONE.** The empty-id guard no longer returns `null`; it returns the new `RR_Evidence_Blank` when the branch can operate and the book could actually serve, so the one state a player starts holding finally explains itself. Still silent on an ordinary novel in an ordinary colony, which is why the guard keeps `campaign.CanOperate` and `IsSupportedCarrier`.
+- [x] **"the company is suppose to supply u with a journal to do tasks in"** — **the scope of this clause needs the owner's read before it is built**, because *"a journal to do tasks in"* reads two ways and the work differs by an order of magnitude: (a) it is the **record book** the design already has — carried in blank, written in the field, carried home as evidence — and the defect is purely that nothing says so; or (b) it is a **task/assignment log** the player writes objectives into, which is a new surface and not the evidence chain at all. Asked rather than assumed. — **ASKED AND ANSWERED: the owner chose (a), *"It IS the record book — just say so"*.** So no new object and no new surface; the card says so now, in the owner's own framing — *"This is the journal the company issues you"*.
+
+Build at the time of the move: **0.12.80-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## The partial count was challenged and the challenge was right - 2026-10-03
+
+**Verbatim owner challenge (2026-10-03):** *"50 partital sounds like you havent been completeing your work"*
+
+Answered by measuring rather than defending, and the measurement agreed with the owner. Ten of the fifty `[~]` rows were not work at all, and three of those were finished on 2026-09-28 and had sat unticked ever since.
+
+### Governance was sitting in the work queue, inflating the count
+
+Six rows were **standing instructions and objectives wearing task checkboxes** - four of them written by this session. *"so no need to stage"* and *"and no need to cascade until told to start again"* are constraints: a constraint cannot be *completed*, so it can never leave the queue, and every session it reads as another task in progress. *"begin on any and all todo work to reach the goal of having a completed working mod"* is the whole project. *"start on the todo weork"* is a **pointer** at work that has its own rows under Major M1, so counting it counted the same work twice.
+
+**The owner's own 2026-10-02 direction already said where these belong:** *"A rule that must survive goes to `.claude/CONSTRAINTS.md` or becomes a checker. Open work goes to `docs/TODO.md`."* Every word is kept; only the checkbox is gone.
+
+### Three were done on 2026-09-28 and never ticked
+
+- *"new feature branch for your work"* - the row **states** the branch was created from `48a8418` and pushed with the first milestone, and work has since moved to a second branch on the same instruction.
+- *"making sure to properly finalize all completed work..."* - the row **states** all 129 checked master TODO items were archived verbatim, and names no remainder.
+- *"read now.md to continue the work..."* - a read is an act with an end, and the row names what was read, what it was filtered on and what it found.
+
+Each reported its own completion in the same sentence that still carried `[~]`.
+
+### And the two contradictions NOW.md flagged for a human are settled
+
+Both were flagged on 2026-10-02 rather than flipped, for the right reason at the time: *"promoting a row on an inference is the thing that put twenty-two unticked rows under headings saying DONE."*
+
+**Adapter families vs surgery: the closure stands, so the row is done - and this is not an inference.** The row named exactly one remainder, *"Surgery across a gate is the named remainder"*, and that remainder is closed **by proof**: `.local/register/proof-medical-routes.py` runs green and prints *"surgery cannot cross and the patient comes home"*. `Bill_Medical.GiverPawn` makes the patient the bill giver, `WorkGiver_DoBill` reserves per-map, and ingredients are searched on the doctor's map, so doctor, patient and ingredients must be co-located and there is no seam to build across. Register row **227** records it. **A remainder that cannot exist is not a remainder.**
+
+**Workbook rows vs the retro sweep: THERE WAS NEVER A CONTRADICTION.** Two different claims were being compared as one, and both are true. The retro-sweep row counts **families swept for applicability** - all twenty-one really are done. The workbook row counts **per-row disposition closure with evidence and a result**, which is a different unit entirely. Counted from the register HTML rather than from either row's memory: **201 `Provisional` against 95 `Settled`** across 295 parsed rows, matching the independently recorded *"200 of the 294 dispositions are still provisional"*. So the remaining work is **201 rows to settle**, not *"7 families to sweep"* - and the 14-of-21 figure was measuring the other row's unit, which is what made them look irreconcilable. The row stays `[~]` because that is the honest marker for 95 closed and 201 not.
+
+A **dangling cross-reference** was found and removed while resolving them: both rows pointed at *"see Contradictions found while splitting rows below"*, a section archived on 2026-10-02. The pointer had been aimed at nothing since.
+
+### The row that had been asking to be reviewed
+
+*"Add staff role recommendations, field kit assignment, readiness checks, and basic company tasks"* carried the note **"review whether this row should now be `[x]`"** and nobody had. Reviewed clause by clause against the source rather than from the note: `AssignCompanyRole` in `Company/PersonnelServices.cs` surfaced through `UI/OperationsPersonnel.cs`; the readiness ladder on the gate; the `RR_OperateGate` / `RR_CalibrateGate` jobs; and field kit assignment **superseded by owner decision** under `CONTENT_REUSE_POLICY.md` rather than unbuilt. *"Open: nothing new"* is not a remainder - it is a row with nothing left in it.
+
+**What this does NOT claim.** The remaining partials are real: roughly thirty are *"mostly built, one named remainder"* rows under M1 to M6, each carrying its remainder inline. That is the same shape the owner called out on 2026-10-02 - *"finished work written inside open rows"* - and sweeping those against the source is the obvious next pass, not something this entry claims to have done.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-03)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **2 whole direction groups** whose every row was done, and **2 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TODO.md`
+
+**Verbatim owner request (2026-09-28, four items):** *"new feature branch for your work start on the todo weork making sure to properly finalize all completed work as i think gate 0 is still in the todo stuff but it should be finalized first and begin on any and all todo work to reach the goal of having a completed working mod in all regaurds as outlined in the many prep documentes build over 18 hours of work in gate 0"*
+
+**Adjudicated 2026-10-03 against the owner's challenge** *"50 partital sounds like you havent been completeing your work"*. Two of these four were **finished work that had sat unticked since 2026-09-28**, and two are standing objectives that were never tasks. The branch row in particular said *"created ... Pushed with the first milestone"* and still read in-progress.
+
+- [x] **"new feature branch for your work"** — branch `feature/connected-colony-portals` created from `48a8418` (= `Develop` = `Main` on both remotes). Pushed with the first milestone per `PUBLISHING.md`. — **DONE, and it was done when it was written.** Work has since moved on to `feature/bug-testing`, which is a second branch on the same instruction, so nothing about this clause is outstanding.
+- [x] **"making sure to properly finalize all completed work as i think gate 0 is still in the todo stuff but it should be finalized first"** — all 129 checked master TODO items archived verbatim in `FINALIZED.md` §Inherited completed work; master TODO checkboxes retained beside their evidence per `REGRESSION_CONTAINMENT.md`. — **DONE. The row states its own completion** — 129 items archived verbatim — and named no remainder.
+
+**The other two clauses are STANDING OBJECTIVES, not tasks, so they carry no status marker.** Neither can ever be ticked: the first is a pointer at work tracked under Major M1 below, and the second is the whole project. Every word kept.
+
+- **"start on the todo weork"** — **Open:** resume step 4's remaining families, listed under Major M1. (Resume steps 1 to 3 and the gate traversal rule closed in 0.4.2-dev and 0.4.3-dev; archived.) — this is a **pointer**, and the thing it points at has its own rows under Major M1; counting it as well counted the same work twice.
+- **"begin on any and all todo work to reach the goal of having a completed working mod in all regaurds as outlined in the many prep documentes build over 18 hours of work in gate 0"** — standing objective for every session from here: work the cascade M1 → M6 in `ROADMAP.md` order until the master TODO is empty; runtime rows are `[T]` and belong to the post-completion test phase, so none of them ever stops the building.
+
+
+**Verbatim owner direction (2026-09-29), resuming after compaction:** *"read now.md to continue the work guided by the prep docs and mod register and worrkflow docs to make an all encompassing mod(You do know how to properly make rimworld mods right for 1.6?) should of asked that before now, get to work!"*
+
+- [x] **"read now.md to continue the work guided by the prep docs and mod register and worrkflow docs"** - `docs/NOW.md` read, `docs/CAMPAIGN_CHART.md` read as the authority, and the register filtered on the Research and staff development family before designing anything (six rows, all Optional or Configuration-only, none conflicting). Item 1 of the NOW.md queue is research tier 2. — **DONE, and it reported its own completion in the same breath.** A read is an act with an end; this one names what was read, what it was filtered on and what it found. It has been re-done every session since, including 2026-10-03.
+
+**Standing objective, no status marker** — the same reason as the clause above it, and it is a restatement of *"a completed working mod in all regaurds"*.
+
+- **"to make an all encompassing mod"** - the standing objective. The chart's build order is the sequence; nothing is skipped and nothing is deferred.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **Adapter families, one at a time with source evidence per route.** Eighteen families and decisions closed in order from 0.5.0-dev to 0.6.7-dev; the sequence and the reason for each is archived. Sources: [`research/WORK_TYPE_COVERAGE_AUDIT.md`](research/WORK_TYPE_COVERAGE_AUDIT.md), `CONNECTED_WORK_CORE_API.md`, `CONNECTED_WORK_PROFILE_BOUNDARIES.md`. — **CONTRADICTION RESOLVED 2026-10-03, AND THE CLOSURE STANDS, SO THIS ROW IS DONE.** It was flagged on 2026-10-02 rather than flipped, with the correct reason recorded at the time: *"promoting a row on an inference is the thing that put twenty-two unticked rows under headings saying DONE."* **This is not an inference.** The row's own remainder clause named exactly one thing — *"Surgery across a gate is the named remainder"* — and that remainder is closed **by proof, not by argument**: `.local/register/proof-medical-routes.py` runs green and prints *"surgery cannot cross and the patient comes home"*, asserting `Bill_Medical.GiverPawn` makes the patient the bill giver, `WorkGiver_DoBill` reserves per-map, and ingredients are searched on the doctor's map — so doctor, patient and ingredients must be co-located and **there is no seam to build across**. Recorded as register row **227**, *"surgery across a gate cannot be built"*, and in the 0.12.33-dev changelog as closed by proof. Everything else on the row is struck through in the archive: **31 families, 23 of them deployments, every work type in Core and all five expansions covered or decided against with its reason**. A remainder that cannot exist is not a remainder.
+
+> moved from `## Owner directions recorded late` in `docs/TODO.md`
+
+- [x] Add staff role recommendations, field kit assignment, readiness checks, and basic company tasks while retaining vanilla pawn/work controls. — **Open:** nothing new; field kit assignment is **superseded** with the rest of the custom field gear. Closure archived — review whether this row should now be `[x]`. — **REVIEWED 2026-10-03 AS THE ROW ITSELF ASKED, AND THE ANSWER IS YES.** The row had been carrying its own review request since the closure was archived, and *"Open: nothing new"* is not a remainder — it is a row with nothing left in it. Checked clause by clause against the source rather than taken from the note: role assignment ships as `Company/PersonnelServices.cs` `AssignCompanyRole`, surfaced in `UI/OperationsPersonnel.cs`; readiness checks ship as the gate's own `CheckStationReadiness` / `CheckCrossingReadiness` / `CalibrationBlockerKey` / `StaffConsoleBlockerKey` ladder; basic company tasks ship as the `RR_OperateGate` and `RR_CalibrateGate` jobs with their work givers; and **field kit assignment is superseded by owner decision**, not unbuilt — the custom field gear was retired wholesale under `CONTENT_REUSE_POLICY.md` and its replacements closed individually (survey tag → Core `GlowPod`, recorder → Core `TextBook`, beacon dropped, case → designated `Shelf`). Vanilla pawn and work controls are retained throughout, which is what the clause actually guards.
+
+Build at the time of the move: **0.12.80-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## A door can be made the gate before its circuit exists - 2026-10-03
+
+**Verbatim owner report (2026-10-03):** *"and another bug repoert, i try to first thing set a door as gate on the doors ui bar, but it tells me i have to set up the battery used for reserver before i can do anything, incrattely, i should be able to set the gate on a door first, so idk why its tellign me i cant set the gate door without setting the batteries first"*, scoped *"in company scenerio"*.
+
+### The cause: the only route from a door to a gate was all-or-nothing
+
+`CompRimroomsGate.MakeGateGizmos` resolved **three** providers and refused if any was missing:
+
+```csharp
+if (console == null || battery == null || bench == null)
+{ ShowOrderResult(CompanyActionResult.Refused(... "RR_NativeGate_NoSingleBattery" ...)); return; }
+```
+
+`SoleCandidate` returns null for **none** and for **more than one**, so on a company start with no battery bound the button said *"No single battery to hold the gate's reserve"* and stopped. The method's docstring already said it was only meant to be the one-click path and that anything ambiguous belongs on the Operations pane - but **a refusal is not a route**, and the owner read it as the answer rather than as a detour.
+
+### The row's own premise was wrong, and that is why the fix is small
+
+The queued row predicted major work: *"'designated' currently means 'fully bound' ... introducing a designated-but-unbound state and auditing every reader"*. **It does not.** `IsDesignated` is `!IsRunExtension && NativeDoorProvider() && nativeBindingSchema == 1 && nativeDesignated` - the three provider fields are not in it. What reports a missing circuit is `NativeBindingFailureKey` -> `NativeIdentityLinkFailure` -> **`RR_NativeGate_LinkMissing`**, which is exactly the *"expose why a room is not functional"* channel the standing owner direction asks for.
+
+**Audited every dereference of the three provider fields before writing a line**, because the row was right that this is where a null would bite: `SameNativeHeadquartersThing(null)` and `ExactProvider(null, …)` both return false; `NativeBatteryComp` is null-guarded; `NativeStoredEnergy` and `NativeBatteryCapacity` return `0f` on a null net; `IsConsolePowered(null)` returns false; `GateSpinUp` null-checks both comps; and the identity check's `||` chain short-circuits before the one place it could dereference. **`ClearNativeBinding` already reads `nativeConsole?.`** - the component anticipated this state. Nothing had to change to make it safe.
+
+### What shipped
+
+**`DesignateAsGate()`** - a new entry point, not a loosened bind. Binding is four decisions at once and rightly refuses a half-answer, because a gate that looks complete and is not strands the first crew through it; the owner asked for the **first** of those four to be takeable alone. It keeps every structural refusal that applies to the *door* - supported provider, schema, not opening, not spinning up, no debit fault, headquarters eligibility through the same `SameNativeHeadquartersThing` predicate rather than a second copy, branch match, standable entry cell - and asks for no provider at all. A **run extension is refused** with the new `RR_NativeGate_IsRunExtension`, because `IsDesignated` is false for one by design and setting the flag would produce a click that appears to do nothing.
+
+**The door button designates first, then binds opportunistically.** A tidy headquarters with exactly one of each still gets the single click it always had. Otherwise the player is **told, not refused**: `RR_NativeGate_DesignatedNeedsCircuit` wraps the existing specific reason, each of which already names where the choice is made. `RR_NativeGate_MakeDesc` was rewritten to say the circuit need not exist yet - and broken into paragraphs, because `check-info-cards.py` refused 485 unbroken characters as a text wall, which is the wall rule doing its job on the same commit that created the wall.
+
+### The new rule is proof-backed, and five plants prove the proof bites
+
+Six claims added to `proof-gate-circuit.py`: the designation exists and sets the flag; **it asks for no provider** (asserted negatively against the method's own body - `ExactProvider`, `nativeBattery`, `nativeConsole` and `nativeAssemblyBench` all absent from it); binding itself still refuses a half-answer; the button **designates before it resolves** (an ordering claim, by string index); a missing circuit is told rather than refused; and all three new keys are translated.
+
+**And a mistake of mine was caught by the plants rather than by me.** The first draft appended those checks **after** the proof's `if failures: sys.exit(1)` gate, so they ran, recorded failures, and were never acted on - the proof exited 0 regardless. Four of the five plants reported `MISSED!`, and the one that read `CAUGHT` was caught by an accidental `ValueError` crash rather than by its claim. The exit gate was moved to the end of the file and all five then caught properly. **A claim after the gate is a claim that cannot fail**, which is the same defect class as a checker that can only ever pass.
+
+**Swept all forty-nine proofs for that shape and found nothing - stated explicitly rather than left as silence.** No other proof has a `check()` after its gate. Four (`proof-displacement`, `proof-facilities`, `proof-fit`, `proof-spinup`) have no `sys.exit(1)` at all, which looked like a finding and was not: they fail through `assert` and `raise SystemExit(1)`. The heuristic was too narrow, not the proofs.
+
+### Evidence
+
+**0.12.80-dev, build clean: 0 warnings, 0 errors, 92 approved files, no game launched.** All **sixteen** checkers exit 0. All **forty-nine** proofs hold. `plant-gate-circuit.py`: **23 of 23 planted faults caught**, every touched file verified byte-identical afterwards. 774 plant anchors findable.
+
+**Not staged and not cascaded**, per *"no need to stage and no need to cascade until told to start again"*.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-03)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **3 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **"i should be able to set the gate on a door first"** — the binding design statement. Which door is the gate must be settable **before** the circuit behind it exists. — **DONE.** New `CompRimroomsGate.DesignateAsGate()` in `Gate/NativeGateBinding.cs` sets the designation on its own. It keeps every structural refusal `BindNativeInfrastructure` applies to the *door* — supported provider, schema, not opening, not spinning up, no debit fault, headquarters eligibility, branch match, standable entry cell — and asks for **no** console, battery or bench. A run extension is refused outright with the new `RR_NativeGate_IsRunExtension`, because `IsDesignated` is false for one by design and setting the flag there would produce a click that appears to do nothing.
+- [x] **"it tells me i have to set up the battery used for reserver before i can do anything, incrattely"** — the one-click button refuses instead of routing. At minimum it must say where the choice is made rather than only what is missing; the owner's direction asks for more than that. — **DONE, and it does more than the minimum.** The door button now designates **first**, then binds the circuit only if all three providers resolve unambiguously — so the one-click path for a tidy headquarters is unchanged. When they do not resolve, the player is **told** rather than refused: `RR_NativeGate_DesignatedNeedsCircuit` — *"This door is the gate now. Its circuit is not finished yet: {0}"* — wrapping the existing specific reason (`NoSingleConsole` / `NoSingleBattery` / `ChooseBench`), each of which already names where the choice is made. `RR_NativeGate_MakeDesc` was rewritten to say the circuit need not exist yet, and broken into paragraphs because `check-info-cards.py` refused 485 unbroken characters as a text wall.
+- [x] **What has to be checked before writing anything, because this is a model question not a message question:** `IsDesignated` and `NativeBindingFailureKey` are read all over this component, and `HasPowerAndHeadroom()` is literally `NativeBindingFailureKey == null`. **So "designated" currently means "fully bound".** Allowing a door to be marked as the gate with no battery means introducing a *designated-but-unbound* state and auditing every reader of those two members for what it should do in it — a gate that reports *why* it is not functional is already the standing owner direction (*"why a room is not functional"*), so the state is wanted; it is the audit that is the work. **Not started, and deliberately not half-built.** — **AUDITED, AND THE PREMISE IN THIS ROW WAS WRONG, which is why the work came out far smaller than it predicted.** *"Designated" never meant "fully bound":* `IsDesignated` is `!IsRunExtension && NativeDoorProvider() && nativeBindingSchema == 1 && nativeDesignated`, and the three provider fields are not in it. What reports a missing circuit is `NativeBindingFailureKey` → `NativeIdentityLinkFailure` → **`RR_NativeGate_LinkMissing`**, which is precisely the *"expose why a room is not functional"* channel the row hoped for. Every dereference of `nativeConsole` / `nativeBattery` / `nativeAssemblyBench` was read before a line was written: `SameNativeHeadquartersThing(null)` and `ExactProvider(null, …)` both return false, `NativeBatteryComp` is null-guarded, `NativeStoredEnergy` and `NativeBatteryCapacity` return `0f` on a null net, `IsConsolePowered(null)` returns false, `GateSpinUp` null-checks both comps, and the identity check's `||` chain short-circuits before it can dereference. **`ClearNativeBinding` already reads `nativeConsole?.`** — the component anticipated this state. Nothing needed changing to make it safe.
+
+Build at the time of the move: **0.12.80-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## The maze was measured, the earlier report was wrong, and the instrument could not see the defect - 2026-10-03
+
+**Verbatim owner direction (2026-10-03):** *"and another thing to add to todo( the backrooms is still incorrectly too much having the rooms like a string of pearls where the rooms are just one exit one entrance. this is not the backrooms universe MAZES!!!! room connected to like 0 - 10 other rooms and not have so much empty rock space where nothing exists. it looks too much like are long series connection of drooms, DO YOU UNDERSTAND WHAT A MAZE MEANS AND TO FILL THE SPACE WITH ROOMS and where there is mountain walls and no rooms areas minable need to have resources that you can mine like steel gold plasteel, gems, all of them, even underground resources that u can use deep drill with and chemfuel, and im reiterating the fact that we need to fix the depancy list so that its accurate to what is required and we hope to have the mod as a complete stand alone"*
+
+Queued as nine rows, one per clause. Nothing was built for it this checkpoint; what was built is the **measurement**, because the earlier report to the owner was wrong and nothing in the repo could have told anybody so.
+
+### A correction owed to the owner
+
+Earlier the same day, the adjudication pass closed *"all the backrooms so far are just one lone strain of perals arangement"* and *"it needs to be more maze liek"* as **BUILT**, citing `RoomLayoutPlanner.BuildMaze` and `BraidRarity`. The owner then walked it and reported it is still a string of pearls. **Source presence was read as behaviour** - the exact mistake this repository keeps naming, committed in the same session that closed twenty-one rows for the opposite reason.
+
+### The first hypothesis was wrong, and it is recorded rather than replaced
+
+The guess was that `TrySelect`'s three maze candidates were being refused and every level was silently falling back to `BuildSerpentine`, which has happened before and is written into the planner's own comments: *"the fallback serpentine quietly caught every seed while the probe reported no refusals at all."*
+
+**`fellback 0` at every depth across 200 seeds each. The maze is selected.** The look has a different cause.
+
+### Checker 14 could not measure the complaint, so it was taught to
+
+`tools/check-planner-layouts.py` is the only instrument that runs the planner for real, and **every column it reported was about whether a layout is LEGAL** - refused, widest, margin, starved, shaped, approach. Not one was about whether it reads as a maze. A checker that cannot measure the complaint cannot confirm the fix either, so degree and fill were added to `.local/harness/PlannerProbe/Program.cs`, read through the same reflection the probe already uses, with the map size taken from `DestinationService.MapWidth/MapHeight` rather than written as a local constant.
+
+| depth | avg degree | max degree | deg 0 | deg 1 | roomfill of 300x300 |
+|---|---|---|---|---|---|
+| 1 | **2.39** | **4** | 0.0% | 6.5% | 46.0% |
+| 2 | 2.41 | 4 | 0.0% | 7.3% | 42.4% |
+| 3 | 2.40 | 4 | 0.0% | 5.0% | 38.7% |
+| 4 | 2.23 | 4 | 0.0% | 4.6% | 27.1% |
+| 5 / 6 / 8 | **2.20** | **4** | 0.0% | 4.0% | **17.1%** |
+
+**The owner is right on every clause, and two of them are architectural rather than tuning.**
+
+* *"just one exit one entrance"* - **avg degree 2.2 to 2.4 is literally that.** The braid adds only ~0.4 over a spanning tree's 2.0, so `BraidRarity = 3` is far too sparse to read as a maze.
+* *"0 - 10 other rooms"* - **unreachable by construction.** Max degree is **4** at every depth because every link must join grid-adjacent slots: `AreNeighbourRooms` requires linked centres to share a row or column and `BuildCorridors` carves straight between them. Ten needs corridors that bend, which is a change to the carver and to `ValidateRooms`, not a braid constant. `deg 0` never occurs either, so the owner's explicit zero case is absent too.
+* *"so much empty rock space"* / *"FILL THE SPACE WITH ROOMS"* - **confirmed, and it worsens with depth, which is backwards.** 46% of a depth-1 map is rooms; **17% by depth 5**, so 83% is uncarved rock. The arithmetic: slots rise 6x6 -> 10x10 while `VariedRoomSpan` shrinks 34 -> 16, so area per room falls faster than count rises and `MaxRooms = 60` caps the count before it can compensate.
+
+### What is not claimed
+
+**No generator change was made.** The ore and deep-drill clauses are queued and untouched - nothing in `GenStep_BackroomsDestination` places ore today, and deep-drill resources are a separate Core system from surface rock. The dependency reiteration is cross-referenced to its existing rows. This entry claims one thing: the defect is now measurable, the earlier closure was wrong, and the numbers to aim at are on record.
+
+**Build clean at 0.12.80-dev: 0 warnings, 0 errors, 92 approved files. Sixteen checkers exit 0, forty-nine proofs hold. Not staged, not cascaded.**
+
+---
+
+## Walking out of the Backrooms is a round trip now - 2026-10-03
+
+**Verbatim owner report (2026-10-03):** *"and another bug.. ther natureal gates in the backrrooms that lead to the world map tiles( these gats currently dont have a way back into the backrooms when a pawn goes through a natural gate in the backrroms that leads to a world tile map, they need to have a gate spawn in the world tile that they portal to so they can head back into the backrooms, currently and incorrectyl there is no way for a pawn to go back into the backrooms when they exit via a natural gate. this needs added to the todo and worked on"*
+
+**Verbatim owner answer at the fork:** *"Generate a map on arrival with the gate in it"* - chosen over a caravan command, a caravan-only fix, and a world object without a map.
+
+### One-way by construction, and the way back was already written down
+
+`grep` for any return, re-enter or go-back method in `Portals/WorldExit.cs` returned **nothing**. `LeaveThroughWorldExit` was the only direction that existed - while `WorldExitRecord` had been saving `coordinateId` **and** `doorLoadId` since the day it was written, with nothing reading them. The way home was recorded and unreachable.
+
+### The decomposition predicted two slices that did not exist, and measuring found both
+
+Queued as seven slices. **Two were wrong, and they were the two biggest:**
+
+* **Slice 1, a new `WorldObjectDef` plus a `MapParent` subclass - NOT NEEDED.** `ClaimTileAndWalkOut` already calls Core's own `SettleUtility.AddNewHome` and `GetOrGenerateMap`, so the arrival map is an ordinary **player settlement** every mod in the register already understands. Nothing was written.
+* **Slice 2, generate the map and bound it by the cap - ALREADY BUILT.** The map on arrival has existed since that method was written, and `CanClaimAnotherMap` already applies **both** gates: `MaximumBranchMaps = 5` and `SettleUtility.PlayerSettlementsCountLimitReached` reading `Prefs.MaxNumberOfPlayerSettlements`, stricter wins.
+
+**So the owner's chosen option was already half-built and nobody knew.** The job was the gate and the edge.
+
+### A correction I owe on my own framing of the fork
+
+When the options were put to the owner I said a world object *"touches world generation, the most compatibility-sensitive surface there is with 294 other mods"*. **That was overstated.** Placing a world object at a known tile on demand is not world generation - no planet, biome or tile-validity rule changes, and `RimroomsDestinationMapParent` already does exactly that for every coordinate. The register caution is real but narrower: rows **61 / 98 / 159 / 266** (Carryalls, Giddy-Up 2, Pack Mules Extended, Alpha Vehicles Age of Sail) are all *Transport and expedition logistics*, **Optional**, **Settled**, and all four integrate with **caravans** - what they care about is whether the crew can still be a caravan, not whether a map exists on a tile. The owner's choice was sounder than the warning implied, and `WorldExit.cs`'s own docstring has been corrected where it said the same thing.
+
+### What shipped
+
+`EstablishReturnGate`, and every precondition read out of `RimroomsPortalNetwork.Register` rather than assumed:
+
+| Step | Why, from the code |
+|---|---|
+| `RegisterRemoteSite(claimed)` **first** | `Register` line 82 wants `OwnsMap(firstAnchor.Map)`, and a Core player settlement is neither the headquarters nor a coordinate. `CompRimroomsEmergence.OrdinaryBranchMap` asks the same question, so `Mark()` cannot run before it. `OperatesAt`'s own comment already named this as the intent: *"a gate may anchor there and a way out may come up on it"* |
+| a Core `Door` in steel | made exactly the way `GenStep_BackroomsDestination.PlaceNativeDoors` makes every other threshold in this mod. **No new ThingDef** - content-reuse policy untouched |
+| `FindReturnGateCell` refuses a cell with no standable cardinal neighbour | `ValidDoor` (lines 278-283) needs the approach cardinally adjacent. Discovering that two steps later would mean a door already standing on the map |
+| `anchor.Mark()` | the same method the player's own gizmo calls - lines 90-95 need the anchor designated, player-faction, with a matching approach |
+| `Register(..., Emergence, gate, approach, coordinateDoor, farApproach)` | the step that makes the trip two-way. The second anchor is the coordinate map, which lines 79-81 require, and it already is: the crew walked out of it |
+
+**The gate is built BEFORE anybody is despawned**, which is this file's own stated safety property applied to the new work: if the way home cannot be made, nothing has moved and the door they came to is still there. Establishing it afterwards would strand a crew **on a map** instead of on a tile - worse, because it looks finished. **Every failure after the spawn destroys the door again**, because a door with no edge behind it is a gate that looks like the way home and is not.
+
+**`LeaveThroughWorldExit` can now refuse where it previously always succeeded under the cap.** Deliberate: a one-way trip *is* the defect, so refusing to leave beats stranding. Eight new keyed refusals, one per cause, each ending *"Nobody has moved"* so a player knows the trip did not half-happen.
+
+**The caravan path is still one-way, and that is the owner's own earlier rule** - *"anything over 5 maps defaults to caravans"*. A caravan has no map for a gate to stand on; it walks home overland, which is what a caravan is for.
+
+### The proof had never been plant-tested
+
+Six return-side claims were added to `proof-world-exit.py` - and **`grep -l` across all forty-nine proofs for any return-side claim had found nothing**, which is why a one-way trip reached the owner in play. Same blind spot, same shape, as the one that let a flat battery report an address fault.
+
+**Then: `proof-world-exit.py` had no plant suite at all.** Twenty-one suites existed and not one tested it, so nobody had ever verified its claims *could* fail. New `plant-world-return.py`, **8 of 8 caught**.
+
+**Two of my own new claims were too weak, and the plants caught that rather than me.** An ordering asserted with `.index()` passes when a **second** call is added after the despawn - satisfying the test while doing the exact thing it forbids - so the claim is now *"exactly once, before"*, with the count as part of the property. And building the gate then ignoring its result needed a claim of its own. **That is the second time this session a plant caught a weak claim of mine**, which is the suite earning its keep twice.
+
+### Evidence
+
+**0.12.80-dev, build clean: 0 warnings, 0 errors, 92 approved files, no game launched.** All **sixteen** checkers exit 0. All **forty-nine** proofs hold. `plant-world-return.py` **8 of 8**; `plant-gate-circuit.py` **23 of 23**; 782 plant anchors findable. **Not staged and not cascaded**, per *"no need to stage and no need to cascade until told to start again"*.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-03)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner report — emerging onto a world tile is a ONE-WAY trip, there is no gate back in (2026-10-03)
+
+**Verbatim owner report (2026-10-03):** *"and another bug.. ther natureal gates in the backrrooms that lead to the world map tiles( these gats currently dont have a way back into the backrooms when a pawn goes through a natural gate in the backrroms that leads to a world tile map, they need to have a gate spawn in the world tile that they portal to so they can head back into the backrooms, currently and incorrectyl there is no way for a pawn to go back into the backrooms when they exit via a natural gate. this needs added to the todo and worked on"*
+
+- [x] **"ther natureal gates in the backrrooms that lead to the world map tiles( these gats currently dont have a way back into the backrooms"** — the defect as stated. A natural gate pointing out to the world is currently an exit with no matching entrance.
+- [x] **"they need to have a gate spawn in the world tile that they portal to so they can head back into the backrooms"** — the fix the owner specifies: **a gate Thing spawns on the arrival map**, so the way back is a real object standing on the world tile rather than a menu action or a saved abstraction.
+- [x] **"currently and incorrectyl there is no way for a pawn to go back into the backrooms when they exit via a natural gate"** — the acceptance condition: a crew that emerges can walk back in. **This is the stranding class of defect**, the most consequential kind in this project, and it is the same shape as the owner's standing direction that closing a gate on a crew *"doesnt lose control of those pawns"* — a one-way exit takes people somewhere they cannot return from.
+- [x] **"this needs added to the todo and worked on"** — queued and being worked, not just filed.
+
+**CLOSED 2026-10-03.** `EstablishReturnGate` in `Portals/WorldExit.cs`: the claimed arrival map is registered as a remote site (so `Register` line 82's `OwnsMap` holds), a Core `Door` in steel is spawned at a cell with a standable cardinal neighbour, `Mark()` designates it as an emergence anchor, and an `Emergence` edge is registered home using the `coordinateId` the record had been saving all along. **Built before anybody is despawned**, so a failure leaves the crew where they were and the door they came to still there — and every failure after the spawn destroys the door rather than leaving a false way home standing.
+
+**Two things the decomposition predicted were wrong, and measuring found both.** Slice 1's new `WorldObjectDef` + `MapParent` was **not needed** — `ClaimTileAndWalkOut` already calls Core's `SettleUtility.AddNewHome` + `GetOrGenerateMap`, so the arrival map is an ordinary player settlement. Slice 2's map generation and budget enforcement were **already built**: `CanClaimAnotherMap` already applies `MaximumBranchMaps = 5` **and** `Prefs.MaxNumberOfPlayerSettlements`, stricter wins. The job was the gate and the edge, nothing more.
+
+**`LeaveThroughWorldExit` can now refuse where it previously always succeeded under the cap.** That is deliberate: a one-way trip *is* the defect, so refusing to leave beats stranding, and each of the eight new refusals names its own cause and ends with *"Nobody has moved"*.
+
+**The caravan path (at the five-map cap) is still one-way, by the owner's own earlier rule** — *"anything over 5 maps defaults to caravans"*. A caravan has no map for a gate to stand on; it walks home overland.
+
+**Evidence:** build clean 0/0, 92 approved files; **16 checkers** exit 0; **49 proofs** hold, including six new return-side claims in `proof-world-exit.py`; new `plant-world-return.py` **8 of 8 caught**. `proof-world-exit.py` had **no plant suite at all** before this — twenty-one suites existed and none tested it.
+
+
+Build at the time of the move: **0.12.80-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/DECOMPOSED.md (2026-10-03)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/DECOMPOSED.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/DECOMPOSED.md`
+
+### A way back in from a world tile — decomposed 2026-10-03
+
+**Parent minor task (from `docs/TODO.md`, verbatim):**
+> *"and another bug.. ther natureal gates in the backrrooms that lead to the world map tiles( these gats currently dont have a way back into the backrooms when a pawn goes through a natural gate in the backrroms that leads to a world tile map, they need to have a gate spawn in the world tile that they portal to so they can head back into the backrooms, currently and incorrectyl there is no way for a pawn to go back into the backrooms when they exit via a natural gate. this needs added to the todo and worked on"*
+
+**Owner answer at the fork, verbatim:** *"Generate a map on arrival with the gate in it"* — chosen over a caravan command, a caravan-only fix, and a world-object-without-a-map.
+
+**MEASURED FIRST. The defect is confirmed and it is one-way by construction:** `grep` for any return, re-enter or go-back method in `Portals/WorldExit.cs` returns **nothing**. `LeaveThroughWorldExit` is the only direction that exists, it has exactly one caller (a player gizmo), and `WorldExitRecord` already saves `coordinateId` **and** `doorLoadId` — **the way back is recorded and nothing reads it.**
+
+**A CORRECTION I OWE ON MY OWN FRAMING.** When I put the options to the owner I said a world object *"touches world generation, the most compatibility-sensitive surface there is"*. **That was overstated for this shape.** Adding a `WorldObjectDef` and placing one at a known tile on demand is not world *generation* — nothing about how the planet is made changes. `RimroomsDestinationMapParent` + `RR_BackroomsSite` already does exactly this for every coordinate and is the proven path. The register caution that `WorldExit.cs` recorded is real but narrower than I repeated it: rows **61 / 98 / 159 / 266** (Carryalls, Giddy-Up 2, Pack Mules Extended, Alpha Vehicles Age of Sail) are all *Transport and expedition logistics*, **Optional**, **Settled**, and all four integrate with **caravans** — so what they care about is whether the crew can still be a caravan, not whether a map exists on a tile.
+
+**THE CONSTRAINTS, read out of `RimroomsPortalNetwork.Register` rather than assumed:**
+
+| Requirement | Line | Consequence for this work |
+|---|---|---|
+| `secondAnchor.Map.Parent as RimroomsDestinationMapParent`, matching `CoordinateRecord`, `LayoutReady` | 79–81 | The **Backrooms** side must be the coordinate map. It already is — we come from one. No change. |
+| `OwnsMap(campaign, firstAnchor.Map)` | 82 | The **surface** map must be a branch place. `OwnsMap` accepts the headquarters, a coordinate, **or `IsRegisteredRemoteSite(map)`** — and `OperatesAt`'s own comment says *"a gate may anchor there and a way out may come up on it"*. So the generated map must be registered as a remote site. |
+| `Emergence` kind needs `firstAnchor` to carry `CompRimroomsEmergence`, `IsDesignated`, player faction, `ApproachCell == firstApproach` | 90–95 | The spawned door must be a marked emergence anchor, not just a door. |
+| `ValidDoor`: `is Building_Door`, spawned, approach cardinally adjacent and in bounds | 278–283 | A Core `Door` with a clear cardinal neighbour. No new ThingDef — content-reuse policy intact. |
+
+- [x] **Slice 1 — the surface world object.** ⛔ **NOT NEEDED, AND THE SLICE WAS WRONG.** `ClaimTileAndWalkOut` already calls Core's own `SettleUtility.AddNewHome` + `GetOrGenerateMap`, so the arrival map is an ordinary **player settlement** every mod in the register already understands. No `WorldObjectDef` and no `MapParent` subclass were written. **Closed as superseded by measurement, not as done.** Original text: Add `RR_EmergenceSite` `WorldObjectDef` plus a small `MapParent` subclass, mirroring `RR_BackroomsSite` / `RimroomsDestinationMapParent`. **Rationale:** `Register` needs a real map and `GetOrGenerateMapUtility.GetOrGenerateMap(tile, size, def)` needs a `WorldObjectDef`; this is the proven path and invariant 10 permits generator-placed infrastructure. **Files:** `Mod/.../Defs/WorldObjectDefs/RR_BackroomsSites.xml`, new `src/.../Portals/RimroomsEmergenceMapParent.cs`. **Verify:** `check-def-fields.py` and `check-package-integrity.py` exit 0; the def resolves by name at runtime the way `RR_BackroomsSite` does.
+- [x] **Slice 2 — generate the map on arrival, bounded by the owner's own cap.** ⛔ **ALREADY BUILT BEFORE THIS SESSION.** The map on arrival has existed since `ClaimTileAndWalkOut` was written, and `CanClaimAnotherMap` already enforces **both** gates the slice asked for: `MaximumBranchMaps = 5` and `SettleUtility.PlayerSettlementsCountLimitReached` reading `Prefs.MaxNumberOfPlayerSettlements`, stricter wins. **Nothing was added.** Original text: Create the world object at the recorded tile and generate its map, following `DestinationService.EnsureSite` exactly: create → `Find.WorldObjects.Add` → verify `MapParentAt(tile) == parent` and no existing map → `GetOrGenerateMap`. **Rationale:** a surface map is the one thing standing between the saved record and a usable return. **MUST count against `OpenMapBudget`** — the owner's *"5 is the limit of other colonies available so a backrooms level should be one colonly bacskicly"* reads from `Prefs.MaxNumberOfPlayerSettlements`, and an emergence map is another held place. **Files:** `src/.../Portals/WorldExit.cs`, `src/.../Portals/OpenMapBudget.cs`. **Verify:** the budget refusal fires at the cap rather than generating a sixth map.
+- [x] **Slice 3 — register the map as a remote site.** — **DONE.** `EstablishReturnGate` calls `RegisterRemoteSite(claimed)` first, because `Register` line 82 wants `OwnsMap(firstAnchor.Map)` and a Core player settlement is neither the headquarters nor a coordinate — and `CompRimroomsEmergence.OrdinaryBranchMap` asks the same question, which is why it must precede `Mark()`. Original text: Call `RegisterRemoteSite(map)` so `OwnsMap` returns true. **Rationale:** `Register` line 82 refuses otherwise, and `OperatesAt`'s comment already names *"a way out may come up on it"* as the intent of that predicate — this is using an audited path, not widening one. **Files:** `src/.../Portals/WorldExit.cs`. **Verify:** `campaign.OwnsMap(generatedMap)` is true before any registration is attempted.
+- [x] **Slice 4 — spawn the gate and mark it.** — **DONE.** A Core `Door` in steel, made exactly the way `GenStep_BackroomsDestination.PlaceNativeDoors` makes every other threshold — **no new ThingDef**. `FindReturnGateCell` refuses any cell without a standable cardinal neighbour, because `ValidDoor` needs one and discovering that two steps later would leave a door already on the map. `Mark()` is the same method the player's own gizmo calls. Original text: Place a Core `Door` on the generated map with a clear cardinal approach cell, attach/designate `CompRimroomsEmergence` so `IsDesignated` is true and `ApproachCell` matches. **Rationale:** this is the owner's *"gate spawn in the world tile"*, as a real object standing there. No new ThingDef. **Files:** `src/.../Portals/WorldExit.cs`, `src/.../Portals/CompRimroomsEmergence.cs`. **Verify:** `ValidDoor(door, approach)` and the four `Emergence` conditions at lines 90–95 all hold.
+- [x] **Slice 5 — register the connection.** — **DONE.** `Register(record.id + ":return", record.coordinateId, PortalConnectionKind.Emergence, gate, approach, coordinateDoor, farApproach)`, using the `coordinateId` the record had been saving all along. **Every failure after the spawn destroys the door again** — a door with no edge behind it is a gate that looks like the way home and is not. Original text: `Register(id, coordinateId, PortalConnectionKind.Emergence, spawnedDoor, approach, backroomsDoor, approach)` using the `coordinateId` and `doorLoadId` the record already holds. **Rationale:** this is the step that makes the trip two-way; everything before it is preconditions. **Files:** `src/.../Portals/WorldExit.cs`. **Verify:** the result is `Success`, and `PortalRouteSearch` finds a route from the surface map back to the coordinate.
+- [x] **Slice 6 — player text, and say why when it cannot.** — **DONE.** Eight new keyed strings, one per cause, each ending *"Nobody has moved"* so the player knows the trip did not half-happen. `check-keyed-strings.py` and `check-info-cards.py` both exit 0. Original text: Keyed strings for the arrival, and a named refusal per failure (budget full, tile occupied, no standable approach, registration refused). **Rationale:** the standing owner direction *"expose why a room is not functional"*, and this repo's own rule that one generic refusal covering several causes always lies about one. **Files:** `Mod/.../Keyed/RR_Portals.xml`. **Verify:** `check-keyed-strings.py` and `check-info-cards.py` exit 0 — the latter refuses text walls.
+- [x] **Slice 7 — a proof and plants, because this is the stranding class.** — **DONE, and it found that `proof-world-exit.py` had NO plant suite at all** — twenty-one suites existed and not one tested it, so nobody had ever verified its claims could fail. Six return-side claims added to it (**before** its exit gate), and a new `plant-world-return.py`: **8 of 8 caught**. Two of my own claims were too weak and the plants caught that: an `.index()` ordering test passes when a *second* call is added after the despawn, so the claim is now *"exactly once, before"*; and building the gate then ignoring its result needed its own claim. Original text: Claim that emerging registers a two-way edge and that **no path leaves a crew on a tile with no registered way back**; plant the removal of the registration, of the door spawn, and of the budget check. **Rationale:** *"currently and incorrectyl there is no way for a pawn to go back"* is exactly the defect a claim should have caught, and `grep -l` across the proofs for a return-side claim finds none. **Files:** new `.local/register/proof-world-return.py`, `.local/register/plant-world-return.py`. **Verify:** every plant reports `CAUGHT`.
+
+**COMPLETE 2026-10-03. Build clean, 16 checkers, 49 proofs, 8 of 8 plants.** The caravan path (at the five-map cap) is still one-way, which is the owner's own earlier rule — *"anything over 5 maps defaults to caravans"* — and a caravan has no map for a gate to stand on. Original plan note: This is the stranding class of defect — the most consequential kind in this project — and a partial implementation that generates a map without registering the edge would strand a crew *on a map* instead of on a tile, which is worse because it looks finished. Slices land in order, each with its own build and checker pass.
+
+**This file holds no completed entry, by owner direction 2026-10-02:** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Everything this file used to carry under *Complete* now lives in `docs/FINALIZED.md` — **56 entries, 228 lines**, moved verbatim. **That section's own heading had been lying:** it read *"Complete — moved to FINALIZED, descriptions retained per LAW"* while **not one** of those entries was in `FINALIZED.md`, zero string hits for any of them. The claim is true now because the transfer happened, not because the heading said so.
+
+Archive with `python .local/qa/archive-finished-todo.py --queue docs/DECOMPOSED.md --apply` at the end of any batch that closes slices. It proves the transfer byte for byte before the queue is rewritten; full LAW in `.claude/CONSTRAINTS.md §FINALIZED BEFORE DELETE`.
+
+---
+
+
+Build at the time of the move: **0.12.80-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Two defects in the archiver I wrote today, found by using it - 2026-10-03
+
+Both were in `tools/archive-finished-todo.py`, both were mine from earlier the same session, and both surfaced by running the thing at the end of a batch the way the LAW says to.
+
+**A second is not a unique name.** `write_backup` stamped its snapshot folder `%Y%m%d-%H%M%S`. Archiving `docs/TODO.md` and then `docs/DECOMPOSED.md` back to back lands both inside the same second, so the second run died with `FileExistsError` from `os.makedirs`. **It failed safely** - the snapshot is taken before anything else is written, so the queue and the archive were both untouched, and that was verified rather than assumed. But a mover that cannot run twice in a row is a mover nobody can use at the end of a batch, which is precisely when `§FINALIZED BEFORE DELETE` says to use it. Now suffixed `-2`, `-3` by asking the filesystem, which is the only authority on whether a name is taken.
+
+**Nothing moved should mean nothing written.** Running `--apply` on a queue already holding no `[x]` row appended a full archive region - heading, the owner's quoted direction, three paragraphs of preamble - and **zero rows**. A record of a transfer that did not happen. Two of them went into `docs/FINALIZED.md` while regression-testing the fix above, and were removed by hand: the guard asserted the removed tail held **zero `- [x]` rows** and exactly two region headings before writing, so **no archived entry was touched** and the integrity the LAW protects was never at risk. The mover now returns early and says so.
+
+A ledger that accumulates ceremonial no-ops is a ledger people stop reading, which is the same failure as a queue full of `[x]` rows nobody can read past. Both fixes verified by re-running the exact case that broke: two `--apply` calls in the same second, `backup-...-214147` and `backup-...-214147-2`, both exit 0.
+
+---
+
+## The grand hall stopped always being in the same corner - 2026-10-03
+
+**Verbatim owner direction (2026-10-03):** *"and make sure hallways and corradors and shit arent all straight.. its suppose to be a lsd trip when it comes to archeteture and shit, repeated patternes in variations, u -turns, multiple coices on directions to take in every rooms, non default fdoor possitions in rooms so doors are not just on each side, can have doors al over, and starting room is not to always be in bottom left of map, starts locations of main grand rooms can be anywhere on the map and lead anywhere in multiple differetn varied ways"*
+
+Nine clauses, queued one per clause. **One of them shipped this checkpoint.** The other eight are recorded with the code that confirms them, because three were confirmable against source within minutes and **two of those were single literals**.
+
+### Three clauses confirmed against the source immediately
+
+| Clause | What the code actually does |
+|---|---|
+| *"starting room is not to always be in bottom left of map"* | `var hallFirst = new IntVec2(0, 0);` / `var hallSecond = new IntVec2(1, 0);` -- and `SlotCenter(0)` is `Margin + spacing / 2`, the lowest cell on both axes. **Every coordinate ever generated opened in the same corner.** |
+| *"hallways and corradors and shit arent all straight"* | `BuildCorridors` runs `if (first.CenterCell.z == second.CenterCell.z)` then one `for` loop at a fixed `centerZ`. One axis, no bend -- and `AreNeighbourRooms` *requires* linked centres to share a row or column, so a bent corridor is currently **illegal**, not merely absent. |
+| *"non default fdoor possitions in rooms so doors are not just on each side"* | `DoorOpening` opens a wall cell only where `cell.z == CenterCell.z` or `cell.x == CenterCell.x` -- the exact midpoint of each of four walls. `FalseOpening` is the only non-midpoint opening that exists. |
+
+**And the interlock worth naming: bent corridors, the 0-10 degree spec, doors-anywhere and u-turns are ONE job, not four.** Straight-only carving is *why* links must be grid-adjacent, so `AreNeighbourRooms`, `ValidateRooms`, `BuildCorridors` and `CandidateIsSafe`'s corridor model all move together -- four readers of one rule, which this file's own comments name as the source of its worst defects.
+
+### What shipped: the hall is placed from the seed
+
+Slot **and orientation** now drawn from `StableHash(seed, "hall:slot", depth)`, so a revisit is the same place. The orientation cost nothing: `MakeHall` has always asked `first.z == second.z` and swapped its long and short spans, so a **vertical hall was supported and simply unreachable**.
+
+`check-planner-layouts.py` was taught to see hall placement for this, because nothing measured it -- which is why "always the same corner" was invisible to the whole battery. Across 200 seeds per depth:
+
+| | before | after |
+|---|---|---|
+| distinct hall positions | **1** | **46 - 59** |
+| in the old corner | **100%** | **7.5 - 16%** |
+| vertical halls | **0%** | **~50%** |
+
+### Moving it broke 1.5% of seeds, and the probe caught that rather than the owner
+
+The maze walk started from `hallSecond` alone, which worked only while the hall was pinned to (0,0)-(1,0). The hall's centre sits **between** its two slot centres, so `AreNeighbourRooms` declines every step off its own axis -- and a horizontal hall landing in the last two columns left that slot with **no legal step at all**: east off the grid, west the hall itself, north and south declined.
+
+The walk ended with **one room**. `ValidateRooms` refused it as `RR_Generation_InvalidRoomGraph -- 1 rooms`, and `TrySelect` handed those seeds the **fallback serpentine** -- a string of pearls, the exact defect this line of work exists to remove. It showed as the `fellback` column rising from 0 to 1-3 and as the probe's own `reason:` lines, both of which already existed and had only to be read.
+
+**Fixed by growing the walk from both halves of the hall**, not by clamping the hall away from the edges -- a clamp would have reintroduced the positional bias the owner just overruled. It is also the better shape on its own terms: *"lead anywhere in multiple differetn varied ways"*. `fellback` is **0 at every depth** again, `refused 0/200` throughout, and back-to-back pairs rose 12 -> 57 at depth 1 as a side effect.
+
+### Three claims re-aimed, and one of mine was written wrong
+
+Two **pre-existing** claims in `proof-coordinate-layout.py` asserted the hall's slots **by their literal corner coordinates** and that the walk *"starts from the second"*. Both were describing the behaviour the owner overruled, so they were re-aimed at the property actually meant -- exactly two slots, built by a one-step offset, walk starting at the hall -- rather than weakened or deleted.
+
+**My own absence claim read raw source instead of `planner_code`**, so it matched the comment that explains the removed literal and failed against correct code. `code()`'s docstring in that very file had already counted **thirty-six instances of this defect class**; mine made thirty-seven, in the file that documents it.
+
+`plant-coordinate-layout.py` re-aimed with them: the obsolete *"maze starts inside the hall"* plant became **"the maze grows from only one half of the hall again"**, guarding the regression that actually happened, plus a new plant for the hall reverting to a hardcoded draw. **125 of 125 planted faults caught.**
+
+### Evidence
+
+**0.12.80-dev, build clean: 0 warnings, 0 errors, 92 approved files, no game launched.** All **sixteen** checkers exit 0. All **forty-nine** proofs hold. `plant-coordinate-layout.py` **125 of 125**; 784 plant anchors findable. **Not staged and not cascaded.**
+
+**Also worth recording: a stale build nearly produced a false claim.** The first probe run after the change reported `hallspots 1, corner 100.0%` -- unchanged -- because `check-planner-layouts.py` rebuilds the *probe* and links the already-built mod assembly. The mod has to be rebuilt first. Measuring before rebuilding would have reported a fix that never shipped.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-03)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **"and starting room is not to always be in bottom left of map"** — **two literals at `BuildMaze:650-651`.** The hall slot must be drawn from the coordinate's own seed like every other generated property. **Not a one-line change though:** the maze walk starts from `hallSecond`, the braid walks the slot list in order, and `AssignMazeFamilies` measures hops from room 0 — all of which assume where the hall is. Moving it is cheap; proving the level is still connected and still has its unique families is the work. — **DONE 2026-10-03, and the prediction in this row was exactly right: moving it was cheap and proving it was the work.** The slot and its **orientation** are now drawn from the coordinate's own seed (`StableHash(seed, "hall:slot", depth)`), so a revisit is still the same place. Measured across 200 seeds per depth with `check-planner-layouts.py`, which was taught to see hall placement for this: **distinct hall positions 1 → 46-59**, **in the old corner 100% → 7.5-16%**, and **vertical halls 0% → ~50%** — an orientation `MakeHall` had always supported by asking `first.z == second.z` and which had simply never been reachable.
+
+Build at the time of the move: **0.12.80-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## The corridor got one authority, and bends turned out to need a different shape - 0.12.81-dev, 2026-10-03
+
+**Verbatim owner direction (2026-10-03):** *"and make sure hallways and corradors and shit arent all straight.. its suppose to be a lsd trip when it comes to archeteture and shit"*, and on being told the plan: *"go"*.
+
+### What landed, and what deliberately did not
+
+**The corridor's shape is now decided in ONE place.** `RoomLayoutPlanner.CorridorLegs(first, second, depth)` owns the extents, the width, the wall lines and the back-to-back skip; `CorridorSideCells` owns the dressing cells. `CandidateIsSafe` and `GenStep_BackroomsDestination.BuildCorridors` both read it.
+
+It was derived **three times independently** before this: the carver cut it, the validator modelled it to prove the level walkable, and `AreNeighbourRooms` / `AreGridNeighbors` decided which pairs could have one. The planner's own comments name that pattern as the defect that cost the project thirty-nine checkpoints, which is why `PillarCells`, `SharesWall`, `DoorOpening`, `RockIntrusionCells` and `CorridorHalfWidthBetween` already existed as single authorities. **The corridor was the one shape in the generator that never got the same treatment.**
+
+**The extraction was done first, on purpose, and proved to change nothing.** `check-planner-layouts.py` reported **byte-identical numbers across all seven depths** before and after - refused, rooms, widest, pairs, margin, starved, shaped, rock, fellback, institutions, degree, roomfill, hall spots, every column. The ranges were checked term by term beforehand too: `[min(maxX) + 1, max(minX) - 1]` inclusive in both readers, and the carver's `offset` over `[-halfWidth + 1, halfWidth - 1]` is the validator's `dz` over `[-reach, reach]` with `reach = halfWidth - 1`. The genstep's `throw new InvalidOperationException("RR_Generation_NonAdjacentRooms")` is gone with the derivation: an empty leg list carves nothing and says the same thing without a crash.
+
+**The bend itself did NOT land, and that was the right call.**
+
+### The finding that stopped it: doglegging between centres is unsafe
+
+Worked at depth 1, where slots sit 45 apart and rooms are about 34 across. An L-corridor for the **diagonal** pair (0,0) -> (1,1) runs from (36,36) toward x = 81 - and **straight into the room at slot (1,0)**, which occupies x 64..98.
+
+So bends are not merely absent; **routing one between room centres cuts through a third room.** Real bends have to run in the **rock gap lanes** between slots, which is a larger change - and the same change that makes non-adjacent links possible, so *"corradors arent all straight"*, *"room connected to like 0 - 10 other rooms"*, *"u -turns"* and *"multiple coices on directions to take in every rooms"* are **one job, not four.** `CorridorLegs` is now the only function it has to land in, which is exactly what the extraction bought.
+
+**Two hazards found while designing it, both silent if missed:** a multi-leg corridor places a **wall at every joint**, inside the next leg's floor, so wall placement has to skip cells that are any leg's floor; and `CorridorSideCells` would report a joint cell that is another leg's **centre line**, so the dressing could furnish the middle of the route - the precise thing the side-cell rule exists to prevent. A blocked corridor is the unreachable-room defect class that cost thirty-nine checkpoints, so neither gets guessed at.
+
+### Eight claims and five plants had to be re-aimed, and the properties came out stronger
+
+The refactor broke four proof claims and orphaned five plant anchors - **every one of them asserting the old derivation rather than the property.** Re-aimed, not weakened:
+
+* *"TWO ROOMS CAN SHARE A WALL, AND ONE FUNCTION DECIDES IT"* - the generator reaches `SharesWall` **through** the authority now, so the property is strictly more true than when the claim was written.
+* *"the generator carves no corridor where a wall is shared"* - the skip lives inside `CorridorLegs`, so the carver carves nothing because there is nothing to carve rather than because it remembered to check. A caller cannot forget.
+* *"HALLWAYS ARE NOT ALL ONE WIDTH"* and *"the planner models the same corridor width the generator carves"* - **the second stopped being a coincidence.** It had asserted that two independent derivations happened to agree; both now take the floor from one function, so "the model is the build" holds by construction.
+* *"the hallways are lit and furnished, against their walls only"* - this **counted** the centre-line guard twice, once per axis, because a plant that removed one run had once been satisfied by the other. One function with two branches replaced the two copies, so the duplicate-count trap went with the duplicate.
+
+**Two plants had silently collapsed into the same fault** - each used to delete its own copy of the back-to-back skip, and there is one copy now. One keeps that fault at its new home; the other was re-aimed at a genuinely different one, the validator ceasing to model the corridor at all. A third was re-aimed at the divergence that is still *possible*: the carver asking the authority for a corridor at the **wrong shaping depth**.
+
+`plant-coordinate-layout.py` **125 of 125 caught**; `plant-generation.py` **103 of 103 caught**.
+
+### Evidence
+
+**0.12.81-dev, build clean: 0 warnings, 0 errors, 211 C# files, 92 approved files, no game launched.** All **sixteen** checkers exit 0. All **forty-nine** proofs hold. 784 plant anchors findable.
+
+**Published via the cascade in `PUBLISHING.md`; refs read back in session output.** `README.md` was caught by `check-doc-conformance.py` still claiming 0.12.80-dev and corrected in this same commit, which is the docs-before-push LAW enforced mechanically rather than remembered.
+
+### And the publication cadence changed with it
+
+**Verbatim owner direction (2026-10-03):** *"aftert u finish up go ahead and get back to the staging, now.md writeing, and the cascades but not every time u do something only after you finish like 10-12 items in the todo do u do another stage/cascade"*
+
+This replaced *"no need to stage and no need to cascade until told to start again"* - that direction's own stated exit. Batch size is **10 to 12 closed items**, counted as rows archived out of the queue into this file, because that count cannot be inflated: a row only leaves on a proved byte-for-byte transfer. **This publication carried 49 archived rows**, far past one batch, because the work before it ran under the no-cascade direction.

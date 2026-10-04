@@ -266,6 +266,14 @@ Nothing warns you again.</RR_Portals_RemoveWayInConfirm>
   <RR_WorldExit_NoTileFound>The survey found the way out but nowhere for it to lead. Nothing on the far side would hold anybody.</RR_WorldExit_NoTileFound>
   <RR_WorldExit_NobodyHere>Nobody is standing at this door. Bring whoever is leaving to it first.</RR_WorldExit_NobodyHere>
   <RR_WorldExit_CouldNotClaim>The place on the far side could not be taken on. Nobody has moved, and the door is still there.</RR_WorldExit_CouldNotClaim>
+  <RR_WorldReturn_Unavailable>The way back could not be set up, so nobody walked out. The door you came to is still there.</RR_WorldReturn_Unavailable>
+  <RR_WorldReturn_NoDoorDef>A plain door could not be made, so there would be no way back in. Nobody has moved.</RR_WorldReturn_NoDoorDef>
+  <RR_WorldReturn_NoGateCell>Nowhere on the far side can hold a gate with room to stand beside it, so there would be no way back in. Nobody has moved.</RR_WorldReturn_NoGateCell>
+  <RR_WorldReturn_GateNotPlaced>The gate on the far side would not stand where it was put, so there would be no way back in. Nobody has moved.</RR_WorldReturn_GateNotPlaced>
+  <RR_WorldReturn_NoAnchorComp>That door cannot be marked as a way back in. Nobody has moved.</RR_WorldReturn_NoAnchorComp>
+  <RR_WorldReturn_NoNetwork>The address book is unavailable, so the way back could not be recorded. Nobody has moved.</RR_WorldReturn_NoNetwork>
+  <RR_WorldReturn_NotRegistered>The way back refused to record itself, so the gate was taken down again rather than left standing as a false way home. Nobody has moved.</RR_WorldReturn_NotRegistered>
+  <RR_Event_WorldReturnGateBuilt>A gate back into the Backrooms now stands on the far side.</RR_Event_WorldReturnGateBuilt>
   <RR_WorldExit_NoArrivalCell>There is nowhere to stand on the far side. Nobody has moved.</RR_WorldExit_NoArrivalCell>
   <RR_WorldExit_NobodyMoved>Nobody made it through, and everybody is back where they were standing.</RR_WorldExit_NobodyMoved>
   <RR_WorldExit_CouldNotForm>They could not set out from there. Nobody has moved.</RR_WorldExit_CouldNotForm>

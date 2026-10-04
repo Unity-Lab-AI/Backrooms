@@ -31,6 +31,6 @@ Reverse order = lost work, silently. If FINALIZED is written after the TODO dele
 **How to apply:**
 - Archive at the end of **every batch that closes rows** — not "eventually", not at a milestone.
 - **Prove verbatim, never assert it.** Partition the source file's line indices into kept/moved, assert reassembling the two halves reproduces the original **byte for byte**, write the archive first, confirm every moved line is present, only then rewrite the queue. A failed confirmation restores the archive and leaves the queue untouched.
-- In this project: `.local/qa/archive-finished-todo.py` (`--apply`, `--queue <path>`) and `.local/qa/verify-archive-move.py` (re-checks the result independently, five ways).
+- In this project: `tools/archive-finished-todo.py` (`--apply`, `--queue <path>`) and `tools/verify-archive-move.py` (re-checks the result independently, five ways).
 - Moved rows land in a delimited `archived-queue` region so a checker can tell "archived from the queue" from "never reached the queue" — opposite facts, and the second is still a build failure.
 - Full LAW body in `.claude/CONSTRAINTS.md §FINALIZED BEFORE DELETE`. Related: [[feedback_never_delete_todo_info]], [[feedback_docs_before_push]].

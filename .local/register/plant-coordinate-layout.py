@@ -111,9 +111,25 @@ PLANTS = [
     ("THE GRAND THRESHOLD HALL IS LOST", PLANNER,
      "rooms.Add(MakeHall(coordinate, hallFirst, hallSecond, spacing, seed, depth));", ""),
 
-    ("the maze starts inside the hall instead of beside it", PLANNER,
-     "            var stack = new List<IntVec2> { hallSecond };",
-     "            var stack = new List<IntVec2> { hallFirst };"),
+    # **RE-AIMED 2026-10-03, at the regression that actually happened.** This mutated
+    # `{ hallSecond }` into `{ hallFirst }` on the premise that starting "inside the hall" was the
+    # fault. That premise is obsolete: **both** slots are the hall, and the walk now starts from
+    # both on purpose -- owner, *"starts locations of main grand rooms can be anywhere on the map
+    # and lead anywhere in multiple differetn varied ways"*.
+    #
+    # The live regression is dropping one half, and it is not hypothetical: growing from
+    # `hallSecond` alone worked only while the hall was pinned to slots (0,0)-(1,0). Once the hall
+    # could land anywhere, a horizontal hall in the last two columns left that slot with no legal
+    # step -- east off-grid, west the hall itself, north and south declined by
+    # `AreNeighbourRooms` -- and **1.5% of seeds produced a one-room level** that fell back to the
+    # serpentine, which is the string of pearls this whole line of work exists to remove.
+    ("THE MAZE GROWS FROM ONLY ONE HALF OF THE HALL AGAIN", PLANNER,
+     "            var stack = new List<IntVec2> { hallFirst, hallSecond };",
+     "            var stack = new List<IntVec2> { hallSecond };"),
+
+    ("the hall goes back to a hardcoded corner", PLANNER,
+     "            int hallDraw = DestinationService.StableHash(seed, \"hall:slot\", depth);",
+     "            int hallDraw = 0;"),
 
     # ------------------------------------------------------- the maze itself
     # Owner: *"all the backrooms so far are just one lone strain of perals arangement that snakes
@@ -256,11 +272,18 @@ PLANTS = [
      "            bool collides = rooms.Any(other => other != mover && mover.Bounds.Overlaps(other.Bounds));",
      "            bool collides = false;"),
 
-    ("a corridor is carved through the shared wall, merging the two rooms", GEN,
-     "                    if (RoomLayoutPlanner.SharesWall(room, other)) { continue; }", ""),
+    # **BOTH RE-AIMED 2026-10-03, and they had collapsed into ONE fault.** These deleted the
+    # back-to-back skip from the carver and from the validator separately, because each kept its
+    # own copy. The skip now lives once inside `CorridorLegs`, so deleting it is a single fault --
+    # and planting it twice would have proved nothing the second time. The first keeps that fault
+    # at its new home; the second is re-aimed at a genuinely different one, the validator ceasing
+    # to model the corridor at all, which is the divergence the old pair was really guarding.
+    ("a corridor is carved through the shared wall, merging the two rooms", PLANNER,
+     "            if (first == null || second == null || SharesWall(first, second)) { return legs; }",
+     "            if (first == null || second == null) { return legs; }"),
 
-    ("the validator still models a corridor the generator will not carve", PLANNER,
-     "                    if (SharesWall(room, other)) { continue; }", ""),
+    ("the validator stops modelling the corridor the generator will carve", PLANNER,
+     "                            floor[cell.x, cell.z] = true;", ""),
 
     ("rooms stop being pushed together at all", PLANNER,
      "                PushAgainst(rooms, rooms[index], rooms[host]);" + chr(10), ""),
@@ -407,17 +430,21 @@ PLANTS = [
      "                    if (intrusions.Contains(cell)) { continue; }" + NL
      + "                    map.roofGrid.SetRoof(cell, overheadRoof);"),
 
-    ("HALLWAYS GO BACK TO ONE WIDTH", GEN,
-     "                    int halfWidth = RoomLayoutPlanner.CorridorHalfWidthBetween(room, other," + NL
-     + "                        Math.Max(RoomLayoutPlanner.ShapeDepthOf(rooms, room, depth)," + NL
-     + "                            RoomLayoutPlanner.ShapeDepthOf(rooms, other, depth)));",
-     "                    int halfWidth = 2;"),
+    # **RE-AIMED 2026-10-03.** The width was read in the carver; it is read inside `CorridorLegs`
+    # now, which is the only place that needs it. Same fault, new home.
+    ("HALLWAYS GO BACK TO ONE WIDTH", PLANNER,
+     "            int halfWidth = CorridorHalfWidthBetween(first, second, depth);",
+     "            int halfWidth = 2;"),
 
-    ("the planner models a corridor width the generator does not carve", PLANNER,
-     "                    int reach = CorridorHalfWidthBetween(room, other," + NL
-     + "                        Math.Max(ShapeDepthOf(rooms, room, depth)," + NL
-     + "                            ShapeDepthOf(rooms, other, depth))) - 1;",
-     "                    int reach = 1;"),
+    # **RE-AIMED 2026-10-03 at the divergence that is still POSSIBLE.** There is one width now,
+    # so "the planner models a width the generator does not carve" cannot be planted by changing a
+    # number. What can still diverge is the **shaping depth** each reader passes in: the carver
+    # feeding the coordinate's own depth instead of the pair's would hand the authority a
+    # different question and get a different corridor back.
+    ("the generator asks for a corridor at the wrong shaping depth", GEN,
+     "                        Math.Max(RoomLayoutPlanner.ShapeDepthOf(rooms, room, depth)," + NL
+     + "                            RoomLayoutPlanner.ShapeDepthOf(rooms, other, depth))))",
+     "                        depth))"),
 
     # ------------------------------------------------------ the open-map budget
     ("THE BUDGET GETS HARD-CODED INSTEAD OF READING THE GAME'S LIMIT", BUDGET,

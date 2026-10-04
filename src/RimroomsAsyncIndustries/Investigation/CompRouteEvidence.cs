@@ -108,8 +108,35 @@ namespace RimroomsAsyncIndustries.Investigation
         }
         public override string CompInspectStringExtra()
         {
-            if (string.IsNullOrEmpty(evidenceId)) { return null; }
             RimroomsCampaignComponent campaign = Current.Game == null ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            // **A BLANK BOOK SAID NOTHING AT ALL, AND A BLANK BOOK IS THE ONLY KIND THE COMPANY
+            // EVER HANDS YOU.** Owner, 2026-10-03, verbatim: *"the company is suppose to supply u
+            // with a journal to do tasks in but they only gave me noraml books named wrong things
+            // that dont do anything"*.
+            //
+            // This method opened with `if (string.IsNullOrEmpty(evidenceId)) { return null; }`,
+            // which returned **before** `RR_Evidence_Unregistered` could ever be reached. So the
+            // one state a player actually starts holding -- an unwritten book granted by the
+            // scenario -- was the single state with no guidance, while the *registered* state had
+            // had a next step since the same owner's earlier report *"it was confusing at what i
+            // was suppose to do with it"*. The fix then was applied to one branch and the branch
+            // nobody reaches first was left silent.
+            //
+            // Said only while the branch can operate and only on a book that could actually
+            // serve, so an ordinary Core novel in an ordinary colony is untouched.
+            //
+            // **And the book is deliberately NOT renamed.** `CompProperties_RouteEvidence` is
+            // patched onto EVERY Core `TextBook` (`Patches/RR_ExistingEvidenceBook.xml`), because
+            // the design is that any blank book can be carried in and written in the field. A
+            // label transform here would therefore retitle every novel in the game, trade stock
+            // and mod content included. The company's book is identified by what the card says it
+            // is for, not by overwriting Core's own titles.
+            if (string.IsNullOrEmpty(evidenceId))
+            {
+                return campaign == null || !campaign.CanOperate || !IsSupportedCarrier(parent)
+                    ? null
+                    : "RR_Evidence_Blank".Translate().ToString();
+            }
             EvidenceRecord record = campaign == null ? null : campaign.FindEvidence(evidenceId);
             return !HasValidBinding || record == null || record.Item != parent ? "RR_Evidence_Unregistered".Translate().ToString()
                 // **THE NEXT THING TO DO, not just the state.** Owner, on finding one on a

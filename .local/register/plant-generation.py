@@ -13,6 +13,7 @@ CONTENT = SRC + "/Generation/RoomContentBuilder.cs"
 INHAB = SRC + "/Threats/InhabitantService.cs"
 IDEF = SRC + "/Threats/RimroomsInhabitantDef.cs"
 GEN = SRC + "/Generation/GenStep_BackroomsDestination.cs"
+PLANNER = SRC + "/Generation/RoomLayoutPlanner.cs"
 PROOF = ".local/register/proof-generation-batch.py"
 
 
@@ -201,15 +202,13 @@ PLANTS = [
 
     # Anchored on the horizontal run only: the same guard exists on both axes, so the bare
     # condition matches twice and a plant that matches twice proves nothing while looking fine.
-    ("furniture lands on the middle of a corridor and blocks the route", GEN,
-     "                                SetWalkableRoofedCell(map, cell, look.floor);" + NL
-     + "                                PaintCorridorCell(map, cell, look, x);" + NL
-     + "                                // One in from the wall, and never the centre line." + NL
-     + "                                if (offset != 0 && (offset == halfWidth - 1 || offset == 1 - halfWidth))"
-     + NL + "                                { sides.Add(cell); }",
-     "                                SetWalkableRoofedCell(map, cell, look.floor);" + NL
-     + "                                PaintCorridorCell(map, cell, look, x);" + NL
-     + "                                sides.Add(cell);"),
+    # **RE-AIMED 2026-10-03.** This deleted the carver's own centre-line guard. The rule now
+    # lives once in `RoomLayoutPlanner.CorridorSideCells`, which reports only the outermost rows
+    # of a leg's floor -- so the fault is planted by making that function report the centre line
+    # instead, which is exactly "furniture lands in the middle of the route".
+    ("furniture lands on the middle of a corridor and blocks the route", PLANNER,
+     "                    yield return new IntVec3(x, 0, floor.minZ);",
+     "                    yield return new IntVec3(x, 0, floor.CenterCell.z);"),
 
     # ------------------------------------ the wiring order, and the rebuild that threw
     # The conduit guard was correct and ran too early to see anything: conduits were laid before

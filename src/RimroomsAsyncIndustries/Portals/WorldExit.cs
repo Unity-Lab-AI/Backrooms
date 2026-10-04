@@ -17,18 +17,39 @@ namespace RimroomsAsyncIndustries.Company
     /// row that described this as a missing feature suggested: it was a dead end for exactly the
     /// player least equipped to deal with one.
     ///
-    /// ## Why this is a caravan and not a new world object
+    /// ## Why this is a caravan or a CLAIMED tile, never a new world object
     ///
     /// Core already has *"people standing on a world tile you do not own"*, and it is a caravan.
-    /// A new `WorldObjectDef` plus a generated map would duplicate that, touch world generation —
-    /// the most compatibility-sensitive surface there is with 294 other mods — and fight the four
-    /// Settled transport mods the register's **RR-OUT** trace groups around this exact feature:
-    /// Carryalls intercontinental transport, Giddy-Up 2, Pack Mules Extended, and Alpha Vehicles
-    /// Age of Sail. All four already integrate with caravans. None of them integrates with a
-    /// bespoke world object of ours.
+    /// A new `WorldObjectDef` would duplicate that and fight the four Settled transport mods the
+    /// register's **RR-OUT** trace groups around this exact feature: Carryalls intercontinental
+    /// transport (row 61), Giddy-Up 2 (98), Pack Mules Extended (159) and Alpha Vehicles Age of
+    /// Sail (266). All four already integrate with caravans. None integrates with a bespoke world
+    /// object of ours.
+    ///
+    /// **A claimed tile is not that, and this file always claimed one.** Under the map cap,
+    /// <see cref="RimroomsCampaignComponent.ClaimTileAndWalkOut"/> calls Core's own
+    /// `SettleUtility.AddNewHome` and `GetOrGenerateMap`, so the crew walks onto an ordinary
+    /// player settlement every mod in the register already understands. **Nothing here touches
+    /// world generation** — an earlier phrasing of this comment implied it did, and that was
+    /// overstated: no planet, biome or tile-validity rule is altered by settling a tile Core
+    /// chose.
     ///
     /// **Acquisition stays RimWorld's; recognition is ours** — the same rule arc 5 settled for
     /// remote sites.
+    ///
+    /// ## And the trip is two-way as of 2026-10-03
+    ///
+    /// Owner: *"currently and incorrectyl there is no way for a pawn to go back into the backrooms
+    /// when they exit via a natural gate"*. It was one-way by construction — `LeaveThroughWorldExit`
+    /// was the only direction, while `WorldExitRecord` had been saving `coordinateId` and
+    /// `doorLoadId` all along with nothing reading them. The claimed path now builds a marked Core
+    /// `Door` on the arrival map and registers an `Emergence` edge home **before anybody is
+    /// despawned**, so a failure leaves the crew where they were. See
+    /// <see cref="RimroomsCampaignComponent.EstablishReturnGate"/>.
+    ///
+    /// **The caravan path is still one-way, and that is the owner's own earlier rule** — *"anything
+    /// over 5 maps defaults to caravans"*. A caravan has no map for a gate to stand on; it walks
+    /// home overland, which is what a caravan is for.
     ///
     /// ## The guarantee this narrows, and exactly how far
     ///
@@ -299,7 +320,7 @@ namespace RimroomsAsyncIndustries.Company
             if (leaving.Count == 0) { return CompanyActionResult.Refused("RR_WorldExit_NobodyHere"); }
 
             CompanyActionResult result = CanClaimAnotherMap
-                ? ClaimTileAndWalkOut(record, leaving)
+                ? ClaimTileAndWalkOut(record, leaving, door)
                 : FormCaravanAndWalkOut(record, from, leaving);
             if (!result.Success) { return result; }
 
@@ -320,7 +341,8 @@ namespace RimroomsAsyncIndustries.Company
         /// ordinary player settlement that every mod in the register already understands. Nothing
         /// bespoke, and no `PassToWorld` anywhere on this path.
         /// </summary>
-        private CompanyActionResult ClaimTileAndWalkOut(WorldExitRecord record, List<Pawn> leaving)
+        private CompanyActionResult ClaimTileAndWalkOut(WorldExitRecord record, List<Pawn> leaving,
+            Thing coordinateDoor)
         {
             PlanetTile tile = record.Tile;
             Settlement settlement;
@@ -341,6 +363,22 @@ namespace RimroomsAsyncIndustries.Company
 
             IntVec3 arrival = FindArrivalCell(claimed);
             if (!arrival.IsValid) { return CompanyActionResult.Refused("RR_WorldExit_NoArrivalCell"); }
+
+            // **THE WAY BACK IN IS BUILT BEFORE ANYBODY IS DESPAWNED.** Owner, 2026-10-03:
+            // *"there is no way for a pawn to go back into the backrooms when they exit via a
+            // natural gate"*, and at the fork: *"Generate a map on arrival with the gate in it"*.
+            //
+            // The ordering is the safety property, and it is the same one this method's docstring
+            // already claims for generation: if the return gate cannot be established, **nothing
+            // has moved and the way out is still there**. Establishing it afterwards would mean a
+            // failure stranded a crew on a map instead of on a tile -- worse, because it looks
+            // finished.
+            //
+            // So this method can now refuse where it previously always succeeded under the cap.
+            // That is deliberate: a one-way trip IS the defect, and every refusal names its own
+            // cause so a player can clear it (releasing a site frees a slot).
+            CompanyActionResult returnGate = EstablishReturnGate(record, claimed, coordinateDoor);
+            if (!returnGate.Success) { return returnGate; }
 
             int moved = 0;
             for (int index = 0; index < leaving.Count; index++)
@@ -389,6 +427,134 @@ namespace RimroomsAsyncIndustries.Company
             if (formed == null) { return CompanyActionResult.Refused("RR_WorldExit_CouldNotForm"); }
             RecordEvent("RR_Event_WorldExitCaravan", record.id, formed.Label);
             return CompanyActionResult.Applied();
+        }
+
+        /// <summary>
+        /// Build the way back in, on the tile they walked out onto.
+        ///
+        /// ## Owner report and answer, 2026-10-03, verbatim
+        ///
+        /// *"ther natureal gates in the backrrooms that lead to the world map tiles( these gats
+        /// currently dont have a way back into the backrooms ... they need to have a gate spawn in
+        /// the world tile that they portal to so they can head back into the backrooms, currently
+        /// and incorrectyl there is no way for a pawn to go back into the backrooms when they exit
+        /// via a natural gate"*, and at the fork: *"Generate a map on arrival with the gate in it"*.
+        ///
+        /// **The map was already being generated.** `ClaimTileAndWalkOut` has claimed the tile and
+        /// generated its map since the day it was written, and `CanClaimAnotherMap` already bounds
+        /// it by the owner's five-map cap *and* `Prefs.MaxNumberOfPlayerSettlements`. What was
+        /// missing was only ever the gate standing in it and the edge pointing home, which is why
+        /// this is one method rather than the new world object and map generator the queued row
+        /// predicted.
+        ///
+        /// ## Four preconditions, each read out of `RimroomsPortalNetwork.Register`
+        ///
+        /// * **Line 82, `OwnsMap(firstAnchor.Map)`.** A Core player settlement is neither the
+        ///   headquarters nor a coordinate, so `OwnsMap` is false until the map is registered as a
+        ///   remote site. `OperatesAt`'s own comment already names this as that predicate's
+        ///   purpose — *"a gate may anchor there and a way out may come up on it"* — so this uses
+        ///   an audited path rather than widening one. `CompRimroomsEmergence.OrdinaryBranchMap`
+        ///   asks the same question, which is why the registration happens before the mark.
+        /// * **Lines 90-95, the `Emergence` kind.** The anchor must carry
+        ///   <see cref="CompRimroomsEmergence"/>, be designated, be player-faction and have a
+        ///   matching approach cell. `Mark()` is what makes it designated, and it is the same
+        ///   method the player's own gizmo calls.
+        /// * **Lines 278-283, `ValidDoor`.** A `Building_Door`, spawned, with the approach cell
+        ///   cardinally adjacent and in bounds. A Core `Door` in steel, made exactly the way
+        ///   `GenStep_BackroomsDestination.PlaceNativeDoors` makes every other threshold in this
+        ///   mod — **no new ThingDef**, so the content-reuse policy is untouched.
+        /// * **Lines 79-81.** The *second* anchor must be the coordinate map, and it is: the door
+        ///   the crew walked out of is the natural gate they were standing at.
+        ///
+        /// ## It cleans up after itself, and that is not optional
+        ///
+        /// Every failure after the door is spawned destroys it again. A door left standing with no
+        /// edge behind it is worse than no door: it is a gate that looks like the way home and is
+        /// not, which is the same lie as a section titled DONE full of open rows.
+        /// </summary>
+        private CompanyActionResult EstablishReturnGate(WorldExitRecord record, Map claimed,
+            Thing coordinateDoor)
+        {
+            if (claimed == null || coordinateDoor == null || !coordinateDoor.Spawned)
+            { return CompanyActionResult.Refused("RR_WorldReturn_Unavailable"); }
+
+            CompanyActionResult site = RegisterRemoteSite(claimed);
+            if (!site.Success) { return site; }
+
+            ThingDef doorDef = DefDatabase<ThingDef>.GetNamedSilentFail("Door");
+            if (doorDef == null) { return CompanyActionResult.Refused("RR_WorldReturn_NoDoorDef"); }
+
+            IntVec3 cell = FindReturnGateCell(claimed);
+            if (!cell.IsValid) { return CompanyActionResult.Refused("RR_WorldReturn_NoGateCell"); }
+
+            var gate = ThingMaker.MakeThing(doorDef,
+                doorDef.MadeFromStuff ? ThingDefOf.Steel : null) as Building_Door;
+            if (gate == null) { return CompanyActionResult.Refused("RR_WorldReturn_NoDoorDef"); }
+            gate.SetFaction(Faction.OfPlayer);
+            GenSpawn.Spawn(gate, cell, claimed, Rot4.North);
+            if (!gate.Spawned || gate.Map != claimed)
+            { return CompanyActionResult.Refused("RR_WorldReturn_GateNotPlaced"); }
+            gate.SetForbidden(false, false);
+
+            CompRimroomsEmergence anchor = gate.TryGetComp<CompRimroomsEmergence>();
+            if (anchor == null)
+            {
+                gate.Destroy(DestroyMode.Vanish);
+                return CompanyActionResult.Refused("RR_WorldReturn_NoAnchorComp");
+            }
+            CompanyActionResult marked = anchor.Mark();
+            if (!marked.Success) { gate.Destroy(DestroyMode.Vanish); return marked; }
+
+            RimroomsPortalNetwork network = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsPortalNetwork>();
+            if (network == null)
+            {
+                gate.Destroy(DestroyMode.Vanish);
+                return CompanyActionResult.Refused("RR_WorldReturn_NoNetwork");
+            }
+
+            IntVec3 approach = anchor.ApproachCell;
+            IntVec3 farApproach = PortalAddressService.ApproachCellFor(coordinateDoor);
+            PortalNetworkResult registered = network.Register(record.id + ":return",
+                record.coordinateId, PortalConnectionKind.Emergence,
+                gate, approach, coordinateDoor, farApproach);
+            if (registered != PortalNetworkResult.Success && registered != PortalNetworkResult.Existing)
+            {
+                gate.Destroy(DestroyMode.Vanish);
+                return CompanyActionResult.Refused("RR_WorldReturn_NotRegistered");
+            }
+
+            RecordEvent("RR_Event_WorldReturnGateBuilt", record.id);
+            return CompanyActionResult.Applied();
+        }
+
+        /// <summary>
+        /// A cell on the claimed map a door can stand in, with somewhere to stand beside it.
+        ///
+        /// The cardinal-neighbour test is not decoration: `ValidDoor` requires the approach cell
+        /// to be cardinally adjacent, and `PortalAddressService.ApproachCellFor` finds it by
+        /// walking the four cardinals. A cell whose neighbours are all rock or water would spawn a
+        /// door that can never be registered, so the search refuses it here rather than
+        /// discovering it two steps later with a door already on the map.
+        /// </summary>
+        private static IntVec3 FindReturnGateCell(Map map)
+        {
+            IntVec3 found;
+            if (CellFinderLoose.TryFindRandomNotEdgeCellWith(12,
+                cell => cell.Standable(map) && !cell.Fogged(map) && cell.GetEdifice(map) == null &&
+                    HasStandableCardinal(cell, map), map, out found))
+            { return found; }
+            return IntVec3.Invalid;
+        }
+
+        private static bool HasStandableCardinal(IntVec3 cell, Map map)
+        {
+            foreach (IntVec3 direction in GenAdj.CardinalDirections)
+            {
+                IntVec3 candidate = cell + direction;
+                if (candidate.InBounds(map) && candidate.Standable(map)) { return true; }
+            }
+            return false;
         }
 
         /// <summary>Somewhere standable on the claimed map. Core's own centre-out search.</summary>

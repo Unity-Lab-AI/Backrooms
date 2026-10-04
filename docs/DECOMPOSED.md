@@ -34,16 +34,6 @@ YOLO mode picks the next decomposed task in cascade order — current minor's pe
 
 ## In progress
 
-_(none. Slices are added when a minor task is picked up.)_
-
-**This file holds no completed entry, by owner direction 2026-10-02:** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
-
-Everything this file used to carry under *Complete* now lives in `docs/FINALIZED.md` — **56 entries, 228 lines**, moved verbatim. **That section's own heading had been lying:** it read *"Complete — moved to FINALIZED, descriptions retained per LAW"* while **not one** of those entries was in `FINALIZED.md`, zero string hits for any of them. The claim is true now because the transfer happened, not because the heading said so.
-
-Archive with `python .local/qa/archive-finished-todo.py --queue docs/DECOMPOSED.md --apply` at the end of any batch that closes slices. It proves the transfer byte for byte before the queue is rewritten; full LAW in `.claude/CONSTRAINTS.md §FINALIZED BEFORE DELETE`.
-
----
-
 ## TOMBSTONES
 
 _(none)_

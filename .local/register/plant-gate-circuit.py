@@ -18,6 +18,8 @@ BINDING = "src/RimroomsAsyncIndustries/Gate/NativeGateBinding.cs"
 OPENING = "src/RimroomsAsyncIndustries/Gate/PortalGateOpening.cs"
 TRAVEL = "src/RimroomsAsyncIndustries/Portals/PortalTravelService.cs"
 KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml"
+GATE = "src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs"
+GATEKEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Gate.xml"
 
 PROOF = ".local/register/proof-gate-circuit.py"
 
@@ -50,9 +52,32 @@ PLANTS = [
      "            if (NativePowerNet == null) { return; }" + NL, "", PROOF),
 
     # ====================================================== the refusal
-    ("THE REFUSAL STOPS NAMING A FLAT BATTERY", OPENING,
-     '            if (NativeStoredEnergy < needed) { return "RR_PortalTravel_NoCharge"; }' + NL,
-     "", PROOF),
+    #
+    # **RE-AIMED 2026-10-03.** This planted the DELETION of
+    #     if (NativeStoredEnergy < needed) { return "RR_PortalTravel_NoCharge"; }
+    # from the crossing path, against a proof that a flat battery was a named cause of a refused
+    # crossing. Owner direction removed that behaviour -- *"if its open it doenst need special
+    # power to send things through the gate"* -- so the line is gone and the deletion plant could
+    # no longer find its target, which `check-plant-anchors.py` caught rather than letting the
+    # suite break open with PLANT SETUP BROKEN.
+    #
+    # **The claim is not weakened, it is inverted, which is what the direction actually asks for.**
+    # The regression to guard is now an ADDITION: somebody putting an opening-time power condition
+    # back onto a crossing. All three arrive together through `CheckStationReadiness`, so swapping
+    # the call back is the single mutation that reintroduces every one of them at once.
+    ("AN OPEN APERTURE IS CHARGED POWER TO PASS SOMEBODY THROUGH AGAIN", OPENING,
+     "            CompanyActionResult station = CheckCrossingReadiness(assignedOperator);",
+     "            CompanyActionResult station = CheckStationReadiness(assignedOperator);", PROOF),
+
+    ("the stored-charge toll is put back on the crossing", OPENING,
+     "            CompanyActionResult station = CheckCrossingReadiness(assignedOperator);",
+     "            CompanyActionResult station = CheckCrossingReadiness(assignedOperator);" + NL
+     + '            if (NativeStoredEnergy < 1f) { return "RR_PortalTravel_NoCharge"; }', PROOF),
+
+    ("the power conditions are dropped from STARTING an opening too, which is a different bug",
+     OPENING,
+     "            CompanyActionResult ready = CheckStationReadiness(assignedOperator);",
+     "            CompanyActionResult ready = CheckCrossingReadiness(assignedOperator);", PROOF),
 
     ("THE BLOCKER KEY IS WRITTEN AND NEVER ASKED", TRAVEL,
      "                    if (why != null) { return CompanyActionResult.Refused(why); }",
@@ -66,9 +91,42 @@ PLANTS = [
      "                return CompanyActionResult.Refused(AvailabilityKey(availability));",
      "                return CompanyActionResult.Refused(\"RR_PortalTravel_NoCharge\");", PROOF),
 
+    # =============================================== which door is the gate, decided on its own
+    #
+    # Owner, 2026-10-03: *"i should be able to set the gate on a door first"*. The regressions to
+    # guard are the two shapes the old behaviour had -- resolving providers before designating,
+    # and refusing instead of routing -- plus putting a provider condition inside the designation
+    # itself, which would reintroduce `RR_NativeGate_NoSingleBattery` under another name.
+    ("THE DOOR BUTTON RESOLVES PROVIDERS BEFORE IT DESIGNATES AGAIN", GATE,
+     "                    CompanyActionResult designated = DesignateAsGate();" + NL
+     + "                    if (!designated.Success) { ShowOrderResult(designated); return; }" + NL,
+     "", PROOF),
+
+    ("a missing circuit goes back to refusing instead of telling", GATE,
+     '                        Messages.Message("RR_NativeGate_DesignatedNeedsCircuit".Translate(',
+     '                        ShowOrderResult(CompanyActionResult.Refused(', PROOF),
+
+    ("A BATTERY CONDITION IS PUT BACK INTO THE DESIGNATION ITSELF", BINDING,
+     "            if (nativeDesignated) { return CompanyActionResult.Existing(); }",
+     '            if (nativeBattery == null) { return RefuseNative("LinkMissing"); }' + NL
+     + "            if (nativeDesignated) { return CompanyActionResult.Existing(); }", PROOF),
+
+    ("binding stops refusing a battery too small to hold a return", BINDING,
+     '            { return RefuseNative("ReserveTooSmall"); }',
+     "            { }", PROOF),
+
+    ("the designation message loses its string and prints a raw key", GATEKEYED,
+     "  <RR_NativeGate_DesignatedNeedsCircuit>",
+     "  <RR_NativeGate_DesignatedNeedsCircuitXX>", PROOF),
+
     # ====================================================== the words
+    # **RE-AIMED 2026-10-03, onto a reason the crossing can still return.** The proof derives the
+    # guarded set from the code -- `re.findall(r'"(RR_PortalTravel_[A-Za-z]+)"', opening)` -- so
+    # when the stored-charge toll came off the crossing path, `RR_PortalTravel_NoCharge` stopped
+    # being a reachable reason and this plant stopped being caught. **The proof was right and the
+    # plant was stale:** a key no code can return is not a refusal that can print raw at a player.
     ("a reason loses its string and prints a raw key", KEYED,
-     "  <RR_PortalTravel_NoCharge>", "  <RR_PortalTravel_NoChargeXX>", PROOF),
+     "  <RR_PortalTravel_SessionClosed>", "  <RR_PortalTravel_SessionClosedXX>", PROOF),
 
     ("the charge message stops telling the player the limit is gone", KEYED,
      "Any number of them count.", "Bind one battery.", PROOF),

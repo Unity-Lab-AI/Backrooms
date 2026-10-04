@@ -375,6 +375,75 @@ namespace RimroomsAsyncIndustries.Gate
             return EnsureNativeAssemblyBill(workshop, false);
         }
 
+        /// <summary>
+        /// Mark this door as the gate, **before** its circuit exists.
+        ///
+        /// ## Owner direction, 2026-10-03, verbatim
+        ///
+        /// *"i try to first thing set a door as gate on the doors ui bar, but it tells me i have
+        /// to set up the battery used for reserver before i can do anything, incrattely, i should
+        /// be able to set the gate on a door first, so idk why its tellign me i cant set the gate
+        /// door without setting the batteries first"*, scoped *"in company scenerio"*.
+        ///
+        /// ## Why this is a new entry point and not a loosened <see cref="BindNativeInfrastructure"/>
+        ///
+        /// Binding is **four** decisions at once — which door, which console, which battery, which
+        /// bench — and it rightly refuses a half-answer, because a gate that looks complete and is
+        /// not strands the first crew through it. The owner is not asking for a weaker bind; they
+        /// are asking for the **first** of those four decisions to be takeable on its own.
+        ///
+        /// ## And the state this creates was already safe, which is why this is small
+        ///
+        /// `IsDesignated` was never "fully bound" — it is
+        /// `!IsRunExtension &amp;&amp; NativeDoorProvider() &amp;&amp; schema == 1 &amp;&amp; nativeDesignated`,
+        /// and the providers are not in it. What reports a missing circuit is
+        /// <see cref="NativeBindingFailureKey"/>, through `NativeIdentityLinkFailure`, which
+        /// returns `RR_NativeGate_LinkMissing` for exactly this case. Audited every dereference of
+        /// the three provider fields before writing a line: `SameNativeHeadquartersThing(null)` and
+        /// `ExactProvider(null, …)` both return false, `NativeBatteryComp` is null-guarded,
+        /// `NativeStoredEnergy` and `NativeBatteryCapacity` return `0f` on a null net,
+        /// `IsConsolePowered(null)` returns false, `GateSpinUp` null-checks both comps, and the
+        /// identity check's `||` chain short-circuits before it can dereference. **`ClearNativeBinding`
+        /// already reads `nativeConsole?.`** — the component anticipated this state.
+        ///
+        /// So a designated-but-unbound gate reports **why it is not functional** on its own inspect
+        /// card and in the Operations steps pane, which is the standing owner direction
+        /// (*"expose why a room is not functional"*) rather than a new behaviour.
+        ///
+        /// Every structural refusal `BindNativeInfrastructure` applies to the DOOR is kept, asked
+        /// through the same helpers so the two paths cannot disagree. A run extension is refused
+        /// outright: `IsDesignated` is false for one by design, so letting the flag be set would
+        /// produce a click that appears to do nothing.
+        /// </summary>
+        public CompanyActionResult DesignateAsGate()
+        {
+            if (!NativeDoorProvider()) { return RefuseNative("UnsupportedProvider"); }
+            if (nativeBindingSchema != 1) { return RefuseNative("UnknownSchema"); }
+            if (IsRunExtension) { return RefuseNative("IsRunExtension"); }
+            if (IsOpening || IsSpinningUp) { return RefuseNative("ActiveCannotRebind"); }
+            if (HasNativeEnergyDebitFault) { return RefuseNative("EnergyDebitFault"); }
+            // The door itself has to be an eligible headquarters thing, asked through the same
+            // predicate the provider checks use rather than a second copy of its conditions.
+            if (!SameNativeHeadquartersThing(parent)) { return RefuseNative("HeadquartersRequired"); }
+            if (!string.IsNullOrEmpty(nativeBranchId) && nativeBranchId != NativeCampaign.BranchId)
+            { return RefuseNative("HeadquartersRequired"); }
+            IntVec3 entry = EntrySideCell(nativeOppositeEntrySide);
+            if (!entry.InBounds(parent.Map) || !entry.Standable(parent.Map)) { return RefuseNative("EntryBlocked"); }
+            if (nativeDesignated) { return CompanyActionResult.Existing(); }
+
+            nativeBranchId = NativeCampaign.BranchId;
+            nativeBoundPosition = parent.Position;
+            nativeBoundRotation = parent.Rotation.AsInt;
+            nativeDesignated = true;
+            calibrated = false;
+            stablePowerTicks = 0;
+            // A gate from this moment, so it reads as one from this moment -- the same reason
+            // `BindNativeInfrastructure` and `ClearNativeBinding` both call this.
+            if (parent.Spawned) { parent.Notify_ColorChanged(); }
+            RecordGateActivity("RR_Event_GateDesignated", parent.GetUniqueLoadID());
+            return CompanyActionResult.Applied();
+        }
+
         public CompanyActionResult ClearNativeBinding()
         {
             if (nativeBindingSchema != 1) { return RefuseNative("UnknownSchema"); }

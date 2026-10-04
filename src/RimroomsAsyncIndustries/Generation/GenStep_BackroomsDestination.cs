@@ -965,59 +965,34 @@ namespace RimroomsAsyncIndustries.Generation
                 foreach (int linkedIndex in room.Links.Where(index => index > room.Index))
                 {
                     RoomRecord other = rooms.First(candidate => candidate.Index == linkedIndex);
-                    // A back-to-back pair is joined by the doorway in the wall they share.
-                    // Carving between their centres would cut a five-cell hole through that wall
-                    // and make them one room. The SAME predicate CandidateIsSafe used.
-                    if (RoomLayoutPlanner.SharesWall(room, other)) { continue; }
-                    // The pair's own shaping depth, the SAME call CandidateIsSafe made when
-                    // it proved the route through this corridor.
-                    int halfWidth = RoomLayoutPlanner.CorridorHalfWidthBetween(room, other,
+                    // **THE SHAPE COMES FROM THE PLANNER, not from a second derivation here.**
+                    // This block rebuilt the corridor's ranges itself -- the extents, the width
+                    // offsets, the wall lines and the back-to-back skip -- while `CandidateIsSafe`
+                    // rebuilt the same ranges to prove the level walkable. Two readers of one
+                    // rule is the defect this project has paid for most often, and the corridor
+                    // was the last shape in the generator still derived twice.
+                    //
+                    // `CorridorLegs` returns no legs for a back-to-back pair (the doorway in the
+                    // shared wall is the route) and no legs for a pair that is not axis-aligned,
+                    // which `AreNeighbourRooms` refuses before it can reach here anyway. The
+                    // throw that used to guard that case is gone with the derivation: an empty
+                    // list carves nothing, which is the same outcome without a crash.
+                    foreach (RoomLayoutPlanner.CorridorLeg leg in RoomLayoutPlanner.CorridorLegs(
+                        room, other,
                         Math.Max(RoomLayoutPlanner.ShapeDepthOf(rooms, room, depth),
-                            RoomLayoutPlanner.ShapeDepthOf(rooms, other, depth)));
-                    CellRect first = room.Bounds;
-                    CellRect second = other.Bounds;
-                    if (first.CenterCell.z == second.CenterCell.z)
+                            RoomLayoutPlanner.ShapeDepthOf(rooms, other, depth))))
                     {
-                        int fromX = Math.Min(first.maxX, second.maxX) + 1;
-                        int toX = Math.Max(first.minX, second.minX) - 1;
-                        int centerZ = first.CenterCell.z;
-                        for (int x = fromX; x <= toX; x++)
+                        foreach (IntVec3 cell in leg.Floor.Cells)
                         {
-                            for (int offset = -halfWidth + 1; offset <= halfWidth - 1; offset++)
-                            {
-                                IntVec3 cell = new IntVec3(x, 0, centerZ + offset);
-                                SetWalkableRoofedCell(map, cell, look.floor);
-                                PaintCorridorCell(map, cell, look, x);
-                                // One in from the wall, and never the centre line.
-                                if (offset != 0 && (offset == halfWidth - 1 || offset == 1 - halfWidth))
-                                { sides.Add(cell); }
-                            }
-                            PlaceCorridorWall(map, new IntVec3(x, 0, centerZ - halfWidth), wallDef, wallStuff, look);
-                            PlaceCorridorWall(map, new IntVec3(x, 0, centerZ + halfWidth), wallDef, wallStuff, look);
+                            SetWalkableRoofedCell(map, cell, look.floor);
+                            PaintCorridorCell(map, cell, look, leg.AlongX ? cell.x : cell.z);
                         }
-                    }
-                    else if (first.CenterCell.x == second.CenterCell.x)
-                    {
-                        int fromZ = Math.Min(first.maxZ, second.maxZ) + 1;
-                        int toZ = Math.Max(first.minZ, second.minZ) - 1;
-                        int centerX = first.CenterCell.x;
-                        for (int z = fromZ; z <= toZ; z++)
-                        {
-                            for (int offset = -halfWidth + 1; offset <= halfWidth - 1; offset++)
-                            {
-                                IntVec3 cell = new IntVec3(centerX + offset, 0, z);
-                                SetWalkableRoofedCell(map, cell, look.floor);
-                                PaintCorridorCell(map, cell, look, z);
-                                if (offset != 0 && (offset == halfWidth - 1 || offset == 1 - halfWidth))
-                                { sides.Add(cell); }
-                            }
-                            PlaceCorridorWall(map, new IntVec3(centerX - halfWidth, 0, z), wallDef, wallStuff, look);
-                            PlaceCorridorWall(map, new IntVec3(centerX + halfWidth, 0, z), wallDef, wallStuff, look);
-                        }
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("RR_Generation_NonAdjacentRooms");
+                        foreach (IntVec3 cell in RoomLayoutPlanner.CorridorSideCells(leg))
+                        { sides.Add(cell); }
+                        foreach (IntVec3 cell in leg.WallLow.Cells)
+                        { PlaceCorridorWall(map, cell, wallDef, wallStuff, look); }
+                        foreach (IntVec3 cell in leg.WallHigh.Cells)
+                        { PlaceCorridorWall(map, cell, wallDef, wallStuff, look); }
                     }
                 }
             }

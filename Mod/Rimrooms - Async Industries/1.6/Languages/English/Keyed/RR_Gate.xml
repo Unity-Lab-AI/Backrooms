@@ -77,10 +77,13 @@
   <RR_NativeGate_NormalOpDesc>Give this installation back to its ordinary work. The bills gate control suspended are resumed, and the gate will not spin up or be assembled until it is handed over again.</RR_NativeGate_NormalOpDesc>
   <RR_NativeGate_NotInGateControl>One of the gate's installations is still in normal operation. Set the comms console and the machining table to gate control first.</RR_NativeGate_NotInGateControl>
   <RR_NativeGate_MakeLabel>Commission this door as the gate</RR_NativeGate_MakeLabel>
-  <RR_NativeGate_MakeDesc>Commission this door as the branch's gate, using the headquarters comms console, battery reserve and machining table. The gate still has to be assembled, calibrated and powered before it will open.</RR_NativeGate_MakeDesc>
+  <RR_NativeGate_MakeDesc>Commission this door as the branch's gate.\n\nThis only decides which door the gate is. The circuit does not have to exist yet.\n\nIf the headquarters already has exactly one comms console, one battery and one machining table, they are bound at the same time. Otherwise the door becomes the gate anyway and you finish the circuit on the Operations gate pane.\n\nThe gate still has to be assembled, calibrated and powered before it will open. It will tell you which of those is missing.</RR_NativeGate_MakeDesc>
   <RR_NativeGate_NoSingleConsole>No single comms console to commission against. Build one at the headquarters, or choose between them on the Operations gate pane.</RR_NativeGate_NoSingleConsole>
   <RR_NativeGate_NoSingleBattery>No single battery to hold the gate's reserve. Build one at the headquarters, or choose between them on the Operations gate pane.</RR_NativeGate_NoSingleBattery>
   <RR_NativeGate_ChooseBench>No single machining table to commission against. Build one at the headquarters, or choose between them on the Operations gate pane.</RR_NativeGate_ChooseBench>
+  <RR_NativeGate_DesignatedNeedsCircuit>This door is the gate now. Its circuit is not finished yet: {0}</RR_NativeGate_DesignatedNeedsCircuit>
+  <RR_NativeGate_IsRunExtension>This door is part of another gate's run, not a gate of its own. Give the run back from the gate it belongs to first.</RR_NativeGate_IsRunExtension>
+  <RR_Event_GateDesignated>This door was commissioned as the branch's gate.</RR_Event_GateDesignated>
   <RR_NativeGate_KillSwitchThrown>The emergency cutoff was thrown.</RR_NativeGate_KillSwitchThrown>
   <RR_NativeGate_UnsupportedSwitch>That is not a power switch.</RR_NativeGate_UnsupportedSwitch>
   <RR_NativeGate_SwitchMustBeOnToBind>The switch must be closed when it is chosen, so its circuit can be checked against the gate's.</RR_NativeGate_SwitchMustBeOnToBind>

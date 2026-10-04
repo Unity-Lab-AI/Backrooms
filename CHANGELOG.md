@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.12.81-dev - 2026-10-03 - A way back out of the world, a door you can commission first, and the grand hall stops hiding in one corner
+
+- **A crew that walks out of the Backrooms onto a world tile can now walk back in.** Emerging was
+  a one-way trip: the exit existed, the way home did not. Claiming the tile now also puts a gate
+  on it, marked and connected back to the level you came from. It is built **before** anybody
+  steps through, so if it cannot be built nobody moves and the door you came to is still there.
+  At five maps held the crew still forms a caravan and walks home overland, as before.
+- **Any door can be commissioned as the gate before its circuit exists.** Picking the door used to
+  demand a single comms console, a single battery and a single machining table all at once, so on
+  a company start with no battery bound the button simply refused. Now the door becomes the gate
+  first; if the headquarters already has exactly one of each they are wired at the same time,
+  otherwise you finish the circuit on the Operations gate pane and the gate tells you what it is
+  still missing.
+- **An open gate no longer asks for power to send people through it.** Passing somebody through an
+  aperture that is already held was being charged the cost of *opening* one, and refusing with a
+  message about reserve power in the batteries. Opening and recovering a connection still cost what
+  they cost.
+- **The company's record book says what it is.** A blank one was indistinguishable from any other
+  book on the shelf and its card said nothing at all. It now reads as the journal the company
+  issues you, with what to do with it.
+- **The grand hall is no longer always in the same corner of the map.** Every level ever generated
+  opened in the bottom-left; the hall's position and its orientation are now part of the level's
+  own seed, so revisiting is the same place but two different levels are not. Roughly half of
+  levels now open in a hall that runs the other way.
+
 ## 0.12.80-dev - 2026-10-02 - Architect gets its corner back, and the shop stocks a meal that keeps
 
 - **The Architect tab is at the far left again.** The Operations tab had taken that slot, so

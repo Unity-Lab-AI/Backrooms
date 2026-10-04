@@ -33,6 +33,11 @@ namespace PlannerProbe
         private static MethodInfo anchorFor;
         private static FieldInfo coordinateRooms;
         private static MethodInfo candidateIsSafe;
+        // Read from DestinationService rather than written here, so the fill percentage is
+        // against the map the game actually generates. A constant of our own would be a second
+        // opinion about how big a coordinate is.
+        private static int mapWidth;
+        private static int mapHeight;
         private static int candidateBudget;
 
         private static int Main()
@@ -48,6 +53,8 @@ namespace PlannerProbe
             validateRooms = service.GetMethod("ValidateRooms", Statics);
             sharesWall = planner.GetMethod("SharesWall", Statics);
             widestSpan = planner.GetProperty("WidestRoomSpan", Statics);
+            mapWidth = (int)service.GetField("MapWidth", Statics).GetValue(null);
+            mapHeight = (int)service.GetField("MapHeight", Statics).GetValue(null);
             pillarCells = planner.GetMethod("PillarCells", Statics);
             rockIntrusionCells = planner.GetMethod("RockIntrusionCells", Statics);
             shapeDepthOf = planner.GetMethod("ShapeDepthOf", Statics);
@@ -87,6 +94,27 @@ namespace PlannerProbe
                 int totalRooms = 0;
                 long rockTotal = 0;
                 long interiorTotal = 0;
+                // **DEGREE AND FILL, ADDED 2026-10-03, because this probe could not see the
+                // defect the owner was reporting.** Owner, verbatim: *"the rooms are just one
+                // exit one entrance ... room connected to like 0 - 10 other rooms and not have so
+                // much empty rock space where nothing exists ... FILL THE SPACE WITH ROOMS"*.
+                // Every column above is about whether a layout is LEGAL; none of them is about
+                // whether it reads as a maze. A checker that cannot measure the complaint cannot
+                // confirm the fix either.
+                long degreeTotal = 0;
+                int degreeMax = 0;
+                int degreeOne = 0;
+                int degreeZero = 0;
+                long roomCellTotal = 0;
+                // **WHERE THE GRAND HALL LANDS.** Owner, 2026-10-03: *"starting room is not to
+                // always be in bottom left of map"*. It was two literals, and nothing measured
+                // it -- so "always the same corner" was invisible to every instrument here.
+                // Tracked as distinct hall origins across the seed sweep plus how many of them
+                // are the old corner, because "it varies" and "it stopped being the corner" are
+                // two different claims and only the second is what the owner asked for.
+                var hallOrigins = new HashSet<string>();
+                int hallAtOldCorner = 0;
+                int hallVertical = 0;
                 var reasons = new SortedSet<string>();
                 const int Seeds = 200;
                 for (int seed = 0; seed < Seeds; seed++)
@@ -104,12 +132,36 @@ namespace PlannerProbe
                     if (!(bool)validateRooms.Invoke(null, check))
                     { refused++; reasons.Add("ValidateRooms: " + check[1]); continue; }
 
+                    // Room 0 is the hall by construction (`AssignMazeFamilies` sets index 0 to
+                    // the threshold family), so its bounds are where the hall is.
+                    if (layout.Count > 0)
+                    {
+                        var hallBounds = (Verse.CellRect)roomType.GetProperty("Bounds")
+                            .GetValue(layout[0], null);
+                        hallOrigins.Add(hallBounds.minX + "," + hallBounds.minZ);
+                        if (hallBounds.Height > hallBounds.Width) { hallVertical++; }
+                        // The old behaviour put the hall's first slot at index 0 on both axes.
+                        if (hallBounds.minX < mapWidth / 4 && hallBounds.minZ < mapHeight / 4)
+                        { hallAtOldCorner++; }
+                    }
+
                     foreach (object room in layout)
                     {
                         int width = Field<int>(room, "width");
                         int height = Field<int>(room, "height");
                         if (width > widest) { widest = width; }
                         if (height > widest) { widest = height; }
+
+                        // How many other rooms this one actually reaches, and how much of the map
+                        // it occupies. `links` is the committed graph the game will save, so this
+                        // is the degree a player walks rather than the degree the planner meant.
+                        int degree = Field<List<int>>(room, "links").Count;
+                        degreeTotal += degree;
+                        if (degree > degreeMax) { degreeMax = degree; }
+                        if (degree == 0) { degreeZero++; }
+                        if (degree == 1) { degreeOne++; }
+                        roomCellTotal += ((Verse.CellRect)roomType.GetProperty("Bounds")
+                            .GetValue(room, null)).Area;
                     }
                     // **WHICH CANDIDATE WON.** `TrySelect` falls back to a serpentine when
                     // all three real candidates are refused, so a clean `refused` column
@@ -205,6 +257,23 @@ namespace PlannerProbe
                     refused == Seeds ? 0.0 : (double)institutions / (Seeds - refused),
                     biggest,
                     tightestApproach == int.MaxValue ? -1 : tightestApproach, noApproach));
+                // The maze line. Degree is what *"one exit one entrance"* means as a number, and
+                // roomfill is what *"so much empty rock space"* means as a number. Reported
+                // beside the legality line rather than folded into it, because a layout can be
+                // perfectly legal and still read as a string of pearls -- which is exactly the
+                // report this was added for.
+                int measuredRooms = totalRooms == 0 ? 1 : totalRooms;
+                int mapArea = mapWidth * mapHeight;
+                Console.WriteLine(string.Format(
+                    "     maze  depth {0,-2} degree avg {1,4:0.00} max {2,2} deg0 {3,5:0.0}% deg1 {4,5:0.0}% roomfill {5,4:0.0}% of {6}x{7}"
+                    + "  hallspots {8,3} corner {9,5:0.0}% vertical {10,5:0.0}%",
+                    depth, (double)degreeTotal / measuredRooms, degreeMax,
+                    100.0 * degreeZero / measuredRooms, 100.0 * degreeOne / measuredRooms,
+                    refused == Seeds ? 0.0 : 100.0 * roomCellTotal / ((Seeds - refused) * (long)mapArea),
+                    mapWidth, mapHeight,
+                    hallOrigins.Count,
+                    refused == Seeds ? 0.0 : 100.0 * hallAtOldCorner / (Seeds - refused),
+                    refused == Seeds ? 0.0 : 100.0 * hallVertical / (Seeds - refused)));
                 foreach (string reason in reasons) { Console.WriteLine("        reason: " + reason); }
                 if (refused != 0) { failures++; }
                 if (fellBack >= Seeds) { fellBackEverywhere = true; }

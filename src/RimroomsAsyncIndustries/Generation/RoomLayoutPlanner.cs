@@ -570,6 +570,133 @@ namespace RimroomsAsyncIndustries.Generation
             return roll % 3 == 0 ? 3 : 2;
         }
 
+        /// <summary>
+        /// One straight length of a corridor: its floor, its two walls, and which axis it runs
+        /// along.
+        ///
+        /// A corridor is a **list** of these rather than a single rect, because the owner has
+        /// asked for corridors that bend — *"make sure hallways and corradors and shit arent all
+        /// straight"* — and a bend is two legs. Today every corridor is exactly one leg, so this
+        /// shape describes the current behaviour without changing it.
+        /// </summary>
+        internal struct CorridorLeg
+        {
+            internal CellRect Floor;
+            internal CellRect WallLow;
+            internal CellRect WallHigh;
+            internal bool AlongX;
+        }
+
+        /// <summary>
+        /// **THE ONE PLACE A CORRIDOR'S SHAPE IS DECIDED.**
+        ///
+        /// ## Why this exists
+        ///
+        /// The shape of a corridor was derived **three times, independently**:
+        /// `GenStep_BackroomsDestination.BuildCorridors` carved it, `CandidateIsSafe` modelled it
+        /// to prove the level walkable, and `ValidateRooms`/`AreNeighbourRooms` decided which
+        /// pairs could have one. This file's own comments name that pattern as the defect that
+        /// cost the project thirty-nine checkpoints — *"two readers deriving one rule
+        /// independently"* — and it is the reason `PillarCells`, `SharesWall`, `DoorOpening`,
+        /// `RockIntrusionCells` and `CorridorHalfWidthBetween` all already exist as single
+        /// authorities. The corridor itself was the one that never got the same treatment.
+        ///
+        /// **Extracted deliberately before any bend is added**, so the behaviour change lands in
+        /// one function instead of three. The extraction itself changes nothing: the ranges here
+        /// are the ranges both readers already computed, which was checked term by term —
+        /// `[min(maxX) + 1, max(minX) - 1]` inclusive in both, and the carver's
+        /// `offset ∈ [-halfWidth + 1, halfWidth - 1]` is the validator's `dz ∈ [-reach, reach]`
+        /// with `reach = halfWidth - 1`.
+        ///
+        /// ## Why a bend is not just "turn a corner here"
+        ///
+        /// Worked at depth 1, where slots sit 45 apart and rooms are about 34 across: a dogleg
+        /// between the **diagonal** pair (0,0) and (1,1) would run from (36,36) toward x = 81 and
+        /// straight into the room at slot (1,0), which occupies x 64..98. **Routing a bend
+        /// through room centres is not merely absent, it is unsafe.** Real bends have to run in
+        /// the rock gap lanes between slots, which is a larger change and is queued as its own
+        /// work. This function is where it will happen, and it is now the only place it has to.
+        ///
+        /// Returns an empty list when the pair has no corridor: a back-to-back pair is joined by
+        /// the doorway in the wall they share, and carving between their centres would cut a hole
+        /// through it and make them one room.
+        /// </summary>
+        internal static List<CorridorLeg> CorridorLegs(RoomRecord first, RoomRecord second, int depth)
+        {
+            var legs = new List<CorridorLeg>();
+            if (first == null || second == null || SharesWall(first, second)) { return legs; }
+            int halfWidth = CorridorHalfWidthBetween(first, second, depth);
+            CellRect a = first.Bounds;
+            CellRect b = second.Bounds;
+            IntVec3 centreA = a.CenterCell;
+            IntVec3 centreB = b.CenterCell;
+
+            if (centreA.z == centreB.z)
+            {
+                int fromX = Math.Min(a.maxX, b.maxX) + 1;
+                int toX = Math.Max(a.minX, b.minX) - 1;
+                if (toX < fromX) { return legs; }
+                legs.Add(new CorridorLeg
+                {
+                    AlongX = true,
+                    Floor = CellRect.FromLimits(fromX, centreA.z - halfWidth + 1,
+                        toX, centreA.z + halfWidth - 1),
+                    WallLow = CellRect.FromLimits(fromX, centreA.z - halfWidth, toX, centreA.z - halfWidth),
+                    WallHigh = CellRect.FromLimits(fromX, centreA.z + halfWidth, toX, centreA.z + halfWidth),
+                });
+                return legs;
+            }
+            if (centreA.x == centreB.x)
+            {
+                int fromZ = Math.Min(a.maxZ, b.maxZ) + 1;
+                int toZ = Math.Max(a.minZ, b.minZ) - 1;
+                if (toZ < fromZ) { return legs; }
+                legs.Add(new CorridorLeg
+                {
+                    AlongX = false,
+                    Floor = CellRect.FromLimits(centreA.x - halfWidth + 1, fromZ,
+                        centreA.x + halfWidth - 1, toZ),
+                    WallLow = CellRect.FromLimits(centreA.x - halfWidth, fromZ, centreA.x - halfWidth, toZ),
+                    WallHigh = CellRect.FromLimits(centreA.x + halfWidth, fromZ, centreA.x + halfWidth, toZ),
+                });
+                return legs;
+            }
+            // Not axis-aligned. Today that pair is illegal and `AreNeighbourRooms` refuses it
+            // before anything asks for a corridor; the carver threw `RR_Generation_NonAdjacentRooms`
+            // if one ever reached it. An empty list says the same thing without a throw, and it is
+            // the case the gap-lane routing will fill.
+            return legs;
+        }
+
+        /// <summary>
+        /// The cells of a corridor leg that may hold a lamp or dressing: the two outermost rows of
+        /// its floor, never the centre line.
+        ///
+        /// A corridor is a route, and the reasoning that reserves a room's route cross applies to
+        /// the whole of a corridor's length. Lifted out of `BuildCorridors` with the rest so the
+        /// rule travels with the shape it describes.
+        /// </summary>
+        internal static IEnumerable<IntVec3> CorridorSideCells(CorridorLeg leg)
+        {
+            CellRect floor = leg.Floor;
+            if (leg.AlongX)
+            {
+                if (floor.Height < 3) { yield break; }
+                for (int x = floor.minX; x <= floor.maxX; x++)
+                {
+                    yield return new IntVec3(x, 0, floor.minZ);
+                    yield return new IntVec3(x, 0, floor.maxZ);
+                }
+                yield break;
+            }
+            if (floor.Width < 3) { yield break; }
+            for (int z = floor.minZ; z <= floor.maxZ; z++)
+            {
+                yield return new IntVec3(floor.minX, 0, z);
+                yield return new IntVec3(floor.maxX, 0, z);
+            }
+        }
+
         private static List<RoomRecord> Build(CoordinateRecord coordinate, int candidate)
         {
             bool fallback = candidate == FallbackCandidate;
@@ -647,8 +774,35 @@ namespace RimroomsAsyncIndustries.Generation
             // backrooms look isnt the whole floor but the main spanw room"*. The threshold takes
             // TWO adjacent slots, so at depth 1 it is about eighty cells across while everything
             // past it is a third of that.
-            var hallFirst = new IntVec2(0, 0);
-            var hallSecond = new IntVec2(1, 0);
+            // **WHERE THE HALL IS, DRAWN FROM THE SEED.** Owner, 2026-10-03, verbatim: *"and
+            // starting room is not to always be in bottom left of map, starts locations of main
+            // grand rooms can be anywhere on the map and lead anywhere in multiple differetn
+            // varied ways"*.
+            //
+            // This was `new IntVec2(0, 0)` and `new IntVec2(1, 0)` -- **two literals**, and
+            // `SlotCenter(0)` is `Margin + spacing / 2`, the lowest cell on both axes. So every
+            // coordinate this mod has ever generated opened in the same corner, and the owner
+            // walked enough of them to notice.
+            //
+            // **The orientation is drawn too, and that costs nothing**: `MakeHall` has always
+            // asked `first.z == second.z` and swapped its long and short spans accordingly, so a
+            // vertical hall was supported and had simply never been reachable. `WidestRoomSpan`
+            // is unaffected either way -- it is the max of the two spans, and the long span is
+            // the same number in both orientations.
+            //
+            // Clamped so the second slot is on the grid, and derived from the coordinate's own
+            // seed like every other generated property, so a revisit is the same place.
+            int hallDraw = DestinationService.StableHash(seed, "hall:slot", depth);
+            if (hallDraw < 0) { hallDraw = ~hallDraw; }
+            bool hallHorizontal = (hallDraw / 7) % 2 == 0;
+            int hallSpanX = hallHorizontal ? 2 : 1;
+            int hallSpanZ = hallHorizontal ? 1 : 2;
+            var hallFirst = new IntVec2(
+                hallDraw % Math.Max(1, slots - hallSpanX + 1),
+                (hallDraw / 13) % Math.Max(1, slots - hallSpanZ + 1));
+            var hallSecond = new IntVec2(
+                hallFirst.x + (hallHorizontal ? 1 : 0),
+                hallFirst.z + (hallHorizontal ? 0 : 1));
             rooms.Add(MakeHall(coordinate, hallFirst, hallSecond, spacing, seed, depth));
 
             // slotOf[slot] is the room index standing in it, or absent.
@@ -657,7 +811,28 @@ namespace RimroomsAsyncIndustries.Generation
 
             // The walk. An explicit stack rather than recursion: a ten-by-ten grid is a hundred
             // frames deep in the worst case and this runs during map generation.
-            var stack = new List<IntVec2> { hallSecond };
+            // **THE WALK GROWS FROM BOTH HALVES OF THE HALL, and it has to.**
+            //
+            // This was `{ hallSecond }` alone, which worked only because the hall was pinned to
+            // slots (0,0)-(1,0). The moment the hall could be anywhere, **1.5% of seeds produced
+            // a one-room level** -- caught by `check-planner-layouts.py` reporting
+            // `RR_Generation_InvalidRoomGraph -- 1 rooms` and the `fellback` column rising from 0,
+            // which then handed those seeds the serpentine: a string of pearls, the exact defect
+            // being fixed.
+            //
+            // The cause is the hall's geometry. Its centre sits BETWEEN its two slot centres, so
+            // `AreNeighbourRooms` -- which demands linked centres share a row or a column --
+            // declines every step off the hall's own axis. A horizontal hall landing in the last
+            // two columns leaves `hallSecond` with no legal step at all: east is off the grid,
+            // west is the hall itself, and north and south are declined. The walk ends with one
+            // room.
+            //
+            // Pushing both halves fixes it without clamping the hall away from the edges, which
+            // would have reintroduced a positional bias -- the opposite of what was asked. And it
+            // is the better shape regardless: owner, 2026-10-03, *"starts locations of main grand
+            // rooms can be anywhere on the map and lead anywhere in multiple differetn varied
+            // ways"*. A grand hall should lead out of both its ends.
+            var stack = new List<IntVec2> { hallFirst, hallSecond };
             IntVec2[] directions =
             {
                 new IntVec2(1, 0), new IntVec2(0, 1), new IntVec2(-1, 0), new IntVec2(0, -1),
@@ -1105,27 +1280,29 @@ namespace RimroomsAsyncIndustries.Generation
                 foreach (int linked in room.links.Where(index => index > room.index))
                 {
                     RoomRecord other = rooms[linked];
-                    IntVec3 a = room.Bounds.CenterCell;
-                    IntVec3 b = other.Bounds.CenterCell;
-                    // The same width the generator will carve, from the shared function.
-                    // The pair's own shaping depth, so a corridor near the hall stays the
-                    // plain three cells and one deep in the maze may narrow or open out. The
-                    // SAME number the generator will cut with.
-                    // A back-to-back pair has no corridor to model: the doorway in the
-                    // shared wall is the route, and the floor grid already carries it.
-                    if (SharesWall(room, other)) { continue; }
-                    int reach = CorridorHalfWidthBetween(room, other,
+                    // The width, the shaping depth and the back-to-back test all live inside
+                    // `CorridorLegs` now, so this loop no longer needs the two centres it used to
+                    // compute the ranges from. The pair's own shaping depth still decides the
+                    // width -- a corridor near the hall stays the plain three cells and one deep
+                    // in the maze may narrow or open out -- it is just asked for in one place.
+                    // **THE SAME SHAPE THE CARVER WILL CUT, from the one authority.** A
+                    // back-to-back pair returns no legs: the doorway in the shared wall is the
+                    // route, and the floor grid already carries it. This loop used to rebuild the
+                    // ranges itself, which meant a corridor the validator proved and a corridor
+                    // the generator carved were two independent derivations of one rule -- the
+                    // defect this file has paid for repeatedly. See `CorridorLegs`.
+                    foreach (CorridorLeg leg in CorridorLegs(room, other,
                         Math.Max(ShapeDepthOf(rooms, room, depth),
-                            ShapeDepthOf(rooms, other, depth))) - 1;
-                    if (a.z == b.z)
+                            ShapeDepthOf(rooms, other, depth))))
                     {
-                        for (int x = Math.Min(room.Bounds.maxX, other.Bounds.maxX) + 1; x < Math.Max(room.Bounds.minX, other.Bounds.minX); x++)
-                        { for (int dz = -reach; dz <= reach; dz++) { floor[x, a.z + dz] = true; } }
-                    }
-                    else
-                    {
-                        for (int z = Math.Min(room.Bounds.maxZ, other.Bounds.maxZ) + 1; z < Math.Max(room.Bounds.minZ, other.Bounds.minZ); z++)
-                        { for (int dx = -reach; dx <= reach; dx++) { floor[a.x + dx, z] = true; } }
+                        foreach (IntVec3 cell in leg.Floor.Cells)
+                        {
+                            if (cell.x < 0 || cell.z < 0 ||
+                                cell.x >= DestinationService.MapWidth ||
+                                cell.z >= DestinationService.MapHeight)
+                            { continue; }
+                            floor[cell.x, cell.z] = true;
+                        }
                     }
                 }
             }

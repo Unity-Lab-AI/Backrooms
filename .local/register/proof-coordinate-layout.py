@@ -243,7 +243,7 @@ check("the serpentine still alternates direction row by row",
 check("THE SPINE IS A BRAIDED MAZE, NOT A LINE THAT SNAKES",
       "private static List<RoomRecord> BuildMaze(" in planner
       and "return BuildMaze(coordinate, slots, spacing, seed, depth);" in planner
-      and "var stack = new List<IntVec2> { hallSecond };" in planner
+      and "var stack = new List<IntVec2> { hallFirst, hallSecond };" in planner
       and 'int turn = DestinationService.StableHash(seed,' in planner
       and "if (!advanced) { stack.RemoveAt(stack.Count - 1); }" in planner,
       "-- owner: *\"all the backrooms so far are just one lone strain of perals arangement that "
@@ -418,7 +418,13 @@ check("and the dim one is dimmer, never off",
 check("TWO ROOMS CAN SHARE A WALL, AND ONE FUNCTION DECIDES IT",
       "internal static bool SharesWall(" in planner
       and planner.count("SharesWall(") >= 3
-      and "RoomLayoutPlanner.SharesWall(room, other)" in genstep,
+      # **RE-AIMED 2026-10-03.** The generator used to call `SharesWall` itself; it now reaches
+      # it through `CorridorLegs`, which is the one authority on a corridor's shape and asks the
+      # question on its behalf. The property -- one function decides whether two rooms touch --
+      # is strictly MORE true than when this claim was written, so it is asserted at the
+      # authority rather than at a call site that correctly stopped existing.
+      and "SharesWall(first, second)" in planner
+      and "RoomLayoutPlanner.CorridorLegs(" in genstep,
       "-- three readers: the doorway goes in the shared wall, the validator routes through it, "
       "and the generator skips the corridor. Two derivations of one rule is the defect that cost "
       "thirty-nine checkpoints")
@@ -443,8 +449,12 @@ check("and the doorway in it needs no second rule, so there is not one",
       "the same cell on it and the openings meet. The deleted `SharedDoorCell` was a second rule "
       "deciding one doorway")
 
+# **RE-AIMED 2026-10-03.** The skip moved into `CorridorLegs`, which returns an empty list for a
+# back-to-back pair -- so the generator carves nothing because there is nothing to carve, rather
+# than because it remembered to check. That is the stronger arrangement: a caller cannot forget.
 check("the generator carves no corridor where a wall is shared",
-      "if (RoomLayoutPlanner.SharesWall(room, other)) { continue; }" in genstep,
+      "if (first == null || second == null || SharesWall(first, second)) { return legs; }" in planner
+      and "foreach (RoomLayoutPlanner.CorridorLeg leg in RoomLayoutPlanner.CorridorLegs(" in genstep,
       "-- carving between two touching centres cuts a five-cell hole through the shared wall and "
       "makes them one room")
 
@@ -530,13 +540,19 @@ check("THE THRESHOLD IS STILL A GRAND HALL, AND IT IS THE ONLY ONE",
       "It spans two slots, so at depth 1 it is about eighty cells across -- the span the whole "
       "level used to have -- while everything past it is about a third of that")
 
-check("the hall takes TWO slots and not four, and the maze starts from the second",
-      "var hallFirst = new IntVec2(0, 0);" in planner
-      and "var hallSecond = new IntVec2(1, 0);" in planner
+# **RE-AIMED 2026-10-03.** This asserted the hall's two slots by their LITERAL coordinates,
+# `new IntVec2(0, 0)` and `new IntVec2(1, 0)` -- the hardcoded corner the owner overruled:
+# *"starting room is not to always be in bottom left of map"*. The claim's purpose was never the
+# position; it was that the hall is **exactly two slots, both marked**, because a 2x2 hall would
+# leave a slot the walk could never link to along a shared axis. That property is asserted
+# directly now, by the one-step offset that builds the second slot from the first.
+check("the hall takes TWO slots and not four, and the maze starts from the hall",
+      "hallFirst.x + (hallHorizontal ? 1 : 0)" in planner
+      and "hallFirst.z + (hallHorizontal ? 0 : 1)" in planner
       and "{ hallFirst, 0 }, { hallSecond, 0 }" in planner
-      and "var stack = new List<IntVec2> { hallSecond };" in planner,
+      and "var stack = new List<IntVec2> { hallFirst, hallSecond };" in planner,
       "-- both slots are marked as the hall so nothing is built inside it, and the walk begins "
-      "at the second. A 2x2 hall would leave a slot the walk could never link to along a "
+      "at the hall itself. A 2x2 hall would leave a slot the walk could never link to along a "
       "shared axis, which is the same arithmetic that made the hall link illegal")
 
 check("it gets denser and smaller deeper in, which is the other half of the direction",
@@ -800,16 +816,26 @@ check("an intrusion is rock inside a room, never a hole in the world",
 check("HALLWAYS ARE NOT ALL ONE WIDTH",
       "internal static int CorridorHalfWidthBetween(RoomRecord first, RoomRecord second, int depth)"
       in planner
-      and "RoomLayoutPlanner.CorridorHalfWidthBetween(room, other," in genstep
+      # **RE-AIMED 2026-10-03.** The width is read inside `CorridorLegs` now, so the generator
+      # asks for it the same way the validator does: by asking for the corridor. The genstep
+      # still supplies the pair's own shaping depth, which is the part that had to stay.
+      and "int halfWidth = CorridorHalfWidthBetween(first, second, depth);" in planner
       and "RoomLayoutPlanner.ShapeDepthOf(rooms, room, depth)" in genstep
       and "private const int CorridorHalfWidth" not in genstep,
       "-- the constant is gone; the width comes from the shared function, so the reachability "
       "the planner proved is the reachability that gets built")
 
-check("the planner models the same corridor width the generator carves",
-      "int reach = CorridorHalfWidthBetween(room, other," in planner
+# **RE-AIMED 2026-10-03, and the property stopped being a coincidence.** This asserted that the
+# validator recomputed `reach` from `CorridorHalfWidthBetween` and swept `dz` over it -- i.e. that
+# two independent derivations happened to agree. Both readers now take the corridor's floor from
+# `CorridorLegs`, so "the model is the build" holds **by construction** instead of by two
+# computations matching. The extraction was checked against the probe before this claim moved:
+# all seven depths reported byte-identical numbers.
+check("the planner models the same corridor the generator carves",
+      "foreach (CorridorLeg leg in CorridorLegs(room, other," in planner
       and "ShapeDepthOf(rooms, room, depth)" in planner
-      and "for (int dz = -reach; dz <= reach; dz++)" in planner,
+      and "floor[cell.x, cell.z] = true;" in planner
+      and "foreach (RoomLayoutPlanner.CorridorLeg leg in RoomLayoutPlanner.CorridorLegs(" in genstep,
       "-- a model with a different width than the build is a model of a different map")
 
 # The shape rule, modelled: fill every corner at the deepest reach and prove the room still
@@ -1152,6 +1178,46 @@ check("every release string the player can meet is written",
       "-- a refusal the player cannot read is a silent failure: %s" % missing_keys)
 
 print("")
+
+# ============================================ the hall is not always in the bottom-left corner
+#
+# Owner, 2026-10-03, verbatim: *"and starting room is not to always be in bottom left of map,
+# starts locations of main grand rooms can be anywhere on the map and lead anywhere in multiple
+# differetn varied ways"*.
+#
+# It was `new IntVec2(0, 0)` and `new IntVec2(1, 0)` -- **two literals** -- and `SlotCenter(0)` is
+# `Margin + spacing / 2`, the lowest cell on both axes. Every coordinate this mod ever generated
+# opened in the same corner, and **nothing measured it**, so it was invisible to the whole battery
+# until the owner walked enough levels to notice.
+check("THE GRAND HALL'S SLOT IS DRAWN FROM THE SEED, NOT WRITTEN DOWN",
+      # **`planner_code`, not `planner`** -- an absence claim cannot read raw source, because the
+      # comment explaining a removed literal quotes it. `code()`'s own docstring had counted
+      # thirty-six instances of this defect class before this one made thirty-seven.
+      "var hallFirst = new IntVec2(0, 0);" not in planner_code
+      and "var hallSecond = new IntVec2(1, 0);" not in planner_code
+      and 'StableHash(seed, "hall:slot", depth)' in planner_code,
+      "-- a literal slot is a literal corner. Seeded so a revisit is still the same place, which "
+      "every other generated property already is")
+
+check("and its orientation is drawn too, so a vertical hall is reachable at all",
+      "bool hallHorizontal = (hallDraw / 7) % 2 == 0;" in planner
+      and "hallFirst.z + (hallHorizontal ? 0 : 1)" in planner,
+      "-- `MakeHall` has always asked `first.z == second.z` and swapped its spans, so a vertical "
+      "hall was supported and simply unreachable. Measured at ~50% of seeds once the draw existed")
+
+# **THE WALK MUST START FROM BOTH HALVES OF THE HALL**, and this claim exists because moving the
+# hall broke it. The hall's centre sits BETWEEN its two slot centres, so `AreNeighbourRooms`
+# declines every step off its own axis; a horizontal hall in the last two columns leaves
+# `hallSecond` with no legal step -- east off-grid, west the hall itself, north and south
+# declined -- and the walk ends with ONE room. 1.5% of seeds produced
+# `RR_Generation_InvalidRoomGraph -- 1 rooms` and fell back to the serpentine, which is the string
+# of pearls this whole line of work is removing.
+check("AND THE MAZE GROWS FROM BOTH HALVES OF THE HALL",
+      "var stack = new List<IntVec2> { hallFirst, hallSecond };" in planner,
+      "-- growing from `hallSecond` alone worked only while the hall was pinned to the corner. "
+      "Fixed by pushing both rather than by clamping the hall away from the edges, which would "
+      "have put the positional bias straight back")
+
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))
     sys.exit(1)

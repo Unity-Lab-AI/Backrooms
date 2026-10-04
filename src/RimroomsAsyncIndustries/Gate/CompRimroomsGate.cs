@@ -467,6 +467,24 @@ namespace RimroomsAsyncIndustries.Gate
                 icon = parent.def.uiIcon,
                 action = delegate
                 {
+                    // **WHICH DOOR IS THE GATE IS SETTABLE ON ITS OWN, FIRST.** Owner, 2026-10-03:
+                    // *"i should be able to set the gate on a door first, so idk why its tellign
+                    // me i cant set the gate door without setting the batteries first"*.
+                    //
+                    // This button used to resolve all three providers and **refuse outright** if
+                    // any was absent or ambiguous -- `SoleCandidate` returns null for *none* and
+                    // for *more than one* -- so on the company start, where no battery is bound
+                    // yet, the only route from a door to a gate said `RR_NativeGate_NoSingleBattery`
+                    // and stopped. **A refusal is not a route**, and the owner read it as the
+                    // answer rather than as a detour.
+                    //
+                    // So the designation happens first and on its own. Only then is the circuit
+                    // bound, and only when all three resolve unambiguously -- picking one of
+                    // several for the player is still a decision rather than a shortcut, which is
+                    // what this method's docstring has always said.
+                    CompanyActionResult designated = DesignateAsGate();
+                    if (!designated.Success) { ShowOrderResult(designated); return; }
+
                     Thing console = UI.MainTabWindow_Operations.SoleCandidate(
                         UI.MainTabWindow_Operations.AvailableNativeConsoles(campaign));
                     Thing battery = UI.MainTabWindow_Operations.SoleCandidate(
@@ -475,12 +493,15 @@ namespace RimroomsAsyncIndustries.Gate
                         UI.MainTabWindow_Operations.AvailableNativeAssemblyBenches(campaign));
                     if (console == null || battery == null || bench == null)
                     {
-                        // Named, not silent: the player needs to know which piece to build or
-                        // which choice to make, and "it did nothing" tells them neither.
-                        ShowOrderResult(CompanyActionResult.Refused(
-                            console == null ? "RR_NativeGate_NoSingleConsole"
-                            : battery == null ? "RR_NativeGate_NoSingleBattery"
-                            : "RR_NativeGate_ChooseBench"));
+                        // **Told, not refused.** The door IS the gate now; what is missing is the
+                        // circuit, and the player needs to know which piece and where to finish.
+                        // Named rather than generic for the same reason as before: "it did nothing"
+                        // tells them neither.
+                        Messages.Message("RR_NativeGate_DesignatedNeedsCircuit".Translate(
+                                (console == null ? "RR_NativeGate_NoSingleConsole"
+                                : battery == null ? "RR_NativeGate_NoSingleBattery"
+                                : "RR_NativeGate_ChooseBench").Translate()),
+                            parent, MessageTypeDefOf.TaskCompletion, false);
                         return;
                     }
                     // The fourth argument is the entry side, which defaults to the near side.
@@ -997,7 +1018,42 @@ namespace RimroomsAsyncIndustries.Gate
             Audio.RimroomsAudio.Play("RR_GateWarning", parent.Map, parent.Position, false);
         }
 
-        private CompanyActionResult CheckStationReadiness(Pawn gateOperator)
+        /// <summary>
+        /// Why the station cannot work this gate at all: the conditions that hold whether an
+        /// aperture is being **opened** or merely **crossed** — saved-ownership sanity, the
+        /// physical binding, and a real operator actually at the console.
+        ///
+        /// ## Owner direction, 2026-10-03, verbatim
+        ///
+        /// *"i build and set up and open the gate but it incorrectly says i dont have power to
+        /// send people through, even tho the gate is open and connected,,, thast is wrong if its
+        /// open it doenst need special power to send things through the gate"*, and naming the
+        /// message: *"when i try to send people through it gives me a error about not enough
+        /// reserver power in the batteries or something incarrate that shouldnt be"*.
+        ///
+        /// ## What was wrong, and the code said so itself
+        ///
+        /// `PortalWindowBlockerKey` — the single authority gating a crossing — called
+        /// <see cref="CheckStationReadiness"/> **whole**, so passing somebody through a live
+        /// aperture was asked three *opening* questions: the `stablePowerTicks` spin-up counter,
+        /// `HasPowerAndHeadroom()`, and <see cref="ProjectedOpeningPowerFailure"/>, **whose own
+        /// docstring reads "This gates opening only."** Its refusal `RR_Gate_SupplyTooLow` even
+        /// says *"cannot deliver enough power **to start an opening**"* — the wrong sentence to
+        /// show somebody whose opening is already running, and the one the owner read as
+        /// *"reserver power in the batteries"*.
+        ///
+        /// **And it was redundant as well as wrong, which is why this is a removal and not a
+        /// tuning.** Power lost while open is owned by the tick, which calls
+        /// `EnterEmergency("RR_Gate_PowerLost")`, and `PortalWindowBlockerKey` already refuses an
+        /// emergency gate three lines earlier with `RR_PortalTravel_InEmergency`. The crossing
+        /// path was deriving a rule the tick already enforces, a second time and with a worse
+        /// message — *two derivations of one rule*, which is the defect this component keeps
+        /// paying for.
+        ///
+        /// **Split, not copied.** <see cref="CheckStationReadiness"/> is this plus the power
+        /// conditions, so the opening path and the crossing path cannot drift apart.
+        /// </summary>
+        private CompanyActionResult CheckCrossingReadiness(Pawn gateOperator)
         {
             if (portalOwnerFault) { return CompanyActionResult.Refused("RR_Gate_InvalidOperation"); }
             if (NativeBindingFailureKey != null)
@@ -1008,6 +1064,21 @@ namespace RimroomsAsyncIndustries.Gate
             // One key served both and only one string could win, so one of the two messages
             // was always wrong. Corrected 2026-09-29.
             if (!IsOperatorOnStation) { return CompanyActionResult.Refused("RR_Gate_OperatorNotStaffing"); }
+            return CompanyActionResult.Applied();
+        }
+
+        /// <summary>
+        /// Why the station cannot **start or recover** an opening: the crossing conditions above,
+        /// plus the power that the act of opening needs.
+        ///
+        /// **Never ask this of a crossing** — that is <see cref="CheckCrossingReadiness"/>. An
+        /// aperture that is already held needs no supply projection and no spin-up counter, by
+        /// owner direction quoted there.
+        /// </summary>
+        private CompanyActionResult CheckStationReadiness(Pawn gateOperator)
+        {
+            CompanyActionResult crossing = CheckCrossingReadiness(gateOperator);
+            if (!crossing.Success) { return crossing; }
             if (stablePowerTicks < GateProps.stablePowerTicksRequired || !HasPowerAndHeadroom())
             { return CompanyActionResult.Refused("RR_Gate_PowerUnstable"); }
             // A keyed reason rather than one blanket refusal: "the circuit cannot deliver

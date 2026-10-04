@@ -224,6 +224,75 @@ check("no tile found is an honest refusal rather than an invented destination",
       "RR_WorldExit_NoTileFound" in record,
       "-- inventing a tile Core rejected is how a crew ends up in the sea")
 
+
+# ===================================================== and the trip is two-way, added 2026-10-03
+#
+# Owner, verbatim: *"ther natureal gates in the backrrooms that lead to the world map tiles( these
+# gats currently dont have a way back into the backrooms ... currently and incorrectyl there is no
+# way for a pawn to go back into the backrooms when they exit via a natural gate"*.
+#
+# **`grep -l` across all forty-nine proofs for a return-side claim found NOTHING.** Not one claim
+# had ever been made about getting back, which is why a one-way trip reached the owner in play --
+# the same blind spot, in the same shape, as the one that let a flat battery report an address
+# fault. `LeaveThroughWorldExit` was the only direction that existed, while `WorldExitRecord` had
+# been saving `coordinateId` and `doorLoadId` all along with nothing reading them.
+portal_keys = io.open(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6",
+                                   "Languages", "English", "Keyed", "RR_Portals.xml"),
+                      encoding="utf-8-sig").read()
+
+check("WALKING OUT ONTO A CLAIMED TILE BUILDS THE WAY BACK IN",
+      "private CompanyActionResult EstablishReturnGate(" in exit_src
+      and "EstablishReturnGate(record, claimed, coordinateDoor)" in exit_src
+      and "PortalConnectionKind.Emergence" in exit_src,
+      "-- a recorded way back that nothing reads is not a way back. This is the step that turns "
+      "the saved coordinateId and doorLoadId into an edge a pawn can walk")
+
+# **ORDERING IS THE SAFETY PROPERTY**, and it is asserted as an ordering rather than a presence.
+# Establishing the gate after the crew moves would mean a failure stranded them ON A MAP instead
+# of on a tile -- worse, because it looks finished. This file's own docstring already claimed that
+# property for map generation; the return gate has to sit inside it.
+check("AND IT IS BUILT BEFORE ANYBODY IS DESPAWNED, EXACTLY ONCE",
+      # **The count is part of the claim, not padding.** An ordering asserted with `.index()`
+      # alone finds the FIRST occurrence, so adding a SECOND call after the despawn satisfies it
+      # while doing the exact thing the claim forbids -- which is how the matching plant went
+      # MISSED. "Once, before" is the property; "before" on its own is not.
+      exit_src.count("EstablishReturnGate(record, claimed, coordinateDoor)") == 1
+      and "pawn.DeSpawn();" in exit_src
+      and exit_src.index("EstablishReturnGate(record, claimed, coordinateDoor)")
+          < exit_src.index("pawn.DeSpawn();"),
+      "-- if the way home cannot be made, nothing has moved and the door is still there")
+
+check("and its refusal actually stops the walk-out",
+      "if (!returnGate.Success) { return returnGate; }" in exit_src,
+      "-- building the gate and then ignoring whether it worked is the same one-way trip with "
+      "extra steps. The guard IS the fix")
+
+check("and the map is made the branch's own first, because Register refuses otherwise",
+      "CompanyActionResult site = RegisterRemoteSite(claimed);" in exit_src
+      and exit_src.index("RegisterRemoteSite(claimed)")
+          < exit_src.index("PortalConnectionKind.Emergence"),
+      "-- `Register` line 82 wants `OwnsMap(firstAnchor.Map)`, and a Core player settlement is "
+      "neither the headquarters nor a coordinate. `OrdinaryBranchMap` asks the same question, "
+      "which is why `Mark()` cannot run before this")
+
+# A door standing with no edge behind it is a gate that LOOKS like the way home and is not. That
+# is the same lie as a section titled DONE full of open rows, and it is worse than no door.
+check("AND A FAILED REGISTRATION TAKES THE GATE BACK DOWN",
+      exit_src.count("gate.Destroy(DestroyMode.Vanish);") >= 4
+      and '"RR_WorldReturn_NotRegistered"' in exit_src,
+      "-- every failure after the spawn removes the door again rather than leaving a false way "
+      "home standing on the tile")
+
+check("and the one-way caravan path is still the owner's own rule, not an oversight",
+      "FormCaravanAndWalkOut" in exit_src and "CanClaimAnotherMap" in exit_src,
+      "-- *\"anything over 5 maps defaults to caravans\"*. A caravan has no map for a gate to "
+      "stand on; it walks home overland, which is what a caravan is for")
+
+for key in ("RR_WorldReturn_NotRegistered", "RR_WorldReturn_NoGateCell",
+            "RR_WorldReturn_Unavailable", "RR_Event_WorldReturnGateBuilt"):
+    check("%s is translated" % key, ("<%s>" % key) in portal_keys,
+          "-- a refusal with no string prints a raw key at the player")
+
 print("")
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))

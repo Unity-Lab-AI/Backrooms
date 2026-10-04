@@ -121,12 +121,35 @@ namespace RimroomsAsyncIndustries.Gate
             if (IsEmergency) { return "RR_PortalTravel_InEmergency"; }
             if (openingTicksRemaining <= 0 && !PortalOpeningIsIndefinite)
             { return "RR_PortalTravel_WindowExpired"; }
-            CompanyActionResult station = CheckStationReadiness(assignedOperator);
+            // **CROSSING readiness, not OPENING readiness**, and the difference is the whole of
+            // owner direction 2026-10-03: *"if its open it doenst need special power to send
+            // things through the gate"*. `CheckStationReadiness` is asked only where an opening
+            // is actually started or recovered; it carries the spin-up counter and the supply
+            // projection, and `ProjectedOpeningPowerFailure`'s own docstring says *"This gates
+            // opening only"* while this call site was a crossing. See `CheckCrossingReadiness`.
+            CompanyActionResult station = CheckCrossingReadiness(assignedOperator);
             if (!station.Success) { return station.MessageKey ?? "RR_Gate_OperatorLost"; }
-            // **The one that was invisible.** Reported in watt-days so the number matches the
-            // gate's own power readout rather than being a second unit nobody can compare.
-            float needed = OpeningPowerDrawWatts * CompPower.WattsToWattDaysPerTick;
-            if (NativeStoredEnergy < needed) { return "RR_PortalTravel_NoCharge"; }
+            // **The stored-charge toll on a crossing is gone, deliberately.** It used to read
+            //     float needed = OpeningPowerDrawWatts * CompPower.WattsToWattDaysPerTick;
+            //     if (NativeStoredEnergy < needed) { return "RR_PortalTravel_NoCharge"; }
+            // which charged the battery for passing through an aperture that is **already held**
+            // — the owner's *"a error about not enough reserver power in the batteries"*. Every
+            // line above this point establishes that the opening is live, so this check could
+            // only ever fire in the one case the direction forbids.
+            //
+            // Nothing is unguarded by removing it: the tick spends the opening's energy every
+            // tick and calls `EnterEmergency` when the supply runs dry, and `IsEmergency` is
+            // refused above as `RR_PortalTravel_InEmergency`. Draining the reserve still ends the
+            // session — it just no longer blocks a crossing before it has.
+            //
+            // `RR_PortalTravel_NoCharge` is kept in `Keyed/RR_Portals.xml` rather than deleted,
+            // and the reason is **not** that the opening and recovery paths return it -- they do
+            // not, they return `RR_NativeGate_OpeningEnergyLow` and
+            // `RR_NativeGate_RecoveryEnergyLow`. It is kept because its text carries the owner's
+            // *"there should be no loimit"* on how many batteries a gate may draw from --
+            // *"Any number of them count."* -- and `proof-gate-circuit.py` asserts that sentence
+            // separately. The proof derives the keys it guards from this file's own code, so an
+            // unreachable key is correctly no longer treated as a refusal that could print raw.
             return null;
         }
 

@@ -59,7 +59,10 @@ def no_comments(text):
 binding = no_comments(read(SRC, "Gate", "NativeGateBinding.cs"))
 opening = no_comments(read(SRC, "Gate", "PortalGateOpening.cs"))
 travel = no_comments(read(SRC, "Portals", "PortalTravelService.cs"))
+comp = no_comments(read(SRC, "Gate", "CompRimroomsGate.cs"))
 keyed = read(KEYED)
+gate_keys = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6",
+                              "Languages", "English", "Keyed", "RR_Gate.xml"))
 
 print("")
 
@@ -111,10 +114,54 @@ check("and the anchor is still required, so a gate without a bound battery has n
 # =============================================================== the refusal names the cause
 check("A CROSSING REFUSAL NAMES THE REAL CAUSE",
       "public string PortalWindowBlockerKey(string connectionId, string openingId)" in opening
-      and '"RR_PortalTravel_NoCharge"' in opening,
+      and '"RR_PortalTravel_SessionClosed"' in opening
+      and '"RR_PortalTravel_InEmergency"' in opening
+      and '"RR_PortalTravel_WindowExpired"' in opening,
       "-- seven conditions used to collapse into one bool and one message. *\"the laboratory "
       "address for that is not open\"* is what a FLAT BATTERY said, and the owner spent a "
       "session on the address because of it")
+
+# ======================================================= and it is no longer a power question
+#
+# **RE-AIMED 2026-10-03, and the claim came out stronger.** This used to assert
+# `"RR_PortalTravel_NoCharge"` appeared in the blocker -- that a flat battery was one of the named
+# causes of a refused crossing. Owner direction has overruled the behaviour, not the naming:
+#
+#   *"i build and set up and open the gate but it incorrectly says i dont have power to send
+#   people through, even tho the gate is open and connected,,, thast is wrong if its open it
+#   doenst need special power to send things through the gate"*
+#
+# and, naming the message, *"a error about not enough reserver power in the batteries"*.
+#
+# So the causes above are asserted by the names that still exist, and the removal gets a claim of
+# its own, stated negatively, because **the regression here is an addition** -- somebody putting a
+# power condition back on the crossing path. The three it used to apply all arrive together
+# through `CheckStationReadiness`, so asserting the exact call line is what pins it.
+# Scoped to the blocker's own body, not the whole file, and that is load-bearing in BOTH
+# directions. `RecoverPortalOpening` legitimately reads `NativeStoredEnergy` a few methods below,
+# so a file-wide assertion could never say this; and a claim written as the absence of one exact
+# line would miss a toll reintroduced with any other comparison, which is precisely what the
+# matching plant inserts. `opening` has already had its comments stripped, so this splits on code.
+blocker = (opening.split("public string PortalWindowBlockerKey(")[-1]
+           .split("public bool HasUsablePortalWindow(")[0])
+
+check("AND AN OPEN APERTURE IS NEVER CHARGED TO PASS SOMEBODY THROUGH",
+      "CheckCrossingReadiness(assignedOperator)" in blocker
+      and "CheckStationReadiness" not in blocker
+      and "NativeStoredEnergy" not in blocker
+      and "RR_PortalTravel_NoCharge" not in blocker,
+      "-- every line above the readiness call already establishes that the opening is LIVE, so an "
+      "opening-time power condition there could only ever fire in the one case the owner forbids. "
+      "`ProjectedOpeningPowerFailure` says *\"This gates opening only\"* in its own docstring and "
+      "`RR_Gate_SupplyTooLow` says *\"to start an opening\"* in its own text, while both were "
+      "being shown to somebody whose opening was already running")
+
+check("and the power conditions still guard the paths that DO start an opening",
+      "CompanyActionResult ready = CheckStationReadiness(assignedOperator);" in opening
+      and "RecoveryEnergyRequiredWattDays" in opening,
+      "-- the removal is scoped to crossing. Starting and recovering an opening still pay, and "
+      "`RecoverPortalOpening` still refuses on `RR_NativeGate_RecoveryEnergyLow`; a crossing fix "
+      "that made openings free would be a different defect wearing this one's clothes")
 
 check("and the crossing path actually asks it",
       "blocked.PortalWindowBlockerKey(connection.Id, connection.OpeningId)" in travel
@@ -172,6 +219,58 @@ check("and a held-open or already-open door is never refused",
       "-- neither needs permission, and refusing one would break a gate the player had "
       "deliberately pinned open")
 
+
+
+# ====================================================== which door is the gate, decided on its own
+#
+# Owner, 2026-10-03, verbatim: *"i try to first thing set a door as gate on the doors ui bar, but
+# it tells me i have to set up the battery used for reserver before i can do anything, incrattely,
+# i should be able to set the gate on a door first"*, scoped *"in company scenerio"*.
+#
+# The door's own button resolved all three providers and REFUSED if any was absent or ambiguous,
+# so on a company start with no battery bound the only route from a door to a gate said
+# `RR_NativeGate_NoSingleBattery` and stopped. A refusal is not a route.
+designate = (binding.split("public CompanyActionResult DesignateAsGate()")[-1]
+             .split("public CompanyActionResult ClearNativeBinding()")[0])
+
+check("WHICH DOOR IS THE GATE CAN BE SET ON ITS OWN",
+      "public CompanyActionResult DesignateAsGate()" in binding
+      and "nativeDesignated = true;" in designate,
+      "-- the owner asked for the FIRST of binding's four decisions to be takeable alone")
+
+check("AND IT ASKS FOR NO PROVIDER, WHICH IS THE WHOLE POINT",
+      "ExactProvider" not in designate
+      and "nativeBattery" not in designate
+      and "nativeConsole" not in designate
+      and "nativeAssemblyBench" not in designate,
+      "-- a battery, console or bench condition in here would put the owner's refusal straight "
+      "back. `IsDesignated` never meant *fully bound* -- it is "
+      "`!IsRunExtension && NativeDoorProvider() && schema == 1 && nativeDesignated` -- and what "
+      "reports a missing circuit is `NativeBindingFailureKey` -> `RR_NativeGate_LinkMissing`")
+
+check("and binding itself still refuses a half-answer",
+      "ReserveTooSmall" in binding
+      and 'ExactProvider(console, "CommsConsole")' in binding
+      and 'ExactProvider(battery, "Battery")' in binding,
+      "-- the fix is a NEW entry point, not a loosened bind. A gate that looks complete and is "
+      "not strands the first crew through it")
+
+make = comp.split("RR_NativeGate_MakeLabel")[-1].split("public override IEnumerable<Gizmo>")[0]
+check("THE DOOR BUTTON DESIGNATES BEFORE IT RESOLVES ANY PROVIDER",
+      "DesignateAsGate()" in make and "SoleCandidate" in make
+      and make.index("DesignateAsGate()") < make.index("SoleCandidate"),
+      "-- ordering is the claim. Resolving first and refusing is exactly the behaviour reported")
+
+check("and a missing circuit is TOLD, not refused",
+      'Messages.Message("RR_NativeGate_DesignatedNeedsCircuit"' in make
+      and "ShowOrderResult(CompanyActionResult.Refused(" not in make,
+      "-- the door IS the gate by then; what is missing is the circuit, and the player needs to "
+      "know which piece and where to finish it")
+
+for key in ("RR_NativeGate_DesignatedNeedsCircuit", "RR_NativeGate_IsRunExtension",
+            "RR_Event_GateDesignated"):
+    check("%s is translated" % key, ("<%s>" % key) in gate_keys,
+          "-- a refusal with no string prints a raw key at the player")
 
 print("")
 if failures:

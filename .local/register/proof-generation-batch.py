@@ -785,11 +785,19 @@ check("and the hallways are lit and furnished, against their walls only",
       corridor_dress_body is not None
       and "DressCorridors(map, coordinate, corridorSides, lightDef, floorLightDef, placedLights,"
       in genstep
-      # **BOTH AXES.** The guard that keeps the centre line out of the reported cells exists
-      # once in the horizontal run and once in the vertical, so a plant that removed one was
-      # satisfied by the other. Counted rather than merely found -- thirty-ninth instance.
-      and genstep.count(
-          "if (offset != 0 && (offset == halfWidth - 1 || offset == 1 - halfWidth))") == 2
+      # **BOTH AXES, now in ONE function -- re-aimed 2026-10-03.** The guard that keeps the
+      # centre line out of the reported cells used to exist twice in the genstep, once per axis,
+      # and this claim counted it because a plant that removed one run was satisfied by the other.
+      # It now lives once in `RoomLayoutPlanner.CorridorSideCells`, which handles both axes and is
+      # the only thing that reports those cells -- so "both axes" is a property of one function
+      # rather than an agreement between two copies. The duplicate-count trap is gone with the
+      # duplicate.
+      and "internal static IEnumerable<IntVec3> CorridorSideCells(CorridorLeg leg)" in _PL
+      and _PL.count("yield return new IntVec3(x, 0, floor.minZ);") == 1
+      and _PL.count("yield return new IntVec3(floor.minX, 0, z);") == 1
+      and "if (floor.Height < 3) { yield break; }" in _PL
+      and "if (floor.Width < 3) { yield break; }" in _PL
+      and "foreach (IntVec3 cell in RoomLayoutPlanner.CorridorSideCells(leg))" in genstep
       and "if (lightDef != null && index % CorridorLampSpacing == 0)" in corridor_dress_body
       and "if (fixtures.Count == 0 || index % CorridorFixtureSpacing != 0) { continue; }"
       in corridor_dress_body
