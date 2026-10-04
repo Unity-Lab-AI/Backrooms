@@ -1036,6 +1036,112 @@ def check_cname(problems):
                         "naming a domain nobody owns stops Pages answering on github.io")
 
 
+# --------------------------------------------------------------------------- #
+# About.xml's description: the most-read document this mod has
+# --------------------------------------------------------------------------- #
+#
+# **It told every player the mod needs 294 other mods, and it needs none.**
+#
+# `About.xml` has declared **zero** `modDependencies` since 0.12.86-dev -- owner: *"rework mod to
+# not need any depeancie mods"*, *"we hope to have the mod as a complete stand alone"*. Only
+# `loadAfter` remained, which is sorting advice. The description never followed: it still said the
+# build *"declares every member of it as a dependency"*, naming all five expansions and 288 mods.
+#
+# That text is what a player reads in the mod list before deciding whether they can run this at
+# all, and **it was the one document nothing here checked**, because `living_docs()` globs `.md`.
+# It survived six versions of a checker written specifically to catch stale claims.
+#
+# **The boundary with `check-info-cards.py` is deliberate.** That file owns *def cards* -- whether
+# a thing a player can click has a label and a description at all. This owns *documents that make
+# claims*, and `About.xml`'s description is a document the game displays.
+#
+# Found by generating the public repository's readme from this text and reading it: the readme said
+# *"Needs no other mod and no expansion"* two lines above a section demanding five expansions. A
+# contradiction that blatant survived because nothing had ever put the two sentences side by side.
+ABOUT_XML = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "About", "About.xml")
+
+# Asserting a dependency is the opposite error from `NO_DEPENDENCY_CLAIMS`, and which one is a
+# finding depends on what `About.xml` declares. With nothing declared, these are the false ones.
+DEPENDENCY_ASSERTION_CLAIMS = (
+    "as a dependency",
+    "declares every member",
+    "is a requirement",
+    "are required",
+    "is required",
+    "requires the following",
+    "every dependency is declared",
+    "hard dependency",
+    "hard dependencies",
+)
+
+
+def about_description():
+    """The description `About.xml` ships, or None."""
+    if not os.path.isfile(ABOUT_XML):
+        return None
+    text = io.open(ABOUT_XML, encoding="utf-8-sig").read()
+    match = re.search(r"<description>(.*?)</description>", text, re.S)
+    if not match:
+        return None
+    # Entities matter here: the description is XML, and `&amp;` read as prose would be a word.
+    body = match.group(1)
+    return (body.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
+            .replace("&quot;", '"').replace("&apos;", "'"))
+
+
+def check_about_description(version, branch, count, declared, problems):
+    """Hold the mod's own description to the same claims rules as every reader-facing document."""
+    description = about_description()
+    if description is None:
+        problems.append("About.xml has no <description>, which is the mod's own card in the "
+                        "mod list")
+        return False
+    rel = "Mod/Rimrooms - Async Industries/About/About.xml"
+
+    for match in VERSION_CLAIM.finditer(description):
+        if version and match.group(1) != version:
+            problems.append("%s claims version %s; the build is %s"
+                            % (rel, match.group(1), version))
+
+    for name in STALE_BRANCHES:
+        if name in description and branch and name != branch:
+            problems.append("%s names working branch %r; the branch is %r" % (rel, name, branch))
+
+    for definition in RETIRED_DEFS:
+        if definition in description:
+            problems.append("%s names retired def %s to a player" % (rel, definition))
+
+    check_checker_count(rel, description, count, problems)
+
+    # **WHICH DEPENDENCY RULE APPLIES IS READ OFF About.xml ITSELF**, never typed, which is the
+    # same discipline the markdown rules use. If the owner ever declares dependencies again, the
+    # assertion rule stops firing and the denial rule starts, with nothing here to edit.
+    lowered = description.lower()
+    if declared <= 0:
+        for phrase in DEPENDENCY_ASSERTION_CLAIMS:
+            if phrase in lowered:
+                problems.append("%s says %r while About.xml declares NO dependencies; that is "
+                                "the claim a player reads before deciding whether they can run "
+                                "this at all" % (rel, phrase))
+    else:
+        for phrase in NO_DEPENDENCY_CLAIMS:
+            if phrase in lowered:
+                problems.append("%s says %r, and About.xml declares %d dependencies"
+                                % (rel, phrase, declared))
+
+    prose = readable_prose(description)
+    scanned = DOC_BANNED_EXEMPT.sub(" ", prose)
+    for term, pattern in DOC_BANNED:
+        match = pattern.search(scanned)
+        if match:
+            problems.append("%s says %r to a player -- %s"
+                            % (rel, match.group(0), DOC_BANNED_TERMS[term]))
+    check_forbidden_claims(rel, prose, problems)
+    check_expansion_claims(rel, prose, problems)
+    check_broad_compatibility(rel, description, declared, problems)
+    return True
+
+
 def check_published_site(version, branch, count, problems):
     """Everything above, and the inventory the summary prints."""
     includes, excludes = site_config_lists()
@@ -1106,6 +1212,8 @@ def main():
     check_directions_reached_the_queue(problems)
     check_reader_facing(problems)
     published, site_entries = check_published_site(version, branch, checkers, problems)
+    about_checked = check_about_description(version, branch, checkers,
+                                           declared_dependencies, problems)
 
     print("doc-conformance")
     print("  living documents checked : %d" % len(docs))
@@ -1119,6 +1227,8 @@ def main():
     print("  non-markdown site files  : %d, held to the version, branch and claims rules"
           % len(site_entries))
     print("  ledger names refused     : %d, in the published set" % len(LEDGER_NAMES))
+    print("  About.xml description    : %s, held to the same claims rules as a reader document"
+          % ("checked" if about_checked else "MISSING"))
     print("  dated records skipped    : implementation records, FINALIZED, CHANGELOG, reviews")
     print("  build version            : %s" % version)
     print("  working branch           : %s" % branch)

@@ -26,9 +26,9 @@ change"*
 
 - **During the work:** run **only the one instrument covering the file you just touched.** One
   checker, or one proof, or one plant suite. **Keep writing and extending them.**
-- **At publication, once:** 20 checkers → 57 proofs → 31 plant suites.
+- **At publication, once:** 21 checkers → 58 proofs → 32 plant suites.
 - **If a sweep finds something, fix it and re-run ONLY the instrument that failed.**
-- **Batch size is 10–12 closed rows.** 0.12.93 closed **nine** and noted four.
+- **Batch size is 10–12 closed rows.** 0.12.93 closed nine and noted four; 0.12.94 closed **six**, every one of a single owner direction.
 
 ---
 
@@ -49,61 +49,69 @@ reword the document into something awkward. A checker that cries wolf is one peo
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`** |
-| Version | **0.12.93-dev** — read from `About.xml`, never from a document |
+| Version | **0.12.94-dev** — read from `About.xml`, never from a document |
 | Build | **232 C# files, 103 package files**, zero warnings, zero errors |
 | Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile and is checked against the register |
-| Instruments | **20 checkers**, **57 proofs**, **31 plant suites**, **1091 plant anchors** |
+| Instruments | **21 checkers**, **58 proofs**, **32 plant suites** |
 | Remotes | **all TEN refs level** — `forgejo` 5 of 5, `github` 5 of 5. Forgejo caught up 2026-10-05 after four commits down |
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
 | Queue | **49 open · 20 partial · 38 `[T]` · 0 `[x]`** |
+| Public repos | **`Rimrooms-AsyncIndustries` on BOTH hosts** — `forgejo GFourteen/...` and `github G-Fourteen/...`, `main` at one commit. **The mod as staged, the public face, nothing else** |
+| Published site | **LIVE** — `https://g-fourteen.github.io/Rimrooms-AsyncIndustries/`, 200 on the index, a deep page and the stylesheet |
 | Launches | **At least twelve**, all by the owner. **Every defect any launch found was ours** |
 
 ---
 
-## What 0.12.93-dev changed
+## What 0.12.94-dev changed
 
-**Nine rows closed, four noted. Two of the nine were the same work written twice in two different
-sections**, which is worth knowing: a duplicate closed in one place and left open in the other is
-how a finished thing gets built a second time.
+**One owner direction, six rows, and two defects it uncovered in the mod itself.**
 
-1. **ENABLING PAGES WOULD HAVE PUBLISHED THE ENTIRE WORK LEDGER.** The row said *"a comment is not a guard"* and was righter than it knew. `_config.yml` claimed everything but the wiki was *"deliberately excluded"* while naming **four directories, two of which do not exist** — and Jekyll publishes whatever it is not told to exclude. **Fifty-four documents sit at `docs/` root**, none with front matter, so `TODO.md`, `NOW.md`, `FINALIZED.md` and `DECOMPOSED.md` would have been copied verbatim and served as raw downloads.
-2. **Two independent instruments hold it now.** One keeps the list current — `build-site.py` writes it from the directory itself. One **refuses the bad outcome without reading that list at all**: it models what Jekyll would publish and fails on the answer, so a broken generator cannot produce a quiet pass.
-3. **The site's non-markdown published files are covered.** A version in a layout, a branch in a stylesheet comment, a retired def on the front door: all would have shipped unexamined. **A layout is never fetched by a reader and its text is on every page that is.**
-4. **The site had no root document and answered 404 at its own address.** `docs/index.html` is the front door — no front matter, a **relative** link because a project site is served from a subpath, and a real anchor as well as the refresh.
-5. **The checker count is read off `tools/` instead of typed.** It said `8` while nineteen shipped. The derived version immediately caught a real stale claim the fixed phrase list structurally could not see — **and then caught this very file saying 19 after the twentieth checker landed.**
-6. **THE PACK IS NOT A CARGO ROUTE, AND NOTHING USED TO LOOK AT IT.** Every cargo rule and the crossing receipt govern `carryTracker` — the hands — so anything in `pawn.inventory` crossed **unrecorded**, and the branch's own account of what went through its gate was wrong by whatever was in the bag. **The hole is ours, not a mod's.**
-7. **No adapter and no patch for any of the three work providers**, each for a recorded reason, so invariant 42 holds by there being nothing to apply. Prison Labor's open axis was never a runtime question: **7 of 7 adapters and 2 of 2 work givers** gate on one function.
-8. **The laundering invariant is held by an instrument instead of a sentence.** The row's purpose is satisfied and its mechanism is recorded as superseded — marking on spawn is what *closes* the hole, because the stamp is one-way and everything gets one.
-9. **Three rows closed on measurement.** 38 projects / 8 branches / **0 cross-branch prerequisites**; the five `RR_*Staff` PawnKinds were always native colonists because **a `PawnKindDef` is a generation recipe, not a pawn class**; and the DLC half of the no-compatibility-claim rule is enforced, with the *control* mattering more than the refusal.
+1. **TWO NEW REPOSITORIES HOLD THE MOD AND NOTHING ELSE**, on both hosts, and **the published site is live** — 200 on the index, a deep page and the stylesheet, verified with `curl -sI`. That is the standard the Backrooms deploy row sets and has never met.
+2. **ONE DEFINITION OF THE MOD, AND IT WAS ALREADY MACHINE-READABLE.** The payload is the 103 files in `artifacts/build/package-manifest.json` — the same list `stage-mod.ps1` copies — with **every SHA256 verified on the way out**. So *what we stage* and *what we publish* cannot drift. **It refused this batch** when `About.xml` was edited after the build.
+3. **AN ALLOWLIST DECIDES, A DENYLIST REFUSES THE RESULT, AND BOTH RUN.** The second pass refused the first export it ever saw: `CHANGELOG.md` is a development log and does not ship. The working README does not ship either — **every link in it is wrong there** — so the export generates its own from `About.xml` and refuses if a link would dangle.
+4. **THE MOD TOLD EVERY PLAYER IT NEEDS 294 MODS, AND IT NEEDS NONE.** `About.xml` has declared zero dependencies since 0.12.86-dev while its description still said it *"declares every member of it as a dependency"*. **It is the most-read document this mod has, and nothing checked it**, because the checker globs `.md`.
+5. **Found by reading generated output, not by auditing.** The export's readme said *"Needs no other mod and no expansion"* two lines above a section demanding five expansions. Nothing had ever put those two sentences side by side.
+6. **`About.xml`'s description is now held to the full claims rules**, including a **new inverse dependency rule** — with nothing declared, *asserting* a dependency is the finding — and it immediately caught a second defect: the description said **"doorway"** to a player, banned everywhere else since 0.10.2-dev.
+7. **The wiki renders to standalone static HTML**, no Jekyll and no build step, **importing the reading order from `build-site.py` rather than copying it**. `docs/.nojekyll` ships, or Pages rebuilds it with Jekyll and can fail outright.
+8. **`git subtree split` was offered, argued against and declined** — it would have published hundreds of commits of `docs/TODO.md`.
 
 ---
 
 ## THE NEXT THING
 
-**The docs and site cluster is finished except for two owner switches.** Settings → Pages →
-`main` / `/docs`, and a domain when you want one. Everything else about the site ships, is
-generated, and is guarded — including the thing that would have put the ledger online.
+**The public face is done and live.** What remains of it is authoring, not plumbing: a
+**player-facing changelog** for the public repository — deliberately not faked by filtering the
+development one — and the **Workshop page and collection**, which the queue already orders behind
+a working site.
 
 **Then the four expansion rows**, each needing a decision about what the *optional* version of
 genes, rituals, or a gravship that carries a branch actually is. These are the largest open design
 questions left and they are not measurement jobs.
 
 **T5/T6 of the research tree is a knob sweep**, not an authoring job: 274 tunable constants exist
-and 34 are claimed by capabilities, so there is somewhere to look — but a tier may only exist where
-a player could *name the effect*, and inventing seven projects without that is the lie the file
-deletes projects for.
+and 34 are claimed, but a tier may only exist where a player could *name the effect*.
 
 Then: **entity/anomaly design sheets as authored documents**; **vehicles and the VGE hooks**; and
-the **world-tile rows**, which need a new world object and a generated map and are their own
-checkpoint.
+the **world-tile rows**, which need a new world object and a generated map.
 
 **And the two starting-goods rows wait on a launch, not on code.** They are the only rows whose
 next step is a `Player.log`.
+
+**One thing worth the owner's attention, blocking nothing:** Backrooms still carries its own Jekyll
+site under `docs/`, and the public deploy now lives in the new repository. Enabling Pages on
+Backrooms is no longer needed for the wiki to reach anybody. That row stays open and the switch is
+still the owner's; it is simply no longer the only route.
 
 ---
 
 ## Read these before touching anything
 
+- **A WORD BEING PRESENT IS NOT THE WORD DOING ANYTHING. THREE MORE THIS BATCH, EVERY ONE CAUGHT BY ITS PLANT.** A regex with word boundaries cannot match inside `git_subtree_split`, because an underscore is a word character. `"--push" in sys.argv` appears twice, so containment survived a plant that deleted the push guard entirely. And `stash` is a nested function's own name, so it stayed when the call using it was removed. **Assert the call, the whole anchored statement, or the condition — never the identifier.**
+- **A GENERATED ARTEFACT IS THE BEST AUDIT YOU WILL EVER RUN.** The mod telling every player it needs 294 mods had survived six versions of a checker written to catch stale claims. It was found by generating a readme from that text and reading the result, where the contradiction sat two lines apart. **Render the thing and look at it.**
+- **A PLANT SUITE THAT TOUCHES A FILE WITH A BOM MUST USE BYTES.** `io.open(..., "w", encoding="utf-8")` strips one silently, which is how three were lost. `plant-public-export.py` reads and writes bytes throughout, and the BOM survived 29 plants.
+- **A GUARD BELONGS IN THE BATTERY, NOT ONLY IN THE TOOL THAT KNOWS ABOUT IT.** The export audit lives in the exporter; `check-public-export.py` is what makes the battery run it. A guard only somebody remembers to fire is the `_config.yml` mistake with a different filename.
+- **IMPORT, NEVER COPY, ANYTHING TWO GENERATORS AGREE ABOUT.** The static renderer imports `SECTIONS`, `page_title` and `page_summary` from `build-site.py`. A copied reading order drifts the first time a page is added, and then the two sites disagree about what the wiki is.
+- **WHAT GOES IN A PUBLIC REPOSITORY IS DECIDED TWICE.** An allowlist assembles it; a denylist then refuses the assembled tree. The second pass is not redundant — it is the one that catches a mistake in the first, and it did so on its first run.
 - **A CLAIM READS ITS OWN DOCUMENTATION. FOUR TIMES NOW, AND TWICE IN ONE FILE THIS BATCH.** Good documentation explains the thing it avoids **by naming it**, so an absence claim fails on the comment that justifies it. This batch it happened through an **HTML** comment and then again through a **Liquid `{%- comment -%}`** block the first stripper did not know existed. `code_only()`, `xml_only()`, `yaml_only()` and `html_only()` exist for this. Put every absence assertion through one.
 - **A POSITIONAL CLAIM ENCODES LAYOUT, NOT THE PROPERTY.** A claim anchored `origin =` to the start of a line and reported 1 assignment where there were 2 — the second was written inline inside an `if`. Count on whitespace-normalised source.
 - **A WORD BEING PRESENT IS NOT THE WORD DOING ANYTHING, and it hid in two places.** A claim that the spawn guard tests `respawningAfterLoad` passed on the **method signature**, because the parameter is named the same thing. With the signature cut it *still* passed, because `base.PostSpawnSetup(respawningAfterLoad)` **forwards** the flag. Cut both, then assert.

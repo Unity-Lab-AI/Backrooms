@@ -3,7 +3,7 @@
   <name>Rimrooms - Async Industries</name>
   <author>Operator</author>
   <packageId>Rimrooms.AsyncIndustries</packageId>
-  <modVersion>0.12.93-dev</modVersion>
+  <modVersion>0.12.94-dev</modVersion>
   <supportedVersions>
     <li>1.6</li>
   </supportedVersions>
@@ -309,7 +309,7 @@
     <li>proxyer.dismantleancientjunk</li>
     <li>VehiclesWrecksExpanded.Revisited</li>
   </loadAfter>
-  <description>Development build 0.12.93-dev. Gameplay acceptance is pending; this is not a finished campaign release.
+  <description>Development build 0.12.94-dev. Gameplay acceptance is pending; this is not a finished campaign release.
 
 Rimrooms - Async Industries is a company-management campaign about an authorised research branch that investigates, contains and profits from unstable spaces beyond a gate.
 
@@ -331,7 +331,7 @@ Go back to a space you have been to before and something is sometimes not where 
 
 People are down there too - wanderers, the missing, the dead, survivors worth bringing home. Nothing starves or rots before you have found it; discovery starts their clock, not your exploring speed.
 
-In the worst coordinates, what lives there stops holding its ground and follows your crew to the doorway. On an advanced gate it can step through behind them, and then it behaves like anything else that gets inside your base. Closing the connection before it arrives is what stops it.
+In the worst coordinates, what lives there stops holding its ground and follows your crew to the threshold. On an advanced gate it can step through behind them, and then it behaves like anything else that gets inside your base. Closing the connection before it arrives is what stops it.
 
 --- THE COMPANY ---
 
@@ -343,15 +343,15 @@ Your colonists work across a gate the way they work anywhere: hauling, construct
 
 --- REQUIREMENTS ---
 
-This build is authored against a specific collection and declares every member of it as a dependency, so your mod manager can tell you what is missing instead of letting the game fail later: RimWorld - Royalty, Ideology, Biotech, Anomaly and Odyssey, and the 288 mods loaded alongside them.
+This mod needs nothing but RimWorld itself. It declares no dependencies: not one mod, and not one expansion. Royalty, Ideology, Biotech, Anomaly and Odyssey are each optional, and the parts that use them simply are not there when they are not installed.
 
-Load this mod last. Every dependency is declared with loadAfter as well as being a requirement, so a sorting manager will place it correctly on its own.
+Load this mod last. It lists 294 mods in loadAfter, which is sorting advice rather than a requirement: a sorting manager will place it correctly on its own, and every one of those mods is optional. Nothing is announced as compatible until it has been tested.
 
 Nothing here is patched through Harmony. Content from another mod is looked up by name and never assumed, so a missing one degrades what depends on it rather than throwing.
 
 --- THE WIKI ---
 
-How to install it, how to set up your mod manager, how to play, what is through the gate, and what to do when something refuses: https://github.com/Unity-Lab-AI/Backrooms
+How to install it, how to set up your mod manager, how to play, what is through the gate, and what to do when something refuses: https://github.com/G-Fourteen/Rimrooms-AsyncIndustries
 
 Original Backrooms menu backgrounds show the mod title and loaded version beside the native version information.</description>
 </ModMetaData>

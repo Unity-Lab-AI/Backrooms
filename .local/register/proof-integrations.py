@@ -180,10 +180,12 @@ check("THE CLAIM GUARD EXISTS and is wired into the reader-facing walk",
 # two call sites. Excluded by lookbehind rather than by subtracting one, because subtracting one
 # would quietly keep passing if the definition were ever removed.
 _calls = len(re.findall(r"(?<!def )check_forbidden_claims\(rel, prose, problems\)", conformance))
-check("the claim guard is reached from BOTH walks, counted rather than contained",
-      _calls == 2,
-      "-- the reader-facing documents and the site's published non-markdown files; found %d "
-      "call site(s)" % _calls)
+check("the claim guard is reached from ALL THREE walks, counted rather than contained",
+      _calls == 3,
+      "-- the reader-facing documents, the site's published non-markdown files, and About.xml's "
+      "own description; found %d call site(s). **The count going stale is this claim working:** "
+      "it was 2 until 0.12.94-dev gave the guard a third consumer, and a claim written with `in` "
+      "would have said nothing either time" % _calls)
 check("the guard checks for negation rather than banning the words outright",
       "CLAIM_NEGATORS" in conformance,
       "-- a naive substring ban would fail the one document written to obey the rule, which is "
