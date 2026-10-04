@@ -80,7 +80,7 @@ already got this wrong. It was not the cause here, and it was still the wrong wa
 - **During the work:** run **only the one instrument covering the file you just touched.** One checker, or one proof, or one plant suite. **Keep writing and extending them.**
 - **At publication, once:** 19 checkers → 54 proofs → 28 plant suites.
 - **If a sweep finds something, fix it and re-run ONLY the instrument that failed.**
-- **Batch size is 10–12 closed rows.** 0.12.89 eleven, 0.12.90 nine, 0.12.91 **six closed and six noted** — the DLC rows are each five clauses wide and closing them on one clause would be over-claiming.
+- **Batch size is 10–12 closed rows.** 0.12.90 nine, 0.12.91 six closed and six noted, 0.12.92 **four closed and five noted** — wrapped early on the owner's word, and the docs rows that stayed open are each waiting on something that is not code.
 
 ---
 
@@ -101,43 +101,52 @@ what the ceiling was pushing me to find.
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`** |
-| Version | **0.12.91-dev** — read from `About.xml`, never from a document |
+| Version | **0.12.92-dev** — read from `About.xml`, never from a document |
 | Build | **231 C# files, 103 package files**, zero warnings, zero errors |
 | Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile and is checked against the register |
 | Instruments | **19 checkers**, **54 proofs**, **28 plant suites**, **1035 plant anchors** |
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
-| Queue | **62 open · 20 partial · 38 `[T]` · 0 `[x]`** |
+| Queue | **58 open · 20 partial · 38 `[T]` · 0 `[x]`** |
 | Launches | **At least twelve**, all by the owner. **Every defect any launch found was ours** |
 
 ---
 
-## What 0.12.91-dev changed
+## What 0.12.92-dev changed
 
-1. **THE STAND-ALONE GUARANTEE IS A CHECKER.** The row said *"a declaration cannot establish it"*, and nothing in the battery could: `check-dlc-gating.py` asks *is every expansion reference gated* and **cannot see a reference to one of the 294 profile mods**, because such a def is not DLC-only — it is not in the game's data at all. Checker **19** closes that hole.
-2. **The first run: 214 def-name field values, ZERO outside Core and our own defs.** 64 C# lookups, **zero hard `GetNamed`** on anything we do not ship. Four assembly references, all game or Unity. Reference fields **enumerated from our own source**, and it **skips rather than passes** with no game installed.
-3. **Four expansion roles, optional by CONSTRUCTION rather than by a gate.** `thingDefNames` is a `List<string>`, so naming `HoldingPlatform` creates **no cross-reference at load at all** — `Fillable` hides a role nothing can fill. Not merely gated: unable to exist.
-4. **`MayRequire` per entry, never per role**, because gating a whole role would delete one that also accepts Core buildings. **`check-dlc-gating.py` could not see a per-entry gate** and was taught the mechanism rather than worked around.
-5. **Royalty gets nothing, recorded rather than padded.** Thrones are Core; what Royalty adds is titles, permits, psycasts and the Empire. A route must be a thing, a log or a project — a title is none. An honest hook needs a new route kind.
-6. **The starting-goods defect: four candidate causes eliminated, no fix on a hunch.** The arrival part, the start spot, the gen-step order and the drop method are all ruled out against the installed game. And the report's own evidence rules out the next one — the pawns' possessions *did* arrive, in the same list as the grants.
-7. **So the next launch answers it.** The receipt records the **promise** and the **delivery**, and the start reports the gap. The promise is read through `GetSummaryListEntries`, which **creates nothing** — enumerating `PlayerStartingThings()` again would manufacture a second set of goods.
-8. **Two rows closed on measurement.** Prior exposure was listed unbuilt on a second row while built and wired — **a fact recorded as missing in two places was missing in neither**. And the battery-reserve row was a recorded *finding*, not a task.
+**A short batch, wrapped on the owner's word mid-flight.** Four rows closed, five noted, one
+measurement that corrected a row.
+
+1. **THE WIKI IS A SITE YOU CAN SCAN.** `jekyll-theme-primer` is gone — the row called it *"a text wall with a margin"* and it was. Our own layout and stylesheet: a persistent index on every page, a summary line at the top of each, a prose column near 68 characters, and headings that read as dividers. No webfont, no script, no external request, no theme gem.
+2. **THE INDEX WRITES ITSELF.** `tools/build-site.py` generates `docs/_includes/nav.html` from the wiki directory. `--check` fails the battery when they disagree. **It caught a bug in itself before shipping** — `page.url contains '/wiki/'` is true of every page, so the index would have been marked current everywhere.
+3. **All thirteen pages carry `title` and `summary` front matter**, so each says what it is before it says anything else.
+4. **CNAME support authored, domain deliberately not named.** The shape, the DNS records and the verification are in `docs/CNAME.example`, inert on purpose: a live `CNAME` for a domain nobody owns stops Pages answering on `github.io` and waits for DNS that never arrives.
+5. **Two gaps measured rather than claimed.** `check-doc-conformance.py` already covers every `.md`, so the wiki prose was never uncovered; what *is* uncovered is the site's **non-markdown** files — layout, include, stylesheet, `_config.yml`, a future `CNAME`.
+6. **The research row was wrong about T3.** It is fully built, seven projects with their own header; T4 is built too, six of seven with both absences reasoned. **34 capabilities granted, 34 read — a perfect bijection.** What is open is T5/T6, and the file's own rule makes that a knob sweep.
 
 ---
 
 ## THE NEXT THING
 
-**The four expansion rows that are still open** each had one clause answered and four left. Biotech
-wants genes, children, medicine and pollution; Ideology wants beliefs, meditation, rituals and
-staff policies; Odyssey wants a gravship that actually carries a branch between tiles. Each needs
-its own answer to *what does the optional version look like* before it is code.
+**One small piece of work finishes the docs cluster**, and it is two rows at once: extend
+`check-doc-conformance.py` to cover the site's **non-markdown** published files for version and
+branch claims, **and** make it refuse a published copy of `TODO.html`/`NOW.html` so the ledger
+guard is a guard rather than a comment. Both are in `docs/TODO.md` with the gap already measured.
+
+Then the two deploy rows are **the owner's switches, not work**: Settings → Pages → `main` /
+`/docs`, and a domain when you want one.
+
+**T5 of the research tree is a knob sweep**, not an authoring job: 274 tunable constants exist and
+34 are claimed by capabilities, so there is somewhere to look — but a tier may only exist where a
+player could *name the effect*, and inventing seven projects without that is the lie the file
+deletes projects for.
 
 Then: **entity/anomaly design sheets as authored documents**; **vehicles and the VGE hooks**; **the
-optional work/storage provider adapters**; **T3 of the research tree**, where every capability a
-project grants must be read by a named source file.
+optional work/storage provider adapters**; and the four expansion rows, each of which needs a
+decision about what the optional version of *genes*, *rituals* or *a gravship that carries a
+branch* actually is.
 
-**And the starting-goods rows now wait on a launch rather than on work.** They are the only two
-rows in the queue whose next step is a `Player.log` — the report will either implicate a mod
-supplying starting equipment or clear it.
+**And the two starting-goods rows wait on a launch, not on code.** They are the only rows whose
+next step is a `Player.log`.
 
 ---
 
@@ -209,7 +218,7 @@ python tools/check-queue-integrity.py                                 # and this
 
 ## Is it done?
 
-**The build is. The play is not.** `0.12.91-dev` is staged and published; the next action that unblocks anything is a launch, and only the owner launches.
+**The build is. The play is not.** `0.12.92-dev` is staged and published; the next action that unblocks anything is a launch, and only the owner launches.
 
 Read a launch log in this order: `Player.log`, grep the **first** `[Rimrooms]` line — it carries
 the fixture-tell attachment count, the fastest signal that the object register reached anything —

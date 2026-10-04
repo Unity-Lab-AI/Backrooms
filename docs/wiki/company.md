@@ -1,3 +1,8 @@
+---
+title: The company
+summary: "Your employer: contracts, credits, staff, evidence and what the corporation wants."
+---
+
 # The company
 
 **The company is not a faction you befriend.** It is an account, a queue of requests, and a bill.

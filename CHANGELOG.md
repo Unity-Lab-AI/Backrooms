@@ -1,5 +1,64 @@
 # Changelog
 
+## 0.12.92-dev - 2026-10-05 - The wiki is a site you can scan, and its index writes itself
+
+- **THE THEME IS GONE AND THE LAYOUT IS OURS.** Owner: *"the beautiful and masterfully way
+  paossible so the thing needs to NOT pop like a text wall"*. The queue row's reading of
+  `jekyll-theme-primer` was blunt and right - a text wall with a margin: one column, one type
+  size, and no way into a page except reading it from the top. `docs/_layouts/default.html` and
+  `docs/assets/css/rimrooms.css` replace it.
+- **Four devices do the scannability**, because the row says it is *"a layout answer as much as a
+  prose one"*: a persistent index of every page on every page; a **summary line** at the top of
+  each; a prose column capped near 68 characters, since a full-width paragraph *is* the text wall;
+  and headings that read as dividers with a rule and real space above them, with tables and
+  blockquotes styled so a skimming eye lands on them.
+- **No webfont, no script, no external request and no remote theme gem.** The site is a handful of
+  static files, which is the same instinct as the package depending on nothing but Core. Dark mode,
+  a keyboard skip link, and the current page marked by weight and an inset rule rather than by
+  colour alone.
+- **THE INDEX WRITES ITSELF.** Owner: *"Generated, never hand-maintained."* `tools/build-site.py`
+  writes `docs/_includes/nav.html` from whatever is actually in `docs/wiki/` - the title from each
+  page's own first heading, the hover text from its `summary` front matter. **A hand-written list
+  of pages is a second place the truth lives:** add a page and the list is wrong, rename one and
+  the list is a broken link. `--check` fails when the include and the directory disagree, so the
+  battery catches a stale index rather than a reader finding it. A page not in the declared reading
+  order is still published and still indexed, under *More*.
+- **And it found a bug in itself before shipping:** the first version marked the current page with
+  `page.url contains '/wiki/'`, which is true of **every** page in the wiki - so the index would
+  have been highlighted as current everywhere. The layout now derives a slug once and the generated
+  index compares against that.
+- **All thirteen pages say what they are before they say anything else**, through `title` and
+  `summary` front matter rendered as a callout at the top and as the hover text on the index entry.
+  No stylesheet can invent a one-line answer to *what is this page for*.
+- **CNAME SUPPORT AUTHORED, DOMAIN DELIBERATELY NOT NAMED.** `docs/CNAME.example` carries the
+  shape, the four apex A records, the subdomain alternative, the Settings step and the `curl -sI`
+  verification - and it is **inert on purpose**. No file in this repository names a hostname the
+  deploy does not serve, because a live `CNAME` naming a domain nobody owns yet does not fail
+  loudly: Pages stops answering on `github.io` and waits for DNS that never arrives. And no page
+  hard-codes the site's own address, so the real domain needs no page edits at all.
+- **`_config.yml` now records in the file why the work ledger can never be published.**
+  `outputs/readable/` renders `TODO.html` and `NOW.html` as an internal reading convenience, and
+  the row is explicit that it stays internal. **Written down and NOT yet enforced** - a comment is
+  not a guard, so that row stays open alongside the published-site coverage it belongs with.
+- **Two gaps measured rather than claimed.** `check-doc-conformance.py` already globs every `.md`
+  in the repository, so the thirteen wiki pages were **always** covered for version and branch
+  claims - that half was never missing. What is uncovered is the site's **non-markdown** published
+  files: the layout, the generated include, the stylesheet, `_config.yml` and a future `CNAME`. A
+  version claimed in a layout would ship unchecked today.
+- **THE RESEARCH ROW WAS WRONG ABOUT T3, and the measurement says so.** It read *"tiers 0-2
+  complete; T3 is the next checkpoint"*. **T3 is fully built** - seven projects, one per branch,
+  each gated on its tier-2 sibling plus three route, two distortion and one entity log, with its
+  own header and a record in `BUILD_ORDER_CORRECTION.md`. **T4 is built too**, six of seven, and
+  both absences are reasoned in the file. **34 capabilities granted, 34 read - a perfect
+  bijection**, so no hollow unlock and no dead read. What is actually open is T5 and T6, and the
+  file's own rule makes that a knob sweep rather than an authoring job.
+- Instruments: **19 checkers, 54 proofs, 28 plant suites.** 19 checkers and 54 proofs run green.
+  **The plant sweep was not re-run and did not need to be:** this batch changed no C# and no mod
+  Def or Keyed file - only two version lines, the docs tree and the new site tool - so every plant
+  target is byte-identical to the 1035-of-1035 sweep at 0.12.91-dev, and `check-plant-residue.py`
+  confirms nothing is planted. Queue: 58 open, 20 partial, 38 post-completion test, 0
+  completed-and-unarchived.
+
 ## 0.12.91-dev - 2026-10-05 - The package needs nothing, expansions only add, and a missing start reports itself
 
 - **THE STAND-ALONE GUARANTEE IS A CHECKER NOW, which is what the row said it would take.** Owner:

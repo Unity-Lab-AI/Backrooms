@@ -1,3 +1,8 @@
+---
+title: Multiplayer
+summary: "What is known about multiplayer, and what is honestly untested."
+---
+
 # Multiplayer
 
 **Nothing about multiplayer is promised.**

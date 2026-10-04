@@ -1,3 +1,8 @@
+---
+title: Your first hour
+summary: "The gate start-up chain end to end: eleven goals, in the order they unlock."
+---
+
 # Your first hour
 
 Written for the **Async Industries** start. The others reach the same place with less in hand.

@@ -1,0 +1,30 @@
+PUT-YOUR-HOSTNAME-HERE
+
+# ----------------------------------------------------------------------------------------------
+# THIS FILE IS NOT LIVE. Copy it to `CNAME` (no extension) and replace the first line with the
+# bare hostname, then delete everything below it: GitHub Pages reads the whole file as one
+# hostname, so a real CNAME contains exactly one line and no comments.
+#
+# Owner direction: "a real domain, not a github.io path" / "a nice backrooms url".
+#
+# Why this is an example rather than the real thing: **no file in this repository may name a
+# hostname the deploy does not serve.** A CNAME naming a domain nobody owns yet does not fail
+# loudly - it silently breaks the site, because Pages stops answering on github.io and starts
+# waiting for DNS that will never arrive. So the shape is authored, ready, and inert.
+#
+# WHAT TO DO WHEN THE DOMAIN EXISTS
+#
+#   1. Register the domain.
+#   2. At the DNS host, for an apex domain (example.com) create four A records pointing at
+#      185.199.108.153, 185.199.109.153, 185.199.110.153 and 185.199.111.153 - and, if the host
+#      supports it, the matching AAAA records. For a subdomain (wiki.example.com) create one
+#      CNAME record pointing at <owner>.github.io instead.
+#   3. `cp docs/CNAME.example docs/CNAME`, put the bare hostname on line one, delete the rest.
+#   4. In the repository's Settings -> Pages, set the custom domain to the same hostname and
+#      tick "Enforce HTTPS" once the certificate has been issued.
+#   5. Nothing in the wiki needs editing. No page hard-codes the site's own address; links within
+#      the site go through Jekyll's `relative_url`, so they follow whatever domain serves them.
+#
+# Verify with `curl -sI https://<hostname>` returning 200 and a `github.com` server header
+# before announcing it anywhere.
+# ----------------------------------------------------------------------------------------------

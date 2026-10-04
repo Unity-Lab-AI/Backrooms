@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if page.title %}{{ page.title }} — {% endif %}{{ site.title }}</title>
+<meta name="description" content="{{ page.summary | default: site.description }}">
+<link rel="stylesheet" href="{{ '/assets/css/rimrooms.css' | relative_url }}">
+</head>
+<body>
+
+<!-- OUR OWN LAYOUT, NOT A REMOTE THEME.
+
+     Owner direction, verbatim: *"the beautiful and masterfully way paossible so the thing needs
+     to NOT pop like a text wall"*. The queue row's reading of what was here before was blunt and
+     correct: `jekyll-theme-primer` is a text wall with a margin. One column, one type size, no
+     way into a page except reading it from the top.
+
+     So the theme is gone and this is ours. Two consequences worth stating. The site no longer
+     depends on a remote gem resolving at build time, which is the same instinct as the package
+     depending on nothing but Core. And the layout can do the scannability work the row says is
+     *"a layout answer as much as a prose one"*: a persistent index of every page on the left, a
+     summary line at the top of each page, and a prose column narrow enough to read.
+
+     THE NAV IS GENERATED. `_includes/nav.html` is written by `tools/build-site.py` from whatever
+     is in `wiki/`, so adding a page updates the index without anybody editing a list. Owner:
+     *"Generated, never hand-maintained."* -->
+
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="brand" href="{{ '/wiki/' | relative_url }}">{{ site.title }}</a>
+    <p class="tagline">{{ site.description }}</p>
+  </div>
+</header>
+
+<div class="shell">
+
+  <nav class="sidebar" aria-label="Pages">
+    {%- comment -%}
+      The current page's slug, derived once. `/wiki/install.html` and `/wiki/install/` both reduce
+      to `install`, and the wiki root reduces to `index`. The generated index compares against
+      this rather than using `page.url contains`, which is true of every page in the wiki and
+      would have marked the index as current everywhere.
+    {%- endcomment -%}
+    {%- assign pageslug = page.url | split: '/' | last | replace: '.html', '' -%}
+    {%- if pageslug == '' -%}{%- assign pageslug = 'index' -%}{%- endif -%}
+    {% include nav.html %}
+  </nav>
+
+  <main id="content" class="prose">
+    {% if page.summary %}
+    <p class="summary">{{ page.summary }}</p>
+    {% endif %}
+    {{ content }}
+  </main>
+
+</div>
+
+<footer class="footer">
+  <p>{{ site.title }}. A development build; nothing here is a balance, performance or
+     compatibility report.</p>
+</footer>
+
+</body>
+</html>

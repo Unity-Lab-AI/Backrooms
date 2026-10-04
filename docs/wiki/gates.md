@@ -1,3 +1,8 @@
+---
+title: Gates and connections
+summary: "How a gate is built, bound, staffed and opened, and what the window depends on."
+---
+
 # Gates and connections
 
 Three words, used strictly.

@@ -1,3 +1,8 @@
+---
+title: Links
+summary: "Where the source, the ledger and the register live."
+---
+
 # Links
 
 > **Workshop links are not live yet.** The slots below are in place and will be filled when the

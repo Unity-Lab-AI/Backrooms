@@ -1,9 +1,27 @@
 title: Rimrooms — Async Industries
 description: A company-management campaign for RimWorld about contract work beyond a gate.
-theme: jekyll-theme-primer
 
-# The wiki is the landing page. Everything else under docs/ is project working
-# material and is deliberately excluded from the published site.
+# NO REMOTE THEME, DELIBERATELY.
+#
+# Owner direction: "the beautiful and masterfully way paossible so the thing needs to NOT pop
+# like a text wall". `jekyll-theme-primer` was here and the queue row's reading of it was blunt
+# and right: a text wall with a margin. One column, one type size, and no way into a page except
+# reading it from the top.
+#
+# `_layouts/default.html` and `assets/css/rimrooms.css` are ours now. Two things follow. The
+# published site no longer depends on a remote gem resolving at build time, which is the same
+# instinct as the package depending on nothing but Core. And the layout can carry the
+# scannability the row asks for, because the row says it is "a layout answer as much as a prose
+# one": a persistent index of every page, a summary line at the top of each, and a prose column
+# narrow enough to read.
+
+# The wiki is the published site. Everything else under docs/ is project working material and is
+# deliberately excluded.
+#
+# THE WORK LEDGER IS NEVER PUBLISHED. `tools/make-readable-html.py` renders TODO.html and
+# NOW.html into outputs/readable/ as an internal reading convenience, and that is all it is for.
+# `check-doc-conformance.py` refuses a published copy of either, so pointing a generator at this
+# tree cannot quietly put the queue on the internet.
 include:
   - wiki
 
@@ -18,3 +36,14 @@ defaults:
       path: wiki
     values:
       layout: default
+
+# A REAL DOMAIN IS SUPPORTED AND NOT YET NAMED.
+#
+# Owner: "a real domain, not a github.io path" / "a nice backrooms url". GitHub Pages reads a
+# plain-text `CNAME` file in the published root, holding the bare hostname and nothing else.
+#
+# `CNAME.example` ships beside this file with the shape and the DNS records needed. **No file in
+# this repository names a hostname the deploy does not have**, which is the rule the queue row
+# sets: a document must not claim a URL that does not serve. When the owner has the domain,
+# copy `CNAME.example` to `CNAME`, put the real hostname in it, point DNS at GitHub, and the row
+# closes. Until then `github.io` is the address and nothing pretends otherwise.

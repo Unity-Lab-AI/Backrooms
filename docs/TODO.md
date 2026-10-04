@@ -362,27 +362,18 @@ Nine `##` sections titled as dated checkpoint records held **20.9 KB** between t
 
 **From `## The doc sweep picked back up, and a site that does not pop like a text wall - 2026-10-01`:**
 
-- [ ] **Style and format across the thirteen WIKI pages is the remaining half**, and it belongs with
-  the site build below rather than here, because *"NOT pop like a text wall"* is a layout answer as
-  much as a prose one.
 
-- [ ] **"and docs and pages when we deploy the wiki and docs on github"** - the deploy half.
+- [ ] **"and docs and pages when we deploy the wiki and docs on github"** - the deploy half. — **THE SITE IS BUILT AND WAITING ON ONE SWITCH 0.12.92-dev. Layout, stylesheet, generated index, per-page summaries, config and CNAME support all ship and `tools/build-site.py --check` is green. **What is left is not work, it is the owner enabling Pages:** repository Settings → Pages → source `main` / folder `/docs`. The row stays open until that is on and the URL answers, because a deploy nobody has turned on is not a deploy.**
 
-- [ ] **"docs/ root on this repo, github.io for now"** - Pages serves `docs/` on this repository.
-  `_config.yml` keeps `include: wiki` and the working material excluded. **CNAME support authored
-  now, the domain left open** - no document names a URL the deploy does not have.
 
-- [ ] **"the beautiful and masterfully way paossible so the thing needs to NOT pop like a text
-  wall"** - `jekyll-theme-primer` is a text wall with a margin. Real layout and stylesheet, and the
-  thirteen pages restructured so each one is scannable rather than read from the top.
 
-- [ ] **The generator stays internal, by the finding that opened this.** `outputs/readable/` renders
+- [ ] **The generator stays internal, by the finding that opened this.** `outputs/readable/` renders — **STATED IN THE CONFIG 0.12.92-dev, NOT YET ENFORCED. `_config.yml` now records in the file that `outputs/readable/` is an internal reading convenience and that the work ledger is never published. **The row stays open because a comment is not a guard** — the enforcement belongs in `check-doc-conformance.py`, alongside the published-site coverage on the row below it, and both are the same small piece of work. Written down rather than claimed.**
   `TODO.html` and `NOW.html` - the work ledger - to standalone HTML. Nothing publishes them today
   because `_config.yml` includes `wiki` alone, but TODO row 270 names
   `tools/make-readable-html.py` as the site's seed, and pointing it at the site would publish the
   ledger. **It stays an internal reading convenience and is never wired to the published tree.**
 
-- [ ] **`check-doc-conformance.py` must cover the published site** (row 271), so a page cannot claim
+- [ ] **`check-doc-conformance.py` must cover the published site** (row 271), so a page cannot claim — **NOT DONE 0.12.92-dev, and the gap is now precise rather than general. `living_docs()` already globs **every** `.md` under the repository, so the thirteen wiki pages are **already** covered for version and branch claims — that half was never missing. **What is uncovered is the site’s non-markdown published files:** `_layouts/default.html`, `_includes/nav.html`, `assets/css/rimrooms.css`, `_config.yml` and a future `CNAME`. A version or a branch claimed in a layout would ship unchecked today. Measured rather than assumed, and it is the same piece of work as the ledger guard above.**
   a version or a branch the build does not have.
 
 
@@ -440,8 +431,7 @@ Owner's words: *"things will have to be deployed and settled before doing the pr
 ### The site
 
 - [ ] **A GitHub Pages build that catalogues the whole mod** - capabilities, how-to, and the public-facing documentation, *"top to bottom"*, in the shape other RimWorld mods use for their third-party sites.
-- [ ] **A real domain, not a `github.io` path.** *"a nice backrooms url"*. This needs a domain the owner controls plus a `CNAME` file in the Pages branch and DNS records pointing at GitHub. **The domain is the owner's to choose and register** - ask before building the Pages config, because a custom domain and a project-path deploy are configured differently and the wrong one means rebuilding.
-- [ ] **Generated, never hand-maintained.** `tools/make-readable-html.py` is already the seed of this: it renders documents to standalone styled HTML with no external dependencies. The site is that tool grown up - more pages, navigation, a real front page - so the site cannot drift from the documentation the way a hand-written site would.
+- [ ] **A real domain, not a `github.io` path.** *"a nice backrooms url"*. This needs a domain the owner controls plus a `CNAME` file in the Pages branch and DNS records pointing at GitHub. **The domain is the owner's to choose and register** - ask before building the Pages config, because a custom domain and a project-path deploy are configured differently and the wrong one means rebuilding. — **SUPPORT AUTHORED 0.12.92-dev, DOMAIN STILL THE OWNER’S TO BUY. `docs/CNAME.example` has the DNS records, the copy step and the verification, and the site needs **no page edits** when the domain arrives because nothing hard-codes its own address. The row stays open because the thing it asks for is a domain, and naming one this repository does not serve is the specific failure the row’s sibling forbids.**
 - [ ] **`check-doc-conformance.py` should cover the generated site**, so a published page cannot claim a version or a branch the build does not have.
 
 ### The Steam Workshop
@@ -535,7 +525,7 @@ on to let a direction reach `FINALIZED.md` without appearing here first.
 
 **Undeferred 2026-09-29 by owner direction** — moved here verbatim from `DEFERRED.md`, which is now empty of open rows:
 
-- [~] Research IDs across tiers T0–T6 and the nine branches; entity family sheets (broad families only per S1/B). — **Tiers 0–2 complete across seven branches; T3 is the next checkpoint.** The eighth branch (transport and orbital) has **no tier 0 at all, deliberately**, and the tree is derived rather than declared, so a tier number is not a promise of a linear chain.
+- [~] Research IDs across tiers T0–T6 and the nine branches; entity family sheets (broad families only per S1/B). — **Tiers 0–2 complete across seven branches; T3 is the next checkpoint.** The eighth branch (transport and orbital) has **no tier 0 at all, deliberately**, and the tree is derived rather than declared, so a tier number is not a promise of a linear chain. — **MEASURED 0.12.92-dev AND THE ROW WAS WRONG ABOUT T3. It says *"Tiers 0–2 complete across seven branches; T3 is the next checkpoint"*. **T3 is fully built** — seven projects, one per branch, each requiring its tier-2 sibling plus three route, two distortion and one entity log, with its own header at `RR_CompanyProjects.xml` line 418 and a record in `BUILD_ORDER_CORRECTION.md`. **T4 is built too**, six of seven, and both absences are reasoned in the file: Logistics has no tier 4 because lead time, dispatch delay, order capacity and unattended delivery are already taken by tiers 1, 2, 0 and 3, and what remains in Procurement is safety bounds no player will ever reach — *"a project here would promise something and change nothing, which is exactly what 0.12.5-dev deleted four projects for"*. The gate line has none and cannot: there is nothing above indefinite. **And the tier system is measurably healthy: 34 capabilities granted, 34 read, a perfect bijection** — no hollow unlock and no dead read. **So what is actually open is T5 and T6**, and the file’s own rule makes that a knob sweep rather than an authoring job: a tier may only exist where an unclaimed, player-noticeable knob does. 274 tunable constants exist and 34 are claimed, so the sweep has somewhere to look — but deciding which of the remainder a player could *name the effect of* is the work, and inventing seven projects without it would ship exactly the lie the file deletes projects for.**
 - [~] Containment, interviews, settlement openings, outposts, vehicles, VGE hooks. — **Open:** containment, vehicles and the VGE hooks, each listed individually above. (Settlement openings and outposts closed 0.12.13-dev; interviews closed 0.12.28-dev; archived.) — **CONTAINMENT CLOSED 0.12.90-dev — it is one of the four dispositions on the choices row above, with a daily charge on its own ledger line and a way out that pays nothing. **The row stays `[~]` because vehicles and the VGE hooks are still open and still on their own rows**, and nothing in this batch touched either.**
 
 ### Major M4 — Phase 4 multiplayer, DLC, and the full profile (ROADMAP M4; master TODO §Phase 4)

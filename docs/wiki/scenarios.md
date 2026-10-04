@@ -1,3 +1,8 @@
+---
+title: The three starts
+summary: "The three shipped starts and what each one is actually like to play."
+---
+
 # The three starts
 
 All three appear in the ordinary new-game list. All three establish a branch and use the same

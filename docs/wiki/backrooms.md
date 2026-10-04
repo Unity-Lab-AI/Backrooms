@@ -1,3 +1,8 @@
+---
+title: Beyond the gate
+summary: "What is through a gate: how a coordinate is generated, and what is down there."
+---
+
 # Beyond the gate
 
 A **coordinate** is an address, and the map it opens onto.

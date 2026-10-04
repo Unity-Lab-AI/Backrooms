@@ -1,0 +1,285 @@
+/* Rimrooms — Async Industries. The published wiki's stylesheet.
+
+   Owner direction, verbatim: "the beautiful and masterfully way paossible so the thing needs to
+   NOT pop like a text wall".
+
+   The queue row is explicit that this is "a layout answer as much as a prose one", so the rules
+   below are aimed at one thing: a reader should be able to find what they want without reading
+   the page from the top. Four devices do that work.
+
+     1. A PERSISTENT INDEX. Every page is one click away, always visible on a wide screen.
+     2. A SUMMARY LINE. Each page says what it is before it says anything else.
+     3. A NARROW PROSE COLUMN. 68 characters or so. A full-width paragraph is the text wall.
+     4. HEADINGS THAT READ AS DIVIDERS rather than as slightly bigger text, and tables and
+        callouts styled so a skimming eye lands on them.
+
+   No webfont, no script, no external request. The site is a handful of static files, which is
+   also why it needs no theme gem to resolve at build time. */
+
+:root {
+  --ink: #15181d;
+  --ink-soft: #4a5260;
+  --paper: #fbfaf7;
+  --panel: #f2efe9;
+  --rule: #d9d4ca;
+  --accent: #8a5a2b;       /* the yellow-rooms register, kept to edges rather than fills */
+  --accent-soft: #f6ead6;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Keyboard users first: the index is long, so skipping it has to be possible. */
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+.skip:focus {
+  left: 1rem;
+  top: 1rem;
+  z-index: 10;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.5rem 0.9rem;
+  border-radius: 3px;
+}
+
+/* ---------------------------------------------------------------- masthead */
+
+.masthead {
+  border-bottom: 1px solid var(--rule);
+  background: var(--panel);
+}
+.masthead-inner {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 1.4rem 1.5rem 1.1rem;
+}
+.brand {
+  display: inline-block;
+  font-size: 1.35rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+}
+.brand:hover { color: var(--accent); }
+.tagline {
+  margin: 0.3rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  max-width: 46rem;
+}
+
+/* ---------------------------------------------------------------- shell */
+
+.shell {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  gap: 2.75rem;
+  align-items: start;
+}
+
+/* ---------------------------------------------------------------- the index */
+
+.sidebar {
+  position: sticky;
+  top: 1.5rem;
+  padding: 1.6rem 0 2rem;
+  font-size: 0.93rem;
+}
+.sidebar h2 {
+  margin: 1.4rem 0 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 650;
+}
+.sidebar h2:first-child { margin-top: 0; }
+.sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sidebar li { margin: 0; }
+.sidebar a {
+  display: block;
+  padding: 0.3rem 0.6rem;
+  margin-left: -0.6rem;
+  border-radius: 3px;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+.sidebar a:hover {
+  background: var(--panel);
+  color: var(--ink);
+}
+/* The page you are on, marked without colour alone: it is also bolder and indented by a rule. */
+.sidebar a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 650;
+  background: var(--accent-soft);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* ---------------------------------------------------------------- prose */
+
+.prose {
+  padding: 1.9rem 0 3rem;
+  max-width: 44rem;      /* ~68 characters. Device 3. */
+}
+
+.summary {
+  margin: 0 0 1.9rem;
+  padding: 0.8rem 1rem;
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 3px 3px 0;
+  font-size: 1.02rem;
+  color: var(--ink);
+}
+
+.prose h1 {
+  margin: 0 0 1rem;
+  font-size: 2rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+/* Device 4: a heading is a divider, so it carries a rule and real space above it. */
+.prose h2 {
+  margin: 2.6rem 0 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--rule);
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+}
+.prose h3 {
+  margin: 1.9rem 0 0.6rem;
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+.prose p { margin: 0 0 1.05rem; }
+.prose ul, .prose ol { margin: 0 0 1.05rem; padding-left: 1.3rem; }
+.prose li { margin: 0.25rem 0; }
+.prose strong { font-weight: 650; }
+
+.prose a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.prose a:hover { color: var(--ink); }
+
+/* A blockquote is a callout here, not an indent. Skimming should land on it. */
+.prose blockquote {
+  margin: 1.4rem 0;
+  padding: 0.85rem 1.1rem;
+  background: var(--panel);
+  border-left: 3px solid var(--ink-soft);
+  border-radius: 0 3px 3px 0;
+  color: var(--ink);
+}
+.prose blockquote > :last-child { margin-bottom: 0; }
+
+.prose code {
+  font: 0.88em/1.5 var(--mono);
+  background: var(--panel);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+.prose pre {
+  margin: 1.3rem 0;
+  padding: 0.95rem 1.1rem;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow-x: auto;
+}
+.prose pre code { background: none; padding: 0; font-size: 0.86rem; }
+
+/* Tables carry most of the scannable content in these pages, so they are not an afterthought. */
+.prose table {
+  width: 100%;
+  margin: 1.4rem 0;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.prose th, .prose td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid var(--rule);
+}
+.prose th {
+  font-size: 0.74rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--ink-soft);
+}
+.prose tbody tr:last-child td { border-bottom: none; }
+
+.prose hr {
+  margin: 2.4rem 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+/* ---------------------------------------------------------------- footer */
+
+.footer {
+  border-top: 1px solid var(--rule);
+  background: var(--panel);
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+}
+.footer p {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 1.1rem 1.5rem;
+}
+
+/* ---------------------------------------------------------------- narrow screens
+
+   The index becomes a block above the content rather than disappearing. A reader on a phone
+   still needs to be able to get to another page without going back to a landing page. */
+
+@media (max-width: 54rem) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .sidebar {
+    position: static;
+    padding: 1.2rem 0 0.4rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .sidebar ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.4rem;
+  }
+  .sidebar a { margin-left: 0; }
+  .prose { padding-top: 1.4rem; }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e7e4de;
+    --ink-soft: #a8a39a;
+    --paper: #16181b;
+    --panel: #1f2227;
+    --rule: #343840;
+    --accent: #d9a35f;
+    --accent-soft: #2a2520;
+  }
+}

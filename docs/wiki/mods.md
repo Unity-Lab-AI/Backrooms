@@ -1,3 +1,8 @@
+---
+title: Mods and expansions
+summary: "Expansions are optional and add content. What the 294-mod profile means for you."
+---
+
 # Mods and expansions
 
 ## What is required

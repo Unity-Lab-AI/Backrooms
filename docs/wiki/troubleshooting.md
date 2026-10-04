@@ -1,3 +1,8 @@
+---
+title: Troubleshooting
+summary: "Symptoms, what each one usually means, and what to send if it is ours."
+---
+
 # Troubleshooting
 
 **Every refusal in the game names its own cause.** Read it — the cause is the instruction.

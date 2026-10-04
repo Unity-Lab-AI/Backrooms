@@ -1,3 +1,8 @@
+---
+title: The interface
+summary: "The Operations panel pane by pane, and what each control refuses and why."
+---
+
 # The interface
 
 Everything the company does lives in one tab: **Operations**, first on the bottom bar.

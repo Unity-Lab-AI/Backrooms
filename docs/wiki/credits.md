@@ -1,3 +1,8 @@
+---
+title: Credits
+summary: "Who made this, what it is built on, and the licence."
+---
+
 # Credits
 
 ## This mod

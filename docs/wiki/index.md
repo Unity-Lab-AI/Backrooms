@@ -1,3 +1,8 @@
+---
+title: Rimrooms — Async Industries
+summary: "What this mod is, and the four pages worth reading before you start a colony."
+---
+
 # Rimrooms — Async Industries
 
 **You run a branch office of a company that does contract work in the Backrooms.**

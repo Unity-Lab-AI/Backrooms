@@ -15582,3 +15582,38 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.90-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **4 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **Style and format across the thirteen WIKI pages is the remaining half**, and it belongs with — **CLOSED 0.12.92-dev, and the row said where it belonged: *"it belongs with the site build below rather than here"*. All thirteen pages now carry `title` and `summary` front matter, so each one **says what it is before it says anything else** — rendered as a callout at the top of the page and as the hover text on its index entry. The structural half is the layout above; this is the half that had to be on the pages themselves, because no stylesheet can invent a one-line answer to *what is this page for*.**
+  the site build below rather than here, because *"NOT pop like a text wall"* is a layout answer as
+  much as a prose one.
+- [x] **"docs/ root on this repo, github.io for now"** - Pages serves `docs/` on this repository. — **CLOSED 0.12.92-dev, exactly as the row specified: **CNAME support authored now, the domain left open.** `_config.yml` publishes `wiki` and excludes the working material, and it now states in the file why the ledger can never be published. `docs/CNAME.example` carries the shape, the four apex A records, the subdomain alternative, the Settings step and the `curl -sI` verification — and it is **inert on purpose**. **No file in this repository names a hostname the deploy does not serve**, which is the rule the row sets. A live `CNAME` naming a domain nobody owns yet does not fail loudly: Pages stops answering on `github.io` and waits for DNS that never arrives. So the shape is ready and nothing pretends. **And no page hard-codes the site’s own address** — links go through Jekyll’s `relative_url`, so they follow whatever domain serves them and the real domain needs no page edits at all.**
+  `_config.yml` keeps `include: wiki` and the working material excluded. **CNAME support authored
+  now, the domain left open** - no document names a URL the deploy does not have.
+- [x] **"the beautiful and masterfully way paossible so the thing needs to NOT pop like a text — **CLOSED 0.12.92-dev. **The theme is gone and the layout is ours.** The row’s reading of `jekyll-theme-primer` was blunt and right — a text wall with a margin: one column, one type size, and no way into a page except reading it from the top. `docs/_layouts/default.html` and `docs/assets/css/rimrooms.css` replace it, and the row’s own framing decided the approach — *"a layout answer as much as a prose one"*. **Four devices do that work:** a persistent index of every page, visible on every page; a **summary line** at the top of each; a prose column capped near 68 characters, because a full-width paragraph *is* the text wall; and headings that read as dividers with a rule and real space above them, with tables and blockquotes styled so a skimming eye lands on them. **No webfont, no script, no external request, and no remote theme gem** — the site is a handful of static files, which is the same instinct as the package depending on nothing but Core. Dark mode, a keyboard skip link, and the current page marked by weight and an inset rule rather than by colour alone.**
+  wall"** - `jekyll-theme-primer` is a text wall with a margin. Real layout and stylesheet, and the
+  thirteen pages restructured so each one is scannable rather than read from the top.
+
+> moved from `## Public face: the site, the Workshop page and the collection` in `docs/TODO.md`
+
+- [x] **Generated, never hand-maintained.** `tools/make-readable-html.py` is already the seed of this: it renders documents to standalone styled HTML with no external dependencies. The site is that tool grown up - more pages, navigation, a real front page - so the site cannot drift from the documentation the way a hand-written site would. — **CLOSED 0.12.92-dev. `tools/build-site.py` writes `docs/_includes/nav.html` from whatever is actually in `docs/wiki/` — the title from each page’s own first heading, the hover text from its `summary` front matter. **A hand-written list of pages is a second place the truth lives:** add a page and the list is wrong, rename one and the list is a broken link. `--check` fails when the include and the directory disagree, so the battery catches a stale index rather than a reader finding it. **A page not named in the declared reading order is still published and still indexed**, under *More* — a new page is never silently dropped. Order is declared rather than alphabetical because a newcomer wants *install* before *credits*, and alphabetical would open with *backrooms* by accident.**
+
+Build at the time of the move: **0.12.91-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

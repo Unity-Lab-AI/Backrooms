@@ -1,3 +1,8 @@
+---
+title: Install
+summary: "What you need, what you do not, and how to tell the install worked."
+---
+
 # Install
 
 ## Requirements
