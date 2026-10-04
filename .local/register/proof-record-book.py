@@ -165,9 +165,14 @@ check("CheckKit refuses when the book cannot be resolved",
 loadout = body_of(cargo, "public static CompanyActionResult QueueLoadout(")
 check("QueueLoadout refuses on the same null",
       "if (def == null)" in loadout and "RR_Exp_MissingRecordBook" in loadout)
-check("the loadout takes mass from the item, never from a constant",
-      "GetStatValue(StatDefOf.Mass)" in loadout,
-      "-- the register's cargo family asks to preserve each mod's normal weight behaviour")
+# **THE ITEM'S MASS, NAMED.** `QueueLoadout` reads two masses: the pawn's carried thing at one
+# line and the item being loaded at another. A claim for bare `GetStatValue(StatDefOf.Mass)` was
+# satisfied by the carried-thing read while a plant replaced the item read with a constant -- so
+# the claim passed on a loadout that had stopped weighing what it was loading.
+check("the loadout takes THE ITEM'S mass from the item, never from a constant",
+      "item.GetStatValue(StatDefOf.Mass)" in loadout,
+      "-- the register's cargo family asks to preserve each mod's normal weight behaviour, and "
+      "the carried-thing mass in the same method is a different number")
 
 check("NativeCarrierDef still requires Core provenance",
       "IsCoreMod" in body_of(comp, "public static ThingDef NativeCarrierDef"),
@@ -220,6 +225,44 @@ check("the reworded refusal exists",
 check("the old key is gone rather than left dangling",
       "RR_Exp_Missing_RR_FieldRecorder" not in keyed_xml,
       "-- a key nothing translates is a key that prints its own name at the player")
+# ---------------------------------------------- THE FOUR LIVE READ SITES THE ROW ASKED FOR
+#
+# The queue row was one line from 0.12.14-dev: *"NEXT: build the recorder fold. Four live read sites
+# move onto the book."* It came from the decision *"Field recorder -> the book is the recorder. One
+# Core `TextBook`: carried in blank, written in the field, carried home as the evidence. lose the
+# book, lose the run."*
+#
+# **The fold shipped and the sites were never claimed.** `RecorderGap` is the observation kind the
+# whole thing turns on and it appeared in **no proof at all** -- so the fold could silently un-fold
+# one site at a time, and the only symptom would be an expedition that quietly stopped noticing a
+# missing book.
+#
+# Counted per file rather than summed, because the hazard is **one** site drifting, and a total
+# would stay right while a site moved.
+request = strip_cs_comments(read(os.path.join(SRC, "Company", "RequestLine.cs")))
+
+check("the observation kind exists as a declared constant",
+      'public const string RecorderGap = "recorder_gap";' in observations,
+      "-- a string typed at four call sites is four chances to typo it into silence")
+check("the site tick raises it when a crew carries no book",
+      "EvidenceObservationKinds.RecorderGap" in site,
+      "-- this is the one that notices, and the other three are what it is noticed FOR")
+check("the observation pipeline handles it, in both of its switches",
+      observations.count("case EvidenceObservationKinds.RecorderGap:") == 2,
+      "-- recording it and reading it back are separate switches; a kind handled by one and not "
+      "the other is an observation that is stored and never surfaces")
+check("the request line treats it as a real finding",
+      "observationKind == EvidenceObservationKinds.RecorderGap" in request)
+check("ALL FOUR READ SITES ARE PRESENT, counted",
+      (observations.count("case EvidenceObservationKinds.RecorderGap:")
+       + (1 if "EvidenceObservationKinds.RecorderGap" in site else 0)
+       + (1 if "EvidenceObservationKinds.RecorderGap" in request else 0)) == 4,
+      "-- the row said four and four is what there is")
+check("nothing reaches the kind by its literal string instead of the constant",
+      observations.count('"recorder_gap"') == 1
+      and '"recorder_gap"' not in site and '"recorder_gap"' not in request,
+      "-- the declaration is the only place the literal belongs")
+
 check("the refusal is a literal key in C#, not one built at run time",
       '"RR_Exp_MissingRecordBook"' in cargo and '"RR_Exp_Missing_" +' not in cargo,
       "-- a runtime-built key cannot be checked, and this is the fourth one found in this repo")

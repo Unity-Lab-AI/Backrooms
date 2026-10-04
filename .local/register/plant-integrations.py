@@ -142,9 +142,17 @@ PLANTS = [
      "        check_forbidden_claims(rel, prose, problems)\n", "", PROOF),
 
     # The guard itself, planted with a real claim in a real reader-facing document.
+    # **RE-AIMED 0.12.97-dev.** The anchor was `## What it would be`, a heading that existed when
+    # the page only described a shape. The page was rewritten to name RimWorld Together and explain
+    # its model, and that heading went with it -- so the anchor pointed at nothing and
+    # `check-plant-anchors.py` caught it before the suite could report PLANT SETUP BROKEN.
+    #
+    # `## What it is not` is the right home for it anyway: a page whose own section denies shared
+    # research is the hardest place for an un-negated claim to hide, which is exactly what the
+    # negation-aware rule has to get right.
     ("ROW 791: a real shared-research claim lands in a reader-facing document", WIKI_DOC,
-     "## What it would be",
-     "## What it would be\n\nResearch is synchronised research across every "
+     "## What it is not",
+     "## What it is not\n\nResearch is synchronised research across every "
      "company on the server.", CHECKER),
 
     ("ROW 791: a real shared-colony claim lands in a reader-facing document", "README.md",

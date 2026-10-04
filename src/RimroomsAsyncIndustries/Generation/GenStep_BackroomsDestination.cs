@@ -473,8 +473,26 @@ namespace RimroomsAsyncIndustries.Generation
                 // This replaced a single wall at the room's centre cell. A lone centre support
                 // was right for a 14-cell room and pointless in an 80-cell one -- and it sat on
                 // the centre cross, which the lattice now deliberately leaves clear.
+                // **A ROOM'S PILLARS ARE MADE OF THE SAME THING ITS WALLS ARE.**
+                //
+                // This passed `wallStuff` -- the level band's material -- while the ring around
+                // the same room was built from `roomWallStuff`. So a hall whose walls had been
+                // drawn from the profile stood on pillars in the band's wood or steel: stone
+                // walls, wooden columns, in the one room big enough for anybody to notice.
+                //
+                // Owner direction, verbatim: *"we want every type of wall and material for all
+                // things randomly"*, and *"wild variatiosn of material typeds in all items
+                // equaipment walls floors lights furnature and benches"*. A pillar is a wall --
+                // it is literally `wallDef` -- so it takes the room's material for the same
+                // reason the ring does, and per **room** rather than per cell for the same reason
+                // too: a column whose every cell is a different stone is a patchwork, not a
+                // column.
+                //
+                // Nothing structural changes. Any wall stuff holds a roof, so the
+                // `RoofMaxSupportDistance` lattice is untouched; this is only what the pillar is
+                // built from.
                 foreach (IntVec3 pillar in RoomLayoutPlanner.PillarCells(room))
-                { PlaceWall(map, pillar, wallDef, wallStuff); }
+                { PlaceWall(map, pillar, wallDef, roomWallStuff); }
             }
             PlaceNativeDoors(coordinate.Rooms, map);
             return corridorSides;

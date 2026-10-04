@@ -647,6 +647,25 @@ check("THE LATTICE IS DECIDED IN EXACTLY ONE PLACE",
       "them in it. Two independent derivations of the same lattice is precisely the defect that "
       "stopped every coordinate generating for thirty-nine checkpoints")
 
+# **A ROOM'S PILLARS ARE MADE OF THE SAME THING ITS WALLS ARE, and they were not.**
+#
+# 0.12.96-dev found the ring around a room built from `roomWallStuff` -- per room, drawn from
+# whatever the profile offers once past `CoherentDepth` -- while the pillars standing inside that
+# same room were placed with `wallStuff`, the level band's material. Stone walls, wooden columns,
+# in the one room big enough for anybody to notice.
+#
+# Owner direction, verbatim: *"we want every type of wall and material for all things randomly"*.
+# A pillar is a wall; it is literally `wallDef`. Nothing structural changed -- any wall stuff holds
+# a roof, so the `RoofMaxSupportDistance` lattice is untouched.
+#
+# **Nothing asserted the material, which is why it drifted.** The claims around it all covered
+# *where* the pillars go.
+check("a room's pillars are built from the room's own material",
+      "{ PlaceWall(map, pillar, wallDef, roomWallStuff); }" in genstep
+      and "PlaceWall(map, pillar, wallDef, wallStuff);" not in genstep,
+      "-- the ring around the same room uses roomWallStuff, so a hall drawn from the profile "
+      "stood on pillars in the band's wood: stone walls, wooden columns")
+
 # Scoped to PillarCells' own body. Stage three added the SAME guard line to RockIntrusionCells,
 # and the plant harness replaces only the first occurrence -- so a plant that deleted the pillar
 # guard left the intrusion copy standing and satisfying a whole-file claim. That is the

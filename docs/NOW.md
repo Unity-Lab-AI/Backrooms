@@ -49,13 +49,13 @@ reword the document into something awkward. A checker that cries wolf is one peo
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`** |
-| Version | **0.12.96-dev** — read from `About.xml`, never from a document |
+| Version | **0.12.97-dev** — read from `About.xml`, never from a document |
 | Build | **232 C# files, 103 package files**, zero warnings, zero errors |
 | Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile and is checked against the register |
-| Instruments | **21 checkers**, **59 proofs**, **33 plant suites** |
+| Instruments | **21 checkers**, **59 proofs**, **34 plant suites** |
 | Remotes | **all TEN refs level** — `forgejo` 5 of 5, `github` 5 of 5. Forgejo caught up 2026-10-05 after four commits down |
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
-| Queue | **41 open · 20 partial · 38 `[T]` · 0 `[x]`** |
+| Queue | **36 open · 20 partial · 38 `[T]` · 0 `[x]`** |
 | Public repos | **`Rimrooms-AsyncIndustries` on BOTH hosts** — `forgejo GFourteen/...` and `github G-Fourteen/...`, `main` at one commit. **The mod as staged, the public face, nothing else** |
 | Published site | **LIVE** — `https://g-fourteen.github.io/Rimrooms-AsyncIndustries/`, 200 on the index, a deep page and the stylesheet |
 | Launches | **At least twelve**, all by the owner. **Every defect any launch found was ours** |

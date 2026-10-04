@@ -15945,3 +15945,114 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.95-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **1 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **2 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **"and everything doesnt have to be square rooms and rectangle halways and u can use walls as pillars making the 0 level rooms be grand large spaces and leas than 60-100 romms and this can propigate depper with the wild variatiosn of material typeds in all items equaipment walls floors lights furnature and benches that are found everywher deeper in with wild random events and layouts and spawns to find and loot!!!!!!"** — **OPEN. This REVISES the room-count answer given an hour earlier and it is the better call.** Taken apart into what each clause actually requires: — **CLOSED 0.12.96-dev — **the owner was right that most of this was already done, and checking it found one real defect.** All eight clauses measured against the source rather than taken on trust. **"not square rooms and rectangle halways"** — the `Bounds` rect stays for bookkeeping and the **carve** changes: rock is left standing inside a room and **only in the corners**, never on the centre cross and never at an edge, so a straight walk from any doorway to any other stays clear whatever the room's size. **"u can use walls as pillars"** — `RoomLayoutPlanner.PillarCells` is the lattice and **nowhere else derives it**, because the planner has to prove the room is still walkable with the pillars in it before any map exists. Spacing comes from `RoofCollapseUtility.RoofMaxSupportDistance`, measured at **6.9** from the installed assembly, so a roofed span wider than ~13 cells has something holding it up. Two independent derivations of one lattice is the defect that stopped every coordinate generating for thirty-nine checkpoints, which is why it is one place. **"0 level rooms be grand large spaces"** and **"leas than 60-100 romms"** — `MinSlotsPerAxis` is **6**, so depth 1 is a **36-slot grid with rooms about 34 cells across**, and it was tuned against the owner's own walkthrough: at 3 slots the rooms were eighty cells across and the owner said *"not enough rooms"*. Deeper is more rooms, smaller and tighter. The 10x10 grid at 19-cell spacing is superseded with the shape it was sized for. **"wild variatiosn of material typeds in all items equaipment walls floors lights furnature and benches"** — done, and more carefully than the row asked. Walls are chosen **per room** past `CoherentDepth`, measured by **distance from the spawn hall** rather than raw depth, because testing `coordinate.Depth` made every room at level 0 take the band's wood and the whole level read as one corridor — the level the owner walked and called *"nothing but what it currently is"*. Per **room** and not per cell, because a wall whose every cell is a different stone is a patchwork. And the arrival hall keeps the yellow look, per *"the normal yellow backrooms look isnt the whole floor but the main spanw room"*. **AND THE DEFECT THIS CHECK FOUND:** the ring around a room was built from the room's own material while **the pillars standing inside that same room used the level band's** — stone walls, wooden columns, in the one room big enough for anybody to notice. A pillar *is* a wall; it is literally `wallDef`. **Nothing asserted the material, which is exactly how it drifted** — every claim around it covered *where* the pillars go. Fixed, nothing structural changed because any wall stuff holds a roof, and now claimed: `proof-coordinate-layout.py` holds it and `plant-coordinate-layout.py` lands **159 of 159** with a plant that puts it back.**
+
+  | Clause, verbatim | What it means in the generator |
+  |---|---|
+  | *"everything doesnt have to be square rooms and rectangle halways"* | a room's `Bounds` stays a rect for bookkeeping, but the **carved shape** does not: L, T, cross and ragged-edged rooms, and corridors that change width and bend |
+  | *"u can use walls as pillars"* | interior `ThingDefOf.Wall` on a support lattice. **This is the thing that makes grand spaces possible at all** — `RoofCollapseUtility.RoofMaxSupportDistance` is **6.9**, so a roofed span wider than ~13 cells needs something holding it up, and a pillar is exactly that |
+  | *"making the 0 level rooms be grand large spaces"* | shallow depth is **few, very large, pillared halls** — not the tidy 10-16 cell boxes the planner builds today |
+  | *"leas than 60-100 romms"* | **supersedes the 60-100 dense-warren answer.** Fewer rooms, each far bigger. The warren idea moves inward rather than being dropped |
+  | *"this can propigate depper"* | the variation is a **function of depth**, which `BackroomsPalette` and `Derange` already are. Same axis, more of it |
+  | *"wild variatiosn of material typeds in all items equaipment walls floors lights furnature and benches"* | `CoordinateMaterials` already picks stuff per coordinate; widen it across **every** placed category and let the spread grow with depth |
+  | *"found everywher deeper in"* | material variety is discovered content, so what a room is **built from** is part of the loot |
+  | *"with wild random events and layouts and spawns to find and loot!!!!!!"* | `AnomalyEventService`, `InhabitantService` and `RoomArchetypeService` all exist; the layouts and the loot density scale inward with the rest |
+
+  **What stands from the four earlier answers:** levels are **300x300**; `threshold_room` / `office_copy` / `return_gallery` stay **unique** while other families **repeat**; **new structural families** are authored as layout and dressing only with **no new ThingDefs**; **4-6 onward gates** per level with `MaximumNaturalDepth` **3 to 6**; **fresh save**, the 60x60 path dropped.
+
+  **What changes:** *"leas than 60-100 romms"* replaces the 60-100 count, and grand pillared halls at shallow depth replace the uniform small-room grid. The 10x10 planning grid at 19-cell spacing was sized for the old shape and is superseded with it — a grand hall does not fit in a 19-cell slot.
+- [x] **SUPERSEDED IN PART, same day, by the row above** -- the *"leas than 60-100 romms"* direction replaces this row's 60-100 count and its uniform small-room grid. Kept whole because the size, family, gate-count, depth-cap and save decisions in it all still stand. — **CLOSED 0.12.96-dev AS THE RECORD IT IS. This row carries no work: it states that the *"leas than 60-100 romms"* direction replaced its own 60-100 count and its uniform small-room grid, and it was *"kept whole because the size, family, gate-count, depth-cap and save decisions in it all still stand"*. All of those still stand and are asserted elsewhere — 300x300, the three unique families against the repeating ones, 4-6 onward gates, the depth cap and the save decisions. **A supersession is a record, and a record cannot be completed**, so it was holding a checkbox that could never be ticked. Archived as the history it is, which is where the superseding row above now points.**
+## Owner question — a multiplayer page that never names the multiplayer mod (2026-10-05)
+
+**Verbatim owner question (2026-10-05):** *"and how can we have a multiplayer section to the wiki if we dont explain how to Use Rim Together... i mean thats the multipleyer mod.... u didnt build a whole muliplayer client and server that i dont know about did you?"*
+
+**No. Nothing of the sort exists** — this mod contains no client, no server and no networking of any kind, and the answer to the question as asked is a flat no.
+
+**But the point underneath it was right, and it was live.** `docs/wiki/multiplayer.md` was honest about what is not promised and said *"Each player runs their own company, in their own colony, on their own map"* — **without ever naming RimWorld Together.** A reader landed on a page titled *Multiplayer*, learned the **shape** of it, and was told nothing about **what software would make any of it happen.** Describing a shape while withholding the thing that provides it is a worse page than having none.
+
+- [x] **"how can we have a multiplayer section to the wiki if we dont explain how to Use Rim Together"** — **FIXED 0.12.96-dev, and written from the register rather than from memory.** Register row **196, RimWorld Together**, Workshop `3005289691`, family *"Multiplayer: separate colonies and shared-world exchange"*, stance **Optional**, disposition *"Provisional: async co-op layer for separate facilities ... No live shared-map or shared research"*. The page now **names it, links it, and explains its model**: separate colonies on separate maps, with **offline visits and raids and item and pawn exchange** linking them, which is precisely why a branch office fits it — two players are two companies, not one company with two managers. **It records that RimWorld Together needs Harmony and that we do not**, which is a real distinction a reader will otherwise get backwards. **It states that everyone needs the same mod list**, because the register notes *"the server does not enforce mod order/settings"*. **And the denials stay, now correctly attributed:** no shared colony, no shared map, no synchronised research are **RimWorld Together's own model**, not limits this mod added. **Nothing is announced as tested**, per D1 — the untested list is named item by item from the register’s own acceptance evidence: separate starts, an offline visit, a supply or aid exchange, reconnecting after a drop, and whether anything company-specific transfers at all. The page’s own words: *"A real result is worth more here than anything on this page."*
+
+
+Build at the time of the move: **0.12.96-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Public face: the site, the Workshop page and the collection` in `docs/TODO.md`
+
+**Verbatim owner directions:** *"go ahead with now.md protocol and get ready form compact with creating the handoff before i compact"*, *"ask me the question remebr i said sooner than later with those"*, *"that means asap"*.
+
+- [x] **NEXT: build the recorder fold.** Four live read sites move onto the book. — **CLOSED 0.12.96-dev. **The fold shipped; what was missing was anybody ever watching it hold.** The row is one line from 0.12.14-dev and comes from the decision *"Field recorder → the book is the recorder. One Core `TextBook`: carried in blank, written in the field, carried home as the evidence. lose the book, lose the run."* **It is folded.** `ExpeditionCargo.RecordBookDef` resolves through `CompRouteEvidence.NativeCarrierDef` — not a def-name string, because *"a def-name string would match another mod's TextBook just as happily"* — and that predicate requires **Core provenance** and **exactly one** of our comps. `TryFindRecordBook` finds it in a crew member's inventory, the carrier must be a living spawned member of the run, and `RecordBookDelivery` exists so nobody meets `RR_Exp_MissingRecordBook` with no idea what a record book is. **And the four read sites are real, counted rather than asserted:** `RecorderGap` is handled in **two** switches inside `EvidenceObservations` — recording it and reading it back are separate, and a kind handled by one and not the other is an observation that is **stored and never surfaces** — raised by `FirstSliceSiteComponent`, and treated as a finding by `RequestLine`. Four, which is what the row said. **`RecorderGap` appeared in no proof at all**, so the fold could have un-folded one site at a time with no symptom but an expedition that quietly stopped noticing a missing book. Six claims now cover it, including one that refuses the literal `"recorder_gap"` anywhere but its own declaration — a string typed at four call sites is four chances to typo it into silence. **And `proof-record-book.py` had 34 claims and NO plant suite**, which is the condition that makes a proof decorative: a claim nobody has watched refuse is indistinguishable from a comment that agrees with itself. `plant-record-book.py` is new and lands **11 of 11**. **Two of its plants were wrong before they were right, both my error:** one renamed a declaration while the reference that the claim actually reads lived in another file, and one aimed at a constant's name when the claim was about refusing on null. **A third exposed a weak claim:** `QueueLoadout` reads two masses — the pawn's carried thing and the item being loaded — and a claim for bare `GetStatValue(StatDefOf.Mass)` passed while a plant replaced the item's read with a constant. The claim now names the item.**
+
+**Built 2026-09-29, 0.12.14-dev: the queue could not answer the question.**
+
+
+Build at the time of the move: **0.12.96-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Owner directions recorded late` in `docs/TODO.md`
+
+### Owner direction — the other half of the topology: a way out into the world (2026-09-29)
+
+**Verbatim owner requests, carried from the topology direction:** *"and or pop out any where in the game world on a tile map"*, and the worked examples *"map>backrrooms>backrroms , map > backrooms > map > backrooms , and backrromms > map>backrooms>backrooms>map"*.
+
+Record: [`implementation/CONNECTED_EMERGENCE_IMPLEMENTATION.md`](implementation/CONNECTED_EMERGENCE_IMPLEMENTATION.md).
+
+- [x] **A world tile the branch does not hold** — still the larger half, needing a new world object and a generated map. Its own checkpoint. — **CLOSED 0.12.96-dev ON MEASUREMENT — **built, and asserted.** The row asks for *"a new world object and a generated map"*, and `RimroomsCampaignComponent.ClaimTileAndWalkOut` is both: a Core `Settlement` is the world object and `GetOrGenerateMapUtility.GetOrGenerateMap(tile, null)` is the map. It is reached from `LeaveThroughWorldExit`, **a gizmo the player clicks**, and `proof-world-exit.py` asserts that routine has **exactly one caller** and that the caller is a player command — no tick, no work giver, no incident can reach it. **The ordering is the safety and it is claimed:** the map is generated and the return gate established **before any pawn is despawned**, so if the gate cannot be established nothing has moved; a failed spawn puts the pawn back where it was; and a claim that moves nobody is reported as a refusal rather than a success that did not happen. **Over the five-map cap it forms a caravan instead**, per the owner's own earlier rule *"anything over 5 maps defaults to caravans"* — and that is the **only** path in the mod reaching `PassToWorld`, from a player's click, into a caravan they still own. **This row and its twin below were the same work written twice**, in two sections — which is how a finished thing gets built again. Both are closed together and both say so.**
+
+**Undeferred 2026-09-29 by owner direction** — moved here verbatim from `DEFERRED.md`, which is now empty of open rows:
+
+- [x] **A world tile the branch does not hold** — still open. A new world object and a generated map; its own checkpoint. — **CLOSED 0.12.96-dev ON MEASUREMENT — **built, and asserted.** The row asks for *"a new world object and a generated map"*, and `RimroomsCampaignComponent.ClaimTileAndWalkOut` is both: a Core `Settlement` is the world object and `GetOrGenerateMapUtility.GetOrGenerateMap(tile, null)` is the map. It is reached from `LeaveThroughWorldExit`, **a gizmo the player clicks**, and `proof-world-exit.py` asserts that routine has **exactly one caller** and that the caller is a player command — no tick, no work giver, no incident can reach it. **The ordering is the safety and it is claimed:** the map is generated and the return gate established **before any pawn is despawned**, so if the gate cannot be established nothing has moved; a failed spawn puts the pawn back where it was; and a claim that moves nobody is reported as a refusal rather than a success that did not happen. **Over the five-map cap it forms a caravan instead**, per the owner's own earlier rule *"anything over 5 maps defaults to caravans"* — and that is the **only** path in the mod reaching `PassToWorld`, from a player's click, into a caravan they still own. **The duplicate of the row above**, in a different section and in slightly different words. Kept and closed rather than silently dropped, because LAW #0 does not let a restatement be deleted — but recorded as the duplicate it is.**
+
+
+Build at the time of the move: **0.12.96-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

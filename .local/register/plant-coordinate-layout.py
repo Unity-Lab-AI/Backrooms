@@ -207,6 +207,14 @@ PLANTS = [
     ("A PILLAR LANDS ON THE CENTRE CROSS AND CAN BLOCK A DOORWAY", PLANNER,
      "                    if (x == center.x || z == center.z) { continue; }" + NL, ""),
 
+    # 0.12.96-dev: the ring was per room and the pillars were not, so a hall drawn from the
+    # profile stood on pillars in the band's wood. Nothing asserted the material, which is how it
+    # drifted; this is the plant that stops it drifting back.
+    ("A ROOM'S PILLARS GO BACK TO THE BAND'S MATERIAL, not the room's",
+     "src/RimroomsAsyncIndustries/Generation/GenStep_BackroomsDestination.cs",
+     "{ PlaceWall(map, pillar, wallDef, roomWallStuff); }",
+     "{ PlaceWall(map, pillar, wallDef, wallStuff); }"),
+
     ("THE GENERATOR DERIVES ITS OWN LATTICE INSTEAD OF SHARING ONE", GEN,
      "foreach (IntVec3 pillar in RoomLayoutPlanner.PillarCells(room))",
      "foreach (IntVec3 pillar in new List<IntVec3> { room.Bounds.CenterCell })"),

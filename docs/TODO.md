@@ -255,24 +255,7 @@ Nine `##` sections titled as dated checkpoint records held **20.9 KB** between t
 
 **From `## Fifth launch findings — 2026-09-30`:**
 
-- [ ] **"and everything doesnt have to be square rooms and rectangle halways and u can use walls as pillars making the 0 level rooms be grand large spaces and leas than 60-100 romms and this can propigate depper with the wild variatiosn of material typeds in all items equaipment walls floors lights furnature and benches that are found everywher deeper in with wild random events and layouts and spawns to find and loot!!!!!!"** — **OPEN. This REVISES the room-count answer given an hour earlier and it is the better call.** Taken apart into what each clause actually requires:
 
-  | Clause, verbatim | What it means in the generator |
-  |---|---|
-  | *"everything doesnt have to be square rooms and rectangle halways"* | a room's `Bounds` stays a rect for bookkeeping, but the **carved shape** does not: L, T, cross and ragged-edged rooms, and corridors that change width and bend |
-  | *"u can use walls as pillars"* | interior `ThingDefOf.Wall` on a support lattice. **This is the thing that makes grand spaces possible at all** — `RoofCollapseUtility.RoofMaxSupportDistance` is **6.9**, so a roofed span wider than ~13 cells needs something holding it up, and a pillar is exactly that |
-  | *"making the 0 level rooms be grand large spaces"* | shallow depth is **few, very large, pillared halls** — not the tidy 10-16 cell boxes the planner builds today |
-  | *"leas than 60-100 romms"* | **supersedes the 60-100 dense-warren answer.** Fewer rooms, each far bigger. The warren idea moves inward rather than being dropped |
-  | *"this can propigate depper"* | the variation is a **function of depth**, which `BackroomsPalette` and `Derange` already are. Same axis, more of it |
-  | *"wild variatiosn of material typeds in all items equaipment walls floors lights furnature and benches"* | `CoordinateMaterials` already picks stuff per coordinate; widen it across **every** placed category and let the spread grow with depth |
-  | *"found everywher deeper in"* | material variety is discovered content, so what a room is **built from** is part of the loot |
-  | *"with wild random events and layouts and spawns to find and loot!!!!!!"* | `AnomalyEventService`, `InhabitantService` and `RoomArchetypeService` all exist; the layouts and the loot density scale inward with the rest |
-
-  **What stands from the four earlier answers:** levels are **300x300**; `threshold_room` / `office_copy` / `return_gallery` stay **unique** while other families **repeat**; **new structural families** are authored as layout and dressing only with **no new ThingDefs**; **4-6 onward gates** per level with `MaximumNaturalDepth` **3 to 6**; **fresh save**, the 60x60 path dropped.
-
-  **What changes:** *"leas than 60-100 romms"* replaces the 60-100 count, and grand pillared halls at shallow depth replace the uniform small-room grid. The 10x10 planning grid at 19-cell spacing was sized for the old shape and is superseded with it — a grand hall does not fit in a 19-cell slot.
-
-- [ ] **SUPERSEDED IN PART, same day, by the row above** -- the *"leas than 60-100 romms"* direction replaces this row's 60-100 count and its uniform small-room grid. Kept whole because the size, family, gate-count, depth-cap and save decisions in it all still stand.
 
 - [ ] **"theri 300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels with thir natual gate spawns to different levels within"** — **OPEN, and fully specified by the owner across four questions this checkpoint.** Levels become **300×300** (from 60×60); **60–100 rooms** in a dense warren on a **10×10** planning grid at the existing 19-cell spacing; **threshold_room / office_copy / return_gallery stay unique**, the other five families **repeat**, and **new structural families** are authored (flooded_room, stairwell, dead_end, pillar_hall) — **layout and dressing only, no new ThingDefs**; **4–6 onward gates per level**, one per ~15 rooms, with `MaximumNaturalDepth` **3 → 6**; and a **fresh save**, dropping the 60×60 path entirely for one shape, the simplest code and the cleanest proofs.
 
@@ -380,12 +363,6 @@ Owner's words: *"things will have to be deployed and settled before doing the pr
 - **No Claude attribution** in any of it - site, Workshop page, collection write-up.
 - **The owner alone launches, sorts and publishes.** Deployment of a site is not the same act as launching the game, but the Workshop is the owner's account and the owner's decision.
 
-
-**Verbatim owner directions:** *"go ahead with now.md protocol and get ready form compact with creating the handoff before i compact"*, *"ask me the question remebr i said sooner than later with those"*, *"that means asap"*.
-
-- [ ] **NEXT: build the recorder fold.** Four live read sites move onto the book.
-
-**Built 2026-09-29, 0.12.14-dev: the queue could not answer the question.**
 
 ## Owner decisions, 2026-09-29 — the three reserved questions answered, and one I should never have asked
 
@@ -554,18 +531,6 @@ That second message is what shaped the palette: a single global look could only 
 Two of the three override standing policy, so all three are recorded in [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) as decisions 19, 20 and 21, and **D1 is superseded** there. This is the first change to a D-numbered Gate 0 decision since they were recorded on 2026-09-27.
 
 - [ ] **Consequence: save migration becomes a standing obligation from the first published version.** It was a release-day checkbox on the assumption that publication came last. From publication onward there *are* other people's saves, so every subsequent version must carry a migration or a declared break. Owned by [`SAVE_MIGRATION_POLICY.md`](SAVE_MIGRATION_POLICY.md); D2's version policy is unchanged (`0.x` pre-release, `1.0.0` first stable).
-
-### Owner direction — the other half of the topology: a way out into the world (2026-09-29)
-
-**Verbatim owner requests, carried from the topology direction:** *"and or pop out any where in the game world on a tile map"*, and the worked examples *"map>backrrooms>backrroms , map > backrooms > map > backrooms , and backrromms > map>backrooms>backrooms>map"*.
-
-Record: [`implementation/CONNECTED_EMERGENCE_IMPLEMENTATION.md`](implementation/CONNECTED_EMERGENCE_IMPLEMENTATION.md).
-
-- [ ] **A world tile the branch does not hold** — still the larger half, needing a new world object and a generated map. Its own checkpoint.
-
-**Undeferred 2026-09-29 by owner direction** — moved here verbatim from `DEFERRED.md`, which is now empty of open rows:
-
-- [ ] **A world tile the branch does not hold** — still open. A new world object and a generated map; its own checkpoint.
 
 ### Owner direction — the 294-mod register must actually work and be human navigable (2026-09-29)
 
