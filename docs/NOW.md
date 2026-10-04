@@ -15,6 +15,56 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 ---
 
+## ⛔ FORGEJO CANNOT WRITE TO ITS OWN REPOSITORY. 0.12.91-dev IS ON GITHUB ONLY ⛔
+
+**The cascade is 5 of 10 refs.** GitHub has `6145f4a` on all five branches. **Forgejo is stuck at
+`2d0b677` (0.12.90-dev).**
+
+```
+error: remote unpack failed: unable to create temporary object directory
+ ! [remote rejected] feature/bug-testing -> feature/bug-testing (unpacker error)
+```
+
+**That message is `tmp_objdir_create()` in Git, and knowing which function it is settles the
+diagnosis.** It creates the push **quarantine** directory — `objects/incoming-XXXXXX` inside the
+repository on the server — and `receive-pack` does it on **every** push, before any object is
+read. So the pack size, the object count, the refspec form and the number of refs are all
+irrelevant by construction: Forgejo cannot create a directory inside
+`GFourteen/Backrooms.git/objects/`. **Disk full, a quota, or permissions on that directory.**
+
+**Ruled out from this end, each with evidence:**
+
+| Candidate | How it was ruled out |
+|---|---|
+| The key | `ssh -T` → *"successfully authenticated with the key named `gfour-DumbAss-20260519`"* |
+| Write access vs read | `git ls-remote forgejo` lists every ref. Read works, write fails |
+| **My procedure** | `docs/PUBLISHING.md` §4 followed literally: no local branches, one refspec at a time, `feature/bug-testing:Prep` and so on. Same error |
+| Pack shape | `--no-thin`, single-threaded pack, one ref alone — same error |
+| Our repository | `git gc` and `git fsck` both clean, then retried — same error |
+| Wrong namespace | `UnityAILab/Backrooms` does not exist. `GFourteen/Backrooms` is the right and only target |
+| Transient | Six retries with pauses, then four more by refspec |
+
+**This needs an admin on `git.unityailab.com`:** free space, or fix ownership/permissions on that
+repository's `objects/` directory. A `git gc` server-side on the repo would also clear it if the
+cause is a leftover `incoming-*` directory from an interrupted push.
+
+**When it comes back, nothing needs rebuilding.** The commit is complete and on GitHub; the five
+Forgejo refs only need fast-forwarding, per `PUBLISHING.md` §4 Case A:
+
+```
+git push forgejo feature/bug-testing
+git push forgejo feature/bug-testing:Prep
+git push forgejo feature/bug-testing:Develop
+git push forgejo feature/bug-testing:Main
+git push forgejo feature/bug-testing:feature/connected-colony-portals
+```
+
+**And the lesson that is mine:** `PUBLISHING.md` is the cascade authority and I improvised instead
+of reading it. Forcing local `Prep`/`Develop`/`Main` branches is listed in that file as a way
+previous agents have already got this wrong. It was not the cause here, and it was still wrong.
+
+---
+
 ## ⛔⛔ THE BATTERY RUNS ONCE, AND THE INSTRUMENTS STAY ⛔⛔
 
 **Owner, 2026-10-04, three times:** *"okay once again.. yu should be completeing like near a dozen items before you run the whole battery. i told you i can NOT be waiting 40 minutes when u run 10m batteries constantly with every item you work on"*, *"you have run batteries repeatily and you havent even done ten items yet"*, and when I over-corrected: *"no you fucking retard!!!! you still need to do instrament checks and build them when needed just dont run them for every fucking code change"*
