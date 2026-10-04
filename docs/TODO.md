@@ -360,16 +360,6 @@ Nine `##` sections titled as dated checkpoint records held **20.9 KB** between t
   exactly.** `RoomLayoutPlanner.Build` walks the slot grid row-major with alternating direction
   and calls it a *serpentine*; it is one line that snakes, by construction
 
-**From `## The doc sweep picked back up, and a site that does not pop like a text wall - 2026-10-01`:**
-
-
-- [ ] **"and docs and pages when we deploy the wiki and docs on github"** - the deploy half. — **THE SITE IS BUILT AND WAITING ON ONE SWITCH 0.12.92-dev. Layout, stylesheet, generated index, per-page summaries, config and CNAME support all ship and `tools/build-site.py --check` is green. **What is left is not work, it is the owner enabling Pages:** repository Settings → Pages → source `main` / folder `/docs`. The row stays open until that is on and the URL answers, because a deploy nobody has turned on is not a deploy.** — **AND THE URL NOW HAS SOMETHING TO ANSWER WITH, 0.12.93-dev. The row says it stays open *"until that is on and the URL answers"* — and **the URL would have answered 404.** Pages serves `docs/`, every page inside the wiki worked, and the site’s own address had no document at all. `docs/index.html` is that front door: no front matter so Jekyll copies it verbatim, a **relative** link because a project site is served from a subpath and `/wiki/` would resolve above it, a real anchor as well as the refresh so a reader whose browser ignores one still has a way in, and no script and no external request. The row stays open because the switch is still the owner’s: Settings → Pages → source `main` / folder `/docs`.**
-
-
-
-
-
-
 ### Major M1 — Connected colony portals (ROADMAP M1; master TODO §Native-provider foundation — 0.4.0-dev)
 
 Binding contract: [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md). Baseline commit `8ed4e32`, 0.4.1-dev, 75 C# files, 71 package files, zero warnings/errors. Read `implementation/CONNECTED_COLONY_CHECKPOINT.md`, `CONNECTED_COLONY_IMPLEMENTATION_TASK.md`, `CONNECTED_NETWORK_IMPLEMENTATION.md`, `CONNECTED_CROSSING_IMPLEMENTATION.md`, `CONNECTED_WORK_CORE_API.md`, `CONNECTED_PORTAL_STATE_MIGRATION.md`, `CONNECTED_WORK_PROFILE_BOUNDARIES.md` before editing `src/RimroomsAsyncIndustries/Portals/` or `Gate/`. Source fact: nothing in the repo calls `RimroomsPortalNetwork.Register`, `PortalCrossingService.Cross`/`Recover`, or `CompRimroomsGate.BeginPortalOpening` yet.
@@ -422,7 +412,7 @@ Owner's words: *"things will have to be deployed and settled before doing the pr
 
 ### The site
 
-- [ ] **A real domain, not a `github.io` path.** *"a nice backrooms url"*. This needs a domain the owner controls plus a `CNAME` file in the Pages branch and DNS records pointing at GitHub. **The domain is the owner's to choose and register** - ask before building the Pages config, because a custom domain and a project-path deploy are configured differently and the wrong one means rebuilding. — **SUPPORT AUTHORED 0.12.92-dev, DOMAIN STILL THE OWNER’S TO BUY. `docs/CNAME.example` has the DNS records, the copy step and the verification, and the site needs **no page edits** when the domain arrives because nothing hard-codes its own address. The row stays open because the thing it asks for is a domain, and naming one this repository does not serve is the specific failure the row’s sibling forbids.**
+- [ ] **A real domain, not a `github.io` path.** *"a nice backrooms url"*. This needs a domain the owner controls plus a `CNAME` file in the Pages branch and DNS records pointing at GitHub. **The domain is the owner's to choose and register** - ask before building the Pages config, because a custom domain and a project-path deploy are configured differently and the wrong one means rebuilding. — **SUPPORT AUTHORED 0.12.92-dev, DOMAIN STILL THE OWNER’S TO BUY. `docs/CNAME.example` has the DNS records, the copy step and the verification, and the site needs **no page edits** when the domain arrives because nothing hard-codes its own address. The row stays open because the thing it asks for is a domain, and naming one this repository does not serve is the specific failure the row’s sibling forbids.** — **RE-AIMED 0.12.94-dev AT THE PUBLIC REPOSITORY, STILL THE OWNER’S TO BUY. The domain now belongs to `G-Fourteen/Rimrooms-AsyncIndustries`, which is the only thing that deploys. `CNAME.example` carries the DNS records, the copy step and the `curl -sI` verification, and **the export needs no page edits when the domain arrives** because nothing in the rendered site hard-codes its own address — every link is relative. The row stays open because the thing it asks for is a domain.**
 
 ### The Steam Workshop
 

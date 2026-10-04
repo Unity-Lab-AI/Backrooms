@@ -259,6 +259,91 @@ claim("About.xml still declares no dependencies at all",
       "<modDependencies>" not in about,
       "the fix was to the description; the decision itself is unchanged")
 
+# ------------------------------------- ONE Pages deploy, and nothing references the build repos
+claim("a document telling a reader to deploy Pages from this repository is refused",
+      "def check_only_one_pages_deploy" in conform_code
+      and "check_only_one_pages_deploy(" in slice_function(conform_code, "check_reader_facing"))
+claim("the rule also runs over every living document, not only reader-facing ones",
+      conform_code.count("check_only_one_pages_deploy(") >= 3,
+      "definition plus the living-document walk plus the reader-facing walk")
+claim("a sentence naming the public repository is allowed, so recording the rule passes",
+      "if PAGES_ALLOWED.search(sentence):" in conform_code,
+      "the CALL, not the constant: a plant replaced the test with `if False:` and the "
+      "definition alone satisfied the first version")
+claim("the rule is negation-aware in ALL THREE of its passes",
+      conform_code.count("for negator in PAGES_NEGATORS)") == 3,
+      "the USE SITE: a plant renamed the constant to PAGES_NEGATORS_UNUSED, which still "
+      "contains PAGES_NEGATORS as a substring, so the first version passed")
+claim("a foreign Pages address is scanned on RAW LINES, not on stripped prose",
+      "FOREIGN_PAGES_ADDRESS.search(line)" in conform_code,
+      "the address was hiding inside a code span, which readable_prose removes")
+claim("the export refuses any file referencing a build repository",
+      "for marker in FORBIDDEN_REFERENCES:" in exporter_code
+      and "A BUILD REPOSITORY IS REFERENCED IN THE EXPORT" in exporter,
+      "the LOOP, not the constant: a plant iterated an empty tuple instead")
+claim("the build-repo rule matches repository forms, never the bare word",
+      '"Unity-Lab-AI/Backrooms"' in exporter_code
+      and '"git.unityailab.com"' in exporter_code
+      and '"Backrooms",' not in exporter_code,
+      "Backrooms is the name of the setting and appears all over the wiki as prose")
+claim("the published wiki no longer points a reader at a build repository",
+      "Unity-Lab-AI" not in read(os.path.join(REPO, "docs", "wiki", "links.md")))
+
+# ------------------------------------------ the dependency rectification, enforced in three places
+claim("a reader document asserting this mod needs something is refused",
+      "def check_reader_dependency_assertions" in conform_code
+      and len(re.findall(r"(?<!def )check_reader_dependency_assertions\(rel, prose, problems\)",
+                         conform_code)) == 1,
+      "COUNTED WITH A LOOKBEHIND: the definition line contains the call text, so a plant that "
+      "replaced the call with `pass` left the claim satisfied by the signature")
+claim("the negator must sit in the SAME CLAUSE as the claim",
+      "def negated_in_clause" in conform_code
+      and "clause = lowered[left:right]" in conform_code,
+      "an incidental 'rather than' about failing later excused a false claim on the install page")
+claim("a comma ends a clause for that test",
+      '"[.;,]"' in conform_code.replace("r\"[.;,]\"", '"[.;,]"'),
+      "which is exactly where the excuse was hiding")
+claim("the rule runs on paragraphs, so a table cell is not read as an assertion",
+      "for paragraph in paragraphs(prose):"
+      in slice_function(conform_code, "check_reader_dependency_assertions"))
+claim("a finding needs a dependency SUBJECT, not just an assertion phrase",
+      # **THE NEEDLE IS BUILT FROM chr(92), NOT WRITTEN AS AN ESCAPE.** Written as a normal
+      # string, r"\b" inside it is the BACKSPACE escape, so the needle became a control
+      # character and could never match. One backslash has now broken this single line three
+      # times: doubled in the checker (making the rule a no-op), a real backspace in the
+      # repair, and an escape in the claim written to guard it.
+      ('if not any(re.search(r"%sb" + subject + r"%sb", lowered)'
+       % (chr(92), chr(92))) in conform_code
+      and "for subject in DEPENDENCY_SUBJECTS)" in conform_code,
+      "or 'Nothing special is required' and a heading both become findings")
+# **MARKUP STRIPPED BEFORE THE PHRASE IS LOOKED FOR.** `install.md` writes
+# `**This build declares no dependencies at all.**` and `mods.md` writes
+# `declares **no dependencies at all**` -- the same sentence with the emphasis in a different place,
+# so a literal needle matched one and missed the other. The claim is about what the page says, and
+# where the asterisks fall is not part of that.
+def plain(text):
+    return " ".join(text.replace("*", "").replace("`", "").split())
+
+
+for page, label in (("install.md", "the install page"), ("mods.md", "the mods page")):
+    text = plain(read(os.path.join(REPO, "docs", "wiki", page)))
+    claim("%s no longer tells a player an expansion is required" % label,
+          "declares no dependencies" in text and "declares every" not in text)
+claim("the install page no longer lists Harmony as required",
+      "Not used and not needed" in read(os.path.join(REPO, "docs", "wiki", "install.md")))
+claim("PLAYING.md no longer claims hard dependencies",
+      "declares hard dependencies" not in read(os.path.join(REPO, "docs", "PLAYING.md")))
+claim("README.md no longer claims every requirement is declared",
+      "requirement is **declared**" not in read(os.path.join(REPO, "README.md")))
+
+# ------------------------------------------------- a checker must be able to report what it finds
+claim("the report survives a character the console cannot encode",
+      "def say(" in conform_code and "UnicodeEncodeError" in conform_code,
+      "the Pages rule quotes the offending sentence, one contained an arrow, and the run died "
+      "after finding six real problems and before naming five of them")
+claim("the findings are printed through it",
+      'say("  - %s" % problem)' in conform_code)
+
 # ---------------------------------------------------------------------------------- report
 bad = [(label, detail) for label, ok, detail in CLAIMS if not ok]
 for label, ok, detail in CLAIMS:

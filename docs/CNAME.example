@@ -1,9 +1,16 @@
 PUT-YOUR-HOSTNAME-HERE
 
 # ----------------------------------------------------------------------------------------------
-# THIS FILE IS NOT LIVE. Copy it to `CNAME` (no extension) and replace the first line with the
-# bare hostname, then delete everything below it: GitHub Pages reads the whole file as one
-# hostname, so a real CNAME contains exactly one line and no comments.
+# THIS FILE IS NOT LIVE, AND IT BELONGS TO THE PUBLIC MOD REPOSITORY, NOT THIS ONE.
+#
+# Owner direction, 2026-10-05: "the only page deploy will be on the new github mod and wiki and
+# public docs ONLY!!!" This repository is never deployed - Pages on it returns 404 and has never
+# been enabled - so a CNAME here would serve nothing. When the domain exists, it is copied into
+# the PUBLISHED repository's docs/ directory, which is where the site actually is.
+#
+# Copy it to `CNAME` (no extension) and replace the first line with the bare hostname, then
+# delete everything below it: GitHub Pages reads the whole file as one hostname, so a real CNAME
+# contains exactly one line and no comments.
 #
 # Owner direction: "a real domain, not a github.io path" / "a nice backrooms url".
 #

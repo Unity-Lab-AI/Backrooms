@@ -252,10 +252,12 @@ There is no synchronised research either.
 
 It is not a balance document, it is not a compatibility report, and it is not a play report.
 
-The mod is developed against RimWorld 1.6. **It declares hard dependencies**: all five
-expansions and every mod in the collection it is built alongside, so a mod manager can name
-anything missing before the game loads. Content from another mod is still looked up by name, so a
-missing one degrades what depends on it rather than throwing.
+The mod is developed against RimWorld 1.6 and **declares no dependencies at all** — not one mod and
+not one expansion. All five expansions are optional, and expansion content is marked as needing its
+expansion, so without it that content is simply absent. A 294-entry load-order list ships as sorting
+advice, which is a different thing from a requirement: own none of those mods and this still runs.
+Content from another mod is looked up by name, so a missing one degrades what depends on it rather
+than throwing.
 
 For what the systems are meant to achieve, read [`GAME_DESIGN.md`](GAME_DESIGN.md). For the opening
 script in the company's own voice, read [`TUTORIAL_SCRIPT.md`](TUTORIAL_SCRIPT.md). For what is

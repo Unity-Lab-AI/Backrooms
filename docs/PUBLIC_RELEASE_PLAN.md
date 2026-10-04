@@ -88,22 +88,31 @@ A GitHub Pages site can deploy either way:
 
 | Option | Address | What it needs |
 |---|---|---|
-| **Project path** | `unity-lab-ai.github.io/Backrooms/` | Nothing. Works immediately. |
+| **Project path** | the publishing repository's own `github.io` path | Nothing. Works immediately. |
 | **Custom domain** | e.g. `rimrooms.something` | A domain the owner registers, a `CNAME` file in the published branch, and DNS records pointing at GitHub. |
 
 **These are configured differently**, and the internal links a static site generates depend on
-which one is used — a project-path deploy needs a base path, a custom domain does not.
-Building for the wrong one means rebuilding.
+which one is used — a project-path deploy needs a base path, a custom domain does not. The site is
+built with **every internal link relative**, so a base path cannot break them and moving to a
+custom domain later is adding one file rather than a rebuild.
 
-**ANSWERED 2026-10-01, verbatim: *"docs/ root on this repo, github.io for now"*.** So the
-project-path deploy is what gets built: `unity-lab-ai.github.io/Backrooms/`, every internal link
-relative so a base path cannot break them. **CNAME support is authored and the domain row stays
-open** — no page names a URL the deploy does not have, which is the same rule that keeps a version
-out of a document. Moving to a custom domain later is then adding one file, not a rebuild.
+> **SUPERSEDED 2026-10-05.** The 2026-10-01 answer here was *"docs/ root on this repo, github.io
+> for now"*, and the owner has overruled it: *"the only page deploy will be on the new github mod
+> and wiki and public docs ONLY!!!"*, with *"supper seeding rules that only the mod and public docs
+> go into the new mod repo as the deployable repo for the wiki"*.
+
+**The project-path deploy is live, on the public mod repository**, and the domain row is re-aimed
+there. **This repository is never deployed** — Pages on it returns 404 and has never been enabled.
 
 ### 3.4 Where it is deployed from
 
-**ANSWERED 2026-10-01: the `docs/` directory, on this repository.**
+**ANSWERED 2026-10-05, superseding the 2026-10-01 answer of *"the `docs/` directory, on this
+repository"*: the public mod repository, from its `docs/` directory, holding pre-rendered static
+HTML with no Jekyll.**
+
+The working repository publishes nothing. Its Jekyll configuration stays in place and keeps its
+exclude list, which exists for exactly one purpose now: **if Pages were ever switched on here by
+mistake, that list is the only thing that would refuse the work ledger.**
 
 **And the sentence that stood here was wrong in a way that mattered.** It said *"the repository is
 private and mirrors to two remotes"*. The Forgejo remote is private; **the GitHub remote is

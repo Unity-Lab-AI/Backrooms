@@ -11,9 +11,18 @@
 </head>
 <body>
 
-<!-- THE PUBLISHED SITE'S ROOT. Pages serves docs/ on this repository, so without a document
-     here the site's own address answers 404 while every page inside it works. The deploy row
-     says it stays open "until that is on and the URL answers" - and the URL is this one.
+<!-- THIS REPOSITORY IS NEVER DEPLOYED, AND THIS FILE IS KEPT ANYWAY.
+
+     Owner direction, 2026-10-05: "the only page deploy will be on the new github mod and wiki and
+     public docs ONLY!!!" So the published wiki is pre-rendered static HTML in the public mod
+     repository, and Pages on this repository returns 404 and has never been enabled. The
+     2026-10-01 answer "docs/ root on this repo, github.io for now" is SUPERSEDED.
+
+     Kept rather than deleted, on the owner's own terms - "without losing capability and
+     functioning and documentiaons". The Jekyll site here still works; it simply is not served. If
+     Pages were ever switched on for this repository by mistake, this file is what stops its root
+     answering 404 - and docs/_config.yml's exclude list is what stops the work ledger being
+     published. Neither costs anything to keep.
 
      NO FRONT MATTER, DELIBERATELY. Jekyll copies a file without front matter verbatim, so this
      page is exactly what it looks like and cannot be changed by a layout. The wiki's own index

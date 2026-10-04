@@ -124,6 +124,26 @@ FORBIDDEN_TEXT = (
     "archived-queue:begin",
     "LAW #0",
 )
+
+# **NOTHING IN THE PUBLIC REPOSITORY MAY REFERENCE THE BUILD REPOSITORIES.**
+#
+# Owner direction, 2026-10-05, verbatim: *"nothing should refrence the build repos anywhere"*.
+#
+# This was live when the rule was given. `docs/wiki/links.md` pointed its **Repository** and
+# **Issues** rows at the working repository, so the published site sent every reader who wanted the
+# source, or who wanted to report a bug, to the repository that holds the work ledger.
+#
+# Matched on the **repository forms only**, never on the bare word: *Backrooms* is the name of the
+# setting and appears all over the wiki as prose, which it must. A rule that banned the word would
+# be unusable, and this battery has five recorded cases of a check that cried wolf being scrolled
+# past. So the patterns are owner/repo pairs and hostnames -- things that can only be a repository.
+FORBIDDEN_REFERENCES = (
+    "Unity-Lab-AI/Backrooms",
+    "unity-lab-ai.github.io",
+    "git.unityailab.com",
+    "GFourteen/Backrooms",
+    "Unity-Lab-AI/backrooms",
+)
 TEXT_SUFFIXES = (".md", ".html", ".htm", ".txt", ".xml", ".json", ".yml", ".css", ".js")
 
 
@@ -332,6 +352,12 @@ def audit(problems):
             for marker in FORBIDDEN_TEXT:
                 if marker in text:
                     problems.append("LEDGER TEXT IN THE EXPORT: %s contains %r" % (rel, marker))
+                    break
+            for marker in FORBIDDEN_REFERENCES:
+                if marker.lower() in text.lower():
+                    problems.append("A BUILD REPOSITORY IS REFERENCED IN THE EXPORT: %s names "
+                                    "%r -- owner: nothing should reference the build repos "
+                                    "anywhere" % (rel, marker))
                     break
             # A queue row carries its own shape, and it is unmistakable at the start of a line.
             if re.search(r"(?m)^\s*- \[[ x~T]\] ", text):

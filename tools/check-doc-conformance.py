@@ -57,6 +57,7 @@ import re
 import subprocess
 import sys
 
+NEWLINE = chr(10)
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSPROJ = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "RimroomsAsyncIndustries.csproj")
 
@@ -113,6 +114,23 @@ CHECKER_CLAIM = re.compile(
     r"\b(?:all\s+)?(?:(other)\s+)?(\d{1,3}|" +
     "|".join(sorted(WORD_NUMBERS, key=len, reverse=True)) +
     r")\s+checkers\b", re.I)
+
+
+def say(line):
+    """Print a line that may hold characters the console cannot encode.
+
+    **A CHECKER THAT CRASHES WHILE REPORTING CANNOT REPORT.** The Pages rule quotes the offending
+    sentence, and one of those sentences contained an arrow; on a cp1252 console `print` raised
+    `UnicodeEncodeError` and the run died **after** finding six real problems and before naming
+    five of them. The findings were correct and invisible, which is the worst possible outcome for
+    an instrument.
+
+    Replaced rather than dropped, so the reader still sees where the character was.
+    """
+    try:
+        print(line)
+    except UnicodeEncodeError:
+        print(line.encode("ascii", "replace").decode("ascii"))
 
 
 def checker_count():
@@ -427,6 +445,9 @@ def check_reader_facing(problems):
 
         check_forbidden_claims(rel, prose, problems)
         check_expansion_claims(rel, prose, problems)
+
+        check_reader_dependency_assertions(rel, prose, problems)
+        check_only_one_pages_deploy(rel, prose, problems)
 
         for paragraph in paragraphs(prose):
             if len(paragraph) > DOC_WALL_CHARS:
@@ -1037,6 +1058,80 @@ def check_cname(problems):
 
 
 # --------------------------------------------------------------------------- #
+# THE ONLY PAGES DEPLOY IS THE PUBLIC REPOSITORY
+# --------------------------------------------------------------------------- #
+#
+# **Owner direction, 2026-10-05, verbatim:** *"the only page deploy will be on the new github mod
+# and wiki and public docs ONLY!!! DO YOU UNDERSTAND!!!!?????"*
+#
+# It is already the live state -- Pages on this repository returns 404 and has never been enabled,
+# and `G-Fourteen/Rimrooms-AsyncIndustries` is built and serving. **What was wrong was the
+# documents**: `TODO.md`, `NOW.md` and `PUBLIC_RELEASE_PLAN.md` each still told a reader to switch
+# Pages on for *this* repository, and one of them named a `unity-lab-ai.github.io/Backrooms/`
+# address. A queue row instructing a forbidden action is worse than a stale one: somebody does it.
+#
+# **So the rule is enforced rather than written down**, which is the whole lesson of 0.12.93-dev --
+# a configuration file described an exclusion policy it did not implement, and the ledger was one
+# switch away from being public.
+#
+# Nothing is deleted to achieve this. The Jekyll configuration stays exactly where it is, and its
+# exclude list stays with it, because that list is what would refuse the ledger **if this
+# repository were ever deployed by accident**. A guard costs nothing to keep and is the only thing
+# standing between a mis-click and the work ledger.
+PAGES_INSTRUCTION = re.compile(
+    r"(settings\s*(?:→|->|>)\s*pages"
+    r"|enabl\w*\s+pages"
+    r"|turn\w*\s+on\s+pages"
+    r"|pages\s+(?:source|is\s+enabled))", re.I)
+
+# A sentence naming the public repository or its address is about the right deploy and is fine.
+PAGES_ALLOWED = re.compile(
+    r"(Rimrooms-AsyncIndustries|g-fourteen\.github\.io|the public repository|"
+    r"the new (?:github )?repo)", re.I)
+
+# Denials. Wider than CLAIM_NEGATORS because the subject here is an instruction, and the natural
+# way to write a denial of one is "never", "forbidden", "no longer" or "superseded".
+PAGES_NEGATORS = ("never", " not ", "no longer", "forbidden", "refus", "must not", "cannot",
+                  "superseded", "instead", "would have", "was never", "404", "is not")
+
+# An address this repository does not serve and now never will.
+FOREIGN_PAGES_ADDRESS = re.compile(r"unity-lab-ai\.github\.io", re.I)
+
+
+def check_only_one_pages_deploy(rel, raw, problems):
+    """Refuse a living document that tells a reader to deploy Pages from this repository."""
+    # **THE ADDRESS IS SCANNED ON RAW LINES, NOT ON PROSE, AND THAT IS NOT AN OVERSIGHT IN REVERSE.**
+    # `readable_prose` strips code spans, which is right for claims -- a fenced example is not an
+    # assertion. But `PUBLIC_RELEASE_PLAN.md` carried `unity-lab-ai.github.io/Backrooms/` **inside a
+    # code span**, in a table saying that is what gets built, and the rule could not see it. A
+    # hostname being advertised is a hostname being advertised whatever punctuation is around it.
+    for number, line in enumerate(raw.split(NEWLINE), start=1):
+        if not FOREIGN_PAGES_ADDRESS.search(line):
+            continue
+        lowered = line.lower()
+        if any(negator in lowered for negator in PAGES_NEGATORS):
+            continue
+        problems.append("%s:%d names a Pages address this repository does not serve and never "
+                        "will" % (rel, number))
+
+    for sentence in sentences(readable_prose(raw)):
+        lowered = sentence.lower()
+        if PAGES_INSTRUCTION.search(sentence):
+            if PAGES_ALLOWED.search(sentence):
+                continue
+            if any(negator in lowered for negator in PAGES_NEGATORS):
+                continue
+            problems.append("%s tells a reader to deploy Pages from THIS repository -- owner, "
+                            "2026-10-05: the only Pages deploy is the public repository, and "
+                            "Pages here is 404 by design (%r)" % (rel, sentence[:90]))
+        if FOREIGN_PAGES_ADDRESS.search(sentence):
+            if any(negator in lowered for negator in PAGES_NEGATORS):
+                continue
+            problems.append("%s names a Pages address this repository does not serve and never "
+                            "will (%r)" % (rel, sentence[:90]))
+
+
+# --------------------------------------------------------------------------- #
 # About.xml's description: the most-read document this mod has
 # --------------------------------------------------------------------------- #
 #
@@ -1072,6 +1167,15 @@ DEPENDENCY_ASSERTION_CLAIMS = (
     "every dependency is declared",
     "hard dependency",
     "hard dependencies",
+    # **ADDED AFTER A FALSE POSITIVE POINTED AT A REAL DEFECT.** A scoping bug flagged `README.md`
+    # for the wrong reason, and the sentence it happened to print was genuinely false: *"RimWorld
+    # 1.6, all five expansions, and the collection this build is authored against. Every requirement
+    # is declared."* Fixing the bug made the finding vanish, so the phrasing is listed here -- a
+    # defect that was real does not stop being real because the rule found it by accident.
+    "requirement is declared",
+    "requirements are declared",
+    "every requirement",
+    "declares every",
 )
 
 
@@ -1087,6 +1191,95 @@ def about_description():
     body = match.group(1)
     return (body.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
             .replace("&quot;", '"').replace("&apos;", "'"))
+
+
+# A sentence can only be asserting a dependency if it is talking about one. These are the subjects.
+DEPENDENCY_SUBJECTS = ("mod", "mods", "expansion", "expansions", "dlc", "collection",
+                       "dependency", "dependencies", "royalty", "ideology", "biotech",
+                       "anomaly", "odyssey", "profile")
+
+
+# **THE NEGATOR MUST BE IN THE SAME CLAUSE AS THE CLAIM, AND A COMMA ENDS A CLAUSE HERE.**
+#
+# This file already records the identical defect in `retirement_covers`: *"One incidental `until`,
+# about an entirely different subject, exempted the whole paragraph."* It happened again, in the
+# other direction and on the page that matters most. `docs/wiki/install.md` said:
+#
+#     This build **declares every one of its requirements**, so your mod manager will tell you
+#     what is missing before the game loads rather than failing later.
+#
+# A sentence-wide negator test saw *"rather than"* -- about failing later, nothing to do with
+# dependencies -- and excused a false claim on the install page. **A false negative here is worse
+# than a false positive**: the finding is simply never made.
+#
+# Commas are included in the split precisely because that is where the excuse was hiding. It cuts
+# the other way too, and correctly: *"Nothing special is required, and nothing special is
+# provided"* keeps its negator in the clause that carries the claim.
+CLAUSE_SPLIT_PROSE = re.compile(r"[.;,]")
+
+
+def phrase_found(lowered):
+    """The first assertion phrase present, so the clause test knows what to scope around."""
+    for phrase in DEPENDENCY_ASSERTION_CLAIMS:
+        if phrase in lowered:
+            return phrase
+    return None
+
+
+def negated_in_clause(sentence, phrase):
+    """True when a negator sits in the same clause as the claim, not merely in the sentence."""
+    if not phrase:
+        return False
+    lowered = sentence.lower()
+    found = lowered.find(phrase)
+    if found < 0:
+        return False
+    left, right = 0, len(sentence)
+    for match in CLAUSE_SPLIT_PROSE.finditer(sentence):
+        if match.end() <= found:
+            left = match.end()
+        elif match.start() >= found + len(phrase):
+            right = match.start()
+            break
+    clause = lowered[left:right]
+    return any(negator in clause for negator in CLAIM_NEGATORS)
+
+
+def check_reader_dependency_assertions(rel, prose, problems):
+    """Refuse a reader document asserting this mod needs something, when it declares nothing.
+
+    **NARROWED AFTER SCORING ONE OUT OF FOUR.** The first version reused the phrase list written for
+    `About.xml`, where every sentence is about dependencies. Turned loose on reader prose it flagged
+    *"Nothing special is required"* -- a denial -- plus a table label and a heading, and caught one
+    real claim. That is three false findings for one true one, and this file's own branch rule
+    states the cost: *"A checker that cries wolf is a checker people learn to scroll past, which is
+    worse than not having it."*
+
+    So a finding now needs three things in **one sentence**: an assertion phrase, a subject that is
+    actually a mod or an expansion, and no negator. The real claim --
+    *"This build is authored against a specific collection and declares every member of it"* -- has
+    all three. The three false ones each lack the subject or carry the negator.
+    """
+    if declared_dependency_count() > 0:
+        return
+    # **PARAGRAPHS, NOT RAW SENTENCES.** `sentences()` turned a table row --
+    # `| Mods and expansions | What is required, what is optional |` -- into a sentence with a
+    # subject and an assertion phrase in it, and flagged a column label. `paragraphs()` already
+    # excludes tables, headings, lists and blockquotes, because **an assertion lives in prose and a
+    # table cell is a label.** That distinction is the same one the wall rule relies on.
+    for paragraph in paragraphs(prose):
+        for sentence in sentences(paragraph):
+            lowered = sentence.lower()
+            if not any(phrase in lowered for phrase in DEPENDENCY_ASSERTION_CLAIMS):
+                continue
+            if not any(re.search(r"\b" + subject + r"\b", lowered)
+                       for subject in DEPENDENCY_SUBJECTS):
+                continue
+            if negated_in_clause(sentence, phrase_found(lowered)):
+                continue
+            problems.append("%s tells a reader this mod needs something, and it declares NO "
+                            "dependencies -- not one mod and not one expansion (%r)"
+                            % (rel, sentence[:90]))
 
 
 def check_about_description(version, branch, count, declared, problems):
@@ -1198,6 +1391,7 @@ def main():
                     problems.append("%s:%d names retired def %s with nothing saying it is gone"
                                     % (rel, number, definition))
 
+        check_only_one_pages_deploy(rel, raw, problems)
         check_dependency_claims(rel, raw, declared_dependencies, problems)
         check_broad_compatibility(rel, raw, declared_dependencies, problems)
 
@@ -1222,8 +1416,10 @@ def main():
     print("  reader-facing documents  : %d, held to the vocabulary and the wall rule"
           % len(READER_FACING))
     print("  checkers on disk         : %d, counted off tools/ and never typed" % checkers)
-    print("  files the site publishes : %d, modelled from docs/_config.yml rather than trusted"
+    print("  a Pages deploy here WOULD publish : %d files, modelled rather than trusted"
           % len(published))
+    print("                             THIS REPOSITORY IS NEVER DEPLOYED (Pages 404 by"
+          " design); the list is the guard against an accidental switch")
     print("  non-markdown site files  : %d, held to the version, branch and claims rules"
           % len(site_entries))
     print("  ledger names refused     : %d, in the published set" % len(LEDGER_NAMES))
@@ -1237,7 +1433,7 @@ def main():
     if problems:
         print("FAIL: %d problem(s)" % len(problems))
         for problem in sorted(set(problems)):
-            print("  - %s" % problem)
+            say("  - %s" % problem)
         return 1
     print("PASS")
     return 0

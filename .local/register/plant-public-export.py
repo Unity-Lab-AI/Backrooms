@@ -37,6 +37,8 @@ RENDERER = "tools/render-wiki-html.py"
 CHECKER = "tools/check-public-export.py"
 CONFORM = "tools/check-doc-conformance.py"
 ABOUT = "Mod/Rimrooms - Async Industries/About/About.xml"
+LINKS = "docs/wiki/links.md"
+INSTALL = "docs/wiki/install.md"
 
 _RR_SENTINEL = os.path.join(".local", "register",
                             ".plant-in-progress-"
@@ -193,6 +195,65 @@ PLANTS = [
     ("the About description check is unwired from the entry point", CONFORM,
      "    about_checked = check_about_description(version, branch, checkers,",
      "    about_checked = True and (lambda *a: True)(version, branch, checkers,", 1),
+
+    # ---- ONE Pages deploy, and no build-repo references ---------------------------------
+    ("the one-deploy rule stops allowing a sentence about the PUBLIC repo", CONFORM,
+     "            if PAGES_ALLOWED.search(sentence):", "            if False:", 1),
+
+    # **PLANTED AT A USE SITE, NOT AT THE DEFINITION.** Renaming the constant produces a runtime
+    # NameError, which a proof that only reads source text cannot see -- the plant was testing
+    # something the instrument is not built to observe. Disabling one of the two negator tests is
+    # the same defect expressed where a source claim can catch it.
+    ("the one-deploy rule stops being negation-aware in its raw-line pass", CONFORM,
+     "        if any(negator in lowered for negator in PAGES_NEGATORS):",
+     "        if False:", 1),
+
+    ("a foreign Pages address is only looked for in stripped prose again", CONFORM,
+     "        if not FOREIGN_PAGES_ADDRESS.search(line):", "        if True:", 1),
+
+    ("the export stops refusing a build-repository reference", EXPORTER,
+     "            for marker in FORBIDDEN_REFERENCES:", "            for marker in ():", 1),
+
+    ("the build-repo rule starts matching the bare word, which would be unusable", EXPORTER,
+     '    "Unity-Lab-AI/Backrooms",', '    "Backrooms",', 1),
+
+    ("the published wiki points a reader at a build repository again", LINKS,
+     "https://github.com/G-Fourteen/Rimrooms-AsyncIndustries>",
+     "https://github.com/Unity-Lab-AI/Backrooms>", 1),
+
+    # ---- the dependency rectification ---------------------------------------------------
+    ("the reader dependency rule is unwired", CONFORM,
+     "        check_reader_dependency_assertions(rel, prose, problems)", "        pass", 1),
+
+    ("the negator stops being scoped to its own clause", CONFORM,
+     "    clause = lowered[left:right]", "    clause = lowered", 1),
+
+    ("a comma stops ending a clause, which is where the excuse was hiding", CONFORM,
+     'CLAUSE_SPLIT_PROSE = re.compile(r"[.;,]")',
+     'CLAUSE_SPLIT_PROSE = re.compile(r"[.;]")', 1),
+
+    ("the rule reads raw sentences again, so a table cell becomes an assertion", CONFORM,
+     "    for paragraph in paragraphs(prose):\n        for sentence in sentences(paragraph):",
+     "    for paragraph in [prose]:\n        for sentence in sentences(paragraph):", 1),
+
+    ("the subject test is dropped, so a denial and a heading become findings", CONFORM,
+     "            if not any(re.search(r\"\\b\" + subject + r\"\\b\", lowered)",
+     "            if False and any(re.search(r\"\\b\" + subject + r\"\\b\", lowered)", 1),
+
+    ("the install page tells a player an expansion is required again", INSTALL,
+     "**This build declares no dependencies at all.**",
+     "This build **declares every one of its requirements**.", 1),
+
+    ("the install page lists Harmony as required again", INSTALL,
+     "| **Harmony** | Not used and not needed |",
+     "| **Harmony** | Required by the collection |", 1),
+
+    # ---- a checker must be able to report what it finds ----------------------------------
+    ("the report stops surviving a character the console cannot encode", CONFORM,
+     "    except UnicodeEncodeError:", "    except KeyboardInterrupt:", 1),
+
+    ("the findings stop going through the safe printer", CONFORM,
+     '            say("  - %s" % problem)', '            print("  - %s" % problem)', 1),
 ]
 
 caught = 0

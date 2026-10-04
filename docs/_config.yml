@@ -1,6 +1,30 @@
 title: Rimrooms — Async Industries
 description: A company-management campaign for RimWorld about contract work beyond a gate.
 
+# ==============================================================================================
+# THIS REPOSITORY IS NEVER DEPLOYED. THIS FILE IS NOT A DEPLOY CONFIGURATION ANY MORE.
+#
+# Owner direction, 2026-10-05, verbatim: "the only page deploy will be on the new github mod and
+# wiki and public docs ONLY!!!", with "supper seeding rules that only the mod and public docs go
+# into the new mod repo as the deployable repo for the wiki".
+#
+# So the 2026-10-01 answer "docs/ root on this repo, github.io for now" is SUPERSEDED. Pages on
+# this repository returns 404 and has never been enabled. The published wiki is pre-rendered
+# static HTML in the public mod repository, built by tools/render-wiki-html.py from docs/wiki/.
+#
+# WHY THIS FILE STILL EXISTS, AND WHY NOTHING WAS DELETED
+#
+# Owner, same day: "without losing capability and functioning and documentiaons". Nothing here was
+# removed. `title` and `description` are read by the static renderer, so they are live. The layout,
+# the include and the front door still work and are still maintained.
+#
+# And the exclude list below now has exactly ONE job, which is worth more than the deploy it was
+# written for: **if Pages were ever switched on for this repository by mistake, that list is the
+# only thing standing between the mis-click and the work ledger.** Deleting it would save nothing
+# and would remove the guard. tools/check-doc-conformance.py refuses any document that tells a
+# reader to deploy Pages from here, so the rule is enforced rather than written down.
+# ==============================================================================================
+
 # NO REMOTE THEME, DELIBERATELY.
 #
 # Owner direction: "the beautiful and masterfully way paossible so the thing needs to NOT pop

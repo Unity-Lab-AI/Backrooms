@@ -6,7 +6,7 @@ Backrooms.**
 Ordinary colony play is untouched. What this adds is an employer, a machine that opens a way into
 somewhere else, and paperwork about both.
 
-**Current development version: 0.12.94-dev.** No balance, performance or compatibility result is
+**Current development version: 0.12.95-dev.** No balance, performance or compatibility result is
 claimed.
 
 ---
@@ -39,8 +39,10 @@ claimed.
 
 ## Requirements
 
-RimWorld 1.6, all five expansions, and the collection this build is authored against. Every
-requirement is **declared**, so your mod manager names anything missing before the game loads.
+**RimWorld 1.6, and nothing else.** No other mod and no expansion: this build declares no
+dependencies at all, so your mod manager will not ask you for anything. The five expansions are
+each optional, and content that uses one simply is not there without it. A 294-mod load-order list
+ships as sorting advice, which is not the same thing as a requirement.
 
 See **[Install](docs/wiki/install.md)**.
 

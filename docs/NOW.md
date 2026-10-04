@@ -49,13 +49,13 @@ reword the document into something awkward. A checker that cries wolf is one peo
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`** |
-| Version | **0.12.94-dev** — read from `About.xml`, never from a document |
+| Version | **0.12.95-dev** — read from `About.xml`, never from a document |
 | Build | **232 C# files, 103 package files**, zero warnings, zero errors |
 | Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile and is checked against the register |
 | Instruments | **21 checkers**, **58 proofs**, **32 plant suites** |
 | Remotes | **all TEN refs level** — `forgejo` 5 of 5, `github` 5 of 5. Forgejo caught up 2026-10-05 after four commits down |
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
-| Queue | **49 open · 20 partial · 38 `[T]` · 0 `[x]`** |
+| Queue | **48 open · 20 partial · 38 `[T]` · 0 `[x]`** |
 | Public repos | **`Rimrooms-AsyncIndustries` on BOTH hosts** — `forgejo GFourteen/...` and `github G-Fourteen/...`, `main` at one commit. **The mod as staged, the public face, nothing else** |
 | Published site | **LIVE** — `https://g-fourteen.github.io/Rimrooms-AsyncIndustries/`, 200 on the index, a deep page and the stylesheet |
 | Launches | **At least twelve**, all by the owner. **Every defect any launch found was ours** |
@@ -97,11 +97,22 @@ the **world-tile rows**, which need a new world object and a generated map.
 **And the two starting-goods rows wait on a launch, not on code.** They are the only rows whose
 next step is a `Player.log`.
 
-**One thing worth the owner's attention, blocking nothing:** Backrooms still carries its own Jekyll
-site under `docs/`, and the public deploy now lives in the new repository. Enabling Pages on
-Backrooms is no longer needed for the wiki to reach anybody. That row stays open and the switch is
-still the owner's; it is simply no longer the only route.
+**ONE PAGES DEPLOY, AND IT IS THE PUBLIC MOD REPOSITORY.** Owner, 2026-10-05, verbatim: *"the
+only page deploy will be on the new github mod and wiki and public docs ONLY!!!"*, and naming the
+supersession itself: *"but wait there are supper seeding rules that only the mod and public docs go
+into the new mod repo as the deployable repo for the wiki"*.
 
+**This repository is never deployed.** Pages here returns **404** and has never been enabled —
+measured, not assumed. The 2026-10-01 answer *"docs/ root on this repo, github.io for now"* is
+**superseded**, and `PUBLIC_RELEASE_PLAN.md` §3.3 and §3.4 are corrected rather than left recording
+it as current. **`check_only_one_pages_deploy` refuses any document that tells a reader to deploy
+Pages from here**, because a queue row instructing a forbidden action is worse than a stale one:
+somebody does it. It caught two documents written earlier in the same session.
+
+**Nothing was deleted to achieve that.** Owner: *"without losing capability and functioning and
+documentiaons"*. The Jekyll config, layout, include and front door all stay, `build-site.py` and
+`check-site-generated.py` keep maintaining them, and **the exclude list stays as the guard** — it
+is the only thing that would refuse the work ledger if Pages were ever switched on here by mistake.
 ---
 
 ## Read these before touching anything

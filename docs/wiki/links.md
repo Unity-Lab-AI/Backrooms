@@ -1,38 +1,32 @@
 ---
 title: Links
-summary: "Where the source, the ledger and the register live."
+summary: "The Workshop mod and collection, and where to report something."
 ---
 
 # Links
 
-> **Workshop links are not live yet.** The slots below are in place and will be filled when the
-> mod and its collection are published. Nothing here links to a page that does not exist.
+> **The Workshop links are not live yet.** They are the links this page exists for, and the slots
+> below are waiting on publication. Nothing here points at a page that does not exist.
 
 ---
 
-## Workshop
+## Steam Workshop
 
 | | |
 |---|---|
 | **The mod** | *pending publication* |
 | **The collection** | *pending publication* |
 
-Subscribe to **the collection**, not the mod alone — the mod declares the whole collection as its
-requirements.
+The collection is a convenience, not a requirement. This mod needs nothing but RimWorld itself —
+no other mod, and no expansion.
 
-## Source
-
-| | |
-|---|---|
-| **Repository** | <https://github.com/Unity-Lab-AI/Backrooms> |
-| **Wiki** | [This wiki](index.md) |
-| **Changelog** | [CHANGELOG](../../CHANGELOG.md) |
-
-## Reporting
+## Source and reporting
 
 | | |
 |---|---|
-| **Issues** | <https://github.com/Unity-Lab-AI/Backrooms/issues> |
+| **Mod and wiki** | <https://github.com/G-Fourteen/Rimrooms-AsyncIndustries> |
+| **Issues** | <https://github.com/G-Fourteen/Rimrooms-AsyncIndustries/issues> |
+| **This wiki** | [Start here](index.md) |
 
 Include your RimWorld version, your mod list, and the exact text of any message.
 
