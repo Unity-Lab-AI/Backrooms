@@ -15,64 +15,37 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 ---
 
-## ⛔ FORGEJO IS DOWN. THE CASCADE IS GITHUB-ONLY UNTIL IT IS BACK ⛔
+## ⛔ FORGEJO IS BACK. THE CASCADE IS TEN REFS AGAIN ⛔
 
-**Owner, 2026-10-05, verbatim:** *"okay apparently forgejo is down, so until we get it back up we
-are stuck cascading to github only"*
+**Owner, 2026-10-05, verbatim:** *"okay read now.md to continue then first we need to make the
+forgejo pushes, its back up and last cascade to forgejo was a while ago"*
 
-So the cascade is **5 refs, not 10**, and that is correct rather than a shortfall:
+It was back, and the first push attempted was the same one that had failed ten times. It was
+accepted. Forgejo had been stuck at `2d0b677` (0.12.90-dev) for four commits; it is now at
+`0c2712d` with GitHub, and **both remotes carry every commit.**
 
-```
-git push github feature/bug-testing
-git push github feature/bug-testing:Prep
-git push github feature/bug-testing:Develop
-git push github feature/bug-testing:Main
-git push github feature/bug-testing:feature/connected-colony-portals
-```
-
-**Do not treat a Forgejo refusal as a defect to investigate.** It was investigated once, and the
-answer is recorded below so nobody spends that time again. **Do not switch Forgejo to HTTPS, and
-do not re-point the remote** — `PUBLISHING.md` says SSH is the transport and
-`UnityAILab/Backrooms` does not exist; `GFourteen/Backrooms` is the right and only target.
-
-**Forgejo is stuck at `2d0b677` (0.12.90-dev).** Everything from 0.12.91-dev onward is GitHub-only
-until the host is back.
-
-### What it was, so it is not re-derived
-
-`error: remote unpack failed: unable to create temporary object directory` is
-**`tmp_objdir_create()`** in Git: the push *quarantine* directory,
-`objects/incoming-XXXXXX` inside the repository on the server. `receive-pack` creates it on
-**every** push, before reading any object — so pack size, object count, refspec form and ref
-count are irrelevant by construction. Ruled out from this end: the key (`ssh -T` authenticates),
-read versus write (`ls-remote` lists every ref), the procedure (`PUBLISHING.md` §4 followed
-literally), pack shape (`--no-thin`, single-threaded, one ref alone), our repository (`gc` and
-`fsck` clean), the namespace, and transience (ten attempts).
-
-### When it comes back
-
-Nothing needs rebuilding. The commits are complete on GitHub; the five Forgejo refs only need
-fast-forwarding, per `PUBLISHING.md` §4 Case A:
+**So the cascade is ten refs, and the count is the trap `PUBLISHING.md` §5 warns about in its own
+words.** Push **by refspec from the feature branch** — never by creating local
+`Prep`/`Develop`/`Main` branches, which that file names as a way previous agents have already got
+this wrong:
 
 ```
-git push forgejo feature/bug-testing
-git push forgejo feature/bug-testing:Prep
-git push forgejo feature/bug-testing:Develop
-git push forgejo feature/bug-testing:Main
-git push forgejo feature/bug-testing:feature/connected-colony-portals
+BRANCH=$(git rev-parse --abbrev-ref HEAD)      # never hard-code it
+for r in forgejo github; do
+  git push $r "$BRANCH"
+  for b in Prep Develop Main feature/connected-colony-portals; do
+    git push $r "$BRANCH:$b"
+  done
+done
+git ls-remote --heads forgejo; git ls-remote --heads github; git rev-parse HEAD
 ```
 
-**Then re-verify ten refs**, not five, and drop this section.
-
-### The lesson that is mine either way
-
-`docs/PUBLISHING.md` is the cascade authority and I improvised instead of reading it. Forcing
-local `Prep`/`Develop`/`Main` branches is listed in that file as a way previous agents have
-already got this wrong. It was not the cause here, and it was still the wrong way to do it.
-**Push by refspec from the feature branch.**
+**The outage and its root cause are recorded in `docs/FINALIZED.md`**, not here — this file holds
+one record and that one is finished. Read it before investigating any future Forgejo refusal: the
+answer was `tmp_objdir_create()` on the server, and nothing on this machine changed between the
+last failure and the first success. **An outage is recorded, not re-investigated.**
 
 ---
-
 ## ⛔⛔ THE BATTERY RUNS ONCE, AND THE INSTRUMENTS STAY ⛔⛔
 
 **Owner, 2026-10-04, three times:** *"okay once again.. yu should be completeing like near a dozen items before you run the whole battery. i told you i can NOT be waiting 40 minutes when u run 10m batteries constantly with every item you work on"*, *"you have run batteries repeatily and you havent even done ten items yet"*, and when I over-corrected: *"no you fucking retard!!!! you still need to do instrament checks and build them when needed just dont run them for every fucking code change"*
@@ -108,6 +81,7 @@ what the ceiling was pushing me to find.
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
 | Queue | **58 open · 20 partial · 38 `[T]` · 0 `[x]`** |
 | Launches | **At least twelve**, all by the owner. **Every defect any launch found was ours** |
+| Remotes | **`0c2712d` on all TEN refs** — `forgejo` 5 of 5, `github` 5 of 5. Forgejo caught up 2026-10-05 after four commits down |
 
 ---
 
@@ -161,7 +135,7 @@ next step is a `Player.log`.
 - **A `catch` EXISTING IS NOT A `catch` SWALLOWING.** A planted `throw;` walked past a claim that only asserted the handler was there.
 - **THE FIX FOR DEAD CODE IS TO REACH IT.**
 - **THE BATTERY RUNS ONCE AND THE INSTRUMENTS STAY.** The only thing the owner has had to say three times.
-- **THE CASCADE IS FIVE REFS WHILE FORGEJO IS DOWN** — `github` × `feature/bug-testing, feature/connected-colony-portals, Prep, Develop, Main`, pushed **by refspec from the feature branch**, never by forcing local branches. It is ten again the day the host returns. `PUBLISHING.md` is the authority; read it rather than improvising.
+- **THE CASCADE IS TEN REFS** — `forgejo` and `github` × `feature/bug-testing, feature/connected-colony-portals, Prep, Develop, Main`, pushed **by refspec from the feature branch**, never by creating local integration branches. It was five for two versions while the host was down and it is ten again. `PUBLISHING.md` is the authority; read it rather than improvising, which is the one thing the owner has corrected about publishing.
 - **WRITING A FILE WITH THE WRONG ENCODING SILENTLY CHANGES IT.** Last batch the version bump stripped three BOMs and the changelog script added one. This batch the bump read with `utf-8-sig` and re-wrote the BOM it found; `git diff --stat` showed version lines only. **Always diff-stat after a scripted edit** — the line counts do not lie.
 - **§1.1 IS THE RULE A NEW FEATURE IS MOST LIKELY TO BREAK WITHOUT NOTICING.** Every leasing system ever played has a term. The test that passes: does it read the gate's own window, is it off by default or driven by the player, and can it take anything away?
 - **A BILL NEEDS A `Building_WorkTable`.** Core's research benches are `Building_ResearchBench` and have **no bill stack at all**, so a recipe placed on one is a feature nobody can ever reach. Nineteen Core worktables, enumerated from the installed data.
