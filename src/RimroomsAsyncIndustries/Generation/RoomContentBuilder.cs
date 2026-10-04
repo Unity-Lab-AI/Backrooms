@@ -204,7 +204,8 @@ namespace RimroomsAsyncIndustries.Generation
             // locations and places that vary more even on the first level"*.
             int dressingDepth = RoomArchetypeService.EffectiveDepth(coordinate, dresser, depth);
             RimroomsRoomArchetypeDef archetype =
-                RoomArchetypeService.Select(dresser.familyId, dressingDepth, seed, dresser.index);
+                RoomArchetypeService.Select(dresser.familyId, dressingDepth, seed, dresser.index,
+                    CoordinateMotif.For(coordinate));
             if (archetype == null || archetype.slots == null) { return; }
 
             // Slots start well past the family fixtures' slot indices so the quadrant spread

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
   <!-- Owner direction 2026-09-29: "lots of furnature and equipment and different types of
@@ -26,6 +26,9 @@
     <description>Chairs facing a table at the front. Somebody set it out for a lesson that was never given, and the chairs are all pointing the right way.</description>
     <minDepth>2</minDepth>
     <weight>1.1</weight>
+    <themes>
+      <li>institution</li>
+    </themes>
     <slots>
       <li>
         <kind>Seat</kind>
@@ -62,6 +65,9 @@
     <description>Racks and lockers, most of them open and most of them empty. Whoever cleared this room was in a hurry, and did not finish.</description>
     <minDepth>3</minDepth>
     <weight>0.9</weight>
+    <themes>
+      <li>military</li>
+    </themes>
     <slots>
       <li>
         <kind>Storage</kind>
@@ -102,6 +108,10 @@
     <description>Benches, samples and the residue of work nobody finished.</description>
     <minDepth>2</minDepth>
     <weight>1.2</weight>
+    <themes>
+      <li>institution</li>
+      <li>industry</li>
+    </themes>
     <slots>
       <li>
         <kind>WorkTable</kind>
@@ -138,6 +148,9 @@
     <description>Half-finished work, tools left where they fell, and material nobody came back for.</description>
     <minDepth>2</minDepth>
     <weight>1.3</weight>
+    <themes>
+      <li>industry</li>
+    </themes>
     <slots>
       <li>
         <kind>WorkTable</kind>
@@ -169,6 +182,10 @@
     <description>Small furniture in a room with no children in it.</description>
     <minDepth>3</minDepth>
     <weight>0.8</weight>
+    <themes>
+      <li>residential</li>
+      <li>institution</li>
+    </themes>
     <slots>
       <li>
         <kind>Bed</kind>
@@ -204,6 +221,10 @@
     <description>Beds in rows, made up and never slept in.</description>
     <minDepth>2</minDepth>
     <weight>1.0</weight>
+    <themes>
+      <li>residential</li>
+      <li>military</li>
+    </themes>
     <slots>
       <li>
         <kind>Bed</kind>
@@ -237,6 +258,10 @@
          coordinate holds, and food lived only here, behind minDepth 2 and a 70% roll. -->
     <minDepth>1</minDepth>
     <weight>1.6</weight>
+    <themes>
+      <li>institution</li>
+      <li>leisure</li>
+    </themes>
     <slots>
       <li>
         <kind>Table</kind>
@@ -275,6 +300,10 @@
          A storeroom in a facility holds food; it held everything except food. -->
     <minDepth>1</minDepth>
     <weight>1.4</weight>
+    <themes>
+      <li>industry</li>
+      <li>market</li>
+    </themes>
     <slots>
       <li>
         <kind>Storage</kind>
@@ -316,6 +345,10 @@
     <description>Equipment still bolted down, still warm, still running on nothing.</description>
     <minDepth>3</minDepth>
     <weight>1.0</weight>
+    <themes>
+      <li>industry</li>
+      <li>infrastructure</li>
+    </themes>
     <slots>
       <li>
         <kind>WorkTable</kind>
@@ -342,6 +375,9 @@
     <description>Beds, medicine, and the smell of a place that treated people once.</description>
     <minDepth>3</minDepth>
     <weight>0.9</weight>
+    <themes>
+      <li>institution</li>
+    </themes>
     <slots>
       <li>
         <kind>Bed</kind>
@@ -373,6 +409,9 @@
     <description>Desks in a grid under a light that hums at the wrong pitch.</description>
     <minDepth>2</minDepth>
     <weight>1.3</weight>
+    <themes>
+      <li>institution</li>
+    </themes>
     <slots>
       <li>
         <kind>Table</kind>
@@ -408,6 +447,10 @@
     <description>Furniture pulled up and stacked, ready to be carried somewhere that does not exist.</description>
     <minDepth>2</minDepth>
     <weight>1.0</weight>
+    <themes>
+      <li>derelict</li>
+      <li>industry</li>
+    </themes>
     <slots>
       <li>
         <kind>Table</kind>
@@ -443,6 +486,10 @@
     <description>Pieces hung with care by somebody who is not here.</description>
     <minDepth>4</minDepth>
     <weight>0.6</weight>
+    <themes>
+      <li>leisure</li>
+      <li>institution</li>
+    </themes>
     <anomalous>true</anomalous>
     <slots>
       <li>
@@ -475,6 +522,9 @@
     <description>Identical furniture in identical positions. You have been here. You have not been here.</description>
     <minDepth>4</minDepth>
     <weight>0.5</weight>
+    <themes>
+      <li>derelict</li>
+    </themes>
     <anomalous>true</anomalous>
     <slots>
       <li>
@@ -505,6 +555,9 @@
     <description>Things that belong in different rooms, arranged by something that had only read about rooms.</description>
     <minDepth>5</minDepth>
     <weight>0.7</weight>
+    <themes>
+      <li>derelict</li>
+    </themes>
     <anomalous>true</anomalous>
     <slots>
       <li>
@@ -548,6 +601,9 @@
     <description>Everything of one kind, far more of it than anybody needed.</description>
     <minDepth>5</minDepth>
     <weight>0.5</weight>
+    <themes>
+      <li>derelict</li>
+    </themes>
     <anomalous>true</anomalous>
     <slots>
       <li>
@@ -560,6 +616,1028 @@
         <kind>Storage</kind>
         <count>2~4</count>
         <chance>0.8</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+
+  <!-- ====================================================================================
+       THE OWNER'S NAMED KINDS, AND THE EXPANSION PAST THEM
+
+       Verbatim owner direction, 2026-10-03: "so its more rooma corradors facilites
+       infastructure roads neighborrs hood malls shoopping centers military(i cant name theme
+       all but there are hundred s and hundreds of facilities and room types like underground
+       lsd cities", and at the composition fork: "option 3 but keep it not limited to my
+       examples i want you to expand and expound on everything in a lsd way".
+
+       "hundred s and hundreds" is not a number of defs to author — it is a product. A room's
+       identity is its ARCHETYPE (these) times its SHAPE (seven forms in RockIntrusionCells)
+       times its coordinate's MATERIALS times every slot's rolled count and chance. Forty-four
+       archetypes against seven shapes is three hundred and eight distinguishable rooms before
+       a single slot is rolled, and the owner's named kinds are all in here by name.
+
+       Every slot still asks for a CAPABILITY rather than naming furniture, for the reason at
+       the top of this file: a profile mod that adds a bench puts it in Backrooms workshops the
+       day it is installed. The CategoryMember slots below use only categories already proven
+       to resolve in this file — an unresolved ThingCategoryDef is a load failure.
+
+       themes is what makes a floor read as somewhere rather than as a list of rooms. A
+       coordinate draws ONE theme and an archetype carrying it is three times likelier; it is
+       deliberately a bias and not a filter, because a market coordinate holding nothing but
+       shops is a themed level rather than a Backrooms level. The wrongness needs the one
+       laboratory in the shopping centre.
+       ==================================================================================== -->
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_ShopFront</defName>
+    <label>shop front</label>
+    <description>A counter, and racks still arranged to be browsed. The prices are gone but the layout assumes somebody is coming in off a street that does not exist.</description>
+    <minDepth>2</minDepth>
+    <weight>1.0</weight>
+    <themes>
+      <li>market</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Table</kind>
+        <count>1~2</count>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>2~5</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Apparel</category>
+        <count>1~4</count>
+        <chance>0.7</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Seat</kind>
+        <count>0~2</count>
+        <chance>0.5</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>0~2</count>
+        <chance>0.6</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_MallConcourse</defName>
+    <label>mall concourse</label>
+    <description>Benches facing nothing, planters, and the lighting of a place built to be walked through. The walking-through has no other end.</description>
+    <minDepth>2</minDepth>
+    <weight>1.2</weight>
+    <themes>
+      <li>market</li>
+      <li>leisure</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Seat</kind>
+        <count>3~8</count>
+      </li>
+      <li>
+        <kind>Art</kind>
+        <count>1~3</count>
+        <chance>0.8</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>2~5</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>0~2</count>
+        <chance>0.35</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Manufactured</category>
+        <count>1~3</count>
+        <chance>0.6</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_FoodCourt</defName>
+    <label>food court</label>
+    <description>Tables bolted in rows, a serving line, and meals that have not spoiled. Nobody is eating and nothing is cold.</description>
+    <minDepth>2</minDepth>
+    <weight>1.0</weight>
+    <themes>
+      <li>market</li>
+      <li>leisure</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Table</kind>
+        <count>2~5</count>
+      </li>
+      <li>
+        <kind>Seat</kind>
+        <count>4~10</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>FoodMeals</category>
+        <count>1~4</count>
+        <chance>0.85</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>WorkTable</kind>
+        <count>0~2</count>
+        <chance>0.6</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~3</count>
+        <chance>0.7</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Checkout</defName>
+    <label>checkout lane</label>
+    <description>Six identical stations in a row, all of them facing the same way, all of them clear.</description>
+    <minDepth>3</minDepth>
+    <weight>0.9</weight>
+    <themes>
+      <li>market</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Table</kind>
+        <count>3~6</count>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>1~4</count>
+        <chance>0.8</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Manufactured</category>
+        <count>1~3</count>
+        <chance>0.6</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~2</count>
+        <chance>0.5</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Stockroom</defName>
+    <label>stockroom</label>
+    <description>Shelving to the ceiling with the aisles too narrow for the pallets. Somebody stocked it and never had to walk it.</description>
+    <minDepth>2</minDepth>
+    <weight>1.0</weight>
+    <themes>
+      <li>market</li>
+      <li>industry</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Storage</kind>
+        <count>4~9</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>ResourcesRaw</category>
+        <count>2~5</count>
+        <chance>0.8</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>0~2</count>
+        <chance>0.5</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Barracks</defName>
+    <label>barracks</label>
+    <description>Beds squared off on a grid, lockers at the foot of each. The bedding is made to a standard nobody is here to inspect.</description>
+    <minDepth>2</minDepth>
+    <weight>1.1</weight>
+    <themes>
+      <li>military</li>
+      <li>residential</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Bed</kind>
+        <count>3~8</count>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>2~6</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~3</count>
+        <chance>0.7</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Apparel</category>
+        <count>0~3</count>
+        <chance>0.5</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Checkpoint</defName>
+    <label>checkpoint</label>
+    <description>A desk across the only way through, and racks behind it. Whatever was being checked for was expected to come from inside.</description>
+    <minDepth>2</minDepth>
+    <weight>1.0</weight>
+    <themes>
+      <li>military</li>
+      <li>infrastructure</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Table</kind>
+        <count>1~2</count>
+      </li>
+      <li>
+        <kind>Seat</kind>
+        <count>1~3</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Weapons</category>
+        <count>1~3</count>
+        <chance>0.7</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>1~3</count>
+        <chance>0.8</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~2</count>
+        <chance>0.8</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_MotorPool</defName>
+    <label>motor pool</label>
+    <description>Benches, parts and the bays for vehicles too wide for any door in the building.</description>
+    <minDepth>3</minDepth>
+    <weight>0.9</weight>
+    <themes>
+      <li>military</li>
+      <li>industry</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>WorkTable</kind>
+        <count>1~3</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Manufactured</category>
+        <count>2~6</count>
+        <chance>0.9</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>1~4</count>
+        <chance>0.8</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~3</count>
+        <chance>0.6</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_BriefingRoom</defName>
+    <label>briefing room</label>
+    <description>Chairs in ranks facing a board. The chairs are occupied by nothing and arranged for somebody who was going to stand at the front.</description>
+    <minDepth>2</minDepth>
+    <weight>0.9</weight>
+    <themes>
+      <li>military</li>
+      <li>institution</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Seat</kind>
+        <count>5~12</count>
+      </li>
+      <li>
+        <kind>Table</kind>
+        <count>1~2</count>
+        <chance>0.8</chance>
+      </li>
+      <li>
+        <kind>Art</kind>
+        <count>0~2</count>
+        <chance>0.5</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~2</count>
+        <chance>0.7</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Books</category>
+        <count>1~2</count>
+        <chance>0.7</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Apartment</defName>
+    <label>apartment</label>
+    <description>Somebody lived in exactly this shape of room, with exactly this furniture, and the door opens onto a corridor with no address.</description>
+    <minDepth>2</minDepth>
+    <weight>1.2</weight>
+    <themes>
+      <li>residential</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Bed</kind>
+        <count>1~2</count>
+      </li>
+      <li>
+        <kind>Table</kind>
+        <count>1~2</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>Seat</kind>
+        <count>1~3</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>1~3</count>
+        <chance>0.8</chance>
+      </li>
+      <li>
+        <kind>Art</kind>
+        <count>0~2</count>
+        <chance>0.6</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~2</count>
+        <chance>0.7</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Apparel</category>
+        <count>1~4</count>
+        <chance>0.8</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_LaundryRoom</defName>
+    <label>laundry room</label>
+    <description>Machines along one wall and folded clothing that is not anybody's size.</description>
+    <minDepth>2</minDepth>
+    <weight>0.8</weight>
+    <themes>
+      <li>residential</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>WorkTable</kind>
+        <count>1~3</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>1~4</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Apparel</category>
+        <count>2~6</count>
+        <chance>0.9</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>0~2</count>
+        <chance>0.5</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Playroom</defName>
+    <label>play room</label>
+    <description>Small chairs, soft flooring, and the picture books stacked by somebody who could read.</description>
+    <minDepth>3</minDepth>
+    <weight>0.8</weight>
+    <themes>
+      <li>residential</li>
+      <li>leisure</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Seat</kind>
+        <count>2~6</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Books</category>
+        <count>1~4</count>
+        <chance>0.8</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Art</kind>
+        <count>1~3</count>
+        <chance>0.8</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>0~2</count>
+        <chance>0.5</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_StairwellLanding</defName>
+    <label>stairwell landing</label>
+    <description>A landing with no stairs at either end of it. The handrail is worn exactly where a hand would go.</description>
+    <minDepth>2</minDepth>
+    <weight>1.0</weight>
+    <themes>
+      <li>infrastructure</li>
+      <li>residential</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Light</kind>
+        <count>1~3</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>Seat</kind>
+        <count>0~1</count>
+        <chance>0.3</chance>
+      </li>
+      <li>
+        <kind>Art</kind>
+        <count>0~1</count>
+        <chance>0.25</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>ResourcesRaw</category>
+        <count>1~2</count>
+        <chance>0.45</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_ServiceTunnel</defName>
+    <label>service tunnel</label>
+    <description>Conduit, cable trays and the stencilled numbers of a system the building does not have.</description>
+    <minDepth>2</minDepth>
+    <weight>1.2</weight>
+    <themes>
+      <li>infrastructure</li>
+      <li>industry</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Light</kind>
+        <count>2~5</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Manufactured</category>
+        <count>1~4</count>
+        <chance>0.8</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>0~2</count>
+        <chance>0.4</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Substation</defName>
+    <label>substation</label>
+    <description>Switchgear humming with nothing drawing on it, and the floor marked out for feet that should not stand there.</description>
+    <minDepth>3</minDepth>
+    <weight>0.9</weight>
+    <themes>
+      <li>infrastructure</li>
+      <li>industry</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Manufactured</category>
+        <count>2~5</count>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>WorkTable</kind>
+        <count>0~2</count>
+        <chance>0.6</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~3</count>
+        <chance>0.8</chance>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>0~2</count>
+        <chance>0.4</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_PumpHouse</defName>
+    <label>pump house</label>
+    <description>Pumps, valve wheels, and the stains of water moved through a place with no source and no drain.</description>
+    <minDepth>3</minDepth>
+    <weight>0.9</weight>
+    <themes>
+      <li>infrastructure</li>
+      <li>industry</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>WorkTable</kind>
+        <count>1~2</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Manufactured</category>
+        <count>2~5</count>
+        <chance>0.9</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>1~3</count>
+        <chance>0.7</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~2</count>
+        <chance>0.6</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Roadway</defName>
+    <label>roadway</label>
+    <description>Lane markings, a kerb, and lighting at the spacing of a road. It is indoors, it is roofed, and it is wide enough for two lanes of something.</description>
+    <minDepth>2</minDepth>
+    <weight>1.0</weight>
+    <themes>
+      <li>infrastructure</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Light</kind>
+        <count>3~7</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Manufactured</category>
+        <count>0~3</count>
+        <chance>0.5</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Art</kind>
+        <count>0~1</count>
+        <chance>0.2</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Cinema</defName>
+    <label>cinema</label>
+    <description>Seating in a rake, facing a wall that was built to be looked at. The wall is a wall.</description>
+    <minDepth>3</minDepth>
+    <weight>0.9</weight>
+    <themes>
+      <li>leisure</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Seat</kind>
+        <count>6~14</count>
+      </li>
+      <li>
+        <kind>Art</kind>
+        <count>0~2</count>
+        <chance>0.5</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>0~2</count>
+        <chance>0.4</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>FoodMeals</category>
+        <count>1~3</count>
+        <chance>0.7</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_WaitingRoom</defName>
+    <label>waiting room</label>
+    <description>Chairs round the wall, a low table, and magazines nobody has disturbed. Whoever was waiting is not here and has not been called.</description>
+    <minDepth>2</minDepth>
+    <weight>1.1</weight>
+    <themes>
+      <li>leisure</li>
+      <li>institution</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Seat</kind>
+        <count>4~9</count>
+      </li>
+      <li>
+        <kind>Table</kind>
+        <count>1~2</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Books</category>
+        <count>1~3</count>
+        <chance>0.7</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Art</kind>
+        <count>0~2</count>
+        <chance>0.6</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~2</count>
+        <chance>0.6</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Sauna</defName>
+    <label>changing room</label>
+    <description>Benches, hooks, and the close warmth of a room with nothing heating it.</description>
+    <minDepth>3</minDepth>
+    <weight>0.8</weight>
+    <themes>
+      <li>leisure</li>
+      <li>residential</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Seat</kind>
+        <count>2~6</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Apparel</category>
+        <count>1~4</count>
+        <chance>0.8</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>1~3</count>
+        <chance>0.7</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>0~2</count>
+        <chance>0.5</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_RecordsVault</defName>
+    <label>records vault</label>
+    <description>Files in ranks, indexed by a scheme that holds all the way through and refers to nothing.</description>
+    <minDepth>3</minDepth>
+    <weight>0.9</weight>
+    <themes>
+      <li>institution</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Storage</kind>
+        <count>4~9</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Books</category>
+        <count>2~6</count>
+        <chance>0.9</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~2</count>
+        <chance>0.6</chance>
+      </li>
+      <li>
+        <kind>Table</kind>
+        <count>0~1</count>
+        <chance>0.4</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Chapel</defName>
+    <label>quiet room</label>
+    <description>Seating in rows facing one end, and a space at that end left deliberately empty.</description>
+    <minDepth>4</minDepth>
+    <weight>0.7</weight>
+    <themes>
+      <li>institution</li>
+      <li>leisure</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Seat</kind>
+        <count>4~10</count>
+      </li>
+      <li>
+        <kind>Art</kind>
+        <count>1~2</count>
+        <chance>0.8</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~3</count>
+        <chance>0.7</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Books</category>
+        <count>1~2</count>
+        <chance>0.6</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Infirmary</defName>
+    <label>infirmary</label>
+    <description>Two beds, a supply cabinet, and medicine stocked for a number of people this room could never hold.</description>
+    <minDepth>2</minDepth>
+    <weight>0.9</weight>
+    <themes>
+      <li>institution</li>
+      <li>military</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Bed</kind>
+        <count>1~3</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Medicine</category>
+        <count>1~4</count>
+        <chance>0.9</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>1~3</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~2</count>
+        <chance>0.7</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_EndlessShelves</defName>
+    <label>endless shelving</label>
+    <description>Shelving on every wall and down the middle, all of it the same shelving, all of it stocked with the same thing. The aisles meet at the far end.</description>
+    <minDepth>4</minDepth>
+    <weight>0.8</weight>
+    <anomalous>true</anomalous>
+    <themes>
+      <li>derelict</li>
+      <li>market</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Storage</kind>
+        <count>6~12</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Manufactured</category>
+        <count>3~8</count>
+        <chance>0.9</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>0~2</count>
+        <chance>0.4</chance>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_FurnitureDrift</defName>
+    <label>drifted furniture</label>
+    <description>Everything in the room has been moved to one wall. Not stacked, not piled -- moved, upright, and still facing the way it was.</description>
+    <minDepth>4</minDepth>
+    <weight>0.8</weight>
+    <anomalous>true</anomalous>
+    <themes>
+      <li>derelict</li>
+      <li>residential</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Seat</kind>
+        <count>3~9</count>
+      </li>
+      <li>
+        <kind>Table</kind>
+        <count>2~5</count>
+        <chance>0.9</chance>
+      </li>
+      <li>
+        <kind>Storage</kind>
+        <count>1~4</count>
+        <chance>0.7</chance>
+      </li>
+      <li>
+        <kind>Art</kind>
+        <count>0~2</count>
+        <chance>0.5</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Apparel</category>
+        <count>1~4</count>
+        <chance>0.7</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_MirrorWard</defName>
+    <label>mirrored ward</label>
+    <description>Beds in a grid so exact that the gaps are the same width as the beds, and the room is symmetrical about an axis the door is not on.</description>
+    <minDepth>5</minDepth>
+    <weight>0.7</weight>
+    <anomalous>true</anomalous>
+    <themes>
+      <li>derelict</li>
+      <li>institution</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Bed</kind>
+        <count>4~10</count>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>2~4</count>
+        <chance>0.8</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Medicine</category>
+        <count>0~2</count>
+        <chance>0.4</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_CarpetSea</defName>
+    <label>one chair</label>
+    <description>A room of this size, carpeted wall to wall, holding one chair. The chair is in the middle and it is facing a corner.</description>
+    <minDepth>5</minDepth>
+    <weight>0.6</weight>
+    <anomalous>true</anomalous>
+    <themes>
+      <li>derelict</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Seat</kind>
+        <count>1~1</count>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>0~1</count>
+        <chance>0.3</chance>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>Apparel</category>
+        <count>1~1</count>
+        <chance>0.5</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+    </slots>
+  </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+
+  <RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>
+    <defName>RR_Room_Vending</defName>
+    <label>vending wall</label>
+    <description>Machines in an unbroken line, every one of them the same, every one of them stocked, none of them taking anything.</description>
+    <minDepth>4</minDepth>
+    <weight>0.7</weight>
+    <anomalous>true</anomalous>
+    <themes>
+      <li>derelict</li>
+      <li>market</li>
+    </themes>
+    <slots>
+      <li>
+        <kind>Storage</kind>
+        <count>4~8</count>
+      </li>
+      <li>
+        <kind>CategoryMember</kind>
+        <category>FoodMeals</category>
+        <count>2~6</count>
+        <chance>0.9</chance>
+        <stackCount>1~5</stackCount>
+      </li>
+      <li>
+        <kind>Light</kind>
+        <count>1~3</count>
+        <chance>0.7</chance>
       </li>
     </slots>
   </RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>

@@ -141,6 +141,21 @@ namespace RimroomsAsyncIndustries.Generation
         public static RimroomsRoomArchetypeDef Select(string familyId, int depth, int seed,
             int roomIndex)
         {
+            return Select(familyId, depth, seed, roomIndex, CoordinateMotif.None);
+        }
+
+        /// <summary>
+        /// Pick a kind of room, biased toward the coordinate's own **theme**.
+        ///
+        /// Owner, 2026-10-03: *"so its more rooma corradors facilites infastructure roads
+        /// neighborrs hood malls shoopping centers military"*. Archetypes were drawn against
+        /// their own weight alone, so a coordinate held a classroom beside a weapons locker
+        /// beside a nursery -- a list of rooms rather than somewhere. See
+        /// <see cref="CoordinateMotif"/> for why the theme is a bias and not a filter.
+        /// </summary>
+        internal static RimroomsRoomArchetypeDef Select(string familyId, int depth, int seed,
+            int roomIndex, CoordinateMotif motif)
+        {
             if (depth <= 1 || string.IsNullOrEmpty(familyId)) { return null; }
 
             // The threshold is where a player arrives. It is left undressed on purpose, so the
@@ -177,7 +192,9 @@ namespace RimroomsAsyncIndustries.Generation
             // ordinary ones are the surprise.
             float anomalousFactor = SpaceSophistication.AnomalousWeightFactor(depth, campaign);
             Func<RimroomsRoomArchetypeDef, float> weightOf = archetype =>
-                Math.Max(0.0001f, archetype.weight) * (archetype.anomalous ? anomalousFactor : 1f);
+                Math.Max(0.0001f, archetype.weight)
+                * (archetype.anomalous ? anomalousFactor : 1f)
+                * motif.WeightFor(archetype.themes);
 
             float total = legal.Sum(weightOf);
             int roll = Gen.HashCombineInt(seed, 0x41524348);

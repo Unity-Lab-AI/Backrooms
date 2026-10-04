@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Generation_InvalidRequest>That coordinate cannot be opened from this branch.</RR_Generation_InvalidRequest>
   <RR_Generation_InvalidCoordinate>The coordinate record is incomplete or invalid.</RR_Generation_InvalidCoordinate>
@@ -64,4 +64,15 @@
   <RR_Event_SiteReaddressed>The unvisited failed survey at {0} was reassigned to {1}. The failed map is retained, and the original contract remains unpaid.</RR_Event_SiteReaddressed>
   <RR_Generation_Failed>This space could not be laid out. Nothing was generated and the coordinate is unchanged.</RR_Generation_Failed>
   <RR_Event_ThingsMovedSinceLastVisit>{0} fixture(s) in this coordinate are not where the last survey left them.</RR_Event_ThingsMovedSinceLastVisit>
+
+  <!-- The generation freeze, told before it happens and toned per scenario.
+       Owner direction 2026-10-03: a notice of the pause that is expected, in the
+       universe's own voice. The example wording the owner gave was explicitly
+       rejected by the owner in the same sentence; the sense it carries is kept. -->
+  <RR_Generation_FreezeEvent>Resolving a space that has not been indexed...</RR_Generation_FreezeEvent>
+  <RR_Generation_FreezeAcknowledge>Understood — hold</RR_Generation_FreezeAcknowledge>
+  <RR_Generation_FreezeNotice>THE HOLD IS EXPECTED\n\nA space on the far side is being resolved, and it is larger than anything here. Until it finishes, nothing on this side advances: no clock, no movement, no answer to anything you do.\n\nThis is not a fault and nothing has been lost. Wait for it. It ends.</RR_Generation_FreezeNotice>
+  <RR_Generation_FreezeNotice_RR_AsyncIndustriesStart>GATE CONNECTION — HOLD\n\nThe aperture is resolving a coordinate that carries no index. Resolution is not interruptible and it does not share the tick: while it runs, the company clock and everything on it stops. You will see no movement and get no response.\n\nThis is expected. Async Industries records the interval as acquisition time and bills it to the client.\n\nThe hold ends when the far side has a shape.</RR_Generation_FreezeNotice_RR_AsyncIndustriesStart>
+  <RR_Generation_FreezeNotice_RR_FurnitureStoreStart>BACK DOOR — PLEASE WAIT\n\nSomething behind the door is being measured out, and it is a great deal bigger than the stockroom. Until the measuring is done, nothing in the shop moves. Not the clock. Not the lights. Not you.\n\nThis happens every time a door opens onto somewhere new, and it has always finished.\n\nStay where you are.</RR_Generation_FreezeNotice_RR_FurnitureStoreStart>
+  <RR_Generation_FreezeNotice_RR_SoloGroupStart>IT IS TAKING A MOMENT\n\nThe space past the threshold has not settled on what it is. While it settles, nothing moves — not the air, not the light, not your own hands.\n\nTime has not slowed down. It has stopped. It will start again and you will not have aged a second.\n\nWait. Everyone who has gone through has waited here.</RR_Generation_FreezeNotice_RR_SoloGroupStart>
 </LanguageData>

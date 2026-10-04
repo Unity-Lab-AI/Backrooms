@@ -271,7 +271,20 @@ namespace RimroomsAsyncIndustries.UI
             if (gate == null || !gate.IsDesignated)
             { listing.Label("RR_Portals_GateRequired".Translate()); }
             else if (listing.ButtonText("RR_Portals_RememberLaboratory".Translate()))
-            { ShowResult(PortalAddressService.RegisterLaboratoryAddress(gate, coordinate)); }
+            {
+                // **THE NOTICE GOES BEFORE THE FREEZE, and a button callback is the one place it
+                // can.** Owner, 2026-10-03: *"using the operations tab machine when finally
+                // opening the gate(loading the backrooms) we need a popup and notice ... that pops
+                // up befgore the "freeze" of the generation"*. `EnsureSite` generates
+                // synchronously and returns the map through an `out` parameter, so a window added
+                // immediately before it would draw on the NEXT frame -- after the freeze. Nothing
+                // is waiting on a return value here, so the work can move into a long event and
+                // the warning can be drawn first. See `RimroomsGenerationNotice`.
+                CoordinateRecord opening = coordinate;
+                CompRimroomsGate opened = gate;
+                Presentation.RimroomsGenerationNotice.Announce(opening, () =>
+                    ShowResult(PortalAddressService.RegisterLaboratoryAddress(opened, opening)));
+            }
 
             if (listing.ButtonText("RR_Portals_SelectNaturalDoor".Translate()))
             { OpenPortalNaturalDoorMenu(campaign); }
@@ -281,7 +294,15 @@ namespace RimroomsAsyncIndustries.UI
                     portalNaturalDoorChoice.Position));
                 IntVec3 approach = NaturalApproachCell(portalNaturalDoorChoice);
                 if (approach.IsValid && listing.ButtonText("RR_Portals_RememberNatural".Translate()))
-                { ShowResult(PortalAddressService.RegisterNaturalAddress(portalNaturalDoorChoice, approach, coordinate)); }
+                {
+                    // Same reasoning as the laboratory address above: a natural doorway opening
+                    // onto an unindexed coordinate builds a map, and this is a button callback.
+                    CoordinateRecord opening = coordinate;
+                    Thing chosen = portalNaturalDoorChoice;
+                    IntVec3 from = approach;
+                    Presentation.RimroomsGenerationNotice.Announce(opening, () =>
+                        ShowResult(PortalAddressService.RegisterNaturalAddress(chosen, from, opening)));
+                }
             }
         }
 

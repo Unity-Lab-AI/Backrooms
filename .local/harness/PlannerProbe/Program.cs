@@ -35,6 +35,21 @@ namespace PlannerProbe
         private static MethodInfo anchorFor;
         private static FieldInfo coordinateRooms;
         private static MethodInfo candidateIsSafe;
+        private static MethodInfo motifFor;
+        private static Type motifType;
+        private const BindingFlags Instanced = BindingFlags.Instance | BindingFlags.Public
+            | BindingFlags.NonPublic;
+        private static MethodInfo shapeFormOf;
+
+        /// <summary>
+        /// The motif of the coordinate being measured, set once per coordinate.
+        ///
+        /// A field rather than a parameter threaded through six methods: this is a harness, the
+        /// value is constant for the whole of one coordinate's measurement, and the alternative
+        /// is six signatures carrying a diagnostic concern. It is set immediately after the
+        /// coordinate is built and read nowhere else.
+        /// </summary>
+        private static object currentMotif;
         // Read from DestinationService rather than written here, so the fill percentage is
         // against the map the game actually generates. A constant of our own would be a second
         // opinion about how big a coordinate is.
@@ -71,6 +86,10 @@ namespace PlannerProbe
             coordinateRooms = coordinateType.GetField("rooms",
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             candidateIsSafe = planner.GetMethod("CandidateIsSafe", Statics);
+            shapeFormOf = planner.GetMethod("ShapeFormOf", Statics);
+            motifType = planner.Assembly
+                .GetType("RimroomsAsyncIndustries.Generation.CoordinateMotif");
+            motifFor = motifType.GetMethod("For", Statics);
             candidateBudget = (int)planner.GetField("CandidateBudget", Statics).GetValue(null);
 
             Console.WriteLine("WidestRoomSpan = " + widestSpan.GetValue(null, null));
@@ -110,6 +129,17 @@ namespace PlannerProbe
                 int degreeOne = 0;
                 int degreeZero = 0;
                 long roomCellTotal = 0;
+                // **IS IT A PATTERN WITH VARIATIONS, OR IS IT NOISE?** Owner, 2026-10-03:
+                // *"repeated patternes in variations"*. Seven room shapes already existed and
+                // every room rolled its own independently, which is not a pattern -- and nothing
+                // in the battery could see that, exactly as nothing could see the average degree
+                // before this probe was taught to count links. Two numbers: the share of rooms
+                // that take the coordinate's motif shape, and how many distinct shapes a level
+                // holds. A floor that is all motif is monotonous; one at a seventh of it is
+                // random; the owner asked for the ground in between, and it has to be visible to
+                // be aimed at.
+                int onMotif = 0;
+                var shapesSeen = new HashSet<int>();
                 // **WHERE THE GRAND HALL LANDS.** Owner, 2026-10-03: *"starting room is not to
                 // always be in bottom left of map"*. It was two literals, and nothing measured
                 // it -- so "always the same corner" was invisible to every instrument here.
@@ -124,6 +154,10 @@ namespace PlannerProbe
                 for (int seed = 0; seed < Seeds; seed++)
                 {
                     object coordinate = MakeCoordinate("probe-" + depth + "-" + seed, seed * 7919 + 13, depth);
+                    // **THE COORDINATE'S MOTIF, from the planner rather than re-derived.** Owner,
+                    // 2026-10-03: *"repeated patternes in variations"*. Every shape decision now
+                    // reads it, so the harness has to hold the same one the carver would.
+                    currentMotif = motifFor.Invoke(null, new object[] { coordinate });
                     object[] args = { coordinate, null };
                     bool selected = (bool)trySelect.Invoke(null, args);
                     if (!selected) { refused++; reasons.Add("TrySelect refused"); continue; }
@@ -176,7 +210,8 @@ namespace PlannerProbe
                     {
                         object built = buildCandidate.Invoke(
                             null, new object[] { coordinate, which });
-                        if ((bool)candidateIsSafe.Invoke(null, new object[] { built, depth }))
+                        if ((bool)candidateIsSafe.Invoke(null,
+                            new object[] { built, depth, currentMotif }))
                         { safeCandidates++; continue; }
                         object[] why = { built, null };
                         validateRooms.Invoke(null, why);
@@ -219,9 +254,16 @@ namespace PlannerProbe
                             null, new object[] { layout, room, depth });
                         int rock = 0;
                         foreach (Verse.IntVec3 rockCell in (IEnumerable<Verse.IntVec3>)
-                            rockIntrusionCells.Invoke(null, new object[] { room, roomShapeDepth }))
+                            rockIntrusionCells.Invoke(null,
+                                new object[] { room, roomShapeDepth, currentMotif }))
                         { rock++; }
                         if (rock > 0) { shapedRooms++; }
+                        int motifShape = (int)motifType.GetField("Shape", Instanced)
+                            .GetValue(currentMotif);
+                        int roomShape = (int)shapeFormOf.Invoke(null,
+                            new object[] { room, roomShapeDepth, currentMotif });
+                        shapesSeen.Add(roomShape);
+                        if (roomShape == motifShape) { onMotif++; }
                         rockTotal += rock;
                         var roomBounds = (Verse.CellRect)roomType.GetProperty("Bounds")
                             .GetValue(room, null);
@@ -270,14 +312,16 @@ namespace PlannerProbe
                 int mapArea = mapWidth * mapHeight;
                 Console.WriteLine(string.Format(
                     "     maze  depth {0,-2} degree avg {1,4:0.00} max {2,2} deg0 {3,5:0.0}% deg1 {4,5:0.0}% roomfill {5,4:0.0}% of {6}x{7}"
-                    + "  hallspots {8,3} corner {9,5:0.0}% vertical {10,5:0.0}%",
+                    + "  hallspots {8,3} corner {9,5:0.0}% vertical {10,5:0.0}%"
+                    + "  onmotif {11,5:0.0}% shapes {12}",
                     depth, (double)degreeTotal / measuredRooms, degreeMax,
                     100.0 * degreeZero / measuredRooms, 100.0 * degreeOne / measuredRooms,
                     refused == Seeds ? 0.0 : 100.0 * roomCellTotal / ((Seeds - refused) * (long)mapArea),
                     mapWidth, mapHeight,
                     hallOrigins.Count,
                     refused == Seeds ? 0.0 : 100.0 * hallAtOldCorner / (Seeds - refused),
-                    refused == Seeds ? 0.0 : 100.0 * hallVertical / (Seeds - refused)));
+                    refused == Seeds ? 0.0 : 100.0 * hallVertical / (Seeds - refused),
+                    100.0 * onMotif / measuredRooms, shapesSeen.Count));
                 foreach (string reason in reasons) { Console.WriteLine("        reason: " + reason); }
                 if (refused != 0) { failures++; }
                 if (fellBack >= Seeds) { fellBackEverywhere = true; }
@@ -611,7 +655,7 @@ namespace PlannerProbe
             { blocked.Add(cell); }
             int shapeDepth = (int)shapeDepthOf.Invoke(null, new object[] { layout, room, depth });
             foreach (Verse.IntVec3 cell in (IEnumerable<Verse.IntVec3>)rockIntrusionCells.Invoke(
-                null, new object[] { room, shapeDepth }))
+                null, new object[] { room, shapeDepth, currentMotif }))
             { blocked.Add(cell); }
             // The room's own perimeter is wall, and wall is an edifice like any other.
             foreach (Verse.IntVec3 cell in bounds.Cells)

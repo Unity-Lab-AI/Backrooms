@@ -116,6 +116,32 @@ namespace RimroomsAsyncIndustries.Generation
         public List<RoomFurnitureSlot> slots = new List<RoomFurnitureSlot>();
 
         /// <summary>
+        /// Which kinds of place this room belongs to, from <see cref="CoordinateMotif.Themes"/>.
+        ///
+        /// ## Owner direction, 2026-10-03, verbatim
+        ///
+        /// *"so its more rooma corradors facilites infastructure roads neighborrs hood malls
+        /// shoopping centers military"*, and at the fork *"option 3 but keep it not limited to my
+        /// examples i want you to expand and expound on everything in a lsd way"*.
+        ///
+        /// ## This is the axis that turns sixteen kinds into a place
+        ///
+        /// Every archetype was drawn per room against its own weight alone, so a coordinate held
+        /// a classroom beside a weapons locker beside a nursery — **a list of rooms rather than
+        /// somewhere.** A coordinate now draws one theme and an archetype carrying it is
+        /// <see cref="CoordinateMotif.ThemeWeightFactor"/> times likelier, so the floor reads as
+        /// an institution, a market, a barracks, a neighbourhood.
+        ///
+        /// **A bias, never a filter**, and that is deliberate: a market coordinate holding
+        /// nothing but shops is a themed level rather than a Backrooms level. The wrongness needs
+        /// the one laboratory in the shopping centre.
+        ///
+        /// Empty means the archetype fits anywhere and is never penalised for saying so — the
+        /// tags buy coherence, they are not a tax on not declaring one.
+        /// </summary>
+        public List<string> themes;
+
+        /// <summary>
         /// The highest tech level this archetype will ever produce.
         ///
         /// A **ceiling, not a target.** What a coordinate actually produces rises with the
@@ -142,6 +168,19 @@ namespace RimroomsAsyncIndustries.Generation
             { yield return "RimroomsRoomArchetypeDef " + defName + " has a non-positive weight."; }
             if (maxDepth > 0 && maxDepth < minDepth)
             { yield return "RimroomsRoomArchetypeDef " + defName + " has maxDepth below minDepth."; }
+            // **A THEME THE MOTIF CANNOT DRAW IS A TAG THAT DOES NOTHING.** A typo here would be
+            // completely silent otherwise: the archetype would simply never get its bias, and a
+            // coordinate meant to read as a market would hold shops at the same rate as
+            // everything else. Caught at load, by name, where somebody can fix it.
+            if (themes != null)
+            {
+                for (int index = 0; index < themes.Count; index++)
+                {
+                    if (System.Array.IndexOf(CoordinateMotif.Themes, themes[index]) >= 0) { continue; }
+                    yield return "RimroomsRoomArchetypeDef " + defName + " declares theme '"
+                        + themes[index] + "', which is not one of CoordinateMotif.Themes.";
+                }
+            }
         }
     }
 }

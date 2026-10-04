@@ -168,10 +168,12 @@ namespace RimroomsAsyncIndustries.Generation
             for (int candidate = 0; candidate < CandidateBudget; candidate++)
             {
                 List<RoomRecord> rooms = Build(coordinate, candidate);
-                if (CandidateIsSafe(rooms, DepthOf(coordinate))) { selected = rooms; return true; }
+                if (CandidateIsSafe(rooms, DepthOf(coordinate), CoordinateMotif.For(coordinate)))
+                { selected = rooms; return true; }
             }
             List<RoomRecord> fallback = Build(coordinate, FallbackCandidate);
-            if (!CandidateIsSafe(fallback, DepthOf(coordinate))) { return false; }
+            if (!CandidateIsSafe(fallback, DepthOf(coordinate), CoordinateMotif.For(coordinate)))
+            { return false; }
             selected = fallback;
             return true;
         }
@@ -183,7 +185,8 @@ namespace RimroomsAsyncIndustries.Generation
                 coordinate.GeneratorVersion < 1 || coordinate.roomLibraryVersion < 1)
             { return false; }
             List<RoomRecord> candidate = Build(coordinate, FallbackCandidate);
-            if (!CandidateIsSafe(candidate, DepthOf(coordinate))) { return false; }
+            if (!CandidateIsSafe(candidate, DepthOf(coordinate), CoordinateMotif.For(coordinate)))
+            { return false; }
             fallback = candidate;
             return true;
         }
@@ -448,7 +451,53 @@ namespace RimroomsAsyncIndustries.Generation
         /// <summary>How many distinct forms a room can take.</summary>
         internal const int ShapeForms = 7;
 
-        internal static IEnumerable<IntVec3> RockIntrusionCells(RoomRecord room, int depth)
+        /// <summary>
+        /// The one roll every shape decision in a room is drawn from.
+        ///
+        /// Lifted out so <see cref="ShapeFormOf"/> and <see cref="RockIntrusionCells"/> cannot
+        /// drift: they are the carver and the measurement of the same choice, and a probe that
+        /// re-derived this would be the third copy of a rule in this generator rather than the
+        /// second. The third copy is what the layout probe's own refusal diagnostic turned out to
+        /// be holding, and every reason it printed was wrong because of it.
+        /// </summary>
+        internal static int ShapeRollFor(RoomRecord room, int depth)
+        {
+            if (room == null) { return 0; }
+            int roll = DestinationService.StableHash(room.index * 31 + depth,
+                (room.familyId ?? "") + ":shape", depth);
+            return roll < 0 ? ~roll : roll;
+        }
+
+        /// <summary>
+        /// Which of the seven forms this room takes: the motif's, or its own.
+        ///
+        /// **Named rather than inlined so it can be MEASURED.** Owner, 2026-10-03: *"repeated
+        /// patternes in variations"*. Whether a floor reads as a pattern with variations or as
+        /// noise is a number — the share of rooms on the motif — and before this existed
+        /// nothing in the battery could see it, exactly as nothing could see the average degree
+        /// before the probe was taught to count links. `check-planner-layouts.py` reads this.
+        /// </summary>
+        internal static int ShapeFormOf(RoomRecord room, int depth, CoordinateMotif motif)
+        {
+            return motif.ShapeFor(ShapeRollFor(room, depth));
+        }
+
+        /// <summary>
+        /// The rock left standing inside a room, shaped by the coordinate's own **motif**.
+        ///
+        /// Owner, 2026-10-03: *"repeated patternes in variations"*. The seven forms below have
+        /// existed for some time and **every room rolled its own, independently of every other
+        /// room** — which does not make a pattern, it makes noise. A floor where one room is a
+        /// wedge, the next has bays and the next is a cross reads as damage rather than as
+        /// architecture. The motif is the shape the floor tends toward; see
+        /// <see cref="CoordinateMotif"/> for why its grip falls with depth.
+        ///
+        /// <paramref name="motif"/> must be the SAME motif the reachability proof used. Both
+        /// derive it from the coordinate rather than passing it along a chain, so neither can be
+        /// handed a different one.
+        /// </summary>
+        internal static IEnumerable<IntVec3> RockIntrusionCells(RoomRecord room, int depth,
+            CoordinateMotif motif)
         {
             // **Never the grand hall.** It is the room the player arrives in and the one meant to
             // read as built, which is the same reason `FalseOpening` leaves it alone.
@@ -464,9 +513,7 @@ namespace RimroomsAsyncIndustries.Generation
             if (extentX - insetX < 4 || extentZ - insetZ < 4) { yield break; }
 
             IntVec3 center = bounds.CenterCell;
-            int roll = DestinationService.StableHash(room.index * 31 + depth,
-                (room.familyId ?? "") + ":shape", depth);
-            if (roll < 0) { roll = ~roll; }
+            int roll = ShapeRollFor(room, depth);
 
             // How far a mass reaches in, growing with depth and never past the centre cross.
             int reach = System.Math.Min((depth - 1) * 2,
@@ -485,7 +532,12 @@ namespace RimroomsAsyncIndustries.Generation
 
             // A plain room is a form too. Owner: *"all the geomentry and mixetrues"* -- a floor
             // where every room is deranged is as uniform as one where none is.
-            int form = roll % ShapeForms;
+            //
+            // **AND WHICH FORM IS THE MOTIF'S MOST OF THE TIME.** This was `roll % ShapeForms`
+            // alone: an independent draw per room, so seven good shapes added up to noise. The
+            // motif holds hardest at depth 1 and loosens all the way down, which is one number
+            // producing both the monotonous yellow floors and the incoherent deep ones.
+            int form = ShapeFormOf(room, depth, motif);
             if (!roomy && form != 0) { form = 0; }
 
             bool east = (roll / 7) % 2 == 0;
@@ -2074,7 +2126,15 @@ namespace RimroomsAsyncIndustries.Generation
             rooms[b].links.Add(a);
         }
 
-        private static bool CandidateIsSafe(List<RoomRecord> rooms, int depth)
+        /// <summary>
+        /// Prove this layout walkable before any map exists.
+        ///
+        /// <paramref name="motif"/> is **the coordinate's own**, because the rock shapes it
+        /// decides are the rock the generator will leave standing: a validator proving a square
+        /// room the carver then shapes is a validator proving a different room, which is the
+        /// defect class that stopped every coordinate generating for thirty-nine checkpoints.
+        /// </summary>
+        private static bool CandidateIsSafe(List<RoomRecord> rooms, int depth, CoordinateMotif motif)
         {
             if (!DestinationService.ValidateRooms(rooms, out _)) { return false; }
             // Project the exact boundary walls, one-cell openable doors, three-cell corridors and
@@ -2095,7 +2155,7 @@ namespace RimroomsAsyncIndustries.Generation
                 // The SAME shaping depth the generator will carve with. Passing the
                 // coordinate's own depth here while the generator used a per-room one would be
                 // a validator proving a room that is not the room that gets built.
-                foreach (IntVec3 rock in RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth)))
+                foreach (IntVec3 rock in RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth), motif))
                 { floor[rock.x, rock.z] = false; }
             }
             foreach (RoomRecord room in rooms)

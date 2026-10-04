@@ -14789,3 +14789,148 @@ reads `isResourceRock` and `deepCommonality` out of the loaded game rather than 
 a profile mod's ores and deep resources are included **without** an adapter — which is the
 `modDependencies` removal direction being served by construction rather than by a later pass.
 
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **2 whole direction groups** whose every row was done, and **8 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **"repeated patternes in variations"** — a Backrooms motif: the *same* shape recurring with differences, which is not the same thing as the current per-room independent roll. Seven shape forms exist (`RockIntrusionCells`) but each room rolls alone, so a floor reads as noise rather than as a pattern with variations. Needs a per-coordinate motif that rooms vary *from*.
+**Verbatim owner direction (2026-10-03):** *"do it properly"*
+
+- [x] **"but i dont think we properly did the same for loading screens and the like"** — and the owner is right. The slideshow is bound to the main menu surface only; nothing draws behind a load, a save, a map generation or a world generation, so every one of those is Core's plain screen. *"and the like"* is deliberate and is read as **every** waiting screen the mod can reach, not only the one labelled loading. — **STILL OPEN, and here is the honest boundary.** The entry-state waits — loading a save, starting a game — draw `UIMenuBackgroundManager.background`, so those now show our art and show it randomly. **An in-play long event does not**: `Root.OnGUI` skips the UI root entirely while `LongEventHandler.ShouldWaitForEvent`, and the box Core draws over the frozen frame is Core’s own. Drawing behind that needs a transpiler, and this mod ships **no Harmony** by decision. What is reachable without one is a surface **we** own, which is the pre-generation notice in the row below — so these two rows close together. — **CLOSED 0.12.83-dev, **and the owner’s instinct was right twice over.** The entry-state waits now show the art and show it randomly (the index had been pinned to `0` in two places). And the in-play half, which the earlier finding recorded as unreachable without Harmony, is answered by owning the surface instead of fighting for Core’s: `Dialog_RimroomsGenerationNotice` is a frameless full-screen window carrying one of the mod’s own menu images, drawn from the same list the menu reads. **It is a loading screen with our art on it, before the longest wait in the mod.****
+- [x] **"do it properly"** — recorded as the instruction it is: not a hook that happens to fire, but the images drawn behind the wait in a way that reads as part of the game.
+
+- [x] **"we need a popup and notice in that portion of the machine gate connection step"** — a popup **and** a notice, and the notice belongs in the gate-connection step of the machine's own readout, not only in a window that vanishes. — **CLOSED 0.12.83-dev. `Presentation/RimroomsGenerationNotice.cs` — a popup **and** a notice: the full-screen window before the freeze, and `RR_Generation_FreezeEvent` carried by Core’s own wait box **through** the freeze, so the message is present in both halves of the pause rather than only in the one that vanishes.**
+- [x] **"that pops up befgore the "freeze" of the generation"** — **before**, which is the whole requirement and the hard part: it must be drawn and presented while the game can still draw, then the generation runs. A message queued and shown afterwards is worth nothing. — **STILL OPEN, and the design is settled rather than guessed.** Read against the code this session: `DestinationService.EnsureSite` calls `GetOrGenerateMapUtility.GetOrGenerateMap` **synchronously** at line 186 and returns the map through an `out` parameter, so every caller depends on it having finished. A window added to the stack immediately before that call renders on the *next* frame, which is after the freeze — so the popup cannot work until the generation is deferred into `LongEventHandler.QueueLongEvent`, which changes the contract every caller of `EnsureSite` relies on. **That is its own checkpoint and it is deliberately not half-built here**: a notice that appears after the thing it warns about is worse than none, and the keyed text would be *"a collected list nothing spends"*, which this repo names as its most repeated defect. — **CLOSED 0.12.83-dev, **and this was the whole difficulty.** The earlier finding was right that `EnsureSite` generates synchronously, so a window added immediately before it draws on the *next* frame. The answer is not to defer `EnsureSite` — it hands the map back through an `out` parameter and every caller depends on that — but to move the **work** into `LongEventHandler.QueueLongEvent`, which is the pattern Core itself uses for settling. That is legal exactly where nothing waits on a return value, and **a UI button callback is such a place.** So the pane’s buttons announce, the player dismisses the notice while the game can still draw, and the generation then runs inside the event.**
+- [x] **"telling the player "Time has froze due to mass distortions, please wait" but noit that"** — the owner's example wording, given **and explicitly rejected as the final text**. Recorded verbatim because it is the sense that must survive: time has stopped, something enormous is the cause, and waiting is correct. — **CLOSED 0.12.83-dev. The sense is kept and the words are not: every notice says time has stopped, that something far larger than this side is the cause, and that waiting is correct. `proof-menu-slides.py` asserts the phrase *"mass distortions"* is **absent** from the keyed file, so the placeholder cannot drift back in.**
+- [x] **"i want u to make a universe of backrooms themed notcie of the pause that is expected"** — the text is **authored in the setting's voice**, and it must say the pause **is expected**. A player who reads it should stop worrying rather than start. — **CLOSED 0.12.83-dev, and *"expected"* is asserted rather than intended — the proof requires the words that say so to be present. The company reads *"Async Industries records the interval as acquisition time and bills it to the client"*; the shop reads *"This happens every time a door opens onto somewhere new, and it has always finished"*; alone in the dark reads *"Time has not slowed down. It has stopped. It will start again and you will not have aged a second."***
+- [x] **"and propely keep it toned to the experience we are trying to make per scenrio type"** — **per scenario**, so the company start, the solo start and the group start each get their own tone. The company reads an instrument; somebody alone in the dark does not. This is a keyed string per shipped opening, not one line reused three times.
+- [x] **"there needs to be wide varying variations of all types"** — *"all types"*, so variation is required of **every** axis the generator has, not only the corridor: route shape, room shape, room size, material, fixture, motif, lighting, and the arrangement of rooms into larger things. — **CLOSED 0.12.83-dev, counted per axis rather than asserted: **7 corridor route forms**, **7 room shapes** under a motif, **44 archetypes** across **8 themes**, per-coordinate materials, per-room span variation, per-pair corridor width, and every fixture slot resolved by capability against the whole loaded game rather than from a list. *"all types"* is the test and each axis is now a number somebody can read.**
+**Verbatim owner answer (2026-10-03), on the hundreds of room and facility types:** *"option 3 but keep it not limited to my examples i want you to expand and expound on everything in a lsd way"*
+
+- [x] **"option 3"** — **the composition engine first, then the named kinds expressed as recipes in it.** A family becomes a draw from the seed over layout form × fixture set × material palette × motif, so the hundreds are a *product* of authored parts rather than hundreds of authored families. Nothing gets authored twice and *"repeated patternes in variations"* falls out of the same mechanism. — **CLOSED 0.12.83-dev. The engine is three axes drawn per coordinate and read by everything: **shape** (`CoordinateMotif.ShapeFormOf`, seven forms), **theme** (`CoordinateMotif.Themes`, eight kinds of place, biasing the archetype draw by ×3), and the existing **fixture sets** whose slots already resolve by *capability* against the whole loaded game. The named kinds are recipes in it — `themes` tags on archetype defs — so nothing is authored twice.**
+- [x] **"but keep it not limited to my examples"** — the owner's named kinds (*"rooma corradors facilites infastructure roads neighborrs hood malls shoopping centers military"*) are **examples, not the list**. The recipe vocabulary has to reach past them. — **CLOSED 0.12.83-dev. **44 archetypes, up from 16**, every one themed, across eight themes with 7 to 13 archetypes each. The owner’s named kinds are in there by name and are a minority of the file: shop fronts, mall concourses, food courts, checkout lanes, stockrooms, barracks, checkpoints, motor pools, briefing rooms, apartments, laundries, play rooms, stairwell landings, service tunnels, substations, pump houses, roadways, cinemas, waiting rooms, changing rooms, records vaults, quiet rooms and infirmaries — plus five in the LSD register.**
+- [x] **"i want you to expand and expound on everything in a lsd way"** — the acceptance condition on the composition engine, in the owner's words. Recognisable kinds of place, then wrong, then wronger — and the *"underground lsd cities"* register applies to the arrangement of rooms as much as to any one room.
+
+- [x] **"(i cant name theme all but there are hundred s and hundreds of facilities and room types like underground lsd cities"** — the scale the owner is asking for, stated as a scale: **hundreds** of facility and room types, and *"underground lsd cities"* as the register. Authored one at a time this is unbuildable; it has to come from **composition** — a family is a choice of layout, of fixtures, of materials and of a motif, and the hundreds are the product rather than the list. This is the same answer *"repeated patternes in variations"* needs, so the two close together.
+
+Build at the time of the move: **0.12.82-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+## A floor has an architecture, forty-four kinds of room, and the freeze says so first - 0.12.83-dev, 2026-10-04
+
+**Staged and read back from the game folder**, not from the build output: `0.12.83-dev`,
+SHA-256 `41FEC0AAE967F424D152D0F7C0C127437405B1FE1ABFD4298F28DD548D6E2B58`, 92 package files,
+44 archetype defs present in the staged copy.
+
+**Verified before publication:** build 0 warnings / 0 errors, 215 C# files; **16 of 16 checkers**
+exit 0; **49 of 49 proofs** hold; `plant-coordinate-layout` **152 of 152**, `plant-menu-slides`
+**21 of 21**; **836 plant anchors** findable. Queue after the archive: **70 open / 38 partial /
+38 `[T]` / 0 `[x]`**.
+
+### The finding: independent rolls are not variation
+
+Owner: *"repeated patternes in variations"*. Seven room shapes had existed for some time, and the
+complaint was not that there were too few — **it was that every room rolled its own, independent
+of every other room.** One room a wedge, the next bays, the next a cross: that reads as damage,
+not as architecture. The same shape of problem sat under the archetypes, where sixteen kinds were
+each drawn against their own weight, so a coordinate held a classroom beside a weapons locker
+beside a nursery — a list of rooms rather than a place.
+
+**Neither was a legality fault, so nothing in the battery could see either.** Every shape is safe
+by construction and every archetype is a legal archetype. The fix is one draw per coordinate that
+everything reads, and *how hard it holds falls with depth*:
+
+| depth | 1 | 2 | 3 | 4 | 5 | 6 | 8 |
+|---|---|---|---|---|---|---|---|
+| rooms on the motif shape | **89.3%** | 74.9% | 72.3% | 62.5% | 53.7% | 44.5% | **36.5%** |
+
+All seven shapes appear at every depth; a random floor sits at **14.3%**. One number produces both
+the monotonous shallow floors — *the monotony is the image the setting rests on* — and the
+*"further in it gets very varied and weird"* curve. That is why it is a single falling value rather
+than two systems.
+
+### Hundreds as a product, which is the only way the number is reachable
+
+**44 archetypes against 7 shapes is 308 distinguishable rooms before a single slot is rolled**, and
+every slot carries a count range and an appearance chance on top. Authored one at a time, hundreds
+of *families* would also mean hundreds of `RoomContentBuilder` cases — whose `default` throws
+`RR_Generation_InvalidRoomGraph` and kills the level — plus three keyed strings each. **An
+archetype costs none of that**, which is the whole reason the composition engine went there rather
+than into the family ids.
+
+Every kind the owner named exists by name, including a `RR_Room_Roadway` with lane markings, a kerb
+and lighting at the spacing of a road, indoors and roofed. Twenty-one more besides, and five in the
+LSD register: endless shelving whose aisles meet at the far end, a room with its furniture moved to
+one wall and still facing the way it was, a ward symmetrical about an axis the door is not on, and
+a room holding one chair, in the middle, facing a corner.
+
+### What the instruments caught that reading did not
+
+- **`proof-facilities.py` refused eight of the twenty-eight new kinds**, against a standing owner
+  direction nobody had restated: *"facilitys and buildings and neighboorhoods and complexes and
+  shools and hospitals and military and storages need loot inside of them too"*. They shipped with
+  furniture and nothing worth carrying out. A room with nothing to take is a room with no reason to
+  walk into.
+- **`check-display-style.py` refused the new notice window** until it drew inside
+  `RimroomsWindowState.Clean()`. That is not housekeeping here: a frameless full-screen image is
+  the most vulnerable draw in the mod to a leaked zero-alpha `GUI.color` from any of 294 others —
+  an invisible backdrop on a window with no frame is an invisible window, so the player would be
+  looking at a frozen game with no notice on it. **The exact failure the feature exists to prevent,
+  arriving through the feature.**
+- **Two plants reported MISSED** because two claims named the callee instead of the call: the motif
+  struct existed, the hold was still computed, the carver still called `ShapeFormOf`, and a plant
+  had deleted the on-motif branch so every room went back to rolling its own. Fifth instance of
+  that one gap in two sessions, and all five were found by a plant rather than by reading.
+- **`proof-menu-slides.py` broke the moment the slide list moved out of `RimroomsMenuBackground`**,
+  which is exactly what it was built to do: it reads the folder and prefix out of the source rather
+  than restating them. A second AI reading the diff independently flagged the same thing.
+
+### The freeze, and the ordering that was the whole difficulty
+
+Owner: *"a popup and notice ... that pops up befgore the "freeze" of the generation"*. **Before** is
+the requirement and it is the hard part. `EnsureSite` generates synchronously and hands the map back
+through an `out` parameter, so a window added immediately before it draws on the *next* frame —
+after the freeze it was warning about.
+
+The answer is not to defer `EnsureSite`; every caller depends on that `out`. It is to move the
+**work** into `LongEventHandler.QueueLongEvent`, the pattern Core itself uses for settling — legal
+exactly where nothing waits on a return value. **A UI button callback is such a place; a method
+handing back a `CompanyActionResult` is not.** So the Operations pane's two openings announce, the
+player dismisses a full-screen notice carrying one of the mod's own menu images while the game can
+still draw, and the generation then runs inside the event with our wait text on Core's box.
+
+**The gate-enter half is recorded rather than claimed.** A pawn crossing is a job tick, and
+`GateSpinUp` reaches `EnsureSite` from a tick as well; a tick cannot queue a long event and carry
+on. That path needs the result chain deferred and its row stayed open — it was marked `[x]` and put
+back to `[ ]` before the archive, because **the archiver will happily move a row that lies.**
+
+### The menu defect behind the owner's loading-screen report
+
+`currentIndex` was pinned to `0` in the constructor **and reset to `0` again** in the settings
+handler, so the main menu — and the backdrop behind every load started from it — opened on slide
+one of six, every single time, forever. The slideshow cycled perfectly and every claim about the
+folder scan and the crossfade held. **There was no plant suite covering the menu art at all**;
+there is now, and the first plant in it is this defect.
+
+### Mod register
+
+`python tools/register-query.py trace RR-SPACE`. Nothing applied: the archetype slots resolve by
+**capability** against the whole loaded def database rather than naming anything, so a profile mod
+that adds a bench, a shelf or an ore puts it in Backrooms rooms the day it is installed — no
+adapter, no row. That is the `modDependencies` direction being served by construction rather than by
+a later pass.
+

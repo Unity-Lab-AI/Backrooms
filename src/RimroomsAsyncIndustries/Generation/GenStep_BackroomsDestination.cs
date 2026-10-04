@@ -386,6 +386,11 @@ namespace RimroomsAsyncIndustries.Generation
             FillWithRock(map, coordinate, rockTypes);
 
             int coordinateDepth = RoomLayoutPlanner.DepthOf(coordinate);
+            // **THE COORDINATE'S MOTIF, derived here rather than handed in.** Owner, 2026-10-03:
+            // *"repeated patternes in variations"*. `CandidateIsSafe` derives the identical motif
+            // from the identical record, so the rock this carves is the rock it proved walkable.
+            // Passing it along a chain instead would be a second derivation of one rule.
+            CoordinateMotif motif = CoordinateMotif.For(coordinate);
             foreach (RoomRecord room in coordinate.Rooms)
             {
                 // Owner direction, 2026-09-30: *"everything doesnt have to be square rooms"*.
@@ -397,7 +402,8 @@ namespace RimroomsAsyncIndustries.Generation
                 // it proved this room walkable.
                 var intrusions = new HashSet<IntVec3>(
                     RoomLayoutPlanner.RockIntrusionCells(room,
-                        RoomLayoutPlanner.ShapeDepthOf(coordinate.Rooms, room, coordinateDepth)));
+                        RoomLayoutPlanner.ShapeDepthOf(coordinate.Rooms, room, coordinateDepth),
+                        motif));
                 foreach (IntVec3 cell in room.Bounds.Cells)
                 {
                     // The roof goes overhead either way: an intrusion is rock inside the room,

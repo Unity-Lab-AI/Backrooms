@@ -23,6 +23,10 @@ PROOF = ".local/register/proof-menu-slides.py"
 SRC = "src/RimroomsAsyncIndustries"
 ART = SRC + "/Presentation/RimroomsSlideArt.cs"
 BACKGROUND = SRC + "/Presentation/RimroomsMenuBackground.cs"
+NOTICE = SRC + "/Presentation/RimroomsGenerationNotice.cs"
+PANE = SRC + "/UI/OperationsPortalNetwork.cs"
+KEYS = ("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed"
+        "/RR_Generation.xml")
 
 # (label, path, old, new)
 
@@ -115,6 +119,61 @@ PLANTS = [
     ("the folder scan becomes a list, so new art would need a C# edit", ART,
      "ContentFinder<Texture2D>.GetAllInFolder(SlideFolder)",
      "System.Linq.Enumerable.Empty<Texture2D>()"),
+    # ------------------------------------------------------- the generation freeze, told in time
+    ("THE NOTICE IS QUEUED AFTER THE FREEZE INSTEAD OF BEFORE IT", NOTICE,
+     "            Find.WindowStack.Add(new Dialog_RimroomsGenerationNotice(NoticeText(), () =>\n"
+     "                LongEventHandler.QueueLongEvent(work, LongEventKey, false, null)));",
+     "            work();"),
+
+    ("the work stops running inside a long event, so the freeze is unexplained again", NOTICE,
+     "                LongEventHandler.QueueLongEvent(work, LongEventKey, false, null)));",
+     "                work()));"),
+
+    ("THE NOTICE FIRES ON EVERY CROSSING, so it becomes the nuisance instead of the warning",
+     NOTICE,
+     "            return coordinate != null && coordinate.Site == null;",
+     "            return coordinate != null;"),
+
+    ("and it stops firing at all, because a re-entry test swallows a first build", NOTICE,
+     "            return coordinate != null && coordinate.Site == null;",
+     "            return false;"),
+
+    ("the pane stops announcing before the laboratory address is taken", PANE,
+     "                Presentation.RimroomsGenerationNotice.Announce(opening, () =>\n"
+     "                    ShowResult(PortalAddressService.RegisterLaboratoryAddress(opened, opening)));",
+     "                ShowResult(PortalAddressService.RegisterLaboratoryAddress(opened, opening));"),
+
+    ("THE BACKDROP STOPS BEING THE MOD'S OWN ART", NOTICE,
+     "            backdrop = RimroomsSlideArt.RandomSlide();",
+     "            backdrop = null;"),
+
+    ("and the backdrop stops filling the screen", NOTICE,
+     "                GUI.DrawTexture(RimroomsSlideArt.FullScreenRect(backdrop), backdrop,",
+     "                GUI.DrawTexture(inRect, backdrop,"),
+
+    # **THE WORST ONE, AND IT IS SILENT.** Unity's IMGUI state is process-wide. A leaked
+    # zero-alpha `GUI.color` from any of 294 other mods makes a frameless full-screen window draw
+    # nothing at all -- so the player sees a frozen game with no notice on it, which is the exact
+    # failure the feature exists to prevent, arriving through the feature.
+    ("THE WINDOW DRAWS WITH WHATEVER GUI STATE IT INHERITED", NOTICE,
+     "            using (RimroomsWindowState.Clean()) { Draw(inRect); }",
+     "            Draw(inRect);"),
+
+    ("the per-scenario tone is gone, so every opening reads the same", NOTICE,
+     "                if (scoped.CanTranslate()) { key = scoped; }",
+     "                if (false) { key = scoped; }"),
+
+    ("and the scenario is no longer consulted at all", NOTICE,
+     "            ScenPart_RimroomsStart part = ScenPart_RimroomsStart.Current;",
+     "            ScenPart_RimroomsStart part = null;"),
+
+    ("THE COMPANY NOTICE LOSES THE WORDS THAT SAY THE PAUSE IS EXPECTED", KEYS,
+     "This is expected.",
+     "Something has gone wrong."),
+
+    ("and the owner's rejected placeholder wording comes back", KEYS,
+     "THE HOLD IS EXPECTED",
+     "Time has froze due to mass distortions, please wait"),
 ]
 
 

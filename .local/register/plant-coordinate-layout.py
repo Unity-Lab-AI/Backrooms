@@ -8,6 +8,7 @@ import time
 
 SRC = "src/RimroomsAsyncIndustries"
 PLANNER = SRC + "/Generation/RoomLayoutPlanner.cs"
+MOTIF = SRC + "/Generation/CoordinateMotif.cs"
 SERVICE = SRC + "/Generation/DestinationService.cs"
 GEN = SRC + "/Generation/GenStep_BackroomsDestination.cs"
 CONTAIN = SRC + "/Generation/BackroomsContainment.cs"
@@ -395,8 +396,26 @@ PLANTS = [
     # guess, more reach, would only have produced rounder squares. There was exactly ONE form.
     # Owner: *"they were all just square rooms again..wtf dont u know any other compbinations"*.
     ("THERE IS ONLY ONE ROOM FORM AGAIN", PLANNER,
-     "            int form = roll % ShapeForms;",
+     "            int form = ShapeFormOf(room, depth, motif);",
      "            int form = 0;"),
+
+    # **THE MOTIF IS WHAT MAKES SEVEN SHAPES A PATTERN RATHER THAN NOISE.** Owner:
+    # *"repeated patternes in variations"*. Rolling each room independently is not a fault a
+    # legality check can see -- every form is safe by construction -- so it needs its own
+    # claim and its own plant, measured by the probe rather than argued about.
+    ("THE MOTIF STOPS HOLDING, so every room rolls its own shape and the floor is noise",
+     MOTIF,
+     "            return onMotif ? Shape : roll % RoomLayoutPlanner.ShapeForms;",
+     "            return roll % RoomLayoutPlanner.ShapeForms;"),
+
+    ("and the motif stops loosening with depth, so a deep floor is as monotonous as level one",
+     MOTIF,
+     "            int hold = StrongestHold - (depth - 1) * HoldLostPerDepth;",
+     "            int hold = StrongestHold;"),
+
+    ("THE COORDINATE STOPS HAVING A THEME, so a floor is a list of rooms again", MOTIF,
+     "            motif.Theme = Themes[(draw / 13) % Themes.Length];",
+     "            motif.Theme = null;"),
 
     ("the form count collapses to the corner masses", PLANNER,
      "        internal const int ShapeForms = 7;",
@@ -426,14 +445,20 @@ PLANTS = [
      "            if (room == null || room.index == 0) { yield break; }"),
 
     ("the planner stops modelling the rock it leaves standing", PLANNER,
-     "                foreach (IntVec3 rock in RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth)))" + NL
+     "                foreach (IntVec3 rock in RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth), motif))" + NL
      + "                { floor[rock.x, rock.z] = false; }" + NL, ""),
 
     # The two readers stop agreeing: the validator proves a square room and the generator
     # carves a shaped one. The defect that cost thirty-nine checkpoints, in a new place.
     ("THE VALIDATOR AND THE GENERATOR SHAPE DIFFERENTLY", PLANNER,
-     "RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth))",
-     "RockIntrusionCells(room, depth)"),
+     "RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth), motif)",
+     "RockIntrusionCells(room, depth, motif)"),
+
+    # And the other half of the same defect: the same shaping depth, a DIFFERENT motif. The
+    # validator would prove a floor shaped to one pattern and the carver cut another.
+    ("THE VALIDATOR SHAPES TO A DIFFERENT MOTIF THAN THE CARVER", PLANNER,
+     "RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth), motif)",
+     "RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth), CoordinateMotif.None)"),
 
     ("shape stops reaching the first level at all", PLANNER,
      "            int band = hops / LinksPerShapeBand;", "            int band = 0;"),

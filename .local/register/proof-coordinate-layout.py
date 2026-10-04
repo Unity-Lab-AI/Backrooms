@@ -781,7 +781,8 @@ print("-" * 78)
 # Owner direction, 2026-09-30, verbatim: *"and everything doesnt have to be square rooms and
 # rectangle halways"*.
 check("ROCK IS LEFT STANDING INSIDE A ROOM, SO IT IS NOT A RECTANGLE",
-      "internal static IEnumerable<IntVec3> RockIntrusionCells(RoomRecord room, int depth)" in planner
+      ("internal static IEnumerable<IntVec3> RockIntrusionCells(RoomRecord room, int depth,"
+       + chr(10) + "            CoordinateMotif motif)") in planner
       and "RoomLayoutPlanner.RockIntrusionCells(room," in genstep
       and "RoomLayoutPlanner.ShapeDepthOf(coordinate.Rooms, room, coordinateDepth)" in genstep,
       "-- the Bounds stays a rect because the validator, the doors, the corridors and the pillar "
@@ -820,9 +821,16 @@ check("SHALLOW COORDINATES STAY RECTANGULAR",
       # ONE form: a quarter-ellipse per corner. Owner: *"they were all just square rooms
       # again..wtf dont u know any other compbinations"*.
       and "internal const int ShapeForms = 7;" in planner
-      and "int form = roll % ShapeForms;" in planner,
+      # **AND WHICH OF THE SEVEN IS THE MOTIF'S, not an independent roll.** This asserted
+      # `int form = roll % ShapeForms;` -- correct when it was written and the very thing the
+      # owner's *"repeated patternes in variations"* was about: seven good shapes drawn
+      # independently per room do not make a pattern, they make noise.
+      and "int form = ShapeFormOf(room, depth, motif);" in intrusion_body
+      and "int form = roll % ShapeForms;" not in planner_code,
       "-- the yellow rooms read as a place precisely because they are monotonous, which is the "
-      "same reason Derange leaves depth 1 alone. The wrongness is travelled toward")
+      "same reason Derange leaves depth 1 alone. The wrongness is travelled toward -- and since "
+      "the motif, the monotony is a MEASURED property rather than a hope: on-motif 89.3% at "
+      "depth 1 against 36.5% at depth 8, where a random floor would sit at 14.3%")
 
 # **BOTH READERS PASS THE SAME SHAPING DEPTH.** This used to assert that the generator passed
 # `coordinateDepth` and the validator passed `depth` -- which is precisely what kept every shape
@@ -830,7 +838,7 @@ check("SHALLOW COORDINATES STAY RECTANGULAR",
 # validator proves walkable is the room that gets built.
 check("the shape is decided in one place, like the pillars",
       planner.count("internal static IEnumerable<IntVec3> RockIntrusionCells") == 1
-      and "foreach (IntVec3 rock in RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth)))"
+      and "foreach (IntVec3 rock in RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth), motif))"
       in planner
       and genstep.count("RoomLayoutPlanner.RockIntrusionCells(room,") == 1
       and planner.count("internal static int ShapeDepthOf(") == 1,
@@ -1484,6 +1492,138 @@ check("THE REACH BRAID'S ROLL IS ASKED, so links to a slot two away actually hap
       "has, and the five-leg route forms are what arrive at a slot the pair are not adjacent to. "
       "Measured: max degree 8 without them, 13 to 16 with. A plant disabled the roll and no claim "
       "noticed, because the constant and the offsets were all still sitting there")
+
+
+# ======================================================================================
+# A COORDINATE IS A PLACE, NOT A LIST OF ROOMS
+#
+# Owner, 2026-10-03: *"repeated patternes in variations"*, and at the composition fork
+# *"option 3 but keep it not limited to my examples i want you to expand and expound on
+# everything in a lsd way"*.
+#
+# Seven room shapes already existed and **every room rolled its own, independently of every
+# other room** -- which is not a pattern, it is noise. Sixteen archetypes were drawn per room
+# against their own weight alone, so a coordinate held a classroom beside a weapons locker
+# beside a nursery. Neither was a legality fault, so nothing in the battery could see either:
+# every form is safe by construction and every archetype is a legal archetype.
+# ======================================================================================
+
+motif_raw = read(os.path.join(SRC, "Generation", "CoordinateMotif.cs"))
+archetype_service = read(os.path.join(SRC, "Generation", "RoomArchetypeService.cs"))
+archetype_def = read(os.path.join(SRC, "Generation", "RimroomsRoomArchetypeDef.cs"))
+
+check("A COORDINATE HAS ONE MOTIF, drawn from its own seed",
+      "internal struct CoordinateMotif" in motif_raw
+      and "internal static CoordinateMotif For(CoordinateRecord coordinate)" in motif_raw
+      and 'StableHash(seed, id + ":motif", depth)' in motif_raw,
+      "-- drawn from the saved record and nothing else, so a revisit draws the identical motif "
+      "without a save-schema field. **That is what lets the carver and the reachability proof "
+      "derive it independently and still agree** -- a motif saved on one side and recomputed on "
+      "the other would be two derivations of one rule")
+
+check("and the motif decides a room's shape, in ONE named function both readers use",
+      "internal static int ShapeRollFor(RoomRecord room, int depth)" in planner
+      and "internal static int ShapeFormOf(RoomRecord room, int depth, CoordinateMotif motif)"
+      in planner
+      and "int form = ShapeFormOf(room, depth, motif);" in planner
+      and "int form = roll % ShapeForms;" not in planner_code
+      # **AND THE BRANCH INSIDE IT IS ASSERTED, NOT JUST THE FUNCTION.** A plant deleted the
+      # on-motif branch and every claim above still held: the struct existed, the hold was
+      # still computed, the carver still called `ShapeFormOf`, and every room went back to
+      # rolling its own shape. Assert the assignment, not the callee -- third time this run.
+      and "bool onMotif = (roll / 101) % 100 < Hold;" in motif_raw
+      and "return onMotif ? Shape : roll % RoomLayoutPlanner.ShapeForms;" in motif_raw,
+      "-- it was `roll % ShapeForms`, an independent draw per room. Named rather than inlined so "
+      "`check-planner-layouts.py` can MEASURE it: whether a floor reads as a pattern with "
+      "variations is a number, and before this nothing could see it -- exactly as nothing could "
+      "see the average degree before the probe was taught to count links")
+
+check("AND THE MOTIF LOOSENS WITH DEPTH, which is one number producing both ends of the curve",
+      "internal const int StrongestHold = 85;" in motif_raw
+      and "internal const int WeakestHold = 25;" in motif_raw
+      and "int hold = StrongestHold - (depth - 1) * HoldLostPerDepth;" in motif_raw,
+      "-- shallow coordinates are strongly on-motif, and **the monotony is the image the setting "
+      "rests on**: the yellow rooms read as a place precisely because they repeat. The deeper a "
+      "space is the more often a room departs, so *\"further in it gets very varied and "
+      "weird\"* is the same number falling rather than a second system. Measured: on-motif "
+      "89.3% at depth 1 down to 36.5% at depth 8, with all seven shapes present at every depth "
+      "and a random floor sitting at 14.3%")
+
+check("the validator and the carver shape to the SAME motif",
+      "RockIntrusionCells(room, ShapeDepthOf(rooms, room, depth), motif)" in planner
+      and "private static bool CandidateIsSafe(List<RoomRecord> rooms, int depth, CoordinateMotif motif)"
+      in planner
+      and "CandidateIsSafe(rooms, DepthOf(coordinate), CoordinateMotif.For(coordinate))" in planner,
+      "-- a validator proving a square room the carver then shapes is a validator proving a "
+      "different room, which is the defect class that stopped every coordinate generating for "
+      "thirty-nine checkpoints. Both derive the motif from the coordinate rather than passing it "
+      "along a chain, so neither can be handed a different one")
+
+check("A COORDINATE HAS A THEME, and an archetype carrying it is likelier",
+      "internal static readonly string[] Themes" in motif_raw
+      and "internal const float ThemeWeightFactor = 3f;" in motif_raw
+      and "internal float WeightFor(System.Collections.Generic.List<string> themes)" in motif_raw
+      and "* motif.WeightFor(archetype.themes);" in archetype_service
+      # The DRAW, not just the list and the reader: a plant set `Theme` to null and the
+      # weighting silently returned 1 for everything, so every floor went back to being a
+      # list of rooms with nothing failing.
+      and "motif.Theme = Themes[(draw / 13) % Themes.Length];" in motif_raw,
+      "-- archetypes were drawn against their own weight alone, so a coordinate held a classroom "
+      "beside a weapons locker beside a nursery: a list of rooms rather than somewhere. **A bias "
+      "and never a filter**, deliberately -- a market coordinate holding nothing but shops is a "
+      "themed level rather than a Backrooms level, and the wrongness needs the one laboratory in "
+      "the shopping centre")
+
+check("and a theme nobody can draw is refused at load, by name",
+      "System.Array.IndexOf(CoordinateMotif.Themes, themes[index]) >= 0" in archetype_def
+      and "is not one of CoordinateMotif.Themes." in archetype_def,
+      "-- a typo in a theme tag is otherwise completely silent: the archetype simply never gets "
+      "its bias, and a coordinate meant to read as a market holds shops at the same rate as "
+      "everything else. There is no observable symptom at all, which is the worst kind of defect "
+      "this project meets")
+
+# **THE THEME LIST IS APPEND-ONLY and that is load-bearing.** The index is drawn from the
+# coordinate's seed, so inserting a theme in the middle re-themes every coordinate already
+# saved -- a place a player has walked would come back as somewhere else.
+check("the theme list is append-only, and says so where somebody would break it",
+      "Ordered, and **never reordered**" in motif_raw
+      and "Append only." in motif_raw,
+      "-- the index comes from the coordinate's seed, so inserting a theme in the middle "
+      "re-themes every coordinate already saved. A player's place would come back as somewhere "
+      "else, with nothing in the log")
+
+# ---------------------------------------------------------------- the kinds themselves
+archetype_xml = read(os.path.join(
+    "Mod", "Rimrooms - Async Industries", "1.6", "Defs", "RimroomsRoomArchetypeDefs",
+    "RR_RoomArchetypes.xml"))
+archetype_count = archetype_xml.count(
+    "<RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>")
+themed_count = archetype_xml.count("<themes>")
+print("archetypes: %d, themed: %d" % (archetype_count, themed_count))
+
+check("EVERY KIND THE OWNER NAMED EXISTS, by name",
+      all(name in archetype_xml for name in (
+          "RR_Room_MallConcourse", "RR_Room_ShopFront", "RR_Room_Barracks",
+          "RR_Room_Checkpoint", "RR_Room_Apartment", "RR_Room_ServiceTunnel",
+          "RR_Room_Roadway", "RR_Room_Substation")),
+      "-- *\"rooma corradors facilites infastructure roads neighborrs hood malls shoopping "
+      "centers military\"*: malls and shop fronts, military and checkpoints, neighbourhoods as "
+      "apartments, infrastructure as service tunnels and substations, and **roads as a roadway** "
+      "-- lane markings, a kerb and lighting at the spacing of a road, indoors and roofed")
+
+check("and they are not the whole of it, which the owner asked for explicitly",
+      archetype_count >= 40 and themed_count == archetype_count,
+      "-- *\"but keep it not limited to my examples i want you to expand and expound on "
+      "everything in a lsd way\"*. %d archetypes, every one themed, against seven shapes is "
+      "over three hundred distinguishable rooms before a single slot is rolled -- which is how "
+      "*\"hundred s and hundreds\"* is answered as a PRODUCT of authored parts rather than as "
+      "hundreds of authored families" % archetype_count)
+
+check("every archetype still asks for a capability rather than naming furniture",
+      "<kind>Explicit</kind>" not in archetype_xml,
+      "-- a hand-written list of defNames covers Core, misses every DLC, misses all 294 profile "
+      "mods and rots the first time anything is renamed. Not one of the new kinds names a piece "
+      "of furniture it hopes exists")
 
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))
