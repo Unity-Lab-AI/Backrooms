@@ -74,6 +74,6 @@ These are genuinely the owner's to answer, and none of them blocks further build
 
 ## Re-verification
 
-**It is `tools/check-compliance.py`, and it runs in the standard sweep with the other twelve checkers.** That sentence is the whole of this section now, because the previous version of it described the checks in prose and asked to be trusted — which is how the table above went thirty-six checkpoints without being re-run while saying it was re-run rather than trusted.
+**It is `tools/check-compliance.py`, and it runs in the standard sweep with every other checker.** That sentence is the whole of this section now, because the previous version of it described the checks in prose and asked to be trusted — which is how the table above went thirty-six checkpoints without being re-run while saying it was re-run rather than trusted. It named a count until 0.12.93-dev, and by then that count was years of checkpoints out of date: **a number here is a second place the count lives, so this sentence names none.** `check-doc-conformance.py` counts them off `tools/` and refuses any document that states a wrong one — which caught this very sentence, and then the first rewrite of it put a *different* number in the explanation and went stale again inside the same version when the twentieth checker landed.
 
 The one thing the checker cannot answer is below, and it is not a check.

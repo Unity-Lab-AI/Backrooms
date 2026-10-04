@@ -84,13 +84,73 @@ RETIRED_DEFS = (
 )
 
 # A phrase that will make a future agent skip a check.
-CHECKER_COUNT = 8
-CHECKER_PHRASES = (
-    re.compile('\\b(all\\s+)?four checkers\\b', re.I),
-    re.compile('\\b(all\\s+)?five checkers\\b', re.I),
-    re.compile('\\b(all\\s+)?six checkers\\b', re.I),
-    re.compile('\\b(all\\s+)?seven checkers\\b', re.I),
-)
+#
+# **COUNTED OFF THE DIRECTORY, NEVER TYPED.** This read `CHECKER_COUNT = 8` with a phrase list
+# that stopped at *"seven checkers"*, while nineteen checkers shipped. So the one number the rule
+# exists to protect was eleven out of date, and every document saying *"all eight checkers"* --
+# the first wrong phrase a reader would write at the time -- passed unexamined.
+#
+# It is the same defect this file already names in its own dependency rule: *"The count is read
+# from About.xml, never typed here"*. A checker that hard-codes a number it is checking is a dated
+# assertion wearing a check's clothes, and a dated assertion read as current is this project's most
+# repeated documentation defect.
+WORD_NUMBERS = {
+    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8,
+    "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14,
+    "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19,
+    "twenty": 20, "twenty-one": 21, "twenty-two": 22, "twenty-three": 23, "twenty-four": 24,
+}
+
+# Any count of checkers, spelled or in digits. A correct count passes; a wrong one fails whatever
+# the number is, which is what the fixed phrase list could not do.
+#
+# **`other` IS CAPTURED BECAUSE IT CHANGES THE ARITHMETIC, NOT TO BE LENIENT.** *"it runs in the
+# standard sweep with the other twelve checkers"* is a sentence about thirteen checkers, and a rule
+# that read it as twelve would be demanding the author write a number that is wrong in order to
+# pass. This file's own branch rule states the cost of that: *"A checker that cries wolf is a
+# checker people learn to scroll past, which is worse than not having it."*
+CHECKER_CLAIM = re.compile(
+    r"\b(?:all\s+)?(?:(other)\s+)?(\d{1,3}|" +
+    "|".join(sorted(WORD_NUMBERS, key=len, reverse=True)) +
+    r")\s+checkers\b", re.I)
+
+
+def checker_count():
+    """How many checkers there are, read off `tools/`."""
+    return len(glob.glob(os.path.join(REPO, "tools", "check-*.py")))
+
+
+def check_checker_count(rel, text, count, problems):
+    """Refuse a document that tells a reader to run the wrong number of checkers.
+
+    **QUOTED SPANS ARE CUT FIRST, AND THIS RULE CAUGHT ITSELF DOING THE OPPOSITE.** The first
+    version flagged the very sentence written to fix it: a document explaining that it used to say
+    *"the other twelve checkers"* has to contain that phrase to explain it, and a rule that reads
+    the quotation reads its own documentation. Good documentation names the thing it avoids, so an
+    absence rule that scans quotations fails on the comment that justifies it -- the single most
+    repeated defect in this battery, now three times in three batches.
+
+    The doctrine is already written into `readable_prose` in this same file: *"Words we are quoting
+    are never ours to change."* A count inside quotation marks is a report of what was said, not a
+    claim about what is true.
+    """
+    text = OWNER_INLINE_QUOTE.sub(" ", text)
+    text = QUOTED_SPAN.sub(" ", text)
+    for match in CHECKER_CLAIM.finditer(text):
+        raw = match.group(2).lower()
+        claimed = WORD_NUMBERS.get(raw)
+        if claimed is None:
+            try:
+                claimed = int(raw)
+            except ValueError:
+                continue
+        # "the other twelve" counts everything except the one being described.
+        total = claimed + 1 if match.group(1) else claimed
+        if total != count:
+            problems.append("%s says %r, which is %d checker(s); there are %d, and a reader "
+                            "following that will skip one or hunt for one that is not there"
+                            % (rel, match.group(0), total, count))
+            return
 
 VERSION_CLAIM = re.compile(r"(?:current\s+(?:development\s+)?version|development\s+build)\D{0,12}"
                            r"(\d+\.\d+\.\d+-dev)", re.I)
@@ -298,6 +358,55 @@ def check_forbidden_claims(rel, prose, problems):
                             "demonstrated (%r)" % (rel, phrase, sentence[:90]))
 
 
+# ------------------------------------------------- the expansions, which are all optional
+#
+# **Owner decision 19, binding: D1's option B text stays in force** -- *"do not announce
+# compatibility until validation is complete"* -- and the queue row that this enforces says the
+# consequence in its own words: the package *"must claim no profile row, no DLC interaction and
+# no RWT co-op until that row has a recorded result"*, with **200 of the 294 dispositions still
+# provisional**. The row also says what it needs to become: *"the main protection, not a
+# formality"*.
+#
+# The RWT co-op half was already enforced by `FORBIDDEN_CLAIMS` above. The profile-row half is
+# enforced by `check_broad_compatibility`. **This is the DLC half, and nothing covered it.**
+#
+# Every expansion is optional and `About.xml` declares none of them as a dependency, so a reader
+# document stating that one is needed is wrong about what it takes to play -- which is a worse
+# error than a stale version, because it turns somebody away at the door.
+#
+# **Narrow by construction, and negation-aware for the same reason the multiplayer rule is.**
+# `docs/wiki/mods.md` exists to say the expansions are optional, so it must be able to name every
+# one of them; only a sentence asserting a *requirement* is a finding. The phrase list pairs each
+# expansion with requirement words rather than matching the name alone -- matching the name was
+# tried first in the multiplayer rule's history and is recorded there as the way to fail the one
+# document written to obey the rule.
+EXPANSIONS = ("royalty", "ideology", "biotech", "anomaly", "odyssey")
+REQUIREMENT_WORDS = ("requires", "required", "require", "needs", "needed", "must have",
+                     "mandatory", "depends on", "dependency", "prerequisite")
+
+EXPANSION_CLAIM = re.compile(
+    r"\b(?:(?:" + "|".join(REQUIREMENT_WORDS).replace(" ", r"\s+") + r")\s+(?:the\s+)?(" +
+    "|".join(EXPANSIONS) + r")\b"
+    r"|\b(" + "|".join(EXPANSIONS) + r")\s+(?:expansion\s+|dlc\s+)?(?:is|are)\s+(?:" +
+    "|".join(REQUIREMENT_WORDS).replace(" ", r"\s+") + r"))", re.I)
+
+
+def check_expansion_claims(rel, prose, problems):
+    """Refuse a reader document saying an expansion is needed. None is."""
+    for sentence in sentences(prose):
+        match = EXPANSION_CLAIM.search(sentence)
+        if not match:
+            continue
+        lowered = sentence.lower()
+        if any(negator in lowered for negator in CLAIM_NEGATORS):
+            continue
+        named = match.group(1) or match.group(2)
+        problems.append("%s tells a reader %s is required; every expansion is optional and "
+                        "About.xml declares none as a dependency -- D1: do not announce "
+                        "compatibility until validation is complete (%r)"
+                        % (rel, named, sentence[:90]))
+
+
 def check_reader_facing(problems):
     for rel in READER_FACING:
         path = os.path.join(REPO, rel)
@@ -317,6 +426,7 @@ def check_reader_facing(problems):
                                 % (rel, match.group(0), DOC_BANNED_TERMS[term]))
 
         check_forbidden_claims(rel, prose, problems)
+        check_expansion_claims(rel, prose, problems)
 
         for paragraph in paragraphs(prose):
             if len(paragraph) > DOC_WALL_CHARS:
@@ -651,12 +761,315 @@ def check_directions_reached_the_queue(problems):
         problems.append("docs/FINALIZED.md quotes an owner direction that never reached "
                         "docs/TODO.md: %r" % (quote[:90] + ("..." if len(quote) > 90 else "")))
 
+# --------------------------------------------------------------------------- #
+# The published site
+# --------------------------------------------------------------------------- #
+#
+# Two queue rows, one piece of work, and the measurement that opened it was wrong in our favour.
+#
+# Row: *"`check-doc-conformance.py` must cover the published site"*. `living_docs()` already globs
+# **every** `.md`, so the thirteen wiki pages were never uncovered. What was uncovered is the
+# site's **non-markdown** published files -- a version claimed in a layout, a branch named in a
+# stylesheet comment, a retired def named in the front door -- all of which would have shipped
+# unexamined.
+#
+# Row: *"The generator stays internal, by the finding that opened this"*, noted as **stated in the
+# config, not yet enforced**, because *"a comment is not a guard"*.
+#
+# **AND THE COMMENT WAS ALSO WRONG.** `_config.yml` said *"everything else under docs/ is project
+# working material and is deliberately excluded"* while naming four directories, two of which do
+# not exist. Jekyll publishes every entry in its source directory it is not told to exclude, and
+# fifty-four documents sit at `docs/` root. Enabling Pages would have published `TODO.md`,
+# `NOW.md`, `FINALIZED.md` and `DECOMPOSED.md` -- the whole ledger, as raw downloads, because none
+# of them carries front matter.
+#
+# **This check does not read the exclude list and agree with it.** It works out what Jekyll would
+# publish and fails on the answer, so a broken generator cannot produce a quiet pass.
+SITE_SOURCE = os.path.join("docs")
+SITE_CONFIG = os.path.join(REPO, SITE_SOURCE, "_config.yml")
+
+# The work ledger, in both the form it is written and the form the internal renderer produces.
+# The row names `TODO.html` and `NOW.html` specifically; the `.md` sources are the ones actually
+# at risk, because they are what sits in the published directory.
+LEDGER_NAMES = (
+    "TODO.md", "TODO.html", "NOW.md", "NOW.html", "FINALIZED.md", "FINALIZED.html",
+    "DECOMPOSED.md", "DECOMPOSED.html", "ROADMAP.md", "ROADMAP.html",
+    "DEFERRED.md", "DEFERRED.html",
+    "PREPRODUCTION_AND_IMPLEMENTATION_TODO.md", "PREPRODUCTION_AND_IMPLEMENTATION_TODO.html",
+)
+
+# What the published site is allowed to consist of. Anything else reaching the published set is a
+# finding even when it is not a ledger: the ledger names are the hazard we know about, and a
+# surface nobody declared is how the next one arrives.
+SITE_SURFACE = ("wiki", "assets", "index.html", "CNAME")
+
+# Files whose text is **not served as a file** but appears inside every published page. A layout
+# is never fetched by a reader and its content is on every page a reader fetches, so a version
+# claimed here ships exactly as widely as one claimed in prose. Checking the published set alone
+# would have missed all three.
+SITE_TEMPLATES = (
+    os.path.join("docs", "_layouts", "default.html"),
+    os.path.join("docs", "_includes", "nav.html"),
+    os.path.join("docs", "_config.yml"),
+)
+
+HTML_COMMENT = re.compile(r"<!--.*?-->", re.S)
+LIQUID_TAG = re.compile(r"\{%.*?%\}|\{\{.*?\}\}", re.S)
+HTML_TAG = re.compile(r"<[^>]+>")
+HTML_PARAGRAPH = re.compile(r"<p\b[^>]*>(.*?)</p>", re.S | re.I)
+CSS_COMMENT = re.compile(r"/\*.*?\*/", re.S)
+YAML_COMMENT = re.compile(r"^\s*#.*$", re.M)
+
+
+def site_config_lists():
+    """`include:` and `exclude:` as the config actually writes them.
+
+    Hand-parsed rather than through a YAML library, because this project ships no third-party
+    Python dependency and a checker that cannot run is a checker that does not exist. The parse
+    is deliberately narrow: a block list of `- value` lines under a top-level key, which is the
+    only shape either key has ever had here. Anything it cannot read is reported as unreadable
+    rather than silently treated as empty -- an exclude list read as empty would publish
+    everything, and this check would call that correct.
+    """
+    if not os.path.isfile(SITE_CONFIG):
+        return None, None
+    text = io.open(SITE_CONFIG, encoding="utf-8-sig").read()
+    lists = {}
+    key = None
+    for line in text.split("\n"):
+        if re.match(r"^[A-Za-z_][A-Za-z0-9_]*:", line):
+            key = line.split(":", 1)[0]
+            lists.setdefault(key, [])
+            continue
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        if stripped.startswith("- ") and key is not None:
+            lists[key].append(stripped[2:].strip())
+            continue
+        if not line.startswith((" ", "\t")):
+            key = None
+    return lists.get("include"), lists.get("exclude")
+
+
+def jekyll_publishes(rel, includes, excludes):
+    """Conservative model of Jekyll's entry filter: would this path reach the built site?
+
+    Jekyll keeps every entry unless it is *special* (a leading `_` or `.`), a backup, or matched
+    by `exclude` -- and a match in `include` short-circuits all of that, which is the precedence
+    that lets `include: [wiki]` keep a directory whose contents a pattern would otherwise drop.
+
+    **Anything this cannot prove excluded is reported as PUBLISHED.** A ledger guard has exactly
+    one failure mode it must never have, and that is calling a published file safe. Erring the
+    other way produces a loud finding somebody fixes.
+    """
+    parts = rel.replace(os.sep, "/").split("/")
+    for pattern in includes or ():
+        clean = pattern.strip().strip("/")
+        if not clean:
+            continue
+        if rel.replace(os.sep, "/") == clean or rel.replace(os.sep, "/").startswith(clean + "/"):
+            return True
+    if any(part.startswith("_") or part.startswith(".") for part in parts):
+        return False
+    for pattern in excludes or ():
+        clean = pattern.strip().strip("/")
+        if not clean:
+            continue
+        if rel.replace(os.sep, "/") == clean or rel.replace(os.sep, "/").startswith(clean + "/"):
+            return False
+    return True
+
+
+def published_files(includes, excludes):
+    """Every file under `docs/` that Jekyll would copy or render into the built site."""
+    root = os.path.join(REPO, SITE_SOURCE)
+    found = []
+    for base, dirs, names in os.walk(root):
+        rel_base = os.path.relpath(base, root)
+        rel_base = "" if rel_base == "." else rel_base
+        # Prune a directory Jekyll would not descend into, so a tree of working material is not
+        # walked only to be discarded a thousand files later.
+        dirs[:] = [d for d in dirs
+                   if jekyll_publishes(os.path.join(rel_base, d) if rel_base else d,
+                                       includes, excludes)]
+        for name in sorted(names):
+            rel = os.path.join(rel_base, name) if rel_base else name
+            if jekyll_publishes(rel, includes, excludes):
+                found.append(rel.replace(os.sep, "/"))
+    return sorted(found)
+
+
+def check_ledger_never_published(published, problems):
+    """The owner's rule, enforced instead of stated.
+
+    Owner direction, 2026-10-02, verbatim: *"the now.md needs to be completedy deleted, then
+    written current. The NOW .md is a temp read file not a history of all work ever done.. its a
+    one time record only ever holding one record"*, and the queue row that this closes says the
+    ledger *"stays an internal reading convenience and is never wired to the published tree"*.
+    """
+    for rel in published:
+        name = rel.split("/")[-1]
+        if name in LEDGER_NAMES:
+            problems.append("docs/%s would be PUBLISHED by the site; the work ledger is never "
+                            "published. Exclude it in docs/_config.yml (run "
+                            "tools/build-site.py)" % rel)
+        top = rel.split("/")[0]
+        if top not in SITE_SURFACE and name not in SITE_SURFACE:
+            problems.append("docs/%s would be PUBLISHED and is not part of the declared site "
+                            "surface %s; a published file nobody declared is how a ledger "
+                            "arrives next time" % (rel, "/".join(SITE_SURFACE)))
+
+
+def template_prose(raw, rel):
+    """The reader-visible text of a published non-markdown file.
+
+    Comments go first and for a reason that bit this battery before: good documentation explains
+    the thing it avoids **by naming it**, so a layout's own comment quoting *"NOT pop like a text
+    wall"* would otherwise read as prose making a claim. The same cut removes Liquid tags, which
+    are instructions rather than words anybody reads.
+    """
+    text = HTML_COMMENT.sub(" ", raw)
+    if rel.endswith(".css"):
+        text = CSS_COMMENT.sub(" ", text)
+    if rel.endswith((".yml", ".yaml")):
+        text = YAML_COMMENT.sub(" ", text)
+    text = LIQUID_TAG.sub(" ", text)
+    text = HTML_TAG.sub(" ", text)
+    text = OWNER_INLINE_QUOTE.sub(" ", text)
+    return QUOTED_SPAN.sub(" ", text)
+
+
+def site_text_files(published):
+    """Published non-markdown files plus the templates whose text rides inside every page."""
+    found = []
+    for rel in published:
+        if rel.endswith(".md"):
+            continue            # `living_docs()` already holds every markdown file.
+        path = os.path.join(REPO, SITE_SOURCE, rel)
+        if os.path.isfile(path):
+            found.append((os.path.join("docs", rel).replace(os.sep, "/"), path))
+    for rel in SITE_TEMPLATES:
+        path = os.path.join(REPO, rel)
+        if os.path.isfile(path):
+            found.append((rel.replace(os.sep, "/"), path))
+    return sorted(set(found))
+
+
+def check_published_non_markdown(entries, version, branch, count, problems):
+    """Hold the site's non-markdown published files to the claims rule.
+
+    A version or a branch stated in a layout, an include, the config or the front door ships to
+    every reader exactly like one stated in prose, and until 0.12.93-dev nothing looked at any of
+    them. Binary files are never read; a stylesheet is text and a comment in it is a claim.
+    """
+    for rel, path in entries:
+        raw = io.open(path, encoding="utf-8-sig").read()
+
+        for match in VERSION_CLAIM.finditer(raw):
+            if version and match.group(1) != version:
+                problems.append("%s claims version %s; the build is %s"
+                                % (rel, match.group(1), version))
+
+        for name in STALE_BRANCHES:
+            if name in raw and branch and name != branch:
+                problems.append("%s names working branch %r; the branch is %r"
+                                % (rel, name, branch))
+
+        for number, line in enumerate(raw.split("\n"), start=1):
+            for definition in RETIRED_DEFS:
+                if definition in line and not RETIREMENT_WORDS.search(line):
+                    problems.append("%s:%d names retired def %s with nothing saying it is gone"
+                                    % (rel, number, definition))
+
+        check_checker_count(rel, raw, count, problems)
+
+        # Only files whose words a reader actually meets are held to the vocabulary and the wall
+        # rule. A stylesheet's selectors are not prose, and flagging one would be the crying-wolf
+        # failure this file warns about in its own branch rule.
+        if not rel.endswith((".html", ".htm")):
+            continue
+        prose = template_prose(raw, rel)
+        scanned = DOC_BANNED_EXEMPT.sub(" ", prose)
+        for term, pattern in DOC_BANNED:
+            match = pattern.search(scanned)
+            if match:
+                problems.append("%s says %r to a reader -- %s"
+                                % (rel, match.group(0), DOC_BANNED_TERMS[term]))
+        check_forbidden_claims(rel, prose, problems)
+
+        # Paragraphs are `<p>` elements here, not blank-line blocks: an HTML file has no blank
+        # line between paragraphs, so the markdown splitter would read a whole page as one and
+        # report every front door as a wall.
+        for block in HTML_PARAGRAPH.findall(HTML_COMMENT.sub(" ", raw)):
+            paragraph = " ".join(HTML_TAG.sub(" ", LIQUID_TAG.sub(" ", block)).split())
+            if len(paragraph) > DOC_WALL_CHARS:
+                problems.append("%s has a %d-character paragraph with no break; a reader meets "
+                                "it as a wall (%r)" % (rel, len(paragraph), paragraph[:60]))
+
+
+def check_cname(problems):
+    """A live `CNAME` is one bare hostname and nothing else.
+
+    `CNAME.example` already says so -- *"GitHub Pages reads the whole file as one hostname, so a
+    real CNAME contains exactly one line and no comments"* -- and nothing enforced it. Copying the
+    example and forgetting to delete the explanation is the obvious way to get this wrong, and it
+    fails the way the example warns about: quietly, by Pages serving nothing while DNS is blamed.
+    """
+    path = os.path.join(REPO, SITE_SOURCE, "CNAME")
+    if not os.path.isfile(path):
+        return
+    raw = io.open(path, encoding="utf-8-sig").read()
+    lines = [line for line in raw.split("\n") if line.strip()]
+    if len(lines) != 1:
+        problems.append("docs/CNAME holds %d non-empty lines; GitHub Pages reads the whole file "
+                        "as one hostname, so it must hold exactly one" % len(lines))
+        return
+    host = lines[0].strip()
+    if host.startswith("#") or "#" in host:
+        problems.append("docs/CNAME contains a comment; Pages reads the whole file as the "
+                        "hostname and will serve nothing")
+    if not re.match(r"^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$", host) or "." not in host:
+        problems.append("docs/CNAME holds %r, which is not a bare hostname" % host[:60])
+    if "PUT-YOUR-HOSTNAME-HERE" in raw:
+        problems.append("docs/CNAME still holds the placeholder from CNAME.example; a CNAME "
+                        "naming a domain nobody owns stops Pages answering on github.io")
+
+
+def check_published_site(version, branch, count, problems):
+    """Everything above, and the inventory the summary prints."""
+    includes, excludes = site_config_lists()
+    if includes is None and excludes is None:
+        problems.append("docs/_config.yml is missing, so what the site publishes cannot be "
+                        "determined and the ledger guard cannot run")
+        return [], []
+    published = published_files(includes, excludes)
+
+    # **A GUARD THAT LOOKED AT NOTHING MUST NOT REPORT A PASS.** Every rule below is an absence
+    # rule, and an absence rule over an empty set is satisfied by construction -- so a broken
+    # model, a renamed directory or an exclude that swallowed the site would all read as green.
+    # The site publishes thirteen wiki pages; if the model finds none, it is not modelling the
+    # site, whatever else it says. This is the same property the def-field checker spends three
+    # plants on: *"a checker that silently passes everything is worse than no checker: it
+    # manufactures confidence."*
+    if not any(rel.startswith("wiki/") for rel in published):
+        problems.append("the published-site model finds no page under docs/wiki/, so it is not "
+                        "modelling the site and every rule below it would pass on an empty set")
+
+    check_ledger_never_published(published, problems)
+    entries = site_text_files(published)
+    check_published_non_markdown(entries, version, branch, count, problems)
+    check_cname(problems)
+    return published, entries
+
+
 def main():
     version = package_version()
     branch = current_branch()
     problems = []
     docs = living_docs()
     declared_dependencies = declared_dependency_count()
+    checkers = checker_count()
 
     for rel, path in docs:
         raw = io.open(path, encoding="utf-8-sig").read()
@@ -682,12 +1095,7 @@ def main():
         check_dependency_claims(rel, raw, declared_dependencies, problems)
         check_broad_compatibility(rel, raw, declared_dependencies, problems)
 
-        for pattern in CHECKER_PHRASES:
-            found = pattern.search(text)
-            if found:
-                problems.append("%s says %r; there are %d, and a reader following that will skip one"
-                                % (rel, found.group(0), CHECKER_COUNT))
-                break
+        check_checker_count(rel, text, checkers, problems)
 
         # Mentioning the file is fine; mentioning it without anywhere saying it is closed is
         # what leaves a reader thinking there is still somewhere to put work.
@@ -697,6 +1105,7 @@ def main():
 
     check_directions_reached_the_queue(problems)
     check_reader_facing(problems)
+    published, site_entries = check_published_site(version, branch, checkers, problems)
 
     print("doc-conformance")
     print("  living documents checked : %d" % len(docs))
@@ -704,6 +1113,12 @@ def main():
           % declared_dependencies)
     print("  reader-facing documents  : %d, held to the vocabulary and the wall rule"
           % len(READER_FACING))
+    print("  checkers on disk         : %d, counted off tools/ and never typed" % checkers)
+    print("  files the site publishes : %d, modelled from docs/_config.yml rather than trusted"
+          % len(published))
+    print("  non-markdown site files  : %d, held to the version, branch and claims rules"
+          % len(site_entries))
+    print("  ledger names refused     : %d, in the published set" % len(LEDGER_NAMES))
     print("  dated records skipped    : implementation records, FINALIZED, CHANGELOG, reviews")
     print("  build version            : %s" % version)
     print("  working branch           : %s" % branch)

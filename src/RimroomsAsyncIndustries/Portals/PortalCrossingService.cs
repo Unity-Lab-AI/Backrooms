@@ -125,6 +125,20 @@ namespace RimroomsAsyncIndustries.Portals
             busy = true;
             try
             {
+                // **THE PACK IS NOT A CARGO ROUTE, AND NOTHING USED TO LOOK AT IT.** Everything
+                // below records and governs the *carried* thing -- the hands. Anything in
+                // `pawn.inventory` crossed unrecorded, so the branch's own account of what went
+                // through its gate was wrong by whatever was in the bag. Put it down first, on
+                // the side the pawn is still standing on, while it is still spawned and before
+                // any custody has changed.
+                //
+                // Core's `FirstUnloadableThing` decides what counts, so a pawn never loses its
+                // own medicine, drugs or packed meal here. See `CrossingInventoryPolicy`; the
+                // question came from mod register row 164, and the answer needed no adapter.
+                CrossingInventoryPolicy.DropFreight(pawn);
+                if (CrossingInventoryPolicy.HasFreight(pawn))
+                { return FailBeforeDespawn(receipt, "RR_PortalCrossing_PackNotCleared"); }
+
                 Thing carried = pawn.carryTracker == null ? null : pawn.carryTracker.CarriedThing;
                 string cargoPolicy = PortalTraversalPolicy.CargoFailureKey(carried, pawn);
                 if (cargoPolicy != null) { return FailBeforeDespawn(receipt, cargoPolicy); }

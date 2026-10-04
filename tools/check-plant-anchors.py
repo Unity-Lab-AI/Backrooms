@@ -91,8 +91,32 @@ def main() -> int:
                 stale.append((os.path.basename(suite), "(unreadable entry)", "malformed tuple"))
                 continue
             label = literal(entry.elts[0], names)
-            target = literal(entry.elts[1], names)
-            anchor = literal(entry.elts[2], names)
+
+            # **TWO SUITE SHAPES EXIST, AND THIS READ ONLY ONE OF THEM.**
+            #
+            # The original shape is `(label, path, old, new, want)`. `plant-published-site.py`
+            # adds a **kind** field -- `(label, kind, path, old-or-content, new, command, want)`
+            # -- because a plant that *creates* a file that must not already exist is a different
+            # operation from one that substitutes inside a file that must. Read positionally, the
+            # kind was taken as the path and every entry reported `target missing: create`.
+            #
+            # That was a **false positive on seven sound anchors**, which is the cry-wolf failure
+            # this battery has recorded five of. It failed loudly rather than quietly, which is
+            # the right direction -- but a checker that cannot read a suite that exists is not
+            # guarding it. One pattern, all the files it guards.
+            KINDS = ("replace", "create")
+            kind = literal(entry.elts[1], names)
+            if isinstance(kind, str) and kind in KINDS:
+                if len(entry.elts) < 4:
+                    stale.append((os.path.basename(suite), label or "(unlabelled)",
+                                  "kinded entry too short to carry a target"))
+                    continue
+                target = literal(entry.elts[2], names)
+                anchor = literal(entry.elts[3], names)
+            else:
+                kind = "replace"
+                target = literal(entry.elts[1], names)
+                anchor = literal(entry.elts[2], names)
             # **A SUITE MAY SKIP ITS OWN ENTRY**, and `plant-def-fields.py` does: its loop reads
             # `if want is None: continue`, with a comment saying the two blinding plants above
             # cover the same property. Refusing that entry would make this checker stricter than
@@ -108,6 +132,27 @@ def main() -> int:
                               "anchor or target could not be read statically"))
                 continue
             path = os.path.join(REPO, target)
+
+            # **A `create` PLANT INVERTS THE RULE.** Its suite refuses to run -- PLANT SETUP
+            # BROKEN -- when the file already exists, because writing over a real file and then
+            # deleting it would destroy it rather than restore it. So the staleness being checked
+            # for is the opposite one: a path that has since become a real file.
+            if kind == "create":
+                if os.path.isfile(path):
+                    stale.append((os.path.basename(suite), label,
+                                  "create-plant target now EXISTS: %s -- the suite would refuse "
+                                  "to run, and running it anyway would delete a real file"
+                                  % target))
+                    continue
+                parent = os.path.dirname(path) or REPO
+                if not os.path.isdir(parent):
+                    stale.append((os.path.basename(suite), label,
+                                  "create-plant target's directory is gone: %s" % target))
+                    continue
+                checked += 1
+                total += 1
+                continue
+
             if not os.path.isfile(path):
                 stale.append((os.path.basename(suite), label, "target missing: %s" % target))
                 continue

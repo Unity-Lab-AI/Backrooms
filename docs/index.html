@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rimrooms — Async Industries</title>
+<meta name="description" content="A company-management campaign for RimWorld about contract work beyond a gate.">
+<link rel="canonical" href="wiki/">
+<meta http-equiv="refresh" content="0; url=wiki/">
+<link rel="stylesheet" href="assets/css/rimrooms.css">
+</head>
+<body>
+
+<!-- THE PUBLISHED SITE'S ROOT. Pages serves docs/ on this repository, so without a document
+     here the site's own address answers 404 while every page inside it works. The deploy row
+     says it stays open "until that is on and the URL answers" - and the URL is this one.
+
+     NO FRONT MATTER, DELIBERATELY. Jekyll copies a file without front matter verbatim, so this
+     page is exactly what it looks like and cannot be changed by a layout. The wiki's own index
+     is the real front page; duplicating its prose here would create a second place the truth
+     lives, which is the problem `tools/build-site.py` exists to avoid.
+
+     THE LINK IS RELATIVE ON PURPOSE. GitHub Pages serves a project site from a subpath, so a
+     root-absolute "/wiki/" would resolve above the site and 404; "wiki/" is correct both there
+     and on a custom domain. Nothing here hard-codes the site's own address, which is the rule
+     `CNAME.example` sets.
+
+     The anchor is not a fallback nicety. A reader whose browser ignores a meta refresh, or who
+     is reading this through anything that does not follow one, still has a working way in. -->
+
+<main class="prose">
+  <h1>Rimrooms — Async Industries</h1>
+  <p class="summary">A company-management campaign for RimWorld about contract work beyond a
+     gate. You are not a colony that survives; you are a contractor that takes jobs.</p>
+  <p><a href="wiki/">Open the wiki &rarr;</a></p>
+  <p>If your browser did not move on its own, that link is the whole site: installing, the first
+     hour, the gate, the company, and what to do when something looks wrong.</p>
+</main>
+
+<footer class="footer">
+  <p>Rimrooms — Async Industries. A development build; nothing here is a balance, performance or
+     compatibility report.</p>
+</footer>
+
+</body>
+</html>

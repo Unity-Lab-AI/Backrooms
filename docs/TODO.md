@@ -363,18 +363,11 @@ Nine `##` sections titled as dated checkpoint records held **20.9 KB** between t
 **From `## The doc sweep picked back up, and a site that does not pop like a text wall - 2026-10-01`:**
 
 
-- [ ] **"and docs and pages when we deploy the wiki and docs on github"** - the deploy half. — **THE SITE IS BUILT AND WAITING ON ONE SWITCH 0.12.92-dev. Layout, stylesheet, generated index, per-page summaries, config and CNAME support all ship and `tools/build-site.py --check` is green. **What is left is not work, it is the owner enabling Pages:** repository Settings → Pages → source `main` / folder `/docs`. The row stays open until that is on and the URL answers, because a deploy nobody has turned on is not a deploy.**
+- [ ] **"and docs and pages when we deploy the wiki and docs on github"** - the deploy half. — **THE SITE IS BUILT AND WAITING ON ONE SWITCH 0.12.92-dev. Layout, stylesheet, generated index, per-page summaries, config and CNAME support all ship and `tools/build-site.py --check` is green. **What is left is not work, it is the owner enabling Pages:** repository Settings → Pages → source `main` / folder `/docs`. The row stays open until that is on and the URL answers, because a deploy nobody has turned on is not a deploy.** — **AND THE URL NOW HAS SOMETHING TO ANSWER WITH, 0.12.93-dev. The row says it stays open *"until that is on and the URL answers"* — and **the URL would have answered 404.** Pages serves `docs/`, every page inside the wiki worked, and the site’s own address had no document at all. `docs/index.html` is that front door: no front matter so Jekyll copies it verbatim, a **relative** link because a project site is served from a subpath and `/wiki/` would resolve above it, a real anchor as well as the refresh so a reader whose browser ignores one still has a way in, and no script and no external request. The row stays open because the switch is still the owner’s: Settings → Pages → source `main` / folder `/docs`.**
 
 
 
-- [ ] **The generator stays internal, by the finding that opened this.** `outputs/readable/` renders — **STATED IN THE CONFIG 0.12.92-dev, NOT YET ENFORCED. `_config.yml` now records in the file that `outputs/readable/` is an internal reading convenience and that the work ledger is never published. **The row stays open because a comment is not a guard** — the enforcement belongs in `check-doc-conformance.py`, alongside the published-site coverage on the row below it, and both are the same small piece of work. Written down rather than claimed.**
-  `TODO.html` and `NOW.html` - the work ledger - to standalone HTML. Nothing publishes them today
-  because `_config.yml` includes `wiki` alone, but TODO row 270 names
-  `tools/make-readable-html.py` as the site's seed, and pointing it at the site would publish the
-  ledger. **It stays an internal reading convenience and is never wired to the published tree.**
 
-- [ ] **`check-doc-conformance.py` must cover the published site** (row 271), so a page cannot claim — **NOT DONE 0.12.92-dev, and the gap is now precise rather than general. `living_docs()` already globs **every** `.md` under the repository, so the thirteen wiki pages are **already** covered for version and branch claims — that half was never missing. **What is uncovered is the site’s non-markdown published files:** `_layouts/default.html`, `_includes/nav.html`, `assets/css/rimrooms.css`, `_config.yml` and a future `CNAME`. A version or a branch claimed in a layout would ship unchecked today. Measured rather than assumed, and it is the same piece of work as the ledger guard above.**
-  a version or a branch the build does not have.
 
 
 ### Major M1 — Connected colony portals (ROADMAP M1; master TODO §Native-provider foundation — 0.4.0-dev)
@@ -408,7 +401,6 @@ Binding contract: [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md). 
 
 **Undeferred 2026-09-29 by owner direction** — moved here verbatim from `DEFERRED.md`, which is now empty of open rows:
 
-- [ ] **Optional work/storage provider adapters** (Pick Up And Haul 164, Haul To Stack 107, Adaptive Storage 10/24/25/26, LWM Deep Storage 122, Warehouse 259, RimFridge 195, Prison Labor 288, Research Whatever 279, Meals On Wheels 125, Gastronomy 269). Core-only path must work with every one absent. **Narrowed 2026-09-28:** the generic storage half is closed — the four storage providers reach cross-gate hauling through `IHaulDestination` now that the container route exists, with no bespoke adapter each. What remains is behaviour those mods add *beyond* the interface, plus the work-behaviour providers (Pick Up And Haul, Haul To Stack, Prison Labor), each still needing its own review. **Narrowed further 2026-09-29:** Research Whatever (279) was reviewed with the research family in 0.5.8-dev, and Meals On Wheels (125) and Gastronomy (269) were reviewed with the food family in 0.6.0-dev — all three are optional with no adapter, and Gastronomy additionally has unresolved rights so its code and art must not be adapted. Source: `CONNECTED_WORK_PROFILE_BOUNDARIES.md`, `implementation/DEFERMENT_AUDIT_AND_CLOSURES.md`. — **STILL OPEN.** Each needs its own source review and a `PatchOperationFindMod` so it applies nothing when the mod is absent (invariant 42). **None is a requirement** — the package must load and run against Core alone.
 - [T] **Connected-site scheduling and streaming, then measurement.** Active connected job destinations must not be silently unloaded to meet a budget. Measurement itself belongs to the post-completion test phase and gates nothing. Source: `CONNECTED_COLONY_PORTALS.md`, `research/PERFORMANCE_BENCHMARK_PLAN.md`.
 
 ## Public face: the site, the Workshop page and the collection
@@ -430,9 +422,7 @@ Owner's words: *"things will have to be deployed and settled before doing the pr
 
 ### The site
 
-- [ ] **A GitHub Pages build that catalogues the whole mod** - capabilities, how-to, and the public-facing documentation, *"top to bottom"*, in the shape other RimWorld mods use for their third-party sites.
 - [ ] **A real domain, not a `github.io` path.** *"a nice backrooms url"*. This needs a domain the owner controls plus a `CNAME` file in the Pages branch and DNS records pointing at GitHub. **The domain is the owner's to choose and register** - ask before building the Pages config, because a custom domain and a project-path deploy are configured differently and the wrong one means rebuilding. — **SUPPORT AUTHORED 0.12.92-dev, DOMAIN STILL THE OWNER’S TO BUY. `docs/CNAME.example` has the DNS records, the copy step and the verification, and the site needs **no page edits** when the domain arrives because nothing hard-codes its own address. The row stays open because the thing it asks for is a domain, and naming one this repository does not serve is the specific failure the row’s sibling forbids.**
-- [ ] **`check-doc-conformance.py` should cover the generated site**, so a published page cannot claim a version or a branch the build does not have.
 
 ### The Steam Workshop
 
@@ -454,17 +444,6 @@ Owner's words: *"things will have to be deployed and settled before doing the pr
 **Built 2026-09-29, 0.12.14-dev: the queue could not answer the question.**
 
 ## Owner decisions, 2026-09-29 — the three reserved questions answered, and one I should never have asked
-
-**Verbatim owner request:** *"read Now.md to resume the work and okay shoot ask me all you want on those question u had that were blocking and lets get to finishing all this work so we have a finished mod with nothing to do but test and bug hunt"*
-
-**Q1 — how a generated request picks its routes. THIS WAS ALREADY ANSWERED AND I RE-ASKED IT. Then the new answer contradicted the shipped one, and the owner resolved the conflict.**
-
-
-**Q2 — whether the eight branches unlock in any order after the hinge. ANSWERED: all eight open, any order.**
-
-- [ ] The hinge opens **everything**. Each branch keeps its own internal tier ladder - tier 2 in a branch still needs tier 1 in that branch - but no branch gates another. Consistent with the standing direction *"but remmebr this is all open eneded they can play how they choose"*. **Closes chart §6 item 2.**
-
-**Q3 — the adjacent-door-run fallback. I ASKED A QUESTION THE OWNER HAD ALREADY ANSWERED.**
 
 **Verbatim owner correction:** *"wtf are you talking about core only we have 294 recommend mods you fuck!!!!"*
 
@@ -492,8 +471,7 @@ on to let a direction reach `FINALIZED.md` without appearing here first.
 - **Field recorder → the book is the recorder.** One Core `TextBook`: carried in blank, written in the field, carried home as the evidence. *"lose the book, lose the run."*
 
 
-- [ ] **Five `RR_*Staff` PawnKinds** → native `Colonist` (new starts already use it; old kinds are readable-only).
-- [ ] **Migration decision or declared development-save break** before removing any Def a saved `Thing` references, with the old build preserved. Shares saved keys with the portal legacy-threshold repair built in step 2 — decide them together.
+- [ ] **Migration decision or declared development-save break** before removing any Def a saved `Thing` references, with the old build preserved. Shares saved keys with the portal legacy-threshold repair built in step 2 — decide them together. — **NO DECISION IS NEEDED YET, AND THE CANDIDATE LIST IS NOW MEASURED RATHER THAN OPEN-ENDED, 0.12.93-dev. The row fires *"before removing any Def a saved `Thing` references"* — and **nothing is being removed.** The five `RR_*Staff` PawnKinds were the other half of this cluster and they are **kept and wired**, not retired, so the save-break risk the row guards against does not arise from them at all. The one remaining candidate is the hidden legacy analysis bench, and `SAVE_MIGRATION_POLICY.md` already records its terms in the file: new starts do not spawn it, it cannot be built, company jobs do not use it, and *"final removal still requires migration or the explicit development-save boundary"*. **The row stays open because the decision is the owner’s and it is blocking nothing being built** — a save break is a decision about other people’s games, and per the M6 answer there are none yet: *"we dont have other peoples saves we just publish it all and update it as we go fixing bugs"*. It becomes a real question the first time a removal is actually proposed, and none is.**
 
 ### Phase 1 leftovers (master TODO §Phase 1 — repository, build, and content foundations)
 
@@ -625,21 +603,12 @@ That second message is what shaped the palette: a single global look could only 
 
 - [~] **"so that a solo group has ability to build and get supplies on backrroms instances and find a way out before dying"** — **THE ARITHMETIC GUARANTEES IT AS OF 0.8.0-dev**, as three properties rather than tuning: an **absolute** cap of three simultaneous encounters at any depth and any wealth; **half of every coordinate's rooms bare by count rather than by chance**, so an unlucky run of rolls cannot produce a space with something in every room; and a first visit always quiet. Shallow coordinates are also capped below the top band regardless of wealth. **Stays in progress until inhabitants exist and the condition can actually be observed.** — **an acceptance condition on the whole generator, not a nice-to-have.** A high-tier coordinate that cannot be survived solo by building, supplying and finding a way out has failed this direction regardless of how good it looks.
 
-### Owner direction — nothing is deferred, and what the Backrooms is *for* (2026-09-29)
-
-**Verbatim owner request (2026-09-29), answering the floors question and going well beyond it:** *"ik think option one can work and we can add a flag to item from the back rooms like (odd) or something like that and have quests and missions and contracts and stuff for like 1000 (odd) cotton or like 10 uninstalled electic stoves(odd) and the such for all things materials and resources ect ect that can give reason for the players to have to advance and excplore and haul and use the spaces iin the backrooms"*
-
-**This is the answer to why a player goes back in, and it turns the whole cross-map work engine into an economy.** Thirty-one work families already move real goods through a gate; nothing in the game has ever asked for those goods *by origin*. An odd-only contract cannot be filled from the colony stockpile at any price — only by going in, working the space and hauling it out. It also gives ordinary Core resources a second tier of value **without inventing a single new item**.
-
-- [ ] **The laundering routes are closed and must stay closed.** Marking happens in exactly one place — once, at the end of generation, before the map can be reached. Marking on spawn instead would let a player haul ordinary goods in, drop them, and carry them out as odd. Any future code that marks a thing anywhere else reopens that hole. — the stated purpose, and the acceptance test for the whole feature: if odd contracts can be satisfied without entering a coordinate, it has failed.
-
 ### Owner direction — the M6 release gate (2026-09-29)
 
 **Verbatim owner request (2026-09-29, three answers):** *"what is the m6 gate use askme question lets get past it"*, then the answers themselves — **M6 path:** *"Split M6a / M6b, build all of M6a"*; **fixtures:** *"option 2 and option 3"*; **release:** *"option 3 and remeber we dont have other peoples saves we just publish it all and update it as we go fixing bugs"*.
 
 Two of the three override standing policy, so all three are recorded in [`GATE_0_DECISIONS.md`](GATE_0_DECISIONS.md) as decisions 19, 20 and 21, and **D1 is superseded** there. This is the first change to a D-numbered Gate 0 decision since they were recorded on 2026-09-27.
 
-- [ ] **Consequence: the no-compatibility-claim rule is now the main protection, not a formality.** D1's option B text stays binding — *"do not announce compatibility until validation is complete"*. The mod page may claim the Core-only solo path and must claim **no** profile row, **no** DLC interaction and **no** RWT co-op until that row has a recorded result. **200 of the 294 dispositions are still provisional.** Owned by M6a's mod-page row.
 - [ ] **Consequence: save migration becomes a standing obligation from the first published version.** It was a release-day checkbox on the assumption that publication came last. From publication onward there *are* other people's saves, so every subsequent version must carry a migration or a declared break. Owned by [`SAVE_MIGRATION_POLICY.md`](SAVE_MIGRATION_POLICY.md); D2's version policy is unchanged (`0.x` pre-release, `1.0.0` first stable).
 
 ### Owner direction — the other half of the topology: a way out into the world (2026-09-29)

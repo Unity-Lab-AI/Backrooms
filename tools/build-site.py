@@ -20,9 +20,25 @@ tree"* -- the work ledger is not public. The two tools share no output directory
 
 What it writes
 --------------
-`docs/_includes/nav.html` only. It never touches a page's prose: the title comes from the page's
-own first `# ` heading and the one-line summary from its `summary:` front matter, so the page
-remains the source of truth and this file remains derived.
+**Two generated artefacts, and neither is prose.**
+
+`docs/_includes/nav.html` -- the index. It never touches a page's prose: the title comes from the
+page's own first `# ` heading and the one-line summary from its `summary:` front matter, so the
+page remains the source of truth and this file remains derived.
+
+`docs/_config.yml`'s `exclude:` block, between markers. **This was added because the hand-written
+version was not merely unmaintained, it was wrong.** The file said *"everything else under docs/ is
+project working material and is deliberately excluded"* while naming four directories, two of
+which (`evidence`, `reviews`) do not exist. **Jekyll publishes every entry in its source directory
+that it is not told to exclude**, and fifty-four markdown files sit at `docs/` root -- `TODO.md`,
+`NOW.md`, `FINALIZED.md`, `DECOMPOSED.md` among them. Enabling Pages would have put the entire work
+ledger on the public internet, which is the exact outcome the queue row calls *"never published"*.
+
+The list is written **explicitly, entry by entry, never as a glob.** Jekyll's exact-name and
+directory-prefix rules behave identically in every version; `*` crossing a path separator is a
+subtlety of Ruby's `File.fnmatch` that cannot be verified from here, and a pattern that silently
+fails to exclude is the one failure mode this must not have. Completeness is guaranteed by
+`--check` instead -- add a document, and the battery fails until it is excluded.
 
 Order is declared in SECTIONS rather than alphabetical, because a reader arriving at a wiki wants
 *install* before *credits*, and alphabetical would put `backrooms` first and `troubleshooting`
@@ -31,8 +47,8 @@ last by accident rather than on purpose. A page not named in SECTIONS still appe
 
 Usage
 -----
-    python tools/build-site.py          # write the include
-    python tools/build-site.py --check  # fail if it is out of date, for the battery
+    python tools/build-site.py          # write the include and the exclude block
+    python tools/build-site.py --check  # fail if either is out of date, for the battery
 """
 import io
 import os
@@ -40,9 +56,27 @@ import re
 import sys
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-WIKI = os.path.join(REPO, "docs", "wiki")
-INCLUDE = os.path.join(REPO, "docs", "_includes", "nav.html")
+DOCS = os.path.join(REPO, "docs")
+WIKI = os.path.join(DOCS, "wiki")
+INCLUDE = os.path.join(DOCS, "_includes", "nav.html")
+SITE_CONFIG = os.path.join(DOCS, "_config.yml")
 NL = chr(10)
+
+# **What the published site actually is.** Everything else at `docs/` root is working material.
+#
+# `assets` is here because the stylesheet has to be served or the layout is a text wall again, and
+# `CNAME` is here because GitHub Pages reads it out of the published root -- excluding it would
+# make the custom domain silently never work, which is the same class of quiet failure as
+# `CNAME.example` going live. `CNAME.example` itself is working material and is excluded; the
+# prefix rule is safe in that direction, because `docs/CNAME` does not start with
+# `docs/CNAME.example`.
+#
+# Entries beginning `_` or `.` are never listed: Jekyll treats those as special and never
+# publishes them, which is why `_config.yml`, `_layouts/` and `_includes/` need no exclusion.
+PUBLISHED_ENTRIES = ("wiki", "assets", "CNAME", "index.html")
+
+EXCLUDE_BEGIN = "  # BEGIN GENERATED EXCLUDE LIST -- written by tools/build-site.py."
+EXCLUDE_END = "  # END GENERATED EXCLUDE LIST"
 
 # The reading order a newcomer needs, which is not alphabetical. Any page not listed here is
 # still published and still indexed, under the last group.
@@ -129,6 +163,79 @@ def render(found):
     return NL.join(lines)
 
 
+def working_material():
+    """Every entry at `docs/` root that is not part of the published site.
+
+    Read off the directory rather than listed, for the same reason the index is: a hand-written
+    list is a second place the truth lives, and this one was already wrong in the direction that
+    publishes a ledger.
+    """
+    found = []
+    for name in sorted(os.listdir(DOCS)):
+        if name.startswith("_") or name.startswith("."):
+            continue        # Jekyll treats these as special and never publishes them.
+        if name in PUBLISHED_ENTRIES:
+            continue
+        found.append(name)
+    return found
+
+
+def render_excludes(names):
+    """The `exclude:` block, with the reason it exists written where it is read."""
+    lines = [
+        EXCLUDE_BEGIN,
+        "  #",
+        "  # Jekyll publishes every entry in its source directory that it is not told to",
+        "  # exclude. This list named four directories until 0.12.93-dev -- two of which",
+        "  # (evidence, reviews) do not exist -- while fifty-four documents sat at docs/ root,",
+        "  # TODO.md and NOW.md among them. Enabling Pages would have published the whole work",
+        "  # ledger. The owner's rule is that it is never published, so the rule is now a list",
+        "  # that cannot fall behind the directory: `tools/build-site.py --check` fails the",
+        "  # battery when a new document appears and is not named here.",
+        "  #",
+        "  # Explicit names, never globs: Jekyll's exact-name and directory-prefix rules behave",
+        "  # identically in every version, and a glob that silently fails to exclude is the one",
+        "  # failure mode a ledger guard must not have.",
+    ]
+    for name in names:
+        lines.append("  - %s" % name)
+    lines.append(EXCLUDE_END)
+    return NL.join(lines)
+
+
+def splice_excludes(text, block):
+    """Replace the generated region, or refuse rather than guess where it goes."""
+    begin = text.find(EXCLUDE_BEGIN)
+    end = text.find(EXCLUDE_END)
+    if begin < 0 or end < 0 or end < begin:
+        return None
+    return text[:begin] + block + text[end + len(EXCLUDE_END):]
+
+
+def excludes_up_to_date(names):
+    """(ok, message). False whenever the config does not hold exactly this list."""
+    if not os.path.isfile(SITE_CONFIG):
+        return False, "docs/_config.yml is missing"
+    text = io.open(SITE_CONFIG, encoding="utf-8").read()
+    begin = text.find(EXCLUDE_BEGIN)
+    end = text.find(EXCLUDE_END)
+    if begin < 0 or end < 0:
+        return False, ("docs/_config.yml has no generated exclude block. Run "
+                       "tools/build-site.py.")
+    region = text[begin:end]
+    listed = [line.strip()[2:].strip() for line in region.split(NL)
+              if line.strip().startswith("- ")]
+    missing = [name for name in names if name not in listed]
+    extra = [name for name in listed if name not in names]
+    if missing:
+        return False, ("docs/_config.yml does not exclude %d entry(s) that are working "
+                       "material: %s" % (len(missing), ", ".join(missing)))
+    if extra:
+        return False, ("docs/_config.yml excludes %d entry(s) that are not at docs/ root "
+                       "any more: %s" % (len(extra), ", ".join(extra)))
+    return True, "the exclude list matches %d working-material entry(s)" % len(listed)
+
+
 def main():
     if not os.path.isdir(WIKI):
         print("build-site: %s does not exist" % WIKI)
@@ -140,27 +247,51 @@ def main():
     rendered = render(found)
     existing = (io.open(INCLUDE, encoding="utf-8").read()
                 if os.path.isfile(INCLUDE) else None)
+    material = working_material()
 
     if "--check" in sys.argv:
+        failures = []
         if existing is None:
-            print("build-site: docs/_includes/nav.html is missing. Run tools/build-site.py.")
-            return 1
-        if existing != rendered:
-            print("build-site: docs/_includes/nav.html is out of date against docs/wiki/.")
-            print("            Run tools/build-site.py and commit the result.")
+            failures.append("docs/_includes/nav.html is missing. Run tools/build-site.py.")
+        elif existing != rendered:
+            failures.append("docs/_includes/nav.html is out of date against docs/wiki/. "
+                            "Run tools/build-site.py and commit the result.")
+        ok, message = excludes_up_to_date(material)
+        if not ok:
+            failures.append(message)
+        if failures:
+            for failure in failures:
+                print("build-site: %s" % failure)
             return 1
         print("build-site: the generated index matches %d page(s)." % len(found))
+        print("            %s" % message)
         return 0
 
     directory = os.path.dirname(INCLUDE)
     if not os.path.isdir(directory):
         os.makedirs(directory)
     io.open(INCLUDE, "w", encoding="utf-8", newline=NL).write(rendered)
-    missing = [slug for slug in found if slug not in set(
+    unlisted = [slug for slug in found if slug not in set(
         s for _, names in SECTIONS for s in names)]
     print("build-site: wrote docs/_includes/nav.html for %d page(s)." % len(found))
-    if missing:
-        print("            indexed under \"More\": %s" % ", ".join(sorted(missing)))
+    if unlisted:
+        print("            indexed under \"More\": %s" % ", ".join(sorted(unlisted)))
+
+    if not os.path.isfile(SITE_CONFIG):
+        print("build-site: docs/_config.yml is missing; wrote no exclude list.")
+        return 1
+    config = io.open(SITE_CONFIG, encoding="utf-8").read()
+    spliced = splice_excludes(config, render_excludes(material))
+    if spliced is None:
+        print("build-site: docs/_config.yml has no %r .. %r region, so there is nowhere to"
+              % (EXCLUDE_BEGIN.strip(), EXCLUDE_END.strip()))
+        print("            write the exclude list. Add the two marker lines under `exclude:`")
+        print("            rather than letting this guess where the block belongs.")
+        return 1
+    io.open(SITE_CONFIG, "w", encoding="utf-8", newline=NL).write(spliced)
+    print("build-site: wrote docs/_config.yml exclude list for %d working-material entry(s)."
+          % len(material))
+    print("            published: %s" % ", ".join(PUBLISHED_ENTRIES))
     return 0
 
 

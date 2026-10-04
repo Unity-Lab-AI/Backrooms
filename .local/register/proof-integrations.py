@@ -157,11 +157,33 @@ check("THE MULTIPLAYER PAGE A READER OPENS IS HELD TO THE READER-FACING RULES",
       "is in the set; `MULTIPLAYER.md` keeps the server detail a player does not need and a "
       "maintainer does. Otherwise the vocabulary and wall rules skip the page people actually "
       "read")
+# **SCOPED TO THE READER-FACING WALK, AND THE FIRST VERSION WAS NOT.** The claim looked for the
+# call anywhere in the file at an eight-space indent. 0.12.93-dev added a **second** call site --
+# the published non-markdown files now go through the same guard -- at the same indent, so
+# deleting the reader-facing call stopped failing this claim and `plant-integrations.py` reported
+# MISSED on a plant that was perfectly sound. **`in` cannot tell one site from two**, which is the
+# recurring defect this battery has recorded against itself repeatedly; the claim was weakened by
+# a change elsewhere rather than being wrong when written.
+#
+# Both sites are asserted, so each is load-bearing: the reader-facing one by position inside the
+# function, and the total by count.
+_reader_walk = conformance[conformance.index("def check_reader_facing("):] \
+    if "def check_reader_facing(" in conformance else ""
+_reader_walk = _reader_walk[:_reader_walk.index("\ndef ")] if "\ndef " in _reader_walk \
+    else _reader_walk
 check("THE CLAIM GUARD EXISTS and is wired into the reader-facing walk",
       "FORBIDDEN_CLAIMS" in conformance and
       "def check_forbidden_claims(" in conformance and
-      "\n        check_forbidden_claims(rel, prose, problems)" in conformance,
+      "check_forbidden_claims(rel, prose, problems)" in _reader_walk,
       "-- row 791 is an absolute, and an absolute with no check is a promise")
+# The definition line carries the same text as a call, so a bare count reads 3 where there are
+# two call sites. Excluded by lookbehind rather than by subtracting one, because subtracting one
+# would quietly keep passing if the definition were ever removed.
+_calls = len(re.findall(r"(?<!def )check_forbidden_claims\(rel, prose, problems\)", conformance))
+check("the claim guard is reached from BOTH walks, counted rather than contained",
+      _calls == 2,
+      "-- the reader-facing documents and the site's published non-markdown files; found %d "
+      "call site(s)" % _calls)
 check("the guard checks for negation rather than banning the words outright",
       "CLAIM_NEGATORS" in conformance,
       "-- a naive substring ban would fail the one document written to obey the rule, which is "

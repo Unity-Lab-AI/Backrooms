@@ -16,20 +16,103 @@ description: A company-management campaign for RimWorld about contract work beyo
 # narrow enough to read.
 
 # The wiki is the published site. Everything else under docs/ is project working material and is
-# deliberately excluded.
+# excluded by the generated list below.
 #
-# THE WORK LEDGER IS NEVER PUBLISHED. `tools/make-readable-html.py` renders TODO.html and
-# NOW.html into outputs/readable/ as an internal reading convenience, and that is all it is for.
-# `check-doc-conformance.py` refuses a published copy of either, so pointing a generator at this
-# tree cannot quietly put the queue on the internet.
+# THE WORK LEDGER IS NEVER PUBLISHED, AND UNTIL 0.12.93-dev THIS FILE ONLY SAID SO.
+#
+# The four lines that used to be here named `implementation`, `research`, `evidence` and
+# `reviews` -- and two of those four do not exist. **Jekyll publishes every entry in its source
+# directory that it is not told to exclude**, and fifty-four documents sit at docs/ root, with
+# `TODO.md`, `NOW.md`, `FINALIZED.md` and `DECOMPOSED.md` among them. None of them carries front
+# matter, so Jekyll would have copied each one verbatim into the built site and served it as a
+# raw download. **Enabling Pages would have published the entire work ledger.**
+#
+# Two independent instruments now hold the line, which is the right shape: one keeps the list
+# current and one refuses the bad outcome.
+#
+#   * `tools/build-site.py` WRITES the block below from the directory itself, and `--check`
+#     fails the battery the moment a new document appears unexcluded. A list nobody maintains
+#     is how this got wrong in the first place.
+#   * `tools/check-doc-conformance.py` MODELS what Jekyll would publish and refuses outright if
+#     a ledger is in that set. It does not read this list and agree with it; it works out the
+#     answer and fails on the answer. So a broken generator cannot produce a quiet pass.
+#
+# `tools/make-readable-html.py` renders TODO.html and NOW.html into outputs/readable/ as an
+# internal reading convenience, and that is all it is for. It shares no output directory with
+# the site.
 include:
   - wiki
 
 exclude:
+  # BEGIN GENERATED EXCLUDE LIST -- written by tools/build-site.py.
+  #
+  # Jekyll publishes every entry in its source directory that it is not told to
+  # exclude. This list named four directories until 0.12.93-dev -- two of which
+  # (evidence, reviews) do not exist -- while fifty-four documents sat at docs/ root,
+  # TODO.md and NOW.md among them. Enabling Pages would have published the whole work
+  # ledger. The owner's rule is that it is never published, so the rule is now a list
+  # that cannot fall behind the directory: `tools/build-site.py --check` fails the
+  # battery when a new document appears and is not named here.
+  #
+  # Explicit names, never globs: Jekyll's exact-name and directory-prefix rules behave
+  # identically in every version, and a glob that silently fails to exclude is the one
+  # failure mode a ledger guard must not have.
+  - ADMIN-ONBOARDING.md
+  - AI_BUILD_HANDOFF.md
+  - ARCHITECTURE.md
+  - BUILDING.md
+  - CAMPAIGN_CHART.md
+  - CAMPAIGN_CONTENT_CATALOG.md
+  - CAMPAIGN_ECONOMY_MODEL.md
+  - CAMPAIGN_ECONOMY_PROGRESSION.md
+  - CAMPAIGN_ROSTER_FREEZE.md
+  - CAMPAIGN_STATE_DICTIONARY.md
+  - CNAME.example
+  - COMPATIBILITY.md
+  - COMPLIANCE_AND_OFFICIAL_VERSIONS.md
+  - CONNECTED_COLONY_PORTALS.md
+  - CONTENT_REUSE_POLICY.md
+  - CREDITS.md
+  - DECOMPOSED.md
+  - DEFERRED.md
+  - FEATURE_TRACEABILITY.md
+  - FINALIZED.md
+  - FIRST_PLAYABLE_CONTRACT.md
+  - FIRST_SLICE_CONTENT_INVENTORY.md
+  - GAME_DESIGN.md
+  - GATE_0_DECISIONS.md
+  - HOOKS.html
+  - HOWTO.md
+  - MENU_ART_BRIEF.md
+  - MOD_INTEGRATION_PLAN.md
+  - MULTIPLAYER.md
+  - NOW.md
+  - OPERATIONS_ACTION_CONTRACTS.md
+  - PLAYING.md
+  - PREPRODUCTION_AND_IMPLEMENTATION_TODO.md
+  - PROCEDURAL_SPACE_CONTRACT.md
+  - PUBLIC_RELEASE_PLAN.md
+  - PUBLISHING.md
+  - REGRESSION_CONTAINMENT.md
+  - RESEARCH.md
+  - RIMROOMS_MOD_OVERVIEW.md
+  - ROADMAP.md
+  - SAVE_MIGRATION_POLICY.md
+  - SCENARIOS.md
+  - SCENARIO_SETUP_AND_PORTAL_NETWORK.md
+  - SKILL_TREE.md
+  - SOURCE_REGISTER.md
+  - SPINNER-VERBS-SETUP.md
+  - STATUSLINE.md
+  - SYSTEMS_CATALOG.md
+  - TECHNICAL_ARCHITECTURE.md
+  - THREAT_DESIGN_SHEETS.md
+  - TODO.md
+  - TUTORIAL_SCRIPT.md
+  - UNIVERSE_ADAPTATION.md
   - implementation
   - research
-  - evidence
-  - reviews
+  # END GENERATED EXCLUDE LIST
 
 defaults:
   - scope:

@@ -140,6 +140,7 @@ Select who you mean first. Anyone who cannot cross is listed with the reason rat
   <RR_PortalCrossing_IdentityConflict>A different crossing already used that operation identity.</RR_PortalCrossing_IdentityConflict>
   <RR_PortalCrossing_PendingLimit>Too many crossings are unresolved. Reconcile some before starting another.</RR_PortalCrossing_PendingLimit>
   <RR_PortalCrossing_PawnInTransit>{0} is already part of an unresolved crossing.</RR_PortalCrossing_PawnInTransit>
+  <RR_PortalCrossing_PackNotCleared>Goods in a pack cannot go through a gate; they have to be in the carrier's hands. This person's pack could not be emptied here, so clear a space by the door and try again.</RR_PortalCrossing_PackNotCleared>
   <RR_PortalCrossing_PawnNotEligible>Only this company's own available people and animals can cross. Drafted, downed, dead, prisoner, enslaved, guest and distressed people cannot, and neither can a downed or panicking animal.</RR_PortalCrossing_PawnNotEligible>
   <RR_PortalCrossing_NotAtSourceThreshold>The person is not standing at the saved threshold cell for that connection.</RR_PortalCrossing_NotAtSourceThreshold>
   <RR_PortalCrossing_SourceAccessDenied>The door on this side cannot be used: it is forbidden, locked or impassable for this person.</RR_PortalCrossing_SourceAccessDenied>
