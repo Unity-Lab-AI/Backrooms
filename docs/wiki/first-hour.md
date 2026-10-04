@@ -13,35 +13,31 @@ Open the **Operations** tab — first on the bottom bar, bound to `\` by default
 
 ## The eleven checks, in order
 
-Operations → **Machine** lists every one of these with a light and a tick. **A player who already
-knows simply sees eleven ticks**; the list below is what each one means.
+Operations → **Machine** lists all eleven with a light and a tick, and names what to do for each
+one that is not done.
 
 | # | The check | What satisfies it |
 |---|---|---|
 | 1 | A door chosen to become the gate | Designate any door |
 | 2 | Console, battery and machining table bound to it | Bind all three on the Machine pane |
-| 3 | **The gate commissioned** | A commissioning step on the same pane |
+| 3 | The gate commissioned | A commissioning step on the same pane |
 | 4 | **Machining table set to gate control** | A switch on the table itself |
 | 5 | Gate assembled | The **assemble gate** bill: 100 steel, 8 industrial components |
 | 6 | An operator assigned | A certified gate operator, on Personnel |
-| 7 | The gate calibrated | A qualified staff member, once assembly is done |
+| 7 | The gate calibrated | A certified staff member, once assembly is done |
 | 8 | **Communications console set to gate control** | A switch on the console itself |
-| 9 | **An address remembered** | Somewhere to open to — dial, or a request |
+| 9 | An address remembered | Somewhere to open to — dial, or take one from a request |
 | 10 | The operator standing at the console | A job, not a checkbox |
 | 11 | A session opened | Open the connection |
 
----
+## Steps 4 and 8 are two separate switches
 
-## Steps 4 and 8 are the two that catch everybody
+**The machining table and the communications console each have to be set to gate control.** Setting
+one and not the other leaves the gate looking finished and unable to open, because every other
+check can read as done.
 
-They are the same switch on two different buildings: **the machining table** and **the
-communications console** each have to be set to gate control, separately.
-
-Setting one and not the other is the single most common reason a gate looks finished and will not
-open. Everything else can read as done.
-
-**If you have done everything and nothing happens, check these two first.** The Machine pane will
-tell you which one — that is what it is numbered for.
+If you have worked through the list and nothing happens, check both of these. The Machine pane
+names which one is outstanding.
 
 ---
 
@@ -70,9 +66,9 @@ Then commission it, set the table to gate control, and run the **assemble gate**
 
 The table keeps all of its normal recipes.
 
-## 3. Get somebody certified
+## 3. Train a gate operator
 
-**The gate needs a certified operator, and you make one.** Three training bills exist:
+The gate needs a certified operator, and you train one. Three **train** bills exist:
 
 | Bill | Needs |
 |---|---|
@@ -80,28 +76,27 @@ The table keeps all of its normal recipes.
 | **train field analyst** | Intellectual 3 |
 | **train reserve technician** | Crafting 5 |
 
-The first two run on a **machining table or a crafting spot**, so you are not blocked waiting on a
-table. The third needs the table.
+The first two run on a machining table or a crafting spot; the third needs the table.
 
-**If nobody is certified, nothing else on this list matters.**
+Until somebody is certified, the gate cannot be calibrated or opened.
 
 ## 4. Calibrate
 
-A qualified staff member calibrates the gate once the assembly is done. The Machine pane numbers
+A certified staff member calibrates the gate once the assembly is done. The Machine pane numbers
 every step and shows which are complete.
 
 ## 5. Keep an operator on station
 
-Someone stays at the console while a connection is open. **This is a job, not a checkbox** — walk
-them away and the connection drops.
+Someone stays at the console while a connection is open. This is a job, not a checkbox — walk them
+away and the connection drops.
 
 ## 6. Pick a crew
 
 Up to three field staff. The planner checks skill, health and carried weight, and names anyone who
 is not ready.
 
-It also shows who has **been through before**, and who has walked the exact address you are
-dialling. An operator who knows the route brings the gate up faster.
+It also shows who has been through before, and who has walked the exact address you are dialling.
+An operator who knows the route brings the gate up faster.
 
 ## 7. Have somewhere to go
 
@@ -110,17 +105,21 @@ pick.
 
 ## 8. Open a connection and go
 
-Bringing a connection up is **work over time**, not an instant. Walk away and it loses charge.
+Bringing a connection up is work over time, not an instant. Walk away and it loses charge.
+
+**A first opening holds about thirty minutes of real time.** Research multiplies that by three per
+earned tier, and the top rung removes the countdown entirely.
 
 ---
 
 ## Read the refusal
 
-Operations refuses any opening it cannot complete, and **always names the reason**:
+Operations refuses any opening it cannot complete, and always names the reason:
 
 - the assembly is unfinished
 - a building is not set to gate control
 - the reserve is below what a return costs
+- nobody is certified to operate it
 - no qualified operator is at the controls
 - no crew is ready
 - no address to open to
@@ -129,7 +128,7 @@ Operations refuses any opening it cannot complete, and **always names the reason
 - the connection was cut deliberately
 - too many places are already held open
 
-**The reason is the instruction.** Fix the named one.
+Fix the named one.
 
 ---
 
@@ -141,4 +140,4 @@ Operations refuses any opening it cannot complete, and **always names the reason
 4. Have a second person **review** the finished report.
 5. Spend the insight on a company project.
 
-That loop is the game.
+That loop is the game. **Nothing in it is timed except the connection itself.**

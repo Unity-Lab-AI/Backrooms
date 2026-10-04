@@ -14,7 +14,7 @@ Everything the company does lives in one tab: **Operations**, first on the botto
 | Pane | What it is for |
 |---|---|
 | **Overview** | The branch at a glance; register headquarters; pay obligations |
-| **Personnel** | Hire, pay, assign roles |
+| **Personnel** | Hire, pay, assign roles, train certificates |
 | **Contracts** | Requests first, then priced jobs |
 | **Ledger** | Account movements, with a reason for each |
 | **Atlas** | Coordinates, bands, surveyed rooms |
@@ -63,7 +63,8 @@ shipped one.
 font, colourblind mode — apply here exactly as they apply to the base game.
 
 **Nothing required is carried by colour, sound or animation alone.** Gate readiness, the return
-reserve, route tags, distance, recall warnings and record status each have a written label.
+reserve, route tags, distance, recall warnings and record status each have a written label, and the
+Machine pane's indicator lights are paired with the game's own tick glyph.
 
 ---
 

@@ -30,10 +30,10 @@ throwing an error.
 3. **Sort.** Rimrooms publishes its own load order, so the sorter places it correctly on its own.
 4. Launch.
 
-**Rimrooms must load last.** A patch cannot see content from a mod that loads after it. Its
+**Rimrooms loads last.** A patch cannot see content from a mod that loads after it, and its
 load-order list handles this — you do not need to drag it.
 
-That list names 294 mods, and it is **advice about order, never a list of things you need**. Own
+That list names other mods, and it is **advice about order, never a list of things you need**. Own
 none of them and the mod runs.
 
 ---
@@ -67,7 +67,7 @@ frameworks → expansions → everything else → Rimrooms
 ## Verifying it loaded
 
 - A **Rimrooms** background appears on the main menu with the version beside RimWorld's own.
-- A new scenario appears in the new-game list — see [The three starts](scenarios.md).
+- New scenarios appear in the new-game list — see [The three starts](scenarios.md).
 - Once in game, the **Operations** tab sits first on the bottom bar.
 
 If the menu background is there but Operations is not, you are in the world view. Return to a

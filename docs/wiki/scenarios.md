@@ -1,6 +1,6 @@
 ---
 title: The three starts
-summary: "The three shipped starts and what each one is actually like to play."
+summary: "The three starts and what each one is actually like to play."
 ---
 
 # The three starts
@@ -8,15 +8,30 @@ summary: "The three shipped starts and what each one is actually like to play."
 All three appear in the ordinary new-game list. All three establish a branch and use the same
 systems.
 
-**The opening decides what you have on day one — not what you can eventually do.**
+The opening decides what you have on day one, not what you can eventually do.
 
 Native pawn customisation works on every start.
 
 ---
 
+## Contact is the thing that differs
+
+The corporation's protection — the crew it sends when a branch goes under — applies **only once
+that branch is in contact with it**.
+
+| Start | In contact | What that means |
+|---|---|---|
+| **Async Industries** | **Yes, from the first minute** | You are already an investment. Help comes |
+| **The Store** | No | Reaching contact is the achievement |
+| **Lone survivor** | No | Same, from further away |
+
+For two of the three starts there is no rescue until you earn it. That absence is the difficulty.
+
+---
+
 ## Async Industries
 
-**The intended opening.** Most of this wiki is written about it.
+The intended opening, and most of this wiki is written about it.
 
 | | |
 |---|---|
@@ -31,7 +46,7 @@ sit outside and the batteries sit in.
 
 ## The Store
 
-**You begin in a shop with a way through in the back.**
+You begin in a shop with a way through in the back.
 
 | | |
 |---|---|
@@ -40,20 +55,24 @@ sit outside and the batteries sit in.
 | **First job** | Secure the public area, account for who is missing, decide how to handle it |
 | **Difficulty** | Less money, more improvisation |
 
-No corporation yet. Getting one is a decision you make.
+No corporation yet. Getting one is a decision you make, and it is also what buys you a safety net.
+
+Three readable approaches to the first incident: evacuate and seal the basement, run a short
+supervised search for the missing customer, or document the way through and ask for outside help.
 
 ## Lone survivor
 
-**You are already inside.**
+You are already inside.
 
 | | |
 |---|---|
-| **You get** | One person, field kit, limited supplies |
+| **You get** | One person, field kit, a blank record book, limited supplies |
 | **The gate** | None, and no facility |
 | **First job** | Stay alive, learn a local rule, record a way out |
 | **Difficulty** | The hardest. The map you start on *is* a coordinate |
 
-Getting anywhere else is the first problem.
+Getting anywhere else is the first problem. An escape lead reaches a surface contact, a radio
+response can establish a small remote site, or you can keep going as a solo expedition.
 
 ---
 
@@ -65,4 +84,4 @@ Getting anywhere else is the first problem.
 | To build the company yourself from nothing | **The Store** |
 | A survival run with the company as a distant hope | **Lone survivor** |
 
-Every start can eventually run several gates.
+Every start can eventually run several gates, and every start reaches the same systems.

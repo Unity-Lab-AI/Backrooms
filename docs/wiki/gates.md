@@ -13,7 +13,32 @@ Three words, used strictly.
 | **Connection** | The live link an opened gate holds. |
 | **Threshold** | The cell you arrive on, on the far side. |
 
-**A gate is a door and nothing else.** It does not teleport, scan or think.
+A gate is a door and nothing else. It does not teleport, scan or think.
+
+---
+
+## The gate is the only clock in this mod
+
+An open connection has a duration. **Nothing else here does** — no request, contract, offer or
+trade ever expires, and nothing penalises you for taking your time.
+
+And the connection's duration is not a timer set against you. It is the result of five things you
+control:
+
+| Factor | Effect on how long a connection holds |
+|---|---|
+| **Power** | The reserve drains while the connection stands; an empty reserve ends it |
+| **Technology** | The window ladder multiplies the base window; the top rung removes the countdown |
+| **Maintenance** | A lapsed assembly blocks the *next* opening, never the current one |
+| **Workforce** | An operator off station, or none at all, ends it |
+| **Physical factors** | The kill switch, a broken battery, an EMP, a condition disabling power |
+
+## The window ladder
+
+A first opening holds about **thirty minutes of real time** at normal speed.
+
+Each earned tier in gate engineering **multiplies that by three**. The top rung is a **standing
+connection**: no countdown at all, for as long as power, the operator and the reserve hold.
 
 ---
 
@@ -38,7 +63,7 @@ glance.
 | 2 | Pack animals — muffalo, dromedaries |
 | 3+ | Anything |
 
-A wider gate is more machine: **more power while open, longer to bring up**.
+A wider gate is more machine: more power while open, and longer to bring up.
 
 ---
 
@@ -52,7 +77,7 @@ An operator brings the gate up at the console over time. The console shows progr
 
 ## The reserve
 
-An open connection draws power while it stands, and **holds a reserve back so one return is always
+An open connection draws power while it stands, and holds a reserve back so **one return is always
 paid for**. You cannot open a connection you could not bring people home through.
 
 ---
@@ -62,11 +87,8 @@ paid for**. You cannot open a connection you could not bring people home through
 A branch may run **three operational gates at once**. The count is across every map you hold, not
 per map.
 
-**It is a cap on gates, not on addresses.** No gate is tied to a place — any operational gate
-dials anything the branch has on its records.
-
-That is what makes a second and third gate worth building rather than three copies of one route:
-three gates can hold three different places open at the same time.
+It is a cap on gates, not on addresses. No gate is tied to a place: any operational gate dials
+anything the branch has on its records, so three gates can hold three different places open.
 
 ## Dialling an address nobody gave you
 
@@ -79,31 +101,31 @@ Alongside requests and contracts, a gate can **dial an unknown address** — in 
 | **Repeatable** | Dial the same slot again and you get the same place. Reloading does not reshuffle it |
 | **What it costs** | Nothing. It creates an **address**, not a map |
 
-Nothing is generated until somebody crosses. **So looking is free and arriving is the part that
-costs you.**
+Nothing is generated until somebody crosses, so discovering an address is free and the cost arrives
+when you open it.
 
 ---
 
 ## Places held open, and when a gate refuses
 
-A Backrooms level is a loaded map. **So is a colony** — and the game only keeps so many at once.
+A Backrooms level is a loaded map, and so is a colony. The game keeps a limited number at once.
 
-Your allowance is **your own colony limit**, the one in Options, so a player who runs three
-colonies gets three places and the default allowance is five. A start may set its own figure. It is
-never lower than two, because a branch needs somewhere to live and somewhere to go.
+Your allowance is **your own colony limit** from Options, so the default is five and a player who
+lowers it gets fewer. A start may set its own figure. It is never below two, because a branch needs
+somewhere to live and somewhere to go.
 
-Hold your allowance and the next way onward says **so**: the Places pane reads *Holding 4 of 5*,
-and a door that would open one map too many is refused before anything is generated.
+At your allowance, the next way onward is refused before anything is generated, and the Places pane
+reads *Holding 4 of 5*.
 
-**Three gates each holding a place, plus home, is four of five** — which leaves one spare for
-somewhere you walk into without planning to.
+Three gates each holding a place, plus home, is four of five, which leaves one spare for a place
+you walk into without planning to.
 
 ## Boarding one up
 
-A way through you did not build can be closed for good: **board it up for 25 wood**.
+A way through you did not build can be closed permanently: **board it up for 25 wood**.
 
-A colonist walks over, nails the boards on, and the place behind it closes — **and that frees a
-place against your allowance.** It needs wood on the map and somebody who can reach both.
+A colonist walks over and nails the boards on. The place behind it closes and that frees a place
+against your allowance. It needs wood on the map and somebody who can reach both.
 
 ---
 
@@ -117,7 +139,7 @@ Gunfire, fire and mortars all count — a gate is an ordinary building with hit 
 
 Each gate keeps a record of what its openings did: completed returns against emergency cutoffs.
 
-**That is history, not a dice roll.** Nothing here is randomly unreliable.
+That is history, not a dice roll. Nothing here is randomly unreliable.
 
 ## Addresses
 
@@ -131,8 +153,10 @@ matter, clear the rest.
 Early on you will find ways through you did not build. These reach **through depth 6 and no
 further**.
 
-Past that, the only way deeper is a gate you built, powered and calibrated yourself. **The free
-ways in are a tutorial, not a strategy.**
+Past that, the only way deeper is a gate you built, powered and calibrated yourself.
+
+The cap applies to going deeper, never to coming out: a crew at the deepest band can always find a
+way that leads home.
 
 ## There is always a way home
 
@@ -146,4 +170,4 @@ it — a gate is its own door cell.
 Wire a power switch to a gate and it becomes a kill switch. Flicking it is ordinary colonist work,
 so somebody at home can cut a connection while a crew is still inside.
 
-**That is what the control is for.** A cut connection gives the crew their return window.
+A cut connection gives the crew their return window.

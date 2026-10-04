@@ -1,6 +1,6 @@
 ---
 title: Mods and expansions
-summary: "Nothing is required but RimWorld. What the 294-mod profile actually means for you."
+summary: "Nothing is required but RimWorld. What the load-order profile actually means for you."
 ---
 
 # Mods and expansions
@@ -22,9 +22,9 @@ because nothing is being asked for.
 
 **It loads last.** A patch cannot see content from a mod that loads after it.
 
-It lists 294 mods as load-order advice, which is a different thing from a requirement: a sorting
-manager reads that list and places this mod correctly on its own. Every mod on it is optional, and
-the list is advice about *order*, never about what you need to own.
+It publishes a long list of mods as load-order advice, which is a different thing from a
+requirement: a sorting manager reads that list and places this mod correctly on its own. Every mod
+on it is optional, and the list is advice about *order*, never about what you need to own.
 
 ---
 
@@ -40,6 +40,12 @@ the list is advice about *order*, never about what you need to own.
 
 The company panel lists the optional mods this one has a stated position on, whether each is
 loaded, and in plain words what will and will not happen with it.
+
+## No start depends on another mod
+
+Every opening reaches its first objective on RimWorld's own content. Where a mod or expansion would
+have supplied something, its absence degrades that thing with a stated reason rather than refusing
+to continue.
 
 ## Doors from other mods
 
@@ -62,7 +68,7 @@ If you hit a conflict, it is worth reporting — see [Links](links.md).
 ## Running a smaller list
 
 Run whatever list you like. Nothing is declared as a requirement, so no manager will warn you, and
-the mod is written so that **missing content degrades rather than crashes**.
+the mod is written so that missing content degrades rather than crashes.
 
 A reduced list is untested rather than unsupported — the same as every other list, including the
 full one.
