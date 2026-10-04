@@ -535,6 +535,42 @@ namespace RimroomsAsyncIndustries.Gate
                 action = OpenConnectionHistoryMenu
             };
 
+            // **DIAL SOMEWHERE NOBODY ASKED FOR, FROM THE GATE.** Owner, 2026-10-04: *"we need a
+            // Random address option not just company requested task and quests at specific
+            // xcorrdinates"*, and in the same message *"everything that the machine needs to
+            // start up should be able to do in the worlkd from the devices themselfes with pawns
+            // controls and actrions not just in the opetaions tab"*.
+            //
+            // Every coordinate until now arrived because something named it -- a request, a
+            // quest, a contract, or a doorway somebody walked into. This is the player deciding
+            // to go and look. It creates an **address**, not a map: nothing is generated until
+            // somebody crosses, which is why dialling is free and the open-map budget is only
+            // spent when the place is actually opened.
+            if (NativeCampaign != null && NativeCampaign.CanOperate)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "RR_Dial_RandomLabel".Translate(),
+                    defaultDesc = "RR_Dial_RandomDesc".Translate(
+                        Portals.PortalRandomDial.DeepestBlindDial.ToString()),
+                    icon = parent.def.uiIcon,
+                    action = delegate
+                    {
+                        Company.CoordinateRecord dialled;
+                        CompanyActionResult result =
+                            Portals.PortalRandomDial.Dial(NativeCampaign, out dialled);
+                        if (result.Success && dialled != null)
+                        {
+                            Messages.Message("RR_Dial_RandomFound".Translate(
+                                    dialled.AddressCode, dialled.Depth.ToString()),
+                                parent, MessageTypeDefOf.PositiveEvent, false);
+                            return;
+                        }
+                        ShowOrderResult(result);
+                    }
+                };
+            }
+
             if (IsSpinningUp)
             {
                 yield return new Command_Action

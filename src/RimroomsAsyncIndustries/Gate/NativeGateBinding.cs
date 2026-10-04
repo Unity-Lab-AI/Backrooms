@@ -430,6 +430,17 @@ namespace RimroomsAsyncIndustries.Gate
             IntVec3 entry = EntrySideCell(nativeOppositeEntrySide);
             if (!entry.InBounds(parent.Map) || !entry.Standable(parent.Map)) { return RefuseNative("EntryBlocked"); }
             if (nativeDesignated) { return CompanyActionResult.Existing(); }
+            // **THREE OPERATIONAL GATES, AND THE LIMIT IS MET HERE.** Owner, 2026-10-04:
+            // *"up to three differnt operational gates that can call any address"*, correcting
+            // their own earlier wording -- *"not three address per gate!!!"*. The cap is on
+            // gates; a gate is bound to no place and may dial anything the branch knows.
+            //
+            // Refused at **designation** rather than at opening, which is the whole point of
+            // putting it here: a player who has built a fourth door, wired it and crewed it
+            // before being told would have spent all of that for nothing. See
+            // `MaximumOperationalGates` for the arithmetic the owner did.
+            if (OperationalGateCount() >= MaximumOperationalGates)
+            { return RefuseNative("TooManyGates"); }
 
             nativeBranchId = NativeCampaign.BranchId;
             nativeBoundPosition = parent.Position;
@@ -727,6 +738,57 @@ namespace RimroomsAsyncIndustries.Gate
 
         private static bool FiniteNonnegative(float value)
         { return !float.IsNaN(value) && !float.IsInfinity(value) && value >= 0f; }
+        /// <summary>
+        /// How many gates a branch may have operational at once.
+        ///
+        /// ## Owner direction, 2026-10-04, verbatim
+        ///
+        /// *"up to three differnt operational gates that can call any address"*, correcting their
+        /// own earlier phrasing in the same message: *"not three address per gate!!!"*.
+        ///
+        /// ## Three is the owner's arithmetic, not a feel
+        ///
+        /// *"so u can have three addrerss called at once wich would give 4 of 5 open maps"*.
+        /// `Portals/OpenMapBudget` reads the player's own `MaxNumberOfPlayerSettlements` — five
+        /// by default — and a coordinate counts against it. Three gates each holding one open
+        /// coordinate, plus the colony, is four of five and leaves one spare for a natural
+        /// doorway somebody walks through without planning to.
+        ///
+        /// **It is a cap on gates and not on addresses.** A gate is bound to no place; any
+        /// operational gate dials anything the branch knows, which is what makes a second and
+        /// third gate worth building rather than three copies of one route.
+        /// </summary>
+        internal const int MaximumOperationalGates = 3;
+
+        /// <summary>
+        /// Gates already operational for this branch, counted across every loaded map.
+        ///
+        /// Across maps rather than this one, because *operational* is a property of the branch:
+        /// `SameNativeHeadquartersThing` keeps a gate on the headquarters today, and counting
+        /// only the local map would silently grant three more per map the day that changes.
+        /// </summary>
+        private int OperationalGateCount()
+        {
+            string branch = NativeCampaign == null ? null : NativeCampaign.BranchId;
+            int count = 0;
+            List<Map> maps = Find.Maps;
+            for (int index = 0; index < maps.Count; index++)
+            {
+                Map map = maps[index];
+                if (map == null || map.listerBuildings == null) { continue; }
+                foreach (Building building in map.listerBuildings.allBuildingsColonist)
+                {
+                    CompRimroomsGate other = building.TryGetComp<CompRimroomsGate>();
+                    if (other == null || other == this || !other.nativeDesignated) { continue; }
+                    if (!string.IsNullOrEmpty(branch) && !string.IsNullOrEmpty(other.nativeBranchId)
+                        && other.nativeBranchId != branch)
+                    { continue; }
+                    count++;
+                }
+            }
+            return count;
+        }
+
         private static CompanyActionResult RefuseNative(string suffix)
         { return CompanyActionResult.Refused("RR_NativeGate_" + suffix); }
     }

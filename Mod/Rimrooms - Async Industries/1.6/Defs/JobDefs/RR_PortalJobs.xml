@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <!-- Study a door deeper in and record where it leads. Bounded per coordinate
        by NaturalFrontierService; the door itself decides, from its own position
@@ -19,5 +19,15 @@
     <carryThingAfterJob>true</carryThingAfterJob>
     <dropThingBeforeJob>false</dropThingBeforeJob>
     <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+  </JobDef>
+
+  <!-- Boarding up a natural portal. Owner 2026-10-04: "so pawns can close it with like 25 wood
+       to board it up which makes it close its map freeing up a map from being open". The wood is
+       carried to the doorway, so the job is visible on the map rather than a number changing. -->
+  <JobDef>
+    <defName>RR_BoardUpPortal</defName>
+    <driverClass>RimroomsAsyncIndustries.Portals.JobDriver_BoardUpPortal</driverClass>
+    <reportString>boarding up TargetA.</reportString>
+    <casualInterruptible>false</casualInterruptible>
   </JobDef>
 </Defs>

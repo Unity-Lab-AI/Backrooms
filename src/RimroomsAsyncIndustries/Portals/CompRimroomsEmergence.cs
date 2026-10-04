@@ -664,6 +664,37 @@ namespace RimroomsAsyncIndustries.Portals
             // leads away from, and offering the command there would only ever refuse.
             if (!OrdinaryBranchMap(parent.Map)) { yield break; }
 
+            // **BOARDING IT UP, ON THE DOOR, BY A PAWN, FOR WOOD.** Owner, 2026-10-04: *"the
+            // closing of natural portals needs to be an option on the gate itself so pawns can
+            // close it with like 25 wood to board it up which makes it close its map freeing up a
+            // map from being open so others can be explored"*.
+            //
+            // Closing a place already existed in the Operations held-places pane. What the owner
+            // objected to is where it lived -- the same direction says *"everything that the
+            // machine needs to start up should be able to do in the worlkd from the devices
+            // themselfes with pawns controls and actrions not just in the opetaions tab"*.
+            //
+            // Offered only when there is something behind the door to close, and **disabled with
+            // its reason showing** rather than hidden when there is not: a command that vanishes
+            // teaches nothing, and the reasons here are the interesting part -- somebody is still
+            // inside, a crossing is in flight, there is no wood.
+            RimroomsCampaignComponent boardCampaign = Campaign();
+            if (boardCampaign != null
+                && PortalBoardUp.PlaceBehind(boardCampaign, parent) != null)
+            {
+                string boardRefusal = PortalBoardUp.RefusalFor(boardCampaign, parent);
+                var boardUp = new Command_Action
+                {
+                    defaultLabel = "RR_BoardUp_Label".Translate(PortalBoardUp.WoodCost),
+                    defaultDesc = "RR_BoardUp_Desc".Translate(PortalBoardUp.WoodCost),
+                    icon = parent.def.uiIcon,
+                    action = delegate { Show(PortalBoardUp.Order(boardCampaign, parent)); }
+                };
+                if (boardRefusal != null)
+                { boardUp.Disable(boardRefusal.Translate()); }
+                yield return boardUp;
+            }
+
             bool marked = IsDesignated;
             yield return new Command_Action
             {

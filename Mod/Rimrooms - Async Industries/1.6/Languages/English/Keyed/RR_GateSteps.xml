@@ -13,12 +13,9 @@
 -->
 <LanguageData>
 
-  <RR_Steps_Heading>Start-up connection checks</RR_Steps_Heading>
   <RR_Steps_Progress>{0} of {1} complete.</RR_Steps_Progress>
   <RR_Steps_NextUp>DO THIS NEXT - step {0}, {1}: {2}</RR_Steps_NextUp>
   <RR_Steps_AllDone>All checks complete. The gate is open or ramping up.</RR_Steps_AllDone>
-  <RR_Steps_LineDone>[x] {0}. {1}</RR_Steps_LineDone>
-  <RR_Steps_LineToDo>[ ] {0}. {1} - {2}</RR_Steps_LineToDo>
   <RR_Steps_Fault>FAULT, and it blocks everything below the step it broke: {0}</RR_Steps_Fault>
   <RR_Steps_TheTable>the machining table</RR_Steps_TheTable>
   <RR_Steps_TheConsole>the communications console</RR_Steps_TheConsole>
@@ -64,4 +61,11 @@
   <RR_Steps_11HowRamping>Bringing the connection up: {0}% done. Keep the assigned operator on the console - the charge bleeds back down while nobody is holding it, and at zero the ramp lapses.</RR_Steps_11HowRamping>
   <RR_Steps_NowCross>THE CONNECTION IS OPEN. To send somebody: select one colonist, then press "Order a crossing" on that address further down this tab. Walking through the door on its own never moves anyone.</RR_Steps_NowCross>
 
+
+  <!-- The compact status board. One row per system; the instruction is the row's
+       tooltip rather than a paragraph beside it. Owner 2026-10-04: "with tools tips
+       would less cluter it making them all concise and accurate". -->
+  <RR_Steps_Row>{0}. {1}</RR_Steps_Row>
+  <RR_Steps_TipDone>{0}\n\nDone. {1}</RR_Steps_TipDone>
+  <RR_Steps_TipToDo>{0}\n\nNot done yet. {1}</RR_Steps_TipToDo>
 </LanguageData>

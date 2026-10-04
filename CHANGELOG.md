@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.12.85-dev - 2026-10-04 - The machine tab is a status board, the gate dials blind, and a door can be boarded up
+
+- **The machine tab stopped being a novel.** The same eleven start-up checks were drawn as
+  fourteen wrapped paragraphs: a heading, a progress line, a next-up line carrying its full
+  instruction, then eleven lines each carrying its own instruction again. It is a status board
+  now - one row per system with a coloured light and Core's own checkbox glyph, one next-step
+  line for the whole tab, and every instruction in full on the row's tooltip. Measured 356
+  on-screen words to 58.
+- **"Less of a text wall" is a number now.** `tools/check-operations-density.py` reports, per
+  pane, the words a player reads on screen, the words on hover, how many things they can read and
+  how many they can do, and the ratio between them. It is a per-pane ratchet: every pane's
+  current figure is recorded and may only come down. The panel measures 3,980 on-screen words
+  against 121 controls.
+- **The status lights are never the only channel.** Colour alone fails the accessibility brief
+  and a player's colourblind setting cannot help a dot that means something by hue, so the
+  display-style rule permits exactly two named indicator colours in exactly that file and
+  requires the glyph beside them. Both the checker and its proof police the pair.
+- **Internal identifiers came off the player's screen.** The short address code was never
+  missing - it has been AI-01, AI-02 since the first version - but the raw coordinate id leaked
+  out beside it in four places, one of them putting a thirty-character internal string on a
+  button. One property is now the thing every readout asks for.
+- **A natural door can be boarded up, by a colonist, for 25 wood.** It fetches the wood, carries
+  it there, nails it shut, and the place behind it closes - freeing one of the five open-map
+  slots. Closing a place already existed in a panel; what was missing is that it happens in the
+  world. The release conditions are re-checked at the end as well as the start, because a crew
+  can walk in while the boards are being carried, and the wood is spent only after the place
+  actually closes.
+- **Three operational gates, refused at designation.** A player who had built a fourth door,
+  wired it and crewed it before being told would have spent all of that for nothing. Three
+  called addresses plus the colony is four of the five maps the game holds open; the fifth is the
+  margin for a door somebody walks through without planning to.
+- **A gate can dial somewhere nobody asked for.** Every coordinate until now arrived because
+  something named it - a request, a quest, a contract. The dial is unpredictable and the place is
+  not: the address derives from a monotonic index, never from `Rand`, so the same slot is always
+  the same place and a reload does not move it. It creates an address, not a map.
+
 ## 0.12.84-dev - 2026-10-04 - Roads are wide, neighbourhoods are blocks, and twelve slides are all disclosed
 
 - **A road is now an arrangement rather than a room with lane markings in it.** A straight run of

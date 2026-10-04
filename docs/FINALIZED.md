@@ -15071,3 +15071,133 @@ by removing a row by hand before being trusted.
 `python tools/register-query.py trace RR-SPACE`. Nothing applied: this change adds no integration
 surface and touches no other mod's defs.
 
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **4 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner clarification and new direction — three operational gates, any address, and a random one (2026-10-04)
+
+**Verbatim owner correction (2026-10-04):** *"not three address per gate!!! up to three differnt operational gates that can call any address and we need a Random address option not just company requested task and quests at specific xcorrdinates"*
+
+- [x] **"not three address per gate!!!"** — recorded as the correction it is. The cap is on **gates**, not on addresses held by one. — **CLOSED 0.12.85-dev as the correction it was. My reading of the original row said *"three addresses held per gate"* and I had started building a per-gate address cap off it. The wrong reading is struck in place in the archive rather than deleted.**
+- [x] **"up to three differnt operational gates"** — **three** gates may be operational at once. Enforced where a door becomes a gate, so the player meets the limit at the moment they would exceed it rather than at the moment they try to open one. — **CLOSED 0.12.85-dev. `NativeGateBinding.MaximumOperationalGates = 3`, refused at **designation** rather than at opening — a player who had built a fourth door, wired it and crewed it before being told would have spent all of that for nothing. Counted across every loaded map rather than the local one, because *operational* is a property of the branch.**
+- [x] **"that can call any address"** — **no pairing.** A gate is not bound to a place; any operational gate can dial any address the branch knows. This is also what makes three gates worth having rather than three copies of the same route. — **CLOSED 0.12.85-dev as a property of what was **not** built: there is no gate-to-place pairing anywhere, and the cap added above is on gates alone. That is what makes a second and third gate worth building rather than three copies of one route.**
+- [x] **"and we need a Random address option not just company requested task and quests at specific xcorrdinates"** — **dial somewhere nobody asked for.** Every coordinate today arrives because something named it: a request, a quest, a contract. A random dial is the player choosing to go *looking*, and it is the thing that makes the gate an instrument of exploration rather than a delivery chute. It needs its own address, discovered on the dial rather than granted.
+
+
+- [x] **"so that on the machine tab its shows the different systems with green and red lights of whether complete/active with a next step section showing what to do next  not every step having its own type up of whats next"** — a **status board**: one row per system, a light for complete/active, and **one** next-step section for the whole tab. The current shape writes a paragraph of what-to-do-next beside every individual step, which is what makes it a novel. — **CLOSED 0.12.85-dev. `OperationsGateSteps.cs` is a status board: one row per system with a coloured light **and** Core’s own checkbox glyph, and **one** next-step line for the whole tab. Measured by the new `tools/check-operations-density.py`: **356 on-screen words to 58**. The light is never the only channel — colour alone fails the accessibility brief and the player’s colourblind setting cannot help a dot that means something by hue, so `check-display-style.py` permits the two indicator colours in that file by name and **requires the glyph beside them**.**
+- [x] **"and things can be shortend and more concise and dirrect  with tools tips would less cluter it making them all concise and accurate"** — the detail moves into **tooltips**. Short on the surface, full text on hover, and *"accurate"* is a constraint on the shortening: a label that fits by dropping the condition it describes is worse than the paragraph. — **CLOSED 0.12.85-dev. Every instruction still exists **in full** — it moved to the row’s tooltip. *"accurate"* was the binding half: a label that fits by dropping the condition it describes is worse than the paragraph, so nothing was shortened by deletion. `proof-starts.py`’s claim was **strengthened** rather than relaxed: it used to assert that a done row omitted its instruction, and now asserts that **no** row carries one.**
+- [x] **"and we dont need things like long string corrdinates list in the operations panel thing like that arnet needed only like the !A-01 address code is needed to be displayed to thew player and save able and useable"** — the long coordinate id comes **off the player-facing surface entirely**. The **short address code** is the only identifier a player ever sees, and it must be **saveable and useable** — the thing you store, recall and dial. — **CLOSED 0.12.85-dev. The code itself was never missing — `CoordinateRecord.label` has been `AI-01`, `AI-02` since the first version, assigned in discovery order so it is short, unique and stable. **What leaked was the raw id**, in four places, the worst of them putting a thirty-character internal string on a button and printing the connection id, the coordinate id and the code on one line. `CoordinateRecord.AddressCode` is now the single thing every readout asks for; the internal identifiers moved to a row tooltip for diagnosis.**
+- [x] **"and the closing of natural portals needs to be an option on the gate itself so pawns can close it with like 25 wood to board it up which makes it close its map freeing up a map from being open so others can be explored"** — **boarding up a natural portal, from the gate, by a pawn, for about 25 wood**, which closes its map and returns a slot to the budget. This is the player-facing answer to the held-places problem that has been open since *"get 5 natural gates u cant use a machine gate"* — and it is a **job with a material cost**, not a menu button.
+
+Build at the time of the move: **0.12.84-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+## The machine tab is a status board, the gate dials blind, and a door can be boarded up - 0.12.85-dev, 2026-10-04
+
+**Staged and read back from the game folder**: `0.12.85-dev`, SHA-256
+`06B14EACB94B4722DD8CD8FA5E76A177BC26A3C569C5BABD5981C1E48656A83B`, 98 package files.
+
+**Verified:** build 0 warnings / 0 errors, 217 C# files; **17 of 17 checkers** exit 0; **49 of 49
+proofs** hold; **844 plant anchors** findable. Queue after the archive: **79 open / 38 partial /
+38 `[T]` / 0 `[x]`**. Operations panel measures **3,980 on-screen words / 121 controls / 32.9
+words per action**.
+
+### The owner corrected the working rhythm, and they were right
+
+*"this setting of 10m timers conbstantly with all the checks you are doing is becoming excessive i
+told you we only do stageing and checks and cascades and shit only after completing a bunch of
+todo items not on every fucking one,, we are spoenign 9/10ths of the time just doing maintainace
+work"*
+
+I had been running all seventeen checkers and forty-nine proofs after **every single edit**. The
+battery now runs once, at publication; during the work, only the instrument covering what was
+touched. Recorded in `NOW.md` as a working rule rather than a note.
+
+### "Less of a text wall" had no number, so it got one first
+
+Owner: *"we need to make the whole operations panel thing alot less of a text wall its like a
+fucking novel"*. Seventeen checkers and forty-nine proofs, and **not one of them knew how many
+words a player reads to use a pane** — the same blind spot that let the room graph sit at an
+average degree of 2.2 while every proof passed.
+
+`tools/check-operations-density.py` reports, per pane, on-screen words, hover words, things to
+read, things to do, and the ratio. It is a **per-pane ratchet**: every figure is recorded and may
+only come down.
+
+**And its first version measured nothing while printing numbers.** The keyed-string harvest used
+`re.S` and matched the outer `<LanguageData>` wrapper, so it found exactly one "key" named
+LanguageData, every word count read zero, and it reported the panel comfortably inside budget.
+**A second version then could not see the fix**: it counted every string a file referenced, so
+moving an instruction into a tooltip — the owner's own remedy — changed the number not at all.
+Both are recorded in the tool's own comments.
+
+### The machine tab
+
+Eleven start-up checks drawn as **fourteen wrapped paragraphs**: a heading, a progress line, a
+next-up line carrying its full instruction, then eleven lines each carrying its own instruction
+again, then two more. Now a status board — one row per system, a coloured light **and Core's own
+checkbox glyph**, one next-step line for the whole tab, every instruction in full on the row's
+tooltip. **356 on-screen words to 58.**
+
+**The lights are never the only channel.** Colour alone fails the accessibility brief and a
+player's colourblind setting cannot help a dot that means something by hue, so
+`check-display-style.py` gained a **second named, conditional exception**: that file may author
+exactly two named indicator colours, and only while the glyph is drawn beside them. Its proof
+polices the same pair.
+
+`proof-starts.py`'s claim about the rows was **strengthened** rather than relaxed: it asserted
+that a done row omitted its instruction, and now asserts that **no** row carries one.
+
+### Boarding up a door, and three gates
+
+Closing a place already existed — `CoordinateRelease.TryRelease`, in a panel. **What the owner
+objected to is where it lived**, in the same breath as *"everything that the machine needs to
+start up should be able to do in the worlkd from the devices themselfes with pawns controls and
+actrions not just in the opetaions tab"*. So it is a command on the door, a colonist who fetches
+25 wood and carries it there, a progress bar, and then the **same** release path asked rather
+than restated. The conditions are re-checked at the end as well as the start, because a crew can
+walk into the place while the boards are being carried across the map; the wood is spent only
+after the place actually closes.
+
+**Three operational gates, refused at designation** rather than at opening — a player who had
+built a fourth door, wired it and crewed it before being told would have spent all of that for
+nothing.
+
+### A gate can dial somewhere nobody asked for
+
+**Every coordinate until now arrived because something named it** — a request, a quest, a
+contract, or a door somebody walked into. There was no way for a player to decide *"I want to go
+and look"*. `PortalRandomDial` is that decision: the **dial** is unpredictable and the **place**
+is not, composed from a monotonic index so the seed derives exactly as every other discovery does
+and `Rand` is never touched. Depth is drawn weighted shallow to a maximum of six. It creates an
+**address, not a map**.
+
+### A correction of mine, recorded in place
+
+I read *"gates need to be able to set up a max of three of them"* as **three addresses per gate**
+and started building a per-gate address cap. The owner corrected it immediately: *"not three
+address per gate!!! up to three differnt operational gates that can call any address"*. The wrong
+reading is **struck in the archived row rather than deleted** — a correction nobody can see is a
+correction that gets made again.
+
+### And six strings broke the vocabulary rule
+
+`check-info-cards.py` refused *"portal"* — the thing this mod replaced, where the words are
+**gate** and **connection** — and *"doorway"*, which the glossary reserves against **door** and
+**threshold**. All six reworded. The rule earned its keep.
+

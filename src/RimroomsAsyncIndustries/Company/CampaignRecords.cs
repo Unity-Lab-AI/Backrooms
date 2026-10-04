@@ -304,6 +304,30 @@ namespace RimroomsAsyncIndustries.Company
         public IReadOnlyList<string> OddGoodsDefNames { get { return oddGoodsDefNames; } }
         public string Id { get { return id; } }
         public string Label { get { return label; } }
+
+        /// <summary>
+        /// **THE ONLY IDENTIFIER A PLAYER EVER SEES.**
+        ///
+        /// Owner, 2026-10-04: *"we dont need things like long string corrdinates list in the
+        /// operations panel thing like that arnet needed only like the !A-01 address code is
+        /// needed to be displayed to thew player and save able and useable"*.
+        ///
+        /// The code itself is not new — `label` has been `AI-01`, `AI-02` and so on since the
+        /// first version, assigned in discovery order so it is short, unique within a branch and
+        /// stable across a reload. **What was wrong is that the raw `id` leaked out beside it**:
+        /// a thirty-character internal string on a button, and in an address list that printed
+        /// the connection id, the coordinate id and the code all on one line.
+        ///
+        /// So this exists to be the thing every readout asks for, rather than each one choosing
+        /// between `Label`, `Id` and a fallback. A record with no label falls back to its id
+        /// because a row with no identifier at all is worse than an ugly one — and that is a
+        /// repair case, not a display choice.
+        /// </summary>
+        public string AddressCode
+        {
+            get { return string.IsNullOrEmpty(label) ? id : label; }
+        }
+
         public int Seed { get { return seed; } }
         public int GeneratorVersion { get { return generatorVersion; } }
         public CoordinateStatus Status { get { return status; } }

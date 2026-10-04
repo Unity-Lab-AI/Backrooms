@@ -5,6 +5,7 @@ using RimroomsAsyncIndustries.Gate;
 using RimroomsAsyncIndustries.Generation;
 using RimroomsAsyncIndustries.Portals;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace RimroomsAsyncIndustries.UI
@@ -38,7 +39,7 @@ namespace RimroomsAsyncIndustries.UI
                 ? 0 : crossings.Receipts.Count(receipt => receipt != null && !receipt.IsTerminal);
             if (unresolved > 0) { listing.Label("RR_Portals_CrossingPending".Translate(unresolved)); }
 
-            DrawRememberedAddresses(listing, network);
+            DrawRememberedAddresses(listing, network, campaign);
             DrawAddressActions(listing, campaign, network);
             DrawTravelControls(listing, campaign, network, crossings);
             DrawConnectedWork(listing);
@@ -98,7 +99,10 @@ namespace RimroomsAsyncIndustries.UI
                         // is exactly one way a laboratory gate opens no matter which button
                         // started it. Owner direction 2026-09-29: opening is "a ramp up process
                         // that takes a bit of time".
-                        if (listing.ButtonText("RR_Portals_OpenSession".Translate(captured.CoordinateId)))
+                        // **THE CODE, NOT THE RAW ID.** This printed a thirty-character
+                        // internal coordinate string on a button a player presses.
+                        if (listing.ButtonText("RR_Portals_OpenSession".Translate(
+                            AddressCodeOf(campaign, captured.CoordinateId))))
                         { ShowResult(gate.BeginSpinUp(captured.Id)); }
                     }
                     // **AND WHAT IS STILL IN THE WAY, NAMED.** Every one of these refuses the
@@ -130,7 +134,8 @@ namespace RimroomsAsyncIndustries.UI
                         if (step == null || step.Source.Anchor == null) { continue; }
                         PortalConnectionRecord captured = address;
                         if (listing.ButtonText("RR_Portals_OrderCrossing".Translate(selected.LabelShortCap,
-                            step.Source.Anchor.LabelCap, captured.CoordinateId)))
+                            step.Source.Anchor.LabelCap,
+                            AddressCodeOf(campaign, captured.CoordinateId))))
                         { ShowResult(PortalTravelService.OrderCrossing(selected, captured)); }
                     }
                 }
@@ -159,7 +164,8 @@ namespace RimroomsAsyncIndustries.UI
             }
         }
 
-        private static void DrawRememberedAddresses(Listing_Standard listing, RimroomsPortalNetwork network)
+        private static void DrawRememberedAddresses(Listing_Standard listing,
+            RimroomsPortalNetwork network, RimroomsCampaignComponent campaign)
         {
             IReadOnlyList<PortalConnectionRecord> addresses = network.Connections;
             if (addresses.Count == 0)
@@ -172,8 +178,16 @@ namespace RimroomsAsyncIndustries.UI
             {
                 if (address == null) { continue; }
                 string kind = KindLabelKey(address.Kind).Translate().ToString();
-                listing.Label("RR_Portals_AddressLine".Translate(address.Id, address.CoordinateId, kind,
+                // **ONE IDENTIFIER PER ROW.** This printed the connection id AND the raw
+                // coordinate id AND the kind AND the status -- four fields, two of them
+                // internal strings the player can do nothing with. The code is the one
+                // they dial; the connection id moved to the row tooltip for diagnosis.
+                Rect addressRow = listing.GetRect(Text.LineHeight);
+                Widgets.Label(addressRow, "RR_Portals_AddressLine".Translate(
+                    AddressCodeOf(campaign, address.CoordinateId), kind,
                     AvailabilityLabel(network.Availability(address))));
+                TooltipHandler.TipRegion(addressRow,
+                    "RR_Portals_AddressTip".Translate(address.Id, address.CoordinateId));
             }
         }
 
@@ -252,7 +266,8 @@ namespace RimroomsAsyncIndustries.UI
             CoordinateRecord coordinate = coordinates.FirstOrDefault(record => record.Id == portalCoordinateChoice)
                 ?? coordinates[0];
             portalCoordinateChoice = coordinate.Id;
-            listing.Label("RR_Portals_SelectedCoordinate".Translate(coordinate.Label ?? coordinate.Id, coordinate.Id));
+            // The code alone. This showed the code and then the raw id in brackets after it.
+            listing.Label("RR_Portals_SelectedCoordinate".Translate(coordinate.AddressCode));
 
             RimroomsDestinationMapParent site = coordinate.Site as RimroomsDestinationMapParent;
             if (site != null && site.NeedsThresholdRepair)
@@ -360,6 +375,27 @@ namespace RimroomsAsyncIndustries.UI
         /// The player-facing name of a connection kind. A switch rather than a ternary so a
         /// kind added later cannot be silently displayed as a laboratory.
         /// </summary>
+        /// <summary>
+        /// The player-facing address code for a coordinate id, asked of the record that owns it.
+        ///
+        /// Owner, 2026-10-04: *"only like the !A-01 address code is needed to be displayed to
+        /// thew player"*. A readout holding a coordinate **id** -- a portal connection does, and
+        /// so does an expedition record -- has to turn it into something a player recognises, and
+        /// doing that inline in each place is how three panes ended up printing three different
+        /// things. Falls back to the id when the record is gone, because a row with no identifier
+        /// is worse than an ugly one.
+        /// </summary>
+        private static string AddressCodeOf(RimroomsCampaignComponent campaign, string coordinateId)
+        {
+            if (campaign == null || string.IsNullOrEmpty(coordinateId)) { return coordinateId; }
+            for (int index = 0; index < campaign.Coordinates.Count; index++)
+            {
+                CoordinateRecord record = campaign.Coordinates[index];
+                if (record != null && record.Id == coordinateId) { return record.AddressCode; }
+            }
+            return coordinateId;
+        }
+
         private static string KindLabelKey(PortalConnectionKind kind)
         {
             switch (kind)

@@ -552,10 +552,20 @@ check("AND THE FIRST UNFINISHED ONE IS NAMED ON ITS OWN LINE",
       "still a list to read; the answer to *what do i do* is one of them and it is said once at "
       "the top")
 
-check("and the done ones do NOT repeat their instruction",
-      '"RR_Steps_LineDone".Translate(step.Number.ToString(), step.Label)' in _steps
-      and '"RR_Steps_LineToDo".Translate(step.Number.ToString(), step.Label, step.How)' in _steps,
-      "-- otherwise the list becomes a wall of advice about things already handled")
+# **STRONGER NOW, NOT WEAKER.** This asserted that a DONE row omitted its instruction while an
+# unfinished one still carried it -- which was the right call when every row was a wrapped
+# paragraph. Owner, 2026-10-04: *"not every step having its own type up of whats next and things
+# can be shortend and more concise and dirrect with tools tips would less cluter it"*. So **no
+# row carries an instruction**: the surface is a light, a glyph, a number and a few words, the
+# detail is the row's tooltip, and one next-step line at the top answers *what do i do*.
+# Measured by `check-operations-density.py`: 356 on-screen words to 58.
+check("and NO row repeats an instruction -- the detail is on hover",
+      '"RR_Steps_Row".Translate(step.Number.ToString(), step.Label)' in _steps
+      and "TooltipHandler.TipRegion(row, step.Done" in _steps
+      and '"RR_Steps_TipToDo".Translate(step.Label, step.How)' in _steps
+      and "RR_Steps_LineToDo" not in _steps,
+      "-- otherwise the list becomes a wall of advice about things already handled, which is "
+      "exactly what the owner walked into and called a novel")
 
 check("and a binding fault is reported as a FAULT rather than as a step",
       '"RR_Steps_Fault".Translate(gate.NativeBindingFailureKey.Translate())' in _steps,

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
   <!-- Right-click a live gate with a colonist selected. Owner direction, 2026-09-30: "the pawns
@@ -26,7 +26,7 @@ Select who you mean first. Anyone who cannot cross is listed with the reason rat
   <RR_Portals_NetworkFault>The saved connection network could not be read. Its records are retained for review and no gate operation is available.</RR_Portals_NetworkFault>
   <RR_Portals_NoAddresses>No addresses are remembered yet. Select a coordinate below and remember it on the designated gate.</RR_Portals_NoAddresses>
   <RR_Portals_AddressCount>Remembered addresses: {0}</RR_Portals_AddressCount>
-  <RR_Portals_AddressLine>{0} — coordinate {1} ({2}), status {3}</RR_Portals_AddressLine>
+  <RR_Portals_AddressLine>{0} — {1}, {2}</RR_Portals_AddressLine>
   <RR_Portals_KindLaboratory>laboratory</RR_Portals_KindLaboratory>
   <RR_Portals_KindNatural>natural, permanent</RR_Portals_KindNatural>
   <RR_Portals_StatusAvailable>available</RR_Portals_StatusAvailable>
@@ -37,7 +37,7 @@ Select who you mean first. Anyone who cannot cross is listed with the reason rat
   <RR_Portals_SelectCoordinate>Select a coordinate</RR_Portals_SelectCoordinate>
   <RR_Portals_CoordinateOption>{0} ({1})</RR_Portals_CoordinateOption>
   <RR_Portals_NoCoordinates>This branch has no coordinate records.</RR_Portals_NoCoordinates>
-  <RR_Portals_SelectedCoordinate>Selected coordinate: {0} ({1})</RR_Portals_SelectedCoordinate>
+  <RR_Portals_SelectedCoordinate>Selected: {0}</RR_Portals_SelectedCoordinate>
   <RR_Portals_RememberLaboratory>Remember this coordinate on the designated gate</RR_Portals_RememberLaboratory>
   <RR_Portals_RememberNatural>Remember this coordinate on the selected door as a permanent natural link</RR_Portals_RememberNatural>
   <RR_Portals_SelectNaturalDoor>Select a door for a natural link</RR_Portals_SelectNaturalDoor>
@@ -296,4 +296,19 @@ Nothing warns you again.</RR_Portals_RemoveWayInConfirm>
   <RR_PortalTravel_InEmergency>That connection is in emergency. The crew have a return window; nobody else goes through.</RR_PortalTravel_InEmergency>
   <RR_PortalTravel_WindowExpired>That opening has run out of time.</RR_PortalTravel_WindowExpired>
   <RR_PortalTravel_DoorLocked>That gate's door is locked, so nobody can walk through it. Select the door and unlock it, or set it to hold open.</RR_PortalTravel_DoorLocked>
+  <RR_Portals_AddressTip>Connection {0}\n\nCoordinate {1}\n\nInternal identifiers, for diagnosis. The address code is what you dial.</RR_Portals_AddressTip>
+  <RR_BoardUp_Label>Board it up ({0} wood)</RR_BoardUp_Label>
+  <RR_BoardUp_Desc>Send a colonist to nail {0} wood across this door.\n\nThe place behind it closes and its map is let go, which frees one of the open-map slots so somewhere else can be opened. Anything left lying in there is left in there.\n\nThis cannot be undone. A door that has been boarded up still says where it used to lead, but it does not lead there any more.</RR_BoardUp_Desc>
+  <RR_BoardUp_LeadsNowhere>This door does not lead anywhere that is being held open.</RR_BoardUp_LeadsNowhere>
+  <RR_BoardUp_NoWood>There is not enough wood on this map to board it up.</RR_BoardUp_NoWood>
+  <RR_BoardUp_NobodyAvailable>Nobody is free who can reach both the wood and this door.</RR_BoardUp_NobodyAvailable>
+  <RR_BoardUp_NoJobDef>The boarding-up job is missing from the package. This is a packaging fault, not a situation in the game.</RR_BoardUp_NoJobDef>
+  <RR_BoardUp_Done>{0} boarded up the door. The place behind it is closed and a map slot is free.</RR_BoardUp_Done>
+  <RR_Dial_RandomLabel>Dial an unknown address</RR_Dial_RandomLabel>
+  <RR_Dial_RandomDesc>Let the gate choose somewhere. No request, no contract, nobody waiting at the other end.
+
+The address is recorded and can be dialled like any other. Depth is drawn and weighted shallow, down to a maximum of {0}; a deep one is rare and you will know before you go.
+
+This only finds the address. Nothing is generated and no map slot is spent until somebody actually crosses.</RR_Dial_RandomDesc>
+  <RR_Dial_RandomFound>The gate settled on {0}, at depth {1}. Nobody sent you there and nobody is expecting you.</RR_Dial_RandomFound>
 </LanguageData>

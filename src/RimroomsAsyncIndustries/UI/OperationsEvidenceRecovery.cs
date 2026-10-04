@@ -22,7 +22,8 @@ namespace RimroomsAsyncIndustries.UI
             {
                 string id = attempt.CoordinateId;
                 CoordinateRecord coordinate = campaign.Coordinates.FirstOrDefault(c => c.Id == id);
-                listing.Label("RR_EvidenceRecovery_Identity".Translate(coordinate?.Label ?? id,
+                listing.Label("RR_EvidenceRecovery_Identity".Translate(
+                    coordinate == null ? id : coordinate.AddressCode,
                     attempt.ItemLoadId ?? "RR_EvidenceRecovery_NoOriginal".Translate().ToString()));
                 if (!string.IsNullOrEmpty(attempt.FailureKey)) { listing.Label(attempt.FailureKey.Translate()); }
                 Thing original = attempt.Item;

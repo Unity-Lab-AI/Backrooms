@@ -96,8 +96,17 @@ PLANTS = [
      + '                    ? "RR_Steps_11HowRamping".Translate(', STARTS_PROOF),
 
     ("THE LIST STOPS SAYING HOW TO SEND SOMEBODY THROUGH", STEPS,
-     '            { listing.Label("RR_Steps_NowCross".Translate()); }',
-     "            { }", STARTS_PROOF),
+     '                listing.Label("RR_Steps_NowCross".Translate());',
+     "                { }", STARTS_PROOF),
+
+    # The board's own shape: one next-step line, and rows that carry no instruction.
+    ("THE ROWS GO BACK TO CARRYING THEIR OWN INSTRUCTIONS", STEPS,
+     '            TooltipHandler.TipRegion(row, step.Done',
+     '            TooltipHandler.TipRegion(row, false'),
+
+    ("THE STATUS LIGHT LOSES ITS GLYPH, so the state is carried by hue alone", STEPS,
+     "            Widgets.CheckboxDraw(light.xMax + 4f, row.y, step.Done, true, StatusRowHeight);"
+     + CHR_NL, ""),
 
     ("CORE'S ROTATION ADJUSTMENT IS DROPPED FROM THE CHECKER",
      "tools/check-start-layout.py",

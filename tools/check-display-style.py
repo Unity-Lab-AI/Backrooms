@@ -327,6 +327,27 @@ READOUT_DIR = os.path.join(SRC, "RimroomsAsyncIndustries", "UI")
 # Exactly one file may touch that state, and the rules below police that file rather than waving
 # it through: it may only reset to Core's defaults, and it must put back what it found.
 STATE_GUARD = "RimroomsWindowState.cs"
+
+# The second named exception: the machine tab's status board, by owner direction 2026-10-04,
+# *"shows the different systems with green and red lights of whether complete/active"*.
+#
+# Conditional, and the condition is the accessibility one. Two indicator colours are permitted
+# here; a glyph must sit beside them so the state is readable with no colour at all, and nothing
+# else about the palette may be touched. An indicator is not text -- but a light whose meaning is
+# carried only by hue is worse than the paragraph it replaced.
+INDICATOR_FILE = "OperationsGateSteps.cs"
+INDICATOR_REQUIRED = (
+    ("Widgets.CheckboxDraw(", "draw Core's own glyph beside every light"),
+    ("StatusLightComplete", "name the complete colour rather than inlining it"),
+    ("StatusLightIncomplete", "name the incomplete colour rather than inlining it"),
+)
+INDICATOR_FORBIDDEN = (
+    (re.compile(r"\bGUI\s*\.\s*color\s*="), "an assignment to GUI.color"),
+    (re.compile(r"\bColorLibrary\s*\."), "a ColorLibrary colour"),
+    (re.compile(r"<color="), "an inline colour tag"),
+    (re.compile(r"\bfontSize\s*="), "a direct font size"),
+)
+
 GUARD_REQUIRED = (
     ("GUI.color = Color.white;", "reset the tint to nothing"),
     ("Text.Font = GameFont.Small;", "reset the font to Core's body size"),
@@ -398,6 +419,31 @@ def check_readability(problems):
                 if pattern.search(code):
                     problems.append("%s is the state guard and must not %s. It resets to Core's "
                                     "defaults and restores; it does not choose" % (rel, what))
+            continue
+
+        if os.path.basename(path) == INDICATOR_FILE:
+            # **THE SECOND NAMED EXCEPTION, AND IT IS POLICED RATHER THAN WAIVED.**
+            #
+            # Owner direction, 2026-10-04: *"on the machine tab its shows the different systems
+            # with green and red lights of whether complete/active"*. Two colours, asked for by
+            # name, on a status board.
+            #
+            # The rule's purpose is *do not impose a palette on text a player reads*, and a
+            # status light is not text -- but colour as the ONLY channel is worse than prose,
+            # because the player's colourblind setting cannot help a dot that means something by
+            # hue, and `research/CONTENT_ACCESSIBILITY_BRIEF.md` says so. So the exception is
+            # conditional: this file may author exactly these two indicator colours, and only
+            # while Core's own checkbox glyph is drawn beside them.
+            for needle, why in INDICATOR_REQUIRED:
+                if needle not in code:
+                    problems.append("%s draws the status lights and must %s -- %r is missing. A "
+                                    "light that carries its meaning by hue alone is unreadable "
+                                    "to a colourblind player and the game's own setting cannot "
+                                    "fix it" % (rel, why, needle))
+            for pattern, what in INDICATOR_FORBIDDEN:
+                if pattern.search(code):
+                    problems.append("%s may author the two status-light colours and nothing "
+                                    "else; it uses %s" % (rel, what))
             continue
 
         for pattern, what in AUTHORED_COLOUR:

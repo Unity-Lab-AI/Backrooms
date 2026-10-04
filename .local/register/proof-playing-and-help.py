@@ -280,15 +280,38 @@ QUALIFIED_COLOUR = re.compile(r"\bnew\s+(?:[A-Za-z_][A-Za-z0-9_]*\s*\.\s*)*Color
 # true and was never the whole claim -- authoring nothing is not the same as assuming nothing.
 # Resetting to white imposes no palette; white is the absence of a tint.
 STATE_GUARD = "RimroomsWindowState.cs"
+# **THE SECOND NAMED EXCEPTION, and it is conditional.** Owner direction 2026-10-04: *"on the
+# machine tab its shows the different systems with green and red lights of whether
+# complete/active"*. Two indicator colours, asked for by name.
+#
+# The rule's purpose is *do not impose a palette on text a player reads*, and a status light is
+# not text -- but a light whose meaning is carried only by hue is worse than the paragraph it
+# replaced, because the player's colourblind setting cannot help it. So this file may author
+# exactly two named indicator colours, and only while Core's own checkbox glyph is drawn beside
+# them. `check-display-style.py` polices the same pair from the other side.
+INDICATOR_FILE = "OperationsGateSteps.cs"
+unlit = []
 for path in readouts:
     if os.path.basename(path) == STATE_GUARD:
         continue
     code = strip_cs_comments(read(path))
+    if os.path.basename(path) == INDICATOR_FILE:
+        if ("Widgets.CheckboxDraw(" not in code or "StatusLightComplete" not in code
+                or "StatusLightIncomplete" not in code):
+            unlit.append(os.path.basename(path))
+        continue
     if QUALIFIED_COLOUR.search(code) or re.search(r"\bGUI\s*\.\s*color\s*=", code):
         offenders.append(os.path.basename(path))
-check("no readout file authors a colour, the state guard aside", not offenders,
+check("no readout file authors a colour, the state guard and the status lights aside",
+      not offenders,
       "-- %s does; the player's own contrast and colourblind settings are the only ones that "
       "should apply to text" % ", ".join(offenders))
+
+check("AND THE STATUS LIGHTS ARE NEVER THE ONLY CHANNEL",
+      not unlit,
+      "-- %s authors the two indicator colours without Core's checkbox glyph beside them. A light "
+      "that means something by hue alone is unreadable to a colourblind player and no game "
+      "setting can fix it" % ", ".join(unlit))
 
 guard = read(os.path.join(SRC, "UI", STATE_GUARD))
 check("THE STATE GUARD EXISTS AND RESTORES WHAT IT FOUND",
