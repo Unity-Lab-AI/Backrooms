@@ -41,6 +41,9 @@ namespace RimroomsAsyncIndustries.Scenario
                     // Recorded even on the fallback path, so a retry cannot grant stock twice.
                     if (receipt.arrivalStarted) { return; }
                     receipt.arrivalStarted = true;
+                    // **The promise is recorded on BOTH paths**, because this is the path where a
+                    // player is most likely to be missing things and most in need of the report.
+                    RecordPromisedGrants(receipt);
                 }
                 try { base.GenerateIntoMap(map); }
                 catch (Exception exception)
@@ -49,6 +52,7 @@ namespace RimroomsAsyncIndustries.Scenario
             }
             if (receipt.arrivalStarted) { return; }
             receipt.arrivalStarted = true;
+            RecordPromisedGrants(receipt);
             var before = new HashSet<Thing>(map.listerThings.AllThings);
             try
             {
@@ -81,6 +85,56 @@ namespace RimroomsAsyncIndustries.Scenario
                     Investigation.CompRouteEvidence issued =
                         thing.TryGetComp<Investigation.CompRouteEvidence>();
                     if (issued != null) { issued.MarkCompanyIssued(); }
+                    // **WHAT ACTUALLY LANDED, beside what was promised.** Owner: *"they need to
+                    // properly spawn in with starting goods"*. Items only -- the pawns are
+                    // recorded above and are not what went missing.
+                    if (thing.def.category == ThingCategory.Item)
+                    {
+                        receipt.deliveredGrants.Add(
+                            thing.def.defName + " x" + thing.stackCount);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Records what the scenario said the player would start with, before anything arrives.
+        ///
+        /// ## This creates nothing, and that is the constraint
+        ///
+        /// `GetSummaryListEntries("PlayerStartsWith")` is the public, read-only side of a
+        /// starting-thing part: it yields the label the setup page shows. Enumerating
+        /// `PlayerStartingThings()` instead would **manufacture a second set of goods**, which is
+        /// the double-grant this whole receipt exists to prevent and which this class's own
+        /// header forbids in so many words — *"no retry may re-enumerate native starting-thing
+        /// factories"*.
+        ///
+        /// So the promise is read from the summary and the delivery is read from the map, and the
+        /// two are compared by a human reading the start report rather than by code guessing at
+        /// which label means which def. **A diagnostic that can only ever report is a diagnostic
+        /// that cannot cause the defect it is looking for.**
+        /// </summary>
+        private static void RecordPromisedGrants(HeadquartersSetupComponent receipt)
+        {
+            if (receipt == null || Find.Scenario == null) { return; }
+            receipt.promisedGrants.Clear();
+            foreach (ScenPart part in Find.Scenario.AllParts)
+            {
+                if (part == null) { continue; }
+                IEnumerable<string> entries;
+                try { entries = part.GetSummaryListEntries("PlayerStartsWith"); }
+                catch (Exception exception)
+                {
+                    // A part from another mod may refuse to summarise itself. That is one missing
+                    // line in a report, never a failed start.
+                    Log.Warning("[Rimrooms][Scenario] A scenario part would not summarise its "
+                                + "starting things: " + exception.Message);
+                    continue;
+                }
+                if (entries == null) { continue; }
+                foreach (string entry in entries)
+                {
+                    if (!string.IsNullOrEmpty(entry)) { receipt.promisedGrants.Add(entry); }
                 }
             }
         }

@@ -1,5 +1,83 @@
 # Changelog
 
+## 0.12.91-dev - 2026-10-05 - The package needs nothing, expansions only add, and a missing start reports itself
+
+- **THE STAND-ALONE GUARANTEE IS A CHECKER NOW, which is what the row said it would take.** Owner:
+  *"we will completely make the mod 100% functional and stand alone not needing any other mods"*.
+  The queue row named the obstacle exactly - *"A declaration cannot establish it"* - and nothing in
+  the battery could, because `check-dlc-gating.py` asks *is every expansion reference gated* and
+  **can never see a reference to one of the 294 profile mods**: such a def is not DLC-only, it is
+  not in the game's data at all. That is the hole a stand-alone claim actually rests on. One
+  `thingDefName` naming another mod's building would quietly make the package require that mod,
+  with no error anywhere until a player without it reached the feature.
+- **The measurement, first run: 214 def-name field values across the package and ZERO resolve
+  outside Core and our own defs.** The 14 that resolve only in an expansion are all gated. 64
+  literal def lookups in C# and **zero hard `GetNamed`** on anything we do not ship; the 5
+  expansion lookups all degrade through `GetNamedSilentFail`. Four assembly references, all the
+  game's own and Unity's.
+- **Its reference fields are enumerated from our own source rather than listed by hand** - the
+  lesson `check-register-compliance.py` paid for when a hand-kept tag list missed `<thing>` and
+  read 114 of 171 references as nothing. **And it SKIPS rather than passes when the game data is
+  absent**, because a checker that reports green against nothing is the defect that once gave
+  eight claims a false pass.
+- **FOUR EXPANSION ROLES, AND THEY ARE OPTIONAL BY CONSTRUCTION RATHER THAN BY A GATE.** Owner:
+  *"DLCs only add content"*. A containment wing (Anomaly), a biological laboratory (Biotech), an
+  assembly room (Ideology) and off-world logistics (Odyssey).
+  `RimroomsGateEquipmentDef.thingDefNames` is a `List<string>`, so naming `HoldingPlatform`
+  creates **no cross-reference at load at all** - `Fillable` resolves it through
+  `GetNamedSilentFail` and `AllInOrder` hides a role nothing can fill from the picker, the readout
+  and `RoleFor` alike. Not merely gated: unable to exist.
+- **`MayRequire` is on every expansion entry anyway, per entry rather than per role.** Gating the
+  whole role would delete a role that also accepts Core buildings, and Core gates string lists the
+  same way in `CommonMapGenerator.xml`. **`check-dlc-gating.py` could not see a per-entry gate**
+  and reported all fourteen as ungated; it read the attribute off the def alone and now accumulates
+  it down the element tree, which is how RimWorld reads it. **Taught the mechanism rather than
+  worked around** - demanding the attribute on the def would have pushed the worse shape, which is
+  how a checker ends up making the code wrong. Verified still strict three ways.
+- **None of the four carries a stock need or a risk**, so an expansion cannot even put a
+  *shortfall* line in front of a player. The gate opens, the crews cross, the records are kept and
+  the company pays identically without any of them.
+- **AND ROYALTY GETS NOTHING, WHICH IS RECORDED RATHER THAN PADDED.** It ships almost no buildings
+  - thrones are Core - and what it adds is titles, permits, psycasts and the Empire. None is
+  equipment a facility links to, and the row's own condition is *"only as optional company
+  routes"*: a route must be a thing, a log or a project, and a title is none of the three. An
+  honest hook needs a new route kind, which is a design decision rather than a def edit. Stated the
+  way the project tree states that transport and orbital support has no tier 0, deliberately.
+- **THE STARTING-GOODS DEFECT: FOUR CANDIDATE CAUSES ELIMINATED AND NO FIX WRITTEN ON A HUNCH.**
+  Owner: *"they need to properly spawn in with starting goods"* and *"my preparecarfully mod food
+  did not appear"*. Eliminated against the installed game rather than guessed: the arrival part is
+  not missing - `ScenPart_RimroomsArrival` **subclasses** `ScenPart_PlayerPawnsArriveMethod`, which
+  is the one place in the game that collects `PlayerStartingThings()`; the start spot is not wrong,
+  Core's `FindPlayerStartSpot` is order 850 and only picks when none is valid; the gen steps are not
+  out of order, `ScenParts` is order **875** after both; and the pawns do not arrive by pod,
+  `Standing` is enum zero **and** set explicitly.
+- **The report's own evidence rules out the next obvious one:** the pawns' `MealSurvivalPack`
+  possessions *did* arrive, and possessions travel in the same list as the grants through the same
+  `DropThingGroupsNear` call. So the placement ran and the grants were not in the list it placed.
+- **So what shipped is the thing that makes the next launch answer it.** The receipt records what
+  the scenario **promised** and what actually **arrived**, and the start reports the gap on the
+  letter stack naming Prepare Carefully as the likely quarter. **The promise is read through
+  `GetSummaryListEntries`, which creates nothing** - enumerating `PlayerStartingThings()` again
+  would manufacture a second set of goods, the exact double-grant the receipt exists to prevent and
+  which that class's own header forbids. It never blocks a start, and it is silent unless a promise
+  was recorded and nothing at all arrived.
+- **Two rows closed on measurement.** Staff prior exposure was listed as unbuilt on a second row
+  while being built and wired - **a fact recorded as missing in two places was missing in neither**.
+  And the battery-reserve row was a recorded *finding* rather than a task: its own words are
+  *"checked and ruled out rather than assumed"*, and a ruled-out cause belongs in the archive where
+  the next reader finds it.
+- **Two instruments added, and five claims in them were wrong before they were right.**
+  `proof-standalone-and-grants.py` is 20 claims and `plant-standalone-and-grants.py` reports **23
+  of 23 caught**. One claim tested a refusal's *message* instead of its condition - the
+  message-is-not-a-rule mistake, made again. One asserted a name that appears at its definition
+  **and** its use, so `in` was satisfied by the use alone. One asserted a `catch` existed rather
+  than that it swallows, and a planted `throw;` walked past. **One had a slicing bug**: it cut a
+  method at its first `}`, which was an inline `{ return; }` guard, so it examined four lines and a
+  planted failure sat safely below. **And one plant was wrong rather than the claim** - it rewrote a
+  checker's message, which does not stop the checker refusing anything.
+- Instruments: **19 checkers, 54 proofs, 28 plant suites, 1035 plant anchors.** Queue: 62 open, 20
+  partial, 38 post-completion test, 0 completed-and-unarchived.
+
 ## 0.12.90-dev - 2026-10-05 - Training is work, a decision costs something, and the only clock is still the gate
 
 - **CERTIFICATIONS AND TRAINING JOBS, and the training is a real bill rather than a button.**

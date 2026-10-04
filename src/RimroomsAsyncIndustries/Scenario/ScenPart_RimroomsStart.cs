@@ -70,6 +70,11 @@ namespace RimroomsAsyncIndustries.Scenario
         public override void PostGameStart()
         {
             base.PostGameStart();
+            // **Said before anything else, because a player with no supplies needs telling and
+            // the branch initialising successfully would otherwise bury it.** Owner: *"they need
+            // to properly spawn in with starting goods"* / *"my preparecarfully mod food did not
+            // appear"*. This reports; it never blocks a start.
+            ReportGrantShortfall(Verse.Current.Game.CurrentMap);
             CompanyActionResult result = TryInitializeExistingHeadquarters(Verse.Current.Game.CurrentMap);
             if (!result.Success) { ShowStartFailure(result.MessageKey); }
             else
@@ -80,6 +85,48 @@ namespace RimroomsAsyncIndustries.Scenario
                     { DefDatabase<MainButtonDef>.GetNamedSilentFail("RR_Operations")?.Worker.InterfaceTryActivate(); }
                 });
             }
+        }
+
+        /// <summary>
+        /// Tells the player what the scenario promised and what actually arrived, when the two
+        /// do not match.
+        ///
+        /// ## Why a report rather than a fix
+        ///
+        /// The queue row is explicit — *"no fix was written on a hunch"* — and four candidate
+        /// causes were eliminated against the installed game rather than guessed at. See
+        /// <see cref="HeadquartersSetupComponent.promisedGrants"/> for the list and the evidence.
+        /// What is left needs a launch, and the owner's own second report names the likely
+        /// quarter: *"my preparecarfully mod food did not appear"*, which is the same
+        /// `PlayerStartingThings()` enumeration.
+        ///
+        /// **So this turns the next launch from a repeat of the question into an answer.** A
+        /// player who starts with nothing currently has to sweep nine thousand cells to find out;
+        /// this says it on the letter stack, with both lists.
+        ///
+        /// ## It never blocks a start, and it never cries wolf
+        ///
+        /// Silent unless the promise is non-empty **and** nothing was delivered. A partial
+        /// delivery is not reported, because the labels are human text and the deliveries are
+        /// defNames: comparing them item by item would need a mapping this deliberately does not
+        /// build, and a false alarm on a working start is worse than no report. **Nothing arriving
+        /// at all is unambiguous**, and it is the case the owner actually hit.
+        /// </summary>
+        private static void ReportGrantShortfall(Map map)
+        {
+            HeadquartersSetupComponent receipt = map == null
+                ? null : map.GetComponent<HeadquartersSetupComponent>();
+            if (receipt == null) { return; }
+            if (receipt.promisedGrants == null || receipt.promisedGrants.Count == 0) { return; }
+            if (receipt.deliveredGrants != null && receipt.deliveredGrants.Count > 0) { return; }
+
+            string promised = string.Join(", ", receipt.promisedGrants.ToArray());
+            Log.Error("[Rimrooms][Scenario] The scenario promised starting goods and none "
+                      + "arrived. Promised: " + promised);
+            Find.LetterStack.ReceiveLetter(
+                "RR_Start_GrantsMissingLabel".Translate(),
+                "RR_Start_GrantsMissingText".Translate(promised),
+                LetterDefOf.NegativeEvent);
         }
 
         // An explicit recovery command may retry only branch registration, never physical grants.

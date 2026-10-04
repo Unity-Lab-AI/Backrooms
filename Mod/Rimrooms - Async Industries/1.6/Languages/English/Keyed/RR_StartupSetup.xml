@@ -54,4 +54,16 @@ The rest of the company review is unavailable, but Back and Start both still wor
   <RR_Setup_GateLaterWork>A built gate is later work for this opening, not a missing piece of it. Not here yet: {0}.</RR_Setup_GateLaterWork>
   <RR_Setup_GateContactRoute>This branch starts outside company contact and with no gate research finished, so it is not meant to assemble one yet. There is already a way through that nobody built. Reach the corporation, research what a gate needs, then order the equipment.</RR_Setup_GateContactRoute>
   <RR_Setup_GateInsideRoute>This opening begins inside the Backrooms, outside company contact and with no gate research finished. Finding a way out comes first; ways through that nobody built reach only so deep, and going further needs a gate you have earned the right to build.</RR_Setup_GateInsideRoute>
+  <!-- The starting-goods report. A diagnostic, not a fix: four candidate causes were eliminated
+       against the installed game and what is left needs a launch. A player who starts with
+       nothing currently has to sweep the map to find out; this says it on the letter stack with
+       what was promised, so the next launch answers the question instead of posing it again. -->
+  <RR_Start_GrantsMissingLabel>Starting goods did not arrive</RR_Start_GrantsMissingLabel>
+  <RR_Start_GrantsMissingText>This branch was supposed to start with supplies and none of them reached the map.
+
+The scenario promised: {0}
+
+The facility, the people and the company account are all fine - only the physical goods are missing, so the branch is short rather than broken. Nothing was taken away from you and nothing will grant it twice if the cause is fixed.
+
+If you are running Prepare Carefully or another mod that supplies starting equipment, this is the most likely quarter: its goods and the scenario's reach the map through the same enumeration, so one break explains both. Please send the Player.log with this message in it.</RR_Start_GrantsMissingText>
 </LanguageData>

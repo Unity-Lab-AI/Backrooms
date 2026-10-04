@@ -83,6 +83,27 @@ def index_game_defs():
     return owner
 
 
+def requirements_of(node):
+    """The package ids this one element names, if any."""
+    attribute = node.get("MayRequire") or ""
+    return {part.strip() for part in attribute.split(",") if part.strip()}
+
+
+def nodes_with_requirements(definition, inherited=None):
+    """Every element under a def, paired with the package ids gating it.
+
+    `MayRequire` applies to the element carrying it **and everything inside it**, which is how
+    RimWorld itself reads the attribute. Yielding the accumulated set means a `<li>` gated on its
+    own line counts, and so does one inside a gated block, and so does one whose whole def is
+    gated -- all three are real forms and the first is the one Core uses for string lists.
+    """
+    gates = (inherited or set()) | requirements_of(definition)
+    yield definition, gates
+    for child in definition:
+        for pair in nodes_with_requirements(child, gates):
+            yield pair
+
+
 def main():
     if not os.path.isdir(GAME_DATA):
         sys.stderr.write("dlc-gating: game Data folder not found; check skipped, not passed\n")
@@ -107,16 +128,30 @@ def main():
         except ElementTree.ParseError as error:
             failures.append("%s does not parse: %s" % (relative, error))
             continue
+        # See the comment at the walk below for why requirements have to accumulate.
         for definition in root:
-            may_require = definition.get("MayRequire") or ""
-            required = {part.strip() for part in may_require.split(",") if part.strip()}
             def_name = definition.findtext("defName") or definition.tag
-            for node in definition.iter():
+            # **`MayRequire` IS INHERITED DOWN THE ELEMENT TREE, and reading it only off the def
+            # was a real blind spot.** RimWorld honours the attribute on *any* element, and Core
+            # uses it on list items itself -- `<li MayRequire="Ludeon.RimWorld.Ideology">
+            # AncientPipelineSection</li>` in `CommonMapGenerator.xml` is a list of plain
+            # defName strings gated entry by entry.
+            #
+            # Per-entry gating is **finer and strictly better** than gating the whole def: a role
+            # that accepts six buildings, two of them from an expansion, should lose those two
+            # without the expansion rather than vanish entirely. Demanding the attribute on the
+            # def would have pushed exactly that worse shape, which is how a checker ends up
+            # making the code wrong.
+            #
+            # So requirements accumulate from the def downwards and a node is gated if it, or
+            # anything it sits inside, names the expansion.
+            for node, required in nodes_with_requirements(definition):
                 if node.tag in IGNORED_TAGS:
                     continue
                 value = (node.text or "").strip()
                 if value not in dlc_only:
                     continue
+                may_require = ",".join(sorted(required))
                 checked += 1
                 wanted = {PACKAGE_IDS[folder] for folder in dlc_only[value]
                           if folder in PACKAGE_IDS}

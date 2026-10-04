@@ -20,9 +20,9 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 **Owner, 2026-10-04, three times:** *"okay once again.. yu should be completeing like near a dozen items before you run the whole battery. i told you i can NOT be waiting 40 minutes when u run 10m batteries constantly with every item you work on"*, *"you have run batteries repeatily and you havent even done ten items yet"*, and when I over-corrected: *"no you fucking retard!!!! you still need to do instrament checks and build them when needed just dont run them for every fucking code change"*
 
 - **During the work:** run **only the one instrument covering the file you just touched.** One checker, or one proof, or one plant suite. **Keep writing and extending them.**
-- **At publication, once:** 18 checkers → 53 proofs → 27 plant suites.
+- **At publication, once:** 19 checkers → 54 proofs → 28 plant suites.
 - **If a sweep finds something, fix it and re-run ONLY the instrument that failed.**
-- **Batch size is 10–12 closed rows.** 0.12.88 eight, 0.12.89 eleven, 0.12.90 **nine**.
+- **Batch size is 10–12 closed rows.** 0.12.89 eleven, 0.12.90 nine, 0.12.91 **six closed and six noted** — the DLC rows are each five clauses wide and closing them on one clause would be over-claiming.
 
 ---
 
@@ -43,45 +43,43 @@ what the ceiling was pushing me to find.
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`** |
-| Version | **0.12.90-dev** — read from `About.xml`, never from a document |
+| Version | **0.12.91-dev** — read from `About.xml`, never from a document |
 | Build | **231 C# files, 103 package files**, zero warnings, zero errors |
 | Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile and is checked against the register |
-| Instruments | **18 checkers**, **53 proofs**, **27 plant suites** |
+| Instruments | **19 checkers**, **54 proofs**, **28 plant suites**, **1035 plant anchors** |
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
-| Queue | **67 open · 21 partial · 38 `[T]` · 0 `[x]`** |
+| Queue | **62 open · 20 partial · 38 `[T]` · 0 `[x]`** |
 | Launches | **At least twelve**, all by the owner. **Every defect any launch found was ours** |
 
 ---
 
-## What 0.12.90-dev changed
+## What 0.12.91-dev changed
 
-1. **CERTIFICATIONS AND TRAINING JOBS.** The person-level twin of a company project. Each one is an **ordinary bill** on a bench, modelled on `RR_AssembleMachineGate` — no new work giver, no new job driver, no new building. **Core enforces the skill floor** through `skillRequirements`, so no pawn can ever spend a day's work and be told no at the end.
-2. **Three certifications, three named consumers, nothing hollow.** Spin-up dial, reviewer qualification, reconditioning work. **Security and medical logistics have none, deliberately** — no surface would act on one.
-3. **Contain, release, transfer, destroy — and detain.** Four decisions about a recovered thing, plus the one that belongs to a person. **Containment charges every day on its own ledger line**; transfer pays **less** than the exchange, because taking less *is* the decision; destroy is **the only option that needs nothing**.
-4. **Detain is Core's prisoner system**, not a second model. A few lines, because needs, recruitment, escape and the warden job all already exist.
-5. **Confidence is derived and never stored.** A stored score could disagree with its own inputs. And it **moves what the corporation pays**, so it is not a readout.
-6. **The generator can see four more things about the branch** — tier, previous outcome, opening duration, the world's hostility. **Bias, never a filter**, clamped both ways.
-7. **"Term" is REFUSED, not built.** §1.1 forbids a countdown on anything the player maintains. Eviction is allowed because it is a **consequence of not paying**, visible on the ledger and cleared by paying; **no time passing ever evicts anybody.**
-8. **Three rows closed on measurement.** The company book's blocker was solved by `companyIssued` at 0.12.87; gate size and what it lets through was fully built; equipment-versus-seed was held on one half and superseded on the other.
+1. **THE STAND-ALONE GUARANTEE IS A CHECKER.** The row said *"a declaration cannot establish it"*, and nothing in the battery could: `check-dlc-gating.py` asks *is every expansion reference gated* and **cannot see a reference to one of the 294 profile mods**, because such a def is not DLC-only — it is not in the game's data at all. Checker **19** closes that hole.
+2. **The first run: 214 def-name field values, ZERO outside Core and our own defs.** 64 C# lookups, **zero hard `GetNamed`** on anything we do not ship. Four assembly references, all game or Unity. Reference fields **enumerated from our own source**, and it **skips rather than passes** with no game installed.
+3. **Four expansion roles, optional by CONSTRUCTION rather than by a gate.** `thingDefNames` is a `List<string>`, so naming `HoldingPlatform` creates **no cross-reference at load at all** — `Fillable` hides a role nothing can fill. Not merely gated: unable to exist.
+4. **`MayRequire` per entry, never per role**, because gating a whole role would delete one that also accepts Core buildings. **`check-dlc-gating.py` could not see a per-entry gate** and was taught the mechanism rather than worked around.
+5. **Royalty gets nothing, recorded rather than padded.** Thrones are Core; what Royalty adds is titles, permits, psycasts and the Empire. A route must be a thing, a log or a project — a title is none. An honest hook needs a new route kind.
+6. **The starting-goods defect: four candidate causes eliminated, no fix on a hunch.** The arrival part, the start spot, the gen-step order and the drop method are all ruled out against the installed game. And the report's own evidence rules out the next one — the pawns' possessions *did* arrive, in the same list as the grants.
+7. **So the next launch answers it.** The receipt records the **promise** and the **delivery**, and the start reports the gap. The promise is read through `GetSummaryListEntries`, which **creates nothing** — enumerating `PlayerStartingThings()` again would manufacture a second set of goods.
+8. **Two rows closed on measurement.** Prior exposure was listed unbuilt on a second row while built and wired — **a fact recorded as missing in two places was missing in neither**. And the battery-reserve row was a recorded *finding*, not a task.
 
 ---
 
 ## THE NEXT THING
 
-**The DLC-conditional content rows** (Royalty, Ideology, Biotech, Anomaly, Odyssey) are the
-largest honest cluster left. Each says *no DLC-specific content is authored*, and each is gated
-correctly already — so the work is authoring content that is **optional by construction**. The
-Anomaly one is the nearest: its row names *containment/research links*, and containment now
-exists to link to.
+**The four expansion rows that are still open** each had one clause answered and four left. Biotech
+wants genes, children, medicine and pollution; Ideology wants beliefs, meditation, rituals and
+staff policies; Odyssey wants a gravship that actually carries a branch between tiles. Each needs
+its own answer to *what does the optional version look like* before it is code.
 
-Then: **entity/anomaly design sheets as authored documents** (the last clause on that row);
-**vehicles and the VGE hooks**; **the optional work/storage provider adapters**; **T3 of the
-research tree**.
+Then: **entity/anomaly design sheets as authored documents**; **vehicles and the VGE hooks**; **the
+optional work/storage provider adapters**; **T3 of the research tree**, where every capability a
+project grants must be read by a named source file.
 
-And the one the owner keeps naming: **the stand-alone guarantee half** — every
-`GetNamedSilentFail` degrades, both `PatchOperation`s stay guarded, no Def assumes a DLC. The
-`Fillable` guard on equipment roles and the *every-recipe-must-reach-a-real-worktable* finding are
-that rule applied in two places; it belongs everywhere a defName is named.
+**And the starting-goods rows now wait on a launch rather than on work.** They are the only two
+rows in the queue whose next step is a `Player.log` — the report will either implicate a mod
+supplying starting equipment or clear it.
 
 ---
 
@@ -91,6 +89,9 @@ that rule applied in two places; it belongs everywhere a defName is named.
 - **`in` CANNOT TELL ONE SITE FROM THREE, and this is the recurring one.** A claim asserted the recipe worker class was `in` the file; three recipes carry it, a plant stripped one, two were left, MISSED. Same class as `RecallOptionTicks` last batch. **Count it.**
 - **A POSITIONAL CLAIM ENCODES LAYOUT, NOT THE PROPERTY. Also recurring.** Comparing call indices was satisfied by a plant that moved the call **out of its block entirely**. The property was containment; assert it on whitespace-normalised source.
 - **ONE PATTERN, ALL THE FILES IT GUARDS.** The clock-name check was strict on `RemoteSiteTenure.cs` and narrower on `RemoteSites.cs`, so an `expiryTick` in registration walked past. A clock is a clock whichever file grows it.
+- **A MESSAGE IS NOT A RULE — and that cuts both ways.** A claim asserted a refusal's *message* rather than its condition, and a plant rewrote the message; the claim rightly passed and **the plant was testing nothing**. Assert the test; plant against the test.
+- **A SLICE IS A CLAIM TOO.** One claim cut a method at its first `}` — an inline `{ return; }` guard — so it examined four lines and a planted failure sat safely below it. Slice to the next signature, not to the next brace.
+- **A `catch` EXISTING IS NOT A `catch` SWALLOWING.** A planted `throw;` walked past a claim that only asserted the handler was there.
 - **THE FIX FOR DEAD CODE IS TO REACH IT.**
 - **THE BATTERY RUNS ONCE AND THE INSTRUMENTS STAY.** The only thing the owner has had to say three times.
 - **THE CASCADE IS TEN REFS.** `forgejo, github` × `feature/connected-colony-portals, Prep, Develop, Main`, **plus `feature/bug-testing` on both**. `PUBLISHING.md`.
@@ -150,7 +151,7 @@ python tools/check-queue-integrity.py                                 # and this
 
 ## Is it done?
 
-**The build is. The play is not.** `0.12.90-dev` is staged and published; the next action that unblocks anything is a launch, and only the owner launches.
+**The build is. The play is not.** `0.12.91-dev` is staged and published; the next action that unblocks anything is a launch, and only the owner launches.
 
 Read a launch log in this order: `Player.log`, grep the **first** `[Rimrooms]` line — it carries
 the fixture-tell attachment count, the fastest signal that the object register reached anything —

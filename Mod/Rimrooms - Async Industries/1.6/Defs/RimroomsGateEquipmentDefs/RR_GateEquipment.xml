@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
   <!-- Roles a gate's facility can have equipment linked into. Every def name below was read
@@ -151,6 +151,98 @@
     <stockCategoryDefName>FoodMeals</stockCategoryDefName>
     <stockTarget>8</stockTarget>
     <riskKey>RR_GateLink_RiskCanteen</riskKey>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
+  <!-- ==================================================================================
+       EXPANSION ROLES. "DLCs only add content" - owner, and the standing rule that nothing
+       the mod needs to operate may live behind one.
+
+       THESE ARE OPTIONAL BY CONSTRUCTION, NOT BY A GATE, and that is worth stating because it
+       is a stronger guarantee than MayRequire gives. `thingDefNames` is a List<string>, not a
+       list of def references - `Accepts` compares `thing.def.defName` and `Fillable` resolves
+       through `GetNamedSilentFail`. So naming an expansion building here creates NO
+       cross-reference at load: on an install without that expansion the names simply resolve to
+       nothing, `Fillable` returns false, and `AllInOrder` hides the role from the picker, the
+       readout and `RoleFor` alike. Nothing errors, nothing is offered, nothing is missed.
+
+       That is the same property that made `TableLong` a caught mistake rather than a red log at
+       0.12.89-dev.
+
+       AND MayRequire IS ON EVERY EXPANSION ENTRY ANYWAY, as a deliberate second line. The
+       entries are gated one `<li>` at a time rather than the whole role being gated, which is
+       finer and is the form Core itself uses for string lists - see the
+       `<li MayRequire="Ludeon.RimWorld.Ideology">AncientPipelineSection</li>` entries in
+       CommonMapGenerator.xml. Gating the whole role would make a role that accepts six
+       buildings, two of them from an expansion, vanish entirely instead of losing those two.
+       `tools/check-dlc-gating.py` could not see a per-entry gate until 0.12.91-dev and was
+       taught the mechanism rather than worked around.
+
+       ONE CLAUSE EACH, AND THAT IS SAID PLAINLY. Each expansion row in the queue lists several
+       things - Biotech alone names "genes, mechanitors, children, medicine, pollution, and
+       mechanoid options". A facility role addresses the equipment clause and no other, so only
+       the Anomaly row (whose open item is specifically "the containment/research links
+       themselves") closes on these. The rest stay open with what landed recorded.
+
+       ROYALTY HAS NO ROLE HERE, DELIBERATELY. Its row asks for "titles/quests/faction/psycasts
+       only as optional company routes", and Royalty ships almost no buildings at all - thrones
+       are Core, and what it adds is titles, permits, psycasts and the Empire. None of those is
+       equipment a facility can be linked to, and a route must be a thing, a log or a project.
+       An honest Royalty hook needs a new route kind, which is a bigger decision than a def
+       edit. Stated rather than padded out, exactly as transport and orbital support has no
+       tier 0 project. -->
+
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_Containment</defName>
+    <label>containment</label>
+    <description>Holding platforms and bioferrite equipment, linked as this facility's containment wing. A branch that decides to contain what it brings back needs somewhere built for it rather than a shelf and a hope.\n\nThis role only exists if the Anomaly expansion is installed. Without it the branch contains records on paper, which is what the rest of the mod does anyway.</description>
+    <thingDefNames>
+      <li MayRequire="Ludeon.RimWorld.Anomaly">HoldingPlatform</li>
+      <li MayRequire="Ludeon.RimWorld.Anomaly">HoldingSpot</li>
+      <li MayRequire="Ludeon.RimWorld.Anomaly">BioferriteHarvester</li>
+      <li MayRequire="Ludeon.RimWorld.Anomaly">BioferriteGenerator</li>
+    </thingDefNames>
+    <maxLinked>6</maxLinked>
+    <displayOrder>8</displayOrder>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_Biolab</defName>
+    <label>biological laboratory</label>
+    <description>Gene and mechanoid equipment linked as this facility's biological wing. What comes back from a coordinate is not always a thing on a shelf, and a branch with this bench can work on the rest of it.\n\nThis role only exists if the Biotech expansion is installed. Nothing the mod needs to operate depends on it.</description>
+    <thingDefNames>
+      <li MayRequire="Ludeon.RimWorld.Biotech">GeneAssembler</li>
+      <li MayRequire="Ludeon.RimWorld.Biotech">GeneBank</li>
+      <li MayRequire="Ludeon.RimWorld.Biotech">GrowthVat</li>
+      <li MayRequire="Ludeon.RimWorld.Biotech">MechGestator</li>
+      <li MayRequire="Ludeon.RimWorld.Biotech">SubcoreEncoder</li>
+      <li MayRequire="Ludeon.RimWorld.Biotech">SubcoreSoftscanner</li>
+    </thingDefNames>
+    <maxLinked>6</maxLinked>
+    <displayOrder>9</displayOrder>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_Assembly</defName>
+    <label>assembly room</label>
+    <description>A room the branch gathers in: somewhere to be presentable, somewhere to be heard, and something to make a noise with. Crews that come back from a coordinate do not go straight back to work.\n\nThis role only exists if the Ideology expansion is installed.</description>
+    <thingDefNames>
+      <li MayRequire="Ludeon.RimWorld.Ideology">StylingStation</li>
+      <li MayRequire="Ludeon.RimWorld.Ideology">Loudspeaker</li>
+      <li MayRequire="Ludeon.RimWorld.Ideology">Drum</li>
+    </thingDefNames>
+    <maxLinked>4</maxLinked>
+    <displayOrder>10</displayOrder>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_OffworldLogistics</defName>
+    <label>off-world logistics</label>
+    <description>A gravitational engine on the branch's books, so the company can account for a facility that is able to leave. A branch that can move is a branch whose gate is not the only way anything arrives.\n\nThis role only exists if the Odyssey expansion is installed, and the gate works exactly the same without it.</description>
+    <thingDefNames>
+      <li MayRequire="Ludeon.RimWorld.Odyssey">GravEngine</li>
+    </thingDefNames>
+    <maxLinked>2</maxLinked>
+    <displayOrder>11</displayOrder>
   </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
 
 </Defs>
