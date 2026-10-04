@@ -16056,3 +16056,32 @@ Record: [`implementation/CONNECTED_EMERGENCE_IMPLEMENTATION.md`](implementation/
 Build at the time of the move: **0.12.96-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **1 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+## Owner direction — staging includes the mod-only repository (2026-10-05)
+
+**Verbatim owner direction (2026-10-05):** *"and remember staging now includeds pushes to the mod only repo"*
+
+**It was being done, and it was being done from memory, which is the thing worth fixing.** Every publication since 0.12.94-dev has pushed the mod-only pair — but **`docs/PUBLISHING.md` said nothing about it**, and that file is the cascade authority and the one document an agent is told to read instead of improvising. A step that is not in there is a step that gets forgotten, and the owner has already corrected improvised publishing once.
+
+**A publication that updates this repository and not that one leaves the published site and the downloadable mod behind — silently, with every instrument still green.**
+
+- [x] **"staging now includeds pushes to the mod only repo"** — **MADE STRUCTURAL 0.12.98-dev, in three places, because a rule in one place is a rule somebody can miss.** **The procedure:** `PUBLISHING.md` opens with it now — publication is **twelve refs, not ten**: ten here across five branches on both remotes, plus two on `Rimrooms-AsyncIndustries`. Its **§7 one-screen version** is corrected too, and it had **two** faults of exactly the kind that pass silently: the loop pushed three integration branches and omitted `feature/connected-colony-portals`, producing the **eight-ref publish §5 warns about in its own words**, and it named no mod-only repository at all. **The order is recorded with its reason:** the export runs **before** the commit here, because it is built from `artifacts/build/package-manifest.json` and verifies every file's SHA256 against the working tree, so it must run against the tree that was built and checked. **The tool:** `export-public-repo.py --push` now **receipts its own push** — it reads both remotes back and refuses if either does not hold the export commit, because **`git push` exiting zero is not the same statement as *the remote holds this commit*.** That is the same discipline §5 exists for: nobody noticed an eight-ref publish was missing a branch for forty-five checkpoints. **The handoff:** the standing cascade rule in `NOW.md` says twelve. **And the refusal is documented as non-negotiable:** the exporter refuses for two real reasons — a package edited after the build, or something in the export that must never be published — and *“do not work around it”* is written next to them. It has refused twice already, both times correctly, when a version bump landed after a build.
+
+
+Build at the time of the move: **0.12.97-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

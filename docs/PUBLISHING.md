@@ -2,6 +2,25 @@
 
 This is the procedure that works. It was written after doing it, not before. Follow it literally; every deviation the previous agents made (assuming an `origin` remote, lowercase branch names, creating local tracking branches and then a "receipt" file, trying to use the browser session for Git transport, using the other host's CLI against Forgejo) is a way it has failed before.
 
+> ## ⛔ PUBLICATION IS FOUR REPOSITORIES NOW, NOT TWO ⛔
+>
+> **Owner direction, 2026-10-05, verbatim:** *"and remember staging now includeds pushes to the mod only repo"*.
+>
+> Since 0.12.94-dev there is a **second pair of remotes** holding the mod and its public face only — `Rimrooms-AsyncIndustries` on Forgejo and on GitHub — and it is **where the wiki actually deploys from**. A publication that updates this repository and not that one leaves the published site and the downloadable mod behind, silently, with every instrument still green.
+>
+> **This document said nothing about it until 0.12.98-dev**, which is exactly the gap the owner's reminder was aimed at: this file is the cascade authority and the one thing an agent is told to read instead of improvising, so a step that is not in here is a step that gets forgotten.
+>
+> **So the full publication is twelve refs, not ten:**
+>
+> | | refs | how |
+> |---|---|---|
+> | This repository | **10** — `forgejo` and `github` × five branches | §4, by refspec from the feature branch |
+> | The mod-only repository | **2** — `forgejo` and `github` × `main` | `python tools/export-public-repo.py --push` |
+>
+> **The exporter receipts its own push**, reading both remotes back and refusing if either does not hold the export commit — because `git push` exiting zero is not the same statement as *the remote holds this commit*, and §5 below exists because nobody noticed an eight-ref publish was missing a branch for forty-five checkpoints.
+>
+> **Order matters, and only one way round works.** Export and push the mod-only repository **before** committing here: the export is built from `artifacts/build/package-manifest.json` and verifies every file's SHA256 against the working tree, so it must run against the tree that was built and checked. It refuses outright on a package edited after the build — which it has done twice, both times correctly, when a version bump landed after a build.
+
 ## 0. Facts about this repository's remotes that you must not guess
 
 | | `forgejo` (PRIMARY) | `github` |
@@ -110,15 +129,30 @@ All eight lines must show the same commit hash as local `HEAD` (Case A) or the e
 
 ## 7. One-screen version
 
+**Two things were wrong with the version that used to be here**, and both are the kind that pass silently: the loop pushed three integration branches and not `feature/connected-colony-portals`, so it produced an eight-ref publish — the exact defect §5 warns about in its own words — and it said nothing about the mod-only repository, so running it published this repository and left the wiki and the downloadable mod behind.
+
 ```bash
+# 0. THE MOD-ONLY REPOSITORY FIRST. It is built from the build manifest and verifies every
+#    file's SHA256, so it must run against the tree that was built -- and it receipts its own
+#    push by reading both remotes back.
+python tools/export-public-repo.py --push
+
+# 1. Then this repository, all five branches on both remotes.
 BRANCH=$(git rev-parse --abbrev-ref HEAD)                  # never hard-code it; that is how eight became wrong
 git status --short && git log -1 --oneline                 # sanity
-git push forgejo "$BRANCH"
-git push github  "$BRANCH"
 for r in forgejo github; do
-  for b in Prep Develop Main; do git push $r "$BRANCH:$b"; done
+  git push $r "$BRANCH"
+  for b in Prep Develop Main feature/connected-colony-portals; do
+    git push $r "$BRANCH:$b"
+  done
 done
+
+# 2. Read back TWELVE refs: ten here, two there.
 git ls-remote --heads forgejo; git ls-remote --heads github; git rev-parse HEAD
+git -C .local/export/Rimrooms-AsyncIndustries ls-remote --heads forgejo
+git -C .local/export/Rimrooms-AsyncIndustries ls-remote --heads github
 ```
 
 If any push in the loop is refused as non-fast-forward, stop, go to §4 Case B for that remote/branch, and do not continue the loop until it is resolved.
+
+If the exporter refuses, **do not work around it**. It refuses for two reasons and both are real: a package edited after the build, which means rebuild and re-export; or something in the export that must never be published, which means read the refusal and fix what it names.

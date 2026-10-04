@@ -26,9 +26,9 @@ change"*
 
 - **During the work:** run **only the one instrument covering the file you just touched.** One
   checker, or one proof, or one plant suite. **Keep writing and extending them.**
-- **At publication, once:** 21 checkers → 58 proofs → 32 plant suites.
+- **At publication, once:** 21 checkers → 59 proofs → 34 plant suites → `check-plant-residue.py`. **Then stage, then `export-public-repo.py --push`, then commit, then the ten-ref cascade.**
 - **If a sweep finds something, fix it and re-run ONLY the instrument that failed.**
-- **Batch size is 10–12 closed rows.** 0.12.93 closed nine and noted four; 0.12.94 closed **six**, every one of a single owner direction.
+- **Batch size is 10–12 closed rows.** 0.12.96 closed **ten** before the battery ran once, which is the cadence the owner asked for: *"get a bunch done berfore battery and stage and cascade"*.
 
 ---
 
@@ -49,11 +49,11 @@ reword the document into something awkward. A checker that cries wolf is one peo
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`** |
-| Version | **0.12.97-dev** — read from `About.xml`, never from a document |
+| Version | **0.12.98-dev** — read from `About.xml`, never from a document |
 | Build | **232 C# files, 103 package files**, zero warnings, zero errors |
 | Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile and is checked against the register |
 | Instruments | **21 checkers**, **59 proofs**, **34 plant suites** |
-| Remotes | **all TEN refs level** — `forgejo` 5 of 5, `github` 5 of 5. Forgejo caught up 2026-10-05 after four commits down |
+| Remotes | **TWELVE refs, all level** — this repository 10 (`forgejo` 5, `github` 5) plus the mod-only pair 2. Forgejo caught up 2026-10-05 after four commits down |
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
 | Queue | **36 open · 20 partial · 38 `[T]` · 0 `[x]`** |
 | Public repos | **`Rimrooms-AsyncIndustries` on BOTH hosts** — `forgejo GFourteen/...` and `github G-Fourteen/...`, `main` at one commit. **The mod as staged, the public face, nothing else** |
@@ -62,21 +62,21 @@ reword the document into something awkward. A checker that cries wolf is one peo
 
 ---
 
-## What 0.12.94-dev changed
+## What 0.12.95 through 0.12.98-dev changed
 
-**One owner direction, six rows, and two defects it uncovered in the mod itself.**
+**Four publications, and the pattern across all of them is the same:** almost nothing needed
+building. What needed doing was **checking what was already built**, and every check that found
+something found it in a place nobody had looked.
 
-1. **TWO NEW REPOSITORIES HOLD THE MOD AND NOTHING ELSE**, on both hosts, and **the published site is live** — 200 on the index, a deep page and the stylesheet, verified with `curl -sI`. That is the standard the Backrooms deploy row sets and has never met.
-2. **ONE DEFINITION OF THE MOD, AND IT WAS ALREADY MACHINE-READABLE.** The payload is the 103 files in `artifacts/build/package-manifest.json` — the same list `stage-mod.ps1` copies — with **every SHA256 verified on the way out**. So *what we stage* and *what we publish* cannot drift. **It refused this batch** when `About.xml` was edited after the build.
-3. **AN ALLOWLIST DECIDES, A DENYLIST REFUSES THE RESULT, AND BOTH RUN.** The second pass refused the first export it ever saw: `CHANGELOG.md` is a development log and does not ship. The working README does not ship either — **every link in it is wrong there** — so the export generates its own from `About.xml` and refuses if a link would dangle.
-4. **THE MOD TOLD EVERY PLAYER IT NEEDS 294 MODS, AND IT NEEDS NONE.** `About.xml` has declared zero dependencies since 0.12.86-dev while its description still said it *"declares every member of it as a dependency"*. **It is the most-read document this mod has, and nothing checked it**, because the checker globs `.md`.
-5. **Found by reading generated output, not by auditing.** The export's readme said *"Needs no other mod and no expansion"* two lines above a section demanding five expansions. Nothing had ever put those two sentences side by side.
-6. **`About.xml`'s description is now held to the full claims rules**, including a **new inverse dependency rule** — with nothing declared, *asserting* a dependency is the finding — and it immediately caught a second defect: the description said **"doorway"** to a player, banned everywhere else since 0.10.2-dev.
-7. **The wiki renders to standalone static HTML**, no Jekyll and no build step, **importing the reading order from `build-site.py` rather than copying it**. `docs/.nojekyll` ships, or Pages rebuilds it with Jekyll and can fail outright.
-8. **`git subtree split` was offered, argued against and declined** — it would have published hundreds of commits of `docs/TODO.md`.
-
----
-
+1. **THE MOD TOLD EVERY PLAYER IT NEEDS 294 MODS, AND IT NEEDS NONE.** `About.xml` has declared zero dependencies since 0.12.86-dev while **five live documents** said the opposite — including `About.xml`'s **own description**, the install page, the mods page, the README and `PLAYING.md`. The install page listed all five expansions **and Harmony** as *Required*. Found by generating a readme from that text and reading it: it said *"Needs no other mod and no expansion"* two lines above a section demanding five expansions.
+2. **ONE PAGES DEPLOY, AND IT IS THE PUBLIC MOD REPOSITORY.** Pages here is **404 and never was enabled** — the direction described the live state. What was wrong was three documents still telling a reader to switch it on, which is worse than stale: **somebody does it.** Now refused by a checker, with the 2026-10-01 answer recorded as superseded rather than quietly dropped.
+3. **NOTHING REFERENCES THE BUILD REPOSITORIES**, and it did when the rule was given: the published wiki sent anyone wanting the source, or wanting to report a bug, **to the repository that holds the work ledger.**
+4. **THE STAND-ALONE GUARANTEE'S MISSING HALF.** The checker proved the package only *names* safe things; it never proved the lookups **degrade**. Now: **152 silent-fail results, every one guarded.** The rule was wrong three times first — 65 findings of which 56 were innocent, then 9 more on correct code, then two safe through `??`.
+5. **A MULTIPLAYER PAGE THAT NEVER NAMED THE MULTIPLAYER MOD.** It described the shape and withheld the thing that provides it. Rewritten from register row 196: **RimWorld Together**, what it does, that it needs Harmony and we do not, and that everyone needs the same mod list.
+6. **TEN ROWS THAT WERE BUILT AND UNGUARDED**, including the whole stranded-crew guarantee — where the feared defect **never existed**: `LostPawnRegister` stores *names*, not pawns, and `DeinitAndRemoveMap` is called from exactly one place, a player action.
+7. **A ROOM'S PILLARS WERE THE WRONG MATERIAL.** The wall ring used the room's material; the pillars inside it used the level band's. Stone walls, wooden columns. **Nothing asserted the material**, so it drifted.
+8. **A PROOF WITH 34 CLAIMS AND NO PLANTS.** The recorder fold passed from the day it was written and nobody had watched it refuse. `RecorderGap` — the thing it turns on — was in **no proof at all**.
+9. **AND STAGING IS TWELVE REFS, NOT TEN.** `PUBLISHING.md` — the cascade authority — said nothing about the mod-only repository, so the step lived in memory. Now in the procedure, in the handoff, and **receipted by the tool itself**.
 ## THE NEXT THING
 
 **The public face is done and live.** What remains of it is authoring, not plumbing: a
@@ -135,7 +135,7 @@ is the only thing that would refuse the work ledger if Pages were ever switched 
 - **EXPLICIT NAMES, NEVER GLOBS, WHERE A MISS IS SILENT.** `*` crossing a path separator is a Ruby `File.fnmatch` subtlety that cannot be verified from here. A pattern that silently fails to exclude is the one failure mode a ledger guard must not have.
 - **READ THE API OUT OF THE INSTALLED GAME.** `Pawn_InventoryTracker.FirstUnloadableThing` and its exact keep-list came from `ilspycmd` against the shipped assembly, which is why the pack rule never takes a pawn's own medicine. `.local/tools/ilspycmd.exe`.
 - **THE REGISTER ANSWERS MORE THAN IT LOOKS LIKE.** Two of the three provider rows were already decided in their own review cards. `python tools/register-query.py card <id>` prints every field. **`docs/CAMPAIGN_CHART.md`** beats any prep document.
-- **THE CASCADE IS TEN REFS** — `forgejo` and `github` × `feature/bug-testing, feature/connected-colony-portals, Prep, Develop, Main`, pushed **by refspec from the feature branch**, never by creating local integration branches. `PUBLISHING.md` is the authority; read it rather than improvising, which is the one thing the owner has corrected about publishing.
+- **THE CASCADE IS TWELVE REFS, NOT TEN.** Owner, 2026-10-05: *"and remember staging now includeds pushes to the mod only repo"*. **Ten here** — `forgejo` and `github` × `feature/bug-testing, feature/connected-colony-portals, Prep, Develop, Main`, pushed **by refspec from the feature branch**, never by creating local integration branches — **plus two** on `Rimrooms-AsyncIndustries` via `python tools/export-public-repo.py --push`, which **runs BEFORE the commit here** because it verifies every file's SHA256 against the build manifest and must see the tree that was built. **The exporter reads its own remotes back and refuses if either is behind**, because `git push` exiting zero does not mean the remote holds the commit. **A publication that skips it leaves the published site and the downloadable mod behind, silently, with every instrument still green.** `PUBLISHING.md` is the authority and now says so in its own opening; read it rather than improvising, which is the one thing the owner has corrected about publishing.
 - **WRITING A FILE WITH THE WRONG ENCODING SILENTLY CHANGES IT.** Read with `utf-8-sig`, re-write the BOM you found, and **diff-stat after every scripted edit** — the line counts do not lie.
 - **§1.1 IS THE RULE A NEW FEATURE IS MOST LIKELY TO BREAK WITHOUT NOTICING.** *"A gate's connection has a duration. Nothing else in this mod has a duration."*
 - **A BILL NEEDS A `Building_WorkTable`.** Research benches are `Building_ResearchBench` and have no bill stack, so a recipe placed on one is a feature nobody can ever reach.

@@ -465,7 +465,38 @@ def main():
             print("  push %-8s %s" % (name, "ok" if code == 0 else "FAILED (exit %d)" % code))
             if code != 0:
                 problems.append("push to %s failed" % name)
+
+        # **THE PUSH RECEIPTS ITSELF.** Owner, 2026-10-05: *"and remember staging now includeds
+        # pushes to the mod only repo"* -- so this is part of publication rather than something
+        # somebody remembers to do afterwards, and a step that is part of publication has to prove
+        # it happened the same way the ten-ref cascade does: by reading the refs back.
+        #
+        # `git push` exiting zero is not the same statement as *the remote holds this commit*. A
+        # push can report success having sent nothing when the local branch is behind, and the
+        # whole reason `PUBLISHING.md` §5 insists on a read-back is that nobody noticed an
+        # eight-ref publish was missing a branch for forty-five checkpoints.
+        head = git_out("rev-parse", "HEAD")
+        print("")
+        print("  export HEAD              : %s" % (head[:7] if head else "unknown"))
+        level = 0
+        for name, _ in REMOTES:
+            listed = git_out("ls-remote", "--heads", name, "main")
+            at = listed.split()[0] if listed else ""
+            ok = bool(head) and at == head
+            level += 1 if ok else 0
+            print("  %-8s refs/heads/main : %s" % (name, (at[:7] + " ok") if ok else
+                                                   ("%s MISMATCH" % (at[:7] or "absent"))))
+            if not ok:
+                problems.append("%s does not hold the export commit; the mod-only repository is "
+                                "not published" % name)
+        print("  PUBLIC RECEIPT           : %d of %d remote(s) at the export commit"
+              % (level, len(REMOTES)))
+
         if problems:
+            print("")
+            print("REFUSED: %d problem(s)" % len(problems))
+            for problem in sorted(set(problems)):
+                print("  - %s" % problem)
             return 1
 
     return 0
