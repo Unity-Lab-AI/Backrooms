@@ -24,6 +24,8 @@ namespace PlannerProbe
         private static MethodInfo trySelect;
         private static MethodInfo validateRooms;
         private static MethodInfo sharesWall;
+        private static MethodInfo areNeighbourRooms;
+        private static MethodInfo corridorLegs;
         private static PropertyInfo widestSpan;
         private static MethodInfo pillarCells;
         private static MethodInfo rockIntrusionCells;
@@ -52,6 +54,8 @@ namespace PlannerProbe
             trySelect = planner.GetMethod("TrySelect", Statics);
             validateRooms = service.GetMethod("ValidateRooms", Statics);
             sharesWall = planner.GetMethod("SharesWall", Statics);
+            areNeighbourRooms = planner.GetMethod("AreNeighbourRooms", Statics);
+            corridorLegs = planner.GetMethod("CorridorLegs", Statics);
             widestSpan = planner.GetProperty("WidestRoomSpan", Statics);
             mapWidth = (int)service.GetField("MapWidth", Statics).GetValue(null);
             mapHeight = (int)service.GetField("MapHeight", Statics).GetValue(null);
@@ -177,7 +181,7 @@ namespace PlannerProbe
                         object[] why = { built, null };
                         validateRooms.Invoke(null, why);
                         string key = why[1] == null ? "reachability or a family rule" : why[1].ToString();
-                        reasons.Add("candidate refused: " + key + " -- " + Describe((IList)built));
+                        reasons.Add("candidate refused: " + key + " -- " + Describe((IList)built, depth));
                     }
                     if (safeCandidates == 0) { fellBack++; }
 
@@ -335,7 +339,7 @@ namespace PlannerProbe
         /// `ValidateRooms` in the probe would give two opinions about one question, which is the
         /// defect this whole harness exists to catch.
         /// </summary>
-        private static string Describe(IList layout)
+        private static string Describe(IList layout, int depth)
         {
             var families = new Dictionary<string, int>();
             foreach (object room in layout)
@@ -382,21 +386,55 @@ namespace PlannerProbe
                 }
             }
 
-            bool axisFound = false;
-            for (int index = 0; index < layout.Count && !axisFound; index++)
+            // **THE PROBE ASKS THE PLANNER RATHER THAN RE-DERIVING ADJACENCY, and it used to do
+            // the opposite.** This held `a.CenterCell.x == b.CenterCell.x || ...z == ...z` -- a
+            // third copy of the rule, beside the planner's and the validator's. The moment
+            // corridors learned to bend it started reporting `shares no axis` for links that are
+            // perfectly legal, so every refusal diagnosis it printed was wrong and pointed at the
+            // wrong rule. A diagnostic that re-derives the thing it is diagnosing is the same
+            // defect class it exists to find.
+            bool linkFound = false;
+            for (int index = 0; index < layout.Count && !linkFound; index++)
             {
                 var a = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(layout[index], null);
                 foreach (int linked in Field<List<int>>(layout[index], "links"))
                 {
                     if (linked <= index || linked >= layout.Count) { continue; }
                     var b = (Verse.CellRect)roomType.GetProperty("Bounds").GetValue(layout[linked], null);
-                    if (a.CenterCell.x == b.CenterCell.x || a.CenterCell.z == b.CenterCell.z) { continue; }
-                    report.Add("link " + index + "-" + linked + " shares no axis "
+                    bool neighbours = (bool)areNeighbourRooms.Invoke(null,
+                        new object[] { layout[index], layout[linked] });
+                    if (!neighbours)
+                    {
+                        report.Add("link " + index + "-" + linked + " is not a shape a corridor can join "
+                                   + a.CenterCell + " / " + b.CenterCell);
+                        linkFound = true;
+                        break;
+                    }
+                    bool shared = (bool)sharesWall.Invoke(null,
+                        new object[] { layout[index], layout[linked] });
+                    if (shared) { continue; }
+                    var legs = (System.Collections.ICollection)corridorLegs.Invoke(null,
+                        new object[] { layout[index], layout[linked], depth, layout });
+                    if (legs.Count > 0) { continue; }
+                    report.Add("link " + index + "-" + linked + " has no route under it "
                                + a.CenterCell + " / " + b.CenterCell);
-                    axisFound = true;
+                    linkFound = true;
                     break;
                 }
             }
+
+            int tooMany = 0;
+            for (int index = 0; index < layout.Count; index++)
+            {
+                int count = Field<List<int>>(layout[index], "links").Count;
+                if (count > tooMany) { tooMany = count; }
+            }
+            // **SIXTEEN, not eight.** `MaximumUndirectedEdgesPerRoom` bounds the layout's TOTAL
+            // edges as `2 * 8 * rooms`, so it is an average rather than a per-room cap -- a
+            // junction may hold far more while the average stays low, and that spread is the
+            // point of it. The geometric maximum is the sixteen slots a lane route can reach.
+            if (tooMany > 16)
+            { report.Add("a room carries " + tooMany + " links, past the sixteen the grid can reach"); }
 
             return string.Join(", ", report.ToArray());
         }

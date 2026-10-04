@@ -40,7 +40,10 @@ namespace RimroomsAsyncIndustries.Generation
 
         private static readonly string[] RepeatingFamilies =
         {
-            "survey_lobby", "service_passage", "borrowed_corridor", "storage_nook", "utility_room"
+            "survey_lobby", "service_passage", "borrowed_corridor", "storage_nook", "utility_room",
+            // The sealed vault, which has no links at all and is found by mining. See
+            // `RoomLayoutPlanner.SealedFamily`.
+            "sealed_vault"
         };
 
         public static CompanyActionResult EnsureSite(
@@ -329,17 +332,33 @@ namespace RimroomsAsyncIndustries.Generation
             //
             // A ceiling still belongs here, because **every edge is one carved corridor** and an
             // unbounded graph would carve the map to gravel. But the honest number is the
-            // geometry's own: links run between grid-adjacent slots and a slot has at most four
-            // neighbours, so a grid graph cannot exceed two undirected edges per room. This is
-            // less a loosening than a statement of what the slot grid can produce -- and it still
-            // refuses what the clause was written to refuse: links between distant rooms, a
-            // duplicated edge set, a room joined to everything.
+            // geometry's own: a link joins a slot to a slot within reach -- four orthogonal
+            // neighbours, four diagonals, and the eight span-two offsets `RoomLayoutPlanner`'s
+            // five-leg route forms reach -- so a grid graph cannot exceed eight undirected edges
+            // per room, and `AreNeighbourRooms` refuses anything further. This is less a
+            // loosening than a statement of what the slot grid can produce -- and it still refuses
+            // what the clause was written to refuse: links between distant rooms, a duplicated
+            // edge set, a room joined to everything. See `MaximumUndirectedEdgesPerRoom`.
             //
             // **The floor is untouched.** `visited.Count != rooms.Count` and the `n - 1` minimum
             // are what guarantee one connected place, and they are the half of this check that
             // was always doing the work.
-            if (visited.Count != rooms.Count ||
-                directedEdges < 2 * (rooms.Count - 1) ||
+            // **A SEALED VAULT IS NOT A DISCONNECTED LEVEL, and the difference is whether the room
+            // claims a route.** This was `visited.Count != rooms.Count`, which refused any room the
+            // BFS over links could not reach -- correct while every room had links, and the exact
+            // clause that made the degree spec's *"0 - 10"* unbuildable at its lower end. Owner,
+            // 2026-10-03: *"insentive to mine things out to find isolated undiscorvered rooms when
+            // mining and deconsturcting wals"*.
+            //
+            // So the question is asked of rooms that have links: every one of them must be in the
+            // same connected piece as the threshold. A room with none is a vault and is reached by
+            // digging. The edge floor follows it -- a connected piece of `linked` rooms needs
+            // `linked - 1` edges, not `rooms - 1` -- and the ceiling still counts every room,
+            // because a vault is still a room the map has to hold.
+            int linkedRooms = rooms.Count(room => room.links.Count > 0);
+            if (!visited.Contains(0) ||
+                rooms.Any(room => room.links.Count > 0 && !visited.Contains(room.index)) ||
+                directedEdges < 2 * (linkedRooms - 1) ||
                 directedEdges > 2 * MaximumUndirectedEdgesPerRoom * rooms.Count)
             {
                 failureKey = "RR_Generation_InvalidRoomGraph";
@@ -351,11 +370,19 @@ namespace RimroomsAsyncIndustries.Generation
         /// <summary>
         /// The most corridors a room may carry, and it is the slot grid's own limit.
         ///
-        /// Links run between grid-adjacent slots, so a room has at most four neighbours and a
-        /// layout at most `2 * rooms` undirected edges. Two per room is the bound that admits any
-        /// maze the grid can describe while still refusing a graph that is not one.
+        /// **RAISED FROM TWO TO EIGHT AT 0.12.82-dev, and the number is still the geometry's
+        /// rather than a preference.** A link joins a slot to a slot within reach: four orthogonal
+        /// neighbours, four diagonal ones, and the eight offsets with a span of two that
+        /// `RoomLayoutPlanner`'s five-leg route forms can reach. Sixteen candidate neighbours is
+        /// eight undirected edges per room. At two this clause refused every braided maze that
+        /// used the links it had just been given — which is the same way the ceiling before it
+        /// forbade a maze outright, and the reason that one is quoted at length below.
+        ///
+        /// It still refuses what it was written to refuse: links between distant rooms, a
+        /// duplicated edge set, and a room joined to everything. The floor — `visited.Count` and
+        /// the `n - 1` minimum — is untouched and is the half that guarantees one connected place.
         /// </summary>
-        private const int MaximumUndirectedEdgesPerRoom = 2;
+        private const int MaximumUndirectedEdgesPerRoom = 8;
 
         internal static int ComputeFingerprint(CoordinateRecord coordinate)
         {
@@ -466,13 +493,25 @@ namespace RimroomsAsyncIndustries.Generation
         /// has is this: the centres share a row or a column, and the bounds do not overlap, so
         /// there is a straight run of rock between them to carve.
         /// </summary>
+        /// <summary>
+        /// Whether a saved graph's link is a shape a corridor can join — **and it is now the
+        /// planner's own answer rather than a copy of it.**
+        ///
+        /// This held its own arithmetic (`a.x == b.x` or `a.z == b.z`, centres only) while
+        /// `RoomLayoutPlanner.AreNeighbourRooms` held the identical arithmetic separately. **Two
+        /// independent derivations of one rule, which is the defect that cost this project
+        /// thirty-nine checkpoints** — and it was live: the planner's half had to grow to admit
+        /// bent corridors and the generalised straight run, and had this not been collapsed the
+        /// validator would have refused every graph the planner had just learned to build, on
+        /// load, for every saved coordinate.
+        ///
+        /// So the planner decides and this asks. The question is still the right one for a
+        /// validator: a graph edge whose two rooms no corridor can join is a graph that cannot be
+        /// carved, whatever produced it.
+        /// </summary>
         private static bool AreGridNeighbors(RoomRecord first, RoomRecord second)
         {
-            IntVec3 a = first.Bounds.CenterCell;
-            IntVec3 b = second.Bounds.CenterCell;
-            if (first.Bounds.Overlaps(second.Bounds)) { return false; }
-            if (a.x == b.x) { return a.z != b.z; }
-            return a.z == b.z && a.x != b.x;
+            return RoomLayoutPlanner.AreNeighbourRooms(first, second);
         }
 
         private static PlanetTile FindUniqueTile(CoordinateRecord coordinate)

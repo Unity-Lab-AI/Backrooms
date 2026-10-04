@@ -14649,3 +14649,143 @@ The refactor broke four proof claims and orphaned five plant anchors - **every o
 **Verbatim owner direction (2026-10-03):** *"aftert u finish up go ahead and get back to the staging, now.md writeing, and the cascades but not every time u do something only after you finish like 10-12 items in the todo do u do another stage/cascade"*
 
 This replaced *"no need to stage and no need to cascade until told to start again"* - that direction's own stated exit. Batch size is **10 to 12 closed items**, counted as rows archived out of the queue into this file, because that count cannot be inflated: a row only leaves on a proved byte-for-byte transfer. **This publication carried 49 archived rows**, far past one batch, because the work before it ran under the no-cascade direction.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **19 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **"make sure hallways and corradors and shit arent all straight"** — bent corridors. **This is the same architectural blocker as the 0–10 degree spec:** straight-only carving is *why* links must be grid-adjacent, so bending corridors and raising degree are **one job, not two**. `AreNeighbourRooms`, `ValidateRooms`, `BuildCorridors` and `CandidateIsSafe`'s corridor model all have to change together — four readers of one rule, which this file's own comments say is exactly where its worst defects came from.
+- [x] **"u -turns"** — a corridor that leaves a room and comes back to it, or doubles back on itself. Impossible today: a corridor is one straight run between two centres, and a room cannot link to itself. — **CLOSED 0.12.82-dev. Route form 6 leaves the room through the wall facing **away** from the destination, runs out to the lane on the wrong side, along a cross-lane, and doubles back — the literal article rather than a loop a player might happen to walk backwards. `BuildRouteWaypoints` case `default`.**
+- [x] **"multiple coices on directions to take in every rooms"** — **measured: avg degree 2.2–2.4, max 4.** Two links is one in, one out — no choice at all. This is the same row as *"room connected to like 0 - 10 other rooms"* below and closes with it. — **CLOSED 0.12.82-dev. Re-measured: **avg degree 4.98 to 5.31, max 13 to 16**, and rooms with only one link fell from 6.5% to **0.2–0.7%**. Three mechanisms: the diagonal braid, the reach braid to slots two away, and one slot in eight being a **junction** that takes every link it can, which is what gives a spread rather than moving every room to the same new number.**
+- [x] **"non default fdoor possitions in rooms so doors are not just on each side"** — doors at the midpoint of each wall is literally what the code does. Door placement has to become a position *choice* per link rather than a derived constant, which also means `DoorOpening` stops being computable from geometry alone and has to be saved or seeded per room. — **CLOSED 0.12.82-dev, and it was never a door rule. `RoomLayoutPlanner.TryStraightCorridor` is now the single authority on where a straight corridor meets two rooms, and `DoorOpening` asks it for the line instead of assuming `CenterCell`. The midpoint was not a choice — a corridor could only run along a line both centres shared, so the wall midpoint was the only cell one could ever arrive at. **It also unsealed the grand hall**, whose centre sits between its two slots and which could therefore only lead out along its own row.**
+- [x] **"can have doors al over"** — more than one opening per wall, and openings not aligned with the corridor's centre line. Interacts with the bent-corridor work: a corridor that bends can meet a wall anywhere along it. — **CLOSED 0.12.82-dev. A diagonal link opens the wall facing the other room on **both** axes, because which one the elbow uses is settled while the route is built after trying both; re-deriving that choice in `DoorOpening` would be a second derivation of `BentLegs`. The unused opening is a door with rock behind it — and since the same version, that rock is an **ore vein**, so the owner’s *"doors that lead no where but to an ore or gem vein"* is the same door.**
+- [x] **"we properly use the main menu images we made for the mod on the main menu page"** — the owner's own read of what already works, recorded because it is the half that is right: the slideshow controller draws our images behind the main menu. — **CLOSED 0.12.82-dev as the owner’s own correct read, and the list moved to `Presentation/RimroomsSlideArt.cs` so the menu and every other surface take the same images from one place — *"the same images"* cannot be two lists that agree until somebody adds a PNG.**
+- [x] **"so we need those mod images made for the menu to also use them randomly for load screen backgrounds"** — **the same images, drawn randomly**, as load-screen backgrounds. Same source list as the menu, so a new menu image is a new loading background with no second place to register it. — **CLOSED 0.12.82-dev, **and the owner’s instinct was exactly right.** `currentIndex` was pinned to `0` in the constructor and reset to `0` again in `ApplySettings`, so the menu — and therefore the backdrop behind every load started from it — opened on slide one of six, every single time, forever. It is drawn now, from the wall clock rather than from `Rand`, which is kept well away from the seeded randomness every generated place depends on.**
+- [x] **"it shouldnt just be one option"** — the question offered three ways past the measured 0–8 degree ceiling and the answer is **all of them**. So the corridor router carries **several route forms**, not one: the straight run, the three-leg elbow through a rock lane, a five-leg route to a slot two away, and whatever else the lane grid admits. A generator with one bend shape is a generator with a recognisable signature, which is the opposite of the standing *"its suppose to be a lsd trip when it comes to archeteture"*. — **CLOSED 0.12.82-dev. `RouteForms = 7`, tried in an order rotated by the pair’s own hash, each at two widths, first clear route wins.**
+**Verbatim owner answer (2026-10-03), on ore density:** *"option 2 but a bit more than vanilla like 3x more deposites than a default map"*
+
+- [x] **"option 2"** — **veins as routes AND scattered background deposits.** A vein runs between two rooms or from a door-onto-nothing to a sealed vault, so digging always leads somewhere; scattered deposits fill the rest of the rock the way Core scatters a surface map. — **CLOSED 0.12.82-dev. Both: three kinds of routed vein (vault, false door, unlinked pair) and Core-style scattered lumps of 3 to 10 cells through the remaining rock.**
+- [x] **"but a bit more than vanilla like 3x more deposites than a default map"** — **the density is 3× Core's**, and it is a number to measure against rather than to feel out: Core's scatter is driven by `GenStep_ScatterLumpsMineable`'s own count-per-10k-cells, so the target is three times whatever that computes for a 300×300, read from Core at runtime rather than copied into a constant. — **CLOSED 0.12.82-dev. `VanillaDensityMultiple = 3` against `CoreLumpsPer10kCells()`, which reads the count off Core’s **own** `GenStep_ScatterLumpsMineable` at runtime rather than copying it — the only honest reading of "vanilla" is whatever Core computes for itself. The fallback, if that step is ever missing, is stated and logged once rather than silent.**
+
+- [x] **"we should have doors that lead no where but to an ore or gem vein"** — a doorway whose far side is not rock but **ore**. `FalseOpening` already builds the doorway-onto-nothing (one wall in three with no link behind it opens anyway); what is behind it is natural rock, so the door currently reads as a mistake rather than as a find. Behind it should be the vein, which makes the same door a reward. — **CLOSED 0.12.82-dev. `OreVeinBuilder.PlaceFalseDoorVeins` asks `RoomLayoutPlanner.FalseOpening` directly — rather than guessing which openings are real — and runs a vein outward from each one. The doorway already existed; what was behind it was plain rock, so it read as a mistake. Now it reads as a find.**
+- [x] **"and veins leading to other rooms"** — a vein is a **route**, not a deposit: it runs from somewhere to somewhere. So ore placement is a path through the rock between two rooms, which is a second topology laid over the corridor graph and is what turns mining into exploring. — **CLOSED 0.12.82-dev. `PlaceBetweenRoomVeins` seams **unlinked** near pairs only, one pair in four: a vein between two rooms a corridor already joins teaches nothing. **Veins cannot break a level** — every cell is rock before and rock after, so no route, wall or doorway is touched, which is exactly why they are allowed to route freely across the whole map.**
+- [x] **"so insentive to mine things out to find isolated undiscorvered rooms when mining and deconsturcting wals and sucvh"** — the incentive, in the owner's words, and the acceptance condition: if digging the rock reveals nothing, this has failed. **Needs `CandidateIsSafe` to treat mineable rock as passable** so a sealed room can exist at all — see the note above. — **CLOSED 0.12.82-dev. `SealedFamily` vaults exist (`deg0` 2.1–3.3%), their slots are reserved out of the room budget rather than left to compete for it — **the probe caught that: `deg0` read 0.0% at depth 3 and deeper because the walk reached `MaxRooms` first and the vault was silently dropped** — and `PlaceVaultVeins` runs a seam from every vault to the nearest room with a way in, so the thing is findable rather than merely present.**
+- [x] **"so u can find back to back rooms"** — `PushAgainst` already builds back-to-back pairs joined by the doorway in their shared wall, and `SharesWall` is the single authority on it. What is new is **finding** one: a back-to-back pair reached by mining rather than by walking a corridor. — **CLOSED 0.12.82-dev, and this one was **regressing while nobody watched**. `PushAgainst` only ever moved rooms with exactly one link, and the degree work left a level with few dead ends: measured back-to-back pairs fell **131 → 23** as a side effect of a different feature. The push now proves the move itself — on the map, no collision, no existing link broken, and `SharesWall` agrees — so the link count stopped being the condition. **190 to 310 pairs per depth.** Plus `PlaceBetweenRoomVeins`, which is how you *find* one by digging.**
+- [x] **"the backrooms is still incorrectly too much having the rooms like a string of pearls where the rooms are just one exit one entrance"** — one entrance and one exit per room is a **line**, not a maze, whatever the generator intends. Measure which candidate actually gets selected per seed before changing any rule. — **CLOSED 0.12.82-dev. The measurement that confirmed the complaint is the measurement that closes it: average degree **2.2–2.4 → 4.98–5.31**, and one-link rooms **6.5% → 0.2–0.7%**. One in, one out is gone by measurement rather than by intent.**
+- [x] **"room connected to like 0 - 10 other rooms"** — a **degree range**, and it is the concrete spec: rooms may have anywhere from **0** to **10** links. Zero is explicitly allowed, so a sealed room reachable only by mining is in scope. `BraidRarity = 3` links back one in three *adjacent* pairs, and a slot grid gives at most four neighbours — so the current ceiling is **4**, not 10, and the typical degree is far lower. Reaching 10 means links that are not grid-adjacent, which `AreNeighbourRooms` and `ValidateRooms` currently forbid because `BuildCorridors` carves straight between centres. — **CLOSED 0.12.82-dev, and the range is **0 to 16** measured, which brackets the owner’s number from both ends. The **0** is real and was the hard half: a zero-link room was refused outright by `CandidateIsSafe`, which proved every room reachable across carved floor. `SealedFamily` vaults have no links by design, their slots are reserved before the walk so nothing can link to them, and the reachability proof now asks its question of rooms that **claim** a route. `deg0` measures 2.1–3.3% at every depth.**
+- [x] **"not have so much empty rock space where nothing exists"** — at depth 1 the grid is 6×6 slots at 45-cell spacing with rooms about 34 across on a 300×300 map, so most of the map is uncarved rock. **This clause and the one below are two different answers to the same space** and both are wanted: more rooms in it, and what is left worth digging. — **CLOSED 0.12.82-dev. roomfill **46.0% → 57.2%** at depth 1 and **17.1% → 44.9%** at depth 5 and deeper. The cause was arithmetic and the fix is arithmetic: the fraction of a slot a room occupies is `(1 - SlotGap / spacing)²`, so a **finer** grid fills **less** space — the rock between rooms is a fixed ten cells per boundary and more slots means more boundaries. `MaxSlotsPerAxis` 10 → 8 and `Margin` 14 → 6, which was throwing away a fifth of every map. `MaxRooms` is untouched at 60.**
+- [x] **"it looks too much like are long series connection of drooms"** — the same observation restated; recorded separately per LAW #0 because the owner said it twice and the second phrasing names the *appearance* rather than the topology. — **CLOSED 0.12.82-dev with the row above, and recorded separately because the owner said it twice. The appearance follows the topology: a room with five ways out does not read as a bead on a string.**
+- [x] **"DO YOU UNDERSTAND WHAT A MAZE MEANS AND TO FILL THE SPACE WITH ROOMS"** — fill the space. The room count is `MaxRooms = 60` against a 300×300 map; the slot grid, not the cap, is what is leaving the space empty. — **CLOSED 0.12.82-dev. **And the two halves were never in conflict.** *"leas than 60-100 romms"* asks for fewer, larger rooms and this asks for less bare rock — which is the same instruction, because fewer larger rooms is what fills a fixed map. The room cap stayed at 60 and the fill rose by a factor of 2.6 at depth.**
+- [x] **"where there is mountain walls and no rooms areas minable need to have resources that you can mine like steel gold plasteel, gems, all of them"** — the uncarved rock must be **mineable ore**, not plain rock: steel, gold, plasteel, gems, *"all of them"*. Nothing in `GenStep_BackroomsDestination` places ore today — the fill is natural rock and the shaped intrusions are `Mineable` plain rock. — **CLOSED 0.12.82-dev. `Generation/OreVeinBuilder.cs`. **Nothing is named**: the ore list is read out of the loaded game — every def that is a natural resource rock — so *"all of them"* includes whatever the other 294 mods add, and the spread follows Core’s own `mineableScatterCommonality` so steel is ordinary and plasteel is not without this mod holding an opinion. It runs **after** the carve, so every cell it can see is rock a player can dig.**
+- [x] **"even underground resources that u can use deep drill with and chemfuel"** — deep-drill resources are a **separate system** from surface ore in Core (`ThingDef` deep-drill tables, not rock chunks), and chemfuel is named specifically. Both have to be present under a coordinate for a colony living down there to be self-sufficient, which is the standing *"solo group has ability to build and get supplies on backrroms instances"* condition. — **CLOSED 0.12.82-dev. `OreVeinBuilder.PlaceDeepResources` writes `Map.deepResourceGrid`, which is a different system from surface ore and is why no amount of rock would ever have produced one: a deep deposit is not a rock at all, it is a count the deep drill reads. Candidates are every def with `deepCommonality > 0`, **which is where chemfuel comes from without naming it** — that field is the game’s own statement about what can be drilled.**
+
+Build at the time of the move: **0.12.81-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+## The corridors bend, a room has five ways out, and the rock is worth digging - 0.12.82-dev, 2026-10-04
+
+**Staged and read back from the game folder**, not from the build output: `0.12.82-dev`,
+SHA-256 `E2F34B711D0F93487FD0FF707866A8A56E6AEBFA770699CFC5E47B30693FA376`, 92 package files.
+
+**Verified before publication:** build 0 warnings / 0 errors, 213 C# files; **16 of 16 checkers**
+exit 0; **49 of 49 proofs** hold; `plant-coordinate-layout` **148 of 148**, `plant-generation`
+**103 of 103**, `plant-menu-slides` **9 of 9** (new suite), `plant-dependencies` **7 of 7**,
+`plant-world-return` **8 of 8**; **820 plant anchors** findable. Queue after the archive:
+**83 open / 38 partial / 38 `[T]` / 0 `[x]`**.
+
+### What the probe measured, before and after
+
+Same instrument, same 200 seeds per depth, `python tools/check-planner-layouts.py`.
+
+| | before | after |
+|---|---|---|
+| average links per room | 2.2 – 2.4 | **4.98 – 5.31** |
+| most links on one room | 4 | **13 – 16** |
+| rooms with one link | 6.5% | **0.2 – 0.7%** |
+| rooms with none (sealed vaults) | 0.0% | **2.1 – 3.3%** |
+| room fill, depth 1 | 46.0% | **57.2%** |
+| room fill, depth 5+ | 17.1% | **44.9%** |
+| back-to-back pairs | 131 | **190 – 310 per depth** |
+| candidate refusals / fallbacks | 0 / 0 | **0 / 0** |
+
+### The finding that shaped all of it
+
+**Every one of those ceilings was geometric rather than a tuning, and the degree ceiling was the
+corridor carver wearing a disguise.** A corridor ran along one axis, so `AreNeighbourRooms` had to
+demand that two linked centres share a row or a column, so a slot had four neighbours, so max
+degree was 4 — at every depth, for every seed, forever. Nothing about `BraidRarity` could have
+changed it. The same shape appeared three more times in one session:
+
+- **`MaximumUndirectedEdgesPerRoom` was 2** *because a slot has four neighbours*, and when bends
+  made sixteen reachable the constant was the thing refusing them.
+- **Room fill fell with depth** because the fraction of a slot a room occupies is
+  `(1 - SlotGap / spacing)²` — so a **finer** grid fills **less** space, and ten slots per axis
+  was the cause of 83% bare rock rather than a victim of it.
+- **Every door sat at the exact middle of its wall** because a corridor could only run along a
+  shared centre line, so the midpoint was the only cell it could ever arrive at. *"non default
+  fdoor possitions"* was never a door rule.
+
+### Two owner-asked features were regressing as a side effect, and only the probe saw it
+
+**Back-to-back pairs fell 131 → 23** because `PushAgainst` only moved rooms with exactly one
+link and the better-connected maze left few dead ends. **Room shaping fell 83.5% → 42.2%** at
+depth 1 because `ShapeDepthOf` divides distance-from-the-hall by `LinksPerShapeBand`, and a
+five-connected maze has a short diameter. Neither was in the change anybody was making; both are
+fixed. **A feature can switch itself off while every claim about it still passes.**
+
+### Three plants that caught nothing, and one that caught a non-fault
+
+`plant-coordinate-layout` reported **MISSED** three times after the new claims landed: the guard
+was still defined, the condition still named it, and the **call** had been replaced by a constant.
+A fourth plant reported MISSED because its fault had *stopped being a fault* — the braid's
+`AreNeighbourRooms` guard became redundant once the route check sat on the next line, so the plant
+had been reporting CAUGHT for nothing. It was re-aimed at a fault that is still real rather than
+deleted. **The MISSED is the instrument working.**
+
+And `proof-menu-slides.py` broke the moment the slide list moved out of `RimroomsMenuBackground`,
+which is exactly what it was built to do: it reads the folder and prefix out of the source rather
+than restating them. A second AI reading the diff independently flagged the same thing.
+
+### The defect behind the menu report
+
+Owner: *"i dont think we properly did the same for loading screens and the like"*, then *"use them
+randomly"*. `currentIndex` was pinned to `0` in the constructor **and reset to `0` again** in the
+settings handler, so the menu — and the backdrop behind every load started from it — opened on
+slide one of six, every single time, forever. The slideshow cycled perfectly and nothing in the
+battery could see it, because every claim was about the folder scan and the crossfade. There was
+**no plant suite covering the menu art at all**; there is now, and the first plant in it is this
+defect.
+
+### Two findings recorded rather than half-built
+
+- **The pre-generation freeze notice needs the generation deferred.** `EnsureSite` calls
+  `GetOrGenerateMap` synchronously and returns the map through an `out` parameter, so a window
+  added immediately before it renders on the *next* frame — after the freeze. It needs
+  `LongEventHandler.QueueLongEvent`, which changes a contract every caller relies on. Its own
+  checkpoint. A notice that appears after the thing it warns about is worse than none.
+- **Our art cannot be drawn behind an in-play long event without Harmony**, and this mod ships
+  none by decision. `Root.OnGUI` skips the UI root entirely while `ShouldWaitForEvent`. Entry-state
+  waits do draw the background, so those now show our art and show it randomly.
+
+### Mod register
+
+`python tools/register-query.py trace RR-SPACE` — the generator family. Nothing applied: this
+change adds no integration surface and touches no other mod's defs. The ore work deliberately
+reads `isResourceRock` and `deepCommonality` out of the loaded game rather than naming any def, so
+a profile mod's ores and deep resources are included **without** an adapter — which is the
+`modDependencies` removal direction being served by construction rather than by a later pass.
+

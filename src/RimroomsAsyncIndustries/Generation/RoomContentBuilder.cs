@@ -73,6 +73,19 @@ namespace RimroomsAsyncIndustries.Generation
                             landmark = Place(map, room, coordinate, "StandingLamp", reserved, seed, 0);
                             Decorate(map, room, coordinate, "Stool", reserved, seed, 1);
                             break;
+                        case "sealed_vault":
+                            // **NOBODY HAS BEEN IN HERE**, which is the whole point of it: the
+                            // room has no links and the only way in is a pick. Owner: *"insentive
+                            // to mine things out to find isolated undiscorvered rooms"*. So it is
+                            // dressed as a find rather than as a room somebody left -- a shelf
+                            // with something still on it, and nothing arranged for sitting.
+                            Decorate(map, room, coordinate, "Shelf", reserved, seed, 0);
+                            landmark = variant == 0
+                                ? Place(map, room, coordinate, "Steel", reserved, seed, 1, false, 35)
+                                : Place(map, room, coordinate, variant == 1 ? "Gold" : "Plasteel",
+                                    reserved, seed, 1, false, variant == 1 ? 20 : 15);
+                            salvage = true;
+                            break;
                         case "return_gallery":
                             landmark = Place(map, room, coordinate, "Stool", reserved, seed, 0);
                             Decorate(map, room, coordinate, "Stool", reserved, seed, 1);

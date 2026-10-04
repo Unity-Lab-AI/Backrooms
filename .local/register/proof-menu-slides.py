@@ -35,6 +35,9 @@ SLIDES = os.path.join(MOD, "Textures", "UI", "Menu")
 failures = []
 
 
+NEWLINE = chr(10)
+
+
 def check(claim, condition, detail=""):
     print("  %s %s %s" % ("OK  " if condition else "FAIL", claim, detail if not condition else ""))
     if not condition:
@@ -43,8 +46,18 @@ def check(claim, condition, detail=""):
 
 # The prefix and folder are read out of the source, never restated here. If somebody renames
 # either one, this proof follows them rather than quietly checking the old value.
-menu_source = io.open(os.path.join(SRC, "Presentation", "RimroomsMenuBackground.cs"),
-                      encoding="utf-8-sig").read()
+#
+# **THEY MOVED, AND THIS PROOF CAUGHT IT THE SAME MINUTE.** The folder scan, the prefix and the
+# ordering lived in `RimroomsMenuBackground`, which is a `UI_BackgroundMain` and therefore only
+# ever exists for the main menu -- so when the owner asked for *"those mod images made for the
+# menu to also use them randomly for load screen backgrounds"* they had to come out into a type
+# anything can read. Both files are loaded and searched together: the constants may sit in either
+# without this proof needing to know which, and the claims below still hold whichever one answers.
+art_source = io.open(os.path.join(SRC, "Presentation", "RimroomsSlideArt.cs"),
+                     encoding="utf-8-sig").read()
+background_source = io.open(os.path.join(SRC, "Presentation", "RimroomsMenuBackground.cs"),
+                            encoding="utf-8-sig").read()
+menu_source = art_source + NEWLINE + background_source
 folder_match = re.search(r'const\s+string\s+SlideFolder\s*=\s*"([^"]+)"', menu_source)
 prefix_match = re.search(r'const\s+string\s+SlidePrefix\s*=\s*"([^"]+)"', menu_source)
 check("the slide folder and prefix were read out of the source",
@@ -68,6 +81,36 @@ check("the scan is filtered by the prefix",
 check("slides are ordered ordinally",
       "StringComparer.Ordinal" in menu_source,
       "-- invariant 26: running order would depend on the install")
+
+# **THE MENU OPENED ON THE SAME PICTURE EVERY SINGLE TIME.** Owner, 2026-10-03: *"so we need those
+# mod images made for the menu to also use them randomly for load screen backgrounds"*. The
+# slideshow cycled perfectly and `currentIndex` was pinned to `0` in the constructor and reset to
+# `0` again in `ApplySettings`, so the first thing anybody ever saw -- and the backdrop behind
+# every load started from the menu -- was slide one of six, forever. Nothing here could see it,
+# because every claim was about the scan and the crossfade.
+check("THE STARTING SLIDE IS DRAWN, not pinned to the first one",
+      "internal static int RandomIndex(int count)" in art_source
+      and background_source.count("currentIndex = RimroomsSlideArt.RandomIndex(slides.Count);") == 2
+      and "currentIndex = 0;" not in background_source,
+      "-- BOTH places that set it: the constructor, and the settings reset that fires whenever the "
+      "slideshow or reduced-motion is toggled. One without the other leaves a second route back "
+      "to slide one")
+
+check("and the draw is kept away from the game's seeded randomness",
+      "Environment.TickCount" in art_source
+      and "Rand." not in art_source,
+      "-- every other number this mod draws comes from a coordinate's own seed so a place is the "
+      "same place on every visit, and `Rand` during map generation is pushed and popped so a "
+      "layout is reproducible. Which picture is behind a loading box is the one thing here that "
+      "should differ run to run and that nothing may depend on")
+
+check("the loading surfaces and the menu read ONE list",
+      "internal static List<Texture2D> Slides()" in art_source
+      and "return RimroomsSlideArt.Slides();" in background_source
+      and "GetAllInFolder" not in background_source,
+      "-- the owner's ask is explicitly *\"those mod images\"*, the same ones. A second folder "
+      "scan with a second prefix and a second ordering would be two lists that agree until "
+      "somebody adds a PNG")
 
 # ---------------------------------------------------------------- the files themselves
 check("the slide folder exists", os.path.isdir(SLIDES))

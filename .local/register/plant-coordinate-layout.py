@@ -87,7 +87,7 @@ PLANTS = [
 
     # ------------------------------------------------------------------ the geometry
     ("THE MARGIN GOES NEGATIVE AND ROOMS FALL OFF THE MAP", PLANNER,
-     "internal const int Margin = 14;", "internal const int Margin = -60;"),
+     "internal const int Margin = 6;", "internal const int Margin = -60;"),
 
     ("the slot gap closes and rooms share a wall", PLANNER,
      "internal const int SlotGap = 10;", "internal const int SlotGap = 0;"),
@@ -145,7 +145,7 @@ PLANTS = [
      + '                string unusedMazeKey = "maze:" + current.x + "," + current.z;'),
 
     ("THE BRAID IS GONE, so the maze is a tree with one route through it", PLANNER,
-     "                    if (roll % BraidRarity != 0) { continue; }",
+     "                    if (!SlotIsJunction(seed, slot, depth) && roll % BraidRarity != 0) { continue; }",
      "                    if (true) { continue; }"),
 
     ("the graph ceiling goes back to allowing a tree plus one loop", SERVICE,
@@ -155,12 +155,13 @@ PLANTS = [
     ("the walk stops declining a step the validator would refuse", PLANNER,
      "                    if (!AreNeighbourRooms(rooms[parent], room)) { continue; }" + chr(10), ""),
 
-    ("a braid is made that the validator would refuse", PLANNER,
-     "                    if (!AreNeighbourRooms(rooms[here], rooms[there])) { continue; }" + chr(10), ""),
+    ("A BENT ROUTE IS CARVED WITHOUT BEING PROVED CLEAR OF EVERY ROOM", PLANNER,
+     "if (candidate.Count > 0 && LegsClearEveryRoom(candidate, rooms))",
+     "if (candidate.Count > 0)"),
 
     ("the maze goes back to one branch in three", PLANNER,
-     "if (rooms[index].links.Count != 1) { continue; }",
-     "if (rooms[index].links.Count < 1) { continue; }"),
+     "                    if (!SlotIsJunction(seed, slot, depth) && roll % BraidRarity != 0) { continue; }",
+     "                    if (roll % 3 != 0) { continue; }"),
 
     ("THE WARREN STOPS TIGHTENING INWARD", PLANNER,
      "internal const int MaxRooms = 60;", "internal const int MaxRooms = 6;"),
@@ -263,7 +264,7 @@ PLANTS = [
      "            if (verticalOverlap && a.minX > b.maxX) { mover.x = b.maxX; }"),
 
     ("THE PUSH IS NEVER PUT BACK, so a spur lands on top of a third room", PLANNER,
-     "            if (onMap && !collides && SharesWall(mover, anchorRoom)) { return; }" + NL
+     "            if (onMap && !collides && !blocksARoute && SharesWall(mover, anchorRoom)) { return; }" + NL
      + "            mover.x = originalX;" + NL
      + "            mover.z = originalZ;" + NL,
      "            return;" + NL),
@@ -286,7 +287,18 @@ PLANTS = [
      "                            floor[cell.x, cell.z] = true;", ""),
 
     ("rooms stop being pushed together at all", PLANNER,
-     "                PushAgainst(rooms, rooms[index], rooms[host]);" + chr(10), ""),
+     "                PushAgainst(rooms, rooms[index], rooms[host], depth);" + chr(10), ""),
+
+    ("the push goes back to only ever moving a dead end, so back-to-back pairs collapse", PLANNER,
+     "                if (rooms[index].links.Count < 1) { continue; }",
+     "                if (rooms[index].links.Count != 1) { continue; }"),
+
+    ("THE PUSH STOPS CHECKING WHETHER IT BROKE SOMEBODY ELSE'S CORRIDOR", PLANNER,
+     "bool blocksARoute = !EveryLinkRoutes(rooms, mover, depth);",
+     "bool blocksARoute = false;"),
+
+    ("and the moved room is allowed to carry a link past the stated reach", PLANNER,
+     "                    if (!AreNeighbourRooms(room, other)) { return false; }" + chr(10), ""),
 
     # -------------------------------------------- the ceiling the hall has to pass
     # **NOTHING COULD REACH THIS BEFORE.** `MaxRoomSpan` recomputed the span of a room filling
@@ -315,8 +327,10 @@ PLANTS = [
 
     # ------------------------------------------------------------------ the constants that went
     ("THE FIXED 19-CELL SPACING COMES BACK INTO THE VALIDATOR", SERVICE,
-     "            if (a.x == b.x) { return a.z != b.z; }",
-     "            if (a.x == b.x) { return Math.Abs(a.z - b.z) == 19; }"),
+     "            return RoomLayoutPlanner.AreNeighbourRooms(first, second);",
+     "            IntVec3 a = first.Bounds.CenterCell;" + NL
+     + "            IntVec3 b = second.Bounds.CenterCell;" + NL
+     + "            return Math.Abs(a.x - b.x) == 19 || Math.Abs(a.z - b.z) == 19;"),
 
     ("the hard-coded slot table comes back", PLANNER,
      "        internal static bool TrySelect(CoordinateRecord coordinate, out List<RoomRecord> selected)",
@@ -443,8 +457,9 @@ PLANTS = [
     # different question and get a different corridor back.
     ("the generator asks for a corridor at the wrong shaping depth", GEN,
      "                        Math.Max(RoomLayoutPlanner.ShapeDepthOf(rooms, room, depth)," + NL
-     + "                            RoomLayoutPlanner.ShapeDepthOf(rooms, other, depth))))",
-     "                        depth))"),
+     + "                            RoomLayoutPlanner.ShapeDepthOf(rooms, other, depth))," + NL
+     + "                        rooms);",
+     "                        depth," + NL + "                        rooms);"),
 
     # ------------------------------------------------------ the open-map budget
     ("THE BUDGET GETS HARD-CODED INSTEAD OF READING THE GAME'S LIMIT", BUDGET,
@@ -636,6 +651,92 @@ PLANTS = [
     ("the places pane label is never written", KEYED,
      "<RR_UI_Places>", "<RR_UI_PlacesUnused>"),
 
+
+    # ------------------------------------------------------ the bend, the degree and the vaults
+    ("CORRIDORS GO BACK TO BEING ALL STRAIGHT", PLANNER,
+     "            return BentLegs(first, second, depth, rooms);",
+     "            return legs;"),
+
+    ("THE ROUTE FORMS COLLAPSE TO ONE, so every bend in the game is the same shape", PLANNER,
+     "                int form = (roll + attempt) % RouteForms;",
+     "                int form = 0;"),
+
+    ("THE U-TURN IS GONE, so no corridor ever leaves a room the wrong way", PLANNER,
+     "                    int wrongWayX = eastward ? a.minX - 1 : a.maxX + 1;",
+     "                    int wrongWayX = eastward ? a.maxX + 1 : a.minX - 1;"),
+
+    ("the route terminus is extended into the room it is supposed to stop outside of", PLANNER,
+     "                if (index != 0) { start -= step * reach; }",
+     "                start -= step * reach;"),
+
+    ("THE REACH BRAID IS GONE, so the degree ceiling falls back to a diagonal's eight", PLANNER,
+     "                    if (roll % ReachBraidRarity != 0) { continue; }",
+     "                    if (true) { continue; }"),
+
+    ("THE STRAIGHT RUN STOPS BEING PROVED CLEAR, so a corridor is carved through a room", PLANNER,
+     "                if (!LegsClearEveryRoom(legs, rooms)) { legs.Clear(); }" + NL
+     + "                if (halfWidth > NarrowestCorridorHalfWidth && legs.Count == 0)",
+     "                if (halfWidth > NarrowestCorridorHalfWidth && legs.Count == 0)"),
+
+    ("A GRAPH EDGE IS LEFT STANDING WITH NO CORRIDOR UNDER IT", PLANNER,
+     "            PruneUnroutableLinks(rooms, depth);" + NL, ""),
+
+    ("the walk takes a step it cannot carve, so the spanning tree is a lie", PLANNER,
+     "                    if (CorridorLegs(rooms[parent], room, depth, rooms).Count == 0 &&" + NL
+     + "                        !SharesWall(rooms[parent], room))" + NL
+     + "                    { continue; }" + NL, ""),
+
+    ("THE DIAGONAL BRAID IS GONE, so max degree falls back to the slot grid's four", PLANNER,
+     "                    if (!SlotIsJunction(seed, slot, depth) && roll % DiagonalBraidRarity != 0)" + NL
+     + "                    { continue; }",
+     "                    if (true) { continue; }"),
+
+    ("the junction slot stops applying to the diagonals, so the degree spread narrows", PLANNER,
+     "                    if (!SlotIsJunction(seed, slot, depth) && roll % DiagonalBraidRarity != 0)",
+     "                    if (roll % DiagonalBraidRarity != 0 || false)"),
+
+    ("THE REACHABILITY PROOF REFUSES A SEALED ROOM AGAIN, so degree 0 is unbuildable", PLANNER,
+     "            return rooms.All(room => room.links.Count == 0 || seen.Contains(room.Bounds.CenterCell)) &&",
+     "            return rooms.All(room => seen.Contains(room.Bounds.CenterCell)) &&"),
+
+    ("a sealed vault is allowed to carry links, so it is just an ordinary room", PLANNER,
+     "                rooms.Where(room => room.familyId == SealedFamily).All(room => room.links.Count == 0);",
+     "                rooms.Where(room => room.familyId == SealedFamily).All(room => room.links.Count >= 0);"),
+
+    ("THE WALK IS ALLOWED INTO A RESERVED SLOT, so nothing is ever sealed", PLANNER,
+     "if (slotOf.ContainsKey(next) || sealedSlots.Contains(next)) { continue; }",
+     "if (slotOf.ContainsKey(next)) { continue; }"),
+
+    ("the vaults stop being reserved from the room budget and are silently dropped", PLANNER,
+     "            int budget = Math.Max(1, MaxRooms - sealedSlots.Count);",
+     "            int budget = MaxRooms;"),
+
+    ("THE VALIDATOR CALLS A SEALED VAULT A DISCONNECTED LEVEL", SERVICE,
+     "            if (!visited.Contains(0) ||" + NL
+     + "                rooms.Any(room => room.links.Count > 0 && !visited.Contains(room.index)) ||" + NL
+     + "                directedEdges < 2 * (linkedRooms - 1) ||",
+     "            if (visited.Count != rooms.Count ||" + NL
+     + "                directedEdges < 2 * (rooms.Count - 1) ||"),
+
+    # ---------------------------------------------------------------- the door, off the midpoint
+    ("EVERY DOOR GOES BACK TO THE EXACT MIDDLE OF ITS WALL", PLANNER,
+     "&& cell.z == line) { return true; }",
+     "&& cell.z == room.Bounds.CenterCell.z) { return true; }"),
+
+    ("the straight run stops preferring the first room's own centre line", PLANNER,
+     "                line = centreA.z >= low && centreA.z <= high ? centreA.z" + NL
+     + "                    : centreB.z >= low && centreB.z <= high ? centreB.z : (low + high) / 2;",
+     "                line = (low + high) / 2;"),
+
+    # ------------------------------------------------------------- the lane, and filling the map
+    ("THE SPAN VARIATION IS ALLOWED TO EAT THE CORRIDOR LANE", PLANNER,
+     "            if (reach > lane) { reach = lane; }" + NL, ""),
+
+    ("THE SLOT GRID GOES BACK TO TEN PER AXIS AND A DEEP LEVEL IS BARE ROCK AGAIN", PLANNER,
+     "internal const int MaxSlotsPerAxis = 8;", "internal const int MaxSlotsPerAxis = 10;"),
+
+    ("the margin goes back to throwing away a fifth of every map", PLANNER,
+     "internal const int Margin = 6;", "internal const int Margin = 14;"),
 ]
 
 

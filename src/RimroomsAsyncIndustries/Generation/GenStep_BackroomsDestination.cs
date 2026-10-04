@@ -417,6 +417,19 @@ namespace RimroomsAsyncIndustries.Generation
             List<IntVec3> corridorSides = BuildCorridors(coordinate.Rooms, map, coordinate,
                 wallDef, wallStuff, coordinateDepth);
 
+            // **THE ROCK IS MADE WORTH DIGGING, and it happens HERE for a reason.** Owner,
+            // 2026-10-03: *"where there is mountain walls and no rooms areas minable need to have
+            // resources that you can mine like steel gold plasteel, gems, all of them"* and *"we
+            // should have doors that lead no where but to an ore or gem vein, and veins leading to
+            // other rooms"*.
+            //
+            // After the rooms and the corridors, because what is left standing at this point is
+            // exactly the rock a player can dig, and `OreVeinBuilder` only ever swaps plain
+            // natural rock for ore-bearing natural rock. Run before the carve it would seam the
+            // floor plan; run here it cannot touch a route, a wall or a doorway, which is why it
+            // is allowed to route veins freely across the whole map.
+            OreVeinBuilder.Place(map, coordinate, coordinateDepth);
+
             foreach (RoomRecord room in coordinate.Rooms)
             {
                 // **Walls are chosen PER ROOM deeper in.** Owner correction: *"we want every
@@ -960,6 +973,20 @@ namespace RimroomsAsyncIndustries.Generation
             var sides = new List<IntVec3>();
             BackroomsPalette.Look look = BackroomsPalette.For(depth,
                 DestinationService.StableHash(coordinate.Seed, coordinate.Id + ":corridors", 1));
+
+            // **EVERY LEG OF EVERY CORRIDOR IS COLLECTED BEFORE A SINGLE CELL IS CUT, and a bend
+            // is why.** A three-leg route puts one leg's wall line squarely inside the next leg's
+            // floor at the turn -- that is not an edge case, it is what a corner is -- so a carver
+            // that walks one pair at a time would wall off the inside of its own corridor. The two
+            // walls of a bend's middle leg do the same to the legs either side of it.
+            //
+            // So the floor of the whole level's corridor network is known first, and a wall is
+            // only placed on a cell that no leg anywhere carries floor on. **The planner needs no
+            // matching rule**, because `CandidateIsSafe` models corridors by marking floor and
+            // never by marking walls: a cell that is floor for one leg is floor, and a cell that
+            // is nobody's floor was never walkable to begin with. One rule, one reader each.
+            var legsByPair = new List<List<RoomLayoutPlanner.CorridorLeg>>();
+            var corridorFloor = new HashSet<IntVec3>();
             foreach (RoomRecord room in rooms)
             {
                 foreach (int linkedIndex in room.Links.Where(index => index > room.Index))
@@ -972,28 +999,46 @@ namespace RimroomsAsyncIndustries.Generation
                     // rule is the defect this project has paid for most often, and the corridor
                     // was the last shape in the generator still derived twice.
                     //
-                    // `CorridorLegs` returns no legs for a back-to-back pair (the doorway in the
-                    // shared wall is the route) and no legs for a pair that is not axis-aligned,
-                    // which `AreNeighbourRooms` refuses before it can reach here anyway. The
-                    // throw that used to guard that case is gone with the derivation: an empty
-                    // list carves nothing, which is the same outcome without a crash.
-                    foreach (RoomLayoutPlanner.CorridorLeg leg in RoomLayoutPlanner.CorridorLegs(
+                    // `CorridorLegs` returns no legs for a back-to-back pair, because the doorway
+                    // in the shared wall is the route; the planner prunes any link it could not
+                    // route, so an empty list here means back to back and nothing else.
+                    List<RoomLayoutPlanner.CorridorLeg> legs = RoomLayoutPlanner.CorridorLegs(
                         room, other,
                         Math.Max(RoomLayoutPlanner.ShapeDepthOf(rooms, room, depth),
-                            RoomLayoutPlanner.ShapeDepthOf(rooms, other, depth))))
+                            RoomLayoutPlanner.ShapeDepthOf(rooms, other, depth)),
+                        rooms);
+                    if (legs.Count == 0) { continue; }
+                    legsByPair.Add(legs);
+                    for (int index = 0; index < legs.Count; index++)
                     {
-                        foreach (IntVec3 cell in leg.Floor.Cells)
-                        {
-                            SetWalkableRoofedCell(map, cell, look.floor);
-                            PaintCorridorCell(map, cell, look, leg.AlongX ? cell.x : cell.z);
-                        }
-                        foreach (IntVec3 cell in RoomLayoutPlanner.CorridorSideCells(leg))
-                        { sides.Add(cell); }
-                        foreach (IntVec3 cell in leg.WallLow.Cells)
-                        { PlaceCorridorWall(map, cell, wallDef, wallStuff, look); }
-                        foreach (IntVec3 cell in leg.WallHigh.Cells)
-                        { PlaceCorridorWall(map, cell, wallDef, wallStuff, look); }
+                        foreach (IntVec3 cell in legs[index].Floor.Cells) { corridorFloor.Add(cell); }
                     }
+                }
+            }
+
+            foreach (List<RoomLayoutPlanner.CorridorLeg> legs in legsByPair)
+            {
+                for (int index = 0; index < legs.Count; index++)
+                {
+                    RoomLayoutPlanner.CorridorLeg leg = legs[index];
+                    foreach (IntVec3 cell in leg.Floor.Cells)
+                    {
+                        SetWalkableRoofedCell(map, cell, look.floor);
+                        PaintCorridorCell(map, cell, look, leg.AlongX ? cell.x : cell.z);
+                    }
+                }
+                foreach (IntVec3 cell in RoomLayoutPlanner.CorridorSideCells(legs))
+                { sides.Add(cell); }
+            }
+
+            foreach (List<RoomLayoutPlanner.CorridorLeg> legs in legsByPair)
+            {
+                for (int index = 0; index < legs.Count; index++)
+                {
+                    foreach (IntVec3 cell in legs[index].WallLow.Cells)
+                    { PlaceCorridorWall(map, cell, wallDef, wallStuff, look, corridorFloor); }
+                    foreach (IntVec3 cell in legs[index].WallHigh.Cells)
+                    { PlaceCorridorWall(map, cell, wallDef, wallStuff, look, corridorFloor); }
                 }
             }
             return sides;
@@ -1023,8 +1068,17 @@ namespace RimroomsAsyncIndustries.Generation
         /// was honoured for rooms and contradicted one cell outside them.
         /// </summary>
         private static void PlaceCorridorWall(Map map, IntVec3 cell, ThingDef wallDef,
-            ThingDef wallStuff, BackroomsPalette.Look look)
+            ThingDef wallStuff, BackroomsPalette.Look look, HashSet<IntVec3> corridorFloor)
         {
+            // **A CORRIDOR NEVER WALLS OFF ITS OWN FLOOR.** At a bend one leg's wall line runs
+            // through the next leg's floor, and two corridors sharing a lane do the same to each
+            // other. `PlaceWall` throws `RR_Generation_WallOverlap` on an occupied cell -- which
+            // is the right behaviour for a room and would kill generation here -- so the carver
+            // settles the whole network's floor first and a wall yields to it.
+            if (corridorFloor != null && corridorFloor.Contains(cell)) { return; }
+            // A room's own wall already standing here does the job a corridor wall would, and
+            // replacing it is not available: the doorway sits at the midpoint of that same wall.
+            if (cell.InBounds(map) && cell.GetEdifice(map) != null) { return; }
             PlaceWall(map, cell, wallDef, wallStuff);
             Thing wall = cell.InBounds(map) ? cell.GetEdifice(map) : null;
             if (wall != null && wall.def == wallDef)

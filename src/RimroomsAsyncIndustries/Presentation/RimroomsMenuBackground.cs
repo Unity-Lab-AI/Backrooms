@@ -21,24 +21,6 @@ namespace RimroomsAsyncIndustries.Presentation
         private const float NativeAspectHeight = 1280f;
         private const float VersionLabelX = 350f;
 
-        /// <summary>
-        /// Where the slides live, and the prefix that decides which of them are ours.
-        ///
-        /// **The folder is scanned rather than listed**, so a new slide is added by dropping a
-        /// PNG in and nothing in C# changes. That matters because the menu art is the one place
-        /// this project is allowed to add original images, and it is being produced separately
-        /// from the code.
-        ///
-        /// **The prefix is not decoration.** `UI/Menu` is a generic content path and
-        /// `ContentFinder` resolves across every loaded mod, so a folder scan alone would pull
-        /// another mod's menu art into this slideshow. With 294 other mods in the target install
-        /// that is a certainty rather than a risk. Only `RR_Menu_*` is ours.
-        /// </summary>
-        private const string SlideFolder = "UI/Menu";
-        private const string SlidePrefix = "RR_Menu_";
-
-        private static Texture2D[] loadedSlides;
-
         private Texture2D nativeImage;
         private Texture2D lastAssignedImage;
         private readonly List<Texture2D> slides;
@@ -55,6 +37,12 @@ namespace RimroomsAsyncIndustries.Presentation
         {
             nativeImage = nativeSelectedImage;
             slides = LoadSlides();
+            // **THE MENU OPENED ON THE SAME PICTURE EVERY SINGLE TIME.** Owner, 2026-10-03: *"so
+            // we need those mod images made for the menu to also use them randomly"*. The
+            // slideshow cycled correctly and `currentIndex` was pinned to 0 here and reset to 0
+            // again in `ApplySettings`, so the first thing anybody ever saw -- and the backdrop
+            // behind every load started from the menu -- was slide one of six.
+            currentIndex = RimroomsSlideArt.RandomIndex(slides.Count);
             lastExpansionHoverAt = Time.unscaledTime;
             nextTransitionAt = Time.unscaledTime + DwellSeconds;
             AssignOverride(nativeImage);
@@ -99,7 +87,7 @@ namespace RimroomsAsyncIndustries.Presentation
                 float alpha = Mathf.Clamp01((now - transitionStartedAt) / CrossfadeSeconds);
                 Color oldColor = GUI.color;
                 GUI.color = new Color(1f, 1f, 1f, alpha);
-                GUI.DrawTexture(BackgroundRect(slides[transitionTarget]), slides[transitionTarget], ScaleMode.ScaleToFit, true);
+                GUI.DrawTexture(RimroomsSlideArt.FullScreenRect(slides[transitionTarget]), slides[transitionTarget], ScaleMode.ScaleToFit, true);
                 GUI.color = oldColor;
             }
 
@@ -123,7 +111,9 @@ namespace RimroomsAsyncIndustries.Presentation
             settingsMode = mode;
             transitionTarget = -1;
             transitionPaused = false;
-            currentIndex = 0;
+            // Drawn again rather than reset to 0, for the reason in the constructor: toggling the
+            // slideshow off and on in settings was the other way to get slide one forever.
+            currentIndex = RimroomsSlideArt.RandomIndex(slides.Count);
             lastExpansionHoverAt = protectNativeExpansionPreview ? now : now - ExpansionFadeGraceSeconds;
             nextTransitionAt = now + DwellSeconds;
         }
@@ -176,36 +166,17 @@ namespace RimroomsAsyncIndustries.Presentation
             return Mouse.IsOver(strip);
         }
 
+        /// <summary>
+        /// The slides, from the one place they are found.
+        ///
+        /// **The folder scan, the prefix and the ordering all moved to
+        /// <see cref="RimroomsSlideArt"/>** when the owner asked for the same images behind the
+        /// loading screens: a `UI_BackgroundMain` only ever exists for the main menu, so anything
+        /// else wanting *"those mod images"* would have had to find them a second time.
+        /// </summary>
         private static List<Texture2D> LoadSlides()
         {
-            if (loadedSlides == null)
-            {
-                // Sorted ordinally by name -- invariant 26 -- so the running order is the same on
-                // every machine and every mod list, rather than whatever order the loader
-                // happened to return. A slideshow whose order depends on the install is a
-                // slideshow nobody can describe or reproduce a screenshot from.
-                loadedSlides = ContentFinder<Texture2D>.GetAllInFolder(SlideFolder)
-                    .Where(image => image != null && image.name != null &&
-                        image.name.StartsWith(SlidePrefix, System.StringComparison.Ordinal))
-                    .OrderBy(image => image.name, System.StringComparer.Ordinal)
-                    .ToArray();
-            }
-            return new List<Texture2D>(loadedSlides);
-        }
-
-        private static Rect BackgroundRect(Texture2D image)
-        {
-            float imageWidth = image == null ? NativeAspectWidth : image.width;
-            float imageHeight = image == null ? NativeAspectHeight : image.height;
-            float aspect = imageWidth / imageHeight;
-            if (Verse.UI.screenWidth > Verse.UI.screenHeight * aspect)
-            {
-                float height = Verse.UI.screenWidth / aspect;
-                return new Rect(0f, (Verse.UI.screenHeight - height) / 2f, Verse.UI.screenWidth, height);
-            }
-
-            float width = Verse.UI.screenHeight * aspect;
-            return new Rect((Verse.UI.screenWidth - width) / 2f, 0f, width, Verse.UI.screenHeight);
+            return RimroomsSlideArt.Slides();
         }
 
         private static void DrawRimroomsVersion()

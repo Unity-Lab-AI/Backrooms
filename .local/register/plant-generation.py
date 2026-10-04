@@ -207,8 +207,10 @@ PLANTS = [
     # of a leg's floor -- so the fault is planted by making that function report the centre line
     # instead, which is exactly "furniture lands in the middle of the route".
     ("furniture lands on the middle of a corridor and blocks the route", PLANNER,
-     "                    yield return new IntVec3(x, 0, floor.minZ);",
-     "                    yield return new IntVec3(x, 0, floor.CenterCell.z);"),
+     "                    IntVec3 low = leg.AlongX" + NL
+     + "                        ? new IntVec3(along, 0, floor.minZ) : new IntVec3(floor.minX, 0, along);",
+     "                    IntVec3 low = leg.AlongX" + NL
+     + "                        ? new IntVec3(along, 0, floor.CenterCell.z) : new IntVec3(floor.CenterCell.x, 0, along);"),
 
     # ------------------------------------ the wiring order, and the rebuild that threw
     # The conduit guard was correct and ran too early to see anything: conduits were laid before

@@ -792,12 +792,12 @@ check("and the hallways are lit and furnished, against their walls only",
       # the only thing that reports those cells -- so "both axes" is a property of one function
       # rather than an agreement between two copies. The duplicate-count trap is gone with the
       # duplicate.
-      and "internal static IEnumerable<IntVec3> CorridorSideCells(CorridorLeg leg)" in _PL
-      and _PL.count("yield return new IntVec3(x, 0, floor.minZ);") == 1
-      and _PL.count("yield return new IntVec3(floor.minX, 0, z);") == 1
-      and "if (floor.Height < 3) { yield break; }" in _PL
-      and "if (floor.Width < 3) { yield break; }" in _PL
-      and "foreach (IntVec3 cell in RoomLayoutPlanner.CorridorSideCells(leg))" in genstep
+      and "internal static IEnumerable<IntVec3> CorridorSideCells(List<CorridorLeg> legs)" in _PL
+      and _PL.count("? new IntVec3(along, 0, floor.minZ) : new IntVec3(floor.minX, 0, along);") == 1
+      and _PL.count("? new IntVec3(along, 0, floor.maxZ) : new IntVec3(floor.maxX, 0, along);") == 1
+      and "if (leg.AlongX ? floor.Height < 3 : floor.Width < 3) { continue; }" in _PL
+      and "if (!OnAnotherLegFloor(legs, index, low)) { yield return low; }" in _PL
+      and "foreach (IntVec3 cell in RoomLayoutPlanner.CorridorSideCells(legs))" in genstep
       and "if (lightDef != null && index % CorridorLampSpacing == 0)" in corridor_dress_body
       and "if (fixtures.Count == 0 || index % CorridorFixtureSpacing != 0) { continue; }"
       in corridor_dress_body

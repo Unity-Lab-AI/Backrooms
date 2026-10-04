@@ -50,6 +50,8 @@
   <RR_Clue_Text_utility_room>A standing lamp has no supplied power although the ceiling fixture still glows. This dead end provides an observation.</RR_Clue_Text_utility_room>
   <RR_Clue_Label_return_gallery>Return-route seating — room {0}</RR_Clue_Label_return_gallery>
   <RR_Clue_Text_return_gallery>Paired stools mark the gallery on the saved return route. Keep the gate window and route markers in view; use a closed door deliberately when breaking pursuit.</RR_Clue_Text_return_gallery>
+  <RR_Clue_Label_sealed_vault>Nobody walked in here — room {0}</RR_Clue_Label_sealed_vault>
+  <RR_Clue_Text_sealed_vault>This room has no door onto any route: the rock around it was never cut through. Whatever is on the shelf has been here as long as the room has. The only way in is the way you came — through the stone — and the only way out is the same.</RR_Clue_Text_sealed_vault>
   <RR_Generation_ReaddressContentRestore>This failure needs package or source diagnosis. A replacement cannot repair this record; the saved site is retained for recovery.</RR_Generation_ReaddressContentRestore>
   <RR_Generation_ReaddressFailureNotEligible>This coordinate is not an eligible failed first-survey site. Its current map and records remain unchanged.</RR_Generation_ReaddressFailureNotEligible>
   <RR_Generation_ReaddressSiteNotPristine>The site already has activity, evidence, people or linked expedition records. It cannot be replaced; preserve the coordinate and recover its existing state.</RR_Generation_ReaddressSiteNotPristine>

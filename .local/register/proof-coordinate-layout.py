@@ -263,13 +263,20 @@ check("and it is BRAIDED, so there is more than one way through",
 
 check("and the graph ceiling admits a maze at all",
       "directedEdges > 2 * MaximumUndirectedEdgesPerRoom * rooms.Count" in service
-      and "private const int MaximumUndirectedEdgesPerRoom = 2;" in service
+      and "private const int MaximumUndirectedEdgesPerRoom = 8;" in service
+      and "private const int MaximumUndirectedEdgesPerRoom = 2;" not in service
       and "directedEdges > 2 * rooms.Count" not in service_code,
       "-- **the old ceiling allowed a tree plus exactly ONE edge**, which is one loop in the whole "
       "level at every depth. The line with alcoves was not a choice the generator made, it was "
       "the only shape `ValidateRooms` would accept: every braided candidate was refused and the "
-      "fallback serpentine caught every seed. The floor is untouched, and it is the half of that "
-      "check that was always doing the work")
+      "fallback serpentine caught every seed. **And TWO per room was the same clause again** -- "
+      "a slot has four orthogonal neighbours plus the four diagonals `BentLegs` can route to, so "
+      "at two it refused every maze that used the links the bend had just made possible. **And the "
+      "same again at four**, once the five-leg route forms reached the eight span-two offsets as well. "
+      "Eight is the grid geometry stated -- sixteen candidate neighbours, so eight undirected "
+      "edges -- not a preference, and it bounds the layout TOTAL rather than one room, so a "
+      "junction may hold more while the average stays low. The floor is untouched, and it is the half of "
+      "that check that was always doing the work")
 
 check("and the walk declines a step the validator would refuse",
       "if (!AreNeighbourRooms(rooms[parent], room)) { continue; }" in planner,
@@ -338,9 +345,13 @@ check("and its rooms are small enough to be rooms rather than halls",
 check("AND ROOM SIZES ARE ACTUALLY VARIED, not merely variable",
       "internal static int VariedRoomSpan(" in planner
       and planner.count("VariedRoomSpan(spacing, next, seed, depth)") == 1
-      and planner.count("VariedRoomSpan(spacing, slot, seed, depth)") == 1,
-      "-- defined and called at BOTH room-making sites. A plant swapped the calls back to the "
-      "flat span and left the function sitting there, and every claim about variation still held")
+      and planner.count("VariedRoomSpan(spacing, slot, seed, depth)") == 2,
+      "-- defined and called at ALL THREE room-making sites: the maze walk, the fallback "
+      "serpentine, and the sealed vaults added after every link is made. A plant swapped the "
+      "calls back to the flat span and left the function sitting there, and every claim about "
+      "variation still held. **The count is the point** -- it was two and a third site appeared "
+      "with the vaults, so a claim that only counted the old two would have let an unvaried "
+      "vault through")
 
 # **THE LAMPS ARE HUNG, NOT MERELY HANGABLE.** Owner: *"the main grand themed backrooms universe
 # rooms need like a wall light on every column wall used as in the universe of backrooms the basic
@@ -442,29 +453,43 @@ check("A BACK-TO-BACK PAIR ABUTS, IT DOES NOT OVERLAP",
 
 check("and the doorway in it needs no second rule, so there is not one",
       "SharedDoorCell" not in planner_code
-      and "other.Bounds.minX > room.Bounds.maxX && cell.x == room.Bounds.maxX" in planner,
+      and "other.Bounds.minX > bounds.maxX && cell.x == bounds.maxX" in planner
+      and "if (TryStraightCorridor(room, other, out alongX, out line))" in planner,
       "-- an abutting neighbour's near edge is `maxX + 1`, which IS strictly beyond `maxX`, so "
-      "`DoorOpening`'s existing rule already opens each room's own wall midpoint -- and "
-      "`AreGridNeighbors` guarantees linked centres share that axis, so the two midpoints are "
-      "the same cell on it and the openings meet. The deleted `SharedDoorCell` was a second rule "
-      "deciding one doorway")
+      "`DoorOpening`'s existing rule already opens each room's own wall. **What makes the two "
+      "openings the same cell is that both rooms ask `TryStraightCorridor` for the line, not an "
+      "assumption about their centres** -- since the straight run was generalised the two "
+      "centres need not share an axis at all, and the old reasoning here would have been a "
+      "guarantee resting on something no longer true. The deleted `SharedDoorCell` was a second "
+      "rule deciding one doorway")
 
 # **RE-AIMED 2026-10-03.** The skip moved into `CorridorLegs`, which returns an empty list for a
 # back-to-back pair -- so the generator carves nothing because there is nothing to carve, rather
 # than because it remembered to check. That is the stronger arrangement: a caller cannot forget.
 check("the generator carves no corridor where a wall is shared",
       "if (first == null || second == null || SharesWall(first, second)) { return legs; }" in planner
-      and "foreach (RoomLayoutPlanner.CorridorLeg leg in RoomLayoutPlanner.CorridorLegs(" in genstep,
+      and "List<RoomLayoutPlanner.CorridorLeg> legs = RoomLayoutPlanner.CorridorLegs(" in genstep
+      and "if (legs.Count == 0) { continue; }" in genstep,
       "-- carving between two touching centres cuts a five-cell hole through the shared wall and "
-      "makes them one room")
+      "makes them one room. The carver now collects every leg of every pair before it cuts, "
+      "because a bend puts one leg's wall line inside the next leg's floor, so the empty list "
+      "is skipped where it is collected rather than where it is carved")
 
-check("and only a DEAD END is ever pushed, found by its link count",
-      "if (rooms[index].links.Count != 1) { continue; }" in planner
-      and "PushAgainst(rooms, rooms[index], rooms[host]);" in planner
-      and "private static void PushAgainst(List<RoomRecord> rooms, RoomRecord mover," in planner,
-      "-- a room with one connection cannot re-route anything by moving, and in a braided maze a "
-      "dead end is found by asking rather than by knowing which rooms were added last. The old "
-      "claim pinned `rooms[rooms.Count - 1]`, which was the spur loop's last-added room")
+check("ANY ROOM MAY BE PUSHED BACK TO BACK, because the push now proves itself",
+      "if (rooms[index].links.Count < 1) { continue; }" in planner
+      and "PushAgainst(rooms, rooms[index], rooms[host], depth);" in planner
+      and "int host = rooms[index].links[(roll / 7) % rooms[index].links.Count];" in planner
+      and "private static void PushAgainst(List<RoomRecord> rooms, RoomRecord mover," in planner
+      and "if (rooms[index].links.Count != 1) { continue; }" not in planner_code,
+      "-- it was restricted to rooms with exactly ONE link, on the reasoning that such a room "
+      "cannot re-route anything by moving. True, and the only guarantee available while nothing "
+      "checked whether a move broke a corridor. **The degree work then made the restriction "
+      "bite**: at an average of five links a level has few dead ends left, and the measured "
+      "back-to-back count fell from 131 to 23 -- a feature the owner asked for twice, shrinking "
+      "as a side effect of a different one, which the probe printed and nobody would otherwise "
+      "have seen. `PushAgainst` now proves the move itself, so the link count stops being the "
+      "condition, and which neighbour it goes wall to wall with is drawn rather than always the "
+      "first link it happens to hold")
 
 check("THE PUSH LANDS ONE CELL CLEAR, ON ALL FOUR SIDES",
       "if (verticalOverlap && a.minX > b.maxX) { mover.x = b.maxX + 1; }" in planner
@@ -481,12 +506,21 @@ check("THE PUSH LANDS ONE CELL CLEAR, ON ALL FOUR SIDES",
 check("AND THE PUSH IS PUT BACK IF IT LANDED ON SOMEBODY",
       "bool collides = rooms.Any(other => other != mover && mover.Bounds.Overlaps(other.Bounds));"
       in planner
-      and "if (onMap && !collides && SharesWall(mover, anchorRoom)) { return; }" in planner
+      and "if (onMap && !collides && !blocksARoute && SharesWall(mover, anchorRoom)) { return; }"
+      in planner
+      and "private static bool EveryLinkRoutes(List<RoomRecord> rooms, RoomRecord mover, int depth)"
+      in planner
+      and "if (!AreNeighbourRooms(room, other)) { return false; }" in planner
       and "mover.x = originalX;" in planner,
-      "-- the slot a spur leaves is not the slot it arrives in, and the arrival may belong to a "
-      "third room. All three conditions are checked -- on the map, no collision, and `SharesWall` "
-      "agrees -- because a pair the pushing code thinks is back to back and the doorway code "
-      "does not is a sealed room")
+      "-- the slot a room leaves is not the slot it arrives in, and the arrival may belong to a "
+      "third room. **FOUR conditions now, and the fourth is what made it safe to push any room "
+      "rather than only a dead end**: on the map, no collision, no existing link broken, and "
+      "`SharesWall` agrees -- because a pair the pushing code thinks is back to back and the "
+      "doorway code does not is a sealed room. And the fourth asks the SHAPE gate as well as the "
+      "route, because the shape gate is what `ValidateRooms` asks: a push slides a room by most "
+      "of its own span, enough to carry a reach-braid link past `FurthestLinkedCentres`, measured "
+      "as a candidate refusal at 106 cells against a stated 96 while the route stayed perfectly "
+      "carvable")
 
 # --------------------------------------------- the ceiling the hall has to pass
 # **THIS IS THE ONE NOBODY WROTE, AND IT IS THE ONE THAT BROKE THE GAME.** `ValidateRooms` refuses
@@ -641,10 +675,15 @@ check("THE FIXED 19-CELL SLOT SPACING IS GONE FROM THE VALIDATOR",
       "the planner no longer uses is the same defect class as the light count")
 
 check("adjacency is now a property of the rooms, not of a magic number",
-      "if (first.Bounds.Overlaps(second.Bounds)) { return false; }" in service
-      and "if (a.x == b.x) { return a.z != b.z; }" in service,
-      "-- what BuildCorridors actually needs: a shared row or column and a straight run of rock "
-      "between them")
+      "return RoomLayoutPlanner.AreNeighbourRooms(first, second);" in service
+      and "if (first.Bounds.Overlaps(second.Bounds)) { return false; }" in planner
+      and "internal static bool TryStraightCorridor(RoomRecord first, RoomRecord second," in planner
+      and "if (a.x == b.x) { return a.z != b.z; }" not in service_code,
+      "-- what `BuildCorridors` actually needs, asked of the one function that knows: a straight "
+      "run of rock between them, or a bend through the lane. **The validator held a SECOND COPY "
+      "of this arithmetic** and the copy was live -- the planner's half had to grow to admit "
+      "bent and generalised-straight corridors, and the copy would have refused every graph the "
+      "planner had just learned to build, on load, for every saved coordinate")
 
 check("the slot grid is a function of depth",
       "internal static int SlotsPerAxis(int depth)" in planner
@@ -835,8 +874,12 @@ check("the planner models the same corridor the generator carves",
       "foreach (CorridorLeg leg in CorridorLegs(room, other," in planner
       and "ShapeDepthOf(rooms, room, depth)" in planner
       and "floor[cell.x, cell.z] = true;" in planner
-      and "foreach (RoomLayoutPlanner.CorridorLeg leg in RoomLayoutPlanner.CorridorLegs(" in genstep,
-      "-- a model with a different width than the build is a model of a different map")
+      and "List<RoomLayoutPlanner.CorridorLeg> legs = RoomLayoutPlanner.CorridorLegs(" in genstep
+      and "RoomLayoutPlanner.ShapeDepthOf(rooms, other, depth))," in genstep,
+      "-- a model with a different width than the build is a model of a different map, and a "
+      "model with a different SHAPE is worse: a bend the validator did not know about is an "
+      "unproved route. Both readers pass the pair's own shaping depth and the room list to the "
+      "same function and take back the same legs")
 
 # The shape rule, modelled: fill every corner at the deepest reach and prove the room still
 # flood-fills from its centre to all four edge midpoints, which is where the doors are.
@@ -1217,6 +1260,230 @@ check("AND THE MAZE GROWS FROM BOTH HALVES OF THE HALL",
       "-- growing from `hallSecond` alone worked only while the hall was pinned to the corner. "
       "Fixed by pushing both rather than by clamping the hall away from the edges, which would "
       "have put the positional bias straight back")
+
+
+# ======================================================================================
+# THE CORRIDOR BENDS, THE DEGREE RISES, AND SOME ROOMS HAVE NO WAY IN AT ALL
+#
+# Owner, 2026-10-03: *"and make sure hallways and corradors and shit arent all straight ...
+# u -turns, multiple coices on directions to take in every rooms"*, *"room connected to like
+# 0 - 10 other rooms"*, *"not have so much empty rock space where nothing exists"* and
+# *"insentive to mine things out to find isolated undiscorvered rooms when mining and
+# deconsturcting wals"*.
+#
+# Measured before any of it was written: average degree **2.2 to 2.4**, maximum **4**, roomfill
+# **17.1%** at depth five. Every one of those is the slot grid's arithmetic rather than a tuning,
+# which is why each claim below asserts a rule and not a number.
+# ======================================================================================
+
+check("A CORRIDOR CAN BEND, AND THE BEND RUNS IN THE ROCK LANE",
+      "private static List<CorridorLeg> BentLegs(RoomRecord first, RoomRecord second, int depth,"
+      in planner
+      and "return BentLegs(first, second, depth, rooms);" in planner
+      and "private static int LaneBeyond(int wall, bool forward, int halfWidth)" in planner
+      and "return forward ? wall + 1 + halfWidth : wall - 1 - halfWidth;" in planner,
+      "-- DEFINED AND CALLED. A dogleg between two room CENTRES is not merely absent from this "
+      "generator, it is unsafe: at depth 1 the diagonal pair (0,0)-(1,1) would run from (36,36) "
+      "toward x=81 and straight through the room at slot (1,0). **And the lane is defined by a "
+      "room's own wall rather than by the slot grid** -- the line whose near wall lands one cell "
+      "past it -- which means a route needs nothing but the two rooms' rects to compute. No reader "
+      "has to be told the slot spacing, so no reader can be told a different one")
+
+check("AND THERE ARE SEVEN ROUTE FORMS, because one bend shape is a signature",
+      "internal const int RouteForms = 7;" in planner
+      and "int form = (roll + attempt) % RouteForms;" in planner
+      and "for (int attempt = 0; attempt < RouteForms; attempt++)" in planner
+      and "private static void BuildRouteWaypoints(List<IntVec3> points, CellRect a, CellRect b,"
+      in planner
+      and "int wrongWayX = eastward ? a.minX - 1 : a.maxX + 1;" in planner
+      and "int laneAway = LaneBeyond(eastward ? a.minX : a.maxX, !eastward, halfWidth);" in planner
+      and "if (candidate.Count > 0 && LegsClearEveryRoom(candidate, rooms))" in planner,
+      "-- two elbows through a lane beside the FIRST room, two through a lane beside the SECOND, "
+      "two five-leg routes that reach a slot TWO away, and one U-TURN that leaves through the "
+      "wall facing away from where it is going. Owner, answering the degree fork: *\"it shouldnt "
+      "just be one option there needs to be wide varying variations of all types so dont limit "
+      "yourself\"*, and *\"u -turns\"* by name. The five-leg forms are what lift the degree "
+      "ceiling past the eight a diagonal can manage, measured from max 8 to max 13-16. Each leg "
+      "overruns its turn by `halfWidth - 1`: the reachability flood is FOUR-directional, so a "
+      "corner that met only diagonally would read as connected to a person and as sealed to the "
+      "check -- and the two TERMINI are deliberately not extended, because they sit one cell "
+      "outside a room's wall and extending them would put corridor floor inside the room")
+
+# **THE ONE SAFETY GATE ON A BENT ROUTE, and it is stricter than it needs to be on purpose.** A
+# corridor wall sharing a cell with a room wall is harmless by itself -- but a room's doorway sits
+# at a point on that same wall, and a corridor wall landing on a doorway SEALS THE ROOM. That is
+# the unreachable-room class that cost this project thirty-nine checkpoints.
+check("AND EVERY ROUTE IS PROVED CLEAR OF EVERY ROOM BEFORE IT IS CARVED",
+      "private static bool LegsClearEveryRoom(List<CorridorLeg> legs, IReadOnlyList<RoomRecord> rooms)"
+      in planner
+      and "if (leg.Floor.Overlaps(bounds) || leg.WallLow.Overlaps(bounds) ||" in planner
+      and planner.count("LegsClearEveryRoom(") == 4
+      and "if (!envelope.Overlaps(bounds)) { continue; }" in planner,
+      "-- DEFINED ONCE AND CALLED THREE TIMES: once per route form tried, and twice on the "
+      "straight run -- plus a single envelope rect around the whole route, which answers almost "
+      "every room in one test and changes no verdict, because a room that misses the envelope "
+      "cannot touch a leg inside it. "
+      "whole route, which answers almost every room in one test and changes no verdict, because a "
+      "room that misses the envelope cannot touch a leg inside it. "
+      "The straight run never needed it while a corridor could only join grid-adjacent slots, "
+      "because the gap between two such slots holds nothing. `TryStraightCorridor` can now join a "
+      "pair that merely overlaps on one axis, and two rooms in the same row two slots apart would "
+      "be carved straight through the room between them")
+
+check("NO GRAPH EDGE STANDS WITHOUT A ROUTE UNDER IT",
+      "private static void PruneUnroutableLinks(List<RoomRecord> rooms, int depth)" in planner
+      and "PruneUnroutableLinks(rooms, depth);" in planner
+      and "if (a.x == b.x || a.z == b.z) { continue; }" in planner
+      and "other.links.Remove(room.index);" in planner,
+      "-- DEFINED AND CALLED, last, after every room has stopped moving. Two things decided after "
+      "the braid can take a lane away: `PushAgainst` slides a dead end into somebody's lane, and "
+      "`ShapeDepthOf` shifts as links are added, which changes the width the pair asks for. **It "
+      "only ever removes a diagonal, which is what makes it safe** -- the spanning tree the walk "
+      "built is entirely non-diagonal, so pruning cannot disconnect the level")
+
+check("and the WALK refuses a step it could not carve, which is what makes that prune safe",
+      "if (CorridorLegs(rooms[parent], room, depth, rooms).Count == 0 &&" in planner
+      and "!SharesWall(rooms[parent], room))" in planner,
+      "-- the walk builds the spanning tree, so a tree edge with no corridor under it is a level "
+      "that cannot be carved -- and the prune deliberately refuses to touch a non-diagonal link, "
+      "because taking one away is the thing that would disconnect the place")
+
+check("THE DIAGONAL BRAID EXISTS, so a room is a junction rather than a stop on a line",
+      'StableHash(seed,' in planner
+      and '"diagonal:" + slot.x + "," + slot.z + ":" + side, depth);' in planner
+      and "? new IntVec2(slot.x + 1, slot.z + 1)" in planner
+      and ": new IntVec2(slot.x + 1, slot.z - 1);" in planner
+      and "internal const int DiagonalBraidRarity = 2;" in planner,
+      "-- north-east and south-east only, so each diagonal pair is considered exactly once, the "
+      "same reason the orthogonal braid takes east and north alone. A slot has four diagonal "
+      "neighbours as well as four orthogonal ones, so the degree ceiling is eight rather than the "
+      "measured four")
+
+check("and one slot in eight is a JUNCTION that takes every link it can, so the degree SPREADS",
+      "internal const int JunctionRarity = 8;" in planner
+      and "private static bool SlotIsJunction(int seed, IntVec2 slot, int depth)" in planner
+      and planner.count("SlotIsJunction(seed, slot, depth)") == 2,
+      "-- DEFINED AND CALLED FROM BOTH BRAIDS. A single rarity moves every room to the same new "
+      "average and leaves the RANGE as narrow as it was; *\"0 - 10 other rooms\"* asks for a "
+      "spread. A junction is the top of it at eight ways out, and a sealed vault is the bottom "
+      "at none")
+
+# **THE OWNER'S EXPLICIT ZERO CASE, and the clause that made it unbuildable.** `CandidateIsSafe`
+# proved EVERY room reachable across carved floor, so a room with no links was refused outright --
+# the degree spec's lower end could not exist. The later direction is what makes zero legal rather
+# than broken: an *"isolated undiscorvered room"* is MEANT to have no way in, and the way in is a
+# pick. The guarantee is not weakened: the defect that clause exists to catch is a room the
+# generator believed it had connected and had not, and every such room HAS links.
+check("A SEALED VAULT HAS NO LINKS, AND THE REACHABILITY PROOF KNOWS THE DIFFERENCE",
+      'internal const string SealedFamily = "sealed_vault";' in planner
+      and "rooms.All(room => room.links.Count == 0 || seen.Contains(room.Bounds.CenterCell))"
+      in planner
+      and "rooms.Where(room => room.familyId == SealedFamily).All(room => room.links.Count == 0)"
+      in planner
+      and "rooms.All(room => seen.Contains(room.Bounds.CenterCell))" not in planner_code,
+      "-- a room that CLAIMS a route must have one; a vault claims none. And the family is held to "
+      "that from the other side too, so a vault that somehow gained a link fails the candidate "
+      "rather than quietly becoming an ordinary room")
+
+check("and its slot is reserved BEFORE the walk, which is what makes it sealed",
+      'StableHash(seed, "sealed:" + attempt, depth)' in planner
+      and "if (slotOf.ContainsKey(next) || sealedSlots.Contains(next)) { continue; }" in planner
+      and "int budget = Math.Max(1, MaxRooms - sealedSlots.Count);" in planner,
+      "-- nothing can link to a slot that was never in `slotOf` while the walk and both braids "
+      "were running. **And the budget is the measured half**: the walk reaches `MaxRooms` from "
+      "depth 3 onward, so a vault appended afterwards was silently dropped every time -- `deg0` "
+      "read 0.0% at depth 3 and deeper while the slots had been reserved and the rock left "
+      "standing. The probe printed the zero; nobody reasoned it out")
+
+check("and the validator counts a vault as a room but not as a disconnection",
+      "int linkedRooms = rooms.Count(room => room.links.Count > 0);" in service
+      and "rooms.Any(room => room.links.Count > 0 && !visited.Contains(room.index))" in service
+      and "directedEdges < 2 * (linkedRooms - 1)" in service
+      and "visited.Count != rooms.Count" not in service_code,
+      "-- every room with links must be in the same connected piece as the threshold, and the edge "
+      "floor follows that: a connected piece of `linked` rooms needs `linked - 1` edges, not "
+      "`rooms - 1`. The ceiling still counts every room, because a vault is still a room the map "
+      "has to hold")
+
+# **THE DOOR POSITION WAS NEVER A DOOR RULE.** Owner: *"non default fdoor possitions in rooms so
+# doors are not just on each side, can have doors al over"*. `DoorOpening` read
+# `cell.z == room.Bounds.CenterCell.z`, and that was not a choice -- a corridor could only run
+# along a line both centres shared, so the wall midpoint was the only cell one could arrive at.
+check("A DOOR IS WHERE THE CORRIDOR ARRIVES, NOT THE MIDDLE OF A WALL",
+      "internal static bool TryStraightCorridor(RoomRecord first, RoomRecord second," in planner
+      and "if (TryStraightCorridor(room, other, out alongX, out line))" in planner
+      and "if (other.Bounds.minX > bounds.maxX && cell.x == bounds.maxX && cell.z == line)"
+      in planner
+      and "cell.z == room.Bounds.CenterCell.z" not in planner_code,
+      "-- the corridor names the line it runs along and the door is wherever that line meets the "
+      "wall. **It also unsealed the grand hall**: the hall spans two slots so its centre sits "
+      "between them, matching no slot's centre, and a room directly above it shared neither axis "
+      "-- so the maze walk could leave the hall along one row and nowhere else")
+
+check("and the straight run prefers the FIRST room's centre line, so every old pair is unchanged",
+      "line = centreA.z >= low && centreA.z <= high ? centreA.z" in planner
+      and ": centreB.z >= low && centreB.z <= high ? centreB.z : (low + high) / 2;" in planner,
+      "-- which is what makes this a generalisation rather than a change: a grid-adjacent pair "
+      "shares a centre line, so it is chosen first and the corridor is the one that was always "
+      "carved. The second room's line is the hall's case, and the overlap midpoint is the "
+      "fallback when neither centre is inside it")
+
+check("THE SPAN VARIATION MAY NOT EAT THE CORRIDOR LANE",
+      "int lane = SlotGap - (2 * NarrowestCorridorHalfWidth + 1);" in planner
+      and "if (reach > lane) { reach = lane; }" in planner
+      and "internal const int NarrowestCorridorHalfWidth = 2;" in planner,
+      "-- two neighbours both rolled to their widest leave `SlotGap - 2 * reach` cells of rock "
+      "between them, and the narrowest corridor is five cells including its walls. Below that the "
+      "pair gets no route, the step is declined, the level comes out smaller and nothing says why. "
+      "**It had never bitten because the numbers happened to leave exactly five at every depth** "
+      "-- a constraint satisfied by luck, which bit the moment the slot grid changed")
+
+check("AND THE SPACE IS FILLED BY FEWER, LARGER ROOMS, which is the same instruction twice",
+      "internal const int Margin = 6;" in planner
+      and "internal const int MaxSlotsPerAxis = 8;" in planner
+      and "internal const int MaxRooms = 60;" in planner,
+      "-- the fraction of a slot a room occupies is `(1 - SlotGap / spacing)^2`, and spacing is "
+      "the map divided by the slot count, so **a FINER grid fills LESS space**: the rock between "
+      "rooms is a fixed ten cells per boundary and more slots means more boundaries. At ten slots "
+      "the span had fallen to sixteen against a twenty-seven spacing and roomfill measured 17.1%. "
+      "So *\"leas than 60-100 romms\"* and *\"FILL THE SPACE WITH ROOMS\"* are not in conflict "
+      "-- fewer larger rooms is what fills a fixed map, and a margin of fourteen on four sides was "
+      "throwing away a fifth of every one of them")
+
+
+# ======================================================================================
+# THREE CLAIMS THE PLANTS ASKED FOR. Each fault below was planted and caught by nothing:
+# the guard was still defined, still called, and the call had been replaced by a constant.
+# ======================================================================================
+
+check("THE PUSH'S ROUTE CHECK IS ASKED, not merely written",
+      "bool blocksARoute = !EveryLinkRoutes(rooms, mover, depth);" in planner
+      and "bool blocksARoute = false;" not in planner_code,
+      "-- a plant replaced this assignment with `false` and every claim about `EveryLinkRoutes` "
+      "still held: the function was defined, the condition still named it, and no room was ever "
+      "checked again. **The thing to assert is the call, not the callee** -- the same gap that let "
+      "a plant switch off room-size variation while the variation function sat there untouched")
+
+check("AND A ROUTE'S TWO TERMINI ARE NOT EXTENDED, so corridor floor never reaches inside a room",
+      "if (index != 0) { start -= step * reach; }" in planner
+      and "if (index + 2 != points.Count) { end += step * reach; }" in planner,
+      "-- every interior end of every leg overruns its turn so the corner is a solid block, and "
+      "the two ends that sit one cell outside a room's wall do not, because extending them would "
+      "put corridor floor inside the room. **A plant dropped the `index != 0` guard and nothing "
+      "failed**: the route still carved, the level still validated, and a corridor quietly ate "
+      "the edge of every room it left -- which is the wall the doorway is in")
+
+check("THE REACH BRAID'S ROLL IS ASKED, so links to a slot two away actually happen",
+      "internal const int ReachBraidRarity = 5;" in planner
+      and "if (roll % ReachBraidRarity != 0) { continue; }" in planner
+      and 'StableHash(seed,' in planner
+      and '"reach:" + slot.x + "," + slot.z + ":" + side, depth);' in planner
+      and "new IntVec2(2, 0), new IntVec2(0, 2), new IntVec2(2, 1), new IntVec2(2, -1)," in planner,
+      "-- the eight offsets with a span of two, each considered once from the lower-left of the "
+      "pair. **These are the only links that pass eight**, because eight is every neighbour a slot "
+      "has, and the five-leg route forms are what arrive at a slot the pair are not adjacent to. "
+      "Measured: max degree 8 without them, 13 to 16 with. A plant disabled the roll and no claim "
+      "noticed, because the constant and the offsets were all still sitting there")
 
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))

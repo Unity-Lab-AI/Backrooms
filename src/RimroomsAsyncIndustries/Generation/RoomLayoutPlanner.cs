@@ -26,18 +26,22 @@ namespace RimroomsAsyncIndustries.Generation
     /// The slot grid is now a **function of depth**, and so is everything derived from it:
     ///
     ///     depth   slots     spacing   room span   rooms
-    ///       1      6x6         45        34        24      a grand hall, then a maze
-    ///       2      7x7         38        28        32
-    ///       3      8x8         34        24        42
-    ///       4      9x9         30        20        54
-    ///       5+    10x10        27        16        60      a warren, at the room cap
+    ///       1      6x6         48        38        36      a grand hall, then a maze
+    ///       2      7x7         41        30        49
+    ///       3+     8x8         36        26        60      a warren, at the room cap
     ///
-    /// **Depth 1 is twenty-four rooms of thirty-four cells, and one hall of eighty.** The hall is
-    /// the owner's *"grand large spaces"* and *"the main spanw room"*; it takes two slots and it
-    /// is the only room that does. Everything past it is a third of its size, which is what
+    /// **The grid used to reach 10x10 and that left 83% of a deep map as bare rock.** A finer grid
+    /// fills LESS space, because the rock between rooms is a fixed <see cref="SlotGap"/> per
+    /// boundary and more slots means more boundaries. See <see cref="MaxSlotsPerAxis"/>, which is
+    /// the owner's *"FILL THE SPACE WITH ROOMS"* read against these constants.
+    ///
+    /// **Depth 1 is thirty-five rooms of thirty-eight cells, and one hall of eighty-six.** The hall
+    /// is the owner's *"grand large spaces"* and *"the main spanw room"*; it takes two slots and it
+    /// is the only room that does. Everything past it is well under half its size, which is what
     /// *"going deeping in can mean the numner of branch hallways and rooms distancing from the
     /// main portal spawn"* asks for. *"leas than 60-100 romms"* is held by
-    /// <see cref="MaxRooms"/>.
+    /// <see cref="MaxRooms"/>, and a handful of the slots go to sealed vaults that no corridor
+    /// reaches — see <see cref="SealedFamily"/>.
     ///
     /// **The table above was wrong for a whole checkpoint**, describing the 3x3 grid this file
     /// had already stopped using -- and the same staleness in `MaxRoomSpan`, which is the ceiling
@@ -57,8 +61,17 @@ namespace RimroomsAsyncIndustries.Generation
         internal const int CandidateBudget = 3;
         internal const int FallbackCandidate = 3;
 
-        /// <summary>Free cells kept between the slot grid and the map edge.</summary>
-        internal const int Margin = 14;
+        /// <summary>
+        /// Free cells kept between the slot grid and the map edge.
+        ///
+        /// **FOURTEEN WAS THROWING AWAY A FIFTH OF EVERY MAP.** A margin of 14 on all four sides
+        /// leaves 272 of 300 usable per axis — 82% of the area — and the owner walked the result:
+        /// *"not have so much empty rock space where nothing exists"*. Six is what the geometry
+        /// actually needs: the innermost slot centre is `Margin + spacing / 2`, so the widest room
+        /// the planner can place in it still lands eight cells clear of the edge, and corridor
+        /// walls two cells beyond that. `WithinMap` is the gate that proves it per layout.
+        /// </summary>
+        internal const int Margin = 6;
 
         /// <summary>Rock left between neighbouring rooms, which is what corridors run through.</summary>
         internal const int SlotGap = 10;
@@ -76,7 +89,31 @@ namespace RimroomsAsyncIndustries.Generation
         /// portal spawn"* describes.
         /// </summary>
         internal const int MinSlotsPerAxis = 6;
-        internal const int MaxSlotsPerAxis = 10;
+
+        /// <summary>
+        /// Slots per axis at the deepest coordinate, and **ten was the reason a deep level was 83%
+        /// bare rock.**
+        ///
+        /// Owner, 2026-10-03: *"not have so much empty rock space where nothing exists ... DO YOU
+        /// UNDERSTAND WHAT A MAZE MEANS AND TO FILL THE SPACE WITH ROOMS"*. Measured against the
+        /// arithmetic rather than guessed at: the fraction of a slot a room occupies is
+        /// `(1 - SlotGap / spacing)²`, and spacing is the map divided by the slot count. **So a
+        /// finer grid fills less space, not more** — the rock between rooms is a fixed ten cells
+        /// per boundary and more boundaries means more rock. At ten slots the span had fallen to
+        /// sixteen cells against a twenty-seven-cell spacing and roomfill measured **17.1%**; at
+        /// eight it is twenty-six against thirty-six.
+        ///
+        /// This also settles what looked like two contradictory directions. *"leas than 60-100
+        /// romms"* asks for fewer, larger rooms and *"FILL THE SPACE WITH ROOMS"* asks for less
+        /// bare rock — and they are **the same instruction**, because fewer larger rooms is what
+        /// fills a fixed map. `MaxRooms` is unchanged at 60 and the grid is now 64 slots, so the
+        /// room count is still the owner's number and the four slots over are what the sealed
+        /// vaults are reserved from.
+        ///
+        /// Deeper is still more rooms and tighter ones — 6, 7, then 8 — it simply stops before the
+        /// point where another slot costs more rock than it adds room.
+        /// </summary>
+        internal const int MaxSlotsPerAxis = 8;
 
         /// <summary>The ceiling the owner named: *"leas than 60-100 romms"*.</summary>
         internal const int MaxRooms = 60;
@@ -102,6 +139,28 @@ namespace RimroomsAsyncIndustries.Generation
 
         /// <summary>Dead ends hanging off the chain, one link each.</summary>
         private static readonly string[] SpurFamilies = { "storage_nook", "utility_room" };
+
+        /// <summary>
+        /// The family of a room with **no links at all**, which you reach by mining.
+        ///
+        /// ## Owner direction, 2026-10-03, verbatim
+        ///
+        /// *"and we should have doors that lead no where but to an ore or gem vein, and veins
+        /// leading to other rooms so insentive to mine things out to find isolated undiscorvered
+        /// rooms when mining and deconsturcting wals and sucvh"*, and from the same day
+        /// *"room connected to like 0 - 10 other rooms"*.
+        ///
+        /// **The degree spec explicitly allows zero and nothing could produce it**, because a
+        /// zero-link room is one `CandidateIsSafe` refuses: it proves every room's centre reachable
+        /// across carved floor, and a sealed room has no floor leading to it. The owner's later
+        /// direction is what makes zero legal rather than broken — *"isolated undiscorvered
+        /// rooms"* are **meant** to have no way in, and the way in is a pick.
+        ///
+        /// So the reachability proof now asks its question of rooms that **claim** a route. A room
+        /// with links must be walkable to; a room with none is a vault, and the rock around it is
+        /// `Mineable` like all the fill, so it is reachable in the only sense this room wants to be.
+        /// </summary>
+        internal const string SealedFamily = "sealed_vault";
 
         internal static bool TrySelect(CoordinateRecord coordinate, out List<RoomRecord> selected)
         {
@@ -228,6 +287,16 @@ namespace RimroomsAsyncIndustries.Generation
         {
             int baseline = SlotRoomSpan(spacing);
             int reach = SpanVariation < baseline / 3 ? SpanVariation : baseline / 3;
+            // **AND THE VARIATION MAY NEVER EAT THE CORRIDOR LANE.** Two neighbours both rolled
+            // to their widest leave `SlotGap - 2 * reach` cells of rock between them, and the
+            // narrowest corridor is `2 * NarrowestCorridorHalfWidth + 1` cells wide including its
+            // walls. Below that the pair gets no route at all -- the step is declined, the level
+            // comes out smaller, and nothing says why. It had never bitten because the numbers
+            // happened to leave exactly five cells at every depth the planner produced; it bit
+            // the moment the slot grid changed, which is the definition of a constraint that was
+            // being satisfied by luck.
+            int lane = SlotGap - (2 * NarrowestCorridorHalfWidth + 1);
+            if (reach > lane) { reach = lane; }
             if (reach < 1) { return baseline; }
             int offset = DestinationService.StableHash(seed, "span:" + slot.x + "," + slot.z, depth)
                 % (reach * 2 + 1) - reach;
@@ -303,7 +372,17 @@ namespace RimroomsAsyncIndustries.Generation
         /// checkpoints.
         /// </summary>
         /// <summary>Links walked before a room counts as one level deeper, for shaping.</summary>
-        internal const int LinksPerShapeBand = 3;
+        /// <remarks>
+        /// **THREE BECAME TWO WITH THE DEGREE WORK, and the probe is why.** A room's shaping band
+        /// is its distance from the hall divided by this, and the degree work collapsed those
+        /// distances: a five-connected maze has a short diameter, so almost every room landed in
+        /// band 0 and `RockIntrusionCells` declined it. Measured: rooms with any rock shaped at
+        /// all fell from 83.5% to 42.2% at depth 1, purely as a side effect of better
+        /// connectivity. At two, the hall and its immediate neighbours still read as square --
+        /// which is the arrival, and the thing everything past it is supposed to contrast with --
+        /// and the rest comes apart again.
+        /// </remarks>
+        internal const int LinksPerShapeBand = 2;
 
         /// <summary>The most distance can add to a room's shaping depth.</summary>
         internal const int MaximumShapeBand = 4;
@@ -574,10 +653,10 @@ namespace RimroomsAsyncIndustries.Generation
         /// One straight length of a corridor: its floor, its two walls, and which axis it runs
         /// along.
         ///
-        /// A corridor is a **list** of these rather than a single rect, because the owner has
-        /// asked for corridors that bend — *"make sure hallways and corradors and shit arent all
-        /// straight"* — and a bend is two legs. Today every corridor is exactly one leg, so this
-        /// shape describes the current behaviour without changing it.
+        /// A corridor is a **list** of these rather than a single rect, because the owner asked for
+        /// corridors that bend — *"make sure hallways and corradors and shit arent all straight"* —
+        /// and a bend is more than one leg. An orthogonal pair is one leg; a diagonal pair is three,
+        /// out of the room, along the rock lane, and back in. See <see cref="BentLegs"/>.
         /// </summary>
         internal struct CorridorLeg
         {
@@ -608,20 +687,23 @@ namespace RimroomsAsyncIndustries.Generation
         /// `offset ∈ [-halfWidth + 1, halfWidth - 1]` is the validator's `dz ∈ [-reach, reach]`
         /// with `reach = halfWidth - 1`.
         ///
-        /// ## Why a bend is not just "turn a corner here"
+        /// ## Three outcomes, and the list length is which one
         ///
-        /// Worked at depth 1, where slots sit 45 apart and rooms are about 34 across: a dogleg
-        /// between the **diagonal** pair (0,0) and (1,1) would run from (36,36) toward x = 81 and
-        /// straight into the room at slot (1,0), which occupies x 64..98. **Routing a bend
-        /// through room centres is not merely absent, it is unsafe.** Real bends have to run in
-        /// the rock gap lanes between slots, which is a larger change and is queued as its own
-        /// work. This function is where it will happen, and it is now the only place it has to.
+        /// **One leg** — the pair shares a row or a column, so the corridor is the straight run it
+        /// always was, at the width the pair rolled.
         ///
-        /// Returns an empty list when the pair has no corridor: a back-to-back pair is joined by
-        /// the doorway in the wall they share, and carving between their centres would cut a hole
-        /// through it and make them one room.
+        /// **Three legs** — the pair stands one slot apart on *each* axis, so the route bends
+        /// through the rock lane between them. <see cref="BentLegs"/> owns that, including the
+        /// reason a bend cannot simply turn a corner between the two centres.
+        ///
+        /// **No legs** — there is no corridor to carve. Either the pair is back to back, and the
+        /// doorway in the wall they share is the route (carving between their centres would cut a
+        /// hole through that wall and make them one room), or a bend was asked for and every
+        /// candidate route ran into a room. `BuildMaze` prunes a link that gets no route, so an
+        /// empty list never leaves a graph edge standing with nothing underneath it.
         /// </summary>
-        internal static List<CorridorLeg> CorridorLegs(RoomRecord first, RoomRecord second, int depth)
+        internal static List<CorridorLeg> CorridorLegs(RoomRecord first, RoomRecord second, int depth,
+            IReadOnlyList<RoomRecord> rooms)
         {
             var legs = new List<CorridorLeg>();
             if (first == null || second == null || SharesWall(first, second)) { return legs; }
@@ -631,70 +713,513 @@ namespace RimroomsAsyncIndustries.Generation
             IntVec3 centreA = a.CenterCell;
             IntVec3 centreB = b.CenterCell;
 
-            if (centreA.z == centreB.z)
+            bool alongX;
+            int line;
+            if (TryStraightCorridor(first, second, out alongX, out line))
             {
-                int fromX = Math.Min(a.maxX, b.maxX) + 1;
-                int toX = Math.Max(a.minX, b.minX) - 1;
-                if (toX < fromX) { return legs; }
-                legs.Add(new CorridorLeg
+                if (alongX)
                 {
-                    AlongX = true,
-                    Floor = CellRect.FromLimits(fromX, centreA.z - halfWidth + 1,
-                        toX, centreA.z + halfWidth - 1),
-                    WallLow = CellRect.FromLimits(fromX, centreA.z - halfWidth, toX, centreA.z - halfWidth),
-                    WallHigh = CellRect.FromLimits(fromX, centreA.z + halfWidth, toX, centreA.z + halfWidth),
-                });
-                return legs;
+                    int fromX = Math.Min(a.maxX, b.maxX) + 1;
+                    int toX = Math.Max(a.minX, b.minX) - 1;
+                    if (toX < fromX) { return legs; }
+                    legs.Add(LegAlongX(fromX, toX, line, halfWidth));
+                }
+                else
+                {
+                    int fromZ = Math.Min(a.maxZ, b.maxZ) + 1;
+                    int toZ = Math.Max(a.minZ, b.minZ) - 1;
+                    if (toZ < fromZ) { return legs; }
+                    legs.Add(LegAlongZ(line, fromZ, toZ, halfWidth));
+                }
+                // **THE CLEARANCE TEST APPLIES TO A STRAIGHT RUN TOO.** It never used to, because
+                // a straight corridor only ever joined grid-adjacent slots and the gap between
+                // them holds nothing. `TryStraightCorridor` can now join a pair that merely
+                // overlaps on one axis, and the shape test `AreNeighbourRooms` performs says
+                // nothing about what stands between them -- two rooms in the same row two slots
+                // apart would be carved straight through the room in the middle. Nothing proposes
+                // such a pair today; this is what makes that a fact rather than a hope.
+                if (!LegsClearEveryRoom(legs, rooms)) { legs.Clear(); }
+                if (halfWidth > NarrowestCorridorHalfWidth && legs.Count == 0)
+                {
+                    // One retry narrower, for the same reason a bend gets one: a lane pinched by
+                    // a widened room is a width problem rather than a routing problem.
+                    legs.Add(alongX
+                        ? LegAlongX(Math.Min(a.maxX, b.maxX) + 1, Math.Max(a.minX, b.minX) - 1,
+                            line, NarrowestCorridorHalfWidth)
+                        : LegAlongZ(line, Math.Min(a.maxZ, b.maxZ) + 1,
+                            Math.Max(a.minZ, b.minZ) - 1, NarrowestCorridorHalfWidth));
+                    if (!LegsClearEveryRoom(legs, rooms)) { legs.Clear(); }
+                }
+                if (legs.Count > 0) { return legs; }
+                // **A BLOCKED STRAIGHT RUN FALLS THROUGH TO THE LANES RATHER THAN GIVING UP.**
+                // Two rooms in the same row two slots apart share a centre line, so the straight
+                // branch claims the pair and then the clearance test refuses it, because the room
+                // between them is in the way. Returning here would make such a pair permanently
+                // unlinkable -- which is the four-neighbour ceiling again, wearing the straight
+                // branch as a disguise. The lane router goes around.
             }
-            if (centreA.x == centreB.x)
+            return BentLegs(first, second, depth, rooms);
+        }
+
+        /// <summary>
+        /// **WHERE A STRAIGHT CORRIDOR MEETS TWO ROOMS, AND THE ONE PLACE THAT IS DECIDED.**
+        ///
+        /// ## What this replaced, and the two defects it closes at once
+        ///
+        /// A straight corridor used to need the two **centres** to share a row or a column, which
+        /// is a far stronger condition than "a straight corridor fits". Two consequences, both
+        /// owner-reported:
+        ///
+        /// **1. The grand hall could only ever lead out of its own two ends.** The hall spans two
+        /// slots, so its centre sits *between* them — 58 at depth 1, which is no slot's centre. A
+        /// room directly above the hall therefore shared neither axis with it and the link was
+        /// refused, so the maze walk could leave the hall along one row and nowhere else. When a
+        /// reserved vault happened to block that row's one remaining step, the walk ended with the
+        /// hall alone and the candidate was thrown away. Owner, 2026-10-03: *"starts locations of
+        /// main grand rooms can be anywhere on the map and lead anywhere in multiple differetn
+        /// varied ways"*.
+        ///
+        /// **2. Every door in the game sat at the exact midpoint of its wall.** Owner, same day:
+        /// *"non default fdoor possitions in rooms so doors are not just on each side, can have
+        /// doors al over"*. That was not a door-placement rule to be loosened — it was this
+        /// condition's shadow. A corridor could only run along a shared centre line, so the only
+        /// cell it could ever meet a wall at was that wall's midpoint.
+        ///
+        /// ## The rule
+        ///
+        /// Two rooms separated on one axis, whose extents **overlap** on the other by at least
+        /// three cells, can be joined by one straight run. The line it runs along is the first of
+        /// these that lies inside both rooms, corners excluded:
+        ///
+        ///   * the first room's centre line — so every pair that worked before works identically,
+        ///     which is what makes this a generalisation rather than a change;
+        ///   * the second room's centre line — this is the hall's case, and the door it produces is
+        ///     off-centre on the hall's wall and dead centre on the small room's;
+        ///   * the middle of the overlap, when neither centre is inside it.
+        ///
+        /// Read by `CorridorLegs` to carve it, by <see cref="DoorOpening"/> to open the two cells it
+        /// arrives at, and by <see cref="AreNeighbourRooms"/> to answer whether the pair is legal at
+        /// all. **Three readers, one rule** — the same reason `PillarCells`, `SharesWall` and
+        /// `CorridorLegs` itself exist, and the defect this file has paid for most often.
+        /// </summary>
+        internal static bool TryStraightCorridor(RoomRecord first, RoomRecord second,
+            out bool alongX, out int line)
+        {
+            alongX = false;
+            line = 0;
+            if (first == null || second == null) { return false; }
+            CellRect a = first.Bounds;
+            CellRect b = second.Bounds;
+            if (a.Overlaps(b)) { return false; }
+            IntVec3 centreA = a.CenterCell;
+            IntVec3 centreB = b.CenterCell;
+
+            if (a.maxX < b.minX || b.maxX < a.minX)
             {
-                int fromZ = Math.Min(a.maxZ, b.maxZ) + 1;
-                int toZ = Math.Max(a.minZ, b.minZ) - 1;
-                if (toZ < fromZ) { return legs; }
-                legs.Add(new CorridorLeg
-                {
-                    AlongX = false,
-                    Floor = CellRect.FromLimits(centreA.x - halfWidth + 1, fromZ,
-                        centreA.x + halfWidth - 1, toZ),
-                    WallLow = CellRect.FromLimits(centreA.x - halfWidth, fromZ, centreA.x - halfWidth, toZ),
-                    WallHigh = CellRect.FromLimits(centreA.x + halfWidth, fromZ, centreA.x + halfWidth, toZ),
-                });
-                return legs;
+                int low = Math.Max(a.minZ, b.minZ) + 1;
+                int high = Math.Min(a.maxZ, b.maxZ) - 1;
+                if (high < low) { return false; }
+                alongX = true;
+                line = centreA.z >= low && centreA.z <= high ? centreA.z
+                    : centreB.z >= low && centreB.z <= high ? centreB.z : (low + high) / 2;
+                return true;
             }
-            // Not axis-aligned. Today that pair is illegal and `AreNeighbourRooms` refuses it
-            // before anything asks for a corridor; the carver threw `RR_Generation_NonAdjacentRooms`
-            // if one ever reached it. An empty list says the same thing without a throw, and it is
-            // the case the gap-lane routing will fill.
+            if (a.maxZ < b.minZ || b.maxZ < a.minZ)
+            {
+                int low = Math.Max(a.minX, b.minX) + 1;
+                int high = Math.Min(a.maxX, b.maxX) - 1;
+                if (high < low) { return false; }
+                alongX = false;
+                line = centreA.x >= low && centreA.x <= high ? centreA.x
+                    : centreB.x >= low && centreB.x <= high ? centreB.x : (low + high) / 2;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>One straight leg running east-west, from the one formula that shapes a leg.</summary>
+        private static CorridorLeg LegAlongX(int fromX, int toX, int centreZ, int halfWidth)
+        {
+            return new CorridorLeg
+            {
+                AlongX = true,
+                Floor = CellRect.FromLimits(fromX, centreZ - halfWidth + 1, toX, centreZ + halfWidth - 1),
+                WallLow = CellRect.FromLimits(fromX, centreZ - halfWidth, toX, centreZ - halfWidth),
+                WallHigh = CellRect.FromLimits(fromX, centreZ + halfWidth, toX, centreZ + halfWidth),
+            };
+        }
+
+        /// <summary>One straight leg running north-south, from the same formula.</summary>
+        private static CorridorLeg LegAlongZ(int centreX, int fromZ, int toZ, int halfWidth)
+        {
+            return new CorridorLeg
+            {
+                AlongX = false,
+                Floor = CellRect.FromLimits(centreX - halfWidth + 1, fromZ, centreX + halfWidth - 1, toZ),
+                WallLow = CellRect.FromLimits(centreX - halfWidth, fromZ, centreX - halfWidth, toZ),
+                WallHigh = CellRect.FromLimits(centreX + halfWidth, fromZ, centreX + halfWidth, toZ),
+            };
+        }
+
+        /// <summary>
+        /// The narrowest a corridor is ever cut: a three-cell walkway between two walls.
+        ///
+        /// A bent route has to fit inside the rock lane between two slots, and that lane is only
+        /// <see cref="SlotGap"/> cells wide before <see cref="VariedRoomSpan"/> eats into it from
+        /// both sides. So a bend asks for the width the pair rolled and then narrows until it
+        /// fits, rather than refusing a bend because one roll wanted five cells.
+        /// </summary>
+        internal const int NarrowestCorridorHalfWidth = 2;
+
+        /// <summary>
+        /// **A CORRIDOR THAT BENDS, AND IT RUNS IN THE ROCK LANE RATHER THAN BETWEEN CENTRES.**
+        ///
+        /// ## Owner direction, 2026-10-03, verbatim
+        ///
+        /// *"and make sure hallways and corradors and shit arent all straight.. its suppose to be
+        /// a lsd trip when it comes to archeteture and shit, repeated patternes in variations, u
+        /// -turns, multiple coices on directions to take in every rooms"*, and from the same day
+        /// *"room connected to like 0 - 10 other rooms"*.
+        ///
+        /// **Those are one job, not two.** Straight-only carving is precisely *why* a link had to
+        /// join grid-adjacent slots: `AreNeighbourRooms` demanded the two centres share a row or a
+        /// column because the carver could only run along one axis. A slot has four orthogonal
+        /// neighbours, so the measured max degree was **4** at every depth and the average **2.2
+        /// to 2.4** — one way in, one way out, which is what the owner walked and called a string
+        /// of pearls. Bending the corridor is what makes a diagonal link possible, and a diagonal
+        /// link is what turns a room into a junction.
+        ///
+        /// ## Why the bend cannot be a corner between the two centres
+        ///
+        /// Worked at depth 1, where slots sit 45 apart and rooms are about 34 across: an L between
+        /// the diagonal pair (0,0) and (1,1) leaves (36,36), runs toward x = 81 and goes **straight
+        /// through the room at slot (1,0)**, which occupies x 64..98. A dogleg between centres is
+        /// not merely absent from this generator, it is unsafe — and a corridor that opens into the
+        /// side of a room is the unreachable-room class that cost this project thirty-nine
+        /// checkpoints.
+        ///
+        /// So a bend runs in a **rock lane**, and a lane is defined by a room's own wall rather
+        /// than by the slot grid: the lane beside a room's east wall is the line whose low wall
+        /// lands one cell past it. That matters for more than tidiness — it means a route needs
+        /// nothing but the two rooms' rects to compute, so no reader has to be told the slot
+        /// spacing and no reader can be told a different one.
+        ///
+        /// ## Seven forms, because one bend shape is a signature
+        ///
+        /// Owner, 2026-10-03, asked at the fork and answered as *more*: *"it shouldnt just be one
+        /// option there needs to be wide varying variations of all types so dont limit yourself"*.
+        /// So <see cref="RouteForms"/> holds every form the lane grid admits —
+        ///
+        ///   * **two elbows** through a lane beside the FIRST room, one per axis;
+        ///   * **two elbows** through a lane beside the SECOND room, which reach the same pair of
+        ///     rooms by a visibly different route;
+        ///   * **two five-leg routes**, out to a lane, across a cross-lane, back down another lane.
+        ///     These are what reach a slot **two away**, which is what lifts the degree ceiling
+        ///     past the eight a diagonal can manage;
+        ///   * **one u-turn**, which leaves the room through the wall facing *away* from where it
+        ///     is going and doubles back. The owner asked for *"u -turns"* by name and this is the
+        ///     literal article: a corridor that starts by going the wrong way.
+        ///
+        /// The order is rotated by the pair's own hash, so which form a given pair gets is as
+        /// varied as everything else here and is the same on every revisit.
+        ///
+        /// ## Why the corner is square
+        ///
+        /// Each leg overruns its turn by `halfWidth - 1`, so a corner is a full block of floor. The
+        /// reachability flood is four-directional and a corner that met only diagonally would read
+        /// as connected to a person and as sealed to the check.
+        ///
+        /// ## Safety is proved, not reasoned about
+        ///
+        /// Every rect of every leg — floor and both walls — must miss **every room's bounds**, and
+        /// the route is refused outright if any does not. That is deliberately stricter than it
+        /// needs to be: a corridor wall sharing a cell with a room wall is harmless by itself, but
+        /// a room's doorway sits on that same wall, and a corridor wall landing on a doorway
+        /// **seals the room** — the unreachable-room class that cost this project thirty-nine
+        /// checkpoints. The strict test costs a minority of candidates and buys the guarantee
+        /// outright, and seven forms at two widths are tried before a pair is given up on.
+        /// </summary>
+        private static List<CorridorLeg> BentLegs(RoomRecord first, RoomRecord second, int depth,
+            IReadOnlyList<RoomRecord> rooms)
+        {
+            var none = new List<CorridorLeg>();
+            if (rooms == null) { return none; }
+            CellRect a = first.Bounds;
+            CellRect b = second.Bounds;
+            IntVec3 centreA = a.CenterCell;
+            IntVec3 centreB = b.CenterCell;
+            if (a.Overlaps(b)) { return none; }
+
+            int roll = DestinationService.StableHash(first.index * 211 + second.index,
+                "corridor:bend", depth);
+            if (roll < 0) { roll = ~roll; }
+            int widest = CorridorHalfWidthBetween(first, second, depth);
+            var points = new List<IntVec3>();
+
+            for (int attempt = 0; attempt < RouteForms; attempt++)
+            {
+                int form = (roll + attempt) % RouteForms;
+                for (int halfWidth = widest; halfWidth >= NarrowestCorridorHalfWidth; halfWidth--)
+                {
+                    BuildRouteWaypoints(points, a, b, centreA, centreB, halfWidth, form);
+                    if (points.Count < 2) { continue; }
+                    List<CorridorLeg> candidate = LegsAlongWaypoints(points, halfWidth);
+                    if (candidate.Count > 0 && LegsClearEveryRoom(candidate, rooms))
+                    { return candidate; }
+                }
+            }
+            return none;
+        }
+
+        /// <summary>How many shapes a bent corridor can take. See <see cref="BentLegs"/>.</summary>
+        internal const int RouteForms = 7;
+
+        /// <summary>The lane line beside a rect, whose near wall lands one cell past that wall.</summary>
+        private static int LaneBeyond(int wall, bool forward, int halfWidth)
+        {
+            return forward ? wall + 1 + halfWidth : wall - 1 - halfWidth;
+        }
+
+        /// <summary>
+        /// The turning points of one route form, as orthogonal waypoints.
+        ///
+        /// The first and last are the cells just **outside** each room's wall, so the route meets
+        /// the doorway without ever entering the room; everything between is a lane crossing.
+        /// <see cref="LegsAlongWaypoints"/> turns them into legs.
+        /// </summary>
+        private static void BuildRouteWaypoints(List<IntVec3> points, CellRect a, CellRect b,
+            IntVec3 centreA, IntVec3 centreB, int halfWidth, int form)
+        {
+            points.Clear();
+            bool eastward = centreB.x > centreA.x;
+            bool northward = centreB.z > centreA.z;
+
+            // Where the route leaves and arrives, one cell outside each wall.
+            int leaveX = eastward ? a.maxX + 1 : a.minX - 1;
+            int leaveZ = northward ? a.maxZ + 1 : a.minZ - 1;
+            int arriveX = eastward ? b.minX - 1 : b.maxX + 1;
+            int arriveZ = northward ? b.minZ - 1 : b.maxZ + 1;
+
+            switch (form)
+            {
+                case 0: // elbow, along the lane beside the FIRST room's side wall
+                {
+                    int lane = LaneBeyond(eastward ? a.maxX : a.minX, eastward, halfWidth);
+                    points.Add(new IntVec3(leaveX, 0, centreA.z));
+                    points.Add(new IntVec3(lane, 0, centreA.z));
+                    points.Add(new IntVec3(lane, 0, centreB.z));
+                    points.Add(new IntVec3(arriveX, 0, centreB.z));
+                    return;
+                }
+                case 1: // elbow, along the lane beside the FIRST room's end wall
+                {
+                    int lane = LaneBeyond(northward ? a.maxZ : a.minZ, northward, halfWidth);
+                    points.Add(new IntVec3(centreA.x, 0, leaveZ));
+                    points.Add(new IntVec3(centreA.x, 0, lane));
+                    points.Add(new IntVec3(centreB.x, 0, lane));
+                    points.Add(new IntVec3(centreB.x, 0, arriveZ));
+                    return;
+                }
+                case 2: // elbow, along the lane beside the SECOND room instead
+                {
+                    int lane = LaneBeyond(eastward ? b.minX : b.maxX, !eastward, halfWidth);
+                    points.Add(new IntVec3(leaveX, 0, centreA.z));
+                    points.Add(new IntVec3(lane, 0, centreA.z));
+                    points.Add(new IntVec3(lane, 0, centreB.z));
+                    points.Add(new IntVec3(arriveX, 0, centreB.z));
+                    return;
+                }
+                case 3:
+                {
+                    int lane = LaneBeyond(northward ? b.minZ : b.maxZ, !northward, halfWidth);
+                    points.Add(new IntVec3(centreA.x, 0, leaveZ));
+                    points.Add(new IntVec3(centreA.x, 0, lane));
+                    points.Add(new IntVec3(centreB.x, 0, lane));
+                    points.Add(new IntVec3(centreB.x, 0, arriveZ));
+                    return;
+                }
+                case 4: // five legs: out to a lane, across a cross-lane, down a lane beside B
+                {
+                    int laneOut = LaneBeyond(eastward ? a.maxX : a.minX, eastward, halfWidth);
+                    int cross = LaneBeyond(northward ? a.maxZ : a.minZ, northward, halfWidth);
+                    int laneIn = LaneBeyond(eastward ? b.minX : b.maxX, !eastward, halfWidth);
+                    points.Add(new IntVec3(leaveX, 0, centreA.z));
+                    points.Add(new IntVec3(laneOut, 0, centreA.z));
+                    points.Add(new IntVec3(laneOut, 0, cross));
+                    points.Add(new IntVec3(laneIn, 0, cross));
+                    points.Add(new IntVec3(laneIn, 0, centreB.z));
+                    points.Add(new IntVec3(arriveX, 0, centreB.z));
+                    return;
+                }
+                case 5: // five legs, the other way round
+                {
+                    int laneOut = LaneBeyond(northward ? a.maxZ : a.minZ, northward, halfWidth);
+                    int cross = LaneBeyond(eastward ? a.maxX : a.minX, eastward, halfWidth);
+                    int laneIn = LaneBeyond(northward ? b.minZ : b.maxZ, !northward, halfWidth);
+                    points.Add(new IntVec3(centreA.x, 0, leaveZ));
+                    points.Add(new IntVec3(centreA.x, 0, laneOut));
+                    points.Add(new IntVec3(cross, 0, laneOut));
+                    points.Add(new IntVec3(cross, 0, laneIn));
+                    points.Add(new IntVec3(centreB.x, 0, laneIn));
+                    points.Add(new IntVec3(centreB.x, 0, arriveZ));
+                    return;
+                }
+                default: // **THE U-TURN.** Owner: *"u -turns"*.
+                {
+                    // It leaves through the wall facing AWAY from the destination, runs out to the
+                    // lane on the wrong side, along a cross-lane, and comes back. A player walking
+                    // it goes the wrong way first and the corridor turns them around, which is the
+                    // thing the word means.
+                    int wrongWayX = eastward ? a.minX - 1 : a.maxX + 1;
+                    int laneAway = LaneBeyond(eastward ? a.minX : a.maxX, !eastward, halfWidth);
+                    int cross = LaneBeyond(northward ? a.maxZ : a.minZ, northward, halfWidth);
+                    int laneIn = LaneBeyond(eastward ? b.minX : b.maxX, !eastward, halfWidth);
+                    points.Add(new IntVec3(wrongWayX, 0, centreA.z));
+                    points.Add(new IntVec3(laneAway, 0, centreA.z));
+                    points.Add(new IntVec3(laneAway, 0, cross));
+                    points.Add(new IntVec3(laneIn, 0, cross));
+                    points.Add(new IntVec3(laneIn, 0, centreB.z));
+                    points.Add(new IntVec3(arriveX, 0, centreB.z));
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Waypoints into legs, with every interior end overrunning its turn so each corner is a
+        /// solid block of floor.
+        ///
+        /// The two **termini** are not extended, because they sit one cell outside a room's wall
+        /// and extending them would put corridor floor inside the room. Every other end is, for
+        /// the four-directional-flood reason in <see cref="BentLegs"/>.
+        ///
+        /// Returns nothing at all if any consecutive pair is not a single orthogonal step. A route
+        /// that is not orthogonal is not a route this carver can cut, and saying so by returning
+        /// nothing is what lets the caller try the next form.
+        /// </summary>
+        private static List<CorridorLeg> LegsAlongWaypoints(List<IntVec3> points, int halfWidth)
+        {
+            var legs = new List<CorridorLeg>();
+            int reach = halfWidth - 1;
+            for (int index = 0; index + 1 < points.Count; index++)
+            {
+                IntVec3 from = points[index];
+                IntVec3 to = points[index + 1];
+                bool alongX = from.z == to.z;
+                bool alongZ = from.x == to.x;
+                if (alongX == alongZ) { legs.Clear(); return legs; }
+                int start = alongX ? from.x : from.z;
+                int end = alongX ? to.x : to.z;
+                int step = end >= start ? 1 : -1;
+                if (index != 0) { start -= step * reach; }
+                if (index + 2 != points.Count) { end += step * reach; }
+                int low = Math.Min(start, end);
+                int high = Math.Max(start, end);
+                legs.Add(alongX
+                    ? LegAlongX(low, high, from.z, halfWidth)
+                    : LegAlongZ(from.x, low, high, halfWidth));
+            }
             return legs;
         }
 
         /// <summary>
-        /// The cells of a corridor leg that may hold a lamp or dressing: the two outermost rows of
-        /// its floor, never the centre line.
+        /// Whether every rect of every leg misses every room, and stays on the map.
+        ///
+        /// The one safety gate on a bent route. See <see cref="BentLegs"/> for why it tests the
+        /// walls as strictly as the floor.
+        /// </summary>
+        private static bool LegsClearEveryRoom(List<CorridorLeg> legs, IReadOnlyList<RoomRecord> rooms)
+        {
+            // **ONE RECT AROUND THE WHOLE ROUTE FIRST.** Seven forms at two widths, each tested
+            // against sixty rooms and five legs of three rects, is 12,600 overlap tests for a
+            // single pair -- and this is asked once per candidate link by the braid and again by
+            // both readers. The envelope answers almost every room in one test and changes no
+            // verdict: a room that misses the envelope cannot touch a leg inside it.
+            int minX = int.MaxValue;
+            int minZ = int.MaxValue;
+            int maxX = int.MinValue;
+            int maxZ = int.MinValue;
+            for (int index = 0; index < legs.Count; index++)
+            {
+                CorridorLeg leg = legs[index];
+                if (!RectOnMap(leg.Floor) || !RectOnMap(leg.WallLow) || !RectOnMap(leg.WallHigh))
+                { return false; }
+                if (leg.WallLow.minX < minX) { minX = leg.WallLow.minX; }
+                if (leg.WallLow.minZ < minZ) { minZ = leg.WallLow.minZ; }
+                if (leg.WallHigh.maxX > maxX) { maxX = leg.WallHigh.maxX; }
+                if (leg.WallHigh.maxZ > maxZ) { maxZ = leg.WallHigh.maxZ; }
+            }
+            if (legs.Count == 0) { return false; }
+            CellRect envelope = CellRect.FromLimits(minX, minZ, maxX, maxZ);
+
+            for (int other = 0; other < rooms.Count; other++)
+            {
+                if (rooms[other] == null) { continue; }
+                CellRect bounds = rooms[other].Bounds;
+                if (!envelope.Overlaps(bounds)) { continue; }
+                for (int index = 0; index < legs.Count; index++)
+                {
+                    CorridorLeg leg = legs[index];
+                    if (leg.Floor.Overlaps(bounds) || leg.WallLow.Overlaps(bounds) ||
+                        leg.WallHigh.Overlaps(bounds))
+                    { return false; }
+                }
+            }
+            return true;
+        }
+
+        /// <summary>One clear cell inside the map edge, which is what the room bound check uses.</summary>
+        private static bool RectOnMap(CellRect rect)
+        {
+            return rect.minX >= 1 && rect.minZ >= 1 &&
+                rect.maxX < DestinationService.MapWidth - 1 &&
+                rect.maxZ < DestinationService.MapHeight - 1;
+        }
+
+        /// <summary>
+        /// The cells of a corridor that may hold a lamp or dressing: the two outermost rows of each
+        /// leg's floor, never a centre line.
         ///
         /// A corridor is a route, and the reasoning that reserves a room's route cross applies to
-        /// the whole of a corridor's length. Lifted out of `BuildCorridors` with the rest so the
-        /// rule travels with the shape it describes.
+        /// the whole of a corridor's length. Lifted out of `BuildCorridors` so the rule travels
+        /// with the shape it describes.
+        ///
+        /// **IT TAKES THE WHOLE ROUTE, AND IT HAS TO.** At a bend, one leg's outermost floor row
+        /// crosses the next leg's **centre line** — so a per-leg reading of this rule would hand
+        /// the dressing a cell in the middle of the route and furnish the corner of the corridor,
+        /// the exact thing the side-cell rule exists to prevent. A cell that is any other leg's
+        /// floor is therefore not a side cell, whichever leg offered it.
         /// </summary>
-        internal static IEnumerable<IntVec3> CorridorSideCells(CorridorLeg leg)
+        internal static IEnumerable<IntVec3> CorridorSideCells(List<CorridorLeg> legs)
         {
-            CellRect floor = leg.Floor;
-            if (leg.AlongX)
+            if (legs == null) { yield break; }
+            for (int index = 0; index < legs.Count; index++)
             {
-                if (floor.Height < 3) { yield break; }
-                for (int x = floor.minX; x <= floor.maxX; x++)
+                CorridorLeg leg = legs[index];
+                CellRect floor = leg.Floor;
+                if (leg.AlongX ? floor.Height < 3 : floor.Width < 3) { continue; }
+                int from = leg.AlongX ? floor.minX : floor.minZ;
+                int to = leg.AlongX ? floor.maxX : floor.maxZ;
+                for (int along = from; along <= to; along++)
                 {
-                    yield return new IntVec3(x, 0, floor.minZ);
-                    yield return new IntVec3(x, 0, floor.maxZ);
+                    IntVec3 low = leg.AlongX
+                        ? new IntVec3(along, 0, floor.minZ) : new IntVec3(floor.minX, 0, along);
+                    IntVec3 high = leg.AlongX
+                        ? new IntVec3(along, 0, floor.maxZ) : new IntVec3(floor.maxX, 0, along);
+                    if (!OnAnotherLegFloor(legs, index, low)) { yield return low; }
+                    if (!OnAnotherLegFloor(legs, index, high)) { yield return high; }
                 }
-                yield break;
             }
-            if (floor.Width < 3) { yield break; }
-            for (int z = floor.minZ; z <= floor.maxZ; z++)
+        }
+
+        private static bool OnAnotherLegFloor(List<CorridorLeg> legs, int skip, IntVec3 cell)
+        {
+            for (int index = 0; index < legs.Count; index++)
             {
-                yield return new IntVec3(floor.minX, 0, z);
-                yield return new IntVec3(floor.maxX, 0, z);
+                if (index == skip) { continue; }
+                if (legs[index].Floor.Contains(cell)) { return true; }
             }
+            return false;
         }
 
         private static List<RoomRecord> Build(CoordinateRecord coordinate, int candidate)
@@ -832,12 +1357,39 @@ namespace RimroomsAsyncIndustries.Generation
             // is the better shape regardless: owner, 2026-10-03, *"starts locations of main grand
             // rooms can be anywhere on the map and lead anywhere in multiple differetn varied
             // ways"*. A grand hall should lead out of both its ends.
+            // **THE SEALED SLOTS, CHOSEN BEFORE THE WALK SO THE WALK CANNOT ENTER THEM.** Owner:
+            // *"insentive to mine things out to find isolated undiscorvered rooms"*. A vault has to
+            // be unreachable by corridor, and the cheapest way to guarantee that is to make the
+            // walk and both braids blind to the slot — nothing can link to a slot that was never
+            // in `slotOf` when the links were made. The room goes in afterwards.
+            //
+            // They double as obstacles while the walk is running, which is free maze quality: a
+            // blocked slot forces the walk around it. If enough of them blocked the walk into a
+            // level too small to be legal, `ValidateRooms` refuses the candidate and the next one
+            // is tried — it fails closed, and `fellback` in `check-planner-layouts.py` is where
+            // that would show.
+            var sealedSlots = new List<IntVec2>();
+            int sealedTarget = SealedRoomCount(slots);
+            for (int attempt = 0; attempt < slots * slots && sealedSlots.Count < sealedTarget; attempt++)
+            {
+                int draw = DestinationService.StableHash(seed, "sealed:" + attempt, depth);
+                if (draw < 0) { draw = ~draw; }
+                var reserved = new IntVec2(draw % slots, (draw / 31) % slots);
+                if (slotOf.ContainsKey(reserved) || sealedSlots.Contains(reserved)) { continue; }
+                sealedSlots.Add(reserved);
+            }
+
             var stack = new List<IntVec2> { hallFirst, hallSecond };
             IntVec2[] directions =
             {
                 new IntVec2(1, 0), new IntVec2(0, 1), new IntVec2(-1, 0), new IntVec2(0, -1),
             };
-            int budget = MaxRooms;
+            // **THE VAULTS ARE TAKEN OUT OF THE BUDGET, NOT LEFT TO COMPETE FOR IT.** The walk is
+            // bounded by `MaxRooms` and from depth 3 onward it reaches that bound, so a vault
+            // appended afterwards was silently dropped every time -- `deg0` read 0.0% at depth 3
+            // and deeper while the slots had been reserved and the rock left standing. Measured,
+            // not reasoned about: the probe printed the zero.
+            int budget = Math.Max(1, MaxRooms - sealedSlots.Count);
 
             while (stack.Count > 0 && rooms.Count < budget)
             {
@@ -854,7 +1406,7 @@ namespace RimroomsAsyncIndustries.Generation
                     IntVec2 direction = directions[(turn + step) % directions.Length];
                     var next = new IntVec2(current.x + direction.x, current.z + direction.z);
                     if (next.x < 0 || next.z < 0 || next.x >= slots || next.z >= slots) { continue; }
-                    if (slotOf.ContainsKey(next)) { continue; }
+                    if (slotOf.ContainsKey(next) || sealedSlots.Contains(next)) { continue; }
 
                     int parent = slotOf[current];
                     var room = MakeRoom(coordinate, rooms.Count, "survey_lobby", next, spacing,
@@ -871,6 +1423,14 @@ namespace RimroomsAsyncIndustries.Generation
                     // Declined rather than forced: the slot stays unvisited and is reached later
                     // from a different parent, which is a thing a maze can do and a line cannot.
                     if (!AreNeighbourRooms(rooms[parent], room)) { continue; }
+                    // **AND THE ROUTE HAS TO EXIST, not merely be a legal shape.** The walk builds
+                    // the spanning tree, so a tree edge with no corridor under it is a level that
+                    // cannot be carved -- and `PruneUnroutableLinks` deliberately refuses to touch
+                    // a non-diagonal link, because taking one away is what would disconnect the
+                    // place. Asking here is what makes that refusal safe.
+                    if (CorridorLegs(rooms[parent], room, depth, rooms).Count == 0 &&
+                        !SharesWall(rooms[parent], room))
+                    { continue; }
                     rooms.Add(room);
                     slotOf[next] = room.index;
                     hops[room.index] = hops[parent] + 1;
@@ -907,7 +1467,7 @@ namespace RimroomsAsyncIndustries.Generation
                     int roll = DestinationService.StableHash(seed,
                         "braid:" + slot.x + "," + slot.z + ":" + side, depth);
                     if (roll < 0) { roll = ~roll; }
-                    if (roll % BraidRarity != 0) { continue; }
+                    if (!SlotIsJunction(seed, slot, depth) && roll % BraidRarity != 0) { continue; }
                     // The corridor builder needs the two centres to share an axis, which the
                     // hall's two-slot span can break. `AreNeighbourRooms` is the same question
                     // `ValidateRooms` will ask, so a braid it would refuse is never made.
@@ -916,22 +1476,243 @@ namespace RimroomsAsyncIndustries.Generation
                 }
             }
 
+            // **THE DIAGONAL BRAID, AND IT IS WHAT ANSWERS THE DEGREE COMPLAINT.** Owner,
+            // 2026-10-03: *"room connected to like 0 - 10 other rooms"* and *"multiple coices on
+            // directions to take in every rooms"*. Measured before this existed: average degree
+            // **2.2 to 2.4**, maximum **4**, at every depth -- one way in and one way out, which
+            // is a line with rooms on it however the walk turned.
+            //
+            // The ceiling was geometric rather than a tuning: a link had to join grid-adjacent
+            // slots because the carver ran along one axis, so four neighbours was all a slot had.
+            // `BentLegs` lifted that, so the four DIAGONAL neighbours are reachable too and the
+            // ceiling is eight.
+            //
+            // North-east and south-east only, so each diagonal pair is considered exactly once --
+            // the same reason the orthogonal braid above takes east and north alone.
+            //
+            // **Routability is asked here as well as proved later.** A diagonal whose lane is
+            // blocked by a wide room gets no link rather than a link that the prune pass has to
+            // take back, which keeps the family assignment below reading a graph that is already
+            // settled. The prune is still the authority, because `ShapeDepthOf` shifts as links
+            // are added and the readers compute the route from the finished graph.
+            for (int index = 0; index < slotList.Count; index++)
+            {
+                IntVec2 slot = slotList[index];
+                int here = slotOf[slot];
+                for (int side = 0; side < 2; side++)
+                {
+                    var next = side == 0
+                        ? new IntVec2(slot.x + 1, slot.z + 1)
+                        : new IntVec2(slot.x + 1, slot.z - 1);
+                    int there;
+                    if (!slotOf.TryGetValue(next, out there) || there == here) { continue; }
+                    if (rooms[here].links.Contains(there)) { continue; }
+                    int roll = DestinationService.StableHash(seed,
+                        "diagonal:" + slot.x + "," + slot.z + ":" + side, depth);
+                    if (roll < 0) { roll = ~roll; }
+                    if (!SlotIsJunction(seed, slot, depth) && roll % DiagonalBraidRarity != 0)
+                    { continue; }
+                    if (!AreNeighbourRooms(rooms[here], rooms[there])) { continue; }
+                    if (CorridorLegs(rooms[here], rooms[there], depth, rooms).Count == 0) { continue; }
+                    Link(rooms, here, there);
+                }
+            }
+
+            // **THE REACH BRAID: links to a slot TWO AWAY, which is what passes eight.** Owner,
+            // 2026-10-03, answering the degree-ceiling fork: *"it shouldnt just be one option
+            // there needs to be wide varying variations of all types so dont limit yourself"*.
+            //
+            // A diagonal lifts the ceiling from four to eight and no further, because eight is all
+            // the neighbours a slot has. The five-leg route forms in `BentLegs` go out to a lane,
+            // across a cross-lane and back down another, so they arrive at a slot the pair are not
+            // adjacent to at all -- and that is the only thing that reaches the owner's ten.
+            //
+            // **Deliberately rare.** A long corridor costs rock, and a floor where every room
+            // reaches every room two away is an open plan rather than a maze. `ReachBraidRarity`
+            // is higher than either braid above it, so these read as the odd long run that goes
+            // somewhere unexpected -- which is what they are for.
+            //
+            // Every offset with a span of two, each considered once from the lower-left of the
+            // pair, so no pair is offered twice.
+            IntVec2[] reaches =
+            {
+                new IntVec2(2, 0), new IntVec2(0, 2), new IntVec2(2, 1), new IntVec2(2, -1),
+                new IntVec2(1, 2), new IntVec2(-1, 2), new IntVec2(2, 2), new IntVec2(2, -2),
+            };
+            for (int index = 0; index < slotList.Count; index++)
+            {
+                IntVec2 slot = slotList[index];
+                int here = slotOf[slot];
+                for (int side = 0; side < reaches.Length; side++)
+                {
+                    var next = new IntVec2(slot.x + reaches[side].x, slot.z + reaches[side].z);
+                    int there;
+                    if (!slotOf.TryGetValue(next, out there) || there == here) { continue; }
+                    if (rooms[here].links.Contains(there)) { continue; }
+                    int roll = DestinationService.StableHash(seed,
+                        "reach:" + slot.x + "," + slot.z + ":" + side, depth);
+                    if (roll < 0) { roll = ~roll; }
+                    if (roll % ReachBraidRarity != 0) { continue; }
+                    if (!AreNeighbourRooms(rooms[here], rooms[there])) { continue; }
+                    if (CorridorLegs(rooms[here], rooms[there], depth, rooms).Count == 0) { continue; }
+                    Link(rooms, here, there);
+                }
+            }
+
             AssignMazeFamilies(rooms, hops, seed);
 
-            // **BACK TO BACK**, and still only ever a dead end. Owner: *"and you can have back to
-            // back roomes"*. A room with one link cannot re-route anything by moving.
+            // **THE VAULTS GO IN AFTER EVERY LINK HAS BEEN MADE**, which is what makes them
+            // sealed: nothing can have linked to a slot that was not in `slotOf` while the walk
+            // and the braids were running, and nothing links to anything afterwards.
+            //
+            // Their family is set here rather than by `AssignMazeFamilies`, which decides by link
+            // count and would read a vault as a dead end and hand it a spur family -- and
+            // `CandidateIsSafe` asserts a spur family has exactly one link.
+            for (int index = 0; index < sealedSlots.Count && rooms.Count < MaxRooms; index++)
+            {
+                IntVec2 slot = sealedSlots[index];
+                RoomRecord vault = MakeRoom(coordinate, rooms.Count, SealedFamily, slot, spacing,
+                    VariedRoomSpan(spacing, slot, seed, depth), seed, false, depth);
+                // A reserved slot is nobody else's, but `Derange` can widen a vault past its own
+                // slot and a neighbour can have been widened toward it. An overlap is refused by
+                // `ValidateRooms` outright, so the vault is simply not placed.
+                if (rooms.Any(other => other != null && other.Bounds.Overlaps(vault.Bounds)))
+                { continue; }
+                rooms.Add(vault);
+            }
+
+            // **BACK TO BACK, AND NO LONGER ONLY A DEAD END.** Owner: *"and you can have back to
+            // back roomes"*, and again on 2026-10-03 *"so u can find back to back rooms"*.
+            //
+            // This was restricted to rooms with exactly one link, on the reasoning that *"a room
+            // with one link cannot re-route anything by moving"* -- true, and it was the only
+            // guarantee available while nothing checked whether a move broke somebody's corridor.
+            // **The degree work then made the restriction bite**: with an average of five links a
+            // level has few dead ends left, and the measured back-to-back count fell from 131 to
+            // 23. A feature the owner asked for twice was quietly shrinking as a side effect of a
+            // different feature, which the probe printed and nobody would otherwise have seen.
+            //
+            // `PushAgainst` now proves the move itself: on the map, no room overlapped, **no
+            // existing route broken**, and the two rooms really share a wall afterwards -- or it
+            // is undone. That holds whatever the link count is, so the link count stops being the
+            // condition and the push is offered to every room.
             for (int index = 1; index < rooms.Count; index++)
             {
-                if (rooms[index].links.Count != 1) { continue; }
-                int host = rooms[index].links[0];
-                if (host == 0) { continue; }
+                if (rooms[index].links.Count < 1) { continue; }
                 int roll = DestinationService.StableHash(seed,
                     "backtoback:" + rooms[index].x + "," + rooms[index].z, depth);
                 if (roll < 0) { roll = ~roll; }
                 if (roll % 3 != 0) { continue; }
-                PushAgainst(rooms, rooms[index], rooms[host]);
+                // Which neighbour it goes wall to wall with is drawn too, so a well-connected
+                // room is not always pushed against the first link it happens to hold.
+                int host = rooms[index].links[(roll / 7) % rooms[index].links.Count];
+                if (host == 0) { continue; }
+                PushAgainst(rooms, rooms[index], rooms[host], depth);
             }
+
+            PruneUnroutableLinks(rooms, depth);
             return rooms;
+        }
+
+        /// <summary>
+        /// One slot in this many is a **junction**, and takes every link it can rather than rolling
+        /// for each.
+        ///
+        /// Owner: *"multiple coices on directions to take in every rooms"* and *"room connected to
+        /// like 0 - 10 other rooms"*. A single braid rarity moves every room to the same new
+        /// average and leaves the *range* as narrow as it was; what the owner asked for is a
+        /// spread. A junction slot is the top of it — four orthogonal neighbours and four
+        /// diagonals, so eight ways out of one room — and a vault is the bottom, at none.
+        /// </summary>
+        internal const int JunctionRarity = 8;
+
+        /// <summary>Whether this slot takes every link available to it. See <see cref="JunctionRarity"/>.</summary>
+        private static bool SlotIsJunction(int seed, IntVec2 slot, int depth)
+        {
+            int roll = DestinationService.StableHash(seed, "junction:" + slot.x + "," + slot.z, depth);
+            if (roll < 0) { roll = ~roll; }
+            return roll % JunctionRarity == 0;
+        }
+
+        /// <summary>
+        /// How many sealed vaults a coordinate carries, scaled to the slot grid so a deep level
+        /// with a hundred slots hides more than a shallow one with thirty-six.
+        ///
+        /// Always at least one, because *"isolated undiscorvered rooms"* with none of them is the
+        /// feature not existing.
+        /// </summary>
+        internal static int SealedRoomCount(int slots)
+        {
+            int count = slots * slots / 25;
+            return count < 1 ? 1 : count;
+        }
+
+        /// <summary>How many of the diagonal pairs the walk left alone are linked back.</summary>
+        /// <remarks>
+        /// At 2, about half of them. A maze needs walls as much as it needs junctions: link every
+        /// diagonal and the floor becomes an open plan with pillars in it, which reads no more
+        /// like a maze than a single line does. Half gives junctions that offer a real choice and
+        /// leaves enough rock standing to get lost in -- and it leaves the **spread** that
+        /// *"0 - 10 other rooms"* asks for, rather than moving every room to the same new number.
+        /// </remarks>
+        internal const int DiagonalBraidRarity = 2;
+
+        /// <summary>
+        /// How rare a link to a slot **two away** is. See the reach braid in <see cref="BuildMaze"/>.
+        /// </summary>
+        /// <remarks>
+        /// Higher than either braid above it on purpose. A five-leg route is a long corridor and
+        /// costs rock the rooms could have had; a floor where every room reaches every room two
+        /// away is an open plan with pillars in it. At one in five these read as the occasional
+        /// long run that arrives somewhere you did not expect, which is the whole point of them.
+        /// </remarks>
+        internal const int ReachBraidRarity = 5;
+
+        /// <summary>
+        /// **NO GRAPH EDGE MAY STAND WITHOUT A ROUTE UNDERNEATH IT**, and this is what guarantees
+        /// it after every room has stopped moving.
+        ///
+        /// A diagonal link is routed through the rock lane between its two rooms, and two things
+        /// decided after the braid can take that lane away: `PushAgainst` slides a dead-end room
+        /// out of its slot and into somebody's lane, and `ShapeDepthOf` shifts as links are added,
+        /// which changes the width the pair asks for. So the braid's routability test is a
+        /// courtesy and **this is the authority** — it runs last, against the finished geometry,
+        /// and asks exactly the question `CandidateIsSafe` and `BuildCorridors` will ask.
+        ///
+        /// **It can only ever remove a diagonal, so it cannot disconnect the level.** Every
+        /// orthogonal pair either shares a wall, in which case the doorway is the route, or has a
+        /// straight run between its centres by construction; the spanning tree the walk built is
+        /// entirely orthogonal. Diagonals exist only on top of it.
+        ///
+        /// A room that loses its last diagonal is simply a room with fewer ways out. It keeps the
+        /// family it was given, which is deliberate: `CandidateIsSafe` asserts that a
+        /// `storage_nook` or `utility_room` **has** one link, not that a one-link room must be one
+        /// of those.
+        /// </summary>
+        private static void PruneUnroutableLinks(List<RoomRecord> rooms, int depth)
+        {
+            for (int index = 0; index < rooms.Count; index++)
+            {
+                RoomRecord room = rooms[index];
+                if (room == null || room.links == null) { continue; }
+                for (int at = room.links.Count - 1; at >= 0; at--)
+                {
+                    int otherIndex = room.links[at];
+                    if (otherIndex <= room.index) { continue; }
+                    RoomRecord other = rooms.FirstOrDefault(r => r != null && r.index == otherIndex);
+                    if (other == null) { continue; }
+                    IntVec3 a = room.Bounds.CenterCell;
+                    IntVec3 b = other.Bounds.CenterCell;
+                    // Orthogonal pairs are never touched: see the summary for why that is what
+                    // makes this pass safe rather than merely conservative.
+                    if (a.x == b.x || a.z == b.z) { continue; }
+                    int legDepth = Math.Max(ShapeDepthOf(rooms, room, depth),
+                        ShapeDepthOf(rooms, other, depth));
+                    if (CorridorLegs(room, other, legDepth, rooms).Count > 0) { continue; }
+                    room.links.RemoveAt(at);
+                    other.links.Remove(room.index);
+                }
+            }
         }
 
         /// <summary>
@@ -1153,13 +1934,55 @@ namespace RimroomsAsyncIndustries.Generation
             return -1;
         }
 
-        private static bool AreNeighbourRooms(RoomRecord first, RoomRecord second)
+        /// <summary>
+        /// Whether these two rooms are a shape a corridor can join.
+        ///
+        /// **A DIAGONAL PAIR IS NOW ONE OF THEM, and that is the whole of the degree change.**
+        /// This function returned false for anything off-axis because `BuildCorridors` could only
+        /// carve along one axis — so a slot's four orthogonal neighbours were the only links in
+        /// existence and max degree was **4** at every depth. <see cref="BentLegs"/> removed that
+        /// constraint, so an equal-magnitude offset on both axes — one slot across and one slot
+        /// up, the rooms whose lane midpoint is real rock — is admissible too, and a slot has
+        /// eight such neighbours rather than four.
+        ///
+        /// Kept to the **shape** question deliberately. Whether a route actually fits is
+        /// `CorridorLegs`' answer and it needs the whole room list to give it; asking two
+        /// questions in one function here is how this file ended up with a rule derived twice.
+        /// `DestinationService.AreGridNeighbors` asks the identical question of the saved graph and
+        /// the two must agree.
+        /// </summary>
+        internal static bool AreNeighbourRooms(RoomRecord first, RoomRecord second)
         {
+            if (first == null || second == null) { return false; }
+            if (first.Bounds.Overlaps(second.Bounds)) { return false; }
             IntVec3 a = first.Bounds.CenterCell;
             IntVec3 b = second.Bounds.CenterCell;
-            if (a.x == b.x) { return !first.Bounds.Overlaps(second.Bounds) && a.z != b.z; }
-            if (a.z == b.z) { return !first.Bounds.Overlaps(second.Bounds) && a.x != b.x; }
-            return false;
+            // **THE ONE BOUND, AND IT IS THE PLANNER'S OWN COARSEST GEOMETRY RATHER THAN A
+            // PREFERENCE.** With seven lane route forms almost any pair of rooms could be joined
+            // by a corridor that goes far enough, and *"a room joined to everything"* is what the
+            // graph ceiling in `ValidateRooms` exists to refuse. Two of the widest slots this
+            // planner can produce is the reach, so the braid's furthest proposal -- two slots --
+            // is admissible at every depth and nothing beyond it is.
+            if (Math.Abs(a.x - b.x) > FurthestLinkedCentres ||
+                Math.Abs(a.z - b.z) > FurthestLinkedCentres)
+            { return false; }
+            bool alongX;
+            int line;
+            if (TryStraightCorridor(first, second, out alongX, out line)) { return true; }
+            // Off-axis on both, and within reach: the lane router has a form for it. Whether a
+            // route actually fits is `CorridorLegs`' answer and it needs the whole room list to
+            // give it -- asking two questions in one function here is how this file ended up with
+            // a rule derived twice.
+            return a.x != b.x && a.z != b.z;
+        }
+
+        /// <summary>
+        /// The furthest apart two linked rooms' centres may be, in cells: two of the coarsest slots
+        /// this planner can produce. See <see cref="AreNeighbourRooms"/>.
+        /// </summary>
+        internal static int FurthestLinkedCentres
+        {
+            get { return SlotSpacing(MinSlotsPerAxis) * 2; }
         }
 
         /// <summary>
@@ -1293,7 +2116,7 @@ namespace RimroomsAsyncIndustries.Generation
                     // defect this file has paid for repeatedly. See `CorridorLegs`.
                     foreach (CorridorLeg leg in CorridorLegs(room, other,
                         Math.Max(ShapeDepthOf(rooms, room, depth),
-                            ShapeDepthOf(rooms, other, depth))))
+                            ShapeDepthOf(rooms, other, depth)), rooms))
                     {
                         foreach (IntVec3 cell in leg.Floor.Cells)
                         {
@@ -1321,8 +2144,20 @@ namespace RimroomsAsyncIndustries.Generation
                         floor[next.x, next.z] && seen.Add(next)) { pending.Enqueue(next); }
                 }
             }
-            return rooms.All(room => seen.Contains(room.Bounds.CenterCell)) &&
-                rooms.Where(room => room.familyId == "utility_room" || room.familyId == "storage_nook").All(room => room.links.Count == 1);
+            // **A ROOM THAT CLAIMS A ROUTE MUST HAVE ONE; A VAULT CLAIMS NONE.** This read
+            // `rooms.All(...)`, and that is why the degree spec's explicit **0** case was
+            // unbuildable -- an unlinked room has no floor leading to it by design, and this
+            // clause is the thing that refused it. Owner: *"insentive to mine things out to find
+            // isolated undiscorvered rooms when mining and deconsturcting wals"*.
+            //
+            // **The guarantee is not weakened.** The defect this clause exists to catch is a room
+            // the generator believed it had connected and had not, and every such room has links
+            // -- that is what believing it was connected means. `SealedFamily` is the only family
+            // the planner ever gives zero links, it is given them deliberately, and the rock
+            // around it is `Mineable` like all the fill.
+            return rooms.All(room => room.links.Count == 0 || seen.Contains(room.Bounds.CenterCell)) &&
+                rooms.Where(room => room.familyId == "utility_room" || room.familyId == "storage_nook").All(room => room.links.Count == 1) &&
+                rooms.Where(room => room.familyId == SealedFamily).All(room => room.links.Count == 0);
         }
 
         /// <summary>
@@ -1372,7 +2207,8 @@ namespace RimroomsAsyncIndustries.Generation
         /// decides any of it, and a room that goes back where it was is simply a room that is
         /// not back to back with anything.
         /// </summary>
-        private static void PushAgainst(List<RoomRecord> rooms, RoomRecord mover, RoomRecord anchorRoom)
+        private static void PushAgainst(List<RoomRecord> rooms, RoomRecord mover, RoomRecord anchorRoom,
+            int depth)
         {
             if (rooms == null || mover == null || anchorRoom == null) { return; }
             CellRect a = mover.Bounds;
@@ -1391,9 +2227,57 @@ namespace RimroomsAsyncIndustries.Generation
                 mover.Bounds.maxX < DestinationService.MapWidth - 1 &&
                 mover.Bounds.maxZ < DestinationService.MapHeight - 1;
             bool collides = rooms.Any(other => other != mover && mover.Bounds.Overlaps(other.Bounds));
-            if (onMap && !collides && SharesWall(mover, anchorRoom)) { return; }
+            // **AND IT MAY NOT LAND IN SOMEBODY ELSE'S CORRIDOR.** A fourth condition, added with
+            // the lane router. The three above ask whether the room's new position is legal; none
+            // of them asks whether it broke a route that was already there, and a dead end sliding
+            // into a lane is exactly how it would. The link whose route it blocked may be a
+            // spanning-tree edge, which `PruneUnroutableLinks` deliberately refuses to remove --
+            // so the level would simply fail to generate, with the reason three steps upstream of
+            // where it showed.
+            bool blocksARoute = !EveryLinkRoutes(rooms, mover, depth);
+            if (onMap && !collides && !blocksARoute && SharesWall(mover, anchorRoom)) { return; }
             mover.x = originalX;
             mover.z = originalZ;
+        }
+
+        /// <summary>
+        /// Whether every link in the graph still has a corridor or a shared wall under it.
+        ///
+        /// Asked after a room moves. See <see cref="PushAgainst"/>.
+        /// </summary>
+        private static bool EveryLinkRoutes(List<RoomRecord> rooms, RoomRecord mover, int depth)
+        {
+            // **ONLY THE LINKS THE MOVER COULD POSSIBLY HAVE BROKEN.** The one thing that changed
+            // is where this room is, and a corridor it cannot reach cannot have been blocked by
+            // it. Without the filter this is every link re-routed through seven forms on every
+            // push attempt, which is the whole level's routing done sixty times over.
+            IntVec3 at = mover.Bounds.CenterCell;
+            int span = FurthestLinkedCentres * 2;
+            for (int index = 0; index < rooms.Count; index++)
+            {
+                RoomRecord room = rooms[index];
+                if (room == null || room.links == null) { continue; }
+                IntVec3 here = room.Bounds.CenterCell;
+                if (room != mover && (Math.Abs(here.x - at.x) > span || Math.Abs(here.z - at.z) > span))
+                { continue; }
+                for (int link = 0; link < room.links.Count; link++)
+                {
+                    if (room.links[link] <= room.index) { continue; }
+                    RoomRecord other = rooms.FirstOrDefault(r => r != null && r.index == room.links[link]);
+                    if (other == null) { continue; }
+                    // **THE SHAPE GATE TOO, not only the route**, because the shape gate is what
+                    // `ValidateRooms` asks and a move that fails it refuses the whole layout. A
+                    // push slides a room by most of its own span, which is enough to carry a
+                    // reach-braid link past `FurthestLinkedCentres` -- measured, as a candidate
+                    // refusal reading *"is not a shape a corridor can join"* at 106 cells against
+                    // a stated 96. Asking only about the route missed it entirely, because the
+                    // route was still perfectly carvable.
+                    if (!AreNeighbourRooms(room, other)) { return false; }
+                    if (SharesWall(room, other)) { continue; }
+                    if (CorridorLegs(room, other, depth, rooms).Count == 0) { return false; }
+                }
+            }
+            return true;
         }
 
         /// <summary>
@@ -1435,21 +2319,61 @@ namespace RimroomsAsyncIndustries.Generation
             return false;
         }
 
+        /// <summary>
+        /// Whether this perimeter cell is a doorway, and **it asks `TryStraightCorridor` rather
+        /// than assuming a wall midpoint.**
+        ///
+        /// Owner, 2026-10-03: *"non default fdoor possitions in rooms so doors are not just on each
+        /// side, can have doors al over"*. The four tests below used to read
+        /// `cell.z == room.Bounds.CenterCell.z`, which put every door at the exact centre of its
+        /// wall — and that was not a choice, it was forced: a corridor could only run along a line
+        /// both centres shared, so the midpoint was the only cell one could arrive at. Now the
+        /// corridor names the line it runs along and the door is wherever that line meets the wall.
+        ///
+        /// **A diagonal link opens two doors and that is deliberate.** The elbow leaves through one
+        /// of the two walls facing the other room and which one is settled while the route is
+        /// built, after trying both; re-deriving that choice here would be a second derivation of
+        /// `BentLegs`, which is the defect this file keeps paying for. So both cells open, and the
+        /// one the corridor does not use is a door with rock behind it — the owner's own *"odd
+        /// contructions of doors walls corners deadends doors to now where"*, which
+        /// <see cref="FalseOpening"/> already builds on purpose. It costs nothing: the cell is on
+        /// the room's own perimeter and what lies past it is solid, so no route is added or taken
+        /// away and `CandidateIsSafe` proves the same level either way.
+        /// </summary>
         internal static bool DoorOpening(RoomRecord room, IReadOnlyList<RoomRecord> rooms, IntVec3 cell)
         {
+            CellRect bounds = room.Bounds;
+            IntVec3 centre = bounds.CenterCell;
             foreach (int index in room.links)
             {
                 RoomRecord other = rooms.First(r => r.index == index);
-                if (other.Bounds.minX > room.Bounds.maxX && cell.x == room.Bounds.maxX && cell.z == room.Bounds.CenterCell.z) { return true; }
-                if (other.Bounds.maxX < room.Bounds.minX && cell.x == room.Bounds.minX && cell.z == room.Bounds.CenterCell.z) { return true; }
-                if (other.Bounds.minZ > room.Bounds.maxZ && cell.z == room.Bounds.maxZ && cell.x == room.Bounds.CenterCell.x) { return true; }
-                if (other.Bounds.maxZ < room.Bounds.minZ && cell.z == room.Bounds.minZ && cell.x == room.Bounds.CenterCell.x) { return true; }
+                bool alongX;
+                int line;
+                if (TryStraightCorridor(room, other, out alongX, out line))
+                {
+                    if (alongX)
+                    {
+                        if (other.Bounds.minX > bounds.maxX && cell.x == bounds.maxX && cell.z == line) { return true; }
+                        if (other.Bounds.maxX < bounds.minX && cell.x == bounds.minX && cell.z == line) { return true; }
+                        continue;
+                    }
+                    if (other.Bounds.minZ > bounds.maxZ && cell.z == bounds.maxZ && cell.x == line) { return true; }
+                    if (other.Bounds.maxZ < bounds.minZ && cell.z == bounds.minZ && cell.x == line) { return true; }
+                    continue;
+                }
+                if (other.Bounds.minX > bounds.maxX && cell.x == bounds.maxX && cell.z == centre.z) { return true; }
+                if (other.Bounds.maxX < bounds.minX && cell.x == bounds.minX && cell.z == centre.z) { return true; }
+                if (other.Bounds.minZ > bounds.maxZ && cell.z == bounds.maxZ && cell.x == centre.x) { return true; }
+                if (other.Bounds.maxZ < bounds.minZ && cell.z == bounds.minZ && cell.x == centre.x) { return true; }
             }
-            // **A BACK-TO-BACK PAIR NEEDS NO EXTRA RULE HERE.** The four tests above ask whether
-            // the neighbour lies strictly beyond this room's edge, and an abutting neighbour's
-            // near edge is `maxX + 1`, which is strictly beyond `maxX`. So each room already
-            // opens the midpoint of the wall it shares, and `AreGridNeighbors` guarantees linked
-            // centres share that axis, so the two midpoints line up and the openings meet.
+            // **A BACK-TO-BACK PAIR NEEDS NO EXTRA RULE HERE.** The tests above ask whether the
+            // neighbour lies strictly beyond this room's edge, and an abutting neighbour's near
+            // edge is `maxX + 1`, which is strictly beyond `maxX`. `TryStraightCorridor` answers
+            // for such a pair as well -- they are separated on one axis and overlap on the other,
+            // which is exactly what standing wall to wall means -- so **both rooms read the same
+            // line out of the same function and their two openings are the same cell.** That is
+            // what makes them meet, rather than an assumption about where their centres are: since
+            // `TryStraightCorridor` the two centres need not share an axis at all.
             //
             // The first draft added a second rule and a `SharedDoorCell` to go with it, computed
             // from the overlap of two rooms whose edges were equal. Both are gone: the edges are
