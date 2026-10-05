@@ -105,6 +105,12 @@ namespace RimroomsAsyncIndustries.Core
                 "RR_ConnectedBillWorkTailoringContinue", "RR_ConnectedBillWorkTailoring"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyBillWorkArt",
                 "RR_ConnectedBillWorkArtContinue", "RR_ConnectedBillWorkArt"),
+            // Register row 274, Medical Dissection. The only family here whose work type comes
+            // from a profile mod, so its givers carry MayRequire and are absent for almost
+            // everybody -- which is exactly the case `Present` exists to keep out of the pane.
+            new ConnectedWorkPriorityPair("RR_Settings_FamilyBillWorkMedicalTraining",
+                "RR_ConnectedBillWorkMedicalTrainingContinue",
+                "RR_ConnectedBillWorkMedicalTraining"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyBill",
                 "RR_ConnectedBillContinue", "RR_ConnectedBill"),
             new ConnectedWorkPriorityPair("RR_Settings_FamilyWarden",
@@ -208,6 +214,53 @@ namespace RimroomsAsyncIndustries.Core
         }
 
         /// <summary>
+        /// Whether this family's two givers are actually in the game.
+        ///
+        /// **A live defect before this existed, and not a hypothetical one.** Four families are
+        /// gated by `MayRequire` — childcare on Biotech, dark study on Anomaly, fishing on
+        /// Odyssey and medical training on register row 274 — so their giver defs are absent for
+        /// anyone without that content. <see cref="Apply"/> had always skipped an absent pair,
+        /// but the settings pane iterated <see cref="Families"/> unconditionally, so a player
+        /// without Anomaly was shown a cross-gate dark-study slider: labelled with a shipped
+        /// default of **0**, because <see cref="Shipped"/> has nothing to report for a def that
+        /// never loaded, and writing an override keyed to a defName no def carries, which then
+        /// sits in the preferences file for ever.
+        ///
+        /// **A control for work the player does not own is worse than a missing one** — it reads
+        /// as a feature that does nothing. Asked with the same two `GetNamedSilentFail` lookups
+        /// `Apply` uses, so the pane and the applier cannot disagree about what exists.
+        /// </summary>
+        internal static bool Present(ConnectedWorkPriorityPair pair)
+        {
+            WorkGiverDef unusedContinue, unusedPlan;
+            return TryGivers(pair, out unusedContinue, out unusedPlan);
+        }
+
+        /// <summary>
+        /// This family's two giver defs, and whether both are in the game.
+        ///
+        /// **The single lookup site, deliberately.** <see cref="Apply"/> needs the defs and the
+        /// settings pane needs only the verdict, and when those were two pieces of code asking
+        /// the same question separately the pane drew sliders for families the applier skipped.
+        /// One method answering both is what makes disagreeing impossible rather than unlikely.
+        ///
+        /// The null comparison lives here, beside the lookups it guards, because that is what
+        /// `tools/check-standalone-guarantee.py` requires and the requirement is correct: a
+        /// guard inferred from a predicate called earlier is a guard a later reordering removes
+        /// silently.
+        /// </summary>
+        private static bool TryGivers(ConnectedWorkPriorityPair pair,
+            out WorkGiverDef continueGiver, out WorkGiverDef planGiver)
+        {
+            continueGiver = null;
+            planGiver = null;
+            if (pair == null) { return false; }
+            continueGiver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(pair.ContinueDefName);
+            planGiver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(pair.PlanDefName);
+            return continueGiver != null && planGiver != null;
+        }
+
+        /// <summary>
         /// Whether this family's plan giver had to be pushed below its continue giver. Shown
         /// to the player rather than silently corrected, so a slider that will not go where
         /// it was dragged explains itself.
@@ -255,9 +308,11 @@ namespace RimroomsAsyncIndustries.Core
             for (int index = 0; index < Families.Length; index++)
             {
                 ConnectedWorkPriorityPair pair = Families[index];
-                WorkGiverDef continueGiver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(pair.ContinueDefName);
-                WorkGiverDef planGiver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(pair.PlanDefName);
-                if (continueGiver == null || planGiver == null) { continue; }
+                // The same lookup the pane's `Present` asks through, so a family can never be
+                // drawn there and skipped here or the other way round.
+                WorkGiverDef continueGiver;
+                WorkGiverDef planGiver;
+                if (!TryGivers(pair, out continueGiver, out planGiver)) { continue; }
 
                 int continueValue = Effective(settings, pair.ContinueDefName);
                 int planValue = Effective(settings, pair.PlanDefName);

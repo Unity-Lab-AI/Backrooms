@@ -109,6 +109,28 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         public const string BillWorkTailoring = "bill-work-tailoring";
         public const string BillWorkArt = "bill-work-art";
 
+        /// <summary>
+        /// **The first work type here that a profile mod adds rather than Core or an expansion.**
+        /// Register row **274, Medical Dissection** — `MedicalTraining`, one giver,
+        /// `HMDissection.WorkGiver_DoDissectionBill`.
+        ///
+        /// It is here and the other twelve mod-added work types in the 294 profile are not, and
+        /// the difference is a measured property rather than a preference. `WorkGiver_DoDissectionBill`
+        /// **derives from `WorkGiver_DoBill`** and its giver def carries `fixedBillGiverDefs`, so
+        /// <see cref="Providers.BillWorkProvider"/> — which reads the bench set out of the loaded
+        /// `WorkGiverDef`s by capability and never by name — already covers it with no code about
+        /// this mod anywhere. Decompiled against the installed assembly rather than assumed; the
+        /// other twelve are `WorkGiver_Scanner`, `WorkGiver_Warden` or `WorkGiver_RescueDowned`
+        /// subclasses whose candidate set lives inside the mod's own types, where nothing generic
+        /// can reach it without referencing them. `research/WORK_TYPE_COVERAGE_AUDIT.md` carries
+        /// the enumeration and the verdict for each.
+        ///
+        /// **Nothing is patched, referenced or copied.** `MedicalTraining` is a defName string
+        /// looked up through `GetNamedSilentFail`, exactly as `Cooking` is, and the two giver defs
+        /// carry `MayRequire="Heremeus.MedicalDissection"` so they simply do not load without it.
+        /// </summary>
+        public const string BillWorkMedicalTraining = "bill-work-medical-training";
+
         /// <summary>Anomaly content; unavailable without the expansion rather than broken.</summary>
         public const string DarkStudy = "dark-study";
 
@@ -174,6 +196,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             new BillWorkProvider(BillWorkTailoring, "Tailoring", "RR_ConnectedWork_BillWorkTailoringLabel");
         private static readonly BillWorkProvider billArt =
             new BillWorkProvider(BillWorkArt, "Art", "RR_ConnectedWork_BillWorkArtLabel");
+        private static readonly BillWorkProvider billMedicalTraining = new BillWorkProvider(
+            BillWorkMedicalTraining, "MedicalTraining",
+            "RR_ConnectedWork_BillWorkMedicalTrainingLabel");
         private static readonly DarkStudyProvider darkStudy = new DarkStudyProvider();
         private static readonly HaulingUpkeepProvider haulingUpkeep = new HaulingUpkeepProvider();
         private static readonly MachineLoadingProvider machineLoading =
@@ -205,6 +230,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 { BillWorkSmithing, billSmithing },
                 { BillWorkTailoring, billTailoring },
                 { BillWorkArt, billArt },
+                { BillWorkMedicalTraining, billMedicalTraining },
                 { DarkStudy, darkStudy },
                 { HaulingUpkeep, haulingUpkeep },
                 { MachineLoading, machineLoading },

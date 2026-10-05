@@ -115,10 +115,13 @@ check("gated one entry at a time, never the whole role",
 
 check("AND THE GATING CHECKER CAN SEE A PER-ENTRY GATE, which it could not before",
       "def nodes_with_requirements(" in gating
-      and "for node, required in nodes_with_requirements(definition):" in gating,
+      and gating.count("for node, required in nodes_with_requirements(definition):") == 2,
       "-- it read `MayRequire` off the def alone, so per-entry gating reported as ungated. It "
       "was taught the mechanism rather than worked around, because demanding the attribute on "
-      "the def would have pushed the worse shape")
+      "the def would have pushed the worse shape. **COUNTED, because there are two rules in "
+      "that file now and containment could not tell one walk from two** -- adding the "
+      "foreign-work-type rule silently made this claim survive a plant that gutted the first "
+      "walk entirely, which is `in` cannot tell one site from three, again")
 
 check("and no expansion role is load-bearing for anything",
       all(("<stockTarget>" not in block) for block in
@@ -234,6 +237,67 @@ check("THE FOUR ELIMINATED CAUSES ARE RECORDED RATHER THAN RE-DERIVED",
       "-- the queue row says *no fix was written on a hunch*. Four candidates were eliminated "
       "against the installed game: the arrival part, the start spot, the gen step order and the "
       "drop method. The next reader does not repeat that work")
+
+# =====================================================================================
+# THE CHILDCARE DEFECT'S SECOND SHAPE: A WORK TYPE A PROFILE MOD ADDS
+# =====================================================================================
+# The DLC rule indexes the game's own `Data` folders, so it can only ask whether a name is
+# DLC-only. A work type from a workshop mod is in no `Data` folder at all -- not DLC-only,
+# therefore invisible, therefore ungatable by that rule. Thirteen such work types exist across
+# twelve mods in the 294 profile. Ungated, each is the identical unresolved cross-reference at
+# load that two childcare givers shipped with until 0.6.6-dev.
+connected_givers = read(MOD, "Defs", "WorkGiverDefs", "RR_ConnectedWork.xml")
+
+check("THE FOREIGN-WORK-TYPE RULE EXISTS, IS CALLED, AND IS SCOPED TO ONE UNAMBIGUOUS TAG",
+      "def foreign_work_types(owner):" in gating
+      # **THE CALL, not the definition.** The first version of this claim asserted only that the
+      # function existed, and its plant correctly reported MISSED: a rule defined and never
+      # invoked is a rule that does nothing, and the identifier was present either way.
+      and "    foreign, foreign_checked = foreign_work_types(owner)" in gating
+      and "    failures.extend(foreign)" in gating
+      and 'if node.tag != "workType":' in gating
+      and "known = set(owner) | own_work_types()" in gating,
+      "-- widening it to every reference tag would mean guessing what each tag's text is, and a "
+      "rule that guesses produces findings nobody trusts")
+
+check("it counts the package's own work types rather than assuming there are none",
+      "def own_work_types():" in gating and 'definition.tag != "WorkTypeDef"' in gating,
+      "-- authoring one later must not make the rule start reporting it as foreign")
+
+check("A MOD-PROVIDED WORK TYPE IS GATED ON THAT MOD'S OWN PACKAGE ID",
+      xml_only(connected_givers).count(
+          '<WorkGiverDef MayRequire="Heremeus.MedicalDissection">') == 2
+      and xml_only(connected_givers).count("<workType>MedicalTraining</workType>") == 2,
+      "-- both givers of the family, counted rather than tested for presence, because one gated "
+      "and one bare is the shape that ships a load error to everybody without the mod")
+
+check("and nothing in the package references a type that mod owns",
+      "HMDissection" not in code_only(read(
+          SRC, "ConnectedWork", "ConnectedDeploymentProvider.cs"))
+      and "HMDissection" not in code_only(read(
+          SRC, "ConnectedWork", "Providers", "BillWorkProvider.cs")),
+      "-- the family is reached entirely through Core's own bill plumbing and a defName string, "
+      "so the register's no-patch-no-copy instruction holds by construction")
+
+# =====================================================================================
+# A CONTROL FOR WORK THE PLAYER DOES NOT OWN
+# =====================================================================================
+priorities = read(SRC, "Core", "ConnectedWorkPriorities.cs")
+
+check("A GATED FAMILY DRAWS NO SLIDER, AND THE PANE ASKS THE APPLIER'S OWN QUESTION",
+      "if (!ConnectedWorkPriorities.Present(pair)) { continue; }" in code_only(read(
+          SRC, "Core", "RimroomsMod.cs"))
+      and "if (!TryGivers(pair, out continueGiver, out planGiver)) { continue; }" in code_only(
+          priorities),
+      "-- four families are MayRequire-gated and the pane drew all of them regardless, "
+      "reporting a shipped default of zero because no def had ever loaded to read one from")
+
+check("and BOTH read the same single lookup, counted rather than assumed",
+      code_only(priorities).count("GetNamedSilentFail(pair.ContinueDefName)") == 1
+      and code_only(priorities).count("GetNamedSilentFail(pair.PlanDefName)") == 1
+      and "return TryGivers(pair, out unusedContinue, out unusedPlan);" in code_only(priorities),
+      "-- two pieces of code asking the same question separately is what produced the phantom "
+      "slider, so the count is the claim: one lookup site for the pane and the applier both")
 
 print("")
 if failures:

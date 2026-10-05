@@ -132,7 +132,25 @@ def rewrite_target(target):
     if "#" in target:
         target, anchor = target.split("#", 1)
         anchor = "#" + anchor
-    target = target.lstrip("./")
+    # **`lstrip("./")` USED TO FLATTEN AN ESCAPE PATH INTO A LIE, and it shipped one.** It strips
+    # the characters `.` and `/` from the front, so `../../LICENSE` came out as `LICENSE` -- a
+    # perfectly site-relative-looking href for a file that is not at the site root. The licence
+    # link on the published credits page was **404 on the live site**, read back over HTTP, with
+    # every instrument green: the on-disk path resolved, and the escape guard added at 0.12.97-dev
+    # covers image sources only.
+    #
+    # So the two cases are now separated rather than collapsed. A `./` prefix is noise and is
+    # stripped; a `..` is a page reaching outside the published site and is **carried through
+    # intact**, so `check_links_resolve` in the exporter refuses it instead of inheriting a
+    # flattened href that looks correct.
+    if target.startswith("./"):
+        target = target[2:]
+    if target.split("#")[0].rsplit("/", 1)[-1] == "LICENSE" and ".." in target.split("/"):
+        # The one escape that is answered by publishing the file twice rather than by rewording
+        # the page -- the same answer the slide art got, for the same reason. A credits page that
+        # cites a licence has to be able to link it, and the export copies `LICENSE` into the
+        # site directory so this href resolves at the site root.
+        return "LICENSE" + anchor
     if target.endswith(".md"):
         target = target[:-3] + ".html"
     return target + anchor

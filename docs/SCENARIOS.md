@@ -88,6 +88,10 @@ These cards make the opening playable on paper before code begins. Counts, costs
 
 These are options for future scenario content, not promised release features. Give each an owner-approved objective chain and acceptance criteria before implementation.
 
+**All three now have a full design brief: [`ALTERNATE_START_BRIEFS.md`](ALTERNATE_START_BRIEFS.md).** Owner direction, 2026-10-05, asked which of three options to take and answered *"Write briefs for all three"*. Each brief carries the four things the queue row required — starting state, pressure, failure/recovery and acceptance evidence — plus convergence and the dependency boundary, which are the two shared-contract fields these three starts have most trouble with.
+
+**Two of the three premises below were rewritten by that work rather than expanded, and the reason is recorded here because this table is what somebody reads first.** `town_distortion` names *"time pressure"* and `isolated_outpost` names *"uncertain evacuation"*; both are clocks, and `CAMPAIGN_CHART.md` §1.1 permits exactly one clock in this mod and it is the gate's. The briefs replace them with costs that grow — settlement standing, and an account the post cannot reach. **The premises are left standing below rather than edited**, so the next reader sees that the position moved rather than wondering which is current.
+
 | Candidate | Opening premise | Distinct pressure | Likely convergence |
 | --- | --- | --- | --- |
 | `isolated_outpost` | A remote company post loses its radio relay and supply link. | Small crew, low stock, unreliable communications, and uncertain evacuation. | Restore a route, call aid, or operate as a self-sufficient site on the corporate network. |

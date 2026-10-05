@@ -168,6 +168,9 @@ def main():
                         % (relative, node.tag, value, node.tag,
                            "/".join(dlc_only[value]), may_require or "(none)"))
 
+    foreign, foreign_checked = foreign_work_types(owner)
+    failures.extend(foreign)
+
     if failures:
         for failure in failures:
             sys.stderr.write("dlc-gating: %s\n" % failure)
@@ -178,7 +181,76 @@ def main():
     print("  references found    : %d, all gated" % checked)
     for line in gated:
         print("    %s" % line)
+    print("  work types named    : %d, every foreign one gated" % foreign_checked)
     return 0
+
+
+# Work types this package declares itself. Empty today and checked rather than assumed, so
+# authoring one later does not make the rule below start lying about it.
+def own_work_types():
+    names = set()
+    for path in glob.glob(os.path.join(MOD, "**", "*.xml"), recursive=True):
+        if "/Languages/" in path.replace("\\", "/"):
+            continue
+        try:
+            root = ElementTree.parse(path).getroot()
+        except ElementTree.ParseError:
+            continue
+        for definition in root:
+            if definition.tag != "WorkTypeDef":
+                continue
+            name = definition.findtext("defName")
+            if name:
+                names.add(name)
+    return names
+
+
+def foreign_work_types(owner):
+    """A `<workType>` that no installed game folder defines must carry a `MayRequire`.
+
+    **This is the `Childcare` defect's second shape, and the first rule above cannot see it.**
+    That rule indexes the game's own `Data` folders and asks whether a referenced name is
+    DLC-only. A work type added by a *profile mod* -- `MedicalTraining` from register row 274,
+    `NuclearWork` from row 83, eleven more across the 294 -- appears in no `Data` folder at all,
+    so it is not DLC-only, so it is simply invisible. Ungated, it is the identical failure: an
+    unresolved cross-reference at load on an install without that mod, which is every install
+    that does not happen to have it.
+
+    Scoped to `<workType>` deliberately. It is the one tag in this package whose text is always a
+    `WorkTypeDef` name and never prose, a number or a class, so a foreign value has exactly one
+    meaning and the rule cannot cry wolf. Widening it to every reference tag would mean deciding
+    what each tag's text is, which is the kind of guess that produces findings nobody trusts.
+    """
+    known = set(owner) | own_work_types()
+    problems = []
+    counted = 0
+    for path in sorted(glob.glob(os.path.join(MOD, "**", "*.xml"), recursive=True)):
+        relative = os.path.relpath(path, REPO).replace("\\", "/")
+        if "/Languages/" in relative:
+            continue
+        try:
+            root = ElementTree.parse(path).getroot()
+        except ElementTree.ParseError:
+            continue
+        for definition in root:
+            def_name = definition.findtext("defName") or definition.tag
+            for node, required in nodes_with_requirements(definition):
+                if node.tag != "workType":
+                    continue
+                value = (node.text or "").strip()
+                if not value:
+                    continue
+                counted += 1
+                if value in known or required:
+                    continue
+                problems.append(
+                    "%s: %s names <workType>%s</workType>, which no installed game folder "
+                    "defines and this package does not declare. If a mod provides it the def "
+                    "needs MayRequire=\"<that mod's packageId>\"; without one this is an "
+                    "unresolved cross-reference at load for anybody who lacks the mod. If the "
+                    "name is a typo, that is the other thing this catches."
+                    % (relative, def_name, value))
+    return problems, counted
 
 
 if __name__ == "__main__":

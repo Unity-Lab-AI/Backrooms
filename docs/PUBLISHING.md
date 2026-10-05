@@ -156,3 +156,73 @@ git -C .local/export/Rimrooms-AsyncIndustries ls-remote --heads github
 If any push in the loop is refused as non-fast-forward, stop, go to §4 Case B for that remote/branch, and do not continue the loop until it is resolved.
 
 If the exporter refuses, **do not work around it**. It refuses for two reasons and both are real: a package edited after the build, which means rebuild and re-export; or something in the export that must never be published, which means read the refusal and fix what it names.
+
+## 8. Cutting a release — the ritual, and the archive it leaves behind
+
+**This section is the M6a half of the tag-release row, and the queue row itself says which half that is:** *"the ritual and the archive close here; the actual tag cannot be cut until M6b supplies the acceptance results this row requires."*
+
+So: **the procedure is written and the first tag is not cut.** The row asks to *"publish only features that passed their listed acceptance criteria"*, and nothing has passed anything because nothing has run. A tag is a claim about what works; this one would be a claim nobody has earned.
+
+### 8.1 What a release is here
+
+A release is **a cascade that is additionally marked**. It is not a different act. Everything in §0–§6 happens exactly as written, and then three things more.
+
+### 8.2 The preconditions, every one of them refusable
+
+| | Precondition | How it is established |
+|---|---|---|
+| 1 | The whole battery is green **in one run** | checkers, then proofs, then plant suites, then `check-plant-residue.py` |
+| 2 | The package is the one that was built | the stager and the exporter both verify every file's SHA256 against the build manifest |
+| 3 | The queue holds **no** finished item | `check-queue-integrity.py`, and `[x]` must be zero |
+| 4 | The twelve refs are level | read back with `git ls-remote`, pasted into the session output |
+| 5 | The published site answers over HTTP | `curl` the index, a deep page, the stylesheet, the cover and one banner |
+| 6 | **Every feature in the release notes has a recorded acceptance result** | this is the one that is not met and the reason no tag exists yet |
+
+**Precondition 6 is the gate.** The other five are met today.
+
+### 8.3 The three extra acts
+
+**One — the version is final, not `-dev`.** `About.xml`'s `modVersion` and the project's `Version` are the same string, and `check-doc-conformance.py` already refuses a document that names a different one. A release drops the `-dev` suffix; a `0.x` release is still pre-release under the standing version policy, and `1.0.0` is the first stable.
+
+**Two — an annotated tag on both remotes, from the commit that was published.**
+
+```bash
+V=$(python - <<'PY'
+import io, re
+print(re.search(r"<modVersion>([^<]+)</modVersion>",
+      io.open("Mod/Rimrooms - Async Industries/About/About.xml", encoding="utf-8-sig").read()).group(1))
+PY
+)
+git tag -a "v$V" -m "Rimrooms - Async Industries $V"
+for r in forgejo github; do git push "$r" "v$V"; done
+git ls-remote --tags forgejo | grep "v$V"
+git ls-remote --tags github  | grep "v$V"
+```
+
+**Annotated rather than lightweight**, because a tag is a record and a record carries who and when. Read back, for the same reason every push here is read back: `git push` exiting zero does not mean the remote holds the ref.
+
+**Three — the same tag on the mod-only repository.** It is a separate repository with its own history, and the downloadable mod is what a player actually has. A version that exists here and not there is a version nobody can obtain.
+
+```bash
+cd .local/export/Rimrooms-AsyncIndustries
+git tag -a "v$V" -m "Rimrooms - Async Industries $V"
+for r in forgejo github; do git push "$r" "v$V"; done
+```
+
+### 8.4 The archive, which is a property rather than a folder
+
+The row asks to *"archive exact source and build artifacts, preserve a known-good server profile"*. **Two of those three are already archived by construction, and saying so is better than copying files into a folder nobody maintains.**
+
+| What | Where it already is | Why that is the archive |
+|---|---|---|
+| Exact source | the tagged commit on **four** remote refs | a tag on an immutable history is a stronger archive than a copy, and there are four of them |
+| Build artifacts | the build manifest, with a SHA256 per file, committed beside the package | the manifest is what lets a later reader prove a downloaded copy is the one that was built — a zip could not |
+| **A known-good profile** | **nothing. This is the gap.** | the profile is 294 rows of the owner's own mod list, and *known-good* is a launch result |
+
+**So the archive is complete except for the one piece that requires a launch**, and that piece is M6b's. What a release must do is record the profile it was published **against** — the pinned list, the game build, the expansion set — and `docs/research/installed-mod-metadata-2026-09-27.csv` is that snapshot, carrying a parsed `About.xml` SHA256 for all 294 entries. A release names the snapshot it used; it does not claim the snapshot was good.
+
+### 8.5 What a release must never do
+
+- **Claim a tested order, a verified combination or a compatibility result.** D1 is unchanged: *"do not announce compatibility until validation is complete."*
+- **Promise a save migration it has not written.** While the version starts with `0.`, a development save may break and the release notes say so plainly.
+- **Ship the development changelog.** `docs/WHATS_NEW.md` is the player-facing record and it is authored, not filtered.

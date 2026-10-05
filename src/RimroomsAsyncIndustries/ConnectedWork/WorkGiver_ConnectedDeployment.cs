@@ -541,6 +541,27 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         protected override bool ContinueOnly { get { return true; } }
     }
 
+    /// <summary>
+    /// The first family in this mod whose work type comes from a profile mod rather than from
+    /// Core or an expansion. Register row **274, Medical Dissection**. Its giver defs carry
+    /// `MayRequire="Heremeus.MedicalDissection"`, so without that mod these classes are never
+    /// instantiated and the family is not in the game at all.
+    /// </summary>
+    public sealed class WorkGiver_ConnectedBillWorkMedicalTraining : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BillWorkMedicalTraining; } }
+        protected override bool ContinueOnly { get { return false; } }
+    }
+
+    public sealed class WorkGiver_ConnectedBillWorkMedicalTrainingContinue
+        : WorkGiver_ConnectedDeployment
+    {
+        protected override string ProviderId
+        { get { return ConnectedDeploymentProviders.BillWorkMedicalTraining; } }
+        protected override bool ContinueOnly { get { return true; } }
+    }
+
 
     public sealed class WorkGiver_ConnectedDarkStudy : WorkGiver_ConnectedDeployment
     {

@@ -895,6 +895,39 @@
     <canBeDoneByMechs>false</canBeDoneByMechs>
   </WorkGiverDef>
 
+  <!-- Medical training: a doctor crosses a gate to run a dissection bill on the far side.
+       The only mod-added work type in the 294 profile that Core's own bill plumbing already
+       covers: HMDissection.WorkGiver_DoDissectionBill derives from WorkGiver_DoBill and its
+       giver def carries fixedBillGiverDefs, so BillWorkProvider reads the bench set out of
+       the loaded defs by capability and nothing here names a thing the mod owns. Both defs
+       are gated on the mod's own package id, so without it this family is not in the game.
+       Its single giver DoBillsDissection sits at 100, so continue is 102 and plan is 2. -->
+
+  <WorkGiverDef MayRequire="Heremeus.MedicalDissection">
+    <defName>RR_ConnectedBillWorkMedicalTrainingContinue</defName>
+    <label>travel on to dissect through a gate</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillWorkMedicalTrainingContinue</giverClass>
+    <workType>MedicalTraining</workType>
+    <verb>dissect</verb>
+    <gerund>dissecting</gerund>
+    <priorityInType>102</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <WorkGiverDef MayRequire="Heremeus.MedicalDissection">
+    <defName>RR_ConnectedBillWorkMedicalTraining</defName>
+    <label>cross a gate to dissect</label>
+    <giverClass>RimroomsAsyncIndustries.ConnectedWork.WorkGiver_ConnectedBillWorkMedicalTraining</giverClass>
+    <workType>MedicalTraining</workType>
+    <verb>dissect</verb>
+    <gerund>dissecting</gerund>
+    <priorityInType>2</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Moving</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
+
   <!-- Dark study: a researcher crosses a gate to study a contained entity. Anomaly content,
        so both defs are gated; Core's own WorkGiver_DarkStudyInteract.ShouldSkip is likewise
        just `return !ModsConfig.AnomalyActive`. Continue sits above Core's StudyInteract (110)

@@ -132,6 +132,11 @@ namespace RimroomsAsyncIndustries.Core
             }
             foreach (ConnectedWorkPriorityPair pair in ConnectedWorkPriorities.Families)
             {
+                // A family whose givers are not in this game gets no control. Four are gated by
+                // `MayRequire` and this pane used to draw all of them regardless -- a slider for
+                // work the player does not own, reporting a shipped default of zero because
+                // nothing was ever loaded to read one from. See `ConnectedWorkPriorities.Present`.
+                if (!ConnectedWorkPriorities.Present(pair)) { continue; }
                 listing.Gap(6f);
                 listing.Label(pair.LabelKey.Translate());
                 DrawPriority(listing, "RR_Settings_PriorityContinue", pair.ContinueDefName);

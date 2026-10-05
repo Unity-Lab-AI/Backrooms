@@ -70,6 +70,13 @@ ABOUT = os.path.join(MOD, "About", "About.xml")
 ALLOWLIST = os.path.join(REPO, "tools", "package-files.json")
 CSPROJ = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "RimroomsAsyncIndustries.csproj")
 GAME_DATA = r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Data"
+
+# The owner's 294-entry profile as it is actually installed. Used only to verify an **optional**
+# compatibility patch target, never to resolve anything this package needs: nothing here is a
+# dependency and the absence of this folder changes no verdict about the package itself.
+WORKSHOP = r"C:\Program Files (x86)\Steam\steamapps\workshop\content\294100"
+
+DEFNAME_TAG = re.compile(r"<defName>([^<]+)</defName>")
 GAME_MANAGED = r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed"
 
 # Directories RimWorld reads inside a version folder. Anything else is inert.
@@ -563,7 +570,45 @@ def optional_compat_xpaths(root):
     return exempt
 
 
+def profile_defs():
+    """Every defName declared by the installed profile mods, or None if they are unreachable.
+
+    **Why this exists.** An optional compatibility patch target was reported as *"not installed
+    here and cannot be verified"* seven times -- every one of them a `PH_` door from **Doors
+    Expanded**. Both that mod (profile row 77, `jecrell.doorsexpanded`) and **ReBuild: Doors and
+    Corners** (row 185) declare those defs, **both are in the owner's 294-entry profile, and both
+    are installed on this machine.** So the seven were verifiable all along and the checker simply
+    was not looking anywhere a profile mod lives.
+
+    That matters because a renamed target is a **silent** compatibility break: the patch applies
+    to nothing and the gate console never appears on the door. A note saying it cannot be checked
+    reads as *checked and fine* after the third time somebody sees it.
+
+    **Returns None rather than an empty set when the library is not reachable**, so a machine
+    without the Steam workshop folder degrades to exactly the old behaviour -- seven notes -- and
+    never to a silent pass. An absence rule over an empty set is satisfied by construction, which
+    is this repository's most repeated finding about its own instruments.
+    """
+    if not os.path.isdir(WORKSHOP):
+        return None
+    names = set()
+    for path in glob.iglob(os.path.join(WORKSHOP, "*", "**", "*.xml"), recursive=True):
+        try:
+            text = io.open(path, encoding="utf-8-sig", errors="replace").read()
+        except OSError:
+            continue
+        if "<defName>" not in text:
+            continue
+        for name in DEFNAME_TAG.findall(text):
+            names.add(name.strip())
+    return names or None
+
+
 def check_patches(problems, declared, game_defs, notes):
+    # Read once for the whole sweep: the library is thousands of files and the answer is the
+    # same for every patch in the package.
+    installed = profile_defs()
+    verified = 0
     patch_dir = os.path.join(MOD, "*", "Patches", "*.xml")
     for path in sorted(glob.glob(patch_dir)):
         root = parse(path, problems)
@@ -586,17 +631,35 @@ def check_patches(problems, declared, game_defs, notes):
                 if game_defs is None:
                     continue
                 if target not in game_defs:
-                    if optional:
-                        # Still surfaced rather than silent: an optional target that has been
-                        # renamed by the other mod is a real compatibility break, it is just
-                        # not a reason to refuse the package.
-                        notes.append("optional compatibility patch targets %r, which is not "
-                                     "installed here and cannot be verified" % target)
-                    else:
+                    if not optional:
                         fail(problems, "%s patches %r, which exists neither in the game's "
                                        "Data nor in this package" % (rel(path), target))
+                    elif installed is None:
+                        notes.append("optional compatibility patch targets %r; the mod library "
+                                     "is not reachable from here, so it cannot be verified"
+                                     % target)
+                    elif target in installed:
+                        # Verified against the profile mod's own defs on disk, which is what the
+                        # patch's own comment says the names were read from in the first place.
+                        verified += 1
+                    else:
+                        # **A FAILURE, not a note.** The library IS reachable and the target is
+                        # in none of it, so this is the silent break rather than the unknown:
+                        # the patch would apply to nothing and the gate console would never
+                        # appear on that door, with no error anywhere to say so.
+                        fail(problems, "%s patches %r as optional compatibility, and no "
+                                       "installed profile mod declares it. An optional patch "
+                                       "whose target has been renamed applies to nothing and "
+                                       "reports nothing -- read the mod's current defs and "
+                                       "update the xpath, or drop the target" % (rel(path), target))
         if not found_any:
             fail(problems, "%s is in Patches/ but contains no xpath" % rel(path))
+    if installed is None:
+        notes.append("mod library not reachable; optional compatibility targets are unverified "
+                     "rather than passed")
+    else:
+        notes.append("optional compatibility patch targets verified against the installed "
+                     "profile mods: %d" % verified)
 
 
 # --------------------------------------------------------------------------- #

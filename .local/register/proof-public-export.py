@@ -368,6 +368,42 @@ claim("the image guard refuses a site with no image at all",
       "an absence rule over an empty set is satisfied by construction, so finding no image is "
       "itself the fault -- it means the banners stopped being generated")
 
+# ----------------------------------- the same guard for links, because the same fault was live
+#
+# **The image rule shipped half a guard and the other half was already broken on the live site.**
+# `check_images_resolve` was aimed at `<img src>` because that was the fault in hand the day the
+# banners 404'd. An `<a href>` has the identical failure mode, and the credits page had it: the
+# source links the licence as `../../LICENSE`, the renderer's `lstrip("./")` flattened that to
+# `LICENSE`, and `<site>/LICENSE` returned **404** -- read back over HTTP, not inferred. A broken
+# image is visible; a dead link looks exactly like a working one.
+links_guard = slice_function(exporter_code, "check_links_resolve")
+claim("THE AUDIT RUNS THE LINK GUARD, not only the image one",
+      "check_links_resolve(problems)" in audit_body,
+      "one pattern, all the references it guards -- the lesson the plant suites already carry, "
+      "applied to a guard instead of a plant table")
+claim("the link guard refuses a link that climbs out of the site",
+      '".." in target.split("/")' in links_guard,
+      "the identical rule as the image guard's, because the identical fault was live on the "
+      "published credits page")
+claim("the link guard resolves every other link against the assembled tree",
+      "os.path.isfile(resolved) or os.path.isdir(resolved)" in links_guard,
+      "a dead link that does not climb anywhere is still a 404, and it is the one a reader "
+      "cannot tell from a working link")
+claim("the link guard refuses a site with no relative link at all",
+      "if checked == 0:" in links_guard,
+      "every page carries the navigation, so finding none means the pages stopped being "
+      "generated rather than that the site is clean")
+claim("THE LICENCE IS PUBLISHED INSIDE THE SITE, so the credits page can link it",
+      'shutil.copyfile(licence, os.path.join(target, "LICENSE"))' in exporter_code,
+      "the same answer the slide art got, for the same reason: a page may not reach outside the "
+      "site, so the thing it reaches for comes inside")
+claim("and the renderer no longer flattens an escape path into a plausible href",
+      'if target.startswith("./"):' in renderer_code
+      and 'lstrip("./")' not in renderer_code,
+      "`lstrip(\"./\")` strips the CHARACTERS `.` and `/`, so `../../LICENSE` came out as "
+      "`LICENSE` -- a site-relative-looking href for a file that was not at the site root. The "
+      "two cases are separated now: `./` is noise, `..` is carried through for the guard to refuse")
+
 # ------------------------------------------------- a checker must be able to report what it finds
 claim("the report survives a character the console cannot encode",
       "def say(" in conform_code and "UnicodeEncodeError" in conform_code,

@@ -36,6 +36,9 @@ RECEIPT = SRC + "/Scenario/HeadquartersSetupComponent.cs"
 HQ = SRC + "/Scenario/GenStep_Headquarters.cs"
 GUARANTEE = "tools/check-standalone-guarantee.py"
 GATING = "tools/check-dlc-gating.py"
+GIVERS = ("Mod/Rimrooms - Async Industries/1.6/Defs/WorkGiverDefs/RR_ConnectedWork.xml")
+MODFILE = SRC + "/Core/RimroomsMod.cs"
+PRIORITIES = SRC + "/Core/ConnectedWorkPriorities.cs"
 PROOF = ".local/register/proof-standalone-and-grants.py"
 NL = chr(10)
 
@@ -99,6 +102,50 @@ PLANTS = [
     ("the gating checker goes back to reading MayRequire off the def alone", GATING,
      "            for node, required in nodes_with_requirements(definition):",
      "            required = set()" + NL + "            for node in definition.iter():", PROOF),
+
+    # ============================ the foreign work type, verified by the rule itself
+    # **Verified by `check-dlc-gating.py` and not by the proof**, which is the stronger of the
+    # two directions available here: the proof can only assert the rule's source still says
+    # what it says, while the checker has to actually produce a finding from a real fault in a
+    # real def. The fault is the exact one two childcare givers shipped with -- a work type the
+    # install may not have, named with nothing gating it.
+    ("A MOD-PROVIDED WORK TYPE LOSES ITS GATE", GIVERS,
+     '<WorkGiverDef MayRequire="Heremeus.MedicalDissection">' + NL
+     + "    <defName>RR_ConnectedBillWorkMedicalTrainingContinue</defName>",
+     "<WorkGiverDef>" + NL
+     + "    <defName>RR_ConnectedBillWorkMedicalTrainingContinue</defName>", GATING),
+
+    # One gated and one bare is the shape that reads as handled and is not, so the claim counts
+    # both rather than testing for presence. This plant is why it counts.
+    ("only ONE of the pair keeps its gate", GIVERS,
+     '<WorkGiverDef MayRequire="Heremeus.MedicalDissection">' + NL
+     + "    <defName>RR_ConnectedBillWorkMedicalTraining</defName>",
+     "<WorkGiverDef>" + NL
+     + "    <defName>RR_ConnectedBillWorkMedicalTraining</defName>", GATING),
+
+    ("the rule stops counting the package's own work types", GATING,
+     "    known = set(owner) | own_work_types()", "    known = set(owner)", PROOF),
+
+    ("THE FOREIGN-WORK-TYPE RULE IS SKIPPED ENTIRELY", GATING,
+     "    foreign, foreign_checked = foreign_work_types(owner)",
+     "    foreign, foreign_checked = [], 0", PROOF),
+
+    # ============================================ a control for work nobody owns
+    ("A GATED FAMILY GETS A SLIDER AGAIN IN THE SETTINGS PANE", MODFILE,
+     "                if (!ConnectedWorkPriorities.Present(pair)) { continue; }" + NL, "", PROOF),
+
+    ("the applier stops asking the pane's question", PRIORITIES,
+     "                if (!TryGivers(pair, out continueGiver, out planGiver)) { continue; }",
+     "                TryGivers(pair, out continueGiver, out planGiver);", PROOF),
+
+    # The phantom slider existed because two pieces of code asked the same question separately.
+    # A second lookup is how that comes back, so the claim counts them and this plants the count.
+    ("THE PANE GETS ITS OWN SECOND LOOKUP BACK", PRIORITIES,
+     "            continueGiver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(pair.ContinueDefName);",
+     "            continueGiver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(pair.ContinueDefName);"
+     + NL + "            if (DefDatabase<WorkGiverDef>.GetNamedSilentFail(pair.PlanDefName) == null)"
+     + NL + "            { planGiver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(pair.PlanDefName); }",
+     PROOF),
 
     ("AN EXPANSION ROLE BECOMES LOAD-BEARING, so the branch is told it is short", ROLES,
      "    <maxLinked>6</maxLinked>" + NL + "    <displayOrder>8</displayOrder>",

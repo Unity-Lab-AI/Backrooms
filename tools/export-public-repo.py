@@ -92,8 +92,22 @@ REMOTES = [
 # information"*. A player-facing *what is new* is worth having and is **authoring work**, not a
 # transformation of this one; filtering it automatically would be guessing at what a player cares
 # about. Left out and recorded rather than shipped dressed up.
+#
+# **THAT AUTHORING WAS DONE AT 0.12.99-dev and `docs/WHATS_NEW.md` is it.** Written rather than
+# filtered, exactly as the paragraph above requires: it names what changed for somebody playing,
+# says plainly that nothing has been played, and carries the four things a player is owed up front
+# -- nothing is claimed as tested with other mods, co-op is not promised, development saves may
+# break, and balance is unjudged. It holds no version soup, no instrument names, no queue counts
+# and no task numbers, and it goes through the same reader-facing checks as every wiki page.
+#
+# It ships at the repository ROOT rather than into the site, deliberately. The declared site
+# surface is `wiki/`, `assets/`, `index.html` and `CNAME`; adding a fourteenth page to carry a
+# changelog would put a dated document inside a reference guide, and the guide is written in the
+# present tense on purpose. The generated readme links it, which is where somebody looking for
+# *"what changed"* actually looks.
 PUBLIC_FILES = [
     ("LICENSE", "LICENSE"),
+    (os.path.join("docs", "WHATS_NEW.md"), "WHATS_NEW.md"),
 ]
 
 ABOUT = os.path.join(PACKAGE, "About", "About.xml")
@@ -306,6 +320,12 @@ def write_readme(problems):
         "",
     ] + links + [
         "",
+        "## What's new",
+        "",
+        "[What changed, and what is still unjudged](WHATS_NEW.md). **Written for players rather",
+        "than filtered from a development log** -- the development log is not published, because",
+        "a player asking what changed is not asking which instruments were added.",
+        "",
         "## Licence",
         "",
         "MIT. See [LICENSE](LICENSE).",
@@ -332,6 +352,17 @@ def render_site(problems):
     # Empty by design: Pages tests for the file's presence, never its contents.
     io.open(os.path.join(target, ".nojekyll"), "w", encoding="utf-8", newline=NL).write("")
     copy_site_art(problems, target)
+    # **THE LICENCE, PUBLISHED TWICE ON PURPOSE -- the same answer the slide art got.**
+    # The credits page cites the licence and links it, and the licence lives at the repository
+    # root, which Pages never serves because it serves SITE_DIRECTORY as the root. The link was
+    # **404 on the live site**, read back over HTTP. A page may not reach outside the site, so the
+    # thing it reaches for comes inside. Two kilobytes against a dead link on the one page whose
+    # whole subject is attribution.
+    licence = os.path.join(REPO, "LICENSE")
+    if not os.path.isfile(licence):
+        problems.append("LICENSE is missing, so the credits page would link a 404")
+    else:
+        shutil.copyfile(licence, os.path.join(target, "LICENSE"))
     return len([n for n in os.listdir(target) if n.endswith(".html")])
 
 
@@ -407,6 +438,7 @@ def audit(problems):
             if re.search(r"(?m)^\s*- \[[ x~T]\] ", text):
                 problems.append("A QUEUE ROW IN THE EXPORT: %s" % rel)
     check_images_resolve(problems)
+    check_links_resolve(problems)
     return seen
 
 
@@ -461,6 +493,57 @@ def check_images_resolve(problems):
         problems.append("NO PAGE IN THE PUBLISHED SITE REFERENCES AN IMAGE. The owner's direction "
                         "is that the slide art is the wiki's banner and the preview leads; a site "
                         "with no image means the banners stopped being generated.")
+
+
+def check_links_resolve(problems):
+    """Every `<a href>` in the published site must name something the site actually serves.
+
+    **The image rule shipped half a guard, and the other half was already broken on the live
+    site.** `check_images_resolve` was written the day every banner 404'd, and it was aimed at
+    `<img src>` because that was the fault in hand. An `<a href>` has the identical failure mode,
+    and the credits page had it: the source links the licence as `../../LICENSE`, the renderer's
+    `lstrip("./")` flattened that to `LICENSE`, and `<site>/LICENSE` is **404** -- confirmed by
+    reading the published page back over HTTP, not inferred.
+
+    That is the worse shape of the two. A broken image is visible; a dead link looks like a link.
+
+    **A fault one rule caught is a fault its sibling has too.** The lesson recorded about plant
+    suites applies to guards: one pattern, all the references it guards.
+    """
+    site = os.path.join(EXPORT, SITE_DIRECTORY)
+    if not os.path.isdir(site):
+        return
+    checked = 0
+    for name in sorted(os.listdir(site)):
+        if not name.endswith(".html"):
+            continue
+        path = os.path.join(site, name)
+        try:
+            text = io.open(path, encoding="utf-8-sig").read()
+        except (UnicodeDecodeError, OSError):
+            continue
+        for href in re.findall(r"<a[^>]+href=\"([^\"]+)\"", text):
+            if href.startswith(("http://", "https://", "mailto:", "#")):
+                continue
+            target = href.split("#", 1)[0]
+            if not target:
+                continue
+            checked += 1
+            if target.startswith("/") or ".." in target.split("/"):
+                problems.append("A PUBLISHED PAGE LINKS OUTSIDE THE SITE: %s/%s names %r. Pages "
+                                "serves %r as the site root, so a link above it is never served."
+                                % (SITE_DIRECTORY, name, href, SITE_DIRECTORY))
+                continue
+            resolved = os.path.normpath(os.path.join(site, target.replace("/", os.sep)))
+            if not (os.path.isfile(resolved) or os.path.isdir(resolved)):
+                problems.append("A PUBLISHED PAGE LINKS TO SOMETHING THE EXPORT DOES NOT HAVE: "
+                                "%s/%s names %r. This is the shape that shipped a dead licence "
+                                "link -- a 404 that looks exactly like a working link."
+                                % (SITE_DIRECTORY, name, href))
+    if checked == 0:
+        problems.append("NO PAGE IN THE PUBLISHED SITE CONTAINS A RELATIVE LINK. Every page "
+                        "carries the navigation, so finding none means the pages stopped being "
+                        "generated rather than that the site is clean.")
 
 
 def git(*args):

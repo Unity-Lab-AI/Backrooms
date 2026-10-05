@@ -83,6 +83,7 @@ exclude:
   # failure mode a ledger guard must not have.
   - ADMIN-ONBOARDING.md
   - AI_BUILD_HANDOFF.md
+  - ALTERNATE_START_BRIEFS.md
   - ARCHITECTURE.md
   - BUILDING.md
   - CAMPAIGN_CHART.md
@@ -134,6 +135,8 @@ exclude:
   - TODO.md
   - TUTORIAL_SCRIPT.md
   - UNIVERSE_ADAPTATION.md
+  - WHATS_NEW.md
+  - WORKSHOP_COPY.md
   - implementation
   - research
   # END GENERATED EXCLUDE LIST

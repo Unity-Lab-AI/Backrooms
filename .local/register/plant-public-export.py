@@ -269,6 +269,34 @@ PLANTS = [
      "            if False:", 1),
     ("the art stops being copied into the site", EXPORTER,
      "    copy_site_art(problems, target)", "    pass", 1),
+
+    # ---- the link guard, which the image guard shipped without ---------------------------
+    # The credits page's licence link was **404 on the live site** while every instrument was
+    # green, because the escape-path rule covered `<img src>` and nothing covered `<a href>`.
+    ("THE AUDIT STOPS RUNNING THE LINK GUARD", EXPORTER,
+     "    check_links_resolve(problems)", "    pass", 1),
+
+    ("the link guard stops refusing a path that climbs out of the site", EXPORTER,
+     '            if target.startswith("/") or ".." in target.split("/"):',
+     "            if False:", 1),
+
+    ("the link guard stops resolving a link against the assembled tree", EXPORTER,
+     "            if not (os.path.isfile(resolved) or os.path.isdir(resolved)):",
+     "            if False:", 1),
+
+    ("the link guard passes a site with no relative link at all", EXPORTER,
+     "    if checked == 0:\n        problems.append(\"NO PAGE IN THE PUBLISHED SITE CONTAINS A "
+     "RELATIVE LINK. Every page \"",
+     "    if False:\n        problems.append(\"NO PAGE IN THE PUBLISHED SITE CONTAINS A "
+     "RELATIVE LINK. Every page \"", 1),
+
+    ("THE LICENCE STOPS BEING PUBLISHED INSIDE THE SITE, so the credits link 404s again",
+     EXPORTER, '        shutil.copyfile(licence, os.path.join(target, "LICENSE"))',
+     "        pass", 1),
+
+    ("the renderer goes back to flattening an escape path into a plausible href", RENDERER,
+     '    if target.startswith("./"):\n        target = target[2:]',
+     '    target = target.lstrip("./")', 1),
 ]
 
 caught = 0

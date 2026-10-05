@@ -80,6 +80,18 @@ PLANTS = [
     ("THE SEVENTH-LAUNCH DEFECT, REPLANTED VERBATIM: Class=\"CompProperties_Colorable\"",
      PATCH, COLORABLE, '          <li Class="CompProperties_Colorable" />', INTEGRITY),
 
+    # ===================================== the optional compat target nobody could verify
+    # Seven `PH_` door targets were reported *"not installed here and cannot be verified"* until
+    # 0.12.99-dev, and both mods that declare them are in the owner's own profile and installed.
+    # The old note was the worse outcome of the two: a renamed optional target applies to nothing
+    # and reports nothing, so the gate console silently never appears on that door. Now that the
+    # library is read, an unknown target is a failure -- and this plants a renamed one.
+    ("AN OPTIONAL COMPATIBILITY TARGET IS RENAMED, which used to be an unverifiable note",
+     PATCH, 'defName="PH_GateDoubleThick"', 'defName="PH_GateDoubleThickk"', INTEGRITY),
+
+    ("a whole optional target set drifts to names no installed mod declares", PATCH,
+     'defName="PH_DoorBlastDoor"', 'defName="PH_DoorBlastDoorway"', INTEGRITY),
+
     ("a British spelling of the same absent type", PATCH,
      COLORABLE, '          <li Class="CompProperties_Colourable" />', INTEGRITY),
 
