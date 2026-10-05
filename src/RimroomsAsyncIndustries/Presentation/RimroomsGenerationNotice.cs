@@ -62,6 +62,18 @@ namespace RimroomsAsyncIndustries.Presentation
         internal const string DefaultNoticeKey = "RR_Generation_FreezeNotice";
 
         /// <summary>
+        /// The close-out, shown once the space has settled and time is moving again.
+        ///
+        /// **Owner direction, 2026-10-05, verbatim:** *"the notice needs to appear before the map
+        /// bagins to load then close out with a normalization notice"*.
+        ///
+        /// The hold notice is a promise -- *nothing on this side advances until this finishes* --
+        /// and a promise with no close is a player wondering whether it ever did. **The pair is
+        /// the feature**: one says the stop is expected, the other says it is over.
+        /// </summary>
+        internal const string DefaultNormalizationKey = "RR_Generation_NormalNotice";
+
+        /// <summary>
         /// Whether a space is about to be resolved from nothing.
         ///
         /// `Site == null` is the one condition that means a map will be generated; everything else
@@ -84,7 +96,57 @@ namespace RimroomsAsyncIndustries.Presentation
             if (work == null) { return; }
             if (!ShouldAnnounce(coordinate)) { work(); return; }
             Find.WindowStack.Add(new Dialog_RimroomsGenerationNotice(NoticeText(), () =>
-                LongEventHandler.QueueLongEvent(work, LongEventKey, false, null)));
+                LongEventHandler.QueueLongEvent(work, LongEventKey, false, null,
+                    showExtraUIInfo: true, forceHideUI: false, callback: ShowNormalization)));
+        }
+
+        /// <summary>
+        /// The close-out, on Core's own completion callback rather than on a guess about timing.
+        ///
+        /// **`QueueLongEvent` takes a `callback` and invokes it after the event finishes** --
+        /// read out of `LongEventHandler` in the shipped assembly rather than assumed, and it is
+        /// the same hook Core uses to follow its own long work. The alternatives were both worse:
+        /// calling this at the end of `work` would run it while the event is still the thing on
+        /// screen, and `ExecuteWhenFinished` fires when the *whole queue* drains, which is a
+        /// different moment the first time two events are ever queued together.
+        ///
+        /// **It is deliberately not the full-screen surface the hold notice uses.** The player has
+        /// just arrived somewhere and the first thing they should see is the place, not another
+        /// picture of a corridor over the top of it.
+        /// </summary>
+        internal static void ShowNormalization()
+        {
+            Find.WindowStack.Add(new Dialog_RimroomsNormalizationNotice(NormalizationText()));
+        }
+
+        /// <summary>
+        /// The close-out text, toned to the scenario exactly as the hold notice is.
+        ///
+        /// Same scoped-key-then-fallback rule and the same reason: a player on a scenario this mod
+        /// did not author still gets told the hold is over, which is the load-bearing half.
+        /// </summary>
+        internal static TaggedString NormalizationText()
+        {
+            return Toned(DefaultNormalizationKey);
+        }
+
+        /// <summary>
+        /// A keyed string, preferring a per-start variant when one is authored.
+        ///
+        /// Lifted out of <see cref="NoticeText"/> when the close-out needed the identical rule.
+        /// **Two copies of a key-scoping rule is how the hold notice and its close-out would end
+        /// up toned for different scenarios**, which is the drift this project keeps meeting.
+        /// </summary>
+        private static TaggedString Toned(string baseKey)
+        {
+            string key = baseKey;
+            ScenPart_RimroomsStart part = ScenPart_RimroomsStart.Current;
+            if (part != null && part.startDef != null && part.startDef.defName != null)
+            {
+                string scoped = baseKey + "_" + part.startDef.defName;
+                if (scoped.CanTranslate()) { key = scoped; }
+            }
+            return key.Translate();
         }
 
         /// <summary>
@@ -101,14 +163,7 @@ namespace RimroomsAsyncIndustries.Presentation
         /// </summary>
         internal static TaggedString NoticeText()
         {
-            string key = DefaultNoticeKey;
-            ScenPart_RimroomsStart part = ScenPart_RimroomsStart.Current;
-            if (part != null && part.startDef != null && part.startDef.defName != null)
-            {
-                string scoped = DefaultNoticeKey + "_" + part.startDef.defName;
-                if (scoped.CanTranslate()) { key = scoped; }
-            }
-            return key.Translate();
+            return Toned(DefaultNoticeKey);
         }
     }
 
@@ -218,6 +273,79 @@ namespace RimroomsAsyncIndustries.Presentation
                 Close(false);
                 if (onContinue != null) { onContinue(); }
             }
+        }
+    }
+
+    /// <summary>
+    /// The close-out: the space has settled, and time is moving again.
+    ///
+    /// **Owner direction, 2026-10-05, verbatim:** *"the notice needs to appear before the map
+    /// bagins to load then close out with a normalization notice"*.
+    ///
+    /// ## Deliberately small, and deliberately not the hold screen
+    ///
+    /// <see cref="Dialog_RimroomsGenerationNotice"/> is full screen because it is replacing a view
+    /// that is about to stop answering. This one arrives when the player has just been put
+    /// somewhere new, so it is a panel over the map rather than a picture instead of it: **the
+    /// first thing they should see is the place they have arrived in.**
+    ///
+    /// It does not force a pause either. The hold notice pauses because the freeze is coming; this
+    /// one says the freeze is over, and pausing to announce that time is moving again would be the
+    /// notice contradicting its own text.
+    ///
+    /// ## It only ever appears where the hold notice did
+    ///
+    /// Posted from `QueueLongEvent`'s completion callback, which is reached only through
+    /// <see cref="RimroomsGenerationNotice.Announce"/> on a coordinate that had no site -- so a
+    /// re-entry, which never saw a hold notice, never gets a close-out for a hold that did not
+    /// happen.
+    /// </summary>
+    internal sealed class Dialog_RimroomsNormalizationNotice : Window
+    {
+        private const float PanelWidth = 460f;
+        private const float PanelPadding = 20f;
+        private const float ButtonHeight = 34f;
+
+        private readonly TaggedString notice;
+
+        internal Dialog_RimroomsNormalizationNotice(TaggedString notice)
+        {
+            this.notice = notice;
+            absorbInputAroundWindow = true;
+            closeOnClickedOutside = false;
+            closeOnAccept = true;
+            closeOnCancel = true;
+            doCloseX = false;
+            doCloseButton = false;
+            preventCameraMotion = false;
+        }
+
+        public override Vector2 InitialSize
+        {
+            get
+            {
+                float text = Text.CalcHeight(notice, PanelWidth - PanelPadding * 2f);
+                return new Vector2(PanelWidth, text + PanelPadding * 3f + ButtonHeight);
+            }
+        }
+
+        /// <summary>
+        /// Guarded for the same reason the hold notice is: Unity's IMGUI colour and font state is
+        /// process-wide, and a window that leaves it changed paints every window drawn after it.
+        /// </summary>
+        public override void DoWindowContents(Rect inRect)
+        {
+            using (RimroomsWindowState.Clean()) { Draw(inRect); }
+        }
+
+        private void Draw(Rect inRect)
+        {
+            float textHeight = Text.CalcHeight(notice, inRect.width);
+            Widgets.Label(new Rect(inRect.x, inRect.y, inRect.width, textHeight), notice);
+
+            var button = new Rect(inRect.x, inRect.yMax - ButtonHeight, inRect.width, ButtonHeight);
+            if (Widgets.ButtonText(button, "RR_Generation_NormalAcknowledge".Translate()))
+            { Close(false); }
         }
     }
 }

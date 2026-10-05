@@ -16344,3 +16344,32 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Owner direction — the hold notice closes out with a normalization notice (2026-10-05)` in `docs/TODO.md`
+
+**Verbatim owner direction (2026-10-05):** *"do it and the notice needs to appear before the map bagins to load then close out with a normalization notice"*
+
+**The hold notice makes a promise** — *nothing on this side advances until this finishes* — **and a promise with no close is a player wondering whether it ever did.** The pair is the feature: one says the stop is expected, the other says it is over.
+
+- [x] **"the notice needs to appear before the map bagins to load"** — **ALREADY TRUE AND NOW ASSERTED HARDER, 0.12.98-dev.** The ordering is the whole requirement and it was built this way: `EnsureSite` generates **synchronously** and hands the map back through an `out` parameter, so a window added immediately before it would draw on the *next* frame — **after** the freeze it was warning about. The work therefore moves into `LongEventHandler.QueueLongEvent`, the warning is drawn and dismissed while the game can still draw, and Core's own wait box then carries our keyed text through the freeze itself.
+- [x] **"then close out with a normalization notice"** — **BUILT 0.12.98-dev, on Core's own completion callback rather than on a guess about timing.** `QueueLongEvent` takes a **`callback`** and invokes it after the event finishes — **read out of `LongEventHandler` in the shipped assembly rather than assumed.** The two alternatives were both worse: calling it at the end of the work would run it while the event is still the thing on screen, and `ExecuteWhenFinished` fires when the **whole queue** drains, a different moment the first time two events are ever queued together. **It is deliberately not the full-screen surface the hold notice uses** — the player has just been put somewhere new and the first thing they should see is the place, not another picture of a corridor over the top of it. **It does not force a pause either**, because a notice announcing that time is moving again has no business stopping it. **Toned per start like its other half, through one shared rule:** `Toned(baseKey)` was lifted out when the close-out needed the identical scoping, because two copies of a key-scoping rule is how a hold notice and its close-out end up toned for different scenarios. Four strings authored, each answering its own hold notice in the same voice — the company bills the interval, the shopkeeper counts the lights back on, the person alone checks their own hands. **Four claims and four plants**, including the one that matters: *the hold never closes out*.
+
+
+Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

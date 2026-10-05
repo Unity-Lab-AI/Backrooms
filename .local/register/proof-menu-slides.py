@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """Assert every menu slide will actually appear, and that the folder cannot fail silently.
 
 The property this exists for
@@ -227,7 +227,8 @@ check("THE NOTICE IS DRAWN BEFORE THE FREEZE, and the work moves into a long eve
       "internal static void Announce(CoordinateRecord coordinate, Action work)" in notice_source
       and "Find.WindowStack.Add(new Dialog_RimroomsGenerationNotice(NoticeText(), () =>"
       in notice_source
-      and "LongEventHandler.QueueLongEvent(work, LongEventKey, false, null)));" in notice_source,
+      and "LongEventHandler.QueueLongEvent(work, LongEventKey, false, null," in notice_source
+      and "callback: ShowNormalization)));" in notice_source,
       "-- **the ordering is the whole requirement.** `EnsureSite` generates synchronously and "
       "hands the map back through an `out` parameter, so a window added immediately before it "
       "draws on the NEXT frame -- after the freeze it was warning about. The work therefore runs "
@@ -276,8 +277,11 @@ check("AND THE DRAW IS GUARDED, because an invisible notice is worse than none",
 
 check("THERE IS A TONE PER SCENARIO, and a fallback that still says the pause is expected",
       "ScenPart_RimroomsStart part = ScenPart_RimroomsStart.Current;" in notice_source
-      and 'string scoped = DefaultNoticeKey + "_" + part.startDef.defName;' in notice_source
-      and "if (scoped.CanTranslate()) { key = scoped; }" in notice_source,
+      and 'string scoped = baseKey + "_" + part.startDef.defName;' in notice_source
+      and "if (scoped.CanTranslate()) { key = scoped; }" in notice_source
+      and "private static TaggedString Toned(string baseKey)" in notice_source
+      and "return Toned(DefaultNoticeKey);" in notice_source
+      and "return Toned(DefaultNormalizationKey);" in notice_source,
       "-- owner: *\"propely keep it toned to the experience we are trying to make per scenrio "
       "type\"*. The company reads an instrument; somebody alone in the dark does not. "
       "`Find.Scenario` persists in the save, so the tone is right mid-game and not only at setup. "
@@ -291,9 +295,54 @@ check("and every shipped scenario has its own notice, with the generic one behin
           "RR_Generation_FreezeNotice_RR_FurnitureStoreStart",
           "RR_Generation_FreezeNotice_RR_SoloGroupStart",
           "RR_Generation_FreezeEvent",
-          "RR_Generation_FreezeAcknowledge")),
+          "RR_Generation_FreezeAcknowledge",
+          "RR_Generation_NormalNotice",
+          "RR_Generation_NormalNotice_RR_AsyncIndustriesStart",
+          "RR_Generation_NormalNotice_RR_FurnitureStoreStart",
+          "RR_Generation_NormalNotice_RR_SoloGroupStart",
+          "RR_Generation_NormalAcknowledge")),
       "-- three shipped openings, three tones, plus the generic notice and the short line Core's "
       "own wait box carries through the freeze itself")
+
+# ======================================================================================
+# THE CLOSE-OUT. Owner, 2026-10-05: *"the notice needs to appear before the map bagins to load
+# then close out with a normalization notice"*. The hold notice makes a promise -- *nothing on
+# this side advances until this finishes* -- and a promise with no close is a player wondering
+# whether it ever did.
+# ======================================================================================
+
+check("THE HOLD IS CLOSED OUT, on Core's own completion callback rather than on a guess",
+      "internal static void ShowNormalization()" in notice_source
+      and "callback: ShowNormalization" in notice_source
+      and "new Dialog_RimroomsNormalizationNotice(NormalizationText())" in notice_source,
+      "-- `QueueLongEvent` takes a `callback` and invokes it after the event finishes, read out "
+      "of `LongEventHandler` in the shipped assembly rather than assumed. Calling it at the end "
+      "of `work` would run it while the event is still the thing on screen, and "
+      "`ExecuteWhenFinished` fires when the WHOLE QUEUE drains -- a different moment the first "
+      "time two events are ever queued together")
+
+check("and the close-out is NOT the full-screen surface the hold notice uses",
+      "internal sealed class Dialog_RimroomsNormalizationNotice : Window" in notice_source
+      and "RimroomsSlideArt" not in notice_source.split(
+          "internal sealed class Dialog_RimroomsNormalizationNotice")[1]
+      and "forcePause" not in notice_source.split(
+          "internal sealed class Dialog_RimroomsNormalizationNotice")[1],
+      "-- the player has just been put somewhere new and **the first thing they should see is the "
+      "place, not another picture of a corridor over the top of it.** It does not force a pause "
+      "either: this notice says the freeze is over, and pausing to announce that time is moving "
+      "again would be the notice contradicting its own text")
+
+check("and its draw is guarded too",
+      notice_source.count("using (RimroomsWindowState.Clean()) { Draw(inRect); }") == 2,
+      "-- both windows, for the same process-wide IMGUI reason. Counted rather than searched, "
+      "because one guarded window and one unguarded one is what a single `in` cannot tell apart")
+
+check("every shipped scenario has a close-out in its own voice",
+      all(phrase in generation_keys for phrase in (
+          "TIME HAS NORMALIZED", "COORDINATE INDEXED", "THE SHOP IS BACK", "IT HAS SETTLED")),
+      "-- each one answers its own hold notice: the company bills the interval, the shopkeeper "
+      "counts the lights back on, the person alone checks their own hands. A generic *done* would "
+      "have been the close-out that proves nobody read the pair together")
 
 check("the notice says the pause is EXPECTED, which is the load-bearing half of the direction",
       all(word in generation_keys for word in (

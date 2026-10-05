@@ -569,3 +569,19 @@ Not more maps. **Expressing our rules in Core's data instead of our C#**, which 
 - [ ] **A `Backrooms` PlanetLayer as a design question, not a capacity one.** `canFormCaravans: false` is our no-caravan rule; `onlyAllowWhitelistedArrivals` and `onlyAllowWhitelistedIncidents` are `PortalTraversalPolicy` and the incident gate expressed as data; a `defaultBiome` and `raidPointsFactor` of its own replace tuning we currently carry in code. **It would also make `PlanetLayerConnection` the engine's own word for a gate.** Needs an owner decision because it is a visible change: a layer gets its own world-view gizmo and its own tab, so the Backrooms would become somewhere the player can look at from the planet view — which may be exactly right or exactly wrong for a space that is meant to be found through a door.
 - [ ] **Measure before any of it:** whether a `MapParent` on a non-surface layer still generates and saves identically, and whether `onlyAllowWhitelistedIncidents` would silence the unnerving register rather than shape it. **This is `[T]`-shaped work** — it needs a launch, and the owner is the only one who launches.
 - [ ] **The cap itself stays five until the owner says otherwise.** It is their number, and the measurement above does not argue for changing it: nothing found gives a free map, and the thing that would — raising the number — is a performance trade nobody has measured yet.
+
+## Owner direction — the hold notice closes out with a normalization notice (2026-10-05)
+
+### And the measured half that is still open
+
+**Three paths can still reach generation with no notice at all**, measured rather than assumed — every caller of `EnsureSite` and of the three address registrars was read:
+
+| Path | Why it is uncovered |
+|---|---|
+| `GateSpinUp` completing the ramp | **A tick.** It needs `connectionId` back from `RegisterLaboratoryAddress` on the spot |
+| `NaturalFrontierService` — walking into a found door | **A job tick**, same shape |
+| `RimroomsExpeditionComponent.Dispatch` | Returns a `CompanyActionResult` its caller reads |
+
+**A long event is only legal where nothing is waiting on a return value**, which is why this hooks buttons rather than `EnsureSite`. The Operations pane, the gate's own address gizmo and the scenario opening are all covered; these three are not.
+
+- [ ] **Defer the result chain on the three tick-driven paths so they can announce too.** The owner named this entry point explicitly — *"on gate enter and or using the operations tab machine when finally opening the gate"* — and **the gate-enter half is the one still missing.** Each needs its continuation moved inside the long event instead of its result being read immediately, which is a real refactor of `GateSpinUp`'s completion and of the natural-door job, not a wrapper. **Until it lands, a player who starts a ramp from the console and walks away still meets an unexplained freeze**, which is the exact failure the feature exists to prevent.

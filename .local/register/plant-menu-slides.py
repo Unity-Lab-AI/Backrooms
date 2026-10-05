@@ -78,7 +78,46 @@ def _rr_restore(path, original):
                        "restored." % (path, last, _RR_SENTINEL))
 
 
+NL = chr(10)
+
 PLANTS = [
+    # ------------------- the close-out, planted four ways it could silently stop
+    #
+    # Owner, 2026-10-05: *"the notice needs to appear before the map bagins to load then close out
+    # with a normalization notice"*. Each of these is a way the pair quietly becomes a half.
+    ("THE HOLD NEVER CLOSES OUT -- the promise is made and never answered", NOTICE,
+     "                    showExtraUIInfo: true, forceHideUI: false, "
+     "callback: ShowNormalization)));",
+     "                    showExtraUIInfo: true, forceHideUI: false)));"),
+
+    ("the close-out starts forcing a pause, contradicting its own text", NOTICE,
+     "            absorbInputAroundWindow = true;" + NL
+     + "            closeOnClickedOutside = false;" + NL
+     + "            closeOnAccept = true;",
+     "            absorbInputAroundWindow = true;" + NL
+     + "            forcePause = true;" + NL
+     + "            closeOnClickedOutside = false;" + NL
+     + "            closeOnAccept = true;"),
+
+    ("the close-out's draw loses its IMGUI guard", NOTICE,
+     "            using (RimroomsWindowState.Clean()) { Draw(inRect); }" + NL
+     + "        }" + NL
+     + NL
+     + "        private void Draw(Rect inRect)" + NL
+     + "        {" + NL
+     + "            float textHeight = Text.CalcHeight(notice, inRect.width);",
+     "            Draw(inRect);" + NL
+     + "        }" + NL
+     + NL
+     + "        private void Draw(Rect inRect)" + NL
+     + "        {" + NL
+     + "            float textHeight = Text.CalcHeight(notice, inRect.width);"),
+
+    ("the hold and its close-out stop sharing one key-scoping rule, so they tone differently",
+     NOTICE,
+     "            return Toned(DefaultNormalizationKey);",
+     '            return "RR_Generation_NormalNotice".Translate();'),
+
     ("THE DEFECT THE OWNER SAW: the menu goes back to opening on slide one", BACKGROUND,
      "            currentIndex = RimroomsSlideArt.RandomIndex(slides.Count);\n"
      "            lastExpansionHoverAt = Time.unscaledTime;",
@@ -120,14 +159,18 @@ PLANTS = [
      "ContentFinder<Texture2D>.GetAllInFolder(SlideFolder)",
      "System.Linq.Enumerable.Empty<Texture2D>()"),
     # ------------------------------------------------------- the generation freeze, told in time
+    # Re-aimed when the close-out added a `callback` argument to the queue call. The anchors now
+    # stop at the line they are about rather than carrying the whole argument list, so adding
+    # another named argument cannot break them a second time.
     ("THE NOTICE IS QUEUED AFTER THE FREEZE INSTEAD OF BEFORE IT", NOTICE,
-     "            Find.WindowStack.Add(new Dialog_RimroomsGenerationNotice(NoticeText(), () =>\n"
-     "                LongEventHandler.QueueLongEvent(work, LongEventKey, false, null)));",
-     "            work();"),
+     "            Find.WindowStack.Add(new Dialog_RimroomsGenerationNotice(NoticeText(), () =>"
+     + NL
+     + "                LongEventHandler.QueueLongEvent(work, LongEventKey, false, null,",
+     "            work();" + NL + "            if (false) LongEventHandler.QueueLongEvent(null,"),
 
     ("the work stops running inside a long event, so the freeze is unexplained again", NOTICE,
-     "                LongEventHandler.QueueLongEvent(work, LongEventKey, false, null)));",
-     "                work()));"),
+     "                LongEventHandler.QueueLongEvent(work, LongEventKey, false, null,",
+     "                Dummy(work, LongEventKey, false, null,"),
 
     ("THE NOTICE FIRES ON EVERY CROSSING, so it becomes the nuisance instead of the warning",
      NOTICE,
@@ -155,9 +198,22 @@ PLANTS = [
     # zero-alpha `GUI.color` from any of 294 other mods makes a frameless full-screen window draw
     # nothing at all -- so the player sees a frozen game with no notice on it, which is the exact
     # failure the feature exists to prevent, arriving through the feature.
+    # Scoped to the HOLD window specifically. Both windows guard their draw with the identical
+    # line, so the bare line stopped being unique the moment the close-out was added -- and an
+    # ambiguous anchor stops its whole suite rather than planting the wrong half.
     ("THE WINDOW DRAWS WITH WHATEVER GUI STATE IT INHERITED", NOTICE,
-     "            using (RimroomsWindowState.Clean()) { Draw(inRect); }",
-     "            Draw(inRect);"),
+     "            using (RimroomsWindowState.Clean()) { Draw(inRect); }" + NL
+     + "        }" + NL
+     + NL
+     + "        private void Draw(Rect inRect)" + NL
+     + "        {" + NL
+     + "            if (backdrop != null)",
+     "            Draw(inRect);" + NL
+     + "        }" + NL
+     + NL
+     + "        private void Draw(Rect inRect)" + NL
+     + "        {" + NL
+     + "            if (backdrop != null)"),
 
     ("the per-scenario tone is gone, so every opening reads the same", NOTICE,
      "                if (scoped.CanTranslate()) { key = scoped; }",
