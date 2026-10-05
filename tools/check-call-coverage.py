@@ -109,11 +109,18 @@ def main():
                          set(chokepoint.get("declaring_files", [])))
         covered = [rel for rel, entry in declared.items() if entry.get("status") == "covered"]
         exempt = [rel for rel, entry in declared.items() if entry.get("status") == "exempt"]
+        # **COVERAGE IS SOMETIMES ONE FILE AWAY, and pretending otherwise would have forced a
+        # false exemption.** `GateSpinUp.DialRememberedAddress` reaches the chokepoint, and the
+        # wrapper that guards it sits in `GateConnectionHistory.cs`, the float menu that calls it.
+        # The honest declaration names the other file and the rule checks it there -- which is
+        # strictly stronger than marking the site exempt and writing a reason nobody can verify.
+        elsewhere = [rel for rel, entry in declared.items()
+                     if entry.get("status") == "covered_by_caller"]
 
         say("")
         say("  %s" % name)
-        say("    call sites declared     : %d (%d covered, %d exempt)"
-            % (len(declared), len(covered), len(exempt)))
+        say("    call sites declared     : %d (%d covered, %d covered by caller, %d exempt)"
+            % (len(declared), len(covered), len(elsewhere), len(exempt)))
         say("    call sites found        : %d" % len(actual))
 
         # 1. The census cannot rot: a declared site that no longer calls anything is a decision
@@ -136,6 +143,26 @@ def main():
                 problems.append("%s: %r is declared covered by %r and does not contain it. The "
                                 "guard was removed and the call left behind."
                                 % (name, rel, wrapper))
+
+        # 2b. A site covered from elsewhere must name BOTH the wrapper and the file holding it,
+        #     and that file must really contain it. Without the file the claim is unverifiable,
+        #     which is the same as an exemption with a nicer label.
+        for rel in sorted(elsewhere):
+            wrapper = declared[rel].get("by")
+            holder = declared[rel].get("in")
+            if not wrapper or not holder:
+                problems.append("%s: %r is marked covered_by_caller without naming both the "
+                                "wrapper and the file that holds it. An unverifiable claim is an "
+                                "exemption wearing a better label." % (name, rel))
+                continue
+            if holder not in files:
+                problems.append("%s: %r is declared covered from %r, which is not a source file "
+                                "any more." % (name, rel, holder))
+                continue
+            if wrapper not in files[holder]:
+                problems.append("%s: %r is declared covered from %r by %r, and that file does not "
+                                "contain it. The guard moved or went."
+                                % (name, rel, holder, wrapper))
 
         # 3. An exemption has to say why, or it is just a list of things somebody waved through.
         for rel in sorted(exempt):

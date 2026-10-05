@@ -352,6 +352,29 @@ namespace RimroomsAsyncIndustries.Gate
                 recorded.ToString("N0"), rate.ToStringPercent("F0")).ToString();
         }
 
+        /// <summary>
+        /// The coordinate a history entry points at, or null when the branch no longer holds it.
+        ///
+        /// Null is a real answer rather than a failure: a gate remembers dialling somewhere the
+        /// company has since released, and `DialRememberedAddress` refuses that with its own
+        /// keyed reason. This exists so the freeze notice can ask *is a map about to be built*
+        /// before the dial runs, and a null simply means there is nothing to announce.
+        /// </summary>
+        private static CoordinateRecord CoordinateOfEntry(GateHistoryEntry entry,
+            RimroomsCampaignComponent campaign)
+        {
+            if (entry == null || campaign == null || entry.coordinateId == null) { return null; }
+            IReadOnlyList<CoordinateRecord> coordinates = campaign.Coordinates;
+            for (int index = 0; index < coordinates.Count; index++)
+            {
+                CoordinateRecord record = coordinates[index];
+                if (record != null && string.Equals(record.Id, entry.coordinateId,
+                    StringComparison.Ordinal))
+                { return record; }
+            }
+            return null;
+        }
+
         private void OpenEntryMenu(GateHistoryEntry entry, RimroomsCampaignComponent campaign)
         {
             string name = HistoryLabelFor(entry, campaign);
@@ -361,11 +384,31 @@ namespace RimroomsAsyncIndustries.Gate
                 // choosing any of the actions below it.
                 new FloatMenuOption(ReliabilityRow(entry), null),
                 // First, because it is what the list is for. Everything below it is management.
+                // **ANNOUNCED, because dialling a remembered address can build a map.**
+                //
+                // `DialRememberedAddress` reaches `RegisterLaboratoryAddress`, which reaches
+                // `EnsureSite`, which generates -- and this path was recorded as exempt from the
+                // freeze notice on the grounds that it was a tick. **It is not a tick. It is a
+                // float-menu delegate**, which is a click, which is precisely the one place a long
+                // event is legal. The exemption was written without reading the caller, which is
+                // the same half-wiring `check-call-coverage.py` exists to refuse -- and the
+                // checker named this file, which is how it was found.
+                //
+                // The coordinate is resolved here rather than inside `Announce` because only the
+                // caller knows what is about to be dialled, and `ShouldAnnounce` needs it to tell
+                // a first build from a re-entry.
                 new FloatMenuOption("RR_GateHistory_Dial".Translate(name), delegate
                 {
-                    CompanyActionResult result = DialRememberedAddress(entry);
-                    if (!result.Success && !string.IsNullOrWhiteSpace(result.MessageKey))
-                    { Messages.Message(result.MessageKey.Translate(), parent, MessageTypeDefOf.RejectInput, false); }
+                    Presentation.RimroomsGenerationNotice.Announce(
+                        CoordinateOfEntry(entry, campaign), delegate
+                        {
+                            CompanyActionResult result = DialRememberedAddress(entry);
+                            if (!result.Success && !string.IsNullOrWhiteSpace(result.MessageKey))
+                            {
+                                Messages.Message(result.MessageKey.Translate(), parent,
+                                    MessageTypeDefOf.RejectInput, false);
+                            }
+                        });
                 }),
                 new FloatMenuOption("RR_GateHistory_Rename".Translate(name), delegate
                 {

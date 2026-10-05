@@ -79,6 +79,8 @@ def _rr_restore(path, original):
 
 
 NL = chr(10)
+HISTORY = SRC + "/Gate/GateConnectionHistory.cs"
+EXPEDITIONS = SRC + "/UI/OperationsExpeditions.cs"
 
 PLANTS = [
     # ------------------- the close-out, planted four ways it could silently stop
@@ -117,6 +119,19 @@ PLANTS = [
      NOTICE,
      "            return Toned(DefaultNormalizationKey);",
      '            return "RR_Generation_NormalNotice".Translate();'),
+
+    # The two paths whose exemptions were wrong. Both revert to generating a 300x300 map behind an
+    # unexplained freeze, which is the failure the whole feature exists to prevent.
+    ("DIALLING A REMEMBERED ADDRESS STOPS ANNOUNCING, the way it used to", HISTORY,
+     "                    Presentation.RimroomsGenerationNotice.Announce(" + NL
+     + "                        CoordinateOfEntry(entry, campaign), delegate",
+     "                    RunDial(" + NL
+     + "                        CoordinateOfEntry(entry, campaign), delegate"),
+
+    ("DISPATCHING A CREW stops announcing", EXPEDITIONS,
+     "                Presentation.RimroomsGenerationNotice.Announce(coordinate, delegate"
+     + NL + "                { ShowResult(trips.Dispatch(gate, coordinate, dispatching)); });",
+     "                ShowResult(trips.Dispatch(gate, coordinate, dispatching));"),
 
     ("THE DEFECT THE OWNER SAW: the menu goes back to opening on slide one", BACKGROUND,
      "            currentIndex = RimroomsSlideArt.RandomIndex(slides.Count);\n"

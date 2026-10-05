@@ -255,6 +255,31 @@ check("THE BUTTONS THAT CAN BUILD A MAP ACTUALLY CALL IT",
       "return value, and a method handing back a `CompanyActionResult` is not such a place, which "
       "is why this hooks the pane rather than `EnsureSite`")
 
+# **TWO EXEMPTIONS WERE WRONG, and check-call-coverage.py is what exposed them.** Both were
+# recorded as unable to announce; both are clicks. Asserted here so neither can quietly revert to
+# generating a 300x300 map behind an unexplained freeze.
+history_source = io.open(os.path.join(SRC, "Gate", "GateConnectionHistory.cs"),
+                         encoding="utf-8-sig").read()
+expeditions_source = io.open(os.path.join(SRC, "UI", "OperationsExpeditions.cs"),
+                             encoding="utf-8-sig").read()
+
+check("DIALLING A REMEMBERED ADDRESS ANNOUNCES, because a float menu is a click and not a tick",
+      "Presentation.RimroomsGenerationNotice.Announce(" in history_source
+      and "CoordinateOfEntry(entry, campaign)" in history_source
+      and "private static CoordinateRecord CoordinateOfEntry(" in history_source,
+      "-- `DialRememberedAddress` reaches `RegisterLaboratoryAddress` and so `EnsureSite`. It was "
+      "declared exempt on the grounds that it was a tick; it is a `FloatMenuOption` delegate. The "
+      "exemption had been written without reading the caller")
+
+check("and DISPATCHING A CREW announces too, with the result read inside the continuation",
+      "Presentation.RimroomsGenerationNotice.Announce(coordinate, delegate" in expeditions_source
+      and "ShowResult(trips.Dispatch(gate, coordinate, dispatching));" in expeditions_source
+      and "var dispatching = new List<Pawn>(selectedCrew);" in expeditions_source,
+      "-- its exemption said the result is read by its caller, which described the method rather "
+      "than the call: the result is read INSIDE the callback, which is where a long event is "
+      "legal. The crew list is copied before the lambda because `selectedCrew` is pane state the "
+      "player can still change and the dispatch now happens a frame or more later")
+
 check("THE BACKDROP IS THE MOD'S OWN ART, drawn at random from the same list the menu reads",
       "backdrop = RimroomsSlideArt.RandomSlide();" in notice_source
       and "RimroomsSlideArt.FullScreenRect(backdrop)" in notice_source,

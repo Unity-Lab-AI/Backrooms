@@ -103,22 +103,6 @@ Asked because each one gated work that was already queued, and three of the four
 ## Pending
 
 
-### Owner direction — an LSD trip, not a grid: bent corridors, doors anywhere, and the hall is not always in the corner (2026-10-03)
-
-**Verbatim owner direction (2026-10-03):** *"and make sure hallways and corradors and shit arent all straight.. its suppose to be a lsd trip when it comes to archeteture and shit, repeated patternes in variations, u -turns, multiple coices on directions to take in every rooms, non default fdoor possitions in rooms so doors are not just on each side, can have doors al over, and starting room is not to always be in bottom left of map, starts locations of main grand rooms can be anywhere on the map and lead anywhere in multiple differetn varied ways"*
-
-**Extends the string-of-pearls direction below.** Three of these nine clauses were confirmed against the source within minutes, and **two of them are single literals** — this is not a design problem, it is hardcoded values nobody had questioned.
-
-| Clause | Confirmed in code | Where |
-|---|---|---|
-| *"starting room is not to always be in bottom left of map"* | **`var hallFirst = new IntVec2(0, 0); var hallSecond = new IntVec2(1, 0);`** — and `SlotCenter(0) = Margin + spacing / 2`, the lowest cell on both axes. **Every coordinate ever generated puts the grand hall in the same corner.** | `RoomLayoutPlanner.BuildMaze:650-651` |
-| *"hallways and corradors and shit arent all straight"* | `if (first.CenterCell.z == second.CenterCell.z)` then a single `for (int x = fromX; x <= toX; x++)` run at a fixed `centerZ`. **One axis, no bend, by construction** — and `AreNeighbourRooms` *requires* linked centres to share a row or column, so a bent corridor is currently illegal rather than merely absent. | `GenStep_BackroomsDestination.BuildCorridors:979-986` |
-| *"non default fdoor possitions in rooms so doors are not just on each side"* | `DoorOpening` opens a wall cell only where `cell.z == room.Bounds.CenterCell.z` or `cell.x == room.Bounds.CenterCell.x` — **the exact midpoint of each of the four walls.** `FalseOpening` adds one more at a third along a wall with no link behind it, and that is the only non-midpoint opening that exists. | `RoomLayoutPlanner.DoorOpening:1261-1282` |
-
-
-- [ ] **"its suppose to be a lsd trip when it comes to archeteture and shit"** — the acceptance condition on the whole generator, in the owner's words. Recognisable, then wrong, then wronger.
-
-
 ### Owner direction — the mod's own menu images belong on the loading screens too (2026-10-03)
 
 **Verbatim owner direction (2026-10-03):** *"and anothert thing.. we properly use the main menu images we made for the mod on the main menu page but i dont think we properly did the same for loading screens and the like add this to the todo"*
@@ -138,31 +122,6 @@ Asked because each one changes what gets built, and all three were answered as *
 
 **Verbatim owner answer (2026-10-03), on the degree ceiling:** *"it shouldnt just be one option there needs to be wide varying variations of all types so dont limit yourself"*
 - [ ] **"so dont limit yourself"** — recorded as the standing instruction it is. Where a bound exists it has to be a bound the geometry imposes and is **stated**, not a bound chosen for convenience. `MaximumUndirectedEdgesPerRoom` is the live example: it was 2 *"because a slot has four neighbours"*, and when bends made eight neighbours reachable the constant was the thing refusing them.
-
-### Owner direction — it is STILL a string of pearls, fill the space, and the rock has to be worth mining (2026-10-03)
-
-**Verbatim owner direction (2026-10-03):** *"and another thing to add to todo( the backrooms is still incorrectly too much having the rooms like a string of pearls where the rooms are just one exit one entrance. this is not the backrooms universe MAZES!!!! room connected to like 0 - 10 other rooms and not have so much empty rock space where nothing exists. it looks too much like are long series connection of drooms, DO YOU UNDERSTAND WHAT A MAZE MEANS AND TO FILL THE SPACE WITH ROOMS and where there is mountain walls and no rooms areas minable need to have resources that you can mine like steel gold plasteel, gems, all of them, even underground resources that u can use deep drill with and chemfuel, and im reiterating the fact that we need to fix the depancy list so that its accurate to what is required and we hope to have the mod as a complete stand alone"*
-
-> **⛔ THIS DIRECTION CONTRADICTS WHAT WAS REPORTED TO THE OWNER EARLIER THE SAME DAY, AND THE OWNER IS THE ONE WHO SAW IT RUN.** The 2026-10-03 adjudication pass closed *"all the backrooms so far are just one lone strain of perals arangement"* and *"it needs to be more maze liek"* as **built**, citing `RoomLayoutPlanner.BuildMaze` and `BraidRarity`. The owner has now walked it and says it is **still a string of pearls with one entrance and one exit per room**. Source-presence was read as behaviour, which is the exact mistake this repo keeps naming.
-
-**MEASURED 2026-10-03, and the first hypothesis was WRONG — recorded rather than quietly replaced.** The guess was that `TrySelect`'s three maze candidates were being refused and every level was silently getting `BuildSerpentine`, the way it had before. **`fellback 0` at every depth across 200 seeds: the maze IS selected.** The string-of-pearls look has a different and more fundamental cause, and it took extending the probe to see it, because **checker 14 could not measure the complaint**: every column it reported was about whether a layout is *legal*, and none about whether it reads as a maze. Degree and fill columns were added to `.local/harness/PlannerProbe/Program.cs` for this.
-
-| depth | avg degree | max degree | deg 0 | deg 1 | roomfill of 300×300 |
-|---|---|---|---|---|---|
-| 1 | **2.39** | **4** | 0.0% | 6.5% | 46.0% |
-| 2 | 2.41 | 4 | 0.0% | 7.3% | 42.4% |
-| 3 | 2.40 | 4 | 0.0% | 5.0% | 38.7% |
-| 4 | 2.23 | 4 | 0.0% | 4.6% | 27.1% |
-| 5 / 6 / 8 | **2.20** | **4** | 0.0% | 4.0% | **17.1%** |
-
-**What the numbers say, clause by clause:**
-- *"the rooms are just one exit one entrance"* — **confirmed exactly.** An average degree of **2.2 to 2.4** means the typical room has two links: one in, one out. That is a corridor with rooms on it, which is what a string of pearls is. The braid is contributing only ~0.4 above the spanning tree's 2.0, so `BraidRarity = 3` is far too sparse to read as a maze.
-- *"room connected to like 0 - 10 other rooms"* — **structurally unreachable today, and this is the architectural finding.** Max degree is **4** at every depth, because every link must join **grid-adjacent slots**: `AreNeighbourRooms` requires linked centres to share a row or column and `BuildCorridors` carves straight between them, so a slot has at most four orthogonal neighbours. **Reaching 10 requires links that are not grid-adjacent**, which means corridors that bend — a change to the corridor carver and to `ValidateRooms`, not a tuning of the braid. `deg 0` is 0.0% as well, so the owner's explicit *"0"* case does not occur at all.
-- *"not have so much empty rock space where nothing exists"* / *"FILL THE SPACE WITH ROOMS"* — **confirmed, and it gets worse the deeper you go, which is backwards.** Rooms occupy **46%** of a depth-1 map and only **17%** by depth 5. The cause is arithmetic: slots rise 6×6 → 10×10 while `VariedRoomSpan` shrinks 34 → 16, so area per room falls faster than room count rises, and `MaxRooms = 60` caps the count before it can compensate. **83% of a deep coordinate is uncarved rock** — which is also exactly the space the ore clauses below want to make worth digging.
-
-`python tools/check-planner-layouts.py` runs this; the `maze` line beside each depth is the new measurement and is how any fix gets confirmed.
-
-- [ ] **"this is not the backrooms universe MAZES!!!!"** — the acceptance condition on the whole layout, in the owner's own words.
 
 ### Owner report — a door refuses to become a gate until the battery is set up first (2026-10-03)
 
@@ -238,7 +197,7 @@ Nine `##` sections titled as dated checkpoint records held **20.9 KB** between t
 
 
 
-- [ ] **"theri 300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels with thir natual gate spawns to different levels within"** — **OPEN, and fully specified by the owner across four questions this checkpoint.** Levels become **300×300** (from 60×60); **60–100 rooms** in a dense warren on a **10×10** planning grid at the existing 19-cell spacing; **threshold_room / office_copy / return_gallery stay unique**, the other five families **repeat**, and **new structural families** are authored (flooded_room, stairwell, dead_end, pillar_hall) — **layout and dressing only, no new ThingDefs**; **4–6 onward gates per level**, one per ~15 rooms, with `MaximumNaturalDepth` **3 → 6**; and a **fresh save**, dropping the 60×60 path entirely for one shape, the simplest code and the cleanest proofs.
+- [ ] **"theri 300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels with thir natual gate spawns to different levels within"** — **OPEN, and fully specified by the owner across four questions this checkpoint.** Levels become **300×300** (from 60×60); **60–100 rooms** in a dense warren on a **10×10** planning grid at the existing 19-cell spacing; **threshold_room / office_copy / return_gallery stay unique**, the other five families **repeat**, and **new structural families** are authored (flooded_room, stairwell, dead_end, pillar_hall) — **layout and dressing only, no new ThingDefs**; **4–6 onward gates per level**, one per ~15 rooms, with `MaximumNaturalDepth` **3 → 6**; and a **fresh save**, dropping the 60×60 path entirely for one shape, the simplest code and the cleanest proofs. — **MEASURED 0.12.98-dev, AND THIS ROW IS NOW STALE IN ITS PREMISE RATHER THAN ITS STATUS.** Built: **300×300** (`MapWidth`/`MapHeight`), unique `threshold_room` / `office_copy` / `return_gallery` enforced by the validator, the other families repeating, and natural ways onward to different levels through `MaximumNaturalDepth` 6. **Superseded by measurement: the "10×10 planning grid at the existing 19-cell spacing".** The planner reached 10×10 and **left 83% of a deep map as bare rock**, because the gap between slots is fixed per boundary and more slots means more boundaries — a finer grid fills *less* space. It is now **6×6 / 7×7 / 8×8 by depth** at 48 / 41 / 36 spacing, which is the owner's *"FILL THE SPACE WITH ROOMS"* read against the constants. **And one number is genuinely short of the spec, deliberately: rooms measure 33 / 47 / 60 by depth against the stated "60–100".** `MaxRooms` is **60**, and depth 1 is fewer and bigger on purpose — *"the normal yellow backrooms look isnt the whole floor but the main spanw room"*. **Whether the ceiling should rise toward 100 for the deep bands is the owner's call and nothing is blocked on it**; raising `MaxRooms` is one constant, and the probe would show the fill and degree move with it.
 
 **From `## The first walked level — 2026-09-30 (0.12.61-dev) — DONE`:**
 
@@ -270,13 +229,6 @@ Nine `##` sections titled as dated checkpoint records held **20.9 KB** between t
 
 
 
-
-**From `## The lab name comes out, and every level becomes a maze - 2026-10-01 (0.12.68-dev, 0.12.69-dev) - DONE`:**
-
-- [~] **"all the backrooms so far are just one lone strain of perals arangement that snakes back
-  and forth across the map like one series line"** - **the owner is describing the algorithm
-  exactly.** `RoomLayoutPlanner.Build` walks the slot grid row-major with alternating direction
-  and calls it a *serpentine*; it is one line that snakes, by construction
 
 ### Major M1 — Connected colony portals (ROADMAP M1; master TODO §Native-provider foundation — 0.4.0-dev)
 
@@ -503,7 +455,7 @@ Contracts: [`OPERATIONS_ACTION_CONTRACTS.md`](OPERATIONS_ACTION_CONTRACTS.md), [
 
 That second message is what shaped the palette: a single global look could only ever deliver half the direction, so the look is a **function of depth**. Record: [`implementation/BACKROOMS_PALETTE_IMPLEMENTATION.md`](implementation/BACKROOMS_PALETTE_IMPLEMENTATION.md).
 
-- [~] **"so that a solo group has ability to build and get supplies on backrroms instances and find a way out before dying"** — **THE ARITHMETIC GUARANTEES IT AS OF 0.8.0-dev**, as three properties rather than tuning: an **absolute** cap of three simultaneous encounters at any depth and any wealth; **half of every coordinate's rooms bare by count rather than by chance**, so an unlucky run of rolls cannot produce a space with something in every room; and a first visit always quiet. Shallow coordinates are also capped below the top band regardless of wealth. **Stays in progress until inhabitants exist and the condition can actually be observed.** — **an acceptance condition on the whole generator, not a nice-to-have.** A high-tier coordinate that cannot be survived solo by building, supplying and finding a way out has failed this direction regardless of how good it looks.
+- [T] **"so that a solo group has ability to build and get supplies on backrroms instances and find a way out before dying"** — **THE ARITHMETIC GUARANTEES IT AS OF 0.8.0-dev**, as three properties rather than tuning: an **absolute** cap of three simultaneous encounters at any depth and any wealth; **half of every coordinate's rooms bare by count rather than by chance**, so an unlucky run of rolls cannot produce a space with something in every room; and a first visit always quiet. Shallow coordinates are also capped below the top band regardless of wealth. **Stays in progress until inhabitants exist and the condition can actually be observed.** — **an acceptance condition on the whole generator, not a nice-to-have.** A high-tier coordinate that cannot be survived solo by building, supplying and finding a way out has failed this direction regardless of how good it looks. — **RECLASSIFIED TO THE TEST PHASE 0.12.98-dev, on the row's own condition.** It says it stays in progress *"until inhabitants exist and the condition can actually be observed"*. **Inhabitants exist** — twelve defs, wanderers through to the dead and the psychotic — and the three guarantees are constants in source rather than tuning: `MaxSimultaneousEncounters = 3`, half of every coordinate's rooms bare by count, and a quiet first visit. **So nothing buildable remains; what remains is watching it**, which is the owner's launch and belongs in the test phase rather than the working queue.
 
 ### Owner direction — the M6 release gate (2026-09-29)
 

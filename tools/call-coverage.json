@@ -40,16 +40,20 @@
           "by": "Presentation.RimroomsGenerationNotice.Announce"
         },
         "Gate/GateSpinUp.cs": {
-          "status": "exempt",
-          "reason": "A tick. The ramp completing needs connectionId back from the registrar on the spot, and a long event cannot hand a value back to the tick that queued it. This is the gate-enter half the owner named and it is an open queue row, not a decision."
+          "status": "covered_by_caller",
+          "by": "Presentation.RimroomsGenerationNotice.Announce",
+          "in": "Gate/GateConnectionHistory.cs",
+          "note": "The exemption here was WRONG and said so confidently: it claimed a tick. DialRememberedAddress is reached from a FloatMenuOption delegate in GateConnectionHistory, which is a click, which is exactly where a long event is legal. The exemption had been written without reading the caller -- the same half-wiring this file exists to refuse. Now announced, and the claim is checkable in the file that holds the wrapper."
         },
         "Portals/NaturalFrontierService.cs": {
           "status": "exempt",
-          "reason": "A job tick, same shape: a pawn walking into a found door resolves the place during the job and the job reads the result."
+          "reason": "STILL EXEMPT, BUT NOT FOR THE REASON FIRST WRITTEN. The original said 'a job tick', and only one of its two callers is one: RecordDiscovery is a Toil initAction, but CompRimroomsEmergence's walk-through is a FloatMenuOption delegate, which is a click. The real obstacle is the predicate, not the caller: Discover MINTS the coordinate, so there is nothing to ask ShouldAnnounce about beforehand -- and a found door may record a way OUT, which generates no map at all. Announcing a hold that never comes is the notice becoming the nuisance, which this feature is explicitly scoped against. Covering it needs a predicate for 'this door will mint a place', which is design work and not a wrapper."
         },
         "Expedition/RimroomsExpeditionComponent.cs": {
-          "status": "exempt",
-          "reason": "Dispatch returns a CompanyActionResult its caller reads to decide what to show, so it cannot defer."
+          "status": "covered_by_caller",
+          "by": "Presentation.RimroomsGenerationNotice.Announce",
+          "in": "UI/OperationsExpeditions.cs",
+          "note": "The second exemption that was wrong. It said the result is read by its caller -- which described the method, not the call: Dispatch is reached from a button, the result is read INSIDE the callback, and moving ShowResult(Dispatch(...)) into the notice's continuation is the shape OperationsPortalNetwork already used. A long event is legal wherever nothing outside the callback is waiting."
         },
         "Scenario/SoloGroupOpening.cs": {
           "status": "exempt",
@@ -71,16 +75,46 @@
         "Portals/PortalTraversalPolicy.cs"
       ],
       "sites": {
-        "ConnectedWork/Adapters/ConnectedBillAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
-        "ConnectedWork/Adapters/ConnectedCasualtyAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
-        "ConnectedWork/Adapters/ConnectedConstructionAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
-        "ConnectedWork/Adapters/ConnectedFoodAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
-        "ConnectedWork/Adapters/ConnectedFuelAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
-        "ConnectedWork/Adapters/ConnectedHaulingAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
-        "ConnectedWork/Adapters/ConnectedMedicineAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
-        "ConnectedWork/RimroomsConnectedWorkComponent.cs": { "status": "covered", "by": "TravellerFailureKey" },
-        "ConnectedWork/WorkGiver_ConnectedDeployment.cs": { "status": "covered", "by": "TravellerFailureKey" },
-        "ConnectedWork/WorkGiver_ConnectedWork.cs": { "status": "covered", "by": "TravellerFailureKey" }
+        "ConnectedWork/Adapters/ConnectedBillAdapter.cs": {
+          "status": "covered",
+          "by": "TravellerFailureKey"
+        },
+        "ConnectedWork/Adapters/ConnectedCasualtyAdapter.cs": {
+          "status": "covered",
+          "by": "TravellerFailureKey"
+        },
+        "ConnectedWork/Adapters/ConnectedConstructionAdapter.cs": {
+          "status": "covered",
+          "by": "TravellerFailureKey"
+        },
+        "ConnectedWork/Adapters/ConnectedFoodAdapter.cs": {
+          "status": "covered",
+          "by": "TravellerFailureKey"
+        },
+        "ConnectedWork/Adapters/ConnectedFuelAdapter.cs": {
+          "status": "covered",
+          "by": "TravellerFailureKey"
+        },
+        "ConnectedWork/Adapters/ConnectedHaulingAdapter.cs": {
+          "status": "covered",
+          "by": "TravellerFailureKey"
+        },
+        "ConnectedWork/Adapters/ConnectedMedicineAdapter.cs": {
+          "status": "covered",
+          "by": "TravellerFailureKey"
+        },
+        "ConnectedWork/RimroomsConnectedWorkComponent.cs": {
+          "status": "covered",
+          "by": "TravellerFailureKey"
+        },
+        "ConnectedWork/WorkGiver_ConnectedDeployment.cs": {
+          "status": "covered",
+          "by": "TravellerFailureKey"
+        },
+        "ConnectedWork/WorkGiver_ConnectedWork.cs": {
+          "status": "covered",
+          "by": "TravellerFailureKey"
+        }
       },
       "_found_by_the_checker": [
         "These last two were missing from the census the first time it was written, and the",

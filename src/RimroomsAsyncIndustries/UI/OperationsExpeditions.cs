@@ -281,7 +281,24 @@ namespace RimroomsAsyncIndustries.UI
                     refusal: gate == null || !gate.IsDesignated
                         ? "RR_NativeGate_DispatchNeedsBoundGate".Translate()
                         : TaggedString.Empty))
-            { ShowResult(trips.Dispatch(gate, coordinate, new List<Pawn>(selectedCrew))); }
+            {
+                // **ANNOUNCED, because dispatching to an unresolved coordinate builds its map.**
+                //
+                // `Dispatch` reaches `EnsureSite`, and this path was recorded as exempt from the
+                // freeze notice because *the result is read by its caller*. That reason described
+                // the method and not the call: **this is a button**, the result is read inside the
+                // callback, and moving the whole `ShowResult(Dispatch(...))` into the notice's
+                // continuation is exactly the shape `OperationsPortalNetwork` already uses for its
+                // two openings. A long event is legal wherever nothing *outside* the callback is
+                // waiting, which is here.
+                //
+                // The crew list is copied before the lambda for the reason it was already being
+                // copied: `selectedCrew` is pane state the player can change, and the dispatch
+                // now happens a frame or more later.
+                var dispatching = new List<Pawn>(selectedCrew);
+                Presentation.RimroomsGenerationNotice.Announce(coordinate, delegate
+                { ShowResult(trips.Dispatch(gate, coordinate, dispatching)); });
+            }
         }
 
         // Recovering a marker is an ordinary uninstall order on an ordinary Core building

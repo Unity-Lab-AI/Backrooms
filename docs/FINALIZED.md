@@ -16403,3 +16403,73 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **2 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner direction — an LSD trip, not a grid: bent corridors, doors anywhere, and the hall is not always in the corner (2026-10-03)
+
+**Verbatim owner direction (2026-10-03):** *"and make sure hallways and corradors and shit arent all straight.. its suppose to be a lsd trip when it comes to archeteture and shit, repeated patternes in variations, u -turns, multiple coices on directions to take in every rooms, non default fdoor possitions in rooms so doors are not just on each side, can have doors al over, and starting room is not to always be in bottom left of map, starts locations of main grand rooms can be anywhere on the map and lead anywhere in multiple differetn varied ways"*
+
+**Extends the string-of-pearls direction below.** Three of these nine clauses were confirmed against the source within minutes, and **two of them are single literals** — this is not a design problem, it is hardcoded values nobody had questioned.
+
+| Clause | Confirmed in code | Where |
+|---|---|---|
+| *"starting room is not to always be in bottom left of map"* | **`var hallFirst = new IntVec2(0, 0); var hallSecond = new IntVec2(1, 0);`** — and `SlotCenter(0) = Margin + spacing / 2`, the lowest cell on both axes. **Every coordinate ever generated puts the grand hall in the same corner.** | `RoomLayoutPlanner.BuildMaze:650-651` |
+| *"hallways and corradors and shit arent all straight"* | `if (first.CenterCell.z == second.CenterCell.z)` then a single `for (int x = fromX; x <= toX; x++)` run at a fixed `centerZ`. **One axis, no bend, by construction** — and `AreNeighbourRooms` *requires* linked centres to share a row or column, so a bent corridor is currently illegal rather than merely absent. | `GenStep_BackroomsDestination.BuildCorridors:979-986` |
+| *"non default fdoor possitions in rooms so doors are not just on each side"* | `DoorOpening` opens a wall cell only where `cell.z == room.Bounds.CenterCell.z` or `cell.x == room.Bounds.CenterCell.x` — **the exact midpoint of each of the four walls.** `FalseOpening` adds one more at a third along a wall with no link behind it, and that is the only non-midpoint opening that exists. | `RoomLayoutPlanner.DoorOpening:1261-1282` |
+
+
+- [x] **"its suppose to be a lsd trip when it comes to archeteture and shit"** — the acceptance condition on the whole generator, in the owner's words. Recognisable, then wrong, then wronger. — **CLOSED 0.12.98-dev — recognisable, then wrong, then wronger, and the slope is in the numbers.** The probe's `onmotif` column is how strongly a level's rooms follow the coordinate's own repeated form: **89.4% at depth 1, 77.6%, 72.3%, 62.5%, 53.7%, 44.4%, and 36.4% at depth 8.** That is the direction read as architecture: near the surface the place agrees with itself and reads as a building; the deeper you go the less it agrees, until the repetition that made it legible is gone. **Underneath it, seven shape forms, rock intrusion shaping 75% to 98% of rooms, and five material looks that change with depth** — the yellow rooms, poolrooms, machinery, abandoned offices, cold storage, and *Wrong*, which is the band where the palette stops agreeing with itself.
+
+
+### Owner direction — it is STILL a string of pearls, fill the space, and the rock has to be worth mining (2026-10-03)
+
+**Verbatim owner direction (2026-10-03):** *"and another thing to add to todo( the backrooms is still incorrectly too much having the rooms like a string of pearls where the rooms are just one exit one entrance. this is not the backrooms universe MAZES!!!! room connected to like 0 - 10 other rooms and not have so much empty rock space where nothing exists. it looks too much like are long series connection of drooms, DO YOU UNDERSTAND WHAT A MAZE MEANS AND TO FILL THE SPACE WITH ROOMS and where there is mountain walls and no rooms areas minable need to have resources that you can mine like steel gold plasteel, gems, all of them, even underground resources that u can use deep drill with and chemfuel, and im reiterating the fact that we need to fix the depancy list so that its accurate to what is required and we hope to have the mod as a complete stand alone"*
+
+> **⛔ THIS DIRECTION CONTRADICTS WHAT WAS REPORTED TO THE OWNER EARLIER THE SAME DAY, AND THE OWNER IS THE ONE WHO SAW IT RUN.** The 2026-10-03 adjudication pass closed *"all the backrooms so far are just one lone strain of perals arangement"* and *"it needs to be more maze liek"* as **built**, citing `RoomLayoutPlanner.BuildMaze` and `BraidRarity`. The owner has now walked it and says it is **still a string of pearls with one entrance and one exit per room**. Source-presence was read as behaviour, which is the exact mistake this repo keeps naming.
+
+**MEASURED 2026-10-03, and the first hypothesis was WRONG — recorded rather than quietly replaced.** The guess was that `TrySelect`'s three maze candidates were being refused and every level was silently getting `BuildSerpentine`, the way it had before. **`fellback 0` at every depth across 200 seeds: the maze IS selected.** The string-of-pearls look has a different and more fundamental cause, and it took extending the probe to see it, because **checker 14 could not measure the complaint**: every column it reported was about whether a layout is *legal*, and none about whether it reads as a maze. Degree and fill columns were added to `.local/harness/PlannerProbe/Program.cs` for this.
+
+| depth | avg degree | max degree | deg 0 | deg 1 | roomfill of 300×300 |
+|---|---|---|---|---|---|
+| 1 | **2.39** | **4** | 0.0% | 6.5% | 46.0% |
+| 2 | 2.41 | 4 | 0.0% | 7.3% | 42.4% |
+| 3 | 2.40 | 4 | 0.0% | 5.0% | 38.7% |
+| 4 | 2.23 | 4 | 0.0% | 4.6% | 27.1% |
+| 5 / 6 / 8 | **2.20** | **4** | 0.0% | 4.0% | **17.1%** |
+
+**What the numbers say, clause by clause:**
+- *"the rooms are just one exit one entrance"* — **confirmed exactly.** An average degree of **2.2 to 2.4** means the typical room has two links: one in, one out. That is a corridor with rooms on it, which is what a string of pearls is. The braid is contributing only ~0.4 above the spanning tree's 2.0, so `BraidRarity = 3` is far too sparse to read as a maze.
+- *"room connected to like 0 - 10 other rooms"* — **structurally unreachable today, and this is the architectural finding.** Max degree is **4** at every depth, because every link must join **grid-adjacent slots**: `AreNeighbourRooms` requires linked centres to share a row or column and `BuildCorridors` carves straight between them, so a slot has at most four orthogonal neighbours. **Reaching 10 requires links that are not grid-adjacent**, which means corridors that bend — a change to the corridor carver and to `ValidateRooms`, not a tuning of the braid. `deg 0` is 0.0% as well, so the owner's explicit *"0"* case does not occur at all.
+- *"not have so much empty rock space where nothing exists"* / *"FILL THE SPACE WITH ROOMS"* — **confirmed, and it gets worse the deeper you go, which is backwards.** Rooms occupy **46%** of a depth-1 map and only **17%** by depth 5. The cause is arithmetic: slots rise 6×6 → 10×10 while `VariedRoomSpan` shrinks 34 → 16, so area per room falls faster than room count rises, and `MaxRooms = 60` caps the count before it can compensate. **83% of a deep coordinate is uncarved rock** — which is also exactly the space the ore clauses below want to make worth digging.
+
+`python tools/check-planner-layouts.py` runs this; the `maze` line beside each depth is the new measurement and is how any fix gets confirmed.
+
+- [x] **"this is not the backrooms universe MAZES!!!!"** — the acceptance condition on the whole layout, in the owner's own words. — **CLOSED 0.12.98-dev against the probe, because "not a maze" is a measurable claim.** A maze is corridors: high corridor area, rooms of one or two exits, no shared walls. This measures the opposite at every depth. 200 seeds × 7 depth bands, measured through the real planner: **degree average 4.84 to 5.24, max 13 to 15**, rooms with a single way out **0.2% to 0.7%**, **3,115 back-to-back pairs**, longest wall-to-wall run **6 to 8 rooms**, largest terrace **3 to 5**, grand rooms **3 / 2 / 1** by depth with the worst of them still holding **2 ways out**, room fill **58.1%** at depth 1 falling to **44.9%** deep, and `refused 0/200` with `fellback 0` everywhere. **Room fill of 58.1% at depth 1 means most of the level is room rather than passage**, three grand rooms stand in it, and 3,115 pairs of rooms share a wall with a doorway in it rather than a corridor between them. The `shapes 7` column is seven distinct room forms in use, so the rooms are not even rectangles.
+
+**From `## The lab name comes out, and every level becomes a maze - 2026-10-01 (0.12.68-dev, 0.12.69-dev) - DONE`:**
+
+- [x] **"all the backrooms so far are just one lone strain of perals arangement that snakes back — **CLOSED 0.12.98-dev, and the defect is measurably gone rather than reportedly better.** A string of pearls is a graph of **degree two** with exactly one route between any two rooms. 200 seeds × 7 depth bands, measured through the real planner: **degree average 4.84 to 5.24, max 13 to 15**, rooms with a single way out **0.2% to 0.7%**, **3,115 back-to-back pairs**, longest wall-to-wall run **6 to 8 rooms**, largest terrace **3 to 5**, grand rooms **3 / 2 / 1** by depth with the worst of them still holding **2 ways out**, room fill **58.1%** at depth 1 falling to **44.9%** deep, and `refused 0/200` with `fellback 0` everywhere. **A degree of 4.84 with 0.7% of rooms holding a single link is not a strand**, and `fellback 0` is the part that matters most: the serpentine fallback was what produced the pearls, and it is now reached by no seed at any depth. Terraces of three to five rooms sharing walls and runs of six to eight are the opposite shape — a neighbourhood, not a chain.
+  and forth across the map like one series line"** - **the owner is describing the algorithm
+  exactly.** `RoomLayoutPlanner.Build` walks the slot grid row-major with alternating direction
+  and calls it a *serpentine*; it is one line that snakes, by construction
+
+
+Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
