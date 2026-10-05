@@ -26,7 +26,7 @@ change"*
 
 - **During the work:** run **only the one instrument covering the file you just touched.** One
   checker, or one proof, or one plant suite. **Keep writing and extending them.**
-- **At publication, once:** 22 checkers → 59 proofs → 34 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the ten-ref cascade — and then `curl` the published site.** The last step is not a formality: every banner once shipped as a 404 with all twelve refs level and every instrument green, because an on-disk audit cannot see a deployment fault.
+- **At publication, once:** 23 checkers → 59 proofs → 34 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the ten-ref cascade — and then `curl` the published site.** The last step is not a formality: every banner once shipped as a 404 with all twelve refs level and every instrument green, because an on-disk audit cannot see a deployment fault.
 - **If a sweep finds something, fix it and re-run ONLY the instrument that failed.**
 - **Batch size is 10–12 closed rows.** 0.12.96 closed **ten** before the battery ran once, which is the cadence the owner asked for: *"get a bunch done berfore battery and stage and cascade"*.
 
@@ -52,7 +52,7 @@ reword the document into something awkward. A checker that cries wolf is one peo
 | Version | **0.12.98-dev** — read from `About.xml`, never from a document |
 | Build | **232 C# files, 103 package files**, zero warnings, zero errors |
 | Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile and is checked against the register |
-| Instruments | **22 checkers**, **59 proofs**, **34 plant suites**. `check-doc-comments.py` is the newest: one `<summary>` per member, no threshold and no judgement |
+| Instruments | **23 checkers**, **59 proofs**, **34 plant suites**. `check-call-coverage.py` is the newest and it answers a named criticism: *"u have a habit of half completing and half wiring up and half connecting things"*. Each chokepoint carries a census of every site that reaches it, covered by a named wrapper or exempt with a reason — **and an undeclared new caller fails the build.** It found two real call sites on its first run that the hand-written census had missed |
 | Remotes | **TWELVE refs, all level** — this repository 10 (`forgejo` 5, `github` 5) plus the mod-only pair 2. Forgejo caught up 2026-10-05 after four commits down |
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
 | Queue | **31 open · 20 partial · 38 `[T]` · 0 `[x]`** — **31 closed across this session**, every one archived with VERBATIM TRANSFER CONFIRMED. Roughly 22 of what remains is blocked on the owner: a launch log, Steam, a domain, play-balance |

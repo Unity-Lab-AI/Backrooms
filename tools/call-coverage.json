@@ -1,0 +1,94 @@
+{
+  "_why": [
+    "Owner, 2026-10-05, verbatim: \"u have a habit of half completing and half wiring up and half",
+    "connecting things\". check-wiring.py already refuses a def nothing reads and an action nothing",
+    "calls. Neither of those is the defect being named: a feature wired to SOME of its call sites",
+    "and not the rest passes both, because every individual file is fine and the thing that is",
+    "missing is a call that was never written.",
+    "",
+    "So each chokepoint below carries a CENSUS of every place that reaches it, and every one of",
+    "those places is either covered by a named wrapper or exempt with a stated reason. A new call",
+    "site appearing undeclared fails the build, which is the only moment anybody is in a position",
+    "to notice they are wiring up half of something."
+  ],
+  "chokepoints": [
+    {
+      "name": "a map is generated only where the player was warned about the freeze",
+      "why": [
+        "Generation carves a 300x300 map on the main thread and the window stops answering.",
+        "An unexplained freeze reads as a crash. RimroomsGenerationNotice.Announce warns first,",
+        "moves the work into a long event, and closes out when it ends -- but a long event is only",
+        "legal where nothing is waiting on a return value, so a tick cannot use it."
+      ],
+      "callees": [
+        "RegisterLaboratoryAddress(",
+        "RegisterNaturalAddress(",
+        "RegisterEmergenceAddress(",
+        "DestinationService.EnsureSite("
+      ],
+      "declaring_files": [
+        "Portals/PortalAddressService.cs",
+        "Generation/DestinationService.cs"
+      ],
+      "sites": {
+        "UI/OperationsPortalNetwork.cs": {
+          "status": "covered",
+          "by": "Presentation.RimroomsGenerationNotice.Announce"
+        },
+        "Gate/GateAddressControls.cs": {
+          "status": "covered",
+          "by": "Presentation.RimroomsGenerationNotice.Announce"
+        },
+        "Gate/GateSpinUp.cs": {
+          "status": "exempt",
+          "reason": "A tick. The ramp completing needs connectionId back from the registrar on the spot, and a long event cannot hand a value back to the tick that queued it. This is the gate-enter half the owner named and it is an open queue row, not a decision."
+        },
+        "Portals/NaturalFrontierService.cs": {
+          "status": "exempt",
+          "reason": "A job tick, same shape: a pawn walking into a found door resolves the place during the job and the job reads the result."
+        },
+        "Expedition/RimroomsExpeditionComponent.cs": {
+          "status": "exempt",
+          "reason": "Dispatch returns a CompanyActionResult its caller reads to decide what to show, so it cannot defer."
+        },
+        "Scenario/SoloGroupOpening.cs": {
+          "status": "exempt",
+          "reason": "Runs inside new-game setup, where there is no frame to draw a notice on and no freeze to explain -- the player has not been shown a game yet."
+        }
+      }
+    },
+    {
+      "name": "every connected-work adapter asks the one traversal policy",
+      "why": [
+        "Invariant 1: PortalTraversalPolicy is the only traversal chokepoint. An adapter that",
+        "forgets to ask it would quietly let a pawn cross who may not -- and `in` cannot tell one",
+        "site from seven, which is why the count is declared rather than searched for."
+      ],
+      "callees": [
+        "PortalTraversalPolicy.TravellerFailureKey("
+      ],
+      "declaring_files": [
+        "Portals/PortalTraversalPolicy.cs"
+      ],
+      "sites": {
+        "ConnectedWork/Adapters/ConnectedBillAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
+        "ConnectedWork/Adapters/ConnectedCasualtyAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
+        "ConnectedWork/Adapters/ConnectedConstructionAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
+        "ConnectedWork/Adapters/ConnectedFoodAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
+        "ConnectedWork/Adapters/ConnectedFuelAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
+        "ConnectedWork/Adapters/ConnectedHaulingAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
+        "ConnectedWork/Adapters/ConnectedMedicineAdapter.cs": { "status": "covered", "by": "TravellerFailureKey" },
+        "ConnectedWork/RimroomsConnectedWorkComponent.cs": { "status": "covered", "by": "TravellerFailureKey" },
+        "ConnectedWork/WorkGiver_ConnectedDeployment.cs": { "status": "covered", "by": "TravellerFailureKey" },
+        "ConnectedWork/WorkGiver_ConnectedWork.cs": { "status": "covered", "by": "TravellerFailureKey" }
+      },
+      "_found_by_the_checker": [
+        "These last two were missing from the census the first time it was written, and the",
+        "checker reported them on its first run. The hand-written list came from a grep that was",
+        "truncated at eight lines -- which is the same mistake in miniature as the defect the file",
+        "exists to catch, and the reason the rule asserts the FOUND set rather than trusting the",
+        "declared one."
+      ]
+    }
+  ]
+}

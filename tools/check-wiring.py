@@ -164,7 +164,78 @@ def main():
     blob = "\n".join(files.values())
     check_defs(problems, blob)
     check_actions(problems, files)
+    check_deployment_chain(problems, files)
     return report()
+
+
+def check_deployment_chain(problems, files):
+    """Every registered deployment provider must be reachable through all three of its links.
+
+    **Owner, 2026-10-05, verbatim:** *"u have a habit of half completing and half wiring up and
+    half connecting things"*. This is that class, and the chain is three links long with each one
+    in a different kind of file:
+
+        registered in `ConnectedDeploymentProviders`
+            -> a `WorkGiver_Connected*` subclass overrides `ProviderId` to return it
+                -> a `WorkGiverDef` names that subclass in `giverClass`
+
+    `ConnectedDeploymentProviders.Get(id)` is the **only** consumer -- `All` is never enumerated --
+    so a provider whose chain is broken at any link is a thing a pawn can never be asked to do,
+    and nothing else in this repository would notice. The registry would still list it, the class
+    would still compile, and the work would simply never be offered.
+
+    Measured at 0.12.98-dev: 27 providers, 27 subclasses, all present in defs. **The point of
+    writing it down is the twenty-eighth.**
+    """
+    provider = next((text for path, text in files.items()
+                     if path.endswith("ConnectedDeploymentProvider.cs")), None)
+    if provider is None:
+        problems.append("ConnectedDeploymentProvider.cs is gone; the deployment chain cannot be "
+                        "checked, which is a failure rather than a skip")
+        return
+    code = strip_cs_comments(provider)
+    registry = re.search(r"registry\s*=[^;]*?\{(.*?)\};", code, re.S)
+    if registry is None:
+        problems.append("the deployment provider registry could not be read, so no provider's "
+                        "reachability is being checked")
+        return
+    registered = sorted(set(re.findall(r"\{\s*(\w+),", registry.group(1))))
+    if not registered:
+        problems.append("the deployment provider registry parsed as empty. An absence rule over "
+                        "an empty set passes by construction, which is the trap this guards")
+        return
+
+    everything = strip_cs_comments("\n".join(files.values()))
+    givers = {}
+    for match in re.finditer(
+            r"class (WorkGiver_\w+)\s*:\s*WorkGiver_ConnectedDeployment(.*?)(?=class |\Z)",
+            everything, re.S):
+        used = re.search(
+            r"ProviderId\s*\{\s*get\s*\{\s*return ConnectedDeploymentProviders\.(\w+)",
+            match.group(2))
+        if used:
+            givers.setdefault(used.group(1), []).append(match.group(1))
+
+    # `giverClass`, which is RimWorld's own field name. Looking for `workGiverClass` instead found
+    # zero and reported all twenty-seven providers unreachable -- a confident wrong answer about
+    # shipped work, caught only because the number was too round to believe.
+    declared = set()
+    for path in sorted(glob.glob(os.path.join(MOD, "Defs", "**", "*.xml"), recursive=True)):
+        text = strip_xml_comments(read(path))
+        declared.update(re.findall(r"<giverClass>\s*[\w.]*?(\w+)\s*<", text))
+
+    for constant in registered:
+        subclasses = givers.get(constant, [])
+        if not subclasses:
+            problems.append("deployment provider %r is registered and NO WorkGiver subclass "
+                            "returns it, so no pawn can ever be asked to do it" % constant)
+            continue
+        if not any(name in declared for name in subclasses):
+            problems.append("deployment provider %r has subclass(es) %s and NONE of them is named "
+                            "by a WorkGiverDef's giverClass, so the work is never offered"
+                            % (constant, ", ".join(sorted(subclasses))))
+    notes.append("deployment chain: %d provider(s) registered, each with a WorkGiver subclass "
+                 "named by a WorkGiverDef" % len(registered))
 
 
 def report():
