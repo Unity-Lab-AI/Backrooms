@@ -100,6 +100,11 @@ namespace RimroomsAsyncIndustries.Portals
         /// three wide or more passes anything at all.
         /// </summary>
         public const float SingleWidthMaxBodySize = 1.2f;
+        /// <summary>
+        /// The body size a two-cell gate will pass, which is what lets pack animals
+        /// through: a muffalo is 2.0 and a dromedary 2.2, so 2.5 clears both with room
+        /// rather than sitting on top of either number.
+        /// </summary>
         public const float DoubleWidthMaxBodySize = 2.5f;
 
         /// <summary>The body size a doorway this wide admits, or null for no limit.</summary>

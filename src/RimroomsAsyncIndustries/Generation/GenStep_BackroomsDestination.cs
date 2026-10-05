@@ -34,6 +34,14 @@ namespace RimroomsAsyncIndustries.Generation
         /// <see cref="TrySpawnNativeConduit"/>.
         /// </summary>
         private const int MaxNativePowerConduits = 4000;
+        /// <summary>
+        /// Most stacks of fuel a generated coordinate will prime its generator with.
+        ///
+        /// **A refusal rather than a clamp**, which is the point: a fuel whose stack
+        /// size makes the authored run cost more than this many stacks is skipped
+        /// entirely rather than part-filled, because a generator holding a token
+        /// amount reads as broken where an unfuelled one reads as unfuelled.
+        /// </summary>
         private const int MaxInitialFuelStacks = 16;
 
         public override int SeedPart { get { return GeneratorSeedPart; } }

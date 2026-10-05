@@ -1,4 +1,4 @@
-using RimroomsAsyncIndustries.Company;
+﻿using RimroomsAsyncIndustries.Company;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -75,6 +75,15 @@ namespace RimroomsAsyncIndustries.Gate
         /// <summary>Condition remaining, in ticks of ordinary wear. Ten days at full.</summary>
         private int serviceConditionTicks = -1;
 
+        /// <summary>
+        /// A fully serviced gate's assembly life, and the denominator the condition
+        /// fraction is read against.
+        ///
+        /// **It is the full-tank figure rather than a deadline.** A gate restored to
+        /// this sits at 1.0, a saved gate that never had the field starts here, and
+        /// what the player sees is the fraction -- so nothing fails when it runs out,
+        /// the next opening is blocked until the assembly is serviced again.
+        /// </summary>
         private const int ServiceCapacityTicks = 600000;
 
         /// <summary>

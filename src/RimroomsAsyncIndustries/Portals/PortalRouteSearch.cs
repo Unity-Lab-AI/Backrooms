@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Verse;
 
@@ -20,6 +20,13 @@ namespace RimroomsAsyncIndustries.Portals
             internal PortalNetworkResult Availability;
         }
 
+        /// <summary>
+        /// Most search operations one advance of the route search may spend.
+        ///
+        /// **A tick budget, so the search is resumable rather than long.** The search
+        /// keeps its own cursor and continues on the next advance, so this bounds how
+        /// much work a single frame does and never how far a route may reach.
+        /// </summary>
         public const int MaximumOperationsPerAdvance = 1024;
         private static readonly IReadOnlyList<PortalRouteStep> EmptyRoute =
             new List<PortalRouteStep>().AsReadOnly();

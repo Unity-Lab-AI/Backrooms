@@ -58,6 +58,16 @@ namespace RimroomsAsyncIndustries.Generation
     internal static class RoomLayoutPlanner
     {
         internal const int PlannerVersion = 3;
+        /// <summary>
+        /// How many whole layouts are attempted before the safe fallback is taken.
+        ///
+        /// **Three because each candidate is a complete, deterministic maze**, so a
+        /// second attempt is a different seed rather than a retry of the same one --
+        /// and `check-planner-layouts.py` measures `refused 0/200` at every depth, so
+        /// the first candidate is accepted essentially always. This is the depth of
+        /// the net, not a quality dial: raising it would hide a planner that had
+        /// started failing, which is exactly what `fellback` exists to show.
+        /// </summary>
         internal const int CandidateBudget = 3;
         internal const int FallbackCandidate = 3;
 

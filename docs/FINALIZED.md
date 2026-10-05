@@ -16473,3 +16473,74 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **1 whole `##` sections** that were closed records end to end, **2 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner direction — tell the player the freeze is coming, in the universe's own voice (2026-10-03)
+
+**Verbatim owner direction (2026-10-03):** *"and another thing when first loading a new backrooms on gate enter and or using the operations tab machine when finally opening the gate(loading the backrooms) we need a popup and notice in that portion of the machine gate connection step that pops up befgore the "freeze" of the generation telling the player "Time has froze due to mass distortions, please wait" but noit that i want u to make a universe of backrooms themed notcie of the pause that is expected and propely keep it toned to the experience we are trying to make per scenrio type this needs to be added to todo work"*
+
+**This is a real freeze and it is unavoidable, which is exactly why it needs saying.** `GenStep_BackroomsDestination` carves a 300×300 map — rooms, corridors, pillars, rock intrusions, ore, fixtures, lights, power — inside Core's map generation, which runs on the main thread with no progress surface. The player gets a hung window and no idea whether the game died. **An unexplained freeze reads as a crash; an explained one reads as the setting.**
+- [x] **"when first loading a new backrooms on gate enter and or using the operations tab machine when finally opening the gate(loading the backrooms)"** — **both entry points**, named separately because they are different code: crossing in through a gate, and opening the gate from the Operations pane. Whichever the player used, the notice comes from the same place so the two cannot drift. — **PARTLY CLOSED 0.12.83-dev, and **the Operations pane half is done**: both of its openings — the laboratory address and a natural doorway — announce before the freeze. `OperationsPortalNetwork`. **The gate-enter half is genuinely different code and is recorded rather than claimed**: a pawn walking through is a job tick, and `GateSpinUp` reaches `EnsureSite` from a tick as well. A tick cannot queue a long event and then carry on, so that path needs the result chain deferred — the same refactor the row below names.** — **CLOSED 0.12.98-dev. Every path a player can CLICK now announces before the freeze and closes out after it.** Five of them: the Operations pane's two openings, the gate's own address gizmo, dialling a remembered address, and dispatching a crew. The last two were the gate-enter half the row was holding open, and they were never ticks. **What remains uncovered is two paths a player cannot click**, both recorded with reasons in `tools/call-coverage.json`: a job toil, where a pawn surveying a found door resolves it mid-job and the job reads the result, and new-game setup, where there is no frame to draw on and no game yet to freeze. **Neither is the entry point the owner named.**
+
+**Verbatim owner answer (2026-10-03), on the degree ceiling:** *"it shouldnt just be one option there needs to be wide varying variations of all types so dont limit yourself"*
+- [x] **"so dont limit yourself"** — recorded as the standing instruction it is. Where a bound exists it has to be a bound the geometry imposes and is **stated**, not a bound chosen for convenience. `MaximumUndirectedEdgesPerRoom` is the live example: it was 2 *"because a slot has four neighbours"*, and when bends made eight neighbours reachable the constant was the thing refusing them. — **MADE ENFORCEABLE 0.12.98-dev rather than left as an instruction nobody could check. `check-stated-bounds.py` is checker 24.** Measured first: **121 numeric caps in the source, 47 with no stated reason at all** — so the instruction was being honoured by habit and nothing else. **Scoped to where a bound can refuse CONTENT:** `Generation/`, `Portals/` and `Gate/`, which is 44 caps and where 8 were bare. All eight now carry reasons **read out of their own use rather than invented** — the tile search's 512 is a bound on *work* and `Math.Min(count, …)` means a small world is searched exhaustively; `CandidateBudget = 3` is the depth of a net that `refused 0/200` says is never needed; `MaximumPendingCrossings` guards a **saved** list from growing a save file for ever; `DoubleWidthMaxBodySize = 2.5` clears a muffalo at 2.0 and a dromedary at 2.2 with room rather than sitting on either number. **`ConnectedWork/` is out of scope and that is a decision, not laziness:** its thirty `Maximum*` constants are per-tick scan windows under one shared policy (invariant 5), and thirty paragraphs saying the same thing is how **a checker starts crying wolf** — which this project has recorded about its own rules twice. The rule refuses an empty scope outright, so it cannot pass by finding nothing, and a planted deletion fails it.
+
+## Owner direction — the hold notice closes out with a normalization notice (2026-10-05)
+
+### And the measured half that is still open
+
+**Three paths can still reach generation with no notice at all**, measured rather than assumed — every caller of `EnsureSite` and of the three address registrars was read:
+
+| Path | Why it is uncovered |
+|---|---|
+| `GateSpinUp` completing the ramp | **A tick.** It needs `connectionId` back from `RegisterLaboratoryAddress` on the spot |
+| `NaturalFrontierService` — walking into a found door | **A job tick**, same shape |
+| `RimroomsExpeditionComponent.Dispatch` | Returns a `CompanyActionResult` its caller reads |
+
+**A long event is only legal where nothing is waiting on a return value**, which is why this hooks buttons rather than `EnsureSite`. The Operations pane, the gate's own address gizmo and the scenario opening are all covered; these three are not.
+
+- [x] **Defer the result chain on the three tick-driven paths so they can announce too.** The owner named this entry point explicitly — *"on gate enter and or using the operations tab machine when finally opening the gate"* — and **the gate-enter half is the one still missing.** Each needs its continuation moved inside the long event instead of its result being read immediately, which is a real refactor of `GateSpinUp`'s completion and of the natural-door job, not a wrapper. **Until it lands, a player who starts a ramp from the console and walks away still meets an unexplained freeze**, which is the exact failure the feature exists to prevent. — **CLOSED 0.12.98-dev, and the row's own premise was wrong about two of its three.** It said each needs its continuation moved inside the long event. **Two of them needed nothing of the kind, because they were never ticks:** `DialRememberedAddress` is reached from a `FloatMenuOption` delegate, and expedition `Dispatch` from a button whose result is read **inside** the callback — which is precisely where a long event is legal. Both now announce, each with a claim and a plant. **The exemptions had been written describing the method instead of reading the caller**, which is the half-wiring `check-call-coverage.py` exists to refuse, and it is the checker that named both files. **The third is genuinely not a deferral problem and is now recorded as what it is:** the found-door path cannot ask *is a map about to be built*, because `Discover` **mints** the coordinate — and a found door may record a way **out**, which generates no map at all. Announcing a hold that never comes is the notice becoming the nuisance, which this feature is explicitly scoped against. Covering it needs a *predicate* for "this door will mint a place", which is design and not a wrapper.
+
+
+Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Owner directions recorded late` in `docs/TODO.md`
+
+- [x] Eleven-pane Company Command, deep links, reason codes, native menu remap. — **Open:** deep links are partial, and the native menu remap is open and questioned on its own row above. (Twelve panes and reason codes closed; archived.) — **DEEP LINKS CLOSED 0.12.89-dev — pawn, building and research project all reach now, through `UI/OperationsLinks.cs`; see the deep-link row above for what the research half was doing before. **The row stays `[~]` because the native menu remap is still open and still questioned on its own row**, and nothing in this batch touched it.** — **CLOSED 0.12.98-dev, AND IT WAS BEING HELD OPEN BY A POINTER TO A ROW THAT NO LONGER EXISTS.** Its own text says it stays `[~]` because the native menu remap *"is open and questioned on its own row above"* — **that row is archived.** The decision was made and recorded: *"The remap itself is deliberately NOT built"*, and **the absence is asserted rather than assumed** by a proof that refuses a patch against `MainButtonDef` and refuses any C# of ours that assigns through a `MainButtonDef`-typed expression. The reason is shipped to players too, in `interface.md`: remapping would fight every interface mod installed, and reachability was the actual requirement — the company tab is first and everything it names is reachable from inside it. Deep links closed at 0.12.89-dev (pawn, building and research project all reach). **So nothing was open here except a cross-reference.** **A row must name its blocker, never point at a neighbour** — a pointer survives the thing it points at, and this is the second time this session a decision was recorded while the row carrying it went missing. Deliberately NOT made a checker: there are two positional references in the whole queue and *"the row below"* has no mechanical meaning, so a rule would cry wolf for two cases, which is how rules stop being read.
+
+Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

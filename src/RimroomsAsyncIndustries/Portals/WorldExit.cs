@@ -134,6 +134,12 @@ namespace RimroomsAsyncIndustries.Company
         /// than inventing a second idea of "somewhere else on the planet".
         /// </summary>
         internal const int WorldExitMinimumTiles = 7;
+        /// <summary>
+        /// The far end of the band a world exit lands in, measured in planet tiles
+        /// from the branch. Paired with the minimum above: near enough to be a place
+        /// the company could plausibly reach, far enough that coming out is a
+        /// relocation rather than a shortcut home.
+        /// </summary>
         internal const int WorldExitMaximumTiles = 20;
 
         private List<WorldExitRecord> worldExits = new List<WorldExitRecord>();

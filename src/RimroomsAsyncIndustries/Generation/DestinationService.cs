@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -17,6 +17,15 @@ namespace RimroomsAsyncIndustries.Generation
         // with this and what it costs.
         public const int MapWidth = 300;
         public const int MapHeight = 300;
+        /// <summary>
+        /// How many planet tiles the unique-tile search will probe before giving up.
+        ///
+        /// **A bound on WORK, never on where a coordinate may live.** The walk starts
+        /// at a seeded offset and steps by a stride coprime with the tile count, so it
+        /// visits distinct tiles and would eventually cover the planet; this stops it
+        /// after 512 probes on a world where almost every tile is already taken.
+        /// `Math.Min(count, ...)` means a small world is searched exhaustively.
+        /// </summary>
         private const int WorldTileCandidateBudget = 512;
         private static readonly IntVec3 MapSize = new IntVec3(MapWidth, 1, MapHeight);
         private static readonly string[] PreferredBiomeNames =

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -15,6 +15,14 @@ namespace RimroomsAsyncIndustries.Portals
     public sealed class RimroomsPortalCrossingService : GameComponent, IThingHolder
     {
         private const int CurrentSchema = 1;
+        /// <summary>
+        /// Most crossings that may be in flight at once across the whole company.
+        ///
+        /// **A guard against an unbounded saved list, not a limit on play.** Only
+        /// non-terminal receipts count, so finished crossings never consume it, and
+        /// three gates moving a crew each is single digits. It exists because this
+        /// list is saved: a leak here would grow a save file for ever.
+        /// </summary>
         private const int MaximumPendingCrossings = 256;
 
         /// <summary>
