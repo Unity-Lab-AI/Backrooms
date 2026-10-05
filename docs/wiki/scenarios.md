@@ -40,9 +40,13 @@ The intended opening, and most of this wiki is written about it.
 | **First job** | Restore power, finish the gate, run one crossing, bring back a record |
 | **Difficulty** | The gentlest. You start with the tools |
 
-The facility is a real one: viewing glass onto the gate hall, lab rooms, security, decontamination,
-storage, housing, a mess, medical, an archive, a power room, and a breezeway where the generators
-sit outside and the batteries sit in.
+The facility is a real one: a control room onto the gate hall, lab rooms, security,
+decontamination, storage, housing, a mess, medical, an archive, a power room, and a breezeway where
+the generators sit outside and the batteries sit in.
+
+**You watch the gate from the Machine pane, not through a window.** The control room is sealed off
+from the hall by a solid wall and reached through an airlock — two automatic doors in series — so
+nothing in the hall is ever one pane of glass away from your operator.
 
 ## The Store
 

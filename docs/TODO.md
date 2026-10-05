@@ -588,3 +588,21 @@ Not more maps. **Expressing our rules in Core's data instead of our C#**, which 
 - [ ] **A `Backrooms` PlanetLayer as a design question, not a capacity one.** `canFormCaravans: false` is our no-caravan rule; `onlyAllowWhitelistedArrivals` and `onlyAllowWhitelistedIncidents` are `PortalTraversalPolicy` and the incident gate expressed as data; a `defaultBiome` and `raidPointsFactor` of its own replace tuning we currently carry in code. **It would also make `PlanetLayerConnection` the engine's own word for a gate.** Needs an owner decision because it is a visible change: a layer gets its own world-view gizmo and its own tab, so the Backrooms would become somewhere the player can look at from the planet view — which may be exactly right or exactly wrong for a space that is meant to be found through a door.
 - [ ] **Measure before any of it:** whether a `MapParent` on a non-surface layer still generates and saves identically, and whether `onlyAllowWhitelistedIncidents` would silence the unnerving register rather than shape it. **This is `[T]`-shaped work** — it needs a launch, and the owner is the only one who launches.
 - [ ] **The cap itself stays five until the owner says otherwise.** It is their number, and the measurement above does not argue for changing it: nothing found gives a free map, and the thing that would — raising the number — is a performance trade nobody has measured yet.
+
+## Owner direction — the viewing wall, re-opened after being lost, and answered (2026-10-05)
+
+**Verbatim owner direction (2026-10-05):** *"ioi thought the wiki says we dont need the stargate mod remember? and the ballistic glass we used in the scenria facility needs to be replaced too so we aarent uusing ballistic glass in game"*
+
+**Verbatim owner direction this re-opens (2026-10-04, from the register sweep):** *"with like ballistic glass  walls for viewing the machine remotely and safely with security zones and shit"*
+
+### Two answers, and one of them is an apology
+
+**THE BALLISTIC GLASS IS ALREADY OUT OF THE GAME, and has been since 0.12.87-dev.** `RR_Starts.xml` named `RB_ReinforcedGlassWall` and `RB_GlassWall` from ReBuild: Doors and Corners (register row 185); both are gone, they were the **only two** non-Core def references in any shipped start, and `check-register-compliance.py` now refuses a non-Core def in a shipped start or scenario. Those eleven cells are plain steel wall. **Nothing in the game uses ballistic glass**, and the four remaining mentions of the word in that file are the comment recording its removal.
+
+**AND THE STARGATE MOD IS NOT A DEPENDENCY AND NEVER WAS.** The owner is right, and the error was mine, in a sentence I wrote about what to build next. **Stargates! is register row 218, GPL-3.0, explicitly not a dependency and nothing is taken from it** — `COMPLIANCE_AND_OFFICIAL_VERSIONS.md` records that copying from it would force this project to GPL, and `check-compliance.py` holds it. The owner's own words were a **comparison**: *"300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels"* and *"like the stargate mod works but with normal does"* — a 300×300 level reached through **an ordinary door**. The wiki mentions no mod by name for this and must not start.
+
+### What was actually still open, and was lost
+
+**The archive entry for the glass removal says in its own words that the direction it served *"stays open in the queue"*. It did not stay open.** No row for it exists in `TODO.md`, `DECOMPOSED.md` or `ROADMAP.md` — the promise was written inside the row that closed, so it was archived with it. **A sentence promising that something stays open is not a queue row.** An owner direction survives only as its own row.
+
+- [ ] **A physical window stays a legitimate want, and it is a content decision rather than a gap.** If the owner wants to *see* the hall from the control room, Core cannot do it and the options are each a real trade: an open gap in the wall (line of sight, no seal), a run of barricades (sight, no seal, no roof support), or **our own see-through wall def**, which is the only one that keeps the seal and is also the only one that adds a building — and *"repurpose existing game/mod content"* is the standing rule, with the menu art the single approved exception. **Needs the owner's call; nothing is blocked on it.**

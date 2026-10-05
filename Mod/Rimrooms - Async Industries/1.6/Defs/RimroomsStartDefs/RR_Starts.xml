@@ -132,10 +132,28 @@
          non-Core def reference in a shipped start or scenario.
 
          The glazing field, the run plan and the genstep all stay: they cost nothing and
-         a scenario may use them. The earlier owner direction this served, "ballistic
-         glass  walls for viewing the machine remotely and safely", stays open in the
-         queue - Core ships no see-through wall, so answering it Core-only is a decision
-         rather than a tidy-up. -->
+         a scenario may use them.
+
+         **AND THE DIRECTION IT SERVED IS NOW ANSWERED, 0.12.98-dev.** Owner, 2026-10-04:
+         "with like ballistic glass  walls for viewing the machine remotely and safely
+         with security zones and shit". Measured against the installed game: Core ships
+         NO barrier that is both see-through and sealing. Wall blocks sight; Barricade is
+         passability PassThroughOnly at fillPercent 0.55, holds no roof and seals nothing,
+         so a run of them across a twenty-cell hall breaks the seal AND reintroduces the
+         roof-collapse case the pillars below exist to prevent.
+
+         So "remotely" is answered by what already ships - the Operations Machine pane
+         reads live gate state from any map - and "safely with security zones" by this
+         facility's own shape: a solid wall plus the two-autodoor airlock above. That is
+         strictly safer than a window, which is the half of the direction glass would
+         have failed.
+
+         A physical window remains a legitimate content decision and is recorded as an
+         open row rather than left implied here. **The note this replaced said the
+         direction "stays open in the queue" and it did NOT: no row for it existed in any
+         queue, because the promise was written inside the row that closed and was
+         archived with it. A sentence promising something stays open is not a queue
+         row.** -->
     <!-- Columns. A roof is supported only within 6.9 cells of a wall and the gate hall is
          twenty across, so without these its middle is unsupported and collapses on the
          pawn who deconstructs the wall holding it. proof-startplacement.py caught exactly

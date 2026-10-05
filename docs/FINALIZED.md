@@ -16221,3 +16221,26 @@ Three kinds were sampled and all three are live faults, not tidiness:
 Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Owner direction — the viewing wall, re-opened after being lost, and answered (2026-10-05)` in `docs/TODO.md`
+
+- [x] **"with like ballistic glass  walls for viewing the machine remotely and safely with security zones and shit"** — **ANSWERED CORE-ONLY 0.12.98-dev, and the answer is that there is no glass.** Measured against the installed game rather than assumed: **Core ships no barrier that is both see-through and sealing.** `Wall` blocks sight; `Barricade` is `passability PassThroughOnly` at `fillPercent 0.55`, holds no roof and seals nothing, so a run of them in a twenty-cell hall both breaks the seal and reintroduces the roof-collapse case `pillars` exists to prevent. There is no third option in Core. **So "remotely" is answered by the thing that already ships: the Operations → Machine pane**, which reads live gate state from any map, and the physical answer is the **security zone the owner also asked for** — a solid wall with an **airlock of two automatic doors in series** between the control room and the hall. **That is strictly safer than glass**, which is the half of the direction a window would have failed: *"remotely and safely"*. Recorded in `RR_Starts.xml` in place of the note that said this was still undecided, and `scenarios.md` no longer tells a reader there is viewing glass.
+
+Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
