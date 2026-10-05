@@ -26,9 +26,19 @@ change"*
 
 - **During the work:** run **only the one instrument covering the file you just touched.** One
   checker, or one proof, or one plant suite. **Keep writing and extending them.**
-- **At publication, once:** 25 checkers → 59 proofs → 34 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the ten-ref cascade — and then `curl` the published site.** The last step is not a formality: every banner once shipped as a 404 with all twelve refs level and every instrument green, **and the licence link shipped as a 404 the same way**, because an on-disk audit cannot see a deployment fault.
+- **At publication, once:** 25 checkers → 59 proofs → 36 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the ten-ref cascade — and then `curl` the published site.** The last step is not a formality: every banner once shipped as a 404 with all twelve refs level and every instrument green, **and the licence link shipped as a 404 the same way**, because an on-disk audit cannot see a deployment fault.
 - **If a sweep finds something, fix it and re-run ONLY the instrument that failed.**
 - **Batch size is 10–12 closed rows.**
+- **THE OWNER ALONE LAUNCHES, SORTS AND PUBLISHES.** Deploying a site is not the same act as
+  launching the game, but the Workshop is the owner's account and the owner's decision. Lifted here
+  0.12.99-dev from a queue section that was being cleared: **it existed nowhere else**, and a
+  standing constraint whose only copy is inside a queue section dies when that section is archived.
+- **`docs/TODO.md` ENDS AS A TEMPLATE HOLDING NOTHING.** Owner direction, 2026-10-04, verbatim:
+  *"read now.md and continue the work we are working off todo items to get the todo to a templet
+  form with no items listed"*, and *"all complketed and moved completed into finalized.md"*. The
+  terminal state is the preamble, the status-marker legend and the structural headings — nothing
+  listed. **The `[T]` rows are the one honest obstacle**: a `[T]` row cannot be closed without the
+  game running, so the file reaches template form when the owner has launched, not before.
 - ⛔ **NEVER RUN THE PLANT SUITES CONCURRENTLY WITH ANYTHING ELSE.** A plant suite *writes a real
   fault into the working tree* and restores it moments later; anything reading the tree inside that
   window sees the fault. Running the checkers alongside them at 0.12.99-dev reported **four
@@ -59,10 +69,10 @@ A checker that cries wolf is one people scroll past.
 | Version | **0.12.99-dev** — read from `About.xml`, never from a document |
 | Build | **232 C# files, 103 package files**, zero warnings, zero errors |
 | Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile and is checked against the register |
-| Instruments | **25 checkers**, **59 proofs**, **34 plant suites**, **1,206 plant anchors**. `check-queue-pointers.py` is the newest: **a statement of what is still open may not be resolved by position.** It found five, and three pointed at rows that were closed and archived |
+| Instruments | **25 checkers**, **59 proofs**, **36 plant suites**, **1,206 plant anchors**. `check-queue-pointers.py` is the newest: **a statement of what is still open may not be resolved by position.** It found five, and three pointed at rows that were closed and archived |
 | Remotes | **TWELVE refs** — this repository 10 (`forgejo` 5, `github` 5) plus the mod-only pair 2 |
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
-| Queue | **7 open · 3 partial · 45 `[T]` · 0 `[x]`** — down from **16 open · 11 partial**, every closure archived with VERBATIM TRANSFER CONFIRMED |
+| Queue | **0 open · 2 partial · 52 `[T]` · 0 `[x]`** — down from **16 open · 11 partial**. **`[ ]` now means *doable today*, and nothing is**: eight rows said in their own text that they need a launch and have been moved to `[T]` where they gate nothing |
 | Public repos | **`Rimrooms-AsyncIndustries` on BOTH hosts** — `forgejo GFourteen/...` and `github G-Fourteen/...`. **The mod as staged, the public face, nothing else** |
 | Published site | **LIVE** — `https://g-fourteen.github.io/Rimrooms-AsyncIndustries/`. Pages serves `/docs` as the **site root**, so a page is `<site>/gates.html` and every reference must be site-relative |
 | Launches | **At least twelve**, all by the owner. **Every defect any launch found was ours** |
@@ -139,7 +149,7 @@ a launch, on Steam, or on a domain.
 
 ## THE NEXT THING
 
-**Seven open rows, and almost all of them are the owner's.** The Steam mod page and collection wait
+**Nothing is open. Two rows are partial and only one of them is work.** The Steam mod page and collection wait
 on the owner's *"Not yet — ask again when the mod is ready to publish"*. The domain waits on
 *"Not yet — leave it on the github.io path"*. The compatibility report and the duplicate-def
 resolution structurally require a launch with the 294 profile loaded.

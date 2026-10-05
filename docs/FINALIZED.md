@@ -16827,3 +16827,94 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+## Queue sections cleared 0.12.99-dev — owner: "clean up the todo properly"
+
+**Every section below held NO row of any kind.** Its rows were closed and archived in earlier batches and the heading outlived them, so the file read as though there were work in it. Moved here **verbatim and whole**, proved by a byte-identical reassembly of `docs/TODO.md` from what was kept plus what was moved.
+
+**Two standing rules were lifted into `docs/NOW.md` before this ran**, because their only copy was inside a section being cleared: *the owner alone launches, sorts and publishes*, and the owner's own terminal state for the queue, *"to get the todo to a templet form with no items listed"*.
+
+### Session direction, 2026-10-03 — build the buildable, stage nothing, cascade nothing
+
+**Verbatim owner direction (2026-10-03), four clauses:** *"we are finishing buildable items still open in todos(test items and live runs are not being done yet so no need to stage and no need to cascade until told to start again"*
+
+**These four are CONSTRAINTS ON THE SESSION, not units of work, so they carry no status marker.** Owner challenge, 2026-10-03, verbatim: *"50 partital sounds like you havent been completeing your work"* — **and they were right.** Written as `[~]` rows, these four read as four tasks in progress forever: a constraint cannot be *completed*, so it can never leave the queue, and it inflates the partial count while telling nobody anything. The owner's own 2026-10-02 direction already says where governance belongs: *"A rule that must survive goes to `.claude/CONSTRAINTS.md` or becomes a checker. Open work goes to `docs/TODO.md`."* Every word is kept; only the checkbox is gone.
+
+- **"we are finishing buildable items still open in todos"** — the standing instruction for this session. Work the open rows that can be *built* from here, in cascade order, and keep going. A row that cannot be closed without the game running is not this session's work.
+- **"(test items and live runs are not being done yet"** — `[T]` rows stay `[T]`. No checker is run *as acceptance*, no live-read instrument is pointed at a process, and nothing waits on an observation.
+- **"so no need to stage"** — ~~`tools/stage-mod.ps1` is NOT run this session.~~ **SUPERSEDED, see below.**
+- **"and no need to cascade until told to start again"** — ~~no publish, no push, no ten-ref cascade.~~ **SUPERSEDED, see below — and this clause asked to be told, so being told is the clause working rather than being overridden.**
+
+### Session direction REPLACED, 2026-10-03 — staging, NOW.md and the cascade come back, in batches
+
+**Verbatim owner direction (2026-10-03):** *"aftert u finish up go ahead and get back to the staging, now.md writeing, and the cascades but not every time u do something only after you finish like 10-12 items in the todo do u do another stage/cascade"*
+
+**This supersedes the two struck clauses above**, which is the earlier direction's own stated exit — *"until told to start again"*. Also a constraint rather than work, so no status marker, and every word kept.
+
+- **"aftert u finish up"** — the batch in flight finishes first. A stage in the middle of a half-landed change is the thing `stage-mod.ps1` already refuses for a different reason.
+- **"go ahead and get back to the staging, now.md writeing, and the cascades"** — all three resume: `tools/stage-mod.ps1`, rewriting `docs/NOW.md` as the one handoff record, and the **ten-ref** cascade per `PUBLISHING.md` (`forgejo` and `github` × `feature/connected-colony-portals`, `Prep`, `Develop`, `Main`, **plus `feature/bug-testing` on both** — a publish that reads back eight has silently left the working branch unpublished).
+- **"but not every time u do something"** — **the publication cadence is explicitly NOT per-change.** This agrees with the standing regression-containment rule already in `PUBLISHING.md`: *"publish only at meaningful milestones, all changes batched"*.
+- **"only after you finish like 10-12 items in the todo do u do another stage/cascade"** — **the batch size is 10–12 closed items.** Counted as rows archived out of the queue to `FINALIZED.md`, because that is the one count that cannot be inflated: a row only leaves on a proved verbatim transfer.
+
+### Owner answers at four forks — the chasers are ordinary pawns, the DLC only adds, and the glass comes out (2026-10-04)
+
+Asked because each one gated work that was already queued, and three of the four changed what gets built rather than how.
+
+### Session direction, 2026-10-04 — this file ends as a template holding nothing
+
+**Verbatim owner direction (2026-10-04):** *"read now.md and continue the work we are working off todo items to get the todo to a templet form with no items listed and all complketed and moved completed into finalized.md"*
+
+**A constraint and a destination rather than a unit of work, so it carries no status marker** — the same treatment the 2026-10-03 session directions above have, and for the same reason: a destination cannot be *completed*, so written as a row it would never leave and would inflate the partial count while telling nobody anything.
+
+- **"to get the todo to a templet form with no items listed"** — the terminal state is this file holding its **preamble, its status-marker legend and its headings, and zero rows**. That is what *"templet form"* means: the shape stays so the next queue can be poured into it.
+- **"and all complketed and moved completed into finalized.md"** — and every row leaves by the one door, `tools/archive-finished-todo.py` into `docs/FINALIZED.md`, on a proved verbatim transfer. **Not by deletion.** The count at the start of this session was **79 open · 38 partial · 38 `[T]`**.
+- **THE `[T]` ROWS ARE THE ONE HONEST OBSTACLE AND IT IS NAMED HERE RATHER THAN DISCOVERED LATER.** A `[T]` row cannot be closed without the game running, and only the owner launches. Thirty-eight of them cannot reach `FINALIZED.md` from a keyboard. Everything else can, and this session works the rest.
+
+### Owner direction — the mod's own menu images belong on the loading screens too (2026-10-03)
+
+**Verbatim owner direction (2026-10-03):** *"and anothert thing.. we properly use the main menu images we made for the mod on the main menu page but i dont think we properly did the same for loading screens and the like add this to the todo"*
+
+**Verbatim owner direction (2026-10-03), the shape of it:** *"so we need those mod images made for the menu to also use them randomly for load screen backgrounds"*
+
+### Owner answers at three forks — don't limit yourself, expand it in an LSD way, 3× vanilla ore (2026-10-03)
+
+Asked because each one changes what gets built, and all three were answered as *more* rather than as a choice between options.
+
+### Standing constraints that still apply
+
+- **No Claude attribution** in any of it - site, Workshop page, collection write-up.
+- **The owner alone launches, sorts and publishes.** Deployment of a site is not the same act as launching the game, but the Workshop is the owner's account and the owner's decision.
+
+
+## Owner directions recorded late
+
+These three were **acted on correctly and recorded in `NOW.md` or `FINALIZED.md`, but never
+written into this queue as tasks**. The owner noticed the gap on 2026-09-29 and was right.
+They are recorded here verbatim now, and `check-doc-conformance.py` refuses from this point
+on to let a direction reach `FINALIZED.md` without appearing here first.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-05)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Public face: the site, the Workshop page and the collection` in `docs/TODO.md`
+
+### The Steam Workshop
+
+- [x] **Owner idea, verbatim:** *"idk maybe we will use a playwrite thing so you can click through steam and set it all up keeping me from having to do it all"* - Playwright driving the Steam Workshop UI. **Ask before doing this**: it means automating an authenticated session on the owner's Steam account, which is a different kind of action from anything done so far and needs explicit permission, not an assumption. The alternative is a prepared write-up the owner pastes, which is far less work for whoever is not doing the clicking. -- **CLOSED AS A DECISION WITH A TRIGGER 0.12.99-dev.** Owner, asked directly: *"Not yet -- ask again when the mod is ready to publish"*. **Nothing in this project touches Steam** -- no Playwright, no account access, no page, no collection. **And the alternative this row itself named is built:** *"The alternative is a prepared write-up the owner pastes, which is far less work for whoever is not doing the clicking"* -- `docs/WORKSHOP_COPY.md`, both write-ups, ready to paste. **The question gets asked again at publication readiness.**
+
+
+Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

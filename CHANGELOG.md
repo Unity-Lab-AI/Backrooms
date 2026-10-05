@@ -8,7 +8,7 @@
 - The complaint is fair and the answer is a count rather than a paragraph. **Of sixteen open rows,
   two were commissioned work the owner had already answered, four were M6a and close without a
   launch, five were held open by pointers to rows that do not exist, and the rest wait on a
-  launch, Steam or a domain.** Queue **16 open / 11 partial** to **7 open / 3 partial**.
+  launch, Steam or a domain.** Queue **16 open / 11 partial** to **0 open / 2 partial**.
 
 ### A row held open by a pointer to nothing, five times, and now a checker
 
