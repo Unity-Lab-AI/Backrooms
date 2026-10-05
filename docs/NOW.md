@@ -39,6 +39,14 @@ change"*
   terminal state is the preamble, the status-marker legend and the structural headings — nothing
   listed. **The `[T]` rows are the one honest obstacle**: a `[T]` row cannot be closed without the
   game running, so the file reaches template form when the owner has launched, not before.
+- **THE REGISTER IS AN INPUT TO WORK, NOT A BACKLOG OF IT.** Owner, 2026-10-05: *"as the
+  Rimrooms Mod is stand alond only adding to it when mopds are added? right?"* Right. **A row's
+  disposition is settled when something is built that touches that mod, or when a launch produces
+  evidence about it — never as a bulk sweep.** 94 of 295 rows are Settled and that is exactly the
+  set somebody had a reason to look at. Settling the rest from a desk would break D1, because a
+  disposition asks for things like *"verify stack, weight, ownership, caravan and RWT transfer
+  behavior"* — runtime claims. The register's own policy says it: ***"Researched" does not mean
+  "integrated"; "loads" does not mean "compatible"; "optional" does not mean tested.***
 - ⛔ **NEVER RUN THE PLANT SUITES CONCURRENTLY WITH ANYTHING ELSE.** A plant suite *writes a real
   fault into the working tree* and restores it moments later; anything reading the tree inside that
   window sees the fault. Running the checkers alongside them at 0.12.99-dev reported **four
@@ -72,7 +80,7 @@ A checker that cries wolf is one people scroll past.
 | Instruments | **25 checkers**, **59 proofs**, **36 plant suites**, **1,206 plant anchors**. `check-queue-pointers.py` is the newest: **a statement of what is still open may not be resolved by position.** It found five, and three pointed at rows that were closed and archived |
 | Remotes | **TWELVE refs** — this repository 10 (`forgejo` 5, `github` 5) plus the mod-only pair 2 |
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
-| Queue | **0 open · 2 partial · 50 `[T]` · 0 `[x]`** — down from **16 open · 11 partial**. **`[ ]` now means *doable today*, and nothing is**: eight rows said in their own text that they need a launch and have been moved to `[T]` where they gate nothing |
+| Queue | **0 open · 1 partial · 50 `[T]` · 0 `[x]`** — down from **16 open · 11 partial**. **`[ ]` now means *doable today*, and nothing is**: eight rows said in their own text that they need a launch and have been moved to `[T]` where they gate nothing |
 | Public repos | **`Rimrooms-AsyncIndustries` on BOTH hosts** — `forgejo GFourteen/...` and `github G-Fourteen/...`. **The mod as staged, the public face, nothing else** |
 | Published site | **LIVE** — `https://g-fourteen.github.io/Rimrooms-AsyncIndustries/`. Pages serves `/docs` as the **site root**, so a page is `<site>/gates.html` and every reference must be site-relative |
 | Launches | **At least twelve**, all by the owner. **Every defect any launch found was ours** |
@@ -149,7 +157,8 @@ a launch, on Steam, or on a domain.
 
 ## THE NEXT THING
 
-**Nothing is open. Two rows are partial and only one of them is work.** The Steam mod page and collection wait
+**Nothing is open and nothing is buildable without the owner.** One row is partial: the T5/T6
+research sweep, which is written and waiting on the owner to pick from it. The Steam mod page and collection wait
 on the owner's *"Not yet — ask again when the mod is ready to publish"*. The domain waits on
 *"Not yet — leave it on the github.io path"*. The compatibility report and the duplicate-def
 resolution structurally require a launch with the 294 profile loaded.

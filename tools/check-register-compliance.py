@@ -480,6 +480,36 @@ if gameplay_art:
 else:
     notes.append("ships no gameplay art or audio; menu images only")
 
+# ------------------------------------------- the register's own one-word column may not contradict
+# **THIS IS THE "NEEDS 294 MODS" DEFECT IN THE ONE PLACE NOBODY CHECKED.** `About.xml` has declared
+# zero `modDependencies` since 0.12.86-dev, and five live documents still said otherwise until
+# 0.12.95-dev. The register was not one of them -- but its `stance` column still read **Required**
+# for three rows, and that column is what a reader filters on.
+#
+# The three cards were *precise*: Harmony is required by RimWorld Together and by several selected
+# frameworks, **not by us**; Vanilla Expanded Framework is required by the Gravship Expanded chain,
+# **not by us**. A one-word summary cannot carry *"required by something else in the profile"*, so
+# it said the opposite of what its own card said -- and a reader who filters the register by
+# `stance=Required` and finds three rows concludes this mod needs three mods.
+#
+# **Core is exempt by name, and only Core.** It is the game, not a mod, and nobody reading
+# *"Core: Required"* is misled. Every other row must be Optional, Configuration only, Visual only
+# or No integration while the package declares no dependencies.
+CORE_ROW_EXEMPT = "core"
+required_rows = [r for r in rows
+                 if r["stance"].strip() == "Required"
+                 and r["mod"].strip().lower() != CORE_ROW_EXEMPT]
+if required_rows:
+    for row in required_rows:
+        fail("register row %s (%r) has stance 'Required' while About.xml declares no "
+             "modDependencies. That column is what a reader filters on, and it cannot carry "
+             "'required by something ELSE in the profile' -- which is what this row's own card "
+             "says. Set the stance to Optional and leave the qualifier in the card."
+             % (row["load"].strip(), row["mod"].strip()))
+else:
+    notes.append("no register row claims this package requires a mod; Core is the only Required "
+                 "row and Core is the game")
+
 # ---------------------------------------------------------------- report
 print("register compliance")
 for note in notes:
