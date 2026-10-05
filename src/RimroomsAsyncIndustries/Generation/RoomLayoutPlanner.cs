@@ -1508,6 +1508,9 @@ namespace RimroomsAsyncIndustries.Generation
                 sealedSlots.Add(reserved);
             }
 
+            // The arrival hall is grand room one; the walk may make up to
+            // `GrandRoomsPerLevel(depth) - 1` more.
+            int grandRooms = 1;
             var stack = new List<IntVec2> { hallFirst, hallSecond };
             IntVec2[] directions =
             {
@@ -1538,8 +1541,53 @@ namespace RimroomsAsyncIndustries.Generation
                     if (slotOf.ContainsKey(next) || sealedSlots.Contains(next)) { continue; }
 
                     int parent = slotOf[current];
-                    var room = MakeRoom(coordinate, rooms.Count, "survey_lobby", next, spacing,
-                        VariedRoomSpan(spacing, next, seed, depth), seed, false, depth);
+
+                    // **MORE THAN ONE GRAND ROOM, AND THEY ARE MADE *INSIDE* THE WALK.** Owner,
+                    // 2026-10-03: *"starts locations of main grand rooms can be anywhere on the
+                    // map and lead anywhere in multiple differetn varied ways"* -- plural.
+                    //
+                    // Placed here rather than seeded alongside the hall before the walk, and the
+                    // reason is connectivity. The walk skips any slot already in `slotOf`, so two
+                    // independent seeds can never merge: their components stay separate, and
+                    // `ValidateRooms` refuses a disconnected graph, which hands the seed the
+                    // fallback serpentine -- *"one lone strain of perals"*, the exact defect being
+                    // fixed. The braid that follows only links one adjacent pair in three, so it
+                    // cannot be relied on to join them either.
+                    //
+                    // Made as the walk steps into the slot, the grand room is linked to its parent
+                    // **by construction**, and it passes through the same two legality gates below
+                    // as any other room. If its geometry breaks the link -- which a two-slot
+                    // centre can, exactly as the hall's does -- the whole step is declined and the
+                    // slot is reached later from a different parent.
+                    IntVec2 grandSecond = IntVec2.Invalid;
+                    RoomRecord room = null;
+                    if (grandRooms < GrandRoomsPerLevel(depth) && GrandRoomHere(seed, next, depth))
+                    {
+                        // Extended along the direction of travel, so a grand room always lies
+                        // across the way the walk was already going and reads as a space opening
+                        // up rather than as a room that happens to be wide.
+                        var beyond = new IntVec2(next.x + direction.x, next.z + direction.z);
+                        bool roomy = beyond.x >= 0 && beyond.z >= 0 && beyond.x < slots
+                            && beyond.z < slots && !slotOf.ContainsKey(beyond)
+                            && !sealedSlots.Contains(beyond);
+                        if (roomy)
+                        {
+                            grandSecond = beyond;
+                            // The same placeholder family every other maze room gets, so
+                            // `AssignMazeFamilies` treats a grand room exactly as it treats the
+                            // rest. Naming a family here would both duplicate that pass's
+                            // decisions and risk minting a second room of a family something
+                            // downstream expects exactly one of.
+                            room = MakeGrandRoom(coordinate, rooms.Count, "survey_lobby",
+                                next, beyond, spacing);
+                        }
+                    }
+                    if (room == null)
+                    {
+                        grandSecond = IntVec2.Invalid;
+                        room = MakeRoom(coordinate, rooms.Count, "survey_lobby", next, spacing,
+                            VariedRoomSpan(spacing, next, seed, depth), seed, false, depth);
+                    }
                     // **THE SAME QUESTION `ValidateRooms` WILL ASK.** `AreGridNeighbors` requires
                     // a linked pair's centres to share a row or a column, because `BuildCorridors`
                     // carves straight between them. The hall spans two slots, so its centre sits
@@ -1565,6 +1613,17 @@ namespace RimroomsAsyncIndustries.Generation
                     hops[room.index] = hops[parent] + 1;
                     Link(rooms, room.index, parent);
                     stack.Add(next);
+                    if (grandSecond.IsValid)
+                    {
+                        // **BOTH SLOTS, AND BOTH ENDS ON THE STACK.** Claiming only the first
+                        // would let the walk place a second room inside this one's footprint;
+                        // pushing only the first is what pinned the old hall to leading out of one
+                        // row, which is the half of *"lead anywhere in multiple differetn varied
+                        // ways"* that a grand room exists to answer.
+                        slotOf[grandSecond] = room.index;
+                        stack.Add(grandSecond);
+                        grandRooms++;
+                    }
                     advanced = true;
                     break;
                 }
@@ -2110,6 +2169,43 @@ namespace RimroomsAsyncIndustries.Generation
         private static RoomRecord MakeHall(CoordinateRecord coordinate, IntVec2 first,
             IntVec2 second, int spacing, int seed, int depth)
         {
+            // The arrival hall is grand room number one. It keeps index 0 and the threshold
+            // family because `DestinationService` validates both: `byIndex[0].familyId` must be
+            // `threshold_room`, and `GenStep_BackroomsDestination` takes `First(...)` of that
+            // family to find where a crossing lands.
+            return MakeGrandRoom(coordinate, 0, UniqueFamilies[0], first, second, spacing);
+        }
+
+        /// <summary>
+        /// A room spanning **two** adjacent slots rather than one, which is what makes it grand.
+        ///
+        /// ## Owner direction, 2026-10-03, verbatim
+        ///
+        /// *"starts locations of main grand rooms can be anywhere on the map and lead anywhere in
+        /// multiple differetn varied ways"* — **plural**. One hall was the arrival; the level is
+        /// supposed to contain several large spaces.
+        ///
+        /// ## Grand is the SPAN, never the family
+        ///
+        /// This was the whole design question, and the answer came from what already depends on
+        /// the hall. `DestinationService` requires room **index 0** to carry `threshold_room`, and
+        /// `GenStep_BackroomsDestination` resolves a crossing's landing cell with
+        /// `First(room =&gt; room.familyId == "threshold_room")`. **A second room of that family
+        /// would be a second candidate for the place a player arrives**, decided by list order.
+        ///
+        /// So additional grand rooms take an ordinary family from <see cref="FamilyFor"/> and are
+        /// grand purely by size. Nothing downstream needs teaching, no def changes, and the
+        /// properties that follow from size follow automatically: they are wide enough to need
+        /// <see cref="PillarCells"/>, and unlike the arrival hall they are **not** exempt from
+        /// <see cref="RockIntrusionCells"/>, so they come out as large irregular spaces rather
+        /// than as big rectangles.
+        ///
+        /// `WidestRoomSpan` is unaffected by the count: it is the maximum of the long and short
+        /// spans, and the long span is this same number however many rooms use it.
+        /// </summary>
+        private static RoomRecord MakeGrandRoom(CoordinateRecord coordinate, int index,
+            string family, IntVec2 first, IntVec2 second, int spacing)
+        {
             int centerX = (SlotCenter(first.x, spacing) + SlotCenter(second.x, spacing)) / 2;
             int centerZ = (SlotCenter(first.z, spacing) + SlotCenter(second.z, spacing)) / 2;
             bool horizontal = first.z == second.z;
@@ -2119,14 +2215,50 @@ namespace RimroomsAsyncIndustries.Generation
             int height = horizontal ? shortSpan : longSpan;
             return new RoomRecord
             {
-                index = 0,
-                familyId = UniqueFamilies[0],
+                index = index,
+                familyId = family,
                 x = centerX - width / 2,
                 z = centerZ - height / 2,
                 width = width,
                 height = height,
                 links = new List<int>(),
             };
+        }
+
+        /// <summary>
+        /// How many grand rooms a level has, the arrival hall included.
+        ///
+        /// **It falls with depth, and that is the shallow look rather than a convenience bound.**
+        /// Owner: *"the normal yellow backrooms look isnt the whole floor but the main spanw
+        /// room"*, and *"going deeping in can mean the numner of branch hallways and rooms
+        /// distancing from the main portal spawn"*. The first band is the fewest, largest spaces
+        /// a player will see; deeper is more rooms, smaller and tighter, until the only grand
+        /// space left is the one they arrived in.
+        ///
+        /// Three is the most the geometry affords at depth 1 without crowding out the maze: each
+        /// grand room costs **two** of thirty-six slots, and <see cref="SealedRoomCount"/> is
+        /// already taking some.
+        /// </summary>
+        internal static int GrandRoomsPerLevel(int depth)
+        {
+            if (depth <= 1) { return 3; }
+            if (depth == 2) { return 2; }
+            return 1;
+        }
+
+        /// <summary>
+        /// Whether the walk should try to make the room it is about to place a grand one.
+        ///
+        /// Drawn from the slot, so the same coordinate makes the same choice on every visit, and
+        /// **it is only ever a request**: the caller still has to find a free slot to extend into
+        /// and the resulting room still has to satisfy every link check an ordinary room does. A
+        /// refusal costs nothing — the slot takes an ordinary room instead.
+        /// </summary>
+        private static bool GrandRoomHere(int seed, IntVec2 slot, int depth)
+        {
+            int draw = DestinationService.StableHash(seed, "grand:" + slot.x + "," + slot.z, depth);
+            if (draw < 0) { draw = ~draw; }
+            return draw % 5 == 0;
         }
 
         private static RoomRecord MakeRoom(CoordinateRecord coordinate, int index, string family,

@@ -100,6 +100,21 @@ def _rr_restore(path, original):
 
 
 PLANTS = [
+    # ------------------- the retired inside-start comes back, both ways it could
+    #
+    # Real code and a real def element, not comments. The source claim reads STRIPPED C# so a
+    # comment would be discarded and the plant would test nothing; the def claim reads the XML raw,
+    # so this plants an element rather than a comment to match what a real reappearance looks like.
+    ("THE RETIRED INSIDE-START GENERATOR IS WIRED BACK INTO THE SOURCE", OPENING,
+     "            CoordinateRecord coordinate;",
+     '            string retiredGenerator = "GenStep_InsideStart";' + CHR_NL
+     + "            CoordinateRecord coordinate;", PROOF),
+
+    ("the package declares the retired generator again", STARTS,
+     "    <insideStart>true</insideStart>",
+     "    <insideStart>true</insideStart>" + CHR_NL
+     + "    <mapGenerator>RR_InsideStart</mapGenerator>", PROOF),
+
     # ------------------- a ramp is not an open connection, and the facility's power
     ("A RAMPING CONNECTION COUNTS AS OPEN AGAIN", CHECKLIST,
      "                Done = haveGate && gate.IsOpening,",

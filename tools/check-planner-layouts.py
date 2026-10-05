@@ -48,6 +48,7 @@ RimWorld install or a missing assembly is a failure here, not a skip.
 """
 import io
 import os
+import re
 import subprocess
 import sys
 
@@ -57,6 +58,8 @@ PROJECT = os.path.join(PROBE, "PlannerProbe.csproj")
 BUILT = os.path.join(PROBE, "bin", "Release", "net472", "PlannerProbe.exe")
 ASSEMBLY = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "bin", "Release", "net472",
                         "RimroomsAsyncIndustries.dll")
+MOD_PROJECT = os.path.join(REPO, "src", "RimroomsAsyncIndustries",
+                           "RimroomsAsyncIndustries.csproj")
 
 DEFAULT_GAME = r"C:\Program Files (x86)\Steam\steamapps\common\Rimworld"
 
@@ -93,6 +96,23 @@ def main():
     environment["DOTNET_CLI_TELEMETRY_OPTOUT"] = "1"
     os.environ.update(environment)
 
+    # **THE MOD IS REBUILT FIRST, AND WITHOUT THIS THE PROBE MEASURES A STALE ASSEMBLY.**
+    #
+    # `PlannerProbe.csproj` binds the mod with a `HintPath` to
+    # `src/.../bin/Release/net472/RimroomsAsyncIndustries.dll` rather than a `ProjectReference`,
+    # so building the probe does **not** build the planner it is about to interrogate. It loads
+    # whatever DLL happens to be sitting there.
+    #
+    # Found by planting a real regression -- the grand-room count cut back to one -- and watching
+    # this check report the old numbers and pass. **A layout verdict about code that is no longer
+    # the source is worse than no verdict**, because the whole purpose of this probe is to answer
+    # at the desk what would otherwise need a launch.
+    code, output = run(["dotnet", "build", MOD_PROJECT, "-c", "Release",
+                        "-p:RimWorldPath=%s" % game_path(), "--verbosity", "quiet"], REPO)
+    if code != 0:
+        print(output)
+        fail("the mod assembly did not build, so the probe would have measured a stale one.")
+
     code, output = run(["dotnet", "build", PROJECT, "-c", "Release",
                         "-p:RimWorldPath=%s" % game_path(), "--verbosity", "quiet"], REPO)
     if code != 0:
@@ -107,8 +127,47 @@ def main():
         fail("the planner did not produce an acceptable layout at every depth.")
     if "PROBE HELD" not in output:
         fail("the probe exited zero without holding, which means it did not run its claims.")
+
+    # **"GRAND ROOMS" IS PLURAL, AND A COUNT NOBODY ASSERTS IS A FEATURE NOBODY HAS.** Owner,
+    # 2026-10-03: *"starts locations of main grand rooms can be anywhere on the map and lead
+    # anywhere in multiple differetn varied ways"*. The probe reports `grand <average>/<target>`
+    # per depth; this is what makes the number mean something.
+    #
+    # Asserted as a floor against the target rather than as equality. The walk only *asks* for a
+    # grand room -- it still needs a free slot to extend into and the resulting two-slot room
+    # still has to pass the same link checks as any other, so a seed is entitled to come up short.
+    # Demanding exactness would be a rule that fails on a legal layout. A floor of the target
+    # minus a quarter of a room still catches the thing worth catching: the feature silently
+    # stopping.
+    grand = re.findall(r"maze\s+depth\s+(\d+).*?grand\s+([0-9.]+)/(\d+)\s+ways\s+(-?\d+)", output)
+    if not grand:
+        fail("the probe printed no grand-room count, so the plural claim is unmeasured. "
+             "A check that cannot see the feature is worse than no check.")
+    for depth, average, target, ways in grand:
+        if float(average) < int(target) - 0.25:
+            fail("depth %s averaged %s grand rooms against a target of %s. The level is supposed "
+                 "to contain several large spaces, not one arrival hall and a maze."
+                 % (depth, average, target))
+    # **AND A GRAND ROOM HAS TO LEAD SOMEWHERE, more than one way.** Owner: *"lead anywhere
+    # in multiple differetn varied ways"*. The probe reports the WORST grand room across every
+    # seed, not the average, because an average hides the one that is a dead end -- and a grand
+    # space with a single door is a cul-de-sac wearing a hall's clothes.
+    for depth, _, _, ways in grand:
+        if int(ways) < 2:
+            fail("depth %s has a grand room with %s way(s) out. A grand space is supposed to lead "
+                 "anywhere in several varied ways, not be a dead end." % (depth, ways))
+
+    shallow = [(d, a) for d, a, _, _ in grand if int(d) <= 1]
+    for depth, average in shallow:
+        if float(average) < 2.0:
+            fail("depth %s averaged %s grand rooms. \"Grand rooms\" is plural and the shallow "
+                 "band is the one that is supposed to read as a few huge spaces."
+                 % (depth, average))
+
     print("OK: every depth produces a layout the validator accepts, back-to-back pairs exist, "
-          "and every room can put its landmark beside a reserved route cross.")
+          "every room can put its landmark beside a reserved route cross, and every depth meets "
+          "its grand-room count (%s)."
+          % ", ".join("d%s %s/%s ways>=%s" % (d, a, t, w) for d, a, t, w in grand))
     return 0
 
 

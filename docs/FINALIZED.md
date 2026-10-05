@@ -16244,3 +16244,103 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **1 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+## Owner direction — the viewing wall, re-opened after being lost, and answered (2026-10-05)
+
+**Verbatim owner direction (2026-10-05):** *"ioi thought the wiki says we dont need the stargate mod remember? and the ballistic glass we used in the scenria facility needs to be replaced too so we aarent uusing ballistic glass in game"*
+
+**Verbatim owner direction this re-opens (2026-10-04, from the register sweep):** *"with like ballistic glass  walls for viewing the machine remotely and safely with security zones and shit"*
+
+### Two answers, and one of them is an apology
+
+**THE BALLISTIC GLASS IS ALREADY OUT OF THE GAME, and has been since 0.12.87-dev.** `RR_Starts.xml` named `RB_ReinforcedGlassWall` and `RB_GlassWall` from ReBuild: Doors and Corners (register row 185); both are gone, they were the **only two** non-Core def references in any shipped start, and `check-register-compliance.py` now refuses a non-Core def in a shipped start or scenario. Those eleven cells are plain steel wall. **Nothing in the game uses ballistic glass**, and the four remaining mentions of the word in that file are the comment recording its removal.
+
+**AND THE STARGATE MOD IS NOT A DEPENDENCY AND NEVER WAS.** The owner is right, and the error was mine, in a sentence I wrote about what to build next. **Stargates! is register row 218, GPL-3.0, explicitly not a dependency and nothing is taken from it** — `COMPLIANCE_AND_OFFICIAL_VERSIONS.md` records that copying from it would force this project to GPL, and `check-compliance.py` holds it. The owner's own words were a **comparison**: *"300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels"* and *"like the stargate mod works but with normal does"* — a 300×300 level reached through **an ordinary door**. The wiki mentions no mod by name for this and must not start.
+
+### What was actually still open, and was lost
+
+**The archive entry for the glass removal says in its own words that the direction it served *"stays open in the queue"*. It did not stay open.** No row for it exists in `TODO.md`, `DECOMPOSED.md` or `ROADMAP.md` — the promise was written inside the row that closed, so it was archived with it. **A sentence promising that something stays open is not a queue row.** An owner direction survives only as its own row.
+
+- [x] **A physical window stays a legitimate want, and it is a content decision rather than a gap.** If the owner wants to *see* the hall from the control room, Core cannot do it and the options are each a real trade: an open gap in the wall (line of sight, no seal), a run of barricades (sight, no seal, no roof support), or **our own see-through wall def**, which is the only one that keeps the seal and is also the only one that adds a building — and *"repurpose existing game/mod content"* is the standing rule, with the menu art the single approved exception. **Needs the owner's call; nothing is blocked on it.** — **DECIDED AND CLOSED 0.12.98-dev. Owner, verbatim:** *"we dont need our own wall type"*. So there is **no window and no new def**, and the Core-only answer already shipped is the final one: a solid wall, the two-autodoor airlock, and the Operations Machine pane as the remote view. **The standing *repurpose existing content* rule holds with no exception added**, the `glazing` field stays unused and available, and `scenarios.md` describes what is actually there.
+
+
+Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **2 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TODO.md`
+
+**Verbatim owner answer (2026-09-29), at the exit-route fork:** *"Two maps at start, coordinate is real (Recommended)"*
+
+- [x] **"Two maps at start, coordinate is real"** - the solo/group start generates **two** maps. The starting map is an ordinary surface map on the tile the player picked, holding a small concrete shell with one door in it. A **real Backrooms coordinate** is generated alongside, and the starting people and their supplies are put inside it before the player ever sees the surface. The exit is a genuine registered `Emergence` connection from the first tick. — **MEASURED AS BUILT AND NOW GUARDED, 0.12.98-dev.** `SoloGroupOpening.Open` does all five steps in the stated order: a stable coordinate from the branch, its map through `DestinationService.EnsureSite` — the same path every gate destination uses — the surface door marked, the connection registered through `PortalAddressService.RegisterEmergenceAddress`, and the party moved inside **last**, so a failure above leaves everybody standing safely on the surface instead of sealed in with no way home. **It is also idempotent**, which the row did not ask for: every step answers *already done*, so a retry after a partial failure finishes the job rather than building a second one. `proof-startplacement.py` holds it and says so in its own headline.
+- [x] **This supersedes the earlier answer** *"Emerges on a fresh tile chosen by the seed"*, and the reason is a hard architectural constraint that was only found by reading `RimroomsPortalNetwork.Register`: — **THE CONSTRAINT IS STILL REAL AND IS NOW ASSERTED, 0.12.98-dev.** The reasoning was sound and nothing had been checking it: `GenStep_InsideStart` and `RR_InsideStart` are retired, archived at `docs/implementation/historical-content/0.12.0-dev/RETIRED_GENSTEP_INSIDESTART.md`, and **no instrument refused their return** until now. Two claims added — none in the stripped source, none in the shipped defs — each with a plant that reintroduces it as real code and a real def element. **A reappearance would not have looked like a bug**: a solo start would work right up to the moment somebody tried to register a way home.
+  - `Register` requires **`secondAnchor.Map.Parent as RimroomsDestinationMapParent`** with a matching `CoordinateRecord`. The Backrooms side of any connection must be a real coordinate map.
+  - The solo/group start's map **cannot be one**, because `Game.InitNewGame` generates the starting map for a **player `Settlement`** world object and errors without one.
+  - So 0.12.0-dev's design - *the starting map IS the coordinate* - is the thing that makes a registered exit impossible. Keeping it would have meant widening the validation that **every existing gate depends on**, which is the riskiest change available.
+- [x] **What this reworks from 0.12.0-dev:** `GenStep_InsideStart` and the `RR_InsideStart` map generator are **retired and archived**; the coordinate is generated by the existing `DestinationService.EnsureSite` through `GenStep_BackroomsDestination`, which is the proven path. `insideStart` stops meaning *"the starting map is a coordinate"* and starts meaning *"the starting people begin in a coordinate alongside the surface map"*. — **CONFIRMED COMPLETE 0.12.98-dev.** Zero references to `GenStep_InsideStart` or `RR_InsideStart` anywhere in source or the package. `insideStart` now means exactly what the row says — *the starting people begin in a coordinate* — and it is read in four places: the setup page's summary line, the def's own validation, the depth the coordinate is created at, and the single branch that decides whether anybody is moved inside.
+- [x] **The cost, stated plainly:** the surface tile is the one the player chose at setup rather than one derived from the seed. The owner took that trade knowingly at the fork. — **STANDS AS THE RECORDED TRADE 0.12.98-dev.** The surface tile is the player's chosen one. Nothing has changed to revisit it, and the row is the record rather than a task.
+
+**Verbatim owner direction (2026-09-29), constraining all of the above:** *"but remmebr this is all open eneded they can play how they choose"*
+
+- [x] **"this is all open eneded they can play how they choose"** - **the tutorial chain guides, it never rails.** This is the same rule `docs/CAMPAIGN_CHART.md` already holds the Async line to and it now governs the solo/group line too: — **HELD, AND IT IS IN THE CODE RATHER THAN ONLY IN THE QUEUE, 0.12.98-dev.** `SoloGroupOpening`'s own *what it does not decide* section carries the owner's words and the consequence: the exit exists and is permanently open, and **a group that would rather stay down there, mine the rock and grow food under thick roof is playing correctly and nothing nudges them.** The wiki says the same thing in a player's words — no deadlines, and using the way out is a choice.
+  - The exit is **guaranteed to exist**, and **using it is a choice**. A player who wants to live down there, dig, farm and never come out is playing the game correctly.
+  - The depth-3 limit is a property of **natural portals**, not a gate on the player. It does not stop anybody doing anything; it only means the free doorways run out and a built gate is how you go further **if you want to go further**.
+  - Nothing in the chain expires, nothing is failed by ignoring it, and every step offers more than one way through (chart #1.1 and #1.2, both already enforced by `check-campaign-absolutes.py`).
+  - **The chain is a set of offers describing what is possible, not an order of operations.** If a player reaches the surface before anybody suggested it, the chain has to read as already-done rather than skipped.
+
+
+Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **"starts locations of main grand rooms can be anywhere on the map and lead anywhere in multiple differetn varied ways"** — plural **"rooms"**: more than one grand room, placed anywhere, each with several ways out. Today there is exactly one hall, it takes two slots, and `MakeHall` is the only caller — so "grand rooms" plural is new content as well as new placement. — **BUILT AND GUARDED 0.12.98-dev. The level now has several grand rooms, and the count is measured rather than claimed.** *"Anywhere on the map"* was already done — the hall's slot and orientation are drawn from the coordinate's seed. **What was missing was the plural**, and it is built: `GrandRoomsPerLevel` is **3 at depth 1, 2 at depth 2, 1 deeper**, which is the shallow look rather than a convenience bound — the first band is the fewest and largest spaces, and deeper is more rooms, smaller. **Grand is the SPAN, never the family**, and that was the design question: `DestinationService` requires room index 0 to carry `threshold_room` and the genstep resolves a crossing with `First(...)` of it, so a second room of that family would be a second candidate for where a player arrives, decided by list order. Extra grand rooms take the ordinary placeholder family and go through `AssignMazeFamilies` like everything else — so nothing downstream needed teaching, and the properties that follow from size follow for free: wide enough for `PillarCells`, and **not** exempt from `RockIntrusionCells` the way the arrival hall is, so they come out as large irregular spaces rather than big rectangles. **They are made INSIDE the maze walk**, which is the part that matters: seeding them alongside the hall would have left disconnected components, because the walk skips occupied slots and the braid only links one adjacent pair in three — and a disconnected graph is refused, which hands the seed the fallback serpentine, *"one lone strain of perals"*, the exact defect being fixed. Made as the walk steps in, each is linked to its parent by construction and passes the same two legality gates as any other room; **both its slots are claimed and both ends pushed onto the stack**, which is the *"lead anywhere in multiple differetn varied ways"* half. **Measured over 200 seeds at seven depths: `grand 3.0/3, 2.0/2, 1.0/1 ...`, `refused 0/200`, `fellback 0`** — every seed hits its target, and the **worst** grand room at every depth still has **2 ways out**, so none is ever a cul-de-sac. `check-planner-layouts.py` now asserts both the count and the exits, and **the plant proved the rule** by cutting the plural back to one. **AND THE PLANT EXPOSED A HOLE IN THE PROBE ITSELF:** `PlannerProbe.csproj` binds the mod by `HintPath` to the built DLL rather than a `ProjectReference`, so the check was measuring **whatever assembly happened to be on disk** — it reported the old numbers and passed against planted source. It now builds the mod first. **A layout verdict about code that is no longer the source is worse than no verdict.**
+
+Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

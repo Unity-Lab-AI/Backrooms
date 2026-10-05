@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +27,10 @@ namespace PlannerProbe
         private static MethodInfo areNeighbourRooms;
         private static MethodInfo corridorLegs;
         private static PropertyInfo widestSpan;
+        private static MethodInfo slotsPerAxis;
+        private static MethodInfo slotSpacing;
+        private static MethodInfo grandRoomsPerLevel;
+        private static int slotGap;
         private static MethodInfo pillarCells;
         private static MethodInfo rockIntrusionCells;
         private static MethodInfo shapeDepthOf;
@@ -91,6 +95,13 @@ namespace PlannerProbe
                 .GetType("RimroomsAsyncIndustries.Generation.CoordinateMotif");
             motifFor = motifType.GetMethod("For", Statics);
             candidateBudget = (int)planner.GetField("CandidateBudget", Statics).GetValue(null);
+            // The grand span is DERIVED from the planner rather than typed here: a grand room
+            // is two slots less the gap between them, exactly as `MakeGrandRoom` builds it, so
+            // the probe cannot disagree with the thing it measures.
+            slotsPerAxis = planner.GetMethod("SlotsPerAxis", Statics);
+            slotSpacing = planner.GetMethod("SlotSpacing", Statics);
+            slotGap = (int)planner.GetField("SlotGap", Statics).GetValue(null);
+            grandRoomsPerLevel = planner.GetMethod("GrandRoomsPerLevel", Statics);
 
             Console.WriteLine("WidestRoomSpan = " + widestSpan.GetValue(null, null));
             Console.WriteLine();
@@ -105,6 +116,12 @@ namespace PlannerProbe
                 int refused = 0;
                 int rooms = 0;
                 int widest = 0;
+                int grandRooms = 0;
+                int slotsHere = (int)slotsPerAxis.Invoke(null, new object[] { depth });
+                int spacingHere = (int)slotSpacing.Invoke(null, new object[] { slotsHere });
+                int grandSpan = spacingHere * 2 - slotGap;
+                int grandWanted = (int)grandRoomsPerLevel.Invoke(null, new object[] { depth });
+                int grandWorstDegree = int.MaxValue;
                 int backToBack = 0;
                 int tightest = int.MaxValue;
                 int starved = 0;
@@ -198,6 +215,28 @@ namespace PlannerProbe
                         int height = Field<int>(room, "height");
                         if (width > widest) { widest = width; }
                         if (height > widest) { widest = height; }
+
+                        // **GRAND ROOMS, COUNTED, because "more than one" is the whole claim.**
+                        // Owner: *"starts locations of main grand rooms can be anywhere on the map
+                        // and lead anywhere in multiple differetn varied ways"* -- plural. A room
+                        // is grand when it spans two slots, so its long side reaches the two-slot
+                        // span rather than the one-slot one. Measured off the committed layout, so
+                        // this counts rooms a player will actually walk into and not intentions.
+                        //
+                        // Counted rather than asserted here: the Python side decides what the
+                        // number has to be, because a count belongs in one place and the probe's
+                        // job is to report.
+                        if (Math.Max(width, height) >= grandSpan) { grandRooms++; }
+                        // **AND WHETHER A GRAND ROOM ACTUALLY LEADS ANYWHERE.** Owner, same
+                        // direction: *"lead anywhere in multiple differetn varied ways"*. A
+                        // grand space with one door is a cul-de-sac wearing a hall's clothes,
+                        // so the worst case across every grand room is what gets reported --
+                        // an average would hide the one that matters.
+                        if (Math.Max(width, height) >= grandSpan)
+                        {
+                            int grandDegree = Field<List<int>>(room, "links").Count;
+                            if (grandDegree < grandWorstDegree) { grandWorstDegree = grandDegree; }
+                        }
 
                         // How many other rooms this one actually reaches, and how much of the map
                         // it occupies. `links` is the committed graph the game will save, so this
@@ -326,7 +365,7 @@ namespace PlannerProbe
                 int mapArea = mapWidth * mapHeight;
                 Console.WriteLine(string.Format(
                     "     maze  depth {0,-2} degree avg {1,4:0.00} max {2,2} deg0 {3,5:0.0}% deg1 {4,5:0.0}% roomfill {5,4:0.0}% of {6}x{7}"
-                    + "  hallspots {8,3} corner {9,5:0.0}% vertical {10,5:0.0}%"
+                    + "  hallspots {8,3} corner {9,5:0.0}% vertical {10,5:0.0}%  grand {15,4:0.0}/{16} ways {17,2}"
                     + "  onmotif {11,5:0.0}% shapes {12} road {13,2} block {14,2}",
                     depth, (double)degreeTotal / measuredRooms, degreeMax,
                     100.0 * degreeZero / measuredRooms, 100.0 * degreeOne / measuredRooms,
@@ -336,7 +375,10 @@ namespace PlannerProbe
                     refused == Seeds ? 0.0 : 100.0 * hallAtOldCorner / (Seeds - refused),
                     refused == Seeds ? 0.0 : 100.0 * hallVertical / (Seeds - refused),
                     100.0 * onMotif / measuredRooms, shapesSeen.Count,
-                    longestRoad, largestBlock));
+                    longestRoad, largestBlock,
+                    refused == Seeds ? 0.0 : (double)grandRooms / (Seeds - refused),
+                    grandWanted,
+                    grandWorstDegree == int.MaxValue ? -1 : grandWorstDegree));
                 foreach (string reason in reasons) { Console.WriteLine("        reason: " + reason); }
                 if (refused != 0) { failures++; }
                 if (fellBack >= Seeds) { fellBackEverywhere = true; }
