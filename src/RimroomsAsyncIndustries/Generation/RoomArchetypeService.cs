@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using RimroomsAsyncIndustries.Company;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,13 +41,6 @@ namespace RimroomsAsyncIndustries.Generation
         /// </summary>
         private const int MaxFixtureSide = 2;
 
-        /// <summary>
-        /// Picks an archetype for a room, or null when the room should be left as it is.
-        ///
-        /// **Depth 1 always returns null.** The shallow yellow rooms stay sparse because that
-        /// emptiness *is* the look; filling them with laboratory equipment would destroy the
-        /// exact image the setting rests on.
-        /// </summary>
         /// <summary>Links walked before a room counts as one level deeper.</summary>
         public const int LinksPerDepthBand = 3;
 
@@ -138,6 +131,13 @@ namespace RimroomsAsyncIndustries.Generation
         /// <summary>Forget the measured graphs; the maps they describe belong to another game.</summary>
         public static void ClearHopCache() { hopCache.Clear(); }
 
+        /// <summary>
+        /// Picks an archetype for a room, or null when the room should be left as it is.
+        ///
+        /// **Depth 1 always returns null.** The shallow yellow rooms stay sparse because that
+        /// emptiness *is* the look; filling them with laboratory equipment would destroy the
+        /// exact image the setting rests on.
+        /// </summary>
         public static RimroomsRoomArchetypeDef Select(string familyId, int depth, int seed,
             int roomIndex)
         {

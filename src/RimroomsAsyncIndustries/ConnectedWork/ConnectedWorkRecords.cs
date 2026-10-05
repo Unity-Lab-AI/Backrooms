@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using Verse;
 using RimroomsAsyncIndustries.Portals;
 
@@ -185,11 +185,6 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         }
 
         /// <summary>
-        /// The destination is an object rather than a cell: a storage container, a grave,
-        /// a bed. Recorded in the final-target field, which is exactly what that field is
-        /// for — the native object the work finally belongs to.
-        /// </summary>
-        /// <summary>
         /// The destination is a cell, but the work still belongs to an object — a bill's
         /// ingredients land in storage near the bench, and the bench is still what the trip
         /// is for. Distinct from <see cref="RecordResolvedStoreCell"/>, which clears the
@@ -201,6 +196,11 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             candidateStoreCell = cell;
         }
 
+        /// <summary>
+        /// The destination is an object rather than a cell: a storage container, a grave,
+        /// a bed. Recorded in the final-target field, which is exactly what that field is
+        /// for — the native object the work finally belongs to.
+        /// </summary>
         internal void RecordResolvedTarget(Thing target)
         {
             finalTarget = target;

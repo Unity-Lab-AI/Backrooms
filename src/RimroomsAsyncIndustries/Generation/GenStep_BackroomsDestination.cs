@@ -355,8 +355,7 @@ namespace RimroomsAsyncIndustries.Generation
         /// direction, 2026-09-30: *"backrooms can not and shall not have cave ins so removing
         /// walls floors columns shall not cause mountain overhead to column collapse"*, scoped
         /// to *"tgis is only for backrooms"*. See `BackroomsContainmentMapComponent.OverheadRoof`.
-        /// </summary>
-        /// <summary>
+        ///
         /// Carve the coordinate and return the cells along its corridor walls, so the hallways
         /// can be lit and dressed like the rooms they join.
         /// </summary>
@@ -968,8 +967,7 @@ namespace RimroomsAsyncIndustries.Generation
         /// doesnt have to be ... rectangle halways"*. It comes from
         /// `RoomLayoutPlanner.CorridorHalfWidthBetween`, which `CandidateIsSafe` also reads, so
         /// the reachability the planner proved is the reachability that gets built.
-        /// </summary>
-        /// <summary>
+        ///
         /// Carve the routes between rooms, **as rooms**, and report the cells along their walls
         /// that can hold something.
         ///
@@ -1149,8 +1147,7 @@ namespace RimroomsAsyncIndustries.Generation
         /// the same coordinate is always made of the same stone in the same places — revisiting
         /// a known space never reshuffles it, which is the same rule every other generated
         /// property of a coordinate follows.
-        /// </summary>
-        /// <summary>
+        ///
         /// Solid rock everywhere a room or corridor is not.
         ///
         /// **Region rebuilding is suspended for the duration**, which is the same thing Core's
@@ -1265,15 +1262,6 @@ namespace RimroomsAsyncIndustries.Generation
             throw new InvalidOperationException("RR_Generation_NoSafeRoomCell");
         }
 
-        /// <summary>
-        /// An interior cell with one of the room's own walls directly behind it, and the rotation
-        /// that faces that wall.
-        ///
-        /// A wall attachment draws itself almost a full cell in its facing direction, so the
-        /// rotation is not decoration -- it is the difference between a lamp on the wall and a
-        /// lamp hanging over the floor. The wall must be the room's own wall def: a door also
-        /// holds up roof, and a lamp mounted on a door is mounted on nothing the moment it opens.
-        /// </summary>
         /// <summary>
         /// A wall lamp on each of a room's pillars, so the basic rooms are lit the way the
         /// Backrooms are lit.
@@ -1472,47 +1460,6 @@ namespace RimroomsAsyncIndustries.Generation
         }
 
         /// <summary>
-        /// Whether a wall attachment standing on this cell with this facing really is attached to
-        /// something.
-        ///
-        /// ## This is the defect that cost the owner two launches, and it is a one-line rule
-        ///
-        /// `RimWorld.PowerConnectionMaker.TryConnectToAnyPowerNet`, Core 1.6, verbatim:
-        ///
-        /// <code>
-        /// BestTransmitterForConnector(pc.parent.def.building.isAttachment
-        ///     ? GenConstruct.GetWallAttachedTo(pc.parent).Position
-        ///     : pc.parent.Position, pc.parent.Map, disallowedNets);
-        /// </code>
-        ///
-        /// **Core dereferences that wall without checking it.** `GetWallAttachedTo` returns null
-        /// when the cell at `position + rotation.FacingCell` holds nothing with
-        /// `building.supportsWallAttachments`, so **an attachment facing open floor is a
-        /// guaranteed `NullReferenceException` inside Core's own power rebuild** -- and that
-        /// rebuild is step four of fifteen in `Map.FinalizeInit`, so regions, pens, plant growth
-        /// rates, every `PostMapInit` and the wealth recount never run. The throw leaves
-        /// `MapGenerator.GenerateMap`, so `GetOrGenerateMap` throws, so `EnsureSite` reports
-        /// failure and `SoloGroupOpening` never moves anybody inside.
-        ///
-        /// Owner: *"why are my colonists on the world map!!!!!!!!! they should be in the backrooms
-        /// in this scenerio"*. And: *"we loaded solo/group start into the backrooms correctly
-        /// before"* -- **they did.** `BackroomsPalette` resolves `WallLamp`, which is
-        /// `isAttachment`, and the only placer that existed then was
-        /// <see cref="FindWallAttachmentCell"/>, which finds the wall first and faces it. The two
-        /// placers added afterwards did not: the pillar lamps faced **away** from the pillar they
-        /// were mounted on, and the corridor lamps were spawned `Rot4.North` with no wall test at
-        /// all. One mistake, made twice, in the two checkpoints the owner is calling a regression.
-        ///
-        /// Because the queue Core throws out of is never cleared, it re-runs every tick --
-        /// `Root level exception in Update()` for the rest of the session, plus *"there is already
-        /// a power net here"* when the re-run re-registers the generator.
-        ///
-        /// **Asked of Core's own function, not re-derived.** Core is what dereferences the answer,
-        /// so Core is the only thing whose opinion matters; a local copy of the rule could
-        /// disagree with it, and that disagreement is this project's most expensive defect shape.
-        /// Non-attachments answer true, because they have nothing to be attached to.
-        /// </summary>
-        /// <summary>
         /// Removes anything on this coordinate that is a wall attachment and is not attached to a
         /// wall, before Core is asked to wire the place.
         ///
@@ -1559,6 +1506,47 @@ namespace RimroomsAsyncIndustries.Generation
             }
         }
 
+        /// <summary>
+        /// Whether a wall attachment standing on this cell with this facing really is attached to
+        /// something.
+        ///
+        /// ## This is the defect that cost the owner two launches, and it is a one-line rule
+        ///
+        /// `RimWorld.PowerConnectionMaker.TryConnectToAnyPowerNet`, Core 1.6, verbatim:
+        ///
+        /// <code>
+        /// BestTransmitterForConnector(pc.parent.def.building.isAttachment
+        ///     ? GenConstruct.GetWallAttachedTo(pc.parent).Position
+        ///     : pc.parent.Position, pc.parent.Map, disallowedNets);
+        /// </code>
+        ///
+        /// **Core dereferences that wall without checking it.** `GetWallAttachedTo` returns null
+        /// when the cell at `position + rotation.FacingCell` holds nothing with
+        /// `building.supportsWallAttachments`, so **an attachment facing open floor is a
+        /// guaranteed `NullReferenceException` inside Core's own power rebuild** -- and that
+        /// rebuild is step four of fifteen in `Map.FinalizeInit`, so regions, pens, plant growth
+        /// rates, every `PostMapInit` and the wealth recount never run. The throw leaves
+        /// `MapGenerator.GenerateMap`, so `GetOrGenerateMap` throws, so `EnsureSite` reports
+        /// failure and `SoloGroupOpening` never moves anybody inside.
+        ///
+        /// Owner: *"why are my colonists on the world map!!!!!!!!! they should be in the backrooms
+        /// in this scenerio"*. And: *"we loaded solo/group start into the backrooms correctly
+        /// before"* -- **they did.** `BackroomsPalette` resolves `WallLamp`, which is
+        /// `isAttachment`, and the only placer that existed then was
+        /// <see cref="FindWallAttachmentCell"/>, which finds the wall first and faces it. The two
+        /// placers added afterwards did not: the pillar lamps faced **away** from the pillar they
+        /// were mounted on, and the corridor lamps were spawned `Rot4.North` with no wall test at
+        /// all. One mistake, made twice, in the two checkpoints the owner is calling a regression.
+        ///
+        /// Because the queue Core throws out of is never cleared, it re-runs every tick --
+        /// `Root level exception in Update()` for the rest of the session, plus *"there is already
+        /// a power net here"* when the re-run re-registers the generator.
+        ///
+        /// **Asked of Core's own function, not re-derived.** Core is what dereferences the answer,
+        /// so Core is the only thing whose opinion matters; a local copy of the rule could
+        /// disagree with it, and that disagreement is this project's most expensive defect shape.
+        /// Non-attachments answer true, because they have nothing to be attached to.
+        /// </summary>
         private static bool WallAttachmentHolds(Map map, ThingDef def, IntVec3 cell, Rot4 facing)
         {
             if (map == null || def == null || def.building == null || !def.building.isAttachment)
@@ -1616,6 +1604,15 @@ namespace RimroomsAsyncIndustries.Generation
             return light.Spawned && light.Map == map ? light : null;
         }
 
+        /// <summary>
+        /// An interior cell with one of the room's own walls directly behind it, and the rotation
+        /// that faces that wall.
+        ///
+        /// A wall attachment draws itself almost a full cell in its facing direction, so the
+        /// rotation is not decoration -- it is the difference between a lamp on the wall and a
+        /// lamp hanging over the floor. The wall must be the room's own wall def: a door also
+        /// holds up roof, and a lamp mounted on a door is mounted on nothing the moment it opens.
+        /// </summary>
         private static IntVec3 FindWallAttachmentCell(Map map, RoomRecord room, IntVec3 preferred,
             ThingDef wallDef, HashSet<IntVec3> reserved, out Rot4 facing)
         {

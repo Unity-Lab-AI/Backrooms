@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Gate;
@@ -382,10 +382,6 @@ namespace RimroomsAsyncIndustries.UI
         { return PortalAddressService.ApproachCellFor(door); }
     
         /// <summary>
-        /// The player-facing name of a connection kind. A switch rather than a ternary so a
-        /// kind added later cannot be silently displayed as a laboratory.
-        /// </summary>
-        /// <summary>
         /// The player-facing address code for a coordinate id, asked of the record that owns it.
         ///
         /// Owner, 2026-10-04: *"only like the !A-01 address code is needed to be displayed to
@@ -406,6 +402,10 @@ namespace RimroomsAsyncIndustries.UI
             return coordinateId;
         }
 
+        /// <summary>
+        /// The player-facing name of a connection kind. A switch rather than a ternary so a
+        /// kind added later cannot be silently displayed as a laboratory.
+        /// </summary>
         private static string KindLabelKey(PortalConnectionKind kind)
         {
             switch (kind)

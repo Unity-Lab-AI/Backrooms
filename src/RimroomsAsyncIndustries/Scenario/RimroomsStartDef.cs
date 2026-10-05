@@ -9,7 +9,6 @@ namespace RimroomsAsyncIndustries.Scenario
     {
         public string scenarioId;
         public int scenarioVersion = 1;
-        /// <summary>The name offered at setup. The player may replace it; every start can.</summary>
         /// <summary>
         /// Whether this start begins already in communication with the parent corporation.
         ///
@@ -21,6 +20,7 @@ namespace RimroomsAsyncIndustries.Scenario
         /// </summary>
         public bool beginsInCorporationContact;
 
+        /// <summary>The name offered at setup. The player may replace it; every start can.</summary>
         public string defaultCompanyName;
         public int mapSize = 60;
         // The `mapGenerator` field was retired at 0.12.46-dev. Owner direction: **"the map

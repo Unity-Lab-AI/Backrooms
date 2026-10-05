@@ -217,21 +217,6 @@ namespace RimroomsAsyncIndustries.Company
         }
 
         /// <summary>
-        /// Walk out through this door, onto the world map, as a caravan.
-        ///
-        /// **This is the only place in the mod that reaches Core's caravan formation, and it runs
-        /// only from a player command.** No tick, work giver, incident or scheduler calls it, and
-        /// `proof-world-exit.py` asserts it has exactly one caller. That is what makes the narrowed
-        /// stranded-crew guarantee hold: a gate closing, a window expiring and any traversal still
-        /// never take a crew anywhere.
-        ///
-        /// **Core does the leaving.** `CaravanExitMapUtility.ExitMapAndCreateCaravan` despawns the
-        /// pawns, forms the caravan, notifies the map and sets the route. Hand-rolling that is how
-        /// a pawn gets lost — invariant 55: a transfer that can lose a pawn is a corruption, not a
-        /// threat — and it is also what every transport mod in the register's RR-OUT group already
-        /// hooks into.
-        /// </summary>
-        /// <summary>
         /// The most maps this branch may hold at once, counting **everything**: its headquarters,
         /// every Backrooms coordinate currently loaded, every registered site, and every tile it
         /// has claimed by walking out of a door.

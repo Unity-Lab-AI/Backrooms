@@ -102,10 +102,6 @@ namespace RimroomsAsyncIndustries.Threats
         private const int SurroundingsRadius = 6;
 
         /// <summary>
-        /// Converts accumulated pressure into the mood offset a thought should carry.
-        /// Returns 0 when a pawn has no pressure at all, so no thought is applied.
-        /// </summary>
-        /// <summary>
         /// How fast pressure drains from somebody who is out of a coordinate.
         ///
         /// **RR_Cap_Decompression** (Fieldcraft, tier 4) doubles it again. A branch that has
@@ -146,6 +142,10 @@ namespace RimroomsAsyncIndustries.Threats
         /// </summary>
         private const int SteadyNervePenalty = 6;
 
+        /// <summary>
+        /// Converts accumulated pressure into the mood offset a thought should carry.
+        /// Returns 0 when a pawn has no pressure at all, so no thought is applied.
+        /// </summary>
         public static int PenaltyFor(int pressureTicks)
         {
             if (pressureTicks <= 0) { return 0; }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -132,6 +132,33 @@ namespace RimroomsAsyncIndustries.Generation
         { return StuffFor(definition, coordinate, 0); }
 
         /// <summary>
+        /// The same choice, but asked for a particular room rather than for the whole level.
+        ///
+        /// Owner: *"the normal yellow backrooms look isnt the whole floor but the main spanw
+        /// room"*. `StuffFor` decides on the coordinate's depth, so at `CoherentDepth` every wall
+        /// on a three-hundred-cell map comes from one narrow palette -- right for the hall you
+        /// arrive in, wrong for the far side of a maze.
+        ///
+        /// **This locates the earlier direction rather than overruling it.** *"depth 0 in the
+        /// backrroms is the standard yellow style"* still holds where a player arrives and for
+        /// the rooms around it; it stopped holding twelve doors out, and that is what the owner
+        /// walked.
+        /// </summary>
+        internal static ThingDef StuffForRoom(ThingDef definition, CoordinateRecord coordinate,
+            RoomRecord room, int variant)
+        {
+            if (definition == null || !definition.MadeFromStuff) { return null; }
+            int depth = coordinate == null ? 1 : coordinate.Depth;
+            int effective = RoomArchetypeService.EffectiveDepth(coordinate, room, depth);
+            if (effective > CoherentDepth)
+            {
+                ThingDef wild = WildStuffFor(definition, coordinate, variant);
+                if (wild != null) { return wild; }
+            }
+            return StuffFor(definition, coordinate, variant);
+        }
+
+        /// <summary>
         /// What this particular fixture is made of on this coordinate.
         ///
         /// ## Two behaviours, and the split is the owner's specification
@@ -162,33 +189,6 @@ namespace RimroomsAsyncIndustries.Generation
         /// mod that adds a material widens this automatically and a mod that restricts one is
         /// obeyed. **Nothing here names a material.**
         /// </summary>
-        /// <summary>
-        /// The same choice, but asked for a particular room rather than for the whole level.
-        ///
-        /// Owner: *"the normal yellow backrooms look isnt the whole floor but the main spanw
-        /// room"*. `StuffFor` decides on the coordinate's depth, so at `CoherentDepth` every wall
-        /// on a three-hundred-cell map comes from one narrow palette -- right for the hall you
-        /// arrive in, wrong for the far side of a maze.
-        ///
-        /// **This locates the earlier direction rather than overruling it.** *"depth 0 in the
-        /// backrroms is the standard yellow style"* still holds where a player arrives and for
-        /// the rooms around it; it stopped holding twelve doors out, and that is what the owner
-        /// walked.
-        /// </summary>
-        internal static ThingDef StuffForRoom(ThingDef definition, CoordinateRecord coordinate,
-            RoomRecord room, int variant)
-        {
-            if (definition == null || !definition.MadeFromStuff) { return null; }
-            int depth = coordinate == null ? 1 : coordinate.Depth;
-            int effective = RoomArchetypeService.EffectiveDepth(coordinate, room, depth);
-            if (effective > CoherentDepth)
-            {
-                ThingDef wild = WildStuffFor(definition, coordinate, variant);
-                if (wild != null) { return wild; }
-            }
-            return StuffFor(definition, coordinate, variant);
-        }
-
         internal static ThingDef StuffFor(ThingDef definition, CoordinateRecord coordinate, int variant)
         {
             if (definition == null || !definition.MadeFromStuff) { return null; }

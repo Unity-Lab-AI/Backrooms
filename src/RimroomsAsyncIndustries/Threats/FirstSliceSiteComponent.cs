@@ -246,19 +246,6 @@ namespace RimroomsAsyncIndustries.Threats
 
         public RoomRecord RoomAt(IntVec3 cell) { return Coordinate?.Rooms.FirstOrDefault(r => r.Bounds.Contains(cell)); }
         /// <summary>
-        /// Whether this crew member is carrying something the company's record can be written in.
-        ///
-        /// The field recorder this replaced was a mod item matched by def name, and 0.12.24-dev
-        /// folded its job into the record book a crew already carries. The book is matched by
-        /// <see cref="CompRouteEvidence.IsSupportedCarrier"/>, which asks a stricter question
-        /// than a name does: it has to be Core's own book, unstacked, undestroyed, and actually
-        /// carrying our comp. A book another mod replaced, or one whose comp never got patched
-        /// on, is not a company record book and a crew holding it is not recording.
-        ///
-        /// A legacy route recording still counts, because saves made before the switch contain
-        /// them and a crew holding one has never stopped being a crew that can write.
-        /// </summary>
-        /// <summary>
         /// Whether any fact on this record already carries an account that contradicts it.
         ///
         /// Read either side of a recording call, because a dispute is saved onto the observation
@@ -276,6 +263,19 @@ namespace RimroomsAsyncIndustries.Threats
             return false;
         }
 
+        /// <summary>
+        /// Whether this crew member is carrying something the company's record can be written in.
+        ///
+        /// The field recorder this replaced was a mod item matched by def name, and 0.12.24-dev
+        /// folded its job into the record book a crew already carries. The book is matched by
+        /// <see cref="CompRouteEvidence.IsSupportedCarrier"/>, which asks a stricter question
+        /// than a name does: it has to be Core's own book, unstacked, undestroyed, and actually
+        /// carrying our comp. A book another mod replaced, or one whose comp never got patched
+        /// on, is not a company record book and a crew holding it is not recording.
+        ///
+        /// A legacy route recording still counts, because saves made before the switch contain
+        /// them and a crew holding one has never stopped being a crew that can write.
+        /// </summary>
         internal static bool CarriesRecordBook(Pawn pawn)
         {
             return pawn?.inventory != null &&
@@ -304,20 +304,20 @@ namespace RimroomsAsyncIndustries.Threats
             return nextMarkerNumber == int.MaxValue ? nextMarkerNumber : nextMarkerNumber++;
         }
         /// <summary>
-        /// Nothing queues a marker any more, and that is the point.
-        ///
-        /// The retired survey tag needed an order, a job driver, a reserved cell, a free
-        /// inventory slot and a limit of one per room before a pawn could put one down. A glow
-        /// pod is a Core building a colonist installs with the ordinary install order, and
-        /// marking it is a designation on the thing itself -- the same shape as designating a
-        /// door as a gate. Five moving parts became none, and the cap went with them.
-        /// </summary>
-        /// <summary>
         /// Drains anything a save made before 0.10.7-dev left in the deployment holder.
         ///
         /// Nothing fills it now that the deploy order is gone. It is kept rather than
         /// deleted because a saved <c>ThingOwner</c> that stops being read is a saved
         /// object that quietly stops existing, and the things inside it were the player's.
+        ///
+        /// ## And nothing queues a marker any more, which is the point
+        ///
+        /// This holder is the only vestige of that system, so the reasoning lives here. The
+        /// retired survey tag needed an order, a job driver, a reserved cell, a free inventory
+        /// slot and a limit of one per room before a pawn could put one down. A glow pod is a
+        /// Core building a colonist installs with the ordinary install order, and marking it is a
+        /// designation on the thing itself -- the same shape as designating a door as a gate.
+        /// Five moving parts became none, and the cap went with them.
         /// </summary>
         public CompanyActionResult RecoverDeploymentItems(Pawn pawn)
         {

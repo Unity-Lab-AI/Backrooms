@@ -75,14 +75,6 @@ namespace RimroomsAsyncIndustries.UI
         }
 
         /// <summary>
-        /// The interview: which of two accounts the company files.
-        ///
-        /// Only drawn for a fact two crew actually disagree about. The player chooses the account;
-        /// the interviewer is whoever the company would send, named on the button so the choice is
-        /// not made blind. A refusal is shown in place rather than the button being hidden, because
-        /// *"nobody on staff can take a statement"* is information and a missing button is not.
-        /// </summary>
-        /// <summary>
         /// The sign-off, and the button that performs it.
         ///
         /// **Review is the fourth of the owner's four workflows** -- *"Add
@@ -218,6 +210,14 @@ namespace RimroomsAsyncIndustries.UI
             { ShowResult(campaign.DestroyRecord(record)); }
         }
 
+        /// <summary>
+        /// The interview: which of two accounts the company files.
+        ///
+        /// Only drawn for a fact two crew actually disagree about. The player chooses the account;
+        /// the interviewer is whoever the company would send, named on the button so the choice is
+        /// not made blind. A refusal is shown in place rather than the button being hidden, because
+        /// *"nobody on staff can take a statement"* is information and a missing button is not.
+        /// </summary>
         private static void DrawInterview(Listing_Standard listing, EvidenceRecord record,
             EvidenceObservationRecord observation)
         {

@@ -16085,3 +16085,139 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.97-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-04)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **4 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+## Owner direction — the wiki write-ups are stale and generic (2026-10-05)
+
+**Verbatim owner direction (2026-10-05):** *"and add totodo to reword the write ups on the wiki, alot of that shit was written agges ago and is generic horshit stalle as fuck even how it we all explained is all generalized and has nothing weve done written up in it over the last few days"*
+
+### Measured before it was written down, so the row names what is missing rather than repeating the complaint
+
+Every one of the thirteen pages was last touched **2026-10-04** — but that was the front-matter and layout pass, not the prose. Swept the pages against what has actually shipped, and **nine player-facing systems appear nowhere in the wiki at all**:
+
+| Shipped and a player can see it | Anywhere in the wiki? |
+|---|---|
+| **Three operational gates** — the cap, and that a gate dials any address | **no** |
+| **The random address dial** — going to look rather than being sent | **no** |
+| **The open-map budget** — five maps, and *"this gate is blocked"* | **no** |
+| **Boarding a natural doorway up** — 25 wood, a real job a pawn walks to | **no** |
+| **The held-places list and Release** — giving a place back, and what is left behind | **no** |
+| **Grand pillared halls** — shallow levels are few huge rooms, not small boxes | **no** |
+| **Staff certification and training** — training is work that completes state | **no** |
+| **A stranded crew** — a closed gate does not take your people; they survive and you get them out | **no** |
+| **Material variation by depth** — what a room is built from is part of the loot | **no** |
+| Odd goods and origin | **yes** — `backrooms.md`, and it is good |
+
+**Two apparent hits were false and are worth naming so nobody trusts the grep:** `install.md` matched *Release* on *"Download the release"*, and `interface.md` matched *board* on *"Keyboard"*. So the real coverage is thinner than a search suggests.
+
+- [x] **"reword the write ups on the wiki"** — rewrite the prose on all thirteen pages so each one describes **what this mod actually does now**. The nine systems above are the content that is missing; the row is not a style pass. **Written from the source and the register, never from memory** — that is the method that found five documents lying about dependencies and a multiplayer page that never named the multiplayer mod. — **CLOSED 0.12.98-dev. All thirteen pages rewritten from source**, not from a neighbouring page and not from a doc comment. Six claims were not stale but **wrong**: the free ways through stop at depth 6 and not 3, the corporation teaches with six requests plus the hinge and never stops asking, research is nine branches across five bands, `interface.md` listed 13 of 14 panes, `first-hour.md` promised eleven goals and gave six, and `company.md` advertised selling a bond at 85% which the code refuses on purpose. **Eight claims were verified correct and recorded as correct** so a later pass does not undo them.
+- [x] **"is generic horshit stalle as fuck"** — the specific failure is **generality**: pages describe the *shape* of a feature and not the feature. The multiplayer page is the worked example of the fix — it described *"each player runs their own company"* and never named **RimWorld Together**, and rewriting it meant naming the thing, its model, its requirement and what is untested. **Every page gets that treatment: name the thing, say what it does, say what is not claimed.** — **CLOSED 0.12.98-dev, and the diagnosis held.** The fix was naming the thing: the two absolutes the wiki had never mentioned -- **the only clock is the gate** and **every job has two or more success routes of different kinds** -- are now on the front page and in three more. Added with them: the window ladder, contact as a branch state, the eight arcs, and that no research prerequisite is satisfied by time passing.
+- [x] **"nothing weve done written up in it over the last few days"** — and the gap is one-directional: the **mod** moved and the **wiki** did not. Nine systems shipped with instruments and claims and keyed strings and nobody wrote a sentence a player could read about any of them. **A feature nobody can find out about is a feature nobody uses.** — **CLOSED 0.12.98-dev.** The nine absent systems are written: three gates, the random dial, the open-map allowance, boarding up for 25 wood, certification and its three training bills, Release being permanent and losing stock, a stranded crew surviving and being fetched, the room scale per depth, and the five deep-level materials.
+- [x] **The rules the rewrite still has to obey**, so none of this is traded away for liveliness: the **vocabulary** (`gate`/`connection`/`threshold`, never *portal* or *doorway*, and *the machine* is reserved), the **360-character paragraph ceiling** — owner: *"public facing documnets ARE NOT to be text walls"* — **no in-house dev names, no task numbers, no work information**, **no dependency claims** because the mod declares none, **nothing announced as compatible or tested** per D1, and **no reference to the build repositories**. All six are enforced by `check-doc-conformance.py` and the export audit, so a rewrite that breaks one fails the battery rather than shipping. — **HELD, AND ONE OF THEM BIT 0.12.98-dev.** `check-campaign-absolutes` refused two pages for the word *deadline* where the prose was **denying** deadlines. The rule scopes a 120-character window against a precise denial allowlist and its own comment warns that widening it is how a rule stops meaning anything -- **so the prose was reworded and the rule left alone.** Vocabulary, the wall ceiling, no dev names, no dependency claims, nothing announced as tested and no build-repo reference all pass.
+
+## Full wiki checkup analysis — measured against source, not read (2026-10-05)
+
+**Verbatim owner direction (2026-10-05):** *"read now.md and lets do that full wiki checkup analysis to stack"*
+
+All thirteen pages read end to end — **988 lines, smaller than one source file** — and every countable or behavioural claim checked against the code that implements it. **Six claims are not stale, they are wrong**, and one of them advertises a transaction the code deliberately refuses to perform.
+
+### Verified CORRECT — recorded so a rewrite does not "fix" what is already right
+
+| Claim | Where it is proved |
+|---|---|
+| 294 mods in the load-order list, zero dependencies | `About.xml` — `loadAfter` 294 `<li>`, `modDependencies` **absent** |
+| Up to three field staff | `CrewPlanner.MaxCrew = 3` |
+| 100 steel + 8 industrial components | `RR_GateRecipes.xml` — `RR_AssembleMachineGate`, `workAmount 6000` |
+| Below half condition a gate will not hold | `CompRimroomsGate.IntegrityFloorFraction = 0.5f`, read as a fraction of Core's `MaxHitPoints` |
+| Up to 25,000,000 drawn, three replacement staff | `CompanyClearSquad.RestockingChargeUsd = 25000000L`; `ClearSquadRoles` = operations, engineering, security |
+| Bonds from ten up to a quadrillion | 15 `RR_PrintBond_*` recipes, `_10` through `_1000000000000000` |
+| An ornate door is a 2-cell gate | `GateFootprint` — `OrnateDoor` is 2x1, read out of the shipped assembly |
+| Seven research branches | `RimroomsProjectDefs` — Commerce, Entities, Facilities, Fieldcraft, Logistics, Measurement, Spatial |
+
+### The defects, each with the line that proves it
+
+- [x] **`gates.md` tells players the free doors stop at depth 3. They stop at 6.** *"These reach **through depth 3 and no further**"* against `NaturalFrontierService.MaximumNaturalDepth = 6` — **raised from 3 to 6 at 0.12.49-dev, owner direction 2026-09-30**, alongside the map budget that made a deeper chain affordable. **Half the free range is undocumented.** **And the root cause is in the source, not the page:** that constant carries **two consecutive `<summary>` blocks**, and the first one still argues for depth 3 in full — *"the depth chosen at the fork was through depth 3"*, *"hands a branch three bands for free"*. The page copied the stale one faithfully. **Fix both, or the next reader copies it again.** — **CLOSED 0.12.98-dev, page and root cause.** The page says depth 6. `MaximumNaturalDepth` now carries **one** `<summary>` with the current value first and the superseded three recorded inside it.
+- [x] **`company.md` says the corporation asks for six things. It asks for seven.** `RimroomsRequestDef.tutorial` is true on **seven** requests with `tutorialOrder` **0 through 6** — PowerTheGate, AssembleAndCalibrate, BringBackOneRecord, MarkARouteHome, ReportADisagreement, HoldAConnectionOpen, ChooseADirection. **Somebody read the last index as the count.** The sentence calls this *"the hinge of the opening arc"*, so the number is the one thing on the line that has to be right. — **CLOSED 0.12.98-dev, and the framing was wrong too.** `CAMPAIGN_CHART.md` is the authority: six requests teach, the seventh is **the hinge**, and everything after is generated. **It never stops asking -- it stops teaching.**
+- [x] **`company.md` says four research tiers. There are five bands.** `RR_CompanyProjects.xml` is authored in headed blocks **TIER 0 through TIER 4** — foundations, first entry, repeatable operations, remote operations, the practised branch. 38 projects. Say the band count the file actually has, and say it the way the file does, because `NOW.md` already treats **T5/T6 as open work** and a page claiming four makes the top of the shipped tree invisible. — **CLOSED 0.12.98-dev, from the authority rather than the XML.** `CAMPAIGN_CHART.md` §3 is **nine branches across five progression bands**, all named, and it overrules `ROADMAP.md`'s T0-T6 by its own opening clause. The page carries the chart's names and the linkage rule that nothing requires time to have passed.
+- [x] **`company.md` advertises selling a bond at 85%, and the code refuses to do it on purpose.** `ValuablesExchange.ExchangeableIn` skips bonds outright — `if (BondService.FaceValueOf(thing) > 0L) { continue; }` — and the reason is written beside it: *"quietly selling a million-credit bond at 0.85 would be a way to destroy a player's money by accident."* **The page documents the exact accident the code was written to prevent.** The 0.85 is real but it is `OrdinaryExchangeRate` for ordinary goods, not bonds. Deposit and bank at 100% is correct and stays. — **CLOSED 0.12.98-dev.** The page now says a bond banks at full value and that the company declines to buy one, with the 85% put where it belongs: ordinary valuables.
+- [x] **`interface.md` is the pane-by-pane reference and it is missing a pane.** `MainTabWindow_Operations.PaneKeys` ships **fourteen**; the table lists **thirteen**. The absent one is `RR_UI_Places` — **"Places"**, between Sites and Help. A reference table that omits a pane is worse than no table: a player concludes the pane is not there. — **CLOSED 0.12.98-dev.** Places is listed, and **the count is gone from the prose** so the table cannot go stale the next time a pane lands.
+- [x] **`first-hour.md` promises eleven goals and documents six.** Its own summary says *"eleven goals, in the order they unlock"* and the body numbers **1 to 6**. **The summary is the correct one** — `GateStartupChecklist.Steps` is eleven, and `OperationsGateSteps.cs` says so in its own words: *"a player who already knows simply sees eleven ticks."* Write all eleven, in the game's own labels: a door chosen · console, battery and table bound · **the gate commissioned** · **machining table set to gate control** · gate assembled · an operator assigned · the gate calibrated · **communications console set to gate control** · **an address remembered** · the operator standing at the console · a session opened. — **CLOSED 0.12.98-dev.** All eleven, in the game's own labels, as a table.
+- [x] **THE ONE REPORTED "IT WILL NOT OPEN" FAILURE IS THE ONE THE WIKI NEVER MENTIONS.** Steps **4** and **8** are *"set to gate control"* — the table and the console, separately. That is verbatim the owner's own fault report: *"ive done like 50 things in a row and its still not opening"*, where the save had *"the machining table in gate control while the communications console on the same gate was not"*. **One switch, out of eleven steps.** It is the entire reason the Machine pane was renumbered. **It appears in `first-hour.md`, `gates.md` and `troubleshooting.md` exactly zero times** — and `troubleshooting.md`'s *"Every box is ticked and it still will not connect"* section, which exists for precisely this moment, sends the player to check the **address** instead. **That section is wrong in the only place a player reads it.** — **CLOSED 0.12.98-dev.** Steps 4 and 8 have their own section in `first-hour.md`, a row in the troubleshooting table, and `troubleshooting.md`'s *"every box is ticked"* section now **answers with gate control instead of sending the reader to the address.**
+- [x] **A permanent, irreversible, item-destroying action ships with no wiki page at all.** The Places pane carries **24+ keyed strings** including a confirmation reading **"THIS CANNOT BE UNDONE. The gate will not open again"**, a *"{0} item(s) would be left behind"* warning, refusals for *"somebody is still inside"* and *"somebody is part-way through a way into it"*, and a whole second list — *"Released, and reachable again from the door that found them"*. **Nothing anywhere in the wiki warns a player that Release is forever or that stock is lost.** Of every gap in this sweep this is the one that costs a player something real. — **CLOSED 0.12.98-dev.** `company.md` and `troubleshooting.md` both carry it: permanent, what is left behind, the refusals, and that a found place is recoverable from the door that found it.
+
+### The remaining undocumented systems, now with the game's own words rather than my description
+
+| System | The player-facing text that exists | In the wiki |
+|---|---|---|
+| Three operational gates | `NativeGateBinding.MaximumOperationalGates = 3` | **no** |
+| The random dial | **"Dial an unknown address"** — *"Let the gate choose somewhere. No request, no contract, nobody waiting"* | **no** |
+| The open-map budget | `RR_Release_Budget` — *"Holding {0} of {1}. A Backrooms level costs a loaded map exactly as a colony does"* | **no** |
+| Boarding a doorway up | `RR_BoardUp_Label` — **"Board it up ({0} wood)"** | **no** |
+| Staff certification and training | 3 certs (`RR_Cert_GateOperator`, `_FieldAnalyst`, `_ReserveTechnician`) and **3 training bills** on the machining table and crafting spot, with skill floors of Intellectual 4, Intellectual 3 and Crafting 5 | **no** |
+| Grand pillared halls | shallow levels are few huge rooms, pillars on a 6.9 lattice | **no** |
+| Material variation by depth | what a room is built from is part of the loot | **no** |
+| A stranded crew | a closed gate does not take your people | **no** |
+
+- [x] **Certification is the gap that dead-ends a player, so it is called out separately.** `first-hour.md` step 3 says *"A qualified staff member calibrates the gate"* and `troubleshooting.md` answers *"Out of calibration"* with *"Have a qualified staff member calibrate it"*. **Neither page, nor any other, says anywhere that you can make one** — three **train** bills sit on the machining table and the crafting spot. A player with nobody certified is told to go find a person who does not exist in their colony, and the instruction is a loop. **Name the bills, name the skill floors, say the crafting spot works so it is reachable before a table exists.** — **CLOSED 0.12.98-dev.** The three bills, their skill floors and the crafting-spot route are in `first-hour.md`, `company.md` and the troubleshooting table.
+
+## Owner direction — fix the whole wiki against the code, not against the old wording (2026-10-05)
+
+**Verbatim owner direction (2026-10-05):** *"yes and i want the full wiki fix all the shit that was written ages ago that stall and not accurate to code, making sure the wiki is accurate not the old shit and old wordings that are being copied and pasten from weeks ago"*
+
+**This supersedes nothing and sharpens everything.** The rewrite rows already recorded asked for prose that is not generic. This direction names the actual standard: **every page is rewritten from the code that implements it**, and the failure mode is named too — *"old wordings that are being copied and pasten from weeks ago"*. The checkup proved that is literally what happened: `gates.md` carries *"through depth 3"* because the **source's own first `<summary>` block** still says it, two years of version bumps later.
+
+**So the method is fixed, not optional:** measure the constant, read the keyed string, then write the sentence. Never the reverse, and never from a neighbouring page.
+
+- [x] **"making sure the wiki is accurate not the old shit"** — every one of the thirteen pages re-derived from source. The nine checkup rows below are the known defects; the standard is that **no number, threshold, count or behaviour appears on a page unless it was read out of the code in the same pass that wrote it**, with the verified-correct table standing as the record of what must not be disturbed. — **CLOSED 0.12.98-dev.** Thirteen of thirteen pages rewritten from the code and the design authority. **Every count left in the wiki is fixed by an authority** -- nine branches, five bands, eleven checks, three gates, three crew, three starts -- and `SCENARIOS.md` records the outpost, town-distortion and company-crisis openings as *"not promised release features"*, so three starts is the final design rather than an interim number.
+- [x] **"old wordings that are being copied and pasten from weeks ago"** — and the copy-paste has a **source-side root** that has to be cut or the next pass inherits it again: a stale doc comment that still argues the superseded value. `NaturalFrontierService.MaximumNaturalDepth` is the proved case. **Sweep the doc comments on every constant the wiki quotes**, because a page is only ever as accurate as the comment somebody read to write it. — **CLOSED 0.12.98-dev, upstream included.** `SCENARIOS.md` still asserted the superseded 2026-10-01 *"declared requirements"* position in **three** places -- the exact premise behind the dependency lie -- and is corrected with the supersession recorded. The source side is the doc-comment sweep below.
+
+## Owner direction — the slide art becomes the wiki's banner, and must not fight the text (2026-10-05)
+
+**Verbatim owner direction (2026-10-05):** *"and use our slide art as a banner or something  /background to where text writing is not fighting the art to be read ,, in the wiki pages"*
+
+**We ship twelve pieces of art and the published wiki uses none of them.** The menu slides are the **only** art in the package — the approved exception to *no gameplay art* — and they are already ours, already licensed, already the mod's visual identity on the main menu. The site is currently all type.
+
+**The direction carries its own acceptance test**, which is the part that matters: *"to where text writing is not fighting the art to be read"*. So art behind running prose is refused by the instruction itself. **A banner is a band the text sits beside, never underneath**, and anywhere art and type do share a box, the type gets an opaque enough ground that the art cannot reduce its contrast.
+
+- [x] **"use our slide art as a banner or something /background"** — a per-page banner drawn from the twelve menu slides, assigned by subject rather than at random, so the gate page carries the gate slide and the deep-levels page carries a deep-level slide. **One slide may serve more than one page**; twelve pieces against thirteen pages means no page is left blank and nothing is invented to fill a slot. — **CLOSED 0.12.98-dev. All twelve slides used**, assigned by subject, with exactly one repeat and a stated reason: the two gate pages share the gate slide.
+- [x] **"to where text writing is not fighting the art to be read"** — **the readability rule is the deliverable, not a caveat.** No body text over art anywhere. Where a title sits on a banner it gets a solid scrim behind it, and the whole banner is marked as decoration so a screen reader skips it rather than announcing a filename. This has to hold at a narrow window too, which is the case a banner usually breaks in. — **CLOSED 0.12.98-dev, structurally rather than by opacity.** **No text is drawn over art anywhere** -- the band sits above the prose and the heading below it, so there is no overlay a later edit can mistune. Marked decorative so a screen reader skips it, real pixel dimensions so nothing jumps while it loads, and a deeper crop at narrow widths.
+- [x] **The art has to actually reach the published site**, which is a second job and a quieter one: the public export is an **allowlist**, so a file nobody added is a file that silently is not there. The pages would render with broken images and every instrument would stay green. **Ship the images in the export, then read the live site back.** — **CLOSED 0.12.98-dev, AND THE PREDICTION WAS RIGHT IN THE WORST WAY.** The first version referenced the package's own slides at `../1.6/Textures/...` for zero duplication: every path resolved on disk, the audit passed, twelve refs went level -- and **every banner was a 404 in the browser**, because **Pages serves `/docs` as the site root** and nothing above it is served at any URL. The art is now **copied into `docs/assets/art/`** and referenced site-relative. **The guard that was missing is the one that mattered: a published page may not reference a path that climbs out of the site**, proved by planting the exact bug that shipped. Read back over HTTP: pages, cover and banners all 200.
+
+**Verbatim owner direction (2026-10-05), on which image leads:** *"make sure the preview image is prominate becasue thats what mod loaders see"*
+
+- [x] **"make sure the preview image is prominate becasue thats what mod loaders see"** — `About/Preview.png` is **the only image a player sees before they ever install**, and the reason is exactly the one the owner gives: it is what a mod loader renders in its list, so it is already doing the job of a cover. **The front page leads with it, at a size that reads as the cover and not as a thumbnail** — not one of the twelve slides, and not buried below the reading tables. The twelve slides stay the per-page banners; this is the mod's face and it goes first. **Same readability rule: nothing written across it.** — **CLOSED 0.12.98-dev.** `About/Preview.png` leads the front page as the cover, uncropped, with a real `alt` because unlike the banners it is content rather than decoration. Verified 200 on the live site.
+
+### The defect class behind the published lie — 29 stacked doc comments (measured 2026-10-05)
+
+Found by asking *why* `gates.md` said depth 3. The answer was not the page: `MaximumNaturalDepth` carried **two consecutive `<summary>` blocks**, the first still arguing for three in full and the second noting the raise to six. **Whoever wrote the page read the first one.** That one is fixed and the superseded value is now recorded inside the single surviving block.
+
+**Then the same shape was swept for, and there are 29 of them** — a member with two `<summary>` elements and nothing between. That is malformed XML documentation in its own right; tooling keeps one and discards the other, so **half of every pair is invisible to the reader who needs it and visible to the reader who should not trust it.**
+
+Three kinds were sampled and all three are live faults, not tidiness:
+
+| File | What the stale half does |
+|---|---|
+| `Scenario/RimroomsStartDef.cs` | **Describes a different field entirely** — *"The name offered at setup"* sits on the field for whether a start begins in contact with the corporation |
+| `Gate/NativeGateBinding.cs` | **Describes a different member** — the door-allowlist summary sits on the shape test |
+| `Generation/RoomLayoutPlanner.cs` | A leftover group header — *"Fewest and most slots per axis"* — stranded on the depth-1 constant |
+
+- [x] **Clear all 29 stacked `<summary>` blocks, and add the checker that refuses a new one.** The rule is cheap and exact: a `</summary>` followed by `/// <summary>` with only whitespace between is always wrong, so it cannot cry wolf. **The checker has to land in the same commit as the fixes**, because a rule that reports 29 known faults is a rule people learn to scroll past. Worth doing deliberately rather than quickly — each pair needs reading to tell which half is current, and guessing would replace a stale comment with a wrong one. — **CLOSED 0.12.98-dev, and there were MORE than 29.** Every one repaired by **reuniting the orphan with the member it documents** (fifteen moves), merging a true duplicate (six), or dropping a block only once its every word provably survived on the correct member (two). `check-doc-comments.py` is checker **22** and shipped in the same commit, as this row required. **Its first version was too weak and a plant walked through it**: it matched a line that was exactly `/// </summary>` followed by `/// <summary>`, so the one-line `<summary>x</summary>` form was invisible -- and rewriting it to count openings per doc block **immediately found six more real faults**. Proved alive against both shapes. Zero remain; build clean.
+- [x] **And the standing lesson, because this one generalises past comments:** a document is only ever as accurate as the thing its author read. **The wiki was rewritten from constants and keyed strings this pass rather than from doc comments**, which is why it is now right — but the comments are what the *next* author will reach for. **A stale comment is the upstream of a published lie.** — **RECORDED 0.12.98-dev in `NOW.md` as a standing lesson**, with the second half it earned the same day: *an on-disk audit cannot see a deployment fault.* The battery line now ends with reading the published site over HTTP.
+
+
+Build at the time of the move: **0.12.98-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

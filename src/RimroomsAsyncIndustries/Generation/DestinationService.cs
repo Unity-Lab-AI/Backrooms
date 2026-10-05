@@ -485,17 +485,14 @@ namespace RimroomsAsyncIndustries.Generation
         }
 
         /// <summary>
-        /// Whether a link between these two rooms is one a corridor can actually be built for.
+        /// Whether a saved graph's link is a shape a corridor can join — **and it is now the
+        /// planner's own answer rather than a copy of it.**
         ///
         /// **The literal 19 is gone.** It was the old fixed slot spacing, and the spacing is a
         /// function of depth now -- a validator carrying a constant the planner no longer uses is
         /// the same defect class as the light count. The requirement the corridor builder really
         /// has is this: the centres share a row or a column, and the bounds do not overlap, so
         /// there is a straight run of rock between them to carve.
-        /// </summary>
-        /// <summary>
-        /// Whether a saved graph's link is a shape a corridor can join — **and it is now the
-        /// planner's own answer rather than a copy of it.**
         ///
         /// This held its own arithmetic (`a.x == b.x` or `a.z == b.z`, centres only) while
         /// `RoomLayoutPlanner.AreNeighbourRooms` held the identical arithmetic separately. **Two

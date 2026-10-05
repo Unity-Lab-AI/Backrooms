@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -76,7 +76,8 @@ namespace RimroomsAsyncIndustries.Generation
         /// <summary>Rock left between neighbouring rooms, which is what corridors run through.</summary>
         internal const int SlotGap = 10;
 
-        /// <summary>Fewest and most slots per axis, mapped from depth 1 upward.</summary>
+        // Fewest and most slots per axis, mapped from depth 1 upward. A section header rather than
+        // a summary: it describes the pair below it, and a <summary> belongs to one member.
         /// <summary>
         /// Slots per axis at depth 1, and **the number that made the first walked level feel
         /// like a warehouse.**
@@ -342,38 +343,6 @@ namespace RimroomsAsyncIndustries.Generation
             }
         }
 
-        /// <summary>
-        /// Cells inside a room that are left as solid rock, so the room is not a rectangle.
-        ///
-        /// ## Owner direction, 2026-09-30, verbatim
-        ///
-        /// *"and everything doesnt have to be square rooms and rectangle halways"*.
-        ///
-        /// ## Why rock in the corners rather than a different rectangle
-        ///
-        /// The room's `Bounds` has to stay a rect: the validator bounds-checks it, the doors are
-        /// placed at the midpoint of each side, the corridors aim at `CenterCell`, and the pillar
-        /// lattice is laid out across it. Changing the rect would mean changing all four.
-        ///
-        /// So the rect stays and the **carve** changes. Rock is left standing inside the room, and
-        /// it is left **only in the corners** -- never on the centre cross, never at an edge
-        /// midpoint. That single restriction buys four things at once:
-        ///
-        ///   * every doorway still opens onto clear floor;
-        ///   * a straight walk from any doorway to any other is still clear, so **no shape can
-        ///     ever disconnect a room** and no candidate is rejected for having one;
-        ///   * the pillar lattice needs no special case, because rock already holds roof; and
-        ///   * the intrusions are `Mineable`, so a player who wants the rectangle can dig for it.
-        ///
-        /// **Shallow coordinates barely deform.** Depth 1 gets nothing, for the same reason
-        /// <see cref="Derange"/> leaves it alone: the yellow rooms read as a place precisely
-        /// because they are monotonous, and the wrongness is something the player travels toward.
-        ///
-        /// **Decided here and nowhere else**, like <see cref="PillarCells"/>: the generator leaves
-        /// these cells uncarved and <see cref="CandidateIsSafe"/> marks them unwalkable, and two
-        /// independent derivations of one rule is the defect that cost this project thirty-nine
-        /// checkpoints.
-        /// </summary>
         /// <summary>Links walked before a room counts as one level deeper, for shaping.</summary>
         /// <remarks>
         /// **THREE BECAME TWO WITH THE DEGREE WORK, and the probe is why.** A room's shaping band
@@ -495,6 +464,37 @@ namespace RimroomsAsyncIndustries.Generation
         /// <paramref name="motif"/> must be the SAME motif the reachability proof used. Both
         /// derive it from the coordinate rather than passing it along a chain, so neither can be
         /// handed a different one.
+        ///
+        /// Cells inside a room that are left as solid rock, so the room is not a rectangle.
+        ///
+        /// ## Owner direction, 2026-09-30, verbatim
+        ///
+        /// *"and everything doesnt have to be square rooms and rectangle halways"*.
+        ///
+        /// ## Why rock in the corners rather than a different rectangle
+        ///
+        /// The room's `Bounds` has to stay a rect: the validator bounds-checks it, the doors are
+        /// placed at the midpoint of each side, the corridors aim at `CenterCell`, and the pillar
+        /// lattice is laid out across it. Changing the rect would mean changing all four.
+        ///
+        /// So the rect stays and the **carve** changes. Rock is left standing inside the room, and
+        /// it is left **only in the corners** -- never on the centre cross, never at an edge
+        /// midpoint. That single restriction buys four things at once:
+        ///
+        ///   * every doorway still opens onto clear floor;
+        ///   * a straight walk from any doorway to any other is still clear, so **no shape can
+        ///     ever disconnect a room** and no candidate is rejected for having one;
+        ///   * the pillar lattice needs no special case, because rock already holds roof; and
+        ///   * the intrusions are `Mineable`, so a player who wants the rectangle can dig for it.
+        ///
+        /// **Shallow coordinates barely deform.** Depth 1 gets nothing, for the same reason
+        /// <see cref="Derange"/> leaves it alone: the yellow rooms read as a place precisely
+        /// because they are monotonous, and the wrongness is something the player travels toward.
+        ///
+        /// **Decided here and nowhere else**, like <see cref="PillarCells"/>: the generator leaves
+        /// these cells uncarved and <see cref="CandidateIsSafe"/> marks them unwalkable, and two
+        /// independent derivations of one rule is the defect that cost this project thirty-nine
+        /// checkpoints.
         /// </summary>
         internal static IEnumerable<IntVec3> RockIntrusionCells(RoomRecord room, int depth,
             CoordinateMotif motif)
@@ -2418,21 +2418,6 @@ namespace RimroomsAsyncIndustries.Generation
                 rooms.Where(room => room.familyId == SealedFamily).All(room => room.links.Count == 0);
         }
 
-        /// <summary>
-        /// Whether these two rooms share a wall, so there is no corridor between them.
-        ///
-        /// Owner: *"and you can have back to back roomes"*. Every room used to sit at the centre
-        /// of its own slot with a ten-cell gap to its neighbour and every link was a carved
-        /// corridor, so nothing ever touched anything -- a level of islands joined by tubes.
-        ///
-        /// **THE SINGLE PLACE THIS IS DECIDED.** `DoorOpening` puts the doorway in the shared
-        /// wall, `BuildCorridors` skips the pair, and `CandidateIsSafe` proves the route through
-        /// the doorway rather than through a corridor. Three readers, one rule -- the same reason
-        /// `PillarCells` exists, and the same defect avoided.
-        ///
-        /// Edges equal, overlap along the shared axis, so a pair that merely passes close does
-        /// not count.
-        /// </summary>
         /// <summary>
         /// Slide this room until its wall meets the other's, along whichever axis they are
         /// already separated on.

@@ -234,16 +234,13 @@ namespace RimroomsAsyncIndustries.Gate
         { return thing != null && thing.def != null && thing.def.defName == definition; }
 
         /// <summary>
-        /// A door this mod is prepared to operate as a gate.
+        /// Whether this door can be a gate at all -- a door this mod is prepared to operate.
         ///
         /// This used to name Core `Door` and `Autodoor` explicitly. It no longer needs to:
         /// the component is only ever attached by this mod's own patches, so **carrying the
         /// component is the allowlist**, and the patch file is where the supported providers
         /// are declared. What still has to be checked here is the shape, because the
         /// capability ladder is defined for four footprints and nothing else.
-        /// </summary>
-        /// <summary>
-        /// Whether this door can be a gate at all.
         ///
         /// The footprint tested is the **run's**, not the def's, so three adjacent ordinary doors
         /// bound together are a legal 1x3 and any one of them alone is a legal 1x1. A door whose

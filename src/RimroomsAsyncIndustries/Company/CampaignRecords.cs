@@ -315,7 +315,6 @@ namespace RimroomsAsyncIndustries.Company
             if (openings < int.MaxValue - 1) { openings++; }
         }
 
-        /// <summary>Adds worked time inside this coordinate.</summary>
         /// <summary>
         /// Anomalous events that have already fired here and are not repeatable.
         ///
@@ -354,6 +353,7 @@ namespace RimroomsAsyncIndustries.Company
             if (!firedEventDefNames.Contains(defName)) { firedEventDefNames.Add(defName); }
         }
 
+        /// <summary>Adds worked time inside this coordinate.</summary>
         internal void NoteOccupancy(int ticks)
         {
             if (ticks <= 0) { return; }

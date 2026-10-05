@@ -82,7 +82,6 @@ namespace RimroomsAsyncIndustries.Gate
         /// </summary>
         private const float PractisedDiallingFactor = 0.8f;
 
-        /// <summary>A ramp is running toward an opening on this gate.</summary>
         /// <summary>
         /// The address this gate is ramping toward, or null when it is not ramping.
         ///
@@ -92,6 +91,7 @@ namespace RimroomsAsyncIndustries.Gate
         /// </summary>
         public string SpinUpCoordinateId { get { return spinUpCoordinateId; } }
 
+        /// <summary>A ramp is running toward an opening on this gate.</summary>
         public bool IsSpinningUp
         { get { return !string.IsNullOrEmpty(spinUpConnectionId) && !IsOpening; } }
 

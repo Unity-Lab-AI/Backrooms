@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -236,14 +236,6 @@ namespace RimroomsAsyncIndustries.Generation
         }
 
         /// <summary>
-        /// Places a fixture and returns null instead of throwing when it cannot.
-        ///
-        /// Deliberately a separate method rather than a flag on <see cref="Place"/>: the
-        /// required content genuinely must fail generation loudly if it cannot be placed,
-        /// because the clue system and the saved layout depend on it, and a shared code path
-        /// with a "do not throw" switch is exactly how that guarantee gets lost later.
-        /// </summary>
-        /// <summary>
         /// Where a fixture would like to stand: anywhere in the room, not a corner.
         ///
         /// Owner, after walking the first level: *"the furnature is only in the four corners of
@@ -276,6 +268,14 @@ namespace RimroomsAsyncIndustries.Generation
             return derived % bound;
         }
 
+        /// <summary>
+        /// Places a fixture and returns null instead of throwing when it cannot.
+        ///
+        /// Deliberately a separate method rather than a flag on <see cref="Place"/>: the
+        /// required content genuinely must fail generation loudly if it cannot be placed,
+        /// because the clue system and the saved layout depend on it, and a shared code path
+        /// with a "do not throw" switch is exactly how that guarantee gets lost later.
+        /// </summary>
         private static Thing TryPlace(Map map, RoomRecord room, CoordinateRecord coordinate,
             ThingDef definition,
             HashSet<IntVec3> reserved, int seed, int slot, bool minified, int count)

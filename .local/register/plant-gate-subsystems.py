@@ -123,9 +123,15 @@ PLANTS = [
      "                if (entry != null)\n"
      "                { entry.NoteOutcome(emergency); break; }", P_SUB),
 
+    # Anchored INSIDE the method rather than across the next declaration. The old anchor reached
+    # forward to `public int ClearConnectionHistory()` to disambiguate the two
+    # `historyCoordinateId = null;` sites, and that made it break the moment a doc comment was
+    # moved onto that member. The preceding two lines disambiguate it just as well and are local
+    # to the method the claim is about.
     ("the remembered coordinate is left stale", HIST,
-     "            historyCoordinateId = null;\n        }\n\n        public int ClearConnectionHistory()",
-     "        }\n\n        public int ClearConnectionHistory()", P_SUB),
+     "                { entry.NoteOutcome(emergency); break; }\n            }\n"
+     "            historyCoordinateId = null;\n        }",
+     "                { entry.NoteOutcome(emergency); break; }\n            }\n        }", P_SUB),
 
     ("the outcome is filed AFTER failureKey is cleared, so every trip reads as a success", GATE,
      "            NoteOpeningOutcome(IsEmergency);\n"

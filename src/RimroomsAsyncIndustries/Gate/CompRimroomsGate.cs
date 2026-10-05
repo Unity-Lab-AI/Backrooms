@@ -34,13 +34,12 @@ namespace RimroomsAsyncIndustries.Gate
         public float portalWindowMultiplierPerTier = 3f;
 
         /// <summary>
-        /// The company projects that each raise the duration tier by one, in order.
-        /// This is content: as the research tree lands, its projects are appended here
-        /// and the ladder grows without a code change. Completion is what counts, not
-        /// spendable insight, so a tier can never be lost by spending currency.
-        /// </summary>
-        /// <summary>
-        /// The ladder, in order. One rung per tier.
+        /// The ladder, in order. One rung per tier: the company projects that each raise the
+        /// duration tier by one.
+        ///
+        /// This is content. As the research tree lands, its projects are appended here and the
+        /// ladder grows without a code change. **Completion is what counts, not spendable
+        /// insight**, so a tier can never be lost by spending currency.
         ///
         /// This held a single name until 0.10.9-dev while <see cref="portalIndefiniteTier"/> was
         /// 4, so the tier could never exceed 1 and a standing connection was unreachable however

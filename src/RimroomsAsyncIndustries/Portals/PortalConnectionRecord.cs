@@ -32,28 +32,6 @@ namespace RimroomsAsyncIndustries.Portals
         { return anchor == thing && map == thing.Map && anchorCell == thing.Position && approachCell == approach; }
 
         /// <summary>
-        /// Re-derive the approach cell when the saved one has been built over.
-        ///
-        /// **Owner direction, 2026-09-29, verbatim:** *"in the real world maps the portals dont
-        /// extend into the real world environment so in the real world you can mine and build and
-        /// explore directly behind the gates with out actually effecting the gate"*.
-        ///
-        /// The approach cell was snapshotted at registration and never revisited, so a wall built
-        /// on it made `RimroomsPortalNetwork.Availability` return `Obstructed` **forever** — even
-        /// with three other perfectly walkable cells beside the same door. **A portal is its own
-        /// door cell and reserves nothing**, so walling one side of it must cost no more than
-        /// walling one side of any other door.
-        ///
-        /// **The anchor cell is deliberately NOT refreshed.** That snapshot is what stops a moved
-        /// door silently redirecting a saved route, and it is still exactly right. Only the cell a
-        /// traveller stands on moves, because that is a fact about the local geometry rather than
-        /// about the connection.
-        ///
-        /// Returns true when the endpoint has a usable approach afterwards. A door genuinely
-        /// sealed on all four sides returns false, which is the honest answer: the player closed
-        /// their own door in.
-        /// </summary>
-        /// <summary>
         /// Follow this endpoint's own door to where it has been reinstalled.
         ///
         /// ## Why this exists, and why it is not the thing the snapshot was guarding against
@@ -94,6 +72,28 @@ namespace RimroomsAsyncIndustries.Portals
             return true;
         }
 
+        /// <summary>
+        /// Re-derive the approach cell when the saved one has been built over.
+        ///
+        /// **Owner direction, 2026-09-29, verbatim:** *"in the real world maps the portals dont
+        /// extend into the real world environment so in the real world you can mine and build and
+        /// explore directly behind the gates with out actually effecting the gate"*.
+        ///
+        /// The approach cell was snapshotted at registration and never revisited, so a wall built
+        /// on it made `RimroomsPortalNetwork.Availability` return `Obstructed` **forever** — even
+        /// with three other perfectly walkable cells beside the same door. **A portal is its own
+        /// door cell and reserves nothing**, so walling one side of it must cost no more than
+        /// walling one side of any other door.
+        ///
+        /// **The anchor cell is deliberately NOT refreshed.** That snapshot is what stops a moved
+        /// door silently redirecting a saved route, and it is still exactly right. Only the cell a
+        /// traveller stands on moves, because that is a fact about the local geometry rather than
+        /// about the connection.
+        ///
+        /// Returns true when the endpoint has a usable approach afterwards. A door genuinely
+        /// sealed on all four sides returns false, which is the honest answer: the player closed
+        /// their own door in.
+        /// </summary>
         internal bool TryRepairApproach()
         {
             if (anchor == null || !anchor.Spawned || anchor.Destroyed || map == null ||

@@ -9,8 +9,7 @@ namespace RimroomsAsyncIndustries.Gate
 {
     /// <summary>
     /// One coordinate a laboratory gate has dialled, and what the player has chosen to call it.
-    /// </summary>
-    /// <summary>
+    ///
     /// Implements <see cref="IRenameable"/> so the player renames an address through **the
     /// game's own rename dialog** — the same one used for zones, caravans and storage groups,
     /// and already used by this mod for the company name. No bespoke dialog, no new UI to keep
@@ -253,13 +252,6 @@ namespace RimroomsAsyncIndustries.Gate
         }
 
         /// <summary>
-        /// Clears the whole list, **except pinned entries**.
-        ///
-        /// Pinned entries surviving a clear is deliberate. "Clear" in a long game means "get rid
-        /// of the noise", and a single button that also destroyed the handful of addresses
-        /// somebody had explicitly marked would be a trap rather than a convenience.
-        /// </summary>
-        /// <summary>
         /// File how the live opening ended against the coordinate it was to.
         ///
         /// Called from the one place an opening is torn down, so an opening cannot be counted
@@ -280,6 +272,13 @@ namespace RimroomsAsyncIndustries.Gate
             historyCoordinateId = null;
         }
 
+        /// <summary>
+        /// Clears the whole list, **except pinned entries**.
+        ///
+        /// Pinned entries surviving a clear is deliberate. "Clear" in a long game means "get rid
+        /// of the noise", and a single button that also destroyed the handful of addresses
+        /// somebody had explicitly marked would be a trap rather than a convenience.
+        /// </summary>
         public int ClearConnectionHistory()
         {
             if (connectionHistory == null) { return 0; }

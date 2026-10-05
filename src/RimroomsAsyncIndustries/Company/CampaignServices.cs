@@ -191,11 +191,6 @@ namespace RimroomsAsyncIndustries.Company
         { return CreateDiscoveredCoordinate(discoveryId, 1, out coordinate); }
 
         /// <summary>
-        /// As above, recording how deep the new space sits. Depth is counted in portals from
-        /// the ordinary world and is what the palette and room library read to decide how
-        /// strange a coordinate looks.
-        /// </summary>
-        /// <summary>
         /// The longest discovery id this branch will accept, and **the number that capped the
         /// Backrooms at two levels deep.**
         ///
@@ -214,6 +209,11 @@ namespace RimroomsAsyncIndustries.Company
         /// </summary>
         public const int MaximumDiscoveryIdLength = 128;
 
+        /// <summary>
+        /// As above, recording how deep the new space sits. Depth is counted in gates from
+        /// the ordinary world and is what the palette and room library read to decide how
+        /// strange a coordinate looks.
+        /// </summary>
         public CompanyActionResult CreateDiscoveredCoordinate(string discoveryId, int depth, out CoordinateRecord coordinate)
         {
             coordinate = null;
