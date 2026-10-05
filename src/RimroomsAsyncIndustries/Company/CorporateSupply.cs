@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Procurement;
@@ -75,10 +75,34 @@ namespace RimroomsAsyncIndustries.Company
                     StringComparison.Ordinal));
         }
 
-        /// <summary>Whether the account can cover the tier's access fee.</summary>
+        /// <summary>
+        /// Whether the account can cover the tier's access fee.
+        ///
+        /// **Asked through <see cref="SupplyFeeFor"/> so the test and the charge cannot disagree.**
+        /// A player who scaled the fees down and was still told they could not afford a tier would
+        /// be reading one number while the ledger used another.
+        /// </summary>
         public bool SupplyTierAffordable(RimroomsSupplyTierDef tier)
         {
-            return tier != null && BalanceUsd >= tier.unlockCostCredits;
+            return tier != null && BalanceUsd >= SupplyFeeFor(tier);
+        }
+
+        /// <summary>
+        /// What a tier actually costs: its authored fee, scaled by the player's own multiplier.
+        ///
+        /// Owner, 2026-10-05: *"Make them player-visible settings"*. The authored figure stays the
+        /// design -- the relative cost of the five tiers is the decision -- and the multiplier is
+        /// how somebody playing moves the whole ladder without a rebuild. Rounded away from zero
+        /// so a scaled-down fee never becomes free by accident.
+        /// </summary>
+        public static long SupplyFeeFor(RimroomsSupplyTierDef tier)
+        {
+            if (tier == null) { return 0L; }
+            Core.RimroomsSettings tuning = Core.RimroomsMod.Settings;
+            if (tuning == null) { return tier.unlockCostCredits; }
+            double scaled = (double)tier.unlockCostCredits * tuning.EffectiveSupplyFeeMultiplier;
+            if (scaled <= 0d) { return tier.unlockCostCredits > 0L ? 1L : 0L; }
+            return (long)System.Math.Round(scaled);
         }
 
         /// <summary>
@@ -98,9 +122,14 @@ namespace RimroomsAsyncIndustries.Company
             if (!SupplyTierAffordable(tier)) { return CompanyActionResult.Refused("RR_Supply_Unaffordable"); }
 
             string operationId = "rr.supply.unlock." + tier.defName;
-            if (tier.unlockCostCredits > 0L)
+            // **CHARGED THROUGH THE SAME HELPER THE AFFORDABILITY TEST USES.** Reading
+            // `unlockCostCredits` here while the test read the scaled figure is exactly the
+            // half-wiring this project keeps meeting: the button would offer a tier at one price
+            // and the ledger would take another.
+            long fee = SupplyFeeFor(tier);
+            if (fee > 0L)
             {
-                CompanyActionResult paid = PostTransaction(operationId, -tier.unlockCostCredits,
+                CompanyActionResult paid = PostTransaction(operationId, -fee,
                     "RR_Ledger_SupplyTierUnlocked", tier.defName);
                 if (!paid.Success) { return paid; }
             }
@@ -108,8 +137,9 @@ namespace RimroomsAsyncIndustries.Company
             unlockedSupplyTiers = unlockedSupplyTiers ?? new List<string>();
             if (!unlockedSupplyTiers.Contains(tier.defName))
             { unlockedSupplyTiers.Add(tier.defName); }
+            // The figure RECORDED is the figure CHARGED, so the ledger and the event agree.
             RecordEvent("RR_Event_SupplyTierUnlocked", tier.defName,
-                tier.LabelCap.ToString(), tier.unlockCostCredits.ToString("N0"));
+                tier.LabelCap.ToString(), fee.ToString("N0"));
             return CompanyActionResult.Applied();
         }
 

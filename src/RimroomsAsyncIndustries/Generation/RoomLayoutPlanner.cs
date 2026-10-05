@@ -117,17 +117,42 @@ namespace RimroomsAsyncIndustries.Generation
         /// This also settles what looked like two contradictory directions. *"leas than 60-100
         /// romms"* asks for fewer, larger rooms and *"FILL THE SPACE WITH ROOMS"* asks for less
         /// bare rock — and they are **the same instruction**, because fewer larger rooms is what
-        /// fills a fixed map. `MaxRooms` is unchanged at 60 and the grid is now 64 slots, so the
-        /// room count is still the owner's number and the four slots over are what the sealed
-        /// vaults are reserved from.
+        /// fills a fixed map.
         ///
-        /// Deeper is still more rooms and tighter ones — 6, 7, then 8 — it simply stops before the
-        /// point where another slot costs more rock than it adds room.
+        /// **RAISED FROM 8 TO 9 AT 0.12.98-dev, on owner direction, and the measurement is why
+        /// it was safe.** Asked whether the deep bands should reach the *"60-100"* they were
+        /// originally specified at, the owner chose the middle: eighty. Nine slots is what affords
+        /// it — eighty-one slots against a ceiling of eighty rooms, with the one over plus the
+        /// sealed vaults coming out of the same budget.
+        ///
+        /// **Measured over 200 seeds at seven depths before it was kept.** Depth 1 and 2 did not
+        /// move at all, because their slot counts are below the ceiling either way; depth 3 went
+        /// from 60 rooms to 63 and its room fill went **up**, 44.9% to 47.1%; depth 4 and deeper
+        /// reach the full eighty at 42.6% fill, 2.3 points below where they were. `refused 0/200`
+        /// and `fellback 0` at every band, degree rose from 5.22 to 5.49, and back-to-back pairs
+        /// rose from 3,115 to 3,194.
+        ///
+        /// **The cost is in the span, which is the honest trade:** the widest room at depth 4 and
+        /// deeper falls from 62 cells to 54. That is *"going deeping in can mean the numner of
+        /// branch hallways and rooms distancing from the main portal spawn"* arriving in the
+        /// numbers — deeper is more rooms, smaller and tighter — and it is why the grand rooms
+        /// and the shallow bands were left alone.
+        ///
+        /// Deeper is still more rooms and tighter ones — 6, 7, 8, then 9 — and it still stops
+        /// before the point where another slot costs more rock than it adds room: at ten the span
+        /// had fallen to sixteen cells and fill measured 17.1%.
         /// </summary>
-        internal const int MaxSlotsPerAxis = 8;
+        internal const int MaxSlotsPerAxis = 9;
 
-        /// <summary>The ceiling the owner named: *"leas than 60-100 romms"*.</summary>
-        internal const int MaxRooms = 60;
+        /// <summary>
+        /// The ceiling, and it is **eighty** since 0.12.98-dev.
+        ///
+        /// The owner named *"leas than 60-100 romms"*; it sat at the bottom of that band
+        /// at 60 and, asked directly, they chose the middle. Reached at depth 4 and deeper, where
+        /// eighty-one slots are available; the shallow bands never approach it because their grids
+        /// are smaller on purpose.
+        /// </summary>
+        internal const int MaxRooms = 80;
 
         /// <summary>
         /// Cells between pillars inside a room. Chosen against

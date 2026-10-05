@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 using RimroomsAsyncIndustries.Audio;
 using UnityEngine;
@@ -64,11 +64,56 @@ namespace RimroomsAsyncIndustries.Core
                 listing.GapLine();
                 listing.CheckboxLabeled("RR_NativeGate_AuraEnabled".Translate().ToString(), ref Settings.PortalAuraEnabled);
                 listing.CheckboxLabeled("RR_NativeGate_ReducedMotion".Translate().ToString(), ref Settings.PortalReducedMotion);
+                listing.GapLine();
+                DrawExchangeRates(listing);
 
                 listing.NewColumn();
                 DrawWorkPriorities(listing);
             }
             finally { listing.End(); }
+        }
+
+        /// <summary>
+        /// What the company pays, as three sliders rather than three constants.
+        ///
+        /// **Owner direction, 2026-10-05, asked how to resolve two open balance rows:** *"Make
+        /// them player-visible settings"*. Both rows said in their own words that the numbers were
+        /// *"a first pass with no play behind them"* — and a first pass nobody can change without
+        /// a rebuild is a first pass that never gets a second.
+        ///
+        /// **The same reasoning as the work-priority sliders beside them:** whether a rate feels
+        /// right is a play judgement, and a play judgement belongs to whoever is playing. The
+        /// shipped numbers stay the defaults, so changing nothing changes nothing.
+        ///
+        /// The ranges are deliberately wide on the low side and generous on the high: a player who
+        /// wants the company to be a worse deal than any trader can have that, and one who wants
+        /// an absurd economy can have that too. `RimroomsSettings.SaneRate` is what stops either
+        /// from reaching a saved ledger balance as a zero or a `NaN`.
+        /// </summary>
+        private static void DrawExchangeRates(Listing_Standard listing)
+        {
+            listing.Label("RR_Settings_ExchangeTitle".Translate());
+            listing.Label("RR_Settings_ExchangeDescription".Translate());
+            if (Settings == null)
+            {
+                listing.Label("RR_Settings_AudioUnavailable".Translate());
+                return;
+            }
+            listing.Label("RR_Settings_RateOdd".Translate(
+                Settings.EffectiveOddExchangeRate.ToString("0.00")));
+            Settings.OddExchangeRate = listing.Slider(Settings.EffectiveOddExchangeRate, 0.1f, 5f);
+            listing.Label("RR_Settings_RateOrdinary".Translate(
+                Settings.EffectiveOrdinaryExchangeRate.ToString("0.00")));
+            Settings.OrdinaryExchangeRate =
+                listing.Slider(Settings.EffectiveOrdinaryExchangeRate, 0.1f, 2f);
+            listing.Label("RR_Settings_RateOpenMarket".Translate(
+                Settings.EffectiveOpenMarketOrdinaryRate.ToString("0.00")));
+            Settings.OpenMarketOrdinaryRate =
+                listing.Slider(Settings.EffectiveOpenMarketOrdinaryRate, 0.1f, 2f);
+            listing.Label("RR_Settings_SupplyFee".Translate(
+                Settings.EffectiveSupplyFeeMultiplier.ToString("0.00")));
+            Settings.SupplyFeeMultiplier =
+                listing.Slider(Settings.EffectiveSupplyFeeMultiplier, 0.1f, 5f);
         }
 
         /// <summary>

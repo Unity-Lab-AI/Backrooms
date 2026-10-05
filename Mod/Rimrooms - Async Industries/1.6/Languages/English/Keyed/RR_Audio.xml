@@ -33,6 +33,12 @@
   <RR_Settings_FamilyResearch>Travelling to research</RR_Settings_FamilyResearch>
   <RR_Settings_FamilyFinishing>Travelling to finish a build</RR_Settings_FamilyFinishing>
 
+  <RR_Settings_ExchangeTitle>What the company pays</RR_Settings_ExchangeTitle>
+  <RR_Settings_ExchangeDescription>The shipped rates are a first pass. Whether they feel right is a play judgement, so they are yours. Leave them alone and nothing changes.</RR_Settings_ExchangeDescription>
+  <RR_Settings_RateOdd>Odd goods: {0}x market</RR_Settings_RateOdd>
+  <RR_Settings_RateOrdinary>Ordinary valuables: {0}x market</RR_Settings_RateOrdinary>
+  <RR_Settings_RateOpenMarket>Ordinary valuables once the branch has learned the market: {0}x</RR_Settings_RateOpenMarket>
+  <RR_Settings_SupplyFee>Corporate catalogue access fees: {0}x the shipped price</RR_Settings_SupplyFee>
   <RR_Settings_AudioTitle>Company sound cues</RR_Settings_AudioTitle>
   <RR_Settings_AudioDescription>Existing game sound cues accompany gate and field events. Persistent text warnings remain available when audio is muted. Native game and master volume still apply.</RR_Settings_AudioDescription>
   <RR_Settings_AudioUnavailable>Audio preferences could not be loaded. Company cues are silent.</RR_Settings_AudioUnavailable>

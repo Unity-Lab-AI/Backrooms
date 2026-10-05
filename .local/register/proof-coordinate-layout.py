@@ -1474,8 +1474,8 @@ check("THE SPAN VARIATION MAY NOT EAT THE CORRIDOR LANE",
 
 check("AND THE SPACE IS FILLED BY FEWER, LARGER ROOMS, which is the same instruction twice",
       "internal const int Margin = 6;" in planner
-      and "internal const int MaxSlotsPerAxis = 8;" in planner
-      and "internal const int MaxRooms = 60;" in planner,
+      and "internal const int MaxSlotsPerAxis = 9;" in planner
+      and "internal const int MaxRooms = 80;" in planner,
       "-- the fraction of a slot a room occupies is `(1 - SlotGap / spacing)^2`, and spacing is "
       "the map divided by the slot count, so **a FINER grid fills LESS space**: the rock between "
       "rooms is a fixed ten cells per boundary and more slots means more boundaries. At ten slots "

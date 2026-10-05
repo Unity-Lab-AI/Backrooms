@@ -183,12 +183,6 @@ Nine `##` sections titled as dated checkpoint records held **20.9 KB** between t
 
 **1 row(s) repeated verbatim across checkpoints and are carried once.** The same open item written three times is one open item; the repeats are named in the archive rather than dropped silently.
 
-**From `## Fifth launch findings — 2026-09-30`:**
-
-
-
-- [ ] **"theri 300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels with thir natual gate spawns to different levels within"** — **OPEN, and fully specified by the owner across four questions this checkpoint.** Levels become **300×300** (from 60×60); **60–100 rooms** in a dense warren on a **10×10** planning grid at the existing 19-cell spacing; **threshold_room / office_copy / return_gallery stay unique**, the other five families **repeat**, and **new structural families** are authored (flooded_room, stairwell, dead_end, pillar_hall) — **layout and dressing only, no new ThingDefs**; **4–6 onward gates per level**, one per ~15 rooms, with `MaximumNaturalDepth` **3 → 6**; and a **fresh save**, dropping the 60×60 path entirely for one shape, the simplest code and the cleanest proofs. — **MEASURED 0.12.98-dev, AND THIS ROW IS NOW STALE IN ITS PREMISE RATHER THAN ITS STATUS.** Built: **300×300** (`MapWidth`/`MapHeight`), unique `threshold_room` / `office_copy` / `return_gallery` enforced by the validator, the other families repeating, and natural ways onward to different levels through `MaximumNaturalDepth` 6. **Superseded by measurement: the "10×10 planning grid at the existing 19-cell spacing".** The planner reached 10×10 and **left 83% of a deep map as bare rock**, because the gap between slots is fixed per boundary and more slots means more boundaries — a finer grid fills *less* space. It is now **6×6 / 7×7 / 8×8 by depth** at 48 / 41 / 36 spacing, which is the owner's *"FILL THE SPACE WITH ROOMS"* read against the constants. **And one number is genuinely short of the spec, deliberately: rooms measure 33 / 47 / 60 by depth against the stated "60–100".** `MaxRooms` is **60**, and depth 1 is fewer and bigger on purpose — *"the normal yellow backrooms look isnt the whole floor but the main spanw room"*. **Whether the ceiling should rise toward 100 for the deep bands is the owner's call and nothing is blocked on it**; raising `MaxRooms` is one constant, and the probe would show the fill and degree move with it.
-
 **From `## The first walked level — 2026-09-30 (0.12.61-dev) — DONE`:**
 
 **Adjudicated against the source 2026-10-03.** The section title was never the marker, per `.claude/CONSTRAINTS.md §FINALIZED BEFORE DELETE`: *"A section titled DONE whose rows are still `[ ]` does not move. The title is not the marker."* So each row below was read against the code rather than promoted on the heading's word. **Eleven of the twelve were built and nobody had ticked them.** `RoomLayoutPlanner.cs` (1,351 lines) and `RoomArchetypeService.cs` (392) were read in full; `RoomContentBuilder.cs`, `BackroomsPalette.cs`, `GuaranteedFrontiers.cs` and the four Def folders were read at the named sites. **Register checked:** `python tools/register-query.py trace RR-SPACE` → 15 rows, Core *Required* and the rest *Optional* / *Configuration only* / *No integration*; none applied, because this pass changes no code.
@@ -270,10 +264,6 @@ Binding contract: [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md). 
 
 Owner's words: *"things will have to be deployed and settled before doing the proper order of setting up the workfshop collection and the mod in the workshop"*. Doing any of it earlier means publishing links that point at nothing.
 
-### The site
-
-- [ ] **A real domain, not a `github.io` path.** *"a nice backrooms url"*. This needs a domain the owner controls plus a `CNAME` file in the Pages branch and DNS records pointing at GitHub. **The domain is the owner's to choose and register** - ask before building the Pages config, because a custom domain and a project-path deploy are configured differently and the wrong one means rebuilding. — **SUPPORT AUTHORED 0.12.92-dev, DOMAIN STILL THE OWNER’S TO BUY. `docs/CNAME.example` has the DNS records, the copy step and the verification, and the site needs **no page edits** when the domain arrives because nothing hard-codes its own address. The row stays open because the thing it asks for is a domain, and naming one this repository does not serve is the specific failure the row’s sibling forbids.** — **RE-AIMED 0.12.94-dev AT THE PUBLIC REPOSITORY, STILL THE OWNER’S TO BUY. The domain now belongs to `G-Fourteen/Rimrooms-AsyncIndustries`, which is the only thing that deploys. `CNAME.example` carries the DNS records, the copy step and the `curl -sI` verification, and **the export needs no page edits when the domain arrives** because nothing in the rendered site hard-codes its own address — every link is relative. The row stays open because the thing it asks for is a domain.**
-
 ### The Steam Workshop
 
 - [ ] **The mod page write-up**, linking to the site.
@@ -287,35 +277,12 @@ Owner's words: *"things will have to be deployed and settled before doing the pr
 - **The owner alone launches, sorts and publishes.** Deployment of a site is not the same act as launching the game, but the Workshop is the owner's account and the owner's decision.
 
 
-## Owner decisions, 2026-09-29 — the three reserved questions answered, and one I should never have asked
-
-**Verbatim owner correction:** *"wtf are you talking about core only we have 294 recommend mods you fuck!!!!"*
-
-
-**Q4 — how far the public release goes. ANSWERED: everything, including Playwright driving Steam.**
-
-- [ ] Repo, site and the Steam Workshop page driven through Playwright. **The concern was stated plainly before the choice was made and the owner chose this option anyway**, which makes it an informed decision and it stands. Recorded here so the decision is not re-litigated at the release checkpoint. Still correctly **last** in the queue, and it needs the owner present for the Steam session.
-
----
-
 ## Owner directions recorded late
 
 These three were **acted on correctly and recorded in `NOW.md` or `FINALIZED.md`, but never
 written into this queue as tasks**. The owner noticed the gap on 2026-09-29 and was right.
 They are recorded here verbatim now, and `check-doc-conformance.py` refuses from this point
 on to let a direction reach `FINALIZED.md` without appearing here first.
-
-**Verbatim owner direction (2026-09-29), on the glow pods:** *"tyhe glow pods can be used and lets not limit the amount as a backrooms instance can have 100s of rooms if the player is using 300x300 maps for instance and maybe lets have the glow pods color setable"* and *"color means differnt types of the needs markers"*
-
-**Owner answers on the field kit, asked at the fork:**
-
-- **Survey tag → Core `GlowPod`.** Minifiable, carried, deployed, and it lights the room it marks. *"place one per room you clear, room is lit AND numbered."* **BUILT 0.10.7-dev.**
-- **Return beacon → dropped.** *"the gate IS the beacon"* — the address book and the saved return threshold already do its job. **DONE 0.9.9-dev.**
-- **Sealed evidence case → a designated headquarters shelf is the archive.** The book is carried and custody completes when it reaches a Core `Shelf` designated as the evidence archive, the same designation pattern as the gate console and the laboratory bench.
-- **Field recorder → the book is the recorder.** One Core `TextBook`: carried in blank, written in the field, carried home as the evidence. *"lose the book, lose the run."*
-
-
-- [ ] **Migration decision or declared development-save break** before removing any Def a saved `Thing` references, with the old build preserved. Shares saved keys with the portal legacy-threshold repair built in step 2 — decide them together. — **NO DECISION IS NEEDED YET, AND THE CANDIDATE LIST IS NOW MEASURED RATHER THAN OPEN-ENDED, 0.12.93-dev. The row fires *"before removing any Def a saved `Thing` references"* — and **nothing is being removed.** The five `RR_*Staff` PawnKinds were the other half of this cluster and they are **kept and wired**, not retired, so the save-break risk the row guards against does not arise from them at all. The one remaining candidate is the hidden legacy analysis bench, and `SAVE_MIGRATION_POLICY.md` already records its terms in the file: new starts do not spawn it, it cannot be built, company jobs do not use it, and *"final removal still requires migration or the explicit development-save boundary"*. **The row stays open because the decision is the owner’s and it is blocking nothing being built** — a save break is a decision about other people’s games, and per the M6 answer there are none yet: *"we dont have other peoples saves we just publish it all and update it as we go fixing bugs"*. It becomes a real question the first time a removal is actually proposed, and none is.**
 
 ### Phase 1 leftovers (master TODO §Phase 1 — repository, build, and content foundations)
 
@@ -341,10 +308,6 @@ on to let a direction reach `FINALIZED.md` without appearing here first.
 
 - [T] Bound active map count, pawn/thing count, graph search, event evaluation, and background tick cost; profile large, long-running saves. — **Bounding is done; profiling is not and cannot be.** Every scan in `ConnectedWork/` is a bounded rotating window, never a prefix (invariant 5), with roughly thirty `Maximum*` scan budgets. **Profiling a long-running save requires launching the game, which only the owner does.** — **RECLASSIFIED TO THE TEST PHASE 0.12.98-dev, on the row's own words.** It says in its own text: *"Bounding is done; profiling is not and cannot be"*, and that profiling a long-running save **requires launching the game, which only the owner does.** Every scan is already a bounded rotating window rather than a prefix, with roughly thirty budgets. **A row whose only remaining step is an owner launch belongs in the test phase**, not in the working queue where it reads as something somebody could pick up.
 
-**Research, entity, and expansion progression** (owner S1/B: broad threat families only; the five named sketches in `CAMPAIGN_ROSTER_FREEZE.md` stay deferred until approved):
-
-- [~] Author entity/anomaly design sheets first: appearance/readability, AI rules, triggers, limits, interaction, tells, counters, evidence, study risk, capture/storage, sale value, and fail states. — **Partly built.** Inhabitant defs carry AI rules, bands, tells and counters, and the escalation ladder is bounded. **Not built as authored design documents**, and the `RR_QuietPursuer` presentation is still the last open existing-content replacement.
-
 **Undeferred 2026-09-29 by owner direction** — moved here verbatim from `DEFERRED.md`, which is now empty of open rows:
 
 - [~] Research IDs across tiers T0–T6 and the nine branches; entity family sheets (broad families only per S1/B). — **Tiers 0–2 complete across seven branches; T3 is the next checkpoint.** The eighth branch (transport and orbital) has **no tier 0 at all, deliberately**, and the tree is derived rather than declared, so a tier number is not a promise of a linear chain. — **MEASURED 0.12.92-dev AND THE ROW WAS WRONG ABOUT T3. It says *"Tiers 0–2 complete across seven branches; T3 is the next checkpoint"*. **T3 is fully built** — seven projects, one per branch, each requiring its tier-2 sibling plus three route, two distortion and one entity log, with its own header at `RR_CompanyProjects.xml` line 418 and a record in `BUILD_ORDER_CORRECTION.md`. **T4 is built too**, six of seven, and both absences are reasoned in the file: Logistics has no tier 4 because lead time, dispatch delay, order capacity and unattended delivery are already taken by tiers 1, 2, 0 and 3, and what remains in Procurement is safety bounds no player will ever reach — *"a project here would promise something and change nothing, which is exactly what 0.12.5-dev deleted four projects for"*. The gate line has none and cannot: there is nothing above indefinite. **And the tier system is measurably healthy: 34 capabilities granted, 34 read, a perfect bijection** — no hollow unlock and no dead read. **So what is actually open is T5 and T6**, and the file’s own rule makes that a knob sweep rather than an authoring job: a tier may only exist where an unclaimed, player-noticeable knob does. 274 tunable constants exist and 34 are claimed, so the sweep has somewhere to look — but deciding which of the remainder a player could *name the effect of* is the work, and inventing seven projects without it would ship exactly the lie the file deletes projects for.**
@@ -364,10 +327,6 @@ Every item in this major needs a Rimrooms build the owner has launched; source-s
 
 **Five DLC layers:**
 
-- [~] Royalty conditional content: titles/quests/faction/psycasts only as optional company routes. — **Open:** no Royalty-specific content is authored. That is honest rather than a gap: it must be an optional route or nothing. (Gating mechanism closed and enforced; archived.) — **NO HONEST HOOK EXISTS YET, AND THAT IS RECORDED RATHER THAN PADDED 0.12.91-dev. Royalty ships **almost no buildings** — thrones are Core; what it adds is titles, permits, psycasts and the Empire. None of those is equipment a facility can be linked to, and the row’s own condition is *"only as optional company routes"*: a success route must be a **thing** (Deliver/Substitute/Purchase), a **log** (Document/Testify) or a **project** (Research). A title is none of the three. **So an honest Royalty hook needs a new route kind**, which is a design decision rather than a def edit, and inventing a thin one would be the hollow unlock this package keeps refusing. Stated the same way the project tree states that transport and orbital support has no tier 0 project, deliberately. The one place Royalty content already reaches the campaign is indirect and real: the Empire is a faction, and 0.12.90-dev made the world’s faction hostility one of the four inputs biasing which request family the corporation leads with.**
-- [~] Ideology conditional content: beliefs, meditation, rituals, staff policies, and recreation only when available. — **Open:** no Ideology-specific content authored. (Gating closed; archived.) — **THE RECREATION CLAUSE LANDED 0.12.91-dev; the row stays open for the rest. `RR_Link_Assembly` is a room the branch gathers in — somewhere to be presentable, somewhere to be heard, and something to make a noise with — linked from `StylingStation`, `Loudspeaker` and `Drum`, and **hidden entirely without Ideology** by `Fillable` rather than merely gated. **One clause of five, and that is said plainly rather than claimed as the row.** Beliefs, meditation, rituals and staff policies are pawn-level and ideo-level mechanics with no facility or supply shape, and each would need its own decision about what an *optional* version looks like.**
-- [~] Biotech conditional content: genes, mechanitors, children, medicine, pollution, and mechanoid options; no mandatory gene/resource dependency. — **Open:** no Biotech-specific content authored. Nothing is mandatory. (Gating closed; archived.) — **THE EQUIPMENT CLAUSE LANDED 0.12.91-dev; the row stays open for the rest. `RR_Link_Biolab` is this facility’s biological wing — gene assembler, gene bank, growth vat, mech gestator, subcore encoder and softscanner — because what comes back from a coordinate is not always a thing on a shelf. **Hidden entirely without Biotech** by `Fillable`. **Nothing is mandatory, which is the clause the row cares most about**, and it is now measured rather than asserted: `check-standalone-guarantee.py` confirms every Biotech reference in the package is gated and every Biotech lookup in C# degrades. Genes, children, medicine and pollution remain unaddressed, each needing its own answer about what optional means.**
-- [~] Odyssey conditional content: gravship/off-world logistics and any compatible space travel. — **Open:** no gravship integration is written, and it stays DLC-optional throughout. (Gating and arc 7's request families closed; archived.) — **THE LOGISTICS CLAUSE LANDED 0.12.91-dev; the row stays open for space travel. `RR_Link_OffworldLogistics` puts a gravitational engine on the branch’s books, so the company can account for a facility that is able to leave — a branch that can move is a branch whose gate is not the only way anything arrives. **Hidden entirely without Odyssey** by `Fillable`, and the gate works identically without it. **A gravship actually carrying a branch between tiles is not built**, and that is the larger half: it needs the same world-object-and-generated-map checkpoint the two outstanding *"world tile the branch does not hold"* rows name.**
 - [T] Before implementing or advertising optional VGE support, verify the clean Core + Harmony + Odyssey + VEF + both VGE chapters stack, Chapter 1 operations, Chapter 2 threat/defense/salvage, optional Insectoids 2, save/reload, and the gravship-touch profile graph. Keep this in the per-integration acceptance gate; it is not a Gate 0 requirement. See the [gravship profile review](research/GRAVSHIP_PROFILE_INTERACTIONS.md). — post-completion test phase (owner RimSort launch).
 - [T] Verify all five individually enabled/disabled, then all combined. Maintain a 32-row DLC bitmask matrix (all combinations of five DLCs) if claiming full combinatorial support; at minimum, explicitly publish exactly which combinations were run. — post-completion test phase (owner RimSort launch).
 
@@ -421,14 +380,6 @@ Contracts: [`OPERATIONS_ACTION_CONTRACTS.md`](OPERATIONS_ACTION_CONTRACTS.md), [
 - [T] The launch-gated half of the mod-page row: **screenshots, trailer/preview art**, and any known-issues entry that needs an observed failure. The row itself lives in M6a with its full verbatim text; only these pieces need a running game. — post-completion test phase (owner RimSort launch).
 - [T] The launch-gated half of the tag-release row: *"publish only features that passed their listed acceptance criteria"* — **nothing has passed anything, because nothing has run.** The row itself lives in M6a with its full verbatim text; the tag cannot be cut until the acceptance results above exist. — post-completion test phase (owner RimSort launch).
 
-### Owner direction — credits, bonds, and the weight of the place (2026-09-29)
-
-**Verbatim owner requests (2026-09-29, three more):** *"yeah keep teriing it then dont stop at 1 million"*; *"and ther should be a trader that is the multi trillion dollar corporation with all kinds of equipenmnt tools amaterials and supplies like a universersal trader but things are tech and company quest locked out till passed"*; *"and even cost credits to unlock item and materials and equipment gates in buying"*.
-
-- [ ] **Exchange-rate balance** alongside catalogue balance. Both are constants in one place; neither has any play behind it.
-- [ ] **Corporate catalogue balance.** The five tiers and their access fees are a first pass with no play behind them. They are data, so changing them is a def edit rather than a code change.
-
-
 ### Owner direction — the place copies you, and who you find in it (2026-09-29)
 
 **Verbatim owner direction (2026-09-29), on ordering the remaining work:** *"we are doing it all so order needs to be logical and your intelkligent educated choise based on logical programming order of operations"*
@@ -481,32 +432,3 @@ Full record in [`implementation/MOD_REGISTER_REBUILD.md`](implementation/MOD_REG
 ## TOMBSTONES
 
 _(none)_
-
-## Owner question — do RimWorld's map layers change the five-map limit? (2026-10-05)
-
-**Verbatim owner question (2026-10-05):** *"and somthing someone told me is that with rimworld updates there are now map layers? is that usable in any way as per our 5 mcolony limit we use to propigate and sustain our entire gameplay limitations"*
-
-### Measured from the installed game before answering
-
-**Layers are real, and they are extensible.** `PlanetLayerDef` is a def type. Core ships one, `Surface`. **Odyssey** ships `Orbit`, and leaves a **commented-out `Moon` layer** in `Odyssey/Defs/PlanetLayerDefs/PlanetLayers.xml` — Ludeon documenting, in data, exactly how a modder adds a surface layer of their own.
-
-**A layer carries real behaviour, not just a camera position:** `canFormCaravans`, `onlyAllowWhitelistedIncidents`, `onlyAllowWhitelistedGameConditions`, `onlyAllowWhitelistedArrivals`, `onlyAllowWhitelistedArrivalModes`, `isSpace`, `ignoreNoBuildArea`, `defaultBiome`, `settlementWorldObjectDef`, `raidPointsFactor`, and its own `worldGenSteps`, `worldDrawLayers` and `worldTabs`.
-
-**And layers CONNECT.** `PlanetLayer.HasConnectionFromTo(PlanetLayer)` and `TryGetConnectionFromTo(...)` with a `PlanetLayerConnection`. That is this mod's central idea written in Core's own vocabulary.
-
-### THE ANSWER: layers do not raise the cap, and our coordinate maps were never counted by it
-
-**Read out of `RimWorld.Planet.SettleUtility.PlayerSettlementsCountLimitReached`, not inferred:** it walks `Find.Maps` and counts a map when `map.IsPlayerHome && map.Parent is Settlement`, **or** when `map.wasSpawnedViaGravShipLanding`, then compares against `Prefs.MaxNumberOfPlayerSettlements`.
-
-- **It is NOT layer-aware.** An orbital colony counts against the same number as a surface one. **A layer buys zero extra colonies.**
-- **But it only counts settlement-parented homes and gravship landings.** `RimroomsDestinationMapParent` derives `MapParent`, **not** `Settlement`, so **every Backrooms coordinate map is already invisible to the player's settlement cap.** The only thing counting them is ours.
-- **Our five is the owner's own direction, not an engine limit** — *"lets have that 5 map count be universal max for back rooms main map and claiming maps where u pop out and anything over 5 maps defaults to caravans"* — and `WorldExit.MaximumBranchMaps` counts headquarters, loaded coordinates, registered sites and claimed tiles together, with the stricter of ours and the player's preference winning.
-- **The real cost of a map is simulation, and a layer does not make one cheaper.** Eight loaded maps is eight maps of pathfinding, temperature, weather and pawn ticking whichever layer their world object sits on. Raising the cap is a performance decision, and performance is the one thing this project cannot measure for itself.
-
-### What layers would actually be worth using for
-
-Not more maps. **Expressing our rules in Core's data instead of our C#**, which is cheaper to maintain and automatically correct as the game changes.
-
-- [ ] **A `Backrooms` PlanetLayer as a design question, not a capacity one.** `canFormCaravans: false` is our no-caravan rule; `onlyAllowWhitelistedArrivals` and `onlyAllowWhitelistedIncidents` are `PortalTraversalPolicy` and the incident gate expressed as data; a `defaultBiome` and `raidPointsFactor` of its own replace tuning we currently carry in code. **It would also make `PlanetLayerConnection` the engine's own word for a gate.** Needs an owner decision because it is a visible change: a layer gets its own world-view gizmo and its own tab, so the Backrooms would become somewhere the player can look at from the planet view — which may be exactly right or exactly wrong for a space that is meant to be found through a door.
-- [ ] **Measure before any of it:** whether a `MapParent` on a non-surface layer still generates and saves identically, and whether `onlyAllowWhitelistedIncidents` would silence the unnerving register rather than shape it. **This is `[T]`-shaped work** — it needs a launch, and the owner is the only one who launches.
-- [ ] **The cap itself stays five until the owner says otherwise.** It is their number, and the measurement above does not argue for changing it: nothing found gives a free map, and the thing that would — raising the number — is a performance trade nobody has measured yet.

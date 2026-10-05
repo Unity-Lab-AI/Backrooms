@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using RimroomsAsyncIndustries.Economy;
 using RimWorld;
@@ -128,12 +128,28 @@ namespace RimroomsAsyncIndustries.Company
             // ORDINARY goods only. The odd rate is the premium the whole economy is built on and
             // is deliberately untouched: a branch learns to stop being fleeced on scrap, it does
             // not learn to make the Backrooms pay better.
-            float ordinary = OrdinaryExchangeRate;
+            // **READ FROM SETTINGS, NOT FROM THE CONSTANT.** Owner, 2026-10-05, on how to resolve
+            // the two balance rows: *"Make them player-visible settings"*. The constants are now
+            // the DEFAULTS rather than the values -- so a player who never opens the settings gets
+            // exactly what shipped, and anyone who wants a different economy does not need a
+            // rebuild to try one.
+            //
+            // Asked at use time rather than cached, for the same reason everything else here is:
+            // a rate read once at startup would ignore the player changing it mid-game, and
+            // `RimroomsMod.Settings` is null-guarded because settings can be absent while the mod
+            // list is still being resolved.
+            Core.RimroomsSettings tuning = Core.RimroomsMod.Settings;
+            float ordinary = tuning == null
+                ? OrdinaryExchangeRate : tuning.EffectiveOrdinaryExchangeRate;
             RimroomsCampaignComponent marketCampaign = Current.Game == null
                 ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
             if (marketCampaign != null && marketCampaign.HasCapability("RR_Cap_OpenMarket"))
-            { ordinary = OpenMarketOrdinaryRate; }
-            float rate = OddOriginService.IsOdd(thing) ? OddExchangeRate : ordinary;
+            {
+                ordinary = tuning == null
+                    ? OpenMarketOrdinaryRate : tuning.EffectiveOpenMarketOrdinaryRate;
+            }
+            float odd = tuning == null ? OddExchangeRate : tuning.EffectiveOddExchangeRate;
+            float rate = OddOriginService.IsOdd(thing) ? odd : ordinary;
             double total = (double)unit * Math.Max(1, thing.stackCount) * rate;
             if (total < 0d) { total = 0d; }
             if (total > 1e15d) { total = 1e15d; }

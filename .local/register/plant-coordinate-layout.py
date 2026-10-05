@@ -165,7 +165,7 @@ PLANTS = [
      "                    if (roll % 3 != 0) { continue; }"),
 
     ("THE WARREN STOPS TIGHTENING INWARD", PLANNER,
-     "internal const int MaxRooms = 60;", "internal const int MaxRooms = 6;"),
+     "internal const int MaxRooms = 80;", "internal const int MaxRooms = 6;"),
 
     # The first level stops being a maze and goes back to a handful of halls.
     ("THE FIRST LEVEL GOES BACK TO A WAREHOUSE", PLANNER,
@@ -791,7 +791,7 @@ PLANTS = [
      "            if (reach > lane) { reach = lane; }" + NL, ""),
 
     ("THE SLOT GRID GOES BACK TO TEN PER AXIS AND A DEEP LEVEL IS BARE ROCK AGAIN", PLANNER,
-     "internal const int MaxSlotsPerAxis = 8;", "internal const int MaxSlotsPerAxis = 10;"),
+     "internal const int MaxSlotsPerAxis = 9;", "internal const int MaxSlotsPerAxis = 11;"),
 
     ("the margin goes back to throwing away a fifth of every map", PLANNER,
      "internal const int Margin = 6;", "internal const int Margin = 14;"),
