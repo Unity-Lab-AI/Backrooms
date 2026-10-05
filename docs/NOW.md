@@ -72,7 +72,7 @@ A checker that cries wolf is one people scroll past.
 | Instruments | **25 checkers**, **59 proofs**, **36 plant suites**, **1,206 plant anchors**. `check-queue-pointers.py` is the newest: **a statement of what is still open may not be resolved by position.** It found five, and three pointed at rows that were closed and archived |
 | Remotes | **TWELVE refs** — this repository 10 (`forgejo` 5, `github` 5) plus the mod-only pair 2 |
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
-| Queue | **0 open · 2 partial · 52 `[T]` · 0 `[x]`** — down from **16 open · 11 partial**. **`[ ]` now means *doable today*, and nothing is**: eight rows said in their own text that they need a launch and have been moved to `[T]` where they gate nothing |
+| Queue | **0 open · 2 partial · 50 `[T]` · 0 `[x]`** — down from **16 open · 11 partial**. **`[ ]` now means *doable today*, and nothing is**: eight rows said in their own text that they need a launch and have been moved to `[T]` where they gate nothing |
 | Public repos | **`Rimrooms-AsyncIndustries` on BOTH hosts** — `forgejo GFourteen/...` and `github G-Fourteen/...`. **The mod as staged, the public face, nothing else** |
 | Published site | **LIVE** — `https://g-fourteen.github.io/Rimrooms-AsyncIndustries/`. Pages serves `/docs` as the **site root**, so a page is `<site>/gates.html` and every reference must be site-relative |
 | Launches | **At least twelve**, all by the owner. **Every defect any launch found was ours** |
@@ -162,8 +162,11 @@ resolution structurally require a launch with the 294 profile loaded.
 - **Say whether any of the three start briefs should be built**, and in what order. The briefs exist
   precisely so that call can be made without guessing.
 
-**And the two starting-goods rows wait on a launch, not on code.** They are the only rows whose next
-step is a `Player.log`.
+**And the two starting-goods rows are RETIRED by owner direction, 2026-10-05:** *"remove these,
+they are no longer needed"*. What was found stays in the archive -- a 9,216-cell sweep and four
+candidate causes eliminated against the installed game -- and the diagnostic that reports a
+promised-but-absent starting grant stays in the package, held by its own proof claims. **No further
+investigation is owed.**
 
 **ONE PAGES DEPLOY, AND IT IS THE PUBLIC MOD REPOSITORY.** Owner, 2026-10-05, verbatim: *"the only
 page deploy will be on the new github mod and wiki and public docs ONLY!!!"*. **This repository is
