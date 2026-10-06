@@ -25,17 +25,19 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 ---
 
-## ⛔ THE ONE THING THAT IS THE OWNER'S TO ANSWER ⛔
+## ⛔ NOTHING IS WAITING ON THE OWNER EXCEPT A LAUNCH ⛔
 
-**Fieldcraft T5 has no subject, and it is the only open row in the queue.**
+**The queue is 0 open, 0 partial, 53 `[T]`.** Every row the owner answered is built, proved and
+documented. What is left is the test phase, which is theirs: **the owner alone launches, sorts and
+publishes.**
 
-They approved *"All six, including the fourth crew member"*, and minutes later, answering a different question: *"rememberber pawns can cross gate as they plkease so no max number"*. The fifth candidate **was** the fourth crew member — a project whose whole effect was raising `CrewPlanner.MaxCrew` from three to four. With no cap there is nothing to raise, which makes it *"a project that promises something and changes nothing"*: the exact phrase four deleted projects were deleted for.
+The three fork answers of 2026-10-06, all built:
 
-**So it was not built, and the absence is proved rather than assumed.** `proof-research-tier5.py` asserts the absence **and the condition that makes it correct** — if a crew cap is ever reintroduced, that proof starts failing and names the sweep. A Fieldcraft T5 can exist. It needs a different number.
-
-Everything else the owner answered on 2026-10-06 is built.
-
----
+| Asked | Answered | Built as |
+|---|---|---|
+| Fieldcraft T5's new subject | **the long handover** | `RR_Fieldcraft_StandingRelief` — an empty console is a hand-off for an hour, not half of one |
+| How far to take the entity sheets | **author the broad families** | sixteen sheets: eleven describing shipped content, five stating that nothing is built |
+| The three facility rows | **convert to `[T]`** | status only, proved by the file differing in exactly three characters |
 
 ## ⛔ STAGE BEFORE THE OWNER LAUNCHES, AND IT IS IN A DURABLE PLACE NOW ⛔
 
@@ -54,7 +56,7 @@ The rule lived only here — in the one file that gets replaced wholesale. **It 
 **Owner, 2026-10-04:** *"yu should be completeing like near a dozen items before you run the whole battery. i told you i can NOT be waiting 40 minutes"*, and when I over-corrected: *"you still need to do instrament checks and build them when needed just dont run them for every fucking code change"*
 
 - **During the work:** run **only the instrument covering the file you just touched.**
-- **At publication, once:** 29 checkers → 63 proofs → 41 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
+- **At publication, once:** 29 checkers → 63 proofs → 42 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
 - **THE OWNER ALONE LAUNCHES, SORTS AND PUBLISHES.**
 - ⛔ **NEVER RUN THE PLANT SUITES CONCURRENTLY WITH ANYTHING ELSE.** A suite writes a real fault into the tree and restores it; anything reading the tree in that window sees the fault. Doing so reported **four failures that did not exist**.
 - **THE REGISTER IS AN INPUT TO WORK, NOT A BACKLOG OF IT.**
@@ -68,11 +70,11 @@ The rule lived only here — in the one file that gets replaced wholesale. **It 
 | Branch | **`feature/bug-testing`**, ahead of every remote by owner direction |
 | Version | **0.12.99-dev** — read from `About.xml`, never from a document |
 | Build | **252 C# files, 106 package files**, zero warnings, zero errors |
-| Instruments | **29 checkers**, **63 proofs**, **41 plant suites** |
-| Queue | **1 open · 4 partial · 50 `[T]` · 0 `[x]`** — from 10 open · 5 partial at the start of this session |
-| Research tree | **43 projects, T0 to T6, nine branches** |
+| Instruments | **29 checkers**, **63 proofs**, **42 plant suites** — **every one green in one run** |
+| Queue | **0 open · 0 partial · 53 `[T]` · 0 `[x]`** — from 10 open · 5 partial at the start of this session |
+| Research tree | **44 projects, T0 to T6, nine branches** |
 | Staged copy | **MATCHES THE BUILD.** `check-package-integrity` PASS |
-| Commits this session | **Seven**, all local |
+| Commits this session | **Nine**, all local |
 
 ---
 
@@ -85,11 +87,18 @@ The rule lived only here — in the one file that gets replaced wholesale. **It 
 5. **A branch can hold more than one job.** It could hold exactly one, which made the ledger and the desks unreachable.
 6. **The ore density is Core's own figure at last**, per tile hilliness.
 7. **Zoning proved to stay the player's**, as an absence, with a plant suite behind it.
+8. **Fieldcraft T5's second subject**, chosen from three measured options rather than invented.
+9. **Sixteen entity family sheets** — eleven describing shipped content, five saying plainly that nothing is built.
+10. **A prisoner could cross a gate**, and that was mine from this session. Fixed, and checker 29 got the plant suite it never had.
+11. **A full sweep of every instrument**, which found **eleven stale ones** — including 23 false reds, one real defect in my own palette band, and thirteen broken plant anchors that would each have died with PLANT SETUP BROKEN.
 
 ---
 
 ## Read these before touching anything
 
+- **RUN EVERY INSTRUMENT ONCE BEFORE BELIEVING THE BATTERY.** Four stale instruments turned up by accident, so all 29 checkers and 63 proofs were run in one pass: **eleven were stale and two had been enforcing defects.** The sweep is cheap, it is read-only, and it is the only thing that finds an instrument nobody has run since the code moved under it.
+- **A FALSE RED IS STILL A FINDING.** `proof-starts` reported 23 failures saying the Async Industries facility would throw on generation. Every one was wrong: `Cooler` and `Vent` declare `canPlaceOverWall` in Core and the generator has honoured it all along — the proof was the stale derivation, not the start. **Measure the game before believing an instrument about it.**
+- **AND A PLANT ANCHOR THAT NO LONGER MATCHES IS A SUITE THAT PROVES NOTHING.** `check-plant-anchors` found thirteen, across eight suites. Re-aiming them exposed four more weak rules of mine, every one the same shape: a substring, a whole file instead of one band, one of two call sites, or a plant pointed at a verifier that never owned the claim.
 - **A RULE SATISFIED BY ITS SUBJECT NOT BEING THERE IS NOT A RULE, AND THIS SESSION FOUND FOUR.** `find(a) < find(b)` passes when `a` is deleted, because `find` returns **-1**. A substring test passed a rename to `unclaimedRequestId` because the new name **contains** the old one. A per-pawn rule passed because **one of two** call sites still matched. A `body_of(...) or ""` test passed when the method was gone. Every ordering claim now fails on absence; every name claim is word-bounded; every call-site claim counts.
 - **AND TWO PROOF CLAIMS WERE ENFORCING DEFECTS.** *"The natural depth reach is not research-driven"* went on passing after the code stopped honouring it, because it knew one spelling of a ternary. *"Only one request is ever open"* was holding in place the rule that a branch may hold one job. **Both were restated out loud rather than quietly edited** — a green instrument over a dead restraint is worse than no instrument.
 - **A FEATURE WHOSE PRECONDITION IS IMPOSSIBLE IS A FEATURE NOBODY CAN REPORT AS BROKEN.** The paperwork ledger and the parallel desks were both unreachable because one guard limited a branch to one job. Found by reading a guard, not by playing.
@@ -123,16 +132,18 @@ python tools/check-queue-pointers.py                     # and this, which neith
 
 ## THE NEXT THING
 
-**The queue is one open row and four partial, and three of the five need the owner rather than me.**
+**A launch. That is the whole list.**
 
-1. ⛔ **Fieldcraft T5 needs a new subject** — the only open row. See the interdiction above.
-2. **The starting-facility feedback loop** (three partial rows) — the offline half is verified and the rest **needs a launch**: `facility-diff.py` can only compare an authored layout against a real one once a facility has been generated and hand-fixed.
-3. **Entity family sheets** — the other half of the research-IDs row, now that its research half is finished. `THREAT_DESIGN_SHEETS.md` holds the authoring sheet and two worked families and says plainly that the rest *"remain open design work"*. That is content design and it needs the owner.
+The 53 `[T]` rows are the test phase and every one of them needs the game running. Three of them are
+the starting-facility feedback loop, which can only be finished by generating a facility and
+comparing it against its own def — `.local/qa/facility-diff.py` does the comparing and cannot do the
+generating.
 
----
+**Read a launch log in this order:** `Player.log`, grep the **first** `[Rimrooms]` line, then
+`python .local/qa/bridge.py call rimworld/list_letters '{}'`.
 
 ## Is it done?
 
-**The buildable list is finished.** Every row the owner answered on 2026-10-06 is built, proved and documented; what remains is one question for them, one launch, and one piece of content design.
+**The buildable list is finished and the battery is green in one run.** 29 checkers, 63 proofs, 42 plant suites, no plant residue, staged copy matching the build.
 
-Read a launch log in this order: `Player.log`, grep the **first** `[Rimrooms]` line, then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.
+What remains is the test phase and the two holds. Nothing is waiting on an answer.
