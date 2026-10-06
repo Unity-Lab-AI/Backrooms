@@ -66,6 +66,25 @@ font, colourblind mode — apply here exactly as they apply to the base game.
 reserve, route tags, distance, recall warnings and record status each have a written label, and the
 Machine pane's indicator lights are paired with the game's own tick glyph.
 
+### The switches, and what each one leaves behind
+
+Everything the mod draws or plays can be turned off, and **nothing turns off a word of text**. These
+are in the mod's own settings.
+
+| Setting | Off means |
+|---|---|
+| **Use the Backrooms background slideshow** | The main menu keeps the game's own background |
+| **Reduced motion (show one still image)** | The menu shows one picture instead of cycling |
+| **Show native gate aura** | A designated gate has its blue tint and no light of its own |
+| **Show company gate frames** | A designated gate is the bare door, with no frame and no animation on it |
+| **Reduce gate motion (hide aura; keep status text)** | No gate light and no gate animation. The panes and messages are untouched, which is what the label promises |
+| **Mute gate cues** | The gate is silent |
+| **Mute field and radio cues** | Reporting sounds are silent — a tag set, a journal filed, an analysis finished, a payment |
+| **Cue volume** | Scales every company sound, underneath the game's own volume |
+
+**A muted or hidden thing is never the only way to know something.** That is the rule the gate's
+own light is held to: every state it shows already has a message, a pane indicator or both.
+
 ---
 
 ## Two things this deliberately does not do

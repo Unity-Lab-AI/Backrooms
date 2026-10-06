@@ -148,6 +148,14 @@ _spec = _ilu.spec_from_file_location("rr_build_site", os.path.join(
 _bs = _ilu.module_from_spec(_spec)
 _spec.loader.exec_module(_bs)
 
+# The gallery's own thumbnails, for the same reason: the page generator decides which picture
+# represents an asset and how large a thumbnail is, and a second copy of either rule here would
+# publish a directory of pictures the page does not reference.
+_aspec = _ilu.spec_from_file_location("rr_build_asset_page", os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "build-asset-page.py"))
+_ap = _ilu.module_from_spec(_aspec)
+_aspec.loader.exec_module(_ap)
+
 # Anything matching these must never reach the export. Checked against the assembled tree, after
 # the allowlist has had its say.
 #
@@ -372,7 +380,8 @@ def render_site(problems):
     #
     # Empty by design: Pages tests for the file's presence, never its contents.
     io.open(os.path.join(target, ".nojekyll"), "w", encoding="utf-8", newline=NL).write("")
-    copy_site_art(problems, target)
+    gallery_count, gallery_note = copy_site_art(problems, target)
+    print("  asset gallery             : %d picture(s); %s" % (gallery_count, gallery_note))
     # **THE LICENCE, PUBLISHED TWICE ON PURPOSE -- the same answer the slide art got.**
     # The credits page cites the licence and links it, and the licence lives at the repository
     # root, which Pages never serves because it serves SITE_DIRECTORY as the root. The link was
@@ -418,6 +427,20 @@ def copy_site_art(problems, target):
                         "cover -- owner: it is what mod loaders see")
     else:
         shutil.copyfile(preview, os.path.join(art, os.path.basename(_bs.PREVIEW_IMAGE)))
+
+    # **THE GALLERY.** Owner, 2026-10-06: *"a asset gallery organizable just like the mod registry
+    # with their images listing there details"*. Fifty-two pictures, one per drawing, resampled where
+    # the original is larger than a thumbnail needs. The twelve slides are the only heavy ones and
+    # they are already published full size above for the banners; everything else is a small texture.
+    #
+    # Written here rather than committed, because these are **site bytes derived from the package**
+    # on every run -- the same reason the rendered HTML is not kept in the working repository.
+    gallery = os.path.join(target, _ap.GALLERY_DIRECTORY.replace("/", os.sep))
+    written, _resampled, note = _ap.write_gallery(gallery)
+    if written == 0:
+        problems.append("THE ASSET GALLERY IS EMPTY. The page references a picture per drawing, so "
+                        "an empty directory means every row on it is a broken image.")
+    return written, note
 
 
 def audit(problems):

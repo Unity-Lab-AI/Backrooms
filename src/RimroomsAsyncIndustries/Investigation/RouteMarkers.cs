@@ -157,11 +157,25 @@ namespace RimroomsAsyncIndustries.Investigation
             if (IsMarker && Lifespan != null) { Lifespan.age = 0; }
         }
 
+        /// <summary>
+        /// Give this marker a meaning.
+        ///
+        /// **`RR_MarkerSet` is played here because this is the moment the brief names** — *"A survey
+        /// tag is given a meaning. A small click and a lamp"*. The cue shipped against
+        /// `ASSET_REQUESTS.md` and had **no consumer anywhere** until 2026-10-06, along with four
+        /// others from the same priority band, every one of them described on the published asset
+        /// page as though it played.
+        ///
+        /// After the state change and the glow, never before: presentation does not decide whether
+        /// the designation happened.
+        /// </summary>
         internal void Designate(RimroomsMarkerTypeDef type)
         {
             markerType = type;
             BindToPlace();
             ApplyGlow();
+            if (parent != null && parent.Spawned && parent.Map != null)
+            { Audio.RimroomsAudio.Play("RR_MarkerSet", parent.Map, parent.Position, true); }
         }
 
         internal void ClearDesignation()

@@ -26,6 +26,10 @@ It publishes a long list of mods as load-order advice, which is a different thin
 requirement: a sorting manager reads that list and places this mod correctly on its own. Every mod
 on it is optional, and the list is advice about *order*, never about what you need to own.
 
+**[RimSort](https://github.com/RimSort/RimSort) is the manager this was sorted with**, and the one
+[Install](install.md#with-rimsort-recommended) gives steps for. Any manager that reads a declared
+load order will do the same job.
+
 ---
 
 ## How it treats other mods

@@ -20,6 +20,21 @@ summary: "The Workshop mod and collection, and where to report something."
 The collection is a convenience, not a requirement. This mod needs nothing but RimWorld itself —
 no other mod, and no expansion.
 
+## The mod manager we use
+
+**[RimSort](https://github.com/RimSort/RimSort)** — free, open source, Windows, macOS and Linux. It
+is the manager this mod was built and sorted with, and [Install](install.md#with-rimsort-recommended)
+gives the steps.
+
+| | |
+|---|---|
+| **The project** | <https://github.com/RimSort/RimSort> |
+| **Downloads** | <https://github.com/RimSort/RimSort/releases> |
+| **Its own documentation** | <https://github.com/RimSort/RimSort/wiki> |
+
+Not a requirement. Rimrooms publishes its own load order, so any manager that reads one will place
+it correctly, and the game's own mod list works if you would rather order it by hand.
+
 ## Source and reporting
 
 | | |

@@ -43,6 +43,18 @@ TARGET = os.path.join(REPO, "docs", "wiki", "assets.md")
 
 ROTATIONS = ("_north", "_east", "_south", "_west")
 
+# **ONE FULL TABLE, NOT SIX GROUPED ONES, AND THE MOD LIST ALREADY LEARNED THIS LESSON.**
+#
+# Owner direction, 2026-10-06, verbatim: *"there is a asset gallery organizable just like the mod
+# registry with their images listing there details"*. The register page had been five grouped tables
+# and the owner's words then were *"this is not correct in the wiki and not the full 296 mods"* --
+# grouping without one complete list hides the thing a reader came for.
+#
+# It is also what makes the page *organizable* at all: `render-wiki-html.py` attaches its search box
+# and sortable headings to **any table with at least twenty body rows**, by size rather than by a
+# flag. Six tables of twelve, thirty-four, six, one and seventeen rows got the tooling on exactly
+# one of them. One table of sixty-nine gets it on the whole gallery, and the `Kind` column below
+# does the grouping's job without costing the full list.
 GROUPS = [
     ("Main menu backgrounds", "1.6/Textures/UI/"),
     ("Buildings", "1.6/Textures/Things/Building/"),
@@ -50,6 +62,36 @@ GROUPS = [
     ("Creatures", "1.6/Textures/Things/Pawn/"),
     ("Floors", "1.6/Textures/Terrain/"),
     ("Sound cues", "1.6/Sounds/"),
+]
+
+# Where the site serves the gallery's own copies from, site-relative with no leading `..` --
+# the rule `export-public-repo.check_images_resolve` enforces on every published page.
+GALLERY_DIRECTORY = "assets/art/gallery"
+
+# A thumbnail's longest edge, and the size below which the original is simply copied.
+#
+# **The twelve menu slides are 1672x941 and about 1.6 MB each.** Serving them full size into a
+# ninety-six-pixel table cell would make a single page pull twenty megabytes, so those are resampled.
+# A 128 or 256 pixel texture is already smaller than the resample target and copying it keeps it
+# crisp, which matters more here than anywhere: half these textures are mostly transparent and the
+# reader is looking at them to judge the alpha.
+THUMB_MAX = 192
+COPY_AT_OR_BELOW = 256
+
+# One line per kind, so the summary table says what a category *is* rather than only how big it is.
+# Ordered as a reader meets them, not alphabetically. A kind with no assets is not printed, so this
+# list can name a category before anything fills it without putting an empty row on the page.
+KIND_BLURBS = [
+    ("Menu background", "A painting behind the main menu. Twelve, shown in turn."),
+    ("Building", "Something the company builds and you can place and rotate."),
+    ("Gate frame", "The machine trim a designated door wears, one per supported footprint."),
+    ("Animation frame", "One still of a sequence the code plays in order."),
+    ("Item", "Something a colonist carries, hauls or reads."),
+    ("Floor", "A terrain surface."),
+    ("Interface icon", "A picture used by a button or panel rather than placed in the world."),
+    ("Creature", "Something that lives out there."),
+    ("Sound cue", "A company sound. Mono, 48 kHz, played at the thing that made it."),
+    ("Other", "Shipped and not yet categorised, which is a fault worth reporting."),
 ]
 
 
@@ -183,6 +225,55 @@ def master_for(stem):
     return ""
 
 
+def kind_of(entry):
+    """The one-word category the gallery sorts and filters on.
+
+    Derived from where the file sits and what it is named, never hand-listed: a new texture lands in
+    the right category by being put in the right folder, which is the same reason the page itself is
+    generated. The order of the tests matters -- a gate frame and an animation frame both live under
+    `Things/Building/`, and both are more specific than "Building".
+    """
+    relative = entry["relative"]
+    if entry["sound"]:
+        return "Sound cue"
+    if relative.startswith("1.6/Textures/UI/Menu/"):
+        return "Menu background"
+    if relative.startswith("1.6/Textures/UI/"):
+        return "Interface icon"
+    if relative.startswith("1.6/Textures/Terrain/"):
+        return "Floor"
+    if relative.startswith("1.6/Textures/Things/Item/"):
+        return "Item"
+    if relative.startswith("1.6/Textures/Things/Pawn/"):
+        return "Creature"
+    if "/Gates/RR_GateFrame_" in relative:
+        return "Gate frame"
+    # A two-digit tail is a sequence frame. `stem_of` has already removed any rotation suffix, so
+    # nothing here can mistake `_south` for a frame number.
+    if re.match(r"^.*_\d{2}$", entry["stem"]):
+        return "Animation frame"
+    if relative.startswith("1.6/Textures/Things/Building/"):
+        return "Building"
+    return "Other"
+
+
+def preview_source(entry):
+    """The file a thumbnail is made from, or "" for a cue.
+
+    A rotatable set has three files and one gallery row, so one facing has to represent it.
+    **South, because that is the view a building is authored in** -- it is the face a player sees
+    when they place one, and `master_for` already prefers the south master for the same reason.
+    """
+    if entry["sound"]:
+        return ""
+    for suffix in ("_south", "", "_north", "_east", "_west"):
+        candidate = os.path.join(PACKAGE, *(entry["folder"].split("/")[1:]))
+        candidate = os.path.join(candidate, entry["stem"] + suffix + ".png")
+        if os.path.isfile(candidate):
+            return candidate
+    return ""
+
+
 def build():
     defs = def_text()
     code = source_text()
@@ -225,14 +316,72 @@ def build():
         entry["named_by"] = named_by(lookup, defs, code)
         entry["master"] = master_for(entry["stem"])
         entry["description"] = written.get(entry["stem"], "")
+        entry["kind"] = kind_of(entry)
+        entry["preview_source"] = preview_source(entry)
         out.append(entry)
     return out
+
+
+def gallery_files(entries):
+    """{gallery file name: the package file it is made from}, for every entry with a picture."""
+    found = {}
+    for entry in entries:
+        source = entry.get("preview_source")
+        if source:
+            found[entry["stem"] + ".png"] = source
+    return found
+
+
+def write_gallery(target_directory, entries=None):
+    """Write the gallery's thumbnails into a site directory. Returns (written, resampled, note).
+
+    **Called by `export-public-repo.py` rather than at page-generation time**, because these are
+    site bytes and not repository content: the published site is the only place they are served
+    from, and the export tree is rebuilt from scratch on every run.
+
+    **Pillow is used where it is present and its absence is reported, never fatal.** The same
+    degradation rule the staged-copy check follows: a tool that fails on somebody else's machine for
+    a reason that is not a defect is a tool people switch off. Without Pillow the originals are
+    copied at full size to the same paths, so the markup, the page and the image-resolve guard are
+    identical either way -- only the bytes differ, and the note says which happened.
+    """
+    import shutil
+    if entries is None:
+        entries = build()
+    if not os.path.isdir(target_directory):
+        os.makedirs(target_directory)
+    try:
+        from PIL import Image
+    except ImportError:
+        Image = None
+    written = 0
+    resampled = 0
+    for name, source in sorted(gallery_files(entries).items()):
+        destination = os.path.join(target_directory, name)
+        width, height = png_size(source)
+        if Image is None or max(width, height) <= COPY_AT_OR_BELOW:
+            shutil.copyfile(source, destination)
+        else:
+            picture = Image.open(source)
+            # RGBA throughout: most of these are mostly transparent, and flattening one would put a
+            # black rectangle on the page where the reader is checking for a clear aperture.
+            picture = picture.convert("RGBA")
+            picture.thumbnail((THUMB_MAX, THUMB_MAX), Image.LANCZOS)
+            picture.save(destination, "PNG", optimize=True)
+            resampled += 1
+        written += 1
+    note = ("Pillow is not installed, so every gallery picture is a full-size copy"
+            if Image is None else
+            "%d picture(s) resampled to %d px, the rest copied at their own size"
+            % (resampled, THUMB_MAX))
+    return written, resampled, note
 
 
 def page(entries):
     textures = [e for e in entries if not e["sound"]]
     sounds = [e for e in entries if e["sound"]]
     total = sum(e["bytes"] for e in entries)
+    file_count = len(shipped_assets())
 
     out = []
     out.append("---")
@@ -250,53 +399,85 @@ def page(entries):
                "the game provides it while you play — that file is not in this package and is not "
                "on this page.")
     out.append("")
-    out.append("**%d drawings and %d sound cues, %.0f KB in total.**"
-               % (len(textures), len(sounds), total / 1024.0))
+    # **FILES AND ENTRIES ARE DIFFERENT NUMBERS AND BOTH ARE STATED.** A rotatable set is three
+    # files and one entry, so a single count has to pick one meaning and will be read as the other.
+    # `NOW.md` published "59 shipped: 42 drawings" on 2026-10-06 -- 59 was the count of entries with
+    # a master, printed as the total. Saying both is what stops that happening again.
+    out.append("**%d drawings and %d sound cues — %d entries from %d files, %.0f KB in total.**"
+               % (len(textures), len(sounds), len(entries), file_count, total / 1024.0))
     out.append("")
     out.append("This page is generated from the package itself on every build, so it cannot drift "
                "from what actually ships.")
     out.append("")
-    out.append("## How to read the facings column")
+    out.append("## How to read this page")
+    out.append("")
+    out.append("**Search the table and sort it by any column.** Click a heading to sort, click it "
+               "again to reverse. The search box filters every column at once, so typing *gate* "
+               "finds the frames, the animation and the cues together.")
     out.append("")
     out.append("A building that can be rotated needs a separate drawing per direction. The game "
-               "mirrors west from east for free; nothing else is free.")
+               "mirrors west from east for free; nothing else is free. A rotatable set is **one "
+               "row with one picture**, because three facings are one drawing and not three assets.")
     out.append("")
     out.append("**`one frame` identifies a fixed pose or interface icon.** The closed journal and "
                "Set Gate button need one picture; the journal's reading poses and directional "
                "equipment have their own facing sets. Rectangular sets list both pixel sizes "
                "because turning them swaps their width and depth.")
     out.append("")
+    out.append("**A sound cue has no picture, so its preview is a dash.** It is in the same table "
+               "rather than a separate one, because a reader asking what this mod ships wants one "
+               "list.")
+    out.append("")
+    out.append("**The pictures are checkerboarded behind.** Most of these textures are mostly "
+               "transparent — a gate frame is an outline around a hole — so the squares are there "
+               "to show you where the transparency is instead of hiding it against a flat colour.")
+    out.append("")
 
-    for title, prefix in GROUPS:
-        group = sorted([e for e in entries if e["relative"].startswith(prefix)],
-                       key=lambda e: e["stem"].lower())
-        if not group:
-            continue
-        out.append("## %s" % title)
-        out.append("")
-        if group[0]["sound"]:
-            out.append("| Cue | What it is | Length and format | Sound definition |")
-            out.append("|---|---|---|---|")
-            for entry in group:
-                out.append("| **%s** | %s | %s | %s |" % (
-                    entry["stem"], entry["description"] or "—", entry["size"],
-                    entry["named_by"] or "—"))
+    out.append("## What is in here")
+    out.append("")
+    out.append("| Kind | How many | What it is |")
+    out.append("|---|---|---|")
+    for kind, blurb in KIND_BLURBS:
+        count = len([e for e in entries if e["kind"] == kind])
+        if count:
+            out.append("| **%s** | %d | %s |" % (kind, count, blurb))
+    out.append("")
+
+    out.append("## The gallery")
+    out.append("")
+    out.append("| Preview | Asset | Kind | What it is | In game | Size | Facings | Master |")
+    out.append("|---|---|---|---|---|---|---|---|")
+    for entry in sorted(entries, key=lambda e: e["stem"].lower()):
+        # Facings only mean something for a thing that can be placed and turned. A menu
+        # background reading "one frame" invites the reader to wonder which way it faces.
+        if entry["sound"] or "/Things/" not in entry["relative"]:
+            facings = "—"
+        elif entry["facings"]:
+            facings = ", ".join(sorted(entry["facings"]))
         else:
-            out.append("| Drawing | What it is | In game | Size | Facings |")
-            out.append("|---|---|---|---|---|")
-            for entry in group:
-                # Facings only mean something for a thing that can be placed and turned. A menu
-                # background reading "one frame" invites the reader to wonder which way it faces.
-                if "/Things/" not in entry["relative"]:
-                    facings = "—"
-                elif entry["facings"]:
-                    facings = ", ".join(sorted(entry["facings"]))
-                else:
-                    facings = "one frame"
-                out.append("| **%s** | %s | %s | %s | %s |" % (
-                    entry["stem"], entry["description"] or "—", entry["named_by"] or "—",
-                    entry["size"], facings))
-        out.append("")
+            facings = "one frame"
+        if entry.get("preview_source"):
+            preview = "![%s](%s/%s.png)" % (entry["stem"], GALLERY_DIRECTORY, entry["stem"])
+        else:
+            preview = "—"
+        master = os.path.basename(entry["master"]) if entry["master"] else "—"
+        out.append("| %s | **%s** | %s | %s | %s | %s | %s | %s |" % (
+            preview, entry["stem"], entry["kind"], entry["description"] or "—",
+            entry["named_by"] or "—", entry["size"], facings, master))
+    out.append("")
+
+    out.append("## Where a master is a dash")
+    out.append("")
+    masterless = sorted(e["kind"] for e in entries if not e["master"])
+    kinds = sorted(set(masterless))
+    out.append("Every drawing of a game object is cut from a larger master kept outside the "
+               "package, and so is every cue; that master's filename is in the last column.")
+    out.append("")
+    out.append("**%d of the %d entries have no separate master, and every one of them is a %s.** "
+               "There is nothing to cut: a background ships at the size it was drawn."
+               % (len(masterless), len(entries),
+                  " or ".join(k.lower() for k in kinds) if kinds else "—"))
+    out.append("")
 
     missing = [e for e in entries if not e["named_by"]]
     if missing:
@@ -329,6 +510,13 @@ def main():
     undescribed = sorted(e["stem"] for e in entries if not e.get("description"))
     print("  no description    : %d%s"
           % (len(undescribed), (" (%s)" % ", ".join(undescribed[:6])) if undescribed else ""))
+    print("  gallery pictures  : %d" % len(gallery_files(entries)))
+    # **A KIND OF "Other" IS A FAULT AND IS NAMED HERE.** It means a file landed somewhere
+    # `kind_of` does not recognise, and an uncategorised row would still sort and still read as
+    # deliberate on the published page.
+    uncategorised = sorted(e["stem"] for e in entries if e["kind"] == "Other")
+    print("  uncategorised     : %d%s"
+          % (len(uncategorised), (" (%s)" % ", ".join(uncategorised)) if uncategorised else ""))
 
     if "--check" in sys.argv:
         current = io.open(TARGET, encoding="utf-8").read() if os.path.isfile(TARGET) else ""

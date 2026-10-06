@@ -90,6 +90,16 @@ A place reached through a gate you built does not come back.
 - You are in the **world view**. Return to a colony map.
 - Or the mod did not load — see [Install](install.md).
 
+## I sorted and the order did not change
+
+**Sorting arranges the list; saving is what writes it.** In
+[RimSort](https://github.com/RimSort/RimSort), sort, then **save**, then run — running without
+saving launches the order you had before.
+
+If saving also appears to do nothing, RimSort's **config folder** is pointing somewhere other than
+the one holding `ModsConfig.xml`. That is the only one of its four locations a sort writes to. See
+[RimSort setup](install.md#setting-rimsort-up).
+
 ## The keybind does nothing
 
 Another mod took `\`. Rebind Operations in your Key Bindings dialog; the Help pane will show your
@@ -106,11 +116,11 @@ That is deliberate. Coordinates change between visits. Not every time, and nothi
 Also deliberate, at the deepest band through an advanced gate. Closing the connection before it
 arrives is what stops it.
 
-## I took too long and missed a deadline
+## I took too long and something is gone
 
-**There are no deadlines.** No request, contract, offer, quote or trade in this mod expires, and
-nothing is penalised for delay. If something became unavailable it was not a clock — read the
-message, which names its own cause.
+**Nothing in this mod runs out.** No request, contract, offer, quote or trade stops being available
+because time passed, and nothing is penalised for delay. If something became unavailable it was not
+a clock — read the message, which names its own cause.
 
 ---
 

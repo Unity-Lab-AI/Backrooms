@@ -95,10 +95,19 @@ namespace RimroomsAsyncIndustries.Gate
         /// field with no `Scribe` call, so a save reloaded mid-cycle shows no burst. That is the
         /// correct behaviour rather than a shortcut: a one-off flash replaying every time somebody
         /// loads a game would announce an event that is not happening.
+        ///
+        /// **REDUCED MOTION STOPS THE ANIMATION AND KEEPS THE FRAME**, and the first version of this
+        /// honoured neither. `GateFramesEnabled` was read at `PostDraw` and `PortalReducedMotion` was
+        /// read nowhere, so a player who had asked for no moving effects got three new animated
+        /// sequences the moment this shipped. The static frame is not motion and stays: it says a
+        /// gate was built, which is information. The charge, activation and live cycles are motion
+        /// and stop here, at the one place all three are resolved.
         /// </summary>
         private Material OverlayFrameNow()
         {
             if (Current.Game == null || Find.TickManager == null) { return null; }
+            if (RimroomsMod.Settings == null || RimroomsMod.Settings.PortalReducedMotion)
+            { return null; }
             int now = Find.TickManager.TicksGame;
             if (activationBurstTick >= 0)
             {

@@ -267,8 +267,13 @@ PLANTS = [
     ("a path climbing out of the site stops being refused", EXPORTER,
      '            if src.startswith("/") or ".." in src.split("/"):',
      "            if False:", 1),
+    # **RE-AIMED 2026-10-06, and the claim is unchanged.** The call now takes a return value,
+    # because `copy_site_art` also writes the asset gallery's thumbnails and reports how many.
+    # Anchoring on the bare statement stopped matching; the fault planted is identical -- the art
+    # is never copied, so every banner and every gallery row is a broken image.
     ("the art stops being copied into the site", EXPORTER,
-     "    copy_site_art(problems, target)", "    pass", 1),
+     "    gallery_count, gallery_note = copy_site_art(problems, target)",
+     "    gallery_count, gallery_note = 0, \"not copied\"", 1),
 
     # ---- the link guard, which the image guard shipped without ---------------------------
     # The credits page's licence link was **404 on the live site** while every instrument was

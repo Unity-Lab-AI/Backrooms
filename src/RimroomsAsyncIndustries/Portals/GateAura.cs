@@ -1,3 +1,4 @@
+using RimroomsAsyncIndustries.Core;
 using RimroomsAsyncIndustries.Gate;
 using UnityEngine;
 using Verse;
@@ -47,6 +48,31 @@ namespace RimroomsAsyncIndustries.Portals
     /// `THREAT_DESIGN_SHEETS.md` binds this: *"Do not use color or sound as the only way to notice a
     /// tell."* Every state below already has a message, a pane indicator or both before the aura
     /// says anything. The aura is allowed to be beautiful; it is not allowed to be the evidence.
+    ///
+    /// ## THE TWO SETTINGS GOVERN THIS, AND THE FIRST VERSION IGNORED BOTH
+    ///
+    /// `PortalAuraEnabled` and `PortalReducedMotion` were honoured only in
+    /// <see cref="NativePortalPresentation"/>, whose own docstring promises *"a player who turned
+    /// the effect off gets a plainly tinted door and nothing moving"*. That promise was **broken the
+    /// moment this file shipped**: the fleck effect stopped and the glow kept strobing, because the
+    /// two effects are different mechanisms on different components and only one of them read the
+    /// settings. A player who had already switched the aura off would have seen a *new* moving light
+    /// appear, which is the worst possible answer to an accessibility preference.
+    ///
+    /// **Both of them hide this entirely, and the shipped labels are why.** The second draft held
+    /// each state's colour and merely stopped the pulse, on the reasoning that a colour is
+    /// information rather than motion. **The label refutes that:** `RR_NativeGate_ReducedMotion`
+    /// reads *"Reduce gate motion (hide aura; keep status text)"*, and
+    /// `RR_NativeGate_AuraEnabled` reads *"Show native gate aura"*. A player who ticked either one
+    /// was promised no aura and text instead, so a dimmer aura is not the promise being kept. The
+    /// compensation is already built: every state has a message, a Machine-pane indicator or both.
+    ///
+    /// So either setting returns the glower to exactly the behaviour it had before this file
+    /// existed — live blue while a connection is open, nothing otherwise.
+    ///
+    /// **What neither setting offers is colour without motion**, and that is stated rather than
+    /// quietly invented here: a third option would be a new shipped setting and a new label, which
+    /// is a decision for the owner and not for this file.
     /// </summary>
     public partial class CompRimroomsEmergence
     {
@@ -124,6 +150,12 @@ namespace RimroomsAsyncIndustries.Portals
             colour = LiveGlowColor;
             radius = auraLive ? LiveGlowRadius : 0f;
 
+            // Both settings are answered here, before any state is read, so the feature collapses to
+            // what the glower did before this file existed rather than to a quieter version of it.
+            if (RimroomsMod.Settings == null || !RimroomsMod.Settings.PortalAuraEnabled ||
+                RimroomsMod.Settings.PortalReducedMotion)
+            { return; }
+
             CompRimroomsGate gate = parent.TryGetComp<CompRimroomsGate>();
             if (gate == null) { return; }
 
@@ -165,6 +197,10 @@ namespace RimroomsAsyncIndustries.Portals
         /// <summary>
         /// A triangle wave between two radii. Triangular rather than square: a hard on/off is a
         /// hazard light, and this is a machine running.
+        ///
+        /// No setting is read here. `ResolveAura` has already returned for a player who turned the
+        /// aura off or asked for reduced motion, so a guard in this method would be unreachable —
+        /// and an unreachable guard is the shape that reads as covered while proving nothing.
         /// </summary>
         private static float Pulse(int periodTicks, float low, float high)
         {

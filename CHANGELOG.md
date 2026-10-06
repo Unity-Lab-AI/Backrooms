@@ -231,7 +231,9 @@
 ### A new checker, because only the owner launches
 
 - `check-def-references.py` parses **12,283 def and abstract names** out of the installed
-  `Data/` folders — Core and all six expansions — and resolves every `ParentName`, build cost,
+  `Data/` folders — Core and all **five** expansions, six folders in total, which is what the
+  checker names in its own output: Anomaly, Biotech, Core, Ideology, Odyssey, Royalty — and
+  resolves every `ParentName`, build cost,
   research prerequisite, category and Rimrooms type the package names. On a 296-mod profile a typo'd
   def name is a red log read as *this mod broke my game*, and it is invisible without the game.
 - It passed on its first run, which is not evidence. Four faults were planted and **all four were
@@ -279,6 +281,95 @@
 - **The outstanding plant run from the previous handoff is done.** It asked for the full battery
   before the next publication because four anchors had been re-aimed. **Run twice here, once before
   any change and once after — 43 of 43 both times**, with the tree byte-clean afterwards.
+
+### The asset gallery, and five cues that shipped without a consumer
+
+- Owner: ***"okay now full wiki updates and checks of everything written in totality is accurate and
+  uptodate and there is a asset gallery organizable just like the mod registry with their images
+  listing there details"***.
+- **THE GALLERY IS ONE TABLE OF SIXTY-NINE ROWS WITH FIFTY-TWO PICTURES, AND *"JUST LIKE THE MOD
+  REGISTRY"* DECIDED THAT TWICE OVER.** One full list rather than six grouped tables is the
+  correction the owner already made to the register page — and it is also the only way the page
+  becomes organizable, because the search box and sortable headings attach to **any table with at
+  least twenty body rows**. Six tables of twelve, thirty-four, six, one and seventeen got the
+  tooling on exactly one of them. A `Kind` column does the grouping's job without costing the list.
+- **The renderer could not show an image at all.** No wiki page had ever used one, so `inline()` had
+  a rule for links and none for images, and `![alt](src)` would have rendered as `!` followed by a
+  link. Image sources are deliberately **not** passed through `rewrite_target`: it carries `..`
+  through intact so the export's escape guard can refuse a page that climbs out of the site.
+- **The pictures are checkerboarded behind**, because most of these textures are mostly transparent
+  — a gate frame is an outline around a hole — and on a flat background the thing the reader came to
+  check reads as an empty cell. Fifteen oversized originals are resampled to 192 px and everything
+  at or below 256 px is copied untouched, so the whole gallery is **1.3 MB**. Pillow's absence
+  degrades to full-size copies at the same paths with a note, never to a failure.
+- **FIVE OF THE SEVENTEEN SHIPPED CUES HAD NO CONSUMER ANYWHERE.** `RR_AnalysisComplete`,
+  `RR_ContractPaid`, `RR_CutoffThrown`, `RR_JournalFiled` and `RR_MarkerSet` — the whole of
+  `ASSET_REQUESTS.md`'s *"events that happen now and make no sound"* band. Delivered, measured,
+  described on the published asset page, given SoundDefs, and **never played**. This is the defect
+  class that retired the 0.2.0 art, and **every instrument was green**: the asset page counted a cue
+  as named because *its own def names it*, and `check-wiring.py` counted it as wired because
+  `SoundDef` was in its core-consumed list.
+- All five are wired at the call sites the brief itself names. **The cause picks the cue at an
+  emergency**: the cutoff and the kill switch carry the mechanical clack because that is somebody's
+  decision, and anything actually failing carries the failing motor — two causes, two cues, never
+  both on one tick. The payout plays at the camera rather than at a building, because a ledger entry
+  has no place and a receipt audible only from the right room is worse than none.
+- **IT TOOK THREE FIXES TO MAKE ONE RULE REAL, AND A PLANT FOUND THE SECOND AND THIRD.** Removing
+  `SoundDef` from `CORE_CONSUMED` was not enough. Rule 3 asked whether a name appears *"somewhere
+  OTHER than its own declaration"* by counting occurrences in all def XML and testing `> 1` — and
+  every cue's block names itself twice, as `<defName>` and as the `<clipPath>` of the
+  identically-named file, so **each cue cross-referenced itself**. And `enumerated` matched
+  `DefDatabase<T>` anywhere, so `DefDatabase<SoundDef>.GetNamedSilentFail` counted as *this type is
+  enumerated* — a by-name lookup on a variable proving the opposite of what it was read as. After
+  each fix the plant stayed green, which is the only reason the next hole was found rather than
+  assumed closed. Suite 44, 2 of 2, and 19 types are enumerated now where 33 were claimed.
+- **TWO DEFECTS OF MY OWN FROM THE PREVIOUS BATCH.** The new aura and the new animations read
+  **neither** `PortalAuraEnabled` nor `PortalReducedMotion` — both were honoured only in the older
+  fleck effect. So a player who had already switched the aura off would have seen the flecks stop
+  and a *new* strobing light appear, which is the worst possible answer to an accessibility
+  preference. The shipped label settles how: *"Reduce gate motion (hide aura; keep status text)"*
+  promises the aura is **hidden**, so holding the colour and stopping the pulse was the wrong shape
+  and both settings now return the glower to what it did before that file existed.
+- **The wiki in totality, all sixteen pages read end to end.** `gates.md` said a gate was *"blue,
+  with a blue glow"* and never mentioned the five state colours, the three animation sequences or
+  the gate's voice; `interface.md` claimed accessibility and named none of the seven settings that
+  implement it. Both now carry a table of what each switch leaves behind. `credits.md` said *"the
+  four company sound cues"* when seventeen ship, and the **shipped settings description** still read
+  *"Existing game sound cues accompany gate and field events"* — a player-facing string describing
+  the world before the reversal.
+- Also corrected: `CAMPAIGN_CHART.md` said *"Six tiers"* directly above its own seven-row table and
+  its own seven-band summary; `company.md` said insight buys unlocks across nine branches while one
+  of the nine deliberately ships nothing, and contradicted itself two paragraphs later with *"five
+  branches reach it and three do not"*; `build-site.py` still called the twelve slides *"the only
+  art in the package"* when 83 textures and 17 cues ship; two player-facing pages used the banned
+  word *deadline*, which the archive records as **reworded rather than exempted** the last time it
+  came up; and `asset-descriptions.json` carried a mojibaked em dash that was being published.
+
+### RimSort is named, linked and explained, having been named nowhere
+
+- Owner: ***"and make sure the right locations suggest the sorter we use Rimsort with links and shit
+  that we use with the instructions on setup in the wiki"***.
+- **IT WAS NAMED IN NO PUBLIC-FACING FILE AT ALL**, measured before anything was written: zero
+  mentions across all sixteen wiki pages, the README and `WHATS_NEW.md` — while **two of this
+  project's own instruments depend on it by name.** `stage-mod.ps1` stages into RimSort's local mods
+  folder and `check-package-integrity` reads RimSort's `settings.json` to prove the staged copy is
+  the build. The thing the whole publication loop runs on was a secret from the reader.
+- Six locations name it now: **`install.md`** with its own section, **`mods.md`** beside the
+  load-order advice, **`index.md`** in the Start table, **`links.md`**, **`troubleshooting.md`**, and
+  **`About.xml`** — the player-facing description a mod manager itself displays, which said *"how to
+  set up your mod manager"*.
+- **The generic sentence is kept wherever it is still true.** Any manager that reads a declared load
+  order does the same job and the game's own mod list works, so naming the one in use must not read
+  as a requirement this mod does not have.
+- **The setup instructions are built around the four folders rather than around buttons.** A
+  manager's locations are what a reader has to get right and they do not change between releases;
+  its exact labels do, and inventing one would publish a wrong instruction. **The config folder is
+  called out as the one that matters**, because it is the only one of the four a sort writes to — so
+  a wrong config folder is the shape of *"I sorted and nothing happened"*, which is now its own
+  troubleshooting entry. **Sort-then-save is stated twice**, in the steps and as a callout.
+- Three links, in both places a reader looks: the project, the releases page, and **RimSort's own
+  documentation**, because paraphrasing somebody else's interface is how a page goes stale against
+  software it does not control.
 
 ## 0.12.99-dev - 2026-10-05 - The buildable rows were buildable, and three were already done
 

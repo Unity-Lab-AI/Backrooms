@@ -625,6 +625,31 @@ namespace RimroomsAsyncIndustries.Company
                 .ToList();
         }
 
+        /// <summary>
+        /// The receipt. `RR_ContractPaid` shipped against `ASSET_REQUESTS.md` -- *"The company pays
+        /// out. Should feel like a receipt, not a jackpot"* -- and had **no consumer anywhere** until
+        /// 2026-10-06.
+        ///
+        /// **It plays at the camera rather than at a building, because a ledger entry has no place.**
+        /// The def is `MapOnly` with a `distRange` of 8 to 40, so a cue posted at the headquarters'
+        /// centre would be inaudible whenever the player happened to be looking somewhere else on
+        /// their own base -- a receipt that plays only if you are standing in the right room is worse
+        /// than no receipt. Using the camera's own cell makes it audible exactly when the player is
+        /// looking at the map it belongs to, and `RimroomsAudio.Play` already refuses any map that is
+        /// not the current one, so being away on a coordinate stays silent without a second check.
+        ///
+        /// **Never the notification.** The letter below is what tells a player they were paid; this
+        /// only accompanies it.
+        /// </summary>
+        private void PlayPaidCue()
+        {
+            Map map = Find.CurrentMap;
+            if (map == null || Find.CameraDriver == null) { return; }
+            IntVec3 cell = Find.CameraDriver.MapPosition;
+            if (!cell.IsValid || !cell.InBounds(map)) { return; }
+            Audio.RimroomsAudio.Play("RR_ContractPaid", map, cell, true);
+        }
+
         private void CompleteRequest(RequestRecord record, RimroomsRequestDef definition,
             RimroomsSuccessRoute satisfied)
         {
@@ -643,6 +668,7 @@ namespace RimroomsAsyncIndustries.Company
             record.completedTick = Find.TickManager.TicksGame;
             record.satisfiedRouteLabelKey = satisfied.labelKey;
             RecordEvent("RR_Event_RequestCompleted", record.id, definition.LabelCap);
+            PlayPaidCue();
 
             if (definition.bonusUsd > 0 && EverybodyCameBack(record))
             {

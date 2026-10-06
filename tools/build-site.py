@@ -94,8 +94,13 @@ SECTIONS = [
 # on which image leads: *"make sure the preview image is prominate becasue thats what mod loaders
 # see"*.
 #
-# These are the **only** art in the package -- twelve menu slides and the preview, the approved
-# exception to shipping no art.
+# **These are the only art the BANNERS use, which is not the same as the only art in the package.**
+# This comment read *"the only art in the package -- twelve menu slides and the preview, the approved
+# exception to shipping no art"* until 2026-10-06, and by then the package shipped **83 textures and
+# 17 cues**: the owner reversed the no-gameplay-art direction and the sentence describing the old
+# world stayed behind in the file that decides what the site serves. Corrected rather than deleted,
+# because the distinction is load-bearing -- the slides are the only art a page uses as a *banner*,
+# and the gallery serves everything else from the same directory.
 #
 # ## THE ART IS COPIED INTO THE SITE, AND THE FIRST ATTEMPT NOT TO WAS BROKEN ON THE LIVE SITE
 #

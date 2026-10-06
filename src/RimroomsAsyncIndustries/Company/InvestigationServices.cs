@@ -195,6 +195,11 @@ namespace RimroomsAsyncIndustries.Company
             if (HasCapability("RR_Cap_SecondReading") && researchInsights < int.MaxValue)
             { researchInsights++; }
             RecordEvent("RR_Event_EvidenceAnalyzed", record.id, analyst.LabelShortCap.ToString());
+            // **`RR_AnalysisComplete` is played here, and it shipped with no consumer for a version.**
+            // The brief's own words: *"A researcher finishes analysing a finding"*. After the record,
+            // so a cue is never the only evidence that the work completed.
+            if (analyst.Spawned && analyst.Map != null)
+            { Audio.RimroomsAudio.Play("RR_AnalysisComplete", analyst.Map, analyst.Position, true); }
             UpdateEvidenceAndContracts();
             // The evidence record itself is the once-only insight receipt. Contract settlement is retriable independently.
             return CompanyActionResult.Applied();

@@ -201,6 +201,18 @@ def strip_front_matter(text):
 
 LINK = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
 
+# An image, which must be tried BEFORE `LINK` or the link rule eats `[alt](src)` and leaves a bare
+# `!` in the prose. Added 2026-10-06 for the asset gallery -- owner: *"a asset gallery organizable
+# just like the mod registry with their images listing there details"*. No page used an image until
+# then, which is why the renderer had no rule for one.
+#
+# **The source is NOT passed through `rewrite_target`, deliberately.** That helper strips a `./`
+# prefix and rewrites `.md` to `.html`, neither of which an image wants, and it carries `..` through
+# **intact on purpose** so `check_images_resolve` in the exporter can refuse a page that climbs out
+# of the published site. Rewriting here would be a second, quieter path to the same 404 that rule
+# exists to catch.
+IMAGE = re.compile(r"!\[([^\]]*)\]\(([^)\s]+)\)")
+
 
 def rewrite_target(target):
     """`install.md` -> `install.html`, and a bare anchor or absolute URL is left alone.
@@ -253,6 +265,12 @@ def inline(text):
     out = re.sub(r"\*\*\*([^*]+)\*\*\*", r"<strong><em>\1</em></strong>", out)
     out = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", out)
     out = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", out)
+    # Images first: `LINK` would otherwise match the `[alt](src)` inside `![alt](src)`.
+    # `out` is already escaped, so neither group is escaped again -- doing so would turn a `&` in a
+    # path into `&amp;amp;`. The alt text is real content here rather than decoration: a gallery row
+    # whose picture does not load should still say which asset it was.
+    out = IMAGE.sub(lambda m: '<img src="%s" alt="%s" loading="lazy" decoding="async">'
+                    % (m.group(2), m.group(1)), out)
     out = LINK.sub(lambda m: '<a href="%s">%s</a>'
                    % (esc(rewrite_target(m.group(2))), m.group(1)), out)
     for index, span in enumerate(spans):

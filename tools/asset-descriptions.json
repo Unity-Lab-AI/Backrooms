@@ -29,7 +29,7 @@
     "RR_GateActivation_06": "Activation phase 6 of 6: two small residual sparks. Stop drawing after this frame.",
     "RR_MachineGate": "The arch that gives the Set Gate button its picture. Drawn face on, which is right for an interface icon and wrong for the floor, so it is never placed in the world.",
     "RR_GateConsole": "The company's own control console: a slab panel with a green readout, labelled switches and a cable loop. Three facings.",
-    "RR_FieldAnalysisBench": "A long analysis counter â€” reel recorder, reader and terminal across one worktop. Three facings, with the end-on view drawn for the rotated footprint.",
+    "RR_FieldAnalysisBench": "A long analysis counter — reel recorder, reader and terminal across one worktop. Three facings, with the end-on view drawn for the rotated footprint.",
     "RR_UtilityGenerator": "A compact wood-fired set with an exhaust stack and a side hopper of split logs. The hopper is why it burns wood rather than chemfuel.",
     "RR_EmergencyCutoff": "A sealed box with a palm-sized red stop button and a stub of conduit. Reads the same from every side, which is why one drawing honestly produces all four facings.",
     "RR_ReturnBeacon": "An amber lamp on a weighted tripod with a coiled lead. A marker, not a lamp for lighting a room.",

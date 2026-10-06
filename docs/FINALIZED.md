@@ -18097,3 +18097,63 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-06)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner direction — the wiki in totality, and an organizable asset gallery (2026-10-06)
+
+**Verbatim owner direction (2026-10-06), the whole sentence:** *"okay now full wiki updates and checks of everything written in totality is accurate and uptodate and there is a asset gallery organizable just like the mod registry with their images listing there details"*
+
+- [x] **"full wiki updates"** — every page brought current against what the package actually ships at 0.13.0-dev, not against a neighbouring page. The art and audio reversal, the thirteen new cues, the aura, the loops, the animation sequences and the four defects the triple check found all landed after most of this prose was written. -- **DONE 0.13.0-dev. All sixteen pages read end to end**, and the two biggest gaps were features the owner asked for that the wiki never mentioned: **`gates.md` said a gate was *"blue, with a blue glow"*** and said nothing about the five state colours, the three animation sequences or the gate's voice; **`interface.md` claimed accessibility and named none of the seven settings that implement it.** Both now carry a table of what each switch leaves behind. `credits.md` said *"the four company sound cues"* when seventeen ship. **And the shipped settings description was still describing the world before the reversal** — *"Existing game sound cues accompany gate and field events"* — which is a player-facing string, not a doc.
+- [x] **"checks of everything written in totality is accurate and uptodate"** — *"in totality"* is the binding word: every page, every claim, read against source and against the generators rather than spot-checked. A claim verified correct is recorded as correct so a later pass does not undo it. -- **DONE 0.13.0-dev, AND IT FOUND SOMETHING MUCH WORSE THAN A STALE SENTENCE.** **Five of the seventeen shipped sound cues had no consumer anywhere** — `RR_AnalysisComplete`, `RR_ContractPaid`, `RR_CutoffThrown`, `RR_JournalFiled`, `RR_MarkerSet`, the whole of `ASSET_REQUESTS.md`'s *"events that happen now and make no sound"* band. Delivered, measured, described on the published asset page, given SoundDefs, and **never played**. All five are wired now at the call sites the brief itself names. **Two code defects of my own were also found**: the new aura and the new animations read **neither** `PortalAuraEnabled` nor `PortalReducedMotion`, so a player who had already asked for no moving effects would have got three new animated sequences and a strobing light. Also corrected: `CAMPAIGN_CHART.md` said *"Six tiers"* above its own seven-row table, `company.md` said insight buys unlocks across nine branches when one of the nine deliberately ships nothing, `build-site.py` still called the menu slides *"the only art in the package"*, two player-facing pages used the banned word *deadline*, and `asset-descriptions.json` carried a mojibaked em dash that was being published.
+- [x] **"there is a asset gallery organizable just like the mod registry with their images listing there details"** — the gallery shows **the images themselves**, sortable and searchable the way the public mod register is, with each asset's details beside it. *"just like the mod registry"* names the behaviour to copy: a search box and sortable columns over one full list. -- **BUILT 0.13.0-dev: one table, 69 rows, 52 pictures, eight columns.** *"Just like the mod registry"* decided the shape twice over. **One full list rather than six grouped tables**, which is the correction the owner made to the register page itself — and it is also what makes the page organizable at all, because the search box and sortable headings attach to **any table with at least twenty body rows**. Six tables of twelve, thirty-four, six, one and seventeen got the tooling on one of them; one table of sixty-nine gets it on the whole gallery, with a `Kind` column doing the grouping's job. **The renderer could not show an image at all** and now can. **The pictures are checkerboarded**, because half these textures are mostly transparent and the reader is looking at them to judge the alpha. Fifteen oversized originals are resampled and the small ones copied untouched, so the whole gallery is **1.3 MB**.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-06)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner direction — name RimSort as the sorter, with links and setup instructions (2026-10-06)
+
+**Verbatim owner direction (2026-10-06):** *"and make sure the right locations suggest the sorter we use Rimsort with links and shit that we use with the instructions on setup in the wiki"*
+
+- [x] **"make sure the right locations suggest the sorter we use Rimsort"** — the pages that talk about installing and sorting currently say *"your mod manager"* and never name it. **Every location that mentions sorting names RimSort**, which is the sorter this project actually uses: `stage-mod.ps1` stages into RimSort's own local mods folder and `check-package-integrity` reads RimSort's `settings.json` to prove the staged copy is the build. -- **DONE 0.13.0-dev, AND IT WAS NAMED IN NO PUBLIC-FACING FILE AT ALL.** Measured before anything was written: zero mentions across all sixteen wiki pages, the README and `WHATS_NEW.md` — while two of this project's own instruments depend on RimSort by name. Six locations now name it: **`install.md`** (its own section), **`mods.md`** (beside the load-order advice), **`index.md`** (*"RimSort setup"* in the Start table), **`links.md`**, **`troubleshooting.md`** (a sorted-but-nothing-changed entry), and **`About.xml`**, which is the player-facing description a mod manager itself displays and said *"how to set up your mod manager"*. **The generic sentence is kept where it is still true** — any manager that reads a declared load order does the same job, and the game's own mod list works — because naming the one in use must not read as a requirement this mod does not have.
+- [x] **"with links and shit that we use"** — the real links, in the places a reader needs them, including on [`links.md`](wiki/links.md) beside the rest. -- **DONE 0.13.0-dev. Three links, twice over**, as a table on `install.md` and again on `links.md` where a reader goes looking for them: the project, the releases page, and **RimSort's own documentation** — because the one thing this wiki should not do is paraphrase somebody else's interface and go stale against it. Linked inline from `mods.md` and `troubleshooting.md` too, so the name is never a dead end.
+- [x] **"with the instructions on setup in the wiki"** — how to set RimSort up and sort this mod with it, written as steps on [`install.md`](wiki/install.md) rather than assumed. -- **WRITTEN 0.13.0-dev as *Setting RimSort up*, and it is built around the four folders rather than around buttons.** A manager's locations are what a reader actually has to get right and they do not change between releases; its exact labels do, and inventing one would publish a wrong instruction. **The config folder is called out as the one that matters**, because it is the only one of the four a sort writes to, so a wrong config folder is the shape of *"I sorted and nothing happened"* — which is now also its own entry on `troubleshooting.md`. **And sort-then-save is stated twice**, in the steps and as a callout: sorting arranges the list, saving writes `ModsConfig.xml`, and running without saving launches the order you had before.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

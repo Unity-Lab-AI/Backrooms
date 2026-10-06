@@ -82,7 +82,18 @@ namespace RimroomsAsyncIndustries.Company
                     HasArchivedCustody(record))
                 {
                     if (record.status != EvidenceStatus.Secured)
-                    { RecordEvent("RR_Event_EvidenceSecured", record.id); }
+                    {
+                        RecordEvent("RR_Event_EvidenceSecured", record.id);
+                        // **`RR_JournalFiled`, which shipped with no consumer for a version.** The
+                        // brief: *"A filled journal reaches the records archive. Paper and a latch"*.
+                        // Inside the status-change guard rather than beside it, so a sweep that keeps
+                        // finding the same secured record does not replay the latch every pass.
+                        if (record.item != null && record.item.Spawned && record.item.Map != null)
+                        {
+                            Audio.RimroomsAudio.Play("RR_JournalFiled", record.item.Map,
+                                record.item.Position, true);
+                        }
+                    }
                     record.status = EvidenceStatus.Secured;
                 }
                 else if (record.analyzedTick < 0 && record.status == EvidenceStatus.Secured)

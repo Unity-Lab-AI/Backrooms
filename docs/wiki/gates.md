@@ -61,6 +61,56 @@ there were not manufactured by anyone: in the places this mod is drawn from, the
 and stretches of wall you simply pass through. **A frame means somebody built it. No frame means it
 was already there.**
 
+## The glow tells you what the gate is doing
+
+A designated gate carries a light, and **its colour is its state**. You can read a gate across the
+room without selecting it.
+
+| The gate is | The light |
+|---|---|
+| Designated, doing nothing | A dim steady blue, close in |
+| Bringing a connection up | Blue warming toward white, brightening as the work completes |
+| **Open** | Steady blue at full reach — **exactly as it has always looked** |
+| In an emergency | Amber, pulsing slowly |
+| Waiting on a recovery | Red, pulsing faster |
+
+**The pulse quickens as the ramp fills**, from a slow breath at the start to a hard beat at full, so
+a gate coming up reads as a machine winding up rather than a warning light blinking.
+
+**The light is never the only signal.** Every state above already writes a message, marks the
+Machine pane, or both. Nothing here is information you can only get by seeing a colour.
+
+## It is drawn and heard as it works
+
+The frame carries three animations over it: a **charge** cycle while the connection comes up, a
+one-off **activation** flash at the moment it reaches full, and a quieter **live** cycle that loops
+while the connection stands.
+
+The live cycle runs slower than the charge one on purpose — work in progress should look busy, and
+an open connection should look settled.
+
+The gate also has a voice. A **rev** climbs when a ramp starts and holds, unresolved; a **detent**
+clicks at each quarter of the way up; the rev **resolves** into a latch when a connection closes
+normally. A low **hum** loops through the ramp and a quieter one while the connection is open.
+
+**A fault sounds different from a countdown.** A window running short is the gate working correctly
+and uses the ordinary warning. A failing gate has its own cue, and **throwing the cutoff or the kill
+switch has another** — a mechanical clack, because that one is somebody's decision rather than a
+failure.
+
+## Turning any of it off
+
+All of it is presentation, and none of it is load-bearing. In the mod's settings:
+
+| Setting | What it does |
+|---|---|
+| **Show native gate aura** | Off leaves the door its blue tint and no light of its own |
+| **Show company gate frames** | Off leaves the bare door, with no frame and no animation over it |
+| **Reduce gate motion (hide aura; keep status text)** | Stops the light and the animations. **The panes and messages are untouched** |
+| **Mute gate cues** | Silences the gate's sounds |
+| **Mute field and radio cues** | Silences the reporting sounds — a tag set, a journal filed, an analysis finished, a payment |
+| **Cue volume** | Scales all of them, under the game's own volume |
+
 ## Width decides what fits
 
 | Width | Passes |

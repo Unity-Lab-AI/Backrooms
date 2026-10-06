@@ -33,7 +33,7 @@ Requiring a mod does not mean its authors support or endorse this one.
 ## Art and audio
 
 **Everything shipped here is original to this project.** The main-menu backgrounds, the gameplay
-textures and the four company sound cues.
+textures and all seventeen company sound cues.
 
 **No other package's assets are copied, ever.** Where Rimrooms uses the game's own art or sounds, it
 names the path and the game provides it at runtime — nothing is pulled into this package.

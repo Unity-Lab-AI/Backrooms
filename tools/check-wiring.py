@@ -47,9 +47,25 @@ SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
 
 # Def types RimWorld resolves itself, so our code never has to name or enumerate them. Kept short
 # and explicit: a type added here without a reason is a hole in the check.
+#
+# **`SoundDef` WAS IN THIS LIST AND IT WAS A HOLE, EXACTLY AS THE LINE ABOVE WARNS.** RimWorld does
+# not play a mod's `SoundDef` by enumerating the database -- a cue is played by an explicit call or
+# named in another def's field, and nothing else ever reaches it. Listing the type as core-consumed
+# therefore declared **every cue wired by existing**, which is the definition of an absence rule
+# satisfied by construction.
+#
+# Measured 2026-10-06: **five of the seventeen shipped cues had no consumer anywhere** --
+# `RR_AnalysisComplete`, `RR_ContractPaid`, `RR_CutoffThrown`, `RR_JournalFiled`, `RR_MarkerSet`,
+# the whole of `ASSET_REQUESTS.md`'s *"events that happen now and make no sound"* band. They were
+# delivered, described on the published asset page, given SoundDefs, and never played. The asset
+# page reported them as named because **a cue's own def names it**, and this checker reported them
+# as wired because of this line. Two instruments agreeing while nothing plays the sound.
+#
+# This is the same defect class the docstring above lists four times, and it is the one that
+# retired the 0.2.0 art. Removed, so a cue must now be named by our code or by another def.
 CORE_CONSUMED = set("""
 ThingDef TerrainDef RecipeDef ScenarioDef FactionDef IncidentDef ResearchProjectDef JobDef
-WorkGiverDef ThingCategoryDef SoundDef ThoughtDef HediffDef PawnKindDef ScenPartDef
+WorkGiverDef ThingCategoryDef ThoughtDef HediffDef PawnKindDef ScenPartDef
 MapGeneratorDef GenStepDef DesignationCategoryDef WorkTypeDef StatDef TraitDef RulePackDef
 MainButtonDef KeyBindingDef TaleDef ColorDef
 """.split())
@@ -89,7 +105,10 @@ def source_files():
 
 
 def declared_defs():
-    """defName -> type name, for every def this package declares."""
+    """defName -> (type name, the def's own declaration body).
+
+    The body is returned because rule 3 has to subtract it. See `check_defs`.
+    """
     found = {}
     for path in glob.glob(os.path.join(MOD, "Defs", "**", "*.xml"), recursive=True):
         text = strip_xml_comments(read(path))
@@ -101,7 +120,7 @@ def declared_defs():
             body = match.group(2)
             name = re.search(r"<defName>([^<]+)</defName>", body)
             if name:
-                found.setdefault(name.group(1).strip(), match.group(1))
+                found.setdefault(name.group(1).strip(), (match.group(1), body))
     return found
 
 
@@ -111,21 +130,45 @@ def check_defs(problems, source_blob):
         fail("no defs parsed at all; the package layout has moved")
         return 0
 
-    enumerated = set(t.split(".")[-1]
-                     for t in re.findall(r"DefDatabase<([A-Za-z0-9_.]+)>", source_blob))
+    # **ENUMERATION, NOT ANY MENTION OF THE DATABASE.** This matched `DefDatabase<T>` anywhere,
+    # which counted `DefDatabase<SoundDef>.GetNamedSilentFail(cueId)` as *this type is enumerated*.
+    # A by-name lookup on a variable proves the opposite: it says some cue is fetched, and nothing
+    # whatever about whether any particular cue is ever reachable. That is how `RR_MarkerSet` stayed
+    # "wired" through two separate attempts to catch it -- the plant in `.local/qa/` renamed its only
+    # `Play` call and this check stayed green both times.
+    #
+    # `AllDefs` and `AllDefsListForReading` are the real thing: code that walks every def of a type
+    # genuinely consumes all of them. A `GetNamed*` call names its target, so rule 1 already covers
+    # the defs it reaches, by the literal in the call.
+    enumerated = set(t.split(".")[-1] for t in re.findall(
+        r"DefDatabase<([A-Za-z0-9_.]+)>\s*\.\s*AllDefs", source_blob))
 
     # Every def XML, so a cross-reference from one def to another counts as wiring.
     def_xml = "\n".join(strip_xml_comments(read(path)) for path in
                         glob.glob(os.path.join(MOD, "Defs", "**", "*.xml"), recursive=True))
 
-    for name, kind in sorted(declared.items()):
+    for name, (kind, own_body) in sorted(declared.items()):
         short = kind.split(".")[-1]
         if re.search(r"\b" + re.escape(name) + r"\b", source_blob):
             continue
         if short in enumerated or short in CORE_CONSUMED:
             continue
-        # A cross-reference means the name appears somewhere OTHER than its own declaration.
-        if len(re.findall(r"\b" + re.escape(name) + r"\b", def_xml)) > 1:
+        # A cross-reference means the name appears somewhere OTHER than its own declaration, and
+        # **`> 1` was the wrong way to ask that.** A def whose own block names itself twice then
+        # cross-references itself. Every one of the seventeen `SoundDef`s does exactly that: the
+        # block carries `<defName>RR_MarkerSet</defName>` **and**
+        # `<clipPath>Rimrooms/RR_MarkerSet</clipPath>`, because the clip file is named after the
+        # cue. So the count was 2 for a cue nothing played, and the rule passed.
+        #
+        # Measured 2026-10-06 by planting it: renaming the one `Play` call for `RR_MarkerSet` left
+        # this check **green**, which is the only reason the loophole was found rather than assumed
+        # closed when `SoundDef` came out of `CORE_CONSUMED`.
+        #
+        # Counting against the def's own body fixes it for every type, not just cues -- any def
+        # that happens to repeat its own name inside itself had the same free pass.
+        elsewhere = (len(re.findall(r"\b" + re.escape(name) + r"\b", def_xml))
+                     - len(re.findall(r"\b" + re.escape(name) + r"\b", own_body)))
+        if elsewhere > 0:
             continue
         fail("%s (%s) is declared and nothing reads it: not named in C#, its type is neither "
              "enumerated nor Core-consumed, and no other def references it" % (name, short))

@@ -9,11 +9,11 @@ The company is not a faction you befriend. It is an account, a queue of requests
 
 ---
 
-## Nothing the company asks for has a deadline
+## Nothing the company asks for ever runs out
 
-**There are no deadlines in this mod.** No request, contract, offer, quote or trade ever expires.
-There is no penalty for taking a long time, no cancellation for slowness, and nothing that asks you
-to respond within a set period.
+**Nothing in this mod runs out.** No request, contract, offer, quote or trade ever stops being
+available because time passed. There is no penalty for taking a long time, no cancellation for
+slowness, and nothing that asks you to respond within a set period.
 
 You may cancel a job. The corporation may not.
 
@@ -240,7 +240,9 @@ what the amber light is telling you.
 
 ## Research
 
-Insight from analysed records buys unlocks across **nine branches**:
+Insight from analysed records buys unlocks across **forty-four projects**. They are laid out in nine
+branches, and **eight of the nine have projects to buy** — the ninth is listed because it is part of
+the plan and deliberately ships nothing:
 
 | Branch | |
 |---|---|
@@ -252,7 +254,7 @@ Insight from analysed records buys unlocks across **nine branches**:
 | **Entities and containment** | Detection, quarantine, scoped study |
 | **Communications and logistics** | Link range, delivery planning, caches, relays |
 | **Commerce and organisation** | Better offers, specialist recruitment, leases |
-| **Transport and orbital support** | Expansion content only, and never required |
+| **Transport and orbital support** | **Nothing to buy here, deliberately.** Expansion content only, and never required |
 
 Branches run through **seven progression bands**:
 

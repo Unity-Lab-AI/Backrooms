@@ -40,7 +40,7 @@
   <RR_Settings_RateOpenMarket>Ordinary valuables once the branch has learned the market: {0}x</RR_Settings_RateOpenMarket>
   <RR_Settings_SupplyFee>Corporate catalogue access fees: {0}x the shipped price</RR_Settings_SupplyFee>
   <RR_Settings_AudioTitle>Company sound cues</RR_Settings_AudioTitle>
-  <RR_Settings_AudioDescription>Existing game sound cues accompany gate and field events. Persistent text warnings remain available when audio is muted. Native game and master volume still apply.</RR_Settings_AudioDescription>
+  <RR_Settings_AudioDescription>Seventeen company sound cues accompany gate and field events. Where one cannot be found, the game's own nearest sound is used instead. Text warnings remain whatever you mute here, and the game's own volume still applies on top.</RR_Settings_AudioDescription>
   <RR_Settings_AudioUnavailable>Audio preferences could not be loaded. Company cues are silent.</RR_Settings_AudioUnavailable>
   <RR_Settings_MuteGateCues>Mute gate cues</RR_Settings_MuteGateCues>
   <RR_Settings_MuteFieldCues>Mute field and radio cues</RR_Settings_MuteFieldCues>

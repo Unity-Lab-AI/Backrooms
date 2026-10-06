@@ -154,8 +154,10 @@ removed per §1.1.
 
 ## 3. The research tree
 
-Six tiers and nine branches; the first five are `CAMPAIGN_CONTENT_CATALOG.md`'s and the sixth was
-swept for and chosen at 0.12.99-dev. **Tiers are progression bands,
+**Seven tiers and nine branches.** The first five are `CAMPAIGN_CONTENT_CATALOG.md`'s; tiers 5 and 6
+were swept for and chosen at 0.12.99-dev. *This line read "Six tiers" until 2026-10-06, while the
+table below it listed seven and §3.2's own summary said seven — the count was never updated when the
+second of the two new tiers landed.* **Tiers are progression bands,
 not a promise that every branch is a linear chain** — that caveat is the prep material's own and
 it is kept, because §1.2 needs alternate routes through the tree as much as through a mission.
 

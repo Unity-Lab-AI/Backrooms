@@ -1264,7 +1264,29 @@ namespace RimroomsAsyncIndustries.Gate
             RecordGateActivity(reasonKey == "RR_Gate_TimeCostWindowExhausted"
                 ? "RR_Gate_TimeCostWindowExhausted" : reasonKey, CurrentOpeningId);
             Messages.Message(reasonKey.Translate(), parent, MessageTypeDefOf.SilentInput, false);
-            Audio.RimroomsAudio.Play("RR_GateWarning", parent.Map, parent.Position, false);
+            // **THE EMERGENCY HAS ITS OWN CUE, AND IT SHIPPED WITH NO CONSUMER FOR A WHOLE VERSION.**
+            // `RR_GateEmergency` was delivered against `ASSET_REQUESTS.md`, which asks for it in so
+            // many words -- *"Distinct from RR_GateWarning, which is already used for six smaller
+            // things. This one means the gate itself has gone wrong"* -- and then nothing ever played
+            // it. A `SoundDef` existed, the file shipped, the asset page listed it as present, and
+            // **every instrument stayed green**, because a cue named by its own def reads as named.
+            // This is the same defect that retired the 0.2.0 art: content with no consumer.
+            //
+            // The countdown warnings at ten, five and two minutes keep `RR_GateWarning` on purpose.
+            // They are the six smaller things the brief is distinguishing this from: a window running
+            // short is the gate working correctly, and only this method means it has gone wrong.
+            //
+            // **AND THE CAUSE PICKS THE CUE, WHICH IS WHY `RR_CutoffThrown` LIVES HERE TOO.** That
+            // cue is *"The emergency cutoff opens the circuit. A heavy mechanical clack"*, and the
+            // cutoff building is Core's own `Building_PowerSwitch` -- we own no flick, so there is no
+            // hook on the switch itself. What we do own is the moment the gate finds out, and this
+            // method is already told **why**. So somebody choosing to cut the power gets the clack
+            // and anything actually failing gets the failing motor: two causes, two cues, and never
+            // both on one tick, which is the mess a second `Play` call here would have made.
+            string cue = reasonKey == "RR_Gate_EmergencyCutoff" ||
+                         reasonKey == "RR_NativeGate_KillSwitchThrown"
+                ? "RR_CutoffThrown" : "RR_GateEmergency";
+            Audio.RimroomsAudio.Play(cue, parent.Map, parent.Position, false);
         }
 
         /// <summary>

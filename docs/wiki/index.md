@@ -34,7 +34,7 @@ have a crew testify, redirect to related work, or complete a research project.
 
 | | |
 |---|---|
-| **[Install](install.md)** | Requirements, mod manager setup, load order |
+| **[Install](install.md)** | Requirements, RimSort setup, load order |
 | **[Your first hour](first-hour.md)** | Power, gate, crew, first crossing |
 | **[The three starts](scenarios.md)** | Which opening to pick |
 
