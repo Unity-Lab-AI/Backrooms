@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-06",
+  "creator": "Operator",
+  "tool": "built-in image_gen",
+  "ownerChoice": "Paper field journal with matching closed, open and upright views (Recommended)",
+  "scope": "Seven original journal masters; package conversion uses the existing cutter. No game/DLC/mod assets copied.",
+  "assets": [
+    {
+      "filename": "RR_CompanyJournal_Closed.png",
+      "masterPath": "assets/source/journal/RR_CompanyJournal_Closed.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a0e322-28b4-7753-a12c-30694ea362c5\\exec-fb472f57-d0da-4df8-a38f-e173cea89b01.png",
+      "prompt": "Use case: stylized-concept. Asset: original transparent gameplay sprite for RimWorld 1.6 mod Rimrooms - Async Industries, a CLOSED PAPER FIELD JOURNAL. One isolated object only. Strict high overhead orthographic colony-sim item view, small visible lower edge like native RimWorld objects. A practical 1990s scientist field notebook: rectangular charcoal-grey cloth hardcover with subtly worn corners, cream paper visible at its right edge, a narrow muted amber spine band, small plain amber rectangular label inset on the front cover, a slim cream elastic band holding it shut, one small cream index tab. Draw as simplified hand-painted 2D game art with restrained firm dark outlines and broad readable surfaces; no realistic photograph, no elaborate illustration on the cover. Consistent industrial charcoal, warm gray, cream and muted gold palette of the project's equipment sprites. The closed journal lies flat, spine at left, top of journal at top of image, completely inside square canvas with ample transparent padding. Slight dimensional edge, no cast shadow, no scenery, no hands, no person, no floor. No lettering, logos, tape, cassette, plastic sleeve, UI or watermark. Genuine alpha transparent background; item sprite crisp and recognizable at 128 pixels. Output one PNG.",
+      "references": []
+    },
+    {
+      "filename": "RR_CompanyJournal_Open_south.png",
+      "masterPath": "assets/source/journal/RR_CompanyJournal_Open_south.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a0e322-28b4-7753-a12c-30694ea362c5\\exec-408ebc9d-65e4-4cdb-980a-628aa00ff26a.png",
+      "prompt": "OPEN READING VIEW, facing SOUTH: Edit the referenced paper field journal into the requested pose, keeping the SAME charcoal cloth cover, muted amber spine band and plain amber cover label, cream paper, worn corners, restrained dark outlines and simplified hand-painted RimWorld colony-sim sprite style. Single isolated centered object on genuine alpha transparent background, no scenery, hands, floor, shadow outside object, UI or watermark. No cassette, tape or plastic sleeve. All details should remain readable after downscaling to a 128-pixel item sprite. No readable lettering. Use strict game-sprite overhead orthographic projection, not a photograph or cinematic angle. Keep ample transparent padding in a square PNG. The journal is opened flat, two cream pages with a narrow central binding crease. The top edges of both pages point toward the TOP of the image. A few sparse fine pencil route lines and faint ruled lines, no legible words. Dark cover only visible around the page edges; amber spine material subtly visible at binding. Pages are flat and readable from above. Do not leave the elastic crossing the pages.",
+      "references": [
+        "assets/source/journal/RR_CompanyJournal_Closed.png"
+      ]
+    },
+    {
+      "filename": "RR_CompanyJournal_Vertical_south.png",
+      "masterPath": "assets/source/journal/RR_CompanyJournal_Vertical_south.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a0e322-28b4-7753-a12c-30694ea362c5\\exec-ac2ac2b1-f06c-4bf6-91df-20200f9ed608.png",
+      "prompt": "UPRIGHT STORAGE/HELD VIEW, facing SOUTH: Edit the referenced paper field journal into the requested pose, keeping the SAME charcoal cloth cover, muted amber spine band and plain amber cover label, cream paper, worn corners, restrained dark outlines and simplified hand-painted RimWorld colony-sim sprite style. Single isolated centered object on genuine alpha transparent background, no scenery, hands, floor, shadow outside object, UI or watermark. No cassette, tape or plastic sleeve. All details should remain readable after downscaling to a 128-pixel item sprite. No readable lettering. Use strict game-sprite overhead orthographic projection, not a photograph or cinematic angle. Keep ample transparent padding in a square PNG. The journal is closed and standing upright on its bottom page edge, a narrow tall rectangular book occupying a vertical silhouette, as viewed from the high overhead game camera. Front charcoal cover and plain amber label face the BOTTOM/south of the image; the upper edge and cream page thickness are visible. The muted amber spine band is at LEFT. Keep the cream elastic band and tiny index tab. This is a compact in-game upright book sprite, no display stand or environment.",
+      "references": [
+        "assets/source/journal/RR_CompanyJournal_Closed.png"
+      ]
+    },
+    {
+      "filename": "RR_CompanyJournal_Open_north.png",
+      "masterPath": "assets/source/journal/RR_CompanyJournal_Open_north.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a0e322-28b4-7753-a12c-30694ea362c5\\exec-98c57c1f-8714-4eda-a38c-d7f4a8965506.png",
+      "prompt": "Edit only the orientation of the referenced open paper field journal sprite to its NORTH reading facing. Turn the complete book through 180 degrees within the image plane: the page top edges point to the BOTTOM of the image, left and right pages exchange screen sides, and the sparse route marks rotate with the paper. Preserve the same book, charcoal cover, amber binding, cream ruled pages, exact restrained RimWorld hand-painted sprite treatment and transparent background. Flat overhead orthographic book, one centered isolated sprite with transparent padding. No text, UI, objects, shadows or scenery. No new design.",
+      "references": [
+        "assets/source/journal/RR_CompanyJournal_Open_south.png"
+      ]
+    },
+    {
+      "filename": "RR_CompanyJournal_Open_east.png",
+      "masterPath": "assets/source/journal/RR_CompanyJournal_Open_east.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a0e322-28b4-7753-a12c-30694ea362c5\\exec-d7a30e4b-a818-45c2-8188-112c44a670b4.png",
+      "prompt": "Edit only the orientation of the referenced open paper field journal sprite to its EAST reading facing. Turn the complete open book 90 degrees counterclockwise within the image plane: its page top edges point toward the LEFT, and its central binding now runs horizontally. Preserve the same page layout and route marks, charcoal cover, amber binding, cream paper, restrained RimWorld hand-painted sprite treatment and transparent background. Flat overhead orthographic book, one centered isolated sprite with transparent padding. No text, UI, objects, shadows or scenery. No new design.",
+      "references": [
+        "assets/source/journal/RR_CompanyJournal_Open_south.png"
+      ]
+    },
+    {
+      "filename": "RR_CompanyJournal_Vertical_north.png",
+      "masterPath": "assets/source/journal/RR_CompanyJournal_Vertical_north.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a0e322-28b4-7753-a12c-30694ea362c5\\exec-bd076b94-606a-4248-810c-978813dcdf83.png",
+      "prompt": "Edit the referenced standing paper field journal into a NORTH/back-facing sprite of the SAME book. Show its BACK COVER, plain charcoal cloth without the front amber label. The amber spine band appears on the RIGHT and the cream elastic near the LEFT, with matching worn corners, cream top page block and small tab on the opposite edge. Keep the same tall narrow upright silhouette and high overhead orthographic colony-sim camera. Simplified restrained hand-painted RimWorld sprite, broad readable shapes, genuine alpha transparent background, one isolated centered book with transparent padding. No floor, person, hand, extra objects, lettering, UI, cast shadow or watermark.",
+      "references": [
+        "assets/source/journal/RR_CompanyJournal_Vertical_south.png"
+      ]
+    },
+    {
+      "filename": "RR_CompanyJournal_Vertical_east.png",
+      "masterPath": "assets/source/journal/RR_CompanyJournal_Vertical_east.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a0e322-28b4-7753-a12c-30694ea362c5\\exec-52f380c4-2e90-4f0e-b062-2eaf1a252f70.png",
+      "prompt": "Edit the referenced standing paper field journal into its EAST/side-facing sprite of the SAME book. The standing book is now viewed edge-on: a much NARROWER tall vertical silhouette, primarily its muted amber SPINE with charcoal bevels, a subtle strip of cream paper around the top edge. Preserve the same book height, material and wear. This is a genuine side view, not the broad front cover rotated flat; do not show the front label. Strict high overhead orthographic RimWorld game-sprite viewpoint with small visible top edge; simplified hand-painted style and dark outlines matching reference. One isolated centered object, genuine alpha transparency and ample padding. No scenery, hands, person, text, UI, shadow or watermark.",
+      "references": [
+        "assets/source/journal/RR_CompanyJournal_Vertical_south.png"
+      ]
+    }
+  ]
+}

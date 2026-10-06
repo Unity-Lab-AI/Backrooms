@@ -53,7 +53,13 @@ A gate is a door you designate — not a custom building.
 | Wider doors from other mods | 3+ cells |
 
 A designated gate is **blue, with a blue glow**, so you can tell it from an ordinary door at a
-glance.
+glance. It also wears a **machine frame** drawn across the whole run — the company built it, and it
+looks built. You can switch the frame off in the mod's settings if you prefer the bare door.
+
+**A natural gate never wears one, and that is the point.** The permanent ways through you find out
+there were not manufactured by anyone: in the places this mod is drawn from, they are ordinary doors
+and stretches of wall you simply pass through. **A frame means somebody built it. No frame means it
+was already there.**
 
 ## Width decides what fits
 

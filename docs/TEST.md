@@ -67,6 +67,14 @@ recorded on the row, and then the row moves to `FINALIZED.md` by the usual archi
 
 ## Pending
 
+### Owner direction — original equipment, paper journal and gate world frames (2026-10-06)
+
+**Verbatim owner direction:** *"gate size variants too right and any other things we need like journal and such and converting into game world"*
+
+**Verbatim journal choice:** *"Paper field journal with matching closed, open and upright views (Recommended)"*
+
+- [T] **Original artwork world acceptance.** After the owner launches through RimSort, inspect the six authored equipment objects in all four facings at normal zoom, including sprite scale/origin, console and bench interaction access, the bench's rotated 1x2 work side, uninstall/minify/carry/reinstall, and unchanged facility, power and storage links. Inspect the paper journal's closed ground/icon, all open and upright facings, native book reading, company issuance and field recording, physical evidence custody and analysis, then save/reload without losing identity or duplicating evidence. Inspect the 1x1, 1x2, 1x3 and 2x3 gate frames in every orientation on native doors and bound runs: centered full-footprint trim, visible animated native leaves, native access permissions, physical crossings and arrival/return cells, fog hiding and the separate `GateFramesEnabled` disable option. Record actual observations against the [authored rotation and journal artifact record](implementation/AUTHORED_ROTATION_PIPELINE.md); the compiled renderer and converted PNGs are source/build evidence and do not close this row.
+
 
 ### Owner direction — phase 2 is back on: our own items and benches and gates, with our own art and audio (2026-10-06)
 

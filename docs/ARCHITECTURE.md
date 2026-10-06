@@ -30,6 +30,20 @@ Three facts shape everything below:
 
 ---
 
+## Original artwork integration — 2026-10-06
+
+This is the current, bounded artwork addition under the October 6 content-policy reversal; earlier asset-retirement and package-count paragraphs remain historical. The [authored rotation and journal record](implementation/AUTHORED_ROTATION_PIPELINE.md) owns its source provenance, conversion evidence and remaining acceptance. The combined source build has zero warnings/errors and 164 approved package files. All 164 files were staged and hash-checked at `C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\Rimrooms - Async Industries`, recorded in the [staging receipt](implementation/evidence/authored-rotations-2026-10-06/staging-receipt.json) and [staging output](implementation/evidence/authored-rotations-2026-10-06/staging-output.txt). The assembly SHA256 is `519A9F36EE9CE5FC653DE77A54E31E026DA72A6C869340E703C8973C47F16D6D`. Compilation and staging do not establish in-game appearance, interaction or compatibility.
+
+| Artwork | As-built binding and conversion |
+| --- | --- |
+| Six equipment objects | Gate console, utility generator, analysis bench, field recorder, evidence case and survey tag use rotatable `Graphic_Multi`. Twelve original north/back and east/side masters supplement the preserved front masters; eighteen north/east/south package views are derived, with west mirrored by RimWorld. The analysis bench retains its 2x1 footprint and turns to 1x2. [The Phase 2 cutter](../tools/cut-phase2-art.py) requires authored frames before writing active directional graphics; draft views do not ship while a consumer remains `Graphic_Single`. Existing component, power, storage and facility bindings are retained. |
+| Paper field journal | [Seven source views and provenance](../assets/source/journal/) produce closed ground/icon, three open and three upright package views. `RR_RouteRecording` retains its Def identity, `BookBase`/`RimroomsRecordBook`, `CompBook`, evidence component and saved keys; open/upright graphics use `Graphic_Multi`. Recognition of the company carrier uses the central package identity. The prior cassette package texture is archived outside the mod. |
+| Gate world frames | [Twelve source views and provenance](../assets/source/gates/) supply north/east/south trims for the existing 1x1, 1x2, 1x3 and 2x3 apertures, with west mirrored from east. [The gate cutter](../tools/cut-gate-frames.py) preflights all views and runtime consumers, enforces transparent aperture centers and exports footprint-shaped textures under `1.6/Textures/Things/Building/Rimrooms/Gates/`. These decorate actual doors and bound door runs; no new door Def is introduced. |
+
+[GateWorldFrames.cs](../src/RimroomsAsyncIndustries/Gate/GateWorldFrames.cs) adds cosmetic `CompRimroomsGate.PostDraw` rendering. It uses the designation's saved orientation rather than a native door's render-mutated rotation, centers the frame over the complete occupied rectangle and hides it if any occupied cell is fogged. Cached materials reject absent or wrong-aspect textures; unsupported/mismatched footprints retain the native door presentation. Transparent openings preserve native leaves and animation. Collision, permissions, power, crossings, arrival/return cells and route ownership stay with their existing systems.
+
+`GateFramesEnabled` defaults to `true` in [RimroomsSettings.cs](../src/RimroomsAsyncIndustries/Core/RimroomsSettings.cs) and persists as `rr_gateFramesEnabled` in mod preferences, not campaign save state. Disabling it removes only the frame decoration. [The asset-page generator](../tools/build-asset-page.py) derives the [player asset catalog](wiki/assets.md) from package files, exact consumers and original masters. Source masters, prompts and historical art remain outside the copyable mod package. The owner-launched appearance and behavior cases remain open in [TEST.md](TEST.md).
+
 ## Tech Stack
 
 | Layer | Technology |

@@ -66,15 +66,26 @@ surface.
 
 | Make | Where | What it is |
 |---|---|---|
-| **company route recording** | field analysis bench | A blank company journal. Take it out empty, write it in the field, bring it home as the record |
+| **company field journal** | field analysis bench | A blank paper journal. Take it out empty, write it in the field, bring it home as the record |
 
 The company also posts these out to a branch that has a gate and none. Making your own is the faster
 route if you have a bench.
 
+The journal has a numbered cloth cover and cream pages, with matching closed, open and upright
+views. It is a real book: pawns can carry and read it, and the company's notes stay with that
+physical journal.
+
 ## A note on which way things face
 
-Some of these do not rotate. That is deliberate and not an oversight: a building only rotates when
-every side of it has actually been drawn, and for several of these only the front exists.
+The company console, utility generator, analysis bench, field recorder, evidence case and survey
+tag now rotate, with distinct front, back and side artwork. The analysis bench turns from a wide
+two-cell counter to a one-cell-wide, two-cell-deep counter. Leave room at its operating side for a
+pawn to work.
 
-Shipping a rotatable building with one picture would show a missing-texture square on three sides
-out of four, and you would only find out after placing it.
+Gates use the real doors you build and designate. Supported footprints are 1×1, 1×2, 1×3 and 2×3,
+including turned orientations; adjacent ordinary doors can be bound into a wider gate. Their
+size does not create another workbench or change the equipment you can build here.
+
+Designated gates have matching company frame trim for these four sizes. The real doors keep
+their opening animation and access rules. You can hide the trim with **Show company gate frames**
+in the mod settings. A frame indicates designation, not whether a connection is currently open.

@@ -17912,3 +17912,77 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-06)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+## In progress
+
+- [x] **"gate size variants too right and any other things we need like journal and such and converting into game world"** — artwork integration: paper journal closed/open/upright; authored equipment rotations; cosmetic frame sets for all four existing native gate footprints. Appearance answer: **"Paper field journal with matching closed, open and upright views (Recommended)"**. Implementation and evidence: [`implementation/AUTHORED_ROTATION_PIPELINE.md`](implementation/AUTHORED_ROTATION_PIPELINE.md). **Source/package closure:** seven journal views, twelve new equipment masters/eighteen cardinal package views, twelve gate-frame views and guarded native-door renderer; zero-warning/error 164-file build, staged and compared by content. Targeted package, register/provenance, keyed-string and asset-page checks passed. No game launched, profile changed or publication performed; runtime visual/behavior acceptance remains in `TEST.md` and the full mod goal remains unfinished.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-06)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Asset delivery — gate cycle and event cues (2026-10-06)
+
+**Verbatim owner direction:** *"you might check if u have work from claude to do: \ASSET_REQUESTS.md and todo :"*
+
+- [x] Deliver the asset portion of [ASSET_REQUESTS.md](ASSET_REQUESTS.md): eleven one-shot cues, two seamless loops, one shared eight-frame charge cycle and a six-frame activation burst. Masters, provenance and reproduction instructions stay outside the mod; finished mono PCM WAVs and transparent 256-square PNGs go to the stated package destinations and allowlist. [Task and handoff](implementation/GATE_CYCLE_ASSET_DELIVERY.md). Playback, sustainer lifecycle, aura and frame-index code remain with the continuing build agent; their five rows below stay open. No publication or game launch is authorized by this asset task.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-06)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **Asset authoring:** create one shared eight-frame live/open company-portal loop, `RR_GateOpen_01..08.png`, matching the thin blue-white charge/burst style with a calmer steady presence. Each frame is 256 x 256 RGBA energy only, with a clear aperture and no structure/aura artwork; masters in `assets/source/phase2/`, finished frames in package `1.6/Textures/Things/Building/Rimrooms/Gates/`. Add provenance, package entries and the [delivery record](implementation/GATE_CYCLE_ASSET_DELIVERY.md#active-portal-extension). Preserve the earlier fourteen frames and thirteen WAVs. **Verbatim owner direction:** *"what about active portal ones. should you do those to and write an ote to claude in todo"*.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

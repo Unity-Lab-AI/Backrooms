@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Cut the phase 2 masters into textures RimWorld can actually load.
+"""Cut the phase 2 and company-journal masters into textures RimWorld can actually load.
 
 Why this is a tool and not thirteen hand edits
 ----------------------------------------------
@@ -47,15 +47,25 @@ Usage
 -----
     python tools/cut-phase2-art.py            report what would be cut, write nothing
     python tools/cut-phase2-art.py --apply    cut and write into the package
+
+Authored building rotations use <name>_north.png and <name>_east.png beside the existing
+<name>.png south/front master. They are only exported after the shipped graphicData selects
+Graphic_Multi. Change that Def and the package allowlist together; this tool does not enable
+rotation or ship draft facings for a Graphic_Single. Missing, unreadable or empty active authored
+facings refuse the cut before any package texture is written. Icons need no world-space rotation.
+The source destinations and integration checklist are in
+docs/implementation/AUTHORED_ROTATION_PIPELINE.md.
 """
 import io
 import os
 import sys
+import xml.etree.ElementTree as ET
 
 from PIL import Image, ImageChops
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCE = os.path.join(REPO, "assets", "source", "phase2")
+JOURNAL_SOURCE = os.path.join(REPO, "assets", "source", "journal")
 TEXTURES = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Textures")
 
 # RimWorld draws about this many pixels per tile. Everything below is a multiple of it.
@@ -82,8 +92,8 @@ BLEED = 0.04
 # recorded beside it so a later change is an argument rather than a guess.
 PLAN = [
     # name,                       kind,      tiles,  strategy,  folder,                     why
-    ("RR_MachineGate",            "building", (2, 2), "single",  "Things/Building/Rimrooms",
-     "aspect 1.14, an arch read face on; a back and a side view do not exist"),
+    ("RR_MachineGate",            "icon",     (2, 2), "single",  "Things/Building/Rimrooms",
+     "a flat Set Gate gizmo icon; not a buildable, so no world-space rotation is required"),
     ("RR_GateConsole",            "building", (1, 1), "single",  "Things/Building/Rimrooms",
      "aspect 0.84, a console with a clearly front face"),
     ("RR_EmergencyCutoff",        "building", (1, 1), "uniform", "Things/Building/Rimrooms",
@@ -91,7 +101,7 @@ PLAN = [
     ("RR_UtilityGenerator",       "building", (2, 2), "single",  "Things/Building/Rimrooms",
      "aspect 0.84, a three quarter view with a distinct front"),
     ("RR_FieldAnalysisBench",     "building", (2, 1), "single",  "Things/Building/Rimrooms",
-     "aspect 2.21, a counter; its end on view is the frame that does not exist"),
+     "aspect 2.21, a counter with an authored end view for its swapped footprint"),
     ("RR_SiteFluorescent",        "building", (3, 1), "flat",    "Things/Building/Rimrooms",
      "aspect 4.96, a flat strip fitting read from above; its east frame is its south turned"),
     ("RR_ReturnBeacon",           "building", (1, 1), "uniform", "Things/Building/Rimrooms",
@@ -101,11 +111,11 @@ PLAN = [
     # tool report a complete rotation set that does not exist. The owner's fork answer was "Build
     # the three items, hold the Pursuer"; each took a 1x1 minifiable building to get a real job.
     ("RR_FieldRecorder",          "building", (1, 1), "single",  "Things/Item/Rimrooms",
-     "aspect 1.39, a desk unit with a front face; no back or side view exists"),
+     "aspect 1.39, a desk unit with authored rear vents and an end view"),
     ("RR_SealedEvidenceCase",     "building", (1, 1), "single",  "Things/Item/Rimrooms",
-     "aspect 1.59, a latched case seen front on; the latch side is the only side drawn"),
+     "aspect 1.59, a latched case with authored hinge-side and end views"),
     ("RR_SurveyTag",              "building", (1, 1), "single",  "Things/Item/Rimrooms",
-     "aspect 0.47, a tag with a printed face; its reverse is blank and undrawn"),
+     "aspect 0.47, a tag with authored plain reverse and edge views"),
     # The journal stays an item. Items genuinely do not rotate, so it is not a gap.
     ("RR_RouteRecording",         "item",     (1, 1), "single",  "Things/Item/Rimrooms",
      "items do not rotate"),
@@ -113,9 +123,16 @@ PLAN = [
      "terrain tiles rather than rotates; 256 px keeps the weave at a readable density"),
     ("RR_QuietPursuer",           "pawn",     (2, 2), "pawn",    "Things/Pawn/Rimrooms",
      "a creature presentation, drawn square and never rotated by facing"),
+    ("RR_CompanyJournal_Closed",  "item",     (1, 1), "single",  "Things/Item/Rimrooms/Journal",
+     "the paper field journal's closed world sprite and inventory icon"),
+    ("RR_CompanyJournal_Open",    "book",     (1, 1), "authored", "Things/Item/Rimrooms/Journal",
+     "matching authored north/east/south reading views; west mirrors east"),
+    ("RR_CompanyJournal_Vertical", "book",    (1, 1), "authored", "Things/Item/Rimrooms/Journal",
+     "matching authored north/east/south upright views; west mirrors east"),
 ]
 
 ROTATIONS = ("_north", "_east", "_south")
+AUTHORED_FACINGS = ("_north", "_east")
 
 
 def thresholded_box(image):
@@ -197,6 +214,8 @@ def outputs_for(name, kind, tiles, strategy, folder):
     """Every file this entry produces, as (relative path, how it is made)."""
     size = (tiles[0] * PIXELS_PER_TILE, tiles[1] * PIXELS_PER_TILE)
     base = "%s/%s" % (folder, name)
+    if strategy == "authored":
+        return size, [("%s%s.png" % (base, suffix), suffix) for suffix in ROTATIONS]
     if strategy == "uniform":
         return size, [("%s%s.png" % (base, suffix), "fit") for suffix in ROTATIONS]
     if strategy == "flat":
@@ -263,28 +282,114 @@ def referenced_texture_paths():
     return found
 
 
+def directional_texture_paths():
+    """Texture stems whose shipped graphicData explicitly selects Graphic_Multi."""
+    defs_root = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs")
+    found = set()
+    for folder, _subdirs, files in os.walk(defs_root):
+        for name in files:
+            if not name.lower().endswith(".xml"):
+                continue
+            tree = ET.parse(os.path.join(folder, name))
+            graphics = (element for element in tree.iter()
+                        if element.tag in ("graphicData", "openGraphic", "verticalGraphic"))
+            for graphic in graphics:
+                if (graphic.findtext("graphicClass") or "").strip() == "Graphic_Multi":
+                    stem = (graphic.findtext("texPath") or "").strip()
+                    if stem:
+                        found.add(stem)
+    return found
+
+
+def authored_paths(name):
+    """Only real drawings count; south is the unchanged original front master."""
+    directory = JOURNAL_SOURCE if name.startswith("RR_CompanyJournal_") else SOURCE
+    return {suffix: os.path.join(directory, name + suffix + ".png")
+            for suffix in AUTHORED_FACINGS}
+
+
+def primary_master_path(name, strategy):
+    directory = JOURNAL_SOURCE if name.startswith("RR_CompanyJournal_") else SOURCE
+    # Books have a real south drawing; legacy fixed-facing buildings keep their original name.
+    suffix = "_south" if strategy == "authored" else ""
+    return os.path.join(directory, name + suffix + ".png")
+
+
 def main():
     apply_changes = "--apply" in sys.argv
     if not os.path.isdir(SOURCE):
         print("REFUSED: no master folder at %s" % os.path.relpath(SOURCE, REPO))
         return 1
     referenced = referenced_texture_paths()
+    directional = directional_texture_paths()
     code = source_text()
     held = []
 
+    # Refuse an incomplete active set before writing even an unrelated texture. Single-facing
+    # objects may have draft masters, but those frames are not package output until activated.
+    incomplete = []
+    invalid = []
+    active_frames = {}
+    for name, kind, tiles, strategy, folder, _why in PLAN:
+        if not ((kind == "building" and strategy == "single") or strategy == "authored"):
+            continue
+        if "%s/%s" % (folder, name) not in directional:
+            continue
+        paths = authored_paths(name)
+        paths["_south"] = primary_master_path(name, strategy)
+        absent = [path for path in paths.values() if not os.path.isfile(path)]
+        if absent:
+            incomplete.extend(os.path.relpath(path, REPO) for path in absent)
+            continue
+        size = (tiles[0] * PIXELS_PER_TILE, tiles[1] * PIXELS_PER_TILE)
+        frames = {}
+        for suffix, path in paths.items():
+            try:
+                with Image.open(path) as authored:
+                    facing_size = (size[1], size[0]) if suffix == "_east" else size
+                    frames[suffix] = fit(authored.convert("RGBA"), facing_size)
+            except (OSError, ValueError) as exception:
+                invalid.append((os.path.relpath(path, REPO), str(exception)))
+        active_frames[name] = frames
+    if incomplete or invalid:
+        print("REFUSED: Graphic_Multi needs valid authored masters; no package textures written.")
+        for path in incomplete:
+            print("  MISSING FACING  %s" % path)
+        for path, reason in invalid:
+            print("  INVALID FACING  %s: %s" % (path, reason))
+        return 1
+
     written = 0
     wanted = []
+    ready = []
     print("cut phase 2 art  (%s)" % ("APPLY" if apply_changes else "report only"))
     print("")
     for name, kind, tiles, strategy, folder, why in PLAN:
-        master_path = os.path.join(SOURCE, name + ".png")
+        stem = "%s/%s" % (folder, name)
+        if strategy == "authored" and stem not in directional:
+            held.append((name, stem))
+            print("  %-30s HELD -- no explicit Graphic_Multi binding names %s" % (name, stem))
+            continue
+        master_path = primary_master_path(name, strategy)
         if not os.path.isfile(master_path):
             print("  MISSING MASTER  %s" % name)
             return 1
         master = Image.open(master_path).convert("RGBA")
+        paths = (authored_paths(name)
+                 if (kind == "building" and strategy == "single") or strategy == "authored" else {})
+        missing = [suffix for suffix, path in paths.items() if not os.path.isfile(path)]
+        if paths and stem in directional:
+            strategy = "authored"
         size, targets = outputs_for(name, kind, tiles, strategy, folder)
 
-        if strategy == "terrain":
+        if strategy == "authored":
+            # Preflight fitted every active facing before any output could be written. East uses
+            # the swapped rectangular footprint, as for flat fixtures; no view is synthesized.
+            frames = active_frames[name]
+            produced = [(rel, frames[facing]) for rel, facing in targets]
+            print("  %-30s %-8s %4dx%-4d %-8s rotates (authored north/east, original south)"
+                  % (name, kind, size[0], size[1], "%dx%d" % tiles))
+        elif strategy == "terrain":
             tile = quad_mirror(master, size)
             before = seam_error(master)
             after = seam_error(tile)
@@ -299,16 +404,18 @@ def main():
                     "flat": "rotates (east is south turned ninety degrees)"}.get(strategy, "no rotation")
             print("  %-30s %-8s %4dx%-4d %-8s %s" % (name, kind, size[0], size[1],
                                                      "%dx%d" % tiles, note))
-            if strategy == "single" and kind == "building":
-                wanted.append((name, why))
 
         print("        %s" % why)
         # A def names its texture without a rotation suffix, so that is what is matched.
-        stem = "%s/%s" % (folder, name)
         if stem not in referenced and ('"%s"' % stem) not in code:
             held.append((name, stem))
             print("        HELD -- no shipped def or source file names %s" % stem)
             continue
+        if kind == "building" and paths and strategy == "single":
+            if missing:
+                wanted.append((name, why, missing))
+            else:
+                ready.append(name)
         for rel, image in produced:
             destination = os.path.join(TEXTURES, rel.replace("/", os.sep))
             print("        -> 1.6/Textures/%s" % rel)
@@ -331,13 +438,21 @@ def main():
         print("")
         print("ROTATIONS WANTED -- these ship Graphic_Single and non-rotatable until a back and a")
         print("side view exist. None of them is faked, and none ships Graphic_Multi with one frame.")
-        print("Each one needs TWO drawings: _north and _east. _south is the master already here,")
+        print("Missing drawings are listed per object. _south is the master already here,")
         print("and RimWorld mirrors _west from _east at no cost.")
-        for name, why in wanted:
-            print("  %-30s %s" % (name, why))
+        for name, why, missing in wanted:
+            print("  %-30s missing %s; %s" % (name, ", ".join(missing), why))
         print("")
-        print("  TOTAL STILL TO DRAW: %d frames across %d buildings." % (len(wanted) * 2, len(wanted)))
+        print("  TOTAL STILL TO DRAW: %d frames across %d buildings."
+              % (sum(len(missing) for _name, _why, missing in wanted), len(wanted)))
         print("  Nothing in this tool can derive them. A back view and a side view are drawings.")
+
+    if ready:
+        print("")
+        print("AUTHORED VIEWS READY -- still Graphic_Single; activate Graphic_Multi, rotation and")
+        print("the package allowlist together before exporting these draft facings.")
+        for name in ready:
+            print("  %s" % name)
 
     print("")
     if apply_changes:

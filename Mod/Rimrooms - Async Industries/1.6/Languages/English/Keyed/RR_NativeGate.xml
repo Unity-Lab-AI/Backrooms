@@ -98,6 +98,7 @@ Neither can be done while the gate is working.</RR_GateRun_Desc>
   <RR_NativeGate_DebitFaultExplanation>Acknowledgment records that you reviewed the observed loss. It does not refill the battery or refund the company.</RR_NativeGate_DebitFaultExplanation>
   <RR_NativeGate_AcknowledgeDebit>Acknowledge reviewed battery debit</RR_NativeGate_AcknowledgeDebit>
   <RR_NativeGate_AuraEnabled>Show native gate aura</RR_NativeGate_AuraEnabled>
+  <RR_NativeGate_FramesEnabled>Show company gate frames</RR_NativeGate_FramesEnabled>
   <RR_NativeGate_ReducedMotion>Reduce gate motion (hide aura; keep status text)</RR_NativeGate_ReducedMotion>
   <RR_NativeGate_ReserveBreakdown>Of that, {0} watt-days is held back for an emergency return, and a recovery opening costs {1} watt-days.</RR_NativeGate_ReserveBreakdown>
   <RR_GateAddress_SetLabel>Set this gate's address</RR_GateAddress_SetLabel>

@@ -1,0 +1,830 @@
+{
+  "PackageId": "Rimrooms.AsyncIndustries",
+  "Version": "0.13.0-dev",
+  "Destination": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Rimworld\\Mods\\Rimrooms - Async Industries",
+  "Backup": "C:\\Users\\gfour\\Desktop\\Backrooms\\artifacts\\staging-backups\\e3746570d868452091f4a8d547cbb53d",
+  "Files": [
+    {
+      "Path": "1.6/Assemblies/RimroomsAsyncIndustries.dll",
+      "Bytes": 1086464,
+      "SHA256": "519A9F36EE9CE5FC653DE77A54E31E026DA72A6C869340E703C8973C47F16D6D"
+    },
+    {
+      "Path": "1.6/Defs/FactionDefs/RR_UniverseFactions.xml",
+      "Bytes": 13140,
+      "SHA256": "4987A402D80C4874D4D4BD010E55D9AE123F994E7A0C6097514A4E8E22C573F5"
+    },
+    {
+      "Path": "1.6/Defs/IncidentDefs/RR_Incidents.xml",
+      "Bytes": 3766,
+      "SHA256": "6D987D26509295967C45093BC3E165716644A57EDAF21560E5D6BD26ACD7811E"
+    },
+    {
+      "Path": "1.6/Defs/JobDefs/RR_ConnectedWorkJobs.xml",
+      "Bytes": 3389,
+      "SHA256": "8635487D35AD55E06FAF595E51C169E884D07A94E6A6DF64A867C8B15A46D2CC"
+    },
+    {
+      "Path": "1.6/Defs/JobDefs/RR_ExpeditionJobs.xml",
+      "Bytes": 1373,
+      "SHA256": "CB7683EF97247D4751A70670FAF3E822E77CCF667D477E8A9A90A5F586D28102"
+    },
+    {
+      "Path": "1.6/Defs/JobDefs/RR_GateJobs.xml",
+      "Bytes": 4316,
+      "SHA256": "9ED3C34C7D4FA2EF37E0B3B1D09B35433755388DFCFBFAFA31A46A6F31072EC9"
+    },
+    {
+      "Path": "1.6/Defs/JobDefs/RR_InvestigationJobs.xml",
+      "Bytes": 739,
+      "SHA256": "9A6EC7039C136A8878B6987C4037D95128A7224591D469523BD13170F02A0FD9"
+    },
+    {
+      "Path": "1.6/Defs/JobDefs/RR_PortalJobs.xml",
+      "Bytes": 1603,
+      "SHA256": "89CC4C0F360EA7E971C330C6A0D595619A9CD2EFF83EDE0212D4632971A9AAFE"
+    },
+    {
+      "Path": "1.6/Defs/MainButtonDefs/RR_MainButtons.xml",
+      "Bytes": 3592,
+      "SHA256": "65EF18BAE767977FC04F888F085F95674EA9DC647637F243CA3EC91C01185590"
+    },
+    {
+      "Path": "1.6/Defs/MapGeneratorDefs/RR_BackroomsGeneration.xml",
+      "Bytes": 414,
+      "SHA256": "344EAB4332BFCEB85B0D97DDDEE065BC585B9B5362A8AD131F4BC2F5C491D536"
+    },
+    {
+      "Path": "1.6/Defs/PawnKindDefs/RR_Staff.xml",
+      "Bytes": 2412,
+      "SHA256": "ED58E71DAE8D32F629E5C8B66E57F0994B20539F97E35208342E8DD981C3DED9"
+    },
+    {
+      "Path": "1.6/Defs/RecipeDefs/RR_BondPrinting.xml",
+      "Bytes": 12087,
+      "SHA256": "FF6CF08CD8145DCF55C890594057A478673B6F68BAAC769694779F5048E8DFBE"
+    },
+    {
+      "Path": "1.6/Defs/RecipeDefs/RR_FieldKitRecipes.xml",
+      "Bytes": 2495,
+      "SHA256": "90F729E91149A153CFD12B84A0F1B3245A90E53B76650E5FEA1038B0A2CA3DB9"
+    },
+    {
+      "Path": "1.6/Defs/RecipeDefs/RR_GateRecipes.xml",
+      "Bytes": 2817,
+      "SHA256": "491507959F7A5E3B140AEF357486F27321ED1DBE47475655E5DD375683934302"
+    },
+    {
+      "Path": "1.6/Defs/RecipeDefs/RR_TrainingRecipes.xml",
+      "Bytes": 4667,
+      "SHA256": "9DB032A4B86B88B927D7D6D50E4B4F56BAB2473A6B14385C433428AF40D28DA6"
+    },
+    {
+      "Path": "1.6/Defs/ResearchProjectDefs/RR_ResearchMirror.xml",
+      "Bytes": 35548,
+      "SHA256": "B58902DFDFF1567D23948A30CD11F514ED961BC85BBB17C0769277999C8FAA2A"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsAnomalyEventDefs/RR_AnomalyEvents.xml",
+      "Bytes": 6886,
+      "SHA256": "B99E3D1D6A0B1B1B6B95050D09B841BB2D4D83E28ED45C84EA919C9BD628307F"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsCertificationDefs/RR_Certifications.xml",
+      "Bytes": 4280,
+      "SHA256": "D8E1ECBB6AD4ED2746E314FDDC7D4B6D9CBED8705A98719FD73980D5E2539B96"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsFacilityDefs/RR_FacilityCategories.xml",
+      "Bytes": 6400,
+      "SHA256": "0B60708E905176A960EC439DC80E54DC73C0E470148F70710E5746955D6A1A16"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsFixtureTellDefs/RR_FixtureTells.xml",
+      "Bytes": 13671,
+      "SHA256": "9027A1331762B352D584270CA49D85B311B8CDF81A6114E3EEEA819F0DBE4E87"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsGateEquipmentDefs/RR_GateEquipment.xml",
+      "Bytes": 19880,
+      "SHA256": "25079C0D6C84AB73F094E83C8BB3BD5F5FD62EE1C17342B0A9B7A196C22470F3"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml",
+      "Bytes": 11702,
+      "SHA256": "136543F47444CFE2C31C8E94FECBA4AA2B5DA95C956BDDD788BCDD283C0E38C1"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsMarkerTypeDefs/RR_MarkerTypes.xml",
+      "Bytes": 2702,
+      "SHA256": "550241B4D5D1DEE629DB3546D2B0A1DF5C3EB78FAAA1CEF17510768B48135137"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsPersonnelDefs/RR_HiringPolicies.xml",
+      "Bytes": 604,
+      "SHA256": "96E181F09CD246810A0B01FD89E8A1420AA9414669E74662F7973110A5F0C36E"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsProcurementCatalogDefs/RR_ProcurementCatalog.xml",
+      "Bytes": 6613,
+      "SHA256": "850A3869204F0FB13658EC995DBCC3C55F078B5CA510869578FB6E16FC76BEFA"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsProjectDefs/RR_CompanyProjects.xml",
+      "Bytes": 56135,
+      "SHA256": "250A3952F9E44EF5A294DFA827403681AB8DC3B585AF113289A962F5E6C93F70"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsRequestDefs/RR_Requests.xml",
+      "Bytes": 34760,
+      "SHA256": "29F29E53D2392F8B2E32A80069BFEABCDCD6ED914A33591D025F65B16A0FC02F"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsRoomArchetypeDefs/RR_RoomArchetypes.xml",
+      "Bytes": 47389,
+      "SHA256": "5914BF8CE9E2E2D35F51896E4DEFD7956F0BB42A3E45B25383BF052065CA6592"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsStartDefs/RR_Starts.xml",
+      "Bytes": 37122,
+      "SHA256": "F5BE2AC911F5FA87C6DF41E2C7CECE89EEBCCEA8FE3107D47406A0F6D73F0D6F"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsSupplyTierDefs/RR_SupplyTiers.xml",
+      "Bytes": 4574,
+      "SHA256": "41425AB6FB75BB1DFD79067B4FCD9245B4C93D580BB2B095A53755722ECBE496"
+    },
+    {
+      "Path": "1.6/Defs/RimroomsWriteUpDefs/RR_WriteUps.xml",
+      "Bytes": 5226,
+      "SHA256": "21C1D87949562A34A910A10C213D869504505F81FF649A87E9E18FD5BF503B2F"
+    },
+    {
+      "Path": "1.6/Defs/RoofDefs/RR_Roofs.xml",
+      "Bytes": 5260,
+      "SHA256": "054AF28FDC5A89D69D268C9D0D769144F2F7E50D5628E6926EDF644A77CAE717"
+    },
+    {
+      "Path": "1.6/Defs/ScenarioDefs/RR_Scenarios.xml",
+      "Bytes": 13453,
+      "SHA256": "C02660BFAF1AF0185D16D46A483491E6E1A4A9BE7DDC1BCF591B01C040EA344F"
+    },
+    {
+      "Path": "1.6/Defs/ScenPartDefs/RR_ScenarioParts.xml",
+      "Bytes": 1218,
+      "SHA256": "FEB26A2B097AD1CBFFA4C0E465489AE2BA2A9B06C39B60E95D728956905D6D07"
+    },
+    {
+      "Path": "1.6/Defs/SoundDefs/RR_CompanyCues.xml",
+      "Bytes": 3413,
+      "SHA256": "7F47B3C29A70F86FEB0522F4378CE02E63D954937659D970E85F7F3C28A1F74B"
+    },
+    {
+      "Path": "1.6/Defs/TerrainDefs/RR_LiminalFloors.xml",
+      "Bytes": 3038,
+      "SHA256": "0D3D25239BE833E7F7DFA105E9B8F3DF703068C7F72E5C6C358A9ECAECBDEF80"
+    },
+    {
+      "Path": "1.6/Defs/ThingCategoryDefs/RR_FieldCategories.xml",
+      "Bytes": 351,
+      "SHA256": "D47E56D4C182199712E70B3F1357F33EADD3D1543E35C27BD7B1062895590872"
+    },
+    {
+      "Path": "1.6/Defs/ThingDefs_Buildings/RR_FieldKit.xml",
+      "Bytes": 9738,
+      "SHA256": "811017EB557BCB572366DAD53FB358CBA674155E2F5C9F64910621039BB38B92"
+    },
+    {
+      "Path": "1.6/Defs/ThingDefs_Buildings/RR_GateEquipmentBuildings.xml",
+      "Bytes": 8708,
+      "SHA256": "1B60B8292280BE3583627EBE8204CD85F3CFD57EA432685B25D2AC2E0333BB72"
+    },
+    {
+      "Path": "1.6/Defs/ThingDefs_Buildings/RR_RecordsDesk.xml",
+      "Bytes": 4397,
+      "SHA256": "5BAEA65046351F10C604FD8B2825B2601D1EA0543E7E78D66221A8D9681CC395"
+    },
+    {
+      "Path": "1.6/Defs/ThingDefs_Buildings/RR_SiteFixtures.xml",
+      "Bytes": 12804,
+      "SHA256": "BC3875DEE5FEDCCDD3BEDEAD471C966E1BD3690C3A60E10A5EBC6BC04282DCA5"
+    },
+    {
+      "Path": "1.6/Defs/ThingDefs_Items/RR_CompanyJournal.xml",
+      "Bytes": 6743,
+      "SHA256": "9DE2E8F9BA549604616BD626FFDB4369302730EC2DC8C6D23BF388043D847792"
+    },
+    {
+      "Path": "1.6/Defs/ThingDefs_Misc/RR_SiteObjects.xml",
+      "Bytes": 1913,
+      "SHA256": "1C636A15974370015733DC2DC3C223248CB327AA93503B0313BCAFE65ACAD9C9"
+    },
+    {
+      "Path": "1.6/Defs/ThoughtDefs/RR_BackroomsPressure.xml",
+      "Bytes": 2831,
+      "SHA256": "AD1EA25A85E5C4F849878C83E0D7C1C39A59022EA9F3BD55A133E76FCF6381E9"
+    },
+    {
+      "Path": "1.6/Defs/TraderKindDefs/RR_CorporateSupply.xml",
+      "Bytes": 1746,
+      "SHA256": "EFE120DFD447010FDC53D5121D967CD89F6E5020F9AC234050860ADFF75B3E5D"
+    },
+    {
+      "Path": "1.6/Defs/WorkGiverDefs/RR_ConnectedWork.xml",
+      "Bytes": 55543,
+      "SHA256": "F5FAF90CCE7A47EE0FCC2761AE1FA6B11C9000263208F0469C71CCAB9F467F3B"
+    },
+    {
+      "Path": "1.6/Defs/WorkGiverDefs/RR_GateWork.xml",
+      "Bytes": 4651,
+      "SHA256": "7849A82BF9BB3F86F3B724502F98AC3BEAB05162F05D1D07CAE3C40A5F43C86C"
+    },
+    {
+      "Path": "1.6/Defs/WorkGiverDefs/RR_InvestigationWork.xml",
+      "Bytes": 1335,
+      "SHA256": "67F780E6D78CC8A680D33B60AA8EF7C97E94BE1E145D2F8C9F9ECC4F1090B4D5"
+    },
+    {
+      "Path": "1.6/Defs/WorldObjectDefs/RR_BackroomsSites.xml",
+      "Bytes": 823,
+      "SHA256": "6ED1604981FCCDFE5979423B39760D06185967D4585996CB34429B6187AF9BF2"
+    },
+    {
+      "Path": "1.6/Languages/English/DefInjected/JobDef/RR_GateJobs.xml",
+      "Bytes": 246,
+      "SHA256": "F09667891363D74C502491A832A911BAE3316941C3CACAFAC1AE85BC7751D30D"
+    },
+    {
+      "Path": "1.6/Languages/English/DefInjected/MainButtonDef/RR_MainButtons.xml",
+      "Bytes": 258,
+      "SHA256": "D7ADD911E400686E579403C9531BE7BC1B66E37653AABCC3C45CD78E7ED6F5DD"
+    },
+    {
+      "Path": "1.6/Languages/English/DefInjected/RecipeDef/RR_GateRecipes.xml",
+      "Bytes": 441,
+      "SHA256": "4ED25711E0B0F797F4C22034CB5A9BA2F896B24E1B4913C2C831C2F2071CCFD2"
+    },
+    {
+      "Path": "1.6/Languages/English/DefInjected/WorkGiverDef/RR_GateWork.xml",
+      "Bytes": 483,
+      "SHA256": "236896288C57631B9299AC63949A7D2495C1F3668778644ECAAE2B5BE38038F2"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Alerts.xml",
+      "Bytes": 1321,
+      "SHA256": "F17A8C1B6761C76610A6FBD90FAA2E2EACE814E601818F6065EB71778D22EE58"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_AnomalyEvents.xml",
+      "Bytes": 2195,
+      "SHA256": "B9C09D9470052365DEA9FE82CC8E4BDB4B08FB1077D931657637190EC639C061"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Audio.xml",
+      "Bytes": 5837,
+      "SHA256": "A8BE38EDA30F710FF0E4DECB133CCF696A90AFF033C8A39738BAA209679150F8"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Bonds.xml",
+      "Bytes": 6461,
+      "SHA256": "61A653DCB0EDF7160C91A96FF45608B1951080BA5D7E26E9A02F1564E7683DAA"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Certifications.xml",
+      "Bytes": 739,
+      "SHA256": "E00EE24F62A05E6D5E7C9E4FE5230A22A7FF764552071BED3AD0E61FC97D0360"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Company.xml",
+      "Bytes": 13064,
+      "SHA256": "249AD192D285E63AB20FE3BD39A420A0F0B9C0E15DE342BED002D7AEC1B6A7F3"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_ConnectedWork.xml",
+      "Bytes": 11422,
+      "SHA256": "7E07C2BD79967E12B21885A5727F741C78682B18466BBBC38D59B8A1B55E3FF1"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_CorporateSupply.xml",
+      "Bytes": 2215,
+      "SHA256": "454F061E2243AF5CFFBF4762E2ACAD49DDA5BBD765AD072CDEDC1D9EC0A00BC4"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_CrewPlanner.xml",
+      "Bytes": 3379,
+      "SHA256": "D9EC3A9ABF9A57C4B5D18AD403E043152126D63DF3C14FC4DDBF6E958A2822DF"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_EvidenceRecovery.xml",
+      "Bytes": 2500,
+      "SHA256": "921CB8C88E2EE2526E46C6AB307088D2D1A62E0317DF2510BB399CE860F2E1BE"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Expedition.xml",
+      "Bytes": 8900,
+      "SHA256": "1E7F3E274F86CCDFA270A6378063A3325566DD5983FF3C1C2E6E26E47A38A6C7"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Facilities.xml",
+      "Bytes": 3295,
+      "SHA256": "148FC274546DA5F55A60064DD52CAB4A77BCFD64235246CEEC817DCF2821C722"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_FieldAndThreats.xml",
+      "Bytes": 4138,
+      "SHA256": "A87CD8BEB136D7EDCCD9C55E184718CC287AB08428EA60CFE20F1AF4F3CFFAA5"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_FixtureTells.xml",
+      "Bytes": 4083,
+      "SHA256": "80E974002959A6FC8C04C77AB6E085C494212DAACF8FDE97337B4864538DF725"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Gate.xml",
+      "Bytes": 20711,
+      "SHA256": "19F4461031C8AFC8E8DAEBA32803AB9EAA1BAC1B7CD68B02AF0AB6D539135E5F"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_GateHistory.xml",
+      "Bytes": 1650,
+      "SHA256": "9153A2BD23C9C394918D9CC2F63B25AD3FEF0003B5EFF608C8A447B6A8D929BF"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_GateLinks.xml",
+      "Bytes": 3836,
+      "SHA256": "05D468BA23A00740CEE4E17BEAD13BFDD90D2A02483A243C47DF61A609A075DD"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_GateSteps.xml",
+      "Bytes": 5379,
+      "SHA256": "0AB7A30EA0738D0C2B06FABFEBFBBE7E911762EB20CBC4657BA99857E10D91EC"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Generation.xml",
+      "Bytes": 17975,
+      "SHA256": "930E00AEA481161C881F327C47AA8F84C9D0E39ECF79A368D2D52B09EF81363D"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Help.xml",
+      "Bytes": 4385,
+      "SHA256": "3339EDF297897C3DB117E316D8461EFB9A524908C4FFE586D715F5EC56B8C72B"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Inhabitants.xml",
+      "Bytes": 4669,
+      "SHA256": "D95F9772F74CD3F87A889FB95EF08EDB348B43A43AA6C6B0A892C90D7B864AFF"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Investigation.xml",
+      "Bytes": 15099,
+      "SHA256": "CA36F3B2DBA5CCE33FA8DD8CFD9202898AC369FBA7FCFBE6D8E4A0569C9C5A17"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_LaboratoryBinding.xml",
+      "Bytes": 4276,
+      "SHA256": "9EE8D954D50744EE48BBED75E4AD4C746AB52561AC12140F4837D600373436B8"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Markers.xml",
+      "Bytes": 1321,
+      "SHA256": "9D1B92EB6FA016C8DBE58BA5F08F7019A6D410A768C1ED71F9EC9C3D21373DC7"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Menu.xml",
+      "Bytes": 402,
+      "SHA256": "861F0F236463A80C2E3C538BA2187ECDF3C21B54E0D68B5C760E24BA4B9BC96C"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_NativeGate.xml",
+      "Bytes": 14191,
+      "SHA256": "A43167F1D1F0BA62FC0146CC0927268671E15599AF48FD908C59EF8674E13BCA"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_OddOrigin.xml",
+      "Bytes": 398,
+      "SHA256": "5A14BEB435C16C5C79A3883CDBFB4866466D1D8362963E8B26D7130FCB35CA03"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_OddSupply.xml",
+      "Bytes": 1625,
+      "SHA256": "B6619F41F31599825FC444028524FA70AD5AC68CB04659E68A91F9C3A0CE494B"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Operations.xml",
+      "Bytes": 8917,
+      "SHA256": "6BD22F04E8DD5213F0E3881858220A86A9C53384F4C27B3D59DBE80C51B409FE"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_OperationsExpeditions.xml",
+      "Bytes": 11733,
+      "SHA256": "DA5B8532648D9877EAEB3CABD4478B033027B04AA868AEF7C66BFFC0EC8F4793"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Palette.xml",
+      "Bytes": 470,
+      "SHA256": "9F7E091518B01112E8C9A2DDE2E0ED8527F54CBB01A7E674633572D1F38FF55C"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Personnel.xml",
+      "Bytes": 12963,
+      "SHA256": "25E680CE38BE86326527F3134CB0C61A69BC0AD8332D449AFEA23461E7113C36"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Portals.xml",
+      "Bytes": 36787,
+      "SHA256": "DD25E6C4798827799AD2C250CCF19673E99016B38C7B5D42710A2DF927037C79"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Procurement.xml",
+      "Bytes": 14502,
+      "SHA256": "D3043FD497402573EFAF0CE2E035B9D4BD3ED58B4EA6B384BB442BF4580F8E2E"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Requests.xml",
+      "Bytes": 28680,
+      "SHA256": "6CC78F63E54DAD073A254AB54AB9845C35AFFE9545CDFF59526EF637A1E2E0D7"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Scenario.xml",
+      "Bytes": 2816,
+      "SHA256": "FE14C4906AE7963ED5EC8943904EDDDF15F07F0787DDE95A3D38D06BADF5CFF7"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_StartupSetup.xml",
+      "Bytes": 9012,
+      "SHA256": "7D4195C92ABDD682A1495FA0701AFB5BF088DAABC311A6708946D105C94230C7"
+    },
+    {
+      "Path": "1.6/Languages/English/Keyed/RR_Survivors.xml",
+      "Bytes": 2534,
+      "SHA256": "16CB23CA737A026C2CA23FA74F009B70490985F25A6D32506DF6681C61E22BA4"
+    },
+    {
+      "Path": "1.6/Patches/RR_ExistingEvidenceBook.xml",
+      "Bytes": 3210,
+      "SHA256": "7C0E119F7CE2EFE17FC975BFFA2C57E5B4E6F7724A922A455ECCF1ED939A8875"
+    },
+    {
+      "Path": "1.6/Patches/RR_GateApproachPlacement.xml",
+      "Bytes": 2820,
+      "SHA256": "1DE979481CA840B92318B0AE5E69B53AC76C13558FD6C5FE7AF865009444650A"
+    },
+    {
+      "Path": "1.6/Patches/RR_GlowPodMarker.xml",
+      "Bytes": 987,
+      "SHA256": "582C2CCD7EA6DD980D5EEDA15B1529C035A0905C7804F3393A48B7F7684A3179"
+    },
+    {
+      "Path": "1.6/Patches/RR_NativeGateProviders.xml",
+      "Bytes": 11052,
+      "SHA256": "2F56F630CF6AF9F2D521A8E202BCFB546511A43E83E7748A33DEB0EEE7AD6A98"
+    },
+    {
+      "Path": "1.6/Patches/RR_StartGenSteps.xml",
+      "Bytes": 2476,
+      "SHA256": "12FBE45149DE4F3CA003B87F676F6057025532554D861091EB6C3A7B3D490634"
+    },
+    {
+      "Path": "1.6/Sounds/Rimrooms/RR_FieldRadio.wav",
+      "Bytes": 57644,
+      "SHA256": "030ACBEB064900D64BA787CCD3ABE0D4E7D4169A45D3D914217450DB334FBDF7"
+    },
+    {
+      "Path": "1.6/Sounds/Rimrooms/RR_GatePowerRise.wav",
+      "Bytes": 192044,
+      "SHA256": "B46973B4765F9B1BBF8C8D869A8419DAFA9C85967E04B1A76A2778A1C52D63D7"
+    },
+    {
+      "Path": "1.6/Sounds/Rimrooms/RR_GateWarning.wav",
+      "Bytes": 105644,
+      "SHA256": "12C2A762DF2674F1EF3C3278EA5EE489FB0D0310BAB011D1770C843A006BD70C"
+    },
+    {
+      "Path": "1.6/Sounds/Rimrooms/RR_SpatialTell.wav",
+      "Bytes": 134444,
+      "SHA256": "260EE746025DC9FD3FB425C35904CD0AE0B5F954AC1CB84A47D3F9F09932B1A5"
+    },
+    {
+      "Path": "1.6/Textures/Terrain/Rimrooms/RR_FadedInstitutionalCarpet.png",
+      "Bytes": 118063,
+      "SHA256": "5E7C6C3EA353FEE377EA6397A0D94F55BF077E6F390A86329D9E476540A8C355"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x1_east.png",
+      "Bytes": 20836,
+      "SHA256": "CF1A362CD6BBFA47A8A9A63C19D84A7B4D94F362DAB6AF6B730520E7CFD191E7"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x1_north.png",
+      "Bytes": 18813,
+      "SHA256": "0B41365CB315B8A9C74447777BA16700877ACD06F9629EAB672AC2B82D88DEAF"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x1_south.png",
+      "Bytes": 19216,
+      "SHA256": "04F5006623335831171C8CBF53B546E0F7706930DEA2D5F5ECBE4EA8CADC0626"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x2_east.png",
+      "Bytes": 34434,
+      "SHA256": "F4410C2A7BEEA6C24C6692E2F15E1B5ADB4730A2B7F08700BA033BA219ADFF11"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x2_north.png",
+      "Bytes": 30708,
+      "SHA256": "262D6C352A2A17ABC2631B106C17BBC6704B00E9B65B5F8DACDD37ECF38DB10E"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x2_south.png",
+      "Bytes": 28471,
+      "SHA256": "EE24A1104A212EA090C6B08B9C32E4D52FC3934F374D922296D3E62D778D7F61"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x3_east.png",
+      "Bytes": 43287,
+      "SHA256": "51867437277D0DD0E54C24D8E671088B9AEDF9C6EE122EFDAE147300A0F2290D"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x3_north.png",
+      "Bytes": 38020,
+      "SHA256": "0B14F3B3FD29FB7DEA067D0BF314D4D09ACB28D142B016E5A381E69D8E34F5E6"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x3_south.png",
+      "Bytes": 37946,
+      "SHA256": "4F12F02185495B7FD2FB3C09CD5421B743F544FB0ADE6852219D3BCD2C909D03"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_2x3_east.png",
+      "Bytes": 70197,
+      "SHA256": "06B7BE1DA19E06CBEE4FCDF3FCE3A8F9B3D660C15C578EE26402FD36B232564E"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_2x3_north.png",
+      "Bytes": 63653,
+      "SHA256": "63CDFD8A7E74CFA822CF13F56EB5BB151241730CD90908BDF2ECAD27458FBF1B"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_2x3_south.png",
+      "Bytes": 75063,
+      "SHA256": "9FE55DC2DEEC4AE448E617605F6D63C1019FBD461C5643C7E9A892F32C500B9A"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_EmergencyCutoff_east.png",
+      "Bytes": 17148,
+      "SHA256": "FD013EC92EF32FEB981A22512053E94212E0B9871C2484F0EBCBE4645F26B3D5"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_EmergencyCutoff_north.png",
+      "Bytes": 17148,
+      "SHA256": "FD013EC92EF32FEB981A22512053E94212E0B9871C2484F0EBCBE4645F26B3D5"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_EmergencyCutoff_south.png",
+      "Bytes": 17148,
+      "SHA256": "FD013EC92EF32FEB981A22512053E94212E0B9871C2484F0EBCBE4645F26B3D5"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_FieldAnalysisBench_east.png",
+      "Bytes": 38665,
+      "SHA256": "165D6268B713EB1465EA20E33FA4C625E0FCE3D8D973F8328E201FA720208100"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_FieldAnalysisBench_north.png",
+      "Bytes": 36717,
+      "SHA256": "B8FFAA86ED987D30BF2EC3068F9E70E055A49091E4222CF6414E1F3486423D15"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_FieldAnalysisBench_south.png",
+      "Bytes": 38648,
+      "SHA256": "97FACA43CF6184B70BCC08B35EEBA91825E17B837CB3625FDABDB9C429A68B77"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_GateConsole_east.png",
+      "Bytes": 13036,
+      "SHA256": "E499DE71AB8F0DE3A3FD509B0A5B15FB332E61D27FAB6A09CC4125243DBB2D2C"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_GateConsole_north.png",
+      "Bytes": 15251,
+      "SHA256": "38134E1A2162BE066DB854C1ABF8E6324638310C30895F76511FEF2D6A7556B8"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_GateConsole_south.png",
+      "Bytes": 16915,
+      "SHA256": "EA89C247100E693D9582D1D0606D97D72153E8B7174761526DDAE2439D149445"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_MachineGate.png",
+      "Bytes": 61303,
+      "SHA256": "BE0EE3858042F792ADDE1FA81DADAC93BE0DF314FC1AF7376F221791ED95A7D7"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_ReturnBeacon_east.png",
+      "Bytes": 18534,
+      "SHA256": "A204F2B7E0A3061E6AC3D33EE84AF38ADF267A1F2FED35EF05166F9B77BB2836"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_ReturnBeacon_north.png",
+      "Bytes": 18534,
+      "SHA256": "A204F2B7E0A3061E6AC3D33EE84AF38ADF267A1F2FED35EF05166F9B77BB2836"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_ReturnBeacon_south.png",
+      "Bytes": 18534,
+      "SHA256": "A204F2B7E0A3061E6AC3D33EE84AF38ADF267A1F2FED35EF05166F9B77BB2836"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_SiteFluorescent_east.png",
+      "Bytes": 37630,
+      "SHA256": "24DBB89F342FB70912D3FB1219C83F9853E82736E8B0BD777783608BFB6CE2AC"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_SiteFluorescent_north.png",
+      "Bytes": 36972,
+      "SHA256": "05D2C8C132B2171CEA17836543ECD8BFC5E859C4A69DFF2A722D6CEB1C3931D0"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_SiteFluorescent_south.png",
+      "Bytes": 36972,
+      "SHA256": "05D2C8C132B2171CEA17836543ECD8BFC5E859C4A69DFF2A722D6CEB1C3931D0"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_UtilityGenerator_east.png",
+      "Bytes": 59247,
+      "SHA256": "9F4AA3FFBFFE72C3962CA72A8A4B81555FF7F5ABCA34865D8BC8AEAA31168374"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_UtilityGenerator_north.png",
+      "Bytes": 70303,
+      "SHA256": "47AA31C38743AF4DBAACA57C2617BD8DD04E9D8BA94EEAADE8138743F506317A"
+    },
+    {
+      "Path": "1.6/Textures/Things/Building/Rimrooms/RR_UtilityGenerator_south.png",
+      "Bytes": 70467,
+      "SHA256": "213819B577B866EFAD579D94D8C7192D60F1FA11A36A36F37F32AD936B3A4145"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Closed.png",
+      "Bytes": 16817,
+      "SHA256": "E6F18EB814C9B127B82C791447BF2633B087DD973895B0C9D9C09067BB2538B3"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Open_east.png",
+      "Bytes": 15938,
+      "SHA256": "6A24787CC0AE52DCDDB4B23A05F0848E6030D3D8826BA40D40DBE4B59882BBED"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Open_north.png",
+      "Bytes": 14879,
+      "SHA256": "2210CF32650163CC36C6BA4B2D32F8D0E37EB22BF6A1B76C6B66A14DA6E208D2"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Open_south.png",
+      "Bytes": 13974,
+      "SHA256": "92FEBF1408A8617F13D5DF801CC3186EF5EAFE11C0163FA9CD1C86CEF91B9FF3"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Vertical_east.png",
+      "Bytes": 5172,
+      "SHA256": "8E7FB87EA2BF1815919FD3D2A95BB7EC93BE48D62D244EE25D4685E0C49988B4"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Vertical_north.png",
+      "Bytes": 12544,
+      "SHA256": "0C356AF7718F7ADF93709DA90171B07ED15BDF689F7639D29AC9557E4FAD0CA1"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Vertical_south.png",
+      "Bytes": 12821,
+      "SHA256": "8955DCF332EC3A4E61EA1C9C98DC645169C1581DFD1F53409C5ECE34F2B78AC3"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/RR_FieldRecorder_east.png",
+      "Bytes": 11731,
+      "SHA256": "50D1A2F5DD9A438C6A004E49B6BE4D7C5DC4D31C0770E6C7011EBD11B54B6656"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/RR_FieldRecorder_north.png",
+      "Bytes": 11485,
+      "SHA256": "39D4AAD886EF39C51A7B446B6693EC822E5251DF8AC448321693F5C16095B272"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/RR_FieldRecorder_south.png",
+      "Bytes": 12739,
+      "SHA256": "F6373276C733971DD1AA69A5DFE8F393168007EF0EFA5CD70DB5F636F9E3327F"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/RR_SealedEvidenceCase_east.png",
+      "Bytes": 14477,
+      "SHA256": "827DA518C137B2C6B63F8070428AD57A4FFB2BB921E8E2077D810D8FE501F34A"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/RR_SealedEvidenceCase_north.png",
+      "Bytes": 14688,
+      "SHA256": "98DA15D91B467AA77805010EA9B8813AD9F8EDAC6753D818FC0A4175A4E6E670"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/RR_SealedEvidenceCase_south.png",
+      "Bytes": 15721,
+      "SHA256": "FC5DD05642DCC545561016AC9D1DE2F6ABA60EBDBD213159875809924C48843B"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/RR_SurveyTag_east.png",
+      "Bytes": 3985,
+      "SHA256": "582DEBDBFCC4A2C78D0F8E284A6AE0555881D394F30C1292757016C77F9F43E3"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/RR_SurveyTag_north.png",
+      "Bytes": 10924,
+      "SHA256": "582FE24428669A222ECD1D36B247953940A58CDCB05DF51DBAF184677A128993"
+    },
+    {
+      "Path": "1.6/Textures/Things/Item/Rimrooms/RR_SurveyTag_south.png",
+      "Bytes": 11812,
+      "SHA256": "9007862D0E4043908A3983F4D6C1A38084F43B71C09626CA02AF52DD8E87E6D6"
+    },
+    {
+      "Path": "1.6/Textures/UI/Menu/RR_Menu_BreachedVault.png",
+      "Bytes": 1506497,
+      "SHA256": "50900CD035D4E0F08F2ECC59944F0C6A2AB70CEB5E3B3D791C20D0C52C1C90B4"
+    },
+    {
+      "Path": "1.6/Textures/UI/Menu/RR_Menu_CorridorEncounter.png",
+      "Bytes": 1616605,
+      "SHA256": "4DBAB8ED8EC4BD4FEF14194739E00F0BC06A7B41A602F4C923D8079D8ED5760E"
+    },
+    {
+      "Path": "1.6/Textures/UI/Menu/RR_Menu_EmptyCinema.png",
+      "Bytes": 1543450,
+      "SHA256": "6ED0DBAC11BEC717FE4F9CAFE260BBD7BEC8BDECF9401AA906093A18391A3313"
+    },
+    {
+      "Path": "1.6/Textures/UI/Menu/RR_Menu_FacilityThreshold_v2.png",
+      "Bytes": 1789238,
+      "SHA256": "AEB5091DE4568134980D36065C95C65DCD83472B4BB3E8D2DB92F092D3BF452C"
+    },
+    {
+      "Path": "1.6/Textures/UI/Menu/RR_Menu_FamiliarStranger.png",
+      "Bytes": 1637467,
+      "SHA256": "E5E9BEFE1DD156478507C18BDDCB7B75F17FC5F1BFB1A419C37437ECF92C7E08"
+    },
+    {
+      "Path": "1.6/Textures/UI/Menu/RR_Menu_FieldSurvey_v2.png",
+      "Bytes": 1911119,
+      "SHA256": "3AC775159E46DB91163299DBE1B454B310BCFB9676FE93279AD9A5A520837843"
+    },
+    {
+      "Path": "1.6/Textures/UI/Menu/RR_Menu_IndustrialGateLogistics.png",
+      "Bytes": 2082928,
+      "SHA256": "384975AFDBD1A632C27FE9B5F66E8ACCFA5F5BA5E8C223F4DFCB785FB5A2D93C"
+    },
+    {
+      "Path": "1.6/Textures/UI/Menu/RR_Menu_LaboratoryOperations.png",
+      "Bytes": 1865770,
+      "SHA256": "FEE06AE37CB2ACD9E77990CFA0003467EFDF927DA309A5BB3C8DA7C7C70E3737"
+    },
+    {
+      "Path": "1.6/Textures/UI/Menu/RR_Menu_LightsOut.png",
+      "Bytes": 1853767,
+      "SHA256": "DB63DE41E09449D181A2DB640A28077965C6F59363C1A0FEF95C33FBDDA78156"
+    },
+    {
+      "Path": "1.6/Textures/UI/Menu/RR_Menu_PanicJunction.png",
+      "Bytes": 1522882,
+      "SHA256": "BB8FFAA603D7BC72843983AB8C6C9D23BB1D762B4D754C8281735547E0A54AB1"
+    },
+    {
+      "Path": "1.6/Textures/UI/Menu/RR_Menu_RedTrail.png",
+      "Bytes": 1813791,
+      "SHA256": "83D28E7D088BEE73FA292FEE7DBADD72243DCB4E520E00985E7636125EE8338A"
+    },
+    {
+      "Path": "1.6/Textures/UI/Menu/RR_Menu_SilentRecovery.png",
+      "Bytes": 1880961,
+      "SHA256": "009E3CF278BD3CB68E052FB894C406E0AD53F7DD82ECF1FAF7647501DD91AABB"
+    },
+    {
+      "Path": "About/About.xml",
+      "Bytes": 16235,
+      "SHA256": "1C06000A8E158FE591D4705F6A1681C0100FC306E395A1E10EEA2AD5BD8F2714"
+    },
+    {
+      "Path": "About/License.txt",
+      "Bytes": 1065,
+      "SHA256": "B42D22D94B8A6E22CEF52B7D923C7D1CB8DC2F3FCC0687FA66FDDBC6FBC71E42"
+    },
+    {
+      "Path": "About/Preview.png",
+      "Bytes": 1006918,
+      "SHA256": "32CAE82D63CAA3ADA3E866EA01EAE6AB458EE95BA6EB2754AB2E4F7CABC6A1C3"
+    },
+    {
+      "Path": "LoadFolders.xml",
+      "Bytes": 104,
+      "SHA256": "23F721252643F6A0230C935EA3E1F2F89A6371025DDE018AFE776508D66FCB03"
+    }
+  ],
+  "ProfileChanged": false,
+  "GameLaunched": false
+}

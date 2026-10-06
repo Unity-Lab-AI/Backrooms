@@ -1,0 +1,15 @@
+Command: python tools/check-package-integrity.py --rimsort-settings C:\Users\gfour\AppData\Local\RimSort\settings.json
+Exit code: 0
+
+package-integrity
+  defs declared:      414
+  package files:      164
+  supported versions: 1.6
+  game defs indexed:  12174
+  game name heap:     1532377 bytes
+  note: optional compatibility patch targets verified against the installed profile mods: 7
+  note: folder scanned by GetAllInFolder, 12 texture(s) covered: UI/Menu
+  note: 3 non-RR texture path(s) point at game assets and cannot be checked from disk; they live in asset bundles, not Data/
+  note: staged copy matches the build at 0.13.0-dev, every file compared by content
+
+PASS

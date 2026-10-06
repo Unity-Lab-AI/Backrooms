@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "date": "2026-10-06",
+  "ownerDirection": "what about active portal ones. should you do those to and write an ote to claude in todo",
+  "scope": "Original open/live company-portal artwork only; no natural-door effects or runtime consumer claims.",
+  "tool": "built-in image_gen.imagegen",
+  "family": "RR_GateOpen",
+  "frames": 8,
+  "grid": [
+    4,
+    2
+  ],
+  "generatedPath": "C:\\Users\\gfour\\.codex\\generated_images\\01a111aa-843f-7df3-a78d-d3c3cc254596\\exec-ebebf906-7766-4e76-a0f3-63988ae202f3.png",
+  "workspacePath": "outputs/gate-cycle-assets-2026-10-06/gate-open-sheet.png",
+  "styleReference": "outputs/gate-cycle-assets-2026-10-06/gate-charge-sheet.png",
+  "generationPrompt": "Use case: stylized-concept. Asset type: transparent RimWorld sci-fi company gate OPEN/LIVE idle energy overlay sprites. The input sheet is a STYLE REFERENCE ONLY for the accepted thin white-core, narrow-blue-edge filaments; do not reproduce its charging intensity. Create exactly EIGHT frames, strict 4-column by 2-row grid, 2:1 overall aspect ratio, eight equal square cells. Every cell has EXACTLY the same center and overall aperture registration. Across all eight frames retain the SAME TWO short thin curved electrical filaments: one on the upper-left quadrant, one on the lower-right quadrant of an invisible square aperture. Each of these filaments only covers about 12 percent of the perimeter. Same position, same size, same shape in all frames, with only TINY gentle changes in the fine branch tips and a slow very small brightening and dimming: frames1,2 gently rise;3,4 soft peak;5,6 gentlyfall;7,8 gentlyreturn toward frame1. Keep the brightness nearly steady, never a flash. This is a quiet active portal presence, much sparser and calmer than the charging reference. Narrow sky-blue strokes with very thin white core and restrained narrow luminosity. Every cell center and inner60percent remains fully transparent, and keep12percent margin at all cell boundaries. TRUE transparent alpha background, no painted checkerboard, no black surface, no opaqueportal fill, no broad haze, no glowing ring, no aura disk, no border or structure, no door, no hardware, no room, no text, numbers or grid lines. Energy ONLY. Flat orthographic front view, clean small readable RimWorld-style game VFX. Frame8to1 should be just another tiny normal brightness step. Produce the complete transparent eight-frame sheet.",
+  "editPrompt": "Use case: precise-object-edit. Keep this exact 4-column by 2-row eight-frame idle energy sheet and every filament's position, size and shape. Change ONLY stroke thickness and light intensity. Remove the thick blue glow ribbons completely. Keep only the thin white jagged lightning core and a very narrow sky-blue edge, with no more than one stroke-width of adjacent glow. The total visible stroke must be roughly one third the current width. Reduce intensity to a soft quiet active idle: blue line with only a small white core, much calmer than a charge-up flash. No broad cloudy patches, no blue bands, no aura. Preserve the same two short upper-left/lower-right filaments in each cell and their tiny phase variations. Centers and corners and everything outside these narrow lines remain fully transparent alpha. Exact grid and registration unchanged. No frame, hardware, door, solid fill, text or grid lines.",
+  "priorGeneratedPath": "C:\\Users\\gfour\\.codex\\generated_images\\01a111aa-843f-7df3-a78d-d3c3cc254596\\exec-a33abf90-0a84-421c-82d3-8a4e4461a6bd.png",
+  "transforms": "Mechanical fixed uniform-grid extraction to444px square RGBA masters; alpha compositing to clear hidden RGB, alpha-aware uniform Lanczos resizing to256px. No per-frame recentering or newly authored procedural energy.",
+  "destinationMasters": "assets/source/phase2/RR_GateOpen_01..08.png",
+  "destinationPackage": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateOpen_01..08.png",
+  "runtimeHandoff": "Claude: render the shared slower eight-frame loop after the nonlooping activation burst while a company portal is Live. Stop on closure, fault/recovery transitions, destruction, map unload and reload; do not apply to natural portals, replace door art or implement aura using these sprites. Restart from saved/current phase policy. No runtime wiring changed in this art delivery."
+}

@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-06",
+  "creator": "Operator",
+  "tool": "built-in image_gen",
+  "scope": "Six genuine new back/north and side/east views for the existing field recorder, sealed evidence case and survey tag; original source masters only. No provider assets copied.",
+  "ownerDirection": "gate size variants too right and any other things we need like journal and such and converting into game world",
+  "visualReview": "Reviewed the existing front masters and each generated output. Recorder rear changes its front controls to vents and battery hatch; case rear uses hinges instead of front latches and handle; tag rear has plain reverse material. East views expose narrower end/edge silhouettes with physical depth.",
+  "orientationLimitations": "Art uses the existing masters' high camera with a partly front-facing projection rather than strict top-down. East silhouettes are intentionally narrower; the converter must preserve alpha and apply consistent tile sizing. West may use RimWorld's native east mirroring, which swaps asymmetric recorder/case details. In-game scale and readability remain unobserved; no game was launched.",
+  "assets": [
+    {
+      "filename": "RR_FieldRecorder_north.png",
+      "masterPath": "assets/source/phase2/RR_FieldRecorder_north.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116a-fe53-7501-a845-a95896e091ac\\exec-49b3f639-efa1-4db4-81a0-fb1f89cc3d60.png",
+      "prompt": "Use case: precise-object-edit. Asset type: original RimWorld 1.6 gameplay sprite for Rimrooms - Async Industries. Edit target: the referenced existing original asset. Change its physical view only, preserving the SAME object design, proportions, materials, worn edges, muted charcoal/cream/amber palette, and restrained hand-painted colony-sim art with readable dark outlines. High overhead orthographic game camera with a slightly visible upper and front edge; no photographic perspective. One centered isolated object entirely inside a square PNG, ample transparent padding, genuinely alpha-transparent background. Broad readable shapes suitable for a 128-pixel 1x1 sprite. No lettering, logos, watermark, hands, people, scenery, floor, external cast shadow, UI, extra props or new hardware. Draw a genuine new view of the object, never rotate the existing front image flat in the image plane. NORTH/BACK VIEW of the same wide rectangular 1990s field cassette recorder. Its broad rear charcoal panel faces the bottom of the image. Show the plain battery hatch, restrained rear ventilation slots, a small rear cable port and the same single short antenna emerging from the top now at the LEFT when viewed from behind. The broad rear must have NO cassette window, speaker grille or row of front buttons; those are on the hidden face. Keep the wrist strap on the opposite screen side from the front, same height and wide silhouette, visible shallow top edge.",
+      "references": [
+        "assets/source/phase2/RR_FieldRecorder.png"
+      ]
+    },
+    {
+      "filename": "RR_SealedEvidenceCase_north.png",
+      "masterPath": "assets/source/phase2/RR_SealedEvidenceCase_north.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116a-fe53-7501-a845-a95896e091ac\\exec-1823cd11-de88-433f-919c-32ca4bd5f3c3.png",
+      "prompt": "Use case: precise-object-edit. Asset type: original RimWorld 1.6 gameplay sprite for Rimrooms - Async Industries. Edit target: the referenced existing original asset. Change its physical view only, preserving the SAME object design, proportions, materials, worn edges, muted charcoal/cream/amber palette, and restrained hand-painted colony-sim art with readable dark outlines. High overhead orthographic game camera with a slightly visible upper and front edge; no photographic perspective. One centered isolated object entirely inside a square PNG, ample transparent padding, genuinely alpha-transparent background. Broad readable shapes suitable for a 128-pixel 1x1 sprite. No lettering, logos, watermark, hands, people, scenery, floor, external cast shadow, UI, extra props or new hardware. Draw a genuine new view of the object, never rotate the existing front image flat in the image plane. NORTH/BACK VIEW of the SAME closed rugged wide rectangular evidence case. Cream upper lid panel, charcoal reinforced corners and shell, same narrow central amber sealing strap continuing over lid. Rear/hinge side faces bottom: replace visible front carrying handle and two front latches with two simple charcoal-metal rear hinges at the corresponding outer positions. Hide the front handle and latches on the far side. Preserve same wide low suitcase silhouette, cream lid and physical shell thickness viewed from the high game camera.",
+      "references": [
+        "assets/source/phase2/RR_SealedEvidenceCase.png"
+      ]
+    },
+    {
+      "filename": "RR_SurveyTag_north.png",
+      "masterPath": "assets/source/phase2/RR_SurveyTag_north.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116a-fe53-7501-a845-a95896e091ac\\exec-6ff9ca93-9ba5-4fbb-8212-11a47cf60f81.png",
+      "prompt": "Use case: precise-object-edit. Asset type: original RimWorld 1.6 gameplay sprite for Rimrooms - Async Industries. Edit target: the referenced existing original asset. Change its physical view only, preserving the SAME object design, proportions, materials, worn edges, muted charcoal/cream/amber palette, and restrained hand-painted colony-sim art with readable dark outlines. High overhead orthographic game camera with a slightly visible upper and front edge; no photographic perspective. One centered isolated object entirely inside a square PNG, ample transparent padding, genuinely alpha-transparent background. Broad readable shapes suitable for a 128-pixel 1x1 sprite. No lettering, logos, watermark, hands, people, scenery, floor, external cast shadow, UI, extra props or new hardware. Draw a genuine new view of the object, never rotate the existing front image flat in the image plane. NORTH/BACK VIEW of the SAME elongated cream route survey tag with clipped corners, worn muted amber perimeter border, dark metal edge, single circular reinforced eyelet and attached black loop. Show the reverse broad face, plain scuffed cream material without the front arrow and without any new label, writing, marker or symbols. Preserve the same elongated upright silhouette, eyelet at top, physical rim thickness and attached loop; the tag is physically turned around, not rotated flat.",
+      "references": [
+        "assets/source/phase2/RR_SurveyTag.png"
+      ]
+    },
+    {
+      "filename": "RR_FieldRecorder_east.png",
+      "masterPath": "assets/source/phase2/RR_FieldRecorder_east.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116a-fe53-7501-a845-a95896e091ac\\exec-7e2a9ec2-0537-4666-aac4-a323ba0c6fed.png",
+      "prompt": "Use case: precise-object-edit. Asset type: original RimWorld 1.6 gameplay sprite for Rimrooms - Async Industries. Edit target: the referenced existing original asset. Change its physical view only, preserving the SAME object design, proportions, materials, worn edges, muted charcoal/cream/amber palette, and restrained hand-painted colony-sim art with readable dark outlines. High overhead orthographic game camera with a slightly visible upper and front edge; no photographic perspective. One centered isolated object entirely inside a square PNG, ample transparent padding, genuinely alpha-transparent background. Broad readable shapes suitable for a 128-pixel 1x1 sprite. No lettering, logos, watermark, hands, people, scenery, floor, external cast shadow, UI, extra props or new hardware. Draw a genuine new view of the object, never rotate the existing front image flat in the image plane. EAST/RIGHT END VIEW of the same 1990s field cassette recorder. Its SHORT right end faces bottom, so the silhouette is much narrower than the wide front view and has clearly visible front-to-back case depth. Show the same ribbed black circular side tuning knob, a restrained small side port, charcoal side housing and part of the top ventilation ridges. Same short single antenna near one corner, wrist strap mostly behind the far end. The cassette window and three front buttons face to the LEFT and are only a narrow edge sliver, NEVER copied as a wide facing front panel. Preserve practical hardware identity and readable end silhouette.",
+      "references": [
+        "assets/source/phase2/RR_FieldRecorder.png"
+      ]
+    },
+    {
+      "filename": "RR_SealedEvidenceCase_east.png",
+      "masterPath": "assets/source/phase2/RR_SealedEvidenceCase_east.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116a-fe53-7501-a845-a95896e091ac\\exec-4fd57699-44eb-4a9f-a2a8-a61e476f0138.png",
+      "prompt": "Use case: precise-object-edit. Asset type: original RimWorld 1.6 gameplay sprite for Rimrooms - Async Industries. Edit target: the referenced existing original asset. Change its physical view only, preserving the SAME object design, proportions, materials, worn edges, muted charcoal/cream/amber palette, and restrained hand-painted colony-sim art with readable dark outlines. High overhead orthographic game camera with a slightly visible upper and front edge; no photographic perspective. One centered isolated object entirely inside a square PNG, ample transparent padding, genuinely alpha-transparent background. Broad readable shapes suitable for a 128-pixel 1x1 sprite. No lettering, logos, watermark, hands, people, scenery, floor, external cast shadow, UI, extra props or new hardware. Draw a genuine new view of the object, never rotate the existing front image flat in the image plane. EAST/SHORT SIDE VIEW of the SAME closed evidence case. Show one short dark reinforced end facing bottom, making the suitcase's physical thickness clear; silhouette is substantially narrower than the wide front view. The cream lid is visible from above, the narrow amber central strap runs across the far/central lid, dark reinforced side ribs and the seam between lid and lower shell are visible. Two front latches and carrying handle face LEFT and only a tiny edge sliver may show; do not invent a new side handle or side latch. Keep same materials, worn edges, restrained outline and closed case proportions.",
+      "references": [
+        "assets/source/phase2/RR_SealedEvidenceCase.png"
+      ]
+    },
+    {
+      "filename": "RR_SurveyTag_east.png",
+      "masterPath": "assets/source/phase2/RR_SurveyTag_east.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116a-fe53-7501-a845-a95896e091ac\\exec-e8f29864-6d52-4d32-990b-95022b47cef5.png",
+      "prompt": "Use case: precise-object-edit. Asset type: original RimWorld 1.6 gameplay sprite for Rimrooms - Async Industries. Edit target: the referenced existing original asset. Change its physical view only, preserving the SAME object design, proportions, materials, worn edges, muted charcoal/cream/amber palette, and restrained hand-painted colony-sim art with readable dark outlines. High overhead orthographic game camera with a slightly visible upper and front edge; no photographic perspective. One centered isolated object entirely inside a square PNG, ample transparent padding, genuinely alpha-transparent background. Broad readable shapes suitable for a 128-pixel 1x1 sprite. No lettering, logos, watermark, hands, people, scenery, floor, external cast shadow, UI, extra props or new hardware. Draw a genuine new view of the object, never rotate the existing front image flat in the image plane. EAST/EDGE VIEW of the SAME elongated route survey tag. Show its true thin charcoal metal edge as a NARROW tall vertical silhouette with readable modest physical thickness; a thin strip of cream and muted amber paint can be visible along one edge. The front arrow-bearing face points LEFT and is largely hidden, NEVER present as a broad flat front rotated sideways. Keep the same top reinforced eyelet and attached black loop, viewed mostly edge-on, retaining enough width and thickness to read as a small physical tag at 128 pixels. No new symbols or labels.",
+      "references": [
+        "assets/source/phase2/RR_SurveyTag.png"
+      ]
+    }
+  ]
+}

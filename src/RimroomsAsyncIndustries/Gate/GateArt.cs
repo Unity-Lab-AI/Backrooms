@@ -4,7 +4,7 @@ using Verse;
 namespace RimroomsAsyncIndustries.Gate
 {
     /// <summary>
-    /// The company's own artwork for the gate, where a gate has no thing of its own to draw it on.
+    /// The company's designation icon for a gate that remains a bound native door run.
     ///
     /// **A GATE IS A DOOR THE PLAYER ALREADY OWNS, AND THAT IS NOT CHANGING.** Owner, 2026-10-06:
     /// *"need to be able to build upto three gates of differnt sizes to... remember?"* -- and the
@@ -14,16 +14,16 @@ namespace RimroomsAsyncIndustries.Gate
     /// Locks, Doors Expanded, ReBuild, Vault Walls and Doors and every prisoner-access mod in the
     /// profile. So `RR_MachineGate` is **not** a buildable and never will be.
     ///
-    /// **SO THE ART GOES WHERE FRONT-ELEVATION ART IS ACTUALLY CORRECT: A BUTTON.** The master is
-    /// an arch drawn face on. Gizmo icons are drawn flat in the interface, which is the one place a
-    /// face-on drawing is right rather than a thing lying on its side. The world-space overlay --
-    /// drawing the arch across a designated run -- is a separate open row precisely because nobody
-    /// here can look at it: only the owner launches, and shipping a world sprite sight unseen is
-    /// how a release earns its first screenshot complaint.
+    /// The original face-on arch stays a flat button icon. It is never used as a world sprite.
+    /// `GateWorldFrames` draws separate, genuinely authored cardinal frames across the bound
+    /// native door run, using its saved orientation and complete footprint. Missing art, a disabled
+    /// setting or an incompatible footprint leaves the native rendering intact. That consumer is
+    /// implemented; its appearance, occlusion and provider behaviour still need an owner-launched
+    /// runtime review.
     ///
     /// Resolved once and cached, with failure answering null rather than throwing. Content loads
-    /// after static construction in some orders, so the lookup is lazy and a null result is retried
-    /// at most once per session rather than every frame.
+    /// after static construction in some orders, so the lookup is lazy and runs once per session
+    /// rather than every frame.
     /// </summary>
     internal static class RimroomsGateArt
     {

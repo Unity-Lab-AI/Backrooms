@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
+using RimroomsAsyncIndustries.Core;
 using RimroomsAsyncIndustries.Expedition;
 using RimWorld;
 using Verse;
@@ -96,7 +97,7 @@ namespace RimroomsAsyncIndustries.Investigation
                 ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail("RR_RouteRecording");
                 return definition != null && definition.modContentPack != null &&
                     string.Equals(definition.modContentPack.PackageId,
-                        "unitylabai.rimroomsasyncindustries", StringComparison.OrdinalIgnoreCase) &&
+                        RimroomsMod.PackageId, StringComparison.OrdinalIgnoreCase) &&
                     definition.thingClass != null && typeof(Book).IsAssignableFrom(definition.thingClass) &&
                     definition.comps != null &&
                     definition.comps.OfType<CompProperties_RouteEvidence>().Count() == 1 &&
@@ -114,16 +115,18 @@ namespace RimroomsAsyncIndustries.Investigation
         /// 0.13.0-dev, so the same test now matches brand new items, and a reader trusting the old
         /// name would conclude this branch is dead code and delete it.
         ///
-        /// **The test itself is unchanged, deliberately.** It stays looser than `CompanyCarrierDef`
+        /// **The recognition shape is unchanged, deliberately.** It stays looser than `CompanyCarrierDef`
         /// -- def name and package, with no component requirements -- because its other job is to
         /// recognise a carrier in an old save whose def no longer fully resolves. Tightening it
         /// would orphan exactly the items it was written to rescue.
+        /// The package check uses the live central identity rather than a retired package name:
+        /// a saved carrier resolves its unchanged Def under the package supplying it now.
         /// </summary>
         public static bool IsCompanyCarrier(Thing thing)
         {
             return thing != null && thing.def != null && thing.def.defName == "RR_RouteRecording" &&
                 thing.def.modContentPack != null && string.Equals(thing.def.modContentPack.PackageId,
-                    "unitylabai.rimroomsasyncindustries", StringComparison.OrdinalIgnoreCase);
+                    RimroomsMod.PackageId, StringComparison.OrdinalIgnoreCase);
         }
         public static bool IsSupportedCarrier(Thing thing)
         {

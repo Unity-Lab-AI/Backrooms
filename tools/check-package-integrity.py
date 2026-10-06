@@ -29,17 +29,20 @@ What it checks
    and reports nothing.
 4. **Our own def references resolve.** Every `RR_` token referenced from a def must be a
    def this package declares, or a keyed string it declares -- a def may legitimately name a
-   keyed letter label or body. This is what catches a rename that updated the declaration
+   keyed letter label or body. Leaf content-path values are checked as assets, not defNames.
+   This is what catches a rename that updated the declaration
    and missed a reference -- an unresolved cross-reference at load, in a mod whose whole
    claim is that it needs nothing but Core.
 5. **Patch targets exist.** Each `PatchOperation`'s xpath is resolved down to the defName
    it selects, and that def must exist in the game's own `Data/` or in this package. A
    patch against a def that was renamed by the game is silent: it simply never applies.
-6. **Textures.** Every `texPath` naming an `RR_` asset resolves to a real `.png` in the
-   package, and every `.png` in the package is referenced by something. Core texture
+6. **Textures.** Every texture field or resolved C# content path naming an `RR_` asset resolves
+   to a real `.png` or a complete north/east/south cardinal set for a multi-facing graphic.
+   Reverse lookup recognizes those directional files as referenced. Core texture
    paths cannot be verified from disk (they live in asset bundles) and are reported as
    unverifiable rather than passed.
-7. **Sounds.** Every `RR_` sound reference resolves to a `SoundDef` this package declares.
+7. **Sounds.** Every `RR_` sound reference resolves to a `SoundDef` this package declares;
+   each `RR_` clipPath resolves to a shipped audio file rather than a SoundDef.
 8. **Class references.** Every `RimroomsAsyncIndustries` type named by a `workerClass`,
    `compClass`, `giverClass`, `thingClass`, `driverClass` or `Class="..."` attribute must exist
    in the C# source. A def naming a class that is not there fails at load with a red error.
@@ -60,8 +63,10 @@ other checkers.
 Usage
 -----
     python tools/check-package-integrity.py
+    python tools/check-package-integrity.py --rimsort-settings <path-to-settings.json>
 """
 
+import argparse
 import glob
 import io
 import json
@@ -98,6 +103,17 @@ RR_TOKEN = re.compile(r"\bRR_[A-Za-z0-9_]+\b")
 
 # XML comments, stripped before reference scanning.
 COMMENT = re.compile(r"<!--.*?-->", re.S)
+
+# These values name content files, not Defs. openGraphic and verticalGraphic ordinarily wrap
+# GraphicData with a nested texPath; only a leaf value is removed from the Def-reference scan.
+TEXTURE_PATH_TAGS = ("texPath", "uiIconPath", "iconPath", "symbol", "texturePath",
+                     "openGraphic", "verticalGraphic")
+CONTENT_PATH_TAGS = TEXTURE_PATH_TAGS + ("clipPath",)
+CONTENT_PATH_VALUE = re.compile(
+    r"(<(?P<path_tag>%s)(?:\s[^>]*)?>)[^<]*(</(?P=path_tag)\s*>)"
+    % "|".join(CONTENT_PATH_TAGS), re.S)
+ROTATIONS = ("_north", "_east", "_south", "_west")
+REQUIRED_ROTATIONS = ("_north", "_east", "_south")
 
 # Files RimWorld reads from the mod root rather than from a version folder.
 ROOT_FILES = ("LoadFolders.xml",)
@@ -449,6 +465,9 @@ def check_def_references(problems, declared, keyed):
         # Comments name files and defs that were deliberately moved elsewhere, so
         # scanning them reports prose as a broken reference.
         text = COMMENT.sub(" ", read_text(path))
+        # A journal's RR_CompanyJournal_Open is a texture stem, not an undeclared ThingDef.
+        # Strip only content leaf values; every RR token in other values/attributes still counts.
+        text = CONTENT_PATH_VALUE.sub(r"\1\3", text)
         for token in sorted(set(RR_TOKEN.findall(text))):
             if token in declared or token in keyed:
                 continue
@@ -611,7 +630,7 @@ def _file_sha256(path):
     return digest.hexdigest()
 
 
-def check_staged_copy_is_current(problems, notes):
+def check_staged_copy_is_current(problems, notes, settings_path=None):
     """The copy the owner launches must be the build that was just made.
 
     **Caught at 0.12.99-dev minutes before a launch: the staged copy was `0.12.98-dev` while the
@@ -629,18 +648,19 @@ def check_staged_copy_is_current(problems, notes):
     rule that fails on somebody else's machine for a reason that is not a defect is a rule people
     switch off.
     """
-    settings = os.path.join(os.environ.get("LOCALAPPDATA", ""), "RimSort", "settings.json")
+    settings = settings_path or os.path.join(os.environ.get("LOCALAPPDATA", ""),
+                                            "RimSort", "settings.json")
     if not os.path.isfile(settings):
-        notes.append("RimSort settings not present; the staged copy is unchecked rather than "
-                     "confirmed current")
+        notes.append("RimSort settings not present at %s; the staged copy is unchecked rather "
+                     "than confirmed current" % settings)
         return
     try:
         data = json.loads(io.open(settings, encoding="utf-8-sig").read())
         instance = data["instances"][data["current_instance"]]
         local = instance.get("local_folder") or ""
     except (ValueError, KeyError, TypeError, OSError):
-        notes.append("RimSort settings could not be read; the staged copy is unchecked rather "
-                     "than confirmed current")
+        notes.append("RimSort settings could not be read at %s; the staged copy is unchecked "
+                     "rather than confirmed current" % settings)
         return
     staged = os.path.join(local, "Rimrooms - Async Industries", "About", "About.xml")
     if not local or not os.path.isfile(staged):
@@ -788,97 +808,115 @@ def check_patches(problems, declared, game_defs, notes):
 # 6 + 7. Textures and sounds
 # --------------------------------------------------------------------------- #
 
+def csharp_texture_paths(text):
+    """Literal/const ContentFinder arguments and the gate frame's bounded constructor table.
+
+    This is source inspection, not C# data-flow analysis. Unknown expressions are not guessed.
+    The frame-table case is accepted only beside the actual three cardinal Get(stem + suffix)
+    calls and constructor-to-field assignment; arbitrary quoted paths do not count as consumers.
+    """
+    # Keep strings intact while removing comments, including comments containing example paths.
+    text = re.sub(r'@"(?:[^\"]|\"\")*"|"(?:\\.|[^"\\])*"|//[^\r\n]*|/\*.*?\*/',
+                  lambda match: " " if match.group(0).startswith(("//", "/*"))
+                  else match.group(0), text, flags=re.S)
+    constants = dict(re.findall(r'\bconst\s+string\s+(\w+)\s*=\s*@?"([^"\r\n]+)"', text))
+    finder = r'ContentFinder<\s*(?:UnityEngine\.)?Texture2D\s*>\s*\.\s*'
+    argument = r'(@?"[^"\r\n]+"|\w+)\s*(?=,|\))'
+
+    def resolve(token):
+        token = token.strip()
+        if token.startswith(('"', '@"')):
+            return token.lstrip('@')[1:-1]
+        return constants.get(token)
+
+    referenced = set()
+    directional = set()
+    folders = set()
+    for token in re.findall(finder + r'Get\s*\(\s*' + argument, text):
+        value = resolve(token)
+        if value:
+            referenced.add(value.strip())
+    for token in re.findall(finder + r'GetAllInFolder\s*\(\s*' + argument, text):
+        value = resolve(token)
+        if value:
+            folders.add(value.strip('/'))
+
+    cardinal_calls = set(re.findall(
+        finder + r'Get\s*\(\s*stem\s*\+\s*"(_north|_east|_south)"\s*(?=,|\))', text))
+    if set(REQUIRED_ROTATIONS).issubset(cardinal_calls) and re.search(
+            r'\bstem\s*=\s*textureStem\s*;', text):
+        for value in re.findall(
+                r'\bnew\s+FrameSet\s*\(\s*\d+\s*,\s*\d+\s*,\s*"([^"\r\n]+)"\s*\)', text):
+            referenced.add(value.strip())
+            directional.add(value.strip())
+    return referenced, directional, folders
+
+
 def check_textures(problems, notes):
     referenced = set()
+    directional = set()
     unverifiable = set()
     for path in mod_xml_files():
-        text = read_text(path)
-        for tag in ("texPath", "uiIconPath", "iconPath", "symbol"):
-            for value in re.findall(r"<%s>([^<]+)</%s>" % (tag, tag), text):
-                value = value.strip()
-                if "RR_" in value:
-                    referenced.add(value)
-                else:
-                    unverifiable.add(value)
+        root = parse(path, problems)
+        if root is None:
+            continue
+        parents = {child: parent for parent in root.iter() for child in parent}
+        for node in root.iter():
+            if node.tag not in TEXTURE_PATH_TAGS:
+                continue
+            value = (node.text or "").strip()
+            if not value:
+                continue
+            if "RR_" not in value:
+                unverifiable.add(value)
+                continue
+            referenced.add(value)
+            # Book openGraphic/verticalGraphic contain exactly the same GraphicData fields.
+            parent = parents.get(node)
+            if node.tag == "texPath" and parent is not None and (
+                    parent.findtext("graphicClass") or "").strip() == "Graphic_Multi":
+                directional.add(value)
 
-    # C# asks for textures too, and until 0.9.0-dev this check could not see it. Retiring
-    # the legacy gate buildings deleted four textures that C# still named on a dead branch,
-    # and the checker passed clean: it only ever looked at XML, and only ever checked the
-    # "ships but unreferenced" direction from disk. A reference to a texture that does not
-    # ship is the more serious of the two, because ContentFinder reports a missing path at
-    # runtime, so it is checked in both directions now and from both kinds of source.
     scanned_folders = set()
     for path in source_cs_files():
-        text = read_text(path)
-        for value in re.findall(r"""ContentFinder<\s*Texture2D\s*>\s*\.\s*Get\s*\(\s*["']([^"']+)["']""", text):
-            value = value.strip()
+        paths, multis, folders = csharp_texture_paths(read_text(path))
+        for value in paths:
             if "RR_" in value:
                 referenced.add(value)
+                if value in multis:
+                    directional.add(value)
             else:
                 unverifiable.add(value)
-        # GetAllInFolder references a WHOLE FOLDER, not one path, and this checker could not see
-        # that. Both menu slides have been reported as "ships but nothing references it" for
-        # every run since they were added -- the old code named them in a string array and then
-        # called Get(variable), which this regex cannot follow either. A note nobody can act on
-        # is noise, and noise is how a real finding gets scrolled past.
-        #
-        # This is not a widening. GetAllInFolder genuinely loads every image under the folder, so
-        # treating them as referenced is what the API actually does. The "reference that does not
-        # ship" direction is untouched and is still the more serious of the two.
-        for value in re.findall(
-                r"""ContentFinder<\s*Texture2D\s*>\s*\.\s*GetAllInFolder\s*\(\s*(\w+|["'][^"']+["'])""",
-                text):
-            token = value.strip()
-            if token.startswith('"') or token.startswith("'"):
-                folder = token.strip("\"'")
-            else:
-                # A bare identifier. Resolve the const it names, in this same file, or give up --
-                # guessing a folder would be worse than reporting nothing.
-                match = re.search(
-                    r"""const\s+string\s+%s\s*=\s*["']([^"']+)["']""" % re.escape(token), text)
-                folder = match.group(1) if match else None
-            if folder:
-                scanned_folders.add(folder.strip("/"))
+        scanned_folders.update(folders)
 
     on_disk = set()
     for path in glob.glob(os.path.join(MOD, "*", "Textures", "**", "*.png"), recursive=True):
         parts = os.path.relpath(path, MOD).replace(os.sep, "/").split("/")
         on_disk.add("/".join(parts[2:])[: -len(".png")])
 
-    # **A Graphic_Multi texPath IS A STEM, NOT A FILE, AND THIS RULE DID NOT KNOW THAT.** It
-    # predates this package shipping any rotatable texture of its own: every texture was a menu
-    # slide or a Graphic_Single, so `texPath` and the file name were the same string. 0.13.0-dev
-    # ships three rotatable buildings on the owner's direction *"remember things rotate"*, and
-    # RimWorld resolves `<texPath>Foo</texPath>` for a Graphic_Multi as `Foo_north`, `Foo_east`,
-    # `Foo_south` and `Foo_west`. The rule reported three real, correct textures as missing.
-    #
-    # **The claim is unchanged and is not weakened**: a referenced path must still ship something.
-    # What changed is what counts as shipping it. `check-register-compliance.py` rule 6b is the one
-    # that asserts the rotation set is complete, so a stem matching only `_west` is still caught
-    # there rather than being let through here.
-    ROTATIONS = ("_north", "_east", "_south", "_west")
+    used = set()
     for value in sorted(referenced):
-        if value in on_disk:
-            continue
-        if any(value + suffix in on_disk for suffix in ROTATIONS):
-            continue
-        fail(problems, "texture path %r is referenced but no matching .png ships" % value)
+        if value in directional:
+            absent = [suffix for suffix in REQUIRED_ROTATIONS if value + suffix not in on_disk]
+            if absent:
+                fail(problems, "multi-facing texture stem %r is referenced but cardinal .png "
+                               "file(s) do not ship: %s" % (value, ", ".join(absent)))
+            used.update(value + suffix for suffix in ROTATIONS if value + suffix in on_disk)
+        elif value in on_disk:
+            used.add(value)
+        else:
+            fail(problems, "texture path %r is referenced but no matching .png ships" % value)
 
-    for value in sorted(on_disk):
-        if value in referenced:
-            continue
-        # A texture inside a folder some source scans with GetAllInFolder IS referenced, by the
-        # folder rather than by name. That is the whole point of scanning: art can be added by
-        # dropping a file in.
+    for value in sorted(on_disk - used):
+        # GetAllInFolder loads all files below a named folder, including menu slides.
         if any(value.startswith(folder + "/") for folder in scanned_folders):
             continue
         notes.append("texture ships but nothing references it: %s.png" % value)
 
-    if scanned_folders:
-        for folder in sorted(scanned_folders):
-            count = len([v for v in on_disk if v.startswith(folder + "/")])
-            notes.append("folder scanned by GetAllInFolder, %d texture(s) covered: %s"
-                         % (count, folder))
+    for folder in sorted(scanned_folders):
+        count = len([v for v in on_disk if v.startswith(folder + "/")])
+        notes.append("folder scanned by GetAllInFolder, %d texture(s) covered: %s"
+                     % (count, folder))
 
     if unverifiable:
         notes.append("%d non-RR texture path(s) point at game assets and cannot be "
@@ -886,7 +924,7 @@ def check_textures(problems, notes):
                      % len(unverifiable))
 
 
-def check_sounds(problems, declared):
+def check_sounds(problems, declared, notes=None):
     sound_defs = set(name for name, tags in declared.items() if "SoundDef" in tags)
     for path in mod_xml_files():
         if os.sep + "SoundDefs" + os.sep in path:
@@ -898,6 +936,31 @@ def check_sounds(problems, declared):
                 if value.startswith("RR_") and value not in sound_defs:
                     fail(problems, "%s references sound %r, which this package does not "
                                    "declare as a SoundDef" % (rel(path), value))
+
+    # A clipPath is an audio file lookup, even when its filename shares a SoundDef's name.
+    # Removing it from Def-token scanning must not turn a missing original sound into a pass.
+    extensions = (".wav", ".ogg", ".mp3")
+    clips = set()
+    for path in glob.glob(os.path.join(MOD, "*", "Sounds", "**", "*"), recursive=True):
+        if not os.path.isfile(path) or not path.lower().endswith(extensions):
+            continue
+        parts = os.path.relpath(path, MOD).replace(os.sep, "/").split("/")
+        clips.add(os.path.splitext("/".join(parts[2:]))[0])
+    unverifiable = set()
+    for path in mod_xml_files():
+        text = COMMENT.sub(" ", read_text(path))
+        for value in re.findall(r"<clipPath>([^<]+)</clipPath>", text):
+            value = value.strip()
+            if "RR_" not in value:
+                unverifiable.add(value)
+                continue
+            stem = os.path.splitext(value)[0] if value.lower().endswith(extensions) else value
+            if stem not in clips:
+                fail(problems, "%s references audio clip %r but no matching sound file ships"
+                     % (rel(path), value))
+    if notes is not None and unverifiable:
+        notes.append("%d non-RR clip path(s) point at game audio assets and cannot be checked "
+                     "from disk" % len(unverifiable))
 
 
 # --------------------------------------------------------------------------- #
@@ -926,7 +989,11 @@ def check_definjected(problems, declared):
 
 # --------------------------------------------------------------------------- #
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Check the Rimrooms package's internal references.")
+    parser.add_argument("--rimsort-settings", help="Explicit RimSort settings.json for staged-copy "
+                        "comparison; otherwise use LOCALAPPDATA/RimSort/settings.json.")
+    args = parser.parse_args(argv)
     problems = []
     notes = []
 
@@ -959,8 +1026,8 @@ def main():
     check_class_references(problems, notes)
     check_patches(problems, declared, game_defs, notes)
     check_textures(problems, notes)
-    check_staged_copy_is_current(problems, notes)
-    check_sounds(problems, declared)
+    check_staged_copy_is_current(problems, notes, args.rimsort_settings)
+    check_sounds(problems, declared, notes)
     check_definjected(problems, declared)
 
     print("package-integrity")

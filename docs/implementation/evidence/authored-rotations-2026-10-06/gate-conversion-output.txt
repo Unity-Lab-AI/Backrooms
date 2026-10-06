@@ -1,0 +1,13 @@
+RR_GateFrame_1x1_north.png -> 128x128
+RR_GateFrame_1x1_east.png -> 128x128
+RR_GateFrame_1x1_south.png -> 128x128
+RR_GateFrame_1x2_north.png -> 256x128
+RR_GateFrame_1x2_east.png -> 128x256
+RR_GateFrame_1x2_south.png -> 256x128
+RR_GateFrame_1x3_north.png -> 384x128
+RR_GateFrame_1x3_east.png -> 128x384
+RR_GateFrame_1x3_south.png -> 384x128
+RR_GateFrame_2x3_north.png -> 384x256
+RR_GateFrame_2x3_east.png -> 256x384
+RR_GateFrame_2x3_south.png -> 384x256
+wrote 12 gate textures

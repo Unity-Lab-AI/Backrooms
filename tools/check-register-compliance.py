@@ -518,12 +518,15 @@ for root, _dirs, files in os.walk(MOD):
         gameplay_assets.append((rel, os.path.join(root, name), name))
 
 # -- 6a. provenance
-# A rotation is cut from its master and carries a suffix the master does not have, so the master
-# is looked up by the stem with any rotation suffix removed.
+# An authored facing has an exact-name master. Derived uniform/flat rotations instead share an
+# unsuffixed master, so prefer the exact filename before trying that existing fallback.
 ROTATIONS = ("_north", "_east", "_south", "_west")
 
 
 def master_name(name):
+    exact = name.lower()
+    if exact in source_masters:
+        return exact
     stem, dot, extension = name.rpartition(".")
     for suffix in ROTATIONS:
         if stem.lower().endswith(suffix):
@@ -555,7 +558,10 @@ for path in package_xml_files():
     if not path.startswith(defs_root):
         continue
     body = strip_xml_comments(read(path))
-    for block in re.findall(r"<graphicData>(.*?)</graphicData>", body, re.S):
+    # CompBook's reading and upright poses hold GraphicData in these two additional fields.
+    # They need the same facing checks as a ThingDef's ordinary graphicData.
+    for _tag, block in re.findall(
+            r"<(graphicData|openGraphic|verticalGraphic)>(.*?)</\1>", body, re.S):
         if "Graphic_Multi" not in block:
             continue
         tex = re.search(r"<texPath>([^<]+)</texPath>", block)
@@ -573,7 +579,7 @@ for path in package_xml_files():
 
 if missing_rotations:
     fail("%d Graphic_Multi texture(s) of ours have no rotation frames: %s. RimWorld mirrors _west "
-         "from _east and nothing else -- a rotatable building with one frame is a missing-texture "
+         "from _east and nothing else -- a rotatable object with one frame is a missing-texture "
          "square on three facings. Owner direction 2026-10-06: \"remember things rotate\"."
          % (len(missing_rotations), "; ".join(missing_rotations[:6])))
 elif shipped_textures:

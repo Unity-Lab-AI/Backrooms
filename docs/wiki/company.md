@@ -167,8 +167,12 @@ Walking a single colonist through a door by hand is not a company dispatch and i
 carries it through a gate, the survey writes itself as they walk, and the filled book becomes the
 case record your researcher analyses.
 
-The company issues its own: a **company route recording**, a tape in a numbered sleeve with a
-write-on card. It is a book, so a colonist reads it, hauls it and stores it like any other.
+The company issues its own: a **company field journal**, bound with a numbered cover and pages for
+route notes, sketches and observations. It is a book, so a colonist reads it, hauls it and stores it
+like any other — and it has its own drawings for closed, open and upright, so you can see at a
+glance whether somebody is reading one.
+
+You can also **make them at a field analysis bench**, which is the faster route once you have one.
 
 A stamped **company record book** still counts as well, so an older colony loses nothing. An
 ordinary textbook bought from a trader is just a textbook, and the mod leaves it alone.

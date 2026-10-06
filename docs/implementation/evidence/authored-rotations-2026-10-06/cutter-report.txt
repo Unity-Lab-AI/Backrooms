@@ -1,0 +1,68 @@
+cut phase 2 art  (report only)
+
+  RR_MachineGate                 icon      256x256  2x2      no rotation
+        a flat Set Gate gizmo icon; not a buildable, so no world-space rotation is required
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_MachineGate.png
+  RR_GateConsole                 building  128x128  1x1      no rotation
+        aspect 0.84, a console with a clearly front face
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_GateConsole.png
+  RR_EmergencyCutoff             building  128x128  1x1      rotates (one master, all sides alike)
+        aspect 0.68, a button on a box that reads the same from every side
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_EmergencyCutoff_north.png
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_EmergencyCutoff_east.png
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_EmergencyCutoff_south.png
+  RR_UtilityGenerator            building  256x256  2x2      no rotation
+        aspect 0.84, a three quarter view with a distinct front
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_UtilityGenerator.png
+  RR_FieldAnalysisBench          building  256x128  2x1      no rotation
+        aspect 2.21, a counter; its end on view is the frame that does not exist
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_FieldAnalysisBench.png
+  RR_SiteFluorescent             building  384x128  3x1      rotates (east is south turned ninety degrees)
+        aspect 4.96, a flat strip fitting read from above; its east frame is its south turned
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_SiteFluorescent_south.png
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_SiteFluorescent_north.png
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_SiteFluorescent_east.png
+  RR_ReturnBeacon                building  128x128  1x1      rotates (one master, all sides alike)
+        aspect 0.86, a tripod lamp, radially alike
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_ReturnBeacon_north.png
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_ReturnBeacon_east.png
+        -> 1.6/Textures/Things/Building/Rimrooms/RR_ReturnBeacon_south.png
+  RR_FieldRecorder               building  128x128  1x1      no rotation
+        aspect 1.39, a desk unit with a front face; no back or side view exists
+        -> 1.6/Textures/Things/Item/Rimrooms/RR_FieldRecorder.png
+  RR_SealedEvidenceCase          building  128x128  1x1      no rotation
+        aspect 1.59, a latched case seen front on; the latch side is the only side drawn
+        -> 1.6/Textures/Things/Item/Rimrooms/RR_SealedEvidenceCase.png
+  RR_SurveyTag                   building  128x128  1x1      no rotation
+        aspect 0.47, a tag with a printed face; its reverse is blank and undrawn
+        -> 1.6/Textures/Things/Item/Rimrooms/RR_SurveyTag.png
+  RR_RouteRecording              item      128x128  1x1      no rotation
+        items do not rotate
+        -> 1.6/Textures/Things/Item/Rimrooms/RR_RouteRecording.png
+  RR_FadedInstitutionalCarpet    terrain   256x256  terrain   seam x1.4/x1.7 -> x0.00/x0.00 (1.0 = invisible)
+        terrain tiles rather than rotates; 256 px keeps the weave at a readable density
+        -> 1.6/Textures/Terrain/Rimrooms/RR_FadedInstitutionalCarpet.png
+  RR_QuietPursuer                pawn      256x256  2x2      no rotation
+        a creature presentation, drawn square and never rotated by facing
+        HELD -- no shipped def or source file names Things/Pawn/Rimrooms/RR_QuietPursuer
+
+HELD OUT OF THE PACKAGE -- cut cleanly, but no shipped def names them yet. A texture
+nobody can see is the exact defect that retired this art in 0.9.0-dev. Author the def
+and the next run ships it; nothing here needs changing.
+  RR_QuietPursuer                Things/Pawn/Rimrooms/RR_QuietPursuer
+
+ROTATIONS WANTED -- these ship Graphic_Single and non-rotatable until a back and a
+side view exist. None of them is faked, and none ships Graphic_Multi with one frame.
+Missing drawings are listed per object. _south is the master already here,
+and RimWorld mirrors _west from _east at no cost.
+  RR_GateConsole                 missing _north, _east; aspect 0.84, a console with a clearly front face
+  RR_UtilityGenerator            missing _north, _east; aspect 0.84, a three quarter view with a distinct front
+  RR_FieldAnalysisBench          missing _north, _east; aspect 2.21, a counter; its end on view is the frame that does not exist
+  RR_FieldRecorder               missing _north, _east; aspect 1.39, a desk unit with a front face; no back or side view exists
+  RR_SealedEvidenceCase          missing _north, _east; aspect 1.59, a latched case seen front on; the latch side is the only side drawn
+  RR_SurveyTag                   missing _north, _east; aspect 0.47, a tag with a printed face; its reverse is blank and undrawn
+
+  TOTAL STILL TO DRAW: 12 frames across 6 buildings.
+  Nothing in this tool can derive them. A back view and a side view are drawings.
+
+nothing written; re-run with --apply

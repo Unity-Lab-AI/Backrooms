@@ -1,0 +1,105 @@
+{
+  "date": "2026-10-06",
+  "creator": "Operator",
+  "tool": "built-in image_gen",
+  "scope": "Six original authored building rotation masters; edits of this project's existing south/front masters. No Core, DLC or other mod assets copied.",
+  "sourceInspection": "The existing RR_GateConsole, RR_UtilityGenerator and RR_FieldAnalysisBench masters were each viewed before generation. Every generated result was inspected inline.",
+  "sourceOrientation": "The unsuffixed original master remains the south/front reference. North is an authored rear view; east is an authored side view. West can mirror east in the consumer.",
+  "integration": "Root owns Def Graphic_Multi/rotatable changes, package allowlist, cutter invocation, build and owner-launched acceptance. This task saved source masters only.",
+  "limitations": [
+    "Original equipment masters use stylized elevated front views. These new facings match that presentation; consistent world scale, drawer/operator-side alignment and native shadows require owner-launched visual acceptance.",
+    "The north bench shows rear terminal/recorder housings, with near-edge drawer/cabinet details retained in the generated view. Review that cabinet appearance alongside the original south view in-game."
+  ],
+  "assets": [
+    {
+      "filename": "RR_GateConsole_north.png",
+      "masterPath": "assets/source/phase2/RR_GateConsole_north.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a11153-7ab6-7df2-b67c-72a9695a08fc\\exec-f5466fa5-72b7-4852-be5f-c24c89b33e13.png",
+      "nativeDimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "cornerAlphaObserved": 0,
+      "pixelFormat": "Format32bppArgb",
+      "prompt": "Use case: precise-object-edit. Edit target: the referenced original Rimrooms equipment sprite, preserve its exact object design, industrial charcoal/off-white/muted amber palette, panel proportions, original worn metal, dark firm outlines and simplified hand-painted RimWorld 1.6 game-sprite style. Draw a genuinely authored alternative physical facing of the SAME object, not a rotated or mirrored image and not a redesign. One isolated object only, high overhead orthographic colony-sim camera with a small visible near-side elevation. Genuine alpha transparent background, generous transparent padding, no ground, no scenery, no floor, no people, no words, no logo, no watermark, no cast shadow outside the object. Same top-lighting and equipment identity. Square master PNG, sprite must read clearly when reduced to the stated footprint. Requested NORTH/back facing, one-cell console. The console's operator/front control face points toward TOP/north of the image, away from the viewer at bottom. Show its real charcoal rear service panel on the near/bottom side with screws and cooling slots instead of the front green screen, red lever and yellow controls. Keep the SAME off-white sloped housing, dark upper ventilation unit, and original heavy side cable routed on its physically opposite side after turning. The front screen must not be drawn on the rear panel. Preserve the compact vertical-housing silhouette.",
+      "references": [
+        "assets/source/phase2/RR_GateConsole.png"
+      ]
+    },
+    {
+      "filename": "RR_UtilityGenerator_north.png",
+      "masterPath": "assets/source/phase2/RR_UtilityGenerator_north.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a11153-7ab6-7df2-b67c-72a9695a08fc\\exec-f2b69cd4-b445-4571-bc99-f49d4ad447a0.png",
+      "nativeDimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "cornerAlphaObserved": 0,
+      "pixelFormat": "Format32bppArgb",
+      "prompt": "Use case: precise-object-edit. Edit target: the referenced original Rimrooms equipment sprite, preserve its exact object design, industrial charcoal/off-white/muted amber palette, panel proportions, original worn metal, dark firm outlines and simplified hand-painted RimWorld 1.6 game-sprite style. Draw a genuinely authored alternative physical facing of the SAME object, not a rotated or mirrored image and not a redesign. One isolated object only, high overhead orthographic colony-sim camera with a small visible near-side elevation. Genuine alpha transparent background, generous transparent padding, no ground, no scenery, no floor, no people, no words, no logo, no watermark, no cast shadow outside the object. Same top-lighting and equipment identity. Square master PNG, sprite must read clearly when reduced to the stated footprint. Requested NORTH/back facing, two-cell by two-cell utility generator. Turn the physical generator so the original glowing furnace hatch/front faces TOP/north and is hidden from this south-side camera. The near/bottom side is the real back of the cylindrical off-white boiler and dark lower cylinder, with plain rear service details. Keep the SAME boiler lid, right-side(original) alternator unit, left-side(original) wood-log hopper and tall perforated exhaust stack. After this physical half-turn, hopper and alternator trade apparent left/right positions and exhaust is on image LEFT. Do not put the glowing front furnace window on the rear. Preserve original squat machine base and pipe connections.",
+      "references": [
+        "assets/source/phase2/RR_UtilityGenerator.png"
+      ]
+    },
+    {
+      "filename": "RR_FieldAnalysisBench_north.png",
+      "masterPath": "assets/source/phase2/RR_FieldAnalysisBench_north.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a11153-7ab6-7df2-b67c-72a9695a08fc\\exec-7373dbd7-4743-4f07-b723-d9d9220935b6.png",
+      "nativeDimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "cornerAlphaObserved": 0,
+      "pixelFormat": "Format32bppArgb",
+      "prompt": "Use case: precise-object-edit. Edit target: the referenced original Rimrooms equipment sprite, preserve its exact object design, industrial charcoal/off-white/muted amber palette, panel proportions, original worn metal, dark firm outlines and simplified hand-painted RimWorld 1.6 game-sprite style. Draw a genuinely authored alternative physical facing of the SAME object, not a rotated or mirrored image and not a redesign. One isolated object only, high overhead orthographic colony-sim camera with a small visible near-side elevation. Genuine alpha transparent background, generous transparent padding, no ground, no scenery, no floor, no people, no words, no logo, no watermark, no cast shadow outside the object. Same top-lighting and equipment identity. Square master PNG, sprite must read clearly when reduced to the stated footprint. Requested NORTH/back facing of the SAME analysis bench. Two-cell wide by one-cell deep, long axis runs left/right. The operator front faces TOP/north, away from camera at bottom. Show the real back of the CRT terminal and the rear chassis of the reel recorder; no duplicate screen or keyboard on their backs. Original recorder was at image LEFT and CRT at RIGHT; after the physical half-turn their positions swap: recorder on RIGHT, terminal on LEFT. Keep the exact long off-white two-part countertop, center amber covered document tray, looped black cables, dark frame/legs, and cabinet drawers on the far front rather than the near rear. Genuine back view, same compact bench, not a second invented workstation. Bench fits a 2:1 footprint; no diagonal isometric rotation.",
+      "references": [
+        "assets/source/phase2/RR_FieldAnalysisBench.png"
+      ]
+    },
+    {
+      "filename": "RR_GateConsole_east.png",
+      "masterPath": "assets/source/phase2/RR_GateConsole_east.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a11153-7ab6-7df2-b67c-72a9695a08fc\\exec-197c17f0-9734-451f-9ed9-e6d5bf16ce07.png",
+      "nativeDimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "cornerAlphaObserved": 0,
+      "pixelFormat": "Format32bppArgb",
+      "prompt": "Use case: precise-object-edit. Edit target: the referenced original Rimrooms equipment sprite, preserve its exact object design, industrial charcoal/off-white/muted amber palette, panel proportions, original worn metal, dark firm outlines and simplified hand-painted RimWorld 1.6 game-sprite style. Draw a genuinely authored alternative physical facing of the SAME object, not a rotated or mirrored image and not a redesign. One isolated object only, high overhead orthographic colony-sim camera with a small visible near-side elevation. Genuine alpha transparent background, generous transparent padding, no ground, no scenery, no floor, no people, no words, no logo, no watermark, no cast shadow outside the object. Same top-lighting and equipment identity. Square master PNG, sprite must read clearly when reduced to the stated footprint. Requested EAST/side facing, one-cell console. The physical operator/front face now points toward RIGHT/east of image, away from the viewer at bottom. Draw its genuine SIDE PROFILE with the charcoal lower cabinet, sloping off-white control deck and upright dark ventilated top housing, the SAME thick side cable loop and base. Green CRT face, red lever and yellow button belong only to the right-facing front panel and are foreshortened or hidden, NEVER drawn face-on on the side. Camera stays in the same high overhead world position; only the object changes orientation. Use a compact cabinet side-view silhouette; do not turn the original bitmap flat sideways.",
+      "references": [
+        "assets/source/phase2/RR_GateConsole.png"
+      ]
+    },
+    {
+      "filename": "RR_UtilityGenerator_east.png",
+      "masterPath": "assets/source/phase2/RR_UtilityGenerator_east.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a11153-7ab6-7df2-b67c-72a9695a08fc\\exec-ea518d12-53f4-44f9-b134-e77ded571f6b.png",
+      "nativeDimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "cornerAlphaObserved": 0,
+      "pixelFormat": "Format32bppArgb",
+      "prompt": "Use case: precise-object-edit. Edit target: the referenced original Rimrooms equipment sprite, preserve its exact object design, industrial charcoal/off-white/muted amber palette, panel proportions, original worn metal, dark firm outlines and simplified hand-painted RimWorld 1.6 game-sprite style. Draw a genuinely authored alternative physical facing of the SAME object, not a rotated or mirrored image and not a redesign. One isolated object only, high overhead orthographic colony-sim camera with a small visible near-side elevation. Genuine alpha transparent background, generous transparent padding, no ground, no scenery, no floor, no people, no words, no logo, no watermark, no cast shadow outside the object. Same top-lighting and equipment identity. Square master PNG, sprite must read clearly when reduced to the stated footprint. Requested EAST/side facing of the SAME two-cell by two-cell utility generator. The front furnace hatch now faces RIGHT/east; show a genuinely drawn side/back view of its cylindrical off-white boiler, dark lower chamber, same circular top lid, exact original wood-log hopper, alternator box, perforated vertical exhaust stack and bent linking pipes. Physical arrangement turns with the machine: the original left hopper comes toward the near/bottom side, the original right alternator/exhaust moves toward the far/top side. Hide the front furnace window or show it only on the right-facing edge; do not draw the front layout mirrored. Keep the square skid/frame and the same object dimensions. Camera remains high overhead, no dramatic or diagonal perspective.",
+      "references": [
+        "assets/source/phase2/RR_UtilityGenerator.png"
+      ]
+    },
+    {
+      "filename": "RR_FieldAnalysisBench_east.png",
+      "masterPath": "assets/source/phase2/RR_FieldAnalysisBench_east.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a11153-7ab6-7df2-b67c-72a9695a08fc\\exec-e661b1a6-2d43-4272-b2ab-d01e66ce5957.png",
+      "nativeDimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "cornerAlphaObserved": 0,
+      "pixelFormat": "Format32bppArgb",
+      "prompt": "Use case: precise-object-edit. Edit target: the referenced original Rimrooms equipment sprite, preserve its exact object design, industrial charcoal/off-white/muted amber palette, panel proportions, original worn metal, dark firm outlines and simplified hand-painted RimWorld 1.6 game-sprite style. Draw a genuinely authored alternative physical facing of the SAME object, not a rotated or mirrored image and not a redesign. One isolated object only, high overhead orthographic colony-sim camera with a small visible near-side elevation. Genuine alpha transparent background, generous transparent padding, no ground, no scenery, no floor, no people, no words, no logo, no watermark, no cast shadow outside the object. Same top-lighting and equipment identity. Square master PNG, sprite must read clearly when reduced to the stated footprint. Requested EAST/side facing of the SAME field analysis bench. One-cell wide by TWO-cell deep: the long countertop runs TOP to BOTTOM, a genuinely vertical 1:2 footprint. The operator/front long edge faces RIGHT/east. Draw the real short END of the counter visible at BOTTOM, not a ninety-degree spin of the south bitmap. Same equipment arranged on the worktop: reel recorder toward BOTTOM/near end, amber covered document tray in center, CRT terminal toward TOP/far end, same black cables and clipboard. CRT and recorder operator faces point RIGHT; show their side housings, not face-on front screens. Preserve original off-white joined two-part counter and dark legs; front drawer handles appear along the RIGHT long side only, the short bottom end is plain. Strict overhead game sprite with small visible near side, keep long axis vertical and equipment within counter footprint.",
+      "references": [
+        "assets/source/phase2/RR_FieldAnalysisBench.png"
+      ]
+    }
+  ]
+}

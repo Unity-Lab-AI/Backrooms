@@ -21,9 +21,9 @@
 
   <RecipeDef>
     <defName>RR_MakeRouteRecording</defName>
-    <label>make company route recording</label>
-    <description>Make a blank company route recording: a tape, a numbered sleeve and a write-on card. A crew takes it out empty and writes it in the field.</description>
-    <jobString>Making a company route recording.</jobString>
+    <label>make company field journal</label>
+    <description>Bind a blank company field journal with a cloth cover and pages for route notes, sketches and observations. A crew takes it out empty and writes its findings in the field.</description>
+    <jobString>Making a company field journal.</jobString>
     <workAmount>900</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
     <workSkill>Crafting</workSkill>

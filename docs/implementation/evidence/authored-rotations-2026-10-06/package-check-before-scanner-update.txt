@@ -1,0 +1,62 @@
+package-integrity
+  defs declared:      414
+  package files:      164
+  supported versions: 1.6
+  game defs indexed:  12174
+  game name heap:     1532377 bytes
+  note: optional compatibility patch targets verified against the installed profile mods: 7
+  note: texture ships but nothing references it: Terrain/Rimrooms/RR_FadedInstitutionalCarpet.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/Gates/RR_GateFrame_1x1_east.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/Gates/RR_GateFrame_1x1_north.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/Gates/RR_GateFrame_1x1_south.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/Gates/RR_GateFrame_1x2_east.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/Gates/RR_GateFrame_1x2_north.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/Gates/RR_GateFrame_1x2_south.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/Gates/RR_GateFrame_1x3_east.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/Gates/RR_GateFrame_1x3_north.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/Gates/RR_GateFrame_1x3_south.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/Gates/RR_GateFrame_2x3_east.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/Gates/RR_GateFrame_2x3_north.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/Gates/RR_GateFrame_2x3_south.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_EmergencyCutoff_east.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_EmergencyCutoff_north.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_EmergencyCutoff_south.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_FieldAnalysisBench_east.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_FieldAnalysisBench_north.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_FieldAnalysisBench_south.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_GateConsole_east.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_GateConsole_north.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_GateConsole_south.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_MachineGate.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_ReturnBeacon_east.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_ReturnBeacon_north.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_ReturnBeacon_south.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_SiteFluorescent_east.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_SiteFluorescent_north.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_SiteFluorescent_south.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_UtilityGenerator_east.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_UtilityGenerator_north.png
+  note: texture ships but nothing references it: Things/Building/Rimrooms/RR_UtilityGenerator_south.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/Journal/RR_CompanyJournal_Open_east.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/Journal/RR_CompanyJournal_Open_north.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/Journal/RR_CompanyJournal_Open_south.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/Journal/RR_CompanyJournal_Vertical_east.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/Journal/RR_CompanyJournal_Vertical_north.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/Journal/RR_CompanyJournal_Vertical_south.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/RR_FieldRecorder_east.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/RR_FieldRecorder_north.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/RR_FieldRecorder_south.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/RR_SealedEvidenceCase_east.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/RR_SealedEvidenceCase_north.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/RR_SealedEvidenceCase_south.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/RR_SurveyTag_east.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/RR_SurveyTag_north.png
+  note: texture ships but nothing references it: Things/Item/Rimrooms/RR_SurveyTag_south.png
+  note: folder scanned by GetAllInFolder, 12 texture(s) covered: UI/Menu
+  note: 2 non-RR texture path(s) point at game assets and cannot be checked from disk; they live in asset bundles, not Data/
+  note: RimSort settings not present; the staged copy is unchecked rather than confirmed current
+
+FAIL: 3 problem(s)
+  - Mod/Rimrooms - Async Industries/1.6/Defs/ThingDefs_Items/RR_CompanyJournal.xml references RR_CompanyJournal_Closed, which this package does not declare
+  - Mod/Rimrooms - Async Industries/1.6/Defs/ThingDefs_Items/RR_CompanyJournal.xml references RR_CompanyJournal_Open, which this package does not declare
+  - Mod/Rimrooms - Async Industries/1.6/Defs/ThingDefs_Items/RR_CompanyJournal.xml references RR_CompanyJournal_Vertical, which this package does not declare

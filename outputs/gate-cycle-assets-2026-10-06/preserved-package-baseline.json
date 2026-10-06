@@ -1,0 +1,657 @@
+{
+  "scope": "Existing art, audio, XML and assembly protected during asset-only delivery",
+  "files": [
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Assemblies/RimroomsAsyncIndustries.dll",
+      "sha256": "ef5d2930f358415da3b49292690d49cab4e4a4980d57d391dfbfb418ee2d1415"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/FactionDefs/RR_UniverseFactions.xml",
+      "sha256": "4987a402d80c4874d4d4bd010e55d9ae123f994e7a0c6097514a4e8e22c573f5"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/IncidentDefs/RR_Incidents.xml",
+      "sha256": "6d987d26509295967c45093bc3e165716644a57edaf21560e5d6bd26acd7811e"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/JobDefs/RR_ConnectedWorkJobs.xml",
+      "sha256": "8635487d35ad55e06faf595e51c169e884d07a94e6a6df64a867c8b15a46d2cc"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/JobDefs/RR_ExpeditionJobs.xml",
+      "sha256": "cb7683ef97247d4751a70670faf3e822e77ccf667d477e8a9a90a5f586d28102"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/JobDefs/RR_GateJobs.xml",
+      "sha256": "9ed3c34c7d4fa2ef37e0b3b1d09b35433755388dfcfbfafa31a46a6f31072ec9"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/JobDefs/RR_InvestigationJobs.xml",
+      "sha256": "9a6ec7039c136a8878b6987c4037d95128a7224591d469523bd13170f02a0fd9"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/JobDefs/RR_PortalJobs.xml",
+      "sha256": "89cc4c0f360ea7e971c330c6a0d595619a9cd2eff83ede0212d4632971a9aafe"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/MainButtonDefs/RR_MainButtons.xml",
+      "sha256": "65ef18bae767977fc04f888f085f95674ea9dc647637f243ca3ec91c01185590"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/MapGeneratorDefs/RR_BackroomsGeneration.xml",
+      "sha256": "344eab4332bfceb85b0d97dddee065bc585b9b5362a8ad131f4bc2f5c491d536"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/PawnKindDefs/RR_Staff.xml",
+      "sha256": "ed58e71dae8d32f629e5c8b66e57f0994b20539f97e35208342e8dd981c3ded9"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RecipeDefs/RR_BondPrinting.xml",
+      "sha256": "ff6cf08cd8145dcf55c890594057a478673b6f68baac769694779f5048e8dfbe"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RecipeDefs/RR_FieldKitRecipes.xml",
+      "sha256": "90f729e91149a153cfd12b84a0f1b3245a90e53b76650e5fea1038b0a2ca3db9"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RecipeDefs/RR_GateRecipes.xml",
+      "sha256": "32cc5540089b5e2c8ea0f4edd7f7114fe059446ba5fd372db1f9f6eaea1f6e27"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RecipeDefs/RR_TrainingRecipes.xml",
+      "sha256": "9db032a4b86b88b927d7d6d50e4b4f56bab2473a6b14385c433428af40d28da6"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/ResearchProjectDefs/RR_ResearchMirror.xml",
+      "sha256": "b58902dfdff1567d23948a30cd11f514ed961bc85bbb17c0769277999c8faa2a"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsAnomalyEventDefs/RR_AnomalyEvents.xml",
+      "sha256": "b99e3d1d6a0b1b1b6b95050d09b841bb2d4d83e28ed45c84ea919c9bd628307f"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsCertificationDefs/RR_Certifications.xml",
+      "sha256": "d8e1ecbb6ad4ed2746e314fddc7d4b6d9cbed8705a98719fd73980d5e2539b96"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsFacilityDefs/RR_FacilityCategories.xml",
+      "sha256": "0b60708e905176a960ec439dc80e54dc73c0e470148f70710e5746955d6a1a16"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsFixtureTellDefs/RR_FixtureTells.xml",
+      "sha256": "9027a1331762b352d584270ca49d85b311b8cdf81a6114e3eeea819f0dbe4e87"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsGateEquipmentDefs/RR_GateEquipment.xml",
+      "sha256": "25079c0d6c84ab73f094e83c8bb3bd5f5fd62ee1c17342b0a9b7a196c22470f3"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml",
+      "sha256": "136543f47444cfe2c31c8e94fecba4aa2b5da95c956bddd788bcdd283c0e38c1"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsMarkerTypeDefs/RR_MarkerTypes.xml",
+      "sha256": "550241b4d5d1dee629db3546d2b0a1df5c3eb78faaa1cef17510768b48135137"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsPersonnelDefs/RR_HiringPolicies.xml",
+      "sha256": "96e181f09cd246810a0b01fd89e8a1420aa9414669e74662f7973110a5f0c36e"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsProcurementCatalogDefs/RR_ProcurementCatalog.xml",
+      "sha256": "850a3869204f0fb13658ec995dbcc3c55f078b5ca510869578fb6e16fc76befa"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsProjectDefs/RR_CompanyProjects.xml",
+      "sha256": "250a3952f9e44ef5a294dfa827403681ab8dc3b585af113289a962f5e6c93f70"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsRequestDefs/RR_Requests.xml",
+      "sha256": "29f29e53d2392f8b2e32a80069bfeabcdcd6ed914a33591d025f65b16a0fc02f"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsRoomArchetypeDefs/RR_RoomArchetypes.xml",
+      "sha256": "5914bf8ce9e2e2d35f51896e4defd7956f0bb42a3e45b25383bf052065ca6592"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsStartDefs/RR_Starts.xml",
+      "sha256": "f5be2ac911f5fa87c6df41e2c7cece89eebccea8fe3107d47406a0f6d73f0d6f"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsSupplyTierDefs/RR_SupplyTiers.xml",
+      "sha256": "41425ab6fb75bb1dfd79067b4fcd9245b4c93d580bb2b095a53755722ecbe496"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsWriteUpDefs/RR_WriteUps.xml",
+      "sha256": "21c1d87949562a34a910a10c213d869504505f81ff649a87e9e18fd5bf503b2f"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/RoofDefs/RR_Roofs.xml",
+      "sha256": "054af28fdc5a89d69d268c9d0d769144f2f7e50d5628e6926edf644a77cae717"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/ScenarioDefs/RR_Scenarios.xml",
+      "sha256": "c02660bfaf1af0185d16d46a483491e6e1a4a9be7ddc1bcf591b01c040ea344f"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/ScenPartDefs/RR_ScenarioParts.xml",
+      "sha256": "feb26a2b097ad1cbffa4c0e465489ae2ba2a9b06c39b60e95d728956905d6d07"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/SoundDefs/RR_CompanyCues.xml",
+      "sha256": "7f47b3c29a70f86feb0522f4378ce02e63d954937659d970e85f7f3c28a1f74b"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/TerrainDefs/RR_LiminalFloors.xml",
+      "sha256": "0d3d25239be833e7f7dfa105e9b8f3df703068c7f72e5c6c358a9ecaecbdef80"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/ThingCategoryDefs/RR_FieldCategories.xml",
+      "sha256": "d47e56d4c182199712e70b3f1357f33eadd3d1543e35c27bd7b1062895590872"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/ThingDefs_Buildings/RR_FieldKit.xml",
+      "sha256": "811017eb557bcb572366dad53fb358cba674155e2f5c9f64910621039bb38b92"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/ThingDefs_Buildings/RR_GateEquipmentBuildings.xml",
+      "sha256": "1b60b8292280be3583627ebe8204cd85f3cfd57ea432685b25d2ac2e0333bb72"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/ThingDefs_Buildings/RR_RecordsDesk.xml",
+      "sha256": "5baea65046351f10c604fd8b2825b2601d1ea0543e7e78d66221a8d9681cc395"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/ThingDefs_Buildings/RR_SiteFixtures.xml",
+      "sha256": "bc3875dee5fedccdd3bedead471c966e1bd3690c3a60e10a5ebc6bc04282dca5"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/ThingDefs_Items/RR_CompanyJournal.xml",
+      "sha256": "9de2e8f9ba549604616bd626ffdb4369302730ec2dc8c6d23bf388043d847792"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/ThingDefs_Misc/RR_SiteObjects.xml",
+      "sha256": "1c636a15974370015733dc2dc3c223248cb327aa93503b0313bcafe65acad9c9"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/ThoughtDefs/RR_BackroomsPressure.xml",
+      "sha256": "ad1ea25a85e5c4f849878c83e0d7c1c39a59022ea9f3bd55a133e76fcf6381e9"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/TraderKindDefs/RR_CorporateSupply.xml",
+      "sha256": "efe120dfd447010fdc53d5121d967cd89f6e5020f9ac234050860adff75b3e5d"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/WorkGiverDefs/RR_ConnectedWork.xml",
+      "sha256": "f5faf90cce7a47ee0fcc2761ae1fa6b11c9000263208f0469c71ccab9f467f3b"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/WorkGiverDefs/RR_GateWork.xml",
+      "sha256": "7849a82bf9bb3f86f3b724502f98ac3beab05162f05d1d07cae3c40a5f43c86c"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/WorkGiverDefs/RR_InvestigationWork.xml",
+      "sha256": "67f780e6d78cc8a680d33b60aa8ef7c97e94be1e145d2f8c9f9ecc4f1090b4d5"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Defs/WorldObjectDefs/RR_BackroomsSites.xml",
+      "sha256": "6ed1604981fccdfe5979423b39760d06185967d4585996cb34429b6187af9bf2"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/DefInjected/JobDef/RR_GateJobs.xml",
+      "sha256": "f09667891363d74c502491a832a911bae3316941c3cacafac1ae85bc7751d30d"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/DefInjected/MainButtonDef/RR_MainButtons.xml",
+      "sha256": "d7add911e400686e579403c9531be7bc1b66e37653aabcc3c45cd78e7ed6f5dd"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/DefInjected/RecipeDef/RR_GateRecipes.xml",
+      "sha256": "4ed25711e0b0f797f4c22034cb5a9ba2f896b24e1b4913c2c831c2f2071ccfd2"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/DefInjected/WorkGiverDef/RR_GateWork.xml",
+      "sha256": "236896288c57631b9299ac63949a7d2495c1f3668778644ecaae2b5be38038f2"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Alerts.xml",
+      "sha256": "f17a8c1b6761c76610a6fbd90faa2e2eace814e601818f6065eb71778d22ee58"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_AnomalyEvents.xml",
+      "sha256": "b9c09d9470052365dea9fe82cc8e4bdb4b08fb1077d931657637190ec639c061"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Audio.xml",
+      "sha256": "a8be38eda30f710ff0e4decb133ccf696a90aff033c8a39738baa209679150f8"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Bonds.xml",
+      "sha256": "61a653dcb0edf7160c91a96ff45608b1951080ba5d7e26e9a02f1564e7683daa"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Certifications.xml",
+      "sha256": "e00ee24f62a05e6d5e7c9e4fe5230a22a7ff764552071bed3ad0e61fc97d0360"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Company.xml",
+      "sha256": "249ad192d285e63ab20fe3bd39a420a0f0b9c0e15de342bed002d7aec1b6a7f3"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_ConnectedWork.xml",
+      "sha256": "7e07c2bd79967e12b21885a5727f741c78682b18466bbbc38d59b8a1b55e3ff1"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_CorporateSupply.xml",
+      "sha256": "454f061e2243af5cffbf4762e2acad49dda5bbd765ad072cdedc1d9ec0a00bc4"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_CrewPlanner.xml",
+      "sha256": "d9ec3a9abf9a57c4b5d18ad403e043152126d63df3c14fc4ddbf6e958a2822df"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_EvidenceRecovery.xml",
+      "sha256": "921cb8c88e2ee2526e46c6ab307088d2d1a62e0317df2510bb399ce860f2e1be"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Expedition.xml",
+      "sha256": "1e7f3e274f86ccdfa270a6378063a3325566dd5983ff3c1c2e6e26e47a38a6c7"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Facilities.xml",
+      "sha256": "148fc274546da5f55a60064dd52cab4a77bcfd64235246ceec817dcf2821c722"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_FieldAndThreats.xml",
+      "sha256": "a87cd8beb136d7edccd9c55e184718cc287ab08428ea60cfe20f1af4f3cffaa5"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_FixtureTells.xml",
+      "sha256": "80e974002959a6fc8c04c77ab6e085c494212daacf8fde97337b4864538df725"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Gate.xml",
+      "sha256": "19f4461031c8afc8e8daeba32803ab9eaa1bac1b7cd68b02af0ab6d539135e5f"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_GateHistory.xml",
+      "sha256": "9153a2bd23c9c394918d9cc2f63b25ad3fef0003b5eff608c8a447b6a8d929bf"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_GateLinks.xml",
+      "sha256": "05d468ba23a00740cee4e17bead13bfdd90d2a02483a243c47df61a609a075dd"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_GateSteps.xml",
+      "sha256": "0ab7a30ea0738d0c2b06fabfebfbbe7e911762eb20cbc4657ba99857e10d91ec"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Generation.xml",
+      "sha256": "930e00aea481161c881f327c47aa8f84c9d0e39ecf79a368d2d52b09ef81363d"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Help.xml",
+      "sha256": "3339edf297897c3db117e316d8461efb9a524908c4ffe586d715f5ec56b8c72b"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Inhabitants.xml",
+      "sha256": "d95f9772f74cd3f87a889fb95ef08edb348b43a43aa6c6b0a892c90d7b864aff"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Investigation.xml",
+      "sha256": "ca36f3b2dba5cce33fa8dd8cfd9202898ac369fba7fcfbe6d8e4a0569c9c5a17"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_LaboratoryBinding.xml",
+      "sha256": "9ee8d954d50744ee48bbed75e4ad4c746ab52561ac12140f4837d600373436b8"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Markers.xml",
+      "sha256": "9d1b92eb6fa016c8dbe58ba5f08f7019a6d410a768c1ed71f9ec9c3d21373dc7"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Menu.xml",
+      "sha256": "861f0f236463a80c2e3c538ba2187ecdf3c21b54e0d68b5c760e24ba4b9bc96c"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_NativeGate.xml",
+      "sha256": "a43167f1d1f0ba62fc0146cc0927268671e15599af48fd908c59ef8674e13bca"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_OddOrigin.xml",
+      "sha256": "5a14beb435c16c5c79a3883cdbfb4866466d1d8362963e8b26d7130fcb35ca03"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_OddSupply.xml",
+      "sha256": "b6619f41f31599825fc444028524fa70ad5ac68cb04659e68a91f9c3a0ce494b"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Operations.xml",
+      "sha256": "6bd22f04e8dd5213f0e3881858220a86a9c53384f4c27b3d59dbe80c51b409fe"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_OperationsExpeditions.xml",
+      "sha256": "da5b8532648d9877eaeb3cabd4478b033027b04aa868aef7c66bffc0ec8f4793"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Palette.xml",
+      "sha256": "9f7e091518b01112e8c9a2dde2e0ed8527f54cbb01a7e674633572d1f38ff55c"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Personnel.xml",
+      "sha256": "25e680ce38be86326527f3134cb0c61a69bc0ad8332d449afea23461e7113c36"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml",
+      "sha256": "dd25e6c4798827799ad2c250ccf19673e99016b38c7b5d42710a2df927037c79"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Procurement.xml",
+      "sha256": "d3043fd497402573efaf0ce2e035b9d4bd3ed58b4ea6b384bb442bf4580f8e2e"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Requests.xml",
+      "sha256": "6cc78f63e54dad073a254ab54ab9845c35affe9545cdff59526ef637a1e2e0d7"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Scenario.xml",
+      "sha256": "fe14c4906ae7963ed5ec8943904edddf15f07f0787dde95a3d38d06badf5cff7"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_StartupSetup.xml",
+      "sha256": "7d4195c92abdd682a1495fa0701afb5bf088daabc311a6708946d105c94230c7"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Survivors.xml",
+      "sha256": "16cb23ca737a026c2ca23fa74f009b70490985f25a6d32506df6681c61e22ba4"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Patches/RR_ExistingEvidenceBook.xml",
+      "sha256": "7c0e119f7ce2efe17fc975bffa2c57e5b4e6f7724a922a455eccf1ed939a8875"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Patches/RR_GateApproachPlacement.xml",
+      "sha256": "1de979481ca840b92318b0ae5e69b53ac76c13558fd6c5fe7af865009444650a"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Patches/RR_GlowPodMarker.xml",
+      "sha256": "582c2ccd7ea6dd980d5eeda15b1529c035a0905c7804f3393a48b7f7684a3179"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Patches/RR_NativeGateProviders.xml",
+      "sha256": "2f56f630cf6af9f2d521a8e202bcfb546511a43e83e7748a33deb0eee7ad6a98"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Patches/RR_StartGenSteps.xml",
+      "sha256": "12fbe45149de4f3ca003b87f676f6057025532554d861091eb6c3a7b3d490634"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Sounds/Rimrooms/RR_FieldRadio.wav",
+      "sha256": "030acbeb064900d64ba787ccd3abe0d4e7d4169a45d3d914217450db334fbdf7"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Sounds/Rimrooms/RR_GatePowerRise.wav",
+      "sha256": "b46973b4765f9b1bbf8c8d869a8419dafa9c85967e04b1a76a2778a1c52d63d7"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Sounds/Rimrooms/RR_GateWarning.wav",
+      "sha256": "12c2a762df2674f1ef3c3278ea5ee489fb0d0310bab011d1770c843a006bd70c"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Sounds/Rimrooms/RR_SpatialTell.wav",
+      "sha256": "260ee746025dc9fd3fb425c35904cd0ae0b5f954ac1cb84a47d3f9f09932b1a5"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Terrain/Rimrooms/RR_FadedInstitutionalCarpet.png",
+      "sha256": "5e7c6c3ea353fee377ea6397a0d94f55bf077e6f390a86329d9e476540a8c355"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x1_east.png",
+      "sha256": "cf1a362cd6bbfa47a8a9a63c19d84a7b4d94f362dab6af6b730520e7cfd191e7"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x1_north.png",
+      "sha256": "0b41365cb315b8a9c74447777ba16700877acd06f9629eab672ac2b82d88deaf"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x1_south.png",
+      "sha256": "04f5006623335831171c8cbf53b546e0f7706930dea2d5f5ecbe4ea8cadc0626"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x2_east.png",
+      "sha256": "f4410c2a7beea6c24c6692e2f15e1b5adb4730a2b7f08700ba033ba219adff11"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x2_north.png",
+      "sha256": "262d6c352a2a17abc2631b106c17bbc6704b00e9b65b5f8dacdd37ecf38db10e"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x2_south.png",
+      "sha256": "ee24a1104a212ea090c6b08b9c32e4d52fc3934f374d922296d3e62d778d7f61"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x3_east.png",
+      "sha256": "51867437277d0dd0e54c24d8e671088b9aedf9c6ee122efdae147300a0f2290d"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x3_north.png",
+      "sha256": "0b14f3b3fd29fb7dea067d0bf314d4d09acb28d142b016e5a381e69d8e34f5e6"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_1x3_south.png",
+      "sha256": "4f12f02185495b7fd2fb3c09cd5421b743f544fb0ade6852219d3bcd2c909d03"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_2x3_east.png",
+      "sha256": "06b7be1da19e06cbee4fcdf3fce3a8f9b3d660c15c578ee26402fd36b232564e"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_2x3_north.png",
+      "sha256": "63cdfd8a7e74cfa822cf13f56eb5bb151241730cd90908bdf2ecad27458fbf1b"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateFrame_2x3_south.png",
+      "sha256": "9fe55dc2deec4ae448e617605f6d63c1019fbd461c5643c7e9a892f32c500b9a"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_EmergencyCutoff_east.png",
+      "sha256": "fd013ec92ef32feb981a22512053e94212e0b9871c2484f0ebcbe4645f26b3d5"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_EmergencyCutoff_north.png",
+      "sha256": "fd013ec92ef32feb981a22512053e94212e0b9871c2484f0ebcbe4645f26b3d5"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_EmergencyCutoff_south.png",
+      "sha256": "fd013ec92ef32feb981a22512053e94212e0b9871c2484f0ebcbe4645f26b3d5"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_FieldAnalysisBench_east.png",
+      "sha256": "165d6268b713eb1465ea20e33fa4c625e0fce3d8d973f8328e201fa720208100"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_FieldAnalysisBench_north.png",
+      "sha256": "b8ffaa86ed987d30bf2ec3068f9e70e055a49091e4222cf6414e1f3486423d15"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_FieldAnalysisBench_south.png",
+      "sha256": "97faca43cf6184b70bcc08b35eeba91825e17b837cb3625fdabdb9c429a68b77"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_GateConsole_east.png",
+      "sha256": "e499de71ab8f0de3a3fd509b0a5b15fb332e61d27fab6a09cc4125243dbb2d2c"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_GateConsole_north.png",
+      "sha256": "38134e1a2162be066db854c1abf8e6324638310c30895f76511fef2d6a7556b8"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_GateConsole_south.png",
+      "sha256": "ea89c247100e693d9582d1d0606d97d72153e8b7174761526ddae2439d149445"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_MachineGate.png",
+      "sha256": "be0ee3858042f792adde1fa81dadac93be0df314fc1af7376f221791ed95a7d7"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_ReturnBeacon_east.png",
+      "sha256": "a204f2b7e0a3061e6ac3d33ee84af38adf267a1f2fed35ef05166f9b77bb2836"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_ReturnBeacon_north.png",
+      "sha256": "a204f2b7e0a3061e6ac3d33ee84af38adf267a1f2fed35ef05166f9b77bb2836"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_ReturnBeacon_south.png",
+      "sha256": "a204f2b7e0a3061e6ac3d33ee84af38adf267a1f2fed35ef05166f9b77bb2836"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_SiteFluorescent_east.png",
+      "sha256": "24dbb89f342fb70912d3fb1219c83f9853e82736e8b0bd777783608bfb6ce2ac"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_SiteFluorescent_north.png",
+      "sha256": "05d2c8c132b2171cea17836543ecd8bfc5e859c4a69dff2a722d6ceb1c3931d0"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_SiteFluorescent_south.png",
+      "sha256": "05d2c8c132b2171cea17836543ecd8bfc5e859c4a69dff2a722d6ceb1c3931d0"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_UtilityGenerator_east.png",
+      "sha256": "9f4aa3ffbffe72c3962ca72a8a4b81555ff7f5abca34865d8bc8aeaa31168374"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_UtilityGenerator_north.png",
+      "sha256": "47aa31c38743af4dbaaca57c2617bd8dd04e9d8ba94eeaade8138743f506317a"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/RR_UtilityGenerator_south.png",
+      "sha256": "213819b577b866efad579d94d8c7192d60f1fa11a36a36f37f32ad936b3a4145"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Closed.png",
+      "sha256": "e6f18eb814c9b127b82c791447bf2633b087dd973895b0c9d9c09067bb2538b3"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Open_east.png",
+      "sha256": "6a24787cc0ae52dcddb4b23a05f0848e6030d3d8826ba40d40dbe4b59882bbed"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Open_north.png",
+      "sha256": "2210cf32650163cc36c6ba4b2d32f8d0e37eb22bf6a1b76c6b66a14da6e208d2"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Open_south.png",
+      "sha256": "92febf1408a8617f13d5df801cc3186ef5eafe11c0163fa9cd1c86cef91b9ff3"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Vertical_east.png",
+      "sha256": "8e7fb87ea2bf1815919fd3d2a95bb7ec93be48d62d244ee25d4685e0c49988b4"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Vertical_north.png",
+      "sha256": "0c356af7718f7adf93709da90171b07ed15bdf689f7639d29ac9557e4fad0ca1"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/Journal/RR_CompanyJournal_Vertical_south.png",
+      "sha256": "8955dcf332ec3a4e61ea1c9c98dc645169c1581dfd1f53409c5ece34f2b78ac3"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/RR_FieldRecorder_east.png",
+      "sha256": "50d1a2f5dd9a438c6a004e49b6be4d7c5dc4d31c0770e6c7011ebd11b54b6656"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/RR_FieldRecorder_north.png",
+      "sha256": "39d4aad886ef39c51a7b446b6693ec822e5251df8ac448321693f5c16095b272"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/RR_FieldRecorder_south.png",
+      "sha256": "f6373276c733971dd1aa69a5dfe8f393168007ef0efa5cd70db5f636f9e3327f"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/RR_SealedEvidenceCase_east.png",
+      "sha256": "827da518c137b2c6b63f8070428ad57a4ffb2bb921e8e2077d810d8fe501f34a"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/RR_SealedEvidenceCase_north.png",
+      "sha256": "98da15d91b467aa77805010ea9b8813ad9f8edac6753d818fc0a4175a4e6e670"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/RR_SealedEvidenceCase_south.png",
+      "sha256": "fc5dd05642dcc545561016ac9d1de2f6aba60ebdbd213159875809924c48843b"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/RR_SurveyTag_east.png",
+      "sha256": "582debdbfcc4a2c78d0f8e284a6ae0555881d394f30c1292757016c77f9f43e3"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/RR_SurveyTag_north.png",
+      "sha256": "582fe24428669a222ecd1d36b247953940a58cdcb05df51dbaf184677a128993"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Item/Rimrooms/RR_SurveyTag_south.png",
+      "sha256": "9007862d0e4043908a3983f4d6c1a38084f43b71c09626ca02af52dd8e87e6d6"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_BreachedVault.png",
+      "sha256": "50900cd035d4e0f08f2ecc59944f0c6a2ab70ceb5e3b3d791c20d0c52c1c90b4"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_CorridorEncounter.png",
+      "sha256": "4dbab8ed8ec4bd4fef14194739e00f0bc06a7b41a602f4c923d8079d8ed5760e"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_EmptyCinema.png",
+      "sha256": "6ed0dbac11bec717fe4f9cafe260bbd7bec8bdecf9401aa906093a18391a3313"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_FacilityThreshold_v2.png",
+      "sha256": "aeb5091de4568134980d36065c95c65dcd83472b4bb3e8d2db92f092d3bf452c"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_FamiliarStranger.png",
+      "sha256": "e5e9befe1dd156478507c18bddcb7b75f17fc5f1bfb1a419c37437ecf92c7e08"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_FieldSurvey_v2.png",
+      "sha256": "3ac775159e46db91163299dbe1b454b310bcfb9676fe93279ad9a5a520837843"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_IndustrialGateLogistics.png",
+      "sha256": "384975afdbd1a632c27fe9b5f66e8accfa5f5ba5e8c223f4dfcb785fb5a2d93c"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_LaboratoryOperations.png",
+      "sha256": "fee06ae37cb2acd9e77990cfa0003467efdf927da309a5bb3c8da7c7c70e3737"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_LightsOut.png",
+      "sha256": "db63de41e09449d181a2db640a28077965c6f59363c1a0fef95c33fbdda78156"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_PanicJunction.png",
+      "sha256": "bb8ffaa603d7bc72843983ab8c6c9d23bb1d762b4d754c8281735547e0a54ab1"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_RedTrail.png",
+      "sha256": "83d28e7d088bee73fa292fee7dbadd72243dcb4e520e00985e7636125ee8338a"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/RR_Menu_SilentRecovery.png",
+      "sha256": "009e3cf278bd3cb68e052fb894c406e0ad53f7dd82ecf1faf7647501dd91aabb"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/About/About.xml",
+      "sha256": "1c06000a8e158fe591d4705f6a1681c0100fc306e395a1e10eea2ad5bd8f2714"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/About/Preview.png",
+      "sha256": "32cae82d63caa3ada3e866ea01eae6ab458ee95ba6eb2754ab2e4f7cabc6a1c3"
+    },
+    {
+      "path": "Mod/Rimrooms - Async Industries/LoadFolders.xml",
+      "sha256": "23f721252643f6a0230c935ea3e1f2f89a6371025dde018afe776508d66fcb03"
+    }
+  ]
+}

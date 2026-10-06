@@ -1,0 +1,231 @@
+{
+  "created": "2026-10-06",
+  "author": "Operator",
+  "generator": "Built-in image_gen tool",
+  "use_case": "stylized-concept",
+  "scope": "Original high-overhead industrial cosmetic frame overlays on existing native doors or native door runs. Source masters only; no cloned door Def or painted aperture.",
+  "style_reference": "assets/source/phase2/RR_MachineGate.png",
+  "orientation": {
+    "north": "Rear service rim near lower image edge; front trim at upper edge.",
+    "east": "Front cream rim along left edge, rear dark service rim along right edge. Long footprint dimension vertical.",
+    "south": "Front cream rim near lower image edge; rear steel rim at upper edge.",
+    "west": "RimWorld may mirror authored east view."
+  },
+  "conversion_notes": [
+    "Transparent aperture and outside: center alpha confirmed zero on all twelve files.",
+    "Generated RGB underneath alpha=0 may contain haze; zero RGB in alpha=0 pixels before filtering/downscale; preserve real alpha.",
+    "Sources have transparent margins and possible low-alpha edge speckles; deterministic converter should find opaque hardware crop before fitting target footprint.",
+    "These sprites are trim/frame overlays only. Native existing door aperture, door leaf, permissions and pawns remain visible and authoritative.",
+    "No gameplay, compatibility or runtime visual result is claimed."
+  ],
+  "assets": [
+    {
+      "file": "assets/source/gates/RR_GateFrame_1x1_north.png",
+      "footprint": "1x1",
+      "rotation": "north",
+      "source": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-4d35ed5a-d8b0-4a2f-b444-9b2fe9443455.png",
+      "references": [
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\gates\\RR_GateFrame_1x1_south.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent PNG colony-simulation world building FRAME overlay, NOT an icon, concept sheet or environment. Image 1 is ONLY the steel construction, charcoal/cream/amber color, and hand-painted line style identity reference. Its upright front-elevation view MUST NOT be copied. Redesign into an actual RimWorld-style game-world sprite: orthographic HIGH OVERHEAD camera about 82 degrees down, looking nearly straight at ground; no perspective convergence, no isometric diamond, only a small visible near/front side thickness. One complete industrial rectangular gate FRAME lying within its ground footprint. Thick compact charcoal steel jambs, muted warm-gray/cream trim, restrained dark outlines, a few bolts, cable channels, SMALL warm amber strip details. Object geometry must read at 128px per tile, simplify busy details. The ENTIRE central passage is a large genuinely TRANSPARENT hole with no pixels, no threshold bar blocking it. Hardware sits ONLY around perimeter edges. This frame overlays a real existing native door which remains visible through the hole; no door slab, floor, void, black space, yellow corridor, glass, portal energy, smoke, shadows extending into the hole or environment. Transparent outside as well. No text, letters, labels, scale marks, arrows, UI, logo, cast ground shadow or characters. Light comes from upper left. Render one object, centered, with transparent margins; consistent size and silhouette proportions. The reference is a style/identity starting point, not a projection guide.\nImage1 is SAME square 1-wide 1-deep personnel frame. Create NORTH/BACK world rotation: warm cream/amber FRONT rim now on far TOP edge, charcoal REAR SERVICE cover rim on near BOTTOM edge. Rear faces show different access panels, vented cover, bracket hinges, hose-clamp service routing; physical panel identity continuous withsource, not fake duplicated front. Exact square ground footprint; no floor, pane or arch scene. Camera truly high overhead, looking at broad top surfaces, only tiny near face thickness. Keep centered transparent square opening and outside transparency absolutely clear, NO glow/shadow haze. Sourcehardwareonly.",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "centerAlpha": 0,
+      "sha256": "5563525f40f3a15dd552bf3a3d6fc921931c3306b2de47700f5284840e283936"
+    },
+    {
+      "file": "assets/source/gates/RR_GateFrame_1x1_east.png",
+      "footprint": "1x1",
+      "rotation": "east",
+      "source": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-9e36f76f-c283-4946-a6bc-94c9beb09f64.png",
+      "references": [
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\gates\\RR_GateFrame_1x1_south.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent PNG colony-simulation world building FRAME overlay, NOT an icon, concept sheet or environment. Image 1 is ONLY the steel construction, charcoal/cream/amber color, and hand-painted line style identity reference. Its upright front-elevation view MUST NOT be copied. Redesign into an actual RimWorld-style game-world sprite: orthographic HIGH OVERHEAD camera about 82 degrees down, looking nearly straight at ground; no perspective convergence, no isometric diamond, only a small visible near/front side thickness. One complete industrial rectangular gate FRAME lying within its ground footprint. Thick compact charcoal steel jambs, muted warm-gray/cream trim, restrained dark outlines, a few bolts, cable channels, SMALL warm amber strip details. Object geometry must read at 128px per tile, simplify busy details. The ENTIRE central passage is a large genuinely TRANSPARENT hole with no pixels, no threshold bar blocking it. Hardware sits ONLY around perimeter edges. This frame overlays a real existing native door which remains visible through the hole; no door slab, floor, void, black space, yellow corridor, glass, portal energy, smoke, shadows extending into the hole or environment. Transparent outside as well. No text, letters, labels, scale marks, arrows, UI, logo, cast ground shadow or characters. Light comes from upper left. Render one object, centered, with transparent margins; consistent size and silhouette proportions. The reference is a style/identity starting point, not a projection guide.\nCreate EAST facing actual world-view rotation of Image1 square1x1 gate FRAME. A square horizontal ground machine, topdownorthographic, about82deg camera. Place its FRONT cream rim at LEFT WEST edge, REAR charcoal service/vent rim at RIGHT EAST edge; top/bottom jambs show their side surfaces and cable recesses in this physical orientation. It must be newly drawn with upper-left consistent lighting and genuine side-facing hardware faces, NOT a ninety-degree pixel rotation of source front image. Center squarehole completely transparent, outside fullytransparent, no glow, groundshadow or haze. Exactsamepersonnelframeindustrialidentity, samecomponents.",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "centerAlpha": 0,
+      "sha256": "7f5f33e21131bdab5dd9b89d533cac3ce331f6f6250764e92761f390d33d8960"
+    },
+    {
+      "file": "assets/source/gates/RR_GateFrame_1x1_south.png",
+      "footprint": "1x1",
+      "rotation": "south",
+      "source": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-a03381ad-edf0-47bd-a89f-4a0d26afe729.png",
+      "references": [
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\phase2\\RR_MachineGate.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent PNG colony-simulation world building FRAME overlay, NOT an icon, concept sheet or environment. Image 1 is ONLY the steel construction, charcoal/cream/amber color, and hand-painted line style identity reference. Its upright front-elevation view MUST NOT be copied. Redesign into an actual RimWorld-style game-world sprite: orthographic HIGH OVERHEAD camera about 82 degrees down, looking nearly straight at ground; no perspective convergence, no isometric diamond, only a small visible near/front side thickness. One complete industrial rectangular gate FRAME lying within its ground footprint. Thick compact charcoal steel jambs, muted warm-gray/cream trim, restrained dark outlines, a few bolts, cable channels, SMALL warm amber strip details. Object geometry must read at 128px per tile, simplify busy details. The ENTIRE central passage is a large genuinely TRANSPARENT hole with no pixels, no threshold bar blocking it. Hardware sits ONLY around perimeter edges. This frame overlays a real existing native door which remains visible through the hole; no door slab, floor, void, black space, yellow corridor, glass, portal energy, smoke, shadows extending into the hole or environment. Transparent outside as well. No text, letters, labels, scale marks, arrows, UI, logo, cast ground shadow or characters. Light comes from upper left. Render one object, centered, with transparent margins; consistent size and silhouette proportions. The reference is a style/identity starting point, not a projection guide.\nGround footprint is ONE tile wide by ONE tile deep; nearly square outside perimeter, square clear center. SOUTH FRONT view: near/lower/front rim shows warm-gray panels and one small amber status strip; upper/far rim shows steel cover tops. Simple personnel-width frame, compact restrained hardware. Longitudinal passage runs vertically north-south through transparent opening.",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "centerAlpha": 0,
+      "sha256": "b0b2cc318bf8f6d5677d11bc678922719cf78e81453608e9f29df6aa49fb3df2"
+    },
+    {
+      "file": "assets/source/gates/RR_GateFrame_1x2_north.png",
+      "footprint": "1x2",
+      "rotation": "north",
+      "source": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-8de885d1-6708-42c8-9d1d-007dc0cf4a3e.png",
+      "references": [
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\gates\\RR_GateFrame_1x2_south.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent PNG colony-simulation world building FRAME overlay, NOT an icon, concept sheet or environment. Image 1 is ONLY the steel construction, charcoal/cream/amber color, and hand-painted line style identity reference. Its upright front-elevation view MUST NOT be copied. Redesign into an actual RimWorld-style game-world sprite: orthographic HIGH OVERHEAD camera about 82 degrees down, looking nearly straight at ground; no perspective convergence, no isometric diamond, only a small visible near/front side thickness. One complete industrial rectangular gate FRAME lying within its ground footprint. Thick compact charcoal steel jambs, muted warm-gray/cream trim, restrained dark outlines, a few bolts, cable channels, SMALL warm amber strip details. Object geometry must read at 128px per tile, simplify busy details. The ENTIRE central passage is a large genuinely TRANSPARENT hole with no pixels, no threshold bar blocking it. Hardware sits ONLY around perimeter edges. This frame overlays a real existing native door which remains visible through the hole; no door slab, floor, void, black space, yellow corridor, glass, portal energy, smoke, shadows extending into the hole or environment. Transparent outside as well. No text, letters, labels, scale marks, arrows, UI, logo, cast ground shadow or characters. Light comes from upper left. Render one object, centered, with transparent margins; consistent size and silhouette proportions. The reference is a style/identity starting point, not a projection guide.\nImage 1 is the EXACT same 2-wide 1-deep gate trim. Create its NORTH/BACK facing game-world rotation. Long axis LEFT TO RIGHT, exterior ratio2:1 WIDTH:DEPTH. Physical frame rotated around180degrees: show REAR SERVICE SIDE near BOTTOM with charcoal service access panels, steel vent strips, bracket hinges and small hose channels. Cream/amber FRONT rim moves to far TOP. Maintain exact reference silhouette and part identities, width and depth, but author real rear construction detail rather than flip or rotate source pixels. Light stillupperleft. Center clear transparent rectangular hole, no floor, door or scene. Same HIGH OVERHEAD world projection.",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "centerAlpha": 0,
+      "sha256": "dea188b09b6e03b7f5166f4b582f6494f43bad328c6f9663ff99139f52132530"
+    },
+    {
+      "file": "assets/source/gates/RR_GateFrame_1x2_east.png",
+      "footprint": "1x2",
+      "rotation": "east",
+      "source": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-2bbcc3a6-4c2d-4bf8-ab2a-8db22fbf93d6.png",
+      "references": [
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\gates\\RR_GateFrame_1x2_south.png",
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\gates\\RR_GateFrame_1x1_east.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent PNG colony-simulation world building FRAME overlay, NOT an icon, concept sheet or environment. Image 1 is ONLY the steel construction, charcoal/cream/amber color, and hand-painted line style identity reference. Its upright front-elevation view MUST NOT be copied. Redesign into an actual RimWorld-style game-world sprite: orthographic HIGH OVERHEAD camera about 82 degrees down, looking nearly straight at ground; no perspective convergence, no isometric diamond, only a small visible near/front side thickness. One complete industrial rectangular gate FRAME lying within its ground footprint. Thick compact charcoal steel jambs, muted warm-gray/cream trim, restrained dark outlines, a few bolts, cable channels, SMALL warm amber strip details. Object geometry must read at 128px per tile, simplify busy details. The ENTIRE central passage is a large genuinely TRANSPARENT hole with no pixels, no threshold bar blocking it. Hardware sits ONLY around perimeter edges. This frame overlays a real existing native door which remains visible through the hole; no door slab, floor, void, black space, yellow corridor, glass, portal energy, smoke, shadows extending into the hole or environment. Transparent outside as well. No text, letters, labels, scale marks, arrows, UI, logo, cast ground shadow or characters. Light comes from upper left. Render one object, centered, with transparent margins; consistent size and silhouette proportions. The reference is a style/identity starting point, not a projection guide.\nImage1defines exact2-wide1-deep frame identity. Image2 is correct east-facing orientation layout. Generate SAME 1x2 frame facing EAST: footprint ONE tile wide horizontally by TWO tiles long VERTICALLY in the PNG, outeraspectratio1:2. Cream FRONT rim now LEFT edge, charcoal REAR SERVICE rim RIGHT edge. Two modular cream segments vertically onleft, two dark metal/vent/cooling modules verticallyonright; jambs and corners atTOP/BOTTOM. Genuine newlypainted side-facing topdown view, NOT uprightfront, notrotateimagepixels; upperleftlightingmuststayupperleft onnewpanels. Industrialchannelhardware only, center longtransparentrectangularhole andoutside perfectlytransparent. No glow/no haze/no groundshadow. Camera82degrees down orthographic world sprite.",
+      "size": [
+        887,
+        1774
+      ],
+      "mode": "RGBA",
+      "centerAlpha": 0,
+      "sha256": "f8441232c4c2193495b3559a1870d2d6663293d4b58427d286078289554d23d9"
+    },
+    {
+      "file": "assets/source/gates/RR_GateFrame_1x2_south.png",
+      "footprint": "1x2",
+      "rotation": "south",
+      "source": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-10561e76-969f-4280-8ddb-75c1b2bcb918.png",
+      "references": [
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\phase2\\RR_MachineGate.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent PNG colony-simulation world building FRAME overlay, NOT an icon, concept sheet or environment. Image 1 is ONLY the steel construction, charcoal/cream/amber color, and hand-painted line style identity reference. Its upright front-elevation view MUST NOT be copied. Redesign into an actual RimWorld-style game-world sprite: orthographic HIGH OVERHEAD camera about 82 degrees down, looking nearly straight at ground; no perspective convergence, no isometric diamond, only a small visible near/front side thickness. One complete industrial rectangular gate FRAME lying within its ground footprint. Thick compact charcoal steel jambs, muted warm-gray/cream trim, restrained dark outlines, a few bolts, cable channels, SMALL warm amber strip details. Object geometry must read at 128px per tile, simplify busy details. The ENTIRE central passage is a large genuinely TRANSPARENT hole with no pixels, no threshold bar blocking it. Hardware sits ONLY around perimeter edges. This frame overlays a real existing native door which remains visible through the hole; no door slab, floor, void, black space, yellow corridor, glass, portal energy, smoke, shadows extending into the hole or environment. Transparent outside as well. No text, letters, labels, scale marks, arrows, UI, logo, cast ground shadow or characters. Light comes from upper left. Render one object, centered, with transparent margins; consistent size and silhouette proportions. The reference is a style/identity starting point, not a projection guide.\nGround footprint is TWO tiles wide left-to-right by ONE tile deep vertically; outer perimeter precisely 2:1 WIDTH:DEPTH. SOUTH FRONT view: near/lower/front rim has warm-gray modular panels and two small amber status strips; upper/far rim steel cover tops. Personnel/cargo-width frame, joined straight modular rim sections, with clear rectangular central passage. Horizontal width double its vertical depth. Do not make taller upright arch.",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "centerAlpha": 0,
+      "sha256": "cb4e1dd543a6fd2378ec48355363e84894d2e5cba874cb164d614fb3b19a870f"
+    },
+    {
+      "file": "assets/source/gates/RR_GateFrame_1x3_north.png",
+      "footprint": "1x3",
+      "rotation": "north",
+      "source": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-70b470a8-427e-46ad-b11d-13a5cb3e8d97.png",
+      "references": [
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\gates\\RR_GateFrame_1x3_south.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent PNG colony-simulation world building FRAME overlay, NOT an icon, concept sheet or environment. Image 1 is ONLY the steel construction, charcoal/cream/amber color, and hand-painted line style identity reference. Its upright front-elevation view MUST NOT be copied. Redesign into an actual RimWorld-style game-world sprite: orthographic HIGH OVERHEAD camera about 82 degrees down, looking nearly straight at ground; no perspective convergence, no isometric diamond, only a small visible near/front side thickness. One complete industrial rectangular gate FRAME lying within its ground footprint. Thick compact charcoal steel jambs, muted warm-gray/cream trim, restrained dark outlines, a few bolts, cable channels, SMALL warm amber strip details. Object geometry must read at 128px per tile, simplify busy details. The ENTIRE central passage is a large genuinely TRANSPARENT hole with no pixels, no threshold bar blocking it. Hardware sits ONLY around perimeter edges. This frame overlays a real existing native door which remains visible through the hole; no door slab, floor, void, black space, yellow corridor, glass, portal energy, smoke, shadows extending into the hole or environment. Transparent outside as well. No text, letters, labels, scale marks, arrows, UI, logo, cast ground shadow or characters. Light comes from upper left. Render one object, centered, with transparent margins; consistent size and silhouette proportions. The reference is a style/identity starting point, not a projection guide.\nImage 1 is the EXACT same 3-wide 1-deep gate trim. Create its NORTH/BACK facing game-world rotation. The frame's long axis stays LEFT TO RIGHT, exterior ratio3:1 WIDTH:DEPTH. It is turned around 180 degrees as physical machinery; we now view the REAR SERVICE SIDE as the near bottom rim: charcoal maintenance access panels, bracket hinges, restrained hose routing, steel cooling covers. The warm cream/amber FRONT side lies along far TOP rim. RETAIN physical silhouette, width/depth and original corner-module identities, but show genuine back construction panels instead of merely flipping or rotating the source PNG. Light still from upper left, shade newly visible surfaces. Large clear rectangular central hole and exterior remain genuinely transparent. Same HIGH OVERHEAD ground-plane world projection, no standing arch/scene.",
+      "size": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "centerAlpha": 0,
+      "sha256": "df7e0dda0cc8d9d844c6d16a294a8484681c9036ce4bf89fe6bc962273659416"
+    },
+    {
+      "file": "assets/source/gates/RR_GateFrame_1x3_east.png",
+      "footprint": "1x3",
+      "rotation": "east",
+      "source": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-d8ce514b-02e5-4b09-af1d-8f79948ade7f.png",
+      "references": [
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\gates\\RR_GateFrame_1x3_south.png",
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\gates\\RR_GateFrame_1x1_east.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent PNG colony-simulation world building FRAME overlay, NOT an icon, concept sheet or environment. Image 1 is ONLY the steel construction, charcoal/cream/amber color, and hand-painted line style identity reference. Its upright front-elevation view MUST NOT be copied. Redesign into an actual RimWorld-style game-world sprite: orthographic HIGH OVERHEAD camera about 82 degrees down, looking nearly straight at ground; no perspective convergence, no isometric diamond, only a small visible near/front side thickness. One complete industrial rectangular gate FRAME lying within its ground footprint. Thick compact charcoal steel jambs, muted warm-gray/cream trim, restrained dark outlines, a few bolts, cable channels, SMALL warm amber strip details. Object geometry must read at 128px per tile, simplify busy details. The ENTIRE central passage is a large genuinely TRANSPARENT hole with no pixels, no threshold bar blocking it. Hardware sits ONLY around perimeter edges. This frame overlays a real existing native door which remains visible through the hole; no door slab, floor, void, black space, yellow corridor, glass, portal energy, smoke, shadows extending into the hole or environment. Transparent outside as well. No text, letters, labels, scale marks, arrows, UI, logo, cast ground shadow or characters. Light comes from upper left. Render one object, centered, with transparent margins; consistent size and silhouette proportions. The reference is a style/identity starting point, not a projection guide.\nImage1definesexact3-wide1-deepframeidentity. Image2correcteastorientation. GenerateSAME1x3 frame facingEAST: footprint ONEtile wide HORIZONTALLY by THREEtileslong VERTICALLY, exterioraspectratio1:3. Cream FRONT rim LEFT vertical edge, charcoal REAR SERVICE rim RIGHT verticaledge. Threejoined modular creamrimsections withsmall amberstatusstrips downleft; threedarksteel vent/service modules downright. Jambs/corners atTOP/BOTTOM. Realnewlypainted side-facing highoverhead view, not rotatedpixels, not standingarch. Upperleftlightingstayupperleftwithnewphysicalsurfaces. Centerlongclearrectangularhole andoutsidefullytransparent, nohaze, glow,castshadow,thresholdfloor. OpaqueedgehardwareONLY.",
+      "size": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "centerAlpha": 0,
+      "sha256": "d790eea640b85d5f55ecb2250850f0426171ee8bd156c75e24d409f77783b248"
+    },
+    {
+      "file": "assets/source/gates/RR_GateFrame_1x3_south.png",
+      "footprint": "1x3",
+      "rotation": "south",
+      "source": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-9fabc31b-6004-4151-87c0-f6b43c2a02c1.png",
+      "references": [
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\phase2\\RR_MachineGate.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent PNG colony-simulation world building FRAME overlay, NOT an icon, concept sheet or environment. Image 1 is ONLY the steel construction, charcoal/cream/amber color, and hand-painted line style identity reference. Its upright front-elevation view MUST NOT be copied. Redesign into an actual RimWorld-style game-world sprite: orthographic HIGH OVERHEAD camera about 82 degrees down, looking nearly straight at ground; no perspective convergence, no isometric diamond, only a small visible near/front side thickness. One complete industrial rectangular gate FRAME lying within its ground footprint. Thick compact charcoal steel jambs, muted warm-gray/cream trim, restrained dark outlines, a few bolts, cable channels, SMALL warm amber strip details. Object geometry must read at 128px per tile, simplify busy details. The ENTIRE central passage is a large genuinely TRANSPARENT hole with no pixels, no threshold bar blocking it. Hardware sits ONLY around perimeter edges. This frame overlays a real existing native door which remains visible through the hole; no door slab, floor, void, black space, yellow corridor, glass, portal energy, smoke, shadows extending into the hole or environment. Transparent outside as well. No text, letters, labels, scale marks, arrows, UI, logo, cast ground shadow or characters. Light comes from upper left. Render one object, centered, with transparent margins; consistent size and silhouette proportions. The reference is a style/identity starting point, not a projection guide.\nGround footprint is THREE tiles wide left-to-right by ONE tile deep vertically; outer perimeter precisely 3:1 WIDTH:DEPTH. SOUTH FRONT view: near/lower/front rim has cream-gray modular panels and three small amber strips; upper/far rim steel cover tops. Broad thin vehicle-width frame, long joined horizontal rim sections, clear broad rectangular central passage. Width THREE times vertical depth, no upright arch.",
+      "size": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "centerAlpha": 0,
+      "sha256": "6554dc5a948bfc3a4affbbc22930fd88906acd8c67e28f3c9a2cccec2aa673f8"
+    },
+    {
+      "file": "assets/source/gates/RR_GateFrame_2x3_north.png",
+      "footprint": "2x3",
+      "rotation": "north",
+      "source": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-dfe29193-8d03-425e-99aa-de8e4ddd010e.png",
+      "references": [
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\gates\\RR_GateFrame_2x3_south.png",
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\gates\\RR_GateFrame_1x3_north.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent PNG colony-simulation world building FRAME overlay, NOT an icon, concept sheet or environment. Image 1 is ONLY the steel construction, charcoal/cream/amber color, and hand-painted line style identity reference. Its upright front-elevation view MUST NOT be copied. Redesign into an actual RimWorld-style game-world sprite: orthographic HIGH OVERHEAD camera about 82 degrees down, looking nearly straight at ground; no perspective convergence, no isometric diamond, only a small visible near/front side thickness. One complete industrial rectangular gate FRAME lying within its ground footprint. Thick compact charcoal steel jambs, muted warm-gray/cream trim, restrained dark outlines, a few bolts, cable channels, SMALL warm amber strip details. Object geometry must read at 128px per tile, simplify busy details. The ENTIRE central passage is a large genuinely TRANSPARENT hole with no pixels, no threshold bar blocking it. Hardware sits ONLY around perimeter edges. This frame overlays a real existing native door which remains visible through the hole; no door slab, floor, void, black space, yellow corridor, glass, portal energy, smoke, shadows extending into the hole or environment. Transparent outside as well. No text, letters, labels, scale marks, arrows, UI, logo, cast ground shadow or characters. Light comes from upper left. Render one object, centered, with transparent margins; consistent size and silhouette proportions. The reference is a style/identity starting point, not a projection guide.\nImage1 exactTHREEwideTWOdeep reinforcedframe. Image2 north/backdesign for slim variant. GenerateNORTH/BACK reinforced2x3 worldrotation: externalwidth:depth3:2, widthhorizontallefttoright. Warmcreamfrontpanelswith3smallamberstrips move farTOP; rearcharcoalvent/servicepanelrimnearatBOTTOM with steel coolingribs,maintenancecoversandhoseclamps. Deepjambsleft/right keep extraspacedribs andtwo-row reinforcement comparedslim1x3. ExactindustrialpartidentityofImage1butnewgenuinebackserviceview andcorrectupperleftlighting. Completelyclearzeroalpharectangularcentralhole andoutside; remove ALLsoftglow,halo,vignette and castshadow fromreference. OpaquehardwareONLYaroundedges; no door/floor/aperturefill.",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "centerAlpha": 0,
+      "sha256": "cedd4d7e4463d097ad3c25e10e30d9f8d2643a0891d41b9af133882b8ea34bd1"
+    },
+    {
+      "file": "assets/source/gates/RR_GateFrame_2x3_east.png",
+      "footprint": "2x3",
+      "rotation": "east",
+      "source": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-0a60d60a-752d-4906-94a6-1f5975a987dd.png",
+      "references": [
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\gates\\RR_GateFrame_2x3_south.png",
+        "C:\\Users\\gfour\\Desktop\\Backrooms\\assets\\source\\gates\\RR_GateFrame_1x3_east.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent PNG colony-simulation world building FRAME overlay, NOT an icon, concept sheet or environment. Image 1 is ONLY the steel construction, charcoal/cream/amber color, and hand-painted line style identity reference. Its upright front-elevation view MUST NOT be copied. Redesign into an actual RimWorld-style game-world sprite: orthographic HIGH OVERHEAD camera about 82 degrees down, looking nearly straight at ground; no perspective convergence, no isometric diamond, only a small visible near/front side thickness. One complete industrial rectangular gate FRAME lying within its ground footprint. Thick compact charcoal steel jambs, muted warm-gray/cream trim, restrained dark outlines, a few bolts, cable channels, SMALL warm amber strip details. Object geometry must read at 128px per tile, simplify busy details. The ENTIRE central passage is a large genuinely TRANSPARENT hole with no pixels, no threshold bar blocking it. Hardware sits ONLY around perimeter edges. This frame overlays a real existing native door which remains visible through the hole; no door slab, floor, void, black space, yellow corridor, glass, portal energy, smoke, shadows extending into the hole or environment. Transparent outside as well. No text, letters, labels, scale marks, arrows, UI, logo, cast ground shadow or characters. Light comes from upper left. Render one object, centered, with transparent margins; consistent size and silhouette proportions. The reference is a style/identity starting point, not a projection guide.\nImage1shows reinforced THREEwideTWOdeep frameidentity. Image2showscorrectEASTorientation. CreateEASTviewofreinforced2x3gateframe: TWOtileswidehorizontallybyTHREEtileslongvertically, outeraspect2:3 WIDTH:HEIGHT. CreamFRONTrimLEFTverticaledgewith3smallamberstrips; charcoalREARservice/ventrimRIGHTverticaledgewith3moduleaccesscovers; deep jambsandpairedribsatTOP/BOTTOM. ComparedImage2slim1x3, top/bottom jambs genuinelytwiceasdeepandcornersheavilybraced. Realnewlypaintedside-facinghighoverheadcamera82degreesdown, strictlyorthographic;upperleftlightingfixed. IndustrialrigidEDGEHARDWAREONLY,no floor ordoor slab,centerlargefullytransparentverticalrectangularholeandoutsidefullytransparent. DO NOT copyanygrayhaloor soft glow fromImage1, do notusevignette, castshadow,bloom,aura, fogorgradientbackground. Allopacitymustbeactualmetal/amberdisplaypanelswithcrisphardedges.",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "centerAlpha": 0,
+      "sha256": "7300318fb827ac67116a33331fe9456fca00a2c3d991685b404e9aa2ab198a65"
+    },
+    {
+      "file": "assets/source/gates/RR_GateFrame_2x3_south.png",
+      "footprint": "2x3",
+      "rotation": "south",
+      "source": "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-78f46ba6-e0aa-48bb-95ae-b509e974e0cd.png",
+      "references": [
+        "C:\\Users\\gfour\\.codex\\generated_images\\01a1116f-f81e-77b1-9299-b486be15c699\\exec-92191bd4-401b-4e70-b507-216a7d927687.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent PNG colony-simulation world building FRAME overlay, NOT an icon, concept sheet or environment. Image 1 is ONLY the steel construction, charcoal/cream/amber color, and hand-painted line style identity reference. Its upright front-elevation view MUST NOT be copied. Redesign into an actual RimWorld-style game-world sprite: orthographic HIGH OVERHEAD camera about 82 degrees down, looking nearly straight at ground; no perspective convergence, no isometric diamond, only a small visible near/front side thickness. One complete industrial rectangular gate FRAME lying within its ground footprint. Thick compact charcoal steel jambs, muted warm-gray/cream trim, restrained dark outlines, a few bolts, cable channels, SMALL warm amber strip details. Object geometry must read at 128px per tile, simplify busy details. The ENTIRE central passage is a large genuinely TRANSPARENT hole with no pixels, no threshold bar blocking it. Hardware sits ONLY around perimeter edges. This frame overlays a real existing native door which remains visible through the hole; no door slab, floor, void, black space, yellow corridor, glass, portal energy, smoke, shadows extending into the hole or environment. Transparent outside as well. No text, letters, labels, scale marks, arrows, UI, logo, cast ground shadow or characters. Light comes from upper left. Render one object, centered, with transparent margins; consistent size and silhouette proportions. The reference is a style/identity starting point, not a projection guide.\nPRECISE OBJECT EDIT of Image1: preserve the industrial frame hardware geometry, footprint THREE wide TWO deep, colors and tiny amber panels. REMOVE absolutely ALL soft glow, soft shadows, vignette, gray halo and dark background pixels INSIDE THE CENTRAL HOLE AND OUTSIDE HARDWARE. Background and the central aperture must be true zero-alpha transparent, all the way up to every hardware edge. No aura, no lighting bloom. Keep ONLY the opaque steel/cream hardware; small amber panel fills are flat solid with NO spill or glow. Do not alter frame shape/bolt identity. This is a transparent overlay for visible native game doors. Exactly one flat high-overhead frame sprite.",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "centerAlpha": 0,
+      "sha256": "ae17aa849fce03ea053a66210d7e1e923d209d3c1c5052274c44a80a02e80dab"
+    }
+  ]
+}

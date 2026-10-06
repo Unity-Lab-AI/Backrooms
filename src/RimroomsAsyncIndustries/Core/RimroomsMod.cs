@@ -63,6 +63,7 @@ namespace RimroomsAsyncIndustries.Core
                 listing.CheckboxLabeled("RR_Menu_ReducedMotion".Translate().ToString(), ref Settings.MenuReducedMotion);
                 listing.GapLine();
                 listing.CheckboxLabeled("RR_NativeGate_AuraEnabled".Translate().ToString(), ref Settings.PortalAuraEnabled);
+                listing.CheckboxLabeled("RR_NativeGate_FramesEnabled".Translate().ToString(), ref Settings.GateFramesEnabled);
                 listing.CheckboxLabeled("RR_NativeGate_ReducedMotion".Translate().ToString(), ref Settings.PortalReducedMotion);
                 listing.GapLine();
                 DrawExchangeRates(listing);

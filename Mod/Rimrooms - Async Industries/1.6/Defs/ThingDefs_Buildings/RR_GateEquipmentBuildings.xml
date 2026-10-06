@@ -40,7 +40,7 @@
     <description>The console a company branch runs its gate from. It is a working comms console, so it hails the company and anyone else a standard set can reach, and it is built to be bound to a gate as that gate's control station.\n\nIt is smaller than a standard set and costs more to put up. A branch that has one does not need the standard set as well, and a branch that never builds one loses nothing: an ordinary comms console does the same job.</description>
     <graphicData>
       <texPath>Things/Building/Rimrooms/RR_GateConsole</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
+      <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(1.4,1.4)</drawSize>
       <damageData>
         <cornerTL>Damage/Corner</cornerTL>
@@ -50,11 +50,8 @@
       </damageData>
     </graphicData>
     <size>(1,1)</size>
-    <!-- NOT ROTATABLE, HONESTLY. The master is a front elevation with a clear face; there is no
-         back view and no side view, and a Graphic_Multi carrying one frame is a missing-texture
-         square on three facings. tools/cut-phase2-art.py lists this under ROTATIONS WANTED, and
-         check-register-compliance.py rule 6b refuses the dishonest version. -->
-    <rotatable>false</rotatable>
+    <!-- Authored north/east views and the original south master; Core mirrors west from east. -->
+    <rotatable>true</rotatable>
     <hasInteractionCell>true</hasInteractionCell>
     <interactionCellOffset>(0,0,-1)</interactionCellOffset>
     <altitudeLayer>Building</altitudeLayer>
@@ -107,16 +104,15 @@
     <description>A long analysis counter: a reel recorder, a reader and a terminal on one run of worktop. The company fits them in branch laboratories so gate assembly work and the examination of whatever comes back off a run happen at the same bench.\n\nIt can be bound to a gate as that gate's assembly bench. A branch that never builds one can bind an ordinary machining table instead and lose nothing.</description>
     <graphicData>
       <texPath>Things/Building/Rimrooms/RR_FieldAnalysisBench</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
+      <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(2,1)</drawSize>
       <damageData>
         <rect>(0,0.2,2,0.6)</rect>
       </damageData>
     </graphicData>
     <size>(2,1)</size>
-    <!-- NOT ROTATABLE, for the same reason and a sharper one: a counter's end on view is a
-         completely different drawing, and there is no master for it. -->
-    <rotatable>false</rotatable>
+    <!-- Authored rear and end views; the east texture uses the rotated 1x2 footprint. -->
+    <rotatable>true</rotatable>
     <hasInteractionCell>true</hasInteractionCell>
     <interactionCellOffset>(0,0,-1)</interactionCellOffset>
     <passability>PassThroughOnly</passability>

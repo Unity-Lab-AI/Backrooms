@@ -32,18 +32,20 @@ namespace RimroomsAsyncIndustries.Audio
                 if (settings == null) { WarnOnce("settings", "Audio preferences are unavailable; cues remain silent."); return; }
                 if ((field ? settings.MuteFieldCues : settings.MuteGateCues) || settings.EffectiveCueVolume <= 0f) { return; }
 
-                // An unknown cue id is a typo at a call site, and it is caught here rather than by a
-                // silent miss: ResolveNativeCue answers null for a name this mod does not define.
-                string native = ResolveNativeCue(cueId);
-                if (native == null) { WarnOnce("name", "An unknown company cue was requested."); return; }
-
                 // **OURS FIRST, CORE'S AS THE FALLBACK.** The company's own SoundDefs carry the same
                 // defNames as the cue ids, so a resolved original is simply the cue id itself. A
                 // package with no Sounds folder -- or one whose clips failed to resolve -- degrades to
                 // the native cue it used while the existing-content-only direction held, instead of
                 // going silent. The fallback is announced once so a missing folder is diagnosable.
+                //
+                // **THE NATIVE LOOKUP MOVED BELOW THIS AND THAT ORDER IS THE POINT.** It used to run
+                // first and refuse any cue id it had no Core mapping for -- which was every one of
+                // the thirteen cues delivered for the gate cycle. A guard written to catch a typo at
+                // a call site was silently rejecting correct, shipped content, and the only symptom
+                // would have been a gate that makes no sound.
                 SoundDef definition = Usable(cueId);
-                if (definition == null)
+                string native = ResolveNativeCue(cueId);
+                if (definition == null && native != null)
                 {
                     definition = Usable(native);
                     if (definition != null)
@@ -51,7 +53,16 @@ namespace RimroomsAsyncIndustries.Audio
                         WarnOnce("fallback:" + cueId, "The company cue " + cueId + " is unavailable; falling back to " + native + ".");
                     }
                 }
-                if (definition == null) { WarnOnce("def:" + cueId, "Unavailable or incompatible map cue: " + cueId); return; }
+                if (definition == null)
+                {
+                    // Still reported, and the message now separates the two cases a reader needs to
+                    // tell apart: a name nothing defines is a typo, a name that resolves to an
+                    // unusable def is a packaging fault.
+                    WarnOnce("def:" + cueId, native == null
+                        ? "An unknown company cue was requested: " + cueId
+                        : "Unavailable or incompatible map cue: " + cueId);
+                    return;
+                }
 
                 // Where a cue plays is the def's own property, never a second derivation here. Our
                 // cues are MapOnly and positional; the Core fallbacks for three of the four are

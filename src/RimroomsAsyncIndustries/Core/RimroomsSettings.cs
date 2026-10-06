@@ -26,6 +26,7 @@ namespace RimroomsAsyncIndustries.Core
         public bool MenuReducedMotion;
         public bool PortalAuraEnabled = true;
         public bool PortalReducedMotion;
+        public bool GateFramesEnabled = true;
 
         /// <summary>
         /// The three exchange rates, as player settings rather than shipped constants.
@@ -136,6 +137,7 @@ namespace RimroomsAsyncIndustries.Core
             Scribe_Values.Look(ref MenuReducedMotion, "rr_menuReducedMotion", false);
             Scribe_Values.Look(ref PortalAuraEnabled, "rr_portalAuraEnabled", true);
             Scribe_Values.Look(ref PortalReducedMotion, "rr_portalReducedMotion", false);
+            Scribe_Values.Look(ref GateFramesEnabled, "rr_gateFramesEnabled", true);
             // Additive: absent from every earlier preferences file, which loads correctly
             // as "no overrides" and therefore as the shipped priorities.
             Scribe_Collections.Look(ref ConnectedWorkPriorities, "rr_connectedWorkPriorities",

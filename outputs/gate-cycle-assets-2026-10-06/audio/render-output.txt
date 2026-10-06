@@ -1,0 +1,14 @@
+Authored RR_GateRampUp: 2.50 s one-shot
+Authored RR_GateCalibrate: 0.60 s one-shot
+Authored RR_GateActivate: 2.00 s one-shot
+Authored RR_GateRampDown: 2.50 s one-shot
+Authored RR_GateEmergency: 2.00 s one-shot
+Authored RR_CutoffThrown: 0.45 s one-shot
+Authored RR_SectionAssembled: 0.80 s one-shot
+Authored RR_JournalFiled: 0.70 s one-shot
+Authored RR_AnalysisComplete: 1.00 s one-shot
+Authored RR_MarkerSet: 0.40 s one-shot
+Authored RR_ContractPaid: 1.00 s one-shot
+Authored RR_GateSpinLoop: 3.00 s periodic loop
+Authored RR_GateOpenLoop: 4.00 s periodic loop
+Recorded 13/13 original assets; existing four package cues and their masters unchanged. No audio was played.

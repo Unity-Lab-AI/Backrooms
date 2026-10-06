@@ -32,22 +32,22 @@
        def silently fail to qualify and every caller would fall back to Core's textbook forever -
        working software, wrong book, no error anywhere.
 
-       THE OPEN AND VERTICAL GRAPHICS ARE CORE'S, ON PURPOSE. Those are the frames drawn while a
-       pawn is actually reading, and the company's art is a closed cassette in a sleeve. Pointing
-       at Core's paths references them at runtime and copies nothing, which is the one clause of
-       the reuse policy the 2026-10-06 reversal did not touch. -->
+       MATCHING PAPER JOURNAL VIEWS. The closed view is the ground graphic and icon; CompBook uses the
+       matching open and vertical facings while a pawn reads. These are original Rimrooms assets,
+       with their masters outside the package; no Core or provider texture is copied. This changes
+       the journal's presentation, not its Def identity, evidence custody or native book behaviour. -->
 
   <ThingDef ParentName="BookBase">
     <defName>RR_RouteRecording</defName>
-    <label>company route recording</label>
-    <description>A sealed company journal: a tape in a numbered sleeve with a write-on card for the route it carries. The branch issues them blank, a crew writes one in the field, and it comes home as the record of where they went and what was there.\n\nAnalysis at a bench turns a written recording into something the company will pay for. An unwritten one is a blank tape and worth about as much.</description>
+    <label>company field journal</label>
+    <description>A bound company field journal with a numbered cover and pages for route notes, sketches and observations. The branch issues journals blank, a crew writes one in the field, and it comes home as the record of where they went and what was there.\n\nAnalysis at a bench turns written findings into a record the company will pay for. An unwritten journal carries no field findings.</description>
     <thingClass>RimroomsAsyncIndustries.Investigation.RimroomsRecordBook</thingClass>
     <graphicData>
-      <texPath>Things/Item/Rimrooms/RR_RouteRecording</texPath>
+      <texPath>Things/Item/Rimrooms/Journal/RR_CompanyJournal_Closed</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>0.8</drawSize>
     </graphicData>
-    <uiIconPath>Things/Item/Rimrooms/RR_RouteRecording</uiIconPath>
+    <uiIconPath>Things/Item/Rimrooms/Journal/RR_CompanyJournal_Closed</uiIconPath>
     <!-- **THIS DEF NAME WAS DECLARED TWICE AND THE DUPLICATE WAS SHIPPED.** `RR_FieldEquipment.xml`
          already carried an `RR_RouteRecording` - the found-evidence item from 0.2.0, kept loadable
          for old saves - and this file added a second ThingDef with the same defName, which RimWorld
@@ -73,12 +73,12 @@
         <descriptionMaker>Description_SkillBook</descriptionMaker>
         <ageYearsRange>0~1</ageYearsRange>
         <openGraphic>
-          <texPath>Things/Item/Book/Textbook/Textbook_Open</texPath>
+          <texPath>Things/Item/Rimrooms/Journal/RR_CompanyJournal_Open</texPath>
           <graphicClass>Graphic_Multi</graphicClass>
           <drawSize>0.7</drawSize>
         </openGraphic>
         <verticalGraphic>
-          <texPath>Things/Item/Book/Textbook/Textbook_Vertical</texPath>
+          <texPath>Things/Item/Rimrooms/Journal/RR_CompanyJournal_Vertical</texPath>
           <graphicClass>Graphic_Multi</graphicClass>
           <addTopAltitudeBias>true</addTopAltitudeBias>
         </verticalGraphic>

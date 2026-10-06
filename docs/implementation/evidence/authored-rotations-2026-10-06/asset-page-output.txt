@@ -1,0 +1,6 @@
+asset page
+  drawings          : 30
+  sound cues        : 4
+  with a master     : 24
+  named by nothing  : 0
+  wrote             : docs/wiki/assets.md

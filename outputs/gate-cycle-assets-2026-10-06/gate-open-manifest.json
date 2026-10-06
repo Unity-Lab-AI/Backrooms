@@ -1,0 +1,264 @@
+{
+  "families": [
+    {
+      "stem": "RR_GateOpen",
+      "sourceSheet": "outputs/gate-cycle-assets-2026-10-06/gate-open-sheet.png",
+      "sourceSha256": "34074858e22a0d9fef56c946edf05873f76e04d70349618e03342daacfeb0309",
+      "sheetSize": [
+        1774,
+        887
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "masterSize": 444,
+      "frames": [
+        {
+          "name": "RR_GateOpen_01.png",
+          "metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alphaRange": [
+              0,
+              255
+            ],
+            "coverageAbove8": 0.030426,
+            "center64MaxAlpha": 1,
+            "center64CoverageAbove8": 0.0,
+            "center16MaxAlpha": 0,
+            "outer8MaxAlpha": 1,
+            "alphaEnergy": 915.376
+          },
+          "master": "assets/source/phase2/RR_GateOpen_01.png",
+          "package": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateOpen_01.png",
+          "masterSha256": "8cec589a3ea4c5fa4a72fd60e958fff0b4bdff82faf2647236e4c90685dc3ce1",
+          "packageSha256": "019b069b7f1bf3874ca8ece7c47a7303b33eeb846e76c426e54151f71bf9a226"
+        },
+        {
+          "name": "RR_GateOpen_02.png",
+          "metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alphaRange": [
+              0,
+              255
+            ],
+            "coverageAbove8": 0.030197,
+            "center64MaxAlpha": 1,
+            "center64CoverageAbove8": 0.0,
+            "center16MaxAlpha": 0,
+            "outer8MaxAlpha": 1,
+            "alphaEnergy": 917.604
+          },
+          "master": "assets/source/phase2/RR_GateOpen_02.png",
+          "package": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateOpen_02.png",
+          "masterSha256": "1a648031b3d3acd53333d24bc00e689c7d114352385cb4d3d5de0c3b381cb9ed",
+          "packageSha256": "d411756f48e14a65ce845eabf98c39bff84cb140f33ada4e2917cc52afa9b55a"
+        },
+        {
+          "name": "RR_GateOpen_03.png",
+          "metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alphaRange": [
+              0,
+              255
+            ],
+            "coverageAbove8": 0.03067,
+            "center64MaxAlpha": 1,
+            "center64CoverageAbove8": 0.0,
+            "center16MaxAlpha": 0,
+            "outer8MaxAlpha": 1,
+            "alphaEnergy": 911.584
+          },
+          "master": "assets/source/phase2/RR_GateOpen_03.png",
+          "package": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateOpen_03.png",
+          "masterSha256": "9570774a136447a25dc5aee2ba9bf8fa6d3f6c753e75a5ba7a9f3807fb022751",
+          "packageSha256": "217be478fdae8c49833fc312a6cc719dcf969c32c9e912fc31ec89a425458c0f"
+        },
+        {
+          "name": "RR_GateOpen_04.png",
+          "metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alphaRange": [
+              0,
+              255
+            ],
+            "coverageAbove8": 0.029465,
+            "center64MaxAlpha": 1,
+            "center64CoverageAbove8": 0.0,
+            "center16MaxAlpha": 1,
+            "outer8MaxAlpha": 1,
+            "alphaEnergy": 897.647
+          },
+          "master": "assets/source/phase2/RR_GateOpen_04.png",
+          "package": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateOpen_04.png",
+          "masterSha256": "e24dee12b27e60bd57b5d2b58e626a519e7536a9a9496ffc32fa561e9330ff45",
+          "packageSha256": "ee37d8ea41e6efadf8cbf1534f12469e4cbfcfef1b6764d860ac4251ab8f0a3f"
+        },
+        {
+          "name": "RR_GateOpen_05.png",
+          "metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alphaRange": [
+              0,
+              255
+            ],
+            "coverageAbove8": 0.03038,
+            "center64MaxAlpha": 1,
+            "center64CoverageAbove8": 0.0,
+            "center16MaxAlpha": 0,
+            "outer8MaxAlpha": 1,
+            "alphaEnergy": 904.239
+          },
+          "master": "assets/source/phase2/RR_GateOpen_05.png",
+          "package": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateOpen_05.png",
+          "masterSha256": "ab053e038f1832171bba4d705ad504f0ed56c256f00831fb5d9d7ab1eddbcb0b",
+          "packageSha256": "0593ace4b1e5a1ab91b9f770b0a230c66d7a8c8b5cb7d08589c93499aa918c0b"
+        },
+        {
+          "name": "RR_GateOpen_06.png",
+          "metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alphaRange": [
+              0,
+              255
+            ],
+            "coverageAbove8": 0.03006,
+            "center64MaxAlpha": 1,
+            "center64CoverageAbove8": 0.0,
+            "center16MaxAlpha": 0,
+            "outer8MaxAlpha": 1,
+            "alphaEnergy": 894.773
+          },
+          "master": "assets/source/phase2/RR_GateOpen_06.png",
+          "package": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateOpen_06.png",
+          "masterSha256": "b3ed4bbf37c0fead1d7b7ea32fb6178f5878e3b53816d01eb4c14009325a33d5",
+          "packageSha256": "8857597481062eae92dc0712479ecaf833f2d8f6f4cd73def334c181f7341cdc"
+        },
+        {
+          "name": "RR_GateOpen_07.png",
+          "metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alphaRange": [
+              0,
+              255
+            ],
+            "coverageAbove8": 0.030609,
+            "center64MaxAlpha": 1,
+            "center64CoverageAbove8": 0.0,
+            "center16MaxAlpha": 0,
+            "outer8MaxAlpha": 1,
+            "alphaEnergy": 920.086
+          },
+          "master": "assets/source/phase2/RR_GateOpen_07.png",
+          "package": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateOpen_07.png",
+          "masterSha256": "4d880eb9f0539212d2a3fb2f5565684e33fa853f79a6034775be61dbcfa65bee",
+          "packageSha256": "9c71e011df2f13432815e81aa653d024b640eefd7fe3cef79e86bbf9d17d36b6"
+        },
+        {
+          "name": "RR_GateOpen_08.png",
+          "metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alphaRange": [
+              0,
+              255
+            ],
+            "coverageAbove8": 0.030426,
+            "center64MaxAlpha": 1,
+            "center64CoverageAbove8": 0.0,
+            "center16MaxAlpha": 0,
+            "outer8MaxAlpha": 1,
+            "alphaEnergy": 915.149
+          },
+          "master": "assets/source/phase2/RR_GateOpen_08.png",
+          "package": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateOpen_08.png",
+          "masterSha256": "86388b6d08eae6fa4f6463f32d8943f57313211077c9f9782bbb7e4b87168191",
+          "packageSha256": "11d57dd766fb495dfd78b733e8b38cf0693242d2895ba68c3ebef3cb5ff670e7"
+        }
+      ],
+      "loopTransitions": [
+        {
+          "from": 1,
+          "to": 2,
+          "meanPremultipliedRgbaDifference": 0.00171,
+          "activePixelDifference": 0.051934
+        },
+        {
+          "from": 2,
+          "to": 3,
+          "meanPremultipliedRgbaDifference": 0.001942,
+          "activePixelDifference": 0.059094
+        },
+        {
+          "from": 3,
+          "to": 4,
+          "meanPremultipliedRgbaDifference": 0.00446,
+          "activePixelDifference": 0.132238
+        },
+        {
+          "from": 4,
+          "to": 5,
+          "meanPremultipliedRgbaDifference": 0.005331,
+          "activePixelDifference": 0.157906
+        },
+        {
+          "from": 5,
+          "to": 6,
+          "meanPremultipliedRgbaDifference": 0.001617,
+          "activePixelDifference": 0.048951
+        },
+        {
+          "from": 6,
+          "to": 7,
+          "meanPremultipliedRgbaDifference": 0.002832,
+          "activePixelDifference": 0.086027
+        },
+        {
+          "from": 7,
+          "to": 8,
+          "meanPremultipliedRgbaDifference": 0.001677,
+          "activePixelDifference": 0.050951
+        },
+        {
+          "from": 8,
+          "to": 1,
+          "meanPremultipliedRgbaDifference": 0.003163,
+          "activePixelDifference": 0.094609
+        }
+      ],
+      "loopLimit": "Authored electrical flicker, not mathematically interpolated motion. The 8-to-1 boundary is compared with every normal step; final in-game pacing belongs to runtime QA.",
+      "playback": "Quiet live company-portal presence after activation finishes. Eight-frame loop at a slower rate than charge; 300ms per frame in the outside-package APNG preview. Stop on closure; never draw on natural doors. Runtime state/lifecycle handling belongs to Claude."
+    }
+  ]
+}

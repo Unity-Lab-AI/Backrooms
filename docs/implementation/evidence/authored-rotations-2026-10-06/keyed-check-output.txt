@@ -1,0 +1,7 @@
+keyed strings verified
+  keys declared        : 2105
+  duplicates           : 0
+  defNames declared    : 412
+  internal identifiers : 59 (toil names, audio cues, capabilities)
+  literal references   : 1937, all resolve
+  argument mismatches  : 0

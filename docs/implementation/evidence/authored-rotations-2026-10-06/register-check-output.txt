@@ -1,0 +1,23 @@
+register compliance
+  note: no hard mod dependencies declared
+  note: loadAfter names Core plus 293 other entries
+  note: loadAfter matches the 294-mod profile register exactly
+  note: RR_Starts.xml references Core defs and ours only
+  note: RR_Scenarios.xml references Core defs and ours only
+  note: patches 'Doors Expanded' -- row 77, Optional, Settled, trace RR-FAC;RR-THREAT;RR-STYLE;RR-COMPAT
+  note: authors no QuestScriptDef
+  note: authors no StorytellerDef
+  note: every shipped file belongs to this package; no other mod's content is present
+  note: patches no HediffDef
+  note: patches no MainButtonDef
+  note: patches no ThoughtDef
+  note: patches no TraderKindDef
+  note: no patch alters another def's stat bases
+  note: every one of the 52 shipped gameplay assets has a master under assets/source/
+  note: every Graphic_Multi texture of ours carries its _north/_east/_south frames
+  note: no shipped gameplay texture exceeds 1024 px on an axis
+  note: research mirror syncs both ways; the Operations insight route is unchanged and remains the independent one row 191 asks for
+  note: no register row claims this package requires a mod; Core is the only Required row and Core is the game
+  register rows parsed: 295
+
+PASS: the build honours the register's structural guidance on using other mods

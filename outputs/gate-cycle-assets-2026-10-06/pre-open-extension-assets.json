@@ -1,0 +1,113 @@
+{
+  "files": [
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_GateRampUp.wav",
+      "sha256": "5f22009eade72e04da38260c388393c00aa18fdfab878f9f2b5cb4bbcbb213d0"
+    },
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_GateCalibrate.wav",
+      "sha256": "77c413117343b37c1e12097c355b547d3f93b385e8381c5f1845422ec084443b"
+    },
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_GateActivate.wav",
+      "sha256": "988b87d68399f50b4b030441d0e8b33ab514e4015412f07a000d893e5aaea614"
+    },
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_GateRampDown.wav",
+      "sha256": "0b02e5f9e0b7b522779f7392d31ce3c84c0b93ab88c0ef3f3076cfe112aba073"
+    },
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_GateEmergency.wav",
+      "sha256": "9560ff236e017a2c0e26be013089c71248f5d2a633615ce94771442024ea2b90"
+    },
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_CutoffThrown.wav",
+      "sha256": "05331f5af53b743d8bcf29b29c0c7d54bc924202db9f1596b033ecdb6e96f6b7"
+    },
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_SectionAssembled.wav",
+      "sha256": "8f72cfac0b88169c7a0d87e088c6105152d7c7dd81bb4d954d8b30ad7c405469"
+    },
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_JournalFiled.wav",
+      "sha256": "66cab76d28ce70d9904cdcc37c9696c3d3ca5a48ff9c78096b542f459aaefdbe"
+    },
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_AnalysisComplete.wav",
+      "sha256": "d45604c11e9eb629f73588eeabf4a82c56257607a8a52b440cd59cde8de92e35"
+    },
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_MarkerSet.wav",
+      "sha256": "663cbf64a88347f1da4d31e03de0f1d1fece7c2bae7347894cce5267aa4c9106"
+    },
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_ContractPaid.wav",
+      "sha256": "6f45ba697da665a99e1886031888318080110e67f0155704eb59a8415375a16b"
+    },
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_GateSpinLoop.wav",
+      "sha256": "222a47aa0faa9c4c97902cee8a08f329a97d542ce3be8cb9f9fe24c72e3ad15c"
+    },
+    {
+      "path": "1.6/Sounds/Rimrooms/RR_GateOpenLoop.wav",
+      "sha256": "f6e98b27e8f2fd236b332ffe23c2c53f9ed37a59c416e2923faa08bd6afe327b"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateCharge_01.png",
+      "sha256": "a662906d26baf47b1ebd543e7c70f682cbbc35f8168f7b6f497ee483fb60b447"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateCharge_02.png",
+      "sha256": "cfb1e40da12b93e8a1cba9d05621c3f8dbc6b67ec132b1f0fc1e15ef4d78f7cd"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateCharge_03.png",
+      "sha256": "4cc5284d16a8a985f909c41cb787aafcaf371a92d02962a3da8e5e12b052b66e"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateCharge_04.png",
+      "sha256": "de951f563b230c8f4230a24654668d35ab9d89dd69ab1ffc1fce817de5a7a236"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateCharge_05.png",
+      "sha256": "397b1f4329646f75755cabdff7b1e49a917dac87eaa76b599e56768e911ba4c9"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateCharge_06.png",
+      "sha256": "e8579285742cd34d31edfe142045893a2e984cb0818f8e085a60c050d5a8a9c4"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateCharge_07.png",
+      "sha256": "9b584a4be978bd5f819c7edd6c844241099522cabdcfa618c9cadc167db9a467"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateCharge_08.png",
+      "sha256": "4fbaab6aba725a307a0368b2410351c95222a58df95b43d110fc4d04c70fed88"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateActivation_01.png",
+      "sha256": "bf19b9cafbd4f766ba9c5e868e391b87bbb0d8f765f00abaa571cd67e6c883e7"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateActivation_02.png",
+      "sha256": "ae1c5406062d8af452bd6237b32699e44faacc7d9de472ca454f1a917e10f45c"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateActivation_03.png",
+      "sha256": "6a221393dceda029d567bcd9c2efa491db21f81bfe2e35121686b55d4d620bc4"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateActivation_04.png",
+      "sha256": "6a5c3871d7a7aec2b6907f58e26bd6d7203eec0aec94c0fd39026826fb9b7a30"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateActivation_05.png",
+      "sha256": "b210dd78167af665293f994628852f9a5d489e5da44c8253d96973374dbda094"
+    },
+    {
+      "path": "1.6/Textures/Things/Building/Rimrooms/Gates/RR_GateActivation_06.png",
+      "sha256": "e7fefa34f5ab680e3a05108943a6cc94750b61e273409d3e3aa0ff0f1689da2f"
+    }
+  ],
+  "count": 27
+}

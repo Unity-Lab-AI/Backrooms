@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-06",
+  "reviewKind": "Authored asset inspection and packaging checks, not runtime testing",
+  "finishedFrames": 14,
+  "allFinishedFrames": "256x256 RGBA PNG",
+  "charge": {
+    "frames": 8,
+    "contactSheet": "RR_GateCharge-contact.png",
+    "sourceGrid": "4 columns by 2 rows; exact fractional 443.5px cells uniformly resampled to 444px masters",
+    "registration": "Fixed uniform cell bounds; no separate recentering, fit or scale by frame",
+    "energyCoverageAboveAlpha8": "2.78 to 3.51 percent",
+    "central64pxSquare": "No pixel above alpha 1 after packaging",
+    "closure8to1MeanDifference": 0.020036,
+    "ordinaryStepDifferenceRange": [0.024448, 0.030006],
+    "closureActivePixelDifference": 0.427027,
+    "ordinaryActiveDifferenceRange": [0.443436, 0.499757],
+    "visualResult": "Sparse discontinuous blue-white electrical arcs, consistent scale and central aperture. Last-to-first change is smaller than the other phase steps under premultiplied RGBA comparison.",
+    "limitation": "This is an authored flickering electricity cycle, not smoothly interpolated travel of one identical filament. Actual playback pacing and visibility over all door footprints require owner-run game QA."
+  },
+  "activation": {
+    "frames": 6,
+    "contactSheet": "RR_GateActivation-contact.png",
+    "sourceGrid": "3 columns by 2 rows; 512px square masters",
+    "registration": "Fixed uniform cell bounds; no separate recentering, fit or scale by frame",
+    "energyCoverageAboveAlpha8": "0.67 to 7.67 percent",
+    "center16pxSquare": "Fully transparent in every frame",
+    "briefInwardBranches": "Frame 3 has two thin branches; they cover 7.69 percent of central 64px square. Frame 4 has 0.29 percent central coverage. There is no opaque central portal surface.",
+    "alphaEnergyByFrame": [1243.992, 2339.145, 4060.173, 3379.016, 2342.216, 328.133],
+    "visualResult": "Gather, bright snap, residual scattered arcs, then two small sparks. Stop drawing after frame 6; do not loop this burst."
+  },
+  "alphaConversion": "Generated alpha preserved. Transparent RGBA compositing clears hidden RGB; alpha-aware Lanczos uniform resize. Finished alpha-zero pixels have zero RGB.",
+  "scopeLimits": "No aura asset, door or structural frame, natural-gate frame, runtime code/XML, game launch, staging or publication. Runtime indexing/state handling is Claude's work."
+}

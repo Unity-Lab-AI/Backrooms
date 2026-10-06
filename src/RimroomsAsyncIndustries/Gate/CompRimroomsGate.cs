@@ -1500,8 +1500,63 @@ namespace RimroomsAsyncIndustries.Gate
             RimroomsCampaignComponent campaign = Current.Game.GetComponent<RimroomsCampaignComponent>();
             if (campaign == null || !campaign.CanOperate) { return; }
             campaign.RecordEvent(messageKey, string.IsNullOrWhiteSpace(relatedId) ? parent.GetUniqueLoadID() : relatedId, arguments);
-            if (messageKey == "RR_Event_GateOpeningStarted" || messageKey == "RR_Event_GateRecoveryOpeningStarted")
-            { Audio.RimroomsAudio.Play("RR_GatePowerRise", parent.Map, parent.Position, false); }
+            string cue = CueForGateEvent(messageKey);
+            if (cue != null) { Audio.RimroomsAudio.Play(cue, parent.Map, parent.Position, false); }
+            // The burst and the activation cue are the same moment, triggered from the same event,
+            // so they can never drift apart into a flash with no sound or a sound with no flash.
+            if (messageKey == "RR_Event_GateSpinUpCompleted") { BeginActivationBurst(); }
+        }
+
+        /// <summary>
+        /// The cue a recorded gate event carries, or null for the events that stay silent.
+        ///
+        /// **ONE PLACE, KEYED ON THE EVENT THE GATE ALREADY RECORDS.** This was two hard-coded
+        /// event names beside a single `Play` call; adding six more inline would have put cue
+        /// decisions in six different methods, and the first one somebody forgot would be a gate
+        /// that goes quiet for one state and nobody could say which.
+        ///
+        /// **A cue is never the record.** Every event here has already been written to the campaign
+        /// log and, where it matters, shown as a message before this runs. Sound is the last thing
+        /// to happen and the first thing a player may have switched off -- `THREAT_DESIGN_SHEETS.md`
+        /// forbids sound being the only way to notice anything.
+        /// </summary>
+        private static string CueForGateEvent(string messageKey)
+        {
+            switch (messageKey)
+            {
+                // Unchanged from before the gate cycle landed: an opening draws on the reserve, and
+                // that is what this cue has always meant.
+                case "RR_Event_GateOpeningStarted":
+                case "RR_Event_GateRecoveryOpeningStarted":
+                    return "RR_GatePowerRise";
+
+                // **The ramp reaching full is the moment worth hearing**, and it is deliberately not
+                // the opening: the work finishing is what a player waited through, and the opening
+                // follows from it. The calibration beat is suppressed at the fourth quarter in
+                // GateSpinUp for this reason, so the two never land on the same tick.
+                case "RR_Event_GateSpinUpCompleted":
+                    return "RR_GateActivate";
+
+                // Both resolve. A connection closing and a ramp stopped on purpose are safe
+                // outcomes, and the brief's one hard rule is that ramp-down resolves while ramp-up
+                // does not.
+                case "RR_Event_GateOpeningClosed":
+                case "RR_Event_GateSpinUpAborted":
+                    return "RR_GateRampDown";
+
+                case "RR_Event_GateCalibrationCompleted":
+                    return "RR_GateCalibrate";
+
+                case "RR_Event_GateAssemblySection":
+                case "RR_Event_GateAssemblyCompleted":
+                    return "RR_SectionAssembled";
+
+                // Everything else -- designation, kill-switch binding, run extension, reconditioning
+                // -- is a quiet administrative act. Giving each one a noise would make the loud ones
+                // mean nothing.
+                default:
+                    return null;
+            }
         }
     }
 

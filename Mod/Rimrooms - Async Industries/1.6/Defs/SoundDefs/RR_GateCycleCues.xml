@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The gate cycle, and the events that used to happen in silence.
+
+  Thirteen cues were delivered against docs/ASSET_REQUESTS.md and shipped with no SoundDef at all,
+  which means the game could never have played one of them. Every file was checked rather than
+  trusted: all are 48 kHz mono 16-bit and every duration falls inside the range the brief asked for.
+
+  THE TWO LOOPS ARE DECLARED BUT NOT YET REACHABLE, AND THAT IS SAID HERE RATHER THAN DISCOVERED.
+  RimroomsAudio.Usable refuses any SoundDef carrying sustain, because every cue before these was a
+  one-shot and a sustainer nobody stops runs until the map unloads. Declaring them now makes the
+  files loadable and referenced; the start/stop lifecycle is a separate open row and the loops stay
+  silent until it lands. A def that exists and is never asked for is inert; a sustainer that is
+  started and never stopped is a bug a player hears for the rest of the session.
+
+  EVERY ONE IS POSITIONAL, like the four before them. Each call site has a map and a cell, and a cue
+  that plays at the camera cannot tell a player WHICH gate it came from. distRange 12~55 is the
+  figure the original four use: a gate's working area is a room or two, and 55 cells reaches the
+  next building without carrying across a map.
+
+  VOLUMES ARE NOT UNIFORM, ON PURPOSE. The calibrate beat fires four times a charge cycle and the
+  marker click fires every time a tag is set, so both sit well below the one-off events. The brief's
+  own warning about the calibrate beat is that it "must not be annoying".
+-->
+<Defs>
+
+  <!-- ============================================================ the gate cycle -->
+
+  <SoundDef>
+    <defName>RR_GateRampUp</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_GateRampUp</clipPath></li>
+        </grains>
+        <volumeRange>40~40</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>12~55</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <!-- Four of these per charge cycle. Quietest of the gate set for that reason alone. -->
+  <SoundDef>
+    <defName>RR_GateCalibrate</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_GateCalibrate</clipPath></li>
+        </grains>
+        <volumeRange>25~25</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>8~40</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <!-- The payoff. The loudest cue this mod ships, and the only one that earns it. -->
+  <SoundDef>
+    <defName>RR_GateActivate</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_GateActivate</clipPath></li>
+        </grains>
+        <volumeRange>55~55</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>12~60</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>RR_GateRampDown</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_GateRampDown</clipPath></li>
+        </grains>
+        <volumeRange>40~40</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>12~55</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <!-- Deliberately louder and wider than RR_GateWarning. That cue covers six smaller things;
+       this one means the gate itself has gone wrong, and the two must not be confused. -->
+  <SoundDef>
+    <defName>RR_GateEmergency</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_GateEmergency</clipPath></li>
+        </grains>
+        <volumeRange>60~60</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>14~70</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <!-- ============================================================ events that were silent -->
+
+  <SoundDef>
+    <defName>RR_CutoffThrown</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_CutoffThrown</clipPath></li>
+        </grains>
+        <volumeRange>35~35</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>8~40</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>RR_SectionAssembled</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_SectionAssembled</clipPath></li>
+        </grains>
+        <volumeRange>35~35</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>8~40</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>RR_JournalFiled</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_JournalFiled</clipPath></li>
+        </grains>
+        <volumeRange>30~30</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>6~30</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>RR_AnalysisComplete</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_AnalysisComplete</clipPath></li>
+        </grains>
+        <volumeRange>35~35</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>8~40</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <!-- Fires every time a tag is given a meaning, so it is the quietest cue in the package. -->
+  <SoundDef>
+    <defName>RR_MarkerSet</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_MarkerSet</clipPath></li>
+        </grains>
+        <volumeRange>22~22</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>6~26</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>RR_ContractPaid</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_ContractPaid</clipPath></li>
+        </grains>
+        <volumeRange>35~35</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>8~40</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <!-- ============================================================ the two loops
+
+       DECLARED, LOADABLE, AND NOT YET ASKED FOR BY ANYTHING. sustain is what makes these loop and
+       is exactly what RimroomsAudio.Usable refuses today, so nothing can start one by accident
+       before the lifecycle that stops them exists. That is the safe order: an inert def costs
+       nothing, an unstoppable sustainer costs the rest of the session. -->
+
+  <SoundDef>
+    <defName>RR_GateSpinLoop</defName>
+    <context>MapOnly</context>
+    <sustain>true</sustain>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_GateSpinLoop</clipPath></li>
+        </grains>
+        <volumeRange>28~28</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>10~45</distRange>
+        <sustainLoop>true</sustainLoop>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>RR_GateOpenLoop</defName>
+    <context>MapOnly</context>
+    <sustain>true</sustain>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_GateOpenLoop</clipPath></li>
+        </grains>
+        <volumeRange>20~20</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>10~45</distRange>
+        <sustainLoop>true</sustainLoop>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+</Defs>

@@ -90,6 +90,71 @@
 - **1254x1254 masters became 15 textures totalling 532 KB**, cut by tool from the masters so the
   package can be reproduced rather than hand-matched.
 
+### The gate has a voice and a face, and thirteen cues could never have played
+
+- Owner: ***"ramp up and down and rev"***, ***"things like the gates activating animations and charge
+  up and stuff"***, ***"can be still frame made into gif like thing or whatever the game needs"***.
+- **Seventeen cues ship and thirteen had no SoundDef at all** - the files were on disk and the game
+  could never have asked for one of them.
+- **And the playback service was silently rejecting every new cue.** It resolved the Core fallback
+  FIRST and refused any cue id it had no mapping for, which was all thirteen. A guard written to
+  catch a typo at a call site was throwing away correct, shipped content, and the only symptom
+  would have been a gate that makes no sound. The two failure cases are now reported differently:
+  a name nothing defines is a typo, a name that resolves to an unusable def is a packaging fault.
+- **Cue selection is one table keyed on the gate event already recorded**, not eight Play calls in
+  eight methods. The calibration beat deliberately does NOT fire at the fourth quarter: that is the
+  tick the ramp completes and the activation cue owns it. Two cues on one tick is mush.
+- **All three animations wired** - charge, activation and live - as a frame index over the existing
+  frame draw. The activation burst is transient and deliberately not saved: a one-off flash
+  replaying on every load would announce an event that is not happening.
+- **One square sheet per sequence, not one per footprint.** Four footprints times three facings
+  times eight frames is ninety-six files for one animation.
+- Still silent on purpose: the two loops. RimroomsAudio refuses a sustained def until a lifecycle
+  exists that stops it on destruction, map unload and a reload mid-cycle. Shipping silence beats
+  shipping a hum nobody can turn off.
+
+### An asset page, and 59 assets described from sight
+
+- Owner: ***"a asset page in wiki for it all showing game assets and details once its done"***, then
+  ***"that shit about asseet decriptions needs done and updated in wiki"***.
+- Generated from the package, never written: every row is the file, its size or duration, what names
+  it, and whether a master exists. **Zero unreferenced, zero undescribed**, down from 22 and 8.
+- **Descriptions were written from looking at every asset**, not from filenames. Contact sheets were
+  rendered for the twelve menu slides and the nineteen new files first; describing a picture nobody
+  looked at would be fabrication on a page whose whole job is saying what each asset is.
+- Three ways it learned to stop crying wolf: a folder scan names every file in it (the menu slides),
+  a numbered sequence is named by its prefix (all twenty-two animation frames), and a SoundDef has
+  no label (RR_GateWarning was announced as "starting staff").
+
+### A full wiki review, because one wrong sentence is never one wrong sentence
+
+- Owner: ***"shit like this needs to be found cia a full review and corrected in the wiki"***,
+  quoting a credits page that still said **"No gameplay art or audio is shipped"**.
+- The audit looks for the SHAPES a stale claim takes - absolute denials about shipped content,
+  claims that everything in play is somebody else's, renamed things, counts - so the next one is
+  caught too. 16 pages, 5 suspects, one real: the journal's old label.
+- **The credits text the owner quoted was already fixed in the repository.** The live site was stale
+  because the export had been held while another agent worked on the package. This cascade clears it.
+
+### A natural gate stays a plain door
+
+- Owner: ***"natural gates dont look like the machine in the real univiverse of backrooms they are
+  mainly just normal doors and walls that u can majicly walk through but lets keep natural doors
+  just normal doors in game so there is distinction for it"***.
+- Reported as a gap, overruled as a decision. **The asymmetry is the information**: a framed opening
+  was built, an unframed one was found. Recorded in GateWorldFrames.cs where anybody tempted to
+  "fix" it would be standing, with an explicit instruction not to.
+
+### Two agents writing one repository
+
+- Owner: ***"cant stop chatgpt"***.
+- **Plant suites must never run while another agent writes.** A suite puts a real fault in a real
+  file and restores it; anything written in that window is silently reverted. It nearly happened.
+- A plant that cannot trust the tree now **aborts rather than lying**: plant-class-resolution
+  refused to run because package integrity did not pass clean, which was a half-delivered package
+  rather than a fault.
+- Two commits were deliberately scoped to exclude the other agent's in-flight files.
+
 ### A fourth ledger, and an honest answer to "is everything done"
 
 - Owner: ***"we should make a seperate todo=Test.md and move all test items to it to be done and

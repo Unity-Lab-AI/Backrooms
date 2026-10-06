@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-06",
+  "reviewKind": "Artwork visual inspection and mechanical packaging, not a runtime pass",
+  "family": "RR_GateOpen",
+  "frames": 8,
+  "finishedFormat": "256x256 RGBA PNG",
+  "masterFormat": "444x444 RGBA PNG, uniformly extracted from1774x887 sheet with exact443.5px cells",
+  "contactSheet": "RR_GateOpen-contact.png",
+  "preview": "RR_GateOpen-preview.png, outside-package APNG,300ms per frame",
+  "visualResult": "The same two soft blue-white corner filaments persist across all eight phases. No structural frame, aura disk, opaque aperture or changing world registration. Native door/pawn visibility is preserved by sparse transparency.",
+  "coverageAboveAlpha8Range": [0.029465, 0.03067],
+  "alphaEnergyRange": [894.773, 920.086],
+  "chargeAlphaEnergyRangeForComparison": [1168.843, 1453.239],
+  "center64MaximumAlpha": 1,
+  "centerTransparencyQualification": "At most one byte of255 alpha in the central64px square, below visible energy threshold. Low-alpha source/resampling residue is retained; no opaque center.",
+  "alphaZeroRgbNonzeroPixels": 0,
+  "closure8to1MeanPremultipliedRgbaDifference": 0.003163,
+  "ordinaryStepMeanDifferenceRange": [0.001617, 0.005331],
+  "closureActivePixelDifference": 0.094609,
+  "ordinaryActiveDifferenceRange": [0.048951, 0.157906],
+  "loopQualification": "The closure difference falls within the normal step range. Subtle authored electrical idle variation, not a mathematically synthesized continuous filament or gameplay visibility result.",
+  "preservation": {
+    "snapshot": "gate-open-preserved-baseline.json",
+    "previousMasterPackageEvidenceFilesChecked": 35,
+    "changedPreviousFiles": []
+  },
+  "consumerNote": "Claude owns code: switch from the activation burst to this slower shared loop while a company portal is Live. Stop/clear on closure and lifecycle transitions, including destruction, map unload and save reload. Natural doors stay ordinary. Do not implement aura using this overlay."
+}

@@ -21,9 +21,8 @@
 
        THINGS ROTATE. Owner, 2026-10-06. The fluorescent is Graphic_Multi with real frames: its
        east texture is drawn at 128x384 for the swapped footprint, cut by tools/cut-phase2-art.py,
-       because a flat fixture read from above genuinely turns with its footprint. The generator is
-       drawn in three quarter view with a front, so it has no honest side frame and is NOT
-       rotatable rather than shipping one frame four times. check-register-compliance.py rule 6b
+       because a flat fixture read from above genuinely turns with its footprint. The generator
+       now has authored rear and side masters alongside its original front. Rule 6b in the checker
        refuses a Graphic_Multi of ours that is missing its north, east or south. -->
 
   <ThingDef ParentName="BuildingBase">
@@ -95,7 +94,7 @@
     <thingClass>Building</thingClass>
     <graphicData>
       <texPath>Things/Building/Rimrooms/RR_UtilityGenerator</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
+      <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(2,2)</drawSize>
       <damageData>
         <cornerTL>Damage/Corner</cornerTL>
@@ -105,12 +104,8 @@
       </damageData>
     </graphicData>
     <size>(2,2)</size>
-    <!-- NOT ROTATABLE, AND THAT IS THE HONEST ANSWER RATHER THAN THE TIDY ONE. The master is drawn
-         in three quarter view with an exhaust stack, a hopper and a clear front. There is no back
-         view and no side view, and Graphic_Multi with one frame is a missing-texture square on
-         three facings that a player who never rotates it on placement would never discover.
-         tools/cut-phase2-art.py prints this one under ROTATIONS WANTED. -->
-    <rotatable>false</rotatable>
+    <!-- Three authored facings preserve the exhaust, hopper and machinery; west mirrors east. -->
+    <rotatable>true</rotatable>
     <altitudeLayer>Building</altitudeLayer>
     <passability>PassThroughOnly</passability>
     <pathCost>50</pathCost>

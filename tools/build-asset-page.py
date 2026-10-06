@@ -122,36 +122,71 @@ def named_by(texture_path, defs, code):
         return "main menu slideshow"
     # A Def names the path without the extension and without a rotation suffix.
     pattern = re.escape(texture_path)
-    block = re.search(r"<(?:texPath|texturePath|uiIconPath|clipPath)>%s</" % pattern, defs)
+    # **A SoundDef HAS NO LABEL, AND WALKING BACK FOR ONE FINDS SOMEBODY ELSE'S.** The first
+    # version reported RR_GateWarning as "starting staff" -- the nearest <label> above the clip
+    # path belonged to an unrelated def entirely. A cue is identified by its defName.
+    clip = re.search(r"<clipPath>%s</clipPath>" % pattern, defs)
+    if clip:
+        names = re.findall(r"<defName>([^<]+)</defName>", defs[: clip.start()])
+        return names[-1] if names else ""
+    block = re.search(r"<(?:texPath|texturePath|uiIconPath)>%s</" % pattern, defs)
     if block:
         # Walk back to the nearest label above the match: that is the thing a player sees.
         before = defs[: block.start()]
         labels = re.findall(r"<label>([^<]+)</label>", before)
         if labels:
             return labels[-1]
+    # **A NUMBERED SEQUENCE IS NAMED BY ITS PREFIX, NOT BY EACH FRAME.** The animation code holds
+    # one literal -- "Things/.../RR_GateCharge_" -- and appends 01 through 08, which is the only
+    # sane way to load a sequence. Matching whole paths alone reported all twenty-two frames as
+    # shipped-but-unnamed while the code was drawing every one of them.
+    frame = re.match(r"^(?P<stem>.*_)\d{2}$", texture_path)
+    if frame and ('"%s"' % frame.group("stem")) in code:
+        return "animation frame, drawn in sequence by code"
     if ('"%s"' % texture_path) in code:
-        # **A DRAWING RESOLVED IN CODE RATHER THAN BY A DEF IS AN INTERFACE PICTURE**, and saying so
-        # is not decoration: `check-doc-conformance` refuses a published page that names a retired
-        # def without saying it is gone, and `RR_MachineGate` is exactly that -- a texture on the
-        # Set Gate button whose buildable def was retired in 0.9.0-dev and is never coming back,
-        # because a gate is a real door and cloning one would cut it off from every door mod.
-        # If a future code-resolved asset was never a buildable, this wording needs revisiting
-        # rather than widening.
-        return "button icon; no longer a buildable"
+        if texture_path == "Things/Building/Rimrooms/RR_MachineGate":
+            return "button icon; no longer a buildable"
+        if texture_path.startswith("Things/Building/Rimrooms/Gates/RR_GateFrame_"):
+            return "cosmetic frame on designated native doors"
+        return "graphic loaded by code"
     return ""
 
 
+def descriptions():
+    """What each asset actually depicts, hand-written because nothing can derive it.
+
+    **Owner, 2026-10-06: *"that shit about asseet decriptions needs done and updated in wiki"*.**
+    Every other column on the page is read off the package; a description is the one thing a file
+    cannot tell you about itself. So it is authored here and merged in, and an asset with no
+    description is **reported** rather than silently left blank -- an incomplete page that says it
+    is incomplete is honest, and one that quietly shows a dash is not.
+    """
+    path = os.path.join(REPO, "tools", "asset-descriptions.json")
+    if not os.path.isfile(path):
+        return {}
+    import json
+    return json.load(io.open(path, encoding="utf-8")).get("assets", {})
+
+
 def master_for(stem):
+    # Preserve the original south master for older buildings; newer directional sets have
+    # genuinely authored suffixed masters rather than an unsuffixed source that never existed.
+    candidates = [stem] + [stem + suffix for suffix in ("_south", "_north", "_east", "_west")]
+    sources = {}
     for folder, _subdirs, files in os.walk(SOURCE):
         for name in files:
-            if os.path.splitext(name)[0] == stem:
-                return os.path.relpath(os.path.join(folder, name), REPO).replace(os.sep, "/")
+            sources[os.path.splitext(name)[0]] = os.path.relpath(
+                os.path.join(folder, name), REPO).replace(os.sep, "/")
+    for candidate in candidates:
+        if candidate in sources:
+            return sources[candidate]
     return ""
 
 
 def build():
     defs = def_text()
     code = source_text()
+    written = descriptions()
     rows = {}
     for relative, path in shipped_assets():
         stem, suffix = stem_of(relative)
@@ -163,6 +198,7 @@ def build():
             "bytes": 0,
             "sound": relative.lower().endswith((".wav", ".ogg", ".mp3")),
             "size": "",
+            "pixel_sizes": set(),
             "relative": relative,
         })
         entry["bytes"] += os.path.getsize(path)
@@ -174,7 +210,9 @@ def build():
                 seconds, rate // 1000, "mono" if channels == 1 else "stereo")
         else:
             width, height = png_size(path)
-            entry["size"] = "%d x %d" % (width, height)
+            entry["pixel_sizes"].add((width, height))
+            entry["size"] = " / ".join("%d x %d" % dimensions
+                                       for dimensions in sorted(entry["pixel_sizes"]))
 
     out = []
     for entry in rows.values():
@@ -186,6 +224,7 @@ def build():
             lookup = texture_path.replace("Textures/", "")
         entry["named_by"] = named_by(lookup, defs, code)
         entry["master"] = master_for(entry["stem"])
+        entry["description"] = written.get(entry["stem"], "")
         out.append(entry)
     return out
 
@@ -222,9 +261,10 @@ def page(entries):
     out.append("A building that can be rotated needs a separate drawing per direction. The game "
                "mirrors west from east for free; nothing else is free.")
     out.append("")
-    out.append("**`one frame` means the building does not rotate** — which is deliberate. A "
-               "rotatable building with one drawing would show a missing-texture square on three "
-               "sides out of four, and you would only find out after placing it.")
+    out.append("**`one frame` identifies a fixed pose or interface icon.** The closed journal and "
+               "Set Gate button need one picture; the journal's reading poses and directional "
+               "equipment have their own facing sets. Rectangular sets list both pixel sizes "
+               "because turning them swaps their width and depth.")
     out.append("")
 
     for title, prefix in GROUPS:
@@ -235,14 +275,14 @@ def page(entries):
         out.append("## %s" % title)
         out.append("")
         if group[0]["sound"]:
-            out.append("| Cue | Length and format | Heard when | Master |")
+            out.append("| Cue | What it is | Length and format | Sound definition |")
             out.append("|---|---|---|---|")
             for entry in group:
                 out.append("| **%s** | %s | %s | %s |" % (
-                    entry["stem"], entry["size"], entry["named_by"] or "—",
-                    "yes" if entry["master"] else "—"))
+                    entry["stem"], entry["description"] or "—", entry["size"],
+                    entry["named_by"] or "—"))
         else:
-            out.append("| Drawing | In game | Size | Facings | Master |")
+            out.append("| Drawing | What it is | In game | Size | Facings |")
             out.append("|---|---|---|---|---|")
             for entry in group:
                 # Facings only mean something for a thing that can be placed and turned. A menu
@@ -254,8 +294,8 @@ def page(entries):
                 else:
                     facings = "one frame"
                 out.append("| **%s** | %s | %s | %s | %s |" % (
-                    entry["stem"], entry["named_by"] or "—", entry["size"], facings,
-                    "yes" if entry["master"] else "—"))
+                    entry["stem"], entry["description"] or "—", entry["named_by"] or "—",
+                    entry["size"], facings))
         out.append("")
 
     missing = [e for e in entries if not e["named_by"]]
@@ -283,6 +323,12 @@ def main():
     print("  with a master     : %d" % len([e for e in entries if e["master"]]))
     unnamed = [e["stem"] for e in entries if not e["named_by"]]
     print("  named by nothing  : %d%s" % (len(unnamed), (" (%s)" % ", ".join(unnamed)) if unnamed else ""))
+    # **A BLANK DESCRIPTION IS REPORTED, NEVER SHRUGGED OFF.** The owner asked for descriptions on
+    # this page; an asset that quietly shows a dash is the page failing at the one job it was asked
+    # to do, and a dash looks deliberate.
+    undescribed = sorted(e["stem"] for e in entries if not e.get("description"))
+    print("  no description    : %d%s"
+          % (len(undescribed), (" (%s)" % ", ".join(undescribed[:6])) if undescribed else ""))
 
     if "--check" in sys.argv:
         current = io.open(TARGET, encoding="utf-8").read() if os.path.isfile(TARGET) else ""

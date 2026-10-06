@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "date": "2026-10-06",
+  "scope": "Original artwork delivery only; no runtime consumers or game result claimed.",
+  "tool": "built-in image_gen.imagegen",
+  "sourceSheets": [
+    {
+      "family": "RR_GateCharge",
+      "frames": 8,
+      "grid": [
+        4,
+        2
+      ],
+      "generatedPath": "C:\\Users\\gfour\\.codex\\generated_images\\01a111aa-843f-7df3-a78d-d3c3cc254596\\exec-449964d5-d982-4116-aa29-60bedb78714e.png",
+      "workspacePath": "outputs/gate-cycle-assets-2026-10-06/gate-charge-sheet.png",
+      "generationPrompt": "Use case: stylized-concept. Asset type: RimWorld sci-fi industrial gate ENERGY OVERLAY animation sprites, transparent PNG sprite sheet. Create exactly EIGHT consecutive animation frames in a strict 4-column by 2-row grid, ordered left to right then top to bottom. Overall sheet aspect ratio exactly 2:1 so all eight equal cells are perfectly square. Each cell has the same center and scale, with generous completely transparent margin between separate cells. Subject in every cell: sparse blue-white electrical filaments and short luminous arcs arranged loosely around a square aperture, soft restrained blue edging, thin white cores; the central 60 percent of each cell is mostly EMPTY and genuinely transparent. This is energy only, no solid object anywhere. Style clean simple hand-painted game VFX matching RimWorld's small readable sprites, flat orthographic front view, subtle glow along individual filaments. Animation: steady subtle charging cycle, same luminous structure and restrained brightness through all eight frames, flickering arc segments gradually advance clockwise around the perimeter. Frame 8 is just one normal phase step before frame 1; do not escalate toward a finale. Keep identical registration and bounds across all cells. True transparent alpha background, NO checkerboard painted into image, no opaque black background, no aura disk or broad hazy wash, no door, no portal frame, no hardware, no structural border, no room, no shadow, no text, no numbers, no grid lines. Use only sparse blue-white ENERGY with a very clear transparent aperture. Produce the entire sheet.",
+      "editPrompts": [
+        "Use case: precise-object-edit. Edit this transparent 8-frame energy sprite sheet. Preserve its exact 4-by-2 cell grid, same per-cell centers and boundaries. Replace the thick blue bands entirely with very sparse hair-thin electrical arcs only. The current thick blue bands and cloudy mottling are wrong: remove every solid ribbon, cloudy patch and hazy aura. Keep only 3 to 5 short, discontinuous blue-white lightning filaments per cell, each occupying a small part of the outer perimeter of the invisible aperture. Do not draw a full connected perimeter; leave at least half of the perimeter blank between filaments. Arc widths at 256-pixel final size must read as roughly 1 to 3 pixels with very limited soft glow immediately adjacent to each arc. Keep center totally clear and transparent in every cell. Completely transparent background and cell margins; no broad blue wash anywhere. All eight frames share the same fixed center, scale and brightness. Filament positions gradually advance clockwise as consecutive loop phases; frame 8 leads naturally into frame 1. Clean hand-painted game VFX for RimWorld; no frame, door, hardware, physical structure, text or grid lines. Blue-white energy only.",
+        "Use case: precise-object-edit. Keep the EXACT existing 4-column 2-row arrangement of eight energy animation cells, all cell positions and centers unchanged. Change only the energy stroke thickness: remove the wide pale-blue pill-shaped glow ribbons that surround each white lightning stroke. Keep the original thin jagged white lightning core with just a very narrow blue outline approximately the same thickness as the white core. No diffuse glow clouds, no thick bands, no fill. Result should be skeletal sparse tiny electrical filaments, not glowing ropes. All backgrounds and aperture interiors fully transparent alpha. Preserve each frame's phase and composition. No extra objects, no text or grid."
+      ],
+      "priorOutputs": [
+        "C:\\Users\\gfour\\.codex\\generated_images\\01a111aa-843f-7df3-a78d-d3c3cc254596\\exec-de87f104-0978-41fe-9f42-052bd61b3230.png",
+        "C:\\Users\\gfour\\.codex\\generated_images\\01a111aa-843f-7df3-a78d-d3c3cc254596\\exec-f41ee358-ba2a-4932-8264-3590b78ca589.png"
+      ]
+    },
+    {
+      "family": "RR_GateActivation",
+      "frames": 6,
+      "grid": [
+        3,
+        2
+      ],
+      "generatedPath": "C:\\Users\\gfour\\.codex\\generated_images\\01a111aa-843f-7df3-a78d-d3c3cc254596\\exec-2b30a1cc-eeb0-4043-9701-e08ea56c562e.png",
+      "workspacePath": "outputs/gate-cycle-assets-2026-10-06/gate-activation-sheet.png",
+      "generationPrompt": "Use case: stylized-concept. Asset type: transparent RimWorld gate activation burst VFX sprite sheet. Use the supplied sheet as a STYLE REFERENCE ONLY: sparse skeletal blue-white lightning filaments with narrow blue edging, flat front view, no physical object. Create exactly SIX consecutive NONLOOPING activation frames in a strict 3-column by 2-row grid, ordered left to right then top to bottom, overall aspect ratio exactly 3:2 so six equal cells are square. Each cell has identical registration: center at cell center, aperture and filament path same overall scale, energy stays at least 12 percent away from cell boundary. Transparent background and mostly transparent aperture centers; no aura wash. Frame 1: small faint arcs at upper-left and lower-right edges. Frame 2: four edges gather brief larger white-core arcs. Frame 3: a brief bright activation snap, disconnected thin filaments running around the perimeter with two very thin diagonal branches reaching inward; keep the center mostly transparent. Frame 4: thin short arcs flare outward around the same perimeter without increasing the overall size. Frame 5: fading scattered small edge arcs. Frame 6: only two tiny faint blue-white residual sparks. This is energy only, no border, no door, no frame, no hardware, no room, no structure, no opaque background, no broad ring/glow disk, no text, numbers or grid lines. All alpha transparent except individual light filaments. Keep the same consistent clean small-game-sprite style as reference. Six phases of a short activation flash, with clear decay to almost nothing at the end.",
+      "editPrompts": [
+        "Use case: background-extraction and precise-object-edit. Edit this 3-column by 2-row six-frame activation sprite sheet. Preserve every white-and-blue lightning filament at exactly its current position, size, shape and arrangement. REMOVE the entire black background and ALL broad cloudy blue glow behind the filaments. The final must have true transparent alpha in every area outside the very narrow lightning strokes. In particular centers and corners of each cell must be fully transparent, not black, and there must be zero broad blue haze or opaque portal surface. Preserve only the skinny bright white lightning core and narrow saturated blue outline, with no more than one stroke-width of glow around it. Do not change the six-frame grid or phase ordering. No grid, text, new objects, border or doorway. Transparent PNG with actual empty alpha background."
+      ],
+      "priorOutputs": [
+        "C:\\Users\\gfour\\.codex\\generated_images\\01a111aa-843f-7df3-a78d-d3c3cc254596\\exec-892cc31a-a0b5-4aa9-a1ca-4791bd74d7e7.png"
+      ]
+    }
+  ],
+  "transforms": "Mechanical uniform-grid extraction, RGBA alpha compositing to clear invisible RGB, uniform 256x256 Lanczos packaging. No per-frame recentering, no procedurally authored replacement art.",
+  "destinationMasters": "assets/source/phase2/",
+  "destinationPackage": "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates/",
+  "constraints": "One shared energy-only sequence per phase for all footprints/facings; no door, frame, structure, natural-gate art, aura disk, text or opaque central surface.",
+  "runtime": "Claude owns state-driven start/stop/indexing and rendering. This delivery contains no runtime changes."
+}

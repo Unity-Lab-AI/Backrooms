@@ -297,6 +297,10 @@ namespace RimroomsAsyncIndustries.Gate
                 MessageTypeDefOf.TaskCompletion, false);
             RecordGateActivity("RR_Event_GateSpinUpStarted", connectionId,
                 spinUpWorkRequired.ToString("F0", System.Globalization.CultureInfo.InvariantCulture));
+            // The rev. Owner, 2026-10-06: *"ramp up and down and rev"*. It is played after the
+            // message and the record rather than before, so a cue can never be the only thing that
+            // happened -- presentation never decides whether an action occurred.
+            Audio.RimroomsAudio.Play("RR_GateRampUp", parent.Map, parent.Position, false);
             return CompanyActionResult.Applied();
         }
 
@@ -370,7 +374,21 @@ namespace RimroomsAsyncIndustries.Gate
                     ? DefaultSpinUpRate : assignedOperator.GetStatValue(StatDefOf.ResearchSpeed);
                 if (!(rate > 0f) || float.IsNaN(rate)) { rate = DefaultSpinUpRate; }
                 spinUpObservedRate = rate;
+                // **THE CALIBRATION BEAT, AND IT DELIBERATELY DOES NOT FIRE AT THE FOURTH QUARTER.**
+                // Crossing into the final quarter is the same moment the ramp reaches full, and the
+                // activation cue belongs to that moment. Two cues on one tick is a mess nobody can
+                // tell apart, so the beats are the three interior crossings and activation carries
+                // the last one. Compared before and after the add, so a single large tick cannot
+                // skip a beat it passed straight through.
+                float beforeWork = spinUpWorkDone;
                 spinUpWorkDone = Mathf.Min(spinUpWorkRequired, spinUpWorkDone + rate);
+                if (spinUpWorkRequired > 0f)
+                {
+                    int crossedBefore = (int)(4f * beforeWork / spinUpWorkRequired);
+                    int crossedNow = (int)(4f * spinUpWorkDone / spinUpWorkRequired);
+                    if (crossedNow > crossedBefore && crossedNow < 4)
+                    { Audio.RimroomsAudio.Play("RR_GateCalibrate", parent.Map, parent.Position, false); }
+                }
             }
             else
             {
