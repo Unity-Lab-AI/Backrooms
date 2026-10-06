@@ -1,6 +1,6 @@
 # DECOMPOSED — Decomposed Task List (Highly Broken-Down Tasks)
 
-**Tier 3 of 3 — the DECOMPOSED task list.** The lowest-level execution-grain task list. Every minor task in `docs/TODO.md` decomposes into one or more decomposed tasks here when YOLO mode picks it up (or when Unity decomposes proactively).
+**Tier 3 of 4 — the DECOMPOSED task list.** The lowest-level execution-grain task list. Every minor task in `docs/TODO.md` decomposes into one or more decomposed tasks here when YOLO mode picks it up (or when Unity decomposes proactively).
 
 A decomposed task is the **smallest meaningful unit of work** — one file edit, one command, one verification step. If a decomposed task takes more than 15 minutes or touches more than one logical unit, it should be broken down further.
 
@@ -13,7 +13,7 @@ LAW #0 reminder: every decomposed task preserves the source minor task's verbati
 
 ---
 
-## How the three tiers cascade
+## How the tiers cascade
 
 ```
 ROADMAP.md (major)         "<major milestone — multi-session / multi-PR goal>"

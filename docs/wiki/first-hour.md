@@ -45,7 +45,11 @@ names which one is outstanding.
 
 The gate needs a real supply **and** a real reserve.
 
-Ordinary generators and batteries. Nothing special is required, and nothing special is provided.
+Ordinary generators and batteries work. **Nothing special is required.**
+
+The company does build its own **utility generator** — wood-fired, more output than a standard set
+for the same footprint, and hungrier and louder for it. Use it or don't. The battery has to be one
+of the game's own, because a crew's way home is charged from it.
 
 ## 2. Build and bind the gate
 

@@ -90,6 +90,35 @@
 - **1254x1254 masters became 15 textures totalling 532 KB**, cut by tool from the masters so the
   package can be reproduced rather than hand-matched.
 
+### A fourth ledger, and an honest answer to "is everything done"
+
+- Owner: ***"we should make a seperate todo=Test.md and move all test items to it to be done and
+  clear todo , if its true all items are done."***
+- **It was true of `TODO.md` and of nothing else.** Zero open, zero partial, every remaining row
+  `[T]` — so all 53 moved to `docs/TEST.md` and that file went back to template state. The move is
+  **proved rather than read**: every line byte-identical, every body line conserved, no `[T]` left
+  behind, and it refuses to run at all if an open or partial row exists.
+- **The master TODO still carries 66 unticked rows and they are not all runtime acceptance.**
+  Applicant pools, company roles and schedules, cafeteria and recreation, outpost starts, structured
+  log categories. Some look built-but-unticked and nobody has reconciled which is which. An empty
+  `TODO.md` means nothing buildable is queued, not that the mod is finished, and `NOW.md` says so.
+- Three instruments followed the rows rather than being left pointing at an empty file:
+  `check-queue-pointers` (an empty scope is the one thing it refuses to call a pass),
+  `check-doc-conformance`'s owner-quote reconciliation (it reported seven owner directions as never
+  having reached a ledger they were sitting in), and the published-surface rule, which correctly
+  flagged `TEST.md` as a ledger about to be published.
+
+### The wiki said things that stopped being true today
+
+- Owner: ***"we should make sure all regress and inacurracyies in the wiki are all correct as we
+  changed alot today"***. Three were false and one was a hole.
+- `credits.md` said **"No gameplay art or audio is shipped"**. `index.md` said **"No custom
+  buildings."** `first-hour.md` said **"nothing special is provided"** about power.
+- **And no page told a player what they can build.** `building.md` is new: every buildable, where it
+  is in the menu, what it needs first, and why several deliberately do not rotate.
+- **`ROADMAP.md`'s status table was six versions stale** — 0.7.1-dev, 120 C# files, 76 package files
+  against 0.13.0-dev, 254 and 134 — and still led with the content rule the owner reversed.
+
 ### The field kit, and the three the owner asked for by name
 
 - Owner at a fork: ***"Build the three items, hold the Pursuer"***. Each got a job nothing else does,

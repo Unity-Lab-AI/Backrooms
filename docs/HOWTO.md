@@ -13,6 +13,7 @@ This is the practical guide for anyone (human or build agent) opening this repos
 | [`ROADMAP.md`](ROADMAP.md) | MAJOR tier — milestone markers layered on the Stage 0–6 roadmap | master TODO phases |
 | [`TODO.md`](TODO.md) | MINOR tier — the working queue: what is pending or in flight now | master TODO bounded subitems |
 | [`DECOMPOSED.md`](DECOMPOSED.md) | DECOMPOSED tier — single-edit slices of the active minor task | the per-system implementation record |
+| [`TEST.md`](TEST.md) | TEST tier (added 2026-10-06) — every row that cannot close without the game running. Nothing here is buildable by an agent | owner-launched acceptance |
 | [`NOW.md`](NOW.md) | The one task in motion, verbatim request, files touched, blockers | — |
 | [`FINALIZED.md`](FINALIZED.md) | Permanent archive of completed work; append-only | build records + evidence folders |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | As-built map of `src/`, the package, tools and save owners | `TECHNICAL_ARCHITECTURE.md` (the design target) |
@@ -78,7 +79,7 @@ Each build wave followed the same document rhythm, visible in `docs/implementati
 5. **Master TODO** bounded subitems ticked with their evidence link; broad parents left open.
 6. Version bump in `About.xml` + `CHANGELOG.md`, then one **cascade publication** per remote.
 
-Keep that rhythm. The workflow ledger adds the verbatim-quote discipline, the three-tier queue and the permanent archive on top of it; it does not replace the task-record pattern.
+Keep that rhythm. The workflow ledger adds the verbatim-quote discipline, the four-tier queue and the permanent archive on top of it; it does not replace the task-record pattern.
 
 ## 6. Build, package, stage
 

@@ -49,7 +49,12 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # The open tiers only. `FINALIZED.md` is an archive: a closed row's pointer is part of the record
 # of what was true, and rewriting history to satisfy a rule is worse than the rule not applying.
-QUEUES = [os.path.join("docs", "TODO.md"), os.path.join("docs", "DECOMPOSED.md")]
+# **`TEST.md` JOINED THE QUEUE ON 2026-10-06**, when the owner moved the post-completion test phase
+# out of `TODO.md`: *"we should make a seperate todo=Test.md and move all test items to it to be
+# done and clear todo"*. Leaving it out emptied this rule's scope entirely, and an empty scope is
+# the one thing this rule refuses to call a pass.
+QUEUES = [os.path.join("docs", "TODO.md"), os.path.join("docs", "TEST.md"),
+          os.path.join("docs", "DECOMPOSED.md")]
 
 ROW = re.compile(r"^\s*- \[[ ~T]\] ")
 

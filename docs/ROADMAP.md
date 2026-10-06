@@ -1,10 +1,12 @@
 # Development roadmap
 
-**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+**Current content rule (owner, 2026-10-06):** [Reuse first, and ship original content where a role needs it](CONTENT_REUSE_POLICY.md). The mod ships its own art, audio, items, benches and terrain again. **Reuse remains the default**, an original def is justified by a role nothing fills rather than by wanting to attach a texture, and **another package's assets are never copied**. The gate stays a designation on a real Core door, because that binding is what the 294-mod profile integrates against.
+
+**Superseded content rule (owner, 2026-09-28), kept because every retirement record cites it:** Repurpose existing game/mod content. Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 ## Workflow major-milestone tier
 
-**Tier 1 of 3** in the Claude Code three-tier task cascade (ROADMAP → `TODO.md` → `DECOMPOSED.md`; completed work archives to `FINALIZED.md`). Added 2026-09-28 when the Claude Code workflow took over from the previous build agent. This section layers status markers, scope, exit conditions and dependencies over the existing Stage 0–6 roadmap below; it changes no stage scope or exit condition. The [master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) keeps the complete backlog and formal gates; every open item of it is mirrored verbatim in `TODO.md` under these majors. The sections after the stages (decision log, dependency graph, risks, timeline, next actions) are the workflow's project-wide view.
+**Tier 1 of 4** in the Claude Code task cascade (ROADMAP → `TODO.md` → `DECOMPOSED.md`, with `TEST.md` alongside for rows that need a launch; completed work archives to `FINALIZED.md`). Added 2026-09-28 when the Claude Code workflow took over from the previous build agent. This section layers status markers, scope, exit conditions and dependencies over the existing Stage 0–6 roadmap below; it changes no stage scope or exit condition. The [master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md) keeps the complete backlog and formal gates; every open item of it is mirrored verbatim in `TODO.md` under these majors. The sections after the stages (decision log, dependency graph, risks, timeline, next actions) are the workflow's project-wide view.
 
 Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived to `FINALIZED.md`) · `[T]` belongs to the **post-completion test phase**.
 
@@ -14,15 +16,15 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
 
 | Metric | Value |
 |--------|-------|
-| **Development version** | 0.7.1-dev (`About.xml`, csproj), branch `feature/connected-colony-portals` |
+| **Development version** | 0.13.0-dev (`About.xml`, csproj), branch `feature/bug-testing` |
 | **Gate 0 (docs/source preparation)** | PASSED 2026-09-28 (`research/GATE_0_COMPLETION_AUDIT.md`) |
 | **Gate 2 (first loop in play)** | OPEN — no Rimrooms build has ever been launched |
-| **Master TODO** | 134 items checked, 122 open (mirrored in `TODO.md`; deferments tracked in `DEFERRED.md`). **Read this number with the caveat below** |
-| **Source** | 120 C# files, 18 namespaces, no Harmony |
-| **Package** | 76 allowlisted files, 28 Def XMLs, 2 patches, 26 language files, 16 PNGs |
+| **Master TODO** | 190 items checked, 66 open (mirrored in `TODO.md`; deferments tracked in `DEFERRED.md`). **Read this number with the caveat below** |
+| **Source** | 254 C# files, 20 namespaces, no Harmony |
+| **Package** | 134 allowlisted files, 48 Def XMLs, 5 patches, 42 language files, 31 PNGs (12 menu slides, 18 gameplay textures, 1 preview) and 4 WAVs |
 | **Active major** | M1 connected colony portals — addresses, crossing, controls, natural-gate discovery and nineteen cross-map work families reachable in source (storage hauling, casualties and remains, construction supply, construction finishing, bill ingredients, research, tending, medicine supply, food supply, patient feeding, rescue in place, cleaning, repair, firefighting, mining, hunting, plant cutting, growing zones, fuel with rearm), eleven of them travel-to-work deployments rather than carries; twenty-eight deferments closed; **thirty-one cross-map work families, twenty-three of them deployments**, covering or explicitly deciding against every work type in Core and all five expansions; Backrooms containment enforced; the continuous topology is half closed (nesting and new-seed links already worked, ordinary-map discovery now added, emerging out in the world still open); prisoner/guest care, wardening, childcare and animals all built; no work-type gaps remain |
-| **Next unblocked minor** | The player-facing how-to for the gameplay and systems, then the four area types across a gate |
-| **Owner questions open** | 3 (inside-start party size; first-exit fixed vs chosen; opening duration) |
+| **Next unblocked minor** | **None. `TODO.md` is empty** - zero open, zero partial. The 53 rows that cannot close without a launch moved to `TEST.md` on 2026-10-06 |
+| **Owner questions open** | 0. Two things wait on the owner rather than on an answer: 12 rotation drawings, and the Quiet Pursuer's race definition |
 
 **Read the master TODO count with this caveat — it undercounts, badly.** The master backlog is granular for research and coarse for code: Phase 0 spends **81 rows** on preparation, while everything built from 0.5.0 through 0.7.1 — the whole cross-map work engine, 31 work families, 23 deployments, Backrooms containment, emergence, the kill switch and gate servicing — sits under **one** unchecked row, *"Implement and integrate native work/needs adapters, physical ingredient logistics and per-provider coverage without separate mandatory labor/material pools."* Twenty-seven shipped versions behind a single checkbox. A raw count of that file therefore reads ~12% on code while the source tree has gone from 78 files to 120. Reconciling those checkpoints back into the master backlog is itself an open item; until it is done, use the per-major estimates rather than the row count.
 

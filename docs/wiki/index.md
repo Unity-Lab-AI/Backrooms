@@ -61,7 +61,10 @@ have a crew testify, redirect to related work, or complete a research project.
 
 ## In one minute
 
-- A **gate** is an ordinary door you designate. No custom buildings.
+- A **gate** is an ordinary door you designate. It is never a building Rimrooms adds, which is what
+  lets a door from any mod become one.
+- The company does add [its own kit](building.md) — a generator, lights, a console, a bench, a
+  floor. **None of it is required**, and the game's own objects do every one of those jobs.
 - Opening a **connection** is work, not a button. An operator brings it up at a console over time.
 - **Eleven checks** stand between a door and an open connection. The Machine pane numbers them.
 - A first opening holds about **thirty minutes of real time**, and research extends it until the

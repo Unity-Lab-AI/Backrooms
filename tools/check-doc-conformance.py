@@ -807,12 +807,18 @@ def check_directions_reached_the_queue(problems):
     queue's history rather than as a missing entry.
     """
     archive = os.path.join(REPO, "docs", "FINALIZED.md")
-    queue = os.path.join(REPO, "docs", "TODO.md")
-    if not (os.path.isfile(archive) and os.path.isfile(queue)):
+    # **THE QUEUE IS TWO FILES SINCE 2026-10-06.** Owner: *"we should make a seperate todo=Test.md
+    # and move all test items to it to be done and clear todo"*. The 53 `[T]` rows went to
+    # `TEST.md`, so a quote this rule used to find in `TODO.md` is now in the other half of the same
+    # queue -- and reading only one half reported seven owner directions as never having reached a
+    # ledger they are sitting in. The rule's teeth are unchanged; its scope follows the rows.
+    queues = [os.path.join(REPO, "docs", "TODO.md"), os.path.join(REPO, "docs", "TEST.md")]
+    if not os.path.isfile(archive) or not any(os.path.isfile(q) for q in queues):
         return
     archive_text = io.open(archive, encoding="utf-8-sig").read()
     archived = owner_quotes(archive_text)
-    queue_text = normalise(io.open(queue, encoding="utf-8-sig").read())
+    queue_text = normalise("\n".join(
+        io.open(q, encoding="utf-8-sig").read() for q in queues if os.path.isfile(q)))
     moved_out = normalise("\n".join(archived_queue_regions(archive_text)))
     for quote in archived:
         if normalise(quote) in CONTINUATION_QUOTES:
@@ -855,7 +861,8 @@ SITE_CONFIG = os.path.join(REPO, SITE_SOURCE, "_config.yml")
 # The row names `TODO.html` and `NOW.html` specifically; the `.md` sources are the ones actually
 # at risk, because they are what sits in the published directory.
 LEDGER_NAMES = (
-    "TODO.md", "TODO.html", "NOW.md", "NOW.html", "FINALIZED.md", "FINALIZED.html",
+    "TODO.md", "TODO.html", "TEST.md", "TEST.html",
+    "NOW.md", "NOW.html", "FINALIZED.md", "FINALIZED.html",
     "DECOMPOSED.md", "DECOMPOSED.html", "ROADMAP.md", "ROADMAP.html",
     "DEFERRED.md", "DEFERRED.html",
     "PREPRODUCTION_AND_IMPLEMENTATION_TODO.md", "PREPRODUCTION_AND_IMPLEMENTATION_TODO.html",

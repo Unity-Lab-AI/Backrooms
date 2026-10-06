@@ -30,11 +30,15 @@ Other mods are **separately installed**. None of their files are bundled or modi
 
 Requiring a mod does not mean its authors support or endorse this one.
 
-## Art
+## Art and audio
 
-The main-menu backgrounds are original to this project.
+**Everything shipped here is original to this project.** The main-menu backgrounds, the gameplay
+textures and the four company sound cues.
 
-**No gameplay art or audio is shipped** — every object in play is existing game or mod content.
+**No other package's assets are copied, ever.** Where Rimrooms uses the game's own art or sounds, it
+names the path and the game provides it at runtime — nothing is pulled into this package.
+
+Earlier builds shipped no gameplay art at all and this page said so. That changed on 2026-10-06.
 
 ## Tooling
 

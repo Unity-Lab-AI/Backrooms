@@ -6,14 +6,14 @@ Written 2026-10-06, for Rev, at the owner's request.
 
 **The thirteen master images were not made in this session and not made by me.** They were already on disk when this work started, under `assets/source/phase2/`, with file timestamps of **2026-09-28** — the same day the owner's existing-content-only direction landed and retired them. Seven of them had already shipped once, in version 0.2.0, and were pulled back out across three later versions.
 
-So the honest answer to *how did you make those PNGs* is: **I didn't. I cut them.** What follows is how 13 source images at 1254×1254 became the 15 textures the game actually loads, and every number below is measured rather than estimated.
+So the honest answer to *how did you make those PNGs* is: **I didn't. I cut them.** What follows is how 13 source images at 1254×1254 became the 18 textures the game actually loads, and every number below is measured rather than estimated.
 
 | | |
 |---|---|
 | Masters in | 13 files, **1254×1254**, 8-bit RGBA — except the carpet, correctly 8-bit RGB with no alpha, because terrain is opaque |
 | Total master size | **11,468 KB** |
-| Textures out | **15 files**, 128×128 to 384×128 |
-| Total shipped size | **532 KB** |
+| Textures out | **18 files**, 128×128 to 384×128 |
+| Total shipped size | **570 KB** |
 
 ## The tool, not the hand
 
@@ -70,10 +70,11 @@ So the tool has one strategy per asset, and each one is a claim about the drawin
 |---|---|---|---|
 | `uniform` | Writes `_north`, `_east`, `_south` from the one master | emergency cutoff, site marker beacon | A button on a box and a lamp on a tripod genuinely look the same from every side |
 | `flat` | `_south` and `_north` from the master, **`_east` is the master turned 90°** and drawn at the swapped size — a 3×1 strip at 384×128 becomes **128×384** | site fluorescent | A flat fixture read from above really does turn with its footprint. This is geometry, not a trick |
-| `single` | One frame, and the def is marked **not rotatable** | machine gate, gate console, utility generator, field analysis bench | These are drawn as front elevations with a clear face. **There is no back view and no side view in existence**, so they ship honestly non-rotatable rather than showing one frame four times |
+| `single` | One frame, and the def is marked **not rotatable** | gate console, utility generator, field analysis bench, field recorder, sealed evidence case, survey tag | These are drawn as front elevations with a clear face. **There is no back view and no side view in existence**, so they ship honestly non-rotatable rather than showing one frame four times |
+| `icon` | One frame, used in the interface and never placed | machine gate | It is the Set Gate button's picture. A gizmo is drawn flat, so a face-on drawing is exactly right and there is no facing to be missing |
 | `terrain` | Made seamless, no rotation | institutional carpet | Terrain tiles rather than turns |
 
-**The four `single` buildings are printed under a heading called ROTATIONS WANTED on every run.** That list is the tool telling whoever reads it exactly which drawings are missing. Nobody has to remember.
+**The six `single` buildings are printed under a heading called ROTATIONS WANTED on every run.** That list is the tool telling whoever reads it exactly which drawings are missing. Nobody has to remember.
 
 A build check fails if any `Graphic_Multi` of ours is missing `_north`, `_east` or `_south`, so the dishonest version cannot be shipped by accident.
 
@@ -108,11 +109,10 @@ Four images are cut cleanly and deliberately held out on that rule, and the tool
 
 **18 of the 19 cut textures ship.** One is held by decision: the Quiet Pursuer, which needs a race definition with body graphics rather than a texture, and a malformed race on a 296-mod profile breaks other mods' pawn rendering.
 
-**Seven buildings are shipping non-rotatable because their other facings do not exist.** Each needs exactly **two** drawings — `_north` and `_east`. `_south` is the master already here, and the engine mirrors `_west` from `_east` free.
+**Six buildings are shipping non-rotatable because their other facings do not exist.** Each needs exactly **two** drawings — `_north` and `_east`. `_south` is the master already here, and the engine mirrors `_west` from `_east` free.
 
 | Building | What is missing |
 |---|---|
-| machine gate | back and side of an arch drawn face on |
 | gate console | back and side |
 | utility generator | back and side of a three-quarter view |
 | field analysis bench | the end-on view of a counter |
@@ -120,7 +120,7 @@ Four images are cut cleanly and deliberately held out on that rule, and the tool
 | sealed evidence case | the case's other side; only the latch side is drawn |
 | survey tag | the tag's reverse, which is blank and undrawn |
 
-**14 frames.** The tool prints that count on every run, under a heading called ROTATIONS WANTED, so it is reported rather than remembered.
+**12 frames.** The tool prints that count on every run, under a heading called ROTATIONS WANTED, so it is reported rather than remembered.
 
 **Nothing in the pipeline can derive them.** A back view and a side view are drawings, not transforms — the one case where a transform is legitimate is the flat strip light, because a flat object genuinely turns with its footprint. Rotating a three-quarter drawing would lay the object on its side.
 

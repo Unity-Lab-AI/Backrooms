@@ -7,11 +7,14 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 | Ledger | Grain |
 |--------|-------|
 | `docs/ROADMAP.md` | MAJOR — phases and milestones |
-| `docs/TODO.md` | MINOR — the working queue, every owner direction verbatim, **open work only** |
+| `docs/TODO.md` | MINOR — the working queue, every owner direction verbatim, **buildable work only**. **Currently empty** |
 | `docs/DECOMPOSED.md` | smallest execution units, **open only** |
+| **`docs/TEST.md`** | **NEW 2026-10-06 — the test phase. 53 `[T]` rows, every one needing a launch** |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 | ~~`docs/DEFERRED.md`~~ | **CLOSED. Zero open rows. Never add one.** |
+
+**Owner direction, 2026-10-06, verbatim:** *"we should make a seperate todo=Test.md and move all test items to it to be done and clear todo , if its true all items are done."* It was true of `TODO.md` and of nothing else: **the master TODO still carries 66 unticked rows and the ROADMAP still carries 7 milestone containers**, and neither was touched. The move is proved rather than read — every line byte-identical, every body line conserved, no `[T]` left behind.
 
 ---
 
@@ -37,7 +40,7 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 - **`uniform`** — cutoff, beacon. Read the same from every side, so one master honestly produces every facing.
 - **`flat`** — the fluorescent, and it is a strategy the first draft missed. A flat fixture read from above genuinely turns with its footprint: `_east` is `_south` turned ninety degrees at **128x384** for the swapped footprint. **Geometry, not a trick.**
-- **non-rotatable** — machine gate, gate console, generator, bench. Front elevations with no back and no side view. They ship `Graphic_Single` and the cutter prints them under **ROTATIONS WANTED**. **Seven buildings want rotations: 14 drawings, and only the owner can author them.**
+- **non-rotatable** — gate console, generator, bench, recorder, evidence case, survey tag. Front elevations with no back and no side view. They ship `Graphic_Single` and the cutter prints them under **ROTATIONS WANTED**. **Six buildings want rotations: 12 drawings, and only the owner can author them.** The machine gate is **not** among them — it is the Set Gate gizmo's icon, drawn flat in the interface, and an icon has no facing to be missing.
 
 ---
 
@@ -74,6 +77,21 @@ Three systems resolved a single def name while a **component** was the real mark
 | `RouteMarkers.OnMap` | A survey tag designatable from its own button, then **missing from every route, ledger entry and distortion count** |
 
 **All three are one derivation now.** The pattern to watch for: a `GetNamedSilentFail("...")` or a `def.defName == "..."` standing in for *does this thing carry our component*.
+
+---
+
+## ⛔ THE WIKI SAID THINGS THAT STOPPED BEING TRUE TODAY ⛔
+
+**Owner:** *"we should make sure all regress and inacurracyies in the wiki are all correct as we changed alot today"*. Three were real and one was a hole:
+
+| Page | Was | Now |
+|---|---|---|
+| `credits.md` | *"No gameplay art or audio is shipped — every object in play is existing game or mod content"* | Everything shipped is original to this project, and **no other package's assets are ever copied** |
+| `index.md` | *"A gate is an ordinary door you designate. No custom buildings."* | The gate half is still true and is **why** a door from any mod can become one. The company's own kit is named and linked, with *none of it required* |
+| `first-hour.md` | *"Nothing special is required, and nothing special is provided"* | Nothing special is **required**. The company does build its own generator, and the battery must still be the game's own |
+| — | **No page told a player what they can build** | `building.md`, a new page under Playing: every buildable, where it is in the menu, what it needs, and why some do not rotate |
+
+**And `ROADMAP.md`'s status table was six versions stale** — 0.7.1-dev, 120 C# files, 76 package files, against 0.13.0-dev, 254 and 134. It also still led with the content rule the owner reversed. Both restated.
 
 ---
 
@@ -114,7 +132,7 @@ This cost a whole launch report on 2026-10-06: the staged assembly was **02:51**
 | Version | **0.13.0-dev** — read from `About.xml`, never from a document |
 | Build | **254 C# files, 134 package files**, zero warnings, zero errors |
 | Instruments | **32 checkers**, **63 proofs**, **42 plant suites** |
-| Queue | **0 open · 0 partial · 53 `[T]` · 0 `[x]`** |
+| Queue | **`TODO.md` 0 open · 0 partial · 0 `[T]`** — empty. **`TEST.md` 53 `[T]`** |
 | Shipped art | **18 textures**, from 11.5 MB of masters. **One cut and held** — the Quiet Pursuer, by owner decision |
 | Shipped audio | **4 original cues**, positional, Core fallback retained |
 
@@ -179,15 +197,19 @@ python tools/check-queue-pointers.py                     # and this, which neith
 
 **A launch. The buildable queue is empty.**
 
-The 53 `[T]` rows all need the game running — **the owner alone launches, sorts and publishes.**
+The 53 `[T]` rows live in **[`TEST.md`](TEST.md)** now and all need the game running — **the owner alone launches, sorts and publishes.**
+
+**AND ONE THING IS NOT DONE, SAID PLAINLY BECAUSE THE OWNER ASKED WHETHER EVERYTHING WAS.** The master TODO, `PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`, carries **66 unticked rows** — and they are not all runtime acceptance. Some are real open scope: applicant and talent pools, company roles and schedules and certifications, cafeteria and recreation and shift rotation, outpost and town-distortion starts, structured log categories, stable cross-save references. Others look built-but-unticked, and **nobody has reconciled which is which**. That reconciliation is itself a named open item in `ROADMAP.md` and it is the honest next piece of buildable work after a launch.
 
 **Read a launch log in this order:** `Player.log`, grep the **first** `[Rimrooms]` line, then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.
 
 **Two things are waiting on the owner rather than on work:**
 
-1. **14 drawings.** Seven buildings ship non-rotatable because their other facings do not exist — machine gate, gate console, utility generator, field analysis bench, field recorder, sealed evidence case, survey tag. Each needs `_north` and `_east`; `_south` is the master already here and `_west` is mirrored free. `tools/cut-phase2-art.py` prints the count every run. **Nothing can derive them: a back view is a drawing.**
+1. **12 drawings.** Six buildings ship non-rotatable because their other facings do not exist — gate console, utility generator, field analysis bench, field recorder, sealed evidence case, survey tag. Each needs `_north` and `_east`; `_south` is the master already here and `_west` is mirrored free. `tools/cut-phase2-art.py` prints the count every run. **Nothing can derive them: a back view is a drawing.**
 2. **The Quiet Pursuer**, held by owner decision. It needs a race `ThingDef` with `lifeStages` and body graphics rather than a texture, and a malformed race on a 296-mod profile breaks other people's pawn rendering.
 
 ## Is it done?
 
-**The buildable list is empty: 0 open, 0 partial, 53 `[T]`.** Everything claimed here is built and the whole battery is green in one run. What remains is the test phase, which belongs to a launch, and the two items above, which belong to the owner.
+**`TODO.md` is empty and `TEST.md` holds the 53 rows that need a launch.** Everything claimed here is built and the whole battery is green in one run.
+
+**But "is everything done" is NO, and the difference matters.** `TODO.md` being empty means *nothing buildable is queued*, not that the mod is finished: the master TODO's 66 unticked rows are unreconciled, and some of them are real scope nobody has built. Anyone reading an empty queue as a finished mod is reading one tier of four.
