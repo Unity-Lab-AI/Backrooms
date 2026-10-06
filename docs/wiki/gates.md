@@ -86,6 +86,11 @@ not a station — the gate does not count it.
 
 **Nothing is researched for this.** It is how a gate should always have worked.
 
+**An empty chair is forgiven for half an hour**, which is long enough for somebody to walk across a
+sprawling facility and sit down. Longer than that and the connection drops. The company project
+**Standing Relief** doubles that grace to a full hour; nothing makes a gate hold with nobody at the
+controls at all.
+
 ## Four benches, so four people can build it
 
 **Link up to three more machining tables the same way.** The gate's assembly is **four sections**,

@@ -171,8 +171,8 @@ it is kept, because §1.2 needs alternate routes through the tree as much as thr
 | **5 — The settled branch** | Service, read and leave a space on the branch's own terms |
 | **6 — Deep Reach** | One project, and it is the top of the whole tree |
 
-**Tiers 5 and 6 were added at 0.12.99-dev and the top is RAGGED ON PURPOSE.** Four branches reach
-band 5, one reaches band 6, and five reach neither; and every absence is a finding recorded beside the tier it is absent from in
+**Tiers 5 and 6 were added at 0.12.99-dev and the top is RAGGED ON PURPOSE.** Five branches reach
+band 5, one of those reaches band 6, and three reach neither; and every absence is a finding recorded beside the tier it is absent from in
 `RR_CompanyProjects.xml`. The sweep that produced it is
 [`research/RESEARCH_T5_T6_SWEEP.md`](research/RESEARCH_T5_T6_SWEEP.md), and the bar it applied is
 the one this chart implies: **a tier may only exist where a player could name the effect in one
@@ -189,7 +189,7 @@ same thing built twice.
 |---|---|---|---|
 | **Gate engineering and stability** | **All four**: Telemetry → Field Stability → Sustained Aperture → Standing Connection | 3 | the top rung already removes the countdown, and there is no state above *no countdown* |
 | **Facilities and power** | all six: reserve, aperture, standby, sites, dialling, servicing | **5** | — |
-| **Fieldcraft and medicine** | five: drill, rescue, relief watch, way home, decompression | 4 | its tier-5 candidate was the crew cap, and **there is no cap** |
+| **Fieldcraft and medicine** | all six: drill, rescue, relief watch, way home, decompression, standing relief | **5** | — |
 | **Measurement and evidence** | all six: second reading, corroboration, standards, rapid survey, statements, the trained eye | **5** | — |
 | **Spatial mapping and topology** | all seven: atlas, alternate exits, known address, coordinate reading, surface reading, the near exit, deep reach | **6** | — |
 | **Entities and containment** | all six: early warning, detection, containment, space discipline, steady nerve, quiet protocol | **5** | — |
@@ -197,7 +197,7 @@ same thing built twice.
 | **Commerce and organisation** | five: terms, leases, recruitment, site economies, open market | 4 | its remaining knobs **became player settings**, and a project over a slider you already own is two controls fighting |
 | **Transport and orbital support** | none, deliberately | — | **no tier 0 by design.** DLC-optional throughout, and a top on an empty branch is incoherent |
 
-**Forty-three projects across nine branches and seven bands.** The gate branch is the spine and was
+**Forty-four projects across nine branches and seven bands.** The gate branch is the spine and was
 completed first, at 0.10.9-dev; the eight others were written between 0.12.5-dev and 0.12.99-dev,
 with four tier-3 projects deleted along the way for promising something and changing nothing.
 

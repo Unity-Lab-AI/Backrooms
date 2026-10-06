@@ -454,7 +454,8 @@ namespace RimroomsAsyncIndustries.Gate
                 // one bound console's cell -- so a window was hostage to that person's bladder and
                 // a hand-off was impossible. `TickOperatorRelief` asks whether ANY qualified pawn
                 // is at ANY bound console, and only reports a loss once the chair has been empty
-                // for longer than `ReliefGraceTicks`. The grace is the feature: if the window
+                // for longer than `ReliefGrace()` -- half an hour, or a full one for a branch
+                // holding Fieldcraft tier 5. The grace is the feature: if the window
                 // dropped for a single tick while one pawn stood up and another sat down, relief
                 // would arrive into an emergency it caused.
                 else if (TickOperatorRelief()) { EnterEmergency("RR_Gate_OperatorLost"); }

@@ -738,6 +738,38 @@ A properly built room holds it back considerably better. **It never stops entire
     <grantsCapabilities><li>RR_Cap_QuietProtocol</li></grantsCapabilities>
   </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
 
+  <!-- FIELDCRAFT TIER 5, AND IT IS THE SECOND SUBJECT THIS TIER HAS HAD.
+
+       The sweep's candidate was "the fourth hand": raise CrewPlanner.MaxCrew from three to four.
+       The owner approved it with "All six, including the fourth crew member" and then, answering a
+       different question minutes later, removed the crew cap entirely: "rememberber pawns can cross
+       gate as they plkease so no max number". With no maximum there was nothing to raise, so the
+       tier was recorded as needing a different number rather than quietly dropped.
+
+       ASKED AGAIN, THE OWNER CHOSE THE HANDOVER. Only two unclaimed knobs existed anywhere in this
+       branch's own subject, and the other one was the stranding margin on a need-crossing - which
+       would have made this the only project in the tree that buys utility with safety.
+
+       IT SOFTENS A FACTOR 1.1 NAMES, AND THAT IS THE STATED COST. Workforce is one of the four
+       things that decide how long a gate holds. An empty chair is now forgiven for twice as long -
+       still bounded, and the bound still carries its reason: a gate holding a connection with
+       nobody at the controls at all is what the grace exists to forbid, and doubling a grace is not
+       removing one. -->
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Fieldcraft_StandingRelief</defName>
+    <label>Standing Relief</label>
+    <description>Drill the hand-off until the chair is never really empty. Who takes the post, who fetches them, and what the person leaving writes down before they stand up.\n\nAn empty console is a hand-off for a full hour instead of half of one. A gate still lapses if nobody comes back at all: this buys the walk across a sprawling facility, not an unattended connection.</description>
+    <insightCost>6</insightCost>
+    <workRequired>22000</workRequired>
+    <minimumIntellectual>8</minimumIntellectual>
+    <requiredRouteLogs>5</requiredRouteLogs>
+    <requiredDistortionLogs>4</requiredDistortionLogs>
+    <requiredEntityLogs>3</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Fieldcraft_Decompression</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_StandingRelief</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
   <!-- ==================================================================================== -->
   <!-- TIER 6 - ONE PROJECT, AND IT IS THE TOP OF THE WHOLE TREE                            -->
   <!--                                                                                      -->

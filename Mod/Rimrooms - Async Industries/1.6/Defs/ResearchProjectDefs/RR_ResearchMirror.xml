@@ -262,6 +262,20 @@ A survey turns up a way out into the world on one draw in two instead of one in 
   </ResearchProjectDef>
 
   <ResearchProjectDef>
+    <defName>RR_Mirror_RR_Fieldcraft_StandingRelief</defName>
+    <label>Standing Relief</label>
+    <description>Drill the hand-off until the chair is never really empty. Who takes the post, who fetches them, and what the person leaving writes down before they stand up.\n\nAn empty console is a hand-off for a full hour instead of half of one. A gate still lapses if nobody comes back at all: this buys the walk across a sprawling facility, not an unattended connection.</description>
+    <baseCost>7800</baseCost>
+    <techLevel>Ultra</techLevel>
+    <tab>RR_Research</tab>
+    <researchViewX>2.00</researchViewX>
+    <researchViewY>5.50</researchViewY>
+    <prerequisites>
+      <li>RR_Mirror_RR_Fieldcraft_Decompression</li>
+    </prerequisites>
+  </ResearchProjectDef>
+
+  <ResearchProjectDef>
     <defName>RR_Mirror_RR_Logistics_StandingOrders</defName>
     <label>Standing Orders</label>
     <description>Stop placing one order at a time. Agree a standing arrangement with the parent corporation's supply service and let the branch carry more in flight than it can currently receive.

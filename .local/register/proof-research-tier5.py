@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Assert tier 5 moves four real knobs, that its FIVE absences are correct, and that the two
+"""Assert tier 5 moves five real knobs, that its FOUR absences are correct, and that the two
 guarantees it sits next to are still absolutes rather than tech gates.
 
 The property this exists for
@@ -8,9 +8,10 @@ Same as tier 4's, one band up, and with one new hazard that tier 4 did not have.
 
 **Tier 5 was chosen from a sweep rather than invented.** `docs/research/RESEARCH_T5_T6_SWEEP.md`
 enumerated 278 numeric constants across 232 files against three tests and proposed six candidates;
-the owner picked. Four were CONFIDENT and are built. One is blocked on content (Spatial T6 needs a
-sixth palette band). **And one was superseded hours after being approved**, which is the claim in
-this file a reader cannot get from the def file:
+the owner picked. Four were CONFIDENT and are built. The sixth was blocked on content and that
+content was authored, so Spatial T6 is built too. **And one was superseded hours after being
+approved** -- it has a second subject now, chosen at a later fork, and the record of the first is the
+claim in this file a reader cannot get from the def file:
 
     Owner, asked which tiers to build: "All six, including the fourth crew member"
     Owner, minutes later, on a different question:
@@ -21,10 +22,11 @@ The fifth candidate WAS the fourth crew member -- a project whose whole effect w
 it would have shipped *"a project that promises something and changes nothing"*, which is the exact
 phrase `RR_CompanyProjects.xml` deleted four projects for at 0.12.5-dev.
 
-**So this proof asserts the absence AND the condition that makes the absence correct.** If a crew
-cap is ever reintroduced, claim 2.1 starts failing -- which is the right behaviour, because at that
-moment a Fieldcraft tier 5 becomes buildable again and somebody should be told rather than left to
-rediscover the sweep.
+**So this proof asserts the condition that keeps the FOURTH HAND impossible, and it keeps asserting
+it after Fieldcraft found a different subject.** Claim 2.1 starts failing the moment a crew cap is
+reintroduced -- which is the right behaviour: at that moment *the fourth hand* becomes a buildable
+subject again, the branch already has a tier 5, and somebody should be told rather than left to
+rediscover the sweep and quietly build two.
 
 The new hazard: a tier that subtracts
 -------------------------------------
@@ -121,6 +123,14 @@ for root, _, files in os.walk(SRC):
 all_source = "\n".join(source.values())
 
 TIER5 = {
+    # **FIELDCRAFT IS HERE NOW, AND THIS FILE SPENT A DAY ASSERTING THAT IT WAS NOT.** The absence
+    # was correct and is now wrong, in the ordinary way: the owner was asked again and chose a
+    # different subject. The candidate that was superseded -- the fourth hand -- is still
+    # impossible, and claim 2.1 still proves why. What changed is that the tier found a second
+    # subject, which is exactly what the superseded record said could happen: *"the owner may still
+    # want a Fieldcraft T5, but it has to be about a different number."*
+    "RR_Fieldcraft_StandingRelief":
+        ("RR_Cap_StandingRelief", "RR_Fieldcraft_Decompression"),
     "RR_Facilities_ServicingRegime":
         ("RR_Cap_ServicingRegime", "RR_Facilities_PractisedDialling"),
     "RR_Measurement_TrainedEye":
@@ -132,21 +142,25 @@ TIER5 = {
 }
 
 # The branches that get no tier 5, and the reason each absence is a finding rather than a gap.
+#
+# **FIELDCRAFT CAME OFF THIS LIST, and the entry is kept here as a comment rather than deleted**
+# because a reader of this file a month from now needs to know the branch was once declined and why:
+#   "RR_Fieldcraft_": superseded, its subject was the crew cap and there is no longer a cap
+# The subject moved to the console hand-off. The cap is still gone, and claim 2.1 still proves it.
 DECLINED = {
-    "RR_Fieldcraft_": "superseded: its subject was the crew cap, and there is no longer a cap",
     "RR_Gate": "nothing exists above a connection that no longer counts down",
     "RR_Logistics_": "every Procurement knob is claimed by tiers 0 to 3",
     "RR_Commerce_": "its candidates became player settings at 0.12.98-dev",
 }
 
 print("")
-print("proof: tier 5 moves four real knobs, declines four branches, and moves no guarantee")
+print("proof: tier 5 moves five real knobs, declines three branches, and moves no guarantee")
 print("")
 
 # ------------------------------------------------------------------ 1. the four
-print("1. four projects, each moving a knob real code reads")
+print("1. five projects, each moving a knob real code reads")
 at_tier = [b for b in project.values() if "<insightCost>6</insightCost>" in b]
-check("exactly four projects cost insight 6", len(at_tier) == 4, "-- found %d" % len(at_tier))
+check("exactly five projects cost insight 6", len(at_tier) == 5, "-- found %d" % len(at_tier))
 for name, (capability, prerequisite) in sorted(TIER5.items()):
     body = project.get(name)
     check("%s exists" % name, body is not None)
@@ -171,7 +185,7 @@ for name, (capability, prerequisite) in sorted(TIER5.items()):
 
 # ------------------------------------------------------------------ 2. the absences
 print("")
-print("2. four branches have no tier 5, and each absence is still correct")
+print("2. three branches have no tier 5, and each absence is still correct")
 for prefix, reason in sorted(DECLINED.items()):
     offenders = [name for name, body in project.items()
                  if name.startswith(prefix) and "<insightCost>6</insightCost>" in body]
@@ -232,7 +246,7 @@ check("the event ceiling is asked once per arrival, from one place",
 
 # ------------------------------------------------------------------ 4. each knob's own restraint
 print("")
-print("4. every one of the four moved a number without removing a floor")
+print("4. every one of the five moved a number without removing a floor")
 servicing = source.get(os.path.join(SRC, "Gate", "NativeGateServicing.cs"), "")
 check("the servicing project moves WEAR, not the assembly's capacity",
       "ServiceCapacityTicks = 600000" in servicing
@@ -258,6 +272,20 @@ check("the tell share is asked through one function, so both figures cannot drif
 
 exits = source.get(os.path.join(SRC, "Portals", "WorldExit.cs"), "")
 near_min = re.search(r"NearExitMinimumTiles = (\d+)", exits)
+relief = source.get(os.path.join(SRC, "Gate", "GateOperatorRelief.cs"), "")
+grace = body_of(relief, "public int ReliefGrace()")
+check("the hand-off grace is doubled and not removed",
+      "ReliefGraceTicks = 1250" in relief
+      and "StandingReliefGraceTicks = 2500" in relief,
+      "-- workforce is one of the four factors deciding a window; doubling a grace softens it, "
+      "removing one would delete it")
+check("ONE PLACE DECIDES THE GRACE, and the tick reads that place",
+      grace is not None
+      and "operatorAbsentTicks > ReliefGrace()" in relief
+      and "operatorAbsentTicks > ReliefGraceTicks" not in relief,
+      "-- the counter and the comment that explains it would otherwise disagree about when a gate "
+      "drops, which is this project's most repeated defect")
+
 check("the near exit keeps a floor above the branch's own doorstep",
       near_min is not None and int(near_min.group(1)) >= 2
       and "NearExitMaximumTiles = 10" in exits,
@@ -272,4 +300,4 @@ print("")
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))
     sys.exit(1)
-print("PROOF HELD: four real knobs, five deliberate absences, and no guarantee became a tech gate")
+print("PROOF HELD: five real knobs, four deliberate absences, and no guarantee became a tech gate")

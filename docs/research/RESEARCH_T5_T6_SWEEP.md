@@ -13,15 +13,21 @@
 > | 2 | Measurement T5 trained eye | **BUILT** as `RR_Measurement_TrainedEye` |
 > | 3 | Spatial T5 near exit | **BUILT** as `RR_Spatial_NearExit` |
 > | 4 | Entities T5 quiet protocol | **BUILT** as `RR_Entities_QuietProtocol`, `MaxEventsPerOpening` only |
-> | 5 | Fieldcraft T5 fourth hand | **SUPERSEDED. Not built, and not forgotten.** |
+> | 5 | Fieldcraft T5 fourth hand | **SUPERSEDED, then re-subjected.** Built as `RR_Fieldcraft_StandingRelief` |
 > | 6 | Spatial T6 seventh level | **BUILT** as `RR_Spatial_DeepFrontier`. The sixth band was authored |
 >
 > **Candidate 5 was superseded minutes after it was approved**, by a direction answering a
 > different question: *"rememberber pawns can cross gate as they plkease so no max number"*. The
 > candidate's whole effect was raising `CrewPlanner.MaxCrew` from three to four. With no maximum
 > there is nothing to raise, so it would have been *"a project that promises something and changes
-> nothing"* — the exact phrase four deleted projects were deleted for. **A Fieldcraft T5 can still
-> exist; it has to be about a different number, and that is the owner's question.**
+> nothing"* — the exact phrase four deleted projects were deleted for.
+>
+> **Asked again, the owner chose the console hand-off.** Only two unclaimed knobs existed anywhere
+> in this branch's own subject, and the other was the stranding margin on a need-crossing — which
+> would have made it the only project in the tree that buys utility with safety. So Fieldcraft T5 is
+> `RR_Fieldcraft_StandingRelief`: the relief grace doubles from half an in-game hour to one.
+> **The fourth hand is still impossible and `proof-research-tier5.py` still proves why**, so if a
+> crew cap ever returns, somebody is told rather than left to build a second tier for it.
 >
 > Both halves are enforced rather than remembered: `.local/register/proof-research-tier5.py` asserts
 > the four, the five absences, and the condition that makes the Fieldcraft absence correct — **if a

@@ -44,8 +44,9 @@ namespace RimroomsAsyncIndustries.Gate
     /// and another sits down, the feature is theatre: the gate would enter emergency in exactly
     /// the moment relief was arriving.
     ///
-    /// So absence is **counted, not reacted to**. <see cref="ReliefGraceTicks"/> is the window in
-    /// which an empty chair is a hand-off rather than an abandonment, and the counter resets the
+    /// So absence is **counted, not reacted to**. <see cref="CompRimroomsGate.ReliefGrace"/> is the
+    /// window in which an empty chair is a hand-off rather than an abandonment -- half an in-game
+    /// hour, doubled for a branch that has earned Fieldcraft tier 5 -- and the counter resets the
     /// instant anybody sits down. **A gate with no relief station behaves as it always did** apart
     /// from that grace, which is the honest cost of the feature and is stated rather than hidden:
     /// a player who truly abandons a console now has a short delay before the emergency fires.
@@ -67,6 +68,53 @@ namespace RimroomsAsyncIndustries.Gate
         /// arrives in time and short enough that genuine abandonment is still an emergency.
         /// </summary>
         public const int ReliefGraceTicks = 1250;
+
+        /// <summary>
+        /// The grace once **RR_Cap_StandingRelief** (Fieldcraft, tier 5) is held: a full in-game
+        /// hour instead of half of one.
+        ///
+        /// ## This tier exists because its first subject stopped existing
+        ///
+        /// The T5/T6 sweep's Fieldcraft candidate was *the fourth hand* -- raising
+        /// `CrewPlanner.MaxCrew` from three to four. The owner approved it and then, answering a
+        /// different question minutes later, removed the crew cap entirely: *"rememberber pawns can
+        /// cross gate as they plkease so no max number"*. With no maximum there was nothing to
+        /// raise, so the tier was recorded as needing a different number rather than quietly
+        /// dropped, and **the owner chose this one at a second fork.**
+        ///
+        /// **It is the right branch for it.** Fieldcraft already owns the return drill, the rescue
+        /// training and the relief watch; the hand-off at the console is the same subject --
+        /// getting people where they need to be without the window paying for it.
+        ///
+        /// ## What it costs, stated rather than discovered
+        ///
+        /// §1.1 names **workforce** as one of the four things that decide how long a gate holds, and
+        /// this softens that factor: an empty chair is forgiven for twice as long. **It is still
+        /// bounded, and the bound still carries its reason** -- a gate that holds a connection with
+        /// nobody at the controls at all is the thing `ReliefGraceTicks` exists to forbid, and
+        /// doubling a grace is not removing one. Genuine abandonment is still an emergency; it
+        /// simply takes an hour to become one.
+        ///
+        /// **And it is visible where the player is already looking:** the gate's own pane prints
+        /// whether somebody is holding it and how many stations could.
+        /// </summary>
+        public const int StandingReliefGraceTicks = 2500;
+
+        /// <summary>
+        /// How long this branch's empty chair is a hand-off rather than an abandonment.
+        ///
+        /// **One place decides it**, which matters more here than it looks: the grace is read by the
+        /// tick that counts absence and quoted by the comment in `CompRimroomsGate` that explains
+        /// why the window is not cut immediately. A second derivation would let the count and the
+        /// explanation disagree about when a gate drops.
+        /// </summary>
+        public int ReliefGrace()
+        {
+            Company.RimroomsCampaignComponent campaign = NativeCampaign;
+            return campaign != null && campaign.HasCapability("RR_Cap_StandingRelief")
+                ? StandingReliefGraceTicks
+                : ReliefGraceTicks;
+        }
 
         /// <summary>
         /// How long no qualified pawn has been at any bound console.
@@ -211,7 +259,7 @@ namespace RimroomsAsyncIndustries.Gate
                 return false;
             }
             if (operatorAbsentTicks < int.MaxValue) { operatorAbsentTicks++; }
-            return operatorAbsentTicks > ReliefGraceTicks;
+            return operatorAbsentTicks > ReliefGrace();
         }
 
         /// <summary>

@@ -36,6 +36,7 @@ EXITS = "src/RimroomsAsyncIndustries/Portals/WorldExit.cs"
 EVENTS = "src/RimroomsAsyncIndustries/Threats/AnomalyEventService.cs"
 LADDER = "src/RimroomsAsyncIndustries/Threats/CoordinatePressureLadder.cs"
 CARGO = "src/RimroomsAsyncIndustries/Expedition/ExpeditionCargo.cs"
+RELIEF = "src/RimroomsAsyncIndustries/Gate/GateOperatorRelief.cs"
 
 PROOF = ".local/register/proof-research-tier5.py"
 
@@ -88,8 +89,21 @@ PLANTS = [
      PROOF),
 
     # ================================================= 2. the absences, which is why this exists
-    ("THE SUPERSEDED FIELDCRAFT TIER COMES BACK, promising a fourth hand that already exists",
-     PROJECTS, NL + "</Defs>", (REVIVED % "RR_Fieldcraft_FourthHand") + "</Defs>", PROOF),
+    # **THIS PLANT WAS RETIRED, AND THE RETIREMENT IS THE RECORD.** It revived a Fieldcraft tier 5
+    # to prove the absence was asserted. The owner was asked again and chose a subject for that
+    # tier -- the console hand-off -- so reviving one is no longer a fault, and a plant that plants
+    # legitimate code proves nothing. What replaced it below are faults aimed at the tier that now
+    # exists, and claim 2.1 still proves the fourth hand itself is impossible.
+    ("the hand-off tier is renamed, so Fieldcraft silently loses its top band again", PROJECTS,
+     "<defName>RR_Fieldcraft_StandingRelief</defName>",
+     "<defName>RR_Fieldcraft_StandingReliefRenamed</defName>", PROOF),
+
+    ("THE GRACE IS REMOVED RATHER THAN DOUBLED, so a gate holds with nobody at the controls",
+     RELIEF, "StandingReliefGraceTicks = 2500", "StandingReliefGraceTicks = int.MaxValue", PROOF),
+
+    ("the tick goes back to the bare constant, so earning the tier changes nothing", RELIEF,
+     "return operatorAbsentTicks > ReliefGrace();",
+     "return operatorAbsentTicks > ReliefGraceTicks;", PROOF),
 
     ("the gate line sprouts a fifth rung above a connection that already never ends", PROJECTS,
      NL + "</Defs>", (REVIVED % "RR_GateUnending") + "</Defs>", PROOF),
