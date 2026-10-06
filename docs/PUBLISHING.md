@@ -132,12 +132,18 @@ All eight lines must show the same commit hash as local `HEAD` (Case A) or the e
 **Two things were wrong with the version that used to be here**, and both are the kind that pass silently: the loop pushed three integration branches and not `feature/connected-colony-portals`, so it produced an eight-ref publish — the exact defect §5 warns about in its own words — and it said nothing about the mod-only repository, so running it published this repository and left the wiki and the downloadable mod behind.
 
 ```bash
-# 0. THE MOD-ONLY REPOSITORY FIRST. It is built from the build manifest and verifies every
+# 0. STAGE THE BUILD INTO THE GAME'S MODS FOLDER. This step was missing from this file until
+#    0.12.99-dev and the omission was caught with the staged copy a whole version behind the
+#    build, minutes before a launch. It is the copy the owner LAUNCHES: stale means they test a
+#    build whose defects are already fixed.
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/stage-mod.ps1 -UpdateExisting
+
+# 1. THE MOD-ONLY REPOSITORY. It is built from the build manifest and verifies every
 #    file's SHA256, so it must run against the tree that was built -- and it receipts its own
 #    push by reading both remotes back.
 python tools/export-public-repo.py --push
 
-# 1. Then this repository, all five branches on both remotes.
+# 2. Then this repository, all five branches on both remotes.
 BRANCH=$(git rev-parse --abbrev-ref HEAD)                  # never hard-code it; that is how eight became wrong
 git status --short && git log -1 --oneline                 # sanity
 for r in forgejo github; do
@@ -147,7 +153,7 @@ for r in forgejo github; do
   done
 done
 
-# 2. Read back TWELVE refs: ten here, two there.
+# 3. Read back TWELVE refs: ten here, two there.
 git ls-remote --heads forgejo; git ls-remote --heads github; git rev-parse HEAD
 git -C .local/export/Rimrooms-AsyncIndustries ls-remote --heads forgejo
 git -C .local/export/Rimrooms-AsyncIndustries ls-remote --heads github

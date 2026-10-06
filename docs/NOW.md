@@ -26,6 +26,7 @@ change"*
 
 - **During the work:** run **only the one instrument covering the file you just touched.** One
   checker, or one proof, or one plant suite. **Keep writing and extending them.**
+- **STAGE FIRST, AND IT WAS MISSING FROM THIS LIST UNTIL 0.12.99-dev.** `powershell -File tools/stage-mod.ps1 -UpdateExisting` copies the built package into RimSort's Local Mods folder, **which is the copy the owner actually launches.** It was in neither this sequence nor `PUBLISHING.md`, so it got skipped -- and the staged copy sat at **0.12.98-dev while the build was 0.12.99-dev**, caught minutes before a launch. A stale staged copy means the owner tests the wrong build and reports defects that were already fixed, which is the most expensive kind of wasted session there is. The owner's own direction named three things, *"the staging, now.md writeing, and the cascades"*, and only two of them were written down.
 - **At publication, once:** 25 checkers → 59 proofs → 36 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the ten-ref cascade — and then `curl` the published site.** The last step is not a formality: every banner once shipped as a 404 with all twelve refs level and every instrument green, **and the licence link shipped as a 404 the same way**, because an on-disk audit cannot see a deployment fault.
 - **If a sweep finds something, fix it and re-run ONLY the instrument that failed.**
 - **Batch size is 10–12 closed rows.**

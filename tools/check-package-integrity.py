@@ -46,6 +46,13 @@ What it checks
 9. **DefInjected.** Every DefInjected key's leading defName must be a def this package
    declares, and its folder must name that def's own type. A DefInjected entry aimed at a
    def that no longer exists is dead text that never reaches a player.
+10. **The staged copy is this build.** The version in RimSort's local mods folder must match
+   the version just built, because **that is the copy a launch actually loads.** Caught at
+   0.12.99-dev with the staged copy a whole version behind, minutes before a launch: staging
+   was in neither publication procedure, so it had been skipped batch after batch while every
+   instrument stayed green. A stale staged copy sends the owner to report defects that were
+   already fixed, and nothing downstream can tell -- the log is a true record of the wrong code.
+   Skipped with a note where RimSort is not installed.
 
 Exit code is non-zero on any failure, so it drops into the checkpoint ritual beside the
 other checkers.
@@ -570,6 +577,59 @@ def optional_compat_xpaths(root):
     return exempt
 
 
+def check_staged_copy_is_current(problems, notes):
+    """The copy the owner launches must be the build that was just made.
+
+    **Caught at 0.12.99-dev minutes before a launch: the staged copy was `0.12.98-dev` while the
+    build was `0.12.99-dev`.** `tools/stage-mod.ps1` was in neither the publication sequence in
+    `NOW.md` nor the one-screen version in `PUBLISHING.md`, so it was simply skipped, batch after
+    batch, while every instrument stayed green and every ref stayed level.
+
+    **A stale staged copy is the most expensive failure in this project's whole loop.** The owner
+    launches, meets a defect that was fixed two versions ago, and spends their session reporting
+    it. Nothing downstream can detect that -- the log is from a real launch of a real build, and
+    every word in it is true about the wrong code.
+
+    Degrades rather than failing where RimSort is not installed: the path is read from RimSort's
+    own `settings.json` and the whole check is skipped with a note when that is absent, because a
+    rule that fails on somebody else's machine for a reason that is not a defect is a rule people
+    switch off.
+    """
+    settings = os.path.join(os.environ.get("LOCALAPPDATA", ""), "RimSort", "settings.json")
+    if not os.path.isfile(settings):
+        notes.append("RimSort settings not present; the staged copy is unchecked rather than "
+                     "confirmed current")
+        return
+    try:
+        data = json.loads(io.open(settings, encoding="utf-8-sig").read())
+        instance = data["instances"][data["current_instance"]]
+        local = instance.get("local_folder") or ""
+    except (ValueError, KeyError, TypeError, OSError):
+        notes.append("RimSort settings could not be read; the staged copy is unchecked rather "
+                     "than confirmed current")
+        return
+    staged = os.path.join(local, "Rimrooms - Async Industries", "About", "About.xml")
+    if not local or not os.path.isfile(staged):
+        notes.append("no staged copy in the RimSort local mods folder; nothing to compare")
+        return
+    built = read_text(os.path.join(MOD, "About", "About.xml"))
+    live = read_text(staged)
+    want = re.search(r"<modVersion>([^<]+)</modVersion>", built)
+    have = re.search(r"<modVersion>([^<]+)</modVersion>", live)
+    if want is None or have is None:
+        fail(problems, "a modVersion could not be read from the built or the staged About.xml")
+        return
+    if want.group(1).strip() != have.group(1).strip():
+        fail(problems,
+             "THE STAGED COPY IS NOT THIS BUILD: the game's Mods folder holds %r and the build is "
+             "%r. That is the copy a launch actually loads, so the next Player.log would describe "
+             "code that is already superseded. Run "
+             "`powershell -File tools/stage-mod.ps1 -UpdateExisting`."
+             % (have.group(1).strip(), want.group(1).strip()))
+    else:
+        notes.append("staged copy matches the build at %s" % want.group(1).strip())
+
+
 def profile_defs():
     """Every defName declared by the installed profile mods, or None if they are unreachable.
 
@@ -822,6 +882,7 @@ def main():
     check_class_references(problems, notes)
     check_patches(problems, declared, game_defs, notes)
     check_textures(problems, notes)
+    check_staged_copy_is_current(problems, notes)
     check_sounds(problems, declared)
     check_definjected(problems, declared)
 
