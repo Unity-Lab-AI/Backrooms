@@ -294,6 +294,25 @@ bills, research, medical, cooking, cleaning, mining, hunting, farming, animals.
 
 The Activity and Connected Work panes report what crossed, and why.
 
+### You decide who goes, with the zoning you already use
+
+**A coordinate is a map, so it has areas like any other map.** Open the Architect's zone tools on a
+coordinate, paint an allowed area, and restrict somebody to it exactly as you would at home.
+
+**RimWorld keeps a separate allowed area for every map a colonist has one on**, and it saves them.
+So a colonist can be free to roam the colony and confined to two rooms on a coordinate, and that
+holds across a reload without you setting it again.
+
+**This mod never writes an area.** It reads them and obeys them: who may go where is your decision
+and nothing here overrules it. Restrict somebody to the colony and they stop being offered work
+through the gate; restrict them to a coordinate and they stay in it.
+
+**One honest limitation.** Work planning has to guess whether a colonist is allowed somewhere on a
+map they are not standing on, because RimWorld does not expose that from a distance. The mod
+remembers what it saw last time they were there and **assumes allowed where it has never looked** —
+so the first trip is sometimes a wasted walk, never a crossing you forbade. The real check happens
+when they get there, and it is the game's own.
+
 ---
 
 ## Places held open, and giving one back

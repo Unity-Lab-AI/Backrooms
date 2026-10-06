@@ -17673,3 +17673,39 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-06)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **1 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+## ⛔ THIS DIRECTION INVERTS INVARIANT #1, WHICH SIX DOCUMENTS ASSERT AND ONE CALLS PERMANENT ⛔
+
+**Stated plainly rather than discovered in a diff.** `PortalTraversalPolicy` is described in source as *"the single chokepoint"* and holds two constants:
+
+- `AutonomousNonPlayerTraversalPermitted` -- *"Deliberately constant. A connection opening never grants any non-player pawn a reason, route or permission to traverse. There is no setting, no research and no upgrade that flips this."*
+- `MayApproachThresholdForTraversal` -- unconditionally false **for everything**.
+
+`ARCHITECTURE.md` line 454 states it as an owner rule enforced in source: *"an open gate can never become an objective, lure, spawn target, raid route or attack trigger"*. `CONNECTED_COLONY_PORTALS.md` line 89 repeats it. Two implementation records repeat it. And `FINALIZED.md` entry **54** reads: *"`MayApproachThresholdForTraversal` must stay false for everything, forever. Incursion works *because* nothing is drawn to a gate."*
+
+**So `GateIncursion` -- the one existing exception, where something follows your crew home -- is safe precisely BECAUSE nothing is drawn to a gate.** Its own words: a hostile *"walks to the threshold because **your people are standing there**, not because a door is open"*. The owner's direction makes the door itself a reason, which is the exact sentence that invariant was written to forbid.
+
+**THE OWNER OUTRANKS THE INVARIANT AND THAT IS NOT IN QUESTION.** What is in question is that eight assertions across six documents and one `const bool` currently say the opposite, and `check-compliance`, `check-campaign-absolutes` and the proof suites assert some of them. **None of this may be edited quietly.** The invariant is rewritten in the owner's words, in the same commit as the first line of code, per DOCS-BEFORE-PUSH -- and the five bounds `GateIncursion` carries must be re-derived, because every one of them was reasoned from an assumption that is about to be false.
+
+- [x] **Zoning is the control surface and HALF OF IT IS ALREADY IN THE GAME.** Owner: *"all one person choices in zoning"*, then *"i mena its upto the play to zone pawns where they want them,, that was the whole cross zone support"*. **Measured out of the shipped assembly: `Pawn_PlayerSettings.allowedAreas` is a `Dictionary<Map, Area>`**, scribed per pawn and per map. **So RimWorld already stores a separate allowed area for every map a pawn has one on, and already saves it.** Cross-map zoning is not a system to build; it is a system to reach. Once a pawn is on a coordinate the player zones them there with the UI they already know, and Core enforces it with no help from this mod -- which also means **nothing here needs to read or write another map's area**, and that matters because there is **no public per-map setter**: `AreaRestrictionInPawnCurrentMap` writes only to the map the pawn is standing on, and `allowedAreas` is private. -- **CLOSED 0.12.99-dev AS AN ABSENCE AND A PAGE, because there was nothing honest left to build.** The row's measurement holds: `Pawn_PlayerSettings.allowedAreas` is a `Dictionary<Map, Area>`, scribed with the pawn, so RimWorld already keeps a separate allowed area per map and already saves it. **Cross-map zoning is a system to reach, not to build.** **AND THE MEASUREMENT WENT ONE STEP FURTHER, WHICH IS WHAT THE DELIVERABLE TURNED OUT TO BE.** Read out of the installed assembly: `allowedAreas` is private and the only public accessors are `AreaRestrictionInPawnCurrentMap` and `EffectiveAreaRestrictionInPawnCurrentMap`, both of which touch **only the map the pawn is standing on**. There is **no public per-map getter at all**. So a future session that wants a worker's area on a map they are not on will find no API, and **the obvious next move is reflection into a private field** -- which would make this mod the second author of a player setting, and the first disagreement between the two would be a colonist walking somewhere the player told them not to go. **So the deliverable is a proof of an absence**, which is the hardest kind of thing to keep true: `proof-cross-map-zoning.py`, proof 63, asserts that nothing assigns an area anywhere, that the string `allowedAreas` appears nowhere in the source, and that no reflection is pointed at `Pawn_PlayerSettings` at all. With **plant suite 40 against it, 7 of 7 caught** -- because a proof of an absence passes on an empty repository, on a typo in its own pattern, and on the day somebody renames what it was watching. **What the mod does instead was audited rather than assumed.** `RimroomsConnectedWorkComponent.ObserveAreaHere` writes down the area a worker has on a map **while they are standing on it**, and cross-map planning consults that. It is **permissive on anything it has never seen** -- an unobserved map answers allowed, matching Core's own unrestricted default -- the cache is bounded and evicts the least recently confirmed rather than refusing to learn, and the definitive check still happens on arrival. **A cache of a reading is not a second copy of the setting:** it is never written back, and a stale observation costs a wasted walk and never a crossing the player forbade. **And the automatic crossings honour it for free**, because there is one implementation of stepping through a gate -- `ConnectedCrossing.StepToward`, three callers -- and the need-crossing goes through it. **THE READER-FACING HALF IS THE PART THAT WAS ACTUALLY MISSING.** A player would never guess they can zone on a coordinate: `wiki/company.md` now says the Architect's zone tools work there, that RimWorld keeps the per-map restriction and saves it, that this mod reads areas and never writes them, and **states the limitation plainly** -- the first trip to a map nobody has been zoned on yet can be a wasted walk, and never a crossing you forbade.
+
+### Owner direction — pawns cross as they please, there is no maximum, and three was never their number (2026-10-06)
+
+
+Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

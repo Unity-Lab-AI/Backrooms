@@ -223,23 +223,6 @@ Binding contract: [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md). 
 
 **WHAT IS ALREADY BUILT, MEASURED BEFORE ANY OF THIS WAS DESIGNED, because the first message asks for a thing that largely exists.** `WorkGiver_ConnectedDeployment` has **56 work givers** running on RimWorld's own work loop, so a colonist on the surface is offered a job on the far map and crosses by itself. `WORK_TYPE_COVERAGE_AUDIT` puts **21 of the game's 23 work types** across a gate. **The automatic cross-map coordinator the owner asked for is shipped for WORK.** The gap the owner put their finger on is exact: beds appear in that code only for carrying a **downed** patient to one, so **no healthy pawn ever crosses for a need** -- not an empty bed, not food, not recreation. *"like a empty bed work task"* is the missing half.
 
-## ⛔ THIS DIRECTION INVERTS INVARIANT #1, WHICH SIX DOCUMENTS ASSERT AND ONE CALLS PERMANENT ⛔
-
-**Stated plainly rather than discovered in a diff.** `PortalTraversalPolicy` is described in source as *"the single chokepoint"* and holds two constants:
-
-- `AutonomousNonPlayerTraversalPermitted` -- *"Deliberately constant. A connection opening never grants any non-player pawn a reason, route or permission to traverse. There is no setting, no research and no upgrade that flips this."*
-- `MayApproachThresholdForTraversal` -- unconditionally false **for everything**.
-
-`ARCHITECTURE.md` line 454 states it as an owner rule enforced in source: *"an open gate can never become an objective, lure, spawn target, raid route or attack trigger"*. `CONNECTED_COLONY_PORTALS.md` line 89 repeats it. Two implementation records repeat it. And `FINALIZED.md` entry **54** reads: *"`MayApproachThresholdForTraversal` must stay false for everything, forever. Incursion works *because* nothing is drawn to a gate."*
-
-**So `GateIncursion` -- the one existing exception, where something follows your crew home -- is safe precisely BECAUSE nothing is drawn to a gate.** Its own words: a hostile *"walks to the threshold because **your people are standing there**, not because a door is open"*. The owner's direction makes the door itself a reason, which is the exact sentence that invariant was written to forbid.
-
-**THE OWNER OUTRANKS THE INVARIANT AND THAT IS NOT IN QUESTION.** What is in question is that eight assertions across six documents and one `const bool` currently say the opposite, and `check-compliance`, `check-campaign-absolutes` and the proof suites assert some of them. **None of this may be edited quietly.** The invariant is rewritten in the owner's words, in the same commit as the first line of code, per DOCS-BEFORE-PUSH -- and the five bounds `GateIncursion` carries must be re-derived, because every one of them was reasoned from an assumption that is about to be false.
-
-- [ ] **Zoning is the control surface and HALF OF IT IS ALREADY IN THE GAME.** Owner: *"all one person choices in zoning"*, then *"i mena its upto the play to zone pawns where they want them,, that was the whole cross zone support"*. **Measured out of the shipped assembly: `Pawn_PlayerSettings.allowedAreas` is a `Dictionary<Map, Area>`**, scribed per pawn and per map. **So RimWorld already stores a separate allowed area for every map a pawn has one on, and already saves it.** Cross-map zoning is not a system to build; it is a system to reach. Once a pawn is on a coordinate the player zones them there with the UI they already know, and Core enforces it with no help from this mod -- which also means **nothing here needs to read or write another map's area**, and that matters because there is **no public per-map setter**: `AreaRestrictionInPawnCurrentMap` writes only to the map the pawn is standing on, and `allowedAreas` is private.
-
-### Owner direction — pawns cross as they please, there is no maximum, and three was never their number (2026-10-06)
-
 ## ⛔ AND THIS SUPERSEDES AN ANSWER THE OWNER GAVE MINUTES EARLIER, WHICH THEY NEED TO SEE ⛔
 
 Asked which research tiers to build, the owner answered **"All six, including the fourth crew member"**. The sweep's fifth candidate is **Fieldcraft T5, "the fourth hand"** -- a project whose whole effect is raising `MaxCrew` from three to four.
