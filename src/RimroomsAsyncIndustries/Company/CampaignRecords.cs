@@ -185,6 +185,7 @@ namespace RimroomsAsyncIndustries.Company
         internal int requiredDepth;
         internal int requiredSurveyedRooms;
 
+
         public string RequiredThingDefName { get { return requiredThingDefName; } }
         public int RequiredCount { get { return requiredCount; } }
         public int DeliveredCount { get { return deliveredCount; } }

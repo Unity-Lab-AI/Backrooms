@@ -112,6 +112,58 @@ namespace RimroomsAsyncIndustries.Investigation
         public bool IsCompanyIssued { get { return companyIssued; } }
 
         /// <summary>
+        /// Which accepted quest this book is the deliverable for, or empty.
+        ///
+        /// **Owner direction, 2026-10-06:** *"its almost like every book recieved needs to be tuned
+        /// to or capable of listing the current quests its needed for that has been acceptred"*.
+        /// </summary>
+        private string stampedQuestId;
+
+        /// <summary>
+        /// How many write-ups the record had filed when this book was last stamped.
+        ///
+        /// **A count, and it is the agreement test.** The record is the authority and this is the
+        /// receipt, so the only question the book has to answer is *am I current*. A book stamped
+        /// for the right quest but carrying a smaller count is a book from before the last write-up,
+        /// which is the disagreement the owner asked to be visible rather than papered over.
+        ///
+        /// Counting rather than copying the list is deliberate: a second copy of *which* kinds were
+        /// filed would be a second thing to keep in step, and the record already holds that.
+        /// </summary>
+        private int stampedWriteUpCount;
+
+        public string StampedQuestId { get { return stampedQuestId; } }
+        public int StampedWriteUpCount { get { return stampedWriteUpCount; } }
+
+        /// <summary>
+        /// Stamp this book for a quest at a tally. Called **only** from
+        /// `RimroomsCampaignComponent.FileWriteUpAndStamp`, which writes the record first.
+        ///
+        /// Refuses a book the company did not issue, because a traded novel is not a deliverable
+        /// and branding one would make `BookFor` able to find somebody else's property.
+        ///
+        /// **The count only ever rises.** A stamp carrying a smaller tally than the book already
+        /// holds is stale — a resumed job, a reloaded save — and taking it would make a current book
+        /// read as out of date, which shows as amber and tells the player to fix something that is
+        /// not broken.
+        /// </summary>
+        public bool StampForQuest(string questId, int writeUpsFiled)
+        {
+            if (!companyIssued || string.IsNullOrWhiteSpace(questId) || writeUpsFiled < 0)
+            { return false; }
+            // **Captured BEFORE the assignment, because the first draft tested it after.** Setting
+            // `stampedQuestId` first made the "different quest" branch dead code, so a book
+            // re-stamped for a *new* quest with a lower tally would have kept the old quest's count.
+            bool differentQuest = stampedQuestId != questId;
+            if (!differentQuest && writeUpsFiled <= stampedWriteUpCount) { return false; }
+            stampedQuestId = questId;
+            // A new quest adopts its tally outright; the same quest only ever counts up.
+            if (differentQuest || writeUpsFiled > stampedWriteUpCount)
+            { stampedWriteUpCount = writeUpsFiled; }
+            return true;
+        }
+
+        /// <summary>
         /// Mark this book as one the company handed out.
         ///
         /// Refuses anything that is not a supported carrier, so a caller cannot brand a
@@ -168,6 +220,10 @@ namespace RimroomsAsyncIndustries.Investigation
             Scribe_Values.Look(ref evidenceId, "rr_evidenceId");
             Scribe_Values.Look(ref carrierLoadId, "rr_carrierLoadId");
             Scribe_Values.Look(ref companyIssued, "rr_companyIssued", false);
+            // Additive. An unstamped book loads with an empty id and a zero count, which is exactly
+            // what a book nobody has written in yet is.
+            Scribe_Values.Look(ref stampedQuestId, "rr_stampedQuestId");
+            Scribe_Values.Look(ref stampedWriteUpCount, "rr_stampedWriteUpCount", 0);
             if (Scribe.mode == LoadSaveMode.PostLoadInit && bindingSchema == 1 && IsLegacyCarrier(parent) &&
                 !string.IsNullOrEmpty(evidenceId) && string.IsNullOrEmpty(carrierLoadId))
             { carrierLoadId = parent.GetUniqueLoadID(); }

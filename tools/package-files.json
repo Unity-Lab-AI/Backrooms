@@ -23,6 +23,8 @@
     "1.6/Defs/RimroomsFacilityDefs/RR_FacilityCategories.xml",
     "1.6/Defs/RimroomsFixtureTellDefs/RR_FixtureTells.xml",
     "1.6/Defs/RimroomsGateEquipmentDefs/RR_GateEquipment.xml",
+    "1.6/Defs/RimroomsWriteUpDefs/RR_WriteUps.xml",
+    "1.6/Defs/ThingDefs_Buildings/RR_RecordsDesk.xml",
     "1.6/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml",
     "1.6/Defs/RimroomsMarkerTypeDefs/RR_MarkerTypes.xml",
     "1.6/Defs/RimroomsPersonnelDefs/RR_HiringPolicies.xml",

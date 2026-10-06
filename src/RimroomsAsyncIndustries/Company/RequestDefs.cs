@@ -158,6 +158,23 @@ namespace RimroomsAsyncIndustries.Company
         /// </summary>
         public List<RimroomsSuccessRoute> successRoutes = new List<RimroomsSuccessRoute>();
 
+        /// <summary>
+        /// The paperwork this request wants written up, by <see cref="RimroomsWriteUpDef"/> defName.
+        ///
+        /// **Owner direction, 2026-10-06:** *"each step has a lab nots, research write up,
+        /// investigation, analysis, ... what ever the task requires and what the company wants"*.
+        ///
+        /// **Declared here rather than inferred from the request's name or its routes.** A quest
+        /// called *"Analysis of coordinate 4-A"* must not acquire an analysis write-up because
+        /// something matched a word in its label, and a request's success routes are how it is
+        /// *finished* rather than what has to be *filed*. Listing the defNames makes the
+        /// requirement readable in XML, countable by a checker, and the same on every branch.
+        ///
+        /// **Empty is legal and is most requests.** Paperwork is a thing the company asks for on
+        /// some work, not a tax on all of it, and a request with no write-ups needs no desk.
+        /// </summary>
+        public List<string> writeUps = new List<string>();
+
         public override IEnumerable<string> ConfigErrors()
         {
             foreach (string error in base.ConfigErrors()) { yield return error; }
@@ -193,6 +210,34 @@ namespace RimroomsAsyncIndustries.Company
 
             if (prerequisiteRequests != null && prerequisiteRequests.Contains(defName))
             { yield return "A request cannot require itself; it could never be offered."; }
+
+            // **Resolved at load, because a write-up nobody can write is a quest nobody can
+            // finish.** A defName typo here would otherwise surface as a green light that never
+            // comes on, which is the worst kind of fault: the player would see outstanding
+            // paperwork, assign somebody to it, and watch nothing happen for ever.
+            if (writeUps != null)
+            {
+                var seen = new HashSet<string>();
+                for (int index = 0; index < writeUps.Count; index++)
+                {
+                    string name = writeUps[index];
+                    if (string.IsNullOrWhiteSpace(name))
+                    { yield return "writeUps entry " + index + " is blank."; continue; }
+                    if (!seen.Add(name))
+                    {
+                        // One kind twice is one write-up, not two, and a tally of "1 of 2" that
+                        // can never reach 2 is a light that never goes green.
+                        yield return "writeUps lists " + name + " more than once; one kind is one "
+                            + "write-up, and a duplicate is a tally that cannot complete.";
+                        continue;
+                    }
+                    if (DefDatabase<RimroomsWriteUpDef>.GetNamedSilentFail(name) == null)
+                    {
+                        yield return "writeUps names " + name + ", which is not a RimroomsWriteUpDef. "
+                            + "An unresolvable write-up is outstanding paperwork nobody can ever file.";
+                    }
+                }
+            }
         }
 
         /// <summary>The tutorial line in order. Sorted ordinally after the declared order.</summary>

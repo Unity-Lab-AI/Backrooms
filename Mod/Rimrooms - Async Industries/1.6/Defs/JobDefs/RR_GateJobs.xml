@@ -39,4 +39,24 @@
     <casualInterruptible>false</casualInterruptible>
     <checkOverrideOnDamage>Always</checkOverrideOnDamage>
   </JobDef>
+
+  <!-- Writing one piece of the company's paperwork at a records desk.
+
+       SUSPENDABLE AND CASUALLY INTERRUPTIBLE, which is the opposite of RR_OperateGate above, and
+       the contrast is the decision. A gate window is a scarce thing somebody might reasonably want
+       held through discomfort, which is why that job keeps the decision and takes the duty with it.
+       A report is not scarce and nothing is waiting on it, so RimWorld gets to pull the pawn off
+       for anything it likes.
+
+       The driver still asks GateWatch.MustLeave in its FailOn and again every tick. That is not
+       belt-and-braces: a suspendable job can still be entered by a pawn who is already starving,
+       and the floor exists so a pawn never begins work it should not. -->
+  <JobDef>
+    <defName>RR_WriteUp</defName>
+    <driverClass>RimroomsAsyncIndustries.Company.JobDriver_RRWriteUp</driverClass>
+    <reportString>writing up company paperwork at TargetA.</reportString>
+    <suspendable>true</suspendable>
+    <casualInterruptible>true</casualInterruptible>
+    <allowOpportunisticPrefix>false</allowOpportunisticPrefix>
+  </JobDef>
 </Defs>

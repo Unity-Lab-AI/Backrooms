@@ -129,6 +129,54 @@ namespace RimroomsAsyncIndustries.Company
 
         public IReadOnlyList<string> SatisfiedRouteLabelKeys { get { return satisfiedRouteLabelKeys; } }
 
+        /// <summary>
+        /// The write-up kinds already filed for this quest, by <see cref="RimroomsWriteUpDef"/>
+        /// defName.
+        ///
+        /// **THIS IS THE AUTHORITY, AND THE BOOK CARRIES A COPY.** The owner chose *"Both, and they
+        /// must agree"* when asked what the green light reads from, and the cost was named in the
+        /// option before it was chosen: two things holding one truth is *"two derivations of one
+        /// rule"*, the defect this project keeps meeting.
+        ///
+        /// So it is spent down to **one writer and two readers.** <see cref="FileWriteUp"/> is the
+        /// only thing that ever adds to this list, and the job that calls it stamps the book in the
+        /// same operation, record first. **A mismatch therefore cannot be produced by the mod
+        /// working normally** — only a book from another branch, a hand-edited save, or damage. Each
+        /// of those is something a player should be told about, which is what the amber state is for.
+        ///
+        /// **Saved**, unlike <see cref="satisfiedRouteLabelKeys"/> above, and the contrast is the
+        /// rule rather than an inconsistency: a satisfied route is derived from the world and can be
+        /// re-measured, while filed paperwork is a thing a pawn *did* and nothing in the world
+        /// remembers it. Losing this would make a finished quest unfinished.
+        ///
+        /// A list of defNames rather than a count, because *which* paperwork is outstanding is what
+        /// a pawn needs to pick its next job and what the ledger has to show. A count answers
+        /// neither question.
+        /// </summary>
+        internal List<string> writeUpsFiled = new List<string>();
+
+        /// <summary>What has been filed. Read-only to everything but <see cref="FileWriteUp"/>.</summary>
+        public IReadOnlyList<string> WriteUpsFiled
+        {
+            get { return writeUpsFiled ?? (writeUpsFiled = new List<string>()); }
+        }
+
+        /// <summary>
+        /// Record one filed write-up. **Idempotent, and the only writer.**
+        ///
+        /// Returns false when it was already filed, so a caller cannot double-count and a job
+        /// resumed after a save that then finishes twice costs nothing. Same reasoning as
+        /// `PostTransaction`'s operation id: a second attempt is not an error, it is a no-op.
+        /// </summary>
+        internal bool FileWriteUp(string writeUpDefName)
+        {
+            if (string.IsNullOrWhiteSpace(writeUpDefName)) { return false; }
+            if (writeUpsFiled == null) { writeUpsFiled = new List<string>(); }
+            if (writeUpsFiled.Contains(writeUpDefName)) { return false; }
+            writeUpsFiled.Add(writeUpDefName);
+            return true;
+        }
+
         public string Id { get { return id; } }
         public string RequestDefName { get { return requestDefName; } }
         public RequestStatus Status { get { return status; } }
@@ -172,6 +220,12 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref satisfiedRouteLabelKey, "rr_satisfiedRouteLabelKey");
             Scribe_Values.Look(ref bonusPaid, "rr_bonusPaid", false);
             Scribe_Collections.Look(ref staffAtAcceptance, "rr_staffAtAcceptance", LookMode.Value);
+            // Additive, and re-made on load rather than trusted. `Scribe_Collections` writes nothing
+            // for an empty list, so a save written before this field existed loads it back as
+            // **null** — and then every reader would have to remember that. One place remembers.
+            Scribe_Collections.Look(ref writeUpsFiled, "rr_writeUpsFiled", LookMode.Value);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && writeUpsFiled == null)
+            { writeUpsFiled = new List<string>(); }
             Scribe_Collections.Look(ref routeBaselines, "rr_routeBaselines", LookMode.Deep);
             if (Scribe.mode == LoadSaveMode.PostLoadInit && staffAtAcceptance == null)
             { staffAtAcceptance = new List<string>(); }

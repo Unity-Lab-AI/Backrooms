@@ -72,6 +72,12 @@
         <count>8</count>
       </li>
     </successRoutes>
+    <!-- LAB NOTES, because this request IS the gate steps. Owner: "after doing all the gate
+         steps, each step has a lab nots". The precondition is a recorded startup step, which this
+         quest cannot be worked on without producing. -->
+    <writeUps>
+      <li>RR_WriteUp_LabNotes</li>
+    </writeUps>
   </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
 
   <!-- ================================================================= 3 - one record ==== -->
@@ -102,6 +108,25 @@
         <count>1</count>
       </li>
     </successRoutes>
+    <!-- THE FIRST QUEST THE COMPANY WANTS PAPERWORK FOR, and it is this one because this one is
+         ABOUT the paperwork: the whole request is bringing a record home and filing it.
+
+         Owner, 2026-10-06: "each step has a lab nots, research write up, investigation, analysis,
+         ... what ever the task requires".
+
+         Two kinds rather than four, deliberately. The investigation is written once the book is in
+         the branch's custody and the analysis once a researcher has finished with it, so the pair
+         follows the quest's own two halves and neither can be written early. Lab notes and the
+         research write-up are left off: this request performs no gate step of its own and completes
+         no project, so demanding them would be asking for reports about work it never asked for.
+
+         IT DOES NOT GATE COMPLETION. The success routes above still decide whether the quest is
+         done. The paperwork is what the green light reads, and sending the book back is a separate
+         act - so a branch with no records desk is slower to report, never stuck. -->
+    <writeUps>
+      <li>RR_WriteUp_Investigation</li>
+      <li>RR_WriteUp_Analysis</li>
+    </writeUps>
   </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
 
   <!-- ================================================================ 4 - mark the way ==== -->
@@ -235,6 +260,12 @@
         <projectDefName>RR_GateSustainedAperture</projectDefName>
       </li>
     </successRoutes>
+    <!-- THE RESEARCH WRITE-UP, on the one tutorial request that offers a Research route. Owner:
+         "research write up". A branch that learns something and files nothing has spent its insight
+         privately, and the precondition is simply that a company project is finished. -->
+    <writeUps>
+      <li>RR_WriteUp_Research</li>
+    </writeUps>
   </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
 
   <!-- ===================================================================================
@@ -268,6 +299,13 @@
         <logKind>route</logKind>
       </li>
     </successRoutes>
+    <!-- THE SURVEY REPORT, and the fit is exact: the request's own label is "a client wants a
+         coordinate written up". The precondition is every authored room of a coordinate entered,
+         read off the room records rather than off fog so a sealed pocket cannot make it
+         unreachable. This is also the write-up a completed exploration will post. -->
+    <writeUps>
+      <li>RR_WriteUp_Survey</li>
+    </writeUps>
   </RimroomsAsyncIndustries.Company.RimroomsRequestDef>
 
   <!-- samples -->

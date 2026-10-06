@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- THE RECORDS DESK: THE SECOND APPROVED EXCEPTION TO THE CONTENT-REUSE RULE.
+
+       Owner's fork answer, 2026-10-06, asked where the write-up happens: "A dedicated write-up
+       desk". It was chosen over a toggle on the existing research bench and over writing at any
+       table, AND THE COST WAS PRINTED IN THE OPTION BEFORE IT WAS CHOSEN: "it's a new buildable,
+       and the standing content rule is to reuse existing game content".
+
+       So CONTENT_REUSE_POLICY.md gains its second approved exception, after the original menu
+       images, and it is approved for this purpose only.
+
+       THE ART RULE STILL BINDS, AND THAT DISTINCTION IS WHY THE OLD CUSTOM ITEMS WERE RETIRED. The
+       record that closed them says it plainly: "The breach was the ART, not the defs." So this def
+       carries Core's own texture path, Core's own graphic class, Core's own stuff system and Core's
+       own damage corners. One new def, zero new pixels.
+
+       WHY A PLAIN Building AND NOT A WORK TABLE. A Building_WorkTable exists to carry a bill stack,
+       and paperwork is not a bill: the job is driven by which write-up a quest still owes, which the
+       company record already knows. A bill stack would be a second place to say the same thing and
+       a player could delete the bill for work the company is still waiting on.
+
+       WHY NO POWER. The owner's own words are "the journals are taken to a table and written out".
+       A desk with paper on it does not need a generator, and making it need one would mean a branch
+       that loses power also stops being able to report, which punishes the wrong failure.
+
+       UNCAPPED, DELIBERATELY, AND THIS IS NOT AN OVERSIGHT. Owner: "u can have more than one to have
+       more than one pawn doing it as u can have multiple quests going". The gate console cap of four
+       is the owner's number for a SCARCE SHARED resource, a gate's window. A desk is neither scarce
+       nor shared; it is a work station, and RimWorld has never capped a work station. Capping it
+       would invent a rule a player cannot see a reason for. -->
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_RecordsDesk</defName>
+    <label>records desk</label>
+    <description>A desk kept for the company's paperwork. Lab notes, investigations, analyses and research write-ups are written here, from records the branch already holds, and filed against whichever quest asked for them.\n\nA colonist does this as ordinary work, so it competes with cooking and hauling like anything else. Build more than one and more than one person can write at once, which is what you want when several quests are open.\n\nNothing is invented at a desk. If the work was not done and recorded, there is nothing here to write up.</description>
+    <thingClass>Building</thingClass>
+    <graphicData>
+      <texPath>Things/Building/Furniture/Table1x2</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(3,4)</drawSize>
+      <damageData>
+        <cornerTL>Damage/Corner</cornerTL>
+        <cornerTR>Damage/Corner</cornerTR>
+        <cornerBL>Damage/Corner</cornerBL>
+        <cornerBR>Damage/Corner</cornerBR>
+      </damageData>
+    </graphicData>
+    <uiIconScale>0.8</uiIconScale>
+    <size>(1,2)</size>
+    <rotatable>true</rotatable>
+    <hasInteractionCell>true</hasInteractionCell>
+    <interactionCellOffset>(1,0,0)</interactionCellOffset>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>60</pathCost>
+    <fillPercent>0.5</fillPercent>
+    <useHitPoints>true</useHitPoints>
+    <selectable>true</selectable>
+    <castEdgeShadows>false</castEdgeShadows>
+    <surfaceType>Item</surfaceType>
+    <statBases>
+      <MaxHitPoints>75</MaxHitPoints>
+      <WorkToBuild>900</WorkToBuild>
+      <Mass>5</Mass>
+      <Flammability>1.0</Flammability>
+      <Beauty>0.5</Beauty>
+    </statBases>
+    <stuffCategories>
+      <li>Metallic</li>
+      <li>Woody</li>
+      <li>Stony</li>
+    </stuffCategories>
+    <costStuffCount>30</costStuffCount>
+    <designationCategory>Production</designationCategory>
+    <designationHotKey>Misc6</designationHotKey>
+    <building>
+      <paintable>true</paintable>
+    </building>
+    <tickerType>Never</tickerType>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+  </ThingDef>
+
+</Defs>

@@ -25,8 +25,26 @@ namespace RimroomsAsyncIndustries.Company
         /// </summary>
         private bool HasArchivedCustody(EvidenceRecord record)
         {
-            if (record == null || record.item == null || record.item.Destroyed) { return false; }
-            Thing store = record.item.StoringThing();
+            return record != null && HasArchivedCustody(record.item);
+        }
+
+        /// <summary>
+        /// The same question asked of a thing rather than of a record.
+        ///
+        /// **Extracted so there is one derivation and not two.** The quest paperwork needs to know
+        /// whether a *quest book* is filed, and a quest book is not an `EvidenceRecord` — it is a
+        /// company-issued book stamped for a request. Writing a second custody test for it would
+        /// have been *"two derivations of one rule"*, and the two would have drifted the first time
+        /// somebody changed what an archive is.
+        ///
+        /// So the rule stays exactly where it was and both callers ask it: stored in a thing that
+        /// this gate links in the `RR_Link_Archive` role, read through Core's own `StoringThing()`
+        /// so a modded shelf counts and a vanilla one still works.
+        /// </summary>
+        internal bool HasArchivedCustody(Thing item)
+        {
+            if (item == null || item.Destroyed) { return false; }
+            Thing store = item.StoringThing();
             if (store == null || store.Map != headquarters) { return false; }
             foreach (Building building in headquarters.listerBuildings.allBuildingsColonist)
             {

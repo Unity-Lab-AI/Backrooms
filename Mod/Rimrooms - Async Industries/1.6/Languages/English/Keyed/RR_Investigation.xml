@@ -8,6 +8,10 @@
        aiming. Four steps and a stop: "keep it very concise asnd to the point". -->
   <RR_Evidence_CompanyBookDesc>The journal the company issues you. It records where a crew went and what they found, and it is the thing you get paid for.\n\n1. Have a colonist carry it through a gate.\n2. Walk it through each required room. The survey writes itself as they go.\n3. Bring it home and put it on the shelf you designated as the records archive.\n4. Assign a researcher to analyse it at a powered bench.\n\nLose the book and you lose that run's record, not the branch's work.</RR_Evidence_CompanyBookDesc>
   <RR_UI_JournalHowTo>What is this journal for?</RR_UI_JournalHowTo>
+  <!-- {0} is the write-up kind's own label, {1} the quest id. Logged on the company's event record
+       rather than lettered: filing one report is bookkeeping, and the green light is the thing the
+       player is actually waiting for. -->
+  <RR_Event_WriteUpFiled>Filed: {0} ({1}).</RR_Event_WriteUpFiled>
   <RR_UI_JournalHowToTitle>Company record book</RR_UI_JournalHowToTitle>
   <RR_Evidence_Unregistered>Somebody left this here before you. It has no case record on this branch yet - carry it out and take it home, and it will open one.</RR_Evidence_Unregistered>
   <RR_Evidence_Inspect>Case status: {0}\nAnalysis: {1}\n{2}</RR_Evidence_Inspect>

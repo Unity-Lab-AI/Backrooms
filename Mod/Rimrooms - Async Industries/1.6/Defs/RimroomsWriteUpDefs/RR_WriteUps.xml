@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- THE KINDS OF PAPERWORK THE COMPANY WANTS, AND THE LIST IS OPEN BY DESIGN.
+
+       Owner direction, 2026-10-06, verbatim: "after doing all the gate steps, each step has a lab
+       nots, research write up, investigation, analysis, ... what ever the task requires and what
+       the company wants as far as data or anaylisiis or retreval and such".
+
+       FOUR ARE NAMED AND THE ELLIPSIS IS THE SPECIFICATION. That is why these are defs rather than
+       an enum: a fifth kind is a file edit. The one thing a new kind cannot invent is a new
+       PRECONDITION, because a precondition is a question asked of real saved state and that
+       question is code. A new kind reuses any existing precondition for free.
+
+       A request names the kinds it wants in RimroomsRequestDef.writeUps, and the def names are
+       resolved at load, so a typo is a startup error rather than a green light that never comes on.
+
+       workRequired is bench work over time, because the owner said these are jobs: "these tasks are
+       auto in the pawns work jobs". A write-up that completed instantly would be a button wearing a
+       pawn's clothes. The numbers rise with how much the company is asking for, and they sit well
+       below CompProperties_RouteEvidence.analysisWorkRequired (3000), because filing a report about
+       an analysis must never cost more than the analysis did. -->
+
+  <RimroomsAsyncIndustries.Company.RimroomsWriteUpDef>
+    <defName>RR_WriteUp_LabNotes</defName>
+    <label>lab notes</label>
+    <description>What was done at the gate, in order, with the numbers. The company reads these to decide whether a branch is following procedure or improvising, so they are wanted for every recorded step rather than only the ones that went wrong.\n\nWritten at a records desk from the step's own record. Nothing is invented at the desk; if the step was not recorded, there is nothing to write up.</description>
+    <precondition>GateStepRecorded</precondition>
+    <workRequired>600</workRequired>
+    <displayOrder>0</displayOrder>
+  </RimroomsAsyncIndustries.Company.RimroomsWriteUpDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsWriteUpDef>
+    <defName>RR_WriteUp_Investigation</defName>
+    <label>investigation</label>
+    <description>An account of what the crew found and where, filed once the record book is in the branch's custody on an archive shelf. The company will not accept an investigation written from memory while the book is still in somebody's pack.\n\nThis is the paperwork that turns a recovered book into a case the company recognises.</description>
+    <precondition>EvidenceSecured</precondition>
+    <workRequired>900</workRequired>
+    <displayOrder>1</displayOrder>
+  </RimroomsAsyncIndustries.Company.RimroomsWriteUpDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsWriteUpDef>
+    <defName>RR_WriteUp_Analysis</defName>
+    <label>analysis</label>
+    <description>The findings, written up after a researcher has actually analysed the record. The analysis is the work; this is the report the company is paying to read.\n\nIt cannot be written before the analysis finishes, which is the whole reason it is a separate piece of paperwork rather than part of the bench job.</description>
+    <precondition>EvidenceAnalysed</precondition>
+    <workRequired>1200</workRequired>
+    <displayOrder>2</displayOrder>
+  </RimroomsAsyncIndustries.Company.RimroomsWriteUpDef>
+
+  <RimroomsAsyncIndustries.Company.RimroomsWriteUpDef>
+    <defName>RR_WriteUp_Research</defName>
+    <label>research write-up</label>
+    <description>What a finished company project actually established, in language the corporation's own people can act on. A branch that learns something and files nothing has spent its insight privately.\n\nWanted once the project is complete, and only then.</description>
+    <precondition>ProjectCompleted</precondition>
+    <workRequired>1500</workRequired>
+    <displayOrder>3</displayOrder>
+  </RimroomsAsyncIndustries.Company.RimroomsWriteUpDef>
+
+  <!-- EXPLORATION'S OWN ENTRY, and it is ONE per finished coordinate rather than one per room.
+
+       Owner: "and exploration need journal entry work stuff", scoped by the next message to "once
+       completed". A write-up per room would bury a branch in paperwork for walking down a corridor,
+       so the precondition is the whole survey being finished.
+
+       Declared here with the others because it is the same mechanism, which is the point: the
+       exploration toggle does not need a paperwork system of its own. -->
+  <RimroomsAsyncIndustries.Company.RimroomsWriteUpDef>
+    <defName>RR_WriteUp_Survey</defName>
+    <label>survey report</label>
+    <description>The finished map of a coordinate: every room the crew entered, how they connect, and what was in them. Filed once a space has been explored end to end, not room by room.\n\nThis is the deliverable a completed survey produces, and it is what the company pays for when it buys a map it did not have.</description>
+    <precondition>SurveyComplete</precondition>
+    <workRequired>1800</workRequired>
+    <displayOrder>4</displayOrder>
+  </RimroomsAsyncIndustries.Company.RimroomsWriteUpDef>
+
+</Defs>

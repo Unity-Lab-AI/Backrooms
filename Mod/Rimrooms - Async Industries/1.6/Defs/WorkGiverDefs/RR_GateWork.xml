@@ -64,4 +64,31 @@
     <requiredCapacities><li>Manipulation</li><li>Sight</li><li>Talking</li></requiredCapacities>
     <canBeDoneByMechs>false</canBeDoneByMechs>
   </WorkGiverDef>
+
+  <!-- THE COMPANY'S PAPERWORK, as ordinary work at a records desk.
+
+       Owner, 2026-10-06: "these tasks are auto in the pawns work jobs". So a priority the player
+       sets, not an order, and it competes with cooking and hauling like everything else.
+
+       Intellectual, like calibration, reconditioning and analysis, because the work is reading
+       records and writing prose and the branch's researchers are the people with that skill.
+
+       LOW PRIORITY WITHIN THE TYPE, at 90, BELOW calibration's 100 and reconditioning's 102. A
+       lapsed gate assembly blocks every expedition and a report blocks nothing until a player wants
+       to send it, so paperwork must never crowd out the bench work the branch runs on. And it finds
+       nothing at all unless an accepted quest owes a write-up whose precondition is already met,
+       which is most of the time.
+
+       Talking is not required: a report is written, not radioed. -->
+  <WorkGiverDef>
+    <defName>RR_WriteUp</defName>
+    <label>write up company paperwork</label>
+    <giverClass>RimroomsAsyncIndustries.Company.WorkGiver_RRWriteUp</giverClass>
+    <workType>Research</workType>
+    <verb>write up</verb>
+    <gerund>writing up paperwork at</gerund>
+    <priorityInType>90</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Sight</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
 </Defs>
