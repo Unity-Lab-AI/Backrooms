@@ -48,6 +48,17 @@
       <drawSize>0.8</drawSize>
     </graphicData>
     <uiIconPath>Things/Item/Rimrooms/RR_RouteRecording</uiIconPath>
+    <!-- **THIS DEF NAME WAS DECLARED TWICE AND THE DUPLICATE WAS SHIPPED.** `RR_FieldEquipment.xml`
+         already carried an `RR_RouteRecording` - the found-evidence item from 0.2.0, kept loadable
+         for old saves - and this file added a second ThingDef with the same defName, which RimWorld
+         resolves by one silently winning. Found by a duplicate scan written after the fact; the
+         scan is `tools/check-def-duplicates.py` now, so it cannot happen twice.
+         The two are ONE object in this design: the company issues it blank, a crew writes it in the
+         field, and it comes home as the finding. So the old def is gone and this one inherits its
+         evidence category, which is what the records archive and every evidence filter read. -->
+    <thingCategories>
+      <li>RR_Evidence</li>
+    </thingCategories>
     <statBases>
       <MarketValue>180</MarketValue>
     </statBases>

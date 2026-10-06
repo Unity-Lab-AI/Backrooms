@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- THE BENCH GETS A BILL, AND THE REASON IS A CHECKER RATHER THAN A WHIM.
+
+       `RR_GateEquipmentBuildings.xml` says the field analysis bench ships with no recipes, because
+       giving it Core's machining recipes would make it a better machining table and that is a
+       balance change nobody asked for. That still holds: this is ONE recipe, for the company's own
+       journal, on the company's own bench.
+
+       It exists because `check-retired-content.py` classifies a live def as **superseded but still
+       loadable** when it is untradeable, unbuilt and ungranted - and a journal the company only
+       ever posts out would have matched that shape exactly, leaving a shipped, issued, craftable
+       item filed as something nothing should tell a player to use. A recipe is the honest fix: the
+       journal is obtainable because a colonist can make one.
+
+       Register row 53 Big Little Mod Patch recorded the mechanism that keeps this additive:
+       "the bill work family reads its bench set from every loaded WorkGiverDef's
+       fixedBillGiverDefs, so any bench this patch bundle links is covered with no code naming it".
+       Nothing in this mod names this recipe in C#. -->
+
+  <RecipeDef>
+    <defName>RR_MakeRouteRecording</defName>
+    <label>make company route recording</label>
+    <description>Make a blank company route recording: a tape, a numbered sleeve and a write-on card. A crew takes it out empty and writes it in the field.</description>
+    <jobString>Making a company route recording.</jobString>
+    <workAmount>900</workAmount>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+    <workSkill>Crafting</workSkill>
+    <effectWorking>Smith</effectWorking>
+    <soundWorking>Recipe_Smith</soundWorking>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Steel</li>
+          </thingDefs>
+        </filter>
+        <count>5</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Cloth</li>
+          </thingDefs>
+        </filter>
+        <count>5</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Steel</li>
+        <li>Cloth</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <RR_RouteRecording>1</RR_RouteRecording>
+    </products>
+    <recipeUsers>
+      <li>RR_FieldAnalysisBench</li>
+    </recipeUsers>
+  </RecipeDef>
+
+</Defs>

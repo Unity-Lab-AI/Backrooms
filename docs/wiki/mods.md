@@ -55,6 +55,16 @@ do. A 2-cell door passes pack animals; 3 cells or more passes anything.
 Core alone gives you a 1-cell gate from a door or autodoor, and a 2-cell gate from an ornate door,
 with no other mod installed.
 
+## The list itself, mod by mod
+
+**[The mod list](mods-list.md)** carries all 296 of them, grouped by tag.
+
+Each one gets four things: what Rimrooms uses it for, what changes if you leave it out, what to
+watch for, and a tag — Required, Recommended, Optional, Visual only or Not needed.
+
+**Required there means required for the experience as it was built.** Nothing on that page is
+required to launch.
+
 ## What is not claimed
 
 **No compatibility report exists**, and none is implied by the load-order list. Nothing is

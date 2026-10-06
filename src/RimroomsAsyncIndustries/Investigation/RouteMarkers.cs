@@ -293,12 +293,39 @@ namespace RimroomsAsyncIndustries.Investigation
         public static IEnumerable<CompRimroomsMarker> OnMap(Map map)
         {
             if (map == null) { yield break; }
-            ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail("GlowPod");
-            if (definition == null) { yield break; }
-            foreach (Thing thing in map.listerThings.ThingsOfDef(definition))
+            foreach (ThingDef definition in MarkerCarrierDefs)
             {
-                CompRimroomsMarker marker = thing.TryGetComp<CompRimroomsMarker>();
-                if (marker != null && marker.IsMarker) { yield return marker; }
+                foreach (Thing thing in map.listerThings.ThingsOfDef(definition))
+                {
+                    CompRimroomsMarker marker = thing.TryGetComp<CompRimroomsMarker>();
+                    if (marker != null && marker.IsMarker) { yield return marker; }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Every def that can carry a marker: the company's own survey tag, and Core's glow pod.
+        ///
+        /// **THIS SCAN NAMED ONE DEF AND THAT WAS THE THIRD INSTANCE OF THE SAME DEFECT IN A DAY.**
+        /// The gate's providers and the crew's record book both resolved a single def name while
+        /// the component was the real marker, so new content carrying the component was invisible
+        /// to the system built to read it. A survey tag with `CompRimroomsMarker` would have been
+        /// designatable from its own button and then missing from every route, every ledger entry
+        /// and every distortion count that `OnMap` feeds.
+        ///
+        /// **The scan still has to name defs rather than walk every thing on the map**, because
+        /// `ThingsOfDef` is indexed and `AllThings` is not, and this runs on a site tick. So the
+        /// list is short, ordered ours-first, and both entries resolve silently to null when
+        /// absent -- a profile without Core's glow pod simply has one fewer carrier.
+        /// </summary>
+        private static IEnumerable<ThingDef> MarkerCarrierDefs
+        {
+            get
+            {
+                ThingDef tag = DefDatabase<ThingDef>.GetNamedSilentFail("RR_SurveyTag");
+                if (tag != null) { yield return tag; }
+                ThingDef pod = DefDatabase<ThingDef>.GetNamedSilentFail("GlowPod");
+                if (pod != null) { yield return pod; }
             }
         }
     }

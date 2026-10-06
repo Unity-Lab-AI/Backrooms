@@ -96,13 +96,18 @@ PLAN = [
      "aspect 4.96, a flat strip fitting read from above; its east frame is its south turned"),
     ("RR_ReturnBeacon",           "building", (1, 1), "uniform", "Things/Building/Rimrooms",
      "aspect 0.86, a tripod lamp, radially alike"),
-    ("RR_FieldRecorder",          "item",     (1, 1), "single",  "Things/Item/Rimrooms",
-     "items do not rotate"),
+    # **THESE THREE BECAME BUILDINGS ON 2026-10-06** and the kind is corrected with them, because
+    # the kind is what puts an entry in ROTATIONS WANTED. Leaving them as `item` would have had the
+    # tool report a complete rotation set that does not exist. The owner's fork answer was "Build
+    # the three items, hold the Pursuer"; each took a 1x1 minifiable building to get a real job.
+    ("RR_FieldRecorder",          "building", (1, 1), "single",  "Things/Item/Rimrooms",
+     "aspect 1.39, a desk unit with a front face; no back or side view exists"),
+    ("RR_SealedEvidenceCase",     "building", (1, 1), "single",  "Things/Item/Rimrooms",
+     "aspect 1.59, a latched case seen front on; the latch side is the only side drawn"),
+    ("RR_SurveyTag",              "building", (1, 1), "single",  "Things/Item/Rimrooms",
+     "aspect 0.47, a tag with a printed face; its reverse is blank and undrawn"),
+    # The journal stays an item. Items genuinely do not rotate, so it is not a gap.
     ("RR_RouteRecording",         "item",     (1, 1), "single",  "Things/Item/Rimrooms",
-     "items do not rotate"),
-    ("RR_SealedEvidenceCase",     "item",     (1, 1), "single",  "Things/Item/Rimrooms",
-     "items do not rotate"),
-    ("RR_SurveyTag",              "item",     (1, 1), "single",  "Things/Item/Rimrooms",
      "items do not rotate"),
     ("RR_FadedInstitutionalCarpet", "terrain", (2, 2), "terrain", "Terrain/Rimrooms",
      "terrain tiles rather than rotates; 256 px keeps the weave at a readable density"),
@@ -326,8 +331,13 @@ def main():
         print("")
         print("ROTATIONS WANTED -- these ship Graphic_Single and non-rotatable until a back and a")
         print("side view exist. None of them is faked, and none ships Graphic_Multi with one frame.")
+        print("Each one needs TWO drawings: _north and _east. _south is the master already here,")
+        print("and RimWorld mirrors _west from _east at no cost.")
         for name, why in wanted:
             print("  %-30s %s" % (name, why))
+        print("")
+        print("  TOTAL STILL TO DRAW: %d frames across %d buildings." % (len(wanted) * 2, len(wanted)))
+        print("  Nothing in this tool can derive them. A back view and a side view are drawings.")
 
     print("")
     if apply_changes:

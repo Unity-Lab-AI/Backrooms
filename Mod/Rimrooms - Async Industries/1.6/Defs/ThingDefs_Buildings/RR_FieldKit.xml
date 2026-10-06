@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- THE THREE THE OWNER ASKED FOR BY NAME.
+
+       Owner's fork answer, 2026-10-06: "Build the three items, hold the Pursuer" - the field
+       recorder, the survey tag and the sealed evidence case. The Quiet Pursuer stays held, because
+       a creature of ours needs a race ThingDef with lifeStages and body graphics rather than a
+       texture, and a malformed race on a 296-mod profile breaks other people's pawn rendering.
+
+       EACH ONE HAS A JOB NOTHING ELSE DOES, AND THAT WAS THE HARD PART. The 0.9.0-dev retirement
+       record is explicit about why this art deserved retiring the first time: the defs "had no C#
+       consumer whatsoever and had been shipping textures nobody could see". So none of these is a
+       prettier version of something that already works. Every one uses a standard Core mechanic
+       with no new C# at all:
+
+         field recorder       -> CompFacility, linked to our own analysis bench
+         survey tag           -> the marker component, already carried by Core's glow pod
+         sealed evidence case -> Building_Storage, filtered to evidence and books
+
+       ALL THREE ARE 1x1 AND MINIFIABLE, which is what makes them field kit rather than furniture:
+       a crew uninstalls one, carries it through a gate and puts it down on the other side.
+
+       THEY WERE ITEMS AND THEY ARE BUILDINGS NOW. The recorder's def was an item, superseded since
+       0.12.24-dev and explicitly "no longer issued, built or bought" - so nothing grants one, no
+       recipe makes one, and the only instances anywhere are in saves made before that version or
+       recovered from an abandoned coordinate. Reshaping it is a declared development-save
+       consideration rather than a silent change, and it is recorded in the changelog as one. -->
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_FieldRecorder</defName>
+    <label>field recorder and radio</label>
+    <description>A company-issue reel recorder with a short-range set, bolted to a bench top. A crew no longer carries one into the field - observations go straight into the journal they carry - but back at a branch it is still the fastest way to get a recording off the tape and onto a desk.\n\nStand one beside a field analysis bench and the work goes quicker. It does nothing on its own.</description>
+    <thingClass>Building</thingClass>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <graphicData>
+      <texPath>Things/Item/Rimrooms/RR_FieldRecorder</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+      <damageData>
+        <rect>(0.15,0.2,0.7,0.6)</rect>
+      </damageData>
+    </graphicData>
+    <size>(1,1)</size>
+    <!-- Drawn face on with a clear front and no side view, so it is honestly not rotatable rather
+         than a Graphic_Multi with one frame shown four times. -->
+    <rotatable>false</rotatable>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>42</pathCost>
+    <fillPercent>0.4</fillPercent>
+    <useHitPoints>true</useHitPoints>
+    <selectable>true</selectable>
+    <thingCategories>
+      <li>RR_FieldEquipment</li>
+    </thingCategories>
+    <statBases>
+      <MaxHitPoints>90</MaxHitPoints>
+      <WorkToBuild>1400</WorkToBuild>
+      <Mass>8</Mass>
+      <Flammability>0.5</Flammability>
+      <Beauty>-1</Beauty>
+      <MarketValue>160</MarketValue>
+    </statBases>
+    <costList>
+      <Steel>40</Steel>
+      <ComponentIndustrial>2</ComponentIndustrial>
+    </costList>
+    <researchPrerequisites>
+      <li>MicroelectronicsBasics</li>
+    </researchPrerequisites>
+    <designationCategory>Production</designationCategory>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    <tickerType>Normal</tickerType>
+    <building>
+      <paintable>false</paintable>
+      <destroySound>BuildingDestroyed_Metal_Small</destroySound>
+    </building>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>60</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Flickable" />
+      <!-- The whole job, and it is Core's own mechanic. One per bench, within range, and the
+           bench has to name it back - see CompProperties_AffectedByFacilities on
+           RR_FieldAnalysisBench. A facility nobody links to is inert rather than broken. -->
+      <li Class="CompProperties_Facility">
+        <statOffsets>
+          <WorkTableWorkSpeedFactor>0.12</WorkTableWorkSpeedFactor>
+        </statOffsets>
+        <maxSimultaneous>1</maxSimultaneous>
+        <maxDistance>6</maxDistance>
+      </li>
+    </comps>
+    <placeWorkers>
+      <li>PlaceWorker_ShowFacilitiesConnections</li>
+    </placeWorkers>
+  </ThingDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_SurveyTag</defName>
+    <label>survey tag</label>
+    <description>A numbered company tag on a weighted base, with a small lamp behind the card. Set one where a route turns, where a room has been cleared, or where something is worth coming back for, and give it a meaning from its own button.\n\nIt reads the same as a glow pod and is used the same way, with one difference that matters underground: a glow pod is alive and dies on its own schedule. A tag does not.</description>
+    <thingClass>Building</thingClass>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <graphicData>
+      <texPath>Things/Item/Rimrooms/RR_SurveyTag</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+      <damageData>
+        <rect>(0.3,0.15,0.4,0.7)</rect>
+      </damageData>
+    </graphicData>
+    <size>(1,1)</size>
+    <rotatable>false</rotatable>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>18</pathCost>
+    <fillPercent>0.2</fillPercent>
+    <useHitPoints>true</useHitPoints>
+    <selectable>true</selectable>
+    <thingCategories>
+      <li>RR_FieldEquipment</li>
+    </thingCategories>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <WorkToBuild>260</WorkToBuild>
+      <Mass>2</Mass>
+      <Flammability>0.5</Flammability>
+      <Beauty>-1</Beauty>
+      <MarketValue>45</MarketValue>
+    </statBases>
+    <costList>
+      <Steel>8</Steel>
+    </costList>
+    <designationCategory>Misc</designationCategory>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    <tickerType>Rare</tickerType>
+    <building>
+      <paintable>false</paintable>
+    </building>
+    <comps>
+      <!-- Core's glow pod carries exactly these two, minus the lifespan. The marker component is
+           what RouteMarkers reads, and it is dormant until a player gives the tag a meaning -
+           the same contract the glow pod has: an undesignated tag is a small lamp and nothing
+           else. The glower's own colour is replaced per instance once a meaning is set. -->
+      <li Class="CompProperties_Glower">
+        <glowRadius>5</glowRadius>
+        <glowColor>(220,220,200,0)</glowColor>
+      </li>
+      <li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RimroomsMarker" />
+    </comps>
+  </ThingDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_SealedEvidenceCase</defName>
+    <label>sealed evidence case</label>
+    <description>A latched company case for carrying a finding home without losing it in a stockpile. It accepts recordings, journals and nothing else, so what is in it is always what it says it is.\n\nDesignate one as a branch's records archive exactly as you would a shelf. Being purpose-built is the point: a shelf will take anything a hauler decides belongs there.</description>
+    <thingClass>Building_Storage</thingClass>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <graphicData>
+      <texPath>Things/Item/Rimrooms/RR_SealedEvidenceCase</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+      <damageData>
+        <rect>(0.1,0.25,0.8,0.5)</rect>
+      </damageData>
+    </graphicData>
+    <size>(1,1)</size>
+    <rotatable>false</rotatable>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>30</pathCost>
+    <fillPercent>0.4</fillPercent>
+    <useHitPoints>true</useHitPoints>
+    <selectable>true</selectable>
+    <surfaceType>Item</surfaceType>
+    <thingCategories>
+      <li>RR_FieldEquipment</li>
+    </thingCategories>
+    <inspectorTabs>
+      <li>ITab_Storage</li>
+    </inspectorTabs>
+    <statBases>
+      <MaxHitPoints>120</MaxHitPoints>
+      <WorkToBuild>620</WorkToBuild>
+      <Mass>6</Mass>
+      <Flammability>0.3</Flammability>
+      <Beauty>0</Beauty>
+      <MarketValue>90</MarketValue>
+    </statBases>
+    <costList>
+      <Steel>30</Steel>
+    </costList>
+    <designationCategory>Furniture</designationCategory>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    <tickerType>Never</tickerType>
+    <building>
+      <!-- NO storageGroupTag. A case joining the shelf group would let a player link it to every
+           shelf in the colony and then wonder why it refuses the steel they just assigned.
+           Its fixed filter is the feature; sharing settings with shelves would defeat it. -->
+      <paintable>false</paintable>
+      <fixedStorageSettings>
+        <filter>
+          <disallowNotEverStorable>true</disallowNotEverStorable>
+          <categories>
+            <li>RR_Evidence</li>
+            <li>Books</li>
+          </categories>
+        </filter>
+      </fixedStorageSettings>
+      <defaultStorageSettings>
+        <priority>Important</priority>
+        <filter>
+          <categories>
+            <li>RR_Evidence</li>
+            <li>Books</li>
+          </categories>
+        </filter>
+      </defaultStorageSettings>
+    </building>
+  </ThingDef>
+
+</Defs>

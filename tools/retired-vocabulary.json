@@ -5,14 +5,6 @@
       "disposition": "stale",
       "why": "RR_SiteClimateUnit was retired; a coordinate uses Core climate equipment."
     },
-    "evidence case": {
-      "disposition": "stale",
-      "why": "same item, and the phrase strings actually used - 'physical evidence case', 'expedition evidence case'."
-    },
-    "field recorder": {
-      "disposition": "stale",
-      "why": "superseded 0.12.24-dev. The def stays loadable so old saves open, and is untradeable, unbuilt and ungranted - so nothing should tell a player to use one. Crews write into the record book they carry."
-    },
     "liminal climate": {
       "disposition": "stale",
       "why": "same def."
@@ -28,22 +20,6 @@
     "return beacon": {
       "disposition": "stale",
       "why": "retired 0.9.9-dev. The gate's address book and the saved return threshold are the route authority, so the item had no job left."
-    },
-    "route recording": {
-      "disposition": "live",
-      "why": "REVIVED 0.13.0-dev on the owner's full reversal of the existing-content-only direction. RR_RouteRecording ships as the company route recording, a Book the company issues and a crew writes in the field. It was never removed from the evidence pipeline: CompRouteEvidence accepted this exact defName throughout as a 0.2.0 migration path, and that test is IsCompanyCarrier now because 'legacy' stopped being true. Core's TextBook is still accepted beside it, so counting the kit is plural and issuing one is singular."
-    },
-    "sealed evidence": {
-      "disposition": "stale",
-      "why": "same item."
-    },
-    "sealed evidence case": {
-      "disposition": "stale",
-      "why": "retired 0.10.9-dev. Custody completes at a Shelf designated as the records archive, which is a PLACE rather than an item - so rewording is not enough, the instruction changes."
-    },
-    "survey tag": {
-      "disposition": "stale",
-      "why": "retired 0.10.7-dev. Markers are Core glow pods now, and they are still NUMBERED - say 'numbered marker', not 'numbered tag'."
     },
     "survey tags": {
       "disposition": "stale",

@@ -83,7 +83,7 @@ EXCLUDE_END = "  # END GENERATED EXCLUDE LIST"
 SECTIONS = [
     ("Start", ["index", "install", "first-hour", "scenarios"]),
     ("Playing", ["company", "gates", "backrooms", "interface"]),
-    ("Running it", ["mods", "multiplayer", "troubleshooting"]),
+    ("Running it", ["mods", "mods-list", "multiplayer", "troubleshooting"]),
     ("About", ["credits", "links"]),
 ]
 

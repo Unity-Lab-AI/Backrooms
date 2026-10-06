@@ -1,0 +1,57 @@
+{
+  "note": "Hand-authored player-facing text for the public mod register. Everything not named here is composed by tools/build-public-register.py from the engineering register's own structured columns. NOTHING in this file is copied from the engineering register's prose: the owner's direction was 'all new writes'. 'extra' carries the two entries the engineering register never had, which is what takes the published list from 294 to the owner's 296.",
+  "extra": [
+    {
+      "name": "Rimbridge",
+      "tag": "Optional",
+      "uses": "Nothing directly. It is in the owner's own load order and is listed so the published list matches a real installation rather than a tidy one.",
+      "without": "Nothing at all. Rimrooms never touches it.",
+      "watch": "Not read in full. It arrived after the 294 were reviewed."
+    },
+    {
+      "name": "Rimrooms - Async Industries",
+      "tag": "Required",
+      "uses": "This is the mod this list is about.",
+      "without": "There is no list.",
+      "watch": "Declares no hard dependency on anything below, and starts on its own."
+    }
+  ],
+  "rows": {
+    "4": {
+      "tag": "Required",
+      "uses": "Everything. Every gate is one of Core's own doors, every cue falls back to a Core sound, and every object Rimrooms cannot supply is one Core already ships.",
+      "without": "This is the game itself.",
+      "watch": "Rimrooms targets RimWorld 1.6."
+    },
+    "77": {
+      "tag": "Recommended",
+      "uses": "Gates. A gate is a real door you designate, so a wider door from here can become a wider gate.",
+      "without": "Nothing breaks. Gates up to three cells wide are still reachable by binding a run of ordinary Core doors side by side.",
+      "watch": "Read and settled. Door sizes were checked against the gate footprints that exist."
+    },
+    "273": {
+      "tag": "Recommended",
+      "uses": "Who may walk through a gate. Rimrooms asks the door, so a lock here decides a crossing.",
+      "without": "Nothing breaks. Zones and the door's own settings still decide who crosses.",
+      "watch": "Read and settled. Prisoner and guest access were checked specifically, because a prisoner crossing is a door permission and nothing else."
+    },
+    "148": {
+      "tag": "Optional",
+      "uses": "Nothing Rimrooms depends on. The company's own contracts live on their own board, not in the quest system.",
+      "without": "Nothing changes. The Operations board is where company work comes from either way.",
+      "watch": "Read and settled. Rimrooms deliberately keeps its contracts out of the quest system so this mod's filter cannot hide them."
+    },
+    "49": {
+      "tag": "Optional",
+      "uses": "Power reliability around a branch.",
+      "without": "Nothing breaks.",
+      "watch": "If you switch its breakdowns or solar flares off, gates still work. Nothing in a gate's progress waits on an incident this mod can suppress."
+    },
+    "53": {
+      "tag": "Visual only",
+      "uses": "Linking benches to the things that help them.",
+      "without": "Nothing changes in play. Rimrooms names no bench of this mod's in any of its own code.",
+      "watch": "Read. Rimrooms adds no second patch of its own for the same links."
+    }
+  }
+}

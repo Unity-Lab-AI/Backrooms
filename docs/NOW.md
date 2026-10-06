@@ -37,7 +37,7 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 - **`uniform`** — cutoff, beacon. Read the same from every side, so one master honestly produces every facing.
 - **`flat`** — the fluorescent, and it is a strategy the first draft missed. A flat fixture read from above genuinely turns with its footprint: `_east` is `_south` turned ninety degrees at **128x384** for the swapped footprint. **Geometry, not a trick.**
-- **non-rotatable** — machine gate, gate console, generator, bench. Front elevations with no back and no side view. They ship `Graphic_Single` and the cutter prints them under **ROTATIONS WANTED**. **Only the owner can author those four.**
+- **non-rotatable** — machine gate, gate console, generator, bench. Front elevations with no back and no side view. They ship `Graphic_Single` and the cutter prints them under **ROTATIONS WANTED**. **Seven buildings want rotations: 14 drawings, and only the owner can author them.**
 
 ---
 
@@ -50,6 +50,30 @@ The role test was hard-coded **twice** — the Operations pane's lister and `Nat
 **And the obvious implementation was a regression in a feature's clothes.** The button binds only on an unambiguous role, so *one more candidate* means a branch building our console **beside** Core's is told `RR_NativeGate_NoSingleConsole` — **the owner's own open 2026-10-03 report, caused by adding content.** One of ours wins outright over any number of native ones, so building ours can only ever *resolve* an ambiguity.
 
 **The battery is deliberately not widened.** Admitting every `CompPowerBattery` in the profile, in the one role a crew's way home depends on, is a change nobody asked for.
+
+---
+
+## ⛔ A DUPLICATE defName SHIPPED, AND NOTHING IN A THIRTY-CHECKER BATTERY SAW IT ⛔
+
+The company journal was authored as `RR_RouteRecording` in a new file while `RR_FieldEquipment.xml` had declared a ThingDef of that exact name since 0.2.0. **Two ThingDefs, one defName, committed and pushed.** RimWorld resolves that by one winning silently, and which one is not something a reader can tell by looking.
+
+**`check-def-references.py` resolves names outward and is blind to a name declared twice.** The build only validates that each file is well-formed XML.
+
+`check-def-duplicates.py` is checker 31. Two rules, and **the second matters more on a 296-mod profile**: no two defs of the same type share a name, and **no def of ours silently overrides one the game ships** — declaring `<ThingDef><defName>Shelf` does not warn, it *replaces* Core's shelf for every mod in the load order. It parses **13,161 game defs** to say so, and it recognises that a `JobDef` and a `WorkGiverDef` sharing a name is legal, which this package does four times on purpose.
+
+---
+
+## ⛔ THE THIRD DEF-NAME COUPLING IN ONE DAY ⛔
+
+Three systems resolved a single def name while a **component** was the real marker, so new content carrying that component was invisible to the system built to read it:
+
+| Where | Would have broken |
+|---|---|
+| Gate providers | Our console offered in the pane and refused by the validator |
+| The crew's record book | A crew carrying the company journal told it had none |
+| `RouteMarkers.OnMap` | A survey tag designatable from its own button, then **missing from every route, ledger entry and distortion count** |
+
+**All three are one derivation now.** The pattern to watch for: a `GetNamedSilentFail("...")` or a `def.defName == "..."` standing in for *does this thing carry our component*.
 
 ---
 
@@ -75,7 +99,7 @@ This cost a whole launch report on 2026-10-06: the staged assembly was **02:51**
 **Owner, 2026-10-04:** *"yu should be completeing like near a dozen items before you run the whole battery. i told you i can NOT be waiting 40 minutes"*, and *"you still need to do instrament checks and build them when needed just dont run them for every fucking code change"*
 
 - **During the work:** run **only the instrument covering the file you just touched.**
-- **At publication, once:** 30 checkers → 63 proofs → 42 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
+- **At publication, once:** 32 checkers → 63 proofs → 42 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
 - **THE OWNER ALONE LAUNCHES, SORTS AND PUBLISHES.**
 - ⛔ **NEVER RUN THE PLANT SUITES CONCURRENTLY WITH ANYTHING ELSE.** A suite writes a real fault into the tree and restores it; anything reading the tree in that window sees the fault.
 - **THE REGISTER IS AN INPUT TO WORK, NOT A BACKLOG OF IT.**
@@ -88,10 +112,10 @@ This cost a whole launch report on 2026-10-06: the staged assembly was **02:51**
 |---|---|
 | Branch | **`feature/bug-testing`**, ahead of every remote by owner direction |
 | Version | **0.13.0-dev** — read from `About.xml`, never from a document |
-| Build | **254 C# files, 130 package files**, zero warnings, zero errors |
-| Instruments | **30 checkers**, **63 proofs**, **42 plant suites** |
-| Queue | **7 open · 1 partial · 53 `[T]` · 0 `[x]`** |
-| Shipped art | **15 textures, 532 KB**, from 11.5 MB of masters. Four cut and held |
+| Build | **254 C# files, 134 package files**, zero warnings, zero errors |
+| Instruments | **32 checkers**, **63 proofs**, **42 plant suites** |
+| Queue | **0 open · 0 partial · 53 `[T]` · 0 `[x]`** |
+| Shipped art | **18 textures**, from 11.5 MB of masters. **One cut and held** — the Quiet Pursuer, by owner decision |
 | Shipped audio | **4 original cues**, positional, Core fallback retained |
 
 ---
@@ -132,18 +156,38 @@ python tools/check-queue-pointers.py                     # and this, which neith
 
 ---
 
-## THE NEXT THING
-
-**The public-facing mod register, which is a whole workstream and has not been started.**
+## ⛔ THE PUBLIC MOD REGISTER IS BUILT, AND IT IS A SECOND REGISTER RATHER THAN A VIEW ⛔
 
 **Owner, 2026-10-06, verbatim:** *"okay we are adding to todo everything we need to make a similar mod registry as the one we have but this one will be pubvlic facing with all new writes in it so that it says the important stuff all players would need to know like mod interferances, what if's if not used  uses in rimrooms, required/recommended/(whatever else(s) is needed) as tags per mod in this recommended mod list for all modsand anything else relevant of note"*
 
-**It is a second register, not a view of the first**, and *"all new writes"* means none of the engineering prose is reused — a player does not need our integration approach, they need to know whether to install the thing and what happens if they do not. **Two things have to be decided rather than assumed:** the tag vocabulary, because a player-facing *Required* and the engineering `stance` column's *Required* are different claims and `check-register-compliance.py` refuses the latter while `About.xml` declares no dependencies; and the count, because the owner's profile is **296** — *"6DLCs, Rimbridge , Rimrooms(locally)"* — against the register's 294 rows plus Core.
+***"All new writes"* is the whole instruction and it is load bearing.** Not one sentence of the engineering register's prose is carried across. A player does not need our integration approach.
 
-After that: the 53 `[T]` rows, every one of which needs the game running — **the owner alone launches, sorts and publishes.**
+| | |
+|---|---|
+| Page | `docs/wiki/mods-list.md`, generated, published, linked from the mods page |
+| Entries | **296 mods**, plus the base game shown for context and **stated not to be counted** |
+| Tags | **Required · Recommended · Optional · Visual only · Not needed** — the owner's own words, with the page saying before the table that **Required never means required to launch** |
+| Spread | 83 Recommended · 192 Optional · 4 Visual only · 16 Not needed. **The only thing tagged Required is the game** |
+| Hand-authored | 6 rows in `tools/public-register-text.json`, which overrides any cell on any row |
+| Checker | **32**, `check-public-register.py`, because the generator is not a `check-*` and a battery that globs would never have run it |
+
+**The count reconciles exactly rather than quietly differing**: the engineering register holds **295 rows — 294 profile entries plus one for Core** — with the six `Data/` folders inside the 294 as rows 4 to 9. So **294 + Rimbridge + Rimrooms = 296**, and the two the engineering register never had are declared in the overrides file.
+
+---
+
+## THE NEXT THING
+
+**A launch. The buildable queue is empty.**
+
+The 53 `[T]` rows all need the game running — **the owner alone launches, sorts and publishes.**
 
 **Read a launch log in this order:** `Player.log`, grep the **first** `[Rimrooms]` line, then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.
 
+**Two things are waiting on the owner rather than on work:**
+
+1. **14 drawings.** Seven buildings ship non-rotatable because their other facings do not exist — machine gate, gate console, utility generator, field analysis bench, field recorder, sealed evidence case, survey tag. Each needs `_north` and `_east`; `_south` is the master already here and `_west` is mirrored free. `tools/cut-phase2-art.py` prints the count every run. **Nothing can derive them: a back view is a drawing.**
+2. **The Quiet Pursuer**, held by owner decision. It needs a race `ThingDef` with `lifeStages` and body graphics rather than a texture, and a malformed race on a 296-mod profile breaks other people's pawn rendering.
+
 ## Is it done?
 
-**No, and two things are open by name.** The public register has not been started. Four masters are cut and held out of the package because nothing names them, and four more need rotations only the owner can author. Everything claimed above is built, and the test phase still belongs to a launch.
+**The buildable list is empty: 0 open, 0 partial, 53 `[T]`.** Everything claimed here is built and the whole battery is green in one run. What remains is the test phase, which belongs to a launch, and the two items above, which belong to the owner.

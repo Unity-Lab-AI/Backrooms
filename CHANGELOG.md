@@ -90,6 +90,50 @@
 - **1254x1254 masters became 15 textures totalling 532 KB**, cut by tool from the masters so the
   package can be reproduced rather than hand-matched.
 
+### The field kit, and the three the owner asked for by name
+
+- Owner at a fork: ***"Build the three items, hold the Pursuer"***. Each got a job nothing else does,
+  using a standard Core mechanic and **no new C# at all**: the **field recorder** is a facility
+  linked to our own analysis bench (one per bench, six cells, 12% off its work), the **survey tag**
+  carries the same marker component Core's glow pod does and differs in the one way that matters
+  underground — a glow pod is alive and dies on schedule, a tag does not — and the **sealed evidence
+  case** is a storage building whose fixed filter takes recordings and books and nothing else, which
+  is exactly what a designated shelf cannot promise. All three are 1x1 and minifiable.
+- **The Quiet Pursuer stays held**, by the owner's choice. It needs a race definition with body
+  graphics rather than a texture, and a malformed race on a 296-mod profile breaks other people's
+  pawn rendering.
+
+### A duplicate defName shipped, and nothing in a thirty-checker battery saw it
+
+- The company journal was authored as `RR_RouteRecording` while `RR_FieldEquipment.xml` had declared
+  a ThingDef of that exact name since 0.2.0. **Two ThingDefs, one defName, committed and pushed.**
+  RimWorld resolves that by one winning silently.
+- `check-def-duplicates.py` is the answer, and its **second** rule is the one that matters on a
+  296-mod profile: **no def of ours silently overrides one the game ships.** Declaring
+  `<ThingDef><defName>Shelf` does not warn — it replaces Core's shelf for every mod in the load
+  order. It parses **13,161 game defs** to say so, and it knows a JobDef and a WorkGiverDef sharing
+  a name is legal, which this package does four times on purpose.
+
+### The third def-name coupling in one day
+
+- Three systems resolved a single def name while a **component** was the real marker: the gate's
+  providers, the crew's record book, and `RouteMarkers.OnMap`. The third would have made a survey
+  tag designatable from its own button and then **missing from every route, ledger entry and
+  distortion count**. All three are one derivation now.
+
+### The public mod register
+
+- Owner: ***"a similar mod registry as the one we have but this one will be pubvlic facing with all
+  new writes in it"***. ***"All new writes"*** is the whole instruction: **not one sentence of the
+  engineering register's prose is carried across.** A player does not need our integration approach.
+- **296 mods**, plus the base game shown for context and stated not to be counted — the owner's
+  figure reconciles exactly as 294 profile entries plus Rimbridge plus Rimrooms.
+- Tags are the owner's own words, and the page says before the table that **Required never means
+  required to launch**. The only thing tagged Required is the game.
+- Generated from the register's structured columns, with `public-register-text.json` overriding any
+  cell by hand, and the generator **refuses to finish** on an empty cell so *"for all mods"* cannot
+  quietly become *for most mods*.
+
 ### A new checker, because only the owner launches
 
 - `check-def-references.py` parses **12,283 def and abstract names** out of the installed

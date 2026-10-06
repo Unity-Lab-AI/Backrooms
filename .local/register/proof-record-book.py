@@ -1,5 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Assert the field recorder's job is the record book's, the def still loads, and nothing grants it.
+"""Assert the field recorder's job is the record book's, the def still loads, and both books count.
+
+**READ THIS FIRST: ONE OF THE FOUR PROPERTIES BELOW WAS OVERRULED BY THE OWNER ON 2026-10-06** and
+is restated in place rather than deleted, because the reasoning that produced it was sound and the
+record of it is what makes the reversal legible.
+
+The overruled one is *"it is never granted or sold again"*. Answering a fork with **"Build the three
+items, hold the Pursuer"**, the owner made the recorder a buildable facility. What survives of that
+property is the part the reversal did not license: the recorder may be obtainable, but it may not be
+obtainable **by pretending to be the record book**. The 0.12.24-dev merge stands.
+
+**And a second property gained a half.** *"The kit is resolved, not named"* is unchanged, but the
+kit is now **plural**: Core's book and the company's own journal both count, because a crew carrying
+the company journal was being told it had no record book. Counting is plural; issuing is singular.
+
 
 The property this exists for
 ---------------------------
@@ -24,9 +38,12 @@ Four things have to stay true, and no compiler and no checker will say so:
     So the retirement is achieved entirely by taking away every way to *get* one, and
     `FailedSiteRecovery` deliberately keeps naming it.
 
-  * **IT IS NEVER GRANTED OR SOLD AGAIN.** No recipe, no scenario grant, no catalogue entry, and
+  * ~~**IT IS NEVER GRANTED OR SOLD AGAIN.** No recipe, no scenario grant, no catalogue entry, and
     `tradeability` is `None`. This is the half a reader cannot verify, because the absence of a
-    grant looks exactly like a grant nobody thought of.
+    grant looks exactly like a grant nobody thought of.~~ **OVERRULED 2026-10-06.** The recorder is
+    a buildable facility linked to the field analysis bench. Section 2 now asserts that it is a real
+    buildable and that it does **not** carry the evidence component, which is what would un-merge
+    the recorder from the record.
 
   * **THE KIT IS RESOLVED, NOT NAMED.** `CompRouteEvidence.NativeCarrierDef` is strict: Core's own
     book, a `Book` subclass, carrying our comp exactly once, with `CompBook` and `CompQuality`. A
@@ -99,13 +116,18 @@ observations = strip_cs_comments(read(os.path.join(SRC, "Company", "EvidenceObse
 comp = strip_cs_comments(read(os.path.join(SRC, "Investigation", "CompRouteEvidence.cs")))
 recovery = strip_cs_comments(read(os.path.join(SRC, "Generation", "FailedSiteRecovery.cs")))
 
-items_xml = read(os.path.join(MOD, "Defs", "ThingDefs_Items", "RR_FieldEquipment.xml"))
+# **`RR_FieldEquipment.xml` IS GONE AS OF 0.13.0-dev.** Both defs it held moved: the recorder is a
+# building in `RR_FieldKit.xml`, and the route recording became the company journal in
+# `RR_CompanyJournal.xml` -- which also resolved a duplicate defName that file had been shipping.
+kit_xml = read(os.path.join(MOD, "Defs", "ThingDefs_Buildings", "RR_FieldKit.xml"))
+journal_xml = read(os.path.join(MOD, "Defs", "ThingDefs_Items", "RR_CompanyJournal.xml"))
+items_xml = kit_xml + journal_xml
 scenarios_xml = read(os.path.join(MOD, "Defs", "ScenarioDefs", "RR_Scenarios.xml"))
 catalogue_xml = read(os.path.join(MOD, "Defs", "RimroomsProcurementCatalogDefs", "RR_ProcurementCatalog.xml"))
 keyed_xml = read(os.path.join(MOD, "Languages", "English", "Keyed", "RR_Expedition.xml"))
 
 print("")
-print("proof: the record book is the recorder, the def survives, and nothing hands one out")
+print("proof: the record book is the recorder, both carriers count, and the company issues its own")
 print("")
 
 # ------------------------------------------------------------------ 1. no save break
@@ -122,19 +144,36 @@ check("the legacy route recording is still a supported carrier",
 
 # ------------------------------------------------------------------ 2. never granted or sold
 print("")
-print("2. there is no way left to obtain one")
+print("2. the recorder is obtainable again, and the owner reversed the rule that said otherwise")
+# **THIS SECTION ASSERTED THE OPPOSITE UNTIL 0.13.0-dev AND IS RESTATED RATHER THAN DELETED.** It
+# was headed *"there is no way left to obtain one"* and required `tradeability` None, no recipe, no
+# scenario grant and no catalogue entry -- the shape of a def kept loadable purely so old saves
+# open. **The owner overruled it**, answering a fork with "Build the three items, hold the Pursuer",
+# and the recorder is a buildable facility now. A proof demanding it stay unobtainable would be a
+# green instrument over a dead restraint, which this project treats as worse than no instrument.
+#
+# What is asserted instead is what the reversal did NOT license: the recorder may be obtainable,
+# but it may not be obtainable by *pretending to be the record book*. The merge of the two was a
+# deliberate design decision in 0.12.24-dev -- the recorder and the record were two things that
+# could get separated -- and nothing here un-merges it.
 recorder_def = items_xml[items_xml.index("<defName>RR_FieldRecorder</defName>"):]
 recorder_def = recorder_def[:recorder_def.index("</ThingDef>")]
-check("the recorder's tradeability is None",
-      "<tradeability>None</tradeability>" in recorder_def,
-      "-- its base is ResourceBase with tradeability Buyable, so this override is the whole of it")
+check("the recorder is a real buildable with a cost",
+      "<costList>" in recorder_def and "designationCategory" in recorder_def,
+      "-- the owner asked for it built; a def nobody can build is the thing that was reversed")
+check("and it is a facility rather than a second record book",
+      "CompProperties_Facility" in recorder_def
+      and "CompProperties_RouteEvidence" not in recorder_def,
+      "-- the recorder and the record were merged on purpose in 0.12.24-dev because two things "
+      "that can get separated is the defect. Giving it the evidence component would un-merge them")
 
 recipe_hits = []
 recipe_dir = os.path.join(MOD, "Defs", "RecipeDefs")
 for name in sorted(os.listdir(recipe_dir)):
     if strip_xml_comments(read(os.path.join(recipe_dir, name))).find("RR_FieldRecorder") >= 0:
         recipe_hits.append(name)
-check("no recipe produces a recorder", not recipe_hits, "-- found in %s" % recipe_hits)
+check("no recipe produces a recorder", not recipe_hits,
+      "-- it is built like a building, not crafted like a product. Found in %s" % recipe_hits)
 check("the retired recipe file is gone from disk",
       not os.path.exists(os.path.join(recipe_dir, "RR_FieldEquipmentRecipes.xml")))
 allowlist = json.loads(read(os.path.join(REPO, "tools", "package-files.json")).lstrip(u"﻿"))
@@ -144,9 +183,35 @@ check("the package allowlist no longer names it",
 
 check("no scenario grants a recorder",
       "RR_FieldRecorder" not in strip_xml_comments(scenarios_xml),
-      "-- two starts granted one; both now grant a textbook")
+      "-- a start that hands out a facility nobody asked for is clutter; it is buildable instead")
 check("the procurement catalogue does not carry a recorder",
       "RR_FieldRecorder" not in strip_xml_comments(catalogue_xml))
+
+# **A PLANT REPORTED MISSED HERE AND THAT IS WHY THIS CLAIM EXISTS.** `plant-record-book.py` took
+# the route-evidence component off the company journal and the whole battery stayed green. Without
+# it `CompanyCarrierDef` returns null -- it requires the component exactly once -- and every caller
+# silently falls back to Core's textbook for ever: working software, wrong book, no error anywhere.
+# That is the quietest possible failure and nothing was asserting against it.
+# **AND THE FIRST VERSION OF THIS CLAIM REPORTED MISSED A SECOND TIME, FOR A DIFFERENT REASON.**
+# It read `"CompProperties_RouteEvidence" in journal_xml`, and the plant renames the class to
+# `CompProperties_RouteEvidenceGone` -- which CONTAINS the string being searched for. A rename
+# satisfying a substring test is a hole this project has recorded before, word for word: *"a
+# substring test passed a rename to `unclaimedRequestId` because the new name contains the old
+# one"*. So the test is the whole attribute, terminated by its own closing quote, and the def's
+# comments are stripped first because they name the class while explaining it -- the fifth
+# instance of a checker reading its own prose is already on record here too.
+journal_code = strip_xml_comments(journal_xml)
+check("the company journal carries the route evidence component",
+      'Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteEvidence"' in journal_code,
+      "-- CompanyCarrierDef requires it exactly once. Without it the journal silently stops "
+      "qualifying and the company issues Core's textbook again, with nothing reporting a fault")
+
+check("the company journal IS obtainable, and visibly so",
+      "RR_MakeRouteRecording" in strip_xml_comments(
+          read(os.path.join(recipe_dir, "RR_FieldKitRecipes.xml"))),
+      "-- a journal the company only ever posts out matches check-retired-content's shape for "
+      "'superseded but still loadable', which would file a shipped, issued item as something "
+      "nothing should tell a player to use. A recipe is the honest fix")
 
 # ------------------------------------------------------------------ 3. resolved, not named
 print("")
@@ -284,4 +349,4 @@ print("")
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))
     sys.exit(1)
-print("PROOF HELD: the book is the recorder, the def still loads, and nothing hands one out")
+print("PROOF HELD: the book is the recorder, both carriers count, and the company issues its own")

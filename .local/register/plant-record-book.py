@@ -39,7 +39,11 @@ REQUEST = SRC + "/Company/RequestLine.cs"
 CARGO = SRC + "/Expedition/ExpeditionCargo.cs"
 COMP = SRC + "/Investigation/CompRouteEvidence.cs"
 MOD = "Mod/Rimrooms - Async Industries/1.6"
-ITEMS = MOD + "/Defs/ThingDefs_Items/RR_FieldEquipment.xml"
+# **`RR_FieldEquipment.xml` IS GONE AS OF 0.13.0-dev** and both of the defs it held moved. The
+# recorder is a building in `RR_FieldKit.xml`; the route recording became the company journal in
+# `RR_CompanyJournal.xml`, which also resolved a duplicate defName that file had been shipping.
+KIT = MOD + "/Defs/ThingDefs_Buildings/RR_FieldKit.xml"
+JOURNAL = MOD + "/Defs/ThingDefs_Items/RR_CompanyJournal.xml"
 KEYED = MOD + "/Languages/English/Keyed/RR_Expedition.xml"
 
 _RR_SENTINEL = os.path.join(".local", "register",
@@ -95,11 +99,26 @@ PLANTS = [
      'public const string RecorderGap = "recorder-gap";', 1),
 
     # ---- the book is Core's, and nothing hands one out ----------------------------------
-    ("the recorder def stops being declared", ITEMS,
+    # **RE-AIMED: the def moved file, and the claim is unchanged.** Something in a saved game and in
+    # `FailedSiteRecovery`'s required-content list must keep resolving, wherever it is declared.
+    ("the recorder def stops being declared", KIT,
      "RR_FieldRecorder", "RR_FieldRecorderGone", 1),
 
-    ("the recorder becomes tradeable", ITEMS,
-     "<tradeability>None</tradeability>", "<tradeability>All</tradeability>", 1),
+    # **THIS CLAIM IS GONE, AND IT IS RESTATED HERE RATHER THAN QUIETLY DELETED.** It was *"the
+    # recorder becomes tradeable"*, planting against `<tradeability>None</tradeability>` -- the
+    # rule being that a superseded item must stay untradeable, unbuilt and ungranted so nothing
+    # tells a player to go and use one. **The owner overruled it on 2026-10-06** by answering
+    # "Build the three items, hold the Pursuer": the recorder is live, buildable and useful, so a
+    # rule demanding it stay unobtainable is a rule about a decision that was reversed. A green
+    # instrument over a dead restraint is worse than no instrument.
+    #
+    # What replaces it is the claim that now matters, and it is stricter: **the journal must carry
+    # the component the whole evidence pipeline reads.** Without it `CompanyCarrierDef` silently
+    # returns null and every caller falls back to Core's textbook forever -- working software,
+    # wrong book, no error anywhere.
+    ("the company journal loses the route evidence component", JOURNAL,
+     'li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteEvidence"',
+     'li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteEvidenceGone"', 1),
 
     # ---- the carrier predicate ----------------------------------------------------------
     # **AIMED AT THE PROPERTY.** The first version renamed the declaration, which neither

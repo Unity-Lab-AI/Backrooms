@@ -160,9 +160,18 @@
       <li Class="CompProperties_Flickable" />
       <li Class="CompProperties_Breakdownable" />
       <li Class="RimroomsAsyncIndustries.Gate.CompProperties_RimroomsGateConsole" />
+      <!-- The bench has to name the facility back or the link never forms. One facility, Core's
+           own mechanic, no new C#: a field recorder standing within six cells takes 12% off the
+           bench's work. -->
+      <li Class="CompProperties_AffectedByFacilities">
+        <linkableFacilities>
+          <li>RR_FieldRecorder</li>
+        </linkableFacilities>
+      </li>
     </comps>
     <placeWorkers>
       <li>PlaceWorker_PreventInteractionSpotOverlap</li>
+      <li>PlaceWorker_ShowFacilitiesConnections</li>
     </placeWorkers>
   </ThingDef>
 

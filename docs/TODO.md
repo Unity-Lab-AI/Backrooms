@@ -64,31 +64,23 @@ LAW #0 reminder: every task description preserves the user's verbatim words.
 
 **Verbatim owner decision, asked and answered the same message (2026-10-06):** *"Full reversal — our own items and benches"* — chosen over sound-only, over sound-plus-gate-identity, and over leaving it archived.
 
-**Verbatim owner direction (2026-10-06):** *"remember things rotate"*
+### Owner decisions, asked and answered 2026-10-06 — the three forks that were left
 
-**THIS REVERSES A BINDING OWNER DIRECTION AND THE REVERSAL IS STATED OUT LOUD RATHER THAN QUIETLY EDITED.** [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md) opened with the owner's own words of **2026-09-28**: *"The owner does not want a new item, equipment, furniture, production-bench or in-game asset production project. This supersedes earlier instructions to create original gameplay art/audio and custom physical item/building content."* That sentence is what retired phase 2 across three versions — 0.9.0-dev took the four legacy gate objects, the field analysis bench, the site lamp and climate unit and the institutional carpet; 0.9.9-dev took the return beacon; **0.12.22-dev took the last four textures and `check-register-compliance.py` rule 6 has asserted *zero gameplay art or audio ships* ever since.** The 2026-10-06 direction above supersedes it. **The 2026-09-28 sentence is not deleted anywhere it appears** — it was true on the day, invariant 105 forbids making a removal look like progress, and a reader who finds the retirement records must be able to see why they were written and what overruled them.
+**Verbatim owner direction (2026-10-06):** *"suse ask me questions and get to finish ing the todao so nothing is left but tests"*
 
-**WHAT IS *NOT* REVERSED, STATED BECAUSE INFERRING IT WOULD HAVE DESTROYED THE MOD.** The gate is a **designation on an existing Core `Door`/`Autodoor`**, and that binding is what makes the 294-mod profile work — register rows 273 Locks, 77 Doors Expanded, 185 ReBuild: Doors and Corners, 252 Vault Walls and Doors, 201 Secret Passage Doors, 265 AirtightGarageDoors. **It is also what the prisoner crossing shipped hours earlier rides on**, because *"if zoned to and door are allowed access"* is door permissions and nothing else. Our own content is therefore built **alongside** the Core-door path, never in place of it. Both routes stay reachable.
+Three forks were put to the owner and answered:
 
-- [~] **Six masters never had a Def at all** — field recorder, Quiet Pursuer, return beacon, route recording, sealed evidence case, survey tag — so each needs its role decided rather than restored. -- **TWO OF THE SIX ANSWERED 0.13.0-dev, FOUR DELIBERATELY HELD.** The **route recording** is the company journal, and the **return beacon** ships as a site marker beacon -- a powered amber marker, explicitly NOT a route authority, because the gate's own address book took that job in 0.9.9-dev and taking it back would be two places deciding where home is. **Held, with reasons rather than silence:** the field recorder's job is already the journal's, the survey tag's is already a `GlowPod`'s and the evidence case's is already a designated `Shelf`'s -- a second object doing an existing object's job is the duplication the reuse policy still warns about -- and the Quiet Pursuer needs a race `ThingDef` with `lifeStages` and body graphics rather than a texture, which on a 296-mod profile is how other people's pawn rendering gets broken. All four are cut and held out of the package by the cutter, which ships no texture that no def or source file names.
+| Fork | **Owner's answer, verbatim** |
+|---|---|
+| The four cut masters nothing names | **"Build the three items, hold the Pursuer"** |
+| The public register's tag vocabulary | **"Your words, with the page saying nothing is required to run"** |
+| Where the public register lives | **"Generated filterable HTML, linked from the mods wiki page"** |
 
+**And one count was settled without asking, because it is a fact rather than a decision.** The owner's *"i cuttenlty have 296 (6DLCs, Rimbridge , Rimrooms(locally))"* reconciles exactly: **294 profile mods + Rimbridge + Rimrooms = 296**, with the six `Data/` folders (Core, Royalty, Ideology, Biotech, Anomaly, Odyssey) sitting inside the 294 as rows 4 to 9. The public register carries all 296, so Rimbridge and Rimrooms get rows the engineering register never had.
 
 ### Owner direction — a second register, public facing, written for players rather than for us (2026-10-06)
 
 **Verbatim owner direction (2026-10-06):** *"okay we are adding to todo everything we need to make a similar mod registry as the one we have but this one will be pubvlic facing with all new writes in it so that it says the important stuff all players would need to know like mod interferances, what if's if not used  uses in rimrooms, required/recommended/(whatever else(s) is needed) as tags per mod in this recommended mod list for all modsand anything else relevant of note"*
-
-**Verbatim owner profile statement (2026-10-06):** *"i cuttenlty have 296 (6DLCs, Rimbridge , Rimrooms(locally))"*
-
-**THIS IS A SECOND REGISTER, NOT A VIEW OF THE FIRST, AND THE DIFFERENCE IS THE AUDIENCE.** The existing 294-row register is an engineering input — *Planned Use*, *Integration Approach*, *Compatibility Watch*, *FinalDisposition*, *EvidenceBuild*, *AcceptanceEvidence* — written for whoever is about to build something. **"all new writes"** means none of that prose is reused: a player does not need our integration approach, they need to know whether to install the thing and what happens if they do not.
-
-- [ ] **"a similar mod registry as the one we have but this one will be pubvlic facing with all new writes in it"** — a second generated register beside the existing one, sharing its machinery and **none of its sentences**. It is published with the site, so the published-document rules bind it: no text walls, the 360-character paragraph ceiling, and the banned vocabulary.
-- [ ] **"mod interferances"** — per mod, what it actually collides with: ours, another mod's, or a vanilla behaviour a player would notice changing. Named concretely rather than as a caution.
-- [ ] **"what if's if not used"** — per mod, **what a player loses by not installing it**, which is the column the engineering register has never had. The fallback already exists in code for every bound provider; this is where it gets said in the player's language.
-- [ ] **"uses in rimrooms"** — per mod, what this mod does *for this mod*, in one readable line.
-- [ ] **"required/recommended/(whatever else(s) is needed) as tags per mod in this recommended mod list for all mods"** — a tag per mod, **and the tag vocabulary itself has to be decided rather than assumed**, because the engineering register's `stance` column already carries Optional / Configuration only / Visual only / No integration, and `check-register-compliance.py` refuses **Required** on any row while `About.xml` declares no dependencies. A player-facing *Required* and an engineering *Required* are different claims and must not be the same word by accident.
-- [ ] **"for all mods"** — all of them, not the ones that happen to be interesting. The owner's own profile is **296**: *"6DLCs, Rimbridge , Rimrooms(locally)"*, against the register's 294 rows plus Core — so the counts have to be reconciled and stated rather than quietly differing.
-- [ ] **"and anything else relevant of note"** — open by construction, like the unnerving register's *"all things"*; whatever a player would want and the engineering register has no column for.
-
 
 ### Owner report — a door refuses to become a gate until the battery is set up first (2026-10-03)
 
