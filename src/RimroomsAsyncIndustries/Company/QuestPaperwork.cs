@@ -116,6 +116,105 @@ namespace RimroomsAsyncIndustries.Company
         }
 
         /// <summary>
+        /// A quest by its record id, for anything holding a stamp rather than a def name.
+        ///
+        /// `RequestFor` already looks a quest up by **def name**, which is what the Operations pane
+        /// has. A book carries the **record id**, because a def name would stop identifying one quest
+        /// the moment the same request could be offered twice.
+        /// </summary>
+        public RequestRecord RequestById(string id)
+        {
+            if (string.IsNullOrEmpty(id)) { return null; }
+            IReadOnlyList<RequestRecord> line = Requests;
+            if (line == null) { return null; }
+            for (int index = 0; index < line.Count; index++)
+            {
+                if (line[index] != null && line[index].Id == id) { return line[index]; }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// The nearest storage thing a gate links as its records archive, or null.
+        ///
+        /// **Asked of the gate links**, which is where `HasArchivedCustody` reads custody from, so
+        /// the shelf this offers to haul to is the shelf that will satisfy the test. Offering the
+        /// nearest *shelf* instead would send a pawn across the base to a container that does not
+        /// count.
+        /// </summary>
+        public Thing NearestArchiveStore(Thing item)
+        {
+            if (item == null || item.Map == null) { return null; }
+            RimroomsGateEquipmentDefRole archive = ArchiveRole();
+            if (archive.Role == null) { return null; }
+            Thing best = null;
+            int bestDistance = int.MaxValue;
+            List<Building> buildings = item.Map.listerBuildings.allBuildingsColonist;
+            for (int index = 0; index < buildings.Count; index++)
+            {
+                Gate.CompRimroomsGate gate = buildings[index] == null
+                    ? null : buildings[index].TryGetComp<Gate.CompRimroomsGate>();
+                if (gate == null || !gate.IsDesignated) { continue; }
+                foreach (Thing linked in gate.LinkedEquipment)
+                {
+                    if (linked == null || !linked.Spawned || linked.Map != item.Map) { continue; }
+                    if (gate.RoleOf(linked) != archive.Role) { continue; }
+                    int distance = item.Position.DistanceToSquared(linked.Position);
+                    if (distance >= bestDistance) { continue; }
+                    best = linked;
+                    bestDistance = distance;
+                }
+            }
+            return best;
+        }
+
+        /// <summary>The archive role, resolved once so neither caller types the defName.</summary>
+        private struct RimroomsGateEquipmentDefRole { public Gate.RimroomsGateEquipmentDef Role; }
+
+        private static RimroomsGateEquipmentDefRole ArchiveRole()
+        {
+            return new RimroomsGateEquipmentDefRole
+            {
+                Role = DefDatabase<Gate.RimroomsGateEquipmentDef>.GetNamedSilentFail("RR_Link_Archive")
+            };
+        }
+
+        /// <summary>
+        /// A cell inside the nearest designated credit beacon's radius, or an invalid cell.
+        ///
+        /// **The beacon's own cell when it is standable, and a cell beside it otherwise.** A beacon
+        /// is a building, so a haul order aimed at its position would be a haul into a wall; the
+        /// radius is what matters and anything inside it is equally collected.
+        /// </summary>
+        public IntVec3 NearestCreditBeaconCell(Thing item)
+        {
+            if (item == null || item.Map == null) { return IntVec3.Invalid; }
+            Building nearest = null;
+            int bestDistance = int.MaxValue;
+            List<Building> buildings = item.Map.listerBuildings.allBuildingsColonist;
+            for (int index = 0; index < buildings.Count; index++)
+            {
+                Building building = buildings[index];
+                if (building == null || building.Destroyed) { continue; }
+                Economy.CompRimroomsCreditBeacon beacon =
+                    building.TryGetComp<Economy.CompRimroomsCreditBeacon>();
+                if (beacon == null || !beacon.Designated) { continue; }
+                int distance = item.Position.DistanceToSquared(building.Position);
+                if (distance >= bestDistance) { continue; }
+                nearest = building;
+                bestDistance = distance;
+            }
+            if (nearest == null) { return IntVec3.Invalid; }
+            // Walked outward from the beacon in Core's own radial order, so the chosen cell is the
+            // same on every reload and is as close to the beacon as the map allows.
+            foreach (IntVec3 cell in GenRadial.RadialCellsAround(nearest.Position, 2.9f, true))
+            {
+                if (cell.InBounds(item.Map) && cell.Standable(item.Map)) { return cell; }
+            }
+            return IntVec3.Invalid;
+        }
+
+        /// <summary>
         /// Whether any designated gate on an owned map has completed at least one startup step.
         ///
         /// Stops at the first one found, so on a branch that has done anything at all this is a

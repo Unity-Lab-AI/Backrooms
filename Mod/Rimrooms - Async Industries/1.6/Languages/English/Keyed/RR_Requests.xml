@@ -151,6 +151,23 @@ There is no date on this and there will not be one. Open the Operations tab, loo
   <RR_Letter_RequestCompletedTitle>Request met: {0}</RR_Letter_RequestCompletedTitle>
   <RR_Letter_RequestCompletedBody>The company has what it asked for. {0} was finished by {1}, and ${2} has gone into the account.</RR_Letter_RequestCompletedBody>
 
+  <!-- THE BRANCH LEDGER. Owner: "every book recieved needs to be tuned to or capable of listing the
+       current quests its needed for that has been acceptred, with ability to accept more than one
+       quests at a time". Accepted quests only; the pane above is the offer board. {0} is how many.
+
+       Each row carries the NEXT STEP as well as the state, because a status line only helps somebody
+       who already knows the procedure exists - the lesson the record book's own inspect card learned
+       when the owner reported "it was confusing at what i was suppose to do with it". -->
+  <RR_Ledger_PaperworkHeading>Paperwork outstanding ({0} job(s))</RR_Ledger_PaperworkHeading>
+  <RR_Ledger_PaperworkRow>{0} — {1} of {2} filed — {3}</RR_Ledger_PaperworkRow>
+  <RR_Ledger_LightGreen>READY TO SEND</RR_Ledger_LightGreen>
+  <RR_Ledger_LightAmber>no book</RR_Ledger_LightAmber>
+  <RR_Ledger_LightDark>in progress</RR_Ledger_LightDark>
+  <RR_Ledger_PaperworkNextSend>Haul its book into a designated credit beacon's radius. There is no deadline.</RR_Ledger_PaperworkNextSend>
+  <RR_Ledger_PaperworkNextBook>The work is filed and no book agrees with it. The company sends another when the branch holds none for this job.</RR_Ledger_PaperworkNextBook>
+  <RR_Ledger_PaperworkNextWrite>Next: {0}. Assign somebody to a records desk.</RR_Ledger_PaperworkNextWrite>
+  <RR_Ledger_PaperworkNextWaiting>Nothing can be written yet; this job is waiting on the work it reports.</RR_Ledger_PaperworkNextWaiting>
+
   <!-- Ledger reasons. Noun phrases, matching RR_Ledger_SurveyPayment. -->
   <RR_Ledger_RequestPayment>Corporation request met</RR_Ledger_RequestPayment>
   <RR_Ledger_RequestBonus>Request met with the whole crew intact</RR_Ledger_RequestBonus>
@@ -247,6 +264,29 @@ There is no date on this and there will not be one. Open the Operations tab, loo
   <RR_Route_UnfamiliarCorroborationDesc>Complete the corroboration project and one account becomes a finding. This is the version the company can charge for.</RR_Route_UnfamiliarCorroborationDesc>
 
   <RR_Event_RecordBookDelivery>The corporation sent blank record books. A branch with a working gate and nothing to write in is a branch that cannot file anything.</RR_Event_RecordBookDelivery>
+
+  <!-- A BOOK PER ACCEPTED QUEST. Owner: "the seend new journals after each quest finished/ starting
+       new quests/missions". One pod per company tick rather than a crate of identical-looking books,
+       because each one is bound to its own quest and a player sorting a pile is the opposite of
+       helpful. {0} is the company, {1} the quest's own label. -->
+  <RR_QuestBook_Title>A journal for the job</RR_QuestBook_Title>
+  <RR_QuestBook_Body>{0} has sent a record book for one of the jobs you accepted: {1}.
+
+The paperwork this job wants is written at a records desk, from records the branch already holds. When every piece is filed, the book is ready to go back.
+
+To send it: haul it inside the radius of a trade beacon you designated for credit. There is no deadline.</RR_QuestBook_Body>
+
+  <!-- COLLECTION OUT OF A BEACON RADIUS, the owner's chosen send-back. {0} is the company, {1} how
+       many went, {2} the quest labels. Named rather than counted alone, because a collection that
+       says only "2 books" leaves the player checking which. -->
+  <RR_QuestBookCollected_Title>Paperwork received</RR_QuestBookCollected_Title>
+  <RR_QuestBookCollected_Body>{0} has collected {1} finished record book(s) from the beacon: {2}.
+
+Payment is on the ledger.</RR_QuestBookCollected_Body>
+
+  <RR_Event_QuestBookDelivery>A record book arrived for an accepted job ({0}).</RR_Event_QuestBookDelivery>
+  <RR_Event_QuestBookCollected>Finished paperwork collected for {0}. Company Account receipt: ${1} USD.</RR_Event_QuestBookCollected>
+  <RR_Ledger_PaperworkReturn>Accepted paperwork</RR_Ledger_PaperworkReturn>
   <RR_BookDrop_Title>Record books delivered</RR_BookDrop_Title>
   <RR_BookDrop_Body>{0} has a gate that works and nothing to write in.
 

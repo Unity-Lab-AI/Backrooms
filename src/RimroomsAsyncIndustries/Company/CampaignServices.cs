@@ -371,6 +371,13 @@ namespace RimroomsAsyncIndustries.Company
             if (now % 60 == 30) { TickFacilityRelief(); }
             // Offset from the relief so the two map scans never land together.
             if (now % 60 == 45) { TickRecordBookDelivery(); }
+            // Offset from the record-book tick above so two pods never land on the same tick, and
+            // on the same one-second cadence: a book arriving a second late is unnoticeable and a
+            // scan every tick for a condition that changes a handful of times a campaign is waste.
+            if (now % 60 == 50) { TickQuestBookDelivery(); }
+            // The beacon sweep is slower on purpose. Collection is a batch, so a player hauling
+            // three books into a radius should see them go together rather than one at a time.
+            if (now % 600 == 120) { TickQuestBookCollection(); }
             // The mission line. Offered on contact, completed when a route comes true. Slow on
             // purpose: every check it runs is a scan, and no route in this mod can be satisfied
             // and un-satisfied inside four seconds.

@@ -19,6 +19,7 @@ DRIVER = "src/RimroomsAsyncIndustries/Company/JobDriver_WriteUp.cs"
 GIVER = "src/RimroomsAsyncIndustries/Company/WorkGiver_WriteUp.cs"
 SETTLEMENT = "src/RimroomsAsyncIndustries/Company/EvidenceSettlement.cs"
 DEFS = "src/RimroomsAsyncIndustries/Company/WriteUpDefs.cs"
+DELIVERY = "src/RimroomsAsyncIndustries/Company/QuestBookDelivery.cs"
 KINDS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsWriteUpDefs/RR_WriteUps.xml"
 REQUESTS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsRequestDefs/RR_Requests.xml"
 DESK = "Mod/Rimrooms - Async Industries/1.6/Defs/ThingDefs_Buildings/RR_RecordsDesk.xml"
@@ -36,6 +37,17 @@ PLANTS = [
     ("A SECOND CALLER STAMPS A BOOK, so the record and the receipt can drift apart", GIVER,
      "            JobDef definition = DefDatabase<JobDef>.GetNamedSilentFail(\"RR_WriteUp\");",
      "            request.FileWriteUp(kind.defName);" + NL
+     + "            JobDef definition = DefDatabase<JobDef>.GetNamedSilentFail(\"RR_WriteUp\");",
+     CHECK),
+
+    # ======================================================= rule 2, the tally must be the record's
+    ("A STAMP CARRIES A LITERAL INSTEAD OF THE RECORD'S COUNT, so a book receipts nothing real",
+     DELIVERY, "issued.StampForQuest(request.Id, request.WriteUpsFiled.Count);",
+     "issued.StampForQuest(request.Id, 0);", CHECK),
+
+    ("A THIRD CALLER STAMPS A BOOK, outside both sanctioned operations", GIVER,
+     "            JobDef definition = DefDatabase<JobDef>.GetNamedSilentFail(\"RR_WriteUp\");",
+     "            pawn.inventory?.innerContainer?.FirstOrDefault()?.TryGetComp<RimroomsAsyncIndustries.Investigation.CompRouteEvidence>()?.StampForQuest(request.Id, request.WriteUpsFiled.Count);" + NL
      + "            JobDef definition = DefDatabase<JobDef>.GetNamedSilentFail(\"RR_WriteUp\");",
      CHECK),
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -23,7 +23,7 @@ namespace RimroomsAsyncIndustries.Investigation
         }
     }
 
-    public sealed class CompRouteEvidence : ThingComp
+    public sealed partial class CompRouteEvidence : ThingComp
     {
         private int bindingSchema = 1;
         private string evidenceId;
@@ -213,6 +213,20 @@ namespace RimroomsAsyncIndustries.Investigation
             get { return "RR_Evidence_CompanyBookDesc".Translate().ToString(); }
         }
 
+        /// <summary>
+        /// Forget the quest this book served.
+        ///
+        /// Called when the corporation collects it, immediately before it stops existing, so nothing
+        /// can ever find a half-collected book. **Deliberately not called when a quest is cancelled:**
+        /// a book the branch still holds is still the branch's, and un-stamping it would silently
+        /// turn a deliverable into an ordinary volume the player then has to re-issue.
+        /// </summary>
+        public void ClearQuestStamp()
+        {
+            stampedQuestId = null;
+            stampedWriteUpCount = 0;
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -293,6 +307,17 @@ namespace RimroomsAsyncIndustries.Investigation
                         "RR_Evidence_CompanyBookDesc".Translate(),
                         title: "RR_UI_JournalHowToTitle".Translate().ToString()));
                 });
+            }
+            // **THE QUEST-BOUND ACTIONS, and each one exists only once its underlying action does.**
+            // Owner, 2026-10-06: *"with a pawn click actions with sterp by step instructions how to
+            // use the journal"*. The instruction block above is always there; these three appear
+            // when they can actually be taken, because an option that explains why it is greyed out
+            // is a sentence a player reads every time they right-click.
+            if (companyIssued && !string.IsNullOrEmpty(stampedQuestId) && selPawn != null
+                && selPawn.Faction == Faction.OfPlayer && parent.Spawned
+                && selPawn.Map == parent.Map && !parent.Position.Fogged(parent.Map))
+            {
+                foreach (FloatMenuOption option in QuestBookOptions(selPawn)) { yield return option; }
             }
             if (!HasValidBinding || selPawn == null || selPawn.Faction != Faction.OfPlayer || !parent.Spawned ||
                 selPawn.Map != parent.Map || parent.Position.Fogged(parent.Map)) { yield break; }

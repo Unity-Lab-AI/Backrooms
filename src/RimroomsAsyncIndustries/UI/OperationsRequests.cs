@@ -62,8 +62,90 @@ namespace RimroomsAsyncIndustries.UI
                 DrawOpenRequest(listing, campaign, open);
             }
 
+            DrawPaperworkLedger(listing, campaign);
             DrawRequestHistory(listing, campaign);
             listing.GapLine();
+        }
+
+        /// <summary>
+        /// The branch ledger: every accepted quest, its paperwork, and its light.
+        ///
+        /// **Owner direction, 2026-10-06, verbatim:** *"its almost like every book recieved needs to
+        /// be tuned to or capable of listing the current quests its needed for that has been
+        /// acceptred, with ability to accept more than one quests at a time"*.
+        ///
+        /// **Nothing ever prevented several at once** — `requests` is a list, and the tutorial line
+        /// simply hands out one at a time. **What was missing is the index**, which is this.
+        ///
+        /// ## Accepted quests only, which is what makes it a ledger
+        ///
+        /// A ledger that also listed offers would be an offer board, and the pane above is already
+        /// that. This answers one question: *what has this branch taken on, and what does each one
+        /// still need from me.*
+        ///
+        /// ## And it is silent when there is nothing to say
+        ///
+        /// No accepted quest wants paperwork, no section. A heading over an empty list is the kind of
+        /// permanent furniture that teaches a player to stop reading a pane.
+        /// </summary>
+        private void DrawPaperworkLedger(Listing_Standard listing, RimroomsCampaignComponent campaign)
+        {
+            IReadOnlyList<RequestRecord> line = campaign.Requests;
+            if (line == null) { return; }
+            var rows = new List<RequestRecord>();
+            for (int index = 0; index < line.Count; index++)
+            {
+                RequestRecord record = line[index];
+                if (record == null || record.Status != RequestStatus.Accepted) { continue; }
+                if (campaign.WriteUpsWanted(record).Count == 0) { continue; }
+                rows.Add(record);
+            }
+            if (rows.Count == 0) { return; }
+
+            listing.GapLine();
+            listing.Label("RR_Ledger_PaperworkHeading".Translate(rows.Count));
+            for (int index = 0; index < rows.Count; index++)
+            {
+                RequestRecord record = rows[index];
+                RimroomsRequestDef definition = record.Definition;
+                List<RimroomsWriteUpDef> wanted = campaign.WriteUpsWanted(record);
+                int filed = 0;
+                for (int item = 0; item < wanted.Count; item++)
+                {
+                    if (record.WriteUpsFiled.Contains(wanted[item].defName)) { filed++; }
+                }
+                QuestLight light = campaign.LightFor(record);
+                listing.Label("RR_Ledger_PaperworkRow".Translate(
+                    definition == null ? record.RequestDefName : definition.LabelCap.ToString(),
+                    filed, wanted.Count, LightLabel(light)));
+
+                // **The next step, not just the state.** A status line only helps somebody who
+                // already knows the procedure exists, which is the lesson the record book's own
+                // inspect card learned the hard way.
+                if (light == QuestLight.Green)
+                { listing.Label("RR_Ledger_PaperworkNextSend".Translate()); }
+                else if (light == QuestLight.Amber)
+                { listing.Label("RR_Ledger_PaperworkNextBook".Translate()); }
+                else
+                {
+                    RimroomsWriteUpDef next = campaign.NextWriteUp(record);
+                    listing.Label(next == null
+                        ? "RR_Ledger_PaperworkNextWaiting".Translate().ToString()
+                        : "RR_Ledger_PaperworkNextWrite".Translate(next.label).ToString());
+                }
+                listing.Gap(4f);
+            }
+        }
+
+        /// <summary>One word for the light, so the row stays one line.</summary>
+        private static string LightLabel(QuestLight light)
+        {
+            switch (light)
+            {
+                case QuestLight.Green: return "RR_Ledger_LightGreen".Translate().ToString();
+                case QuestLight.Amber: return "RR_Ledger_LightAmber".Translate().ToString();
+                default: return "RR_Ledger_LightDark".Translate().ToString();
+            }
         }
 
         private void DrawOpenRequest(Listing_Standard listing, RimroomsCampaignComponent campaign,

@@ -18,8 +18,9 @@ THE RULES
 
  1. `RequestRecord.FileWriteUp` is the only thing that appends to the tally, and
     `FileWriteUpAndStamp` is its only caller.
- 2. `CompRouteEvidence.StampForQuest` is the only thing that stamps a book, and `FileWriteUpAndStamp`
-    is its only caller -- so the record and the receipt move together or not at all.
+ 2. `CompRouteEvidence.StampForQuest` is only reachable from the operation that advances the record
+    and the one that binds a new book -- and **every** call must pass the record's own
+    `WriteUpsFiled.Count`, never a literal. That is what keeps the record authoritative.
  3. The record is written **before** the book in that method. The reverse order would stamp a book
     for work the record never recorded.
  4. Every `RimroomsWriteUpDef` is asked for by at least one request. A kind nobody wants is dead
@@ -102,10 +103,32 @@ def main():
         problems.append("FileWriteUp is called from %d place(s) (%s); exactly one caller, "
                         "FileWriteUpAndStamp, may advance the tally or the record and the book can "
                         "drift apart" % (len(writers), ", ".join(sorted(set(writers))) or "none"))
-    if len(stampers) != 1 or stampers[0] != PAPERWORK:
-        problems.append("StampForQuest is called from %d place(s) (%s); exactly one caller may stamp "
-                        "a book, in the same operation that writes the record"
-                        % (len(stampers), ", ".join(sorted(set(stampers))) or "none"))
+    # **TWO LEGITIMATE STAMPERS, NAMED, AND A STRONGER RULE THAN "ONLY ONE".** The first draft
+    # allowed one and the batch that added quest-book delivery tripped it -- correctly, because a
+    # second call site had appeared. Reading it showed the call was legitimate: binding a BRAND NEW
+    # book to a quest at the record's existing tally advances nothing.
+    #
+    # So the rule became the thing that actually matters: a stamp may only ever be handed
+    # `request.WriteUpsFiled.Count`. Not a literal, not a computed number, not a cached one. That is
+    # what keeps the record authoritative no matter how many places bind a book, and it is a tighter
+    # rule than a caller count ever was.
+    allowed_stampers = {PAPERWORK, os.path.join("src", "RimroomsAsyncIndustries", "Company",
+                                                "QuestBookDelivery.cs")}
+    unexpected = sorted(set(stampers) - allowed_stampers)
+    if unexpected:
+        problems.append("StampForQuest is called from %s, which is neither the one operation that "
+                        "advances the record nor the one that binds a new book"
+                        % ", ".join(unexpected))
+    for relative, source in every_source_file():
+        # Anchored on the dot: the first draft matched the DECLARATION, whose parameter list is
+        # obviously not a call argument. `.StampForQuest(` is a call and nothing else is.
+        for match in re.finditer(r"\.StampForQuest\(([^)]*)\)", source):
+            arguments = match.group(1)
+            if "WriteUpsFiled.Count" not in arguments:
+                problems.append("%s stamps a book with %r instead of the record's own "
+                                "WriteUpsFiled.Count. The record is the authority, so a stamp carrying "
+                                "any other number is a receipt for something nobody recorded"
+                                % (relative, arguments.strip()[:60]))
 
     # ---------------------------------------------------- rule 3, the record goes first
     if body:

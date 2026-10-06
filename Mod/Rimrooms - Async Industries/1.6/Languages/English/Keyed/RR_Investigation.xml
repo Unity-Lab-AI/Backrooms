@@ -8,6 +8,12 @@
        aiming. Four steps and a stop: "keep it very concise asnd to the point". -->
   <RR_Evidence_CompanyBookDesc>The journal the company issues you. It records where a crew went and what they found, and it is the thing you get paid for.\n\n1. Have a colonist carry it through a gate.\n2. Walk it through each required room. The survey writes itself as they go.\n3. Bring it home and put it on the shelf you designated as the records archive.\n4. Assign a researcher to analyse it at a powered bench.\n\nLose the book and you lose that run's record, not the branch's work.</RR_Evidence_CompanyBookDesc>
   <RR_UI_JournalHowTo>What is this journal for?</RR_UI_JournalHowTo>
+  <!-- THE THREE QUEST-BOUND CLICK ACTIONS. Each is offered only when it can actually be taken, so a
+       player never reads an explanation of why an option is greyed out. {0} on the first is the
+       write-up kind's own label, so the order names what is about to be written. -->
+  <RR_UI_JournalWriteUpHere>Write up: {0}</RR_UI_JournalWriteUpHere>
+  <RR_UI_JournalFile>File this in the records archive</RR_UI_JournalFile>
+  <RR_UI_JournalSend>Send this to the company</RR_UI_JournalSend>
   <!-- {0} is the write-up kind's own label, {1} the quest id. Logged on the company's event record
        rather than lettered: filing one report is bookkeeping, and the green light is the thing the
        player is actually waiting for. -->

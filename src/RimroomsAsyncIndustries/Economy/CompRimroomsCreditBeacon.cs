@@ -53,6 +53,16 @@ namespace RimroomsAsyncIndustries.Economy
 
         public bool Designated { get { return designated; } }
 
+        /// <summary>
+        /// The radius that counts, exposed so other subsystems can ask the beacon rather than
+        /// re-reading its props.
+        ///
+        /// Added when quest-book collection needed the same circle. **The alternative was each
+        /// caller reaching into `Props.radius` itself**, which is two readers of one number and the
+        /// kind of thing that drifts the first time the default changes.
+        /// </summary>
+        public float Radius { get { return Props.radius; } }
+
         public override void PostExposeData()
         {
             base.PostExposeData();

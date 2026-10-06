@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -271,6 +271,8 @@ namespace RimroomsAsyncIndustries.Company
             ExposeFieldExposure();
             ExposeCertifications();
             ExposeRecordBookDelivery();
+            ExposeQuestBookDelivery();
+            ExposeQuestBookCollection();
             ExposeSoloGroupHints();
             ExposeRemoteSites();
             ExposeLostPawns();
