@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -325,7 +325,17 @@ namespace RimroomsAsyncIndustries.Generation
             if (!cell.IsValid) { return null; }
             GenSpawn.Spawn(thing, cell, map, rotation);
             if (!thing.Spawned || thing.Map != map) { return null; }
-            thing.SetForbidden(false, false);
+            // **FORBIDDEN UNTIL SOMEBODY HAS SEEN THE ROOM.** This line said `false` and that
+            // was the whole of the defect the owner reported: *"pawns when entering the back room
+            // instantly try to find tasks and start running of for example to flower pots to plant
+            // the flower work"*. Unforbidden content on a 300x300 coordinate is a work target the
+            // full width of the maze away, from the tick the map exists.
+            //
+            // `UnexploredWorkMapComponent` releases it when its cell stops being fogged, which is
+            // Core's own notion of somebody having been there. Doors, the gate anchor and the
+            // conduits are deliberately NOT forbidden -- a forbidden door is a door nobody will
+            // walk through -- and they un-forbid at their own spawn sites.
+            thing.SetForbidden(true, false);
             // **The dressing is where the owner's *"items and equipment and production benches"*
             // actually lives**, so it is the path that most needed a tell. Marked after the spawn
             // rather than before: a thing that failed to spawn is not an object anybody can read,
@@ -586,7 +596,11 @@ namespace RimroomsAsyncIndustries.Generation
             }
             GenSpawn.Spawn(thing, cell, map, rotation);
             if (!thing.Spawned || thing.Map != map) { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }
-            thing.SetForbidden(false, false);
+            // Forbidden until seen, for the same reason as the dressing above. A landmark is
+            // the clue a coordinate is built around, so having a crew sprint to haul one out of a
+            // room they have never entered is the worst version of this defect rather than the
+            // mildest.
+            thing.SetForbidden(true, false);
             // **And nothing else goes beside the landmark.** The same thing `Populate` already
             // does for the gate anchor, for the same reason: the ring it was placed with is the
             // ring it keeps. Without this, a cross-adjacent landmark still survives -- cross

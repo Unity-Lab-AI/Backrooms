@@ -463,21 +463,6 @@ namespace RimroomsAsyncIndustries.Gate
         }
 
         /// <summary>
-        /// Turn this door into a machine gate, with the branch's own equipment.
-        ///
-        /// Offered only on a door at the headquarters, because `BindNativeInfrastructure` requires
-        /// every provider to stand there and a button that can only refuse is worse than no
-        /// button.
-        ///
-        /// **Nothing is decided here.** The binding applies every rule it always did -- the exact
-        /// provider defs, the reserve size, the entry cell, the branch -- and this only answers
-        /// *which* console, battery and bench, and only when there is exactly one of each. That
-        /// is every start this mod ships, so the owner's *"basic components there and connected
-        /// just waiting to be switched on"* is a single click; anything ambiguous is named and
-        /// chosen in the Operations pane, because picking one of several for the player is a
-        /// decision rather than a shortcut.
-        /// </summary>
-        /// <summary>
         /// The watch-posture dropdown, offered wherever an operator can be assigned.
         ///
         /// **A `FloatMenu` rather than three buttons or a cycling one.** The owner asked for *"a
@@ -517,6 +502,21 @@ namespace RimroomsAsyncIndustries.Gate
             };
         }
 
+        /// <summary>
+        /// Turn this door into a machine gate, with the branch's own equipment.
+        ///
+        /// Offered only on a door at the headquarters, because `BindNativeInfrastructure` requires
+        /// every provider to stand there and a button that can only refuse is worse than no
+        /// button.
+        ///
+        /// **Nothing is decided here.** The binding applies every rule it always did -- the exact
+        /// provider defs, the reserve size, the entry cell, the branch -- and this only answers
+        /// *which* console, battery and bench, and only when there is exactly one of each. That
+        /// is every start this mod ships, so the owner's *"basic components there and connected
+        /// just waiting to be switched on"* is a single click; anything ambiguous is named and
+        /// chosen in the Operations pane, because picking one of several for the player is a
+        /// decision rather than a shortcut.
+        /// </summary>
         private IEnumerable<Gizmo> MakeGateGizmos()
         {
             RimroomsCampaignComponent campaign = NativeCampaign;

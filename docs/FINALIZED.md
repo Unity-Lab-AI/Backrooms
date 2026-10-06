@@ -17028,3 +17028,26 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-05)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **FIXED 0.12.99-dev, AND THE CAUSE WAS OURS AND EXPLICIT.** `RoomContentBuilder` called `thing.SetForbidden(false, false)` on **every** piece of room content it placed — two sites, the dressing and the landmark — and the corridor fixtures spawn as `Faction.OfPlayer`. So from the tick a coordinate existed, every pot, bench and bed on it was colony property, unforbidden, and a legitimate work target the full width of a 300×300 maze away. **Not a pathfinding quirk and not vanilla being greedy: the generator did it on purpose, in two lines.** **The mechanism was read out of the shipped assembly rather than guessed at.** `ForbidUtility.IsForbidden(Thing, Pawn)` was decompiled: it tests the thing's own forbidden flag, its cell's `InAllowedArea`, and a lord's extra-forbidden list — **fog is not part of it at all**, so fogging a coordinate would have changed nothing on its own. That left two real mechanisms, and **the forbidden flag beats an allowed area because of the player**: an area would have to be assigned to each crossing pawn, overriding a control the player owns, while the flag touches only content the generator placed. **And forbidding does not restrict movement** — a forbidden thing is not a work target and not haulable; it is not a wall — which is what leaves exploring possible. `UnexploredWorkMapComponent` releases content when its cell stops being fogged, which is Core's own notion of somebody having been there, as a bounded rotating window per invariant 5: 600 cells a second, so a 90,000-cell coordinate is covered in about a minute and a quarter and a room a crew is standing in is reached far sooner. **It only ever un-forbids**, so a thing the player deliberately unforbade keeps that state. **Doors, the gate anchor, the found gate and the conduits are deliberately untouched** — a forbidden door is a door nobody walks through, and the conduits are the power grid rather than scenery.
+
+Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
