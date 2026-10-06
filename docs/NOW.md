@@ -2,7 +2,7 @@
 
 **ONE RECORD. Owner direction, 2026-10-02, verbatim:** *"and the now.md needs to be completedy deleted, then written current. The NOW .md is a temp read file not a history of all work ever done.. its a one time record only ever holding one record"*
 
-So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`. A rule that must survive goes to `.claude/CONSTRAINTS.md` or becomes a checker. Open work goes to `docs/TODO.md`.
+So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`. A rule that must survive goes to `.claude/CONSTRAINTS.md`, to `PUBLISHING.md`, or becomes a checker. Open work goes to `docs/TODO.md`.
 
 | Ledger | Grain |
 |--------|-------|
@@ -17,7 +17,7 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 ## ⛔⛔ TWO HOLDS, BOTH THE OWNER'S, BOTH CURRENT ⛔⛔
 
-**1. Nothing publishes until the launch list is finished.** Owner, 2026-10-06: *"we are not stageing now.md and cascading to all three remotes correctly and properly until we are sure all of this is completed"*. Work is committed **locally only** — the branch sits ahead of every remote on purpose, and **every commit of this session is unpushed.**
+**1. Nothing publishes until the launch list is finished.** Owner, 2026-10-06: *"we are not stageing now.md and cascading to all three remotes correctly and properly until we are sure all of this is completed"*. Work is committed **locally only** — the branch sits ahead of every remote on purpose, and **every commit of this session and the last is unpushed.**
 
 **2. Forgejo is down.** Owner, 2026-10-06: *"fyi the git.unityailab.com is going down so stop pushes to it until further notice, github two repos is still good"*. **The cascade is SIX refs while that stands** — `github` × five branches here, plus `github/main` on the mod-only repository.
 
@@ -25,15 +25,27 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 ---
 
-## ⛔ STAGE BEFORE THE OWNER LAUNCHES, NOT AT PUBLICATION ⛔
+## ⛔ THE ONE THING THAT IS THE OWNER'S TO ANSWER ⛔
 
-**This cost a whole launch report on 2026-10-06 and is the most expensive lesson of the session.** The owner reported the solo start broken; the staged assembly was **02:51** and the build on disk was **23:00**. They tested a DLL twenty-one hours old. `check-package-integrity` rule 10 had already said so — nine differing files — and it was read as an environmental note because the game was open.
+**Fieldcraft T5 has no subject, and it is the only open row in the queue.**
+
+They approved *"All six, including the fourth crew member"*, and minutes later, answering a different question: *"rememberber pawns can cross gate as they plkease so no max number"*. The fifth candidate **was** the fourth crew member — a project whose whole effect was raising `CrewPlanner.MaxCrew` from three to four. With no cap there is nothing to raise, which makes it *"a project that promises something and changes nothing"*: the exact phrase four deleted projects were deleted for.
+
+**So it was not built, and the absence is proved rather than assumed.** `proof-research-tier5.py` asserts the absence **and the condition that makes it correct** — if a crew cap is ever reintroduced, that proof starts failing and names the sweep. A Fieldcraft T5 can exist. It needs a different number.
+
+Everything else the owner answered on 2026-10-06 is built.
+
+---
+
+## ⛔ STAGE BEFORE THE OWNER LAUNCHES, AND IT IS IN A DURABLE PLACE NOW ⛔
+
+This cost a whole launch report on 2026-10-06: the staged assembly was **02:51**, the build was **23:00**, and the owner tested a DLL **twenty-one hours old**. `check-package-integrity` rule 10 had already reported it with nine differing files and it was read as environmental because the game was open. **It was the warning working.**
+
+The rule lived only here — in the one file that gets replaced wholesale. **It is now its own interdiction in `PUBLISHING.md`**, above the cascade, with the figures.
 
 - `powershell -File tools/stage-mod.ps1 -UpdateExisting` — **the staged copy is the copy a launch loads.**
-- Run it **after the last build and before telling the owner anything is testable.**
-- `check-package-integrity` must read **PASS** before a launch report is trusted. It compares every file by content, because **the version is a label and the bytes are what runs.**
-
-**It is staged and PASS as of this writing.**
+- `python tools/check-package-integrity.py` must read **PASS** before any launch report is trusted.
+- **It is staged and PASS as of this writing**, so the next launch runs this code.
 
 ---
 
@@ -41,11 +53,11 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 **Owner, 2026-10-04:** *"yu should be completeing like near a dozen items before you run the whole battery. i told you i can NOT be waiting 40 minutes"*, and when I over-corrected: *"you still need to do instrament checks and build them when needed just dont run them for every fucking code change"*
 
-- **During the work:** run **only the one instrument covering the file you just touched.**
-- **At publication, once:** 29 checkers → 59 proofs → 36 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
+- **During the work:** run **only the instrument covering the file you just touched.**
+- **At publication, once:** 29 checkers → 63 proofs → 41 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
 - **THE OWNER ALONE LAUNCHES, SORTS AND PUBLISHES.**
 - ⛔ **NEVER RUN THE PLANT SUITES CONCURRENTLY WITH ANYTHING ELSE.** A suite writes a real fault into the tree and restores it; anything reading the tree in that window sees the fault. Doing so reported **four failures that did not exist**.
-- **THE REGISTER IS AN INPUT TO WORK, NOT A BACKLOG OF IT.** A row's disposition is settled when something is built that touches that mod, or when a launch gives evidence — **never as a bulk sweep**.
+- **THE REGISTER IS AN INPUT TO WORK, NOT A BACKLOG OF IT.**
 
 ---
 
@@ -55,43 +67,39 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 |---|---|
 | Branch | **`feature/bug-testing`**, ahead of every remote by owner direction |
 | Version | **0.12.99-dev** — read from `About.xml`, never from a document |
-| Build | **251 C# files, 106 package files**, zero warnings, zero errors |
-| Instruments | **29 checkers**, **59 proofs**, **36 plant suites** |
-| Queue | **10 open · 5 partial · 50 `[T]` · 0 `[x]`** — from 20 open at the start of the session |
+| Build | **252 C# files, 106 package files**, zero warnings, zero errors |
+| Instruments | **29 checkers**, **63 proofs**, **41 plant suites** |
+| Queue | **1 open · 4 partial · 50 `[T]` · 0 `[x]`** — from 10 open · 5 partial at the start of this session |
+| Research tree | **43 projects, T0 to T6, nine branches** |
 | Staged copy | **MATCHES THE BUILD.** `check-package-integrity` PASS |
-| Launches | **Fourteen.** The fourteenth found the solo start dead on arrival, and the cause was ours |
+| Commits this session | **Seven**, all local |
 
 ---
 
-## What shipped this session, and the pattern under most of it
+## What shipped this session
 
-1. **The journal and quest system, eight of nine steps.** Write-up kinds as defs — the owner's ellipsis *was* the specification — the records desk, one-writer-two-readers with a three-state green light, the branch ledger, quest-bound click actions, beacon send-back, and a book per accepted quest.
-2. **Exploration.** A drafting-style toggle; the pawn writes each room into the journal for **twenty seconds**, the owner's own figure, and the book is required because an explorer without one is a colonist on a walk.
-3. **Cross-map traversal, all seven rows.** Invariant #1 rewritten with **half kept**; outbound crossing for hostiles and friendlies; colonists crossing for a need with the stranding guard at the decision.
-4. **The record book's identity.** `CompRouteEvidence.TransformLabel` had existed for versions and **was never called once**, because `Verse.Book` overrides the property that runs the comp chain.
-5. **Operator relief.** A station question instead of a pawn question, correcting six call sites in one derivation.
-6. **The solo start's way out**, and the **sealed-vault validator** that killed the fourteenth launch.
-7. **The crew cap removed**, and the records-bonus defect it was concealing.
-8. **Four new instruments.** Checkers 26–29, plant suites 35–36.
+1. **The four approved tier-5 projects**, each moving a constant nothing else claims and each visible without reading source. Facilities moves **wear, not capacity** — capacity is the denominator every saved gate condition is read against, so raising it would have made a finished research project read as every gate half empty.
+2. **Spatial T6 and the sixth palette band.** The content blocker was answered by authoring rather than by shipping the limitation, and the band derivation **stopped wrapping** — at five bands a depth-six coordinate came up Poolrooms on half its seeds.
+3. **Four assembly benches, four sections**, at exactly the price one bill cost. A section is **never allocated to a bench**, so losing one cannot orphan work.
+4. **Parallel records desks that actually work.** Two writers could both write the same report, and the second's progress landed on the *next* one.
+5. **A branch can hold more than one job.** It could hold exactly one, which made the ledger and the desks unreachable.
+6. **The ore density is Core's own figure at last**, per tile hilliness.
+7. **Zoning proved to stay the player's**, as an absence, with a plant suite behind it.
 
 ---
 
 ## Read these before touching anything
 
-- **TWO DERIVATIONS OF ONE RULE IS THE DEFECT THIS PROJECT KEEPS MEETING, and it caused four separate faults this session.** The planner and the layout validator disagreed about a sealed vault and **killed a start**. My own exploration completion and the survey precondition disagreed about the same vault and would have made a write-up permanently unwritable. The gate's readout and its emergency test nearly disagreed about who was at the controls. Custody needed a refactor rather than a copy. **When a second place needs the same answer, extract — never copy.**
-- **A CAP CONCEALS THE FAULT BENEATH IT.** `InitialCrew.Count == 3` made the records bonus unreachable for any other crew size, and **with the cap in place no player could easily send four and find out.**
-- **MEASURE THE PROVENANCE OF A NUMBER BEFORE DEFENDING IT.** *"dont know where 3 came from"* — it was the start def's staff roster, promoted to a design cap by being written down somewhere else.
-- **A CONSTANT DENYING WHAT THE CODE DOES IS A STALE COMMENT WITH A COMPILER BEHIND IT.** `AutonomousNonPlayerTraversalPermitted` was deleted rather than left at false. And a cap of `int.MaxValue` is still a cap somebody reads as a rule: **the absence is the rule.**
-- **AN INSTRUMENT THAT CRASHES WHILE REPORTING CANNOT REPORT.** `archive-finished-todo` died printing a heading character, **after** the reassembly identity had held — leaving a half-written report and no statement of whether the move happened. Three queue tools carry the replacing print now.
-- **A FILE THAT PARSES IS NOT A FILE THAT WORKS.** My fix for that broke two tools into infinite recursion, because they already had a `say(line)` whose body is `print(line)`. Caught by **running** all five.
-- **`--` IS ILLEGAL INSIDE AN XML COMMENT AND I HAVE NOW WRITTEN ONE FOUR TIMES.** `check-package-integrity` already names the file and the line. The instrument was never missing; the **order** was.
-- **A GUARD THAT ACCEPTS ANY MATCHING TEXT IN THE VICINITY IS NOT READING THE GUARD.** A plant walked past a rule that allowed 400 characters of slack around a `default: return false;`.
-- **ASSERT THE CALL, NOT THE DEFINITION.** A rule matched `StampForQuest(string questId, int writeUpsFiled)` — the declaration. Anchor to the dot.
-- **A RULE ABOUT CODE MUST READ CODE.** Checker 29's first run refused the policy's own prose explaining the change it was checking for.
-- **READ THE API OUT OF THE INSTALLED GAME.** `.local/tools/ilspycmd.exe` settled `Verse.Book`, `CompBook`, `ThingWithComps`, `Pawn_PlayerSettings`, `FogGrid`, `ScribeExtractor` and `Dialog_MessageBox` this session. **`Pawn_PlayerSettings.allowedAreas` is a `Dictionary<Map, Area>`** — cross-map zoning was already in the game.
-- **USE THE WRITE TOOL FOR SCRIPTS, NEVER A BASH HEREDOC.**
+- **A RULE SATISFIED BY ITS SUBJECT NOT BEING THERE IS NOT A RULE, AND THIS SESSION FOUND FOUR.** `find(a) < find(b)` passes when `a` is deleted, because `find` returns **-1**. A substring test passed a rename to `unclaimedRequestId` because the new name **contains** the old one. A per-pawn rule passed because **one of two** call sites still matched. A `body_of(...) or ""` test passed when the method was gone. Every ordering claim now fails on absence; every name claim is word-bounded; every call-site claim counts.
+- **AND TWO PROOF CLAIMS WERE ENFORCING DEFECTS.** *"The natural depth reach is not research-driven"* went on passing after the code stopped honouring it, because it knew one spelling of a ternary. *"Only one request is ever open"* was holding in place the rule that a branch may hold one job. **Both were restated out loud rather than quietly edited** — a green instrument over a dead restraint is worse than no instrument.
+- **A FEATURE WHOSE PRECONDITION IS IMPOSSIBLE IS A FEATURE NOBODY CAN REPORT AS BROKEN.** The paperwork ledger and the parallel desks were both unreachable because one guard limited a branch to one job. Found by reading a guard, not by playing.
+- **MEASURE THE GAME BEFORE BELIEVING A LOG LINE.** *"Core's mineable scatter step was not found"* was read for a whole checkpoint as evidence about a 294-mod profile. **There is no such def in RimWorld 1.6 at all** — the class is constructed in code. The fallback had been used on every map ever generated, and nothing looked wrong because the fallback was right by coincidence.
+- **MUD HAS NO BUILD AFFORDANCE AND A PATH COST OF 14.** It was the obvious floor for the deepest palette band and would have shipped a level nothing can be built on, found by a player rather than by a build.
+- **USE THE WRITE TOOL FOR SCRIPTS, NEVER A BASH HEREDOC.** I broke this one rule after writing a rule about absence: two `\b` word boundaries arrived in a checker as literal **0x08 backspace bytes**, and a correct rule failed on correct code.
+- **TWO DERIVATIONS OF ONE RULE IS STILL THE DEFECT THIS PROJECT KEEPS MEETING.** The blind dial carried its own constant six *with a comment saying it matched the natural cap* — and a comment is not a derivation.
+- **WHEN A WIKI PAGE NEVER MENTIONS A FEATURE, THE FEATURE DOES NOT EXIST FOR THE PLAYER.** `grep` found *relief station* in exactly one file in the repository: the queue. The whole paperwork system had no page either. Both are written now.
 - **§1.1 IS THE RULE A NEW FEATURE IS MOST LIKELY TO BREAK.** *"A gate's connection has a duration. Nothing else in this mod has a duration."*
-- **BANNED VOCABULARY.** *"portal"* → gate/connection; *"doorway"* → door/threshold; *"the machine"* is reserved.
+- **BANNED VOCABULARY.** *"portal"* → gate/connection; *"doorway"* → door/threshold; *"the machine"* is reserved. And **never a deadline, nor the word itself** — a player-facing string may not use it even to deny one, and two of them did until this session.
 
 ---
 
@@ -115,20 +123,16 @@ python tools/check-queue-pointers.py                     # and this, which neith
 
 ## THE NEXT THING
 
-**Ten open rows. Five are the owner's fork answers from 2026-10-06, and one of those answers is now in conflict.**
+**The queue is one open row and four partial, and three of the five need the owner rather than me.**
 
-1. ⛔ **FIELDCRAFT T5 IS SUPERSEDED AND THE OWNER NEEDS TO CHOOSE AGAIN.** They approved *"All six, including the fourth crew member"* — and minutes later said *"pawns can cross gate as they plkease so no max number"*. **With no cap there is nothing for that tier to raise**, which makes it *"a project that promises something and changes nothing"*, the exact phrase four deleted projects were deleted for. A Fieldcraft T5 can exist; it needs a different subject.
-2. **Build the four clean research tiers** — Facilities T5 servicing interval, Measurement T5 trained eye, Spatial T5 near exit, Entities T5 (`MaxEventsPerOpening` **only**). All approved.
-3. **Spatial T6** — approved, and the one tier with a dependency outside research: a sixth palette band, or level seven reuses the deepest existing band as a stated limitation.
-4. **Four machine benches, splitting the component count** — approved, and the build has to answer the cost named in the option: a destroyed or unlinked bench must not leave an unfinishable remainder.
-5. **Journal step 9** — quest variety after the tutorial, and the quest half of the wiki.
-6. **The ore-scatter scan** — why `GenStep_ScatterLumpsMineable` was not found on the owner's profile, so coordinate ore density is this mod's guess rather than Core's.
-7. **Five partial rows**, four of which need the owner to launch and hand-fix a facility.
+1. ⛔ **Fieldcraft T5 needs a new subject** — the only open row. See the interdiction above.
+2. **The starting-facility feedback loop** (three partial rows) — the offline half is verified and the rest **needs a launch**: `facility-diff.py` can only compare an authored layout against a real one once a facility has been generated and hand-fixed.
+3. **Entity family sheets** — the other half of the research-IDs row, now that its research half is finished. `THREAT_DESIGN_SHEETS.md` holds the authoring sheet and two worked families and says plainly that the rest *"remain open design work"*. That is content design and it needs the owner.
 
 ---
 
 ## Is it done?
 
-**No, and the reason is a short list rather than an absence of evidence.** Twenty open rows became ten in one session, every closure carries its measurement, and the staged copy finally matches the build — so the next launch tests the code that exists.
+**The buildable list is finished.** Every row the owner answered on 2026-10-06 is built, proved and documented; what remains is one question for them, one launch, and one piece of content design.
 
 Read a launch log in this order: `Player.log`, grep the **first** `[Rimrooms]` line, then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.
