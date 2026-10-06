@@ -197,30 +197,6 @@ Binding contract: [`CONNECTED_COLONY_PORTALS.md`](CONNECTED_COLONY_PORTALS.md). 
   - [~] **THE PRE-LAUNCH BASELINE, measured 2026-10-05 before any launch, so the diff has something true to compare against.** **Neither facility has working power as authored.** `RR_AsyncIndustriesStart`: **34 of 34** power-drawing buildings are unconnected, the nearest conduit to any of them is **3 to 7 cells away**, there are **5 separate conduit grids** (167/15/8/8/7 cells), and of the two `WoodFiredGenerator`s **one sits off the wire by 2 cells**. `RR_FurnitureStoreStart`: **8 of 8** unconnected and its single generator is **3 cells off the wire**. **Neither authors a battery**, though the Async Industries start card promises *"one utility generator with a small reserve battery"*. **The number was checked before it was believed** — 34 of 34 is exactly the too-round figure that caught a false reachability result at 0.12.9x, so the distances were measured individually rather than trusted: 3, 3, 3, 6 and 7 cells on the sample. The conduit runs are corridor spines with no spur reaching anything. **This is the owner's reported *"broken conduit lines"* found deterministically, from data, with no launch needed.**
   - [~] **What the loop can and cannot carry, read off `RimroomsStartDef` rather than hoped for.** **Carries:** a building's `thing`, `stuff`, `cell` and `rotation`; a conduit run; a door; an autodoor; a pillar; `batteryFraction`; `fuelFraction`; a glazing wall run. **Does not carry:** a **per-cell floor change**, because flooring is one facility-wide `floorTerrain` plus a per-room boolean and there is no per-cell terrain list; and a **knocked-through wall**, because walls are generated from the room rectangles, so a removal is a room edit rather than a building edit. **Both limits are stated before the session rather than discovered after it**, since a change the def cannot express is owner time that cannot be kept.
 
-### Owner report — the solo/group start left everybody on the surface with no gate (2026-10-06)
-
-**Verbatim owner report (2026-10-06):** *"major problem!!! i tried the solo/group start and the people and everything spawned in the world tile map incorrectly... i didnt even see a natrual gate in the world of the starting map chossed, and they were to spawn in the backrooms and didnt to find the gate that leads to that world tile map thewy started in so there seemsed to be multiple problems and u need to thouroughly understand the issues and make the fixed and ducment them"*
-
-**Recorded after the diagnosis rather than before it, because this was a live failure report and the evidence was a log that is overwritten by the next launch.** Everything below was read out of `Player.log` and the source, not reasoned from the symptoms.
-
-**ONE THROW PRODUCED ALL THREE SYMPTOMS, AND THE LOG NAMES IT.** `[Rimrooms][Generation] Site layout stopped; existing coordinate/map are retained: System.InvalidOperationException: RR_Generation_UnreachableRoom`, thrown from `GenStep_BackroomsDestination.ValidatePlacedLayoutCore`. The chain, each link verified in source:
-
-| Step | What happened |
-|---|---|
-| 1 | `ValidatePlacedLayoutCore` threw, so **`MarkLayoutReady` on line 334 never ran** |
-| 2 | `ValidateExistingMap` saw `!parent.LayoutReady` and returned a failure |
-| 3 | `DestinationService.EnsureSite` returned `Fail(...)` |
-| 4 | `SoloGroupOpening.Open` returned at **step 2 of 5** |
-| 5 | Step 3 marks the surface door as the way out -- **never reached**, so no natural gate |
-| 6 | Step 5 moves the party inside -- **never reached**, so everybody stayed on the surface |
-
-**So *"multiple problems"* was one fault wearing three faces**, which is why it could not be found by looking at any of them.
-
-**AND THE BUILD THE OWNER RAN WAS NOT THE BUILD ON DISK.** Measured: the staged assembly is dated **02:51** and the built one **23:00** the same day, both declaring `0.12.99-dev`. So the launch contained none of that day's work. **The fault is genuinely pre-existing and not a regression from it** -- established by timestamp rather than assumed -- but the staging gap is its own row below.
-
-- [ ] **The owner launched a build 21 hours older than the one on disk, and the instrument already said so.** `check-package-integrity` rule 10 reported *"THE STAGED COPY IS NOT THIS BUILD"* with nine differing files before the launch, and it was read as an expected environmental note because RimWorld was open at the time. **It was the warning working.** The rule to draw is not a new instrument but an ordering one: **staging belongs immediately before the owner launches, not at publication**, because a launch loads the staged copy and nothing else. Until that is settled in `PUBLISHING.md` and `NOW.md`, every launch report risks describing code that is not the code on disk -- which is the most expensive kind of wasted session there is.
-- [ ] **Core's mineable scatter step was not found, so coordinate ore density is a guess.** Same log: *"Core's mineable scatter step was not found; coordinate ore density falls back to 10 lumps per 10k cells before the owner's x3"*. `OreVeinBuilder.CoreLumpsPer10kCells` scans for a `GenStep_ScatterLumpsMineable` and did not find one on the owner's 294-mod profile. **It is a stated fallback rather than a fault**, and ore still spawns -- but the number is this mod's guess instead of Core's own, which is exactly the shape of claim this repository measures rather than assumes. Worth finding out why the scan missed it.
-
 ### Owner direction — anything standing on your map may cross a gate, and zoning is the control (2026-10-06)
 
 **Verbatim owner direction (2026-10-06), four messages in a row.** The first, on finding the wiki saying no guests arrive:

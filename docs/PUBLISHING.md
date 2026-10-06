@@ -21,6 +21,31 @@ This is the procedure that works. It was written after doing it, not before. Fol
 >
 > **Order matters, and only one way round works.** Export and push the mod-only repository **before** committing here: the export is built from `artifacts/build/package-manifest.json` and verifies every file's SHA256 against the working tree, so it must run against the tree that was built and checked. It refuses outright on a package edited after the build — which it has done twice, both times correctly, when a version bump landed after a build.
 
+## ⛔ STAGING IS NOT ONLY A PUBLICATION STEP. IT BELONGS BEFORE EVERY LAUNCH ⛔
+
+**This cost a whole launch report on 2026-10-06 and it is the most expensive ordering mistake in
+this repository's history.** The owner reported the solo start broken. The staged assembly was
+**02:51** and the build on disk was **23:00** — they had tested a DLL **twenty-one hours old**, and
+every conclusion drawn from that launch was about code that had already been replaced.
+
+**The instrument had already said so.** `check-package-integrity` rule 10 reported *"THE STAGED COPY
+IS NOT THIS BUILD"* with **nine differing files** before the launch, and it was read as an expected
+environmental note because RimWorld was open at the time. **It was the warning working.**
+
+So the rule is an ordering one rather than a new instrument:
+
+| When | What must run |
+|---|---|
+| After the last build, **before telling the owner anything is testable** | `powershell -File tools/stage-mod.ps1 -UpdateExisting` |
+| Before any launch report is trusted | `python tools/check-package-integrity.py` must read **PASS** |
+| At publication | the same two, as step 0 of §7 below |
+
+**A launch loads the staged copy and nothing else.** The version string is a label; the bytes are
+what runs, which is why rule 10 compares every file by content and not by version. And
+`stage-mod.ps1` refuses outright on a package edited after the build — it has done so correctly
+whenever a keyed string or a def changed between the build and the stage, which is the common case
+and the whole reason the refusal exists.
+
 ## ⛔ FORGEJO IS HELD. SIX REFS, NOT TWELVE, UNTIL THE OWNER SAYS OTHERWISE ⛔
 
 **Owner, 2026-10-06, verbatim:** *"fyi the git.unityailab.com is going down so stop pushes to it until further notice, github two repos is still good"*

@@ -140,7 +140,7 @@ So a space you surveyed once is a space you can keep. Some of what people do wit
 | **Storage** | Ordinary stockpiles and shelves. Nothing deteriorates under a roof that thick |
 | **An isolated safe room** | One room, one door, nothing that leads anywhere. A coordinate has no neighbours |
 | **A workshop** | Benches and bills. Every bill family crosses: cooking, crafting, smithing, tailoring, art |
-| **A mine** | The rock is real rock. Mining crosses |
+| **A mine** | The rock is real rock. Mining crosses, and a coordinate carries **three times** the ore of an ordinary map |
 | **A farm** | Growing and animal handling both cross. It is roofed, so you want sun lamps and the power to run them |
 | **A field hospital** | Doctoring, patient feeding and rescue all cross |
 
@@ -149,6 +149,16 @@ patient and resting in bed, which are things that happen to a pawn rather than j
 
 **You are not pushed toward any of it.** A branch that would rather live down there, mine the rock
 and grow food under thick roof is playing correctly, and nothing nudges them.
+
+### What a coordinate is worth to mine
+
+**Three times the ore of an ordinary map, and the ordinary map it is three times is the tile you are
+standing on.** A coordinate under flat country is poorer than one under mountains, exactly as two
+colonies on those tiles would be — the mod reads the game's own figure for the tile and multiplies
+it, rather than keeping a number of its own.
+
+On top of that: every sealed vault has a vein running to it, and a door that opens onto nothing
+usually has one behind it. Those are the deposits worth finding rather than worth counting.
 
 ### Two honest limits
 

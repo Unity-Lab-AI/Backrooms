@@ -58,12 +58,15 @@ namespace RimroomsAsyncIndustries.Generation
         internal const int VanillaDensityMultiple = 3;
 
         /// <summary>
-        /// The density used when Core's own scatter step cannot be found, in lumps per ten
+        /// The density used when Core's own figure cannot be read for a map, in lumps per ten
         /// thousand cells.
         ///
         /// **A stated fallback rather than a silent one.** If this is ever used, the log says so
         /// once: a density that quietly stopped matching Core would be a number nobody could
         /// check, which is the defect class this file's own header warns about.
+        ///
+        /// **Ten is also Core's own default**, which is why the fallback being used on every map
+        /// ever generated — see <see cref="CoreLumpsPer10kCells"/> — never looked like anything.
         /// </summary>
         internal const float FallbackLumpsPer10kCells = 10f;
 
@@ -122,23 +125,62 @@ namespace RimroomsAsyncIndustries.Generation
         }
 
         /// <summary>
-        /// Core's own scatter density, in lumps per ten thousand cells.
+        /// Core's own scatter density for this map, in lumps per ten thousand cells.
         ///
-        /// **Read from the game's own generation step, not copied.** The owner asked for three
-        /// times vanilla, and the only honest reading of "vanilla" is whatever Core computes for
-        /// itself — a constant here would be this mod's memory of a number Ludeon can change.
+        /// **Read from the game's own arithmetic, not copied.** The owner asked for three times
+        /// vanilla, and the only honest reading of *vanilla* is whatever Core computes for itself —
+        /// a constant here would be this mod's memory of a number Ludeon can change.
+        ///
+        /// ## THE SCAN THIS REPLACES NEVER WORKED, ON ANY PROFILE
+        ///
+        /// It walked `DefDatabase&lt;GenStepDef&gt;` looking for a step whose `genStep` is a
+        /// `GenStep_ScatterLumpsMineable`, found none, and logged the stated fallback. The queue row
+        /// recorded that as a mystery worth investigating on the owner's 294-mod profile — *"worth
+        /// finding out why the scan missed it"*.
+        ///
+        /// **It missed nothing. There is no such def.** Measured out of the installed game: every
+        /// `GenStepDef` in Core and all five expansions was enumerated, and the string
+        /// `ScatterLumpsMineable` appears in **zero** def files. The class exists in the assembly and
+        /// is **constructed in code**: `GenStep_RocksFromGrid.Generate` makes one, sets
+        /// `countPer10kCellsRange` from `GetResourceBlotchesPer10KCellsForMap(map)`, and runs it. So
+        /// the fallback was used on every map this mod has ever generated, including on a pure-Core
+        /// install, and the log line was never evidence about the mod list.
+        ///
+        /// **The fallback was ten and Core's own default is ten**, which is why nothing ever looked
+        /// wrong. A number that is right by coincidence is still a number nobody checked.
+        ///
+        /// ## And the real source is better than the one that was wanted
+        ///
+        /// `GetResourceBlotchesPer10KCellsForMap` is public, static, and reads the **tile's
+        /// hilliness**: 4 flat, 8 small hills, 11 large hills, 15 mountainous, 16 impassable. So a
+        /// coordinate now carries the ore density of the tile it sits under, the way an ordinary map
+        /// does, instead of one figure everywhere. The owner's x3 multiplies that.
+        ///
+        /// **Guarded, because generation may never fail.** A map with no valid world tile throws on
+        /// `TileInfo`, and a coordinate is reached through paths that do not all guarantee one. The
+        /// stated fallback stays for exactly that case, and it says so once.
         /// </summary>
-        internal static float CoreLumpsPer10kCells()
+        internal static float CoreLumpsPer10kCells(Map map)
         {
-            foreach (GenStepDef def in DefDatabase<GenStepDef>.AllDefsListForReading)
+            if (map != null)
             {
-                if (def == null) { continue; }
-                var scatterer = def.genStep as GenStep_Scatterer;
-                if (!(def.genStep is GenStep_ScatterLumpsMineable) || scatterer == null) { continue; }
-                float mid = (scatterer.countPer10kCellsRange.min + scatterer.countPer10kCellsRange.max) / 2f;
-                if (mid > 0f) { return mid; }
+                try
+                {
+                    float blotches = GenStep_RocksFromGrid.GetResourceBlotchesPer10KCellsForMap(map);
+                    if (blotches > 0f) { return blotches; }
+                }
+                catch (System.Exception exception)
+                {
+                    // Reported rather than swallowed: a density nobody can check is the defect this
+                    // whole method exists to avoid, and a silent catch would recreate it.
+                    Log.Message("[Rimrooms][Generation] Core's own blotch density could not be read "
+                        + "for this map (" + exception.GetType().Name + "); coordinate ore density "
+                        + "falls back to " + FallbackLumpsPer10kCells + " lumps per 10k cells before "
+                        + "the owner's x" + VanillaDensityMultiple + ".");
+                    return FallbackLumpsPer10kCells;
+                }
             }
-            Log.Message("[Rimrooms][Generation] Core's mineable scatter step was not found; "
+            Log.Message("[Rimrooms][Generation] No map to read Core's blotch density from; "
                 + "coordinate ore density falls back to " + FallbackLumpsPer10kCells
                 + " lumps per 10k cells before the owner's x" + VanillaDensityMultiple + ".");
             return FallbackLumpsPer10kCells;
@@ -270,7 +312,7 @@ namespace RimroomsAsyncIndustries.Generation
         private static void PlaceScatteredLumps(Map map, CoordinateRecord coordinate,
             List<ThingDef> ores, HashSet<IntVec3> oreCells)
         {
-            float per10k = CoreLumpsPer10kCells() * VanillaDensityMultiple;
+            float per10k = CoreLumpsPer10kCells(map) * VanillaDensityMultiple;
             int cells = map.Size.x * map.Size.z;
             int lumps = (int)(per10k * cells / 10000f);
             if (lumps < 1) { return; }

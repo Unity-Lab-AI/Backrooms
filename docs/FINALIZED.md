@@ -17627,3 +17627,49 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-06)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner report — the solo/group start left everybody on the surface with no gate (2026-10-06)
+
+**Verbatim owner report (2026-10-06):** *"major problem!!! i tried the solo/group start and the people and everything spawned in the world tile map incorrectly... i didnt even see a natrual gate in the world of the starting map chossed, and they were to spawn in the backrooms and didnt to find the gate that leads to that world tile map thewy started in so there seemsed to be multiple problems and u need to thouroughly understand the issues and make the fixed and ducment them"*
+
+**Recorded after the diagnosis rather than before it, because this was a live failure report and the evidence was a log that is overwritten by the next launch.** Everything below was read out of `Player.log` and the source, not reasoned from the symptoms.
+
+**ONE THROW PRODUCED ALL THREE SYMPTOMS, AND THE LOG NAMES IT.** `[Rimrooms][Generation] Site layout stopped; existing coordinate/map are retained: System.InvalidOperationException: RR_Generation_UnreachableRoom`, thrown from `GenStep_BackroomsDestination.ValidatePlacedLayoutCore`. The chain, each link verified in source:
+
+| Step | What happened |
+|---|---|
+| 1 | `ValidatePlacedLayoutCore` threw, so **`MarkLayoutReady` on line 334 never ran** |
+| 2 | `ValidateExistingMap` saw `!parent.LayoutReady` and returned a failure |
+| 3 | `DestinationService.EnsureSite` returned `Fail(...)` |
+| 4 | `SoloGroupOpening.Open` returned at **step 2 of 5** |
+| 5 | Step 3 marks the surface door as the way out -- **never reached**, so no natural gate |
+| 6 | Step 5 moves the party inside -- **never reached**, so everybody stayed on the surface |
+
+**So *"multiple problems"* was one fault wearing three faces**, which is why it could not be found by looking at any of them.
+
+**AND THE BUILD THE OWNER RAN WAS NOT THE BUILD ON DISK.** Measured: the staged assembly is dated **02:51** and the built one **23:00** the same day, both declaring `0.12.99-dev`. So the launch contained none of that day's work. **The fault is genuinely pre-existing and not a regression from it** -- established by timestamp rather than assumed -- but the staging gap is its own row below.
+
+- [x] **The owner launched a build 21 hours older than the one on disk, and the instrument already said so.** `check-package-integrity` rule 10 reported *"THE STAGED COPY IS NOT THIS BUILD"* with nine differing files before the launch, and it was read as an expected environmental note because RimWorld was open at the time. **It was the warning working.** The rule to draw is not a new instrument but an ordering one: **staging belongs immediately before the owner launches, not at publication**, because a launch loads the staged copy and nothing else. Until that is settled in `PUBLISHING.md` and `NOW.md`, every launch report risks describing code that is not the code on disk -- which is the most expensive kind of wasted session there is. -- **SETTLED 0.12.99-dev in the durable place, which is what the row asked for.** The row's own conclusion was that this needs an **ordering** rule rather than a new instrument, *"settled in `PUBLISHING.md` and `NOW.md`"*. **`NOW.md` had it and `PUBLISHING.md` did not -- and NOW.md is a one-record file that is replaced wholesale**, so the rule was living in the one document guaranteed to lose it. `PUBLISHING.md` now carries it as its own interdiction, above the cascade: stage after the last build and **before telling the owner anything is testable**, and `check-package-integrity` must read PASS before a launch report is trusted. **The instrument was never missing.** Rule 10 reported *"THE STAGED COPY IS NOT THIS BUILD"* with nine differing files before that launch and it was read as an environmental note because the game was open. **It was the warning working**, which is the part worth writing down: the failure was in how a reader weighed a true report, so the repair is an ordering and a sentence rather than code. **And it has been followed every time since**: five commits in this session each staged after their build, with `check-package-integrity` PASS recorded before any claim that the tree was testable. `stage-mod.ps1` also refused once, correctly, when a keyed string changed between the build and the stage -- which is the common case and the whole reason the refusal exists.
+- [x] **Core's mineable scatter step was not found, so coordinate ore density is a guess.** Same log: *"Core's mineable scatter step was not found; coordinate ore density falls back to 10 lumps per 10k cells before the owner's x3"*. `OreVeinBuilder.CoreLumpsPer10kCells` scans for a `GenStep_ScatterLumpsMineable` and did not find one on the owner's 294-mod profile. **It is a stated fallback rather than a fault**, and ore still spawns -- but the number is this mod's guess instead of Core's own, which is exactly the shape of claim this repository measures rather than assumes. Worth finding out why the scan missed it. -- **MEASURED AND FIXED 0.12.99-dev, AND THE ANSWER IS THAT THE SCAN NEVER WORKED ON ANY PROFILE.** The row asked why it missed on the owner's 294-mod profile. **It missed nothing: there is no such def.** Every `GenStepDef` in Core and all five expansions was enumerated out of the installed game, and the string `ScatterLumpsMineable` appears in **zero def files**. The class exists in the assembly and is **constructed in code** -- `GenStep_RocksFromGrid.Generate` makes one, sets `countPer10kCellsRange` from `GetResourceBlotchesPer10KCellsForMap(map)`, and runs it. **So the stated fallback was used on every map this mod has ever generated, on a pure-Core install included, and the log line was never evidence about the mod list.** **AND NOTHING EVER LOOKED WRONG BECAUSE THE FALLBACK WAS RIGHT BY COINCIDENCE:** ten is also the default `result` in Core's own function. **A number that is right by accident is still a number nobody checked**, which is the whole reason this repository measures instead of remembering. **The real source is strictly better than the one the row wanted.** `GetResourceBlotchesPer10KCellsForMap` is public, static, and reads the **tile's hilliness** -- 4 flat, 8 small hills, 11 large hills, 15 mountainous, 16 impassable. So a coordinate now carries the ore density of the tile it sits under, the way an ordinary map on that tile does, instead of one flat figure everywhere; the owner's *"a bit more than vanilla like 3x more deposites than a default map"* multiplies a real per-tile number at last. **Guarded rather than trusted**, because a map with no valid world tile throws on `TileInfo` and **a generation step may never fail** -- the stated fallback stays for exactly that case and names the exception type when it fires. **Wiki in the same commit:** the mining row now says three times an ordinary map, and a new section says which ordinary map -- the tile you are standing on -- because *"three times vanilla" is meaningless to a reader who does not know vanilla varies by terrain.
+
+
+Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
