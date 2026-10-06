@@ -377,15 +377,33 @@ check("ONLY A GATE WITH A REAL WAY THROUGH LIGHTS UP",
       "-- a door the player marked but which nothing leads through yet is a plan, not a gate, and "
       "lighting it blue would promise a way through that does not exist")
 
+# **THE GLOWER WRITES MOVED TO `GateAura.cs` AT 0.13.0-dev AND THE CLAIMS MOVED WITH THEM.** The
+# aura became state-driven -- idle, charging, live, emergency, awaiting recovery -- and lives in its
+# own partial so that the strobe can sample sixteen times more often than `RefreshGateAppearance`
+# without making it walk the portal network sixteen times more often. Both claims below are
+# unchanged in substance and now read both halves of the class.
+auraFile = _read(_SRC, "Portals", "GateAura.cs")
 check("the colour and radius are per-instance overrides, never shared props",
-      "glower.GlowRadius =" in gatecomp and "glower.GlowColor =" in gatecomp
-      and "Props.glowRadius" not in gatecomp,
+      "glower.GlowRadius =" in auraFile and "glower.GlowColor =" in auraFile
+      and "Props.glowRadius" not in auraFile and "Props.glowRadius" not in gatecomp,
       "-- editing a shared CompProperties would recolour every door in the game at once")
 
 check("a gate that stops being live stops glowing",
-      "glower.GlowRadius = live ? LiveGlowRadius : 0f;" in gatecomp
+      "radius = auraLive ? LiveGlowRadius : 0f;" in auraFile
       and "else if (colorable.Active) { colorable.Disable(); }" in gatecomp,
       "-- a blue door that no longer leads anywhere is a worse lie than a plain one")
+
+# **AND THE NEW STATES MUST NOT HAVE QUIETLY BROKEN THAT.** A door that is not a gate at all now
+# passes through five state tests before anything is written, and every one of them must leave it
+# dark. The only states that light an undesignated door would be the ones that read the gate comp,
+# and a plain door has none of its states true -- so the claim is that the fall-through is reached
+# rather than that it exists.
+check("and an undesignated door still falls through every state to darkness",
+      "if (gate == null) { return; }" in auraFile
+      and auraFile.index("radius = auraLive ? LiveGlowRadius : 0f;")
+      < auraFile.index("if (gate == null) { return; }"),
+      "-- the dark default is set BEFORE any state can change it, so a door that is not a gate "
+      "cannot be lit by a state it does not have")
 
 menu_at = gatecomp.find("public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)")
 menu_body = gatecomp[menu_at:gatecomp.find(chr(10) + "        }" + chr(10), menu_at)] \

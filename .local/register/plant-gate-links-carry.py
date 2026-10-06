@@ -11,6 +11,7 @@ RECORDS = SRC + "/Portals/PortalConnectionRecord.cs"
 NETWORK = SRC + "/Portals/RimroomsPortalNetwork.cs"
 CROSSING = SRC + "/Portals/PortalCrossingService.cs"
 COMP = SRC + "/Portals/CompRimroomsEmergence.cs"
+AURA = SRC + "/Portals/GateAura.cs"
 CONSOLE = SRC + "/Gate/CompRimroomsGateConsole.cs"
 SPINUP = SRC + "/Gate/GateSpinUp.cs"
 RECIPE = ("Mod/Rimrooms - Async Industries/1.6/Defs/RecipeDefs/RR_GateRecipes.xml")
@@ -236,9 +237,12 @@ PLANTS = [
      "                if (live) { colorable.SetColor(LiveTintColor); }",
      "                if (false) { colorable.SetColor(LiveTintColor); }"),
 
-    ("a live gate stops casting light", COMP,
-     "                glower.GlowRadius = live ? LiveGlowRadius : 0f;",
-     "                glower.GlowRadius = 0f;"),
+    # **RE-AIMED 0.13.0-dev: the glower writes moved to `GateAura.cs`** when the aura became
+    # state-driven. The claim is identical -- a live gate must cast light -- and only the file and
+    # the expression changed, from a direct write to the resolved radius the aura pushes.
+    ("a live gate stops casting light", AURA,
+     "            radius = auraLive ? LiveGlowRadius : 0f;",
+     "            radius = 0f;"),
 
     ("the glower comp is never added to the door", DOORPATCH,
      '<li Class="CompProperties_Glower">', '<li Class="CompProperties_GlowerUnused">'),
@@ -264,9 +268,11 @@ PLANTS = [
      "          <li>\n            <compClass>CompColorable</compClass>\n          </li>",
      '          <li Class="CompProperties_Colorable" />'),
 
+    # The class became `partial` at 0.13.0-dev so the aura could live in its own file. The claim is
+    # unchanged: dropping `IThingGlower` is what would make Core light every door in the game.
     ("EVERY DOOR IN THE GAME STARTS GLOWING", COMP,
-     "    public class CompRimroomsEmergence : ThingComp, IThingGlower",
-     "    public class CompRimroomsEmergence : ThingComp"),
+     "    public partial class CompRimroomsEmergence : ThingComp, IThingGlower",
+     "    public partial class CompRimroomsEmergence : ThingComp"),
 
     ("the glow veto stops asking whether this is a live gate", COMP,
      "        public bool ShouldBeLitNow() { return IsLiveGate || recordedGate || frontierGate; }",

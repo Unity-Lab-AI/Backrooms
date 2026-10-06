@@ -41,7 +41,7 @@ namespace RimroomsAsyncIndustries.Portals
     /// outside. The branch id is recorded at the moment of marking so a mark cannot be
     /// inherited by another company through a saved map.
     /// </summary>
-    public class CompRimroomsEmergence : ThingComp, IThingGlower
+    public partial class CompRimroomsEmergence : ThingComp, IThingGlower
     {
         /// <summary>
         /// The blue the owner asked for, as a **glow** colour.
@@ -218,15 +218,15 @@ namespace RimroomsAsyncIndustries.Portals
             // to stop glowing the moment it started working.
             recordedGate = IsRecordedGate;
             bool live = IsLiveGate || recordedGate || frontierGate;
-            CompGlower glower = parent.TryGetComp<CompGlower>();
-            if (glower != null)
-            {
-                glower.GlowRadius = live ? LiveGlowRadius : 0f;
-                glower.GlowColor = LiveGlowColor;
-                // UpdateLit is the whole of it: Core registers or deregisters the light with
-                // the glow grid itself. There is no separate cache to dirty.
-                glower.UpdateLit(parent.Map);
-            }
+            // **THE EXPENSIVE ANSWER IS CACHED HERE AND THE CHEAP ONE RUNS FOUR TIMES A SECOND.**
+            // `IsLiveGate` walks every edge in the portal network, which is why this method is
+            // throttled to 250 ticks. The aura needs to move faster than that, so it reads this
+            // cached answer rather than asking the network again. See `GateAura.cs`.
+            auraLive = live;
+            // UpdateLit is still the whole of it: Core registers or deregisters the light with the
+            // glow grid itself, and ApplyAura calls it only when the value it would write differs
+            // from the value it last wrote.
+            ApplyAura();
             CompColorable colorable = parent.TryGetComp<CompColorable>();
             if (colorable != null)
             {
@@ -356,11 +356,20 @@ namespace RimroomsAsyncIndustries.Portals
         public override void CompTickInterval(int delta)
         {
             base.CompTickInterval(delta);
-            if (parent == null || !parent.IsHashIntervalTick(AppearanceInterval, delta)) { return; }
-            RefreshGateAppearance();
-            // Same tick, same question. If the appearance and the wormhole were refreshed from
-            // different places they could disagree about whether this is a gate.
-            RefreshStargate();
+            if (parent == null) { return; }
+            if (parent.IsHashIntervalTick(AppearanceInterval, delta))
+            {
+                RefreshGateAppearance();
+                // Same tick, same question. If the appearance and the wormhole were refreshed from
+                // different places they could disagree about whether this is a gate.
+                RefreshStargate();
+                return;
+            }
+            // **The aura's own cadence, and it asks the network nothing.** It reads the cached
+            // `auraLive` from the slow pass above plus the gate's own live state, so running it
+            // sixteen times as often costs no extra edge walks. It writes to the glow grid only
+            // when the colour or the quantised radius actually moved.
+            if (parent.IsHashIntervalTick(AuraInterval, delta)) { ApplyAura(); }
         }
 
         /// <summary>

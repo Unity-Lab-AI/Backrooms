@@ -25,12 +25,6 @@ LAW #0 reminder: every task description preserves the user's verbatim words.
 ---
 ## Pending
 
-### Active portal artwork and code handoff (2026-10-06)
-
-**Verbatim owner direction:** *"what about active portal ones. should you do those to and write an ote to claude in todo"*
-
-- [ ] **Note to Claude — runtime integration:** after the nonlooping `RR_GateActivation_01..06` burst completes, display `RR_GateOpen_01..08` as a slower repeating effect while a **company machine portal's connection is live**. Share one set across every supported footprint/facing and reuse the existing whole-run/fog guards. Stop the effect on closure, loss of the live state, destruction and map unload; derive/reconcile state on reload without replaying activation. Respect the visual disable/reduced-motion behavior, preserve native door leaves/pawns, and keep text/state indicators. **Natural portals stay ordinary unframed doors, without these machine-energy overlays.** This is code work, separate from delivered artwork; do not close it merely because PNGs exist. See the [asset brief](ASSET_REQUESTS.md#live-open-portal-loop).
-
 ### Owner direction — the gate should look and sound like it is doing something (2026-10-06)
 
 **Verbatim owner direction (2026-10-06):** *"an make a write up about any other audio we need for chatgpt to find and create"*
@@ -40,16 +34,6 @@ LAW #0 reminder: every task description preserves the user's verbatim words.
 **Verbatim owner direction (2026-10-06):** *"can be still frame made into gif like thing or whatever the game needs"*
 
 **Verbatim owner direction (2026-10-06):** *"and maybe have the auro for the gat be gate sensitive change color to the state of the gate and like strobe on charge up callibation and activation and shit like star trek warp core"*
-
-**Verbatim owner direction (2026-10-06):** *"ramp up and down and rev"*
-
-**The brief is written: [`ASSET_REQUESTS.md`](ASSET_REQUESTS.md).** It carries the format rules, the cue list grounded in real code events, the animation shape and the aura palette. These rows are the **code** that has to exist for those assets to do anything.
-
-- [ ] **"and maybe have the auro for the gat be gate sensitive change color to the state of the gate"** — **the aura is one colour and binary today.** `CompRimroomsEmergence` holds a single `LiveGlowColor` of `(70,130,220)` and sets it on or clears it. The gate already computes everything a state-driven aura needs — designated, spinning up with a progress fraction, live, emergency, awaiting recovery — and **both the glow colour and its radius are settable per instance**, so this needs no art at all. **The fairness rule binds it:** `THREAT_DESIGN_SHEETS.md` forbids colour or sound being the only way to notice a tell, so the aura may be beautiful and may never be the only signal.
-- [ ] **"like strobe on charge up callibation and activation and shit like star trek warp core"** — the strobe, driven from the spin-up fraction the gate already computes, with a pulse at each quarter. **Live stays the current blue unchanged**, so an existing colony looks the same as it did.
-- [ ] **"and things like the gates activating animations and charge up and stuff"**, **"can be still frame made into gif like thing or whatever the game needs"** — **the frame is already drawn by us** in `GateWorldFrames.PostDraw`, so an animation is a frame index rather than a new engine concept, and *"still frame made into gif like thing"* is exactly right: a numbered sequence of PNGs the code picks from. **Author one square overlay sheet, not a sequence per footprint** — four footprints times three facings times six frames is 72 files and every future footprint multiplies it.
-- [ ] **"ramp up and down and rev"** — ⛔ **`RimroomsAudio.Usable` REFUSES any `SoundDef` with `sustain` set**, because every existing cue is a one-shot and a sustainer nobody stops runs until the map unloads. So a loop needs a sustainer started on a state change and **explicitly stopped on the opposite one, including on destruction, map unload and a reload mid-cycle** — that is the risky half, not the audio. The four one-shots carry the whole cycle without it.
-- [ ] **The one thing the cues have to get right, recorded so it is not lost between the brief and the build:** ramp-up ends **unresolved** and ramp-down **resolves**. That single contrast tells a player whether the gate is becoming dangerous or becoming safe without reading a word.
 
 ### Owner decision — a natural gate stays a plain door (2026-10-06)
 

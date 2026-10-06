@@ -9,7 +9,7 @@ The [artwork handoff this replaces](implementation/evidence/authored-rotations-2
 | `docs/ROADMAP.md` | MAJOR — phases and milestones |
 | `docs/TODO.md` | MINOR — buildable work only |
 | `docs/DECOMPOSED.md` | smallest execution units |
-| `docs/TEST.md` | **the test phase — 53 rows, every one needing a launch** |
+| `docs/TEST.md` | **the test phase — 54 rows, every one needing a launch** |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 
@@ -33,12 +33,12 @@ The [artwork handoff this replaces](implementation/evidence/authored-rotations-2
 |---|---|
 | Branch | **`feature/bug-testing`** |
 | Version | **0.13.0-dev** — read from `About.xml`, never from a document |
-| Build | **255 C# files, 200 package files**, zero warnings, zero errors |
-| Instruments | **33 checkers · 63 proofs · 42 plant suites** — **the whole battery green in one run**, plus `check-plant-residue` |
-| Queue | `TODO.md` **5 open** · `TEST.md` **53 `[T]`** |
+| Build | **257 C# files, 200 package files**, zero warnings, zero errors |
+| Instruments | **33 checkers · 64 proofs · 43 plant suites** — checkers and proofs green in one run; see the plant note below |
+| Queue | `TODO.md` **0 open · 0 partial** · `TEST.md` **54 `[T]`** |
 | Assets | **59 shipped: 42 drawings, 17 cues.** Every one referenced by a def or by code, every one described, every one with a master |
 
-**The whole battery WAS run.** The artwork handoff this replaces said no full regression battery had been run for that task; one has been run since, against the finished package.
+**PLANT NOTE, STATED RATHER THAN GLOSSED.** The full battery ran green earlier against this tree. After it the aura and the loops landed with their own suite — **`plant-gate-aura-and-loops`, 8 of 8 caught** — and four anchors in three other suites were re-aimed at code that moved. `check-plant-anchors` confirms **all 1333 anchors are findable** and `check-plant-residue` is clean, but **the full 43-suite run was not repeated after those re-aims**, because the owner needed to compact and a plant suite mutates the tree. **Run it before the next publication.**
 
 ---
 
@@ -98,12 +98,13 @@ The frame draws on `CompRimroomsGate` and keys on `IsDesignated`. A permanent na
 
 ## THE NEXT THING
 
-**Two code features the owner asked for are not built, and the assets for them are already on disk.**
+**A launch. `TODO.md` is empty and everything the owner asked for this session is built**, including the two things the previous handoff listed as outstanding.
 
-1. **The aura.** *"have the auro for the gat be gate sensitive change color to the state of the gate and like strobe on charge up callibation and activation and shit like star trek warp core"*. It is one colour and binary today. **It needs no art at all** — the glow colour and radius are settable per instance, and the gate already computes every state and a spin-up fraction. `THREAT_DESIGN_SHEETS.md` binds it: the aura may be beautiful, it may never be the only signal.
-2. **The two loops.** `RR_GateSpinLoop` and `RR_GateOpenLoop` ship with valid `SoundDef`s and **cannot play**: `RimroomsAudio.Usable` refuses a sustained def on purpose, because a sustainer nobody stops runs until the map unloads. The lifecycle must survive destruction, map unload **and a reload mid-cycle**. Shipping silence beats shipping a hum nobody can turn off.
+**The aura is state-driven.** Owner: *"gate sensitive change color to the state of the gate and like strobe on charge up callibation and activation and shit like star trek warp core"*. Five states, each its own colour and radius, and **no art at all** — the glow colour and radius are settable per instance. **The pulse is a triangle wave, not a square one**, and through spin-up its period falls from 96 ticks to 20, so the gate winds up rather than blinking. **A live gate looks exactly as it did**, because the faulted states are tested first and the live branch returns untouched.
 
-**After that: a launch.** The 53 rows in `TEST.md` all need the game running — **the owner alone launches, sorts and publishes.**
+**The loops play.** `RR_GateSpinLoop` and `RR_GateOpenLoop` are **reconciled every tick, never started or stopped by event** — the event shape leaks, because completion, abort, lapse, power loss, a fault and a reload would each have to remember to stop the sound. **The sustainer is `MaintenanceType.PerTick`, so it ends itself** the moment it stops being maintained: a destroyed gate goes quiet on its own, and *forgetting to stop one is not a failure mode*. Nothing about it is scribed; a reload mid-ramp restarts it from state.
+
+**So the next thing is a launch.** The 54 rows in `TEST.md` all need the game running — **the owner alone launches, sorts and publishes.**
 
 **Read a launch log in this order:** `Player.log`, grep the **first** `[Rimrooms]` line, then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.
 

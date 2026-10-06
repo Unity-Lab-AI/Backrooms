@@ -403,6 +403,11 @@ namespace RimroomsAsyncIndustries.Gate
         public override void CompTick()
         {
             using (Core.RimroomsDiagnostics.Measure("gate-tick")) { TickGate(); }
+            // **OUTSIDE the measured block and outside TickGate's early returns, on purpose.**
+            // TickGate returns immediately when the gate is unspawned or in a portal-owner fault,
+            // and a loop reconciled inside it would keep running through exactly those states. See
+            // GateLoopAudio.cs: this must be able to decide "nothing should be playing".
+            TickGateLoops();
         }
 
         private void TickGate()

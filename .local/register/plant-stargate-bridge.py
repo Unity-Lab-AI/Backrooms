@@ -89,11 +89,16 @@ PLANTS = [
     ("a merely MARKED door becomes a stargate, registering a place that does not exist",
      EMERGENCE, "if (edge == null || !IsLiveGate) { return; }", "if (edge == null) { return; }"),
 
+    # **RE-AIMED 0.13.0-dev.** `CompTickInterval` gained a second branch for the aura's faster
+    # cadence, so the slow branch is indented one level deeper and the old anchor -- which carried
+    # the indentation and the comment between the two calls -- no longer matched. **The claim is
+    # unchanged**: the appearance and the wormhole must be refreshed from the same place on the same
+    # tick, or they can disagree about whether this is a gate. Only the whitespace moved.
     ("the wormhole is refreshed somewhere other than where the glow is", EMERGENCE,
-     "            RefreshGateAppearance();\n            // Same tick, same question. If the "
-     "appearance and the wormhole were refreshed from\n            // different places they "
-     "could disagree about whether this is a gate.\n            RefreshStargate();",
-     "            RefreshGateAppearance();"),
+     "                RefreshGateAppearance();\n                // Same tick, same question. If "
+     "the appearance and the wormhole were refreshed from\n                // different places "
+     "they could disagree about whether this is a gate.\n                RefreshStargate();",
+     "                RefreshGateAppearance();"),
 
     ("a receiving end is dialled, fighting their one-way rule", EMERGENCE,
      "StargateBridge.IsReceiving(near)", "false"),

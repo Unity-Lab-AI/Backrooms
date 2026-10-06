@@ -156,15 +156,26 @@ for folder, _, names in os.walk(SRC):
         # Which comp classes override which tick.
         for match in re.finditer(r"class\s+(\w+)\s*:[^{]*ThingComp[^{]*\{", body):
             pass
-        for cls in re.findall(r"public\s+class\s+(\w+)\s*:\s*ThingComp", body) + \
-                   re.findall(r"public\s+class\s+(\w+)\s*:\s*ThingComp\s*,", body):
+        # **THIS PATTERN ONLY EVER MATCHED `public class X : ThingComp`**, so it was blind to every
+        # comp declared `sealed` or `partial` -- which is most of them. It went unnoticed because
+        # one comp happened to be declared plainly and that was enough to satisfy the
+        # has-subjects claim. Making `CompRimroomsEmergence` partial at 0.13.0-dev removed that
+        # one subject and the proof reported it had none at all, which is how the hole surfaced.
+        # A proof that silently scans a fraction of its subjects is worse than one that scans none,
+        # because it reports green either way.
+        declarations = re.findall(
+            r"public\s+(?:sealed\s+|partial\s+|abstract\s+)*class\s+(\w+)\s*:\s*ThingComp\b", body)
+        for cls in declarations:
             segment = body.split("class " + cls, 1)[1]
             found = set()
             for override in OVERRIDES:
                 if re.search(r"public\s+override\s+void\s+%s\s*\(" % override, segment):
                     found.add(override)
             if found:
-                comp_ticks[cls] = found
+                # **Unioned, not assigned.** A partial class is declared in more than one file and
+                # its overrides may be split across them; assigning would let whichever file was
+                # walked last decide what the class overrides.
+                comp_ticks.setdefault(cls, set()).update(found)
 
 print("")
 print("     comps with a tick override: %s"
@@ -205,6 +216,11 @@ print("")
 print("WHAT EACH TICKING COMP IS ATTACHED TO, AND WHETHER THOSE DEFS ACTUALLY TICK THAT WAY")
 print("-" * 78)
 
+# A def name carrying another mod's prefix -- two to five capitals then an underscore, which is what
+# `PH_DoorDouble` looks like and what most mods use. Ours are excluded by name: `RR_` is this
+# package's and must always resolve.
+FOREIGN_DEF = re.compile(r"^(?!RR_)[A-Z]{2,5}_[A-Za-z0-9_]+$")
+
 # What each ticker type actually delivers, from Verse.Thing.DoTick.
 DELIVERS = {
     "Normal": set(["CompTick", "CompTickInterval"]),
@@ -225,6 +241,22 @@ for props, comp in sorted(props_to_comp.items()):
     for defname in defs:
         ticker = ticker_of(defname)
         if ticker is None:
+            # **ANOTHER MOD'S DEF CANNOT BE READ FROM DISK, AND THAT IS NOT A FAULT OF OURS.**
+            # Doors Expanded's `PH_*` doors carry the gate component through a
+            # `PatchOperationFindMod`, which is optional by construction and applies nothing when
+            # that mod is absent. Its defs live in that mod's folder, not in Core's `Data/` and not
+            # in this package, so there is nothing here to resolve.
+            #
+            # It is reported with its consequence named rather than passed silently: **if such a
+            # door were not a `Normal` ticker, `CompTick` would never run on it.** In practice they
+            # inherit Core's door bases, which are `Normal` -- but that is an inference about
+            # somebody else's content, and an inference is what a note is for. This surfaced only
+            # when the class scan stopped being blind to `sealed` and `partial` comps.
+            if FOREIGN_DEF.match(defname):
+                print("  NOTE  %s carries %s and belongs to another mod; its ticker cannot be read "
+                      "from disk. If it is not a Normal ticker, %s never runs on it."
+                      % (defname, props, "/".join(sorted(overrides))))
+                continue
             check("%s carries %s and its ticker type resolves" % (defname, props), False,
                   "-- the def was not found in the installed game's data or in this package")
             continue

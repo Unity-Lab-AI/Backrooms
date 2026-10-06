@@ -79,6 +79,61 @@ namespace RimroomsAsyncIndustries.Audio
             }
         }
 
+        /// <summary>
+        /// Start a looping cue, or return null.
+        ///
+        /// **THE CALLER MUST CALL `Maintain()` EVERY TICK, AND THAT IS THE SAFETY PROPERTY RATHER
+        /// THAN A CHORE.** The sustainer is created with <see cref="MaintenanceType.PerTick"/>, so
+        /// RimWorld ends it by itself the moment it stops being maintained. A gate that is
+        /// destroyed, despawned, mid-save-load, or simply forgotten by a future edit therefore goes
+        /// quiet on its own. **Forgetting to stop one is not a failure mode here** -- which is the
+        /// whole reason `Usable` refuses a sustained def on the one-shot path, where forgetting
+        /// would mean a hum that runs until the map unloads.
+        ///
+        /// The volume factor is read once at creation: a sustainer's volume is not re-read, so a
+        /// player changing the slider mid-loop sees it apply to the next loop rather than this one.
+        /// That is a deliberately small lie compared with restarting the sound under them.
+        /// </summary>
+        public static Sustainer TryStartSustainer(string cueId, Map map, IntVec3 cell, bool field)
+        {
+            try
+            {
+                if (!UnityData.IsInMainThread || Current.Game == null ||
+                    Current.ProgramState != ProgramState.Playing || map == null || map.Disposed ||
+                    !Find.Maps.Contains(map) || Find.CurrentMap != map ||
+                    !cell.IsValid || !cell.InBounds(map)) { return null; }
+
+                RimroomsSettings settings = RimroomsMod.Settings;
+                if (settings == null) { return null; }
+                if ((field ? settings.MuteFieldCues : settings.MuteGateCues) ||
+                    settings.EffectiveCueVolume <= 0f) { return null; }
+
+                SoundDef definition = DefDatabase<SoundDef>.GetNamedSilentFail(cueId);
+                // The mirror image of `Usable`: this path takes **only** a sustained def, so a
+                // one-shot can never be started as a loop that nothing will ever end.
+                if (definition == null || definition.isUndefined || !definition.sustain ||
+                    definition.context != SoundContext.MapOnly ||
+                    definition.subSounds == null || definition.subSounds.Count == 0)
+                { WarnOnce("loop:" + cueId, "Unavailable or non-looping cue requested as a loop: " + cueId); return null; }
+                foreach (SubSoundDef subSound in definition.subSounds)
+                {
+                    // Missing resolved clips have zero duration, exactly as on the one-shot path.
+                    if (subSound == null || !(subSound.Duration.TrueMax > 0f))
+                    { WarnOnce("loopgrain:" + cueId, "A looping cue has no resolved clip: " + cueId); return null; }
+                }
+
+                SoundInfo info = SoundInfo.InMap(new TargetInfo(cell, map), MaintenanceType.PerTick);
+                info.volumeFactor = settings.EffectiveCueVolume;
+                return definition.TrySpawnSustainer(info);
+            }
+            catch (Exception error)
+            {
+                WarnOnce("loopexception:" + (cueId ?? "unknown"),
+                    "Looping cue skipped after a presentation error: " + error.GetType().Name);
+                return null;
+            }
+        }
+
         /// <summary>A def this presentation can actually play as a one shot, or null.</summary>
         private static SoundDef Usable(string defName)
         {

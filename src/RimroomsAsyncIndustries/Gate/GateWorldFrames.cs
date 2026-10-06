@@ -241,13 +241,22 @@ namespace RimroomsAsyncIndustries.Gate
         /// <summary>Six ticks a frame: ten frames a second at normal speed.</summary>
         internal const int TicksPerOverlayFrame = 6;
 
+        /// <summary>
+        /// The live cycle runs slower than the charge cycle, on purpose.
+        ///
+        /// A ramp is work in progress and should look busy; an open connection is a steady state and
+        /// should look settled. Running both at the same rate made a finished gate look like it was
+        /// still straining. Ten ticks a frame is six frames a second against the charge cycle's ten.
+        /// </summary>
+        internal const int TicksPerOpenFrame = 10;
+
         internal static int ActivationTicks { get { return ActivationSequence.Count * TicksPerOverlayFrame; } }
 
         internal static Material ChargeFrame(int tick)
         { return UnityData.IsInMainThread ? ChargeSequence.At(tick / TicksPerOverlayFrame) : null; }
 
         internal static Material OpenFrame(int tick)
-        { return UnityData.IsInMainThread ? OpenSequence.At(tick / TicksPerOverlayFrame) : null; }
+        { return UnityData.IsInMainThread ? OpenSequence.At(tick / TicksPerOpenFrame) : null; }
 
         /// <summary>The burst, which plays once. Past its last frame it answers null, not frame one.</summary>
         internal static Material ActivationFrame(int elapsedTicks)
