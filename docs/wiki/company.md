@@ -174,6 +174,43 @@ keeps sending them whenever you have none at all.
 
 ---
 
+## Paperwork, and the light that says a job is ready
+
+**A job you accept wants paperwork before it can go back.** Lab notes on the gate work, the
+investigation, the analysis, the survey — which ones depends on the job, and the Operations
+→ **Requests** pane lists every accepted job with what it still owes.
+
+Paperwork is written at a **records desk**, which you build. A colonist does it as ordinary work on
+the same work tab as cooking and hauling, so a branch that assigns nobody to it files nothing.
+
+**Nothing is invented at a desk.** A report is written from records the branch already holds: if the
+work was not done and recorded, there is nothing there to write.
+
+### Build more than one desk
+
+**One desk is one writer.** Build several and several people write at once, which is what you want
+with several jobs open.
+
+**Two people are never put on the same report.** The branch hands each writer a different one, so a
+second desk is a second report rather than the same page twice.
+
+### The light
+
+| Light | What it means | What you do |
+|---|---|---|
+| **in progress** | Paperwork outstanding | Assign somebody to a records desk |
+| **READY TO SEND** | Everything filed and a book agrees with it | Send it back |
+| **no book** | Everything filed and no book agrees with it | The company sends another |
+
+**To send it, haul the job's book inside the radius of a trade beacon you designated for credit.**
+The company collects it from there.
+
+**The record is the authority, not the book.** Burn the book, lose it in a coordinate, or leave it
+with a crew who did not come back, and you have lost a deliverable rather than the work — which is
+what the amber light is telling you.
+
+---
+
 ## Research
 
 Insight from analysed records buys unlocks across **nine branches**:

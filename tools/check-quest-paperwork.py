@@ -60,6 +60,20 @@ def read(relative):
     return io.open(path, encoding="utf-8-sig").read() if os.path.isfile(path) else None
 
 
+def body_of(text, signature):
+    """One method's body, by signature, to the first dedented close brace.
+
+    Used so a rule about `Resolve()` reads `Resolve()` rather than the whole file. Returns None when
+    the signature is absent, and **the caller must treat that as a failure rather than as a pass** --
+    an absent body contains nothing, so every `in` test against it is trivially false.
+    """
+    at = text.find(signature)
+    if at < 0:
+        return None
+    end = text.find(NL + "        }", at)
+    return text[at:end] if end > at else text[at:]
+
+
 def strip_comments(source):
     """Drop comments so a rule cannot pass on prose describing itself.
 
@@ -231,12 +245,78 @@ def main():
                         "the quest book and the evidence record can disagree about what an archive "
                         "is" % thing_forms)
 
+    # ------------------------------------- rules 11 to 13, two desks are not two people on one page
+    #
+    # **THE OWNER ASKED FOR PARALLEL AND PARALLEL IS WHERE THE BUG WAS.** *"u can have more than one
+    # to have more than one pawn doing it as u can have multiple quests going"*. The desk was
+    # uncapped and the giver scanned every desk, so two pawns could sit down at once -- and both
+    # wrote the same report, because the scan returned the first outstanding one and knew nothing
+    # about who was already writing it.
+    #
+    # Worse than a wasted session: the job re-derived its target every tick and carried its progress
+    # across, so the moment the first writer filed, the second's progress was tested against the NEXT
+    # report's requirement. A pawn 900 ticks into a 1000-tick report instantly completed a 600-tick
+    # one. **One session of work, two reports filed.**
+    #
+    # Three rules, because the repair has three parts and any one of them alone is undone by the
+    # other two being absent.
+    paperwork_body = strip_comments(paperwork or "")
+    if paperwork_body:
+        if "private static bool ClaimedByAnother(" not in paperwork_body:
+            problems.append("nothing excludes a report another pawn is already writing, so two desks "
+                            "put two people on the same page")
+        if re.search(r"bool TryFindWriteUpWork\(out ", paperwork_body):
+            problems.append("a pawn-less TryFindWriteUpWork overload exists. Everything that asks "
+                            "this is a pawn about to sit down, and an overload passing no pawn is a "
+                            "quiet way back to the behaviour that let two people write one page")
+    if driver_body:
+        # **WORD-BOUNDED, BECAUSE A SUBSTRING TEST PASSES ON A RENAME.** A plant renamed the field
+        # to `unclaimedRequestId` and this rule did not notice: the new name CONTAINS the old one.
+        # And declaring a field is not claiming anything, so the assignment is asserted too -- a
+        # claim that is never taken is two writers on one page with extra steps.
+        if (not re.search(r"\bclaimedRequestId\b", driver_body)
+                or not re.search(r"\bclaimedKindName\b", driver_body)):
+            problems.append("the write-up job does not claim the report it sat down to write, so its "
+                            "progress can land on a different one")
+        if (not re.search(r"claimedRequestId\s*=\s*chosen\.Request\.Id", driver_body)
+                or not re.search(r"claimedKindName\s*=\s*chosen\.Kind\.defName", driver_body)):
+            problems.append("the claim is declared and never taken, which is the same as having no "
+                            "claim at all -- the session would answer with whatever is outstanding")
+        # **ABSENCE IS A FAILURE HERE, NOT A PASS.** `body_of` returns None when the signature is
+        # gone, and an `in` test against `or ""` would then be false and the rule would report
+        # nothing -- which is how a rule gets satisfied by its subject not existing. This repository
+        # has shipped that mistake four times, once in a proof written in this same batch.
+        resolve_body = body_of(driver_body, "private WriteUpTarget Resolve()")
+        if resolve_body is None:
+            problems.append("the write-up job has no Resolve() to read, so nothing here can tell "
+                            "whether the session answers with its claim or goes looking for work")
+        elif "TryFindWriteUpWork" in resolve_body:
+            problems.append("Resolve() still searches for work instead of answering with the claim. "
+                            "That is the defect itself: a session's progress migrates to whatever "
+                            "report is outstanding next")
+        if not re.search(r"Scribe_Values\.Look\(ref claimedRequestId", driver_body):
+            problems.append("the claim is not scribed, so a save mid-session resumes writing a "
+                            "different report than the one the pawn sat down to")
+    # **EVERY call site, not merely one, and a plant proved the difference.** The giver asks twice --
+    # once to enumerate desks and once to make the job -- and a rule satisfied by either one passing
+    # a pawn let the other go stale. One stale call site IS the bug: that is the path that offers a
+    # second writer the page the first is already on.
+    if giver_body:
+        asked = len(re.findall(r"TryFindWriteUpWork\(", giver_body))
+        per_pawn = len(re.findall(r"TryFindWriteUpWork\(pawn,", giver_body))
+        if asked == 0 or asked != per_pawn:
+            problems.append("the work giver asks for work %d time(s) and only %d pass a pawn. Every "
+                            "call must, or a second writer is offered the page the first is already "
+                            "on" % (asked, per_pawn))
+
     print("check-quest-paperwork")
     print("  write-up kinds declared : %d" % len(declared))
     print("  kinds requested         : %d" % len(wanted))
     print("  preconditions checked   : %d" % len(members))
     print("  FileWriteUp callers     : %d" % len(writers))
     print("  StampForQuest callers   : %d" % len(stampers))
+    print("  claim on the session    : %s"
+          % ("yes" if driver_body and "claimedRequestId" in driver_body else "NO"))
     print("")
     if problems:
         for problem in problems:

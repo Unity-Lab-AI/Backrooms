@@ -106,6 +106,44 @@ PLANTS = [
      SETTLEMENT, "        internal bool HasArchivedCustody(Thing item)",
      "        internal bool HasArchivedCustody(Thing other) { return true; }" + NL
      + "        internal bool HasArchivedCustody(Thing item)", CHECK),
+
+    # ================================= rules 11 to 13, two desks are not two people on one page
+    #
+    # **THESE ARE THE PARALLELISM THE OWNER ASKED FOR AND THE BUG IT SHIPPED WITH.** Every one of
+    # these five faults is silent: the colony looks busy, two people are writing, and either one
+    # session's work is thrown away or -- worse -- lands on a report nobody wrote.
+    ("NOTHING EXCLUDES WHAT SOMEBODY ELSE IS WRITING, so two desks write one page", PAPERWORK,
+     "        private static bool ClaimedByAnother(Pawn asker, RequestRecord request,",
+     "        private static bool ClaimedByAnotherDisabled(Pawn asker, RequestRecord request,",
+     CHECK),
+
+    ("the pawn-less overload comes back, which is a quiet way to the old behaviour", PAPERWORK,
+     "        public bool TryFindWriteUpWork(Pawn asker, out RequestRecord request,",
+     "        public bool TryFindWriteUpWork(out RequestRecord request, out RimroomsWriteUpDef k)"
+     + NL + "        { return TryFindWriteUpWork(null, out request, out k); }" + NL
+     + "        public bool TryFindWriteUpWork(Pawn asker, out RequestRecord request,", CHECK),
+
+    # **BOTH OF THESE PLANTS WERE WRONG ON THEIR FIRST RUN, AND ONE OF THEM FOUND A REAL RULE
+    # WEAKNESS.** The first appended `&& false`, which left the text the rule reads untouched -- the
+    # plant was a no-op. The second renamed the field to `unclaimedRequestId`, which CONTAINS
+    # `claimedRequestId`, so a substring test could never see it; the rule is word-bounded now and
+    # also asserts the claim is TAKEN rather than merely declared.
+    ("the giver stops asking per pawn, so a second writer is offered the first one's page", GIVER,
+     "            if (!campaign.TryFindWriteUpWork(pawn, out request, out kind)) { return null; }",
+     "            if (!campaign.TryFindWriteUpWork(null, out request, out kind)) { return null; }",
+     CHECK),
+
+    ("THE CLAIM IS DECLARED AND NEVER TAKEN, which is no claim at all", DRIVER,
+     "                claimedRequestId = chosen.Request.Id;", "", CHECK),
+
+    ("RESOLVE GOES BACK TO SEARCHING FOR WORK, which IS the defect", DRIVER,
+     "            RequestRecord request = campaign.RequestById(claimedRequestId);",
+     "            RequestRecord request; RimroomsWriteUpDef ignored;" + NL
+     + "            campaign.TryFindWriteUpWork(pawn, out request, out ignored);", CHECK),
+
+    ("the claim is not saved, so a reload resumes a different report", DRIVER,
+     '            Scribe_Values.Look(ref claimedRequestId, "rr_writeUpClaimedRequest");', "",
+     CHECK),
 ]
 
 _RR_SENTINEL = os.path.join(".local", "register",

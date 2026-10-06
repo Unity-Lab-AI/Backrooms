@@ -268,17 +268,59 @@ namespace RimroomsAsyncIndustries.Company
         }
 
         /// <summary>
-        /// The first accepted quest with writable paperwork, and which kind.
+        /// The first accepted quest with writable paperwork nobody else is writing, and which kind.
         ///
-        /// **One place answers "is there paperwork to do", and the work giver, the job driver and the
-        /// ledger all ask it.** Three copies of this scan would be three chances for the giver to
+        /// **One place answers "is there paperwork for THIS pawn to do", and the work giver and the
+        /// job driver both ask it.** Two copies of this scan would be two chances for the giver to
         /// offer a job the driver then refuses, which reads to a player as a colonist walking to a
         /// desk and standing there.
         ///
         /// Quests are taken in list order, which is acceptance order, so a branch works its oldest
         /// outstanding obligation first.
+        ///
+        /// **There is deliberately no pawn-less overload.** One was written and immediately had no
+        /// callers: everything that asks this question is a pawn about to sit down, and an overload
+        /// that passed `null` would be a quiet way to get the old behaviour back -- the behaviour
+        /// that let two people write the same page. A dead convenience that reintroduces a bug when
+        /// somebody uses it is worse than no convenience.
+        ///
+        /// **There is deliberately no pawn-less overload.** One was written and immediately had no
+        /// callers: everything that asks this question is a pawn about to sit down, and an overload
+        /// that passed `null` would be a quiet way to get the old behaviour back -- the behaviour
+        /// that let two people write the same page. A dead convenience that reintroduces a bug when
+        /// somebody uses it is worse than no convenience.
+        ///
+        /// ## THE DEFECT THIS EXISTS FOR, AND IT WAS IN THE PARALLELISM THE OWNER ASKED FOR
+        ///
+        /// Owner: *"u can have more than one to have more than one pawn doing it as u can have
+        /// multiple quests going"*. The desk was uncapped and the work giver scanned every desk, so
+        /// two people could sit down at once -- **and they would both write the same thing**, because
+        /// this scan returned the first outstanding write-up and knew nothing about who was already
+        /// writing it.
+        ///
+        /// **The second pawn's session was not merely wasted; it landed on the wrong report.** The
+        /// job re-resolved its target every tick and carried its progress across, so when the first
+        /// writer filed, the second's accumulated progress was tested against the NEXT write-up's
+        /// requirement -- and a pawn 900 ticks into a 1000-tick report would instantly complete a
+        /// 600-tick one. **One session of work, two reports filed.** Parallel by accident, which is
+        /// the exact failure the queue row predicted one subsystem over.
+        ///
+        /// ## How a claim is read, and why it is not stored anywhere
+        ///
+        /// A claim is **what another pawn's active job driver says it is writing**, read off the
+        /// pawns. Nothing is reserved, nothing is scribed, and there is no claim table to go stale:
+        /// a pawn who dies, is drafted or is interrupted stops holding a claim by the only means
+        /// that matters, which is no longer having the job. Same shape as
+        /// `CompRimroomsGateConsole.HasAssemblyJob`, which asks the map's pawns what they are doing
+        /// rather than keeping a register of it.
+        ///
+        /// **The limitation, stated rather than hidden:** a pawn with the job queued but not yet
+        /// current holds no claim, so two can still be dispatched at the same instant. That is a
+        /// wasted walk at worst -- the job pins its own target the moment work starts and
+        /// `RequestRecord.FileWriteUp` is idempotent, so the outcome is never a double file.
         /// </summary>
-        public bool TryFindWriteUpWork(out RequestRecord request, out RimroomsWriteUpDef kind)
+        public bool TryFindWriteUpWork(Pawn asker, out RequestRecord request,
+            out RimroomsWriteUpDef kind)
         {
             request = null;
             kind = null;
@@ -289,11 +331,44 @@ namespace RimroomsAsyncIndustries.Company
             {
                 RequestRecord candidate = line[index];
                 if (candidate == null || candidate.Status != RequestStatus.Accepted) { continue; }
-                RimroomsWriteUpDef next = NextWriteUp(candidate);
-                if (next == null) { continue; }
-                request = candidate;
-                kind = next;
-                return true;
+                foreach (RimroomsWriteUpDef next in WriteUpsWanted(candidate))
+                {
+                    if (next == null || candidate.WriteUpsFiled.Contains(next.defName)) { continue; }
+                    if (!WriteUpPreconditionMet(next, candidate)) { continue; }
+                    if (ClaimedByAnother(asker, candidate, next)) { continue; }
+                    request = candidate;
+                    kind = next;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Whether a pawn other than <paramref name="asker"/> is writing this exact report now.
+        ///
+        /// Across every loaded map, because a branch's paperwork is a branch-wide record and a
+        /// colonist on a coordinate writing at a desk is writing the same report as one at home.
+        /// </summary>
+        private static bool ClaimedByAnother(Pawn asker, RequestRecord request,
+            RimroomsWriteUpDef kind)
+        {
+            if (request == null || kind == null) { return false; }
+            List<Map> maps = Find.Maps;
+            if (maps == null) { return false; }
+            for (int index = 0; index < maps.Count; index++)
+            {
+                Map map = maps[index];
+                if (map == null || map.mapPawns == null) { continue; }
+                IReadOnlyList<Pawn> pawns = map.mapPawns.AllPawnsSpawned;
+                for (int slot = 0; slot < pawns.Count; slot++)
+                {
+                    Pawn other = pawns[slot];
+                    if (other == null || other == asker || other.jobs == null) { continue; }
+                    JobDriver_RRWriteUp writing = other.jobs.curDriver as JobDriver_RRWriteUp;
+                    if (writing == null) { continue; }
+                    if (writing.IsWriting(request, kind)) { return true; }
+                }
             }
             return false;
         }

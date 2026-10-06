@@ -51,7 +51,11 @@ namespace RimroomsAsyncIndustries.Company
             if (campaign == null || !campaign.CanOperate) { yield break; }
             RequestRecord request;
             RimroomsWriteUpDef kind;
-            if (!campaign.TryFindWriteUpWork(out request, out kind)) { yield break; }
+            // **ASKED FOR THIS PAWN, so a second writer is not offered the page the first is
+            // already on.** The scan takes out every report another pawn's active job says it is
+            // writing: the desk was uncapped and this giver already scanned every desk, so two
+            // people could sit down at once and both write the same report.
+            if (!campaign.TryFindWriteUpWork(pawn, out request, out kind)) { yield break; }
             ThingDef desk = DefDatabase<ThingDef>.GetNamedSilentFail("RR_RecordsDesk");
             if (desk == null) { yield break; }
             List<Thing> desks = pawn.Map.listerThings.ThingsOfDef(desk);
@@ -71,7 +75,7 @@ namespace RimroomsAsyncIndustries.Company
             if (campaign == null || !campaign.CanOperate) { return null; }
             RequestRecord request;
             RimroomsWriteUpDef kind;
-            if (!campaign.TryFindWriteUpWork(out request, out kind)) { return null; }
+            if (!campaign.TryFindWriteUpWork(pawn, out request, out kind)) { return null; }
             if (!pawn.CanReserveAndReach(thing, PathEndMode.InteractionCell, Danger.Some, 1, -1,
                     null, forced)
                 || !pawn.CanReserveSittableOrSpot(thing.InteractionCell, forced))
