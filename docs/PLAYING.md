@@ -1,4 +1,4 @@
-﻿# Playing Rimrooms — Async Industries
+# Playing Rimrooms — Async Industries
 
 > **The player documentation is the [wiki](wiki/index.md).** Start there — it is shorter, it is
 > organised for reading, and it is what the published site serves.
@@ -54,8 +54,12 @@ keyboard shortcut is under *Keyboard, colour and scale* below.
 1. **Restore power.** The gate needs a real supply and a real reserve. Ordinary generation and
    batteries; nothing special is required and nothing special is provided.
 2. **Build the gate.** Designate the door, the communications console, the battery and a machining
-   table on Operations' Machine pane, then complete the **assemble gate** bill on it: **100 steel
-   and 8 industrial components**, worked by a crafter. The table keeps all of its normal recipes.
+   table on Operations' Machine pane, then complete the **assemble gate section** bill on it four
+   times: **25 steel and 2 industrial components** a section, **100 steel and 8 components** in
+   total, worked by a crafter. The table keeps all of its normal recipes.
+   **Link up to three more machining tables to the gate** and four people build a section each at
+   the same time. A section belongs to no bench: lose one mid-build and its unfinished sections are
+   still outstanding on the others.
 3. **Keep an operator at the console.** A qualified staff member stays at headquarters while the
    crossing is open. This is a job, not a checkbox.
 4. **Pick a crew.** Ready field staff, checked for skill, health and what they are carrying.

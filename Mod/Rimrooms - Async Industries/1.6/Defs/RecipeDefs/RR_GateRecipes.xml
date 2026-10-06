@@ -1,22 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
+  <!-- ONE SECTION OF THE GATE, NOT THE WHOLE GATE. The assembly is four sections, so four
+       people at four linked benches can build it at once.
+
+       Owner direction, 2026-10-06: "with say upto 4 of them available so pawns can do geate
+       process better and faster", and "and same with the coms and machine benches". Asked how to
+       make a second bench mean anything, the owner chose "split the gate's component count across
+       the linked benches" over "any linked bench satisfies the bill".
+
+       THE TOTAL IS UNCHANGED. 25 steel, 2 components and 1500 work per section, four sections:
+       100 steel, 8 components and 6000 work, exactly what one bill cost before. Nothing got
+       cheaper. What changed is that it can be four people instead of one.
+
+       A SECTION IS NEVER ALLOCATED TO A BENCH, and that answers the cost the fork named before
+       the owner chose it: a destroyed or unlinked bench must not leave an unfinishable remainder.
+       The count lives on the gate and any bound bench installs the next one, so there is nothing
+       to recompute when the set of benches changes. See Gate/GateAssemblyShares.cs.
+
+       ONE RECIPE, FOUR ITERATIONS, rather than four recipe defs. Four defs would be four places
+       stating the section cost, and they would disagree the first time one was edited. The repeat
+       count on the bill is the player's: queue four on one bench, or one on each of four. -->
   <RecipeDef>
     <defName>RR_AssembleMachineGate</defName>
-    <label>assemble gate</label>
-    <description>Physically carry 100 steel and 8 industrial components to the designated machining table, then complete the installation assembly work. Designate the native door, communications console, battery and machining table in Operations first. The table retains its ordinary recipes.</description>
-    <jobString>assembling the gate</jobString>
-    <workAmount>6000</workAmount>
+    <label>assemble gate section</label>
+    <description>Physically carry 25 steel and 2 industrial components to a machining table set to gate control, then complete one section of the installation. A gate is four sections: run them one after another on one bench, or at the same time on up to four benches linked to the gate.
+
+Designate the door, communications console, battery and machining table in Operations first. The table retains its ordinary recipes.</description>
+    <jobString>assembling a gate section</jobString>
+    <workAmount>1500</workAmount>
     <workSkill>Crafting</workSkill>
     <requiredGiverWorkType>Crafting</requiredGiverWorkType>
     <workerClass>RimroomsAsyncIndustries.Gate.RecipeWorker_RimroomsGateAssembly</workerClass>
     <ingredients>
       <li>
         <filter><thingDefs><li>Steel</li></thingDefs></filter>
-        <count>100</count>
+        <count>25</count>
       </li>
       <li>
         <filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter>
-        <count>8</count>
+        <count>2</count>
       </li>
     </ingredients>
     <fixedIngredientFilter>

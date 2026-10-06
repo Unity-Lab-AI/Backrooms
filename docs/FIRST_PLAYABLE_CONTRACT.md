@@ -1,4 +1,4 @@
-﻿# Rimrooms - Async Industries: first playable contract
+# Rimrooms - Async Industries: first playable contract
 
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
@@ -20,7 +20,7 @@ Use the `async_industries` opening in [SCENARIOS.md](SCENARIOS.md): one headquar
 | --- | --- | --- |
 | Facility map | 60×60 | Enough space for the starter operation without asking the player to expand immediately. |
 | Field crew | 3 people plus 1 gate operator kept at the facility | A researcher, guard, and flexible medic/logistics pawn can enter; the operator keeps the exit available. |
-| Gate completion | Final 100 steel and 8 components, plus stable power and an operator | The opening asks the player to use construction, stock control, and staff assignments. |
+| Gate completion | Final 100 steel and 8 components in four sections, plus stable power and an operator | The opening asks the player to use construction, stock control, and staff assignments. |
 | Gate opening | 108,000 ticks for the first trip (~30 real minutes at normal speed) | **Superseded the provisional 20 in-game minutes on 2026-09-28.** A first excursion long enough to actually do something, with a visible warning and a recall decision. |
 | First destination | 6–8 connected rooms, one safe return point, the Borrowed Corridor distortion, one bounded Quiet Pursuer encounter, and one evidence lead | The map teaches route reading, investigation, and a first fight-or-retreat choice without a sprawling first mission. |
 | First crew load | Up to three pawns and their carried gear | The first run is intentionally easy to account for in a manifest. |

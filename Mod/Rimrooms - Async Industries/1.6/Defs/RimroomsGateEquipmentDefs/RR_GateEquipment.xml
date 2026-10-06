@@ -140,6 +140,34 @@
     <displayOrder>1</displayOrder>
   </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
 
+  <!-- THE OTHER HALF OF THE SAME DIRECTION. Owner, 2026-10-06, same message as the relief
+       stations: "and same with the coms and machine benches".
+
+       FOUR IS AGAIN THE OWNER'S NUMBER AND maxLinked IS AGAIN THREE. The gate's designated
+       machining table is the first of the four and is bound by its own exclusive rules;
+       `EquipmentLinkFailureKey` refuses a provider in any role as `AlreadyAProvider`.
+
+       AND A LINK ON ITS OWN WOULD HAVE CHANGED NOTHING, which is why this role arrives with the
+       assembly split rather than before it. A second machining table was already buildable and
+       already linkable; what it could not do was let a second pawn work the gate's assembly,
+       because that was ONE bill on the ONE bound bench and one bill is one pawn. The assembly is
+       four sections now, the count lives on the gate, and any bound bench installs the next one.
+
+       SO A DESTROYED BENCH CANNOT ORPHAN WORK. The fork named that cost before the owner chose
+       the split: sections are never allocated to a bench, so unlinking or losing one leaves its
+       unfinished sections simply outstanding, queueable anywhere, including on the designated
+       bench alone. -->
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_GateAssembly</defName>
+    <label>assembly bench</label>
+    <description>A second, third or fourth machining table wired to the same gate, so the gate's four assembly sections can be built at the same time instead of one after another. Set each one to gate control and queue a section on it.\n\nThis is never the gate's own designated table; that one is already the first bench. A section is not reserved for any bench: lose one mid-build and its unfinished sections are still outstanding, on any of the others.</description>
+    <thingDefNames>
+      <li>TableMachining</li>
+    </thingDefNames>
+    <maxLinked>3</maxLinked>
+    <displayOrder>2</displayOrder>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
   <!-- A SECOND comms console, not the gate's own. The gate's control console is bound by its
        own rules and `EquipmentLinkFailureKey` refuses it here as `AlreadyAProvider` - which is
        correct and is what makes this role meaningful: a branch that wants a radio room builds

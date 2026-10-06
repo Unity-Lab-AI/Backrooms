@@ -361,6 +361,7 @@ namespace RimroomsAsyncIndustries.Gate
             // field: `Mild` is enum 0, so an absent value must resolve to Balanced.
             Scribe_Values.Look(ref watchPosture, "rr_gateWatchPosture", GateWatchPosture.Balanced);
             Scribe_Values.Look(ref assemblyComplete, "rr_gateAssemblyComplete", false);
+            ExposeAssemblyShares();
             Scribe_Values.Look(ref calibrated, "rr_gateCalibrated", false);
             Scribe_Values.Look(ref activeExpeditionId, "rr_gateActiveExpeditionId");
             ExposePortalOpening();
@@ -798,6 +799,8 @@ namespace RimroomsAsyncIndustries.Gate
                     IntegrityFraction.ToStringPercent("F0"),
                     IntegrityFloorFraction.ToStringPercent("F0")).ToString();
             string serviceText = ServicingReadout();
+            // How much of the gate is built, and on how many benches. Silent once it is built.
+            string assemblyText = AssemblyReadout();
             // One readout. The legacy one computed here first was overwritten on every
             // single call before it could be shown.
             string powerText = "RR_NativeGate_PowerReadout".Translate(ReturnReserveStoredWattDays.ToString("F2"),
@@ -821,8 +824,8 @@ namespace RimroomsAsyncIndustries.Gate
             string links = EquipmentLinkReadout();
             string footprint = FootprintReadout();
             return string.Join("\n", new[] { NextStepReadout(), status, footprint, integrityText,
-                    operatorText, cutoffText, serviceText, powerText, ramp, links, active,
-                    StandingRecallReadout() }
+                    operatorText, cutoffText, assemblyText, serviceText, powerText, ramp, links,
+                    active, StandingRecallReadout() }
                 .Where(s => !string.IsNullOrEmpty(s)));
         }
 
@@ -1173,20 +1176,52 @@ namespace RimroomsAsyncIndustries.Gate
             return CompanyActionResult.Applied();
         }
 
+        /// <summary>
+        /// One finished section of the gate's assembly, credited to the gate.
+        ///
+        /// **It takes a section rather than finishing the gate**, since 0.12.99-dev: the assembly is
+        /// <see cref="AssemblySharesRequired"/> sections so that four people can build it at once.
+        /// See `GateAssemblyShares` for why the section is credited to the GATE and never allocated
+        /// to a bench.
+        ///
+        /// **The bench test widened from `billGiver != nativeAssemblyBench` to
+        /// <see cref="IsBoundAssemblyBench"/>, and that is the whole of the permission change.**
+        /// Everything else is unchanged and deliberately so: the branch must match, the thing must
+        /// be a headquarters thing, the gate must be designated and on the same map. A linked bench
+        /// is a bench the player wired to this gate, not a bench that happens to be nearby.
+        /// </summary>
         public CompanyActionResult CompleteAssemblyFromBill(Thing billGiver, RecipeDef recipe)
         {
             if (billGiver == null || recipe == null || recipe.defName != "RR_AssembleMachineGate" ||
                 billGiver.TryGetComp<CompRimroomsGateConsole>() == null)
             { return CompanyActionResult.Refused("RR_Gate_InvalidAssemblyBill"); }
             if (!IsDesignated || NativeCampaign == null || nativeBranchId != NativeCampaign.BranchId ||
-                !SameNativeHeadquartersThing(billGiver) || billGiver != nativeAssemblyBench ||
-                billGiver.TryGetComp<CompRimroomsGateConsole>().LinkedGate != parent)
+                !SameNativeHeadquartersThing(billGiver) || !IsBoundAssemblyBench(billGiver))
             { return CompanyActionResult.Refused("RR_Gate_InvalidAssemblyBill"); }
             if (assemblyComplete) { return CompanyActionResult.Existing(); }
             if (!parent.Spawned || billGiver.Map != parent.Map)
             { return CompanyActionResult.Refused("RR_Gate_MachineUnavailable"); }
+            assemblyShares++;
+            RecordGateActivity("RR_Event_GateAssemblySection", parent.GetUniqueLoadID());
+            if (assemblyShares < AssemblySharesRequired)
+            {
+                // A section, not the gate. The bill is left exactly as the player set it, because
+                // there is more of it to do and suspending it here would stop the build halfway
+                // with no explanation anywhere.
+                return CompanyActionResult.Applied();
+            }
+            assemblyShares = AssemblySharesRequired;
             assemblyComplete = true;
-            billGiver.TryGetComp<CompRimroomsGateConsole>().MarkAssemblyBillComplete();
+            // Every bench, not just the one that finished the last section. A repeating bill left
+            // running on another bench would spend another twenty-five steel on a gate that is
+            // already assembled -- which is the one direction `SyncAssemblyBill` is allowed to act
+            // in, and it has to reach all four or three of them keep going.
+            foreach (Thing bench in BoundAssemblyBenches)
+            {
+                CompRimroomsGateConsole station = bench == null
+                    ? null : bench.TryGetComp<CompRimroomsGateConsole>();
+                if (station != null) { station.MarkAssemblyBillComplete(); }
+            }
             RecordGateActivity("RR_Event_GateAssemblyCompleted", parent.GetUniqueLoadID());
             return CompanyActionResult.Applied();
         }

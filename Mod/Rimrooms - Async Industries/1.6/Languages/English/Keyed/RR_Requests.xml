@@ -163,10 +163,10 @@ There is no date on this and there will not be one. Open the Operations tab, loo
   <RR_Ledger_LightGreen>READY TO SEND</RR_Ledger_LightGreen>
   <RR_Ledger_LightAmber>no book</RR_Ledger_LightAmber>
   <RR_Ledger_LightDark>in progress</RR_Ledger_LightDark>
-  <RR_Ledger_PaperworkNextSend>Haul its book into a designated credit beacon's radius. There is no deadline.</RR_Ledger_PaperworkNextSend>
-  <RR_Ledger_PaperworkNextBook>The work is filed and no book agrees with it. The company sends another when the branch holds none for this job.</RR_Ledger_PaperworkNextBook>
+  <RR_Ledger_PaperworkNextSend>Haul its book into a credit beacon's radius. The company waits.</RR_Ledger_PaperworkNextSend>
+  <RR_Ledger_PaperworkNextBook>Filed, and no book agrees with it. The company sends another when the branch holds none.</RR_Ledger_PaperworkNextBook>
   <RR_Ledger_PaperworkNextWrite>Next: {0}. Assign somebody to a records desk.</RR_Ledger_PaperworkNextWrite>
-  <RR_Ledger_PaperworkNextWaiting>Nothing can be written yet; this job is waiting on the work it reports.</RR_Ledger_PaperworkNextWaiting>
+  <RR_Ledger_PaperworkNextWaiting>Waiting on the work it reports.</RR_Ledger_PaperworkNextWaiting>
 
   <!-- Ledger reasons. Noun phrases, matching RR_Ledger_SurveyPayment. -->
   <RR_Ledger_RequestPayment>Corporation request met</RR_Ledger_RequestPayment>
@@ -274,7 +274,7 @@ There is no date on this and there will not be one. Open the Operations tab, loo
 
 The paperwork this job wants is written at a records desk, from records the branch already holds. When every piece is filed, the book is ready to go back.
 
-To send it: haul it inside the radius of a trade beacon you designated for credit. There is no deadline.</RR_QuestBook_Body>
+To send it: haul it inside the radius of a trade beacon you designated for credit. The company waits as long as it takes.</RR_QuestBook_Body>
 
   <!-- COLLECTION OUT OF A BEACON RADIUS, the owner's chosen send-back. {0} is the company, {1} how
        many went, {2} the quest labels. Named rather than counted alone, because a collection that

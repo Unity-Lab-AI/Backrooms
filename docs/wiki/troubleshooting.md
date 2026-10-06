@@ -16,7 +16,7 @@ Operations names exactly one reason. Find it on the **Machine** pane, which numb
 | It says | Do this |
 |---|---|
 | Not set to gate control | **Check both** — the machining table and the comms console each need it, separately |
-| Assembly unfinished | Run the **assemble gate** bill: 100 steel, 8 industrial components |
+| Assembly unfinished | Run the **assemble gate section** bill four times: 25 steel and 2 industrial components each |
 | Nobody certified | Run the **train gate operator** bill. A machining table or a crafting spot will do |
 | Out of calibration | Have a certified staff member calibrate it |
 | No operator at the controls | Keep someone at the console — it is a job, not a checkbox |

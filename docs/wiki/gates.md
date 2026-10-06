@@ -75,6 +75,29 @@ An operator brings the gate up at the console over time. The console shows progr
 - A route your crew has run before comes up **faster**.
 - An operator who has personally walked that address comes up faster still.
 
+## Four stations, so a window is not one person's bladder
+
+**Link up to three more communications consoles to the gate** on the Machine pane. Any qualified
+staff member at any of the four holds the connection, and one can stand up to eat the moment
+another sits down.
+
+The gate's own control console is the first of the four. An unpowered or switched-off console is
+not a station — the gate does not count it.
+
+**Nothing is researched for this.** It is how a gate should always have worked.
+
+## Four benches, so four people can build it
+
+**Link up to three more machining tables the same way.** The gate's assembly is **four sections**,
+so four people can build a section each at the same time instead of queueing behind one bench.
+
+The total never changes: 25 steel and 2 components a section, 100 steel and 8 components for the
+gate, whether you use one bench or four.
+
+**A section is not reserved for a bench.** Destroy or unlink one halfway through and its unfinished
+sections are still outstanding on the others, including on the designated table on its own. You can
+never be left with work that nowhere can finish.
+
 ## The reserve
 
 An open connection draws power while it stands, and holds a reserve back so **one return is always

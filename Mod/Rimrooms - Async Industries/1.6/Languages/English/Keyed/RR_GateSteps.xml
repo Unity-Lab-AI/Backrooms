@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
   The gate start-up checks, numbered.
 
@@ -32,8 +32,8 @@
   <RR_Steps_4Label>Machining table set to gate control</RR_Steps_4Label>
   <RR_Steps_4How>Select {0} on the map and press "Set to gate control". The gate recipe is withdrawn while it is doing its ordinary work.</RR_Steps_4How>
 
-  <RR_Steps_5Label>Gate assembled - 100 steel and 8 industrial components</RR_Steps_5Label>
-  <RR_Steps_5How>Add the "assemble gate" bill to that machining table's bill list, then let a crafter finish it.</RR_Steps_5How>
+  <RR_Steps_5Label>Gate assembled - four sections of 25 steel and 2 industrial components</RR_Steps_5Label>
+  <RR_Steps_5How>Add the "assemble gate section" bill to that machining table's bill list and set it to repeat four times, then let a crafter work through it. Link up to three more machining tables to the gate and four people can build a section each at once.</RR_Steps_5How>
 
   <RR_Steps_6Label>An operator assigned</RR_Steps_6Label>
   <RR_Steps_6How>Select the gate door and press "Assign operator". They must be employed staff.</RR_Steps_6How>

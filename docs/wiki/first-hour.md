@@ -22,7 +22,7 @@ one that is not done.
 | 2 | Console, battery and machining table bound to it | Bind all three on the Machine pane |
 | 3 | The gate commissioned | A commissioning step on the same pane |
 | 4 | **Machining table set to gate control** | A switch on the table itself |
-| 5 | Gate assembled | The **assemble gate** bill: 100 steel, 8 industrial components |
+| 5 | Gate assembled | The **assemble gate section** bill, four times: 25 steel and 2 industrial components each |
 | 6 | An operator assigned | A certified gate operator, on Personnel |
 | 7 | The gate calibrated | A certified staff member, once assembly is done |
 | 8 | **Communications console set to gate control** | A switch on the console itself |
@@ -58,13 +58,24 @@ On Operations → **Machine**, designate four things:
 | **A battery** | The reserve |
 | **A machining table** | Where it gets assembled |
 
-Then commission it, set the table to gate control, and run the **assemble gate** bill:
+Then commission it, set the table to gate control, and run the **assemble gate section** bill
+four times:
 
 ```
-100 steel + 8 industrial components
+25 steel + 2 industrial components   per section
+100 steel + 8 industrial components  for all four
 ```
 
 The table keeps all of its normal recipes.
+
+### Four people can build it at once
+
+**Link up to three more machining tables to the gate** on the Machine pane, set each to gate
+control, and queue a section on each. One bench does the same four sections one after another for
+the same total cost.
+
+**A section is not reserved for a bench.** Lose a bench halfway through and its unfinished sections
+are still outstanding on the others, including on the designated table alone.
 
 ## 3. Train a gate operator
 
@@ -89,6 +100,10 @@ every step and shows which are complete.
 
 Someone stays at the console while a connection is open. This is a job, not a checkbox — walk them
 away and the connection drops.
+
+**It does not have to be the same someone.** Link up to three more communications consoles to the
+gate and any qualified staff member at any of the four holds it, so one can leave to eat the moment
+another sits down. See [four stations](gates.md#four-stations-so-a-window-is-not-one-persons-bladder).
 
 ## 6. Pick a crew
 

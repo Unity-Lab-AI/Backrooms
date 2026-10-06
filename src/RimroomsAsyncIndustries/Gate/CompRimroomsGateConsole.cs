@@ -51,8 +51,17 @@ namespace RimroomsAsyncIndustries.Gate
         /// </summary>
         private List<string> suspendedByGateControl = new List<string>();
 
-        /// <summary>Whether this component is running the gate rather than its ordinary job.</summary>
-        public bool IsGateControl { get { return gateControl && linkedGate != null; } }
+        /// <summary>
+        /// Whether this component is running the gate rather than its ordinary job.
+        ///
+        /// **Asked through <see cref="Gate"/> rather than the raw field, since 0.12.99-dev.** A
+        /// bench linked in the `RR_Link_GateAssembly` role has no primary binding -- that one is
+        /// exclusive and belongs to the designated bench -- so a test on `linkedGate` would have
+        /// made gate control unreachable on exactly the three extra benches the role exists to
+        /// create, and the owner's *"same with the coms and machine benches"* would have shipped as
+        /// a link that changes nothing.
+        /// </summary>
+        public bool IsGateControl { get { return gateControl && Gate != null; } }
         public Building_WorkTable WorkTable { get { return parent as Building_WorkTable; } }
         public Thing LinkedGate { get { return linkedGate; } }
         public bool HasAssemblyJob
@@ -97,6 +106,20 @@ namespace RimroomsAsyncIndustries.Gate
             return true;
         }
 
+        /// <summary>
+        /// The gate this station serves, by primary binding or by equipment link.
+        ///
+        /// **Both are explicit, player-made bindings, which is the distinction that matters here.**
+        /// This getter used to fall back to hunting for the nearest machine gate on the map, and
+        /// that fallback was removed because *"the guess it made was never the right answer anyway
+        /// once two gates could exist"*. **A link is not a guess.** The player wired this bench to
+        /// this gate in the `RR_Link_GateAssembly` role, on the Machine pane, with `maxLinked`
+        /// bounding how many; asking which gate holds that link is reading their decision, not
+        /// substituting for it.
+        ///
+        /// The primary binding is asked first and always wins, so the designated bench behaves
+        /// exactly as it did and nothing about the exclusive binding changed.
+        /// </summary>
         public CompRimroomsGate Gate
         {
             get
@@ -104,12 +127,32 @@ namespace RimroomsAsyncIndustries.Gate
                 if (!parent.Spawned || parent.Map == null) { return null; }
                 if (linkedGate != null && linkedGate.Spawned && linkedGate.Map == parent.Map)
                 { return linkedGate.TryGetComp<CompRimroomsGate>(); }
-                // A station is bound to its gate explicitly, by the player, through the
-                // designation UI. It used to fall back to hunting for the nearest
-                // RR_MachineGate on the map; that def was retired in 0.9.0-dev and the guess
-                // it made was never the right answer anyway once two gates could exist.
-                return null;
+                return LinkedAssemblyGate();
             }
+        }
+
+        /// <summary>
+        /// The gate that has linked this bench as an extra assembly bench, or null.
+        ///
+        /// Scanned over the map's colonist buildings rather than stored, because the link lives on
+        /// the gate and a second copy of it here is a second thing to keep in step through
+        /// unlinking, destruction and a reload. **This is not on a tick path**: it is reached when a
+        /// bill's availability is asked, when a section completes, and when somebody clicks the
+        /// bench.
+        ///
+        /// A worktable only. The role declares `TableMachining`, and a comms console asking this
+        /// question would be a console hunting for an assembly link it can never hold.
+        /// </summary>
+        private CompRimroomsGate LinkedAssemblyGate()
+        {
+            if (!(parent is Building_WorkTable) || parent.Map.listerBuildings == null) { return null; }
+            foreach (Building building in parent.Map.listerBuildings.allBuildingsColonist)
+            {
+                CompRimroomsGate gate = building.TryGetComp<CompRimroomsGate>();
+                if (gate == null || !gate.IsDesignated) { continue; }
+                if (gate.IsBoundAssemblyBench(parent)) { return gate; }
+            }
+            return null;
         }
 
         /// <summary>
@@ -143,7 +186,8 @@ namespace RimroomsAsyncIndustries.Gate
         public override string CompInspectStringExtra()
         {
             var lines = new List<string>();
-            if (linkedGate == null)
+            CompRimroomsGate bound = Gate;
+            if (bound == null)
             {
                 // Silent unless the branch exists. An unbound bench is not a broken bench, and a
                 // colony that has never opened Operations should not be told about gates at all.
@@ -154,7 +198,8 @@ namespace RimroomsAsyncIndustries.Gate
             }
             else
             {
-                lines.Add("RR_NativeGate_StationBound".Translate(linkedGate.LabelShortCap).ToString());
+                lines.Add("RR_NativeGate_StationBound".Translate(
+                    bound.parent.LabelShortCap).ToString());
                 // **WHY NOTHING IS BEING CRAFTED, said on the bench rather than left to be
                 // deduced.** Gate control holds the ordinary bills suspended by design; without
                 // this line that design is indistinguishable from a fault.
@@ -175,8 +220,10 @@ namespace RimroomsAsyncIndustries.Gate
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) { yield return gizmo; }
 
             // **THE SWITCH.** Offered only on a component actually bound to a gate: a button that
-            // can only refuse is worse than no button.
-            if (linkedGate != null)
+            // can only refuse is worse than no button. Asked through `Gate` so a linked assembly
+            // bench gets the switch too -- without it the bench could never enter gate control and
+            // the role would be a link that changes nothing.
+            if (Gate != null)
             {
                 bool running = gateControl;
                 yield return new Command_Action
@@ -331,7 +378,13 @@ namespace RimroomsAsyncIndustries.Gate
             // op and gate op depending whats wanted"*. The two modes are exclusive in both
             // directions: gate control suspends the ordinary bills, and normal operation withdraws
             // the gate recipe.
-            return gate != null && !gate.AssemblyComplete && console.IsGateControl;
+            //
+            // **AND ONLY ON A BENCH THE GATE WOULD CREDIT.** `IsBoundAssemblyBench` is the same
+            // question `CompleteAssemblyFromBill` asks, deliberately: offering a section at a bench
+            // that would then be refused the credit is a pawn carrying twenty-five steel across the
+            // base for nothing, and it is the shape of defect a second derivation produces.
+            return gate != null && !gate.AssemblyComplete && console.IsGateControl
+                && gate.IsBoundAssemblyBench(thing);
         }
 
         public override void Notify_IterationCompleted(Pawn billDoer, List<Thing> ingredients)
@@ -343,8 +396,13 @@ namespace RimroomsAsyncIndustries.Gate
             CompRimroomsGateConsole console = billGiver == null ? null : billGiver.TryGetComp<CompRimroomsGateConsole>();
             CompRimroomsGate gate = console == null ? null : console.Gate;
             if (gate == null) { return; }
-            CompanyActionResult result = gate.CompleteAssemblyFromBill(billGiver, billDoer.CurJob.bill.recipe);
-            if (result.Success) { console.MarkAssemblyBillComplete(); }
+            // **THE SECTION IS CREDITED AND NOTHING ELSE HAPPENS HERE.** This used to call
+            // `MarkAssemblyBillComplete` on success, which suspended the bill -- correct while the
+            // assembly was a single bill, and wrong the moment it became four sections: the build
+            // would have stopped after the first one with the bill suspended and nothing anywhere
+            // saying why. The gate suspends every bound bench's bill itself, once, when the last
+            // section lands.
+            gate.CompleteAssemblyFromBill(billGiver, billDoer.CurJob.bill.recipe);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿# Rimrooms - Async Industries: campaign content catalog
+# Rimrooms - Async Industries: campaign content catalog
 
 **Gate traversal and pacing rule (owner, 2026-09-28):** inhabitants and monstrosities stay in the Backrooms. Nothing but this company's own pawns crosses a gate under its own will, and an open gate is never an objective, lure, spawn target, raid route or attack trigger. Everything else comes back only because one of our pawns physically carried it through by ordinary work, including people and monstrosities that are genuinely downed, dead or imprisoned. Pressure escalates gradually from saved causes, bounded per opening and per coordinate, with quiet stretches as required content. Gate, machine door and portal are one thing in the owner's vocabulary; every start can eventually run several gates. See [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side).
 
@@ -71,7 +71,7 @@ Optional DLC may add familiar routes around these themes, but no branch or requi
 Keep these values aligned with the [scenario card](SCENARIOS.md), [first playable contract](FIRST_PLAYABLE_CONTRACT.md), [first-slice inventory](FIRST_SLICE_CONTENT_INVENTORY.md), and [threat sheets](THREAT_DESIGN_SHEETS.md). They are provisional balance hypotheses, not tested behavior:
 
 - A 60×60 headquarters with five flexible staff, a provisional $50,000,000 authorized Company Account, 150 physical silver, and the listed starter stock.
-- Finish the gate with 100 steel and 8 components; provide the provisional 3,500 W opening draw plus 250 W headroom, charge the gate-owned 2 Wd return capacitor, and keep a qualified operator at the facility. See the [implemented gate values](implementation/PHASE_2_GATE_IMPLEMENTATION.md).
+- Finish the gate with 100 steel and 8 components, in **four sections of 25 steel and 2 components** that up to four linked benches can build at once; provide the provisional 3,500 W opening draw plus 250 W headroom, charge the gate-owned 2 Wd return capacitor, and keep a qualified operator at the facility. See the [implemented gate values](implementation/PHASE_2_GATE_IMPLEMENTATION.md).
 - Prepare up to three field staff for a 20 in-game-minute opening, with warnings at 10, 5, and 2 minutes.
 - Explore AI-01, a saved 6–8-room destination with a validated return path, numbered tags, one Borrowed Corridor route distortion, and one bounded Quiet Pursuer encounter.
 - Return and analyze the AI-01 Route Recording. A valid extraction posts one provisional $5,000,000 payment and one research insight. A further $1,000,000 bonus is optional and requires all three field staff and the route, distortion, and entity-observation records to return. A recoverable injury does not cancel it. See [the v0.2 economy model](CAMPAIGN_ECONOMY_MODEL.md); amounts are untested balance targets.

@@ -1,4 +1,4 @@
-﻿# Rimrooms - Async Industries: first-session tutorial script
+# Rimrooms - Async Industries: first-session tutorial script
 
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
@@ -21,7 +21,7 @@ The branch has **$50,000,000** in its Company Account for quoted company costs a
 
 **Gate checklist**
 
-- Finish assembly with **100 steel and 8 components**.
+- Finish assembly with **100 steel and 8 components**, as four sections of 25 and 2.
 - Confirm the current machine readout's power and stored-return requirements. The development slice uses a **3,500 W opening draw**, **250 W headroom**, and a **2 Wd gate-owned return capacitor**, with an ordinary **6,000 W** starter generator. These are provisional operating values, not a 3,000 W battery-capacity measurement.
 - Assign a qualified operator who will remain at the facility.
 - Select up to three ready field staff; check their kit and return tether.
@@ -77,7 +77,7 @@ Choose **Gate Telemetry** (one insight and staffed research work) or **Prepare a
 
 These messages name the problem and the immediate recovery step:
 
-- **“Gate incomplete: add 100 steel and 8 components, then finish assembly.”**
+- **“Gate incomplete: add 100 steel and 8 components, then finish assembly.”** (Four sections of 25 and 2.)
 - **“Power reserve below the first-run requirement: restore the reserve before opening.”**
 - **“No qualified operator at the controls: assign an available operator and keep them at headquarters.”**
 - **“No field crew selected: choose at least one ready pawn; the first plan allows up to three.”**

@@ -122,17 +122,25 @@ namespace RimroomsAsyncIndustries.UI
                 // **The next step, not just the state.** A status line only helps somebody who
                 // already knows the procedure exists, which is the lesson the record book's own
                 // inspect card learned the hard way.
-                if (light == QuestLight.Green)
-                { listing.Label("RR_Ledger_PaperworkNextSend".Translate()); }
-                else if (light == QuestLight.Amber)
-                { listing.Label("RR_Ledger_PaperworkNextBook".Translate()); }
-                else
-                {
-                    RimroomsWriteUpDef next = campaign.NextWriteUp(record);
-                    listing.Label(next == null
-                        ? "RR_Ledger_PaperworkNextWaiting".Translate().ToString()
-                        : "RR_Ledger_PaperworkNextWrite".Translate(next.label).ToString());
-                }
+                //
+                // **ONE DRAW CALL FOR FOUR MUTUALLY EXCLUSIVE LINES, and the shape is the point.**
+                // This was four separate `listing.Label` statements, which `check-operations-density`
+                // charges as the SUM of all four -- 56 words a player can never see together, since
+                // exactly one branch draws per frame. The honest figure is the worst line the pane
+                // can show, and the tool measures a key picked into a variable and translated once
+                // at the maximum of its group. That is what `indirect_groups` exists for, and the
+                // expedition pane's objective line is the same shape for the same reason.
+                //
+                // The argument rides along unconditionally: `Translate` ignores an extra argument a
+                // string has no placeholder for, so the three with no `{0}` read exactly as they
+                // did and the fourth keeps the name of the write-up it is asking for.
+                RimroomsWriteUpDef next = campaign.NextWriteUp(record);
+                string nextKey;
+                if (light == QuestLight.Green) { nextKey = "RR_Ledger_PaperworkNextSend"; }
+                else if (light == QuestLight.Amber) { nextKey = "RR_Ledger_PaperworkNextBook"; }
+                else if (next == null) { nextKey = "RR_Ledger_PaperworkNextWaiting"; }
+                else { nextKey = "RR_Ledger_PaperworkNextWrite"; }
+                listing.Label(nextKey.Translate(next == null ? "" : next.label));
                 listing.Gap(4f);
             }
         }

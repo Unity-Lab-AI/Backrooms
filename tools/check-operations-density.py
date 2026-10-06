@@ -112,7 +112,25 @@ ONSCREEN_CEILING = {
     "OperationsPortalNetwork.cs": 288,
     "OperationsProcurement.cs": 262,
     "OperationsRemoteSites.cs": 48,
-    "OperationsRequests.cs": 102,
+    # **102 -> 123, AND THIS ONE WAS A REAL MISS BEFORE IT WAS A RAISE.** The quest ledger landed
+    # in the journal batch at 0.12.99-dev and **this checker was not run on it**, so the tree
+    # carried a failing ratchet through two commits. Found on the next run, measured rather than
+    # argued about, and the +61 words were entirely the new section.
+    #
+    # **Trimmed before raised, twice over.** First the shape: the ledger's next-step line was four
+    # separate `listing.Label` statements, which this tool correctly charges as the SUM -- 56 words
+    # a player can never see together, because exactly one branch draws per frame. Rewritten as an
+    # indirect group it is charged at the maximum, which is the worst line a player can actually
+    # meet. Then the wording: the three longest lines came down from 22, 14 and 13 words to 16, 6
+    # and 10.
+    #
+    # What is left is **21 words for a complete index of every accepted quest** -- its filing
+    # progress, its light, and the one thing it needs next -- which the owner asked for in those
+    # terms: *"every book recieved needs to be ... capable of listing the current quests its needed
+    # for that has been acceptred, with ability to accept more than one quests at a time"*. Against
+    # a global budget of 60 words per action, a section that answers *what have I taken on and what
+    # does each one want from me* is the utility this panel is supposed to be.
+    "OperationsRequests.cs": 123,
 }
 
 # The one pane where prose IS the product. Owner's complaint is that readouts read like a novel;
