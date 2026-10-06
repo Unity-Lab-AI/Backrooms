@@ -18157,3 +18157,33 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-06)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner direction — the pictures are not showing, and gameplay use is missing (2026-10-06)
+
+**Verbatim owner direction (2026-10-06):** *"okay but im not seeing the pictures of the assets in the wiki with theri right up details and how the are used in game play"*
+
+- [x] **"im not seeing the pictures of the assets in the wiki"** — **and the cause is measured, not guessed: the pictures exist only in the export tree.** `docs/wiki/assets.md` writes `assets/art/gallery/<stem>.png`, which from `docs/wiki/` resolves to `docs/wiki/assets/art/gallery/` — **a directory that does not exist.** The gallery was built for the published flat site, where the same relative path resolves correctly, and never for the repository the owner actually reads. Every image on the page is broken where it is being looked at. -- **FIXED 0.13.0-dev. One relative path has to resolve from two different layouts**, and only one of them was ever served: the published site is **flat** (`docs/wiki/assets.md` renders to `docs/assets.html`, so the path lands in `docs/assets/art/gallery/`) while the repository is **nested**. The 52 pictures are written to **both** locations now — the exporter beside the flat HTML, and `--apply` under `docs/wiki/` for the markdown. **Verified by resolving all 52 references against disk, not by looking at the page: 52 referenced, 0 missing.** `--check` now **fails** when a referenced picture is absent or a leftover one remains, which it did not before — the check only ever compared the markdown with itself, so it passed while every image on it was broken. Proved by holding one picture back and reading the failure. **And adding 52 PNGs under `docs/` crashed `check-doc-conformance` outright** with a `UnicodeDecodeError`, because it read every published non-markdown file as text while its own docstring claimed *"Binary files are never read"* — a claim that was true only because no binary had ever been published there.
+- [x] **"with theri right up details"** — each picture needs its write-up beside it, in the same row, rather than the reader holding a name in their head. -- **DONE 0.13.0-dev.** The write-up was already in the row; **it could not be seen beside the picture because the picture was broken.** With the images resolving, each row now reads picture, name, kind, what the drawing is, how you use it, what names it, size, facings and master in one line. A short paragraph above the table says what the three prose columns are *for*, because *What it is*, *How you use it* and *In game* answer three different questions and were being read as one.
+- [x] **"and how the are used in game play"** — **a column this page does not have.** *What it is* describes what a drawing depicts and *In game* names the def that loads it; neither says what a player does with the thing. Authored per asset, the way descriptions already are, and reported when missing. -- **BUILT 0.13.0-dev: a `usage` map in `asset-descriptions.json`, 69 of 69 written, and a *How you use it* column.** Every line comes from the shipped defs, the source, or the wiki page that already describes that system — never invented, because a reader checks this page precisely because they cannot see inside the package. A building says where in the build menu, what it needs researched, and the trade it makes; a cue says the moment it plays; an animation frame says the cadence it is drawn at; a slide says it can be switched off. **A blank is reported like a blank description is**, so the column cannot quietly fill with dashes. **And one asset was mis-categorised on the published page**: `RR_MachineGate` is the Set Gate button's icon and **is never placed in the world**, but it sits under `Things/Building/` because it once was a buildable, so the generator called it a *Building* and invited a reader to look for it in the build menu.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

@@ -371,6 +371,40 @@
   documentation**, because paraphrasing somebody else's interface is how a page goes stale against
   software it does not control.
 
+### The gallery's pictures were broken in the one place they were being looked at
+
+- Owner: ***"okay but im not seeing the pictures of the assets in the wiki with theri right up
+  details and how the are used in game play"***.
+- **ONE RELATIVE PATH HAS TO RESOLVE FROM TWO DIFFERENT LAYOUTS, AND ONLY ONE WAS EVER SERVED.** The
+  published site is **flat** — `docs/wiki/assets.md` renders to `docs/assets.html`, so
+  `assets/art/gallery/X.png` lands in `docs/assets/art/gallery/`, which the exporter writes. The
+  **repository is nested**, and the same string read from `docs/wiki/assets.md` resolves to
+  `docs/wiki/assets/art/gallery/` — a directory that existed nowhere. The gallery was built for the
+  published site and never for the tree the owner actually reads.
+- The 52 pictures are written to **both** locations now. **Verified by resolving all 52 references
+  against disk rather than by looking at the page: 52 referenced, 0 missing.**
+- **`--check` now fails when a referenced picture is absent or a leftover one remains**, which it
+  did not before: the check compared the markdown with itself and nothing else, so it reported the
+  page *up to date* while every image on it was broken. Proved by holding one picture back and
+  reading the failure.
+- **Adding 52 PNGs under `docs/` crashed `check-doc-conformance` outright** with a
+  `UnicodeDecodeError` on the first one, because it read every published non-markdown file as text —
+  while its own docstring said *"Binary files are never read."* **That claim was true only because
+  no binary had ever been published there.** Named by suffix, as a list of what to skip rather than
+  what to read, because `docs/CNAME` has no extension and is text.
+- **A *How you use it* column, 69 of 69 written.** *What it is* describes the drawing and *In game*
+  names the def that loads it; **neither says what a player does with the thing.** A building gives
+  its build-menu category, what it needs researched and the trade it makes; a cue gives the moment
+  it plays; an animation frame gives its cadence; a slide says it can be switched off. Every line
+  comes from the shipped defs, the source, or the wiki page that already describes that system —
+  never invented. A blank is reported like a blank description is.
+- **One asset was mis-categorised on the published page.** `RR_MachineGate` is the Set Gate button's
+  icon and is **never placed in the world**, but it sits under `Things/Building/` because it once
+  was a buildable — so the generator called it a *Building* and invited a reader to go looking for it
+  in the build menu.
+- A paragraph above the table now says what the three prose columns are for, because they answer
+  three different questions and were being read as one.
+
 ## 0.12.99-dev - 2026-10-05 - The buildable rows were buildable, and three were already done
 
 - **OWNER: *"read now.md to continue i think we only have a handful of open items but idk

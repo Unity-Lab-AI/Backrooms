@@ -64,9 +64,26 @@ GROUPS = [
     ("Sound cues", "1.6/Sounds/"),
 ]
 
-# Where the site serves the gallery's own copies from, site-relative with no leading `..` --
-# the rule `export-public-repo.check_images_resolve` enforces on every published page.
+# Where the gallery's pictures live, **relative to the page that references them**, with no leading
+# `..` -- the rule `export-public-repo.check_images_resolve` enforces on every published page.
+#
+# ## THE SAME RELATIVE PATH HAS TO RESOLVE FROM TWO DIFFERENT PLACES, AND THE FIRST VERSION ONLY
+# ## SERVED ONE OF THEM
+#
+# Owner, 2026-10-06: *"im not seeing the pictures of the assets in the wiki"*. They were not there to
+# see. The published site is **flat** -- `docs/wiki/assets.md` renders to `docs/assets.html` -- so
+# `assets/art/gallery/X.png` resolves to `docs/assets/art/gallery/X.png`, which the exporter writes.
+# **The repository is nested**, and the same string read from `docs/wiki/assets.md` resolves to
+# `docs/wiki/assets/art/gallery/X.png`, which existed nowhere at all.
+#
+# So the gallery was built for the published site and never for the tree the owner actually reads,
+# and every picture on the page was broken in the only place it was being looked at. One relative
+# path cannot serve both layouts, so the pictures are written to **both** locations: the exporter
+# puts them beside the flat HTML, and `--apply` puts them under `docs/wiki/` for the markdown.
 GALLERY_DIRECTORY = "assets/art/gallery"
+
+# The repository-side copy, which is what makes the markdown render on GitHub and in any editor.
+REPO_GALLERY = os.path.join(REPO, "docs", "wiki", "assets", "art", "gallery")
 
 # A thumbnail's longest edge, and the size below which the original is simply copied.
 #
@@ -210,6 +227,25 @@ def descriptions():
     return json.load(io.open(path, encoding="utf-8")).get("assets", {})
 
 
+def usages():
+    """What a player DOES with each asset, which is a different question from what it depicts.
+
+    **Owner, 2026-10-06: *"im not seeing the pictures of the assets in the wiki with theri right up
+    details and how the are used in game play"*.** The page already carried two facts per asset --
+    what the drawing shows, and the def that loads it -- and **neither of them is what a player does
+    with the thing.** A reader looking at a picture of a sealed box wants to know that you build it
+    on a conduit run and flicking it cuts an open connection.
+
+    Authored for the same reason the descriptions are: nothing can derive it. Reported when absent,
+    never left as a dash, because a dash on a column the owner asked for looks deliberate.
+    """
+    path = os.path.join(REPO, "tools", "asset-descriptions.json")
+    if not os.path.isfile(path):
+        return {}
+    import json
+    return json.load(io.open(path, encoding="utf-8")).get("usage", {})
+
+
 def master_for(stem):
     # Preserve the original south master for older buildings; newer directional sets have
     # genuinely authored suffixed masters rather than an unsuffixed source that never existed.
@@ -239,6 +275,13 @@ def kind_of(entry):
     if relative.startswith("1.6/Textures/UI/Menu/"):
         return "Menu background"
     if relative.startswith("1.6/Textures/UI/"):
+        return "Interface icon"
+    # **AN ICON THAT LIVES AMONG THE BUILDINGS, AND THE FOLDER WOULD HAVE LIED ABOUT IT.**
+    # `RR_MachineGate` sits under `Things/Building/` because it once was a buildable and the path
+    # never moved. It is now the Set Gate button's picture and **is never placed in the world**, so
+    # a `Kind` of "Building" on a published page would invite a reader to look for it in the build
+    # menu. The same path is special-cased in `named_by` for the same reason.
+    if relative.endswith("/RR_MachineGate.png"):
         return "Interface icon"
     if relative.startswith("1.6/Textures/Terrain/"):
         return "Floor"
@@ -278,6 +321,7 @@ def build():
     defs = def_text()
     code = source_text()
     written = descriptions()
+    how_used = usages()
     rows = {}
     for relative, path in shipped_assets():
         stem, suffix = stem_of(relative)
@@ -316,6 +360,7 @@ def build():
         entry["named_by"] = named_by(lookup, defs, code)
         entry["master"] = master_for(entry["stem"])
         entry["description"] = written.get(entry["stem"], "")
+        entry["usage"] = how_used.get(entry["stem"], "")
         entry["kind"] = kind_of(entry)
         entry["preview_source"] = preview_source(entry)
         out.append(entry)
@@ -428,9 +473,15 @@ def page(entries):
                "rather than a separate one, because a reader asking what this mod ships wants one "
                "list.")
     out.append("")
-    out.append("**The pictures are checkerboarded behind.** Most of these textures are mostly "
-               "transparent — a gate frame is an outline around a hole — so the squares are there "
-               "to show you where the transparency is instead of hiding it against a flat colour.")
+    out.append("**The pictures are checkerboarded behind** on the published site. Most of these "
+               "textures are mostly transparent — a gate frame is an outline around a hole — so the "
+               "squares are there to show you where the transparency is instead of hiding it "
+               "against a flat colour.")
+    out.append("")
+    out.append("**What it is** describes the drawing. **How you use it** is what a player does with "
+               "the thing, which is a different question and used to be missing. **In game** names "
+               "the definition or the code that loads the file, so an asset nothing refers to shows "
+               "up as a fault rather than hiding.")
     out.append("")
 
     out.append("## What is in here")
@@ -445,8 +496,9 @@ def page(entries):
 
     out.append("## The gallery")
     out.append("")
-    out.append("| Preview | Asset | Kind | What it is | In game | Size | Facings | Master |")
-    out.append("|---|---|---|---|---|---|---|---|")
+    out.append("| Preview | Asset | Kind | What it is | How you use it | In game | Size | Facings "
+               "| Master |")
+    out.append("|---|---|---|---|---|---|---|---|---|")
     for entry in sorted(entries, key=lambda e: e["stem"].lower()):
         # Facings only mean something for a thing that can be placed and turned. A menu
         # background reading "one frame" invites the reader to wonder which way it faces.
@@ -461,9 +513,9 @@ def page(entries):
         else:
             preview = "—"
         master = os.path.basename(entry["master"]) if entry["master"] else "—"
-        out.append("| %s | **%s** | %s | %s | %s | %s | %s | %s |" % (
+        out.append("| %s | **%s** | %s | %s | %s | %s | %s | %s | %s |" % (
             preview, entry["stem"], entry["kind"], entry["description"] or "—",
-            entry["named_by"] or "—", entry["size"], facings, master))
+            entry["usage"] or "—", entry["named_by"] or "—", entry["size"], facings, master))
     out.append("")
 
     out.append("## Where a master is a dash")
@@ -517,6 +569,14 @@ def main():
     uncategorised = sorted(e["stem"] for e in entries if e["kind"] == "Other")
     print("  uncategorised     : %d%s"
           % (len(uncategorised), (" (%s)" % ", ".join(uncategorised)) if uncategorised else ""))
+    # **A BLANK USAGE LINE IS REPORTED FOR THE SAME REASON A BLANK DESCRIPTION IS.** The owner asked
+    # for *"how the are used in game play"* as a column, so a dash in it is the page failing at a
+    # job it was given rather than an asset that happens to have nothing to say.
+    unexplained = sorted(e["stem"] for e in entries if not e.get("usage"))
+    print("  no usage line     : %d%s"
+          % (len(unexplained), (" (%s)" % ", ".join(unexplained[:6])) if unexplained else ""))
+
+    expected = set(gallery_files(entries))
 
     if "--check" in sys.argv:
         current = io.open(TARGET, encoding="utf-8").read() if os.path.isfile(TARGET) else ""
@@ -526,11 +586,38 @@ def main():
                   % os.path.relpath(TARGET, REPO).replace(os.sep, "/"))
             return 1
         print("  generated page    : up to date")
+        # **AND THE PICTURES THE PAGE POINTS AT MUST BE THERE.** The page passed this check while
+        # every image on it was broken in the repository, because the check only ever compared the
+        # markdown with itself. A reference to a file that is not there is exactly as wrong as a
+        # stale sentence, and it is the fault the owner actually hit.
+        present = set(n for n in os.listdir(REPO_GALLERY)
+                      if n.lower().endswith(".png")) if os.path.isdir(REPO_GALLERY) else set()
+        absent = sorted(expected - present)
+        stale = sorted(present - expected)
+        if absent or stale:
+            print("")
+            print("FAIL: the repository gallery does not match the page. %d picture(s) the page "
+                  "references are missing and %d picture(s) are left over. Every image on "
+                  "docs/wiki/assets.md is broken without them. Run "
+                  "`python tools/build-asset-page.py --apply`." % (len(absent), len(stale)))
+            for name in (absent + stale)[:6]:
+                print("  - %s" % name)
+            return 1
+        print("  repo gallery      : %d picture(s), matching the page" % len(present))
         return 0
 
     if "--apply" in sys.argv:
         io.open(TARGET, "w", encoding="utf-8", newline="\n").write(body)
         print("  wrote             : %s" % os.path.relpath(TARGET, REPO).replace(os.sep, "/"))
+        # Written beside the markdown as well as into the export, because one relative path has to
+        # resolve from a nested page and a flat one. See GALLERY_DIRECTORY.
+        if os.path.isdir(REPO_GALLERY):
+            for name in sorted(os.listdir(REPO_GALLERY)):
+                if name.lower().endswith(".png") and name not in expected:
+                    os.remove(os.path.join(REPO_GALLERY, name))
+        written, _resampled, note = write_gallery(REPO_GALLERY, entries)
+        print("  repo gallery      : %d picture(s) into %s; %s"
+              % (written, os.path.relpath(REPO_GALLERY, REPO).replace(os.sep, "/"), note))
     else:
         print("  nothing written; re-run with --apply")
     return 0

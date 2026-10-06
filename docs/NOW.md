@@ -49,9 +49,32 @@ All five are wired now, at the call sites the brief itself names.
 
 ---
 
+## ⛔ THE GALLERY'S PICTURES WERE BROKEN WHERE THEY WERE BEING READ ⛔
+
+**Owner, 2026-10-06:** *"okay but im not seeing the pictures of the assets in the wiki with theri right up details and how the are used in game play"*
+
+**They were not there to see.** One relative path has to resolve from two different layouts and only one was ever served:
+
+| Layout | `assets/art/gallery/X.png` resolves to | Was it there |
+|---|---|---|
+| Published site, **flat** — `docs/wiki/assets.md` → `docs/assets.html` | `docs/assets/art/gallery/` | **yes**, the exporter writes it |
+| Repository, **nested** — read at `docs/wiki/assets.md` | `docs/wiki/assets/art/gallery/` | **no such directory** |
+
+The gallery was built for the published site and never for the tree the owner actually reads. The 52 pictures are written to **both** locations now, and it was **verified by resolving all 52 references against disk** rather than by looking at the page: 52 referenced, 0 missing.
+
+**`--check` passed the whole time, because it compared the markdown with itself and nothing else.** It now fails when a referenced picture is absent or a leftover one remains — proved by holding one back and reading the failure.
+
+**And adding 52 PNGs under `docs/` crashed `check-doc-conformance` outright**, because it read every published non-markdown file as text while its own docstring said *"Binary files are never read."* That claim was true only because no binary had ever been published there.
+
+**A *How you use it* column, 69 of 69 written.** *What it is* describes the drawing, *In game* names the def that loads it, and **neither says what a player does with the thing.**
+
+One asset was also mis-categorised as a *Building*: `RR_MachineGate` is **no longer a buildable** — that def was retired, and the texture is now only the Set Gate button's icon — but it still sits under `Things/Building/`, so the folder decided its category and invited a reader to look for it in the build menu.
+
+---
+
 ## The asset gallery
 
-**One table, 69 rows, 52 pictures, eight columns, sortable and searchable.**
+**One table, 69 rows, 52 pictures, nine columns, sortable and searchable.**
 
 ***"Just like the mod registry"* decided the shape twice over.** One full list rather than six grouped tables is the correction the owner already made to the register page. It is also the **only** way the page becomes organizable: the search box and sortable headings attach to **any table with at least twenty body rows**, by size rather than by a flag. Six tables of twelve, thirty-four, six, one and seventeen got the tooling on exactly one of them.
 
@@ -105,6 +128,7 @@ Six locations name it now: `install.md` with its own section, `mods.md`, `index.
 | Version | **0.13.0-dev** — read from `About.xml`, never from a document |
 | Instruments | **33 checkers · 64 proofs · 44 plant suites**, all three batteries run to completion |
 | Plant anchors | **1335 findable**, no residue. One anchor re-aimed where `copy_site_art` grew the gallery |
+| Gallery | **52 pictures in two places**, and every one of the 52 references resolved against disk from `docs/wiki/` |
 | Build | **0 warnings, 0 errors, 200 package files** |
 | Queue | `TODO.md` **0 open · 0 partial · 0 `[x]`**, `## Pending` empty rather than quietly occupied · `TEST.md` **54 `[T]`** |
 | Assets | **99 files → 69 entries: 52 drawings, 17 cues.** Every one named by something, every one described, 59 with a master and the other ten menu backgrounds, which have nothing to cut |
@@ -158,7 +182,9 @@ The frame draws on `CompRimroomsGate` and keys on `IsDesignated`. A permanent na
 - **MEASURE, THEN PUBLISH.** A seam metric scored a provably seamless tile at 7.15 and a figure ten times too large was published before it was checked.
 - **A DROP SHADOW IS NOT THE OBJECT.**
 - **THE COMPONENT IS THE ALLOWLIST.**
-- **USE THE WRITE TOOL FOR SCRIPTS, NEVER A BASH HEREDOC.** Broken twice more in this batch and corrected both times.
+- **A GENERATED PAGE CAN BE "UP TO DATE" AND STILL BROKEN.** A check that compares a document with itself says nothing about the files it points at. Resolve the references against disk.
+- **AN INSTRUMENT THAT CRASHES CANNOT REPORT**, and a docstring claiming a property is not the property. *"Binary files are never read"* was written above code that read everything.
+- **USE THE WRITE TOOL FOR SCRIPTS, NEVER A BASH HEREDOC.** Broken **three** times in this session and corrected each time. It is the most repeated personal lapse in this handoff's history; the rule is recorded and still gets broken under time pressure.
 - **MIND THE DEPTH WHEN A SCRIPT MOVES.** A `dirname` short by one level reads somebody else's files.
 - **BANNED VOCABULARY.** *"portal"* → gate/connection; *"doorway"* → door/threshold; *"the machine"* is reserved. **Nothing in this mod ever runs out, and the word for that is banned too** — even in a sentence denying it, which `check-campaign-absolutes` enforces and which refused an earlier draft of this very line. **Reword; never widen the rule.**
 

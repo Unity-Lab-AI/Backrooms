@@ -1010,12 +1010,28 @@ def template_prose(raw, rel):
     return QUOTED_SPAN.sub(" ", text)
 
 
+# Published files that are bytes rather than words. **`check_published_non_markdown`'s docstring
+# has always said "Binary files are never read", and until 2026-10-06 nothing made that true** --
+# the claim held only because no binary had ever been published under `docs/`. The asset gallery put
+# 52 PNGs beside the wiki so its markdown images resolve, and this checker **crashed on the first
+# one** with a UnicodeDecodeError, which is a total failure of an instrument rather than a finding.
+#
+# Named by suffix rather than by sniffing, and as a list of what to SKIP rather than what to read:
+# `docs/CNAME` has no extension and is text, so an allowlist of text suffixes would have silently
+# stopped checking the one file whose whole job is to be read by a deploy.
+BINARY_SUFFIXES = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".pdf",
+                   ".woff", ".woff2", ".ttf", ".otf", ".eot",
+                   ".ogg", ".wav", ".mp3", ".mp4", ".zip", ".dll", ".pdb")
+
+
 def site_text_files(published):
     """Published non-markdown files plus the templates whose text rides inside every page."""
     found = []
     for rel in published:
         if rel.endswith(".md"):
             continue            # `living_docs()` already holds every markdown file.
+        if rel.lower().endswith(BINARY_SUFFIXES):
+            continue            # Bytes, not words. See BINARY_SUFFIXES.
         path = os.path.join(REPO, SITE_SOURCE, rel)
         if os.path.isfile(path):
             found.append((os.path.join("docs", rel).replace(os.sep, "/"), path))
