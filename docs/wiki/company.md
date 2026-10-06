@@ -88,7 +88,27 @@ or go and do the work in one without announcing anything. Every choice succeeds.
 **After the hinge the corporation keeps asking, and stops teaching.** Later requests are generated
 from your branch's state, your coordinate history and what you can do.
 
-The Contracts pane shows both, requests first.
+### Eighteen families after the tutorial, and you can hold several at once
+
+**There are eighteen generated families.** Client work, caches and shelters out in the field,
+leases, resupply, evacuation, witnesses, missing residents, public danger, heavy cargo, staff
+transfers, and the deep ones that combine what you already know.
+
+**The company asks the least-asked one first.** Not the cheapest, and not at random, so it works
+through the range of what it wants instead of repeating itself. Ties break the same way on every
+reload — the same branch asked at the same point always gets the same request.
+
+**One question at a time, as many jobs as you like.** The corporation offers one request and waits
+for an answer, and **accepting it does not stop the next offer coming.** So a branch can be carrying
+several jobs at once, which is what the records desks and the paperwork ledger are for.
+
+**No job has a clock.** No expiry, no penalty for being slow, no request withdrawn because you took
+your time. The only thing in this mod with a duration is a gate's connection.
+
+**Every job has at least two ways to finish, of two different kinds** — see the section above. You
+may also cancel any job you have taken. The corporation may not.
+
+The Contracts pane shows both, requests first: the offer, then everything you have taken on.
 
 ## The arcs
 

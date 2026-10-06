@@ -162,9 +162,29 @@ check("nothing is generated before the hinge",
 check("nothing is generated before contact",
       "corporationContact" in offer,
       "-- a branch nobody has heard of would get client work")
-check("only one request is ever open",
-      "OpenRequest != null" in offer,
-      "-- two open requests means two payouts running at once")
+# **RESTATED AT 0.12.99-dev, AND THE OLD CLAIM WAS ENFORCING A DEFECT.** It read:
+#
+#     check("only one request is ever open", "OpenRequest != null" in offer,
+#           "-- two open requests means two payouts running at once")
+#
+# `OpenRequest` is *offered **or** accepted*, so that guard stopped the company offering anything
+# else the moment a job was accepted: **a branch could hold exactly one job, ever.** The owner's
+# direction is *"with ability to accept more than one quests at a time"*, and two shipped features
+# depended on it -- the paperwork ledger that lists *every accepted quest*, and the parallel records
+# desks. Both were unreachable in play rather than merely unused.
+#
+# **The worry behind the old wording was two PAYOUTS, and that was never what it was testing.** A
+# payout is settled per request when its routes are satisfied; two accepted jobs are two jobs, which
+# is the thing being asked for. What must stay bounded is **the question**: the company asks for one
+# answer at a time, so there is exactly one offer awaiting one.
+check("only one OFFER is ever awaiting an answer",
+      "OfferedRequest != null" in offer,
+      "-- the company may ask one question at a time; how many jobs the branch is carrying is the "
+      "player's business")
+check("AND THE GUARD IS NOT THE OLD OPEN-OR-ACCEPTED TEST",
+      "OpenRequest != null" not in offer,
+      "-- that reading is what limited a branch to one job at a time, and it would come back "
+      "looking like a tidy-up")
 
 # There is no clock and none is coming back. Chart 1.1.
 for token in ("TicksGame %", "nextRequestTick", "interval", "Interval", "cooldown", "Cooldown"):
@@ -175,9 +195,15 @@ for token in ("TicksGame %", "nextRequestTick", "interval", "Interval", "cooldow
 check("the candidate list is sorted ordinally before anything is rolled",
       "StringComparer.Ordinal" in offer and "CampaignSeed.Derive" in offer,
       "-- invariant 26: a list in def order rolls differently on different mod lists")
+# **A PLANT PROVED THIS CLAIM TOO WEAK.** It tested only that `TimesAsked` appears somewhere in the
+# body, and the body names it twice -- once to find the fewest and once to filter on it. A plant that
+# gutted the first (`int asked = 0;`) left the second standing and the claim passed, while variety
+# had become *whichever family is first in the list*. So both halves of the derivation are asserted:
+# the scan that finds the minimum, and the filter that keeps only families at it.
 check("variety comes from least-asked-first, not from a timer",
-      "TimesAsked" in offer,
-      "-- the company would repeat whichever family is cheapest")
+      "int asked = TimesAsked(" in offer
+      and "TimesAsked(definition.defName) == fewest" in offer,
+      "-- the company would repeat whichever family is cheapest, or whichever happens to be first")
 
 # ---------------------------------------------------------------- 5. progress, not absolute state
 
@@ -204,9 +230,18 @@ valid = body_of(line, "internal bool RequestRecordsValid(")
 check("a tutorial request can appear only once in a save",
       "definition.tutorial" in valid,
       "-- a fixed request offered twice would be paid twice")
-check("a save may hold at most one open request",
+# Restated for the same reason as the offer guard above: the bound is on OFFERS, and counting
+# `record.Open` here made a save invalid the moment a branch held two jobs -- the save-level half of
+# the same restriction. Both halves are asserted, because the bound is worthless if the thing being
+# counted quietly goes back to meaning offered-or-accepted.
+check("a save may hold at most one OFFERED request",
       "open <= 1" in valid,
-      "-- two open requests is two payouts, and means an offer guard was bypassed")
+      "-- two offers is two questions at once, and means an offer guard was bypassed")
+check("and the counter counts offers rather than obligations",
+      "if (record.status == RequestStatus.Offered) { open++; }" in valid
+      and "if (record.Open) { open++; }" not in valid,
+      "-- counting accepted jobs here invalidates the save of any branch carrying two, which is "
+      "what the owner asked to be possible")
 
 # ---------------------------------------------------------------- 6. every authored route can fire
 

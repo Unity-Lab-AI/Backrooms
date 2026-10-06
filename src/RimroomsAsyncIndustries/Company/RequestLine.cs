@@ -308,7 +308,14 @@ namespace RimroomsAsyncIndustries.Company
             return null;
         }
 
-        /// <summary>The one request currently on the table, or null. There is never more than one.</summary>
+        /// <summary>
+        /// The first request not yet finished — offered or accepted — or null.
+        ///
+        /// **It is no longer true that there is never more than one, and the change was the owner's
+        /// direction.** See <see cref="OfferedRequest"/> and <see cref="AcceptedRequests"/>: a branch
+        /// may hold any number of ACCEPTED jobs and is offered at most one at a time. This stays for
+        /// the tutorial line, where one-at-a-time means one in either state.
+        /// </summary>
         public RequestRecord OpenRequest
         {
             get
@@ -319,6 +326,68 @@ namespace RimroomsAsyncIndustries.Company
                     if (record != null && record.Open) { return record; }
                 }
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// The one request on the table awaiting an answer, or null.
+        ///
+        /// ## THE DEFECT THIS SPLIT REPAIRS, AND IT MADE TWO FEATURES UNREACHABLE
+        ///
+        /// **Owner direction, 2026-10-06, verbatim:** *"with ability to accept more than one quests
+        /// at a time"*, and, about the write-up desks, *"u can have more than one to have more than
+        /// one pawn doing it as u can have multiple quests going"*.
+        ///
+        /// **A branch could hold exactly one job, ever.** Both offer routines refused while
+        /// <see cref="OpenRequest"/> was non-null, and `Open` is *offered **or** accepted* — so
+        /// accepting a job stopped the company offering anything else until it was finished or
+        /// cancelled. Nothing said so; the Requests pane simply never had a second thing in it.
+        ///
+        /// **So two shipped features were unreachable in play, not merely unused.** The paperwork
+        /// ledger lists *every accepted quest* and could never list more than one. The parallel
+        /// records desks — built in this same batch, with claims so two writers cannot take the
+        /// same page — had nothing to be parallel about. A feature whose precondition is impossible
+        /// is a feature nobody can report as broken, which is why this was found by reading the
+        /// offer guard rather than by anybody playing.
+        ///
+        /// ## One OFFER at a time is still right, and that half is kept deliberately
+        ///
+        /// The tutorial teaches one system per step, and the offer routine's own comment says a
+        /// second simultaneous offer *"would turn a tutorial that teaches one system per step into a
+        /// list of chores"*. That reasoning is about **offers**, not about obligations: a player who
+        /// has taken three jobs chose to. So the company asks for one answer at a time and never
+        /// limits how many the branch is carrying.
+        /// </summary>
+        public RequestRecord OfferedRequest
+        {
+            get
+            {
+                for (int index = 0; index < requests.Count; index++)
+                {
+                    RequestRecord record = requests[index];
+                    if (record != null && record.status == RequestStatus.Offered) { return record; }
+                }
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Every job the branch has taken on and not yet finished, in acceptance order.
+        ///
+        /// Acceptance order, because that is the order the paperwork ledger works through and the
+        /// order a player remembers saying yes in.
+        /// </summary>
+        public List<RequestRecord> AcceptedRequests
+        {
+            get
+            {
+                var taken = new List<RequestRecord>();
+                for (int index = 0; index < requests.Count; index++)
+                {
+                    RequestRecord record = requests[index];
+                    if (record != null && record.status == RequestStatus.Accepted) { taken.Add(record); }
+                }
+                return taken;
             }
         }
 
@@ -359,6 +428,12 @@ namespace RimroomsAsyncIndustries.Company
             if (!corporationContact) { return; }
             // One at a time. A second offer while the first is open would turn a tutorial that
             // teaches one system per step into a list of chores.
+            //
+            // **THE TUTORIAL KEEPS THE STRICTER GUARD, deliberately, and it is the only thing that
+            // does.** Generated work asks `OfferedRequest` so a branch can carry several jobs; the
+            // tutorial is a sequence where each step exists to teach the system the next one needs,
+            // so holding an unfinished tutorial step is exactly when the next must not arrive.
+            // Pre-hinge the two readings coincide anyway: generation does not run until after it.
             if (OpenRequest != null) { return; }
 
             List<RimroomsRequestDef> line = RimroomsRequestDef.TutorialLine();
@@ -896,7 +971,7 @@ namespace RimroomsAsyncIndustries.Company
                 if (string.IsNullOrWhiteSpace(record.requestDefName)) { return false; }
                 if (!System.Enum.IsDefined(typeof(RequestStatus), record.status)) { return false; }
                 if (record.staffAtAcceptance == null || record.routeBaselines == null) { return false; }
-                if (record.Open) { open++; }
+                if (record.status == RequestStatus.Offered) { open++; }
 
                 // A GENERATED family may legitimately appear more than once, so def names are not
                 // unique any more. A TUTORIAL request is asked exactly once, and a save holding
@@ -905,8 +980,15 @@ namespace RimroomsAsyncIndustries.Company
                 if (definition != null && definition.tutorial &&
                     !tutorialDefNames.Add(record.requestDefName)) { return false; }
             }
-            // One open request, ever. Both offer routines refuse while one is open, so two in a
-            // save means one of those guards was bypassed and the player has a second payout.
+            // **ONE OFFER, EVER. ANY NUMBER ACCEPTED, WHICH THE OWNER ASKED FOR.** This counted
+            // `record.Open` -- offered **or** accepted -- which made the whole save invalid the
+            // moment a branch held two jobs, and was the save-level half of the same restriction
+            // the offer guards imposed. Owner: *"with ability to accept more than one quests at a
+            // time"*.
+            //
+            // The offer count stays bounded at one because both offer routines refuse while
+            // something is awaiting an answer, so two offers in a save still means a guard was
+            // bypassed and the player is being asked two questions at once.
             return open <= 1;
         }
     }

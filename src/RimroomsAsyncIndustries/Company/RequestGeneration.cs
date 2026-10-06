@@ -184,7 +184,13 @@ namespace RimroomsAsyncIndustries.Company
         private void OfferNextGeneratedRequest()
         {
             if (!corporationContact) { return; }
-            if (OpenRequest != null) { return; }
+            // **ONE OFFER AWAITING AN ANSWER, NOT ONE JOB IN HAND.** This read `OpenRequest`, which
+            // is offered **or accepted**, so accepting a job stopped the company ever offering
+            // another until it was finished -- a branch could hold exactly one, and the owner asked
+            // for *"ability to accept more than one quests at a time"*. The question being asked
+            // one at a time is the part worth keeping; how many obligations the player has taken on
+            // is their business.
+            if (OfferedRequest != null) { return; }
             // Nothing is generated until the company has stopped naming things. Before the hinge
             // the tutorial line owns the one open slot.
             if (!PastTheHinge) { return; }

@@ -47,8 +47,18 @@ namespace RimroomsAsyncIndustries.UI
                 return;
             }
 
-            RequestRecord open = campaign.OpenRequest;
-            if (open == null)
+            // **THE OFFER AND THE OBLIGATIONS ARE TWO LISTS NOW, and before this they could not be
+            // more than one thing between them.** Accepting a job used to stop the company offering
+            // anything else, so this pane never had a second request to draw. Owner: *"with ability
+            // to accept more than one quests at a time"*.
+            //
+            // The offer comes first because it is the only one asking the player a question. Every
+            // accepted job follows in acceptance order, drawn by the same method: it already shows
+            // the Accept button only on an offer, so one routine serves both and the two cannot
+            // disagree about how a request reads.
+            RequestRecord offered = campaign.OfferedRequest;
+            List<RequestRecord> accepted = campaign.AcceptedRequests;
+            if (offered == null && accepted.Count == 0)
             {
                 if (campaign.PastTheHinge)
                 {
@@ -57,9 +67,11 @@ namespace RimroomsAsyncIndustries.UI
                 }
                 else { listing.Label("RR_Requests_NoneOpen".Translate()); }
             }
-            else
+            if (offered != null) { DrawOpenRequest(listing, campaign, offered); }
+            for (int index = 0; index < accepted.Count; index++)
             {
-                DrawOpenRequest(listing, campaign, open);
+                listing.GapLine();
+                DrawOpenRequest(listing, campaign, accepted[index]);
             }
 
             DrawPaperworkLedger(listing, campaign);
