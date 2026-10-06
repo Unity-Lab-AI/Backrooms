@@ -279,9 +279,15 @@ namespace RimroomsAsyncIndustries.Gate
                 !SameNativeHeadquartersThing(assemblyBench)) { return RefuseNative("HeadquartersRequired"); }
             if (!string.IsNullOrEmpty(nativeBranchId) && nativeBranchId != NativeCampaign.BranchId)
             { return RefuseNative("HeadquartersRequired"); }
-            if (!ExactProvider(console, "CommsConsole") || !(console is Building_CommsConsole) ||
-                !ExactProvider(battery, "Battery") || battery.TryGetComp<CompPowerBattery>() == null ||
-                !ExactProvider(assemblyBench, "TableMachining") || !(assemblyBench is Building_WorkTable))
+            // **ONE DERIVATION WITH THE PANE THAT OFFERS THESE, AND IT USED TO BE TWO.** This block
+            // named `CommsConsole` and `TableMachining` while `OperationsGateBinding` named them
+            // again; widening one and not the other would offer the player a console and then
+            // refuse it, which reads as a broken button rather than as a rule. The role tests are
+            // `RimroomsGateProviders` now, shared by both, and they admit the company's own console
+            // and bench without naming either.
+            if (!RimroomsGateProviders.IsConsole(console) ||
+                !RimroomsGateProviders.IsBattery(battery) ||
+                !RimroomsGateProviders.IsAssemblyBench(assemblyBench))
             { return RefuseNative("UnsupportedProvider"); }
 
             // **`returnReserveCapacityWattDays` wired in 0.11.5-dev** as the thing its name always

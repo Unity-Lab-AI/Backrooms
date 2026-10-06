@@ -1,5 +1,104 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-06 - The mod has its own art and its own voice again
+
+- **OWNER: *"whats phase 2 are we making our own items and benches and gates? becasue if so i
+  fucking love it! ... and a audio folder! sounds dope!!! how do we do sounds can we? can we do
+  all of this for all our shit?"***, answered at the fork as **full reversal**, then
+  ***"remember things rotate"***, ***"rmeembr this might change the set gate option and stuff on
+  doors"***, ***"and the journal"***, ***"journal(s)"***, ***"and the comms console and machining
+  bench"***, ***"need to be able to build upto three gates of differnt sizes to... remember?"***
+  and ***"do it all in the needed order and completely and thouroughly correct to the games
+  requirments and having mods not breaking it that are in the suggested list"***.
+- **This reverses a binding owner direction of 2026-09-28 and that direction is deleted nowhere.**
+  It is what retired the 0.2.0 art across 0.9.0-dev, 0.9.9-dev and 0.12.22-dev, every retirement
+  record cites it, and invariant 105 forbids making a removal look like progress. Seven documents
+  and one checker rule now carry both.
+
+### What a player gets
+
+- **Four original cues**, and three of them were playing in the wrong place. Every call site hands
+  the audio service a map and a cell; the Core sounds it borrowed were interface sounds that play
+  at the camera, so that position was passed in and discarded. **A gate warning now comes from the
+  gate.** Core's sounds stay as the fallback, so a package with no `Sounds` folder gets quieter
+  rather than silent.
+- **Six buildings, one floor and one journal**, all with the mod's own art: a **liminal fluorescent
+  fixture** (wide shallow pool, so a corridor reads as lit instead of three bright circles),
+  a **company utility generator** (wood-fired, 1400W against Core's 1000, and it eats and breaks
+  for it), an **emergency cutoff**, a **site marker beacon**, a **company gate console**, a
+  **field analysis bench**, **faded institutional carpet**, and the **company route recording**.
+- **The gate's own button finally shows a gate** instead of a picture of the door it is standing on.
+
+### Things rotate, and it is a build failure now rather than a note
+
+- `Graphic_Multi` resolves `_north`, `_east` and `_south`; RimWorld mirrors `_west` from `_east`
+  and **nothing else is free**. `check-register-compliance.py` rule 6b fails the build on a
+  `Graphic_Multi` of ours missing any of the three.
+- The cutoff and the beacon read the same from every side, so one master honestly produces every
+  facing. **The fluorescent produced a strategy that was missing:** a flat fixture read from above
+  genuinely turns with its footprint, so its east frame is its south turned ninety degrees, drawn
+  at 128x384 for the swapped footprint. That is geometry, not a trick.
+- **The generator, the console, the bench and the machine gate have no honest side view**, so they
+  ship non-rotatable and `tools/cut-phase2-art.py` prints them under ROTATIONS WANTED. None of them
+  ships one frame four times.
+
+### Adding content was one decision away from breaking the door's set-gate button
+
+- The role test was hard-coded **twice** — the Operations pane's lister and the binding validator —
+  so widening one would have offered a console the other refused, which reads as a broken button.
+  `RimroomsGateProviders` owns it once. **The component is the allowlist**, which is this codebase's
+  own existing principle about doors, and the type is the role: `CompRimroomsGateConsole` has always
+  refused to attach to anything that is not a `Building_WorkTable` or a `Building_CommsConsole`.
+- **And the obvious implementation was a regression wearing a feature's clothes.** The button binds
+  a role only when it resolves unambiguously, so *one more candidate* would mean a branch that built
+  the company console **beside** Core's suddenly being told `RR_NativeGate_NoSingleConsole` — the
+  owner's own open report of 2026-10-03, caused by adding content. One of ours wins outright over
+  any number of native ones, so building ours can only ever resolve an ambiguity.
+
+### The journal, and a complaint from three days earlier
+
+- Owner, 2026-10-03: *"the company is suppose to supply u with a journal to do tasks in but they
+  only gave me noraml books named wrong things that dont do anything"*. Under the old direction the
+  only available answer was a Core textbook with a component patched on, which is literally a normal
+  book named a wrong thing.
+- **Counting the kit is plural; issuing one is singular.** A crew carrying the company journal was
+  told it had no record book, because the kit counted a single def. Both books count now, and the
+  company hands out its own.
+- **It revives `RR_RouteRecording` rather than inventing a def**, because `CompRouteEvidence` never
+  stopped accepting that exact name from this exact package — a migration path for 0.2.0 saves. The
+  test was called `IsLegacyCarrier`; **it is `IsCompanyCarrier` now, because "legacy" stopped being
+  true the moment the def shipped again** and a reader trusting the old name would delete it as dead.
+- **One tuned number lost its duplicate.** `analysisWorkRequired` was written as 3000 in the patch on
+  Core's book and would have been written again on ours. It lives once, as the C# default.
+
+### Measured, not asserted
+
+- **A seam metric reported a failure that did not exist, and the number was published before it was
+  checked.** The carpet was called 18.3 against a threshold of 6, "a grid across every room". That
+  measure compared two edge *regions* for similarity rather than asking whether two columns join,
+  and it scored a **provably seamless** quad mirror at 7.15. Measuring what actually touches, the
+  master is **x1.4 / x1.7** — a faint seam. The fix still takes it to **x0.00**. The fix was worth
+  making and the alarm was not.
+- **A drop shadow is not the object.** Bounding boxes measured at a zero alpha threshold reported
+  the field analysis bench as taller than wide. At a real threshold it is **2.21 : 1** and the site
+  fluorescent is **4.96 : 1**, which is what decided both footprints.
+- **No texture ships that nothing names.** The 0.9.0-dev retirement's own words were that the art
+  *"had no C# consumer whatsoever and had been shipping textures nobody could see"*, so the cutter
+  **derives** what ships by reading which paths the shipped defs and source actually reference.
+  Four are cut and held: the field recorder, the survey tag, the sealed evidence case and the Quiet
+  Pursuer.
+- **1254x1254 masters became 15 textures totalling 532 KB**, cut by tool from the masters so the
+  package can be reproduced rather than hand-matched.
+
+### A new checker, because only the owner launches
+
+- `check-def-references.py` parses **12,283 def and abstract names** out of the installed
+  `Data/` folders — Core and all six expansions — and resolves every `ParentName`, build cost,
+  research prerequisite, category and Rimrooms type the package names. On a 296-mod profile a typo'd
+  def name is a red log read as *this mod broke my game*, and it is invisible without the game.
+- It passed on its first run, which is not evidence. Four faults were planted and **all four were
+  caught**, then removed.
+
 ## 0.12.99-dev - 2026-10-05 - The buildable rows were buildable, and three were already done
 
 - **OWNER: *"read now.md to continue i think we only have a handful of open items but idk

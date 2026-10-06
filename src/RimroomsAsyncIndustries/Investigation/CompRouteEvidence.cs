@@ -76,7 +76,50 @@ namespace RimroomsAsyncIndustries.Investigation
                     definition.comps.Any(p => p.compClass == typeof(CompQuality)) ? definition : null;
             }
         }
-        public static bool IsLegacyCarrier(Thing thing)
+        /// <summary>
+        /// The company's own journal, when one is shipped and fully formed.
+        ///
+        /// **Owner complaint, 2026-10-03, quoted in full further down this file:** *"the company is
+        /// suppose to supply u with a journal to do tasks in but they only gave me noraml books
+        /// named wrong things that dont do anything"*. This is that journal. It became possible on
+        /// 2026-10-06, when the owner reversed the existing-content-only direction and named it --
+        /// *"and the journal"*, *"journal(s)"*.
+        ///
+        /// Resolved exactly as defensively as Core's: ours by package, a `Book` by type, and
+        /// carrying all three components the evidence pipeline reads. Null when any of that is
+        /// untrue, and every caller falls back to Core's book rather than losing the kit rule.
+        /// </summary>
+        public static ThingDef CompanyCarrierDef
+        {
+            get
+            {
+                ThingDef definition = DefDatabase<ThingDef>.GetNamedSilentFail("RR_RouteRecording");
+                return definition != null && definition.modContentPack != null &&
+                    string.Equals(definition.modContentPack.PackageId,
+                        "unitylabai.rimroomsasyncindustries", StringComparison.OrdinalIgnoreCase) &&
+                    definition.thingClass != null && typeof(Book).IsAssignableFrom(definition.thingClass) &&
+                    definition.comps != null &&
+                    definition.comps.OfType<CompProperties_RouteEvidence>().Count() == 1 &&
+                    definition.comps.Any(p => p.compClass == typeof(CompBook)) &&
+                    definition.comps.Any(p => p.compClass == typeof(CompQuality)) ? definition : null;
+            }
+        }
+
+        /// <summary>
+        /// A route recording this package itself ships.
+        ///
+        /// **THIS WAS CALLED `IsLegacyCarrier` AND THE NAME HAS STOPPED BEING TRUE.** It was written
+        /// when `RR_RouteRecording` existed only in saves made before 0.9.0-dev retired it, so
+        /// *legacy* described every thing it could ever match. The def ships again as of
+        /// 0.13.0-dev, so the same test now matches brand new items, and a reader trusting the old
+        /// name would conclude this branch is dead code and delete it.
+        ///
+        /// **The test itself is unchanged, deliberately.** It stays looser than `CompanyCarrierDef`
+        /// -- def name and package, with no component requirements -- because its other job is to
+        /// recognise a carrier in an old save whose def no longer fully resolves. Tightening it
+        /// would orphan exactly the items it was written to rescue.
+        /// </summary>
+        public static bool IsCompanyCarrier(Thing thing)
         {
             return thing != null && thing.def != null && thing.def.defName == "RR_RouteRecording" &&
                 thing.def.modContentPack != null && string.Equals(thing.def.modContentPack.PackageId,
@@ -85,7 +128,7 @@ namespace RimroomsAsyncIndustries.Investigation
         public static bool IsSupportedCarrier(Thing thing)
         {
             return thing != null && !thing.Destroyed && thing.stackCount == 1 && thing.TryGetComp<CompRouteEvidence>() != null &&
-                ((thing is Book && thing.def == NativeCarrierDef) || IsLegacyCarrier(thing));
+                ((thing is Book && thing.def == NativeCarrierDef) || IsCompanyCarrier(thing));
         }
         public static bool IsBoundRouteEvidence(Thing thing, string id = null)
         {
@@ -96,7 +139,7 @@ namespace RimroomsAsyncIndustries.Investigation
         // An ordinary unrelated textbook never blocks site recovery.
         public static bool IsEvidenceCarrierPresence(Thing thing)
         {
-            return IsLegacyCarrier(thing) || (thing is Book && thing.def != null && thing.def.defName == "TextBook" &&
+            return IsCompanyCarrier(thing) || (thing is Book && thing.def != null && thing.def.defName == "TextBook" &&
                 !string.IsNullOrEmpty(thing.TryGetComp<CompRouteEvidence>()?.EvidenceId));
         }
         public bool Initialize(string id)
@@ -238,7 +281,7 @@ namespace RimroomsAsyncIndustries.Investigation
             // what a book nobody has written in yet is.
             Scribe_Values.Look(ref stampedQuestId, "rr_stampedQuestId");
             Scribe_Values.Look(ref stampedWriteUpCount, "rr_stampedWriteUpCount", 0);
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && bindingSchema == 1 && IsLegacyCarrier(parent) &&
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && bindingSchema == 1 && IsCompanyCarrier(parent) &&
                 !string.IsNullOrEmpty(evidenceId) && string.IsNullOrEmpty(carrierLoadId))
             { carrierLoadId = parent.GetUniqueLoadID(); }
         }

@@ -462,32 +462,145 @@ if mass_patches:
 else:
     notes.append("no patch alters another def's stat bases")
 
-# ---------------------------------------------------------------- 6. no new gameplay art
-# Invariant 10: no new gameplay ThingDef, PawnKindDef, art or audio. Original main-menu images are
-# the single declared exception, so the rule is checkable as a shape rather than a count: every PNG
-# this package ships is a menu slide, and nothing else.
+# ---------------------------------------------------------------- 6. our own art, and it rotates
+# **THIS RULE WAS THE EXACT OPPOSITE UNTIL 0.13.0-dev, AND IT IS RESTATED RATHER THAN DELETED.**
 #
-# Closed at 0.12.22-dev, when the last four gameplay textures were replaced with paths enumerated
-# out of Core's own defs. Before that, four shipped and each was a real breach nothing asserted.
+# It read: *"this package ships gameplay art or audio ... Invariant 10 permits original MENU images
+# only; every other texture must name a path Core or an installed mod already ships."* That was a
+# true reading of binding owner direction of 2026-09-28, it closed at 0.12.22-dev when the last four
+# gameplay textures were replaced with paths enumerated out of Core's own defs, and the owner
+# overruled it on **2026-10-06**:
+#
+#     "are we making our own items and benches and gates? becasue if so i fucking love it!"
+#
+# asked which way to take it, answering **full reversal -- our own items and benches**, and adding:
+#
+#     "remember things rotate"
+#
+# A green instrument over a dead restraint is worse than no instrument, so the rule is replaced
+# rather than removed. What the reversal did **not** touch is what it now asserts.
+#
+#   6a. **Every shipped gameplay asset is ours.** The standing rule *"never copy another package's
+#       assets or source"* survived the reversal untouched, and it is now the rule most at risk --
+#       the cheapest way to fill a texture folder is somebody else's texture folder. So every
+#       gameplay PNG and WAV this package ships must have a master of the same name under
+#       `assets/source/`. Provenance by construction, not by assertion.
+#
+#   6b. **Things rotate.** `Graphic_Multi` resolves `_north`, `_east` and `_south`, and RimWorld
+#       mirrors `_west` from `_east` for free. **Nothing else is free.** A rotatable building
+#       declaring `Graphic_Multi` against a texture folder of ours that holds one unsuffixed frame
+#       loads as a missing-texture square from three of four facings -- and a player who never
+#       rotates it on placement would never see it. Only texPaths this package actually ships are
+#       checked: `RR_RecordsDesk` names Core's `Things/Building/Furniture/Table1x2` and Core's own
+#       rotations are Core's business.
+#
+#   6c. **A master is not a texture.** The phase 2 masters are 1254x1254, non-power-of-two and
+#       roughly ten times RimWorld's ~128 px per tile. Copying one in instead of cutting it is the
+#       obvious shortcut and it is invisible until a player's VRAM pays for it, so a shipped
+#       gameplay texture above `TEXTURE_CEILING` on either axis is refused by size alone.
 MENU_PREFIX = "1.6/Textures/UI/Menu/"
-gameplay_art = []
+TEXTURE_CEILING = 1024
+ASSET_SOURCE = os.path.join(REPO, "assets", "source")
+
+source_masters = set()
+for root, _dirs, files in os.walk(ASSET_SOURCE):
+    for name in files:
+        source_masters.add(name.lower())
+
+gameplay_assets = []
 for root, _dirs, files in os.walk(MOD):
     for name in files:
         if not name.lower().endswith((".png", ".jpg", ".jpeg", ".wav", ".ogg", ".mp3")):
             continue
         rel = os.path.relpath(os.path.join(root, name), MOD).replace(os.sep, "/")
-        if rel.startswith(MENU_PREFIX):
-            continue
-        if rel.startswith("About/"):
-            continue          # the mod's own preview and icon, which every mod must ship
-        gameplay_art.append(rel)
+        if rel.startswith(MENU_PREFIX) or rel.startswith("About/"):
+            continue          # menu slides, and the mod's own preview, which every mod must ship
+        gameplay_assets.append((rel, os.path.join(root, name), name))
 
-if gameplay_art:
-    fail("this package ships gameplay art or audio: %s. Invariant 10 permits original MENU images "
-         "only; every other texture must name a path Core or an installed mod already ships."
-         % ", ".join(sorted(gameplay_art)))
+# -- 6a. provenance
+# A rotation is cut from its master and carries a suffix the master does not have, so the master
+# is looked up by the stem with any rotation suffix removed.
+ROTATIONS = ("_north", "_east", "_south", "_west")
+
+
+def master_name(name):
+    stem, dot, extension = name.rpartition(".")
+    for suffix in ROTATIONS:
+        if stem.lower().endswith(suffix):
+            stem = stem[: -len(suffix)]
+            break
+    return (stem + dot + extension).lower()
+
+
+orphans = sorted(rel for rel, _path, name in gameplay_assets
+                 if master_name(name) not in source_masters)
+if orphans:
+    fail("%d shipped gameplay asset(s) have no master under assets/source/, so nobody can say "
+         "where they came from: %s. Original means ours; another package's asset is never copied "
+         "here." % (len(orphans), ", ".join(orphans[:8])))
+elif gameplay_assets:
+    notes.append("every one of the %d shipped gameplay assets has a master under assets/source/"
+                 % len(gameplay_assets))
 else:
-    notes.append("ships no gameplay art or audio; menu images only")
+    notes.append("ships no gameplay art or audio yet")
+
+# -- 6b. things rotate
+shipped_textures = set()
+for rel, _path, _name in gameplay_assets:
+    if rel.lower().endswith(".png") and rel.startswith("1.6/Textures/"):
+        shipped_textures.add(rel[len("1.6/Textures/"):-len(".png")])
+
+missing_rotations = []
+for path in package_xml_files():
+    if not path.startswith(defs_root):
+        continue
+    body = strip_xml_comments(read(path))
+    for block in re.findall(r"<graphicData>(.*?)</graphicData>", body, re.S):
+        if "Graphic_Multi" not in block:
+            continue
+        tex = re.search(r"<texPath>([^<]+)</texPath>", block)
+        if tex is None:
+            continue
+        stem = tex.group(1).strip()
+        # Only ours. A texPath we do not ship belongs to Core or to an installed mod.
+        if not any(t == stem + suffix or t == stem for t in shipped_textures
+                   for suffix in ROTATIONS):
+            continue
+        absent = [s for s in ("_north", "_east", "_south") if stem + s not in shipped_textures]
+        if absent:
+            missing_rotations.append("%s (%s) missing %s"
+                                     % (stem, os.path.basename(path), ", ".join(absent)))
+
+if missing_rotations:
+    fail("%d Graphic_Multi texture(s) of ours have no rotation frames: %s. RimWorld mirrors _west "
+         "from _east and nothing else -- a rotatable building with one frame is a missing-texture "
+         "square on three facings. Owner direction 2026-10-06: \"remember things rotate\"."
+         % (len(missing_rotations), "; ".join(missing_rotations[:6])))
+elif shipped_textures:
+    notes.append("every Graphic_Multi texture of ours carries its _north/_east/_south frames")
+
+# -- 6c. a master is not a texture
+oversized = []
+for rel, path, _name in gameplay_assets:
+    if not rel.lower().endswith(".png"):
+        continue
+    try:
+        with io.open(path, "rb") as handle:
+            header = handle.read(26)
+        width, height = (int.from_bytes(header[16:20], "big"), int.from_bytes(header[20:24], "big"))
+    except Exception as exception:                  # pragma: no cover - reported, never swallowed
+        fail("a shipped texture could not be measured: %s (%s)" % (rel, exception))
+        continue
+    if width > TEXTURE_CEILING or height > TEXTURE_CEILING:
+        oversized.append("%s %dx%d" % (rel, width, height))
+
+if oversized:
+    fail("%d shipped gameplay texture(s) exceed %d px on an axis: %s. That is the size of a source "
+         "master, not of a cut texture -- RimWorld draws about 128 px per tile, and a master copied "
+         "in instead of cut costs a player VRAM for detail no camera ever shows."
+         % (len(oversized), TEXTURE_CEILING, ", ".join(oversized[:6])))
+elif gameplay_assets:
+    notes.append("no shipped gameplay texture exceeds %d px on an axis" % TEXTURE_CEILING)
 
 # ------------------------------------------------- the research mirror the register asked for
 # **A PROHIBITION BECAME AN ASSERTION, and the register is what reversed it.**

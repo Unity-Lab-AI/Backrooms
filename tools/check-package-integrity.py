@@ -845,9 +845,24 @@ def check_textures(problems, notes):
         parts = os.path.relpath(path, MOD).replace(os.sep, "/").split("/")
         on_disk.add("/".join(parts[2:])[: -len(".png")])
 
+    # **A Graphic_Multi texPath IS A STEM, NOT A FILE, AND THIS RULE DID NOT KNOW THAT.** It
+    # predates this package shipping any rotatable texture of its own: every texture was a menu
+    # slide or a Graphic_Single, so `texPath` and the file name were the same string. 0.13.0-dev
+    # ships three rotatable buildings on the owner's direction *"remember things rotate"*, and
+    # RimWorld resolves `<texPath>Foo</texPath>` for a Graphic_Multi as `Foo_north`, `Foo_east`,
+    # `Foo_south` and `Foo_west`. The rule reported three real, correct textures as missing.
+    #
+    # **The claim is unchanged and is not weakened**: a referenced path must still ship something.
+    # What changed is what counts as shipping it. `check-register-compliance.py` rule 6b is the one
+    # that asserts the rotation set is complete, so a stem matching only `_west` is still caught
+    # there rather than being let through here.
+    ROTATIONS = ("_north", "_east", "_south", "_west")
     for value in sorted(referenced):
-        if value not in on_disk:
-            fail(problems, "texture path %r is referenced but no matching .png ships" % value)
+        if value in on_disk:
+            continue
+        if any(value + suffix in on_disk for suffix in ROTATIONS):
+            continue
+        fail(problems, "texture path %r is referenced but no matching .png ships" % value)
 
     for value in sorted(on_disk):
         if value in referenced:

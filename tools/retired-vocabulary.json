@@ -1,61 +1,9 @@
 {
   "note": "Dispositions for every phrase tools/check-retired-content.py derives from a retired or unobtainable def label. The phrases are DERIVED, never listed here by hand; what lives here is the one judgement that cannot be derived - whether the CONCEPT survived the item. 'stale' means no player-facing string may say it. 'live' means the item went but the thing it named is still real. A new retirement fails the check until its words are dispositioned.",
   "phrases": {
-    "analysis bench": {
-      "disposition": "live",
-      "why": "the bench is live - a Core research bench designated as the field analysis bench, 0.10.9-dev. Only the custom building went."
-    },
-    "field analysis": {
-      "disposition": "live",
-      "why": "field analysis is what a designated bench still does; the work survived the building."
-    },
-    "field analysis bench": {
-      "disposition": "live",
-      "why": "the full role name is still what a branch designates. RR_FieldAnalysisBench was the custom building, not the job."
-    },
-    "control console": {
-      "disposition": "live",
-      "why": "a gate console is live - a Core comms console designated to a gate, 0.9.0-dev. The custom console went, the role did not."
-    },
-    "gate control": {
-      "disposition": "live",
-      "why": "same as control console: the designated role is live vocabulary."
-    },
-    "emergency return": {
-      "disposition": "live",
-      "why": "an emergency return is a live mechanic with its own window, energy reserve and alerts. Only RR_EmergencyCutoff, the custom switch, was retired."
-    },
-    "emergency return cutoff": {
+    "climate unit": {
       "disposition": "stale",
-      "why": "the cutoff was a custom building, retired 0.9.0-dev. A branch uses a Core power switch."
-    },
-    "return cutoff": {
-      "disposition": "stale",
-      "why": "same building, shorter name."
-    },
-    "machine gate": {
-      "disposition": "stale",
-      "why": "retired 0.9.0-dev when a gate became a door and nothing else. The vocabulary is 'gate'; only the RR_AssembleMachineGate recipe still carries the old word in its defName."
-    },
-    "return beacon": {
-      "disposition": "stale",
-      "why": "retired 0.9.9-dev. The gate's address book and the saved return threshold are the route authority, so the item had no job left."
-    },
-    "survey tag": {
-      "disposition": "stale",
-      "why": "retired 0.10.7-dev. Markers are Core glow pods now, and they are still NUMBERED - say 'numbered marker', not 'numbered tag'."
-    },
-    "survey tags": {
-      "disposition": "stale",
-      "why": "same item, and the six-per-crew requirement went with it because the owner's direction was not to limit the amount."
-    },
-    "sealed evidence case": {
-      "disposition": "stale",
-      "why": "retired 0.10.9-dev. Custody completes at a Shelf designated as the records archive, which is a PLACE rather than an item - so rewording is not enough, the instruction changes."
-    },
-    "sealed evidence": {
-      "disposition": "stale",
-      "why": "same item."
+      "why": "RR_SiteClimateUnit was retired; a coordinate uses Core climate equipment."
     },
     "evidence case": {
       "disposition": "stale",
@@ -65,18 +13,6 @@
       "disposition": "stale",
       "why": "superseded 0.12.24-dev. The def stays loadable so old saves open, and is untradeable, unbuilt and ungranted - so nothing should tell a player to use one. Crews write into the record book they carry."
     },
-    "route recording": {
-      "disposition": "stale",
-      "why": "RR_RouteRecording is legacy only - CompRouteEvidence.NativeCarrierDef resolves Core's TextBook, and IsLegacyCarrier exists purely so saves made before that switch keep loading. New evidence is a record book."
-    },
-    "utility generator": {
-      "disposition": "stale",
-      "why": "retired 0.9.0-dev. No single Core generator met its 3,500 W, and the vestigial power model went with it; a branch uses Core power."
-    },
-    "climate unit": {
-      "disposition": "stale",
-      "why": "RR_SiteClimateUnit was retired; a coordinate uses Core climate equipment."
-    },
     "liminal climate": {
       "disposition": "stale",
       "why": "same def."
@@ -85,33 +21,33 @@
       "disposition": "stale",
       "why": "same def. Its keyed label survived the def by several checkpoints, referenced by nothing."
     },
-    "fluorescent fixture": {
+    "machine gate": {
       "disposition": "stale",
-      "why": "RR_SiteFluorescent was retired; a coordinate is lit by Core fixtures and glow pods."
+      "why": "retired 0.9.0-dev when a gate became a door and nothing else. The vocabulary is 'gate'; only the RR_AssembleMachineGate recipe still carries the old word in its defName."
     },
-    "liminal fluorescent": {
+    "return beacon": {
       "disposition": "stale",
-      "why": "same def."
+      "why": "retired 0.9.9-dev. The gate's address book and the saved return threshold are the route authority, so the item had no job left."
     },
-    "liminal fluorescent fixture": {
-      "disposition": "stale",
-      "why": "same def. Its keyed label and description survived the def, referenced by nothing."
+    "route recording": {
+      "disposition": "live",
+      "why": "REVIVED 0.13.0-dev on the owner's full reversal of the existing-content-only direction. RR_RouteRecording ships as the company route recording, a Book the company issues and a crew writes in the field. It was never removed from the evidence pipeline: CompRouteEvidence accepted this exact defName throughout as a 0.2.0 migration path, and that test is IsCompanyCarrier now because 'legacy' stopped being true. Core's TextBook is still accepted beside it, so counting the kit is plural and issuing one is singular."
     },
-    "faded institutional carpet": {
+    "sealed evidence": {
       "disposition": "stale",
-      "why": "RR_FadedInstitutionalCarpet was retired; the yellow rooms use Core's CarpetMustard, which 0.12.19-dev finally made them actually use."
+      "why": "same item."
     },
-    "faded institutional": {
+    "sealed evidence case": {
       "disposition": "stale",
-      "why": "same terrain."
+      "why": "retired 0.10.9-dev. Custody completes at a Shelf designated as the records archive, which is a PLACE rather than an item - so rewording is not enough, the instruction changes."
     },
-    "institutional carpet": {
+    "survey tag": {
       "disposition": "stale",
-      "why": "same terrain."
+      "why": "retired 0.10.7-dev. Markers are Core glow pods now, and they are still NUMBERED - say 'numbered marker', not 'numbered tag'."
     },
-    "gate control console": {
+    "survey tags": {
       "disposition": "stale",
-      "why": "the custom console building was retired 0.9.0-dev. A branch designates a Core comms console, so the ROLE is live vocabulary but this full product name is not."
+      "why": "same item, and the six-per-crew requirement went with it because the owner's direction was not to limit the amount."
     }
   }
 }

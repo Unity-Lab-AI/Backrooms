@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- THE FLOOR THE WHOLE AESTHETIC IS NAMED AFTER, SHIPPING AGAIN.
+
+       Owner direction, 2026-10-06, full reversal of the existing-content-only direction of
+       2026-09-28. This terrain shipped in 0.2.0 and was retired at 0.9.0-dev with the note that it
+       "had no C# consumer whatsoever". It has one now and always should have: the generator's
+       palette lays floors, and a straw carpet is the single most recognisable surface in the
+       source material.
+
+       IT DID NOT TILE, AND THAT IS A DEFECT ONLY A PLAYER WOULD HAVE FOUND. Terrain is drawn once
+       per cell, so an unwrapped texture puts one visible joint at every cell boundary. The master
+       measures a seam 1.4 times worse than its own ordinary column adjacency left to right and 1.7
+       times worse top to bottom. tools/cut-phase2-art.py quad mirrors it, which takes both to
+       exactly 0.00 because mirrored edges are equal by construction, and re-measures after cutting
+       so the claim is a measurement rather than a hope.
+
+       THE FIRST MEASUREMENT OF THAT SEAM WAS WRONG BY AN ORDER OF MAGNITUDE AND IS RESTATED HERE
+       RATHER THAN QUIETLY CORRECTED. It compared a sixteen pixel band on one edge against the band
+       on the other and reported 18.3 against a threshold of 6, which reads as a grid across every
+       room. That proxy asks whether two regions look alike, not whether two columns join, and it
+       scored a provably seamless quad mirror at 7.15. The real figure is a mild seam. The fix was
+       worth making and the alarm was not.
+
+       CORE OWNS CARPET, AND THIS BORROWS ITS RULES RATHER THAN INVENTING NEW ONES: the same cloth
+       cost, the same research, the same burned result and the same cleaning penalty, so a player
+       who knows what carpet costs knows what this costs. What is ours is the surface. -->
+  <TerrainDef ParentName="FloorBase">
+    <defName>RR_FadedInstitutionalCarpet</defName>
+    <label>faded institutional carpet</label>
+    <description>A dense, worn carpet in a muted straw colour, laid wall to wall the way an office corridor is. Familiar underfoot, difficult to keep clean, and flammable.\n\nOrdinary cloth reproduces the material at a company facility. It is the surface most of the places out there are floored with, which is exactly why a room that has it feels like somewhere you have already been.</description>
+    <texturePath>Terrain/Rimrooms/RR_FadedInstitutionalCarpet</texturePath>
+    <edgeType>Hard</edgeType>
+    <renderPrecedence>244</renderPrecedence>
+    <isPaintable>true</isPaintable>
+    <burnedDef>BurnedCarpet</burnedDef>
+    <researchPrerequisites>
+      <li>CarpetMaking</li>
+    </researchPrerequisites>
+    <costList>
+      <Cloth>4</Cloth>
+    </costList>
+    <statBases>
+      <Beauty>0</Beauty>
+      <WorkToBuild>650</WorkToBuild>
+      <Flammability>0.32</Flammability>
+      <CleaningTimeFactor>2</CleaningTimeFactor>
+    </statBases>
+    <uiOrder>2190</uiOrder>
+  </TerrainDef>
+
+</Defs>

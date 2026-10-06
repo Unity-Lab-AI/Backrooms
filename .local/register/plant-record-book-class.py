@@ -81,11 +81,15 @@ PLANTS = [
      '    <nomatch Class="PatchOperationAdd">',
      '    <nomatch Class="PatchOperationReplace">', CHECK),
 
+    # **RE-AIMED 0.13.0-dev.** This anchored on `<analysisWorkRequired>3000</analysisWorkRequired>`,
+    # which left the patch in the same change that shipped the company's own journal: the figure was
+    # the C# default written out a second time, and a second book carrying the component would have
+    # made two copies of a tuned number that nothing keeps in agreement. The claim is unchanged --
+    # the patch must never write a thingClass -- and only the line it is aimed at moved.
     ("the patch starts writing thingClass again, where Core's abstract parent makes it unsafe", PATCH,
-     "          <analysisWorkRequired>3000</analysisWorkRequired>",
-     "          <analysisWorkRequired>3000</analysisWorkRequired>" + NL
-     + "        </li>" + NL
-     + "        <li><thingClass>Verse.Book</thingClass>", CHECK),
+     '        <li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteEvidence" />',
+     '        <li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteEvidence" />' + NL
+     + "        <li><thingClass>Verse.Book</thingClass></li>", CHECK),
 
     # ============================================================ rule 7, the startup binding
     ("THE BINDING NEVER ASSIGNS OUR CLASS, so the whole repair is inert", BINDING,

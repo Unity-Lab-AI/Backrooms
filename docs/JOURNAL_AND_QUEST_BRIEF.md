@@ -314,7 +314,7 @@ Owner: *"a variety to choose from after the inital tutorial like quests"*.
 - **§1.1 — a gate's connection has a duration. Nothing else in this mod has a duration.** No deadline on a write-up, a survey, a filing or a send-back.
 - **§1.2 — two routes of two different kinds**, on every request this brief adds.
 - **The solo guarantee** is untouched: nothing here spawns an encounter or changes a room count.
-- **No new art.** One new def, Core's texture.
+- **Was: no new art, one new def, Core's texture. Reversed 2026-10-06.** The company issues **its own journal** now — `RR_RouteRecording`, a `Book` with our own art — which is the actual answer to the owner's report of 2026-10-03: *"the company is suppose to supply u with a journal to do tasks in but they only gave me noraml books named wrong things that dont do anything"*. **Core's textbook is still accepted**, so a save full of them keeps working: counting the kit is plural, issuing one is singular.
 - **Core API only, no Harmony.** Every extension point used here is `virtual` or `public override` in the shipped assembly, and each one is quoted in the section that uses it.
 
 ---

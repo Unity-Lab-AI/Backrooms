@@ -172,49 +172,51 @@ namespace RimroomsAsyncIndustries.UI
                 .ThenBy(door => door.thingIDNumber).ToList();
         }
 
+        // **THESE THREE NO LONGER NAME A DEF, AND THAT IS WHAT LETS THE COMPANY'S OWN BUILDINGS
+        // COUNT.** Owner, 2026-10-06: "and the comms console and machining bench". The role test
+        // lives once in `RimroomsGateProviders` and is shared with the binding validator, which
+        // held a second copy of the same def names -- so a console could appear here and then be
+        // refused there, which reads to a player as the button being broken.
         internal static IEnumerable<Thing> AvailableNativeConsoles(RimroomsCampaignComponent campaign)
         {
-            return AvailableNativeBuildings(campaign, "CommsConsole")
-                .Where(thing => thing is Building_CommsConsole && thing.TryGetComp<CompRimroomsGateConsole>() != null);
+            return GateRoleCandidates(campaign, RimroomsGateProviders.IsConsole);
         }
 
         internal static IEnumerable<Thing> AvailableNativeBatteries(RimroomsCampaignComponent campaign)
         {
-            return AvailableNativeBuildings(campaign, "Battery")
-                .Where(thing => thing.TryGetComp<CompPowerBattery>() != null);
+            return GateRoleCandidates(campaign, RimroomsGateProviders.IsBattery);
         }
 
         internal static IEnumerable<Thing> AvailableNativeAssemblyBenches(RimroomsCampaignComponent campaign)
         {
-            return AvailableNativeBuildings(campaign, "TableMachining")
-                .Where(thing => thing is Building_WorkTable && thing.TryGetComp<CompRimroomsGateConsole>() != null);
+            return GateRoleCandidates(campaign, RimroomsGateProviders.IsAssemblyBench);
         }
 
         /// <summary>
-        /// The one candidate of a kind, or null when there is none or more than one.
+        /// The candidate the door toggle binds without asking, or null when the player must choose.
         ///
         /// **The door toggle's whole contract.** A branch with exactly one console, one battery
         /// and one machining table -- which is every start this mod ships -- can be switched on
         /// from the door. Anything ambiguous is refused by name and chosen in this pane instead,
         /// because picking one of several on the player's behalf is a decision, not a shortcut.
+        ///
+        /// **It used to be *the sole candidate* and that would have broken on new content.** One of
+        /// the company's own buildings now wins outright over any number of native ones, so
+        /// building the company console can only ever resolve an ambiguity. See
+        /// `RimroomsGateProviders.Preferred`, which owns the rule.
         /// </summary>
-        internal static Thing SoleCandidate(IEnumerable<Thing> candidates)
+        internal static Thing PreferredProvider(IEnumerable<Thing> candidates)
         {
-            Thing only = null;
-            foreach (Thing candidate in candidates)
-            {
-                if (only != null) { return null; }
-                only = candidate;
-            }
-            return only;
+            return RimroomsGateProviders.Preferred(candidates);
         }
 
-        private static IEnumerable<Thing> AvailableNativeBuildings(RimroomsCampaignComponent campaign, string defName)
+        private static IEnumerable<Thing> GateRoleCandidates(RimroomsCampaignComponent campaign,
+            Func<Thing, bool> fillsRole)
         {
             if (campaign?.Headquarters == null) { return Enumerable.Empty<Thing>(); }
             return campaign.Headquarters.listerBuildings.allBuildingsColonist
                 .Where(building => building != null && building.Spawned && building.Map == campaign.Headquarters &&
-                    building.Faction == Faction.OfPlayer && building.def.defName == defName)
+                    building.Faction == Faction.OfPlayer && fillsRole(building))
                 .OrderBy(building => building.Position.x).ThenBy(building => building.Position.z)
                 .ThenBy(building => building.thingIDNumber).Cast<Thing>().ToList();
         }

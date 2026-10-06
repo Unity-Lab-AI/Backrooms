@@ -5,9 +5,13 @@
     <nomatch Class="PatchOperationAdd">
       <xpath>Defs/ThingDef[defName="TextBook"]/comps</xpath>
       <value>
-        <li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteEvidence">
-          <analysisWorkRequired>3000</analysisWorkRequired>
-        </li>
+        <!-- THE 3000 THAT WAS HERE IS GONE, AND NOTHING CHANGED BY REMOVING IT. It was the
+             default on CompProperties_RouteEvidence in C# written out a second time, which was
+             harmless while this was the only book carrying the component. 0.13.0-dev ships the
+             company's own journal with the same component, so leaving it would have made two
+             copies of a tuned number in two files that nothing keeps in agreement. The value now
+             lives once, where it is declared. -->
+        <li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteEvidence" />
       </value>
     </nomatch>
   </Operation>

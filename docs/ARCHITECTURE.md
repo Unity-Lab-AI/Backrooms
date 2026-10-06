@@ -354,6 +354,7 @@ Condensed 2026-09-28 from the canonical contracts. Status vocabulary: **Source**
 | D7/D8/D9 | English keyed first; MIT for code only; mature psychological horror at the strongest presentation the game supports |
 | S1/B | Broad threat families frozen; five named sketches deferred (Signal Sink, The Long Exchange, Chalkline Spread, The Receiver, The Latch Visitor) |
 | Content reuse (2026-09-28) | No new gameplay ThingDefs/benches/items/sprites/textures/audio; existing providers bound by saved role; menu images are the sole visual exception |
+| **Content reuse REVERSED IN PART (2026-10-06)** | **Original gameplay art, audio, items, benches and terrain are permitted again** — owner: *"are we making our own items and benches and gates? becasue if so i fucking love it!"*, chosen as a full reversal. **Reuse stays the default and the gate stays a designation on a real Core door**, because that binding is what the 294-mod profile integrates against. Original content is added **beside** every reuse binding, never in place of it. See [`CONTENT_REUSE_POLICY.md`](CONTENT_REUSE_POLICY.md), which keeps both directions on the record |
 | Connected colony (2026-09-28) | Open laboratory/natural portals make one branch's labor and materials work across maps; natural portals never close; expedition dispatch becomes optional mission UI |
 | Build continuation (2026-09-28) | Source work continues in dependency order; runtime gates govern acceptance only; owner alone launches via RimSort |
 

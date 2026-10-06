@@ -41,24 +41,52 @@ namespace RimroomsAsyncIndustries.Expedition
         private const int RecordBooksRequired = 1;
 
         /// <summary>
-        /// The one thing a crew must carry, and the game already ships it.
+        /// Everything that counts as the crew's record book: Core's, and the company's own.
         ///
-        /// Null when it cannot be resolved -- Core's book missing, our comp not patched on,
-        /// another mod having replaced it -- and every caller refuses visibly on null rather
-        /// than carrying on with no kit requirement at all. A silent null here would make the
-        /// kit check pass for a crew carrying nothing, which is the same failure shape as
-        /// Named&lt;TerrainDef&gt;("Carpet") returning null and a fallback making the wrong
-        /// floor look deliberate for months.
+        /// **IT WAS ONE DEF UNTIL 0.13.0-dev AND THE OWNER NAMED THE GAP:** *"and the journal"*,
+        /// *"journal(s)"*, 2026-10-06. A crew carrying the company's own journal was told it had no
+        /// record book, because the kit counted a single def. **Counting is plural; supplying is
+        /// singular**, and keeping those two apart is the whole of this change.
+        ///
+        /// Empty when nothing resolves -- Core's book missing, our comp not patched on, another mod
+        /// having replaced it -- and every caller refuses visibly rather than carrying on with no
+        /// kit requirement at all. A silent empty here would make the kit check pass for a crew
+        /// carrying nothing, which is the same failure shape as Named&lt;TerrainDef&gt;("Carpet")
+        /// returning null and a fallback making the wrong floor look deliberate for months.
         /// </summary>
-        internal static ThingDef RecordBookDef { get { return CompRouteEvidence.NativeCarrierDef; } }
+        internal static IEnumerable<ThingDef> RecordBookDefs
+        {
+            get
+            {
+                ThingDef company = CompRouteEvidence.CompanyCarrierDef;
+                if (company != null) { yield return company; }
+                ThingDef native = CompRouteEvidence.NativeCarrierDef;
+                if (native != null) { yield return native; }
+            }
+        }
+
+        /// <summary>
+        /// The book to hand over when the company issues one, or null when it can issue none.
+        ///
+        /// **The company's own journal wherever it exists**, which is the answer to the owner's
+        /// report of 2026-10-03: *"the company is suppose to supply u with a journal to do tasks in
+        /// but they only gave me noraml books named wrong things that dont do anything"*. Core's
+        /// book remains the fallback, so a branch still receives something when ours cannot
+        /// resolve, and a save full of Core books keeps working because counting accepts both.
+        /// </summary>
+        internal static ThingDef RecordBookDef
+        {
+            get { return CompRouteEvidence.CompanyCarrierDef ?? CompRouteEvidence.NativeCarrierDef; }
+        }
 
         public static CompanyActionResult CheckKit(IEnumerable<Pawn> crew, Map deployedSite = null, string coordinateId = null)
         {
-            ThingDef book = RecordBookDef;
-            if (book == null) { return CompanyActionResult.Refused("RR_Exp_MissingRecordBook"); }
+            List<ThingDef> books = RecordBookDefs.ToList();
+            if (books.Count == 0) { return CompanyActionResult.Refused("RR_Exp_MissingRecordBook"); }
             List<Pawn> pawns = crew.Where(p => p != null && !p.Destroyed).Distinct().ToList();
-            return pawns.Sum(p => InventoryCount(p, book.defName)) +
-                DeployedCount(book.defName, deployedSite, coordinateId) >= RecordBooksRequired
+            int held = books.Sum(book => pawns.Sum(p => InventoryCount(p, book.defName)) +
+                DeployedCount(book.defName, deployedSite, coordinateId));
+            return held >= RecordBooksRequired
                 ? CompanyActionResult.Applied()
                 : CompanyActionResult.Refused("RR_Exp_MissingRecordBook");
         }
@@ -116,30 +144,39 @@ namespace RimroomsAsyncIndustries.Expedition
                 return Math.Max(0f, MassUtility.FreeSpace(p) - mass);
             });
             var requests = new List<PickupRequest>();
-            ThingDef def = RecordBookDef;
-            if (def == null) { return CompanyActionResult.Refused("RR_Exp_MissingRecordBook"); }
-            int remaining = Math.Max(0, RecordBooksRequired - kitOwners.Sum(p => InventoryCount(p, def.defName)) -
-                DeployedCount(def.defName, deployedSite, coordinateId));
+            List<ThingDef> books = RecordBookDefs.ToList();
+            if (books.Count == 0) { return CompanyActionResult.Refused("RR_Exp_MissingRecordBook"); }
+            int remaining = Math.Max(0, RecordBooksRequired -
+                books.Sum(book => kitOwners.Sum(p => InventoryCount(p, book.defName)) +
+                    DeployedCount(book.defName, deployedSite, coordinateId)));
             // Mass comes from the item, never from a constant here. The register's cargo family
             // asks for exactly that -- *"preserve each mod's normal material and weight
             // behavior"* -- and a Core book weighs what Core says it weighs, not what this mod
             // would like it to.
-            foreach (Thing item in headquarters.listerThings.ThingsOfDef(def).OrderBy(t => t.thingIDNumber))
+            //
+            // **Every accepted book is hauled from, in the order RecordBookDefs yields them**, which
+            // puts the company's own journal first. A branch holding one of each sends whichever is
+            // reachable rather than refusing because the one def it knew about was forbidden.
+            foreach (ThingDef def in books)
             {
-                if (remaining == 0) { break; }
-                int available = item.stackCount;
-                foreach (Pawn pawn in crew.OrderByDescending(p => free[p]))
+                foreach (Thing item in headquarters.listerThings.ThingsOfDef(def).OrderBy(t => t.thingIDNumber))
                 {
-                    if (remaining == 0 || available == 0) { break; }
-                    if (item.IsForbidden(pawn)) { continue; }
-                    float mass = Math.Max(0.001f, item.GetStatValue(StatDefOf.Mass));
-                    int count = Math.Min(remaining, Math.Min(available, (int)Math.Floor(free[pawn] / mass)));
-                    if (count < 1 || !pawn.CanReserveAndReach(item, PathEndMode.ClosestTouch, Danger.Deadly, 10, count)) { continue; }
-                    requests.Add(new PickupRequest { pawn = pawn, item = item, count = count });
-                    remaining -= count;
-                    available -= count;
-                    free[pawn] -= mass * count;
+                    if (remaining == 0) { break; }
+                    int available = item.stackCount;
+                    foreach (Pawn pawn in crew.OrderByDescending(p => free[p]))
+                    {
+                        if (remaining == 0 || available == 0) { break; }
+                        if (item.IsForbidden(pawn)) { continue; }
+                        float mass = Math.Max(0.001f, item.GetStatValue(StatDefOf.Mass));
+                        int count = Math.Min(remaining, Math.Min(available, (int)Math.Floor(free[pawn] / mass)));
+                        if (count < 1 || !pawn.CanReserveAndReach(item, PathEndMode.ClosestTouch, Danger.Deadly, 10, count)) { continue; }
+                        requests.Add(new PickupRequest { pawn = pawn, item = item, count = count });
+                        remaining -= count;
+                        available -= count;
+                        free[pawn] -= mass * count;
+                    }
                 }
+                if (remaining == 0) { break; }
             }
             if (remaining > 0) { return CompanyActionResult.Refused("RR_Exp_LoadoutUnavailable"); }
             if (requests.Count == 0) { return CompanyActionResult.Existing(); }

@@ -115,8 +115,14 @@ PLANTS = [
 
     # Same correction: the claim is about refusing on null, not about a constant's name. A
     # silent null makes the kit check pass for a crew carrying nothing.
-    ("THE KIT CHECK STOPS REFUSING ON NULL, so a crew carrying nothing passes", CARGO,
-     "if (book == null)", "if (false)", 1),
+    # **RE-AIMED AND RENAMED 0.13.0-dev.** The kit counted a single def and refused on a null one;
+    # it counts every accepted record book now -- Core's and the company's own journal -- and
+    # refuses when the set is empty. **The claim is identical and the word NULL had stopped being
+    # true**, which is the kind of name that makes a reader trust a rule that is testing something
+    # else. The anchor matches twice, in CheckKit and in QueueLoadout; the first is CheckKit, which
+    # is the one this claim reads.
+    ("THE KIT CHECK STOPS REFUSING WHEN NO RECORD BOOK RESOLVES, so a crew carrying nothing passes",
+     CARGO, "if (books.Count == 0)", "if (false)", 1),
 
     # **AIMED INSIDE QueueLoadout.** `GetStatValue(StatDefOf.Mass)` appears four times in this
     # file and the harness replaces the first, which is in a different method -- so the first

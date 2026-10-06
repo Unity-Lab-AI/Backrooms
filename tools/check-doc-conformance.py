@@ -78,11 +78,53 @@ HISTORICAL_FILES = (
 
 # Defs this package no longer ships. Naming one as something a player has or builds is a
 # promise the package cannot keep.
-RETIRED_DEFS = (
+#
+# **THIS WAS A TYPED TUPLE OF TEN NAMES, ELEVEN LINES ABOVE A COMMENT LECTURING ABOUT TYPED
+# COUNTS GOING STALE.** On 2026-10-06 the owner reversed the existing-content-only direction and
+# six of the ten shipped again -- so a rule written to stop the documents promising things the
+# package cannot deliver started refusing the documents for describing things it **does**. A
+# dated assertion wearing a check's clothes, which is this file's own diagnosis of its own
+# `CHECKER_COUNT = 8`.
+#
+# It is derived now, exactly as `check-retired-content.py` derives it (invariant 214): **retired
+# means archived under `historical-content/` and not declared by the package today.** A def that
+# comes back stops being retired on the next run, and a def retired tomorrow is covered the moment
+# its archive lands, with nobody editing this file either time.
+#
+# The historical floor below is kept for names whose archive record is prose rather than a def
+# file -- a retired recipe, say -- and it is subtracted against the live package just the same, so
+# a name in it can never outlive the def's return.
+HISTORICAL_FLOOR = (
     "RR_MachineGate", "RR_GateConsole", "RR_EmergencyCutoff", "RR_UtilityGenerator",
     "RR_SiteFluorescent", "RR_SiteClimateUnit", "RR_FieldAnalysisBench",
     "RR_FadedInstitutionalCarpet", "RR_ReturnBeacon", "RR_MakeReturnBeacon",
 )
+
+
+def _declared_def_names(root):
+    names = set()
+    for folder, _subdirs, files in os.walk(root):
+        for name in files:
+            if not name.lower().endswith(".xml"):
+                continue
+            try:
+                body = open(os.path.join(folder, name), "rb").read().decode("utf-8-sig", "replace")
+            except Exception:
+                continue
+            names.update(re.findall(r"<defName>([^<]+)</defName>", body))
+    return names
+
+
+def _retired_defs():
+    archived = _declared_def_names(
+        os.path.join(REPO, "docs", "implementation", "historical-content"))
+    live = _declared_def_names(
+        os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs"))
+    candidates = set(HISTORICAL_FLOOR) | set(n for n in archived if n.startswith("RR_"))
+    return tuple(sorted(candidates - live))
+
+
+RETIRED_DEFS = _retired_defs()
 
 # A phrase that will make a future agent skip a check.
 #

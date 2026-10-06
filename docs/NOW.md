@@ -15,53 +15,69 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 ---
 
-## ⛔ ONE HOLD LEFT. THE PUBLICATION HOLD IS LIFTED ⛔
+## ⛔ THE MOD HAS ITS OWN ART AND ITS OWN VOICE AGAIN ⛔
 
-**The owner lifted it, 2026-10-06, verbatim:** *"okay wrap up what ur on, write now.md and cascade to the github remotes"*. The earlier instruction — *"we are not stageing now.md and cascading to all three remotes correctly and properly until we are sure all of this is completed"* — is **satisfied and superseded**: the queue reached 0 open and 0 partial first, which is what *all of this is completed* meant.
+**Owner, 2026-10-06, verbatim:** *"whats phase 2 are we making our own items and benches and gates? becasue if so i fucking love it! ... and a audio folder! sounds dope!!! how do we do sounds can we? can we do all of this for all our shit?"* — answered at the fork as **full reversal**.
 
-**THE FORGEJO HOLD STILL STANDS.** Owner: *"fyi the git.unityailab.com is going down so stop pushes to it until further notice, github two repos is still good"*. **So the cascade is SIX refs** — `github` × five branches here, plus `github/main` on the mod-only repository.
+**This reverses a binding owner direction of 2026-09-28, and that direction is deleted nowhere.** It is what retired this art across 0.9.0-dev, 0.9.9-dev and 0.12.22-dev; every retirement record cites it; invariant 105 forbids making a removal look like progress. Nine places carry both now.
 
-**The remote is HELD, not removed, and that distinction is the point.** Deleting it would make every receipt read *complete*, and a future reader would never learn a destination had gone missing. `export-public-repo.py` keeps `forgejo` in `REMOTES`, skips it through `HELD_REMOTES`, **prints the hold and its reason every run**, and **refuses outright if every remote is held**. `PUBLISHING.md` opens with it, including: **do not push to it to test whether it is up.**
+**WHAT DID NOT REVERSE, AND INFERRING OTHERWISE WOULD HAVE BROKEN THE MOD:**
 
----
-
-## ⛔ A PRISONER MAY CROSS A GATE, AND I HAD JUST SHIPPED THE OPPOSITE ⛔
-
-**Owner, 2026-10-06, verbatim:** *"A prisoner could cross a gate... a prisoner should be able to cross a gate is allowed to ( send the prisonerrs to live and work in there and cross path back if zoned to and door are allowed access remmebr mods we have also along side all of that.. locks and prisoner mods... u know???"*
-
-**I had found the hole and closed it hours earlier. The hole was the feature.** A prisoner crossing is ordinary movement through a door, decided by zoning, door permissions and this profile's own access-control mods. Register row 273 (**Locks**) had already planned for it: *"validate door pathing, guest/prisoner access, emergency exits"*.
-
-| | |
+| Unchanged | Why |
 |---|---|
-| **One derivation replaced four faction tests** | `InOurCare` — faction **or** custody. A prisoner carries somebody else's faction while `HostFaction` is yours, so a faction test was never a test of whose pawn it is |
-| **Custody crosses with them** | A prisoner arrives with **no `Lord`**. A `Lord` makes an actor out of a transferred pawn and would launder somebody in your hands into a free one |
-| **The world-tile walk is still refused** | That path calls `PassToWorld`. *"Cross path back"* is not a caravan |
-| **Six instruments and documents restated** | Including the register's own row 288, which called the ban *"settled"* |
-
-**Two judgement calls that were mine, both one line to change:** a **quest lodger** stays refused (losing one fails a quest the player never chose to fail); a **slave** is admitted (their faction *is* the player's, so refusing the more-owned category while admitting the less-owned one reads as no rule at all).
+| **No cloned door def** | Gate sizes come from **binding a run of real doors** — 1x1, 1x2 on `OrnateDoor`, 1x3, 2x3, plus Doors Expanded. Cloning destroys the binding and cuts the gate off from Locks, Doors Expanded, ReBuild, Vault Walls and Doors, Secret Passage Doors, AirtightGarageDoors — **and from the prisoner crossing, which is door permissions and nothing else** |
+| **Never copy another package's assets** | Untouched, and now the clause most at risk. Rule 6a requires every shipped asset to have a master under `assets/source/` |
+| **Reuse stays the default** | Original content is added **beside** every binding. A branch that builds none of it works exactly as before |
 
 ---
 
-## ⛔ STAGE BEFORE THE OWNER LAUNCHES, AND IT IS IN A DURABLE PLACE NOW ⛔
+## ⛔ THINGS ROTATE, AND IT IS A BUILD FAILURE NOW ⛔
 
-This cost a whole launch report on 2026-10-06: the staged assembly was **02:51**, the build was **23:00**, and the owner tested a DLL **twenty-one hours old**. `check-package-integrity` rule 10 had already reported it with nine differing files and it was read as environmental because the game was open. **It was the warning working.**
+**Owner:** *"remember things rotate"*. `Graphic_Multi` resolves `_north`, `_east`, `_south`; RimWorld mirrors `_west` from `_east` and **nothing else is free**. `check-register-compliance.py` **rule 6b** fails the build on a `Graphic_Multi` of ours missing any of the three.
 
-The rule lived only here — in the one file that gets replaced wholesale. **It is now its own interdiction in `PUBLISHING.md`**, above the cascade, with the figures.
+- **`uniform`** — cutoff, beacon. Read the same from every side, so one master honestly produces every facing.
+- **`flat`** — the fluorescent, and it is a strategy the first draft missed. A flat fixture read from above genuinely turns with its footprint: `_east` is `_south` turned ninety degrees at **128x384** for the swapped footprint. **Geometry, not a trick.**
+- **non-rotatable** — machine gate, gate console, generator, bench. Front elevations with no back and no side view. They ship `Graphic_Single` and the cutter prints them under **ROTATIONS WANTED**. **Only the owner can author those four.**
+
+---
+
+## ⛔ ADDING CONTENT WAS ONE DECISION FROM BREAKING THE DOOR'S SET-GATE BUTTON ⛔
+
+**Owner called it before it happened:** *"rmeembr this might change the set gate option and stuff on doors"*.
+
+The role test was hard-coded **twice** — the Operations pane's lister and `NativeGateBinding.ExactProvider` — so widening one would have offered a console the other refused, which reads as a broken button. `RimroomsGateProviders` owns it once. **The component is the allowlist** (this codebase's own principle, stated at `NativeDoorProvider`) and **the type is the role**.
+
+**And the obvious implementation was a regression in a feature's clothes.** The button binds only on an unambiguous role, so *one more candidate* means a branch building our console **beside** Core's is told `RR_NativeGate_NoSingleConsole` — **the owner's own open 2026-10-03 report, caused by adding content.** One of ours wins outright over any number of native ones, so building ours can only ever *resolve* an ambiguity.
+
+**The battery is deliberately not widened.** Admitting every `CompPowerBattery` in the profile, in the one role a crew's way home depends on, is a change nobody asked for.
+
+---
+
+## ⛔ ONE HOLD LEFT ⛔
+
+**THE FORGEJO HOLD STANDS.** Owner: *"fyi the git.unityailab.com is going down so stop pushes to it until further notice, github two repos is still good"*. **The cascade is SIX refs** — `github` × five branches here, plus `github/main` on the mod-only repository.
+
+**The remote is HELD, not removed, and that distinction is the point.** Deleting it would make every receipt read *complete*. `export-public-repo.py` keeps `forgejo` in `REMOTES`, skips it through `HELD_REMOTES`, **prints the hold and its reason every run**, and **refuses outright if every remote is held**. `PUBLISHING.md` opens with it, including: **do not push to it to test whether it is up.**
+
+---
+
+## ⛔ STAGE BEFORE THE OWNER LAUNCHES ⛔
+
+This cost a whole launch report on 2026-10-06: the staged assembly was **02:51**, the build **23:00**, and the owner tested a DLL **twenty-one hours old**. It is its own interdiction in `PUBLISHING.md` now, above the cascade.
 
 - `powershell -File tools/stage-mod.ps1 -UpdateExisting` — **the staged copy is the copy a launch loads.**
 - `python tools/check-package-integrity.py` must read **PASS** before any launch report is trusted.
-- **It is staged and PASS as of this writing**, so the next launch runs this code.
 
 ---
 
 ## ⛔⛔ THE BATTERY RUNS ONCE, AND THE INSTRUMENTS STAY ⛔⛔
 
-**Owner, 2026-10-04:** *"yu should be completeing like near a dozen items before you run the whole battery. i told you i can NOT be waiting 40 minutes"*, and when I over-corrected: *"you still need to do instrament checks and build them when needed just dont run them for every fucking code change"*
+**Owner, 2026-10-04:** *"yu should be completeing like near a dozen items before you run the whole battery. i told you i can NOT be waiting 40 minutes"*, and *"you still need to do instrament checks and build them when needed just dont run them for every fucking code change"*
 
 - **During the work:** run **only the instrument covering the file you just touched.**
-- **At publication, once:** 29 checkers → 63 proofs → 42 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
+- **At publication, once:** 30 checkers → 63 proofs → 42 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
 - **THE OWNER ALONE LAUNCHES, SORTS AND PUBLISHES.**
-- ⛔ **NEVER RUN THE PLANT SUITES CONCURRENTLY WITH ANYTHING ELSE.** A suite writes a real fault into the tree and restores it; anything reading the tree in that window sees the fault. Doing so reported **four failures that did not exist**.
+- ⛔ **NEVER RUN THE PLANT SUITES CONCURRENTLY WITH ANYTHING ELSE.** A suite writes a real fault into the tree and restores it; anything reading the tree in that window sees the fault.
 - **THE REGISTER IS AN INPUT TO WORK, NOT A BACKLOG OF IT.**
 
 ---
@@ -71,47 +87,30 @@ The rule lived only here — in the one file that gets replaced wholesale. **It 
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`**, ahead of every remote by owner direction |
-| Version | **0.12.99-dev** — read from `About.xml`, never from a document |
-| Build | **252 C# files, 106 package files**, zero warnings, zero errors |
-| Instruments | **29 checkers**, **63 proofs**, **42 plant suites** — **the whole battery green in one run, plus `check-plant-residue`** |
-| Queue | **0 open · 0 partial · 53 `[T]` · 0 `[x]`** |
-| Research tree | **44 projects, T0 to T6, nine branches** |
-| Staged copy | **MATCHES THE BUILD.** `check-package-integrity` PASS |
-| Commits this session | **Eleven**, and the cascade is authorised |
-
----
-
-## What shipped this session
-
-1. **The four approved tier-5 projects**, each moving a constant nothing else claims and each visible without reading source. Facilities moves **wear, not capacity** — capacity is the denominator every saved gate condition is read against, so raising it would have made a finished research project read as every gate half empty.
-2. **Spatial T6 and the sixth palette band.** The content blocker was answered by authoring rather than by shipping the limitation, and the band derivation **stopped wrapping** — at five bands a depth-six coordinate came up Poolrooms on half its seeds.
-3. **Four assembly benches, four sections**, at exactly the price one bill cost. A section is **never allocated to a bench**, so losing one cannot orphan work.
-4. **Parallel records desks that actually work.** Two writers could both write the same report, and the second's progress landed on the *next* one.
-5. **A branch can hold more than one job.** It could hold exactly one, which made the ledger and the desks unreachable.
-6. **The ore density is Core's own figure at last**, per tile hilliness.
-7. **Zoning proved to stay the player's**, as an absence, with a plant suite behind it.
-8. **Fieldcraft T5's second subject**, chosen from three measured options rather than invented.
-9. **Sixteen entity family sheets** — eleven describing shipped content, five saying plainly that nothing is built.
-10. **A prisoner could cross a gate**, and that was mine from this session. Fixed, and checker 29 got the plant suite it never had.
-11. **A full sweep of every instrument**, which found **eleven stale ones** — including 23 false reds, one real defect in my own palette band, and thirteen broken plant anchors that would each have died with PLANT SETUP BROKEN.
+| Version | **0.13.0-dev** — read from `About.xml`, never from a document |
+| Build | **254 C# files, 130 package files**, zero warnings, zero errors |
+| Instruments | **30 checkers**, **63 proofs**, **42 plant suites** |
+| Queue | **7 open · 1 partial · 53 `[T]` · 0 `[x]`** |
+| Shipped art | **15 textures, 532 KB**, from 11.5 MB of masters. Four cut and held |
+| Shipped audio | **4 original cues**, positional, Core fallback retained |
 
 ---
 
 ## Read these before touching anything
 
-- **RUN EVERY INSTRUMENT ONCE BEFORE BELIEVING THE BATTERY.** Four stale instruments turned up by accident, so all 29 checkers and 63 proofs were run in one pass: **eleven were stale and two had been enforcing defects.** The sweep is cheap, it is read-only, and it is the only thing that finds an instrument nobody has run since the code moved under it.
-- **A FALSE RED IS STILL A FINDING.** `proof-starts` reported 23 failures saying the Async Industries facility would throw on generation. Every one was wrong: `Cooler` and `Vent` declare `canPlaceOverWall` in Core and the generator has honoured it all along — the proof was the stale derivation, not the start. **Measure the game before believing an instrument about it.**
-- **AND A PLANT ANCHOR THAT NO LONGER MATCHES IS A SUITE THAT PROVES NOTHING.** `check-plant-anchors` found thirteen, across eight suites. Re-aiming them exposed four more weak rules of mine, every one the same shape: a substring, a whole file instead of one band, one of two call sites, or a plant pointed at a verifier that never owned the claim.
-- **A RULE SATISFIED BY ITS SUBJECT NOT BEING THERE IS NOT A RULE, AND THIS SESSION FOUND FOUR.** `find(a) < find(b)` passes when `a` is deleted, because `find` returns **-1**. A substring test passed a rename to `unclaimedRequestId` because the new name **contains** the old one. A per-pawn rule passed because **one of two** call sites still matched. A `body_of(...) or ""` test passed when the method was gone. Every ordering claim now fails on absence; every name claim is word-bounded; every call-site claim counts.
-- **AND TWO PROOF CLAIMS WERE ENFORCING DEFECTS.** *"The natural depth reach is not research-driven"* went on passing after the code stopped honouring it, because it knew one spelling of a ternary. *"Only one request is ever open"* was holding in place the rule that a branch may hold one job. **Both were restated out loud rather than quietly edited** — a green instrument over a dead restraint is worse than no instrument.
-- **A FEATURE WHOSE PRECONDITION IS IMPOSSIBLE IS A FEATURE NOBODY CAN REPORT AS BROKEN.** The paperwork ledger and the parallel desks were both unreachable because one guard limited a branch to one job. Found by reading a guard, not by playing.
-- **MEASURE THE GAME BEFORE BELIEVING A LOG LINE.** *"Core's mineable scatter step was not found"* was read for a whole checkpoint as evidence about a 294-mod profile. **There is no such def in RimWorld 1.6 at all** — the class is constructed in code. The fallback had been used on every map ever generated, and nothing looked wrong because the fallback was right by coincidence.
-- **MUD HAS NO BUILD AFFORDANCE AND A PATH COST OF 14.** It was the obvious floor for the deepest palette band and would have shipped a level nothing can be built on, found by a player rather than by a build.
-- **USE THE WRITE TOOL FOR SCRIPTS, NEVER A BASH HEREDOC.** I broke this one rule after writing a rule about absence: two `\b` word boundaries arrived in a checker as literal **0x08 backspace bytes**, and a correct rule failed on correct code.
-- **TWO DERIVATIONS OF ONE RULE IS STILL THE DEFECT THIS PROJECT KEEPS MEETING.** The blind dial carried its own constant six *with a comment saying it matched the natural cap* — and a comment is not a derivation.
-- **WHEN A WIKI PAGE NEVER MENTIONS A FEATURE, THE FEATURE DOES NOT EXIST FOR THE PLAYER.** `grep` found *relief station* in exactly one file in the repository: the queue. The whole paperwork system had no page either. Both are written now.
+- **A NEW CHECKER EXISTS BECAUSE ONLY THE OWNER LAUNCHES.** `check-def-references.py` parses **12,283 def and abstract names** out of the installed `Data/` folders — Core and all six expansions — and resolves every `ParentName`, build cost, research prerequisite, category and Rimrooms type the package names. On a 296-mod profile a typo'd def name is a red log read as *this mod broke my game*. **It passed on its first run, which is not evidence: four faults were planted and all four were caught.** It reports **SKIPPED with a non-zero exit** when the game is absent rather than passing.
+- **A MEASUREMENT WAS PUBLISHED BEFORE IT WAS CHECKED, AND IT WAS WRONG BY AN ORDER OF MAGNITUDE.** The carpet seam was called **18.3 against a threshold of 6** — *a grid across every room*. That proxy compared two edge **regions** for similarity rather than asking whether two columns join, and **it scored a provably seamless quad mirror at 7.15**, which is how it was caught. The real figure is **x1.4 / x1.7**: a faint seam. The fix still takes it to **x0.00**. **The fix was worth making and the alarm was not.**
+- **A DROP SHADOW IS NOT THE OBJECT.** Bounding boxes at a zero alpha threshold reported the field analysis bench as taller than wide, for a visibly long counter. At a real threshold it is **2.21 : 1** and the fluorescent is **4.96 : 1**. Both footprints came from the corrected number.
+- **NO TEXTURE SHIPS THAT NOTHING NAMES.** The 0.9.0-dev retirement's own words: the art *"had no C# consumer whatsoever and had been shipping textures nobody could see"*. The cutter **derives** shipment by reading which paths the defs and the C# reference, so authoring a def ships its texture on the next run and nothing else does.
+- **TWO INSTRUMENTS WERE FOUND STALE BY THIS WORK, AND BOTH WERE REPLACED RATHER THAN REMOVED.** Rule 6 asserted *zero gameplay art ships*. And **`RETIRED_DEFS` was a typed tuple of ten names eleven lines above its own comment diagnosing typed counts as "a dated assertion wearing a check's clothes"** — six shipped again, so a rule meant to stop documents promising what the package cannot deliver began refusing them for describing what it **does**.
+- **A NAME THAT HAS STOPPED BEING TRUE IS A DEFECT.** `IsLegacyCarrier` matched only old saves until the def shipped again; it is `IsCompanyCarrier`, because a reader trusting the old name would delete the branch as dead code.
+- **COUNTING IS PLURAL; ISSUING IS SINGULAR.** A crew carrying the company journal was told it had no record book, because the kit counted one def.
+- **RUN EVERY INSTRUMENT ONCE BEFORE BELIEVING THE BATTERY.** A full sweep on 2026-10-06 found **eleven stale instruments**, including 23 false reds and two that had been *enforcing* defects.
+- **A RULE SATISFIED BY ITS SUBJECT NOT BEING THERE IS NOT A RULE.** `find(a) < find(b)` passes when `a` is deleted, because `find` returns **-1**.
+- **MEASURE THE GAME BEFORE BELIEVING AN INSTRUMENT ABOUT IT.** `Cooler` and `Vent` declare `canPlaceOverWall` in Core; there is no mineable-scatter GenStepDef in 1.6 at all; `Mud` has no build affordance.
+- **USE THE WRITE TOOL FOR SCRIPTS, NEVER A BASH HEREDOC.**
 - **§1.1 IS THE RULE A NEW FEATURE IS MOST LIKELY TO BREAK.** *"A gate's connection has a duration. Nothing else in this mod has a duration."*
-- **BANNED VOCABULARY.** *"portal"* → gate/connection; *"doorway"* → door/threshold; *"the machine"* is reserved. And **never a deadline, nor the word itself** — a player-facing string may not use it even to deny one, and two of them did until this session.
+- **BANNED VOCABULARY.** *"portal"* → gate/connection; *"doorway"* → door/threshold; *"the machine"* is reserved. And **never a deadline, nor the word itself**.
 
 ---
 
@@ -135,16 +134,16 @@ python tools/check-queue-pointers.py                     # and this, which neith
 
 ## THE NEXT THING
 
-**The cascade, then a launch.**
+**The public-facing mod register, which is a whole workstream and has not been started.**
 
-The six refs are `github` × `feature/bug-testing`, `feature/connected-colony-portals`, `Prep`, `Develop`, `Main`, plus `github/main` on the mod-only repository. **Order matters and only one way round works:** `python tools/export-public-repo.py --push` runs against the tree that was built and verifies every file's SHA256, so it goes **before** the commit here. Then the five branches. Then `curl` the published site.
+**Owner, 2026-10-06, verbatim:** *"okay we are adding to todo everything we need to make a similar mod registry as the one we have but this one will be pubvlic facing with all new writes in it so that it says the important stuff all players would need to know like mod interferances, what if's if not used  uses in rimrooms, required/recommended/(whatever else(s) is needed) as tags per mod in this recommended mod list for all modsand anything else relevant of note"*
 
-After that it is the 53 `[T]` rows, every one of which needs the game running — **the owner alone launches, sorts and publishes.**
+**It is a second register, not a view of the first**, and *"all new writes"* means none of the engineering prose is reused — a player does not need our integration approach, they need to know whether to install the thing and what happens if they do not. **Two things have to be decided rather than assumed:** the tag vocabulary, because a player-facing *Required* and the engineering `stance` column's *Required* are different claims and `check-register-compliance.py` refuses the latter while `About.xml` declares no dependencies; and the count, because the owner's profile is **296** — *"6DLCs, Rimbridge , Rimrooms(locally)"* — against the register's 294 rows plus Core.
+
+After that: the 53 `[T]` rows, every one of which needs the game running — **the owner alone launches, sorts and publishes.**
 
 **Read a launch log in this order:** `Player.log`, grep the **first** `[Rimrooms]` line, then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.
 
 ## Is it done?
 
-**The buildable list is finished and the battery is green in one run.** 29 checkers, 63 proofs, 42 plant suites, no plant residue, staged copy matching the build.
-
-What remains is the test phase and the two holds. Nothing is waiting on an answer.
+**No, and two things are open by name.** The public register has not been started. Four masters are cut and held out of the package because nothing names them, and four more need rotations only the owner can author. Everything claimed above is built, and the test phase still belongs to a launch.

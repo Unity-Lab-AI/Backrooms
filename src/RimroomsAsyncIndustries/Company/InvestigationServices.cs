@@ -44,9 +44,12 @@ namespace RimroomsAsyncIndustries.Company
             string id = coordinate.id + ":evidence:route";
             if (creation.HasAttempt(id)) { return creation.EnsureOriginal(this, coordinate, map, cell); }
             // A normal textbook is never inferred to be evidence. Recover only this bound identity,
-            // or the one deliberately supported legacy carrier left before old registration completed.
+            // or an unregistered company route recording left before registration completed. That
+            // test was named `IsLegacyCarrier` while `RR_RouteRecording` existed only in old saves;
+            // the def ships again as of 0.13.0-dev, so it now also catches a brand new one whose
+            // registration was interrupted, which is the same situation and the same right answer.
             var physical = map.listerThings.AllThings.Where(t =>
-                t.TryGetComp<CompRouteEvidence>()?.EvidenceId == id || (CompRouteEvidence.IsLegacyCarrier(t) &&
+                t.TryGetComp<CompRouteEvidence>()?.EvidenceId == id || (CompRouteEvidence.IsCompanyCarrier(t) &&
                 string.IsNullOrEmpty(t.TryGetComp<CompRouteEvidence>()?.EvidenceId))).ToList();
             if (physical.Count == 1) { return RegisterRouteRecording(coordinate, physical[0]); }
             if (physical.Count > 1) { return CompanyActionResult.Refused("RR_Company_ReceiptMismatch"); }

@@ -167,8 +167,11 @@ Walking a single colonist through a door by hand is not a company dispatch and i
 carries it through a gate, the survey writes itself as they walk, and the filled book becomes the
 case record your researcher analyses.
 
-The company's own books say **company record book** on them. An ordinary textbook bought from a
-trader is just a textbook, and the mod leaves it alone.
+The company issues its own: a **company route recording**, a tape in a numbered sleeve with a
+write-on card. It is a book, so a colonist reads it, hauls it and stores it like any other.
+
+A stamped **company record book** still counts as well, so an older colony loses nothing. An
+ordinary textbook bought from a trader is just a textbook, and the mod leaves it alone.
 
 | Step | What a colonist does |
 |---|---|

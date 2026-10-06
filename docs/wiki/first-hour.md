@@ -54,9 +54,13 @@ On Operations → **Machine**, designate four things:
 | | |
 |---|---|
 | **A door** | This becomes the gate |
-| **A comms console** | The controls |
+| **A comms console** | The controls — or the company's own **gate console** |
 | **A battery** | The reserve |
-| **A machining table** | Where it gets assembled |
+| **A machining table** | Where it gets assembled — or the company's own **field analysis bench** |
+
+The company's own console and bench are built like anything else and do the same jobs. If you have
+one of each, the gate picks it without asking, so building one settles a choice rather than
+creating one. A colony that never builds either works exactly as before.
 
 Then commission it, set the table to gate control, and run the **assemble gate section** bill
 four times:

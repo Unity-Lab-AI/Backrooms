@@ -512,9 +512,12 @@ check("AN UNDESIGNATED DOOR OFFERS THE WAY TO BECOME A GATE",
       not in gatecomp,
       "-- DEFINED AND CALLED, and the old early return is GONE rather than merely bypassed")
 
+# `SoleCandidate` is `PreferredProvider` since 0.13.0-dev. The method returns the candidate the
+# button binds -- one of OURS where exactly one exists, the sole native one otherwise -- so the old
+# name described a rule the method had stopped following.
 check("and it only ever offers what the binding would accept",
-      "UI.MainTabWindow_Operations.SoleCandidate(" in gatecomp
-      and gatecomp.count("UI.MainTabWindow_Operations.SoleCandidate(") == 3
+      "UI.MainTabWindow_Operations.PreferredProvider(" in gatecomp
+      and gatecomp.count("UI.MainTabWindow_Operations.PreferredProvider(") == 3
       and "campaign.Headquarters != parent.Map" in gatecomp
       and "ShowOrderResult(BindNativeInfrastructure(console, battery, bench));" in gatecomp
       # **THE REFUSAL BRANCH, not just the calls that feed it.** A plant replacing this test with

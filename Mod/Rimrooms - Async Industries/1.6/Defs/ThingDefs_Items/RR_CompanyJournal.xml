@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- THE COMPANY JOURNAL. THIS IS AN ANSWER TO A COMPLAINT THE OWNER MADE WEEKS BEFORE IT COULD
+       BE BUILT.
+
+       Owner, 2026-10-03, verbatim, and it is quoted in CompRouteEvidence.cs too: "the company is
+       suppose to supply u with a journal to do tasks in but they only gave me noraml books named
+       wrong things that dont do anything". Under the existing-content-only direction the only
+       available answer was a Core TextBook with our component patched onto it, which is literally
+       a normal book named a wrong thing. Owner, 2026-10-06: "and the journal", "journal(s)".
+
+       IT REVIVES A defName RATHER THAN INVENTING ONE, AND THAT IS DELIBERATE. RR_RouteRecording
+       shipped in 0.2.0 and was retired at 0.9.0-dev, but CompRouteEvidence never stopped accepting
+       it: IsSupportedCarrier has always taken this exact defName from this exact package, as a
+       migration path for saves made before the retirement. So the evidence pipeline already works
+       with it, and a save from 0.2.0 finds its recordings still legible. The test used to be
+       called IsLegacyCarrier; it is IsCompanyCarrier now, because "legacy" stopped being true the
+       moment this def shipped again and a reader trusting the old name would have deleted it as
+       dead code.
+
+       WHY IT IS A BOOK AND NOT AN ITEM WITH A BOOK-SHAPED NAME. RimroomsEvidenceCreationComponent
+       requires `item is Book` before it will bind a recording, CompanyCarrierDef requires the same,
+       and a journal that cannot be read is the complaint again in a different costume. Inheriting
+       BookBase brings Core's quality, hauling, deterioration, book tab and stack limit of one, so
+       a journal behaves like every other book in the player's colony and every mod that handles
+       books handles this.
+
+       CompProperties_Book IS DECLARED HERE AND CANNOT BE INHERITED. BookBase carries CompQuality
+       and ITab_Book but NOT CompBook: Core declares that per book, on TextBook, Schematic, Novel
+       and Tome separately. CompanyCarrierDef requires a CompBook, so omitting it would make this
+       def silently fail to qualify and every caller would fall back to Core's textbook forever -
+       working software, wrong book, no error anywhere.
+
+       THE OPEN AND VERTICAL GRAPHICS ARE CORE'S, ON PURPOSE. Those are the frames drawn while a
+       pawn is actually reading, and the company's art is a closed cassette in a sleeve. Pointing
+       at Core's paths references them at runtime and copies nothing, which is the one clause of
+       the reuse policy the 2026-10-06 reversal did not touch. -->
+
+  <ThingDef ParentName="BookBase">
+    <defName>RR_RouteRecording</defName>
+    <label>company route recording</label>
+    <description>A sealed company journal: a tape in a numbered sleeve with a write-on card for the route it carries. The branch issues them blank, a crew writes one in the field, and it comes home as the record of where they went and what was there.\n\nAnalysis at a bench turns a written recording into something the company will pay for. An unwritten one is a blank tape and worth about as much.</description>
+    <thingClass>RimroomsAsyncIndustries.Investigation.RimroomsRecordBook</thingClass>
+    <graphicData>
+      <texPath>Things/Item/Rimrooms/RR_RouteRecording</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>0.8</drawSize>
+    </graphicData>
+    <uiIconPath>Things/Item/Rimrooms/RR_RouteRecording</uiIconPath>
+    <statBases>
+      <MarketValue>180</MarketValue>
+    </statBases>
+    <comps>
+      <li Class="CompProperties_Book">
+        <!-- Core's makers, and the label a player sees is still ours. CompBook generates a title
+             and a description from these; RimroomsRecordBook exists precisely so that
+             CompRouteEvidence.TransformLabel gets a chance to replace what is shown with the
+             company's own stamp. Supplying no maker at all would be asking Core to work with a
+             null it has never been handed. -->
+        <nameMaker>Namer_TextBook</nameMaker>
+        <descriptionMaker>Description_SkillBook</descriptionMaker>
+        <ageYearsRange>0~1</ageYearsRange>
+        <openGraphic>
+          <texPath>Things/Item/Book/Textbook/Textbook_Open</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>0.7</drawSize>
+        </openGraphic>
+        <verticalGraphic>
+          <texPath>Things/Item/Book/Textbook/Textbook_Vertical</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <addTopAltitudeBias>true</addTopAltitudeBias>
+        </verticalGraphic>
+        <doers>
+          <!-- Reading somebody's field notes teaches a little. No quest doer: a company journal
+               that occasionally hands out an unrelated quest would be the company behaving like a
+               wandering trader, and register row 148's disposition is that Rimrooms objectives
+               must not depend on the quest system at all. -->
+          <li Class="BookOutcomeProperties_GainSkillExp" />
+        </doers>
+      </li>
+      <!-- NO analysisWorkRequired HERE, AND IT WAS REMOVED FROM THE PATCH IN THE SAME CHANGE.
+           The figure lives once, as the default on CompProperties_RouteEvidence in C#. Writing
+           3000 here would have been a second copy of a tuned number, which is the defect this
+           project keeps meeting; the patch on Core's TextBook carried the only other copy and now
+           relies on the same default. Both books analyse at the same cost because there is one
+           place that says what that cost is. -->
+      <li Class="RimroomsAsyncIndustries.Investigation.CompProperties_RouteEvidence" />
+    </comps>
+  </ThingDef>
+
+</Defs>

@@ -158,13 +158,26 @@ check("no def-name kit array survives",
       "KitDefs" not in cargo and "KitCounts" not in cargo,
       "-- two parallel arrays that could disagree about their own length")
 
+# **RE-AIMED 0.13.0-dev, SAME CLAIM, AND ONE CLAIM ADDED THAT THE OLD SHAPE COULD NOT CARRY.**
+# The kit resolved a single def and refused on null; it resolves every accepted record book now --
+# Core's and the company's own journal -- and refuses when that set is empty. A crew carrying the
+# company journal was previously told it had no record book, which is the defect the owner reported
+# as *"and the journal"*, *"journal(s)"*.
 kit = body_of(cargo, "public static CompanyActionResult CheckKit(")
-check("CheckKit refuses when the book cannot be resolved",
-      "if (book == null)" in kit and "RR_Exp_MissingRecordBook" in kit,
-      "-- a silent null makes the kit check pass for a crew carrying nothing")
+check("CheckKit refuses when no record book resolves at all",
+      "if (books.Count == 0)" in kit and "RR_Exp_MissingRecordBook" in kit,
+      "-- a silent empty set makes the kit check pass for a crew carrying nothing")
+check("and it counts EVERY accepted book rather than one def",
+      "RecordBookDefs" in kit and "books.Sum(" in kit and "RecordBookDef;" not in kit,
+      "-- counting one def is how a crew carrying the company's own journal was told it had none. "
+      "Counting is plural; issuing is singular, and they are different members on purpose")
 loadout = body_of(cargo, "public static CompanyActionResult QueueLoadout(")
-check("QueueLoadout refuses on the same null",
-      "if (def == null)" in loadout and "RR_Exp_MissingRecordBook" in loadout)
+check("QueueLoadout refuses on the same empty set",
+      "if (books.Count == 0)" in loadout and "RR_Exp_MissingRecordBook" in loadout)
+check("and it hauls from every accepted book, not only the first kind",
+      "foreach (ThingDef def in books)" in loadout,
+      "-- a branch holding one of each must send whichever is reachable rather than refusing "
+      "because the one def it knew about was forbidden")
 # **THE ITEM'S MASS, NAMED.** `QueueLoadout` reads two masses: the pawn's carried thing at one
 # line and the item being loaded at another. A claim for bare `GetStatValue(StatDefOf.Mass)` was
 # satisfied by the carried-thing read while a plant replaced the item read with a constant -- so

@@ -7,7 +7,14 @@ using Verse.Sound;
 
 namespace RimroomsAsyncIndustries.Audio
 {
-    /// <summary>Optional main-thread presentation. Gameplay must never depend on a cue playing.</summary>
+    /// <summary>
+    /// Optional main-thread presentation. Gameplay must never depend on a cue playing.
+    ///
+    /// Owner direction, 2026-10-06 -- *"a audio folder! sounds dope!!! how do we do sounds can we?"* --
+    /// reversed the existing-content-only direction of 2026-09-28, so the company's four original
+    /// cues ship again. The Core sounds they were redirected to in the meantime stay as the fallback
+    /// rather than being deleted, because a cue that cannot be found should get quieter, not silent.
+    /// </summary>
     public static class RimroomsAudio
     {
         private const int WarningLimit = 8;
@@ -15,7 +22,6 @@ namespace RimroomsAsyncIndustries.Audio
 
         public static void Play(string cueId, Map map, IntVec3 cell, bool field)
         {
-            string defName = ResolveNativeCue(cueId);
             try
             {
                 if (!UnityData.IsInMainThread || Current.Game == null || Current.ProgramState != ProgramState.Playing ||
@@ -25,31 +31,65 @@ namespace RimroomsAsyncIndustries.Audio
                 RimroomsSettings settings = RimroomsMod.Settings;
                 if (settings == null) { WarnOnce("settings", "Audio preferences are unavailable; cues remain silent."); return; }
                 if ((field ? settings.MuteFieldCues : settings.MuteGateCues) || settings.EffectiveCueVolume <= 0f) { return; }
-                if (string.IsNullOrWhiteSpace(defName)) { WarnOnce("name", "An unknown company cue was requested."); return; }
 
-                // Existing Core sounds are referenced at runtime; no Rimrooms sound assets or Def clones.
-                bool onCamera = cueId != "RR_GatePowerRise";
-                SoundDef definition = DefDatabase<SoundDef>.GetNamedSilentFail(defName);
-                if (definition == null || definition.isUndefined || definition.sustain || (!onCamera && definition.context != SoundContext.MapOnly) ||
-                    definition.subSounds == null || definition.subSounds.Count == 0)
-                { WarnOnce("def:" + defName, "Unavailable or incompatible map cue: " + defName); return; }
-                foreach (SubSoundDef subSound in definition.subSounds)
+                // An unknown cue id is a typo at a call site, and it is caught here rather than by a
+                // silent miss: ResolveNativeCue answers null for a name this mod does not define.
+                string native = ResolveNativeCue(cueId);
+                if (native == null) { WarnOnce("name", "An unknown company cue was requested."); return; }
+
+                // **OURS FIRST, CORE'S AS THE FALLBACK.** The company's own SoundDefs carry the same
+                // defNames as the cue ids, so a resolved original is simply the cue id itself. A
+                // package with no Sounds folder -- or one whose clips failed to resolve -- degrades to
+                // the native cue it used while the existing-content-only direction held, instead of
+                // going silent. The fallback is announced once so a missing folder is diagnosable.
+                SoundDef definition = Usable(cueId);
+                if (definition == null)
                 {
-                    // Missing resolved clips have zero duration. Avoid repeated native missing-grain errors.
-                    if (subSound == null || subSound.onCamera != onCamera || !(subSound.Duration.TrueMax > 0f))
-                    { WarnOnce("grain:" + defName, "A native cue has no compatible resolved clip: " + defName); return; }
+                    definition = Usable(native);
+                    if (definition != null)
+                    {
+                        WarnOnce("fallback:" + cueId, "The company cue " + cueId + " is unavailable; falling back to " + native + ".");
+                    }
                 }
+                if (definition == null) { WarnOnce("def:" + cueId, "Unavailable or incompatible map cue: " + cueId); return; }
 
-                SoundInfo info = onCamera ? SoundInfo.OnCamera() : SoundInfo.InMap(new TargetInfo(cell, map));
+                // Where a cue plays is the def's own property, never a second derivation here. Our
+                // cues are MapOnly and positional; the Core fallbacks for three of the four are
+                // interface sounds and play at the camera.
+                SoundInfo info = definition.subSounds[0].onCamera
+                    ? SoundInfo.OnCamera()
+                    : SoundInfo.InMap(new TargetInfo(cell, map));
                 info.volumeFactor = settings.EffectiveCueVolume;
                 definition.PlayOneShot(info);
             }
             catch (Exception error)
             {
-                WarnOnce("exception:" + (defName ?? "unknown"), "Cue skipped after a presentation error: " + error.GetType().Name);
+                WarnOnce("exception:" + (cueId ?? "unknown"), "Cue skipped after a presentation error: " + error.GetType().Name);
             }
         }
 
+        /// <summary>A def this presentation can actually play as a one shot, or null.</summary>
+        private static SoundDef Usable(string defName)
+        {
+            if (string.IsNullOrWhiteSpace(defName)) { return null; }
+            SoundDef definition = DefDatabase<SoundDef>.GetNamedSilentFail(defName);
+            if (definition == null || definition.isUndefined || definition.sustain ||
+                definition.subSounds == null || definition.subSounds.Count == 0 || definition.subSounds[0] == null)
+            { return null; }
+
+            // One SoundInfo is built for the whole def, so every subsound has to agree about where it
+            // plays. A def that mixed them would play half of itself in the wrong place.
+            bool onCamera = definition.subSounds[0].onCamera;
+            if (!onCamera && definition.context != SoundContext.MapOnly) { return null; }
+            foreach (SubSoundDef subSound in definition.subSounds)
+            {
+                // Missing resolved clips have zero duration. Avoid repeated native missing-grain errors.
+                if (subSound == null || subSound.onCamera != onCamera || !(subSound.Duration.TrueMax > 0f)) { return null; }
+            }
+            return definition;
+        }
+
+        /// <summary>The Core cue each company cue fell back to while no original audio shipped.</summary>
         private static string ResolveNativeCue(string cueId)
         {
             switch (cueId)

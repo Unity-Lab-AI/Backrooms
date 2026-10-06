@@ -248,17 +248,33 @@ check("AND IT ASKS FOR NO PROVIDER, WHICH IS THE WHOLE POINT",
       "`!IsRunExtension && NativeDoorProvider() && schema == 1 && nativeDesignated` -- and what "
       "reports a missing circuit is `NativeBindingFailureKey` -> `RR_NativeGate_LinkMissing`")
 
+# **RE-AIMED 0.13.0-dev, AND THE CLAIM IS STRICTLY STRONGER.** This asserted the literal strings
+# `ExactProvider(console, "CommsConsole")` and `ExactProvider(battery, "Battery")`. Those literals
+# were ONE OF TWO COPIES of the same rule -- the Operations pane held the other -- and this proof
+# could only ever have seen one of them, so widening the pane and leaving the validator alone would
+# have passed here and produced a console the player is offered and then refused. The validator now
+# calls the shared role tests, and the proof requires all three of them plus the reserve rule.
 check("and binding itself still refuses a half-answer",
       "ReserveTooSmall" in binding
-      and 'ExactProvider(console, "CommsConsole")' in binding
-      and 'ExactProvider(battery, "Battery")' in binding,
+      and "RimroomsGateProviders.IsConsole(console)" in binding
+      and "RimroomsGateProviders.IsBattery(battery)" in binding
+      and "RimroomsGateProviders.IsAssemblyBench(assemblyBench)" in binding,
       "-- the fix is a NEW entry point, not a loosened bind. A gate that looks complete and is "
       "not strands the first crew through it")
 
+check("and the validator and the pane cannot disagree about what a provider is",
+      "ExactProvider(console" not in binding and "ExactProvider(battery" not in binding
+      and "ExactProvider(assemblyBench" not in binding,
+      "-- two copies of the same role rule is how a building gets offered in one place and "
+      "refused in the other, which reads to a player as a broken button rather than as a rule")
+
 make = comp.split("RR_NativeGate_MakeLabel")[-1].split("public override IEnumerable<Gizmo>")[0]
+# `SoleCandidate` is `PreferredProvider` since 0.13.0-dev: it returns the candidate the button
+# binds, which is one of OURS where exactly one exists and the sole native one otherwise. The old
+# name had stopped describing what the method does.
 check("THE DOOR BUTTON DESIGNATES BEFORE IT RESOLVES ANY PROVIDER",
-      "DesignateAsGate()" in make and "SoleCandidate" in make
-      and make.index("DesignateAsGate()") < make.index("SoleCandidate"),
+      "DesignateAsGate()" in make and "PreferredProvider" in make
+      and make.index("DesignateAsGate()") < make.index("PreferredProvider"),
       "-- ordering is the claim. Resolving first and refusing is exactly the behaviour reported")
 
 check("and a missing circuit is TOLD, not refused",

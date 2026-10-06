@@ -558,7 +558,10 @@ namespace RimroomsAsyncIndustries.Gate
             {
                 defaultLabel = "RR_NativeGate_MakeLabel".Translate(),
                 defaultDesc = "RR_NativeGate_MakeDesc".Translate(),
-                icon = parent.def.uiIcon,
+                // The company's own gate art, falling back to the door's own icon when the package
+                // ships without it. A button that turns a door into a gate showing a picture of the
+                // door told the player nothing they did not already know.
+                icon = RimroomsGateArt.DesignateIcon ?? parent.def.uiIcon,
                 action = delegate
                 {
                     // **WHICH DOOR IS THE GATE IS SETTABLE ON ITS OWN, FIRST.** Owner, 2026-10-03:
@@ -566,7 +569,7 @@ namespace RimroomsAsyncIndustries.Gate
                     // me i cant set the gate door without setting the batteries first"*.
                     //
                     // This button used to resolve all three providers and **refuse outright** if
-                    // any was absent or ambiguous -- `SoleCandidate` returns null for *none* and
+                    // any was absent or ambiguous -- the resolver returns null for *none* and
                     // for *more than one* -- so on the company start, where no battery is bound
                     // yet, the only route from a door to a gate said `RR_NativeGate_NoSingleBattery`
                     // and stopped. **A refusal is not a route**, and the owner read it as the
@@ -579,11 +582,11 @@ namespace RimroomsAsyncIndustries.Gate
                     CompanyActionResult designated = DesignateAsGate();
                     if (!designated.Success) { ShowOrderResult(designated); return; }
 
-                    Thing console = UI.MainTabWindow_Operations.SoleCandidate(
+                    Thing console = UI.MainTabWindow_Operations.PreferredProvider(
                         UI.MainTabWindow_Operations.AvailableNativeConsoles(campaign));
-                    Thing battery = UI.MainTabWindow_Operations.SoleCandidate(
+                    Thing battery = UI.MainTabWindow_Operations.PreferredProvider(
                         UI.MainTabWindow_Operations.AvailableNativeBatteries(campaign));
-                    Thing bench = UI.MainTabWindow_Operations.SoleCandidate(
+                    Thing bench = UI.MainTabWindow_Operations.PreferredProvider(
                         UI.MainTabWindow_Operations.AvailableNativeAssemblyBenches(campaign));
                     if (console == null || battery == null || bench == null)
                     {

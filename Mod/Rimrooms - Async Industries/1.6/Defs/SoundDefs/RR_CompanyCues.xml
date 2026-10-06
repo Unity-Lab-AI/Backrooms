@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The company's four cues, as original audio.
+
+  Owner direction, 2026-10-06: "a audio folder! sounds dope!!! how do we do sounds can we?", and
+  the full reversal of the existing-content-only policy that answered it. These four shipped once
+  in 0.2.0, were retired by the 2026-09-28 direction, and are reinstated by the 2026-10-06 one.
+  See docs/CONTENT_REUSE_POLICY.md, which keeps both directions on the record.
+
+  EVERY ONE OF THESE IS POSITIONAL, AND THREE OF THEM WERE NOT BEFORE.
+  All ten call sites in RimroomsAudio.Play hand it a map and a cell. While the cues resolved to
+  Core interface sounds (Message_ThreatSmall, CommsWindow_Open, Message_NegativeEvent) that
+  position was passed in and thrown away, because an interface sound plays at the camera. Ours are
+  MapOnly with a distRange, so a gate warning comes from the gate and a spatial tell comes from the
+  pawn who noticed it. A player who hears a warning and cannot tell which gate raised it has been
+  given a noise rather than information.
+
+  THE CORE SOUNDS REMAIN AS THE FALLBACK AND THAT IS DELIBERATE. RimroomsAudio resolves this def
+  first and drops to the Core cue if it is missing or incompatible, so a package stripped of its
+  Sounds folder degrades to the 0.12.x behaviour instead of falling silent.
+
+  distRange is read as (full volume within, inaudible beyond). 12~55 is the 0.2.0 figure and is
+  kept: a gate's working area is a room or two, and 55 cells reaches the next building without
+  carrying across a map.
+-->
+<Defs>
+
+  <SoundDef>
+    <defName>RR_GatePowerRise</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_GatePowerRise</clipPath></li>
+        </grains>
+        <volumeRange>35~35</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>12~55</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>RR_GateWarning</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_GateWarning</clipPath></li>
+        </grains>
+        <volumeRange>50~50</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>12~55</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>RR_FieldRadio</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_FieldRadio</clipPath></li>
+        </grains>
+        <volumeRange>35~35</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>12~55</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>RR_SpatialTell</defName>
+    <context>MapOnly</context>
+    <maxVoices>1</maxVoices>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip"><clipPath>Rimrooms/RR_SpatialTell</clipPath></li>
+        </grains>
+        <volumeRange>35~35</volumeRange>
+        <pitchRange>1~1</pitchRange>
+        <distRange>12~55</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+</Defs>

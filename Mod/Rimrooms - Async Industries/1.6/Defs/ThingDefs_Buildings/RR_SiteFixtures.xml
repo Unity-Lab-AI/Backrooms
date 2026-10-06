@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- THE FIRST TWO BUILDINGS THIS MOD HAS EVER SHIPPED WITH ITS OWN ART.
+
+       Owner direction, 2026-10-06: "are we making our own items and benches and gates? becasue if
+       so i fucking love it!", answered as a full reversal of the existing-content-only direction of
+       2026-09-28. docs/CONTENT_REUSE_POLICY.md carries both directions; neither is deleted.
+
+       BOTH OF THESE EXISTED IN 0.2.0 AND WERE RETIRED, and the record that retired them says why
+       they deserved it the first time: "All four had no C# consumer whatsoever and had been
+       shipping textures nobody could see." A building with no behaviour is a texture with a
+       hitbox. So neither of these comes back as decoration.
+
+       NEITHER NEEDS ONE LINE OF NEW C#, AND THAT IS THE POINT OF STARTING HERE. Core already owns
+       lighting and fuelled power generation, and a company fixture that uses Core's own comps
+       behaves correctly against every mod in the profile that patches lights or power: it is a
+       glower and a power plant, so Power Poles Extended, the breakdown mods and every power
+       overlay see it as what it is. A bespoke implementation would have been a second power system
+       nobody else can read.
+
+       THINGS ROTATE. Owner, 2026-10-06. The fluorescent is Graphic_Multi with real frames: its
+       east texture is drawn at 128x384 for the swapped footprint, cut by tools/cut-phase2-art.py,
+       because a flat fixture read from above genuinely turns with its footprint. The generator is
+       drawn in three quarter view with a front, so it has no honest side frame and is NOT
+       rotatable rather than shipping one frame four times. check-register-compliance.py rule 6b
+       refuses a Graphic_Multi of ours that is missing its north, east or south. -->
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_SiteFluorescent</defName>
+    <label>liminal fluorescent fixture</label>
+    <description>A long institutional strip light of the kind that lines a facility corridor. It throws a wide, flat, slightly yellow light across a whole run of floor rather than pooling it the way a lamp does.\n\nIt draws site power and it breaks like anything else. The company fits them because a crew that can see the corridor it is standing in makes fewer mistakes in it.</description>
+    <thingClass>Building</thingClass>
+    <graphicData>
+      <texPath>Things/Building/Rimrooms/RR_SiteFluorescent</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(3,1)</drawSize>
+      <damageData>
+        <rect>(0,0.35,3,0.3)</rect>
+      </damageData>
+    </graphicData>
+    <uiIconScale>0.9</uiIconScale>
+    <size>(3,1)</size>
+    <rotatable>true</rotatable>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>14</pathCost>
+    <fillPercent>0.15</fillPercent>
+    <useHitPoints>true</useHitPoints>
+    <selectable>true</selectable>
+    <castEdgeShadows>false</castEdgeShadows>
+    <statBases>
+      <MaxHitPoints>90</MaxHitPoints>
+      <WorkToBuild>1100</WorkToBuild>
+      <Mass>6</Mass>
+      <Flammability>0.4</Flammability>
+      <Beauty>-1</Beauty>
+    </statBases>
+    <costList>
+      <Steel>25</Steel>
+      <ComponentIndustrial>1</ComponentIndustrial>
+    </costList>
+    <researchPrerequisites>
+      <li>Electricity</li>
+    </researchPrerequisites>
+    <designationCategory>Furniture</designationCategory>
+    <designationHotKey>Misc7</designationHotKey>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    <tickerType>Normal</tickerType>
+    <building>
+      <paintable>false</paintable>
+      <destroySound>BuildingDestroyed_Metal_Small</destroySound>
+    </building>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>45</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Flickable" />
+      <!-- A WIDE, SHALLOW POOL, WHICH IS THE WHOLE DIFFERENCE FROM A LAMP. Core's standing lamp is
+           radius 12 at full brightness; this is radius 9 at a lower glow, so three of them down a
+           corridor read as a lit corridor rather than three bright circles with dark between. -->
+      <li Class="CompProperties_Glower">
+        <glowRadius>9</glowRadius>
+        <glowColor>(236,226,186,0)</glowColor>
+      </li>
+      <li Class="CompProperties_Breakdownable" />
+    </comps>
+  </ThingDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_UtilityGenerator</defName>
+    <label>company utility generator</label>
+    <description>A compact field generator the company sends out with a branch. It burns wood from a side hopper and puts out noticeably more than a standard wood-fired set for the same footprint, which is the whole reason it is worth hauling to a site.\n\nIt is louder, hungrier and breaks more often than the plain version. A branch that is running one of these is a branch that could not reach a grid.</description>
+    <thingClass>Building</thingClass>
+    <graphicData>
+      <texPath>Things/Building/Rimrooms/RR_UtilityGenerator</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(2,2)</drawSize>
+      <damageData>
+        <cornerTL>Damage/Corner</cornerTL>
+        <cornerTR>Damage/Corner</cornerTR>
+        <cornerBL>Damage/Corner</cornerBL>
+        <cornerBR>Damage/Corner</cornerBR>
+      </damageData>
+    </graphicData>
+    <size>(2,2)</size>
+    <!-- NOT ROTATABLE, AND THAT IS THE HONEST ANSWER RATHER THAN THE TIDY ONE. The master is drawn
+         in three quarter view with an exhaust stack, a hopper and a clear front. There is no back
+         view and no side view, and Graphic_Multi with one frame is a missing-texture square on
+         three facings that a player who never rotates it on placement would never discover.
+         tools/cut-phase2-art.py prints this one under ROTATIONS WANTED. -->
+    <rotatable>false</rotatable>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>50</pathCost>
+    <fillPercent>0.5</fillPercent>
+    <useHitPoints>true</useHitPoints>
+    <selectable>true</selectable>
+    <statBases>
+      <MaxHitPoints>180</MaxHitPoints>
+      <WorkToBuild>2400</WorkToBuild>
+      <Mass>45</Mass>
+      <Flammability>0.5</Flammability>
+      <Beauty>-6</Beauty>
+    </statBases>
+    <costList>
+      <Steel>110</Steel>
+      <ComponentIndustrial>4</ComponentIndustrial>
+    </costList>
+    <researchPrerequisites>
+      <li>Electricity</li>
+    </researchPrerequisites>
+    <designationCategory>Power</designationCategory>
+    <designationHotKey>Misc8</designationHotKey>
+    <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+    <tickerType>Normal</tickerType>
+    <building>
+      <paintable>false</paintable>
+      <destroySound>BuildingDestroyed_Metal_Medium</destroySound>
+    </building>
+    <comps>
+      <!-- 1400 against Core's wood-fired 1000, and it eats for it: 30 wood a day against Core's
+           22, and a breakdown comp the plain generator does not carry. The trade is stated in the
+           description so a player can read the deal before building one. -->
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerPlant</compClass>
+        <basePowerConsumption>-1400</basePowerConsumption>
+        <transmitsPower>true</transmitsPower>
+      </li>
+      <li Class="CompProperties_Refuelable">
+        <fuelConsumptionRate>30</fuelConsumptionRate>
+        <fuelCapacity>80</fuelCapacity>
+        <fuelFilter>
+          <thingDefs>
+            <li>WoodLog</li>
+          </thingDefs>
+        </fuelFilter>
+        <initialFuelPercent>0</initialFuelPercent>
+        <showFuelGizmo>true</showFuelGizmo>
+        <fuelLabel>Wood</fuelLabel>
+        <fuelGizmoLabel>Wood</fuelGizmoLabel>
+      </li>
+      <li Class="CompProperties_Flickable" />
+      <li Class="CompProperties_Breakdownable" />
+      <li Class="CompProperties_HeatPusher">
+        <compClass>CompHeatPusherPowered</compClass>
+        <heatPerSecond>5</heatPerSecond>
+      </li>
+    </comps>
+    <placeWorkers>
+      <li>PlaceWorker_PreventInteractionSpotOverlap</li>
+    </placeWorkers>
+  </ThingDef>
+
+  <!-- THE TWO THAT ACTUALLY ROTATE, AND THEY ARE THE PROOF THAT THE RULE IS REAL.
+
+       Owner, 2026-10-06: "remember things rotate". Both of these are radially alike - a button on a
+       box, and a lamp on a tripod - so one master honestly produces every facing, and
+       tools/cut-phase2-art.py writes _north, _east and _south for each. RimWorld mirrors _west from
+       _east itself. check-register-compliance.py rule 6b fails the build if any of the three is
+       missing, so a Graphic_Multi here can never quietly become one frame shown four times.
+
+       Both are modelled on Core's own defs rather than invented: the cutoff is Core's PowerSwitch
+       shape (Building_PowerSwitch, CompPowerTransmitter, allowWireConnection false) and the beacon
+       is a powered glower. Neither needs a line of C#. -->
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_EmergencyCutoff</defName>
+    <label>emergency cutoff</label>
+    <description>A heavy sealed cutoff with a palm-sized stop button, fitted on the conduit run into a gate's equipment. Flicking it opens the circuit, exactly as an ordinary power switch does.\n\nThe company fits them where a crew might need to drop power to a room without arguing about which conduit to deconstruct.</description>
+    <thingClass>Building_PowerSwitch</thingClass>
+    <category>Building</category>
+    <graphicData>
+      <texPath>Things/Building/Rimrooms/RR_EmergencyCutoff</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(1,1)</drawSize>
+      <damageData>
+        <rect>(0.2,0.2,0.6,0.6)</rect>
+      </damageData>
+    </graphicData>
+    <size>(1,1)</size>
+    <rotatable>true</rotatable>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>Standable</passability>
+    <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+    <selectable>true</selectable>
+    <statBases>
+      <MaxHitPoints>140</MaxHitPoints>
+      <WorkToBuild>320</WorkToBuild>
+      <Flammability>0.4</Flammability>
+      <Beauty>-2</Beauty>
+    </statBases>
+    <costList>
+      <Steel>25</Steel>
+      <ComponentIndustrial>1</ComponentIndustrial>
+    </costList>
+    <researchPrerequisites>
+      <li>Electricity</li>
+    </researchPrerequisites>
+    <designationCategory>Power</designationCategory>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    <tickerType>Normal</tickerType>
+    <building>
+      <ai_chillDestination>false</ai_chillDestination>
+      <allowWireConnection>false</allowWireConnection>
+      <paintable>false</paintable>
+    </building>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTransmitter</compClass>
+        <transmitsPower>true</transmitsPower>
+      </li>
+      <li Class="CompProperties_Flickable" />
+    </comps>
+  </ThingDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_ReturnBeacon</defName>
+    <label>site marker beacon</label>
+    <description>A tripod beacon with an amber lamp, meant to be dropped where a route turns or a door matters. It throws a small, unmistakably orange light that reads as a marker rather than as room lighting.\n\nIt marks a place. It does not call anyone: a gate's own saved addresses are what bring a crew home, and no lamp has ever been part of that.</description>
+    <thingClass>Building</thingClass>
+    <graphicData>
+      <texPath>Things/Building/Rimrooms/RR_ReturnBeacon</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(1,1)</drawSize>
+      <damageData>
+        <rect>(0.15,0.15,0.7,0.7)</rect>
+      </damageData>
+    </graphicData>
+    <size>(1,1)</size>
+    <rotatable>true</rotatable>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>30</pathCost>
+    <fillPercent>0.25</fillPercent>
+    <useHitPoints>true</useHitPoints>
+    <selectable>true</selectable>
+    <statBases>
+      <MaxHitPoints>70</MaxHitPoints>
+      <WorkToBuild>500</WorkToBuild>
+      <Mass>5</Mass>
+      <Flammability>0.4</Flammability>
+      <Beauty>-1</Beauty>
+    </statBases>
+    <costList>
+      <Steel>20</Steel>
+      <ComponentIndustrial>1</ComponentIndustrial>
+    </costList>
+    <researchPrerequisites>
+      <li>Electricity</li>
+    </researchPrerequisites>
+    <designationCategory>Furniture</designationCategory>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    <tickerType>Normal</tickerType>
+    <building>
+      <paintable>false</paintable>
+    </building>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>25</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Flickable" />
+      <!-- Small and orange on purpose. A marker that lights a room is a lamp, and the player
+           already has lamps; this one has to be legible as a marked spot from across a corridor. -->
+      <li Class="CompProperties_Glower">
+        <glowRadius>4</glowRadius>
+        <glowColor>(252,164,38,0)</glowColor>
+      </li>
+    </comps>
+  </ThingDef>
+
+</Defs>
