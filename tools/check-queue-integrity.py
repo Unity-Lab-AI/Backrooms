@@ -76,6 +76,24 @@ INDENTED = re.compile(r"^  +\S")
 EVIDENCE = re.compile(r"\*\*(?:PARTLY )?CLOSED \d+\.\d+")
 
 
+def say(line=""):
+    """Print a line that may hold characters the console cannot encode.
+
+    **AN INSTRUMENT THAT CRASHES WHILE REPORTING CANNOT REPORT.** These tools print section titles
+    and row text straight out of the queue, so they can be handed any character the document holds.
+    One heading carrying an interdiction sign killed `archive-finished-todo` at `print`, after the
+    reassembly identity had already held -- leaving a half-written report and no statement of whether
+    the move had happened.
+
+    Replaced rather than dropped, so the reader still sees where the character was. Same answer
+    `check-doc-conformance.say` already carries, for the same reason.
+    """
+    try:
+        print(line)
+    except UnicodeEncodeError:
+        print(line.encode("ascii", "replace").decode("ascii"))
+
+
 def owner_of(lines, index):
     """The bullet that owns `index`, or None when the line is stranded.
 
@@ -126,24 +144,24 @@ def inspect(path):
 
 
 def report(label, rows, remedy):
-    print("    %-34s : %d" % (label, len(rows)))
+    say("    %-34s : %d" % (label, len(rows)))
     for number, text in rows:
-        print("        line %-5d %s" % (number, text))
+        say("        line %-5d %s" % (number, text))
     if rows:
-        print("        -> %s" % remedy)
+        say("        -> %s" % remedy)
     return len(rows)
 
 
 def main():
-    print("check-queue-integrity")
+    say("check-queue-integrity")
     failures = 0
     for path in QUEUES:
         if not os.path.exists(os.path.join(REPO, path)):
-            print("  %s : ABSENT" % path)
+            say("  %s : ABSENT" % path)
             failures += 1
             continue
         total, stranded, loose_evidence, closed_rows = inspect(path)
-        print("  %s (%d lines)" % (path, total))
+        say("  %s (%d lines)" % (path, total))
         failures += report(
             "stranded continuation lines", stranded,
             "the owning row was archived without its body; recover the lines into "
@@ -156,11 +174,11 @@ def main():
             "[x] rows still in the queue", closed_rows,
             "run tools/archive-finished-todo.py --apply, then tools/verify-archive-move.py")
 
-    print()
+    say()
     if failures:
-        print("  FAILED : %d integrity problem(s)" % failures)
+        say("  FAILED : %d integrity problem(s)" % failures)
         return 1
-    print("  PASS   : every queue holds whole open rows and nothing else")
+    say("  PASS   : every queue holds whole open rows and nothing else")
     return 0
 
 

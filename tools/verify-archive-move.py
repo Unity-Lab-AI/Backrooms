@@ -52,6 +52,24 @@ mover = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mover)
 
 
+def say(line=""):
+    """Print a line that may hold characters the console cannot encode.
+
+    **AN INSTRUMENT THAT CRASHES WHILE REPORTING CANNOT REPORT.** These tools print section titles
+    and row text straight out of the queue, so they can be handed any character the document holds.
+    One heading carrying an interdiction sign killed `archive-finished-todo` at `print`, after the
+    reassembly identity had already held -- leaving a half-written report and no statement of whether
+    the move had happened.
+
+    Replaced rather than dropped, so the reader still sees where the character was. Same answer
+    `check-doc-conformance.say` already carries, for the same reason.
+    """
+    try:
+        print(line)
+    except UnicodeEncodeError:
+        print(line.encode("ascii", "replace").decode("ascii"))
+
+
 def pick_backup():
     """The snapshot to verify against: `--backup <dir>`, else the newest one.
 
@@ -148,20 +166,20 @@ gained = collections.Counter(todo_now) - collections.Counter(backup_todo)
 gained = +collections.Counter({line: count for line, count in gained.items() if line.strip()})
 if gained:
     sample = sorted(gained)[0]
-    print("verify-archive-move")
-    print("  queue verified           : %s" % QUEUE_NAME)
-    print("  snapshot                 : %s" % os.path.relpath(BACKUP, REPO))
-    print()
-    print("STALE SNAPSHOT - nothing was checked")
-    print("  %s holds %d line(s) this snapshot never had, and a move only ever"
+    say("verify-archive-move")
+    say("  queue verified           : %s" % QUEUE_NAME)
+    say("  snapshot                 : %s" % os.path.relpath(BACKUP, REPO))
+    say()
+    say("STALE SNAPSHOT - nothing was checked")
+    say("  %s holds %d line(s) this snapshot never had, and a move only ever"
           % (QUEUE_NAME, sum(gained.values())))
-    print("  removes lines. So the queue was edited after the snapshot was taken and this")
-    print("  baseline cannot describe the current state.")
-    print("  first such line: %r" % sample[:100])
-    print()
-    print("  The mover writes its own snapshot before it changes anything, so run this")
-    print("  immediately after `archive-finished-todo.py --apply`, or point it at the")
-    print("  right folder with  --backup .local/qa/backup-<stamp>")
+    say("  removes lines. So the queue was edited after the snapshot was taken and this")
+    say("  baseline cannot describe the current state.")
+    say("  first such line: %r" % sample[:100])
+    say()
+    say("  The mover writes its own snapshot before it changes anything, so run this")
+    say("  immediately after `archive-finished-todo.py --apply`, or point it at the")
+    say("  right folder with  --backup .local/qa/backup-<stamp>")
     sys.exit(2)
 
 # 1 - the queue is exactly the KEEP half.
@@ -227,25 +245,25 @@ if leftovers:
     failures.append("%s still holds %d [x] rows; first at line %d"
                     % (QUEUE_NAME, len(leftovers), leftovers[0][0]))
 
-print("verify-archive-move")
-print("  queue verified           : %s" % QUEUE_NAME)
-print("  snapshot                 : %s" % os.path.relpath(BACKUP, REPO))
-print("  backup queue lines       : %d" % len(backup_todo))
-print("  queue now                : %d" % len(todo_now))
-print("  moved lines              : %d" % len(moved))
-print("  archive region lines     : %d" % len(region))
-print("  archive grew by          : %d lines" % (len(final_now) - len(backup_final)))
-print("  [x] rows left in queue   : %d" % len(leftovers))
-print()
+say("verify-archive-move")
+say("  queue verified           : %s" % QUEUE_NAME)
+say("  snapshot                 : %s" % os.path.relpath(BACKUP, REPO))
+say("  backup queue lines       : %d" % len(backup_todo))
+say("  queue now                : %d" % len(todo_now))
+say("  moved lines              : %d" % len(moved))
+say("  archive region lines     : %d" % len(region))
+say("  archive grew by          : %d lines" % (len(final_now) - len(backup_final)))
+say("  [x] rows left in queue   : %d" % len(leftovers))
+say()
 if failures:
-    print("FAILED")
+    say("FAILED")
     for failure in failures:
-        print("  -", failure)
+        say("  -", failure)
     sys.exit(1)
-print("  1 queue == KEEP half             : byte-identical")
-print("  2 moved lines in archive, in order: all present")
-print("  3 line multiset conserved         : yes")
-print("  4 archive altered above append    : no")
-print("  5 finished rows left in queue     : none")
-print()
-print("VERBATIM TRANSFER CONFIRMED")
+say("  1 queue == KEEP half             : byte-identical")
+say("  2 moved lines in archive, in order: all present")
+say("  3 line multiset conserved         : yes")
+say("  4 archive altered above append    : no")
+say("  5 finished rows left in queue     : none")
+say()
+say("VERBATIM TRANSFER CONFIRMED")

@@ -119,6 +119,24 @@ STRUCTURAL = {"In progress", "Pending", "TOMBSTONES"}
 KEEP, MOVE = 0, 1
 
 
+def say(line=""):
+    """Print a line that may hold characters the console cannot encode.
+
+    **AN INSTRUMENT THAT CRASHES WHILE REPORTING CANNOT REPORT.** These tools print section titles
+    and row text straight out of the queue, so they can be handed any character the document holds.
+    One heading carrying an interdiction sign killed `archive-finished-todo` at `print`, after the
+    reassembly identity had already held -- leaving a half-written report and no statement of whether
+    the move had happened.
+
+    Replaced rather than dropped, so the reader still sees where the character was. Same answer
+    `check-doc-conformance.say` already carries, for the same reason.
+    """
+    try:
+        print(line)
+    except UnicodeEncodeError:
+        print(line.encode("ascii", "replace").decode("ascii"))
+
+
 def read_lines(path):
     with io.open(path, encoding="utf-8") as handle:
         return handle.read().split("\n")
@@ -477,68 +495,68 @@ def main():
     labels, whole_sections, whole_groups, blocks, untouched = plan(lines)
     kept, moved = assert_lossless(lines, labels)
 
-    print("archive-finished-todo")
-    print("  original lines           : %d" % len(lines))
-    print("  lines moved              : %d" % len(moved))
-    print("  lines kept               : %d" % len(kept))
-    print("  reassembly identity      : HOLDS")
-    print()
-    print("  whole sections moved     : %d" % len(whole_sections))
+    say("archive-finished-todo")
+    say("  original lines           : %d" % len(lines))
+    say("  lines moved              : %d" % len(moved))
+    say("  lines kept               : %d" % len(kept))
+    say("  reassembly identity      : HOLDS")
+    say()
+    say("  whole sections moved     : %d" % len(whole_sections))
     for title, start, end, done in whole_sections:
-        print("      %5d-%-5d x=%-3d %s" % (start, end, done, title[:66]))
-    print()
-    print("  whole direction groups   : %d" % len(whole_groups))
+        say("      %5d-%-5d x=%-3d %s" % (start, end, done, title[:66]))
+    say()
+    say("  whole direction groups   : %d" % len(whole_groups))
     grouped = {}
     for title, _start, _end, done in whole_groups:
         entry = grouped.setdefault(title, [0, 0])
         entry[0] += 1
         entry[1] += done
     for title in grouped:
-        print("      %-3d groups, %-4d rows  from  %s"
+        say("      %-3d groups, %-4d rows  from  %s"
               % (grouped[title][0], grouped[title][1], title[:56]))
-    print()
-    print("  loose [x] rows moved     : %d" % len(blocks))
+    say()
+    say("  loose [x] rows moved     : %d" % len(blocks))
     counted = {}
     for title, _line, _span in blocks:
         counted[title] = counted.get(title, 0) + 1
     for title in counted:
-        print("      %-4d from  %s" % (counted[title], title[:66]))
+        say("      %-4d from  %s" % (counted[title], title[:66]))
 
     multi = [(t, n, s) for t, n, s in blocks if s > 1]
-    print()
-    print("  rows with continuations  : %d" % len(multi))
+    say()
+    say("  rows with continuations  : %d" % len(multi))
     for title, line_number, span in multi[:20]:
-        print("      line %-5d %d lines  (%s)" % (line_number, span, title[:50]))
+        say("      line %-5d %d lines  (%s)" % (line_number, span, title[:50]))
 
     if untouched:
-        print()
-        print("  SECTIONS TITLED DONE WHOSE ROWS ARE STILL [ ] - NOT MOVED:")
+        say()
+        say("  SECTIONS TITLED DONE WHOSE ROWS ARE STILL [ ] - NOT MOVED:")
         for title, start, open_rows in untouched:
-            print("      line %-5d %d open rows  %s" % (start, open_rows, title[:60]))
+            say("      line %-5d %d open rows  %s" % (start, open_rows, title[:60]))
 
     remaining = census(kept, 0, len(kept))
-    print()
-    print("  queue after the move     : x=%d  open=%d  partial=%d  test=%d"
+    say()
+    say("  queue after the move     : x=%d  open=%d  partial=%d  test=%d"
           % (remaining["x"], remaining[" "], remaining["~"], remaining["T"]))
 
     hazards = prose_hazards(lines, labels)
     if hazards:
-        print()
-        print("  UNARCHIVABLE PROSE DIRECTLY AFTER A MOVED BLOCK - %d line(s):" % len(hazards))
+        say()
+        say("  UNARCHIVABLE PROSE DIRECTLY AFTER A MOVED BLOCK - %d line(s):" % len(hazards))
         for line_number, text in hazards:
-            print("      line %-5d %s" % (line_number, text))
-        print()
-        print("  A paragraph at column zero after a closed row is ambiguous: it reads as the")
-        print("  end of that row and as the introduction to the next one, and the mover is")
-        print("  not allowed to guess. Indent it two spaces to make it part of the row, or")
-        print("  lift it above the row to make it part of the group. Nothing is written until")
-        print("  it is one or the other -- this is the exact shape that stranded eleven lines")
-        print("  across four published versions.")
+            say("      line %-5d %s" % (line_number, text))
+        say()
+        say("  A paragraph at column zero after a closed row is ambiguous: it reads as the")
+        say("  end of that row and as the introduction to the next one, and the mover is")
+        say("  not allowed to guess. Indent it two spaces to make it part of the row, or")
+        say("  lift it above the row to make it part of the group. Nothing is written until")
+        say("  it is one or the other -- this is the exact shape that stranded eleven lines")
+        say("  across four published versions.")
         return 3
 
     if not apply_it:
-        print()
-        print("  PLAN ONLY. Nothing written. Re-run with --apply.")
+        say()
+        say("  PLAN ONLY. Nothing written. Re-run with --apply.")
         return 0
 
     # **NOTHING MOVED MEANS NOTHING IS WRITTEN, and this was learned the hard way.** Running
@@ -552,8 +570,8 @@ def main():
     # deleted nothing. But a ledger that accumulates ceremonial no-ops is a ledger people stop
     # reading, which is the same failure as a queue full of `[x]` rows nobody can read past.
     if not moved:
-        print()
-        print("  NOTHING TO MOVE. %s holds no [x] row, so no archive region was written." % QUEUE_NAME)
+        say()
+        say("  NOTHING TO MOVE. %s holds no [x] row, so no archive region was written." % QUEUE_NAME)
         return 0
 
     # **The real clock, not a literal.** This read `today = "2026-10-02"`, so every
@@ -590,13 +608,13 @@ def main():
     with io.open(QUEUE, "w", encoding="utf-8", newline="") as handle:
         handle.write("\n".join(kept))
 
-    print()
-    print("  pre-move snapshot        : %s" % os.path.relpath(backup, REPO))
-    print("  docs/FINALIZED.md        : archive appended, %d lines" % len(archive))
-    print("  verbatim confirmation    : all %d moved lines present in the archive" % len(moved))
-    print("  %-24s : rewritten, %d lines" % (QUEUE_NAME, len(kept)))
-    print()
-    print("  Now re-check it independently:  python tools/verify-archive-move.py")
+    say()
+    say("  pre-move snapshot        : %s" % os.path.relpath(backup, REPO))
+    say("  docs/FINALIZED.md        : archive appended, %d lines" % len(archive))
+    say("  verbatim confirmation    : all %d moved lines present in the archive" % len(moved))
+    say("  %-24s : rewritten, %d lines" % (QUEUE_NAME, len(kept)))
+    say()
+    say("  Now re-check it independently:  python tools/verify-archive-move.py")
     return 0
 
 
