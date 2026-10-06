@@ -99,13 +99,21 @@ namespace RimroomsAsyncIndustries.Company
                         record.Status == EvidenceStatus.Analyzed);
 
                 case WriteUpPrecondition.SurveyComplete:
-                    // Every room the planner authored has been entered, on any coordinate. Read off
-                    // the room records rather than off fog, because a sealed pocket behind unmined
-                    // rock would otherwise make completion unreachable and the condition could
-                    // never be met. Same rule the exploration toggle is specified to use.
+                    // **ASKED OF THE ONE DERIVATION, which this used to duplicate and get wrong.**
+                    // The first version tested `room.Surveyed` on EVERY room of a coordinate. A
+                    // `SealedFamily` vault has no doors by design and is reached by mining, so any
+                    // coordinate holding one could never satisfy that -- and the survey write-up, the
+                    // whole point of the exploration feature, would have been permanently unwritable
+                    // with nothing anywhere saying why.
+                    //
+                    // `ExplorationMapComponent.Complete` is what the explore toggle uses to decide it
+                    // is finished and to fire the owner's *"radioed in exploration complete"* notice.
+                    // **The notice and the paperwork must mean the same thing**, so they ask the same
+                    // method. This is the identical defect that killed the solo start, where the
+                    // planner and the layout validator disagreed about a vault.
                     return coordinates != null && coordinates.Any(coordinate =>
                         coordinate != null && coordinate.Rooms != null && coordinate.Rooms.Count > 0 &&
-                        coordinate.Rooms.All(room => room != null && room.Surveyed));
+                        Generation.ExplorationMapComponent.Complete(coordinate));
 
                 default:
                     // **An unhandled precondition is refused, never waved through.** A new enum

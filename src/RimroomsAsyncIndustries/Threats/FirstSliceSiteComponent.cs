@@ -245,6 +245,37 @@ namespace RimroomsAsyncIndustries.Threats
         public void AcknowledgeDistortionCost() { distortionTimeSpent = false; }
 
         public RoomRecord RoomAt(IntVec3 cell) { return Coordinate?.Rooms.FirstOrDefault(r => r.Bounds.Contains(cell)); }
+
+        /// <summary>
+        /// Mark one room surveyed, with the same event line the walk-through already writes.
+        ///
+        /// **Extracted so the explore job and the walk-through are one derivation.** The tick above
+        /// has marked rooms since long before exploring existed; the owner's direction is that an
+        /// explorer *writes it up in the journal* room by room rather than merely passing through, and
+        /// that is a different **cause** with the same **effect**. Two copies of the effect would have
+        /// drifted the first time the event line changed.
+        ///
+        /// Returns false when there was nothing to do, which lets a caller tell *already surveyed*
+        /// from *refused*.
+        /// </summary>
+        internal bool MarkRoomSurveyed(RoomRecord room, Pawn pawn)
+        {
+            CoordinateRecord coordinate = Coordinate;
+            if (room == null || coordinate == null || Campaign?.CanOperate != true) { return false; }
+            if (room.surveyed) { return false; }
+            room.surveyed = true;
+            Note("RR_Event_RoomSurveyed", coordinate.Label, (room.index + 1).ToString(),
+                ("RR_Room_" + room.familyId).Translate().ToString());
+            // The field observation too, on the same terms the tick applies: a live record, not yet
+            // analysed, and a pawn still on their feet.
+            EvidenceRecord record = Campaign.FindEvidence(coordinate.Id + ":evidence:route");
+            if (record != null && record.Status != EvidenceStatus.Analyzed && pawn != null && !pawn.Downed)
+            {
+                Campaign.RecordFieldObservation(record, EvidenceObservationKinds.RoomSurvey,
+                    room.Index, -1, 0, pawn);
+            }
+            return true;
+        }
         /// <summary>
         /// Whether any fact on this record already carries an account that contradicts it.
         ///

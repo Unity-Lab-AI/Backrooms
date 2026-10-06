@@ -59,4 +59,22 @@
     <casualInterruptible>true</casualInterruptible>
     <allowOpportunisticPrefix>false</allowOpportunisticPrefix>
   </JobDef>
+
+  <!-- Writing one room into the record book while exploring.
+
+       Owner, 2026-10-06: "survey should go hand in hand with the auto explore and person has task to
+       write in journal when exploring each room for like 20 seconds". The driver's RoomSurveyTicks is
+       1200, which is twenty seconds at normal speed.
+
+       Suspendable and casually interruptible, like the records desk and unlike RR_OperateGate: a
+       survey is not a scarce window anybody is holding, and a pawn who needs to eat should eat. The
+       explore toggle stays on, so they resume the room when they come back. -->
+  <JobDef>
+    <defName>RR_ExploreRoom</defName>
+    <driverClass>RimroomsAsyncIndustries.Generation.JobDriver_RRExploreRoom</driverClass>
+    <reportString>writing up this room.</reportString>
+    <suspendable>true</suspendable>
+    <casualInterruptible>true</casualInterruptible>
+    <allowOpportunisticPrefix>false</allowOpportunisticPrefix>
+  </JobDef>
 </Defs>

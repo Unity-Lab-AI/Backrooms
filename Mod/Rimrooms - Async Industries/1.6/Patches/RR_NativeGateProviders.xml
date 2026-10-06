@@ -92,6 +92,11 @@
         <xpath>Defs/ThingDef[defName="Human"]/comps</xpath>
         <value>
           <li Class="RimroomsAsyncIndustries.Threats.CompProperties_RimroomsSurvivor" />
+          <!-- THE EXPLORE TOGGLE, on the same def and for the same reason: dormant on everybody who
+               was not asked. Owner, 2026-10-06: "i think we need a explore option thats toggleable
+               like drafting". The gizmo only appears on a player colonist standing in a coordinate,
+               so a colony pawn never sees a button for a thing there is nothing to do. -->
+          <li Class="RimroomsAsyncIndustries.Generation.CompProperties_RimroomsExplorer" />
         </value>
       </li>
       <!-- **AND ON ANIMALS, so a found animal can say what is wrong with it.** Owner,

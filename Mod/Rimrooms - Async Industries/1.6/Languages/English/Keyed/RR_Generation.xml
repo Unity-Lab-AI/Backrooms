@@ -100,4 +100,24 @@
   <RR_Clue_Text_AnomalyBlackout>Room {0} and everything around it went dark. Not one bulb is broken and not one of them lights.</RR_Clue_Text_AnomalyBlackout>
   <RR_Clue_Label_AnomalyRadioFragment>Room {0}: eleven seconds of carrier</RR_Clue_Label_AnomalyRadioFragment>
   <RR_Clue_Text_AnomalyRadioFragment>The recorder kept eleven seconds of transmission in room {0}. The band is one nothing in the space uses, and the name the voice gives belongs to somebody on the branch's own roster.</RR_Clue_Text_AnomalyRadioFragment>
+
+  <!-- THE EXPLORE TOGGLE. Owner, 2026-10-06: "i think we need a explore option thats toggleable like
+       drafting. so the pawns will go room to room exploring the maze of the map attempting to explore
+       the seed completely until toggled off or completed with a pop notice "PAwn radioed in
+       exploration complete" or something appropriate", and "survey should go hand in hand with the
+       auto explore and person has task to write in journal when exploring each room for like 20
+       seconds". The notice below is the owner's sentence, written out. -->
+  <RR_UI_Explore>Explore</RR_UI_Explore>
+  <RR_UI_ExploreDesc>Send this colonist room to room through the coordinate, writing each one into the record book they are carrying. About twenty seconds a room.
+
+Works like drafting: it overrides ordinary work while it is on, and it ends when you switch it off or when the space is finished.
+
+They need a record book in hand. Sealed vaults with no way in are not counted.</RR_UI_ExploreDesc>
+  <RR_UI_ExploreActive>Exploring: writing up rooms</RR_UI_ExploreActive>
+  <RR_Explore_NoBook>{0} has no record book, so there is nothing to write a survey into. Exploring switched off.</RR_Explore_NoBook>
+  <RR_Explore_CompleteTitle>Exploration complete</RR_Explore_CompleteTitle>
+  <RR_Explore_CompleteBody>{0} radioed in: exploration of {1} complete.
+
+Every room with a way into it has been written up. The survey report can be written at a records desk, and the company pays for a map it did not have.</RR_Explore_CompleteBody>
+  <RR_Event_ExplorationComplete>Exploration of {0} completed; every reachable room is written up.</RR_Event_ExplorationComplete>
 </LanguageData>
