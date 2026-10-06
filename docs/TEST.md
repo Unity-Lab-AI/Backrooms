@@ -3,10 +3,26 @@
 **Tier 4 of 4, and the only tier whose rows a build cannot close.** Almost every row needs the game
 running, and **only the owner launches RimWorld, through RimSort**.
 
-**Two rows are confirmed by reading rather than by launching**, and they say so on themselves. The
-owner was shown that and chose a row over archiving them: *"All four get [T] rows"*, 2026-10-06. The
-file's premise is *a build cannot close this* rather than *a launch is the only way*, and those two
-cannot be closed by a build either.
+**Two rows were confirmed by reading rather than by launching** and are closed — *"All four get [T]
+rows"*, 2026-10-06, and two of those four needed no game. The file's premise is *a build cannot
+close this* rather than *a launch is the only way*, and those two could not be closed by a build
+either.
+
+## ⛔ THE OWNER DOES NOT READ THIS LIST ⛔
+
+**Owner direction, 2026-10-06, verbatim:** *"you are gooing toi monitor the rimbridge and do the work
+of checking off whats comes and passes as i cant read 100 tasks then game them out and tell you to
+check em constantly"*
+
+So the owner plays and reports nothing. `.local/qa/test-watch.py` attaches to the live game through
+RimBridge, journals every letter, message, alert and warning with a timestamp and a game tick, and
+survives the game restarting. Evidence is matched to these rows and recorded on them without the
+owner being asked what happened.
+
+**What that cannot do is judge.** A row about whether the art *looks* right, whether text is
+readable at a given UI scale, or whether the economy *feels* balanced needs a human eye, and the
+bridge has none. Those rows say so, and they wait for a sentence from the owner rather than being
+closed on a letter that happened to arrive.
 
 **Owner direction, 2026-10-06, verbatim:** *"we should make a seperate todo=Test.md and move all
 test items to it to be done and clear todo , if its true all items are done."*
@@ -19,7 +35,7 @@ whole body moved here unchanged and that file went back to its template state.
 | [`ROADMAP.md`](ROADMAP.md) | MAJOR — phases and milestones |
 | [`TODO.md`](TODO.md) | MINOR — the working queue, **open buildable work only** |
 | [`DECOMPOSED.md`](DECOMPOSED.md) | smallest execution units, open only |
-| **`TEST.md`** (this file) | **the test phase — `[T]` only, 58 rows, and a build closes none of them** |
+| **`TEST.md`** (this file) | **the test phase — `[T]` only, 56 rows, and a build closes none of them** |
 | [`FINALIZED.md`](FINALIZED.md) | permanent archive, append-only |
 
 Status markers here are `[T]` and nothing else. A row that turns out to be buildable after all goes
@@ -88,28 +104,6 @@ recorded on the row, and then the row moves to `FINALIZED.md` by the usual archi
 **Verbatim owner decision, asked and answered the same message (2026-10-06):** *"Full reversal — our own items and benches"* — chosen over sound-only, over sound-plus-gate-identity, and over leaving it archived.
 
 - [T] **The mod's own art and audio appear in a running game.** The package ships **52 drawings and 17 cues** and every one is referenced by a def or by code, which a build can prove. What a build cannot prove is that the game draws and plays them. **What to look for:** each of the six rotatable buildings showing our texture from every side rather than a placeholder or a missing-texture box; the gate frame on a designated door at each of the four footprints; the charge, activation and live sequences running over it; and the cues at their moments — the rev on spin-up, the detent at each quarter, the payoff at full, the resolved latch on close. **Five of the cues had no consumer until 0.13.0-dev and had never once played**, so a tag set, a journal filed, an analysis finished, a payout and a cutoff thrown are each worth hearing specifically.
-
-### Owner decisions, asked and answered 2026-10-06 — the three forks that were left
-
-**Verbatim owner direction (2026-10-06):** *"suse ask me questions and get to finish ing the todao so nothing is left but tests"*
-
-Three forks were put to the owner and answered:
-
-| Fork | **Owner's answer, verbatim** |
-|---|---|
-| The four cut masters nothing names | **"Build the three items, hold the Pursuer"** |
-| The public register's tag vocabulary | **"Your words, with the page saying nothing is required to run"** |
-| Where the public register lives | **"Generated filterable HTML, linked from the mods wiki page"** |
-
-**And one count was settled without asking, because it is a fact rather than a decision.** The owner's *"i cuttenlty have 296 (6DLCs, Rimbridge , Rimrooms(locally))"* reconciles exactly: **294 profile mods + Rimbridge + Rimrooms = 296**, with the six `Data/` folders (Core, Royalty, Ideology, Biotech, Anomaly, Odyssey) sitting inside the 294 as rows 4 to 9. The public register carries all 296, so Rimbridge and Rimrooms get rows the engineering register never had.
-
-- [T] **All three answered forks landed as the owner answered them.** **This row is confirmed by reading, not by launching**, and that is stated rather than glossed — the owner chose a row here over archiving it, knowing a running game shows none of it. **What to check:** *"Build the three items, hold the Pursuer"* — the field recorder, the survey tag and the sealed evidence case ship and the Pursuer does not; *"Your words, with the page saying nothing is required to run"* — the public register's tag table says so above the list; *"Generated filterable HTML, linked from the mods wiki page"* — the register is generated, has a search box and sortable headings, and `mods.md` links it.
-
-### Owner direction — a second register, public facing, written for players rather than for us (2026-10-06)
-
-**Verbatim owner direction (2026-10-06):** *"okay we are adding to todo everything we need to make a similar mod registry as the one we have but this one will be pubvlic facing with all new writes in it so that it says the important stuff all players would need to know like mod interferances, what if's if not used  uses in rimrooms, required/recommended/(whatever else(s) is needed) as tags per mod in this recommended mod list for all modsand anything else relevant of note"*
-
-- [T] **The public register reads correctly to somebody who is not us.** **Confirmed by reading, not by launching** — same note as the forks row above. **What to check:** all **296** present as one A-to-Z list rather than grouped tables, which is the correction the owner made once already — *"this is not correct in the wiki and not the full 296 mods"*; a tag on every row with none blank; the search box filtering and every heading sorting; and **not one sentence carried over from the engineering register**, because *"all new writes"* was the whole instruction. The base game is shown for context and stated not to be counted in the 296.
 
 ### Owner report — a door refuses to become a gate until the battery is set up first (2026-10-03)
 

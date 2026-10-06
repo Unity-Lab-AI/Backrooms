@@ -9,7 +9,7 @@ The [artwork handoff this replaces](implementation/evidence/authored-rotations-2
 | `docs/ROADMAP.md` | MAJOR — phases and milestones |
 | `docs/TODO.md` | MINOR — buildable work only |
 | `docs/DECOMPOSED.md` | smallest execution units |
-| `docs/TEST.md` | **the test phase — 58 rows, and it is now guarded like the other three** |
+| `docs/TEST.md` | **the test phase — 56 rows, guarded like the other three, and watched** |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 
@@ -120,6 +120,28 @@ Six locations name it now: `install.md` with its own section, `mods.md`, `index.
 
 ---
 
+## ⛔ THE OWNER PLAYS; THE READING AND THE PAPERWORK ARE MINE ⛔
+
+**Owner, 2026-10-06:** *"you are gooing toi monitor the rimbridge and do the work of checking off whats comes and passes as i cant read 100 tasks then game them out and tell you to check em constantly"*
+
+**`.local/qa/test-watch.py` is on station**, polling every twenty seconds. It attaches the moment the game comes up and journals every letter, message, alert and warning to an append-only JSONL with a **UTC timestamp and a game tick on every record**. The owner reports nothing.
+
+| | |
+|---|---|
+| Read-only | **Enforced, not trusted.** The allowlist is the shipped client's own fixed set and `call()` refuses any name outside it before sending |
+| Dedupe | **By content hash, never by id.** The schema is the bridge's; a renamed field would silently stop deduping, and hashing over-reports instead — the safe direction for evidence |
+| Reconnect | Port and token change per launch, so a reload or a restart drops it back to waiting |
+| **The trap** | **A stale endpoint.** `Player.log` keeps every line every session wrote, so its last port and token may belong to a game closed hours ago — which the first run hit. **Liveness is the handshake answering, never the log having a line in it** |
+| Discovery | The one thing the shipped client refuses to do, by design. It lives in `.local/` where the owner sanctioned it |
+
+**TWO ROWS ARE ALREADY CLOSED, by reading rather than by launching** — the three answered forks and the public register, every figure counted off the page rather than taken from a generator's summary. **56 left.**
+
+**And the split that matters is hands versus eyes, not who closes a row.** Almost nothing in that ledger needs the owner to *decide* anything; it needs their **hands**, because somebody has to open a gate and send a crew. What it does not need is their **reading**. But **the bridge has no eyes** — whether the art looks right, whether text is readable at a UI scale, whether the economy feels balanced. Those rows say so and wait for a sentence, because **a row closed on no evidence is worse than a row left open.**
+
+**One finding came out of doing the work:** *"Pursuer"* names two different things. The fork held a **buildable** from a cut art master; the four package references are the **Quiet Pursuer encounter**, retired as a `ThingDef` and shipping as code. A reader would have seen a contradiction and reopened a settled decision.
+
+---
+
 ## ⛔ THE TEST LEDGER WAS THE ONE TIER WITH NO GUARD ⛔
 
 **Owner, 2026-10-06:** *"so are you ready to start mass chacking off (T) test items as we do them?"*
@@ -148,7 +170,7 @@ Six locations name it now: `install.md` with its own section, `mods.md`, `index.
 | Plant anchors | **1335 findable**, no residue. One anchor re-aimed where `copy_site_art` grew the gallery |
 | Gallery | **52 pictures in two places**, and every one of the 52 references resolved against disk from `docs/wiki/` |
 | Build | **0 warnings, 0 errors, 200 package files** |
-| Queue | `TODO.md` **0 open · 0 partial · 0 `[x]`**, `## Pending` empty rather than quietly occupied · `TEST.md` **58 `[T]`** |
+| Queue | `TODO.md` **0 open · 0 partial · 0 `[x]`**, `## Pending` empty rather than quietly occupied · `TEST.md` **56 `[T]`**, two already closed |
 | Assets | **99 files → 69 entries: 52 drawings, 17 cues.** Every one named by something, every one described, 59 with a master and the other ten menu backgrounds, which have nothing to cut |
 | Staging | `check-package-integrity` reads **PASS** — *"staged copy matches the build at 0.13.0-dev, every file compared by content"* |
 
@@ -212,7 +234,7 @@ The frame draws on `CompRimroomsGate` and keys on `IsDesignated`. A permanent na
 
 **A launch.** `TODO.md` is empty, every battery has run to completion against this tree, the staged copy is this build byte for byte, and the published gallery shows every asset the package ships.
 
-**The 58 rows in `TEST.md` almost all need the game running — the owner alone launches, sorts and publishes.**
+**The 56 rows in `TEST.md` almost all need the game running — the owner alone launches, sorts and publishes.**
 
 **Read a launch log in this order:** `Player.log`, grep the **first** `[Rimrooms]` line, then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.
 

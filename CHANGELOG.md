@@ -439,6 +439,47 @@
   the blank test breaks nothing, because the guard above it already returns for any anchor with kept
   content, and a lead-in over genuinely nothing **is** residue by the sweep's own docstring.
 
+### The owner plays; the reading and the paperwork move to the bridge watcher
+
+- Owner: ***"you are gooing toi monitor the rimbridge and do the work of checking off whats comes and
+  passes as i cant read 100 tasks then game them out and tell you to check em constantly"***.
+- **`.local/qa/test-watch.py` attaches to the live game and journals everything new** — every
+  letter, message, alert and warning, to an append-only JSONL with a **UTC timestamp and a game tick
+  on every record**. It polls for a bridge, attaches when one appears, and survives the game
+  restarting. The owner reports nothing.
+- **Read-only is enforced rather than trusted.** The allowlist is the shipped client's own fixed set
+  and `call()` refuses any name outside it *before sending*. Nothing is discovered from outside the
+  file and nothing is ever written to the game.
+- **It dedupes by content hash, never by id.** The schema belongs to the bridge; an id field that
+  exists today may be renamed tomorrow, and hashing needs no schema. It would over-report rather
+  than silently stop deduping, which is the safe direction for an evidence journal.
+- **THE TRAP IS THE STALE ENDPOINT, and the first run hit it.** `Player.log` keeps every line every
+  session ever wrote, so the last port and token in it may belong to a game closed hours ago — which
+  presents as a connection refused rather than as "no bridge". **Liveness is proved by the handshake
+  answering, never by the log having a line in it.**
+- The one thing it does that `tools/qa/rimbridge_readonly.py` refuses to do is **discover** the port,
+  token and process. That client's whole premise is that the caller supplies them, so the discovery
+  lives in `.local/`, where the owner sanctioned live inspection in the first place. It is
+  machine-local by the same `.gitignore` rule that covers `bridge.py`.
+- **Two rows are already closed, by reading rather than by launching**: the three answered forks and
+  the public register, with every figure counted off the page rather than taken from a generator's
+  own summary. **56 remain.**
+- **The split that matters turned out to be hands versus eyes.** Almost nothing in that ledger needs
+  the owner to *decide* anything — it needs their **hands**, because somebody has to open a gate and
+  send a crew. What it does not need is their **reading**. But the bridge has no eyes: whether the
+  art looks right, whether text is readable at a UI scale, whether the economy feels balanced.
+  **Those rows say so and wait for a sentence**, because a row closed on no evidence is worse than a
+  row left open.
+- **One finding came out of doing the work.** *"Pursuer"* names two different things, and a reader
+  would have seen a contradiction. The fork held a **buildable** made from a cut art master; the four
+  package references are the **Quiet Pursuer encounter**, retired as a `ThingDef` at 0.12.87-dev and
+  shipping as code with its own keyed strings. Recorded on the row so nobody reopens a settled
+  decision.
+- **And one caveat was recorded rather than glossed:** *"all new writes"* holds by construction,
+  because the public register's generator composes from structured columns and never copies the
+  engineering register's four prose fields — **but no instrument asserts it.** A candidate for a
+  checker; not a guarded property today.
+
 ## 0.12.99-dev - 2026-10-05 - The buildable rows were buildable, and three were already done
 
 - **OWNER: *"read now.md to continue i think we only have a handful of open items but idk
