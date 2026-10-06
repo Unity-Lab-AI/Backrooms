@@ -182,6 +182,17 @@ They are on the other side now, and they came for what you keep there. Closing t
 
 They were not invited and nobody sent them. Whatever happens to them in there happened on your watch.</RR_Egress_FriendlyText>
   <RR_Egress_NotEligible>That one cannot cross on its own legs.</RR_Egress_NotEligible>
+  <!-- A PRISONER CROSSING IS NOT A BREAK-OUT AND NOT A VISIT. Owner, 2026-10-06: "a prisoner
+       should be able to cross a gate is allowed to ( send the prisonerrs to live and work in there
+       and cross path back if zoned to and door are allowed access". They keep their custody, they
+       arrive with no lord, and they go looking for a prison bed - so the letter reports a thing the
+       player set up rather than a thing that happened to them. -->
+  <RR_Egress_PrisonerLabel>A prisoner went through the gate</RR_Egress_PrisonerLabel>
+  <RR_Egress_PrisonerText>{0} walked through {1} while it was open.
+
+They are still your prisoner and still in your custody; nothing about crossing changed that. They will look for a prison bed on the other side, and a warden can cross to feed them.
+
+If you did not mean to send them, the zoning and the door are what decide it.</RR_Egress_PrisonerText>
   <RR_Egress_InYourCustody>That one is in your custody. Prisoners, slaves and guests do not walk through a gate; somebody has to carry them.</RR_Egress_InYourCustody>
   <RR_Egress_NoOpening>The gate is not holding an open connection.</RR_Egress_NoOpening>
 </LanguageData>

@@ -56,9 +56,20 @@ Portal complexity and related technological advancement increase the range and i
 
 ### Inhabitants stay in the Backrooms
 
-No pawn that is not this company's own crosses a gate under its own will. That covers generated people in any native state, animals, rare monstrosities, hostile factions, prisoners, wanderers and anything else the far side produces. An open connection is **not** an objective, a lure, a spawn target, a raid route or a trigger. Nothing on the far side may be given a reason, a destination or a permission to move toward a threshold because a gate connected, and nothing may attack through one.
+No pawn that is not **in this company's care** crosses a gate under its own will. That covers generated people in any native state, animals, rare monstrosities, hostile factions, wanderers and anything else the far side produces. An open connection is **not** an objective, a lure, a spawn target, a raid route or a trigger. Nothing on the far side may be given a reason, a destination or a permission to move toward a threshold because a gate connected, and nothing may attack through one.
 
-This is not a difficulty setting, a research unlock or an upgrade. There is no path through the design where it flips.
+**TWO WORDS OF THIS SECTION CHANGED BY OWNER DIRECTION, AND THE SENTENCE BELOW WAS WRONG.** It said *"there is no path through the design where it flips."* The owner flipped two parts of it, and an archive is not edited — the supersession is recorded where the rule lives:
+
+| Changed | Owner, verbatim | Where |
+|---|---|---|
+| **Anything on your own map may walk OUT** through an open gate | *"not anyone in base, but anyone on your map.. a enemy can break in and cross the gate to get valuables and members"*, then *"hold up now friendlys can too"* | 2026-10-06 |
+| **A prisoner of this colony may cross**, both ways | *"a prisoner should be able to cross a gate is allowed to ( send the prisonerrs to live and work in there and cross path back if zoned to and door are allowed access remmebr mods we have also along side all of that.. locks and prisoner mods"* | 2026-10-06 |
+
+**"Prisoners" left the list above because a prisoner of the colony is in the company's care**, even though they carry somebody else's faction — which is the fact that made a faction test the wrong question. Access is decided by the things the player already controls: **zoning, door permissions, and this profile's own access-control and prisoner mods.** Register row 273 (Locks) planned for exactly that: *"validate door pathing, guest/prisoner access, emergency exits"*.
+
+**Custody crosses with them.** A prisoner arrives with no `Lord` — a `Lord` makes an actor out of a transferred pawn, and one handed to somebody in your custody would launder them into a free pawn. They look for a prison bed on the far side and a warden crosses to feed them.
+
+**What has not changed:** nothing is ever *lured*. `MayApproachThresholdForTraversal` is false for everything, so a gate is never a destination for anybody who is not yours, and it still cannot become an objective, a spawn target or a raid route. **And walking out onto a world tile is still refused for a prisoner**, because that path forms a caravan and hands a pawn to the world pool — which is losing them rather than sending them.
 
 ### What does come back, and how
 

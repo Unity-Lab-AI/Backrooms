@@ -31,6 +31,16 @@ THE RULES
     members"* -- and a friendly's does not.
  9. Every transfer puts the pawn back if the spawn fails. A vanished pawn is a save with a hole in it.
 10. The documents do not still assert the removed constant.
+11. **A prisoner of the colony MAY cross, and custody crosses with them.** Owner direction,
+    2026-10-06, superseding invariant 17: *"a prisoner should be able to cross a gate is allowed to
+    ( send the prisonerrs to live and work in there and cross path back if zoned to and door are
+    allowed access"*. So the rule is not who may cross but **what they are when they land**: a
+    prisoner arrives with **no Lord**, because a Lord makes an actor out of a transferred pawn and
+    would launder somebody in your custody into a free pawn. A quest lodger is still refused.
+12. **Whether a pawn is ours is asked in ONE place**, `InOurCare`, and it is custody or faction --
+    never faction alone. A prisoner of the colony carries somebody else's faction, and that single
+    fact produced a fault in both directions on one day: it let a prisoner out through the egress
+    path and locked them out of every other crossing.
 """
 import io
 import os
@@ -143,34 +153,57 @@ def main():
             problems.append("outbound crossing does not bound on fit, so a body too large for the "
                             "opening could walk out through it")
 
-        # **THE CUSTODY CLAUSE, AND IT WAS MISSING WHEN OUTBOUND CROSSING SHIPPED.**
+        # ⛔ **THIS RULE LASTED ONE AFTERNOON AND THE OWNER CORRECTED IT.** It required outbound
+        # crossing to refuse four custody clauses, on the reasoning that invariant 17 said *"a
+        # prisoner can never cross a gate"*.
         #
-        # A prisoner of the colony keeps their ORIGINAL faction -- `HostFaction` is what becomes
-        # yours -- so the `Faction != Faction.OfPlayer` clause that makes this method "about
-        # somebody who is not ours" is **true for a prisoner**. One who got out of their cell and
-        # was neither downed nor in a mental state passed every other clause, and the doorstep scan
-        # PREFERS a hostile faction, so a captured raider near an open gate was transferred into the
-        # coordinate. Invariant 17: *"a prisoner can never cross a gate."*
+        # **Owner, 2026-10-06:** *"a prisoner should be able to cross a gate is allowed to ( send the
+        # prisonerrs to live and work in there and cross path back if zoned to and door are allowed
+        # access remmebr mods we have also along side all of that.. locks and prisoner mods"*.
         #
-        # A quest lodger is the same mistake with a worse outcome: a guest you are required to keep
-        # safe also has their own faction, and losing one fails a quest the player never chose to
-        # fail.
+        # So a prisoner crossing is **ordinary movement through a door**, decided by zoning, door
+        # access and the profile's own access-control mods. Register row 273 (Locks) had already
+        # planned for *"guest/prisoner access"*. **The rule that replaces it is not about who may
+        # cross; it is about what they are when they land.**
         #
-        # Every clause is asserted by name rather than as a set, so removing any single one is
-        # reported for what it is. `IsSlave` is unreachable through the faction test today and is
-        # still required here, because a rule holding by accident of another clause stops holding
-        # when that clause moves.
-        for clause, why in (
-                ("traveller.IsPrisoner", "a prisoner keeps their own faction, so nothing else here "
-                                         "excludes one, and invariant 17 forbids the crossing"),
-                ("traveller.IsSlave", "unreachable today through the faction test, and required so "
-                                      "the rule does not hold by accident"),
-                ("traveller.IsQuestLodger()", "a guest you must keep safe would walk out and fail a "
-                                              "quest the player never chose to fail"),
-                ("traveller.HostFaction != null", "the general form: anybody held by this colony is "
-                                                  "in its custody whatever their own faction says")):
-            if clause not in outbound:
-                problems.append("outbound crossing does not refuse %s -- %s" % (clause, why))
+        # **CUSTODY MUST SURVIVE THE CROSSING, and the place that can break it is the arrival Lord.**
+        # A Lord turns a transferred pawn into an actor: an assault lord would have a captured raider
+        # attack the coordinate, a defend lord would have them stand guard over it, and either way
+        # the player loses somebody they had taken through a mechanism they never clicked. So the
+        # test moved from *refuse the crossing* to *refuse the Lord*.
+        #
+        # A quest lodger is still refused outright, which is the one clause that survived: a guest on
+        # loan whose safety is a quest condition is not the owner's subject here.
+        if "traveller.IsQuestLodger()" not in outbound:
+            problems.append("outbound crossing does not refuse a quest lodger. A guest on loan whose "
+                            "safety is a quest condition would walk out and fail a quest the player "
+                            "never chose to fail -- which is the reasoning the prisoner ban claimed "
+                            "and did not have")
+        for stale in ("traveller.IsPrisoner", "traveller.HostFaction != null"):
+            if stale in outbound:
+                problems.append("outbound crossing still refuses %s. The owner allows a prisoner to "
+                                "cross -- 'send the prisonerrs to live and work in there and cross "
+                                "path back' -- and a clause here denying it is the old rule coming "
+                                "back as a tidy-up" % stale)
+        egress_source = read(EGRESS)
+        egress_code = strip_comments(egress_source) if egress_source else ""
+        if egress_code and "if (pawn.IsPrisonerOfColony) { return; }" not in egress_code:
+            problems.append("a prisoner arriving through a gate is given a Lord. A Lord makes an "
+                            "actor out of a transferred pawn, so it would launder somebody in your "
+                            "custody into a free pawn -- the whole cost of allowing the crossing at "
+                            "all, and the one thing that must not happen")
+        care = read(os.path.join("src", "RimroomsAsyncIndustries", "Portals",
+                                 "PortalCrossingService.cs"))
+        care_code = strip_comments(care) if care else ""
+        if care_code:
+            if "public static bool InOurCare(Pawn pawn)" not in care_code:
+                problems.append("there is no single derivation of whether a pawn is in this colony's "
+                                "care. A faction test is not one: a prisoner of the colony carries "
+                                "somebody else's faction, which is the fact that caused a fault in "
+                                "both directions in one day")
+            if re.search(r"pawn\.Faction != Faction\.OfPlayer\s*\)\s*$", care_code, re.M):
+                problems.append("eligibility still refuses on faction alone, which locks a prisoner "
+                                "out of every crossing before the prisoner clause is even reached")
 
     # ---------------------------------------------------------------- rules 7, 8 and 9, transfers
     for relative, path in ((INCURSION, "inbound"), (EGRESS, "outbound")):
@@ -223,7 +256,8 @@ def main():
         print("")
         print("  %d problem(s)" % len(problems))
         return 1
-    print("  PASS   : one chokepoint, nothing lured, both directions bounded, every arrival has a lord")
+    print("  PASS   : one chokepoint, nothing lured, both directions bounded, every free arrival "
+          "has a lord, and custody crosses with its prisoner")
     return 0
 
 

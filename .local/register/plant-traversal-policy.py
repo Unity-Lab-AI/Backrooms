@@ -68,10 +68,14 @@ PLANTS = [
     ("INBOUND STOPS BEING ONCE PER OPENING, so a coordinate can empty itself into your base",
      POLICY, "IncursionSpentThisOpening", "AlreadySpentOnThisVisit", CHECK),
 
+    # Re-aimed onto the lodger clause, which is the one custody line that survived the owner's
+    # correction. The fault planted is unchanged: outbound borrowing a bound that describes the FAR
+    # side's danger, which says nothing about whether somebody already in your base should walk
+    # through a door.
     ("outbound copies inbound's band bound, which describes the wrong side entirely", POLICY,
-     "            if (traveller.IsPrisoner || traveller.IsSlave || traveller.IsQuestLodger()",
+     "            if (traveller.IsQuestLodger()) { return \"RR_Egress_InYourCustody\"; }",
      "            if (gate.PressureBand < Band.Hostile) { return \"RR_Egress_NotEligible\"; }" + NL
-     + "            if (traveller.IsPrisoner || traveller.IsSlave || traveller.IsQuestLodger()",
+     + "            if (traveller.IsQuestLodger()) { return \"RR_Egress_InYourCustody\"; }",
      CHECK),
 
     # Anchored on `traveller` rather than `intruder`: the two directions call `FitFailureKey` with
@@ -81,20 +85,29 @@ PLANTS = [
      "            return FitFailureKey(traveller, gate.GateWidth, gate.GateOpeningDepth);",
      "            return null;", CHECK),
 
-    # ===================================== THE CUSTODY CLAUSE, four ways
-    ("A PRISONER CAN CROSS A GATE, which invariant 17 forbids outright", POLICY,
-     "traveller.IsPrisoner || traveller.IsSlave", "traveller.IsSlave", CHECK),
+    # ===================================== CUSTODY, AFTER THE OWNER CORRECTED THE RULE
+    #
+    # **These four plants used to break the prisoner ban. The ban lasted one afternoon.** Owner,
+    # 2026-10-06: *"a prisoner should be able to cross a gate is allowed to ( send the prisonerrs to
+    # live and work in there and cross path back if zoned to and door are allowed access"*. A plant
+    # that plants the owner's own design proves nothing, so they are re-aimed at the rule that
+    # replaced it: **custody has to survive the crossing.**
+    ("THE PRISONER BAN COMES BACK, which the owner overruled", POLICY,
+     "            if (traveller.IsQuestLodger()) { return \"RR_Egress_InYourCustody\"; }",
+     "            if (traveller.IsPrisoner || traveller.HostFaction != null)" + NL
+     + "            { return \"RR_Egress_InYourCustody\"; }", CHECK),
 
-    ("the slave clause goes, so the rule holds only by accident of the faction test", POLICY,
-     "traveller.IsPrisoner || traveller.IsSlave || traveller.IsQuestLodger()",
-     "traveller.IsPrisoner || traveller.IsQuestLodger()", CHECK),
+    ("a quest lodger walks out and fails a quest the player never chose to fail", POLICY,
+     "            if (traveller.IsQuestLodger()) { return \"RR_Egress_InYourCustody\"; }", "",
+     CHECK),
 
-    ("A QUEST LODGER WALKS OUT AND FAILS A QUEST THE PLAYER NEVER CHOSE TO FAIL", POLICY,
-     "|| traveller.IsQuestLodger()" + NL + "                || traveller.HostFaction != null",
-     "|| traveller.HostFaction != null", CHECK),
+    ("A PRISONER IS GIVEN AN ARRIVAL LORD, which launders them into a free pawn", EGRESS,
+     "            if (pawn.IsPrisonerOfColony) { return; }", "", CHECK),
 
-    ("the general custody form goes, leaving three named cases and no rule", POLICY,
-     "                || traveller.HostFaction != null)", ")", CHECK),
+    ("whether a pawn is OURS goes back to a bare faction test, locking prisoners out again",
+     "src/RimroomsAsyncIndustries/Portals/PortalCrossingService.cs",
+     "        public static bool InOurCare(Pawn pawn)",
+     "        public static bool InOurCareDisabled(Pawn pawn)", CHECK),
 
     # ===================================== rules 7 to 9, the transfers
     ("AN ARRIVING PAWN IS GIVEN NO LORD, so it stands still and nothing says why", EGRESS,

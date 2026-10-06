@@ -11,10 +11,12 @@ applies nothing when the mod is absent (invariant 42)"*.
 
 * **Haul to Stack (107)** -- register, verbatim: *"Connected-work check added 2026-09-29: none
   needed -- this mod has no cross-map surface."* Nothing to build.
-* **Prison Labor (288)** -- register: *"a prisoner given work by this mod can never cross a gate.
-  PortalTraversalPolicy admits only Faction.OfPlayer colonists."* The register leaves open whether
-  a prisoner *is ever offered* a connected work giver. That is not a runtime question: it is a
-  property of our own nine entry points, and it is asserted below by **count**.
+* **Prison Labor (288)** -- the register said *"a prisoner given work by this mod can never cross a
+  gate"* and called it settled. **The owner overruled that on 2026-10-06**: *"a prisoner should be
+  able to cross a gate is allowed to ( send the prisonerrs to live and work in there and cross path
+  back if zoned to and door are allowed access"*. So a prisoner given work by this mod MAY cross,
+  the register row is corrected, and the axis that replaced it -- custody survives the crossing --
+  is owned by `check-traversal-policy.py` rather than restated here.
 * **Pick Up And Haul (164)** -- the one real finding, and it is **ours, not the mod's**. Every
   cargo rule and the receipt itself govern `carryTracker`; nothing looked at `pawn.inventory`, so
   anything in a pack crossed unrecorded. That mod makes it routine rather than rare.
@@ -150,12 +152,31 @@ claim("no new saved state was introduced",
       "Scribe" not in policy_code,
       "the drop count is not needed after the crossing, and derived beats stored")
 
-# ------------------------------- Prison Labor's axis, by construction in every entry point
-claim("the traveller gate requires our faction AND colonist status",
-      "traveller.Faction != Faction.OfPlayer" in traversal_code
-      and "!traveller.IsColonist" in traversal_code,
-      "a prisoner of the colony keeps its own faction and is held by HostFaction, so it "
-      "fails both")
+# ------------------------- Prison Labor's axis, INVERTED BY OWNER DIRECTION 2026-10-06
+#
+# **This claim was the register's settled line, and the owner overruled it.** Row 288, Prison Labor:
+# *"Settled on one axis: a prisoner given work by this mod can never cross a gate.
+# PortalTraversalPolicy admits only Faction.OfPlayer colonists."* The claim asserted exactly that,
+# by construction, in every entry point.
+#
+# **Owner, 2026-10-06:** *"a prisoner should be able to cross a gate is allowed to ( send the
+# prisonerrs to live and work in there and cross path back if zoned to and door are allowed access
+# remmebr mods we have also along side all of that.. locks and prisoner mods"*.
+#
+# So a prisoner given work may cross, and the axis that replaces it is **custody survives the
+# crossing**. That rule is owned by `check-traversal-policy.py` -- named here rather than copied,
+# because two derivations of one rule is the defect this project keeps meeting.
+#
+# What this proof is entitled to assert is the shape of the gate it reads: the question is custody
+# **or** faction, asked in one place, and never faction alone. Faction alone is what locked a
+# prisoner out of every crossing while letting them out through the egress path on the same day.
+# **COUNTED, because a plant gutting ONE gate left the other standing and this passed.** The work
+# gate and the ordered gate both ask it; a containment test cannot tell one from two.
+claim("the traveller gate asks CUSTODY, not faction alone",
+      traversal_code.count("RimroomsPortalCrossingService.InOurCare(traveller)") == 2
+      and "!traveller.IsColonist" not in traversal_code,
+      "a prisoner of the colony keeps its own faction and is held by HostFaction, so a faction "
+      "test is not a test of whose pawn it is")
 adapter_files = sorted(f for f in os.listdir(ADAPTERS) if f.endswith(".cs"))
 gated = [f for f in adapter_files
          if "TravellerFailureKey" in code_only(read(os.path.join(ADAPTERS, f)))]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -473,6 +473,24 @@ namespace RimroomsAsyncIndustries.Portals
         }
 
         /// <summary>
+        /// Whether this colony holds this pawn — by faction, or by custody.
+        ///
+        /// **THE ONE DERIVATION OF "OURS", and it exists because a faction test is not one.** A
+        /// colonist, a player-owned animal and a slave all carry `Faction.OfPlayer`. **A prisoner
+        /// of the colony does not**: they keep the faction they arrived with, and `HostFaction`
+        /// becomes yours. So `Faction != Faction.OfPlayer` reads as *not ours* for the one category
+        /// that is most completely in the player's hands.
+        ///
+        /// Asked here and read by every crossing decision, so the four of them cannot disagree
+        /// about who the player is allowed to move.
+        /// </summary>
+        public static bool InOurCare(Pawn pawn)
+        {
+            if (pawn == null) { return false; }
+            return pawn.Faction == Faction.OfPlayer || pawn.IsPrisonerOfColony;
+        }
+
+        /// <summary>
         /// The single eligibility rule, shared with callers so an order can refuse with the
         /// same reason the crossing itself would give. Mechs and subhumans are deliberately
         /// out of scope.
@@ -494,12 +512,40 @@ namespace RimroomsAsyncIndustries.Portals
             // drafted colonist could not, which is the kind of gap that only shows up on
             // somebody else's mod list. Found by the register check, not by reading this.
             if (pawn == null || !pawn.Spawned || pawn.Dead || pawn.Downed || pawn.InMentalState ||
-                pawn.Drafted || pawn.Faction != Faction.OfPlayer)
+                pawn.Drafted)
             { return "RR_PortalCrossing_PawnNotEligible"; }
+
+            // **THIS CLAUSE USED TO READ `pawn.Faction != Faction.OfPlayer` AND IT REFUSED A
+            // PRISONER BEFORE THE PRISONER TEST BELOW WAS EVEN REACHED.** A prisoner of the colony
+            // keeps their **original** faction -- `HostFaction` is what becomes yours -- so a
+            // faction test is not a test of whose pawn it is. That one fact caused two faults in
+            // one session: it let a prisoner through the outbound crossing, and it locked them out
+            // of every other crossing.
+            //
+            // **Owner direction, 2026-10-06, verbatim:** *"a prisoner should be able to cross a
+            // gate is allowed to ( send the prisonerrs to live and work in there and cross path
+            // back if zoned to and door are allowed access remmebr mods we have also along side
+            // all of that.. locks and prisoner mods"*.
+            //
+            // So the question is **custody**, not faction: anybody this colony holds is ours to
+            // move. `InOurCare` is the one derivation of that.
+            if (!InOurCare(pawn)) { return "RR_PortalCrossing_PawnNotEligible"; }
+
             // The remaining conditions only mean something for a person: an animal is never a
             // prisoner, a slave or a quest lodger.
             if (pawn.RaceProps != null && pawn.RaceProps.Animal) { return null; }
-            if (!pawn.IsColonist || pawn.IsPrisoner || pawn.IsSlave || pawn.IsQuestLodger())
+
+            // **A QUEST LODGER STAYS REFUSED, AND THAT IS A JUDGEMENT CALL RATHER THAN A DIRECTION.**
+            // The owner's words are about prisoners. A lodger is a guest on loan whose safety is a
+            // quest condition, so losing one through a gate fails a quest the player never chose to
+            // fail -- which is the same reasoning the prisoner ban *claimed* and did not have, since
+            // nothing is lost by moving somebody who stays in your custody.
+            if (pawn.IsQuestLodger()) { return "RR_PortalCrossing_PawnNotEligible"; }
+            // A colonist, a slave or a prisoner of this colony. **A slave is admitted alongside a
+            // prisoner deliberately**: a slave's faction IS the player's, so refusing the
+            // more-owned category while admitting the less-owned one is a rule nobody could read a
+            // reason for.
+            if (!pawn.IsColonist && !pawn.IsSlave && !pawn.IsPrisonerOfColony)
             { return "RR_PortalCrossing_PawnNotEligible"; }
             return null;
         }

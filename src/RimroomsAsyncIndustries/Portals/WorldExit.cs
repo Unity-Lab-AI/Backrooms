@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using RimroomsAsyncIndustries.Portals;
 using RimWorld;
 using RimWorld.Planet;
@@ -594,9 +594,16 @@ namespace RimroomsAsyncIndustries.Company
         /// <summary>
         /// Who walks out: player pawns standing on the door's own approach cell or beside it.
         ///
-        /// **Deliberately only the player's own, and never a prisoner or a slave.** Invariant 17:
-        /// a prisoner can never cross a gate, and walking out into the world is a crossing by any
-        /// honest reading. A downed pawn is left too — somebody unconscious on the floor is not
+        /// **Deliberately only the player's own, and never a prisoner or a slave -- and the reason
+        /// is no longer invariant 17.** That invariant said *"a prisoner can never cross a gate"* and
+        /// the owner overruled it on 2026-10-06: a prisoner may cross a gate, live and work on a
+        /// coordinate, and come back.
+        ///
+        /// **This is a different act and the difference is `PassToWorld`.** Walking out onto a world
+        /// tile forms a caravan, and this is the one path in the mod that reaches Core's caravan
+        /// formation -- a pawn handed to the world pool is alive and no longer the player's. A
+        /// prisoner taken along would leave the player's hands entirely, which is not *"cross path
+        /// back"*; it is losing them. So the refusal stays, on its own reasoning. A downed pawn is left too — somebody unconscious on the floor is not
         /// walking anywhere, and taking them would be the mod moving a crew rather than the player.
         /// </summary>
         private List<Pawn> TravellersAt(Thing door)

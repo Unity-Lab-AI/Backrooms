@@ -114,9 +114,17 @@ PLANTS = [
     ("ONE adapter of seven loses its traveller gate", ONE_ADAPTER,
      "PortalTraversalPolicy.TravellerFailureKey(pawn) != null", "false", 1),
 
-    ("the traveller gate stops requiring colonist status", TRAVERSAL,
-     "if (traveller.Faction != Faction.OfPlayer || !traveller.IsColonist)",
-     "if (traveller.Faction != Faction.OfPlayer)", 1),
+    # **RE-AIMED: the work gate asks CUSTODY now, not colonist status.** Owner, 2026-10-06, a
+    # prisoner may cross and work -- so `!traveller.IsColonist` is gone and
+    # `RimroomsPortalCrossingService.InOurCare` is the test. What must still be refused is anybody
+    # in NOBODY's care, which is every Backrooms inhabitant.
+    # **ONE LINE, because `check-plant-anchors.py` reads these statically and cannot fold a
+    # concatenation.** It reported the first version as an anchor it could not evaluate -- which is
+    # the right answer: a checker that quietly skips what it cannot read is the defect this battery
+    # refuses. The fault planted is the same.
+    ("the work gate stops asking whether the pawn is ours at all", TRAVERSAL,
+     "            if (!RimroomsPortalCrossingService.InOurCare(traveller))",
+     "            if (false)", 1),
 
     # **RE-AIMED 0.12.99-dev: the constant it flipped does not exist any more.** The owner rewrote
     # invariant #1 and `AutonomousNonPlayerTraversalPermitted` was DELETED rather than left at

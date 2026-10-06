@@ -15,29 +15,32 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 ---
 
-## ⛔⛔ TWO HOLDS, BOTH THE OWNER'S, BOTH CURRENT ⛔⛔
+## ⛔ ONE HOLD LEFT. THE PUBLICATION HOLD IS LIFTED ⛔
 
-**1. Nothing publishes until the launch list is finished.** Owner, 2026-10-06: *"we are not stageing now.md and cascading to all three remotes correctly and properly until we are sure all of this is completed"*. Work is committed **locally only** — the branch sits ahead of every remote on purpose, and **every commit of this session and the last is unpushed.**
+**The owner lifted it, 2026-10-06, verbatim:** *"okay wrap up what ur on, write now.md and cascade to the github remotes"*. The earlier instruction — *"we are not stageing now.md and cascading to all three remotes correctly and properly until we are sure all of this is completed"* — is **satisfied and superseded**: the queue reached 0 open and 0 partial first, which is what *all of this is completed* meant.
 
-**2. Forgejo is down.** Owner, 2026-10-06: *"fyi the git.unityailab.com is going down so stop pushes to it until further notice, github two repos is still good"*. **The cascade is SIX refs while that stands** — `github` × five branches here, plus `github/main` on the mod-only repository.
+**THE FORGEJO HOLD STILL STANDS.** Owner: *"fyi the git.unityailab.com is going down so stop pushes to it until further notice, github two repos is still good"*. **So the cascade is SIX refs** — `github` × five branches here, plus `github/main` on the mod-only repository.
 
 **The remote is HELD, not removed, and that distinction is the point.** Deleting it would make every receipt read *complete*, and a future reader would never learn a destination had gone missing. `export-public-repo.py` keeps `forgejo` in `REMOTES`, skips it through `HELD_REMOTES`, **prints the hold and its reason every run**, and **refuses outright if every remote is held**. `PUBLISHING.md` opens with it, including: **do not push to it to test whether it is up.**
 
 ---
 
-## ⛔ NOTHING IS WAITING ON THE OWNER EXCEPT A LAUNCH ⛔
+## ⛔ A PRISONER MAY CROSS A GATE, AND I HAD JUST SHIPPED THE OPPOSITE ⛔
 
-**The queue is 0 open, 0 partial, 53 `[T]`.** Every row the owner answered is built, proved and
-documented. What is left is the test phase, which is theirs: **the owner alone launches, sorts and
-publishes.**
+**Owner, 2026-10-06, verbatim:** *"A prisoner could cross a gate... a prisoner should be able to cross a gate is allowed to ( send the prisonerrs to live and work in there and cross path back if zoned to and door are allowed access remmebr mods we have also along side all of that.. locks and prisoner mods... u know???"*
 
-The three fork answers of 2026-10-06, all built:
+**I had found the hole and closed it hours earlier. The hole was the feature.** A prisoner crossing is ordinary movement through a door, decided by zoning, door permissions and this profile's own access-control mods. Register row 273 (**Locks**) had already planned for it: *"validate door pathing, guest/prisoner access, emergency exits"*.
 
-| Asked | Answered | Built as |
-|---|---|---|
-| Fieldcraft T5's new subject | **the long handover** | `RR_Fieldcraft_StandingRelief` — an empty console is a hand-off for an hour, not half of one |
-| How far to take the entity sheets | **author the broad families** | sixteen sheets: eleven describing shipped content, five stating that nothing is built |
-| The three facility rows | **convert to `[T]`** | status only, proved by the file differing in exactly three characters |
+| | |
+|---|---|
+| **One derivation replaced four faction tests** | `InOurCare` — faction **or** custody. A prisoner carries somebody else's faction while `HostFaction` is yours, so a faction test was never a test of whose pawn it is |
+| **Custody crosses with them** | A prisoner arrives with **no `Lord`**. A `Lord` makes an actor out of a transferred pawn and would launder somebody in your hands into a free one |
+| **The world-tile walk is still refused** | That path calls `PassToWorld`. *"Cross path back"* is not a caravan |
+| **Six instruments and documents restated** | Including the register's own row 288, which called the ban *"settled"* |
+
+**Two judgement calls that were mine, both one line to change:** a **quest lodger** stays refused (losing one fails a quest the player never chose to fail); a **slave** is admitted (their faction *is* the player's, so refusing the more-owned category while admitting the less-owned one reads as no rule at all).
+
+---
 
 ## ⛔ STAGE BEFORE THE OWNER LAUNCHES, AND IT IS IN A DURABLE PLACE NOW ⛔
 
@@ -70,11 +73,11 @@ The rule lived only here — in the one file that gets replaced wholesale. **It 
 | Branch | **`feature/bug-testing`**, ahead of every remote by owner direction |
 | Version | **0.12.99-dev** — read from `About.xml`, never from a document |
 | Build | **252 C# files, 106 package files**, zero warnings, zero errors |
-| Instruments | **29 checkers**, **63 proofs**, **42 plant suites** — **every one green in one run** |
-| Queue | **0 open · 0 partial · 53 `[T]` · 0 `[x]`** — from 10 open · 5 partial at the start of this session |
+| Instruments | **29 checkers**, **63 proofs**, **42 plant suites** — **the whole battery green in one run, plus `check-plant-residue`** |
+| Queue | **0 open · 0 partial · 53 `[T]` · 0 `[x]`** |
 | Research tree | **44 projects, T0 to T6, nine branches** |
 | Staged copy | **MATCHES THE BUILD.** `check-package-integrity` PASS |
-| Commits this session | **Nine**, all local |
+| Commits this session | **Eleven**, and the cascade is authorised |
 
 ---
 
@@ -132,15 +135,13 @@ python tools/check-queue-pointers.py                     # and this, which neith
 
 ## THE NEXT THING
 
-**A launch. That is the whole list.**
+**The cascade, then a launch.**
 
-The 53 `[T]` rows are the test phase and every one of them needs the game running. Three of them are
-the starting-facility feedback loop, which can only be finished by generating a facility and
-comparing it against its own def — `.local/qa/facility-diff.py` does the comparing and cannot do the
-generating.
+The six refs are `github` × `feature/bug-testing`, `feature/connected-colony-portals`, `Prep`, `Develop`, `Main`, plus `github/main` on the mod-only repository. **Order matters and only one way round works:** `python tools/export-public-repo.py --push` runs against the tree that was built and verifies every file's SHA256, so it goes **before** the commit here. Then the five branches. Then `curl` the published site.
 
-**Read a launch log in this order:** `Player.log`, grep the **first** `[Rimrooms]` line, then
-`python .local/qa/bridge.py call rimworld/list_letters '{}'`.
+After that it is the 53 `[T]` rows, every one of which needs the game running — **the owner alone launches, sorts and publishes.**
+
+**Read a launch log in this order:** `Player.log`, grep the **first** `[Rimrooms]` line, then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.
 
 ## Is it done?
 

@@ -243,6 +243,21 @@ namespace RimroomsAsyncIndustries.Threats
         {
             if (pawn == null || map == null || pawn.Faction == null) { return; }
             if (pawn.GetLord() != null) { return; }
+
+            // ⛔ **A PRISONER ARRIVES WITH NO LORD, AND THIS IS WHERE CUSTODY SURVIVES A CROSSING.**
+            //
+            // Owner, 2026-10-06: a prisoner may cross -- *"send the prisonerrs to live and work in
+            // there and cross path back"*. **A `Lord` is what turns a transferred pawn into an
+            // actor**, so handing one to somebody in the colony's custody would launder them into a
+            // free pawn: an assault lord would have a captured raider attack the coordinate, and a
+            // defend lord would have them stand guard over it. Either way the player loses a person
+            // they had taken, through a mechanism they never clicked.
+            //
+            // With no lord the pawn falls back to its own think tree, which for a prisoner of the
+            // colony is the prisoner behaviour it already had -- it looks for a prison bed, it is
+            // fed by a warden, and wardening is one of the twenty-one work types that cross. So a
+            // coordinate prison works because nothing here does anything.
+            if (pawn.IsPrisonerOfColony) { return; }
             try
             {
                 LordJob job = hostile
@@ -268,11 +283,26 @@ namespace RimroomsAsyncIndustries.Threats
         /// </summary>
         private static void Announce(Pawn traveller, Map map, CompRimroomsGate gate, bool hostile)
         {
+            // **A PRISONER IS ITS OWN CASE, AND NOT BECAUSE IT IS TIDIER.** The hostile letter says
+            // *"they came for what you keep there"* and the friendly one says *"whatever happens to
+            // them in there happened on your watch"*. **Both would be lies about somebody still in
+            // your custody**: a prisoner of the colony did not come for your things and is not a
+            // visitor you failed to look after. They are where you are keeping them, which is a
+            // thing the player chose when they zoned them and left the door open.
+            //
+            // Keyed on custody rather than on hostility, because a captured raider is hostile by
+            // faction and is not acting hostile at all -- they have no lord and are looking for a
+            // prison bed.
+            bool held = traveller.IsPrisonerOfColony;
+            string label = held ? "RR_Egress_PrisonerLabel"
+                : hostile ? "RR_Egress_HostileLabel" : "RR_Egress_FriendlyLabel";
+            string body = held ? "RR_Egress_PrisonerText"
+                : hostile ? "RR_Egress_HostileText" : "RR_Egress_FriendlyText";
             Find.LetterStack.ReceiveLetter(
-                (hostile ? "RR_Egress_HostileLabel" : "RR_Egress_FriendlyLabel").Translate(),
-                (hostile ? "RR_Egress_HostileText" : "RR_Egress_FriendlyText")
-                    .Translate(traveller.LabelShortCap, gate.parent.LabelCap),
-                hostile ? LetterDefOf.ThreatBig : LetterDefOf.NeutralEvent,
+                label.Translate(),
+                body.Translate(traveller.LabelShortCap, gate.parent.LabelCap),
+                held ? LetterDefOf.NeutralEvent
+                    : hostile ? LetterDefOf.ThreatBig : LetterDefOf.NeutralEvent,
                 new TargetInfo(traveller.Position, map));
             Audio.RimroomsAudio.Play("RR_GateWarning", map, traveller.Position, false);
         }

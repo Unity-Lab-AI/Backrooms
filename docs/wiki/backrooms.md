@@ -136,7 +136,7 @@ So a space you surveyed once is a space you can keep. Some of what people do wit
 
 | Use it as | What makes it work |
 |---|---|
-| **A prison** | Beds, a door, a prisoner. Wardening crosses the gate, and so does the food |
+| **A prison** | Beds, a door, a prisoner. **A prisoner can cross the gate themselves** if your zoning and the door allow it, and they stay your prisoner on the other side. Wardening crosses, and so does the food |
 | **Storage** | Ordinary stockpiles and shelves. Nothing deteriorates under a roof that thick |
 | **An isolated safe room** | One room, one door, nothing that leads anywhere. A coordinate has no neighbours |
 | **A workshop** | Benches and bills. Every bill family crosses: cooking, crafting, smithing, tailoring, art |

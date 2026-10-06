@@ -1,4 +1,4 @@
-﻿using RimroomsAsyncIndustries.Company;
+using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Gate;
 using RimroomsAsyncIndustries.Threats;
 using RimWorld;
@@ -81,7 +81,15 @@ namespace RimroomsAsyncIndustries.Portals
         public static string TravellerFailureKey(Pawn traveller)
         {
             if (traveller == null) { return "RR_PortalCrossing_PawnNotEligible"; }
-            if (traveller.Faction != Faction.OfPlayer || !traveller.IsColonist)
+            // **`IsColonist` WAS THE TEST AND IT MADE PRISON WORK ACROSS A GATE IMPOSSIBLE.** Owner,
+            // 2026-10-06: *"send the prisonerrs to live and work in there"*. A prisoner of the
+            // colony is in the player's care without being in their faction, and
+            // `RimroomsPortalCrossingService.InOurCare` is the one derivation of that difference.
+            //
+            // **This does not widen the chokepoint toward the far side**, which is the thing it
+            // exists to hold: a Backrooms inhabitant is hostile or unfactioned, is in nobody's
+            // custody, and fails here exactly as it always did.
+            if (!RimroomsPortalCrossingService.InOurCare(traveller))
             { return "RR_PortalTraversal_NotOurPerson"; }
             return RimroomsPortalCrossingService.EligibilityFailureKey(traveller);
         }
@@ -95,15 +103,22 @@ namespace RimroomsAsyncIndustries.Portals
         ///
         /// **The rule this does not weaken** is the one that matters. What the chokepoint
         /// exists to prevent is the **far side** walking out, and the test for that is
-        /// ownership: a pawn must belong to the player's faction. A Backrooms inhabitant is
-        /// hostile or unfactioned and fails here exactly as it always did.
-        /// <see cref="AutonomousNonPlayerTraversalPermitted"/> is still constant false and
-        /// <see cref="MayApproachThresholdForTraversal"/> still returns false for everything.
+        /// ownership: a pawn must be **in this colony's care** --
+        /// <see cref="RimroomsPortalCrossingService.InOurCare"/>, which is its faction or its
+        /// custody. A Backrooms inhabitant is hostile or unfactioned, is in nobody's custody, and
+        /// fails here exactly as it always did.
+        ///
+        /// **The retired constant used to be cited here.** It is gone, and
+        /// <see cref="MayApproachThresholdForTraversal"/> still returns false for everything --
+        /// which is the half of invariant #1 that survived and the reason nothing is ever lured.
         /// </summary>
         public static string OrderedCrossingFailureKey(Pawn traveller)
         {
             if (traveller == null) { return "RR_PortalCrossing_PawnNotEligible"; }
-            if (traveller.Faction != Faction.OfPlayer) { return "RR_PortalTraversal_NotOurPerson"; }
+            // Custody, not faction. See `InOurCare`: a prisoner of the colony is the player's to
+            // move and carries somebody else's faction while they are.
+            if (!RimroomsPortalCrossingService.InOurCare(traveller))
+            { return "RR_PortalTraversal_NotOurPerson"; }
             if (traveller.RaceProps != null && traveller.RaceProps.Animal)
             {
                 // Drafted included. Vanilla cannot draft an animal, but **Draftable Animals -
@@ -400,32 +415,38 @@ namespace RimroomsAsyncIndustries.Portals
             // letting it also qualify here would be two routes for one movement.
             if (traveller.CarriedBy != null) { return "RR_Egress_NotEligible"; }
 
-            // **ANYBODY IN YOUR CUSTODY IS NOT SOMEBODY AT YOUR DOORSTEP, AND THIS WAS A REAL HOLE.**
+            // ## ⛔ THIS CLAUSE WAS WRITTEN HOURS AGO AND THE OWNER CORRECTED IT ⛔
             //
-            // A prisoner of the colony keeps their **original faction** -- `HostFaction` is what
-            // becomes yours -- so `traveller.Faction != Faction.OfPlayer` above is **true** for one.
-            // A prisoner who got out of their cell and was neither downed nor in a mental state
-            // therefore passed every clause of this method, and `FindAtDoorstep` would have taken
-            // them: a hostile-faction prisoner was even **preferred**, because that scan returns the
-            // first hostile it finds. **A captured pawn standing near an open gate was transferred
-            // into the coordinate**, which is invariant 17 broken -- *"a prisoner can never cross a
-            // gate"* -- and a real loss of somebody the player had taken and might have recruited.
+            // It refused anybody in the colony's custody, on the reasoning that a prisoner of the
+            // colony keeps their **original faction** -- `HostFaction` is what becomes yours -- so
+            // the *not ours* clause above is **true** for one, and a prisoner who got out of their
+            // cell was taken by `FindAtDoorstep`, which even **prefers** a hostile faction. I called
+            // that invariant 17 broken and closed it.
             //
-            // `WorldExit.TravellersAt` has always refused a prisoner and a slave for the walk out to
-            // the world, and `CargoFailureKey` only ever let a prisoner cross **in somebody's arms**.
-            // This path was the one crossing decision with no custody clause at all, and it was
-            // written in the same batch that opened outbound crossing at all.
+            // **Owner, 2026-10-06, verbatim:** *"a prisoner should be able to cross a gate is allowed
+            // to ( send the prisonerrs to live and work in there and cross path back if zoned to and
+            // door are allowed access remmebr mods we have also along side all of that.. locks and
+            // prisoner mods... u know???"*
             //
-            // **A quest lodger is the same class of mistake with a worse outcome:** a guest you are
-            // required to keep safe has their own faction too, so they qualified, and losing one
-            // through a gate fails a quest the player never chose to fail.
+            // **So the hole was the feature.** A prisoner crossing is ordinary movement through a
+            // door, governed by the things the player already controls -- zoning, door access, and
+            // the access-control and prisoner mods in the profile. Register row 273 (**Locks**) had
+            // already planned for it: *"validate door pathing, guest/prisoner access, emergency
+            // exits"*. Ours is only to stop forbidding it.
             //
-            // `IsSlave` is already unreachable here -- a slave's faction IS the player's, refused
-            // above -- and it is named anyway, because a rule that holds by accident of another
-            // clause is a rule that stops holding when that clause moves.
-            if (traveller.IsPrisoner || traveller.IsSlave || traveller.IsQuestLodger()
-                || traveller.HostFaction != null)
-            { return "RR_Egress_InYourCustody"; }
+            // **WHAT STILL HAS TO BE TRUE IS THAT CUSTODY CROSSES WITH THEM**, and that is enforced
+            // where the transfer happens rather than here: `GateEgress` gives an arriving pawn a
+            // `Lord`, and **a Lord is what turns a transferred pawn into an actor**. Handing one to
+            // a prisoner would launder them into a free pawn -- the player would lose somebody they
+            // had taken, by a mechanism they never clicked. So a prisoner arrives with no Lord and
+            // stays a prisoner.
+            //
+            // **A quest lodger is still refused, and that is my judgement rather than a direction.**
+            // The owner's words are about prisoners. A lodger is a guest on loan whose safety is a
+            // quest condition, and losing one fails a quest the player never chose to fail -- which
+            // is the reasoning the prisoner ban *claimed* and did not have, because nothing is lost
+            // by moving somebody who remains in your hands.
+            if (traveller.IsQuestLodger()) { return "RR_Egress_InYourCustody"; }
             if (!gate.IsDesignated || gate.IsEmergency || gate.KillSwitchThrown ||
                 string.IsNullOrEmpty(gate.PortalOpeningId))
             { return "RR_Egress_NoOpening"; }
