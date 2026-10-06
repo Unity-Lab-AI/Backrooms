@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Event_CorridorUnmarked>The corridor seems to repeat, and there is nothing marking room {0}. Set a glow pod down at that junction and mark it as the route home, then come back and compare.</RR_Event_CorridorUnmarked>
   <RR_Field_CannotRecover>Select an upright expedition worker at the site with somewhere clear to set things down.</RR_Field_CannotRecover>
@@ -25,7 +25,7 @@
   <RR_Event_PursuerRepelled>The attack forced the figure back to room {0}. The crew has another warning interval to withdraw.</RR_Event_PursuerRepelled>
   <RR_Event_PursuerWithdrawn>The figure withdrew. This opening will not spawn another encounter.</RR_Event_PursuerWithdrawn>
   <RR_UI_RecoverEvidence>Order {0} to collect the record book</RR_UI_RecoverEvidence>
-  <RR_UI_FieldObjectives>Survey the six required room families with the record book, document the route mismatch, carry the book home and shelve it in the records archive. A clear entity observation and all three original crew returning qualify for the bonus. Set glow pods down at known junctions and designate them as route markers to counter the loop.</RR_UI_FieldObjectives>
+  <RR_UI_FieldObjectives>Survey the six required room families with the record book, document the route mismatch, carry the book home and shelve it in the records archive. A clear entity observation and every original crew member returning qualify for the bonus. Set glow pods down at known junctions and designate them as route markers to counter the loop.</RR_UI_FieldObjectives>
   <RR_UI_FieldObjectivesTitle>Contract objectives</RR_UI_FieldObjectivesTitle>
   <RR_Event_PursuerPlacementFailed>The encounter could not be placed safely. No entity sighting was recorded. The crew and saved route remain available; consult the game log before a later visit.</RR_Event_PursuerPlacementFailed>
 </LanguageData>

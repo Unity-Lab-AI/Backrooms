@@ -17,8 +17,12 @@
   <RR_Plan_Hauling>Carrying something. Let them put it down first.</RR_Plan_Hauling>
   <RR_Plan_OverCapacity>Loaded past what they can carry.</RR_Plan_OverCapacity>
 
-  <RR_Plan_SelectedCount>Selected: {0} of {1}.</RR_Plan_SelectedCount>
-  <RR_Plan_TooMany>That is more than a crossing will take. Deselect somebody.</RR_Plan_TooMany>
+  <!-- NO "of N", because there is no N. Owner, 2026-10-06: "rememberber pawns can cross gate as they
+       plkease so no max number", and on where three had come from: "dont know where 3 came from". It
+       came from the number of staff roles the Async Industries start ships, which is a scenario's
+       headcount and was never a design cap. RR_Plan_TooMany is retired with it: there is no longer a
+       state it could describe. -->
+  <RR_Plan_SelectedCount>Selected: {0}. A crossing takes as many as you send.</RR_Plan_SelectedCount>
   <RR_Plan_NoneSelected>Nobody selected yet.</RR_Plan_NoneSelected>
   <RR_Plan_SkillBest>{0}: best in the crew is {1}.</RR_Plan_SkillBest>
   <RR_Plan_SkillAbsent>{0}: nobody selected has any.</RR_Plan_SkillAbsent>

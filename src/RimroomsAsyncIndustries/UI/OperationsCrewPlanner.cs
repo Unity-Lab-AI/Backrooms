@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -82,12 +82,13 @@ namespace RimroomsAsyncIndustries.UI
 
             // The selected crew, as a crew. Composition is a property of the group, not of any
             // one person, which is the half of row 728 that no per-pawn check could cover.
+            // **No cap, so no "of N".** Owner: "pawns can cross gate as they plkease so no max number".
+            // The count is still worth showing -- a player picking a crew wants to know how many they
+            // have picked -- but printing it against a limit was the only thing that made three look
+            // like a rule.
             listing.Label("RR_Plan_SelectedCount".Translate(
-                selectedCrew.Count.ToString(CultureInfo.CurrentCulture),
-                CrewPlanner.MaxCrew.ToString(CultureInfo.CurrentCulture)));
-            if (selectedCrew.Count > CrewPlanner.MaxCrew)
-            { listing.Label("RR_Plan_TooMany".Translate()); }
-            else if (selectedCrew.Count == 0)
+                selectedCrew.Count.ToString(CultureInfo.CurrentCulture)));
+            if (selectedCrew.Count == 0)
             { listing.Label("RR_Plan_NoneSelected".Translate()); }
 
             foreach (SkillDef skill in CrewPlanner.ReadSkills())

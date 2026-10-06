@@ -92,8 +92,8 @@ away and the connection drops.
 
 ## 6. Pick a crew
 
-Up to three field staff. The planner checks skill, health and carried weight, and names anyone who
-is not ready.
+As many field staff as you want to send. **There is no cap.** The planner checks skill, health and
+carried weight, and names anyone who is not ready.
 
 It also shows who has been through before, and who has walked the exact address you are dialling.
 An operator who knows the route brings the gate up faster.

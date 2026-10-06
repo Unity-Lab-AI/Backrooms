@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -98,7 +98,11 @@ namespace RimroomsAsyncIndustries.Expedition
         public static CompanyActionResult QueueLoadout(Map headquarters, List<Pawn> crew,
             IEnumerable<Pawn> existingKitOwners = null, Map deployedSite = null, string coordinateId = null)
         {
-            if (headquarters == null || crew == null || crew.Count < 1 || crew.Count > 3 || crew.Distinct().Count() != crew.Count ||
+            // **NO UPPER BOUND ON A CREW.** Owner: "pawns can cross gate as they plkease so no
+            // max number". The `crew.Count > 3` that was here is one of the TWO places that
+            // actually refused a fourth person -- `CrewPlanner.MaxCrew` only ever printed a number
+            // in a panel. A lower bound of one stays: a dispatch with nobody in it is not a trip.
+            if (headquarters == null || crew == null || crew.Count < 1 || crew.Distinct().Count() != crew.Count ||
                 crew.Any(p => !CanLoad(p) || p.Map != headquarters))
             { return CompanyActionResult.Refused("RR_Exp_InvalidCrew"); }
             if (crew.Any(p => p.CurJob?.def == JobDefOf.TakeInventory || p.jobs.jobQueue.Any(q => q.job.def == JobDefOf.TakeInventory)))

@@ -357,7 +357,10 @@ namespace RimroomsAsyncIndustries.Expedition
         private CompanyActionResult CheckCrew(List<Pawn> crew, CompRimroomsGate gate)
         {
             if (schemaVersion != CurrentSchemaVersion || !Campaign.CanOperate) { return Refuse("RR_Exp_BranchUnavailable"); }
-            if (crew == null || crew.Count < 1 || crew.Count > 3 || crew.Distinct().Count() != crew.Count ||
+            // The second of the two real refusals. See ExpeditionCargo for the reasoning; both had
+            // to go together or the panel and the dispatch would disagree about whether four is
+            // allowed, which is worse than either answer.
+            if (crew == null || crew.Count < 1 || crew.Distinct().Count() != crew.Count ||
                 crew.Any(p => !CanWalk(p, Campaign.Headquarters) || !Campaign.Staff.Any(s => s.Employed && s.Pawn == p)))
             { return Refuse("RR_Exp_InvalidCrew"); }
             if (gate != null && (gate.parent == null || !gate.parent.Spawned || gate.parent.Map != Campaign.Headquarters || crew.Contains(gate.AssignedOperator)))

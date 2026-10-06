@@ -17485,3 +17485,39 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-06)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## ⛔ THIS DIRECTION INVERTS INVARIANT #1, WHICH SIX DOCUMENTS ASSERT AND ONE CALLS PERMANENT ⛔` in `docs/TODO.md`
+
+**Verbatim owner direction (2026-10-06), four messages:**
+
+> *"rememberber pawns can cross gate as they plkease so no max number"*
+
+> *"dont know where 3 came from"*
+
+> *"thats gonna have down stream effects especially in operations tab"*
+
+> *"and wiki and other things, all need accounted for"*
+
+**THEY WERE RIGHT ON ALL FOUR COUNTS, AND THE THIRD WAS THE ONE THAT MATTERED.**
+
+- [x] **The crew cap is gone from every place it was enforced, claimed or implied.** **Where three came from, measured rather than remembered:** it is the number of staff roles the Async Industries start ships, and `SCENARIOS.md` ties a records bonus to *"all three crew"* returning. **A scenario's headcount became a design cap by being written down somewhere else.** Nothing ever asked the owner whether a crew had a maximum size. **AND `CrewPlanner.MaxCrew` WAS NOT THE CAP, which is why the owner's warning about downstream effects was the important message.** That constant only ever printed a number in a panel -- the class's own documentation says it *"returns a report and never a refusal"* and that *"removing it entirely would change no outcome in the game"*. **The real refusals were `crew.Count > 3` in TWO dispatch paths**, `ExpeditionCargo` and `RimroomsExpeditionComponent`. Removing only the panel's number would have left the planner saying *as many as you send* while dispatch refused a fourth person -- **a worse state than the cap**, and exactly what the owner predicted. Both upper bounds are gone; the lower bound of one stays, because a dispatch with nobody in it is not a trip. **A SECOND, REAL DEFECT THE CAP HAD BEEN HIDING.** `EvidenceSettlement` tested `source.InitialCrew.Count == 3` for the records bonus, so **the bonus could only ever be earned by a crew of exactly three** -- send two or four and it was silently unreachable while the contract card still promised it. The rule was always *everybody who went came back*; the three was the start def's roster. **With the cap in place no player could easily send four and discover it**, which is the precise way a ceiling conceals a fault beneath it. **Everything else accounted for, per *"and wiki and other things"*:** `RR_Exp_InvalidCrew` said *"one to three"* and is the refusal a player actually reads, so it was the most visible place the cap could have survived; `RR_UI_ContractTerms` and `RR_UI_FieldObjectives` both claimed *"all three crew"*; `docs/wiki/first-hour.md` said *"Up to three field staff"*; and `docs/SCENARIOS.md` carried the original sentence, which now names where the figure came from so nobody reintroduces it. **And the constant was deleted rather than set to `int.MaxValue`:** a cap of maximum-integer is still a cap somebody can read as a rule, and nothing needs the number -- **the absence is the rule.**
+
+
+Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

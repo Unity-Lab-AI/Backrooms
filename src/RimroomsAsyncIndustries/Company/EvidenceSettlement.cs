@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using RimroomsAsyncIndustries.Expedition;
 using RimWorld;
 using Verse;
@@ -104,7 +104,18 @@ namespace RimroomsAsyncIndustries.Company
                         if (linkedCase != null) { linkedCase.closed = true; }
                         RecordEvent("RR_Event_SurveySettled", contract.id, contract.basePaymentUsd.ToString("N0"));
                     }
-                    bool allReturned = source.InitialCrew.Count == 3 && source.InitialCrew.All(p => p != null && source.ReturnedCrew.Contains(p));
+                    // **THE LITERAL THREE WAS A REAL DEFECT THAT THE INVENTED CAP HID.** This read
+                    // `InitialCrew.Count == 3`, so the records bonus could only ever be earned by a
+                    // crew of exactly three -- send two or four and it was unreachable, silently, with
+                    // the card still promising it. `SCENARIOS.md` says the bonus is for "all three crew"
+                    // because the Async Industries start ships three roles; the RULE is that everybody
+                    // who went came back, and the three was never anything but that scenario's count.
+                    //
+                    // Found while removing `MaxCrew` on the owner's "pawns can cross gate as they
+                    // plkease so no max number", which is exactly the kind of fault a cap conceals: with
+                    // the cap in place no player could easily send four and discover it.
+                    bool allReturned = source.InitialCrew.Count > 0
+                        && source.InitialCrew.All(p => p != null && source.ReturnedCrew.Contains(p));
                     if (record.entityRecorded && allReturned && contract.bonusUsd > 0)
                     {
                         CompanyActionResult bonus = PostTransaction(contract.id + ":survey-bonus", contract.bonusUsd, "RR_Ledger_SurveyBonus", contract.id);

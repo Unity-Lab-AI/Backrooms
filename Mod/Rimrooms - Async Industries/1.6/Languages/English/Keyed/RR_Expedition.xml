@@ -1,10 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Exp_MissingRecordBook>The selected crew are carrying no record book. Load one textbook from storage; relief may also use the book the original crew took to the saved site. Buy more from the company catalogue if the branch has none.</RR_Exp_MissingRecordBook>
   <RR_Exp_CannotCarry>This staff member cannot carry an expedition inventory.</RR_Exp_CannotCarry>
   <RR_Exp_OverCapacity>A crew member's real gear and cargo exceed their native carrying capacity. Unload cargo or choose another carrier.</RR_Exp_OverCapacity>
   <RR_Exp_PickupUnavailable>The item is unavailable, forbidden, reserved, unreachable, or too large for this pickup. Inspect the real item and pawn.</RR_Exp_PickupUnavailable>
-  <RR_Exp_InvalidCrew>Select one to three distinct, available employed staff at headquarters. They must be alive, mobile, controllable, and able to carry their gear.</RR_Exp_InvalidCrew>
+  <!-- "one to three" became "at least one" on owner direction 2026-10-06: "pawns can cross gate
+       as they plkease so no max number". This string is the refusal a player actually reads when
+       dispatch says no, so leaving it claiming a ceiling would have been the cap surviving in the
+       one place it is most visible. -->
+  <RR_Exp_InvalidCrew>Select at least one distinct, available employed staff member at headquarters. They must be alive, mobile, controllable, and able to carry their gear. There is no upper limit on how many go.</RR_Exp_InvalidCrew>
   <RR_Exp_LoadPending>The selected crew already have inventory pickup orders. Let those jobs finish or cancel them before preparing another loadout.</RR_Exp_LoadPending>
   <RR_Exp_LoadoutUnavailable>The complete missing field kit cannot be reserved and carried from headquarters stock. Inspect available items, doors, reservations, and each selected pawn's free capacity.</RR_Exp_LoadoutUnavailable>
   <RR_Exp_PickupPartiallyQueued>Some physical pickup orders were queued before another reservation failed. Let the accepted jobs finish, inspect inventory, and retry only the missing kit.</RR_Exp_PickupPartiallyQueued>
