@@ -25,28 +25,6 @@ LAW #0 reminder: every task description preserves the user's verbatim words.
 ---
 ## Pending
 
-### Owner direction — the gate should look and sound like it is doing something (2026-10-06)
-
-**Verbatim owner direction (2026-10-06):** *"an make a write up about any other audio we need for chatgpt to find and create"*
-
-**Verbatim owner direction (2026-10-06):** *"and things like the gates activating animations and charge up and stuff"*
-
-**Verbatim owner direction (2026-10-06):** *"can be still frame made into gif like thing or whatever the game needs"*
-
-**Verbatim owner direction (2026-10-06):** *"and maybe have the auro for the gat be gate sensitive change color to the state of the gate and like strobe on charge up callibation and activation and shit like star trek warp core"*
-
-### Owner decision — a natural gate stays a plain door (2026-10-06)
-
-**Verbatim owner direction (2026-10-06):** *"remmebr natural gates dont look like the machine in the real univiverse of backrooms they are mainly just normal doors and walls that u can majicly walk through but lets keep natural doors just normal doors in game so there is distinction for it and long time in the future if mod ever pics up in popularity we can add stuff like that"*
-
-**This closes a gap that was reported as a defect.** The machine frame draws on `CompRimroomsGate` and keys on `IsDesignated`, so a permanent natural gate — the other component — gets nothing. **That asymmetry is the information:** a framed opening was built, an unframed one was found. The decision is recorded in `GateWorldFrames.cs` where anybody tempted to "fix" it would be standing, and in `gates.md` where a player reads it.
-
-> **The post-completion test phase lives in [`TEST.md`](TEST.md) as of 2026-10-06.** Owner:
-> *"we should make a seperate todo=Test.md and move all test items to it to be done and clear
-> todo , if its true all items are done."* It was true: this file reached zero open and zero
-> partial, so every `[T]` row moved out whole. **`[T]` must not reappear here** — a row waiting on
-> a launch belongs in that file, and a row that turns out to be buildable comes back as `[ ]`.
-
 ## TOMBSTONES
 
 _(none)_

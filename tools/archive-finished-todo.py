@@ -260,17 +260,53 @@ def prose_hazards(lines, labels):
 
 
 def groups(lines, start, end):
-    """Yield (group_start, group_end_exclusive) spans inside one section."""
+    """Yield (group_start, group_end_exclusive) spans inside one section.
+
+    ## A ROWLESS SPAN BELONGS TO THE ROWS BELOW IT, AND KEEPING IT STRANDED THE OWNER'S WORDS
+
+    `GROUP_START` splits on a `### ` heading **and** on each `**Verbatim` line, so a section
+    written the way this queue writes them -- a heading, four of the owner's sentences, then the
+    rows answering all four -- splits into five spans of which **only the last holds any rows**.
+    The first four counted zero `[x]`, so `group_done_only` was false for each, and they were kept
+    while the rows left. Measured 2026-10-06 on exactly that shape: the rows archived correctly,
+    `VERBATIM TRANSFER CONFIRMED` held because nothing was lost, and `docs/TODO.md` was left
+    holding a heading and **three of the owner's sentences over an empty space** -- which is the
+    precise outcome the docstring above promises this granularity prevents.
+
+    The trailing sweep for an emptied `### ` heading could not save it either: the heading's body
+    was not empty, it still had the three quotes.
+
+    So a span with no rows at all **merges forward into the next span that has them.** A direction
+    and the rows answering it then move as one object whichever order they were written in. A
+    rowless span with nothing after it stays its own span and is kept -- that is unstatused work
+    rather than a stranded quote, and `check-queue-integrity.py` rule 4 owns it.
+
+    **THE PREAMBLE ABOVE THE FIRST GROUP IS NOT A GROUP AND NEVER MERGES.** The first draft of
+    this merge let it, and it swallowed the section's own `## Pending` heading into the first
+    direction group and archived it -- defeating `STRUCTURAL`, which exists precisely because
+    removing such a heading leaves the file shapeless. A group begins at a `GROUP_START` by
+    definition, so anything above the first one is preamble and is kept where it is.
+    """
     starts = [index for index in range(start, end) if GROUP_START.match(lines[index])]
     if not starts:
         return [(start, end)]
+    preamble = [(start, starts[0])] if starts[0] > start else []
     spans = []
-    if starts[0] > start:
-        spans.append((start, starts[0]))
     for position, group_start in enumerate(starts):
         group_end = starts[position + 1] if position + 1 < len(starts) else end
         spans.append((group_start, group_end))
-    return spans
+
+    merged = []
+    pending = None
+    for span_start, span_end in spans:
+        if pending is None:
+            pending = span_start
+        if sum(census(lines, span_start, span_end).values()):
+            merged.append((pending, span_end))
+            pending = None
+    if pending is not None:
+        merged.append((pending, spans[-1][1]))
+    return preamble + merged
 
 
 def plan(lines):

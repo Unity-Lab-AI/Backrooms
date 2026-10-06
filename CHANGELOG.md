@@ -237,6 +237,49 @@
 - It passed on its first run, which is not evidence. Four faults were planted and **all four were
   caught**, then removed.
 
+### The triple check, and all green was not all true
+
+- Owner: ***"read now.md i think all items are complete lets do a triple check to make sure nothing
+  is fucked and make sure everything is staged and done"***. **Four things were, and every
+  instrument was green throughout.**
+- **The queue read zero because the rows had no checkboxes.** Two subsections under `## Pending`
+  held **five verbatim owner directions with no status marker of any kind**, and every counter in
+  this project counts markers. The previous handoff published `0 open` in its state table while its
+  own closing section said five rows were open; the contradiction was the true part. **Two of the
+  five had never reached `FINALIZED.md`** — the audio write-up direction and the natural-gate
+  decision. All five are archived now with the transfer proved, and the queue is empty rather than
+  apparently empty.
+- **`check-queue-integrity.py` gains a fourth rule — no pending section without a row** — because
+  its first three are all *about rows*, which is the blind spot they share. Scoped to a pending
+  region, so `ROADMAP.md`'s `### Risk assessment` and `DECOMPOSED.md`'s prose sections are left
+  alone: a checker that cried wolf on them would be switched off.
+- **It caught a live bug in `archive-finished-todo.py` within minutes of being written.**
+  `GROUP_START` splits on a `###` heading *and* on each `**Verbatim` line, so a heading plus four
+  owner sentences plus the rows answering all four becomes five spans of which only the last holds
+  rows. The other four were kept, so the rows archived, the reassembly identity held because
+  nothing was lost, and the queue was left holding **three of the owner's sentences over an empty
+  space**. A rowless span now merges forward into the next span that has rows — and the preamble
+  above the first group is excluded, because the first attempt swallowed the structural `## Pending`
+  heading and archived it.
+- **Twenty-two notes inside a PASS said something untrue.** `check-package-integrity.py` reported
+  *"texture ships but nothing references it"* for every animation frame `GateWorldFrames.cs` draws.
+  It knew `Graphic_Multi` rotations and `GetAllInFolder` folders and **had never learned the
+  numbered-sequence prefix rule `build-asset-page.py` already knew** — the rule lived in one
+  instrument and was never carried to the other. A false statement inside a PASS is worse than a
+  failure, because the next reader discounts the whole note list.
+- **What replaces it is stronger than the note it removes:** every frame a sequence declares is
+  demanded by name and a missing one is a **failure**, since `Sequence.Resolve` abandons the whole
+  animation at the first texture it cannot find and leaves no trace in the log. Proved by holding
+  one frame back and reading the failure, then restoring it.
+- **The asset numbers were wrong in three ways.** Measured from the generator rather than copied
+  between pages: **100 shipped files** (83 `.png`, 17 audio) making **69 page entries — 52 drawings
+  and 17 cues**, of which **59 carry a master** and the other ten are menu backgrounds excluded from
+  that rule by name, because a slide ships at its authored size. The previous handoff published
+  *"59 shipped: 42 drawings"* — **59 was the master count, published as the total.**
+- **The outstanding plant run from the previous handoff is done.** It asked for the full battery
+  before the next publication because four anchors had been re-aimed. **Run twice here, once before
+  any change and once after — 43 of 43 both times**, with the tree byte-clean afterwards.
+
 ## 0.12.99-dev - 2026-10-05 - The buildable rows were buildable, and three were already done
 
 - **OWNER: *"read now.md to continue i think we only have a handful of open items but idk

@@ -18046,3 +18046,54 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-06)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **2 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner direction — the gate should look and sound like it is doing something (2026-10-06)
+
+**Verbatim owner direction (2026-10-06):** *"an make a write up about any other audio we need for chatgpt to find and create"*
+
+**Verbatim owner direction (2026-10-06):** *"and things like the gates activating animations and charge up and stuff"*
+
+**Verbatim owner direction (2026-10-06):** *"can be still frame made into gif like thing or whatever the game needs"*
+
+**Verbatim owner direction (2026-10-06):** *"and maybe have the auro for the gat be gate sensitive change color to the state of the gate and like strobe on charge up callibation and activation and shit like star trek warp core"*
+
+- [x] **"an make a write up about any other audio we need for chatgpt to find and create"** — the brief another agent works from, naming every cue that does not exist yet. -- **WRITTEN 0.13.0-dev: `docs/ASSET_REQUESTS.md`**, three priority bands plus the animation sections, and the format stated as non-negotiable because a cue delivered at the wrong sample rate is a cue redone. **Thirteen were delivered against it and every one was measured rather than trusted** — 48 kHz, mono, 16-bit, each duration inside the brief's range. The page also carries a *"Read this before writing a loop"* section, because a loop that does not seam is the one defect a listener cannot unhear.
+- [x] **"and things like the gates activating animations and charge up and stuff"** — the gate must look like it is doing something. -- **BUILT 0.13.0-dev: three sequences, twenty-two frames.** Eight charge, six activation, eight live, drawn by `GateWorldFrames.cs` over the existing frame draw. **One square sheet per sequence rather than one per footprint** — four footprints times three facings times eight frames is ninety-six files for a single animation, and every future footprint multiplies it.
+- [x] **"can be still frame made into gif like thing or whatever the game needs"** — the owner naming the technique and leaving the choice open. -- **ANSWERED 0.13.0-dev: still frames are what the game needs**, so that is what ships. RimWorld has no animated-texture format; a sequence is numbered PNGs with a frame index over them, which is what `Sequence.At` does. **A sequence with any frame missing disables that sequence only**, because a half-loaded animation that skips a frame reads as a fault in the game rather than in the package — and as of this batch a missing frame is a **failure** in `check-package-integrity.py` rather than a note, since the loader abandons the whole animation at the first frame it cannot find.
+- [x] **"and maybe have the auro for the gat be gate sensitive change color to the state of the gate and like strobe on charge up callibation and activation and shit like star trek warp core"** -- **BUILT 0.13.0-dev: `GateAura.cs`, five states, and no art at all** — `CompGlower.GlowColor` and `GlowRadius` are per-instance, so the colour and radius are settable and `UpdateLit` recomputes the map glow grid. **The pulse is a triangle wave, not a square one**, and through spin-up its period falls from 96 ticks to 20, so the gate winds up rather than blinking: a hard on/off reads as a hazard light, which is the opposite meaning. **A live gate looks exactly as it did**, because the faulted states are tested first and the live branch returns untouched. **And it does not make the portal-network walk sixteen times more expensive** — `IsLiveGate` walks every edge, so the expensive answer stays cached on the 250-tick cadence while only the colour question runs at 15, and the glow grid is touched only when the value actually changed.
+
+### Owner decision — a natural gate stays a plain door (2026-10-06)
+
+**Verbatim owner direction (2026-10-06):** *"remmebr natural gates dont look like the machine in the real univiverse of backrooms they are mainly just normal doors and walls that u can majicly walk through but lets keep natural doors just normal doors in game so there is distinction for it and long time in the future if mod ever pics up in popularity we can add stuff like that"*
+
+**This closes a gap that was reported as a defect.** The machine frame draws on `CompRimroomsGate` and keys on `IsDesignated`, so a permanent natural gate — the other component — gets nothing. **That asymmetry is the information:** a framed opening was built, an unframed one was found. The decision is recorded in `GateWorldFrames.cs` where anybody tempted to "fix" it would be standing, and in `gates.md` where a player reads it.
+
+- [x] **"remmebr natural gates dont look like the machine in the real univiverse of backrooms they are mainly just normal doors and walls that u can majicly walk through but lets keep natural doors just normal doors in game so there is distinction for it and long time in the future if mod ever pics up in popularity we can add stuff like that"** -- **RECORDED 0.13.0-dev, AND THE CODE ALREADY AGREED — WHICH IS WHY IT NEEDED WRITING DOWN.** The unframed natural gate was being read as a missing feature, so the next person to "improve" it would have deleted the distinction the owner just asked for. **The decision now sits in `GateWorldFrames.cs` where that person would be standing**, quoted verbatim, and in `docs/wiki/gates.md` where a player reads it. **An ordinary door can never wear the frame either:** the component is on every `Door` and `Autodoor`, `PostDraw` returns at the `!IsDesignated` guard, and `DesignateAsGate` sets the orientation **at designation**, so there is no window in which a gate has no frame. The owner's *"long time in the future"* clause is deliberately **not** carried into a queue as work — it is permission for a later idea, not a row.
+
+> **The post-completion test phase lives in [`TEST.md`](TEST.md) as of 2026-10-06.** Owner:
+> *"we should make a seperate todo=Test.md and move all test items to it to be done and clear
+> todo , if its true all items are done."* It was true: this file reached zero open and zero
+> partial, so every `[T]` row moved out whole. **`[T]` must not reappear here** — a row waiting on
+> a launch belongs in that file, and a row that turns out to be buildable comes back as `[ ]`.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

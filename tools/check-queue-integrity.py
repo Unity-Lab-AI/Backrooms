@@ -41,6 +41,27 @@ gate that cannot see its own blind spot.
      `[x]` is transient, and archiving happens in the same batch that closes the
      row. A queue still holding `[x]` at check time means the batch stopped
      halfway.
+  4. **No unstatused work in a pending section.** A subsection inside a pending
+     region with no row under it at all.
+
+## What rule 4 caught, 2026-10-06, and why the first three could not
+
+The first three rules are all **about rows**, and that is the blind spot they
+share. Rule 1 needs an indented continuation, rule 2 needs a closer's signature,
+rule 3 needs an `[x]`. A subsection carrying owner direction and **no status
+marker of any kind** trips none of them.
+
+Two such sections sat under `## Pending` in `docs/TODO.md` holding five verbatim
+owner directions, and **two of the five had never reached `docs/FINALIZED.md`**.
+Every counter in the project read the queue as `0 open / 0 partial` and the
+handoff published that number, because a row with no marker is invisible to a
+count of markers -- it is not absent from the queue, it is unmeasured by it.
+
+This is the repository's own most repeated finding turned on its own ledger: **a
+rule satisfied by its subject not being there is not a rule.** So the rule is
+scoped to a pending region rather than to every heading, because `ROADMAP.md`'s
+`### Risk assessment` and `DECOMPOSED.md`'s `## Decomposition rules` are prose by
+design and a checker that cried wolf on them would be switched off.
 
 Run by **exit status**, like every other instrument here. Never by reading the
 output.
@@ -74,6 +95,12 @@ INDENTED = re.compile(r"^  +\S")
 # with the single space that sat in front of the em dash in the concatenation,
 # so anchoring hard at `^` would have missed every one of them.
 EVIDENCE = re.compile(r"\*\*(?:PARTLY )?CLOSED \d+\.\d+")
+
+# Where live work is listed. A region opens at one of these and closes at the next
+# `##` heading, which is how TOMBSTONES ends it.
+PENDING_REGION = re.compile(r"^##\s+(?:Pending|In progress)\s*$", re.I)
+TOP_HEADING = re.compile(r"^##\s+\S")
+SUB_HEADING = re.compile(r"^(#{3,6})\s+(\S.*)$")
 
 
 def say(line=""):
@@ -116,11 +143,55 @@ def owner_of(lines, index):
     return None
 
 
+def unstatused_sections(lines):
+    """Subsections inside a pending region that hold no row at all.
+
+    The section heading is reported rather than its prose, because the heading is what a reader
+    scans and what an archiver has to aim at. A region with no subsections -- a genuinely empty
+    `## Pending` followed straight by `## TOMBSTONES` -- reports nothing, which is the whole point
+    of the distinction: **empty and saying so is correct; occupied and unmeasured is not.**
+    """
+    found = []
+    in_region = False
+    fenced = False
+    open_section = None
+    for index, line in enumerate(lines):
+        if FENCE.match(line):
+            fenced = not fenced
+            continue
+        if fenced:
+            continue
+        sub = SUB_HEADING.match(line)
+        if PENDING_REGION.match(line):
+            if open_section is not None:
+                found.append(open_section)
+            in_region, open_section = True, None
+            continue
+        if TOP_HEADING.match(line):
+            if open_section is not None:
+                found.append(open_section)
+            in_region, open_section = False, None
+            continue
+        if not in_region:
+            continue
+        if sub:
+            if open_section is not None:
+                found.append(open_section)
+            open_section = (index + 1, sub.group(2).strip()[:88])
+            continue
+        if open_section is not None and BULLET.match(line):
+            open_section = None
+    if open_section is not None:
+        found.append(open_section)
+    return found
+
+
 def inspect(path):
     lines = io.open(os.path.join(REPO, path), encoding="utf-8").read().split("\n")
     stranded = []
     loose_evidence = []
     closed_rows = []
+    unstatused = unstatused_sections(lines)
     fenced = False
     for index, line in enumerate(lines):
         if FENCE.match(line):
@@ -140,7 +211,7 @@ def inspect(path):
             continue
         if INDENTED.match(line) and owner_of(lines, index) is None:
             stranded.append((index + 1, line.strip()[:88]))
-    return len(lines), stranded, loose_evidence, closed_rows
+    return len(lines), stranded, loose_evidence, closed_rows, unstatused
 
 
 def report(label, rows, remedy):
@@ -160,7 +231,7 @@ def main():
             say("  %s : ABSENT" % path)
             failures += 1
             continue
-        total, stranded, loose_evidence, closed_rows = inspect(path)
+        total, stranded, loose_evidence, closed_rows, unstatused = inspect(path)
         say("  %s (%d lines)" % (path, total))
         failures += report(
             "stranded continuation lines", stranded,
@@ -173,6 +244,11 @@ def main():
         failures += report(
             "[x] rows still in the queue", closed_rows,
             "run tools/archive-finished-todo.py --apply, then tools/verify-archive-move.py")
+        failures += report(
+            "pending sections with no row", unstatused,
+            "this section holds work no status marker governs, so every count of the queue "
+            "reads past it; give each item a [ ]/[~]/[T] row, or archive the section to "
+            "docs/FINALIZED.md verbatim and delete it here")
 
     say()
     if failures:

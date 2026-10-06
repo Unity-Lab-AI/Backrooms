@@ -38,7 +38,9 @@ What it checks
    patch against a def that was renamed by the game is silent: it simply never applies.
 6. **Textures.** Every texture field or resolved C# content path naming an `RR_` asset resolves
    to a real `.png` or a complete north/east/south cardinal set for a multi-facing graphic.
-   Reverse lookup recognizes those directional files as referenced. Core texture
+   Reverse lookup recognizes those directional files as referenced, and recognizes an
+   **animation sequence by its prefix** -- the code holds one literal and appends `01`..`08`, and
+   every frame a sequence declares is demanded by name. Core texture
    paths cannot be verified from disk (they live in asset bundles) and are reported as
    unverifiable rather than passed.
 7. **Sounds.** Every `RR_` sound reference resolves to a `SoundDef` this package declares;
@@ -809,11 +811,24 @@ def check_patches(problems, declared, game_defs, notes):
 # --------------------------------------------------------------------------- #
 
 def csharp_texture_paths(text):
-    """Literal/const ContentFinder arguments and the gate frame's bounded constructor table.
+    """Literal/const ContentFinder arguments and the gate frame's bounded constructor tables.
 
     This is source inspection, not C# data-flow analysis. Unknown expressions are not guessed.
     The frame-table case is accepted only beside the actual three cardinal Get(stem + suffix)
     calls and constructor-to-field assignment; arbitrary quoted paths do not count as consumers.
+
+    **A NUMBERED SEQUENCE IS NAMED BY ITS PREFIX, AND THIS CHECKER WAS THE LAST ONE TO LEARN IT.**
+    An animation holds one literal -- "Things/.../RR_GateCharge_" -- and appends 01 through 08,
+    which is the only sane way to load a sequence. `build-asset-page.py` learned that rule when it
+    reported all twenty-two frames as shipped-but-unnamed; the same rule was never carried here, so
+    this script spent every run since printing **twenty-two notes saying nothing references a
+    texture that `GateWorldFrames.cs` demonstrably draws.** A false statement inside a PASS is
+    worse than a failure: the next reader discounts the note list, and the one real entry in it
+    goes with the rest.
+
+    Accepted on the same terms as the frame table -- beside the actual zero-padded loader call and
+    the constructor-to-field assignment -- so a quoted path still never counts as a consumer on
+    its own.
     """
     # Keep strings intact while removing comments, including comments containing example paths.
     text = re.sub(r'@"(?:[^\"]|\"\")*"|"(?:\\.|[^"\\])*"|//[^\r\n]*|/\*.*?\*/',
@@ -841,15 +856,26 @@ def csharp_texture_paths(text):
         if value:
             folders.add(value.strip('/'))
 
+    assigns_stem = re.search(r'\bstem\s*=\s*textureStem\s*;', text)
+
     cardinal_calls = set(re.findall(
         finder + r'Get\s*\(\s*stem\s*\+\s*"(_north|_east|_south)"\s*(?=,|\))', text))
-    if set(REQUIRED_ROTATIONS).issubset(cardinal_calls) and re.search(
-            r'\bstem\s*=\s*textureStem\s*;', text):
+    if set(REQUIRED_ROTATIONS).issubset(cardinal_calls) and assigns_stem:
         for value in re.findall(
                 r'\bnew\s+FrameSet\s*\(\s*\d+\s*,\s*\d+\s*,\s*"([^"\r\n]+)"\s*\)', text):
             referenced.add(value.strip())
             directional.add(value.strip())
-    return referenced, directional, folders
+
+    # The loader itself, not merely a type called Sequence: stem + a two-digit frame number.
+    sequences = {}
+    loads_padded = re.search(
+        finder + r'Get\s*\(\s*stem\s*\+\s*\(\s*index\s*\+\s*1\s*\)\s*\.\s*ToString\s*\(\s*"00"\s*\)',
+        text)
+    if loads_padded and assigns_stem:
+        for stem, count in re.findall(
+                r'\bnew\s+Sequence\s*\(\s*"([^"\r\n]+)"\s*,\s*(\d+)\s*\)', text):
+            sequences[stem.strip()] = int(count)
+    return referenced, directional, folders, sequences
 
 
 def check_textures(problems, notes):
@@ -878,8 +904,9 @@ def check_textures(problems, notes):
                 directional.add(value)
 
     scanned_folders = set()
+    sequences = {}
     for path in source_cs_files():
-        paths, multis, folders = csharp_texture_paths(read_text(path))
+        paths, multis, folders, frames = csharp_texture_paths(read_text(path))
         for value in paths:
             if "RR_" in value:
                 referenced.add(value)
@@ -888,6 +915,7 @@ def check_textures(problems, notes):
             else:
                 unverifiable.add(value)
         scanned_folders.update(folders)
+        sequences.update(frames)
 
     on_disk = set()
     for path in glob.glob(os.path.join(MOD, "*", "Textures", "**", "*.png"), recursive=True):
@@ -907,11 +935,31 @@ def check_textures(problems, notes):
         else:
             fail(problems, "texture path %r is referenced but no matching .png ships" % value)
 
+    # **A MISSING FRAME IS A FAILURE, NOT A NOTE**, and this is where the reverse lookup stops
+    # lying about the twenty-two that do ship. `Sequence.Resolve` returns on the first texture it
+    # cannot find and leaves the whole animation null, so frame seven of eight going astray costs
+    # the entire effect with nothing in the log -- the gate simply never lights. Each declared
+    # frame is therefore demanded by name, which is strictly more than the note it replaces.
+    for stem in sorted(sequences):
+        for index in range(1, sequences[stem] + 1):
+            frame = "%s%02d" % (stem, index)
+            if frame in on_disk:
+                used.add(frame)
+            else:
+                fail(problems, "animation sequence %r declares %d frames but %s.png does not "
+                               "ship. The loader abandons the whole sequence at the first frame "
+                               "it cannot find, so the animation silently never plays"
+                     % (stem, sequences[stem], frame))
+
     for value in sorted(on_disk - used):
         # GetAllInFolder loads all files below a named folder, including menu slides.
         if any(value.startswith(folder + "/") for folder in scanned_folders):
             continue
         notes.append("texture ships but nothing references it: %s.png" % value)
+
+    for stem in sorted(sequences):
+        notes.append("animation sequence drawn by code, %d frame(s) resolved: %s01-%02d"
+                     % (sequences[stem], stem, sequences[stem]))
 
     for folder in sorted(scanned_folders):
         count = len([v for v in on_disk if v.startswith(folder + "/")])
