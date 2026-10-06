@@ -35,9 +35,20 @@ structural rather than advisory, and that would regress silently:
     reached the same structural conclusion -- use our own def types rather than the native systems
     those mods operate on -- and that is what keeps this package clear of them:
 
-        row 191 ResearchTree, row 279 Research Whatever  -> no `ResearchProjectDef`
         row 148 No Quests Without Comms, row 132 MFI     -> no `QuestScriptDef`
         (and a standing project rule)                    -> no `StorytellerDef`, ever
+
+    **`ResearchProjectDef` was on that list until 0.12.99-dev and the register is what removed it.**
+    The steer read *"rows 191 ResearchTree and 279 Research Whatever operate on this type; this mod
+    uses its own RimroomsProjectDef so neither can see it"* -- and the owner then opened the Research
+    tab, found nothing from this mod, and said so in capitals. Reading the two cards shows they ask
+    for the opposite: row 191's planned use is that *"The Backrooms tree should own gate, mapping,
+    containment, and spatial-analysis milestones and should not overwrite other research trees"*,
+    with *"stable definitions and an independent route"*. Being seen by those mods was the goal all
+    along. **A prohibition became four assertions**, which is strictly stronger: our own tab, a
+    self-contained graph, one mirror per project with its fields agreeing
+    (`tools/check-research-mirror.py`), and the sync still running both ways so the Operations insight
+    route remains the independent one.
 
 Nothing here is a judgement about another mod. Every check is about **this** package.
 
@@ -325,8 +336,6 @@ if not patched:
 
 # ---------------------------------------------------------------- 4. def types steered away from
 STEERED = {
-    "ResearchProjectDef": "rows 191 ResearchTree and 279 Research Whatever operate on this type; "
-                          "this mod uses its own RimroomsProjectDef so neither can see it",
     "QuestScriptDef": "rows 148 No Quests Without Comms and 132 More Faction Interaction operate "
                       "on native quests; this mod uses its own request defs and an Operations pane",
     "StorytellerDef": "a StorytellerDef is an exclusive slot -- shipping one would ask a player to "
@@ -479,6 +488,44 @@ if gameplay_art:
          % ", ".join(sorted(gameplay_art)))
 else:
     notes.append("ships no gameplay art or audio; menu images only")
+
+# ------------------------------------------------- the research mirror the register asked for
+# **A PROHIBITION BECAME AN ASSERTION, and the register is what reversed it.**
+#
+# `STEERED` carried `ResearchProjectDef` since 0.5.x with the reason *"rows 191 ResearchTree and 279
+# Research Whatever operate on this type; this mod uses its own RimroomsProjectDef so neither can see
+# it"*. That steer was over-cautious, and the owner's report is what exposed it: they opened the
+# Research tab, found nothing, and said so in capitals.
+#
+# **Read the two cards and they ask for the opposite of the steer.** Row 191's planned use:
+# *"The Backrooms tree should own gate, mapping, containment, and spatial-analysis milestones and
+# should not overwrite other research trees"*, and *"Backrooms milestones need stable definitions and
+# an independent route when optional trees are absent."*
+#
+# So being seen by those mods was always the goal. What the register actually forbids is **crowding
+# somebody else's tree** and **losing the independent route** -- and both are now asserted rather
+# than avoided by shipping nothing:
+#
+#   * our own tab, so vanilla's tree is untouched
+#   * a self-contained prerequisite graph, so no research mod draws ours through vanilla's
+#   * one mirror per company project, label, description and graph agreeing
+#   * the Operations insight route still completes a project with the Research tab untouched
+#
+# The first three are `tools/check-research-mirror.py`, checker 26. The fourth is here, because it is
+# a statement about this package's own code rather than about its defs.
+research_sync = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Company", "ResearchMirror.cs")
+if not os.path.isfile(research_sync):
+    fail("the research mirror ships defs with no sync, so finishing one in the Research tab would "
+         "unlock nothing. See check-research-mirror.py for the pairing rules.")
+else:
+    sync = io.open(research_sync, encoding="utf-8-sig").read()
+    if "MarkResearchedExternally" not in sync or "FinishProject" not in sync:
+        fail("the research mirror sync no longer runs both ways. One direction missing means either "
+             "the Research tab unlocks nothing, or Operations leaves the tab offering work that is "
+             "already done -- both are the tab lying to a player.")
+    else:
+        notes.append("research mirror syncs both ways; the Operations insight route is unchanged "
+                     "and remains the independent one row 191 asks for")
 
 # ------------------------------------------- the register's own one-word column may not contradict
 # **THIS IS THE "NEEDS 294 MODS" DEFECT IN THE ONE PLACE NOBODY CHECKED.** `About.xml` has declared

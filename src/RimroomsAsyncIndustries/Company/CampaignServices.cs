@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -360,6 +360,11 @@ namespace RimroomsAsyncIndustries.Company
             // and it is cheap -- a latched bool, then a holder list that is built at most once
             // per tick and is empty on any branch holding nothing.
             if (now % 60 == 15) { ContainmentProtocol.TickProcedure(this); }
+            // **The two research routes, kept in step.** Owner: *"Two genuine routes,
+            // either works"*, so whichever one finishes, the other has to agree. Every
+            // four seconds rather than every tick: it is a boolean comparison per project
+            // and nobody can perceive four seconds against a project that took hours.
+            if (now % MirrorInterval == 45) { SyncResearchMirror(); }
             // The clean-up team. Checked often enough to land inside Core's 400-tick
             // game-over countdown, and cheap: a bool, then a scan that stops at the
             // first living employee.

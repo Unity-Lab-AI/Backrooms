@@ -1,4 +1,4 @@
-﻿{
+{
   "schemaVersion": 1,
   "packageId": "Rimrooms.AsyncIndustries",
   "note": "Reviewed explicit game-loadable package files. Update with each implemented content addition; source, evidence and third-party files stay outside this list.",
@@ -17,6 +17,7 @@
     "1.6/Defs/RecipeDefs/RR_BondPrinting.xml",
     "1.6/Defs/RecipeDefs/RR_GateRecipes.xml",
     "1.6/Defs/RecipeDefs/RR_TrainingRecipes.xml",
+    "1.6/Defs/ResearchProjectDefs/RR_ResearchMirror.xml",
     "1.6/Defs/RimroomsAnomalyEventDefs/RR_AnomalyEvents.xml",
     "1.6/Defs/RimroomsCertificationDefs/RR_Certifications.xml",
     "1.6/Defs/RimroomsFacilityDefs/RR_FacilityCategories.xml",
@@ -60,11 +61,11 @@
     "1.6/Languages/English/Keyed/RR_Expedition.xml",
     "1.6/Languages/English/Keyed/RR_Facilities.xml",
     "1.6/Languages/English/Keyed/RR_FieldAndThreats.xml",
+    "1.6/Languages/English/Keyed/RR_FixtureTells.xml",
     "1.6/Languages/English/Keyed/RR_Gate.xml",
     "1.6/Languages/English/Keyed/RR_GateHistory.xml",
-    "1.6/Languages/English/Keyed/RR_GateSteps.xml",
     "1.6/Languages/English/Keyed/RR_GateLinks.xml",
-    "1.6/Languages/English/Keyed/RR_FixtureTells.xml",
+    "1.6/Languages/English/Keyed/RR_GateSteps.xml",
     "1.6/Languages/English/Keyed/RR_Generation.xml",
     "1.6/Languages/English/Keyed/RR_Help.xml",
     "1.6/Languages/English/Keyed/RR_Inhabitants.xml",

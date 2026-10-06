@@ -66,6 +66,11 @@ PREFIXES = (
 # it checks rots.
 
 
+
+def concatenated(name, source):
+    """Whether this const is joined to something else rather than used whole."""
+    return re.search(re.escape(name) + r'\s*\+', source) is not None
+
 def keyed_strings():
     found = collections.defaultdict(list)
     for path in sorted(glob.glob(os.path.join(MOD, "**", "Keyed", "*.xml"), recursive=True)):
@@ -146,6 +151,20 @@ def main():
     # like a prefix, or one that is later handed to Translate, is still checked as a keyed string.
     for name, value in re.findall(r'const\s+string\s+(\w+)\s*=\s*"(RR_[A-Za-z0-9_]+)"', source):
         if re.search(r'StartsWith\(\s*%s\b' % re.escape(name), source):
+            internal.add(value)
+        # **A SECOND CALL SITE THAT MAKES A CONST A PREFIX: concatenation into a def lookup.**
+        #
+        # `RR_Mirror_` pairs each company project with its vanilla research mirror and is used
+        # as `GetNamedSilentFail(ResearchMirrorPrefix + companyDefName)`, never through
+        # `StartsWith`. The rule above therefore read it as a whole defName and reported it
+        # unresolved -- which is correct behaviour on an incomplete rule rather than a false
+        # alarm: a fragment is not a key, and the call site is the only honest way to tell.
+        #
+        # Two cheap conditions rather than one multiline regex, deliberately. The first attempt
+        # matched across a line break and the escaping broke the file it was patching; a const
+        # that is concatenated at all is already a fragment, and requiring the file to perform
+        # a def lookup keeps the rule from excusing a const concatenated into a message.
+        elif concatenated(name, source) and 'GetNamedSilentFail' in source:
             internal.add(value)
     unresolved = 0
     for key in sorted(referenced):

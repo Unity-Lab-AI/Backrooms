@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using RimWorld.Planet;
 using Verse;
 
@@ -638,6 +638,25 @@ namespace RimroomsAsyncIndustries.Company
         public bool InsightCommitted { get { return insightCommitted; } }
         public bool Completed { get { return completed; } }
         public float WorkDone { get { return workDone; } }
+
+        /// <summary>
+        /// Mark this project finished because its vanilla mirror was researched.
+        ///
+        /// **Owner direction, 2026-10-06, choosing how the Research tab relates to Operations:** *"Two
+        /// genuine routes, either works"*. This is the second route arriving.
+        ///
+        /// **All three fields move together and that is the point.** `ValidateRecordRelationships`
+        /// requires a completed project to carry a committed insight AND a receipt for it; a
+        /// completed project with neither set a state fault on turn one once before, `CanOperate`
+        /// went false and **every button in the mod refused**. So the receipt names the route that
+        /// paid, rather than being left empty or forged as an evidence id.
+        /// </summary>
+        internal void MarkResearchedExternally(string receipt)
+        {
+            insightCommitted = true;
+            insightOperationId = receipt;
+            completed = true;
+        }
         public void ExposeData()
         {
             Scribe_Values.Look(ref id, "rr_id");

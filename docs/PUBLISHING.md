@@ -21,6 +21,26 @@ This is the procedure that works. It was written after doing it, not before. Fol
 >
 > **Order matters, and only one way round works.** Export and push the mod-only repository **before** committing here: the export is built from `artifacts/build/package-manifest.json` and verifies every file's SHA256 against the working tree, so it must run against the tree that was built and checked. It refuses outright on a package edited after the build — which it has done twice, both times correctly, when a version bump landed after a build.
 
+## ⛔ FORGEJO IS HELD. SIX REFS, NOT TWELVE, UNTIL THE OWNER SAYS OTHERWISE ⛔
+
+**Owner, 2026-10-06, verbatim:** *"fyi the git.unityailab.com is going down so stop pushes to it until further notice, github two repos is still good"*
+
+So the cascade is **six refs** while the hold stands:
+
+| | Refs |
+|---|---|
+| `github` on this repository | **5** — `feature/bug-testing`, `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` |
+| `github` on the mod-only repository | **1** — `main` |
+| ~~`forgejo`, both repositories~~ | **0. Held.** |
+
+**The remote is HELD, not removed, and that distinction is the whole point.** Deleting it would make every receipt read *complete* and a future reader would never learn a destination had gone missing — which is precisely the eight-ref publication that went unnoticed for forty-five checkpoints, wearing a different hat. `tools/export-public-repo.py` keeps `forgejo` in `REMOTES`, skips it by name through `HELD_REMOTES`, **prints the hold and its reason on every run**, and **refuses outright if every remote is held** — a publication with no destination must not report success.
+
+**Restored by the owner saying the host is back. Never by time passing, and never because a push happens to succeed.** When it is lifted, delete the `forgejo` entry from `HELD_REMOTES` and restore the twelve-ref read-back below; both halves are one edit each.
+
+**Do not push to forgejo to - test whether it is up.** The owner has said it is going down; a push that half-succeeds against a host mid-shutdown is how a remote ends up holding a commit nobody recorded.
+
+---
+
 ## 0. Facts about this repository's remotes that you must not guess
 
 | | `forgejo` (PRIMARY) | `github` |

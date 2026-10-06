@@ -17074,3 +17074,61 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-05)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner direction — THE RESEARCH IS INVISIBLE WHERE PLAYERS LOOK FOR IT (2026-10-06)
+
+**Verbatim owner report (2026-10-06), in capitals:** *"AND A MAJOR ISSUE: I DONT SEE ANY RESEARCH FOR THE GATE SYSTEMS AND EVERYTHING THIS MOD HAS!!!!!"*
+
+**Measured, and the branch is not broken.** `Player.log` carries `[Rimrooms][Company] Initialized ... scenario=async_industries`, fixture tells attached to 1,794 definitions, the odd-origin marker to 2,760, **and not one error or warning**. All **38 company projects get a record at branch initialisation** — `CampaignServices` enumerates every `RimroomsProjectDef` and seeds one each — and the Operations pane lists them. **So nothing is missing; it is in the wrong place.** The projects are `RimroomsProjectDef` and live in an Operations section, and the owner looked in the **Research tab**, which is where every player looks and where this mod contributes nothing. The owner also runs **FluffyResearchTree** and **MintResearch**, and both show nothing for the same reason. **The Operations pane's own *Open Research* button points at the vanilla tab — away from our projects rather than toward them.**
+
+- [x] **Mirror every company project into the vanilla Research tab.** Owner's answer, verbatim: *"Mirror them into the vanilla Research tab"*, chosen over a single announcing project and over merely renaming the Operations section. So each company project also becomes a real `ResearchProjectDef`: **nine branches by five bands, visible in Research, drawn by FluffyResearchTree, listed by MintResearch**, with prerequisites shown. Clicking one goes to Operations, where an insight is committed — the bespoke mechanics stay the way a project is *advanced* and the vanilla tree becomes the **map**. **The cost was stated before it was chosen and it is the real work:** 38 paired defs that must not drift, so **a checker proves the pairing** — every `RimroomsProjectDef` has exactly one mirror, every mirror has its project, and the labels, descriptions, branches and prerequisites agree. A mirror that drifts is a research tree that lies about what it unlocks. -- **BUILT 0.12.99-dev. 38 mirrors, their own tab, nine columns by band, and checker 26 holding the pairing.** Owner's answers: *"Two genuine routes, either works"* and *"Own tab, nine columns by band"*, then *"as far as the research layout wit has to work bvanillia and with the research mods"*. **That last one turned out to be a single requirement rather than two.** Vanilla lays a tree out from `researchViewX`/`researchViewY`; every research mod derives its own layout from the **prerequisite graph**. So both are emitted -- coordinates for vanilla, and a correct graph so ResearchTree and Research Whatever each draw the same shape their own way. **THE REGISTER REVERSED A STEER THIS REPOSITORY HAD CARRIED SINCE 0.5.x.** `check-register-compliance` forbade shipping a `ResearchProjectDef` at all, reasoning that rows 191 and 279 operate on that type and we stayed clear. Reading the cards shows they ask for the opposite: row 191's planned use is that *"The Backrooms tree should own gate, mapping, containment, and spatial-analysis milestones and should not overwrite other research trees"*, with *"stable definitions and an independent route"*. **Being seen by those mods was the goal all along**, and the prohibition became **four assertions**, which is strictly stronger: our own tab, a self-contained graph, one mirror per project with label, description and prerequisites agreeing, and the sync still running both ways so the Operations insight route remains the independent one. **Both directions, because one direction is two different lies.** A mirror finished in the Research tab must grant the capability or the tab is a lie; a project finished in Operations must show as done or the tab offers work already completed and a research mod draws an unfinished node for finished work. The sync is idempotent and asks *are these two disagreeing*, never *has something just happened* -- so it also catches a project finished by a dev command, a quest reward or another mod. **And it never un-completes anything:** taking a capability back from a player who has it is worse than granting one twice, and twice is already impossible because the record is a boolean. **AND THE COST MODEL WAS A UNIT ERROR THAT MEASURING CAUGHT.** The first generator used `workRequired * (1 + insightCost)` on the reasoning that both are bench work. Our `workRequired` runs 4,000 to 18,000; vanilla's **113** research projects run **200 to 8,000, median 1,000**. It produced **8,000 to 108,000** -- the *cheapest* mirror equalling vanilla's single dearest project and the dearest thirteen times it. **"Either route works" would have been false while looking true**, and nothing in the build would have said so. Bands now map onto vanilla's own distribution at **800 to 7,000**, with the insight premium additive rather than multiplicative, and **checker 26 asserts the range** so the next version cannot drift out of it. **Three smaller faults, each caught by a tool rather than by me.** `--` inside an XML comment for the **third** time, so the generator now sanitises comment bodies at the point of writing -- and the first sanitiser rewrote the `--` of `<!--` itself, which is why it is scoped to bodies and never delimiters. A new package file is refused until `package-files.json` declares it, which is the allowlist working. And `check-keyed-strings` read the `RR_Mirror_` prefix as a whole defName, **correct behaviour on an incomplete rule rather than a false alarm**: it classifies prefixes by call site, and this one is concatenated into a def lookup rather than passed to `StartsWith`, so the rule learned the second call site.
+
+
+Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-05)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner direction — Forgejo is going down; push GitHub only (2026-10-06)
+
+**Verbatim owner direction (2026-10-06):** *"fyi the git.unityailab.com is going down so stop pushes to it until further notice, github two repos is still good"*
+
+- [x] **HELD, NOT REMOVED, AND LOUDLY. 0.12.99-dev.** The cascade is **six refs** while the hold stands: `github` × five branches here, plus `github/main` on the mod-only repository. **Zero to forgejo, both repositories.** **The distinction between held and removed is the whole point.** Deleting the remote would make every receipt read *complete*, and a future reader would never learn a destination had gone missing — which is exactly the eight-ref publication that went unnoticed for forty-five checkpoints, wearing a different hat. So `tools/export-public-repo.py` keeps `forgejo` in `REMOTES`, skips it by name through `HELD_REMOTES`, **prints the hold and its reason on every run**, and **refuses outright if every remote is held** — a publication with no destination must not report success. `PUBLISHING.md` opens with the hold so nobody re-adds it from habit. **Restored by the owner saying the host is back — never by time passing, and never because a push happens to succeed.** The procedure also says not to push to it in order to *test* whether it is up: a push that half-succeeds against a host mid-shutdown is how a remote ends up holding a commit nobody recorded. **And the twelve-ref receipt is not weakened for GitHub.** Each active remote is still read back by `ls-remote` and still has to hold the exact commit; the count simply says *of the active remotes*, with the held one named beside it.
+
+
+Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

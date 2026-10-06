@@ -75,6 +75,27 @@ REMOTES = [
     ("github", "https://github.com/G-Fourteen/Rimrooms-AsyncIndustries.git"),
 ]
 
+# **A NAMED, DATED HOLD ON ONE REMOTE, not a deleted remote.**
+#
+# Owner, 2026-10-06, verbatim: *"fyi the git.unityailab.com is going down so stop pushes to it until
+# further notice, github two repos is still good"*.
+#
+# Held rather than removed, and loudly, because this tool's whole job is to refuse a publication that
+# only looks complete. Deleting the entry would make the receipt read *1 of 1* and a future reader
+# would never learn a remote had gone missing -- which is exactly the eight-ref defect that went
+# unnoticed for forty-five checkpoints, wearing a different hat.
+#
+# So the remote stays in the list, it is skipped by name, and every run prints that it is held and
+# why. **Restored by the owner saying the host is back**, never by time passing.
+HELD_REMOTES = {
+    "forgejo": "the owner reported git.unityailab.com going down on 2026-10-06, "
+               "\"stop pushes to it until further notice\"",
+}
+
+
+def active_remotes():
+    return [(name, url) for name, url in REMOTES if name not in HELD_REMOTES]
+
 # Copied verbatim. **Only the licence**, and that is not an oversight.
 #
 # `README.md` is NOT copied. The working repository's readme is clean of internal vocabulary -- it
@@ -641,7 +662,14 @@ def main():
 
     if "--push" in sys.argv:
         print("")
-        for name, _ in REMOTES:
+        for name, reason in sorted(HELD_REMOTES.items()):
+            print("  HELD %-8s no push: %s" % (name, reason))
+        if not active_remotes():
+            print("")
+            print("REFUSED: every remote is held, so there is nothing to publish to. A publication "
+                  "with no destination must not report success.")
+            return 1
+        for name, _ in active_remotes():
             code = git("push", "-u", name, "main")
             print("  push %-8s %s" % (name, "ok" if code == 0 else "FAILED (exit %d)" % code))
             if code != 0:
@@ -660,7 +688,7 @@ def main():
         print("")
         print("  export HEAD              : %s" % (head[:7] if head else "unknown"))
         level = 0
-        for name, _ in REMOTES:
+        for name, _ in active_remotes():
             listed = git_out("ls-remote", "--heads", name, "main")
             at = listed.split()[0] if listed else ""
             ok = bool(head) and at == head
@@ -670,8 +698,9 @@ def main():
             if not ok:
                 problems.append("%s does not hold the export commit; the mod-only repository is "
                                 "not published" % name)
-        print("  PUBLIC RECEIPT           : %d of %d remote(s) at the export commit"
-              % (level, len(REMOTES)))
+        print("  PUBLIC RECEIPT           : %d of %d active remote(s) at the export commit%s"
+              % (level, len(active_remotes()),
+                 ("; %d held" % len(HELD_REMOTES)) if HELD_REMOTES else ""))
 
         if problems:
             print("")
