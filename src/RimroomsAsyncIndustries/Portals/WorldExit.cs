@@ -142,6 +142,19 @@ namespace RimroomsAsyncIndustries.Company
         /// </summary>
         internal const int WorldExitMaximumTiles = 20;
 
+        /// <summary>
+        /// The band a way out lands in once **RR_Cap_NearExit** (Spatial, tier 5) is held: three to
+        /// ten tiles instead of seven to twenty, which is roughly half the walk home.
+        ///
+        /// **Three rather than nought at the near end, and that floor is the point of the pair.**
+        /// A way out that surfaces on the branch's own doorstep is not a way out, it is a second
+        /// front door, and it would make the whole Spatial branch's subject — *where does this come
+        /// out* — stop being a question. The project moves the band; it does not collapse it.
+        /// </summary>
+        internal const int NearExitMinimumTiles = 3;
+        /// <summary>The far end of the narrowed band. See <see cref="NearExitMinimumTiles"/>.</summary>
+        internal const int NearExitMaximumTiles = 10;
+
         private List<WorldExitRecord> worldExits = new List<WorldExitRecord>();
 
         internal void ExposeWorldExits()
@@ -179,6 +192,12 @@ namespace RimroomsAsyncIndustries.Company
         /// `Rand`, so the roll is wrapped in a pushed state derived from the coordinate's own seed
         /// and the door's position — the same derivation every other generated property uses. A way
         /// out that moved on reload would be a different world every time somebody loaded a save.
+        ///
+        /// **A recorded way out never moves afterwards, including when the near-exit project
+        /// completes.** The band is read once, here, and the tile is then saved on the record. So
+        /// the research applies to doors surveyed after it and leaves every exit a branch has
+        /// already written down exactly where it is — which is the only reading that does not
+        /// relocate a place crews have walked to.
         /// </summary>
         internal CompanyActionResult RecordWorldExit(Thing door, string coordinateId, int seed)
         {
@@ -192,14 +211,28 @@ namespace RimroomsAsyncIndustries.Company
             PlanetTile from = headquarters.Tile;
             if (!from.Valid) { return CompanyActionResult.Refused("RR_WorldExit_NoAnchorTile"); }
 
-            PlanetTile destination;
-            bool found;
+            PlanetTile destination = default(PlanetTile);
+            bool found = false;
             Rand.PushState(CampaignSeed.Derive(seed,
                 "worldexit:" + door.Position.x + "," + door.Position.z, 1));
             try
             {
-                found = TileFinder.TryFindNewSiteTile(out destination, from,
-                    WorldExitMinimumTiles, WorldExitMaximumTiles, allowCaravans: false);
+                // **RR_Cap_NearExit** (Spatial, tier 5). The narrowed band is TRIED and the full band
+                // still answers if it finds nothing, so the project can only ever bring a way out
+                // closer and never cost a branch one it would otherwise have had. A tier that
+                // sometimes made exits harder to find would be a tier a player learns to regret, and
+                // the band is narrow enough that an ocean or a mountain belt in the wrong place would
+                // do exactly that.
+                if (HasCapability("RR_Cap_NearExit"))
+                {
+                    found = TileFinder.TryFindNewSiteTile(out destination, from,
+                        NearExitMinimumTiles, NearExitMaximumTiles, allowCaravans: false);
+                }
+                if (!found)
+                {
+                    found = TileFinder.TryFindNewSiteTile(out destination, from,
+                        WorldExitMinimumTiles, WorldExitMaximumTiles, allowCaravans: false);
+                }
             }
             finally { Rand.PopState(); }
 

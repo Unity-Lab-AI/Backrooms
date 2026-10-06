@@ -60,6 +60,24 @@ namespace RimroomsAsyncIndustries.Generation
         /// </summary>
         internal const int TellPercent = 12;
 
+        /// <summary>
+        /// The share once **RR_Cap_TrainedEye** (Measurement, tier 5) is held. Roughly one object
+        /// in six rather than one in eight.
+        ///
+        /// **One step, not uncapped**, which is the reservation the T5 sweep attached to this
+        /// candidate: *"At 12% a wrong fixture is an event; at 50% it is wallpaper."* A branch that
+        /// has learned to read a space notices more of what is wrong with it; it does not turn the
+        /// space into a museum of placards.
+        ///
+        /// **Raising the threshold can only ever ADD tells, never move one**, and that falls out of
+        /// the derivation rather than being arranged. The roll is a stable hash of the coordinate,
+        /// the room, the variant and the definition, tested with `roll % 100 &gt;= threshold`, so a
+        /// larger threshold admits a strict superset. A coordinate regenerated after the research
+        /// keeps every tell a crew already wrote down and finds some it had walked past — which is
+        /// exactly what *the trained eye* ought to mean, and the opposite of what a reroll would.
+        /// </summary>
+        internal const int TrainedEyeTellPercent = 18;
+
         /// <summary>Bumped when the derivation changes, so a tell cannot silently move.</summary>
         private const int TellVersion = 1;
 
@@ -130,11 +148,32 @@ namespace RimroomsAsyncIndustries.Generation
                 + ":" + variant + ":" + (thing.def == null ? "" : thing.def.defName);
             int roll = DestinationService.StableHash(coordinate.Seed, key, TellVersion);
             if (roll < 0) { roll = ~roll; }
-            if (roll % 100 >= TellPercent) { return; }
+            if (roll % 100 >= MarkedPercent()) { return; }
 
             RimroomsFixtureTellDef chosen = Choose(thing.def, depth, roll);
             if (chosen == null) { return; }
             comp.Mark(chosen);
+        }
+
+        /// <summary>
+        /// The share of placed objects that carry a tell, as the branch currently stands.
+        ///
+        /// Asked per call rather than cached, because a project completed mid-game has to apply to
+        /// the next coordinate opened without a restart, and this runs once per placed object during
+        /// a generation pass rather than on a tick.
+        ///
+        /// **No game is the base figure, not zero and not the better one.** This is reached from a
+        /// generation pass, which can be driven by a map the game loaded before the campaign
+        /// component exists; a null campaign means *we cannot know what this branch has learned*,
+        /// and the honest answer to that is the number every branch starts with.
+        /// </summary>
+        private static int MarkedPercent()
+        {
+            RimroomsCampaignComponent campaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            return campaign != null && campaign.HasCapability("RR_Cap_TrainedEye")
+                ? TrainedEyeTellPercent
+                : TellPercent;
         }
 
         /// <summary>

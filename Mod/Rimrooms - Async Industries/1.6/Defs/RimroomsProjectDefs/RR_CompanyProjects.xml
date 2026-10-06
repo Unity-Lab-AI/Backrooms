@@ -650,4 +650,92 @@ A properly built room holds it back considerably better. **It never stops entire
     <grantsCapabilities><li>RR_Cap_SteadyNerve</li></grantsCapabilities>
   </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
 
+  <!-- ==================================================================================== -->
+  <!-- TIER 5 - THE SETTLED BRANCH                                                          -->
+  <!--                                                                                      -->
+  <!-- FOUR projects, and the three absences are again the important part.                   -->
+  <!--                                                                                      -->
+  <!-- These are not a sweep result. docs/research/RESEARCH_T5_T6_SWEEP.md enumerated 278    -->
+  <!-- constants against three tests and proposed six candidates; the owner chose. Four were -->
+  <!-- CONFIDENT and are built here. One was blocked on content. One was superseded by a     -->
+  <!-- later direction, below.                                                               -->
+  <!--                                                                                      -->
+  <!-- FIELDCRAFT HAS NO TIER 5, AND IT IS THE ONE ABSENCE THAT CONTRADICTS AN ANSWER.       -->
+  <!-- Asked which tiers to build, the owner answered "All six, including the fourth crew    -->
+  <!-- member". Minutes later, on a different question: "rememberber pawns can cross gate as -->
+  <!-- they plkease so no max number". The candidate WAS the fourth crew member: a project    -->
+  <!-- whose whole effect was raising CrewPlanner.MaxCrew from three to four. With no         -->
+  <!-- maximum there is nothing for it to raise, so building it would have shipped "a project -->
+  <!-- that promises something and changes nothing", which is the exact phrase this file      -->
+  <!-- deleted four projects for at 0.12.5-dev. The owner may still want a Fieldcraft tier 5. -->
+  <!-- It has to be about a different number, and that is a question rather than a gap.       -->
+  <!--                                                                                      -->
+  <!-- GATE, LOGISTICS, COMMERCE AND TRANSPORT have none for the reasons their earlier tiers  -->
+  <!-- already record. Nothing exists above a connection that no longer counts down. Every    -->
+  <!-- Procurement knob is claimed. Commerce's candidates BECAME PLAYER SETTINGS at           -->
+  <!-- 0.12.98-dev, and a research tier over a number the player already drags is two         -->
+  <!-- controls fighting. Transport has no tier 0 by design.                                  -->
+  <!--                                                                                      -->
+  <!-- Ladder shape continues tiers 0 to 4: insight 6, five route logs, four distortion logs  -->
+  <!-- and three entity logs. Every one moves a constant no other project touches, and every  -->
+  <!-- one is visible without reading source, which is the bar the sweep set and the reason    -->
+  <!-- four branches got nothing.                                                             -->
+  <!-- ==================================================================================== -->
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Facilities_ServicingRegime</defName>
+    <label>Servicing Regime</label>
+    <description>Write the servicing down. What gets checked, how often, by whom, and what a certified technician is allowed to sign off without asking anybody.\n\nA designated gate's assembly wears half as fast, so it needs servicing about half as often, and a certified reserve technician does the work in half the time rather than seven tenths. The wear figure on the gate's own pane is where you will see it.</description>
+    <insightCost>6</insightCost>
+    <workRequired>22000</workRequired>
+    <minimumIntellectual>8</minimumIntellectual>
+    <requiredRouteLogs>5</requiredRouteLogs>
+    <requiredDistortionLogs>4</requiredDistortionLogs>
+    <requiredEntityLogs>3</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Facilities_PractisedDialling</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_ServicingRegime</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Measurement_TrainedEye</defName>
+    <label>The Trained Eye</label>
+    <description>Teach the branch what a space gets wrong about itself. Not the distortion anybody would notice, the chair that is the wrong chair.\n\nAbout one object in six carries a tell instead of one in eight. A coordinate the branch has already read keeps every tell it wrote down and gives up a few it had walked past: the place did not change, your people did.</description>
+    <insightCost>6</insightCost>
+    <workRequired>22000</workRequired>
+    <minimumIntellectual>8</minimumIntellectual>
+    <requiredRouteLogs>5</requiredRouteLogs>
+    <requiredDistortionLogs>4</requiredDistortionLogs>
+    <requiredEntityLogs>3</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Measurement_StatementDiscipline</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_TrainedEye</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Spatial_NearExit</defName>
+    <label>The Near Exit</label>
+    <description>Work out which part of the world a chain of spaces actually sits under, and stop walking out wherever the corridors happened to lead.\n\nA way out comes up three to ten tiles from the branch instead of seven to twenty, which is roughly half the walk home. A way out already recorded does not move, and where nothing valid lies that close the survey still reports the farther one.</description>
+    <insightCost>6</insightCost>
+    <workRequired>22000</workRequired>
+    <minimumIntellectual>8</minimumIntellectual>
+    <requiredRouteLogs>5</requiredRouteLogs>
+    <requiredDistortionLogs>4</requiredDistortionLogs>
+    <requiredEntityLogs>3</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Spatial_SurfaceReading</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_NearExit</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Entities_QuietProtocol</defName>
+    <label>Quiet Protocol</label>
+    <description>Standing procedure at the threshold and in the halls. What is not touched, what is not answered, what is written down and then left exactly where it was.\n\nOne thing happens to a crew per opening instead of two. This is the only project in the tree that pays for safety by subtracting content, so it stops at one: an opening where nothing could happen would not be a quieter coordinate. Half of every coordinate's rooms stay bare regardless, and no project moves that.</description>
+    <insightCost>6</insightCost>
+    <workRequired>22000</workRequired>
+    <minimumIntellectual>8</minimumIntellectual>
+    <requiredRouteLogs>5</requiredRouteLogs>
+    <requiredDistortionLogs>4</requiredDistortionLogs>
+    <requiredEntityLogs>3</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Entities_SteadyNerve</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_QuietProtocol</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
 </Defs>

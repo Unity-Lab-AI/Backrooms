@@ -3,8 +3,32 @@
 **Owner direction, 2026-10-05, asked how to resolve the open research-tier row. Verbatim:**
 *"Sweep the constants and propose the tiers to you"*.
 
-So this is a **proposal**, not a build. Nothing in `RR_CompanyProjects.xml` changes until the owner
-picks from the list below. **Six candidates survive, four branches get none, and the reason each
+> ## ⛔ THE OWNER HAS PICKED, AND FOUR OF THESE ARE BUILT. READ THIS BEFORE SWEEPING AGAIN. ⛔
+>
+> **Asked which to build, the owner answered: *"All six, including the fourth crew member"*.**
+>
+> | | Candidate | Outcome, 0.12.99-dev |
+> |---|---|---|
+> | 1 | Facilities T5 servicing interval | **BUILT** as `RR_Facilities_ServicingRegime` |
+> | 2 | Measurement T5 trained eye | **BUILT** as `RR_Measurement_TrainedEye` |
+> | 3 | Spatial T5 near exit | **BUILT** as `RR_Spatial_NearExit` |
+> | 4 | Entities T5 quiet protocol | **BUILT** as `RR_Entities_QuietProtocol`, `MaxEventsPerOpening` only |
+> | 5 | Fieldcraft T5 fourth hand | **SUPERSEDED. Not built, and not forgotten.** |
+> | 6 | Spatial T6 seventh level | Still gated on the sixth palette band |
+>
+> **Candidate 5 was superseded minutes after it was approved**, by a direction answering a
+> different question: *"rememberber pawns can cross gate as they plkease so no max number"*. The
+> candidate's whole effect was raising `CrewPlanner.MaxCrew` from three to four. With no maximum
+> there is nothing to raise, so it would have been *"a project that promises something and changes
+> nothing"* — the exact phrase four deleted projects were deleted for. **A Fieldcraft T5 can still
+> exist; it has to be about a different number, and that is the owner's question.**
+>
+> Both halves are enforced rather than remembered: `.local/register/proof-research-tier5.py` asserts
+> the four, the five absences, and the condition that makes the Fieldcraft absence correct — **if a
+> crew cap ever returns, that proof starts failing and names this document.**
+
+So this was a **proposal**, not a build. Nothing in `RR_CompanyProjects.xml` changed until the owner
+picked from the list below. **Six candidates survive, four branches get none, and the reason each
 branch gets none is the point of the document** — a branch with no honest tier is a finding, not a
 gap.
 

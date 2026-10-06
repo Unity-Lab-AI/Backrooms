@@ -154,7 +154,8 @@ removed per §1.1.
 
 ## 3. The research tree
 
-Five tiers and nine branches, from `CAMPAIGN_CONTENT_CATALOG.md`. **Tiers are progression bands,
+Six tiers and nine branches; the first five are `CAMPAIGN_CONTENT_CATALOG.md`'s and the sixth was
+swept for and chosen at 0.12.99-dev. **Tiers are progression bands,
 not a promise that every branch is a linear chain** — that caveat is the prep material's own and
 it is kept, because §1.2 needs alternate routes through the tree as much as through a mission.
 
@@ -167,23 +168,37 @@ it is kept, because §1.2 needs alternate routes through the tree as much as thr
 | **2 — Repeatable operations** | Revisit known coordinates; reduce preventable failures |
 | **3 — Remote operations** | Support more than one site; work beyond headquarters |
 | **4 — Deep operations** | Combine known techniques; extend reach |
+| **5 — The settled branch** | Service, read and leave a space on the branch's own terms |
+
+**Tier 5 was added at 0.12.99-dev and it is RAGGED ON PURPOSE.** Four branches reach it, five do
+not, and every absence is a finding recorded beside the tier it is absent from in
+`RR_CompanyProjects.xml`. The sweep that produced it is
+[`research/RESEARCH_T5_T6_SWEEP.md`](research/RESEARCH_T5_T6_SWEEP.md), and the bar it applied is
+the one this chart implies: **a tier may only exist where a player could name the effect in one
+sentence, from play, without reading source.**
 
 ### 3.2 Branches, and what each already has
 
-| Branch | Built rungs | Missing |
-|---|---|---|
-| **Gate engineering and stability** | **All four**: Telemetry → Field Stability → Sustained Aperture → Standing Connection | multi-gate capability |
-| **Facilities and power** | — | reserve capacity, protected rooms, repair practice |
-| **Fieldcraft and medicine** | — | kits, triage, recovery, training, rescue teams |
-| **Measurement and evidence** | the log kinds themselves | sensors, comparison, confidence, client reports |
-| **Spatial mapping and topology** | route planning unlock | atlases, alternate exits, deeper surveys |
-| **Entities and containment** | — | detection, quarantine, scoped study |
-| **Communications and logistics** | — | link range, delivery planning, caches, relays |
-| **Commerce and organisation** | — | better offers, specialist recruitment, leases |
-| **Transport and orbital support** | — | **DLC-optional only.** Never required |
+**Measured out of `RR_CompanyProjects.xml` rather than remembered.** An earlier version of this
+table said *"—"* for seven of the nine branches long after they were built, which is the worst
+failure mode a chart has: a document that understates the work reads as a to-do list and gets the
+same thing built twice.
 
-**The gate branch is the only complete one, and it is the spine.** It was completed in 0.10.9-dev
-and the other eight are the work this chart authorises next.
+| Branch | Built rungs | Top band | Nothing above it, because |
+|---|---|---|---|
+| **Gate engineering and stability** | **All four**: Telemetry → Field Stability → Sustained Aperture → Standing Connection | 3 | the top rung already removes the countdown, and there is no state above *no countdown* |
+| **Facilities and power** | all six: reserve, aperture, standby, sites, dialling, servicing | **5** | — |
+| **Fieldcraft and medicine** | five: drill, rescue, relief watch, way home, decompression | 4 | its tier-5 candidate was the crew cap, and **there is no cap** |
+| **Measurement and evidence** | all six: second reading, corroboration, standards, rapid survey, statements, the trained eye | **5** | — |
+| **Spatial mapping and topology** | all six: atlas, alternate exits, known address, coordinate reading, surface reading, the near exit | **5** | — |
+| **Entities and containment** | all six: early warning, detection, containment, space discipline, steady nerve, quiet protocol | **5** | — |
+| **Communications and logistics** | four: standing orders, relays, forward dispatch, unattended delivery | 3 | every Procurement knob is claimed; what is left are safety bounds no player reaches |
+| **Commerce and organisation** | five: terms, leases, recruitment, site economies, open market | 4 | its remaining knobs **became player settings**, and a project over a slider you already own is two controls fighting |
+| **Transport and orbital support** | none, deliberately | — | **no tier 0 by design.** DLC-optional throughout, and a top on an empty branch is incoherent |
+
+**Forty-two projects across nine branches and six bands.** The gate branch is the spine and was
+completed first, at 0.10.9-dev; the eight others were written between 0.12.5-dev and 0.12.99-dev,
+with four tier-3 projects deleted along the way for promising something and changing nothing.
 
 ### 3.3 The linkage rule
 

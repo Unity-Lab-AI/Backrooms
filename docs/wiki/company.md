@@ -190,7 +190,7 @@ Insight from analysed records buys unlocks across **nine branches**:
 | **Commerce and organisation** | Better offers, specialist recruitment, leases |
 | **Transport and orbital support** | Expansion content only, and never required |
 
-Branches run through **five progression bands**:
+Branches run through **six progression bands**:
 
 | Band | What it is for |
 |---|---|
@@ -199,9 +199,28 @@ Branches run through **five progression bands**:
 | **2 — Repeatable operations** | Revisit known coordinates; reduce preventable failures |
 | **3 — Remote operations** | Support more than one site; work beyond headquarters |
 | **4 — Deep operations** | Combine known techniques; extend reach |
+| **5 — The settled branch** | Service, read and leave a space on your own terms |
 
 **A band is a progression band, not a single chain.** Every band above the first is reachable by
 more than one path, so a branch is never locked behind one project you have not happened to unlock.
+
+**The top band is deliberately narrow: four branches reach it and five do not.** Nothing exists
+above a connection that no longer counts down, every delivery number is already claimed by a lower
+band, and the trade rates became sliders you own rather than projects you buy. A branch with no top
+rung is finished, not unfinished.
+
+The four that do reach it:
+
+| Branch | Band 5 | What changes |
+|---|---|---|
+| **Facilities and power** | Servicing Regime | Gates wear half as fast, and a certified technician services one in half the work |
+| **Measurement and evidence** | The Trained Eye | About one object in six carries a wrong detail instead of one in eight |
+| **Spatial mapping** | The Near Exit | A way out comes up three to ten tiles from you instead of seven to twenty |
+| **Entities and containment** | Quiet Protocol | One thing happens per opening instead of two |
+
+**Quiet Protocol is the only project in the whole tree that pays for safety by removing
+something.** It stops at one for that reason, and half of every coordinate's rooms stay bare
+whatever you research. That is a guarantee, not a reward.
 
 A project's prerequisites are only ever completed logs, a named project below it, and the insight
 price. **Nothing requires time to have passed.**

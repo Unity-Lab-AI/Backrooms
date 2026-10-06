@@ -109,6 +109,35 @@ namespace RimroomsAsyncIndustries.Gate
         public const float TechnicianServiceFactor = 0.7f;
 
         /// <summary>
+        /// What a trained technician saves once **RR_Cap_ServicingRegime** (Facilities, tier 5) is
+        /// held: half the work rather than seven tenths.
+        ///
+        /// **It deepens the certification rather than replacing it.** An untrained servicer is
+        /// unaffected by the project, which is what the card says — *a technician does it faster* —
+        /// and it keeps the training worth running for a branch that has the research and nobody
+        /// qualified.
+        /// </summary>
+        public const float RegimeTechnicianServiceFactor = 0.5f;
+
+        /// <summary>
+        /// How much slower the assembly wears once the servicing regime is written down.
+        ///
+        /// **This is the half of the project that moves the interval, and it is applied to WEAR
+        /// rather than to <see cref="ServiceCapacityTicks"/> — deliberately, because the capacity
+        /// is a saved quantity's denominator.** Raising the tank would silently rewrite what every
+        /// already-saved `serviceConditionTicks` means: a gate sitting at a full 600,000 would read
+        /// as half empty the moment the project completed, and the player would see a finished
+        /// research project make their gates worse. Halving wear leaves every stored figure
+        /// meaning exactly what it meant and still produces the card's own sentence — the gate
+        /// needs servicing half as often.
+        ///
+        /// **And it is visible without reading source**, which is the sweep's bar for a tier:
+        /// <see cref="ServicingReadout"/> already prints the wear multiplier, so the number on the
+        /// gate's inspect pane halves where the player is already looking.
+        /// </summary>
+        public const float RegimeWearFactor = 0.5f;
+
+        /// <summary>
         /// The work this particular person needs to recondition the gate.
         ///
         /// **Asked per pawn rather than folded into the flat figure**, because that is what a
@@ -121,9 +150,11 @@ namespace RimroomsAsyncIndustries.Gate
         {
             RimroomsCampaignComponent campaign = NativeCampaign;
             if (campaign == null || servicer == null) { return ReconditionWorkRequired; }
-            return campaign.HasCertification(servicer, "RR_Cert_ReserveTechnician")
-                ? ReconditionWorkRequired * TechnicianServiceFactor
-                : ReconditionWorkRequired;
+            if (!campaign.HasCertification(servicer, "RR_Cert_ReserveTechnician"))
+            { return ReconditionWorkRequired; }
+            return ReconditionWorkRequired * (campaign.HasCapability("RR_Cap_ServicingRegime")
+                ? RegimeTechnicianServiceFactor
+                : TechnicianServiceFactor);
         }
 
         /// <summary>A gate that has never been serviced starts in full condition.</summary>
@@ -164,6 +195,14 @@ namespace RimroomsAsyncIndustries.Gate
                 float factor = RoomWearFactor();
                 if (!NativeElectricalAvailable()) { factor *= UnpoweredWearFactor; }
                 if (IsOpening && !IsEmergency) { factor *= OpenWearFactor; }
+
+                // **RR_Cap_ServicingRegime** (Facilities, tier 5). Applied last and multiplicatively,
+                // so it is worth the same to a filthy unpowered gate as to a sterile one rather than
+                // quietly excusing a room nobody cleans -- the room is still the dominant term, which
+                // is the half of this model the owner's "cool down dead zone" sits in.
+                RimroomsCampaignComponent campaign = NativeCampaign;
+                if (campaign != null && campaign.HasCapability("RR_Cap_ServicingRegime"))
+                { factor *= RegimeWearFactor; }
                 return factor;
             }
         }

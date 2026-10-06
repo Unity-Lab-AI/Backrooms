@@ -5,9 +5,9 @@
   pairing. A mirror that drifts is a research tree that lies about what it unlocks.
 
   Owner, 2026-10-06: "AND A MAJOR ISSUE: I DONT SEE ANY RESEARCH FOR THE GATE SYSTEMS AND
-  EVERYTHING THIS MOD HAS!!!!!" They were right to look in the Research tab. The 38
-  projects existed and were reachable only through an Operations section, so this mod
-  contributed nothing to the tab every player opens, nor to ResearchTree or Research
+  EVERYTHING THIS MOD HAS!!!!!" They were right to look in the Research tab. Every one of
+  the company projects existed and was reachable only through an Operations section, so this
+  mod contributed nothing to the tab every player opens, nor to ResearchTree or Research
   Whatever, both of which the owner runs.
 
   Asked how to fix it: "Two genuine routes, either works" and "Own tab, nine columns by
@@ -16,8 +16,10 @@
 
   BOTH LAYOUT MECHANISMS ARE EMITTED because they are different mechanisms. Vanilla uses
   researchViewX / researchViewY; every research mod derives its own layout from the
-  prerequisite graph. The coordinates give vanilla nine columns by five bands, and the
-  graph is correct so each mod draws the same shape its own way.
+  prerequisite graph. The coordinates give vanilla nine columns by six bands, and the
+  graph is correct so each mod draws the same shape its own way. Columns are ragged on
+  purpose: four branches have nothing honest to put in the top band, and the company file
+  records the reason for each absence beside the tier it is absent from.
 
   THE REGISTER ASKED FOR THIS SHAPE, which is why a steer that forbade shipping a
   ResearchProjectDef at all is now wrong. Row 191 ResearchTree, planned use: "The
@@ -167,6 +169,20 @@ Twelve places on the books instead of eight. The Sites pane stops refusing, and 
     <researchViewY>4.50</researchViewY>
     <prerequisites>
       <li>RR_Mirror_RR_Facilities_SiteNetwork</li>
+    </prerequisites>
+  </ResearchProjectDef>
+
+  <ResearchProjectDef>
+    <defName>RR_Mirror_RR_Facilities_ServicingRegime</defName>
+    <label>Servicing Regime</label>
+    <description>Write the servicing down. What gets checked, how often, by whom, and what a certified technician is allowed to sign off without asking anybody.\n\nA designated gate's assembly wears half as fast, so it needs servicing about half as often, and a certified reserve technician does the work in half the time rather than seven tenths. The wear figure on the gate's own pane is where you will see it.</description>
+    <baseCost>7800</baseCost>
+    <techLevel>Ultra</techLevel>
+    <tab>RR_Research</tab>
+    <researchViewX>1.00</researchViewX>
+    <researchViewY>5.50</researchViewY>
+    <prerequisites>
+      <li>RR_Mirror_RR_Facilities_PractisedDialling</li>
     </prerequisites>
   </ResearchProjectDef>
 
@@ -382,6 +398,20 @@ A survey takes about ten seconds of standing there rather than fourteen. Visible
   </ResearchProjectDef>
 
   <ResearchProjectDef>
+    <defName>RR_Mirror_RR_Measurement_TrainedEye</defName>
+    <label>The Trained Eye</label>
+    <description>Teach the branch what a space gets wrong about itself. Not the distortion anybody would notice, the chair that is the wrong chair.\n\nAbout one object in six carries a tell instead of one in eight. A coordinate the branch has already read keeps every tell it wrote down and gives up a few it had walked past: the place did not change, your people did.</description>
+    <baseCost>7800</baseCost>
+    <techLevel>Ultra</techLevel>
+    <tab>RR_Research</tab>
+    <researchViewX>4.00</researchViewX>
+    <researchViewY>5.50</researchViewY>
+    <prerequisites>
+      <li>RR_Mirror_RR_Measurement_StatementDiscipline</li>
+    </prerequisites>
+  </ResearchProjectDef>
+
+  <ResearchProjectDef>
     <defName>RR_Mirror_RR_Spatial_CoordinateAtlas</defName>
     <label>Coordinate Atlas</label>
     <description>Keep a real atlas rather than a folder of notes. Rooms get numbers, the numbers get used, and the branch stops relying on whoever happened to be there last time.
@@ -453,6 +483,20 @@ Roughly one door in eight leads onward rather than one in twelve. **The limit of
     <researchViewY>4.50</researchViewY>
     <prerequisites>
       <li>RR_Mirror_RR_Spatial_CoordinateReading</li>
+    </prerequisites>
+  </ResearchProjectDef>
+
+  <ResearchProjectDef>
+    <defName>RR_Mirror_RR_Spatial_NearExit</defName>
+    <label>The Near Exit</label>
+    <description>Work out which part of the world a chain of spaces actually sits under, and stop walking out wherever the corridors happened to lead.\n\nA way out comes up three to ten tiles from the branch instead of seven to twenty, which is roughly half the walk home. A way out already recorded does not move, and where nothing valid lies that close the survey still reports the farther one.</description>
+    <baseCost>7800</baseCost>
+    <techLevel>Ultra</techLevel>
+    <tab>RR_Research</tab>
+    <researchViewX>5.00</researchViewX>
+    <researchViewY>5.50</researchViewY>
+    <prerequisites>
+      <li>RR_Mirror_RR_Spatial_SurfaceReading</li>
     </prerequisites>
   </ResearchProjectDef>
 
@@ -603,6 +647,20 @@ A properly built room holds it back considerably better. **It never stops entire
     <researchViewY>4.50</researchViewY>
     <prerequisites>
       <li>RR_Mirror_RR_Entities_SpaceDiscipline</li>
+    </prerequisites>
+  </ResearchProjectDef>
+
+  <ResearchProjectDef>
+    <defName>RR_Mirror_RR_Entities_QuietProtocol</defName>
+    <label>Quiet Protocol</label>
+    <description>Standing procedure at the threshold and in the halls. What is not touched, what is not answered, what is written down and then left exactly where it was.\n\nOne thing happens to a crew per opening instead of two. This is the only project in the tree that pays for safety by subtracting content, so it stops at one: an opening where nothing could happen would not be a quieter coordinate. Half of every coordinate's rooms stay bare regardless, and no project moves that.</description>
+    <baseCost>7800</baseCost>
+    <techLevel>Ultra</techLevel>
+    <tab>RR_Research</tab>
+    <researchViewX>7.00</researchViewX>
+    <researchViewY>5.50</researchViewY>
+    <prerequisites>
+      <li>RR_Mirror_RR_Entities_SteadyNerve</li>
     </prerequisites>
   </ResearchProjectDef>
 

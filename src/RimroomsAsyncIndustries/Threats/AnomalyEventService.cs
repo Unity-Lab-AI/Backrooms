@@ -17,7 +17,9 @@ namespace RimroomsAsyncIndustries.Threats
     ///
     /// ## Bounded per opening, and recorded
     ///
-    /// At most <see cref="MaxEventsPerOpening"/> fire in a single visit, and a one-shot event
+    /// At most <see cref="MaxEventsPerOpening"/> fire in a single visit — or
+    /// <see cref="QuietProtocolEventsPerOpening"/> for a branch that has earned the quiet
+    /// protocol — and a one-shot event
     /// is written to the coordinate so a revisit does not replay it. That is the same
     /// resume-rather-than-reroll rule the escalation ladder follows, applied to events: a space
     /// a player knows should not perform its party trick every single time they walk in.
@@ -33,6 +35,49 @@ namespace RimroomsAsyncIndustries.Threats
     {
         /// <summary>How many events may fire in one visit.</summary>
         public const int MaxEventsPerOpening = 2;
+
+        /// <summary>
+        /// The ceiling once **RR_Cap_QuietProtocol** (Entities, tier 5) is held: one event per
+        /// opening rather than two.
+        ///
+        /// ## This project is the only one in the tree that buys safety by subtracting content,
+        /// and the owner was shown that before approving it
+        ///
+        /// The T5 sweep attached a reservation to this candidate rather than recommending it
+        /// outright: *"Every other project on this list adds a capability; this one removes
+        /// encounters."* It is still honest — a branch that has written procedure about what lives
+        /// down there has earned fewer surprises per visit — but it is the one tier where the
+        /// player's reward is less happening, so the subtraction is bounded at one rather than zero.
+        /// **An opening where nothing can happen is not a quieter coordinate, it is a different
+        /// game**, and the band ladder already guarantees the quiet case: a first visit is always
+        /// <see cref="CoordinatePressureLadder.Band.Quiet"/> and a Quiet band fires nothing at all.
+        ///
+        /// ## And it does NOT touch `QuietRoomFraction`, which the owner confirmed at a second fork
+        ///
+        /// The sweep offered either constant and recommended this one: *"The first is pacing; the
+        /// second is a promise."* `CoordinatePressureLadder.QuietRoomFraction` is half of the
+        /// solo-survivability guarantee — *half of every coordinate's rooms bare by count rather
+        /// than by chance* — and **a research project that moves a guarantee turns an absolute into
+        /// a tech gate.** That is a rule rather than a note:
+        /// `check-standalone-guarantee.py` refuses a build where the deciding function reads a
+        /// capability at all.
+        /// </summary>
+        public const int QuietProtocolEventsPerOpening = 1;
+
+        /// <summary>
+        /// How many events may fire in this branch's openings, as it currently stands.
+        ///
+        /// A null campaign answers with the base ceiling rather than the better one: not knowing
+        /// what a branch has learned is not the same as knowing it has learned this.
+        /// </summary>
+        private static int EventCeiling()
+        {
+            RimroomsCampaignComponent campaign = Verse.Current.Game == null
+                ? null : Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
+            return campaign != null && campaign.HasCapability("RR_Cap_QuietProtocol")
+                ? QuietProtocolEventsPerOpening
+                : MaxEventsPerOpening;
+        }
 
         /// <summary>
         /// Considers firing events for an arrival. Called once when a coordinate becomes
@@ -68,8 +113,9 @@ namespace RimroomsAsyncIndustries.Threats
             // mod list and would make the same seed produce different events.
             legal.Sort((left, right) => string.CompareOrdinal(left.defName, right.defName));
 
+            int ceiling = EventCeiling();
             int fired = 0;
-            for (int attempt = 0; attempt < legal.Count && fired < MaxEventsPerOpening; attempt++)
+            for (int attempt = 0; attempt < legal.Count && fired < ceiling; attempt++)
             {
                 int roll = Gen.HashCombineInt(seed, attempt * 7717);
                 if (roll < 0) { roll = ~roll; }
