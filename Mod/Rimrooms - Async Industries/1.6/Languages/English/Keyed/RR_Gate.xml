@@ -161,4 +161,23 @@ No setting will let an operator starve, collapse or stand in a fire. That floor 
   <RR_GateWatch_StrictDesc>Stays through hunger and tiredness, and leaves only at the point where staying would injure them. Hold a window open with this, then relieve them.</RR_GateWatch_StrictDesc>
   <RR_GateWatch_LeftFloor>left the console before it hurt them</RR_GateWatch_LeftFloor>
   <RR_GateWatch_LeftPosture>left the console to see to themselves</RR_GateWatch_LeftPosture>
+
+  <!-- SOMETHING ON YOUR MAP WENT OUT THROUGH THE GATE. Owner, 2026-10-06: "a enemy can break in and
+       cross the gate to get valuables and members", then "hold up now friendlys can too".
+
+       A friendly crossing is lettered as loudly as a hostile one, deliberately: a guest who dies in a
+       coordinate is a death the player caused by leaving a hole open, and a faction penalty arriving
+       with no story the player can connect it to is the one outcome that must not happen.
+
+       {0} is who went, {1} the gate. -->
+  <RR_Egress_HostileLabel>Something went through the gate</RR_Egress_HostileLabel>
+  <RR_Egress_HostileText>{0} reached {1} while it was open and went through it.
+
+They are on the other side now, and they came for what you keep there. Closing the gate does not bring them back, and it does not bring your people back either.</RR_Egress_HostileText>
+  <RR_Egress_FriendlyLabel>Somebody wandered through the gate</RR_Egress_FriendlyLabel>
+  <RR_Egress_FriendlyText>{0} walked through {1} while it was open.
+
+They were not invited and nobody sent them. Whatever happens to them in there happened on your watch.</RR_Egress_FriendlyText>
+  <RR_Egress_NotEligible>That one cannot cross on its own legs.</RR_Egress_NotEligible>
+  <RR_Egress_NoOpening>The gate is not holding an open connection.</RR_Egress_NoOpening>
 </LanguageData>

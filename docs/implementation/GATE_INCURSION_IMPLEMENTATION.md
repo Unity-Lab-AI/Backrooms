@@ -32,11 +32,11 @@ The tech condition is `PortalWindowTier >= 1`, which requires the `RR_GateTeleme
 
 Invariant #1 holds exactly as written, and the wording matters:
 
-- `MayApproachThresholdForTraversal` **still returns false for everything.** Nothing on the far side is ever given a threshold as a destination or a reason to converge on one.
+- `MayApproachThresholdForTraversal` **still returns false for everything**, including after the 2026-10-06 owner direction that added outbound crossing. Nothing on either side is ever given a threshold as a destination or a reason to converge on one. **That is why incursion stayed fair and why its outbound mirror is fair too:** a pawn is at the doorway because of its own business, and the gate notices what is already there.
 - A hostile walks to the doorway **because your people are standing there** — that is the pursuit from 0.9.5-dev, which is vanilla assault-lord behaviour aimed at colonists, not at a door.
 - The gate then notices what is already on its doorstep and **asks the policy**. The decision is made in `PortalTraversalPolicy.IncursionFailureKey` and nowhere else, which is the same shape as every other crossing in the mod.
 
-`AutonomousNonPlayerTraversalPermitted` is still a constant `false`. The class-level documentation was **rewritten rather than left standing**, because a founding comment that no longer describes the code is worse than no comment.
+`AutonomousNonPlayerTraversalPermitted` **was removed 2026-10-06 by owner direction**, because a constant denying what the code beside it now does is exactly the kind of founding comment this record already refused to leave standing. **And the lord defect this record did not catch is fixed in the same change:** `Transfer` despawned an intruder out from under its `Lord` -- which is per map -- and spawned it with none, so a hostile that followed a crew home arrived with no assault behaviour at all. It now gets `LordJob_AssaultColony` with `canSteal` and `canKidnap` on arrival. The class-level documentation was **rewritten rather than left standing**, because a founding comment that no longer describes the code is worse than no comment.
 
 ## Losing a pawn to a bug is not a threat, it is a corruption
 

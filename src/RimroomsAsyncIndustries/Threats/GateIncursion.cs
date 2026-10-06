@@ -5,6 +5,7 @@ using RimroomsAsyncIndustries.Gate;
 using RimroomsAsyncIndustries.Portals;
 using RimWorld;
 using Verse;
+using Verse.AI.Group;
 
 namespace RimroomsAsyncIndustries.Threats
 {
@@ -35,12 +36,28 @@ namespace RimroomsAsyncIndustries.Threats
     ///
     /// ## The inhabitant still decides nothing
     ///
-    /// Invariant #1 holds exactly as written. No pawn asks to cross and nothing on the far
-    /// side is ever given a gate as a destination -- <see
-    /// cref="PortalTraversalPolicy.MayApproachThresholdForTraversal"/> still returns false for
-    /// everything, so a hostile walks to the threshold because **your people are standing
-    /// there**, not because a door is open. The gate notices what is already on its doorstep
-    /// and the policy decides. That is the same shape as every other crossing in the mod.
+    /// No pawn asks to cross and nothing on the far side is ever given a gate as a destination
+    /// -- <see cref="PortalTraversalPolicy.MayApproachThresholdForTraversal"/> still returns
+    /// false for everything, so a hostile walks to the threshold because **your people are
+    /// standing there**, not because a door is open. The gate notices what is already on its
+    /// doorstep and the policy decides. That is the same shape as every other crossing in the mod.
+    ///
+    /// ## AND THIS IS NOW ONE OF TWO DIRECTIONS, NOT THE ONE EXCEPTION
+    ///
+    /// **Owner direction, 2026-10-06:** *"not anyone in base, but anyone on your map.. a enemy can
+    /// break in and cross the gate to get valuables and members"*, then *"hold up now friendlys can
+    /// too"*. <see cref="GateEgress"/> is the mirror: something standing on **your** map walking out.
+    ///
+    /// **The five bounds above are NOT shared with it, and that asymmetry is the decision.** Inbound
+    /// is a threat to the colony -- the player's people, home and stockpile. Outbound threatens a
+    /// remote stockpile and whoever is standing on it. Coordinate band and gate tier describe how
+    /// dangerous the far side has become, which says nothing about whether a raider already inside
+    /// your base should walk through a door, so outbound is bounded by **motive** and by the
+    /// **doorstep** instead. Nothing here is loosened.
+    ///
+    /// **The class comment was rewritten rather than left standing**, because a founding comment that
+    /// no longer describes the code is worse than no comment -- which is this file's own prior lesson,
+    /// recorded in `GATE_INCURSION_IMPLEMENTATION.md`.
     /// </summary>
     internal static class GateIncursion
     {
@@ -154,7 +171,11 @@ namespace RimroomsAsyncIndustries.Threats
             {
                 pawn.DeSpawn();
                 Thing spawned = GenSpawn.Spawn(pawn, cell, map, rotation, WipeMode.Vanish);
-                if (spawned == pawn && pawn.Spawned && pawn.Map == map) { return true; }
+                if (spawned == pawn && pawn.Spawned && pawn.Map == map)
+                {
+                    GiveArrivalLord(pawn, map, cell);
+                    return true;
+                }
             }
             catch (Exception error)
             {
@@ -163,6 +184,49 @@ namespace RimroomsAsyncIndustries.Threats
             if (!pawn.Spawned && origin != null && Find.Maps.Contains(origin))
             { GenSpawn.Spawn(pawn, originCell, origin, rotation, WipeMode.Vanish); }
             return false;
+        }
+
+        /// <summary>
+        /// Give an arriving pawn something to do, because a `Lord` does not travel with it.
+        ///
+        /// **THIS WAS A DEFECT THAT ALREADY SHIPPED, found while writing the cross-map traversal
+        /// brief.** `Map.lordManager` owns a lord, so `Transfer` above despawned a pawn out from under
+        /// its duty and spawned it with none. **A hostile that followed a crew home arrived with no
+        /// assault behaviour at all** — and whether it still attacked was a question only a launch
+        /// could answer, which is the worst kind of uncertainty to ship.
+        ///
+        /// The fix is the pattern this code base already uses: `InhabitantService` calls
+        /// `LordMaker.MakeNewLord` with `LordJob_AssaultColony` for exactly this reason.
+        ///
+        /// **`canSteal` and `canKidnap` are true here**, which is the owner's own sentence turned into
+        /// parameters — *"to get valuables and members"*. Inbound they matter just as much: something
+        /// that followed a crew home is in a colony full of both.
+        ///
+        /// **`canTimeoutOrFlee` is true as well**, unlike the inhabitant's own lord. An inhabitant in
+        /// its own space does not give up and leave; something that came through a door into somebody
+        /// else's base reasonably does, and a hostile that can never withdraw is a hostile the player
+        /// must kill to the last one.
+        ///
+        /// Reported rather than thrown. A pawn standing on the near side with no lord is worse than a
+        /// pawn with a fallback one, and losing the whole incursion over a lord would cost the player
+        /// the event entirely.
+        /// </summary>
+        private static void GiveArrivalLord(Pawn pawn, Map map, IntVec3 cell)
+        {
+            if (pawn == null || map == null || pawn.Faction == null) { return; }
+            if (pawn.GetLord() != null) { return; }
+            try
+            {
+                LordMaker.MakeNewLord(pawn.Faction,
+                    new LordJob_AssaultColony(pawn.Faction, canKidnap: true, canTimeoutOrFlee: true,
+                        sappers: false, useAvoidGridSmart: false, canSteal: true),
+                    map, new List<Pawn> { pawn });
+            }
+            catch (Exception error)
+            {
+                Log.Warning("[Rimrooms][Threat] Could not give an arriving intruder a lord; it will "
+                    + "fall back to its own think tree: " + error);
+            }
         }
 
         private static void Announce(Pawn intruder, Map map, CompRimroomsGate gate)

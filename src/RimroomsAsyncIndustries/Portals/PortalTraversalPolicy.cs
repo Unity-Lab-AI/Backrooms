@@ -35,15 +35,42 @@ namespace RimroomsAsyncIndustries.Portals
     /// relaxes it, and there is no aggregate exception once several are connected.
     /// Every start can eventually run several gates, so nothing here may assume one
     /// gate per branch, per map or per coordinate.
+    ///
+    /// ## ⛔ INVARIANT #1 WAS REWRITTEN 2026-10-06 BY OWNER DIRECTION, AND ONLY HALF OF IT WENT ⛔
+    ///
+    /// **Owner, verbatim:** *"not anyone in base, but anyone on your map.. a enemy can break in and
+    /// cross the gate to get valuables and members"*, then *"hold up now friendlys can too"*.
+    ///
+    /// Read carefully, the old invariant bundled **two** rules, and only one is discarded:
+    ///
+    /// | The rule | Status |
+    /// |---|---|
+    /// | **One chokepoint. No adapter, scheduler, generator or threat may ever decide a crossing for itself** | **KEPT, UNCHANGED, AND IT IS THE PART THAT MATTERS** |
+    /// | The answer is always no for everybody but our own colonists | **DISCARDED** |
+    ///
+    /// `ARCHITECTURE.md` stated the fear it was built against: *"an open gate can never become an
+    /// objective, lure, spawn target, raid route or attack trigger for a later adapter, scheduler,
+    /// generator or threat."* **The weight is on *for a later … threat*** — the worry was a feature
+    /// quietly growing a crossing of its own. Keeping one chokepoint answers that completely, and it
+    /// is independent of what the chokepoint says yes to.
+    ///
+    /// **`AutonomousNonPlayerTraversalPermitted` is gone rather than left at false**, because a
+    /// constant denying what the code beside it now does is the stale-comment failure this project
+    /// has a rule about. <see cref="OutboundCrossingFailureKey"/> replaces it: a named method, asked
+    /// here and nowhere else.
+    ///
+    /// **And <see cref="MayApproachThresholdForTraversal"/> IS STILL FALSE FOR EVERYTHING.** That is
+    /// not an oversight — it is the surviving half doing real work. Nothing is ever *lured*: a
+    /// hostile or a visitor crosses because it wandered to a threshold that happens to be open, and
+    /// the gate notices what is already on its doorstep. The gate is never a destination for anybody
+    /// who is not ours, so it can still never become an objective, a lure or a raid route.
+    ///
+    /// `FINALIZED.md` entry 54 said this must stay false *"for everything, forever"*. The archive is
+    /// append-only and is not edited: the owner superseded it on 2026-10-06, and this is where that
+    /// is recorded.
     /// </summary>
     public static class PortalTraversalPolicy
     {
-        /// <summary>
-        /// Deliberately constant. A connection opening never grants any non-player
-        /// pawn a reason, route or permission to traverse. There is no setting, no
-        /// research and no upgrade that flips this.
-        /// </summary>
-        public const bool AutonomousNonPlayerTraversalPermitted = false;
 
         /// <summary>
         /// May this pawn traverse **in the course of company work**? Only this company's
@@ -323,6 +350,59 @@ namespace RimroomsAsyncIndustries.Portals
                 containmentCampaign.HasCapability("RR_Cap_ContainmentProtocol") ? 2 : 1;
             if (gate.PortalWindowTier < requiredTier) { return "RR_Incursion_TechTooLow"; }
             return FitFailureKey(intruder, gate.GateWidth, gate.GateOpeningDepth);
+        }
+
+        /// <summary>
+        /// The other direction: something standing on **your** map walking out through an open gate.
+        ///
+        /// **Owner direction, 2026-10-06, verbatim:** *"not anyone in base, but anyone on your map..
+        /// a enemy can break in and cross the gate to get valuables and members"*, and *"hold up now
+        /// friendlys can too"*.
+        ///
+        /// ## Inbound and outbound are not symmetric and must not share bounds
+        ///
+        /// <see cref="IncursionFailureKey"/> is narrow on five axes because inbound is a threat to the
+        /// colony — the player's people, home and stockpile. Outbound threatens a **remote** stockpile
+        /// and whoever is standing on it. The severities differ by a lot, so each axis is re-derived
+        /// here rather than copied:
+        ///
+        /// | Incursion's axis | Outbound |
+        /// |---|---|
+        /// | only while a connection is open | **yes, unchanged.** A closed gate is a wall both ways, and it is the whole counterplay |
+        /// | only at the `Hostile` band | **no.** Coordinate danger says nothing about whether a raider in your base should walk through a door |
+        /// | only once the machine is advanced | **no.** A first unresearched gate is still a hole, and the hole is the point |
+        /// | only if it fits | **yes, unchanged.** `FitFailureKey` on the gate's own width and depth |
+        /// | only once per opening | **no.** The doorstep is the cap — see `GateEgress` |
+        ///
+        /// ## The motive is the bound, and it came out of the owner's own sentence
+        ///
+        /// *"to get valuables and members"*. So **nothing crosses outbound unless there is something
+        /// over there worth crossing for**, which the caller establishes. That is self-limiting in a
+        /// way a hand-tuned number is not: it scales with what the player chose to keep down there, and
+        /// it makes the risk legible. Store nothing beyond a gate and you are never raided through one.
+        ///
+        /// ## Still the policy deciding, never the pawn
+        ///
+        /// <see cref="MayApproachThresholdForTraversal"/> remains false, so nothing on this side is
+        /// ever *given* a gate as a destination. This answers a question about something that already
+        /// walked to the threshold on its own business.
+        /// </summary>
+        public static string OutboundCrossingFailureKey(Pawn traveller, CompRimroomsGate gate)
+        {
+            if (traveller == null || gate == null) { return "RR_Egress_NotEligible"; }
+            // Ours going out is work or a player order, and both are answered above. This method is
+            // only ever about somebody who is not ours.
+            if (traveller.Faction == Faction.OfPlayer) { return "RR_Egress_NotEligible"; }
+            if (!traveller.Spawned || traveller.Dead || traveller.Downed || traveller.InMentalState)
+            { return "RR_Egress_NotEligible"; }
+            // **A carried passenger is not crossing on its own legs.** Anything downed, dead or
+            // imprisoned rides in a carrier's hands under `CargoFailureKey`, which is unchanged, and
+            // letting it also qualify here would be two routes for one movement.
+            if (traveller.CarriedBy != null) { return "RR_Egress_NotEligible"; }
+            if (!gate.IsDesignated || gate.IsEmergency || gate.KillSwitchThrown ||
+                string.IsNullOrEmpty(gate.PortalOpeningId))
+            { return "RR_Egress_NoOpening"; }
+            return FitFailureKey(traveller, gate.GateWidth, gate.GateOpeningDepth);
         }
     }
 }

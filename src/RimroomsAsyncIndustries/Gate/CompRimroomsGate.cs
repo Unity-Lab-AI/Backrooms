@@ -422,6 +422,11 @@ namespace RimroomsAsyncIndustries.Gate
             // its completion is what opens one.
             TickSpinUp();
             Threats.GateIncursion.Tick(this);
+            // **The other direction, on owner direction 2026-10-06.** Incursion is something following
+            // your crew home; this is something on your map walking out through the open gate.
+            // Separate because they are not symmetric: inbound keeps all five of its fairness bounds
+            // and outbound is bounded by motive and by the doorstep instead. See GateEgress.
+            Threats.GateEgress.Tick(this);
             // Row 725's repair half. A gate read no damage at all before this: it could
             // be shot to twelve per cent and still hold a connection perfectly.
             TickIntegrity();

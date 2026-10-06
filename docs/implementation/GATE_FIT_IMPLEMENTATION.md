@@ -33,7 +33,7 @@ These are two different rules and they have been kept apart:
 
 Eleven connected-work adapters ask the first one before they will plan a job across a gate. Relaxing *that* would have made animals eligible to be scheduled into bills and hauling routes, which is not what was asked for and is not a thing animals do.
 
-**The rule this does not weaken is the one that matters.** The chokepoint exists to stop the **far side** walking out, and the test for that is ownership. A Backrooms inhabitant is hostile or unfactioned and fails on `Faction != Faction.OfPlayer` exactly as it always did. `AutonomousNonPlayerTraversalPermitted` is still a constant false and `MayApproachThresholdForTraversal` still returns false for everything.
+**The rule this does not weaken is the one that matters.** The chokepoint exists to stop the **far side** walking out, and the test for that is ownership. A Backrooms inhabitant is hostile or unfactioned and fails on `Faction != Faction.OfPlayer` exactly as it always did. **`AutonomousNonPlayerTraversalPermitted` was removed 2026-10-06 by owner direction** and `MayApproachThresholdForTraversal` still returns false for everything. **The ownership test this record is about is unchanged**: a Backrooms inhabitant is hostile or unfactioned and still fails `TravellerFailureKey` on `Faction != Faction.OfPlayer` exactly as it always did. What changed is a separate, named route in the other direction, `OutboundCrossingFailureKey`, which this record's fit rules bound just as tightly -- a body too large for the opening cannot go out through it either.
 
 ## The ladder, from Core's own numbers
 

@@ -33,7 +33,7 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 - **During the work:** run **only the one instrument covering the file you just touched.**
 - **STAGE FIRST at publication.** `powershell -File tools/stage-mod.ps1 -UpdateExisting` copies the build into RimSort's local mods folder, **which is the copy a launch loads.** It was in neither procedure until 0.12.99-dev, and the staged copy sat a whole version behind — caught minutes before a launch.
-- **At publication, once:** 28 checkers → 59 proofs → 36 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
+- **At publication, once:** 29 checkers → 59 proofs → 36 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
 - **THE OWNER ALONE LAUNCHES, SORTS AND PUBLISHES.**
 - **`docs/TODO.md` ENDS AS A TEMPLATE HOLDING NOTHING**, per *"to get the todo to a templet form with no items listed"*. The `[T]` rows are the honest obstacle: one cannot close without the game running.
 - ⛔ **NEVER RUN THE PLANT SUITES CONCURRENTLY WITH ANYTHING ELSE.** A suite writes a real fault into the tree and restores it; anything reading the tree in that window sees the fault. Doing so reported **four failures that did not exist**.
@@ -55,11 +55,11 @@ A ceiling I set myself is mine to manage, not a reason to delete a feature. **Th
 |---|---|
 | Branch | **`feature/bug-testing`**, ahead of every remote by owner direction |
 | Version | **0.12.99-dev** — read from `About.xml`, never from a document |
-| Build | **249 C# files, 106 package files**, zero warnings, zero errors |
+| Build | **250 C# files, 106 package files**, zero warnings, zero errors |
 | Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile. **No register row claims this package requires a mod** — Core is the only `Required` row and Core is the game |
-| Instruments | **28 checkers**, **59 proofs**, **36 plant suites**. Newest: `check-quest-paperwork.py` (28), whose plant suite found **two false greens in it** and whose first run refused the batch for three unreachable write-up kinds |
+| Instruments | **29 checkers**, **59 proofs**, **36 plant suites**. Newest: `check-traversal-policy.py` (29), which caught itself on its first run reading the prose that documents the change it checks for |
 | Remotes | **SIX active refs.** `forgejo` held on both repositories |
-| Queue | **11 open · 5 partial · 50 `[T]` · 0 `[x]`** — the journal and quest system is the largest block, and the cross-map brief is specified and unbuilt |
+| Queue | **8 open · 5 partial · 50 `[T]` · 0 `[x]`** — the journal and quest system is the largest block, and the cross-map brief is specified and unbuilt |
 | Launches | **Thirteen.** The thirteenth is the first to produce facility data, and **every defect it found was ours** |
 | Staged copy | **STALE on purpose.** Files differ while the game is open; `check-package-integrity` rule 10 says so and names the remedy |
 
