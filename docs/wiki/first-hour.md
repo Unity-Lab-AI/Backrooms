@@ -146,4 +146,13 @@ Fix the named one.
 4. Have a second person **review** the finished report.
 5. Spend the insight on a company project.
 
-That loop is the game. **Nothing in it is timed except the connection itself.**
+**Nothing in it is timed except the connection itself.**
+
+## That is the company's loop, not the game
+
+The five steps above are what your employer pays for, and they are the fastest way to learn what a
+coordinate is. They are **not** the limit of what you can do with one.
+
+A coordinate is a real map that belongs to you. Build on it, mine it, farm it, store things in it,
+put a prison in it, hold a room back as somewhere safe. See
+[what a coordinate is for](backrooms.md#a-coordinate-is-a-map-you-can-use).

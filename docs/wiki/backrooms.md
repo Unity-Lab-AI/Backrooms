@@ -109,7 +109,7 @@ Backrooms generation.
 
 ## Bringing something back
 
-The point of a crossing is a record.
+**One** point of a crossing is a record. It is the one the company pays for.
 
 | Step | Where |
 |---|---|
@@ -122,9 +122,54 @@ The Investigation pane shows which of the three parts each recording still lacks
 
 **None of these steps is timed.** A recording waits as long as you need it to.
 
+## A coordinate is a map you can use
+
+**A coordinate is a real map and it belongs to you.** Everything you can build at home you can build
+down there, and it behaves the same way, because nothing about it is a special case.
+
+So a space you surveyed once is a space you can keep. Some of what people do with them:
+
+| Use it as | What makes it work |
+|---|---|
+| **A prison** | Beds, a door, a prisoner. Wardening crosses the gate, and so does the food |
+| **Storage** | Ordinary stockpiles and shelves. Nothing deteriorates under a roof that thick |
+| **An isolated safe room** | One room, one door, nothing that leads anywhere. A coordinate has no neighbours |
+| **A workshop** | Benches and bills. Every bill family crosses: cooking, crafting, smithing, tailoring, art |
+| **A mine** | The rock is real rock. Mining crosses |
+| **A farm** | Growing and animal handling both cross. It is roofed, so you want sun lamps and the power to run them |
+| **A field hospital** | Doctoring, patient feeding and rescue all cross |
+
+**Twenty-one of the game's twenty-three work types cross a gate.** The two that do not are being a
+patient and resting in bed, which are things that happen to a pawn rather than jobs you assign.
+
+**You are not pushed toward any of it.** A branch that would rather live down there, mine the rock
+and grow food under thick roof is playing correctly, and nothing nudges them.
+
+### Two honest limits
+
+**No guests arrive.** A coordinate is not a settlement on the world map, so faction visitors and
+caravans have nowhere to travel to. Guest quarters and any mod's hospitality content belong at your
+surface base, where they work exactly as they always have.
+
+**It is dark and sealed.** No sunlight, no weather, no rain, and the roof is thick rock — so nothing
+drops through it either. That is why it keeps things so well and why anything that grows needs lamps
+and the power to run them.
+
+## Selling from down there
+
+**You do not have to haul it home to get paid.** Designate a trade beacon as a credit beacon in a
+coordinate and everything valuable inside its radius sells where it stands, straight into the
+company account.
+
+**And what you dig up down there is worth more than the same thing from home**, because of the next
+section.
+
 ## Odd goods
 
 Anything carried out of a coordinate is marked **odd** and never stacks with the ordinary kind.
 
 A thousand odd cotton is a thing you went and fetched, not a thing you grew. Buyers turn up wanting
 goods by origin and paying well over the ordinary rate.
+
+**The company pays ×1.5 for odd goods and ×0.85 for ordinary valuables.** So a mine or a farm on the
+other side of a gate is the better-paid half of the economy, not a detour from it.

@@ -10,6 +10,10 @@ summary: "What this mod is, and the three pages worth reading before you start a
 Ordinary RimWorld colony play is untouched. What this adds is an employer, a machine that opens a
 way into somewhere else, and paperwork about both.
 
+**The contracts are a job, not the game.** A space you surveyed is a real map that belongs to you —
+mine it, farm it, build a prison or a workshop in it, sell out of it. See
+[what a coordinate is for](backrooms.md#a-coordinate-is-a-map-you-can-use).
+
 > **Development build.** Nothing here is a balance, performance or compatibility report.
 
 ---
