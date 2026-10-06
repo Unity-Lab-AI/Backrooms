@@ -84,7 +84,7 @@ SECTIONS = [
     ("Start", ["index", "install", "first-hour", "scenarios"]),
     ("Playing", ["company", "gates", "backrooms", "building", "interface"]),
     ("Running it", ["mods", "mods-list", "multiplayer", "troubleshooting"]),
-    ("About", ["credits", "links"]),
+    ("About", ["assets", "credits", "links"]),
 ]
 
 # ---------------------------------------------------------------------------- the art

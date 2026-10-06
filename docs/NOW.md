@@ -117,7 +117,7 @@ This cost a whole launch report on 2026-10-06: the staged assembly was **02:51**
 **Owner, 2026-10-04:** *"yu should be completeing like near a dozen items before you run the whole battery. i told you i can NOT be waiting 40 minutes"*, and *"you still need to do instrament checks and build them when needed just dont run them for every fucking code change"*
 
 - **During the work:** run **only the instrument covering the file you just touched.**
-- **At publication, once:** 32 checkers → 63 proofs → 42 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
+- **At publication, once:** 33 checkers → 63 proofs → 42 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
 - **THE OWNER ALONE LAUNCHES, SORTS AND PUBLISHES.**
 - ⛔ **NEVER RUN THE PLANT SUITES CONCURRENTLY WITH ANYTHING ELSE.** A suite writes a real fault into the tree and restores it; anything reading the tree in that window sees the fault.
 - **THE REGISTER IS AN INPUT TO WORK, NOT A BACKLOG OF IT.**
@@ -131,7 +131,7 @@ This cost a whole launch report on 2026-10-06: the staged assembly was **02:51**
 | Branch | **`feature/bug-testing`**, ahead of every remote by owner direction |
 | Version | **0.13.0-dev** — read from `About.xml`, never from a document |
 | Build | **254 C# files, 134 package files**, zero warnings, zero errors |
-| Instruments | **32 checkers**, **63 proofs**, **42 plant suites** |
+| Instruments | **33 checkers**, **63 proofs**, **42 plant suites** |
 | Queue | **`TODO.md` 0 open · 0 partial · 0 `[T]`** — empty. **`TEST.md` 53 `[T]`** |
 | Shipped art | **18 textures**, from 11.5 MB of masters. **One cut and held** — the Quiet Pursuer, by owner decision |
 | Shipped audio | **4 original cues**, positional, Core fallback retained |
