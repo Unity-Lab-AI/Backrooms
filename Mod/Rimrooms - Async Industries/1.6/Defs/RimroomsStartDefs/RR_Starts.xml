@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <!-- Original first-slice tuning and layout. The campaign owns ongoing rules and saved money. -->
   <RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
@@ -47,7 +47,12 @@
     <floorTerrain>Concrete</floorTerrain>
     <wallStuff>BlocksGranite</wallStuff>
     <arrivalCell>(39, 0, 29)</arrivalCell>
-    <stockCell>(27, 0, 19)</stockCell>
+    <!-- MOVED ONE CELL 2026-10-06 because the owner put a stove on the old one.
+         Owner: "these places i put everything is exact and purposfully and
+         should use them exactly", so the receiving bay moves rather than the
+         stove. (27, 20) is the nearest free cell in the same room.
+    -->
+    <stockCell>(27, 0, 20)</stockCell>
     <!-- The facility, as a plan rather than eight boxes in a rectangle. Owner direction
          2026-10-01. Authored by .local/register/build-async-facility.py and re-validated
          offline by tools/check-start-layout.py, because GenStep_Headquarters throws on any
@@ -165,7 +170,6 @@
       <li>(42, 0, 44)</li>
     </pillars>
     <buildings>
-      <li><thing>CommsConsole</thing><cell>(32, 0, 33)</cell><rotation>2</rotation></li>
       <li><thing>TableMachining</thing><cell>(45, 0, 33)</cell></li>
       <li><thing>Table1x2c</thing><stuff>WoodLog</stuff><cell>(45, 0, 27)</cell></li>
       <li><thing>DiningChair</thing><stuff>WoodLog</stuff><cell>(44, 0, 27)</cell></li>
@@ -179,21 +183,16 @@
       <li><thing>StandingLamp</thing><cell>(46, 0, 37)</cell></li>
       <li><thing>StandingLamp</thing><cell>(31, 0, 46)</cell></li>
       <li><thing>StandingLamp</thing><cell>(46, 0, 46)</cell></li>
-      <li><thing>Heater</thing><cell>(33, 0, 37)</cell></li>
-      <li><thing>Heater</thing><cell>(44, 0, 37)</cell></li>
-      <li><thing>ElectricSmithy</thing><cell>(46, 0, 16)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(39, 0, 21)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(42, 0, 21)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(45, 0, 21)</cell></li>
       <li><thing>StandingLamp</thing><cell>(49, 0, 19)</cell></li>
-      <li><thing>Heater</thing><cell>(49, 0, 16)</cell></li>
       <li><thing>SimpleResearchBench</thing><stuff>Steel</stuff><cell>(12, 0, 16)</cell></li>
       <li><thing>SimpleResearchBench</thing><stuff>Steel</stuff><cell>(17, 0, 16)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 21)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 21)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(16, 0, 21)</cell></li>
       <li><thing>StandingLamp</thing><cell>(19, 0, 19)</cell></li>
-      <li><thing>Heater</thing><cell>(19, 0, 16)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(25, 0, 16)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(28, 0, 16)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(31, 0, 16)</cell></li>
@@ -216,14 +215,12 @@
       <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(18, 0, 10)</cell></li>
       <li><thing>StandingLamp</thing><cell>(20, 0, 12)</cell></li>
       <li><thing>Heater</thing><cell>(20, 0, 10)</cell></li>
-      <li><thing>ElectricStove</thing><cell>(26, 0, 10)</cell></li>
       <li><thing>Table2x2c</thing><stuff>WoodLog</stuff><cell>(30, 0, 10)</cell></li>
       <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(29, 0, 10)</cell></li>
       <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(32, 0, 10)</cell></li>
       <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(30, 0, 12)</cell></li>
       <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(31, 0, 12)</cell></li>
       <li><thing>StandingLamp</thing><cell>(34, 0, 12)</cell></li>
-      <li><thing>Heater</thing><cell>(24, 0, 12)</cell></li>
       <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(40, 0, 10)</cell><medical>true</medical></li>
       <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(42, 0, 10)</cell><medical>true</medical></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(45, 0, 10)</cell></li>
@@ -232,7 +229,6 @@
       <li><thing>StandingLamp</thing><cell>(10, 0, 27)</cell></li>
       <li><thing>StandingLamp</thing><cell>(16, 0, 27)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 31)</cell></li>
-      <li><thing>Heater</thing><cell>(16, 0, 31)</cell></li>
       <li><thing>StandingLamp</thing><cell>(10, 0, 36)</cell></li>
       <li><thing>StandingLamp</thing><cell>(16, 0, 36)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 40)</cell></li>
@@ -242,35 +238,119 @@
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 48)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 48)</cell></li>
       <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(16, 0, 48)</cell></li>
-      <li><thing>Battery</thing><cell>(23, 0, 27)</cell><batteryFraction>0.6</batteryFraction></li>
-      <li><thing>Battery</thing><cell>(25, 0, 27)</cell><batteryFraction>0.6</batteryFraction></li>
       <li><thing>Battery</thing><cell>(23, 0, 30)</cell><batteryFraction>0.6</batteryFraction></li>
       <li><thing>Battery</thing><cell>(25, 0, 30)</cell><batteryFraction>0.6</batteryFraction></li>
       <li><thing>StandingLamp</thing><cell>(26, 0, 26)</cell></li>
-      <li><thing>WoodFiredGenerator</thing><cell>(23, 0, 36)</cell><fuelFraction>0.5</fuelFraction></li>
       <li><thing>WoodFiredGenerator</thing><cell>(25, 0, 39)</cell><fuelFraction>0.5</fuelFraction></li>
       <li><thing>HorseshoesPin</thing><stuff>Steel</stuff><cell>(20, 0, 33)</cell></li>
       <li><thing>TextBook</thing><cell>(11, 0, 47)</cell></li>
       <li><thing>TextBook</thing><cell>(14, 0, 47)</cell></li>
+      <!-- Owner's own additions, read back from the live facility 2026-10-06. Every cell
+           is theirs: "these places i put everything is exact and purposfully and should
+           use them exactly". -->
+      <li><thing>Wall</thing><stuff>Steel</stuff><cell>(38, 0, 41)</cell><rotation>0</rotation></li>
+      <li><thing>Wall</thing><stuff>Steel</stuff><cell>(40, 0, 41)</cell><rotation>0</rotation></li>
+      <li><thing>Wall</thing><stuff>BlocksGranite</stuff><cell>(43, 0, 39)</cell><rotation>0</rotation></li>
+      <li><thing>Wall</thing><stuff>BlocksGranite</stuff><cell>(43, 0, 44)</cell><rotation>0</rotation></li>
+      <li><thing>Battery</thing><cell>(23, 0, 26)</cell><rotation>0</rotation></li>
+      <li><thing>Battery</thing><cell>(25, 0, 26)</cell><rotation>0</rotation></li>
+      <li><thing>ChessTable</thing><stuff>WoodLog</stuff><cell>(29, 0, 11)</cell><rotation>0</rotation></li>
+      <li><thing>ChessTable</thing><stuff>WoodLog</stuff><cell>(32, 0, 11)</cell><rotation>0</rotation></li>
+      <li><thing>CommsConsole</thing><cell>(32, 0, 32)</cell><rotation>2</rotation></li>
+      <li><thing>Cooler</thing><cell>(21, 0, 51)</cell><rotation>0</rotation></li>
+      <li><thing>Cooler</thing><cell>(22, 0, 51)</cell><rotation>0</rotation></li>
+      <li><thing>Cooler</thing><cell>(23, 0, 51)</cell><rotation>0</rotation></li>
+      <li><thing>Cooler</thing><cell>(51, 0, 19)</cell><rotation>0</rotation><targetTemperature>-8</targetTemperature></li>
+      <li><thing>Cooler</thing><cell>(51, 0, 20)</cell><rotation>0</rotation><targetTemperature>-8</targetTemperature></li>
+      <li><thing>Cooler</thing><cell>(51, 0, 21)</cell><rotation>0</rotation><targetTemperature>-8</targetTemperature></li>
+      <li><thing>Cooler</thing><cell>(51, 0, 22)</cell><rotation>0</rotation><targetTemperature>-8</targetTemperature></li>
+      <li><thing>ElectricSmithy</thing><cell>(15, 0, 31)</cell><rotation>0</rotation></li>
+      <li><thing>ElectricStove</thing><cell>(27, 0, 19)</cell><rotation>0</rotation></li>
+      <li><thing>Heater</thing><cell>(9, 0, 26)</cell><rotation>0</rotation></li>
+      <li><thing>Heater</thing><cell>(27, 0, 33)</cell><rotation>0</rotation></li>
+      <li><thing>Heater</thing><cell>(37, 0, 41)</cell><rotation>0</rotation></li>
+      <li><thing>Heater</thing><cell>(41, 0, 41)</cell><rotation>0</rotation></li>
+      <li><thing>PokerTable</thing><stuff>WoodLog</stuff><cell>(25, 0, 12)</cell><rotation>0</rotation></li>
+      <li><thing>StandingLamp</thing><cell>(19, 0, 33)</cell><rotation>0</rotation></li>
+      <li><thing>StandingLamp</thing><cell>(19, 0, 44)</cell><rotation>0</rotation></li>
+      <li><thing>StandingLamp</thing><cell>(22, 0, 24)</cell><rotation>0</rotation></li>
+      <li><thing>StandingLamp</thing><cell>(36, 0, 24)</cell><rotation>0</rotation></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(24, 0, 12)</cell><rotation>0</rotation></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(24, 0, 13)</cell><rotation>0</rotation></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(27, 0, 12)</cell><rotation>0</rotation></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(27, 0, 13)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(18, 0, 31)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(18, 0, 40)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(18, 0, 48)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(21, 0, 13)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(21, 0, 21)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(22, 0, 30)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(30, 0, 25)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(30, 0, 49)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(35, 0, 13)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(35, 0, 21)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(37, 0, 13)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(47, 0, 25)</cell><rotation>0</rotation></li>
+      <li><thing>Vent</thing><cell>(47, 0, 49)</cell><rotation>0</rotation></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(23, 0, 35)</cell><rotation>0</rotation></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(23, 0, 39)</cell><rotation>0</rotation></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(25, 0, 35)</cell><rotation>0</rotation></li>
+      <!-- Owner: "the door i moved and set to the gate and where i want it with steel
+           walls on both sides of it". Listed here rather than in <autodoors>, because it
+           replaces no authored wall: the owner built the wall segment around it. -->
+      <li><thing>Autodoor</thing><cell>(39, 0, 41)</cell><rotation>0</rotation></li>
+      <!-- Owner: "We will also need trade beacons in middle of rooms that already have
+           shelfs in them(if room doesnt have a shelf no trade beacon is wanted and not
+           required". Eight rooms hold a shelf; each gets one, in the middle. -->
+      <li><thing>OrbitalTradeBeacon</thing><cell>(30, 0, 30)</cell><rotation>0</rotation></li>
+      <li><thing>OrbitalTradeBeacon</thing><cell>(15, 0, 19)</cell><rotation>0</rotation></li>
+      <li><thing>OrbitalTradeBeacon</thing><cell>(30, 0, 19)</cell><rotation>0</rotation></li>
+      <li><thing>OrbitalTradeBeacon</thing><cell>(45, 0, 19)</cell><rotation>0</rotation></li>
+      <li><thing>OrbitalTradeBeacon</thing><cell>(43, 0, 11)</cell><rotation>0</rotation></li>
+      <li><thing>OrbitalTradeBeacon</thing><cell>(13, 0, 29)</cell><rotation>0</rotation></li>
+      <li><thing>OrbitalTradeBeacon</thing><cell>(13, 0, 39)</cell><rotation>0</rotation></li>
+      <li><thing>OrbitalTradeBeacon</thing><cell>(13, 0, 47)</cell><rotation>0</rotation></li>
     </buildings>
+    <!-- THE OWNER'S OWN WIRING, read back from the live facility 2026-10-06.
+         Owner: "ive added hidden conduit where needed and missing", and asked
+         which type, "All HiddenConduit". The generator places HiddenConduit for
+         every run; both it and PowerConduit ship in Core, so neither was ever a
+         mod's. As authored the facility had 205 conduit cells in 17 runs and NOT
+         ONE of its 34 powered buildings was within reach of a wire. This is 233
+         cells in 18 runs.
+    -->
+    <!-- Owner: "readjusted the room by dleteing some walls". Six authored wall cells they
+         opened by hand. Skipped as the rooms are built, so there is no rubble and no
+         work order: a wall that never existed rather than one taken down.
+    -->
+    <removedWalls>
+      <li>(37, 0, 34)</li>
+      <li>(38, 0, 34)</li>
+      <li>(40, 0, 34)</li>
+      <li>(41, 0, 34)</li>
+      <li>(42, 0, 39)</li>
+      <li>(42, 0, 44)</li>
+    </removedWalls>
+
     <conduits>
       <li><start>(9, 0, 24)</start><length>42</length><alongX>true</alongX></li>
-      <li><start>(22, 0, 9)</start><length>15</length><alongX>false</alongX></li>
-      <li><start>(36, 0, 9)</start><length>15</length><alongX>false</alongX></li>
-      <li><start>(14, 0, 15)</start><length>9</length><alongX>false</alongX></li>
-      <li><start>(29, 0, 15)</start><length>9</length><alongX>false</alongX></li>
-      <li><start>(44, 0, 15)</start><length>9</length><alongX>false</alongX></li>
-      <li><start>(14, 0, 9)</start><length>6</length><alongX>false</alongX></li>
-      <li><start>(29, 0, 9)</start><length>6</length><alongX>false</alongX></li>
-      <li><start>(44, 0, 9)</start><length>6</length><alongX>false</alongX></li>
-      <li><start>(39, 0, 25)</start><length>10</length><alongX>false</alongX></li>
-      <li><start>(39, 0, 35)</start><length>14</length><alongX>false</alongX></li>
-      <li><start>(23, 0, 26)</start><length>8</length><alongX>false</alongX></li>
-      <li><start>(23, 0, 34)</start><length>7</length><alongX>false</alongX></li>
-      <li><start>(14, 0, 26)</start><length>8</length><alongX>false</alongX></li>
-      <li><start>(14, 0, 35)</start><length>8</length><alongX>false</alongX></li>
-      <li><start>(14, 0, 44)</start><length>7</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 9)</start><length>15</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 25)</start><length>26</length><alongX>false</alongX></li>
       <li><start>(20, 0, 25)</start><length>26</length><alongX>false</alongX></li>
+      <li><start>(21, 0, 29)</start><length>5</length><alongX>true</alongX></li>
+      <li><start>(22, 0, 9)</start><length>15</length><alongX>false</alongX></li>
+      <li><start>(23, 0, 28)</start><length>1</length><alongX>false</alongX></li>
+      <li><start>(23, 0, 32)</start><length>3</length><alongX>false</alongX></li>
+      <li><start>(23, 0, 37)</start><length>2</length><alongX>false</alongX></li>
+      <li><start>(25, 0, 28)</start><length>1</length><alongX>false</alongX></li>
+      <li><start>(29, 0, 9)</start><length>15</length><alongX>false</alongX></li>
+      <li><start>(31, 0, 41)</start><length>16</length><alongX>true</alongX></li>
+      <li><start>(32, 0, 29)</start><length>14</length><alongX>true</alongX></li>
+      <li><start>(36, 0, 9)</start><length>15</length><alongX>false</alongX></li>
+      <li><start>(39, 0, 25)</start><length>4</length><alongX>false</alongX></li>
+      <li><start>(39, 0, 30)</start><length>11</length><alongX>false</alongX></li>
+      <li><start>(39, 0, 42)</start><length>7</length><alongX>false</alongX></li>
+      <li><start>(44, 0, 9)</start><length>15</length><alongX>false</alongX></li>
     </conduits>
     <!-- Editable stock is owned by native starting-thing parts in RR_Scenarios.xml. -->
     <roles>

@@ -86,6 +86,13 @@ def thing_sizes(core: str) -> dict:
                     continue
                 record = {
                     "size": node.findtext("size"),
+                    # **The game's own permission to stand in a wall.** `Vent`, `Cooler` and
+                    # `Autodoor` carry it, and it is what lets a player build one into a standing
+                    # wall. Read rather than hard-coded, so a mod or a DLC adding another
+                    # wall-mountable thing is covered without touching this rule.
+                    "overWall": (node.find("building") is not None
+                                 and (node.find("building").findtext("canPlaceOverWall") or "")
+                                 .strip().lower() == "true"),
                     "parent": node.get("ParentName"),
                     "abstract": node.get("Abstract") == "True",
                     "interaction": node.findtext("interactionCellOffset"),
@@ -95,6 +102,22 @@ def thing_sizes(core: str) -> dict:
                     by_name[handle] = record
                 order.append(key)
     return by_name
+
+
+def over_wall(name: str, sizes: dict) -> bool:
+    """Whether the game lets this thing be built into a standing wall.
+
+    **This rule used to be unconditional and it was right until 0.12.99-dev.** The generator threw
+    on any furniture cell holding an edifice, so a vent in a wall was a def error. The owner then
+    fixed their facility by hand and put **thirteen vents and seven coolers into walls**, which is
+    what those things are for -- so the generator learned `canPlaceOverWall` and this rule has to
+    learn it too.
+
+    Teaching the rule rather than deleting it: a bench or a bed on a wall cell is still a def error
+    and still caught, which is most of what this check was ever for.
+    """
+    record = sizes.get(name) or {}
+    return bool(record.get("overWall"))
 
 
 def size_of(name: str, sizes: dict) -> tuple:
@@ -343,10 +366,16 @@ def check_start(node, sizes: dict) -> None:
                 fail("%s: %s at %s has its interaction cell at %s, outside every room"
                      % (label, thing, cell, spot))
         for occupied_cell in occupied(cell, rotation, size_of(thing, sizes)):
-            if occupied_cell in walls:
+            if occupied_cell in walls and not over_wall(thing, sizes):
                 fail("%s: %s at %s covers the wall cell %s -- the generator throws here"
                      % (label, thing, cell, occupied_cell))
-            elif occupied_cell not in interiors:
+            elif occupied_cell not in interiors and not (
+                    over_wall(thing, sizes) and occupied_cell in walls):
+                # **A wall-mountable thing ON a wall cell is not "outside a room".** The owner put
+                # the freezer's four coolers on the facility's OUTER wall, which is how a freezer
+                # is built -- it has to exhaust somewhere that is not the room it is cooling. A
+                # perimeter wall cell is in `walls` and never in `interiors`, so the unconditional
+                # rule reported seven correct coolers as outside the building.
                 fail("%s: %s at %s covers %s, which is not inside any room"
                      % (label, thing, cell, occupied_cell))
             if occupied_cell in taken:

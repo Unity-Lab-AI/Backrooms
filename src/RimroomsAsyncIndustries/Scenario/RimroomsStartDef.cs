@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
@@ -36,6 +36,23 @@ namespace RimroomsAsyncIndustries.Scenario
         public List<IntVec3> doors = new List<IntVec3>();
         public List<RimroomsBuildingPlan> buildings = new List<RimroomsBuildingPlan>();
         public List<RimroomsConduitPlan> conduits = new List<RimroomsConduitPlan>();
+
+        /// <summary>
+        /// Authored wall cells where no wall is placed.
+        ///
+        /// **Owner direction, 2026-10-06:** *"readjusted the room by dleteing some walls"*.
+        /// Six cells of the company facility are a deliberate opening the owner cut by hand.
+        ///
+        /// **A list beats re-authoring the rooms, and the arithmetic says so.** Walls are
+        /// generated from the room rectangles, so expressing six removed cells as geometry
+        /// would mean splitting three rooms into five or more -- moving every other wall,
+        /// door and fixture those rooms imply, to say something about six cells. This names
+        /// the six.
+        ///
+        /// Applied as the rooms are built, so it costs nothing and leaves no rubble; it is
+        /// a wall that was never placed rather than one deconstructed afterwards.
+        /// </summary>
+        public List<IntVec3> removedWalls = new List<IntVec3>();
 
         /// <summary>
         /// Wall runs replaced with something else once the rooms are built -- the viewing walls.
@@ -248,6 +265,22 @@ namespace RimroomsAsyncIndustries.Scenario
         public bool medical;
         public float fuelFraction;
         public float batteryFraction;
+
+        /// <summary>
+        /// A target temperature in Celsius for anything carrying `CompTempControl`, or `NaN` for
+        /// "leave it at the def's own default".
+        ///
+        /// **Owner direction, 2026-10-06:** *"and i set 4 ac units to below freezing for a
+        /// freezer(those should be in the scenerio correctly)"*. A cooler's target is comp state
+        /// rather than a spawn argument, so without a field for it the four freezer coolers would
+        /// ship pointing at room temperature. **A freezer that ships warm is a freezer that
+        /// quietly is not one**, and nothing in the build would have said so.
+        ///
+        /// `NaN` rather than 0 as the absent value, because **0 is a temperature somebody means**
+        /// -- it is the freezing point of water and a perfectly reasonable target. A sentinel that
+        /// collides with a real value is how a default becomes a silent setting.
+        /// </summary>
+        public float targetTemperature = float.NaN;
     }
 
     public sealed class RimroomsConduitPlan

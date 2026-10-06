@@ -192,6 +192,26 @@ namespace RimroomsAsyncIndustries.Scenario
             }
         }
 
+        /// <summary>
+        /// The conduit the facility is wired with.
+        ///
+        /// **Owner direction, 2026-10-06, asked whether hidden conduit is vanilla:** *"All
+        /// HiddenConduit"*. Both ship in Core -- the owner's doubt was *"not sure if hidden conduit
+        /// is vanilla"* and the answer is that neither is a mod's -- and hidden conduit sits under
+        /// flooring, which keeps a facility looking built rather than cabled.
+        ///
+        /// **Resolved by name with a fallback rather than through `ThingDefOf`.** `HiddenConduit` is
+        /// not a `ThingDefOf` member, and a hard `GetNamed` on it would throw during map generation
+        /// on any install that somehow lacks it -- costing the player the whole start to save a
+        /// cosmetic preference. `PowerConduit` is the fallback because a facility with visible wiring
+        /// works perfectly; one with no wiring does not.
+        /// </summary>
+        private static ThingDef StartingConduitDef()
+        {
+            ThingDef hidden = DefDatabase<ThingDef>.GetNamedSilentFail("HiddenConduit");
+            return hidden ?? ThingDefOf.PowerConduit;
+        }
+
         internal static void Build(RimroomsStartDef start, Map map, HeadquartersSetupComponent receipt)
         {
             IntVec3 offset = HeadquartersLayout.Offset(start, map.Size);
@@ -199,6 +219,11 @@ namespace RimroomsAsyncIndustries.Scenario
             { throw new InvalidOperationException("Headquarters arrival or receiving position is outside the map."); }
             // Before a single wall: the whole site, in one pass.
             BurnIntoPlace(start, map, offset);
+            // Offset once, outside the loop: the room walk visits tens of thousands of cells and
+            // re-offsetting a six-entry list inside it would be work done for nothing.
+            var removedWalls = new HashSet<IntVec3>();
+            for (int cut = 0; cut < start.removedWalls.Count; cut++)
+            { removedWalls.Add(start.removedWalls[cut] + offset); }
             foreach (RimroomsRoomPlan room in start.rooms)
             {
                 CellRect rect = room.Rect.MovedBy(new IntVec2(offset.x, offset.z));
@@ -208,7 +233,16 @@ namespace RimroomsAsyncIndustries.Scenario
                 {
                     bool edge = cell.x == rect.minX || cell.x == rect.maxX || cell.z == rect.minZ || cell.z == rect.maxZ;
                     if (room.floor) { map.terrainGrid.SetTerrain(cell, start.floorTerrain); }
-                    if (edge)
+                    if (edge && removedWalls.Contains(cell))
+                    {
+                        // **A wall the owner deleted by hand is never placed.** Owner, 2026-10-06:
+                        // *"readjusted the room by dleteing some walls"*. Skipped here rather than
+                        // deconstructed later, so there is no rubble and no work order -- it is a
+                        // wall that never existed, which is what the owner's facility looks like.
+                        map.areaManager.Home[cell] = true;
+                        if (room.floor) { map.terrainGrid.SetTerrain(cell, start.floorTerrain); }
+                    }
+                    else if (edge)
                     {
                         Thing wall = ThingMaker.MakeThing(ThingDefOf.Wall, start.wallStuff);
                         wall.SetFactionDirect(Faction.OfPlayer);
@@ -295,13 +329,35 @@ namespace RimroomsAsyncIndustries.Scenario
                 if (plan.thing == null) { throw new InvalidOperationException("Unresolved headquarters building definition."); }
                 Rot4 rotation = new Rot4(plan.rotation);
                 IntVec3 where = plan.cell + offset;
+                // **A VENT OR A COOLER BELONGS IN A WALL, and this loop used to refuse one.**
+                //
+                // Owner, 2026-10-06: *"ive added ac units"* and *"ive added vents for thhe
+                // rooms(and ac units for the main corradoor all vents connect to)"*. Twenty of the
+                // twenty-six wall cells they opened hold exactly that -- thirteen `Vent` and seven
+                // `Cooler` -- and every one of them threw
+                // `Headquarters furniture intersects a wall/building`.
+                //
+                // The game publishes the answer rather than us inventing one:
+                // `BuildingProperties.canPlaceOverWall` is true on `Vent`, `Cooler` and `Autodoor`
+                // and is what lets a player build one into a standing wall. So OUR OWN wall is
+                // replaced for such a thing, which is precisely what the game does, and anything
+                // else still throws.
+                //
+                // **Only our own wall, and only on a cell this plan occupies.** The burn cleared
+                // natural cover before any of this, so an edifice here can only be a wall this
+                // generator placed moments ago -- and for anything without the flag that is still
+                // a def error worth refusing, because an authored bench overlapping an authored
+                // wall is a mistake rather than a design.
+                bool overWall = plan.thing.building != null && plan.thing.building.canPlaceOverWall;
                 foreach (IntVec3 cell in GenAdj.OccupiedRect(where, rotation, plan.thing.size).Cells)
                 {
-                    // The burn cleared natural cover, so an edifice here is one of OUR OWN walls
-                    // -- an authored furniture cell overlapping an authored wall. That is a def
-                    // error, not a map-generation collision, and it must still be refused.
-                    if (!cell.InBounds(map) || cell.GetEdifice(map) != null)
-                    { throw new InvalidOperationException("Headquarters furniture intersects a wall/building at " + cell); }
+                    if (!cell.InBounds(map))
+                    { throw new InvalidOperationException("Headquarters furniture is outside the map at " + cell); }
+                    Building standing = cell.GetEdifice(map);
+                    if (standing == null) { continue; }
+                    if (overWall && standing.def == ThingDefOf.Wall)
+                    { standing.Destroy(DestroyMode.Vanish); continue; }
+                    throw new InvalidOperationException("Headquarters furniture intersects a wall/building at " + cell);
                 }
                 Thing building = ThingMaker.MakeThing(plan.thing, plan.stuff);
                 building.SetFactionDirect(Faction.OfPlayer);
@@ -313,6 +369,14 @@ namespace RimroomsAsyncIndustries.Scenario
                 if (fuel != null && plan.fuelFraction > 0f) { fuel.Refuel(fuel.Props.fuelCapacity * Mathf.Clamp01(plan.fuelFraction)); }
                 CompPowerBattery battery = building.TryGetComp<CompPowerBattery>();
                 if (battery != null && plan.batteryFraction > 0f) { battery.SetStoredEnergyPct(Mathf.Clamp01(plan.batteryFraction)); }
+                // **A freezer that ships at room temperature is quietly not a freezer.** Owner,
+                // 2026-10-06: *"i set 4 ac units to below freezing for a freezer(those should be in
+                // the scenerio correctly)"*. `NaN` is the absent value rather than 0, because 0 is
+                // a temperature somebody means -- a sentinel that collides with a real value is how
+                // a default becomes a silent setting.
+                CompTempControl climate = building.TryGetComp<CompTempControl>();
+                if (climate != null && !float.IsNaN(plan.targetTemperature))
+                { climate.targetTemperature = plan.targetTemperature; }
                 // The start def places two record books among the furniture; they are issued
                 // by the company exactly as the scenario grant's are.
                 Investigation.CompRouteEvidence placedBook =
@@ -330,11 +394,18 @@ namespace RimroomsAsyncIndustries.Scenario
                     if (!cell.InBounds(map)) { throw new InvalidOperationException("Starting conduit outside headquarters."); }
                     // Native generators/batteries can already transmit across this cell.
                     // A second conduit transmitter under them would duplicate the native grid registration.
-                    bool exists = cell.GetThingList(map).Exists(t => t.def == ThingDefOf.PowerConduit ||
-                        t.TryGetComp<CompPower>()?.Props.transmitsPower == true);
+                    // **The transmitter test has to see BOTH conduit kinds.** It named
+                    // `PowerConduit` alone, and with the facility now wired in `HiddenConduit` an
+                    // existing hidden run would have failed this check and been given an ordinary
+                    // conduit on top of it -- two transmitters on one cell, which is the duplicate
+                    // grid registration the test exists to prevent. The comp question below already
+                    // catches both; the def comparison is the fast path and it needed widening.
+                    bool exists = cell.GetThingList(map).Exists(t => t.def == ThingDefOf.PowerConduit
+                        || t.def == StartingConduitDef()
+                        || t.TryGetComp<CompPower>()?.Props.transmitsPower == true);
                     if (!exists)
                     {
-                        Thing conduit = ThingMaker.MakeThing(ThingDefOf.PowerConduit);
+                        Thing conduit = ThingMaker.MakeThing(StartingConduitDef());
                         conduit.SetFactionDirect(Faction.OfPlayer);
                         GenSpawn.Spawn(conduit, cell, map);
                     }
