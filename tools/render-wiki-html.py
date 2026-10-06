@@ -82,6 +82,89 @@ CSS = os.path.join(REPO, "docs", "assets", "css", "rimrooms.css")
 CONFIG = os.path.join(REPO, "docs", "_config.yml")
 NL = chr(10)
 
+# Search and sorting for any long table on the site.
+#
+# **OWNER, 2026-10-06: *"the mod registry need to be sort able and i dont see the search option"*.**
+# The published mod list is 297 rows. A reader hunting one mod in 297 rows of a static table has
+# the browser's own find and nothing else, and the page was promised as filterable.
+#
+# **IT LIVES HERE BECAUSE IT CANNOT LIVE IN THE PAGE.** This renderer escapes raw HTML in markdown
+# -- a `<script>` written into a wiki page arrives as `&lt;script`, which was measured rather than
+# assumed. So the behaviour belongs to the shell that wraps every page.
+#
+# **IT APPLIES ITSELF BY SIZE, NOT BY A FLAG.** Any table with at least twenty body rows gets a
+# search box and clickable headings; every other table on the site is untouched. A per-page opt-in
+# would be a second thing to remember and would be forgotten the first time somebody adds a long
+# table. Today exactly one table qualifies.
+#
+# **AND THE PAGE WORKS WITHOUT IT.** Everything here is an enhancement applied after load: with
+# scripting off, the full table is still there, in full, sorted A to Z by the generator. Nothing is
+# hidden behind a control that might not run.
+TABLE_TOOLS = NL.join([
+    "<script>",
+    "(function () {",
+    "  var MIN_ROWS = 20;",
+    "  function textOf(node) { return (node.textContent || '').trim().toLowerCase(); }",
+    "  function enhance(table) {",
+    "    var body = table.tBodies[0];",
+    "    if (!body || body.rows.length < MIN_ROWS) { return; }",
+    "    var rows = Array.prototype.slice.call(body.rows);",
+    "    var holder = document.createElement('p');",
+    "    holder.className = 'table-search';",
+    "    var label = document.createElement('label');",
+    "    label.appendChild(document.createTextNode('Search this table: '));",
+    "    var input = document.createElement('input');",
+    "    input.type = 'search';",
+    "    input.setAttribute('aria-label', 'Search this table');",
+    "    var tally = document.createElement('span');",
+    "    label.appendChild(input);",
+    "    holder.appendChild(label);",
+    "    holder.appendChild(tally);",
+    "    function apply() {",
+    "      var needle = input.value.trim().toLowerCase();",
+    "      var shown = 0;",
+    "      for (var i = 0; i < rows.length; i++) {",
+    "        var hit = !needle || textOf(rows[i]).indexOf(needle) >= 0;",
+    "        rows[i].style.display = hit ? '' : 'none';",
+    "        if (hit) { shown++; }",
+    "      }",
+    "      tally.textContent = ' ' + shown + ' of ' + rows.length;",
+    "    }",
+    "    input.addEventListener('input', apply);",
+    "    table.parentNode.insertBefore(holder, table);",
+    "    apply();",
+    "    var head = table.tHead && table.tHead.rows[0];",
+    "    if (!head) { return; }",
+    "    Array.prototype.forEach.call(head.cells, function (cell, index) {",
+    "      var ascending = true;",
+    "      cell.setAttribute('role', 'button');",
+    "      cell.setAttribute('tabindex', '0');",
+    "      cell.style.cursor = 'pointer';",
+    "      function sort() {",
+    "        rows.sort(function (a, b) {",
+    "          var left = textOf(a.cells[index] || a);",
+    "          var right = textOf(b.cells[index] || b);",
+    "          if (left === right) { return 0; }",
+    "          return (left < right ? -1 : 1) * (ascending ? 1 : -1);",
+    "        });",
+    "        for (var i = 0; i < rows.length; i++) { body.appendChild(rows[i]); }",
+    "        Array.prototype.forEach.call(head.cells, function (other) {",
+    "          other.removeAttribute('aria-sort');",
+    "        });",
+    "        cell.setAttribute('aria-sort', ascending ? 'ascending' : 'descending');",
+    "        ascending = !ascending;",
+    "      }",
+    "      cell.addEventListener('click', sort);",
+    "      cell.addEventListener('keydown', function (event) {",
+    "        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); sort(); }",
+    "      });",
+    "    });",
+    "  }",
+    "  Array.prototype.forEach.call(document.querySelectorAll('table'), enhance);",
+    "}());",
+    "</script>",
+])
+
 
 def read(path):
     return io.open(path, encoding="utf-8-sig").read()
@@ -431,6 +514,8 @@ def shell(site_title, site_description, page_name, summary, nav, body, slug=""):
         "  <p>%s. A development build; nothing here is a balance, performance or" % esc(site_title),
         "     compatibility report.</p>",
         "</footer>",
+        "",
+        TABLE_TOOLS,
         "",
         "</body>",
         "</html>",

@@ -76,8 +76,46 @@ TRACE_MEANING = {
     "RR-COMPAT": "nothing directly",
 }
 
-# A trace that means the mod touches something a player would notice losing.
-LOAD_BEARING = {"RR-GATE", "RR-EXP", "RR-FAC", "RR-STA", "RR-EVD", "RR-ECO", "RR-MSN", "RR-SCEN"}
+# **THE FIRST VERSION OF THIS TAGGED 83 MODS "Recommended" AND THE OWNER CALLED IT: "this is not
+# correct".** It derived Recommended from `firmness == Settled` plus any load-bearing trace -- and
+# nearly every row in the register carries a broad family trace, so the filter swept up a third of
+# the list. It recommended **Age Reversing Mech Serum, Animal Sarcophagus, Blood Animations, Gold &
+# Silver Ingots and Dual Wield** for a mod about gates.
+#
+# **The register does not carry a recommendation and never did.** Its FinalDisposition field reads
+# "Provisional" on 200 rows and "Optional ..." on almost all the rest; not one row says a player
+# should install anything. Deriving a recommendation from how far a *review* got is reading a
+# number off the wrong instrument, which is this project's most repeated defect.
+#
+# So Recommended now means one checkable thing:
+#
+#     **the mod gives Rimrooms a capability Core cannot provide.**
+#
+# Two sources, both evidence rather than inference:
+#   * this package **patches** it -- a PatchOperationFindMod naming it is a binding we wrote
+#   * it is **hand-listed** in public-register-text.json with the capability named in the row
+#
+# Everything else is Optional, which is the truth: this mod is built to need nothing, and the page
+# says so above the table. A short Recommended list that is true beats a long one that is not.
+PATCH_ROOT = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Patches")
+
+
+def patched_mod_names():
+    """Mods this package actually patches, read out of the patch files rather than listed here."""
+    import re
+    found = set()
+    if not os.path.isdir(PATCH_ROOT):
+        return found
+    for folder, _subdirs, files in os.walk(PATCH_ROOT):
+        for name in sorted(files):
+            if not name.lower().endswith(".xml"):
+                continue
+            body = io.open(os.path.join(folder, name), encoding="utf-8-sig").read()
+            for block in re.findall(r"<Operation[^>]*PatchOperationFindMod.*?</Operation>",
+                                    body, re.S):
+                for mod in re.findall(r"<li>([^<]+)</li>", block):
+                    found.add(mod.strip().lower())
+    return found
 
 
 def register_module():
@@ -92,22 +130,19 @@ def traces_of(row):
     return [t.strip().upper() for t in (row.get("trace") or "").split(";") if t.strip()]
 
 
-def tag_for(row):
+def tag_for(row, patched):
     stance = (row.get("stance") or "").strip()
     family = (row.get("family") or "").strip().lower()
-    firmness = (row.get("firmness") or "").strip()
-    marks = set(traces_of(row))
 
     if family == "rimworld base game":
         return "Required"
+    # Evidence, not inference: a patch naming this mod is a binding somebody wrote on purpose.
+    if (row.get("mod") or "").strip().lower() in patched:
+        return "Recommended"
     if stance == "Visual only":
         return "Visual only"
     if stance == "No integration":
         return "Not needed"
-    if stance == "Configuration only":
-        return "Optional"
-    if firmness == "Settled" and (marks & LOAD_BEARING):
-        return "Recommended"
     return "Optional"
 
 
@@ -154,12 +189,13 @@ def build():
     overrides = load_overrides()
     per_row = overrides.get("rows", {})
 
+    patched = patched_mod_names()
     entries = []
     for row in rows:
         name = (row.get("mod") or "").strip()
         key = (row.get("load") or "").strip()
         custom = per_row.get(key) or per_row.get(name) or {}
-        tag = custom.get("tag") or tag_for(row)
+        tag = custom.get("tag") or tag_for(row, patched)
         entries.append({
             "name": name,
             # **THE COUNT ONLY RECONCILES IF THE GAME IS NOT COUNTED AS A MOD**, and the owner's
@@ -208,40 +244,58 @@ def page(entries):
     out.append("")
     out.append("The base game is listed too, for context. It is not counted in that %d." % mods)
     out.append("")
-    out.append("## Nothing here is required to launch")
+    out.append("**This whole page is the recommended list.** Every mod on it was part of the "
+               "profile Rimrooms was built in. The tag says what each one *adds*, not whether to "
+               "install it.")
     out.append("")
-    out.append("**Rimrooms declares no mod as a hard dependency and starts on its own.** *Required* "
-               "below means required for the experience as it was built, never required to run.")
+    out.append("## It runs on vanilla, with no expansions")
     out.append("")
-    out.append("Leave out anything tagged Optional and nothing breaks. Rimrooms falls back to what "
-               "the base game already ships.")
+    out.append("**Rimrooms declares no mod as a hard dependency, and every game definition it "
+               "names exists in the base game alone.** That is checked on every build rather than "
+               "assumed — a definition that needed an expansion would fail it.")
+    out.append("")
+    out.append("So *Required* below means the game itself. **Nothing on this page is required to "
+               "launch**, and everything else is capability you are adding on top.")
     out.append("")
     out.append("| Tag | How many | What it means |")
     out.append("|---|---|---|")
     meanings = {
-        "Required": "The game itself.",
-        "Recommended": "Built against this. Skipping it loses a part of the intended experience.",
-        "Optional": "Works with it, works without it.",
+        "Required": "The game itself, and the mod this list is about.",
+        "Recommended": "Gives Rimrooms a capability the base game cannot. Still not required.",
+        "Optional": "Added capability. Rimrooms works the same with it or without it.",
         "Visual only": "Changes how things look and nothing else.",
-        "Not needed": "Rimrooms does not interact with it at all.",
+        "Not needed": "Rimrooms does not interact with it. It is listed because it was in the "
+                      "profile, not as advice to skip it.",
     }
     for tag in TAGS:
         if counts.get(tag):
             out.append("| **%s** | %d | %s |" % (tag, counts[tag], meanings[tag]))
     out.append("")
 
-    for tag in TAGS:
-        group = [e for e in entries if e["tag"] == tag]
-        if not group:
-            continue
-        out.append("## %s (%d)" % (tag, len(group)))
-        out.append("")
-        out.append("| Mod | What it does here | Without it | Watch for |")
-        out.append("|---|---|---|---|")
-        for entry in group:
-            out.append("| **%s** | %s | %s | %s |"
-                       % (entry["name"], entry["uses"], entry["without"], entry["watch"]))
-        out.append("")
+    out.append("## What Recommended means here")
+    out.append("")
+    out.append("**That the mod gives Rimrooms something the base game cannot.** Not that it is "
+               "popular, and not that a review of it went well.")
+    out.append("")
+    out.append("An earlier version of this page derived the tag from how far each review had got, "
+               "and recommended 83 mods including an animal sarcophagus. That was wrong and it is "
+               "the reason this definition is written down.")
+    out.append("")
+
+    # **ONE LIST, ALL OF THEM.** Owner: "not the full 296 mods". The page was five tables grouped
+    # by tag, so no single place showed the whole list and the biggest heading read as the answer.
+    # The tag is a column now and the list is one A to Z table, which is what "for all mods" asks
+    # for. The summary above is a count, not a substitute for the list.
+    out.append("## Every mod, A to Z")
+    out.append("")
+    out.append("All **%d**, in one list. The tag is the second column." % len(entries))
+    out.append("")
+    out.append("| Mod | Tag | What it does here | Without it | Watch for |")
+    out.append("|---|---|---|---|---|")
+    for entry in sorted(entries, key=lambda e: e["name"].lower()):
+        out.append("| **%s** | %s | %s | %s | %s |"
+                   % (entry["name"], entry["tag"], entry["uses"], entry["without"], entry["watch"]))
+    out.append("")
 
     return "\n".join(out) + "\n"
 

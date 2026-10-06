@@ -116,6 +116,13 @@ def main():
         return 2
 
     game_names = set()
+    # **WHICH PACK EACH NAME CAME FROM, BECAUSE "VANILLA, NO DLC" IS A CLAIM NOBODY WAS CHECKING.**
+    # Owner, 2026-10-06: *"remember we wanted a full vanilla no dlc if possible with all others as
+    # addition capability"*. Resolving every reference against Core and all six expansions merged
+    # together answers *does this name exist*, which is a weaker question than the one that matters:
+    # a def that lives only in Royalty resolves perfectly here and is a missing cross-reference on a
+    # player who owns the base game alone.
+    core_names = set()
     packs = []
     for pack in sorted(os.listdir(root)):
         folder = os.path.join(root, pack, "Defs")
@@ -124,8 +131,11 @@ def main():
         packs.append(pack)
         for path in xml_files(folder):
             body = strip_comments(read(path))
-            game_names.update(re.findall(r"<defName>([^<]+)</defName>", body))
-            game_names.update(re.findall(r'\bName\s*=\s*"([^"]+)"', body))
+            names = set(re.findall(r"<defName>([^<]+)</defName>", body))
+            names.update(re.findall(r'\bName\s*=\s*"([^"]+)"', body))
+            game_names.update(names)
+            if pack.lower() == "core":
+                core_names.update(names)
     if not game_names:
         fail("the game's Data folder was found but no defs could be parsed from it")
         game_names = set()
@@ -205,6 +215,45 @@ def main():
             fail(problem)
     else:
         notes.append("every ParentName, def reference and Rimrooms type in the shipped defs resolves")
+
+    # ------------------------------------------------- vanilla, with no expansion installed
+    # Everything referenced must resolve against **Core alone**. A name that needs an expansion is
+    # a cross-reference error on a player who owns none, and `MayRequire` is the only honest way to
+    # name one -- which is why a reference carrying it is exempt.
+    expansion_only = []
+    for path in our_files:
+        rel = os.path.relpath(path, REPO).replace(os.sep, "/")
+        body = strip_comments(read(path))
+        for tag in DEF_TAGS:
+            for match in re.finditer(r"<%s(\s[^>]*)?>([^<]+)</%s>" % (tag, tag), body):
+                attributes, value = match.group(1) or "", match.group(2).strip()
+                if "MayRequire" in attributes:
+                    continue
+                if value and value in game_names and value not in core_names and value not in ours:
+                    expansion_only.append("%s names <%s>%s</%s>, which no expansion-free install has"
+                                          % (rel, tag, value, tag))
+        for wrapper in DEF_LISTS:
+            if wrapper in ("placeWorkers", "inspectorTabs", "modExtensions", "thingSetMakerTags"):
+                continue
+            for block in re.findall(r"<%s>(.*?)</%s>" % (wrapper, wrapper), body, re.S):
+                for match in re.finditer(r"<li(\s[^>]*)?>([^<]+)</li>", block):
+                    attributes, value = match.group(1) or "", match.group(2).strip()
+                    if "MayRequire" in attributes:
+                        continue
+                    if value and value in game_names and value not in core_names and value not in ours:
+                        expansion_only.append("%s lists %r inside <%s>, which no expansion-free "
+                                              "install has" % (rel, value, wrapper))
+        for block in re.findall(r"<costList>(.*?)</costList>", body, re.S):
+            for child in re.findall(r"<(\w+)>", block):
+                if child in game_names and child not in core_names and child not in ours:
+                    expansion_only.append("%s builds from %r, which no expansion-free install has"
+                                          % (rel, child))
+
+    if expansion_only:
+        for problem in sorted(set(expansion_only)):
+            fail(problem)
+    else:
+        notes.append("every referenced game def exists in Core alone; the package needs no expansion")
 
     print("def references")
     for note in notes:
