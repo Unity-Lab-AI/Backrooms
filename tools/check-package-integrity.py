@@ -577,6 +577,40 @@ def optional_compat_xpaths(root):
     return exempt
 
 
+def remedy():
+    """The fix, and whether the operator can perform it right now.
+
+    **Staging refuses while RimWorld is open and it is right to**, so a reader seeing this failure
+    needs to know whether they are one command away or two. Said rather than left to be discovered:
+    the stager's own refusal is `Close RimWorld before staging a new DLL`, and a guard that demands
+    an action the operator cannot currently take without saying so is a guard people learn to
+    ignore.
+    """
+    running = False
+    try:
+        import subprocess
+        output = subprocess.run(["tasklist", "/FI", "IMAGENAME eq RimWorldWin64.exe"],
+                                capture_output=True, text=True, timeout=20).stdout
+        running = "RimWorldWin64" in output
+    except Exception:
+        pass
+    if running:
+        return (" RIMWORLD IS RUNNING, and the stager refuses while it is -- close the game first, "
+                "then run `powershell -File tools/stage-mod.ps1 -UpdateExisting`. Until then the "
+                "running game is loading the previous build.")
+    return " Run `powershell -File tools/stage-mod.ps1 -UpdateExisting`."
+
+
+def _file_sha256(path):
+    """A file's SHA256, read in chunks so a 20 MB texture is not held in memory."""
+    import hashlib
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def check_staged_copy_is_current(problems, notes):
     """The copy the owner launches must be the build that was just made.
 
@@ -619,6 +653,33 @@ def check_staged_copy_is_current(problems, notes):
     if want is None or have is None:
         fail(problems, "a modVersion could not be read from the built or the staged About.xml")
         return
+    # **COMPARING VERSIONS ALONE WAS NOT ENOUGH, and this guard's own first run proved it.**
+    # A fix landed without a version bump -- the same 0.12.99-dev -- so the version matched while
+    # the staged assembly was the previous build. The check reported the staged copy current and it
+    # was not. **The version is a label; the bytes are the thing that runs.**
+    #
+    # So every staged file is compared by content against the package that was just built. Cheap:
+    # 103 files, and it is the difference between knowing and assuming.
+    root = os.path.dirname(os.path.dirname(staged))
+    stale = []
+    missing = []
+    for base, _, names in os.walk(MOD):
+        for name in names:
+            source = os.path.join(base, name)
+            relative = os.path.relpath(source, MOD)
+            mirror = os.path.join(root, relative)
+            if not os.path.isfile(mirror):
+                missing.append(relative.replace(os.sep, "/"))
+            elif _file_sha256(source) != _file_sha256(mirror):
+                stale.append(relative.replace(os.sep, "/"))
+    if missing or stale:
+        fail(problems,
+             "THE STAGED COPY IS NOT THIS BUILD: %d file(s) differ and %d are absent, even though "
+             "both declare %r. The version is a label; the bytes are what runs, so a fix without a "
+             "version bump would otherwise stage as current. First differing: %s.%s"
+             % (len(stale), len(missing), want.group(1).strip(),
+                ", ".join((stale + missing)[:4]), remedy()))
+        return
     if want.group(1).strip() != have.group(1).strip():
         fail(problems,
              "THE STAGED COPY IS NOT THIS BUILD: the game's Mods folder holds %r and the build is "
@@ -627,7 +688,8 @@ def check_staged_copy_is_current(problems, notes):
              "`powershell -File tools/stage-mod.ps1 -UpdateExisting`."
              % (have.group(1).strip(), want.group(1).strip()))
     else:
-        notes.append("staged copy matches the build at %s" % want.group(1).strip())
+        notes.append("staged copy matches the build at %s, every file compared by content"
+                     % want.group(1).strip())
 
 
 def profile_defs():

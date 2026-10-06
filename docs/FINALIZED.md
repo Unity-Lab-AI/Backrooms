@@ -17001,3 +17001,30 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-05)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+**Verbatim owner report (2026-10-06), the fatal one:** *"current a pawn dies at the comms console... and we cant have them not going to eat or finding saftey, but there needs to be like a driop down sleector thing stay at post strict mild, default> inbetween strict and mild"*
+
+- [x] **FIXED 0.12.99-dev, and it was fatal BY CONSTRUCTION rather than by bad luck.** Three things had to be true at once and all three were: `RR_OperateGate` declares `suspendable: false` **and** `casualInterruptible: false`, so RimWorld's own need think-nodes never got the chance to pull the pawn off; the station toil is `ToilCompleteMode.Never`, so it has no end of its own; and its `FailOn` tested the gate, the calibration, the operator's identity, `Downed` and `InMentalState` — **and not one need.** So the only exits were collapse, a mental break, or the player noticing. The pawn stood there and starved. **THE FLOOR IS ABSOLUTE AND IT IS NOT THE SETTING**, because the owner said both halves in one sentence. `GateWatch.MustLeave` is starving, exhausted, burning, bleeding out, downed or in a mental state — **every one of them a state where standing still is the thing doing the harm, and every threshold Core's own rather than a number chosen here** — and it is asked **before** any posture, in the `FailOn` **and** again every tick. The per-tick check is not belt-and-braces: a `FailOn` runs on the driver's own cadence, and a pawn crossing into starvation between two evaluations is exactly the window the defect lived in. **And there is deliberately no enum value meaning *never leave*** — it would be one typo away from the bug. The dropdown is three postures: **relieved early** leaves at hungry or tired, **balanced** at urgently hungry or very tired, **holds the post** stays through both and leaves only at the floor. Balanced is the shipped default because the owner named it one: *"default> inbetween strict and mild"*. **Per gate rather than global**, because a quiet survey and a deep coordinate held open are not the same decision. **A `FloatMenu` rather than a cycling button**, because a cycling button hides the options it is not showing and the difference between these three is the one thing a player cannot guess — getting it wrong once cost a colonist. **The job stays non-suspendable and that is now a recorded decision rather than the defect:** handing the choice back to RimWorld would give exactly the mild posture and could not express the other two, so the mod keeps the decision and takes the duty with it. **Held by 8 proof claims and 10 plants, the first of which replants the exact fault** — the need check deleted from the driver. **Two of my own claims were too weak and the plants said so:** `case GateWatchPosture.Strict:` appears three times, so gutting the one in `Releases` left two behind and containment passed; and the `Scribe` default names `Balanced` too, so deleting the field initialiser left the identifier present. Both are counted now, and the second was counted **after measuring** because the first correction guessed two and failed on correct code.
+
+
+
+Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

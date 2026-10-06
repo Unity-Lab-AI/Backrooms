@@ -272,6 +272,63 @@ for key in ("RR_NativeGate_DesignatedNeedsCircuit", "RR_NativeGate_IsRunExtensio
     check("%s is translated" % key, ("<%s>" % key) in gate_keys,
           "-- a refusal with no string prints a raw key at the player")
 
+# ============================================ the operator leaves before their body gives out
+#
+# **A colonist starved at the console in the first launch.** Owner, 2026-10-06: *"current a pawn
+# dies at the comms console... and we cant have them not going to eat or finding saftey"*. It was
+# fatal by construction and needed three things at once: `suspendable: false`, a
+# `ToilCompleteMode.Never` station, and a `FailOn` that tested the gate, the calibration, the
+# operator identity, `Downed` and `InMentalState` and **not one need**.
+#
+# So the claims below are about the FLOOR, not the setting. A posture tunes WHEN an operator
+# leaves; nothing tunes WHETHER.
+posture = no_comments(read(SRC, "Gate", "GateWatchPosture.cs"))
+driver = no_comments(read(SRC, "Gate", "JobDriver_RimroomsGate.cs"))
+jobs = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+                         "JobDefs", "RR_GateJobs.xml"))
+enum_body = posture.split("public enum GateWatchPosture")[1].split("}")[0]
+
+check("THE OPERATOR JOB CHECKS A NEED AT ALL, which it did not when a pawn starved at it",
+      "GateWatch.MustLeave(pawn)" in driver,
+      "-- without it the only exits were collapse or the player noticing")
+
+check("and it is asked in the FailOn AND every tick, counted rather than assumed",
+      driver.count("GateWatch.MustLeave(pawn)") == 2,
+      "-- a FailOn runs on the driver's own cadence; crossing into starvation between two of them is the window the defect lived in")
+
+check("THE FLOOR IS THE GAME'S OWN CATEGORIES: starving, exhausted, burning, bleeding out",
+      "HungerCategory.Starving" in posture and "RestCategory.Exhausted" in posture
+      and "IsBurning()" in posture and "BleedRateTotal" in posture,
+      "-- each is a state where standing still is the thing doing the harm, and each is Core's threshold rather than a number chosen here")
+
+check("THE FLOOR IS ASKED BEFORE THE POSTURE, so no posture can switch it off",
+      posture.index("MustLeave") < posture.index("Releases"),
+      "-- the ordering IS the safety argument")
+
+check("AND NO POSTURE MEANS NEVER LEAVE, because that value does not exist",
+      "Mild" in enum_body and "Balanced" in enum_body and "Strict" in enum_body
+      and "Never" not in enum_body,
+      "-- a value meaning never leave would be one typo away from the bug this file exists to fix")
+
+check("Strict adds no tolerance of its own beyond the floor",
+      posture.count("case GateWatchPosture.Strict:") == 3
+      and "Releases" in posture.split("case GateWatchPosture.Strict:")[0],
+      "-- COUNTED, because the label and description switches carry the same case and a plant that gutted the one in Releases left two behind")
+
+gate_source = no_comments(read(SRC, "Gate", "CompRimroomsGate.cs"))
+check("the saved default is written out rather than inherited from a zeroed field",
+      "private GateWatchPosture watchPosture = GateWatchPosture.Balanced;" in gate_source
+      and gate_source.count("GateWatchPosture.Balanced") == 3,
+      "-- the whole declaration, not the identifier. Three sites name it: the initialiser, the Scribe default and the dropdown's option list. COUNTED AFTER MEASURING, because the first version of this claim guessed two and failed on correct code")
+
+check("THE JOB DEF RECORDS WHY IT IS STILL NOT SUSPENDABLE",
+      "suspendable" in jobs and "MustLeave" in jobs,
+      "-- suspendable would give exactly the mild posture and could not express the other two, so the mod keeps the decision and carries the duty")
+
+for watch_key in ("RR_GateWatch_Label", "RR_GateWatch_Strict", "RR_GateWatch_StrictDesc",
+                  "RR_GateWatch_Mild", "RR_GateWatch_Balanced"):
+    check("%s is translated" % watch_key, ("<%s>" % watch_key) in gate_keys,
+          "-- a dropdown showing a raw key is a dropdown nobody can use")
 print("")
 if failures:
     print("PROOF FAILED: %d claim(s)" % len(failures))

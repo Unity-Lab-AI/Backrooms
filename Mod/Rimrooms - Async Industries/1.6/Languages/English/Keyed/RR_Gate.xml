@@ -140,4 +140,22 @@ Repairing it is ordinary construction work. Calibrating it is the assigned opera
   <RR_NativeGate_TooManyGates>Three gates are already operational. That is the limit: three called addresses plus your colony is four of the five maps the game will hold open at once, and the fifth is the margin for a natural door somebody walks through without planning to.
 
 Stand one of the others down first, or board up a natural door to free a slot.</RR_NativeGate_TooManyGates>
+  <!-- The watch posture. Owner, 2026-10-06: "there needs to be like a driop down sleector thing
+       stay at post strict mild, default> inbetween strict and mild". Every option states what it
+       does, because the difference between the three is the one thing a player cannot guess and
+       getting it wrong once cost a colonist. -->
+  <RR_GateWatch_Label>Watch: {0}</RR_GateWatch_Label>
+  <RR_GateWatch_Desc>How long the operator stays at the console before their own needs take over.
+
+{0}
+
+No setting will let an operator starve, collapse or stand in a fire. That floor is not optional.</RR_GateWatch_Desc>
+  <RR_GateWatch_Mild>relieved early</RR_GateWatch_Mild>
+  <RR_GateWatch_MildDesc>Leaves as soon as they are hungry or tired, like any other work. The gate drops unless somebody else takes the station.</RR_GateWatch_MildDesc>
+  <RR_GateWatch_Balanced>balanced</RR_GateWatch_Balanced>
+  <RR_GateWatch_BalancedDesc>Leaves when urgently hungry or very tired. One step past ordinary work, one step short of harm.</RR_GateWatch_BalancedDesc>
+  <RR_GateWatch_Strict>holds the post</RR_GateWatch_Strict>
+  <RR_GateWatch_StrictDesc>Stays through hunger and tiredness, and leaves only at the point where staying would injure them. Hold a window open with this, then relieve them.</RR_GateWatch_StrictDesc>
+  <RR_GateWatch_LeftFloor>left the console before it hurt them</RR_GateWatch_LeftFloor>
+  <RR_GateWatch_LeftPosture>left the console to see to themselves</RR_GateWatch_LeftPosture>
 </LanguageData>

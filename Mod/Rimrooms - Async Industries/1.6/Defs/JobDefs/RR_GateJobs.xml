@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <JobDef>
     <defName>RR_CalibrateGate</defName>
@@ -13,6 +13,18 @@
     <defName>RR_OperateGate</defName>
     <driverClass>RimroomsAsyncIndustries.Gate.JobDriver_RROperateGate</driverClass>
     <reportString>staffing the gate console</reportString>
+    <!-- STILL NOT SUSPENDABLE, AND THAT IS NOW A DECISION RATHER THAN THE DEFECT.
+         Owner, 2026-10-06: "current a pawn dies at the comms console". The cause was
+         this flag PLUS a ToilCompleteMode.Never station PLUS a FailOn that tested no
+         need at all — gate, calibration, operator identity, Downed, InMentalState and
+         nothing else. So RimWorld could not pull the pawn off and neither could we.
+
+         Handing the decision back to RimWorld by making this suspendable would give
+         exactly ONE of the three postures the owner asked for — the mild one — and
+         could not express the other two. So the mod keeps the decision and takes the
+         duty with it: GateWatch.MustLeave is an absolute floor, asked BEFORE any
+         posture, in the FailOn and again every tick. No posture can switch it off, and
+         there is deliberately no enum value meaning never leave. -->
     <suspendable>false</suspendable>
     <playerInterruptible>true</playerInterruptible>
     <casualInterruptible>false</casualInterruptible>

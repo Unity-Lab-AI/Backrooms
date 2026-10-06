@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -179,6 +179,19 @@ namespace RimroomsAsyncIndustries.Gate
     public sealed partial class CompRimroomsGate : ThingComp
     {
         private Pawn assignedOperator;
+        /// <summary>
+        /// How long an operator stays before their own body wins. **Per gate rather than
+        /// global**, because a branch running a quiet survey and a branch holding a deep
+        /// coordinate open are not the same decision, and the owner's words name it as a
+        /// property of the post: *"stay at post strict mild, default"*.
+        ///
+        /// Defaults to <see cref="GateWatchPosture.Balanced"/> because the owner named
+        /// that one the default: *"default&gt; inbetween strict and mild"*. **An existing
+        /// save without the field loads as Balanced**, which is the enum's zero-adjacent
+        /// value by intent -- `Mild` is 0, so the default is written explicitly rather
+        /// than inherited from a zeroed field.
+        /// </summary>
+        private GateWatchPosture watchPosture = GateWatchPosture.Balanced;
         private bool assemblyComplete;
         private bool calibrated;
         private string activeExpeditionId;
@@ -197,6 +210,7 @@ namespace RimroomsAsyncIndustries.Gate
 
         private CompProperties_RimroomsGate GateProps { get { return (CompProperties_RimroomsGate)props; } }
         public Pawn AssignedOperator { get { return assignedOperator; } }
+        public GateWatchPosture WatchPosture { get { return watchPosture; } }
         public bool AssemblyComplete { get { return assemblyComplete; } }
         public bool Calibrated { get { return calibrated; } }
         public bool IsOpening { get { return !string.IsNullOrEmpty(activeExpeditionId) || !string.IsNullOrEmpty(portalOpeningId); } }
@@ -329,6 +343,9 @@ namespace RimroomsAsyncIndustries.Gate
             ExposeConnectionHistory();
             ExposeSpinUp();
             Scribe_References.Look(ref assignedOperator, "rr_gateAssignedOperator");
+            // Additive, and the default is written out rather than left to a zeroed
+            // field: `Mild` is enum 0, so an absent value must resolve to Balanced.
+            Scribe_Values.Look(ref watchPosture, "rr_gateWatchPosture", GateWatchPosture.Balanced);
             Scribe_Values.Look(ref assemblyComplete, "rr_gateAssemblyComplete", false);
             Scribe_Values.Look(ref calibrated, "rr_gateCalibrated", false);
             Scribe_Values.Look(ref activeExpeditionId, "rr_gateActiveExpeditionId");
@@ -460,6 +477,46 @@ namespace RimroomsAsyncIndustries.Gate
         /// chosen in the Operations pane, because picking one of several for the player is a
         /// decision rather than a shortcut.
         /// </summary>
+        /// <summary>
+        /// The watch-posture dropdown, offered wherever an operator can be assigned.
+        ///
+        /// **A `FloatMenu` rather than three buttons or a cycling one.** The owner asked for *"a
+        /// driop down sleector thing"*, and a cycling button hides the options it is not showing --
+        /// a player has to click it to find out what else exists. Three gizmos would spend three
+        /// slots on one decision.
+        ///
+        /// Every option states what it does in its own description, because the difference between
+        /// these three is exactly the thing a player cannot guess, and getting it wrong once cost
+        /// a colonist.
+        /// </summary>
+        private Gizmo WatchPostureGizmo()
+        {
+            return new Command_Action
+            {
+                defaultLabel = "RR_GateWatch_Label".Translate(
+                    GateWatch.LabelKey(watchPosture).Translate()),
+                defaultDesc = "RR_GateWatch_Desc".Translate(
+                    GateWatch.DescriptionKey(watchPosture).Translate()),
+                icon = parent.def.uiIcon,
+                action = delegate
+                {
+                    var options = new List<FloatMenuOption>();
+                    foreach (GateWatchPosture choice in new[]
+                    {
+                        GateWatchPosture.Mild, GateWatchPosture.Balanced, GateWatchPosture.Strict,
+                    })
+                    {
+                        GateWatchPosture picked = choice;
+                        options.Add(new FloatMenuOption(
+                            GateWatch.LabelKey(picked).Translate() + " - "
+                                + GateWatch.DescriptionKey(picked).Translate(),
+                            delegate { watchPosture = picked; }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(options));
+                },
+            };
+        }
+
         private IEnumerable<Gizmo> MakeGateGizmos()
         {
             RimroomsCampaignComponent campaign = NativeCampaign;
@@ -532,6 +589,12 @@ namespace RimroomsAsyncIndustries.Gate
             if (!IsDesignated)
             {
                 foreach (Gizmo gizmo in MakeGateGizmos()) { yield return gizmo; }
+            }
+            if (AssemblyComplete)
+            {
+                // Shown once the gate is a gate at all. Before that there is no post to
+                // stand at and the control would be a setting for nothing.
+                yield return WatchPostureGizmo();
                 yield break;
             }
 

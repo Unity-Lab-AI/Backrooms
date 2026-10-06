@@ -154,6 +154,21 @@ namespace RimroomsAsyncIndustries.Gate
         {
             this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
             this.FailOn(() => Gate == null || !Gate.Calibrated || Gate.AssignedOperator != pawn || pawn.Downed || pawn.InMentalState);
+            // **THE NEED CHECK THAT WAS NOT HERE, AND ITS ABSENCE KILLED A COLONIST.**
+            //
+            // Owner report, 2026-10-06: *"current a pawn dies at the comms console... and we cant
+            // have them not going to eat or finding saftey"*. This toil is
+            // `ToilCompleteMode.Never`, the job def is `suspendable: false`, and the failure
+            // conditions above test the gate, the calibration, the operator's identity, `Downed`
+            // and `InMentalState` -- **not one need**. So RimWorld could not pull the pawn off and
+            // neither could we, and the only exits were collapse or the player noticing.
+            //
+            // The floor is checked here, separately and BEFORE the posture, so no posture can
+            // switch it off. `GateWatch.MustLeave` is starving, exhausted, burning, bleeding out,
+            // downed or in a mental state -- every one a state where standing still is the thing
+            // doing the harm.
+            this.FailOn(() => GateWatch.MustLeave(pawn)
+                || GateWatch.Releases(pawn, Gate == null ? GateWatchPosture.Balanced : Gate.WatchPosture));
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.InteractionCell);
 
             Toil station = ToilMaker.MakeToil("RimroomsGateOperatorStation");
@@ -163,6 +178,13 @@ namespace RimroomsAsyncIndustries.Gate
                 CompRimroomsGate gate = Gate;
                 if (gate == null || gate.AssignedOperator != pawn || pawn.Downed || pawn.InMentalState)
                 { EndJobWith(JobCondition.Incompletable); }
+                // Asked every tick as well as in the FailOn, because a FailOn is evaluated by the
+                // driver's own cadence and a pawn crossing into starvation between evaluations is
+                // exactly the window this defect lived in. Ending here releases the post; the gate
+                // keeps its own state and another pawn may take the station.
+                else if (GateWatch.MustLeave(pawn)
+                    || GateWatch.Releases(pawn, gate.WatchPosture))
+                { EndJobWith(JobCondition.InterruptForced); }
                 else
                 {
                     pawn.GainComfortFromCellIfPossible(delta, chairsOnly: true);
