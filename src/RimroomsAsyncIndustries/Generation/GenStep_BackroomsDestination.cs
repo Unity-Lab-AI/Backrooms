@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimroomsAsyncIndustries.Company;
@@ -586,7 +586,8 @@ namespace RimroomsAsyncIndustries.Generation
                 for (int step = 0; step < route.Count; step++)
                 {
                     if (wiredCells.Count >= MaxNativePowerConduits) { break; }
-                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);
+                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells,
+                        consumer);
                 }
             }
 
@@ -636,7 +637,8 @@ namespace RimroomsAsyncIndustries.Generation
                 for (int step = 0; step < route.Count; step++)
                 {
                     if (wiredCells.Count >= MaxNativePowerConduits) { capped = true; break; }
-                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);
+                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells,
+                        consumer.OccupiedRect());
                 }
                 // **Stop the sweep the first time the rebuild fails.** Every decision after that
                 // reads `power.PowerNet` out of bookkeeping Core has already told us is wrong, and
@@ -657,9 +659,19 @@ namespace RimroomsAsyncIndustries.Generation
         /// coordinate.
         /// </summary>
         private static void TrySpawnNativeConduit(Map map, TerrainDef voidFloor, ThingDef conduitDef,
-            IntVec3 cell, HashSet<IntVec3> wiredCells)
+            IntVec3 cell, HashSet<IntVec3> wiredCells, CellRect exemptFootprint)
         {
-            if (!cell.InBounds(map) || map.terrainGrid.TerrainAt(cell) == voidFloor) { return; }
+            // **THE SAME EXEMPTION THE ROUTE SEARCH MAKES, AND IT HAS TO BE BOTH OR NEITHER.**
+            // `FindConduitRoute` now admits the last step onto the consumer's own footprint so a
+            // wall-mounted lamp can be reached at all. Refusing to place the conduit there would
+            // have produced a route that ends one cell short -- a fix that passes a reading and
+            // changes nothing, which is worse than the defect because it looks solved.
+            //
+            // Narrow on purpose: only cells of the thing being wired. The void rule still keeps
+            // conduits out of solid rock everywhere else.
+            if (!cell.InBounds(map)) { return; }
+            if (map.terrainGrid.TerrainAt(cell) == voidFloor && !exemptFootprint.Contains(cell))
+            { return; }
             if (!wiredCells.Add(cell)) { return; }
             if (AlreadyTransmits(map, cell)) { return; }
             Thing conduit = MakeBuilding(conduitDef, null);
@@ -778,7 +790,24 @@ namespace RimroomsAsyncIndustries.Generation
                 foreach (IntVec3 direction in directions)
                 {
                     IntVec3 next = current + direction;
-                    if (!next.InBounds(map) || map.terrainGrid.TerrainAt(next) == voidFloor ||
+                    // **THE CONSUMER'S OWN FOOTPRINT IS EXEMPT FROM THE VOID RULE, AND A WALL LAMP
+                    // IS WHY.** `voidFloor` is `WaterDeep` and `BuildShell` sets it on **every cell
+                    // of the map** before the rooms are carved -- so only a room's *interior* ever
+                    // gets a floor, and a room's own **wall cells keep void terrain**.
+                    //
+                    // A `WallLamp` is mounted *in* a wall, so its only cell is a void cell, so this
+                    // search could never arrive at it and the lamp was never wired. That is exactly
+                    // what the owner's 2026-10-06 log reported: *"WallLamp is not on the generator's
+                    // power net"* -- and wall lamps are the Backrooms look, so it is the fixture
+                    // most likely to be left dark.
+                    //
+                    // **Exempting only the target keeps the rock impassable to routing.** The void
+                    // rule exists so conduits do not tunnel through solid rock between rooms, and it
+                    // still does: this admits the last step onto the thing being wired and nothing
+                    // else. A conduit under a wall is ordinary vanilla construction.
+                    bool exempt = target.Contains(next);
+                    if (!next.InBounds(map) ||
+                        (!exempt && map.terrainGrid.TerrainAt(next) == voidFloor) ||
                         roots.Contains(next) || previous.ContainsKey(next)) { continue; }
                     previous[next] = current;
                     pending.Enqueue(next);
@@ -1701,10 +1730,55 @@ namespace RimroomsAsyncIndustries.Generation
             }
             foreach (RoomRecord room in coordinate.Rooms)
             {
+                if (room == null) { continue; }
+                // **ONLY A ROOM THAT CLAIMS A ROUTE HAS TO HAVE ONE, AND THIS LINE IS WHY THE
+                // OWNER'S SOLO START DIED ON THE WORLD MAP.**
+                //
+                // Owner report, 2026-10-06: *"i tried the solo/group start and the people and
+                // everything spawned in the world tile map incorrectly... i didnt even see a
+                // natrual gate"*. One throw here produced every symptom of that report:
+                // `MarkLayoutReady` never ran, so `ValidateExistingMap` saw `!LayoutReady`,
+                // so `EnsureSite` failed, so `SoloGroupOpening` returned at step 2 -- before the
+                // surface door is marked as the way out and before anybody is moved inside.
+                //
+                // **`RoomLayoutPlanner` had already settled the rule and this validator was
+                // asking a different question**, which is two derivations of one rule -- the
+                // defect this project keeps meeting. The planner's own words:
+                //
+                //   "the reachability proof now asks its question of rooms that **claim** a
+                //    route. A room with links must be walkable to; a room with none is a vault,
+                //    and the rock around it is `Mineable` like all the fill, so it is reachable
+                //    in the only sense this room wants to be."
+                //
+                // `SealedFamily` is authored with **zero links on purpose** -- `CandidateIsSafe`
+                // asserts exactly that -- because a sealed vault is meant to be found by mining,
+                // which is the whole of the owner's *"veins leading to other rooms so insentive
+                // to mine things out to find isolated undiscorvered rooms"*. So the planner
+                // approved a layout and this method then killed the coordinate for containing the
+                // feature the planner had deliberately put in it.
+                //
+                // **Tested on `Links` rather than on the family name**, so there is one
+                // derivation and not two: a future family that is also sealed inherits the rule
+                // instead of needing to be remembered here.
+                if (room.Links == null || room.Links.Count == 0) { continue; }
                 IntVec3 walkable = OrderedInteriorCells(room, room.Bounds.CenterCell)
                     .FirstOrDefault(cell => cell.InBounds(map) && cell.Standable(map));
                 if (!walkable.IsValid || !Reachable(map, entry, walkable))
                 {
+                    // **THE FAILURE NAMES THE ROOM, because the one that fired said nothing.**
+                    // `RR_Generation_UnreachableRoom` cost a log dive to attribute and still did
+                    // not say which room, which family, or whether the fault was no standable
+                    // cell at all versus a standable cell with no route. The thrown message stays
+                    // the bare key -- it is a keyed string a player reads, and
+                    // `FailedSiteRecovery` matches on it -- so the detail goes beside it.
+                    Log.Error("[Rimrooms][Generation] Coordinate " + coordinate.Id + " room "
+                        + room.Index + " (" + room.FamilyId + ") at " + room.Bounds
+                        + " claims " + room.Links.Count + " link(s) and "
+                        + (walkable.IsValid
+                            ? "its interior cell " + walkable + " has no route from the entry at "
+                                + entry + "."
+                            : "has no standable interior cell at all.")
+                        + " The coordinate is refused, which costs the gate that leads to it.");
                     throw new InvalidOperationException("RR_Generation_UnreachableRoom");
                 }
             }

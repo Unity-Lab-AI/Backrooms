@@ -17323,3 +17323,28 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-05)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **3 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **The fatal reachability check contradicted a deliberate feature, and that is the root cause.** `ValidatePlacedLayoutCore` walked **every** room in `coordinate.Rooms` and demanded each be `Reachable` from the entry. **`RoomLayoutPlanner.SealedFamily` rooms are authored with zero links on purpose** -- `CandidateIsSafe` asserts exactly that -- because a sealed vault is meant to be found by mining, which is the owner's own *"veins leading to other rooms so insentive to mine things out to find isolated undiscorvered rooms"*. **THE PLANNER HAD ALREADY SETTLED THE RULE AND THE VALIDATOR WAS ASKING A DIFFERENT QUESTION**, which is *two derivations of one rule*, the defect this project keeps meeting. The planner's own words: *"the reachability proof now asks its question of rooms that **claim** a route. A room with links must be walkable to; a room with none is a vault, and the rock around it is `Mineable` like all the fill, so it is reachable in the only sense this room wants to be."* **So the planner approved a layout and the validator then destroyed the coordinate for containing the feature the planner had deliberately put in it** -- which is why it was intermittent: it only fires when the rolled candidate includes a vault. **FIXED 0.12.99-dev** by asking the planner's question: a room with no links is skipped. **Tested on `Links` rather than on the family name**, so a future sealed family inherits the rule instead of needing to be remembered in a second place. **And the sibling check two lines down was audited rather than assumed safe:** `content.Clues.Count != coordinate.Rooms.Count` would have been the same bug one rung lower if vaults got no clue -- they do, because `AddClue` runs for every room in the loop including the vault's own `Gold`/`Plasteel` case. One pattern, all the references it guards.
+- [x] **The failure named nothing, which is why it cost a log dive to attribute.** `RR_Generation_UnreachableRoom` is a keyed string a player reads and `FailedSiteRecovery` matches on it, so the thrown message **stays the bare key**; the detail now goes beside it in a `Log.Error` naming the coordinate, the room index, its family, its bounds, how many links it claims, and **which of the two failures it was** -- no standable interior cell at all, versus a standable cell with no route from the entry. **A fatal error that does not say which room means the next launch reproduces the same uninformative log.**
+- [x] **A wall lamp could never be wired, so a coordinate ships dark.** The same log: *"WallLamp is not on the generator's power net"*. Measured cause: `voidFloor` is `WaterDeep`, and `BuildShell` sets it on **every cell of the map** before the rooms are carved -- so only a room's *interior* ever gets a floor and **a room's own wall cells keep void terrain.** Both `FindConduitRoute` and `TrySpawnNativeConduit` refuse a void cell, and a `WallLamp` is mounted *in* a wall, so its only cell is a void cell: the route could never arrive and the lamp was never wired. **Wall lamps are the Backrooms look**, so this is the fixture most likely to be left dark, and on a solo start it means waking up in the dark. **FIXED 0.12.99-dev by exempting the consumer's own footprint from the void rule, in both places.** Both, because exempting only the search would end a route one cell short -- a change that passes a reading and fixes nothing, which is worse than the defect for looking solved. **The void rule still keeps conduits out of solid rock everywhere else**, which is the whole reason it exists, and a conduit under a wall is ordinary vanilla construction. **Stated plainly: this half is unverified until a launch.** The arithmetic and the terrain are measured; whether Core then joins that lamp to the net is a thing only the game answers.
+
+Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
