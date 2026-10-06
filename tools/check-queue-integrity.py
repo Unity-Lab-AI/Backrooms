@@ -82,7 +82,18 @@ REPO = os.path.dirname(HERE)
 
 # Every tier that holds rows. `docs/NOW.md` is not one -- it is the handoff and
 # holds no status markers by owner direction.
-QUEUES = ["docs/TODO.md", "docs/DECOMPOSED.md", "docs/ROADMAP.md"]
+QUEUES = ["docs/TODO.md", "docs/DECOMPOSED.md", "docs/ROADMAP.md", "docs/TEST.md"]
+
+# **`docs/TEST.md` WAS NOT IN THIS LIST UNTIL 2026-10-06, AND IT IS THE TIER ABOUT TO BE WORKED.**
+# It was created on 2026-10-06 and the list was never extended, so the fourth tier -- 54 rows, the
+# only ones a build cannot close -- was the one queue with **no integrity guard at all**. None of
+# the four rules could fire on it: a passed row left as `[x]` would have sat there indefinitely,
+# and a section holding owner direction with no row would have been invisible to every count,
+# which is precisely the defect this file's rule 4 was written for after it happened to `TODO.md`.
+#
+# The owner's question was *"are you ready to start mass chacking off (T) test items as we do
+# them?"* -- and the honest answer required this first, because mass-closing rows into an unguarded
+# queue is how the stranded-fragment defect of 2026-10-04 happened in the first place.
 
 BULLET = re.compile(r"^(\s*)(?:- |#### )\[( |x|~|T)\]")
 HEADING = re.compile(r"^\s*#{1,6} ")

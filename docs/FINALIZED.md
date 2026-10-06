@@ -18187,3 +18187,55 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TEST.md (2026-10-06)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TEST.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TEST.md`
+
+### Owner direction — a prisoner IS allowed to cross a gate, and zoning and doors decide it (2026-10-06)
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-06)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner question — ready to start mass checking off the test items (2026-10-06)
+
+**Verbatim owner question (2026-10-06):** *"so are you ready to start mass chacking off (T) test items as we do them?"*
+
+- [x] **"so are you ready to start mass chacking off (T) test items as we do them?"** — answered by making it true rather than by saying yes. -- **DONE 0.13.0-dev, AND THE ANSWER WAS NO UNTIL THREE THINGS WERE FIXED.** **`docs/TEST.md` was the one queue tier with no integrity guard at all.** `check-queue-integrity.py` listed three queues and the file was created on 2026-10-06 without ever being added, so **none of its four rules could fire on the 54 rows about to be worked through** — a row closed as `[x]` would have sat there indefinitely, and a section with no marker was invisible to every count. That is the exact defect the fourth rule was written for after it happened to `TODO.md` hours earlier. Added, and **it failed immediately with five findings.** **One was an empty heading that had been there since the file was born:** *"a prisoner IS allowed to cross a gate"*, its verbatim body and closure record already in `FINALIZED.md` — a heading reading as outstanding test work over nothing. **The archiver's own sweep could never have cleaned it**, because it swept a heading only when something in its body was moving *in that run*: it could clean a heading it had just emptied and never one emptied in an earlier batch. **And the first fix for that was wrong and was applied before being read.** Measuring the body to the next *anchor* counted a `**...:**` lead-in as the end of the section, so four headings were swept **away from their own content**, leaving the owner's verbatim quotes under nothing — the stranded-body defect the sweep exists to prevent, caused by the sweep. **The mover's reassembly identity held throughout**, which is why it could not see it: *where a line goes is not what that proof proves.* Caught by reading the diff, reverted, and re-fixed to measure to the next heading. **The remaining four sections were a real fork and went to the owner**, who answered ***"All four get [T] rows"*** — so TEST.md is **58 rows** now, each with what to look for, and two of them say on themselves that they are confirmed by reading rather than by launching. The file's own header claimed *"every row needs a launch"* and no longer overstates it.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

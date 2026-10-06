@@ -405,6 +405,40 @@
 - A paragraph above the table now says what the three prose columns are for, because they answer
   three different questions and were being read as one.
 
+### The test ledger was the one tier with no guard on it
+
+- Owner: ***"so are you ready to start mass chacking off (T) test items as we do them?"***. The
+  answer was no until three things were fixed.
+- **`docs/TEST.md` WAS NOT IN `check-queue-integrity.py`'s QUEUE LIST.** The file was created on
+  2026-10-06 and the list was never extended, so **none of its four rules could fire on the 54 rows
+  about to be worked through** — a row closed as `[x]` would have sat there indefinitely, and a
+  section with no marker was invisible to every count. The exact defect rule 4 was written for after
+  it happened to `TODO.md` hours earlier. Added, and it failed immediately with five findings.
+- **One was an empty heading that had been there since the file was created** — *"a prisoner IS
+  allowed to cross a gate"*, with its verbatim body and closure record already in `FINALIZED.md`. It
+  read as outstanding test work standing over nothing.
+- **The archiver's own sweep could never have cleaned it.** It swept a heading only when something in
+  its body was moving **in that run**, so it could clean a heading it had just emptied and never one
+  emptied in an earlier batch. Once stranded, stranded for ever.
+- **AND THE FIRST FIX FOR THAT WAS WRONG AND WAS APPLIED BEFORE BEING READ.** Measuring the body to
+  the next *anchor* counted a `**...:**` lead-in as the end of a section, so **four headings were
+  swept away from their own content**, leaving the owner's verbatim quotes sitting under nothing —
+  the stranded-body defect the sweep exists to prevent, caused by the sweep. **The mover's
+  reassembly identity held throughout**, which is why it could not see the problem: *where a line
+  goes is not the thing that proof proves.* Caught by reading the diff, reverted, and re-fixed to
+  measure to the next heading rather than the next anchor.
+- **The remaining four sections were a real fork and went to the owner**, who answered ***"All four
+  get [T] rows"***. The ledger is **58 rows** now, each carrying what to look for, and **two say on
+  themselves that they are confirmed by reading rather than by launching**. The file's own header
+  claimed *"every row needs a launch"*; it no longer overstates what it is.
+- **AND THE MOVER NOW HAS AN INSTRUMENT**, which is the whole reason a wrong fix to it could reach a
+  real ledger: it had none. **Proof 65 and suite 45** ask the question directly against crafted
+  input — *does the sweep give a heading and its body the same label?* — and assert it on the four
+  real ledgers too, because an absence rule over crafted input only proves the function. A third
+  plant was written and **deleted** for asserting something untrue: removing the `H3` restriction on
+  the blank test breaks nothing, because the guard above it already returns for any anchor with kept
+  content, and a lead-in over genuinely nothing **is** residue by the sweep's own docstring.
+
 ## 0.12.99-dev - 2026-10-05 - The buildable rows were buildable, and three were already done
 
 - **OWNER: *"read now.md to continue i think we only have a handful of open items but idk

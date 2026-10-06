@@ -369,9 +369,46 @@ def sweep_orphans(lines, labels):
 
     Runs to a fixed point, because moving a lead-in can orphan the heading above
     it, which can orphan the heading above that.
+
+    ## ONCE A HEADING WAS STRANDED IT STAYED STRANDED FOR EVER, AND ONE HAD
+
+    The second guard below read `if not any(labels[index] == MOVE for index in
+    body): continue` -- a heading was swept **only when something in its body was
+    moving in this run.** A heading whose body went in an *earlier* batch, leaving
+    it standing over nothing on disk, therefore had an empty body with no MOVE
+    lines in it, so every run afterwards skipped it. The sweep could clean a
+    heading it had just emptied and could never clean one it had emptied before.
+
+    Measured 2026-10-06 in `docs/TEST.md`: **`### Owner direction -- a prisoner IS
+    allowed to cross a gate, and zoning and doors decide it` had been an empty
+    heading since the file was created**, its verbatim body and closure record
+    already in `FINALIZED.md`. It read as outstanding test work in the one ledger
+    whose rows the owner was about to work through, and it was found only because
+    `check-queue-integrity` was extended to cover that file.
+
+    So an **entirely blank body** now qualifies as well. The distinction kept is
+    the one that matters: a heading with any kept, non-blank line under it still
+    stays exactly where it is.
+
+    ## AND THE BLANK TEST MEASURES TO THE NEXT HEADING, NOT THE NEXT ANCHOR
+
+    The first version of it measured to the next **anchor**, and `anchors`
+    includes every `LEAD_IN` -- a `**...:**` line. **A lead-in is part of the
+    section it introduces**, so a heading followed by one has a "body" of a single
+    blank line and looked empty. Applied once against `docs/TEST.md`, that swept
+    **four headings away from their own content**, leaving the owner's verbatim
+    quotes sitting under nothing: the stranded-body defect this sweep exists to
+    prevent, caused by the sweep, in one run.
+
+    It was caught by reading the diff rather than the summary. The mover's own
+    reassembly identity **held throughout** -- nothing was lost, every line was
+    either kept or archived -- which is exactly why it could not see the problem:
+    *where a line goes is not the thing that proof proves.*
     """
     anchors = [index for index, line in enumerate(lines)
                if H2.match(line) or H3.match(line) or LEAD_IN.match(line)]
+    headings = [index for index, line in enumerate(lines)
+                if H2.match(line) or H3.match(line)]
     changed = True
     while changed:
         changed = False
@@ -382,7 +419,15 @@ def sweep_orphans(lines, labels):
             body = range(anchor + 1, end)
             if any(labels[index] == KEEP and lines[index].strip() for index in body):
                 continue
-            if not any(labels[index] == MOVE for index in body):
+            moving = any(labels[index] == MOVE for index in body)
+            # Residue only when there is nothing at all before the NEXT HEADING. A lead-in
+            # belongs to its heading, so it must not end the region this test looks at.
+            blank = False
+            if H3.match(lines[anchor]):
+                following = next((h for h in headings if h > anchor), len(lines))
+                blank = not any(lines[index].strip()
+                                for index in range(anchor + 1, following))
+            if not moving and not blank:
                 continue
             for index in range(anchor, end):
                 labels[index] = MOVE

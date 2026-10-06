@@ -9,7 +9,7 @@ The [artwork handoff this replaces](implementation/evidence/authored-rotations-2
 | `docs/ROADMAP.md` | MAJOR — phases and milestones |
 | `docs/TODO.md` | MINOR — buildable work only |
 | `docs/DECOMPOSED.md` | smallest execution units |
-| `docs/TEST.md` | **the test phase — 54 rows, every one needing a launch** |
+| `docs/TEST.md` | **the test phase — 58 rows, and it is now guarded like the other three** |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 
@@ -120,17 +120,35 @@ Six locations name it now: `install.md` with its own section, `mods.md`, `index.
 
 ---
 
+## ⛔ THE TEST LEDGER WAS THE ONE TIER WITH NO GUARD ⛔
+
+**Owner, 2026-10-06:** *"so are you ready to start mass chacking off (T) test items as we do them?"*
+
+**The answer was no until three things were fixed, and the first is the one that mattered.** `check-queue-integrity.py` listed three queues. `docs/TEST.md` was created on 2026-10-06 and **never added**, so **none of its four rules could fire on the rows about to be worked through** — a row closed as `[x]` would have sat there indefinitely, and a section with no marker was invisible to every count. That is the exact defect rule 4 was written for after it happened to `TODO.md` hours earlier.
+
+**Added, and it failed immediately with five findings.**
+
+**One was an empty heading that had been there since the file was born** — *"a prisoner IS allowed to cross a gate"*, its verbatim body and closure record already in `FINALIZED.md`. A heading reading as outstanding test work over nothing. **The archiver's own sweep could never have cleaned it:** it swept a heading only when something in its body was moving *in that run*, so it could clean a heading it had just emptied and never one emptied in an earlier batch.
+
+**AND THE FIRST FIX FOR THAT WAS WRONG AND WAS APPLIED BEFORE BEING READ.** Measuring the body to the next *anchor* counted a `**...:**` lead-in as the end of the section, so **four headings were swept away from their own content**, leaving the owner's verbatim quotes under nothing — the stranded-body defect the sweep exists to prevent, caused by the sweep, in one run. **The reassembly identity held throughout**, which is exactly why it could not see it: *where a line goes is not what that proof proves.* Caught by reading the diff, reverted, re-fixed to measure to the next heading.
+
+**The remaining four sections were a real fork and went to the owner**, who answered ***"All four get [T] rows"***. So the ledger is **58 rows**, each with what to look for, and **two of them say on themselves that they are confirmed by reading rather than by launching** — the file's header claimed *"every row needs a launch"* and no longer overstates it.
+
+**AND THE MOVER NOW HAS AN INSTRUMENT, WHICH IS WHY ANY OF THAT WAS POSSIBLE.** `archive-finished-todo.py` is the tool the LAW names as the proof of verbatim transfer and it had **no plant suite and no proof of its own** — so a wrong fix to it reached a real ledger. Proof 65 and suite 45 ask the question directly against crafted input: *does the sweep give a heading and its body the same label?* The two guards that look closest both pass on the defect — the reassembly identity holds because every line is still either kept or moved, and rule 1 looks for an **indented** continuation while an orphaned paragraph is not indented. A third plant was written and **deleted** for asserting something untrue, the same answer three loophole plants got an hour earlier.
+
+---
+
 ## State, measured 2026-10-06
 
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`** |
 | Version | **0.13.0-dev** — read from `About.xml`, never from a document |
-| Instruments | **33 checkers · 64 proofs · 44 plant suites**, all three batteries run to completion |
+| Instruments | **33 checkers · 65 proofs · 45 plant suites**, all three batteries run to completion |
 | Plant anchors | **1335 findable**, no residue. One anchor re-aimed where `copy_site_art` grew the gallery |
 | Gallery | **52 pictures in two places**, and every one of the 52 references resolved against disk from `docs/wiki/` |
 | Build | **0 warnings, 0 errors, 200 package files** |
-| Queue | `TODO.md` **0 open · 0 partial · 0 `[x]`**, `## Pending` empty rather than quietly occupied · `TEST.md` **54 `[T]`** |
+| Queue | `TODO.md` **0 open · 0 partial · 0 `[x]`**, `## Pending` empty rather than quietly occupied · `TEST.md` **58 `[T]`** |
 | Assets | **99 files → 69 entries: 52 drawings, 17 cues.** Every one named by something, every one described, 59 with a master and the other ten menu backgrounds, which have nothing to cut |
 | Staging | `check-package-integrity` reads **PASS** — *"staged copy matches the build at 0.13.0-dev, every file compared by content"* |
 
@@ -194,7 +212,7 @@ The frame draws on `CompRimroomsGate` and keys on `IsDesignated`. A permanent na
 
 **A launch.** `TODO.md` is empty, every battery has run to completion against this tree, the staged copy is this build byte for byte, and the published gallery shows every asset the package ships.
 
-**The 54 rows in `TEST.md` all need the game running — the owner alone launches, sorts and publishes.**
+**The 58 rows in `TEST.md` almost all need the game running — the owner alone launches, sorts and publishes.**
 
 **Read a launch log in this order:** `Player.log`, grep the **first** `[Rimrooms]` line, then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.
 
