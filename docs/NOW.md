@@ -80,7 +80,7 @@ A checker that cries wolf is one people scroll past.
 | Instruments | **25 checkers**, **59 proofs**, **36 plant suites**, **1,206 plant anchors**. `check-queue-pointers.py` is the newest: **a statement of what is still open may not be resolved by position.** It found five, and three pointed at rows that were closed and archived |
 | Remotes | **TWELVE refs** — this repository 10 (`forgejo` 5, `github` 5) plus the mod-only pair 2 |
 | Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
-| Queue | **0 open · 1 partial · 50 `[T]` · 0 `[x]`** — down from **16 open · 11 partial**. **`[ ]` now means *doable today*, and nothing is**: eight rows said in their own text that they need a launch and have been moved to `[T]` where they gate nothing |
+| Queue | **0 open · 4 partial · 50 `[T]` · 0 `[x]`** — down from **16 open · 11 partial**. **`[ ]` now means *doable today*, and nothing is**: eight rows said in their own text that they need a launch and have been moved to `[T]` where they gate nothing |
 | Public repos | **`Rimrooms-AsyncIndustries` on BOTH hosts** — `forgejo GFourteen/...` and `github G-Fourteen/...`. **The mod as staged, the public face, nothing else** |
 | Published site | **LIVE** — `https://g-fourteen.github.io/Rimrooms-AsyncIndustries/`. Pages serves `/docs` as the **site root**, so a page is `<site>/gates.html` and every reference must be site-relative |
 | Launches | **At least twelve**, all by the owner. **Every defect any launch found was ours** |
@@ -154,6 +154,46 @@ a launch, on Steam, or on a domain.
     claimed as tested with other mods, that co-op is not promised, that **development saves may
     break** — the owner's own *"Development-save break is allowed — declare it"* — and that balance
     is unjudged.
+
+## ⛔ THE LAUNCH IS NEXT, AND THE LOOP IS AGREED ⛔
+
+**Owner, 2026-10-05, verbatim:** *"im going to be starting it up next here soon... the first thing i
+want you to do is 1. check off open items that we complete/you complete, when i start it up"*, and
+the second thing: *"as i load up the different scenerios we will be needing to fix the layout of the
+starting facilities(i will be manual using pawns to change the layout and fix some thing, to which
+you will use the api mod to see what exactly i change/add to the starting facilities that you will
+be making standard and default to the starting scenrios so that the problems like broken conduit
+lines are repaired by me, then updated to match for the mods defualt facilities)"*
+
+**Asked at two forks and answered: *"I'll hand-fix it, you read it back"*.** So **nothing is
+auto-authored.** The owner places it, the tool reads it, the def follows. Same answer for the
+missing battery, Async Industries only.
+
+**The tool is `.local/qa/facility-diff.py` and its offline half is verified:**
+
+```
+python .local/qa/facility-diff.py authored RR_AsyncIndustriesStart   # what the def says, offline
+python .local/qa/facility-diff.py power    RR_AsyncIndustriesStart   # grid connectivity, offline
+python .local/qa/facility-diff.py snapshot RR_AsyncIndustriesStart   # read the live map
+python .local/qa/facility-diff.py diff     RR_AsyncIndustriesStart   # paste-ready def XML
+```
+
+**THE PRE-LAUNCH BASELINE, so the diff has something true to compare against.** Neither facility
+has working power as authored: **34 of 34** powered buildings unconnected in Async Industries with
+the nearest wire **3 to 7 cells away** and **5 separate grids**, **8 of 8** in the furniture store,
+and **two of the three generators are off the wire**. Neither authors a battery. **The number was
+checked before it was believed** — 34 of 34 is the too-round figure that caught a false
+reachability result before, so the distances were measured one by one.
+
+**What the loop cannot carry, said before the session rather than after:** a **per-cell floor
+change** (flooring is one facility-wide terrain plus a per-room boolean) and a **knocked-through
+wall** (walls come from the room rectangles, so a removal is a room edit). Everything else carries,
+including `stuff`, `rotation`, `batteryFraction` and `fuelFraction`.
+
+**And blueprints and frames count as the owner's intent**, so a fix is readable before pawns
+finish building it.
+
+---
 
 ## THE NEXT THING
 
