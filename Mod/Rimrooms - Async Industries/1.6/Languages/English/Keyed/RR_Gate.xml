@@ -11,6 +11,9 @@
   <RR_Gate_NoOperator>No operator assigned.</RR_Gate_NoOperator>
   <RR_Gate_OperatorPresent>Operator on station: {0}</RR_Gate_OperatorPresent>
   <RR_Gate_OperatorAway>Assigned operator away from the console: {0}</RR_Gate_OperatorAway>
+  <!-- Said only when relief stations exist, so an ordinary one-console gate's readout is
+       unchanged. A player who built the stations should be able to see the gate counting them. -->
+  <RR_Gate_ReliefStations>({0} stations can hold it)</RR_Gate_ReliefStations>
   <RR_Gate_ReserveReadout>Emergency return reserve: {0} / {1} watt-days</RR_Gate_ReserveReadout>
   <RR_Gate_OpeningReadout>Opening time: {0}\nEmergency return: {1}\nStatus: {2}</RR_Gate_OpeningReadout>
   <RR_Gate_WindowClosed>Closed</RR_Gate_WindowClosed>

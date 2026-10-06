@@ -98,6 +98,12 @@ is not ready.
 It also shows who has been through before, and who has walked the exact address you are dialling.
 An operator who knows the route brings the gate up faster.
 
+**Send somebody out with a record book.** Your facility starts with company record books lying in
+it; a crew without one records nothing, and the dispatch will say so.
+
+Right-click a book and pick *What is this journal for?* if you want the four steps in the game. The
+full account is in [The company](company.md#the-record-book).
+
 ## 7. Have somewhere to go
 
 A gate needs an address. Take one from a request, or **dial an unknown address** and let the gate

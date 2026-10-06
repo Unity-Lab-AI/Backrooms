@@ -2,6 +2,13 @@
 <LanguageData>
   <RR_Evidence_Blank>Company record book, still blank. This is the journal the company issues you: carry it through a gate and a colonist writes the route into it as they explore. Bring it home and it becomes the case record you analyse and get paid for. Lose the book, lose the run.</RR_Evidence_Blank>
   <RR_Evidence_CompanyBookLabel>company record book</RR_Evidence_CompanyBookLabel>
+  <!-- Replaces the generated book description on a company-issued book only. Core writes a
+       textbook's title and description from its reading-outcome topics, so an unmodified one
+       announces a skill subject; the owner was handed two that claimed to be about nutrition and
+       aiming. Four steps and a stop: "keep it very concise asnd to the point". -->
+  <RR_Evidence_CompanyBookDesc>The journal the company issues you. It records where a crew went and what they found, and it is the thing you get paid for.\n\n1. Have a colonist carry it through a gate.\n2. Walk it through each required room. The survey writes itself as they go.\n3. Bring it home and put it on the shelf you designated as the records archive.\n4. Assign a researcher to analyse it at a powered bench.\n\nLose the book and you lose that run's record, not the branch's work.</RR_Evidence_CompanyBookDesc>
+  <RR_UI_JournalHowTo>What is this journal for?</RR_UI_JournalHowTo>
+  <RR_UI_JournalHowToTitle>Company record book</RR_UI_JournalHowToTitle>
   <RR_Evidence_Unregistered>Somebody left this here before you. It has no case record on this branch yet - carry it out and take it home, and it will open one.</RR_Evidence_Unregistered>
   <RR_Evidence_Inspect>Case status: {0}\nAnalysis: {1}\n{2}</RR_Evidence_Inspect>
   <RR_Evidence_NextStep>Right-click it with a colonist to carry it out. Take it home, put it on the shelf you designate as the records archive, then analyse it at a powered field analysis bench.</RR_Evidence_NextStep>

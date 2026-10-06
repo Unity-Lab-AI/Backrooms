@@ -108,6 +108,7 @@ exclude:
   - GATE_0_DECISIONS.md
   - HOOKS.html
   - HOWTO.md
+  - JOURNAL_AND_QUEST_BRIEF.md
   - MENU_ART_BRIEF.md
   - MOD_INTEGRATION_PLAN.md
   - MULTIPLAYER.md

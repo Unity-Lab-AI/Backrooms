@@ -1206,6 +1206,20 @@ namespace RimroomsAsyncIndustries.Procurement
                     Thing item = ThingMaker.MakeThing(itemDef).TryMakeMinified();
                     if (item == null) { throw new InvalidOperationException("ThingMaker returned no item for " + itemDef.defName); }
                     item.stackCount = count;
+                    // **A BOOK BOUGHT FROM THE COMPANY IS A COMPANY BOOK.** Owner, 2026-10-06, on
+                    // the journals being named wrong: *"need to figure this out for generating ones
+                    // purchased too"*. `RR_ProcurementCatalog.xml` sells `TextBook`, so the
+                    // catalogue was the *"purchased"* half of that sentence all along -- and it was
+                    // the one route that created a record book and never marked it, which is why a
+                    // bought one came out of the crate still wearing Core's generated title.
+                    //
+                    // Marked at creation, like the scenario sweep and the corporation's drop, so
+                    // nothing ever has to go looking for books afterwards. A book from a *trader* is
+                    // untouched and stays an ordinary textbook, which is correct: the company did
+                    // not issue it.
+                    Investigation.CompRouteEvidence ordered =
+                        item.TryGetComp<Investigation.CompRouteEvidence>();
+                    if (ordered != null) { ordered.MarkCompanyIssued(); }
                     if (item.stackCount < 1 || item.stackCount > item.def.stackLimit ||
                         !heldCargo.TryAdd(item, canMergeWithExistingStacks: false))
                     { item.Destroy(DestroyMode.Vanish); throw new InvalidOperationException("Shipment owner refused a bounded stack."); }

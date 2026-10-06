@@ -321,20 +321,33 @@ namespace RimroomsAsyncIndustries.Gate
         public Thing Console { get { return FindConsole(); } }
         public bool IsAwaitingRecovery { get { return IsOpening && IsEmergency && emergencyReturnTicksRemaining <= 0; } }
 
-        public bool IsOperatorOnStation
-        {
-            get
-            {
-                Thing console = FindConsole();
-                Pawn pawn = assignedOperator;
-                if (console == null || !IsConsolePowered(console) || pawn == null || !IsEmployedStaff(pawn) ||
-                    !pawn.Spawned || pawn.Map != parent.Map || pawn.Dead || pawn.Destroyed ||
-                    pawn.Downed || pawn.InMentalState || pawn.jobs == null || pawn.CurJob == null || pawn.Position != console.InteractionCell)
-                { return false; }
-                Job job = pawn.CurJob;
-                return job.def != null && job.def.defName == "RR_OperateGate" && job.GetTarget(TargetIndex.A).Thing == console;
-            }
-        }
+        /// <summary>
+        /// Whether anybody qualified is holding this gate's window.
+        ///
+        /// **THIS WAS A PAWN QUESTION AND IS NOW A STATION QUESTION, AND THE CHANGE IS MADE HERE
+        /// RATHER THAN AT SIX CALL SITES.** It used to resolve `FindConsole()` and ask whether
+        /// `assignedOperator` -- one named colonist -- was standing on that one cell running
+        /// `RR_OperateGate`. Owner, 2026-10-06: *"he can leave when another pawn hops on the other
+        /// comms console toggled to gate contrtrols"*.
+        ///
+        /// Every clause of the old test survives inside `QualifiedToStaff` and `StaffingStation`;
+        /// only the identity clause is gone. **So a pawn who could hold the window before still
+        /// can, and nobody new slipped in.**
+        ///
+        /// **Six places asked this and every one of them meant *is the window being held*:**
+        /// spin-up support, the startup checklist step, the console progress bar, the Operations
+        /// refusal, the send-to-station action and the open-connection precondition. Redefining the
+        /// property corrects all six in one derivation. `GateSpinUp.SpinUpIsSupported` is the
+        /// clearest case and says so in its own words -- *"the same set of conditions a live opening
+        /// is held by, on purpose: bringing a connection up cannot require less than keeping one
+        /// up"* -- so a relief operator who could hold a connection but not ramp one would have been
+        /// a contradiction the file had already ruled out.
+        ///
+        /// **The emergency test does NOT read this.** It reads `TickOperatorRelief()`, which counts
+        /// how long the chair has been empty, because a hand-off that drops the window for one tick
+        /// is not a hand-off.
+        /// </summary>
+        public bool IsOperatorOnStation { get { return AnyOperatorOnStation; } }
 
         public override void PostExposeData()
         {
@@ -343,6 +356,7 @@ namespace RimroomsAsyncIndustries.Gate
             ExposeConnectionHistory();
             ExposeSpinUp();
             Scribe_References.Look(ref assignedOperator, "rr_gateAssignedOperator");
+            ExposeOperatorRelief();
             // Additive, and the default is written out rather than left to a zeroed
             // field: `Mild` is enum 0, so an absent value must resolve to Balanced.
             Scribe_Values.Look(ref watchPosture, "rr_gateWatchPosture", GateWatchPosture.Balanced);
@@ -429,7 +443,15 @@ namespace RimroomsAsyncIndustries.Gate
                 // this, and the log and the readout should say so.
                 if (KillSwitchThrown) { EnterEmergency("RR_NativeGate_KillSwitchThrown"); }
                 else if (!HasPowerAndHeadroom()) { EnterEmergency("RR_Gate_PowerLost"); }
-                else if (!IsOperatorOnStation) { EnterEmergency("RR_Gate_OperatorLost"); }
+                // **A STATION QUESTION, AND COUNTED RATHER THAN REACTED TO.** This read
+                // `!IsOperatorOnStation`, which asked whether one named colonist was standing on
+                // one bound console's cell -- so a window was hostage to that person's bladder and
+                // a hand-off was impossible. `TickOperatorRelief` asks whether ANY qualified pawn
+                // is at ANY bound console, and only reports a loss once the chair has been empty
+                // for longer than `ReliefGraceTicks`. The grace is the feature: if the window
+                // dropped for a single tick while one pawn stood up and another sat down, relief
+                // would arrive into an emergency it caused.
+                else if (TickOperatorRelief()) { EnterEmergency("RR_Gate_OperatorLost"); }
                 else if (IsSustainedPortalSession)
                 {
                     // Held, not counted down. The energy is still spent every tick, so
@@ -746,9 +768,23 @@ namespace RimroomsAsyncIndustries.Gate
             string status = calibrated ? "RR_Gate_StatusCalibrated".Translate().ToString()
                 : assemblyComplete ? "RR_Gate_StatusNeedsCalibration".Translate().ToString()
                 : "RR_Gate_StatusIncomplete".Translate().ToString();
-            string operatorText = assignedOperator == null ? "RR_Gate_NoOperator".Translate().ToString()
-                : (IsOperatorOnStation ? "RR_Gate_OperatorPresent".Translate(assignedOperator.LabelShortCap).ToString()
-                    : "RR_Gate_OperatorAway".Translate(assignedOperator.LabelShortCap).ToString());
+            // **THE READOUT ANSWERS THE QUESTION THE GATE NOW ASKS.** It used to say only whether
+            // the one named operator was at the one console, which after relief landed would have
+            // read "away" while somebody else was holding the window perfectly -- a stale readout
+            // is the upstream of a player fixing something that is not broken.
+            //
+            // So: somebody is holding it, naming who; or the named operator is away and the chair
+            // is empty; or nobody is assigned at all. The station count rides along whenever there
+            // is more than one, because a player who built relief stations should be able to see
+            // that the gate knows about them.
+            Pawn holder = CurrentStationOperator;
+            int stations = BoundConsoleCount;
+            string operatorText = holder != null
+                ? "RR_Gate_OperatorPresent".Translate(holder.LabelShortCap).ToString()
+                : assignedOperator == null ? "RR_Gate_NoOperator".Translate().ToString()
+                    : "RR_Gate_OperatorAway".Translate(assignedOperator.LabelShortCap).ToString();
+            if (stations > 1)
+            { operatorText += " " + "RR_Gate_ReliefStations".Translate(stations).ToString(); }
             string cutoffText = KillSwitchReadout();
             // Said only when the machine is not sound. A line reading "condition 100%" on every
             // gate forever is noise, and Core's own health bar already covers the ordinary case.

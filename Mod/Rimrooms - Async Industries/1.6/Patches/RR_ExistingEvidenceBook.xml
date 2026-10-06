@@ -11,4 +11,36 @@
       </value>
     </nomatch>
   </Operation>
+
+  <!-- THE thingClass BINDING IS DELIBERATELY NOT HERE. It lives in
+       `Investigation/RecordBookClassBinding.cs`, at StaticConstructorOnStartup.
+
+       Owner report, 2026-10-06: the two starting journals are "named wrong and have differ
+       information in the "i" write up saying incorrectly that one is about nutrition and the
+       othert is about aiming". The cause is that `Verse.Book` overrides `LabelNoCount`,
+       `LabelNoParenthesis` and `DescriptionFlavor` without calling base, so no comp can reach a
+       book's label or description, `CompRouteEvidence.TransformLabel` has been dead code since
+       the day it was written. The fix is a thingClass deriving from Book that puts those chains
+       back.
+
+       A first attempt put that binding here, and `check-compliance` rule 3 refused it: Core
+       declares thingClass on the ABSTRACT parent `BookBase`, so an xpath on TextBook's own
+       thingClass matches nothing and the only patch that works is a Replace, and a Replace takes
+       ownership of a def where the last mod to load wins. THE RULE WAS RIGHT AND THE PATCH WAS
+       WRONG. Patching BookBase instead would have handed our class to Novel, Schematic and Tome.
+
+       Binding in code at startup is strictly better than any xpath could be, which is the same
+       argument `FixtureTellService` already makes for attaching its comp there:
+
+         * it runs after inheritance resolves and after every mod's defs load, so it sees the real
+           value rather than the authored one;
+         * it can REFUSE to clobber. If some other mod has already changed TextBook's class, the
+           binding leaves it alone and says so in the log, instead of winning or losing silently by
+           load order;
+         * it is additive in the sense rule 3 means: no def is taken over, nothing is replaced, and
+           removing this mod removes the behaviour completely.
+
+       `check-record-book-class.py` (checker 27) asserts the binding exists, refuses a destructive
+       operation in this file, and asserts every route that mints a record book marks it as the
+       company's, because an unmarked book makes the whole bridge a no-op. -->
 </Patch>

@@ -35,4 +35,33 @@
     <requiredCapacities><li>Manipulation</li><li>Sight</li></requiredCapacities>
     <canBeDoneByMechs>false</canBeDoneByMechs>
   </WorkGiverDef>
+
+  <!-- TAKING A GATE CONSOLE WHEN NOBODY IS HOLDING THE WINDOW.
+
+       Owner, 2026-10-06: "he can leave when another pawn hops on the other comms console toggled
+       to gate contrtrols with say upto 4 of them available so pawns can do geate process better
+       and faster". Before this there was no work giver for staffing at all: the only route was a
+       forced ordered job on one named operator, which is exactly why no hand-off existed anywhere.
+
+       THE PRIORITY IS THE HIGHEST IN THE MOD, AND THAT IS NOT GREED. ReliefWanted is false unless
+       a connection is OPEN and currently unattended, so this giver offers work only in the window
+       where the alternative is a crew stranded on the other side of a gate. It cannot crowd
+       anything out across a campaign because across a campaign it finds nothing: a closed gate
+       wants nobody.
+
+       Intellectual, like calibration and reconditioning, because the work is reading a console and
+       the branch's gate staff are already the people with that skill. Talking is required as well
+       as sight and manipulation: the post is a radio watch, and a pawn who cannot speak cannot
+       answer a crew. -->
+  <WorkGiverDef>
+    <defName>RR_StaffGateConsole</defName>
+    <label>hold gate connection at console</label>
+    <giverClass>RimroomsAsyncIndustries.Gate.WorkGiver_RRStaffGateConsole</giverClass>
+    <workType>Research</workType>
+    <verb>staff</verb>
+    <gerund>staffing gate console at</gerund>
+    <priorityInType>110</priorityInType>
+    <requiredCapacities><li>Manipulation</li><li>Sight</li><li>Talking</li></requiredCapacities>
+    <canBeDoneByMechs>false</canBeDoneByMechs>
+  </WorkGiverDef>
 </Defs>

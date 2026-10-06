@@ -162,7 +162,18 @@ namespace RimroomsAsyncIndustries.Company
             for (int index = 0; index < RecordBookDeliveryCount; index++)
             {
                 Thing made = ThingMaker.MakeThing(book);
-                if (made != null) { payload.Add(made); }
+                if (made == null) { continue; }
+                // **THE CORPORATION'S OWN DROP WAS THE ONE ROUTE THAT NEVER MARKED ITS BOOKS.**
+                // The scenario arrival sweep marks what Core created, and the catalogue now marks
+                // what a branch orders -- but a book that fell out of a company drop pod arrived
+                // unmarked, so it kept Core's generated title and said nothing about being the
+                // company's. The owner's report named the starting journals; this is the same
+                // defect on the route a branch meets *second*, which is the one that unblocks a
+                // player who lost the first book.
+                Investigation.CompRouteEvidence issued =
+                    made.TryGetComp<Investigation.CompRouteEvidence>();
+                if (issued != null) { issued.MarkCompanyIssued(); }
+                payload.Add(made);
             }
             // Nothing was made, so nothing is recorded and the next tick tries again. A letter
             // announcing an empty crate is worse than silence.

@@ -106,6 +106,40 @@
     <riskKey>RR_GateLink_RiskArmory</riskKey>
   </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
 
+  <!-- RELIEF STATIONS FOR GATE CONTROL. This is the role that stops a window being hostage to
+       one colonist's bladder.
+
+       Owner direction, 2026-10-06, verbatim: "so that it isnt dependant at one pawn dying at the
+       gate from starvvation trying to keep it open forever he can leave when another pawn hops on
+       the other comms console toggled to gate contrtrols with say upto 4 of them available so
+       pawns can do geate process better and faster".
+
+       FOUR IS THE OWNER'S NUMBER AND maxLinked IS THREE. The gate's own control console is the
+       first of the four and is bound by its own rules; `EquipmentLinkFailureKey` refuses it in
+       any role as `AlreadyAProvider`. So three relief stations plus the one provider is four
+       consoles a qualified pawn may hold the window from.
+
+       IT IS DELIBERATELY NOT `RR_Link_Radio`. That role says of itself that it is "never the
+       gate's own control console" and exists "for listening rather than for running the gate".
+       Reusing it would have cost nothing and meant nothing, and a player reading the radio room's
+       own description would have been told the opposite of what the link now did.
+
+       UNGATED BY RESEARCH, which was asked and answered. Owner: "maybe tech gated", then "but
+       maybe not", then at the fork: "Not gated, it's a defect, fix it free". And the obvious hook
+       was not one - `RR_Cap_ReliefWatch` sounds exactly like this and is already spent cutting
+       spin-up decay in `GateSpinUp`, so a reader who went looking for it would have found a
+       feature that was not there. -->
+  <RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+    <defName>RR_Link_GateRelief</defName>
+    <label>relief station</label>
+    <description>A second, third or fourth communications console wired to the same gate, so the window does not depend on one person staying put. Any qualified staff member at any of them holds the connection, and one can stand up to eat the moment another sits down.\n\nThis is never the gate's own control console; that one is already the first station. Build these where people actually are.</description>
+    <thingDefNames>
+      <li>CommsConsole</li>
+    </thingDefNames>
+    <maxLinked>3</maxLinked>
+    <displayOrder>1</displayOrder>
+  </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
+
   <!-- A SECOND comms console, not the gate's own. The gate's control console is bound by its
        own rules and `EquipmentLinkFailureKey` refuses it here as `AlreadyAProvider` - which is
        correct and is what makes this role meaningful: a branch that wants a radio room builds

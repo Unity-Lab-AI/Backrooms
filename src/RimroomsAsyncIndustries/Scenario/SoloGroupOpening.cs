@@ -105,7 +105,30 @@ namespace RimroomsAsyncIndustries.Scenario
             //    that was not there yesterday. Whether they go through is theirs to decide.
             if (start.insideStart)
             {
-                MoveOpeningPartyInside(surface, inside, entry);
+                // **THEY DO NOT WAKE UP BESIDE THE WAY OUT.** Owner, 2026-10-06: *"the solo start u
+                // have to find your way to get out not just have the natural exit gate right next to
+                // u in main backroom room at start it needs to be found in the unexplored rooms"*.
+                //
+                // `entry` is the generator's threshold-room start spot, which is the right answer
+                // for an expedition arriving through a machine gate and the wrong one here: the
+                // threshold room is where the exit door is. **The party moves; the door does not** --
+                // `parent.ReturnAnchor` is every expedition's way home, and relocating it would
+                // strand every ordinary crew to fix one opening.
+                //
+                // Measured in ROOMS over `RoomRecord.Links`, never in cells, because a 300x300
+                // coordinate can put a cell far away and still inside the room you woke up in.
+                RoomRecord arrivalRoom = SoloGroupArrival.ArrivalRoom(coordinate);
+                IntVec3 arrival = SoloGroupArrival.ArrivalCell(inside, arrivalRoom);
+                // Falls back to the generator's own cell rather than failing. An opening that is
+                // merely too easy is playable; §1.1's solo guarantee is not traded for a nicety.
+                MoveOpeningPartyInside(surface, inside, arrival.IsValid ? arrival : entry);
+                if (arrival.IsValid)
+                {
+                    // Distant is not the same as found: the generator unfogs the threshold room, so
+                    // without this the exit would sit revealed on the map from the first second.
+                    SoloGroupArrival.HideTheWayOut(inside, arrivalRoom,
+                        SoloGroupArrival.ThresholdRoom(coordinate));
+                }
                 campaign.RecordEvent("RR_Event_SoloGroupOpening", coordinate.Id);
             }
             else

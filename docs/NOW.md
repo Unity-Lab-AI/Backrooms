@@ -15,320 +15,114 @@ So: **replace this file, never append to it.** Narrative goes to `FINALIZED.md`.
 
 ---
 
+## ⛔⛔ PUBLICATION IS HELD BY THE OWNER, AND SO IS ONE REMOTE ⛔⛔
+
+**Two separate holds, both current, both lifted only by the owner saying so.**
+
+**1. Nothing publishes until the launch list is finished.** Owner, 2026-10-06, verbatim: *"we are not stageing now.md and cascading to all three remotes correctly and properly until we are sure all of this is completed"*. Work is committed **locally only** — the branch sits ahead of every remote on purpose.
+
+**2. Forgejo is down.** Owner, 2026-10-06, verbatim: *"fyi the git.unityailab.com is going down so stop pushes to it until further notice, github two repos is still good"*. **The cascade is SIX refs while that stands** — `github` × five branches here, plus `github/main` on the mod-only repository.
+
+**The remote is HELD, not removed, and that distinction is the point.** Deleting it would make every receipt read *complete*, and a future reader would never learn a destination had gone missing — the eight-ref publication that hid for forty-five checkpoints, wearing a different hat. `export-public-repo.py` keeps `forgejo` in `REMOTES`, skips it through `HELD_REMOTES`, **prints the hold and its reason every run**, and **refuses outright if every remote is held**. `PUBLISHING.md` opens with it, including: **do not push to it to test whether it is up.**
+
+---
+
 ## ⛔⛔ THE BATTERY RUNS ONCE, AND THE INSTRUMENTS STAY ⛔⛔
 
-**Owner, 2026-10-04, three times:** *"okay once again.. yu should be completeing like near a dozen
-items before you run the whole battery. i told you i can NOT be waiting 40 minutes when u run 10m
-batteries constantly with every item you work on"*, *"you have run batteries repeatily and you
-havent even done ten items yet"*, and when I over-corrected: *"no you fucking retard!!!! you still
-need to do instrament checks and build them when needed just dont run them for every fucking code
-change"*
+**Owner, 2026-10-04:** *"yu should be completeing like near a dozen items before you run the whole battery. i told you i can NOT be waiting 40 minutes"*, and when I over-corrected: *"you still need to do instrament checks and build them when needed just dont run them for every fucking code change"*
 
-- **During the work:** run **only the one instrument covering the file you just touched.** One
-  checker, or one proof, or one plant suite. **Keep writing and extending them.**
-- **STAGE FIRST, AND IT WAS MISSING FROM THIS LIST UNTIL 0.12.99-dev.** `powershell -File tools/stage-mod.ps1 -UpdateExisting` copies the built package into RimSort's Local Mods folder, **which is the copy the owner actually launches.** It was in neither this sequence nor `PUBLISHING.md`, so it got skipped -- and the staged copy sat at **0.12.98-dev while the build was 0.12.99-dev**, caught minutes before a launch. A stale staged copy means the owner tests the wrong build and reports defects that were already fixed, which is the most expensive kind of wasted session there is. The owner's own direction named three things, *"the staging, now.md writeing, and the cascades"*, and only two of them were written down.
-- **At publication, once:** 26 checkers → 59 proofs → 36 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the ten-ref cascade — and then `curl` the published site.** The last step is not a formality: every banner once shipped as a 404 with all twelve refs level and every instrument green, **and the licence link shipped as a 404 the same way**, because an on-disk audit cannot see a deployment fault.
-- **If a sweep finds something, fix it and re-run ONLY the instrument that failed.**
-- **Batch size is 10–12 closed rows.**
-- **THE OWNER ALONE LAUNCHES, SORTS AND PUBLISHES.** Deploying a site is not the same act as
-  launching the game, but the Workshop is the owner's account and the owner's decision. Lifted here
-  0.12.99-dev from a queue section that was being cleared: **it existed nowhere else**, and a
-  standing constraint whose only copy is inside a queue section dies when that section is archived.
-- **`docs/TODO.md` ENDS AS A TEMPLATE HOLDING NOTHING.** Owner direction, 2026-10-04, verbatim:
-  *"read now.md and continue the work we are working off todo items to get the todo to a templet
-  form with no items listed"*, and *"all complketed and moved completed into finalized.md"*. The
-  terminal state is the preamble, the status-marker legend and the structural headings — nothing
-  listed. **The `[T]` rows are the one honest obstacle**: a `[T]` row cannot be closed without the
-  game running, so the file reaches template form when the owner has launched, not before.
-- **THE REGISTER IS AN INPUT TO WORK, NOT A BACKLOG OF IT.** Owner, 2026-10-05: *"as the
-  Rimrooms Mod is stand alond only adding to it when mopds are added? right?"* Right. **A row's
-  disposition is settled when something is built that touches that mod, or when a launch produces
-  evidence about it — never as a bulk sweep.** 94 of 295 rows are Settled and that is exactly the
-  set somebody had a reason to look at. Settling the rest from a desk would break D1, because a
-  disposition asks for things like *"verify stack, weight, ownership, caravan and RWT transfer
-  behavior"* — runtime claims. The register's own policy says it: ***"Researched" does not mean
-  "integrated"; "loads" does not mean "compatible"; "optional" does not mean tested.***
-- ⛔ **NEVER RUN THE PLANT SUITES CONCURRENTLY WITH ANYTHING ELSE.** A plant suite *writes a real
-  fault into the working tree* and restores it moments later; anything reading the tree inside that
-  window sees the fault. Running the checkers alongside them at 0.12.99-dev reported **four
-  failures that did not exist** — `check-plant-anchors`, `check-public-export`,
-  `check-planner-layouts` and `check-doc-conformance`, each reading a file some suite had planted
-  into. Re-run serially: **0 of 25.** The stages are sequential for a reason, and a false failure
-  costs the same investigation as a real one.
+- **During the work:** run **only the one instrument covering the file you just touched.**
+- **STAGE FIRST at publication.** `powershell -File tools/stage-mod.ps1 -UpdateExisting` copies the build into RimSort's local mods folder, **which is the copy a launch loads.** It was in neither procedure until 0.12.99-dev, and the staged copy sat a whole version behind — caught minutes before a launch.
+- **At publication, once:** 27 checkers → 59 proofs → 35 plant suites → `check-plant-residue.py`. **Then `export-public-repo.py --push`, then commit, then the cascade — and then `curl` the published site.**
+- **THE OWNER ALONE LAUNCHES, SORTS AND PUBLISHES.**
+- **`docs/TODO.md` ENDS AS A TEMPLATE HOLDING NOTHING**, per *"to get the todo to a templet form with no items listed"*. The `[T]` rows are the honest obstacle: one cannot close without the game running.
+- ⛔ **NEVER RUN THE PLANT SUITES CONCURRENTLY WITH ANYTHING ELSE.** A suite writes a real fault into the tree and restores it; anything reading the tree in that window sees the fault. Doing so reported **four failures that did not exist**.
+- **THE REGISTER IS AN INPUT TO WORK, NOT A BACKLOG OF IT.** Owner: *"as the Rimrooms Mod is stand alond only adding to it when mopds are added? right?"* Right. A row's disposition is settled when something is built that touches that mod, or when a launch gives evidence — **never as a bulk sweep**.
 
 ---
 
 ## ⛔ AND THE FIX FOR DEAD CODE IS TO REACH IT, NOT TO DELETE IT ⛔
 
-**Owner, 2026-10-04, verbatim:** *"okay sounds like your deleting shit rather than fixing it by what
-you said,, that better not be the case"*
+**Owner, 2026-10-04, verbatim:** *"okay sounds like your deleting shit rather than fixing it by what you said,, that better not be the case"*
 
-A ceiling I set myself is mine to manage, not a reason to delete a feature. **The same rule applies
-to a claim:** when a rule demanded a document write *"the other eighteen checkers"* to pass, the fix
-was to teach the rule the English construction — not to reword the document into something awkward.
-A checker that cries wolf is one people scroll past.
+A ceiling I set myself is mine to manage, not a reason to delete a feature. **The same rule applies to an instrument:** `check-start-layout` refused a vent in a wall because the generator used to throw on one. It was **taught** `canPlaceOverWall`, not switched off — and a bed on a wall is still refused, which is most of what that rule was ever for.
 
 ---
 
-## State, measured 2026-10-05
+## State, measured 2026-10-06
 
 | | |
 |---|---|
-| Branch | **`feature/bug-testing`** |
+| Branch | **`feature/bug-testing`**, ahead of every remote by owner direction |
 | Version | **0.12.99-dev** — read from `About.xml`, never from a document |
-| Build | **232 C# files, 103 package files**, zero warnings, zero errors |
-| Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile and is checked against the register |
-| Instruments | **26 checkers**, **59 proofs**, **36 plant suites**, **1,206 plant anchors**. `check-queue-pointers.py` is the newest: **a statement of what is still open may not be resolved by position.** It found five, and three pointed at rows that were closed and archived |
-| Remotes | **TWELVE refs** — this repository 10 (`forgejo` 5, `github` 5) plus the mod-only pair 2 |
-| Package art | **13 images, all accounted for**: 12 menu slides (the approved exception) + `About/Preview.png`. **No gameplay art, no audio** |
-| Queue | **0 open · 4 partial · 50 `[T]` · 0 `[x]`** — down from **16 open · 11 partial**. **`[ ]` now means *doable today*, and nothing is**: eight rows said in their own text that they need a launch and have been moved to `[T]` where they gate nothing |
-| Public repos | **`Rimrooms-AsyncIndustries` on BOTH hosts** — `forgejo GFourteen/...` and `github G-Fourteen/...`. **The mod as staged, the public face, nothing else** |
-| Published site | **LIVE** — `https://g-fourteen.github.io/Rimrooms-AsyncIndustries/`. Pages serves `/docs` as the **site root**, so a page is `<site>/gates.html` and every reference must be site-relative |
-| Launches | **At least twelve**, all by the owner. **Every defect any launch found was ours** |
+| Build | **235 C# files, 104 package files**, zero warnings, zero errors |
+| Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile. **No register row claims this package requires a mod** — Core is the only `Required` row and Core is the game |
+| Instruments | **27 checkers**, **59 proofs**, **35 plant suites**. Newest: `check-record-book-class.py` (27), whose own plant suite found **two false greens in it** before it was trusted |
+| Remotes | **SIX active refs.** `forgejo` held on both repositories |
+| Queue | **18 open · 4 partial · 50 `[T]` · 0 `[x]`** — every open row is work this launch created |
+| Launches | **Thirteen.** The thirteenth is the first to produce facility data, and **every defect it found was ours** |
+| Staged copy | **STALE on purpose.** Files differ while the game is open; `check-package-integrity` rule 10 says so and names the remedy |
 
 ---
 
-## What 0.12.99-dev changed
+## What the first real launch found
 
-**The owner asked a fair question:** *"i think we only have a handful of open items but idk how many
-of those are buildable and unblocked undiffered, u didnt specify too correctly"*. The answer is a
-count. Of sixteen open rows: **two were commissioned work already answered, four were M6a and close
-without a launch, five were held open by pointers to rows that do not exist**, and the rest wait on
-a launch, on Steam, or on a domain.
+**The owner launched, fixed the company facility by hand, and reported five things. Four were defects in our code and one was a missing feature.**
 
-1. **A ROW HELD OPEN BY A POINTER TO NOTHING, FIVE TIMES.** 0.12.98-dev found this twice and
-   **declined to make it a rule** — *"two cases, and 'the row below' has no mechanical meaning"*.
-   That was wrong, and the measurement changed it: **five** statements of open work resolved by
-   position, **three of them pointing at rows already closed and archived**. Each read as work
-   somebody could go and pick up. **Checker 25 refuses one construction rather than one phrase**,
-   which is why it does not cry wolf: twelve lines carry a positional phrase and only five are
-   faults. **And my first fix was wrong in a way the checker caught** — appending the correction
-   while leaving the pointer standing is two statements about one thing with one of them dead.
-2. **"A MOD NOBODY HAS NAMED" WAS TWELVE NAMED MODS, INSTALLED ON THIS MACHINE.** Every mod in the
-   profile is named by the register and **288 of the 294 are on disk**, so the claim was checkable.
-   **Twelve add thirteen work types**, every giver class decompiled against its installed assembly.
-   **Exactly one was buildable and it is built** — `MedicalTraining`, whose giver derives from
-   `WorkGiver_DoBill`, which is the entire requirement because `BillWorkProvider` matches benches
-   **by capability** and names nothing. **No code anywhere references that mod.** The other twelve
-   are a closed decision: the only generic candidate query reads `pawn.Map`, which is the one map a
-   deployment question is never about.
-3. **THE SETTINGS PANE DREW SLIDERS FOR WORK THE PLAYER DOES NOT OWN, and it had since 0.6.4-dev.**
-   Four families are `MayRequire`-gated; `Apply` always skipped an absent one and **the pane never
-   did**. A player without Anomaly saw a cross-gate dark-study slider reporting a shipped default of
-   **0**, writing an override keyed to a defName nothing carries. Both now ask through **one**
-   lookup, and **the proof counts the lookups** rather than testing for their presence — two pieces
-   of code asking the same question separately is what produced it.
-4. **THE DLC GATE COULD NOT SEE A MOD.** It indexes the game's `Data` folders, so a work type a
-   profile mod adds is not DLC-only and is therefore invisible. Ungated, that is the identical
-   unresolved cross-reference two childcare givers shipped with. Scoped to `<workType>` because it
-   is the one tag here whose text is always a def name and never prose.
-5. **SEVEN PATCH TARGETS NOBODY COULD VERIFY WERE VERIFIABLE ALL ALONG.** Both mods declaring them
-   are in the owner's own 294 and both installed. **A note that cannot be checked reads as checked
-   and fine**, and it was hiding the worse outcome: a renamed optional target applies to nothing and
-   reports nothing. Now an unknown optional target is a **failure**, and an unreachable library
-   degrades to the old notes rather than to a silent pass.
-6. **THE LICENCE LINK ON THE PUBLISHED CREDITS PAGE WAS A 404.** The image guard was aimed at
-   `<img src>` because that was the fault in hand the day the banners broke; **`<a href>` has the
-   identical failure mode.** `lstrip("./")` strips the *characters* `.` and `/`, so `../../LICENSE`
-   came out as `LICENSE` — a site-relative-looking href for a file not at the site root. **A broken
-   image is visible; a dead link looks exactly like a working link.** Fixed three ways: the renderer
-   separates `./` noise from a `..` escape, **the licence is published inside the site** as the art
-   is, and `check_links_resolve` is the sibling the image guard shipped without.
-7. **THE THREE START BRIEFS, AND WRITING THEM FOUND TWO ILLEGAL PREMISES.** Owner: *"Write briefs
-   for all three"*. `town_distortion`'s recorded pressure is *"time pressure"* and
-   `isolated_outpost`'s is *"uncertain evacuation"* — **both clocks, and §1.1 permits one clock and
-   it is the gate's.** Replaced by costs that grow: settlement standing, and an account the post
-   cannot reach. The old premises stay recorded as superseded rather than quietly edited.
-8. **THE TIER SWEEP, AND COMMERCE GETS NOTHING BECAUSE THAT IS BETTER.** Owner: *"Sweep the
-   constants and propose the tiers to you"*. **278 constants enumerated, six candidates survive,
-   four branches honestly get none.** Facilities T5 fills a gap **§1.1 itself names** — maintenance
-   is one of the four factors deciding a gate's window and the only one with no project on it.
-   **Commerce's candidates became player settings at 0.12.98-dev**, and a research tier over a
-   slider is two controls fighting.
-9. **M6a CLOSES, AND THE RELEASE RITUAL EXISTS NOW.** `PUBLISHING.md` §8: six preconditions, five
-   met, and the sixth is the gate — *every feature has a recorded acceptance result*, and nothing
-   has passed anything because nothing has run. **The archive is a property rather than a folder:**
-   a tagged commit on four refs, and a manifest with a hash per file, which beats a zip because it
-   proves a downloaded copy is the one that was built. **No tag is cut.**
-10. **AND THE PLAYER-FACING CHANGELOG IS AUTHORED, NOT FILTERED.** `docs/WHATS_NEW.md`, shipped at
-    the public repository root. It says plainly that nothing has been played, that nothing is
-    claimed as tested with other mods, that co-op is not promised, that **development saves may
-    break** — the owner's own *"Development-save break is allowed — declare it"* — and that balance
-    is unjudged.
+1. **A PAWN STARVED AT THE COMMS CONSOLE, and it was fatal by construction.** Three things were true at once: `RR_OperateGate` declares `suspendable: false` **and** `casualInterruptible: false`; the station toil is `ToilCompleteMode.Never`; and its `FailOn` tested the gate, the calibration, the operator's identity, `Downed` and `InMentalState` — **and not one need.** The only exits were collapse, a mental break, or the player noticing. **The floor is absolute and is NOT the setting**, because the owner said both halves in one sentence: *"we cant have them not going to eat or finding saftey, but there needs to be like a driop down sleector thing"*. `GateWatch.MustLeave` is starving, exhausted, burning, bleeding out — every threshold Core's own — asked **before** any posture, in the `FailOn` **and** again every tick. **There is deliberately no enum value meaning *never leave*.** Three postures, per gate, as a `FloatMenu`. Held by 8 claims and 10 plants.
+2. **PAWNS SPRINTED THE WIDTH OF A MAZE TO SOW A FLOWER POT, and the generator caused it in two lines.** `RoomContentBuilder` called `SetForbidden(false, false)` on **every** piece of room content, and fixtures spawn as `Faction.OfPlayer`. **The mechanism was read out of the shipped assembly rather than guessed:** `ForbidUtility.IsForbidden` tests the forbidden flag, `InAllowedArea`, and a lord's list — **fog is not part of it**, so fogging a coordinate would have changed nothing at all. The flag beat an allowed area **because of the player**: an area would override a control they own. `UnexploredWorkMapComponent` releases content when its cell stops being fogged, 600 cells a second, and **only ever un-forbids**.
+3. **THE RESEARCH WAS INVISIBLE WHERE EVERY PLAYER LOOKS.** Owner, in capitals: *"I DONT SEE ANY RESEARCH FOR THE GATE SYSTEMS AND EVERYTHING THIS MOD HAS!!!!!"* Nothing was broken — the branch initialised clean and all 38 projects had records, in an Operations section invisible to the vanilla tab and therefore to ResearchTree and Research Whatever, both of which the owner runs. **38 mirrors now, own tab, nine columns by band, two genuine routes**, synced both ways. **And the register reversed a steer carried since 0.5.x:** it forbade shipping a `ResearchProjectDef`, while rows 191 and 279 ask for the opposite in their own words. A prohibition became **four assertions**.
+4. **ONE OPERATOR, ONE CONSOLE, NO HAND-OFF.** `assignedOperator` is a single `Pawn` reference and the facility authored **one** `CommsConsole`, so a gate's window was hostage to one colonist's bladder with nowhere for a second pawn to stand. And the obvious hook is not one: `RR_Cap_ReliefWatch` sounds exactly like this and is already spent on spin-up decay. Answered *"Not gated — it's a defect, fix it free"*. **Still open as a build.**
+5. **THE SOLO START HANDS YOU THE WAY OUT.** The natural exit spawns in the arrival room. Owner: *"the solo start u have to find your way to get out"*. **Still open**, and to be expressed as a minimum **room** distance rather than a cell distance — a 300×300 coordinate can put a cell far away and still inside the room you woke up in.
 
-## ⛔ THE LAUNCH IS NEXT, AND THE LOOP IS AGREED ⛔
+## What the facility read cost, and what it taught
 
-**Owner, 2026-10-05, verbatim:** *"im going to be starting it up next here soon... the first thing i
-want you to do is 1. check off open items that we complete/you complete, when i start it up"*, and
-the second thing: *"as i load up the different scenerios we will be needing to fix the layout of the
-starting facilities(i will be manual using pawns to change the layout and fix some thing, to which
-you will use the api mod to see what exactly i change/add to the starting facilities that you will
-be making standard and default to the starting scenrios so that the problems like broken conduit
-lines are repaired by me, then updated to match for the mods defualt facilities)"*
+**The owner's hand-fixed facility is in the def:** 18 conduit runs all `HiddenConduit`, 6 removed walls, 4 added including the two **Steel** ones flanking the gate door, **43 buildings** with their material, **8 trade beacons** one per room holding a shelf, the card table **complete** with its four stools, **4 coolers at −8 °C**, and 12 old entries dropped.
 
-**Asked at two forks and answered: *"I'll hand-fix it, you read it back"*.** So **nothing is
-auto-authored.** The owner places it, the tool reads it, the def follows. Same answer for the
-missing battery, Async Industries only.
+**FOUR GENERATOR CAPABILITIES HAD TO BE BUILT FIRST**, and the first blocked twenty of the twenty-six wall changes: the buildings loop threw on any cell holding an edifice, so a `Cooler` — whose whole purpose is to sit in a wall — was refused outright.
 
-**The tool is `.local/qa/facility-diff.py` and its offline half is verified:**
+**And the read was wrong twice before it was right, both times caught by an instrument rather than by me.** Seven false *partial footprints*, because a thing the owner **moved** overlaps its own old position. Then two overlapping generators, because an authored thing counted as present if **any** cell of its footprint held its def — true for something shifted one cell. **Testing the anchor fixed both.**
 
-```
-python .local/qa/facility-diff.py authored RR_AsyncIndustriesStart   # what the def says, offline
-python .local/qa/facility-diff.py power    RR_AsyncIndustriesStart   # grid connectivity, offline
-python .local/qa/facility-diff.py snapshot RR_AsyncIndustriesStart   # read the live map
-python .local/qa/facility-diff.py diff     RR_AsyncIndustriesStart   # paste-ready def XML
-```
-
-**THE PRE-LAUNCH BASELINE, so the diff has something true to compare against.** Neither facility
-has working power as authored: **34 of 34** powered buildings unconnected in Async Industries with
-the nearest wire **3 to 7 cells away** and **5 separate grids**, **8 of 8** in the furniture store,
-and **two of the three generators are off the wire**. Neither authors a battery. **The number was
-checked before it was believed** — 34 of 34 is the too-round figure that caught a false
-reachability result before, so the distances were measured one by one.
-
-**What the loop cannot carry, said before the session rather than after:** a **per-cell floor
-change** (flooring is one facility-wide terrain plus a per-room boolean) and a **knocked-through
-wall** (walls come from the room rectangles, so a removal is a room edit). Everything else carries,
-including `stuff`, `rotation`, `batteryFraction` and `fuelFraction`.
-
-**And blueprints and frames count as the owner's intent**, so a fix is readable before pawns
-finish building it.
-
----
-
-## THE NEXT THING
-
-**Nothing is open and nothing is buildable without the owner.** One row is partial: the T5/T6
-research sweep, which is written and waiting on the owner to pick from it. The Steam mod page and collection wait
-on the owner's *"Not yet — ask again when the mod is ready to publish"*. The domain waits on
-*"Not yet — leave it on the github.io path"*. The compatibility report and the duplicate-def
-resolution structurally require a launch with the 294 profile loaded.
-
-**What is left that does not need a launch is two things and both are decisions, not work:**
-
-- **Pick from the tier sweep.** Four candidates are ready to build, one (a fourth crew member) is
-  explicitly the owner's call because it re-shapes the pressure arithmetic, and one (a seventh
-  level) is blocked on authoring a sixth palette band.
-- **Say whether any of the three start briefs should be built**, and in what order. The briefs exist
-  precisely so that call can be made without guessing.
-
-**And the two starting-goods rows are RETIRED by owner direction, 2026-10-05:** *"remove these,
-they are no longer needed"*. What was found stays in the archive -- a 9,216-cell sweep and four
-candidate causes eliminated against the installed game -- and the diagnostic that reports a
-promised-but-absent starting grant stays in the package, held by its own proof claims. **No further
-investigation is owed.**
-
-**ONE PAGES DEPLOY, AND IT IS THE PUBLIC MOD REPOSITORY.** Owner, 2026-10-05, verbatim: *"the only
-page deploy will be on the new github mod and wiki and public docs ONLY!!!"*. **This repository is
-never deployed.** Pages here returns **404** and has never been enabled — measured, not assumed.
-`check_only_one_pages_deploy` refuses any document that tells a reader to deploy Pages from here,
-because a row instructing a forbidden action is worse than a stale one: somebody does it.
-
-**Nothing was deleted to achieve that.** Owner: *"without losing capability and functioning and
-documentiaons"*. The Jekyll config, layout, include and front door all stay, and **the exclude list
-stays as the guard** — it is the only thing that would refuse the work ledger if Pages were ever
-switched on here by mistake. It is **generated** by `tools/build-site.py`, so a new document at
-`docs/` root cannot quietly join the published set; run the generator after adding one.
+**Three conflicts were real rather than tool faults.** The owner's stove covers the receiving-bay cell, so **the bay moved** — their placement is exact, so the cell that is not theirs yields. The comms console came back facing north because the read carries no rotation, putting its interaction cell **inside a wall**; a moved thing inherits its authored facing now. And the autodoor replaces no authored wall — they built the wall segment around it — so it is a building rather than a door-list entry.
 
 ---
 
 ## Read these before touching anything
 
-- **ONE PATTERN, ALL THE REFERENCES IT GUARDS.** The escape-path rule was written for `<img src>`
-  the day every banner 404'd and was never given to `<a href>` — and the licence link on the
-  credits page was **404 on the live site** the whole time. A guard written for the fault in hand
-  covers the fault in hand. Ask what else has that shape, immediately, while the rule is fresh.
-- **A WORD BEING PRESENT IS NOT THE WORD DOING ANYTHING, AND I DID IT AGAIN THIS BATCH.** A claim
-  asserted `"def foreign_work_types(owner):" in gating` — the **definition**, not the call. Its
-  plant correctly reported MISSED: a rule defined and never invoked does nothing, and the identifier
-  was there either way. **Assert the call, the whole anchored statement, or the condition.**
-- **AND `in` CANNOT TELL ONE SITE FROM TWO.** Adding a second rule to `check-dlc-gating.py` put a
-  second copy of `for node, required in nodes_with_requirements(definition):` in the file, which
-  silently made an existing claim survive a plant that gutted the first walk entirely. **Count it.**
-- **AN ON-DISK AUDIT CANNOT SEE A DEPLOYMENT FAULT. READ THE LIVE SITE BACK.** `curl` against the
-  published URL is the last step of publishing, and it is the only instrument that has ever caught
-  either of the two 404 classes.
-- **A NOTE THAT CANNOT BE CHECKED READS AS CHECKED AND FINE.** Seven *"cannot be verified"* notes
-  survived every battery for weeks while the thing they described was sitting in the owner's own mod
-  folder. If a note says *unverifiable*, ask **from where** — the answer was *from a path nobody had
-  looked at*.
-- **A STALE DOC COMMENT IS THE UPSTREAM OF A PUBLISHED LIE.** The wiki told readers the free ways
-  through stop at depth 3 because `MaximumNaturalDepth` carried **two** `<summary>` blocks and the
-  first still argued for three. **Write a reader-facing sentence from the constant and the keyed
-  string, never from the comment beside them.**
-- **A ROW CAN BE STALE IN ITS PREMISE, NOT JUST ITS STATUS.** Four were this batch — *"a mod nobody
-  has named"*, two start premises that ran clocks, and a provider-adapter row the register had
-  already settled. **Measure before building.**
-- **A GENERATED ARTEFACT IS THE BEST AUDIT YOU WILL EVER RUN.** The mod telling every player it
-  needed 294 mods survived six versions of a checker written to catch stale claims. It was found by
-  generating a readme and reading it. **Render the thing and look at it.**
-- **USE THE WRITE TOOL FOR SCRIPTS, NEVER A BASH HEREDOC.** Mangled again this batch; a quote inside
-  a quoted heredoc ate the rest of the file. Four occurrences across two sessions.
-- **WRITING A FILE WITH THE WRONG ENCODING SILENTLY CHANGES IT.** Read with `utf-8-sig`, **re-write
-  only the BOM you actually found**, and **diff-stat after every scripted edit**.
-- **A PLANT SUITE THAT TOUCHES A FILE WITH A BOM MUST USE BYTES.** `io.open(..., "w",
-  encoding="utf-8")` strips one silently.
-- **A GUARD THAT LOOKED AT NOTHING MUST NOT REPORT A PASS.** Every new rule this batch refuses an
-  empty scope explicitly.
-- **A CLAIM READS ITS OWN DOCUMENTATION.** `code_only()`, `xml_only()`, `yaml_only()` and
-  `html_only()` exist for this. Put every absence assertion through one.
-- **READ THE API OUT OF THE INSTALLED GAME — AND THE INSTALLED MODS.** `.local/tools/ilspycmd.exe`
-  settled thirteen base classes this batch in one pass. The workshop library is at
-  `steamapps/workshop/content/294100`, and **288 of the owner's 294 are in it.**
-- **THE REGISTER ANSWERS MORE THAN IT LOOKS LIKE.** The entire optional-provider question was
-  already decided in the review cards. `python tools/register-query.py card <id>` prints every
-  field. **`docs/CAMPAIGN_CHART.md` beats any prep document.**
-- **THE CASCADE IS TWELVE REFS, NOT TEN.** Ten here — `forgejo` and `github` × `feature/bug-testing,
-  feature/connected-colony-portals, Prep, Develop, Main`, pushed **by refspec from the feature
-  branch** — **plus two** via `python tools/export-public-repo.py --push`, which **runs BEFORE the
-  commit here** because it verifies every file's SHA256 against the build manifest. **The exporter
-  reads its own remotes back and refuses if either is behind.** `PUBLISHING.md` is the authority;
-  read it rather than improvising.
-- **§1.1 IS THE RULE A NEW FEATURE IS MOST LIKELY TO BREAK WITHOUT NOTICING.** *"A gate's connection
-  has a duration. Nothing else in this mod has a duration."* It caught two of the three start
-  premises this batch, and `check-campaign-absolutes.py` refuses the forbidden noun for a thing
-  that expires in a living document **even where the sentence is denying one** — reword the prose,
-  never widen the rule. It has now caught that construction three times, including twice in
-  documents written to explain the rule.
-- **A BILL NEEDS A `Building_WorkTable`.** Research benches are `Building_ResearchBench` and have no
-  bill stack, so a recipe placed on one is a feature nobody can ever reach.
-- **THE STAGER REFUSES A PACKAGE EDITED AFTER THE BUILD**, by hash. Rebuild, then stage.
-- **BANNED VOCABULARY.** *"portal"* → gate/connection; *"doorway"* → door/threshold; *"the machine"*
-  is reserved. `check-info-cards.py` is the authority.
+- **`--` IS ILLEGAL INSIDE AN XML COMMENT, AND I HAVE WRITTEN ONE THREE TIMES** — `RR_GateJobs.xml`, `write-facility-def.py`, and the research generator. Both generators sanitise comment **bodies** at the point of writing and never the delimiters: the first sanitiser rewrote the `--` of `<!--` itself and broke line 2.
+- **A SENTINEL THAT COLLIDES WITH A REAL VALUE IS A SILENT SETTING.** `targetTemperature` uses `NaN` for absent, because **0 is a temperature somebody means**.
+- **THE VERSION IS A LABEL; THE BYTES ARE WHAT RUNS.** The staging guard compared version strings, and a fix landed without a bump — so it reported the staged copy current while the DLL was stale. It compares **every file by content** now, and names whether the operator can act: staging refuses while RimWorld is open.
+- **`in` CANNOT TELL ONE SITE FROM THREE, AND MEASURE BEFORE YOU COUNT.** Two claims survived plants because an identifier appeared elsewhere. Then my own correction **guessed** a count of two where the measured answer was three, and failed on correct code.
+- **ASSERT THE CALL, NOT THE DEFINITION.** A claim asserted `def foreign_work_types(...)` exists; its plant correctly reported MISSED, because a rule defined and never invoked does nothing.
+- **A UNIT ERROR LOOKS LIKE ARITHMETIC.** The research mirror first cost `workRequired × (1 + insightCost)` — both "bench work" — producing 8,000 to 108,000 against vanilla's measured 200 to 8,000. **"Either route works" would have been false while looking true.** Measure the thing you are matching.
+- **A NOTE THAT CANNOT BE CHECKED READS AS CHECKED AND FINE.** Seven *"cannot be verified"* patch targets sat in the battery for weeks while both mods declaring them were in the owner's own profile and installed.
+- **AN ON-DISK AUDIT CANNOT SEE A DEPLOYMENT FAULT.** Every banner, and later the licence link, shipped as a 404 with every instrument green. **`curl` the published site; it is the last step of publishing.**
+- **ONE PATTERN, ALL THE REFERENCES IT GUARDS.** The escape-path rule was written for `<img src>` and never given to `<a href>`.
+- **A STALE DOC COMMENT IS THE UPSTREAM OF A PUBLISHED LIE.** Write a reader-facing sentence from the constant and the keyed string, never from the comment beside them.
+- **A ROW CAN BE STALE IN ITS PREMISE, NOT JUST ITS STATUS.** *"a mod nobody has named"* was twelve named mods installed on this machine.
+- **READ THE API OUT OF THE INSTALLED GAME, AND THE INSTALLED MODS.** `.local/tools/ilspycmd.exe` settled `ForbidUtility`, `ResearchProjectDef.CanStartNow` and thirteen giver base classes this session. The workshop library is at `steamapps/workshop/content/294100`, and **288 of the owner's 294 are in it**.
+- **USE THE WRITE TOOL FOR SCRIPTS, NEVER A BASH HEREDOC.** Mangled again; two layers of Python escaping turned `\r?\n` into a real newline inside a string literal.
+- **§1.1 IS THE RULE A NEW FEATURE IS MOST LIKELY TO BREAK.** *"A gate's connection has a duration. Nothing else in this mod has a duration."* It rewrote two of the three alternate-start premises, and `check-campaign-absolutes` refuses the forbidden noun **even in a sentence denying one** — reword the prose, never widen the rule.
+- **A BILL NEEDS A `Building_WorkTable`.** Research benches are `Building_ResearchBench` and have no bill stack.
+- **THE REGISTER ANSWERS MORE THAN IT LOOKS LIKE.** `python tools/register-query.py card <id>`. **`docs/CAMPAIGN_CHART.md` beats any prep document.**
+- **BANNED VOCABULARY.** *"portal"* → gate/connection; *"doorway"* → door/threshold; *"the machine"* is reserved.
 
 ---
 
-## Findings recorded so nobody re-derives them
-
-- **A sentence that names a count is a second place the count lives.** Derive it; let documents name
-  none. This file said *"24 checkers"* within minutes of the twenty-fifth landing, and the rule
-  caught it.
-- **A PLAYER SETTING CAN RETIRE A RESEARCH TIER, and that is an improvement.** Commerce had the
-  cleanest-looking T5 candidates in the mod until its knobs became sliders. **A research tier and a
-  player slider over one number is two controls fighting**, and the right record is that the slider
-  replaced the tier rather than that the tier is missing.
-- **A tier may only exist where a player could name the effect.** Most of 278 constants die on a
-  third test — a schema version, a tick interval or a loop bound is not tuning, it is the machine
-  working.
-- **Making a claim true beats softening it.** `build-site.py --check` was documented as failing the
-  battery and could not, because it is not a `check-*.py`. `tools/check-site-generated.py` is the
-  entry point.
-- **Derived beats stored whenever the inputs are already saved.**
-- **A def nobody wired is a job nobody finished** (invariant 131).
-- **An outage is recorded, not re-investigated.**
-
----
-
-## The live bug that is NOT ours
+## The facility read-back loop, which is now a standing tool
 
 ```
-ReflectionTypeLoadException getting types in assembly RimBridgeServer:
-expected class 'HarmonyLib.CodeInstruction' in assembly '0Harmony, Version=2.4.2.0'
+python .local/qa/facility-diff.py    authored RR_AsyncIndustriesStart   # the def, offline
+python .local/qa/facility-diff.py    power    RR_AsyncIndustriesStart   # grid connectivity, offline
+python .local/qa/facility-diff.py    snapshot RR_AsyncIndustriesStart   # read the live map
+python .local/qa/facility-changes.py          RR_AsyncIndustriesStart   # classified, readable
+python .local/qa/apply-facility-read.py                                 # measure the changes
+python .local/qa/write-facility-def.py                                  # write them in
 ```
 
-`RimBridgeServer.dll` wants **0Harmony 2.4.2.0**; the profile snapshot records `brrainz.harmony` at
-**2.4.2.0** as of 2026-09-27, so this may already be resolved on the machine. Our package loaded
-clean in the same log either way. The fix is not in this repository.
+**The authored layout is offset onto the live map** — a 300×300 map and a 44×44 footprint at (8,8) give **(120, 120)** — and the offset is **confirmed by probing a known building**, never merely computed. The first read returned 2,116 cells of unexplored mountain. **It reads blueprints and frames too**, so a fix is readable before pawns finish building it.
+
+**What it cannot carry:** a per-cell floor change (flooring is one facility-wide terrain plus a per-room boolean) and a knocked-through wall (walls come from the room rectangles, so a removal is a room edit). Both are stated up front, because a change the def cannot express is owner time that cannot be kept.
 
 ---
 
@@ -343,23 +137,31 @@ grep -c '^\s*- \[x\]' docs/TODO.md    # 0, and it must stay 0
 
 ```
 python tools/archive-finished-todo.py --apply
-python tools/verify-archive-move.py                                   # straight after, every time
-python tools/check-queue-integrity.py                                 # and this, which the above cannot see
-python tools/check-queue-pointers.py                                  # and this, which neither can
+python tools/verify-archive-move.py                      # straight after, every time
+python tools/check-queue-integrity.py                    # and this, which the above cannot see
+python tools/check-queue-pointers.py                     # and this, which neither can
+python tools/archive-empty-sections.py --list            # a heading with no rows is residue
 ```
 
-`STALE SNAPSHOT` exit **2** is distinct from `FAILED` exit 1 and `VERBATIM TRANSFER CONFIRMED`
-exit 0. The mover returns **3** for unarchivable prose after a closed row, and writes nothing —
-**indent the paragraph into the row it documents**, which is the mover's own first remedy and means
-the note archives with its row instead of being stranded behind it.
+The mover returns **3** for unarchivable prose after a closed row and writes nothing — **indent the paragraph into the row it documents**, so the note archives with its row rather than being stranded behind it.
+
+---
+
+## THE NEXT THING
+
+**Four items remain on the owner's launch list, in this order:**
+
+1. **The journal and quest brief.** Owner: *"this is big one to need proper write up before attempting the work and using ask me question where forks"*. Two forks are answered already — **per-quest books plus a branch ledger**, and **a dedicated write-up desk**, which **overrides the content-reuse rule and is recorded as a deliberate second exception** rather than slipped in. Two more need asking: how a book physically returns to the company, and what the green light reads from.
+2. **The two starting journals are named wrong.** They are Core `TextBook`s, so they carry Core's own generated title and description — the two it rolled were nutrition and shooting. **Repurposing an existing item kept its identity as well as its model.** The fix covers purchased ones too.
+3. **The wiki pass**, which the owner named in the same sentence as the journals and is not optional.
+4. **Check off the scenario steps this launch completed.**
+
+**Then the two builds this launch specified:** operator relief with up to four consoles, ungated and seamless; and the solo start's exit moved out into the maze.
 
 ---
 
 ## Is it done?
 
-**The build is. The play is not.** The next action that unblocks anything is a launch, and only the
-owner launches.
+**The build is not, and for the first time the reason is a list of real play defects rather than an absence of evidence.** Thirteen launches in, the thirteenth is the one that paid: a hand-fixed facility, four code defects and two missing features, every one recorded with the owner's own words.
 
-Read a launch log in this order: `Player.log`, grep the **first** `[Rimrooms]` line — it carries the
-fixture-tell attachment count, the fastest signal that the object register reached anything — then
-`python .local/qa/bridge.py call rimworld/list_letters '{}'`.
+Read a launch log in this order: `Player.log`, grep the **first** `[Rimrooms]` line — it carries the fixture-tell attachment count, the fastest signal that the object register reached anything — then `python .local/qa/bridge.py call rimworld/list_letters '{}'`.

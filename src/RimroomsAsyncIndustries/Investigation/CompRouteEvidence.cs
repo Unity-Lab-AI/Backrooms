@@ -140,6 +140,27 @@ namespace RimroomsAsyncIndustries.Investigation
             return "RR_Evidence_CompanyBookLabel".Translate().ToString();
         }
 
+        /// <summary>
+        /// What the company book's "i" card says, replacing Core's generated subject.
+        ///
+        /// **Owner, 2026-10-06, verbatim:** *"both are named wrong and have differ information in
+        /// the "i" write up saying incorrectly that one is about nutrition and the othert is about
+        /// aiming"*, and on what should be there instead: *"sterp by step instructions how to use
+        /// the journal but not wordy keep it very concise asnd to the point"*.
+        ///
+        /// **Four steps and a stop, because the owner set the ceiling.** The keyed string carries
+        /// the whole block; nothing is composed here, so a translator moves one entry rather than
+        /// four fragments and the order of the steps cannot be lost in concatenation.
+        ///
+        /// **This is only ever read for a company-issued book.** `RimroomsRecordBook` guards the
+        /// call, and the guard is the same `companyIssued` flag the label uses, so the card and
+        /// the name can never disagree about which book this is.
+        /// </summary>
+        public string CompanyDescription
+        {
+            get { return "RR_Evidence_CompanyBookDesc".Translate().ToString(); }
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -196,6 +217,27 @@ namespace RimroomsAsyncIndustries.Investigation
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
         {
             foreach (FloatMenuOption option in base.CompFloatMenuOptions(selPawn)) { yield return option; }
+            // **THE INSTRUCTIONS COME BEFORE THE BINDING GUARD, AND THAT ORDER IS THE WHOLE POINT.**
+            //
+            // Owner, 2026-10-06: *"with a pawn click actions with sterp by step instructions how to
+            // use the journal"*. The one state a player actually starts holding is a **blank**
+            // company book, which has no evidence binding at all -- so an option added below the
+            // `HasValidBinding` guard would be invisible on exactly the book that needs explaining.
+            // That is the same fault `CompInspectStringExtra` carried until 0.12.9x, where the early
+            // return meant the only state with no guidance was the first one anybody meets.
+            //
+            // Shown on a company-issued book whether bound or not, and never on an ordinary novel.
+            if (companyIssued && selPawn != null && selPawn.Faction == Faction.OfPlayer
+                && parent.Spawned && selPawn.Map == parent.Map
+                && !parent.Position.Fogged(parent.Map))
+            {
+                yield return new FloatMenuOption("RR_UI_JournalHowTo".Translate(), delegate
+                {
+                    Find.WindowStack.Add(new Dialog_MessageBox(
+                        "RR_Evidence_CompanyBookDesc".Translate(),
+                        title: "RR_UI_JournalHowToTitle".Translate().ToString()));
+                });
+            }
             if (!HasValidBinding || selPawn == null || selPawn.Faction != Faction.OfPlayer || !parent.Spawned ||
                 selPawn.Map != parent.Map || parent.Position.Fogged(parent.Map)) { yield break; }
             RimroomsCampaignComponent campaign = Current.Game == null ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();

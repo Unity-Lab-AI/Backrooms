@@ -141,6 +141,39 @@ Walking a single colonist through a door by hand is not a company dispatch and i
 
 ---
 
+## The record book
+
+**The record book is the company's journal, and it is the thing you actually get paid for.** A crew
+carries it through a gate, the survey writes itself as they walk, and the filled book becomes the
+case record your researcher analyses.
+
+The company's own books say **company record book** on them. An ordinary textbook bought from a
+trader is just a textbook, and the mod leaves it alone.
+
+| Step | What a colonist does |
+|---|---|
+| **1. Carry it out** | Right-click the book with a colonist and send it through the gate |
+| **2. Walk the rooms** | The survey records itself as the crew moves through each required room |
+| **3. File it** | Bring it home and store it on the shelf you designated as the records archive |
+| **4. Analyse it** | Assign a researcher at a powered bench |
+
+**Right-click a company book and pick *What is this journal for?*** to read those steps in the game,
+on the book itself. The same text is on the book's information card.
+
+**You get books four ways.** Each one is a company book and each is labelled as such:
+
+| Where it comes from | When |
+|---|---|
+| Your scenario | The opening facility places them |
+| A company drop | Two arrive when you have a calibrated gate and no book anywhere |
+| Procurement | The catalogue sells them |
+| A coordinate | Somebody left one down there. It is not yours yet — carry it home and it opens a case |
+
+**Losing a book loses that run's record, not the branch's work.** The company sends more, and it
+keeps sending them whenever you have none at all.
+
+---
+
 ## Research
 
 Insight from analysed records buys unlocks across **nine branches**:
