@@ -427,10 +427,29 @@ check("it finds them the same way the validator finds them",
       "-- the thing that REPORTS a stray consumer and the thing that FIXES one now agree by "
       "construction rather than by two people remembering the same rule")
 
+# **AND NEITHER CAN THE FIRST PASS, which nothing asserted until 0.12.99-dev.** A plant existed for
+# it -- *"the known-consumer routes go back to the throwing placement"* -- and reported MISSED,
+# because no claim covered the method it edits. `SpawnNativePowerNetwork` wires every consumer the
+# dressing placed; a throwing call there loses the whole coordinate over one unreachable lamp, which
+# is the same defect the stray pass was fixed for and the same reason.
+_network_at = genstep.find("private static HashSet<IntVec3> SpawnNativePowerNetwork(")
+_network = genstep[_network_at:genstep.find(chr(10) + "        }" + chr(10), _network_at)]     if _network_at >= 0 else ""
+check("NOR CAN THE FIRST WIRING PASS",
+      _network_at >= 0
+      and "TrySpawnNativeConduit(" in _network
+      and "SpawnNativeConduit(" not in _network.replace("TrySpawnNativeConduit(", ""),
+      "-- the same rule as the stray pass, and for the same reason: an unreachable consumer is a "
+      "dark corner, and losing the place over it is the defect this checkpoint exists to fix")
+
 check("THE STRAY PASS CAN NEVER COST THE COORDINATE",
       stray_at >= 0 and "throw" not in stray_body
       and "private static void TrySpawnNativeConduit(" in genstep
-      and "TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);" in stray_body
+      # **The argument list grew at 0.12.99-dev** -- `TrySpawnNativeConduit` takes an exempt
+      # footprint now, for the void-terrain rule -- so this had been failing unrun on a
+      # literal nobody had re-read. Anchored on the call and its first five arguments, which
+      # is what the claim is about; the sixth is somebody else's rule.
+      and "TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells,"
+          in stray_body
       # The Try form CONTAINS the throwing form as a substring, so the naive test fails against
       # correct code. Strip the safe calls first and then look for a bare one. This claim fell
       # into the exact prefix trap it was written to close, which is the most on-the-nose lesson

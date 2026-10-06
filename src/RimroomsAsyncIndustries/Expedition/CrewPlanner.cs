@@ -42,29 +42,27 @@ namespace RimroomsAsyncIndustries.Expedition
     /// </summary>
     public static class CrewPlanner
     {
-        /// <summary>
-        /// **THERE IS NO CREW CAP, AND THERE NEVER SHOULD HAVE BEEN ONE.**
-        ///
-        /// Owner direction, 2026-10-06, verbatim: *"rememberber pawns can cross gate as they plkease so
-        /// no max number"*, and when asked where three came from: *"dont know where 3 came from"*.
-        ///
-        /// **They were right, and the provenance is the whole answer.** Three is the number of staff
-        /// roles the Async Industries start ships, and `SCENARIOS.md` ties a records bonus to *"all
-        /// three crew"* returning. That is a **scenario's starting headcount**. `MaxCrew = 3` turned it
-        /// into a design cap by writing it down somewhere else, and nothing anywhere ever asked the
-        /// owner whether a crew had a maximum size.
-        ///
-        /// **It never refused anything either**, which is why it survived unnoticed: this class's own
-        /// documentation says it *"returns a report and never a refusal"* and that *"removing it
-        /// entirely would change no outcome in the game."* So the cap was a sentence in a panel that
-        /// looked like a rule.
-        ///
-        /// What the planner reports now is the crew's **composition** — whether the skills a field trip
-        /// uses are covered — which is the half of its job that was ever real. A player may send one
-        /// person or everybody.
-        /// </summary>
-        /// (No constant is declared. A cap of `int.MaxValue` is still a cap somebody can read as a
-        /// rule, and nothing needs the number: the absence IS the rule.)
+        // **THERE IS NO CREW CAP, AND THERE NEVER SHOULD HAVE BEEN ONE.**
+        //
+        // Owner direction, 2026-10-06, verbatim: *"rememberber pawns can cross gate as they plkease so
+        // no max number"*, and when asked where three came from: *"dont know where 3 came from"*.
+        //
+        // **They were right, and the provenance is the whole answer.** Three is the number of staff
+        // roles the Async Industries start ships, and `SCENARIOS.md` ties a records bonus to *"all
+        // three crew"* returning. That is a **scenario's starting headcount**. `MaxCrew = 3` turned it
+        // into a design cap by writing it down somewhere else, and nothing anywhere ever asked the
+        // owner whether a crew had a maximum size.
+        //
+        // **It never refused anything either**, which is why it survived unnoticed: this class's own
+        // documentation says it *"returns a report and never a refusal"* and that *"removing it
+        // entirely would change no outcome in the game."* So the cap was a sentence in a panel that
+        // looked like a rule.
+        //
+        // What the planner reports now is the crew's **composition** — whether the skills a field trip
+        // uses are covered — which is the half of its job that was ever real. A player may send one
+        // person or everybody.
+        // (No constant is declared. A cap of `int.MaxValue` is still a cap somebody can read as a
+        // rule, and nothing needs the number: the absence IS the rule.)
 
         /// <summary>
         /// The skills a field trip actually uses, and what each one is for. Core's own skills,

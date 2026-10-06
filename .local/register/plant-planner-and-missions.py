@@ -13,6 +13,7 @@ import time
 SRC = "src/RimroomsAsyncIndustries"
 PLANNER = SRC + "/Expedition/CrewPlanner.cs"
 PANE = SRC + "/UI/OperationsCrewPlanner.cs"
+CARGO = "src/RimroomsAsyncIndustries/Expedition/ExpeditionCargo.cs"
 DISPATCH_PANE = SRC + "/UI/OperationsExpeditions.cs"
 EXPEDITION = SRC + "/Expedition/RimroomsExpeditionComponent.cs"
 MISSIONS = SRC + "/Company/OddConsignmentMissions.cs"
@@ -118,8 +119,13 @@ PLANTS = [
     ("the movement check stops using Core's capacity", PLANNER,
      "PawnCapacityDefOf.Moving", "PawnCapacityDefOf.Consciousness", PROOF),
 
-    ("the crew cap is written twice", PANE,
-     "CrewPlanner.MaxCrew.ToString(CultureInfo.CurrentCulture)", '"3"', PROOF),
+    # **RE-AIMED: there is no crew cap to write twice.** It was removed on owner direction, so the
+    # claim became the absence and the fault to plant is a cap RETURNING -- in the dispatch path
+    # that actually refused a fourth person, which is where it lived all along rather than in the
+    # panel that merely printed a number.
+    ("A CREW CAP RETURNS in the path that really refused one", CARGO,
+     "crew.Count < 1 || crew.Distinct()", "crew.Count < 1 || crew.Count > 3 || crew.Distinct()",
+     PROOF),
 
     # ------------------------------------------------------ row 728, the four checks
     ("a disabled skill starts counting as held", PLANNER,

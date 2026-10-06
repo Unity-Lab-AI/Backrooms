@@ -90,7 +90,7 @@ scale, materials and how much the architecture agrees with itself are all functi
 down you are. Near the surface the place makes sense. It stops.
 
 The free ways through reach the sixth level. There are inhabitants. They stay down there:
-[b]nothing crosses a gate under its own will[/b], an open gate is never an objective, a lure or a
+[b]nothing is ever lured through a gate[/b] -- a gate is never a destination for anything that is not yours, though what is already standing at an open threshold can cross it, an open gate is never an objective, a lure or a
 spawn target, and anything that comes back came back because one of your people carried it.
 
 [h1]Before you install[/h1]

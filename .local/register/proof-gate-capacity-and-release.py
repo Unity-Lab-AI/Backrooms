@@ -131,13 +131,25 @@ claim("DIALLING CREATES AN ADDRESS, NOT A MAP",
       and not uses(dial, "EnsureSite"),
       "nothing is generated until somebody crosses, so dialling is free and the open-map budget "
       "is only spent when a place is actually opened")
-claim("the blind dial is bounded",
-      re.search(r"internal const int DeepestBlindDial\s*=\s*\d+\s*;", dial) is not None)
+# **RESTATED 0.12.99-dev, AND THE OLD FORM WAS A SECOND DERIVATION OF THE DEPTH REACH.**
+# `DeepestBlindDial` was `internal const int = 6` with a comment saying it matched the natural cap --
+# and a comment is not a derivation. Spatial tier 6 earns a seventh level, so a copy of the number
+# would have shipped a branch able to walk to depth seven while a blind dial refused to send anybody
+# there. It delegates to `NaturalFrontierService.NaturalDepthReach()` now.
+#
+# **The claim is still about boundedness and it is now stronger**: the dial must read the one place
+# that decides the reach, and that place is bounded by two named constants rather than by a literal
+# anywhere. A `const int` here would be the bug; what must never appear is a number.
+claim("the blind dial is bounded, by the ONE place that decides the depth reach",
+      "NaturalFrontierService.NaturalDepthReach()" in dial
+      and re.search(r"const int DeepestBlindDial", dial) is None,
+      "a constant here is a second derivation of a number Spatial tier 6 moves")
 claim("the blind depth is DERIVED FROM THE SEED, never from Rand",
       "CampaignSeed.Derive(" in dial and not re.search(r"\bRand\.", dial),
       "dial twice and get the same place; reload and it is still there")
-claim("the depth draw is bounded by the constant rather than by a literal",
-      "depth < DeepestBlindDial" in slice_member(dial, "BlindDepth"),
+claim("the depth draw is bounded by that reach rather than by a literal",
+      "depth < deepest" in slice_member(dial, "BlindDepth")
+      and "int deepest = DeepestBlindDial;" in slice_member(dial, "BlindDepth"),
       "the method also multiplies the constant, so containment alone passed a plant that "
       "replaced the loop bound with a literal")
 claim("a dialled place is counted, so the feature can be read back",

@@ -532,10 +532,14 @@ check("and it may only suspend, never un-suspend and never re-time",
       "spending another hundred steel on a gate that exists. Un-suspending one would overrule a "
       "player who suspended it on purpose, and the repeat mode and count are theirs")
 
+# **RESTATED 0.12.99-dev: the recipe's description was rewritten when the assembly became four
+# sections, so the sentence this quoted no longer exists word for word.** What the claim protects is
+# unchanged and is now asserted by its parts rather than by one sentence: the recipe lives on the
+# table's own list, and its description still INSTRUCTS a player who then adds the bill.
 check("and the recipe was on the table's own list the whole time",
       "<recipeUsers><li>TableMachining</li></recipeUsers>" in gaterecipe
-      and "Designate the native door, communications console, battery and machining table in"
-      in gaterecipe,
+      and "Designate the door, communications console, battery and machining table in" in gaterecipe
+      and "Operations first" in gaterecipe,
       "-- **the recipe's own description is an instruction to a player who then adds the bill**, "
       "and nothing had to be built to give them the choice. The choice had been taken")
 
@@ -544,8 +548,14 @@ spinup = _read(_SRC, "Gate", "GateSpinUp.cs")
 # ------------------------------------------------- gate control, and it cuts both ways
 # Owner: *"we should have a set to gate control for these components so other things arnt
 # available and can toggle between normal op and gate op depending whats wanted.."*
+# **RESTATED 0.12.99-dev, AND THE OLD FORM WAS THE BUG.** This asserted
+# `gateControl && linkedGate != null`. `linkedGate` is the EXCLUSIVE primary binding and belongs to
+# the one designated bench, so a machining table linked in the `RR_Link_GateAssembly` role has none
+# -- and gate control was therefore unreachable on exactly the three benches that role exists to
+# create, which made the whole role inert. It asks the resolved `Gate` now, which prefers the
+# primary binding and falls back to the assembly link.
 check("A COMPONENT DOES ITS ORDINARY JOB OR THE GATE'S, AND THE PLAYER CHOOSES",
-      "public bool IsGateControl { get { return gateControl && linkedGate != null; } }" in console
+      "public bool IsGateControl { get { return gateControl && Gate != null; } }" in console
       and "public void SetGateControl(bool running)" in console
       and "action = delegate { SetGateControl(!running); }" in console
       and "RR_NativeGate_GateControlLabel" in console
@@ -582,8 +592,13 @@ check("and a machining table's other bills are suspended, by id, and resumed exa
       "-- **recorded rather than inferred.** A bill the player had already suspended must stay "
       "suspended, and the current state cannot tell those two apart")
 
+# **RESTATED: the clause this quoted gained a second half.** `AvailableOnNow` now also asks
+# `gate.IsBoundAssemblyBench(thing)`, so the recipe is offered only at a bench the gate would credit
+# -- the same question `CompleteAssemblyFromBill` asks. The exclusivity this claim is about is
+# untouched, and both halves are asserted so neither can go quietly.
 check("AND NORMAL OPERATION REFUSES THE GATE, so the modes are exclusive both ways",
-      "&& console.IsGateControl;" in console
+      "&& console.IsGateControl" in console
+      and "&& gate.IsBoundAssemblyBench(thing);" in console
       and "RR_NativeGate_NotInGateControl" in spinup
       and "!spinUpStation.IsGateControl" in spinup
       and "!spinUpWorkshop.IsGateControl" in spinup,

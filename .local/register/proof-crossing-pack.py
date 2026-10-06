@@ -172,8 +172,31 @@ claim("EVERY connected work giver gates on the traveller policy",
 claim("the gate is one function, not a condition copied into nine files",
       traversal_code.count("public static string TravellerFailureKey") == 1,
       "one pattern, all the files it guards")
-claim("autonomous non-player traversal is still a constant false",
-      "AutonomousNonPlayerTraversalPermitted = false" in flat(traversal_code))
+# **RESTATED AT 0.12.99-dev, AND THIS PROOF HAD BEEN FAILING UNRUN SINCE THE CONSTANT WENT.** The
+# claim was:
+#
+#     claim("autonomous non-player traversal is still a constant false",
+#           "AutonomousNonPlayerTraversalPermitted = false" in flat(traversal_code))
+#
+# The owner rewrote invariant #1 on 2026-10-06 and the constant was **deleted rather than left at
+# false**, because a constant denying what the code beside it does is a stale comment with a
+# compiler behind it. So this claim demanded the opposite of the shipped design, and nothing said so
+# because nobody ran this proof between the deletion and now. **That is the fourth instrument this
+# session found asserting something the code had stopped doing**, and it is the loudest kind: a
+# straightforward red, which is the lucky direction.
+#
+# **It is not replaced with a copy of checker 29's rules.** That checker owns the retirement and owns
+# *nothing is ever lured*; restating either here would be two derivations of one rule. What this
+# proof is about is the crossing PACK -- what a traveller may carry and who may be carried -- so the
+# claim becomes the thing this file is entitled to assert: the constant is gone, and the question it
+# used to answer now lives in one named place.
+claim("the retired traversal constant is gone, not left at false",
+      "AutonomousNonPlayerTraversalPermitted" not in code_only(traversal_code),
+      "owner rewrote invariant #1; check-traversal-policy.py owns the rule now")
+claim("and the permission question still lives in the one chokepoint",
+      "public static string OutboundCrossingFailureKey" in traversal_code
+      and "public static string IncursionFailureKey" in traversal_code,
+      "both crossing directions decided in PortalTraversalPolicy and nowhere else")
 
 # ---------------------------------------------------------------------------------- report
 bad = [(label, detail) for label, ok, detail in CLAIMS if not ok]

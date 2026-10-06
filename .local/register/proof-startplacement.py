@@ -179,10 +179,21 @@ check("THE OPENING IS NO LONGER INSIDE-START ONLY",
       and "if (start == null || !start.insideStart) { return null; }" not in opening,
       "-- this early return is why the Store had no connection at all")
 
-check("only an inside start is moved into the coordinate",
-      "if (start.insideStart)" in opening and "MoveOpeningPartyInside(surface, inside, entry);"
-      in opening,
-      "-- a surface start with a natural gate keeps its crew in their own building")
+# **RESTATED 0.12.99-dev: this had been failing unrun since the solo arrival landed.** It asserted
+# the literal `MoveOpeningPartyInside(surface, inside, entry);`, and the destination is no longer
+# `entry` -- the owner's report was *"the solo start u have to find your way to get out not just have
+# the natural exit gate right next to u"*, so the party now wakes three rooms away and the call reads
+# `arrival.IsValid ? arrival : entry`.
+#
+# The claim it was making is unchanged and is asserted by its parts: the move happens **only** for an
+# inside start, and the destination is the distant arrival cell with the generator's own spot as a
+# fallback -- *an opening that is merely too easy is playable; the solo guarantee is not traded for a
+# nicety.*
+check("only an inside start is moved into the coordinate, and not to the way out",
+      "if (start.insideStart)" in opening
+      and "MoveOpeningPartyInside(surface, inside, arrival.IsValid ? arrival : entry);" in opening,
+      "-- a surface start with a natural gate keeps its crew in their own building, and an inside "
+      "start does not wake up beside the exit")
 
 check("a surface natural gate records its own event",
       'RecordEvent("RR_Event_NaturalGateOpening"' in opening)

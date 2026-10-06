@@ -399,6 +399,33 @@ namespace RimroomsAsyncIndustries.Portals
             // imprisoned rides in a carrier's hands under `CargoFailureKey`, which is unchanged, and
             // letting it also qualify here would be two routes for one movement.
             if (traveller.CarriedBy != null) { return "RR_Egress_NotEligible"; }
+
+            // **ANYBODY IN YOUR CUSTODY IS NOT SOMEBODY AT YOUR DOORSTEP, AND THIS WAS A REAL HOLE.**
+            //
+            // A prisoner of the colony keeps their **original faction** -- `HostFaction` is what
+            // becomes yours -- so `traveller.Faction != Faction.OfPlayer` above is **true** for one.
+            // A prisoner who got out of their cell and was neither downed nor in a mental state
+            // therefore passed every clause of this method, and `FindAtDoorstep` would have taken
+            // them: a hostile-faction prisoner was even **preferred**, because that scan returns the
+            // first hostile it finds. **A captured pawn standing near an open gate was transferred
+            // into the coordinate**, which is invariant 17 broken -- *"a prisoner can never cross a
+            // gate"* -- and a real loss of somebody the player had taken and might have recruited.
+            //
+            // `WorldExit.TravellersAt` has always refused a prisoner and a slave for the walk out to
+            // the world, and `CargoFailureKey` only ever let a prisoner cross **in somebody's arms**.
+            // This path was the one crossing decision with no custody clause at all, and it was
+            // written in the same batch that opened outbound crossing at all.
+            //
+            // **A quest lodger is the same class of mistake with a worse outcome:** a guest you are
+            // required to keep safe has their own faction too, so they qualified, and losing one
+            // through a gate fails a quest the player never chose to fail.
+            //
+            // `IsSlave` is already unreachable here -- a slave's faction IS the player's, refused
+            // above -- and it is named anyway, because a rule that holds by accident of another
+            // clause is a rule that stops holding when that clause moves.
+            if (traveller.IsPrisoner || traveller.IsSlave || traveller.IsQuestLodger()
+                || traveller.HostFaction != null)
+            { return "RR_Egress_InYourCustody"; }
             if (!gate.IsDesignated || gate.IsEmergency || gate.KillSwitchThrown ||
                 string.IsNullOrEmpty(gate.PortalOpeningId))
             { return "RR_Egress_NoOpening"; }

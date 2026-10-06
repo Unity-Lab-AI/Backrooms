@@ -187,10 +187,23 @@ check("THE BAND DERIVATION SATURATES RATHER THAN WRAPPING",
       and "% Bands" not in palette,
       "-- the wrap is what made a depth-six coordinate come up Poolrooms on half its seeds, so the "
       "deepest place a branch could reach wore the second shallowest face in the game")
-check("the deepest band is authored out of buildable Core terrain",
-      '"BrokenAsphalt"' in palette and '"PackedDirt"' in palette and '"Mud"' not in palette,
-      "-- Mud declares no Light/Medium/Heavy affordance and a path cost of 14, so a band floored "
-      "in it is a level nothing can be built on and nobody can cross")
+# **TWO MATERIALS FAILED HERE AND THE SECOND FAILURE WAS FOUND BY ANOTHER PROOF.** Mud is
+# unbuildable at path cost 14. `BrokenAsphalt` and `PackedDirt` fixed that and broke
+# `proof-interior-resource.py`, which asserts every palette floor costs something to build --
+# because lifting a floor is how a coordinate pays out, and a natural terrain returns nothing. So
+# the claim is both halves: buildable, AND worth lifting.
+# **THE BAND'S OWN CASE BODY, NOT THE WHOLE FILE.** A plant swapped the Undercroft accent for
+# `PackedDirt` and this claim passed, because `"Concrete"` also appears in the cold-store band and in
+# the file's final fallback. A claim about one band has to read one band -- the same
+# whole-file-containment trap four other instruments fell into this session.
+_under_at = palette.find("default: ")
+_under = palette[_under_at:palette.find("break;", _under_at)] if _under_at >= 0 else ""
+check("the deepest band is authored out of buildable Core terrain that costs something",
+      '"FlagstoneSlate"' in _under and '"Concrete"' in _under
+      and '"Mud"' not in _under and '"BrokenAsphalt"' not in _under
+      and '"PackedDirt"' not in _under,
+      "-- Mud cannot be built on at all; BrokenAsphalt and PackedDirt can, and are worthless when "
+      "lifted, which would make the deepest level in the game the one with nothing in its floors")
 check("the deepest band names itself and the name is translated",
       '"RR_Palette_Undercroft"' in palette
       and "<RR_Palette_Undercroft>" in read(KEYED),

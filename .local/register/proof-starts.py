@@ -46,7 +46,24 @@ def cell(text):
 
 
 # --------------------------------------------------------------------------- Core building sizes
+#
+# **AND WHICH OF THEM MOUNT IN A WALL, WHICH THIS PROOF DID NOT KNOW AND THE GENERATOR DID.**
+#
+# This reported **23 failures** against `RR_AsyncIndustriesStart` -- seven `Cooler` cells and
+# sixteen `Vent` cells -- each saying *"occupies wall cell x,z; the generator throws"*. Every one
+# was a **false red**, and the authority is the installed game: `Cooler` and `Vent` both declare
+# `<canPlaceOverWall>true</canPlaceOverWall>`, which is what lets a player build one into a
+# standing wall.
+#
+# `GenStep_Headquarters` has known this all along and carries the arithmetic: for a thing with that
+# flag it **destroys its own wall and continues**, exactly as the game does, and throws for anything
+# without it. Its own comment records that these twenty wall cells once threw and why they stopped.
+#
+# **So the generator and this proof were two derivations of one Core rule, and the proof was the
+# stale one.** It now reads the same flag from the same place. A cooler in a wall is a cooler doing
+# its job; a bench in a wall is still a def error and still reported.
 sizes = {}
+over_wall = set()
 for path in glob.glob(os.path.join(GAME, "**", "*.xml"), recursive=True):
     try:
         root = ET.parse(path).getroot()
@@ -63,6 +80,9 @@ for path in glob.glob(os.path.join(GAME, "**", "*.xml"), recursive=True):
                 sizes[name.strip()] = (int(numbers[0]), int(numbers[1]))
         else:
             sizes.setdefault(name.strip(), (1, 1))
+        building = node.find("building")
+        if building is not None and (building.findtext("canPlaceOverWall") or "").strip().lower()                 == "true":
+            over_wall.add(name.strip())
 
 # --------------------------------------------------------------------------- our starts
 starts = []
@@ -278,7 +298,7 @@ for start in starts:
         minz = az - (sz - 1) // 2
         for cx in range(minx, minx + sx):
             for cz in range(minz, minz + sz):
-                if (cx, cz) in walls:
+                if (cx, cz) in walls and thing not in over_wall:
                     check("%s %s at %s clears the walls" % (name, thing, str(origin)), False,
                           "-- occupies wall cell %d,%d; the generator throws" % (cx, cz))
                 if (cx, cz) in taken:

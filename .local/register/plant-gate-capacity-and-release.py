@@ -103,7 +103,10 @@ PLANTS = [
      "        internal const string DialPrefix = ", 1),
 
     ("the blind depth is bounded by a literal instead of the constant", DIAL,
-     "            while ((depth + 1) * (depth + 1) <= span && depth < DeepestBlindDial) { depth++; }",
+     # Re-aimed: the bound reads a local now, because `DeepestBlindDial` became a property
+     # delegating to the one place that decides the depth reach. A property read twice in one
+     # derivation is a derivation that can disagree with itself.
+     "            while ((depth + 1) * (depth + 1) <= span && depth < deepest) { depth++; }",
      "            while ((depth + 1) * (depth + 1) <= span && depth < 99) { depth++; }", 1),
 
     ("the dial stops being offered on the gate", GATE,

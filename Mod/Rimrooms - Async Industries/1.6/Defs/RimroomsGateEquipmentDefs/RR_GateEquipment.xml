@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
   <!-- Roles a gate's facility can have equipment linked into. Every def name below was read
@@ -137,7 +137,10 @@
       <li>CommsConsole</li>
     </thingDefNames>
     <maxLinked>3</maxLinked>
-    <displayOrder>1</displayOrder>
+    <!-- 12, appended rather than inserted. This was 1 and COLLIDED with RR_Link_Analysis,
+         which proof-gate-links has been reporting since this role landed. Renumbering the
+         existing roles to make room would reshuffle a pane the player has learned. -->
+    <displayOrder>12</displayOrder>
   </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
 
   <!-- THE OTHER HALF OF THE SAME DIRECTION. Owner, 2026-10-06, same message as the relief
@@ -165,7 +168,8 @@
       <li>TableMachining</li>
     </thingDefNames>
     <maxLinked>3</maxLinked>
-    <displayOrder>2</displayOrder>
+    <!-- 13. The first draft said 2, which collided with RR_Link_Tooling. -->
+    <displayOrder>13</displayOrder>
   </RimroomsAsyncIndustries.Gate.RimroomsGateEquipmentDef>
 
   <!-- A SECOND comms console, not the gate's own. The gate's control console is bound by its

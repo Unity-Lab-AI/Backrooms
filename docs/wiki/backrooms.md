@@ -43,7 +43,7 @@ one room:
 | **Abandoned offices** | Worn carpet under dead strip light |
 | **Cold storage** | Concrete and frost |
 | **Wrong** | Where the place stops agreeing with itself |
-| **Undercroft** | The floor has given up and the ground is coming through |
+| **Undercroft** | Old flagstone under a newer building. You have gone below the thing somebody built |
 
 Which one you get follows depth with some variation, and it is fixed per address — a place looks
 the same every time you return.

@@ -57,6 +57,11 @@ def strip_cs_comments(text):
 
 planner = strip_cs_comments(read(os.path.join(SRC, "Expedition", "CrewPlanner.cs")))
 planner_pane = strip_cs_comments(read(os.path.join(SRC, "UI", "OperationsCrewPlanner.cs")))
+# The two dispatch paths that actually refused a fourth person, read together: the cap was never
+# `MaxCrew`, it was `crew.Count > 3` in these.
+dispatch_cargo = (strip_cs_comments(read(os.path.join(SRC, "Expedition", "ExpeditionCargo.cs")))
+                  + strip_cs_comments(read(os.path.join(SRC, "Expedition",
+                                                        "RimroomsExpeditionComponent.cs"))))
 dispatch_pane = strip_cs_comments(read(os.path.join(SRC, "UI", "OperationsExpeditions.cs")))
 expedition = strip_cs_comments(read(os.path.join(SRC, "Expedition",
                                                  "RimroomsExpeditionComponent.cs")))
@@ -135,11 +140,20 @@ check("the movement check is Core's own capacity",
 # Counted, not merely present. The panel uses the cap twice -- once to print it and once to
 # compare against it -- and a plant that replaced one with a literal `"3"` left the other
 # matching. Every claim in this file that says "is used" now says how many times.
-check("the crew cap comes from one place",
-      "MaxCrew = 3" in planner and planner_pane.count("CrewPlanner.MaxCrew") >= 2,
-      "-- dispatch accepts 1..3; the panel prints it and compares against it, and a literal in "
-      "either place drifts the first time that changes (found %d use site(s))"
-      % planner_pane.count("CrewPlanner.MaxCrew"))
+# **RESTATED 0.12.99-dev, AND THIS CLAIM HAD BEEN FAILING UNRUN SINCE THE CAP WENT.** It asserted
+# `MaxCrew = 3` and that the panel read it from one place. **There is no crew cap.** Owner:
+# *"rememberber pawns can cross gate as they plkease so no max number"*, then *"dont know where 3
+# came from"* -- it was the Async Industries start's staff roster, promoted to a design rule by
+# being written down elsewhere.
+#
+# **So the claim becomes the absence**, which is the only thing left to protect and the thing a
+# later tidy-up would undo: `MaxCrew` is gone rather than set to `int.MaxValue`, and the only bound
+# on a crew is the lower one. A dispatch with nobody in it is not a trip.
+check("THERE IS NO CREW CAP, and the lower bound of one comes from one place",
+      "MaxCrew" not in planner
+      and "crew.Count < 1" in dispatch_cargo
+      and not re.search(r"[Cc]rew\.Count\s*>=?\s*([2-9]|\d\d+)", dispatch_cargo),
+      "-- a cap of int.MaxValue is still a cap somebody reads as a rule; the absence IS the rule")
 
 # --------------------------------------------------------------------------------------------
 print("")

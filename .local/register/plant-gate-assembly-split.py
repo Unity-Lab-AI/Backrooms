@@ -57,16 +57,15 @@ PLANTS = [
     # must read data. The plant edited prose and the instrument rightly saw nothing change. It now
     # swaps the thing the role links, which is the fault it always meant to describe.
     ("the role links comms consoles, which can never build anything", EQUIPMENT,
-     "    <thingDefNames>" + NL
-     + "      <li>TableMachining</li>" + NL
-     + "    </thingDefNames>" + NL
-     + "    <maxLinked>3</maxLinked>" + NL
-     + "    <displayOrder>2</displayOrder>",
-     "    <thingDefNames>" + NL
-     + "      <li>CommsConsole</li>" + NL
-     + "    </thingDefNames>" + NL
-     + "    <maxLinked>3</maxLinked>" + NL
-     + "    <displayOrder>2</displayOrder>", PROOF),
+     # **Anchored on the role's own defName, not on its display order.** The first version pinned
+     # `<displayOrder>2</displayOrder>`, which moved to 13 when the order was found colliding with
+     # RR_Link_Tooling -- so the anchor broke and the suite would have died with PLANT SETUP
+     # BROKEN. A plant must be aimed at what identifies the thing, not at a number beside it.
+     "    <defName>RR_Link_GateAssembly</defName>" + NL
+     + "    <label>assembly bench</label>",
+     "    <defName>RR_Link_GateAssembly</defName>" + NL
+     + "    <label>assembly bench</label>" + NL
+     + "    <thingDefNames><li>CommsConsole</li></thingDefNames>", PROOF),
 
     ("THE ROLE BECOMES A DECLARED LINK NOTHING READS, which changes nothing", SHARES,
      '"RR_Link_GateAssembly"', '"RR_Link_GateAssemblyUnused"', PROOF),
@@ -76,9 +75,9 @@ PLANTS = [
 
     ("maxLinked opens past the owner's four", EQUIPMENT,
      "    <maxLinked>3</maxLinked>" + NL
-     + "    <displayOrder>2</displayOrder>",
+     + "    <!-- 13. The first draft said 2, which collided with RR_Link_Tooling. -->",
      "    <maxLinked>8</maxLinked>" + NL
-     + "    <displayOrder>2</displayOrder>", PROOF),
+     + "    <!-- 13. The first draft said 2, which collided with RR_Link_Tooling. -->", PROOF),
 
     # ================================================= 4. the named cost
     ("A SECTION GETS ALLOCATED TO A BENCH, which is the remainder nowhere can finish", SHARES,

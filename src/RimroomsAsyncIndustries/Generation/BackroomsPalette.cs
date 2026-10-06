@@ -157,20 +157,33 @@ namespace RimroomsAsyncIndustries.Generation
                     look.wallColor = new Color(0.47f, 0.33f, 0.30f);
                     look.nameKey = "RR_Palette_Wrong";
                     break;
-                default: // Undercroft: the floor has given up and the ground is coming through.
+                default: // Undercroft: something older is under the building.
                     //
-                    // **THE DEEPEST BAND, AND THE ONLY ONE THAT IS NOT A ROOM AT ALL.** The five
-                    // above are all places a building could be; this one is what is under a
-                    // building. It is the look a seventh level needed before Spatial tier 6 could
-                    // honestly grant one.
+                    // **THE DEEPEST BAND, AND THE ONLY ONE THAT IS NOT THE SAME BUILDING.** The five
+                    // above are all places this building could be; this is what is beneath it. It is
+                    // the look a seventh level needed before Spatial tier 6 could honestly grant
+                    // one.
                     //
-                    // **`Mud` was the obvious floor and it would have been a defect.** Measured out
-                    // of Core: Mud declares only `Bridgeable` and `WaterproofConduitable`
-                    // affordances and a path cost of **14**. A band floored in it would be a level
-                    // nothing can be built on and nobody can cross at speed -- an unbuildable,
-                    // barely walkable deepest level, found by a player rather than by a build.
-                    // `BrokenAsphalt` carries Light, Medium and Heavy at path cost 0, so the band
-                    // reads as broken ground and behaves as a floor.
+                    // ## TWO MATERIALS WERE TRIED AND BOTH WERE DEFECTS, BOTH FOUND BY MEASURING
+                    //
+                    // **`Mud` was the obvious floor.** Measured out of Core: it declares only
+                    // `Bridgeable` and `WaterproofConduitable` affordances and a path cost of
+                    // **14**. A band floored in it is a level **nothing can be built on and nobody
+                    // can cross at speed** -- and it is a level a player FINDS rather than builds,
+                    // so they would meet it with no warning.
+                    //
+                    // **`BrokenAsphalt` and `PackedDirt` fixed that and broke something else.**
+                    // `proof-interior-resource.py` asserts that **every floor the palette lays cost
+                    // something to build**, because lifting a floor is how a coordinate pays out:
+                    // *"a floor with no cost list returns NOTHING when lifted, however generous the
+                    // fraction"*. Both are natural terrains with no cost list, so the deepest level
+                    // in the game would have been the one whose floors are worthless. A band is not
+                    // only a look; it is also a thing the player can take home.
+                    //
+                    // **So flagstone**, which is what an undercroft actually has: `FlagstoneSlate`
+                    // costs four slate blocks and `Concrete` one steel, both buildable, both worth
+                    // lifting. The story is better for it -- you have gone below the building and
+                    // found an older one -- and it cost no new content.
                     //
                     // **No floor colour, deliberately.** The other bands tint a carpet or a tile,
                     // and the colour grid is honoured by terrain that expects to be coloured.
@@ -178,8 +191,8 @@ namespace RimroomsAsyncIndustries.Generation
                     // exactly the failure this file already carries a long comment about, where
                     // `Named<TerrainDef>("Carpet")` returned null and every carpet band fell
                     // through to a fallback that looked deliberate for versions.
-                    look.floor = Named<TerrainDef>("BrokenAsphalt") ?? look.floor;
-                    look.accent = Named<TerrainDef>("PackedDirt") ?? look.floor;
+                    look.floor = Named<TerrainDef>("FlagstoneSlate") ?? look.floor;
+                    look.accent = Named<TerrainDef>("Concrete") ?? look.floor;
                     look.floorColor = null;
                     look.wallStuff = ThingDefOf.WoodLog;
                     look.wallColor = new Color(0.30f, 0.31f, 0.26f);

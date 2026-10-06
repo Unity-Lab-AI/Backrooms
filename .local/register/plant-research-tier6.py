@@ -102,9 +102,23 @@ PLANTS = [
      "            return band >= Bands ? Bands - 1 : band;", "            return band % Bands;",
      PROOF),
 
+    # Re-aimed twice over, and the second time is the interesting one. Mud was rejected for being
+    # unbuildable; `BrokenAsphalt` replaced it and was rejected by ANOTHER proof for costing nothing
+    # when lifted, which would make the deepest level the one with worthless floors. The band is
+    # flagstone now, and both rejected materials are worth planting.
     ("MUD COMES BACK AS THE DEEPEST FLOOR: unbuildable, path cost 14, found rather than built",
-     PALETTE, 'look.floor = Named<TerrainDef>("BrokenAsphalt") ?? look.floor;',
+     PALETTE, 'look.floor = Named<TerrainDef>("FlagstoneSlate") ?? look.floor;',
      'look.floor = Named<TerrainDef>("Mud") ?? look.floor;', PROOF),
+
+    # **ANCHORED ON BOTH LINES, because `Concrete` is ALSO the machinery band's accent.** The first
+    # version replaced the first occurrence and so edited machinery, leaving the band it claimed to
+    # test untouched -- a plant that proves nothing while reporting MISSED.
+    ("a worthless natural floor comes back, so the deepest level pays nothing when lifted",
+     PALETTE,
+     'look.floor = Named<TerrainDef>("FlagstoneSlate") ?? look.floor;' + NL
+     + '                    look.accent = Named<TerrainDef>("Concrete") ?? look.floor;',
+     'look.floor = Named<TerrainDef>("FlagstoneSlate") ?? look.floor;' + NL
+     + '                    look.accent = Named<TerrainDef>("PackedDirt") ?? look.floor;', PROOF),
 
     ("the deepest band loses its keyed string and renders a raw key on the coordinate", KEYED,
      "<RR_Palette_Undercroft>", "<RR_Palette_UndercroftUnused>", PROOF),

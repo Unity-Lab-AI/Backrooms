@@ -239,14 +239,17 @@ PLANTS = [
      + "        /// <summary>" + CHR_NL
      + "        /// A cell in this room that will take this footprint", PROOF),
 
+    # Re-aimed: the lines around the call moved when forbidding was added. The claim is the ORDER
+    # -- a thing that failed to spawn is not an object anybody can read, so marking it first spends
+    # one of the room's few tells on nothing -- so the anchor is the two statements whose order it
+    # is about.
     ("MARKING MOVES ABOVE THE SPAWN, spending a tell on a thing that never appeared", BUILDER,
-     "            GenSpawn.Spawn(thing, cell, map, rotation);" + CHR_NL
-     + "            if (!thing.Spawned || thing.Map != map) { return null; }" + CHR_NL
-     + "            thing.SetForbidden(false, false);",
+     "            thing.SetForbidden(true, false);" + CHR_NL
+     + "            // **The dressing is where the owner's *\"items and equipment and production benches\"*",
      "            FixtureTellService.Mark(thing, coordinate, room, slot);" + CHR_NL
-     + "            GenSpawn.Spawn(thing, cell, map, rotation);" + CHR_NL
-     + "            if (!thing.Spawned || thing.Map != map) { return null; }" + CHR_NL
-     + "            thing.SetForbidden(false, false);", PROOF),
+     + "            thing.SetForbidden(true, false);" + CHR_NL
+     + "            // **The dressing is where the owner's *\"items and equipment and production benches\"*",
+     PROOF),
 
     # ================================================= the same register, applied to events
     ("AN EVENT LOSES ITS TRACE", EVENTS,
@@ -297,6 +300,13 @@ PLANTS = [
 # re-aimed. `tools/check-plant-anchors.py` parses the literal and reported
 # `has no readable PLANTS table` -- a suite the battery cannot inspect is a suite that rots
 # silently, which is the reason that checker exists. The table is a plain literal again.
+
+
+for _plant in PLANTS:
+    if len(_plant) != 5:
+        sys.stderr.write("PLANT LIST MALFORMED: %r has %d field(s), not 5" + chr(10)
+                         % (_plant[0], len(_plant)))
+        sys.exit(2)
 
 
 _RR_SENTINEL = os.path.join(".local", "register",

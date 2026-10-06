@@ -475,50 +475,22 @@ PLANTS = [
      "                if (!previous.TryGetValue(cursor, out predecessor)) { return new List<IntVec3>(); }",
      '                if (!previous.TryGetValue(cursor, out predecessor)) { throw new InvalidOperationException("RR_Generation_ContentPlacementFailed"); }'),
 
+    # **RE-AIMED 0.12.99-dev: both of these quote code that gained an argument.**
+    # `TrySpawnNativeConduit` takes an exempt footprint now, for the void-terrain rule, so these
+    # anchors stopped matching and `check-plant-anchors.py` reported both suites as ones that would
+    # die with PLANT SETUP BROKEN. The faults they plant are unchanged: the THROWING form of the
+    # call, which can cost the whole coordinate over one conduit.
     ("the known-consumer routes go back to the throwing placement", GEN,
-     "                // An empty route means this consumer could not be reached. Skipped, not fatal:" + chr(10)
-     + "                // the same rule the stray pass and the power validation already follow." + chr(10)
-     + "                for (int step = 0; step < route.Count; step++)" + chr(10)
-     + "                {" + chr(10)
-     + "                    if (wiredCells.Count >= MaxNativePowerConduits) { break; }" + chr(10)
-     + "                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);",
-     "                for (int step = 0; step < route.Count; step++)" + chr(10)
-     + "                {" + chr(10)
-     + "                    SpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);"),
+     "                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells," + NL
+     + "                        consumer);",
+     "                    SpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells," + NL
+     + "                        consumer);"),
 
-    ("one of the two cap guards goes", GEN,
-     "                if (wiredCells.Count >= MaxNativePowerConduits) { break; }" + chr(10)
-     + "                List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells, consumer);",
-     "                List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells, consumer);"),
-
-    # ------------------------------------------ 0.12.53-dev: the conduit blowout
-    ("THE WHOLE-ROOM CONDUIT CARPET COMES BACK", GEN,
-     "            return wiredCells;" + chr(10) + "        }",
-     "            foreach (IntVec3 cell in consumerFootprints.SelectMany(room => room.Cells)" + chr(10)
-     + "                .Distinct()) { SpawnNativeConduit(map, voidFloor, conduitDef, cell, wiredCells); }" + chr(10)
-     + "            return wiredCells;" + chr(10) + "        }"),
-
-    ("the grid stops handing back what it wired", GEN,
-     "        private static HashSet<IntVec3> SpawnNativePowerNetwork(Map map, TerrainDef voidFloor,",
-     "        private static HashSet<IntVec3> SpawnNativePowerNetworkUnused(Map map, TerrainDef voidFloor,"),
-
-    ("THE STRAY PASS RUNS BEFORE THE DRESSING EXISTS", GEN,
-     "                    ConnectStrayConsumers(map, coordinate, voidFloor, conduitDef, wiredCells, generator))" + chr(10),
-     ""),
-
-    ("the stray pass stops sweeping for power consumers", GEN,
-     "                    thing.TryGetComp<CompPowerTrader>() != null)" + chr(10)
-     + "                .OrderBy(thing => thing.Position.x).ThenBy(thing => thing.Position.z)",
-     "                    false)" + chr(10)
-     + "                .OrderBy(thing => thing.Position.x).ThenBy(thing => thing.Position.z)"),
-
-    # The call line now exists in BOTH wiring loops, so it is anchored on the `return` that only
-    # the stray pass uses -- the consumer loop uses `break`. Duplicate-string trap, again.
     ("THE STRAY PASS STARTS THROWING AND CAN COST THE COORDINATE", GEN,
-     "                    if (wiredCells.Count >= MaxNativePowerConduits) { capped = true; break; }" + chr(10)
-     + "                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);",
-     "                    if (wiredCells.Count >= MaxNativePowerConduits) { capped = true; break; }" + chr(10)
-     + "                    SpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells);"),
+     "                    TrySpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells," + NL
+     + "                        consumer.OccupiedRect());",
+     "                    SpawnNativeConduit(map, voidFloor, conduitDef, route[step], wiredCells," + NL
+     + "                        consumer.OccupiedRect());"),
 
     ("the non-throwing conduit form disappears", GEN,
      "        private static void TrySpawnNativeConduit(Map map, TerrainDef voidFloor, ThingDef conduitDef,",

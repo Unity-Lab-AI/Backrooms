@@ -97,9 +97,13 @@ PLANTS = [
      "                    if (bill == null || bill.suspended) { continue; }",
      "                    if (bill == null) { continue; }"),
 
+    # Re-aimed: `AvailableOnNow` gained a second clause when the assembly became four sections --
+    # it also asks whether the gate would credit THIS bench. The fault being planted is unchanged.
     ("THE RECIPE IS AVAILABLE ON A BENCH DOING ITS DAY JOB", CONSOLE,
-     "            return gate != null && !gate.AssemblyComplete && console.IsGateControl;",
-     "            return gate != null && !gate.AssemblyComplete;"),
+     "            return gate != null && !gate.AssemblyComplete && console.IsGateControl" + chr(10)
+     + "                && gate.IsBoundAssemblyBench(thing);",
+     "            return gate != null && !gate.AssemblyComplete" + chr(10)
+     + "                && gate.IsBoundAssemblyBench(thing);"),
 
     ("spin-up stops caring whether the installations were handed over", SPINUP,
      "            if (spinUpStation != null && !spinUpStation.IsGateControl)" + chr(10)

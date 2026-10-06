@@ -118,9 +118,16 @@ PLANTS = [
      "if (traveller.Faction != Faction.OfPlayer || !traveller.IsColonist)",
      "if (traveller.Faction != Faction.OfPlayer)", 1),
 
-    ("autonomous non-player traversal stops being constant false", TRAVERSAL,
-     "AutonomousNonPlayerTraversalPermitted = false",
-     "AutonomousNonPlayerTraversalPermitted = true", 1),
+    # **RE-AIMED 0.12.99-dev: the constant it flipped does not exist any more.** The owner rewrote
+    # invariant #1 and `AutonomousNonPlayerTraversalPermitted` was DELETED rather than left at
+    # false, so this plant could not even be applied -- `check-plant-anchors.py` reported it as a
+    # suite that would die with PLANT SETUP BROKEN. The claim it serves was restated to *the
+    # constant is gone*, so the fault to plant is its RETURN.
+    ("the retired traversal constant comes back", TRAVERSAL,
+     "        public static string OutboundCrossingFailureKey(Pawn traveller, CompRimroomsGate gate)",
+     "        public const bool AutonomousNonPlayerTraversalPermitted = false;" + chr(10)
+     + "        public static string OutboundCrossingFailureKey(Pawn traveller, CompRimroomsGate gate)",
+     1),
 
     ("the refusal has no keyed string, so it would show the player an identifier", KEYED,
      "<RR_PortalCrossing_PackNotCleared>", "<RR_PortalCrossing_PackNotClearedTypo>", 1),

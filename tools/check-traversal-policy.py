@@ -120,12 +120,17 @@ def main():
     # ---------------------------------------------------------------- rules 4, 5 and 6, the bounds
     if policy_body:
         inbound = policy_body.split("IncursionFailureKey", 1)[-1].split("OutboundCrossingFailureKey", 1)[0]
+        # **WORD-BOUNDED, BECAUSE A SUBSTRING TEST PASSES ON A RENAME.** A plant renamed
+        # `IncursionSpentThisOpening` to `IncursionSpentThisOpeningUnused` -- gutting the
+        # once-per-opening bound -- and this rule did not notice, because the new name CONTAINS the
+        # old one. That is the same failure three other instruments in this battery have now had,
+        # and it is always this shape: an `in` test against a name.
         for fragment, why in (
                 ("Band.Hostile", "the Hostile band"),
                 ("PortalWindowTier", "a window tier"),
                 ("IncursionSpentThisOpening", "once per opening"),
                 ("FitFailureKey", "fit")):
-            if fragment not in inbound:
+            if not re.search(r"\b%s\b" % re.escape(fragment).replace(r"\.", r"\."), inbound):
                 problems.append("inbound crossing no longer bounds on %s. Nothing in the outbound "
                                 "direction may loosen inbound: being attacked at home is more severe "
                                 "than losing a remote stockpile" % why)
@@ -137,6 +142,35 @@ def main():
         if "FitFailureKey" not in outbound:
             problems.append("outbound crossing does not bound on fit, so a body too large for the "
                             "opening could walk out through it")
+
+        # **THE CUSTODY CLAUSE, AND IT WAS MISSING WHEN OUTBOUND CROSSING SHIPPED.**
+        #
+        # A prisoner of the colony keeps their ORIGINAL faction -- `HostFaction` is what becomes
+        # yours -- so the `Faction != Faction.OfPlayer` clause that makes this method "about
+        # somebody who is not ours" is **true for a prisoner**. One who got out of their cell and
+        # was neither downed nor in a mental state passed every other clause, and the doorstep scan
+        # PREFERS a hostile faction, so a captured raider near an open gate was transferred into the
+        # coordinate. Invariant 17: *"a prisoner can never cross a gate."*
+        #
+        # A quest lodger is the same mistake with a worse outcome: a guest you are required to keep
+        # safe also has their own faction, and losing one fails a quest the player never chose to
+        # fail.
+        #
+        # Every clause is asserted by name rather than as a set, so removing any single one is
+        # reported for what it is. `IsSlave` is unreachable through the faction test today and is
+        # still required here, because a rule holding by accident of another clause stops holding
+        # when that clause moves.
+        for clause, why in (
+                ("traveller.IsPrisoner", "a prisoner keeps their own faction, so nothing else here "
+                                         "excludes one, and invariant 17 forbids the crossing"),
+                ("traveller.IsSlave", "unreachable today through the faction test, and required so "
+                                      "the rule does not hold by accident"),
+                ("traveller.IsQuestLodger()", "a guest you must keep safe would walk out and fail a "
+                                              "quest the player never chose to fail"),
+                ("traveller.HostFaction != null", "the general form: anybody held by this colony is "
+                                                  "in its custody whatever their own faction says")):
+            if clause not in outbound:
+                problems.append("outbound crossing does not refuse %s -- %s" % (clause, why))
 
     # ---------------------------------------------------------------- rules 7, 8 and 9, transfers
     for relative, path in ((INCURSION, "inbound"), (EGRESS, "outbound")):

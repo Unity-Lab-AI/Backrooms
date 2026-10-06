@@ -256,7 +256,11 @@
       <li><thing>Battery</thing><cell>(25, 0, 26)</cell><rotation>0</rotation></li>
       <li><thing>ChessTable</thing><stuff>WoodLog</stuff><cell>(29, 0, 11)</cell><rotation>0</rotation></li>
       <li><thing>ChessTable</thing><stuff>WoodLog</stuff><cell>(32, 0, 11)</cell><rotation>0</rotation></li>
-      <li><thing>CommsConsole</thing><cell>(32, 0, 32)</cell><rotation>2</rotation></li>
+      <!-- (32, 0, 33), not 32. The owner's own position, converted from their save by the layout
+           offset of (120,120): "thats where i want them so fix there spawn position". Three
+           records say 33 - the archive entry written at conversion time, proof-starts and
+           plant-startplacement - and only this line said 32, so this line was the typo. -->
+      <li><thing>CommsConsole</thing><cell>(32, 0, 33)</cell><rotation>2</rotation></li>
       <li><thing>Cooler</thing><cell>(21, 0, 51)</cell><rotation>0</rotation></li>
       <li><thing>Cooler</thing><cell>(22, 0, 51)</cell><rotation>0</rotation></li>
       <li><thing>Cooler</thing><cell>(23, 0, 51)</cell><rotation>0</rotation></li>

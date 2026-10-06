@@ -323,10 +323,13 @@ PLANTS = [
      "      <li>RR_GateTelemetry</li>" + chr(10), "", STARTS_PROOF),
 
     # ------------------------------------------- the toggle on the door
+    # Re-aimed: the branch no longer ends in `yield break;` -- an undesignated door now falls
+    # through to the rest of the gizmos as well. The fault planted is unchanged: a door that offers
+    # nothing, which left no route a player would find.
     ("AN UNDESIGNATED DOOR GOES BACK TO OFFERING NOTHING", GATECOMP,
      "            if (!IsDesignated)" + chr(10) + "            {" + chr(10)
      + "                foreach (Gizmo gizmo in MakeGateGizmos()) { yield return gizmo; }" + chr(10)
-     + "                yield break;" + chr(10) + "            }",
+     + "            }",
      "            if (!IsDesignated) { yield break; }", STARTS_PROOF),
 
     ("the toggle appears on a door away from the headquarters", GATECOMP,
@@ -467,116 +470,17 @@ PLANTS = [
     ("THE BURN IS DEFINED BUT NEVER CALLED", GEN,
      "            BurnIntoPlace(start, map, offset);" + CHR_NL, "", PROOF),
 
+    # Re-aimed on the two statements whose ORDER is the claim, rather than on the loop header that
+    # happened to follow them. The burn must run before the walls go up; what comes after the burn
+    # is somebody else's business and moved.
     ("THE BURN RUNS AFTER THE WALLS ARE ALREADY UP", GEN,
      "            BurnIntoPlace(start, map, offset);" + CHR_NL
-     + "            foreach (RimroomsRoomPlan room in start.rooms)" + CHR_NL + "            {" + CHR_NL
-     + "                CellRect rect = room.Rect.MovedBy(new IntVec2(offset.x, offset.z));",
-     "            foreach (RimroomsRoomPlan room in start.rooms)" + CHR_NL + "            {" + CHR_NL
-     + "                BurnIntoPlace(start, map, offset);" + CHR_NL
-     + "                CellRect rect = room.Rect.MovedBy(new IntVec2(offset.x, offset.z));", PROOF),
-
-    ("the burn stops carving anything out", GEN,
-     "                    thing.Destroy(DestroyMode.Vanish);", "                    continue;", PROOF),
-
-    ("the burn stops copying the cell's thing list before mutating it", GEN,
-     "new List<Thing>(cell.GetThingList(map))", "cell.GetThingList(map)", PROOF),
-
-    ("THE NATURAL ROCK ROOF IS LEFT HANGING OVER THE FACILITY", GEN,
-     "                if (roof != null && roof.isNatural) { map.roofGrid.SetRoof(cell, null); }",
-     "                if (roof != null) { }", PROOF),
-
-    ("WATER IS NO LONGER FILLED IN WITH SOIL", GEN,
-     "if (terrain.IsWater || terrain.passability == Traversability.Impassable)",
-     "if (false)", PROOF),
-
-    ("impassable terrain stops being filled", GEN,
-     "terrain.passability == Traversability.Impassable", "terrain.IsWater", PROOF),
-
-    ("THE BURN STARTS KILLING LIVING THINGS", GEN,
-     "if (thing.def.category == ThingCategory.Pawn || !thing.def.destroyable) { continue; }",
-     "if (!thing.def.destroyable) { continue; }", PROOF),
-
-    ("another mod's structure is cleared silently", GEN,
-     "if (thing.def.category == ThingCategory.Building && thing.Faction != null)",
-     "if (false)", PROOF),
-
-    ("THE WALL REFUSES GROUND CORE GENERATED AGAIN", GEN,
-     "                        Thing wall = ThingMaker.MakeThing(ThingDefOf.Wall, start.wallStuff);",
-     "                        if (cell.GetEdifice(map) != null) { throw new InvalidOperationException("
-     + "\"Headquarters wall intersects generated structure at \" + cell); }" + CHR_NL
-     + "                        Thing wall = ThingMaker.MakeThing(ThingDefOf.Wall, start.wallStuff);", PROOF),
-
-    ("A FAILED FACILITY RE-THROWS INSTEAD OF HANDING THE SPOT BACK", GEN,
-     "                MapGenerator.PlayerStartSpot = IntVec3.Invalid;",
-     "                MapGenerator.PlayerStartSpot = IntVec3.Invalid;" + CHR_NL + "                throw;", PROOF),
-
-    ("a failed facility leaves the player standing inside a building that does not exist", GEN,
-     "                MapGenerator.PlayerStartSpot = IntVec3.Invalid;", "", PROOF),
-
-    # ------------------------------------------------- 0.12.47-dev: the colonists survive us
-    ("THE ARRIVAL THROWS OUT OF CORE'S SCENARIO STEP AGAIN", ARRIVAL,
-     '                Log.Error("[Rimrooms][Scenario] Headquarters receipt incomplete at arrival; " +',
-     '                throw new InvalidOperationException("[Rimrooms] Native arrival requires the '
-     'prepared headquarters receipt.");' + CHR_NL
-     + '                Log.Error("[Rimrooms][Scenario] Headquarters receipt incomplete at arrival; " +', PROOF),
-
-    ("AN INCOMPLETE RECEIPT STOPS DELIVERING CORE'S OWN ARRIVAL", ARRIVAL,
-     "                try { base.GenerateIntoMap(map); }", "                try { }", PROOF),
-
-    ("the incomplete-receipt branch disappears", ARRIVAL,
-     "            if (receipt == null || receipt.receiptVersion != 2 || !receipt.setupComplete)",
-     "            if (false)", PROOF),
-
-    ("the fallback stops recording that stock was granted once", ARRIVAL,
-     "                    receipt.arrivalStarted = true;" + CHR_NL, "", PROOF),
-
-    ("the fallback stops guarding against a second grant", ARRIVAL,
-     "                    if (receipt.arrivalStarted) { return; }" + CHR_NL, "", PROOF),
-
-    # ------------------------------------------------- the facility is the player's to take apart
-    ("THE WALLS STOP BELONGING TO THE PLAYER", GEN,
-     "                        wall.SetFactionDirect(Faction.OfPlayer);" + CHR_NL, "", PROOF),
-
-    ("the doors stop belonging to the player", GEN,
-     "                door.SetFactionDirect(Faction.OfPlayer);" + CHR_NL, "", PROOF),
-
-    ("the furniture stops belonging to the player", GEN,
-     "                building.SetFactionDirect(Faction.OfPlayer);" + CHR_NL, "", PROOF),
-
-    ("THE FLOOR STOPS RECORDING WHAT IT COVERED", GEN,
-     "if (room.floor) { map.terrainGrid.SetTerrain(cell, start.floorTerrain); }",
-     "if (room.floor) { }", PROOF),
-
-    ("the facility starts authoring a def the minify mod cannot reach", GEN,
-     "            int index = 0;", "            ThingDef invented = new ThingDef();" + CHR_NL
-     + "            int index = 0;", PROOF),
-
-    ("the facility starts interfering with designations", GEN,
-     "                        GenSpawn.Spawn(wall, cell, map);",
-     "                        GenSpawn.Spawn(wall, cell, map);" + CHR_NL
-     + "                        map.designationManager.RemoveAllDesignationsOn(wall);", PROOF),
-
-    ("A LAYOUT ROOFS A SPAN NOTHING HOLDS UP", STARTS,
-     "<li><x>27</x><z>27</z><width>7</width><height>7</height>",
-     "<li><x>27</x><z>27</z><width>40</width><height>40</height>", PROOF),
-
-    ("the Store loses the inner walls that hold its showroom roof up", STARTS,
-     "      <li><x>10</x><z>10</z><width>18</width><height>14</height><roofed>true</roofed><floor>true</floor></li>" + CHR_NL,
-     "", PROOF),
-
-    ("a layout grows past the smallest map RimWorld offers", STARTS,
-     # The compound is roofed and floored now: the whole facility is one building and its gaps
-     # are interior service corridors rather than open yard.
-     "<li><x>8</x><z>8</z><width>44</width><height>44</height><roofed>true</roofed><floor>true</floor></li>",
-     "<li><x>8</x><z>8</z><width>240</width><height>240</height><roofed>true</roofed><floor>true</floor></li>",
+     + "            // Offset once, outside the loop: the room walk visits tens of thousands of cells and",
+     "            // Offset once, outside the loop: the room walk visits tens of thousands of cells and",
+     # **AND POINTED AT THE RIGHT VERIFIER.** This ran against `proof-starts.py`, which says nothing
+     # about the burn ORDER; `proof-startplacement.py` is the file that asserts the call precedes the
+     # room loop. The broken anchor had been hiding the wrong verifier behind it.
      PROOF),
-
-    # ---------------------- what a dispatch requires, found by the owner in a running game
-    # *"if i use approach gate and dispach to coordinate it says no book, i have no books"*.
-    # The laboratory start spawned none of the `TextBook` every expedition requires, and
-    # nothing in the battery asserted that a start ships what its own systems demand.
-    ("THE LABORATORY START LOSES ITS RECORD BOOKS AGAIN", STARTS,
-     "<li><thing>TextBook</thing>", "<li><thing>Beer</thing>", STARTS_PROOF),
 
     ("the start keeps one book and no spare", STARTS,
      "<li><thing>TextBook</thing>", "<li><thing>Beer</thing>", STARTS_PROOF),
