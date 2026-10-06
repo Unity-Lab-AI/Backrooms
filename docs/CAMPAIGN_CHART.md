@@ -169,9 +169,10 @@ it is kept, because §1.2 needs alternate routes through the tree as much as thr
 | **3 — Remote operations** | Support more than one site; work beyond headquarters |
 | **4 — Deep operations** | Combine known techniques; extend reach |
 | **5 — The settled branch** | Service, read and leave a space on the branch's own terms |
+| **6 — Deep Reach** | One project, and it is the top of the whole tree |
 
-**Tier 5 was added at 0.12.99-dev and it is RAGGED ON PURPOSE.** Four branches reach it, five do
-not, and every absence is a finding recorded beside the tier it is absent from in
+**Tiers 5 and 6 were added at 0.12.99-dev and the top is RAGGED ON PURPOSE.** Four branches reach
+band 5, one reaches band 6, and five reach neither; and every absence is a finding recorded beside the tier it is absent from in
 `RR_CompanyProjects.xml`. The sweep that produced it is
 [`research/RESEARCH_T5_T6_SWEEP.md`](research/RESEARCH_T5_T6_SWEEP.md), and the bar it applied is
 the one this chart implies: **a tier may only exist where a player could name the effect in one
@@ -190,13 +191,13 @@ same thing built twice.
 | **Facilities and power** | all six: reserve, aperture, standby, sites, dialling, servicing | **5** | — |
 | **Fieldcraft and medicine** | five: drill, rescue, relief watch, way home, decompression | 4 | its tier-5 candidate was the crew cap, and **there is no cap** |
 | **Measurement and evidence** | all six: second reading, corroboration, standards, rapid survey, statements, the trained eye | **5** | — |
-| **Spatial mapping and topology** | all six: atlas, alternate exits, known address, coordinate reading, surface reading, the near exit | **5** | — |
+| **Spatial mapping and topology** | all seven: atlas, alternate exits, known address, coordinate reading, surface reading, the near exit, deep reach | **6** | — |
 | **Entities and containment** | all six: early warning, detection, containment, space discipline, steady nerve, quiet protocol | **5** | — |
 | **Communications and logistics** | four: standing orders, relays, forward dispatch, unattended delivery | 3 | every Procurement knob is claimed; what is left are safety bounds no player reaches |
 | **Commerce and organisation** | five: terms, leases, recruitment, site economies, open market | 4 | its remaining knobs **became player settings**, and a project over a slider you already own is two controls fighting |
 | **Transport and orbital support** | none, deliberately | — | **no tier 0 by design.** DLC-optional throughout, and a top on an empty branch is incoherent |
 
-**Forty-two projects across nine branches and six bands.** The gate branch is the spine and was
+**Forty-three projects across nine branches and seven bands.** The gate branch is the spine and was
 completed first, at 0.10.9-dev; the eight others were written between 0.12.5-dev and 0.12.99-dev,
 with four tier-3 projects deleted along the way for promising something and changing nothing.
 

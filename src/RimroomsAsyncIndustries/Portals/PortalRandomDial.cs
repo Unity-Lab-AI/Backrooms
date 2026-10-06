@@ -45,15 +45,21 @@ namespace RimroomsAsyncIndustries.Portals
         internal const string DialPrefix = "unknown:";
 
         /// <summary>
-        /// Deepest a blind dial reaches.
+        /// Deepest a blind dial reaches: **whatever a found door reaches for this branch**.
         ///
-        /// Six, matching the natural-doorway cap the owner set — *"MaximumNaturalDepth 3 to 6"*.
         /// A blind dial is not a way to skip the depth ladder; it is a way to pick a rung at
-        /// random. The draw is weighted toward the shallow end because a player who dials into a
-        /// depth-six space with a starting crew has not had an adventure, they have had an
-        /// accident.
+        /// random. The draw is weighted toward the shallow end because a player who dials into the
+        /// deepest space with a starting crew has not had an adventure, they have had an accident.
+        ///
+        /// **THIS WAS ITS OWN CONSTANT SIX, with a comment saying it matched the natural cap.** A
+        /// comment is not a derivation. Spatial tier 6 earns a seventh level, and a copy of the
+        /// number would have shipped a branch that could walk to depth seven while a blind dial
+        /// still refused to send anybody there — the second place agreeing with the first until the
+        /// day the first one moves, which is this project's most expensive recurring defect.
+        /// **When a second place needs the same answer, extract; never copy.**
         /// </summary>
-        internal const int DeepestBlindDial = 6;
+        internal static int DeepestBlindDial
+        { get { return NaturalFrontierService.NaturalDepthReach(); } }
 
         /// <summary>How many unknown addresses this branch has dialled.</summary>
         internal static int DialledCount(RimroomsCampaignComponent campaign)
@@ -92,11 +98,14 @@ namespace RimroomsAsyncIndustries.Portals
         /// </summary>
         internal static int BlindDepth(RimroomsCampaignComponent campaign, int index)
         {
+            // Asked once and held, because the reach is now a method rather than a constant and a
+            // property read twice in one derivation is a derivation that can disagree with itself.
+            int deepest = DeepestBlindDial;
             int draw = CampaignSeed.Derive(campaign.BranchSeed, "dial:depth:" + index, 1);
             if (draw < 0) { draw = ~draw; }
-            int span = draw % (DeepestBlindDial * DeepestBlindDial);
+            int span = draw % (deepest * deepest);
             int depth = 1;
-            while ((depth + 1) * (depth + 1) <= span && depth < DeepestBlindDial) { depth++; }
+            while ((depth + 1) * (depth + 1) <= span && depth < deepest) { depth++; }
             return depth;
         }
     }

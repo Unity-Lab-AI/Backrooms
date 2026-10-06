@@ -16,7 +16,7 @@
 
   BOTH LAYOUT MECHANISMS ARE EMITTED because they are different mechanisms. Vanilla uses
   researchViewX / researchViewY; every research mod derives its own layout from the
-  prerequisite graph. The coordinates give vanilla nine columns by six bands, and the
+  prerequisite graph. The coordinates give vanilla nine columns by seven bands, and the
   graph is correct so each mod draws the same shape its own way. Columns are ragged on
   purpose: four branches have nothing honest to put in the top band, and the company file
   records the reason for each absence beside the tier it is absent from.
@@ -497,6 +497,20 @@ Roughly one door in eight leads onward rather than one in twelve. **The limit of
     <researchViewY>5.50</researchViewY>
     <prerequisites>
       <li>RR_Mirror_RR_Spatial_SurfaceReading</li>
+    </prerequisites>
+  </ResearchProjectDef>
+
+  <ResearchProjectDef>
+    <defName>RR_Mirror_RR_Spatial_DeepFrontier</defName>
+    <label>Deep Reach</label>
+    <description>Read the whole chain rather than one space at a time, and work out which of the doors nobody has opened sits under another level entirely.\n\nFound doors lead one level further than they ever have: a seventh, which looks like nothing above it and is the last one the Backrooms will hand over for free. A blind dial reaches it too. Going further than seven is still a machine's job, and always will be.</description>
+    <baseCost>8000</baseCost>
+    <techLevel>Ultra</techLevel>
+    <tab>RR_Research</tab>
+    <researchViewX>5.00</researchViewX>
+    <researchViewY>6.50</researchViewY>
+    <prerequisites>
+      <li>RR_Mirror_RR_Spatial_NearExit</li>
     </prerequisites>
   </ResearchProjectDef>
 

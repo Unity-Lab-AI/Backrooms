@@ -108,6 +108,10 @@ namespace RimroomsAsyncIndustries.Portals
         /// onward. Going further is a machine's job, which is the convergence this start needs:
         /// the place gives you enough to learn on and then asks you to become an engineer.
         ///
+        /// **Six is the FREE reach. A branch can earn a seventh** — see
+        /// <see cref="DeepFrontierNaturalDepth"/>, and read the reach through
+        /// <see cref="NaturalDepthReach"/> rather than from this constant.
+        ///
         /// **This caps going DEEPER, never coming OUT.** The way-out draw runs first and is not
         /// subject to this, because a crew standing at the deepest band must always be able to
         /// find a door that leads home. Capping both would have turned it into a trap, and
@@ -118,6 +122,55 @@ namespace RimroomsAsyncIndustries.Portals
         /// has earned, exactly as before.
         /// </summary>
         internal const int MaximumNaturalDepth = 6;
+
+        /// <summary>
+        /// The deepest a found door leads for a branch that has earned it. **Seven.**
+        ///
+        /// **Spatial tier 6: `RR_Cap_DeepFrontier`**, the top of the whole tree, and the only
+        /// project in it that moves a number this file calls a cap.
+        ///
+        /// ## This retires a restraint rather than slipping past one
+        ///
+        /// `proof-research-tier4.py` asserted *"THE NATURAL DEPTH REACH IS NOT RESEARCH-DRIVEN,
+        /// WHATEVER ITS VALUE"*, and that claim was correct for every tier up to four. **The owner
+        /// approved a Spatial tier 6 whose subject is exactly this number**, so the restraint is
+        /// restated rather than deleted and rather than quietly circumvented: what it always
+        /// protected is that **the reach is BOUNDED and that one place decides it**, and both are
+        /// still true and still asserted. A capability raises the bound by one; nothing makes it
+        /// unbounded, and nothing else in the mod gets to have an opinion about it.
+        ///
+        /// ## Why one, and why seven is a real place rather than a bigger number
+        ///
+        /// A seventh level had no look of its own until 0.12.99-dev: `BackroomsPalette.Bands` was
+        /// five, and the band derivation wrapped, so depth seven would have come up Poolrooms — the
+        /// second shallowest face in the game on the deepest space in it. **The sweep called that a
+        /// content question before a research question and it was right.** The sixth band
+        /// (`RR_Palette_Undercroft`) and the saturating band derivation are what make the seventh
+        /// level somewhere, and this constant is only honest because they exist.
+        /// </summary>
+        internal const int DeepFrontierNaturalDepth = 7;
+
+        /// <summary>
+        /// How deep found doors lead for this branch, as it currently stands.
+        ///
+        /// **THE ONE PLACE THAT DECIDES IT, and that is the whole point of the method existing.**
+        /// Three places read the reach: the refusal in <see cref="Discover"/>, the blind dial's
+        /// deepest rung, and the hint that tells a branch it has gone as deep as found doors go.
+        /// The dial carried **its own constant six** with a comment saying it matched this one —
+        /// two derivations of one rule, which is the defect this project keeps meeting, and it would
+        /// have shipped a branch that could walk to depth seven while a blind dial still refused to
+        /// send anybody there and a hint still claimed six was the end.
+        ///
+        /// A null campaign answers with the unearned reach: not knowing what a branch has learned is
+        /// not the same as knowing it has learned this.
+        /// </summary>
+        internal static int NaturalDepthReach()
+        {
+            RimroomsCampaignComponent campaign = Campaign();
+            return campaign != null && campaign.HasCapability("RR_Cap_DeepFrontier")
+                ? DeepFrontierNaturalDepth
+                : MaximumNaturalDepth;
+        }
 
         /// <summary>
         /// Roughly one doorway in this many is a frontier. Combined with the cap above,
@@ -276,7 +329,7 @@ namespace RimroomsAsyncIndustries.Portals
             // Refused rather than silently minting a shallower space: a doorway that led
             // somewhere other than where it should would be a quieter and worse lie than being
             // told plainly that nothing natural goes further than this.
-            if (depth > MaximumNaturalDepth)
+            if (depth > NaturalDepthReach())
             { return CompanyActionResult.Refused("RR_Frontier_BeyondNaturalReach"); }
             // **This gate is blocked; you are holding open too many gates.**
             //

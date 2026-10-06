@@ -69,12 +69,19 @@ namespace RimroomsAsyncIndustries.Generation
         }
 
         /// <summary>
-        /// How many distinct bands exist before the pattern repeats with a different seed roll.
-        /// Deliberately small: the variation deeper down should come from **what is in a room**
-        /// rather than from an ever-growing list of paint schemes, and a palette that never
-        /// repeats stops reading as a place at all.
+        /// How many distinct bands exist. Deliberately small: the variation deeper down should come
+        /// from **what is in a room** rather than from an ever-growing list of paint schemes, and a
+        /// palette that never repeats stops reading as a place at all.
+        ///
+        /// **Six since 0.12.99-dev, and the sixth exists because a research tier needed it to.**
+        /// Spatial tier 6 earns a seventh depth level, and the T5/T6 sweep recorded the blocker
+        /// plainly: *"A seventh level with no sixth band is a seventh level that looks exactly like
+        /// the sixth. This is a content question before it is a research question."* The band is
+        /// authored out of Core terrain exactly as the other five are, so the content answer cost no
+        /// asset — which is why it was the better of the two options the queue row offered, the other
+        /// being to ship level seven reusing a band and state the limitation.
         /// </summary>
-        public const int Bands = 5;
+        public const int Bands = 6;
 
         /// <summary>
         /// The look for a coordinate at a given depth.
@@ -142,13 +149,41 @@ namespace RimroomsAsyncIndustries.Generation
                     look.wallColor = new Color(0.78f, 0.80f, 0.83f);
                     look.nameKey = "RR_Palette_ColdStore";
                     break;
-                default: // Wrong: the palette stops agreeing with itself.
+                case 4: // Wrong: the palette stops agreeing with itself.
                     look.floor = Carpet("Structure_UmberBurnt") ?? look.floor;
                     look.accent = Named<TerrainDef>("MetalTile") ?? look.floor;
                     look.floorColor = NamedColor("Structure_UmberBurnt");
                     look.wallStuff = ThingDefOf.WoodLog;
                     look.wallColor = new Color(0.47f, 0.33f, 0.30f);
                     look.nameKey = "RR_Palette_Wrong";
+                    break;
+                default: // Undercroft: the floor has given up and the ground is coming through.
+                    //
+                    // **THE DEEPEST BAND, AND THE ONLY ONE THAT IS NOT A ROOM AT ALL.** The five
+                    // above are all places a building could be; this one is what is under a
+                    // building. It is the look a seventh level needed before Spatial tier 6 could
+                    // honestly grant one.
+                    //
+                    // **`Mud` was the obvious floor and it would have been a defect.** Measured out
+                    // of Core: Mud declares only `Bridgeable` and `WaterproofConduitable`
+                    // affordances and a path cost of **14**. A band floored in it would be a level
+                    // nothing can be built on and nobody can cross at speed -- an unbuildable,
+                    // barely walkable deepest level, found by a player rather than by a build.
+                    // `BrokenAsphalt` carries Light, Medium and Heavy at path cost 0, so the band
+                    // reads as broken ground and behaves as a floor.
+                    //
+                    // **No floor colour, deliberately.** The other bands tint a carpet or a tile,
+                    // and the colour grid is honoured by terrain that expects to be coloured.
+                    // Asking for a tint here would most likely be a silent no-op -- which is
+                    // exactly the failure this file already carries a long comment about, where
+                    // `Named<TerrainDef>("Carpet")` returned null and every carpet band fell
+                    // through to a fallback that looked deliberate for versions.
+                    look.floor = Named<TerrainDef>("BrokenAsphalt") ?? look.floor;
+                    look.accent = Named<TerrainDef>("PackedDirt") ?? look.floor;
+                    look.floorColor = null;
+                    look.wallStuff = ThingDefOf.WoodLog;
+                    look.wallColor = new Color(0.30f, 0.31f, 0.26f);
+                    look.nameKey = "RR_Palette_Undercroft";
                     break;
             }
 
@@ -163,12 +198,23 @@ namespace RimroomsAsyncIndustries.Generation
         /// Which band a depth falls in. Depth advances the band, and the coordinate's own seed
         /// shifts it, so two spaces at the same depth in the same branch are not identical while
         /// each one stays the same across reloads.
+        ///
+        /// **IT SATURATES AT THE DEEPEST BAND RATHER THAN WRAPPING, SINCE 0.12.99-dev.** This was
+        /// `% Bands`, and the wrap was not a rounding detail: at five bands a depth-six coordinate
+        /// came up **Poolrooms** on half its seeds, so the deepest place a branch could reach looked
+        /// like the second shallowest. A built gate reaches any depth it has earned, so the wrap
+        /// also meant depth twelve looked like depth two.
+        ///
+        /// **Nothing below the top band moved.** Depths two to five land on exactly the bands they
+        /// always did; only the cases that used to wrap are affected, and every one of those was a
+        /// deep space wearing a shallow face.
         /// </summary>
         private static int Band(int depth, int seed)
         {
             int roll = Gen.HashCombineInt(seed, depth);
             if (roll < 0) { roll = ~roll; }
-            return (depth - 2 + roll % 2) % Bands;
+            int band = depth - 2 + roll % 2;
+            return band >= Bands ? Bands - 1 : band;
         }
 
         /// <summary>

@@ -122,13 +122,20 @@ namespace RimroomsAsyncIndustries.Company
         /// <summary>
         /// The branch has reached a coordinate as deep as found doors ever go, so the next step
         /// inward is a machine's job. Says so once; does not ask anybody to build one.
+        ///
+        /// **Read through `NaturalDepthReach` rather than off the base constant, since a branch can
+        /// now EARN a seventh level.** A hint that fired at depth six for a branch holding Spatial
+        /// tier 6 would be telling somebody they had hit a wall they had already paid to move, and
+        /// a hint that is not true is worse than no hint: this one fires once and cannot be taken
+        /// back.
         /// </summary>
         private bool KnowsACoordinateAtNaturalLimit()
         {
+            int reach = Portals.NaturalFrontierService.NaturalDepthReach();
             for (int index = 0; index < coordinates.Count; index++)
             {
                 CoordinateRecord record = coordinates[index];
-                if (record != null && record.Depth >= Portals.NaturalFrontierService.MaximumNaturalDepth)
+                if (record != null && record.Depth >= reach)
                 { return true; }
             }
             return false;

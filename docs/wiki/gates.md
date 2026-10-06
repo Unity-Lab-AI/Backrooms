@@ -97,7 +97,7 @@ Alongside requests and contracts, a gate can **dial an unknown address** — in 
 
 | | |
 |---|---|
-| **How deep** | Through depth 6, weighted toward the shallow end |
+| **How deep** | As deep as found doors currently reach for you — 6, or 7 with **Deep Reach** — weighted toward the shallow end |
 | **Repeatable** | Dial the same slot again and you get the same place. Reloading does not reshuffle it |
 | **What it costs** | Nothing. It creates an **address**, not a map |
 
@@ -151,9 +151,11 @@ matter, clear the rest.
 ## Free ways through run out
 
 Early on you will find ways through you did not build. These reach **through depth 6 and no
-further**.
+further** — or depth 7, once the company has earned **Deep Reach**, the project at the very top of
+the research tree.
 
-Past that, the only way deeper is a gate you built, powered and calibrated yourself.
+Past that, the only way deeper is a gate you built, powered and calibrated yourself. **No project
+changes that**, and none ever will: seven is the last level the place hands over for free.
 
 The cap applies to going deeper, never to coming out: a crew at the deepest band can always find a
 way that leads home.

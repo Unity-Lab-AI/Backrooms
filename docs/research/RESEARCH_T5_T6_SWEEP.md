@@ -14,7 +14,7 @@
 > | 3 | Spatial T5 near exit | **BUILT** as `RR_Spatial_NearExit` |
 > | 4 | Entities T5 quiet protocol | **BUILT** as `RR_Entities_QuietProtocol`, `MaxEventsPerOpening` only |
 > | 5 | Fieldcraft T5 fourth hand | **SUPERSEDED. Not built, and not forgotten.** |
-> | 6 | Spatial T6 seventh level | Still gated on the sixth palette band |
+> | 6 | Spatial T6 seventh level | **BUILT** as `RR_Spatial_DeepFrontier`. The sixth band was authored |
 >
 > **Candidate 5 was superseded minutes after it was approved**, by a direction answering a
 > different question: *"rememberber pawns can cross gate as they plkease so no max number"*. The
@@ -132,9 +132,12 @@ acceptance evidence has to include a re-measured pressure ladder, not just a wor
 | Named effect | *"We reach a level nobody has come back from."* |
 | Why it is the only T6 candidate | A T6 should be the top of a branch and feel like it. Nothing else unclaimed is big enough to sit above a T5 |
 | **The blocker, and it is real** | `BackroomsPalette.Bands` is **5**, and depth 6 already lands in the deepest band. A seventh level with no sixth band is a seventh level that looks exactly like the sixth. **This is a content question before it is a research question** |
+| **How it was answered, 0.12.99-dev** | **The sixth band was authored**, which cost no asset: a band is a selection of Core terrain, a stuff and a colour, exactly as the other five are. `RR_Palette_Undercroft`. The band derivation also stopped **wrapping** — at five bands a depth-six coordinate came up Poolrooms on half its seeds, so the deepest place a branch could reach already wore the second shallowest face in the game |
 
-**So T6 is one candidate and it is gated on authoring a band**, which belongs with the deferred
-expansion milestone rather than with a tier sweep.
+**So T6 was one candidate gated on authoring a band**, and the band was authored at 0.12.99-dev
+rather than deferred to the expansion milestone. The two options the queue row offered were a sixth
+band or level seven reusing the deepest existing one as a stated limitation; **the first cost
+nothing but authoring, so shipping the limitation would have been a choice to ship less.**
 
 ---
 
@@ -185,7 +188,7 @@ owner direction.
 | 3 | Spatial | T5 near exit | **Yes** — most visible unclaimed number |
 | 4 | Entities | T5 quiet protocol | **Yes, as `MaxEventsPerOpening` only** |
 | 5 | Fieldcraft | T5 fourth hand | **Owner's call** — changes the pressure arithmetic |
-| 6 | Spatial | T6 seventh level | **Blocked on a sixth palette band** |
+| 6 | Spatial | T6 seventh level | **Built** — the sixth band was authored rather than deferred |
 | — | Gate | none | Nothing above indefinite |
 | — | Logistics | none | Every knob claimed |
 | — | Commerce | none | Its knobs became player settings |

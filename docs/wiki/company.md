@@ -190,7 +190,7 @@ Insight from analysed records buys unlocks across **nine branches**:
 | **Commerce and organisation** | Better offers, specialist recruitment, leases |
 | **Transport and orbital support** | Expansion content only, and never required |
 
-Branches run through **six progression bands**:
+Branches run through **seven progression bands**:
 
 | Band | What it is for |
 |---|---|
@@ -200,6 +200,7 @@ Branches run through **six progression bands**:
 | **3 — Remote operations** | Support more than one site; work beyond headquarters |
 | **4 — Deep operations** | Combine known techniques; extend reach |
 | **5 — The settled branch** | Service, read and leave a space on your own terms |
+| **6 — Deep Reach** | One project, at the top of the whole tree |
 
 **A band is a progression band, not a single chain.** Every band above the first is reachable by
 more than one path, so a branch is never locked behind one project you have not happened to unlock.
@@ -221,6 +222,10 @@ The four that do reach it:
 **Quiet Protocol is the only project in the whole tree that pays for safety by removing
 something.** It stops at one for that reason, and half of every coordinate's rooms stay bare
 whatever you research. That is a guarantee, not a reward.
+
+**One project sits above all of them, and only Spatial reaches it.** **Deep Reach** makes found
+doors lead one level further than they ever have — a seventh, which looks like nothing above it.
+Going deeper than seven is a machine's job, and no project changes that.
 
 A project's prerequisites are only ever completed logs, a named project below it, and the insight
 price. **Nothing requires time to have passed.**

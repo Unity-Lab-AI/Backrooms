@@ -34,9 +34,11 @@ And three restraints had to survive the tier:
   * the per-coordinate frontier cap is **not** a research knob (0.12.18-dev);
   * shelter never reaches zero (0.12.18-dev) -- so Entities took the penalty ceiling, not the
     shelter rate a second time;
-  * `MaximumNaturalDepth` is **six** since 0.12.49-dev, and **still not research-driven** -- the
-     owner raised the reach on 2026-09-30, having chosen three at an earlier fork. The restraint
-     here was never the number; it is that no capability may move it.
+  * `MaximumNaturalDepth` is **six** since 0.12.49-dev, and **the restraint that no capability may
+     move it was RETIRED at 0.12.99-dev** when the owner approved Spatial tier 6, whose whole
+     subject is that number. Restated here as what it always protected -- the reach is bounded and
+     one place decides it -- and owned in full by `proof-research-tier6.py`. The old claim went on
+     passing after the code changed, which is why it is restated out loud rather than quietly.
 
 Run from the repository root.
 """
@@ -189,10 +191,32 @@ check("the ordinary-map frontier CAP is untouched too",
       "Cap = MaximumFrontiersPerOrdinaryMap" in frontier and
       not re.search(r"HasCapability\([^)]*\)\s*\?\s*\w*MaximumFrontiersPerOrdinaryMap", frontier),
       "-- only the rarity moved, which is how often, not how many")
-check("THE NATURAL DEPTH REACH IS NOT RESEARCH-DRIVEN, WHATEVER ITS VALUE",
-      re.search(r"MaximumNaturalDepth\s*=\s*\d+", frontier) is not None and
-      not re.search(r"HasCapability\([^)]*\)\s*\?\s*\w*MaximumNaturalDepth", frontier),
-      "-- the owner answered \"option 1\": through depth 3, then stop")
+# **THIS CLAIM WAS RETIRED AND REPLACED AT 0.12.99-dev, AND IT HAD TO BE DONE OUT LOUD.**
+#
+# It read: "THE NATURAL DEPTH REACH IS NOT RESEARCH-DRIVEN, WHATEVER ITS VALUE", and it was correct
+# for every tier up to four. Then the owner approved **Spatial tier 6, whose entire subject is that
+# number**, so the restraint stopped being true the moment that project was built.
+#
+# **The old claim went on passing**, which is the part worth recording. It looked for the ternary
+# `HasCapability(...) ? <something>MaximumNaturalDepth`, and the capability was written as
+# `? DeepFrontierNaturalDepth : MaximumNaturalDepth` -- an identifier that does not end in the name
+# the pattern required. A green instrument over a restraint that no longer holds is worse than no
+# instrument, and **leaving it green because it happened to pass would have been the dishonest
+# move**: the build would have carried a proof asserting the opposite of what the code does.
+#
+# So the claim is restated to what it ALWAYS protected, which survives the change: the reach is
+# **bounded**, and **one place decides it**. Tier 4 does not touch it, and the capability that moves
+# it belongs to the top of the tree. The full rule, including the constants and the three read sites,
+# is owned by `proof-research-tier5.py`'s sibling `proof-research-tier6.py` -- named here rather than
+# copied, because two derivations of one rule is the defect this project keeps meeting.
+check("the natural depth reach is not a TIER 4 knob, and is still decided in one place",
+      re.search(r"MaximumNaturalDepth\s*=\s*\d+", frontier) is not None
+      and "internal static int NaturalDepthReach()" in frontier
+      and not re.search(r"RR_Cap_(PractisedDialling|Decompression|OpenMarket|"
+                        r"StatementDiscipline|SurfaceReading|SteadyNerve)[^;]*NaturalDepth",
+                        frontier),
+      "-- retired and restated at 0.12.99-dev when the owner approved Spatial tier 6. "
+      "proof-research-tier6.py owns the bound and the single read site now")
 
 pressure = source.get(os.path.join(SRC, "Threats", "BackroomsPressure.cs"), "")
 check("shelter never reaches zero",

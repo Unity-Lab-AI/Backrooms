@@ -43,9 +43,14 @@ one room:
 | **Abandoned offices** | Worn carpet under dead strip light |
 | **Cold storage** | Concrete and frost |
 | **Wrong** | Where the place stops agreeing with itself |
+| **Undercroft** | The floor has given up and the ground is coming through |
 
 Which one you get follows depth with some variation, and it is fixed per address — a place looks
 the same every time you return.
+
+**Undercroft is the deepest look and you will only see it at the bottom.** The deeper a place sits,
+the further down this list it lands, and the deepest ones stop varying: once you are as deep as you
+can get, the place wears the last face on the list.
 
 What a room is built from is also salvage: steel walls are steel.
 

@@ -344,9 +344,16 @@ branches whose effects are Core-readable.
 
 **No numbers are presented as approved.** Every count, dimension and figure above is a hypothesis
 in the same sense the `SCENARIOS.md` start cards say of themselves: *"tuning hypotheses, not
-owner-approved canon."* Where a figure is a property of the shipped code — three gates, three
-crew, depth 6, the half-integrity floor, 25 wood, 420 ticks, the five-band palette — it is stated
+owner-approved canon."* Where a figure is a property of the shipped code — three gates, the free
+depth reach, the half-integrity floor, 25 wood, 420 ticks, the palette's band count — it is stated
 as such and is not a hypothesis.
+
+**Two figures were struck from that list rather than restated, because the code stopped having
+them.** *"Three crew"* was never a rule at all: it is the Async Industries start's staff roster, and
+the cap it had become was removed at 0.12.99-dev on owner direction — *"rememberber pawns can cross
+gate as they plkease so no max number"*. And the depth reach is **no longer one number**: six is
+what the Backrooms gives away, seven is what a branch can earn, and the figure to read is
+`NaturalFrontierService.NaturalDepthReach` rather than either constant.
 
 **No implementation order.** Which of the three to build, or whether to build any, is the owner's
 call and the brief exists to make that call possible rather than to pre-empt it.

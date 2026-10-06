@@ -35,7 +35,8 @@ namespace RimroomsAsyncIndustries.Portals
     /// doorways are ordinary frontier candidates that skip the rarity draw and have their kind
     /// decided rather than drawn. Everything else still applies: the threshold is still checked
     /// for obstruction, the way home is still never a frontier, a door already carrying an edge
-    /// is still refused, and depth is still capped by `MaximumNaturalDepth`.
+    /// is still refused, and depth is still capped by `NaturalFrontierService.NaturalDepthReach`
+    /// — the branch's earned reach, which is six until Spatial tier 6 makes it seven.
     ///
     /// They also **do not count against the cap**, because a cap that can starve the guarantee
     /// would make it conditional -- and the owner's word was *guaranteed*.

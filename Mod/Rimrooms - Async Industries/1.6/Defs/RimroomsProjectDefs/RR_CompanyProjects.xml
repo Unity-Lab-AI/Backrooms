@@ -738,4 +738,42 @@ A properly built room holds it back considerably better. **It never stops entire
     <grantsCapabilities><li>RR_Cap_QuietProtocol</li></grantsCapabilities>
   </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
 
+  <!-- ==================================================================================== -->
+  <!-- TIER 6 - ONE PROJECT, AND IT IS THE TOP OF THE WHOLE TREE                            -->
+  <!--                                                                                      -->
+  <!-- A tier 6 should be the top of a branch and feel like it, and the sweep found exactly   -->
+  <!-- one unclaimed number big enough to sit above a tier 5: how deep a FOUND door leads.    -->
+  <!-- Eight branches get nothing here, which needs no separate reasoning: a sixth band on a  -->
+  <!-- branch whose fifth was already declined would be two inventions rather than one.       -->
+  <!--                                                                                      -->
+  <!-- IT WAS BLOCKED ON CONTENT UNTIL 0.12.99-dev, AND THE BLOCKER WAS REAL. The palette     -->
+  <!-- carried five bands and the band derivation wrapped, so a seventh level would have come  -->
+  <!-- up Poolrooms: the second shallowest face in the game worn by the deepest space in it.   -->
+  <!-- The sweep called that "A CONTENT DECISION, NOT A SWEEP RESULT" and the queue row        -->
+  <!-- offered two answers: author a sixth band, or ship level seven reusing a band and state  -->
+  <!-- the limitation. The band was authored, because it cost no asset - six Core terrains and -->
+  <!-- a colour, exactly what the other five bands are.                                        -->
+  <!--                                                                                      -->
+  <!-- AND IT RETIRES A RESTRAINT RATHER THAN SLIPPING PAST ONE. proof-research-tier4.py      -->
+  <!-- asserted that the natural depth reach is not research-driven, whatever its value, and   -->
+  <!-- that was correct for every tier up to four. The owner approved a tier whose subject IS   -->
+  <!-- that number, so the restraint is restated: what it protected is that the reach is        -->
+  <!-- BOUNDED and that ONE place decides it. Both still hold, and proof-research-tier6.py      -->
+  <!-- asserts them.                                                                           -->
+  <!-- ==================================================================================== -->
+
+  <RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+    <defName>RR_Spatial_DeepFrontier</defName>
+    <label>Deep Reach</label>
+    <description>Read the whole chain rather than one space at a time, and work out which of the doors nobody has opened sits under another level entirely.\n\nFound doors lead one level further than they ever have: a seventh, which looks like nothing above it and is the last one the Backrooms will hand over for free. A blind dial reaches it too. Going further than seven is still a machine's job, and always will be.</description>
+    <insightCost>7</insightCost>
+    <workRequired>26000</workRequired>
+    <minimumIntellectual>9</minimumIntellectual>
+    <requiredRouteLogs>6</requiredRouteLogs>
+    <requiredDistortionLogs>5</requiredDistortionLogs>
+    <requiredEntityLogs>4</requiredEntityLogs>
+    <prerequisiteProjects><li>RR_Spatial_NearExit</li></prerequisiteProjects>
+    <grantsCapabilities><li>RR_Cap_DeepFrontier</li></grantsCapabilities>
+  </RimroomsAsyncIndustries.Investigation.RimroomsProjectDef>
+
 </Defs>
