@@ -123,9 +123,19 @@ satisfies the need, and walks back.
 `JobGiver_GetRest`, `JobGiver_GetFood` and the joy givers — not from the work loop, which is the only
 thing the 56 givers plug into. A need has no `WorkGiverDef` to copy.
 
-**The route in is a `ThinkTreeDef` with `insertTag`**, which is additive XML: a separate def declaring
-where it inserts, never an edit to Core's tree. No Harmony, and nothing of Core's is taken over —
-the same standard the rest of the package is held to.
+This section specified a `ThinkTreeDef` with `insertTag`. **It was built as a map component instead,
+0.12.99-dev, and the brief is corrected here rather than quietly departed from.**
+
+| Why the component won | |
+|---|---|
+| **Strictly more additive** | An insert still edits the shape of Core's humanlike tree at a tagged point. A component edits nothing at all, and with 294 mods loaded the think tree is one of the most contested structures in the game |
+| **Cannot fail silently** | An insert whose tag another mod moves, renames or wraps fails with no symptom: a pawn simply never crosses, and there is nothing anywhere to read |
+| **It is what the owner asked for** | *"pawns auto get command to cross"* — a command issued, which is what this is. A think node is a pawn deciding; a command is the branch telling them |
+
+`CrossForNeedMapComponent` runs on every owned map and issues the crossing through
+`ConnectedCrossing.StepToward` — **the one implementation of stepping through a gate** — so the pawn's
+danger policy, allowed area and locked doors are honoured exactly as they are for work. No Harmony,
+and nothing of Core's is taken over.
 
 ### 3.2 The question has to be asked against an explicit map, and the contract already says so
 
@@ -370,7 +380,7 @@ two.
   produced, not the coordinate.
 - **One chokepoint.** `PortalTraversalPolicy` remains the only place that may say yes, which is the
   half of invariant #1 that is being kept rather than discarded.
-- **Core API only, no Harmony.** Think tree by `insertTag`, lords by `LordMaker`, zoning by Core's
+- **Core API only, no Harmony.** Needs by a map component rather than a think-tree insert (see §3.1), lords by `LordMaker`, zoning by Core's
   own per-map dictionary, transfer by `DeSpawn`/`GenSpawn` with rollback.
 - **No new art, and no new buildable.** Every object involved already exists.
 

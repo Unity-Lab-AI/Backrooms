@@ -55,11 +55,11 @@ A ceiling I set myself is mine to manage, not a reason to delete a feature. **Th
 |---|---|
 | Branch | **`feature/bug-testing`**, ahead of every remote by owner direction |
 | Version | **0.12.99-dev** — read from `About.xml`, never from a document |
-| Build | **250 C# files, 106 package files**, zero warnings, zero errors |
+| Build | **251 C# files, 106 package files**, zero warnings, zero errors |
 | Dependencies | **ZERO declared.** `loadAfter` carries the 294-row profile. **No register row claims this package requires a mod** — Core is the only `Required` row and Core is the game |
 | Instruments | **29 checkers**, **59 proofs**, **36 plant suites**. Newest: `check-traversal-policy.py` (29), which caught itself on its first run reading the prose that documents the change it checks for |
 | Remotes | **SIX active refs.** `forgejo` held on both repositories |
-| Queue | **8 open · 5 partial · 50 `[T]` · 0 `[x]`** — the journal and quest system is the largest block, and the cross-map brief is specified and unbuilt |
+| Queue | **5 open · 5 partial · 50 `[T]` · 0 `[x]`** — the journal and quest system is the largest block, and the cross-map brief is specified and unbuilt |
 | Launches | **Thirteen.** The thirteenth is the first to produce facility data, and **every defect it found was ours** |
 | Staged copy | **STALE on purpose.** Files differ while the game is open; `check-package-integrity` rule 10 says so and names the remedy |
 
