@@ -16978,3 +16978,26 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-05)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **TECH GATING: ANSWERED, NOT GATED. 2026-10-06.** Owner, asked directly: *"Not gated -- it's a defect, fix it free"*. **So the single-operator model is treated as the bug it is rather than a feature sold back**: any qualified pawn at any bound console holds the gate from turn one, four consoles buildable immediately, no project, no capability, no tier. The two alternatives offered -- free relief with an earned fourth console, and fully gated relief -- were both declined. The question was left open in the owner's own words first: *"maybe tech gated"* and then *"but maybe not"*. **Recorded as undecided rather than resolved by me**, because the two answers build different things: a gated relief is a capability a branch earns and a reason for a Facilities tier to exist, while an ungated one is a fix to a defect that is punishing the player today. **Asked, not assumed.**
+
+Build at the time of the move: **0.12.99-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

@@ -1,0 +1,49 @@
+facility-changes  RR_AsyncIndustriesStart
+  offset (120, 120) on a 300-wide map; 1026 live cell(s) read
+  authored wall cells 536 (material BlocksGranite), openings 23
+
+  UNCHANGED      walls 510, doors 22, authored things 127
+  NOT LAYOUT     27 cell-thing(s): stock, items and pawns
+
+  WALLS ADDED            : 4
+  WALLS REMOVED          : 26
+  WALLS RE-MATERIALLED   : 0
+  CONDUIT CELLS ADDED    : 36
+  CONDUIT CELLS MISSING  : 8
+  THINGS ADDED           : 60 cell(s), 13 kind(s)
+  AUTHORED THINGS ABSENT : 10
+
+  --- walls the owner added, by material ---
+      BlocksGranite          2 cell(s)
+      Steel                  2 cell(s)
+
+  --- things the owner added, by kind ---
+      Vent                            13  (21,13), (35,13), (37,13), (21,21), (35,21), (30,25) ...
+      WoodFiredGenerator              10  (23,35), (24,35), (25,35), (26,35), (25,36), (26,36) ...
+      Cooler                           7  (21,51), (22,51), (23,51), (51,19), (51,20), (51,21) ...
+      Stool                            4  (24,12), (27,12), (24,13), (27,13)
+      PokerTable                       4  (25,12), (26,12), (25,13), (26,13)  [4 frame]
+      StandingLamp                     4  (22,24), (36,24), (19,33), (19,44)
+      Heater                           4  (9,26), (27,33), (37,41), (41,41)
+      ElectricStove                    3  (26,19), (27,19), (28,19)
+      ElectricSmithy                   3  (14,31), (15,31), (16,31)
+      CommsConsole                     3  (31,32), (32,32), (33,32)
+      ChessTable                       2  (29,11), (32,11)
+      Battery                          2  (23,26), (25,26)
+      Autodoor                         1  (39,41)
+
+  --- authored things that are not there (deleted, or never spawned) ---
+      (11, 47)  TextBook
+      (14, 47)  TextBook
+      (16, 31)  Heater
+      (19, 16)  Heater
+      (24, 12)  Heater
+      (26, 10)  ElectricStove
+      (33, 37)  Heater
+      (44, 37)  Heater
+      (46, 16)  ElectricSmithy
+      (49, 16)  Heater
+
+  --- authored wall cells now open ---
+      (18,31), (18,40), (18,48), (21,13), (21,21), (21,51), (22,30), (22,51), (23,51), (30,25), (30,49), (35,13), (35,21), (37,13), (37,34), (38,34), (40,34), (41,34), (42,39), (42,44), (47,25), (47,49), (51,19), (51,20), (51,21), (51,22)
+
