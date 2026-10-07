@@ -93,6 +93,34 @@ namespace RimroomsAsyncIndustries.Company
         private readonly Dictionary<string, LedgerEntry> ledgerIndex = new Dictionary<string, LedgerEntry>(StringComparer.Ordinal);
         private string stateFaultKey;
 
+        /// <summary>
+        /// WHICH integrity check failed, in plain words, for the log and the pane.
+        ///
+        /// ## A FAULT THAT NAMES NO CAUSE IS THE ONE REFUSAL THIS MOD GOT WRONG
+        ///
+        /// About a dozen distinct conditions all set <see cref="stateFaultKey"/> to the same
+        /// `RR_Company_InvalidSave`, and the only thing written to the log was *"Campaign integrity
+        /// failed; company actions are disabled."* **A player whose company has switched itself off
+        /// is given nothing to act on**, which is the exact opposite of what `troubleshooting.md`
+        /// promises in its own first line: *"Every refusal in the game names its own cause. Read it
+        /// -- the cause is the instruction."*
+        ///
+        /// Measured 2026-10-06: pinning a real fault in a real save took reading the save's XML by
+        /// hand and re-running each condition outside the game, because nothing in the game would
+        /// say which one it was. That is the cost this field removes.
+        ///
+        /// The player-facing key is unchanged, so no translation moves; this is additional detail
+        /// beside it rather than a replacement for it.
+        /// </summary>
+        private string stateFaultDetail;
+
+        /// <summary>Record a fault and keep the FIRST cause, which is the one nearest the data.</summary>
+        private void Fault(string detail)
+        {
+            stateFaultKey = "RR_Company_InvalidSave";
+            if (string.IsNullOrEmpty(stateFaultDetail)) { stateFaultDetail = detail; }
+        }
+
         public RimroomsCampaignComponent(Game game)
         {
             // Core requires this exact constructor. Never grant funds or spawn here.
@@ -307,6 +335,7 @@ namespace RimroomsAsyncIndustries.Company
         {
             ledgerIndex.Clear();
             stateFaultKey = null;
+            stateFaultDetail = null;
             if (!HasSupportedSchema) { return; }
             long runningBalance = 0;
             try
@@ -315,42 +344,55 @@ namespace RimroomsAsyncIndustries.Company
                 {
                     if (entry == null || string.IsNullOrEmpty(entry.operationId) || ledgerIndex.ContainsKey(entry.operationId))
                     {
-                        stateFaultKey = "RR_Company_InvalidSave";
+                        Fault(entry == null ? "a ledger entry is null"
+                              : string.IsNullOrEmpty(entry.operationId)
+                                  ? "a ledger entry has no operationId"
+                                  : "two ledger entries share operationId '" + entry.operationId + "'");
                         break;
                     }
                     ledgerIndex.Add(entry.operationId, entry);
                     runningBalance = checked(runningBalance + entry.amountUsd);
                     if (runningBalance < 0 || entry.balanceAfterUsd != runningBalance)
                     {
-                        stateFaultKey = "RR_Company_InvalidSave";
+                        Fault("ledger entry '" + entry.operationId + "' records a balance of "
+                              + entry.balanceAfterUsd + " where the running total is " + runningBalance);
                     }
                 }
             }
-            catch (OverflowException) { stateFaultKey = "RR_Company_InvalidSave"; }
-            if (runningBalance != balanceUsd || researchInsights < 0 || dailyOverheadUsd < 0 ||
-                (initializationComplete && (string.IsNullOrEmpty(branchId) || string.IsNullOrEmpty(initializationReceipt))))
-            {
-                stateFaultKey = "RR_Company_InvalidSave";
-            }
-            if (!UniqueRecords(staff, r => r.id) || !UniqueRecords(obligations, r => r.id) ||
-                !UniqueRecords(contracts, r => r.id) || !UniqueRecords(coordinates, r => r.id) ||
-                !UniqueRecords(cases, r => r.id) || !UniqueRecords(evidence, r => r.id) || !UniqueRecords(projects, r => r.id))
-            {
-                stateFaultKey = "RR_Company_InvalidSave";
-            }
+            catch (OverflowException) { Fault("the ledger total overflows a 64-bit balance"); }
+            if (runningBalance != balanceUsd)
+            { Fault("the balance is " + balanceUsd + " but the ledger sums to " + runningBalance); }
+            if (researchInsights < 0) { Fault("researchInsights is negative (" + researchInsights + ")"); }
+            if (dailyOverheadUsd < 0) { Fault("dailyOverheadUsd is negative (" + dailyOverheadUsd + ")"); }
+            if (initializationComplete && (string.IsNullOrEmpty(branchId) || string.IsNullOrEmpty(initializationReceipt)))
+            { Fault("the branch says it finished initialising but has no branchId or receipt"); }
+            if (!UniqueRecords(staff, r => r.id)) { Fault("two staff records share an id"); }
+            if (!UniqueRecords(obligations, r => r.id)) { Fault("two obligations share an id"); }
+            if (!UniqueRecords(contracts, r => r.id)) { Fault("two contracts share an id"); }
+            if (!UniqueRecords(coordinates, r => r.id)) { Fault("two coordinates share an id"); }
+            if (!UniqueRecords(cases, r => r.id)) { Fault("two cases share an id"); }
+            if (!UniqueRecords(evidence, r => r.id)) { Fault("two evidence records share an id"); }
+            if (!UniqueRecords(projects, r => r.id)) { Fault("two project records share an id"); }
             // The request line carries payment operation ids, so a duplicate record is a
             // double-payment waiting to happen rather than a cosmetic problem.
-            if (!RequestRecordsValid()) { stateFaultKey = "RR_Company_InvalidSave"; }
+            if (!RequestRecordsValid()) { Fault("the request line has a duplicate or malformed record"); }
             foreach (StaffRecord member in staff)
             {
-                if (member != null && member.dailyWageUsd < 0) { stateFaultKey = "RR_Company_InvalidSave"; }
+                if (member != null && member.dailyWageUsd < 0)
+                { Fault("staff record '" + member.id + "' has a negative daily wage"); }
             }
             foreach (CompanyObligation obligation in obligations)
             {
-                if (obligation != null && obligation.amountUsd <= 0) { stateFaultKey = "RR_Company_InvalidSave"; }
+                if (obligation != null && obligation.amountUsd <= 0)
+                { Fault("obligation '" + obligation.id + "' has an amount of " + obligation.amountUsd); }
             }
             ValidateRecordRelationships();
-            if (stateFaultKey != null) { Log.Error("[Rimrooms][Save] Campaign integrity failed; company actions are disabled. Preserve the original save."); }
+            if (stateFaultKey != null)
+            {
+                Log.Error("[Rimrooms][Save] Campaign integrity failed; company actions are disabled. "
+                          + "Preserve the original save. Cause: "
+                          + (stateFaultDetail ?? "not recorded, which is itself a defect"));
+            }
         }
 
         private void ValidateRecordRelationships()
@@ -362,14 +404,67 @@ namespace RimroomsAsyncIndustries.Company
             var caseIds = new HashSet<string>(cases.Select(c => c.id), StringComparer.Ordinal);
             var pawnIds = new HashSet<string>(StringComparer.Ordinal);
             bool valid = staff.All(s => !string.IsNullOrWhiteSpace(s.pawnLoadId) && pawnIds.Add(s.pawnLoadId));
-            // An odd-supply contract is branch-wide rather than tied to one coordinate: it
-            // buys goods by origin, and any coordinate that produced them satisfies it. So it
-            // legitimately carries no coordinate id, and requiring one would fault a valid save.
-            valid &= contracts.All(c => (c.IsOddSupply ? string.IsNullOrEmpty(c.coordinateId)
-                    : coordinateIds.Contains(c.coordinateId)) &&
-                Enum.IsDefined(typeof(ContractStatus), c.status) &&
-                c.basePaymentUsd >= 0 && c.bonusUsd >= 0 && !string.IsNullOrWhiteSpace(c.templateId) &&
-                c.requiredCount >= 0 && c.deliveredCount >= 0);
+            // ## THERE ARE THREE KINDS OF CONTRACT HERE, AND THIS TESTED FOR TWO
+            //
+            // **This condition disabled the whole company in any save holding a consignment
+            // mission, and it was found by loading one.** The log said only *"Campaign integrity
+            // failed"*, so the cost of finding it was reading the save's XML by hand.
+            //
+            // The old test was `c.IsOddSupply ? string.IsNullOrEmpty(c.coordinateId) : ...`, with
+            // the comment: *"An odd-supply contract is branch-wide rather than tied to one
+            // coordinate ... So it legitimately carries no coordinate id, and requiring one would
+            // fault a valid save."* **That was true when it was written and stopped being true when
+            // consignment missions landed at 0.12.41-dev**, because:
+            //
+            //   * `IsOddSupply` is `requiredThingDefName != "" && requiredCount > 0` -- it says
+            //     nothing about the template, so a mission satisfies it;
+            //   * `IsOddConsignment` is `IsOddSupply && requiredSurveyedRooms > 0`, so **every
+            //     consignment mission IS an odd-supply contract**;
+            //   * and a mission **names one coordinate on purpose**: its own record says *"A mission
+            //     names one coordinate, wants goods that coordinate produced"*.
+            //
+            // So `IsNullOrEmpty(coordinateId)` was false for a legal record and the branch died.
+            // Measured in a real save: `rr.mission.oddconsignment.v1`, coordinate set,
+            // `requiredThingDefName=XER_MediumTableM`, `requiredCount=8`, `requiredSurveyedRooms=2`.
+            //
+            // **Mission is tested FIRST because it is the narrower kind.** Testing `IsOddSupply`
+            // first is what hid a mission inside the broad case, and ordering the narrow test ahead
+            // of the broad one is the only arrangement that cannot regress the same way.
+            foreach (ContractRecord contract in contracts)
+            {
+                string template = contract.templateId ?? "(no template)";
+                if (contract.IsOddConsignment)
+                {
+                    // A mission is about ONE place, so its coordinate must exist.
+                    if (!coordinateIds.Contains(contract.coordinateId))
+                    {
+                        Fault("consignment mission '" + template + "' names coordinate '"
+                              + (contract.coordinateId ?? "") + "', which is not in this save");
+                    }
+                }
+                else if (contract.IsOddSupply)
+                {
+                    // A standing odd-supply demand is branch-wide and must name no coordinate.
+                    if (!string.IsNullOrEmpty(contract.coordinateId))
+                    {
+                        Fault("odd-supply contract '" + template
+                              + "' carries a coordinate id, which only a consignment mission may do");
+                    }
+                }
+                else if (!coordinateIds.Contains(contract.coordinateId))
+                {
+                    Fault("contract '" + template + "' names coordinate '"
+                          + (contract.coordinateId ?? "") + "', which is not in this save");
+                }
+                if (!Enum.IsDefined(typeof(ContractStatus), contract.status))
+                { Fault("contract '" + template + "' has an unknown status"); }
+                if (contract.basePaymentUsd < 0 || contract.bonusUsd < 0)
+                { Fault("contract '" + template + "' has a negative payment"); }
+                if (string.IsNullOrWhiteSpace(contract.templateId))
+                { Fault("a contract has a blank templateId"); }
+                if (contract.requiredCount < 0 || contract.deliveredCount < 0)
+                { Fault("contract '" + template + "' has a negative count"); }
+            }
             valid &= cases.All(c => coordinateIds.Contains(c.coordinateId) && c.evidenceIds != null &&
                 c.evidenceIds.Count == c.evidenceIds.Distinct(StringComparer.Ordinal).Count() &&
                 c.evidenceIds.All(id => evidence.Any(e => e.id == id && e.caseId == c.id)));
@@ -395,7 +490,7 @@ namespace RimroomsAsyncIndustries.Company
                 foreach (RoomRecord room in coordinate.rooms.Where(r => r != null && r.links != null))
                 { valid &= room.links.All(index => index != room.index && indices.Contains(index)); }
             }
-            if (!valid) { stateFaultKey = "RR_Company_InvalidSave"; }
+            if (!valid) { Fault("a record relationship is broken; see the conditions above"); }
         }
 
         private static bool FiniteNonnegative(float value)
