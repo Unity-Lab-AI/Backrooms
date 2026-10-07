@@ -7,58 +7,72 @@
 | `docs/ROADMAP.md` | MAJOR — phases and milestones |
 | `docs/TODO.md` | MINOR — buildable work only |
 | `docs/DECOMPOSED.md` | smallest execution units |
-| `docs/TEST.md` | **the test phase — 56 rows, guarded by all four queue rules** |
+| `docs/TEST.md` | **the test phase, and the owner's play brief lives at the top of it** |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 
 ---
 
-## ⛔ THE GAME IS RUNNING A QA COLONY, AND IT IS NOT THE OWNER'S ⛔
+## ⛔ READ `docs/TEST.md` FIRST — THE OWNER'S PLAY BRIEF IS AT THE TOP OF IT ⛔
 
-RimWorld is up with **`Solo or group, inside`** on a fresh world, paused, saved by the bridge as `rimbridge_save_20261007_101548.rws`. **The owner's 31 saves are untouched.** Quit it from the main menu when done: `python .local/qa/hands.py 1271 641` after `go_to_main_menu`.
+Six verbatim directions from 2026-10-07 are recorded there in full. **The standing order is to PLAY the colony, not to tinker with tooling.** The owner's own words on how the last hour went:
 
----
+> *"so wtf? how many fucking test items have you completed? youve been playing for an hour and did nothing in the game but plant rice and neever finished completing the gate steps and never expanded what i told you to do ... its like 90% of everything ive told you you just fucking ignore!"*
 
-## ⛔ SIX DEFECTS THE OWNER SAW BY PLAYING, FIVE FIXED AND ONE MEASURED ⛔
+**That judgement is correct and the cause was method.** The hour went on fighting the UI: float menus that draw at the mouse, a zone designator that stayed live so forty clicks painted three stray stockpiles that then had to be deleted, and a faction-naming dialog that silently froze the game for two in-game days.
 
-**Verbatim, 2026-10-07:** *"the flower pot in the back rooms needs to be forbiden ... thousands of lights just mass numbers of lights in piles ... i didnt see it using the lights textures and skins we have ... the hallways were all rock mountain, when they were to be wooden walls ... the veins of resources that are minable inbetween isolated rooms ... the hallways were one massive room so entering one door basicly explored the whole fucking map"*.
+**⛔ DRIVE THE GAME THROUGH THE BRIDGE'S SEMANTIC CLICKS. Pixels are the last resort.** `.local/qa/click-label.py` (`--list`, `--after`, `--nth-after N`, `--labelled-after`) hits real UI elements and cannot drift. `hands.py` pixel clicks are only for surfaces the bridge cannot enumerate — the main menu, the landing-tile page, float menus.
 
-| Finding | Cause, measured | State |
-|---|---|---|
-| Pots pull pawns | Corridor fixtures were `Faction.OfPlayer` and never forbidden; the sow job searches exactly that flag | **fixed** — `GeneratedContent.Quieten`: forbid, and a storage is `Unstored` because hauling never asks about forbids. 176 pots → **43** |
-| Lights in piles | Corridor lamps spaced by **list index** over side cells sorted by row; `StandingLamp` in the fixture list (1,521 of them) | **fixed** — spaced by the cell's own coordinate; no lamp in the fixture list |
-| Our light art unused | `BackroomsPalette` asked for `WallLamp` by name; `RR_SiteFluorescent` shipped and nothing placed it | **fixed** — `RR_SiteFluorescentFitted`, unpowered, placed per bay and per seven corridor cells. **1,197 of ours, 0 wall lamps** |
-| Rock hallways | `PlaceCorridorWall` stood down on *any* edifice, and the rock fill is an edifice in every cell: **no corridor wall was ever built** | **fixed** — yields only to a built wall. 3,499 walls → **9,056** |
-| No veins | They exist: 1,251–2,355 ore cells per coordinate. Rock is `saveCompressible`, so nothing could count it | **measured, unchanged** — `.local/qa/render-coordinate.py` decodes the grid and draws it |
-| One massive room | Every corridor joins every other with nothing between; fog stops at doors only | **fixed** — a door across every leg ≥ 9 cells. 122 doors → **202** |
-
-**Seen with my own eyes in the live game**, not inferred: the yellow rooms lit by our strips, corridors edged in wood, red forbid crosses on the planters, fog still standing sixty cells away. Pictures in `.local/qa/evidence/eyes/`.
-
-**Three follow-on corrections, all kept verbatim in `TODO.md`:** *"i didnt say ban pots i said mark them forbidden"* (they are forbidden, not gone, and the colony-ownership flag is what actually stops the job), *"mark anything else u build that similar has an action like a pot does"* (shelves — storage priority), *"we dont neee 1000 of them on one level"* (fixture spacing 11 → 23, pots capped at 12).
-
-**And the lights were never on.** 3,934 wall lamps at 30 W on a 1,000 W generator; Core browns the whole net out. The fitted fixture draws nothing, which the 0.2.0 site lamp had already got right.
+**And before ANY pixel click: `click_cell x z button=right`, then confirm `get_designator_state` reports `selectedDesignatorId: null`.** `press_cancel` does **not** clear a live designator. That one omission made the mess above.
 
 ---
 
-## ⛔ I HAVE EYES AND HANDS NOW, AND YESTERDAY'S "IMPOSSIBLE" TABLE WAS MISSING A ROW ⛔
+## THE COLONY, LIVE AND SAVED
 
-**Owner:** *"with the rimbridge i dont think u can see very well so im thinking on top of rimbridge u use something like playwrite so u can see the game too"*. Playwright drives browsers; the instinct was right anyway. **`rimworld/take_screenshot` was in the bridge's 125 tools the whole time and I never called it.**
+**`rimbridge_save_20261007_122501.rws`** — Async Industries on a 300×300 **Temperate forest / Mountainous** tile, Spring, rolled the owner's way with `.local/qa/pick-site.py` reading the Terrain pane. Three staff: Gee, Scar, Unity, from Preset3 through Prepare Carefully with the Godsmultiplayer ideoligion.
 
-- `.local/qa/eyes.py` — capture through the bridge, downscale 3840×2160 to 1600 wide, print the path to Read.
-- `.local/qa/hands.py X Y` — click a pixel in that frame with Windows input. **Raises the game and refuses unless the game holds the foreground**, so a click can never land in the owner's other windows.
-- `.local/qa/start-scenario.py --resume` — picks the page loop back up after a pixel click.
+| Done | State |
+|---|---|
+| Gate | **6 of 11.** Console, battery and bench bound; table and console in gate control; **2 of 4 sections installed**; Gee assigned operator |
+| Freezer (`Stockpile zone 2`) | Foods + Medicine + Wort + **Corpses**; `*Allow rotten` **off**, `*Allow fresh` on |
+| Trash | `Dumping stockpile zone 1`, 64 cells, west of the compound |
+| Resources | **140 mine cells on unfogged rock only**, 89 chop designations |
+| Food | 189-cell rice field, blight cut, cook bill running |
+| Pawns | All three **Attack**, schedules all **Anything** |
+| Research | Prisoner containment done, more queued |
 
-**A fresh colony end to end, twice:** New colony → scenario → storyteller → world → *Select random site* → Next → pawns → acknowledge → Start. Launch the game directly with `Start-Process RimWorldWin64.exe -WorkingDirectory` (the `steam://` URL did nothing). ~2.5 minutes to the bridge.
+## ⛔ WHAT THE OWNER ASKED FOR AND DID NOT GET ⛔
 
-**One ordering bug of mine found by the first live run:** the three-cell strip took the utility room's floor before the two-by-two generator chose a cell, and `RR_Generation_NoSafeRoomCell` cost two coordinates. The generator and climate unit place first now; a strip with nowhere to go becomes a standing lamp.
+**Not started:** prison · guest beds (alert standing, five visitors) · defences and embrasures (alert standing) · hunting · a vault for silver, gold, gems and ivory · shelves organised · meds to the hospital · cook bill maintained at **50** rather than 10 · expanding the base · quests and missions · prisoners working under layered security.
+
+**And the gate is stalled at 2 of 4 sections.** The *assemble gate section* bill counts down to `0x` without consuming the 100 steel and 8 components, and step 5 stays red. **Not yet attributed — do not guess.** The gate's own card is the thing to read: it says *"Assembly: 2 of 4 sections installed"* and names its next step in plain words. `.local/qa/inspect.py` prints that card.
 
 ---
 
-## The asset audit the owner asked for
+## What this session actually bought: the board could not see a gate the player had built
 
-*"check all the assets work, opus did it"* / *"if the lights arent working then wtf other probably too"*. `.local/qa/audit-asset-consumers.py`: **12 textured defs, all 82 textures named** (menu backgrounds load by folder). **Four defs are buildable only and the generator places none** — fluorescent (now fitted), utility generator, emergency cutoff, marker beacon. A coordinate runs on Core's chemfuel set, which is right for the budget and recorded rather than changed.
+**Fixed and verified, `57959dd`.** `MainTabWindow_Operations.CurrentGate` read only `selectedGate`, a field assigned nowhere but the pane's own *Select a door* menu. Designate the door from **the door's own button** — the one-click path this mod advertises — and the window never learned the gate existed.
 
-**Mod register checked for lighting:** nothing in the 294 rows touches lamps or glow; nothing applied.
+**The board read `0 of 11 complete` on a gate that was commissioned and already paying out its start-up goals**, and the objective line told the player to assemble a gate they had built. It reset to zero every time Operations was reopened.
+
+**This is the owner's old report** — *"ive done like 50 things in a row and its still not opening"* — wearing a different hat.
+
+**Proved, not reasoned:** pressing *Select a door* moved the board **0 → 2** on an unchanged gate. After the fix, a fresh load reads **2 of 11 with nothing selected**, and the chain then ran to 6 in play. The fallback asks the branch for its designated gate through the same door enumeration the menu offers, so the two cannot disagree; an explicit selection still wins.
+
+---
+
+## Tools built this session, all in `.local/qa/`
+
+| Tool | What it is for |
+|---|---|
+| `click-label.py` | **The main way to drive the game.** Semantic clicks on enumerable UI |
+| `inspect.py` | Prints the selection's inspect card — the game saying what it thinks |
+| `designators.py` | Architect designator ids by category and keyword |
+| `pick-site.py` | Rolls *Select random site* until the Terrain pane reads mountains in forest or jungle |
+| `eyes.py` | Bridge capture (`--os` for a desktop grab when the game's thread is busy) |
+| `hands.py` | Pixel click, drag, hover, unicode typing. **Refuses unless the game holds the foreground** |
+
+**⛔ In any Core file list the unlabelled button beside a row's name is DELETE.** It came one click from the owner's `Godsmultiplayer.rid`. Use `--labelled-after "<name>" "Load"`.
 
 ---
 
@@ -66,14 +80,12 @@ RimWorld is up with **`Solo or group, inside`** on a fresh world, paused, saved 
 
 | | |
 |---|---|
-| Branch | **`feature/bug-testing`** |
-| Version | **0.13.0-dev** |
-| Build | **0 warnings, 0 errors, 200 package files, staged copy matches** |
-| Checkers | **33 of 33** before commit |
-| Fresh coordinate | 33 rooms · 1,197 strips · 0 wall lamps · 16 standing lamps · 43 pots · 9,056 walls · 202 doors · 1,251 ore cells · no warnings in the log |
-| Queue | `TODO.md` still holds: the one welcome letter sent to all three starts, orphaned `RR_Start_Welcome`, no unused-key rule, `rimworld/list_maps` in the shipped allowlist, no instrument that validates a saved campaign · `TEST.md` **56 `[T]`** |
+| Branch | **`feature/bug-testing`**, `57959dd` on five GitHub refs, tree clean |
+| Version | **0.13.0-dev**, 0 warnings, 0 errors, staged copy matches |
+| Checkers | **33 of 33** |
 | Forgejo | **held.** GitHub only |
+| Client | Updating from 2.1.270 to reach `claude-opus-5-5`, which needs 2.1.280+ |
 
 ## Is it done?
 
-**No.** The generator's shape is right now and seen; the test phase is still 56 rows. The next session starts by walking a crew through a corridor door and watching the fog, and by sending somebody through a gate from the Async Industries start, which no live run has done since the company validator was fixed.
+**No.** The generator reads right and the gate chain runs, but the owner's play brief is roughly a tenth done. **Next session opens `TEST.md`, takes the list in order, and uses semantic clicks.**
