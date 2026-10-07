@@ -18366,3 +18366,75 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **2 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **"option 1, look correct, but one thing the loading screen slideshow is still the bas games DLCs slide show not correctly our mods slideart"** — the main menu carries our twelve images; **the loading screen still shows the base game's expansion art.** -- **DONE 0.13.0-dev, and it was ours.** `RimroomsMenuController.Update` released the background the moment `ProgramState` left `Entry` — the first frame of a load — and Core's loading screen draws exactly that surface, so our slides were installed and handed back one frame before they were needed. It releases only once a map is `Playing` now, and claims the stock background on the same terms during `MapInitializing`. **Seen 2026-10-07:** *"Generating map"* over our office-corridor slide, captured from the desktop while the game's own thread was busy.
+- [x] **"i dont know what ur talking about Rimsort only has my DLCs once so if the mod is fucked fucking fix it!"** — on the 2026-10-06 reading that `ModsConfig.xml` lists every expansion twice. **Re-read before anything is touched:** a `ModsConfig.xml` has an `<activeMods>` list and a separate `<knownExpansions>` list, and an expansion appears in both. If that is the whole of it, the mod is not fucked, the reading was, and the test row says so. -- **MEASURED 2026-10-07: THE READING WAS WRONG AND NOTHING IS FUCKED.** `<activeMods>` holds **296 entries, each expansion once**, Core first, `rimrooms.asyncindustries` **last** at line 300 exactly as the docs say, `brrainz.rimbridgeserver` in the middle. The five extra lines are `<knownExpansions>`, a separate list RimWorld keeps of which expansions it has seen, which is not a load order. RimSort shows the DLCs once because there is once. The 2026-10-06 note on the RimSort row in `TEST.md` is corrected in place.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TEST.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TEST.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TEST.md`
+
+### Owner report — a door refuses to become a gate until the battery is set up first (2026-10-03)
+
+**Verbatim owner report (2026-10-03):** *"and another bug repoert, i try to first thing set a door as gate on the doors ui bar, but it tells me i have to set up the battery used for reserver before i can do anything, incrattely, i should be able to set the gate on a door first, so idk why its tellign me i cant set the gate door without setting the batteries first"*
+
+**Verbatim owner scope (2026-10-03):** *"in company scenerio"*
+
+**Located in source the same session; the cause is the all-or-nothing resolve inside the door's own button.** `Gate/CompRimroomsGate.cs` `MakeGateGizmos` resolves **three** providers before it will bind anything:
+
+```csharp
+Thing console = SoleCandidate(AvailableNativeConsoles(campaign));
+Thing battery = SoleCandidate(AvailableNativeBatteries(campaign));
+Thing bench   = SoleCandidate(AvailableNativeAssemblyBenches(campaign));
+if (console == null || battery == null || bench == null)
+{
+    ShowOrderResult(CompanyActionResult.Refused(
+        console == null ? "RR_NativeGate_NoSingleConsole"
+        : battery == null ? "RR_NativeGate_NoSingleBattery"
+        : "RR_NativeGate_ChooseBench"));
+    return;
+}
+```
+
+`SoleCandidate` returns null for **none** and for **more than one**, so the button refuses whenever the battery is absent *or* ambiguous — and `RR_NativeGate_NoSingleBattery` is the owner's *"i have to set up the battery used for reserver before i can do anything"*. The method's own docstring already says it is only meant to be the one-click path — *"anything ambiguous is named and chosen in the Operations pane, because picking one of several for the player is a decision rather than a shortcut"* — but **a refusal is not a route**, and the owner was reading the refusal as the answer.
+
+- [x] **Observed on the company scenario start** — the owner's repro is a launch. -- **OBSERVED 2026-10-07, AND THE REFUSAL IS A ROUTE NOW.** Fresh Async Industries start on the owner's own flow (Preset3 through Prepare Carefully, the Godsmultiplayer ideoligion), no battery anywhere. Selected the gate hall's north door, pressed **"Commission this door as the gate"** through the bridge, and the game answered: *"This door is the gate now. Its circuit is not finished yet: No single battery to hold the gate's reserve. Build one at the headquarters, or choose between them on the Operations gate pane."* The door is the gate first; the battery is the next step and the message says where. That is the owner's *"i should be able to set the gate on a door first"*, verbatim, satisfied.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

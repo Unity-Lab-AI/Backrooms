@@ -34,23 +34,23 @@
   <RR_Generation_ContentPlacementFailed>Room content placement stopped; the existing site is retained.</RR_Generation_ContentPlacementFailed>
   <RR_Generation_InvalidDoorDef>The installed door definition cannot provide the required native room access.</RR_Generation_InvalidDoorDef>
   <RR_Generation_GateAccessOnly>Reachable only through a gate</RR_Generation_GateAccessOnly>
-  <RR_Clue_Label_threshold_room>Validated threshold — room {0}</RR_Clue_Label_threshold_room>
+  <RR_Clue_Label_threshold_room>Room {0} — the return anchor here is your way home</RR_Clue_Label_threshold_room>
   <RR_Clue_Text_threshold_room>Two waiting stools face a route that has no ordinary exterior. Use the return anchor for extraction; reaching this room alone does not send cargo home.</RR_Clue_Text_threshold_room>
-  <RR_Clue_Label_survey_lobby>Survey station — room {0}</RR_Clue_Label_survey_lobby>
+  <RR_Clue_Label_survey_lobby>Room {0} — survey station, check it in Operations</RR_Clue_Label_survey_lobby>
   <RR_Clue_Text_survey_lobby>A table and chair mark the first survey station. Compare the saved coordinate and surveyed-room count in Operations before leaving this junction. Gate Telemetry later adds the recorded room connections.</RR_Clue_Text_survey_lobby>
-  <RR_Clue_Label_office_copy>Duplicated workstation — room {0}</RR_Clue_Label_office_copy>
+  <RR_Clue_Label_office_copy>Room {0} — record book, carry it back for analysis</RR_Clue_Label_office_copy>
   <RR_Clue_Text_office_copy>Two workstations repeat the same arrangement. The record book is stored separately in this room; pick it up and carry it back for analysis.</RR_Clue_Text_office_copy>
-  <RR_Clue_Label_service_passage>Route-marking point — room {0}</RR_Clue_Label_service_passage>
+  <RR_Clue_Label_service_passage>Room {0} — set a numbered route marker here</RR_Clue_Label_service_passage>
   <RR_Clue_Text_service_passage>A shelf and disconnected standing lamp mark this passage. Set a glow pod down at a verified junction and designate it as a numbered route marker before proceeding into the Borrowed Corridor.</RR_Clue_Text_service_passage>
-  <RR_Clue_Label_borrowed_corridor>Repeated planters — room {0}</RR_Clue_Label_borrowed_corridor>
+  <RR_Clue_Label_borrowed_corridor>Room {0} — this shape repeats, compare your markers</RR_Clue_Label_borrowed_corridor>
   <RR_Clue_Text_borrowed_corridor>The paired planters offer a familiar shape without a reliable direction. Compare the real numbered markers with their recorded rooms when the route changes.</RR_Clue_Text_borrowed_corridor>
-  <RR_Clue_Label_storage_nook>Recoverable stock — room {0}</RR_Clue_Label_storage_nook>
+  <RR_Clue_Label_storage_nook>Room {0} — salvage, carry it home</RR_Clue_Label_storage_nook>
   <RR_Clue_Text_storage_nook>This loose salvage is a physical cargo item. Taking it uses actual crew capacity; it is never credited or returned remotely.</RR_Clue_Text_storage_nook>
-  <RR_Clue_Label_utility_room>Disconnected fixture — room {0}</RR_Clue_Label_utility_room>
+  <RR_Clue_Label_utility_room>Room {0} — dead fixture, note the observation</RR_Clue_Label_utility_room>
   <RR_Clue_Text_utility_room>A standing lamp has no supplied power although the ceiling fixture still glows. This dead end provides an observation.</RR_Clue_Text_utility_room>
-  <RR_Clue_Label_return_gallery>Return-route seating — room {0}</RR_Clue_Label_return_gallery>
+  <RR_Clue_Label_return_gallery>Room {0} — return route, keep the gate in view</RR_Clue_Label_return_gallery>
   <RR_Clue_Text_return_gallery>Paired stools mark the gallery on the saved return route. Keep the gate window and route markers in view; use a closed door deliberately when breaking pursuit.</RR_Clue_Text_return_gallery>
-  <RR_Clue_Label_sealed_vault>Nobody walked in here — room {0}</RR_Clue_Label_sealed_vault>
+  <RR_Clue_Label_sealed_vault>Room {0} — nobody walked in here</RR_Clue_Label_sealed_vault>
   <RR_Clue_Text_sealed_vault>This room has no door onto any route: the rock around it was never cut through. Whatever is on the shelf has been here as long as the room has. The only way in is the way you came — through the stone — and the only way out is the same.</RR_Clue_Text_sealed_vault>
   <RR_Generation_ReaddressContentRestore>This failure needs package or source diagnosis. A replacement cannot repair this record; the saved site is retained for recovery.</RR_Generation_ReaddressContentRestore>
   <RR_Generation_ReaddressFailureNotEligible>This coordinate is not an eligible failed first-survey site. Its current map and records remain unchanged.</RR_Generation_ReaddressFailureNotEligible>

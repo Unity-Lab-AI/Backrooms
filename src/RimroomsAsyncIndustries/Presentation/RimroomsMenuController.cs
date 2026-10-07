@@ -63,7 +63,15 @@ namespace RimroomsAsyncIndustries.Presentation
 
         private void Update()
         {
-            if (Current.ProgramState != ProgramState.Entry)
+            // **RELEASED ONLY ONCE A MAP IS PLAYING, NOT THE MOMENT THE MENU IS LEFT.** This tested
+            // `!= Entry`, so the first frame of a load handed the surface back to Core's stock
+            // background -- and Core's loading screen draws exactly that surface. Owner, 2026-10-07:
+            // *"the loading screen slideshow is still the bas games DLCs slide show not correctly
+            // our mods slideart"*. The slides were installed, and we gave them back one frame
+            // before they were needed. `MapInitializing` is the loading screen; the menu's own
+            // ownership rules below apply to it unchanged, so a load started from inside a game
+            // claims the stock background on the same terms the menu does.
+            if (Current.ProgramState == ProgramState.Playing)
             {
                 ReleaseIfStillOwner();
                 yieldedForEntry = false;
