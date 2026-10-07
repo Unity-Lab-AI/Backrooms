@@ -151,38 +151,14 @@ namespace RimroomsAsyncIndustries.Generation
                 //
                 // Branching on the def rather than the def NAME, because the palette still falls
                 // back to `StandingLamp`, which stands on the floor and must keep doing so.
-                var lightCells = new List<IntVec3>();
-                var lightFacings = new List<Rot4>();
-                var lightDefs = new List<ThingDef>();
-                bool wallMounted = lightDef.building != null && lightDef.building.isAttachment;
-                foreach (RoomRecord room in coordinate.Rooms.OrderBy(value => value.Index))
-                {
-                    IntVec3 lightCell;
-                    Rot4 facing = Rot4.North;
-                    ThingDef roomLightDef = lightDef;
-                    lightCell = wallMounted
-                        ? FindWallAttachmentCell(map, room, room.Bounds.CenterCell,
-                            wallDef, reservedProviderCells, out facing)
-                        : IntVec3.Invalid;
-                    if (!lightCell.IsValid)
-                    {
-                        // **No wall to mount on, so it cannot be the wall fixture.** This used to
-                        // fall through placing `lightDef` on an open floor cell facing north --
-                        // and when the palette's light is `WallLamp`, that is an attachment with
-                        // nothing behind it, which is a guaranteed throw inside Core's power
-                        // rebuild. See WallAttachmentHolds. The room still gets a light; it is a
-                        // floor-standing one, which is what the palette's own fallback has
-                        // always been.
-                        facing = Rot4.North;
-                        roomLightDef = wallMounted ? floorLightDef ?? lightDef : lightDef;
-                        lightCell = FindClearInteriorCell(map, room,
-                            room.Bounds.CenterCell + new IntVec3(0, 0, 2), reservedProviderCells);
-                    }
-                    lightCells.Add(lightCell);
-                    lightFacings.Add(facing);
-                    lightDefs.Add(roomLightDef);
-                    reservedProviderCells.Add(lightCell);
-                }
+                // **THE GENERATOR AND THE CLIMATE UNIT CHOOSE THEIR CELLS BEFORE ANY LIGHT DOES.**
+                // This block sat below the light loop, and that order was harmless while a room
+                // light was a one-cell lamp in a wall. The first launch with the three-cell strip
+                // failed two coordinates in a row with `RR_Generation_NoSafeRoomCell` out of
+                // `FindPoweredBuildingCell`: the strip took the clear floor beside the centre of
+                // the utility room, and the two-by-two generator had nowhere left to stand. A
+                // generator that cannot be placed costs the coordinate; a strip that cannot be
+                // placed becomes a standing lamp. So the thing that cannot fail goes first.
                 IntVec3 generatorCell = FindPoweredBuildingCell(map, climateRoom, generatorDef,
                     reservedProviderCells, climateRoom.Bounds.CenterCell + new IntVec3(2, 0, 0));
                 ReserveFootprint(generatorCell, generatorDef, reservedProviderCells);
@@ -192,10 +168,58 @@ namespace RimroomsAsyncIndustries.Generation
                 IntVec3 fuelCell = FindClearInteriorCell(map, climateRoom, generatorCell + IntVec3.East,
                     reservedProviderCells);
 
+                var lightCells = new List<IntVec3>();
+                var lightFacings = new List<Rot4>();
+                var lightDefs = new List<ThingDef>();
+                bool wallMounted = lightDef.building != null && lightDef.building.isAttachment;
+                // **OUR FIXTURE IS A STRIP, NOT A POINT.** `RR_SiteFluorescentFitted` is three cells
+                // long, so every placement rule written for a one-cell lamp has to ask about a
+                // footprint instead. Decided by the def's size rather than its name, so a profile
+                // that swaps the fixture for another shape is handled by the same branch.
+                bool strip = !wallMounted && (lightDef.size.x > 1 || lightDef.size.z > 1);
+                foreach (RoomRecord room in coordinate.Rooms.OrderBy(value => value.Index))
+                {
+                    IntVec3 lightCell = IntVec3.Invalid;
+                    Rot4 facing = Rot4.North;
+                    ThingDef roomLightDef = lightDef;
+                    if (wallMounted)
+                    {
+                        lightCell = FindWallAttachmentCell(map, room, room.Bounds.CenterCell,
+                            wallDef, reservedProviderCells, out facing);
+                    }
+                    else if (strip)
+                    {
+                        lightCell = TryFindFootprintCell(map, room, lightDef, reservedProviderCells,
+                            room.Bounds.CenterCell + new IntVec3(0, 0, 2));
+                    }
+                    if (!lightCell.IsValid)
+                    {
+                        // **No wall to mount on, or no run of floor long enough for the strip.**
+                        // This used to fall through placing `lightDef` on an open floor cell facing
+                        // north -- and when the palette's light is `WallLamp`, that is an attachment
+                        // with nothing behind it, which is a guaranteed throw inside Core's power
+                        // rebuild. See WallAttachmentHolds. The room still gets a light; it is a
+                        // floor-standing one, which is what the palette's own fallback has always
+                        // been.
+                        facing = Rot4.North;
+                        roomLightDef = wallMounted || strip ? floorLightDef ?? lightDef : lightDef;
+                        lightCell = FindClearInteriorCell(map, room,
+                            room.Bounds.CenterCell + new IntVec3(0, 0, 2), reservedProviderCells);
+                    }
+                    lightCells.Add(lightCell);
+                    lightFacings.Add(facing);
+                    lightDefs.Add(roomLightDef);
+                    // The whole footprint, which for a one-cell lamp is the one cell it always was.
+                    ReserveFootprint(lightCell, roomLightDef, reservedProviderCells);
+                }
                 var consumerFootprints = new List<CellRect>
                 { GenAdj.OccupiedRect(climateCell, Rot4.North, climateDef.size) };
                 for (int index = 0; index < lightCells.Count; index++)
                 {
+                    // Only a light that draws power is a consumer. The fitted fluorescent runs off
+                    // the building rather than the crew's generator -- see its def for the
+                    // arithmetic -- so routing a conduit to it would wire nothing.
+                    if (!lightDefs[index].HasComp(typeof(CompPowerTrader))) { continue; }
                     consumerFootprints.Add(GenAdj.OccupiedRect(lightCells[index], Rot4.North,
                         lightDefs[index].size));
                 }
@@ -233,6 +257,11 @@ namespace RimroomsAsyncIndustries.Generation
                 // not the Backrooms; flat even over-lighting is the whole look.
                 SpawnPillarLamps(map, coordinate, wallDef, lightDef, wallMounted,
                     reservedProviderCells, placedLights);
+                // **AND A STRIP IN EVERY BAY**, which is the same even grid the pillar lamps made
+                // but in our own fixture: one fitting midway between each pillar and the next.
+                // Owner: *"in the bacrooms lights are normally spaced"*.
+                if (strip)
+                { SpawnBayStrips(map, coordinate, lightDef, reservedProviderCells, placedLights); }
 
                 // **AND THE HALLWAYS GET THE SAME TREATMENT.** Owner: *"rooms as halways with
                 // the exact shit thats in the rooms"*. A corridor that is lit and furnished is
@@ -546,6 +575,46 @@ namespace RimroomsAsyncIndustries.Generation
         {
             foreach (IntVec3 cell in GenAdj.OccupiedRect(position, Rot4.North, definition.size).Cells)
             { reserved.Add(cell); }
+        }
+
+        /// <summary>
+        /// The same question <see cref="FindPoweredBuildingCell"/> asks, answered with
+        /// <c>IntVec3.Invalid</c> instead of a throw.
+        ///
+        /// A light is lighting. A room too cramped for a three-cell strip gets a standing lamp
+        /// from the caller's fallback; it must never cost the coordinate, which is the decision this
+        /// generator has already made about every light placement rule it has.
+        /// </summary>
+        private static IntVec3 TryFindFootprintCell(Map map, RoomRecord room, ThingDef definition,
+            HashSet<IntVec3> reserved, IntVec3 preferred)
+        {
+            if (map == null || room == null || definition == null) { return IntVec3.Invalid; }
+            CellRect usable = room.Bounds.ContractedBy(1);
+            IntVec3 center = room.Bounds.CenterCell;
+            foreach (IntVec3 candidate in OrderedInteriorCells(room, preferred))
+            {
+                if (FootprintClear(map, GenAdj.OccupiedRect(candidate, Rot4.North, definition.size),
+                        usable, center, reserved))
+                { return candidate; }
+            }
+            return IntVec3.Invalid;
+        }
+
+        /// <summary>
+        /// Whether every cell of this footprint is open floor inside the room, off the reserved set
+        /// and off the three-cell route cross -- the one rule every multi-cell placement here shares.
+        /// </summary>
+        private static bool FootprintClear(Map map, CellRect footprint, CellRect usable, IntVec3 center,
+            HashSet<IntVec3> reserved)
+        {
+            foreach (IntVec3 cell in footprint.Cells)
+            {
+                if (!usable.Contains(cell) || !cell.InBounds(map) || reserved.Contains(cell) ||
+                    !cell.Standable(map) || cell.GetEdifice(map) != null || cell.GetFirstItem(map) != null ||
+                    Math.Abs(cell.x - center.x) <= 1 || Math.Abs(cell.z - center.z) <= 1)
+                { return false; }
+            }
+            return true;
         }
 
         /// <summary>
@@ -916,7 +985,15 @@ namespace RimroomsAsyncIndustries.Generation
             // Every consumer, whatever placed it and whatever def it is. This is the invariant a
             // player can actually see -- nothing here is dark or cold -- and it covers the lamps
             // RoomContentBuilder adds after the grid is laid without naming them.
-            var consumers = new List<Thing>(placedLights) { heater };
+            //
+            // **A light that draws no power is not a consumer.** The fitted fluorescent lights
+            // itself; asking the grid about it would fault every coordinate for the fixture
+            // working as designed.
+            var consumers = new List<Thing> { heater };
+            foreach (Thing light in placedLights)
+            {
+                if (light.TryGetComp<CompPowerTrader>() != null) { consumers.Add(light); }
+            }
             foreach (Thing thing in map.listerThings.AllThings)
             {
                 if (thing == null || !thing.Spawned || thing.Map != map || consumers.Contains(thing))
@@ -977,24 +1054,42 @@ namespace RimroomsAsyncIndustries.Generation
             {
                 foreach (IntVec3 cell in room.Bounds.Cells.Where(c => IsDoorOpening(room, rooms, c)))
                 {
-                    Building_Door door = ThingMaker.MakeThing(definition, definition.MadeFromStuff ? ThingDefOf.Steel : null) as Building_Door;
-                    if (door == null || cell.GetEdifice(map) != null) { throw new InvalidOperationException("RR_Generation_InvalidDoorDef"); }
-                    door.SetFaction(Faction.OfPlayer);
-                    GenSpawn.Spawn(door, cell, map, cell.x == room.Bounds.minX || cell.x == room.Bounds.maxX ? Rot4.East : Rot4.North);
-                    if (!door.Spawned || door.Map != map || door.Open) { throw new InvalidOperationException("RR_Generation_InvalidDoorDef"); }
-                    door.SetForbidden(false, false);
-                    if (!door.HoldOpen)
-                    {
-                        // Invoke the same public native command the player uses; no field reflection or custom door simulation.
-                        string label = "CommandToggleDoorHoldOpen".Translate().ToString();
-                        Command_Toggle hold = door.GetGizmos().OfType<Command_Toggle>()
-                            .FirstOrDefault(c => c.hotKey == KeyBindingDefOf.Misc3 && c.defaultLabel == label);
-                        if (hold != null && hold.toggleAction != null) { hold.toggleAction(); }
-                    }
-                    if (!door.HoldOpen || door.Open)
-                    { Log.Warning("[Rimrooms][Generation] Native closed/hold-open door setup unavailable; inspect first-encounter timing."); }
+                    SpawnNativeDoor(map, cell, definition,
+                        cell.x == room.Bounds.minX || cell.x == room.Bounds.maxX ? Rot4.East : Rot4.North,
+                        true);
                 }
             }
+        }
+
+        /// <summary>
+        /// One Core door, spawned the one way this generator spawns them. Lifted out of
+        /// <see cref="PlaceNativeDoors"/> so the door across a corridor is the same door as the
+        /// one in a room's wall, rather than a second spawner that could drift from it.
+        ///
+        /// A room door is held open, as it always was. A corridor door is not: it is there to end
+        /// one stretch of hallway and begin the next, and a door that stands closed is what does
+        /// that for a crew walking the place.
+        /// </summary>
+        private static void SpawnNativeDoor(Map map, IntVec3 cell, ThingDef definition, Rot4 rotation,
+            bool holdOpen)
+        {
+            Building_Door door = ThingMaker.MakeThing(definition, definition.MadeFromStuff ? ThingDefOf.Steel : null) as Building_Door;
+            if (door == null || cell.GetEdifice(map) != null) { throw new InvalidOperationException("RR_Generation_InvalidDoorDef"); }
+            door.SetFaction(Faction.OfPlayer);
+            GenSpawn.Spawn(door, cell, map, rotation);
+            if (!door.Spawned || door.Map != map || door.Open) { throw new InvalidOperationException("RR_Generation_InvalidDoorDef"); }
+            door.SetForbidden(false, false);
+            if (!holdOpen) { return; }
+            if (!door.HoldOpen)
+            {
+                // Invoke the same public native command the player uses; no field reflection or custom door simulation.
+                string label = "CommandToggleDoorHoldOpen".Translate().ToString();
+                Command_Toggle hold = door.GetGizmos().OfType<Command_Toggle>()
+                    .FirstOrDefault(c => c.hotKey == KeyBindingDefOf.Misc3 && c.defaultLabel == label);
+                if (hold != null && hold.toggleAction != null) { hold.toggleAction(); }
+            }
+            if (!door.HoldOpen || door.Open)
+            { Log.Warning("[Rimrooms][Generation] Native closed/hold-open door setup unavailable; inspect first-encounter timing."); }
         }
 
         /// <summary>
@@ -1100,7 +1195,69 @@ namespace RimroomsAsyncIndustries.Generation
                     { PlaceCorridorWall(map, cell, wallDef, wallStuff, look, corridorFloor); }
                 }
             }
+
+            // **A DOOR ACROSS EVERY LEG, so the hallways are not one room.** Owner: *"the hallways
+            // were one massive room so entering one door basicly explored the whole fucking map"*.
+            // Every corridor joins every other corridor with nothing between them, so Core's fog
+            // flood -- which stops at a door and nowhere else -- took the whole network the moment
+            // a crew stepped out of the threshold room. One door at the midpoint of each leg turns
+            // the network into stretches, and a stretch is revealed by walking it.
+            //
+            // A leg too short to have a middle, and a midpoint that is also another leg's floor (a
+            // junction), get no door: a door in a junction is a door in the middle of a crossing.
+            var everyLeg = new List<RoomLayoutPlanner.CorridorLeg>();
+            foreach (List<RoomLayoutPlanner.CorridorLeg> legs in legsByPair) { everyLeg.AddRange(legs); }
+            ThingDef doorDef = DefDatabase<ThingDef>.GetNamedSilentFail("Door");
+            for (int index = 0; index < everyLeg.Count; index++)
+            { PlaceCorridorDoor(map, everyLeg, index, doorDef, wallDef, wallStuff, look); }
             return sides;
+        }
+
+        /// <summary>Shortest leg that gets a door across its middle. Below this it is a doorway, not a hall.</summary>
+        private const int ShortestDooredLeg = 9;
+
+        /// <summary>
+        /// A wall across this leg at its midpoint with a door in the centre lane. See the caller
+        /// for why. Silent when it cannot: a stretch that stays joined to its neighbour is a longer
+        /// stretch, not a broken coordinate.
+        /// </summary>
+        private static void PlaceCorridorDoor(Map map, List<RoomLayoutPlanner.CorridorLeg> legs, int index,
+            ThingDef doorDef, ThingDef wallDef, ThingDef wallStuff, BackroomsPalette.Look look)
+        {
+            if (doorDef == null) { return; }
+            RoomLayoutPlanner.CorridorLeg leg = legs[index];
+            CellRect floor = leg.Floor;
+            int from = leg.AlongX ? floor.minX : floor.minZ;
+            int to = leg.AlongX ? floor.maxX : floor.maxZ;
+            if (to - from + 1 < ShortestDooredLeg) { return; }
+            int mid = (from + to) / 2;
+            int lane = leg.AlongX ? (floor.minZ + floor.maxZ) / 2 : (floor.minX + floor.maxX) / 2;
+            var line = new List<IntVec3>();
+            foreach (IntVec3 cell in floor.Cells)
+            {
+                if ((leg.AlongX ? cell.x : cell.z) != mid) { continue; }
+                for (int other = 0; other < legs.Count; other++)
+                {
+                    if (other != index && legs[other].Floor.Contains(cell)) { return; }
+                }
+                if (!cell.InBounds(map) || cell.GetEdifice(map) != null) { return; }
+                line.Add(cell);
+            }
+            foreach (IntVec3 cell in line)
+            {
+                bool isDoor = (leg.AlongX ? cell.z : cell.x) == lane;
+                if (isDoor)
+                {
+                    // A door across an east-west hall stands in a north-south line, which is the
+                    // rotation PlaceNativeDoors uses for a door in a room's east or west wall.
+                    SpawnNativeDoor(map, cell, doorDef, leg.AlongX ? Rot4.East : Rot4.North, false);
+                    continue;
+                }
+                PlaceWall(map, cell, wallDef, wallStuff);
+                Thing wall = cell.GetEdifice(map);
+                if (wall != null && wall.def == wallDef)
+                { wall.TryGetComp<CompColorable>()?.SetColor(look.wallColor); }
+            }
         }
 
         /// <summary>
@@ -1137,7 +1294,19 @@ namespace RimroomsAsyncIndustries.Generation
             if (corridorFloor != null && corridorFloor.Contains(cell)) { return; }
             // A room's own wall already standing here does the job a corridor wall would, and
             // replacing it is not available: the doorway sits at the midpoint of that same wall.
-            if (cell.InBounds(map) && cell.GetEdifice(map) != null) { return; }
+            //
+            // **BUT THE ROCK FILL IS NOT A WALL, AND THIS LINE THOUGHT IT WAS.** `BuildShell`
+            // fills every cell of the map with natural rock before anything is carved, and natural
+            // rock is an edifice -- so this test was true on every corridor wall cell of every
+            // coordinate, and **not one corridor wall was ever built.** The owner walked it:
+            // *"the hallways were all rock mountain, when they were to be wooden walls on the
+            // inital normal backrooms themed areas"*. The palette, the material and the colour
+            // below were all correct and all unreachable. `PlaceWall` clears rock itself, which is
+            // why the rooms' walls were fine: they never asked this question first.
+            Building standing = cell.InBounds(map) ? cell.GetEdifice(map) : null;
+            if (standing != null &&
+                !(standing.def.building != null && standing.def.building.isNaturalRock))
+            { return; }
             PlaceWall(map, cell, wallDef, wallStuff);
             Thing wall = cell.InBounds(map) ? cell.GetEdifice(map) : null;
             if (wall != null && wall.def == wallDef)
@@ -1361,11 +1530,64 @@ namespace RimroomsAsyncIndustries.Generation
             }
         }
 
+        /// <summary>
+        /// A strip of our fixture in every bay of a pillared hall: midway between each pillar and
+        /// the next one east of it, on the pillar's own row.
+        ///
+        /// Owner: *"there are thousands of lights just mass numbers of lights in piles and piles of
+        /// llights, in the bacrooms lights are normally spaced"*. The pillar lamps were already a
+        /// grid; this is the same grid in the fixture the owner drew, one fitting per six-by-six
+        /// bay. The lattice is `RoomLayoutPlanner.PillarCells` and nowhere else, for the reason
+        /// written on <see cref="SpawnPillarLamps"/>.
+        ///
+        /// Silent on failure, like every light placer here: a bay that cannot take a strip is a
+        /// darker bay.
+        /// </summary>
+        private static void SpawnBayStrips(Map map, CoordinateRecord coordinate, ThingDef lightDef,
+            HashSet<IntVec3> reserved, List<Thing> placedLights)
+        {
+            if (map == null || coordinate == null || coordinate.Rooms == null || lightDef == null) { return; }
+            var step = new IntVec3(RoomLayoutPlanner.PillarSpacing / 2, 0, 0);
+            for (int index = 0; index < coordinate.Rooms.Count; index++)
+            {
+                RoomRecord room = coordinate.Rooms[index];
+                if (room == null) { continue; }
+                CellRect usable = room.Bounds.ContractedBy(1);
+                IntVec3 center = room.Bounds.CenterCell;
+                foreach (IntVec3 pillar in RoomLayoutPlanner.PillarCells(room))
+                {
+                    IntVec3 at = pillar + step;
+                    if (!FootprintClear(map, GenAdj.OccupiedRect(at, Rot4.North, lightDef.size),
+                            usable, center, reserved))
+                    { continue; }
+                    Thing lamp = SpawnAttachableLight(map, lightDef, null, at, Rot4.North);
+                    if (lamp == null) { continue; }
+                    ReserveFootprint(at, lightDef, reserved);
+                    TintLamp(lamp, coordinate, room, pillar);
+                    placedLights.Add(lamp);
+                }
+            }
+        }
+
         /// <summary>How many cells of corridor wall per lamp.</summary>
         private const int CorridorLampSpacing = 7;
 
-        /// <summary>How many cells of corridor wall per fixture.</summary>
-        private const int CorridorFixtureSpacing = 11;
+        /// <summary>
+        /// How many cells of corridor wall per fixture.
+        ///
+        /// **Eleven put a fixture on every eleventh side cell of several thousand**, and a third
+        /// of those rolled a plant pot: the owner's save held 258 pots on one level. Owner,
+        /// 2026-10-07: *"and we dont neee 1000 of them on one level"*. Twenty-three is a fixture
+        /// every two dozen cells of wall -- a hallway with something in it now and then, which is
+        /// what a hallway looks like.
+        /// </summary>
+        private const int CorridorFixtureSpacing = 23;
+
+        /// <summary>
+        /// Most plant pots the corridors of one coordinate may hold. The rooms still place their
+        /// own as family fixtures; this caps the hallways, which is where the pile came from.
+        /// </summary>
+        private const int MaxCorridorPlantPots = 12;
 
         /// <summary>
         /// Light and furnish the hallways, against their walls only.
@@ -1397,12 +1619,28 @@ namespace RimroomsAsyncIndustries.Generation
                 return left.x - right.x;
             });
 
+            // **NO LAMP IN THE FIXTURE LIST.** `StandingLamp` was in it, so on top of the corridor
+            // lighting every eleventh side cell could roll a second, powered, floor-standing lamp.
+            // The owner's save held 1,521 of them. Corridor light comes from the lighting pass
+            // below and from nowhere else.
             var fixtures = new List<ThingDef>();
-            foreach (string name in new[] { "Shelf", "Stool", "PlantPot", "StandingLamp" })
+            foreach (string name in new[] { "Shelf", "Stool", "PlantPot" })
             {
                 ThingDef candidate = DefDatabase<ThingDef>.GetNamedSilentFail(name);
                 if (candidate != null) { fixtures.Add(candidate); }
             }
+
+            // **SPACED BY WHERE A CELL IS, NOT BY WHERE IT SITS IN A LIST.** This was
+            // `index % CorridorLampSpacing` over the side cells sorted by row -- so a hall running
+            // east-west got a lamp every seventh cell, and a hall running north-south, whose side
+            // cells sit one per row interleaved with every other corridor's, got lamps wherever
+            // the seventh entry happened to fall. At a junction the two piled up. Owner: *"piles
+            // and piles of llights"*. A cell's own coordinate is the same on every row of the map,
+            // so a strip every seventh cell along the hall is a strip every seventh cell.
+            var sideSet = new HashSet<IntVec3>(sides);
+            bool strip = lightDef != null && !(lightDef.building != null && lightDef.building.isAttachment)
+                && (lightDef.size.x > 1 || lightDef.size.z > 1);
+            int plantPots = 0;
 
             for (int index = 0; index < sides.Count; index++)
             {
@@ -1411,7 +1649,41 @@ namespace RimroomsAsyncIndustries.Generation
                 if (!cell.Standable(map) || cell.GetEdifice(map) != null) { continue; }
                 if (cell.GetFirstItem(map) != null) { continue; }
 
-                if (lightDef != null && index % CorridorLampSpacing == 0)
+                if (strip)
+                {
+                    // A strip lies along the hall, so it needs the cell on either side of it to be
+                    // side cells too: that is what keeps it against the wall and out of the lane.
+                    Rot4 along = Rot4.Invalid;
+                    if (cell.x % CorridorLampSpacing == 0 && sideSet.Contains(cell + IntVec3.West)
+                        && sideSet.Contains(cell + IntVec3.East))
+                    { along = Rot4.North; }
+                    else if (cell.z % CorridorLampSpacing == 0 && sideSet.Contains(cell + IntVec3.South)
+                        && sideSet.Contains(cell + IntVec3.North))
+                    { along = Rot4.East; }
+                    if (along.IsValid)
+                    {
+                        CellRect footprint = GenAdj.OccupiedRect(cell, along, lightDef.size);
+                        bool clear = true;
+                        foreach (IntVec3 part in footprint.Cells)
+                        {
+                            if (!part.InBounds(map) || reserved.Contains(part) || !part.Standable(map)
+                                || part.GetEdifice(map) != null || part.GetFirstItem(map) != null)
+                            { clear = false; break; }
+                        }
+                        if (clear)
+                        {
+                            Thing fitting = SpawnAttachableLight(map, lightDef, null, cell, along);
+                            if (fitting != null)
+                            {
+                                foreach (IntVec3 part in footprint.Cells) { reserved.Add(part); }
+                                TintLamp(fitting, coordinate, null, cell);
+                                placedLights.Add(fitting);
+                                continue;
+                            }
+                        }
+                    }
+                }
+                else if (lightDef != null && (cell.x + cell.z) % CorridorLampSpacing == 0)
                 {
                     // **Through the one spawner, which finds the wall.** This was
                     // `GenSpawn.Spawn(lamp, cell, map, Rot4.North)` with no wall test of any
@@ -1435,6 +1707,11 @@ namespace RimroomsAsyncIndustries.Generation
                 // Single-cell only: a wider footprint against a corridor wall is how a route
                 // stops being a route.
                 if (definition.size.x != 1 || definition.size.z != 1) { continue; }
+                if (definition.defName == "PlantPot")
+                {
+                    if (plantPots >= MaxCorridorPlantPots) { continue; }
+                    plantPots++;
+                }
                 // The corridor fixtures are Core defs by name, but a profile is free to patch one
                 // into a wall attachment, and an unattached attachment costs the whole level. The
                 // sweep would catch it; refusing to place it is cheaper. See WallAttachmentHolds.
@@ -1442,9 +1719,17 @@ namespace RimroomsAsyncIndustries.Generation
                 Thing fixture = ThingMaker.MakeThing(definition,
                     CoordinateMaterials.StuffFor(definition, coordinate, roll));
                 if (fixture == null) { continue; }
-                fixture.SetFaction(Faction.OfPlayer);
+                // **NOBODY'S, AND FORBIDDEN UNTIL SEEN -- the same two rules the room dressing
+                // follows, which this path never did.** Owner: *"the flower pot in the back rooms
+                // needs to be forbiden setting them so pawns dont try to plant 100 flower pots"*.
+                // This set `Faction.OfPlayer` and never forbade, so every corridor pot was colony
+                // property the tick the map existed -- and Core's sowing work looks only at
+                // colony-owned growers, which is exactly why the room pots, which carry no
+                // faction, never pulled anybody. `UnexploredWorkMapComponent` releases the forbid
+                // when the cell is seen; claiming the pot is the player's to do.
                 GenSpawn.Spawn(fixture, cell, map, Rot4.North);
                 if (!fixture.Spawned || fixture.Map != map) { continue; }
+                GeneratedContent.Quieten(fixture);
                 reserved.Add(cell);
                 if (definition == lightDef) { placedLights.Add(fixture); }
             }
@@ -1815,7 +2100,15 @@ namespace RimroomsAsyncIndustries.Generation
                 // **It also leaves one throw site for `RR_Generation_UnreachableRequiredCell`.**
                 // Two sites raising one key is why that log could not say which had fired, and
                 // reading the source could not answer it either.
-                if (!reachable)
+                // **A SEALED VAULT'S CLUE IS UNREACHABLE BY DESIGN, and warning about it was the
+                // one warning every launch produced.** *"the clue Gold in room 32 ... has no
+                // reachable cell beside it"* appeared on 2026-10-06 and again on the first fresh
+                // start of 2026-10-07, both times in the vault: a room with no links whose only
+                // way in is a pick, dressed with gold on purpose. Measured against `Links`, the
+                // same test the room loop above uses, so there is one derivation and not two.
+                RoomRecord clueRoom = coordinate.Rooms.FirstOrDefault(room => room.Index == clue.RoomIndex);
+                bool sealedRoom = clueRoom != null && (clueRoom.Links == null || clueRoom.Links.Count == 0);
+                if (!reachable && !sealedRoom)
                 {
                     Log.Warning("[Rimrooms][Generation] Coordinate " + coordinate.Id + ": the clue "
                         + landmark.def.defName + " in room " + clue.RoomIndex + " at "

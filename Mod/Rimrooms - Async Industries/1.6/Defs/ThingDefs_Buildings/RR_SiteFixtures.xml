@@ -87,6 +87,71 @@
     </comps>
   </ThingDef>
 
+  <!-- THE SAME FIXTURE, AS THE FACILITY FITTED IT.
+
+       Owner, 2026-10-07: "i thought we were using our our lights that we made" and "we im fucjking
+       telling you in assets we have our own fucking skins". They were right: the fixture above
+       shipped with its art and the generator went on placing Core's WallLamp on every pillar and
+       every corridor, because BackroomsPalette asked for WallLamp by name. The owner's save held
+       3,934 of them and 1,521 standing lamps across three coordinates, and not one of ours.
+
+       THIS ONE DRAWS NO POWER, AND THAT IS ARITHMETIC RATHER THAN TASTE. A coordinate is lit by
+       one Core chemfuel generator at 1,000 W. Those 3,934 wall lamps at 30 W each asked it for
+       118,000 W, so every lamp the generator placed was dark from the first tick - Core browns
+       the whole net out on a deficit. The 0.2.0 site lamp got this right the first time: "It
+       emits light without drawing from the crew's power grid, but it can be broken." A fitted
+       fixture is the building's own lighting; the buildable one above is the crew's, and the
+       crew's one costs power exactly as it says.
+
+       Not buildable, not for sale, leaves nothing when taken down: it is part of the place, like
+       the floor. Same art, same three frames, same wide shallow pool. -->
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>RR_SiteFluorescentFitted</defName>
+    <label>fitted fluorescent fixture</label>
+    <description>A long institutional strip light of the kind that lines a facility corridor, fitted when the place was built and running off whatever the place runs off. It throws a wide, flat, slightly yellow light across a whole run of floor.\n\nIt draws nothing from a crew's grid and it breaks like anything else. Nobody here fitted it.</description>
+    <thingClass>Building</thingClass>
+    <graphicData>
+      <texPath>Things/Building/Rimrooms/RR_SiteFluorescent</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(3,1)</drawSize>
+      <damageData>
+        <rect>(0,0.35,3,0.3)</rect>
+      </damageData>
+    </graphicData>
+    <uiIconScale>0.9</uiIconScale>
+    <size>(3,1)</size>
+    <rotatable>true</rotatable>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>14</pathCost>
+    <fillPercent>0.15</fillPercent>
+    <useHitPoints>true</useHitPoints>
+    <selectable>true</selectable>
+    <castEdgeShadows>false</castEdgeShadows>
+    <stealable>false</stealable>
+    <tradeability>None</tradeability>
+    <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+    <resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
+    <statBases>
+      <MaxHitPoints>90</MaxHitPoints>
+      <Mass>6</Mass>
+      <Flammability>0.4</Flammability>
+      <Beauty>-1</Beauty>
+      <MarketValue>0</MarketValue>
+    </statBases>
+    <building>
+      <paintable>false</paintable>
+      <destroySound>BuildingDestroyed_Metal_Small</destroySound>
+    </building>
+    <comps>
+      <li Class="CompProperties_Glower">
+        <glowRadius>9</glowRadius>
+        <glowColor>(236,226,186,0)</glowColor>
+      </li>
+    </comps>
+  </ThingDef>
+
   <ThingDef ParentName="BuildingBase">
     <defName>RR_UtilityGenerator</defName>
     <label>company utility generator</label>

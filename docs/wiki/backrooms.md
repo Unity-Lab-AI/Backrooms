@@ -27,7 +27,16 @@ branching corridors, and less open floor.
 Rooms too wide for a roof to span unaided carry **pillars**, which is why the largest spaces read as
 built rather than drawn.
 
-A few spaces are **sealed**, with no corridor reaching them at all.
+**The lighting is the building's own.** A fitted fluorescent strip hangs in every bay between the
+pillars and every few cells down each side of a corridor, flat and even, running off whatever the
+place runs off. None of it draws from your generator, and none of it is yours to take down for parts.
+
+**Corridors are rooms too.** They are walled and floored in the same material as the rooms they
+join, and a door stands across the middle of every long run, so a hallway is revealed by walking it
+rather than all at once.
+
+A few spaces are **sealed**, with no corridor reaching them at all. Their contents are unreachable
+until you dig, which is the point of them.
 
 ## What a room is made of
 
@@ -56,7 +65,11 @@ What a room is built from is also salvage: steel walls are steel.
 
 Further in, the furnishing stops pretending too. Rooms are furnished as laboratories, workshops,
 nurseries and dormitories. Runs of rooms are furnished as one place rather than three. Corridors
-have benches in them.
+have something in them now and then.
+
+**Nothing down there is work until somebody has seen it.** A planter, a bench or a shelf in a room
+nobody has entered is forbidden, and a shelf is nobody's storage. Walk in and the forbid lifts; what
+you do with it after that is yours to decide.
 
 ## Things move
 

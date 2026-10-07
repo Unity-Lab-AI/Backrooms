@@ -335,7 +335,10 @@ namespace RimroomsAsyncIndustries.Generation
             // Core's own notion of somebody having been there. Doors, the gate anchor and the
             // conduits are deliberately NOT forbidden -- a forbidden door is a door nobody will
             // walk through -- and they un-forbid at their own spawn sites.
-            thing.SetForbidden(true, false);
+            //
+            // And a storage is marked as nobody's choice, because hauling never asks about the
+            // forbidden flag. See GeneratedContent.
+            GeneratedContent.Quieten(thing);
             // **The dressing is where the owner's *"items and equipment and production benches"*
             // actually lives**, so it is the path that most needed a tell. Marked after the spawn
             // rather than before: a thing that failed to spawn is not an object anybody can read,
@@ -600,7 +603,7 @@ namespace RimroomsAsyncIndustries.Generation
             // the clue a coordinate is built around, so having a crew sprint to haul one out of a
             // room they have never entered is the worst version of this defect rather than the
             // mildest.
-            thing.SetForbidden(true, false);
+            GeneratedContent.Quieten(thing);
             // **And nothing else goes beside the landmark.** The same thing `Populate` already
             // does for the gate anchor, for the same reason: the ring it was placed with is the
             // ring it keeps. Without this, a cross-adjacent landmark still survives -- cross

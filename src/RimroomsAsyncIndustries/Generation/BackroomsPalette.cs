@@ -99,7 +99,12 @@ namespace RimroomsAsyncIndustries.Generation
             {
                 wallStuff = ThingDefOf.WoodLog,
                 wallColor = MonoYellow,
-                light = Named("WallLamp") ?? Named("StandingLamp"),
+                // **OUR OWN FIXTURE FIRST.** Owner, 2026-10-07: *"i thought we were using our our
+                // lights that we made"*. This said `WallLamp`, so the fluorescent that ships with
+                // its own three frames was never placed anywhere; Core's lamp is the fallback for
+                // a profile that somehow lacks the def, and the standing lamp the fallback for
+                // one that lacks both.
+                light = Named("RR_SiteFluorescentFitted") ?? Named("WallLamp") ?? Named("StandingLamp"),
                 floor = Carpet("Structure_Mustard"),
                 accent = Carpet("Structure_Mustard"),
                 floorColor = NamedColor("Structure_Mustard"),

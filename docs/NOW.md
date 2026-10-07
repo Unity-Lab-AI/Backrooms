@@ -13,106 +13,52 @@
 
 ---
 
-## ⛔ DO THESE TWO THINGS FIRST ⛔
+## ⛔ THE GAME IS RUNNING A QA COLONY, AND IT IS NOT THE OWNER'S ⛔
 
-**1. CLOSE RIMWORLD AND RE-STAGE.** `check-package-integrity` is **failing right now**, and it is right to:
-
-> *THE STAGED COPY IS NOT THIS BUILD: 1 file(s) differ ... First differing: `1.6/Assemblies/RimroomsAsyncIndustries.dll`. RIMWORLD IS RUNNING, and the stager refuses while it is.*
-
-A real fix is in the built DLL and **the running game is still loading the previous one**. Close the game, then `powershell -File tools/stage-mod.ps1 -UpdateExisting`.
-
-**2. ONE CLICK IS WAITING.** The game is sitting on `Page_SelectStartingSite` with **Async Industries** selected, Peaceful, Reload anytime, on a freshly generated world. **Pick a tile and press Next.** From the pawn page on, the flow is drivable again.
+RimWorld is up with **`Solo or group, inside`** on a fresh world, paused, saved by the bridge as `rimbridge_save_20261007_101548.rws`. **The owner's 31 saves are untouched.** Quit it from the main menu when done: `python .local/qa/hands.py 1271 641` after `go_to_main_menu`.
 
 ---
 
-## ⛔ CONFIRMED DEFECT, FIXED: A CONSIGNMENT MISSION DISABLED THE WHOLE COMPANY ⛔
+## ⛔ SIX DEFECTS THE OWNER SAW BY PLAYING, FIVE FIXED AND ONE MEASURED ⛔
 
-**Found by playing, in the owner's own colony.** On load: *"[Rimrooms][Save] Campaign integrity failed; company actions are disabled."* **The mod switched itself off**, and every company row in `TEST.md` was untestable in that save.
+**Verbatim, 2026-10-07:** *"the flower pot in the back rooms needs to be forbiden ... thousands of lights just mass numbers of lights in piles ... i didnt see it using the lights textures and skins we have ... the hallways were all rock mountain, when they were to be wooden walls ... the veins of resources that are minable inbetween isolated rooms ... the hallways were one massive room so entering one door basicly explored the whole fucking map"*.
 
-**One line did it**, in `ValidateRecordRelationships`:
+| Finding | Cause, measured | State |
+|---|---|---|
+| Pots pull pawns | Corridor fixtures were `Faction.OfPlayer` and never forbidden; the sow job searches exactly that flag | **fixed** — `GeneratedContent.Quieten`: forbid, and a storage is `Unstored` because hauling never asks about forbids. 176 pots → **43** |
+| Lights in piles | Corridor lamps spaced by **list index** over side cells sorted by row; `StandingLamp` in the fixture list (1,521 of them) | **fixed** — spaced by the cell's own coordinate; no lamp in the fixture list |
+| Our light art unused | `BackroomsPalette` asked for `WallLamp` by name; `RR_SiteFluorescent` shipped and nothing placed it | **fixed** — `RR_SiteFluorescentFitted`, unpowered, placed per bay and per seven corridor cells. **1,197 of ours, 0 wall lamps** |
+| Rock hallways | `PlaceCorridorWall` stood down on *any* edifice, and the rock fill is an edifice in every cell: **no corridor wall was ever built** | **fixed** — yields only to a built wall. 3,499 walls → **9,056** |
+| No veins | They exist: 1,251–2,355 ore cells per coordinate. Rock is `saveCompressible`, so nothing could count it | **measured, unchanged** — `.local/qa/render-coordinate.py` decodes the grid and draws it |
+| One massive room | Every corridor joins every other with nothing between; fog stops at doors only | **fixed** — a door across every leg ≥ 9 cells. 122 doors → **202** |
 
-> `valid &= contracts.All(c => (c.IsOddSupply ? string.IsNullOrEmpty(c.coordinateId) : coordinateIds.Contains(c.coordinateId)) && ...)`
+**Seen with my own eyes in the live game**, not inferred: the yellow rooms lit by our strips, corridors edged in wood, red forbid crosses on the planters, fog still standing sixty cells away. Pictures in `.local/qa/evidence/eyes/`.
 
-- `IsOddSupply` is `requiredThingDefName != "" && requiredCount > 0` — **nothing to do with the template name.**
-- `IsOddConsignment` is `IsOddSupply && requiredSurveyedRooms > 0`, so **a consignment mission IS an odd-supply contract.**
-- And a mission **names one coordinate by design** — its own 0.12.41-dev record says *"A mission names one coordinate, wants goods that coordinate produced"*.
+**Three follow-on corrections, all kept verbatim in `TODO.md`:** *"i didnt say ban pots i said mark them forbidden"* (they are forbidden, not gone, and the colony-ownership flag is what actually stops the job), *"mark anything else u build that similar has an action like a pot does"* (shelves — storage priority), *"we dont neee 1000 of them on one level"* (fixture spacing 11 → 23, pots capped at 12).
 
-So the moment one existed, the branch died. **Measured in the save rather than reasoned about:** `rr.mission.oddconsignment.v1`, coordinate set, `requiredThingDefName=XER_MediumTableM`, `requiredCount=8`, `requiredSurveyedRooms=2`. The two plain `rr.supply.odd.v1` contracts correctly carry no coordinate and passed.
-
-**The validator's own comment is the record of how it went wrong:** *"An odd-supply contract is branch-wide rather than tied to one coordinate ... So it legitimately carries no coordinate id."* **True when written; never revisited when consignment missions landed.**
-
-**FIXED, BUILT CLEAN, AND VERIFIED AGAINST THE REAL SAVE DATA — but not staged.** Three kinds of contract now, not two, with **the narrow kind tested first**, because testing `IsOddSupply` first is exactly what hid a mission inside the broad case.
-
-**AND THE FAULT NOW NAMES ITS CAUSE.** About a dozen conditions all set the same key and the log said only that integrity failed. `troubleshooting.md` promises the opposite in its first line — *"Every refusal in the game names its own cause"* — and pinning this one took reading a 49 MB save's XML by hand. Every check now carries a sentence, and the log prints it.
-
-**NO INSTRUMENT COVERS THIS.** Every checker reads source or defs; **none validates a saved campaign.** That is why a validator rejecting its own legal data shipped invisibly. `.local/qa/diag2.py` re-runs each condition against a save's XML and is the shape the missing instrument should take.
+**And the lights were never on.** 3,934 wall lamps at 30 W on a 1,000 W generator; Core browns the whole net out. The fitted fixture draws nothing, which the 0.2.0 site lamp had already got right.
 
 ---
 
-## ⛔ I CAN DRIVE THE GAME, EXCEPT FOR ONE STEP ⛔
+## ⛔ I HAVE EYES AND HANDS NOW, AND YESTERDAY'S "IMPOSSIBLE" TABLE WAS MISSING A ROW ⛔
 
-**Owner, 2026-10-06:** *"okay u fucking play the game and restart the scenerios as needed to test whats needed"* — **this supersedes *"only the owner launches"*, which is written into five places and deleted from none of them.**
+**Owner:** *"with the rimbridge i dont think u can see very well so im thinking on top of rimbridge u use something like playwrite so u can see the game too"*. Playwright drives browsers; the instinct was right anyway. **`rimworld/take_screenshot` was in the bridge's 125 tools the whole time and I never called it.**
 
-`.local/qa/start-scenario.py` drives the **normal pathway**: it opens `Page_SelectScenario` — which is what **New colony** itself pushes — selects a scenario from the live list, sets Peaceful and Reload anytime, and presses **Generate**. All three starts are enumerable: *Async Industries*, *Furniture and Knickknack Store*, *Solo or group, inside*.
+- `.local/qa/eyes.py` — capture through the bridge, downscale 3840×2160 to 1600 wide, print the path to Read.
+- `.local/qa/hands.py X Y` — click a pixel in that frame with Windows input. **Raises the game and refuses unless the game holds the foreground**, so a click can never land in the owner's other windows.
+- `.local/qa/start-scenario.py --resume` — picks the page loop back up after a pixel click.
 
-**It stops at the landing tile, and that step is not reachable.** `Page_SelectStartingSite` reports a **0×0 rect** because it draws the globe and its own buttons through `WorldInterface` rather than as window content. **Everything was tried, so nobody repeats it:**
+**A fresh colony end to end, twice:** New colony → scenario → storyteller → world → *Select random site* → Next → pawns → acknowledge → Start. Launch the game directly with `Start-Process RimWorldWin64.exe -WorkingDirectory` (the `steam://` URL did nothing). ~2.5 minutes to the bridge.
 
-| Attempt | Result |
-|---|---|
-| `get_ui_layout` default capture | the MapPreview toolbar, not the page |
-| `get_ui_layout` with the page's **window target id** | one group element, nothing actionable |
-| `get_screen_targets` / `click_screen_target` | windows only |
-| `press_accept`, with every non-page window closed first | *"UI state did not change"* |
-| `search_debug_actions` | nothing; debug actions need a playing game |
-| `rimbridge/run_lua` | a **lowered subset** that orchestrates these same capabilities. No game code |
-
-**There is no world-tile tool in the 125.** One human click per fresh colony, and nothing more.
+**One ordering bug of mine found by the first live run:** the three-cell strip took the utility room's floor before the two-by-two generator chose a cell, and `RR_Generation_NoSafeRoomCell` cost two coordinates. The generator and climate unit place first now; a strip with nowhere to go becomes a standing lamp.
 
 ---
 
-## ⛔ THE WATCHER ⛔
+## The asset audit the owner asked for
 
-**Owner:** *"you are gooing toi monitor the rimbridge and do the work of checking off whats comes and passes as i cant read 100 tasks then game them out and tell you to check em constantly"*
+*"check all the assets work, opus did it"* / *"if the lights arent working then wtf other probably too"*. `.local/qa/audit-asset-consumers.py`: **12 textured defs, all 82 textures named** (menu backgrounds load by folder). **Four defs are buildable only and the generator places none** — fluorescent (now fitted), utility generator, emergency cutoff, marker beacon. A coordinate runs on Core's chemfuel set, which is right for the budget and recorded rather than changed.
 
-`.local/qa/test-watch.py` attaches to the live game and journals every letter, message, alert and warning with a UTC timestamp and a game tick. Read-only is **enforced**, not trusted. **Restart it after the next launch.**
-
-**It was its own worst finding: 263 records for one real event.** `ping` carries a timestamp, `game` a tick, `colonists` fresh operation ids — so every sweep wrote all three down, and eleven records were *"No game is currently loaded"* filed as evidence. **The file argued that hashing the whole payload "needs no schema" and that over-reporting was "the safe direction". The second claim was wrong** — the same letter landed three times and five log messages two hundred times each, burying the one that mattered. Volatile fields are stripped now, as a **removal** list so a new field over-reports rather than going silent. **203 records → 10, and the ten are exactly the signal.**
-
-`rimworld/list_maps` **does not exist on this bridge** and is still named in `tools/qa/rimbridge_readonly.py`'s allowlist. It failed 50 times in one session.
-
----
-
-## What the live game said that nobody had read
-
-| Finding | Status |
-|---|---|
-| **One welcome letter goes to all three starts** and tells a `lone_survivor` player about *"the fixed facility"* and to *"complete the gate"*. That start has neither | **open, not fixed** |
-| **`RR_Start_Welcome` has no consumer** — the Async-specific welcome was written, shipped, and never sent. **Third instance today of content with no consumer**, and `check-keyed-strings` has **no unused-key rule at all** | **open** |
-| *"the clue Gold in room 32 at (123, 0, 176) has no reachable cell beside it"* — a room's evidence cannot be collected | **open** |
-| *"WallLamp is not on the generator's power net"* — a light that can never light | **open** |
-
----
-
-## ⛔ THREE FALSE ATTRIBUTIONS I NEARLY PUBLISHED ⛔
-
-**This is the pattern of the session and the most useful thing in this file.**
-
-1. **605 off-thread resource errors**, the first landing immediately after our own company-init line. **Yesterday's session has 580 of the same.** Pre-existing, not today's build, not the watcher. Five door-gizmo icons resolved once per door during threaded generation; **we provide gizmos and never enumerate them.**
-2. **`Could not resolve reference to ... Thing_Human270`**, sitting directly above the integrity failure. It appears **once** in the whole save, inside a pawn's **vanilla** `<social><directRelations>` as a *Parent*. Ordinary relation data about a relative not in the save.
-3. **31 of my own diagnostic's 32 findings were my parser.** **RimWorld's `Scribe` omits a field equal to its default**, so room index 0 is absent and every *"links to missing room 0"* was an artefact. The 32nd was the real bug.
-
-**Adjacency in a log is not causation. Measure, then attribute.**
-
----
-
-## My own mistakes this session, so they are not repeated
-
-- **Started RimWorld's built-in quick-test colony.** Owner: *"wtf? u started a gamer thats not even one of the scenerios"*. The gizmo list proved it worthless on the spot — **nine gizmos on a spawned door, none of them ours**, because `Set Gate` needs a company a quick-test colony never creates.
-- **Reached for a save from 2026-10-02, twice.** Owner: *"do not load old saves"* and *"STOP LOADING SAVES!! AND START THE SCENERIOS THROUGH THE NORMAL PATHWAY!"* An older package's save tests nothing about today's build.
-- **Called the main menu unreachable after two calls** instead of reading `get_ui_layout`'s own description, which lists the surfaces it captures.
-- **Let the page stack accumulate** across retries — `go_to_main_menu` does **not** clear it — so the driver read a page it had not opened. It now clears the stack and refuses to start if it cannot.
-- **Stopped to ask three times.** Owner: *"why did you stop"*, *"u cant stop!!! nothing gets done when u stop working!"* **Permission was already given; asking again was the error.**
-- **Used a bash heredoc for a script three times**, against a rule recorded in this very file.
+**Mod register checked for lighting:** nothing in the 294 rows touches lamps or glow; nothing applied.
 
 ---
 
@@ -120,14 +66,14 @@ So the moment one existed, the branch died. **Measured in the save rather than r
 
 | | |
 |---|---|
-| Branch | **`feature/bug-testing`**, pushed to five GitHub refs |
+| Branch | **`feature/bug-testing`** |
 | Version | **0.13.0-dev** |
-| Build | **0 warnings, 0 errors, 200 package files** |
-| Checkers | **32 of 33.** The one failure is the staged copy, and it is correct — see the top of this file |
-| Proofs / plants | **65 proofs, 45 plant suites** green as of the previous batch; **not re-run since the integrity fix** |
-| Queue | `TODO.md` holds the open findings above · `TEST.md` **56 `[T]`**, two closed by reading |
+| Build | **0 warnings, 0 errors, 200 package files, staged copy matches** |
+| Checkers | **33 of 33** before commit |
+| Fresh coordinate | 33 rooms · 1,197 strips · 0 wall lamps · 16 standing lamps · 43 pots · 9,056 walls · 202 doors · 1,251 ore cells · no warnings in the log |
+| Queue | `TODO.md` still holds: the one welcome letter sent to all three starts, orphaned `RR_Start_Welcome`, no unused-key rule, `rimworld/list_maps` in the shipped allowlist, no instrument that validates a saved campaign · `TEST.md` **56 `[T]`** |
 | Forgejo | **held.** GitHub only |
 
 ## Is it done?
 
-**No, and the test phase has barely started.** Two rows of 58 are closed. **But the first real session already paid for itself**: it found a defect that disables the entire company in any save holding a consignment mission, which no instrument could have caught because none of them reads a save.
+**No.** The generator's shape is right now and seen; the test phase is still 56 rows. The next session starts by walking a crew through a corridor door and watching the fog, and by sending somebody through a gate from the Async Industries start, which no live run has done since the company validator was fixed.

@@ -1,5 +1,55 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-07 - The place is lit by its own lights and walled where it was rock
+
+- **OWNER, from playing:** *"the flower pot in the back rooms needs to be forbiden setting them so
+  pawns dont try to plant 100 flower pots"*, *"there are thousands of lights just mass numbers of
+  lights in piles and piles of llights, in the bacrooms lights are normally spaced"*, *"i didnt see
+  it using the lights textures and skins we have so wtf is up with that"*, *"the hallways were all
+  rock mountain, when they were to be wooden walls"*, *"the veins of resources that are minable
+  inbetween isolated rooms"*, and *"the hallways were one massive room so entering one door basicly
+  explored the whole fucking map"*. Then: *"i thought we were using our our lights that we made"*,
+  *"i didnt say ban pots i said mark them forbidden"*, *"mark anything else u build that similar has
+  an action like a pot does"*, *"we dont neee 1000 of them on one level"*.
+- **Every one was measured out of the owner's own save before it was touched**, by two new readers:
+  one counts things per map, the other decodes the compressed rock grid by short hash and draws the
+  layout. Natural rock is not a thing in a save, so no instrument here could see it until now.
+
+### What a player gets
+
+- **The fluorescent fixture lights every coordinate.** `RR_SiteFluorescent` shipped with its art and
+  the generator placed Core's wall lamp on every pillar and corridor anyway. A sibling def,
+  **`RR_SiteFluorescentFitted`**, is the same fitting as the building fitted it: not buildable,
+  worth nothing, and **drawing no power** - 3,934 wall lamps at 30 W on one 1,000 W generator meant
+  every generated light was dark from the first tick. One strip per six-by-six bay of a hall, one
+  every seventh cell down each side of a corridor. A fresh level: 1,197 strips, no wall lamps.
+- **Corridors have walls.** Not one corridor wall had ever been built: the wall placer stood down on
+  any edifice in the cell, and the rock fill is an edifice in every cell. The palette, the wood and
+  the colour were all right and all unreachable. A fresh level: 9,056 walls against 3,499.
+- **A door across every corridor leg**, so the hallway network is stretches rather than one room and
+  fog lifts as a crew walks instead of all at once. 202 doors against 122.
+- **Generated things make no work until seen.** Corridor fixtures were colony property and never
+  forbidden; room fixtures were forbidden but shelves anywhere were haul destinations, because
+  hauling never asks whether a shelf is forbidden. One method now: forbid, and a storage is marked
+  `Unstored`. Hallway fixtures every 23 cells instead of 11, pots capped at twelve a level: 43 pots
+  on a fresh level against 176.
+- **Lights are spaced by where a cell is, not where it sat in a list**, which is what made the piles;
+  and the standing lamp is out of the corridor fixture list, which is where 1,521 more came from.
+- **The vault's gold no longer raises a warning.** *"the clue Gold in room 32 has no reachable cell"*
+  fired on every launch: room 32 is the sealed vault, unreachable by design.
+
+### The generator and the climate unit place first
+
+- The first live run with the strip failed two coordinates: the strip took the clear floor beside the
+  centre of the utility room and the two-by-two generator had nowhere to stand. The thing that cannot
+  fail now chooses first; a strip with nowhere to go becomes a standing lamp.
+
+### Eyes and hands
+
+- `rimworld/take_screenshot` was in the bridge the whole time and never called. A capture tool and a
+  pixel-click tool, the click refusing unless the game holds the foreground, drive the main menu, the
+  landing-tile page and the company page: a fresh colony from New colony to Start, end to end.
+
 ## 0.13.0-dev - 2026-10-06 - The mod has its own art and its own voice again
 
 - **OWNER: *"whats phase 2 are we making our own items and benches and gates? becasue if so i

@@ -23,6 +23,10 @@ They are here because the company has its own kit, not because the mod stopped w
 The generator is the trade worth reading twice: **more watts, more wood, more breakdowns.** A branch
 running one is usually a branch that could not reach a grid.
 
+The fluorescent you build is the same fitting that lights every coordinate beyond a gate. The ones
+down there are fitted, run off the place itself and are worth nothing taken down; the one you build
+draws power like anything else of yours.
+
 ## Gate equipment
 
 | Build | Where | What it does | Needs |
