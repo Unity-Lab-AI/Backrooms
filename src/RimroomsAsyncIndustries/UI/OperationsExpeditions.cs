@@ -84,8 +84,44 @@ namespace RimroomsAsyncIndustries.UI
             if (campaign == null || campaign.Headquarters == null || selectedGate == null || selectedGate.Destroyed ||
                 !selectedGate.Spawned || selectedGate.Map != campaign.Headquarters || selectedGate.Faction != Faction.OfPlayer ||
                 selectedGate.TryGetComp<CompRimroomsGate>() == null)
-            { selectedGate = null; return null; }
+            {
+                // **A BRANCH THAT HAS A GATE HAS A GATE, WHETHER OR NOT THIS WINDOW WAS TOLD.**
+                // `selectedGate` is only ever assigned by *Select a door* in this pane, so a player
+                // who designates the door from the door's own button -- which is the one-click path
+                // this mod advertises, and the first thing anybody tries -- left this null. Every
+                // reader of `CurrentGate` then behaved as though no gate existed: **the eleven-step
+                // board read `0 of 11 complete` on a commissioned gate that was already paying out
+                // its start-up goals**, and the objective line above sent the player to assemble a
+                // gate they had built. Found by playing, 2026-10-07.
+                //
+                // The fallback asks the branch instead of the window: the headquarters' own
+                // designated gate, from `AvailableNativeDoors`, which is already ordered
+                // deterministically so a branch with two gates picks the same one every frame
+                // rather than flickering between them. **It is a fallback and not a replacement** --
+                // an explicit selection still wins, which is what lets a player with two gates
+                // choose the other one.
+                selectedGate = null;
+                CompRimroomsGate designated = DesignatedGate(campaign);
+                if (designated != null) { selectedGate = designated.parent; }
+                return designated;
+            }
             return selectedGate?.TryGetComp<CompRimroomsGate>();
+        }
+
+        /// <summary>
+        /// The headquarters' own designated gate, or null when the branch has not made one yet.
+        ///
+        /// Asked of the same enumeration the *Select a door* menu offers, so this cannot drift from
+        /// what that menu would have let the player pick.
+        /// </summary>
+        private static CompRimroomsGate DesignatedGate(RimroomsCampaignComponent campaign)
+        {
+            foreach (Building_Door door in AvailableNativeDoors(campaign))
+            {
+                CompRimroomsGate candidate = door.TryGetComp<CompRimroomsGate>();
+                if (candidate != null && candidate.IsDesignated) { return candidate; }
+            }
+            return null;
         }
 
         private void DrawMachine(Listing_Standard listing, RimroomsCampaignComponent campaign)
