@@ -27,7 +27,7 @@ control:
 
 | Factor | Effect on how long a connection holds |
 |---|---|
-| **Power** | The reserve drains while the connection stands; an empty reserve ends it |
+| **Power** | The gate is a load on its circuit while the connection stands; a circuit that can no longer carry it ends it |
 | **Technology** | The window ladder multiplies the base window; the top rung removes the countdown |
 | **Maintenance** | A lapsed assembly blocks the *next* opening, never the current one |
 | **Workforce** | An operator off station, or none at all, ends it |
@@ -163,6 +163,15 @@ never be left with work that nowhere can finish.
 
 An open connection draws power while it stands, and holds a reserve back so **one return is always
 paid for**. You cannot open a connection you could not bring people home through.
+
+**The draw is an ordinary load on the gate's circuit**, the same as a stove or a light. Your
+generators carry it first, and whatever they cannot cover comes out of **every battery on that
+circuit equally** — not out of the one you bound. A generator with spare output keeps a connection
+open without touching the batteries at all.
+
+When the batteries run down to what a return costs, the connection closes on its own and gives the
+crew their return window, rather than spending the charge they need to come home. A closed gate's
+small standby draw stops at the same line.
 
 ---
 

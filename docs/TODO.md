@@ -71,6 +71,12 @@ So the moment one exists, `IsOddSupply` is true, `coordinateId` is not empty, `v
 
 - [ ] **"not self but shelf! its like items in the game are names route 30 or other names i can litterally see the text under funature and stufff name route 21 and shit, do you get it now? these seem weird like what tdo i do with these route 12 furnature things"** — the text under furniture is the room clue label (`RR_Clue_Label_service_passage` is *"Route-marking point — room {0}"*, drawn under the service passage's shelf). **The label names the thing and never says what a player does with it**, and that is the whole of the complaint.
 
+### Found playing, 2026-10-07 — a refused dispatch leaves an expedition behind
+
+- [ ] **A dispatch refused for "carrying an object in their hands" still records an active expedition.** First press: *"A selected crew member is carrying an object in their hands. Finish that haul or put the item into an allowed inventory before dispatch."* Nobody crossed. Every press after, with both crew empty-handed and drafted: *"The gate already has an active expedition."* The Expedition page shows no expedition to cancel, so the AI-01 survey cannot be started in that save.
+- [ ] **THREE PLANT ANCHORS NO LONGER FIND THEIR CODE, AND THE "33 OF 33" IN NOW.md WAS NOT TRUE.** `check-plant-anchors.py` fails at `4469e9f` before any change of this session: `plant-generation.py` *"A ROOM WITH NO WALL GETS THE WALL FIXTURE ON THE FLOOR AGAIN"* and *"the hallways stop being lit"* find no match in `GenStep_BackroomsDestination.cs`, and `plant-unnerving-register.py` *"MARKING MOVES ABOVE THE SPAWN"* none in `RoomContentBuilder.cs`. The lighting and walls commit `bcf0701` rewrote both files. Re-aim each anchor at the code as it stands; never weaken the claim.
+- [ ] **The English DefInjected file still describes the single-bill gate.** `Languages/English/DefInjected/RecipeDef/RR_GateRecipes.xml` overrides `RR_AssembleMachineGate` to *"assemble gate"* and *"Physically carry 100 steel and 8 industrial components"*; the def is one **section** of 25 steel and 2 components, four sections. The bill reads "Assemble gate" on the table for that reason.
+
 ## TOMBSTONES
 
 _(none)_

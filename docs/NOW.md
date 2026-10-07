@@ -7,85 +7,63 @@
 | `docs/ROADMAP.md` | MAJOR — phases and milestones |
 | `docs/TODO.md` | MINOR — buildable work only |
 | `docs/DECOMPOSED.md` | smallest execution units |
-| `docs/TEST.md` | **the test phase, and the owner's play brief lives at the top of it** |
+| `docs/TEST.md` | the test phase, and the owner's play brief at the top of it |
+| **`docs/PLAYBOOK.md`** | **every play order the owner has given, verbatim, as one checklist. Read before playing** |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 
 ---
 
-## ⛔ READ `docs/TEST.md` FIRST — THE OWNER'S PLAY BRIEF IS AT THE TOP OF IT ⛔
+## ⛔ READ `docs/PLAYBOOK.md` BEFORE TOUCHING THE GAME ⛔
 
-Six verbatim directions from 2026-10-07 are recorded there in full. **The standing order is to PLAY the colony, not to tinker with tooling.** The owner's own words on how the last hour went:
+**Owner, 2026-10-07, verbatim:** *"u need to make meals sooner than later and get your shellves organized so like i already told you. so wtf are you not making a guide of everything ive told you becasue im not fucking around you are gonna die if u dont take care of them"*
 
-> *"so wtf? how many fucking test items have you completed? youve been playing for an hour and did nothing in the game but plant rice and neever finished completing the gate steps and never expanded what i told you to do ... its like 90% of everything ive told you you just fucking ignore!"*
-
-**That judgement is correct and the cause was method.** The hour went on fighting the UI: float menus that draw at the mouse, a zone designator that stayed live so forty clicks painted three stray stockpiles that then had to be deleted, and a faction-naming dialog that silently froze the game for two in-game days.
-
-**⛔ DRIVE THE GAME THROUGH THE BRIDGE'S SEMANTIC CLICKS. Pixels are the last resort.** `.local/qa/click-label.py` (`--list`, `--after`, `--nth-after N`, `--labelled-after`) hits real UI elements and cannot drift. `hands.py` pixel clicks are only for surfaces the bridge cannot enumerate — the main menu, the landing-tile page, float menus.
-
-**And before ANY pixel click: `click_cell x z button=right`, then confirm `get_designator_state` reports `selectedDesignatorId: null`.** `press_cancel` does **not** clear a live designator. That one omission made the mess above.
+The guide exists now. **Walk section 1, keeping them alive, every in-game day.** Play in short bursts and read alerts between them.
 
 ---
 
-## THE COLONY, LIVE AND SAVED
+## What this session did
 
-**`rimbridge_save_20261007_122501.rws`** — Async Industries on a 300×300 **Temperate forest / Mountainous** tile, Spring, rolled the owner's way with `.local/qa/pick-site.py` reading the Terrain pane. Three staff: Gee, Scar, Unity, from Preset3 through Prepare Carefully with the Godsmultiplayer ideoligion.
+**Shipped, built, staged: the gate's draw is a load on the grid.** The owner watched one battery go flat beside a full one on the same conduit. Two defects, both measured: the draw was a **second line beside the grid**, 3500 W out of storage while generators had 1375 W spare, and the drawing method **emptied batteries one at a time** while claiming to copy Core. An autodoor gate now rides its door's own power comp: generators first, then every battery equally. One-time costs and manual doors split evenly. The closed gate's standby draw, which nothing had ever charged, rides the same load. **Not yet seen in a running game** — that is a `[T]` row at the top of `TEST.md`'s Pending.
 
-| Done | State |
+**Played: the gate is open.** Eleven of eleven. The two-section stall was a bill at `0x` nobody had priority to work. The company paid **2,000,000 USD** for *Power the gate*.
+
+**Played: food.** Cook bill at 50, butcher table built with *Butcher creature* on Forever, berries and ambrosia marked, fourteen animals marked to hunt, three charge rifles issued.
+
+## The colony
+
+**`rimbridge_save_20261007_before_battery_fix`** — the latest. Async Industries, Gee, Scar, Unity, 9th of Aprimay 5500. **The AI-01 connection is open** with Gee on station. Account **51,721,860 USD**. Research: **Devilstrand**.
+
+**And it carries the open defect below**: an expedition record that blocks dispatch.
+
+## ⛔ OPEN, IN THE ORDER TO TAKE THEM ⛔
+
+1. **Load the save and watch the batteries** — the `[T]` row. Two batteries should fall together, and not at all while the generators have surplus.
+2. **A refused dispatch leaves an expedition behind** (TODO). The first press refused with *"carrying an object in their hands"*, crossed nobody, and every press after says *"The gate already has an active expedition"*. The **$5,000,000 AI-01 survey** is waiting behind it. **Hand-carried hauls start again the instant a pawn is undrafted**, so drafting first and dispatching second is the play-side workaround once the defect is gone.
+3. **Three plant anchors** no longer find their code since `bcf0701` (TODO). The checkers are **32 of 33**, and the 33 of 33 recorded before was not true.
+4. **The DefInjected gate recipe text** still says 100 steel and one bill (TODO).
+5. **The play brief**, per `PLAYBOOK.md`: shelves organised, a vault, the prison, guest beds, defences and embrasures, the *Galaxy* sculpture the ideoligion wants, chopping, quests.
+
+## How to drive the game, learned the hard way this session
+
+| | |
 |---|---|
-| Gate | **6 of 11.** Console, battery and bench bound; table and console in gate control; **2 of 4 sections installed**; Gee assigned operator |
-| Freezer (`Stockpile zone 2`) | Foods + Medicine + Wort + **Corpses**; `*Allow rotten` **off**, `*Allow fresh` on |
-| Trash | `Dumping stockpile zone 1`, 64 cells, west of the compound |
-| Resources | **140 mine cells on unfogged rock only**, 89 chop designations |
-| Food | 189-cell rice field, blight cut, cook bill running |
-| Pawns | All three **Attack**, schedules all **Anything** |
-| Research | Prisoner containment done, more queued |
-
-## ⛔ WHAT THE OWNER ASKED FOR AND DID NOT GET ⛔
-
-**Not started:** prison · guest beds (alert standing, five visitors) · defences and embrasures (alert standing) · hunting · a vault for silver, gold, gems and ivory · shelves organised · meds to the hospital · cook bill maintained at **50** rather than 10 · expanding the base · quests and missions · prisoners working under layered security.
-
-**And the gate is stalled at 2 of 4 sections.** The *assemble gate section* bill counts down to `0x` without consuming the 100 steel and 8 components, and step 5 stays red. **Not yet attributed — do not guess.** The gate's own card is the thing to read: it says *"Assembly: 2 of 4 sections installed"* and names its next step in plain words. `.local/qa/inspect.py` prints that card.
-
----
-
-## What this session actually bought: the board could not see a gate the player had built
-
-**Fixed and verified, `57959dd`.** `MainTabWindow_Operations.CurrentGate` read only `selectedGate`, a field assigned nowhere but the pane's own *Select a door* menu. Designate the door from **the door's own button** — the one-click path this mod advertises — and the window never learned the gate existed.
-
-**The board read `0 of 11 complete` on a gate that was commissioned and already paying out its start-up goals**, and the objective line told the player to assemble a gate they had built. It reset to zero every time Operations was reopened.
-
-**This is the owner's old report** — *"ive done like 50 things in a row and its still not opening"* — wearing a different hat.
-
-**Proved, not reasoned:** pressing *Select a door* moved the board **0 → 2** on an unchanged gate. After the fix, a fresh load reads **2 of 11 with nothing selected**, and the chain then ran to 6 in play. The fallback asks the branch for its designated gate through the same door enumeration the menu offers, so the two cannot disagree; an explicit selection still wins.
-
----
-
-## Tools built this session, all in `.local/qa/`
-
-| Tool | What it is for |
-|---|---|
-| `click-label.py` | **The main way to drive the game.** Semantic clicks on enumerable UI |
-| `inspect.py` | Prints the selection's inspect card — the game saying what it thinks |
-| `designators.py` | Architect designator ids by category and keyword |
-| `pick-site.py` | Rolls *Select random site* until the Terrain pane reads mountains in forest or jungle |
-| `eyes.py` | Bridge capture (`--os` for a desktop grab when the game's thread is busy) |
-| `hands.py` | Pixel click, drag, hover, unicode typing. **Refuses unless the game holds the foreground** |
-
-**⛔ In any Core file list the unlabelled button beside a row's name is DELETE.** It came one click from the owner's `Godsmultiplayer.rid`. Use `--labelled-after "<name>" "Load"`.
-
----
+| **A bill row's unlabelled icons are plus, minus, DELETE** | `--nth-after "<count>" 3` is plus. #5 deleted the cook bill once |
+| **Float menus** — repeat mode, research nodes | pixel clicks with `hands.py`. A plain click on a research node **replaces** the project |
+| **`find-things.py Word,Word x0 z0 x1 z1`** | new: finds things by def over the map in one socket session. **It counts cells, not stacks** — "1 survival meal" was a stack of 106 |
+| **`designate-cells.py <id> "x,z x,z"`** | new: one designator over a list of cells, then clears it. *Harvest* works per cell; *Harvest fully grown* does not |
+| **`dispatch-crew.sh <names>`** | new: waits for empty hands, drafts, dispatches |
+| **`open_context_menu` on a pawn's right-click** | says why a bill is not being worked — *"Missing 0.5x raw food"* was the whole food diagnosis |
 
 ## State, measured
 
 | | |
 |---|---|
-| Branch | **`feature/bug-testing`**, `57959dd` on five GitHub refs, tree clean |
-| Version | **0.13.0-dev**, 0 warnings, 0 errors, staged copy matches |
-| Checkers | **33 of 33** |
-| Forgejo | **held.** GitHub only |
-| Client | Updating from 2.1.270 to reach `claude-opus-5-5`, which needs 2.1.280+ |
+| Branch | **`feature/bug-testing`** |
+| Version | **0.13.0-dev**, 0 warnings, 0 errors, staged copy hash-checked |
+| Checkers | **32 of 33** — the one is the three stale plant anchors, failing before this change |
+| RimWorld | **closed by owner direction** to build and stage |
 
 ## Is it done?
 
-**No.** The generator reads right and the gate chain runs, but the owner's play brief is roughly a tenth done. **Next session opens `TEST.md`, takes the list in order, and uses semantic clicks.**
+**No.** The battery fix is built and unseen; the survey is blocked by a defect; the play brief is perhaps a fifth done.

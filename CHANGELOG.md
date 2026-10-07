@@ -1,5 +1,54 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-07 - The gate is a load on the grid, and every battery pays its share
+
+- **OWNER, watching the gate open:** *"hold up now, the batteryies only one is drain, thats
+  incorrect.. one is draing very fast but they are on the same string on conductiut, soo that second
+  line of draw u set up to one better is wrong and not needed the battery braw needs to be
+  consistant not tied to a single battery"*.
+- **Both halves were true, and measured before they were touched.** The open gate took 3500 W
+  straight out of storage while the same net read **1375 W of generator surplus**, and the drawing
+  method emptied the first battery in Core's list before touching the next while its own comment
+  claimed to be a copy of Core.
+
+### What a player gets
+
+- **An autodoor gate is an ordinary load on its circuit.** Generators carry it first; whatever they
+  cannot cover comes out of every battery on the circuit equally, by Core's own power tick. A
+  generator with spare output holds a connection open without touching the batteries.
+- **The card says so.** *"Gate load: 3500 W, carried by the grid like any building, generators first
+  and then every battery on the circuit equally"*, where it read *"Rimrooms direct drain while
+  open"*.
+- **A circuit that cannot carry it closes the connection at the return floor**, giving the crew
+  their return window rather than spending the charge they need to come home.
+- **One-time costs and manual doors split evenly too.** A recovery opening, an emergency return, and
+  a manual door's draw, which has no power comp to ride, are paid in equal shares across every
+  battery still holding charge.
+- **The closed gate's standby draw is finally charged.** The method meant to take it was called by
+  nothing, so the card reported a draw that never happened. It rides the same load now and stops at
+  the same floor.
+
+### Played, not assumed
+
+- **The gate went from two sections to an open connection in one sitting.** The stall was a bill run
+  down to `0x` with nobody given the Crafting priority to take it, not a mod fault. Four of four,
+  calibrated, AI-01 remembered, Gee on station, and *"THE CONNECTION IS OPEN"*. The company paid
+  **2,000,000 USD** for *Power the gate* the moment it was accepted.
+- **Food.** The cook bill holds 50, a butcher table was built where there had never been one, wild
+  berries and ambrosia are marked, fourteen animals are marked to hunt, and three charge rifles from
+  the security room went to the only three people who could use them.
+- **`docs/PLAYBOOK.md`** gathers every play order the owner has given into one checklist, verbatim,
+  read before every session. The owner's words: *"so wtf are you not making a guide of everything
+  ive told you"*.
+
+### Found, logged, not yet fixed
+
+- A dispatch refused for a hand-carried haul still leaves *"The gate already has an active
+  expedition"*, so the AI-01 survey cannot start in that save.
+- The English DefInjected file still describes the single-bill gate assembly.
+- Three plant anchors no longer find their code since the lighting commit, so the checker count is
+  32 of 33 and was not 33 before this change either.
+
 ## 0.13.0-dev - 2026-10-07 - The place is lit by its own lights and walled where it was rock
 
 - **OWNER, from playing:** *"the flower pot in the back rooms needs to be forbiden setting them so

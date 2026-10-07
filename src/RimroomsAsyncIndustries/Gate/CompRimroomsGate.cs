@@ -413,9 +413,14 @@ namespace RimroomsAsyncIndustries.Gate
         private void TickGate()
         {
             base.CompTick();
-            if (!parent.Spawned || portalOwnerFault) { return; }
+            if (!parent.Spawned) { return; }
+            // Ahead of every early return below, so a gate that stops being one -- released,
+            // faulted -- hands its door's draw back to Core on the very next tick.
+            ApplyGridLoad();
+            if (portalOwnerFault) { return; }
             if (!BeginNativeTick()) { return; }
             Presentation.NativePortalPresentation.Tick(this);
+            SpendIdleDrawTick();
 
             TickServicing();
             if (HasPowerAndHeadroom())
@@ -1403,10 +1408,10 @@ namespace RimroomsAsyncIndustries.Gate
         }
 
         /// <summary>
-        /// A gate is powered when its designated infrastructure says so. The grid headroom
-        /// arithmetic that used to live here belonged to the retired machine, which drew from
-        /// the colony network directly; a gate on a door is fed by the battery the player bound
-        /// to it, and that check is inside the binding failure key.
+        /// A gate is powered when its designated infrastructure says so, and that check is inside
+        /// the binding failure key -- including the door's own power comp, which Core switches
+        /// off when the circuit cannot carry the gate's load. An autodoor gate's draw is an
+        /// ordinary load on that comp since 0.13.0-dev; see `ApplyGridLoad`.
         /// </summary>
         private bool HasPowerAndHeadroom()
         {
@@ -1416,8 +1421,8 @@ namespace RimroomsAsyncIndustries.Gate
         /// <summary>
         /// Whether the circuit can support **starting** an opening, or a keyed reason why not.
         ///
-        /// Opening load is paid from the linked battery, never charged twice as grid load — so this
-        /// asks about **supply**, not about the cost of the opening itself.
+        /// This asks about **supply** -- what the circuit generates -- not about the cost of the
+        /// opening itself, which the grid pays as the door's load once the gate is open.
         ///
         /// ## Two values that had nothing reading them
         ///

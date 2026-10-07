@@ -149,11 +149,23 @@ namespace RimroomsAsyncIndustries.Gate
         }
 
         /// <summary>
-        /// Draws across every battery on the circuit and reports what was actually taken.
+        /// Draws across every battery on the circuit **evenly** and reports what was actually taken.
         ///
-        /// **Copied from Core rather than called**: `PowerNet.ChangeStoredEnergy` does exactly
-        /// this with `givingBats[j].DrawPower(num3)` and is `private`, so the pattern is
-        /// reproduced and the behaviour matches what the game does to its own batteries.
+        /// ## Owner report, 2026-10-07, verbatim
+        ///
+        /// *"the batteryies only one is drain, thats incorrect.. one is draing very fast but they
+        /// are on the same string on conductiut ... the battery braw needs to be consistant not
+        /// tied to a single battery"*.
+        ///
+        /// **This said it was copied from Core and it was not.** It walked the list and emptied
+        /// each battery before touching the next, so the first one in `batteryComps` went flat
+        /// while its neighbour on the same conduit sat full. Core's private
+        /// `PowerNet.ChangeStoredEnergy` splits a draw into equal shares across every battery that
+        /// still holds charge and repeats until it is paid, and that is what this does now.
+        ///
+        /// Only one-time costs come through here -- a recovery opening, an emergency return, and
+        /// the opening draw of a manual door, which has no power comp of its own. An autodoor
+        /// gate's running draw is an ordinary grid load; see <see cref="ApplyGridLoad"/>.
         ///
         /// Returns the observed total, never the requested one. A battery that refuses to give
         /// what it said it held is the case the debit-fault machinery exists for, and that
@@ -166,21 +178,94 @@ namespace RimroomsAsyncIndustries.Gate
             float remaining = amount;
             float drawn = 0f;
             List<CompPowerBattery> batteries = net.batteryComps;
-            for (int index = 0; index < batteries.Count && remaining > 0f; index++)
+            // Each pass splits what is left equally across the batteries that still hold some.
+            // A battery smaller than its share gives what it has and the rest is spread over the
+            // others on the next pass, so the loop ends in at most one pass per battery.
+            for (int pass = 0; pass <= batteries.Count && remaining > 0.0000001f; pass++)
             {
-                CompPowerBattery battery = batteries[index];
-                if (battery == null || battery.StunnedByEMP) { continue; }
-                float available = battery.StoredEnergy;
-                if (!FiniteNonnegative(available) || available <= 0f) { continue; }
-                float take = available < remaining ? available : remaining;
-                float before = battery.StoredEnergy;
-                battery.DrawPower(take);
-                float observed = before - battery.StoredEnergy;
-                if (!FiniteNonnegative(observed)) { continue; }
-                drawn += observed;
-                remaining -= observed;
+                int giving = 0;
+                for (int index = 0; index < batteries.Count; index++)
+                {
+                    CompPowerBattery battery = batteries[index];
+                    if (battery != null && !battery.StunnedByEMP && battery.StoredEnergy > 0f) { giving++; }
+                }
+                if (giving == 0) { break; }
+                float share = remaining / giving;
+                for (int index = 0; index < batteries.Count; index++)
+                {
+                    CompPowerBattery battery = batteries[index];
+                    if (battery == null || battery.StunnedByEMP) { continue; }
+                    float available = battery.StoredEnergy;
+                    if (!FiniteNonnegative(available) || available <= 0f) { continue; }
+                    float take = available < share ? available : share;
+                    float before = battery.StoredEnergy;
+                    battery.DrawPower(take);
+                    float observed = before - battery.StoredEnergy;
+                    if (!FiniteNonnegative(observed)) { continue; }
+                    drawn += observed;
+                    remaining -= observed;
+                }
             }
             return drawn;
+        }
+
+        /// <summary>
+        /// Whether this gate is fed by the grid. An autodoor carries Core's own power comp, so its
+        /// draw rides that comp like any other building's; a manual door has none.
+        /// </summary>
+        private bool GridFed { get { return powerTrader != null; } }
+
+        /// <summary>
+        /// True while <see cref="ApplyGridLoad"/> has raised the door's draw above Core's own value.
+        /// Not saved: the next tick after a load recomputes it from the gate's state.
+        /// </summary>
+        private bool gridLoadApplied;
+
+        /// <summary>
+        /// Puts the gate's draw on the door's own power comp, so **the grid pays for it the way it
+        /// pays for every building**: generators first, then every battery on the circuit in equal
+        /// shares, by Core's own `PowerNet` tick.
+        ///
+        /// ## Owner report, 2026-10-07, verbatim
+        ///
+        /// *"that second line of draw u set up to one better is wrong and not needed the battery
+        /// braw needs to be consistant not tied to a single battery"*.
+        ///
+        /// The open gate used to take its draw straight out of storage every tick, as a second
+        /// line of draw beside the grid. Measured in the running game: 3500 W out of the batteries
+        /// while the same net read **1375 W of surplus** from its generators, so the generators
+        /// were never asked and the reserve was spent for nothing. One load on the grid is the
+        /// whole fix -- Core already knows how to share a deficit across a battery bank, and a
+        /// brown-out turns the door's comp off, which `NativeBindingFailureKey` already reads as
+        /// lost power.
+        ///
+        /// **The closed gate's standby draw rides the same load**, and that is a second fix: the
+        /// method that was meant to charge it was called by nothing, so the readout reported a draw
+        /// that was never taken. It stops at the emergency-return floor exactly as that method
+        /// would have -- a gate somebody walked away from comes back to a flat battery, never to a
+        /// reserve too low to bring a crew home.
+        /// </summary>
+        private void ApplyGridLoad()
+        {
+            if (!GridFed) { return; }
+            float gateLoad = IsDesignated ? CurrentPowerDrawWatts : 0f;
+            if (!IsOpening && gateLoad > 0f && NativeStoredEnergy <= GateProps.emergencyReturnCostWattDays)
+            { gateLoad = 0f; }
+            if (!(gateLoad > 0f) || float.IsInfinity(gateLoad))
+            {
+                ReleaseGridLoad();
+                return;
+            }
+            powerTrader.PowerOutput = -(powerTrader.Props.PowerConsumption + gateLoad);
+            gridLoadApplied = true;
+        }
+
+        /// <summary>Hands the door's draw back to Core's own value for it.</summary>
+        private void ReleaseGridLoad()
+        {
+            if (!gridLoadApplied || powerTrader == null) { return; }
+            powerTrader.SetUpPowerVars();
+            gridLoadApplied = false;
         }
         private IntVec3 NativeEntryCell
         {
@@ -592,10 +677,14 @@ namespace RimroomsAsyncIndustries.Gate
         /// **Never takes the reserve below what an emergency return costs.** That floor is the
         /// difference between a cost and a trap: a player who designates a gate and walks away
         /// should come back to a flat battery, not to a crew that cannot be recovered.
+        ///
+        /// **Manual doors only, and called by the tick since 0.13.0-dev.** Until then nothing
+        /// called this at all, so the standby draw the readout reported was never taken. An
+        /// autodoor's standby draw rides its grid load instead -- see <see cref="ApplyGridLoad"/>.
         /// </summary>
         private void SpendIdleDrawTick()
         {
-            if (IsOpening || !IsDesignated) { return; }
+            if (GridFed || IsOpening || !IsDesignated) { return; }
             // Through the property, never the raw prop: it is the one place research is applied,
             // so what the gate reports drawing and what it actually takes can never diverge.
             float cost = IdlePowerDrawWatts * CompPower.WattsToWattDaysPerTick;
@@ -609,6 +698,20 @@ namespace RimroomsAsyncIndustries.Gate
         private bool SpendNativeOpeningTick()
         {
             float cost = OpeningPowerDrawWatts * CompPower.WattsToWattDaysPerTick;
+            if (GridFed)
+            {
+                // **The grid is paying, so nothing is debited here.** What is left to decide is
+                // whether it still can: a door the grid has switched off is a lost supply, and a net
+                // running its batteries down to the emergency-return floor must close rather than
+                // spend the charge a crew needs to come home.
+                PowerNet net = NativePowerNet;
+                if (net == null || !powerTrader.PowerOn) { return false; }
+                if (net.CurrentEnergyGainRate() < 0f &&
+                    NativeStoredEnergy < cost + GateProps.emergencyReturnCostWattDays)
+                { return false; }
+                nativeEnergyDrawnWattDays += cost;
+                return true;
+            }
             if (NativeStoredEnergy < cost + GateProps.emergencyReturnCostWattDays) { return false; }
             return TrySpendNativeEnergy(cost, false, NativeOpeningDebitId("tick:" + Find.TickManager.TicksGame));
         }

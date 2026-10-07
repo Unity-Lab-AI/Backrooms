@@ -18438,3 +18438,57 @@ if (console == null || battery == null || bench == null)
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner report — one battery drains while its neighbour on the same conduit does not (2026-10-07)
+
+**Verbatim owner report (2026-10-07):** *"hold up now, the batteryies only one is drain, thats incorrect.. one is draing very fast but they are on the same string on conductiut, soo that second line of draw u set up to one better is wrong and not needed the battery braw needs to be consistant not tied to a single battery"*
+
+**Located the same minute.** `Gate/NativeGateBinding.cs` `DrawFromNativeCircuit` walks `net.batteryComps` in order and empties each battery before touching the next, while its own comment says it is *"copied from Core"* — Core's `PowerNet.ChangeStoredEnergy` splits a draw **evenly** across every giving battery. And the whole draw is **a second line beside the grid**: the open gate took 3500 W straight out of storage while the same net read `Grid excess: 1375 W`, so generators that had surplus were never asked. The inspect card even names it, *"Rimrooms direct drain while open"*.
+
+- [x] **"the battery braw needs to be consistant not tied to a single battery"** — an autodoor gate's draw rides the door's own `CompPowerTrader` as an ordinary grid load, so Core supplies it generators-first and then from every battery evenly; a manual door, which has no trader, draws from storage split evenly the way Core does. -- **BUILT 0.13.0-dev, 0 warnings, staged and hash-checked.** `ApplyGridLoad` sets the door's `PowerOutput` to its own consumption plus the gate's draw every tick and hands it back through Core's `SetUpPowerVars` when the gate stops being one; `DrawFromNativeCircuit` now pays in equal shares across every battery still holding charge, pass after pass, which is what Core's private `ChangeStoredEnergy` does. The opening tick asks only whether the grid still can: the door's comp switched off by a brown-out, or a net in deficit at the emergency-return floor, closes the connection and gives the crew their return window. Seen in the running game is a test-phase row in `TEST.md`.
+- [x] **"that second line of draw u set up to one better is wrong and not needed"** — the separate direct debit is gone for an autodoor gate, and the readout stops calling it a direct drain. -- **BUILT 0.13.0-dev.** An autodoor gate has no separate debit at all; the card reads *"Gate load: {2} W, carried by the grid like any building, generators first and then every battery on the circuit equally"*. **And the closed gate's standby draw is finally charged:** `SpendIdleDrawTick` had been called by nothing, so the readout reported a draw that was never taken. It now rides the same grid load, stopping at the emergency-return floor, and the manual-door path is called from the tick.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TEST.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TEST.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"start seting up the gate"** — the eleven checks on the Machine pane, in order, through to an opened connection. **TWO OF ELEVEN 2026-10-07, and the game paid for both:** *"Start-up goal 1 reached: A door chosen to become the gate. The company has credited 40."* and *"Start-up goal 3 reached: The gate commissioned. The company has credited 60."* **Open:** binding console, battery and bench, the four assembly bills, an operator, calibration, an address, and the opening. -- **ELEVEN OF ELEVEN 2026-10-07, AND THE CONNECTION IS OPEN.** The stall at two sections was a bill at `0x` that nobody had the Crafting priority to pick up, not a mod fault: set to 2x and prioritised for Scar, the card read *"Assembly: 3 of 4"* on the next burst and then moved to step 7. Calibration, the address AI-01 remembered, Gee staffing, and *"Open the laboratory connection for coordinate AI-01"* followed; the gate's own card: *"THE CONNECTION IS OPEN"*, *"Operator on station: Gee"*, *"Opening time: 7619 in-game minutes remaining"*, and `get_game_info` `mapCount: 2`. Saved as `rimbridge_save_20261007_gate_open`. The company then paid the **Power the gate** request, *"finished by Build a battery"*, and the account moved **49,721,860 to 51,721,860 USD**.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
